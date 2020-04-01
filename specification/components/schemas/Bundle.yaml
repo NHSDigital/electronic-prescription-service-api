@@ -1,0 +1,39 @@
+type: object
+description: A container for a collection of resources.
+properties:
+  resourceType:
+    type: string
+    description: FHIR Resource type.
+    default: Bundle
+    readOnly: true
+  id:
+    type: string
+    description: Logical id of this artifact.
+    example: 7EB02341-5F62-4A76-2CD3-34F523452356
+  type:
+    type: string
+    description:
+    enum:
+      - document
+      - message
+      - transaction
+      - transaction-response
+      - batch
+      - batch-response
+      - history
+      - searchset
+      - collection
+    example: collection
+  entry:
+    type: array
+    description:
+    items:
+      type: object
+      properties:
+        resource:
+          anyOf:
+            - $ref: "MedicationRequest.yaml"
+            - $ref: "Patient.yaml"
+            - $ref: "Practitioner.yaml"
+            - $ref: "Encounter.yaml"
+            - $ref: "Organization.yaml"

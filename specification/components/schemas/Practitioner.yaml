@@ -1,0 +1,45 @@
+type: object
+description:
+properties:
+  resourceType:
+    type: string
+    description: FHIR Resource type
+    default: Practitioner
+    readOnly: true
+  id:
+    type: string
+    description: Logical id of this artifact.
+    example: 001
+# The following is valid in JSON schemas but not in OpenAPI schemas:
+#  identifier:
+#    allOf:
+#      - type: array
+#        description: An identifier that applies to this person in this role.
+#        contains:
+#          $ref: "Identifier-SdsUserId.yaml"
+#      - type: array
+#        description: An identifier that applies to this person in this role.
+#        contains:
+#          $ref: "Identifier-SdsJobRoleId.yaml"
+#      - type: array
+#        description: An identifier that applies to this person in this role.
+#        contains:
+#          $ref: "Identifier-SdsRoleProfileId.yaml"
+  identifier:
+    type: array
+    description: An identifier that applies to this person in this role.
+    items:
+      oneOf:
+        - $ref: "Identifier-SdsUserId.yaml"
+        - $ref: "Identifier-SdsJobRoleId.yaml"
+        - $ref: "Identifier-SdsRoleProfileId.yaml"
+  name:
+    type: array
+    description: The name(s) associated with the practitioner.
+    items:
+      $ref: "HumanName.yaml"
+  telecom:
+    type: array
+    description: A contact detail for the practitioner, e.g. a telephone number or an email address.
+    items:
+      $ref: "ContactPoint.yaml"

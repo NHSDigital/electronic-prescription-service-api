@@ -1,0 +1,13 @@
+type: object
+description: A role profile code managed by the NHS Spine Directory Service.
+properties:
+  system:
+    type: string
+    description: Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
+    enum:
+      - https://fhir.nhs.uk/Id/sds-role-profile-id
+    example: https://fhir.nhs.uk/Id/sds-role-profile-id
+  value:
+    type: string
+    description: The portion of the identifier typically relevant to the user and which is unique within the context of the system.
+    example: 934565838956

@@ -3,7 +3,7 @@ description: Outcome of an operation that does not result in a resource or bundl
 properties:
   resourceType:
     type: string
-    description: FHIR Resource Type.
+    description: FHIR Resource type.
     default: OperationOutcome
     readOnly: true
   issue:

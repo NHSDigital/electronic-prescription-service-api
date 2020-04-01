@@ -1,0 +1,30 @@
+type: object
+description: An interaction between a patient and healthcare provider(s) for the purpose of providing healthcare service(s) or assessing the health status of a patient.
+properties:
+  resourceType:
+    type: string
+    description: FHIR Resource type
+    default: Encounter
+    readOnly: true
+  id:
+    type: string
+    description: Logical id of this artifact.
+    example: 001
+  status:
+    type: string
+    description: Current state of the encounter.
+    enum: 
+      - planned
+      - arrived
+      - triaged
+      - in-progress
+      - onleave
+      - finished
+      - cancelled
+      - entered-in-error
+      - unknown
+    example: finished
+  class:
+    $ref: "Coding-ActEncounterCode.yaml"
+  serviceProvider:
+    $ref: "Reference.yaml"

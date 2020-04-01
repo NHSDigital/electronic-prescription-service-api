@@ -1,0 +1,25 @@
+type: object
+description: Concepts representing classification of patient encounter such as ambulatory (outpatient), inpatient, emergency, home health or others due to local variations.
+properties:
+  system:
+    type: string
+    description: The identification of the code system that defines the meaning of the symbol in the code.
+    enum: 
+      - http://terminology.hl7.org/CodeSystem/v3-ActCode
+    example: http://terminology.hl7.org/CodeSystem/v3-ActCode
+  code:
+    type: string
+    description: A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).
+    enum:
+      - AMB
+      - EMER
+      - FLD
+      - HH
+      - IMP
+      - ACUTE
+      - NONAC
+      - OBSENC
+      - PRENC
+      - SS
+      - VR
+    example: AMB
