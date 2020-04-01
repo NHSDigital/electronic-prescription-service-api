@@ -1,0 +1,24 @@
+<TargetEndpoint name="default">
+    <PreFlow>
+        <Request>
+            <Step>
+              <Name>RaiseFault.400BadRequest</Name>
+              <Condition>request.header.NHSD-Session-URID is null</Condition>
+            </Step>
+            <Step>
+                <Name>KeyValueMapOperations.GetAsid</Name>
+            </Step>
+            <Step>
+                <Name>AssignMessage.AddAsidHeader</Name>
+            </Step>
+        </Request>
+    </PreFlow>
+    <HTTPTargetConnection>
+        <SSLInfo>
+            <Enabled>true</Enabled>
+        </SSLInfo>
+        <LoadBalancer>
+            <Server name="ig3" />
+        </LoadBalancer>
+    </HTTPTargetConnection>
+</TargetEndpoint>

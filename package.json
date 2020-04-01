@@ -1,0 +1,26 @@
+{
+  "name": "apim-definitions",
+  "version": "0.0.1",
+  "description": "OAS (Swagger v3) API Definition for Template API",
+  "scripts": {
+    "lint": "node_modules/.bin/speccy lint specification/template-api.yaml --skip default-and-example-are-redundant",
+    "test": "node_modules/.bin/newman run tests/e2e/template-api-sandbox.json -e $API_TEST_ENV_FILE_PATH --reporters html,cli,htmlextra --reporter-htmlextra-logs --reporter-htmlextra-darkTheme",
+    "publish": "mkdir -p build && node_modules/.bin/speccy resolve specification/template-api.yaml -i | poetry run python scripts/yaml2json.py | poetry run python scripts/set_version.py > build/template-api.json",
+    "serve": "node_modules/.bin/speccy serve build/template-api.json",
+    "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
+  },
+  "author": "NHS Digital",
+  "license": "MIT",
+  "homepage": "https://github.com/NHSDigital/template-api",
+  "dependencies": {
+    "speccy": "^0.11.0"
+  },
+  "devDependencies": {
+    "newman": "^4.5.7",
+    "newman-reporter-html": "^1.0.5",
+    "newman-reporter-htmlextra": "^1.11.3",
+    "apigeetool": "^0.14.2",
+    "license-checker": "^25.0.1",
+    "minimist": "^1.2.2"
+  }
+}

@@ -1,0 +1,11 @@
+node_modules/
+bin/
+dist/
+build/
+public/
+newman/
+
+.#*
+
+__pycache__/
+.envrc
