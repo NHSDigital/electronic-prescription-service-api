@@ -1,7 +1,7 @@
 {
-    "name": "template-api-sandbox",
+    "name": "electronic-prescription-service-api-sandbox",
     "version": "0.0.1",
-    "description": "Template API Sandbox Server",
+    "description": "Electronic Prescription Service API Sandbox Server",
     "main": "app.js",
     "scripts": {
         "lint": "find . -type f -name '*.js' ! -name '.eslintrc.js' | grep -v 'node_modules/' | xargs eslint",

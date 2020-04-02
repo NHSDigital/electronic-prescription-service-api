@@ -1,4 +1,4 @@
-<APIProxy name="template-api">
+<APIProxy name="electronic-prescription-service-api">
   <!-- This is the root of the application -->
   <Description>Proxy to a target service.</Description>
 </APIProxy>

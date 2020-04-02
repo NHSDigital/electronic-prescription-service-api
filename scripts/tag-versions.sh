@@ -11,5 +11,5 @@ if [ "$GIT_BRANCH" = 'master' ]; then
     git config user.email "<email>"
     git config user.name "Marvin (Automated)"
     git tag "$VERSION"
-    git push -q "https://${GITHUB_ACCESS_TOKEN}@github.com/NHSDigital/template-api" "$VERSION" > /dev/null 2>&1
+    git push -q "https://${GITHUB_ACCESS_TOKEN}@github.com/NHSDigital/electronic-prescription-service-api" "$VERSION" > /dev/null 2>&1
 fi

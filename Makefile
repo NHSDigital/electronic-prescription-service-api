@@ -41,11 +41,11 @@ serve: update-examples
 
 generate-examples: publish clean
 	mkdir -p build/examples
-	poetry run python scripts/generate_examples.py build/template-api.json build/examples
+	poetry run python scripts/generate_examples.py build/electronic-prescription-service-api.json build/examples
 
 update-examples: generate-examples
-	#TODO copy and standardise examples e.g.:
-	jq -rM . <build/examples/resources/Patient.json >specification/components/examples/Patient.json
+	jq -rM . <build/examples/requests/paths._Prescription.post.requestBody.content.application_fhir+json.examples.example.value.json >specification/components/examples/PrescriptionPostSuccessRequest.json
+	jq -rM . <build/examples/responses/paths._Prescription.post.responses.200.content.application_fhir+json.examples.example.value.json >specification/components/examples/PrescriptionPostSuccessResponse.json
 	make publish
 
 check-licenses:
