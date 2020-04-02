@@ -1,5 +1,5 @@
 type: object
-description:
+description: A person who is directly or indirectly involved in the provisioning of healthcare.
 properties:
   resourceType:
     type: string

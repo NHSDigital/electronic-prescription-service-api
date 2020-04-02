@@ -1,5 +1,5 @@
 type: object
-description: A reference to a code defined by a terminology system.
+description: A reference to a code defined by the SNOMED CT system.
 properties:
   system:
     type: string

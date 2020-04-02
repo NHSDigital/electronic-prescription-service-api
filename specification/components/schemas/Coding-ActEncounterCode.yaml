@@ -10,16 +10,4 @@ properties:
   code:
     type: string
     description: A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).
-    enum:
-      - AMB
-      - EMER
-      - FLD
-      - HH
-      - IMP
-      - ACUTE
-      - NONAC
-      - OBSENC
-      - PRENC
-      - SS
-      - VR
     example: AMB

@@ -12,7 +12,7 @@ properties:
     example: 7EB02341-5F62-4A76-2CD3-34F523452356
   type:
     type: string
-    description:
+    description: Indicates the purpose of a bundle - how it is intended to be used.
     enum:
       - document
       - message
@@ -26,7 +26,7 @@ properties:
     example: collection
   entry:
     type: array
-    description:
+    description: An entry in a bundle resource - will either contain a resource or information about a resource (transactions and history only).
     items:
       type: object
       properties:
