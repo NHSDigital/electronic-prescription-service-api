@@ -26,7 +26,16 @@ def generate_resource_example(schema_dict, path=None):
         path = []
 
     for property_name, property_value in schema_dict.items():
-        if property_value["type"] == "array":
+        if "type" not in property_value:
+            if "oneOf" in property_value:
+                example[property_name] = generate_resource_example(property_value["oneOf"][0]["properties"], path + [property_name])
+            elif "anyOf" in property_value:
+                example[property_name] = generate_resource_example(property_value["anyOf"][0]["properties"], path + [property_name])
+            else:
+                raise RuntimeError(
+                    f"Property {property_name} has no type, oneOf or anyOf properties."
+                )
+        elif property_value["type"] == "array":
             if "oneOf" in property_value["items"]:
                 example[property_name] = [
                     generate_resource_example(t["properties"], path + [property_name])
@@ -86,7 +95,7 @@ def main(arguments):
         spec = json.loads(spec_file.read())
 
     # Create default dir structure
-    for i in ["resources", "responses"]:
+    for i in ["resources", "responses", "requests"]:
         os.makedirs(os.path.join(arguments["OUT_DIR"], i), exist_ok=True)
 
     # Generate resources
@@ -117,6 +126,26 @@ def main(arguments):
             os.path.join(
                 arguments["OUT_DIR"],
                 "responses",
+                str(match.full_path).replace("/", "_") + ".json",
+            ),
+            "w",
+        ) as out_file:
+            out_file.write(json.dumps(match.value))
+
+    # Pull out requests
+    match_expr = parse(
+        "paths.*.*.requestBody.content.*.(example|(examples.*.value))"
+    )
+
+    for match in match_expr.find(spec):
+        if "patch" in str(match.full_path):
+            # PATCHes are not FHIR resources, so we should not be validating them
+            continue
+
+        with open(
+            os.path.join(
+                arguments["OUT_DIR"],
+                "requests",
                 str(match.full_path).replace("/", "_") + ".json",
             ),
             "w",
