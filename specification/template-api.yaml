@@ -11,22 +11,29 @@ info:
     email: tbc-api-support@nhs.net
   description: |
     ## Overview
-    TODO
+    Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service) - the national service used to send electronic prescriptions from GP surgeries to pharmacies.
 
     You can:
-    * TODO
+    * convert a FHIR prescription into the HL7 V3 signature elements to be signed by the prescriber
 
     You cannot currently use this API to:
-    * TODO
+    * create a prescription
+    * cancel a prescription
+    * check the status of a prescription
+    * release a prescription for dispensing
+    * claim for a dispensed prescription
 
-    You can access the following data:
-    * TODO
+    Currently, this API can only be accessed by healthcare professionals, authenticated with an NHS smartcard or equivalent.
 
     ## Related APIs
-    TODO
+    The following APIs also give access to the Electronic Prescription Service:
+    - [Electronic Prescription Service (HL7 V3) API](https://data.developer.nhs.uk/dms/mim/4.2.00/Index.htm) - use this if you want to use functions that are not yet available on the FHIR API.
+    - [Prescription Tracker API](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to obtain information about a patient’s prescriptions.
 
     ## API status and roadmap
-    TODO
+    All endpoints are in [alpha](https://digital.nhs.uk/developer/developer-reference/reference-guide#api-status) - expect further breaking changes.
+    
+    The API is currently available for sandbox testing and integration testing, but not for production use.
 
     The following items are on our roadmap, in rough priority order:
     - TODO
@@ -72,7 +79,8 @@ info:
     More details to follow.
 
     ## Endpoints
-    TODO
+    To see details for specific endpoints, select from the list on the left hand side of the page:
+    * `POST /Prescription` - convert a FHIR prescription into the HL7 V3 signature elements to be signed by the prescriber
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
     description: Sandbox environment.
