@@ -3,7 +3,7 @@
 const Hapi = require('@hapi/hapi')
 const Path = require('path')
 const Inert = require('inert')
-const routes = require('./routes/example')
+const routes = require('./routes/prescription')
 
 const CONTENT_TYPE = 'application/fhir+json; fhirVersion=4.0'
 
