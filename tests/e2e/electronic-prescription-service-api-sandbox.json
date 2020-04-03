@@ -1,0 +1,36 @@
+{
+  "info": {
+    "_postman_id": "0834710e-be75-4d5c-b7c7-881e98faeb57",
+    "name": "Electronic Prescriptions Sandbox",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Prescription POST Success",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\"resourceType\": \"Bundle\",\n\"id\": \"7EB02341-5F62-4A76-2CD3-34F523452356\",\n\"type\": \"collection\",\n\"entry\": [\n\t{\n\t\t\"resourceType\": \"MedicationRequest\"\n\t},\n\t{\n\t\t\"resourceType\": \"Patient\"\n\t},\n\t{\n\t\t\"resourceType\": \"Encounter\"\n\t},\n\t{\n\t\t\"resourceType\": \"Organization\"\n\t},\n\t{\n\t\t\"resourceType\": \"Organization\"\n\t},\n\t{\n\t\t\"resourceType\": \"Practitioner\"\n\t}\n]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/Prescription",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "Prescription"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "protocolProfileBehavior": {}
+}

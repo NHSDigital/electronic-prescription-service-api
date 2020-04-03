@@ -107,7 +107,7 @@ The Apigee portal will not automatically pull examples from schemas, you must sp
 
 ### Postman Collection
 
-`Patient Demographics Sandbox.postman_collection` must be kept in sync with the OAS and Sandbox manually.
+`electronic-prescription-service-api-sandbox.json` must be kept in sync with the OAS and Sandbox manually.
 
 Procedure:
  * Import the collection into Postman
@@ -145,7 +145,7 @@ Redeploy the API Proxy and hosted Sandbox service.
 Successful deployment of the API Proxy requires:
 
  1. A *Target Server* named `ig3`
- 2. A *Key-Value Map* named `pds-variables`, containing:
+ 2. A *Key-Value Map* named `eps-variables`, containing:
     1. Key: `NHSD-ASID`, Value: Accredited System ID (ASID) identifying the API Gateway
 
 :bulb: For Sandbox-running environments (`test`) these need to be present for successful deployment but can be set to empty/dummy values.
