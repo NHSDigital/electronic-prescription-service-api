@@ -28,9 +28,15 @@ def generate_resource_example(schema_dict, path=None):
     for property_name, property_value in schema_dict.items():
         if "type" not in property_value:
             if "oneOf" in property_value:
-                example[property_name] = generate_resource_example(property_value["oneOf"][0]["properties"], path + [property_name])
+                example[property_name] = generate_resource_example(
+                    property_value["oneOf"][0]["properties"],
+                    path + [property_name]
+                )
             elif "anyOf" in property_value:
-                example[property_name] = generate_resource_example(property_value["anyOf"][0]["properties"], path + [property_name])
+                example[property_name] = generate_resource_example(
+                    property_value["anyOf"][0]["properties"],
+                    path + [property_name]
+                )
             else:
                 property_path = ".".join(path)
                 raise RuntimeError(
@@ -115,10 +121,20 @@ def main(arguments):
             )
 
     # Pull out responses
-    extract_examples(spec, "paths.*.*.(response|(responses.*)).content.*.(example|(examples.*.value))", base_output_dir, "responses")
+    extract_examples(
+        spec,
+        "paths.*.*.(response|(responses.*)).content.*.(example|(examples.*.value))",
+        base_output_dir,
+        "responses"
+    )
 
     # Pull out requests
-    extract_examples(spec, "paths.*.*.requestBody.content.*.(example|(examples.*.value))", base_output_dir, "requests")
+    extract_examples(
+        spec,
+        "paths.*.*.requestBody.content.*.(example|(examples.*.value))",
+        base_output_dir,
+        "requests"
+    )
 
 
 def extract_examples(spec, json_path, base_output_dir, output_dir):
