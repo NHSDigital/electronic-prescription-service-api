@@ -34,8 +34,8 @@ properties:
       - option
     description: Whether the request is a proposal, plan, or an original order.
     example: order
-  medicationCodableConcept:
-    $ref: "CodableConcept-SnomedCT.yaml"
+  medicationCodeableConcept:
+    $ref: "CodeableConcept-SnomedCT.yaml"
   subject:
     $ref: "Reference.yaml"
   encounter:

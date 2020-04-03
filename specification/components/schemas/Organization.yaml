@@ -19,7 +19,7 @@ properties:
     type: array
     description: The kind(s) of organization that this is.
     items:
-      $ref: "CodableConcept-OrganizationType.yaml"
+      $ref: "CodeableConcept-OrganizationType.yaml"
   name:
     type: string
     description: A name associated with the organization.

@@ -30,6 +30,10 @@ properties:
     items:
       type: object
       properties:
+        fullUrl:
+          type: string
+          description: The Absolute URL for the resource.
+          example: "urn:uuid:CF464979-41A7-4231-B70F-AAE377A973C9"
         resource:
           anyOf:
             - $ref: "MedicationRequest.yaml"
