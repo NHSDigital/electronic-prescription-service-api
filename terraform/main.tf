@@ -17,6 +17,6 @@ module "electronic-prescription-service" {
   name               = "electronic-prescriptions"
   path               = "electronic-prescriptions"
   apigee_environment = var.apigee_environment
-  proxy_type         = "live"
+  proxy_type         = "sandbox"
   namespace          = var.namespace
 }
