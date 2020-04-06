@@ -72,6 +72,4 @@ release: clean publish build-proxy
 	tar -zcvf dist/package.tar.gz build
 	cp -r terraform dist
 	cp -r build/. dist
-	cp apigee_client.py dist
-	cp spec_uploader.py dist
-	cp pyproject.toml dist
+	cp specification-deploy dist
