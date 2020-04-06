@@ -72,4 +72,4 @@ release: clean publish build-proxy
 	tar -zcvf dist/package.tar.gz build
 	cp -r terraform dist
 	cp -r build/. dist
-	cp specification-release dist
+	cp -r specification-release dist
