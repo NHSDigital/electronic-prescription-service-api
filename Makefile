@@ -74,3 +74,4 @@ release: clean publish build-proxy
 	cp -r build/. dist
 	cp apigee_client.py dist
 	cp spec_uploader.py dist
+	cp pyproject.toml dist
