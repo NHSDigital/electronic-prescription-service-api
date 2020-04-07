@@ -1,5 +1,8 @@
 type: object
 description: A role profile code managed by the NHS Spine Directory Service.
+required:
+  - system
+  - value
 properties:
   system:
     type: string

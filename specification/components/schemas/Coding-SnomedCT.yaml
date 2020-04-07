@@ -1,5 +1,8 @@
 type: object
 description: A reference to a code defined by the SNOMED CT system.
+required:
+  - system
+  - code
 properties:
   system:
     type: string

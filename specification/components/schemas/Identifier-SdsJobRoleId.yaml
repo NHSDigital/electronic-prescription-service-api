@@ -1,5 +1,8 @@
 type: object
 description: A National Code for a position applicable to an employee.
+required:
+  - system
+  - value
 properties:
   system:
     type: string

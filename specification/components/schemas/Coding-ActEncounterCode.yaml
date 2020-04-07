@@ -1,5 +1,8 @@
 type: object
 description: Concepts representing classification of patient encounter such as ambulatory (outpatient), inpatient, emergency, home health or others due to local variations.
+required:
+  - system
+  - code
 properties:
   system:
     type: string

@@ -1,5 +1,17 @@
 type: object
 description: An order or request for both supply of the medication and the instructions for administration of the medication to a patient. The resource is called "MedicationRequest" rather than "MedicationPrescription" or "MedicationOrder" to generalize the use across inpatient and outpatient settings, including care plans, etc., and to harmonize with workflow patterns.
+required:
+  - resourceType
+  - id
+  - status
+  - intent
+  - medicationCodeableConcept
+  - subject
+  - encounter
+  - authoredOn
+  - requester
+  - dosageInstruction
+  - dispenseRequest
 properties:
   resourceType:
     type: string

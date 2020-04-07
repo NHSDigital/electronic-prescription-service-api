@@ -1,5 +1,13 @@
 type: object
 description: Information about an individual or animal receiving health care services.
+required:
+  - resourceType
+  - id
+  - identifier
+  - address
+  - name
+  - gender
+  - birthDate
 properties:
   resourceType:
     type: string
@@ -35,6 +43,15 @@ properties:
     example: 1973-04-21
   address:
     type: array
-    description: An address for the individual
+    description: An address for the individual.
     items:
       $ref: "Address.yaml"
+  telecom:
+    type: array
+    description: A contact detail for the individual.
+    items:
+      $ref: "ContactPoint.yaml"
+  deceasedDateTime:
+    type: string
+    description: Indicates if the individual is deceased or not.
+    example: 2020-01-05

@@ -1,5 +1,7 @@
 type: object
 description: A link to a resource representing the person or set of individuals to whom the medication will be given.
+required:
+  - reference
 properties:
   reference:
     type: string

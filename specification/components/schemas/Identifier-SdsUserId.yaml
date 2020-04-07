@@ -1,5 +1,8 @@
 type: object
 description: The user's unique identifier on the NHS Spine Directory Service.
+required:
+  - system
+  - value
 properties:
   system:
     type: string

@@ -1,5 +1,7 @@
 type: object
 description: Details for all kinds of technology mediated contact points for a person or organization, including telephone, email, etc.
+required:
+  - value
 properties:
   system:
     type: string

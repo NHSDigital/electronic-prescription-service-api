@@ -1,5 +1,8 @@
 type: object
 description: Types of organization.
+required:
+  - system
+  - code
 properties:
   system:
     type: string
