@@ -22,7 +22,7 @@ test:
 lint:
 	npm run lint
 	cd sandbox && npm run lint && cd ..
-	poetry run flake8 **/*.py
+	poetry run flake8 **/*.py --config .flake8
 	find -name '*.sh' | grep -v node_modules | xargs shellcheck
 
 validate: generate-examples
@@ -72,3 +72,4 @@ release: clean publish build-proxy
 	tar -zcvf dist/package.tar.gz build
 	cp -r terraform dist
 	cp -r build/. dist
+	cp -r specification-release dist
