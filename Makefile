@@ -41,7 +41,7 @@ serve: update-examples
 
 generate-examples: publish clean
 	mkdir -p build/examples
-	poetry run python scripts/generate_examples.py build/electronic-prescription-service-api.json build/examples
+	poetry run python scripts/generate_examples.py build/electronic-prescriptions.json build/examples
 
 update-examples: generate-examples
 	jq -rM . <build/examples/requests/paths._Prescription.post.requestBody.content.application_fhir+json.examples.example.value.json >specification/components/examples/PrescriptionPostSuccessRequest.json
