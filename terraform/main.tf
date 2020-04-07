@@ -12,9 +12,9 @@ terraform {
   }
 }
 
-module "electronic-prescription-service" {
+module "electronic-prescription-service-api" {
   source             = "github.com/NHSDigital/api-platform-service-module?ref=apm-501-change-proxy-location"
-  name               = "electronic-prescriptions"
+  name               = "electronic-prescription-service-api"
   path               = "electronic-prescriptions"
   apigee_environment = var.apigee_environment
   proxy_type         = "sandbox"
