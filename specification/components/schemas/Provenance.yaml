@@ -1,0 +1,31 @@
+type: object
+description: Tracks information about the activity that created, revised, deleted, or signed a version of a resource, describing the entities and agents involved
+required:
+  - target
+  - recorded
+  - agent
+properties:
+  resourceType:
+      type: string
+      description: FHIR Resource type
+      enum:
+        - Provenance
+  target:
+    type: array
+    description: The Reference(s) that were generated or updated by the activity described in this resource
+    items: <fill>
+    example: <fill>
+  recorded:
+    type: string
+    description: The time at which the activity was recorded. 
+    example: 2020-04-21T10:45:30+00:00
+  agent:
+    type: array
+    description: An actor taking a role in an activity for which it can be assigned some degree of responsibility for the activity taking place.
+    items:
+      $ref: "Agent.yaml"
+  signature:
+    type: array
+    description: Authorizing signature
+    items:
+      $ref: "Signature.yaml"

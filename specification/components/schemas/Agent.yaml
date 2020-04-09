@@ -1,0 +1,22 @@
+type: object
+description: An actor taking a role in an activity for which it can be assigned some degree of responsibility for the activity taking place.
+required:
+  - who
+properties:
+  type:
+    type: string
+    description: How the agent participated
+    enum:
+      - enterer
+      - legal
+      - <fill others>
+    example: legal
+  role:
+    type: string
+    description: The role of the agent
+    enum:
+      - PRIMAUTH
+      - <fill others>
+    example: PRIMAUTH
+  who:
+    $ref: "Practitioner.yaml"
