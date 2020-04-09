@@ -10,6 +10,7 @@ properties:
       description: FHIR Resource type
       enum:
         - Provenance
+      example: Provenance
   target:
     type: array
     description: The Reference(s) that were generated or updated by the activity described in this resource
