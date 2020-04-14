@@ -89,7 +89,8 @@ servers:
   - url: 'https://api.service.nhs.uk/electronic-prescriptions'
     description: 'Production environment (not yet available: see "API status and roadmap").'
 tags:
-  - name: prescriptions
+  - name: prescribing
+  - name: dispensing
 paths:
   /Prescription:
     post:
@@ -105,10 +106,7 @@ paths:
               examples:
                 example:
                   value:
-                    resourceType: Binary
-                    id: 79FDB414-FADE-459C-87E5-312E646A1910
-                    contentType: application/xml
-                    data: PEZyYWdtZW50c1RvQmVIYXNoZWQ+PEZyYWdtZW50Pjx0aW1lIHhtbG5zPSJ1cm46aGw3LW9yZzp2MyIgdmFsdWU9IjIwMDgwMjI3MTEzODAwIj48L3RpbWU+PGlkIHhtbG5zPSJ1cm46aGw3LW9yZzp2MyIgcm9vdD0iN0VCMDIzNDEtNUY2Mi00QTc2LTJDRDMtMzRGNTIzNDUyMzU2Ij48L2lkPjwvRnJhZ21lbnQ+PEZyYWdtZW50PjxBZ2VudFBlcnNvbiB4bWxucz0idXJuOmhsNy1vcmc6djMiIGNsYXNzQ29kZT0iQUdOVCI+PGlkIGV4dGVuc2lvbj0iMTI1Njg2NTQwMDI1IiByb290PSIxLjIuODI2LjAuMTI4NS4wLjIuMC42NyI+PC9pZD48Y29kZSBjb2RlPSJSMDI2MCIgY29kZVN5c3RlbT0iMS4yLjgyNi4wLjEyODUuMC4yLjEuMTA0Ij48L2NvZGU+PHRlbGVjb20gdXNlPSJXUCIgdmFsdWU9InRlbDowMTEzMjc1MzQyNTYiPjwvdGVsZWNvbT48YWdlbnRQZXJzb24gY2xhc3NDb2RlPSJQU04iIGRldGVybWluZXJDb2RlPSJJTlNUQU5DRSI+PGlkIGV4dGVuc2lvbj0iOTM0NTY1ODM4OTU2IiByb290PSIxLjIuODI2LjAuMTI4NS4wLjIuMC42NSI+PC9pZD48bmFtZT48cHJlZml4PkRyPC9wcmVmaXg+PGZhbWlseT5IdXJzdDwvZmFtaWx5PjwvbmFtZT48L2FnZW50UGVyc29uPjxyZXByZXNlbnRlZE9yZ2FuaXphdGlvbiBjbGFzc0NvZGU9Ik9SRyIgZGV0ZXJtaW5lckNvZGU9IklOU1RBTkNFIj48aWQgZXh0ZW5zaW9uPSJNODUwMTEiIHJvb3Q9IjEuMi44MjYuMC4xMjg1LjAuMS4xMCI+PC9pZD48Y29kZSBjb2RlPSIwMDEiIGNvZGVTeXN0ZW09IjIuMTYuODQwLjEuMTEzODgzLjIuMS4zLjIuNC4xNy45NCI+PC9jb2RlPjxuYW1lPlNpZ25pbmdfU3VyZ18xPC9uYW1lPjx0ZWxlY29tIHVzZT0iV1AiIHZhbHVlPSJ0ZWw6MDExMzI3NTQ1NjgiPjwvdGVsZWNvbT48YWRkciB1c2U9IldQIj48c3RyZWV0QWRkcmVzc0xpbmU+MSBQcmluY2VzIFN0cmVldDwvc3RyZWV0QWRkcmVzc0xpbmU+PHN0cmVldEFkZHJlc3NMaW5lPkxlZWRzPC9zdHJlZXRBZGRyZXNzTGluZT48cG9zdGFsQ29kZT5MUzEgNUFIPC9wb3N0YWxDb2RlPjwvYWRkcj48aGVhbHRoQ2FyZVByb3ZpZGVyTGljZW5zZSBjbGFzc0NvZGU9IlBST1YiPjxPcmdhbml6YXRpb24gY2xhc3NDb2RlPSJPUkciIGRldGVybWluZXJDb2RlPSJJTlNUQU5DRSI+PGlkIGV4dGVuc2lvbj0iNENEIiByb290PSIxLjIuODI2LjAuMTI4NS4wLjEuMTAiPjwvaWQ+PGNvZGUgY29kZT0iMDA1IiBjb2RlU3lzdGVtPSIyLjE2Ljg0MC4xLjExMzg4My4yLjEuMy4yLjQuMTcuOTQiPjwvY29kZT48bmFtZT5XZXN0ICAgICAgICAgWW9ya3NoaXJlPC9uYW1lPjwvT3JnYW5pemF0aW9uPjwvaGVhbHRoQ2FyZVByb3ZpZGVyTGljZW5zZT48L3JlcHJlc2VudGVkT3JnYW5pemF0aW9uPjwvQWdlbnRQZXJzb24+PC9GcmFnbWVudD48RnJhZ21lbnQ+PHJlY29yZFRhcmdldCB4bWxucz0idXJuOmhsNy1vcmc6djMiIHR5cGVDb2RlPSJSQ1QiPjxQYXRpZW50IGNsYXNzQ29kZT0iUEFUIj48aWQgZXh0ZW5zaW9uPSI5OTAwMDA4NDY0IiByb290PSIyLjE2Ljg0MC4xLjExMzg4My4yLjEuNC4xIj48L2lkPjxhZGRyIHVzZT0iSCI+PHN0cmVldEFkZHJlc3NMaW5lPjEgICAgT3RsZXkgUm9hZCw8L3N0cmVldEFkZHJlc3NMaW5lPjxzdHJlZXRBZGRyZXNzTGluZT5MZWVkczwvc3RyZWV0QWRkcmVzc0xpbmU+PHBvc3RhbENvZGU+TFM2IDVSVTwvcG9zdGFsQ29kZT48L2FkZHI+PHBhdGllbnRQZXJzb24gY2xhc3NDb2RlPSJQU04iIGRldGVybWluZXJDb2RlPSJJTlNUQU5DRSI+PG5hbWU+PHByZWZpeD5NcjwvcHJlZml4PjxnaXZlbj5NaWNoYWVsPC9naXZlbj48Z2l2ZW4+SmFjazwvZ2l2ZW4+PGZhbWlseT5BbmRlcnNvbjwvZmFtaWx5PjwvbmFtZT48YWRtaW5pc3RyYXRpdmVHZW5kZXJDb2RlIGNvZGU9IjEiIGNvZGVTeXN0ZW09IjIuMTYuODQwLjEuMTEzODgzLjIuMS4zLjIuNC4xNi4yNSI+PC9hZG1pbmlzdHJhdGl2ZUdlbmRlckNvZGU+PGJpcnRoVGltZSB2YWx1ZT0iMTk3MzA0MjEiPjwvYmlydGhUaW1lPjxwbGF5ZWRQcm92aWRlclBhdGllbnQgY2xhc3NDb2RlPSJQQVQiPjxzdWJqZWN0T2YgdHlwZUNvZGU9IlNCSiI+PHBhdGllbnRDYXJlUHJvdmlzaW9uIGNsYXNzQ29kZT0iUENQUiIgbW9vZENvZGU9IkVWTiI+PGNvZGUgY29kZT0iMSIgY29kZVN5c3RlbT0iMi4xNi44NDAuMS4xMTM4ODMuMi4xLjMuMi40LjE3LjM3Ij48L2NvZGU+PHJlc3BvbnNpYmxlUGFydHkgdHlwZUNvZGU9IlJFU1AiPjxoZWFsdGhDYXJlUHJvdmlkZXIgY2xhc3NDb2RlPSJQUk9WIj48aWQgZXh0ZW5zaW9uPSIxMDAwMDQiIHJvb3Q9IjEuMi44MjYuMC4xMjg1LjAuMi4wLjY1Ij48L2lkPjwvaGVhbHRoQ2FyZVByb3ZpZGVyPjwvcmVzcG9uc2libGVQYXJ0eT48L3BhdGllbnRDYXJlUHJvdmlzaW9uPjwvc3ViamVjdE9mPjwvcGxheWVkUHJvdmlkZXJQYXRpZW50PjwvcGF0aWVudFBlcnNvbj48L1BhdGllbnQ+PC9yZWNvcmRUYXJnZXQ+PC9GcmFnbWVudD48RnJhZ21lbnQ+PHBlcnRpbmVudExpbmVJdGVtIHhtbG5zPSJ1cm46aGw3LW9yZzp2MyIgY2xhc3NDb2RlPSJTQkFETSIgbW9vZENvZGU9IlJRTyI+PGlkIHJvb3Q9IjdCMzhERTMyLTg3N0YtNkQ1My1EMjdDLTg2RTFCQTM1MDE2QyI+PC9pZD48Y29kZSBjb2RlPSIxODYyOTAwNSIgY29kZVN5c3RlbT0iMi4xNi44NDAuMS4xMTM4ODMuMi4xLjMuMi40LjE1IiBkaXNwbGF5TmFtZT0iTWVkaWNhbCBBZG1pbmlzdHJhdGlvbiI+PC9jb2RlPjxlZmZlY3RpdmVUaW1lIG51bGxGbGF2b3I9Ik5BIj48L2VmZmVjdGl2ZVRpbWU+PHByb2R1Y3QgY29udGV4dENvbnRyb2xDb2RlPSJPUCIgdHlwZUNvZGU9IlBSRCI+PG1hbnVmYWN0dXJlZFByb2R1Y3QgY2xhc3NDb2RlPSJNQU5VIj48bWFudWZhY3R1cmVkUmVxdWVzdGVkTWF0ZXJpYWwgY2xhc3NDb2RlPSJNTUFUIiBkZXRlcm1pbmVyQ29kZT0iS0lORCI+PGNvZGUgY29kZT0iMzE3ODk2MDA2IiBjb2RlU3lzdGVtPSIyLjE2Ljg0MC4xLjExMzg4My4yLjEuMy4yLjQuMTUiIGRpc3BsYXlOYW1lPSJkaWdveGluIHRhYmxldHMgMTI1bWljcm9ncmFtcyI+PC9jb2RlPjwvbWFudWZhY3R1cmVkUmVxdWVzdGVkTWF0ZXJpYWw+PC9tYW51ZmFjdHVyZWRQcm9kdWN0PjwvcHJvZHVjdD48Y29tcG9uZW50IHR5cGVDb2RlPSJDT01QIj48c2VwZXJhdGFibGVJbmQgdmFsdWU9ImZhbHNlIj48L3NlcGVyYXRhYmxlSW5kPjxsaW5lSXRlbVF1YW50aXR5IGNsYXNzQ29kZT0iU1BMWSIgbW9vZENvZGU9IlJRTyI+PGNvZGU+PC9jb2RlPjxxdWFudGl0eSB1bml0PSIxIiB2YWx1ZT0iMjgiPjx0cmFuc2xhdGlvbiBjb2RlPSIzMzE5NDExMDAwMDAxMTA5IiBjb2RlU3lzdGVtPSIyLjE2Ljg0MC4xLjExMzg4My4yLjEuMy4yLjQuMTUiIGRpc3BsYXlOYW1lPSJ0YWJsZXQiIHZhbHVlPSIyOCI+PC90cmFuc2xhdGlvbj48L3F1YW50aXR5PjwvbGluZUl0ZW1RdWFudGl0eT48L2NvbXBvbmVudD48cGVydGluZW50SW5mb3JtYXRpb24yIGNvbnRleHRDb25kdWN0aW9uSW5kPSJ0cnVlIiB0eXBlQ29kZT0iUEVSVCI+PHNlcGVyYXRhYmxlSW5kIHZhbHVlPSJmYWxzZSI+PC9zZXBlcmF0YWJsZUluZD48cGVydGluZW50RG9zYWdlSW5zdHJ1Y3Rpb25zIGNsYXNzQ29kZT0iT0JTIiBtb29kQ29kZT0iRVZOIj48Y29kZSBjb2RlPSJESSIgY29kZVN5c3RlbT0iMi4xNi44NDAuMS4xMTM4ODMuMi4xLjMuMi40LjE3LjMwIj48L2NvZGU+PHZhbHVlPjEgdGFibGV0IGFmdGVyIGJyZWFrZmFzdDwvdmFsdWU+PC9wZXJ0aW5lbnREb3NhZ2VJbnN0cnVjdGlvbnM+PC9wZXJ0aW5lbnRJbmZvcm1hdGlvbjI+PC9wZXJ0aW5lbnRMaW5lSXRlbT48L0ZyYWdtZW50PjxGcmFnbWVudD48cGVydGluZW50TGluZUl0ZW0geG1sbnM9InVybjpobDctb3JnOnYzIiBjbGFzc0NvZGU9IlNCQURNIiBtb29kQ29kZT0iUlFPIj48aWQgcm9vdD0iOEQxMkRFNjItODI2Ri04RDMyLUUxN0MtODZEM0JBNTYwMTNFIj48L2lkPjxjb2RlIGNvZGU9IjE4NjI5MDA1IiBjb2RlU3lzdGVtPSIyLjE2Ljg0MC4xLjExMzg4My4yLjEuMy4yLjQuMTUiIGRpc3BsYXlOYW1lPSJNZWRpY2FsIEFkbWluaXN0cmF0aW9uIj48L2NvZGU+PGVmZmVjdGl2ZVRpbWUgbnVsbEZsYXZvcj0iTkEiPjwvZWZmZWN0aXZlVGltZT48cHJvZHVjdCBjb250ZXh0Q29udHJvbENvZGU9Ik9QIiB0eXBlQ29kZT0iUFJEIj48bWFudWZhY3R1cmVkUHJvZHVjdCBjbGFzc0NvZGU9Ik1BTlUiPjxtYW51ZmFjdHVyZWRSZXF1ZXN0ZWRNYXRlcmlhbCBjbGFzc0NvZGU9Ik1NQVQiIGRldGVybWluZXJDb2RlPSJLSU5EIj48Y29kZSBjb2RlPSIzMTk3NzUwMDQiIGNvZGVTeXN0ZW09IjIuMTYuODQwLjEuMTEzODgzLjIuMS4zLjIuNC4xNSIgZGlzcGxheU5hbWU9ImFzcGlyaW4gdGFibGV0cyA3NW1nIj48L2NvZGU+PC9tYW51ZmFjdHVyZWRSZXF1ZXN0ZWRNYXRlcmlhbD48L21hbnVmYWN0dXJlZFByb2R1Y3Q+PC9wcm9kdWN0Pjxjb21wb25lbnQgdHlwZUNvZGU9IkNPTVAiPjxzZXBlcmF0YWJsZUluZCB2YWx1ZT0iZmFsc2UiPjwvc2VwZXJhdGFibGVJbmQ+PGxpbmVJdGVtUXVhbnRpdHkgY2xhc3NDb2RlPSJTUExZIiBtb29kQ29kZT0iUlFPIj48Y29kZT48L2NvZGU+PHF1YW50aXR5IHVuaXQ9IjEiIHZhbHVlPSIyOCI+PHRyYW5zbGF0aW9uIGNvZGU9IjMzMTk0MTEwMDAwMDExMDkiIGNvZGVTeXN0ZW09IjIuMTYuODQwLjEuMTEzODgzLjIuMS4zLjIuNC4xNSIgZGlzcGxheU5hbWU9InRhYmxldCIgdmFsdWU9IjI4Ij48L3RyYW5zbGF0aW9uPjwvcXVhbnRpdHk+PC9saW5lSXRlbVF1YW50aXR5PjwvY29tcG9uZW50PjxwZXJ0aW5lbnRJbmZvcm1hdGlvbjIgY29udGV4dENvbmR1Y3Rpb25JbmQ9InRydWUiIHR5cGVDb2RlPSJQRVJUIj48c2VwZXJhdGFibGVJbmQgdmFsdWU9ImZhbHNlIj48L3NlcGVyYXRhYmxlSW5kPjxwZXJ0aW5lbnREb3NhZ2VJbnN0cnVjdGlvbnMgY2xhc3NDb2RlPSJPQlMiIG1vb2RDb2RlPSJFVk4iPjxjb2RlIGNvZGU9IkRJIiBjb2RlU3lzdGVtPSIyLjE2Ljg0MC4xLjExMzg4My4yLjEuMy4yLjQuMTcuMzAiPjwvY29kZT48dmFsdWU+MSB0YWJsZXQgZHVyaW5nIGJyZWFrZmFzdDwvdmFsdWU+PC9wZXJ0aW5lbnREb3NhZ2VJbnN0cnVjdGlvbnM+PC9wZXJ0aW5lbnRJbmZvcm1hdGlvbjI+PC9wZXJ0aW5lbnRMaW5lSXRlbT48L0ZyYWdtZW50PjxGcmFnbWVudD48cGVydGluZW50TGluZUl0ZW0geG1sbnM9InVybjpobDctb3JnOnYzIiBjbGFzc0NvZGU9IlNCQURNIiBtb29kQ29kZT0iUlFPIj48aWQgcm9vdD0iOUExMkRFNjItODI2Ri04RDMyLUUxN0MtODZEM0JBNTYwMjNGIj48L2lkPjxjb2RlIGNvZGU9IjE4NjI5MDA1IiBjb2RlU3lzdGVtPSIyLjE2Ljg0MC4xLjExMzg4My4yLjEuMy4yLjQuMTUiIGRpc3BsYXlOYW1lPSJNZWRpY2FsIEFkbWluaXN0cmF0aW9uIj48L2NvZGU+PGVmZmVjdGl2ZVRpbWUgbnVsbEZsYXZvcj0iTkEiPjwvZWZmZWN0aXZlVGltZT48cHJvZHVjdCBjb250ZXh0Q29udHJvbENvZGU9Ik9QIiB0eXBlQ29kZT0iUFJEIj48bWFudWZhY3R1cmVkUHJvZHVjdCBjbGFzc0NvZGU9Ik1BTlUiPjxtYW51ZmFjdHVyZWRSZXF1ZXN0ZWRNYXRlcmlhbCBjbGFzc0NvZGU9Ik1NQVQiIGRldGVybWluZXJDb2RlPSJLSU5EIj48Y29kZSBjb2RlPSIzNzcxNDUwMDUiIGNvZGVTeXN0ZW09IjIuMTYuODQwLjEuMTEzODgzLjIuMS4zLjIuNC4xNSIgZGlzcGxheU5hbWU9IkxvcmF6ZXBhbSAyIG1nIG9yYWwgdGFibGV0Ij48L2NvZGU+PC9tYW51ZmFjdHVyZWRSZXF1ZXN0ZWRNYXRlcmlhbD48L21hbnVmYWN0dXJlZFByb2R1Y3Q+PC9wcm9kdWN0Pjxjb21wb25lbnQgdHlwZUNvZGU9IkNPTVAiPjxzZXBlcmF0YWJsZUluZCB2YWx1ZT0iZmFsc2UiPjwvc2VwZXJhdGFibGVJbmQ+PGxpbmVJdGVtUXVhbnRpdHkgY2xhc3NDb2RlPSJTUExZIiBtb29kQ29kZT0iUlFPIj48Y29kZT48L2NvZGU+PHF1YW50aXR5IHVuaXQ9IjEiIHZhbHVlPSI4NCI+PHRyYW5zbGF0aW9uIGNvZGU9IjMzMTk0MTEwMDAwMDExMDkiIGNvZGVTeXN0ZW09IjIuMTYuODQwLjEuMTEzODgzLjIuMS4zLjIuNC4xNSIgZGlzcGxheU5hbWU9InRhYmxldCIgdmFsdWU9Ijg0Ij48L3RyYW5zbGF0aW9uPjwvcXVhbnRpdHk+PC9saW5lSXRlbVF1YW50aXR5PjwvY29tcG9uZW50PjxwZXJ0aW5lbnRJbmZvcm1hdGlvbjIgY29udGV4dENvbmR1Y3Rpb25JbmQ9InRydWUiIHR5cGVDb2RlPSJQRVJUIj48c2VwZXJhdGFibGVJbmQgdmFsdWU9ImZhbHNlIj48L3NlcGVyYXRhYmxlSW5kPjxwZXJ0aW5lbnREb3NhZ2VJbnN0cnVjdGlvbnMgY2xhc3NDb2RlPSJPQlMiIG1vb2RDb2RlPSJFVk4iPjxjb2RlIGNvZGU9IkRJIiBjb2RlU3lzdGVtPSIyLjE2Ljg0MC4xLjExMzg4My4yLjEuMy4yLjQuMTcuMzAiPjwvY29kZT48dmFsdWU+MyB0YWJsZXRzIGJlZm9yZSBicmVha2Zhc3Q8L3ZhbHVlPjwvcGVydGluZW50RG9zYWdlSW5zdHJ1Y3Rpb25zPjwvcGVydGluZW50SW5mb3JtYXRpb24yPjwvcGVydGluZW50TGluZUl0ZW0+PC9GcmFnbWVudD48RnJhZ21lbnQ+PHBlcnRpbmVudExpbmVJdGVtIHhtbG5zPSJ1cm46aGw3LW9yZzp2MyIgY2xhc3NDb2RlPSJTQkFETSIgbW9vZENvZGU9IlJRTyI+PGlkIHJvb3Q9IjJBMzJERTYyLTgyNkYtOEQzMi1FMTdDLTg2RDNCQTU2MDEzRCI+PC9pZD48Y29kZSBjb2RlPSIxODYyOTAwNSIgY29kZVN5c3RlbT0iMi4xNi44NDAuMS4xMTM4ODMuMi4xLjMuMi40LjE1IiBkaXNwbGF5TmFtZT0iTWVkaWNhbCBBZG1pbmlzdHJhdGlvbiI+PC9jb2RlPjxlZmZlY3RpdmVUaW1lIG51bGxGbGF2b3I9Ik5BIj48L2VmZmVjdGl2ZVRpbWU+PHByb2R1Y3QgY29udGV4dENvbnRyb2xDb2RlPSJPUCIgdHlwZUNvZGU9IlBSRCI+PG1hbnVmYWN0dXJlZFByb2R1Y3QgY2xhc3NDb2RlPSJNQU5VIj48bWFudWZhY3R1cmVkUmVxdWVzdGVkTWF0ZXJpYWwgY2xhc3NDb2RlPSJNTUFUIiBkZXRlcm1pbmVyQ29kZT0iS0lORCI+PGNvZGUgY29kZT0iNDIxMzc1MDA0IiBjb2RlU3lzdGVtPSIyLjE2Ljg0MC4xLjExMzg4My4yLjEuMy4yLjQuMTUiIGRpc3BsYXlOYW1lPSJDaXRhbG9wcmFtIChhcyBjaXRhbG9wcmFtIGh5ZHJvYnJvbWlkZSkgNDAgbWcgb3JvZGlzcGVyc2libGUgdGFibGV0Ij48L2NvZGU+PC9tYW51ZmFjdHVyZWRSZXF1ZXN0ZWRNYXRlcmlhbD48L21hbnVmYWN0dXJlZFByb2R1Y3Q+PC9wcm9kdWN0Pjxjb21wb25lbnQgdHlwZUNvZGU9IkNPTVAiPjxzZXBlcmF0YWJsZUluZCB2YWx1ZT0iZmFsc2UiPjwvc2VwZXJhdGFibGVJbmQ+PGxpbmVJdGVtUXVhbnRpdHkgY2xhc3NDb2RlPSJTUExZIiBtb29kQ29kZT0iUlFPIj48Y29kZT48L2NvZGU+PHF1YW50aXR5IHVuaXQ9IjEiIHZhbHVlPSI1NiI+PHRyYW5zbGF0aW9uIGNvZGU9IjMzMTk0MTEwMDAwMDExMDkiIGNvZGVTeXN0ZW09IjIuMTYuODQwLjEuMTEzODgzLjIuMS4zLjIuNC4xNSIgZGlzcGxheU5hbWU9InRhYmxldCIgdmFsdWU9IjU2Ij48L3RyYW5zbGF0aW9uPjwvcXVhbnRpdHk+PC9saW5lSXRlbVF1YW50aXR5PjwvY29tcG9uZW50PjxwZXJ0aW5lbnRJbmZvcm1hdGlvbjIgY29udGV4dENvbmR1Y3Rpb25JbmQ9InRydWUiIHR5cGVDb2RlPSJQRVJUIj48c2VwZXJhdGFibGVJbmQgdmFsdWU9ImZhbHNlIj48L3NlcGVyYXRhYmxlSW5kPjxwZXJ0aW5lbnREb3NhZ2VJbnN0cnVjdGlvbnMgY2xhc3NDb2RlPSJPQlMiIG1vb2RDb2RlPSJFVk4iPjxjb2RlIGNvZGU9IkRJIiBjb2RlU3lzdGVtPSIyLjE2Ljg0MC4xLjExMzg4My4yLjEuMy4yLjQuMTcuMzAiPjwvY29kZT48dmFsdWU+MiB0YWJsZXRzIGFmdGVyIGJyZWFrZmFzdDwvdmFsdWU+PC9wZXJ0aW5lbnREb3NhZ2VJbnN0cnVjdGlvbnM+PC9wZXJ0aW5lbnRJbmZvcm1hdGlvbjI+PC9wZXJ0aW5lbnRMaW5lSXRlbT48L0ZyYWdtZW50PjwvRnJhZ21lbnRzVG9CZUhhc2hlZD4=
+                    $ref: components/examples/PrescriptionPostSuccessResponse.yaml
           headers: {}
       requestBody:
         content:
@@ -118,222 +116,12 @@ paths:
             examples:
               example:
                 value:
-                  resourceType: Bundle
-                  id: 7EB02341-5F62-4A76-2CD3-34F523452356
-                  type: collection
-                  entry:
-                    - fullUrl:
-                        urn:uuid:7B38DE32-877F-6D53-D27C-86E1BA35016C
-                      resource:
-                        resourceType: MedicationRequest
-                        id: 7B38DE32-877F-6D53-D27C-86E1BA35016C
-                        status: active
-                        intent: order
-                        medicationCodeableConcept:
-                          coding:
-                            - system: 'http://snomed.info/sct'
-                              code: '317896006'
-                              display: Digoxin 125 microgram oral tablet
-                        subject:
-                          reference: urn:uuid:C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
-                        encounter:
-                          reference: urn:uuid:401AEEE1-0E1B-42A0-989C-03DEA8667CB7
-                        authoredOn: '2008-02-27 11:38:00'
-                        requester:
-                          reference: urn:uuid:1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D
-                        dosageInstruction:
-                          - text: 1 tablet after breakfast
-                        dispenseRequest:
-                          quantity:
-                            value: 28
-                            unit: tablet
-                            system: 'http://snomed.info/sct'
-                            code: '3319411000001109'
-                    - fullUrl:
-                        urn:uuid:8D12DE62-826F-8D32-E17C-86D3BA56013E
-                      resource:
-                        resourceType: MedicationRequest
-                        id: 8D12DE62-826F-8D32-E17C-86D3BA56013E
-                        status: active
-                        intent: order
-                        medicationCodeableConcept:
-                          coding:
-                            - system: 'http://snomed.info/sct'
-                              code: '319775004'
-                              display: Aspirin 75 mg oral tablet
-                        subject:
-                          reference: urn:uuid:C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
-                        encounter:
-                          reference: urn:uuid:401AEEE1-0E1B-42A0-989C-03DEA8667CB7
-                        authoredOn: '2008-02-27 11:38:00'
-                        requester:
-                          reference: urn:uuid:1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D
-                        dosageInstruction:
-                          - text: 1 tablet during breakfast
-                        dispenseRequest:
-                          quantity:
-                            value: 28
-                            unit: tablet
-                            system: 'http://snomed.info/sct'
-                            code: '3319411000001109'
-                    - fullUrl:
-                        urn:uuid:9A12DE62-826F-8D32-E17C-86D3BA56023F
-                      resource:
-                        resourceType: MedicationRequest
-                        id: 9A12DE62-826F-8D32-E17C-86D3BA56023F
-                        status: active
-                        intent: order
-                        medicationCodeableConcept:
-                          coding:
-                            - system: 'http://snomed.info/sct'
-                              code: '377145005'
-                              display: Lorazepam 2 mg oral tablet
-                        subject:
-                          reference: urn:uuid:C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
-                        encounter:
-                          reference: urn:uuid:401AEEE1-0E1B-42A0-989C-03DEA8667CB7
-                        authoredOn: '2008-02-27 11:38:00'
-                        requester:
-                          reference: urn:uuid:1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D
-                        dosageInstruction:
-                          - text: 3 tablets before breakfast
-                        dispenseRequest:
-                          quantity:
-                            value: 84
-                            unit: tablet
-                            system: 'http://snomed.info/sct'
-                            code: '3319411000001109'
-                    - fullUrl:
-                        urn:uuid:2A32DE62-826F-8D32-E17C-86D3BA56013D
-                      resource:
-                        resourceType: MedicationRequest
-                        id: 2A32DE62-826F-8D32-E17C-86D3BA56013D
-                        status: active
-                        intent: order
-                        medicationCodeableConcept:
-                          coding:
-                            - system: 'http://snomed.info/sct'
-                              code: '421375004'
-                              display: Citalopram (as citalopram hydrobromide) 40 mg orodispersible tablet
-                        subject:
-                          reference: urn:uuid:C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
-                        encounter:
-                          reference: urn:uuid:401AEEE1-0E1B-42A0-989C-03DEA8667CB7
-                        authoredOn: '2008-02-27 11:38:00'
-                        requester:
-                          reference: urn:uuid:1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D
-                        dosageInstruction:
-                          - text: 2 tablets after breakfast
-                        dispenseRequest:
-                          quantity:
-                            value: 56
-                            unit: tablet
-                            system: 'http://snomed.info/sct'
-                            code: '3319411000001109'
-                    - fullUrl:
-                        urn:uuid:C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
-                      resource:
-                        resourceType: Patient
-                        id: C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
-                        identifier:
-                          - system: 'https://fhir.nhs.uk/Id/nhs-number'
-                            value: '9900008464'
-                        name:
-                          - use: official
-                            family: Anderson
-                            given:
-                              - Michael
-                              - Jack
-                            prefix:
-                              - Mr
-                        gender: male
-                        birthDate: '1973-04-21'
-                        address:
-                          - use: home
-                            type: both
-                            line:
-                              - '1 Otley Road,'
-                            city: Leeds
-                            postalCode: LS6 5RU
-                    - fullUrl:
-                        urn:uuid:1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D
-                      resource:
-                        resourceType: Practitioner
-                        id: 1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D
-                        identifier:
-                          - system: 'https://fhir.nhs.uk/Id/sds-user-id'
-                            value: '125686540025'
-                          - system: 'https://fhir.nhs.uk/Id/sds-job-role-id'
-                            value: R0260
-                          - system: 'https://fhir.nhs.uk/Id/sds-role-profile-id'
-                            value: '934565838956'
-                        name:
-                          - use: official
-                            family: Hurst
-                            prefix:
-                              - Dr
-                        telecom:
-                          - system: phone
-                            value: 'tel:011327534256'
-                            use: work
-                    - fullUrl:
-                        urn:uuid:401AEEE1-0E1B-42A0-989C-03DEA8667CB7
-                      resource:
-                        resourceType: Encounter
-                        id: 401AEEE1-0E1B-42A0-989C-03DEA8667CB7
-                        status: finished
-                        class:
-                          system: 'http://terminology.hl7.org/CodeSystem/v3-ActCode'
-                          code: AMB
-                        serviceProvider:
-                          reference: urn:uuid:6666C3B3-FDCD-41B8-9D69-AD1E6D99D9FC
-                    - fullUrl:
-                        urn:uuid:6666C3B3-FDCD-41B8-9D69-AD1E6D99D9FC
-                      resource:
-                        resourceType: Organization
-                        id: 6666C3B3-FDCD-41B8-9D69-AD1E6D99D9FC
-                        identifier:
-                          - system: 'https://fhir.nhs.uk/Id/ods-organization-code'
-                            value: M85011
-                        type:
-                          - coding:
-                              - system: 'urn:oid:2.16.840.1.113883.2.1.3.2.4.17.94'
-                                code: '001'
-                                display: General Medical Practice
-                        name: Signing_Surg_1
-                        telecom:
-                          - system: phone
-                            value: 'tel:01132754568'
-                            use: work
-                        address:
-                          - use: work
-                            line:
-                              - 1 Princes Street
-                            city: Leeds
-                            postalCode: LS1 5AH
-                        partOf:
-                          reference: urn:uuid:8DCB2153-09F5-4604-9229-A5C8C7195199
-                    - fullUrl:
-                        urn:uuid:8DCB2153-09F5-4604-9229-A5C8C7195199
-                      resource:
-                        resourceType: Organization
-                        id: 8DCB2153-09F5-4604-9229-A5C8C7195199
-                        identifier:
-                          - system: 'https://fhir.nhs.uk/Id/ods-organization-code'
-                            value: 4CD
-                        type:
-                          - coding:
-                              - system: 'urn:oid:2.16.840.1.113883.2.1.3.2.4.17.94'
-                                code: '005'
-                                display: Primary Care Trust
-                        name: West Yorkshire
+                  $ref: components/examples/PrescriptionPostSuccessRequest.yaml
         description: ''
       description: Convert a prescription in FHIR format into the canonicalised HL7 V3 signature elements which should be signed by the prescriber.
       tags:
-        - prescriptions
-    parameters: []
-  /Create-Prescription:
-    post:
+        - prescribing
+    put:
       summary: Post a signed prescription to EPS
       operationId: post-signed-prescription
       responses:
@@ -342,10 +130,11 @@ paths:
           content:
             application/fhir+json:
               schema:
-                $ref: components/schemas/Binary.yaml
+                $ref: components/schemas/OperationOutcome.yaml
               examples:
                 example:
-                  value: OK
+                  value:
+                    $ref: components/examples/PrescriptionPutSuccessResponse.yaml
           headers: {}
       requestBody:
         content:
@@ -355,235 +144,11 @@ paths:
             examples:
               example:
                 value:
-                  resourceType: Bundle
-                  id: 7EB02341-5F62-4A76-2CD3-34F523452356
-                  type: collection
-                  entry:
-                    - fullUrl:
-                        urn:uuid:7B38DE32-877F-6D53-D27C-86E1BA35016C
-                      resource:
-                        resourceType: MedicationRequest
-                        id: 7B38DE32-877F-6D53-D27C-86E1BA35016C
-                        status: active
-                        intent: order
-                        medicationCodeableConcept:
-                          coding:
-                            - system: 'http://snomed.info/sct'
-                              code: '317896006'
-                              display: Digoxin 125 microgram oral tablet
-                        subject:
-                          reference: urn:uuid:C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
-                        encounter:
-                          reference: urn:uuid:401AEEE1-0E1B-42A0-989C-03DEA8667CB7
-                        authoredOn: '2008-02-27 11:38:00'
-                        requester:
-                          reference: urn:uuid:1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D
-                        dosageInstruction:
-                          - text: 1 tablet after breakfast
-                        dispenseRequest:
-                          quantity:
-                            value: 28
-                            unit: tablet
-                            system: 'http://snomed.info/sct'
-                            code: '3319411000001109'
-                    - fullUrl:
-                        urn:uuid:8D12DE62-826F-8D32-E17C-86D3BA56013E
-                      resource:
-                        resourceType: MedicationRequest
-                        id: 8D12DE62-826F-8D32-E17C-86D3BA56013E
-                        status: active
-                        intent: order
-                        medicationCodeableConcept:
-                          coding:
-                            - system: 'http://snomed.info/sct'
-                              code: '319775004'
-                              display: Aspirin 75 mg oral tablet
-                        subject:
-                          reference: urn:uuid:C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
-                        encounter:
-                          reference: urn:uuid:401AEEE1-0E1B-42A0-989C-03DEA8667CB7
-                        authoredOn: '2008-02-27 11:38:00'
-                        requester:
-                          reference: urn:uuid:1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D
-                        dosageInstruction:
-                          - text: 1 tablet during breakfast
-                        dispenseRequest:
-                          quantity:
-                            value: 28
-                            unit: tablet
-                            system: 'http://snomed.info/sct'
-                            code: '3319411000001109'
-                    - fullUrl:
-                        urn:uuid:9A12DE62-826F-8D32-E17C-86D3BA56023F
-                      resource:
-                        resourceType: MedicationRequest
-                        id: 9A12DE62-826F-8D32-E17C-86D3BA56023F
-                        status: active
-                        intent: order
-                        medicationCodeableConcept:
-                          coding:
-                            - system: 'http://snomed.info/sct'
-                              code: '377145005'
-                              display: Lorazepam 2 mg oral tablet
-                        subject:
-                          reference: urn:uuid:C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
-                        encounter:
-                          reference: urn:uuid:401AEEE1-0E1B-42A0-989C-03DEA8667CB7
-                        authoredOn: '2008-02-27 11:38:00'
-                        requester:
-                          reference: urn:uuid:1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D
-                        dosageInstruction:
-                          - text: 3 tablets before breakfast
-                        dispenseRequest:
-                          quantity:
-                            value: 84
-                            unit: tablet
-                            system: 'http://snomed.info/sct'
-                            code: '3319411000001109'
-                    - fullUrl:
-                        urn:uuid:2A32DE62-826F-8D32-E17C-86D3BA56013D
-                      resource:
-                        resourceType: MedicationRequest
-                        id: 2A32DE62-826F-8D32-E17C-86D3BA56013D
-                        status: active
-                        intent: order
-                        medicationCodeableConcept:
-                          coding:
-                            - system: 'http://snomed.info/sct'
-                              code: '421375004'
-                              display: Citalopram (as citalopram hydrobromide) 40 mg orodispersible tablet
-                        subject:
-                          reference: urn:uuid:C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
-                        encounter:
-                          reference: urn:uuid:401AEEE1-0E1B-42A0-989C-03DEA8667CB7
-                        authoredOn: '2008-02-27 11:38:00'
-                        requester:
-                          reference: urn:uuid:1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D
-                        dosageInstruction:
-                          - text: 2 tablets after breakfast
-                        dispenseRequest:
-                          quantity:
-                            value: 56
-                            unit: tablet
-                            system: 'http://snomed.info/sct'
-                            code: '3319411000001109'
-                    - fullUrl:
-                        urn:uuid:C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
-                      resource:
-                        resourceType: Patient
-                        id: C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
-                        identifier:
-                          - system: 'https://fhir.nhs.uk/Id/nhs-number'
-                            value: '9900008464'
-                        name:
-                          - use: official
-                            family: Anderson
-                            given:
-                              - Michael
-                              - Jack
-                            prefix:
-                              - Mr
-                        gender: male
-                        birthDate: '1973-04-21'
-                        address:
-                          - use: home
-                            type: both
-                            line:
-                              - '1 Otley Road,'
-                            city: Leeds
-                            postalCode: LS6 5RU
-                    - fullUrl:
-                        urn:uuid:1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D
-                      resource:
-                        resourceType: Practitioner
-                        id: 1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D
-                        identifier:
-                          - system: 'https://fhir.nhs.uk/Id/sds-user-id'
-                            value: '125686540025'
-                          - system: 'https://fhir.nhs.uk/Id/sds-job-role-id'
-                            value: R0260
-                          - system: 'https://fhir.nhs.uk/Id/sds-role-profile-id'
-                            value: '934565838956'
-                        name:
-                          - use: official
-                            family: Hurst
-                            prefix:
-                              - Dr
-                        telecom:
-                          - system: phone
-                            value: 'tel:011327534256'
-                            use: work
-                    - fullUrl:
-                        urn:uuid:401AEEE1-0E1B-42A0-989C-03DEA8667CB7
-                      resource:
-                        resourceType: Encounter
-                        id: 401AEEE1-0E1B-42A0-989C-03DEA8667CB7
-                        status: finished
-                        class:
-                          system: 'http://terminology.hl7.org/CodeSystem/v3-ActCode'
-                          code: AMB
-                        serviceProvider:
-                          reference: urn:uuid:6666C3B3-FDCD-41B8-9D69-AD1E6D99D9FC
-                    - fullUrl:
-                        urn:uuid:6666C3B3-FDCD-41B8-9D69-AD1E6D99D9FC
-                      resource:
-                        resourceType: Organization
-                        id: 6666C3B3-FDCD-41B8-9D69-AD1E6D99D9FC
-                        identifier:
-                          - system: 'https://fhir.nhs.uk/Id/ods-organization-code'
-                            value: M85011
-                        type:
-                          - coding:
-                              - system: 'urn:oid:2.16.840.1.113883.2.1.3.2.4.17.94'
-                                code: '001'
-                                display: General Medical Practice
-                        name: Signing_Surg_1
-                        telecom:
-                          - system: phone
-                            value: 'tel:01132754568'
-                            use: work
-                        address:
-                          - use: work
-                            line:
-                              - 1 Princes Street
-                            city: Leeds
-                            postalCode: LS1 5AH
-                        partOf:
-                          reference: urn:uuid:8DCB2153-09F5-4604-9229-A5C8C7195199
-                    - fullUrl:
-                        urn:uuid:8DCB2153-09F5-4604-9229-A5C8C7195199
-                      resource:
-                        resourceType: Organization
-                        id: 8DCB2153-09F5-4604-9229-A5C8C7195199
-                        identifier:
-                          - system: 'https://fhir.nhs.uk/Id/ods-organization-code'
-                            value: 4CD
-                        type:
-                          - coding:
-                              - system: 'urn:oid:2.16.840.1.113883.2.1.3.2.4.17.94'
-                                code: '005'
-                                display: Primary Care Trust
-                        name: West Yorkshire
-                    - fullUrl:
-                        urn:uuid:28828c55-8fa7-42d7-916f-fcf076e0c10e
-                      resourceType:  Provenance
-                      target: <fill>
-                      recorded: 2020-04-21T10:45:30+00:00
-                      agent:
-                        type: legal
-                        role: PRIMAUTH
-                        who: 
-                          reference: urn:uuid:1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D
-                      signature:
-                        type: 1.2.840.10065.1.12.1.1
-                        when: 2020-04-21T10:45:30+00:00
-                        who:
-                          reference: urn:uuid:1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D
-                        data: PEZyYWdtZW50c1RvQmVIYXNoZWQ+PC9GcmFnbWVudHNUb0JlSGFzaGVkPg==
+                  $ref: components/examples/PrescriptionPutSuccessRequest.yaml
         description: ''
       description: Submit a signed prescription to EPS
       tags:
-        - create-prescriptions
+        - prescribing
     parameters: []
 components:
   schemas:
