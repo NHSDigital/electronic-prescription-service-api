@@ -1,22 +1,20 @@
 type: object
-description: An authorizing signature
+description: A signature along with supporting context.
 required:
   - type
   - when
   - who
+  - data
 properties:
   type:
-    type: string
-    description: Indication of the reason for the signature
-    enum:
-      - 1.2.840.10065.1.12.1.1
+    $ref: "Coding-SignatureType.yaml"
   when:
     type: string
-    description: The time at which the activity was recorded. 
+    description: When the digital signature was signed.
     example: 2020-04-21T10:45:30+00:00
   who:
-    $ref: "Practitioner.yaml"
+    $ref: "Reference.yaml"
   data:
     type: string
-    description: The actual signature content base64 encoded
-    example: PEZyYWdtZW50c1RvQmVIYXNoZWQ+PC9GcmFnbWVudHNUb0JlSGFzaGVkPg==
+    description: The base64 encoding of the Signature content.
+    example: TODO
