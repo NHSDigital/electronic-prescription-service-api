@@ -1,29 +1,82 @@
-module.exports = {
-  verifyResourceTypeIsBundle: function(request) {
-    return request.payload && request.payload["resourceType"] && request.payload["resourceType"] === "Bundle"
-  },
+const Boom = require('boom')
 
-  verifyBundleContainsEntries: function(request) {
-    return request.payload && request.payload["entry"]
-  },
+function verifyResourceTypeIsBundle(bundle) {
+  return bundle && bundle["resourceType"] && bundle["resourceType"] === "Bundle"
+}
 
-  verifyBundleEntryContainsMedicationRequest: function(request) {
-    return request.payload["entry"].filter(entry => entry["resourceType"] === "MedicationRequest").length !== 0
-  },
+function verifyBundleContainsEntries(bundle) {
+  return bundle && bundle["entry"]
+}
 
-  verifyBundleEntryContainsOnePatient: function(request) {
-    return request.payload["entry"].filter(entry => entry["resourceType"] === "Patient").length === 1
-  },
+function getMatchingEntries(bundle, resourceType) {
+  return bundle["entry"].filter(entry => entry["resourceType"] === resourceType)
+}
 
-  verifyBundleEntryContainsPractitioner: function(request) {
-    return request.payload["entry"].filter(entry => entry["resourceType"] === "Practitioner").length !== 0
-  },
-
-  verifyBundleEntryContainsOneEncounter: function(request) {
-    return request.payload["entry"].filter(entry => entry["resourceType"] === "Encounter").length === 1
-  },
-
-  verifyBundleEntryContainsTwoOrganizations: function(request) {
-    return request.payload["entry"].filter(entry => entry["resourceType"] === "Organization").length === 2
+function verifyBundleContainsAtLeast(bundle, number, resourceType) {
+  const matchingEntries = getMatchingEntries(bundle, resourceType)
+  if (matchingEntries.length < number) {
+    throw Boom.badRequest(
+      "Bundle must contain at least " + number + " resource(s) of type " + resourceType,
+      {operationOutcomeCode: "value", apiErrorCode: "MISSING_FIELD"}
+    )
   }
+}
+
+function verifyBundleContainsExactly(bundle, number, resourceType) {
+  const matchingEntries = getMatchingEntries(bundle, resourceType)
+  if (matchingEntries.length !== number) {
+    throw Boom.badRequest(
+      "Bundle must contain exactly " + number + " resource(s) of type " + resourceType,
+      {operationOutcomeCode: "value", apiErrorCode: "MISSING_FIELD"}
+    )
+  }
+}
+
+function verifyPrescriptionBundle(bundle) {
+  if (!verifyResourceTypeIsBundle(bundle)) {
+    throw Boom.badRequest(
+      "ResourceType must be 'Bundle' on request",
+      {operationOutcomeCode: "value", apiErrorCode: "INCORRECT_RESOURCETYPE"}
+    )
+  }
+
+  if (!verifyBundleContainsEntries(bundle)) {
+    throw Boom.badRequest(
+      "ResourceType Bundle must contain 'entry' field",
+      {operationOutcomeCode: "value", apiErrorCode: "MISSING_FIELD"}
+    )
+  }
+
+  verifyBundleContainsAtLeast(bundle, 1, "MedicationRequest")
+  verifyBundleContainsExactly(bundle, 1, "Patient")
+  verifyBundleContainsAtLeast(bundle, 1, "Practitioner")
+  verifyBundleContainsExactly(bundle, 1, "Encounter")
+  verifyBundleContainsExactly(bundle, 2, "Organization")
+}
+
+function verifyPrescriptionAndSignatureBundle(bundle) {
+  if (!verifyResourceTypeIsBundle(bundle)) {
+    throw Boom.badRequest(
+      "ResourceType must be 'Bundle' on request",
+      {operationOutcomeCode: "value", apiErrorCode: "INCORRECT_RESOURCETYPE"}
+    )
+  }
+
+  if (!verifyBundleContainsEntries(bundle)) {
+    throw Boom.badRequest(
+      "ResourceType Bundle must contain 'entry' field",
+      {operationOutcomeCode: "value", apiErrorCode: "MISSING_FIELD"}
+    )
+  }
+
+  verifyBundleContainsExactly(bundle, 1, "Provenance")
+  verifyBundleContainsExactly(bundle, 1, "Bundle")
+
+  const prescriptionBundle = getMatchingEntries(bundle, "Bundle")[0]
+  verifyPrescriptionBundle(prescriptionBundle)
+}
+
+module.exports = {
+  verifyPrescriptionBundle,
+  verifyPrescriptionAndSignatureBundle
 }

@@ -5,17 +5,17 @@ const requestValidator = require("../../validators/request-validator")
 
 module.exports = [
   /*
-    Convert a FHIR prescription into the HL7 V3 signature elements to be signed by the prescriber.
+    Send the signed prescription to EPS.
   */
   {
-    method: 'POST',
+    method: 'PUT',
     path: '/Prescription',
     handler: (request, h) => {
-      requestValidator.verifyPrescriptionBundle(request.payload)
-      if (request.payload.id === examples.prescriptionPostSuccessRequest.id) {
+      requestValidator.verifyPrescriptionAndSignatureBundle(request.payload)
+      if (request.payload.id === examples.prescriptionPutSuccessRequest.id) {
         //TODO add meta to the response schema and use fhirHelper
         //return fhirHelper.createFhirResponse(h, examples.prescriptionPostSuccessResponse)
-        return h.response(examples.prescriptionPostSuccessResponse)
+        return h.response(examples.prescriptionPutSuccessResponse)
       } else {
         throw Boom.badRequest("Unsupported prescription id", {operationOutcomeCode: "value", apiErrorCode: "unsupportedPrescriptionId"})
       }

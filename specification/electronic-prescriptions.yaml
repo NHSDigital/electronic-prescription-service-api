@@ -89,8 +89,8 @@ servers:
   - url: 'https://api.service.nhs.uk/electronic-prescriptions'
     description: 'Production environment (not yet available: see "API status and roadmap").'
 tags:
-  - name: prescribing
   - name: dispensing
+  - name: prescribing
 paths:
   /Prescription:
     post:

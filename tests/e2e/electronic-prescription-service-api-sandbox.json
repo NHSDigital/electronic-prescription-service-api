@@ -12,7 +12,33 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n\"resourceType\": \"Bundle\",\n\"id\": \"7EB02341-5F62-4A76-2CD3-34F523452356\",\n\"type\": \"collection\",\n\"entry\": [\n\t{\n\t\t\"resourceType\": \"MedicationRequest\"\n\t},\n\t{\n\t\t\"resourceType\": \"Patient\"\n\t},\n\t{\n\t\t\"resourceType\": \"Encounter\"\n\t},\n\t{\n\t\t\"resourceType\": \"Organization\"\n\t},\n\t{\n\t\t\"resourceType\": \"Organization\"\n\t},\n\t{\n\t\t\"resourceType\": \"Practitioner\"\n\t}\n]\n}",
+          "raw": "{\n    \"resourceType\": \"Bundle\",\n    \"id\": \"7EB02341-5F62-4A76-2CD3-34F523452356\",\n    \"type\": \"collection\",\n    \"entry\": [\n        {\n            \"resourceType\": \"MedicationRequest\"\n        },\n        {\n            \"resourceType\": \"Patient\"\n        },\n        {\n            \"resourceType\": \"Encounter\"\n        },\n        {\n            \"resourceType\": \"Organization\"\n        },\n        {\n            \"resourceType\": \"Organization\"\n        },\n        {\n            \"resourceType\": \"Practitioner\"\n        }\n    ]\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/Prescription",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "Prescription"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Prescription PUT Success",
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"resourceType\": \"Bundle\",\n    \"id\": \"E8E8D623-62C9-4642-BC51-AB50430DF8CA\",\n    \"type\": \"collection\",\n    \"entry\": [\n        {\n            \"resourceType\": \"Provenance\"\n        },\n        {\n            \"resourceType\": \"Bundle\",\n            \"id\": \"7EB02341-5F62-4A76-2CD3-34F523452356\",\n            \"type\": \"collection\",\n            \"entry\": [\n                {\n                    \"resourceType\": \"MedicationRequest\"\n                },\n                {\n                    \"resourceType\": \"Patient\"\n                },\n                {\n                    \"resourceType\": \"Encounter\"\n                },\n                {\n                    \"resourceType\": \"Organization\"\n                },\n                {\n                    \"resourceType\": \"Organization\"\n                },\n                {\n                    \"resourceType\": \"Practitioner\"\n                }\n            ]\n        }\n    ]\n}",
           "options": {
             "raw": {
               "language": "json"
