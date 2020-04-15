@@ -8,8 +8,8 @@ properties:
     type: string
     description: The identification of the code system that defines the meaning of the symbol in the code.
     enum: 
-      - http://hl7.org/fhir/ValueSet/signature-type
-    example: http://hl7.org/fhir/ValueSet/signature-type
+      - urn:iso-astm:E1762-95:2013
+    example: urn:iso-astm:E1762-95:2013
   code:
     type: string
     description: A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).

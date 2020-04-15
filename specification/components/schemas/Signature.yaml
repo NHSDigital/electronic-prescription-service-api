@@ -7,7 +7,10 @@ required:
   - data
 properties:
   type:
-    $ref: "Coding-SignatureType.yaml"
+    type: array
+    description: An indication of the reason that the entity signed this document.
+    items:
+      $ref: "Coding-SignatureType.yaml"
   when:
     type: string
     description: When the digital signature was signed.
