@@ -70,6 +70,7 @@ function verifyPrescriptionAndSignatureBundle(bundle) {
   }
 
   verifyBundleContainsExactly(bundle, 1, "Provenance")
+  verifyBundleContainsAtLeast(bundle, 1, "Practitioner")
   verifyBundleContainsExactly(bundle, 1, "Bundle")
 
   const prescriptionBundle = getMatchingEntries(bundle, "Bundle")[0]

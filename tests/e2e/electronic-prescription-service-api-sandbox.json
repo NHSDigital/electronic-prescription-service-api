@@ -1,62 +1,114 @@
 {
-  "info": {
-    "_postman_id": "0834710e-be75-4d5c-b7c7-881e98faeb57",
-    "name": "Electronic Prescriptions Sandbox",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "Prescription POST Success",
-      "request": {
-        "method": "POST",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"resourceType\": \"Bundle\",\n    \"id\": \"7EB02341-5F62-4A76-2CD3-34F523452356\",\n    \"type\": \"collection\",\n    \"entry\": [\n        {\n            \"resourceType\": \"MedicationRequest\"\n        },\n        {\n            \"resourceType\": \"Patient\"\n        },\n        {\n            \"resourceType\": \"Encounter\"\n        },\n        {\n            \"resourceType\": \"Organization\"\n        },\n        {\n            \"resourceType\": \"Organization\"\n        },\n        {\n            \"resourceType\": \"Practitioner\"\n        }\n    ]\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{base_url}}/Prescription",
-          "host": [
-            "{{base_url}}"
-          ],
-          "path": [
-            "Prescription"
-          ]
-        }
-      },
-      "response": []
-    },
-    {
-      "name": "Prescription PUT Success",
-      "request": {
-        "method": "PUT",
-        "header": [],
-        "body": {
-          "mode": "raw",
-          "raw": "{\n    \"resourceType\": \"Bundle\",\n    \"id\": \"E8E8D623-62C9-4642-BC51-AB50430DF8CA\",\n    \"type\": \"collection\",\n    \"entry\": [\n        {\n            \"resourceType\": \"Provenance\"\n        },\n        {\n            \"resourceType\": \"Bundle\",\n            \"id\": \"7EB02341-5F62-4A76-2CD3-34F523452356\",\n            \"type\": \"collection\",\n            \"entry\": [\n                {\n                    \"resourceType\": \"MedicationRequest\"\n                },\n                {\n                    \"resourceType\": \"Patient\"\n                },\n                {\n                    \"resourceType\": \"Encounter\"\n                },\n                {\n                    \"resourceType\": \"Organization\"\n                },\n                {\n                    \"resourceType\": \"Organization\"\n                },\n                {\n                    \"resourceType\": \"Practitioner\"\n                }\n            ]\n        }\n    ]\n}",
-          "options": {
-            "raw": {
-              "language": "json"
-            }
-          }
-        },
-        "url": {
-          "raw": "{{base_url}}/Prescription",
-          "host": [
-            "{{base_url}}"
-          ],
-          "path": [
-            "Prescription"
-          ]
-        }
-      },
-      "response": []
-    }
-  ],
-  "protocolProfileBehavior": {}
+	"info": {
+		"_postman_id": "0834710e-be75-4d5c-b7c7-881e98faeb57",
+		"name": "Electronic Prescriptions Sandbox",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Prescription POST Success",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessToken",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "NHSD-Session-URID",
+						"value": "123",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"resourceType\": \"Bundle\",\n    \"id\": \"7EB02341-5F62-4A76-2CD3-34F523452356\",\n    \"type\": \"collection\",\n    \"entry\": [\n        {\n            \"resourceType\": \"MedicationRequest\"\n        },\n        {\n            \"resourceType\": \"Patient\"\n        },\n        {\n            \"resourceType\": \"Encounter\"\n        },\n        {\n            \"resourceType\": \"Organization\"\n        },\n        {\n            \"resourceType\": \"Organization\"\n        },\n        {\n            \"resourceType\": \"Practitioner\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/Prescription",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"Prescription"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Prescription PUT Success",
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessToken",
+							"value": "",
+							"type": "string"
+						},
+						{
+							"key": "tokenType",
+							"value": "Bearer",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "NHSD-Session-URID",
+						"type": "text",
+						"value": "123"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"resourceType\": \"Bundle\",\n    \"id\": \"E8E8D623-62C9-4642-BC51-AB50430DF8CA\",\n    \"type\": \"collection\",\n    \"entry\": [\n        {\n            \"resourceType\": \"Provenance\"\n        },\n        {\n            \"resourceType\": \"Practitioner\"\n        },\n        {\n            \"resourceType\": \"Bundle\",\n            \"id\": \"7EB02341-5F62-4A76-2CD3-34F523452356\",\n            \"type\": \"collection\",\n            \"entry\": [\n                {\n                    \"resourceType\": \"MedicationRequest\"\n                },\n                {\n                    \"resourceType\": \"Patient\"\n                },\n                {\n                    \"resourceType\": \"Encounter\"\n                },\n                {\n                    \"resourceType\": \"Organization\"\n                },\n                {\n                    \"resourceType\": \"Organization\"\n                },\n                {\n                    \"resourceType\": \"Practitioner\"\n                }\n            ]\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/Prescription",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"Prescription"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
 }
