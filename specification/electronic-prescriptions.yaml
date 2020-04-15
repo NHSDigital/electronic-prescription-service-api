@@ -130,7 +130,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                $ref: components/schemas/OperationOutcome.yaml
+                $ref: components/schemas/Bundle.yaml
               examples:
                 example:
                   value:
