@@ -1,1 +1,1 @@
-resourceType: OperationOutcome
+$ref: PrescriptionPutSuccessRequest.yaml
