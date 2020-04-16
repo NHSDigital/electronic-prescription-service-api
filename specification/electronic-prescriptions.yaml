@@ -14,7 +14,8 @@ info:
     Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service) - the national service used to send electronic prescriptions from GP surgeries to pharmacies.
 
     You can:
-    * convert a FHIR prescription into the HL7 V3 signature elements to be signed by the prescriber
+    * prepare a prescription for signing
+    * sign a prescription
 
     You cannot currently use this API to:
     * create a prescription
