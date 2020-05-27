@@ -1,0 +1,25 @@
+type: object
+description: A resource that represents the data of a single raw artifact as digital content accessible in its native format. A Binary resource can contain any content, whether text, image, pdf, zip archive, etc.
+required:
+  - resourceType
+  - id
+  - contentType
+  - data
+properties:
+  resourceType:
+    type: string
+    description: FHIR Resource type.
+    default: Binary
+    readOnly: true
+  id:
+    type: string
+    description: Logical id of this artifact.
+    example: 001
+  contentType:
+    type: string
+    description: MimeType of the binary content.
+    example: application/xml
+  data:
+    type: string
+    description: The actual content.
+    example: PEZyYWdtZW50c1RvQmVIYXNoZWQ+PC9GcmFnbWVudHNUb0JlSGFzaGVkPg==

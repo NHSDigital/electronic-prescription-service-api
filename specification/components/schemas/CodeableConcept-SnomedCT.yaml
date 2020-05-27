@@ -1,0 +1,10 @@
+type: object
+description: A concept that may be defined by a formal reference to a terminology or ontology or may be provided by text.
+required:
+  - coding
+properties:
+  coding:
+    type: array
+    description: A reference to a code defined by a terminology system.
+    items:
+      $ref: "Coding-SnomedCT.yaml"

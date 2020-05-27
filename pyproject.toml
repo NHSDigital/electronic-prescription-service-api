@@ -5,7 +5,7 @@ python = "^3.8"
 [tool.poetry]
 name = "apim-definitions"
 version = "0.0.1-alpha"
-description = "Template API Definitions"
+description = "Electronic Prescription Service API Definitions"
 
 license = "MIT"
 
@@ -15,7 +15,7 @@ authors = [
 
 readme = 'README.md'
 
-repository = "https://github.com/NHSDigital/template-api"
+repository = "https://github.com/NHSDigital/electronic-prescription-service-api"
 homepage = ""
 
 keywords = ["healthcare", "uk", "nhs"] #TODO add additional keywords
@@ -38,3 +38,8 @@ jinja2 = "^2.11.1"
 
 
 [tool.poetry.scripts]
+
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"

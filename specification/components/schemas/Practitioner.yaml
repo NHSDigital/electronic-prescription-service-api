@@ -1,0 +1,36 @@
+type: object
+description: A person who is directly or indirectly involved in the provisioning of healthcare.
+required:
+  - resourceType
+  - id
+  - identifier
+  - name
+  - telecom
+properties:
+  resourceType:
+    type: string
+    description: FHIR Resource type
+    default: Practitioner
+    readOnly: true
+  id:
+    type: string
+    description: Logical id of this artifact.
+    example: 001
+  identifier:
+    type: array
+    description: An identifier that applies to this person in this role.
+    items:
+      oneOf:
+        - $ref: "Identifier-SdsUserId.yaml"
+        - $ref: "Identifier-SdsJobRoleId.yaml"
+        - $ref: "Identifier-SdsRoleProfileId.yaml"
+  name:
+    type: array
+    description: The name(s) associated with the practitioner.
+    items:
+      $ref: "HumanName.yaml"
+  telecom:
+    type: array
+    description: A contact detail for the practitioner, e.g. a telephone number or an email address.
+    items:
+      $ref: "ContactPoint.yaml"

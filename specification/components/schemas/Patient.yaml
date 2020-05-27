@@ -1,0 +1,57 @@
+type: object
+description: Information about an individual or animal receiving health care services.
+required:
+  - resourceType
+  - id
+  - identifier
+  - address
+  - name
+  - gender
+  - birthDate
+properties:
+  resourceType:
+    type: string
+    description: FHIR Resource type
+    default: Patient
+    readOnly: true
+  id:
+    type: string
+    description: Logical id of this artifact.
+    example: 001
+  identifier:
+    type: array
+    description: An identifier for this patient.
+    items:
+      $ref: "Identifier-NhsNumber.yaml"
+  name:
+    type: array
+    description: A name associated with the individual.
+    items:
+      $ref: "HumanName.yaml"
+  gender:
+    type: string
+    description: Administrative Gender - the gender that the patient is considered to have for administration and record keeping purposes.
+    enum:
+      - male
+      - female
+      - other
+      - unknown
+    example: male
+  birthDate:
+    type: string
+    description: The date of birth for the individual.
+    example: 1973-04-21
+  address:
+    type: array
+    description: An address for the individual.
+    items:
+      $ref: "Address.yaml"
+  telecom:
+    type: array
+    description: A contact detail for the individual.
+    items:
+      $ref: "ContactPoint.yaml"
+  deceasedDateTime:
+    type: string
+    description: Indicates if the individual is deceased or not.
+    example: 2020-01-05

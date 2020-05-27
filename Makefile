@@ -14,7 +14,7 @@ install-hooks:
 
 install-fhir-validator:
 	mkdir -p bin
-	test -f bin/org.hl7.fhir.validator.jar || curl https://fhir.github.io/latest-ig-publisher/org.hl7.fhir.validator.jar > bin/org.hl7.fhir.validator.jar
+	test -f bin/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > bin/org.hl7.fhir.validator.jar
 
 test:
 	npm run test
@@ -22,7 +22,7 @@ test:
 lint:
 	npm run lint
 	cd sandbox && npm run lint && cd ..
-	poetry run flake8 **/*.py
+	poetry run flake8 **/*.py --config .flake8
 	find -name '*.sh' | grep -v node_modules | xargs shellcheck
 
 validate: generate-examples
@@ -41,11 +41,11 @@ serve: update-examples
 
 generate-examples: publish clean
 	mkdir -p build/examples
-	poetry run python scripts/generate_examples.py build/template-api.json build/examples
+	poetry run python scripts/generate_examples.py build/electronic-prescriptions.json build/examples
 
 update-examples: generate-examples
-	#TODO copy and standardise examples e.g.:
-	jq -rM . <build/examples/resources/Patient.json >specification/components/examples/Patient.json
+	jq -rM . <build/examples/requests/paths._Prescription.post.requestBody.content.application_fhir+json.examples.example.value.json >specification/components/examples/PrescriptionPostSuccessRequest.json
+	jq -rM . <build/examples/responses/paths._Prescription.post.responses.200.content.application_fhir+json.examples.example.value.json >specification/components/examples/PrescriptionPostSuccessResponse.json
 	make publish
 
 check-licenses:
@@ -69,4 +69,6 @@ build-proxy:
 
 release: clean publish build-proxy
 	mkdir -p dist
+	tar -zcvf dist/package.tar.gz build
+	cp -r terraform dist
 	cp -r build/. dist

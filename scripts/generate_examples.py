@@ -26,7 +26,23 @@ def generate_resource_example(schema_dict, path=None):
         path = []
 
     for property_name, property_value in schema_dict.items():
-        if property_value["type"] == "array":
+        if "type" not in property_value:
+            if "oneOf" in property_value:
+                example[property_name] = generate_resource_example(
+                    property_value["oneOf"][0]["properties"],
+                    path + [property_name]
+                )
+            elif "anyOf" in property_value:
+                example[property_name] = generate_resource_example(
+                    property_value["anyOf"][0]["properties"],
+                    path + [property_name]
+                )
+            else:
+                property_path = ".".join(path)
+                raise RuntimeError(
+                    f"{property_path}.{property_name} has no type, oneOf or anyOf properties."
+                )
+        elif property_value["type"] == "array":
             if "oneOf" in property_value["items"]:
                 example[property_name] = [
                     generate_resource_example(t["properties"], path + [property_name])
@@ -86,13 +102,14 @@ def main(arguments):
         spec = json.loads(spec_file.read())
 
     # Create default dir structure
-    for i in ["resources", "responses"]:
-        os.makedirs(os.path.join(arguments["OUT_DIR"], i), exist_ok=True)
+    base_output_dir = arguments["OUT_DIR"]
+    for i in ["resources", "responses", "requests"]:
+        os.makedirs(os.path.join(base_output_dir, i), exist_ok=True)
 
     # Generate resources
     for component_name, component_spec in spec["components"]["schemas"].items():
         with open(
-            os.path.join(arguments["OUT_DIR"], "resources", component_name + ".json"),
+            os.path.join(base_output_dir, "resources", component_name + ".json"),
             "w",
         ) as out_file:
             out_file.write(
@@ -104,10 +121,24 @@ def main(arguments):
             )
 
     # Pull out responses
-    match_expr = parse(
-        "paths.*.*.(response|(responses.*)).content.*.(example|(examples.*.value))"
+    extract_examples(
+        spec,
+        "paths.*.*.(response|(responses.*)).content.*.(example|(examples.*.value))",
+        base_output_dir,
+        "responses"
     )
 
+    # Pull out requests
+    extract_examples(
+        spec,
+        "paths.*.*.requestBody.content.*.(example|(examples.*.value))",
+        base_output_dir,
+        "requests"
+    )
+
+
+def extract_examples(spec, json_path, base_output_dir, output_dir):
+    match_expr = parse(json_path)
     for match in match_expr.find(spec):
         if "patch" in str(match.full_path):
             # PATCHes are not FHIR resources, so we should not be validating them
@@ -115,8 +146,8 @@ def main(arguments):
 
         with open(
             os.path.join(
-                arguments["OUT_DIR"],
-                "responses",
+                base_output_dir,
+                output_dir,
                 str(match.full_path).replace("/", "_") + ".json",
             ),
             "w",

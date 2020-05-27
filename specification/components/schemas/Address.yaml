@@ -1,0 +1,37 @@
+type: object
+description: An address expressed using postal conventions (as opposed to GPS or other location definition formats). This data type may be used to convey addresses for use in delivering mail as well as for visiting locations which might not be valid for mail delivery. There are a variety of postal address formats defined around the world.
+required:
+  - line
+properties:
+  use:
+    type: string
+    description: The purpose of this address.
+    enum:
+      - home
+      - work
+      - temp
+      - old 
+      - billing
+    example: home
+  type:
+    type: string
+    description: Distinguishes between physical addresses (those you can visit) and mailing addresses (e.g. PO Boxes and care-of addresses). Most addresses are both.
+    enum:
+      - postal
+      - physical
+      - both
+    example: both
+  line:
+    type: array
+    description: This component contains the house number, apartment number, street name, street direction, P.O. Box number, delivery hints, and similar address information.
+    items:
+      type: string
+      example: 1 Otley Road
+  city:
+    type: string
+    description: The name of the city, town, suburb, village or other community or delivery center.
+    example: Leeds
+  postalCode:
+    type: string
+    description: A postal code designating a region defined by the postal service.
+    example: LS6 5RU

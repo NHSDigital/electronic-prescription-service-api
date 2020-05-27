@@ -1,0 +1,9 @@
+type: object
+description: A link to a resource representing the person or set of individuals to whom the medication will be given.
+required:
+  - reference
+properties:
+  reference:
+    type: string
+    description: A reference to a location at which the other resource is found. The reference may be a relative reference, in which case it is relative to the service base URL, or an absolute URL that resolves to the location where the resource is found. The reference may be version specific or not. If the reference is not to a FHIR RESTful server, then it should be assumed to be version specific. Internal fragment references (start with '#') refer to contained resources.
+    example: C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
