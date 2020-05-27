@@ -1,4 +1,8 @@
 #!/bin/sh
+
+set -eu
+
 make lint
 make validate
-cd sandbox && npm run lint
+cd sandbox
+npm run lint

@@ -14,7 +14,7 @@ properties:
   id:
     type: string
     description: Logical id of this artifact.
-    example: 001
+    example: C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
   contentType:
     type: string
     description: MimeType of the binary content.

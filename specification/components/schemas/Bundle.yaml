@@ -55,3 +55,4 @@ properties:
             - $ref: "Practitioner.yaml"
             - $ref: "Encounter.yaml"
             - $ref: "Organization.yaml"
+            - $ref: "Provenance.yaml"

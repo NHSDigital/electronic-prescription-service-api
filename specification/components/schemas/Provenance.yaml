@@ -1,0 +1,44 @@
+type: object
+description: Tracks information about the activity that created, revised, deleted, or signed a version of a resource, describing the entities and agents involved.
+required:
+  - resourceType
+  - id
+  - target
+  - recorded
+  - agent
+  - signature
+properties:
+  resourceType:
+    type: string
+    description: FHIR Resource type
+    enum:
+      - Provenance
+    example: Provenance
+  id:
+    type: string
+    description: Logical id of this artifact.
+    example: C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
+  target:
+    type: array
+    description: The Reference(s) that were generated or updated by the activity described in this resource.
+    items:
+      $ref: "Reference.yaml"
+  recorded:
+    type: string
+    description: The instant of time at which the activity was recorded.
+    example: 2020-04-21T10:45:30+00:00
+  agent:
+    type: array
+    description: An actor taking a role in an activity for which it can be assigned some degree of responsibility for the activity taking place.
+    items:
+      type: object
+      required:
+        - who
+      properties:
+        who:
+          $ref: "Practitioner.yaml"
+  signature:
+    type: array
+    description: A digital signature on the target Reference(s). The signer should match a Provenance.agent.
+    items:
+      $ref: "Signature.yaml"
