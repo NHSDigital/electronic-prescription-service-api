@@ -26,6 +26,12 @@ info:
 
     Currently, this API can only be accessed by healthcare professionals, authenticated with an NHS smartcard or equivalent.
 
+    ## Using this API
+    Legacy systems require prescription signatures in a specific format. To generate the required signature elements:
+    * POST a prescription in FHIR format to the /Prescription endpoint
+    * Sign and place the response in a provenance resource in the original FHIR prescription
+    * PUT request to the /Prescription endpoint with the FHIR prescription in the body
+
     ## Related APIs
     The following APIs also give access to the Electronic Prescription Service:
     - [Electronic Prescription Service (HL7 V3) API](https://data.developer.nhs.uk/dms/mim/4.2.00/Index.htm) - use this if you want to use functions that are not yet available on the FHIR API.
