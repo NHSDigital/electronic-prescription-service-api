@@ -1,6 +1,6 @@
 # electronic-prescription-service-api
 
-![Build](https://github.com/NHSDigital/electronic-prescription-service-api/workflows/Build/badge.svg?branch=master)
+[![Build Status](https://dev.azure.com/NHSD-APIM/API%20Platform/_apis/build/status/NHSDigital.electronic-prescription-service-api?branchName=master)](https://dev.azure.com/NHSD-APIM/API%20Platform/_build/latest?definitionId=7&branchName=master)
 
 This is a RESTful HL7® FHIR® API specification for the *Electronic Prescription Service API*.
 

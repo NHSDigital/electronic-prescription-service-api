@@ -84,9 +84,9 @@ info:
     * `POST /Prescription` - convert a FHIR prescription into the HL7 V3 signature elements to be signed by the prescriber
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
-    description: Sandbox environment.
+    description: 'Sandbox environment. (not yet available: see "API status and roadmap").'
   - url: 'https://int.api.service.nhs.uk/electronic-prescriptions'
-    description: Integration test environment.
+    description: 'Integration test environment. (not yet available: see "API status and roadmap").'
   - url: 'https://api.service.nhs.uk/electronic-prescriptions'
     description: 'Production environment (not yet available: see "API status and roadmap").'
 tags:
