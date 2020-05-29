@@ -1,7 +1,5 @@
-const Boom = require('boom')
-const examples = require('../../services/examples')
-//const fhirHelper = require('../../helpers/fhir-helper')
 const requestValidator = require("../../validators/request-validator")
+const translator = require("../../services/translation-service")
 
 module.exports = [
   /*
@@ -9,16 +7,10 @@ module.exports = [
   */
   {
     method: 'POST',
-    path: '/Prescription',
+    path: '/Convert-Signature-fragments',
     handler: (request, h) => {
       requestValidator.verifyPrescriptionBundle(request.payload)
-      if (request.payload.id === examples.prescriptionPostSuccessRequest.id) {
-        //TODO add meta to the response schema and use fhirHelper
-        //return fhirHelper.createFhirResponse(h, examples.prescriptionPostSuccessResponse)
-        return h.response(examples.prescriptionPostSuccessResponse)
-      } else {
-        throw Boom.badRequest("Unsupported prescription id", {operationOutcomeCode: "value", apiErrorCode: "unsupportedPrescriptionId"})
-      }
+      return h.response(translator.fhirToHl7v3(request.payload))
     }
   }
 ]

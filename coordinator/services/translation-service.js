@@ -7,7 +7,6 @@ function fhirToHl7v3(fhirMessage) {
 }
 
 function produceIntermediateJson(fhirMessage){
-  const fhirObject = JSON.parse(fhirMessage);
   const parentPrescriptionAttributes = {"xmlns":"urn:hl7-org:v3",
     "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
     "classCode": "INFO",
@@ -15,7 +14,7 @@ function produceIntermediateJson(fhirMessage){
     "xsi:schemaLocation": "urn:hl7-org:v3 ..\\Schemas\\PORX_MT132004UK31.xsd"};
   const returnObject = {"ParentPrescription": {"_attributes": parentPrescriptionAttributes}}
 
-  returnObject.ParentPrescription["id"] = {"_attributes": {"root": fhirObject.id}}
+  returnObject.ParentPrescription["id"] = {"_attributes": {"root": fhirMessage.id}}
 
   return returnObject
 }

@@ -12,6 +12,10 @@ function getMatchingEntries(bundle, resourceType) {
   return bundle["entry"].filter(entry => entry["resourceType"] === resourceType)
 }
 
+function verifyHasId(bundle) {
+  return bundle && bundle["id"]
+}
+
 function verifyBundleContainsAtLeast(bundle, number, resourceType) {
   const matchingEntries = getMatchingEntries(bundle, resourceType)
   if (matchingEntries.length < number) {
@@ -47,6 +51,13 @@ function verifyPrescriptionBundle(bundle) {
     )
   }
 
+  if (!verifyHasId(bundle)) {
+    throw Boom.badRequest(
+      "ResourceType Bundle must contain 'id' field",
+      {operationOutcomeCode: "value", apiErrorCode: "MISSING_FIELD"}
+    )
+  }
+
   verifyBundleContainsAtLeast(bundle, 1, "MedicationRequest")
   verifyBundleContainsExactly(bundle, 1, "Patient")
   verifyBundleContainsAtLeast(bundle, 1, "Practitioner")
@@ -69,8 +80,15 @@ function verifyPrescriptionAndSignatureBundle(bundle) {
     )
   }
 
+  if (!verifyHasId(bundle)) {
+    throw Boom.badRequest(
+      "ResourceType Bundle must contain 'id' field",
+      {operationOutcomeCode: "value", apiErrorCode: "MISSING_FIELD"}
+    )
+  }
+
   verifyBundleContainsExactly(bundle, 1, "Provenance")
-  verifyBundleContainsAtLeast(bundle, git add1, "Practitioner")
+  verifyBundleContainsAtLeast(bundle, 1, "Practitioner")
   verifyBundleContainsExactly(bundle, 1, "Bundle")
 
   const prescriptionBundle = getMatchingEntries(bundle, "Bundle")[0]
