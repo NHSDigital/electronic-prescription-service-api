@@ -7,10 +7,10 @@ module.exports = [
   */
   {
     method: 'POST',
-    path: '/Convert-Signature-fragments',
+    path: '/ConvertFullMessage',
     handler: (request, h) => {
-      requestValidator.verifyPrescriptionBundle(request.payload)
-      return h.response(translator.fhirToHl7v3(request.payload))
+      //requestValidator.verifyPrescriptionBundle(request.payload)
+      return h.response(translator.convertFhirMessageToHl7V3ParentPrescription(request.payload))
     }
   }
 ]
