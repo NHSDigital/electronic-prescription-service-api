@@ -32,14 +32,10 @@ clean:
 	rm -rf build
 	rm -rf dist
 
-publish: clean
-	mkdir -p build
-	npm run publish 2> /dev/null
-
 serve: update-examples
 	npm run serve
 
-generate-examples: publish clean
+generate-examples: build-spec clean
 	mkdir -p build/examples
 	poetry run python scripts/generate_examples.py build/electronic-prescriptions.json build/examples
 
@@ -48,17 +44,11 @@ update-examples: generate-examples
 	jq -rM . <build/examples/responses/paths._Prescription.post.responses.200.content.application_fhir+json.examples.example.value.json >specification/components/examples/PrescriptionPostSuccessResponse.json
 	jq -rM . <build/examples/requests/paths._Prescription.put.requestBody.content.application_fhir+json.examples.example.value.json >specification/components/examples/PrescriptionPutSuccessRequest.json
 	jq -rM . <build/examples/responses/paths._Prescription.put.responses.200.content.application_fhir+json.examples.example.value.json >specification/components/examples/PrescriptionPutSuccessResponse.json
-	make publish
+	make build-spec
 
 check-licenses:
 	npm run check-licenses
 	scripts/check_python_licenses.sh
-
-deploy-proxy: update-examples
-	scripts/deploy_proxy.sh
-
-deploy-spec: update-examples
-	scripts/deploy_spec.sh
 
 format:
 	poetry run black **/*.py
@@ -66,10 +56,14 @@ format:
 sandbox: update-examples
 	cd sandbox && npm run start
 
+build-spec: clean
+	mkdir -p build
+	npm run publish 2> /dev/null
+
 build-proxy:
 	scripts/build_proxy.sh
 
-release: clean publish build-proxy
+release: clean build-spec build-proxy
 	mkdir -p dist
 	tar -zcvf dist/package.tar.gz build
 	cp -r terraform dist

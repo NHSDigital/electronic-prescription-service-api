@@ -70,12 +70,6 @@ jobs:
       - bash: "make validate"
         displayName: Validate FHIR
 
-      - bash: "make publish"
-        displayName: Compile Spec
-
-      - bash: 'echo "##vso[task.setvariable variable=SPEC_VERSION]$(poetry run python scripts/calculate_version.py)"'
-        displayName: Set SPEC_VERSION
-
       - bash: "make test"
         displayName: Run Tests
 
@@ -87,6 +81,9 @@ jobs:
 
       - bash: "make release"
         displayName: Build Release Package
+
+      - bash: 'echo "##vso[task.setvariable variable=SPEC_VERSION]$(poetry run python scripts/calculate_version.py)"'
+        displayName: Set SPEC_VERSION
 
       - publish: dist/
         artifact: electronic-prescription-service-$(SPEC_VERSION)+$(Build.BuildNumber)

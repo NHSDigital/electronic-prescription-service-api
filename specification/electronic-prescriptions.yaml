@@ -169,4 +169,3 @@ components:
       $ref: components/schemas/Binary.yaml
     Provenance:
       $ref: components/schemas/Provenance.yaml
-  securitySchemes: {}
