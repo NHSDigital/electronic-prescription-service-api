@@ -9,7 +9,9 @@ function verifyBundleContainsEntries(bundle) {
 }
 
 function getMatchingEntries(bundle, resourceType) {
-  return bundle["entry"].filter(entry => entry["resourceType"] === resourceType)
+  return bundle["entry"]
+    .map(entry => entry.resource)
+    .filter(resource => resource["resourceType"] === resourceType)
 }
 
 function verifyHasId(bundle) {
@@ -60,6 +62,7 @@ function verifyPrescriptionBundle(bundle) {
 
   verifyBundleContainsAtLeast(bundle, 1, "MedicationRequest")
   verifyBundleContainsExactly(bundle, 1, "Patient")
+  verifyBundleContainsAtLeast(bundle, 1, "PractitionerRole")
   verifyBundleContainsAtLeast(bundle, 1, "Practitioner")
   verifyBundleContainsExactly(bundle, 1, "Encounter")
   verifyBundleContainsExactly(bundle, 2, "Organization")

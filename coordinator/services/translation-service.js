@@ -275,6 +275,12 @@ function convertFhirMessageToHl7V3ParentPrescription(fhirMessage) {
   return XmlJs.js2xml(root, options)
 }
 
+function convertHl7V3MessageToHl7V3SignatureFragments(hl7V3Message) {
+  //TODO - implement
+  return hl7V3Message
+}
+
 module.exports = {
-  convertFhirMessageToHl7V3ParentPrescription: convertFhirMessageToHl7V3ParentPrescription
+  convertFhirMessageToHl7V3ParentPrescription: convertFhirMessageToHl7V3ParentPrescription,
+  convertHl7V3MessageToHl7V3SignatureFragments: convertHl7V3MessageToHl7V3SignatureFragments
 }

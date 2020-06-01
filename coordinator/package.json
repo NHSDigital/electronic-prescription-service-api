@@ -1,7 +1,7 @@
 {
-    "name": "electronic-prescription-service-api-sandbox",
+    "name": "electronic-prescription-service-api-coordinator",
     "version": "0.0.1",
-    "description": "Electronic Prescription Service API Sandbox Server",
+    "description": "Electronic Prescription Service API Coordinator",
     "main": "app.js",
     "scripts": {
         "lint": "find . -type f -name '*.js' ! -name '.eslintrc.js' | grep -v 'node_modules/' | xargs eslint",
