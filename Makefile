@@ -33,6 +33,7 @@ clean:
 	rm -rf dist
 
 serve: update-examples
+	scripts/set_spec_internal.sh
 	npm run serve
 
 generate-examples: build-spec clean
@@ -68,3 +69,4 @@ release: clean build-spec build-proxy
 	tar -zcvf dist/package.tar.gz build
 	cp -r terraform dist
 	cp -r build/. dist
+	cp scripts/set_spec_internal.sh dist
