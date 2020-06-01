@@ -1,34 +1,9 @@
 const XmlJs = require("xml-js")
 
 const codes = require("./hl7-v3-datatypes-codes")
-const Code = codes.Code
-const Identifier = codes.Identifier
-
 const core = require("./hl7-v3-datatypes-core")
-const Address = core.Address
-const Bool = core.Bool
-const Name = core.Name
-const QuantityInAlternativeUnits = core.QuantityInAlternativeUnits
-const Telecom = core.Telecom
-const Timestamp = core.Timestamp
-
 const peoplePlaces = require("./hl7-v3-people-places")
-const AgentPerson = peoplePlaces.AgentPerson
-const HealthCareProvider = peoplePlaces.HealthCareProvider
-const Organization = peoplePlaces.Organization
-const Patient = peoplePlaces.Patient
-const PatientCareProvision = peoplePlaces.PatientCareProvision
-const Person = peoplePlaces.Person
-const ProviderPatient = peoplePlaces.ProviderPatient
-
 const prescriptions = require("./hl7-v3-prescriptions")
-const Author = prescriptions.Author
-const LineItem = prescriptions.LineItem
-const LineItemQuantity = prescriptions.LineItemQuantity
-const ParentPrescription = prescriptions.ParentPrescription
-const Prescription = prescriptions.Prescription
-const PrescriptionAnnotation = prescriptions.PrescriptionAnnotation
-const ResponsibleParty = prescriptions.ResponsibleParty
 
 function getResourcesOfType(fhirBundle, resourceType) {
   return fhirBundle.entry
@@ -45,12 +20,12 @@ function getIdentifierValueForSystem(identifier, system) {
 }
 
 function convertBundleToParentPrescription(fhirBundle) {
-  const hl7V3ParentPrescription = new ParentPrescription()
+  const hl7V3ParentPrescription = new prescriptions.ParentPrescription()
 
-  hl7V3ParentPrescription.id = new Identifier.GlobalIdentifier(fhirBundle.id)
+  hl7V3ParentPrescription.id = new codes.Identifier.GlobalIdentifier(fhirBundle.id)
   const fhirMedicationRequests = getResourcesOfType(fhirBundle, "MedicationRequest")
   const fhirFirstMedicationRequest = fhirMedicationRequests[0]
-  hl7V3ParentPrescription.effectiveTime = new Timestamp(fhirFirstMedicationRequest.authoredOn)
+  hl7V3ParentPrescription.effectiveTime = new core.Timestamp(fhirFirstMedicationRequest.authoredOn)
 
   const fhirPatient = getResourceForFullUrl(fhirBundle, fhirFirstMedicationRequest.subject.reference)
   const hl7V3Patient = convertPatient(fhirBundle, fhirPatient)
@@ -63,23 +38,23 @@ function convertBundleToParentPrescription(fhirBundle) {
 }
 
 function convertPatient(fhirBundle, fhirPatient) {
-  const hl7V3Patient = new Patient()
+  const hl7V3Patient = new peoplePlaces.Patient()
   const nhsNumber = getIdentifierValueForSystem(fhirPatient.identifier, "https://fhir.nhs.uk/Id/nhs-number")
-  hl7V3Patient.id = new Identifier.NhsNumber(nhsNumber)
+  hl7V3Patient.id = new codes.Identifier.NhsNumber(nhsNumber)
   hl7V3Patient.addr = fhirPatient.address.map(convertAddress)
 
-  const hl7V3PatientPerson = new Person()
+  const hl7V3PatientPerson = new peoplePlaces.Person()
   hl7V3PatientPerson.name = fhirPatient.name.map(convertName)
   hl7V3PatientPerson.administrativeGenderCode = convertGender(fhirPatient.gender)
-  hl7V3PatientPerson.birthTime = new Timestamp(fhirPatient.birthDate)
+  hl7V3PatientPerson.birthTime = new core.Timestamp(fhirPatient.birthDate)
 
-  const hl7V3ProviderPatient = new ProviderPatient()
-  const hl7V3HealthCareProvider = new HealthCareProvider()
-  const hl7V3PatientCareProvision = new PatientCareProvision.PrimaryCare()
+  const hl7V3ProviderPatient = new peoplePlaces.ProviderPatient()
+  const hl7V3HealthCareProvider = new peoplePlaces.HealthCareProvider()
+  const hl7V3PatientCareProvision = new peoplePlaces.PatientCareProvision.PrimaryCare()
   const fhirPractitionerRole = getResourceForFullUrl(fhirBundle, fhirPatient.generalPractitioner.reference)
   const fhirPractitioner = getResourceForFullUrl(fhirBundle, fhirPractitionerRole.practitioner.reference)
   const sdsUniqueId = getIdentifierValueForSystem(fhirPractitioner.identifier, "https://fhir.nhs.uk/Id/sds-user-id")
-  hl7V3HealthCareProvider.id = new Identifier.SdsUniqueIdentifier(sdsUniqueId)
+  hl7V3HealthCareProvider.id = new codes.Identifier.SdsUniqueIdentifier(sdsUniqueId)
   hl7V3PatientCareProvision.setHealthCareProvider(hl7V3HealthCareProvider)
   hl7V3ProviderPatient.setSubjectOf(hl7V3PatientCareProvision)
   hl7V3PatientPerson.playedProviderPatient = hl7V3ProviderPatient
@@ -90,48 +65,48 @@ function convertPatient(fhirBundle, fhirPatient) {
 }
 
 function convertBundleToPrescription(fhirBundle) {
-  let hl7V3Prescription = new Prescription()
+  let hl7V3Prescription = new prescriptions.Prescription()
 
   const fhirMedicationRequests = getResourcesOfType(fhirBundle, "MedicationRequest")
   const fhirFirstMedicationRequest = fhirMedicationRequests[0]
   const prescriptionId = getIdentifierValueForSystem(fhirFirstMedicationRequest.groupIdentifier, "urn:uuid")
   const prescriptionShortFormId = getIdentifierValueForSystem(fhirFirstMedicationRequest.groupIdentifier, "urn:oid:2.16.840.1.113883.2.1.3.2.4.18.8")
   hl7V3Prescription.id = [
-    new Identifier.GlobalIdentifier(prescriptionId),
-    new Identifier.ShortFormPrescriptionIdentifier(prescriptionShortFormId)
+    new codes.Identifier.GlobalIdentifier(prescriptionId),
+    new codes.Identifier.ShortFormPrescriptionIdentifier(prescriptionShortFormId)
   ]
 
-  const hl7V3Author = new Author()
-  hl7V3Author.time = new Timestamp(fhirFirstMedicationRequest.authoredOn)
+  const hl7V3Author = new prescriptions.Author()
+  hl7V3Author.time = new core.Timestamp(fhirFirstMedicationRequest.authoredOn)
   hl7V3Author.signatureText = {}
   const fhirAuthorPractitionerRole = getResourceForFullUrl(fhirBundle, fhirFirstMedicationRequest.requester.reference)
   hl7V3Author.AgentPerson = convertPractitionerRole(fhirBundle, fhirAuthorPractitionerRole)
   hl7V3Prescription.author = hl7V3Author
 
-  const responsibleParty = new ResponsibleParty()
+  const responsibleParty = new prescriptions.ResponsibleParty()
   const fhirPatient = getResourceForFullUrl(fhirBundle, fhirFirstMedicationRequest.subject.reference)
   const fhirResponsiblePartyPractitionerRole = getResourceForFullUrl(fhirBundle, fhirPatient.generalPractitioner.reference)
   responsibleParty.AgentPerson = convertPractitionerRole(fhirBundle, fhirResponsiblePartyPractitionerRole)
   hl7V3Prescription.responsibleParty = responsibleParty
 
   //TODO - implement
-  const prescriptionTreatmentType = new PrescriptionAnnotation.PrescriptionTreatmentType()
-  prescriptionTreatmentType.value = new Code.PrescriptionTreatmentTypeCode("0001")
+  const prescriptionTreatmentType = new prescriptions.PrescriptionAnnotation.PrescriptionTreatmentType()
+  prescriptionTreatmentType.value = new codes.Code.PrescriptionTreatmentTypeCode("0001")
   hl7V3Prescription.setPrescriptionTreatmentType(prescriptionTreatmentType)
 
   //TODO - implement
-  const dispensingSitePreference = new PrescriptionAnnotation.DispensingSitePreference()
-  dispensingSitePreference.value = new Code.DispensingSitePreferenceCode("0004")
+  const dispensingSitePreference = new prescriptions.PrescriptionAnnotation.DispensingSitePreference()
+  dispensingSitePreference.value = new codes.Code.DispensingSitePreferenceCode("0004")
   hl7V3Prescription.setDispensingSitePreference(dispensingSitePreference)
 
   //TODO - implement
-  const tokenIssued = new PrescriptionAnnotation.TokenIssued()
-  tokenIssued.value = Bool.TRUE
+  const tokenIssued = new prescriptions.PrescriptionAnnotation.TokenIssued()
+  tokenIssued.value = core.Bool.TRUE
   hl7V3Prescription.setTokenIssued(tokenIssued)
 
-  const prescriptionType = new PrescriptionAnnotation.PrescriptionType()
+  const prescriptionType = new prescriptions.PrescriptionAnnotation.PrescriptionType()
   const fhirMedicationRequestCategoryCoding = fhirFirstMedicationRequest.category.coding
-  prescriptionType.value = new Code.PrescriptionTypeCode(fhirMedicationRequestCategoryCoding.code)
+  prescriptionType.value = new codes.Code.PrescriptionTypeCode(fhirMedicationRequestCategoryCoding.code)
   hl7V3Prescription.setPrescriptionType(prescriptionType)
 
   fhirMedicationRequests.map(convertMedicationRequestToLineItem)
@@ -141,20 +116,20 @@ function convertBundleToPrescription(fhirBundle) {
 }
 
 function convertMedicationRequestToLineItem(fhirMedicationRequest) {
-  let hl7V3LineItem = new LineItem()
+  let hl7V3LineItem = new prescriptions.LineItem()
 
   const fhirMedicationCode = fhirMedicationRequest.medicationCodeableConcept.coding
-  const hl7V3MedicationCode = new Code.SnomedCode(fhirMedicationCode.code, fhirMedicationCode.display)
+  const hl7V3MedicationCode = new codes.Code.SnomedCode(fhirMedicationCode.code, fhirMedicationCode.display)
   hl7V3LineItem.setProductCode(hl7V3MedicationCode)
 
-  const hl7V3DosageInstructions = new PrescriptionAnnotation.DosageInstructions()
+  const hl7V3DosageInstructions = new prescriptions.PrescriptionAnnotation.DosageInstructions()
   hl7V3DosageInstructions.value = fhirMedicationRequest.dosageInstruction.text
   hl7V3LineItem.setDosageInstructions(hl7V3DosageInstructions)
 
-  const hl7V3Quantity = new LineItemQuantity()
+  const hl7V3Quantity = new prescriptions.LineItemQuantity()
   const fhirQuantity = fhirMedicationRequest.dispenseRequest.quantity
-  const hl7V3UnitCode = new Code.SnomedCode(fhirQuantity.code, fhirQuantity.unit)
-  hl7V3Quantity.quantity = new QuantityInAlternativeUnits(fhirQuantity.value, fhirQuantity.value, hl7V3UnitCode)
+  const hl7V3UnitCode = new codes.Code.SnomedCode(fhirQuantity.code, fhirQuantity.unit)
+  hl7V3Quantity.quantity = new core.QuantityInAlternativeUnits(fhirQuantity.value, fhirQuantity.value, hl7V3UnitCode)
   hl7V3LineItem.setLineItemQuantity(hl7V3Quantity)
 
   return hl7V3LineItem
@@ -169,19 +144,19 @@ function convertPractitionerRole(fhirBundle, fhirPractitionerRole) {
 }
 
 function convertPractitioner(fhirBundle, fhirPractitioner) {
-  let hl7V3AgentPerson = new AgentPerson()
+  let hl7V3AgentPerson = new peoplePlaces.AgentPerson()
 
   const sdsRoleProfileIdentifier = getIdentifierValueForSystem(fhirPractitioner.identifier, "https://fhir.nhs.uk/Id/sds-role-profile-id")
-  hl7V3AgentPerson.id = new Identifier.SdsRoleProfileIdentifier(sdsRoleProfileIdentifier)
+  hl7V3AgentPerson.id = new codes.Identifier.SdsRoleProfileIdentifier(sdsRoleProfileIdentifier)
   const sdsJobRoleCode = getIdentifierValueForSystem(fhirPractitioner.identifier, "https://fhir.nhs.uk/Id/sds-job-role-id")
-  hl7V3AgentPerson.code = new Code.SdsJobRoleCode(sdsJobRoleCode)
+  hl7V3AgentPerson.code = new codes.Code.SdsJobRoleCode(sdsJobRoleCode)
   if (fhirPractitioner.telecom) {
     hl7V3AgentPerson.telecom = fhirPractitioner.telecom.map(convertTelecom)
   }
 
-  const hl7V3AgentPersonPerson = new Person()
+  const hl7V3AgentPersonPerson = new peoplePlaces.Person()
   const sdsUniqueIdentifier = getIdentifierValueForSystem(fhirPractitioner.identifier, "https://fhir.nhs.uk/Id/sds-user-id")
-  hl7V3AgentPersonPerson.id = new Identifier.SdsUniqueIdentifier(sdsUniqueIdentifier)
+  hl7V3AgentPersonPerson.id = new codes.Identifier.SdsUniqueIdentifier(sdsUniqueIdentifier)
   if (fhirPractitioner.name) {
     hl7V3AgentPersonPerson.name = fhirPractitioner.name.map(convertName)
   }
@@ -192,14 +167,14 @@ function convertPractitioner(fhirBundle, fhirPractitioner) {
 }
 
 function convertOrganization(fhirBundle, fhirOrganization) {
-  const hl7V3Organization = new Organization()
+  const hl7V3Organization = new peoplePlaces.Organization()
 
   const organizationSdsId = getIdentifierValueForSystem(fhirOrganization.identifier, "https://fhir.nhs.uk/Id/ods-organization-code")
-  hl7V3Organization.id = new Identifier.SdsOrganizationIdentifier(organizationSdsId)
+  hl7V3Organization.id = new codes.Identifier.SdsOrganizationIdentifier(organizationSdsId)
   const organizationTypeCode = fhirOrganization.type
     .flatMap(type => type.coding)
     .filter(coding => coding.system === "urn:oid:2.16.840.1.113883.2.1.3.2.4.17.94")[0].code
-  hl7V3Organization.code = new Code.OrganizationTypeCode(organizationTypeCode)
+  hl7V3Organization.code = new codes.Code.OrganizationTypeCode(organizationTypeCode)
   hl7V3Organization.name = fhirOrganization.name
   if (fhirOrganization.telecom) {
     hl7V3Organization.telecom = fhirOrganization.telecom.map(convertTelecom)
@@ -218,24 +193,24 @@ function convertOrganization(fhirBundle, fhirOrganization) {
 }
 
 function convertName(fhirHumanName) {
-  return new Name(fhirHumanName.family, fhirHumanName.given, fhirHumanName.prefix, fhirHumanName.suffix)
+  return new core.Name(fhirHumanName.family, fhirHumanName.given, fhirHumanName.prefix, fhirHumanName.suffix)
 }
 
 function convertTelecom(fhirTelecom) {
   const hl7V3TelecomUse = convertTelecomUse(fhirTelecom.use)
-  return new Telecom(hl7V3TelecomUse, fhirTelecom.value)
+  return new core.Telecom(hl7V3TelecomUse, fhirTelecom.value)
 }
 
 function convertTelecomUse(fhirTelecomUse) {
   switch (fhirTelecomUse) {
     case "home":
-      return Telecom.USE_PERMANENT_HOME
+      return core.Telecom.USE_PERMANENT_HOME
     case "work":
-      return Telecom.USE_WORKPLACE
+      return core.Telecom.USE_WORKPLACE
     case "temp":
-      return Telecom.USE_TEMPORARY
+      return core.Telecom.USE_TEMPORARY
     case "mobile":
-      return Telecom.USE_MOBILE
+      return core.Telecom.USE_MOBILE
     default:
       //TODO use more specific error class
       throw Error("Unhandled telecom use " + fhirTelecomUse)
@@ -257,20 +232,20 @@ function convertAddress(fhirAddress) {
   if (fhirAddress.state) {
     hl7V3AddressLines = hl7V3AddressLines.concat(fhirAddress.state)
   }
-  return new Address(hl7V3AddressUse, hl7V3AddressLines, fhirAddress.postalCode)
+  return new core.Address(hl7V3AddressUse, hl7V3AddressLines, fhirAddress.postalCode)
 }
 
 function convertAddressUse(fhirAddressUse, fhirAddressType) {
   if (fhirAddressType === "postal") {
-    return Address.USE_POSTAL
+    return core.Address.USE_POSTAL
   }
   switch (fhirAddressUse) {
     case "home":
-      return Address.USE_HOME
+      return core.Address.USE_HOME
     case "work":
-      return Address.USE_WORK
+      return core.Address.USE_WORK
     case "temp":
-      return Address.USE_TEMPORARY
+      return core.Address.USE_TEMPORARY
     default:
       //TODO use more specific error class
       throw Error("Unhandled address use " + fhirAddressUse)
@@ -280,13 +255,13 @@ function convertAddressUse(fhirAddressUse, fhirAddressType) {
 function convertGender(fhirGender) {
   switch (fhirGender) {
     case "male":
-      return Code.SexCode.MALE
+      return codes.Code.SexCode.MALE
     case "female":
-      return Code.SexCode.FEMALE
+      return codes.Code.SexCode.FEMALE
     case "other":
-      return Code.SexCode.INDETERMINATE
+      return codes.Code.SexCode.INDETERMINATE
     case "unknown":
-      return Code.SexCode.UNKNOWN
+      return codes.Code.SexCode.UNKNOWN
     default:
       //TODO use more specific error class
       throw new Error("Unhandled gender " + fhirGender)

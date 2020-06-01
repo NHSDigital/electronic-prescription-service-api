@@ -6,6 +6,9 @@ const codes = require('./hl7-v3-datatypes-codes')
 const Code = codes.Code
 const Identifier = codes.Identifier
 
+/**
+ * A participation used to provide a link to the prescriber who authored the prescription.
+ */
 function Author() {
   this._attributes = {
     typeCode: "AUT",
@@ -13,6 +16,9 @@ function Author() {
   }
 }
 
+/**
+ * Medication line item in the prescription.
+ */
 function LineItem() {
   this._attributes = {
     classCode: "SBADM",
@@ -74,6 +80,13 @@ function LineItemQuantity() {
   this.code = new Code.SnomedCode("373784005", "dispensing medication")
 }
 
+/**
+ * This is the parent prescription.
+ *
+ * Each item on a prescription has an administration part and a supply part.
+ * In each case some of the information is common to each item while other information is different.
+ * This act represents the common parts of the administration part of each item on a prescription.
+ */
 function ParentPrescription() {
   this._attributes = {
     xmlns: "urn:hl7-org:v3",
@@ -104,6 +117,9 @@ ParentPrescription.prototype.setPrescription = function (prescription) {
   }
 }
 
+/**
+ * This act represents the distinct parts of the administration part for a single item on a Prescription.
+ */
 function Prescription() {
   this._attributes = {
     classCode: "SBADM",
@@ -199,6 +215,9 @@ PrescriptionAnnotation.DosageInstructions = function () {
   return new PrescriptionAnnotation("DI")
 }
 
+/**
+ * A participation used to provide a link to the healthcare professional who has direct responsibility for the patient.
+ */
 function ResponsibleParty() {
   this._attributes = {
     typeCode: "RESP",
