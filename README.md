@@ -23,6 +23,7 @@ The contents of this repository are protected by Crown Copyright (C).
 
 ### Requirements
 * make
+* jq
 * nodejs + npm/yarn
 * [poetry](https://github.com/python-poetry/poetry)
 
@@ -31,13 +32,8 @@ The contents of this repository are protected by Crown Copyright (C).
 $ make install
 ```
 
-#### Updating hooks
-You can install some pre-commit hooks to ensure you can't commit invalid spec changes by accident. These are also run
-in CI, but it's useful to run them locally too.
-
-```
-$ make install-hooks
-```
+#### Pre-commit hooks
+Some pre-commit hooks are installed as part of the install above to ensure you can't commit invalid spec changes by accident. A combination of these checks are also run in CI.
 
 ### Environment Variables
 Various scripts and commands rely on environment variables being set. These are documented with the commands.
@@ -47,7 +43,7 @@ Various scripts and commands rely on environment variables being set. These are 
 ### Make commands
 There are `make` commands that alias some of this functionality:
  * `lint` -- Lints the spec and code
- * `publish` -- Outputs the specification as a **single file** into the `build/` directory
+ * `build-spec` -- Outputs the specification as a **single file** into the `build/` directory
  * `serve` -- Serves a preview of the specification in human-readable format
  * `generate-examples` -- generate example objects from the specification
  * `validate` -- validate generated examples against FHIR R4
@@ -61,7 +57,8 @@ Set the following environment variables for local testing:
  * `API_TEST_ENV_FILE_PATH`: `tests/e2e/environments/local.postman_environment.json`
  * `API_TEST_URL`: `localhost:9000`
 
-In order for local tests to work, you must have the sandbox server running locally.
+In order for local tests to work, you must have the sandbox server running locally and have symlinked the mock files. Under sandbox/mocks there are some json files with the paths to symlink to as their content. For each of these symlink to these files, removing the original.
+
 ```
 make sandbox
 ```
@@ -113,32 +110,6 @@ Procedure:
  * Import the collection into Postman
  * Update requests and export the collection back into the repo
  * Re-generate the [Run in Postman button](https://learning.getpostman.com/docs/postman-for-publishers/run-in-postman/creating-run-button/) Markdown button link and update the OAS
-
-## Deployment
-
-### Specification
-Update the API Specification and derived documentation in the Portal.
-
-`make deploy-spec` with environment variables:
-
-* `APIGEE_USERNAME`
-* `APIGEE_PASSWORD`
-* `APIGEE_SPEC_ID`
-* `APIGEE_PORTAL_API_ID`
-
-### API Proxy & Sandbox Service
-Redeploy the API Proxy and hosted Sandbox service.
-
-`make deploy-proxy` with environment variables:
-
-* `APIGEE_USERNAME`
-* `APIGEE_PASSWORD`
-* `APIGEE_ORGANIZATION`
-* `APIGEE_ENVIRONMENTS` - Comma-separated list of environments to deploy to (e.g. `test,prod`)
-* `APIGEE_APIPROXY` - Name of the API Proxy for deployment
-* `APIGEE_BASE_PATH` - The proxy's base path (must be unique)
-
-:bulb: Specify your own API Proxy (with base path) for use during development.
 
 #### Platform setup
 
