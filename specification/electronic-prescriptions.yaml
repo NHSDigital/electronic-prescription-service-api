@@ -15,16 +15,26 @@ info:
 
     You can:
     * prepare a prescription for signing
-    * sign a prescription
+    * create a prescription
 
     You cannot currently use this API to:
-    * create a prescription
     * cancel a prescription
     * check the status of a prescription
     * release a prescription for dispensing
     * claim for a dispensed prescription
 
     Currently, this API can only be accessed by healthcare professionals, authenticated with an NHS smartcard or equivalent.
+
+    ## Using this API
+    Electronic prescription messages are digitally signed to protect against tampering and to prevent repudiation.
+    While the messages themselves are FHIR-based, for reasons of backwards compatibility, the signatures must be
+    represented in HL7 V3 format. To make this easier, you can POST a prescription to the /Prescription endpoint to
+    receive exactly the HL7 V3 fragments which need to be signed to conform to the specification.
+    
+    The flow to create a prescription is then:
+    * POST a prescription in FHIR format to the /Prescription endpoint
+    * Sign the response and put the result in a Provenance resource in the original FHIR prescription
+    * PUT the signed prescription in FHIR format to the /Prescription endpoint
 
     ## Related APIs
     The following APIs also give access to the Electronic Prescription Service:
@@ -81,7 +91,8 @@ info:
 
     ## Endpoints
     To see details for specific endpoints, select from the list on the left hand side of the page:
-    * `POST /Prescription` - convert a FHIR prescription into the HL7 V3 signature elements to be signed by the prescriber
+    * `POST /Prescription` - convert a FHIR prescription into the HL7 V3 signature fragments to be signed by the prescriber
+    * `PUT /Prescription` - send a signed FHIR prescription to Spine
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
     description: 'Sandbox environment. (not yet available: see "API status and roadmap").'
@@ -95,7 +106,7 @@ tags:
 paths:
   /Prescription:
     post:
-      summary: Convert prescription to signature elements
+      summary: Convert prescription to signature fragments
       operationId: post-prescription
       responses:
         '200':
@@ -119,11 +130,11 @@ paths:
                 value:
                   $ref: components/examples/PrescriptionPostSuccessRequest.yaml
         description: ''
-      description: Convert a prescription in FHIR format into the canonicalised HL7 V3 signature elements which should be signed by the prescriber.
+      description: Convert a prescription in FHIR format into the canonicalised HL7 V3 signature fragments which should be signed by the prescriber.
       tags:
         - prescribing
     put:
-      summary: Post a signed prescription to EPS
+      summary: Send a signed prescription to Spine
       operationId: post-signed-prescription
       responses:
         '200':
