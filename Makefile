@@ -17,7 +17,10 @@ install-fhir-validator:
 	test -f bin/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > bin/org.hl7.fhir.validator.jar
 
 test:
-	npm run test
+	export ENVIRONMENT=$(or $(ENVIRONMENT),local) \
+	&& export API_TEST_ENV_FILE_PATH=$(or $(API_TEST_ENV_FILE_PATH),tests/e2e/environments/local.postman_environment.json) \
+	&& export API_TEST_URL=$(or $(API_TEST_URL),localhost:9000) \
+	&& npm run test
 
 lint:
 	npm run lint
@@ -31,9 +34,6 @@ validate: generate-examples
 clean:
 	rm -rf build
 	rm -rf dist
-
-serve: update-examples
-	npm run serve
 
 generate-examples: build-spec clean
 	mkdir -p build/examples
@@ -53,8 +53,12 @@ check-licenses:
 format:
 	poetry run black **/*.py
 
-sandbox: update-examples
+run-sandbox: update-examples
 	cd sandbox && npm run start
+
+run-spec-viewer: update-examples
+	scripts/set_spec_server_dev.sh
+	npm run serve
 
 build-spec: clean
 	mkdir -p build
