@@ -44,7 +44,7 @@ Various scripts and commands rely on environment variables being set. These are 
 There are `make` commands that alias some of this functionality:
  * `lint` -- Lints the spec and code
  * `build-spec` -- Outputs the specification as a **single file** into the `build/` directory
- * `serve` -- Serves a preview of the specification in human-readable format
+ * `run-spec-viewer` -- Serves a preview of the specification in human-readable format
  * `generate-examples` -- generate example objects from the specification
  * `validate` -- validate generated examples against FHIR R4
 
