@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "http://localhost:9000/ConvertSignatureFragments",
+			"name": "{{base_url}}/ConvertSignatureFragments",
 			"event": [
 				{
 					"listen": "test",
@@ -38,10 +38,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:9000/ConvertSignatureFragments",
+					"raw": "{{base_url}}/ConvertSignatureFragments",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
 					"port": "9000",
 					"path": [
@@ -52,7 +52,7 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:9000/ConvertFullMessage",
+			"name": "{{base_url}}/ConvertFullMessage",
 			"event": [
 				{
 					"listen": "test",
@@ -85,10 +85,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:9000/ConvertFullMessage",
+					"raw": "{{base_url}}/ConvertFullMessage",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
 					"port": "9000",
 					"path": [
@@ -99,7 +99,7 @@
 			"response": []
 		},
 		{
-			"name": "http://localhost:9000/Send",
+			"name": "{{base_url}}/Send",
 			"event": [
 				{
 					"listen": "test",
@@ -131,10 +131,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:9000/Send",
+					"raw": "{{base_url}}/Send",
 					"protocol": "http",
 					"host": [
-						"localhost"
+						"{{base_url}}"
 					],
 					"port": "9000",
 					"path": [
