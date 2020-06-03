@@ -10,7 +10,8 @@ module.exports = [
     path: '/ConvertFullMessage',
     handler: (request, h) => {
       requestValidator.verifyPrescriptionBundle(request.payload)
-      return h.response(translator.convertFhirMessageToHl7V3ParentPrescription(request.payload))
+      const convertedMessage = translator.convertFhirMessageToHl7V3ParentPrescription(request.payload)
+      return h.response(Buffer.from(convertedMessage, 'binary').toString('base64'))
     }
   }
 ]

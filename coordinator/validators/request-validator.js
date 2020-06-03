@@ -69,33 +69,8 @@ function verifyPrescriptionBundle(bundle) {
 }
 
 function verifyPrescriptionAndSignatureBundle(bundle) {
-  if (!verifyResourceTypeIsBundle(bundle)) {
-    throw Boom.badRequest(
-      "ResourceType must be 'Bundle' on request",
-      {operationOutcomeCode: "value", apiErrorCode: "INCORRECT_RESOURCETYPE"}
-    )
-  }
-
-  if (!verifyBundleContainsEntries(bundle)) {
-    throw Boom.badRequest(
-      "ResourceType Bundle must contain 'entry' field",
-      {operationOutcomeCode: "value", apiErrorCode: "MISSING_FIELD"}
-    )
-  }
-
-  if (!verifyHasId(bundle)) {
-    throw Boom.badRequest(
-      "ResourceType Bundle must contain 'id' field",
-      {operationOutcomeCode: "value", apiErrorCode: "MISSING_FIELD"}
-    )
-  }
-
+  verifyPrescriptionBundle(bundle)
   verifyBundleContainsExactly(bundle, 1, "Provenance")
-  verifyBundleContainsAtLeast(bundle, 1, "Practitioner")
-  verifyBundleContainsExactly(bundle, 1, "Bundle")
-
-  const prescriptionBundle = getMatchingEntries(bundle, "Bundle")[0]
-  verifyPrescriptionBundle(prescriptionBundle)
 }
 
 module.exports = {
