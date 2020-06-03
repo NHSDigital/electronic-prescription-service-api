@@ -1,9 +1,45 @@
+const fs = require('fs');
 const XmlJs = require("xml-js")
+
+//Attempt 1 - xslt-processor
+//const XsltProcessor = require("xslt-processor")
+
+//Attempt 2 - libxslt
+//const LibXslt = require('libxslt');
+
+//Attempt 3 - xslt-ts
+//const XmlDomTs = require('xmldom-ts')
+//const XsltTs = require('xslt-ts')
+
+//Attempt 4 - xsltjs
+const XmlDOM = require('xmldom')
+const XSLT = require('xsltjs').XSLT
 
 const codes = require("./hl7-v3-datatypes-codes")
 const core = require("./hl7-v3-datatypes-core")
 const peoplePlaces = require("./hl7-v3-people-places")
 const prescriptions = require("./hl7-v3-prescriptions")
+
+const xslt1Str = fs.readFileSync('xslt/Prescriptionv0r1.xslt', 'utf8');
+const xslt2Str = fs.readFileSync('xslt/SignedInfowhitespacev0r1.xslt', 'utf8');
+
+//Attempt 1 - xslt-processor
+//const xslt1 = XsltProcessor.xmlParse(xslt1Str)
+//const xslt2 = XsltProcessor.xmlParse(xslt2Str)
+
+//Attempt 2 - libxslt
+//const xslt1 = LibXslt.parse(xslt1Str)
+//const xslt2 = LibXslt.parse(xslt2Str)
+
+//Attempt 3 - xslt-ts
+//XsltTs.install(new XmlDomTs.DOMParserImpl(), new XmlDomTs.XMLSerializerImpl(), new XmlDomTs.DOMImplementationImpl());
+//const xslt1 = XsltTs.getParser().parseFromString(xslt1Str)
+//const xslt2 = XsltTs.getParser().parseFromString(xslt2Str)
+
+//Attempt 4 - xsltjs
+const DOMParser = new XmlDOM.DOMParser()
+const xslt1 = DOMParser.parseFromString(xslt1Str)
+const xslt2 = DOMParser.parseFromString(xslt2Str)
 
 function getResourcesOfType(fhirBundle, resourceType) {
   return fhirBundle.entry
@@ -275,9 +311,28 @@ function convertFhirMessageToHl7V3ParentPrescription(fhirMessage) {
   return XmlJs.js2xml(root, options)
 }
 
-function convertHl7V3MessageToHl7V3SignatureFragments(hl7V3Message) {
-  //TODO - implement
-  return hl7V3Message
+async function convertHl7V3MessageToHl7V3SignatureFragments(hl7V3FullMessageStr) {
+  //Attempt 1 - xslt-processor
+  //const hl7V3SignedInfo = XsltProcessor.xmlParse(hl7V3SignedInfoStr)
+  //return XsltProcessor.xsltProcess(hl7V3SignedInfo, xslt2)
+  //const hl7V3FullMessage = XsltProcessor.xmlParse(hl7V3FullMessageStr)
+  //const hl7V3SignedInfoStr = XsltProcessor.xsltProcess(hl7V3FullMessage, xslt1)
+
+  //Attempt 2 - libxslt
+  //const hl7V3SignedInfoStr = xslt1.apply(hl7V3FullMessageStr)
+  //return xslt2.apply(hl7V3SignedInfoStr)
+
+  //Attempt 3 - xslt-ts
+  //const hl7V3FullMessage = XsltTs.getParser().parseFromString(hl7V3FullMessageStr)
+  //const hl7V3SignedInfoStr = XsltTs.xsltProcess(hl7V3FullMessage, xslt1)
+  //const hl7V3SignedInfo = XsltTs.getParser().parseFromString(hl7V3SignedInfoStr)
+  //return XsltTs.xsltProcess(hl7V3SignedInfo, xslt2)
+
+  //Attempt 4 - xsltjs
+  const hl7V3FullMessage = DOMParser.parseFromString(hl7V3FullMessageStr)
+  const hl7V3SignedInfoStr = await XSLT.process(hl7V3FullMessage, xslt1)
+  const hl7V3SignedInfo = DOMParser.parseFromString(hl7V3SignedInfoStr)
+  return await XSLT.process(hl7V3SignedInfo, xslt2)
 }
 
 module.exports = {

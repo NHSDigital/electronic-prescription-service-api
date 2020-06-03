@@ -8,10 +8,11 @@ module.exports = [
   {
     method: 'POST',
     path: '/ConvertSignatureFragments',
-    handler: (request, h) => {
+    handler: async (request, h) => {
       requestValidator.verifyPrescriptionBundle(request.payload)
       const hl7V3FullMessage = translator.convertFhirMessageToHl7V3ParentPrescription(request.payload)
-      return h.response(translator.convertHl7V3MessageToHl7V3SignatureFragments(hl7V3FullMessage))
+      const canonicalizedHl7V3SignedInfo = await translator.convertHl7V3MessageToHl7V3SignatureFragments(hl7V3FullMessage)
+      return h.response(canonicalizedHl7V3SignedInfo)
     }
   }
 ]
