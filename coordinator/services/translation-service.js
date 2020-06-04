@@ -271,50 +271,39 @@ function convertGender(fhirGender) {
 }
 
 function convertFhirMessageToHl7V3ParentPrescription(fhirMessage) {
-  const root = {ParentPrescription: convertBundleToParentPrescription(fhirMessage)}
+  const root = {
+    ParentPrescription: convertBundleToParentPrescription(fhirMessage)
+  }
   const options = {compact: true, ignoreComment: true, spaces: 4}
   //TODO - canonicalize XML before returning
   return XmlJs.js2xml(root, options)
 }
 
-function findTagsAtPath(tag, pathElements) {
-  if (pathElements.length === 0) {
-    return [tag]
-  } else {
-    const firstPathElement = pathElements[0]
-    const matchingTags = [].concat(tag[firstPathElement])
-    const remainingPathElements = pathElements.slice(1)
-    return matchingTags.flatMap(matchingTag => findTagsAtPath(matchingTag, remainingPathElements))
-  }
-}
-
 function convertFhirMessageToHl7V3SignatureFragments(fhirMessage) {
-  const root = {
-    ParentPrescription: convertBundleToParentPrescription(fhirMessage)
-  }
-
-  const pertinentPrescription = findTagsAtPath(root, ["ParentPrescription", "pertinentInformation1", "pertinentPrescription"])[0]
-
+  const parentPrescription = convertBundleToParentPrescription(fhirMessage)
+  const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
   const fragments = []
+
   fragments.push({
-    time: findTagsAtPath(pertinentPrescription, ["author", "time"])[0],
-    id: findTagsAtPath(pertinentPrescription, ["id"]).filter(id => id.extension === undefined)[0]
+    time: pertinentPrescription.author.time,
+    id: pertinentPrescription.id
+      .filter(id => id._attributes.extension === undefined)
+      .reduce(onlyElement)
   })
 
   fragments.push({
-    AgentPerson: findTagsAtPath(pertinentPrescription, ["author", "AgentPerson"])[0]
+    AgentPerson: pertinentPrescription.author.AgentPerson
   })
 
   fragments.push({
-    recordTarget: findTagsAtPath(root, ["ParentPrescription", "recordTarget"])[0]
+    recordTarget: parentPrescription.recordTarget
   })
 
-  findTagsAtPath(pertinentPrescription, ["pertinentInformation2", "pertinentLineItem"])
-    .forEach(
-      lineItem => fragments.push({
-        pertinentLineItem: lineItem
-      })
-    )
+  pertinentPrescription.pertinentInformation2.forEach(
+    pertinentInformation2 => fragments.push({
+      pertinentLineItem: pertinentInformation2.pertinentLineItem
+    })
+  )
 
   const messageDigest = {
     FragmentsToBeHashed: {
@@ -324,6 +313,13 @@ function convertFhirMessageToHl7V3SignatureFragments(fhirMessage) {
 
   const options = {compact: true, ignoreComment: true, spaces: 0}
   return XmlJs.js2xml(messageDigest, options).replace(/\n/, "")
+}
+
+function onlyElement(previousValues, currentValue) {
+  if (previousValues.length !== 0) {
+    throw TypeError("Expected array to have single element")
+  }
+  return currentValue
 }
 
 module.exports = {
