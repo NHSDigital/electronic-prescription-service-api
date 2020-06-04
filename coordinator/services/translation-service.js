@@ -286,9 +286,11 @@ function convertFhirMessageToHl7V3SignatureFragments(fhirMessage) {
 
   fragments.push({
     time: namespacedCopyOf(pertinentPrescription.author.time),
-    id: namespacedCopyOf(pertinentPrescription.id
-      .filter(id => id._attributes.extension === undefined)
-      .reduce(onlyElement))
+    id: namespacedCopyOf(
+      pertinentPrescription.id
+        .filter(id => id._attributes.extension === undefined)
+        .reduce(onlyElement)
+    )
   })
 
   fragments.push({
@@ -311,7 +313,7 @@ function convertFhirMessageToHl7V3SignatureFragments(fhirMessage) {
     }
   }
 
-  const options = {compact: true, ignoreComment: true, spaces: 0}
+  const options = {compact: true, ignoreComment: true, spaces: 0, fullTagEmptyElement: true}
   return XmlJs.js2xml(messageDigest, options).replace(/\n/, "")
 }
 
