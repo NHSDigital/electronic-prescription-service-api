@@ -1,45 +1,10 @@
 const fs = require('fs');
 const XmlJs = require("xml-js")
 
-//Attempt 1 - xslt-processor
-//const XsltProcessor = require("xslt-processor")
-
-//Attempt 2 - libxslt
-//const LibXslt = require('libxslt');
-
-//Attempt 3 - xslt-ts
-//const XmlDomTs = require('xmldom-ts')
-//const XsltTs = require('xslt-ts')
-
-//Attempt 4 - xsltjs
-const XmlDOM = require('xmldom')
-const XSLT = require('xsltjs').XSLT
-
 const codes = require("./hl7-v3-datatypes-codes")
 const core = require("./hl7-v3-datatypes-core")
 const peoplePlaces = require("./hl7-v3-people-places")
 const prescriptions = require("./hl7-v3-prescriptions")
-
-const xslt1Str = fs.readFileSync('xslt/Prescriptionv0r1.xslt', 'utf8');
-const xslt2Str = fs.readFileSync('xslt/SignedInfowhitespacev0r1.xslt', 'utf8');
-
-//Attempt 1 - xslt-processor
-//const xslt1 = XsltProcessor.xmlParse(xslt1Str)
-//const xslt2 = XsltProcessor.xmlParse(xslt2Str)
-
-//Attempt 2 - libxslt
-//const xslt1 = LibXslt.parse(xslt1Str)
-//const xslt2 = LibXslt.parse(xslt2Str)
-
-//Attempt 3 - xslt-ts
-//XsltTs.install(new XmlDomTs.DOMParserImpl(), new XmlDomTs.XMLSerializerImpl(), new XmlDomTs.DOMImplementationImpl());
-//const xslt1 = XsltTs.getParser().parseFromString(xslt1Str)
-//const xslt2 = XsltTs.getParser().parseFromString(xslt2Str)
-
-//Attempt 4 - xsltjs
-const DOMParser = new XmlDOM.DOMParser()
-const xslt1 = DOMParser.parseFromString(xslt1Str)
-const xslt2 = DOMParser.parseFromString(xslt2Str)
 
 function getResourcesOfType(fhirBundle, resourceType) {
   return fhirBundle.entry
@@ -114,7 +79,8 @@ function convertBundleToPrescription(fhirBundle) {
 
   const hl7V3Author = new prescriptions.Author()
   hl7V3Author.time = new core.Timestamp(fhirFirstMedicationRequest.authoredOn)
-  hl7V3Author.signatureText = {}
+  // TODO implement signatureText
+  hl7V3Author.signatureText = core.Null.NOT_APPLICABLE
   const fhirAuthorPractitionerRole = getResourceForFullUrl(fhirBundle, fhirFirstMedicationRequest.requester.reference)
   hl7V3Author.AgentPerson = convertPractitionerRole(fhirBundle, fhirAuthorPractitionerRole)
   hl7V3Prescription.author = hl7V3Author
@@ -159,7 +125,7 @@ function convertMedicationRequestToLineItem(fhirMedicationRequest) {
   hl7V3LineItem.setProductCode(hl7V3MedicationCode)
 
   const hl7V3DosageInstructions = new prescriptions.PrescriptionAnnotation.DosageInstructions()
-  hl7V3DosageInstructions.value = fhirMedicationRequest.dosageInstruction.text
+  hl7V3DosageInstructions.value = fhirMedicationRequest.dosageInstruction.map(x => x.text).join("\n")
   hl7V3LineItem.setDosageInstructions(hl7V3DosageInstructions)
 
   const hl7V3Quantity = new prescriptions.LineItemQuantity()
@@ -311,31 +277,35 @@ function convertFhirMessageToHl7V3ParentPrescription(fhirMessage) {
   return XmlJs.js2xml(root, options)
 }
 
-async function convertHl7V3MessageToHl7V3SignatureFragments(hl7V3FullMessageStr) {
-  //Attempt 1 - xslt-processor
-  //const hl7V3SignedInfo = XsltProcessor.xmlParse(hl7V3SignedInfoStr)
-  //return XsltProcessor.xsltProcess(hl7V3SignedInfo, xslt2)
-  //const hl7V3FullMessage = XsltProcessor.xmlParse(hl7V3FullMessageStr)
-  //const hl7V3SignedInfoStr = XsltProcessor.xsltProcess(hl7V3FullMessage, xslt1)
+function findTags(parentTag, tagNames) {
+  if (tagNames.length === 0) {
+    return [parentTag]
+  } else {
+    let firstTagName = tagNames[0]
+    let matchingTags = [].concat(parentTag[firstTagName])
+    return matchingTags.flatMap(x => findTags(x, tagNames.slice(1)))
+  }
+}
 
-  //Attempt 2 - libxslt
-  //const hl7V3SignedInfoStr = xslt1.apply(hl7V3FullMessageStr)
-  //return xslt2.apply(hl7V3SignedInfoStr)
+function convertFHIRMessageToHl7V3SignatureFragments(fhirMessage) {
+  const xmlMessage = {ParentPrescription: convertBundleToParentPrescription(fhirMessage)}
 
-  //Attempt 3 - xslt-ts
-  //const hl7V3FullMessage = XsltTs.getParser().parseFromString(hl7V3FullMessageStr)
-  //const hl7V3SignedInfoStr = XsltTs.xsltProcess(hl7V3FullMessage, xslt1)
-  //const hl7V3SignedInfo = XsltTs.getParser().parseFromString(hl7V3SignedInfoStr)
-  //return XsltTs.xsltProcess(hl7V3SignedInfo, xslt2)
+  const pertinentPrescription = findTags(xmlMessage, ["ParentPrescription", "pertinentInformation1", "pertinentPrescription"])[0]
+  const messageFragments = {"FragmentsToBeHashed": {"Fragment": []}}
 
-  //Attempt 4 - xsltjs
-  const hl7V3FullMessage = DOMParser.parseFromString(hl7V3FullMessageStr)
-  const hl7V3SignedInfoStr = await XSLT.process(hl7V3FullMessage, xslt1)
-  const hl7V3SignedInfo = DOMParser.parseFromString(hl7V3SignedInfoStr)
-  return await XSLT.process(hl7V3SignedInfo, xslt2)
+  messageFragments.FragmentsToBeHashed.Fragment.push({"time": findTags(pertinentPrescription, ["author", "time"])[0],
+    "id": findTags(pertinentPrescription, ["id"]).filter(x => !x.extension)[0]})
+  messageFragments.FragmentsToBeHashed.Fragment.push({"AgentPerson": findTags(pertinentPrescription, ["author", "AgentPerson"])[0]})
+  messageFragments.FragmentsToBeHashed.Fragment.push({"recordTarget": findTags(xmlMessage, ["ParentPrescription", "recordTarget"])[0]})
+  const lineItems = findTags(pertinentPrescription, ["pertinentInformation2", "pertinentLineItem"])
+  const lineItemArray = lineItems.map(lineItem => {return {"pertinentLineItem": lineItem}})
+  lineItemArray.forEach(lineItem => messageFragments.FragmentsToBeHashed.Fragment.push(lineItem))
+
+  const options2 = {compact: true, ignoreComment: true, spaces: 0}
+  return XmlJs.js2xml(messageFragments, options2).replace(/\n/, "")
 }
 
 module.exports = {
   convertFhirMessageToHl7V3ParentPrescription: convertFhirMessageToHl7V3ParentPrescription,
-  convertHl7V3MessageToHl7V3SignatureFragments: convertHl7V3MessageToHl7V3SignatureFragments
+  convertHl7V3MessageToHl7V3SignatureFragments: convertFHIRMessageToHl7V3SignatureFragments
 }
