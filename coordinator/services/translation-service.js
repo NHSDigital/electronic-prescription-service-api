@@ -307,9 +307,6 @@ function convertFhirMessageToHl7V3SignatureFragments(fhirMessage) {
 
   const messageDigest = {
     FragmentsToBeHashed: {
-      _attributes: {
-        "xmlns:hl7": "urn:hl7-org:v3"
-      },
       Fragment: fragments
     }
   }
@@ -322,7 +319,6 @@ function namespacedCopyOf(tag) {
   const newTag = {...tag}
   newTag._attributes = {
     xmlns: "urn:hl7-org:v3",
-    "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
     ...newTag._attributes
   }
   return newTag
