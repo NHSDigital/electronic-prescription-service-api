@@ -277,35 +277,56 @@ function convertFhirMessageToHl7V3ParentPrescription(fhirMessage) {
   return XmlJs.js2xml(root, options)
 }
 
-function findTags(parentTag, tagNames) {
-  if (tagNames.length === 0) {
-    return [parentTag]
+function findTagsAtPath(tag, pathElements) {
+  if (pathElements.length === 0) {
+    return [tag]
   } else {
-    let firstTagName = tagNames[0]
-    let matchingTags = [].concat(parentTag[firstTagName])
-    return matchingTags.flatMap(x => findTags(x, tagNames.slice(1)))
+    const firstPathElement = pathElements[0]
+    const matchingTags = [].concat(tag[firstPathElement])
+    const remainingPathElements = pathElements.slice(1)
+    return matchingTags.flatMap(matchingTag => findTagsAtPath(matchingTag, remainingPathElements))
   }
 }
 
-function convertFHIRMessageToHl7V3SignatureFragments(fhirMessage) {
-  const xmlMessage = {ParentPrescription: convertBundleToParentPrescription(fhirMessage)}
+function convertFhirMessageToHl7V3SignatureFragments(fhirMessage) {
+  const root = {
+    ParentPrescription: convertBundleToParentPrescription(fhirMessage)
+  }
 
-  const pertinentPrescription = findTags(xmlMessage, ["ParentPrescription", "pertinentInformation1", "pertinentPrescription"])[0]
-  const messageFragments = {"FragmentsToBeHashed": {"Fragment": []}}
+  const pertinentPrescription = findTagsAtPath(root, ["ParentPrescription", "pertinentInformation1", "pertinentPrescription"])[0]
 
-  messageFragments.FragmentsToBeHashed.Fragment.push({"time": findTags(pertinentPrescription, ["author", "time"])[0],
-    "id": findTags(pertinentPrescription, ["id"]).filter(x => !x.extension)[0]})
-  messageFragments.FragmentsToBeHashed.Fragment.push({"AgentPerson": findTags(pertinentPrescription, ["author", "AgentPerson"])[0]})
-  messageFragments.FragmentsToBeHashed.Fragment.push({"recordTarget": findTags(xmlMessage, ["ParentPrescription", "recordTarget"])[0]})
-  const lineItems = findTags(pertinentPrescription, ["pertinentInformation2", "pertinentLineItem"])
-  const lineItemArray = lineItems.map(lineItem => {return {"pertinentLineItem": lineItem}})
-  lineItemArray.forEach(lineItem => messageFragments.FragmentsToBeHashed.Fragment.push(lineItem))
+  const fragments = []
+  fragments.push({
+    time: findTagsAtPath(pertinentPrescription, ["author", "time"])[0],
+    id: findTagsAtPath(pertinentPrescription, ["id"]).filter(id => id.extension === undefined)[0]
+  })
 
-  const options2 = {compact: true, ignoreComment: true, spaces: 0}
-  return XmlJs.js2xml(messageFragments, options2).replace(/\n/, "")
+  fragments.push({
+    AgentPerson: findTagsAtPath(pertinentPrescription, ["author", "AgentPerson"])[0]
+  })
+
+  fragments.push({
+    recordTarget: findTagsAtPath(root, ["ParentPrescription", "recordTarget"])[0]
+  })
+
+  findTagsAtPath(pertinentPrescription, ["pertinentInformation2", "pertinentLineItem"])
+    .forEach(
+      lineItem => fragments.push({
+        pertinentLineItem: lineItem
+      })
+    )
+
+  const messageDigest = {
+    FragmentsToBeHashed: {
+      Fragment: fragments
+    }
+  }
+
+  const options = {compact: true, ignoreComment: true, spaces: 0}
+  return XmlJs.js2xml(messageDigest, options).replace(/\n/, "")
 }
 
 module.exports = {
   convertFhirMessageToHl7V3ParentPrescription: convertFhirMessageToHl7V3ParentPrescription,
-  convertHl7V3MessageToHl7V3SignatureFragments: convertFHIRMessageToHl7V3SignatureFragments
+  convertHl7V3MessageToHl7V3SignatureFragments: convertFhirMessageToHl7V3SignatureFragments
 }
