@@ -285,34 +285,47 @@ function convertFhirMessageToHl7V3SignatureFragments(fhirMessage) {
   const fragments = []
 
   fragments.push({
-    time: pertinentPrescription.author.time,
-    id: pertinentPrescription.id
+    time: namespacedCopyOf(pertinentPrescription.author.time),
+    id: namespacedCopyOf(pertinentPrescription.id
       .filter(id => id._attributes.extension === undefined)
-      .reduce(onlyElement)
+      .reduce(onlyElement))
   })
 
   fragments.push({
-    AgentPerson: pertinentPrescription.author.AgentPerson
+    AgentPerson: namespacedCopyOf(pertinentPrescription.author.AgentPerson)
   })
 
   fragments.push({
-    recordTarget: parentPrescription.recordTarget
+    recordTarget: namespacedCopyOf(parentPrescription.recordTarget)
   })
 
   pertinentPrescription.pertinentInformation2.forEach(
     pertinentInformation2 => fragments.push({
-      pertinentLineItem: pertinentInformation2.pertinentLineItem
+      pertinentLineItem: namespacedCopyOf(pertinentInformation2.pertinentLineItem)
     })
   )
 
   const messageDigest = {
     FragmentsToBeHashed: {
+      _attributes: {
+        "xmlns:hl7": "urn:hl7-org:v3"
+      },
       Fragment: fragments
     }
   }
 
   const options = {compact: true, ignoreComment: true, spaces: 0}
   return XmlJs.js2xml(messageDigest, options).replace(/\n/, "")
+}
+
+function namespacedCopyOf(tag) {
+  const newTag = {...tag}
+  newTag._attributes = {
+    xmlns: "urn:hl7-org:v3",
+    "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    ...newTag._attributes
+  }
+  return newTag
 }
 
 function onlyElement(previousValues, currentValue) {
