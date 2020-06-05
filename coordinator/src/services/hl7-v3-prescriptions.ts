@@ -335,9 +335,9 @@ export class DispensingSitePreference extends PrescriptionAnnotation {
  * Details of whether the patient was given a token.
  */
 export class TokenIssued extends PrescriptionAnnotation {
-    value: boolean
+    value: core.BooleanValue
 
-    constructor(value: boolean) {
+    constructor(value: core.BooleanValue) {
         super(new codes.PrescriptionAnnotationCode("TI"));
         this.value = value
     }

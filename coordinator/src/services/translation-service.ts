@@ -1,5 +1,4 @@
-const XmlJs = require("xml-js")
-
+import * as XmlJs from 'xml-js'
 import * as codes from "./hl7-v3-datatypes-codes"
 import * as core from "./hl7-v3-datatypes-core"
 import * as peoplePlaces from "./hl7-v3-people-places"
@@ -122,8 +121,12 @@ function convertBundleToPrescription(fhirBundle: fhir.Bundle) {
     const dispensingSitePreference = new prescriptions.DispensingSitePreference(dispensingSitePreferenceValue)
     hl7V3Prescription.pertinentInformation1 = new prescriptions.PrescriptionPertinentInformation1(dispensingSitePreference)
 
+    hl7V3Prescription.pertinentInformation2 = fhirMedicationRequests
+        .map(convertMedicationRequestToLineItem)
+        .map(hl7V3LineItem => new prescriptions.PrescriptionPertinentInformation2(hl7V3LineItem))
+
     //TODO - implement
-    const tokenIssuedValue = true;
+    const tokenIssuedValue = new core.BooleanValue(true);
     const tokenIssued = new prescriptions.TokenIssued(tokenIssuedValue)
     hl7V3Prescription.pertinentInformation8 = new prescriptions.PrescriptionPertinentInformation8(tokenIssued)
 
@@ -131,10 +134,6 @@ function convertBundleToPrescription(fhirBundle: fhir.Bundle) {
     const prescriptionTypeValue = new codes.PrescriptionTypeCode(fhirMedicationRequestCategoryCoding.code)
     const prescriptionType = new prescriptions.PrescriptionType(prescriptionTypeValue)
     hl7V3Prescription.pertinentInformation4 = new prescriptions.PrescriptionPertinentInformation4(prescriptionType)
-
-    hl7V3Prescription.pertinentInformation2 = fhirMedicationRequests
-        .map(convertMedicationRequestToLineItem)
-        .map(hl7V3LineItem => new prescriptions.PrescriptionPertinentInformation2(hl7V3LineItem))
 
     return hl7V3Prescription
 }
@@ -307,7 +306,7 @@ export function convertFhirMessageToHl7V3ParentPrescription(fhirMessage: fhir.Bu
         ParentPrescription: convertBundleToParentPrescription(fhirMessage)
     }
     const options = {compact: true, ignoreComment: true, spaces: 4}
-    //TODO - canonicalize XML before returning
+    //TODO - canonicalize XML before returning?
     return XmlJs.js2xml(root, options)
 }
 
@@ -342,6 +341,7 @@ export function convertFhirMessageToHl7V3SignatureFragments(fhirMessage: fhir.Bu
     }
 
     const options = {compact: true, ignoreComment: true, spaces: 0, fullTagEmptyElement: true}
+    //TODO do we need to worry about newlines inside tags?
     return XmlJs.js2xml(messageDigest, options).replace(/\n/, "")
 }
 
@@ -354,6 +354,6 @@ function namespacedCopyOf(tag: any) {
     return newTag
 }
 
-function onlyElement<T>(previousValue: T, currentValue: T, currentIndex: number, array: T[]): T {
+function onlyElement<T>(previousValue: T, currentValue: T, currentIndex: number, array: T[]): never {
     throw TypeError("Expected 1 element but got " + array.length + ": " + JSON.stringify(array))
 }
