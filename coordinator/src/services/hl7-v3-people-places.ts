@@ -10,7 +10,7 @@ export class AgentPerson {
     }
     id: codes.SdsRoleProfileIdentifier
     code: codes.SdsJobRoleCode
-    telecom?: Array<core.Telecom> //TODO - check this is actually an array
+    telecom?: Array<core.Telecom>
     agentPerson: AgentPersonPerson
     representedOrganization: Organization
 }
@@ -36,11 +36,14 @@ export class Organization {
     id: codes.SdsOrganizationIdentifier
     code: codes.OrganizationTypeCode
     name: string
-    telecom?: Array<core.Telecom> //TODO - check this is actually an array
-    addr?: Array<core.Address> //TODO - check this is actually an array
+    telecom?: core.Telecom
+    addr?: core.Address
     healthCareProviderLicense?: HealthCareProviderLicense
 }
 
+/**
+ * A link to a controlling organisation.
+ */
 export class HealthCareProviderLicense {
     _attributes: core.AttributeClassCode = {
         classCode: "PROV"
@@ -60,7 +63,8 @@ export class Patient {
         classCode: "PAT"
     }
     id: codes.NhsNumber
-    addr: Array<core.Address> //TODO check this is actually an array
+    addr: Array<core.Address>
+    telecom?: Array<core.Telecom>
     patientPerson: PatientPerson
 }
 
@@ -81,6 +85,9 @@ export class PatientCareProvision {
     }
 }
 
+/**
+ * A link to the professional who is directly responsible for the patient care provision.
+ */
 export class ResponsibleParty {
     _attributes: core.AttributeTypeCode = {
         typeCode: "RESP"
@@ -100,19 +107,22 @@ export class PatientPerson {
         classCode: "PSN",
         determinerCode: "INSTANCE"
     }
-    name: Array<core.Name> //TODO check this is actually an array
+    name: Array<core.Name>
     administrativeGenderCode: codes.SexCode
     birthTime: core.Timestamp
     playedProviderPatient: ProviderPatient
 }
 
+/**
+ * Details of a person on SDS.
+ */
 export class AgentPersonPerson {
     _attributes: core.AttributeClassCode & core.AttributeDeterminerCode = {
         classCode: "PSN",
         determinerCode: "INSTANCE"
     }
     id: codes.SdsUniqueIdentifier
-    name?: Array<core.Name> //TODO - check this is actually an array
+    name?: core.Name
 }
 
 /**
@@ -125,6 +135,9 @@ export class ProviderPatient {
     subjectOf: SubjectOf
 }
 
+/**
+ * A link to the Patient who is the subject of the patient care provision.
+ */
 export class SubjectOf {
     _attributes: core.AttributeTypeCode = {
         typeCode: "SBJ"

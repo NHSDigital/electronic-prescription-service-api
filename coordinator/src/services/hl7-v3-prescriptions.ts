@@ -23,14 +23,23 @@ export class LineItem {
         classCode: "SBADM",
         moodCode: "RQO"
     }
+    id: codes.GlobalIdentifier
     //TODO do we need to support child codes of this?
     code: codes.SnomedCode = new codes.SnomedCode("225426007", "administration of therapeutic substance (procedure)")
     effectiveTime: core.Null = core.Null.NOT_APPLICABLE
+    //TODO - repeatNumber
     product: Product
     component: LineItemComponent
+    //TODO - pertinentInformation1
+    //TODO - pertinentInformation3
     pertinentInformation2: LineItemPertinentInformation2
+    //TODO - inFulfillmentOf2
+    //TODO - inFulfillmentOf1
 }
 
+/**
+ * A participation that establishes product specific data for the medication prescribed.
+ */
 export class Product {
     _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
         typeCode: "PRD",
@@ -43,6 +52,9 @@ export class Product {
     }
 }
 
+/**
+ * Details about the physical characteristics of the treatment prescribed.
+ */
 export class ManufacturedProduct {
     _attributes: core.AttributeClassCode = {
         classCode: "MANU"
@@ -54,6 +66,9 @@ export class ManufacturedProduct {
     }
 }
 
+/**
+ * Description of the physical characteristics of the medication material.
+ */
 export class ManufacturedRequestedMaterial {
     _attributes: core.AttributeClassCode & core.AttributeDeterminerCode = {
         classCode: "MMAT",
@@ -66,11 +81,14 @@ export class ManufacturedRequestedMaterial {
     }
 }
 
+/**
+ * An act relationship used to denote the total amount of medication to be dispensed as a unit of measure.
+ */
 export class LineItemComponent {
     _attributes: core.AttributeTypeCode = {
         typeCode: "COMP"
     }
-    seperatableInd: core.Bool = core.Bool.FALSE
+    seperatableInd: core.BooleanValue = new core.BooleanValue(false)
     lineItemQuantity: LineItemQuantity
 
     constructor(lineItemQuantity: LineItemQuantity) {
@@ -78,12 +96,15 @@ export class LineItemComponent {
     }
 }
 
+/**
+ * An act relationship to allow the specification of dosage instructions in human readable form.
+ */
 export class LineItemPertinentInformation2 {
     _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
         typeCode: "PERT",
-        contextConductionInd: "true"
+        contextConductionInd: true
     }
-    seperatableInd: core.Bool = core.Bool.FALSE
+    seperatableInd: core.BooleanValue = new core.BooleanValue(false)
     pertinentDosageInstructions: DosageInstructions
 
     constructor(pertinentDosageInstructions: DosageInstructions) {
@@ -92,6 +113,9 @@ export class LineItemPertinentInformation2 {
 
 }
 
+/**
+ * Details about the total quantity of medication to be supplied for a prescription Line Item.
+ */
 export class LineItemQuantity {
     _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
         classCode: "SPLY",
@@ -102,13 +126,6 @@ export class LineItemQuantity {
     quantity: core.QuantityInAlternativeUnits
 }
 
-/**
- * This is the parent prescription.
- *
- * Each item on a prescription has an administration part and a supply part.
- * In each case some of the information is common to each item while other information is different.
- * This act represents the common parts of the administration part of each item on a prescription.
- */
 class ParentPrescriptionAttributes implements core.AttributeClassCode, core.AttributeMoodCode {
     xmlns: string = "urn:hl7-org:v3"
     "xmlns:xsi": string = "http://www.w3.org/2001/XMLSchema-instance"
@@ -117,16 +134,27 @@ class ParentPrescriptionAttributes implements core.AttributeClassCode, core.Attr
     "xsi:schemaLocation": string = "urn:hl7-org:v3 ..\\Schemas\\PORX_MT132004UK31.xsd"
 }
 
+/**
+ * This is the parent prescription.
+ *
+ * Each item on a prescription has an administration part and a supply part.
+ * In each case some of the information is common to each item while other information is different.
+ * This act represents the common parts of the administration part of each item on a prescription.
+ */
 export class ParentPrescription {
     _attributes: ParentPrescriptionAttributes = new ParentPrescriptionAttributes()
     id: codes.GlobalIdentifier
     code: codes.SnomedCode = new codes.SnomedCode("163501000000109", "Prescription")
-    typeId: codes.TypeIdentifier = new codes.TypeIdentifier("PORX_MT132004UK31")
     effectiveTime: core.Timestamp
+    typeId: codes.TypeIdentifier = new codes.TypeIdentifier("PORX_MT132004UK31")
     recordTarget: RecordTarget
     pertinentInformation1: ParentPrescriptionPertinentInformation1
+    //TODO - pertinentInformation2
 }
 
+/**
+ * A link between the ParentPrescription and the patient who receives the medication treatment.
+ */
 export class RecordTarget {
     _attributes: core.AttributeTypeCode = {
         typeCode: "RCT"
@@ -138,10 +166,13 @@ export class RecordTarget {
     }
 }
 
+/**
+ * A link between the ParentPrescription details of the message and the Prescription administration information.
+ */
 export class ParentPrescriptionPertinentInformation1 {
     _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
         typeCode: "PERT",
-        contextConductionInd: "true"
+        contextConductionInd: true
     }
     templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.pertinentInformation")
     pertinentPrescription: Prescription
@@ -159,27 +190,54 @@ export class Prescription {
         classCode: "SBADM",
         moodCode: "RQO"
     }
-    id: Array<codes.GlobalIdentifier | codes.ShortFormPrescriptionIdentifier>
+    id: [codes.GlobalIdentifier, codes.ShortFormPrescriptionIdentifier]
     //TODO do we need to support child codes of this?
     code: codes.SnomedCode = new codes.SnomedCode("225426007", "administration of therapeutic substance (procedure)")
     effectiveTime: core.Null = core.Null.NOT_APPLICABLE
+    //TODO - repeatNumber
+    //TODO - performer
     author: Author
+    //TODO - legalAuthenticator
     responsibleParty: ResponsibleParty
-    pertinentInformation2: Array<PrescriptionPertinentInformation2> = []
+    //TODO - component1
+    //TODO - pertinentInformation7
     pertinentInformation5: PrescriptionPertinentInformation5
+    //TODO - pertinentInformation6
     pertinentInformation1: PrescriptionPertinentInformation1
+    pertinentInformation2: Array<PrescriptionPertinentInformation2>
     pertinentInformation8: PrescriptionPertinentInformation8
+    //TODO - pertinentInformation3
     pertinentInformation4: PrescriptionPertinentInformation4
+    //TODO - inFulfillmentOf
 }
 
+/**
+ * An act relationship to define the nature of the role played by the pharmacy in the act of dispensing.
+ */
+export class PrescriptionPertinentInformation1 {
+    _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+        typeCode: "PERT",
+        contextConductionInd: true
+    }
+    seperatableInd: core.BooleanValue = new core.BooleanValue(true)
+    pertinentDispensingSitePreference: DispensingSitePreference
+
+    constructor(pertinentDispensingSitePreference: DispensingSitePreference) {
+        this.pertinentDispensingSitePreference = pertinentDispensingSitePreference
+    }
+}
+
+/**
+ * An act relationship to associate the prescribed medication (line items) to the prescription.
+ */
 export class PrescriptionPertinentInformation2 {
     _attributes: core.AttributeTypeCode & core.AttributeInversionInd & core.AttributeContextConductionInd & core.AttributeNegationInd = {
         typeCode: "PERT",
-        inversionInd: "false",
-        contextConductionInd: "true",
-        negationInd: "false"
+        inversionInd: false,
+        contextConductionInd: true,
+        negationInd: false
     }
-    seperatableInd: core.Bool = core.Bool.TRUE
+    seperatableInd: core.BooleanValue = new core.BooleanValue(true)
     templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.sourceOf2")
     pertinentLineItem: LineItem
 
@@ -188,12 +246,31 @@ export class PrescriptionPertinentInformation2 {
     }
 }
 
+/**
+ * An act relationship used to qualify the type of prescriber and a reason for the prescription.
+ */
+export class PrescriptionPertinentInformation4 {
+    _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+        typeCode: "PERT",
+        contextConductionInd: true
+    }
+    seperatableInd: core.BooleanValue = new core.BooleanValue(true)
+    pertinentPrescriptionType: PrescriptionType
+
+    constructor(pertinentPrescriptionType: PrescriptionType) {
+        this.pertinentPrescriptionType = pertinentPrescriptionType
+    }
+}
+
+/**
+ * An act relationship used to qualify the type of prescription (acute, repeat prescription or repeat dispensing).
+ */
 export class PrescriptionPertinentInformation5 {
     _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
         typeCode: "PERT",
-        contextConductionInd: "true"
+        contextConductionInd: true
     }
-    seperatableInd: core.Bool = core.Bool.TRUE
+    seperatableInd: core.BooleanValue = new core.BooleanValue(true)
     pertinentPrescriptionTreatmentType: PrescriptionTreatmentType
 
     constructor(pertinentPrescriptionTreatmentType: PrescriptionTreatmentType) {
@@ -201,42 +278,19 @@ export class PrescriptionPertinentInformation5 {
     }
 }
 
-export class PrescriptionPertinentInformation1 {
-    _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
-        typeCode: "PERT",
-        contextConductionInd: "true"
-    }
-    seperatableInd: core.Bool = core.Bool.TRUE
-    pertinentDispensingSitePreference: DispensingSitePreference
-
-    constructor(pertinentDispensingSitePreference: DispensingSitePreference) {
-        this.pertinentDispensingSitePreference = pertinentDispensingSitePreference
-    }
-}
-
+/**
+ * An Act Relationship that provides information about whether the patient was given a token.
+ */
 export class PrescriptionPertinentInformation8 {
     _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
         typeCode: "PERT",
-        contextConductionInd: "true"
+        contextConductionInd: true
     }
-    seperatableInd: core.Bool = core.Bool.TRUE
+    seperatableInd: core.BooleanValue = new core.BooleanValue(true)
     pertinentTokenIssued: TokenIssued
 
     constructor(pertinentTokenIssued: TokenIssued) {
         this.pertinentTokenIssued = pertinentTokenIssued
-    }
-}
-
-export class PrescriptionPertinentInformation4 {
-    _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
-        typeCode: "PERT",
-        contextConductionInd: "true"
-    }
-    seperatableInd: core.Bool = core.Bool.TRUE
-    pertinentPrescriptionType: PrescriptionType
-
-    constructor(pertinentPrescriptionType: PrescriptionType) {
-        this.pertinentPrescriptionType = pertinentPrescriptionType
     }
 }
 
@@ -253,6 +307,9 @@ class PrescriptionAnnotation {
     }
 }
 
+/**
+ * Details about the type of prescription.
+ */
 export class PrescriptionTreatmentType extends PrescriptionAnnotation {
     value: codes.PrescriptionTreatmentTypeCode
 
@@ -262,6 +319,9 @@ export class PrescriptionTreatmentType extends PrescriptionAnnotation {
     }
 }
 
+/**
+ * The nature of the role played by the Nominated Pharmacy in the act of dispensing the medication.
+ */
 export class DispensingSitePreference extends PrescriptionAnnotation {
     value: codes.DispensingSitePreferenceCode
 
@@ -271,15 +331,21 @@ export class DispensingSitePreference extends PrescriptionAnnotation {
     }
 }
 
+/**
+ * Details of whether the patient was given a token.
+ */
 export class TokenIssued extends PrescriptionAnnotation {
-    value: core.Bool
+    value: boolean
 
-    constructor(value: core.Bool) {
+    constructor(value: boolean) {
         super(new codes.PrescriptionAnnotationCode("TI"));
         this.value = value
     }
 }
 
+/**
+ * Details about the type of prescriber and a reason for the prescription.
+ */
 export class PrescriptionType extends PrescriptionAnnotation {
     value: codes.PrescriptionTypeCode
 
@@ -289,6 +355,9 @@ export class PrescriptionType extends PrescriptionAnnotation {
     }
 }
 
+/**
+ * The dosage and medication instructions in human readable form.
+ */
 export class DosageInstructions extends PrescriptionAnnotation {
     value: string
 

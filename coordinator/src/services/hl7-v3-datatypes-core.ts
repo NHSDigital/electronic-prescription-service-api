@@ -21,15 +21,15 @@ export interface AttributeMoodCode {
 }
 
 export interface AttributeContextConductionInd {
-    contextConductionInd: string
+    contextConductionInd: boolean
 }
 
 export interface AttributeInversionInd {
-    inversionInd: string
+    inversionInd: boolean
 }
 
 export interface AttributeNegationInd {
-    negationInd: string
+    negationInd: boolean
 }
 
 export enum AddressUse {
@@ -46,10 +46,10 @@ interface AddressAttributes {
 
 export class Address {
     _attributes: AddressAttributes
-    streetAddressLine: Array<string>
+    streetAddressLine: string | Array<string>
     postalCode: string
 
-    constructor(use: AddressUse, lines: Array<string>, postalCode: string) {
+    constructor(use: AddressUse, lines: string | Array<string>, postalCode: string) {
         this._attributes = {
             use: use
         }
@@ -58,40 +58,25 @@ export class Address {
     }
 }
 
-enum BoolValue {
-    TRUE = "true",
-    FALSE = "false"
+interface BooleanValueAttributes {
+    value: boolean
 }
 
-interface BoolAttributes {
-    value: BoolValue
-}
+export class BooleanValue {
+    _attributes: BooleanValueAttributes
 
-export class Bool {
-    _attributes: BoolAttributes
-
-    constructor(value: BoolValue) {
+    constructor(value: boolean) {
         this._attributes = {
             value: value
         }
     }
-
-    static TRUE = new Bool(BoolValue.TRUE)
-    static FALSE = new Bool(BoolValue.FALSE)
 }
 
 export class Name {
-    family: string
-    given: Array<string>
-    prefix: Array<string>
-    suffix: Array<string>
-
-    constructor(family: string, given: Array<string>, prefix: Array<string>, suffix: Array<string>) {
-        this.family = family
-        this.given = given
-        this.prefix = prefix
-        this.suffix = suffix
-    }
+    family?: string
+    given?: string | Array<string>
+    prefix?: string | Array<string>
+    suffix?: string | Array<string>
 }
 
 enum NullFlavor {
@@ -133,6 +118,10 @@ interface QuantityInAlternativeUnitsAttributes {
     unit: string
 }
 
+/**
+ * This flavour of the physical quantity data type should be used where the quantity is converted into the approved UCUM representation from an original recording in an alternative set of recognised units.
+ * This flavour is used for representing medication dose form quantities recorded using the dm+d coded units of measure.
+ */
 export class QuantityInAlternativeUnits {
     _attributes: QuantityInAlternativeUnitsAttributes
     translation: QuantityTranslation
