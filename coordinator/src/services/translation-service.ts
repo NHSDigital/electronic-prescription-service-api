@@ -340,13 +340,15 @@ export function convertFhirMessageToHl7V3SignatureFragments(fhirMessage: fhir.Bu
         }
     }
 
-    const options = {compact: true,
+    const options = {
+        compact: true,
         ignoreComment: true,
         spaces: 0,
         fullTagEmptyElement: true,
-        textFn: function(value: string) {return replaceCharacters(value)} ,
-        attributeValueFn: function(value: string) {return canonicaliseAttribute(value)}
-        }
+        textFn: replaceCharacters,
+        attributeValueFn: canonicaliseAttribute,
+        attributesFn: sortAttributes
+    }
     //TODO do we need to worry about newlines inside tags?
     return XmlJs.js2xml(messageDigest, options).replace(/\r?\n/, "")
 }
@@ -374,6 +376,16 @@ function namespacedCopyOf(tag: any) {
         ...newTag._attributes
     }
     return newTag
+}
+
+function sortAttributes(attributes: any) {
+    const newAttributes = {
+        xmlns: attributes.xmlns
+    } as any
+    Object.getOwnPropertyNames(attributes)
+        .sort()
+        .forEach(propertyName => newAttributes[propertyName] = attributes[propertyName])
+    return newAttributes
 }
 
 function onlyElement<T>(previousValue: T, currentValue: T, currentIndex: number, array: T[]): never {
