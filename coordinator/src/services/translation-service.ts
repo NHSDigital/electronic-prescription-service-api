@@ -340,9 +340,31 @@ export function convertFhirMessageToHl7V3SignatureFragments(fhirMessage: fhir.Bu
         }
     }
 
-    const options = {compact: true, ignoreComment: true, spaces: 0, fullTagEmptyElement: true}
+    const options = {compact: true,
+        ignoreComment: true,
+        spaces: 0,
+        fullTagEmptyElement: true,
+        textFn: function(value: string) {return replaceCharacters(value)} ,
+        attributeValueFn: function(value: string) {return canonicaliseAttribute(value)}
+        }
     //TODO do we need to worry about newlines inside tags?
-    return XmlJs.js2xml(messageDigest, options).replace(/\n/, "")
+    return XmlJs.js2xml(messageDigest, options).replace(/\r?\n/, "")
+}
+
+function replaceCharacters(attribute: string) {
+    attribute = attribute.replace(/"/g, "&quot;")
+    attribute = attribute.replace(/'/g, "&apos;")
+    return attribute;
+}
+
+function canonicaliseAttribute(attribute: string){
+    attribute = attribute.replace(/&/g, "&amp;")
+    attribute = attribute.replace(/'/g, "&apos;")
+    attribute = attribute.replace(/</g, "&lt;")
+    attribute = attribute.replace(/>/g, "&gt;")
+    attribute = attribute.replace(/[\t\f]+/g, " ")
+    attribute = attribute.replace(/\r?\n/g, " ")
+    return attribute
 }
 
 function namespacedCopyOf(tag: any) {
