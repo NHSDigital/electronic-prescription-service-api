@@ -345,7 +345,6 @@ export function convertFhirMessageToHl7V3SignatureFragments(fhirMessage: fhir.Bu
         ignoreComment: true,
         spaces: 0,
         fullTagEmptyElement: true,
-        textFn: replaceCharacters,
         attributeValueFn: canonicaliseAttribute,
         attributesFn: sortAttributes
     }
@@ -353,17 +352,7 @@ export function convertFhirMessageToHl7V3SignatureFragments(fhirMessage: fhir.Bu
     return XmlJs.js2xml(messageDigest, options).replace(/\r?\n/, "")
 }
 
-function replaceCharacters(attribute: string) {
-    attribute = attribute.replace(/"/g, "&quot;")
-    attribute = attribute.replace(/'/g, "&apos;")
-    return attribute;
-}
-
 function canonicaliseAttribute(attribute: string){
-    attribute = attribute.replace(/&/g, "&amp;")
-    attribute = attribute.replace(/'/g, "&apos;")
-    attribute = attribute.replace(/</g, "&lt;")
-    attribute = attribute.replace(/>/g, "&gt;")
     attribute = attribute.replace(/[\t\f]+/g, " ")
     attribute = attribute.replace(/\r?\n/g, " ")
     return attribute
