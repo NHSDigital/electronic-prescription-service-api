@@ -349,7 +349,7 @@ export function convertFhirMessageToHl7V3SignatureFragments(fhirMessage: fhir.Bu
         attributesFn: sortAttributes
     }
     //TODO do we need to worry about newlines inside tags?
-    return XmlJs.js2xml(messageDigest, options).replace(/\r?\n/, "")
+    return generateSignedInfo(XmlJs.js2xml(messageDigest, options).replace(/\r?\n/, ""))
 }
 
 function canonicaliseAttribute(attribute: string){
@@ -379,4 +379,20 @@ function sortAttributes(attributes: any) {
 
 function onlyElement<T>(previousValue: T, currentValue: T, currentIndex: number, array: T[]): never {
     throw TypeError("Expected 1 element but got " + array.length + ": " + JSON.stringify(array))
+}
+
+function generateSignedInfo(signatureFragment: string){
+    const digestValue = "test"
+    const signedInfo = "<SignedInfo>\n" +
+        "    <CanonicalizationMethod Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"/>\n" +
+        "    <SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\"/>\n" +
+        "    <Reference>\n" +
+        "        <Transforms>\n" +
+        "            <Transform Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"/>\n" +
+        "        </Transforms>\n" +
+        "        <DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\"/>\n" +
+        `        <DigestValue>${digestValue}</DigestValue>\n` +
+        "    </Reference>\n" +
+        "</SignedInfo>"
+    return signedInfo
 }
