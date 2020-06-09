@@ -87,7 +87,7 @@ function convertPatient(fhirBundle: fhir.Bundle, fhirPatient: fhir.Patient): peo
 }
 
 function convertBundleToPrescription(fhirBundle: fhir.Bundle) {
-    let hl7V3Prescription = new prescriptions.Prescription()
+    const hl7V3Prescription = new prescriptions.Prescription()
 
     const fhirMedicationRequests = getResourcesOfType(fhirBundle, "MedicationRequest") as Array<fhir.MedicationRequest>
     const fhirFirstMedicationRequest = fhirMedicationRequests[0]
@@ -140,12 +140,12 @@ function convertBundleToPrescription(fhirBundle: fhir.Bundle) {
 }
 
 function convertMedicationRequestToLineItem(fhirMedicationRequest: fhir.MedicationRequest) {
-    let hl7V3LineItem = new prescriptions.LineItem()
+    const hl7V3LineItem = new prescriptions.LineItem()
 
     const fhirMedicationCode = getCodingForSystem(fhirMedicationRequest.medicationCodeableConcept.coding, "http://snomed.info/sct")
     const hl7V3MedicationCode = new codes.SnomedCode(fhirMedicationCode.code, fhirMedicationCode.display)
-    let manufacturedRequestedMaterial = new prescriptions.ManufacturedRequestedMaterial(hl7V3MedicationCode);
-    let manufacturedProduct = new prescriptions.ManufacturedProduct(manufacturedRequestedMaterial);
+    const manufacturedRequestedMaterial = new prescriptions.ManufacturedRequestedMaterial(hl7V3MedicationCode);
+    const manufacturedProduct = new prescriptions.ManufacturedProduct(manufacturedRequestedMaterial);
     hl7V3LineItem.product = new prescriptions.Product(manufacturedProduct)
 
     const dosageInstructionsValue = fhirMedicationRequest.dosageInstruction
@@ -172,7 +172,7 @@ function convertPractitionerRole(fhirBundle: fhir.Bundle, fhirPractitionerRole: 
 }
 
 function convertPractitioner(fhirBundle: fhir.Bundle, fhirPractitioner: fhir.Practitioner): peoplePlaces.AgentPerson {
-    let hl7V3AgentPerson = new peoplePlaces.AgentPerson()
+    const hl7V3AgentPerson = new peoplePlaces.AgentPerson()
 
     const sdsRoleProfileIdentifier = getIdentifierValueForSystem(fhirPractitioner.identifier, "https://fhir.nhs.uk/Id/sds-role-profile-id")
     hl7V3AgentPerson.id = new codes.SdsRoleProfileIdentifier(sdsRoleProfileIdentifier)
@@ -302,7 +302,7 @@ function convertGender(fhirGender: string) {
     }
 }
 
-export function convertFhirMessageToHl7V3ParentPrescription(fhirMessage: fhir.Bundle) {
+export function convertFhirMessageToHl7V3ParentPrescription(fhirMessage: fhir.Bundle): string {
     const root = {
         ParentPrescription: convertBundleToParentPrescription(fhirMessage)
     }
@@ -311,7 +311,7 @@ export function convertFhirMessageToHl7V3ParentPrescription(fhirMessage: fhir.Bu
     return XmlJs.js2xml(root, options)
 }
 
-export function convertFhirMessageToHl7V3SignatureFragments(fhirMessage: fhir.Bundle) {
+export function convertFhirMessageToHl7V3SignatureFragments(fhirMessage: fhir.Bundle): string {
     const parentPrescription = convertBundleToParentPrescription(fhirMessage)
     const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
     const fragments = []
@@ -382,7 +382,7 @@ function onlyElement<T>(previousValue: T, currentValue: T, currentIndex: number,
     throw TypeError("Expected 1 element but got " + array.length + ": " + JSON.stringify(array))
 }
 
-function generateSignedInfo(signatureFragment: string){
+function generateSignedInfo(signatureFragment: string): string{
     const digestValue = crypto.SHA1(signatureFragment)
     const signedInfo = "<SignedInfo>" +
         "<CanonicalizationMethod Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"></CanonicalizationMethod>" +

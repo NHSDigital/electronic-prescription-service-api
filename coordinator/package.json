@@ -5,7 +5,7 @@
   "main": "dist/app.js",
   "scripts": {
     "build": "tsc",
-    "lint": "tsc --noEmit && find . -type f -name '*.{ts,js}' ! -name '.eslintrc.js' | grep -v 'node_modules/' | xargs eslint",
+    "lint": "tsc --noEmit && find . -type f -name '*.ts' | grep -v 'node_modules/' | xargs eslint --fix",
     "start": "node dist/app.js --use_strict",
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts"
   },
@@ -24,6 +24,8 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^3.2.0",
+    "@typescript-eslint/parser": "^3.2.0",
     "eslint": "^6.8.0",
     "minimist": "^1.2.2",
     "ts-node-dev": "^1.0.0-pre.44",

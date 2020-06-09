@@ -1,4 +1,4 @@
-const Boom = require('boom')
+import * as Boom from "boom"
 import * as fhir from "../services/fhir-resources"
 
 function verifyResourceTypeIsBundle(bundle: fhir.Bundle) {
@@ -39,7 +39,7 @@ function verifyBundleContainsExactly(bundle: fhir.Bundle, number: number, resour
     }
 }
 
-export function verifyPrescriptionBundle(bundle: fhir.Bundle) {
+export function verifyPrescriptionBundle(bundle: fhir.Bundle): void {
     if (!verifyResourceTypeIsBundle(bundle)) {
         throw Boom.badRequest(
             "ResourceType must be 'Bundle' on request",
@@ -69,7 +69,7 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle) {
     verifyBundleContainsExactly(bundle, 2, "Organization")
 }
 
-export function verifyPrescriptionAndSignatureBundle(bundle: fhir.Bundle) {
+export function verifyPrescriptionAndSignatureBundle(bundle: fhir.Bundle): void {
     verifyPrescriptionBundle(bundle)
     verifyBundleContainsExactly(bundle, 1, "Provenance")
 }

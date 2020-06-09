@@ -127,11 +127,11 @@ export class LineItemQuantity {
 }
 
 class ParentPrescriptionAttributes implements core.AttributeClassCode, core.AttributeMoodCode {
-    xmlns: string = "urn:hl7-org:v3"
-    "xmlns:xsi": string = "http://www.w3.org/2001/XMLSchema-instance"
-    classCode: string = "INFO"
-    moodCode: string = "EVN"
-    "xsi:schemaLocation": string = "urn:hl7-org:v3 ..\\Schemas\\PORX_MT132004UK31.xsd"
+    xmlns = "urn:hl7-org:v3"
+    "xmlns:xsi" = "http://www.w3.org/2001/XMLSchema-instance"
+    classCode = "INFO"
+    moodCode = "EVN"
+    "xsi:schemaLocation" = "urn:hl7-org:v3 ..\\Schemas\\PORX_MT132004UK31.xsd"
 }
 
 /**
@@ -300,7 +300,6 @@ class PrescriptionAnnotation {
         moodCode: "EVN"
     }
     code: codes.PrescriptionAnnotationCode
-    value: any
 
     constructor(code: codes.PrescriptionAnnotationCode) {
         this.code = code
