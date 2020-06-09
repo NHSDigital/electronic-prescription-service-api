@@ -8,6 +8,7 @@ install-python:
 install-node:
 	npm install
 	cd sandbox && npm install
+	cd coordinator && npm install
 
 install-hooks:
 	cp scripts/pre-commit .git/hooks/pre-commit
@@ -24,6 +25,7 @@ lint:
 	cd sandbox && npm run lint && cd ..
 	poetry run flake8 **/*.py --config .flake8
 	find -name '*.sh' | grep -v node_modules | xargs shellcheck
+	cd coordinator && npm run lint
 
 validate: generate-examples
 	java -jar bin/org.hl7.fhir.validator.jar build/examples/**/*application_fhir+json*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt
@@ -74,3 +76,6 @@ release: clean publish build-proxy
 	tar -zcvf dist/package.tar.gz build
 	cp -r terraform dist
 	cp -r build/. dist
+
+build-coordinator:
+	cd coordinator && npm run build && npm run start
