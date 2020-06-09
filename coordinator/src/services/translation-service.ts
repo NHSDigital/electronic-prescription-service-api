@@ -383,18 +383,17 @@ function onlyElement<T>(previousValue: T, currentValue: T, currentIndex: number,
 }
 
 function generateSignedInfo(signatureFragment: string){
-    const base64Fragments = Buffer.from(signatureFragment).toString('base64')
-    const digestValue = crypto.SHA1(base64Fragments)
-    const signedInfo = "<SignedInfo>\n" +
-        "    <CanonicalizationMethod Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"/>\n" +
-        "    <SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\"/>\n" +
-        "    <Reference>\n" +
-        "        <Transforms>\n" +
-        "            <Transform Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"/>\n" +
-        "        </Transforms>\n" +
-        "        <DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\"/>\n" +
-        `        <DigestValue>${digestValue}</DigestValue>\n` +
-        "    </Reference>\n" +
+    const digestValue = crypto.SHA1(signatureFragment)
+    const signedInfo = "<SignedInfo>" +
+        "<CanonicalizationMethod Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"></CanonicalizationMethod>" +
+        "<SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\"></SignatureMethod>" +
+        "<Reference>" +
+            "<Transforms>" +
+                "<Transform Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"></Transform>" +
+            "</Transforms>" +
+            "<DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\"></DigestMethod>" +
+            `<DigestValue>${digestValue}</DigestValue>` +
+        "</Reference>" +
         "</SignedInfo>"
     return signedInfo
 }
