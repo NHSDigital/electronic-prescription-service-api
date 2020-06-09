@@ -4,6 +4,7 @@ import * as core from "./hl7-v3-datatypes-core"
 import * as peoplePlaces from "./hl7-v3-people-places"
 import * as prescriptions from "./hl7-v3-prescriptions"
 import * as fhir from "./fhir-resources"
+import * as crypto from "crypto-js"
 
 //TODO - is there a better way than returning Array<unknown>?
 function getResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): Array<unknown> {
@@ -382,7 +383,8 @@ function onlyElement<T>(previousValue: T, currentValue: T, currentIndex: number,
 }
 
 function generateSignedInfo(signatureFragment: string){
-    const digestValue = "test"
+    const base64Fragments = Buffer.from(signatureFragment).toString('base64')
+    const digestValue = crypto.SHA1(base64Fragments)
     const signedInfo = "<SignedInfo>\n" +
         "    <CanonicalizationMethod Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"/>\n" +
         "    <SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\"/>\n" +
