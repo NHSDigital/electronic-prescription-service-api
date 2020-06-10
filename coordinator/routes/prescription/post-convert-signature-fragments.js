@@ -11,7 +11,8 @@ module.exports = [
     handler: (request, h) => {
       requestValidator.verifyPrescriptionBundle(request.payload)
       const hl7V3FullMessage = translator.convertFhirMessageToHl7V3ParentPrescription(request.payload)
-      return h.response(translator.convertHl7V3MessageToHl7V3SignatureFragments(hl7V3FullMessage))
+      const signatureFragments = translator.convertHl7V3MessageToHl7V3SignatureFragments(hl7V3FullMessage)
+      return h.response(Buffer.from(signatureFragments, 'binary').toString('base64'))
     }
   }
 ]
