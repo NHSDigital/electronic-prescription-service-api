@@ -82,7 +82,7 @@ info:
 
     Alternatively, you can try out the sandbox using our Postman collection:
 
-    [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/TODO)
+    [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/c7de990c99d2b6227e8d)
 
     ## Assurance
     We are hoping to make the assurance process as lightweight and as self-service as possible.
@@ -95,9 +95,9 @@ info:
     * `PUT /Prescription` - send a signed FHIR prescription to Spine
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
-    description: Sandbox environment.
+    description: 'Sandbox environment. (not yet available: see "API status and roadmap").'
   - url: 'https://int.api.service.nhs.uk/electronic-prescriptions'
-    description: Integration test environment.
+    description: 'Integration test environment. (not yet available: see "API status and roadmap").'
   - url: 'https://api.service.nhs.uk/electronic-prescriptions'
     description: 'Production environment (not yet available: see "API status and roadmap").'
 tags:
@@ -180,4 +180,3 @@ components:
       $ref: components/schemas/Binary.yaml
     Provenance:
       $ref: components/schemas/Provenance.yaml
-  securitySchemes: {}
