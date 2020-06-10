@@ -3,10 +3,10 @@ import * as translator from "../../services/translation-service"
 import Hapi from "@hapi/hapi";
 import {Bundle} from "../../services/fhir-resources";
 
-function convertFullMessage(request: Hapi.Request, h: Hapi.ResponseToolkit): Hapi.ResponseObject {
+function convertFullMessage(request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Hapi.ResponseObject {
     //TODO - is it okay to cast this to a Bundle?
     requestValidator.verifyPrescriptionBundle(<Bundle>request.payload)
-    return h.response(translator.convertFhirMessageToHl7V3ParentPrescription(<Bundle>request.payload))
+    return responseToolkit.response(translator.convertFhirMessageToHl7V3ParentPrescription(<Bundle>request.payload))
 }
 
 export const routes = [

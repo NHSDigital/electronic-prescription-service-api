@@ -3,4 +3,4 @@ import * as putPrescription from './prescription/post-convert-signature-fragment
 import * as postSendPrescription from './prescription/post-send-message'
 import * as health from './health/get-health'
 
-export const routes = [].concat(postPrescription.routes, putPrescription.routes,postSendPrescription.routes, health.routes);
+export const routes = [...postPrescription.routes, ...putPrescription.routes, ...postSendPrescription.routes, ...health.routes]

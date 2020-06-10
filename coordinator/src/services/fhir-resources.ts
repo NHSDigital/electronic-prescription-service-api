@@ -1,3 +1,5 @@
+import Boom from "boom";
+
 export abstract class Resource {
     id?: string
     resourceType: string
@@ -38,6 +40,7 @@ export class Coding {
     system?: string
     code?: string
     display?: string
+    version?: number
 }
 
 export class Reference {
@@ -114,4 +117,32 @@ export class Organization extends Resource {
     telecom?: Array<ContactPoint>
     address?: Array<Address>
     partOf?: Reference
+}
+
+
+
+class OperationOutcomeIssue {
+    severity: "error"
+    code: string
+    details: CodeableConcept
+}
+
+export class OperationOutcome {
+    resourceType: "OperationOutcome"
+    issue: Array<OperationOutcomeIssue>
+
+    constructor(error: Boom) {
+        this.issue = [{
+            severity: "error",
+            code: error.data.operationOutcomeCode,
+            details: {
+                coding: [{
+                    system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+                    version: 1,
+                    code: error.data.apiErrorCode,
+                    display: error.message
+                }]
+            }
+        }]
+    }
 }

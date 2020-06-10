@@ -1,24 +1,23 @@
-'use strict'
-
 import Boom from 'boom'
 import Hapi from '@hapi/hapi'
 import Path from 'path'
 import * as routes from './routes'
-
+import {OperationOutcome} from "./services/fhir-resources";
 
 const CONTENT_TYPE = 'application/fhir+json; fhirVersion=4.0'
 
-const preResponse = function (request: Hapi.Request, h: Hapi.ResponseToolkit) {
+function isResponseObject(obj: Hapi.ResponseObject | Error): obj is Hapi.ResponseObject {
+    return (obj as Hapi.ResponseObject).type !== undefined
+}
+
+const preResponse = function (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) {
     const response = request.response
 
-    // Don't reformat non-error responses, and don't reformat system (>=500) errors
-    if (!(response instanceof Boom)) {
+    // Don't reformat non-error responses
+    if (isResponseObject(response)) {
         // Set Content-Type on all responses
-        //TODO - is this check necessary?
-        if ("type" in response) {
-            response.type(CONTENT_TYPE)
-        }
-        return h.continue
+        response.type(CONTENT_TYPE)
+        return responseToolkit.continue
     }
 
     const error = response
@@ -26,9 +25,10 @@ const preResponse = function (request: Hapi.Request, h: Hapi.ResponseToolkit) {
     // Generically present all errors not explicitly thrown by
     // us as internal server errors
     if (!error.data) {
-        error.data = {}
-        error.data['apiErrorCode'] = "internalServerError"
-        error.data['operationOutcomeCode'] = "exception"
+        error.data = {
+            'apiErrorCode': 'internalServerError',
+            'operationOutcomeCode': 'exception'
+        }
     }
 
     /* Reformat errors to FHIR spec
@@ -40,23 +40,9 @@ const preResponse = function (request: Hapi.Request, h: Hapi.ResponseToolkit) {
         * data.operationOutcomeCode: from the [IssueType ValueSet](https://www.hl7.org/fhir/valueset-issue-type.html)
         * data.apiErrorCode: Our own code defined for each particular error. Refer to OAS.
     */
-    const fhirError = {
-        resourceType: "OperationOutcome",
-        issue: [{
-            severity: "error",
-            code: error.data.operationOutcomeCode,
-            details: {
-                coding: [{
-                    system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
-                    version: 1,
-                    code: error.data.apiErrorCode,
-                    display: error.message
-                }]
-            }
-        }]
-    }
+    const fhirError = new OperationOutcome(error as Boom)
 
-    return h.response(fhirError)
+    return responseToolkit.response(fhirError)
         .code(error.output.statusCode)
         .type(CONTENT_TYPE)
 }

@@ -4,8 +4,8 @@
   "description": "Electronic Prescription Service API Coordinator",
   "main": "dist/app.js",
   "scripts": {
-    "build": "tsc",
-    "lint": "tsc --noEmit && find . -type f -name '*.ts' | grep -v 'node_modules/' | xargs eslint --fix",
+    "build": "tsc --alwaysStrict",
+    "lint": "eslint . --ext .ts",
     "start": "node dist/app.js --use_strict",
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts"
   },
