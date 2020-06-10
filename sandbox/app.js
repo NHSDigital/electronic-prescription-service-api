@@ -18,6 +18,7 @@ const preResponse = function (request, h) {
   }
 
   const error = response
+  console.log(error)
 
   // Generically present all errors not explicitly thrown by
   // us as internal server errors
