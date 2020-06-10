@@ -55,7 +55,7 @@ To run tests, you need to supply an environment. A `local` environment and an en
 In order for local tests to work, you must have the sandbox server running locally and have symlinked the mock files. Under sandbox/mocks there are some json files with the paths to symlink to as their content. For each of these symlink to these files, removing the original.
 
 ```
-make sandbox
+make run-sandbox
 ```
 
 To run local tests, use:
