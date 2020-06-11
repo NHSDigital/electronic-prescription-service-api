@@ -7,7 +7,7 @@ import * as fhir from "./fhir-resources"
 import * as crypto from "crypto-js"
 
 //TODO - is there a better way than returning Array<unknown>?
-function getResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): Array<unknown> {
+export function getResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): Array<unknown> {
     return fhirBundle.entry
         .map(entry => entry.resource)
         .filter(resource => resource.resourceType === resourceType)
@@ -384,16 +384,15 @@ function onlyElement<T>(previousValue: T, currentValue: T, currentIndex: number,
 
 function generateSignedInfo(signatureFragment: string): string{
     const digestValue = crypto.SHA1(signatureFragment)
-    const signedInfo = "<SignedInfo>" +
-        "<CanonicalizationMethod Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"></CanonicalizationMethod>" +
-        "<SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\"></SignatureMethod>" +
-        "<Reference>" +
-            "<Transforms>" +
-                "<Transform Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"></Transform>" +
-            "</Transforms>" +
-            "<DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\"></DigestMethod>" +
-            `<DigestValue>${digestValue}</DigestValue>` +
-        "</Reference>" +
+    return "<SignedInfo>" +
+            "<CanonicalizationMethod Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"></CanonicalizationMethod>" +
+            "<SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\"></SignatureMethod>" +
+            "<Reference>" +
+                "<Transforms>" +
+                    "<Transform Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"></Transform>" +
+                "</Transforms>" +
+                "<DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\"></DigestMethod>" +
+                `<DigestValue>${digestValue}</DigestValue>` +
+            "</Reference>" +
         "</SignedInfo>"
-    return signedInfo
 }

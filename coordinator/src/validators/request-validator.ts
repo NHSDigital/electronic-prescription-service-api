@@ -1,22 +1,27 @@
 import Boom from "boom"
 import * as fhir from "../services/fhir-resources"
 
-function verifyResourceTypeIsBundle(bundle: fhir.Bundle) {
-    return bundle && bundle["resourceType"] && bundle["resourceType"] === "Bundle"
+function verifyMessageIsResource(message: unknown): message is fhir.Resource {
+    return (message as fhir.Resource)?.resourceType !== undefined
+}
+
+function verifyResourceTypeIsBundle(resource: unknown): resource is fhir.Bundle {
+    return verifyMessageIsResource(resource)
+        && resource.resourceType === "Bundle"
 }
 
 function verifyBundleContainsEntries(bundle: fhir.Bundle) {
-    return bundle !== undefined && bundle["entry"] !== undefined
+    return bundle.entry !== undefined
 }
 
 function getMatchingEntries(bundle: fhir.Bundle, resourceType: string) {
     return bundle.entry
         .map(entry => entry.resource)
-        .filter(resource => resource["resourceType"] === resourceType)
+        .filter(resource => resource.resourceType === resourceType)
 }
 
 function verifyHasId(bundle: fhir.Bundle) {
-    return bundle && bundle["id"]
+    return bundle.id !== undefined
 }
 
 function verifyBundleContainsAtLeast(bundle: fhir.Bundle, number: number, resourceType: string) {
@@ -39,7 +44,7 @@ function verifyBundleContainsExactly(bundle: fhir.Bundle, number: number, resour
     }
 }
 
-export function verifyPrescriptionBundle(bundle: fhir.Bundle): void {
+export function verifyPrescriptionBundle(bundle: unknown): void {
     if (!verifyResourceTypeIsBundle(bundle)) {
         throw Boom.badRequest(
             "ResourceType must be 'Bundle' on request",

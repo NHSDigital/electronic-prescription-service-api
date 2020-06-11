@@ -19,7 +19,7 @@ export class Identifier {
     value?: string
 }
 
-export class MedicationRequest {
+export class MedicationRequest extends Resource {
     identifier?: Array<Identifier>
     category?: Array<CodeableConcept>
     medicationCodeableConcept: CodeableConcept
