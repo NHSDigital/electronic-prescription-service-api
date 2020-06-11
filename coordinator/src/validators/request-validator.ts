@@ -6,7 +6,7 @@ function verifyResourceTypeIsBundle(bundle: fhir.Bundle) {
 }
 
 function verifyBundleContainsEntries(bundle: fhir.Bundle) {
-    return bundle && bundle["entry"]
+    return bundle !== undefined && bundle["entry"] !== undefined
 }
 
 function getMatchingEntries(bundle: fhir.Bundle, resourceType: string) {
