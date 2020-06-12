@@ -5,6 +5,7 @@ import * as peoplePlaces from "./hl7-v3-people-places"
 import * as prescriptions from "./hl7-v3-prescriptions"
 import * as fhir from "./fhir-resources"
 import * as crypto from "crypto-js"
+import {Resource} from "./fhir-resources";
 
 //TODO - is there a better way than returning Array<unknown>?
 export function getResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): Array<unknown> {
@@ -13,14 +14,14 @@ export function getResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string
         .filter(resource => resource.resourceType === resourceType)
 }
 
-function getResourceForFullUrl(fhirBundle: fhir.Bundle, resourceFullUrl: string) {
+export function getResourceForFullUrl(fhirBundle: fhir.Bundle, resourceFullUrl: string): Resource {
     return fhirBundle.entry
         .filter(entry => entry.fullUrl === resourceFullUrl)
         .reduce(onlyElement)
         .resource
 }
 
-function getIdentifierValueForSystem(identifier: Array<fhir.Identifier>, system: string) {
+export function getIdentifierValueForSystem(identifier: Array<fhir.Identifier>, system: string): string {
     return identifier
         .filter(identifier => identifier.system === system)
         .reduce(onlyElement)
