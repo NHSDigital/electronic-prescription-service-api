@@ -29,9 +29,7 @@ function verifyPrescriptionAndSignatureBundle(bundle) {
     verifyPayloadId,
     verifyResourceTypeIsBundle,
     verifyBundleContainsEntries,
-    //_=> verifyBundleContainsExactly(bundle, 1, "Provenance"),
-    //_=> verifyBundleContainsAtLeast(bundle, 1, "Practitioner"),
-    //_=> verifyBundleContainsExactly(bundle, 1, "Bundle")
+    // TODO: Update validation functions to match new format
   )
 }
 

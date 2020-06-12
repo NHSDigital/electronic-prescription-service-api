@@ -187,6 +187,42 @@ paths:
                 patient-deceased:
                   value:
                     $ref: components/examples/PrescriptionPutErrorPatientDeceasedResponse.yaml
+                duplicate-prescription:
+                  value:
+                    $ref: components/examples/PrescriptionPutErrorDuplicatePrescriptionResponse.yaml
+                digital-signature-not-found:
+                  value:
+                    $ref: components/examples/PrescriptionPutErrorDigitalSignatureNotFoundResponse.yaml
+                patient-not-found:
+                  value:
+                    $ref: components/examples/PrescriptionPutErrorPatientNotFoundResponse.yaml
+                information-missing:
+                  value:
+                    $ref: components/examples/PrescriptionPutErrorInformationMissingResponse.yaml
+                invalid-message:
+                  value:
+                    $ref: components/examples/PrescriptionPutErrorInvalidMessageResponse.yaml
+                incorrect-item-count:
+                  value:
+                    $ref: components/examples/PrescriptionPutErrorIncorrectItemCountResponse.yaml
+                authorised-repeat-mismatch:
+                  value:
+                    $ref: components/examples/PrescriptionPutErrorAuthorisedRepeatMismatchResponse.yaml
+                incorrect-repeat-number:
+                  value:
+                    $ref: components/examples/PrescriptionPutErrorIncorrectRepeatNumberResponse.yaml
+                incompatible-version:
+                  value:
+                    $ref: components/examples/PrescriptionPutErrorIncompatibleVersionResponse.yaml
+                duplicate-item-id:
+                  value:
+                    $ref: components/examples/PrescriptionPutErrorDuplicateItemIdResponse.yaml
+                check-digit-error:
+                  value:
+                    $ref: components/examples/PrescriptionPutErrorCheckDigitErrorResponse.yaml
+                invalid-date-format:
+                  value:
+                    $ref: components/examples/PrescriptionPutErrorInvalidDateFormatResponse.yaml
           headers: {}
       requestBody:
         content:
