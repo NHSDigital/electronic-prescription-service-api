@@ -1,9 +1,9 @@
 import * as translationService from "../../src/services/translation-service"
 import bundle from "../resources/fhir-bundle"
 import * as fhir from "../../src/services/fhir-resources";
-import mock = jest.mock;
+import * as TestResources from "../resources/test-resources"
 
-function clone(input: fhir.Resource | Array<fhir.Identifier>) {
+function clone<T>(input: T) {
     return JSON.parse(JSON.stringify(input))
 }
 
@@ -85,4 +85,43 @@ test('convertBundleToParentPrescription returns correct value', () => {
     expect(mockConvertGender).toHaveBeenCalledWith(mockConvertGenderExpectedArg)
     expect(mockConvertAddress).toHaveBeenCalledWith(mockConvertAddressExpectedArg)
     expect(mockConvertName).toHaveBeenCalledWith(mockConvertNameExpectedArg)
+})
+
+test("convertBundleToParentPrescription returns correct value", () => {
+    const mockPatientConverter = jest.fn().mockReturnValue(TestResources.validHl7V3Patient)
+    const mockPrescriptionConverter = jest.fn().mockReturnValue(TestResources.validHl7V3Prescription)
+
+    const actualHl7V3ParentPrescription = translationService.convertBundleToParentPrescription(bundle, mockPatientConverter, mockPrescriptionConverter);
+
+    expect(actualHl7V3ParentPrescription.id).toEqual({
+        _attributes: {
+            root: "baca8053-ca7b-4c8f-19ca-b447db9525e5",
+        },
+    })
+    expect(actualHl7V3ParentPrescription.effectiveTime).toEqual({
+        _attributes: {
+            value: "2008-02-27T11:38:00+00:00"
+        }
+    })
+    expect(actualHl7V3ParentPrescription.recordTarget).toEqual(TestResources.validHl7V3ParentPrescription.recordTarget)
+    expect(actualHl7V3ParentPrescription.pertinentInformation1).toEqual(TestResources.validHl7V3ParentPrescription.pertinentInformation1)
+
+    // TODO - replace with the below once we've implemented more mappings
+    // const expectedHl7V3ParentPrescription = clone(TestResources.validHl7V3ParentPrescription)
+    // expectedHl7V3ParentPrescription.id = {
+    //     _attributes: {
+    //         root: "baca8053-ca7b-4c8f-19ca-b447db9525e5",
+    //     },
+    // }
+    // expectedHl7V3ParentPrescription.effectiveTime = {
+    //     _attributes: {
+    //         value: "2008-02-27T11:38:00+00:00"
+    //     }
+    // }
+    // expect(actualHl7V3ParentPrescription).toEqual(expectedHl7V3ParentPrescription)
+})
+
+test("convertBundleToParentPrescription returns correct value", () => {
+    const actualHl7V3ParentPrescription = translationService.convertBundleToParentPrescription(bundle);
+    expect(actualHl7V3ParentPrescription).toEqual(TestResources.validHl7V3ParentPrescription)
 })

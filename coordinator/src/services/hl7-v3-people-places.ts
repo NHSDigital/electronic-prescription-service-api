@@ -1,13 +1,15 @@
 import * as codes from "./hl7-v3-datatypes-codes"
 import * as core from "./hl7-v3-datatypes-core"
+import {ElementCompact} from "xml-js";
 
 /**
  * Identifies or provides detailed information about a person fulfilling a specific role when it is not known whether all of the role profile, player and scoper details are available from SDS.
  */
-export class AgentPerson {
+export class AgentPerson implements ElementCompact {
     _attributes: core.AttributeClassCode = {
         classCode: "AGNT"
     }
+
     id: codes.SdsRoleProfileIdentifier
     code: codes.SdsJobRoleCode
     telecom?: Array<core.Telecom>
@@ -18,21 +20,23 @@ export class AgentPerson {
 /**
  * The provider responsible for the patient care provision, e.g. a GP with whom the patient is registered.
  */
-export class HealthCareProvider {
+export class HealthCareProvider implements ElementCompact {
     _attributes: core.AttributeClassCode = {
         classCode: "PROV"
     }
+
     id: codes.SdsUniqueIdentifier
 }
 
 /**
  * Details of an organisation on SDS.
  */
-export class Organization {
+export class Organization implements ElementCompact {
     _attributes: core.AttributeClassCode & core.AttributeDeterminerCode = {
         classCode: "ORG",
         determinerCode: "INSTANCE"
     }
+
     id: codes.SdsOrganizationIdentifier
     code: codes.OrganizationTypeCode
     name: string
@@ -44,10 +48,11 @@ export class Organization {
 /**
  * A link to a controlling organisation.
  */
-export class HealthCareProviderLicense {
+export class HealthCareProviderLicense implements ElementCompact {
     _attributes: core.AttributeClassCode = {
         classCode: "PROV"
     }
+
     Organization: Organization
 
     constructor(organization: Organization) {
@@ -58,10 +63,11 @@ export class HealthCareProviderLicense {
 /**
  * Provides information about a patient's demographics and healthcare provision in a way that conforms to the PDS patient structure.
  */
-export class Patient {
+export class Patient implements ElementCompact {
     _attributes: core.AttributeClassCode = {
         classCode: "PAT"
     }
+
     id: codes.NhsNumber
     addr: Array<core.Address>
     telecom?: Array<core.Telecom>
@@ -72,11 +78,12 @@ export class Patient {
 /**
  * Act defining a relationship between a patient and his/her primary care provider.
  */
-export class PatientCareProvision {
+export class PatientCareProvision implements ElementCompact {
     _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
         classCode: "PCPR",
         moodCode: "EVN"
     }
+
     code: codes.PatientCareProvisionTypeCode
     responsibleParty: ResponsibleParty
 
@@ -88,10 +95,11 @@ export class PatientCareProvision {
 /**
  * A link to the professional who is directly responsible for the patient care provision.
  */
-export class ResponsibleParty {
+export class ResponsibleParty implements ElementCompact {
     _attributes: core.AttributeTypeCode = {
         typeCode: "RESP"
     }
+
     healthCareProvider: HealthCareProvider
 
     constructor(healthCareProvider: HealthCareProvider) {
@@ -102,11 +110,12 @@ export class ResponsibleParty {
 /**
  * Details of the person who is the patient.
  */
-export class PatientPerson {
+export class PatientPerson implements ElementCompact {
     _attributes: core.AttributeClassCode & core.AttributeDeterminerCode = {
         classCode: "PSN",
         determinerCode: "INSTANCE"
     }
+
     name: Array<core.Name>
     administrativeGenderCode: codes.SexCode
     birthTime: core.Timestamp
@@ -116,11 +125,12 @@ export class PatientPerson {
 /**
  * Details of a person on SDS.
  */
-export class AgentPersonPerson {
+export class AgentPersonPerson implements ElementCompact {
     _attributes: core.AttributeClassCode & core.AttributeDeterminerCode = {
         classCode: "PSN",
         determinerCode: "INSTANCE"
     }
+
     id: codes.SdsUniqueIdentifier
     name?: core.Name
 }
@@ -128,20 +138,22 @@ export class AgentPersonPerson {
 /**
  * A Role of a Person as a recipient of healthcare services from a healthcare provider.
  */
-export class ProviderPatient {
+export class ProviderPatient implements ElementCompact {
     _attributes: core.AttributeClassCode = {
         classCode: "PAT"
     }
+
     subjectOf: SubjectOf
 }
 
 /**
  * A link to the Patient who is the subject of the patient care provision.
  */
-export class SubjectOf {
+export class SubjectOf implements ElementCompact {
     _attributes: core.AttributeTypeCode = {
         typeCode: "SBJ"
     }
+
     patientCareProvision: PatientCareProvision
 
     constructor(patientCareProvision: PatientCareProvision) {

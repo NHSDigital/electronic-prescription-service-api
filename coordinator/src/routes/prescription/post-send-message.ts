@@ -1,8 +1,7 @@
 import * as requestValidator from "../../validators/request-validator"
-import Hapi from "@hapi/hapi";
-import {Bundle} from "../../services/fhir-resources";
+import Hapi from "@hapi/hapi"
 
-export const routes = [
+export default [
   /*
     Send a signed message on to SPINE.
   */
@@ -10,7 +9,7 @@ export const routes = [
     method: 'POST',
     path: '/Send',
     handler: (request: Hapi.Request, h: Hapi.ResponseToolkit): Hapi.ResponseObject => {
-      requestValidator.verifyPrescriptionAndSignatureBundle(<Bundle>request.payload)
+      requestValidator.verifyPrescriptionAndSignatureBundle(request.payload)
       return h.response("Message Sent")
     }
   }

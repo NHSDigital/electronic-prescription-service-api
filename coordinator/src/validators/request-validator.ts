@@ -1,30 +1,30 @@
-import Boom from "boom"
-import * as fhir from "../services/fhir-resources"
+import {Bundle, Resource} from "../services/fhir-resources"
+import * as Boom from "@hapi/boom"
 
-function verifyMessageIsResource(message: unknown): message is fhir.Resource {
-    return (message as fhir.Resource)?.resourceType !== undefined
+function verifyMessageIsResource(message: unknown): message is Resource {
+    return (message as Resource)?.resourceType !== undefined
 }
 
-function verifyResourceTypeIsBundle(resource: unknown): resource is fhir.Bundle {
+function verifyResourceTypeIsBundle(resource: unknown): resource is Bundle {
     return verifyMessageIsResource(resource)
         && resource.resourceType === "Bundle"
 }
 
-function verifyBundleContainsEntries(bundle: fhir.Bundle) {
+function verifyBundleContainsEntries(bundle: Bundle) {
     return bundle.entry !== undefined
 }
 
-function getMatchingEntries(bundle: fhir.Bundle, resourceType: string) {
+function getMatchingEntries(bundle: Bundle, resourceType: string) {
     return bundle.entry
         .map(entry => entry.resource)
         .filter(resource => resource.resourceType === resourceType)
 }
 
-function verifyHasId(bundle: fhir.Bundle) {
+function verifyHasId(bundle: Bundle) {
     return bundle.id !== undefined
 }
 
-function verifyBundleContainsAtLeast(bundle: fhir.Bundle, number: number, resourceType: string) {
+function verifyBundleContainsAtLeast(bundle: Bundle, number: number, resourceType: string) {
     const matchingEntries = getMatchingEntries(bundle, resourceType)
     if (matchingEntries.length < number) {
         throw Boom.badRequest(
@@ -34,7 +34,7 @@ function verifyBundleContainsAtLeast(bundle: fhir.Bundle, number: number, resour
     }
 }
 
-function verifyBundleContainsExactly(bundle: fhir.Bundle, number: number, resourceType: string) {
+function verifyBundleContainsExactly(bundle: Bundle, number: number, resourceType: string) {
     const matchingEntries = getMatchingEntries(bundle, resourceType)
     if (matchingEntries.length !== number) {
         throw Boom.badRequest(
@@ -74,7 +74,7 @@ export function verifyPrescriptionBundle(bundle: unknown): void {
     verifyBundleContainsExactly(bundle, 2, "Organization")
 }
 
-export function verifyPrescriptionAndSignatureBundle(bundle: fhir.Bundle): void {
+export function verifyPrescriptionAndSignatureBundle(bundle: unknown): void {
     verifyPrescriptionBundle(bundle)
-    verifyBundleContainsExactly(bundle, 1, "Provenance")
+    verifyBundleContainsExactly(bundle as Bundle, 1, "Provenance")
 }

@@ -1,35 +1,22 @@
-import Boom from 'boom'
+import {Boom} from '@hapi/boom'
 import Hapi from '@hapi/hapi'
 import Path from 'path'
-import * as routes from './routes'
-import {OperationOutcome} from "./services/fhir-resources";
+import routes from './routes'
+import {CodeableConcept, Coding, OperationOutcome, OperationOutcomeIssue} from "./services/fhir-resources";
 
 const CONTENT_TYPE = 'application/fhir+json; fhirVersion=4.0'
-
-function isResponseObject(obj: Hapi.ResponseObject | Error): obj is Hapi.ResponseObject {
-    return (obj as Hapi.ResponseObject).type !== undefined
-}
 
 const preResponse = function (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) {
     const response = request.response
 
     // Don't reformat non-error responses
-    if (isResponseObject(response)) {
+    if (!(response instanceof Boom)) {
         // Set Content-Type on all responses
         response.type(CONTENT_TYPE)
         return responseToolkit.continue
     }
 
-    const error = response
-
-    // Generically present all errors not explicitly thrown by
-    // us as internal server errors
-    if (!error.data) {
-        error.data = {
-            'apiErrorCode': 'internalServerError',
-            'operationOutcomeCode': 'exception'
-        }
-    }
+    console.log(response)
 
     /* Reformat errors to FHIR spec
       Expects request.response is a Boom object with following properties:
@@ -40,11 +27,35 @@ const preResponse = function (request: Hapi.Request, responseToolkit: Hapi.Respo
         * data.operationOutcomeCode: from the [IssueType ValueSet](https://www.hl7.org/fhir/valueset-issue-type.html)
         * data.apiErrorCode: Our own code defined for each particular error. Refer to OAS.
     */
-    const fhirError = new OperationOutcome(error as Boom)
-
+    const fhirError = convertBoomToOperationOutcome(response)
     return responseToolkit.response(fhirError)
-        .code(error.output.statusCode)
+        .code(response.output.statusCode)
         .type(CONTENT_TYPE)
+}
+
+function convertBoomToOperationOutcome(boom: Boom) {
+    // Generically present all errors not explicitly thrown by us as internal server errors
+    if (!boom.data) {
+        boom.data = {
+            'apiErrorCode': 'internalServerError',
+            'operationOutcomeCode': 'exception'
+        }
+    }
+
+    const detailsCoding = new Coding()
+    detailsCoding.system = "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode"
+    detailsCoding.version = 1
+    detailsCoding.code = boom.data.apiErrorCode
+    detailsCoding.display = boom.message
+
+    const detailsCodeableConcept = new CodeableConcept()
+    detailsCodeableConcept.coding = [detailsCoding]
+
+    const operationOutcome = new OperationOutcome();
+    operationOutcome.issue = [
+        new OperationOutcomeIssue("error", boom.data.operationOutcomeCode, detailsCodeableConcept)
+    ]
+    return operationOutcome
 }
 
 const init = async () => {
@@ -60,7 +71,7 @@ const init = async () => {
     })
     server.ext('onPreResponse', preResponse)
 
-    server.route(routes.routes)
+    server.route(routes)
 
     await server.start()
     console.log('Server running on %s', server.info.uri)

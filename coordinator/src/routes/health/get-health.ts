@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi";
 
-export const routes = [
+export default [
     {
         method: 'GET',
         path: '/Health',

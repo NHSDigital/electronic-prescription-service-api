@@ -1,5 +1,3 @@
-import Boom from "boom";
-
 export abstract class Resource {
     id?: string
     resourceType: string
@@ -119,30 +117,19 @@ export class Organization extends Resource {
     partOf?: Reference
 }
 
-
-
-class OperationOutcomeIssue {
-    severity: "error"
+export class OperationOutcomeIssue {
+    severity: string
     code: string
     details: CodeableConcept
+
+    constructor(severity: string, code: string, details: CodeableConcept) {
+        this.severity = severity
+        this.code = code
+        this.details = details
+    }
 }
 
 export class OperationOutcome {
     resourceType: "OperationOutcome"
     issue: Array<OperationOutcomeIssue>
-
-    constructor(error: Boom) {
-        this.issue = [{
-            severity: "error",
-            code: error.data.operationOutcomeCode,
-            details: {
-                coding: [{
-                    system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
-                    version: 1,
-                    code: error.data.apiErrorCode,
-                    display: error.message
-                }]
-            }
-        }]
-    }
 }

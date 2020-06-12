@@ -1,15 +1,19 @@
 import * as core from "./hl7-v3-datatypes-core"
+import {AttributeClassCode, AttributeMoodCode, AttributeTypeCode} from "./hl7-v3-datatypes-core"
 import * as codes from "./hl7-v3-datatypes-codes"
+import {GlobalIdentifier, SnomedCode} from "./hl7-v3-datatypes-codes"
 import * as peoplePlaces from "./hl7-v3-people-places"
+import {ElementCompact} from "xml-js";
 
 /**
  * A participation used to provide a link to the prescriber who authored the prescription.
  */
-export class Author {
+export class Author implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
         typeCode: "AUT",
         contextControlCode: "OP"
     }
+
     time: core.Timestamp
     signatureText: core.Null
     AgentPerson: peoplePlaces.AgentPerson
@@ -18,11 +22,12 @@ export class Author {
 /**
  * Medication line item in the prescription.
  */
-export class LineItem {
+export class LineItem implements ElementCompact {
     _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
         classCode: "SBADM",
         moodCode: "RQO"
     }
+
     id: codes.GlobalIdentifier
     //TODO do we need to support child codes of this?
     code: codes.SnomedCode = new codes.SnomedCode("225426007", "administration of therapeutic substance (procedure)")
@@ -40,11 +45,12 @@ export class LineItem {
 /**
  * A participation that establishes product specific data for the medication prescribed.
  */
-export class Product {
+export class Product implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
         typeCode: "PRD",
         contextControlCode: "OP"
     }
+
     manufacturedProduct: ManufacturedProduct
 
     constructor(manufacturedProduct: ManufacturedProduct) {
@@ -55,10 +61,11 @@ export class Product {
 /**
  * Details about the physical characteristics of the treatment prescribed.
  */
-export class ManufacturedProduct {
+export class ManufacturedProduct implements ElementCompact {
     _attributes: core.AttributeClassCode = {
         classCode: "MANU"
     }
+
     manufacturedRequestedMaterial: ManufacturedRequestedMaterial
 
     constructor(manufacturedRequestedMaterial: ManufacturedRequestedMaterial) {
@@ -69,11 +76,12 @@ export class ManufacturedProduct {
 /**
  * Description of the physical characteristics of the medication material.
  */
-export class ManufacturedRequestedMaterial {
+export class ManufacturedRequestedMaterial implements ElementCompact {
     _attributes: core.AttributeClassCode & core.AttributeDeterminerCode = {
         classCode: "MMAT",
         determinerCode: "KIND"
     }
+
     code: codes.SnomedCode
 
     constructor(code: codes.SnomedCode) {
@@ -84,10 +92,11 @@ export class ManufacturedRequestedMaterial {
 /**
  * An act relationship used to denote the total amount of medication to be dispensed as a unit of measure.
  */
-export class LineItemComponent {
+export class LineItemComponent implements ElementCompact {
     _attributes: core.AttributeTypeCode = {
         typeCode: "COMP"
     }
+
     seperatableInd: core.BooleanValue = new core.BooleanValue(false)
     lineItemQuantity: LineItemQuantity
 
@@ -99,11 +108,12 @@ export class LineItemComponent {
 /**
  * An act relationship to allow the specification of dosage instructions in human readable form.
  */
-export class LineItemPertinentInformation2 {
+export class LineItemPertinentInformation2 implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
         typeCode: "PERT",
-        contextConductionInd: true
+        contextConductionInd: "true"
     }
+
     seperatableInd: core.BooleanValue = new core.BooleanValue(false)
     pertinentDosageInstructions: DosageInstructions
 
@@ -116,23 +126,19 @@ export class LineItemPertinentInformation2 {
 /**
  * Details about the total quantity of medication to be supplied for a prescription Line Item.
  */
-export class LineItemQuantity {
+export class LineItemQuantity implements ElementCompact {
     _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
         classCode: "SPLY",
         moodCode: "RQO"
     }
+
     //TODO do we need to support child codes of this?
     code: codes.SnomedCode = new codes.SnomedCode("373784005", "dispensing medication")
     quantity: core.QuantityInAlternativeUnits
 }
 
-class ParentPrescriptionAttributes implements core.AttributeClassCode, core.AttributeMoodCode {
-    xmlns = "urn:hl7-org:v3"
-    "xmlns:xsi" = "http://www.w3.org/2001/XMLSchema-instance"
-    classCode = "INFO"
-    moodCode = "EVN"
-    "xsi:schemaLocation" = "urn:hl7-org:v3 ..\\Schemas\\PORX_MT132004UK31.xsd"
-}
+const snomedCodePrescription = new codes.SnomedCode("163501000000109", "Prescription")
+snomedCodePrescription.originalText = "Prescription - FocusActOrEvent "
 
 /**
  * This is the parent prescription.
@@ -141,24 +147,29 @@ class ParentPrescriptionAttributes implements core.AttributeClassCode, core.Attr
  * In each case some of the information is common to each item while other information is different.
  * This act represents the common parts of the administration part of each item on a prescription.
  */
-export class ParentPrescription {
-    _attributes: ParentPrescriptionAttributes = new ParentPrescriptionAttributes()
+export class ParentPrescription implements ElementCompact {
+    _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+        classCode: "INFO",
+        moodCode: "EVN",
+    }
+
     id: codes.GlobalIdentifier
-    code: codes.SnomedCode = new codes.SnomedCode("163501000000109", "Prescription")
+    code: codes.SnomedCode = snomedCodePrescription
     effectiveTime: core.Timestamp
     typeId: codes.TypeIdentifier = new codes.TypeIdentifier("PORX_MT132004UK31")
     recordTarget: RecordTarget
     pertinentInformation1: ParentPrescriptionPertinentInformation1
-    //TODO - pertinentInformation2
+    pertinentInformation2: ParentPrescriptionPertinentInformation2
 }
 
 /**
  * A link between the ParentPrescription and the patient who receives the medication treatment.
  */
-export class RecordTarget {
+export class RecordTarget implements ElementCompact {
     _attributes: core.AttributeTypeCode = {
         typeCode: "RCT"
     }
+
     Patient: peoplePlaces.Patient
 
     constructor(patient: peoplePlaces.Patient) {
@@ -169,11 +180,12 @@ export class RecordTarget {
 /**
  * A link between the ParentPrescription details of the message and the Prescription administration information.
  */
-export class ParentPrescriptionPertinentInformation1 {
+export class ParentPrescriptionPertinentInformation1 implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
         typeCode: "PERT",
-        contextConductionInd: true
+        contextConductionInd: "true"
     }
+
     templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.pertinentInformation")
     pertinentPrescription: Prescription
 
@@ -185,11 +197,12 @@ export class ParentPrescriptionPertinentInformation1 {
 /**
  * This act represents the distinct parts of the administration part for a single item on a Prescription.
  */
-export class Prescription {
+export class Prescription implements ElementCompact {
     _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
         classCode: "SBADM",
         moodCode: "RQO"
     }
+
     id: [codes.GlobalIdentifier, codes.ShortFormPrescriptionIdentifier]
     //TODO do we need to support child codes of this?
     code: codes.SnomedCode = new codes.SnomedCode("225426007", "administration of therapeutic substance (procedure)")
@@ -214,11 +227,12 @@ export class Prescription {
 /**
  * An act relationship to define the nature of the role played by the pharmacy in the act of dispensing.
  */
-export class PrescriptionPertinentInformation1 {
+export class PrescriptionPertinentInformation1 implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
         typeCode: "PERT",
-        contextConductionInd: true
+        contextConductionInd: "true"
     }
+
     seperatableInd: core.BooleanValue = new core.BooleanValue(true)
     pertinentDispensingSitePreference: DispensingSitePreference
 
@@ -230,13 +244,14 @@ export class PrescriptionPertinentInformation1 {
 /**
  * An act relationship to associate the prescribed medication (line items) to the prescription.
  */
-export class PrescriptionPertinentInformation2 {
+export class PrescriptionPertinentInformation2 implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeInversionInd & core.AttributeContextConductionInd & core.AttributeNegationInd = {
         typeCode: "PERT",
-        inversionInd: false,
-        contextConductionInd: true,
-        negationInd: false
+        inversionInd: "false",
+        contextConductionInd: "true",
+        negationInd: "false"
     }
+
     seperatableInd: core.BooleanValue = new core.BooleanValue(true)
     templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.sourceOf2")
     pertinentLineItem: LineItem
@@ -249,11 +264,12 @@ export class PrescriptionPertinentInformation2 {
 /**
  * An act relationship used to qualify the type of prescriber and a reason for the prescription.
  */
-export class PrescriptionPertinentInformation4 {
+export class PrescriptionPertinentInformation4 implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
         typeCode: "PERT",
-        contextConductionInd: true
+        contextConductionInd: "true"
     }
+
     seperatableInd: core.BooleanValue = new core.BooleanValue(true)
     pertinentPrescriptionType: PrescriptionType
 
@@ -265,11 +281,12 @@ export class PrescriptionPertinentInformation4 {
 /**
  * An act relationship used to qualify the type of prescription (acute, repeat prescription or repeat dispensing).
  */
-export class PrescriptionPertinentInformation5 {
+export class PrescriptionPertinentInformation5 implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
         typeCode: "PERT",
-        contextConductionInd: true
+        contextConductionInd: "true"
     }
+
     seperatableInd: core.BooleanValue = new core.BooleanValue(true)
     pertinentPrescriptionTreatmentType: PrescriptionTreatmentType
 
@@ -281,11 +298,12 @@ export class PrescriptionPertinentInformation5 {
 /**
  * An Act Relationship that provides information about whether the patient was given a token.
  */
-export class PrescriptionPertinentInformation8 {
+export class PrescriptionPertinentInformation8 implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
         typeCode: "PERT",
-        contextConductionInd: true
+        contextConductionInd: "true"
     }
+
     seperatableInd: core.BooleanValue = new core.BooleanValue(true)
     pertinentTokenIssued: TokenIssued
 
@@ -294,11 +312,12 @@ export class PrescriptionPertinentInformation8 {
     }
 }
 
-class PrescriptionAnnotation {
+abstract class PrescriptionAnnotation implements ElementCompact {
     _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
         classCode: "OBS",
         moodCode: "EVN"
     }
+
     code: codes.PrescriptionAnnotationCode
 
     constructor(code: codes.PrescriptionAnnotationCode) {
@@ -369,10 +388,78 @@ export class DosageInstructions extends PrescriptionAnnotation {
 /**
  * A participation used to provide a link to the healthcare professional who has direct responsibility for the patient.
  */
-export class ResponsibleParty {
+export class ResponsibleParty implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
         typeCode: "RESP",
         contextControlCode: "OP"
     }
+
     AgentPerson: peoplePlaces.AgentPerson
+}
+
+/**
+ * An identifier of the Act Relationship that relates clinical statements directly to the focal act.
+ */
+export class ParentPrescriptionPertinentInformation2 implements ElementCompact {
+    _attributes: core.AttributeTypeCode = {
+        typeCode: "PERT"
+    }
+
+    templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.pertinentInformation1")
+    pertinentCareRecordElementCategory: CareRecordElementCategory
+
+    constructor(pertinentCareRecordElementCategory: CareRecordElementCategory) {
+        this.pertinentCareRecordElementCategory = pertinentCareRecordElementCategory
+    }
+}
+
+/**
+ * An act used to categorise clinical statements within the message into care record element categories.
+ * The CareRecordElementCategory act can reference multiple ActRef acts to 'group' multiple clinical statements under a single category.
+ */
+export class CareRecordElementCategory implements ElementCompact {
+    _attributes: core.AttributeClassCode & AttributeMoodCode = {
+        classCode: "CATEGORY",
+        moodCode: "EVN"
+    }
+
+    code = new SnomedCode("185361000000102", "Medication")
+    component: Array<CareRecordElementCategoryComponent>
+}
+
+/**
+ * An act relationship used to convey that the ActRef act forms a component of the acts within the CareRecordElementCategory.
+ */
+export class CareRecordElementCategoryComponent implements ElementCompact {
+    _attributes: AttributeTypeCode = {
+        typeCode: "COMP"
+    }
+
+    actRef: ActRef
+
+    constructor(actRef: ActRef) {
+        this.actRef = actRef
+    }
+}
+
+export interface Act {
+    _attributes: AttributeClassCode & AttributeMoodCode
+    id: GlobalIdentifier
+}
+
+/**
+ * Reference to a clinical statement within this message.
+ */
+export class ActRef implements ElementCompact {
+    _attributes: AttributeClassCode & AttributeMoodCode
+    id: GlobalIdentifier
+
+    constructor(act: Act) {
+        this._attributes = {
+            classCode: act._attributes.classCode,
+            moodCode: act._attributes.moodCode
+        }
+
+        this.id = act.id
+    }
 }

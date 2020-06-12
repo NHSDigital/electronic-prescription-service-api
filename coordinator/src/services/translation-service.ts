@@ -1,12 +1,12 @@
 import * as XmlJs from 'xml-js'
+import {ElementCompact} from 'xml-js'
 import * as codes from "./hl7-v3-datatypes-codes"
 import * as core from "./hl7-v3-datatypes-core"
 import * as peoplePlaces from "./hl7-v3-people-places"
 import * as prescriptions from "./hl7-v3-prescriptions"
 import * as fhir from "./fhir-resources"
 import * as crypto from "crypto-js"
-import {Patient, Resource} from "./fhir-resources";
-import {ParentPrescription, Prescription} from "./hl7-v3-prescriptions";
+import {ActRef, CareRecordElementCategory, CareRecordElementCategoryComponent, LineItem} from "./hl7-v3-prescriptions";
 
 //TODO - is there a better way than returning Array<unknown>?
 export function getResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): Array<unknown> {
@@ -15,7 +15,7 @@ export function getResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string
         .filter(resource => resource.resourceType === resourceType)
 }
 
-export function getResourceForFullUrl(fhirBundle: fhir.Bundle, resourceFullUrl: string): Resource {
+export function getResourceForFullUrl(fhirBundle: fhir.Bundle, resourceFullUrl: string): fhir.Resource {
     return fhirBundle.entry
         .filter(entry => entry.fullUrl === resourceFullUrl)
         .reduce(onlyElement)
@@ -41,63 +41,165 @@ function getCodeableConceptCodingForSystem(codeableConcept: Array<fhir.CodeableC
     return getCodingForSystem(coding, system)
 }
 
+function convertCareRecordElementCategories(lineItems: Array<LineItem>) {
+    const careRecordElementCategory = new CareRecordElementCategory();
+    careRecordElementCategory.component = lineItems
+        .map(act => new ActRef(act))
+        .map(actRef => new CareRecordElementCategoryComponent(actRef))
+    return careRecordElementCategory
+}
+
 export function convertBundleToParentPrescription(
     fhirBundle: fhir.Bundle,
-    convertPatientFn: (arg1: fhir.Bundle, arg2: fhir.Patient) => peoplePlaces.Patient = convertPatient,
-    convertBundleToPrescriptionFn: (arg1: fhir.Bundle) => prescriptions.Prescription = convertBundleToPrescription
-): ParentPrescription {
-
+    convertPatientFn = convertPatient,
+    convertBundleToPrescriptionFn = convertBundleToPrescription,
+    convertCareRecordElementCategoriesFn = convertCareRecordElementCategories
+): prescriptions.ParentPrescription {
     const hl7V3ParentPrescription = new prescriptions.ParentPrescription()
 
     hl7V3ParentPrescription.id = new codes.GlobalIdentifier(fhirBundle.id)
+
     const fhirMedicationRequests = getResourcesOfType(fhirBundle, "MedicationRequest") as Array<fhir.MedicationRequest>
     const fhirFirstMedicationRequest = fhirMedicationRequests[0]
     hl7V3ParentPrescription.effectiveTime = new core.Timestamp(fhirFirstMedicationRequest.authoredOn)
 
-    const fhirPatient = getResourceForFullUrl(fhirBundle, fhirFirstMedicationRequest.subject.reference)
+    const fhirPatient = getResourcesOfType(fhirBundle, "Patient")[0] as fhir.Patient
     const hl7V3Patient = convertPatientFn(fhirBundle, fhirPatient)
     hl7V3ParentPrescription.recordTarget = new prescriptions.RecordTarget(hl7V3Patient)
 
     const hl7V3Prescription = convertBundleToPrescriptionFn(fhirBundle)
     hl7V3ParentPrescription.pertinentInformation1 = new prescriptions.ParentPrescriptionPertinentInformation1(hl7V3Prescription)
 
+    const lineItems = hl7V3ParentPrescription.pertinentInformation1.pertinentPrescription.pertinentInformation2.map(info => info.pertinentLineItem)
+    const careRecordElementCategory = convertCareRecordElementCategoriesFn(lineItems)
+    hl7V3ParentPrescription.pertinentInformation2 = new prescriptions.ParentPrescriptionPertinentInformation2(careRecordElementCategory)
+
     return hl7V3ParentPrescription
 }
 
-export function convertPatient(
-    fhirBundle: fhir.Bundle,
-    fhirPatient: fhir.Patient,
-    convertGenderFn: (arg1: string) => codes.SexCode = convertGender,
-    convertAddressFn: (arg1: fhir.Address) => core.Address = convertAddress,
-    convertNameFn: (arg1: fhir.HumanName) => core.Name = convertName
-): peoplePlaces.Patient {
+function getGeneralPractitionerSdsUniqueId(
+    bundle: fhir.Bundle,
+    patient: fhir.Patient
+) {
+    const fhirPractitionerRole = getResourceForFullUrl(bundle, patient.generalPractitioner.reference) as fhir.PractitionerRole
+    const fhirPractitioner = getResourceForFullUrl(bundle, fhirPractitionerRole.practitioner.reference) as fhir.Practitioner
+    return getIdentifierValueForSystem(fhirPractitioner.identifier, "https://fhir.nhs.uk/Id/sds-user-id");
+}
 
-    const hl7V3Patient = new peoplePlaces.Patient()
-    const nhsNumber = getIdentifierValueForSystem(fhirPatient.identifier, "https://fhir.nhs.uk/Id/nhs-number")
-    hl7V3Patient.id = new codes.NhsNumber(nhsNumber)
-    hl7V3Patient.addr = fhirPatient.address
-        .map(convertAddressFn)
-
-    const hl7V3PatientPerson = new peoplePlaces.PatientPerson()
-    hl7V3PatientPerson.name = fhirPatient.name
-        .map(convertNameFn)
-    hl7V3PatientPerson.administrativeGenderCode = convertGenderFn(fhirPatient.gender)
-    hl7V3PatientPerson.birthTime = new core.Timestamp(fhirPatient.birthDate)
-
-    const fhirPractitionerRole = getResourceForFullUrl(fhirBundle, fhirPatient.generalPractitioner.reference) as fhir.PractitionerRole
-    const fhirPractitioner = getResourceForFullUrl(fhirBundle, fhirPractitionerRole.practitioner.reference) as fhir.Practitioner
-    const sdsUniqueId = getIdentifierValueForSystem(fhirPractitioner.identifier, "https://fhir.nhs.uk/Id/sds-user-id")
+function convertPatientToProviderPatient(
+    bundle: fhir.Bundle,
+    patient: fhir.Patient,
+    getGeneralPractitionerSdsUniqueIdFn = getGeneralPractitionerSdsUniqueId
+) {
+    const sdsUniqueId = getGeneralPractitionerSdsUniqueIdFn(bundle, patient);
     const hl7V3HealthCareProvider = new peoplePlaces.HealthCareProvider()
     hl7V3HealthCareProvider.id = new codes.SdsUniqueIdentifier(sdsUniqueId)
     const hl7V3PatientCareProvision = new peoplePlaces.PatientCareProvision("1")
     hl7V3PatientCareProvision.responsibleParty = new peoplePlaces.ResponsibleParty(hl7V3HealthCareProvider)
     const hl7V3ProviderPatient = new peoplePlaces.ProviderPatient()
     hl7V3ProviderPatient.subjectOf = new peoplePlaces.SubjectOf(hl7V3PatientCareProvision)
-    hl7V3PatientPerson.playedProviderPatient = hl7V3ProviderPatient
+    return hl7V3ProviderPatient;
+}
 
-    hl7V3Patient.patientPerson = hl7V3PatientPerson
+function convertPatientToPatientPerson(
+    bundle: fhir.Bundle,
+    patient: fhir.Patient,
+    convertNameFn = convertName,
+    convertGenderFn = convertGender,
+    convertPatientToProviderPatientFn = convertPatientToProviderPatient
+) {
+    const hl7V3PatientPerson = new peoplePlaces.PatientPerson()
+    hl7V3PatientPerson.name = patient.name.map(convertNameFn)
+    hl7V3PatientPerson.administrativeGenderCode = convertGenderFn(patient.gender)
+    hl7V3PatientPerson.birthTime = new core.Timestamp(patient.birthDate)
+    hl7V3PatientPerson.playedProviderPatient = convertPatientToProviderPatientFn(bundle, patient)
+    return hl7V3PatientPerson;
+}
 
+export function convertPatient(
+    fhirBundle: fhir.Bundle,
+    fhirPatient: fhir.Patient,
+    getIdentifierValueForSystemFn = getIdentifierValueForSystem,
+    convertAddressFn = convertAddress,
+    convertPatientToPatientPersonFn = convertPatientToPatientPerson
+): peoplePlaces.Patient {
+    const hl7V3Patient = new peoplePlaces.Patient()
+    const nhsNumber = getIdentifierValueForSystemFn(fhirPatient.identifier, "https://fhir.nhs.uk/Id/nhs-number")
+    hl7V3Patient.id = new codes.NhsNumber(nhsNumber)
+    hl7V3Patient.addr = fhirPatient.address.map(convertAddressFn)
+    hl7V3Patient.patientPerson = convertPatientToPatientPersonFn(fhirBundle, fhirPatient)
     return hl7V3Patient
+}
+
+function convertPrescriptionIds(
+    fhirFirstMedicationRequest: fhir.MedicationRequest,
+    getIdentifierValueForSystemFn = getIdentifierValueForSystem
+): [codes.GlobalIdentifier, codes.ShortFormPrescriptionIdentifier] {
+    const prescriptionId = getIdentifierValueForSystemFn(fhirFirstMedicationRequest.groupIdentifier, "urn:uuid")
+    const prescriptionShortFormId = getIdentifierValueForSystemFn(fhirFirstMedicationRequest.groupIdentifier, "urn:oid:2.16.840.1.113883.2.1.3.2.4.18.8")
+    return [
+        new codes.GlobalIdentifier(prescriptionId),
+        new codes.ShortFormPrescriptionIdentifier(prescriptionShortFormId)
+    ]
+}
+
+function convertAuthor(
+    fhirBundle: fhir.Bundle,
+    fhirFirstMedicationRequest: fhir.MedicationRequest,
+    convertPractitionerRoleFn = convertPractitionerRole
+) {
+    const hl7V3Author = new prescriptions.Author()
+    hl7V3Author.time = new core.Timestamp(fhirFirstMedicationRequest.authoredOn)
+    // TODO implement signatureText
+    hl7V3Author.signatureText = core.Null.NOT_APPLICABLE
+    const fhirAuthorPractitionerRole = getResourceForFullUrl(fhirBundle, fhirFirstMedicationRequest.requester.reference) as fhir.PractitionerRole
+    hl7V3Author.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirAuthorPractitionerRole)
+    return hl7V3Author;
+}
+
+function convertResponsibleParty(
+    fhirBundle: fhir.Bundle,
+    convertPractitionerRoleFn = convertPractitionerRole
+) {
+    const responsibleParty = new prescriptions.ResponsibleParty()
+    const fhirPatient = getResourcesOfType(fhirBundle, "Patient")[0] as fhir.Patient
+    const fhirResponsiblePartyPractitionerRole = getResourceForFullUrl(fhirBundle, fhirPatient.generalPractitioner.reference) as fhir.PractitionerRole
+    responsibleParty.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirResponsiblePartyPractitionerRole)
+    return responsibleParty;
+}
+
+function convertPrescriptionPertinentInformation5() {
+    //TODO - implement
+    const prescriptionTreatmentTypeValue = new codes.PrescriptionTreatmentTypeCode("0001");
+    const prescriptionTreatmentType = new prescriptions.PrescriptionTreatmentType(prescriptionTreatmentTypeValue)
+    return new prescriptions.PrescriptionPertinentInformation5(prescriptionTreatmentType);
+}
+
+function convertPrescriptionPertinentInformation1() {
+    //TODO - implement
+    const dispensingSitePreferenceValue = new codes.DispensingSitePreferenceCode("0004");
+    const dispensingSitePreference = new prescriptions.DispensingSitePreference(dispensingSitePreferenceValue)
+    return new prescriptions.PrescriptionPertinentInformation1(dispensingSitePreference);
+}
+
+function convertPrescriptionPertinentInformation2(fhirMedicationRequests: Array<fhir.MedicationRequest>) {
+    return fhirMedicationRequests
+        .map(convertMedicationRequestToLineItem)
+        .map(hl7V3LineItem => new prescriptions.PrescriptionPertinentInformation2(hl7V3LineItem));
+}
+
+function convertPrescriptionPertinentInformation8() {
+    //TODO - implement
+    const tokenIssuedValue = new core.BooleanValue(true);
+    const tokenIssued = new prescriptions.TokenIssued(tokenIssuedValue)
+    return new prescriptions.PrescriptionPertinentInformation8(tokenIssued);
+}
+
+function convertPrescriptionPertinentInformation4(fhirFirstMedicationRequest: fhir.MedicationRequest) {
+    const fhirMedicationRequestCategoryCoding = getCodeableConceptCodingForSystem(fhirFirstMedicationRequest.category, "urn:oid:2.16.840.1.113883.2.1.3.2.4.17.25")
+    const prescriptionTypeValue = new codes.PrescriptionTypeCode(fhirMedicationRequestCategoryCoding.code)
+    const prescriptionType = new prescriptions.PrescriptionType(prescriptionTypeValue)
+    return new prescriptions.PrescriptionPertinentInformation4(prescriptionType);
 }
 
 function convertBundleToPrescription(fhirBundle: fhir.Bundle) {
@@ -105,75 +207,49 @@ function convertBundleToPrescription(fhirBundle: fhir.Bundle) {
 
     const fhirMedicationRequests = getResourcesOfType(fhirBundle, "MedicationRequest") as Array<fhir.MedicationRequest>
     const fhirFirstMedicationRequest = fhirMedicationRequests[0]
-    const prescriptionId = getIdentifierValueForSystem(fhirFirstMedicationRequest.groupIdentifier, "urn:uuid")
-    const prescriptionShortFormId = getIdentifierValueForSystem(fhirFirstMedicationRequest.groupIdentifier, "urn:oid:2.16.840.1.113883.2.1.3.2.4.18.8")
-    hl7V3Prescription.id = [
-        new codes.GlobalIdentifier(prescriptionId),
-        new codes.ShortFormPrescriptionIdentifier(prescriptionShortFormId)
-    ]
 
-    const hl7V3Author = new prescriptions.Author()
-    hl7V3Author.time = new core.Timestamp(fhirFirstMedicationRequest.authoredOn)
-    // TODO implement signatureText
-    hl7V3Author.signatureText = core.Null.NOT_APPLICABLE
-    const fhirAuthorPractitionerRole = getResourceForFullUrl(fhirBundle, fhirFirstMedicationRequest.requester.reference) as fhir.PractitionerRole
-    hl7V3Author.AgentPerson = convertPractitionerRole(fhirBundle, fhirAuthorPractitionerRole)
-    hl7V3Prescription.author = hl7V3Author
+    hl7V3Prescription.id = convertPrescriptionIds(fhirFirstMedicationRequest)
+    hl7V3Prescription.author = convertAuthor(fhirBundle, fhirFirstMedicationRequest)
+    hl7V3Prescription.responsibleParty = convertResponsibleParty(fhirBundle)
 
-    const responsibleParty = new prescriptions.ResponsibleParty()
-    const fhirPatient = getResourceForFullUrl(fhirBundle, fhirFirstMedicationRequest.subject.reference) as fhir.Patient
-    const fhirResponsiblePartyPractitionerRole = getResourceForFullUrl(fhirBundle, fhirPatient.generalPractitioner.reference) as fhir.PractitionerRole
-    responsibleParty.AgentPerson = convertPractitionerRole(fhirBundle, fhirResponsiblePartyPractitionerRole)
-    hl7V3Prescription.responsibleParty = responsibleParty
-
-    //TODO - implement
-    const prescriptionTreatmentTypeValue = new codes.PrescriptionTreatmentTypeCode("0001");
-    const prescriptionTreatmentType = new prescriptions.PrescriptionTreatmentType(prescriptionTreatmentTypeValue)
-    hl7V3Prescription.pertinentInformation5 = new prescriptions.PrescriptionPertinentInformation5(prescriptionTreatmentType)
-
-    //TODO - implement
-    const dispensingSitePreferenceValue = new codes.DispensingSitePreferenceCode("0004");
-    const dispensingSitePreference = new prescriptions.DispensingSitePreference(dispensingSitePreferenceValue)
-    hl7V3Prescription.pertinentInformation1 = new prescriptions.PrescriptionPertinentInformation1(dispensingSitePreference)
-
-    hl7V3Prescription.pertinentInformation2 = fhirMedicationRequests
-        .map(convertMedicationRequestToLineItem)
-        .map(hl7V3LineItem => new prescriptions.PrescriptionPertinentInformation2(hl7V3LineItem))
-
-    //TODO - implement
-    const tokenIssuedValue = new core.BooleanValue(true);
-    const tokenIssued = new prescriptions.TokenIssued(tokenIssuedValue)
-    hl7V3Prescription.pertinentInformation8 = new prescriptions.PrescriptionPertinentInformation8(tokenIssued)
-
-    const fhirMedicationRequestCategoryCoding = getCodeableConceptCodingForSystem(fhirFirstMedicationRequest.category, "urn:oid:2.16.840.1.113883.2.1.3.2.4.17.25")
-    const prescriptionTypeValue = new codes.PrescriptionTypeCode(fhirMedicationRequestCategoryCoding.code)
-    const prescriptionType = new prescriptions.PrescriptionType(prescriptionTypeValue)
-    hl7V3Prescription.pertinentInformation4 = new prescriptions.PrescriptionPertinentInformation4(prescriptionType)
+    hl7V3Prescription.pertinentInformation5 = convertPrescriptionPertinentInformation5()
+    hl7V3Prescription.pertinentInformation1 = convertPrescriptionPertinentInformation1()
+    hl7V3Prescription.pertinentInformation2 = convertPrescriptionPertinentInformation2(fhirMedicationRequests)
+    hl7V3Prescription.pertinentInformation8 = convertPrescriptionPertinentInformation8()
+    hl7V3Prescription.pertinentInformation4 = convertPrescriptionPertinentInformation4(fhirFirstMedicationRequest)
 
     return hl7V3Prescription
 }
 
-function convertMedicationRequestToLineItem(fhirMedicationRequest: fhir.MedicationRequest) {
-    const hl7V3LineItem = new prescriptions.LineItem()
-
-    const fhirMedicationCode = getCodingForSystem(fhirMedicationRequest.medicationCodeableConcept.coding, "http://snomed.info/sct")
+function convertProduct(medicationCodeableConcept: fhir.CodeableConcept) {
+    const fhirMedicationCode = getCodingForSystem(medicationCodeableConcept.coding, "http://snomed.info/sct")
     const hl7V3MedicationCode = new codes.SnomedCode(fhirMedicationCode.code, fhirMedicationCode.display)
     const manufacturedRequestedMaterial = new prescriptions.ManufacturedRequestedMaterial(hl7V3MedicationCode);
     const manufacturedProduct = new prescriptions.ManufacturedProduct(manufacturedRequestedMaterial);
-    hl7V3LineItem.product = new prescriptions.Product(manufacturedProduct)
+    return new prescriptions.Product(manufacturedProduct);
+}
 
-    const dosageInstructionsValue = fhirMedicationRequest.dosageInstruction
+function convertDosageInstructions(dosageInstruction: Array<fhir.Dosage>) {
+    const dosageInstructionsValue = dosageInstruction
         .map(dosageInstruction => dosageInstruction.text)
         .reduce(onlyElement)
     const hl7V3DosageInstructions = new prescriptions.DosageInstructions(dosageInstructionsValue)
-    hl7V3LineItem.pertinentInformation2 = new prescriptions.LineItemPertinentInformation2(hl7V3DosageInstructions)
+    return new prescriptions.LineItemPertinentInformation2(hl7V3DosageInstructions);
+}
 
+function convertLineItemComponent(fhirQuantity: fhir.SimpleQuantity) {
     const hl7V3LineItemQuantity = new prescriptions.LineItemQuantity()
-    const fhirQuantity = fhirMedicationRequest.dispenseRequest.quantity
     const hl7V3UnitCode = new codes.SnomedCode(fhirQuantity.code, fhirQuantity.unit)
     hl7V3LineItemQuantity.quantity = new core.QuantityInAlternativeUnits(fhirQuantity.value, fhirQuantity.value, hl7V3UnitCode)
-    hl7V3LineItem.component = new prescriptions.LineItemComponent(hl7V3LineItemQuantity)
+    return new prescriptions.LineItemComponent(hl7V3LineItemQuantity);
+}
 
+function convertMedicationRequestToLineItem(fhirMedicationRequest: fhir.MedicationRequest) {
+    const hl7V3LineItem = new prescriptions.LineItem()
+    hl7V3LineItem.id = new codes.GlobalIdentifier(fhirMedicationRequest.id)
+    hl7V3LineItem.product = convertProduct(fhirMedicationRequest.medicationCodeableConcept)
+    hl7V3LineItem.pertinentInformation2 = convertDosageInstructions(fhirMedicationRequest.dosageInstruction)
+    hl7V3LineItem.component = convertLineItemComponent(fhirMedicationRequest.dispenseRequest.quantity)
     return hl7V3LineItem
 }
 
@@ -185,55 +261,63 @@ function convertPractitionerRole(fhirBundle: fhir.Bundle, fhirPractitionerRole: 
     return hl7V3AgentPerson
 }
 
-function convertPractitioner(fhirBundle: fhir.Bundle, fhirPractitioner: fhir.Practitioner): peoplePlaces.AgentPerson {
+function convertAgentPersonPerson(fhirPractitioner: fhir.Practitioner) {
+    const hl7V3AgentPersonPerson = new peoplePlaces.AgentPersonPerson()
+    const sdsUniqueIdentifier = getIdentifierValueForSystem(fhirPractitioner.identifier, "https://fhir.nhs.uk/Id/sds-user-id")
+    hl7V3AgentPersonPerson.id = new codes.SdsUniqueIdentifier(sdsUniqueIdentifier)
+    hl7V3AgentPersonPerson.name = fhirPractitioner.name?.map(convertName).reduce(onlyElement)
+    return hl7V3AgentPersonPerson;
+}
+
+function convertPractitioner(
+    fhirBundle: fhir.Bundle,
+    fhirPractitioner: fhir.Practitioner,
+    convertAgentPersonPersonFn = convertAgentPersonPerson
+): peoplePlaces.AgentPerson {
     const hl7V3AgentPerson = new peoplePlaces.AgentPerson()
 
     const sdsRoleProfileIdentifier = getIdentifierValueForSystem(fhirPractitioner.identifier, "https://fhir.nhs.uk/Id/sds-role-profile-id")
     hl7V3AgentPerson.id = new codes.SdsRoleProfileIdentifier(sdsRoleProfileIdentifier)
+
     const sdsJobRoleCode = getIdentifierValueForSystem(fhirPractitioner.identifier, "https://fhir.nhs.uk/Id/sds-job-role-id")
     hl7V3AgentPerson.code = new codes.SdsJobRoleCode(sdsJobRoleCode)
-    if (fhirPractitioner.telecom !== undefined) {
-        hl7V3AgentPerson.telecom = fhirPractitioner.telecom
-            .map(convertTelecom)
-    }
 
-    const hl7V3AgentPersonPerson = new peoplePlaces.AgentPersonPerson()
-    const sdsUniqueIdentifier = getIdentifierValueForSystem(fhirPractitioner.identifier, "https://fhir.nhs.uk/Id/sds-user-id")
-    hl7V3AgentPersonPerson.id = new codes.SdsUniqueIdentifier(sdsUniqueIdentifier)
-    if (fhirPractitioner.name !== undefined) {
-        hl7V3AgentPersonPerson.name = fhirPractitioner.name
-            .map(convertName)
-            .reduce(onlyElement)
-    }
+    hl7V3AgentPerson.telecom = fhirPractitioner.telecom?.map(convertTelecom)
 
-    hl7V3AgentPerson.agentPerson = hl7V3AgentPersonPerson
+    hl7V3AgentPerson.agentPerson = convertAgentPersonPersonFn(fhirPractitioner)
 
     return hl7V3AgentPerson
 }
 
-function convertOrganization(fhirBundle: fhir.Bundle, fhirOrganization: fhir.Organization) {
+function convertHealthCareProviderLicense(
+    bundle: fhir.Bundle,
+    organizationPartOf: fhir.Reference,
+    convertOrganizationFn = convertOrganization
+): peoplePlaces.HealthCareProviderLicense {
+    const fhirParentOrganization = getResourceForFullUrl(bundle, organizationPartOf.reference)
+    const hl7V3ParentOrganization = convertOrganizationFn(bundle, fhirParentOrganization)
+    return new peoplePlaces.HealthCareProviderLicense(hl7V3ParentOrganization)
+}
+
+function convertOrganization(
+    fhirBundle: fhir.Bundle,
+    fhirOrganization: fhir.Organization,
+    convertHealthCareProviderLicenseFn = convertHealthCareProviderLicense
+): peoplePlaces.Organization {
     const hl7V3Organization = new peoplePlaces.Organization()
 
     const organizationSdsId = getIdentifierValueForSystem(fhirOrganization.identifier, "https://fhir.nhs.uk/Id/ods-organization-code")
     hl7V3Organization.id = new codes.SdsOrganizationIdentifier(organizationSdsId)
+
     const organizationTypeCoding = getCodeableConceptCodingForSystem(fhirOrganization.type, "urn:oid:2.16.840.1.113883.2.1.3.2.4.17.94")
     hl7V3Organization.code = new codes.OrganizationTypeCode(organizationTypeCoding.code)
+
     hl7V3Organization.name = fhirOrganization.name
-    if (fhirOrganization.telecom !== undefined) {
-        hl7V3Organization.telecom = fhirOrganization.telecom
-            .map(convertTelecom)
-            .reduce(onlyElement)
-    }
-    if (fhirOrganization.address !== undefined) {
-        hl7V3Organization.addr = fhirOrganization.address
-            .map(convertAddress)
-            .reduce(onlyElement)
-    }
+    hl7V3Organization.telecom = fhirOrganization.telecom?.map(convertTelecom).reduce(onlyElement)
+    hl7V3Organization.addr = fhirOrganization.address?.map(convertAddress).reduce(onlyElement)
 
     if (fhirOrganization.partOf !== undefined) {
-        const fhirParentOrganization = getResourceForFullUrl(fhirBundle, fhirOrganization.partOf.reference)
-        const hl7V3ParentOrganization = convertOrganization(fhirBundle, fhirParentOrganization)
-        hl7V3Organization.healthCareProviderLicense = new peoplePlaces.HealthCareProviderLicense(hl7V3ParentOrganization)
+        hl7V3Organization.healthCareProviderLicense = convertHealthCareProviderLicenseFn(fhirBundle, fhirOrganization.partOf)
     }
 
     return hl7V3Organization
@@ -325,8 +409,7 @@ export function convertFhirMessageToHl7V3ParentPrescription(fhirMessage: fhir.Bu
     return XmlJs.js2xml(root, options)
 }
 
-export function convertFhirMessageToHl7V3SignatureFragments(fhirMessage: fhir.Bundle): string {
-    const parentPrescription = convertBundleToParentPrescription(fhirMessage)
+function convertParentPrescriptionToSignatureFragments(parentPrescription: prescriptions.ParentPrescription) {
     const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
     const fragments = []
 
@@ -349,12 +432,16 @@ export function convertFhirMessageToHl7V3SignatureFragments(fhirMessage: fhir.Bu
         })
     )
 
-    const messageDigest = {
+    const root = {
         FragmentsToBeHashed: {
             Fragment: fragments
         }
-    }
+    } as XmlJs.ElementCompact
 
+    return writeXmlStringCanonicalized(root);
+}
+
+function writeXmlStringCanonicalized(tag: XmlJs.ElementCompact) {
     const options = {
         compact: true,
         ignoreComment: true,
@@ -362,19 +449,25 @@ export function convertFhirMessageToHl7V3SignatureFragments(fhirMessage: fhir.Bu
         fullTagEmptyElement: true,
         attributeValueFn: canonicaliseAttribute,
         attributesFn: sortAttributes
-    }
+    } as unknown as XmlJs.Options.JS2XML //declared type for attributesFn is wrong :(
     //TODO do we need to worry about newlines inside tags?
-    return generateSignedInfo(XmlJs.js2xml(messageDigest, options).replace(/\r?\n/, ""))
+    return XmlJs.js2xml(tag, options).replace(/\r?\n/, "");
 }
 
-function canonicaliseAttribute(attribute: string){
+export function convertFhirMessageToHl7V3SignedInfo(fhirMessage: fhir.Bundle): string {
+    const parentPrescription = convertBundleToParentPrescription(fhirMessage)
+    const fragmentsToBeHashed = convertParentPrescriptionToSignatureFragments(parentPrescription);
+    return convertSignatureFragmentsToSignedInfo(fragmentsToBeHashed)
+}
+
+function canonicaliseAttribute(attribute: string) {
     attribute = attribute.replace(/[\t\f]+/g, " ")
     attribute = attribute.replace(/\r?\n/g, " ")
     return attribute
 }
 
-function namespacedCopyOf(tag: any) {
-    const newTag = {...tag}
+function namespacedCopyOf(tag: XmlJs.ElementCompact) {
+    const newTag = {...tag} as XmlJs.ElementCompact
     newTag._attributes = {
         xmlns: "urn:hl7-org:v3",
         ...newTag._attributes
@@ -382,10 +475,10 @@ function namespacedCopyOf(tag: any) {
     return newTag
 }
 
-function sortAttributes(attributes: any) {
+function sortAttributes(attributes: XmlJs.Attributes) {
     const newAttributes = {
         xmlns: attributes.xmlns
-    } as any
+    } as XmlJs.Attributes
     Object.getOwnPropertyNames(attributes)
         .sort()
         .forEach(propertyName => newAttributes[propertyName] = attributes[propertyName])
@@ -396,17 +489,56 @@ function onlyElement<T>(previousValue: T, currentValue: T, currentIndex: number,
     throw TypeError("Expected 1 element but got " + array.length + ": " + JSON.stringify(array))
 }
 
-function generateSignedInfo(signatureFragment: string): string{
-    const digestValue = crypto.SHA1(signatureFragment)
+function identical<T>(previousValue: T, currentValue: T, currentIndex: number, array: T[]): T {
+    if (previousValue !== currentValue) {
+        throw TypeError("Expected all elements to be identical: " + JSON.stringify(array))
+    }
+    return previousValue
+}
+
+function generateSignedInfo(fragmentsToBeHashed: string): string {
+    const digestValue = crypto.SHA1(fragmentsToBeHashed)
     return "<SignedInfo>" +
-            "<CanonicalizationMethod Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"></CanonicalizationMethod>" +
-            "<SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\"></SignatureMethod>" +
-            "<Reference>" +
-                "<Transforms>" +
-                    "<Transform Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"></Transform>" +
-                "</Transforms>" +
-                "<DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\"></DigestMethod>" +
-                `<DigestValue>${digestValue}</DigestValue>` +
-            "</Reference>" +
+        "<CanonicalizationMethod Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"></CanonicalizationMethod>" +
+        "<SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\"></SignatureMethod>" +
+        "<Reference>" +
+        "<Transforms>" +
+        "<Transform Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"></Transform>" +
+        "</Transforms>" +
+        "<DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\"></DigestMethod>" +
+        `<DigestValue>${digestValue}</DigestValue>` +
+        "</Reference>" +
         "</SignedInfo>"
+}
+
+function convertSignatureFragmentsToSignedInfo(fragmentsToBeHashed: string): string {
+    const digestValue = crypto.SHA1(fragmentsToBeHashed)
+
+    const root = {
+        SignedInfo: {
+            CanonicalizationMethod: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#"),
+            SignatureMethod: new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#rsa-sha1"),
+            Reference: {
+                Transforms: {
+                    Transform: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#")
+                },
+                DigestMethod: new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#sha1"),
+                DigestValue: digestValue.toString()
+            }
+        }
+    }
+
+    return writeXmlStringCanonicalized(root)
+}
+
+class AlgorithmIdentifier implements ElementCompact {
+    _attributes: {
+        Algorithm: string
+    }
+
+    constructor(algorithm: string) {
+        this._attributes = {
+            Algorithm: algorithm
+        }
+    }
 }

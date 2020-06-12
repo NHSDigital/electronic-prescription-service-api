@@ -1,11 +1,13 @@
-interface CodeAttributes {
-    codeSystem: string
-    code: string
-    displayName?: string
-}
+import {ElementCompact} from "xml-js";
 
-class Code {
-    _attributes: CodeAttributes
+class Code implements ElementCompact {
+    _attributes: {
+        codeSystem: string
+        code: string
+        displayName?: string
+    }
+
+    originalText?: string
 
     constructor(system: string, code: string, desc?: string) {
         this._attributes = {
@@ -75,13 +77,11 @@ export class PrescriptionTypeCode extends Code {
     }
 }
 
-interface IdentifierAttributes {
-    root: string
-    extension?: string
-}
-
-class Identifier {
-    _attributes: IdentifierAttributes
+class Identifier implements ElementCompact {
+    _attributes: {
+        root: string
+        extension?: string
+    }
 
     constructor(root: string, extension?: string) {
         this._attributes = {
