@@ -184,9 +184,9 @@ paths:
               schema:
                 $ref: components/schemas/OperationOutcome-5XX.yaml
               examples:
-                example:
+                patient-deceased:
                   value:
-                    $ref: components/examples/ServerErrorResponse.yaml
+                    $ref: components/examples/PrescriptionPutErrorPatientDeceasedResponse.yaml
           headers: {}
       requestBody:
         content:

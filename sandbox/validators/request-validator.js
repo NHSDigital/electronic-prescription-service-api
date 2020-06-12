@@ -15,11 +15,11 @@ function verifyPrescriptionBundle(bundle) {
     verifyPayloadId,
     verifyResourceTypeIsBundle,
     verifyBundleContainsEntries,
-    _=> verifyBundleContainsAtLeast(bundle, 1, "MedicationRequest"),
-    _=> verifyBundleContainsExactly(bundle, 1, "Patient"),
-    _=> verifyBundleContainsAtLeast(bundle, 1, "Practitioner"),
-    _=> verifyBundleContainsExactly(bundle, 1, "Encounter"),
-    _=> verifyBundleContainsExactly(bundle, 2, "Organization")
+    () => verifyBundleContainsAtLeast(bundle, 1, "MedicationRequest"),
+    () => verifyBundleContainsExactly(bundle, 1, "Patient"),
+    () => verifyBundleContainsAtLeast(bundle, 1, "Practitioner"),
+    () => verifyBundleContainsExactly(bundle, 1, "Encounter"),
+    () => verifyBundleContainsExactly(bundle, 2, "Organization")
   )
 }
 
