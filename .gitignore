@@ -11,3 +11,5 @@ sandbox/mocks
 __pycache__/
 .envrc
 .idea
+
+.vscode
