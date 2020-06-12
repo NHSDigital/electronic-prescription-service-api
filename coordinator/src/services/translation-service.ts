@@ -5,7 +5,8 @@ import * as peoplePlaces from "./hl7-v3-people-places"
 import * as prescriptions from "./hl7-v3-prescriptions"
 import * as fhir from "./fhir-resources"
 import * as crypto from "crypto-js"
-import {Resource} from "./fhir-resources";
+import {Patient, Resource} from "./fhir-resources";
+import {ParentPrescription, Prescription} from "./hl7-v3-prescriptions";
 
 //TODO - is there a better way than returning Array<unknown>?
 export function getResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): Array<unknown> {
@@ -40,7 +41,12 @@ function getCodeableConceptCodingForSystem(codeableConcept: Array<fhir.CodeableC
     return getCodingForSystem(coding, system)
 }
 
-function convertBundleToParentPrescription(fhirBundle: fhir.Bundle) {
+export function convertBundleToParentPrescription(
+    fhirBundle: fhir.Bundle,
+    convertPatientFn: (arg1: fhir.Bundle, arg2: fhir.Patient) => peoplePlaces.Patient = convertPatient,
+    convertBundleToPrescriptionFn: (arg1: fhir.Bundle) => prescriptions.Prescription = convertBundleToPrescription
+): ParentPrescription {
+
     const hl7V3ParentPrescription = new prescriptions.ParentPrescription()
 
     hl7V3ParentPrescription.id = new codes.GlobalIdentifier(fhirBundle.id)
@@ -49,26 +55,33 @@ function convertBundleToParentPrescription(fhirBundle: fhir.Bundle) {
     hl7V3ParentPrescription.effectiveTime = new core.Timestamp(fhirFirstMedicationRequest.authoredOn)
 
     const fhirPatient = getResourceForFullUrl(fhirBundle, fhirFirstMedicationRequest.subject.reference)
-    const hl7V3Patient = convertPatient(fhirBundle, fhirPatient)
+    const hl7V3Patient = convertPatientFn(fhirBundle, fhirPatient)
     hl7V3ParentPrescription.recordTarget = new prescriptions.RecordTarget(hl7V3Patient)
 
-    const hl7V3Prescription = convertBundleToPrescription(fhirBundle)
+    const hl7V3Prescription = convertBundleToPrescriptionFn(fhirBundle)
     hl7V3ParentPrescription.pertinentInformation1 = new prescriptions.ParentPrescriptionPertinentInformation1(hl7V3Prescription)
 
     return hl7V3ParentPrescription
 }
 
-function convertPatient(fhirBundle: fhir.Bundle, fhirPatient: fhir.Patient): peoplePlaces.Patient {
+export function convertPatient(
+    fhirBundle: fhir.Bundle,
+    fhirPatient: fhir.Patient,
+    convertGenderFn: (arg1: string) => codes.SexCode = convertGender,
+    convertAddressFn: (arg1: fhir.Address) => core.Address = convertAddress,
+    convertNameFn: (arg1: fhir.HumanName) => core.Name = convertName
+): peoplePlaces.Patient {
+
     const hl7V3Patient = new peoplePlaces.Patient()
     const nhsNumber = getIdentifierValueForSystem(fhirPatient.identifier, "https://fhir.nhs.uk/Id/nhs-number")
     hl7V3Patient.id = new codes.NhsNumber(nhsNumber)
     hl7V3Patient.addr = fhirPatient.address
-        .map(convertAddress)
+        .map(convertAddressFn)
 
     const hl7V3PatientPerson = new peoplePlaces.PatientPerson()
     hl7V3PatientPerson.name = fhirPatient.name
-        .map(convertName)
-    hl7V3PatientPerson.administrativeGenderCode = convertGender(fhirPatient.gender)
+        .map(convertNameFn)
+    hl7V3PatientPerson.administrativeGenderCode = convertGenderFn(fhirPatient.gender)
     hl7V3PatientPerson.birthTime = new core.Timestamp(fhirPatient.birthDate)
 
     const fhirPractitionerRole = getResourceForFullUrl(fhirBundle, fhirPatient.generalPractitioner.reference) as fhir.PractitionerRole
