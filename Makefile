@@ -34,18 +34,45 @@ validate: generate-examples
 clean:
 	rm -rf build
 	rm -rf dist
+	rm -rf sandbox/mocks
 
 generate-examples: build-spec clean
 	mkdir -p build/examples
 	poetry run python scripts/generate_examples.py build/electronic-prescriptions.json build/examples
 
 update-examples: generate-examples
-	jq -rM . <build/examples/requests/paths._Prescription.post.requestBody.content.application_fhir+json.examples.example.value.json >specification/components/examples/PrescriptionPostSuccessRequest.json
-	jq -rM . <build/examples/responses/paths._Prescription.post.responses.200.content.application_fhir+json.examples.example.value.json >specification/components/examples/PrescriptionPostSuccessResponse.json
-	jq -rM . <build/examples/requests/paths._Prescription.put.requestBody.content.application_fhir+json.examples.example.value.json >specification/components/examples/PrescriptionPutSuccessRequest.json
-	jq -rM . <build/examples/responses/paths._Prescription.put.responses.200.content.application_fhir+json.examples.example.value.json >specification/components/examples/PrescriptionPutSuccessResponse.json
-	make build-spec
-
+	mkdir -p sandbox/mocks
+	jq -rM . <build/examples/requests/paths._Prescription.post.requestBody.content.application_fhir+json.examples.example.value.json >sandbox/mocks/PrescriptionPostSuccessRequest.json
+	jq -rM . <build/examples/responses/paths._Prescription.post.responses.200.content.application_fhir+json.examples.example.value.json >sandbox/mocks/PrescriptionPostSuccessResponse.json
+	jq -rM . <build/examples/requests/paths._Prescription.put.requestBody.content.application_fhir+json.examples.success.value.json >sandbox/mocks/PrescriptionPutSuccessRequest.json
+	jq -rM . <build/examples/requests/paths._Prescription.put.requestBody.content.application_fhir+json.examples.patient-deceased.value.json >sandbox/mocks/PrescriptionPutErrorPatientDeceasedRequest.
+	jq -rM . <build/examples/requests/paths._Prescription.put.requestBody.content.application_fhir+json.examples.duplicate-prescription.value.json >sandbox/mocks/PrescriptionPutErrorDuplicatePrescriptionRequest.json
+	jq -rM . <build/examples/requests/paths._Prescription.put.requestBody.content.application_fhir+json.examples.digital-signature-not-found.value.json >sandbox/mocks/PrescriptionPutErrorDigitalSignatureNotFoundRequest.json
+	jq -rM . <build/examples/requests/paths._Prescription.put.requestBody.content.application_fhir+json.examples.patient-not-found.value.json >sandbox/mocks/PrescriptionPutErrorPatientNotFoundRequest.json
+	jq -rM . <build/examples/requests/paths._Prescription.put.requestBody.content.application_fhir+json.examples.information-missing.value.json >sandbox/mocks/PrescriptionPutErrorInformationMissingRequest.json
+	jq -rM . <build/examples/requests/paths._Prescription.put.requestBody.content.application_fhir+json.examples.invalid-message.value.json >sandbox/mocks/PrescriptionPutErrorInvalidMessageRequest.json
+	jq -rM . <build/examples/requests/paths._Prescription.put.requestBody.content.application_fhir+json.examples.incorrect-item-count.value.json >sandbox/mocks/PrescriptionPutErrorIncorrectItemCountRequest.json
+	jq -rM . <build/examples/requests/paths._Prescription.put.requestBody.content.application_fhir+json.examples.authorised-repeat-mismatch.value.json >sandbox/mocks/PrescriptionPutErrorAuthorisedRepeatMismatchRequest.json
+	jq -rM . <build/examples/requests/paths._Prescription.put.requestBody.content.application_fhir+json.examples.incorrect-repeat-number.value.json >sandbox/mocks/PrescriptionPutErrorIncorrectRepeatNumberRequest.json
+	jq -rM . <build/examples/requests/paths._Prescription.put.requestBody.content.application_fhir+json.examples.incompatible-version.value.json >sandbox/mocks/PrescriptionPutErrorIncompatibleVersionResponse.json
+	jq -rM . <build/examples/requests/paths._Prescription.put.requestBody.content.application_fhir+json.examples.duplicate-item-id.value.json >sandbox/mocks/PrescriptionPutErrorDuplicateItemIdRequest.json
+	jq -rM . <build/examples/requests/paths._Prescription.put.requestBody.content.application_fhir+json.examples.check-digit-error.value.json >sandbox/mocks/PrescriptionPutErrorCheckDigitErrorRequest.json
+	jq -rM . <build/examples/requests/paths._Prescription.put.requestBody.content.application_fhir+json.examples.invalid-date-format.value.json >sandbox/mocks/PrescriptionPutErrorInvalidDateFormatRequest.json
+	jq -rM . <build/examples/responses/paths._Prescription.put.responses.200.content.application_fhir+json.examples.example.value.json >sandbox/mocks/PrescriptionPutSuccessResponse.json
+	jq -rM . <build/examples/responses/paths._Prescription.put.responses.5XX.content.application_fhir+json.examples.patient-deceased.value.json >sandbox/mocks/PrescriptionPutErrorPatientDeceasedResponse.json
+	jq -rM . <build/examples/responses/paths._Prescription.put.responses.5XX.content.application_fhir+json.examples.duplicate-prescription.value.json >sandbox/mocks/PrescriptionPutErrorDuplicatePrescriptionResponse.json
+	jq -rM . <build/examples/responses/paths._Prescription.put.responses.5XX.content.application_fhir+json.examples.digital-signature-not-found.value.json >sandbox/mocks/PrescriptionPutErrorDigitalSignatureNotFoundResponse.json
+	jq -rM . <build/examples/responses/paths._Prescription.put.responses.5XX.content.application_fhir+json.examples.patient-not-found.value.json >sandbox/mocks/PrescriptionPutErrorPatientNotFoundResponse.json
+	jq -rM . <build/examples/responses/paths._Prescription.put.responses.5XX.content.application_fhir+json.examples.information-missing.value.json >sandbox/mocks/PrescriptionPutErrorInformationMissingResponse.json
+	jq -rM . <build/examples/responses/paths._Prescription.put.responses.5XX.content.application_fhir+json.examples.invalid-message.value.json >sandbox/mocks/PrescriptionPutErrorInvalidMessageResponse.json
+	jq -rM . <build/examples/responses/paths._Prescription.put.responses.5XX.content.application_fhir+json.examples.incorrect-item-count.value.json >sandbox/mocks/PrescriptionPutErrorIncorrectItemCountResponse.json
+	jq -rM . <build/examples/responses/paths._Prescription.put.responses.5XX.content.application_fhir+json.examples.authorised-repeat-mismatch.value.json >sandbox/mocks/PrescriptionPutErrorAuthorisedRepeatMismatchResponse.json
+	jq -rM . <build/examples/responses/paths._Prescription.put.responses.5XX.content.application_fhir+json.examples.incorrect-repeat-number.value.json >sandbox/mocks/PrescriptionPutErrorIncorrectRepeatNumberResponse.json
+	jq -rM . <build/examples/responses/paths._Prescription.put.responses.5XX.content.application_fhir+json.examples.incompatible-version.value.json >sandbox/mocks/PrescriptionPutErrorIncompatibleVersionResponse.json
+	jq -rM . <build/examples/responses/paths._Prescription.put.responses.5XX.content.application_fhir+json.examples.duplicate-item-id.value.json >sandbox/mocks/PrescriptionPutErrorDuplicateItemIdResponse.json
+	jq -rM . <build/examples/responses/paths._Prescription.put.responses.5XX.content.application_fhir+json.examples.check-digit-error.value.json >sandbox/mocks/PrescriptionPutErrorCheckDigitErrorResponse.json
+	jq -rM . <build/examples/responses/paths._Prescription.put.responses.5XX.content.application_fhir+json.examples.invalid-date-format.value.json >sandbox/mocks/PrescriptionPutErrorInvalidDateFormatResponse.json
+	
 check-licenses:
 	npm run check-licenses
 	scripts/check_python_licenses.sh
