@@ -1,4 +1,4 @@
-export default {
+{
     "resourceType": "Bundle",
     "id": "F68CEA42-E8A0-D799-C874-163048F0D390",
     "type": "collection",
@@ -61,7 +61,7 @@ export default {
                     "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
                 }
             },
-            "fullUrl": "urn:uuid:8a596d71-e475-48a9-2a32-2d88192a1f2b"
+            "fullUrl": "urn:uuid:A7B86F8D-1D81-FC28-E050-D20AE3A215F0"
         },
         {
             "resource": {
@@ -121,7 +121,7 @@ export default {
                     "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
                 }
             },
-            "fullUrl": "urn:uuid:6e610ebd-f9a0-49c3-39c8-3edf199de727"
+            "fullUrl": "urn:uuid:A7B86F8D-1D86-FC28-E050-D20AE3A215F0"
         },
         {
             "resource": {
@@ -181,7 +181,7 @@ export default {
                     "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
                 }
             },
-            "fullUrl": "urn:uuid:c8badc15-19df-4b37-3606-306d57fd79e5"
+            "fullUrl": "urn:uuid:A7B86F8D-1D8B-FC28-E050-D20AE3A215F0"
         },
         {
             "resource": {
@@ -241,7 +241,7 @@ export default {
                     "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
                 }
             },
-            "fullUrl": "urn:uuid:4357ccdf-80c1-40fb-1e72-5b64c95d66ee"
+            "fullUrl": "urn:uuid:A7B86F8D-1D90-FC28-E050-D20AE3A215F0"
         },
         {
             "resource": {

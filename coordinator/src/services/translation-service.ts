@@ -453,7 +453,7 @@ export function convertFhirMessageToHl7V3ParentPrescription(fhirMessage: fhir.Bu
     return XmlJs.js2xml(root, options)
 }
 
-function convertParentPrescriptionToSignatureFragments(parentPrescription: prescriptions.ParentPrescription) {
+export function convertParentPrescriptionToSignatureFragments(parentPrescription: prescriptions.ParentPrescription): XmlJs.ElementCompact {
     const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
     const fragments = []
 
@@ -476,16 +476,14 @@ function convertParentPrescriptionToSignatureFragments(parentPrescription: presc
         })
     )
 
-    const root = {
+    return {
         FragmentsToBeHashed: {
             Fragment: fragments
         }
     } as XmlJs.ElementCompact
-
-    return writeXmlStringCanonicalized(root);
 }
 
-function writeXmlStringCanonicalized(tag: XmlJs.ElementCompact) {
+export function writeXmlStringCanonicalized(tag: XmlJs.ElementCompact): string {
     const options = {
         compact: true,
         ignoreComment: true,
@@ -501,7 +499,10 @@ function writeXmlStringCanonicalized(tag: XmlJs.ElementCompact) {
 export function convertFhirMessageToHl7V3SignedInfo(fhirMessage: fhir.Bundle): string {
     const parentPrescription = convertBundleToParentPrescription(fhirMessage)
     const fragmentsToBeHashed = convertParentPrescriptionToSignatureFragments(parentPrescription);
-    return convertSignatureFragmentsToSignedInfo(fragmentsToBeHashed)
+    const fragmentsToBeHashedStr = writeXmlStringCanonicalized(fragmentsToBeHashed);
+    const digestValue = crypto.SHA1(fragmentsToBeHashedStr).toString(crypto.enc.Base64)
+    const signedInfo = convertSignatureFragmentsToSignedInfo(digestValue)
+    return writeXmlStringCanonicalized(signedInfo)
 }
 
 function canonicaliseAttribute(attribute: string) {
@@ -540,25 +541,8 @@ function identical<T>(previousValue: T, currentValue: T, currentIndex: number, a
     return previousValue
 }
 
-function generateSignedInfo(fragmentsToBeHashed: string): string {
-    const digestValue = crypto.SHA1(fragmentsToBeHashed)
-    return "<SignedInfo>" +
-        "<CanonicalizationMethod Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"></CanonicalizationMethod>" +
-        "<SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\"></SignatureMethod>" +
-        "<Reference>" +
-        "<Transforms>" +
-        "<Transform Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"></Transform>" +
-        "</Transforms>" +
-        "<DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\"></DigestMethod>" +
-        `<DigestValue>${digestValue}</DigestValue>` +
-        "</Reference>" +
-        "</SignedInfo>"
-}
-
-function convertSignatureFragmentsToSignedInfo(fragmentsToBeHashed: string): string {
-    const digestValue = crypto.SHA1(fragmentsToBeHashed)
-
-    const root = {
+function convertSignatureFragmentsToSignedInfo(digestValue: string): XmlJs.ElementCompact {
+    return {
         SignedInfo: {
             CanonicalizationMethod: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#"),
             SignatureMethod: new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#rsa-sha1"),
@@ -567,12 +551,10 @@ function convertSignatureFragmentsToSignedInfo(fragmentsToBeHashed: string): str
                     Transform: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#")
                 },
                 DigestMethod: new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#sha1"),
-                DigestValue: digestValue.toString(crypto.enc.Base64)
+                DigestValue: digestValue
             }
         }
-    }
-
-    return writeXmlStringCanonicalized(root)
+    } as XmlJs.ElementCompact
 }
 
 class AlgorithmIdentifier implements XmlJs.ElementCompact {
