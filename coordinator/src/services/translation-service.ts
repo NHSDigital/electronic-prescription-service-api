@@ -567,7 +567,7 @@ function convertSignatureFragmentsToSignedInfo(fragmentsToBeHashed: string): str
                     Transform: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#")
                 },
                 DigestMethod: new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#sha1"),
-                DigestValue: digestValue.toString()
+                DigestValue: digestValue.toString(crypto.enc.Base64)
             }
         }
     }
