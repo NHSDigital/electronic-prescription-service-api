@@ -35,6 +35,14 @@ export interface AttributeNegationInd extends Attributes {
     negationInd: BooleanString
 }
 
+export class Text {
+    _text: string
+
+    constructor(text: string) {
+        this._text = text
+    }
+}
+
 export enum AddressUse {
     HOME = "H",
     PRIMARY_HOME = "HP",
@@ -48,16 +56,13 @@ export class Address implements ElementCompact {
         use: AddressUse
     }
 
-    streetAddressLine: string | Array<string>
-    postalCode: string
+    streetAddressLine: Array<Text>
+    postalCode: Text
 
-    constructor(use: AddressUse, lines: string | Array<string>, postalCode: string) {
+    constructor(use: AddressUse) {
         this._attributes = {
             use: use
         }
-
-        this.streetAddressLine = lines
-        this.postalCode = postalCode
     }
 }
 
@@ -74,10 +79,10 @@ export class BooleanValue implements ElementCompact {
 }
 
 export class Name implements ElementCompact {
-    family?: string
-    given?: string | Array<string>
-    prefix?: string | Array<string>
-    suffix?: string | Array<string>
+    family?: Text
+    given?: Text | Array<Text>
+    prefix?: Text | Array<Text>
+    suffix?: Text | Array<Text>
 }
 
 enum NullFlavor {
@@ -99,16 +104,20 @@ export class Null implements ElementCompact {
 }
 
 class QuantityTranslation implements ElementCompact {
-    value: string
-    codeSystem: string
-    code: string
-    displayName: string
+    _attributes: {
+        value: string,
+        codeSystem: string,
+        code: string,
+        displayName: string
+    }
 
     constructor(alternativeUnitValue: string, alternativeUnitCode: codes.SnomedCode) {
-        this.value = alternativeUnitValue
-        this.codeSystem = alternativeUnitCode._attributes.codeSystem
-        this.code = alternativeUnitCode._attributes.code
-        this.displayName = alternativeUnitCode._attributes.displayName
+        this._attributes = {
+            value: alternativeUnitValue,
+            codeSystem: alternativeUnitCode._attributes.codeSystem,
+            code: alternativeUnitCode._attributes.code,
+            displayName: alternativeUnitCode._attributes.displayName
+        }
     }
 }
 

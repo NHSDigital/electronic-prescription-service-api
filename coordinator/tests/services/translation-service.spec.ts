@@ -1,7 +1,9 @@
 import * as translationService from "../../src/services/translation-service"
-import bundle from "../resources/fhir-bundle"
+import bundle from "../resources/parent-prescription-fhir-1"
 import * as fhir from "../../src/services/fhir-resources";
 import * as TestResources from "../resources/test-resources"
+import * as XmlJs from "xml-js";
+import {convertBundleToParentPrescription} from "../../src/services/translation-service";
 
 function clone<T>(input: T) {
     return JSON.parse(JSON.stringify(input))
@@ -88,8 +90,8 @@ test('convertBundleToParentPrescription returns correct value', () => {
 })
 
 test("convertBundleToParentPrescription returns correct value", () => {
-    const mockPatientConverter = jest.fn().mockReturnValue(TestResources.validHl7V3Patient)
-    const mockPrescriptionConverter = jest.fn().mockReturnValue(TestResources.validHl7V3Prescription)
+    const mockPatientConverter = jest.fn().mockReturnValue(TestResources.hl7V3Patient1)
+    const mockPrescriptionConverter = jest.fn().mockReturnValue(TestResources.hl7V3Prescription1)
 
     const actualHl7V3ParentPrescription = translationService.convertBundleToParentPrescription(bundle, mockPatientConverter, mockPrescriptionConverter);
 
@@ -103,8 +105,8 @@ test("convertBundleToParentPrescription returns correct value", () => {
             value: "2008-02-27T11:38:00+00:00"
         }
     })
-    expect(actualHl7V3ParentPrescription.recordTarget).toEqual(TestResources.validHl7V3ParentPrescription.recordTarget)
-    expect(actualHl7V3ParentPrescription.pertinentInformation1).toEqual(TestResources.validHl7V3ParentPrescription.pertinentInformation1)
+    expect(actualHl7V3ParentPrescription.recordTarget).toEqual(TestResources.hl7V3ParentPrescription1.recordTarget)
+    expect(actualHl7V3ParentPrescription.pertinentInformation1).toEqual(TestResources.hl7V3ParentPrescription1.pertinentInformation1)
 
     // TODO - replace with the below once we've implemented more mappings
     // const expectedHl7V3ParentPrescription = clone(TestResources.validHl7V3ParentPrescription)
@@ -122,6 +124,17 @@ test("convertBundleToParentPrescription returns correct value", () => {
 })
 
 test("convertBundleToParentPrescription returns correct value", () => {
-    const actualHl7V3ParentPrescription = translationService.convertBundleToParentPrescription(bundle);
-    expect(actualHl7V3ParentPrescription).toEqual(TestResources.validHl7V3ParentPrescription)
+    const options = {compact: true, spaces: 4, attributesFn: translationService.sortAttributes} as unknown as XmlJs.Options.JS2XML
+
+    const actualRoot = {
+        ParentPrescription: convertBundleToParentPrescription(bundle)
+    }
+    const actualXmlStr = XmlJs.js2xml(actualRoot, options)
+
+    const expectedRoot = {
+        ParentPrescription: TestResources.hl7V3ParentPrescription1
+    }
+    const expectedXmlStr = XmlJs.js2xml(expectedRoot, options)
+
+    expect(actualXmlStr).toEqual(expectedXmlStr)
 })

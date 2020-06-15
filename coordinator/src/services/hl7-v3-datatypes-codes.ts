@@ -1,4 +1,5 @@
 import {ElementCompact} from "xml-js";
+import {Text} from "./hl7-v3-datatypes-core";
 
 class Code implements ElementCompact {
     _attributes: {
@@ -7,7 +8,7 @@ class Code implements ElementCompact {
         displayName?: string
     }
 
-    originalText?: string
+    originalText?: Text
 
     constructor(system: string, code: string, desc?: string) {
         this._attributes = {
@@ -117,6 +118,7 @@ export class NhsNumber extends Identifier {
 
 export class SdsUniqueIdentifier extends Identifier {
     constructor(extension: string) {
+        //TODO - is this the correct OID? Examples have 1.2.826.0.1285.0.2.0.54, but that doesn't seem to mean anything
         super("1.2.826.0.1285.0.2.0.65", extension);
     }
 }
