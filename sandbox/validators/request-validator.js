@@ -53,19 +53,19 @@ function verifyPayloadId(bundle) {
   }
 
   return Maybe.fromNull(bundle)
-    .filterNot(bundle => bundle && validPayloadIds.includes(bundle["id"]))
+    .filterNot(bundle => validPayloadIds.includes(bundle["id"]))
     .cata(success(bundle), fail({message: "Unsupported 'id'", operationOutcomeCode: "value", apiErrorCode: "UNSUPPORTED_ID" }));
 }
 
 function verifyResourceTypeIsBundle(bundle) {
   return Maybe.fromNull(bundle)
-    .filterNot(bundle => bundle && bundle["resourceType"] && bundle["resourceType"] === "Bundle")
+    .filterNot(bundle => bundle["resourceType"] && bundle["resourceType"] === "Bundle")
     .cata(success(bundle), fail({message: "ResourceType must be 'Bundle' on request", operationOutcomeCode: "value", apiErrorCode: "INCORRECT_RESOURCETYPE"}));
 }
 
 function verifyBundleContainsEntries(bundle) {
   return Maybe.fromNull(bundle)
-    .filterNot(bundle => bundle && bundle["entry"])
+    .filterNot(bundle => bundle["entry"])
     .cata(success(bundle), fail({message: "ResourceType Bundle must contain 'entry' field", operationOutcomeCode: "value", apiErrorCode: "MISSING_FIELD"}));
 }
 
@@ -75,7 +75,7 @@ function verifyBundleContainsAtLeast(bundle, number, resourceType) {
     .cata(success(bundle), fail({message: `Bundle entry must contain at least ${number} resource(s) of type ${resourceType}`, operationOutcomeCode: "value", apiErrorCode: "MISSING_FIELD" }))
 
   function hasLessThan(bundle, number, resourceType) {
-    return bundle && bundle["entry"] && bundle["entry"].filter(entry => entry["resourceType"] === resourceType).length < number;
+    return bundle["entry"] && bundle["entry"].filter(entry => entry["resourceType"] === resourceType).length < number;
   }
 }
 
@@ -85,7 +85,7 @@ function verifyBundleContainsExactly(bundle, number, resourceType) {
     .cata(success(bundle), fail({message: `Bundle entry must contain exactly ${number} resource(s) of type ${resourceType}`, operationOutcomeCode: "value", apiErrorCode: "MISSING_FIELD" }))
 
   function hasExactly(bundle, number, resourceType) {
-    return bundle && bundle["entry"] && bundle["entry"].filter(entry => entry["resourceType"] === resourceType).length === number;
+    return bundle["entry"] && bundle["entry"].filter(entry => entry["resourceType"] === resourceType).length === number;
   }
 }
 

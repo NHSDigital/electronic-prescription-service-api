@@ -1,0 +1,1 @@
+test('it should be synced with models in coordinator', () => {})
