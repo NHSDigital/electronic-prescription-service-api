@@ -230,9 +230,48 @@ paths:
             schema:
               $ref: components/schemas/Bundle.yaml
             examples:
-              example:
+              success:
                 value:
                   $ref: components/examples/PrescriptionPutSuccessRequest.yaml
+              patient-deceased:
+                value:
+                  $ref: components/examples/PrescriptionPutErrorPatientDeceasedRequest.yaml
+              duplicate-prescription:
+                value:
+                  $ref: components/examples/PrescriptionPutErrorDuplicatePrescriptionRequest.yaml
+              digital-signature-not-found:
+                value:
+                  $ref: components/examples/PrescriptionPutErrorDigitalSignatureNotFoundRequest.yaml
+              patient-not-found:
+                value:
+                  $ref: components/examples/PrescriptionPutErrorPatientNotFoundRequest.yaml
+              information-missing:
+                  value:
+                    $ref: components/examples/PrescriptionPutErrorInformationMissingRequest.yaml
+              invalid-message:
+                value:
+                  $ref: components/examples/PrescriptionPutErrorInvalidMessageRequest.yaml
+              incorrect-item-count:
+                value:
+                  $ref: components/examples/PrescriptionPutErrorIncorrectItemCountRequest.yaml
+              authorised-repeat-mismatch:
+                value:
+                  $ref: components/examples/PrescriptionPutErrorAuthorisedRepeatMismatchRequest.yaml
+              incorrect-repeat-number:
+                value:
+                  $ref: components/examples/PrescriptionPutErrorIncorrectRepeatNumberRequest.yaml
+              incompatible-version:
+                value:
+                  $ref: components/examples/PrescriptionPutErrorIncompatibleVersionRequest.yaml
+              duplicate-item-id:
+                value:
+                  $ref: components/examples/PrescriptionPutErrorDuplicateItemIdRequest.yaml
+              check-digit-error:
+                value:
+                  $ref: components/examples/PrescriptionPutErrorCheckDigitErrorRequest.yaml
+              invalid-date-format:
+                value:
+                  $ref: components/examples/PrescriptionPutErrorInvalidDateFormatRequest.yaml
         description: ''
       description: Submit a signed prescription to EPS
       tags:
