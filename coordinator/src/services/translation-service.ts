@@ -267,7 +267,9 @@ function convertAgentPersonPerson(fhirPractitioner: fhir.Practitioner) {
     const hl7V3AgentPersonPerson = new peoplePlaces.AgentPersonPerson()
     const sdsUniqueIdentifier = getIdentifierValueForSystem(fhirPractitioner.identifier, "https://fhir.nhs.uk/Id/sds-user-id")
     hl7V3AgentPersonPerson.id = new codes.SdsUniqueIdentifier(sdsUniqueIdentifier)
-    hl7V3AgentPersonPerson.name = fhirPractitioner.name?.map(convertName).reduce(onlyElement)
+    if (fhirPractitioner.name !== undefined) {
+        hl7V3AgentPersonPerson.name = fhirPractitioner.name.map(convertName).reduce(onlyElement)
+    }
     return hl7V3AgentPersonPerson;
 }
 
@@ -284,7 +286,9 @@ function convertPractitioner(
     const sdsJobRoleCode = getIdentifierValueForSystem(fhirPractitioner.identifier, "https://fhir.nhs.uk/Id/sds-job-role-id")
     hl7V3AgentPerson.code = new codes.SdsJobRoleCode(sdsJobRoleCode)
 
-    hl7V3AgentPerson.telecom = fhirPractitioner.telecom?.map(convertTelecom)
+    if (fhirPractitioner.telecom !== undefined) {
+        hl7V3AgentPerson.telecom = fhirPractitioner.telecom.map(convertTelecom)
+    }
 
     hl7V3AgentPerson.agentPerson = convertAgentPersonPersonFn(fhirPractitioner)
 
@@ -315,9 +319,11 @@ function convertOrganization(
     hl7V3Organization.code = new codes.OrganizationTypeCode(organizationTypeCoding.code)
 
     hl7V3Organization.name = new core.Text(fhirOrganization.name)
+
     if (fhirOrganization.telecom !== undefined) {
         hl7V3Organization.telecom = fhirOrganization.telecom.map(convertTelecom).reduce(onlyElement)
     }
+
     if (fhirOrganization.address !== undefined) {
         hl7V3Organization.addr = fhirOrganization.address.map(convertAddress).reduce(onlyElement)
     }
