@@ -78,11 +78,26 @@ export class BooleanValue implements ElementCompact {
     }
 }
 
+export enum NameUse {
+    USUAL= "L",
+    ALIAS = "A"
+}
+
 export class Name implements ElementCompact {
+    _attributes: {
+        use?: NameUse
+    }
+
     family?: Text
     given?: Text | Array<Text>
     prefix?: Text | Array<Text>
     suffix?: Text | Array<Text>
+
+    constructor(use?: NameUse) {
+        this._attributes = {
+            use: use
+        }
+    }
 }
 
 enum NullFlavor {

@@ -42,7 +42,7 @@ export default {
                         "code": "3318711000001107"
                     }
                 },
-                "authoredOn": "20200610120600",
+                "authoredOn": "2020-06-10T12:06:00.000Z",
                 "dosageInstruction": [
                     {
                         "text": "As Directed"
@@ -102,7 +102,7 @@ export default {
                         "code": "428673006"
                     }
                 },
-                "authoredOn": "20200610120600",
+                "authoredOn": "2020-06-10T12:06:00.000Z",
                 "dosageInstruction": [
                     {
                         "text": "As Directed"
@@ -162,7 +162,7 @@ export default {
                         "code": "3319911000001101"
                     }
                 },
-                "authoredOn": "20200610120600",
+                "authoredOn": "2020-06-10T12:06:00.000Z",
                 "dosageInstruction": [
                     {
                         "text": "As Directed"
@@ -222,7 +222,7 @@ export default {
                         "code": "3318911000001109"
                     }
                 },
-                "authoredOn": "20200610120600",
+                "authoredOn": "2020-06-10T12:06:00.000Z",
                 "dosageInstruction": [
                     {
                         "text": "As Directed"
@@ -254,7 +254,7 @@ export default {
                     }
                 ],
                 "gender": "unknown",
-                "birthDate": "19770327",
+                "birthDate": "1977-03-27",
                 "name": [
                     {
                         "use": "official",

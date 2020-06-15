@@ -18,6 +18,7 @@
     "@hapi/joi": "^17.1.0",
     "crypto-js": "^4.0.0",
     "lodash": "^4.17.15",
+    "moment": "^2.26.0",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {

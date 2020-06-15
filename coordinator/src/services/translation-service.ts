@@ -5,6 +5,7 @@ import * as peoplePlaces from "./hl7-v3-people-places"
 import * as prescriptions from "./hl7-v3-prescriptions"
 import * as fhir from "./fhir-resources"
 import * as crypto from "crypto-js"
+import moment from "moment"
 
 //TODO - is there a better way than returning Array<unknown>?
 export function getResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): Array<unknown> {
@@ -47,6 +48,18 @@ function convertCareRecordElementCategories(lineItems: Array<prescriptions.LineI
     return careRecordElementCategory
 }
 
+function convertDateTime(isoDateTimeStr: string) {
+    const dateTime = moment.utc(isoDateTimeStr, moment.ISO_8601, true)
+    const hl7V3DateTimeStr = dateTime.format("YYYYMMDDHHmmss")
+    return new core.Timestamp(hl7V3DateTimeStr)
+}
+
+function convertDate(isoDateStr: string) {
+    const dateTime = moment.utc(isoDateStr, moment.ISO_8601, true)
+    const hl7V3DateStr = dateTime.format("YYYYMMDD")
+    return new core.Timestamp(hl7V3DateStr)
+}
+
 export function convertBundleToParentPrescription(
     fhirBundle: fhir.Bundle,
     convertPatientFn = convertPatient,
@@ -58,8 +71,7 @@ export function convertBundleToParentPrescription(
 
     const hl7V3ParentPrescription = new prescriptions.ParentPrescription(
         new codes.GlobalIdentifier(fhirBundle.id),
-        //TODO - convert date formats somewhere
-        new core.Timestamp(fhirFirstMedicationRequest.authoredOn)
+        convertDateTime(fhirFirstMedicationRequest.authoredOn)
     )
 
     const fhirPatient = getResourcesOfType(fhirBundle, "Patient")[0] as fhir.Patient
@@ -110,7 +122,7 @@ function convertPatientToPatientPerson(
     const hl7V3PatientPerson = new peoplePlaces.PatientPerson()
     hl7V3PatientPerson.name = patient.name.map(convertNameFn)
     hl7V3PatientPerson.administrativeGenderCode = convertGenderFn(patient.gender)
-    hl7V3PatientPerson.birthTime = new core.Timestamp(patient.birthDate)
+    hl7V3PatientPerson.birthTime = convertDate(patient.birthDate)
     hl7V3PatientPerson.playedProviderPatient = convertPatientToProviderPatientFn(bundle, patient)
     return hl7V3PatientPerson;
 }
@@ -148,7 +160,7 @@ function convertAuthor(
     convertPractitionerRoleFn = convertPractitionerRole
 ) {
     const hl7V3Author = new prescriptions.Author()
-    hl7V3Author.time = new core.Timestamp(fhirFirstMedicationRequest.authoredOn)
+    hl7V3Author.time = convertDateTime(fhirFirstMedicationRequest.authoredOn)
     // TODO implement signatureText
     hl7V3Author.signatureText = core.Null.NOT_APPLICABLE
     const fhirAuthorPractitionerRole = getResourceForFullUrl(fhirBundle, fhirFirstMedicationRequest.requester.reference) as fhir.PractitionerRole
@@ -336,8 +348,8 @@ function convertOrganization(
 }
 
 function convertName(fhirHumanName: fhir.HumanName) {
-    //TODO - convert name use
-    const name = new core.Name()
+    const nameUse = fhirHumanName.use !== undefined ? convertNameUse(fhirHumanName.use) : undefined
+    const name = new core.Name(nameUse)
     if (fhirHumanName.prefix !== undefined) {
         name.prefix = fhirHumanName.prefix.map(name => new core.Text(name))
     }
@@ -351,6 +363,19 @@ function convertName(fhirHumanName: fhir.HumanName) {
         name.suffix = fhirHumanName.suffix.map(name => new core.Text(name))
     }
     return name
+}
+
+function convertNameUse(fhirNameUse: string) {
+    switch (fhirNameUse) {
+        case "usual":
+            return core.NameUse.USUAL
+        case "official":
+            return core.NameUse.USUAL
+        case "nickname":
+            return core.NameUse.ALIAS
+        default:
+            throw TypeError("Unhandled name use " + fhirNameUse)
+    }
 }
 
 function convertTelecom(fhirTelecom: fhir.ContactPoint) {
