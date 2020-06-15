@@ -1,4 +1,3 @@
-const test = require("jest")
 const validator = require("../validators/request-validator")
 
 test('it should return an array of validation error objects when given an empty json object', () => {
