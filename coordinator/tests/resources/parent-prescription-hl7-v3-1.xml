@@ -41,9 +41,7 @@
     <subject>
       <ParentPrescription classCode="INFO" moodCode="EVN">
         <id root="F68CEA42-E8A0-D799-C874-163048F0D390"/>
-        <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15">
-          <originalText>Prescription - FocusActOrEvent </originalText>
-        </code>
+        <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Prescription - FocusActOrEvent (record artifact)"/>
         <effectiveTime value="20200610120600"/>
         <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
@@ -83,7 +81,7 @@
           <pertinentPrescription classCode="SBADM" moodCode="RQO">
             <id root="A7B86F8D-1D02-FC28-E050-D20AE3A215F0"/>
             <id extension="4D62E6-D81015-07E5FD" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
-            <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+            <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
             <effectiveTime nullFlavor="NA"/>
             <author contextControlCode="OP" typeCode="AUT">
               <time value="20200610120600"/>
@@ -174,7 +172,7 @@
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentLineItem classCode="SBADM" moodCode="RQO">
                 <id root="A7B86F8D-1D81-FC28-E050-D20AE3A215F0"/>
-                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
                 <product contextControlCode="OP" typeCode="PRD">
                   <manufacturedProduct classCode="MANU">
@@ -185,9 +183,9 @@
                   </manufacturedProduct>
                 </product>
                 <component typeCode="COMP">
-                  <seperatableInd value="true"/>
+                  <seperatableInd value="false"/>
                   <lineItemQuantity classCode="SPLY" moodCode="RQO">
-                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
                     <quantity unit="1" value="1">
                       <translation code="3318711000001107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"
                                    displayName="device" value="1"/>
@@ -208,7 +206,7 @@
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentLineItem classCode="SBADM" moodCode="RQO">
                 <id root="A7B86F8D-1D86-FC28-E050-D20AE3A215F0"/>
-                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
                 <product contextControlCode="OP" typeCode="PRD">
                   <manufacturedProduct classCode="MANU">
@@ -219,9 +217,9 @@
                   </manufacturedProduct>
                 </product>
                 <component typeCode="COMP">
-                  <seperatableInd value="true"/>
+                  <seperatableInd value="false"/>
                   <lineItemQuantity classCode="SPLY" moodCode="RQO">
-                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
                     <quantity unit="1" value="63">
                       <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet"
                                    value="63"/>
@@ -242,7 +240,7 @@
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentLineItem classCode="SBADM" moodCode="RQO">
                 <id root="A7B86F8D-1D8B-FC28-E050-D20AE3A215F0"/>
-                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
                 <product contextControlCode="OP" typeCode="PRD">
                   <manufacturedProduct classCode="MANU">
@@ -253,9 +251,9 @@
                   </manufacturedProduct>
                 </product>
                 <component typeCode="COMP">
-                  <seperatableInd value="true"/>
+                  <seperatableInd value="false"/>
                   <lineItemQuantity classCode="SPLY" moodCode="RQO">
-                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
                     <quantity unit="1" value="10">
                       <translation code="3319911000001101" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"
                                    displayName="catheter" value="10"/>
@@ -276,7 +274,7 @@
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentLineItem classCode="SBADM" moodCode="RQO">
                 <id root="A7B86F8D-1D90-FC28-E050-D20AE3A215F0"/>
-                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
                 <product contextControlCode="OP" typeCode="PRD">
                   <manufacturedProduct classCode="MANU">
@@ -287,9 +285,9 @@
                   </manufacturedProduct>
                 </product>
                 <component typeCode="COMP">
-                  <seperatableInd value="true"/>
+                  <seperatableInd value="false"/>
                   <lineItemQuantity classCode="SPLY" moodCode="RQO">
-                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
                     <quantity unit="1" value="54">
                       <translation code="3318911000001109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"
                                    displayName="sachet" value="54"/>
@@ -324,7 +322,7 @@
         <pertinentInformation2 typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentCareRecordElementCategory classCode="CATEGORY" moodCode="EVN">
-            <code code="185361000000102" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+            <code code="185361000000102" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Medication - care record element (record artifact)"/>
             <component typeCode="COMP">
               <actRef classCode="SBADM" moodCode="RQO">
                 <id root="A7B86F8D-1D81-FC28-E050-D20AE3A215F0"/>

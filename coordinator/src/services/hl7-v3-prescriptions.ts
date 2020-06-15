@@ -1,5 +1,5 @@
 import * as core from "./hl7-v3-datatypes-core"
-import {AttributeClassCode, AttributeMoodCode, AttributeTypeCode, Text} from "./hl7-v3-datatypes-core"
+import {AttributeClassCode, AttributeMoodCode, AttributeTypeCode} from "./hl7-v3-datatypes-core"
 import * as codes from "./hl7-v3-datatypes-codes"
 import {GlobalIdentifier, ShortFormPrescriptionIdentifier, SnomedCode} from "./hl7-v3-datatypes-codes"
 import * as peoplePlaces from "./hl7-v3-people-places"
@@ -43,7 +43,7 @@ export class LineItem implements ElementCompact {
     constructor(id: GlobalIdentifier) {
         this.id = id
         //TODO do we need to support child codes of this?
-        this.code = new codes.SnomedCode("225426007", undefined)
+        this.code = new codes.SnomedCode("225426007", "Administration of therapeutic substance (procedure)")
         this.effectiveTime = core.Null.NOT_APPLICABLE
     }
 }
@@ -103,8 +103,7 @@ export class LineItemComponent implements ElementCompact {
         typeCode: "COMP"
     }
 
-    //TODO - what should this be?
-    seperatableInd: core.BooleanValue = new core.BooleanValue(true)
+    seperatableInd: core.BooleanValue = new core.BooleanValue(false)
     lineItemQuantity: LineItemQuantity
 
     constructor(lineItemQuantity: LineItemQuantity) {
@@ -139,14 +138,9 @@ export class LineItemQuantity implements ElementCompact {
         moodCode: "RQO"
     }
 
-    //TODO do we need to support child codes of this?
-    code: codes.SnomedCode = new codes.SnomedCode("373784005", undefined)
+    code: codes.SnomedCode = new codes.SnomedCode("373784005", "Dispensing medication (procedure)")
     quantity: core.QuantityInAlternativeUnits
 }
-
-//TODO - Should we really be using originalText instead of displayName?
-const snomedCodePrescription = new codes.SnomedCode("163501000000109", undefined)
-snomedCodePrescription.originalText = new Text("Prescription - FocusActOrEvent ")
 
 /**
  * This is the parent prescription.
@@ -171,7 +165,7 @@ export class ParentPrescription implements ElementCompact {
 
     constructor(id: codes.GlobalIdentifier, effectiveTime: core.Timestamp) {
         this.id = id
-        this.code = snomedCodePrescription
+        this.code = new codes.SnomedCode("163501000000109", "Prescription - FocusActOrEvent (record artifact)")
         this.effectiveTime = effectiveTime
         this.typeId = new codes.TypeIdentifier("PORX_MT132004UK31")
     }
@@ -239,8 +233,7 @@ export class Prescription implements ElementCompact {
 
     constructor(id: GlobalIdentifier, shortFormId: ShortFormPrescriptionIdentifier) {
         this.id = [id, shortFormId]
-        //TODO do we need to support child codes of this?
-        this.code = new codes.SnomedCode("225426007", undefined)
+        this.code = new codes.SnomedCode("225426007", "Administration of therapeutic substance (procedure)")
         this.effectiveTime = core.Null.NOT_APPLICABLE
     }
 }
@@ -291,7 +284,6 @@ export class PrescriptionPertinentInformation4 implements ElementCompact {
         contextConductionInd: "true"
     }
 
-    //TODO - what should this be?
     seperatableInd: core.BooleanValue = new core.BooleanValue(false)
     pertinentPrescriptionType: PrescriptionType
 
@@ -309,7 +301,6 @@ export class PrescriptionPertinentInformation5 implements ElementCompact {
         contextConductionInd: "true"
     }
 
-    //TODO - why would a prescriber want to change this?
     seperatableInd: core.BooleanValue = new core.BooleanValue(false)
     pertinentPrescriptionTreatmentType: PrescriptionTreatmentType
 
@@ -327,7 +318,6 @@ export class PrescriptionPertinentInformation8 implements ElementCompact {
         contextConductionInd: "true"
     }
 
-    //TODO - what should this be?
     seperatableInd: core.BooleanValue = new core.BooleanValue(false)
     pertinentTokenIssued: TokenIssued
 
@@ -447,7 +437,7 @@ export class CareRecordElementCategory implements ElementCompact {
         moodCode: "EVN"
     }
 
-    code = new SnomedCode("185361000000102", undefined)
+    code = new SnomedCode("185361000000102", "Medication - care record element (record artifact)")
     component: Array<CareRecordElementCategoryComponent>
 }
 
