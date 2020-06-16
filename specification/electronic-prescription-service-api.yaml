@@ -94,12 +94,8 @@ info:
     * `POST /Prescription` - convert a FHIR prescription into the HL7 V3 signature fragments to be signed by the prescriber
     * `PUT /Prescription` - send a signed FHIR prescription to Spine
 servers:
-  - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
-    description: 'Sandbox environment. (not yet available: see "API status and roadmap").'
-  - url: 'https://int.api.service.nhs.uk/electronic-prescriptions'
-    description: 'Integration test environment. (not yet available: see "API status and roadmap").'
-  - url: 'https://api.service.nhs.uk/electronic-prescriptions'
-    description: 'Production environment (not yet available: see "API status and roadmap").'
+  - url: 'https://internal-qa-sandbox.api.service.nhs.uk/electronic-prescriptions'
+    description: 'Internal QA Sandbox environment.'
 tags:
   - name: dispensing
   - name: prescribing
