@@ -1,7 +1,7 @@
-const Boom = require('boom')
-const examples = require('../../services/examples')
 //const fhirHelper = require('../../helpers/fhir-helper')
+const requestBodyParser = require("../../services/request-body-parser")
 const requestValidator = require("../../validators/request-validator")
+const responseBuilder = require("../../services/response-builder")
 
 module.exports = [
   /*
@@ -11,14 +11,13 @@ module.exports = [
     method: 'PUT',
     path: '/Prescription',
     handler: (request, h) => {
-      requestValidator.verifyPrescriptionAndSignatureBundle(request.payload)
-      if (request.payload.id === examples.prescriptionPutSuccessRequest.id) {
-        //TODO add meta to the response schema and use fhirHelper
-        //return fhirHelper.createFhirResponse(h, examples.prescriptionPostSuccessResponse)
-        return h.response(examples.prescriptionPutSuccessResponse)
-      } else {
-        throw Boom.badRequest("Unsupported prescription id", {operationOutcomeCode: "value", apiErrorCode: "unsupportedPrescriptionId"})
-      }
+      var requestBody = requestBodyParser.parse(request)
+      var validation = requestValidator.verifyPrescriptionAndSignatureBundle(requestBody)
+      var response = responseBuilder.create(validation, requestBody.id)
+      var statusCode = requestValidator.getStatusCode(validation)
+      //TODO add meta to the response schema and use fhirHelper
+      //return fhirHelper.createFhirResponse(h, examples.prescriptionPostSuccessResponse)
+      return h.response(response).code(statusCode)
     }
   }
 ]
