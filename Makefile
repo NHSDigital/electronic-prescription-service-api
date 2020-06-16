@@ -75,5 +75,5 @@ release: clean build-spec build-proxy
 	cp -r terraform dist
 	cp -r build/. dist
 
-build-coordinator:
+run-coordinator:
 	cd coordinator && npm run build && npm run start
