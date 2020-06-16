@@ -12,5 +12,5 @@ cp -Rv proxies/sandbox/apiproxy build/proxies/sandbox
 cp -Rv proxies/live/apiproxy build/proxies/live
 mkdir -p build/proxies/sandbox/apiproxy/resources/hosted
 mkdir -p build/proxies/live/apiproxy/resources/hosted
-rsync -av --copy-links --exclude="node_modules" --filter=':- .gitignore' sandbox/ build/proxies/sandbox/apiproxy/resources/hosted
+cp -Rv sandbox/mocks build/proxies/sandbox/apiproxy/resources/hosted/mocks
 rsync -av --copy-links --exclude="node_modules" --filter=':- .gitignore' coordinator/ build/proxies/live/apiproxy/resources/hosted

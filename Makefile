@@ -34,13 +34,10 @@ validate: generate-examples
 clean:
 	rm -rf build
 	rm -rf dist
-	rm -rf sandbox/mocks
 
-generate-examples: build-spec clean
+generate-examples: build-spec
 	mkdir -p build/examples
 	poetry run python scripts/generate_examples.py build/electronic-prescription-service-api.json build/examples
-
-update-examples: generate-examples
 	mkdir -p sandbox/mocks
 	jq -rM . <build/examples/requests/paths._Prescription.post.requestBody.content.application_fhir+json.examples.example.value.json >sandbox/mocks/PrescriptionPostSuccessRequest.json
 	jq -rM . <build/examples/responses/paths._Prescription.post.responses.200.content.application_fhir+json.examples.example.value.json >sandbox/mocks/PrescriptionPostSuccessResponse.json
@@ -80,21 +77,21 @@ check-licenses:
 format:
 	poetry run black **/*.py
 
-run-sandbox: update-examples
+run-sandbox: generate-examples
 	cd sandbox && npm run start
 
-run-spec-viewer: update-examples
+run-spec-viewer: generate-examples
 	scripts/set_spec_server_dev.sh
 	npm run serve
 
-build-spec: clean
+build-spec:
 	mkdir -p build
 	npm run publish 2> /dev/null
 
 build-proxy:
 	scripts/build_proxy.sh
 
-release: clean build-spec build-proxy
+release: generate-examples build-proxy
 	mkdir -p dist
 	tar -zcvf dist/package.tar.gz build
 	cp -r terraform dist
