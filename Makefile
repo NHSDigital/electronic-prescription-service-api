@@ -40,7 +40,7 @@ clean:
 
 generate-examples: build-spec clean
 	mkdir -p build/examples
-	poetry run python scripts/generate_examples.py build/electronic-prescriptions.json build/examples
+	poetry run python scripts/generate_examples.py build/electronic-prescription-service-api.json build/examples
 
 update-examples: generate-examples
 	mkdir -p sandbox/mocks
