@@ -28,7 +28,7 @@ function verifyBundleContainsAtLeast(bundle: Bundle, number: number, resourceTyp
     const matchingEntries = getMatchingEntries(bundle, resourceType)
     if (matchingEntries.length < number) {
         throw Boom.badRequest(
-            "Bundle must contain at least " + number + " resource(s) of type " + resourceType,
+            `Bundle must contain at least ${number} resource(s) of type ${resourceType}`,
             {operationOutcomeCode: "value", apiErrorCode: "MISSING_FIELD"}
         )
     }
@@ -38,7 +38,7 @@ function verifyBundleContainsExactly(bundle: Bundle, number: number, resourceTyp
     const matchingEntries = getMatchingEntries(bundle, resourceType)
     if (matchingEntries.length !== number) {
         throw Boom.badRequest(
-            "Bundle must contain exactly " + number + " resource(s) of type " + resourceType,
+            `Bundle must contain exactly ${number} resource(s) of type ${resourceType}`,
             {operationOutcomeCode: "value", apiErrorCode: "MISSING_FIELD"}
         )
     }
