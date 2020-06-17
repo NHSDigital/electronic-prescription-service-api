@@ -1,10 +1,10 @@
 resourceType: Bundle
-id: E8E8D623-62C9-4642-BC51-AB50430DF8CL
+id: E8E8D623-62C9-4642-BC51-AB50430DF8CK
 type: collection
 entry:
   - fullUrl: urn:uuid:7EB02341-5F62-4A76-2CD3-34F523452356
     resource:
-      $ref: PrescriptionPostSuccessRequest.yaml
+      $ref: PrepareSuccessRequest.yaml
   - fullUrl: urn:uuid:28828C55-8FA7-42D7-916F-FCF076E0C10E
     resource:
       resourceType: Provenance

@@ -15,7 +15,7 @@ properties:
   id:
     type: string
     description: Logical id of this artifact.
-    example: C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
+    example: "C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C"
   identifier:
     type: array
     description: An identifier that applies to this person in this role.

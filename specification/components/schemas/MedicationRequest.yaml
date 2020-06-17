@@ -10,42 +10,43 @@ required:
   - encounter
   - authoredOn
   - requester
+  - groupIdentifier
   - dosageInstruction
   - dispenseRequest
 properties:
   resourceType:
     type: string
     description: FHIR Resource type.
-    default: MedicationRequest
+    default: "MedicationRequest"
     readOnly: true
   id:
     type: string
     description: Logical id of this artifact.
-    example: 7B38DE32-877F-6D53-D27C-86E1BA35016C
+    example: "7B38DE32-877F-6D53-D27C-86E1BA35016C"
   status:
     type: string
     enum: 
-      - active
-      - on-hold
-      - cancelled
-      - completed
-      - entered-in-error
-      - stopped
-      - draft
-      - unknown
+      - "active"
+      - "on-hold"
+      - "cancelled"
+      - "completed"
+      - "entered-in-error"
+      - "stopped"
+      - "draft"
+      - "unknown"
     description: A code specifying the current state of the order. Generally, this will be active or completed state.
-    example: active
+    example: "active"
   intent:
     type: string
     enum:
-      - proposal
-      - plan
-      - order
-      - original-order
-      - instance-order
-      - option
+      - "proposal"
+      - "plan"
+      - "order"
+      - "original-order"
+      - "instance-order"
+      - "option"
     description: Whether the request is a proposal, plan, or an original order.
-    example: order
+    example: "order"
   medicationCodeableConcept:
     $ref: "CodeableConcept-SnomedCT.yaml"
   subject:
@@ -55,9 +56,11 @@ properties:
   authoredOn:
     type: string
     description: The date (and perhaps time) when the prescription was initially written or authored on.
-    example: 2008-02-27T11:38:00+00:00
+    example: "2008-02-27T11:38:00+00:00"
   requester:
     $ref: "Reference.yaml"
+  groupIdentifier:
+    $ref: "Identifier-ShortFormPrescriptionId.yaml"
   dosageInstruction:
     type: array
     description: Indicates how the medication is to be used by the patient.

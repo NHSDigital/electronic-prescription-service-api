@@ -8,9 +8,9 @@ properties:
     type: string
     description: Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
     enum:
-      - urn:oid:2.16.840.1.113883.2.1.3.2.4.18.8
-    example: urn:oid:2.16.840.1.113883.2.1.3.2.4.18.8
+      - "urn:oid:2.16.840.1.113883.2.1.3.2.4.18.8"
+    example: "urn:oid:2.16.840.1.113883.2.1.3.2.4.18.8"
   value:
     type: string
     description: The portion of the identifier typically relevant to the user and which is unique within the context of the system.
-    example: 2BE1EA-L36920-0353AW
+    example: "2BE1EA-L36920-0353AW"

@@ -5,4 +5,4 @@ properties:
   text:
     type: string
     description: Free text dosage instructions e.g. SIG.
-    example: 2 tablets after breakfast
+    example: "2 tablets after breakfast"

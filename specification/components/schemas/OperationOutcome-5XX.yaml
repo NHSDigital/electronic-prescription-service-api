@@ -10,7 +10,7 @@ properties:
   resourceType:
     type: string
     description: FHIR Resource Type.
-    default: OperationOutcome
+    default: "OperationOutcome"
     readOnly: true
   issue:
     type: array
@@ -24,48 +24,48 @@ properties:
       properties:
         severity:
           type: string
-          enum: [fatal, error, warning, information]
+          enum: ["fatal", "error", "warning", "information"]
           description: Severity of the error.
-          example: error
+          example: "error"
         code:
           type: string
           description: FHIR error code.
-          example: invalid
+          example: "invalid"
           enum:
-            - invalid
-            - structure
-            - required
-            - value
-            - invariant
-            - security
-            - login
-            - unknown
-            - expired
-            - forbidden
-            - suppressed
-            - processing
-            - not-supported
-            - duplicate
-            - multiple-matches
-            - not-found
-            - deleted
-            - too-long
-            - code-invalid
-            - extension
-            - too-costly
-            - business-rule
-            - conflict
-            - transient
-            - lock-error
-            - no-store
-            - exception
-            - timeout
-            - incomplete
-            - throttled
-            - informational
+            - "invalid"
+            - "structure"
+            - "required"
+            - "value"
+            - "invariant"
+            - "security"
+            - "login"
+            - "unknown"
+            - "expired"
+            - "forbidden"
+            - "suppressed"
+            - "processing"
+            - "not-supported"
+            - "duplicate"
+            - "multiple-matches"
+            - "not-found"
+            - "deleted"
+            - "too-long"
+            - "code-invalid"
+            - "extension"
+            - "too-costly"
+            - "business-rule"
+            - "conflict"
+            - "transient"
+            - "lock-error"
+            - "no-store"
+            - "exception"
+            - "timeout"
+            - "incomplete"
+            - "throttled"
+            - "informational"
         details:
           $ref: 'ErrorCode.yaml'
         expression:
           type: string
           description: FHIRPath of element(s) related to the error.
-          example: Patient.name.given
+          example: "Patient.name.given"

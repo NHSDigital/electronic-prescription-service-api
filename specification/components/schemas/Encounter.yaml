@@ -10,26 +10,26 @@ properties:
   resourceType:
     type: string
     description: FHIR Resource type
-    default: Encounter
+    default: "Encounter"
     readOnly: true
   id:
     type: string
     description: Logical id of this artifact.
-    example: C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
+    example: "C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C"
   status:
     type: string
     description: Current state of the encounter.
     enum: 
-      - planned
-      - arrived
-      - triaged
-      - in-progress
-      - onleave
-      - finished
-      - cancelled
-      - entered-in-error
-      - unknown
-    example: finished
+      - "planned"
+      - "arrived"
+      - "triaged"
+      - "in-progress"
+      - "onleave"
+      - "finished"
+      - "cancelled"
+      - "entered-in-error"
+      - "unknown"
+    example: "finished"
   class:
     $ref: "Coding-ActEncounterCode.yaml"
   serviceProvider:
