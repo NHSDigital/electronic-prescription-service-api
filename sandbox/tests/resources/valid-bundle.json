@@ -1,0 +1,25 @@
+{
+  "resourceType": "Bundle",
+  "id": "7EB02341-5F62-4A76-2CD3-34F523452356",
+  "type": "collection",
+  "entry": [
+    {
+      "resourceType": "MedicationRequest"
+    },
+    {
+      "resourceType": "Patient"
+    },
+    {
+      "resourceType": "Encounter"
+    },
+    {
+      "resourceType": "Organization"
+    },
+    {
+      "resourceType": "Organization"
+    },
+    {
+      "resourceType": "Practitioner"
+    }
+  ]
+}
