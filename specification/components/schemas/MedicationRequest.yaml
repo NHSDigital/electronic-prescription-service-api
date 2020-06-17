@@ -60,7 +60,7 @@ properties:
   requester:
     $ref: "Reference.yaml"
   groupIdentifier:
-    $ref: "Identifier-ShortFormPrescriptionId.yaml"
+    $ref: "GroupIdentifier.yaml"
   dosageInstruction:
     type: array
     description: Indicates how the medication is to be used by the patient.

@@ -1,6 +1,6 @@
 type: object
 description: A container for a collection of resources.
-required: 
+required:
   - resourceType
   - id
   - type
@@ -46,7 +46,8 @@ properties:
           anyOf:
             - $ref: "MedicationRequest.yaml"
             - $ref: "Patient.yaml"
+            - $ref: "PractitionerRole.yaml"
             - $ref: "Practitioner.yaml"
-            - $ref: "Encounter.yaml"
             - $ref: "Organization.yaml"
+            - $ref: "Encounter.yaml"
             - $ref: "Provenance.yaml"

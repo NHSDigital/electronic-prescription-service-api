@@ -17,6 +17,10 @@ export class Identifier {
     value?: string
 }
 
+class MedicationRequestGroupIdentifier extends Identifier {
+    extension?: Array<IdentifierExtension>
+}
+
 export class MedicationRequest extends Resource {
     identifier?: Array<Identifier>
     category?: Array<CodeableConcept>
@@ -25,7 +29,7 @@ export class MedicationRequest extends Resource {
     encounter?: Reference
     authoredOn?: string
     requester?: Reference
-    groupIdentifier?: Array<Identifier> //TODO this is a lie
+    groupIdentifier?: MedicationRequestGroupIdentifier
     dosageInstruction?: Array<Dosage>
     dispenseRequest?: MedicationRequestDispenseRequest
 }
@@ -132,4 +136,12 @@ export class OperationOutcomeIssue {
 export class OperationOutcome {
     resourceType: "OperationOutcome"
     issue: Array<OperationOutcomeIssue>
+}
+
+abstract class Extension {
+    url: string
+}
+
+export class IdentifierExtension extends Extension {
+    valueIdentifier: Identifier
 }

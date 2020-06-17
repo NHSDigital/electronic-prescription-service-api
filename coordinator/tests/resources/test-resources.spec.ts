@@ -14,11 +14,17 @@ const sendSchema = JSON.parse(sendSchemaStr)
 const sendSchemaValidator = validator.compile(sendSchema)
 
 test("check example message 1 against JSON schema", () => {
-    prepareSchemaValidator(fhirPrescriptionMessage1)
-    expect(prepareSchemaValidator.errors).toBeNull()
+    const valid = prepareSchemaValidator(fhirPrescriptionMessage1)
+    if (prepareSchemaValidator.errors) {
+        console.log(prepareSchemaValidator.errors)
+    }
+    expect(valid).toBeTruthy()
 })
 
 test("check example message 1 against JSON schema", () => {
-    sendSchemaValidator(fhirPrescriptionMessage1)
-    expect(sendSchemaValidator.errors).toBeNull()
+    const valid = sendSchemaValidator(fhirPrescriptionMessage1)
+    if (sendSchemaValidator.errors) {
+        console.log(sendSchemaValidator.errors)
+    }
+    expect(valid).toBeTruthy()
 })

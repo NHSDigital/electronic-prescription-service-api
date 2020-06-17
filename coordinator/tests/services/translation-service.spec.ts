@@ -7,7 +7,7 @@ import {
 import * as fhir from "../../src/services/fhir-resources";
 import * as TestResources from "../resources/test-resources"
 import * as XmlJs from "xml-js";
-import {MedicationRequest} from "../../src/services/fhir-resources";
+import {MedicationRequest, Practitioner} from "../../src/services/fhir-resources";
 
 function clone<T>(input: T) {
     return JSON.parse(JSON.stringify(input))
@@ -32,16 +32,16 @@ test('getResourceForFullUrl throws error when finding multiple resources', () =>
 })
 
 test('getIdentifierValueForSystem returns correct value for system', () => {
-    const medicationRequest = translationService.getResourceForFullUrl(TestResources.fhirPrescriptionMessage1, "urn:uuid:A7B86F8D-1D81-FC28-E050-D20AE3A215F0") as MedicationRequest
-    const result = translationService.getIdentifierValueForSystem(medicationRequest.groupIdentifier, "urn:uuid")
-    expect(result).toBe("A7B86F8D-1D02-FC28-E050-D20AE3A215F0")
+    const practitioner = translationService.getResourceForFullUrl(TestResources.fhirPrescriptionMessage1, "urn:uuid:d4b569e7-ccf6-4bb2-029b-34b6f3e82acf") as Practitioner
+    const result = translationService.getIdentifierValueForSystem(practitioner.identifier, "https://fhir.nhs.uk/Id/sds-role-profile-id")
+    expect(result).toBe("100112897984")
 })
 
 test('getIdentifierValueForSystem throws error when finding multiple values for system', () => {
-    const medicationRequest = translationService.getResourceForFullUrl(TestResources.fhirPrescriptionMessage1, "urn:uuid:A7B86F8D-1D81-FC28-E050-D20AE3A215F0") as MedicationRequest
-    const groupIdentifier = clone(medicationRequest.groupIdentifier)
-    groupIdentifier[1].system = groupIdentifier[0].system
-    expect(() => translationService.getIdentifierValueForSystem(groupIdentifier, groupIdentifier[0].system)).toThrow()
+    const practitioner = translationService.getResourceForFullUrl(TestResources.fhirPrescriptionMessage1, "urn:uuid:d4b569e7-ccf6-4bb2-029b-34b6f3e82acf") as Practitioner
+    const identifier = clone(practitioner.identifier)
+    identifier[0].system = identifier[1].system
+    expect(() => translationService.getIdentifierValueForSystem(identifier, identifier[1].system)).toThrow()
 })
 
 test("convertBundleToParentPrescription returns correct value", () => {

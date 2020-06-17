@@ -143,11 +143,11 @@ export function convertPatient(
 }
 
 function convertPrescriptionIds(
-    fhirFirstMedicationRequest: fhir.MedicationRequest,
-    getIdentifierValueForSystemFn = getIdentifierValueForSystem
+    fhirFirstMedicationRequest: fhir.MedicationRequest
 ): [codes.GlobalIdentifier, codes.ShortFormPrescriptionIdentifier] {
-    const prescriptionId = getIdentifierValueForSystemFn(fhirFirstMedicationRequest.groupIdentifier, "urn:uuid")
-    const prescriptionShortFormId = getIdentifierValueForSystemFn(fhirFirstMedicationRequest.groupIdentifier, "urn:oid:2.16.840.1.113883.2.1.3.2.4.18.8")
+    const groupIdentifier = fhirFirstMedicationRequest.groupIdentifier;
+    const prescriptionId = groupIdentifier.extension.map(extension => extension.valueIdentifier.value).reduce(onlyElement)
+    const prescriptionShortFormId = groupIdentifier.value
     return [
         new codes.GlobalIdentifier(prescriptionId),
         new codes.ShortFormPrescriptionIdentifier(prescriptionShortFormId)
