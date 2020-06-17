@@ -25,10 +25,10 @@ export class MedicationRequest extends Resource {
     identifier?: Array<Identifier>
     category?: Array<CodeableConcept>
     medicationCodeableConcept: CodeableConcept
-    subject: Reference
-    encounter?: Reference
+    subject: Reference<Patient>
+    //encounter?: Reference<Encounter>
     authoredOn?: string
-    requester?: Reference
+    requester?: Reference<PractitionerRole>
     groupIdentifier?: MedicationRequestGroupIdentifier
     dosageInstruction?: Array<Dosage>
     dispenseRequest?: MedicationRequestDispenseRequest
@@ -45,7 +45,7 @@ export class Coding {
     version?: number
 }
 
-export class Reference {
+export class Reference<T extends Resource> {
     reference: string
 }
 
@@ -71,7 +71,7 @@ export class Patient extends Resource {
     gender?: string
     birthDate?: string
     address?: Array<Address>
-    generalPractitioner?: Reference
+    generalPractitioner?: Reference<PractitionerRole>
 }
 
 export class HumanName {
@@ -101,8 +101,8 @@ export class Address {
 }
 
 export class PractitionerRole extends Resource {
-    practitioner?: Reference
-    organization?: Reference
+    practitioner?: Reference<Practitioner>
+    organization?: Reference<Organization>
 }
 
 export class Practitioner extends Resource {
@@ -118,7 +118,7 @@ export class Organization extends Resource {
     name?: string
     telecom?: Array<ContactPoint>
     address?: Array<Address>
-    partOf?: Reference
+    partOf?: Reference<Organization>
 }
 
 export class OperationOutcomeIssue {
