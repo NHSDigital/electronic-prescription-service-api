@@ -1,6 +1,6 @@
 # electronic-prescription-service-api
 
-[![Build Status](https://dev.azure.com/NHSD-APIM/API%20Platform/_apis/build/status/NHSDigital.electronic-prescription-service-api?branchName=master)](https://dev.azure.com/NHSD-APIM/API%20Platform/_build/latest?definitionId=7&branchName=master) 
+[![Build Status](https://dev.azure.com/NHSD-APIM/API%20Platform/_apis/build/status/NHSDigital.electronic-prescription-service-api?branchName=master)](https://dev.azure.com/NHSD-APIM/API%20Platform/_build/latest?definitionId=7&branchName=master)
 
 This is a RESTful HL7® FHIR® API specification for the *Electronic Prescription Service API*.
 
@@ -48,7 +48,7 @@ There are `make` commands that alias some of this functionality:
  * `run-spec-viewer` -- Serves a preview of the specification in human-readable format
  * `generate-examples` -- generate example objects from the specification
  * `validate` -- validate generated examples against FHIR R4
- * `build-coordinator` -- build and run the coordinator locally
+ * `run-coordinator` -- build and run the coordinator locally
 
 ### Running tests
 #### End-to-end tests
