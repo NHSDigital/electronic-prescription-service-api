@@ -146,7 +146,7 @@ paths:
             examples:
               example:
                 value:
-                  $ref: components/examples/PrescriptionPostSuccessRequest.yaml
+                  $ref: components/examples/PrescriptionPostSuccessRequest.json
         description: ''
       description: Convert a prescription in FHIR format into the canonicalised HL7 V3 signature fragments which should be signed by the prescriber.
       tags:
