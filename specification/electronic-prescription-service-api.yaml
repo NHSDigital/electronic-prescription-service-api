@@ -137,6 +137,7 @@ paths:
                     $ref: components/examples/ServerErrorResponse.yaml
           headers: {}
       requestBody:
+        required: true
         content:
           application/fhir+json:
             schema:
