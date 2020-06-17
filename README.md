@@ -1,6 +1,6 @@
 # electronic-prescription-service-api
 
-[![Build Status](https://dev.azure.com/NHSD-APIM/API%20Platform/_apis/build/status/NHSDigital.electronic-prescription-service-api?branchName=master)](https://dev.azure.com/NHSD-APIM/API%20Platform/_build/latest?definitionId=7&branchName=master) 
+[![Build Status](https://dev.azure.com/NHSD-APIM/API%20Platform/_apis/build/status/NHSDigital.electronic-prescription-service-api?branchName=master)](https://dev.azure.com/NHSD-APIM/API%20Platform/_build/latest?definitionId=7&branchName=master)
 
 This is a RESTful HL7® FHIR® API specification for the *Electronic Prescription Service API*.
 
@@ -8,6 +8,7 @@ This is a RESTful HL7® FHIR® API specification for the *Electronic Prescriptio
 * `sandbox/` This NodeJS application implements a mock implementation of the service. Use it as a back-end service to the interactive documentation to illustrate interactions and concepts. It is not intended to provide an exhaustive/faithful environment suitable for full development and testing.
 * `scripts/` Utilities helpful to developers of this specification.
 * `apiproxy/` The Apigee API Proxy
+* `coordinator/` Deals with message translation and distribution to other services. Backend for the production EPS FHIR API.
 
 Consumers of the API will find developer documentation on the [NHS Digital Developer Hub](https://emea-demo8-nhsdportal.apigee.io/).
 
@@ -47,6 +48,7 @@ There are `make` commands that alias some of this functionality:
  * `run-spec-viewer` -- Serves a preview of the specification in human-readable format
  * `generate-examples` -- generate example objects from the specification
  * `validate` -- validate generated examples against FHIR R4
+ * `run-coordinator` -- build and run the coordinator locally
 
 ### Running tests
 #### End-to-end tests

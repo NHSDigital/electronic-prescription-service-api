@@ -8,6 +8,7 @@ install-python:
 install-node:
 	npm install
 	cd sandbox && npm install
+	cd coordinator && npm install
 
 install-hooks:
 	cp scripts/pre-commit .git/hooks/pre-commit
@@ -16,12 +17,18 @@ install-fhir-validator:
 	mkdir -p bin
 	test -f bin/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > bin/org.hl7.fhir.validator.jar
 
+run-coordinator: build-coordinator
+	cd coordinator && npm run start
+
 run-sandbox: build-spec build-sandbox
 	cd sandbox && npm run start
 
 run-spec-viewer: build-spec build-sandbox
 	scripts/set_spec_server_dev.sh
 	npm run serve
+
+build-coordinator:
+	cd coordinator && npm run build
 
 build-spec:
 	mkdir -p build
@@ -71,11 +78,12 @@ check-licenses:
 
 lint:
 	npm run lint
+	cd coordinator && npm run lint && cd ..
 	cd sandbox && npm run lint && cd ..
 	poetry run flake8 **/*.py --config .flake8
 	find -name '*.sh' | grep -v node_modules | xargs shellcheck
 
-validate: build-sandbox
+validate: build-spec build-sandbox
 	java -jar bin/org.hl7.fhir.validator.jar build/examples/**/*application_fhir+json*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt
 
 test:

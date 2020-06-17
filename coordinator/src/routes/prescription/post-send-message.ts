@@ -1,13 +1,14 @@
-const requestValidator = require("../../validators/request-validator")
+import * as requestValidator from "../../validators/request-validator"
+import Hapi from "@hapi/hapi"
 
-module.exports = [
+export default [
   /*
     Send a signed message on to SPINE.
   */
   {
     method: 'POST',
     path: '/Send',
-    handler: (request, h) => {
+    handler: (request: Hapi.Request, h: Hapi.ResponseToolkit): Hapi.ResponseObject => {
       requestValidator.verifyPrescriptionAndSignatureBundle(request.payload)
       return h.response("Message Sent")
     }
