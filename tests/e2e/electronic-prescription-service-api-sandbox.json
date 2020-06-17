@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "Prescription POST Success",
+			"name": "Prepare Success",
 			"request": {
 				"auth": {
 					"type": "oauth2",
@@ -46,19 +46,19 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/Prescription",
+					"raw": "{{base_url}}/Prepare",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
-						"Prescription"
+						"Prepare"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "Prescription PUT Success",
+			"name": "Send Success",
 			"request": {
 				"auth": {
 					"type": "oauth2",
@@ -80,7 +80,7 @@
 						}
 					]
 				},
-				"method": "PUT",
+				"method": "POST",
 				"header": [
 					{
 						"key": "NHSD-Session-URID",
@@ -98,12 +98,12 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/Prescription",
+					"raw": "{{base_url}}/Send",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
-						"Prescription"
+						"Send"
 					]
 				}
 			},

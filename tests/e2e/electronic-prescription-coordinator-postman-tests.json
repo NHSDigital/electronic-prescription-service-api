@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "{{base_url}}/ConvertSignatureFragments",
+			"name": "{{base_url}}/Prepare",
 			"event": [
 				{
 					"listen": "test",
@@ -38,21 +38,21 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/ConvertSignatureFragments",
+					"raw": "{{base_url}}/Prepare",
 					"protocol": "http",
 					"host": [
 						"{{base_url}}"
 					],
 					"port": "9000",
 					"path": [
-						"ConvertSignatureFragments"
+						"Prepare"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "{{base_url}}/ConvertFullMessage",
+			"name": "{{base_url}}/Convert",
 			"event": [
 				{
 					"listen": "test",
@@ -85,14 +85,14 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/ConvertFullMessage",
+					"raw": "{{base_url}}/Convert",
 					"protocol": "http",
 					"host": [
 						"{{base_url}}"
 					],
 					"port": "9000",
 					"path": [
-						"ConvertFullMessage"
+						"Convert"
 					]
 				}
 			},
