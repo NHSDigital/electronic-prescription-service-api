@@ -38,7 +38,7 @@ build-sandbox:
 	mkdir -p build/examples
 	poetry run python scripts/generate_examples.py build/electronic-prescription-service-api.json build/examples
 	mkdir -p sandbox/mocks
-	jq -rM . <build/examples/requests/paths._Prescription.post.requestBody.content.application_fhir+json.examples.example.value.json >sandbox/mocks/PrescriptionPostSuccessRequest.json
+	jq -rM . <build/examples/requests/paths._Prescription.post.requestBody.content.application_json.examples.example.value.json >sandbox/mocks/PrescriptionPostSuccessRequest.json
 	jq -rM . <build/examples/responses/paths._Prescription.post.responses.200.content.application_fhir+json.examples.example.value.json >sandbox/mocks/PrescriptionPostSuccessResponse.json
 	jq -rM . <build/examples/requests/paths._Prescription.put.requestBody.content.application_fhir+json.examples.success.value.json >sandbox/mocks/PrescriptionPutSuccessRequest.json
 	jq -rM . <build/examples/requests/paths._Prescription.put.requestBody.content.application_fhir+json.examples.patient-deceased.value.json >sandbox/mocks/PrescriptionPutErrorPatientDeceasedRequest.
