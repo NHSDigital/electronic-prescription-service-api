@@ -21,6 +21,14 @@ entry:
       authoredOn: '2008-02-27T11:38:00.000+00:00'
       requester:
         reference: urn:uuid:1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D
+      groupIdentifier:
+        extension:
+          - url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-eps-parentPrescriptionId"
+            valueIdentifier:
+              system: "https://fhir.nhs.uk/Id/prescription-parent-id"
+              value: "EDD2E9DD-DA0A-C266-A4E3-447C68239524"
+        system: "https://fhir.nhs.uk/Id/prescription-short-form"
+        value: "83C40E-A23856-00123C"
       dosageInstruction:
         - text: 1 tablet after breakfast
       dispenseRequest:
@@ -48,6 +56,14 @@ entry:
       authoredOn: '2008-02-27T11:38:00.000+00:00'
       requester:
         reference: urn:uuid:1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D
+      groupIdentifier:
+        extension:
+            - url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-eps-parentPrescriptionId"
+              valueIdentifier:
+                system: "https://fhir.nhs.uk/Id/prescription-parent-id"
+                value: "EDD2E9DD-DA0A-C266-A4E3-447C68239524"
+        system: "https://fhir.nhs.uk/Id/prescription-short-form"
+        value: "83C40E-A23856-00123C"
       dosageInstruction:
         - text: 1 tablet during breakfast
       dispenseRequest:
@@ -75,6 +91,14 @@ entry:
       authoredOn: '2008-02-27T11:38:00.000+00:00'
       requester:
         reference: urn:uuid:1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D
+      groupIdentifier:
+        extension:
+            - url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-eps-parentPrescriptionId"
+              valueIdentifier:
+                system: "https://fhir.nhs.uk/Id/prescription-parent-id"
+                value: "EDD2E9DD-DA0A-C266-A4E3-447C68239524"
+        system: "https://fhir.nhs.uk/Id/prescription-short-form"
+        value: "83C40E-A23856-00123C"
       dosageInstruction:
         - text: 3 tablets before breakfast
       dispenseRequest:
@@ -102,6 +126,14 @@ entry:
       authoredOn: '2008-02-27T11:38:00.000+00:00'
       requester:
         reference: urn:uuid:1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D
+      groupIdentifier:
+        extension:
+            - url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-eps-parentPrescriptionId"
+              valueIdentifier:
+                system: "https://fhir.nhs.uk/Id/prescription-parent-id"
+                value: "EDD2E9DD-DA0A-C266-A4E3-447C68239524"
+        system: "https://fhir.nhs.uk/Id/prescription-short-form"
+        value: "83C40E-A23856-00123C"
       dosageInstruction:
         - text: 2 tablets after breakfast
       dispenseRequest:

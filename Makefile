@@ -39,6 +39,9 @@ build-coordinator:
 	cd coordinator && npm run build
 
 build-sandbox:
+	mkdir -p sandbox/schemas
+	jq -rM . <build/examples/schemas/paths._Prepare.post.requestBody.content.application_fhir+json.schema.json >sandbox/schemas/Prepare.json
+	jq -rM . <build/examples/schemas/paths._Send.post.requestBody.content.application_fhir+json.schema.json >sandbox/schemas/Send.json
 	mkdir -p sandbox/mocks
 	jq -rM . <build/examples/requests/paths._Prepare.post.requestBody.content.application_fhir+json.examples.example.value.json >sandbox/mocks/PrepareSuccessRequest.json
 	jq -rM . <build/examples/responses/paths._Prepare.post.responses.200.content.application_fhir+json.examples.example.value.json >sandbox/mocks/PrepareSuccessResponse.json
@@ -104,4 +107,5 @@ clean:
 	rm -rf build
 	rm -rf dist
 	rm -rf sandbox/mocks
+	rm -rf sandbox/schemas
 	rm -rf coordinator/schemas
