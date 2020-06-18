@@ -90,8 +90,8 @@ jobs:
       - bash: 'echo "##vso[task.setvariable variable=SPEC_VERSION]$(poetry run python scripts/calculate_version.py)"'
         displayName: Set SPEC_VERSION
 
-      - bash: "make test"
-        displayName: Run Tests
+      - bash: "make test-sandbox"
+        displayName: Run Sandbox Tests
 
       - task: PublishTestResults@2
         inputs:
