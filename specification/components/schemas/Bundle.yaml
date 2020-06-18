@@ -11,16 +11,12 @@ properties:
     type: string
     description: FHIR Resource type.
     default: Bundle
-    readOnly: true
   id:
     type: string
     description: Logical id of this artifact.
     example: 7EB02341-5F62-4A76-2CD3-34F523452356
   identifier:
-    type: array
-    description: Short Form Prescription Identifier.
-    items:
-      $ref: "Identifier-ShortFormPrescriptionId.yaml"
+    $ref: "Identifier-ShortFormPrescriptionId.yaml"
   type:
     type: string
     description: Indicates the purpose of a bundle - how it is intended to be used.
