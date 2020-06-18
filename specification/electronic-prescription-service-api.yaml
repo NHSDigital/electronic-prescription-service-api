@@ -80,10 +80,6 @@ info:
 
     For more details on sandbox testing, or to try out the sandbox using our "Try this API" feature, see the documentation for each endpoint.
 
-    Alternatively, you can try out the sandbox using our Postman collection:
-
-    [![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/c7de990c99d2b6227e8d)
-
     ## Assurance
     We are hoping to make the assurance process as lightweight and as self-service as possible.
 
@@ -146,7 +142,7 @@ paths:
             examples:
               example:
                 value:
-                  $ref: components/examples/PrescriptionPostSuccessRequest.json
+                  $ref: components/examples/PrescriptionPostSuccessRequest.yaml
         description: ''
       description: Convert a prescription in FHIR format into the canonicalised HL7 V3 signature fragments which should be signed by the prescriber.
       tags:
