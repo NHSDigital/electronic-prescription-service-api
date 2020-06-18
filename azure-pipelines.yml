@@ -36,7 +36,7 @@ jobs:
         inputs:
           versionSpec: "3.8"
 
-      - bash: "sudo apt update && sudo apt-get install --yes default-jre default-jdk curl"
+      - bash: "sudo apt update && sudo apt-get install --yes default-jre default-jdk"
         displayName: Install apt dependencies
 
       - bash: "wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -; curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -; sudo apt-get install -y nodejs"
@@ -89,9 +89,6 @@ jobs:
 
       - bash: 'echo "##vso[task.setvariable variable=SPEC_VERSION]$(poetry run python scripts/calculate_version.py)"'
         displayName: Set SPEC_VERSION
-
-      - bash: "curl -X GET -L http://0.0.0.0:9000/Health"
-        displayName: Check the sandbox is up
 
       - bash: "make test"
         displayName: Run Sandbox Tests
