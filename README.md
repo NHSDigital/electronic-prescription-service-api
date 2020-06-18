@@ -51,16 +51,26 @@ There are `make` commands that alias some of this functionality:
  * `run-coordinator` -- build and run the coordinator locally
 
 ### Running tests
-#### End-to-end tests
-To run tests, you need to supply an environment. A `local` environment and an environment template are included under `tests/e2e/environments`.
+#### Unit and Integration tests
+To run tests for the sandbox: while in the sandbox folder, run
+```
+npm t
+```
+To run tests for the coordinator: while in the coordinator folder, run
+```
+npm t
+```
 
-In order for local tests to work, you must have the sandbox server running locally and have symlinked the mock files. Under sandbox/mocks there are some json files with the paths to symlink to as their content. For each of these symlink to these files, removing the original.
+#### End-to-end tests
+To run e2e tests for the sandbox, you need to supply an environment. A `local` environment and an environment template are included under `tests/e2e/environments`.
+
+In order for local tests to work, you must have the sandbox server running locally.
 
 ```
 make run-sandbox
 ```
 
-To run local tests, use:
+To run all local tests (includes unit and integration tests) for the sandbox: while in the root folder, run
 ```
 make test
 ```
