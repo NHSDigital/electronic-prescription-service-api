@@ -219,8 +219,10 @@ paths:
                     $ref: components/examples/PrescriptionPutErrorInvalidDateFormatResponse.yaml
           headers: {}
       requestBody:
+        required: true
         content:
-          application/fhir+json:
+          #application/fhir+json: FIXME - should be set to this but we have had to change it due to an Apigee SmartDocs bug.
+          application/json:
             schema:
               $ref: components/schemas/Bundle.yaml
             examples:
