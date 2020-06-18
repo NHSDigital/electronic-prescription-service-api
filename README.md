@@ -70,28 +70,14 @@ In order for local tests to work, you must have the sandbox server running local
 make run-sandbox
 ```
 
-To run all local tests (includes unit and integration tests): while in the root folder, run
+To run all local tests (includes unit and integration tests) for the sandbox: while in the root folder, run
 ```
-make test-sandbox
+make test
 ```
 
 There is a template environment file available at `tests/e2e/environments/postman_environment.json.template` useful for configuring different testing environments (such as on the CI server).
 
 The makefile sets defaults for the environment variables required for local testing, the CI server overrides these.
-
-
-To run e2e tests for the coordinator, you need to supply an environment. A `local` environment and an environment template are included under `tests/e2e/environments`.
-
-In order for local tests to work, you must have the sandbox server running locally.
-
-```
-make run-coordinator
-```
-
-To run all local tests (includes unit and integration tests): while in the root folder, run
-```
-make test-coordinator
-```
 
 ### VS Code Plugins
 

@@ -4,8 +4,7 @@
   "description": "OAS (Swagger v3) API Definition for Electronic Prescription Service API",
   "scripts": {
     "lint": "node_modules/.bin/speccy lint specification/electronic-prescription-service-api.yaml --skip default-and-example-are-redundant",
-    "test-sandbox": "node_modules/.bin/newman run tests/e2e/electronic-prescription-service-api-sandbox.json -e $API_TEST_ENV_FILE_PATH --reporters html,cli,htmlextra,junit --reporter-htmlextra-logs --reporter-htmlextra-darkTheme",
-    "test-coordinator": "node_modules/.bin/newman run tests/e2e/electronic-prescription-coordinator-postman-tests.json -e $API_TEST_ENV_FILE_PATH --reporters html,cli,htmlextra,junit --reporter-htmlextra-logs --reporter-htmlextra-darkTheme",
+    "test": "node_modules/.bin/newman run tests/e2e/electronic-prescription-service-api-sandbox.json -e $API_TEST_ENV_FILE_PATH --reporters html,cli,htmlextra,junit --reporter-htmlextra-logs --reporter-htmlextra-darkTheme",
     "publish": "mkdir -p build && node_modules/.bin/speccy resolve specification/electronic-prescription-service-api.yaml -i | poetry run python scripts/yaml2json.py | poetry run python scripts/set_version.py > build/electronic-prescription-service-api.json",
     "serve": "node_modules/.bin/speccy serve build/electronic-prescription-service-api.json",
     "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
