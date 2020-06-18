@@ -21,10 +21,10 @@ run-spec-viewer: build-spec build-sandbox
 	scripts/set_spec_server_dev.sh
 	npm run serve
 
-run-coordinator: build-spec build-coordinator
+run-coordinator: build-coordinator
 	cd coordinator && npm run start
 
-run-sandbox: build-spec build-sandbox
+run-sandbox: build-sandbox
 	cd sandbox && npm run start
 
 build-spec:
@@ -33,15 +33,9 @@ build-spec:
 	poetry run python scripts/generate_examples.py build/electronic-prescription-service-api.json build/examples
 
 build-coordinator:
-	mkdir -p coordinator/schemas
-	jq -rM . <build/examples/schemas/paths._Prepare.post.requestBody.content.application_fhir+json.schema.json >coordinator/schemas/Prepare.json
-	jq -rM . <build/examples/schemas/paths._Send.post.requestBody.content.application_fhir+json.schema.json >coordinator/schemas/Send.json
 	cd coordinator && npm run build
 
-build-sandbox:
-	mkdir -p sandbox/schemas
-	jq -rM . <build/examples/schemas/paths._Prepare.post.requestBody.content.application_fhir+json.schema.json >sandbox/schemas/Prepare.json
-	jq -rM . <build/examples/schemas/paths._Send.post.requestBody.content.application_fhir+json.schema.json >sandbox/schemas/Send.json
+build-sandbox: build-spec
 	mkdir -p sandbox/mocks
 	jq -rM . <build/examples/requests/paths._Prepare.post.requestBody.content.application_fhir+json.examples.example.value.json >sandbox/mocks/PrepareSuccessRequest.json
 	jq -rM . <build/examples/responses/paths._Prepare.post.responses.200.content.application_fhir+json.examples.example.value.json >sandbox/mocks/PrepareSuccessResponse.json
@@ -107,5 +101,3 @@ clean:
 	rm -rf build
 	rm -rf dist
 	rm -rf sandbox/mocks
-	rm -rf sandbox/schemas
-	rm -rf coordinator/schemas

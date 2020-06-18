@@ -1,21 +1,24 @@
 import * as fs from "fs"
 import * as path from "path"
-import Ajv = require("ajv");
+import Ajv = require("ajv")
+import $RefParser = require("@apidevtools/json-schema-ref-parser");
 
 const validator = new Ajv()
 
-const prepareSchemaStr = fs.readFileSync(path.join(__dirname, "../../schemas/Prepare.json"), "utf8")
-const prepareSchema = JSON.parse(prepareSchemaStr)
-const prepareSchemaValidator = validator.compile(prepareSchema)
+//TODO - either have a single validator, or have two schemas
+const prepareSchemaValidator = createSchemaValidator("../../../specification/components/schemas/Bundle.yaml")
+const sendSchemaValidator = createSchemaValidator("../../../specification/components/schemas/Bundle.yaml")
 
-const sendSchemaStr = fs.readFileSync(path.join(__dirname, "../../schemas/Send.json"), "utf8")
-const sendSchema = JSON.parse(sendSchemaStr)
-const sendSchemaValidator = validator.compile(sendSchema)
+async function createSchemaValidator(relativePath: string) {
+    const schema = await $RefParser.dereference(path.join(__dirname, relativePath))
+    return validator.compile(schema)
+}
 
-function testSchema(schemaValidator: Ajv.ValidateFunction, relativePath: string) {
-    return () => {
+function testSchema(schemaValidatorPromise: Promise<Ajv.ValidateFunction>, relativePath: string) {
+    return async () => {
         const messageStr = fs.readFileSync(path.join(__dirname, relativePath), "utf8")
         const message = JSON.parse(messageStr)
+        const schemaValidator = await schemaValidatorPromise
         const valid = schemaValidator(message)
         if (schemaValidator.errors) {
             console.log(schemaValidator.errors)
