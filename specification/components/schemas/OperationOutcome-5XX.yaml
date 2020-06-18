@@ -1,0 +1,71 @@
+type: object
+description: |
+  Outcome of an operation that does not result in a resource or bundle being returned (e.g. error, async/batch submission).
+  There are a number of possible error codes that can be returned along with a more detailed description in the `display` field.
+  Server errors (5XX error codes):
+  | Code                       | Response Code | Description                                   |
+  | -------------------------- | ------------- | --------------------------------------------- |
+  | FAILURE_TO_PROCESS_MESSAGE | 500           | A default message when something really bad has happened that the system could not handle.	|
+properties:
+  resourceType:
+    type: string
+    description: FHIR Resource Type.
+    default: OperationOutcome
+    readOnly: true
+  issue:
+    type: array
+    description: List of issues that have occurred.
+    minItems: 1
+    items:
+      type: object
+      required:
+        - severity
+        - code
+      properties:
+        severity:
+          type: string
+          enum: [fatal, error, warning, information]
+          description: Severity of the error.
+          example: error
+        code:
+          type: string
+          description: FHIR error code.
+          example: invalid
+          enum:
+            - invalid
+            - structure
+            - required
+            - value
+            - invariant
+            - security
+            - login
+            - unknown
+            - expired
+            - forbidden
+            - suppressed
+            - processing
+            - not-supported
+            - duplicate
+            - multiple-matches
+            - not-found
+            - deleted
+            - too-long
+            - code-invalid
+            - extension
+            - too-costly
+            - business-rule
+            - conflict
+            - transient
+            - lock-error
+            - no-store
+            - exception
+            - timeout
+            - incomplete
+            - throttled
+            - informational
+        details:
+          $ref: 'ErrorCode.yaml'
+        expression:
+          type: string
+          description: FHIRPath of element(s) related to the error.
+          example: Patient.name.given

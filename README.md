@@ -1,6 +1,6 @@
 # electronic-prescription-service-api
 
-![Build](https://github.com/NHSDigital/electronic-prescription-service-api/workflows/Build/badge.svg?branch=master)
+[![Build Status](https://dev.azure.com/NHSD-APIM/API%20Platform/_apis/build/status/NHSDigital.electronic-prescription-service-api?branchName=master)](https://dev.azure.com/NHSD-APIM/API%20Platform/_build/latest?definitionId=7&branchName=master)
 
 This is a RESTful HL7® FHIR® API specification for the *Electronic Prescription Service API*.
 
@@ -8,6 +8,7 @@ This is a RESTful HL7® FHIR® API specification for the *Electronic Prescriptio
 * `sandbox/` This NodeJS application implements a mock implementation of the service. Use it as a back-end service to the interactive documentation to illustrate interactions and concepts. It is not intended to provide an exhaustive/faithful environment suitable for full development and testing.
 * `scripts/` Utilities helpful to developers of this specification.
 * `apiproxy/` The Apigee API Proxy
+* `coordinator/` Deals with message translation and distribution to other services. Backend for the production EPS FHIR API.
 
 Consumers of the API will find developer documentation on the [NHS Digital Developer Hub](https://emea-demo8-nhsdportal.apigee.io/).
 
@@ -23,6 +24,7 @@ The contents of this repository are protected by Crown Copyright (C).
 
 ### Requirements
 * make
+* jq
 * nodejs + npm/yarn
 * [poetry](https://github.com/python-poetry/poetry)
 
@@ -31,13 +33,8 @@ The contents of this repository are protected by Crown Copyright (C).
 $ make install
 ```
 
-#### Updating hooks
-You can install some pre-commit hooks to ensure you can't commit invalid spec changes by accident. These are also run
-in CI, but it's useful to run them locally too.
-
-```
-$ make install-hooks
-```
+#### Pre-commit hooks
+Some pre-commit hooks are installed as part of the install above to ensure you can't commit invalid spec changes by accident. A combination of these checks are also run in CI.
 
 ### Environment Variables
 Various scripts and commands rely on environment variables being set. These are documented with the commands.
@@ -47,23 +44,20 @@ Various scripts and commands rely on environment variables being set. These are 
 ### Make commands
 There are `make` commands that alias some of this functionality:
  * `lint` -- Lints the spec and code
- * `publish` -- Outputs the specification as a **single file** into the `build/` directory
- * `serve` -- Serves a preview of the specification in human-readable format
+ * `build-spec` -- Outputs the specification as a **single file** into the `build/` directory
+ * `run-spec-viewer` -- Serves a preview of the specification in human-readable format
  * `generate-examples` -- generate example objects from the specification
  * `validate` -- validate generated examples against FHIR R4
+ * `run-coordinator` -- build and run the coordinator locally
 
 ### Running tests
 #### End-to-end tests
-To run tests, you need to supply an environment. A `local` environment and an environment template are included under `tests/e2e/environments`.
-
-Set the following environment variables for local testing:
- * `ENVIRONMENT`: `local`
- * `API_TEST_ENV_FILE_PATH`: `tests/e2e/environments/local.postman_environment.json`
- * `API_TEST_URL`: `localhost:9000`
+To run tests for the sandbox, you need to supply an environment. A `local` environment and an environment template are included under `tests/e2e/environments`.
 
 In order for local tests to work, you must have the sandbox server running locally.
+
 ```
-make sandbox
+make run-sandbox
 ```
 
 To run local tests, use:
@@ -72,6 +66,13 @@ make test
 ```
 
 There is a template environment file available at `tests/e2e/environments/postman_environment.json.template` useful for configuring different testing environments (such as on the CI server).
+
+The makefile sets defaults for the environment variables required for local testing, the CI server overrides these.
+
+To run tests for the coordinator: while in the coordinator folder, run
+```
+npm t
+```
 
 ### VS Code Plugins
 
@@ -113,32 +114,6 @@ Procedure:
  * Import the collection into Postman
  * Update requests and export the collection back into the repo
  * Re-generate the [Run in Postman button](https://learning.getpostman.com/docs/postman-for-publishers/run-in-postman/creating-run-button/) Markdown button link and update the OAS
-
-## Deployment
-
-### Specification
-Update the API Specification and derived documentation in the Portal.
-
-`make deploy-spec` with environment variables:
-
-* `APIGEE_USERNAME`
-* `APIGEE_PASSWORD`
-* `APIGEE_SPEC_ID`
-* `APIGEE_PORTAL_API_ID`
-
-### API Proxy & Sandbox Service
-Redeploy the API Proxy and hosted Sandbox service.
-
-`make deploy-proxy` with environment variables:
-
-* `APIGEE_USERNAME`
-* `APIGEE_PASSWORD`
-* `APIGEE_ORGANIZATION`
-* `APIGEE_ENVIRONMENTS` - Comma-separated list of environments to deploy to (e.g. `test,prod`)
-* `APIGEE_APIPROXY` - Name of the API Proxy for deployment
-* `APIGEE_BASE_PATH` - The proxy's base path (must be unique)
-
-:bulb: Specify your own API Proxy (with base path) for use during development.
 
 #### Platform setup
 

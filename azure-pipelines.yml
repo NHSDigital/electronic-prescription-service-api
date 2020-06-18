@@ -1,5 +1,12 @@
+name: "$(SourceBranchName)+$(BuildID)"
+
 trigger:
-- master
+  branches:
+    include:
+      - tags/refs/v*
+  tags:
+    include:
+      - v*
 
 pr:
   branches:
@@ -17,13 +24,23 @@ jobs:
     steps:
       - checkout: self
 
+      - bash: echo "##vso[task.setvariable variable=BRANCH_NAME]`echo $(System.PullRequest.SourceBranch) | sed -r 's/[/|\\@":<>?*]+/-/g'`"
+        displayName: Set and replace invalid characters in branch name
+
+      - bash: 'echo "##vso[build.updatebuildnumber]$(BRANCH_NAME)+$(Build.BuildID)"'
+        condition: eq(variables['Build.SourceBranchName'], 'merge')
+        displayName: Update build ID if this is a pull request
+
       - task: UsePythonVersion@0
         displayName: "Use Python 3.8"
         inputs:
           versionSpec: "3.8"
 
-      - bash: "sudo apt update && sudo apt-get install --yes default-jre default-jdk npm"
+      - bash: "sudo apt update && sudo apt-get install --yes default-jre default-jdk"
         displayName: Install apt dependencies
+
+      - bash: "wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -; curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -; sudo apt-get install -y nodejs"
+        displayName: Install node
 
       - bash: "python -m pip install --upgrade pip setuptools wheel && pip install poetry"
         displayName: Install python dependencies
@@ -58,7 +75,7 @@ jobs:
       - bash: "make install"
         displayName: Install repo
 
-      - bash: "make sandbox &"
+      - bash: "make run-sandbox &"
         displayName: Start Sandbox Server
 
       - bash: "make check-licenses"
@@ -69,9 +86,6 @@ jobs:
 
       - bash: "make validate"
         displayName: Validate FHIR
-
-      - bash: "make publish"
-        displayName: Compile Spec
 
       - bash: 'echo "##vso[task.setvariable variable=SPEC_VERSION]$(poetry run python scripts/calculate_version.py)"'
         displayName: Set SPEC_VERSION

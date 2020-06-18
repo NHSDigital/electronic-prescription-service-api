@@ -4,7 +4,8 @@
     "description": "Electronic Prescription Service API Sandbox Server",
     "main": "app.js",
     "scripts": {
-        "lint": "find . -type f -name '*.js' ! -name '.eslintrc.js' | grep -v 'node_modules/' | xargs eslint",
+        "lint": "find . -type f -name '*.js' ! -name '.eslintrc.js' ! -name '*.spec.js' | grep -v 'node_modules/' | xargs eslint",
+        "test": "jest",
         "start": "node app.js --use_strict"
     },
     "author": "NHS Digital",
@@ -15,10 +16,12 @@
         "fast-json-patch": "^3.0.0-1",
         "inert": "^5.1.3",
         "lodash": "^4.17.15",
-        "nhs-number-validator": "^1.1.1"
+        "nhs-number-validator": "^1.1.1",
+        "monet": "0.9.1"
     },
     "devDependencies": {
         "eslint": "^6.8.0",
-        "minimist": "^1.2.2"
+        "minimist": "^1.2.2",
+        "jest": "^26.0.1"
     }
 }

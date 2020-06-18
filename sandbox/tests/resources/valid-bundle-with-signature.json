@@ -1,0 +1,38 @@
+{
+  "resourceType": "Bundle",
+  "id": "E8E8D623-62C9-4642-BC51-AB50430DF8CA",
+  "type": "collection",
+  "entry": [
+  {
+    "resourceType": "Provenance"
+  },
+  {
+    "resourceType": "Practitioner"
+  },
+  {
+    "resourceType": "Bundle",
+    "id": "7EB02341-5F62-4A76-2CD3-34F523452356",
+    "type": "collection",
+    "entry": [
+      {
+        "resourceType": "MedicationRequest"
+      },
+      {
+        "resourceType": "Patient"
+      },
+      {
+        "resourceType": "Encounter"
+      },
+      {
+        "resourceType": "Organization"
+      },
+      {
+        "resourceType": "Organization"
+      },
+      {
+        "resourceType": "Practitioner"
+      }
+    ]
+  }
+]
+}

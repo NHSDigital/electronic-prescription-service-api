@@ -4,9 +4,13 @@ dist/
 build/
 public/
 newman/
+coverage/
+sandbox/mocks
 
 .#*
 
 __pycache__/
 .envrc
 .idea
+
+.vscode
