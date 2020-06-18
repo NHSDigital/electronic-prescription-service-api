@@ -104,7 +104,7 @@ paths:
         '200':
           description: Successful conversion.
           content:
-            application/fhir+json:
+            application/json:
               schema:
                 $ref: components/schemas/Binary.yaml
               examples:
@@ -221,7 +221,7 @@ paths:
       requestBody:
         required: true
         content:
-          #application/fhir+json: FIXME - should be set to this but we have had to change it due to an Apigee SmartDocs bug.
+          #application/fhir+json: #FIXME - should be set to this but we have had to change it due to an Apigee SmartDocs bug.
           application/json:
             schema:
               $ref: components/schemas/Bundle.yaml
