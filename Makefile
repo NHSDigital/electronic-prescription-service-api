@@ -86,12 +86,19 @@ lint:
 validate: build-spec build-sandbox
 	java -jar bin/org.hl7.fhir.validator.jar build/examples/**/*application_fhir+json*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt
 
-test: build-spec build-sandbox
+test-sandbox:
 	export ENVIRONMENT=$(or $(ENVIRONMENT),local) \
 	&& export API_TEST_ENV_FILE_PATH=$(or $(API_TEST_ENV_FILE_PATH),tests/e2e/environments/local.postman_environment.json) \
 	&& export API_TEST_URL=$(or $(API_TEST_URL),localhost:9000) \
-	&& npm run test
+	&& npm run test-sandbox
 	cd sandbox && npm t
+
+test-coordinator:
+	export ENVIRONMENT=$(or $(ENVIRONMENT),local) \
+	&& export API_TEST_ENV_FILE_PATH=$(or $(API_TEST_ENV_FILE_PATH),tests/e2e/environments/local.postman_environment.json) \
+	&& export API_TEST_URL=$(or $(API_TEST_URL),localhost:9000) \
+	&& npm run test-coordinator
+	cd coordinator && npm t
 
 release: build-proxy
 	mkdir -p dist
