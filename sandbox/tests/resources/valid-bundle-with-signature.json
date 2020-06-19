@@ -3,52 +3,40 @@
   "id": "E8E8D623-62C9-4642-BC51-AB50430DF8CA",
   "type": "collection",
   "entry": [
-  {
-    "resource": {
-      "resourceType": "Provenance"
-    }
-  },
-  {
-    "resource": {
-      "resourceType": "Practitioner"
-    }
-  },
-  {
-    "resourceType": "Bundle",
-    "id": "7EB02341-5F62-4A76-2CD3-34F523452356",
-    "type": "collection",
-    "entry": [
-      {
-        "resource": {
-          "resourceType": "MedicationRequest"
-        }
-      },
-      {
-        "resource": {
-          "resourceType": "Patient"
-        }
-      },
-      {
-        "resource": {
-          "resourceType": "Encounter"
-        }
-      },
-      {
-        "resource": {
-          "resourceType": "Organization"
-        }
-      },
-      {
-        "resource": {
-          "resourceType": "Organization"
-        }
-      },
-      {
-        "resource": {
-          "resourceType": "Practitioner"
-        }
+    {
+      "resource": {
+        "resourceType": "MedicationRequest"
       }
-    ]
-  }
-]
+    },
+    {
+      "resource": {
+        "resourceType": "Patient"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Organization"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Organization"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Practitioner"
+      }
+    },
+    {
+      "resource": {
+        "resourceType": "Provenance"
+      }
+    }
+  ]
 }
