@@ -1,7 +1,7 @@
 import * as requestValidator from "../../validators/request-validator"
-import * as translator from "../../services/translation-service"
+import * as requestBodyParser from "../../services/request-body-parser"
+import * as responseBuilder from "../../services/response-builder"
 import Hapi from "@hapi/hapi";
-import {Bundle} from "../../services/fhir-resources";
 
 export default [
     /*
@@ -11,8 +11,11 @@ export default [
         method: 'POST',
         path: '/Convert',
         handler: (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Hapi.ResponseObject => {
-            requestValidator.verifyPrescriptionBundle(request.payload)
-            return responseToolkit.response(translator.convertFhirMessageToHl7V3ParentPrescription(request.payload as Bundle))
+            const requestBody = requestBodyParser.parse(request)
+            const validation = requestValidator.verifyPrescriptionBundle(requestBody)
+            const statusCode = requestValidator.getStatusCode(validation)
+            const response = responseBuilder.createPrescription(validation, requestBody)
+            return responseToolkit.response(response).code(statusCode)
         }
     }
 ]

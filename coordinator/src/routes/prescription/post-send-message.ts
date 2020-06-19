@@ -1,5 +1,7 @@
 import * as requestValidator from "../../validators/request-validator"
 import Hapi from "@hapi/hapi"
+import * as requestBodyParser from "../../services/request-body-parser";
+import * as responseBuilder from "../../services/response-builder";
 
 export default [
   /*
@@ -8,9 +10,12 @@ export default [
   {
     method: 'POST',
     path: '/Send',
-    handler: (request: Hapi.Request, h: Hapi.ResponseToolkit): Hapi.ResponseObject => {
-      requestValidator.verifyPrescriptionAndSignatureBundle(request.payload)
-      return h.response("Message Sent")
+    handler: (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Hapi.ResponseObject => {
+        const requestBody = requestBodyParser.parse(request)
+        const validation = requestValidator.verifyPrescriptionAndSignatureBundle(requestBody)
+        const statusCode = requestValidator.getStatusCode(validation)
+        const response = responseBuilder.sendMessage(validation)
+        return responseToolkit.response(response).code(statusCode)
     }
   }
 ]
