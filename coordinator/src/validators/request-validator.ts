@@ -30,7 +30,7 @@ export function verifyPrescriptionBundle(bundle: unknown): Array<ValidationError
         apiErrorCode: "INCORRECT_RESOURCETYPE",
         severity: "fatal"}]
 }
-// TODO tidy
+
 export function verifyPrescriptionAndSignatureBundle(bundle: unknown): Array<ValidationError> {
     const toReturn = verifyPrescriptionBundle(bundle)
 
