@@ -20,14 +20,14 @@ export function verifyPrescriptionBundle(bundle: unknown): Array<ValidationError
                 () => verifyBundleContainsExactly(bundle, 2, "Organization")
             )
         }
-        return [{message: "string",
-            operationOutcomeCode: "string",
-            apiErrorCode: "string",
+        return [{message: "ResourceType Bundle must contain 'entry' field",
+            operationOutcomeCode: "value",
+            apiErrorCode: "MISSING_FIELD",
             severity: "fatal"}]
     }
-    return [{message: "string",
-        operationOutcomeCode: "string",
-        apiErrorCode: "string",
+    return [{message: "ResourceType must be 'Bundle' on request",
+        operationOutcomeCode: "value",
+        apiErrorCode: "INCORRECT_RESOURCETYPE",
         severity: "fatal"}]
 }
 // TODO tidy
