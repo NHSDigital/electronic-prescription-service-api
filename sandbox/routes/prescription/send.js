@@ -8,8 +8,8 @@ module.exports = [
     Send the signed prescription to EPS.
   */
   {
-    method: 'PUT',
-    path: '/Prescription',
+    method: 'POST',
+    path: '/Send',
     handler: (request, h) => {
       var requestBody = requestBodyParser.parse(request)
       var validation = requestValidator.verifyPrescriptionAndSignatureBundle(requestBody)

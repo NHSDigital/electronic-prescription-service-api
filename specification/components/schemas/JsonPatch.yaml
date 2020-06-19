@@ -7,7 +7,11 @@ items:
   properties:
     op:
       type: string
-      enum: [remove,add,replace]
+      enum: [
+        "remove",
+        "add",
+        "replace"
+      ]
     path:
       description: The location of the information to remove, add or replace. The '-' character must be used to add new items to arrays, e.g. names, addresses.
       type: string
