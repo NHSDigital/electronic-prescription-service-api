@@ -8,9 +8,9 @@ properties:
     type: string
     description: Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
     enum:
-      - https://fhir.nhs.uk/Id/sds-user-id
-    example: https://fhir.nhs.uk/Id/sds-user-id
+      - "https://fhir.nhs.uk/Id/sds-user-id"
+    example: "https://fhir.nhs.uk/Id/sds-user-id"
   value:
     type: string
     description: The portion of the identifier typically relevant to the user and which is unique within the context of the system.
-    example: 125686540025
+    example: "125686540025"

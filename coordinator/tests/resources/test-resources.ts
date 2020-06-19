@@ -1,6 +1,6 @@
 import * as XmlJs from 'xml-js'
 import * as fs from 'fs'
-import * as path from "path";
+import * as path from "path"
 import {ParentPrescription} from "../../src/services/hl7-v3-prescriptions";
 import {Bundle} from "../../src/services/fhir-resources";
 

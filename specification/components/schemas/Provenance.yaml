@@ -12,12 +12,12 @@ properties:
     type: string
     description: FHIR Resource type
     enum:
-      - Provenance
-    example: Provenance
+      - "Provenance"
+    example: "Provenance"
   id:
     type: string
     description: Logical id of this artifact.
-    example: C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
+    example: "4E74661B-E7C9-42A5-9DBB-A167C507C489"
   target:
     type: array
     description: The Reference(s) that were generated or updated by the activity described in this resource.
@@ -26,7 +26,7 @@ properties:
   recorded:
     type: string
     description: The instant of time at which the activity was recorded.
-    example: 2020-04-21T10:45:30+00:00
+    example: "2020-04-21T10:45:30+00:00"
   agent:
     type: array
     description: An actor taking a role in an activity for which it can be assigned some degree of responsibility for the activity taking place.
@@ -36,7 +36,7 @@ properties:
         - who
       properties:
         who:
-          $ref: "Practitioner.yaml"
+          $ref: "Reference.yaml"
   signature:
     type: array
     description: A digital signature on the target Reference(s). The signer should match a Provenance.agent.

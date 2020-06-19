@@ -9,17 +9,17 @@ properties:
   resourceType:
     type: string
     description: FHIR Resource type.
-    default: Binary
+    default: "Binary"
     readOnly: true
   id:
     type: string
     description: Logical id of this artifact.
-    example: C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
+    example: "C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C"
   contentType:
     type: string
     description: MimeType of the binary content.
-    example: application/xml
+    example: "application/xml"
   data:
     type: string
     description: The actual content.
-    example: PEZyYWdtZW50c1RvQmVIYXNoZWQ+PC9GcmFnbWVudHNUb0JlSGFzaGVkPg==
+    example: "PEZyYWdtZW50c1RvQmVIYXNoZWQ+PC9GcmFnbWVudHNUb0JlSGFzaGVkPg=="

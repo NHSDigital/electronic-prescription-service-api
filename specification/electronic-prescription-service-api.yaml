@@ -28,13 +28,13 @@ info:
     ## Using this API
     Electronic prescription messages are digitally signed to protect against tampering and to prevent repudiation.
     While the messages themselves are FHIR-based, for reasons of backwards compatibility, the signatures must be
-    represented in HL7 V3 format. To make this easier, you can POST a prescription to the /Prescription endpoint to
+    represented in HL7 V3 format. To make this easier, you can POST a prescription to the /Prepare endpoint to
     receive exactly the HL7 V3 fragments which need to be signed to conform to the specification.
     
     The flow to create a prescription is then:
-    * POST a prescription in FHIR format to the /Prescription endpoint
+    * POST a prescription in FHIR format to the /Prepare endpoint
     * Sign the response and put the result in a Provenance resource in the original FHIR prescription
-    * PUT the signed prescription in FHIR format to the /Prescription endpoint
+    * POST the signed prescription in FHIR format to the /Send endpoint
 
     ## Related APIs
     The following APIs also give access to the Electronic Prescription Service:
@@ -91,8 +91,8 @@ info:
 
     ## Endpoints
     To see details for specific endpoints, select from the list on the left hand side of the page:
-    * `POST /Prescription` - convert a FHIR prescription into the HL7 V3 signature fragments to be signed by the prescriber
-    * `PUT /Prescription` - send a signed FHIR prescription to Spine
+    * `POST /Prepare` - convert a FHIR prescription into the HL7 V3 signature fragments to be signed by the prescriber
+    * `POST /Send` - send a signed FHIR prescription to Spine
 servers:
   - url: 'https://internal-qa-sandbox.api.service.nhs.uk/electronic-prescriptions'
     description: 'Internal QA Sandbox environment.'
@@ -100,10 +100,23 @@ tags:
   - name: dispensing
   - name: prescribing
 paths:
-  /Prescription:
+  /Prepare:
     post:
+      operationId: prepare-prescription
       summary: Convert prescription to signature fragments
-      operationId: post-prescription
+      description: Convert a prescription in FHIR format into the canonicalised HL7 V3 signature fragments which should be signed by the prescriber.
+      tags:
+        - prescribing
+      requestBody:
+        content:
+          application/fhir+json:
+            schema:
+              $ref: components/schemas/Bundle.yaml
+            examples:
+              example:
+                value:
+                  $ref: components/examples/PrepareSuccessRequest.yaml
+        description: ''
       responses:
         '200':
           description: Successful conversion.
@@ -114,7 +127,7 @@ paths:
               examples:
                 example:
                   value:
-                    $ref: components/examples/PrescriptionPostSuccessResponse.yaml
+                    $ref: components/examples/PrepareSuccessResponse.yaml
         '4XX':
           description: Invalid request.
           content:
@@ -136,22 +149,62 @@ paths:
                   value:
                     $ref: components/examples/ServerErrorResponse.yaml
           headers: {}
+  /Send:
+    post:
+      operationId: send-prescription
+      summary: Send a signed prescription to Spine
+      description: Submit a signed prescription to EPS
+      tags:
+        - prescribing
       requestBody:
         content:
           application/fhir+json:
             schema:
               $ref: components/schemas/Bundle.yaml
             examples:
-              example:
+              success:
                 value:
-                  $ref: components/examples/PrescriptionPostSuccessRequest.yaml
+                  $ref: components/examples/SendSuccessRequest.yaml
+              patient-deceased:
+                value:
+                  $ref: components/examples/SendErrorPatientDeceasedRequest.yaml
+              duplicate-prescription:
+                value:
+                  $ref: components/examples/SendErrorDuplicatePrescriptionRequest.yaml
+              digital-signature-not-found:
+                value:
+                  $ref: components/examples/SendErrorDigitalSignatureNotFoundRequest.yaml
+              patient-not-found:
+                value:
+                  $ref: components/examples/SendErrorPatientNotFoundRequest.yaml
+              information-missing:
+                value:
+                  $ref: components/examples/SendErrorInformationMissingRequest.yaml
+              invalid-message:
+                value:
+                  $ref: components/examples/SendErrorInvalidMessageRequest.yaml
+              incorrect-item-count:
+                value:
+                  $ref: components/examples/SendErrorIncorrectItemCountRequest.yaml
+              authorised-repeat-mismatch:
+                value:
+                  $ref: components/examples/SendErrorAuthorisedRepeatMismatchRequest.yaml
+              incorrect-repeat-number:
+                value:
+                  $ref: components/examples/SendErrorIncorrectRepeatNumberRequest.yaml
+              incompatible-version:
+                value:
+                  $ref: components/examples/SendErrorIncompatibleVersionRequest.yaml
+              duplicate-item-id:
+                value:
+                  $ref: components/examples/SendErrorDuplicateItemIdRequest.yaml
+              check-digit-error:
+                value:
+                  $ref: components/examples/SendErrorCheckDigitErrorRequest.yaml
+              invalid-date-format:
+                value:
+                  $ref: components/examples/SendErrorInvalidDateFormatRequest.yaml
         description: ''
-      description: Convert a prescription in FHIR format into the canonicalised HL7 V3 signature fragments which should be signed by the prescriber.
-      tags:
-        - prescribing
-    put:
-      summary: Send a signed prescription to Spine
-      operationId: post-signed-prescription
       responses:
         '200':
           description: Successfully submitted
@@ -162,7 +215,7 @@ paths:
               examples:
                 example:
                   value:
-                    $ref: components/examples/PrescriptionPutSuccessResponse.yaml
+                    $ref: components/examples/SendSuccessResponse.yaml
         '4XX':
           description: Invalid request.
           content:
@@ -182,97 +235,44 @@ paths:
               examples:
                 patient-deceased:
                   value:
-                    $ref: components/examples/PrescriptionPutErrorPatientDeceasedResponse.yaml
+                    $ref: components/examples/SendErrorPatientDeceasedResponse.yaml
                 duplicate-prescription:
                   value:
-                    $ref: components/examples/PrescriptionPutErrorDuplicatePrescriptionResponse.yaml
+                    $ref: components/examples/SendErrorDuplicatePrescriptionResponse.yaml
                 digital-signature-not-found:
                   value:
-                    $ref: components/examples/PrescriptionPutErrorDigitalSignatureNotFoundResponse.yaml
+                    $ref: components/examples/SendErrorDigitalSignatureNotFoundResponse.yaml
                 patient-not-found:
                   value:
-                    $ref: components/examples/PrescriptionPutErrorPatientNotFoundResponse.yaml
+                    $ref: components/examples/SendErrorPatientNotFoundResponse.yaml
                 information-missing:
                   value:
-                    $ref: components/examples/PrescriptionPutErrorInformationMissingResponse.yaml
+                    $ref: components/examples/SendErrorInformationMissingResponse.yaml
                 invalid-message:
                   value:
-                    $ref: components/examples/PrescriptionPutErrorInvalidMessageResponse.yaml
+                    $ref: components/examples/SendErrorInvalidMessageResponse.yaml
                 incorrect-item-count:
                   value:
-                    $ref: components/examples/PrescriptionPutErrorIncorrectItemCountResponse.yaml
+                    $ref: components/examples/SendErrorIncorrectItemCountResponse.yaml
                 authorised-repeat-mismatch:
                   value:
-                    $ref: components/examples/PrescriptionPutErrorAuthorisedRepeatMismatchResponse.yaml
+                    $ref: components/examples/SendErrorAuthorisedRepeatMismatchResponse.yaml
                 incorrect-repeat-number:
                   value:
-                    $ref: components/examples/PrescriptionPutErrorIncorrectRepeatNumberResponse.yaml
+                    $ref: components/examples/SendErrorIncorrectRepeatNumberResponse.yaml
                 incompatible-version:
                   value:
-                    $ref: components/examples/PrescriptionPutErrorIncompatibleVersionResponse.yaml
+                    $ref: components/examples/SendErrorIncompatibleVersionResponse.yaml
                 duplicate-item-id:
                   value:
-                    $ref: components/examples/PrescriptionPutErrorDuplicateItemIdResponse.yaml
+                    $ref: components/examples/SendErrorDuplicateItemIdResponse.yaml
                 check-digit-error:
                   value:
-                    $ref: components/examples/PrescriptionPutErrorCheckDigitErrorResponse.yaml
+                    $ref: components/examples/SendErrorCheckDigitErrorResponse.yaml
                 invalid-date-format:
                   value:
-                    $ref: components/examples/PrescriptionPutErrorInvalidDateFormatResponse.yaml
+                    $ref: components/examples/SendErrorInvalidDateFormatResponse.yaml
           headers: {}
-      requestBody:
-        content:
-          application/fhir+json:
-            schema:
-              $ref: components/schemas/Bundle.yaml
-            examples:
-              success:
-                value:
-                  $ref: components/examples/PrescriptionPutSuccessRequest.yaml
-              patient-deceased:
-                value:
-                  $ref: components/examples/PrescriptionPutErrorPatientDeceasedRequest.yaml
-              duplicate-prescription:
-                value:
-                  $ref: components/examples/PrescriptionPutErrorDuplicatePrescriptionRequest.yaml
-              digital-signature-not-found:
-                value:
-                  $ref: components/examples/PrescriptionPutErrorDigitalSignatureNotFoundRequest.yaml
-              patient-not-found:
-                value:
-                  $ref: components/examples/PrescriptionPutErrorPatientNotFoundRequest.yaml
-              information-missing:
-                  value:
-                    $ref: components/examples/PrescriptionPutErrorInformationMissingRequest.yaml
-              invalid-message:
-                value:
-                  $ref: components/examples/PrescriptionPutErrorInvalidMessageRequest.yaml
-              incorrect-item-count:
-                value:
-                  $ref: components/examples/PrescriptionPutErrorIncorrectItemCountRequest.yaml
-              authorised-repeat-mismatch:
-                value:
-                  $ref: components/examples/PrescriptionPutErrorAuthorisedRepeatMismatchRequest.yaml
-              incorrect-repeat-number:
-                value:
-                  $ref: components/examples/PrescriptionPutErrorIncorrectRepeatNumberRequest.yaml
-              incompatible-version:
-                value:
-                  $ref: components/examples/PrescriptionPutErrorIncompatibleVersionRequest.yaml
-              duplicate-item-id:
-                value:
-                  $ref: components/examples/PrescriptionPutErrorDuplicateItemIdRequest.yaml
-              check-digit-error:
-                value:
-                  $ref: components/examples/PrescriptionPutErrorCheckDigitErrorRequest.yaml
-              invalid-date-format:
-                value:
-                  $ref: components/examples/PrescriptionPutErrorInvalidDateFormatRequest.yaml
-        description: ''
-      description: Submit a signed prescription to EPS
-      tags:
-        - prescribing
-    parameters: []
 components:
   schemas:
     Bundle:
@@ -283,10 +283,12 @@ components:
       $ref: components/schemas/Patient.yaml
     Practitioner:
       $ref: components/schemas/Practitioner.yaml
-    Encounter:
-      $ref: components/schemas/Encounter.yaml
+    PractitionerRole:
+      $ref: components/schemas/PractitionerRole.yaml
     Organization:
       $ref: components/schemas/Organization.yaml
+    Encounter:
+      $ref: components/schemas/Encounter.yaml
     Binary:
       $ref: components/schemas/Binary.yaml
     Provenance:

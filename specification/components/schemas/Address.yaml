@@ -7,31 +7,31 @@ properties:
     type: string
     description: The purpose of this address.
     enum:
-      - home
-      - work
-      - temp
-      - old 
-      - billing
-    example: home
+      - "home"
+      - "work"
+      - "temp"
+      - "old" 
+      - "billing"
+    example: "work"
   type:
     type: string
     description: Distinguishes between physical addresses (those you can visit) and mailing addresses (e.g. PO Boxes and care-of addresses). Most addresses are both.
     enum:
-      - postal
-      - physical
-      - both
-    example: both
+      - "postal"
+      - "physical"
+      - "both"
+    example: "both"
   line:
     type: array
     description: This component contains the house number, apartment number, street name, street direction, P.O. Box number, delivery hints, and similar address information.
     items:
       type: string
-      example: 1 Otley Road
+      example: "1 Otley Road"
   city:
     type: string
     description: The name of the city, town, suburb, village or other community or delivery center.
-    example: Leeds
+    example: "Leeds"
   postalCode:
     type: string
     description: A postal code designating a region defined by the postal service.
-    example: LS6 5RU
+    example: "LS6 5RU"
