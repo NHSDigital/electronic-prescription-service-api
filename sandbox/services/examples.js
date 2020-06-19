@@ -1,9 +1,9 @@
 const fs = require('fs')
 
 module.exports = {
-  PrepareSuccessRequest: JSON.parse(fs.readFileSync('mocks/PrepareSuccessRequest.json')),
+  //PrepareSuccessRequest: JSON.parse(fs.readFileSync('mocks/PrepareSuccessRequest.json')),
   PrepareSuccessResponse: JSON.parse(fs.readFileSync('mocks/PrepareSuccessResponse.json')),
-  SendSuccessRequest: JSON.parse(fs.readFileSync('mocks/SendSuccessRequest.json')),
+  //SendSuccessRequest: JSON.parse(fs.readFileSync('mocks/SendSuccessRequest.json')),
   SendSuccessResponse: JSON.parse(fs.readFileSync('mocks/SendSuccessResponse.json')),
   SendErrorPatientDeceasedResponse: JSON.parse(fs.readFileSync('mocks/SendErrorPatientDeceasedResponse.json')),
   SendErrorDuplicatePrescriptionResponse: JSON.parse(fs.readFileSync('mocks/SendErrorDuplicatePrescriptionResponse.json')),
