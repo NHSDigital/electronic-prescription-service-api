@@ -30,32 +30,14 @@ export function verifyPrescriptionBundle(bundle: unknown): Array<ValidationError
         apiErrorCode: "string",
         severity: "fatal"}]
 }
-// TODO convert to match style of verifyPrescriptionBundle
-// TODO types
+// TODO tidy
 export function verifyPrescriptionAndSignatureBundle(bundle: unknown): Array<ValidationError> {
-    if(verifyResourceTypeIsBundle(bundle)) {
-        if(!verifyBundleContainsEntries(bundle)){
-            return validate(
-                bundle,
-                verifyHasId,
-                () => verifyBundleContainsAtLeast(bundle, 1, "MedicationRequest"),
-                () => verifyBundleContainsExactly(bundle, 1, "Patient"),
-                () => verifyBundleContainsAtLeast(bundle, 1, "PractitionerRole"),
-                () => verifyBundleContainsAtLeast(bundle, 1, "Practitioner"),
-                () => verifyBundleContainsExactly(bundle, 1, "Encounter"),
-                () => verifyBundleContainsExactly(bundle, 2, "Organization"),
-                () => verifyBundleContainsExactly(bundle as Bundle, 1, "Provenance")
-            )
-        }
-        return [{message: "string",
-            operationOutcomeCode: "string",
-            apiErrorCode: "string",
-            severity: "fatal"}]
-    }
-    return [{message: "string",
-        operationOutcomeCode: "string",
-        apiErrorCode: "string",
-        severity: "fatal"}]
+    const toReturn = verifyPrescriptionBundle(bundle)
+
+    if (toReturn.length === 1 && toReturn[0].severity === "fatal") {return toReturn}
+
+    toReturn.push(verifyBundleContainsExactly(bundle as Bundle, 1, "Provenance"))
+    return toReturn.filter(x => x)
 }
 
 // Validate
