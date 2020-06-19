@@ -90,8 +90,9 @@ test:
 	&& export API_TEST_ENV_FILE_PATH=$(or $(API_TEST_ENV_FILE_PATH),tests/e2e/environments/local.postman_environment.json) \
 	&& export API_TEST_URL=$(or $(API_TEST_URL),localhost:9000) \
 	&& npm run test
+	cd sandbox && npm t
 
-release: build-spec build-sandbox build-proxy
+release: build-proxy
 	mkdir -p dist
 	tar -zcvf dist/package.tar.gz build
 	cp -r terraform dist

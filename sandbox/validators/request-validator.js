@@ -29,7 +29,7 @@ function verifyPrescriptionAndSignatureBundle(bundle) {
     verifyPayloadId,
     verifyResourceTypeIsBundle,
     verifyBundleContainsEntries,
-    // TODO: Update validation functions to match new format
+    () => verifyBundleContainsExactly(bundle, 1, "Provenance")
   )
 }
 
