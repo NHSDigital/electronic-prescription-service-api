@@ -1,7 +1,5 @@
 import * as requestValidator from "../../validators/request-validator"
-import * as translator from "../../services/translation-service"
 import Hapi from "@hapi/hapi"
-import {Bundle} from "../../services/fhir-resources"
 import * as requestBodyParser from "../../services/request-body-parser";
 import * as responseBuilder from "../../services/response-builder";
 

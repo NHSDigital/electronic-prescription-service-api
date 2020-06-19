@@ -534,13 +534,6 @@ function onlyElement<T>(previousValue: T, currentValue: T, currentIndex: number,
     throw TypeError("Expected 1 element but got " + array.length + ": " + JSON.stringify(array))
 }
 
-function identical<T>(previousValue: T, currentValue: T, currentIndex: number, array: T[]): T {
-    if (previousValue !== currentValue) {
-        throw TypeError("Expected all elements to be identical: " + JSON.stringify(array))
-    }
-    return previousValue
-}
-
 function convertSignatureFragmentsToSignedInfo(digestValue: string): XmlJs.ElementCompact {
     return {
         SignedInfo: {
