@@ -2,7 +2,7 @@
   "name": "electronic-prescription-service-api-coordinator",
   "version": "0.0.1",
   "description": "Electronic Prescription Service API Coordinator",
-  "main": "dist/app.js",
+  "main": "app.js",
   "scripts": {
     "build": "tsc --alwaysStrict",
     "lint": "eslint . --ext .ts",
