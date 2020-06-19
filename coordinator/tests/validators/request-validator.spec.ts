@@ -1,6 +1,22 @@
 import * as validator from "../../src/validators/request-validator"
 import {Resource} from "../../src/services/fhir-resources";
 
+// ********************************************************************************
+// Create ConvertSuccessResponse.json from ConvertSuccessResponse.xml
+// TODO: when repo is reshuffled, have a representation of this example in root
+/*import * as XmlJs from 'xml-js'
+import * as fs from 'fs'
+import * as path from "path"
+
+test('create json version of ConvertSuccessResponse.xml for specfication response example', () => {
+    var specExampleDirectory = path.join(__dirname, "../../../specification/components/examples")
+    var xmlResponse = fs.readFileSync(path.join(specExampleDirectory, "ConvertSuccessResponse.xml"), "utf8")
+    const options = {compact: false, ignoreComment: true, spaces: 4}
+    var jsonResponse = JSON.stringify(XmlJs.xml2js(xmlResponse, options))
+    fs.writeFileSync(path.join(specExampleDirectory, "ConvertSuccessResponse.json"), jsonResponse)
+})*/
+// ********************************************************************************
+
 test('rejects null', () => {
     expect(() => validator.verifyPrescriptionBundle(null))
         .toThrow("ResourceType must be 'Bundle' on request")

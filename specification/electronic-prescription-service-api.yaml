@@ -90,8 +90,8 @@ info:
     * `POST /Prepare` - convert a FHIR prescription into the HL7 V3 signature fragments to be signed by the prescriber
     * `POST /Send` - send a signed FHIR prescription to Spine
 servers:
-  - url: 'https://internal-qa-sandbox.api.service.nhs.uk/electronic-prescriptions'
-    description: 'Internal QA Sandbox environment.'
+  - url: 'https://internal-qa.api.service.nhs.uk/electronic-prescriptions'
+    description: 'Internal QA environment.'
 tags:
   - name: dispensing
   - name: prescribing
@@ -274,6 +274,33 @@ paths:
                   value:
                     $ref: components/examples/SendErrorInvalidDateFormatResponse.yaml
           headers: {}
+  /Convert:
+    post:
+      operationId: convert-prescription
+      summary: Convert a prescription to a format used for signing
+      description: Convert a prescription from FHIR format into a HL7 V3 representation which can be used to verify signing operations.
+      tags:
+        - prescribing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: components/schemas/Bundle.yaml
+            examples:
+              example:
+                value:
+                  $ref: components/examples/ConvertSuccessRequest.json
+        description: ''
+      responses:
+        '200':
+          description: Successfully converted prescription represented as json.
+          content:
+            application/json:
+              examples:
+                example:
+                  value:
+                    $ref: components/examples/ConvertSuccessResponse.json
 components:
   schemas:
     Bundle:
