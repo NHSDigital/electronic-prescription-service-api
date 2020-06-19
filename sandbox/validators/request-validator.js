@@ -75,7 +75,7 @@ function verifyBundleContainsAtLeast(bundle, number, resourceType) {
     .cata(success(bundle), fail({message: `Bundle entry must contain at least ${number} resource(s) of type ${resourceType}`, operationOutcomeCode: "value", apiErrorCode: "MISSING_FIELD" }))
 
   function hasLessThan(bundle, number, resourceType) {
-    return bundle["entry"] && bundle["entry"].filter(entry => entry["resourceType"] === resourceType).length < number;
+    return bundle["entry"] && bundle["entry"].map(entry => entry["resource"] || {}).filter(resource => resource.resourceType === resourceType).length < number;
   }
 }
 
@@ -85,7 +85,7 @@ function verifyBundleContainsExactly(bundle, number, resourceType) {
     .cata(success(bundle), fail({message: `Bundle entry must contain exactly ${number} resource(s) of type ${resourceType}`, operationOutcomeCode: "value", apiErrorCode: "MISSING_FIELD" }))
 
   function hasExactly(bundle, number, resourceType) {
-    return bundle["entry"] && bundle["entry"].filter(entry => entry["resourceType"] === resourceType).length === number;
+    return bundle["entry"] && bundle["entry"].map(entry => entry["resource"]  || {}).filter(resource => resource.resourceType === resourceType).length === number;
   }
 }
 

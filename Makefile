@@ -37,22 +37,7 @@ build-coordinator:
 
 build-sandbox: build-spec
 	mkdir -p sandbox/mocks
-	jq -rM . <build/examples/requests/paths._Prepare.post.requestBody.content.application_fhir+json.examples.example.value.json >sandbox/mocks/PrepareSuccessRequest.json
-	jq -rM . <build/examples/responses/paths._Prepare.post.responses.200.content.application_fhir+json.examples.example.value.json >sandbox/mocks/PrepareSuccessResponse.json
-	jq -rM . <build/examples/requests/paths._Send.post.requestBody.content.application_fhir+json.examples.success.value.json >sandbox/mocks/SendSuccessRequest.json
-	jq -rM . <build/examples/requests/paths._Send.post.requestBody.content.application_fhir+json.examples.patient-deceased.value.json >sandbox/mocks/SendErrorPatientDeceasedRequest.json
-	jq -rM . <build/examples/requests/paths._Send.post.requestBody.content.application_fhir+json.examples.duplicate-prescription.value.json >sandbox/mocks/SendErrorDuplicatePrescriptionRequest.json
-	jq -rM . <build/examples/requests/paths._Send.post.requestBody.content.application_fhir+json.examples.digital-signature-not-found.value.json >sandbox/mocks/SendErrorDigitalSignatureNotFoundRequest.json
-	jq -rM . <build/examples/requests/paths._Send.post.requestBody.content.application_fhir+json.examples.patient-not-found.value.json >sandbox/mocks/SendErrorPatientNotFoundRequest.json
-	jq -rM . <build/examples/requests/paths._Send.post.requestBody.content.application_fhir+json.examples.information-missing.value.json >sandbox/mocks/SendErrorInformationMissingRequest.json
-	jq -rM . <build/examples/requests/paths._Send.post.requestBody.content.application_fhir+json.examples.invalid-message.value.json >sandbox/mocks/SendErrorInvalidMessageRequest.json
-	jq -rM . <build/examples/requests/paths._Send.post.requestBody.content.application_fhir+json.examples.incorrect-item-count.value.json >sandbox/mocks/SendErrorIncorrectItemCountRequest.json
-	jq -rM . <build/examples/requests/paths._Send.post.requestBody.content.application_fhir+json.examples.authorised-repeat-mismatch.value.json >sandbox/mocks/SendErrorAuthorisedRepeatMismatchRequest.json
-	jq -rM . <build/examples/requests/paths._Send.post.requestBody.content.application_fhir+json.examples.incorrect-repeat-number.value.json >sandbox/mocks/SendErrorIncorrectRepeatNumberRequest.json
-	jq -rM . <build/examples/requests/paths._Send.post.requestBody.content.application_fhir+json.examples.incompatible-version.value.json >sandbox/mocks/SendErrorIncompatibleVersionResponse.json
-	jq -rM . <build/examples/requests/paths._Send.post.requestBody.content.application_fhir+json.examples.duplicate-item-id.value.json >sandbox/mocks/SendErrorDuplicateItemIdRequest.json
-	jq -rM . <build/examples/requests/paths._Send.post.requestBody.content.application_fhir+json.examples.check-digit-error.value.json >sandbox/mocks/SendErrorCheckDigitErrorRequest.json
-	jq -rM . <build/examples/requests/paths._Send.post.requestBody.content.application_fhir+json.examples.invalid-date-format.value.json >sandbox/mocks/SendErrorInvalidDateFormatRequest.json
+	jq -rM . <build/examples/responses/paths._Prepare.post.responses.200.content.application_json.examples.example.value.json >sandbox/mocks/PrepareSuccessResponse.json
 	jq -rM . <build/examples/responses/paths._Send.post.responses.200.content.application_fhir+json.examples.example.value.json >sandbox/mocks/SendSuccessResponse.json
 	jq -rM . <build/examples/responses/paths._Send.post.responses.5XX.content.application_fhir+json.examples.patient-deceased.value.json >sandbox/mocks/SendErrorPatientDeceasedResponse.json
 	jq -rM . <build/examples/responses/paths._Send.post.responses.5XX.content.application_fhir+json.examples.duplicate-prescription.value.json >sandbox/mocks/SendErrorDuplicatePrescriptionResponse.json
