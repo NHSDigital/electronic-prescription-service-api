@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc --alwaysStrict",
     "lint": "eslint . --ext .ts",
-    "start": "node dist/app.js --use_strict",
+    "start": "node app.js --use_strict",
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts",
     "test": "jest"
   },

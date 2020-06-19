@@ -13,4 +13,6 @@ cp -Rv proxies/live/apiproxy build/proxies/live
 mkdir -p build/proxies/sandbox/apiproxy/resources/hosted
 mkdir -p build/proxies/live/apiproxy/resources/hosted
 rsync -av --copy-links --exclude="node_modules" --filter=':- .gitignore' sandbox/ build/proxies/sandbox/apiproxy/resources/hosted
-rsync -av --copy-links --exclude="node_modules" --filter=':- .gitignore' coordinator/ build/proxies/live/apiproxy/resources/hosted
+cp coordinator/package.json build/proxies/live/apiproxy/resources/hosted
+cp coordinator/app.yaml build/proxies/live/apiproxy/resources/hosted
+rsync -av --copy-links --exclude="node_modules" --filter=':- .gitignore' coordinator/dist/ build/proxies/live/apiproxy/resources/hosted
