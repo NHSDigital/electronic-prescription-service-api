@@ -8,7 +8,7 @@ export function getStatusCode(validation: Array<ValidationError>): number {
 
 export function verifyPrescriptionBundle(bundle: unknown): Array<ValidationError>{
     if(verifyResourceTypeIsBundle(bundle)) {
-        if(!verifyBundleContainsEntries(bundle)){
+        if(verifyBundleContainsEntries(bundle)){
             return validate(
                 bundle,
                 verifyHasId,
@@ -58,9 +58,9 @@ function verifyResourceTypeIsBundle(resource: unknown): resource is Bundle {
     return verifyMessageIsResource(resource)
         && resource.resourceType === "Bundle"
 }
-// TODO rename function
+
 function verifyBundleContainsEntries(bundle: Bundle) {
-    return bundle.entry !== undefined ? null :{message: "ResourceType Bundle must contain 'entry' field", operationOutcomeCode: "value", apiErrorCode: "MISSING_FIELD" }
+    return bundle.entry !== undefined
 }
 
 function getMatchingEntries(bundle: Bundle, resourceType: string) {
