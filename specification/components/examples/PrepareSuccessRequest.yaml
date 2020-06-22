@@ -176,9 +176,9 @@ entry:
       resourceType: PractitionerRole
       id: dbaa616b-e23c-4d53-0f82-b2d178db79ca
       practitioner:
-        reference: urn:uuid:d4b569e7-ccf6-4bb2-029b-34b6f3e82acf
+        reference: urn:uuid:1557e58e-3b1e-41dd-b3b5-d4d393dc5a3d
       organization:
-        reference: urn:uuid:b65dd3a2-9551-45a3-3e9d-342f8de14d8f
+        reference: urn:uuid:6666c3b3-fdcd-41b8-9d69-ad1e6d99d9fc
   - fullUrl:
       urn:uuid:1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D
     resource:
