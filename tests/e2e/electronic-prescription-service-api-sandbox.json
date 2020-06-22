@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "2de808be-8210-4d8f-b1b7-6eac7c9611e8",
+		"_postman_id": "d975208b-658b-4f7b-9dc8-7034fddaa4ea",
 		"name": "Electronic Prescriptions Sandbox",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -11,7 +11,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "8d5b1578-156b-482a-9237-911c85977f65",
+						"id": "e141b53f-c47f-47de-8be4-3d0335779985",
 						"exec": [
 							"const responseText = {",
 							"    \"resourceType\": \"Binary\",",
@@ -86,7 +86,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "2bbb4354-be60-4fe6-8471-4a2380929a67",
+						"id": "e1bb1e7c-28ae-44e5-bbc4-d7480fea488e",
 						"exec": [
 							"const responseText = {",
 							"    \"resourceType\": \"Bundle\",",
@@ -100,7 +100,31 @@
 							"                \"id\": \"28828C55-8FA7-42D7-916F-FCF076E0C10E\",",
 							"                \"target\": [",
 							"                    {",
-							"                        \"reference\": \"urn:uuid:7EB02341-5F62-4A76-2CD3-34F523452356\"",
+							"                        \"reference\": \"urn:uuid:7B38DE32-877F-6D53-D27C-86E1BA35016C\"",
+							"                    },",
+							"                    {",
+							"                        \"reference\": \"urn:uuid:8D12DE62-826F-8D32-E17C-86D3BA56013E\"",
+							"                    },",
+							"                    {",
+							"                        \"reference\": \"urn:uuid:9A12DE62-826F-8D32-E17C-86D3BA56023F\"",
+							"                    },",
+							"                    {",
+							"                        \"reference\": \"urn:uuid:2A32DE62-826F-8D32-E17C-86D3BA56013D\"",
+							"                    },",
+							"                    {",
+							"                        \"reference\": \"urn:uuid:C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C\"",
+							"                    },",
+							"                    {",
+							"                        \"reference\": \"urn:uuid:99B71315-34BC-4095-8411-7DF3ABDBFBB6\"",
+							"                    },",
+							"                    {",
+							"                        \"reference\": \"urn:uuid:1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D\"",
+							"                    },",
+							"                    {",
+							"                        \"reference\": \"urn:uuid:6666C3B3-FDCD-41B8-9D69-AD1E6D99D9FC\"",
+							"                    },",
+							"                    {",
+							"                        \"reference\": \"urn:uuid:8DCB2153-09F5-4604-9229-A5C8C7195199\"",
 							"                    }",
 							"                ],",
 							"                \"recorded\": \"2008-02-27T11:38:00+00:00\",",
@@ -369,9 +393,11 @@
 							"                        \"postalCode\": \"LS6 5RU\"",
 							"                    }",
 							"                ],",
-							"                \"generalPractitioner\": [{",
-							"                    \"reference\": \"urn:uuid:99B71315-34BC-4095-8411-7DF3ABDBFBB6\"",
-							"                }]",
+							"                \"generalPractitioner\": [",
+							"                    {",
+							"                        \"reference\": \"urn:uuid:99B71315-34BC-4095-8411-7DF3ABDBFBB6\"",
+							"                    }",
+							"                ]",
 							"            }",
 							"        },",
 							"        {",
