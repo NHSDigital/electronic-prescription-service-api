@@ -10,12 +10,12 @@ properties:
   resourceType:
     type: string
     description: FHIR Resource type
-    default: Organization
+    default: "Organization"
     readOnly: true
   id:
     type: string
     description: Logical id of this artifact.
-    example: C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
+    example: "C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C"
   identifier:
     type: array
     description: Identifier for the organization that is used to identify the organization across multiple disparate systems.
@@ -29,7 +29,7 @@ properties:
   name:
     type: string
     description: A name associated with the organization.
-    example: Signing_Surg_1
+    example: "Signing_Surg_1"
   telecom:
     type: array
     description: A contact detail for the organization.

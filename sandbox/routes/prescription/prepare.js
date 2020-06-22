@@ -9,7 +9,7 @@ module.exports = [
   */
   {
     method: 'POST',
-    path: '/Prescription',
+    path: '/Prepare',
     handler: (request, h) => {
       var requestBody = requestBodyParser.parse(request)
       var validation = requestValidator.verifyPrescriptionBundle(requestBody)

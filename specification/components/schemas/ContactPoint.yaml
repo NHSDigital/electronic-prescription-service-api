@@ -7,25 +7,25 @@ properties:
     type: string
     description: Telecommunications form for contact point - what communications system is required to make use of the contact.
     enum:
-      - phone
-      - fax
-      - email
-      - pager
-      - url
-      - sms
-      - other
-    example: phone
+      - "phone"
+      - "fax"
+      - "email"
+      - "pager"
+      - "url"
+      - "sms"
+      - "other"
+    example: "phone"
   value:
     type: string
     description: The actual contact point details, in a form that is meaningful to the designated communication system (i.e. phone number or email address).
-    example: tel:011327534256
+    example: "tel:011327534256"
   use:
     type: string
     description: Identifies the purpose for the contact point.
     enum:
-      - home
-      - work
-      - temp
-      - old
-      - mobile
-    example: work
+      - "home"
+      - "work"
+      - "temp"
+      - "old"
+      - "mobile"
+    example: "work"

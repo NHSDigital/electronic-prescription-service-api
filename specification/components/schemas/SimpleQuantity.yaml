@@ -13,12 +13,12 @@ properties:
   unit:
     type: string
     description: A human-readable form of the unit.
-    example: tablet
+    example: "tablet"
   system:
     type: string
     description: The identification of the system that provides the coded form of the unit.
-    example: http://snomed.info/sct
+    example: "http://snomed.info/sct"
   code:
     type: string
     description: A computer processable form of the unit in some unit representation system.
-    example: 3319411000001109
+    example: "3319411000001109"

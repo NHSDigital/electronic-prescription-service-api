@@ -21,6 +21,10 @@ export function getResourceForFullUrl(fhirBundle: fhir.Bundle, resourceFullUrl: 
         .resource
 }
 
+function resolveReference<T extends fhir.Resource>(bundle: fhir.Bundle, reference: fhir.Reference<T>): T {
+    return getResourceForFullUrl(bundle, reference.reference) as T
+}
+
 export function getIdentifierValueForSystem(identifier: Array<fhir.Identifier>, system: string): string {
     return identifier
         .filter(identifier => identifier.system === system)
@@ -92,8 +96,9 @@ function getGeneralPractitionerOdsOrganizationCode(
     bundle: fhir.Bundle,
     patient: fhir.Patient
 ) {
-    const fhirPractitionerRole = getResourceForFullUrl(bundle, patient.generalPractitioner.reference) as fhir.PractitionerRole
-    const fhirOrganization = getResourceForFullUrl(bundle, fhirPractitionerRole.organization.reference) as fhir.Organization
+    const generalPractitionerReference = patient.generalPractitioner.reduce(onlyElement)
+    const fhirPractitionerRole = resolveReference(bundle, generalPractitionerReference)
+    const fhirOrganization = resolveReference(bundle, fhirPractitionerRole.organization)
     return getIdentifierValueForSystem(fhirOrganization.identifier, "https://fhir.nhs.uk/Id/ods-organization-code");
 }
 
@@ -143,11 +148,11 @@ export function convertPatient(
 }
 
 function convertPrescriptionIds(
-    fhirFirstMedicationRequest: fhir.MedicationRequest,
-    getIdentifierValueForSystemFn = getIdentifierValueForSystem
+    fhirFirstMedicationRequest: fhir.MedicationRequest
 ): [codes.GlobalIdentifier, codes.ShortFormPrescriptionIdentifier] {
-    const prescriptionId = getIdentifierValueForSystemFn(fhirFirstMedicationRequest.groupIdentifier, "urn:uuid")
-    const prescriptionShortFormId = getIdentifierValueForSystemFn(fhirFirstMedicationRequest.groupIdentifier, "urn:oid:2.16.840.1.113883.2.1.3.2.4.18.8")
+    const groupIdentifier = fhirFirstMedicationRequest.groupIdentifier;
+    const prescriptionId = groupIdentifier.extension.map(extension => extension.valueIdentifier.value).reduce(onlyElement)
+    const prescriptionShortFormId = groupIdentifier.value
     return [
         new codes.GlobalIdentifier(prescriptionId),
         new codes.ShortFormPrescriptionIdentifier(prescriptionShortFormId)
@@ -163,7 +168,7 @@ function convertAuthor(
     hl7V3Author.time = convertDateTime(fhirFirstMedicationRequest.authoredOn)
     // TODO implement signatureText
     hl7V3Author.signatureText = core.Null.NOT_APPLICABLE
-    const fhirAuthorPractitionerRole = getResourceForFullUrl(fhirBundle, fhirFirstMedicationRequest.requester.reference) as fhir.PractitionerRole
+    const fhirAuthorPractitionerRole = resolveReference(fhirBundle, fhirFirstMedicationRequest.requester)
     hl7V3Author.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirAuthorPractitionerRole)
     return hl7V3Author;
 }
@@ -174,7 +179,8 @@ function convertResponsibleParty(
 ) {
     const responsibleParty = new prescriptions.ResponsibleParty()
     const fhirPatient = getResourcesOfType(fhirBundle, "Patient")[0] as fhir.Patient
-    const fhirResponsiblePartyPractitionerRole = getResourceForFullUrl(fhirBundle, fhirPatient.generalPractitioner.reference) as fhir.PractitionerRole
+    const generalPractitionerReference = fhirPatient.generalPractitioner.reduce(onlyElement)
+    const fhirResponsiblePartyPractitionerRole = resolveReference(fhirBundle, generalPractitionerReference)
     responsibleParty.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirResponsiblePartyPractitionerRole)
     return responsibleParty;
 }
@@ -268,9 +274,9 @@ function convertMedicationRequestToLineItem(fhirMedicationRequest: fhir.Medicati
 }
 
 function convertPractitionerRole(fhirBundle: fhir.Bundle, fhirPractitionerRole: fhir.PractitionerRole): peoplePlaces.AgentPerson {
-    const fhirPractitioner = getResourceForFullUrl(fhirBundle, fhirPractitionerRole.practitioner.reference)
+    const fhirPractitioner = resolveReference(fhirBundle, fhirPractitionerRole.practitioner)
     const hl7V3AgentPerson = convertPractitioner(fhirBundle, fhirPractitioner)
-    const fhirOrganization = getResourceForFullUrl(fhirBundle, fhirPractitionerRole.organization.reference)
+    const fhirOrganization = resolveReference(fhirBundle, fhirPractitionerRole.organization)
     hl7V3AgentPerson.representedOrganization = convertOrganization(fhirBundle, fhirOrganization)
     return hl7V3AgentPerson
 }
@@ -309,10 +315,10 @@ function convertPractitioner(
 
 function convertHealthCareProviderLicense(
     bundle: fhir.Bundle,
-    organizationPartOf: fhir.Reference,
+    organizationPartOf: fhir.Reference<fhir.Organization>,
     convertOrganizationFn = convertOrganization
 ): peoplePlaces.HealthCareProviderLicense {
-    const fhirParentOrganization = getResourceForFullUrl(bundle, organizationPartOf.reference)
+    const fhirParentOrganization = resolveReference(bundle, organizationPartOf)
     const hl7V3ParentOrganization = convertOrganizationFn(bundle, fhirParentOrganization)
     return new peoplePlaces.HealthCareProviderLicense(hl7V3ParentOrganization)
 }
