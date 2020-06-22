@@ -16,6 +16,7 @@ info:
     You can:
     * prepare a prescription for signing
     * create a prescription
+    * evaluate prescription signing client implementations
 
     You cannot currently use this API to:
     * cancel a prescription
@@ -73,7 +74,7 @@ info:
 
     ## Testing
     You can test this API in:
-    * our [sandbox environment](/testing#sandbox-testing) for initial developer testing
+    * our [sandbox environment](/testing#sandbox-testing) for initial developer testing (coming soon)
     * our [integration test environment](/testing#integration-testing) for formal integration testing (coming soon)
 
     Our sandbox environment is a very basic simulation of the live service. It only covers a limited set of scenarios and is stateless, so does not actually persist any updates.
@@ -89,6 +90,7 @@ info:
     To see details for specific endpoints, select from the list on the left hand side of the page:
     * `POST /Prepare` - convert a FHIR prescription into the HL7 V3 signature fragments to be signed by the prescriber
     * `POST /Send` - send a signed FHIR prescription to Spine
+    * `POST /Convert` - convert a FHIR prescription to HL7V3 to verify client signature implementations
 servers:
   - url: 'https://internal-qa.api.service.nhs.uk/electronic-prescriptions'
     description: 'Internal QA environment.'
