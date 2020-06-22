@@ -7,7 +7,6 @@ required:
   - intent
   - medicationCodeableConcept
   - subject
-  - encounter
   - authoredOn
   - requester
   - groupIdentifier
@@ -50,8 +49,6 @@ properties:
   medicationCodeableConcept:
     $ref: "CodeableConcept-SnomedCT.yaml"
   subject:
-    $ref: "Reference.yaml"
-  encounter:
     $ref: "Reference.yaml"
   authoredOn:
     type: string

@@ -70,7 +70,6 @@ export function verifyPrescriptionBundle(bundle: unknown): void {
     verifyBundleContainsExactly(bundle, 1, "Patient")
     verifyBundleContainsAtLeast(bundle, 1, "PractitionerRole")
     verifyBundleContainsAtLeast(bundle, 1, "Practitioner")
-    verifyBundleContainsExactly(bundle, 1, "Encounter")
     verifyBundleContainsExactly(bundle, 2, "Organization")
 }
 
