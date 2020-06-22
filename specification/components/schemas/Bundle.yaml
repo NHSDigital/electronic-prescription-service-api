@@ -49,5 +49,4 @@ properties:
             - $ref: "PractitionerRole.yaml"
             - $ref: "Practitioner.yaml"
             - $ref: "Organization.yaml"
-            - $ref: "Encounter.yaml"
             - $ref: "Provenance.yaml"

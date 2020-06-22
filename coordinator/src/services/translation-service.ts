@@ -96,7 +96,8 @@ function getGeneralPractitionerOdsOrganizationCode(
     bundle: fhir.Bundle,
     patient: fhir.Patient
 ) {
-    const fhirPractitionerRole = resolveReference(bundle, patient.generalPractitioner)
+    const generalPractitionerReference = patient.generalPractitioner.reduce(onlyElement)
+    const fhirPractitionerRole = resolveReference(bundle, generalPractitionerReference)
     const fhirOrganization = resolveReference(bundle, fhirPractitionerRole.organization)
     return getIdentifierValueForSystem(fhirOrganization.identifier, "https://fhir.nhs.uk/Id/ods-organization-code");
 }
@@ -178,7 +179,8 @@ function convertResponsibleParty(
 ) {
     const responsibleParty = new prescriptions.ResponsibleParty()
     const fhirPatient = getResourcesOfType(fhirBundle, "Patient")[0] as fhir.Patient
-    const fhirResponsiblePartyPractitionerRole = resolveReference(fhirBundle, fhirPatient.generalPractitioner)
+    const generalPractitionerReference = fhirPatient.generalPractitioner.reduce(onlyElement)
+    const fhirResponsiblePartyPractitionerRole = resolveReference(fhirBundle, generalPractitionerReference)
     responsibleParty.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirResponsiblePartyPractitionerRole)
     return responsibleParty;
 }

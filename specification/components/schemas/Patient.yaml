@@ -8,6 +8,7 @@ required:
   - name
   - gender
   - birthDate
+  - generalPractitioner
 properties:
   resourceType:
     type: string
@@ -55,3 +56,8 @@ properties:
     type: string
     description: Indicates if the individual is deceased or not.
     example: "2020-01-05"
+  generalPractitioner:
+    type: array
+    description: Patient's nominated primary care provider.
+    items:
+      $ref: "Reference.yaml"
