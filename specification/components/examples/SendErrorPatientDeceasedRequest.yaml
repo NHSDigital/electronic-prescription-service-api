@@ -4,7 +4,7 @@ type: collection
 entry:
   - fullUrl: urn:uuid:7EB02341-5F62-4A76-2CD3-34F523452356
     resource:
-      $ref: PrepareSuccessRequest.json
+      $ref: PrepareDeceasedPatientRequest.yaml
   - fullUrl: urn:uuid:28828C55-8FA7-42D7-916F-FCF076E0C10E
     resource:
       resourceType: Provenance

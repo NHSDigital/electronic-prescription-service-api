@@ -171,42 +171,6 @@ paths:
               patient-deceased:
                 value:
                   $ref: components/examples/SendErrorPatientDeceasedRequest.yaml
-              duplicate-prescription:
-                value:
-                  $ref: components/examples/SendErrorDuplicatePrescriptionRequest.yaml
-              digital-signature-not-found:
-                value:
-                  $ref: components/examples/SendErrorDigitalSignatureNotFoundRequest.yaml
-              patient-not-found:
-                value:
-                  $ref: components/examples/SendErrorPatientNotFoundRequest.yaml
-              information-missing:
-                value:
-                  $ref: components/examples/SendErrorInformationMissingRequest.yaml
-              invalid-message:
-                value:
-                  $ref: components/examples/SendErrorInvalidMessageRequest.yaml
-              incorrect-item-count:
-                value:
-                  $ref: components/examples/SendErrorIncorrectItemCountRequest.yaml
-              authorised-repeat-mismatch:
-                value:
-                  $ref: components/examples/SendErrorAuthorisedRepeatMismatchRequest.yaml
-              incorrect-repeat-number:
-                value:
-                  $ref: components/examples/SendErrorIncorrectRepeatNumberRequest.yaml
-              incompatible-version:
-                value:
-                  $ref: components/examples/SendErrorIncompatibleVersionRequest.yaml
-              duplicate-item-id:
-                value:
-                  $ref: components/examples/SendErrorDuplicateItemIdRequest.yaml
-              check-digit-error:
-                value:
-                  $ref: components/examples/SendErrorCheckDigitErrorRequest.yaml
-              invalid-date-format:
-                value:
-                  $ref: components/examples/SendErrorInvalidDateFormatRequest.yaml
         description: ''
       responses:
         '200':
@@ -234,47 +198,11 @@ paths:
           content:
             application/fhir+json:
               schema:
-                $ref: components/schemas/OperationOutcome-5XX.yaml
+                $ref: components/schemas/OperationOutcome-5XX-send.yaml
               examples:
                 patient-deceased:
                   value:
                     $ref: components/examples/SendErrorPatientDeceasedResponse.yaml
-                duplicate-prescription:
-                  value:
-                    $ref: components/examples/SendErrorDuplicatePrescriptionResponse.yaml
-                digital-signature-not-found:
-                  value:
-                    $ref: components/examples/SendErrorDigitalSignatureNotFoundResponse.yaml
-                patient-not-found:
-                  value:
-                    $ref: components/examples/SendErrorPatientNotFoundResponse.yaml
-                information-missing:
-                  value:
-                    $ref: components/examples/SendErrorInformationMissingResponse.yaml
-                invalid-message:
-                  value:
-                    $ref: components/examples/SendErrorInvalidMessageResponse.yaml
-                incorrect-item-count:
-                  value:
-                    $ref: components/examples/SendErrorIncorrectItemCountResponse.yaml
-                authorised-repeat-mismatch:
-                  value:
-                    $ref: components/examples/SendErrorAuthorisedRepeatMismatchResponse.yaml
-                incorrect-repeat-number:
-                  value:
-                    $ref: components/examples/SendErrorIncorrectRepeatNumberResponse.yaml
-                incompatible-version:
-                  value:
-                    $ref: components/examples/SendErrorIncompatibleVersionResponse.yaml
-                duplicate-item-id:
-                  value:
-                    $ref: components/examples/SendErrorDuplicateItemIdResponse.yaml
-                check-digit-error:
-                  value:
-                    $ref: components/examples/SendErrorCheckDigitErrorResponse.yaml
-                invalid-date-format:
-                  value:
-                    $ref: components/examples/SendErrorInvalidDateFormatResponse.yaml
           headers: {}
   /Convert:
     post:
