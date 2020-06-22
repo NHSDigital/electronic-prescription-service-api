@@ -65,8 +65,8 @@ lint:
 	npm run lint
 	cd coordinator && npm run lint && cd ..
 	cd sandbox && npm run lint && cd ..
-	poetry run flake8 **/*.py --config .flake8
-	find -name '*.sh' | grep -v node_modules | xargs shellcheck
+	poetry run flake8 scripts/*.py --config .flake8
+	shellcheck scripts/*.sh
 
 validate: build-spec
 	java -jar bin/org.hl7.fhir.validator.jar build/examples/requests/*application_fhir+json*.json build/examples/responses/*application_fhir+json*.json build/examples/resources/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt
