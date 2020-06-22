@@ -30,7 +30,6 @@ jobs:
       PIP_CACHE_DIR: ".poetry"
     steps:
       - checkout: self
-        path: s
 
       - checkout: utils
         path: s/utils
