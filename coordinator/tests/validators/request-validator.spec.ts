@@ -6,8 +6,8 @@ const resourceNotABundleError = [{message: "ResourceType must be 'Bundle' on req
     apiErrorCode: "INCORRECT_RESOURCETYPE",
     severity: "fatal"}]
 
-function containAtLeastError(resource: string) {
-    return {message: `Bundle must contain at least 1 resource(s) of type ${resource}`,
+function containAtLeastError(resource: string, numberOfResources: number) {
+    return {message: `Bundle must contain at least ${numberOfResources} resource(s) of type ${resource}`,
         operationOutcomeCode: "value",
         apiErrorCode: "MISSING_FIELD",
         severity: "error"}
@@ -21,17 +21,17 @@ function containExactlyError(resource: string, numberOfResources: number) {
 }
 
 test('verifyPrescriptionBundle rejects null', () => {
-    expect(validator.verifyPrescriptionBundle(null))
+    expect(validator.verifyPrescriptionBundle(null, false))
         .toEqual(resourceNotABundleError)
 })
 
 test('verifyPrescriptionBundle rejects undefined', () => {
-    expect(validator.verifyPrescriptionBundle(undefined))
+    expect(validator.verifyPrescriptionBundle(undefined, false))
         .toEqual(resourceNotABundleError)
 })
 
 test('verifyPrescriptionBundle rejects object which is not a resource', () => {
-    expect(validator.verifyPrescriptionBundle({}))
+    expect(validator.verifyPrescriptionBundle({}, false))
         .toEqual(resourceNotABundleError)
 })
 
@@ -39,7 +39,7 @@ test('verifyPrescriptionBundle rejects resource which is not a bundle', () => {
     const patient = {
         resourceType: "Patient"
     }
-    expect(validator.verifyPrescriptionBundle(patient))
+    expect(validator.verifyPrescriptionBundle(patient, false))
         .toEqual(resourceNotABundleError)
 })
 
@@ -47,7 +47,7 @@ test('verifyPrescriptionBundle rejects bundle without entries', () => {
     const bundle = {
         resourceType: "Bundle"
     }
-    expect(validator.verifyPrescriptionBundle(bundle))
+    expect(validator.verifyPrescriptionBundle(bundle, false))
         .toEqual([{message: "ResourceType Bundle must contain 'entry' field",
             operationOutcomeCode: "value",
             apiErrorCode: "MISSING_FIELD",
@@ -59,7 +59,7 @@ test('verifyPrescriptionBundle rejects bundle without id', () => {
         resourceType: "Bundle",
         entry: [] as Array<Resource>
     }
-    expect(validator.verifyPrescriptionBundle(bundle))
+    expect(validator.verifyPrescriptionBundle(bundle, false))
         .toContainEqual({message: "ResourceType Bundle must contain 'id' field",
             operationOutcomeCode: "value",
             apiErrorCode: "MISSING_FIELD",
@@ -72,8 +72,8 @@ test('verifyPrescriptionBundle rejects bundle without MedicationRequest', () => 
         id: "test-bundle",
         entry: [] as Array<Resource>
     }
-    expect(validator.verifyPrescriptionBundle(bundle))
-        .toContainEqual(containAtLeastError("MedicationRequest"))
+    expect(validator.verifyPrescriptionBundle(bundle, false))
+        .toContainEqual(containAtLeastError("MedicationRequest", 1))
 })
 
 test('verifyPrescriptionBundle rejects bundle without Patient', () => {
@@ -82,7 +82,7 @@ test('verifyPrescriptionBundle rejects bundle without Patient', () => {
         id: "test-bundle",
         entry: [] as Array<Resource>
     }
-    expect(validator.verifyPrescriptionBundle(bundle))
+    expect(validator.verifyPrescriptionBundle(bundle, false))
         .toContainEqual(containExactlyError("Patient", 1))
 })
 
@@ -103,7 +103,7 @@ test('verifyPrescriptionBundle rejects bundle with two Patients', () => {
             }
         ]
     }
-    expect(validator.verifyPrescriptionBundle(bundle))
+    expect(validator.verifyPrescriptionBundle(bundle, false))
         .toContainEqual(containExactlyError("Patient", 1))
 })
 
@@ -113,8 +113,8 @@ test('verifyPrescriptionBundle rejects bundle without PractitionerRole', () => {
         id: "test-bundle",
         entry: [] as Array<Resource>
     }
-    expect(validator.verifyPrescriptionBundle(bundle))
-        .toContainEqual(containAtLeastError("PractitionerRole"))
+    expect(validator.verifyPrescriptionBundle(bundle, false))
+        .toContainEqual(containAtLeastError("PractitionerRole", 1))
 })
 
 test('verifyPrescriptionBundle rejects bundle without Practitioner', () => {
@@ -123,18 +123,8 @@ test('verifyPrescriptionBundle rejects bundle without Practitioner', () => {
         id: "test-bundle",
         entry: [] as Array<Resource>
     }
-    expect(validator.verifyPrescriptionBundle(bundle))
-        .toContainEqual(containAtLeastError("Practitioner"))
-})
-
-test('verifyPrescriptionBundle rejects bundle without Encounter', () => {
-    const bundle = {
-        resourceType: "Bundle",
-        id: "test-bundle",
-        entry: [] as Array<Resource>
-    }
-    expect(validator.verifyPrescriptionBundle(bundle))
-        .toContainEqual(containExactlyError("Encounter", 1))
+    expect(validator.verifyPrescriptionBundle(bundle, false))
+        .toContainEqual(containAtLeastError("Practitioner", 1))
 })
 
 test('verifyPrescriptionBundle rejects bundle without Organization', () => {
@@ -143,8 +133,8 @@ test('verifyPrescriptionBundle rejects bundle without Organization', () => {
         id: "test-bundle",
         entry: [] as Array<Resource>
     }
-    expect(validator.verifyPrescriptionBundle(bundle))
-        .toContainEqual(containExactlyError("Organization", 2))
+    expect(validator.verifyPrescriptionBundle(bundle, false))
+        .toContainEqual(containAtLeastError("Organization", 2))
 })
 
 test('verifyPrescriptionBundle rejects bundle with 1 Organization', () => {
@@ -158,16 +148,16 @@ test('verifyPrescriptionBundle rejects bundle with 1 Organization', () => {
                 }
             }]
     }
-    expect(validator.verifyPrescriptionBundle(bundle))
-        .toContainEqual(containExactlyError("Organization", 2))
+    expect(validator.verifyPrescriptionBundle(bundle, false))
+        .toContainEqual(containAtLeastError("Organization", 2))
 })
 
-test('verifyPrescriptionAndSignatureBundle rejects bundle without Provenance', () => {
+test('verifyPrescriptionBundle rejects bundle without Provenance when requireSignature is true', () => {
     const bundle = {
         resourceType: "Bundle",
         entry: [] as Array<Resource>
     }
-    expect(validator.verifyPrescriptionAndSignatureBundle(bundle))
+    expect(validator.verifyPrescriptionBundle(bundle, true))
         .toContainEqual(containExactlyError("Provenance", 1))
 })
 
@@ -202,11 +192,6 @@ const validBundleWithoutSignature = {
         },
         {
             resource: {
-                resourceType: "Encounter"
-            }
-        },
-        {
-            resource: {
                 resourceType: "Organization"
             }
         },
@@ -219,7 +204,7 @@ const validBundleWithoutSignature = {
 }
 
 test('verifyPrescriptionBundle accepts bundle with required Resources', () => {
-    expect(validator.verifyPrescriptionBundle(validBundleWithoutSignature))
+    expect(validator.verifyPrescriptionBundle(validBundleWithoutSignature, false))
         .toEqual([])
 })
 
@@ -254,11 +239,6 @@ const validBundleWithSignature = {
         },
         {
             resource: {
-                resourceType: "Encounter"
-            }
-        },
-        {
-            resource: {
                 resourceType: "Organization"
             }
         },
@@ -275,7 +255,7 @@ const validBundleWithSignature = {
     ]
 }
 
-test('verifyPrescriptionAndSignatureBundle accepts bundle with required Resources', () => {
-    expect(validator.verifyPrescriptionAndSignatureBundle(validBundleWithSignature))
+test('verifyPrescriptionBundle accepts bundle with required Resources when requireSignature is true', () => {
+    expect(validator.verifyPrescriptionBundle(validBundleWithSignature, true))
         .toEqual([])
 })

@@ -6,38 +6,39 @@ export function getStatusCode(validation: Array<ValidationError>): number {
     return validation.length > 0 ? 400 : 200
 }
 
-export function verifyPrescriptionBundle(bundle: unknown): Array<ValidationError>{
-    if(verifyResourceTypeIsBundle(bundle)) {
-        if(verifyBundleContainsEntries(bundle)){
-            return validate(
-                bundle,
-                verifyHasId,
-                () => verifyBundleContainsAtLeast(bundle, 1, "MedicationRequest"),
-                () => verifyBundleContainsExactly(bundle, 1, "Patient"),
-                () => verifyBundleContainsAtLeast(bundle, 1, "PractitionerRole"),
-                () => verifyBundleContainsAtLeast(bundle, 1, "Practitioner"),
-                () => verifyBundleContainsExactly(bundle, 1, "Encounter"),
-                () => verifyBundleContainsExactly(bundle, 2, "Organization")
-            )
-        }
-        return [{message: "ResourceType Bundle must contain 'entry' field",
+export function verifyPrescriptionBundle(bundle: unknown, requireSignature: boolean): Array<ValidationError> {
+    if (!verifyResourceTypeIsBundle(bundle)) {
+        return [{
+            message: "ResourceType must be 'Bundle' on request",
+            operationOutcomeCode: "value",
+            apiErrorCode: "INCORRECT_RESOURCETYPE",
+            severity: "fatal"
+        }]
+    }
+
+    if (!verifyBundleContainsEntries(bundle)) {
+        return [{
+            message: "ResourceType Bundle must contain 'entry' field",
             operationOutcomeCode: "value",
             apiErrorCode: "MISSING_FIELD",
-            severity: "fatal"}]
+            severity: "fatal"
+        }]
     }
-    return [{message: "ResourceType must be 'Bundle' on request",
-        operationOutcomeCode: "value",
-        apiErrorCode: "INCORRECT_RESOURCETYPE",
-        severity: "fatal"}]
-}
 
-export function verifyPrescriptionAndSignatureBundle(bundle: unknown): Array<ValidationError> {
-    const toReturn = verifyPrescriptionBundle(bundle)
+    const validators = [
+        verifyHasId,
+        (bundle: Bundle) => verifyBundleContainsAtLeast(bundle, 1, "MedicationRequest"),
+        (bundle: Bundle) => verifyBundleContainsExactly(bundle, 1, "Patient"),
+        (bundle: Bundle) => verifyBundleContainsAtLeast(bundle, 1, "PractitionerRole"),
+        (bundle: Bundle) => verifyBundleContainsAtLeast(bundle, 1, "Practitioner"),
+        (bundle: Bundle) => verifyBundleContainsAtLeast(bundle, 2, "Organization")
+    ]
 
-    if (toReturn.length === 1 && toReturn[0].severity === "fatal") {return toReturn}
+    if (requireSignature) {
+        validators.push((bundle: Bundle) => verifyBundleContainsExactly(bundle, 1, "Provenance"))
+    }
 
-    toReturn.push(verifyBundleContainsExactly(bundle as Bundle, 1, "Provenance"))
-    return toReturn.filter(x => x)
+    return validate(bundle, ...validators)
 }
 
 // Validate
@@ -46,8 +47,13 @@ function validate(bundle: Bundle, ...validators: Array<(arg1: unknown) => Valida
         .filter(x => x)
 }
 
-function verifyHasId(bundle: Bundle) {
-    return bundle.id !== undefined ? null :{message: "ResourceType Bundle must contain 'id' field", operationOutcomeCode: "value", apiErrorCode: "MISSING_FIELD", severity: "error"}
+function verifyHasId(bundle: Bundle): ValidationError {
+    return bundle.id !== undefined ? null : {
+        message: "ResourceType Bundle must contain 'id' field",
+        operationOutcomeCode: "value",
+        apiErrorCode: "MISSING_FIELD",
+        severity: "error"
+    }
 }
 
 function verifyMessageIsResource(message: unknown): message is Resource {
@@ -69,31 +75,33 @@ function getMatchingEntries(bundle: Bundle, resourceType: string) {
         .filter(resource => resource.resourceType === resourceType)
 }
 
-function verifyBundleContainsAtLeast(bundle: Bundle, number: number, resourceType: string) {
+function verifyBundleContainsAtLeast(bundle: Bundle, number: number, resourceType: string): ValidationError {
     const matchingEntries = getMatchingEntries(bundle, resourceType)
     if (matchingEntries.length < number) {
         return {
             message: `Bundle must contain at least ${number} resource(s) of type ${resourceType}`,
             operationOutcomeCode: "value",
             apiErrorCode: "MISSING_FIELD",
-            severity: "error"}
+            severity: "error"
+        }
     }
     return null
 }
 
-function verifyBundleContainsExactly(bundle: Bundle, number: number, resourceType: string) {
+function verifyBundleContainsExactly(bundle: Bundle, number: number, resourceType: string): ValidationError {
     const matchingEntries = getMatchingEntries(bundle, resourceType)
     if (matchingEntries.length !== number) {
         return {
             message: `Bundle must contain exactly ${number} resource(s) of type ${resourceType}`,
             operationOutcomeCode: "value",
             apiErrorCode: "MISSING_FIELD",
-            severity: "error"}
+            severity: "error"
+        }
     }
     return null
 }
 
-export interface ValidationError{
+export interface ValidationError {
     message: string,
     operationOutcomeCode: string,
     apiErrorCode: string,

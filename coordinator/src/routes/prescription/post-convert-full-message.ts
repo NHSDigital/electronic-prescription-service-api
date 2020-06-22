@@ -12,7 +12,7 @@ export default [
         path: '/Convert',
         handler: (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Hapi.ResponseObject => {
             const requestBody = requestBodyParser.parse(request)
-            const validation = requestValidator.verifyPrescriptionBundle(requestBody)
+            const validation = requestValidator.verifyPrescriptionBundle(requestBody, false)
             const statusCode = requestValidator.getStatusCode(validation)
             const response = responseBuilder.createPrescription(validation, requestBody)
             return responseToolkit.response(response).code(statusCode)
