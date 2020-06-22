@@ -9,7 +9,7 @@ const CONTENT_TYPE = 'application/fhir+json; fhirVersion=4.0'
 
 const preResponse = function (request, h) {
   const response = request.response
-  
+
   return h.response(response)
     .type(CONTENT_TYPE)
 }
