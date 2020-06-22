@@ -22,7 +22,8 @@ run-spec-viewer: build-spec build-sandbox
 	npm run serve
 
 run-coordinator: build-coordinator
-	cd coordinator && npm run start
+	cp coordinator/package.json coordinator/dist/
+	cd coordinator/dist && npm run start
 
 run-sandbox: build-sandbox
 	cd sandbox && npm run start
@@ -77,7 +78,7 @@ test:
 	&& npm run test
 	cd sandbox && npm t
 
-release: build-proxy
+release: build-coordinator build-proxy
 	mkdir -p dist
 	tar -zcvf dist/package.tar.gz build
 	cp -r terraform dist
@@ -87,3 +88,4 @@ clean:
 	rm -rf build
 	rm -rf dist
 	rm -rf sandbox/mocks
+	rm -rf coordinator/dist

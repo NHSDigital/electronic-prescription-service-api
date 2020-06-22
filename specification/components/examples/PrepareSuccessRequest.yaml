@@ -171,6 +171,15 @@ entry:
       organization:
         reference: urn:uuid:6666C3B3-FDCD-41B8-9D69-AD1E6D99D9FC
   - fullUrl:
+      urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca
+    resource:
+      resourceType: PractitionerRole
+      id: dbaa616b-e23c-4d53-0f82-b2d178db79ca
+      practitioner:
+        reference: urn:uuid:1557e58e-3b1e-41dd-b3b5-d4d393dc5a3d
+      organization:
+        reference: urn:uuid:6666c3b3-fdcd-41b8-9d69-ad1e6d99d9fc
+  - fullUrl:
       urn:uuid:1557E58E-3B1E-41DD-B3B5-D4D393DC5A3D
     resource:
       resourceType: Practitioner
