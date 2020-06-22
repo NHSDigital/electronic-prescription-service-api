@@ -1,5 +1,5 @@
 runtime: node
-runtimeVersion: 13.1.0
+runtimeVersion: 12.18.1
 env:
   - name: NODE_ENV
     value: production
