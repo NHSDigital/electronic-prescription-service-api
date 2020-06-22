@@ -288,8 +288,6 @@ components:
       $ref: components/schemas/PractitionerRole.yaml
     Organization:
       $ref: components/schemas/Organization.yaml
-    Encounter:
-      $ref: components/schemas/Encounter.yaml
     Binary:
       $ref: components/schemas/Binary.yaml
     Provenance:
