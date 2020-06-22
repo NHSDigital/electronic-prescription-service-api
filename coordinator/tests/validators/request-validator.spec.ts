@@ -124,11 +124,6 @@ const validBundleWithoutSignature = {
         },
         {
             resource: {
-                resourceType: "Encounter"
-            }
-        },
-        {
-            resource: {
                 resourceType: "Organization"
             }
         },

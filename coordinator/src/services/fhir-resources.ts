@@ -26,7 +26,6 @@ export class MedicationRequest extends Resource {
     category?: Array<CodeableConcept>
     medicationCodeableConcept: CodeableConcept
     subject: Reference<Patient>
-    //encounter?: Reference<Encounter>
     authoredOn?: string
     requester?: Reference<PractitionerRole>
     groupIdentifier?: MedicationRequestGroupIdentifier
@@ -71,7 +70,7 @@ export class Patient extends Resource {
     gender?: string
     birthDate?: string
     address?: Array<Address>
-    generalPractitioner?: Reference<PractitionerRole>
+    generalPractitioner?: Array<Reference<PractitionerRole>>
 }
 
 export class HumanName {
