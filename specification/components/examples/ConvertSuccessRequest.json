@@ -307,9 +307,9 @@
             "postalCode": "DE22 3JU"
           }
         ],
-        "generalPractitioner": {
+        "generalPractitioner": [{
           "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
-        }
+        }]
       },
       "fullUrl": "urn:uuid:b96806f2-0e43-4046-30f3-bd444965afb3"
     },
