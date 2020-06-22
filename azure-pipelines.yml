@@ -1,5 +1,12 @@
 name: "$(SourceBranchName)+$(BuildID)"
 
+resources:
+  repositories:
+    - repository: utils
+      name: NHSDigital/api-management-utils
+      endpoint: NHSDigital
+      type: github
+
 trigger:
   branches:
     include:
