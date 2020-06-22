@@ -1,4 +1,4 @@
 docker_containers:
-    - name: electronic-prescription-service-coordinator
+    - name: eps-coordinator
       dockerfile: "coordinator/Dockerfile"
       path: "coordinator"
