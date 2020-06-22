@@ -2,24 +2,6 @@ resourceType: Bundle
 id: 79FDB414-FADE-459C-87E5-312E646A1910
 type: collection
 entry:
-  - fullUrl: urn:uuid:28828C55-8FA7-42D7-916F-FCF076E0C10E
-    resource:
-      resourceType: Provenance
-      id: 28828C55-8FA7-42D7-916F-FCF076E0C10E
-      target:
-        - reference: urn:uuid:7EB02341-5F62-4A76-2CD3-34F523452356
-      recorded: 2008-02-27T11:38:00.000+00:00
-      agent:
-        - who:
-            reference: urn:uuid:99B71315-34BC-4095-8411-7DF3ABDBFBB6
-      signature:
-        - type:
-            - system: urn:iso-astm:E1762-95:2013
-              code: 1.2.840.10065.1.12.1.1
-          when: 2008-02-27T11:38:00.000+00:00
-          who:
-            reference: urn:uuid:99B71315-34BC-4095-8411-7DF3ABDBFBB6
-          data: sHu+ug41w5rWgcrogjKPe6JQcy5AodR/2pMJG1Lx+WDf6osgt6GsZuavbowqSh7RI79NUCMb0/Po3P5JGSiIEzFfWvdix7twyN8BhRJzZVoz4nY++roq6th1cZMUtm+ttEMMQhLVFY4hFZrZqZuMhsq5i2m4RCvS+IL4RMH6Hnc=
   - fullUrl:
       urn:uuid:7B38DE32-877F-6D53-D27C-86E1BA35016C
     resource:
