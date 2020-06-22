@@ -22,7 +22,8 @@ run-spec-viewer: build-spec build-sandbox
 	npm run serve
 
 run-coordinator: build-coordinator
-	cd coordinator && npm run start-dev
+	cp coordinator/package.json coordinator/dist/
+	cd coordinator/dist && npm run start
 
 run-sandbox: build-sandbox
 	cd sandbox && npm run start

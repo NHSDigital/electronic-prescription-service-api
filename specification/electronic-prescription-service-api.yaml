@@ -602,12 +602,6 @@ paths:
                         </pertinentCareRecordElementCategory>
                     </pertinentInformation2>
                 </ParentPrescription>
-          content:
-            application/json:
-              examples:
-                example:
-                  value:
-                    $ref: components/examples/ConvertSuccessResponse.json
 components:
   schemas:
     Bundle:
