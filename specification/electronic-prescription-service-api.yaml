@@ -194,7 +194,7 @@ paths:
                   value:
                     $ref: components/examples/ClientErrorResponse.yaml
         '5XX':
-          description: Server error.            
+          description: Server error.
           content:
             application/fhir+json:
               schema:
