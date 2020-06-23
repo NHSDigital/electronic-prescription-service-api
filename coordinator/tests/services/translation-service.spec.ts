@@ -7,7 +7,7 @@ import {
 import * as fhir from "../../src/services/fhir-resources";
 import * as TestResources from "../resources/test-resources"
 import * as XmlJs from "xml-js";
-import {MedicationRequest, Practitioner} from "../../src/services/fhir-resources";
+import {Practitioner} from "../../src/services/fhir-resources";
 
 function clone<T>(input: T) {
     return JSON.parse(JSON.stringify(input))
