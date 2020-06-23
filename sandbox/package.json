@@ -6,7 +6,8 @@
     "scripts": {
         "lint": "find . -type f -name '*.js' ! -name '.eslintrc.js' ! -name '*.spec.js' | grep -v 'node_modules/' | xargs eslint",
         "test": "jest",
-        "start": "node app.js --use_strict"
+        "start": "node app.js --use_strict",
+        "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
     },
     "author": "NHS Digital",
     "license": "MIT",

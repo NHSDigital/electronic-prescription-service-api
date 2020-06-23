@@ -8,7 +8,8 @@
     "lint": "eslint . --ext .ts",
     "start": "node app.js --use_strict",
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts",
-    "test": "jest"
+    "test": "jest",
+    "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
   },
   "author": "NHS Digital",
   "license": "MIT",

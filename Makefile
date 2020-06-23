@@ -59,6 +59,8 @@ build-proxy:
 
 check-licenses:
 	npm run check-licenses
+	cd coordinator && npm run check-licenses && cd ..
+	cd sandbox && npm run check-licenses && cd ..
 	scripts/check_python_licenses.sh
 
 lint:
@@ -76,7 +78,8 @@ test:
 	&& export API_TEST_ENV_FILE_PATH=$(or $(API_TEST_ENV_FILE_PATH),tests/e2e/environments/local.postman_environment.json) \
 	&& export API_TEST_URL=$(or $(API_TEST_URL),localhost:9000) \
 	&& npm run test
-	cd sandbox && npm t
+	cd sandbox && npm t && cd ..
+	cd coordinator && npm t && cd ..
 
 release: build-coordinator build-proxy
 	mkdir -p dist
