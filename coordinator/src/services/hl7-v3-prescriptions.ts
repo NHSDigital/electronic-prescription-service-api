@@ -241,7 +241,7 @@ export class Prescription implements ElementCompact {
 /**
  * A link to the details of the patient's nominated pharmacy that they have indicated they wish the prescription to be dispensed at.
  */
-export class Performer {
+export class Performer implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
         typeCode: "PRF",
         contextControlCode: "OP"

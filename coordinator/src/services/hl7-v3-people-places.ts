@@ -22,7 +22,7 @@ export class AgentPerson implements ElementCompact {
  * Identifies an organization fulfilling a specific role. Full details of the organization are available from SDS.
  * Details of the scoping organization are either not required or available from SDS.
  */
-export class AgentOrganization {
+export class AgentOrganization implements ElementCompact {
     _attributes: core.AttributeClassCode = {
         classCode: "AGNT"
     }
