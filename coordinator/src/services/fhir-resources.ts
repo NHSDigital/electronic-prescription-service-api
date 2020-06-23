@@ -28,7 +28,6 @@ export class MedicationRequest extends Resource {
     subject: Reference<Patient>
     authoredOn?: string
     requester?: Reference<PractitionerRole>
-    performer?: Reference<Organization>
     groupIdentifier?: MedicationRequestGroupIdentifier
     dosageInstruction?: Array<Dosage>
     dispenseRequest?: MedicationRequestDispenseRequest
@@ -55,6 +54,7 @@ export class Dosage {
 
 export class MedicationRequestDispenseRequest {
     quantity?: SimpleQuantity
+    performer?: Reference<Organization>
 }
 
 export class SimpleQuantity {

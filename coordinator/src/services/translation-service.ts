@@ -234,8 +234,8 @@ function convertBundleToPrescription(fhirBundle: fhir.Bundle) {
         ...convertPrescriptionIds(fhirFirstMedicationRequest)
     )
 
-    if (fhirFirstMedicationRequest.performer !== undefined) {
-        hl7V3Prescription.performer = convertPerformer(fhirBundle, fhirFirstMedicationRequest.performer)
+    if (fhirFirstMedicationRequest.dispenseRequest.performer !== undefined) {
+        hl7V3Prescription.performer = convertPerformer(fhirBundle, fhirFirstMedicationRequest.dispenseRequest.performer)
     }
     hl7V3Prescription.author = convertAuthor(fhirBundle, fhirFirstMedicationRequest)
     hl7V3Prescription.responsibleParty = convertResponsibleParty(fhirBundle)

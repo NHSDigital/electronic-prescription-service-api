@@ -47,6 +47,9 @@
             "unit": "ml",
             "system": "http://snomed.info/sct",
             "code": "258773002"
+          },
+          "performer": {
+            "reference": "urn:uuid:15aa7fc0-83a2-44ff-9fb6-c9afff3fd181"
           }
         },
         "authoredOn": "2020-06-10T12:06:00.000Z",
@@ -60,9 +63,6 @@
         },
         "requester": {
           "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
-        },
-        "performer": {
-          "reference": "urn:uuid:15aa7fc0-83a2-44ff-9fb6-c9afff3fd181"
         },
         "recorder": {
           "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
@@ -114,6 +114,9 @@
             "unit": "gram",
             "system": "http://snomed.info/sct",
             "code": "258682000"
+          },
+          "performer": {
+            "reference": "urn:uuid:15aa7fc0-83a2-44ff-9fb6-c9afff3fd181"
           }
         },
         "authoredOn": "2020-06-10T12:06:00.000Z",
@@ -127,9 +130,6 @@
         },
         "requester": {
           "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
-        },
-        "performer": {
-          "reference": "urn:uuid:15aa7fc0-83a2-44ff-9fb6-c9afff3fd181"
         },
         "recorder": {
           "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
@@ -181,6 +181,9 @@
             "unit": "dose",
             "system": "http://snomed.info/sct",
             "code": "3317411000001100"
+          },
+          "performer": {
+            "reference": "urn:uuid:15aa7fc0-83a2-44ff-9fb6-c9afff3fd181"
           }
         },
         "authoredOn": "2020-06-10T12:06:00.000Z",
@@ -194,9 +197,6 @@
         },
         "requester": {
           "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
-        },
-        "performer": {
-          "reference": "urn:uuid:15aa7fc0-83a2-44ff-9fb6-c9afff3fd181"
         },
         "recorder": {
           "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
@@ -248,6 +248,9 @@
             "unit": "ml",
             "system": "http://snomed.info/sct",
             "code": "258773002"
+          },
+          "performer": {
+            "reference": "urn:uuid:15aa7fc0-83a2-44ff-9fb6-c9afff3fd181"
           }
         },
         "authoredOn": "2020-06-10T12:06:00.000Z",
@@ -261,9 +264,6 @@
         },
         "requester": {
           "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
-        },
-        "performer": {
-          "reference": "urn:uuid:15aa7fc0-83a2-44ff-9fb6-c9afff3fd181"
         },
         "recorder": {
           "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
