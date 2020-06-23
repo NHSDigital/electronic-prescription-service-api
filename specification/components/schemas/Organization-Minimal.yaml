@@ -1,0 +1,21 @@
+type: object
+description: A formally or informally recognized grouping of people or organizations formed for the purpose of achieving some form of collective action. Includes companies, institutions, corporations, departments, community groups, healthcare practice groups, payer/insurer, etc.
+required:
+  - resourceType
+  - id
+  - identifier
+properties:
+  resourceType:
+    type: string
+    description: FHIR Resource type
+    default: "Organization"
+    readOnly: true
+  id:
+    type: string
+    description: Logical id of this artifact.
+    example: "C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C"
+  identifier:
+    type: array
+    description: Identifier for the organization that is used to identify the organization across multiple disparate systems.
+    items:
+      $ref: "Identifier-OdsOrganizationCode.yaml"

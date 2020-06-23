@@ -29,3 +29,5 @@ function testSchema(schemaValidatorPromise: Promise<Ajv.ValidateFunction>, relat
 
 test("check example message 1 against Prepare JSON schema", testSchema(prepareSchemaValidator, "parent-prescription-1/fhir-message.json"))
 test("check example message 1 against Send JSON schema", testSchema(sendSchemaValidator, "parent-prescription-1/fhir-message.json"))
+test("check example message 2 against Prepare JSON schema", testSchema(prepareSchemaValidator, "parent-prescription-2/fhir-message.json"))
+test("check example message 2 against Send JSON schema", testSchema(sendSchemaValidator, "parent-prescription-2/fhir-message.json"))
