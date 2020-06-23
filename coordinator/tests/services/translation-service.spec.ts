@@ -8,7 +8,6 @@ import {
 import * as fhir from "../../src/services/fhir-resources"
 import * as TestResources from "../resources/test-resources"
 import * as XmlJs from "xml-js"
-import {ParentPrescription} from "../../src/services/hl7-v3-prescriptions";
 
 function clone<T>(input: T) {
     return JSON.parse(JSON.stringify(input))
@@ -47,22 +46,19 @@ test('getIdentifierValueForSystem throws error when finding multiple values for 
 
 test(
     "convertBundleToParentPrescription returns correct value",
-    testParentPrescriptionConversion(
-        TestResources.fhirPrescriptionMessage1,
+    xmlTest(
+        convertBundleToParentPrescription(TestResources.fhirPrescriptionMessage1),
         TestResources.hl7V3ParentPrescription1
     )
 )
 
-test("convertParentPrescriptionToSignatureFragments returns correct value", () => {
-    const options = {compact: true, spaces: 4, attributesFn: translationService.sortAttributes} as unknown as XmlJs.Options.JS2XML
-
-    const actualRoot = convertParentPrescriptionToSignatureFragments(TestResources.hl7V3ParentPrescription1)
-    const actualXmlStr = XmlJs.js2xml(actualRoot, options)
-
-    const expectedXmlStr = XmlJs.js2xml(TestResources.hl7V3ParentPrescriptionFragments1, options)
-
-    expect(actualXmlStr).toEqual(expectedXmlStr)
-})
+test(
+    "convertParentPrescriptionToSignatureFragments returns correct value",
+    xmlTest(
+        convertParentPrescriptionToSignatureFragments(TestResources.hl7V3ParentPrescription1),
+        TestResources.hl7V3ParentPrescriptionFragments1
+    )
+)
 
 test("writeXmlStringCanonicalized returns correct value", () => {
     const actualOutput = writeXmlStringCanonicalized(TestResources.hl7V3ParentPrescriptionFragments1)
@@ -80,26 +76,21 @@ test("convertFhirMessageToHl7V3SignedInfo returns correct value", () => {
 
 test(
     "convertBundleToParentPrescription returns correct value with nominated pharmacy",
-    testParentPrescriptionConversion(
-        TestResources.fhirPrescriptionMessage2,
+    xmlTest(
+        convertBundleToParentPrescription(TestResources.fhirPrescriptionMessage2),
         TestResources.hl7V3ParentPrescription2
     )
 )
 
-function testParentPrescriptionConversion(fhirMessage: fhir.Bundle, hl7V3Message: ParentPrescription) {
+function xmlTest(actualRoot: XmlJs.ElementCompact, expectedRoot: XmlJs.ElementCompact) {
     return () => {
-        const options = {compact: true, spaces: 4, attributesFn: translationService.sortAttributes} as unknown as XmlJs.Options.JS2XML
-
-        const actualRoot = {
-            ParentPrescription: convertBundleToParentPrescription(fhirMessage)
-        }
+        const options = {
+            compact: true,
+            spaces: 4,
+            attributesFn: translationService.sortAttributes
+        } as unknown as XmlJs.Options.JS2XML
         const actualXmlStr = XmlJs.js2xml(actualRoot, options)
-
-        const expectedRoot = {
-            ParentPrescription: hl7V3Message
-        }
         const expectedXmlStr = XmlJs.js2xml(expectedRoot, options)
-
         expect(actualXmlStr).toEqual(expectedXmlStr)
     }
 }
