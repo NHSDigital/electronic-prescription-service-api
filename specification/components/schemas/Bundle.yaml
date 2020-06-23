@@ -48,6 +48,5 @@ properties:
             - $ref: "Patient.yaml"
             - $ref: "PractitionerRole.yaml"
             - $ref: "Practitioner.yaml"
-            - $ref: "Organization-Full.yaml"
-            - $ref: "Organization-Minimal.yaml"
+            - $ref: "Organization.yaml"
             - $ref: "Provenance.yaml"

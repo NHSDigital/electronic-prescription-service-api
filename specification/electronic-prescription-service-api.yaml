@@ -545,7 +545,7 @@ components:
     PractitionerRole:
       $ref: components/schemas/PractitionerRole.yaml
     Organization:
-      $ref: components/schemas/Organization-Full.yaml
+      $ref: components/schemas/Organization.yaml
     Binary:
       $ref: components/schemas/Binary.yaml
     Provenance:
