@@ -1,0 +1,21 @@
+type: object
+description: A specific set of Roles/Locations/specialties/services that a practitioner may perform at an organization for a period of time.
+required:
+  - resourceType
+  - id
+  - practitioner
+  - organization
+properties:
+  resourceType:
+    type: string
+    description: FHIR Resource type
+    enum: ["PractitionerRole"]
+    example: "PractitionerRole"
+  id:
+    type: string
+    description: Logical id of this artifact.
+    example: "C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C"
+  practitioner:
+    $ref: "Reference.yaml"
+  organization:
+    $ref: "Reference.yaml"

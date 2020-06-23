@@ -6,6 +6,8 @@ public/
 newman/
 coverage/
 sandbox/mocks
+sandbox/schemas
+coordinator/schemas
 
 .#*
 

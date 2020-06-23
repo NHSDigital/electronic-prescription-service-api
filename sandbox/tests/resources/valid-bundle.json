@@ -4,22 +4,34 @@
   "type": "collection",
   "entry": [
     {
-      "resourceType": "MedicationRequest"
+      "resource": {
+        "resourceType": "MedicationRequest"
+      }
     },
     {
-      "resourceType": "Patient"
+      "resource": {
+        "resourceType": "Patient"
+      }
     },
     {
-      "resourceType": "Encounter"
+      "resource": {
+        "resourceType": "Encounter"
+      }
     },
     {
-      "resourceType": "Organization"
+      "resource": {
+        "resourceType": "Organization"
+      }
     },
     {
-      "resourceType": "Organization"
+      "resource": {
+        "resourceType": "Organization"
+      }
     },
     {
-      "resourceType": "Practitioner"
+      "resource": {
+        "resourceType": "Practitioner"
+      }
     }
   ]
 }

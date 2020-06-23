@@ -2,12 +2,27 @@ type: object
 description: |
   Outcome of an operation that does not result in a resource or bundle being returned (e.g. error, async/batch submission).
   There are a number of possible error codes that can be returned along with a more detailed description in the `display` field.
-  Client errors (4XX error codes):
+  Server errors (5XX error codes):
   | Code                       | Response Code | Description                                   |
   | -------------------------- | ------------- | --------------------------------------------- |
-  | VALIDATION_ERROR           | 400           | This it the "default" error thrown when no others are applicable. |
-  | ACCESS_DENIED              | 401           | Used when the user does not have permission for a particular request. eg. when their asid does not have the correct interactions attached to it. |
-  | RESOURCE_NOT_FOUND         | 404           | The resource was not found. |
+  | FAILURE_TO_PROCESS_MESSAGE | 500           | A default message when something really bad has happened that the system could not handle.	|
+
+  Spine error and warning codes:
+  | Code | Display                                   |
+  | ------------- | --------------------------------------------- |
+  | 0001 | Patient is recorded as dead |
+  | 0002 | Duplicate prescription ID exists |
+  | 0003 | Digital signature not found |
+  | 0007 | Patient not found |
+  | 0008 | Unable to process message – information missing |
+  | 0009 | Invalid message |
+  | 0010 | Number of items on a prescription should be between 1 and 4 |
+  | 0018 | Mismatch in authorised repeat counts |
+  | 0019 | Repeat count should be between 1 and 99 |
+  | 0099 | Incompatible version of Request |
+  | 5008 | Duplicate item ID exists |
+  | 5009 | Error in check digit |
+  | 9006 | Format of date passed is invalid |
 properties:
   resourceType:
     type: string

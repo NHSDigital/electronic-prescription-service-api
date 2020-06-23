@@ -17,15 +17,18 @@ export class Identifier {
     value?: string
 }
 
+class MedicationRequestGroupIdentifier extends Identifier {
+    extension?: Array<IdentifierExtension>
+}
+
 export class MedicationRequest extends Resource {
     identifier?: Array<Identifier>
     category?: Array<CodeableConcept>
     medicationCodeableConcept: CodeableConcept
-    subject: Reference
-    encounter?: Reference
+    subject: Reference<Patient>
     authoredOn?: string
-    requester?: Reference
-    groupIdentifier?: Array<Identifier> //TODO this is a lie
+    requester?: Reference<PractitionerRole>
+    groupIdentifier?: MedicationRequestGroupIdentifier
     dosageInstruction?: Array<Dosage>
     dispenseRequest?: MedicationRequestDispenseRequest
 }
@@ -41,7 +44,7 @@ export class Coding {
     version?: number
 }
 
-export class Reference {
+export class Reference<T extends Resource> {
     reference: string
 }
 
@@ -67,7 +70,7 @@ export class Patient extends Resource {
     gender?: string
     birthDate?: string
     address?: Array<Address>
-    generalPractitioner?: Reference
+    generalPractitioner?: Array<Reference<PractitionerRole>>
 }
 
 export class HumanName {
@@ -97,8 +100,8 @@ export class Address {
 }
 
 export class PractitionerRole extends Resource {
-    practitioner?: Reference
-    organization?: Reference
+    practitioner?: Reference<Practitioner>
+    organization?: Reference<Organization>
 }
 
 export class Practitioner extends Resource {
@@ -114,7 +117,7 @@ export class Organization extends Resource {
     name?: string
     telecom?: Array<ContactPoint>
     address?: Array<Address>
-    partOf?: Reference
+    partOf?: Reference<Organization>
 }
 
 export class OperationOutcomeIssue {
@@ -132,4 +135,12 @@ export class OperationOutcomeIssue {
 export class OperationOutcome {
     resourceType: "OperationOutcome"
     issue: Array<OperationOutcomeIssue>
+}
+
+abstract class Extension {
+    url: string
+}
+
+export class IdentifierExtension extends Extension {
+    valueIdentifier: Identifier
 }
