@@ -58,6 +58,9 @@
         "subject": {
           "reference": "urn:uuid:b96806f2-0e43-4046-30f3-bd444965afb3"
         },
+        "encounter": {
+          "reference": "urn:uuid:fc695c22-87b4-42f2-84d1-9ca9fabf7389"
+        },
         "requester": {
           "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
         },
@@ -121,6 +124,9 @@
         ],
         "subject": {
           "reference": "urn:uuid:b96806f2-0e43-4046-30f3-bd444965afb3"
+        },
+        "encounter": {
+          "reference": "urn:uuid:fc695c22-87b4-42f2-84d1-9ca9fabf7389"
         },
         "requester": {
           "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
@@ -186,6 +192,9 @@
         "subject": {
           "reference": "urn:uuid:b96806f2-0e43-4046-30f3-bd444965afb3"
         },
+        "encounter": {
+          "reference": "urn:uuid:fc695c22-87b4-42f2-84d1-9ca9fabf7389"
+        },
         "requester": {
           "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
         },
@@ -249,6 +258,9 @@
         ],
         "subject": {
           "reference": "urn:uuid:b96806f2-0e43-4046-30f3-bd444965afb3"
+        },
+        "encounter": {
+          "reference": "urn:uuid:fc695c22-87b4-42f2-84d1-9ca9fabf7389"
         },
         "requester": {
           "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
@@ -350,6 +362,21 @@
         ]
       },
       "fullUrl": "urn:uuid:d4b569e7-ccf6-4bb2-029b-34b6f3e82acf"
+    },
+    {
+      "resource": {
+        "resourceType": "Encounter",
+        "id": "fc695c22-87b4-42f2-84d1-9ca9fabf7389",
+        "status": "finished",
+        "class": {
+          "system": "http://terminology.hl7.org/CodeSystem/v3-ActCode",
+          "code": "AMB"
+        },
+        "serviceProvider": {
+          "reference": "urn:uuid:b65dd3a2-9551-45a3-3e9d-342f8de14d8f"
+        }
+      },
+      "fullUrl": "urn:uuid:fc695c22-87b4-42f2-84d1-9ca9fabf7389"
     },
     {
       "resource": {

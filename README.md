@@ -51,8 +51,18 @@ There are `make` commands that alias some of this functionality:
  * `run-coordinator` -- build and run the coordinator locally
 
 ### Running tests
+#### Unit and Integration tests
+To run tests for the sandbox: while in the sandbox folder, run
+```
+npm t
+```
+To run tests for the coordinator: while in the coordinator folder, run
+```
+npm t
+```
+
 #### End-to-end tests
-To run tests for the sandbox, you need to supply an environment. A `local` environment and an environment template are included under `tests/e2e/environments`.
+To run e2e tests for the sandbox, you need to supply an environment. A `local` environment and an environment template are included under `tests/e2e/environments`.
 
 In order for local tests to work, you must have the sandbox server running locally.
 
@@ -60,7 +70,7 @@ In order for local tests to work, you must have the sandbox server running local
 make run-sandbox
 ```
 
-To run local tests, use:
+To run all local tests (includes unit and integration tests) for the sandbox: while in the root folder, run
 ```
 make test
 ```
@@ -68,11 +78,6 @@ make test
 There is a template environment file available at `tests/e2e/environments/postman_environment.json.template` useful for configuring different testing environments (such as on the CI server).
 
 The makefile sets defaults for the environment variables required for local testing, the CI server overrides these.
-
-To run tests for the coordinator: while in the coordinator folder, run
-```
-npm t
-```
 
 ### VS Code Plugins
 

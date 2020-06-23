@@ -91,7 +91,7 @@ jobs:
         displayName: Set SPEC_VERSION
 
       - bash: "make test"
-        displayName: Run Tests
+        displayName: Run Sandbox Tests
 
       - task: PublishTestResults@2
         inputs:

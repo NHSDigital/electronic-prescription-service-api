@@ -2,11 +2,11 @@
   "name": "electronic-prescription-service-api-coordinator",
   "version": "0.0.1",
   "description": "Electronic Prescription Service API Coordinator",
-  "main": "dist/app.js",
+  "main": "app.js",
   "scripts": {
     "build": "tsc --alwaysStrict",
-    "lint": "eslint . --ext .ts",
-    "start": "node dist/app.js --use_strict",
+    "lint": "eslint . --ext .ts --max-warnings 0",
+    "start": "node app.js --use_strict",
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts",
     "test": "jest"
   },
@@ -22,6 +22,7 @@
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
+    "@apidevtools/json-schema-ref-parser": "^9.0.1",
     "@types/crypto-js": "^3.1.47",
     "@types/hapi__hapi": "^19.0.3",
     "@types/jest": "^26.0.0",

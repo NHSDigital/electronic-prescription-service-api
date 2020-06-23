@@ -103,7 +103,7 @@ def main(arguments):
 
     # Create default dir structure
     base_output_dir = arguments["OUT_DIR"]
-    for i in ["resources", "responses", "requests"]:
+    for i in ["resources", "responses", "requests", "schemas"]:
         os.makedirs(os.path.join(base_output_dir, i), exist_ok=True)
 
     # Generate resources
@@ -134,6 +134,14 @@ def main(arguments):
         "paths.*.*.requestBody.content.*.(example|(examples.*.value))",
         base_output_dir,
         "requests"
+    )
+
+    # Pull out request schemas
+    extract_examples(
+        spec,
+        "paths.*.*.requestBody.content.*.schema",
+        base_output_dir,
+        "schemas"
     )
 
 

@@ -1,6 +1,5 @@
 import {Boom} from '@hapi/boom'
 import Hapi from '@hapi/hapi'
-import Path from 'path'
 import routes from './routes'
 import {CodeableConcept, Coding, OperationOutcome, OperationOutcomeIssue} from "./services/fhir-resources";
 
@@ -63,10 +62,7 @@ const init = async () => {
         port: 9000,
         host: '0.0.0.0',
         routes: {
-            cors: true, // Won't run as Apigee hosted target without this
-            files: {
-                relativeTo: Path.join(__dirname, 'mocks')
-            }
+            cors: true // Won't run as Apigee hosted target without this
         }
     })
     server.ext('onPreResponse', preResponse)

@@ -1,7 +1,7 @@
 import * as requestValidator from "../../validators/request-validator"
-import * as translator from "../../services/translation-service"
 import Hapi from "@hapi/hapi"
-import {Bundle} from "../../services/fhir-resources"
+import * as requestBodyParser from "../../services/request-body-parser";
+import * as responseBuilder from "../../services/response-builder";
 
 export default [
     /*
@@ -10,10 +10,12 @@ export default [
     {
         method: 'POST',
         path: '/Prepare',
-        handler: (request: Hapi.Request, h: Hapi.ResponseToolkit): Hapi.ResponseObject => {
-            requestValidator.verifyPrescriptionBundle(request.payload)
-            const signedInfo = translator.convertFhirMessageToHl7V3SignedInfo(request.payload as Bundle)
-            return h.response(signedInfo)
+        handler: (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Hapi.ResponseObject => {
+            const requestBody = requestBodyParser.parse(request)
+            const validation = requestValidator.verifyPrescriptionBundle(requestBody, false)
+            const statusCode = requestValidator.getStatusCode(validation)
+            const response = responseBuilder.createSignedInfo(validation, requestBody)
+            return responseToolkit.response(response).code(statusCode)
         }
     }
 ]

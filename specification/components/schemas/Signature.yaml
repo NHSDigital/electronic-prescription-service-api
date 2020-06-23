@@ -14,10 +14,10 @@ properties:
   when:
     type: string
     description: When the digital signature was signed.
-    example: 2020-04-21T10:45:30+00:00
+    example: "2020-04-21T10:45:30+00:00"
   who:
     $ref: "Reference.yaml"
   data:
     type: string
     description: The base64 encoding of the Signature content.
-    example: TODO
+    example: "TODO"

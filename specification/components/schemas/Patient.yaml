@@ -8,6 +8,7 @@ required:
   - name
   - gender
   - birthDate
+  - generalPractitioner
 properties:
   resourceType:
     type: string
@@ -17,7 +18,7 @@ properties:
   id:
     type: string
     description: Logical id of this artifact.
-    example: C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C
+    example: "C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C"
   identifier:
     type: array
     description: An identifier for this patient.
@@ -32,15 +33,15 @@ properties:
     type: string
     description: Administrative Gender - the gender that the patient is considered to have for administration and record keeping purposes.
     enum:
-      - male
-      - female
-      - other
-      - unknown
-    example: male
+      - "male"
+      - "female"
+      - "other"
+      - "unknown"
+    example: "male"
   birthDate:
     type: string
     description: The date of birth for the individual.
-    example: 1973-04-21
+    example: "1973-04-21"
   address:
     type: array
     description: An address for the individual.
@@ -54,4 +55,9 @@ properties:
   deceasedDateTime:
     type: string
     description: Indicates if the individual is deceased or not.
-    example: 2020-01-05
+    example: "2020-01-05"
+  generalPractitioner:
+    type: array
+    description: Patient's nominated primary care provider.
+    items:
+      $ref: "Reference.yaml"
