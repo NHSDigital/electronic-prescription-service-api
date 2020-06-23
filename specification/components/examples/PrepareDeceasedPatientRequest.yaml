@@ -152,6 +152,7 @@ entry:
             - Mr
       gender: male
       birthDate: '1973-04-21'
+      deceasedDateTime: '2015-02-07T13:28:17'
       address:
         - use: home
           type: both
