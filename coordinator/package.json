@@ -8,7 +8,8 @@
     "lint": "eslint . --ext .ts",
     "start": "node app.js --use_strict",
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts",
-    "test": "jest"
+    "test": "jest",
+    "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
   },
   "author": "NHS Digital",
   "license": "MIT",
@@ -19,7 +20,8 @@
     "crypto-js": "^4.0.0",
     "lodash": "^4.17.15",
     "moment": "^2.26.0",
-    "xml-js": "^1.6.11"
+    "xml-js": "^1.6.11",
+    "license-checker": "^25.0.1"
   },
   "devDependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.0.1",

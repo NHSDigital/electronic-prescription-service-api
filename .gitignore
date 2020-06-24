@@ -1,13 +1,12 @@
-node_modules/
-bin/
-dist/
-build/
-public/
-newman/
-coverage/
+**/dist/
+**/newman/
+**/public/
+**/coverage/
+**/node_modules/
 sandbox/mocks
-sandbox/schemas
-coordinator/schemas
+sandbox/tests/resources/valid-bundle.json
+sandbox/tests/resources/valid-bundle-with-signature.json
+coordinator/tests/resources/parent-prescription-1/fhir-message.json
 
 .#*
 

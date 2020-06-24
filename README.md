@@ -7,8 +7,9 @@ This is a RESTful HL7® FHIR® API specification for the *Electronic Prescriptio
 * `specification/` This [Open API Specification](https://swagger.io/docs/specification/about/) describes the endpoints, methods and messages exchanged by the API. Use it to generate interactive documentation; the contract between the API and its consumers.
 * `sandbox/` This NodeJS application implements a mock implementation of the service. Use it as a back-end service to the interactive documentation to illustrate interactions and concepts. It is not intended to provide an exhaustive/faithful environment suitable for full development and testing.
 * `scripts/` Utilities helpful to developers of this specification.
-* `apiproxy/` The Apigee API Proxy
+* `proxies/` Apigee API Proxies
 * `coordinator/` Deals with message translation and distribution to other services. Backend for the production EPS FHIR API.
+* `models/` A common, single source of truth directory for requests, responses and schemas used by the various components of this solution.
 
 Consumers of the API will find developer documentation on the [NHS Digital Developer Hub](https://emea-demo8-nhsdportal.apigee.io/).
 
@@ -43,12 +44,13 @@ Various scripts and commands rely on environment variables being set. These are 
 
 ### Make commands
 There are `make` commands that alias some of this functionality:
- * `lint` -- Lints the spec and code
- * `build-spec` -- Outputs the specification as a **single file** into the `build/` directory
- * `run-spec-viewer` -- Serves a preview of the specification in human-readable format
- * `generate-examples` -- generate example objects from the specification
- * `validate` -- validate generated examples against FHIR R4
- * `run-coordinator` -- build and run the coordinator locally
+ * `test` -- Performs quality checks including linting, licence checking of dependencies and unit/low level integration tests
+ * `build` -- Outputs the FHIR R4 validated models and artifacts for the: specification, sandbox, coordinator and apigee proxies into the corresponding `dist/` directories
+ * `release` -- Pulls all the artifacts for the individual components together and arranges them in a format ready to deploy; used mainly by CI but useful to check the output matches expectations
+ * `clean` -- Removes the output from the build
+ * `run-specification` -- Serves a preview of the specification in human-readable format
+ * `run-sandbox` -- Run the sandbox locally
+ * `run-coordinator` -- Run the coordinator locally
 
 ### Running tests
 #### Unit and Integration tests

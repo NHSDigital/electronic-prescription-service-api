@@ -1,0 +1,18 @@
+{
+  "name": "apim-spec",
+  "version": "0.0.1",
+  "description": "OAS (Swagger v3) API Definition for Electronic Prescription Service API",
+  "scripts": {
+    "lint": "node_modules/.bin/speccy lint electronic-prescription-service-api.yaml --skip default-and-example-are-redundant",
+    "resolve": "./node_modules/.bin/speccy resolve electronic-prescription-service-api.yaml -o dist/electronic-prescription-service-api.yaml",
+    "serve": "./node_modules/.bin/speccy serve dist/electronic-prescription-service-api.json",
+    "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
+  },
+  "author": "NHS Digital",
+  "license": "MIT",
+  "homepage": "https://github.com/NHSDigital/electronic-prescription-service-api",
+  "dependencies": {
+    "license-checker": "^25.0.1",
+    "speccy": "^0.11.0"
+  }
+}

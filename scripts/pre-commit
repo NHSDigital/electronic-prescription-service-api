@@ -2,5 +2,6 @@
 
 set -eu
 
+make build-models
 make lint
-make validate
+make validate-models

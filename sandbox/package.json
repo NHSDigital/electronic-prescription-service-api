@@ -5,8 +5,9 @@
     "main": "app.js",
     "scripts": {
         "lint": "find . -type f -name '*.js' ! -name '.eslintrc.js' ! -name '*.spec.js' | grep -v 'node_modules/' | xargs eslint",
-        "test": "jest",
-        "start": "node app.js --use_strict"
+        "test": "echo 'todo: add jest back here' && node_modules/.bin/newman run ../tests/e2e/electronic-prescription-service-api-sandbox.json -e $API_TEST_ENV_FILE_PATH --reporters html,cli,htmlextra,junit --reporter-htmlextra-logs --reporter-htmlextra-darkTheme",
+        "start": "node app.js --use_strict",
+        "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
     },
     "author": "NHS Digital",
     "license": "MIT",
@@ -17,7 +18,9 @@
         "inert": "^5.1.3",
         "lodash": "^4.17.15",
         "nhs-number-validator": "^1.1.1",
-        "monet": "0.9.1"
+        "monet": "0.9.1",
+        "license-checker": "^25.0.1",
+        "newman": "5.1.0"
     },
     "devDependencies": {
         "@apidevtools/json-schema-ref-parser": "^9.0.1",
