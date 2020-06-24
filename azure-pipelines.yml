@@ -54,13 +54,13 @@ jobs:
             "$(Agent.OS)" | "pythons"
 
       - task: Cache@2
-        displayName: "Cache Package NPM Dependencies"
+        displayName: "Cache Specification NPM Dependencies"
         inputs:
-          key: '"$(Agent.OS)" | "node" | package-lock.json'
-          path: "node_modules"
+          key: '"$(Agent.OS)" | "node" | specification/package-lock.json'
+          path: "specification/node_modules"
           restoreKeys: |
-            "$(Agent.OS)" | "node" | package-lock.json
-            "$(Agent.OS)" | "node"
+            "$(Agent.OS)" | "node-specification" | specification/package-lock.json
+            "$(Agent.OS)" | "node-specification"
 
       - task: Cache@2
         displayName: "Cache Sandbox NPM Dependencies"
@@ -70,6 +70,15 @@ jobs:
           restoreKeys: |
             "$(Agent.OS)" | "node-sandbox" | sandbox/package-lock.json
             "$(Agent.OS)" | "node-sandbox"
+      
+      - task: Cache@2
+        displayName: "Cache Coordinator NPM Dependencies"
+        inputs:
+          key: '"$(Agent.OS)" | "node-coordinator" | coordinator/package-lock.json'
+          path: "coordinator/node_modules"
+          restoreKeys: |
+            "$(Agent.OS)" | "node-coordinator" | coordinator/package-lock.json
+            "$(Agent.OS)" | "node-coordinator"
 
       - bash: "make install"
         displayName: Install repo
