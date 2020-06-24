@@ -18,7 +18,9 @@ clean:
 	rm -rf models/dist
 	rm -rf specification/dist
 	rm -rf sandbox/mocks
+	rm -rf sandbox/tests/resources
 	rm -rf coordinator/dist
+	rm -f coordinator/tests/resources/parent-prescription-1/fhir-message.json
 
 ## Run
 
@@ -79,6 +81,7 @@ build-coordinator:
 build-sandbox:
 	mkdir -p sandbox/mocks
 	cp -r models/dist/responses/*.json sandbox/mocks
+	mkdir -p sandbox/tests/resources
 	cp models/dist/requests/PrepareSuccessRequest.json sandbox/tests/resources/valid-bundle.json
 	cp models/dist/requests/SendSuccessRequest.json sandbox/tests/resources/valid-bundle-with-signature.json
 	cp -r models/dist/responses/ sandbox/mocks/
