@@ -52,6 +52,8 @@ There are `make` commands that alias some of this functionality:
  * `run-sandbox` -- Run the sandbox locally
  * `run-coordinator` -- Run the coordinator locally
 
+All `run-*` make targets rely on the corresponding `build-*` make targets, the `build` make target will run all of these
+
 ### Running tests
 #### Unit and Integration tests
 To run tests for the sandbox: while in the sandbox folder, run
