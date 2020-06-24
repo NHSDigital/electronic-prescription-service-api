@@ -1,3 +1,3 @@
 [flake8]
 max-line-length=120
-exclude = .git,__pycache__,dist,utils/apigee_client.py
+exclude = .git,__pycache__,dist

@@ -113,7 +113,7 @@ lint:
 	cd specification && npm run lint
 	cd sandbox && npm run lint
 	cd coordinator && npm run lint
-	poetry run flake8 **/*.py --config .flake8
+	poetry run flake8 scripts/*.py --config .flake8
 	find -name '*.sh' | grep -v node_modules | xargs shellcheck
 
 check-licenses:
