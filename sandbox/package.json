@@ -24,6 +24,7 @@
         "@apidevtools/json-schema-ref-parser": "^9.0.1",
         "eslint": "^6.8.0",
         "jest": "^26.0.1",
-        "minimist": "^1.2.2"
+        "minimist": "^1.2.2",
+      "license-checker": "^25.0.1"
     }
 }
