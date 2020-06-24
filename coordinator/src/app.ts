@@ -1,6 +1,5 @@
 import {Boom} from '@hapi/boom'
 import Hapi from '@hapi/hapi'
-import Path from 'path'
 import routes from './routes'
 import {CodeableConcept, Coding, OperationOutcome, OperationOutcomeIssue} from "./services/fhir-resources";
 
