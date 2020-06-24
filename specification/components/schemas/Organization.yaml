@@ -4,8 +4,6 @@ required:
   - resourceType
   - id
   - identifier
-  - type
-  - name
 properties:
   resourceType:
     type: string
