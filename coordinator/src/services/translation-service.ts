@@ -219,6 +219,13 @@ function convertPrescriptionPertinentInformation4(fhirFirstMedicationRequest: fh
     return new prescriptions.PrescriptionPertinentInformation4(prescriptionType);
 }
 
+function convertPerformer(fhirBundle: fhir.Bundle, performerReference: fhir.Reference<fhir.Organization>) {
+    const fhirOrganization = resolveReference(fhirBundle, performerReference)
+    const hl7V3Organization = convertOrganization(fhirBundle, fhirOrganization)
+    const hl7V3AgentOrganization = new peoplePlaces.AgentOrganization(hl7V3Organization)
+    return new prescriptions.Performer(hl7V3AgentOrganization)
+}
+
 function convertBundleToPrescription(fhirBundle: fhir.Bundle) {
     const fhirMedicationRequests = getResourcesOfType(fhirBundle, "MedicationRequest") as Array<fhir.MedicationRequest>
     const fhirFirstMedicationRequest = fhirMedicationRequests[0]
@@ -227,6 +234,9 @@ function convertBundleToPrescription(fhirBundle: fhir.Bundle) {
         ...convertPrescriptionIds(fhirFirstMedicationRequest)
     )
 
+    if (fhirFirstMedicationRequest.dispenseRequest.performer !== undefined) {
+        hl7V3Prescription.performer = convertPerformer(fhirBundle, fhirFirstMedicationRequest.dispenseRequest.performer)
+    }
     hl7V3Prescription.author = convertAuthor(fhirBundle, fhirFirstMedicationRequest)
     hl7V3Prescription.responsibleParty = convertResponsibleParty(fhirBundle)
 
@@ -333,10 +343,14 @@ function convertOrganization(
     const organizationSdsId = getIdentifierValueForSystem(fhirOrganization.identifier, "https://fhir.nhs.uk/Id/ods-organization-code")
     hl7V3Organization.id = new codes.SdsOrganizationIdentifier(organizationSdsId)
 
-    const organizationTypeCoding = getCodeableConceptCodingForSystem(fhirOrganization.type, "urn:oid:2.16.840.1.113883.2.1.3.2.4.17.94")
-    hl7V3Organization.code = new codes.OrganizationTypeCode(organizationTypeCoding.code)
+    if (fhirOrganization.type !== undefined) {
+        const organizationTypeCoding = getCodeableConceptCodingForSystem(fhirOrganization.type, "urn:oid:2.16.840.1.113883.2.1.3.2.4.17.94")
+        hl7V3Organization.code = new codes.OrganizationTypeCode(organizationTypeCoding.code)
+    }
 
-    hl7V3Organization.name = new core.Text(fhirOrganization.name)
+    if (fhirOrganization.name !== undefined) {
+        hl7V3Organization.name = new core.Text(fhirOrganization.name)
+    }
 
     if (fhirOrganization.telecom !== undefined) {
         hl7V3Organization.telecom = fhirOrganization.telecom.map(convertTelecom).reduce(onlyElement)

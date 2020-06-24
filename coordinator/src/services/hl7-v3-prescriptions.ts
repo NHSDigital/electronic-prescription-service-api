@@ -216,7 +216,7 @@ export class Prescription implements ElementCompact {
     code: codes.SnomedCode
     effectiveTime: core.Null
     //TODO - repeatNumber
-    //TODO - performer
+    performer: Performer
     author: Author
     //TODO - legalAuthenticator
     responsibleParty: ResponsibleParty
@@ -235,6 +235,22 @@ export class Prescription implements ElementCompact {
         this.id = [id, shortFormId]
         this.code = new codes.SnomedCode("225426007", "Administration of therapeutic substance (procedure)")
         this.effectiveTime = core.Null.NOT_APPLICABLE
+    }
+}
+
+/**
+ * A link to the details of the patient's nominated pharmacy that they have indicated they wish the prescription to be dispensed at.
+ */
+export class Performer implements ElementCompact {
+    _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
+        typeCode: "PRF",
+        contextControlCode: "OP"
+    }
+
+    AgentOrgSDS: peoplePlaces.AgentOrganization
+
+    constructor(agentOrganization: peoplePlaces.AgentOrganization) {
+        this.AgentOrgSDS = agentOrganization
     }
 }
 
