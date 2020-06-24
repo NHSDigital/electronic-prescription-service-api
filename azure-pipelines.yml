@@ -6,6 +6,7 @@ resources:
       name: NHSDigital/api-management-utils
       endpoint: NHSDigital
       type: github
+      ref: refs/heads/mm-apm-1131-aws-char-name-limits
 
 trigger:
   branches:
