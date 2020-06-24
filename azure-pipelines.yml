@@ -91,15 +91,6 @@ jobs:
             "$(Agent.OS)" | "node-coordinator" | coordinator/package-lock.json
             "$(Agent.OS)" | "node-coordinator"
 
-      - task: Cache@2
-        displayName: "Cache Coordinator NPM Dependencies"
-        inputs:
-            key: '"$(Agent.OS)" | "node-coordinator" | coordinator/package-lock.json'
-            path: "coordinator/node_modules"
-            restoreKeys: |
-                "$(Agent.OS)" | "node-coordinator" | coordinator/package-lock.json
-                "$(Agent.OS)" | "node-coordinator"
-
       - bash: "make install"
         displayName: Install repo
 
