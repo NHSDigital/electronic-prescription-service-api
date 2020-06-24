@@ -1,4 +1,4 @@
 docker_containers:
-    - name: eps
+    - name: eps-coordinator
       dockerfile: "coordinator/Dockerfile"
       path: "coordinator"

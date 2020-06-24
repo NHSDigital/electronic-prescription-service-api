@@ -130,7 +130,7 @@ jobs:
       - template: az/create-build-env-vars.yml@utils
         parameters:
             out_dir: 'dist'
-            service_name: 'eps'
+            service_name: 'eps-coordinator'
 
       - template: az/become-build-user.yml@utils
         parameters:
