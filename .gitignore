@@ -4,7 +4,6 @@
 **/public/
 **/coverage/
 **/node_modules/
-specification/build
 sandbox/mocks
 sandbox/tests/resources
 coordinator/tests/resources/parent-prescription-1/fhir-message.json
