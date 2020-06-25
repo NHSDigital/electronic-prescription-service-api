@@ -2,7 +2,8 @@
 """
 yaml2json.py
 
-Takes yaml on stdin and writes json on stdout, converting dates correctly.
+Takes yaml file input and writes json file of the same
+name in the specified directory, converting dates correctly.
 
 Usage:
   yaml2json.py YAML_FILE OUT_DIR

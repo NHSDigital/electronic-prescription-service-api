@@ -47,7 +47,7 @@ There are `make` commands that alias some of this functionality:
  * `test` -- Performs quality checks including linting, licence checking of dependencies and unit/low level integration tests
  * `build` -- Outputs the FHIR R4 validated models and artifacts for the: specification, sandbox, coordinator and apigee proxies into the corresponding `dist/` directories
  * `release` -- Pulls all the artifacts for the individual components together and arranges them in a format ready to deploy; used mainly by CI but useful to check the output matches expectations
- * `clean` -- Removes the output from the build
+ * `clean` -- Removes the output from the build and release commands
  * `run-specification` -- Serves a preview of the specification in human-readable format
  * `run-sandbox` -- Run the sandbox locally
  * `run-coordinator` -- Run the coordinator locally
@@ -70,9 +70,10 @@ npm t
 #### End-to-end tests
 To run e2e tests for the sandbox, you need to supply an environment. A `local` environment and an environment template are included under `tests/e2e/environments`.
 
-In order for tests under the make target `test-sandbox` to work, you must have the sandbox server running locally. In a seperate shell run:
+In order for tests under the make target `test-sandbox` to work, you must have built and be running the sandbox server locally. In a seperate shell run:
 
 ```
+make build
 make run-sandbox
 ```
 

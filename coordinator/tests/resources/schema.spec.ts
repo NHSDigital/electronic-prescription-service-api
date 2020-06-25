@@ -6,8 +6,8 @@ import $RefParser = require("@apidevtools/json-schema-ref-parser");
 const validator = new Ajv()
 
 //TODO - either have a single validator, or have two schemas
-const prepareSchemaValidator = createSchemaValidator("../../../models/schemas/Bundle.yaml")
-const sendSchemaValidator = createSchemaValidator("../../../models/schemas/Bundle.yaml")
+const prepareSchemaValidator = createSchemaValidator("../../../models/dist/schemas/Bundle.yaml")
+const sendSchemaValidator = createSchemaValidator("../../../models/dist/schemas/Bundle.yaml")
 
 async function createSchemaValidator(relativePath: string) {
     const schema = await $RefParser.dereference(path.join(__dirname, relativePath))

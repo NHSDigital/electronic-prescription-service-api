@@ -81,7 +81,7 @@ jobs:
           restoreKeys: |
             "$(Agent.OS)" | "node-sandbox" | sandbox/package-lock.json
             "$(Agent.OS)" | "node-sandbox"
-      
+
       - task: Cache@2
         displayName: "Cache Coordinator NPM Dependencies"
         inputs:
