@@ -54,6 +54,8 @@ There are `make` commands that alias some of this functionality:
 
 All `run-*` make targets rely on the corresponding `build-*` make targets, the `build` make target will run all of these
 
+Make `build-models` is a dependency for all other `build-*` targets, the `build` target will run all builds including this dependency
+
 ### Running tests
 #### Unit and Integration tests
 To run tests for the sandbox: while in the sandbox folder, run
@@ -68,13 +70,20 @@ npm t
 #### End-to-end tests
 To run e2e tests for the sandbox, you need to supply an environment. A `local` environment and an environment template are included under `tests/e2e/environments`.
 
-In order for local tests to work, you must have the sandbox server running locally.
+In order for tests under the make target `test-sandbox` to work, you must have the sandbox server running locally. In a seperate shell run:
 
 ```
 make run-sandbox
 ```
 
-To run all local tests (includes unit and integration tests) for the sandbox: while in the root folder, run
+Once the sandbox is up and displaying the port number, in another shell run:
+
+```
+make test-sandbox
+```
+
+To run all other tests locally (includes unit and low level integration tests): while in the root folder, run
+
 ```
 make test
 ```
@@ -99,13 +108,13 @@ The makefile sets defaults for the environment variables required for local test
 
 Speccy does the lifting for the following npm scripts:
 
- * `test` -- Lints the definition
- * `publish` -- Outputs the specification as a **single file** into the `build/` directory
+ * `lint` -- Lints the definition
+ * `resolve` -- Outputs the specification as a **single file**
  * `serve` -- Serves a preview of the specification in human-readable format
 
 (Workflow detailed in a [post](https://developerjack.com/blog/2018/maintaining-large-design-first-api-specs/) on the *developerjack* blog.)
 
-:bulb: The `publish` command is useful when uploading to Apigee which requires the spec as a single file.
+:bulb: The `resolve` command is useful when uploading to Apigee which requires the spec as a single file.
 
 ### Caveats
 
@@ -115,17 +124,7 @@ Swagger UI unfortunately doesn't correctly render `$ref`s in examples, so use `s
 #### Apigee Portal
 The Apigee portal will not automatically pull examples from schemas, you must specify them manually.
 
-### Postman Collection
-
-`electronic-prescription-service-api-sandbox.json` must be kept in sync with the OAS and Sandbox manually.
-
-Procedure:
- * Import the collection into Postman
- * Update requests and export the collection back into the repo
- * Re-generate the [Run in Postman button](https://learning.getpostman.com/docs/postman-for-publishers/run-in-postman/creating-run-button/) Markdown button link and update the OAS
-
 #### Platform setup
-
 Successful deployment of the API Proxy requires:
 
  1. A *Target Server* named `ig3`
