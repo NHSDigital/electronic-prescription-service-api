@@ -125,9 +125,10 @@ lint:
 	cd sandbox && npm run lint
 	cd coordinator && npm run lint
 	poetry run flake8 scripts/*.py --config .flake8
-	find -name '*.sh' | grep -v node_modules | xargs shellcheck
+	shellcheck scripts/*.sh
 
 check-licenses:
+	cd specification && npm run check-licenses
 	cd sandbox && npm run check-licenses
 	cd coordinator && npm run check-licenses
 	scripts/check_python_licenses.sh
