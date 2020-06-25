@@ -12,7 +12,7 @@ export const fhirPrescriptionMessage2 = JSON.parse(fhirPrescriptionMessage2Str) 
 
 const hl7V3ParentPrescriptionMessage1Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/hl7-v3-message.xml"), "utf8")
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const hl7V3ParentPrescriptionMessage1 = XmlJs.xml2js(hl7V3ParentPrescriptionMessage1Str, {compact: true}) as any
+export const hl7V3ParentPrescriptionMessage1 = XmlJs.xml2js(hl7V3ParentPrescriptionMessage1Str, {compact: true}) as any
 export const hl7V3ParentPrescription1 = hl7V3ParentPrescriptionMessage1.PORX_IN020101UK31.ControlActEvent.subject.ParentPrescription as ParentPrescription
 
 const hl7V3ParentPrescriptionMessage2Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-2/hl7-v3-message.xml"), "utf8")

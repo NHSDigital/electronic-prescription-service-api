@@ -6,6 +6,7 @@ import * as prescriptions from "./hl7-v3-prescriptions"
 import * as fhir from "./fhir-resources"
 import * as crypto from "crypto-js"
 import moment from "moment"
+import {wrap} from "../resources/transport-wrapper"
 
 //TODO - is there a better way than returning Array<unknown>?
 export function getResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): Array<unknown> {
@@ -465,10 +466,8 @@ function convertGender(fhirGender: string) {
 }
 
 export function convertFhirMessageToHl7V3ParentPrescription(fhirMessage: fhir.Bundle): string {
-    const root = {
-        ParentPrescription: convertBundleToParentPrescription(fhirMessage)
-    }
     const options = {compact: true, ignoreComment: true, spaces: 4}
+    const root = wrap(convertBundleToParentPrescription(fhirMessage))
     //TODO - canonicalize XML before returning?
     return XmlJs.js2xml(root, options)
 }
