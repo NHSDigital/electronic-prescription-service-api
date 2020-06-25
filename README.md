@@ -86,6 +86,7 @@ make test-sandbox
 To run all other tests locally (includes unit and low level integration tests): while in the root folder, run
 
 ```
+make build
 make test
 ```
 
