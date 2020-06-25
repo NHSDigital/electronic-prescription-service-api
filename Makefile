@@ -47,14 +47,16 @@ build-proxy:
 
 check-licenses:
 	npm run check-licenses
+	cd coordinator && npm run check-licenses
+	cd sandbox && npm run check-licenses
 	scripts/check_python_licenses.sh
 
 lint:
 	npm run lint
-	cd coordinator && npm run lint && cd ..
-	cd sandbox && npm run lint && cd ..
-	poetry run flake8 **/*.py --config .flake8
-	find -name '*.sh' | grep -v node_modules | xargs shellcheck
+	cd coordinator && npm run lint
+	cd sandbox && npm run lint
+	poetry run flake8 scripts/*.py --config .flake8
+	shellcheck scripts/*.sh
 
 validate: build-spec
 	java -jar bin/org.hl7.fhir.validator.jar build/examples/requests/*application_fhir+json*.json build/examples/responses/*application_fhir+json*.json build/examples/resources/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt
@@ -65,6 +67,7 @@ test:
 	&& export API_TEST_URL=$(or $(API_TEST_URL),localhost:9000) \
 	&& npm run test
 	cd sandbox && npm t
+	cd coordinator && npm t
 
 release: build-coordinator build-proxy
 	mkdir -p dist
