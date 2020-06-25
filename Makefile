@@ -47,14 +47,14 @@ build-proxy:
 
 check-licenses:
 	npm run check-licenses
-	cd coordinator && npm run check-licenses && cd ..
-	cd sandbox && npm run check-licenses && cd ..
+	cd coordinator && npm run check-licenses
+	cd sandbox && npm run check-licenses
 	scripts/check_python_licenses.sh
 
 lint:
 	npm run lint
-	cd coordinator && npm run lint && cd ..
-	cd sandbox && npm run lint && cd ..
+	cd coordinator && npm run lint
+	cd sandbox && npm run lint
 	poetry run flake8 scripts/*.py --config .flake8
 	shellcheck scripts/*.sh
 
@@ -66,8 +66,8 @@ test:
 	&& export API_TEST_ENV_FILE_PATH=$(or $(API_TEST_ENV_FILE_PATH),tests/e2e/environments/local.postman_environment.json) \
 	&& export API_TEST_URL=$(or $(API_TEST_URL),localhost:9000) \
 	&& npm run test
-	cd sandbox && npm t && cd ..
-	cd coordinator && npm t && cd ..
+	cd sandbox && npm t
+	cd coordinator && npm t
 
 release: build-coordinator build-proxy
 	mkdir -p dist
