@@ -7,8 +7,9 @@ This is a RESTful HL7® FHIR® API specification for the *Electronic Prescriptio
 * `specification/` This [Open API Specification](https://swagger.io/docs/specification/about/) describes the endpoints, methods and messages exchanged by the API. Use it to generate interactive documentation; the contract between the API and its consumers.
 * `sandbox/` This NodeJS application implements a mock implementation of the service. Use it as a back-end service to the interactive documentation to illustrate interactions and concepts. It is not intended to provide an exhaustive/faithful environment suitable for full development and testing.
 * `scripts/` Utilities helpful to developers of this specification.
-* `apiproxy/` The Apigee API Proxy
+* `proxies/` Apigee API Proxies
 * `coordinator/` Deals with message translation and distribution to other services. Backend for the production EPS FHIR API.
+* `models/` A common, single source of truth directory for requests, responses and schemas used by the various components of this solution.
 
 Consumers of the API will find developer documentation on the [NHS Digital Developer Hub](https://emea-demo8-nhsdportal.apigee.io/).
 
@@ -43,12 +44,17 @@ Various scripts and commands rely on environment variables being set. These are 
 
 ### Make commands
 There are `make` commands that alias some of this functionality:
- * `lint` -- Lints the spec and code
- * `build-spec` -- Outputs the specification as a **single file** into the `build/` directory
- * `run-spec-viewer` -- Serves a preview of the specification in human-readable format
- * `generate-examples` -- generate example objects from the specification
- * `validate` -- validate generated examples against FHIR R4
- * `run-coordinator` -- build and run the coordinator locally
+ * `test` -- Performs quality checks including linting, licence checking of dependencies and unit/low level integration tests
+ * `build` -- Outputs the FHIR R4 validated models and artifacts for the: specification, sandbox, coordinator and apigee proxies into the corresponding `dist/` directories
+ * `release` -- Pulls all the artifacts for the individual components together and arranges them in a format ready to deploy; used mainly by CI but useful to check the output matches expectations
+ * `clean` -- Removes the output from the build and release commands
+ * `run-specification` -- Serves a preview of the specification in human-readable format
+ * `run-sandbox` -- Run the sandbox locally
+ * `run-coordinator` -- Run the coordinator locally
+
+All `run-*` make targets rely on the corresponding `build-*` make targets, the `build` make target will run all of these
+
+Make `build-models` is a dependency for all other `build-*` targets, the `build` target will run all builds including this dependency
 
 ### Running tests
 #### Unit and Integration tests
@@ -64,14 +70,23 @@ npm t
 #### End-to-end tests
 To run e2e tests for the sandbox, you need to supply an environment. A `local` environment and an environment template are included under `tests/e2e/environments`.
 
-In order for local tests to work, you must have the sandbox server running locally.
+In order for tests under the make target `test-sandbox` to work, you must have built and be running the sandbox server locally. In a seperate shell run:
 
 ```
+make build
 make run-sandbox
 ```
 
-To run all local tests (includes unit and integration tests) for the sandbox: while in the root folder, run
+Once the sandbox is up and displaying the port number, in another shell run:
+
 ```
+make test-sandbox
+```
+
+To run all other tests locally (includes unit and low level integration tests): while in the root folder, run
+
+```
+make build
 make test
 ```
 
@@ -95,13 +110,13 @@ The makefile sets defaults for the environment variables required for local test
 
 Speccy does the lifting for the following npm scripts:
 
- * `test` -- Lints the definition
- * `publish` -- Outputs the specification as a **single file** into the `build/` directory
+ * `lint` -- Lints the definition
+ * `resolve` -- Outputs the specification as a **single file**
  * `serve` -- Serves a preview of the specification in human-readable format
 
 (Workflow detailed in a [post](https://developerjack.com/blog/2018/maintaining-large-design-first-api-specs/) on the *developerjack* blog.)
 
-:bulb: The `publish` command is useful when uploading to Apigee which requires the spec as a single file.
+:bulb: The `resolve` command is useful when uploading to Apigee which requires the spec as a single file.
 
 ### Caveats
 
@@ -111,17 +126,7 @@ Swagger UI unfortunately doesn't correctly render `$ref`s in examples, so use `s
 #### Apigee Portal
 The Apigee portal will not automatically pull examples from schemas, you must specify them manually.
 
-### Postman Collection
-
-`electronic-prescription-service-api-sandbox.json` must be kept in sync with the OAS and Sandbox manually.
-
-Procedure:
- * Import the collection into Postman
- * Update requests and export the collection back into the repo
- * Re-generate the [Run in Postman button](https://learning.getpostman.com/docs/postman-for-publishers/run-in-postman/creating-run-button/) Markdown button link and update the OAS
-
 #### Platform setup
-
 Successful deployment of the API Proxy requires:
 
  1. A *Target Server* named `ig3`

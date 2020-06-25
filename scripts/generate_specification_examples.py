@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 """
-generate_example.py
+generate_specification_examples.py
 
 Usage:
-  generate_example.py SPEC_FILE OUT_DIR
+  generate_specification_examples.py SPEC_FILE OUT_DIR
 """
 import json
 import os

@@ -1,0 +1,10 @@
+resourceType: OperationOutcome
+issue:
+- severity: error
+  code: value
+  details:
+    coding:
+    - system: https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode
+      version: '1'
+      code: FAILURE_TO_PROCESS_MESSAGE
+      display: 'TypeError: Cannot read property ''foo'' of undefined'

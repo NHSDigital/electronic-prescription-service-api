@@ -115,7 +115,7 @@ paths:
             examples:
               example:
                 value:
-                  $ref: components/examples/PrepareSuccessRequest.json
+                  $ref: components/examples/PrepareSuccessRequest.yaml
         description: ''
       responses:
         '200':
@@ -220,7 +220,7 @@ paths:
             examples:
               example:
                 value:
-                  $ref: components/examples/ConvertSuccessRequest.json
+                  $ref: components/examples/ConvertSuccessRequest.yaml
         description: ''
       responses:
         '200':

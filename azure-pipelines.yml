@@ -26,7 +26,6 @@ jobs:
     pool:
       vmImage: 'ubuntu-latest'
     variables:
-      API_TEST_ENV_FILE_PATH: "tests/e2e/environments/local.postman_environment.json"
       PIP_CACHE_DIR: ".poetry"
     steps:
       - checkout: self
@@ -66,13 +65,13 @@ jobs:
             "$(Agent.OS)" | "pythons"
 
       - task: Cache@2
-        displayName: "Cache Package NPM Dependencies"
+        displayName: "Cache Specification NPM Dependencies"
         inputs:
-          key: '"$(Agent.OS)" | "node" | package-lock.json'
-          path: "node_modules"
+          key: '"$(Agent.OS)" | "node" | specification/package-lock.json'
+          path: "specification/node_modules"
           restoreKeys: |
-            "$(Agent.OS)" | "node" | package-lock.json
-            "$(Agent.OS)" | "node"
+            "$(Agent.OS)" | "node-specification" | specification/package-lock.json
+            "$(Agent.OS)" | "node-specification"
 
       - task: Cache@2
         displayName: "Cache Sandbox NPM Dependencies"
@@ -86,32 +85,29 @@ jobs:
       - task: Cache@2
         displayName: "Cache Coordinator NPM Dependencies"
         inputs:
-            key: '"$(Agent.OS)" | "node-coordinator" | coordinator/package-lock.json'
-            path: "coordinator/node_modules"
-            restoreKeys: |
-                "$(Agent.OS)" | "node-coordinator" | coordinator/package-lock.json
-                "$(Agent.OS)" | "node-coordinator"
+          key: '"$(Agent.OS)" | "node-coordinator" | coordinator/package-lock.json'
+          path: "coordinator/node_modules"
+          restoreKeys: |
+            "$(Agent.OS)" | "node-coordinator" | coordinator/package-lock.json
+            "$(Agent.OS)" | "node-coordinator"
 
       - bash: "make install"
         displayName: Install repo
 
+      - bash: "make build"
+        displayName: Build
+
       - bash: "make run-sandbox &"
         displayName: Start Sandbox Server
 
-      - bash: "make check-licenses"
-        displayName: Check licenses
-
-      - bash: "make lint"
-        displayName: Lint
-
-      - bash: "make validate"
-        displayName: Validate FHIR
+      - bash: "make test"
+        displayName: Run Quality Checks
 
       - bash: 'echo "##vso[task.setvariable variable=SPEC_VERSION]$(poetry run python scripts/calculate_version.py)"'
         displayName: Set SPEC_VERSION
 
-      - bash: "make test"
-        displayName: Run Sandbox Tests
+      - bash: "make test-sandbox"
+        displayName: Run Sandbox Integration Tests
 
       - task: PublishTestResults@2
         inputs:
