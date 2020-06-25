@@ -4,7 +4,7 @@
   "description": "OAS (Swagger v3) API Definition for Electronic Prescription Service API",
   "scripts": {
     "lint": "node_modules/.bin/speccy lint build/electronic-prescription-service-api.yaml --skip default-and-example-are-redundant",
-    "resolve": "./node_modules/.bin/speccy resolve build/electronic-prescription-service-api.yaml -o build/electronic-prescription-service-api.resolved.yaml",
+    "resolve": "./node_modules/.bin/speccy resolve -i build/electronic-prescription-service-api.yaml > build/electronic-prescription-service-api.resolved.yaml",
     "serve": "./node_modules/.bin/speccy serve dist/electronic-prescription-service-api.json",
     "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
   },

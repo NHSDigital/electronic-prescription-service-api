@@ -70,16 +70,17 @@ build-models:
 
 build-specification:
 	cd specification \
-	&& mkdir -p build/examples \
 	&& mkdir -p build/components/examples \
+	&& mkdir -p build/components/schemas \
 	&& cp -r ../models/dist/requests/*.yaml build/components/examples \
 	&& cp -r ../models/dist/responses/*.yaml build/components/examples \
-	&& mkdir -p build/components/schemas \
 	&& cp -r ../models/dist/schemas/*.yaml build/components/schemas \
 	&& cp electronic-prescription-service-api.yaml build/electronic-prescription-service-api.yaml \
 	&& npm run resolve \
 	&& poetry run python ../scripts/yaml2json.py build/electronic-prescription-service-api.resolved.yaml build/ \
 	&& cat build/electronic-prescription-service-api.resolved.json | poetry run python ../scripts/set_version.py > build/electronic-prescription-service-api.json \
+	&& mkdir -p build/examples \
+	&& poetry run ../scripts/generate_specification_examples.py build/electronic-prescription-service-api.json build/examples \
 	&& mkdir -p dist \
 	&& cp build/electronic-prescription-service-api.json dist/electronic-prescription-service-api.json
 
