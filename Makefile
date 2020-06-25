@@ -4,7 +4,7 @@ SHELL=/bin/bash -euo pipefail
 
 install: install-node install-python install-hooks
 
-build: build-models build-spec build-sandbox build-coordinator build-proxies
+build: build-models build-specification build-sandbox build-coordinator build-proxies
 
 test: validate-models lint check-licenses test-coordinator #test-sandbox -> TODO: Consolidate coordinator to sandbox, move integration tests out of this target OR remove dep on background process
 
@@ -17,6 +17,7 @@ clean:
 	rm -rf dist
 	rm -rf models/dist
 	rm -rf specification/dist
+	rm -rf specification/build
 	rm -rf sandbox/mocks
 	rm -rf sandbox/tests/resources
 	rm -rf coordinator/dist
@@ -54,24 +55,33 @@ build-models:
 	cd models \
 	&& mkdir -p dist/requests \
 	&& mkdir -p dist/responses \
-	&& mkdir -p dist/schemas/json \
-	&& mkdir -p dist/schemas/yaml
+	&& mkdir -p dist/schemas \
+	&& mkdir -p dist/schemas
+	$(foreach file, $(wildcard models/requests/*.yaml), cp $(file) models/dist/requests;)
 	$(foreach file, $(wildcard models/requests/*.json), cp $(file) models/dist/requests;)
 	$(foreach file, $(wildcard models/requests/*.yaml), poetry run python scripts/yaml2json.py $(file) models/dist/requests;)
+	$(foreach file, $(wildcard models/responses/*.yaml), cp $(file) models/dist/responses;)
 	$(foreach file, $(wildcard models/responses/*.json), cp $(file) models/dist/responses;)
 	$(foreach file, $(wildcard models/responses/*.yaml), poetry run python scripts/yaml2json.py $(file) models/dist/responses;)
-	$(foreach file, $(wildcard models/schemas/*.yaml), poetry run python scripts/yaml2json.py $(file) models/dist/schemas/json;)
-	$(foreach file, $(wildcard models/schemas/*.yaml), cp $(file) models/dist/schemas/yaml;)
+	$(foreach file, $(wildcard models/schemas/*.yaml), cp $(file) models/dist/schemas;)
+	$(foreach file, $(wildcard models/schemas/*.json), cp $(file) models/dist/schemas;)
+	$(foreach file, $(wildcard models/schemas/*.yaml), poetry run python scripts/yaml2json.py $(file) models/dist/schemas;)
+	
 
-build-spec:
+build-specification:
 	cd specification \
-	&& mkdir -p dist \
+	&& mkdir -p build/examples \
+	&& mkdir -p build/components/examples \
+	&& cp -r ../models/dist/requests/*.yaml build/components/examples \
+	&& cp -r ../models/dist/responses/*.yaml build/components/examples \
+	&& mkdir -p build/components/schemas \
+	&& cp -r ../models/dist/schemas/*.yaml build/components/schemas \
+	&& cp electronic-prescription-service-api.yaml build/electronic-prescription-service-api.yaml \
 	&& npm run resolve \
-	&& poetry run python ../scripts/yaml2json.py dist/electronic-prescription-service-api.yaml dist/ \
-	&& rm dist/electronic-prescription-service-api.yaml \
-	&& mv dist/electronic-prescription-service-api.json dist/electronic-prescription-service-api.temp \
-	&& cat dist/electronic-prescription-service-api.temp | poetry run python ../scripts/set_version.py > dist/electronic-prescription-service-api.json \
-	&& rm dist/electronic-prescription-service-api.temp
+	&& poetry run python ../scripts/yaml2json.py build/electronic-prescription-service-api.resolved.yaml build/ \
+	&& cat build/electronic-prescription-service-api.resolved.json | poetry run python ../scripts/set_version.py > build/electronic-prescription-service-api.json \
+	&& mkdir -p dist \
+	&& cp build/electronic-prescription-service-api.json dist/electronic-prescription-service-api.json
 
 build-coordinator:
 	cp models/dist/requests/PrepareSuccessRequest.json coordinator/tests/resources/parent-prescription-1/fhir-message.json
@@ -84,7 +94,7 @@ build-sandbox:
 	mkdir -p sandbox/tests/resources
 	cp models/dist/requests/PrepareSuccessRequest.json sandbox/tests/resources/valid-bundle.json
 	cp models/dist/requests/SendSuccessRequest.json sandbox/tests/resources/valid-bundle-with-signature.json
-	cp -r models/dist/responses/ sandbox/mocks/
+	cp -r models/dist/responses/*.json sandbox/mocks/
 	poetry run scripts/update_sandbox_tests.py
 
 build-proxies:
@@ -107,7 +117,7 @@ test-coordinator:
 
 validate-models:
 	test -f models/dist/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > models/dist/org.hl7.fhir.validator.jar
-	java -jar models/dist/org.hl7.fhir.validator.jar models/dist/requests models/dist/responses -version 4.0.1 -tx n/a | tee /tmp/validation.txt
+	java -jar models/dist/org.hl7.fhir.validator.jar models/dist/requests/*.json models/dist/responses/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt
 
 lint:
 	cd specification && npm run lint

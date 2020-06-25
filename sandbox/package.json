@@ -5,7 +5,7 @@
     "main": "app.js",
     "scripts": {
         "lint": "find . -type f -name '*.js' ! -name '.eslintrc.js' ! -name '*.spec.js' | grep -v 'node_modules/' | xargs eslint",
-        "test": "echo 'todo: add jest back here' && node_modules/.bin/newman run ../tests/e2e/electronic-prescription-service-api-sandbox.json -e $API_TEST_ENV_FILE_PATH --reporters html,cli,htmlextra,junit --reporter-htmlextra-logs --reporter-htmlextra-darkTheme",
+        "test": "jest && node_modules/.bin/newman run ../tests/e2e/electronic-prescription-service-api-sandbox.json -e $API_TEST_ENV_FILE_PATH --reporters html,cli,htmlextra,junit --reporter-htmlextra-logs --reporter-htmlextra-darkTheme",
         "start": "node app.js --use_strict",
         "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
     },
