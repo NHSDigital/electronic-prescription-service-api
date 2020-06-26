@@ -24,6 +24,6 @@ const hl7V3ParentPrescriptionFragments1Str = fs.readFileSync(path.join(__dirname
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const hl7V3ParentPrescriptionFragments1 = XmlJs.xml2js(hl7V3ParentPrescriptionFragments1Str, {compact: true}) as any
 
-export const hl7V3SignedInfoCanonicalized1 = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/hl7-v3-signed-info-canonicalized.txt"), "utf8")
+export const hl7V3SignedInfoCanonicalized1 = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/hl7-v3-signed-info-canonicalized.json"), "utf8")
 
 export const hl7V3ParentPrescriptionFragmentsCanonicalized1 = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/hl7-v3-signature-fragments-canonicalized.txt"), "utf8")

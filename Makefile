@@ -18,11 +18,11 @@ clean:
 	rm -rf models/dist
 	rm -rf specification/dist
 	rm -rf specification/build
-	rm -rf sandbox/mocks
-	rm -rf sandbox/tests/resources
 	rm -rf coordinator/dist
 	rm -f coordinator/tests/resources/parent-prescription-1/fhir-message.json
 	rm -f coordinator/tests/resources/parent-prescription-2/fhir-message.json
+	rm -f coordinator/tests/resources/parent-prescription-1/hl7-v3-signed-info-canonicalized.json
+	rm -f tests/e2e/electronic-prescription-coordinator-postman-tests.json
 
 ## Run
 
@@ -41,7 +41,6 @@ install-python:
 
 install-node:
 	cd specification && npm install
-	cd sandbox && npm install
 	cd coordinator && npm install
 
 install-hooks:
@@ -86,6 +85,7 @@ build-specification:
 build-coordinator:
 	cp models/dist/requests/PrepareSuccessRequest.json coordinator/tests/resources/parent-prescription-1/fhir-message.json
 	cp models/dist/requests/PrepareSuccessNominatedPharmacyRequest.json coordinator/tests/resources/parent-prescription-2/fhir-message.json
+	cp models/dist/responses/PrepareSuccessResponse.json  coordinator/tests/resources/parent-prescription-1/hl7-v3-signed-info-canonicalized.json
 	npm run --prefix=coordinator/ build
 	poetry run scripts/update_coordinator_tests.py
 

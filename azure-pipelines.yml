@@ -74,15 +74,6 @@ jobs:
             "$(Agent.OS)" | "node-specification"
 
       - task: Cache@2
-        displayName: "Cache Sandbox NPM Dependencies"
-        inputs:
-          key: '"$(Agent.OS)" | "node-sandbox" | sandbox/package-lock.json'
-          path: "sandbox/node_modules"
-          restoreKeys: |
-            "$(Agent.OS)" | "node-sandbox" | sandbox/package-lock.json
-            "$(Agent.OS)" | "node-sandbox"
-
-      - task: Cache@2
         displayName: "Cache Coordinator NPM Dependencies"
         inputs:
           key: '"$(Agent.OS)" | "node-coordinator" | coordinator/package-lock.json'

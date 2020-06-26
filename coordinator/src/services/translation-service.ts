@@ -522,7 +522,11 @@ export function convertFhirMessageToHl7V3SignedInfo(fhirMessage: fhir.Bundle): s
     const fragmentsToBeHashedStr = writeXmlStringCanonicalized(fragmentsToBeHashed);
     const digestValue = crypto.SHA1(fragmentsToBeHashedStr).toString(crypto.enc.Base64)
     const signedInfo = convertSignatureFragmentsToSignedInfo(digestValue)
-    return writeXmlStringCanonicalized(signedInfo)
+    const xmlString = writeXmlStringCanonicalized(signedInfo)
+    const parameters = new fhir.Parameters([
+        { name: "message-digest", valueString: xmlString }
+    ])
+    return JSON.stringify(parameters,null,2)
 }
 
 function canonicaliseAttribute(attribute: string) {

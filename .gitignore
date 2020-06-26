@@ -5,6 +5,7 @@
 **/coverage/
 **/node_modules/
 coordinator/tests/resources/parent-prescription-1/fhir-message.json
+coordinator/tests/resources/parent-prescription-1/hl7-v3-signed-info-canonicalized.json
 coordinator/tests/resources/parent-prescription-2/fhir-message.json
 tests/e2e/electronic-prescription-coordinator-postman-tests.json
 

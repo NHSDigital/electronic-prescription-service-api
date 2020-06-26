@@ -24,11 +24,10 @@ def date_converter(obj):
 
 def main():
     """Main entrypoint"""
-    postman_file_path = "./tests/e2e/electronic-prescription-coordinator-postman-tests.json.template" #todo: parametise
+    postman_file_path = "./tests/e2e/electronic-prescription-coordinator-postman-tests.json.template"
     with open(postman_file_path) as f:
         data = json.load(f)
 
-    #todo: extract function, parametise
     convert_success_request_file_path = "./models/dist/requests/ConvertSuccessRequest.json"
     with open(convert_success_request_file_path) as f:
         convert_success_request = json.load(f)
@@ -49,42 +48,13 @@ def main():
     with open(send_success_request_file_path) as f:
         send_success_request = json.load(f)
 
-    # send_success_response_file_path = "./models/dist/responses/SendSuccessResponse.json"
-    # with open(send_success_response_file_path) as f:
-    #     send_success_response = json.load(f)
-
     for item in data['item']:
         for event in item['event']:
-            #todo: extract function, parametise
             if (event['script']['id'] == "582bca6a-3e80-4609-be0c-1fc7a05d7d34"):
                 item['request']['body']['raw'] = json.dumps(
                     convert_success_request,
                     default=date_converter,
                     separators=(',', ':'))
-
-                # response = ["const responseString = '"]
-                # for i, line in enumerate(convert_success_response):
-                #     if (i == 0):
-                #         response[i] = response[i] + line + ","
-                #     elif (i == len(convert_success_response) - 1):
-                #         response[i-1] = line + "'"
-                #     else:
-                #         response.append(line)
-
-                # response.extend([
-                #     "const responseString = '" + convert_success_response + "'",
-                #     "pm.test(\"Status code is 200\", function () {",
-                #     "    pm.response.to.have.status(200);",
-                #     "});",
-                #     "pm.test(\"Body is correct\", function () {",
-                #     "    pm.response.to.have.body(responseString);",
-                #     "});"
-                # ])
-
-                # response = ""
-                # for line in convert_success_response:
-                #     response = response + line
-                # response = response.replace("\n", "\\n")
 
                 event['script']['exec'] = [
                     "const responseString = '" + convert_success_response + "'",
@@ -103,7 +73,9 @@ def main():
 
                 event['script']['exec'] = [
                     "const responseString = '" +
-                    json.dumps(prepare_success_response, default=date_converter, separators=(',', ':'))
+                    json.dumps(prepare_success_response, default=date_converter, indent=2)
+                    .replace("\\", "\\\\")
+                    .replace("\n", "\\n")
                     + "'",
                     "pm.test(\"Status code is 200\", function () {",
                     "    pm.response.to.have.status(200);",
