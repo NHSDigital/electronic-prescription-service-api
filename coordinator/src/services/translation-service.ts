@@ -468,7 +468,7 @@ export function convertFhirMessageToHl7V3ParentPrescription(fhirMessage: fhir.Bu
     const root = {
         ParentPrescription: convertBundleToParentPrescription(fhirMessage)
     }
-    const options = {compact: true, ignoreComment: true, spaces: 4}
+    const options = {compact: true, ignoreComment: true, spaces: 4, attributesFn: sortAttributes} as unknown as XmlJs.Options.JS2XML
     //TODO - canonicalize XML before returning?
     return XmlJs.js2xml(root, options)
 }

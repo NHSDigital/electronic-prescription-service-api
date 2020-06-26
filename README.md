@@ -70,17 +70,17 @@ npm t
 #### End-to-end tests
 To run e2e tests for the sandbox, you need to supply an environment. A `local` environment and an environment template are included under `tests/e2e/environments`.
 
-In order for tests under the make target `test-sandbox` to work, you must have built and be running the sandbox server locally. In a seperate shell run:
+In order for tests under the make target `test-integration-coordinator` to work, you must have built and be running the coorindator locally. In a seperate shell run:
 
 ```
 make build
-make run-sandbox
+make run-coordinator
 ```
 
-Once the sandbox is up and displaying the port number, in another shell run:
+Once the coordinator is up and displaying the port number, in another shell run:
 
 ```
-make test-sandbox
+make test-integration-coorindator
 ```
 
 To run all other tests locally (includes unit and low level integration tests): while in the root folder, run
@@ -89,10 +89,6 @@ To run all other tests locally (includes unit and low level integration tests): 
 make build
 make test
 ```
-
-There is a template environment file available at `tests/e2e/environments/postman_environment.json.template` useful for configuring different testing environments (such as on the CI server).
-
-The makefile sets defaults for the environment variables required for local testing, the CI server overrides these.
 
 ### VS Code Plugins
 
