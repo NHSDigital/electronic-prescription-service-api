@@ -168,21 +168,19 @@ paths:
               success:
                 value:
                   $ref: components/examples/SendSuccessRequest.yaml
-              patient-deceased:
-                value:
-                  $ref: components/examples/SendErrorPatientDeceasedRequest.yaml
+              # TODO: update example in models/requests to conform to schema/validation now models are synced
+              #patient-deceased:
+              #  value:
+              #    $ref: components/examples/SendErrorPatientDeceasedRequest.yaml
         description: ''
       responses:
         '200':
           description: Successfully submitted
           content:
-            application/fhir+json:
+            text/plain:
               schema:
-                $ref: components/schemas/Bundle.yaml
-              examples:
-                example:
-                  value:
-                    $ref: components/examples/SendSuccessResponse.yaml
+                type: string
+                example: "Message Sent"
         '4XX':
           description: Invalid request.
           content:
