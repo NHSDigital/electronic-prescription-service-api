@@ -1,5 +1,12 @@
 name: "$(SourceBranchName)+$(BuildID)"
 
+resources:
+  repositories:
+    - repository: utils
+      name: NHSDigital/api-management-utils
+      endpoint: NHSDigital
+      type: github
+
 trigger:
   branches:
     include:
@@ -19,10 +26,13 @@ jobs:
     pool:
       vmImage: 'ubuntu-latest'
     variables:
-      API_TEST_ENV_FILE_PATH: "tests/e2e/environments/local.postman_environment.json"
       PIP_CACHE_DIR: ".poetry"
     steps:
       - checkout: self
+        path: s
+
+      - checkout: utils
+        path: s/utils
 
       - bash: echo "##vso[task.setvariable variable=BRANCH_NAME]`echo $(System.PullRequest.SourceBranch) | sed -r 's/[/|\\@":<>?*]+/-/g'`"
         displayName: Set and replace invalid characters in branch name
@@ -39,7 +49,7 @@ jobs:
       - bash: "sudo apt update && sudo apt-get install --yes default-jre default-jdk"
         displayName: Install apt dependencies
 
-      - bash: "wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -; curl -sL https://deb.nodesource.com/setup_13.x | sudo -E bash -; sudo apt-get install -y nodejs"
+      - bash: "wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -; curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -; sudo apt-get install -y nodejs"
         displayName: Install node
 
       - bash: "python -m pip install --upgrade pip setuptools wheel && pip install poetry"
@@ -55,13 +65,13 @@ jobs:
             "$(Agent.OS)" | "pythons"
 
       - task: Cache@2
-        displayName: "Cache Package NPM Dependencies"
+        displayName: "Cache Specification NPM Dependencies"
         inputs:
-          key: '"$(Agent.OS)" | "node" | package-lock.json'
-          path: "node_modules"
+          key: '"$(Agent.OS)" | "node" | specification/package-lock.json'
+          path: "specification/node_modules"
           restoreKeys: |
-            "$(Agent.OS)" | "node" | package-lock.json
-            "$(Agent.OS)" | "node"
+            "$(Agent.OS)" | "node-specification" | specification/package-lock.json
+            "$(Agent.OS)" | "node-specification"
 
       - task: Cache@2
         displayName: "Cache Sandbox NPM Dependencies"
@@ -72,26 +82,32 @@ jobs:
             "$(Agent.OS)" | "node-sandbox" | sandbox/package-lock.json
             "$(Agent.OS)" | "node-sandbox"
 
+      - task: Cache@2
+        displayName: "Cache Coordinator NPM Dependencies"
+        inputs:
+          key: '"$(Agent.OS)" | "node-coordinator" | coordinator/package-lock.json'
+          path: "coordinator/node_modules"
+          restoreKeys: |
+            "$(Agent.OS)" | "node-coordinator" | coordinator/package-lock.json
+            "$(Agent.OS)" | "node-coordinator"
+
       - bash: "make install"
         displayName: Install repo
+
+      - bash: "make build"
+        displayName: Build
 
       - bash: "make run-sandbox &"
         displayName: Start Sandbox Server
 
-      - bash: "make check-licenses"
-        displayName: Check licenses
-
-      - bash: "make lint"
-        displayName: Lint
-
-      - bash: "make validate"
-        displayName: Validate FHIR
+      - bash: "make test"
+        displayName: Run Quality Checks
 
       - bash: 'echo "##vso[task.setvariable variable=SPEC_VERSION]$(poetry run python scripts/calculate_version.py)"'
         displayName: Set SPEC_VERSION
 
-      - bash: "make test"
-        displayName: Run Sandbox Tests
+      - bash: "make test-sandbox"
+        displayName: Run Sandbox Integration Tests
 
       - task: PublishTestResults@2
         inputs:
@@ -101,6 +117,24 @@ jobs:
 
       - bash: "make release"
         displayName: Build Release Package
+
+      - bash: "cp ecs-proxies-deploy.yml dist/ecs-deploy-all.yml"
+        displayName: Copy ECS deployment config
+
+      - template: az/build-prereqs.yml@utils
+
+      - template: az/create-build-env-vars.yml@utils
+        parameters:
+            out_dir: 'dist'
+            service_name: 'eps-coordinator'
+
+      - template: az/become-build-user.yml@utils
+        parameters:
+            env_vars_dir: 'dist'
+
+      - template: az/build-and-push-ecs-proxies.yml@utils
+        parameters:
+            env_vars_dir: 'dist'
 
       - publish: dist/
         artifact: electronic-prescription-service-$(SPEC_VERSION)+$(Build.BuildNumber)

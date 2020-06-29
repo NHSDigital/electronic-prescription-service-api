@@ -54,6 +54,7 @@ export class Dosage {
 
 export class MedicationRequestDispenseRequest {
     quantity?: SimpleQuantity
+    performer?: Reference<Organization>
 }
 
 export class SimpleQuantity {

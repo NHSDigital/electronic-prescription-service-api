@@ -1,13 +1,13 @@
-node_modules/
-bin/
-dist/
-build/
-public/
-newman/
-coverage/
+**/build/
+**/dist/
+**/newman/
+**/public/
+**/coverage/
+**/node_modules/
 sandbox/mocks
-sandbox/schemas
-coordinator/schemas
+sandbox/tests/resources
+coordinator/tests/resources/parent-prescription-1/fhir-message.json
+tests/e2e/electronic-prescription-service-api-sandbox.json
 
 .#*
 

@@ -1,4 +1,4 @@
 <APIProxy name="eps">
   <!-- This is the root of the application -->
-  <Description>Proxy to electronic prescription endpoints on spine via ig3.</Description>
+  <Description>Proxy to electronic prescription endpoints provided by the coordinator in ECS.</Description>
 </APIProxy>
