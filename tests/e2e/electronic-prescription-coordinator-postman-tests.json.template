@@ -1,0 +1,179 @@
+{
+	"info": {
+		"_postman_id": "1d33bf06-7e47-4c5d-941b-402813d68bd5",
+		"name": "Prescription Coordinator",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Convert Success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "582bca6a-3e80-4609-be0c-1fc7a05d7d34",
+						"exec": [
+							"REPLACED WHEN CALLING MAKE build-coordinator"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "NHSD-Session-URID",
+						"value": "1234",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "REPLACED WHEN CALLING MAKE build-coordinator",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/Convert",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"Convert"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Prepare Success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "630e7726-f2e1-4bf9-a90f-08350d24e70d",
+						"exec": [
+							"REPLACED WHEN CALLING MAKE build-coordinator"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "NHSD-Session-URID",
+						"value": "1234",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "REPLACED WHEN CALLING MAKE build-coordinator",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/Prepare",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"Prepare"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send Success",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "400fb7e1-0145-41c8-9523-282c047ee1db",
+						"exec": [
+							"REPLACED WHEN CALLING MAKE build-coordinator"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "NHSD-Session-URID",
+						"value": "1234",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "REPLACED WHEN CALLING MAKE build-coordinator",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/Send",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"Send"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "accessToken",
+				"value": "INSERT TOKEN HERE",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "1a2132db-1232-4811-a9dc-5c53e1f39cfb",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "c120fdb5-b558-497a-820f-caa24ab74244",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

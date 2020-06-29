@@ -124,7 +124,7 @@ paths:
             #application/fhir+json: #FIXME - should be set to this but we have had to change it due to a FHIR validator bug
             application/json:
               schema:
-                $ref: components/schemas/Binary.yaml
+                $ref: components/schemas/Parameters.yaml
               examples:
                 example:
                   value:
