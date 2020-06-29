@@ -1,0 +1,16 @@
+type: object
+description: A container for Parameters
+required:
+  - resourceType
+  - parameter
+properties:
+  resourceType:
+    type: string
+    description: FHIR Resource type.
+    default: "Parameters"
+    readOnly: true
+  parameter:
+    type: array
+    description: A collection of parameters
+    items:
+      $ref: "Parameter.yaml"
