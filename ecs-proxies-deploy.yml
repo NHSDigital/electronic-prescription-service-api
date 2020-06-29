@@ -11,4 +11,4 @@ docker_service:
             value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
       health_check:
           matcher: "200"
-          path: "/Health"
+          path: "/_status"
