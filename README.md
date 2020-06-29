@@ -5,7 +5,6 @@
 This is a RESTful HL7® FHIR® API specification for the *Electronic Prescription Service API*.
 
 * `specification/` This [Open API Specification](https://swagger.io/docs/specification/about/) describes the endpoints, methods and messages exchanged by the API. Use it to generate interactive documentation; the contract between the API and its consumers.
-* `sandbox/` This NodeJS application implements a mock implementation of the service. Use it as a back-end service to the interactive documentation to illustrate interactions and concepts. It is not intended to provide an exhaustive/faithful environment suitable for full development and testing.
 * `scripts/` Utilities helpful to developers of this specification.
 * `proxies/` Apigee API Proxies
 * `coordinator/` Deals with message translation and distribution to other services. Backend for the production EPS FHIR API.
@@ -70,7 +69,7 @@ npm t
 #### End-to-end tests
 To run e2e tests for the sandbox, you need to supply an environment. A `local` environment and an environment template are included under `tests/e2e/environments`.
 
-In order for tests under the make target `test-integration-coordinator` to work, you must have built and be running the coorindator locally. In a seperate shell run:
+In order for tests under the make target `test-integration-coordinator` to work, you must have built and be running the coordindator locally. In a seperate shell run:
 
 ```
 make build
@@ -80,7 +79,7 @@ make run-coordinator
 Once the coordinator is up and displaying the port number, in another shell run:
 
 ```
-make test-integration-coorindator
+make test-integration-coordindator
 ```
 
 To run all other tests locally (includes unit and low level integration tests): while in the root folder, run
