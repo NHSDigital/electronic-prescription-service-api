@@ -168,7 +168,7 @@ paths:
               success:
                 value:
                   $ref: components/examples/SendSuccessRequest.yaml
-              # TODO: update example in models/requests to conform to schema/validation now models are synced
+              # TODO: update patient-deceased example to conform to schema/validation now models are synced, see response
               #patient-deceased:
               #  value:
               #    $ref: components/examples/SendErrorPatientDeceasedRequest.yaml
