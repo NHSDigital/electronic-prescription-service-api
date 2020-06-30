@@ -2,7 +2,7 @@
 #docker_service_memory: 512
 
 docker_service:
-    - name: eps-coordinator
+    - name: eps coordinator
       expose: true
       environment:
           - name: NODE_ENV
