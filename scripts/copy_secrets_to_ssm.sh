@@ -13,7 +13,8 @@ clientCertificate=$(
 aws ssm put-parameter \
     --profile build-eps-coordinator \
     --name "$ACCOUNT/eps-coordinator/client-certificate" \
-    --value "$clientCertificate"
+    --value "$clientCertificate" \
+    --type SecureString
 
 fromAsid=$(
     aws secretsmanager get-secret-value \
@@ -24,4 +25,5 @@ fromAsid=$(
 aws ssm put-parameter \
     --profile build-eps-coordinator \
     --name "$ACCOUNT/eps-coordinator/from-asid" \
-    --value "$fromAsid"
+    --value "$fromAsid" \
+    --type SecureString
