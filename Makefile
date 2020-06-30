@@ -1,79 +1,130 @@
 SHELL=/bin/bash -euo pipefail
 
-install: install-node install-python install-fhir-validator install-hooks
+## Common
+
+all: clean install build test release
+
+install: install-node install-python install-hooks
+
+build: build-models build-specification build-coordinator build-proxies
+
+test: validate-models lint check-licenses test-coordinator
+
+release:
+	mkdir -p dist
+	cp -r specification/dist/. dist
+	cp -r terraform dist
+
+clean:
+	rm -rf dist
+	rm -rf models/dist
+	rm -rf specification/dist
+	rm -rf specification/build
+	rm -rf coordinator/dist
+	rm -f coordinator/tests/resources/parent-prescription-1/fhir-message.json
+	rm -f coordinator/tests/resources/parent-prescription-2/fhir-message.json
+	rm -f coordinator/tests/resources/parent-prescription-1/hl7-v3-signed-info-canonicalized.json
+	rm -f tests/e2e/electronic-prescription-coordinator-postman-tests.json
+
+## Run
+
+run-specification:
+	scripts/set_spec_server_dev.sh
+	npm run serve
+
+run-coordinator:
+	cd coordinator/dist && npm run start
+
+## Install
 
 install-python:
 	poetry install
 
 install-node:
-	npm install
-	cd sandbox && npm install
+	cd specification && npm install
 	cd coordinator && npm install
 
 install-hooks:
 	cp scripts/pre-commit .git/hooks/pre-commit
 
-install-fhir-validator:
-	mkdir -p bin
-	test -f bin/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > bin/org.hl7.fhir.validator.jar
+# Build
 
-run-spec-viewer: build-spec build-sandbox
-	scripts/set_spec_server_dev.sh
-	npm run serve
+build-models:
+	cd models \
+	&& mkdir -p dist/requests \
+	&& mkdir -p dist/responses \
+	&& mkdir -p dist/schemas \
+	&& mkdir -p dist/schemas
+	$(foreach file, $(wildcard models/requests/*.yaml), cp $(file) models/dist/requests;)
+	$(foreach file, $(wildcard models/requests/*.json), cp $(file) models/dist/requests;)
+	$(foreach file, $(wildcard models/requests/*.yaml), poetry run python scripts/yaml2json.py $(file) models/dist/requests;)
+	$(foreach file, $(wildcard models/responses/*.xml), cp $(file) models/dist/responses;)
+	$(foreach file, $(wildcard models/responses/*.yaml), cp $(file) models/dist/responses;)
+	$(foreach file, $(wildcard models/responses/*.json), cp $(file) models/dist/responses;)
+	$(foreach file, $(wildcard models/responses/*.yaml), poetry run python scripts/yaml2json.py $(file) models/dist/responses;)
+	$(foreach file, $(wildcard models/schemas/*.yaml), cp $(file) models/dist/schemas;)
+	$(foreach file, $(wildcard models/schemas/*.json), cp $(file) models/dist/schemas;)
+	$(foreach file, $(wildcard models/schemas/*.yaml), poetry run python scripts/yaml2json.py $(file) models/dist/schemas;)
+	
 
-run-coordinator: build-coordinator
-	cp coordinator/package.json coordinator/dist/
-	cd coordinator/dist && npm run start
-
-run-sandbox: build-sandbox
-	cd sandbox && npm run start
-
-build-spec:
-	mkdir -p build/examples
-	npm run publish 2> /dev/null
-	poetry run python scripts/generate_examples.py build/electronic-prescription-service-api.json build/examples
+build-specification:
+	cd specification \
+	&& mkdir -p build/components/examples \
+	&& mkdir -p build/components/schemas \
+	&& cp -r ../models/dist/requests/*.yaml build/components/examples \
+	&& cp -r ../models/dist/responses/*.yaml build/components/examples \
+	&& cp -r ../models/dist/schemas/*.yaml build/components/schemas \
+	&& cp electronic-prescription-service-api.yaml build/electronic-prescription-service-api.yaml \
+	&& npm run resolve \
+	&& poetry run python ../scripts/yaml2json.py build/electronic-prescription-service-api.resolved.yaml build/ \
+	&& cat build/electronic-prescription-service-api.resolved.json | poetry run python ../scripts/set_version.py > build/electronic-prescription-service-api.json \
+	&& mkdir -p build/examples \
+	&& poetry run ../scripts/generate_specification_examples.py build/electronic-prescription-service-api.json build/examples \
+	&& mkdir -p dist \
+	&& cp build/electronic-prescription-service-api.json dist/electronic-prescription-service-api.json
 
 build-coordinator:
-	cd coordinator && npm run build
+	cp models/dist/requests/PrepareSuccessRequest.json coordinator/tests/resources/parent-prescription-1/fhir-message.json
+	cp models/dist/requests/PrepareSuccessNominatedPharmacyRequest.json coordinator/tests/resources/parent-prescription-2/fhir-message.json
+	cp models/dist/responses/PrepareSuccessResponse.json  coordinator/tests/resources/parent-prescription-1/hl7-v3-signed-info-canonicalized.json
+	cp models/dist/responses/ConvertWrapper.xml coordinator/src/resources/ConvertWrapper.xml
+	npm run --prefix=coordinator/ build
+	cp coordinator/package.json coordinator/dist/
+	cp coordinator/src/resources/ConvertWrapper.xml coordinator/dist/resources/
+	poetry run scripts/update_coordinator_tests.py
 
-build-sandbox: build-spec
-	mkdir -p sandbox/mocks
-	jq -rM . <build/examples/responses/paths._Prepare.post.responses.200.content.application_json.examples.example.value.json >sandbox/mocks/PrepareSuccessResponse.json
-	jq -rM . <build/examples/responses/paths._Send.post.responses.200.content.application_fhir+json.examples.example.value.json >sandbox/mocks/SendSuccessResponse.json
-	jq -rM . <build/examples/responses/paths._Send.post.responses.5XX.content.application_fhir+json.examples.patient-deceased.value.json >sandbox/mocks/SendErrorPatientDeceasedResponse.json
+build-proxies:
+	mkdir -p dist/proxies/sandbox
+	mkdir -p dist/proxies/live
+	cp -Rv proxies/sandbox/apiproxy dist/proxies/sandbox
+	cp -Rv proxies/live/apiproxy dist/proxies/live
 
-build-proxy:
-	scripts/build_proxy.sh
+# Test
 
-check-licenses:
-	npm run check-licenses
-	scripts/check_python_licenses.sh
+test-coordinator:
+	cd coordinator \
+	&& npm run test
+
+# Integration Test
+
+test-integration-coordinator:
+	cd coordinator \
+	&& export API_TEST_ENV_FILE_PATH=$(or $(API_TEST_ENV_FILE_PATH),../tests/e2e/environments/local.postman_environment.json) \
+	&& npm run integration-test
+
+## Quality Checks
+
+validate-models:
+	test -f models/dist/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > models/dist/org.hl7.fhir.validator.jar
+	java -jar models/dist/org.hl7.fhir.validator.jar models/dist/requests/*.json models/dist/responses/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt
 
 lint:
-	npm run lint
-	cd coordinator && npm run lint && cd ..
-	cd sandbox && npm run lint && cd ..
-	poetry run flake8 **/*.py --config .flake8
-	find -name '*.sh' | grep -v node_modules | xargs shellcheck
+	cd specification && npm run lint
+	cd coordinator && npm run lint
+	poetry run flake8 scripts/*.py --config .flake8
+	shellcheck scripts/*.sh
 
-validate: build-spec
-	java -jar bin/org.hl7.fhir.validator.jar build/examples/requests/*application_fhir+json*.json build/examples/responses/*application_fhir+json*.json build/examples/resources/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt
-
-test:
-	export ENVIRONMENT=$(or $(ENVIRONMENT),local) \
-	&& export API_TEST_ENV_FILE_PATH=$(or $(API_TEST_ENV_FILE_PATH),tests/e2e/environments/local.postman_environment.json) \
-	&& export API_TEST_URL=$(or $(API_TEST_URL),localhost:9000) \
-	&& npm run test
-	cd sandbox && npm t
-
-release: build-coordinator build-proxy
-	mkdir -p dist
-	tar -zcvf dist/package.tar.gz build
-	cp -r terraform dist
-	cp -r build/. dist
-
-clean:
-	rm -rf build
-	rm -rf dist
-	rm -rf sandbox/mocks
-	rm -rf coordinator/dist
+check-licenses:
+	cd specification && npm run check-licenses
+	cd coordinator && npm run check-licenses
+	scripts/check_python_licenses.sh

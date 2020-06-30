@@ -2,5 +2,12 @@
 
 set -eu
 
+make build-models
+make validate-models
+mkdir -p specification/build/components/examples
+mkdir -p specification/build/components/schemas
+cp -r models/dist/requests/*.yaml specification/build/components/examples
+cp -r models/dist/responses/*.yaml specification/build/components/examples
+cp -r models/dist/schemas/*.yaml specification/build/components/schemas
+cp specification/electronic-prescription-service-api.yaml specification/build/electronic-prescription-service-api.yaml
 make lint
-make validate

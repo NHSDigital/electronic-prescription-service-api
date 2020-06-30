@@ -14,7 +14,21 @@
           </Step>
         </Response>
     </PreFlow>
-    <HostedTarget>
-        <Properties/>
-    </HostedTarget>
+  <HTTPTargetConnection>
+    <Properties>
+      <!-- Allow 'expected' error code responses to pass unhindered to caller
+      Anything unexpected will be sanitsed by the DefaultFaultRule -
+      https://docs.apigee.com/api-platform/fundamentals/fault-handling#customhandlingofhttperrorcodesfromthetargetserver -->
+      <Property name="success.codes">1xx,2xx,3xx,4xx</Property>
+    </Properties>
+    <SSLInfo>
+      <Enabled>true</Enabled>
+    </SSLInfo>
+    <URL>https://{{ APIM_PROXY_HOSTNAME }}</URL>
+  </HTTPTargetConnection>
+    <DefaultFaultRule>
+    <Step>
+      <Name>AssignMessage.CatchallErrorMessage</Name>
+    </Step>
+  </DefaultFaultRule>
 </TargetEndpoint>

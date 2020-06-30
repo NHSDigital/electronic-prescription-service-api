@@ -2,12 +2,19 @@
 """
 yaml2json.py
 
-Takes yaml on stdin and writes json on stdout, converting dates correctly.
+Takes yaml file input and writes json file of the same
+name in the specified directory, converting dates correctly.
+
+Usage:
+  yaml2json.py YAML_FILE OUT_DIR
 """
-import sys
+
 import json
+import os
+import os.path
 import datetime
 import yaml
+from docopt import docopt
 
 
 def date_converter(obj):
@@ -19,12 +26,23 @@ def date_converter(obj):
     return obj
 
 
-def main():
+def main(arguments):
+    arguments = docopt(__doc__, version="0")
     """Main entrypoint"""
-    data = yaml.load(Loader=yaml.FullLoader, stream=sys.stdin.read())
-    sys.stdout.write(json.dumps(data, default=date_converter, indent=2))
-    sys.stdout.close()
+
+    yaml_file_path = arguments["YAML_FILE"]
+    with open(yaml_file_path, "r") as yaml_file:
+        data = yaml.load(yaml_file, Loader=yaml.FullLoader)
+
+    base_output_dir = arguments["OUT_DIR"]
+    with open(
+            os.path.join(base_output_dir, os.path.basename(yaml_file_path.replace(".yaml", ".json"))),
+            "w"
+    ) as out_file:
+        out_file.write(
+            json.dumps(data, default=date_converter, indent=2)
+        )
 
 
 if __name__ == "__main__":
-    main()
+    main(arguments=docopt(__doc__, version="0"))

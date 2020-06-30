@@ -71,7 +71,7 @@ test("writeXmlStringCanonicalized returns correct value", () => {
 test("convertFhirMessageToHl7V3SignedInfo returns correct value", () => {
     const actualOutput = convertFhirMessageToHl7V3SignedInfo(TestResources.fhirPrescriptionMessage1)
     //Remove the newline added at the end of the file by the IDE
-    const expectedOutput = TestResources.hl7V3SignedInfoCanonicalized1.replace("\n", "")
+    const expectedOutput = TestResources.hl7V3SignedInfoCanonicalized1
     expect(actualOutput).toEqual(expectedOutput)
 })
 
