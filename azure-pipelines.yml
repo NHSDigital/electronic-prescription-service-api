@@ -6,7 +6,6 @@ resources:
       name: NHSDigital/api-management-utils
       endpoint: NHSDigital
       type: github
-      ref: AEA-294-add-secrets-manager-policy
 
 trigger:
   branches:
