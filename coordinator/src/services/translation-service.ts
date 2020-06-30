@@ -468,7 +468,7 @@ export function convertFhirMessageToHl7V3ParentPrescription(fhirMessage: fhir.Bu
     const root = {
         ParentPrescription: convertBundleToParentPrescription(fhirMessage)
     }
-    const options = {compact: true, ignoreComment: true, spaces: 4}
+    const options = {compact: true, ignoreComment: true, spaces: 4, attributesFn: sortAttributes} as unknown as XmlJs.Options.JS2XML
     //TODO - canonicalize XML before returning?
     return XmlJs.js2xml(root, options)
 }
@@ -522,7 +522,11 @@ export function convertFhirMessageToHl7V3SignedInfo(fhirMessage: fhir.Bundle): s
     const fragmentsToBeHashedStr = writeXmlStringCanonicalized(fragmentsToBeHashed);
     const digestValue = crypto.SHA1(fragmentsToBeHashedStr).toString(crypto.enc.Base64)
     const signedInfo = convertSignatureFragmentsToSignedInfo(digestValue)
-    return writeXmlStringCanonicalized(signedInfo)
+    const xmlString = writeXmlStringCanonicalized(signedInfo)
+    const parameters = new fhir.Parameters([
+        { name: "message-digest", valueString: xmlString }
+    ])
+    return JSON.stringify(parameters,null,2)
 }
 
 function canonicaliseAttribute(attribute: string) {
