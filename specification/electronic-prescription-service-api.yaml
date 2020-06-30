@@ -92,8 +92,8 @@ info:
     * `POST /Send` - send a signed FHIR prescription to Spine
     * `POST /Convert` - convert a FHIR prescription to HL7V3 to verify client signature implementations
 servers:
-  - url: 'https://internal-qa.api.service.nhs.uk/electronic-prescriptions'
-    description: 'Internal QA environment.'
+  - url: 'https://internal-qa-sandbox.api.service.nhs.uk/electronic-prescriptions'
+    description: 'Internal QA Sandbox environment.'
 tags:
   - name: dispensing
   - name: prescribing
@@ -168,21 +168,19 @@ paths:
               success:
                 value:
                   $ref: components/examples/SendSuccessRequest.yaml
-              patient-deceased:
-                value:
-                  $ref: components/examples/SendErrorPatientDeceasedRequest.yaml
+              # TODO: update patient-deceased example to conform to schema/validation now models are synced, see response
+              #patient-deceased:
+              #  value:
+              #    $ref: components/examples/SendErrorPatientDeceasedRequest.yaml
         description: ''
       responses:
         '200':
           description: Successfully submitted
           content:
-            application/fhir+json:
+            text/plain:
               schema:
-                $ref: components/schemas/Bundle.yaml
-              examples:
-                example:
-                  value:
-                    $ref: components/examples/SendSuccessResponse.yaml
+                type: string
+                example: "Message Sent"
         '4XX':
           description: Invalid request.
           content:
