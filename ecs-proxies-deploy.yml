@@ -2,13 +2,18 @@
 #docker_service_memory: 512
 
 docker_service:
-    - name: eps-coordinator
-      expose: true
-      environment:
-          - name: NODE_ENV
-            value: production
-          - name: LOG_LEVEL
-            value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
-      health_check:
-          matcher: "200"
-          path: "/Health"
+  - name: eps-coordinator
+    expose: true
+    environment:
+        - name: NODE_ENV
+          value: production
+        - name: LOG_LEVEL
+          value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
+    secrets:
+        - name: CLIENT_CERTIFICATE
+          valueFrom: '/{{ account }}/{{ service_name }}/client-certificate'
+        - name: FROM_ASID
+          valueFrom: '/{{ account }}/{{ service_name }}/from-asid'
+    health_check:
+        matcher: "200"
+        path: "/Health"
