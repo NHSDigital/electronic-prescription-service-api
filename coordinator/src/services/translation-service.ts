@@ -466,9 +466,15 @@ function convertGender(fhirGender: string) {
 }
 
 export function convertFhirMessageToHl7V3ParentPrescription(fhirMessage: fhir.Bundle): string {
-    const options = {compact: true, ignoreComment: true, spaces: 4}
+    const options = {
+        compact: true,
+        ignoreComment: true,
+        spaces: 4,
+        attributeValueFn: canonicaliseAttribute,
+        attributesFn: sortAttributes
+    } as unknown as XmlJs.Options.JS2XML
     const root = wrap(convertBundleToParentPrescription(fhirMessage))
-    //TODO - canonicalize XML before returning?
+    //TODO - call canonicalize function instead? this leaves spaces in which makes the response easier to read
     return XmlJs.js2xml(root, options)
 }
 
