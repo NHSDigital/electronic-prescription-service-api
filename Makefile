@@ -2,7 +2,12 @@ SHELL=/bin/bash -euo pipefail
 
 ## Common
 
-all: clean install build test release
+all:
+	make clean > build.log
+	make install >> build.log
+	make build >> build.log 
+	make test >> build.log
+	make release >> build.log 
 
 install: install-node install-python install-hooks
 
