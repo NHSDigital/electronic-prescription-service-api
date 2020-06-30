@@ -10,10 +10,12 @@ docker_service:
         - name: LOG_LEVEL
           value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
     secrets:
-        - name: CLIENT_CERTIFICATE
-          valueFrom: '/{{ account }}/{{ service_name }}/client-certificate'
+        - name: CLIENT_KEY
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/client-key'
+        - name: CLIENT_CERT
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/client-cert'
         - name: FROM_ASID
-          valueFrom: '/{{ account }}/{{ service_name }}/from-asid'
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/from-asid'
     health_check:
         matcher: "200"
         path: "/Health"

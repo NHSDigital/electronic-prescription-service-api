@@ -1,29 +1,38 @@
 #!/bin/bash
 set -euo pipefail
 
-# Just set this to ptl for the time being. It's hard coded all over the pipeline at the moment anyway.
-ACCOUNT=ptl
-
-clientCertificate=$(
+ptlClientKey=$(
     aws secretsmanager get-secret-value \
     --profile build-eps-coordinator \
-    --secret-id "$ACCOUNT/eps-coordinator/client-certificate"
+    --secret-id ptl/eps/veit07.devspineservices.nhs.uk/client/key
 )
 
 aws ssm put-parameter \
     --profile build-eps-coordinator \
-    --name "$ACCOUNT/eps-coordinator/client-certificate" \
-    --value "$clientCertificate" \
+    --name ptl/api-deployment/eps-coordinator/client-key \
+    --value "$ptlClientKey" \
     --type SecureString
 
-fromAsid=$(
+ptlClientCertificate=$(
     aws secretsmanager get-secret-value \
     --profile build-eps-coordinator \
-    --secret-id "$ACCOUNT/eps-coordinator/from-asid"
+    --secret-id ptl/eps/veit07.devspineservices.nhs.uk/client/cert
 )
 
 aws ssm put-parameter \
     --profile build-eps-coordinator \
-    --name "$ACCOUNT/eps-coordinator/from-asid" \
-    --value "$fromAsid" \
+    --name ptl/api-deployment/eps-coordinator/client-cert \
+    --value "$ptlClientCertificate" \
+    --type SecureString
+
+ptlFromAsid=$(
+    aws secretsmanager get-secret-value \
+    --profile build-eps-coordinator \
+    --secret-id ptl/eps/veit07.devspineservices.nhs.uk/asid
+)
+
+aws ssm put-parameter \
+    --profile build-eps-coordinator \
+    --name ptl/api-deployment/eps-coordinator/from-asid \
+    --value "$ptlFromAsid" \
     --type SecureString
