@@ -11,7 +11,8 @@ aws ssm put-parameter \
     --profile build-eps-coordinator \
     --name /ptl/api-deployment/eps-coordinator/client-key \
     --value "$ptlClientKey" \
-    --type SecureString
+    --type SecureString \
+    --overwrite
 
 ptlClientCertificate=$(
     aws secretsmanager get-secret-value \
@@ -23,7 +24,8 @@ aws ssm put-parameter \
     --profile build-eps-coordinator \
     --name /ptl/api-deployment/eps-coordinator/client-cert \
     --value "$ptlClientCertificate" \
-    --type SecureString
+    --type SecureString \
+    --overwrite
 
 ptlFromAsid=$(
     aws secretsmanager get-secret-value \
@@ -35,4 +37,5 @@ aws ssm put-parameter \
     --profile build-eps-coordinator \
     --name /ptl/api-deployment/eps-coordinator/from-asid \
     --value "$ptlFromAsid" \
-    --type SecureString
+    --type SecureString \
+    --overwrite
