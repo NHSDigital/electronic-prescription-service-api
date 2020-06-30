@@ -1,41 +1,21 @@
 #!/bin/bash
 set -euo pipefail
 
-ptlClientKey=$(
-    aws secretsmanager get-secret-value \
-    --profile build-eps-coordinator \
-    --secret-id ptl/eps/veit07.devspineservices.nhs.uk/client/key
-)
+function copy-secret {
+    secretValue="$(
+        aws secretsmanager get-secret-value \
+        --profile build-eps-coordinator \
+        --secret-id "$1"
+    )"
 
-aws ssm put-parameter \
-    --profile build-eps-coordinator \
-    --name /ptl/api-deployment/eps-coordinator/client-key \
-    --value "$ptlClientKey" \
-    --type SecureString \
-    --overwrite
+    aws ssm put-parameter \
+        --profile build-eps-coordinator \
+        --name "$2" \
+        --value "$secretValue" \
+        --type SecureString \
+        --overwrite
+}
 
-ptlClientCertificate=$(
-    aws secretsmanager get-secret-value \
-    --profile build-eps-coordinator \
-    --secret-id ptl/eps/veit07.devspineservices.nhs.uk/client/cert
-)
-
-aws ssm put-parameter \
-    --profile build-eps-coordinator \
-    --name /ptl/api-deployment/eps-coordinator/client-cert \
-    --value "$ptlClientCertificate" \
-    --type SecureString \
-    --overwrite
-
-ptlFromAsid=$(
-    aws secretsmanager get-secret-value \
-    --profile build-eps-coordinator \
-    --secret-id ptl/eps/veit07.devspineservices.nhs.uk/asid
-)
-
-aws ssm put-parameter \
-    --profile build-eps-coordinator \
-    --name /ptl/api-deployment/eps-coordinator/from-asid \
-    --value "$ptlFromAsid" \
-    --type SecureString \
-    --overwrite
+copy-secret "ptl/eps/veit07.devspineservices.nhs.uk/client/key" "/ptl/api-deployment/eps-coordinator/client-key"
+copy-secret "ptl/eps/veit07.devspineservices.nhs.uk/client/cert" "/ptl/api-deployment/eps-coordinator/client-cert"
+copy-secret "ptl/eps/veit07.devspineservices.nhs.uk/asid" "/ptl/api-deployment/eps-coordinator/from-asid"
