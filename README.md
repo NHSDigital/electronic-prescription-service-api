@@ -45,7 +45,7 @@ Various scripts and commands rely on environment variables being set. These are 
 There are further `make` commands that help alias some functionality during development.
 
 #### Common commands
-Common commands needed for development can be run by running the default `make` command. This ouputs to `build.log` and runs the following targets:
+Common commands needed for development can be run by running the default `make` command. This outputs to `build.log` and runs the following targets:
 
  * `clean` -- Removes the output from the build and release commands
  * `install` -- Installs package dependencies for all components
