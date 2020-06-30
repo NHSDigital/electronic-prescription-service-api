@@ -9,7 +9,7 @@ ptlClientKey=$(
 
 aws ssm put-parameter \
     --profile build-eps-coordinator \
-    --name ptl/api-deployment/eps-coordinator/client-key \
+    --name /ptl/api-deployment/eps-coordinator/client-key \
     --value "$ptlClientKey" \
     --type SecureString
 
@@ -21,7 +21,7 @@ ptlClientCertificate=$(
 
 aws ssm put-parameter \
     --profile build-eps-coordinator \
-    --name ptl/api-deployment/eps-coordinator/client-cert \
+    --name /ptl/api-deployment/eps-coordinator/client-cert \
     --value "$ptlClientCertificate" \
     --type SecureString
 
@@ -33,6 +33,6 @@ ptlFromAsid=$(
 
 aws ssm put-parameter \
     --profile build-eps-coordinator \
-    --name ptl/api-deployment/eps-coordinator/from-asid \
+    --name /ptl/api-deployment/eps-coordinator/from-asid \
     --value "$ptlFromAsid" \
     --type SecureString
