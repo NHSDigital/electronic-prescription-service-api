@@ -2,6 +2,13 @@ SHELL=/bin/bash -euo pipefail
 
 ## Common
 
+all:
+	make clean > build.log
+	make install >> build.log
+	make build >> build.log 
+	make test >> build.log
+	make release >> build.log 
+
 install: install-node install-python install-hooks
 
 build: build-models build-specification build-coordinator build-proxies
@@ -31,7 +38,6 @@ run-specification:
 	npm run serve
 
 run-coordinator:
-	cp coordinator/package.json coordinator/dist/
 	cd coordinator/dist && npm run start
 
 ## Install
@@ -86,7 +92,10 @@ build-coordinator:
 	cp models/dist/requests/PrepareSuccessRequest.json coordinator/tests/resources/parent-prescription-1/fhir-message.json
 	cp models/dist/requests/PrepareSuccessNominatedPharmacyRequest.json coordinator/tests/resources/parent-prescription-2/fhir-message.json
 	cp models/dist/responses/PrepareSuccessResponse.json  coordinator/tests/resources/parent-prescription-1/hl7-v3-signed-info-canonicalized.json
+	cp models/dist/responses/ConvertWrapper.xml coordinator/src/resources/ConvertWrapper.xml
 	npm run --prefix=coordinator/ build
+	cp coordinator/package.json coordinator/dist/
+	cp coordinator/src/resources/ConvertWrapper.xml coordinator/dist/resources/
 	poetry run scripts/update_coordinator_tests.py
 
 build-proxies:

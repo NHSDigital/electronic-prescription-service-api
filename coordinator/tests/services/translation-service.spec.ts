@@ -8,6 +8,7 @@ import {
 import * as fhir from "../../src/services/fhir-resources"
 import * as TestResources from "../resources/test-resources"
 import * as XmlJs from "xml-js"
+import {wrap} from "../../src/resources/transport-wrapper";
 
 function clone<T>(input: T) {
     return JSON.parse(JSON.stringify(input))
@@ -79,6 +80,14 @@ test(
     xmlTest(
         convertBundleToParentPrescription(TestResources.fhirPrescriptionMessage2),
         TestResources.hl7V3ParentPrescription2
+    )
+)
+
+test(
+    "convertFhirMessageToHl7V3ParentPrescription returns correct value with wrapper",
+    xmlTest(
+        wrap(convertBundleToParentPrescription(TestResources.fhirPrescriptionMessage1)),
+        TestResources.hl7V3ParentPrescriptionMessage1
     )
 )
 

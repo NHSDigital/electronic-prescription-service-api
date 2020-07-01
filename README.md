@@ -42,11 +42,18 @@ Various scripts and commands rely on environment variables being set. These are 
 :bulb: Consider using [direnv](https://direnv.net/) to manage your environment variables during development and maintaining your own `.envrc` file - the values of these variables will be specific to you and/or sensitive.
 
 ### Make commands
-There are `make` commands that alias some of this functionality:
- * `test` -- Performs quality checks including linting, licence checking of dependencies and unit/low level integration tests
- * `build` -- Outputs the FHIR R4 validated models and artifacts for the: specification, sandbox, coordinator and apigee proxies into the corresponding `dist/` directories
- * `release` -- Pulls all the artifacts for the individual components together and arranges them in a format ready to deploy; used mainly by CI but useful to check the output matches expectations
+There are further `make` commands that help alias some functionality during development.
+
+#### Common commands
+Common commands needed for development can be run by running the default `make` command. This outputs to `build.log` and runs the following targets:
+
  * `clean` -- Removes the output from the build and release commands
+ * `install` -- Installs package dependencies for all components
+ * `build` -- Outputs the FHIR R4 validated models and artifacts for the: specification, sandbox, coordinator and apigee proxies into the corresponding `dist/` directories
+ * `test` -- Performs quality checks including linting, licence checking of dependencies and unit/low level integration tests
+ * `release` -- Pulls all the artifacts for the individual components together and arranges them in a format ready to deploy; used mainly by CI but useful to check the output matches expectations
+   
+#### Run commands
  * `run-specification` -- Serves a preview of the specification in human-readable format
  * `run-sandbox` -- Run the sandbox locally
  * `run-coordinator` -- Run the coordinator locally
@@ -111,7 +118,7 @@ Speccy does the lifting for the following npm scripts:
 
 (Workflow detailed in a [post](https://developerjack.com/blog/2018/maintaining-large-design-first-api-specs/) on the *developerjack* blog.)
 
-:bulb: The `resolve` command is useful when uploading to Apigee which requires the spec as a single file.
+:bulb: The `resolve -i` command is useful when uploading to Apigee which requires the spec as a single file. The `-i` argument ensures that all `$ref`'s are replaced with the referenced file or internal object's content
 
 ### Caveats
 
