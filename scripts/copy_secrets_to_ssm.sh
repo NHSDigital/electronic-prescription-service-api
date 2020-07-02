@@ -19,3 +19,8 @@ function copy-secret {
 copy-secret "ptl/eps/veit07.devspineservices.nhs.uk/client/key" "/ptl/api-deployment/eps-coordinator/client-key"
 copy-secret "ptl/eps/veit07.devspineservices.nhs.uk/client/cert" "/ptl/api-deployment/eps-coordinator/client-cert"
 copy-secret "ptl/eps/veit07.devspineservices.nhs.uk/asid" "/ptl/api-deployment/eps-coordinator/from-asid"
+copy-secret "ptl/eps/veit07.devspineservices.nhs.uk/party-key" "/ptl/api-deployment/eps-coordinator/from-party-key"
+copy-secret "ptl/eps/veit07.devspineservices.nhs.uk/cpa-id" "/ptl/api-deployment/eps-coordinator/cpa-id"
+
+copy-secret "ptl/veit07.devspineservices.nhs.uk/asid" "/ptl/api-deployment/eps-coordinator/to-asid"
+copy-secret "ptl/veit07.devspineservices.nhs.uk/party-key" "/ptl/api-deployment/eps-coordinator/to-party-key"

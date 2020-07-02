@@ -16,6 +16,14 @@ docker_service:
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/client-cert'
         - name: FROM_ASID
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/from-asid'
+        - name: TO_ASID
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/to-asid'
+        - name: FROM_PARTY_KEY
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/from-party-key'
+        - name: TO_PARTY_KEY
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/to-party-key'
+        - name: CPA_ID
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/cpa-id'
     health_check:
         matcher: "200"
         path: "/Health"
