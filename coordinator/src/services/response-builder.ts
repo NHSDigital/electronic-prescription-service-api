@@ -1,4 +1,5 @@
 import * as translator from "./translation-service";
+import * as spineCommunication from "./spine-communication"
 import {Bundle, OperationOutcome} from "./fhir-resources";
 import {ValidationError} from "../validators/request-validator";
 
@@ -16,11 +17,11 @@ export function createSignedInfo(validation: Array<ValidationError>, requestPayl
     return translator.convertFhirMessageToHl7V3SignedInfo(requestPayload as Bundle)
 }
 
-export function sendMessage(validation: Array<ValidationError>): OperationOutcome | string {
+export function sendMessage(validation: Array<ValidationError>, requestPayload: unknown): OperationOutcome | string {
     if (validation.length > 0) {
         return FhirError(validation)
     }
-    return "Message Sent"
+    return spineCommunication.sendData(JSON.stringify(requestPayload))
 }
 
 function FhirError(validation: Array<ValidationError>): OperationOutcome {

@@ -9,6 +9,8 @@ docker_service:
           value: production
         - name: LOG_LEVEL
           value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
+        - name: SANDBOX
+          value: "{{ SANDBOX }}"
     secrets:
         - name: CLIENT_KEY
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/client-key'

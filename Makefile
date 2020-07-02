@@ -5,9 +5,9 @@ SHELL=/bin/bash -euo pipefail
 all:
 	make clean > build.log
 	make install >> build.log
-	make build >> build.log 
+	make build >> build.log
 	make test >> build.log
-	make release >> build.log 
+	make release >> build.log
 
 install: install-node install-python install-hooks
 
@@ -38,7 +38,7 @@ run-specification:
 	npm run serve
 
 run-coordinator:
-	cd coordinator/dist && npm run start
+	source ./scripts/set_env_vars.sh && cd coordinator/dist && npm run start
 
 ## Install
 
@@ -70,7 +70,7 @@ build-models:
 	$(foreach file, $(wildcard models/schemas/*.yaml), cp $(file) models/dist/schemas;)
 	$(foreach file, $(wildcard models/schemas/*.json), cp $(file) models/dist/schemas;)
 	$(foreach file, $(wildcard models/schemas/*.yaml), poetry run python scripts/yaml2json.py $(file) models/dist/schemas;)
-	
+
 
 build-specification:
 	cd specification \
