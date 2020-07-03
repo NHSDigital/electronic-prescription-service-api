@@ -25,13 +25,15 @@ class EbXmlRequest {
     cpa_id: string
     hl7_message: string
 
-    constructor(interactionId: string, hl7V3Message: string) {
+    constructor(interactionId: string, cpaId: string, hl7V3Message: string) {
         this.action = interactionId
-        this.cpa_id = cpaIdMap.get(interactionId)
+        this.cpa_id = cpaId
         this.hl7_message = hl7V3Message
     }
 }
 
 export function addEbXmlWrapper(hl7V3Message: string): string {
-    return Mustache.render(ebxmlRequestTemplate, new EbXmlRequest("PORX_IN020101UK31", hl7V3Message))
+    const interactionId = "PORX_IN020101UK31"
+    const cpaId = cpaIdMap.get(interactionId)
+    return Mustache.render(ebxmlRequestTemplate, new EbXmlRequest(interactionId, cpaId, hl7V3Message))
 }
