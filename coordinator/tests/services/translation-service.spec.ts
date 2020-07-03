@@ -32,37 +32,31 @@ test('getResourceForFullUrl throws error when finding multiple resources', () =>
     expect(() => translationService.getResourceForFullUrl(bundle2, bundle2.entry[0].fullUrl)).toThrow(TypeError)
 })
 
-test('convertCourseOfTherapyType returns "0001" prescription treatment type code when all therapy type codes are "acute"', () => {
+test('convertCourseOfTherapyType returns "0001" prescription treatment type code when first therapy type code is "acute"', () => {
     const bundle2 = clone(TestResources.fhirPrescriptionMessage1)
     const fhirMedicationRequests = translationService.getResourcesOfType(bundle2, "MedicationRequest") as Array<fhir.MedicationRequest>
-    fhirMedicationRequests.forEach(medicationRequest => medicationRequest.courseOfTherapyType.coding.forEach(coding => coding.code = "acute"))
-    const prescriptionTreatmentType = translationService.convertCourseOfTherapyType(fhirMedicationRequests)
+    const firstFhirMedicationRequest = fhirMedicationRequests[0]
+    firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = "acute"
+    const prescriptionTreatmentType = translationService.convertCourseOfTherapyType(firstFhirMedicationRequest)
     expect(prescriptionTreatmentType.value._attributes.code).toEqual("0001")
 })
 
-test('convertCourseOfTherapyType returns "0002" prescription treatment type code when all therapy type codes are "repeat"', () => {
+test('convertCourseOfTherapyType returns "0002" prescription treatment type code when first therapy type code is "repeat"', () => {
     const bundle2 = clone(TestResources.fhirPrescriptionMessage1)
     const fhirMedicationRequests = translationService.getResourcesOfType(bundle2, "MedicationRequest") as Array<fhir.MedicationRequest>
-    fhirMedicationRequests.forEach(medicationRequest => medicationRequest.courseOfTherapyType.coding.forEach(coding => coding.code = "repeat"))
-    const prescriptionTreatmentType = translationService.convertCourseOfTherapyType(fhirMedicationRequests)
+    const firstFhirMedicationRequest = fhirMedicationRequests[0]
+    firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = "repeat"
+    const prescriptionTreatmentType = translationService.convertCourseOfTherapyType(firstFhirMedicationRequest)
     expect(prescriptionTreatmentType.value._attributes.code).toEqual("0002")
 })
 
-test('convertCourseOfTherapyType returns "0003" prescription treatment type code when all therapy type codes are "repeat-dispensing"', () => {
+test('convertCourseOfTherapyType returns "0003" prescription treatment type code when first therapy type code is "repeat-dispensing"', () => {
     const bundle2 = clone(TestResources.fhirPrescriptionMessage1)
     const fhirMedicationRequests = translationService.getResourcesOfType(bundle2, "MedicationRequest") as Array<fhir.MedicationRequest>
-    fhirMedicationRequests.forEach(medicationRequest => medicationRequest.courseOfTherapyType.coding.forEach(coding => coding.code = "repeat-dispensing"))
-    const prescriptionTreatmentType = translationService.convertCourseOfTherapyType(fhirMedicationRequests)
+    const firstFhirMedicationRequest = fhirMedicationRequests[0]
+    firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = "repeat-dispensing"
+    const prescriptionTreatmentType = translationService.convertCourseOfTherapyType(firstFhirMedicationRequest)
     expect(prescriptionTreatmentType.value._attributes.code).toEqual("0003")
-})
-
-test('convertCourseOfTherapyType throws error when finding multiple non-unique prescription treatment type codes', () => {
-    const bundle2 = clone(TestResources.fhirPrescriptionMessage1)
-    const fhirMedicationRequests = translationService.getResourcesOfType(bundle2, "MedicationRequest") as Array<fhir.MedicationRequest>
-    fhirMedicationRequests[0].courseOfTherapyType.coding[0].code = "acute"
-    fhirMedicationRequests[1].courseOfTherapyType.coding[0].code = "repeat"
-    fhirMedicationRequests[2].courseOfTherapyType.coding[0].code = "repeat-dispensing"
-    expect(() => translationService.convertCourseOfTherapyType(fhirMedicationRequests)).toThrow(TypeError)
 })
 
 test('getIdentifierValueForSystem returns correct value for system', () => {

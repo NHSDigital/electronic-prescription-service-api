@@ -186,8 +186,8 @@ function convertResponsibleParty(
     return responsibleParty;
 }
 
-function convertPrescriptionPertinentInformation5(fhirMedicationRequests: Array<fhir.MedicationRequest>) {
-    const prescriptionTreatmentType = convertCourseOfTherapyType(fhirMedicationRequests)
+function convertPrescriptionPertinentInformation5(fhirFirstMedicationRequest: fhir.MedicationRequest) {
+    const prescriptionTreatmentType = convertCourseOfTherapyType(fhirFirstMedicationRequest)
     return new prescriptions.PrescriptionPertinentInformation5(prescriptionTreatmentType);
 }
 
@@ -239,7 +239,7 @@ function convertBundleToPrescription(fhirBundle: fhir.Bundle) {
     hl7V3Prescription.author = convertAuthor(fhirBundle, fhirFirstMedicationRequest)
     hl7V3Prescription.responsibleParty = convertResponsibleParty(fhirBundle)
 
-    hl7V3Prescription.pertinentInformation5 = convertPrescriptionPertinentInformation5(fhirMedicationRequests)
+    hl7V3Prescription.pertinentInformation5 = convertPrescriptionPertinentInformation5(fhirFirstMedicationRequest)
     hl7V3Prescription.pertinentInformation1 = convertPrescriptionPertinentInformation1()
     hl7V3Prescription.pertinentInformation2 = convertPrescriptionPertinentInformation2(fhirMedicationRequests)
     hl7V3Prescription.pertinentInformation8 = convertPrescriptionPertinentInformation8()
@@ -256,12 +256,11 @@ function convertProduct(medicationCodeableConcept: fhir.CodeableConcept) {
     return new prescriptions.Product(manufacturedProduct);
 }
 
-export function convertCourseOfTherapyType(medicationRequests: Array<fhir.MedicationRequest>): prescriptions.PrescriptionTreatmentType {
-    const courseOfTherapyTypeCodes = new Set(
-        medicationRequests.flatMap(medicationRequest => 
-            medicationRequest.courseOfTherapyType.coding.map(coding => coding.code)))
+export function convertCourseOfTherapyType(fhirFirstMedicationRequest: fhir.MedicationRequest): prescriptions.PrescriptionTreatmentType {
+    const courseOfTherapyTypeCode = fhirFirstMedicationRequest
+        .courseOfTherapyType.coding.map(coding => coding.code)
+        .reduce(onlyElement)
 
-    const courseOfTherapyTypeCode = [...courseOfTherapyTypeCodes].reduce(onlyElement)
     const prescriptionTreatmentTypeCode = convertCourseOfTherapyTypeCode(courseOfTherapyTypeCode)
     const hl7V3CourseOfTherapyTypeCode = new codes.PrescriptionTreatmentTypeCode(prescriptionTreatmentTypeCode);
     return new prescriptions.PrescriptionTreatmentType(hl7V3CourseOfTherapyTypeCode);

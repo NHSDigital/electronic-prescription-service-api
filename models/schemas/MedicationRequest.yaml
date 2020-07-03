@@ -60,7 +60,7 @@ properties:
   groupIdentifier:
     $ref: "GroupIdentifier.yaml"
   courseOfTherapyType:
-    $ref: "CourseOfTherapyType.yaml"
+    $ref: "CodeableConcept-CourseOfTherapyType.yaml"
   dosageInstruction:
     type: array
     description: Indicates how the medication is to be used by the patient.
