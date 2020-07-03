@@ -23,7 +23,7 @@ async function request(message = '') {
 export function sendData(message: string): Promise<SpineResponse> {
     return (
         process.env.SANDBOX === "1" ?
-        Promise.resolve({body: "sandbox city", statusCode: 202}) :
+        Promise.resolve({body: "Message Sent", statusCode: 200}) :
         request(message)
     )
 }
