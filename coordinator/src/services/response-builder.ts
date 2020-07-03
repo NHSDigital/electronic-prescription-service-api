@@ -17,9 +17,9 @@ export function createSignedInfo(validation: Array<ValidationError>, requestPayl
     return translator.convertFhirMessageToHl7V3SignedInfo(requestPayload as Bundle)
 }
 
-export function sendMessage(validation: Array<ValidationError>, requestPayload: unknown): OperationOutcome | string {
+export function sendMessage(validation: Array<ValidationError>, requestPayload: unknown): OperationOutcome | Promise<unknown> {
     if (validation.length > 0) {
-        return FhirError(validation)
+        return new Promise<unknown>((resolve) => {resolve({body: FhirError(validation), statusCode: 400})})
     }
     return spineCommunication.sendData(JSON.stringify(requestPayload))
 }

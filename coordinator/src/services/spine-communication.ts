@@ -9,21 +9,15 @@ const options = {
     agent: false
 };
 
-const sandboxOptions = {
-    hostname: 'httpbin.org',
-    path: '/anything',
-    method: 'POST'
-};
-
 async function request(urlOptions: requestOptions, data = '') {
-    return await new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
         const req = https.request(urlOptions, (res) => {
             let body = '';
             res.on('data', (chunk) => (body += chunk.toString()));
             res.on('error', reject);
             res.on('end', () => {
                 if (res.statusCode >= 200 && res.statusCode <= 299) {
-                    resolve(body);
+                    resolve({body: body, statusCode: res.statusCode});
                 } else {
                     reject('Request failed. status: ' + res.statusCode + ', body: ' + body);
                 }
@@ -32,16 +26,15 @@ async function request(urlOptions: requestOptions, data = '') {
         req.on('error', reject);
         req.write(data, 'binary');
         req.end();
-    }).then(result => {return result})
+    })
 }
 
-export function sendData(message: string): string {
+export function sendData(message: string): Promise<unknown> {
     if (process.env.SANDBOX === "1") {
-        request(sandboxOptions, message).then(function(result) {console.log(result)})
-        return message
+        return new Promise<unknown>((resolve) => {resolve({body: "bluh", statusCode: 202})})
+        // return request(sandboxOptions, message).then(function(result) {return result})
     }
-    request(options).then(function(result) {console.log(result)})
-    return "bluh"
+    return request(options, message).then(function(result) {return result})
 }
 
 class requestOptions {

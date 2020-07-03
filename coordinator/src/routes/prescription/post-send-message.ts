@@ -10,12 +10,16 @@ export default [
   {
     method: 'POST',
     path: '/Send',
-    handler: (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Hapi.ResponseObject => {
+    handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<unknown> => {
         const requestBody = requestBodyParser.parse(request)
         const validation = requestValidator.verifyPrescriptionBundle(requestBody, true)
-        const statusCode = requestValidator.getStatusCode(validation)
-        const response = responseBuilder.sendMessage(validation, requestBody)
-        return responseToolkit.response(response).code(statusCode)
+        const response = await responseBuilder.sendMessage(validation, requestBody)
+        return responseToolkit.response((response as responseObj).body).code((response as responseObj).statusCode)
     }
   }
 ]
+
+class responseObj {
+    body: string
+    statusCode: number
+}
