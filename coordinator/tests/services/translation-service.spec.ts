@@ -33,7 +33,7 @@ test('getResourceForFullUrl throws error when finding multiple resources', () =>
 })
 
 test('convertCourseOfTherapyType returns "0001" prescription treatment type code when first therapy type code is "acute"', () => {
-    const bundle2 = clone(TestResources.fhirPrescriptionMessage1)
+    const bundle2 = clone(TestResources.examplePrescription1.fhirMessage)
     const fhirMedicationRequests = translationService.getResourcesOfType(bundle2, "MedicationRequest") as Array<fhir.MedicationRequest>
     const firstFhirMedicationRequest = fhirMedicationRequests[0]
     firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = "acute"
@@ -42,7 +42,7 @@ test('convertCourseOfTherapyType returns "0001" prescription treatment type code
 })
 
 test('convertCourseOfTherapyType returns "0002" prescription treatment type code when first therapy type code is "repeat"', () => {
-    const bundle2 = clone(TestResources.fhirPrescriptionMessage1)
+    const bundle2 = clone(TestResources.examplePrescription1.fhirMessage)
     const fhirMedicationRequests = translationService.getResourcesOfType(bundle2, "MedicationRequest") as Array<fhir.MedicationRequest>
     const firstFhirMedicationRequest = fhirMedicationRequests[0]
     firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = "repeat"
@@ -51,7 +51,7 @@ test('convertCourseOfTherapyType returns "0002" prescription treatment type code
 })
 
 test('convertCourseOfTherapyType returns "0003" prescription treatment type code when first therapy type code is "repeat-dispensing"', () => {
-    const bundle2 = clone(TestResources.fhirPrescriptionMessage1)
+    const bundle2 = clone(TestResources.examplePrescription1.fhirMessage)
     const fhirMedicationRequests = translationService.getResourcesOfType(bundle2, "MedicationRequest") as Array<fhir.MedicationRequest>
     const firstFhirMedicationRequest = fhirMedicationRequests[0]
     firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = "repeat-dispensing"
