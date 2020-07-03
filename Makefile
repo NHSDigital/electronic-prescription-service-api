@@ -4,9 +4,9 @@ SHELL=/bin/bash -euo pipefail
 
 all:
 	make clean > build.log
-	make build >> build.log 
+	make build >> build.log
 	make test >> build.log
-	make release >> build.log 
+	make release >> build.log
 
 install: install-node install-python install-hooks
 
@@ -27,7 +27,7 @@ clean:
 	rm -rf coordinator/dist
 	rm -f coordinator/tests/resources/parent-prescription-1/fhir-message.json
 	rm -f coordinator/tests/resources/parent-prescription-2/fhir-message.json
-	rm -f coordinator/tests/resources/parent-prescription-1/hl7-v3-signed-info-canonicalized.json
+	rm -f coordinator/tests/resources/parent-prescription-1/fhir-message-digest.json
 	rm -f tests/e2e/electronic-prescription-coordinator-postman-tests.json
 
 ## Run
@@ -69,7 +69,7 @@ build-models:
 	$(foreach file, $(wildcard models/schemas/*.yaml), cp $(file) models/dist/schemas;)
 	$(foreach file, $(wildcard models/schemas/*.json), cp $(file) models/dist/schemas;)
 	$(foreach file, $(wildcard models/schemas/*.yaml), poetry run python scripts/yaml2json.py $(file) models/dist/schemas;)
-	
+
 
 build-specification:
 	cd specification \
@@ -91,7 +91,7 @@ build-specification:
 
 build-coordinator:
 	cp models/dist/requests/PrepareSuccessRequest.json coordinator/tests/resources/parent-prescription-1/fhir-message.json
-	cp models/dist/responses/PrepareSuccessResponse.json coordinator/tests/resources/parent-prescription-1/hl7-v3-signed-info-canonicalized.json
+	cp models/dist/responses/PrepareSuccessResponse.json coordinator/tests/resources/parent-prescription-1/fhir-message-digest.json
 	cp models/dist/requests/PrepareSuccessNominatedPharmacyRequest.json coordinator/tests/resources/parent-prescription-2/fhir-message.json
 	cp models/dist/responses/ConvertWrapper.xml coordinator/src/resources/ConvertWrapper.xml
 	npm run --prefix=coordinator/ build

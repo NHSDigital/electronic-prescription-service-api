@@ -16,6 +16,5 @@ function copy-secret {
         --overwrite
 }
 
-copy-secret "ptl/eps/veit07.devspineservices.nhs.uk/client/key" "/ptl/api-deployment/eps-coordinator/client-key"
-copy-secret "ptl/eps/veit07.devspineservices.nhs.uk/client/cert" "/ptl/api-deployment/eps-coordinator/client-cert"
-copy-secret "ptl/eps/veit07.devspineservices.nhs.uk/asid" "/ptl/api-deployment/eps-coordinator/from-asid"
+copy-secret "ptl/eps/veit07.devspineservices.nhs.uk/private-key" "/ptl/api-deployment/eps-coordinator/veit07.devspineservices.nhs.uk/private-key"
+copy-secret "ptl/eps/veit07.devspineservices.nhs.uk/certificate" "/ptl/api-deployment/eps-coordinator/veit07.devspineservices.nhs.uk/certificate"

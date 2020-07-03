@@ -18,11 +18,15 @@
     "@hapi/boom": "^9.1.0",
     "@hapi/hapi": "18.4.1",
     "@hapi/joi": "^17.1.0",
+    "@types/mustache": "^4.0.1",
+    "@types/uuid": "^8.0.0",
     "crypto-js": "^4.0.0",
     "license-checker": "^25.0.1",
     "lodash": "^4.17.15",
     "moment": "^2.26.0",
+    "mustache": "^4.0.1",
     "newman": "^5.1.0",
+    "uuid": "^8.2.0",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {
