@@ -97,7 +97,8 @@ build-coordinator:
 	cp models/dist/responses/ConvertWrapper.xml coordinator/src/resources/ConvertWrapper.xml
 	npm run --prefix=coordinator/ build
 	cp coordinator/package.json coordinator/dist/
-	cp coordinator/src/resources/ConvertWrapper.xml coordinator/dist/resources/
+	cp coordinator/src/resources/ConvertWrapper.mustache coordinator/dist/resources/
+	cp coordinator/src/resources/ebxml_request.mustache coordinator/dist/resources/
 	poetry run scripts/update_coordinator_tests.py
 
 build-proxies:
