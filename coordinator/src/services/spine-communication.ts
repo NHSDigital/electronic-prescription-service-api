@@ -1,9 +1,8 @@
 import https from "https"
 
 const options = {
-    hostname: 'httpbin.org',
-    path: '/anything',
-    method: 'GET',
+    hostname: 'veit07.devspineservices.nhs.uk',
+    method: 'POST',
     key: process.env.CLIENT_KEY,
     cert: process.env.CLIENT_CERT,
     agent: false
