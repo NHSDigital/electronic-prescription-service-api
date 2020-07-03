@@ -12,7 +12,7 @@ export default [
     path: '/Send',
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<unknown> => {
         const requestBody = requestBodyParser.parse(request)
-        const validation = requestValidator.verifyPrescriptionBundle(requestBody, true)
+        const validation = requestValidator.verifyPrescriptionBundle(requestBody, false)
         const response = await responseBuilder.sendMessage(validation, requestBody)
         return responseToolkit.response(response.body).code(response.statusCode)
     }

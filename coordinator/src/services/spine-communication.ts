@@ -1,5 +1,6 @@
 import axios from "axios"
 import https from "https"
+import {addEbXmlWrapper} from "./request-builder";
 
 export interface SpineResponse {
     body: string
@@ -12,10 +13,13 @@ const httpsAgent = new https.Agent({
 });
 
 async function request(message = '') {
+    const wrappedMessage = addEbXmlWrapper(message)
     const result = await axios.post(
         'veit07.devspineservices.nhs.uk',
-        message,
-        {httpsAgent}
+        wrappedMessage,
+        {httpsAgent,
+        headers: {"Content-Type": "multipart/related; boundary=\"--=_MIME-Boundary\"; type=text/xml; start=ebXMLHeader@spine.nhs.uk"}
+        }
     )
     return {body: result.data, statusCode: result.status}
 }

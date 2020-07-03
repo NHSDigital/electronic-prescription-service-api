@@ -21,7 +21,8 @@ export function sendMessage(validation: Array<ValidationError>, requestPayload: 
     if (validation.length > 0) {
         return Promise.resolve({body: JSON.stringify(FhirError(validation)), statusCode: 400})
     }
-    return sendData(JSON.stringify(requestPayload))
+    const translatedMessage = translator.convertFhirMessageToHl7V3ParentPrescription(requestPayload as Bundle)
+    return sendData(translatedMessage)
 }
 
 function FhirError(validation: Array<ValidationError>): OperationOutcome {

@@ -28,6 +28,7 @@ clean:
 	rm -f coordinator/tests/resources/parent-prescription-1/fhir-message.json
 	rm -f coordinator/tests/resources/parent-prescription-2/fhir-message.json
 	rm -f coordinator/tests/resources/parent-prescription-1/fhir-message-digest.json
+	rm -f coordinator/src/resources/ConvertWrapper.xml
 	rm -f tests/e2e/electronic-prescription-coordinator-postman-tests.json
 
 ## Run
