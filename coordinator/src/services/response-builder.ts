@@ -19,7 +19,7 @@ export function createSignedInfo(validation: Array<ValidationError>, requestPayl
 
 export function sendMessage(validation: Array<ValidationError>, requestPayload: unknown): Promise<SpineResponse> {
     if (validation.length > 0) {
-        return new Promise<SpineResponse>((resolve) => {resolve({body: JSON.stringify(FhirError(validation)), statusCode: 400})})
+        return Promise.resolve({body: JSON.stringify(FhirError(validation)), statusCode: 400})
     }
     return sendData(JSON.stringify(requestPayload))
 }
