@@ -1,5 +1,5 @@
 import * as translator from "./translation-service";
-import * as spineCommunication from "./spine-communication"
+import {SpineResponse, sendData} from "./spine-communication"
 import {Bundle, OperationOutcome} from "./fhir-resources";
 import {ValidationError} from "../validators/request-validator";
 
@@ -17,11 +17,11 @@ export function createSignedInfo(validation: Array<ValidationError>, requestPayl
     return translator.convertFhirMessageToHl7V3SignedInfo(requestPayload as Bundle)
 }
 
-export function sendMessage(validation: Array<ValidationError>, requestPayload: unknown): OperationOutcome | Promise<unknown> {
+export function sendMessage(validation: Array<ValidationError>, requestPayload: unknown): Promise<SpineResponse> {
     if (validation.length > 0) {
-        return new Promise<unknown>((resolve) => {resolve({body: FhirError(validation), statusCode: 400})})
+        return new Promise<SpineResponse>((resolve) => {resolve({body: JSON.stringify(FhirError(validation)), statusCode: 400})})
     }
-    return spineCommunication.sendData(JSON.stringify(requestPayload))
+    return sendData(JSON.stringify(requestPayload))
 }
 
 function FhirError(validation: Array<ValidationError>): OperationOutcome {

@@ -14,12 +14,7 @@ export default [
         const requestBody = requestBodyParser.parse(request)
         const validation = requestValidator.verifyPrescriptionBundle(requestBody, true)
         const response = await responseBuilder.sendMessage(validation, requestBody)
-        return responseToolkit.response((response as responseObj).body).code((response as responseObj).statusCode)
+        return responseToolkit.response(response.body).code(response.statusCode)
     }
   }
 ]
-
-class responseObj {
-    body: string
-    statusCode: number
-}
