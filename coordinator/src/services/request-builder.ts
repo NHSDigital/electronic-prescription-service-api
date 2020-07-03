@@ -15,7 +15,8 @@ class EbXmlRequest {
     to_party_id = process.env.TO_PARTY_KEY
     service = "urn:nhs:names:services:mm"
 
-    //These are the parameters for async reliable, as this is the only messaging pattern we need for EPS.
+    //These are the parameters for async reliable, as this is the only messaging pattern we need for now.
+    //TODO - If we change from async reliable, change these parameters.
     duplicate_elimination = true
     ack_requested = true
     ack_soap_actor = "urn:oasis:names:tc:ebxml-msg:actor:toPartyMSH"
