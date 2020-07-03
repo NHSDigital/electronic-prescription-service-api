@@ -29,6 +29,7 @@ export class MedicationRequest extends Resource {
     authoredOn?: string
     requester?: Reference<PractitionerRole>
     groupIdentifier?: MedicationRequestGroupIdentifier
+    courseOfTherapyType?: CodeableConcept
     dosageInstruction?: Array<Dosage>
     dispenseRequest?: MedicationRequestDispenseRequest
 }

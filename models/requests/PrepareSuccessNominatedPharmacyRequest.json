@@ -53,6 +53,15 @@
             }
           },
           "authoredOn": "2020-06-10T12:06:00.000Z",
+          "courseOfTherapyType": {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType",
+                "code": "acute",
+                "display": "Acute"
+              }
+            ]
+          },
           "dosageInstruction": [
             {
               "text": "One 5ml spoonful to be taken every SIX hours"
@@ -120,6 +129,15 @@
             }
           },
           "authoredOn": "2020-06-10T12:06:00.000Z",
+          "courseOfTherapyType": {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType",
+                "code": "acute",
+                "display": "Acute"
+              }
+            ]
+          },
           "dosageInstruction": [
             {
               "text": "Apply sparingly to the affected area"
@@ -187,6 +205,15 @@
             }
           },
           "authoredOn": "2020-06-10T12:06:00.000Z",
+          "courseOfTherapyType": {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType",
+                "code": "acute",
+                "display": "Acute"
+              }
+            ]
+          },
           "dosageInstruction": [
             {
               "text": "ONE puff to be inhaled TWICE a day"
@@ -254,6 +281,15 @@
             }
           },
           "authoredOn": "2020-06-10T12:06:00.000Z",
+          "courseOfTherapyType": {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType",
+                "code": "acute",
+                "display": "Acute"
+              }
+            ]
+          },
           "dosageInstruction": [
             {
               "text": "Put ONE drop into the LEFT eye as directed"

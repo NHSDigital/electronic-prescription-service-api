@@ -32,6 +32,33 @@ test('getResourceForFullUrl throws error when finding multiple resources', () =>
     expect(() => translationService.getResourceForFullUrl(bundle2, bundle2.entry[0].fullUrl)).toThrow(TypeError)
 })
 
+test('convertCourseOfTherapyType returns "0001" prescription treatment type code when first therapy type code is "acute"', () => {
+    const bundle2 = clone(TestResources.fhirPrescriptionMessage1)
+    const fhirMedicationRequests = translationService.getResourcesOfType(bundle2, "MedicationRequest") as Array<fhir.MedicationRequest>
+    const firstFhirMedicationRequest = fhirMedicationRequests[0]
+    firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = "acute"
+    const prescriptionTreatmentType = translationService.convertCourseOfTherapyType(firstFhirMedicationRequest)
+    expect(prescriptionTreatmentType.value._attributes.code).toEqual("0001")
+})
+
+test('convertCourseOfTherapyType returns "0002" prescription treatment type code when first therapy type code is "repeat"', () => {
+    const bundle2 = clone(TestResources.fhirPrescriptionMessage1)
+    const fhirMedicationRequests = translationService.getResourcesOfType(bundle2, "MedicationRequest") as Array<fhir.MedicationRequest>
+    const firstFhirMedicationRequest = fhirMedicationRequests[0]
+    firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = "repeat"
+    const prescriptionTreatmentType = translationService.convertCourseOfTherapyType(firstFhirMedicationRequest)
+    expect(prescriptionTreatmentType.value._attributes.code).toEqual("0002")
+})
+
+test('convertCourseOfTherapyType returns "0003" prescription treatment type code when first therapy type code is "repeat-dispensing"', () => {
+    const bundle2 = clone(TestResources.fhirPrescriptionMessage1)
+    const fhirMedicationRequests = translationService.getResourcesOfType(bundle2, "MedicationRequest") as Array<fhir.MedicationRequest>
+    const firstFhirMedicationRequest = fhirMedicationRequests[0]
+    firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = "repeat-dispensing"
+    const prescriptionTreatmentType = translationService.convertCourseOfTherapyType(firstFhirMedicationRequest)
+    expect(prescriptionTreatmentType.value._attributes.code).toEqual("0003")
+})
+
 test('getIdentifierValueForSystem returns correct value for system', () => {
     const practitioner = translationService.getResourceForFullUrl(TestResources.fhirPrescriptionMessage1, "urn:uuid:d4b569e7-ccf6-4bb2-029b-34b6f3e82acf") as fhir.Practitioner
     const result = translationService.getIdentifierValueForSystem(practitioner.identifier, "https://fhir.nhs.uk/Id/sds-role-profile-id")
