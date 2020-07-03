@@ -101,7 +101,7 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/R4/CodeSystem/CareConnect-PrescriptionType",
+              "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType",
               "code": "acute",
               "display": "Acute"
             }
@@ -161,7 +161,7 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/R4/CodeSystem/CareConnect-PrescriptionType",
+              "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType",
               "code": "acute",
               "display": "Acute"
             }
@@ -221,7 +221,7 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/R4/CodeSystem/CareConnect-PrescriptionType",
+              "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType",
               "code": "acute",
               "display": "Acute"
             }
@@ -281,7 +281,7 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/R4/CodeSystem/CareConnect-PrescriptionType",
+              "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType",
               "code": "acute",
               "display": "Acute"
             }
