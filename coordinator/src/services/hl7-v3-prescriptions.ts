@@ -265,7 +265,6 @@ export class PrescriptionPertinentInformation1 implements ElementCompact {
 
     seperatableInd: core.BooleanValue = new core.BooleanValue(true)
     pertinentDispensingSitePreference: DispensingSitePreference
-    pertinentInformation5: PrescriptionPertinentInformation5
 
     constructor(pertinentDispensingSitePreference: DispensingSitePreference) {
         this.pertinentDispensingSitePreference = pertinentDispensingSitePreference

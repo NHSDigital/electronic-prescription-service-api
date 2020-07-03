@@ -75,7 +75,6 @@ build-specification:
 	cd specification \
 	&& mkdir -p build/components/examples \
 	&& mkdir -p build/components/schemas \
-	&& cp -r ../models/dist/requests/*.yaml build/components/examples \
 	&& cp -r ../models/dist/requests/*.json build/components/examples \
 	&& cp -r ../models/dist/responses/*.yaml build/components/examples \
 	&& cp -r ../models/dist/responses/*.json build/components/examples \
