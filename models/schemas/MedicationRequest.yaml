@@ -10,6 +10,7 @@ required:
   - authoredOn
   - requester
   - groupIdentifier
+  - courseOfTherapyType
   - dosageInstruction
   - dispenseRequest
 properties:
@@ -58,6 +59,8 @@ properties:
     $ref: "Reference.yaml"
   groupIdentifier:
     $ref: "GroupIdentifier.yaml"
+  courseOfTherapyType:
+    $ref: "CourseOfTherapyType.yaml"
   dosageInstruction:
     type: array
     description: Indicates how the medication is to be used by the patient.

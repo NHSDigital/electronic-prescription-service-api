@@ -20,6 +20,7 @@ function testSchema(schemaValidatorPromise: Promise<Ajv.ValidateFunction>, relat
         const message = JSON.parse(messageStr)
         const schemaValidator = await schemaValidatorPromise
         const valid = schemaValidator(message)
+        if (!valid) console.log(schemaValidator.errors);
         if (schemaValidator.errors) {
             console.log(schemaValidator.errors)
         }

@@ -32,6 +32,11 @@ entry:
         system: http://snomed.info/sct
         code: '3318711000001107'
     authoredOn: '2020-06-10T12:06:00+00:00'
+    courseOfTherapyType:
+      coding:
+      - system: https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType
+        code: 'acute'
+        display: Acute
     dosageInstruction:
     - text: As Directed
     subject:
@@ -70,6 +75,11 @@ entry:
         system: http://snomed.info/sct
         code: '428673006'
     authoredOn: '2020-06-10T12:06:00+00:00'
+    courseOfTherapyType:
+      coding:
+      - system: https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType
+        code: 'acute'
+        display: Acute
     dosageInstruction:
     - text: As Directed
     subject:
@@ -108,6 +118,11 @@ entry:
         system: http://snomed.info/sct
         code: '3319911000001101'
     authoredOn: '2020-06-10T12:06:00+00:00'
+    courseOfTherapyType:
+      coding:
+      - system: https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType
+        code: 'acute'
+        display: Acute
     dosageInstruction:
     - text: As Directed
     subject:
@@ -146,6 +161,11 @@ entry:
         system: http://snomed.info/sct
         code: '3318911000001109'
     authoredOn: '2020-06-10T12:06:00+00:00'
+    courseOfTherapyType:
+      coding:
+      - system: https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType
+        code: 'acute'
+        display: Acute
     dosageInstruction:
     - text: As Directed
     subject:

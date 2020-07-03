@@ -160,7 +160,7 @@
                      <seperatableInd value="false"/>
                      <pertinentPrescriptionTreatmentType classCode="OBS" moodCode="EVN">
                         <code code="PTT" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                        <value code="0003" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.36"/>
+                        <value code="0001" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.36"/>
                      </pertinentPrescriptionTreatmentType>
                   </pertinentInformation5>
                   <pertinentInformation1 contextConductionInd="true" typeCode="PERT">

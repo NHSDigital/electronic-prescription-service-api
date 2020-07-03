@@ -32,6 +32,11 @@ entry:
               value: EDD2E9DD-DA0A-C266-A4E3-447C68239524
           system: https://fhir.nhs.uk/Id/prescription-short-form
           value: 83C40E-A23856-00123C
+        courseOfTherapyType:
+          coding:
+          - system: https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType
+            code: 'acute'
+            display: Acute
         dosageInstruction:
         - text: 1 tablet after breakfast
         dispenseRequest:
@@ -64,6 +69,11 @@ entry:
               value: EDD2E9DD-DA0A-C266-A4E3-447C68239524
           system: https://fhir.nhs.uk/Id/prescription-short-form
           value: 83C40E-A23856-00123C
+        courseOfTherapyType:
+          coding:
+          - system: https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType
+            code: 'acute'
+            display: Acute
         dosageInstruction:
         - text: 1 tablet during breakfast
         dispenseRequest:
@@ -96,6 +106,11 @@ entry:
               value: EDD2E9DD-DA0A-C266-A4E3-447C68239524
           system: https://fhir.nhs.uk/Id/prescription-short-form
           value: 83C40E-A23856-00123C
+        courseOfTherapyType:
+          coding:
+          - system: https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType
+            code: 'acute'
+            display: Acute
         dosageInstruction:
         - text: 3 tablets before breakfast
         dispenseRequest:
@@ -129,6 +144,11 @@ entry:
               value: EDD2E9DD-DA0A-C266-A4E3-447C68239524
           system: https://fhir.nhs.uk/Id/prescription-short-form
           value: 83C40E-A23856-00123C
+        courseOfTherapyType:
+          coding:
+          - system: https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType
+            code: 'acute'
+            display: Acute
         dosageInstruction:
         - text: 2 tablets after breakfast
         dispenseRequest:

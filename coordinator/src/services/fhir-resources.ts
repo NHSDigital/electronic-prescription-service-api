@@ -29,6 +29,7 @@ export class MedicationRequest extends Resource {
     authoredOn?: string
     requester?: Reference<PractitionerRole>
     groupIdentifier?: MedicationRequestGroupIdentifier
+    courseOfTherapyType?: TherapyType
     dosageInstruction?: Array<Dosage>
     dispenseRequest?: MedicationRequestDispenseRequest
 }
@@ -46,6 +47,10 @@ export class Coding {
 
 export class Reference<T extends Resource> {
     reference: string
+}
+
+export class TherapyType {
+    coding: Array<Coding>
 }
 
 export class Dosage {

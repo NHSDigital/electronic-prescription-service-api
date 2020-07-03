@@ -186,10 +186,8 @@ function convertResponsibleParty(
     return responsibleParty;
 }
 
-function convertPrescriptionPertinentInformation5() {
-    //TODO - implement
-    const prescriptionTreatmentTypeValue = new codes.PrescriptionTreatmentTypeCode("0003");
-    const prescriptionTreatmentType = new prescriptions.PrescriptionTreatmentType(prescriptionTreatmentTypeValue)
+function convertPrescriptionPertinentInformation5(fhirMedicationRequests: Array<fhir.MedicationRequest>) {
+    const prescriptionTreatmentType = convertCourseOfTherapyType(fhirMedicationRequests)
     return new prescriptions.PrescriptionPertinentInformation5(prescriptionTreatmentType);
 }
 
@@ -241,7 +239,7 @@ function convertBundleToPrescription(fhirBundle: fhir.Bundle) {
     hl7V3Prescription.author = convertAuthor(fhirBundle, fhirFirstMedicationRequest)
     hl7V3Prescription.responsibleParty = convertResponsibleParty(fhirBundle)
 
-    hl7V3Prescription.pertinentInformation5 = convertPrescriptionPertinentInformation5()
+    hl7V3Prescription.pertinentInformation5 = convertPrescriptionPertinentInformation5(fhirMedicationRequests)
     hl7V3Prescription.pertinentInformation1 = convertPrescriptionPertinentInformation1()
     hl7V3Prescription.pertinentInformation2 = convertPrescriptionPertinentInformation2(fhirMedicationRequests)
     hl7V3Prescription.pertinentInformation8 = convertPrescriptionPertinentInformation8()
@@ -256,6 +254,30 @@ function convertProduct(medicationCodeableConcept: fhir.CodeableConcept) {
     const manufacturedRequestedMaterial = new prescriptions.ManufacturedRequestedMaterial(hl7V3MedicationCode);
     const manufacturedProduct = new prescriptions.ManufacturedProduct(manufacturedRequestedMaterial);
     return new prescriptions.Product(manufacturedProduct);
+}
+
+export function convertCourseOfTherapyType(medicationRequests: Array<fhir.MedicationRequest>): prescriptions.PrescriptionTreatmentType {
+    const courseOfTherapyTypeCodes = new Set(
+        medicationRequests.flatMap(medicationRequest => 
+            medicationRequest.courseOfTherapyType.coding.map(coding => coding.code)))
+
+    const courseOfTherapyTypeCode = [...courseOfTherapyTypeCodes].reduce(onlyElement)
+    const prescriptionTreatmentTypeCode = convertCourseOfTherapyTypeCode(courseOfTherapyTypeCode)
+    const hl7V3CourseOfTherapyTypeCode = new codes.PrescriptionTreatmentTypeCode(prescriptionTreatmentTypeCode);
+    return new prescriptions.PrescriptionTreatmentType(hl7V3CourseOfTherapyTypeCode);
+}
+
+function convertCourseOfTherapyTypeCode(courseOfTherapyTypeValue: string) {
+    switch (courseOfTherapyTypeValue) {
+        case "acute":
+            return "0001"
+        case "repeat":
+            return "0002"
+        case "repeat-dispensing":
+            return "0003"
+        default:
+            throw TypeError("Unhandled courseOfTherapyType use " + courseOfTherapyTypeValue)
+    }
 }
 
 function convertDosageInstructions(dosageInstruction: Array<fhir.Dosage>) {

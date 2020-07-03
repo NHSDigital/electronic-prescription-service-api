@@ -4,7 +4,6 @@ SHELL=/bin/bash -euo pipefail
 
 all:
 	make clean > build.log
-	make install >> build.log
 	make build >> build.log 
 	make test >> build.log
 	make release >> build.log 
@@ -35,7 +34,7 @@ clean:
 
 run-specification:
 	scripts/set_spec_server_dev.sh
-	npm run serve
+	npm run --prefix=specification/ serve
 
 run-coordinator:
 	cd coordinator/dist && npm run start
@@ -77,7 +76,10 @@ build-specification:
 	&& mkdir -p build/components/examples \
 	&& mkdir -p build/components/schemas \
 	&& cp -r ../models/dist/requests/*.yaml build/components/examples \
+	&& cp -r ../models/dist/requests/*.json build/components/examples \
 	&& cp -r ../models/dist/responses/*.yaml build/components/examples \
+	&& cp -r ../models/dist/responses/*.json build/components/examples \
+	&& cp -r ../models/dist/responses/*.xml build/components/examples \
 	&& cp -r ../models/dist/schemas/*.yaml build/components/schemas \
 	&& cp electronic-prescription-service-api.yaml build/electronic-prescription-service-api.yaml \
 	&& npm run resolve \
