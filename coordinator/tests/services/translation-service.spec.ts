@@ -65,11 +65,10 @@ test('convertCourseOfTherapyType throws error when finding multiple non-unique p
     expect(() => translationService.convertCourseOfTherapyType(fhirMedicationRequests)).toThrow(TypeError)
 })
 
-test('getIdentifierValueForSystem throws error when finding multiple values for system', () => {
+test('getIdentifierValueForSystem returns correct value for system', () => {
     const practitioner = translationService.getResourceForFullUrl(TestResources.fhirPrescriptionMessage1, "urn:uuid:d4b569e7-ccf6-4bb2-029b-34b6f3e82acf") as fhir.Practitioner
-    const identifier = clone(practitioner.identifier)
-    identifier[0].system = identifier[1].system
-    expect(() => translationService.getIdentifierValueForSystem(identifier, identifier[1].system)).toThrow()
+    const result = translationService.getIdentifierValueForSystem(practitioner.identifier, "https://fhir.nhs.uk/Id/sds-role-profile-id")
+    expect(result).toBe("100112897984")
 })
 
 test('getIdentifierValueForSystem throws error when finding multiple values for system', () => {
