@@ -92,8 +92,8 @@ build-specification:
 
 build-coordinator:
 	cp models/dist/requests/PrepareSuccessRequest.json coordinator/tests/resources/parent-prescription-1/fhir-message.json
+	cp models/dist/responses/PrepareSuccessResponse.json coordinator/tests/resources/parent-prescription-1/hl7-v3-signed-info-canonicalized.json
 	cp models/dist/requests/PrepareSuccessNominatedPharmacyRequest.json coordinator/tests/resources/parent-prescription-2/fhir-message.json
-	cp models/dist/responses/PrepareSuccessResponse.json  coordinator/tests/resources/parent-prescription-1/hl7-v3-signed-info-canonicalized.json
 	cp models/dist/responses/ConvertWrapper.xml coordinator/src/resources/ConvertWrapper.xml
 	npm run --prefix=coordinator/ build
 	cp coordinator/package.json coordinator/dist/

@@ -126,6 +126,15 @@
           }
         },
         "authoredOn": "2020-06-10T12:06:00+00:00",
+        "courseOfTherapyType": {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType",
+              "code": "acute",
+              "display": "Acute"
+            }
+          ]
+        },
         "dosageInstruction": [
           {
             "text": "As Directed"
@@ -193,6 +202,15 @@
           }
         },
         "authoredOn": "2020-06-10T12:06:00+00:00",
+        "courseOfTherapyType": {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType",
+              "code": "acute",
+              "display": "Acute"
+            }
+          ]
+        },
         "dosageInstruction": [
           {
             "text": "As Directed"
@@ -260,6 +278,15 @@
           }
         },
         "authoredOn": "2020-06-10T12:06:00+00:00",
+        "courseOfTherapyType": {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType",
+              "code": "acute",
+              "display": "Acute"
+            }
+          ]
+        },
         "dosageInstruction": [
           {
             "text": "As Directed"
