@@ -49,7 +49,7 @@
               "code": "258773002"
             },
             "performer": {
-              "reference": "urn:uuid:15aa7fc0-83a2-44ff-9fb6-c9afff3fd181"
+              "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
             }
           },
           "authoredOn": "2020-06-10T12:06:00.000Z",
@@ -68,13 +68,13 @@
             }
           ],
           "subject": {
-            "reference": "urn:uuid:b96806f2-0e43-4046-30f3-bd444965afb3"
+            "reference": "urn:uuid:B96806F2-0E43-4046-30F3-BD444965AFB3"
           },
           "requester": {
-            "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
+            "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
           },
           "recorder": {
-            "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
+            "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
           }
         },
         "fullUrl": "urn:uuid:A7B86F8D-1D81-FC28-E050-D20AE3A215F0"
@@ -125,7 +125,7 @@
               "code": "258682000"
             },
             "performer": {
-              "reference": "urn:uuid:15aa7fc0-83a2-44ff-9fb6-c9afff3fd181"
+              "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
             }
           },
           "authoredOn": "2020-06-10T12:06:00.000Z",
@@ -144,13 +144,13 @@
             }
           ],
           "subject": {
-            "reference": "urn:uuid:b96806f2-0e43-4046-30f3-bd444965afb3"
+            "reference": "urn:uuid:B96806F2-0E43-4046-30F3-BD444965AFB3"
           },
           "requester": {
-            "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
+            "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
           },
           "recorder": {
-            "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
+            "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
           }
         },
         "fullUrl": "urn:uuid:A7B86F8D-1D86-FC28-E050-D20AE3A215F0"
@@ -201,7 +201,7 @@
               "code": "3317411000001100"
             },
             "performer": {
-              "reference": "urn:uuid:15aa7fc0-83a2-44ff-9fb6-c9afff3fd181"
+              "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
             }
           },
           "authoredOn": "2020-06-10T12:06:00.000Z",
@@ -220,13 +220,13 @@
             }
           ],
           "subject": {
-            "reference": "urn:uuid:b96806f2-0e43-4046-30f3-bd444965afb3"
+            "reference": "urn:uuid:B96806F2-0E43-4046-30F3-BD444965AFB3"
           },
           "requester": {
-            "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
+            "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
           },
           "recorder": {
-            "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
+            "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
           }
         },
         "fullUrl": "urn:uuid:A7B86F8D-1D8B-FC28-E050-D20AE3A215F0"
@@ -277,7 +277,7 @@
               "code": "258773002"
             },
             "performer": {
-              "reference": "urn:uuid:15aa7fc0-83a2-44ff-9fb6-c9afff3fd181"
+              "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
             }
           },
           "authoredOn": "2020-06-10T12:06:00.000Z",
@@ -296,13 +296,13 @@
             }
           ],
           "subject": {
-            "reference": "urn:uuid:b96806f2-0e43-4046-30f3-bd444965afb3"
+            "reference": "urn:uuid:B96806F2-0E43-4046-30F3-BD444965AFB3"
           },
           "requester": {
-            "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
+            "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
           },
           "recorder": {
-            "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
+            "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
           }
         },
         "fullUrl": "urn:uuid:A7B86F8D-1D90-FC28-E050-D20AE3A215F0"
@@ -310,7 +310,7 @@
       {
         "resource": {
           "resourceType": "Patient",
-          "id": "b96806f2-0e43-4046-30f3-bd444965afb3",
+          "id": "B96806F2-0E43-4046-30F3-BD444965AFB3",
           "identifier": [
             {
               "system": "https://fhir.nhs.uk/Id/nhs-number",
@@ -343,41 +343,41 @@
             }
           ],
           "generalPractitioner": [{
-            "reference": "urn:uuid:9b4c1a77-cccc-418a-b835-4112fbcb14f3"
+            "reference": "urn:uuid:9B4C1A77-CCCC-418A-B835-4112FBCB14F3"
           }]
         },
-        "fullUrl": "urn:uuid:b96806f2-0e43-4046-30f3-bd444965afb3"
+        "fullUrl": "urn:uuid:B96806F2-0E43-4046-30F3-BD444965AFB3"
       },
       {
         "resource": {
           "resourceType": "PractitionerRole",
-          "id": "dbaa616b-e23c-4d53-0f82-b2d178db79ca",
+          "id": "DBAA616B-E23C-4D53-0F82-B2D178DB79CA",
           "practitioner": {
-            "reference": "urn:uuid:d4b569e7-ccf6-4bb2-029b-34b6f3e82acf"
+            "reference": "urn:uuid:D4B569E7-CCF6-4BB2-029B-34B6F3E82ACF"
           },
           "organization": {
-            "reference": "urn:uuid:b65dd3a2-9551-45a3-3e9d-342f8de14d8f"
+            "reference": "urn:uuid:B65DD3A2-9551-45A3-3E9D-342F8DE14D8F"
           }
         },
-        "fullUrl": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
+        "fullUrl": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
       },
       {
         "resource": {
           "resourceType": "PractitionerRole",
-          "id": "9b4c1a77-cccc-418a-b835-4112fbcb14f3",
+          "id": "9B4C1A77-CCCC-418A-B835-4112FBCB14F3",
           "practitioner": {
-            "reference": "urn:uuid:4d2df25e-a6d3-4200-a9fa-6611be03e2a6"
+            "reference": "urn:uuid:4D2DF25E-A6D3-4200-A9FA-6611BE03E2A6"
           },
           "organization": {
-            "reference": "urn:uuid:b65dd3a2-9551-45a3-3e9d-342f8de14d8f"
+            "reference": "urn:uuid:B65DD3A2-9551-45A3-3E9D-342F8DE14D8F"
           }
         },
-        "fullUrl": "urn:uuid:9b4c1a77-cccc-418a-b835-4112fbcb14f3"
+        "fullUrl": "urn:uuid:9B4C1A77-CCCC-418A-B835-4112FBCB14F3"
       },
       {
         "resource": {
           "resourceType": "Practitioner",
-          "id": "d4b569e7-ccf6-4bb2-029b-34b6f3e82acf",
+          "id": "D4B569E7-CCF6-4BB2-029B-34B6F3E82ACF",
           "identifier": [
             {
               "system": "https://fhir.nhs.uk/Id/sds-user-id",
@@ -409,12 +409,12 @@
             }
           ]
         },
-        "fullUrl": "urn:uuid:d4b569e7-ccf6-4bb2-029b-34b6f3e82acf"
+        "fullUrl": "urn:uuid:D4B569E7-CCF6-4BB2-029B-34B6F3E82ACF"
       },
       {
         "resource": {
           "resourceType": "Practitioner",
-          "id": "4d2df25e-a6d3-4200-a9fa-6611be03e2a6",
+          "id": "4D2DF25E-A6D3-4200-A9FA-6611BE03E2A6",
           "identifier": [
             {
               "system": "https://fhir.nhs.uk/Id/sds-user-id",
@@ -446,12 +446,12 @@
             }
           ]
         },
-        "fullUrl": "urn:uuid:4d2df25e-a6d3-4200-a9fa-6611be03e2a6"
+        "fullUrl": "urn:uuid:4D2DF25E-A6D3-4200-A9FA-6611BE03E2A6"
       },
       {
         "resource": {
           "resourceType": "Organization",
-          "id": "b65dd3a2-9551-45a3-3e9d-342f8de14d8f",
+          "id": "B65DD3A2-9551-45A3-3E9D-342F8DE14D8F",
           "identifier": [
             {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -490,15 +490,15 @@
             }
           ],
           "partOf": {
-            "reference": "urn:uuid:cc850777-b73f-43cd-23f8-a41a7f1e8459"
+            "reference": "urn:uuid:CC850777-B73F-43CD-23F8-A41A7F1E8459"
           }
         },
-        "fullUrl": "urn:uuid:b65dd3a2-9551-45a3-3e9d-342f8de14d8f"
+        "fullUrl": "urn:uuid:B65DD3A2-9551-45A3-3E9D-342F8DE14D8F"
       },
       {
         "resource": {
           "resourceType": "Organization",
-          "id": "cc850777-b73f-43cd-23f8-a41a7f1e8459",
+          "id": "CC850777-B73F-43CD-23F8-A41A7F1E8459",
           "identifier": [
             {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -518,12 +518,12 @@
           ],
           "name": "GREATER DERBY PCT"
         },
-        "fullUrl": "urn:uuid:cc850777-b73f-43cd-23f8-a41a7f1e8459"
+        "fullUrl": "urn:uuid:CC850777-B73F-43CD-23F8-A41A7F1E8459"
       },
       {
         "resource": {
           "resourceType": "Organization",
-          "id": "15aa7fc0-83a2-44ff-9fb6-c9afff3fd181",
+          "id": "15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181",
           "identifier": [
             {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -531,8 +531,7 @@
             }
           ]
         },
-        "fullUrl": "urn:uuid:15aa7fc0-83a2-44ff-9fb6-c9afff3fd181"
+        "fullUrl": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
       }
     ]
   }
-  

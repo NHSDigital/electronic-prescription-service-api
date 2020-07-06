@@ -117,7 +117,7 @@
               "code": "258773002"
             },
             "performer": {
-              "reference": "urn:uuid:15aa7fc0-83a2-44ff-9fb6-c9afff3fd181"
+              "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
             }
           },
           "authoredOn": "2020-06-10T12:06:00.000Z",
@@ -136,13 +136,13 @@
             }
           ],
           "subject": {
-            "reference": "urn:uuid:b96806f2-0e43-4046-30f3-bd444965afb3"
+            "reference": "urn:uuid:B96806F2-0E43-4046-30F3-BD444965AFB3"
           },
           "requester": {
-            "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
+            "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
           },
           "recorder": {
-            "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
+            "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
           }
         },
         "fullUrl": "urn:uuid:A7B86F8D-1D81-FC28-E050-D20AE3A215F0"
@@ -193,7 +193,7 @@
               "code": "258682000"
             },
             "performer": {
-              "reference": "urn:uuid:15aa7fc0-83a2-44ff-9fb6-c9afff3fd181"
+              "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
             }
           },
           "authoredOn": "2020-06-10T12:06:00.000Z",
@@ -212,13 +212,13 @@
             }
           ],
           "subject": {
-            "reference": "urn:uuid:b96806f2-0e43-4046-30f3-bd444965afb3"
+            "reference": "urn:uuid:B96806F2-0E43-4046-30F3-BD444965AFB3"
           },
           "requester": {
-            "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
+            "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
           },
           "recorder": {
-            "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
+            "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
           }
         },
         "fullUrl": "urn:uuid:A7B86F8D-1D86-FC28-E050-D20AE3A215F0"
@@ -269,7 +269,7 @@
               "code": "3317411000001100"
             },
             "performer": {
-              "reference": "urn:uuid:15aa7fc0-83a2-44ff-9fb6-c9afff3fd181"
+              "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
             }
           },
           "authoredOn": "2020-06-10T12:06:00.000Z",
@@ -288,13 +288,13 @@
             }
           ],
           "subject": {
-            "reference": "urn:uuid:b96806f2-0e43-4046-30f3-bd444965afb3"
+            "reference": "urn:uuid:B96806F2-0E43-4046-30F3-BD444965AFB3"
           },
           "requester": {
-            "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
+            "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
           },
           "recorder": {
-            "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
+            "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
           }
         },
         "fullUrl": "urn:uuid:A7B86F8D-1D8B-FC28-E050-D20AE3A215F0"
@@ -345,7 +345,7 @@
               "code": "258773002"
             },
             "performer": {
-              "reference": "urn:uuid:15aa7fc0-83a2-44ff-9fb6-c9afff3fd181"
+              "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
             }
           },
           "authoredOn": "2020-06-10T12:06:00.000Z",
@@ -364,13 +364,13 @@
             }
           ],
           "subject": {
-            "reference": "urn:uuid:b96806f2-0e43-4046-30f3-bd444965afb3"
+            "reference": "urn:uuid:B96806F2-0E43-4046-30F3-BD444965AFB3"
           },
           "requester": {
-            "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
+            "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
           },
           "recorder": {
-            "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
+            "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
           }
         },
         "fullUrl": "urn:uuid:A7B86F8D-1D90-FC28-E050-D20AE3A215F0"

@@ -60,13 +60,13 @@ test('convertCourseOfTherapyType returns "0003" prescription treatment type code
 })
 
 test('getIdentifierValueForSystem returns correct value for system', () => {
-    const practitioner = translationService.getResourceForFullUrl(TestResources.examplePrescription1.fhirMessage, "urn:uuid:d4b569e7-ccf6-4bb2-029b-34b6f3e82acf") as fhir.Practitioner
+    const practitioner = translationService.getResourceForFullUrl(TestResources.examplePrescription1.fhirMessage, "urn:uuid:D4B569E7-CCF6-4BB2-029B-34B6F3E82ACF") as fhir.Practitioner
     const result = translationService.getIdentifierValueForSystem(practitioner.identifier, "https://fhir.nhs.uk/Id/sds-role-profile-id")
     expect(result).toBe("100112897984")
 })
 
 test('getIdentifierValueForSystem throws error when finding multiple values for system', () => {
-    const practitioner = translationService.getResourceForFullUrl(TestResources.examplePrescription1.fhirMessage, "urn:uuid:d4b569e7-ccf6-4bb2-029b-34b6f3e82acf") as fhir.Practitioner
+    const practitioner = translationService.getResourceForFullUrl(TestResources.examplePrescription1.fhirMessage, "urn:uuid:D4B569E7-CCF6-4BB2-029B-34B6F3E82ACF") as fhir.Practitioner
     const identifier = clone(practitioner.identifier)
     identifier[0].system = identifier[1].system
     expect(() => translationService.getIdentifierValueForSystem(identifier, identifier[1].system)).toThrow()
