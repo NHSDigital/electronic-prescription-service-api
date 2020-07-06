@@ -5,7 +5,9 @@ function copy-secret {
     secretValue="$(
         aws secretsmanager get-secret-value \
         --profile build-eps-coordinator \
-        --secret-id "$1"
+        --secret-id "$1" \
+        --query SecretString \
+        --output text
     )"
 
     aws ssm put-parameter \
