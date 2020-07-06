@@ -15,7 +15,7 @@ const httpsAgent = new https.Agent({
 async function request(message = '') {
     const wrappedMessage = addEbXmlWrapper(message)
     const result = await axios.post(
-        'veit07.devspineservices.nhs.uk',
+        'https://veit07.devspineservices.nhs.uk',
         wrappedMessage,
         {httpsAgent,
         headers: {"Content-Type": "multipart/related; boundary=\"--=_MIME-Boundary\"; type=text/xml; start=ebXMLHeader@spine.nhs.uk"}
