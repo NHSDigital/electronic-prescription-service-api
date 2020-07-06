@@ -5,11 +5,11 @@ import {ParentPrescription} from "../../src/services/hl7-v3-prescriptions";
 import {Bundle, Parameters} from "../../src/services/fhir-resources";
 import {ElementCompact} from "xml-js";
 
-const fhirMessage1Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/fhir-message.json"), "utf8")
-const hl7V3Message1Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/hl7-v3-message.xml"), "utf8")
-const hl7V3SignatureFragments1Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/hl7-v3-signature-fragments.xml"), "utf8")
-const hl7V3SignatureFragmentsCanonicalized1 = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/hl7-v3-signature-fragments-canonicalized.txt"), "utf8")
-const fhirMessageDigest1Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/fhir-message-digest.json"), "utf8")
+const fhirMessage1Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/PrepareRequest-FhirMessageUnsigned.json"), "utf8")
+const hl7V3Message1Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/ConvertResponse-Hl7V3Message.xml"), "utf8")
+const hl7V3SignatureFragments1Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/PrepareIntermediate-Hl7V3SignatureFragments.xml"), "utf8")
+const hl7V3SignatureFragmentsCanonicalized1 = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/PrepareIntermediate-Hl7V3SignatureFragmentsCanonicalized.txt"), "utf8")
+const fhirMessageDigest1Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/PrepareResponse-FhirMessageDigest.json"), "utf8")
 
 const fhirMessage1 = JSON.parse(fhirMessage1Str) as Bundle
 const hl7V3Message1 = XmlJs.xml2js(hl7V3Message1Str, {compact: true}) as ElementCompact
@@ -25,8 +25,8 @@ export const examplePrescription1 = {
     fhirMessageDigest: fhirMessageDigest1
 }
 
-const fhirMessage2Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-2/fhir-message.json"), "utf8")
-const hl7V3Message2Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-2/hl7-v3-message.xml"), "utf8")
+const fhirMessage2Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-2/PrepareRequest-FhirMessageUnsigned.json"), "utf8")
+const hl7V3Message2Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-2/ConvertResponse-Hl7V3Message.xml"), "utf8")
 
 const fhirMessage2 = JSON.parse(fhirMessage2Str) as Bundle
 const hl7V3Message2 = XmlJs.xml2js(hl7V3Message2Str, {compact: true}) as ElementCompact
