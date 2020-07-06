@@ -12,7 +12,7 @@ export default [
         method: 'POST',
         path: '/Send',
         handler: validatingHandler(
-            true,
+            false,
             async (requestPayload: Bundle, responseToolkit: Hapi.ResponseToolkit) => {
                 const translatedMessage = translator.convertFhirMessageToHl7V3ParentPrescription(requestPayload)
                 const spineResponse = await sendData(translatedMessage)

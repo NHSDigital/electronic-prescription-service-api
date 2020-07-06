@@ -57,7 +57,7 @@ def main():
                     separators=(',', ':'))
 
                 event['script']['exec'] = [
-                    "const responseString = '" + convert_success_response + "'",
+                    "const responseString = '" + convert_success_response[:-2] + "'",
                     "pm.test(\"Status code is 200\", function () {",
                     "    pm.response.to.have.status(200);",
                     "});",
