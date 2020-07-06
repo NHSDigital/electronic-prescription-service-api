@@ -177,8 +177,7 @@
                 <product contextControlCode="OP" typeCode="PRD">
                   <manufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
-                      <code code="15748611000001101" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"
-                            displayName="DermaSilk round neck shirt adult female small (Espere Healthcare Ltd)"/>
+                      <code code="15748611000001101" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="DermaSilk round neck shirt adult female small (Espere Healthcare Ltd)"/>
                     </manufacturedRequestedMaterial>
                   </manufacturedProduct>
                 </product>
@@ -187,8 +186,7 @@
                   <lineItemQuantity classCode="SPLY" moodCode="RQO">
                     <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
                     <quantity unit="1" value="1">
-                      <translation code="3318711000001107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"
-                                   displayName="device" value="1"/>
+                      <translation code="3318711000001107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="device" value="1"/>
                     </quantity>
                   </lineItemQuantity>
                 </component>
@@ -211,8 +209,7 @@
                 <product contextControlCode="OP" typeCode="PRD">
                   <manufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
-                      <code code="42111000001107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"
-                            displayName="Microgynon 30 tablets (Bayer Plc)"/>
+                      <code code="42111000001107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Microgynon 30 tablets (Bayer Plc)"/>
                     </manufacturedRequestedMaterial>
                   </manufacturedProduct>
                 </product>
@@ -221,8 +218,7 @@
                   <lineItemQuantity classCode="SPLY" moodCode="RQO">
                     <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
                     <quantity unit="1" value="63">
-                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet"
-                                   value="63"/>
+                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="63"/>
                     </quantity>
                   </lineItemQuantity>
                 </component>
@@ -245,8 +241,7 @@
                 <product contextControlCode="OP" typeCode="PRD">
                   <manufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
-                      <code code="7138411000001109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"
-                            displayName="Nelaton catheter female 14Ch ZT02017182 (Unomedical Ltd)"/>
+                      <code code="7138411000001109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Nelaton catheter female 14Ch ZT02017182 (Unomedical Ltd)"/>
                     </manufacturedRequestedMaterial>
                   </manufacturedProduct>
                 </product>
@@ -255,8 +250,7 @@
                   <lineItemQuantity classCode="SPLY" moodCode="RQO">
                     <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
                     <quantity unit="1" value="10">
-                      <translation code="3319911000001101" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"
-                                   displayName="catheter" value="10"/>
+                      <translation code="3319911000001101" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="catheter" value="10"/>
                     </quantity>
                   </lineItemQuantity>
                 </component>
@@ -279,8 +273,7 @@
                 <product contextControlCode="OP" typeCode="PRD">
                   <manufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
-                      <code code="20988311000001103" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"
-                            displayName="Optifast shake oral powder 54g sachets (Flavour Not Specified)"/>
+                      <code code="20988311000001103" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Optifast shake oral powder 54g sachets (Flavour Not Specified)"/>
                     </manufacturedRequestedMaterial>
                   </manufacturedProduct>
                 </product>
@@ -289,8 +282,7 @@
                   <lineItemQuantity classCode="SPLY" moodCode="RQO">
                     <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
                     <quantity unit="1" value="54">
-                      <translation code="3318911000001109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"
-                                   displayName="sachet" value="54"/>
+                      <translation code="3318911000001109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="sachet" value="54"/>
                     </quantity>
                   </lineItemQuantity>
                 </component>
