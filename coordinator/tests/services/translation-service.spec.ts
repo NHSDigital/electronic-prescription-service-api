@@ -96,7 +96,7 @@ test("writeXmlStringCanonicalized returns correct value", () => {
 
 test("convertFhirMessageToHl7V3SignedInfo returns correct value", () => {
     const actualOutput = convertFhirMessageToHl7V3SignedInfo(TestResources.examplePrescription1.fhirMessage)
-    const expectedOutput = JSON.stringify(TestResources.examplePrescription1.fhirMessageDigest,null,2)
+    const expectedOutput = JSON.stringify(TestResources.examplePrescription1.fhirMessageDigest, null, 2)
     expect(actualOutput).toEqual(expectedOutput)
 })
 

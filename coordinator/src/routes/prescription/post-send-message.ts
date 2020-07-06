@@ -1,20 +1,23 @@
-import * as requestValidator from "../../validators/request-validator"
-import Hapi from "@hapi/hapi"
-import * as requestBodyParser from "../../services/request-body-parser";
-import * as responseBuilder from "../../services/response-builder";
+import {validatingHandler} from "../../services/handler";
+import * as translator from "../../services/translation-service";
+import {Bundle} from "../../services/fhir-resources";
+import {sendData} from "../../services/spine-communication";
+import Hapi from "@hapi/hapi";
 
 export default [
-  /*
-    Send a signed message on to SPINE.
-  */
-  {
-    method: 'POST',
-    path: '/Send',
-    handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<unknown> => {
-        const requestBody = requestBodyParser.parse(request)
-        const validation = requestValidator.verifyPrescriptionBundle(requestBody, false)
-        const response = await responseBuilder.sendMessage(validation, requestBody)
-        return responseToolkit.response(response.body).code(response.statusCode)
+    /*
+      Send a signed message on to SPINE.
+    */
+    {
+        method: 'POST',
+        path: '/Send',
+        handler: validatingHandler(
+            true,
+            async (requestPayload: Bundle, responseToolkit: Hapi.ResponseToolkit) => {
+                const translatedMessage = translator.convertFhirMessageToHl7V3ParentPrescription(requestPayload)
+                const spineResponse = await sendData(translatedMessage)
+                return responseToolkit.response(spineResponse.body).code(spineResponse.statusCode)
+            }
+        )
     }
-  }
 ]
