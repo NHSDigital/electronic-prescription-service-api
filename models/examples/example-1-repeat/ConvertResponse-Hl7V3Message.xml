@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml encoding="UTF-8" version="1.0"?>
 <PORX_IN020101UK31 xmlns="urn:hl7-org:v3">
   <id root="A7B86F8D-1DBD-FC28-E050-D20AE3A215F0"/>
   <creationTime value="20200610102631"/>
@@ -9,12 +9,12 @@
   <acceptAckCode code="NE"/>
   <communicationFunctionRcv>
     <device classCode="DEV" determinerCode="INSTANCE">
-      <id extension="000000000001" root="1.2.826.0.1285.0.2.0.107"/>
+      <id extension="567456789789" root="1.2.826.0.1285.0.2.0.107"/>
     </device>
   </communicationFunctionRcv>
   <communicationFunctionSnd>
     <device classCode="DEV" determinerCode="INSTANCE">
-      <id extension="000000000002" root="1.2.826.0.1285.0.2.0.107"/>
+      <id extension="200000001285" root="1.2.826.0.1285.0.2.0.107"/>
     </device>
   </communicationFunctionSnd>
   <ControlActEvent classCode="CACT" moodCode="EVN">
@@ -34,7 +34,7 @@
     <author1 typeCode="AUT">
       <AgentSystemSDS classCode="AGNT">
         <agentSystemSDS classCode="DEV" determinerCode="INSTANCE">
-          <id extension="000000000002" root="1.2.826.0.1285.0.2.0.107"/>
+          <id extension="200000001285" root="1.2.826.0.1285.0.2.0.107"/>
         </agentSystemSDS>
       </AgentSystemSDS>
     </author1>
