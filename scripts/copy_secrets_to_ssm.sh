@@ -23,6 +23,6 @@ copy-secret "ptl/eps/veit07.devspineservices.nhs.uk/certificate" "/ptl/api-deplo
 aws ssm put-parameter \
     --profile build-eps-coordinator \
     --name /ptl/platform-common/veit07.devspineservices.nhs.uk/ca-certs \
-    --value "$(cat ./ca-certs-int-all.pem)" \
+    --value "$(cat scripts/ca-certs-int-all.pem)" \
     --type String \
     --overwrite
