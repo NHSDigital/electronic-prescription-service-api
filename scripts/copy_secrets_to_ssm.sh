@@ -18,3 +18,11 @@ function copy-secret {
 
 copy-secret "ptl/eps/veit07.devspineservices.nhs.uk/private-key" "/ptl/api-deployment/eps-coordinator/veit07.devspineservices.nhs.uk/private-key"
 copy-secret "ptl/eps/veit07.devspineservices.nhs.uk/certificate" "/ptl/api-deployment/eps-coordinator/veit07.devspineservices.nhs.uk/certificate"
+
+# TODO - REMOVE - Temporary measure for testing
+aws ssm put-parameter \
+    --profile build-eps-coordinator \
+    --name /ptl/platform-common/veit07.devspineservices.nhs.uk/ca-certs \
+    --value "$(cat ./ca-certs-int-all.pem)" \
+    --type String \
+    --overwrite

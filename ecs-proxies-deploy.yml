@@ -26,6 +26,8 @@ docker_service:
           valueFrom: '/{{ account }}/platform-common/veit07.devspineservices.nhs.uk/party-key'
         - name: CPA_ID_MAP
           valueFrom: '/{{ account }}/platform-common/veit07.devspineservices.nhs.uk/cpa-id-map'
+        - name: CA_CERTS
+          valueFrom: '/{{ account }}/platform-common/veit07.devspineservices.nhs.uk/ca-certs'
     health_check:
         matcher: "200"
         path: "/Health"
