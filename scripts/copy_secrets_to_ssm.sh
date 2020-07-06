@@ -22,7 +22,7 @@ copy-secret "ptl/eps/veit07.devspineservices.nhs.uk/certificate" "/ptl/api-deplo
 # TODO - REMOVE - Temporary measure for testing
 aws ssm put-parameter \
     --profile build-eps-coordinator \
-    --name /ptl/platform-common/veit07.devspineservices.nhs.uk/ca-certs \
+    --name /ptl/api-deployment/eps-coordinator/veit07.devspineservices.nhs.uk/ca-certs \
     --value "$(cat scripts/ca-certs-int-all.pem)" \
     --type String \
     --overwrite
