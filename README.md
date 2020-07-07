@@ -49,13 +49,12 @@ Common commands needed for development can be run by running the default `make` 
 
  * `clean` -- Removes the output from the build and release commands
  * `install` -- Installs package dependencies for all components
- * `build` -- Outputs the FHIR R4 validated models and artifacts for the: specification, sandbox, coordinator and apigee proxies into the corresponding `dist/` directories
+ * `build` -- Outputs the FHIR R4 validated models and artifacts for the: specification, coordinator and apigee proxies into the corresponding `dist/` directories
  * `test` -- Performs quality checks including linting, licence checking of dependencies and unit/low level integration tests
  * `release` -- Pulls all the artifacts for the individual components together and arranges them in a format ready to deploy; used mainly by CI but useful to check the output matches expectations
    
 #### Run commands
  * `run-specification` -- Serves a preview of the specification in human-readable format
- * `run-sandbox` -- Run the sandbox locally
  * `run-coordinator` -- Run the coordinator locally
 
 All `run-*` make targets rely on the corresponding `build-*` make targets, the `build` make target will run all of these
@@ -64,18 +63,12 @@ Make `build-models` is a dependency for all other `build-*` targets, the `build`
 
 ### Running tests
 #### Unit and Integration tests
-To run tests for the sandbox: while in the sandbox folder, run
-```
-npm t
-```
 To run tests for the coordinator: while in the coordinator folder, run
 ```
 npm t
 ```
 
 #### End-to-end tests
-To run e2e tests for the sandbox, you need to supply an environment. A `local` environment and an environment template are included under `tests/e2e/environments`.
-
 In order for tests under the make target `test-integration-coordinator` to work, you must have built and be running the coordindator locally. In a seperate shell run:
 
 ```
