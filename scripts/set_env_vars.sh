@@ -1,20 +1,20 @@
 #!/bin/bash
 set -eu
 
-# CLIENT_KEY=$(cat ~/Documents/DELETE_AFTER_USE/private-key.pem)
-# CLIENT_CERT=$(cat ~/Documents/DELETE_AFTER_USE/public-key.pem)
-# ROOT_CA_CERT=$(cat ~/Documents/DELETE_AFTER_USE/ca-certs-int/root.pem)
-# SUB_CA_CERT=$(cat ~/Documents/DELETE_AFTER_USE/ca-certs-int/sub.pem)
+CLIENT_KEY=$(cat ~/Documents/DELETE_AFTER_USE/private-key.pem)
+CLIENT_CERT=$(cat ~/Documents/DELETE_AFTER_USE/public-key.pem)
+ROOT_CA_CERT=$(cat ~/Documents/DELETE_AFTER_USE/ca-certs-int/root.pem)
+SUB_CA_CERT=$(cat ~/Documents/DELETE_AFTER_USE/ca-certs-int/sub.pem)
 
-# export CLIENT_KEY
-# export CLIENT_CERT
-# export ROOT_CA_CERT
-# export SUB_CA_CERT
+export CLIENT_KEY
+export CLIENT_CERT
+export ROOT_CA_CERT
+export SUB_CA_CERT
 
-export CLIENT_KEY=
-export CLIENT_CERT=
-export ROOT_CA_CERT=
-export SUB_CA_CERT=
+#export CLIENT_KEY=
+#export CLIENT_CERT=
+#export ROOT_CA_CERT=
+#export SUB_CA_CERT=
 
 export SANDBOX=0
 export FROM_ASID=200000001285
