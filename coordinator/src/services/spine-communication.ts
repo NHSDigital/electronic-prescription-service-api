@@ -16,22 +16,22 @@ const httpsAgent = new https.Agent({
     ]
 });
 
-async function request(message = '') {
+async function request(message: string) {
     const wrappedMessage = addEbXmlWrapper(message).replace(/\n/g, "\r\n")
-    try{
+    try {
         const result = await axios.post(
             'https://veit07.devspineservices.nhs.uk/reliablemessaging/reliablerequest',
-        wrappedMessage,
-        {
-            httpsAgent,
-            headers: {
-                "Content-Type": "multipart/related; boundary=\"--=_MIME-Boundary\"; type=text/xml; start=ebXMLHeader@spine.nhs.uk",
-                "SOAPAction": "urn:nhs:names:services:mm/PORX_IN020101UK31"
-            }
-        },
+            wrappedMessage,
+            {
+                httpsAgent,
+                headers: {
+                    "Content-Type": "multipart/related; boundary=\"--=_MIME-Boundary\"; type=text/xml; start=ebXMLHeader@spine.nhs.uk",
+                    "SOAPAction": "urn:nhs:names:services:mm/PORX_IN020101UK31"
+                }
+            },
         )
         return {body: result.data, statusCode: result.status}
-    }catch(error) {
+    } catch (error) {
         if (error.response) {
             return {body: error.response.data, statusCode: error.response.status}
         } else if (error.request) {
