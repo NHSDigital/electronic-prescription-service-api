@@ -10,6 +10,7 @@ export interface SpineResponse {
 const httpsAgent = new https.Agent({
     cert: process.env.CLIENT_CERT,
     key: process.env.CLIENT_KEY,
+    ca: process.env.CA_CERTS
 });
 
 async function request(message = '') {
