@@ -14,14 +14,25 @@ const httpsAgent = new https.Agent({
 
 async function request(message = '') {
     const wrappedMessage = addEbXmlWrapper(message)
-    const result = await axios.post(
-        'https://veit07.devspineservices.nhs.uk',
-        wrappedMessage,
-        {httpsAgent,
-        headers: {"Content-Type": "multipart/related; boundary=\"--=_MIME-Boundary\"; type=text/xml; start=ebXMLHeader@spine.nhs.uk"}
+    try{
+        const result = await axios.post(
+            'https://veit07.devspineservices.nhs.uk',
+            wrappedMessage,
+            {
+                httpsAgent,
+                headers: {"Content-Type": "multipart/related; boundary=\"--=_MIME-Boundary\"; type=text/xml; start=ebXMLHeader@spine.nhs.uk"}
+            },
+        )
+        return {body: result.data, statusCode: result.status}
+    }catch(error) {
+        if (error.response) {
+            return {body: error.response.data, statusCode: error.response.status}
+        } else if (error.request) {
+            return {body: error.request.data, statusCode: 408}
+        } else {
+            return {body: error.message.data, statusCode: 500}
         }
-    )
-    return {body: result.data, statusCode: result.status}
+    }
 }
 
 export function sendData(message: string): Promise<SpineResponse> {
