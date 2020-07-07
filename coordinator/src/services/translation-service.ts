@@ -533,13 +533,11 @@ export function writeXmlStringCanonicalized(tag: XmlJs.ElementCompact): string {
     const options = {
         compact: true,
         ignoreComment: true,
-        spaces: 0,
         fullTagEmptyElement: true,
         attributeValueFn: canonicaliseAttribute,
         attributesFn: sortAttributes
     } as unknown as XmlJs.Options.JS2XML //declared type for attributesFn is wrong :(
-    //TODO do we need to worry about newlines inside tags?
-    return XmlJs.js2xml(tag, options).replace(/\r?\n/, "");
+    return XmlJs.js2xml(tag, options)
 }
 
 export function convertFhirMessageToHl7V3SignedInfo(fhirMessage: fhir.Bundle): string {
@@ -570,7 +568,10 @@ function namespacedCopyOf(tag: XmlJs.ElementCompact) {
     return newTag
 }
 
-export function sortAttributes(attributes: XmlJs.Attributes): XmlJs.Attributes {
+export function sortAttributes(attributes: XmlJs.Attributes, currentElementName: string): XmlJs.Attributes {
+    if (currentElementName === "xml") {
+        return attributes
+    }
     const newAttributes = {
         xmlns: attributes.xmlns
     } as XmlJs.Attributes

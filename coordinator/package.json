@@ -7,6 +7,7 @@
     "build": "tsc --alwaysStrict",
     "lint": "eslint . --ext .ts --max-warnings 0",
     "start": "node app.js --use_strict",
+    "start-with-env": ". ../../scripts/set_env_vars.sh && node app.js --use_strict",
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts",
     "test": "jest",
     "integration-test": "node_modules/.bin/newman run ../tests/e2e/electronic-prescription-coordinator-postman-tests.json -e $API_TEST_ENV_FILE_PATH --reporters html,cli,htmlextra,junit --reporter-htmlextra-logs --reporter-htmlextra-darkTheme",
