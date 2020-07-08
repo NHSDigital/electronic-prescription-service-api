@@ -6,6 +6,7 @@ resources:
       name: NHSDigital/api-management-utils
       endpoint: NHSDigital
       type: github
+      ref: AEA-293-remove-pipeline-cache-step
 
 trigger:
   branches:
