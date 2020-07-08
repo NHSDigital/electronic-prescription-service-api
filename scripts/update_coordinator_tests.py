@@ -29,7 +29,7 @@ def main():
         data = json.load(f)
 
     convert_success_request_file_path = \
-        "./models/dist/examples/example-1-repeat/PrepareRequest-FhirMessageUnsigned.json"
+        "./models/dist/examples/example-1-repeat/SendRequest-FhirMessageSigned.json"
     with open(convert_success_request_file_path) as f:
         convert_success_request = json.load(f)
 
@@ -62,12 +62,20 @@ def main():
                     separators=(',', ':'))
 
                 event['script']['exec'] = [
-                    "const responseString = '" + convert_success_response[:-2] + "'",
+                    "const expectedResponseString = '" + convert_success_response[:-2] + "'",
                     "pm.test(\"Status code is 200\", function () {",
                     "    pm.response.to.have.status(200);",
                     "});",
                     "pm.test(\"Body is correct\", function () {",
-                    "    pm.response.to.have.body(responseString);",
+                    "    const actualResponseStringWithId = pm.response.text().replace(",
+                    "        /<id root=\"[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}\"\\/>/,",
+                    "        \"<id root=\\\"A7B86F8D-1DBD-FC28-E050-D20AE3A215F0\\\"/>\"",
+                    "    )",
+                    "    console.log(\"=====EXPECTED=====\")",
+                    "    console.log(expectedResponseString)",
+                    "    console.log(\"=====ACTUAL=====\")",
+                    "    console.log(actualResponseStringWithId)",
+                    "    pm.expect(actualResponseStringWithId).to.equal(expectedResponseString);",
                     "});"
                 ]
             elif (event['script']['id'] == "630e7726-f2e1-4bf9-a90f-08350d24e70d"):
@@ -86,6 +94,10 @@ def main():
                     "    pm.response.to.have.status(200);",
                     "});",
                     "pm.test(\"Body is correct\", function () {",
+                    "    console.log(\"=====EXPECTED=====\")",
+                    "    console.log(responseString)",
+                    "    console.log(\"=====ACTUAL=====\")",
+                    "    console.log(pm.response.text())",
                     "    pm.response.to.have.body(responseString);",
                     "});"
                 ]
@@ -101,6 +113,10 @@ def main():
                     "    pm.response.to.have.status(200);",
                     "});",
                     "pm.test(\"Body is correct\", function () {",
+                    "    console.log(\"=====EXPECTED=====\")",
+                    "    console.log(responseString)",
+                    "    console.log(\"=====ACTUAL=====\")",
+                    "    console.log(pm.response.text())",
                     "    pm.response.to.have.body(responseString);",
                     "});"
                 ]
