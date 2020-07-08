@@ -9,6 +9,7 @@
     "start": "node app.js --use_strict",
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts",
     "test": "jest",
+    "integration-test": "node_modules/.bin/newman run ../tests/e2e/electronic-prescription-coordinator-postman-tests.json -e $API_TEST_ENV_FILE_PATH --reporters html,cli,htmlextra,junit --reporter-htmlextra-logs --reporter-htmlextra-darkTheme",
     "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
   },
   "author": "NHS Digital",
@@ -17,11 +18,16 @@
     "@hapi/boom": "^9.1.0",
     "@hapi/hapi": "18.4.1",
     "@hapi/joi": "^17.1.0",
+    "@types/mustache": "^4.0.1",
+    "@types/uuid": "^8.0.0",
     "crypto-js": "^4.0.0",
+    "license-checker": "^25.0.1",
     "lodash": "^4.17.15",
     "moment": "^2.26.0",
-    "xml-js": "^1.6.11",
-    "license-checker": "^25.0.1"
+    "mustache": "^4.0.1",
+    "newman": "^5.1.0",
+    "uuid": "^8.2.0",
+    "xml-js": "^1.6.11"
   },
   "devDependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.0.1",

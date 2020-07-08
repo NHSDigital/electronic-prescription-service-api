@@ -92,8 +92,8 @@ info:
     * `POST /Send` - send a signed FHIR prescription to Spine
     * `POST /Convert` - convert a FHIR prescription to HL7V3 to verify client signature implementations
 servers:
-  - url: 'https://internal-qa.api.service.nhs.uk/electronic-prescriptions'
-    description: 'Internal QA environment.'
+  - url: 'https://internal-qa-sandbox.api.service.nhs.uk/electronic-prescriptions'
+    description: 'Internal QA Sandbox environment.'
 tags:
   - name: dispensing
   - name: prescribing
@@ -115,7 +115,7 @@ paths:
             examples:
               example:
                 value:
-                  $ref: components/examples/PrepareSuccessRequest.yaml
+                  $ref: components/examples/PrepareSuccessRequest.json
         description: ''
       responses:
         '200':
@@ -124,7 +124,7 @@ paths:
             #application/fhir+json: #FIXME - should be set to this but we have had to change it due to a FHIR validator bug
             application/json:
               schema:
-                $ref: components/schemas/Binary.yaml
+                $ref: components/schemas/Parameters.yaml
               examples:
                 example:
                   value:
@@ -167,22 +167,19 @@ paths:
             examples:
               success:
                 value:
-                  $ref: components/examples/SendSuccessRequest.yaml
+                  $ref: components/examples/SendSuccessRequest.json
               patient-deceased:
                 value:
-                  $ref: components/examples/SendErrorPatientDeceasedRequest.yaml
+                  $ref: components/examples/SendErrorPatientDeceasedRequest.json
         description: ''
       responses:
         '200':
           description: Successfully submitted
           content:
-            application/fhir+json:
+            text/plain:
               schema:
-                $ref: components/schemas/Bundle.yaml
-              examples:
-                example:
-                  value:
-                    $ref: components/examples/SendSuccessResponse.yaml
+                type: string
+                example: "Message Sent"
         '4XX':
           description: Invalid request.
           content:
@@ -220,318 +217,17 @@ paths:
             examples:
               example:
                 value:
-                  $ref: components/examples/ConvertSuccessRequest.yaml
+                  $ref: components/examples/ConvertSuccessRequest.json
         description: ''
       responses:
         '200':
-          description: |
-            Successfully converted prescription.
-
-            ### Body
-
-            application/xml
-
-            **Example**
-
-                <ParentPrescription classCode="INFO" moodCode="EVN">
-                    <id root="F68CEA42-E8A0-D799-C874-163048F0D390"/>
-                    <code codeSystem="2.16.840.1.113883.2.1.3.2.4.15" code="163501000000109" displayName="Prescription - FocusActOrEvent (record artifact)"/>
-                    <effectiveTime value="20200610120600"/>
-                    <typeId root="2.16.840.1.113883.2.1.3.2.4.18.7" extension="PORX_MT132004UK31"/>
-                    <recordTarget typeCode="RCT">
-                        <Patient classCode="PAT">
-                            <id root="2.16.840.1.113883.2.1.4.1" extension="9453740586"/>
-                            <addr use="H">
-                                <streetAddressLine>10 CRECY CLOSE</streetAddressLine>
-                                <streetAddressLine>DERBY</streetAddressLine>
-                                <postalCode>DE22 3JU</postalCode>
-                            </addr>
-                            <patientPerson classCode="PSN" determinerCode="INSTANCE">
-                                <name use="L">
-                                    <prefix>MR</prefix>
-                                    <given>HEADLEY</given>
-                                    <given>TED</given>
-                                    <family>PENSON</family>
-                                </name>
-                                <administrativeGenderCode codeSystem="2.16.840.1.113883.2.1.3.2.4.16.25" code="0"/>
-                                <birthTime value="19770327"/>
-                                <playedProviderPatient classCode="PAT">
-                                    <subjectOf typeCode="SBJ">
-                                        <patientCareProvision classCode="PCPR" moodCode="EVN">
-                                            <code codeSystem="2.16.840.1.113883.2.1.3.2.4.17.37" code="1"/>
-                                            <responsibleParty typeCode="RESP">
-                                                <healthCareProvider classCode="PROV">
-                                                    <id root="1.2.826.0.1285.0.1.10" extension="D81015"/>
-                                                </healthCareProvider>
-                                            </responsibleParty>
-                                        </patientCareProvision>
-                                    </subjectOf>
-                                </playedProviderPatient>
-                            </patientPerson>
-                        </Patient>
-                    </recordTarget>
-                    <pertinentInformation1 typeCode="PERT" contextConductionInd="true">
-                        <templateId root="2.16.840.1.113883.2.1.3.2.4.18.2" extension="CSAB_RM-NPfITUK10.pertinentInformation"/>
-                        <pertinentPrescription classCode="SBADM" moodCode="RQO">
-                            <id root="A7B86F8D-1D02-FC28-E050-D20AE3A215F0"/>
-                            <id root="2.16.840.1.113883.2.1.3.2.4.18.8" extension="4D62E6-D81015-07E5FD"/>
-                            <code codeSystem="2.16.840.1.113883.2.1.3.2.4.15" code="225426007" displayName="Administration of therapeutic substance (procedure)"/>
-                            <effectiveTime nullFlavor="NA"/>
-                            <author typeCode="AUT" contextControlCode="OP">
-                                <time value="20200610120600"/>
-                                <signatureText nullFlavor="NA"/>
-                                <AgentPerson classCode="AGNT">
-                                    <id root="1.2.826.0.1285.0.2.0.67" extension="100112897984"/>
-                                    <code codeSystem="1.2.826.0.1285.0.2.1.104" code="R0260"/>
-                                    <telecom use="WP" value="tel:01945700223"/>
-                                    <agentPerson classCode="PSN" determinerCode="INSTANCE">
-                                        <id root="1.2.826.0.1285.0.2.0.65" extension="8713353"/>
-                                        <name use="L">
-                                            <given>ANDREW</given>
-                                            <family>CHANDLER</family>
-                                        </name>
-                                    </agentPerson>
-                                    <representedOrganization classCode="ORG" determinerCode="INSTANCE">
-                                        <id root="1.2.826.0.1285.0.1.10" extension="D81015"/>
-                                        <code codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94" code="001"/>
-                                        <name>PARSON DROVE SURGERY</name>
-                                        <telecom use="WP" value="tel:01945700223"/>
-                                        <addr use="WP">
-                                            <streetAddressLine>240 MAIN ROAD</streetAddressLine>
-                                            <streetAddressLine>PARSON DROVE</streetAddressLine>
-                                            <streetAddressLine>WISBECH</streetAddressLine>
-                                            <streetAddressLine>CAMBRIDGESHIRE</streetAddressLine>
-                                            <postalCode>PE13 4JA</postalCode>
-                                        </addr>
-                                        <healthCareProviderLicense classCode="PROV">
-                                            <Organization classCode="ORG" determinerCode="INSTANCE">
-                                                <id root="1.2.826.0.1285.0.1.10" extension="5JK"/>
-                                                <code codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94" code="005"/>
-                                                <name>GREATER DERBY PCT</name>
-                                            </Organization>
-                                        </healthCareProviderLicense>
-                                    </representedOrganization>
-                                </AgentPerson>
-                            </author>
-                            <responsibleParty typeCode="RESP" contextControlCode="OP">
-                                <AgentPerson classCode="AGNT">
-                                    <id root="1.2.826.0.1285.0.2.0.67" extension="100112897984"/>
-                                    <code codeSystem="1.2.826.0.1285.0.2.1.104" code="R0260"/>
-                                    <telecom use="WP" value="tel:01945700223"/>
-                                    <agentPerson classCode="PSN" determinerCode="INSTANCE">
-                                        <id root="1.2.826.0.1285.0.2.0.65" extension="8713353"/>
-                                        <name use="L">
-                                            <given>ANDREW</given>
-                                            <family>CHANDLER</family>
-                                        </name>
-                                    </agentPerson>
-                                    <representedOrganization classCode="ORG" determinerCode="INSTANCE">
-                                        <id root="1.2.826.0.1285.0.1.10" extension="D81015"/>
-                                        <code codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94" code="001"/>
-                                        <name>PARSON DROVE SURGERY</name>
-                                        <telecom use="WP" value="tel:01945700223"/>
-                                        <addr use="WP">
-                                            <streetAddressLine>240 MAIN ROAD</streetAddressLine>
-                                            <streetAddressLine>PARSON DROVE</streetAddressLine>
-                                            <streetAddressLine>WISBECH</streetAddressLine>
-                                            <streetAddressLine>CAMBRIDGESHIRE</streetAddressLine>
-                                            <postalCode>PE13 4JA</postalCode>
-                                        </addr>
-                                        <healthCareProviderLicense classCode="PROV">
-                                            <Organization classCode="ORG" determinerCode="INSTANCE">
-                                                <id root="1.2.826.0.1285.0.1.10" extension="5JK"/>
-                                                <code codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94" code="005"/>
-                                                <name>GREATER DERBY PCT</name>
-                                            </Organization>
-                                        </healthCareProviderLicense>
-                                    </representedOrganization>
-                                </AgentPerson>
-                            </responsibleParty>
-                            <pertinentInformation5 typeCode="PERT" contextConductionInd="true">
-                                <seperatableInd value="false"/>
-                                <pertinentPrescriptionTreatmentType classCode="OBS" moodCode="EVN">
-                                    <code codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30" code="PTT"/>
-                                    <value codeSystem="2.16.840.1.113883.2.1.3.2.4.16.36" code="0003"/>
-                                </pertinentPrescriptionTreatmentType>
-                            </pertinentInformation5>
-                            <pertinentInformation1 typeCode="PERT" contextConductionInd="true">
-                                <seperatableInd value="true"/>
-                                <pertinentDispensingSitePreference classCode="OBS" moodCode="EVN">
-                                    <code codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30" code="DSP"/>
-                                    <value codeSystem="2.16.840.1.113883.2.1.3.2.4.17.21" code="0004"/>
-                                </pertinentDispensingSitePreference>
-                            </pertinentInformation1>
-                            <pertinentInformation2 typeCode="PERT" inversionInd="false" contextConductionInd="true" negationInd="false">
-                                <seperatableInd value="true"/>
-                                <templateId root="2.16.840.1.113883.2.1.3.2.4.18.2" extension="CSAB_RM-NPfITUK10.sourceOf2"/>
-                                <pertinentLineItem classCode="SBADM" moodCode="RQO">
-                                    <id root="A7B86F8D-1D81-FC28-E050-D20AE3A215F0"/>
-                                    <code codeSystem="2.16.840.1.113883.2.1.3.2.4.15" code="225426007" displayName="Administration of therapeutic substance (procedure)"/>
-                                    <effectiveTime nullFlavor="NA"/>
-                                    <product typeCode="PRD" contextControlCode="OP">
-                                        <manufacturedProduct classCode="MANU">
-                                            <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
-                                                <code codeSystem="2.16.840.1.113883.2.1.3.2.4.15" code="15748611000001101" displayName="DermaSilk round neck shirt adult female small (Espere Healthcare Ltd)"/>
-                                            </manufacturedRequestedMaterial>
-                                        </manufacturedProduct>
-                                    </product>
-                                    <component typeCode="COMP">
-                                        <seperatableInd value="false"/>
-                                        <lineItemQuantity classCode="SPLY" moodCode="RQO">
-                                            <code codeSystem="2.16.840.1.113883.2.1.3.2.4.15" code="373784005" displayName="Dispensing medication (procedure)"/>
-                                            <quantity value="1" unit="1">
-                                                <translation value="1" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" code="3318711000001107" displayName="device"/>
-                                            </quantity>
-                                        </lineItemQuantity>
-                                    </component>
-                                    <pertinentInformation2 typeCode="PERT" contextConductionInd="true">
-                                        <seperatableInd value="false"/>
-                                        <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
-                                            <code codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30" code="DI"/>
-                                            <value>As Directed</value>
-                                        </pertinentDosageInstructions>
-                                    </pertinentInformation2>
-                                </pertinentLineItem>
-                            </pertinentInformation2>
-                            <pertinentInformation2 typeCode="PERT" inversionInd="false" contextConductionInd="true" negationInd="false">
-                                <seperatableInd value="true"/>
-                                <templateId root="2.16.840.1.113883.2.1.3.2.4.18.2" extension="CSAB_RM-NPfITUK10.sourceOf2"/>
-                                <pertinentLineItem classCode="SBADM" moodCode="RQO">
-                                    <id root="A7B86F8D-1D86-FC28-E050-D20AE3A215F0"/>
-                                    <code codeSystem="2.16.840.1.113883.2.1.3.2.4.15" code="225426007" displayName="Administration of therapeutic substance (procedure)"/>
-                                    <effectiveTime nullFlavor="NA"/>
-                                    <product typeCode="PRD" contextControlCode="OP">
-                                        <manufacturedProduct classCode="MANU">
-                                            <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
-                                                <code codeSystem="2.16.840.1.113883.2.1.3.2.4.15" code="42111000001107" displayName="Microgynon 30 tablets (Bayer Plc)"/>
-                                            </manufacturedRequestedMaterial>
-                                        </manufacturedProduct>
-                                    </product>
-                                    <component typeCode="COMP">
-                                        <seperatableInd value="false"/>
-                                        <lineItemQuantity classCode="SPLY" moodCode="RQO">
-                                            <code codeSystem="2.16.840.1.113883.2.1.3.2.4.15" code="373784005" displayName="Dispensing medication (procedure)"/>
-                                            <quantity value="63" unit="1">
-                                                <translation value="63" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" code="428673006" displayName="tablet"/>
-                                            </quantity>
-                                        </lineItemQuantity>
-                                    </component>
-                                    <pertinentInformation2 typeCode="PERT" contextConductionInd="true">
-                                        <seperatableInd value="false"/>
-                                        <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
-                                            <code codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30" code="DI"/>
-                                            <value>As Directed</value>
-                                        </pertinentDosageInstructions>
-                                    </pertinentInformation2>
-                                </pertinentLineItem>
-                            </pertinentInformation2>
-                            <pertinentInformation2 typeCode="PERT" inversionInd="false" contextConductionInd="true" negationInd="false">
-                                <seperatableInd value="true"/>
-                                <templateId root="2.16.840.1.113883.2.1.3.2.4.18.2" extension="CSAB_RM-NPfITUK10.sourceOf2"/>
-                                <pertinentLineItem classCode="SBADM" moodCode="RQO">
-                                    <id root="A7B86F8D-1D8B-FC28-E050-D20AE3A215F0"/>
-                                    <code codeSystem="2.16.840.1.113883.2.1.3.2.4.15" code="225426007" displayName="Administration of therapeutic substance (procedure)"/>
-                                    <effectiveTime nullFlavor="NA"/>
-                                    <product typeCode="PRD" contextControlCode="OP">
-                                        <manufacturedProduct classCode="MANU">
-                                            <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
-                                                <code codeSystem="2.16.840.1.113883.2.1.3.2.4.15" code="7138411000001109" displayName="Nelaton catheter female 14Ch ZT02017182 (Unomedical Ltd)"/>
-                                            </manufacturedRequestedMaterial>
-                                        </manufacturedProduct>
-                                    </product>
-                                    <component typeCode="COMP">
-                                        <seperatableInd value="false"/>
-                                        <lineItemQuantity classCode="SPLY" moodCode="RQO">
-                                            <code codeSystem="2.16.840.1.113883.2.1.3.2.4.15" code="373784005" displayName="Dispensing medication (procedure)"/>
-                                            <quantity value="10" unit="1">
-                                                <translation value="10" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" code="3319911000001101" displayName="catheter"/>
-                                            </quantity>
-                                        </lineItemQuantity>
-                                    </component>
-                                    <pertinentInformation2 typeCode="PERT" contextConductionInd="true">
-                                        <seperatableInd value="false"/>
-                                        <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
-                                            <code codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30" code="DI"/>
-                                            <value>As Directed</value>
-                                        </pertinentDosageInstructions>
-                                    </pertinentInformation2>
-                                </pertinentLineItem>
-                            </pertinentInformation2>
-                            <pertinentInformation2 typeCode="PERT" inversionInd="false" contextConductionInd="true" negationInd="false">
-                                <seperatableInd value="true"/>
-                                <templateId root="2.16.840.1.113883.2.1.3.2.4.18.2" extension="CSAB_RM-NPfITUK10.sourceOf2"/>
-                                <pertinentLineItem classCode="SBADM" moodCode="RQO">
-                                    <id root="A7B86F8D-1D90-FC28-E050-D20AE3A215F0"/>
-                                    <code codeSystem="2.16.840.1.113883.2.1.3.2.4.15" code="225426007" displayName="Administration of therapeutic substance (procedure)"/>
-                                    <effectiveTime nullFlavor="NA"/>
-                                    <product typeCode="PRD" contextControlCode="OP">
-                                        <manufacturedProduct classCode="MANU">
-                                            <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
-                                                <code codeSystem="2.16.840.1.113883.2.1.3.2.4.15" code="20988311000001103" displayName="Optifast shake oral powder 54g sachets (Flavour Not Specified)"/>
-                                            </manufacturedRequestedMaterial>
-                                        </manufacturedProduct>
-                                    </product>
-                                    <component typeCode="COMP">
-                                        <seperatableInd value="false"/>
-                                        <lineItemQuantity classCode="SPLY" moodCode="RQO">
-                                            <code codeSystem="2.16.840.1.113883.2.1.3.2.4.15" code="373784005" displayName="Dispensing medication (procedure)"/>
-                                            <quantity value="54" unit="1">
-                                                <translation value="54" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" code="3318911000001109" displayName="sachet"/>
-                                            </quantity>
-                                        </lineItemQuantity>
-                                    </component>
-                                    <pertinentInformation2 typeCode="PERT" contextConductionInd="true">
-                                        <seperatableInd value="false"/>
-                                        <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
-                                            <code codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30" code="DI"/>
-                                            <value>As Directed</value>
-                                        </pertinentDosageInstructions>
-                                    </pertinentInformation2>
-                                </pertinentLineItem>
-                            </pertinentInformation2>
-                            <pertinentInformation8 typeCode="PERT" contextConductionInd="true">
-                                <seperatableInd value="false"/>
-                                <pertinentTokenIssued classCode="OBS" moodCode="EVN">
-                                    <code codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30" code="TI"/>
-                                    <value value="false"/>
-                                </pertinentTokenIssued>
-                            </pertinentInformation8>
-                            <pertinentInformation4 typeCode="PERT" contextConductionInd="true">
-                                <seperatableInd value="false"/>
-                                <pertinentPrescriptionType classCode="OBS" moodCode="EVN">
-                                    <code codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30" code="PT"/>
-                                    <value codeSystem="2.16.840.1.113883.2.1.3.2.4.17.25" code="0101"/>
-                                </pertinentPrescriptionType>
-                            </pertinentInformation4>
-                        </pertinentPrescription>
-                    </pertinentInformation1>
-                    <pertinentInformation2 typeCode="PERT">
-                        <templateId root="2.16.840.1.113883.2.1.3.2.4.18.2" extension="CSAB_RM-NPfITUK10.pertinentInformation1"/>
-                        <pertinentCareRecordElementCategory classCode="CATEGORY" moodCode="EVN">
-                            <code codeSystem="2.16.840.1.113883.2.1.3.2.4.15" code="185361000000102" displayName="Medication - care record element (record artifact)"/>
-                            <component typeCode="COMP">
-                                <actRef classCode="SBADM" moodCode="RQO">
-                                    <id root="A7B86F8D-1D81-FC28-E050-D20AE3A215F0"/>
-                                </actRef>
-                            </component>
-                            <component typeCode="COMP">
-                                <actRef classCode="SBADM" moodCode="RQO">
-                                    <id root="A7B86F8D-1D86-FC28-E050-D20AE3A215F0"/>
-                                </actRef>
-                            </component>
-                            <component typeCode="COMP">
-                                <actRef classCode="SBADM" moodCode="RQO">
-                                    <id root="A7B86F8D-1D8B-FC28-E050-D20AE3A215F0"/>
-                                </actRef>
-                            </component>
-                            <component typeCode="COMP">
-                                <actRef classCode="SBADM" moodCode="RQO">
-                                    <id root="A7B86F8D-1D90-FC28-E050-D20AE3A215F0"/>
-                                </actRef>
-                            </component>
-                        </pertinentCareRecordElementCategory>
-                    </pertinentInformation2>
-                </ParentPrescription>
+          description: Successfully submitted
+          content:
+            application/xml:
+              schema:
+                type: string
+                example:
+                  $ref: components/examples/ConvertSuccessResponse.xml
 components:
   schemas:
     Bundle:

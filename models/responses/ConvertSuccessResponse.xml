@@ -1,0 +1,343 @@
+<?xml encoding="UTF-8" version="1.0"?>
+<PORX_IN020101UK31 xmlns="urn:hl7-org:v3">
+    <id root="A7B86F8D-1DBD-FC28-E050-D20AE3A215F0"/>
+    <creationTime value="20200610102631"/>
+    <versionCode code="V3NPfIT3.0"/>
+    <interactionId extension="PORX_IN020101UK31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
+    <processingCode code="P"/>
+    <processingModeCode code="T"/>
+    <acceptAckCode code="NE"/>
+    <communicationFunctionRcv>
+        <device classCode="DEV" determinerCode="INSTANCE">
+            <id extension="000000000001" root="1.2.826.0.1285.0.2.0.107"/>
+        </device>
+    </communicationFunctionRcv>
+    <communicationFunctionSnd>
+        <device classCode="DEV" determinerCode="INSTANCE">
+            <id extension="000000000002" root="1.2.826.0.1285.0.2.0.107"/>
+        </device>
+    </communicationFunctionSnd>
+    <ControlActEvent classCode="CACT" moodCode="EVN">
+        <author typeCode="AUT">
+            <AgentPersonSDS classCode="AGNT">
+                <id extension="B0090,B0100,B1510" root="1.2.826.0.1285.0.2.0.67"/>
+                <agentPersonSDS classCode="PSN" determinerCode="INSTANCE">
+                    <id extension="687227875014" root="1.2.826.0.1285.0.2.0.65"/>
+                </agentPersonSDS>
+                <part typeCode="PART">
+                    <partSDSRole classCode="ROL">
+                        <id extension="S0080:G0450:R5080" root="1.2.826.0.1285.0.2.1.104"/>
+                    </partSDSRole>
+                </part>
+            </AgentPersonSDS>
+        </author>
+        <author1 typeCode="AUT">
+            <AgentSystemSDS classCode="AGNT">
+                <agentSystemSDS classCode="DEV" determinerCode="INSTANCE">
+                    <id extension="0000000003" root="1.2.826.0.1285.0.2.0.107"/>
+                </agentSystemSDS>
+            </AgentSystemSDS>
+        </author1>
+        <subject>
+            <ParentPrescription classCode="INFO" moodCode="EVN">
+                <id root="F68CEA42-E8A0-D799-C874-163048F0D390"/>
+                <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Prescription - FocusActOrEvent (record artifact)"/>
+                <effectiveTime value="20200610120600"/>
+                <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
+                <recordTarget typeCode="RCT">
+                    <Patient classCode="PAT">
+                        <id extension="9453740586" root="2.16.840.1.113883.2.1.4.1"/>
+                        <addr use="H">
+                            <streetAddressLine>10 CRECY CLOSE</streetAddressLine>
+                            <streetAddressLine>DERBY</streetAddressLine>
+                            <postalCode>DE22 3JU</postalCode>
+                        </addr>
+                        <patientPerson classCode="PSN" determinerCode="INSTANCE">
+                            <name use="L">
+                                <prefix>MR</prefix>
+                                <given>HEADLEY</given>
+                                <given>TED</given>
+                                <family>PENSON</family>
+                            </name>
+                            <administrativeGenderCode code="0" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.25"/>
+                            <birthTime value="19770327"/>
+                            <playedProviderPatient classCode="PAT">
+                                <subjectOf typeCode="SBJ">
+                                    <patientCareProvision classCode="PCPR" moodCode="EVN">
+                                        <code code="1" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.37"/>
+                                        <responsibleParty typeCode="RESP">
+                                            <healthCareProvider classCode="PROV">
+                                                <id extension="D81015" root="1.2.826.0.1285.0.1.10"/>
+                                            </healthCareProvider>
+                                        </responsibleParty>
+                                    </patientCareProvision>
+                                </subjectOf>
+                            </playedProviderPatient>
+                        </patientPerson>
+                    </Patient>
+                </recordTarget>
+                <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
+                    <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+                    <pertinentPrescription classCode="SBADM" moodCode="RQO">
+                        <id root="A7B86F8D-1D02-FC28-E050-D20AE3A215F0"/>
+                        <id extension="4D62E6-D81015-07E5FD" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+                        <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
+                        <effectiveTime nullFlavor="NA"/>
+                        <author contextControlCode="OP" typeCode="AUT">
+                            <time value="20200610120600"/>
+                            <signatureText nullFlavor="NA"/>
+                            <AgentPerson classCode="AGNT">
+                                <id extension="100112897984" root="1.2.826.0.1285.0.2.0.67"/>
+                                <code code="R0260" codeSystem="1.2.826.0.1285.0.2.1.104"/>
+                                <telecom use="WP" value="tel:01945700223"/>
+                                <agentPerson classCode="PSN" determinerCode="INSTANCE">
+                                    <id extension="8713353" root="1.2.826.0.1285.0.2.0.65"/>
+                                    <name use="L">
+                                        <given>ANDREW</given>
+                                        <family>CHANDLER</family>
+                                    </name>
+                                </agentPerson>
+                                <representedOrganization classCode="ORG" determinerCode="INSTANCE">
+                                    <id extension="D81015" root="1.2.826.0.1285.0.1.10"/>
+                                    <code code="001" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
+                                    <name>PARSON DROVE SURGERY</name>
+                                    <telecom use="WP" value="tel:01945700223"/>
+                                    <addr use="WP">
+                                        <streetAddressLine>240 MAIN ROAD</streetAddressLine>
+                                        <streetAddressLine>PARSON DROVE</streetAddressLine>
+                                        <streetAddressLine>WISBECH</streetAddressLine>
+                                        <streetAddressLine>CAMBRIDGESHIRE</streetAddressLine>
+                                        <postalCode>PE13 4JA</postalCode>
+                                    </addr>
+                                    <healthCareProviderLicense classCode="PROV">
+                                        <Organization classCode="ORG" determinerCode="INSTANCE">
+                                            <id extension="5JK" root="1.2.826.0.1285.0.1.10"/>
+                                            <code code="005" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
+                                            <name>GREATER DERBY PCT</name>
+                                        </Organization>
+                                    </healthCareProviderLicense>
+                                </representedOrganization>
+                            </AgentPerson>
+                        </author>
+                        <responsibleParty contextControlCode="OP" typeCode="RESP">
+                            <AgentPerson classCode="AGNT">
+                                <id extension="100112897984" root="1.2.826.0.1285.0.2.0.67"/>
+                                <code code="R0260" codeSystem="1.2.826.0.1285.0.2.1.104"/>
+                                <telecom use="WP" value="tel:01945700223"/>
+                                <agentPerson classCode="PSN" determinerCode="INSTANCE">
+                                    <id extension="8713353" root="1.2.826.0.1285.0.2.0.65"/>
+                                    <name use="L">
+                                        <given>ANDREW</given>
+                                        <family>CHANDLER</family>
+                                    </name>
+                                </agentPerson>
+                                <representedOrganization classCode="ORG" determinerCode="INSTANCE">
+                                    <id extension="D81015" root="1.2.826.0.1285.0.1.10"/>
+                                    <code code="001" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
+                                    <name>PARSON DROVE SURGERY</name>
+                                    <telecom use="WP" value="tel:01945700223"/>
+                                    <addr use="WP">
+                                        <streetAddressLine>240 MAIN ROAD</streetAddressLine>
+                                        <streetAddressLine>PARSON DROVE</streetAddressLine>
+                                        <streetAddressLine>WISBECH</streetAddressLine>
+                                        <streetAddressLine>CAMBRIDGESHIRE</streetAddressLine>
+                                        <postalCode>PE13 4JA</postalCode>
+                                    </addr>
+                                    <healthCareProviderLicense classCode="PROV">
+                                        <Organization classCode="ORG" determinerCode="INSTANCE">
+                                            <id extension="5JK" root="1.2.826.0.1285.0.1.10"/>
+                                            <code code="005" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
+                                            <name>GREATER DERBY PCT</name>
+                                        </Organization>
+                                    </healthCareProviderLicense>
+                                </representedOrganization>
+                            </AgentPerson>
+                        </responsibleParty>
+                        <pertinentInformation5 contextConductionInd="true" typeCode="PERT">
+                            <seperatableInd value="false"/>
+                            <pertinentPrescriptionTreatmentType classCode="OBS" moodCode="EVN">
+                                <code code="PTT" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                                <value code="0001" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.36"/>
+                            </pertinentPrescriptionTreatmentType>
+                        </pertinentInformation5>
+                        <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
+                            <seperatableInd value="true"/>
+                            <pertinentDispensingSitePreference classCode="OBS" moodCode="EVN">
+                                <code code="DSP" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                                <value code="0004" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.21"/>
+                            </pertinentDispensingSitePreference>
+                        </pertinentInformation1>
+                        <pertinentInformation2 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT">
+                            <seperatableInd value="true"/>
+                            <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+                            <pertinentLineItem classCode="SBADM" moodCode="RQO">
+                                <id root="A7B86F8D-1D81-FC28-E050-D20AE3A215F0"/>
+                                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
+                                <effectiveTime nullFlavor="NA"/>
+                                <product contextControlCode="OP" typeCode="PRD">
+                                    <manufacturedProduct classCode="MANU">
+                                        <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
+                                            <code code="15748611000001101" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="DermaSilk round neck shirt adult female small (Espere Healthcare Ltd)"/>
+                                        </manufacturedRequestedMaterial>
+                                    </manufacturedProduct>
+                                </product>
+                                <component typeCode="COMP">
+                                    <seperatableInd value="false"/>
+                                    <lineItemQuantity classCode="SPLY" moodCode="RQO">
+                                        <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
+                                        <quantity unit="1" value="1">
+                                            <translation code="3318711000001107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="device" value="1"/>
+                                        </quantity>
+                                    </lineItemQuantity>
+                                </component>
+                                <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
+                                    <seperatableInd value="false"/>
+                                    <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
+                                        <code code="DI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                                        <value>As Directed</value>
+                                    </pertinentDosageInstructions>
+                                </pertinentInformation2>
+                            </pertinentLineItem>
+                        </pertinentInformation2>
+                        <pertinentInformation2 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT">
+                            <seperatableInd value="true"/>
+                            <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+                            <pertinentLineItem classCode="SBADM" moodCode="RQO">
+                                <id root="A7B86F8D-1D86-FC28-E050-D20AE3A215F0"/>
+                                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
+                                <effectiveTime nullFlavor="NA"/>
+                                <product contextControlCode="OP" typeCode="PRD">
+                                    <manufacturedProduct classCode="MANU">
+                                        <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
+                                            <code code="42111000001107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Microgynon 30 tablets (Bayer Plc)"/>
+                                        </manufacturedRequestedMaterial>
+                                    </manufacturedProduct>
+                                </product>
+                                <component typeCode="COMP">
+                                    <seperatableInd value="false"/>
+                                    <lineItemQuantity classCode="SPLY" moodCode="RQO">
+                                        <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
+                                        <quantity unit="1" value="63">
+                                            <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="63"/>
+                                        </quantity>
+                                    </lineItemQuantity>
+                                </component>
+                                <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
+                                    <seperatableInd value="false"/>
+                                    <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
+                                        <code code="DI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                                        <value>As Directed</value>
+                                    </pertinentDosageInstructions>
+                                </pertinentInformation2>
+                            </pertinentLineItem>
+                        </pertinentInformation2>
+                        <pertinentInformation2 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT">
+                            <seperatableInd value="true"/>
+                            <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+                            <pertinentLineItem classCode="SBADM" moodCode="RQO">
+                                <id root="A7B86F8D-1D8B-FC28-E050-D20AE3A215F0"/>
+                                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
+                                <effectiveTime nullFlavor="NA"/>
+                                <product contextControlCode="OP" typeCode="PRD">
+                                    <manufacturedProduct classCode="MANU">
+                                        <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
+                                            <code code="7138411000001109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Nelaton catheter female 14Ch ZT02017182 (Unomedical Ltd)"/>
+                                        </manufacturedRequestedMaterial>
+                                    </manufacturedProduct>
+                                </product>
+                                <component typeCode="COMP">
+                                    <seperatableInd value="false"/>
+                                    <lineItemQuantity classCode="SPLY" moodCode="RQO">
+                                        <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
+                                        <quantity unit="1" value="10">
+                                            <translation code="3319911000001101" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="catheter" value="10"/>
+                                        </quantity>
+                                    </lineItemQuantity>
+                                </component>
+                                <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
+                                    <seperatableInd value="false"/>
+                                    <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
+                                        <code code="DI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                                        <value>As Directed</value>
+                                    </pertinentDosageInstructions>
+                                </pertinentInformation2>
+                            </pertinentLineItem>
+                        </pertinentInformation2>
+                        <pertinentInformation2 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT">
+                            <seperatableInd value="true"/>
+                            <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+                            <pertinentLineItem classCode="SBADM" moodCode="RQO">
+                                <id root="A7B86F8D-1D90-FC28-E050-D20AE3A215F0"/>
+                                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
+                                <effectiveTime nullFlavor="NA"/>
+                                <product contextControlCode="OP" typeCode="PRD">
+                                    <manufacturedProduct classCode="MANU">
+                                        <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
+                                            <code code="20988311000001103" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Optifast shake oral powder 54g sachets (Flavour Not Specified)"/>
+                                        </manufacturedRequestedMaterial>
+                                    </manufacturedProduct>
+                                </product>
+                                <component typeCode="COMP">
+                                    <seperatableInd value="false"/>
+                                    <lineItemQuantity classCode="SPLY" moodCode="RQO">
+                                        <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
+                                        <quantity unit="1" value="54">
+                                            <translation code="3318911000001109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="sachet" value="54"/>
+                                        </quantity>
+                                    </lineItemQuantity>
+                                </component>
+                                <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
+                                    <seperatableInd value="false"/>
+                                    <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
+                                        <code code="DI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                                        <value>As Directed</value>
+                                    </pertinentDosageInstructions>
+                                </pertinentInformation2>
+                            </pertinentLineItem>
+                        </pertinentInformation2>
+                        <pertinentInformation8 contextConductionInd="true" typeCode="PERT">
+                            <seperatableInd value="false"/>
+                            <pertinentTokenIssued classCode="OBS" moodCode="EVN">
+                                <code code="TI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                                <value value="false"/>
+                            </pertinentTokenIssued>
+                        </pertinentInformation8>
+                        <pertinentInformation4 contextConductionInd="true" typeCode="PERT">
+                            <seperatableInd value="false"/>
+                            <pertinentPrescriptionType classCode="OBS" moodCode="EVN">
+                                <code code="PT" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                                <value code="0101" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.25"/>
+                            </pertinentPrescriptionType>
+                        </pertinentInformation4>
+                    </pertinentPrescription>
+                </pertinentInformation1>
+                <pertinentInformation2 typeCode="PERT">
+                    <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+                    <pertinentCareRecordElementCategory classCode="CATEGORY" moodCode="EVN">
+                        <code code="185361000000102" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Medication - care record element (record artifact)"/>
+                        <component typeCode="COMP">
+                            <actRef classCode="SBADM" moodCode="RQO">
+                                <id root="A7B86F8D-1D81-FC28-E050-D20AE3A215F0"/>
+                            </actRef>
+                        </component>
+                        <component typeCode="COMP">
+                            <actRef classCode="SBADM" moodCode="RQO">
+                                <id root="A7B86F8D-1D86-FC28-E050-D20AE3A215F0"/>
+                            </actRef>
+                        </component>
+                        <component typeCode="COMP">
+                            <actRef classCode="SBADM" moodCode="RQO">
+                                <id root="A7B86F8D-1D8B-FC28-E050-D20AE3A215F0"/>
+                            </actRef>
+                        </component>
+                        <component typeCode="COMP">
+                            <actRef classCode="SBADM" moodCode="RQO">
+                                <id root="A7B86F8D-1D90-FC28-E050-D20AE3A215F0"/>
+                            </actRef>
+                        </component>
+                    </pertinentCareRecordElementCategory>
+                </pertinentInformation2>
+            </ParentPrescription>
+        </subject>
+    </ControlActEvent>
+</PORX_IN020101UK31>

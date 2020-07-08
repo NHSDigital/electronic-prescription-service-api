@@ -6,6 +6,7 @@ import * as prescriptions from "./hl7-v3-prescriptions"
 import * as fhir from "./fhir-resources"
 import * as crypto from "crypto-js"
 import moment from "moment"
+import {wrap} from "../resources/transport-wrapper"
 
 //TODO - is there a better way than returning Array<unknown>?
 export function getResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): Array<unknown> {
@@ -185,10 +186,8 @@ function convertResponsibleParty(
     return responsibleParty;
 }
 
-function convertPrescriptionPertinentInformation5() {
-    //TODO - implement
-    const prescriptionTreatmentTypeValue = new codes.PrescriptionTreatmentTypeCode("0003");
-    const prescriptionTreatmentType = new prescriptions.PrescriptionTreatmentType(prescriptionTreatmentTypeValue)
+function convertPrescriptionPertinentInformation5(fhirFirstMedicationRequest: fhir.MedicationRequest) {
+    const prescriptionTreatmentType = convertCourseOfTherapyType(fhirFirstMedicationRequest)
     return new prescriptions.PrescriptionPertinentInformation5(prescriptionTreatmentType);
 }
 
@@ -240,7 +239,7 @@ function convertBundleToPrescription(fhirBundle: fhir.Bundle) {
     hl7V3Prescription.author = convertAuthor(fhirBundle, fhirFirstMedicationRequest)
     hl7V3Prescription.responsibleParty = convertResponsibleParty(fhirBundle)
 
-    hl7V3Prescription.pertinentInformation5 = convertPrescriptionPertinentInformation5()
+    hl7V3Prescription.pertinentInformation5 = convertPrescriptionPertinentInformation5(fhirFirstMedicationRequest)
     hl7V3Prescription.pertinentInformation1 = convertPrescriptionPertinentInformation1()
     hl7V3Prescription.pertinentInformation2 = convertPrescriptionPertinentInformation2(fhirMedicationRequests)
     hl7V3Prescription.pertinentInformation8 = convertPrescriptionPertinentInformation8()
@@ -255,6 +254,29 @@ function convertProduct(medicationCodeableConcept: fhir.CodeableConcept) {
     const manufacturedRequestedMaterial = new prescriptions.ManufacturedRequestedMaterial(hl7V3MedicationCode);
     const manufacturedProduct = new prescriptions.ManufacturedProduct(manufacturedRequestedMaterial);
     return new prescriptions.Product(manufacturedProduct);
+}
+
+export function convertCourseOfTherapyType(fhirFirstMedicationRequest: fhir.MedicationRequest): prescriptions.PrescriptionTreatmentType {
+    const courseOfTherapyTypeCode = fhirFirstMedicationRequest
+        .courseOfTherapyType.coding.map(coding => coding.code)
+        .reduce(onlyElement)
+
+    const prescriptionTreatmentTypeCode = convertCourseOfTherapyTypeCode(courseOfTherapyTypeCode)
+    const hl7V3CourseOfTherapyTypeCode = new codes.PrescriptionTreatmentTypeCode(prescriptionTreatmentTypeCode);
+    return new prescriptions.PrescriptionTreatmentType(hl7V3CourseOfTherapyTypeCode);
+}
+
+function convertCourseOfTherapyTypeCode(courseOfTherapyTypeValue: string) {
+    switch (courseOfTherapyTypeValue) {
+        case "acute":
+            return "0001"
+        case "repeat":
+            return "0002"
+        case "repeat-dispensing":
+            return "0003"
+        default:
+            throw TypeError("Unhandled courseOfTherapyType use " + courseOfTherapyTypeValue)
+    }
 }
 
 function convertDosageInstructions(dosageInstruction: Array<fhir.Dosage>) {
@@ -465,11 +487,15 @@ function convertGender(fhirGender: string) {
 }
 
 export function convertFhirMessageToHl7V3ParentPrescription(fhirMessage: fhir.Bundle): string {
-    const root = {
-        ParentPrescription: convertBundleToParentPrescription(fhirMessage)
-    }
-    const options = {compact: true, ignoreComment: true, spaces: 4}
-    //TODO - canonicalize XML before returning?
+    const options = {
+        compact: true,
+        ignoreComment: true,
+        spaces: 4,
+        attributeValueFn: canonicaliseAttribute,
+        attributesFn: sortAttributes
+    } as unknown as XmlJs.Options.JS2XML
+    const root = wrap(convertBundleToParentPrescription(fhirMessage))
+    //TODO - call canonicalize function instead? this leaves spaces in which makes the response easier to read
     return XmlJs.js2xml(root, options)
 }
 
@@ -522,7 +548,11 @@ export function convertFhirMessageToHl7V3SignedInfo(fhirMessage: fhir.Bundle): s
     const fragmentsToBeHashedStr = writeXmlStringCanonicalized(fragmentsToBeHashed);
     const digestValue = crypto.SHA1(fragmentsToBeHashedStr).toString(crypto.enc.Base64)
     const signedInfo = convertSignatureFragmentsToSignedInfo(digestValue)
-    return writeXmlStringCanonicalized(signedInfo)
+    const xmlString = writeXmlStringCanonicalized(signedInfo)
+    const parameters = new fhir.Parameters([
+        { name: "message-digest", valueString: xmlString }
+    ])
+    return JSON.stringify(parameters,null,2)
 }
 
 function canonicaliseAttribute(attribute: string) {

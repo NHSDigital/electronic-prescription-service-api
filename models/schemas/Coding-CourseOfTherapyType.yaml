@@ -1,0 +1,28 @@
+type: object
+description: A reference to a code defined by the SNOMED CT system.
+required:
+  - system
+  - code
+properties:
+  system:
+    type: string
+    description: The identification of the code system that defines the meaning of the symbol in the code.
+    enum: 
+      - "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType"
+    example: "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType"
+  code:
+    type: string
+    description: A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).
+    enum: 
+      - "acute"
+      - "repeat"
+      - "repeat-dispensing"
+    example: "acute"
+  display:
+    type: string
+    description: A representation of the meaning of the code in the system, following the rules of the system.
+    enum: 
+      - "Acute"
+      - "Repeat"
+      - "Repeat Dispensing"
+    example: "Acute"

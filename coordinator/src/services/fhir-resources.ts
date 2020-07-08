@@ -29,6 +29,7 @@ export class MedicationRequest extends Resource {
     authoredOn?: string
     requester?: Reference<PractitionerRole>
     groupIdentifier?: MedicationRequestGroupIdentifier
+    courseOfTherapyType?: CodeableConcept
     dosageInstruction?: Array<Dosage>
     dispenseRequest?: MedicationRequestDispenseRequest
 }
@@ -136,6 +137,21 @@ export class OperationOutcomeIssue {
 export class OperationOutcome {
     resourceType: "OperationOutcome"
     issue: Array<OperationOutcomeIssue>
+}
+
+export class Parameters {
+    resourceType: string
+    parameter: Array<Parameter>
+
+    constructor(parameters: Array<Parameter>) {
+        this.resourceType = "Parameters"
+        this.parameter = parameters
+    }
+}
+
+export class Parameter {
+    name: string
+    valueString: string
 }
 
 abstract class Extension {
