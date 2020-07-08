@@ -167,7 +167,7 @@ function convertSignatureText(fhirBundle: fhir.Bundle, signatory: fhir.Reference
     if (requesterSignatures.length !== 0) {
         const requesterSignature = requesterSignatures.reduce(onlyElement)
         const signatureData = requesterSignature.data
-        const decodedSignatureData = new Buffer(signatureData, "base64").toString("utf-8")
+        const decodedSignatureData = Buffer.from(signatureData, "base64").toString("utf-8")
         return XmlJs.xml2js(decodedSignatureData, {compact: true})
     }
     return core.Null.NOT_APPLICABLE

@@ -10,6 +10,14 @@ import * as fhir from "../../src/services/fhir-resources"
 import * as TestResources from "../resources/test-resources"
 import * as XmlJs from "xml-js"
 
+jest.mock('uuid', () => {
+    return {
+        v4: () => {
+            return "A7B86F8D-1DBD-FC28-E050-D20AE3A215F0"
+        }
+    }
+})
+
 function clone<T>(input: T) {
     return JSON.parse(JSON.stringify(input))
 }
@@ -109,11 +117,12 @@ test(
 )
 
 test(
-    "convertFhirMessageToHl7V3ParentPrescription returns correct value",
-    xmlTest(
-        XmlJs.xml2js(translator.convertFhirMessageToHl7V3ParentPrescription(TestResources.examplePrescription1.fhirMessageSigned), {compact: true}),
-        TestResources.examplePrescription1.hl7V3Message
-    )
+    "convertFhirMessageToHl7V3ParentPrescription returns correct value", () => {
+        xmlTest(
+            XmlJs.xml2js(translator.convertFhirMessageToHl7V3ParentPrescription(TestResources.examplePrescription1.fhirMessageSigned), {compact: true}),
+            TestResources.examplePrescription1.hl7V3Message
+        )()
+    }
 )
 
 function xmlTest(actualRoot: XmlJs.ElementCompact, expectedRoot: XmlJs.ElementCompact) {
