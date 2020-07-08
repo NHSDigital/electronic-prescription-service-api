@@ -160,3 +160,12 @@ abstract class Extension {
 export class IdentifierExtension extends Extension {
     valueIdentifier: Identifier
 }
+
+class Signature {
+    who: Reference<PractitionerRole>
+    data: string
+}
+
+export class Provenance extends Resource {
+    signature: Array<Signature>
+}

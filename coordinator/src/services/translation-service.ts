@@ -160,6 +160,19 @@ function convertPrescriptionIds(
     ]
 }
 
+function convertSignatureText(fhirBundle: fhir.Bundle, signatory: fhir.Reference<fhir.PractitionerRole>) {
+    const fhirProvenances = getResourcesOfType(fhirBundle, "Provenance") as Array<fhir.Provenance>
+    const requesterSignatures = fhirProvenances.flatMap(provenance => provenance.signature)
+        .filter(signature => signature.who.reference === signatory.reference)
+    if (requesterSignatures.length !== 0) {
+        const requesterSignature = requesterSignatures.reduce(onlyElement)
+        const signatureData = requesterSignature.data
+        const decodedSignatureData = new Buffer(signatureData, "base64").toString("utf-8")
+        return XmlJs.xml2js(decodedSignatureData, {compact: true})
+    }
+    return core.Null.NOT_APPLICABLE
+}
+
 function convertAuthor(
     fhirBundle: fhir.Bundle,
     fhirFirstMedicationRequest: fhir.MedicationRequest,
@@ -167,8 +180,7 @@ function convertAuthor(
 ) {
     const hl7V3Author = new prescriptions.Author()
     hl7V3Author.time = convertDateTime(fhirFirstMedicationRequest.authoredOn)
-    // TODO implement signatureText
-    hl7V3Author.signatureText = core.Null.NOT_APPLICABLE
+    hl7V3Author.signatureText = convertSignatureText(fhirBundle, fhirFirstMedicationRequest.requester)
     const fhirAuthorPractitionerRole = resolveReference(fhirBundle, fhirFirstMedicationRequest.requester)
     hl7V3Author.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirAuthorPractitionerRole)
     return hl7V3Author;
@@ -548,9 +560,9 @@ export function convertFhirMessageToHl7V3SignedInfo(fhirMessage: fhir.Bundle): s
     const signedInfo = convertSignatureFragmentsToSignedInfo(digestValue)
     const xmlString = writeXmlStringCanonicalized(signedInfo)
     const parameters = new fhir.Parameters([
-        { name: "message-digest", valueString: xmlString }
+        {name: "message-digest", valueString: xmlString}
     ])
-    return JSON.stringify(parameters,null,2)
+    return JSON.stringify(parameters, null, 2)
 }
 
 function canonicaliseAttribute(attribute: string) {

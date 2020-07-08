@@ -1,4 +1,5 @@
 import * as translationService from "../../src/services/translation-service"
+import * as translator from "../../src/services/translation-service"
 import {
     convertBundleToParentPrescription,
     convertFhirMessageToHl7V3SignedInfo,
@@ -8,32 +9,31 @@ import {
 import * as fhir from "../../src/services/fhir-resources"
 import * as TestResources from "../resources/test-resources"
 import * as XmlJs from "xml-js"
-import {wrap} from "../../src/resources/transport-wrapper";
 
 function clone<T>(input: T) {
     return JSON.parse(JSON.stringify(input))
 }
 
 test('getResourcesOfType returns correct resources', () => {
-    const result = translationService.getResourcesOfType(TestResources.examplePrescription1.fhirMessage, "MedicationRequest")
+    const result = translationService.getResourcesOfType(TestResources.examplePrescription1.fhirMessageUnsigned, "MedicationRequest")
     expect(result).toBeInstanceOf(Array)
     expect(result).toHaveLength(4)
     result.map(x => expect((x as fhir.Resource).resourceType).toBe("MedicationRequest"))
 })
 
 test('getResourceForFullUrl returns correct resources', () => {
-    const result = translationService.getResourceForFullUrl(TestResources.examplePrescription1.fhirMessage, "urn:uuid:A7B86F8D-1D81-FC28-E050-D20AE3A215F0")
+    const result = translationService.getResourceForFullUrl(TestResources.examplePrescription1.fhirMessageUnsigned, "urn:uuid:A7B86F8D-1D81-FC28-E050-D20AE3A215F0")
     expect((result as fhir.Resource).resourceType).toBe("MedicationRequest")
 })
 
 test('getResourceForFullUrl throws error when finding multiple resources', () => {
-    const bundle2 = clone(TestResources.examplePrescription1.fhirMessage)
+    const bundle2 = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     bundle2.entry[1].fullUrl = bundle2.entry[0].fullUrl
     expect(() => translationService.getResourceForFullUrl(bundle2, bundle2.entry[0].fullUrl)).toThrow(TypeError)
 })
 
 test('convertCourseOfTherapyType returns "0001" prescription treatment type code when first therapy type code is "acute"', () => {
-    const bundle2 = clone(TestResources.examplePrescription1.fhirMessage)
+    const bundle2 = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     const fhirMedicationRequests = translationService.getResourcesOfType(bundle2, "MedicationRequest") as Array<fhir.MedicationRequest>
     const firstFhirMedicationRequest = fhirMedicationRequests[0]
     firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = "acute"
@@ -42,7 +42,7 @@ test('convertCourseOfTherapyType returns "0001" prescription treatment type code
 })
 
 test('convertCourseOfTherapyType returns "0002" prescription treatment type code when first therapy type code is "repeat"', () => {
-    const bundle2 = clone(TestResources.examplePrescription1.fhirMessage)
+    const bundle2 = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     const fhirMedicationRequests = translationService.getResourcesOfType(bundle2, "MedicationRequest") as Array<fhir.MedicationRequest>
     const firstFhirMedicationRequest = fhirMedicationRequests[0]
     firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = "repeat"
@@ -51,7 +51,7 @@ test('convertCourseOfTherapyType returns "0002" prescription treatment type code
 })
 
 test('convertCourseOfTherapyType returns "0003" prescription treatment type code when first therapy type code is "repeat-dispensing"', () => {
-    const bundle2 = clone(TestResources.examplePrescription1.fhirMessage)
+    const bundle2 = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     const fhirMedicationRequests = translationService.getResourcesOfType(bundle2, "MedicationRequest") as Array<fhir.MedicationRequest>
     const firstFhirMedicationRequest = fhirMedicationRequests[0]
     firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = "repeat-dispensing"
@@ -60,13 +60,13 @@ test('convertCourseOfTherapyType returns "0003" prescription treatment type code
 })
 
 test('getIdentifierValueForSystem returns correct value for system', () => {
-    const practitioner = translationService.getResourceForFullUrl(TestResources.examplePrescription1.fhirMessage, "urn:uuid:D4B569E7-CCF6-4BB2-029B-34B6F3E82ACF") as fhir.Practitioner
+    const practitioner = translationService.getResourceForFullUrl(TestResources.examplePrescription1.fhirMessageUnsigned, "urn:uuid:D4B569E7-CCF6-4BB2-029B-34B6F3E82ACF") as fhir.Practitioner
     const result = translationService.getIdentifierValueForSystem(practitioner.identifier, "https://fhir.nhs.uk/Id/sds-role-profile-id")
     expect(result).toBe("100112897984")
 })
 
 test('getIdentifierValueForSystem throws error when finding multiple values for system', () => {
-    const practitioner = translationService.getResourceForFullUrl(TestResources.examplePrescription1.fhirMessage, "urn:uuid:D4B569E7-CCF6-4BB2-029B-34B6F3E82ACF") as fhir.Practitioner
+    const practitioner = translationService.getResourceForFullUrl(TestResources.examplePrescription1.fhirMessageUnsigned, "urn:uuid:D4B569E7-CCF6-4BB2-029B-34B6F3E82ACF") as fhir.Practitioner
     const identifier = clone(practitioner.identifier)
     identifier[0].system = identifier[1].system
     expect(() => translationService.getIdentifierValueForSystem(identifier, identifier[1].system)).toThrow()
@@ -75,7 +75,7 @@ test('getIdentifierValueForSystem throws error when finding multiple values for 
 test(
     "convertBundleToParentPrescription returns correct value",
     xmlTest(
-        convertBundleToParentPrescription(TestResources.examplePrescription1.fhirMessage),
+        convertBundleToParentPrescription(TestResources.examplePrescription1.fhirMessageSigned),
         TestResources.examplePrescription1.hl7V3ParentPrescription
     )
 )
@@ -95,7 +95,7 @@ test("writeXmlStringCanonicalized returns correct value", () => {
 })
 
 test("convertFhirMessageToHl7V3SignedInfo returns correct value", () => {
-    const actualOutput = convertFhirMessageToHl7V3SignedInfo(TestResources.examplePrescription1.fhirMessage)
+    const actualOutput = convertFhirMessageToHl7V3SignedInfo(TestResources.examplePrescription1.fhirMessageUnsigned)
     const expectedOutput = JSON.stringify(TestResources.examplePrescription1.fhirMessageDigest, null, 2)
     expect(actualOutput).toEqual(expectedOutput)
 })
@@ -103,15 +103,15 @@ test("convertFhirMessageToHl7V3SignedInfo returns correct value", () => {
 test(
     "convertBundleToParentPrescription returns correct value with nominated pharmacy",
     xmlTest(
-        convertBundleToParentPrescription(TestResources.examplePrescription2.fhirMessage),
+        convertBundleToParentPrescription(TestResources.examplePrescription2.fhirMessageSigned),
         TestResources.examplePrescription2.hl7V3ParentPrescription
     )
 )
 
 test(
-    "convertFhirMessageToHl7V3ParentPrescription returns correct value with wrapper",
+    "convertFhirMessageToHl7V3ParentPrescription returns correct value",
     xmlTest(
-        wrap(convertBundleToParentPrescription(TestResources.examplePrescription1.fhirMessage)),
+        XmlJs.xml2js(translator.convertFhirMessageToHl7V3ParentPrescription(TestResources.examplePrescription1.fhirMessageSigned), {compact: true}),
         TestResources.examplePrescription1.hl7V3Message
     )
 )

@@ -17,7 +17,7 @@ const httpsAgent = new https.Agent({
 });
 
 async function request(message: string) {
-    const wrappedMessage = addEbXmlWrapper(message).replace(/\n/g, "\r\n")
+    const wrappedMessage = addEbXmlWrapper(message)
     try {
         const result = await axios.post(
             'https://veit07.devspineservices.nhs.uk/reliablemessaging/reliablerequest',
