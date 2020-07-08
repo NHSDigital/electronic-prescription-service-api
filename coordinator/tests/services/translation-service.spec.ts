@@ -117,12 +117,11 @@ test(
 )
 
 test(
-    "convertFhirMessageToHl7V3ParentPrescription returns correct value", () => {
-        xmlTest(
-            XmlJs.xml2js(translator.convertFhirMessageToHl7V3ParentPrescription(TestResources.examplePrescription1.fhirMessageSigned), {compact: true}),
-            TestResources.examplePrescription1.hl7V3Message
-        )()
-    }
+    "convertFhirMessageToHl7V3ParentPrescription returns correct value",
+    xmlTest(
+        XmlJs.xml2js(translator.convertFhirMessageToHl7V3ParentPrescription(TestResources.examplePrescription1.fhirMessageSigned), {compact: true}),
+        TestResources.examplePrescription1.hl7V3Message
+    )
 )
 
 function xmlTest(actualRoot: XmlJs.ElementCompact, expectedRoot: XmlJs.ElementCompact) {
