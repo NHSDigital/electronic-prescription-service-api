@@ -55,33 +55,6 @@ jobs:
       - bash: "curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip && unzip awscliv2.zip && sudo ./aws/install"
         displayName: Install AWS CLI
 
-      - task: Cache@2
-        displayName: "Cache Python Dependencies"
-        inputs:
-          key: '"$(Agent.OS)" | "python" | poetry.lock'
-          path: ".poetry"
-          restoreKeys: |
-            "$(Agent.OS)" | "python" | poetry.lock
-            "$(Agent.OS)" | "pythons"
-
-      - task: Cache@2
-        displayName: "Cache Specification NPM Dependencies"
-        inputs:
-          key: '"$(Agent.OS)" | "node" | specification/package-lock.json'
-          path: "specification/node_modules"
-          restoreKeys: |
-            "$(Agent.OS)" | "node-specification" | specification/package-lock.json
-            "$(Agent.OS)" | "node-specification"
-
-      - task: Cache@2
-        displayName: "Cache Coordinator NPM Dependencies"
-        inputs:
-          key: '"$(Agent.OS)" | "node-coordinator" | coordinator/package-lock.json'
-          path: "coordinator/node_modules"
-          restoreKeys: |
-            "$(Agent.OS)" | "node-coordinator" | coordinator/package-lock.json
-            "$(Agent.OS)" | "node-coordinator"
-
       - bash: "make install"
         displayName: Install repo
 
@@ -127,7 +100,7 @@ jobs:
         parameters:
             env_vars_dir: 'dist'
 
-      - bash: "scripts/copy_secrets_to_ssm.sh"
+      - bash: "scripts/populate_ssm_parameters.sh"
         displayName: Copy secrets from secrets manager to SSM
 
       - publish: dist/

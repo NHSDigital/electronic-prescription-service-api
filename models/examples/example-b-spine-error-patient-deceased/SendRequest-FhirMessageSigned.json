@@ -361,15 +361,15 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca",
+      "fullUrl": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA",
       "resource": {
         "resourceType": "PractitionerRole",
-        "id": "dbaa616b-e23c-4d53-0f82-b2d178db79ca",
+        "id": "DBAA616B-E23C-4D53-0F82-B2D178DB79CA",
         "practitioner": {
-          "reference": "urn:uuid:d4b569e7-ccf6-4bb2-029b-34b6f3e82acf"
+          "reference": "urn:uuid:D4B569E7-CCF6-4BB2-029B-34B6F3E82ACF"
         },
         "organization": {
-          "reference": "urn:uuid:b65dd3a2-9551-45a3-3e9d-342f8de14d8f"
+          "reference": "urn:uuid:B65DD3A2-9551-45A3-3E9D-342F8DE14D8F"
         }
       }
     },
