@@ -32,4 +32,4 @@ docker_service:
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/sub-ca-certificate'
     health_check:
         matcher: "200"
-        path: "/Health"
+        path: "/_status"
