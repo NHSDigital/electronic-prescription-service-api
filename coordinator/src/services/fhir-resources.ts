@@ -135,16 +135,15 @@ export class OperationOutcomeIssue {
 }
 
 export class OperationOutcome {
-    resourceType: "OperationOutcome"
+    readonly resourceType = "OperationOutcome"
     issue: Array<OperationOutcomeIssue>
 }
 
 export class Parameters {
-    resourceType: string
+    readonly resourceType = "Parameters"
     parameter: Array<Parameter>
 
     constructor(parameters: Array<Parameter>) {
-        this.resourceType = "Parameters"
         this.parameter = parameters
     }
 }
@@ -160,4 +159,13 @@ abstract class Extension {
 
 export class IdentifierExtension extends Extension {
     valueIdentifier: Identifier
+}
+
+class Signature {
+    who: Reference<PractitionerRole>
+    data: string
+}
+
+export class Provenance extends Resource {
+    signature: Array<Signature>
 }

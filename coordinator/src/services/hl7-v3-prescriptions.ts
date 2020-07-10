@@ -15,7 +15,7 @@ export class Author implements ElementCompact {
     }
 
     time: core.Timestamp
-    signatureText: core.Null
+    signatureText: core.Null | ElementCompact
     AgentPerson: peoplePlaces.AgentPerson
 }
 

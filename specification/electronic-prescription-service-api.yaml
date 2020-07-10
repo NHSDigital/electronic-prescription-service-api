@@ -115,7 +115,7 @@ paths:
             examples:
               example:
                 value:
-                  $ref: components/examples/PrepareSuccessRequest.json
+                  $ref: components/examples/example-1-repeat/PrepareRequest-FhirMessageUnsigned.json
         description: ''
       responses:
         '200':
@@ -128,7 +128,7 @@ paths:
               examples:
                 example:
                   value:
-                    $ref: components/examples/PrepareSuccessResponse.yaml
+                    $ref: components/examples/example-1-repeat/PrepareResponse-FhirMessageDigest.json
         '4XX':
           description: Invalid request.
           content:
@@ -138,7 +138,7 @@ paths:
               examples:
                 example:
                   value:
-                    $ref: components/examples/ClientErrorResponse.yaml
+                    $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
         '5XX':
           description: Server error.
           content:
@@ -148,7 +148,7 @@ paths:
               examples:
                 example:
                   value:
-                    $ref: components/examples/ServerErrorResponse.yaml
+                    $ref: components/examples/example-c-unhandled-error/Response-FhirError.json
           headers: {}
   /Send:
     post:
@@ -167,10 +167,10 @@ paths:
             examples:
               success:
                 value:
-                  $ref: components/examples/SendSuccessRequest.json
+                  $ref: components/examples/example-1-repeat/SendRequest-FhirMessageSigned.json
               patient-deceased:
                 value:
-                  $ref: components/examples/SendErrorPatientDeceasedRequest.json
+                  $ref: components/examples/example-b-spine-error-patient-deceased/SendRequest-FhirMessageSigned.json
         description: ''
       responses:
         '200':
@@ -189,7 +189,7 @@ paths:
               examples:
                 example:
                   value:
-                    $ref: components/examples/ClientErrorResponse.yaml
+                    $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
         '5XX':
           description: Server error.
           content:
@@ -199,7 +199,7 @@ paths:
               examples:
                 patient-deceased:
                   value:
-                    $ref: components/examples/SendErrorPatientDeceasedResponse.yaml
+                    $ref: components/examples/example-b-spine-error-patient-deceased/SendResponse-FhirError.json
           headers: {}
   /Convert:
     post:
@@ -217,7 +217,7 @@ paths:
             examples:
               example:
                 value:
-                  $ref: components/examples/ConvertSuccessRequest.json
+                  $ref: components/examples/example-1-repeat/SendRequest-FhirMessageSigned.json
         description: ''
       responses:
         '200':
@@ -227,7 +227,27 @@ paths:
               schema:
                 type: string
                 example:
-                  $ref: components/examples/ConvertSuccessResponse.xml
+                  $ref: components/examples/example-1-repeat/ConvertResponse-Hl7V3Message.xml
+        '4XX':
+          description: Invalid request.
+          content:
+            application/fhir+json:
+              schema:
+                $ref: components/schemas/OperationOutcome-4XX.yaml
+              examples:
+                example:
+                  value:
+                    $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
+        '5XX':
+          description: Server error.
+          content:
+            application/fhir+json:
+              schema:
+                $ref: components/schemas/OperationOutcome-5XX.yaml
+              examples:
+                example:
+                  value:
+                    $ref: components/examples/example-c-unhandled-error/Response-FhirError.json
 components:
   schemas:
     Bundle:

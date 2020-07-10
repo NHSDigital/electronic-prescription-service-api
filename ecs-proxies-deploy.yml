@@ -9,21 +9,27 @@ docker_service:
           value: production
         - name: LOG_LEVEL
           value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
+        - name: SANDBOX
+          value: "{{ SANDBOX }}"
     secrets:
         - name: CLIENT_KEY
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/private-key'
         - name: CLIENT_CERT
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/certificate'
         - name: FROM_ASID
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/asid'
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/from-asid'
         - name: TO_ASID
-          valueFrom: '/{{ account }}/platform-common/veit07.devspineservices.nhs.uk/asid'
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-asid'
         - name: FROM_PARTY_KEY
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/party-key'
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/from-party-key'
         - name: TO_PARTY_KEY
-          valueFrom: '/{{ account }}/platform-common/veit07.devspineservices.nhs.uk/party-key'
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-party-key'
         - name: CPA_ID_MAP
-          valueFrom: '/{{ account }}/platform-common/veit07.devspineservices.nhs.uk/cpa-id-map'
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/cpa-id-map'
+        - name: ROOT_CA_CERT
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/root-ca-certificate'
+        - name: SUB_CA_CERT
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/sub-ca-certificate'
     health_check:
         matcher: "200"
         path: "/Health"
