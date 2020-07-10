@@ -5,7 +5,6 @@
 This is a RESTful HL7® FHIR® API specification for the *Electronic Prescription Service API*.
 
 * `specification/` This [Open API Specification](https://swagger.io/docs/specification/about/) describes the endpoints, methods and messages exchanged by the API. Use it to generate interactive documentation; the contract between the API and its consumers.
-* `sandbox/` This NodeJS application implements a mock implementation of the service. Use it as a back-end service to the interactive documentation to illustrate interactions and concepts. It is not intended to provide an exhaustive/faithful environment suitable for full development and testing.
 * `scripts/` Utilities helpful to developers of this specification.
 * `proxies/` Apigee API Proxies
 * `coordinator/` Deals with message translation and distribution to other services. Backend for the production EPS FHIR API.
@@ -43,13 +42,19 @@ Various scripts and commands rely on environment variables being set. These are 
 :bulb: Consider using [direnv](https://direnv.net/) to manage your environment variables during development and maintaining your own `.envrc` file - the values of these variables will be specific to you and/or sensitive.
 
 ### Make commands
-There are `make` commands that alias some of this functionality:
- * `test` -- Performs quality checks including linting, licence checking of dependencies and unit/low level integration tests
- * `build` -- Outputs the FHIR R4 validated models and artifacts for the: specification, sandbox, coordinator and apigee proxies into the corresponding `dist/` directories
- * `release` -- Pulls all the artifacts for the individual components together and arranges them in a format ready to deploy; used mainly by CI but useful to check the output matches expectations
+There are further `make` commands that help alias some functionality during development.
+
+#### Common commands
+Common commands needed for development can be run by running the default `make` command. This outputs to `build.log` and runs the following targets:
+
  * `clean` -- Removes the output from the build and release commands
+ * `install` -- Installs package dependencies for all components
+ * `build` -- Outputs the FHIR R4 validated models and artifacts for the: specification, coordinator and apigee proxies into the corresponding `dist/` directories
+ * `test` -- Performs quality checks including linting, licence checking of dependencies and unit/low level integration tests
+ * `release` -- Pulls all the artifacts for the individual components together and arranges them in a format ready to deploy; used mainly by CI but useful to check the output matches expectations
+   
+#### Run commands
  * `run-specification` -- Serves a preview of the specification in human-readable format
- * `run-sandbox` -- Run the sandbox locally
  * `run-coordinator` -- Run the coordinator locally
 
 All `run-*` make targets rely on the corresponding `build-*` make targets, the `build` make target will run all of these
@@ -58,29 +63,23 @@ Make `build-models` is a dependency for all other `build-*` targets, the `build`
 
 ### Running tests
 #### Unit and Integration tests
-To run tests for the sandbox: while in the sandbox folder, run
-```
-npm t
-```
 To run tests for the coordinator: while in the coordinator folder, run
 ```
 npm t
 ```
 
 #### End-to-end tests
-To run e2e tests for the sandbox, you need to supply an environment. A `local` environment and an environment template are included under `tests/e2e/environments`.
-
-In order for tests under the make target `test-sandbox` to work, you must have built and be running the sandbox server locally. In a seperate shell run:
+In order for tests under the make target `test-integration-coordinator` to work, you must have built and be running the coordindator locally. In a seperate shell run:
 
 ```
 make build
-make run-sandbox
+make run-coordinator
 ```
 
-Once the sandbox is up and displaying the port number, in another shell run:
+Once the coordinator is up and displaying the port number, in another shell run:
 
 ```
-make test-sandbox
+make test-integration-coordindator
 ```
 
 To run all other tests locally (includes unit and low level integration tests): while in the root folder, run
@@ -89,10 +88,6 @@ To run all other tests locally (includes unit and low level integration tests): 
 make build
 make test
 ```
-
-There is a template environment file available at `tests/e2e/environments/postman_environment.json.template` useful for configuring different testing environments (such as on the CI server).
-
-The makefile sets defaults for the environment variables required for local testing, the CI server overrides these.
 
 ### VS Code Plugins
 
@@ -116,7 +111,7 @@ Speccy does the lifting for the following npm scripts:
 
 (Workflow detailed in a [post](https://developerjack.com/blog/2018/maintaining-large-design-first-api-specs/) on the *developerjack* blog.)
 
-:bulb: The `resolve` command is useful when uploading to Apigee which requires the spec as a single file.
+:bulb: The `resolve -i` command is useful when uploading to Apigee which requires the spec as a single file. The `-i` argument ensures that all `$ref`'s are replaced with the referenced file or internal object's content
 
 ### Caveats
 

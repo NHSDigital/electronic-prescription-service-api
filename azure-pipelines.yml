@@ -10,10 +10,7 @@ resources:
 trigger:
   branches:
     include:
-      - tags/refs/v*
-  tags:
-    include:
-      - v*
+      - master
 
 pr:
   branches:
@@ -55,41 +52,8 @@ jobs:
       - bash: "python -m pip install --upgrade pip setuptools wheel && pip install poetry"
         displayName: Install python dependencies
 
-      - task: Cache@2
-        displayName: "Cache Python Dependencies"
-        inputs:
-          key: '"$(Agent.OS)" | "python" | poetry.lock'
-          path: ".poetry"
-          restoreKeys: |
-            "$(Agent.OS)" | "python" | poetry.lock
-            "$(Agent.OS)" | "pythons"
-
-      - task: Cache@2
-        displayName: "Cache Specification NPM Dependencies"
-        inputs:
-          key: '"$(Agent.OS)" | "node" | specification/package-lock.json'
-          path: "specification/node_modules"
-          restoreKeys: |
-            "$(Agent.OS)" | "node-specification" | specification/package-lock.json
-            "$(Agent.OS)" | "node-specification"
-
-      - task: Cache@2
-        displayName: "Cache Sandbox NPM Dependencies"
-        inputs:
-          key: '"$(Agent.OS)" | "node-sandbox" | sandbox/package-lock.json'
-          path: "sandbox/node_modules"
-          restoreKeys: |
-            "$(Agent.OS)" | "node-sandbox" | sandbox/package-lock.json
-            "$(Agent.OS)" | "node-sandbox"
-
-      - task: Cache@2
-        displayName: "Cache Coordinator NPM Dependencies"
-        inputs:
-          key: '"$(Agent.OS)" | "node-coordinator" | coordinator/package-lock.json'
-          path: "coordinator/node_modules"
-          restoreKeys: |
-            "$(Agent.OS)" | "node-coordinator" | coordinator/package-lock.json
-            "$(Agent.OS)" | "node-coordinator"
+      - bash: "curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip && unzip awscliv2.zip && sudo ./aws/install"
+        displayName: Install AWS CLI
 
       - bash: "make install"
         displayName: Install repo
@@ -97,8 +61,8 @@ jobs:
       - bash: "make build"
         displayName: Build
 
-      - bash: "make run-sandbox &"
-        displayName: Start Sandbox Server
+      - bash: "make run-coordinator &"
+        displayName: Start Coordinator
 
       - bash: "make test"
         displayName: Run Quality Checks
@@ -106,8 +70,8 @@ jobs:
       - bash: 'echo "##vso[task.setvariable variable=SPEC_VERSION]$(poetry run python scripts/calculate_version.py)"'
         displayName: Set SPEC_VERSION
 
-      - bash: "make test-sandbox"
-        displayName: Run Sandbox Integration Tests
+      - bash: "make test-integration-coordinator"
+        displayName: Run Coordinator Integration Tests
 
       - task: PublishTestResults@2
         inputs:
@@ -135,6 +99,9 @@ jobs:
       - template: az/build-and-push-ecs-proxies.yml@utils
         parameters:
             env_vars_dir: 'dist'
+
+      - bash: "scripts/populate_ssm_parameters.sh"
+        displayName: Copy secrets from secrets manager to SSM
 
       - publish: dist/
         artifact: electronic-prescription-service-$(SPEC_VERSION)+$(Build.BuildNumber)

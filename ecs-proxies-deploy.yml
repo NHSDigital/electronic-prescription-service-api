@@ -2,13 +2,34 @@
 #docker_service_memory: 512
 
 docker_service:
-    - name: eps-coordinator
-      expose: true
-      environment:
-          - name: NODE_ENV
-            value: production
-          - name: LOG_LEVEL
-            value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
-      health_check:
+  - name: eps-coordinator
+    expose: true
+    environment:
+        - name: NODE_ENV
+          value: production
+        - name: LOG_LEVEL
+          value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
+        - name: SANDBOX
+          value: "{{ SANDBOX }}"
+    secrets:
+        - name: CLIENT_KEY
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/private-key'
+        - name: CLIENT_CERT
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/certificate'
+        - name: FROM_ASID
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/from-asid'
+        - name: TO_ASID
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-asid'
+        - name: FROM_PARTY_KEY
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/from-party-key'
+        - name: TO_PARTY_KEY
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-party-key'
+        - name: CPA_ID_MAP
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/cpa-id-map'
+        - name: ROOT_CA_CERT
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/root-ca-certificate'
+        - name: SUB_CA_CERT
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/sub-ca-certificate'
+    health_check:
           matcher: "200"
           path: "/_status"

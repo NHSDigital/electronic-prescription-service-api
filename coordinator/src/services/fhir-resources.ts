@@ -29,6 +29,7 @@ export class MedicationRequest extends Resource {
     authoredOn?: string
     requester?: Reference<PractitionerRole>
     groupIdentifier?: MedicationRequestGroupIdentifier
+    courseOfTherapyType?: CodeableConcept
     dosageInstruction?: Array<Dosage>
     dispenseRequest?: MedicationRequestDispenseRequest
 }
@@ -134,8 +135,22 @@ export class OperationOutcomeIssue {
 }
 
 export class OperationOutcome {
-    resourceType: "OperationOutcome"
+    readonly resourceType = "OperationOutcome"
     issue: Array<OperationOutcomeIssue>
+}
+
+export class Parameters {
+    readonly resourceType = "Parameters"
+    parameter: Array<Parameter>
+
+    constructor(parameters: Array<Parameter>) {
+        this.parameter = parameters
+    }
+}
+
+export class Parameter {
+    name: string
+    valueString: string
 }
 
 abstract class Extension {
@@ -144,4 +159,13 @@ abstract class Extension {
 
 export class IdentifierExtension extends Extension {
     valueIdentifier: Identifier
+}
+
+class Signature {
+    who: Reference<PractitionerRole>
+    data: string
+}
+
+export class Provenance extends Resource {
+    signature: Array<Signature>
 }
