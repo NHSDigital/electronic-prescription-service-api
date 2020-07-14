@@ -7,30 +7,35 @@ info:
   version: "{VERSION}"
   contact:
     name: Electronic Prescription Service FHIR API Support
-    url: 'https://tbc.api.nhs.net'
-    email: tbc-api-support@nhs.net
+    url: "https://digital.nhs.uk/developer/help-and-support"
+    email: "api.management@nhs.net"
   description: |
     ## Overview
     Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service) - the national service used to send electronic prescriptions from GP surgeries to pharmacies.
 
     You can:
-    * prepare a prescription for signing
-    * create a prescription
+    * prepare a secondary care (outpatient) prescription for signing
+    * create a secondary care (outpatient) prescription
     * evaluate prescription signing client implementations
 
     You cannot currently use this API to:
+    * prepare a primary care prescription for signing
+    * create a primary care prescription
+    * prepare a secondary care (other than outpatient) prescription for signing
+    * create a secondary care (other than outpatient) prescription
+    * prepare a tertiary care prescription for signing
+    * create a tertiary care prescription
     * cancel a prescription
     * check the status of a prescription
     * release a prescription for dispensing
     * claim for a dispensed prescription
+    * Track prescriptions or check a prescriptions status
+
 
     Currently, this API can only be accessed by healthcare professionals, authenticated with an NHS smartcard or equivalent.
 
     ## Using this API
-    Electronic prescription messages are digitally signed to protect against tampering and to prevent repudiation.
-    While the messages themselves are FHIR-based, for reasons of backwards compatibility, the signatures must be
-    represented in HL7 V3 format. To make this easier, you can POST a prescription to the /Prepare endpoint to
-    receive exactly the HL7 V3 fragments which need to be signed to conform to the specification.
+    Electronic prescription messages are digitally signed to protect against tampering and to prevent repudiation. While the messages themselves are FHIR-based, for reasons of backwards compatibility, the signatures must be represented in HL7 V3 format. To make this easier, you can POST a prescription to the /Prepare endpoint to receive exactly the HL7 V3 fragments which need to be signed to conform to the specification.
     
     The flow to create a prescription is then:
     * POST a prescription in FHIR format to the /Prepare endpoint
@@ -43,26 +48,30 @@ info:
     - [Prescription Tracker API](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to obtain information about a patient’s prescriptions.
 
     ## API status and roadmap
-    All endpoints are in [alpha](https://digital.nhs.uk/developer/developer-reference/reference-guide#api-status) - expect further breaking changes.
+    All endpoints are in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status) - expect further breaking changes.
     
     The API is currently available for sandbox testing and integration testing, but not for production use.
 
     The following items are on our roadmap, in rough priority order:
-    - TODO
+    * Cancellation
+    * Primary care prescribing
+    * Dispensing
+    * Prescription tracking
+    * Other prescribing scenarios
 
     We are extremely keen to receive feedback on the API during alpha and beta,
     for example if there are data fields missing that you think you need.
-    Please [get in touch](/help-and-support) with any comments or suggestions.
+    Please [get in touch](https://digital.nhs.uk/developer/help-and-support) with any comments or suggestions.
 
     ## Technology
-    This API is [RESTful](/introduction-to-apis#basic-rest).
+    This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
 
-    It also conforms to the [FHIR](/introduction-to-apis#fhir) global standard for health care data exchange.
+    It also conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir) global standard for health care data exchange.
     Specifically, it is aligned with [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), which is built on FHIR Release 4.
 
     You don’t need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.
     In particular:
-    - resource names are capitalised and singular, for example the `/Patient` not `/patients`
+    - resource names are capitalised and singular, for example the /Prepare not /prepare
     - array names are singular, for example `line` not `lines` for address lines
     - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
 
@@ -70,12 +79,24 @@ info:
     currently requires a connection to the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).
 
     ## Authorisation
-    TODO
+    This API is [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis),
+    meaning an end user must be present and authenticated to use it.
+
+    The end user must be:
+    - a healthcare professional
+    - strongly authenticated, using either an NHS smartcard or a modern alternative
+
+    The API uses Open ID Connect to authenticate the end user and OAuth 2.0 to authorise the calling system.
+    It supports the following security patterns:
+    * user-restricted RESTful API - using NHS Identity - combined authentication and authorisation
+    * user-restricted RESTful API - using NHS Identity - separate authentication and authorisation
+
+    For more details, see [user-restricted APIs](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis).
 
     ## Testing
     You can test this API in:
-    * our [sandbox environment](/testing#sandbox-testing) for initial developer testing (coming soon)
-    * our [integration test environment](/testing#integration-testing) for formal integration testing (coming soon)
+    * our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing) for initial developer testing (coming soon)
+    * our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing) for formal integration testing (coming soon)
 
     Our sandbox environment is a very basic simulation of the live service. It only covers a limited set of scenarios and is stateless, so does not actually persist any updates.
 
