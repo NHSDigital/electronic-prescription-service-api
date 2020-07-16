@@ -70,11 +70,11 @@ function verifyValueIdenticalForAllMedicationRequests<U>(
 ): ValidationError {
     const fieldValues = medicationRequests.map(accessor)
     const serializedFieldValues = fieldValues.map(value => JSON.stringify(value))
-    const uniqueFieldValues = new Set(serializedFieldValues).size
-    return uniqueFieldValues === 1 ? null : {
-        message: `Expected all MedicationRequests to have the same value for ${accessor}`,
+    const uniqueFieldValues = new Set(serializedFieldValues)
+    return uniqueFieldValues.size === 1 ? null : {
+        message: `Expected all MedicationRequests to have the same value for ${accessor}. Received ${[...uniqueFieldValues]}.`,
         operationOutcomeCode: "value",
-        apiErrorCode: "TODO",
+        apiErrorCode: "INVALID_VALUE",
         severity: "error"
     }
 }
