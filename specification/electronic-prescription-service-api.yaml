@@ -30,6 +30,7 @@ info:
     * release a prescription for dispensing
     * claim for a dispensed prescription
     * Track prescriptions or check a prescriptions status
+    * Test entry
 
 
     Currently, this API can only be accessed by healthcare professionals, authenticated with an NHS smartcard or equivalent.
