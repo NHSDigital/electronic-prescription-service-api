@@ -34,4 +34,11 @@
   <RouteRule name="sandbox">
         <TargetEndpoint>sandbox</TargetEndpoint>
     </RouteRule>
+    <PostClientFlow>
+      <Response>
+        <Step>
+          <Name>FlowCallout.LogToSplunk</Name>
+        </Step>
+      </Response>
+    </PostClientFlow>
 </ProxyEndpoint>
