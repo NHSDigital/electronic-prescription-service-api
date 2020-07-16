@@ -45,7 +45,7 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
         (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, (medicationRequest) => medicationRequest.courseOfTherapyType),
         (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, (medicationRequest) => medicationRequest.subject),
         (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, (medicationRequest) => medicationRequest.requester),
-        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, (medicationRequest) => medicationRequest.dispenseRequest.performer)
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, (medicationRequest) => medicationRequest.dispenseRequest?.performer)
     ]
     const medicationRequests = getMatchingEntries(bundle, "MedicationRequest") as Array<MedicationRequest>
     const medicationRequestConsistencyValidationErrors = validate(medicationRequests, ...medicationRequestConsistencyValidators)
