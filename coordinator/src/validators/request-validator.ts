@@ -71,12 +71,12 @@ function verifyValueIdenticalForAllMedicationRequests<U>(
     const fieldValues = medicationRequests.map(accessor)
     const serializedFieldValues = fieldValues.map(value => JSON.stringify(value))
     const uniqueFieldValues = new Set(serializedFieldValues).size
-    return uniqueFieldValues > 1 ? {
+    return uniqueFieldValues === 1 ? null : {
         message: `Expected all MedicationRequests to have the same value for ${accessor}`,
         operationOutcomeCode: "value",
         apiErrorCode: "TODO",
         severity: "error"
-    } : null
+    }
 }
 
 function verifyHasId(bundle: Bundle): ValidationError {
