@@ -1,4 +1,4 @@
-import {Bundle, Resource} from "../services/fhir-resources"
+import {Bundle, MedicationRequest, Resource} from "../services/fhir-resources"
 
 // Validate Status
 
@@ -25,7 +25,7 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
         }]
     }
 
-    const validators = [
+    const bundleValidators = [
         verifyHasId,
         (bundle: Bundle) => verifyBundleContainsAtLeast(bundle, 1, "MedicationRequest"),
         (bundle: Bundle) => verifyBundleContainsExactly(bundle, 1, "Patient"),
@@ -33,18 +33,49 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
         (bundle: Bundle) => verifyBundleContainsAtLeast(bundle, 1, "Practitioner"),
         (bundle: Bundle) => verifyBundleContainsAtLeast(bundle, 2, "Organization")
     ]
-
     if (requireSignature) {
-        validators.push((bundle: Bundle) => verifyBundleContainsExactly(bundle, 1, "Provenance"))
+        bundleValidators.push((bundle: Bundle) => verifyBundleContainsExactly(bundle, 1, "Provenance"))
     }
+    const bundleValidationErrors = validate(bundle, ...bundleValidators)
 
-    return validate(bundle, ...validators)
+    const medicationRequestConsistencyValidators = [
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, (medicationRequest) => medicationRequest.groupIdentifier),
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, (medicationRequest) => medicationRequest.category),
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, (medicationRequest) => medicationRequest.authoredOn),
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, (medicationRequest) => medicationRequest.courseOfTherapyType),
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, (medicationRequest) => medicationRequest.subject),
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, (medicationRequest) => medicationRequest.requester)
+    ]
+    const medicationRequests = getMatchingEntries(bundle, "MedicationRequest") as Array<MedicationRequest>
+    const medicationRequestConsistencyValidationErrors = validate(medicationRequests, ...medicationRequestConsistencyValidators)
+
+    return [
+        ...bundleValidationErrors,
+        ...medicationRequestConsistencyValidationErrors
+    ]
 }
 
+type Validator<T> = (input: T) => ValidationError
+
 // Validate
-function validate(bundle: Bundle, ...validators: Array<(arg1: unknown) => ValidationError>) {
-    return validators.map(v => v(bundle))
+function validate<T>(input: T, ...validators: Array<Validator<T>>) {
+    return validators.map(v => v(input))
         .filter(x => x)
+}
+
+function verifyValueIdenticalForAllMedicationRequests<U>(
+    medicationRequests: Array<MedicationRequest>,
+    accessor: (resource: MedicationRequest) => U
+): ValidationError {
+    const fieldValues = medicationRequests.map(accessor)
+    const serializedFieldValues = fieldValues.map(value => JSON.stringify(value))
+    const uniqueFieldValues = new Set(serializedFieldValues).size
+    return uniqueFieldValues > 1 ? {
+        message: `Expected all MedicationRequests to have the same value for ${accessor}`,
+        operationOutcomeCode: "value",
+        apiErrorCode: "TODO",
+        severity: "error"
+    } : null
 }
 
 function verifyHasId(bundle: Bundle): ValidationError {
