@@ -39,13 +39,13 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
     const bundleValidationErrors = validate(bundle, ...bundleValidators)
 
     const medicationRequestConsistencyValidators = [
-        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, (medicationRequest) => medicationRequest.groupIdentifier),
-        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, (medicationRequest) => medicationRequest.category),
-        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, (medicationRequest) => medicationRequest.authoredOn),
-        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, (medicationRequest) => medicationRequest.courseOfTherapyType),
-        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, (medicationRequest) => medicationRequest.subject),
-        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, (medicationRequest) => medicationRequest.requester),
-        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, (medicationRequest) => medicationRequest.dispenseRequest?.performer)
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "groupIdentifier", (medicationRequest) => medicationRequest.groupIdentifier),
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "category", (medicationRequest) => medicationRequest.category),
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "authoredOn", (medicationRequest) => medicationRequest.authoredOn),
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "courseOfTherapyType", (medicationRequest) => medicationRequest.courseOfTherapyType),
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "subject", (medicationRequest) => medicationRequest.subject),
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "requester", (medicationRequest) => medicationRequest.requester),
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "dispenseRequest.performer", (medicationRequest) => medicationRequest.dispenseRequest?.performer)
     ]
     const medicationRequests = getMatchingEntries(bundle, "MedicationRequest") as Array<MedicationRequest>
     const medicationRequestConsistencyValidationErrors = validate(medicationRequests, ...medicationRequestConsistencyValidators)
@@ -66,13 +66,14 @@ function validate<T>(input: T, ...validators: Array<Validator<T>>) {
 
 function verifyValueIdenticalForAllMedicationRequests<U>(
     medicationRequests: Array<MedicationRequest>,
-    accessor: (resource: MedicationRequest) => U
+    fieldName: string,
+    fieldAccessor: (resource: MedicationRequest) => U
 ): ValidationError {
-    const fieldValues = medicationRequests.map(accessor)
+    const fieldValues = medicationRequests.map(fieldAccessor)
     const serializedFieldValues = fieldValues.map(value => JSON.stringify(value))
     const uniqueFieldValues = new Set(serializedFieldValues)
     return uniqueFieldValues.size === 1 ? null : {
-        message: `Expected all MedicationRequests to have the same value for ${accessor}. Received ${[...uniqueFieldValues]}.`,
+        message: `Expected all MedicationRequests to have the same value for ${fieldName}. Received ${[...uniqueFieldValues]}.`,
         operationOutcomeCode: "value",
         apiErrorCode: "INVALID_VALUE",
         severity: "error"
@@ -101,7 +102,7 @@ function verifyBundleContainsEntries(bundle: Bundle) {
     return bundle.entry !== undefined
 }
 
-function getMatchingEntries(bundle: Bundle, resourceType: string) {
+export function getMatchingEntries(bundle: Bundle, resourceType: string): Array<Resource> {
     return bundle.entry
         .map(entry => entry.resource)
         .filter(resource => resource.resourceType === resourceType)
