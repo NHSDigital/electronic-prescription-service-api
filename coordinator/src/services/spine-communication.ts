@@ -26,12 +26,13 @@ async function request(message: string) {
                 httpsAgent,
                 headers: {
                     "Content-Type": "multipart/related; boundary=\"--=_MIME-Boundary\"; type=text/xml; start=ebXMLHeader@spine.nhs.uk",
-                    "SOAPAction": "urn:nhs:names:services:mm/PORX_IN020101UK31"
+                    "SOAPAction": "urn:nhs:names:services:mm/PORX_IN020101SM31"
                 }
             },
         )
         return {body: result.data, statusCode: result.status}
     } catch (error) {
+        console.log(error)
         if (error.response) {
             return {body: error.response.data, statusCode: error.response.status}
         } else if (error.request) {

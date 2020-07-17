@@ -16,6 +16,6 @@ export const wrap = function (payload: ParentPrescription): ElementCompact {
     }
     const wrapperStr = Mustache.render(wrapperTemplate, view)
     const wrapperJson = xml2js(wrapperStr, options) as ElementCompact
-    wrapperJson.PORX_IN020101UK31.ControlActEvent.subject.ParentPrescription = payload
+    wrapperJson.PORX_IN020101SM31.ControlActEvent.subject.ParentPrescription = payload
     return wrapperJson
 }

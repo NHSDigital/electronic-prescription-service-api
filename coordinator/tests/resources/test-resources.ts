@@ -22,7 +22,7 @@ export const examplePrescription1 = {
     fhirMessageUnsigned: fhirMessageUnsigned1,
     fhirMessageSigned: fhirMessageSigned1,
     hl7V3Message: hl7V3Message1,
-    hl7V3ParentPrescription: hl7V3Message1.PORX_IN020101UK31.ControlActEvent.subject.ParentPrescription as ParentPrescription,
+    hl7V3ParentPrescription: hl7V3Message1.PORX_IN020101SM31.ControlActEvent.subject.ParentPrescription as ParentPrescription,
     hl7V3SignatureFragments: hl7V3SignatureFragments1,
     hl7V3FragmentsCanonicalized: hl7V3SignatureFragmentsCanonicalized1.replace("\n", ""),
     fhirMessageDigest: fhirMessageDigest1
@@ -40,5 +40,5 @@ export const examplePrescription2 = {
     fhirMessageUnsigned: fhirMessageUnsigned2,
     fhirMessageSigned: fhirMessageSigned2,
     hl7V3Message: hl7V3Message2,
-    hl7V3ParentPrescription: hl7V3Message2.PORX_IN020101UK31.ControlActEvent.subject.ParentPrescription as ParentPrescription
+    hl7V3ParentPrescription: hl7V3Message2.PORX_IN020101SM31.ControlActEvent.subject.ParentPrescription as ParentPrescription
 }

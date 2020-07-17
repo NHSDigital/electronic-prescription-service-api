@@ -34,7 +34,7 @@ class EbXmlRequest {
 }
 
 export function addEbXmlWrapper(hl7V3Message: string): string {
-    const interactionId = "PORX_IN020101UK31"
+    const interactionId = "PORX_IN020101SM31"
     const cpaId = cpaIdMap.get(interactionId)
     return Mustache.render(ebxmlRequestTemplate, new EbXmlRequest(interactionId, cpaId, hl7V3Message))
 }
