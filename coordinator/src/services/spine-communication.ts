@@ -20,7 +20,7 @@ async function request(message: string) {
     const wrappedMessage = addEbXmlWrapper(message)
     try {
         const result = await axios.post(
-            'https://veit07.devspineservices.nhs.uk/reliablemessaging/reliablerequest',
+            'https://veit07.devspineservices.nhs.uk/Prescription',
             wrappedMessage,
             {
                 httpsAgent,
