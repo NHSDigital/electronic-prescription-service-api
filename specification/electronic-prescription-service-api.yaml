@@ -283,7 +283,7 @@ components:
       $ref: components/schemas/PractitionerRole.yaml
     Organization:
       $ref: components/schemas/Organization.yaml
-    Binary:
-      $ref: components/schemas/Binary.yaml
+    Parameters:
+      $ref: components/schemas/Parameters.yaml
     Provenance:
       $ref: components/schemas/Provenance.yaml
