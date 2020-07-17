@@ -127,8 +127,8 @@
           "coding": [
             {
               "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType",
-              "code": "acute",
-              "display": "Acute"
+              "code": "repeat-dispensing",
+              "display": "Repeat Dispensing"
             }
           ]
         },
@@ -200,8 +200,8 @@
           "coding": [
             {
               "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType",
-              "code": "acute",
-              "display": "Acute"
+              "code": "repeat-dispensing",
+              "display": "Repeat Dispensing"
             }
           ]
         },
@@ -273,8 +273,8 @@
           "coding": [
             {
               "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType",
-              "code": "acute",
-              "display": "Acute"
+              "code": "repeat-dispensing",
+              "display": "Repeat Dispensing"
             }
           ]
         },
