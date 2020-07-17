@@ -2,23 +2,26 @@
   <PreFlow/>
   <Flows>
     <Flow name="OptionsPreFlight">
-      <Request />
+      <Request/>
       <Response>
         <Step>
           <Name>AssignMessage.AddCors</Name>
         </Step>
       </Response>
-      <Condition>request.verb == "OPTIONS" AND request.header.origin != null AND request.header.Access-Control-Request-Method != null</Condition>
+      <Condition>request.verb == "OPTIONS" AND request.header.origin != null AND
+        request.header.Access-Control-Request-Method != null
+      </Condition>
     </Flow>
     <Flow name="AddPayloadToPing">
-      <Description />
-      <Request />
+      <Description/>
+      <Request/>
       <Response>
         <Step>
           <Name>AssignMessage.AddPayloadToPing</Name>
         </Step>
       </Response>
-      <Condition>(proxy.pathsuffix MatchesPath "/_ping") and ((request.verb = "GET") or (request.verb = "HEAD"))</Condition>
+      <Condition>(proxy.pathsuffix MatchesPath "/_ping") and ((request.verb = "GET") or (request.verb = "HEAD"))
+      </Condition>
     </Flow>
   </Flows>
   <HTTPProxyConnection>
@@ -26,10 +29,13 @@
     <VirtualHost>secure</VirtualHost>
   </HTTPProxyConnection>
   <RouteRule name="NoRoute">
-    <Condition>request.verb == "OPTIONS" AND request.header.origin != null AND request.header.Access-Control-Request-Method != null</Condition>
+    <Condition>request.verb == "OPTIONS" AND request.header.origin != null AND
+      request.header.Access-Control-Request-Method != null
+    </Condition>
   </RouteRule>
   <RouteRule name="NoRoutePing">
-    <Condition>(proxy.pathsuffix MatchesPath "/_ping") and ((request.verb = "GET") or (request.verb = "HEAD"))</Condition>
+    <Condition>(proxy.pathsuffix MatchesPath "/_ping") and ((request.verb = "GET") or (request.verb = "HEAD"))
+    </Condition>
   </RouteRule>
   <RouteRule name="apim">
     <TargetEndpoint>apim</TargetEndpoint>
@@ -39,4 +45,11 @@
       <Name>AssignMessage.CatchallErrorMessage</Name>
     </Step>
   </DefaultFaultRule>
+  <PostClientFlow>
+    <Response>
+      <Step>
+        <Name>FlowCallout.LogToSplunk</Name>
+      </Step>
+    </Response>
+  </PostClientFlow>
 </ProxyEndpoint>
