@@ -1,5 +1,6 @@
 import * as validator from "../../src/validators/request-validator"
-import {Resource} from "../../src/services/fhir-resources";
+import {MedicationRequest, Resource} from "../../src/services/fhir-resources";
+import * as TestResources from "../resources/test-resources"
 
 const resourceNotABundleError = [{message: "ResourceType must be 'Bundle' on request",
     operationOutcomeCode: "value",
@@ -258,4 +259,53 @@ const validBundleWithSignature = {
 test('verifyPrescriptionBundle accepts bundle with required Resources when requireSignature is true', () => {
     expect(validator.verifyPrescriptionBundle(validBundleWithSignature, true))
         .toEqual([])
+})
+
+test("Should accept message where fields common to all MedicationRequests are identical", () => {
+    expect(validator.verifyPrescriptionBundle(TestResources.examplePrescription1.fhirMessageUnsigned, false))
+        .toEqual([])
+})
+
+test("Should reject message where MedicationRequests have different authoredOn", () => {
+    const bundle = TestResources.clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    const medicationRequests = validator.getMatchingEntries(bundle, "MedicationRequest") as Array<MedicationRequest>
+    medicationRequests.forEach(medicationRequest => medicationRequest.authoredOn = "2020-01-02T00:00:00.000Z")
+    medicationRequests[0].authoredOn = "2020-01-01T00:00:00.000Z"
+    expect(validator.verifyPrescriptionBundle(bundle, false)).toEqual([{
+        "apiErrorCode": "INVALID_VALUE",
+        "message": "Expected all MedicationRequests to have the same value for authoredOn. Received \"2020-01-01T00:00:00.000Z\",\"2020-01-02T00:00:00.000Z\".",
+        "operationOutcomeCode": "value",
+        "severity": "error",
+    }])
+})
+
+test("Should reject message where MedicationRequests have different dispenseRequest.performer", () => {
+    const bundle = TestResources.clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    const medicationRequests = validator.getMatchingEntries(bundle, "MedicationRequest") as Array<MedicationRequest>
+    medicationRequests.forEach(medicationRequest => medicationRequest.dispenseRequest.performer = {reference: "pharmacy1"})
+    medicationRequests[3].dispenseRequest.performer = {reference: "pharmacy2"}
+    expect(validator.verifyPrescriptionBundle(bundle, false)).toEqual([{
+        "apiErrorCode": "INVALID_VALUE",
+        "message": "Expected all MedicationRequests to have the same value for dispenseRequest.performer. Received {\"reference\":\"pharmacy1\"},{\"reference\":\"pharmacy2\"}.",
+        "operationOutcomeCode": "value",
+        "severity": "error",
+    }])
+})
+
+test("Null should contribute to the count of unique values", () => {
+    const bundle = TestResources.clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    const medicationRequests = validator.getMatchingEntries(bundle, "MedicationRequest") as Array<MedicationRequest>
+    medicationRequests[0].groupIdentifier = null
+    const validationErrors = validator.verifyPrescriptionBundle(bundle, false)
+    expect(validationErrors).toHaveLength(1)
+    expect(validationErrors[0].apiErrorCode).toEqual("INVALID_VALUE")
+})
+
+test("Undefined should contribute to the count of unique values", () => {
+    const bundle = TestResources.clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    const medicationRequests = validator.getMatchingEntries(bundle, "MedicationRequest") as Array<MedicationRequest>
+    medicationRequests[0].groupIdentifier = undefined
+    const validationErrors = validator.verifyPrescriptionBundle(bundle, false)
+    expect(validationErrors).toHaveLength(1)
+    expect(validationErrors[0].apiErrorCode).toEqual("INVALID_VALUE")
 })

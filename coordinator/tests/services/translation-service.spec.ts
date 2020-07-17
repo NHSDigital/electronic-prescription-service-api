@@ -18,10 +18,6 @@ jest.mock('uuid', () => {
     }
 })
 
-function clone<T>(input: T) {
-    return JSON.parse(JSON.stringify(input))
-}
-
 test('getResourcesOfType returns correct resources', () => {
     const result = translationService.getResourcesOfType(TestResources.examplePrescription1.fhirMessageUnsigned, "MedicationRequest")
     expect(result).toBeInstanceOf(Array)
@@ -35,13 +31,13 @@ test('getResourceForFullUrl returns correct resources', () => {
 })
 
 test('getResourceForFullUrl throws error when finding multiple resources', () => {
-    const bundle2 = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    const bundle2 = TestResources.clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     bundle2.entry[1].fullUrl = bundle2.entry[0].fullUrl
     expect(() => translationService.getResourceForFullUrl(bundle2, bundle2.entry[0].fullUrl)).toThrow(TypeError)
 })
 
 test('convertCourseOfTherapyType returns "0001" prescription treatment type code when first therapy type code is "acute"', () => {
-    const bundle2 = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    const bundle2 = TestResources.clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     const fhirMedicationRequests = translationService.getResourcesOfType(bundle2, "MedicationRequest") as Array<fhir.MedicationRequest>
     const firstFhirMedicationRequest = fhirMedicationRequests[0]
     firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = "acute"
@@ -50,7 +46,7 @@ test('convertCourseOfTherapyType returns "0001" prescription treatment type code
 })
 
 test('convertCourseOfTherapyType returns "0002" prescription treatment type code when first therapy type code is "repeat"', () => {
-    const bundle2 = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    const bundle2 = TestResources.clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     const fhirMedicationRequests = translationService.getResourcesOfType(bundle2, "MedicationRequest") as Array<fhir.MedicationRequest>
     const firstFhirMedicationRequest = fhirMedicationRequests[0]
     firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = "repeat"
@@ -59,7 +55,7 @@ test('convertCourseOfTherapyType returns "0002" prescription treatment type code
 })
 
 test('convertCourseOfTherapyType returns "0003" prescription treatment type code when first therapy type code is "repeat-dispensing"', () => {
-    const bundle2 = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    const bundle2 = TestResources.clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     const fhirMedicationRequests = translationService.getResourcesOfType(bundle2, "MedicationRequest") as Array<fhir.MedicationRequest>
     const firstFhirMedicationRequest = fhirMedicationRequests[0]
     firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = "repeat-dispensing"
@@ -75,7 +71,7 @@ test('getIdentifierValueForSystem returns correct value for system', () => {
 
 test('getIdentifierValueForSystem throws error when finding multiple values for system', () => {
     const practitioner = translationService.getResourceForFullUrl(TestResources.examplePrescription1.fhirMessageUnsigned, "urn:uuid:D4B569E7-CCF6-4BB2-029B-34B6F3E82ACF") as fhir.Practitioner
-    const identifier = clone(practitioner.identifier)
+    const identifier = TestResources.clone(practitioner.identifier)
     identifier[0].system = identifier[1].system
     expect(() => translationService.getIdentifierValueForSystem(identifier, identifier[1].system)).toThrow()
 })
