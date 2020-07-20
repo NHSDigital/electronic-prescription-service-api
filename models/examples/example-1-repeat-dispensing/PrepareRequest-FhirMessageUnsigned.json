@@ -7,6 +7,21 @@
       "resource": {
         "resourceType": "MedicationRequest",
         "id": "A7B86F8D-1D81-FC28-E050-D20AE3A215F0",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/R4/CodeSystem/prescription-type",
+              "code": "0101"
+            }
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+            "valueReference": {
+              "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
+            }
+          }
+        ],
         "groupIdentifier": {
           "extension": [
             {

@@ -32,6 +32,7 @@ export class MedicationRequest extends Resource {
     courseOfTherapyType?: CodeableConcept
     dosageInstruction?: Array<Dosage>
     dispenseRequest?: MedicationRequestDispenseRequest
+    extension?: Array<Extension>
 }
 
 export class CodeableConcept {
@@ -153,12 +154,20 @@ export class Parameter {
     valueString: string
 }
 
-abstract class Extension {
+export abstract class Extension {
     url: string
 }
 
 export class IdentifierExtension extends Extension {
     valueIdentifier: Identifier
+}
+
+export class CodingExtension extends Extension {
+    valueCoding: Coding
+}
+
+export class ReferenceExtension<T extends Resource> extends Extension {
+    valueReference: Reference<T>
 }
 
 class Signature {
