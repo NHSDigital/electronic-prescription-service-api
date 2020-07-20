@@ -10,7 +10,10 @@ resources:
 trigger:
   branches:
     include:
-      - master
+      - tags/refs/v*
+  tags:
+    include:
+      - v*
 
 pr:
   branches:
