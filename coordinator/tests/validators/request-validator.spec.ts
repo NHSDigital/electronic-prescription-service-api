@@ -162,99 +162,14 @@ test('verifyPrescriptionBundle rejects bundle without Provenance when requireSig
         .toContainEqual(containExactlyError("Provenance", 1))
 })
 
-const validBundleWithoutSignature = {
-    resourceType: "Bundle",
-    id: "test-bundle",
-    entry: [
-        {
-            resource: {
-                resourceType: "MedicationRequest"
-            }
-        },
-        {
-            resource: {
-                resourceType: "MedicationRequest"
-            }
-        },
-        {
-            resource: {
-                resourceType: "Patient"
-            }
-        },
-        {
-            resource: {
-                resourceType: "PractitionerRole"
-            }
-        },
-        {
-            resource: {
-                resourceType: "Practitioner"
-            }
-        },
-        {
-            resource: {
-                resourceType: "Organization"
-            }
-        },
-        {
-            resource: {
-                resourceType: "Organization"
-            }
-        }
-    ]
-}
+const validBundleWithoutSignature = TestResources.examplePrescription1.fhirMessageUnsigned
 
 test('verifyPrescriptionBundle accepts bundle with required Resources', () => {
     expect(validator.verifyPrescriptionBundle(validBundleWithoutSignature, false))
         .toEqual([])
 })
 
-const validBundleWithSignature = {
-    resourceType: "Bundle",
-    id: "test-bundle",
-    entry: [
-        {
-            resource: {
-                resourceType: "MedicationRequest"
-            }
-        },
-        {
-            resource: {
-                resourceType: "MedicationRequest"
-            }
-        },
-        {
-            resource: {
-                resourceType: "Patient"
-            }
-        },
-        {
-            resource: {
-                resourceType: "PractitionerRole"
-            }
-        },
-        {
-            resource: {
-                resourceType: "Practitioner"
-            }
-        },
-        {
-            resource: {
-                resourceType: "Organization"
-            }
-        },
-        {
-            resource: {
-                resourceType: "Organization"
-            }
-        },
-        {
-            resource: {
-                resourceType: "Provenance"
-            }
-        }
-    ]
-}
+const validBundleWithSignature = TestResources.examplePrescription1.fhirMessageSigned
 
 test('verifyPrescriptionBundle accepts bundle with required Resources when requireSignature is true', () => {
     expect(validator.verifyPrescriptionBundle(validBundleWithSignature, true))

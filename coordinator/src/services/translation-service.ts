@@ -7,7 +7,7 @@ import * as fhir from "./fhir-resources"
 import * as crypto from "crypto-js"
 import moment from "moment"
 import {wrap} from "../resources/transport-wrapper"
-import {PractitionerRole} from "./fhir-resources";
+import {Extension, PractitionerRole} from "./fhir-resources";
 
 //TODO - is there a better way than returning Array<unknown>?
 export function getResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): Array<unknown> {
@@ -40,7 +40,7 @@ function getCodingForSystem(coding: Array<fhir.Coding>, system: string) {
         .reduce(onlyElement)
 }
 
-function getExtensionForURL(extensions: Array<fhir.Extension>, url: string) {
+export function getExtensionForUrl(extensions: Array<fhir.Extension>, url: string): Extension {
     return extensions
         .filter(extension => extension.url === url)
         .reduce(onlyElement)
@@ -199,7 +199,7 @@ function convertResponsibleParty(
     convertPractitionerRoleFn = convertPractitionerRole
 ) {
     const responsibleParty = new prescriptions.ResponsibleParty()
-    const fhirResponsibleParty = getExtensionForURL(fhirMedicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner") as fhir.ReferenceExtension<PractitionerRole>
+    const fhirResponsibleParty = getExtensionForUrl(fhirMedicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner") as fhir.ReferenceExtension<PractitionerRole>
     const fhirResponsiblePartyPractitionerRole = resolveReference(fhirBundle, fhirResponsibleParty.valueReference)
     responsibleParty.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirResponsiblePartyPractitionerRole)
     return responsibleParty;
@@ -231,7 +231,7 @@ function convertPrescriptionPertinentInformation8() {
 }
 
 function convertPrescriptionPertinentInformation4(fhirFirstMedicationRequest: fhir.MedicationRequest) {
-    const fhirMedicationPrescriptionTypeExtension = getExtensionForURL(fhirFirstMedicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType") as fhir.CodingExtension
+    const fhirMedicationPrescriptionTypeExtension = getExtensionForUrl(fhirFirstMedicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType") as fhir.CodingExtension
     const prescriptionTypeValue = new codes.PrescriptionTypeCode(fhirMedicationPrescriptionTypeExtension.valueCoding.code)
     const prescriptionType = new prescriptions.PrescriptionType(prescriptionTypeValue)
     return new prescriptions.PrescriptionPertinentInformation4(prescriptionType);
@@ -315,7 +315,7 @@ function convertLineItemComponent(fhirQuantity: fhir.SimpleQuantity) {
 
 function convertMedicationRequestToLineItem(fhirMedicationRequest: fhir.MedicationRequest) {
     const hl7V3LineItem = new prescriptions.LineItem(
-        new codes.GlobalIdentifier(fhirMedicationRequest.id)
+        new codes.GlobalIdentifier(getIdentifierValueForSystem(fhirMedicationRequest.identifier, "https://fhir.nhs.uk/Id/prescription-order-item-number"))
     )
 
     hl7V3LineItem.product = convertProduct(fhirMedicationRequest.medicationCodeableConcept)
