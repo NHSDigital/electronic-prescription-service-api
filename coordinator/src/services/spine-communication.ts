@@ -30,8 +30,11 @@ async function request(message: string) {
                 }
             },
         )
-        return {body: result.data, statusCode: result.status}
+        console.log('Successful post request for prescription message')
+        console.log(`Got polling URL ${result.headers['content-location']}`)
+        return {body: '', statusCode: result.status}
     } catch (error) {
+        console.error(`Failed post request for prescription message. Error: ${error}`)
         if (error.response) {
             return {body: error.response.data, statusCode: error.response.status}
         } else if (error.request) {
