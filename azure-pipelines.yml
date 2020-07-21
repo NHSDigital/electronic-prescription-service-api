@@ -41,7 +41,7 @@ jobs:
         inputs:
           versionSpec: "3.8"
 
-      - bash: "sudo apt update && sudo apt-get install --yes default-jre default-jdk"
+      - bash: "sudo apt update && sudo apt-get install --yes default-jre default-jdk npx"
         displayName: Install apt dependencies
 
       - bash: "wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -; curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -; sudo apt-get install -y nodejs"
