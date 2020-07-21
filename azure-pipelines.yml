@@ -31,6 +31,17 @@ jobs:
       - checkout: self
         path: s
 
+      # Create a draft release before checking out other repos
+      # Specify assets if moving this step to later in the pipeline 
+      # to filter out tooling files/directories from released assets
+      - task: GitHubRelease@0
+        displayName: 'Create GitHub Release'
+        inputs:
+          gitHubConnection: NHSDigital
+          repositoryName: NHSDigital/electronic-prescription-service-api
+          tagSource: manual
+          tag: $(poetry run python scripts/calculate_version.py)
+
       - checkout: utils
         path: s/utils
 
