@@ -6,6 +6,12 @@
 npm
 ```
 
+## Install
+
+```
+make install
+```
+
 ## Create Pacts
 
 ```
