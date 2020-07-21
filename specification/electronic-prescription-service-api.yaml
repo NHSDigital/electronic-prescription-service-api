@@ -113,7 +113,7 @@ info:
     * `POST /Send` - send a signed FHIR prescription to Spine
     * `POST /Convert` - convert a FHIR prescription to HL7V3 to verify client signature implementations
 servers:
-  - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
+  - url: 'https://internal-qa-sandbox.api.service.nhs.uk/electronic-prescriptions'
     description: 'Sandbox environment.'
 tags:
   - name: dispensing
