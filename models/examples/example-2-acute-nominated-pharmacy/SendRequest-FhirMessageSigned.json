@@ -379,6 +379,12 @@
         "resource": {
           "resourceType": "Patient",
           "id": "B96806F2-0E43-4046-30F3-BD444965AFB3",
+          "managingOrganization": {
+            "identifier": {
+              "value": "C81007",
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code"
+            }
+          },
           "identifier": [
             {
               "system": "https://fhir.nhs.uk/Id/nhs-number",
@@ -409,10 +415,7 @@
               "city": "DERBY",
               "postalCode": "DE22 3HD"
             }
-          ],
-          "generalPractitioner": [{
-            "reference": "urn:uuid:9B4C1A77-CCCC-418A-B835-4112FBCB14F3"
-          }]
+          ]
         },
         "fullUrl": "urn:uuid:B96806F2-0E43-4046-30F3-BD444965AFB3"
       },

@@ -93,29 +93,18 @@ export function convertBundleToParentPrescription(
     return hl7V3ParentPrescription
 }
 
-function getGeneralPractitionerOdsOrganizationCode(
+function convertPatientToProviderPatient(
     bundle: fhir.Bundle,
     patient: fhir.Patient
 ) {
-    const generalPractitionerReference = patient.generalPractitioner.reduce(onlyElement)
-    const fhirPractitionerRole = resolveReference(bundle, generalPractitionerReference)
-    const fhirOrganization = resolveReference(bundle, fhirPractitionerRole.organization)
-    return getIdentifierValueForSystem(fhirOrganization.identifier, "https://fhir.nhs.uk/Id/ods-organization-code");
-}
-
-function convertPatientToProviderPatient(
-    bundle: fhir.Bundle,
-    patient: fhir.Patient,
-    getGeneralPractitionerOrganizationCodeFn = getGeneralPractitionerOdsOrganizationCode
-) {
-    const gpOdsCode = getGeneralPractitionerOrganizationCodeFn(bundle, patient);
+    const managingOrganizationIdentifier = patient.managingOrganization.identifier.value
     const hl7V3HealthCareProvider = new peoplePlaces.HealthCareProvider()
-    hl7V3HealthCareProvider.id = new codes.SdsOrganizationIdentifier(gpOdsCode)
+    hl7V3HealthCareProvider.id = new codes.SdsOrganizationIdentifier(managingOrganizationIdentifier)
     const hl7V3PatientCareProvision = new peoplePlaces.PatientCareProvision("1")
     hl7V3PatientCareProvision.responsibleParty = new peoplePlaces.ResponsibleParty(hl7V3HealthCareProvider)
     const hl7V3ProviderPatient = new peoplePlaces.ProviderPatient()
     hl7V3ProviderPatient.subjectOf = new peoplePlaces.SubjectOf(hl7V3PatientCareProvision)
-    return hl7V3ProviderPatient;
+    return hl7V3ProviderPatient
 }
 
 function convertPatientToPatientPerson(
