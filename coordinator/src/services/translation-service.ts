@@ -7,7 +7,7 @@ import * as fhir from "./fhir-resources"
 import * as crypto from "crypto-js"
 import moment from "moment"
 import {wrap} from "../resources/transport-wrapper"
-import {Extension, PractitionerRole} from "./fhir-resources";
+import {Extension, IdentifierExtension, PractitionerRole} from "./fhir-resources";
 
 //TODO - is there a better way than returning Array<unknown>?
 export function getResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): Array<unknown> {
@@ -159,7 +159,8 @@ function convertPrescriptionIds(
     fhirFirstMedicationRequest: fhir.MedicationRequest
 ): [codes.GlobalIdentifier, codes.ShortFormPrescriptionIdentifier] {
     const groupIdentifier = fhirFirstMedicationRequest.groupIdentifier;
-    const prescriptionId = groupIdentifier.extension.map(extension => extension.valueIdentifier.value).reduce(onlyElement)
+    const prescriptionIdExtension = getExtensionForUrl(groupIdentifier.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId") as IdentifierExtension
+    const prescriptionId = prescriptionIdExtension.valueIdentifier.value
     const prescriptionShortFormId = groupIdentifier.value
     return [
         new codes.GlobalIdentifier(prescriptionId),

@@ -12,8 +12,8 @@ properties:
         url:
           type: string
           enum:
-            - "https://fhir.nhs.uk/R4/StructureDefinition/Extension-eps-parentPrescriptionId"
-          example: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-eps-parentPrescriptionId"
+            - "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId"
+          example: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId"
         valueIdentifier:
           type: object
           properties:
