@@ -44,8 +44,8 @@ info:
 
     ## Related APIs
     The following APIs also give access to the Electronic Prescription Service:
-    - [Electronic Prescription Service (HL7 V3) API](https://data.developer.nhs.uk/dms/mim/4.2.00/Index.htm) - use this if you want to use functions that are not yet available on the FHIR API.
-    - [Prescription Tracker API](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to obtain information about a patient’s prescriptions.
+    - [Electronic Prescription Service (HL7 V3) API](https://data.developer.nhs.uk/dms/mim/4.2.00/Index.htm) - use this if you want to use functions that are not yet available on the FHIR API
+    - [Prescription Tracker API](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to obtain information about a patient’s prescriptions
 
     ## API status and roadmap
     All endpoints are in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status) - expect further breaking changes.
@@ -61,7 +61,7 @@ info:
 
     We are extremely keen to receive feedback on the API during alpha and beta,
     for example if there are data fields missing that you think you need.
-    Please [get in touch](https://digital.nhs.uk/developer/help-and-support) with any comments or suggestions.
+    [Get in touch](https://digital.nhs.uk/developer/help-and-support) with any comments or suggestions.
 
     ## Technology
     This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
@@ -114,7 +114,7 @@ info:
     * `POST /Convert` - convert a FHIR prescription to HL7V3 to verify client signature implementations
 servers:
   - url: 'https://internal-qa-sandbox.api.service.nhs.uk/electronic-prescriptions'
-    description: 'Internal QA Sandbox environment.'
+    description: 'Sandbox environment.'
 tags:
   - name: dispensing
   - name: prescribing
