@@ -73,10 +73,11 @@ function getBranch() {
 }
 function getTags() {
   try {
-    artifactTag = cp
-      .execSync("git describe")
-      .toString()
-      .trim() || "v1.0.44-alpha";
+    artifactTag = "v1.0.44-alpha"
+      // cp
+      // .execSync("git describe")
+      // .toString()
+      // .trim();
   } catch (Error) {
     const errorMessage = Error.message;
     if (errorMessage.indexOf("fatal") >= 0) {
