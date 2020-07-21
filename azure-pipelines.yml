@@ -60,7 +60,7 @@ jobs:
       # Specify assets if moving this step to later in the pipeline 
       # to filter out tooling files/directories from released assets
       - task: GitHubRelease@0
-        #condition: eq(variables['Build.SourceBranchName'], 'master')
+        condition: eq(variables['Build.SourceBranchName'], 'master')
         displayName: 'Create GitHub Release'
         inputs:
           gitHubConnection: booshibooshi
