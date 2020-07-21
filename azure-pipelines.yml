@@ -92,9 +92,6 @@ jobs:
       - bash: "make test-integration-coordinator"
         displayName: Run Coordinator Integration Tests
 
-      - bash: "test-e2e-integration-setup"
-        displayName: Setup E2E Integration Tests
-
       - task: PublishTestResults@2
         inputs:
           testResultsFormat: 'JUnit'
