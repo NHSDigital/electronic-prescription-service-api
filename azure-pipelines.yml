@@ -37,7 +37,7 @@ jobs:
       - task: GitHubRelease@0
         displayName: 'Create GitHub Release'
         inputs:
-          gitHubConnection: NHSDigital
+          gitHubConnection: booshibooshi
           repositoryName: NHSDigital/electronic-prescription-service-api
           tagSource: manual
           tag: $(poetry run python scripts/calculate_version.py)
