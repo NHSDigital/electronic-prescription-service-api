@@ -76,11 +76,11 @@ function getTags() {
     artifactTag = cp
       .execSync("git describe")
       .toString()
-      .trim();
+      .trim() || "v1.0.44-alpha";
   } catch (Error) {
     const errorMessage = Error.message;
     if (errorMessage.indexOf("fatal") >= 0) {
-        throw new TypeError("Couldn't find a git tag or CIRCLE_BUILD_NUM");
+        throw new TypeError("Couldn't find a git tag");
     }
   }
 }
