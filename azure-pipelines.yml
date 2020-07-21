@@ -30,6 +30,7 @@ jobs:
     steps:
       - checkout: self
         path: s
+        fetchDepth: 0
 
       - bash: echo "##vso[task.setvariable variable=BRANCH_NAME]`echo $(System.PullRequest.SourceBranch) | sed -r 's/[/|\\@":<>?*]+/-/g'`"
         displayName: Set and replace invalid characters in branch name
@@ -61,7 +62,7 @@ jobs:
           gitHubConnection: booshibooshi
           repositoryName: NHSDigital/electronic-prescription-service-api
           tagSource: manual
-          tag: $(poetry run python scripts/calculate_version.py)
+          tag: "$(poetry run python scripts/calculate_version.py)"
 
       - checkout: utils
         path: s/utils
