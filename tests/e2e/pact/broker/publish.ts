@@ -6,7 +6,6 @@ let revision: string = "";
 let branch: string = "";
 let artifactTag: string = "";
 let opts: PublisherOptions;
-const APIGEE_ENVIRONMENT: string = process.env.APIGEE_ENVIRONMENT || "";
 const PACT_BROKER_URL: string = process.env.PACT_BROKER_URL || "";
 const PACT_BROKER_BASIC_AUTH_USERNAME: string = process.env.PACT_BROKER_BASIC_AUTH_USERNAME || "";
 const PACT_BROKER_BASIC_AUTH_PASSWORD: string = process.env.PACT_BROKER_BASIC_AUTH_PASSWORD || "";
@@ -21,7 +20,7 @@ function getOpts() {
     pactBrokerUsername: PACT_BROKER_BASIC_AUTH_USERNAME,
     pactBrokerPassword: PACT_BROKER_BASIC_AUTH_PASSWORD,
     consumerVersion: consumerVersion,
-    tags: [APIGEE_ENVIRONMENT, branch]
+    tags: [branch]
   };
 }
 
