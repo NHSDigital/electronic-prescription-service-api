@@ -63,7 +63,7 @@ jobs:
         condition: eq(variables['Build.SourceBranchName'], 'master')
         displayName: 'Create GitHub Release'
         inputs:
-          gitHubConnection: apm-ops
+          gitHubConnection: booshibooshi
           repositoryName: NHSDigital/electronic-prescription-service-api
           action: create
           target: $(Build.SourceVersion)
