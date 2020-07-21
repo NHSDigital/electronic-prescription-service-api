@@ -6,13 +6,7 @@
     "lib": [
       "es2019"
     ],
-    "moduleResolution": "node",
-    "paths": {
-      "*": [
-        "node_modules/*",
-        "specs/*"
-      ]
-    }
+    "moduleResolution": "node"
   },
   "include": [
     "specs/**/*"
