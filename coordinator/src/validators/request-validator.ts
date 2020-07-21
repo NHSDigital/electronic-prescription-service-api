@@ -1,4 +1,5 @@
 import {Bundle, MedicationRequest, Resource} from "../services/fhir-resources"
+import {getExtensionForUrl} from "../services/translation-service"
 
 // Validate Status
 
@@ -45,7 +46,9 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
         (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "courseOfTherapyType", (medicationRequest) => medicationRequest.courseOfTherapyType),
         (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "subject", (medicationRequest) => medicationRequest.subject),
         (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "requester", (medicationRequest) => medicationRequest.requester),
-        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "dispenseRequest.performer", (medicationRequest) => medicationRequest.dispenseRequest?.performer)
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "dispenseRequest.performer", (medicationRequest) => medicationRequest.dispenseRequest?.performer),
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "extension (eps prescriptionType)", (medicationRequest) => getExtensionForUrl(medicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType")),
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "extension (ResponsiblePractitioner)", (medicationRequest) => getExtensionForUrl(medicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner"))
     ]
     const medicationRequests = getMatchingEntries(bundle, "MedicationRequest") as Array<MedicationRequest>
     const medicationRequestConsistencyValidationErrors = validate(medicationRequests, ...medicationRequestConsistencyValidators)
