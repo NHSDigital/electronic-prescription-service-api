@@ -15,7 +15,7 @@ make install
 ## Create Pacts
 
 ```
-make create-pacts
+make create
 ```
 
 ## Run Publish
@@ -23,5 +23,5 @@ make create-pacts
 Ensure you have set environment variables for `PACT_BROKER_BASIC_AUTH_USERNAME`, `PACT_BROKER_BASIC_AUTH_PASSWORD` and `PACT_BROKER_URL`
 
 ```
-make publish-pacts
+make publish
 ```
