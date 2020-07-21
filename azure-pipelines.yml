@@ -53,6 +53,9 @@ jobs:
       - bash: "python -m pip install --upgrade pip setuptools wheel && pip install poetry"
         displayName: Install python dependencies
 
+      - bash: "make install"
+        displayName: Install repo
+
       - bash: echo "##vso[task.setvariable variable=RELEASE_TAG]`echo $(poetry run python scripts/calculate_version.py)`"
         displayName: Calculate Release Tag
 
@@ -76,9 +79,6 @@ jobs:
 
       - bash: "curl https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -o awscliv2.zip && unzip awscliv2.zip && sudo ./aws/install"
         displayName: Install AWS CLI
-
-      - bash: "make install"
-        displayName: Install repo
 
       - bash: "make build"
         displayName: Build
