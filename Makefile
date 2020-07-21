@@ -44,6 +44,7 @@ install-python:
 install-node:
 	cd specification && npm install
 	cd coordinator && npm install
+	cd tests/e2e/pact && npm install
 
 install-hooks:
 	cp scripts/pre-commit .git/hooks/pre-commit
@@ -101,6 +102,22 @@ test-integration-coordinator:
 	cd coordinator \
 	&& export API_TEST_ENV_FILE_PATH=$(or $(API_TEST_ENV_FILE_PATH),../tests/e2e/postman/environments/local.postman_environment.json) \
 	&& npm run integration-test
+
+# E2E Integration Tests
+
+test-e2e-integration-setup: create-pacts publish-pacts
+
+create-pacts:
+	cd tests/e2e/pact \
+	&& npm t
+
+publish-pacts:
+	export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT) \
+	&& export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME) \
+	&& export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD) \
+	&& export PACT_BROKER_URL=$(PACT_BROKER_URL) \
+	&& cd ./tests/e2e/pact \
+	&& ./broker/publish.sh
 
 ## Quality Checks
 

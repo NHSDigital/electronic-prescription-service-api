@@ -63,7 +63,7 @@ jobs:
         condition: eq(variables['Build.SourceBranchName'], 'master')
         displayName: 'Create GitHub Release'
         inputs:
-          gitHubConnection: booshibooshi
+          gitHubConnection: apm-ops
           repositoryName: NHSDigital/electronic-prescription-service-api
           action: create
           target: $(Build.SourceVersion)
@@ -91,6 +91,9 @@ jobs:
 
       - bash: "make test-integration-coordinator"
         displayName: Run Coordinator Integration Tests
+
+      - bash: "test-e2e-integration-setup"
+        displayName: Setup E2E Integration Tests
 
       - task: PublishTestResults@2
         inputs:
