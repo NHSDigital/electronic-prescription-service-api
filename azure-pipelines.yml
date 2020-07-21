@@ -92,7 +92,7 @@ jobs:
       - bash: "make test-integration-coordinator"
         displayName: Run Coordinator Integration Tests
 
-      - bash: "make -s test-e2e-integration-setup"
+      - bash: "make test-e2e-integration-setup"
         displayName: Setup E2E Integration Tests
         workingDirectory: ./tests/e2e/pact
         env:
