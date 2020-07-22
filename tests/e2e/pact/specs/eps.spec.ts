@@ -9,8 +9,8 @@ const prepareRepeatDispensingPrescriptionResponse = fs.readFileSync(path.join(__
 
 jestpact.pactWith(
   {
-    consumer: "apim-eps-client",
-    provider: "apim-eps",
+    consumer: "nhsd-apim-eps-test-client",
+    provider: "nhsd-apim-eps",
     pactfileWriteMode: "overwrite"
   },
   async (provider: any) => {
