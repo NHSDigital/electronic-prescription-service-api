@@ -100,7 +100,7 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "text/plain"
             },
-            body: Matchers.like("Message Sent"),
+            body: Matchers.string("Message Sent"),
             status: 200
           }
         };
