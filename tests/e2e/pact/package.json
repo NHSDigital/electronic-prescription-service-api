@@ -17,7 +17,7 @@
     "typescript": "^3.9.5",
     "jest-pact": "0.6.0",
     "@pact-foundation/pact": "9.11.0",
-    "@pact-foundation/pact-node": "10.9.6",
+    "@pact-foundation/pact-node": "10.9.7",
     "supertest": "4.0.2"
   }
 }

@@ -1,5 +1,5 @@
-import publisher, { PublisherOptions } from "@pact-foundation/pact-node";
-import * as cp from "child_process";
+import { Publisher } from "@pact-foundation/pact";
+import { PublisherOptions } from "@pact-foundation/pact-node";
 import { resolve } from "path";
 
 let version: string = "";
@@ -44,8 +44,8 @@ function main() {
 function performPublish() {
   console.log(opts)
 
-  publisher
-    .publishPacts(opts)
+  new Publisher(opts)
+    .publishPacts()
     .then(() => {
       console.log("successfully published pacts");
       return process.exit(0);

@@ -29,6 +29,6 @@ verify-sandbox:
 
 install-verify:
 	cd broker \
-	&& curl -LO https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.86.0/pact-1.86.0-linux-x86_64.tar.gz \
-	&& tar xzf pact-1.86.0-linux-x86_64.tar.gz \
-	&& rm pact-1.86.0-linux-x86_64.tar.gz
+	&& curl -LO https://github.com/pact-foundation/pact-ruby-standalone/releases/download/v1.87.5/pact-1.87.5-linux-x86_64.tar.gz \
+	&& tar xzf pact-1.87.5-linux-x86_64.tar.gz \
+	&& rm pact-1.87.5-linux-x86_64.tar.gz
