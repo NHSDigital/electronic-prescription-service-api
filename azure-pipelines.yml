@@ -65,8 +65,7 @@ jobs:
         displayName: Calculate Short Commit Hash
 
       # Create a draft release before checking out other repos
-      # Specify assets if moving this step to later in the pipeline 
-      # to filter out tooling files/directories from released assets
+      # todo: Publish more than README
       - task: GitHubRelease@0
         condition: eq(variables['Build.SourceBranchName'], 'master')
         displayName: 'Create GitHub Release'
@@ -78,6 +77,17 @@ jobs:
           tagSource: manual
           tag: $(RELEASE_VERSION)
           isDraft: true
+          assets: "README.md"
+
+      - bash: "make -s test-e2e-integration-setup"
+        displayName: Setup E2E Integration Tests
+        workingDirectory: ./tests/e2e/pact
+        env:
+          PACT_BROKER_URL: $(PACT_BROKER_URL)
+          PACT_BROKER_BASIC_AUTH_USERNAME: $(PACT_BROKER_BASIC_AUTH_USERNAME)
+          PACT_BROKER_BASIC_AUTH_PASSWORD: $(PACT_BROKER_BASIC_AUTH_PASSWORD)
+          BUILD_SOURCE_BRANCH: $(SourceBranchName)
+          BUILD_VERSION: $(RELEASE_VERSION)-$(SHORT_COMMIT_HASH)
 
       - checkout: utils
         path: s/utils
@@ -99,16 +109,6 @@ jobs:
 
       - bash: "make test-integration-coordinator"
         displayName: Run Coordinator Integration Tests
-
-      - bash: "make -s test-e2e-integration-setup"
-        displayName: Setup E2E Integration Tests
-        workingDirectory: ./tests/e2e/pact
-        env:
-          PACT_BROKER_URL: $(PACT_BROKER_URL)
-          PACT_BROKER_BASIC_AUTH_USERNAME: $(PACT_BROKER_BASIC_AUTH_USERNAME)
-          PACT_BROKER_BASIC_AUTH_PASSWORD: $(PACT_BROKER_BASIC_AUTH_PASSWORD)
-          BUILD_SOURCE_BRANCH: $(SourceBranchName)
-          BUILD_VERSION: $(RELEASE_VERSION)-$(SHORT_COMMIT_HASH)
 
       - task: PublishTestResults@2
         inputs:
