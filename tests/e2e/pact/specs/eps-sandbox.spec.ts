@@ -21,6 +21,36 @@ jestpact.pactWith(
 
     describe("eps sandbox e2e tests", () => {
       
+      test("should be able to convert a FHIR repeat-dispensing parent-prescription-1 into a HL7V3 Spine interaction", async () => {
+        const apiPath = "/Convert";
+        const interaction: InteractionObject = {
+          state: null,
+          uponReceiving: "a request to convert a FHIR repeat-dispensing parent-prescription-1",
+          withRequest: {
+            headers: {
+              "Content-Type": "application/json",
+              "NHSD-Session-URID": "1234"
+            },
+            method: "POST",
+            path: "/Convert",
+            body: JSON.parse(prepareRepeatDispensingPrescriptionRequest)
+          },
+          willRespondWith: {
+            headers: {
+              "Content-Type": "application/xml"
+            },
+            status: 200
+          }
+        };
+        await provider.addInteraction(interaction);
+        await client()
+          .post(apiPath)
+          .set('Content-Type', 'application/json')
+          .set('NHSD-Session-URID', '1234')
+          .send(prepareRepeatDispensingPrescriptionRequest)
+          .expect(200);
+      });
+
       test("should be able to prepare a repeat-dispensing parent-prescription-1", async () => {
         const apiPath = "/Prepare";
         const interaction: InteractionObject = {
@@ -50,6 +80,36 @@ jestpact.pactWith(
           .set('NHSD-Session-URID', '1234')
           .send(prepareRepeatDispensingPrescriptionRequest)
           .expect(200);
+      });
+
+      test("should be able to send a repeat-dispensing parent-prescription-1", async () => {
+        const apiPath = "/Send";
+        const interaction: InteractionObject = {
+          state: null,
+          uponReceiving: "a request to send a repeat-dispensing parent-prescription-1 to Spine",
+          withRequest: {
+            headers: {
+              "Content-Type": "application/json",
+              "NHSD-Session-URID": "1234"
+            },
+            method: "POST",
+            path: "/Prepare",
+            body: JSON.parse(prepareRepeatDispensingPrescriptionRequest)
+          },
+          willRespondWith: {
+            headers: {
+              "Content-Type": "application/xml"
+            },
+            status: 202
+          }
+        };
+        await provider.addInteraction(interaction);
+        await client()
+          .post(apiPath)
+          .set('Content-Type', 'application/json')
+          .set('NHSD-Session-URID', '1234')
+          .send(prepareRepeatDispensingPrescriptionRequest)
+          .expect(202);
       });
 
     });
