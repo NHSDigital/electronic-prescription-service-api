@@ -11,14 +11,6 @@ create:
 publish:
 	./broker/publish.sh
 
-# E2E Integration Test Run
-
-test-e2e-integration-run:
-	./broker/verify-eps.sh
-
-test-e2e-integration-run-sandbox:
-	./broker/verify-eps-sandbox.sh
-
 
 # Quality Checks
 
