@@ -1,7 +1,7 @@
 version: 1
 update_configs:
   - package_manager: "javascript"
-    directory: "/"
+    directory: "/specification"
     update_schedule: "live"
     automerged_updates:
       - match:
@@ -9,6 +9,13 @@ update_configs:
           update_type: "security:patch"
   - package_manager: "javascript"
     directory: "/coordinator"
+    update_schedule: "live"
+    automerged_updates:
+      - match:
+          dependency_type: "all"
+          update_type: "security:patch"
+  - package_manager: "javascript"
+    directory: "/tests/e2e/pact"
     update_schedule: "live"
     automerged_updates:
       - match:
