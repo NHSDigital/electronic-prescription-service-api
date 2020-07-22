@@ -104,7 +104,7 @@ jobs:
       - task: PublishTestResults@2
         inputs:
           testResultsFormat: 'JUnit'
-          testResultsFiles: 'coordindator/newman/*.xml'
+          testResultsFiles: 'coordinator/newman/*.xml'
           failTaskOnFailedTests: true
 
       - bash: "make release"

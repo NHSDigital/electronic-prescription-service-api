@@ -6,6 +6,7 @@
 **/coverage/
 **/node_modules/
 tests/e2e/pact/pact/
+tests/e2e/pact/broker/pact/
 tests/e2e/postman/electronic-prescription-coordinator-postman-tests.json
 .#*
 __pycache__/
