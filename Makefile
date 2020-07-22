@@ -18,8 +18,9 @@ release:
 	mkdir -p dist
 	cp -r specification/dist/. dist
 	cp -r terraform dist
-	mdkir -p dist/pact
-	cp -r tests/e2e/pact/broker/verify-* pact-broker
+	mkdir -p dist/pact/broker
+	cp -r tests/e2e/pact/broker/verify-* dist/pact/broker
+	cp tests/e2e/pact/Makefile dist/pact
 
 clean:
 	rm -rf dist
