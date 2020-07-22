@@ -63,10 +63,11 @@ function getRevision() {
 
 function getBranch() {
   try {
-    return (branch = cp
-      .execSync("git rev-parse --abbrev-ref HEAD")
-      .toString()
-      .trim());
+    branch = "pr" 
+    // return (branch = cp
+    //   .execSync("git rev-parse --abbrev-ref HEAD")
+    //   .toString()
+    //   .trim());
   } catch (Error) {
     throw new TypeError("Couldn't find a git branch, is this a git directory?");
   }
