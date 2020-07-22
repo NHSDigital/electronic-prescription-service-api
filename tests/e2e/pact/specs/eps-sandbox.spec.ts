@@ -1,4 +1,4 @@
-import { InteractionObject } from "@pact-foundation/pact"
+import { InteractionObject, Matchers } from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as fs from 'fs'
@@ -93,14 +93,15 @@ jestpact.pactWith(
               "NHSD-Session-URID": "1234"
             },
             method: "POST",
-            path: "/Prepare",
+            path: "/Send",
             body: JSON.parse(prepareRepeatDispensingPrescriptionRequest)
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/xml"
+              "Content-Type": "text/plain"
             },
-            status: 202
+            body: Matchers.like("Message Sent"),
+            status: 200
           }
         };
         await provider.addInteraction(interaction);
@@ -109,7 +110,7 @@ jestpact.pactWith(
           .set('Content-Type', 'application/json')
           .set('NHSD-Session-URID', '1234')
           .send(prepareRepeatDispensingPrescriptionRequest)
-          .expect(202);
+          .expect(200);
       });
 
     });
