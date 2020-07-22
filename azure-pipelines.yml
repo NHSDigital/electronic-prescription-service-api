@@ -68,7 +68,7 @@ jobs:
       # todo: Publish more than README
       - task: GitHubRelease@0
         condition: eq(variables['Build.SourceBranchName'], 'master')
-        displayName: 'Create GitHub Release'
+        displayName: 'Draft GitHub Release'
         inputs:
           gitHubConnection: booshibooshi
           repositoryName: NHSDigital/electronic-prescription-service-api
