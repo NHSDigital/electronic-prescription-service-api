@@ -4,8 +4,8 @@ import supertest from "supertest"
 import * as fs from 'fs'
 import * as path from "path"
 
-const prepareRepeatDispensingPrescriptionRequest = fs.readFileSync(path.join(__dirname, "../resources/parent-prescription-1/PrepareRequest-FhirMessageUnsigned.json"), "utf8")
-const prepareRepeatDispensingPrescriptionResponse = fs.readFileSync(path.join(__dirname, "../resources/parent-prescription-1/PrepareResponse-FhirMessageDigest.json"), "utf8")
+const prepareRepeatDispensingPrescriptionRequest = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareRequest-FhirMessageUnsigned.json"), "utf8")
+const prepareRepeatDispensingPrescriptionResponse = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareResponse-FhirMessageDigest.json"), "utf8")
 
 jestpact.pactWith(
   {
