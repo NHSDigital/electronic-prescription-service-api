@@ -101,7 +101,6 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
-            body: Matchers.string("Message Sent"),
             status: 200
           }
         };
