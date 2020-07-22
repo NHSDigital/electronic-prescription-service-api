@@ -57,6 +57,7 @@ export class Dosage {
 export class MedicationRequestDispenseRequest {
     quantity?: SimpleQuantity
     performer?: Reference<Organization>
+    validityPeriod?: Period
 }
 
 export class SimpleQuantity {
@@ -177,4 +178,9 @@ class Signature {
 
 export class Provenance extends Resource {
     signature: Array<Signature>
+}
+
+export class Period {
+    start: string
+    end: string
 }
