@@ -54,8 +54,15 @@ jobs:
         displayName: Install repo
 
       - bash: echo "##vso[task.setvariable variable=RELEASE_TAG]`echo $(poetry run python scripts/calculate_version.py)`"
-        condition: eq(variables['Build.SourceBranchName'], 'master')
         displayName: Calculate Release Tag
+
+      - bash: |
+          echo $sourceVersion
+          commitShortHash=${sourceVersion:0:7}
+          echo $commitHash
+          echo "##vso[task.setvariable variable=RELEASE_TAG_COMMIT_HASH]$commitShortHash"
+        env: { sourceVersion: $(Build.SourceVersion) }
+        displayName: Calculate Release Tag Commit Hash
 
       # Create a draft release before checking out other repos
       # Specify assets if moving this step to later in the pipeline 
@@ -100,6 +107,8 @@ jobs:
           PACT_BROKER_URL: $(PACT_BROKER_URL)
           PACT_BROKER_BASIC_AUTH_USERNAME: $(PACT_BROKER_BASIC_AUTH_USERNAME)
           PACT_BROKER_BASIC_AUTH_PASSWORD: $(PACT_BROKER_BASIC_AUTH_PASSWORD)
+          BUILD_SOURCE_BRANCH: $(SourceBranchName)
+          BUILD_VERSION: $(RELEASE_TAG)-$(RELEASE_TAG_COMMIT_HASH)
 
       - task: PublishTestResults@2
         inputs:
