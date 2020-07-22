@@ -62,5 +62,5 @@ function getBranch() {
 }
 
 function getVersion() {
-  branch = process.env.BUILD_VERSION || ""
+  version = process.env.BUILD_VERSION || ""
 }
