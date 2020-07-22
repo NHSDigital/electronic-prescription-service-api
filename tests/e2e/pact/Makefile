@@ -1,10 +1,6 @@
 SHELL=/bin/bash -euo pipefail
 
-test-e2e-integration-setup: install create publish
-
-test-e2e-integration-run-sandbox: verify-sandbox
-
-test-e2e-integration-run: verify
+# E2E Integration Test Setup
 
 install:
 	npm install
@@ -15,8 +11,19 @@ create:
 publish:
 	./broker/publish.sh
 
-verify:
+# E2E Integration Test Run
+
+test-e2e-integration-run:
 	./broker/verify-eps.sh
 
-verify-sandbox:
+test-e2e-integration-run-sandbox:
 	./broker/verify-eps-sandbox.sh
+
+
+# Quality Checks
+
+lint:
+	npm run lint
+
+check-licenses:
+	npm run check-licenses

@@ -13,6 +13,7 @@ jestpact.pactWith(
     provider: "nhsd-apim-eps",
     pactfileWriteMode: "overwrite"
   },
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
       const url = `${provider.mockService.baseUrl}`;

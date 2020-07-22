@@ -47,6 +47,7 @@ install-python:
 install-node:
 	cd specification && npm install
 	cd coordinator && npm install
+	cd tests/e2e/pact && make install
 
 install-hooks:
 	cp scripts/pre-commit .git/hooks/pre-commit
@@ -105,6 +106,14 @@ test-integration-coordinator:
 	&& export API_TEST_ENV_FILE_PATH=$(or $(API_TEST_ENV_FILE_PATH),../tests/e2e/postman/environments/local.postman_environment.json) \
 	&& npm run integration-test
 
+
+# E2E Integration Test Setup
+
+test-e2e-integration-setup:
+	cd tests/e2e/pact \
+	&& make create \
+	&& make publish
+
 ## Quality Checks
 
 validate-models:
@@ -114,10 +123,12 @@ validate-models:
 lint:
 	cd specification && npm run lint
 	cd coordinator && npm run lint
+	cd tests/e2e/pact && make lint
 	poetry run flake8 scripts/*.py --config .flake8
 	shellcheck scripts/*.sh
 
 check-licenses:
 	cd specification && npm run check-licenses
 	cd coordinator && npm run check-licenses
+	cd tests/e2e/pact && make check-licenses
 	scripts/check_python_licenses.sh

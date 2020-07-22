@@ -81,7 +81,6 @@ jobs:
 
       - bash: "make -s test-e2e-integration-setup"
         displayName: Setup E2E Integration Tests
-        workingDirectory: ./tests/e2e/pact
         env:
           PACT_BROKER_URL: $(PACT_BROKER_URL)
           PACT_BROKER_BASIC_AUTH_USERNAME: $(PACT_BROKER_BASIC_AUTH_USERNAME)

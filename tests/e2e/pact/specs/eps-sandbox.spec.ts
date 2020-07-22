@@ -13,6 +13,7 @@ jestpact.pactWith(
     provider: "nhsd-apim-eps-sandbox",
     pactfileWriteMode: "overwrite"
   },
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
       const url = `${provider.mockService.baseUrl}`;
@@ -37,7 +38,7 @@ jestpact.pactWith(
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/xml"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             status: 200
           }
@@ -98,7 +99,7 @@ jestpact.pactWith(
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "text/plain"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             body: Matchers.string("Message Sent"),
             status: 200
