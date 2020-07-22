@@ -38,7 +38,7 @@ jestpact.pactWith(
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/xml"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             status: 200
           }
@@ -107,12 +107,8 @@ jestpact.pactWith(
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/xml"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
-            body: Matchers.term({ 
-              generate: '<?xml version=\'1.0\' encoding=\'UTF-8\'?>\n<soap:Envelope xmlns:xsi="http://www.w3c.org/2001/XML-Schema-Instance" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:hl7ebxml="urn:hl7-org:transport/ebXML/DSTUv1.0" xmlns:xlink="http://www.w3.org/1999/xlink"><soap:Header><eb:MessageHeader eb:version="2.0" soap:mustUnderstand="1"><eb:From><eb:PartyId eb:type="urn:nhs:names:partyType:ocs+serviceInstance">YES-0000806</eb:PartyId></eb:From><eb:To><eb:PartyId eb:type="urn:nhs:names:partyType:ocs+serviceInstance">T141D-822234</eb:PartyId></eb:To><eb:CPAId>S20001A000100</eb:CPAId><eb:ConversationId>8788691B-1A3A-450D-B40A-3C27B6B1BBFA</eb:ConversationId><eb:Service>urn:oasis:names:tc:ebxml-msg:service</eb:Service><eb:Action>Acknowledgment</eb:Action><eb:MessageData><eb:MessageId>F3D691FC-CC2F-11EA-AB61-000C29F50CF9</eb:MessageId><eb:Timestamp>2020-07-22T15: 28: 11Z</eb:Timestamp><eb:RefToMessageId>FBA91221-811F-48D4-A5D8-ABC1B41D950F</eb:RefToMessageId></eb:MessageData></eb:MessageHeader><eb:Acknowledgment eb:version="2.0" soap:mustUnderstand="1" soap:actor="urn:oasis:names:tc:ebxml-msg:actor:toPartyMSH"><eb:Timestamp>2020-07-22T15: 28: 11</eb:Timestamp><eb:RefToMessageId>FBA91221-811F-48D4-A5D8-ABC1B41D950F</eb:RefToMessageId><eb:From><eb:PartyId eb:type="urn:nhs:names:partyType:ocs+serviceInstance">YES-0000806</eb:PartyId></eb:From></eb:Acknowledgment></soap:Header><soap:Body/></soap:Envelope>',
-              matcher: "(Acknowledgment)"
-            }),
             status: 202
           }
         };
