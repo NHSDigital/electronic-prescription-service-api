@@ -35,13 +35,18 @@ info:
     Currently, this API can only be accessed by healthcare professionals, authenticated with an NHS smartcard or equivalent.
 
     ## Using this API
-    Electronic prescription messages are digitally signed to protect against tampering and to prevent repudiation. While the messages themselves are FHIR-based, for reasons of backwards compatibility, the signatures must be represented in HL7 V3 format. To make this easier, you can POST a prescription to the /Prepare endpoint to receive exactly the HL7 V3 fragments which need to be signed to conform to the specification.
+    Electronic prescription messages are digitally signed to protect against tampering and to prevent repudiation. While the messages themselves are FHIR-based, for reasons of backwards compatibility, the signatures must be represented in HL7 V3 format. To make this easier, you can POST a prescription to the `/Prepare` endpoint to receive exactly the HL7 V3 fragments which need to be signed to conform to the specification.
     
-    The flow to create a prescription is then:
-    * POST a prescription in FHIR format to the /Prepare endpoint
-    * Sign the response and put the result in a Provenance resource in the original FHIR prescription
-    * POST the signed prescription in FHIR format to the /Send endpoint
+    To create a prescription:
+    1. POST a prescription in FHIR format to the `/Prepare` endpoint
+    2. Sign the response and put the result in a Provenance resource in the original FHIR prescription
+    3. POST the signed prescription in FHIR format to the `/Send` endpoint
 
+    ## Legal Use
+    This API can only be used where there is a legal basis to do so. You should make an access request before you go too far with your development.
+
+    You must have made this request before you can go live (see ‘Onboarding’ below).
+    
     ## Related APIs
     The following APIs also give access to the Electronic Prescription Service:
     - [Electronic Prescription Service (HL7 V3) API](https://data.developer.nhs.uk/dms/mim/4.2.00/Index.htm) - use this if you want to use functions that are not yet available on the FHIR API
@@ -102,7 +107,7 @@ info:
 
     For more details on sandbox testing, or to try out the sandbox using our "Try this API" feature, see the documentation for each endpoint.
 
-    ## Assurance
+    ## Onboarding
     We are hoping to make the assurance process as lightweight and as self-service as possible.
 
     More details to follow.
@@ -110,8 +115,9 @@ info:
     ## Endpoints
     To see details for specific endpoints, select from the list on the left hand side of the page:
     * `POST /Prepare` - convert a FHIR prescription into the HL7 V3 signature fragments to be signed by the prescriber
+    * `POST /Convert` - convert a FHIR prescription to HL7 V3 to verify client signature implementations
     * `POST /Send` - send a signed FHIR prescription to Spine
-    * `POST /Convert` - convert a FHIR prescription to HL7V3 to verify client signature implementations
+    
 servers:
   - url: 'https://internal-qa-sandbox.api.service.nhs.uk/electronic-prescriptions'
     description: 'Internal QA Sandbox environment.'
