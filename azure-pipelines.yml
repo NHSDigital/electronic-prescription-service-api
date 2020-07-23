@@ -64,8 +64,6 @@ jobs:
         env: { sourceVersion: $(Build.SourceVersion) }
         displayName: Calculate Short Commit Hash
 
-      # Create a draft release before checking out other repos
-      # todo: Publish more than README
       - task: GitHubRelease@0
         condition: eq(variables['Build.SourceBranchName'], 'master')
         displayName: 'Draft GitHub Release'
@@ -77,7 +75,7 @@ jobs:
           tagSource: manual
           tag: $(RELEASE_VERSION)
           isDraft: true
-          assets: "README.md"
+          addChangeLog: false
 
       - bash: "make -s test-e2e-integration-setup"
         displayName: Setup E2E Integration Tests
