@@ -53,23 +53,42 @@ jobs:
       - bash: "make install"
         displayName: Install repo
 
-      - bash: echo "##vso[task.setvariable variable=RELEASE_TAG]`echo $(poetry run python scripts/calculate_version.py)`"
-        displayName: Calculate Release Tag
+      - bash: echo "##vso[task.setvariable variable=RELEASE_VERSION]`echo $(poetry run python scripts/calculate_version.py)`"
+        displayName: Calculate Release Version
+
+      - bash: |
+          echo $sourceVersion
+          commitShortHash=${sourceVersion:0:7}
+          echo $commitHash
+          echo "##vso[task.setvariable variable=SHORT_COMMIT_HASH]$commitShortHash"
+        env: { sourceVersion: $(Build.SourceVersion) }
+        displayName: Calculate Short Commit Hash
 
       # Create a draft release before checking out other repos
-      # Specify assets if moving this step to later in the pipeline 
-      # to filter out tooling files/directories from released assets
+      # todo: Publish more than README
       - task: GitHubRelease@0
         condition: eq(variables['Build.SourceBranchName'], 'master')
-        displayName: 'Create GitHub Release'
+        displayName: 'Draft GitHub Release'
         inputs:
           gitHubConnection: booshibooshi
           repositoryName: NHSDigital/electronic-prescription-service-api
           action: create
           target: $(Build.SourceVersion)
           tagSource: manual
-          tag: $(RELEASE_TAG)
+          tag: $(RELEASE_VERSION)
           isDraft: true
+          assets: "README.md"
+
+      - bash: "make -s test-e2e-integration-setup"
+        displayName: Setup E2E Integration Tests
+        env:
+          PACT_BROKER_URL: $(PACT_BROKER_URL)
+          PACT_BROKER_BASIC_AUTH_USERNAME: $(PACT_BROKER_BASIC_AUTH_USERNAME)
+          PACT_BROKER_BASIC_AUTH_PASSWORD: $(PACT_BROKER_BASIC_AUTH_PASSWORD)
+          PACT_BROKER_URL_NEXT: $(PACT_BROKER_URL_NEXT)
+          PACT_BROKER_TOKEN_NEXT: $(PACT_BROKER_TOKEN_NEXT)
+          BUILD_SOURCE_BRANCH: $(Build.SourceBranchName)
+          BUILD_VERSION: $(RELEASE_VERSION)-$(SHORT_COMMIT_HASH)
 
       - checkout: utils
         path: s/utils
@@ -86,7 +105,7 @@ jobs:
       - bash: "make test"
         displayName: Run Quality Checks
 
-      - bash: 'echo "##vso[task.setvariable variable=SPEC_VERSION]$(poetry run python scripts/calculate_version.py)"'
+      - bash: 'echo "##vso[task.setvariable variable=SPEC_VERSION]$RELEASE_VERSION"'
         displayName: Set SPEC_VERSION
 
       - bash: "make test-integration-coordinator"
@@ -95,7 +114,7 @@ jobs:
       - task: PublishTestResults@2
         inputs:
           testResultsFormat: 'JUnit'
-          testResultsFiles: 'newman/*.xml'
+          testResultsFiles: 'coordinator/newman/*.xml'
           failTaskOnFailedTests: true
 
       - bash: "make release"
