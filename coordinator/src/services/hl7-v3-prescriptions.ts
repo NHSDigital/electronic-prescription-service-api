@@ -1,5 +1,5 @@
 import * as core from "./hl7-v3-datatypes-core"
-import {AttributeClassCode, AttributeMoodCode, AttributeTypeCode} from "./hl7-v3-datatypes-core"
+import {AttributeClassCode, AttributeMoodCode, AttributeTypeCode, Timestamp} from "./hl7-v3-datatypes-core"
 import * as codes from "./hl7-v3-datatypes-codes"
 import {GlobalIdentifier, ShortFormPrescriptionIdentifier, SnomedCode} from "./hl7-v3-datatypes-codes"
 import * as peoplePlaces from "./hl7-v3-people-places"
@@ -220,7 +220,7 @@ export class Prescription implements ElementCompact {
     author: Author
     //TODO - legalAuthenticator
     responsibleParty: ResponsibleParty
-    //TODO - component1
+    component1: Component1
     //TODO - pertinentInformation7
     pertinentInformation5: PrescriptionPertinentInformation5
     //TODO - pertinentInformation6
@@ -491,5 +491,37 @@ export class ActRef implements ElementCompact {
         }
 
         this.id = act.id
+    }
+}
+
+export class Component1 {
+    _attributes: core.AttributeTypeCode = {
+        typeCode: "COMP"
+    }
+
+    seperatableInd: core.BooleanValue = new core.BooleanValue(true)
+    daysSupply: DaysSupply
+}
+
+export class DaysSupply {
+    _attributes: core.AttributeClassCode & AttributeMoodCode = {
+        classCode: "SPLY",
+        moodCode: "RQO"
+    }
+
+    code: codes.SnomedCode = new codes.SnomedCode("373784005", "Dispensing medication (procedure)")
+    effectiveTime: IntervalComplete
+    expectedUseTime: IntervalUnanchored
+}
+
+export class IntervalComplete {
+    low: Timestamp
+    high: Timestamp
+}
+
+export class IntervalUnanchored {
+    width: {
+        value: number
+        unit: string
     }
 }
