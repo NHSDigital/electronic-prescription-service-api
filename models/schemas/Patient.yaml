@@ -20,7 +20,7 @@ properties:
     description: Logical id of this artifact.
     example: "C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C"
   managingOrganization:
-    $ref: "Identifier-Reference.yaml"
+    $ref: "OdsOrganizationCode-Identifier-Reference.yaml"
   identifier:
     type: array
     description: An identifier for this patient.

@@ -1,7 +1,0 @@
-type: object
-description: A link to a resource representing the person or set of individuals to whom the medication will be given.
-required:
-  - identifier
-properties:
-  identifier:
-    $ref: "Identifier-OdsOrganizationCode.yaml"
