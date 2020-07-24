@@ -61,14 +61,13 @@ jobs:
 
       - bash: |
           echo $sourceVersion
-          commitShortHash=${sourceVersion:0:7}
+          commitShortHash=-${sourceVersion:0:7}
           echo $commitHash
           echo "##vso[task.setvariable variable=SHORT_COMMIT_HASH]$commitShortHash"
         env: { sourceVersion: $(Build.SourceVersion) }
+        condition: ne(variables['Build.SourceBranchName'], 'master')
         displayName: Calculate Short Commit Hash
 
-      # Create a draft release before checking out other repos
-      # todo: Publish more than README
       - task: GitHubRelease@0
         condition: eq(variables['Build.SourceBranchName'], 'master')
         displayName: 'Draft GitHub Release'
@@ -80,7 +79,7 @@ jobs:
           tagSource: manual
           tag: $(RELEASE_VERSION)
           isDraft: true
-          assets: "README.md"
+          addChangeLog: false
 
       - bash: "make -s test-e2e-integration-setup"
         displayName: Setup E2E Integration Tests
@@ -91,7 +90,7 @@ jobs:
           PACT_BROKER_URL_NEXT: $(PACT_BROKER_URL_NEXT)
           PACT_BROKER_TOKEN_NEXT: $(PACT_BROKER_TOKEN_NEXT)
           BUILD_SOURCE_BRANCH: $(Build.SourceBranchName)
-          BUILD_VERSION: $(RELEASE_VERSION)-$(SHORT_COMMIT_HASH)
+          BUILD_VERSION: $(RELEASE_VERSION)$(SHORT_COMMIT_HASH)
 
       - checkout: utils
         path: s/utils
