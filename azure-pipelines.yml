@@ -1,5 +1,8 @@
 name: "$(SourceBranchName)+$(BuildID)"
 
+variables:
+- group: pact
+
 resources:
   repositories:
     - repository: utils
