@@ -124,8 +124,6 @@ The Apigee portal will not automatically pull examples from schemas, you must sp
 #### Platform setup
 Successful deployment of the API Proxy requires:
 
- 1. A *Target Server* named `ig3`
- 2. A *Key-Value Map* named `eps-variables`, containing:
-    1. Key: `NHSD-ASID`, Value: Accredited System ID (ASID) identifying the API Gateway
+ * A *Target Server* named `ig3`
 
 :bulb: For Sandbox-running environments (`test`) these need to be present for successful deployment but can be set to empty/dummy values.

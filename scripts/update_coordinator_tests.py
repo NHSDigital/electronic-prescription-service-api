@@ -24,7 +24,7 @@ def date_converter(obj):
 
 def main():
     """Main entrypoint"""
-    postman_file_path = "./tests/e2e/electronic-prescription-coordinator-postman-tests.json.template"
+    postman_file_path = "./tests/e2e/postman/electronic-prescription-coordinator-postman-tests.json.template"
     with open(postman_file_path) as f:
         data = json.load(f)
 
@@ -122,7 +122,7 @@ def main():
                 ]
 
     with open(
-            "./tests/e2e/electronic-prescription-coordinator-postman-tests.json",
+            "./tests/e2e/postman/electronic-prescription-coordinator-postman-tests.json",
             "w"
     ) as out_file:
         out_file.write(
