@@ -1,5 +1,3 @@
-import {Telecom} from "./hl7-v3-datatypes-core";
-
 export abstract class Resource {
     id?: string
     resourceType: string
