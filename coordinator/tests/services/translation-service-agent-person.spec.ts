@@ -48,7 +48,7 @@ describe('getAgentPersonTelecom', () => {
         const output = getAgentPersonTelecom(undefined, practitionerTelecom)
         expect(output).toEqual(practitionerTelecomExpected)
     })
-    test('if neither practitionerRole or practitioner has telecom then ', () => {
+    test('if neither practitionerRole or practitioner has telecom then we return undefined', () => {
         const output = getAgentPersonTelecom(undefined, undefined)
         expect(output).toEqual(undefined)
     })
