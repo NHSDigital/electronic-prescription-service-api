@@ -506,6 +506,23 @@
       "resource": {
         "resourceType": "PractitionerRole",
         "id": "DBAA616B-E23C-4D53-0F82-B2D178DB79CA",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+            "value": "100109391987"
+          }
+        ],
+        "code": [
+          {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName",
+                "code": "R0260",
+                "display": "General Medical Practitioner"
+              }
+            ]
+          }
+        ],
         "practitioner": {
           "reference": "urn:uuid:D4B569E7-CCF6-4BB2-029B-34B6F3E82ACF"
         },
@@ -519,6 +536,23 @@
       "resource": {
         "resourceType": "PractitionerRole",
         "id": "9B4C1A77-CCCC-418A-B835-4112FBCB14F3",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+            "value": "100104917989"
+          }
+        ],
+        "code": [
+          {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName",
+                "code": "R0260",
+                "display": "General Medical Practitioner"
+              }
+            ]
+          }
+        ],
         "practitioner": {
           "reference": "urn:uuid:4D2DF25E-A6D3-4200-A9FA-6611BE03E2A6"
         },
@@ -536,14 +570,6 @@
           {
             "system": "https://fhir.nhs.uk/Id/sds-user-id",
             "value": "8412511"
-          },
-          {
-            "system": "https://fhir.nhs.uk/Id/sds-job-role-id",
-            "value": "R0260"
-          },
-          {
-            "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-            "value": "100109391987"
           }
         ],
         "name": [
@@ -573,14 +599,6 @@
           {
             "system": "https://fhir.nhs.uk/Id/sds-user-id",
             "value": "981055"
-          },
-          {
-            "system": "https://fhir.nhs.uk/Id/sds-job-role-id",
-            "value": "R0260"
-          },
-          {
-            "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-            "value": "100104917989"
           }
         ],
         "name": [

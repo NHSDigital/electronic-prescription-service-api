@@ -1,3 +1,5 @@
+import {Telecom} from "./hl7-v3-datatypes-core";
+
 export abstract class Resource {
     id?: string
     resourceType: string
@@ -104,8 +106,11 @@ export class Address {
 }
 
 export class PractitionerRole extends Resource {
+    identifier?: Array<Identifier>
     practitioner?: Reference<Practitioner>
     organization?: Reference<Organization>
+    code?: Array<CodeableConcept>
+    telecom: Array<ContactPoint>
 }
 
 export class Practitioner extends Resource {
