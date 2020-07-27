@@ -383,6 +383,12 @@
       "resource": {
         "resourceType": "Patient",
         "id": "B96806F2-0E43-4046-30F3-BD444965AFB3",
+        "managingOrganization": {
+          "identifier": {
+            "value": "D81015",
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code"
+          }
+        },
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
@@ -413,11 +419,6 @@
             ],
             "city": "DERBY",
             "postalCode": "DE22 3JU"
-          }
-        ],
-        "generalPractitioner": [
-          {
-            "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
           }
         ]
       },

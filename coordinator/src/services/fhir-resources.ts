@@ -47,7 +47,8 @@ export class Coding {
 }
 
 export class Reference<T extends Resource> {
-    reference: string
+    reference?: string
+    identifier?: Identifier
 }
 
 export class Dosage {
@@ -75,6 +76,7 @@ export class Patient extends Resource {
     birthDate?: string
     address?: Array<Address>
     generalPractitioner?: Array<Reference<PractitionerRole>>
+    managingOrganization: Reference<Organization>
 }
 
 export class HumanName {
