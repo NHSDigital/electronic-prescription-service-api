@@ -52,7 +52,7 @@ export class RequestHandler {
                     httpsAgent,
                     headers: {
                         "Content-Type": "multipart/related; boundary=\"--=_MIME-Boundary\"; type=text/xml; start=ebXMLHeader@spine.nhs.uk",
-                        "SOAPAction": "urn:nhs:names:services:mm/PORX_IN020101UK31"
+                        "SOAPAction": "urn:nhs:names:services:mm/PORX_IN020101SM31"
                     }
                 }
             )
