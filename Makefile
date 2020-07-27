@@ -78,7 +78,7 @@ build-specification:
 build-coordinator:
 	npm run --prefix=coordinator/ build
 	cp coordinator/package.json coordinator/dist/
-	mkdir coordinator/dist/resources
+	mkdir -p coordinator/dist/resources
 	cp coordinator/src/resources/ebxml_request.mustache coordinator/dist/resources/
 	poetry run scripts/update_coordinator_tests.py
 

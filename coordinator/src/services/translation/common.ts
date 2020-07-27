@@ -3,11 +3,11 @@ import {Extension} from "../../model/fhir-resources";
 import moment from "moment";
 import * as core from "../../model/hl7-v3-datatypes-core";
 
-//TODO - is there a better way than returning Array<unknown>?
-export function getResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): Array<unknown> {
+export function getResourcesOfType<T extends fhir.Resource>(fhirBundle: fhir.Bundle, type: T): Array<T> {
+    const typeGuard = (resource: fhir.Resource): resource is T => resource.resourceType === type.resourceType
     return fhirBundle.entry
         .map(entry => entry.resource)
-        .filter(resource => resource.resourceType === resourceType)
+        .filter(typeGuard)
 }
 
 export function getResourceForFullUrl(fhirBundle: fhir.Bundle, resourceFullUrl: string): fhir.Resource {

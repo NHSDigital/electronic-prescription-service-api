@@ -1,5 +1,5 @@
 import * as fhir from "../../model/fhir-resources";
-import {PractitionerRole} from "../../model/fhir-resources";
+import {PractitionerRole, Provenance} from "../../model/fhir-resources";
 import * as peoplePlaces from "../../model/hl7-v3-people-places";
 import * as codes from "../../model/hl7-v3-datatypes-codes";
 import {convertName, convertTelecom} from "./demographics";
@@ -82,7 +82,7 @@ function convertPractitioner(
 }
 
 function convertSignatureText(fhirBundle: fhir.Bundle, signatory: fhir.Reference<fhir.PractitionerRole>) {
-    const fhirProvenances = getResourcesOfType(fhirBundle, "Provenance") as Array<fhir.Provenance>
+    const fhirProvenances = getResourcesOfType(fhirBundle, new Provenance())
     const requesterSignatures = fhirProvenances.flatMap(provenance => provenance.signature)
         .filter(signature => signature.who.reference === signatory.reference)
     if (requesterSignatures.length !== 0) {
