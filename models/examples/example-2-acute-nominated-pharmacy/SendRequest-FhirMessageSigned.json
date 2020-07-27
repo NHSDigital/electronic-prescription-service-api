@@ -1,6 +1,10 @@
 {
   "resourceType": "Bundle",
   "id": "9C7635DA-DE6A-38CE-B790-163048F0D390",
+  "identifier": {
+    "system": "https://tools.ietf.org/html/rfc4122",
+    "value": "A7B86F8D-1DAE-FC28-E050-D20AE3A215F0"
+  },
   "type": "collection",
   "entry": [
     {

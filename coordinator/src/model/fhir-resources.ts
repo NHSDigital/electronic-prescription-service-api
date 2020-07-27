@@ -4,6 +4,7 @@ export abstract class Resource {
 }
 
 export class Bundle extends Resource {
+    identifier?: Identifier
     entry?: Array<BundleEntry>
 }
 

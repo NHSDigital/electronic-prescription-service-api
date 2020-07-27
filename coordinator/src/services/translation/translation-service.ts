@@ -7,26 +7,23 @@ import * as crypto from "crypto-js"
 import {createSendMessagePayload} from "./send-message-payload";
 import {namespacedCopyOf, writeXmlStringCanonicalized} from "./xml";
 import {convertParentPrescription} from "./parent-prescription";
+import {getIdentifierValueForSystem} from "./common";
 
 export function convertFhirMessageToHl7V3ParentPrescriptionMessage(fhirMessage: fhir.Bundle): string {
     const root = {
-        _declaration: {
-            _attributes: {
-                version: "1.0",
-                encoding: "UTF-8"
-            }
-        },
+        _declaration: new XmlDeclaration(),
         PORX_IN020101UK31: namespacedCopyOf(createParentPrescriptionSendMessagePayload(fhirMessage))
     }
     return writeXmlStringCanonicalized(root)
 }
 
 export function createParentPrescriptionSendMessagePayload(fhirBundle: fhir.Bundle): core.SendMessagePayload<prescriptions.ParentPrescriptionRoot> {
+    const messageId = getIdentifierValueForSystem([fhirBundle.identifier], "https://tools.ietf.org/html/rfc4122")
     const parentPrescription = convertParentPrescription(fhirBundle)
     const parentPrescriptionRoot = new prescriptions.ParentPrescriptionRoot(parentPrescription)
     const interactionId = codes.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT
     const authorAgentPerson = parentPrescription.pertinentInformation1.pertinentPrescription.author.AgentPerson
-    return createSendMessagePayload(interactionId, authorAgentPerson, parentPrescriptionRoot)
+    return createSendMessagePayload(messageId, interactionId, authorAgentPerson, parentPrescriptionRoot)
 }
 
 export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle): string {
@@ -100,5 +97,12 @@ class AlgorithmIdentifier implements XmlJs.ElementCompact {
         this._attributes = {
             Algorithm: algorithm
         }
+    }
+}
+
+class XmlDeclaration {
+    _attributes = {
+        version: "1.0",
+        encoding: "UTF-8"
     }
 }

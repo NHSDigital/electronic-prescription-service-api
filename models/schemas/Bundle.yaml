@@ -3,6 +3,7 @@ description: A container for a collection of resources.
 required:
   - resourceType
   - id
+  - identifier
   - type
   - entry
 properties:
@@ -15,6 +16,8 @@ properties:
     type: string
     description: Logical id of this artifact.
     example: "7EB02341-5F62-4A76-2CD3-34F523452356"
+  identifier:
+    $ref: "Identifier-UUID.yaml"
   type:
     type: string
     description: Indicates the purpose of a bundle - how it is intended to be used.
