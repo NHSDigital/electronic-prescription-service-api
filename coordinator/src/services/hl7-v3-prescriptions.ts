@@ -494,6 +494,10 @@ export class ActRef implements ElementCompact {
     }
 }
 
+/**
+ * An act relationship used to provide information on the number of days' treatment that the current prescription's medication provides for.
+ * Applicable to repeat dispensing prescriptions only.
+ */
 export class Component1 {
     _attributes: core.AttributeTypeCode = {
         typeCode: "COMP"
@@ -503,6 +507,10 @@ export class Component1 {
     daysSupply: DaysSupply
 }
 
+/**
+ * Prescription duration and supply intervals used to calculate the "Dispensing Window".
+ * This information is mandatory for repeat dispensing prescriptions, optional otherwise.
+ */
 export class DaysSupply {
     _attributes: core.AttributeClassCode & AttributeMoodCode = {
         classCode: "SPLY",
@@ -510,99 +518,8 @@ export class DaysSupply {
     }
 
     code: codes.SnomedCode = new codes.SnomedCode("373784005", "Dispensing medication (procedure)")
-    effectiveTime: IntervalComplete
-    expectedUseTime: IntervalUnanchored
-}
-
-export class IntervalComplete {
-    low: Timestamp
-    high: Timestamp
-}
-
-export class IntervalUnanchored {
-    width: {
-        value: number
-        unit: string
-    }
-}
-
-export class Device {
-    _attributes: core.AttributeClassCode & core.AttributeDeterminerCode = {
-        classCode: "DEV",
-        determinerCode: "INSTANCE"
-    }
-
-    id: codes.AccreditedSystemIdentifier
-}
-
-export class CommunicationFunction {
-    device: Device
-}
-
-export class SdsRole {
-    _attributes: core.AttributeClassCode = {
-        classCode: "ROL"
-    }
-
-    id: codes.SdsJobRoleCode
-}
-
-export class AgentPersonPart {
-    _attributes: core.AttributeTypeCode = {
-        typeCode: "PART"
-    }
-
-    partSDSRole: SdsRole
-}
-
-abstract class BaseAgent {
-    _attributes: core.AttributeClassCode = {
-        classCode: "AGNT"
-    }
-}
-
-export class AgentPersonSds extends BaseAgent {
-    id: codes.SdsRoleProfileIdentifier
-    agentPersonSDS: peoplePlaces.AgentPersonPerson
-    part: AgentPersonPart
-}
-
-export class AgentSystemSystemSds {
-    _attributes: core.AttributeClassCode & core.AttributeDeterminerCode = {
-        classCode: "DEV",
-        determinerCode: "INSTANCE"
-    }
-
-    id: codes.AccreditedSystemIdentifier
-}
-
-export class AgentSystemSds extends BaseAgent {
-    agentSystemSDS: AgentSystemSystemSds
-}
-
-abstract class BaseAuthor {
-    _attributes: core.AttributeTypeCode = {
-        typeCode: "AUT"
-    }
-}
-
-export class SendMessagePayloadAuthorPersonSds extends BaseAuthor {
-    AgentPersonSDS: AgentPersonSds
-}
-
-export class SendMessagePayloadAuthorSystemSds extends BaseAuthor {
-    AgentSystemSDS: AgentSystemSds
-}
-
-export class ControlActEvent<T> {
-    _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-        classCode: "CACT",
-        moodCode: "EVN"
-    }
-
-    author: SendMessagePayloadAuthorPersonSds
-    author1: SendMessagePayloadAuthorSystemSds
-    subject: T
+    effectiveTime: core.IntervalComplete
+    expectedUseTime: core.IntervalUnanchored
 }
 
 export class ParentPrescriptionRoot {
@@ -610,28 +527,5 @@ export class ParentPrescriptionRoot {
 
     constructor(parentPrescription: ParentPrescription) {
         this.ParentPrescription = parentPrescription
-    }
-}
-
-export class SendMessagePayload<T> {
-    id: GlobalIdentifier
-    creationTime: Timestamp
-    versionCode: codes.Hl7StandardVersionCode
-    interactionId: codes.Hl7InteractionIdentifier
-    processingCode: codes.ProcessingId
-    processingModeCode: codes.ProcessingMode
-    acceptAckCode: codes.AcceptAckCode
-    communicationFunctionRcv: CommunicationFunction
-    communicationFunctionSnd: CommunicationFunction
-    ControlActEvent: ControlActEvent<T>
-
-    constructor(id: GlobalIdentifier, creationTime: Timestamp, interactionId: codes.Hl7InteractionIdentifier) {
-        this.id = id
-        this.creationTime = creationTime
-        this.versionCode = codes.Hl7StandardVersionCode.V3_NPFIT_4_2_00
-        this.interactionId = interactionId
-        this.processingCode = codes.ProcessingId.PRODUCTION
-        this.processingModeCode = codes.ProcessingMode.ONLINE
-        this.acceptAckCode = codes.AcceptAckCode.NEVER
     }
 }

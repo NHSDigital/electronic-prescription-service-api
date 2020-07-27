@@ -175,3 +175,9 @@ export class AccreditedSystemIdentifier extends Identifier {
         super("1.2.826.0.1285.0.2.0.107", extension)
     }
 }
+
+export class SdsJobRoleIdentifier extends Identifier {
+    constructor(extension: string) {
+        super("1.2.826.0.1285.0.2.1.104", extension)
+    }
+}

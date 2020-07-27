@@ -150,6 +150,10 @@ export class AgentPersonPerson implements ElementCompact {
 
     id: codes.SdsUniqueIdentifier
     name?: core.Name
+
+    constructor(id: codes.SdsUniqueIdentifier) {
+        this.id = id
+    }
 }
 
 /**

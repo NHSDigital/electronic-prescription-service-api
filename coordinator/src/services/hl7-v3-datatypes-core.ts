@@ -1,5 +1,7 @@
 import * as codes from "./hl7-v3-datatypes-codes"
+import {GlobalIdentifier} from "./hl7-v3-datatypes-codes"
 import {Attributes, ElementCompact} from "xml-js";
+import * as peoplePlaces from "./hl7-v3-people-places";
 
 export interface AttributeTypeCode extends Attributes {
     typeCode: "AUT" | "COMP" | "FLFS" | "LA" | "PART" | "PERT" | "PRD" | "PRF" | "RESP" | "RCT" | "SBJ"
@@ -79,7 +81,7 @@ export class BooleanValue implements ElementCompact {
 }
 
 export enum NameUse {
-    USUAL= "L",
+    USUAL = "L",
     ALIAS = "A"
 }
 
@@ -190,5 +192,146 @@ export class Timestamp implements ElementCompact {
         this._attributes = {
             value: value
         }
+    }
+}
+
+export class IntervalComplete {
+    low: Timestamp
+    high: Timestamp
+}
+
+export class IntervalUnanchored {
+    width: {
+        value: number
+        unit: string
+    }
+}
+
+export class SendMessagePayload<T> {
+    id: GlobalIdentifier
+    creationTime: Timestamp
+    versionCode: codes.Hl7StandardVersionCode
+    interactionId: codes.Hl7InteractionIdentifier
+    processingCode: codes.ProcessingId
+    processingModeCode: codes.ProcessingMode
+    acceptAckCode: codes.AcceptAckCode
+    communicationFunctionRcv: CommunicationFunction
+    communicationFunctionSnd: CommunicationFunction
+    ControlActEvent: ControlActEvent<T>
+
+    constructor(id: GlobalIdentifier, creationTime: Timestamp, interactionId: codes.Hl7InteractionIdentifier) {
+        this.id = id
+        this.creationTime = creationTime
+        this.versionCode = codes.Hl7StandardVersionCode.V3_NPFIT_4_2_00
+        this.interactionId = interactionId
+        this.processingCode = codes.ProcessingId.PRODUCTION
+        this.processingModeCode = codes.ProcessingMode.ONLINE
+        this.acceptAckCode = codes.AcceptAckCode.NEVER
+    }
+}
+
+export class CommunicationFunction {
+    device: Device
+}
+
+export class Device {
+    _attributes: AttributeClassCode & AttributeDeterminerCode = {
+        classCode: "DEV",
+        determinerCode: "INSTANCE"
+    }
+
+    id: codes.AccreditedSystemIdentifier
+}
+
+export class ControlActEvent<T> {
+    _attributes: AttributeClassCode & AttributeMoodCode = {
+        classCode: "CACT",
+        moodCode: "EVN"
+    }
+
+    author: SendMessagePayloadAuthorPersonSds
+    author1: SendMessagePayloadAuthorSystemSds
+    subject: T
+}
+
+abstract class SendMessagePayloadAuthor {
+    _attributes: AttributeTypeCode = {
+        typeCode: "AUT"
+    }
+}
+
+export class SendMessagePayloadAuthorPersonSds extends SendMessagePayloadAuthor {
+    AgentPersonSDS: AgentPersonSds
+
+    constructor(agentPersonSds: AgentPersonSds) {
+        super()
+        this.AgentPersonSDS = agentPersonSds
+    }
+}
+
+export class SendMessagePayloadAuthorSystemSds extends SendMessagePayloadAuthor {
+    AgentSystemSDS: AgentSystemSds
+
+    constructor(agentSystemSds: AgentSystemSds) {
+        super()
+        this.AgentSystemSDS = agentSystemSds
+    }
+}
+
+abstract class SendMessagePayloadAgent {
+    _attributes: AttributeClassCode = {
+        classCode: "AGNT"
+    }
+}
+
+export class AgentPersonSds extends SendMessagePayloadAgent {
+    id: codes.SdsRoleProfileIdentifier
+    agentPersonSDS: peoplePlaces.AgentPersonPerson
+    part: AgentPersonPart
+}
+
+export class AgentPersonPart {
+    _attributes: AttributeTypeCode = {
+        typeCode: "PART"
+    }
+
+    partSDSRole: SdsRole
+
+    constructor(sdsRole: SdsRole) {
+        this.partSDSRole = sdsRole
+    }
+}
+
+export class SdsRole {
+    _attributes: AttributeClassCode = {
+        classCode: "ROL"
+    }
+
+    id: codes.SdsJobRoleIdentifier
+
+    constructor(id: codes.SdsJobRoleIdentifier) {
+        this.id = id
+    }
+}
+
+export class AgentSystemSds extends SendMessagePayloadAgent {
+    agentSystemSDS: AgentSystemSystemSds
+
+    constructor(systemSds: AgentSystemSystemSds) {
+        super()
+        this.agentSystemSDS = systemSds
+    }
+}
+
+export class AgentSystemSystemSds {
+    _attributes: AttributeClassCode & AttributeDeterminerCode = {
+        classCode: "DEV",
+        determinerCode: "INSTANCE"
+    }
+
+    id: codes.AccreditedSystemIdentifier
+
+    constructor(id: codes.AccreditedSystemIdentifier) {
+        this.id = id
     }
 }

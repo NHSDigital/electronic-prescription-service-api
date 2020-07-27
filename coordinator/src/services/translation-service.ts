@@ -74,8 +74,8 @@ function convertDate(isoDateStr: string) {
 }
 
 function createCommunicationFunction(asid: string) {
-    const communicationFunctionRcv = new prescriptions.CommunicationFunction()
-    const device = new prescriptions.Device()
+    const communicationFunctionRcv = new core.CommunicationFunction()
+    const device = new core.Device()
     device.id = new codes.AccreditedSystemIdentifier(asid)
     communicationFunctionRcv.device = device
     return communicationFunctionRcv;
@@ -84,40 +84,30 @@ function createCommunicationFunction(asid: string) {
 function createControlActEventAuthor(
     authorAgentPersonFromMessage: peoplePlaces.AgentPerson
 ) {
-    const authorAgentPersonPerson = new peoplePlaces.AgentPersonPerson()
-    authorAgentPersonPerson.id = authorAgentPersonFromMessage.agentPerson.id
+    const authorAgentPersonPerson = new peoplePlaces.AgentPersonPerson(authorAgentPersonFromMessage.agentPerson.id)
+    const sdsJobRoleIdentifier = new codes.SdsJobRoleIdentifier(authorAgentPersonFromMessage.code._attributes.code)
+    const sdsRole = new core.SdsRole(sdsJobRoleIdentifier)
 
-    const sdsRole = new prescriptions.SdsRole()
-    sdsRole.id = authorAgentPersonFromMessage.code
-
-    const authorAgentPersonPart = new prescriptions.AgentPersonPart()
-    authorAgentPersonPart.partSDSRole = sdsRole
-
-    const authorAgentPerson = new prescriptions.AgentPersonSds()
+    const authorAgentPerson = new core.AgentPersonSds()
     authorAgentPerson.id = authorAgentPersonFromMessage.id
     authorAgentPerson.agentPersonSDS = authorAgentPersonPerson
-    authorAgentPerson.part = authorAgentPersonPart
+    authorAgentPerson.part = new core.AgentPersonPart(sdsRole)
 
-    const author = new prescriptions.SendMessagePayloadAuthorPersonSds()
-    author.AgentPersonSDS = authorAgentPerson
-    return author
+    return new core.SendMessagePayloadAuthorPersonSds(authorAgentPerson)
 }
 
 function createControlActEventAuthor1(asid: string) {
-    const author1 = new prescriptions.SendMessagePayloadAuthorSystemSds()
-    const agentSystemSds = new prescriptions.AgentSystemSds()
-    const agentSystemSystemSds = new prescriptions.AgentSystemSystemSds()
-    agentSystemSystemSds.id = new codes.AccreditedSystemIdentifier(asid)
-    agentSystemSds.agentSystemSDS = agentSystemSystemSds
-    author1.AgentSystemSDS = agentSystemSds
-    return author1
+    const id = new codes.AccreditedSystemIdentifier(asid)
+    const agentSystemSystemSds = new core.AgentSystemSystemSds(id)
+    const agentSystemSds = new core.AgentSystemSds(agentSystemSystemSds)
+    return new core.SendMessagePayloadAuthorSystemSds(agentSystemSds)
 }
 
 function createControlActEvent<T>(
     authorAgentPerson: peoplePlaces.AgentPerson,
     subject: T
 ) {
-    const controlActEvent = new prescriptions.ControlActEvent<T>()
+    const controlActEvent = new core.ControlActEvent<T>()
     controlActEvent.author = createControlActEventAuthor(authorAgentPerson)
     controlActEvent.author1 = createControlActEventAuthor1(process.env.FROM_ASID)
     controlActEvent.subject = subject
@@ -125,7 +115,7 @@ function createControlActEvent<T>(
 }
 
 function createSendMessagePayload<T>(interactionId: codes.Hl7InteractionIdentifier, authorAgentPerson: peoplePlaces.AgentPerson, subject: T) {
-    const sendMessagePayload = new prescriptions.SendMessagePayload<T>(
+    const sendMessagePayload = new core.SendMessagePayload<T>(
         new GlobalIdentifier(uuid.v4().toUpperCase()),
         new core.Timestamp(moment.utc().format("YYYYMMDDHHmmss")),
         interactionId
@@ -136,7 +126,7 @@ function createSendMessagePayload<T>(interactionId: codes.Hl7InteractionIdentifi
     return sendMessagePayload
 }
 
-export function convertBundleToSendMessagePayload(fhirBundle: fhir.Bundle): prescriptions.SendMessagePayload<prescriptions.ParentPrescriptionRoot> {
+export function convertBundleToSendMessagePayload(fhirBundle: fhir.Bundle): core.SendMessagePayload<prescriptions.ParentPrescriptionRoot> {
     const parentPrescription = convertBundleToParentPrescription(fhirBundle)
     const parentPrescriptionRoot = new prescriptions.ParentPrescriptionRoot(parentPrescription)
     const interactionId = codes.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT
@@ -395,9 +385,9 @@ function convertPractitionerRole(fhirBundle: fhir.Bundle, fhirPractitionerRole: 
 }
 
 function convertAgentPersonPerson(fhirPractitioner: fhir.Practitioner) {
-    const hl7V3AgentPersonPerson = new peoplePlaces.AgentPersonPerson()
     const sdsUniqueIdentifier = getIdentifierValueForSystem(fhirPractitioner.identifier, "https://fhir.nhs.uk/Id/sds-user-id")
-    hl7V3AgentPersonPerson.id = new codes.SdsUniqueIdentifier(sdsUniqueIdentifier)
+    const id = new codes.SdsUniqueIdentifier(sdsUniqueIdentifier)
+    const hl7V3AgentPersonPerson = new peoplePlaces.AgentPersonPerson(id)
     if (fhirPractitioner.name !== undefined) {
         hl7V3AgentPersonPerson.name = fhirPractitioner.name.map(convertName).reduce(onlyElement)
     }
@@ -576,6 +566,12 @@ export function convertFhirMessageToHl7V3ParentPrescription(fhirMessage: fhir.Bu
         attributesFn: sortAttributes
     } as unknown as XmlJs.Options.JS2XML
     const root = {
+        _declaration: {
+            _attributes: {
+                version: "1.0",
+                encoding: "UTF-8"
+            }
+        },
         PORX_IN020101UK31: namespacedCopyOf(convertBundleToSendMessagePayload(fhirMessage))
     }
     //TODO - call canonicalize function instead? this leaves spaces in which makes the response easier to read

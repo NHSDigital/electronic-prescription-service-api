@@ -9,12 +9,20 @@ import {
 import * as fhir from "../../src/services/fhir-resources"
 import * as TestResources from "../resources/test-resources"
 import * as XmlJs from "xml-js"
+import {MomentFormatSpecification, MomentInput} from "moment";
 
 jest.mock('uuid', () => {
     return {
         v4: () => {
             return "A7B86F8D-1DBD-FC28-E050-D20AE3A215F0"
         }
+    }
+})
+
+const moment = jest.requireActual("moment")
+jest.mock('moment', () => {
+    return {
+        utc: (input?: MomentInput, format?: MomentFormatSpecification) => moment.utc(input ? input : "2020-06-10T10:26:31.000Z", format)
     }
 })
 
