@@ -69,6 +69,7 @@ jobs:
           commitShortHash=-${sourceVersion:0:7}
           echo $commitHash
           echo "##vso[task.setvariable variable=SHORT_COMMIT_HASH]$commitShortHash"
+        condition: ne(variables['Build.SourceBranchName'], 'master')
         env: { sourceVersion: $(Build.SourceVersion) }
         displayName: Calculate Short Commit Hash
 
@@ -87,7 +88,6 @@ jobs:
 
       - bash: "make -s test-e2e-integration-setup"
         displayName: Setup E2E Integration Tests
-        condition: ne(variables['Build.SourceBranchName'], 'master')
         env:
           PACT_BROKER_URL: $(PACT_BROKER_URL)
           PACT_BROKER_BASIC_AUTH_USERNAME: $(PACT_BROKER_BASIC_AUTH_USERNAME)
