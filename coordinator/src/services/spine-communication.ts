@@ -20,13 +20,13 @@ async function request(message: string) {
     const wrappedMessage = addEbXmlWrapper(message)
     try {
         const result = await axios.post(
-            'https://veit07.devspineservices.nhs.uk/reliablemessaging/reliablerequest',
+            'https://nww.int.spine2.ncrs.nhs.uk/Prescription',
             wrappedMessage,
             {
                 httpsAgent,
                 headers: {
                     "Content-Type": "multipart/related; boundary=\"--=_MIME-Boundary\"; type=text/xml; start=ebXMLHeader@spine.nhs.uk",
-                    "SOAPAction": "urn:nhs:names:services:mm/PORX_IN020101UK31"
+                    "SOAPAction": "urn:nhs:names:services:mm/PORX_IN020101SM31"
                 }
             },
         )
