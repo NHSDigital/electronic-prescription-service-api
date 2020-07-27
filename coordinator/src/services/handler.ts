@@ -1,7 +1,7 @@
 import Hapi from "@hapi/hapi";
 import * as requestValidator from "../validators/request-validator";
 import {ValidationError} from "../validators/request-validator";
-import {Bundle, OperationOutcome} from "./fhir-resources";
+import {Bundle, OperationOutcome} from "../model/fhir-resources";
 
 export function validatingHandler(requireSignature: boolean, handler: (requestPayload: Bundle, responseToolkit: Hapi.ResponseToolkit) => Hapi.ResponseObject | Promise<Hapi.ResponseObject>) {
     return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {

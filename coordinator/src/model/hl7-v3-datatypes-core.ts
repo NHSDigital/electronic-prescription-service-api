@@ -232,6 +232,10 @@ export class SendMessagePayload<T> {
 
 export class CommunicationFunction {
     device: Device
+
+    constructor(device: Device) {
+        this.device = device
+    }
 }
 
 export class Device {
@@ -241,6 +245,10 @@ export class Device {
     }
 
     id: codes.AccreditedSystemIdentifier
+
+    constructor(id: codes.AccreditedSystemIdentifier) {
+        this.id = id
+    }
 }
 
 export class ControlActEvent<T> {
