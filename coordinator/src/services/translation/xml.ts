@@ -17,8 +17,8 @@ export function canonicaliseAttribute(attribute: string): string {
     return attribute
 }
 
-export function namespacedCopyOf(tag: XmlJs.ElementCompact): XmlJs.ElementCompact {
-    const newTag = {...tag} as XmlJs.ElementCompact
+export function namespacedCopyOf<T extends XmlJs.ElementCompact>(tag: T): T {
+    const newTag = {...tag} as T
     newTag._attributes = {
         xmlns: "urn:hl7-org:v3",
         ...newTag._attributes

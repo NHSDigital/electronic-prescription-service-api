@@ -4,6 +4,7 @@ import * as peoplePlaces from "../../model/hl7-v3-people-places";
 import * as core from "../../model/hl7-v3-datatypes-core";
 import * as uuid from "uuid";
 import moment from "moment";
+import {convertMomentToDateTime} from "./common";
 
 export function createSendMessagePayload<T>(
     interactionId: codes.Hl7InteractionIdentifier,
@@ -11,8 +12,9 @@ export function createSendMessagePayload<T>(
     subject: T
 ): core.SendMessagePayload<T> {
     const sendMessagePayload = new core.SendMessagePayload<T>(
+        //TODO - populate id from somewhere in the original message
         new GlobalIdentifier(uuid.v4().toUpperCase()),
-        new core.Timestamp(moment.utc().format("YYYYMMDDHHmmss")),
+        convertMomentToDateTime(moment.utc()),
         interactionId
     )
     sendMessagePayload.communicationFunctionRcv = createCommunicationFunction(process.env.TO_ASID)

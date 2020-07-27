@@ -34,6 +34,8 @@ export class PatientCareProvisionTypeCode extends Code {
     constructor(code: string) {
         super("2.16.840.1.113883.2.1.3.2.4.17.37", code);
     }
+
+    static PRIMARY_CARE = new PatientCareProvisionTypeCode("1")
 }
 
 export class SnomedCode extends Code {

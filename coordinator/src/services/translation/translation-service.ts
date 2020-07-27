@@ -5,17 +5,10 @@ import * as prescriptions from "../../model/hl7-v3-prescriptions"
 import * as fhir from "../../model/fhir-resources"
 import * as crypto from "crypto-js"
 import {createSendMessagePayload} from "./send-message-payload";
-import {canonicaliseAttribute, namespacedCopyOf, sortAttributes, writeXmlStringCanonicalized} from "./xml";
+import {namespacedCopyOf, writeXmlStringCanonicalized} from "./xml";
 import {convertParentPrescription} from "./parent-prescription";
 
 export function convertFhirMessageToHl7V3ParentPrescriptionMessage(fhirMessage: fhir.Bundle): string {
-    const options = {
-        compact: true,
-        ignoreComment: true,
-        spaces: 4,
-        attributeValueFn: canonicaliseAttribute,
-        attributesFn: sortAttributes
-    } as unknown as XmlJs.Options.JS2XML
     const root = {
         _declaration: {
             _attributes: {
@@ -23,13 +16,12 @@ export function convertFhirMessageToHl7V3ParentPrescriptionMessage(fhirMessage: 
                 encoding: "UTF-8"
             }
         },
-        PORX_IN020101UK31: namespacedCopyOf(convertBundleToSendMessagePayload(fhirMessage))
+        PORX_IN020101UK31: namespacedCopyOf(createParentPrescriptionSendMessagePayload(fhirMessage))
     }
-    //TODO - call canonicalize function instead? this leaves spaces in which makes the response easier to read
-    return XmlJs.js2xml(root, options)
+    return writeXmlStringCanonicalized(root)
 }
 
-export function convertBundleToSendMessagePayload(fhirBundle: fhir.Bundle): core.SendMessagePayload<prescriptions.ParentPrescriptionRoot> {
+export function createParentPrescriptionSendMessagePayload(fhirBundle: fhir.Bundle): core.SendMessagePayload<prescriptions.ParentPrescriptionRoot> {
     const parentPrescription = convertParentPrescription(fhirBundle)
     const parentPrescriptionRoot = new prescriptions.ParentPrescriptionRoot(parentPrescription)
     const interactionId = codes.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT
@@ -37,7 +29,7 @@ export function convertBundleToSendMessagePayload(fhirBundle: fhir.Bundle): core
     return createSendMessagePayload(interactionId, authorAgentPerson, parentPrescriptionRoot)
 }
 
-export function convertFhirMessageToHl7V3SignedInfoMessage(fhirMessage: fhir.Bundle): string {
+export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle): string {
     const parentPrescription = convertParentPrescription(fhirMessage)
     const fragmentsToBeHashed = extractSignatureFragments(parentPrescription);
     const fragmentsToBeHashedStr = writeXmlStringCanonicalized(fragmentsToBeHashed);

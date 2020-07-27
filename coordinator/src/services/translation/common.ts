@@ -1,9 +1,9 @@
-//TODO - is there a better way than returning Array<unknown>?
 import * as fhir from "../../model/fhir-resources";
 import {Extension} from "../../model/fhir-resources";
 import moment from "moment";
 import * as core from "../../model/hl7-v3-datatypes-core";
 
+//TODO - is there a better way than returning Array<unknown>?
 export function getResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): Array<unknown> {
     return fhirBundle.entry
         .map(entry => entry.resource)
@@ -46,18 +46,27 @@ export function getCodeableConceptCodingForSystem(codeableConcept: Array<fhir.Co
     return getCodingForSystem(coding, system)
 }
 
-export function convertDateTime(isoDateTimeStr: string): core.Timestamp {
-    const dateTime = moment.utc(isoDateTimeStr, moment.ISO_8601, true)
+export function convertMomentToDateTime(dateTime: moment.Moment): core.Timestamp {
     const hl7V3DateTimeStr = dateTime.format("YYYYMMDDHHmmss")
     return new core.Timestamp(hl7V3DateTimeStr)
 }
 
-export function convertDate(isoDateStr: string): core.Timestamp {
-    const dateTime = moment.utc(isoDateStr, moment.ISO_8601, true)
+export function convertIsoStringToDateTime(isoDateTimeStr: string): core.Timestamp {
+    const dateTime = moment.utc(isoDateTimeStr, moment.ISO_8601, true)
+    return convertMomentToDateTime(dateTime);
+}
+
+export function convertMomentToDate(dateTime: moment.Moment): core.Timestamp {
     const hl7V3DateStr = dateTime.format("YYYYMMDD")
     return new core.Timestamp(hl7V3DateStr)
 }
 
+export function convertIsoStringToDate(isoDateStr: string): core.Timestamp {
+    const dateTime = moment.utc(isoDateStr, moment.ISO_8601, true)
+    return convertMomentToDate(dateTime);
+}
+
+//TODO - replace usage of this method with something which returns more user-friendly error messages
 export function onlyElement<T>(previousValue: T, currentValue: T, currentIndex: number, array: T[]): never {
     throw TypeError("Expected 1 element but got " + array.length + ": " + JSON.stringify(array))
 }

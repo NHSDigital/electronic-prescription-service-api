@@ -13,7 +13,7 @@ export default [
         handler: validatingHandler(
             false,
             (requestPayload: Bundle, responseToolkit: Hapi.ResponseToolkit) => {
-                const response = translator.convertFhirMessageToHl7V3SignedInfoMessage(requestPayload)
+                const response = translator.convertFhirMessageToSignedInfoMessage(requestPayload)
                 return responseToolkit.response(response).code(200)
             }
         )

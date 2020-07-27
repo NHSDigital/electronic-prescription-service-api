@@ -1,5 +1,5 @@
 import * as translator from "../../src/services/translation/translation-service"
-import {convertFhirMessageToHl7V3SignedInfoMessage, extractSignatureFragments} from "../../src/services/translation/translation-service"
+import {convertFhirMessageToSignedInfoMessage, extractSignatureFragments} from "../../src/services/translation/translation-service"
 import * as fhir from "../../src/model/fhir-resources"
 import * as TestResources from "../resources/test-resources"
 import * as XmlJs from "xml-js"
@@ -105,7 +105,7 @@ test("writeXmlStringCanonicalized returns correct value", () => {
 })
 
 test("convertFhirMessageToHl7V3SignedInfo returns correct value", () => {
-    const actualOutput = convertFhirMessageToHl7V3SignedInfoMessage(TestResources.examplePrescription1.fhirMessageUnsigned)
+    const actualOutput = convertFhirMessageToSignedInfoMessage(TestResources.examplePrescription1.fhirMessageUnsigned)
     const expectedOutput = JSON.stringify(TestResources.examplePrescription1.fhirMessageDigest, null, 2)
     expect(actualOutput).toEqual(expectedOutput)
 })
