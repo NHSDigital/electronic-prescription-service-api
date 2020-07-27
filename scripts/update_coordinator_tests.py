@@ -24,32 +24,32 @@ def date_converter(obj):
 
 def main():
     """Main entrypoint"""
-    postman_file_path = "./tests/e2e/electronic-prescription-coordinator-postman-tests.json.template"
+    postman_file_path = "./tests/e2e/postman/electronic-prescription-coordinator-postman-tests.json.template"
     with open(postman_file_path) as f:
         data = json.load(f)
 
     convert_success_request_file_path = \
-        "./models/dist/examples/example-1-repeat/SendRequest-FhirMessageSigned.json"
+        "./models/dist/examples/example-1-repeat-dispensing/SendRequest-FhirMessageSigned.json"
     with open(convert_success_request_file_path) as f:
         convert_success_request = json.load(f)
 
     convert_success_response_file_path = \
-        "./models/dist/examples/example-1-repeat/ConvertResponse-Hl7V3Message.xml"
+        "./models/dist/examples/example-1-repeat-dispensing/ConvertResponse-Hl7V3Message.xml"
     with open(convert_success_response_file_path) as f:
         convert_success_response = f.read().replace("\n", "\\n")
 
     prepare_success_request_file_path = \
-        "./models/dist/examples/example-1-repeat/PrepareRequest-FhirMessageUnsigned.json"
+        "./models/dist/examples/example-1-repeat-dispensing/PrepareRequest-FhirMessageUnsigned.json"
     with open(prepare_success_request_file_path) as f:
         prepare_success_request = json.load(f)
 
     prepare_success_response_file_path = \
-        "./models/dist/examples/example-1-repeat/PrepareResponse-FhirMessageDigest.json"
+        "./models/dist/examples/example-1-repeat-dispensing/PrepareResponse-FhirMessageDigest.json"
     with open(prepare_success_response_file_path) as f:
         prepare_success_response = json.load(f)
 
     send_success_request_file_path = \
-        "./models/dist/examples/example-1-repeat/SendRequest-FhirMessageSigned.json"
+        "./models/dist/examples/example-1-repeat-dispensing/SendRequest-FhirMessageSigned.json"
     with open(send_success_request_file_path) as f:
         send_success_request = json.load(f)
 
@@ -122,7 +122,7 @@ def main():
                 ]
 
     with open(
-            "./tests/e2e/electronic-prescription-coordinator-postman-tests.json",
+            "./tests/e2e/postman/electronic-prescription-coordinator-postman-tests.json",
             "w"
     ) as out_file:
         out_file.write(

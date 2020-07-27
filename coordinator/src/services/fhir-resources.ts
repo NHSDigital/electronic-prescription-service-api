@@ -32,6 +32,7 @@ export class MedicationRequest extends Resource {
     courseOfTherapyType?: CodeableConcept
     dosageInstruction?: Array<Dosage>
     dispenseRequest?: MedicationRequestDispenseRequest
+    extension?: Array<Extension>
 }
 
 export class CodeableConcept {
@@ -46,7 +47,8 @@ export class Coding {
 }
 
 export class Reference<T extends Resource> {
-    reference: string
+    reference?: string
+    identifier?: Identifier
 }
 
 export class Dosage {
@@ -56,6 +58,7 @@ export class Dosage {
 export class MedicationRequestDispenseRequest {
     quantity?: SimpleQuantity
     performer?: Reference<Organization>
+    validityPeriod?: Period
 }
 
 export class SimpleQuantity {
@@ -73,6 +76,7 @@ export class Patient extends Resource {
     birthDate?: string
     address?: Array<Address>
     generalPractitioner?: Array<Reference<PractitionerRole>>
+    managingOrganization: Reference<Organization>
 }
 
 export class HumanName {
@@ -153,12 +157,20 @@ export class Parameter {
     valueString: string
 }
 
-abstract class Extension {
+export abstract class Extension {
     url: string
 }
 
 export class IdentifierExtension extends Extension {
     valueIdentifier: Identifier
+}
+
+export class CodingExtension extends Extension {
+    valueCoding: Coding
+}
+
+export class ReferenceExtension<T extends Resource> extends Extension {
+    valueReference: Reference<T>
 }
 
 class Signature {
@@ -168,4 +180,9 @@ class Signature {
 
 export class Provenance extends Resource {
     signature: Array<Signature>
+}
+
+export class Period {
+    start: string
+    end: string
 }

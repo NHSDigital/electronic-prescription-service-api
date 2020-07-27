@@ -120,7 +120,7 @@ info:
     
 servers:
   - url: 'https://internal-qa-sandbox.api.service.nhs.uk/electronic-prescriptions'
-    description: 'Internal QA Sandbox environment.'
+    description: 'Sandbox environment.'
 tags:
   - name: dispensing
   - name: prescribing
@@ -142,7 +142,7 @@ paths:
             examples:
               example:
                 value:
-                  $ref: components/examples/example-1-repeat/PrepareRequest-FhirMessageUnsigned.json
+                  $ref: components/examples/example-1-repeat-dispensing/PrepareRequest-FhirMessageUnsigned.json
         description: ''
       responses:
         '200':
@@ -155,7 +155,7 @@ paths:
               examples:
                 example:
                   value:
-                    $ref: components/examples/example-1-repeat/PrepareResponse-FhirMessageDigest.json
+                    $ref: components/examples/example-1-repeat-dispensing/PrepareResponse-FhirMessageDigest.json
         '4XX':
           description: Invalid request.
           content:
@@ -194,7 +194,7 @@ paths:
             examples:
               success:
                 value:
-                  $ref: components/examples/example-1-repeat/SendRequest-FhirMessageSigned.json
+                  $ref: components/examples/example-1-repeat-dispensing/SendRequest-FhirMessageSigned.json
               patient-deceased:
                 value:
                   $ref: components/examples/example-b-spine-error-patient-deceased/SendRequest-FhirMessageSigned.json
@@ -244,7 +244,7 @@ paths:
             examples:
               example:
                 value:
-                  $ref: components/examples/example-1-repeat/SendRequest-FhirMessageSigned.json
+                  $ref: components/examples/example-1-repeat-dispensing/SendRequest-FhirMessageSigned.json
         description: ''
       responses:
         '200':
@@ -254,7 +254,7 @@ paths:
               schema:
                 type: string
                 example:
-                  $ref: components/examples/example-1-repeat/ConvertResponse-Hl7V3Message.xml
+                  $ref: components/examples/example-1-repeat-dispensing/ConvertResponse-Hl7V3Message.xml
         '4XX':
           description: Invalid request.
           content:
@@ -289,7 +289,7 @@ components:
       $ref: components/schemas/PractitionerRole.yaml
     Organization:
       $ref: components/schemas/Organization.yaml
-    Binary:
-      $ref: components/schemas/Binary.yaml
+    Parameters:
+      $ref: components/schemas/Parameters.yaml
     Provenance:
       $ref: components/schemas/Provenance.yaml

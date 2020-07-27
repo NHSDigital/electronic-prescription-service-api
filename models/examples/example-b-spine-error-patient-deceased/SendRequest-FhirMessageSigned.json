@@ -88,7 +88,7 @@
         "groupIdentifier": {
           "extension": [
             {
-              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-eps-parentPrescriptionId",
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription-parent-id",
                 "value": "EDD2E9DD-DA0A-C266-A4E3-447C68239524"
@@ -148,7 +148,7 @@
         "groupIdentifier": {
           "extension": [
             {
-              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-eps-parentPrescriptionId",
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription-parent-id",
                 "value": "EDD2E9DD-DA0A-C266-A4E3-447C68239524"
@@ -208,7 +208,7 @@
         "groupIdentifier": {
           "extension": [
             {
-              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-eps-parentPrescriptionId",
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription-parent-id",
                 "value": "EDD2E9DD-DA0A-C266-A4E3-447C68239524"
@@ -268,7 +268,7 @@
         "groupIdentifier": {
           "extension": [
             {
-              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-eps-parentPrescriptionId",
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription-parent-id",
                 "value": "EDD2E9DD-DA0A-C266-A4E3-447C68239524"
