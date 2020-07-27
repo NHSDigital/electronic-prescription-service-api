@@ -90,20 +90,18 @@ export function convertCourseOfTherapyType(fhirFirstMedicationRequest: fhir.Medi
         .reduce(onlyElement)
 
     const prescriptionTreatmentTypeCode = convertCourseOfTherapyTypeCode(courseOfTherapyTypeCode)
-    const hl7V3CourseOfTherapyTypeCode = new codes.PrescriptionTreatmentTypeCode(prescriptionTreatmentTypeCode);
-    return new prescriptions.PrescriptionTreatmentType(hl7V3CourseOfTherapyTypeCode);
+    return new prescriptions.PrescriptionTreatmentType(prescriptionTreatmentTypeCode)
 }
 
 function convertCourseOfTherapyTypeCode(courseOfTherapyTypeValue: string) {
     switch (courseOfTherapyTypeValue) {
         case "acute":
-            return "0001"
+            return codes.PrescriptionTreatmentTypeCode.ACUTE
         case "repeat":
-            return "0002"
+            return codes.PrescriptionTreatmentTypeCode.REPEAT_PRESCRIBING
         case "repeat-dispensing":
-            return "0003"
+            return codes.PrescriptionTreatmentTypeCode.REPEAT_DISPENSING
         default:
-            throw TypeError("Unhandled courseOfTherapyType use " + courseOfTherapyTypeValue)
+            throw TypeError("Unhandled courseOfTherapyType " + courseOfTherapyTypeValue)
     }
 }
-

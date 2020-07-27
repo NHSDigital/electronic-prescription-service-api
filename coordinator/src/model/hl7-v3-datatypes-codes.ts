@@ -64,6 +64,10 @@ export class PrescriptionTreatmentTypeCode extends Code {
     constructor(code: string) {
         super("2.16.840.1.113883.2.1.3.2.4.16.36", code);
     }
+
+    static ACUTE = new PrescriptionTreatmentTypeCode("0001")
+    static REPEAT_PRESCRIBING = new PrescriptionTreatmentTypeCode("0002")
+    static REPEAT_DISPENSING = new PrescriptionTreatmentTypeCode("0003")
 }
 
 export class DispensingSitePreferenceCode extends Code {
