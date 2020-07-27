@@ -1,13 +1,14 @@
 import * as XmlJs from 'xml-js'
 import * as codes from "./hl7-v3-datatypes-codes"
+import {GlobalIdentifier} from "./hl7-v3-datatypes-codes"
 import * as core from "./hl7-v3-datatypes-core"
 import * as peoplePlaces from "./hl7-v3-people-places"
 import * as prescriptions from "./hl7-v3-prescriptions"
 import * as fhir from "./fhir-resources"
+import {Extension, IdentifierExtension, PractitionerRole} from "./fhir-resources"
 import * as crypto from "crypto-js"
 import moment from "moment"
-import {wrap} from "../resources/transport-wrapper"
-import {Extension, IdentifierExtension, PractitionerRole} from "./fhir-resources";
+import * as uuid from "uuid"
 
 //TODO - is there a better way than returning Array<unknown>?
 export function getResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): Array<unknown> {
@@ -70,6 +71,77 @@ function convertDate(isoDateStr: string) {
     const dateTime = moment.utc(isoDateStr, moment.ISO_8601, true)
     const hl7V3DateStr = dateTime.format("YYYYMMDD")
     return new core.Timestamp(hl7V3DateStr)
+}
+
+function createCommunicationFunction(asid: string) {
+    const communicationFunctionRcv = new prescriptions.CommunicationFunction()
+    const device = new prescriptions.Device()
+    device.id = new codes.AccreditedSystemIdentifier(asid)
+    communicationFunctionRcv.device = device
+    return communicationFunctionRcv;
+}
+
+function createControlActEventAuthor(
+    authorAgentPersonFromMessage: peoplePlaces.AgentPerson
+) {
+    const authorAgentPersonPerson = new peoplePlaces.AgentPersonPerson()
+    authorAgentPersonPerson.id = authorAgentPersonFromMessage.agentPerson.id
+
+    const sdsRole = new prescriptions.SdsRole()
+    sdsRole.id = authorAgentPersonFromMessage.code
+
+    const authorAgentPersonPart = new prescriptions.AgentPersonPart()
+    authorAgentPersonPart.partSDSRole = sdsRole
+
+    const authorAgentPerson = new prescriptions.AgentPersonSds()
+    authorAgentPerson.id = authorAgentPersonFromMessage.id
+    authorAgentPerson.agentPersonSDS = authorAgentPersonPerson
+    authorAgentPerson.part = authorAgentPersonPart
+
+    const author = new prescriptions.SendMessagePayloadAuthorPersonSds()
+    author.AgentPersonSDS = authorAgentPerson
+    return author
+}
+
+function createControlActEventAuthor1(asid: string) {
+    const author1 = new prescriptions.SendMessagePayloadAuthorSystemSds()
+    const agentSystemSds = new prescriptions.AgentSystemSds()
+    const agentSystemSystemSds = new prescriptions.AgentSystemSystemSds()
+    agentSystemSystemSds.id = new codes.AccreditedSystemIdentifier(asid)
+    agentSystemSds.agentSystemSDS = agentSystemSystemSds
+    author1.AgentSystemSDS = agentSystemSds
+    return author1
+}
+
+function createControlActEvent<T>(
+    authorAgentPerson: peoplePlaces.AgentPerson,
+    subject: T
+) {
+    const controlActEvent = new prescriptions.ControlActEvent<T>()
+    controlActEvent.author = createControlActEventAuthor(authorAgentPerson)
+    controlActEvent.author1 = createControlActEventAuthor1(process.env.FROM_ASID)
+    controlActEvent.subject = subject
+    return controlActEvent
+}
+
+function createSendMessagePayload<T>(interactionId: codes.Hl7InteractionIdentifier, authorAgentPerson: peoplePlaces.AgentPerson, subject: T) {
+    const sendMessagePayload = new prescriptions.SendMessagePayload<T>(
+        new GlobalIdentifier(uuid.v4().toUpperCase()),
+        new core.Timestamp(moment.utc().format("YYYYMMDDHHmmss")),
+        interactionId
+    )
+    sendMessagePayload.communicationFunctionRcv = createCommunicationFunction(process.env.TO_ASID)
+    sendMessagePayload.communicationFunctionSnd = createCommunicationFunction(process.env.FROM_ASID)
+    sendMessagePayload.ControlActEvent = createControlActEvent(authorAgentPerson, subject)
+    return sendMessagePayload
+}
+
+export function convertBundleToSendMessagePayload(fhirBundle: fhir.Bundle): prescriptions.SendMessagePayload<prescriptions.ParentPrescriptionRoot> {
+    const parentPrescription = convertBundleToParentPrescription(fhirBundle)
+    const parentPrescriptionRoot = new prescriptions.ParentPrescriptionRoot(parentPrescription)
+    const interactionId = codes.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT
+    const authorAgentPerson = parentPrescription.pertinentInformation1.pertinentPrescription.author.AgentPerson
+    return createSendMessagePayload(interactionId, authorAgentPerson, parentPrescriptionRoot)
 }
 
 export function convertBundleToParentPrescription(
@@ -503,7 +575,9 @@ export function convertFhirMessageToHl7V3ParentPrescription(fhirMessage: fhir.Bu
         attributeValueFn: canonicaliseAttribute,
         attributesFn: sortAttributes
     } as unknown as XmlJs.Options.JS2XML
-    const root = wrap(convertBundleToParentPrescription(fhirMessage))
+    const root = {
+        PORX_IN020101UK31: namespacedCopyOf(convertBundleToSendMessagePayload(fhirMessage))
+    }
     //TODO - call canonicalize function instead? this leaves spaces in which makes the response easier to read
     return XmlJs.js2xml(root, options)
 }

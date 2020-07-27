@@ -2,7 +2,7 @@ import * as codes from "./hl7-v3-datatypes-codes"
 import {Attributes, ElementCompact} from "xml-js";
 
 export interface AttributeTypeCode extends Attributes {
-    typeCode: "AUT" | "COMP" | "FLFS" | "LA" | "PERT" | "PRD" | "PRF" | "RESP" | "RCT" | "SBJ"
+    typeCode: "AUT" | "COMP" | "FLFS" | "LA" | "PART" | "PERT" | "PRD" | "PRF" | "RESP" | "RCT" | "SBJ"
 }
 
 export interface AttributeContextControlCode extends Attributes {
@@ -10,7 +10,7 @@ export interface AttributeContextControlCode extends Attributes {
 }
 
 export interface AttributeClassCode extends Attributes {
-    classCode: "AGNT" | "CATEGORY" | "INFO" | "MANU" | "MMAT" | "OBS" | "ORG" | "PAT" | "PCPR" | "PROV" | "PSN" | "SBADM" | "SPLY"
+    classCode: "AGNT" | "CACT" | "CATEGORY" | "DEV" | "INFO" | "MANU" | "MMAT" | "OBS" | "ORG" | "PAT" | "PCPR" | "PROV" | "PSN" | "ROL" | "SBADM" | "SPLY"
 }
 
 export interface AttributeDeterminerCode extends Attributes {

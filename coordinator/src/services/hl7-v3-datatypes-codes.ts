@@ -78,6 +78,28 @@ export class PrescriptionTypeCode extends Code {
     }
 }
 
+class CodeWithoutSystem extends Code {
+    constructor(code: string) {
+        super(undefined, code);
+    }
+}
+
+export class Hl7StandardVersionCode extends CodeWithoutSystem {
+    static V3_NPFIT_4_2_00 = new Hl7StandardVersionCode("V3NPfIT4.2.00")
+}
+
+export class ProcessingId extends CodeWithoutSystem {
+    static PRODUCTION = new ProcessingId("P")
+}
+
+export class ProcessingMode extends CodeWithoutSystem {
+    static ONLINE = new ProcessingMode("T")
+}
+
+export class AcceptAckCode extends CodeWithoutSystem {
+    static NEVER = new AcceptAckCode("NE")
+}
+
 class Identifier implements ElementCompact {
     _attributes: {
         root: string
@@ -137,5 +159,19 @@ export class ShortFormPrescriptionIdentifier extends Identifier {
 export class SdsOrganizationIdentifier extends Identifier {
     constructor(extension: string) {
         super("1.2.826.0.1285.0.1.10", extension);
+    }
+}
+
+export class Hl7InteractionIdentifier extends Identifier {
+    constructor(extension: string) {
+        super("2.16.840.1.113883.2.1.3.2.4.12", extension)
+    }
+
+    static PARENT_PRESCRIPTION_URGENT = new Hl7InteractionIdentifier("PORX_IN020101UK31")
+}
+
+export class AccreditedSystemIdentifier extends Identifier {
+    constructor(extension: string) {
+        super("1.2.826.0.1285.0.2.0.107", extension)
     }
 }
