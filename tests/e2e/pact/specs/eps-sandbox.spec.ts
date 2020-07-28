@@ -6,6 +6,7 @@ import * as path from "path"
 
 const prepareRepeatDispensingPrescriptionRequest = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareRequest-FhirMessageUnsigned.json"), "utf8")
 const prepareRepeatDispensingPrescriptionResponse = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareResponse-FhirMessageDigest.json"), "utf8")
+const prepareRepeatDispensingSendRequest = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/SendRequest-FhirMessageSigned.json"), "utf8")
 
 jestpact.pactWith(
   {
@@ -21,7 +22,7 @@ jestpact.pactWith(
     };
 
     describe("eps sandbox e2e tests", () => {
-      
+
       test("should be able to convert a FHIR repeat-dispensing parent-prescription-1 into a HL7V3 Spine interaction", async () => {
         const apiPath = "/Convert";
         const interaction: InteractionObject = {
@@ -95,7 +96,7 @@ jestpact.pactWith(
             },
             method: "POST",
             path: "/Send",
-            body: JSON.parse(prepareRepeatDispensingPrescriptionRequest)
+            body: JSON.parse(prepareRepeatDispensingSendRequest)
           },
           willRespondWith: {
             headers: {
@@ -109,7 +110,7 @@ jestpact.pactWith(
           .post(apiPath)
           .set('Content-Type', 'application/json')
           .set('NHSD-Session-URID', '1234')
-          .send(prepareRepeatDispensingPrescriptionRequest)
+          .send(prepareRepeatDispensingSendRequest)
           .expect(200);
       });
 
