@@ -38,7 +38,7 @@ export function getIdentifierValueOrNullForSystem(identifier: Array<fhir.Identif
     const filtered = identifier
         .filter(identifier => identifier.system === system)
         .map(identifier => identifier.value)
-    if (filtered.length > 1) throw TypeError("Expected 1 element but got " + filtered.length + ": " + JSON.stringify(filtered))
+    if (filtered.length > 1) throw TypeError(`Expected 1 or less elements but got ${filtered.length}: ${JSON.stringify(filtered)}`)
     return filtered.shift()
 }
 
@@ -622,7 +622,7 @@ export function sortAttributes(attributes: XmlJs.Attributes, currentElementName:
 }
 
 function onlyElement<T>(previousValue: T, currentValue: T, currentIndex: number, array: T[]): never {
-    throw TypeError("Expected 1 element but got " + array.length + ": " + JSON.stringify(array))
+    throw TypeError(`Expected 1 element but got ${array.length}: ${array}`)
 }
 
 function convertSignatureFragmentsToSignedInfo(digestValue: string): XmlJs.ElementCompact {
