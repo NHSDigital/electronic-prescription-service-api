@@ -8,7 +8,6 @@ import * as crypto from "crypto-js"
 import moment from "moment"
 import {wrap} from "../resources/transport-wrapper"
 import {Extension, IdentifierExtension, PractitionerRole} from "./fhir-resources";
-import {AgentPerson} from "./hl7-v3-people-places";
 
 //TODO - is there a better way than returning Array<unknown>?
 export function getResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): Array<unknown> {
@@ -39,7 +38,7 @@ export function getIdentifierValueOrNullForSystem(identifier: Array<fhir.Identif
     const filtered = identifier
         .filter(identifier => identifier.system === system)
         .map(identifier => identifier.value)
-    if (filtered.length > 1) throw new Error()
+    if (filtered.length > 1) throw TypeError("Expected 1 element but got " + filtered.length + ": " + JSON.stringify(filtered))
     return filtered.shift()
 }
 
@@ -384,16 +383,17 @@ function convertAgentPersonPerson(fhirPractitionerRole: fhir.PractitionerRole, f
 
 export function getAgentPersonPersonId(fhirPractitionerRoleIdentifier: Array<fhir.Identifier>, fhirPractitionerIdentifier: Array<fhir.Identifier>): codes.BsaPrescribingIdentifier | codes.SdsUniqueIdentifier {
     const spuriousCode = getIdentifierValueOrNullForSystem(fhirPractitionerRoleIdentifier, "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code")
-    const dinCode = getIdentifierValueOrNullForSystem(fhirPractitionerIdentifier, "https://fhir.hl7.org.uk/Id/din-number")
-    const sdsUniqueIdentifier = getIdentifierValueForSystem(fhirPractitionerIdentifier, "https://fhir.nhs.uk/Id/sds-user-id")
-
     if (spuriousCode) {
         return new codes.BsaPrescribingIdentifier(spuriousCode)
-    } else if (dinCode) {
-        return new codes.BsaPrescribingIdentifier(dinCode)
-    } else {
-        return new codes.SdsUniqueIdentifier(sdsUniqueIdentifier)
     }
+
+    const dinCode = getIdentifierValueOrNullForSystem(fhirPractitionerIdentifier, "https://fhir.hl7.org.uk/Id/din-number")
+    if (dinCode) {
+        return new codes.BsaPrescribingIdentifier(dinCode)
+    }
+
+    const sdsUniqueIdentifier = getIdentifierValueForSystem(fhirPractitionerIdentifier, "https://fhir.nhs.uk/Id/sds-user-id")
+    return new codes.SdsUniqueIdentifier(sdsUniqueIdentifier)
 }
 
 function convertHealthCareProviderLicense(
