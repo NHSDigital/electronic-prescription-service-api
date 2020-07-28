@@ -6,7 +6,7 @@ import * as path from "path"
 
 const prepareRepeatDispensingPrescriptionRequest = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareRequest-FhirMessageUnsigned.json"), "utf8")
 const prepareRepeatDispensingPrescriptionResponse = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareResponse-FhirMessageDigest.json"), "utf8")
-const prepareRepeatDispensingSendRequest = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/SendRequest-FhirMessageSigned.json"), "utf8")
+const sendRepeatDispensingPrescriptionSendRequest = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/SendRequest-FhirMessageSigned.json"), "utf8")
 
 jestpact.pactWith(
   {
@@ -96,7 +96,7 @@ jestpact.pactWith(
             },
             method: "POST",
             path: "/Send",
-            body: JSON.parse(prepareRepeatDispensingSendRequest)
+            body: JSON.parse(sendRepeatDispensingPrescriptionSendRequest)
           },
           willRespondWith: {
             headers: {
@@ -110,7 +110,7 @@ jestpact.pactWith(
           .post(apiPath)
           .set('Content-Type', 'application/json')
           .set('NHSD-Session-URID', '1234')
-          .send(prepareRepeatDispensingSendRequest)
+          .send(sendRepeatDispensingPrescriptionSendRequest)
           .expect(200);
       });
 
