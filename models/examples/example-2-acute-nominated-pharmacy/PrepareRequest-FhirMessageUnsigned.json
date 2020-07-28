@@ -77,7 +77,7 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType",
+              "system": "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-course-of-therapy",
               "code": "acute",
               "display": "Acute"
             }
@@ -174,7 +174,7 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType",
+              "system": "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-course-of-therapy",
               "code": "acute",
               "display": "Acute"
             }
@@ -271,7 +271,7 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType",
+              "system": "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-course-of-therapy",
               "code": "acute",
               "display": "Acute"
             }
@@ -368,7 +368,7 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType",
+              "system": "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-course-of-therapy",
               "code": "acute",
               "display": "Acute"
             }
