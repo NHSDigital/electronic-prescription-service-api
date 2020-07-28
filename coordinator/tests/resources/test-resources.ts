@@ -5,10 +5,6 @@ import {ParentPrescription} from "../../src/model/hl7-v3-prescriptions";
 import {Bundle, Parameters} from "../../src/model/fhir-resources";
 import {ElementCompact} from "xml-js";
 
-export function clone<T>(input: T): T {
-    return JSON.parse(JSON.stringify(input))
-}
-
 const fhirMessageUnsigned1Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/PrepareRequest-FhirMessageUnsigned.json"), "utf8")
 const fhirMessageSigned1Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/SendRequest-FhirMessageSigned.json"), "utf8")
 const hl7V3Message1Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/ConvertResponse-Hl7V3Message.xml"), "utf8")
