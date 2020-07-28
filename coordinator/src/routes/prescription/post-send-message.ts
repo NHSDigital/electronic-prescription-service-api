@@ -18,9 +18,9 @@ export default [
                 const spineResponse = await defaultRequestHandler.sendData(translatedMessage)
                 
                 if (isPollable(spineResponse)) {
-                    return responseToolkit.response().code(spineResponse.statusCode).header('content-location', spineResponse.pollingUrl)
+                    return responseToolkit.response().code(spineResponse.statusCode).header('Content-Location', spineResponse.pollingUrl)
                 } else {
-                    return responseToolkit.response(spineResponse.body).code(spineResponse.statusCode)
+                    return responseToolkit.response(spineResponse.body).code(spineResponse.statusCode).header('Content-Type', 'multipart/mixed; boundary=----=_MIME-Boundary')
                 }
             }
         )
