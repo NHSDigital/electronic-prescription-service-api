@@ -1,7 +1,7 @@
 import {validatingHandler} from "../../services/handler";
-import * as translator from "../../services/translation-service";
+import * as translator from "../../services/translation/translation-service";
 import Hapi from "@hapi/hapi";
-import {Bundle} from "../../services/fhir-resources";
+import {Bundle} from "../../model/fhir-resources";
 
 export default [
     /*
@@ -13,7 +13,7 @@ export default [
         handler: validatingHandler(
             false,
             (requestPayload: Bundle, responseToolkit: Hapi.ResponseToolkit) => {
-                const response = translator.convertFhirMessageToHl7V3ParentPrescription(requestPayload)
+                const response = translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(requestPayload)
                 return responseToolkit.response(response).code(200)
             }
         )
