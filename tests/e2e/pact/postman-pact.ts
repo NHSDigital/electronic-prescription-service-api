@@ -1,7 +1,6 @@
 import * as fs from 'fs'
 import * as path from "path"
 
-
 function createPostmanCollection() {
     const pactString = fs.readFileSync(path.join(__dirname, "pact/pacts/nhsd-apim-eps-test-client-nhsd-apim-eps.json"), "utf8")
     const pact = JSON.parse(pactString)
