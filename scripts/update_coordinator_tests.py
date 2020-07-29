@@ -69,7 +69,7 @@ def main():
                     "pm.test(\"Body is correct\", function () {",
                     "    const actualResponseStringWithCorrectedTime = pm.response.text().replace(",
                     "        /<creationTime value=\"[0-9]{14}\"><\\/creationTime>/,",
-                    "        \"<creationTime value=\\\"20200729113640\\\"></creationTime>\"",
+                    "        \"<creationTime value=\\\"20200610102631\\\"></creationTime>\"",
                     "    )",
                     "    console.log(\"=====EXPECTED=====\")",
                     "    console.log(expectedResponseString)",
