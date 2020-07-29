@@ -187,7 +187,7 @@
           {
             "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
             "valueReference": {
-              "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
+              "reference": "urn:uuid:9B4C1A77-CCCC-418A-B835-4112FBCB14F3"
             }
           }
         ],
@@ -284,7 +284,7 @@
           {
             "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
             "valueReference": {
-              "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
+              "reference": "urn:uuid:9B4C1A77-CCCC-418A-B835-4112FBCB14F3"
             }
           }
         ],
@@ -381,7 +381,7 @@
           {
             "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
             "valueReference": {
-              "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
+              "reference": "urn:uuid:9B4C1A77-CCCC-418A-B835-4112FBCB14F3"
             }
           }
         ],

@@ -119,14 +119,14 @@
           {
             "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
             "valueReference": {
-              "reference": "urn:uuid:A7B86F8D-1D4A-FC28-E050-D20AE3A215F0"
+              "reference": "urn:uuid:9B4C1A77-CCCC-418A-B835-4112FBCB14F3"
             }
           }
         ],
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-            "value": "A7B86F8D-1D81-FC28-E050-D20AE3A215F0"
+            "value": "A7B86F8D-1D4A-FC28-E050-D20AE3A215F0"
           }
         ],
         "groupIdentifier": {
@@ -216,7 +216,7 @@
           {
             "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
             "valueReference": {
-              "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
+              "reference": "urn:uuid:9B4C1A77-CCCC-418A-B835-4112FBCB14F3"
             }
           }
         ],
@@ -313,7 +313,7 @@
           {
             "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
             "valueReference": {
-              "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
+              "reference": "urn:uuid:9B4C1A77-CCCC-418A-B835-4112FBCB14F3"
             }
           }
         ],
