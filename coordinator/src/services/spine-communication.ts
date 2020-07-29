@@ -44,6 +44,9 @@ export class RequestHandler {
 
     async request(message: string): Promise<SpineResponse> {
         const wrappedMessage = this.ebXMLBuilder(message)
+
+        console.log(`Attempting to send the following message to spine:\n${wrappedMessage}`)
+
         try {
             const result = await axios.post<string>(
                 `${this.spineEndpoint}${this.spinePath}`,
