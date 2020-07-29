@@ -100,7 +100,6 @@ jobs:
           isDraft: true
           addChangeLog: false
           assets: |
-            $(Build.ArtifactStagingDirectory)/*
             tests/e2e/postman/collections/electronic-prescription-service-collection.json
 
       - checkout: utils
