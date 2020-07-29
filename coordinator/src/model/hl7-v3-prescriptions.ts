@@ -167,7 +167,7 @@ export class ParentPrescription implements ElementCompact {
         this.id = id
         this.code = new codes.SnomedCode("163501000000109", "Prescription - FocusActOrEvent (record artifact)")
         this.effectiveTime = effectiveTime
-        this.typeId = new codes.TypeIdentifier("PORX_MT132004UK31")
+        this.typeId = new codes.TypeIdentifier("PORX_MT132004SM31")
     }
 }
 
