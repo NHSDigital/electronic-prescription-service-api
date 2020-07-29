@@ -22,7 +22,7 @@ function createPostmanCollection() {
 createPostmanCollection()
 
 function createPostmanItem(interaction) {
-    let item = {
+    const item = {
         name: interaction.description,
             request: {
                 method: interaction.request.method,
