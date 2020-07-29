@@ -11,6 +11,8 @@ create:
 publish:
 	./broker/publish.sh
 
+postman:
+	npm run postman
 
 # Quality Checks
 

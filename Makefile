@@ -109,7 +109,8 @@ test-integration-coordinator:
 test-e2e-integration-setup:
 	cd tests/e2e/pact \
 	&& make create \
-	&& make publish
+	&& make publish \
+	&& make postman
 
 ## Quality Checks
 

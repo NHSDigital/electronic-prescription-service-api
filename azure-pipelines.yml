@@ -73,19 +73,6 @@ jobs:
         env: { sourceVersion: $(Build.SourceVersion) }
         displayName: Calculate Short Commit Hash
 
-      - task: GitHubRelease@0
-        condition: eq(variables['Build.SourceBranchName'], 'master')
-        displayName: 'Draft GitHub Release'
-        inputs:
-          gitHubConnection: booshibooshi
-          repositoryName: NHSDigital/electronic-prescription-service-api
-          action: create
-          target: $(Build.SourceVersion)
-          tagSource: manual
-          tag: $(RELEASE_VERSION)
-          isDraft: true
-          addChangeLog: false
-
       - bash: "make -s test-e2e-integration-setup"
         displayName: Setup E2E Integration Tests
         env:
@@ -99,6 +86,21 @@ jobs:
             BUILD_VERSION: $(RELEASE_VERSION)
           ${{ if ne(variables['Build.SourceBranchName'], 'master') }}:
             BUILD_VERSION: $(RELEASE_VERSION)$(SHORT_COMMIT_HASH)
+
+      - task: GitHubRelease@0
+        #condition: eq(variables['Build.SourceBranchName'], 'master')
+        displayName: 'Draft GitHub Release'
+        inputs:
+          gitHubConnection: booshibooshi
+          repositoryName: NHSDigital/electronic-prescription-service-api
+          action: create
+          target: $(Build.SourceVersion)
+          tagSource: manual
+          tag: $(RELEASE_VERSION)
+          isDraft: true
+          addChangeLog: false
+          assets: |
+            tests/e2e/postman/collections/electronic-prescription-service-collection.json
 
       - checkout: utils
         path: s/utils
