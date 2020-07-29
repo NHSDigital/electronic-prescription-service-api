@@ -26,6 +26,7 @@ clean:
 	rm -rf specification/build
 	rm -rf coordinator/dist
 	rm -f tests/e2e/postman/electronic-prescription-coordinator-postman-tests.json
+	rm -f tests/e2e/postman/collections/electronic-prescription-service-collection.json
 
 ## Run
 

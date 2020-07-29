@@ -12,8 +12,8 @@ publish:
 	./broker/publish.sh
 
 postman:
-    mkdir -p ../postman/collections
-	npm run postman
+    mkdir -p ../postman/collections \
+	&& npm run postman
 
 # Quality Checks
 
