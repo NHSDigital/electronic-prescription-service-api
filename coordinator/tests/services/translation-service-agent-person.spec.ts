@@ -86,9 +86,9 @@ describe('getAgentPersonPersonId', () => {
         )
         expect(output).toEqual(new codes.SdsUniqueIdentifier(userIdentifier.value))
     })
-    test('if userId is missing then throw', () => {
+    test('if all 3 are missing then throw', () => {
         expect(() => translationService.getAgentPersonPersonId(
-            [spuriousIdentifier], [dinIdentifier]
+            [], []
         )).toThrow()
     })
 })
