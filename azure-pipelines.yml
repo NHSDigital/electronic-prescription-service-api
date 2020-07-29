@@ -88,7 +88,7 @@ jobs:
             BUILD_VERSION: $(RELEASE_VERSION)$(SHORT_COMMIT_HASH)
 
       - task: GitHubRelease@0
-        condition: eq(variables['Build.SourceBranchName'], 'master')
+        #condition: eq(variables['Build.SourceBranchName'], 'master')
         displayName: 'Draft GitHub Release'
         inputs:
           gitHubConnection: booshibooshi
@@ -100,6 +100,7 @@ jobs:
           isDraft: true
           addChangeLog: false
           assets: |
+            $(Build.ArtifactStagingDirectory)/*
             tests/e2e/postman/collections/electronic-prescription-service-collection.json
 
       - checkout: utils
