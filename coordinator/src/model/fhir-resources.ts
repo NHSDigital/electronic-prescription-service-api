@@ -4,6 +4,8 @@ export abstract class Resource {
 }
 
 export class Bundle extends Resource {
+    readonly resourceType = "Bundle"
+    identifier?: Identifier
     entry?: Array<BundleEntry>
 }
 
@@ -22,6 +24,7 @@ class MedicationRequestGroupIdentifier extends Identifier {
 }
 
 export class MedicationRequest extends Resource {
+    readonly resourceType = "MedicationRequest"
     identifier?: Array<Identifier>
     category?: Array<CodeableConcept>
     medicationCodeableConcept: CodeableConcept
@@ -69,6 +72,7 @@ export class SimpleQuantity {
 }
 
 export class Patient extends Resource {
+    readonly resourceType = "Patient"
     identifier?: Array<Identifier>
     name?: Array<HumanName>
     telecom?: Array<ContactPoint>
@@ -106,6 +110,7 @@ export class Address {
 }
 
 export class PractitionerRole extends Resource {
+    readonly resourceType = "PractitionerRole"
     identifier?: Array<Identifier>
     practitioner?: Reference<Practitioner>
     organization?: Reference<Organization>
@@ -114,6 +119,7 @@ export class PractitionerRole extends Resource {
 }
 
 export class Practitioner extends Resource {
+    readonly resourceType = "Practitioner"
     identifier?: Array<Identifier>
     name?: Array<HumanName>
     telecom?: Array<ContactPoint>
@@ -121,6 +127,7 @@ export class Practitioner extends Resource {
 }
 
 export class Organization extends Resource {
+    readonly resourceType = "Organization"
     identifier?: Array<Identifier>
     type?: Array<CodeableConcept>
     name?: string
@@ -141,16 +148,17 @@ export class OperationOutcomeIssue {
     }
 }
 
-export class OperationOutcome {
+export class OperationOutcome extends Resource {
     readonly resourceType = "OperationOutcome"
     issue: Array<OperationOutcomeIssue>
 }
 
-export class Parameters {
+export class Parameters extends Resource {
     readonly resourceType = "Parameters"
     parameter: Array<Parameter>
 
     constructor(parameters: Array<Parameter>) {
+        super()
         this.parameter = parameters
     }
 }
@@ -182,6 +190,7 @@ class Signature {
 }
 
 export class Provenance extends Resource {
+    readonly resourceType = "Provenance"
     signature: Array<Signature>
 }
 

@@ -1,6 +1,6 @@
 import {validatingHandler} from "../../services/handler";
-import * as translator from "../../services/translation-service";
-import {Bundle} from "../../services/fhir-resources";
+import * as translator from "../../services/translation/translation-service";
+import {Bundle} from "../../model/fhir-resources";
 import {sendData} from "../../services/spine-communication";
 import Hapi from "@hapi/hapi";
 
@@ -14,7 +14,7 @@ export default [
         handler: validatingHandler(
             false,
             async (requestPayload: Bundle, responseToolkit: Hapi.ResponseToolkit) => {
-                const translatedMessage = translator.convertFhirMessageToHl7V3ParentPrescription(requestPayload)
+                const translatedMessage = translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(requestPayload)
                 const spineResponse = await sendData(translatedMessage)
                 return responseToolkit.response(spineResponse.body).code(spineResponse.statusCode)
             }
