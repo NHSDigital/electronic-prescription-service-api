@@ -5,9 +5,11 @@ import * as codes from "../../model/hl7-v3-datatypes-codes";
 import {convertName, convertTelecom} from "./demographics";
 import * as prescriptions from "../../model/hl7-v3-prescriptions";
 import {
-    convertIsoStringToDateTime, getCodeableConceptCodingForSystem,
+    convertIsoStringToDateTime,
+    getCodeableConceptCodingForSystem,
     getExtensionForUrl,
-    getIdentifierValueForSystem, getIdentifierValueOrNullForSystem,
+    getIdentifierValueForSystem,
+    getIdentifierValueOrNullForSystem,
     getResourcesOfType,
     onlyElement,
     resolveReference
@@ -87,7 +89,7 @@ function convertAgentPersonPerson(fhirPractitionerRole: fhir.PractitionerRole, f
     return hl7V3AgentPersonPerson;
 }
 
-export function getAgentPersonPersonId(fhirPractitionerRoleIdentifier: Array<fhir.Identifier>, fhirPractitionerIdentifier: Array<fhir.Identifier>): codes.BsaPrescribingIdentifier | codes.SdsUniqueIdentifier {
+export function getAgentPersonPersonId(fhirPractitionerRoleIdentifier: Array<fhir.Identifier>, fhirPractitionerIdentifier: Array<fhir.Identifier>): peoplePlaces.PrescriptionAuthorId {
     const spuriousCode = getIdentifierValueOrNullForSystem(fhirPractitionerRoleIdentifier, "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code")
     if (spuriousCode) {
         return new codes.BsaPrescribingIdentifier(spuriousCode)

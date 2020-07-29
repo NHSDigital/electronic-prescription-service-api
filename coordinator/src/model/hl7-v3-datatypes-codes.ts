@@ -20,6 +20,11 @@ class Code implements ElementCompact {
 }
 
 export class SexCode extends Code {
+    _attributes: {
+        codeSystem: "2.16.840.1.113883.2.1.3.2.4.16.25",
+        code: string,
+        displayName?: string
+    }
     constructor(code: string) {
         super("2.16.840.1.113883.2.1.3.2.4.16.25", code);
     }
@@ -31,6 +36,11 @@ export class SexCode extends Code {
 }
 
 export class PatientCareProvisionTypeCode extends Code {
+    _attributes: {
+        codeSystem: "2.16.840.1.113883.2.1.3.2.4.17.37",
+        code: string,
+        displayName?: string
+    }
     constructor(code: string) {
         super("2.16.840.1.113883.2.1.3.2.4.17.37", code);
     }
@@ -39,30 +49,55 @@ export class PatientCareProvisionTypeCode extends Code {
 }
 
 export class SnomedCode extends Code {
+    _attributes: {
+        codeSystem: "2.16.840.1.113883.2.1.3.2.4.15",
+        code: string,
+        displayName?: string
+    }
     constructor(code: string, desc: string) {
         super("2.16.840.1.113883.2.1.3.2.4.15", code, desc);
     }
 }
 
 export class SdsJobRoleCode extends Code {
+    _attributes: {
+        codeSystem: "1.2.826.0.1285.0.2.1.104",
+        code: string,
+        displayName?: string
+    }
     constructor(code: string) {
         super("1.2.826.0.1285.0.2.1.104", code);
     }
 }
 
 export class OrganizationTypeCode extends Code {
+    _attributes: {
+        codeSystem: "2.16.840.1.113883.2.1.3.2.4.17.94",
+        code: string,
+        displayName?: string
+    }
     constructor(code: string) {
         super("2.16.840.1.113883.2.1.3.2.4.17.94", code);
     }
 }
 
 export class PrescriptionAnnotationCode extends Code {
+    _attributes: {
+        codeSystem: "2.16.840.1.113883.2.1.3.2.4.17.30",
+        code: string,
+        displayName?: string
+    }
     constructor(code: string) {
         super("2.16.840.1.113883.2.1.3.2.4.17.30", code);
     }
 }
 
 export class PrescriptionTreatmentTypeCode extends Code {
+    _attributes: {
+        codeSystem: "2.16.840.1.113883.2.1.3.2.4.16.36",
+        code: string,
+        displayName?: string
+    }
     constructor(code: string) {
         super("2.16.840.1.113883.2.1.3.2.4.16.36", code);
     }
@@ -73,18 +108,33 @@ export class PrescriptionTreatmentTypeCode extends Code {
 }
 
 export class DispensingSitePreferenceCode extends Code {
+    _attributes: {
+        codeSystem: "2.16.840.1.113883.2.1.3.2.4.17.21",
+        code: string,
+        displayName?: string
+    }
     constructor(code: string) {
         super("2.16.840.1.113883.2.1.3.2.4.17.21", code);
     }
 }
 
 export class PrescriptionTypeCode extends Code {
+    _attributes: {
+        codeSystem: "2.16.840.1.113883.2.1.3.2.4.17.25",
+        code: string,
+        displayName?: string
+    }
     constructor(code: string) {
         super("2.16.840.1.113883.2.1.3.2.4.17.25", code);
     }
 }
 
 class CodeWithoutSystem extends Code {
+    _attributes: {
+        codeSystem: undefined,
+        code: string,
+        displayName?: string
+    }
     constructor(code: string) {
         super(undefined, code);
     }
@@ -121,60 +171,91 @@ class Identifier implements ElementCompact {
 }
 
 export class GlobalIdentifier extends Identifier {
+    _attributes: {
+        root: string
+        extension: undefined
+    }
     constructor(root: string) {
         super(root);
     }
 }
 
 export class TypeIdentifier extends Identifier {
+    _attributes: {
+        root: "2.16.840.1.113883.2.1.3.2.4.18.7"
+    }
     constructor(extension: string) {
         super("2.16.840.1.113883.2.1.3.2.4.18.7", extension);
     }
 }
 
 export class TemplateIdentifier extends Identifier {
+    _attributes: {
+        root: "2.16.840.1.113883.2.1.3.2.4.18.2"
+    }
     constructor(extension: string) {
         super("2.16.840.1.113883.2.1.3.2.4.18.2", extension);
     }
 }
 
 export class NhsNumber extends Identifier {
+    _attributes: {
+        root: "2.16.840.1.113883.2.1.4.1"
+    }
     constructor(extension: string) {
         super("2.16.840.1.113883.2.1.4.1", extension);
     }
 }
 
 export class SdsUniqueIdentifier extends Identifier {
+    _attributes: {
+        root: "1.2.826.0.1285.0.2.0.65"
+    }
     constructor(extension: string) {
         super("1.2.826.0.1285.0.2.0.65", extension);
     }
 }
 
 export class SdsRoleProfileIdentifier extends Identifier {
+    _attributes: {
+        root: "1.2.826.0.1285.0.2.0.67"
+    }
     constructor(extension: string) {
         super("1.2.826.0.1285.0.2.0.67", extension);
     }
 }
 
 export class BsaPrescribingIdentifier extends Identifier {
+    _attributes: {
+        root: "1.2.826.0.1285.0.2.1.54"
+    }
     constructor(extension: string) {
         super("1.2.826.0.1285.0.2.1.54", extension);
     }
 }
 
 export class ShortFormPrescriptionIdentifier extends Identifier {
+    _attributes: {
+        root: "2.16.840.1.113883.2.1.3.2.4.18.8"
+    }
     constructor(extension: string) {
         super("2.16.840.1.113883.2.1.3.2.4.18.8", extension);
     }
 }
 
 export class SdsOrganizationIdentifier extends Identifier {
+    _attributes: {
+        root: "1.2.826.0.1285.0.1.10"
+    }
     constructor(extension: string) {
         super("1.2.826.0.1285.0.1.10", extension);
     }
 }
 
 export class Hl7InteractionIdentifier extends Identifier {
+    _attributes: {
+        root: "2.16.840.1.113883.2.1.3.2.4.12"
+    }
     constructor(extension: string) {
         super("2.16.840.1.113883.2.1.3.2.4.12", extension)
     }
@@ -183,12 +264,18 @@ export class Hl7InteractionIdentifier extends Identifier {
 }
 
 export class AccreditedSystemIdentifier extends Identifier {
+    _attributes: {
+        root: "1.2.826.0.1285.0.2.0.107"
+    }
     constructor(extension: string) {
         super("1.2.826.0.1285.0.2.0.107", extension)
     }
 }
 
 export class SdsJobRoleIdentifier extends Identifier {
+    _attributes: {
+        root: "1.2.826.0.1285.0.2.1.104"
+    }
     constructor(extension: string) {
         super("1.2.826.0.1285.0.2.1.104", extension)
     }
