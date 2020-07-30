@@ -5,7 +5,12 @@ import { addEbXmlWrapper } from "./request-builder"
 const SPINE_ENDPOINT = 'https://veit07.devspineservices.nhs.uk'
 const SPINE_PATH = '/Prescription'
 
-type SpineResponse = SpineDirectResponse | SpinePollableResponse
+export type SpineResponse = SandboxResponse | SpineDirectResponse | SpinePollableResponse
+
+export interface SandboxResponse {
+    body: string
+    statusCode: number
+}
 
 export interface SpineDirectResponse {
     body: string
@@ -15,6 +20,15 @@ export interface SpineDirectResponse {
 export interface SpinePollableResponse {
     pollingUrl: string
     statusCode: number
+}
+
+export function isSandbox(spineResponse: SpineResponse) : spineResponse is SandboxResponse {
+    const sandboxResponse = spineResponse as SandboxResponse
+    return sandboxResponse.body && sandboxResponse.body === "Message Sent"
+}
+
+export function isDirect(spineResponse: SpineResponse): spineResponse is SpineDirectResponse {
+    return !isPollable(spineResponse)
 }
 
 export function isPollable(spineResponse: SpineResponse): spineResponse is SpinePollableResponse {
