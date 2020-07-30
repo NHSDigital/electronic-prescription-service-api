@@ -18,6 +18,7 @@ release:
 	mkdir -p dist
 	cp -r specification/dist/. dist
 	cp -r terraform dist
+	rm -rf tests/e2e/pact/node_modules
 	cp -r tests/e2e/pact dist
 
 clean:
