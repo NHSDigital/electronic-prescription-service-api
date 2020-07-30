@@ -30,7 +30,7 @@ jestpact.pactWith(
           uponReceiving: "a request to convert a FHIR repeat-dispensing parent-prescription-1",
           withRequest: {
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type": "application/fhir+json; fhirVersion=4.0",
               "NHSD-Session-URID": "1234"
             },
             method: "POST",
@@ -47,7 +47,7 @@ jestpact.pactWith(
         await provider.addInteraction(interaction);
         await client()
           .post(apiPath)
-          .set('Content-Type', 'application/json')
+          .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('NHSD-Session-URID', '1234')
           .send(prepareRepeatDispensingPrescriptionRequest)
           .expect(200);
@@ -61,7 +61,7 @@ jestpact.pactWith(
           uponReceiving: "a request to prepare a repeat-dispensing parent-prescription-1",
           withRequest: {
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type": "application/fhir+json; fhirVersion=4.0",
               "NHSD-Session-URID": "1234"
             },
             method: "POST",
@@ -85,7 +85,7 @@ jestpact.pactWith(
         await provider.addInteraction(interaction);
         await client()
           .post(apiPath)
-          .set('Content-Type', 'application/json')
+          .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('NHSD-Session-URID', '1234')
           .send(prepareRepeatDispensingPrescriptionRequest)
           .expect(200);
@@ -99,7 +99,7 @@ jestpact.pactWith(
           uponReceiving: "a request to send a repeat-dispensing parent-prescription-1 to Spine",
           withRequest: {
             headers: {
-              "Content-Type": "application/json",
+              "Content-Type": "application/fhir+json; fhirVersion=4.0",
               "NHSD-Session-URID": "1234"
             },
             method: "POST",
@@ -108,18 +108,18 @@ jestpact.pactWith(
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
-            status: 202
+            status: 200
           }
         };
         await provider.addInteraction(interaction);
         await client()
           .post(apiPath)
-          .set('Content-Type', 'application/json')
+          .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('NHSD-Session-URID', '1234')
           .send(sendRepeatDispensingPrescriptionSendRequest)
-          .expect(202);
+          .expect(200);
       });
 
     });

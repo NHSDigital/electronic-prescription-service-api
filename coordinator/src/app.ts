@@ -8,7 +8,7 @@ const preResponse = function (request: Hapi.Request, responseToolkit: Hapi.Respo
     const response = request.response
     if (response instanceof Boom) {
         console.log(response)
-    } else {
+    } else if(!response.headers['content-type']) {
         // Set Content-Type on all responses
         response.type(CONTENT_TYPE)
     }

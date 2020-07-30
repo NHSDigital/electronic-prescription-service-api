@@ -12,7 +12,7 @@ import {getIdentifierValueForSystem} from "./common";
 export function convertFhirMessageToHl7V3ParentPrescriptionMessage(fhirMessage: fhir.Bundle): string {
     const root = {
         _declaration: new XmlDeclaration(),
-        PORX_IN020101UK31: namespacedCopyOf(createParentPrescriptionSendMessagePayload(fhirMessage))
+        PORX_IN020101SM31: namespacedCopyOf(createParentPrescriptionSendMessagePayload(fhirMessage))
     }
     return writeXmlStringCanonicalized(root)
 }
