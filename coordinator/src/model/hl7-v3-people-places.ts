@@ -104,8 +104,8 @@ export class PatientCareProvision implements ElementCompact {
     code: codes.PatientCareProvisionTypeCode
     responsibleParty: ResponsibleParty
 
-    constructor(code: string) {
-        this.code = new codes.PatientCareProvisionTypeCode(code)
+    constructor(code: codes.PatientCareProvisionTypeCode) {
+        this.code = code
     }
 }
 
@@ -150,6 +150,10 @@ export class AgentPersonPerson implements ElementCompact {
 
     id: codes.SdsUniqueIdentifier
     name?: core.Name
+
+    constructor(id: codes.SdsUniqueIdentifier) {
+        this.id = id
+    }
 }
 
 /**

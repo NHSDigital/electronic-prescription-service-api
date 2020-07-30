@@ -56,11 +56,9 @@ build-models:
 	&& mkdir -p dist/examples \
 	&& mkdir -p dist/schemas
 	$(foreach directory, $(wildcard models/examples/*), cp -r $(directory) models/dist/examples;)
-	# TODO - convert YAML to JSON if needed - $(foreach directory, $(wildcard models/dist/examples/*), $(foreach file, $(wildcard $(directory)/*.yaml), poetry run python scripts/yaml2json.py $(file) $(directory););)
 	$(foreach file, $(wildcard models/schemas/*.yaml), cp $(file) models/dist/schemas;)
 	$(foreach file, $(wildcard models/schemas/*.json), cp $(file) models/dist/schemas;)
 	$(foreach file, $(wildcard models/schemas/*.yaml), poetry run python scripts/yaml2json.py $(file) models/dist/schemas;)
-
 
 build-specification:
 	cd specification \
@@ -80,7 +78,7 @@ build-specification:
 build-coordinator:
 	npm run --prefix=coordinator/ build
 	cp coordinator/package.json coordinator/dist/
-	cp coordinator/src/resources/ConvertWrapper.mustache coordinator/dist/resources/
+	mkdir -p coordinator/dist/resources
 	cp coordinator/src/resources/ebxml_request.mustache coordinator/dist/resources/
 	poetry run scripts/update_coordinator_tests.py
 

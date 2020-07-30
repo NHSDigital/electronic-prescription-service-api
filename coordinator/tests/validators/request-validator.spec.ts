@@ -1,24 +1,31 @@
 import * as validator from "../../src/validators/request-validator"
-import {MedicationRequest, Resource} from "../../src/services/fhir-resources";
+import {MedicationRequest, Resource} from "../../src/model/fhir-resources";
 import * as TestResources from "../resources/test-resources"
+import {clone} from "../resources/test-helpers";
 
-const resourceNotABundleError = [{message: "ResourceType must be 'Bundle' on request",
+const resourceNotABundleError = [{
+    message: "ResourceType must be 'Bundle' on request",
     operationOutcomeCode: "value",
     apiErrorCode: "INCORRECT_RESOURCETYPE",
-    severity: "fatal"}]
+    severity: "fatal"
+}]
 
 function containAtLeastError(resource: string, numberOfResources: number) {
-    return {message: `Bundle must contain at least ${numberOfResources} resource(s) of type ${resource}`,
+    return {
+        message: `Bundle must contain at least ${numberOfResources} resource(s) of type ${resource}`,
         operationOutcomeCode: "value",
         apiErrorCode: "MISSING_FIELD",
-        severity: "error"}
+        severity: "error"
+    }
 }
 
 function containExactlyError(resource: string, numberOfResources: number) {
-    return {message: `Bundle must contain exactly ${numberOfResources} resource(s) of type ${resource}`,
+    return {
+        message: `Bundle must contain exactly ${numberOfResources} resource(s) of type ${resource}`,
         operationOutcomeCode: "value",
         apiErrorCode: "MISSING_FIELD",
-        severity: "error"}
+        severity: "error"
+    }
 }
 
 test('verifyPrescriptionBundle rejects null', () => {
@@ -49,10 +56,12 @@ test('verifyPrescriptionBundle rejects bundle without entries', () => {
         resourceType: "Bundle"
     }
     expect(validator.verifyPrescriptionBundle(bundle, false))
-        .toEqual([{message: "ResourceType Bundle must contain 'entry' field",
+        .toEqual([{
+            message: "ResourceType Bundle must contain 'entry' field",
             operationOutcomeCode: "value",
             apiErrorCode: "MISSING_FIELD",
-            severity: "fatal"}])
+            severity: "fatal"
+        }])
 })
 
 test('verifyPrescriptionBundle rejects bundle without id', () => {
@@ -61,10 +70,12 @@ test('verifyPrescriptionBundle rejects bundle without id', () => {
         entry: [] as Array<Resource>
     }
     expect(validator.verifyPrescriptionBundle(bundle, false))
-        .toContainEqual({message: "ResourceType Bundle must contain 'id' field",
+        .toContainEqual({
+            message: "ResourceType Bundle must contain 'id' field",
             operationOutcomeCode: "value",
             apiErrorCode: "MISSING_FIELD",
-            severity: "error"})
+            severity: "error"
+        })
 })
 
 test('verifyPrescriptionBundle rejects bundle without MedicationRequest', () => {
@@ -182,7 +193,7 @@ test("Should accept message where fields common to all MedicationRequests are id
 })
 
 test("Should reject message where MedicationRequests have different authoredOn", () => {
-    const bundle = TestResources.clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    const bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     const medicationRequests = validator.getMatchingEntries(bundle, "MedicationRequest") as Array<MedicationRequest>
     medicationRequests.forEach(medicationRequest => medicationRequest.authoredOn = "2020-01-02T00:00:00.000Z")
     medicationRequests[0].authoredOn = "2020-01-01T00:00:00.000Z"
@@ -195,7 +206,7 @@ test("Should reject message where MedicationRequests have different authoredOn",
 })
 
 test("Should reject message where MedicationRequests have different dispenseRequest.performer", () => {
-    const bundle = TestResources.clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    const bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     const medicationRequests = validator.getMatchingEntries(bundle, "MedicationRequest") as Array<MedicationRequest>
     medicationRequests.forEach(medicationRequest => medicationRequest.dispenseRequest.performer = {reference: "pharmacy1"})
     medicationRequests[3].dispenseRequest.performer = {reference: "pharmacy2"}
@@ -208,7 +219,7 @@ test("Should reject message where MedicationRequests have different dispenseRequ
 })
 
 test("Null should contribute to the count of unique values", () => {
-    const bundle = TestResources.clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    const bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     const medicationRequests = validator.getMatchingEntries(bundle, "MedicationRequest") as Array<MedicationRequest>
     medicationRequests[0].groupIdentifier = null
     const validationErrors = validator.verifyPrescriptionBundle(bundle, false)
@@ -217,7 +228,7 @@ test("Null should contribute to the count of unique values", () => {
 })
 
 test("Undefined should contribute to the count of unique values", () => {
-    const bundle = TestResources.clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    const bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     const medicationRequests = validator.getMatchingEntries(bundle, "MedicationRequest") as Array<MedicationRequest>
     medicationRequests[0].groupIdentifier = undefined
     const validationErrors = validator.verifyPrescriptionBundle(bundle, false)

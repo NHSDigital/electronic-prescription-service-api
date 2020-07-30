@@ -55,7 +55,7 @@ def main():
 
     for item in data['item']:
         for event in item['event']:
-            if (event['script']['id'] == "582bca6a-3e80-4609-be0c-1fc7a05d7d34"):
+            if event['script']['id'] == "582bca6a-3e80-4609-be0c-1fc7a05d7d34":
                 item['request']['body']['raw'] = json.dumps(
                     convert_success_request,
                     default=date_converter,
@@ -67,18 +67,18 @@ def main():
                     "    pm.response.to.have.status(200);",
                     "});",
                     "pm.test(\"Body is correct\", function () {",
-                    "    const actualResponseStringWithId = pm.response.text().replace(",
-                    "        /<id root=\"[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}\"\\/>/,",
-                    "        \"<id root=\\\"A7B86F8D-1DBD-FC28-E050-D20AE3A215F0\\\"/>\"",
+                    "    const actualResponseStringWithCorrectedTime = pm.response.text().replace(",
+                    "        /<creationTime value=\"[0-9]{14}\"><\\/creationTime>/,",
+                    "        \"<creationTime value=\\\"20200610102631\\\"></creationTime>\"",
                     "    )",
                     "    console.log(\"=====EXPECTED=====\")",
                     "    console.log(expectedResponseString)",
                     "    console.log(\"=====ACTUAL=====\")",
-                    "    console.log(actualResponseStringWithId)",
-                    "    pm.expect(actualResponseStringWithId).to.equal(expectedResponseString);",
+                    "    console.log(actualResponseStringWithCorrectedTime)",
+                    "    pm.expect(actualResponseStringWithCorrectedTime).to.equal(expectedResponseString);",
                     "});"
                 ]
-            elif (event['script']['id'] == "630e7726-f2e1-4bf9-a90f-08350d24e70d"):
+            elif event['script']['id'] == "630e7726-f2e1-4bf9-a90f-08350d24e70d":
                 item['request']['body']['raw'] = json.dumps(
                     prepare_success_request,
                     default=date_converter,
@@ -101,7 +101,7 @@ def main():
                     "    pm.response.to.have.body(responseString);",
                     "});"
                 ]
-            elif (event['script']['id'] == "400fb7e1-0145-41c8-9523-282c047ee1db"):
+            elif event['script']['id'] == "400fb7e1-0145-41c8-9523-282c047ee1db":
                 item['request']['body']['raw'] = json.dumps(
                     send_success_request,
                     default=date_converter,

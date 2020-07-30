@@ -494,6 +494,10 @@ export class ActRef implements ElementCompact {
     }
 }
 
+/**
+ * An act relationship used to provide information on the number of days' treatment that the current prescription's medication provides for.
+ * Applicable to repeat dispensing prescriptions only.
+ */
 export class Component1 {
     _attributes: core.AttributeTypeCode = {
         typeCode: "COMP"
@@ -503,6 +507,10 @@ export class Component1 {
     daysSupply: DaysSupply
 }
 
+/**
+ * Prescription duration and supply intervals used to calculate the "Dispensing Window".
+ * This information is mandatory for repeat dispensing prescriptions, optional otherwise.
+ */
 export class DaysSupply {
     _attributes: core.AttributeClassCode & AttributeMoodCode = {
         classCode: "SPLY",
@@ -510,18 +518,14 @@ export class DaysSupply {
     }
 
     code: codes.SnomedCode = new codes.SnomedCode("373784005", "Dispensing medication (procedure)")
-    effectiveTime: IntervalComplete
-    expectedUseTime: IntervalUnanchored
+    effectiveTime: core.IntervalComplete
+    expectedUseTime: core.IntervalUnanchored
 }
 
-export class IntervalComplete {
-    low: Timestamp
-    high: Timestamp
-}
+export class ParentPrescriptionRoot {
+    ParentPrescription: ParentPrescription
 
-export class IntervalUnanchored {
-    width: {
-        value: number
-        unit: string
+    constructor(parentPrescription: ParentPrescription) {
+        this.ParentPrescription = parentPrescription
     }
 }
