@@ -3,6 +3,10 @@ import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as fs from 'fs'
 import * as path from "path"
+import {SendMessagePayload} from "../../../../coordinator/src/model/hl7-v3-datatypes-core";
+import {ParentPrescriptionRoot} from "../../../../coordinator/src/model/hl7-v3-prescriptions";
+import {GlobalIdentifier} from "../../../../coordinator/src/model/hl7-v3-datatypes-codes";
+import * as uuid from "uuid";
 
 const prepareRepeatDispensingPrescriptionRequest = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareRequest-FhirMessageUnsigned.json"), "utf8")
 const prepareRepeatDispensingPrescriptionResponse = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareResponse-FhirMessageDigest.json"), "utf8")
@@ -94,7 +98,9 @@ jestpact.pactWith(
 
       test("should be able to send a repeat-dispensing parent-prescription-1", async () => {
         const apiPath = "/Send";
-        const interaction: InteractionObject = {
+          const body = JSON.parse(sendRepeatDispensingPrescriptionSendRequest) as SendMessagePayload<ParentPrescriptionRoot>
+          body.id = new GlobalIdentifier(uuid.v4())
+          const interaction: InteractionObject = {
           state: null,
           uponReceiving: "a request to send a repeat-dispensing parent-prescription-1 to Spine",
           withRequest: {
@@ -104,7 +110,7 @@ jestpact.pactWith(
             },
             method: "POST",
             path: "/Send",
-            body: JSON.parse(sendRepeatDispensingPrescriptionSendRequest)
+            body: body
           },
           willRespondWith: {
             headers: {
@@ -121,7 +127,6 @@ jestpact.pactWith(
           .send(sendRepeatDispensingPrescriptionSendRequest)
           .expect(202);
       });
-
     });
   }
 );
