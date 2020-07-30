@@ -48,6 +48,11 @@ def main():
     with open(prepare_success_response_file_path) as f:
         prepare_success_response = json.load(f)
 
+    send_success_response_file_path = \
+        "./models/dist/examples/example-1-repeat-dispensing/SendRequest-SuccessResponse.json"
+    with open(send_success_response_file_path) as f:
+        send_success_response = json.load(f)
+
     send_success_request_file_path = \
         "./models/dist/examples/example-1-repeat-dispensing/SendRequest-FhirMessageSigned.json"
     with open(send_success_request_file_path) as f:
@@ -108,7 +113,13 @@ def main():
                     separators=(',', ':'))
 
                 event['script']['exec'] = [
-                    "const responseString = 'Message Sent'",
+                    "const responseString = '" +
+                    json.dumps(send_success_response, default=date_converter)
+                        .replace(": ", ":")
+                        .replace(", ", ",")
+                        .replace("\\", "\\\\")
+                        .replace("\n", "\\n")
+                    + "'",
                     "pm.test(\"Status code is 200\", function () {",
                     "    pm.response.to.have.status(200);",
                     "});",
