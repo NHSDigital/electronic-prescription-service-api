@@ -119,7 +119,7 @@ info:
     * `POST /Send` - send a signed FHIR prescription to Spine
     
 servers:
-  - url: 'https://internal-qa-sandbox.api.service.nhs.uk/electronic-prescriptions'
+  - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
     description: 'Sandbox environment.'
 tags:
   - name: dispensing
