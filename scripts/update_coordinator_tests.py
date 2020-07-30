@@ -114,9 +114,7 @@ def main():
 
                 event['script']['exec'] = [
                     "const responseString = '" +
-                    json.dumps(send_success_response, default=date_converter)
-                        .replace(": ", ":")
-                        .replace(", ", ",")
+                    json.dumps(send_success_response, default=date_converter, separators=(',', ':'))
                         .replace("\\", "\\\\")
                         .replace("\n", "\\n")
                     + "'",
