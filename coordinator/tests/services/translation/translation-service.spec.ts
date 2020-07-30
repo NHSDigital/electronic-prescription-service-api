@@ -34,7 +34,7 @@ test(
     )
 )
 
-test("convertFhirMessageToHl7V3SignedInfo returns correct value", () => {
+test("convertFhirMessageToSignedInfoMessage returns correct value", () => {
     const actualOutput = convertFhirMessageToSignedInfoMessage(TestResources.examplePrescription1.fhirMessageUnsigned)
     const expectedOutput = JSON.stringify(TestResources.examplePrescription1.fhirMessageDigest, null, 2)
     expect(actualOutput).toEqual(expectedOutput)
