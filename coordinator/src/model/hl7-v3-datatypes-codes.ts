@@ -1,5 +1,5 @@
-import {ElementCompact} from "xml-js";
-import {Text} from "./hl7-v3-datatypes-core";
+import {ElementCompact} from "xml-js"
+import {Text} from "./hl7-v3-datatypes-core"
 
 class Code implements ElementCompact {
     _attributes: {
@@ -21,7 +21,7 @@ class Code implements ElementCompact {
 
 export class SexCode extends Code {
     constructor(code: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.16.25", code);
+        super("2.16.840.1.113883.2.1.3.2.4.16.25", code)
     }
 
     static UNKNOWN = new SexCode("0")
@@ -32,7 +32,7 @@ export class SexCode extends Code {
 
 export class PatientCareProvisionTypeCode extends Code {
     constructor(code: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.17.37", code);
+        super("2.16.840.1.113883.2.1.3.2.4.17.37", code)
     }
 
     static PRIMARY_CARE = new PatientCareProvisionTypeCode("1")
@@ -40,31 +40,31 @@ export class PatientCareProvisionTypeCode extends Code {
 
 export class SnomedCode extends Code {
     constructor(code: string, desc: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.15", code, desc);
+        super("2.16.840.1.113883.2.1.3.2.4.15", code, desc)
     }
 }
 
 export class SdsJobRoleCode extends Code {
     constructor(code: string) {
-        super("1.2.826.0.1285.0.2.1.104", code);
+        super("1.2.826.0.1285.0.2.1.104", code)
     }
 }
 
 export class OrganizationTypeCode extends Code {
     constructor(code: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.17.94", code);
+        super("2.16.840.1.113883.2.1.3.2.4.17.94", code)
     }
 }
 
 export class PrescriptionAnnotationCode extends Code {
     constructor(code: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.17.30", code);
+        super("2.16.840.1.113883.2.1.3.2.4.17.30", code)
     }
 }
 
 export class PrescriptionTreatmentTypeCode extends Code {
     constructor(code: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.16.36", code);
+        super("2.16.840.1.113883.2.1.3.2.4.16.36", code)
     }
 
     static ACUTE = new PrescriptionTreatmentTypeCode("0001")
@@ -74,19 +74,19 @@ export class PrescriptionTreatmentTypeCode extends Code {
 
 export class DispensingSitePreferenceCode extends Code {
     constructor(code: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.17.21", code);
+        super("2.16.840.1.113883.2.1.3.2.4.17.21", code)
     }
 }
 
 export class PrescriptionTypeCode extends Code {
     constructor(code: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.17.25", code);
+        super("2.16.840.1.113883.2.1.3.2.4.17.25", code)
     }
 }
 
 class CodeWithoutSystem extends Code {
     constructor(code: string) {
-        super(undefined, code);
+        super(undefined, code)
     }
 }
 
@@ -122,49 +122,49 @@ class Identifier implements ElementCompact {
 
 export class GlobalIdentifier extends Identifier {
     constructor(root: string) {
-        super(root);
+        super(root)
     }
 }
 
 export class TypeIdentifier extends Identifier {
     constructor(extension: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.18.7", extension);
+        super("2.16.840.1.113883.2.1.3.2.4.18.7", extension)
     }
 }
 
 export class TemplateIdentifier extends Identifier {
     constructor(extension: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.18.2", extension);
+        super("2.16.840.1.113883.2.1.3.2.4.18.2", extension)
     }
 }
 
 export class NhsNumber extends Identifier {
     constructor(extension: string) {
-        super("2.16.840.1.113883.2.1.4.1", extension);
+        super("2.16.840.1.113883.2.1.4.1", extension)
     }
 }
 
 export class SdsUniqueIdentifier extends Identifier {
     constructor(extension: string) {
-        super("1.2.826.0.1285.0.2.0.65", extension);
+        super("1.2.826.0.1285.0.2.0.65", extension)
     }
 }
 
 export class SdsRoleProfileIdentifier extends Identifier {
     constructor(extension: string) {
-        super("1.2.826.0.1285.0.2.0.67", extension);
+        super("1.2.826.0.1285.0.2.0.67", extension)
     }
 }
 
 export class ShortFormPrescriptionIdentifier extends Identifier {
     constructor(extension: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.18.8", extension);
+        super("2.16.840.1.113883.2.1.3.2.4.18.8", extension)
     }
 }
 
 export class SdsOrganizationIdentifier extends Identifier {
     constructor(extension: string) {
-        super("1.2.826.0.1285.0.1.10", extension);
+        super("1.2.826.0.1285.0.1.10", extension)
     }
 }
 

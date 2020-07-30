@@ -2,7 +2,6 @@
 
 set -eu
 
-make build-models
 make validate-models
 make build-specification
 make lint

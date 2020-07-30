@@ -1,7 +1,7 @@
 import * as codes from "./hl7-v3-datatypes-codes"
 import {GlobalIdentifier} from "./hl7-v3-datatypes-codes"
-import {Attributes, ElementCompact} from "xml-js";
-import * as peoplePlaces from "./hl7-v3-people-places";
+import {Attributes, ElementCompact} from "xml-js"
+import * as peoplePlaces from "./hl7-v3-people-places"
 
 export interface AttributeTypeCode extends Attributes {
     typeCode: "AUT" | "COMP" | "FLFS" | "LA" | "PART" | "PERT" | "PRD" | "PRF" | "RESP" | "RCT" | "SBJ"

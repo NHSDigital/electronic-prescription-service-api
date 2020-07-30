@@ -1,4 +1,4 @@
-import * as XmlJs from "xml-js";
+import * as XmlJs from "xml-js"
 
 export function writeXmlStringCanonicalized(tag: XmlJs.ElementCompact): string {
     const options = {

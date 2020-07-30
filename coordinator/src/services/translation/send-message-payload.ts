@@ -1,9 +1,9 @@
-import * as codes from "../../model/hl7-v3-datatypes-codes";
-import {GlobalIdentifier} from "../../model/hl7-v3-datatypes-codes";
-import * as peoplePlaces from "../../model/hl7-v3-people-places";
-import * as core from "../../model/hl7-v3-datatypes-core";
-import moment from "moment";
-import {convertMomentToDateTime} from "./common";
+import * as codes from "../../model/hl7-v3-datatypes-codes"
+import {GlobalIdentifier} from "../../model/hl7-v3-datatypes-codes"
+import * as peoplePlaces from "../../model/hl7-v3-people-places"
+import * as core from "../../model/hl7-v3-datatypes-core"
+import moment from "moment"
+import {convertMomentToDateTime} from "./common"
 
 export function createSendMessagePayload<T>(
     messageId: string,

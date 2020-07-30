@@ -42,7 +42,7 @@ const httpsAgent = new https.Agent({
         process.env.ROOT_CA_CERT,
         process.env.SUB_CA_CERT
     ]
-});
+})
 
 export class RequestHandler {
 

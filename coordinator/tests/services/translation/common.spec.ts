@@ -2,11 +2,11 @@ import {
     getIdentifierValueForSystem,
     getResourceForFullUrl,
     getResourcesOfType
-} from "../../../src/services/translation/common";
-import * as TestResources from "../../resources/test-resources";
-import * as fhir from "../../../src/model/fhir-resources";
-import {MedicationRequest} from "../../../src/model/fhir-resources";
-import {clone} from "../../resources/test-helpers";
+} from "../../../src/services/translation/common"
+import * as TestResources from "../../resources/test-resources"
+import * as fhir from "../../../src/model/fhir-resources"
+import {MedicationRequest} from "../../../src/model/fhir-resources"
+import {clone} from "../../resources/test-helpers"
 
 test('getResourcesOfType returns correct resources', () => {
     const result = getResourcesOfType(TestResources.examplePrescription1.fhirMessageUnsigned, new MedicationRequest())

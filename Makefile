@@ -10,9 +10,9 @@ all:
 
 install: install-node install-python install-hooks
 
-build: build-models build-specification build-coordinator build-proxies
+build: build-specification build-coordinator build-proxies
 
-test: validate-models lint check-licenses test-coordinator
+test: validate-models lint check-licenses test-coordinator test-e2e-integration-setup
 
 release:
 	mkdir -p dist
@@ -22,7 +22,7 @@ release:
 
 clean:
 	rm -rf dist
-	rm -rf models/dist
+	rm -rf models/build
 	rm -rf specification/dist
 	rm -rf specification/build
 	rm -rf coordinator/dist
@@ -53,21 +53,12 @@ install-hooks:
 
 # Build
 
-build-models:
-	cd models \
-	&& mkdir -p dist/examples \
-	&& mkdir -p dist/schemas
-	$(foreach directory, $(wildcard models/examples/*), cp -r $(directory) models/dist/examples;)
-	$(foreach file, $(wildcard models/schemas/*.yaml), cp $(file) models/dist/schemas;)
-	$(foreach file, $(wildcard models/schemas/*.json), cp $(file) models/dist/schemas;)
-	$(foreach file, $(wildcard models/schemas/*.yaml), poetry run python scripts/yaml2json.py $(file) models/dist/schemas;)
-
 build-specification:
 	cd specification \
 	&& mkdir -p build/components/examples \
 	&& mkdir -p build/components/schemas \
-	&& cp -r ../models/dist/examples/* build/components/examples \
-	&& cp -r ../models/dist/schemas/*.yaml build/components/schemas \
+	&& cp -r ../models/examples build/components \
+	&& cp -r ../models/schemas build/components \
 	&& cp electronic-prescription-service-api.yaml build/electronic-prescription-service-api.yaml \
 	&& npm run resolve \
 	&& poetry run python ../scripts/yaml2json.py build/electronic-prescription-service-api.resolved.yaml build/ \
@@ -109,14 +100,18 @@ test-integration-coordinator:
 test-e2e-integration-setup:
 	cd tests/e2e/pact \
 	&& make create \
-	&& make publish \
 	&& make postman
+
+test-e2e-integration-publish:
+	cd tests/e2e/pact \
+	&& make publish
 
 ## Quality Checks
 
 validate-models:
-	test -f models/dist/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > models/dist/org.hl7.fhir.validator.jar
-	java -jar models/dist/org.hl7.fhir.validator.jar models/dist/examples/*/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt
+	mkdir -p models/build
+	test -f models/build/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > models/build/org.hl7.fhir.validator.jar
+	java -jar models/build/org.hl7.fhir.validator.jar models/examples/*/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt
 
 lint:
 	cd specification && npm run lint

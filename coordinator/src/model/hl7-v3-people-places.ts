@@ -1,7 +1,7 @@
 import * as codes from "./hl7-v3-datatypes-codes"
 import * as core from "./hl7-v3-datatypes-core"
-import {ElementCompact} from "xml-js";
-import {Text} from "./hl7-v3-datatypes-core";
+import {ElementCompact} from "xml-js"
+import {Text} from "./hl7-v3-datatypes-core"
 
 /**
  * Identifies or provides detailed information about a person fulfilling a specific role when it is not known whether all of the role profile, player and scoper details are available from SDS.

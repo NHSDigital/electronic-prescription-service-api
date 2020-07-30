@@ -1,7 +1,7 @@
-import * as fhir from "../../model/fhir-resources";
-import {Extension} from "../../model/fhir-resources";
-import moment from "moment";
-import * as core from "../../model/hl7-v3-datatypes-core";
+import * as fhir from "../../model/fhir-resources"
+import {Extension} from "../../model/fhir-resources"
+import moment from "moment"
+import * as core from "../../model/hl7-v3-datatypes-core"
 
 export function getResourcesOfType<T extends fhir.Resource>(fhirBundle: fhir.Bundle, type: T): Array<T> {
     const typeGuard = (resource: fhir.Resource): resource is T => resource.resourceType === type.resourceType
@@ -42,7 +42,7 @@ export function getExtensionForUrl(extensions: Array<fhir.Extension>, url: strin
 
 export function getCodeableConceptCodingForSystem(codeableConcept: Array<fhir.CodeableConcept>, system: string): fhir.Coding {
     const coding = codeableConcept
-        .flatMap(codeableConcept => codeableConcept.coding);
+        .flatMap(codeableConcept => codeableConcept.coding)
     return getCodingForSystem(coding, system)
 }
 
@@ -53,7 +53,7 @@ export function convertMomentToDateTime(dateTime: moment.Moment): core.Timestamp
 
 export function convertIsoStringToDateTime(isoDateTimeStr: string): core.Timestamp {
     const dateTime = moment.utc(isoDateTimeStr, moment.ISO_8601, true)
-    return convertMomentToDateTime(dateTime);
+    return convertMomentToDateTime(dateTime)
 }
 
 export function convertMomentToDate(dateTime: moment.Moment): core.Timestamp {
@@ -63,7 +63,7 @@ export function convertMomentToDate(dateTime: moment.Moment): core.Timestamp {
 
 export function convertIsoStringToDate(isoDateStr: string): core.Timestamp {
     const dateTime = moment.utc(isoDateStr, moment.ISO_8601, true)
-    return convertMomentToDate(dateTime);
+    return convertMomentToDate(dateTime)
 }
 
 //TODO - replace usage of this method with something which returns more user-friendly error messages

@@ -1,7 +1,7 @@
 import * as validator from "../../src/validators/request-validator"
-import {MedicationRequest, Resource} from "../../src/model/fhir-resources";
+import {MedicationRequest, Resource} from "../../src/model/fhir-resources"
 import * as TestResources from "../resources/test-resources"
-import {clone} from "../resources/test-helpers";
+import {clone} from "../resources/test-helpers"
 
 const resourceNotABundleError = [{
     message: "ResourceType must be 'Bundle' on request",

@@ -1,8 +1,8 @@
-import {validatingHandler} from "../../services/handler";
-import * as translator from "../../services/translation/translation-service";
-import {Bundle} from "../../model/fhir-resources";
-import {isSandbox, isDirect, isPollable, defaultRequestHandler} from "../../services/spine-communication";
-import Hapi from "@hapi/hapi";
+import {validatingHandler} from "../../services/handler"
+import * as translator from "../../services/translation/translation-service"
+import {Bundle} from "../../model/fhir-resources"
+import {isSandbox, isDirect, isPollable, defaultRequestHandler} from "../../services/spine-communication"
+import Hapi from "@hapi/hapi"
 
 export default [
     /*
