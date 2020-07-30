@@ -5,7 +5,7 @@ import * as prescriptions from "../../model/hl7-v3-prescriptions"
 import * as fhir from "../../model/fhir-resources"
 import * as crypto from "crypto-js"
 import {createSendMessagePayload} from "./send-message-payload";
-import {namespacedCopyOf, writeXmlStringCanonicalized} from "./xml";
+import {namespacedCopyOf, writeXmlStringCanonicalized, writeXmlStringPretty} from "./xml";
 import {convertParentPrescription} from "./parent-prescription";
 import {getIdentifierValueForSystem} from "./common";
 
@@ -14,7 +14,7 @@ export function convertFhirMessageToHl7V3ParentPrescriptionMessage(fhirMessage: 
         _declaration: new XmlDeclaration(),
         PORX_IN020101SM31: namespacedCopyOf(createParentPrescriptionSendMessagePayload(fhirMessage))
     }
-    return writeXmlStringCanonicalized(root)
+    return writeXmlStringPretty(root)
 }
 
 export function createParentPrescriptionSendMessagePayload(fhirBundle: fhir.Bundle): core.SendMessagePayload<prescriptions.ParentPrescriptionRoot> {
