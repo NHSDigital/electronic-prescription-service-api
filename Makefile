@@ -105,6 +105,7 @@ test-e2e-integration-setup:
 	rm -rf tests/e2e/pact/resources/example-1-repeat-dispensing
 	mkdir -p tests/e2e/pact/resources/example-1-repeat-dispensing
 	cp models/examples/example-1-repeat-dispensing/*.json tests/e2e/pact/resources/example-1-repeat-dispensing
+	cd tests/e2e/pact && make postman
 
 ## Quality Checks
 
