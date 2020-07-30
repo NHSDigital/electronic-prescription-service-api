@@ -10,7 +10,7 @@ all:
 
 install: install-node install-python install-hooks
 
-build: build-specification build-coordinator build-proxies
+build: build-models build-specification build-coordinator build-proxies
 
 test: validate-models lint check-licenses test-coordinator test-e2e-integration-setup
 
@@ -52,6 +52,9 @@ install-hooks:
 	cp scripts/pre-commit .git/hooks/pre-commit
 
 # Build
+
+build-models:
+	$(foreach file, $(wildcard models/examples/**/SendRequest-FhirMessageSigned.json), cat $(file) | jq 'del(.entry[0])' > ""`echo $(file) | sed "s/SendRequest-FhirMessageSigned/PrepareRequest-FhirMessageUnsigned/"`"";)
 
 build-specification:
 	cd specification \
