@@ -19,7 +19,6 @@ release:
 	cp -r specification/dist/. dist
 	cp -r terraform dist
 	cp -r tests/e2e/pact dist
-	cp tests/e2e/postman/collections/electronic-prescription-service-collection.json dist
 
 clean:
 	rm -rf dist
@@ -105,7 +104,6 @@ test-e2e-integration-setup:
 	rm -rf tests/e2e/pact/resources/example-1-repeat-dispensing
 	mkdir -p tests/e2e/pact/resources/example-1-repeat-dispensing
 	cp models/examples/example-1-repeat-dispensing/*.json tests/e2e/pact/resources/example-1-repeat-dispensing
-	cd tests/e2e/pact && make postman
 
 ## Quality Checks
 
