@@ -41,7 +41,7 @@ jestpact.pactWith(
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
+              "Content-Type": "application/xml"
             },
             status: 200
           }
@@ -111,9 +111,6 @@ jestpact.pactWith(
             body: body
           },
           willRespondWith: {
-            headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
-            },
             status: 202
           }
         };
