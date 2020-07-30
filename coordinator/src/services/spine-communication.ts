@@ -59,14 +59,21 @@ export class RequestHandler {
                     }
                 }
             )
-    
-            const pollingUrl = result.headers['content-location']
-            console.log('Successful post request for prescription message')
-            console.log(`Got polling URL ${pollingUrl}`)
 
-            return {
-                statusCode: result.status,
-                pollingUrl: pollingUrl
+            switch (result.status) {
+                case (202): {
+                    console.log('Successful post request for prescription message')
+                    const pollingUrl = result.headers['content-location']
+                    console.log(`Got polling URL ${pollingUrl}`)
+
+                    return {
+                        statusCode: result.status,
+                        pollingUrl: pollingUrl
+                    }
+                }
+                default: {
+                    throw Error(`Unsupported status, expected 202, got ${result.status}`)
+                }
             }
         } catch (error) {
             console.error(`Failed post request for prescription message. Error: ${error}`)
@@ -83,19 +90,18 @@ export class RequestHandler {
                     headers: { "nhsd-asid": process.env.FROM_ASID }
                 }
             )
-
-            console.log('Successful post request for prescription message')
     
             switch (result.status) {
                 case (200): {
+                    console.log('Successful request for polling message')
                     return {
                         body: result.data,
                         statusCode: result.status
                     }
                 }
                 case (202): {
+                    console.log('Successful request for polling message')
                     const pollingUrl = result.headers['content-location']
-            
                     console.log(`Got polling URL ${pollingUrl}`)
             
                     return {
