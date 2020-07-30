@@ -1,5 +1,5 @@
-import {Bundle, MedicationRequest, Resource} from "../services/fhir-resources"
-import {getExtensionForUrl} from "../services/translation-service"
+import {Bundle, MedicationRequest, Resource} from "../model/fhir-resources"
+import {getExtensionForUrl} from "../services/translation/common";
 
 // Validate Status
 
