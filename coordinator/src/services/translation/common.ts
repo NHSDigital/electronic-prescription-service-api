@@ -1,7 +1,7 @@
 import * as fhir from "../../model/fhir-resources";
-import {Extension} from "../../model/fhir-resources";
 import moment from "moment";
 import * as core from "../../model/hl7-v3-datatypes-core";
+import {SpineResponse} from "../spine-communication";
 
 export function getResourcesOfType<T extends fhir.Resource>(fhirBundle: fhir.Bundle, type: T): Array<T> {
     const typeGuard = (resource: fhir.Resource): resource is T => resource.resourceType === type.resourceType
@@ -34,7 +34,7 @@ export function getCodingForSystem(coding: Array<fhir.Coding>, system: string): 
         .reduce(onlyElement)
 }
 
-export function getExtensionForUrl(extensions: Array<fhir.Extension>, url: string): Extension {
+export function getExtensionForUrl(extensions: Array<fhir.Extension>, url: string): fhir.Extension {
     return extensions
         .filter(extension => extension.url === url)
         .reduce(onlyElement)
@@ -69,4 +69,14 @@ export function convertIsoStringToDate(isoDateStr: string): core.Timestamp {
 //TODO - replace usage of this method with something which returns more user-friendly error messages
 export function onlyElement<T>(previousValue: T, currentValue: T, currentIndex: number, array: T[]): never {
     throw TypeError("Expected 1 element but got " + array.length + ": " + JSON.stringify(array))
+}
+
+export function wrapInOperationOutcome(message: SpineResponse): fhir.OperationOutcome {
+    const severity = message.statusCode <= 299 ? "informational" : "error"
+    const operationOutcomeIssue: fhir.OperationOutcomeIssue = new fhir.OperationOutcomeIssue(severity, message.statusCode.toString())
+    operationOutcomeIssue.diagnostics = message.body
+
+    const response: fhir.OperationOutcome = new fhir.OperationOutcome()
+    response.issue = [operationOutcomeIssue]
+    return response
 }

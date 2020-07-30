@@ -1,12 +1,13 @@
 import {
     getIdentifierValueForSystem,
     getResourceForFullUrl,
-    getResourcesOfType
+    getResourcesOfType, wrapInOperationOutcome
 } from "../../../src/services/translation/common";
 import * as TestResources from "../../resources/test-resources";
 import * as fhir from "../../../src/model/fhir-resources";
 import {MedicationRequest} from "../../../src/model/fhir-resources";
 import {clone} from "../../resources/test-helpers";
+import * as spine from "../../../src/services/spine-communication"
 
 test('getResourcesOfType returns correct resources', () => {
     const result = getResourcesOfType(TestResources.examplePrescription1.fhirMessageUnsigned, new MedicationRequest())
@@ -38,3 +39,18 @@ test('getIdentifierValueForSystem throws error when finding multiple values for 
     identifier[0].system = identifier[1].system
     expect(() => getIdentifierValueForSystem(identifier, identifier[1].system)).toThrow()
 })
+
+describe('wrapInOperationOutcome', () => {
+    test('returns informational OperationOutcome for status code <= 299', () => {
+        const spineResponse: spine.SpineResponse = {statusCode: 299, body: "test"}
+        const result = wrapInOperationOutcome(spineResponse)
+        expect(result.issue[0].severity).toEqual("informational")
+    })
+
+    test('returns error OperationOutcome for status code > 299', () => {
+        const spineResponse: spine.SpineResponse = {statusCode: 300, body: "test"}
+        const result = wrapInOperationOutcome(spineResponse)
+        expect(result.issue[0].severity).toEqual("error")
+    })
+})
+
