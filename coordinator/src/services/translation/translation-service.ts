@@ -2,12 +2,13 @@ import * as XmlJs from 'xml-js'
 import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as core from "../../model/hl7-v3-datatypes-core"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
+import {ParentPrescription} from "../../model/hl7-v3-prescriptions"
 import * as fhir from "../../model/fhir-resources"
 import * as crypto from "crypto-js"
 import {createSendMessagePayload} from "./send-message-payload";
 import {namespacedCopyOf, writeXmlStringCanonicalized} from "./xml";
 import {convertParentPrescription} from "./parent-prescription";
-import {getIdentifierValueForSystem} from "./common";
+import {getIdentifierValueForSystem, toArray} from "./common";
 
 export function convertFhirMessageToHl7V3ParentPrescriptionMessage(fhirMessage: fhir.Bundle): string {
     const root = {
@@ -26,13 +27,21 @@ export function createParentPrescriptionSendMessagePayload(fhirBundle: fhir.Bund
     return createSendMessagePayload(messageId, interactionId, authorAgentPerson, parentPrescriptionRoot)
 }
 
-export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle): string {
-    const parentPrescription = convertParentPrescription(fhirMessage)
+export function convertParentPrescriptionToSignatureFragmentsStr(parentPrescription: ParentPrescription): string {
     const fragmentsToBeHashed = extractSignatureFragments(parentPrescription);
-    const fragmentsToBeHashedStr = writeXmlStringCanonicalized(fragmentsToBeHashed);
+    return writeXmlStringCanonicalized(fragmentsToBeHashed);
+}
+
+export function convertParentPrescriptionToMessageDigestStr(parentPrescription: ParentPrescription): string {
+    const fragmentsToBeHashedStr = convertParentPrescriptionToSignatureFragmentsStr(parentPrescription);
     const digestValue = crypto.SHA1(fragmentsToBeHashedStr).toString(crypto.enc.Base64)
     const signedInfo = createSignedInfo(digestValue)
-    const xmlString = writeXmlStringCanonicalized(signedInfo)
+    return writeXmlStringCanonicalized(signedInfo);
+}
+
+export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle): string {
+    const parentPrescription = convertParentPrescription(fhirMessage)
+    const xmlString = convertParentPrescriptionToMessageDigestStr(parentPrescription);
     const parameters = new fhir.Parameters([
         {
             name: "message-digest",
@@ -59,7 +68,7 @@ export function extractSignatureFragments(parentPrescription: prescriptions.Pare
         recordTarget: namespacedCopyOf(parentPrescription.recordTarget)
     })
 
-    pertinentPrescription.pertinentInformation2.forEach(
+    toArray(pertinentPrescription.pertinentInformation2).forEach(
         pertinentInformation2 => fragments.push({
             pertinentLineItem: namespacedCopyOf(pertinentInformation2.pertinentLineItem)
         })
@@ -75,6 +84,9 @@ export function extractSignatureFragments(parentPrescription: prescriptions.Pare
 function createSignedInfo(digestValue: string): XmlJs.ElementCompact {
     return {
         SignedInfo: {
+            _attributes: {
+                xmlns: "http://www.w3.org/2000/09/xmldsig#"
+            },
             CanonicalizationMethod: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#"),
             SignatureMethod: new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#rsa-sha1"),
             Reference: {

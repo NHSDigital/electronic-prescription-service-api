@@ -225,7 +225,7 @@ export class Prescription implements ElementCompact {
     pertinentInformation5: PrescriptionPertinentInformation5
     //TODO - pertinentInformation6
     pertinentInformation1: PrescriptionPertinentInformation1
-    pertinentInformation2: Array<PrescriptionPertinentInformation2>
+    pertinentInformation2: PrescriptionPertinentInformation2 | Array<PrescriptionPertinentInformation2>
     pertinentInformation8: PrescriptionPertinentInformation8
     //TODO - pertinentInformation3
     pertinentInformation4: PrescriptionPertinentInformation4

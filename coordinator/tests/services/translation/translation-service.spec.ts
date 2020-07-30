@@ -7,6 +7,9 @@ import * as TestResources from "../../resources/test-resources"
 import * as XmlJs from "xml-js"
 import {MomentFormatSpecification, MomentInput} from "moment";
 import {xmlTest} from "../../resources/test-helpers";
+import {ParentPrescriptionRoot} from "../../../src/model/hl7-v3-prescriptions";
+import * as fs from "fs";
+import * as path from "path";
 
 jest.mock('uuid', () => {
     return {
@@ -43,4 +46,24 @@ test(
         XmlJs.xml2js(translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(TestResources.examplePrescription1.fhirMessageSigned), {compact: true}),
         TestResources.examplePrescription1.hl7V3Message
     )
+)
+
+test(
+    "convertParentPrescriptionToSignatureFragmentsStr returns correct fragments in canonical form",
+    () => {
+        const parentPrescriptionStr = fs.readFileSync(path.join(__dirname, "../../resources/signature-generation/OriginalMessage.xml"), "utf-8")
+        const signatureFragmentsStr = fs.readFileSync(path.join(__dirname, "../../resources/signature-generation/SignatureFragments.xml"), "utf-8")
+        const parentPrescriptionRoot = XmlJs.xml2js(parentPrescriptionStr, {compact: true}) as ParentPrescriptionRoot
+        expect(translator.convertParentPrescriptionToSignatureFragmentsStr(parentPrescriptionRoot.ParentPrescription)).toEqual(signatureFragmentsStr)
+    }
+)
+
+test(
+    "convertParentPrescriptionToMessageDigestStr returns correct digest in canonical form",
+    () => {
+        const parentPrescriptionStr = fs.readFileSync(path.join(__dirname, "../../resources/signature-generation/OriginalMessage.xml"), "utf-8")
+        const messageDigestStr = fs.readFileSync(path.join(__dirname, "../../resources/signature-generation/MessageDigest.xml"), "utf-8")
+        const parentPrescriptionRoot = XmlJs.xml2js(parentPrescriptionStr, {compact: true}) as ParentPrescriptionRoot
+        expect(translator.convertParentPrescriptionToMessageDigestStr(parentPrescriptionRoot.ParentPrescription)).toEqual(messageDigestStr)
+    }
 )

@@ -70,3 +70,7 @@ export function convertIsoStringToDate(isoDateStr: string): core.Timestamp {
 export function onlyElement<T>(previousValue: T, currentValue: T, currentIndex: number, array: T[]): never {
     throw TypeError("Expected 1 element but got " + array.length + ": " + JSON.stringify(array))
 }
+
+export function toArray<T>(itemOrArray: T | Array<T>): Array<T> {
+    return Array.isArray(itemOrArray) ? itemOrArray : [itemOrArray];
+}
