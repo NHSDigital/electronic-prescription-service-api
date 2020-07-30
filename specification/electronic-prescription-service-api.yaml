@@ -279,6 +279,8 @@ components:
   schemas:
     Bundle:
       $ref: components/schemas/Bundle.yaml
+    MessageHeader:
+      $ref: components/schemas/MessageHeader.yaml
     MedicationRequest:
       $ref: components/schemas/MedicationRequest.yaml
     Patient:

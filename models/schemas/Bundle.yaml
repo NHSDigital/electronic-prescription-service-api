@@ -47,6 +47,7 @@ properties:
           example: "urn:uuid:CF464979-41A7-4231-B70F-AAE377A973C9"
         resource:
           anyOf:
+            - $ref: "MessageHeader.yaml"
             - $ref: "MedicationRequest.yaml"
             - $ref: "Patient.yaml"
             - $ref: "PractitionerRole.yaml"
