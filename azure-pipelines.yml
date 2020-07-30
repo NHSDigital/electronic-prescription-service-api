@@ -99,8 +99,7 @@ jobs:
           tag: $(RELEASE_VERSION)
           isDraft: true
           addChangeLog: false
-          assets: |
-            tests/e2e/postman/collections/electronic-prescription-service-collection.json
+            
 
       - checkout: utils
         path: s/utils
