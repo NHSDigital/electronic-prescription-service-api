@@ -57,14 +57,19 @@ function convertRequesterToControlActAuthor(
     return createControlActEventAuthor(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier);
 }
 
-function createControlActEventAuthor(sdsUniqueIdentifier: string, sdsJobRoleCode: string, sdsRoleProfileIdentifier: string) {
-    const authorAgentPersonPerson = new core.AgentPersonPersonSds(new SdsUniqueIdentifier(sdsUniqueIdentifier))
-    const sdsRole = new core.SdsRole(new codes.SdsJobRoleIdentifier(sdsJobRoleCode))
+function createControlActEventAuthor(sdsUniqueIdentifierStr: string, sdsJobRoleCodeStr: string, sdsRoleProfileIdentifierStr: string) {
+    const sdsUniqueIdentifier = new SdsUniqueIdentifier(sdsUniqueIdentifierStr)
+    const authorAgentPersonPerson = new core.AgentPersonPersonSds(sdsUniqueIdentifier)
 
+    const sdsJobRoleIdentifier = new codes.SdsJobRoleIdentifier(sdsJobRoleCodeStr)
+    const sdsRole = new core.SdsRole(sdsJobRoleIdentifier)
+    const agentPersonPart = new core.AgentPersonPart(sdsRole)
+
+    const sdsRoleProfileIdentifier = new SdsRoleProfileIdentifier(sdsRoleProfileIdentifierStr)
     const authorAgentPerson = new core.AgentPersonSds()
-    authorAgentPerson.id = new SdsRoleProfileIdentifier(sdsRoleProfileIdentifier)
+    authorAgentPerson.id = sdsRoleProfileIdentifier
     authorAgentPerson.agentPersonSDS = authorAgentPersonPerson
-    authorAgentPerson.part = new core.AgentPersonPart(sdsRole)
+    authorAgentPerson.part = agentPersonPart
 
     return new core.SendMessagePayloadAuthorPersonSds(authorAgentPerson)
 }
