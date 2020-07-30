@@ -8,6 +8,67 @@
   "type": "collection",
   "entry": [
     {
+      "resource": {
+        "resourceType": "MessageHeader",
+        "id": "1E21D133-B39B-4C81-B10F-FCE9B4570375",
+        "eventCoding": {
+          "system": "https://fhir.nhs.uk/R4/CodeSystem/message-event",
+          "code": "prescription-order",
+          "display": "Prescription Order"
+        },
+        "sender": {
+          "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA",
+          "display": "PEPIN MCQUADE"
+        },
+        "source": {
+          "name": "PAS",
+          "endpoint": "https://fhir.mynhstrust.nhs.uk/R4"
+        },
+        "focus": [
+          {
+            "reference": "urn:uuid:28828C55-8FA7-42D7-916F-FCF076E0C10E"
+          },
+          {
+            "reference": "urn:uuid:A7B86F8D-1D81-FC28-E050-D20AE3A215F0"
+          },
+          {
+            "reference": "urn:uuid:A7B86F8D-1D86-FC28-E050-D20AE3A215F0"
+          },
+          {
+            "reference": "urn:uuid:A7B86F8D-1D8B-FC28-E050-D20AE3A215F0"
+          },
+          {
+            "reference": "urn:uuid:A7B86F8D-1D90-FC28-E050-D20AE3A215F0"
+          },
+          {
+            "reference": "urn:uuid:B96806F2-0E43-4046-30F3-BD444965AFB3"
+          },
+          {
+            "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
+          },
+          {
+            "reference": "urn:uuid:9B4C1A77-CCCC-418A-B835-4112FBCB14F3"
+          },
+          {
+            "reference": "urn:uuid:D4B569E7-CCF6-4BB2-029B-34B6F3E82ACF"
+          },
+          {
+            "reference": "urn:uuid:4D2DF25E-A6D3-4200-A9FA-6611BE03E2A6"
+          },
+          {
+            "reference": "urn:uuid:B65DD3A2-9551-45A3-3E9D-342F8DE14D8F"
+          },
+          {
+            "reference": "urn:uuid:CC850777-B73F-43CD-23F8-A41A7F1E8459"
+          },
+          {
+            "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:1E21D133-B39B-4C81-B10F-FCE9B4570375"
+    },
+    {
       "fullUrl": "urn:uuid:28828C55-8FA7-42D7-916F-FCF076E0C10E",
       "resource": {
         "resourceType": "Provenance",
