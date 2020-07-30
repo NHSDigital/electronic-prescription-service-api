@@ -122,7 +122,7 @@ jestpact.pactWith(
           .post(apiPath)
           .set('Content-Type', 'application/json')
           .set('NHSD-Session-URID', '1234')
-          .send(sendRepeatDispensingPrescriptionSendRequest)
+          .send(body)
           .expect(202);
       });
     });
