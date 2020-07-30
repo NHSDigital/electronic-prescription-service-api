@@ -1,5 +1,14 @@
+import {Boom} from '@hapi/boom'
 import Hapi from '@hapi/hapi'
 import routes from './routes'
+
+const preResponse = function (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) {
+    const response = request.response
+    if (response instanceof Boom) {
+        console.log(response)
+    }
+    return responseToolkit.continue
+}
 
 const init = async () => {
     const server = Hapi.server({
@@ -9,6 +18,7 @@ const init = async () => {
             cors: true // Won't run as Apigee hosted target without this
         }
     })
+    server.ext('onPreResponse', preResponse)
 
     server.route(routes)
 
