@@ -74,10 +74,10 @@ export function onlyElement<T>(previousValue: T, currentValue: T, currentIndex: 
 export function wrapInOperationOutcome(message: SpineResponse): fhir.OperationOutcome {
     const severity = message.statusCode <= 299 ? "information" : "error"
     const code = message.statusCode <= 299 ? "informational" : "invalid"
-    const operationOutcomeIssue: fhir.OperationOutcomeIssue = new fhir.OperationOutcomeIssue(severity, code)
+    const operationOutcomeIssue = new fhir.OperationOutcomeIssue(severity, code)
     operationOutcomeIssue.diagnostics = message.body
 
-    const response: fhir.OperationOutcome = new fhir.OperationOutcome()
+    const response = new fhir.OperationOutcome()
     response.issue = [operationOutcomeIssue]
     return response
 }
