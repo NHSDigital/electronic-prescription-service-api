@@ -43,7 +43,7 @@ function createPostmanItem(interaction) {
     }
 
     for (const [key, value] of Object.entries(interaction.request.headers)) {
-        item.request.header.push({key, value});
+        item.request.header.push({key, value})
     }
 
     return item

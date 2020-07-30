@@ -17,14 +17,14 @@ jestpact.pactWith(
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
-      const url = `${provider.mockService.baseUrl}`;
-      return supertest(url);
-    };
+      const url = `${provider.mockService.baseUrl}`
+      return supertest(url)
+    }
 
     describe("eps sandbox e2e tests", () => {
 
       test("should be able to convert a FHIR repeat-dispensing parent-prescription-1 into a HL7V3 Spine interaction", async () => {
-        const apiPath = "/Convert";
+        const apiPath = "/Convert"
         const interaction: InteractionObject = {
           state: null,
           uponReceiving: "a request to convert a FHIR repeat-dispensing parent-prescription-1",
@@ -43,18 +43,18 @@ jestpact.pactWith(
             },
             status: 200
           }
-        };
-        await provider.addInteraction(interaction);
+        }
+        await provider.addInteraction(interaction)
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('NHSD-Session-URID', '1234')
           .send(prepareRepeatDispensingPrescriptionRequest)
-          .expect(200);
-      });
+          .expect(200)
+      })
 
       test("should be able to prepare a repeat-dispensing parent-prescription-1", async () => {
-        const apiPath = "/Prepare";
+        const apiPath = "/Prepare"
         const interaction: InteractionObject = {
           state: null,
           uponReceiving: "a request to prepare a repeat-dispensing parent-prescription-1",
@@ -74,18 +74,18 @@ jestpact.pactWith(
             body: JSON.parse(prepareRepeatDispensingPrescriptionResponse),
             status: 200
           }
-        };
-        await provider.addInteraction(interaction);
+        }
+        await provider.addInteraction(interaction)
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('NHSD-Session-URID', '1234')
           .send(prepareRepeatDispensingPrescriptionRequest)
-          .expect(200);
-      });
+          .expect(200)
+      })
 
       test("should be able to send a repeat-dispensing parent-prescription-1", async () => {
-        const apiPath = "/Send";
+        const apiPath = "/Send"
         const interaction: InteractionObject = {
           state: null,
           uponReceiving: "a request to send a repeat-dispensing parent-prescription-1 to Spine",
@@ -104,16 +104,16 @@ jestpact.pactWith(
             },
             status: 200
           }
-        };
-        await provider.addInteraction(interaction);
+        }
+        await provider.addInteraction(interaction)
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('NHSD-Session-URID', '1234')
           .send(sendRepeatDispensingPrescriptionSendRequest)
-          .expect(200);
-      });
+          .expect(200)
+      })
 
-    });
+    })
   }
-);
+)
