@@ -12,12 +12,13 @@ install: install-node install-python install-hooks
 
 build: build-models build-specification build-coordinator build-proxies
 
-test: validate-models lint check-licenses test-coordinator test-e2e-integration-setup
+test: validate-models lint check-licenses test-coordinator
 
 release:
 	mkdir -p dist
 	cp -r specification/dist/. dist
 	cp -r terraform dist
+	cp tests/e2e/pact dist
 	cp tests/e2e/postman/collections/electronic-prescription-service-collection.json dist
 
 clean:
@@ -101,13 +102,9 @@ test-integration-coordinator:
 # E2E Integration Test Setup
 
 test-e2e-integration-setup:
-	cd tests/e2e/pact \
-	&& make create \
-	&& make postman
-
-test-e2e-integration-publish:
-	cd tests/e2e/pact \
-	&& make publish
+	rm -rf tests/e2e/pact/resources/example-1-repeat-dispensing
+	mkdir -p tests/e2e/pact/resources/example-1-repeat-dispensing
+	cp models/examples/example-1-repeat-dispensing/*.json tests/e2e/pact/resources/example-1-repeat-dispensing
 
 ## Quality Checks
 
