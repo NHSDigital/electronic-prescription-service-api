@@ -112,7 +112,7 @@ jestpact.pactWith(
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "multipart/mixed; boundary=----=_MIME-Boundary"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             status: 202
           }

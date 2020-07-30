@@ -113,7 +113,6 @@ jestpact.pactWith(
           .send(sendRepeatDispensingPrescriptionSendRequest)
           .expect(200);
       });
-
     });
   }
 );
