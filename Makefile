@@ -18,7 +18,7 @@ release:
 	mkdir -p dist
 	cp -r specification/dist/. dist
 	cp -r terraform dist
-	cp tests/e2e/pact dist
+	cp -r tests/e2e/pact dist
 	cp tests/e2e/postman/collections/electronic-prescription-service-collection.json dist
 
 clean:
