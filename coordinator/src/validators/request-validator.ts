@@ -2,7 +2,6 @@ import {Bundle, MedicationRequest, Resource} from "../model/fhir-resources"
 import {getExtensionForUrl} from "../services/translation/common";
 
 // Validate Status
-
 export function getStatusCode(validation: Array<ValidationError>): number {
     return validation.length > 0 ? 400 : 200
 }
@@ -59,19 +58,22 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
     ]
 }
 
-type Validator<T> = (input: T) => ValidationError
+function notEmpty<T>(value: T | null | undefined): value is T {
+    return value !== null && value !== undefined;
+}
+type Validator<T> = (input: T) => ValidationError | null
 
 // Validate
-function validate<T>(input: T, ...validators: Array<Validator<T>>) {
+function validate<T>(input: T, ...validators: Array<Validator<T>>): Array<ValidationError> {
     return validators.map(v => v(input))
-        .filter(x => x)
+        .filter(notEmpty)
 }
 
 function verifyValueIdenticalForAllMedicationRequests<U>(
     medicationRequests: Array<MedicationRequest>,
     fieldName: string,
     fieldAccessor: (resource: MedicationRequest) => U
-): ValidationError {
+): ValidationError | null {
     const fieldValues = medicationRequests.map(fieldAccessor)
     const serializedFieldValues = fieldValues.map(value => JSON.stringify(value))
     const uniqueFieldValues = new Set(serializedFieldValues)
@@ -83,7 +85,7 @@ function verifyValueIdenticalForAllMedicationRequests<U>(
     }
 }
 
-function verifyHasId(bundle: Bundle): ValidationError {
+function verifyHasId(bundle: Bundle): ValidationError | null {
     return bundle.id !== undefined ? null : {
         message: "ResourceType Bundle must contain 'id' field",
         operationOutcomeCode: "value",
@@ -108,10 +110,11 @@ function verifyBundleContainsEntries(bundle: Bundle) {
 export function getMatchingEntries(bundle: Bundle, resourceType: string): Array<Resource> {
     return bundle.entry
         .map(entry => entry.resource)
+        .filter(notEmpty)
         .filter(resource => resource.resourceType === resourceType)
 }
 
-function verifyBundleContainsAtLeast(bundle: Bundle, number: number, resourceType: string): ValidationError {
+function verifyBundleContainsAtLeast(bundle: Bundle, number: number, resourceType: string): ValidationError | null {
     const matchingEntries = getMatchingEntries(bundle, resourceType)
     if (matchingEntries.length < number) {
         return {
@@ -124,7 +127,7 @@ function verifyBundleContainsAtLeast(bundle: Bundle, number: number, resourceTyp
     return null
 }
 
-function verifyBundleContainsExactly(bundle: Bundle, number: number, resourceType: string): ValidationError {
+function verifyBundleContainsExactly(bundle: Bundle, number: number, resourceType: string): ValidationError | null {
     const matchingEntries = getMatchingEntries(bundle, resourceType)
     if (matchingEntries.length !== number) {
         return {

@@ -1,5 +1,5 @@
 type: object
-description: A specific set of Roles/Locations/specialties/services that a practitioner may perform at an organization for a period of time.
+description: "A specific set of Roles/Locations/specialties/services that a practitioner may perform at an organization for a period of time."
 required:
   - resourceType
   - id
@@ -8,14 +8,75 @@ required:
 properties:
   resourceType:
     type: string
-    description: FHIR Resource type
+    description: "FHIR Resource type"
     enum: 
       - "PractitionerRole"
     example: "PractitionerRole"
   id:
     type: string
-    description: Logical id of this artifact.
+    description: "Logical id of this artifact"
     example: "C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C"
+  identifier:
+    type: array
+    description: "Business Identifiers that are specific to a role/location"
+    items: 
+      anyOf:
+        - type: object
+          description: "An identifier intended for computation"
+          properties: 
+            system:
+              type: string
+              description: "The namespace for the identifier value"
+              enum: ["https://fhir.nhs.uk/Id/sds-role-profile-id"]
+              example: "https://fhir.nhs.uk/Id/sds-role-profile-id"
+            value:
+              type: string
+              description: "The value that is unique"
+              example: "100109391987"
+        - type: object
+          description: "Prescribing code for doctors who don't have a DIN code, or whose DIN code is already in use at another practice"
+          properties:
+            system:
+              type: string
+              description: "The namespace for the identifier value"
+              enum: ["https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code"]
+              example: "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code"
+            value:
+              type: string
+              description: "The value that is unique"
+              example: "G6123456"
+  code: 
+    type: array
+    description: "Roles which this practitioner may perform"
+    items: 
+      type: object
+      description: "Concept - reference to a terminology or just text"
+      properties: 
+        coding: 
+          type: array
+          items: 
+            type: object
+            description: "Code defined by a terminology system"
+            properties: 
+              system:
+                type: string
+                description: "	Identity of the terminology system"
+                enum: ["https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName"]
+                example: "https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName"
+              code: 
+                type: string
+                description: "Symbol in syntax defined by the system"
+                example: "R0260"
+              display:
+                type: string
+                description: "Representation defined by the system"
+                example: "General Medical Practitioner"
+  telecom:
+    type: array
+    description: "A contact detail for the practitioner, e.g. a telephone number or an email address."
+    items:
+      $ref: "ContactPoint.yaml"
+
   practitioner:
     $ref: "Reference.yaml"
   organization:
