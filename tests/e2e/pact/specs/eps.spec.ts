@@ -4,7 +4,7 @@ import supertest from "supertest"
 import * as fs from 'fs'
 import * as path from "path"
 import * as uuid from "uuid"
-import {Bundle} from "../../../../coordinator/src/model/fhir-resources"
+import {Bundle} from "../resources/fhir-resources"
 
 const prepareRepeatDispensingPrescriptionRequest = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareRequest-FhirMessageUnsigned.json"), "utf8")
 const prepareRepeatDispensingPrescriptionResponse = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareResponse-FhirMessageDigest.json"), "utf8")
