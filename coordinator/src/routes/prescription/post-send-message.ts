@@ -1,9 +1,8 @@
-import {validatingHandler} from "../../services/handler";
 import * as translator from "../../services/translation/translation-service";
 import {Bundle} from "../../model/fhir-resources";
-import {sendData} from "../../services/spine-communication";
+import {defaultRequestHandler} from "../../services/spine-communication";
 import Hapi from "@hapi/hapi";
-import {wrapInOperationOutcome} from "../../services/translation/common"
+import {handlePollableResponse, validatingHandler} from "../util";
 
 export default [
     /*
@@ -16,8 +15,8 @@ export default [
             false,
             async (requestPayload: Bundle, responseToolkit: Hapi.ResponseToolkit) => {
                 const translatedMessage = translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(requestPayload)
-                const spineResponse = await sendData(translatedMessage)
-                return responseToolkit.response(wrapInOperationOutcome(spineResponse)).code(spineResponse.statusCode)
+                const spineResponse = await defaultRequestHandler.sendData(translatedMessage)
+                return handlePollableResponse(spineResponse, responseToolkit)
             }
         )
     }
