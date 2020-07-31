@@ -17,8 +17,9 @@ properties:
   resourceType:
     type: string
     description: FHIR Resource type.
-    default: "MedicationRequest"
-    readOnly: true
+    enum:
+      - "MedicationRequest"
+    example: "MedicationRequest"
   id:
     type: string
     description: Logical id of this artifact.
