@@ -125,6 +125,15 @@
           ]
         },
         "dispenseRequest": {
+          "extension":  [
+            {
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
+              "valueCoding": {
+                "system": "https://fhir.nhs.uk/R4/CodeSystem/dispensing-site-preference",
+                "code": "P1"
+              }
+            }
+          ],
           "quantity": {
             "value": 100,
             "unit": "ml",
@@ -222,6 +231,15 @@
           ]
         },
         "dispenseRequest": {
+          "extension":  [
+            {
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
+              "valueCoding": {
+                "system": "https://fhir.nhs.uk/R4/CodeSystem/dispensing-site-preference",
+                "code": "P1"
+              }
+            }
+          ],
           "quantity": {
             "value": 100,
             "unit": "gram",
@@ -319,6 +337,15 @@
           ]
         },
         "dispenseRequest": {
+          "extension":  [
+            {
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
+              "valueCoding": {
+                "system": "https://fhir.nhs.uk/R4/CodeSystem/dispensing-site-preference",
+                "code": "P1"
+              }
+            }
+          ],
           "quantity": {
             "value": 200,
             "unit": "dose",
@@ -416,6 +443,15 @@
           ]
         },
         "dispenseRequest": {
+          "extension":  [
+            {
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
+              "valueCoding": {
+                "system": "https://fhir.nhs.uk/R4/CodeSystem/dispensing-site-preference",
+                "code": "P1"
+              }
+            }
+          ],
           "quantity": {
             "value": 10,
             "unit": "ml",

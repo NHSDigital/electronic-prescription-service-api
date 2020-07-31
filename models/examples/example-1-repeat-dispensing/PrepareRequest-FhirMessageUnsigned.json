@@ -116,6 +116,15 @@
           ]
         },
         "dispenseRequest": {
+          "extension":  [
+            {
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
+              "valueCoding": {
+                "system": "https://fhir.nhs.uk/R4/CodeSystem/dispensing-site-preference",
+                "code": "0004"
+              }
+            }
+          ],
           "quantity": {
             "value": 1,
             "unit": "device",
@@ -210,6 +219,15 @@
           ]
         },
         "dispenseRequest": {
+          "extension":  [
+            {
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
+              "valueCoding": {
+                "system": "https://fhir.nhs.uk/R4/CodeSystem/dispensing-site-preference",
+                "code": "0004"
+              }
+            }
+          ],
           "quantity": {
             "value": 63,
             "unit": "tablet",
@@ -304,6 +322,15 @@
           ]
         },
         "dispenseRequest": {
+          "extension":  [
+            {
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
+              "valueCoding": {
+                "system": "https://fhir.nhs.uk/R4/CodeSystem/dispensing-site-preference",
+                "code": "0004"
+              }
+            }
+          ],
           "quantity": {
             "value": 10,
             "unit": "catheter",
@@ -398,6 +425,15 @@
           ]
         },
         "dispenseRequest": {
+          "extension":  [
+            {
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
+              "valueCoding": {
+                "system": "https://fhir.nhs.uk/R4/CodeSystem/dispensing-site-preference",
+                "code": "0004"
+              }
+            }
+          ],
           "quantity": {
             "value": 54,
             "unit": "sachet",

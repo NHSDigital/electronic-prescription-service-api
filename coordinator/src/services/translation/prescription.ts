@@ -1,7 +1,7 @@
 import * as core from "../../model/hl7-v3-datatypes-core";
 import * as prescriptions from "../../model/hl7-v3-prescriptions";
 import * as fhir from "../../model/fhir-resources";
-import {IdentifierExtension, MedicationRequest} from "../../model/fhir-resources";
+import {CodingExtension, IdentifierExtension, MedicationRequest} from "../../model/fhir-resources";
 import {getExtensionForUrl, getResourcesOfType, onlyElement, resolveReference} from "./common";
 import {convertAuthor, convertResponsibleParty} from "./practitioner";
 import * as codes from "../../model/hl7-v3-datatypes-codes";
@@ -24,7 +24,7 @@ export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescripti
     hl7V3Prescription.responsibleParty = convertResponsibleParty(fhirBundle, fhirFirstMedicationRequest)
 
     hl7V3Prescription.pertinentInformation5 = convertPrescriptionPertinentInformation5(fhirFirstMedicationRequest)
-    hl7V3Prescription.pertinentInformation1 = convertPrescriptionPertinentInformation1()
+    hl7V3Prescription.pertinentInformation1 = convertPrescriptionPertinentInformation1(fhirFirstMedicationRequest)
     hl7V3Prescription.pertinentInformation2 = convertPrescriptionPertinentInformation2(fhirMedicationRequests)
     hl7V3Prescription.pertinentInformation8 = convertPrescriptionPertinentInformation8()
     hl7V3Prescription.pertinentInformation4 = convertPrescriptionPertinentInformation4(fhirFirstMedicationRequest)
@@ -50,11 +50,37 @@ function convertPrescriptionPertinentInformation5(fhirFirstMedicationRequest: fh
     return new prescriptions.PrescriptionPertinentInformation5(prescriptionTreatmentType);
 }
 
-function convertPrescriptionPertinentInformation1() {
-    //TODO - implement
-    const dispensingSitePreferenceValue = new codes.DispensingSitePreferenceCode("0004");
-    const dispensingSitePreference = new prescriptions.DispensingSitePreference(dispensingSitePreferenceValue)
+export function convertCourseOfTherapyType(fhirFirstMedicationRequest: fhir.MedicationRequest): prescriptions.PrescriptionTreatmentType {
+  const courseOfTherapyTypeCode = fhirFirstMedicationRequest
+    .courseOfTherapyType.coding.map(coding => coding.code)
+    .reduce(onlyElement)
+
+  const prescriptionTreatmentTypeCode = convertCourseOfTherapyTypeCode(courseOfTherapyTypeCode)
+  return new prescriptions.PrescriptionTreatmentType(prescriptionTreatmentTypeCode)
+}
+
+function convertCourseOfTherapyTypeCode(courseOfTherapyTypeValue: string) {
+  switch (courseOfTherapyTypeValue) {
+    case "acute":
+      return codes.PrescriptionTreatmentTypeCode.ACUTE
+    case "repeat":
+      return codes.PrescriptionTreatmentTypeCode.REPEAT_PRESCRIBING
+    case "repeat-dispensing":
+      return codes.PrescriptionTreatmentTypeCode.REPEAT_DISPENSING
+    default:
+      throw TypeError("Unhandled courseOfTherapyType " + courseOfTherapyTypeValue)
+  }
+}
+
+function convertPrescriptionPertinentInformation1(fhirFirstMedicationRequest: fhir.MedicationRequest) {
+    const dispensingSitePreference = convertDispensingSitePreference(fhirFirstMedicationRequest)
     return new prescriptions.PrescriptionPertinentInformation1(dispensingSitePreference);
+}
+
+function convertDispensingSitePreference(fhirFirstMedicationRequest: fhir.MedicationRequest): prescriptions.DispensingSitePreference {
+  const performerSiteType = getExtensionForUrl(fhirFirstMedicationRequest.dispenseRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType") as CodingExtension
+  const dispensingSitePreferenceValue = new codes.DispensingSitePreferenceCode(performerSiteType.valueCoding.code);
+  return new prescriptions.DispensingSitePreference(dispensingSitePreferenceValue)
 }
 
 function convertPrescriptionPertinentInformation2(fhirMedicationRequests: Array<fhir.MedicationRequest>) {
@@ -82,26 +108,4 @@ function convertPerformer(fhirBundle: fhir.Bundle, performerReference: fhir.Refe
     const hl7V3Organization = convertOrganization(fhirBundle, fhirOrganization)
     const hl7V3AgentOrganization = new peoplePlaces.AgentOrganization(hl7V3Organization)
     return new prescriptions.Performer(hl7V3AgentOrganization)
-}
-
-export function convertCourseOfTherapyType(fhirFirstMedicationRequest: fhir.MedicationRequest): prescriptions.PrescriptionTreatmentType {
-    const courseOfTherapyTypeCode = fhirFirstMedicationRequest
-        .courseOfTherapyType.coding.map(coding => coding.code)
-        .reduce(onlyElement)
-
-    const prescriptionTreatmentTypeCode = convertCourseOfTherapyTypeCode(courseOfTherapyTypeCode)
-    return new prescriptions.PrescriptionTreatmentType(prescriptionTreatmentTypeCode)
-}
-
-function convertCourseOfTherapyTypeCode(courseOfTherapyTypeValue: string) {
-    switch (courseOfTherapyTypeValue) {
-        case "acute":
-            return codes.PrescriptionTreatmentTypeCode.ACUTE
-        case "repeat":
-            return codes.PrescriptionTreatmentTypeCode.REPEAT_PRESCRIBING
-        case "repeat-dispensing":
-            return codes.PrescriptionTreatmentTypeCode.REPEAT_DISPENSING
-        default:
-            throw TypeError("Unhandled courseOfTherapyType " + courseOfTherapyTypeValue)
-    }
 }
