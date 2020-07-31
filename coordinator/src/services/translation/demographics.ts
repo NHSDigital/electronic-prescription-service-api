@@ -1,6 +1,6 @@
-import * as fhir from "../../model/fhir-resources";
-import * as core from "../../model/hl7-v3-datatypes-core";
-import * as codes from "../../model/hl7-v3-datatypes-codes";
+import * as fhir from "../../model/fhir-resources"
+import * as core from "../../model/hl7-v3-datatypes-core"
+import * as codes from "../../model/hl7-v3-datatypes-codes"
 
 export function convertName(fhirHumanName: fhir.HumanName): core.Name {
     const nameUse = fhirHumanName.use !== undefined ? convertNameUse(fhirHumanName.use) : undefined

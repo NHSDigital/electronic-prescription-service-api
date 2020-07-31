@@ -1,8 +1,8 @@
-import {clone} from "../../resources/test-helpers";
-import * as TestResources from "../../resources/test-resources";
-import {getResourcesOfType} from "../../../src/services/translation/common";
-import {MedicationRequest} from "../../../src/model/fhir-resources";
-import {convertCourseOfTherapyType} from "../../../src/services/translation/prescription";
+import {clone} from "../../resources/test-helpers"
+import * as TestResources from "../../resources/test-resources"
+import {getResourcesOfType} from "../../../src/services/translation/common"
+import {MedicationRequest} from "../../../src/model/fhir-resources"
+import {convertCourseOfTherapyType} from "../../../src/services/translation/prescription"
 
 test('convertCourseOfTherapyType returns "0001" prescription treatment type code when first therapy type code is "acute"', () => {
     const bundle2 = clone(TestResources.examplePrescription1.fhirMessageUnsigned)

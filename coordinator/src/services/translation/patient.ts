@@ -1,7 +1,7 @@
-import * as fhir from "../../model/fhir-resources";
-import * as peoplePlaces from "../../model/hl7-v3-people-places";
-import * as codes from "../../model/hl7-v3-datatypes-codes";
-import {convertAddress, convertGender, convertName} from "./demographics";
+import * as fhir from "../../model/fhir-resources"
+import * as peoplePlaces from "../../model/hl7-v3-people-places"
+import * as codes from "../../model/hl7-v3-datatypes-codes"
+import {convertAddress, convertGender, convertName} from "./demographics"
 import {convertIsoStringToDate, getIdentifierValueForSystem} from "./common"
 
 function convertPatientToProviderPatient(
@@ -30,7 +30,7 @@ function convertPatientToPatientPerson(
     hl7V3PatientPerson.administrativeGenderCode = convertGenderFn(patient.gender)
     hl7V3PatientPerson.birthTime = convertIsoStringToDate(patient.birthDate)
     hl7V3PatientPerson.playedProviderPatient = convertPatientToProviderPatientFn(bundle, patient)
-    return hl7V3PatientPerson;
+    return hl7V3PatientPerson
 }
 
 export function convertPatient(

@@ -1,5 +1,5 @@
-import * as XmlJs from "xml-js";
-import {sortAttributes} from "../../src/services/translation/xml";
+import * as XmlJs from "xml-js"
+import {sortAttributes} from "../../src/services/translation/xml"
 
 export function clone<T>(input: T): T {
     return JSON.parse(JSON.stringify(input))

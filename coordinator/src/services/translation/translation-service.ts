@@ -4,10 +4,10 @@ import * as core from "../../model/hl7-v3-datatypes-core"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
 import * as fhir from "../../model/fhir-resources"
 import * as crypto from "crypto-js"
-import {createSendMessagePayload} from "./send-message-payload";
-import {namespacedCopyOf, writeXmlStringCanonicalized, writeXmlStringPretty} from "./xml";
-import {convertParentPrescription} from "./parent-prescription";
-import {getIdentifierValueForSystem} from "./common";
+import {createSendMessagePayload} from "./send-message-payload"
+import {namespacedCopyOf, writeXmlStringCanonicalized, writeXmlStringPretty} from "./xml"
+import {convertParentPrescription} from "./parent-prescription"
+import {getIdentifierValueForSystem} from "./common"
 
 export function convertFhirMessageToHl7V3ParentPrescriptionMessage(fhirMessage: fhir.Bundle): string {
     const root = {
@@ -27,8 +27,8 @@ export function createParentPrescriptionSendMessagePayload(fhirBundle: fhir.Bund
 
 export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle): string {
     const parentPrescription = convertParentPrescription(fhirMessage)
-    const fragmentsToBeHashed = extractSignatureFragments(parentPrescription);
-    const fragmentsToBeHashedStr = writeXmlStringCanonicalized(fragmentsToBeHashed);
+    const fragmentsToBeHashed = extractSignatureFragments(parentPrescription)
+    const fragmentsToBeHashedStr = writeXmlStringCanonicalized(fragmentsToBeHashed)
     const digestValue = crypto.SHA1(fragmentsToBeHashedStr).toString(crypto.enc.Base64)
     const signedInfo = createSignedInfo(digestValue)
     const xmlString = writeXmlStringCanonicalized(signedInfo)

@@ -1,10 +1,10 @@
-import * as fhir from "../../model/fhir-resources";
-import {convertPatient} from "./patient";
-import {convertBundleToPrescription} from "./prescription";
-import * as prescriptions from "../../model/hl7-v3-prescriptions";
-import {convertIsoStringToDateTime, getResourcesOfType} from "./common";
-import * as codes from "../../model/hl7-v3-datatypes-codes";
-import {MedicationRequest} from "../../model/fhir-resources";
+import * as fhir from "../../model/fhir-resources"
+import {convertPatient} from "./patient"
+import {convertBundleToPrescription} from "./prescription"
+import * as prescriptions from "../../model/hl7-v3-prescriptions"
+import {convertIsoStringToDateTime, getResourcesOfType} from "./common"
+import * as codes from "../../model/hl7-v3-datatypes-codes"
+import {MedicationRequest} from "../../model/fhir-resources"
 
 export function convertParentPrescription(
     fhirBundle: fhir.Bundle,
@@ -35,7 +35,7 @@ export function convertParentPrescription(
 }
 
 function convertCareRecordElementCategories(lineItems: Array<prescriptions.LineItem>) {
-    const careRecordElementCategory = new prescriptions.CareRecordElementCategory();
+    const careRecordElementCategory = new prescriptions.CareRecordElementCategory()
     careRecordElementCategory.component = lineItems
         .map(act => new prescriptions.ActRef(act))
         .map(actRef => new prescriptions.CareRecordElementCategoryComponent(actRef))

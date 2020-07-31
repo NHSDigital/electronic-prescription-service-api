@@ -5,8 +5,10 @@
 **/public/
 **/coverage/
 **/node_modules/
+models/examples/**/PrepareRequest-FhirMessageUnsigned.json
 tests/e2e/pact/pact/
 tests/e2e/postman/electronic-prescription-coordinator-postman-tests.json
+tests/e2e/postman/collections/electronic-prescription-service-collection.json
 .#*
 __pycache__/
 .envrc

@@ -1,9 +1,9 @@
-import {isPollable, SpineDirectResponse, SpinePollableResponse} from "../services/spine-communication";
+import {isPollable, SpineDirectResponse, SpinePollableResponse} from "../services/spine-communication"
 import Hapi from "@hapi/hapi"
-import {Bundle, OperationOutcome} from "../model/fhir-resources";
-import * as requestValidator from "../validators/request-validator";
-import {ValidationError} from "../validators/request-validator";
-import {wrapInOperationOutcome} from "../services/translation/common";
+import {Bundle, OperationOutcome} from "../model/fhir-resources"
+import * as requestValidator from "../validators/request-validator"
+import {ValidationError} from "../validators/request-validator"
+import {wrapInOperationOutcome} from "../services/translation/common"
 
 export function handlePollableResponse(spineResponse: SpineDirectResponse | SpinePollableResponse, responseToolkit: Hapi.ResponseToolkit): Hapi.ResponseObject {
     if (isPollable(spineResponse)) {
@@ -28,7 +28,7 @@ export function validatingHandler(requireSignature: boolean, handler: Handler<Bu
       const statusCode = requestValidator.getStatusCode(validation)
       return responseToolkit.response(response).code(statusCode)
     }
-    return handler(requestPayload as Bundle, responseToolkit);
+    return handler(requestPayload as Bundle, responseToolkit)
   }
 }
 

@@ -1,9 +1,9 @@
-import * as fhir from "../../model/fhir-resources";
-import * as peoplePlaces from "../../model/hl7-v3-people-places";
-import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem, onlyElement, resolveReference} from "./common";
-import * as codes from "../../model/hl7-v3-datatypes-codes";
-import * as core from "../../model/hl7-v3-datatypes-core";
-import {convertAddress, convertTelecom} from "./demographics";
+import * as fhir from "../../model/fhir-resources"
+import * as peoplePlaces from "../../model/hl7-v3-people-places"
+import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem, onlyElement, resolveReference} from "./common"
+import * as codes from "../../model/hl7-v3-datatypes-codes"
+import * as core from "../../model/hl7-v3-datatypes-core"
+import {convertAddress, convertTelecom} from "./demographics"
 
 export function convertOrganization(
     fhirBundle: fhir.Bundle,
