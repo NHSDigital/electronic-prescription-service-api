@@ -5,8 +5,57 @@
     "system": "https://tools.ietf.org/html/rfc4122",
     "value": "A7B86F8D-1DBD-FC28-E050-D20AE3A215F0"
   },
-  "type": "collection",
+  "type": "message",
   "entry": [
+    {
+      "resource": {
+        "resourceType": "MessageHeader",
+        "id": "859F8240-D02F-4EA3-8F7F-0AED7B4D7D4E",
+        "eventCoding": {
+          "system": "https://fhir.nhs.uk/R4/CodeSystem/message-event",
+          "code": "prescription-order",
+          "display": "Prescription Order"
+        },
+        "sender": {
+          "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA",
+          "display": "ANDREW CHANDLER"
+        },
+        "source": {
+          "name": "PAS",
+          "endpoint": "https://fhir.mynhstrust.nhs.uk/R4"
+        },
+        "focus": [
+          {
+            "reference": "urn:uuid:A7B86F8D-1D81-FC28-E050-D20AE3A215F0"
+          },
+          {
+            "reference": "urn:uuid:A7B86F8D-1D86-FC28-E050-D20AE3A215F0"
+          },
+          {
+            "reference": "urn:uuid:A7B86F8D-1D8B-FC28-E050-D20AE3A215F0"
+          },
+          {
+            "reference": "urn:uuid:A7B86F8D-1D90-FC28-E050-D20AE3A215F0"
+          },
+          {
+            "reference": "urn:uuid:B96806F2-0E43-4046-30F3-BD444965AFB3"
+          },
+          {
+            "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
+          },
+          {
+            "reference": "urn:uuid:D4B569E7-CCF6-4BB2-029B-34B6F3E82ACF"
+          },
+          {
+            "reference": "urn:uuid:B65DD3A2-9551-45A3-3E9D-342F8DE14D8F"
+          },
+          {
+            "reference": "urn:uuid:CC850777-B73F-43CD-23F8-A41A7F1E8459"
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:859F8240-D02F-4EA3-8F7F-0AED7B4D7D4E"
+    },
     {
       "resource": {
         "resourceType": "MedicationRequest",
