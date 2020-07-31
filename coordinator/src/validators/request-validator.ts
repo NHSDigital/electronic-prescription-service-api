@@ -1,5 +1,5 @@
 import {Bundle, MedicationRequest, Resource} from "../model/fhir-resources"
-import {getExtensionForUrl} from "../services/translation/common";
+import {getExtensionForUrl} from "../services/translation/common"
 
 // Validate Status
 export function getStatusCode(validation: Array<ValidationError>): number {
@@ -59,7 +59,7 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
 }
 
 function notEmpty<T>(value: T | null | undefined): value is T {
-    return value !== null && value !== undefined;
+    return value !== null && value !== undefined
 }
 type Validator<T> = (input: T) => ValidationError | null
 

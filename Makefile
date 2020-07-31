@@ -18,14 +18,16 @@ release:
 	mkdir -p dist
 	cp -r specification/dist/. dist
 	cp -r terraform dist
+	rsync -av --progress --copy-links tests/e2e/pact dist --exclude node_modules
 
 clean:
 	rm -rf dist
-	rm -rf models/dist
+	rm -rf models/build
 	rm -rf specification/dist
 	rm -rf specification/build
 	rm -rf coordinator/dist
 	rm -f tests/e2e/postman/electronic-prescription-coordinator-postman-tests.json
+	rm -f tests/e2e/postman/collections/electronic-prescription-service-collection.json
 
 ## Run
 
@@ -52,20 +54,19 @@ install-hooks:
 # Build
 
 build-models:
-	cd models \
-	&& mkdir -p dist/examples \
-	&& mkdir -p dist/schemas
-	$(foreach directory, $(wildcard models/examples/*), cp -r $(directory) models/dist/examples;)
-	$(foreach file, $(wildcard models/schemas/*.yaml), cp $(file) models/dist/schemas;)
-	$(foreach file, $(wildcard models/schemas/*.json), cp $(file) models/dist/schemas;)
-	$(foreach file, $(wildcard models/schemas/*.yaml), poetry run python scripts/yaml2json.py $(file) models/dist/schemas;)
+	$(foreach file, \
+	$(wildcard models/examples/**/SendRequest-FhirMessageSigned.json), \
+	cat $(file) \
+	| jq 'del(.entry[] | select(.resource.resourceType == "Provenance"))' \
+	| jq 'del(.entry[0].resource.focus[0])' \
+	> ""`echo $(file) | sed "s/SendRequest-FhirMessageSigned/PrepareRequest-FhirMessageUnsigned/"`"";)
 
 build-specification:
 	cd specification \
 	&& mkdir -p build/components/examples \
 	&& mkdir -p build/components/schemas \
-	&& cp -r ../models/dist/examples/* build/components/examples \
-	&& cp -r ../models/dist/schemas/*.yaml build/components/schemas \
+	&& cp -r ../models/examples build/components \
+	&& cp -r ../models/schemas build/components \
 	&& cp electronic-prescription-service-api.yaml build/electronic-prescription-service-api.yaml \
 	&& npm run resolve \
 	&& poetry run python ../scripts/yaml2json.py build/electronic-prescription-service-api.resolved.yaml build/ \
@@ -80,7 +81,6 @@ build-coordinator:
 	cp coordinator/package.json coordinator/dist/
 	mkdir -p coordinator/dist/resources
 	cp coordinator/src/resources/ebxml_request.mustache coordinator/dist/resources/
-	poetry run scripts/update_coordinator_tests.py
 
 build-proxies:
 	mkdir -p dist/proxies/sandbox
@@ -101,19 +101,12 @@ test-integration-coordinator:
 	&& export API_TEST_ENV_FILE_PATH=$(or $(API_TEST_ENV_FILE_PATH),../tests/e2e/postman/environments/local.postman_environment.json) \
 	&& npm run integration-test
 
-
-# E2E Integration Test Setup
-
-test-e2e-integration-setup:
-	cd tests/e2e/pact \
-	&& make create \
-	&& make publish
-
 ## Quality Checks
 
 validate-models:
-	test -f models/dist/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > models/dist/org.hl7.fhir.validator.jar
-	java -jar models/dist/org.hl7.fhir.validator.jar models/dist/examples/*/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt
+	mkdir -p models/build
+	test -f models/build/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > models/build/org.hl7.fhir.validator.jar
+	java -jar models/build/org.hl7.fhir.validator.jar models/examples/*/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt
 
 lint:
 	cd specification && npm run lint

@@ -1,9 +1,9 @@
-import * as fhir from "../../model/fhir-resources";
-import {PractitionerRole, Provenance} from "../../model/fhir-resources";
-import * as peoplePlaces from "../../model/hl7-v3-people-places";
-import * as codes from "../../model/hl7-v3-datatypes-codes";
-import {convertName, convertTelecom} from "./demographics";
-import * as prescriptions from "../../model/hl7-v3-prescriptions";
+import * as fhir from "../../model/fhir-resources"
+import {PractitionerRole, Provenance} from "../../model/fhir-resources"
+import * as peoplePlaces from "../../model/hl7-v3-people-places"
+import * as codes from "../../model/hl7-v3-datatypes-codes"
+import {convertName, convertTelecom} from "./demographics"
+import * as prescriptions from "../../model/hl7-v3-prescriptions"
 import {
     convertIsoStringToDateTime,
     getCodeableConceptCodingForSystem,
@@ -13,10 +13,10 @@ import {
     getResourcesOfType,
     onlyElement,
     resolveReference
-} from "./common";
-import * as XmlJs from "xml-js";
-import * as core from "../../model/hl7-v3-datatypes-core";
-import {convertOrganization} from "./organization";
+} from "./common"
+import * as XmlJs from "xml-js"
+import * as core from "../../model/hl7-v3-datatypes-core"
+import {convertOrganization} from "./organization"
 
 export function convertAuthor(
     fhirBundle: fhir.Bundle,
@@ -28,7 +28,7 @@ export function convertAuthor(
     hl7V3Author.signatureText = convertSignatureText(fhirBundle, fhirFirstMedicationRequest.requester)
     const fhirAuthorPractitionerRole = resolveReference(fhirBundle, fhirFirstMedicationRequest.requester)
     hl7V3Author.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirAuthorPractitionerRole)
-    return hl7V3Author;
+    return hl7V3Author
 }
 
 export function convertResponsibleParty(
@@ -40,7 +40,7 @@ export function convertResponsibleParty(
     const fhirResponsibleParty = getExtensionForUrl(fhirMedicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner") as fhir.ReferenceExtension<PractitionerRole>
     const fhirResponsiblePartyPractitionerRole = resolveReference(fhirBundle, fhirResponsibleParty.valueReference)
     responsibleParty.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirResponsiblePartyPractitionerRole)
-    return responsibleParty;
+    return responsibleParty
 }
 
 function convertPractitionerRole(fhirBundle: fhir.Bundle, fhirPractitionerRole: fhir.PractitionerRole): peoplePlaces.AgentPerson {
@@ -86,7 +86,7 @@ function convertAgentPersonPerson(fhirPractitionerRole: fhir.PractitionerRole, f
     if (fhirPractitioner.name !== undefined) {
         hl7V3AgentPersonPerson.name = fhirPractitioner.name.map(convertName).reduce(onlyElement)
     }
-    return hl7V3AgentPersonPerson;
+    return hl7V3AgentPersonPerson
 }
 
 export function getAgentPersonPersonId(fhirPractitionerRoleIdentifier: Array<fhir.Identifier>, fhirPractitionerIdentifier: Array<fhir.Identifier>): peoplePlaces.PrescriptionAuthorId {

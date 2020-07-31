@@ -1,7 +1,7 @@
-import { Request } from "@hapi/hapi";
-import Hapi from "@hapi/hapi";
-import { defaultRequestHandler } from "../services/spine-communication";
-import { handlePollableResponse } from "./util";
+import { Request } from "@hapi/hapi"
+import Hapi from "@hapi/hapi"
+import { defaultRequestHandler } from "../services/spine-communication"
+import { handlePollableResponse } from "./util"
 
 export default [{
         method: 'GET',

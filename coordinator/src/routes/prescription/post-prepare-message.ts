@@ -1,7 +1,7 @@
-import * as translator from "../../services/translation/translation-service";
-import {Bundle} from "../../model/fhir-resources";
-import Hapi from "@hapi/hapi";
-import {validatingHandler} from "../util";
+import * as translator from "../../services/translation/translation-service"
+import {Bundle} from "../../model/fhir-resources"
+import Hapi from "@hapi/hapi"
+import {validatingHandler} from "../util"
 
 const CONTENT_TYPE = 'application/fhir+json; fhirVersion=4.0'
 

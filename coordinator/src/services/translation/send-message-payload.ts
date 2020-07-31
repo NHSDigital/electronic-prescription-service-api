@@ -1,15 +1,15 @@
-import * as codes from "../../model/hl7-v3-datatypes-codes";
-import {GlobalIdentifier, SdsRoleProfileIdentifier, SdsUniqueIdentifier} from "../../model/hl7-v3-datatypes-codes";
-import * as core from "../../model/hl7-v3-datatypes-core";
-import moment from "moment";
+import * as codes from "../../model/hl7-v3-datatypes-codes"
+import {GlobalIdentifier, SdsRoleProfileIdentifier, SdsUniqueIdentifier} from "../../model/hl7-v3-datatypes-codes"
+import * as core from "../../model/hl7-v3-datatypes-core"
+import moment from "moment"
 import {
     convertMomentToDateTime,
     getCodeableConceptCodingForSystem,
     getIdentifierValueForSystem,
     getResourcesOfType,
     resolveReference
-} from "./common";
-import {Bundle, MedicationRequest} from "../../model/fhir-resources";
+} from "./common"
+import {Bundle, MedicationRequest} from "../../model/fhir-resources"
 
 export function createSendMessagePayload<T>(
     messageId: string,
@@ -54,7 +54,7 @@ function convertRequesterToControlActAuthor(
     const sdsUniqueIdentifier = getIdentifierValueForSystem(authorPractitioner.identifier, "https://fhir.nhs.uk/Id/sds-user-id")
     const sdsJobRoleCode = getCodeableConceptCodingForSystem(authorPractitionerRole.code, "https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName").code
     const sdsRoleProfileIdentifier = getIdentifierValueForSystem(authorPractitionerRole.identifier, "https://fhir.nhs.uk/Id/sds-role-profile-id")
-    return createControlActEventAuthor(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier);
+    return createControlActEventAuthor(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier)
 }
 
 function createControlActEventAuthor(sdsUniqueIdentifierStr: string, sdsJobRoleCodeStr: string, sdsRoleProfileIdentifierStr: string) {

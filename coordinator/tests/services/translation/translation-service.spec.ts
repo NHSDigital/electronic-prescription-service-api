@@ -5,8 +5,8 @@ import {
 } from "../../../src/services/translation/translation-service"
 import * as TestResources from "../../resources/test-resources"
 import * as XmlJs from "xml-js"
-import {MomentFormatSpecification, MomentInput} from "moment";
-import {xmlTest} from "../../resources/test-helpers";
+import {MomentFormatSpecification, MomentInput} from "moment"
+import {xmlTest} from "../../resources/test-helpers"
 
 jest.mock('uuid', () => {
     return {
