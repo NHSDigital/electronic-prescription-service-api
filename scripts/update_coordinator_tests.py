@@ -108,16 +108,8 @@ def main():
                     separators=(',', ':'))
 
                 event['script']['exec'] = [
-                    "const responseString = 'Message Sent'",
-                    "pm.test(\"Status code is 200\", function () {",
-                    "    pm.response.to.have.status(200);",
-                    "});",
-                    "pm.test(\"Body is correct\", function () {",
-                    "    console.log(\"=====EXPECTED=====\")",
-                    "    console.log(responseString)",
-                    "    console.log(\"=====ACTUAL=====\")",
-                    "    console.log(pm.response.text())",
-                    "    pm.response.to.have.body(responseString);",
+                    "pm.test(\"Status code is 202\", function () {",
+                    "    pm.response.to.have.status(202);",
                     "});"
                 ]
 

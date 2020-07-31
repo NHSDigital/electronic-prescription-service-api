@@ -1,9 +1,8 @@
-import {validatingHandler} from "../../services/handler";
 import * as translator from "../../services/translation/translation-service";
 import {Bundle} from "../../model/fhir-resources";
 import {defaultRequestHandler} from "../../services/spine-communication";
 import Hapi from "@hapi/hapi";
-import { handlePollableResponse } from "../util";
+import {handlePollableResponse, validatingHandler} from "../util";
 
 export default [
     /*
