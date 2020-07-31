@@ -48,11 +48,6 @@ def main():
     with open(prepare_success_response_file_path) as f:
         prepare_success_response = json.load(f)
 
-    send_success_response_file_path = \
-        "./models/dist/examples/example-1-repeat-dispensing/SendRequest-SuccessResponse.json"
-    with open(send_success_response_file_path) as f:
-        send_success_response = json.load(f)
-
     send_success_request_file_path = \
         "./models/dist/examples/example-1-repeat-dispensing/SendRequest-FhirMessageSigned.json"
     with open(send_success_request_file_path) as f:
@@ -73,8 +68,8 @@ def main():
                     "});",
                     "pm.test(\"Body is correct\", function () {",
                     "    const actualResponseStringWithCorrectedTime = pm.response.text().replace(",
-                    "        /<creationTime value=\"[0-9]{14}\"><\\/creationTime>/,",
-                    "        \"<creationTime value=\\\"20200610102631\\\"></creationTime>\"",
+                    "        /<creationTime value=\"[0-9]{14}\"\\/>/,",
+                    "        \"<creationTime value=\\\"20200610102631\\\"/>\"",
                     "    )",
                     "    console.log(\"=====EXPECTED=====\")",
                     "    console.log(expectedResponseString)",
@@ -113,20 +108,8 @@ def main():
                     separators=(',', ':'))
 
                 event['script']['exec'] = [
-                    "const responseString = '" +
-                    json.dumps(send_success_response, default=date_converter, separators=(',', ':'))
-                        .replace("\\", "\\\\")
-                        .replace("\n", "\\n")
-                    + "'",
-                    "pm.test(\"Status code is 200\", function () {",
-                    "    pm.response.to.have.status(200);",
-                    "});",
-                    "pm.test(\"Body is correct\", function () {",
-                    "    console.log(\"=====EXPECTED=====\")",
-                    "    console.log(responseString)",
-                    "    console.log(\"=====ACTUAL=====\")",
-                    "    console.log(pm.response.text())",
-                    "    pm.response.to.have.body(responseString);",
+                    "pm.test(\"Status code is 202\", function () {",
+                    "    pm.response.to.have.status(202);",
                     "});"
                 ]
 

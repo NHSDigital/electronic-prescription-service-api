@@ -1,8 +1,10 @@
-import { InteractionObject, Matchers } from "@pact-foundation/pact"
+import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as fs from 'fs'
 import * as path from "path"
+import * as uuid from "uuid";
+import {Bundle} from "../../../../coordinator/src/model/fhir-resources";
 
 const prepareRepeatDispensingPrescriptionRequest = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareRequest-FhirMessageUnsigned.json"), "utf8")
 const prepareRepeatDispensingPrescriptionResponse = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareResponse-FhirMessageDigest.json"), "utf8")
@@ -39,7 +41,7 @@ jestpact.pactWith(
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
+              "Content-Type": "application/xml"
             },
             status: 200
           }
@@ -94,7 +96,9 @@ jestpact.pactWith(
 
       test("should be able to send a repeat-dispensing parent-prescription-1", async () => {
         const apiPath = "/Send";
-        const interaction: InteractionObject = {
+          const body = JSON.parse(sendRepeatDispensingPrescriptionSendRequest) as Bundle
+          body.identifier.value = uuid.v4()
+          const interaction: InteractionObject = {
           state: null,
           uponReceiving: "a request to send a repeat-dispensing parent-prescription-1 to Spine",
           withRequest: {
@@ -104,20 +108,12 @@ jestpact.pactWith(
             },
             method: "POST",
             path: "/Send",
-            body: JSON.parse(sendRepeatDispensingPrescriptionSendRequest)
+            body: body
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
+              "Content-Location": Matchers.string("_poll/9807d292_074a_49e8_b48d_52e5bbf785ed")
             },
-              body: {
-                  resourceType: "OperationOutcome",
-                  issue: Matchers.eachLike({
-                      severity: Matchers.string("information"),
-                      code: Matchers.string("informational"),
-                      diagnostics: Matchers.string("Message Sent")
-                  })
-              },
             status: 202
           }
         };
@@ -126,10 +122,9 @@ jestpact.pactWith(
           .post(apiPath)
           .set('Content-Type', 'application/json')
           .set('NHSD-Session-URID', '1234')
-          .send(sendRepeatDispensingPrescriptionSendRequest)
+          .send(body)
           .expect(202);
       });
-
     });
   }
 );
