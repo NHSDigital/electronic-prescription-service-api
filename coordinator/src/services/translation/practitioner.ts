@@ -6,8 +6,10 @@ import {convertName, convertTelecom} from "./demographics";
 import * as prescriptions from "../../model/hl7-v3-prescriptions";
 import {
     convertIsoStringToDateTime,
+    getCodeableConceptCodingForSystem,
     getExtensionForUrl,
     getIdentifierValueForSystem,
+    getIdentifierValueOrNullForSystem,
     getResourcesOfType,
     onlyElement,
     resolveReference
@@ -43,15 +45,43 @@ export function convertResponsibleParty(
 
 function convertPractitionerRole(fhirBundle: fhir.Bundle, fhirPractitionerRole: fhir.PractitionerRole): peoplePlaces.AgentPerson {
     const fhirPractitioner = resolveReference(fhirBundle, fhirPractitionerRole.practitioner)
-    const hl7V3AgentPerson = convertPractitioner(fhirBundle, fhirPractitioner)
+    const hl7V3AgentPerson = createAgentPerson(fhirBundle, fhirPractitionerRole, fhirPractitioner)
     const fhirOrganization = resolveReference(fhirBundle, fhirPractitionerRole.organization)
     hl7V3AgentPerson.representedOrganization = convertOrganization(fhirBundle, fhirOrganization)
     return hl7V3AgentPerson
 }
 
-function convertAgentPersonPerson(fhirPractitioner: fhir.Practitioner) {
-    const sdsUniqueIdentifier = getIdentifierValueForSystem(fhirPractitioner.identifier, "https://fhir.nhs.uk/Id/sds-user-id")
-    const id = new codes.SdsUniqueIdentifier(sdsUniqueIdentifier)
+function createAgentPerson(
+    fhirBundle: fhir.Bundle,
+    fhirPractitionerRole: fhir.PractitionerRole,
+    fhirPractitioner: fhir.Practitioner,
+    convertAgentPersonPersonFn = convertAgentPersonPerson
+): peoplePlaces.AgentPerson {
+    const hl7V3AgentPerson = new peoplePlaces.AgentPerson()
+
+    const sdsRoleProfileIdentifier = getIdentifierValueForSystem(fhirPractitionerRole.identifier, "https://fhir.nhs.uk/Id/sds-role-profile-id")
+    hl7V3AgentPerson.id = new codes.SdsRoleProfileIdentifier(sdsRoleProfileIdentifier)
+
+    const sdsJobRoleCode = getCodeableConceptCodingForSystem(fhirPractitionerRole.code, "https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName")
+    hl7V3AgentPerson.code = new codes.SdsJobRoleCode(sdsJobRoleCode.code)
+
+    hl7V3AgentPerson.telecom = getAgentPersonTelecom(fhirPractitionerRole.telecom, fhirPractitioner.telecom)
+
+    hl7V3AgentPerson.agentPerson = convertAgentPersonPersonFn(fhirPractitionerRole, fhirPractitioner)
+
+    return hl7V3AgentPerson
+}
+
+export function getAgentPersonTelecom(fhirPractitionerRoleTelecom: Array<fhir.ContactPoint>, fhirPractitionerTelecom: Array<fhir.ContactPoint>): Array<core.Telecom> {
+    if (fhirPractitionerRoleTelecom !== undefined) {
+        return fhirPractitionerRoleTelecom.map(convertTelecom)
+    } else if (fhirPractitionerTelecom !== undefined) {
+        return fhirPractitionerTelecom.map(convertTelecom)
+    }
+}
+
+function convertAgentPersonPerson(fhirPractitionerRole: fhir.PractitionerRole, fhirPractitioner: fhir.Practitioner) {
+    const id = getAgentPersonPersonId(fhirPractitionerRole.identifier, fhirPractitioner.identifier)
     const hl7V3AgentPersonPerson = new peoplePlaces.AgentPersonPerson(id)
     if (fhirPractitioner.name !== undefined) {
         hl7V3AgentPersonPerson.name = fhirPractitioner.name.map(convertName).reduce(onlyElement)
@@ -59,26 +89,19 @@ function convertAgentPersonPerson(fhirPractitioner: fhir.Practitioner) {
     return hl7V3AgentPersonPerson;
 }
 
-function convertPractitioner(
-    fhirBundle: fhir.Bundle,
-    fhirPractitioner: fhir.Practitioner,
-    convertAgentPersonPersonFn = convertAgentPersonPerson
-): peoplePlaces.AgentPerson {
-    const hl7V3AgentPerson = new peoplePlaces.AgentPerson()
-
-    const sdsRoleProfileIdentifier = getIdentifierValueForSystem(fhirPractitioner.identifier, "https://fhir.nhs.uk/Id/sds-role-profile-id")
-    hl7V3AgentPerson.id = new codes.SdsRoleProfileIdentifier(sdsRoleProfileIdentifier)
-
-    const sdsJobRoleCode = getIdentifierValueForSystem(fhirPractitioner.identifier, "https://fhir.nhs.uk/Id/sds-job-role-id")
-    hl7V3AgentPerson.code = new codes.SdsJobRoleCode(sdsJobRoleCode)
-
-    if (fhirPractitioner.telecom !== undefined) {
-        hl7V3AgentPerson.telecom = fhirPractitioner.telecom.map(convertTelecom)
+export function getAgentPersonPersonId(fhirPractitionerRoleIdentifier: Array<fhir.Identifier>, fhirPractitionerIdentifier: Array<fhir.Identifier>): peoplePlaces.PrescriptionAuthorId {
+    const spuriousCode = getIdentifierValueOrNullForSystem(fhirPractitionerRoleIdentifier, "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code")
+    if (spuriousCode) {
+        return new codes.BsaPrescribingIdentifier(spuriousCode)
     }
 
-    hl7V3AgentPerson.agentPerson = convertAgentPersonPersonFn(fhirPractitioner)
+    const dinCode = getIdentifierValueOrNullForSystem(fhirPractitionerIdentifier, "https://fhir.hl7.org.uk/Id/din-number")
+    if (dinCode) {
+        return new codes.BsaPrescribingIdentifier(dinCode)
+    }
 
-    return hl7V3AgentPerson
+    const sdsUniqueIdentifier = getIdentifierValueForSystem(fhirPractitionerIdentifier, "https://fhir.nhs.uk/Id/sds-user-id")
+    return new codes.SdsUniqueIdentifier(sdsUniqueIdentifier)
 }
 
 function convertSignatureText(fhirBundle: fhir.Bundle, signatory: fhir.Reference<fhir.PractitionerRole>) {

@@ -1,5 +1,5 @@
 type: object
-description: A person who is directly or indirectly involved in the provisioning of healthcare.
+description: "A person who is directly or indirectly involved in the provisioning of healthcare."
 required:
   - resourceType
   - id
@@ -9,28 +9,38 @@ required:
 properties:
   resourceType:
     type: string
-    description: FHIR Resource type
+    description: "FHIR Resource type"
     default: Practitioner
     readOnly: true
   id:
     type: string
-    description: Logical id of this artifact.
+    description: "Logical id of this artifact."
     example: "C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C"
   identifier:
     type: array
-    description: An identifier that applies to this person in this role.
+    description: "An identifier that applies to this person in this role."
     items:
-      oneOf:
+      anyOf:
         - $ref: "Identifier-SdsUserId.yaml"
-        - $ref: "Identifier-SdsJobRoleId.yaml"
-        - $ref: "Identifier-SdsRoleProfileId.yaml"
+        - type: object
+          description: "GP prescribing code"
+          properties:
+            system:
+              type: string
+              description: "The namespace for the identifier value"
+              enum: ["https://fhir.hl7.org.uk/Id/din-number"]
+              example: "https://fhir.hl7.org.uk/Id/din-number"
+            value:
+              type: string
+              description: "The value that is unique"
+              example: "123456"
   name:
     type: array
-    description: The name(s) associated with the practitioner.
+    description: "The name(s) associated with the practitioner."
     items:
       $ref: "HumanName.yaml"
   telecom:
     type: array
-    description: A contact detail for the practitioner, e.g. a telephone number or an email address.
+    description: "A contact detail for the practitioner, e.g. a telephone number or an email address."
     items:
       $ref: "ContactPoint.yaml"

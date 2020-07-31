@@ -111,8 +111,11 @@ export class Address {
 
 export class PractitionerRole extends Resource {
     readonly resourceType = "PractitionerRole"
+    identifier?: Array<Identifier>
     practitioner?: Reference<Practitioner>
     organization?: Reference<Organization>
+    code?: Array<CodeableConcept>
+    telecom: Array<ContactPoint>
 }
 
 export class Practitioner extends Resource {
