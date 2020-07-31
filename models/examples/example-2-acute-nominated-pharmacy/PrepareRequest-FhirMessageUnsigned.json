@@ -5,7 +5,7 @@
     "system": "https://tools.ietf.org/html/rfc4122",
     "value": "A7B86F8D-1DAE-FC28-E050-D20AE3A215F0"
   },
-  "type": "collection",
+  "type": "message",
   "entry": [
     {
       "resource": {

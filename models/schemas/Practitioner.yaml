@@ -10,8 +10,9 @@ properties:
   resourceType:
     type: string
     description: FHIR Resource type
-    default: Practitioner
-    readOnly: true
+    enum:
+      - "Practitioner"
+    example: "Practitioner"
   id:
     type: string
     description: Logical id of this artifact.

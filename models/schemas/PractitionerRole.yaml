@@ -9,7 +9,8 @@ properties:
   resourceType:
     type: string
     description: FHIR Resource type
-    enum: ["PractitionerRole"]
+    enum: 
+      - "PractitionerRole"
     example: "PractitionerRole"
   id:
     type: string

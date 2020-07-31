@@ -12,8 +12,9 @@ properties:
   resourceType:
     type: string
     description: FHIR Resource Type.
-    default: "OperationOutcome"
-    readOnly: true
+    enum:
+      - "OperationOutcome"
+    example: "OperationOutcome"
   issue:
     type: array
     description: List of issues that have occurred.
