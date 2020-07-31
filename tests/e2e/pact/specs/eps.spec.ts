@@ -114,7 +114,7 @@ jestpact.pactWith(
             headers: {
               "Content-Location": Matchers.string("_poll/9807d292_074a_49e8_b48d_52e5bbf785ed")
             },
-            status: 200
+            status: 202
           }
         }
         await provider.addInteraction(interaction)
