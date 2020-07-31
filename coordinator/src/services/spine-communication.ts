@@ -81,6 +81,7 @@ export class RequestHandler {
           }
         }
         default: {
+          console.log(`Got the following response from spine:\n${result.data}`)
           throw Error(`Unsupported status, expected 202, got ${result.status}`)
         }
       }
