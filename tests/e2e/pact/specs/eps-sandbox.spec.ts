@@ -99,7 +99,7 @@ jestpact.pactWith(
             body: JSON.parse(sendRepeatDispensingPrescriptionSendRequest)
           },
           willRespondWith: {
-            status: 200
+            status: 202
           }
         };
         await provider.addInteraction(interaction);
