@@ -13,7 +13,7 @@ export function handlePollableResponse(spineResponse: SpineDirectResponse | Spin
     } else {
         return responseToolkit.response(wrapInOperationOutcome(spineResponse))
           .code(spineResponse.statusCode)
-          .header('Content-Type', 'multipart/mixed; boundary=----=_MIME-Boundary')
+          .header('Content-Type', 'application/fhir+json; fhirVersion=4.0')
     }
 }
 
