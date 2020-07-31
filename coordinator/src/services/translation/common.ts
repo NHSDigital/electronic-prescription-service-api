@@ -28,6 +28,14 @@ export function getIdentifierValueForSystem(identifier: Array<fhir.Identifier>, 
         .value
 }
 
+export function getIdentifierValueOrNullForSystem(identifier: Array<fhir.Identifier>, system: string): string {
+    const filtered = identifier
+        .filter(identifier => identifier.system === system)
+        .map(identifier => identifier.value)
+    if (filtered.length > 1) throw TypeError(`Expected 1 or less elements but got ${filtered.length}: ${JSON.stringify(filtered)}`)
+    return filtered.shift()
+}
+
 export function getCodingForSystem(coding: Array<fhir.Coding>, system: string): fhir.Coding {
     return coding
         .filter(coding => coding.system === system)
