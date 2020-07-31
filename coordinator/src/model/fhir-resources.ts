@@ -139,12 +139,12 @@ export class Organization extends Resource {
 export class OperationOutcomeIssue {
     severity: string
     code: string
-    details: CodeableConcept
+    details?: CodeableConcept
+    diagnostics?: string
 
-    constructor(severity: string, code: string, details: CodeableConcept) {
+    constructor(severity: string, code: string) {
         this.severity = severity
         this.code = code
-        this.details = details
     }
 }
 

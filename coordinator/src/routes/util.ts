@@ -3,6 +3,7 @@ import Hapi from "@hapi/hapi"
 import {Bundle, OperationOutcome} from "../model/fhir-resources";
 import * as requestValidator from "../validators/request-validator";
 import {ValidationError} from "../validators/request-validator";
+import {wrapInOperationOutcome} from "../services/translation/common";
 
 export function handlePollableResponse(spineResponse: SpineDirectResponse | SpinePollableResponse, responseToolkit: Hapi.ResponseToolkit): Hapi.ResponseObject {
     if (isPollable(spineResponse)) {
@@ -10,7 +11,7 @@ export function handlePollableResponse(spineResponse: SpineDirectResponse | Spin
           .code(spineResponse.statusCode)
           .header('Content-Location', spineResponse.pollingUrl)
     } else {
-        return responseToolkit.response(spineResponse.body)
+        return responseToolkit.response(wrapInOperationOutcome(spineResponse))
           .code(spineResponse.statusCode)
           .header('Content-Type', 'multipart/mixed; boundary=----=_MIME-Boundary')
     }

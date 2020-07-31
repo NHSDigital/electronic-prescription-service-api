@@ -203,10 +203,13 @@ paths:
         '200':
           description: Successfully submitted
           content:
-            text/plain:
+            application/fhir+json:
               schema:
-                type: string
-                example: "Message Sent"
+                $ref: components/schemas/OperationOutcome-2XX.yaml
+              examples:
+                example:
+                  value:
+                    $ref: components/examples/example-1-repeat-dispensing/SendRequest-SuccessResponse.json
         '4XX':
           description: Invalid request.
           content:

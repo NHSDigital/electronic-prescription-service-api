@@ -83,7 +83,7 @@ describe('Spine communication', () => {
 describe('Spine responses', () => {
     test('Messages shoule be correctly identified as pollable', () => {
         const message = {
-            statusCode: 200, 
+            statusCode: 200,
             pollingUrl: 'http://test.com'
         }
 
@@ -92,7 +92,7 @@ describe('Spine responses', () => {
 
     test('Messages shoule be correctly identified as non-pollable', () => {
         const message = {
-            statusCode: 200, 
+            statusCode: 200,
             body: 'This is a response body'
         }
 

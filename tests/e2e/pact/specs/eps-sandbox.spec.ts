@@ -1,4 +1,4 @@
-import { InteractionObject } from "@pact-foundation/pact"
+import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as fs from 'fs'
@@ -120,6 +120,14 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/json",
               "NHSD-Session-URID": "1234"
+            },
+            body: {
+              resourceType: "OperationOutcome",
+              issue: Matchers.eachLike({
+                severity: Matchers.string("information"),
+                code: Matchers.string("informational"),
+                diagnostics: Matchers.string("Message Sent")
+              })
             },
             method: "GET",
             path: apiPath

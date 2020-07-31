@@ -111,6 +111,9 @@ jestpact.pactWith(
             body: body
           },
           willRespondWith: {
+            headers: {
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
+            },
             status: 202
           }
         };
