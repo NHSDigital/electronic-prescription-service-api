@@ -121,6 +121,13 @@ jestpact.pactWith(
               "Content-Type": "application/json",
               "NHSD-Session-URID": "1234"
             },
+            method: "GET",
+            path: apiPath
+          },
+          willRespondWith: {
+            headers: {
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
+            },
             body: {
               resourceType: "OperationOutcome",
               issue: Matchers.eachLike({
@@ -129,10 +136,6 @@ jestpact.pactWith(
                 diagnostics: Matchers.string("Message Sent")
               })
             },
-            method: "GET",
-            path: apiPath
-          },
-          willRespondWith: {
             status: 200
           }
         };
