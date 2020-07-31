@@ -5,7 +5,7 @@ import {addEbXmlWrapper} from "./request-builder"
 const SPINE_ENDPOINT = 'https://veit07.devspineservices.nhs.uk'
 const SPINE_PATH = '/Prescription'
 
-type SpineResponse = SpineDirectResponse | SpinePollableResponse
+export type SpineResponse = SpineDirectResponse | SpinePollableResponse
 
 export interface SpineDirectResponse {
   body: string

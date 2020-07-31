@@ -1,7 +1,7 @@
 import * as fhir from "../../model/fhir-resources";
 import moment from "moment";
 import * as core from "../../model/hl7-v3-datatypes-core";
-import {SpineDirectResponse} from "../spine-communication";
+import { SpineDirectResponse } from "../spine-communication";
 
 export function getResourcesOfType<T extends fhir.Resource>(fhirBundle: fhir.Bundle, type: T): Array<T> {
   const typeGuard = (resource: fhir.Resource): resource is T => resource.resourceType === type.resourceType
@@ -83,7 +83,7 @@ export function toArray<T>(itemOrArray: T | Array<T>): Array<T> {
     return Array.isArray(itemOrArray) ? itemOrArray : [itemOrArray];
 }
 
-export function wrapInOperationOutcome(message: SpineResponse): fhir.OperationOutcome {
+export function wrapInOperationOutcome(message: SpineDirectResponse): fhir.OperationOutcome {
     const severity = message.statusCode <= 299 ? "information" : "error"
     const code = message.statusCode <= 299 ? "informational" : "invalid"
     const operationOutcomeIssue = new fhir.OperationOutcomeIssue(severity, code)
@@ -92,15 +92,4 @@ export function wrapInOperationOutcome(message: SpineResponse): fhir.OperationOu
     const response = new fhir.OperationOutcome()
     response.issue = [operationOutcomeIssue]
     return response
-}
-
-export function wrapInOperationOutcome(message: SpineDirectResponse): fhir.OperationOutcome {
-  const severity = message.statusCode <= 299 ? "information" : "error"
-  const code = message.statusCode <= 299 ? "informational" : "invalid"
-  const operationOutcomeIssue = new fhir.OperationOutcomeIssue(severity, code)
-  operationOutcomeIssue.diagnostics = message.body
-
-  const response = new fhir.OperationOutcome()
-  response.issue = [operationOutcomeIssue]
-  return response
 }
