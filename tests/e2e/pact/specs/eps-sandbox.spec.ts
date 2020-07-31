@@ -130,7 +130,7 @@ jestpact.pactWith(
         };
         await provider.addInteraction(interaction);
         await client()
-          .post(apiPath)
+          .get(apiPath)
           .set('Content-Type', 'application/json')
           .set('NHSD-Session-URID', '1234')
           .expect(200);
