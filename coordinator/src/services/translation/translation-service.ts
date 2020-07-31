@@ -23,8 +23,7 @@ export function createParentPrescriptionSendMessagePayload(fhirBundle: fhir.Bund
     const parentPrescription = convertParentPrescription(fhirBundle)
     const parentPrescriptionRoot = new prescriptions.ParentPrescriptionRoot(parentPrescription)
     const interactionId = codes.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT
-    const authorAgentPerson = parentPrescription.pertinentInformation1.pertinentPrescription.author.AgentPerson
-    return createSendMessagePayload(messageId, interactionId, authorAgentPerson, parentPrescriptionRoot)
+    return createSendMessagePayload(messageId, interactionId, fhirBundle, parentPrescriptionRoot)
 }
 
 export function convertParentPrescriptionToSignatureFragmentsStr(parentPrescription: ParentPrescription): string {

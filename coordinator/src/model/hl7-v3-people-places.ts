@@ -42,7 +42,7 @@ export class HealthCareProvider implements ElementCompact {
         classCode: "PROV"
     }
 
-    id: codes.SdsUniqueIdentifier
+    id: codes.SdsOrganizationIdentifier
 }
 
 /**
@@ -139,6 +139,8 @@ export class PatientPerson implements ElementCompact {
     playedProviderPatient: ProviderPatient
 }
 
+export type PrescriptionAuthorId = codes.BsaPrescribingIdentifier | codes.SdsUniqueIdentifier
+
 /**
  * Details of a person on SDS.
  */
@@ -148,10 +150,10 @@ export class AgentPersonPerson implements ElementCompact {
         determinerCode: "INSTANCE"
     }
 
-    id: codes.SdsUniqueIdentifier
+    id: PrescriptionAuthorId
     name?: core.Name
 
-    constructor(id: codes.SdsUniqueIdentifier) {
+    constructor(id: PrescriptionAuthorId) {
         this.id = id
     }
 }

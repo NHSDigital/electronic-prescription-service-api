@@ -1,0 +1,42 @@
+type: object
+description: "A resource that describes a message that is exchanged between systems"
+required:
+  - resourceType
+  - id
+  - eventCoding
+  - sender
+  - source
+properties:
+  resourceType:
+    type: string
+    description: "FHIR Resource type"
+    enum:
+      - "MessageHeader"
+    example: "MessageHeader"
+  id:
+    type: string
+    description: "Logical id of this artifact"
+    example: "7EB02341-5F62-4A76-2CD3-34F523452356"
+  eventCoding:
+    $ref: "Coding-MessageDefinition.yaml"
+  sender:
+    $ref: "Reference.yaml"
+  source:
+    type: object
+    description: "Message source application"
+    required:
+      - endpoint
+    properties:
+      name:
+        type: string
+        description: "Name of system"
+        example: "PAS"
+      endpoint:
+        type: string
+        description: "Actual message source address or id"
+        example: "https://fhir.mynhstrust.nhs.uk/R4"
+  focus:
+    type: array
+    description: "The actual content of the message"
+    items:
+      $ref: "Reference.yaml"
