@@ -82,6 +82,14 @@ export class RequestHandler {
     }
 
     async poll(path: string): Promise<SpineResponse> {
+        if (process.env.SANDBOX === "1") {
+            console.log('Sandbox Mode. Returning fixed polling response')
+            return {
+                statusCode: 200,
+                body: 'Message Sent'
+            }
+        }
+
         try {
             const result = await axios.get<string>(
                 `${this.spineEndpoint}/_poll/${path}`,
@@ -146,8 +154,8 @@ export class RequestHandler {
         return (
             process.env.SANDBOX === "1" ?
                 Promise.resolve({
-                    body: "Message Sent",
-                    statusCode: 200
+                    pollingUrl: '_poll/9807d292_074a_49e8_b48d_52e5bbf785ed',
+                    statusCode: 202
                 }) :
                 await this.request(message)
         )

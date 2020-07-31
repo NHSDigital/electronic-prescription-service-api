@@ -99,9 +99,6 @@ jestpact.pactWith(
             body: JSON.parse(sendRepeatDispensingPrescriptionSendRequest)
           },
           willRespondWith: {
-            headers: {
-              "Content-Type": "multipart/mixed; boundary=----=_MIME-Boundary"
-            },
             status: 200
           }
         };
@@ -111,6 +108,31 @@ jestpact.pactWith(
           .set('Content-Type', 'application/json')
           .set('NHSD-Session-URID', '1234')
           .send(sendRepeatDispensingPrescriptionSendRequest)
+          .expect(202);
+      });
+
+      test("should be able to poll for a prescription response", async () => {
+        const apiPath = "/_poll/9807d292_074a_49e8_b48d_52e5bbf785ed";
+        const interaction: InteractionObject = {
+          state: null,
+          uponReceiving: "a request to poll for a prescription response",
+          withRequest: {
+            headers: {
+              "Content-Type": "application/json",
+              "NHSD-Session-URID": "1234"
+            },
+            method: "GET",
+            path: apiPath
+          },
+          willRespondWith: {
+            status: 200
+          }
+        };
+        await provider.addInteraction(interaction);
+        await client()
+          .post(apiPath)
+          .set('Content-Type', 'application/json')
+          .set('NHSD-Session-URID', '1234')
           .expect(200);
       });
     });

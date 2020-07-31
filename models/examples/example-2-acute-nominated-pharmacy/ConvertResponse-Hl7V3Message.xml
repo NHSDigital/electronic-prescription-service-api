@@ -43,7 +43,7 @@
         <id root="9C7635DA-DE6A-38CE-B790-163048F0D390"/>
         <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Prescription - FocusActOrEvent (record artifact)"/>
         <effectiveTime value="20200610120600"/>
-        <typeId extension="PORX_MT132004SM31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
+        <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <Patient classCode="PAT">
             <id extension="9453740578" root="2.16.840.1.113883.2.1.4.1"/>
