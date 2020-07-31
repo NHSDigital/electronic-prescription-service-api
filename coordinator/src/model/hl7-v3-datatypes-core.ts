@@ -1,6 +1,6 @@
 import * as codes from "./hl7-v3-datatypes-codes"
 import {GlobalIdentifier, SdsUniqueIdentifier} from "./hl7-v3-datatypes-codes"
-import {Attributes, ElementCompact} from "xml-js";
+import {Attributes, ElementCompact} from "xml-js"
 
 export interface AttributeTypeCode extends Attributes {
     typeCode: "AUT" | "COMP" | "FLFS" | "LA" | "PART" | "PERT" | "PRD" | "PRF" | "RESP" | "RCT" | "SBJ"

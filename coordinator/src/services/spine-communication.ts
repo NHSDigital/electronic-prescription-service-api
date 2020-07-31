@@ -17,8 +17,17 @@ export interface SpinePollableResponse {
   statusCode: number
 }
 
+export interface SpinePollableResponse {
+    pollingUrl: string
+    statusCode: number
+}
+
+export function isDirect(spineResponse: SpineResponse): spineResponse is SpineDirectResponse {
+    return !isPollable(spineResponse)
+}
+
 export function isPollable(spineResponse: SpineResponse): spineResponse is SpinePollableResponse {
-  return 'pollingUrl' in spineResponse
+    return 'pollingUrl' in spineResponse
 }
 
 const httpsAgent = new https.Agent({
@@ -28,7 +37,7 @@ const httpsAgent = new https.Agent({
     process.env.ROOT_CA_CERT,
     process.env.SUB_CA_CERT
   ]
-});
+})
 
 export class RequestHandler {
 

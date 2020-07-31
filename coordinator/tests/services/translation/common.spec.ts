@@ -4,11 +4,11 @@ import {
   getResourceForFullUrl,
   getResourcesOfType,
   wrapInOperationOutcome
-} from "../../../src/services/translation/common";
-import * as TestResources from "../../resources/test-resources";
-import * as fhir from "../../../src/model/fhir-resources";
-import {Identifier, MedicationRequest} from "../../../src/model/fhir-resources";
-import {clone} from "../../resources/test-helpers";
+} from "../../../src/services/translation/common"
+import * as TestResources from "../../resources/test-resources"
+import * as fhir from "../../../src/model/fhir-resources"
+import {Identifier, MedicationRequest} from "../../../src/model/fhir-resources"
+import {clone} from "../../resources/test-helpers"
 import {SpineDirectResponse} from "../../../src/services/spine-communication"
 
 test('getResourcesOfType returns correct resources', () => {

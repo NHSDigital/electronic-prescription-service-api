@@ -1,6 +1,6 @@
-import {convertParentPrescription} from "../../../src/services/translation/parent-prescription";
-import * as TestResources from "../../resources/test-resources";
-import {xmlTest} from "../../resources/test-helpers";
+import {convertParentPrescription} from "../../../src/services/translation/parent-prescription"
+import * as TestResources from "../../resources/test-resources"
+import {xmlTest} from "../../resources/test-helpers"
 
 test(
     "convertParentPrescription returns correct value for repeat prescription",
