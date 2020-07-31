@@ -18,8 +18,7 @@ release:
 	mkdir -p dist
 	cp -r specification/dist/. dist
 	cp -r terraform dist
-	rm -rf tests/e2e/pact/node_modules
-	cp -r tests/e2e/pact dist
+	rsync -av --progress --copy-links tests/e2e/pact dist --exclude node_modules
 
 clean:
 	rm -rf dist
@@ -55,7 +54,12 @@ install-hooks:
 # Build
 
 build-models:
-	$(foreach file, $(wildcard models/examples/**/SendRequest-FhirMessageSigned.json), cat $(file) | jq 'del(.entry[0])' > ""`echo $(file) | sed "s/SendRequest-FhirMessageSigned/PrepareRequest-FhirMessageUnsigned/"`"";)
+	$(foreach file, \
+	$(wildcard models/examples/**/SendRequest-FhirMessageSigned.json), \
+	cat $(file) \
+	| jq 'del(.entry[] | select(.resource.resourceType == "Provenance"))' \
+	| jq 'del(.entry[0].resource.focus[0])' \
+	> ""`echo $(file) | sed "s/SendRequest-FhirMessageSigned/PrepareRequest-FhirMessageUnsigned/"`"";)
 
 build-specification:
 	cd specification \
@@ -77,7 +81,6 @@ build-coordinator:
 	cp coordinator/package.json coordinator/dist/
 	mkdir -p coordinator/dist/resources
 	cp coordinator/src/resources/ebxml_request.mustache coordinator/dist/resources/
-	poetry run scripts/update_coordinator_tests.py
 
 build-proxies:
 	mkdir -p dist/proxies/sandbox
@@ -97,14 +100,6 @@ test-integration-coordinator:
 	cd coordinator \
 	&& export API_TEST_ENV_FILE_PATH=$(or $(API_TEST_ENV_FILE_PATH),../tests/e2e/postman/environments/local.postman_environment.json) \
 	&& npm run integration-test
-
-
-# E2E Integration Test Setup
-
-test-e2e-integration-setup:
-	rm -rf tests/e2e/pact/resources/example-1-repeat-dispensing
-	mkdir -p tests/e2e/pact/resources/example-1-repeat-dispensing
-	cp models/examples/example-1-repeat-dispensing/*.json tests/e2e/pact/resources/example-1-repeat-dispensing
 
 ## Quality Checks
 

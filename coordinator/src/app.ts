@@ -2,15 +2,10 @@ import {Boom} from '@hapi/boom'
 import Hapi from '@hapi/hapi'
 import routes from './routes'
 
-const CONTENT_TYPE = 'application/fhir+json; fhirVersion=4.0'
-
 const preResponse = function (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) {
     const response = request.response
     if (response instanceof Boom) {
         console.log(response)
-    } else if(!response.headers['content-type']) {
-        // Set Content-Type on all responses
-        response.type(CONTENT_TYPE)
     }
     return responseToolkit.continue
 }

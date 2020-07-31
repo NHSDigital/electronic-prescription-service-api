@@ -7,8 +7,9 @@ properties:
   resourceType:
     type: string
     description: FHIR Resource type.
-    default: "Parameters"
-    readOnly: true
+    enum:
+      - "Parameters"
+    example: "Parameters"
   parameter:
     type: array
     description: A collection of parameters

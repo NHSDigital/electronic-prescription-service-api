@@ -10,7 +10,9 @@
   },
   "author": "NHS Digital",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "uuid": "^8.3.0"
+  },
   "devDependencies": {
     "@types/jest": "^26.0.0",
     "@types/node": "^14.0.13",

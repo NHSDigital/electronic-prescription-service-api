@@ -1,7 +1,6 @@
 import * as codes from "./hl7-v3-datatypes-codes"
-import {GlobalIdentifier} from "./hl7-v3-datatypes-codes"
+import {GlobalIdentifier, SdsUniqueIdentifier} from "./hl7-v3-datatypes-codes"
 import {Attributes, ElementCompact} from "xml-js"
-import * as peoplePlaces from "./hl7-v3-people-places"
 
 export interface AttributeTypeCode extends Attributes {
     typeCode: "AUT" | "COMP" | "FLFS" | "LA" | "PART" | "PERT" | "PRD" | "PRF" | "RESP" | "RCT" | "SBJ"
@@ -294,8 +293,21 @@ abstract class SendMessagePayloadAgent {
 
 export class AgentPersonSds extends SendMessagePayloadAgent {
     id: codes.SdsRoleProfileIdentifier
-    agentPersonSDS: peoplePlaces.AgentPersonPerson
+    agentPersonSDS: AgentPersonPersonSds
     part: AgentPersonPart
+}
+
+export class AgentPersonPersonSds {
+    _attributes: AttributeClassCode & AttributeDeterminerCode = {
+        classCode: "PSN",
+        determinerCode: "INSTANCE"
+    }
+
+    id: SdsUniqueIdentifier
+
+    constructor(id: SdsUniqueIdentifier) {
+        this.id = id
+    }
 }
 
 export class AgentPersonPart {

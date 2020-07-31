@@ -1,7 +1,9 @@
-import {validatingHandler} from "../../services/handler"
 import * as translator from "../../services/translation/translation-service"
 import Hapi from "@hapi/hapi"
 import {Bundle} from "../../model/fhir-resources"
+import {validatingHandler} from "../util"
+
+const CONTENT_TYPE = 'application/xml'
 
 export default [
     /*
@@ -14,7 +16,7 @@ export default [
             false,
             (requestPayload: Bundle, responseToolkit: Hapi.ResponseToolkit) => {
                 const response = translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(requestPayload)
-                return responseToolkit.response(response).code(200)
+                return responseToolkit.response(response).code(200).header('Content-Type', CONTENT_TYPE)
             }
         )
     }

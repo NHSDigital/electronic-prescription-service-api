@@ -1,10 +1,19 @@
 import * as XmlJs from "xml-js"
 
 export function writeXmlStringCanonicalized(tag: XmlJs.ElementCompact): string {
+    return writeXml(tag, 0, true)
+}
+
+export function writeXmlStringPretty(tag: XmlJs.ElementCompact): string {
+    return writeXml(tag, 2, false)
+}
+
+function writeXml(tag: XmlJs.ElementCompact, spaces: number, fullTagEmptyElement: boolean): string {
     const options = {
         compact: true,
+        spaces,
         ignoreComment: true,
-        fullTagEmptyElement: true,
+        fullTagEmptyElement,
         attributeValueFn: canonicaliseAttribute,
         attributesFn: sortAttributes
     } as unknown as XmlJs.Options.JS2XML //declared type for attributesFn is wrong :(
