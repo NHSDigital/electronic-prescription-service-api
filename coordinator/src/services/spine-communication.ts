@@ -86,7 +86,7 @@ export class RequestHandler {
         }
       }
     } catch (error) {
-      console.error(`Failed post request for prescription message. Error: ${error}`)
+      console.log(`Failed post request for prescription message. Error: ${error}`)
       return this.handleError(error)
     }
   }
@@ -132,7 +132,7 @@ export class RequestHandler {
         }
       }
     } catch (error) {
-      console.error(`Failed polling request for polling path ${path}. Error: ${error}`)
+      console.log(`Failed polling request for polling path ${path}. Error: ${error}`)
       return this.handleError(error)
     }
   }

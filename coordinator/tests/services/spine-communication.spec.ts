@@ -1,5 +1,5 @@
 import 'jest'
-import * as moxios from 'moxios'
+import moxios from 'moxios'
 import axios from 'axios'
 import { RequestHandler, isPollable, SpinePollableResponse } from '../../src/services/spine-communication'
 
