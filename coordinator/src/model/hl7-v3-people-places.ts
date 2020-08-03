@@ -1,7 +1,7 @@
 import * as codes from "./hl7-v3-datatypes-codes"
 import * as core from "./hl7-v3-datatypes-core"
-import {ElementCompact} from "xml-js";
-import {Text} from "./hl7-v3-datatypes-core";
+import {ElementCompact} from "xml-js"
+import {Text} from "./hl7-v3-datatypes-core"
 
 /**
  * Identifies or provides detailed information about a person fulfilling a specific role when it is not known whether all of the role profile, player and scoper details are available from SDS.
@@ -42,7 +42,7 @@ export class HealthCareProvider implements ElementCompact {
         classCode: "PROV"
     }
 
-    id: codes.SdsUniqueIdentifier
+    id: codes.SdsOrganizationIdentifier
 }
 
 /**
@@ -104,8 +104,8 @@ export class PatientCareProvision implements ElementCompact {
     code: codes.PatientCareProvisionTypeCode
     responsibleParty: ResponsibleParty
 
-    constructor(code: string) {
-        this.code = new codes.PatientCareProvisionTypeCode(code)
+    constructor(code: codes.PatientCareProvisionTypeCode) {
+        this.code = code
     }
 }
 
@@ -139,6 +139,8 @@ export class PatientPerson implements ElementCompact {
     playedProviderPatient: ProviderPatient
 }
 
+export type PrescriptionAuthorId = codes.BsaPrescribingIdentifier | codes.SdsUniqueIdentifier
+
 /**
  * Details of a person on SDS.
  */
@@ -148,8 +150,12 @@ export class AgentPersonPerson implements ElementCompact {
         determinerCode: "INSTANCE"
     }
 
-    id: codes.SdsUniqueIdentifier
+    id: PrescriptionAuthorId
     name?: core.Name
+
+    constructor(id: PrescriptionAuthorId) {
+        this.id = id
+    }
 }
 
 /**

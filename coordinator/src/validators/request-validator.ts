@@ -1,8 +1,7 @@
-import {Bundle, MedicationRequest, Resource} from "../services/fhir-resources"
-import {getExtensionForUrl} from "../services/translation-service"
+import {Bundle, MedicationRequest, Resource} from "../model/fhir-resources"
+import {getExtensionForUrl} from "../services/translation/common"
 
 // Validate Status
-
 export function getStatusCode(validation: Array<ValidationError>): number {
     return validation.length > 0 ? 400 : 200
 }
@@ -46,9 +45,10 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
         (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "courseOfTherapyType", (medicationRequest) => medicationRequest.courseOfTherapyType),
         (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "subject", (medicationRequest) => medicationRequest.subject),
         (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "requester", (medicationRequest) => medicationRequest.requester),
-        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "dispenseRequest.performer", (medicationRequest) => medicationRequest.dispenseRequest?.performer),
-        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "extension (eps prescriptionType)", (medicationRequest) => getExtensionForUrl(medicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType")),
-        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "extension (ResponsiblePractitioner)", (medicationRequest) => getExtensionForUrl(medicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner"))
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "dispenseRequest.performer", (medicationRequest) => medicationRequest.dispenseRequest.performer),
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "dispenseRequest.extension (performer site type)", (medicationRequest) => getExtensionForUrl(medicationRequest.dispenseRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType")),
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "extension (prescription type)", (medicationRequest) => getExtensionForUrl(medicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType")),
+        (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "extension (responsible practitioner)", (medicationRequest) => getExtensionForUrl(medicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner"))
     ]
     const medicationRequests = getMatchingEntries(bundle, "MedicationRequest") as Array<MedicationRequest>
     const medicationRequestConsistencyValidationErrors = validate(medicationRequests, ...medicationRequestConsistencyValidators)
@@ -59,19 +59,22 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
     ]
 }
 
-type Validator<T> = (input: T) => ValidationError
+function notEmpty<T>(value: T | null | undefined): value is T {
+    return value !== null && value !== undefined
+}
+type Validator<T> = (input: T) => ValidationError | null
 
 // Validate
-function validate<T>(input: T, ...validators: Array<Validator<T>>) {
+function validate<T>(input: T, ...validators: Array<Validator<T>>): Array<ValidationError> {
     return validators.map(v => v(input))
-        .filter(x => x)
+        .filter(notEmpty)
 }
 
 function verifyValueIdenticalForAllMedicationRequests<U>(
     medicationRequests: Array<MedicationRequest>,
     fieldName: string,
     fieldAccessor: (resource: MedicationRequest) => U
-): ValidationError {
+): ValidationError | null {
     const fieldValues = medicationRequests.map(fieldAccessor)
     const serializedFieldValues = fieldValues.map(value => JSON.stringify(value))
     const uniqueFieldValues = new Set(serializedFieldValues)
@@ -83,7 +86,7 @@ function verifyValueIdenticalForAllMedicationRequests<U>(
     }
 }
 
-function verifyHasId(bundle: Bundle): ValidationError {
+function verifyHasId(bundle: Bundle): ValidationError | null {
     return bundle.id !== undefined ? null : {
         message: "ResourceType Bundle must contain 'id' field",
         operationOutcomeCode: "value",
@@ -108,10 +111,11 @@ function verifyBundleContainsEntries(bundle: Bundle) {
 export function getMatchingEntries(bundle: Bundle, resourceType: string): Array<Resource> {
     return bundle.entry
         .map(entry => entry.resource)
+        .filter(notEmpty)
         .filter(resource => resource.resourceType === resourceType)
 }
 
-function verifyBundleContainsAtLeast(bundle: Bundle, number: number, resourceType: string): ValidationError {
+function verifyBundleContainsAtLeast(bundle: Bundle, number: number, resourceType: string): ValidationError | null {
     const matchingEntries = getMatchingEntries(bundle, resourceType)
     if (matchingEntries.length < number) {
         return {
@@ -124,7 +128,7 @@ function verifyBundleContainsAtLeast(bundle: Bundle, number: number, resourceTyp
     return null
 }
 
-function verifyBundleContainsExactly(bundle: Bundle, number: number, resourceType: string): ValidationError {
+function verifyBundleContainsExactly(bundle: Bundle, number: number, resourceType: string): ValidationError | null {
     const matchingEntries = getMatchingEntries(bundle, resourceType)
     if (matchingEntries.length !== number) {
         return {

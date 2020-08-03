@@ -22,7 +22,7 @@ pr:
 jobs:
   - job: build
     displayName: Build & Test
-    timeoutInMinutes: 10
+    timeoutInMinutes: "10"
     pool:
       vmImage: 'ubuntu-latest'
     variables:
@@ -30,7 +30,7 @@ jobs:
     steps:
       - checkout: self
         path: s
-        fetchDepth: 0
+        fetchDepth: "0"
 
       - bash: echo "##vso[task.setvariable variable=BRANCH_NAME]`echo $(System.PullRequest.SourceBranch) | sed -r 's/[/|\\@":<>?*]+/-/g'`"
         displayName: Set and replace invalid characters in branch name
@@ -85,20 +85,7 @@ jobs:
           tag: $(RELEASE_VERSION)
           isDraft: true
           addChangeLog: false
-
-      - bash: "make -s test-e2e-integration-setup"
-        displayName: Setup E2E Integration Tests
-        env:
-          PACT_BROKER_URL: $(PACT_BROKER_URL)
-          PACT_BROKER_BASIC_AUTH_USERNAME: $(PACT_BROKER_BASIC_AUTH_USERNAME)
-          PACT_BROKER_BASIC_AUTH_PASSWORD: $(PACT_BROKER_BASIC_AUTH_PASSWORD)
-          PACT_BROKER_URL_NEXT: $(PACT_BROKER_URL_NEXT)
-          PACT_BROKER_TOKEN_NEXT: $(PACT_BROKER_TOKEN_NEXT)
-          BUILD_SOURCE_BRANCH: $(Build.SourceBranchName)
-          ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
-            BUILD_VERSION: $(RELEASE_VERSION)
-          ${{ if ne(variables['Build.SourceBranchName'], 'master') }}:
-            BUILD_VERSION: $(RELEASE_VERSION)$(SHORT_COMMIT_HASH)
+            
 
       - checkout: utils
         path: s/utils
@@ -109,17 +96,11 @@ jobs:
       - bash: "make build"
         displayName: Build
 
-      - bash: "make run-coordinator &"
-        displayName: Start Coordinator
-
       - bash: "make test"
         displayName: Run Quality Checks
 
       - bash: 'echo "##vso[task.setvariable variable=SPEC_VERSION]$RELEASE_VERSION"'
         displayName: Set SPEC_VERSION
-
-      - bash: "make test-integration-coordinator"
-        displayName: Run Coordinator Integration Tests
 
       - task: PublishTestResults@2
         inputs:

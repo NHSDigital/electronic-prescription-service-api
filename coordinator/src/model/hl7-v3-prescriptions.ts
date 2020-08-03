@@ -3,7 +3,7 @@ import {AttributeClassCode, AttributeMoodCode, AttributeTypeCode, Timestamp} fro
 import * as codes from "./hl7-v3-datatypes-codes"
 import {GlobalIdentifier, ShortFormPrescriptionIdentifier, SnomedCode} from "./hl7-v3-datatypes-codes"
 import * as peoplePlaces from "./hl7-v3-people-places"
-import {ElementCompact} from "xml-js";
+import {ElementCompact} from "xml-js"
 
 /**
  * A participation used to provide a link to the prescriber who authored the prescription.
@@ -362,7 +362,7 @@ export class PrescriptionTreatmentType extends PrescriptionAnnotation {
     value: codes.PrescriptionTreatmentTypeCode
 
     constructor(value: codes.PrescriptionTreatmentTypeCode) {
-        super(new codes.PrescriptionAnnotationCode("PTT"));
+        super(new codes.PrescriptionAnnotationCode("PTT"))
         this.value = value
     }
 }
@@ -374,7 +374,7 @@ export class DispensingSitePreference extends PrescriptionAnnotation {
     value: codes.DispensingSitePreferenceCode
 
     constructor(value: codes.DispensingSitePreferenceCode) {
-        super(new codes.PrescriptionAnnotationCode("DSP"));
+        super(new codes.PrescriptionAnnotationCode("DSP"))
         this.value = value
     }
 }
@@ -386,7 +386,7 @@ export class TokenIssued extends PrescriptionAnnotation {
     value: core.BooleanValue
 
     constructor(value: core.BooleanValue) {
-        super(new codes.PrescriptionAnnotationCode("TI"));
+        super(new codes.PrescriptionAnnotationCode("TI"))
         this.value = value
     }
 }
@@ -398,7 +398,7 @@ export class PrescriptionType extends PrescriptionAnnotation {
     value: codes.PrescriptionTypeCode
 
     constructor(value: codes.PrescriptionTypeCode) {
-        super(new codes.PrescriptionAnnotationCode("PT"));
+        super(new codes.PrescriptionAnnotationCode("PT"))
         this.value = value
     }
 }
@@ -410,7 +410,7 @@ export class DosageInstructions extends PrescriptionAnnotation {
     value: string
 
     constructor(value: string) {
-        super(new codes.PrescriptionAnnotationCode("DI"));
+        super(new codes.PrescriptionAnnotationCode("DI"))
         this.value = value
     }
 }
@@ -494,6 +494,10 @@ export class ActRef implements ElementCompact {
     }
 }
 
+/**
+ * An act relationship used to provide information on the number of days' treatment that the current prescription's medication provides for.
+ * Applicable to repeat dispensing prescriptions only.
+ */
 export class Component1 {
     _attributes: core.AttributeTypeCode = {
         typeCode: "COMP"
@@ -503,6 +507,10 @@ export class Component1 {
     daysSupply: DaysSupply
 }
 
+/**
+ * Prescription duration and supply intervals used to calculate the "Dispensing Window".
+ * This information is mandatory for repeat dispensing prescriptions, optional otherwise.
+ */
 export class DaysSupply {
     _attributes: core.AttributeClassCode & AttributeMoodCode = {
         classCode: "SPLY",
@@ -510,18 +518,14 @@ export class DaysSupply {
     }
 
     code: codes.SnomedCode = new codes.SnomedCode("373784005", "Dispensing medication (procedure)")
-    effectiveTime: IntervalComplete
-    expectedUseTime: IntervalUnanchored
+    effectiveTime: core.IntervalComplete
+    expectedUseTime: core.IntervalUnanchored
 }
 
-export class IntervalComplete {
-    low: Timestamp
-    high: Timestamp
-}
+export class ParentPrescriptionRoot {
+    ParentPrescription: ParentPrescription
 
-export class IntervalUnanchored {
-    width: {
-        value: number
-        unit: string
+    constructor(parentPrescription: ParentPrescription) {
+        this.ParentPrescription = parentPrescription
     }
 }

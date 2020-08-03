@@ -1,0 +1,16 @@
+type: object
+description: A Universally Unique Identifier (UUID).
+required:
+  - system
+  - value
+properties:
+  system:
+    type: string
+    description: Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
+    enum:
+      - "https://tools.ietf.org/html/rfc4122"
+    example: "https://tools.ietf.org/html/rfc4122"
+  value:
+    type: string
+    description: The portion of the identifier typically relevant to the user and which is unique within the context of the system.
+    example: "05AB477D-D72F-404D-9651-416DA988C138"

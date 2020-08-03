@@ -8,8 +8,9 @@ properties:
   resourceType:
     type: string
     description: FHIR Resource type
-    default: "Organization"
-    readOnly: true
+    enum:
+      - "Organization"
+    example: "Organization"
   id:
     type: string
     description: Logical id of this artifact.
