@@ -1,5 +1,5 @@
 import 'jest'
-import moxios from 'moxios'
+import * as moxios from 'moxios'
 import axios from 'axios'
 import { RequestHandler, isPollable, SpinePollableResponse } from '../../src/services/spine-communication'
 
@@ -81,7 +81,7 @@ describe('Spine communication', () => {
 })
 
 describe('Spine responses', () => {
-    test('Messages shoule be correctly identified as pollable', () => {
+    test('Messages should be correctly identified as pollable', () => {
         const message = {
             statusCode: 200,
             pollingUrl: 'http://test.com'
@@ -90,7 +90,7 @@ describe('Spine responses', () => {
         expect(isPollable(message)).toBe(true)
     })
 
-    test('Messages shoule be correctly identified as non-pollable', () => {
+    test('Messages should be correctly identified as non-pollable', () => {
         const message = {
             statusCode: 200,
             body: 'This is a response body'

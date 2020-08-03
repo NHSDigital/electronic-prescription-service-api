@@ -9,20 +9,21 @@ properties:
     description: The identification of the code system that defines the meaning of the symbol in the code.
     enum: 
       - "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-course-of-therapy"
-    example: "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-course-of-therapy"
+      - "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy"
+    example: "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy"
   code:
     type: string
     description: A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).
     enum: 
       - "acute"
-      - "repeat"
-      - "repeat-dispensing"
+      - "continuous"
+      - "continuous-repeat-dispensing"
     example: "acute"
   display:
     type: string
     description: A representation of the meaning of the code in the system, following the rules of the system.
     enum: 
-      - "Acute"
-      - "Repeat"
-      - "Repeat Dispensing"
+      - "Short course (acute) therapy"
+      - "Continuous long term therapy"
+      - "Continuous long term (repeat dispensing)"
     example: "Acute"

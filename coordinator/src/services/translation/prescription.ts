@@ -63,9 +63,9 @@ function convertCourseOfTherapyTypeCode(courseOfTherapyTypeValue: string) {
   switch (courseOfTherapyTypeValue) {
     case "acute":
       return codes.PrescriptionTreatmentTypeCode.ACUTE
-    case "repeat":
+    case "continuous":
       return codes.PrescriptionTreatmentTypeCode.REPEAT_PRESCRIBING
-    case "repeat-dispensing":
+    case "continuous-repeat-dispensing":
       return codes.PrescriptionTreatmentTypeCode.REPEAT_DISPENSING
     default:
       throw TypeError("Unhandled courseOfTherapyType " + courseOfTherapyTypeValue)
