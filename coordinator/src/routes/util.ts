@@ -6,15 +6,15 @@ import {ValidationError} from "../validators/request-validator"
 import {wrapInOperationOutcome} from "../services/translation/common"
 
 export function handlePollableResponse(spineResponse: SpineDirectResponse | SpinePollableResponse, responseToolkit: Hapi.ResponseToolkit): Hapi.ResponseObject {
-    if (isPollable(spineResponse)) {
-        return responseToolkit.response()
-          .code(spineResponse.statusCode)
-          .header('Content-Location', spineResponse.pollingUrl)
-    } else {
-        return responseToolkit.response(wrapInOperationOutcome(spineResponse))
-          .code(spineResponse.statusCode)
-          .header('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-    }
+  if (isPollable(spineResponse)) {
+    return responseToolkit.response()
+      .code(spineResponse.statusCode)
+      .header("Content-Location", spineResponse.pollingUrl)
+  } else {
+    return responseToolkit.response(wrapInOperationOutcome(spineResponse))
+      .code(spineResponse.statusCode)
+      .header("Content-Type", "application/fhir+json; fhirVersion=4.0")
+  }
 }
 
 type Handler<T> = (requestPayload: T, responseToolkit: Hapi.ResponseToolkit) => Hapi.ResponseObject | Promise<Hapi.ResponseObject>

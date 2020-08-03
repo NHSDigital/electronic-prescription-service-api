@@ -10,8 +10,8 @@ import {ElementCompact} from "xml-js"
  */
 export class Author implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
-        typeCode: "AUT",
-        contextControlCode: "OP"
+      typeCode: "AUT",
+      contextControlCode: "OP"
     }
 
     time: core.Timestamp
@@ -24,8 +24,8 @@ export class Author implements ElementCompact {
  */
 export class LineItem implements ElementCompact {
     _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-        classCode: "SBADM",
-        moodCode: "RQO"
+      classCode: "SBADM",
+      moodCode: "RQO"
     }
 
     id: codes.GlobalIdentifier
@@ -41,10 +41,10 @@ export class LineItem implements ElementCompact {
     //TODO - inFulfillmentOf1
 
     constructor(id: GlobalIdentifier) {
-        this.id = id
-        //TODO do we need to support child codes of this?
-        this.code = new codes.SnomedCode("225426007", "Administration of therapeutic substance (procedure)")
-        this.effectiveTime = core.Null.NOT_APPLICABLE
+      this.id = id
+      //TODO do we need to support child codes of this?
+      this.code = new codes.SnomedCode("225426007", "Administration of therapeutic substance (procedure)")
+      this.effectiveTime = core.Null.NOT_APPLICABLE
     }
 }
 
@@ -53,14 +53,14 @@ export class LineItem implements ElementCompact {
  */
 export class Product implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
-        typeCode: "PRD",
-        contextControlCode: "OP"
+      typeCode: "PRD",
+      contextControlCode: "OP"
     }
 
     manufacturedProduct: ManufacturedProduct
 
     constructor(manufacturedProduct: ManufacturedProduct) {
-        this.manufacturedProduct = manufacturedProduct
+      this.manufacturedProduct = manufacturedProduct
     }
 }
 
@@ -69,13 +69,13 @@ export class Product implements ElementCompact {
  */
 export class ManufacturedProduct implements ElementCompact {
     _attributes: core.AttributeClassCode = {
-        classCode: "MANU"
+      classCode: "MANU"
     }
 
     manufacturedRequestedMaterial: ManufacturedRequestedMaterial
 
     constructor(manufacturedRequestedMaterial: ManufacturedRequestedMaterial) {
-        this.manufacturedRequestedMaterial = manufacturedRequestedMaterial
+      this.manufacturedRequestedMaterial = manufacturedRequestedMaterial
     }
 }
 
@@ -84,14 +84,14 @@ export class ManufacturedProduct implements ElementCompact {
  */
 export class ManufacturedRequestedMaterial implements ElementCompact {
     _attributes: core.AttributeClassCode & core.AttributeDeterminerCode = {
-        classCode: "MMAT",
-        determinerCode: "KIND"
+      classCode: "MMAT",
+      determinerCode: "KIND"
     }
 
     code: codes.SnomedCode
 
     constructor(code: codes.SnomedCode) {
-        this.code = code
+      this.code = code
     }
 }
 
@@ -100,14 +100,14 @@ export class ManufacturedRequestedMaterial implements ElementCompact {
  */
 export class LineItemComponent implements ElementCompact {
     _attributes: core.AttributeTypeCode = {
-        typeCode: "COMP"
+      typeCode: "COMP"
     }
 
     seperatableInd: core.BooleanValue = new core.BooleanValue(false)
     lineItemQuantity: LineItemQuantity
 
     constructor(lineItemQuantity: LineItemQuantity) {
-        this.lineItemQuantity = lineItemQuantity
+      this.lineItemQuantity = lineItemQuantity
     }
 }
 
@@ -116,15 +116,15 @@ export class LineItemComponent implements ElementCompact {
  */
 export class LineItemPertinentInformation2 implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
-        typeCode: "PERT",
-        contextConductionInd: "true"
+      typeCode: "PERT",
+      contextConductionInd: "true"
     }
 
     seperatableInd: core.BooleanValue = new core.BooleanValue(false)
     pertinentDosageInstructions: DosageInstructions
 
     constructor(pertinentDosageInstructions: DosageInstructions) {
-        this.pertinentDosageInstructions = pertinentDosageInstructions
+      this.pertinentDosageInstructions = pertinentDosageInstructions
     }
 
 }
@@ -134,8 +134,8 @@ export class LineItemPertinentInformation2 implements ElementCompact {
  */
 export class LineItemQuantity implements ElementCompact {
     _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-        classCode: "SPLY",
-        moodCode: "RQO"
+      classCode: "SPLY",
+      moodCode: "RQO"
     }
 
     code: codes.SnomedCode = new codes.SnomedCode("373784005", "Dispensing medication (procedure)")
@@ -151,8 +151,8 @@ export class LineItemQuantity implements ElementCompact {
  */
 export class ParentPrescription implements ElementCompact {
     _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-        classCode: "INFO",
-        moodCode: "EVN",
+      classCode: "INFO",
+      moodCode: "EVN"
     }
 
     id: codes.GlobalIdentifier
@@ -164,10 +164,10 @@ export class ParentPrescription implements ElementCompact {
     pertinentInformation2: ParentPrescriptionPertinentInformation2
 
     constructor(id: codes.GlobalIdentifier, effectiveTime: core.Timestamp) {
-        this.id = id
-        this.code = new codes.SnomedCode("163501000000109", "Prescription - FocusActOrEvent (record artifact)")
-        this.effectiveTime = effectiveTime
-        this.typeId = new codes.TypeIdentifier("PORX_MT132004UK31")
+      this.id = id
+      this.code = new codes.SnomedCode("163501000000109", "Prescription - FocusActOrEvent (record artifact)")
+      this.effectiveTime = effectiveTime
+      this.typeId = new codes.TypeIdentifier("PORX_MT132004UK31")
     }
 }
 
@@ -176,13 +176,13 @@ export class ParentPrescription implements ElementCompact {
  */
 export class RecordTarget implements ElementCompact {
     _attributes: core.AttributeTypeCode = {
-        typeCode: "RCT"
+      typeCode: "RCT"
     }
 
     Patient: peoplePlaces.Patient
 
     constructor(patient: peoplePlaces.Patient) {
-        this.Patient = patient
+      this.Patient = patient
     }
 }
 
@@ -191,15 +191,15 @@ export class RecordTarget implements ElementCompact {
  */
 export class ParentPrescriptionPertinentInformation1 implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
-        typeCode: "PERT",
-        contextConductionInd: "true"
+      typeCode: "PERT",
+      contextConductionInd: "true"
     }
 
     templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.pertinentInformation")
     pertinentPrescription: Prescription
 
     constructor(pertinentPrescription: Prescription) {
-        this.pertinentPrescription = pertinentPrescription
+      this.pertinentPrescription = pertinentPrescription
     }
 }
 
@@ -208,8 +208,8 @@ export class ParentPrescriptionPertinentInformation1 implements ElementCompact {
  */
 export class Prescription implements ElementCompact {
     _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-        classCode: "SBADM",
-        moodCode: "RQO"
+      classCode: "SBADM",
+      moodCode: "RQO"
     }
 
     id: [codes.GlobalIdentifier, codes.ShortFormPrescriptionIdentifier]
@@ -232,9 +232,9 @@ export class Prescription implements ElementCompact {
     //TODO - inFulfillmentOf
 
     constructor(id: GlobalIdentifier, shortFormId: ShortFormPrescriptionIdentifier) {
-        this.id = [id, shortFormId]
-        this.code = new codes.SnomedCode("225426007", "Administration of therapeutic substance (procedure)")
-        this.effectiveTime = core.Null.NOT_APPLICABLE
+      this.id = [id, shortFormId]
+      this.code = new codes.SnomedCode("225426007", "Administration of therapeutic substance (procedure)")
+      this.effectiveTime = core.Null.NOT_APPLICABLE
     }
 }
 
@@ -243,14 +243,14 @@ export class Prescription implements ElementCompact {
  */
 export class Performer implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
-        typeCode: "PRF",
-        contextControlCode: "OP"
+      typeCode: "PRF",
+      contextControlCode: "OP"
     }
 
     AgentOrgSDS: peoplePlaces.AgentOrganization
 
     constructor(agentOrganization: peoplePlaces.AgentOrganization) {
-        this.AgentOrgSDS = agentOrganization
+      this.AgentOrgSDS = agentOrganization
     }
 }
 
@@ -259,15 +259,15 @@ export class Performer implements ElementCompact {
  */
 export class PrescriptionPertinentInformation1 implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
-        typeCode: "PERT",
-        contextConductionInd: "true"
+      typeCode: "PERT",
+      contextConductionInd: "true"
     }
 
     seperatableInd: core.BooleanValue = new core.BooleanValue(true)
     pertinentDispensingSitePreference: DispensingSitePreference
 
     constructor(pertinentDispensingSitePreference: DispensingSitePreference) {
-        this.pertinentDispensingSitePreference = pertinentDispensingSitePreference
+      this.pertinentDispensingSitePreference = pertinentDispensingSitePreference
     }
 }
 
@@ -276,10 +276,10 @@ export class PrescriptionPertinentInformation1 implements ElementCompact {
  */
 export class PrescriptionPertinentInformation2 implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeInversionInd & core.AttributeContextConductionInd & core.AttributeNegationInd = {
-        typeCode: "PERT",
-        inversionInd: "false",
-        contextConductionInd: "true",
-        negationInd: "false"
+      typeCode: "PERT",
+      inversionInd: "false",
+      contextConductionInd: "true",
+      negationInd: "false"
     }
 
     seperatableInd: core.BooleanValue = new core.BooleanValue(true)
@@ -287,7 +287,7 @@ export class PrescriptionPertinentInformation2 implements ElementCompact {
     pertinentLineItem: LineItem
 
     constructor(pertinentLineItem: LineItem) {
-        this.pertinentLineItem = pertinentLineItem
+      this.pertinentLineItem = pertinentLineItem
     }
 }
 
@@ -296,15 +296,15 @@ export class PrescriptionPertinentInformation2 implements ElementCompact {
  */
 export class PrescriptionPertinentInformation4 implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
-        typeCode: "PERT",
-        contextConductionInd: "true"
+      typeCode: "PERT",
+      contextConductionInd: "true"
     }
 
     seperatableInd: core.BooleanValue = new core.BooleanValue(false)
     pertinentPrescriptionType: PrescriptionType
 
     constructor(pertinentPrescriptionType: PrescriptionType) {
-        this.pertinentPrescriptionType = pertinentPrescriptionType
+      this.pertinentPrescriptionType = pertinentPrescriptionType
     }
 }
 
@@ -313,15 +313,15 @@ export class PrescriptionPertinentInformation4 implements ElementCompact {
  */
 export class PrescriptionPertinentInformation5 implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
-        typeCode: "PERT",
-        contextConductionInd: "true"
+      typeCode: "PERT",
+      contextConductionInd: "true"
     }
 
     seperatableInd: core.BooleanValue = new core.BooleanValue(false)
     pertinentPrescriptionTreatmentType: PrescriptionTreatmentType
 
     constructor(pertinentPrescriptionTreatmentType: PrescriptionTreatmentType) {
-        this.pertinentPrescriptionTreatmentType = pertinentPrescriptionTreatmentType
+      this.pertinentPrescriptionTreatmentType = pertinentPrescriptionTreatmentType
     }
 }
 
@@ -330,28 +330,28 @@ export class PrescriptionPertinentInformation5 implements ElementCompact {
  */
 export class PrescriptionPertinentInformation8 implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
-        typeCode: "PERT",
-        contextConductionInd: "true"
+      typeCode: "PERT",
+      contextConductionInd: "true"
     }
 
     seperatableInd: core.BooleanValue = new core.BooleanValue(false)
     pertinentTokenIssued: TokenIssued
 
     constructor(pertinentTokenIssued: TokenIssued) {
-        this.pertinentTokenIssued = pertinentTokenIssued
+      this.pertinentTokenIssued = pertinentTokenIssued
     }
 }
 
 abstract class PrescriptionAnnotation implements ElementCompact {
     _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-        classCode: "OBS",
-        moodCode: "EVN"
+      classCode: "OBS",
+      moodCode: "EVN"
     }
 
     code: codes.PrescriptionAnnotationCode
 
     constructor(code: codes.PrescriptionAnnotationCode) {
-        this.code = code
+      this.code = code
     }
 }
 
@@ -362,8 +362,8 @@ export class PrescriptionTreatmentType extends PrescriptionAnnotation {
     value: codes.PrescriptionTreatmentTypeCode
 
     constructor(value: codes.PrescriptionTreatmentTypeCode) {
-        super(new codes.PrescriptionAnnotationCode("PTT"))
-        this.value = value
+      super(new codes.PrescriptionAnnotationCode("PTT"))
+      this.value = value
     }
 }
 
@@ -374,8 +374,8 @@ export class DispensingSitePreference extends PrescriptionAnnotation {
     value: codes.DispensingSitePreferenceCode
 
     constructor(value: codes.DispensingSitePreferenceCode) {
-        super(new codes.PrescriptionAnnotationCode("DSP"))
-        this.value = value
+      super(new codes.PrescriptionAnnotationCode("DSP"))
+      this.value = value
     }
 }
 
@@ -386,8 +386,8 @@ export class TokenIssued extends PrescriptionAnnotation {
     value: core.BooleanValue
 
     constructor(value: core.BooleanValue) {
-        super(new codes.PrescriptionAnnotationCode("TI"))
-        this.value = value
+      super(new codes.PrescriptionAnnotationCode("TI"))
+      this.value = value
     }
 }
 
@@ -398,8 +398,8 @@ export class PrescriptionType extends PrescriptionAnnotation {
     value: codes.PrescriptionTypeCode
 
     constructor(value: codes.PrescriptionTypeCode) {
-        super(new codes.PrescriptionAnnotationCode("PT"))
-        this.value = value
+      super(new codes.PrescriptionAnnotationCode("PT"))
+      this.value = value
     }
 }
 
@@ -410,8 +410,8 @@ export class DosageInstructions extends PrescriptionAnnotation {
     value: string
 
     constructor(value: string) {
-        super(new codes.PrescriptionAnnotationCode("DI"))
-        this.value = value
+      super(new codes.PrescriptionAnnotationCode("DI"))
+      this.value = value
     }
 }
 
@@ -420,8 +420,8 @@ export class DosageInstructions extends PrescriptionAnnotation {
  */
 export class ResponsibleParty implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
-        typeCode: "RESP",
-        contextControlCode: "OP"
+      typeCode: "RESP",
+      contextControlCode: "OP"
     }
 
     AgentPerson: peoplePlaces.AgentPerson
@@ -432,14 +432,14 @@ export class ResponsibleParty implements ElementCompact {
  */
 export class ParentPrescriptionPertinentInformation2 implements ElementCompact {
     _attributes: core.AttributeTypeCode = {
-        typeCode: "PERT"
+      typeCode: "PERT"
     }
 
     templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.pertinentInformation1")
     pertinentCareRecordElementCategory: CareRecordElementCategory
 
     constructor(pertinentCareRecordElementCategory: CareRecordElementCategory) {
-        this.pertinentCareRecordElementCategory = pertinentCareRecordElementCategory
+      this.pertinentCareRecordElementCategory = pertinentCareRecordElementCategory
     }
 }
 
@@ -449,8 +449,8 @@ export class ParentPrescriptionPertinentInformation2 implements ElementCompact {
  */
 export class CareRecordElementCategory implements ElementCompact {
     _attributes: core.AttributeClassCode & AttributeMoodCode = {
-        classCode: "CATEGORY",
-        moodCode: "EVN"
+      classCode: "CATEGORY",
+      moodCode: "EVN"
     }
 
     code = new SnomedCode("185361000000102", "Medication - care record element (record artifact)")
@@ -462,13 +462,13 @@ export class CareRecordElementCategory implements ElementCompact {
  */
 export class CareRecordElementCategoryComponent implements ElementCompact {
     _attributes: AttributeTypeCode = {
-        typeCode: "COMP"
+      typeCode: "COMP"
     }
 
     actRef: ActRef
 
     constructor(actRef: ActRef) {
-        this.actRef = actRef
+      this.actRef = actRef
     }
 }
 
@@ -485,12 +485,12 @@ export class ActRef implements ElementCompact {
     id: GlobalIdentifier
 
     constructor(act: Act) {
-        this._attributes = {
-            classCode: act._attributes.classCode,
-            moodCode: act._attributes.moodCode
-        }
+      this._attributes = {
+        classCode: act._attributes.classCode,
+        moodCode: act._attributes.moodCode
+      }
 
-        this.id = act.id
+      this.id = act.id
     }
 }
 
@@ -500,7 +500,7 @@ export class ActRef implements ElementCompact {
  */
 export class Component1 {
     _attributes: core.AttributeTypeCode = {
-        typeCode: "COMP"
+      typeCode: "COMP"
     }
 
     seperatableInd: core.BooleanValue = new core.BooleanValue(true)
@@ -513,8 +513,8 @@ export class Component1 {
  */
 export class DaysSupply {
     _attributes: core.AttributeClassCode & AttributeMoodCode = {
-        classCode: "SPLY",
-        moodCode: "RQO"
+      classCode: "SPLY",
+      moodCode: "RQO"
     }
 
     code: codes.SnomedCode = new codes.SnomedCode("373784005", "Dispensing medication (procedure)")
@@ -526,6 +526,6 @@ export class ParentPrescriptionRoot {
     ParentPrescription: ParentPrescription
 
     constructor(parentPrescription: ParentPrescription) {
-        this.ParentPrescription = parentPrescription
+      this.ParentPrescription = parentPrescription
     }
 }
