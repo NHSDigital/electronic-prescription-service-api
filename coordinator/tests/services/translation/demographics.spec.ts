@@ -17,7 +17,7 @@ describe("convertName fills correct fields only", () => {
     expect(result.prefix).toEqual([{_text: prefix}])
   })
 
-  test("prefix should add prefix key", () => {
+  test("given should add given key", () => {
     const given = "example"
     const fhirName = {given: [given]}
     const result = demographics.convertName(fhirName)
@@ -49,35 +49,71 @@ describe("convertName fills correct fields only", () => {
     expect(result.family).toEqual({_text: ""})
     expect(result.suffix).toEqual([{_text: ""}])
   })
-})
 
-describe("convertNameUse returns correct use", () => {
-  test("usual should return L", () => {
+  test("usual should return USUAL", () => {
     const fhirName = {"use": "usual"}
     const result = demographics.convertName(fhirName)
     expect(result._attributes).toEqual({use: core.NameUse.USUAL})
   })
 
-  test("official should return L", () => {
+  test("official should return USUAL", () => {
     const fhirName = {"use": "official"}
     const result = demographics.convertName(fhirName)
     expect(result._attributes).toEqual({use: core.NameUse.USUAL})
   })
 
-  test("nickname should return A", () => {
+  test("nickname should return ALIAS", () => {
     const fhirName = {"use": "nickname"}
     const result = demographics.convertName(fhirName)
     expect(result._attributes).toEqual({use: core.NameUse.ALIAS})
   })
 
-  test("empty should return undefined", () => {
-    const fhirName = {}
-    const result = demographics.convertName(fhirName)
-    expect(result._attributes).toEqual({use: undefined})
-  })
-
   test("Other should throw TypeError", () => {
     const fhirName = {"use": ""}
     expect(() => demographics.convertName(fhirName)).toThrow(TypeError)
+  })
+})
+
+describe("convertTelecom should convert correct use", () => {
+  test("empty telecom should throw TypeError", () => {
+    const fhirTelecom = {}
+    expect(() => demographics.convertTelecom(fhirTelecom)).toThrow(TypeError)
+  })
+
+  test("home should return PERMANENT_HOME", () => {
+    const fhirTelecom = {use: "home"}
+    const result = demographics.convertTelecom(fhirTelecom)
+    expect(result._attributes).toEqual({use: core.TelecomUse.PERMANENT_HOME})
+  })
+
+  test("work should return WORKPLACE", () => {
+    const fhirTelecom = {use: "work"}
+    const result = demographics.convertTelecom(fhirTelecom)
+    expect(result._attributes).toEqual({use: core.TelecomUse.WORKPLACE})
+  })
+
+  test("temp should return TEMPORARY", () => {
+    const fhirTelecom = {use: "temp"}
+    const result = demographics.convertTelecom(fhirTelecom)
+    expect(result._attributes).toEqual({use: core.TelecomUse.TEMPORARY})
+  })
+
+  test("mobile should return MOBILE", () => {
+    const fhirTelecom = {use: "mobile"}
+    const result = demographics.convertTelecom(fhirTelecom)
+    expect(result._attributes).toEqual({use: core.TelecomUse.MOBILE})
+  })
+})
+
+describe("convertAddress should return correct addresses", () => {
+  test("empty address should throw TypeError", () => {
+    const fhirAddress = {}
+    expect(() => demographics.convertAddress(fhirAddress)).toThrow(TypeError)
+  })
+
+  test("address type as postal should return ", () => {
+    const fhirAddress = {type: "postal"}
+    const result = demographics.convertAddress(fhirAddress)
+    expect(result).toEqual({_attributes: {use: "postal"}})
   })
 })
