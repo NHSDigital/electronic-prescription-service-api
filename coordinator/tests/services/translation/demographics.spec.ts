@@ -1,5 +1,6 @@
 import * as demographics from "../../../src/services/translation/demographics"
 import * as core from "../../../src/model/hl7-v3-datatypes-core"
+import * as codes from "../../../src/model/hl7-v3-datatypes-codes"
 
 describe("convertName fills correct fields only", () => {
   test("no keys should add no keys", () => {
@@ -106,14 +107,42 @@ describe("convertTelecom should convert correct use", () => {
 })
 
 describe("convertAddress should return correct addresses", () => {
-  test("empty address should throw TypeError", () => {
-    const fhirAddress = {}
+  test("Throw TypeError when no use or type", () => {
+    const fhirAddress = {line: [""]}
     expect(() => demographics.convertAddress(fhirAddress)).toThrow(TypeError)
   })
 
-  test("address type as postal should return ", () => {
-    const fhirAddress = {type: "postal"}
+  test("address type as postal and use as anything else should return use as core.AddressUse.POSTAL", () => {
+    const fhirAddress = {type: "postal", use:"home", line: [""]}
     const result = demographics.convertAddress(fhirAddress)
-    expect(result).toEqual({_attributes: {use: "postal"}})
+    expect(result._attributes).toEqual({use: core.AddressUse.POSTAL})
+    expect(result.streetAddressLine).toHaveLength(1)
+  })
+
+  test("address type not postal and use as allowed value should return correct value", () => {
+    const fhirAddressHome = {type: "example", use:"home", line: [""]}
+    const fhirAddressWork = {type: "example", use:"work", line: [""]}
+    const fhirAddressTemp = {type: "example", use:"temp", line: [""]}
+
+    const resultHome = demographics.convertAddress(fhirAddressHome)
+    const resultWork = demographics.convertAddress(fhirAddressWork)
+    const resultTemp = demographics.convertAddress(fhirAddressTemp)
+
+    expect(resultHome._attributes).toEqual({use: core.AddressUse.HOME})
+    expect(resultWork._attributes).toEqual({use: core.AddressUse.WORK})
+    expect(resultTemp._attributes).toEqual({use: core.AddressUse.TEMPORARY})
+  })
+})
+
+describe("convertGender should return correct gender", () => {
+  test("valid fhirGender returns correct hl7 gender", () => {
+    expect(demographics.convertGender("male")).toEqual(codes.SexCode.MALE)
+    expect(demographics.convertGender("female")).toEqual(codes.SexCode.FEMALE)
+    expect(demographics.convertGender("other")).toEqual(codes.SexCode.INDETERMINATE)
+    expect(demographics.convertGender("unknown")).toEqual(codes.SexCode.UNKNOWN)
+  })
+
+  test("invalid fhirGender throws TypeError", () => {
+    expect(() => demographics.convertGender("example")).toThrow(TypeError)
   })
 })
