@@ -1,5 +1,5 @@
 type: object
-description: An address expressed using postal conventions (as opposed to GPS or other location definition formats). This data type may be used to convey addresses for use in delivering mail as well as for visiting locations which might not be valid for mail delivery. There are a variety of postal address formats defined around the world.
+description: An address expressed using postal conventions (as opposed to GPS or other location/navigation definition formats). This data type may be used to define addresses for use in delivering mail as well as for visiting locations which might not be valid for mail delivery. There are a variety of postal address formats defined around the world.
 required:
   - line
 properties:
@@ -15,7 +15,7 @@ properties:
     example: "work"
   type:
     type: string
-    description: Distinguishes between physical addresses (those you can visit) and mailing addresses (e.g. PO Boxes and care-of addresses). Most addresses are both.
+    description: Distinguishes between physical addresses (those you can visit) and mailing addresses (for example, PO Boxes and care-of addresses). Most addresses are both.
     enum:
       - "postal"
       - "physical"
@@ -23,7 +23,7 @@ properties:
     example: "both"
   line:
     type: array
-    description: This component contains the house number, apartment number, street name, street direction, P.O. Box number, delivery hints, and similar address information.
+    description: This component contains the house number, apartment number, street name, street direction, PO Box, delivery hints, and similar address information.
     items:
       type: string
       example: "1 Otley Road"
