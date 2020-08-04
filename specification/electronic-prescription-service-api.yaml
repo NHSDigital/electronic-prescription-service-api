@@ -33,6 +33,11 @@ info:
 
 
     Currently, this API can only be accessed by healthcare professionals, authenticated with an NHS smartcard or equivalent.
+    
+    Please use the following values for courseOfTherapyType depending on the submitted prescription type:
+    * acute => acute
+    * repeat => continuous
+    * repeat-dispensing => continuous-repeat-dispensing
 
     ## Using this API
     Electronic prescription messages are digitally signed to protect against tampering and to prevent repudiation. While the messages themselves are FHIR-based, for reasons of backwards compatibility, the signatures must be represented in HL7 V3 format. To make this easier, you can POST a prescription to the `/Prepare` endpoint to receive exactly the HL7 V3 fragments which need to be signed to conform to the specification.
