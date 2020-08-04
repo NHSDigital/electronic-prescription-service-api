@@ -27,19 +27,19 @@ class EbXmlRequest {
     hl7_message: string
 
     constructor(interactionId: string, cpaId: string, hl7V3Message: string) {
-        this.action = interactionId
-        this.cpa_id = cpaId
-        this.hl7_message = hl7V3Message
+      this.action = interactionId
+      this.cpa_id = cpaId
+      this.hl7_message = hl7V3Message
     }
 }
 
 export function addEbXmlWrapper(hl7V3Message: string): string {
-    const interactionId = "PORX_IN020101SM31"
-    const cpaId = cpaIdMap.get(interactionId)
+  const interactionId = "PORX_IN020101SM31"
+  const cpaId = cpaIdMap.get(interactionId)
 
-    if (!cpaId) {
-        throw new Error(`Could not identify CPA ID for interaction ${interactionId}`)
-    }
+  if (!cpaId) {
+    throw new Error(`Could not identify CPA ID for interaction ${interactionId}`)
+  }
 
-    return Mustache.render(ebxmlRequestTemplate, new EbXmlRequest(interactionId, cpaId, hl7V3Message))
+  return Mustache.render(ebxmlRequestTemplate, new EbXmlRequest(interactionId, cpaId, hl7V3Message))
 }
