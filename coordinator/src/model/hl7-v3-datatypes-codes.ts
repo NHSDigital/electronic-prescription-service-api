@@ -11,18 +11,18 @@ class Code<T extends string> implements ElementCompact {
     originalText?: Text
 
     constructor(system: T, code: string, desc?: string) {
-        this._attributes = {
-            codeSystem: system,
-            code: code,
-            displayName: desc
-        }
+      this._attributes = {
+        codeSystem: system,
+        code: code,
+        displayName: desc
+      }
     }
 }
 
 export class SexCode extends Code<"2.16.840.1.113883.2.1.3.2.4.16.25"> {
-    constructor(code: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.16.25", code)
-    }
+  constructor(code: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.16.25", code)
+  }
 
     static UNKNOWN = new SexCode("0")
     static MALE = new SexCode("1")
@@ -31,41 +31,41 @@ export class SexCode extends Code<"2.16.840.1.113883.2.1.3.2.4.16.25"> {
 }
 
 export class PatientCareProvisionTypeCode extends Code<"2.16.840.1.113883.2.1.3.2.4.17.37"> {
-    constructor(code: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.17.37", code)
-    }
+  constructor(code: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.17.37", code)
+  }
 
     static PRIMARY_CARE = new PatientCareProvisionTypeCode("1")
 }
 
 export class SnomedCode extends Code<"2.16.840.1.113883.2.1.3.2.4.15"> {
-    constructor(code: string, desc: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.15", code, desc)
-    }
+  constructor(code: string, desc: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.15", code, desc)
+  }
 }
 
 export class SdsJobRoleCode extends Code<"1.2.826.0.1285.0.2.1.104"> {
-    constructor(code: string) {
-        super("1.2.826.0.1285.0.2.1.104", code)
-    }
+  constructor(code: string) {
+    super("1.2.826.0.1285.0.2.1.104", code)
+  }
 }
 
 export class OrganizationTypeCode extends Code<"2.16.840.1.113883.2.1.3.2.4.17.94"> {
-    constructor(code: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.17.94", code)
-    }
+  constructor(code: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.17.94", code)
+  }
 }
 
 export class PrescriptionAnnotationCode extends Code<"2.16.840.1.113883.2.1.3.2.4.17.30"> {
-    constructor(code: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.17.30", code)
-    }
+  constructor(code: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.17.30", code)
+  }
 }
 
 export class PrescriptionTreatmentTypeCode extends Code<"2.16.840.1.113883.2.1.3.2.4.16.36"> {
-    constructor(code: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.16.36", code)
-    }
+  constructor(code: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.16.36", code)
+  }
 
     static ACUTE = new PrescriptionTreatmentTypeCode("0001")
     static CONTINUOUS = new PrescriptionTreatmentTypeCode("0002")
@@ -73,21 +73,21 @@ export class PrescriptionTreatmentTypeCode extends Code<"2.16.840.1.113883.2.1.3
 }
 
 export class DispensingSitePreferenceCode extends Code<"2.16.840.1.113883.2.1.3.2.4.17.21"> {
-    constructor(code: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.17.21", code)
-    }
+  constructor(code: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.17.21", code)
+  }
 }
 
 export class PrescriptionTypeCode extends Code<"2.16.840.1.113883.2.1.3.2.4.17.25"> {
-    constructor(code: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.17.25", code)
-    }
+  constructor(code: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.17.25", code)
+  }
 }
 
 class CodeWithoutSystem extends Code<undefined> {
-    constructor(code: string) {
-        super(undefined, code)
-    }
+  constructor(code: string) {
+    super(undefined, code)
+  }
 }
 
 export class Hl7StandardVersionCode extends CodeWithoutSystem {
@@ -113,10 +113,10 @@ class Identifier<T extends string> implements ElementCompact {
     }
 
     constructor(root: T, extension?: string) {
-        this._attributes = {
-            root: root,
-            extension: extension
-        }
+      this._attributes = {
+        root: root,
+        extension: extension
+      }
     }
 }
 
@@ -126,74 +126,74 @@ export class GlobalIdentifier extends Identifier<string> {
         extension: undefined
     }
     constructor(root: string) {
-        super(root)
+      super(root)
     }
 }
 
 export class TypeIdentifier extends Identifier<"2.16.840.1.113883.2.1.3.2.4.18.7"> {
-    constructor(extension: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.18.7", extension)
-    }
+  constructor(extension: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.18.7", extension)
+  }
 }
 
 export class TemplateIdentifier extends Identifier<"2.16.840.1.113883.2.1.3.2.4.18.2"> {
-    constructor(extension: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.18.2", extension)
-    }
+  constructor(extension: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.18.2", extension)
+  }
 }
 
 export class NhsNumber extends Identifier<"2.16.840.1.113883.2.1.4.1"> {
-    constructor(extension: string) {
-        super("2.16.840.1.113883.2.1.4.1", extension)
-    }
+  constructor(extension: string) {
+    super("2.16.840.1.113883.2.1.4.1", extension)
+  }
 }
 
 export class SdsUniqueIdentifier extends Identifier<"1.2.826.0.1285.0.2.0.65"> {
-    constructor(extension: string) {
-        super("1.2.826.0.1285.0.2.0.65", extension)
-    }
+  constructor(extension: string) {
+    super("1.2.826.0.1285.0.2.0.65", extension)
+  }
 }
 
 export class SdsRoleProfileIdentifier extends Identifier<"1.2.826.0.1285.0.2.0.67"> {
-    constructor(extension: string) {
-        super("1.2.826.0.1285.0.2.0.67", extension)
-    }
+  constructor(extension: string) {
+    super("1.2.826.0.1285.0.2.0.67", extension)
+  }
 }
 
 export class BsaPrescribingIdentifier extends Identifier<"1.2.826.0.1285.0.2.1.54"> {
-    constructor(extension: string) {
-        super("1.2.826.0.1285.0.2.1.54", extension)
-    }
+  constructor(extension: string) {
+    super("1.2.826.0.1285.0.2.1.54", extension)
+  }
 }
 
 export class ShortFormPrescriptionIdentifier extends Identifier<"2.16.840.1.113883.2.1.3.2.4.18.8"> {
-    constructor(extension: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.18.8", extension)
-    }
+  constructor(extension: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.18.8", extension)
+  }
 }
 
 export class SdsOrganizationIdentifier extends Identifier<"1.2.826.0.1285.0.1.10"> {
-    constructor(extension: string) {
-        super("1.2.826.0.1285.0.1.10", extension)
-    }
+  constructor(extension: string) {
+    super("1.2.826.0.1285.0.1.10", extension)
+  }
 }
 
 export class Hl7InteractionIdentifier extends Identifier<"2.16.840.1.113883.2.1.3.2.4.12"> {
-    constructor(extension: string) {
-        super("2.16.840.1.113883.2.1.3.2.4.12", extension)
-    }
+  constructor(extension: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.12", extension)
+  }
 
     static PARENT_PRESCRIPTION_URGENT = new Hl7InteractionIdentifier("PORX_IN020101SM31")
 }
 
 export class AccreditedSystemIdentifier extends Identifier<"1.2.826.0.1285.0.2.0.107"> {
-    constructor(extension: string) {
-        super("1.2.826.0.1285.0.2.0.107", extension)
-    }
+  constructor(extension: string) {
+    super("1.2.826.0.1285.0.2.0.107", extension)
+  }
 }
 
 export class SdsJobRoleIdentifier extends Identifier<"1.2.826.0.1285.0.2.1.104"> {
-    constructor(extension: string) {
-        super("1.2.826.0.1285.0.2.1.104", extension)
-    }
+  constructor(extension: string) {
+    super("1.2.826.0.1285.0.2.1.104", extension)
+  }
 }

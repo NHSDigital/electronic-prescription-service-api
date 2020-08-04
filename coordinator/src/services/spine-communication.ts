@@ -2,8 +2,8 @@ import axios from "axios"
 import https from "https"
 import {addEbXmlWrapper} from "./request-builder"
 
-const SPINE_ENDPOINT = 'https://veit07.devspineservices.nhs.uk'
-const SPINE_PATH = '/Prescription'
+const SPINE_ENDPOINT = "https://veit07.devspineservices.nhs.uk"
+const SPINE_PATH = "/Prescription"
 
 type SpineResponse = SpineDirectResponse | SpinePollableResponse
 
@@ -23,11 +23,11 @@ export interface SpinePollableResponse {
 }
 
 export function isDirect(spineResponse: SpineResponse): spineResponse is SpineDirectResponse {
-    return !isPollable(spineResponse)
+  return !isPollable(spineResponse)
 }
 
 export function isPollable(spineResponse: SpineResponse): spineResponse is SpinePollableResponse {
-    return 'pollingUrl' in spineResponse
+  return "pollingUrl" in spineResponse
 }
 
 const httpsAgent = new https.Agent({
@@ -63,27 +63,27 @@ export class RequestHandler {
         {
           httpsAgent,
           headers: {
-            "Content-Type": "multipart/related; boundary=\"--=_MIME-Boundary\"; type=text/xml; start=ebXMLHeader@spine.nhs.uk",
+            "Content-Type": 'multipart/related; boundary="--=_MIME-Boundary"; type=text/xml; start=ebXMLHeader@spine.nhs.uk',
             "SOAPAction": "urn:nhs:names:services:mm/PORX_IN020101SM31"
           }
         }
       )
 
       switch (result.status) {
-        case (202): {
-          console.log('Successful post request for prescription message')
-          const pollingUrl = result.headers['content-location']
-          console.log(`Got polling URL ${pollingUrl}`)
+      case (202): {
+        console.log("Successful post request for prescription message")
+        const pollingUrl = result.headers["content-location"]
+        console.log(`Got polling URL ${pollingUrl}`)
 
-          return {
-            statusCode: result.status,
-            pollingUrl: pollingUrl
-          }
+        return {
+          statusCode: result.status,
+          pollingUrl: pollingUrl
         }
-        default: {
-          console.log(`Got the following response from spine:\n${result.data}`)
-          throw Error(`Unsupported status, expected 202, got ${result.status}`)
-        }
+      }
+      default: {
+        console.log(`Got the following response from spine:\n${result.data}`)
+        throw Error(`Unsupported status, expected 202, got ${result.status}`)
+      }
       }
     } catch (error) {
       console.log(`Failed post request for prescription message. Error: ${error}`)
@@ -93,10 +93,10 @@ export class RequestHandler {
 
   async poll(path: string): Promise<SpineResponse> {
     if (process.env.SANDBOX === "1") {
-      console.log('Sandbox Mode. Returning fixed polling response')
+      console.log("Sandbox Mode. Returning fixed polling response")
       return {
         statusCode: 200,
-        body: 'Message Sent'
+        body: "Message Sent"
       }
     }
 
@@ -110,26 +110,26 @@ export class RequestHandler {
       )
 
       switch (result.status) {
-        case (200): {
-          console.log('Successful request for polling message')
-          return {
-            body: result.data,
-            statusCode: result.status
-          }
+      case (200): {
+        console.log("Successful request for polling message")
+        return {
+          body: result.data,
+          statusCode: result.status
         }
-        case (202): {
-          console.log('Successful request for polling message')
-          const pollingUrl = result.headers['content-location']
-          console.log(`Got polling URL ${pollingUrl}`)
+      }
+      case (202): {
+        console.log("Successful request for polling message")
+        const pollingUrl = result.headers["content-location"]
+        console.log(`Got polling URL ${pollingUrl}`)
 
-          return {
-            statusCode: result.status,
-            pollingUrl: pollingUrl
-          }
+        return {
+          statusCode: result.status,
+          pollingUrl: pollingUrl
         }
-        default: {
-          throw Error(`Unsupported status, expected 200 or 202, got ${result.status}`)
-        }
+      }
+      default: {
+        throw Error(`Unsupported status, expected 200 or 202, got ${result.status}`)
+      }
       }
     } catch (error) {
       console.log(`Failed polling request for polling path ${path}. Error: ${error}`)
