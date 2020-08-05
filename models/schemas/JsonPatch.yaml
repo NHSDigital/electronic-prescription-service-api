@@ -13,7 +13,7 @@ items:
         "replace"
       ]
     path:
-      description: The location of the information to remove, add or replace. The '-' character must be used to add new items to arrays, e.g. names, addresses.
+      description: The location of the information to remove, add or replace. The '-' character must be used to add new items to arrays - for example, names, addresses.
       type: string
       format: jsonpointer
       externalDocs:
