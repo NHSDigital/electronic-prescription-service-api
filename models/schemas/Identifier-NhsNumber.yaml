@@ -26,4 +26,9 @@ properties:
             - "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHSNumberVerificationStatus"
           example: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHSNumberVerificationStatus"
         valueCodeableConcept:
-          $ref: "Coding-NhsNumber.yaml"
+          type: object
+          properties:
+            coding:
+              type: array
+              items:
+                $ref: "Coding-NhsNumber.yaml"
