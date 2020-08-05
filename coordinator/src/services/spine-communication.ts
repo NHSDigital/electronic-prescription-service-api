@@ -2,8 +2,7 @@ import axios from "axios"
 import https from "https"
 import {addEbXmlWrapper} from "./request-builder"
 
-//const SPINE_ENDPOINT = "https://veit07.devspineservices.nhs.uk"
-const SPINE_ENDPOINT2 = "https://msg.intspineservices.nhs.uk"
+const SPINE_ENDPOINT = process.env.SPINE_URL
 const SPINE_PATH = "/Prescription"
 
 type SpineResponse = SpineDirectResponse | SpinePollableResponse
@@ -173,4 +172,4 @@ export class RequestHandler {
   }
 }
 
-export const defaultRequestHandler = new RequestHandler(SPINE_ENDPOINT2, SPINE_PATH, addEbXmlWrapper)
+export const defaultRequestHandler = new RequestHandler(SPINE_ENDPOINT, SPINE_PATH, addEbXmlWrapper)
