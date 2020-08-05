@@ -68,8 +68,8 @@ export class PrescriptionTreatmentTypeCode extends Code<"2.16.840.1.113883.2.1.3
   }
 
     static ACUTE = new PrescriptionTreatmentTypeCode("0001")
-    static REPEAT_PRESCRIBING = new PrescriptionTreatmentTypeCode("0002")
-    static REPEAT_DISPENSING = new PrescriptionTreatmentTypeCode("0003")
+    static CONTINUOUS = new PrescriptionTreatmentTypeCode("0002")
+    static CONTINUOUS_REPEAT_DISPENSING = new PrescriptionTreatmentTypeCode("0003")
 }
 
 export class DispensingSitePreferenceCode extends Code<"2.16.840.1.113883.2.1.3.2.4.17.21"> {
