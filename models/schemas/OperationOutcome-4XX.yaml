@@ -1,12 +1,12 @@
 type: object
 description: |
-  Outcome of an operation that does not result in a resource or bundle being returned (e.g. error, async/batch submission).
+  Outcome of an operation that does not result in a resource or bundle being returned (for example, error, async/batch submission).
   There are a number of possible error codes that can be returned along with a more detailed description in the `display` field.
   Client errors (4XX error codes):
   | Code                       | Response Code | Description                                   |
   | -------------------------- | ------------- | --------------------------------------------- |
   | VALIDATION_ERROR           | 400           | This it the "default" error thrown when no others are applicable. |
-  | ACCESS_DENIED              | 401           | Used when the user does not have permission for a particular request. eg. when their asid does not have the correct interactions attached to it. |
+  | ACCESS_DENIED              | 401           | Used when the user does not have permission for a particular request. For example, when their asid does not have the correct interactions attached to it. |
   | RESOURCE_NOT_FOUND         | 404           | The resource was not found. |
 properties:
   resourceType:
