@@ -16,7 +16,7 @@ export function convertOrganization(
   hl7V3Organization.id = new codes.SdsOrganizationIdentifier(organizationSdsId)
 
   if (fhirOrganization.type !== undefined) {
-    const organizationTypeCoding = getCodeableConceptCodingForSystem(fhirOrganization.type, "urn:oid:2.16.840.1.113883.2.1.3.2.4.17.94")
+    const organizationTypeCoding = getCodeableConceptCodingForSystem(fhirOrganization.type, "https://fhir.nhs.uk/R4/CodeSystem/organisation-type")
     hl7V3Organization.code = new codes.OrganizationTypeCode(organizationTypeCoding.code)
   }
 
