@@ -12,7 +12,7 @@ docker_service:
         - name: SANDBOX
           value: "{{ SANDBOX }}"
         - name: SPINE_URL
-          value: "https://msg.intspineservices.nhs.uk"
+          value: "https://{{ IG3_URL }}"
     secrets:
         - name: CLIENT_KEY
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/private-key'

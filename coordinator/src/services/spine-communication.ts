@@ -17,11 +17,6 @@ export interface SpinePollableResponse {
   statusCode: number
 }
 
-export interface SpinePollableResponse {
-    pollingUrl: string
-    statusCode: number
-}
-
 export function isDirect(spineResponse: SpineResponse): spineResponse is SpineDirectResponse {
   return !isPollable(spineResponse)
 }
@@ -161,6 +156,7 @@ export class RequestHandler {
   }
 
   async sendData(message: string): Promise<SpineResponse> {
+    console.log(`DAN: Sending message to URL: ${this.spineEndpoint}${this.spinePath}`)
     return (
       process.env.SANDBOX === "1" ?
         Promise.resolve({
