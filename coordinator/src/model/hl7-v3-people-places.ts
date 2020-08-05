@@ -1,14 +1,14 @@
 import * as codes from "./hl7-v3-datatypes-codes"
 import * as core from "./hl7-v3-datatypes-core"
-import {ElementCompact} from "xml-js";
-import {Text} from "./hl7-v3-datatypes-core";
+import {ElementCompact} from "xml-js"
+import {Text} from "./hl7-v3-datatypes-core"
 
 /**
  * Identifies or provides detailed information about a person fulfilling a specific role when it is not known whether all of the role profile, player and scoper details are available from SDS.
  */
 export class AgentPerson implements ElementCompact {
     _attributes: core.AttributeClassCode = {
-        classCode: "AGNT"
+      classCode: "AGNT"
     }
 
     id: codes.SdsRoleProfileIdentifier
@@ -24,13 +24,13 @@ export class AgentPerson implements ElementCompact {
  */
 export class AgentOrganization implements ElementCompact {
     _attributes: core.AttributeClassCode = {
-        classCode: "AGNT"
+      classCode: "AGNT"
     }
 
     agentOrganizationSDS: Organization
 
     constructor(organization: Organization) {
-        this.agentOrganizationSDS = organization
+      this.agentOrganizationSDS = organization
     }
 }
 
@@ -39,10 +39,10 @@ export class AgentOrganization implements ElementCompact {
  */
 export class HealthCareProvider implements ElementCompact {
     _attributes: core.AttributeClassCode = {
-        classCode: "PROV"
+      classCode: "PROV"
     }
 
-    id: codes.SdsUniqueIdentifier
+    id: codes.SdsOrganizationIdentifier
 }
 
 /**
@@ -50,8 +50,8 @@ export class HealthCareProvider implements ElementCompact {
  */
 export class Organization implements ElementCompact {
     _attributes: core.AttributeClassCode & core.AttributeDeterminerCode = {
-        classCode: "ORG",
-        determinerCode: "INSTANCE"
+      classCode: "ORG",
+      determinerCode: "INSTANCE"
     }
 
     id: codes.SdsOrganizationIdentifier
@@ -67,13 +67,13 @@ export class Organization implements ElementCompact {
  */
 export class HealthCareProviderLicense implements ElementCompact {
     _attributes: core.AttributeClassCode = {
-        classCode: "PROV"
+      classCode: "PROV"
     }
 
     Organization: Organization
 
     constructor(organization: Organization) {
-        this.Organization = organization
+      this.Organization = organization
     }
 }
 
@@ -82,7 +82,7 @@ export class HealthCareProviderLicense implements ElementCompact {
  */
 export class Patient implements ElementCompact {
     _attributes: core.AttributeClassCode = {
-        classCode: "PAT"
+      classCode: "PAT"
     }
 
     id: codes.NhsNumber
@@ -91,21 +91,20 @@ export class Patient implements ElementCompact {
     patientPerson: PatientPerson
 }
 
-
 /**
  * Act defining a relationship between a patient and his/her primary care provider.
  */
 export class PatientCareProvision implements ElementCompact {
     _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-        classCode: "PCPR",
-        moodCode: "EVN"
+      classCode: "PCPR",
+      moodCode: "EVN"
     }
 
     code: codes.PatientCareProvisionTypeCode
     responsibleParty: ResponsibleParty
 
     constructor(code: codes.PatientCareProvisionTypeCode) {
-        this.code = code
+      this.code = code
     }
 }
 
@@ -114,13 +113,13 @@ export class PatientCareProvision implements ElementCompact {
  */
 export class ResponsibleParty implements ElementCompact {
     _attributes: core.AttributeTypeCode = {
-        typeCode: "RESP"
+      typeCode: "RESP"
     }
 
     healthCareProvider: HealthCareProvider
 
     constructor(healthCareProvider: HealthCareProvider) {
-        this.healthCareProvider = healthCareProvider
+      this.healthCareProvider = healthCareProvider
     }
 }
 
@@ -129,8 +128,8 @@ export class ResponsibleParty implements ElementCompact {
  */
 export class PatientPerson implements ElementCompact {
     _attributes: core.AttributeClassCode & core.AttributeDeterminerCode = {
-        classCode: "PSN",
-        determinerCode: "INSTANCE"
+      classCode: "PSN",
+      determinerCode: "INSTANCE"
     }
 
     name: Array<core.Name>
@@ -139,20 +138,22 @@ export class PatientPerson implements ElementCompact {
     playedProviderPatient: ProviderPatient
 }
 
+export type PrescriptionAuthorId = codes.BsaPrescribingIdentifier | codes.SdsUniqueIdentifier
+
 /**
  * Details of a person on SDS.
  */
 export class AgentPersonPerson implements ElementCompact {
     _attributes: core.AttributeClassCode & core.AttributeDeterminerCode = {
-        classCode: "PSN",
-        determinerCode: "INSTANCE"
+      classCode: "PSN",
+      determinerCode: "INSTANCE"
     }
 
-    id: codes.SdsUniqueIdentifier
+    id: PrescriptionAuthorId
     name?: core.Name
 
-    constructor(id: codes.SdsUniqueIdentifier) {
-        this.id = id
+    constructor(id: PrescriptionAuthorId) {
+      this.id = id
     }
 }
 
@@ -161,7 +162,7 @@ export class AgentPersonPerson implements ElementCompact {
  */
 export class ProviderPatient implements ElementCompact {
     _attributes: core.AttributeClassCode = {
-        classCode: "PAT"
+      classCode: "PAT"
     }
 
     subjectOf: SubjectOf
@@ -172,12 +173,12 @@ export class ProviderPatient implements ElementCompact {
  */
 export class SubjectOf implements ElementCompact {
     _attributes: core.AttributeTypeCode = {
-        typeCode: "SBJ"
+      typeCode: "SBJ"
     }
 
     patientCareProvision: PatientCareProvision
 
     constructor(patientCareProvision: PatientCareProvision) {
-        this.patientCareProvision = patientCareProvision
+      this.patientCareProvision = patientCareProvision
     }
 }

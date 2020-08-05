@@ -1,5 +1,5 @@
 type: object
-description: A formally or informally recognized grouping of people or organizations formed for the purpose of achieving some form of collective action. Includes companies, institutions, corporations, departments, community groups, healthcare practice groups, payer/insurer, etc.
+description: A formally or informally recognized grouping of people or organizations formed for the purpose of achieving some form of collective action. This includes companies, institutions, corporations, departments, community groups, healthcare practice groups, payer/insurer, and so on.
 required:
   - resourceType
   - id
@@ -8,8 +8,9 @@ properties:
   resourceType:
     type: string
     description: FHIR Resource type
-    default: "Organization"
-    readOnly: true
+    enum:
+      - "Organization"
+    example: "Organization"
   id:
     type: string
     description: Logical id of this artifact.

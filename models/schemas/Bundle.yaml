@@ -10,8 +10,9 @@ properties:
   resourceType:
     type: string
     description: FHIR Resource type.
-    default: "Bundle"
-    readOnly: true
+    enum:
+      - "Bundle"
+    example: "Bundle"
   id:
     type: string
     description: Logical id of this artifact.
@@ -22,16 +23,8 @@ properties:
     type: string
     description: Indicates the purpose of a bundle - how it is intended to be used.
     enum:
-      - "document"
       - "message"
-      - "transaction"
-      - "transaction-response"
-      - "batch"
-      - "batch-response"
-      - "history"
-      - "searchset"
-      - "collection"
-    example: "collection"
+    example: "message"
   entry:
     type: array
     description: An entry in a bundle resource - will either contain a resource or information about a resource (transactions and history only).
@@ -47,6 +40,7 @@ properties:
           example: "urn:uuid:CF464979-41A7-4231-B70F-AAE377A973C9"
         resource:
           anyOf:
+            - $ref: "MessageHeader.yaml"
             - $ref: "MedicationRequest.yaml"
             - $ref: "Patient.yaml"
             - $ref: "PractitionerRole.yaml"

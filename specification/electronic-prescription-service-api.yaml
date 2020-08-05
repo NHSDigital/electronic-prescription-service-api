@@ -33,6 +33,11 @@ info:
 
 
     Currently, this API can only be accessed by healthcare professionals, authenticated with an NHS smartcard or equivalent.
+    
+    Please use the following values for courseOfTherapyType depending on the submitted prescription type:
+    * acute => acute
+    * repeat => continuous
+    * repeat-dispensing => continuous-repeat-dispensing
 
     ## Using this API
     Electronic prescription messages are digitally signed to protect against tampering and to prevent repudiation. While the messages themselves are FHIR-based, for reasons of backwards compatibility, the signatures must be represented in HL7 V3 format. To make this easier, you can POST a prescription to the `/Prepare` endpoint to receive exactly the HL7 V3 fragments which need to be signed to conform to the specification.
@@ -117,9 +122,9 @@ info:
     * `POST /Prepare` - convert a FHIR prescription into the HL7 V3 signature fragments to be signed by the prescriber
     * `POST /Convert` - convert a FHIR prescription to HL7 V3 to verify client signature implementations
     * `POST /Send` - send a signed FHIR prescription to Spine
-    
+    * `GET /_poll` - Obtain the response to an asynchronous spine request
 servers:
-  - url: 'https://internal-qa-sandbox.api.service.nhs.uk/electronic-prescriptions'
+  - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
     description: 'Sandbox environment.'
 tags:
   - name: dispensing
@@ -203,10 +208,13 @@ paths:
         '200':
           description: Successfully submitted
           content:
-            text/plain:
+            application/fhir+json:
               schema:
-                type: string
-                example: "Message Sent"
+                $ref: components/schemas/OperationOutcome-2XX.yaml
+              examples:
+                example:
+                  value:
+                    $ref: components/examples/example-1-repeat-dispensing/SendRequest-SuccessResponse.json
         '4XX':
           description: Invalid request.
           content:
@@ -247,14 +255,54 @@ paths:
                   $ref: components/examples/example-1-repeat-dispensing/SendRequest-FhirMessageSigned.json
         description: ''
       responses:
-        '200':
-          description: Successfully submitted
-          content:
-            application/xml:
+        '202':
+          description: Accepted
+          headers:
+            content-location:
+              description: The polling location for the client to call to check for spine updates
               schema:
                 type: string
+        '4XX':
+          description: Invalid request.
+          content:
+            application/fhir+json:
+              schema:
+                $ref: components/schemas/OperationOutcome-4XX.yaml
+              examples:
                 example:
-                  $ref: components/examples/example-1-repeat-dispensing/ConvertResponse-Hl7V3Message.xml
+                  value:
+                    $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
+        '5XX':
+          description: Server error.
+          content:
+            application/fhir+json:
+              schema:
+                $ref: components/schemas/OperationOutcome-5XX.yaml
+              examples:
+                example:
+                  value:
+                    $ref: components/examples/example-c-unhandled-error/Response-FhirError.json
+  /_poll:
+    get:
+      operationId: prescription-poll
+      summary: Obtain the response to an asynchronous spine request
+      description: Obtain the respone to an asynchronous spine request, using the location provided by the `/Send` endpoint
+      tags:
+        - prescribing
+      responses:
+        '200':
+          description: Result available
+          content:
+            multipart/mixed:
+              schema:
+                type: string
+        '202':
+          description: Accepted
+          headers:
+            content-location:
+              description: The polling location for the client to call to check for spine updates
+              schema:
+                type: string
         '4XX':
           description: Invalid request.
           content:
@@ -279,6 +327,8 @@ components:
   schemas:
     Bundle:
       $ref: components/schemas/Bundle.yaml
+    MessageHeader:
+      $ref: components/schemas/MessageHeader.yaml
     MedicationRequest:
       $ref: components/schemas/MedicationRequest.yaml
     Patient:

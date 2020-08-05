@@ -1,5 +1,5 @@
 type: object
-description: An order or request for both supply of the medication and the instructions for administration of the medication to a patient. The resource is called "MedicationRequest" rather than "MedicationPrescription" or "MedicationOrder" to generalize the use across inpatient and outpatient settings, including care plans, etc., and to harmonize with workflow patterns.
+description: An order or request for both the supply of the medication and the instructions for administration of the medication to a patient. The resource is called "MedicationRequest" rather than "MedicationPrescription" or "MedicationOrder". This is to generalize the use across inpatient and outpatient settings (including care plans), and to harmonize with workflow patterns.
 required:
   - resourceType
   - id
@@ -17,8 +17,9 @@ properties:
   resourceType:
     type: string
     description: FHIR Resource type.
-    default: "MedicationRequest"
-    readOnly: true
+    enum:
+      - "MedicationRequest"
+    example: "MedicationRequest"
   id:
     type: string
     description: Logical id of this artifact.
@@ -68,8 +69,38 @@ properties:
       $ref: "Dosage.yaml"
   dispenseRequest:
     type: object
-    description: Indicates the specific details for the dispense or medication supply part of a medication request (also known as a Medication Prescription or Medication Order).
+    description: Indicates the specific details for the dispense or medication supply part of a medication request. This is also known as a Medication Prescription or Medication Order.
     properties:
+      extension:
+        type: array
+        description: "Additional content defined by implementations"
+        items:
+          type: object
+          properties:
+            url:
+              type: string
+              description: "Identifies the meaning of the extension"
+              enum:
+                - "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType"
+              example: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType"
+            valueCoding:
+              type: object
+              properties:
+                system:
+                  type: string
+                  description: "Identity of the terminology system"
+                  enum:
+                    - "https://fhir.nhs.uk/R4/CodeSystem/dispensing-site-preference"
+                  example: "https://fhir.nhs.uk/R4/CodeSystem/dispensing-site-preference"
+                value:
+                  type: string
+                  description: "Symbol in syntax defined by the system"
+                  enum:
+                    - "P1"
+                    - "P2"
+                    - "P3"
+                    - "0004"
+                  example: "P1"
       quantity:
         $ref: "SimpleQuantity.yaml"
       performer:
