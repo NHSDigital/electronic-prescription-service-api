@@ -4,6 +4,7 @@ import {addEbXmlWrapper} from "./request-builder"
 
 const SPINE_ENDPOINT = process.env.SPINE_ENV === "INT" ? process.env.INT_SPINE_URL : process.env.TEST_SPINE_URL
 const SPINE_PATH = "/Prescription"
+const SPINE_URL_SCHEME = "https"
 
 type SpineResponse = SpineDirectResponse | SpinePollableResponse
 
@@ -38,19 +39,17 @@ export class RequestHandler {
 
   private spineEndpoint: string
   private spinePath: string
-  private spineUrlScheme: string
   private ebXMLBuilder: (message: string) => string
 
   constructor(spineEndpoint: string, spinePath: string, ebXMLBuilder: (message: string) => string) {
     this.spineEndpoint = spineEndpoint
     this.spinePath = spinePath
-    this.spineUrlScheme = "https"
     this.ebXMLBuilder = ebXMLBuilder
   }
 
   async request(message: string): Promise<SpineResponse> {
     const wrappedMessage = this.ebXMLBuilder(message)
-    const address = `${this.spineUrlScheme}://${this.spineEndpoint}${this.spinePath}`
+    const address = `${SPINE_URL_SCHEME}://${this.spineEndpoint}${this.spinePath}`
 
     console.log(`Attempting to send the following message to ${address}:\n${wrappedMessage}`)
 
@@ -98,7 +97,7 @@ export class RequestHandler {
       }
     }
 
-    const address = `${this.spineUrlScheme}://${this.spineEndpoint}/_poll/${path}`
+    const address = `${SPINE_URL_SCHEME}://${this.spineEndpoint}/_poll/${path}`
 
     console.log(`Attempting to send polling message to ${address}`)
 
