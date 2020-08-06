@@ -11,9 +11,9 @@ docker_service:
           value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
         - name: SANDBOX
           value: "{{ SANDBOX }}"
-        - name: SPINE_URL
-          value: "https://{{ IG3_URL }}"
     secrets:
+        - name: SPINE_URL
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/int/host'
         - name: CLIENT_KEY
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/private-key'
         - name: CLIENT_CERT

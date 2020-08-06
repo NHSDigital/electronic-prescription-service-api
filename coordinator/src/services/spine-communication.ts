@@ -48,12 +48,13 @@ export class RequestHandler {
 
   async request(message: string): Promise<SpineResponse> {
     const wrappedMessage = this.ebXMLBuilder(message)
+    const address = `${this.spineEndpoint}${this.spinePath}`
 
-    console.log(`Attempting to send the following message to spine:\n${wrappedMessage}`)
+    console.log(`Attempting to send the following message to ${address}:\n${wrappedMessage}`)
 
     try {
       const result = await axios.post<string>(
-        `${this.spineEndpoint}${this.spinePath}`,
+        address,
         wrappedMessage,
         {
           httpsAgent,
@@ -156,7 +157,6 @@ export class RequestHandler {
   }
 
   async sendData(message: string): Promise<SpineResponse> {
-    console.log(`DAN: Sending message to URL: ${this.spineEndpoint}${this.spinePath}`)
     return (
       process.env.SANDBOX === "1" ?
         Promise.resolve({
