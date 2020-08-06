@@ -150,16 +150,6 @@
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
           "value": "4D62E6-D81015-07E5FD"
         },
-        "category": [
-          {
-            "coding": [
-              {
-                "system": "urn:oid:2.16.840.1.113883.2.1.3.2.4.17.25",
-                "code": "0101"
-              }
-            ]
-          }
-        ],
         "status": "active",
         "intent": "order",
         "medicationCodeableConcept": {
@@ -253,16 +243,6 @@
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
           "value": "4D62E6-D81015-07E5FD"
         },
-        "category": [
-          {
-            "coding": [
-              {
-                "system": "urn:oid:2.16.840.1.113883.2.1.3.2.4.17.25",
-                "code": "0101"
-              }
-            ]
-          }
-        ],
         "status": "active",
         "intent": "order",
         "medicationCodeableConcept": {
@@ -356,16 +336,6 @@
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
           "value": "4D62E6-D81015-07E5FD"
         },
-        "category": [
-          {
-            "coding": [
-              {
-                "system": "urn:oid:2.16.840.1.113883.2.1.3.2.4.17.25",
-                "code": "0101"
-              }
-            ]
-          }
-        ],
         "status": "active",
         "intent": "order",
         "medicationCodeableConcept": {
@@ -459,16 +429,6 @@
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
           "value": "4D62E6-D81015-07E5FD"
         },
-        "category": [
-          {
-            "coding": [
-              {
-                "system": "urn:oid:2.16.840.1.113883.2.1.3.2.4.17.25",
-                "code": "0101"
-              }
-            ]
-          }
-        ],
         "status": "active",
         "intent": "order",
         "medicationCodeableConcept": {
