@@ -2,7 +2,7 @@ import axios from "axios"
 import https from "https"
 import {addEbXmlWrapper} from "./request-builder"
 
-const SPINE_ENDPOINT = process.env.SPINE_URL
+const SPINE_ENDPOINT = process.env.SPINE_ENV === "INT" ? process.env.INT_SPINE_URL : process.env.TEST_SPINE_URL
 const SPINE_PATH = "/Prescription"
 
 type SpineResponse = SpineDirectResponse | SpinePollableResponse
@@ -38,22 +38,25 @@ export class RequestHandler {
 
   private spineEndpoint: string
   private spinePath: string
+  private spineUrlScheme: string
   private ebXMLBuilder: (message: string) => string
 
   constructor(spineEndpoint: string, spinePath: string, ebXMLBuilder: (message: string) => string) {
     this.spineEndpoint = spineEndpoint
     this.spinePath = spinePath
+    this.spineUrlScheme = "https"
     this.ebXMLBuilder = ebXMLBuilder
   }
 
   async request(message: string): Promise<SpineResponse> {
     const wrappedMessage = this.ebXMLBuilder(message)
+    const address = `${this.spineUrlScheme}://${this.spineEndpoint}${this.spinePath}`
 
-    console.log(`Attempting to send the following message to spine:\n${wrappedMessage}`)
+    console.log(`Attempting to send the following message to ${address}:\n${wrappedMessage}`)
 
     try {
       const result = await axios.post<string>(
-        `${this.spineEndpoint}${this.spinePath}`,
+        address,
         wrappedMessage,
         {
           httpsAgent,
@@ -95,9 +98,13 @@ export class RequestHandler {
       }
     }
 
+    const address = `${this.spineUrlScheme}://${this.spineEndpoint}/_poll/${path}`
+
+    console.log(`Attempting to send polling message to ${address}`)
+
     try {
       const result = await axios.get<string>(
-        `${this.spineEndpoint}/_poll/${path}`,
+        address,
         {
           httpsAgent,
           headers: {"nhsd-asid": process.env.FROM_ASID}
@@ -156,7 +163,6 @@ export class RequestHandler {
   }
 
   async sendData(message: string): Promise<SpineResponse> {
-    console.log(`DAN: Sending message to URL: ${this.spineEndpoint}${this.spinePath}`)
     return (
       process.env.SANDBOX === "1" ?
         Promise.resolve({
