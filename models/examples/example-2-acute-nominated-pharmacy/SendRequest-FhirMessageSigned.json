@@ -574,11 +574,11 @@
           {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
             "value": "9453740578",
-            "extension":  [
+            "extension": [
               {
                 "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHSNumberVerificationStatus",
                 "valueCodeableConcept": {
-                  "coding":  [
+                  "coding": [
                     {
                       "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-NHSNumberVerificationStatus",
                       "code": "01",
