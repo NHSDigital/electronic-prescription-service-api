@@ -22,6 +22,7 @@ properties:
       properties:
         url:
           type: string
+          description: "Identifies the meaning of the extension"
           enum:
             - "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHSNumberVerificationStatus"
           example: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHSNumberVerificationStatus"
