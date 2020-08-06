@@ -1,6 +1,6 @@
 type: object
 description: |
-  Outcome of an operation that does not result in a resource or bundle being returned (e.g. error, async/batch submission).
+  Outcome of an operation that does not result in a resource or bundle being returned (such as error, async/batch submission).
   There are a number of possible error codes that can be returned along with a more detailed description in the `display` field.
   Server errors (5XX error codes):
   | Code                       | Response Code | Description                                   |

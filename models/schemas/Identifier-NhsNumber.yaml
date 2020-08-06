@@ -3,6 +3,7 @@ description: NHS Number allocated to the patient.
 required:
   - system
   - value
+  - extension
 properties:
   system:
     type: string
@@ -14,3 +15,20 @@ properties:
     type: string
     description: The portion of the identifier typically relevant to the user and which is unique within the context of the system.
     example: "9900008464"
+  extension:
+    type: array
+    items:
+      type: object
+      properties:
+        url:
+          type: string
+          enum:
+            - "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHSNumberVerificationStatus"
+          example: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHSNumberVerificationStatus"
+        valueCodeableConcept:
+          type: object
+          properties:
+            coding:
+              type: array
+              items:
+                $ref: "Coding-NhsNumber.yaml"

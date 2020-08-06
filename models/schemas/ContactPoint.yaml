@@ -1,5 +1,5 @@
 type: object
-description: Details for all kinds of technology mediated contact points for a person or organization, including telephone, email, etc.
+description: Details for all kinds of technology-mediated contact points for a person or organization, including telephone, email, and so on.
 required:
   - value
 properties:
@@ -17,11 +17,11 @@ properties:
     example: "phone"
   value:
     type: string
-    description: The actual contact point details, in a form that is meaningful to the designated communication system (i.e. phone number or email address).
+    description: The actual contact point details, in a form that is meaningful to the designated communication system (such as phone number or email address).
     example: "tel:011327534256"
   use:
     type: string
-    description: Identifies the purpose for the contact point.
+    description: Identifies the purpose of the contact point.
     enum:
       - "home"
       - "work"

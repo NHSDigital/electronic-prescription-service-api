@@ -12,7 +12,7 @@ properties:
     example: "urn:iso-astm:E1762-95:2013"
   code:
     type: string
-    description: A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).
+    description: A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (such as post-coordination).
     example: "1.2.840.10065.1.12.1.1"
   display:
     type: string

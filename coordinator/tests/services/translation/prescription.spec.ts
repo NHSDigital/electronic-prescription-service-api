@@ -4,29 +4,22 @@ import {getResourcesOfType} from "../../../src/services/translation/common"
 import {MedicationRequest} from "../../../src/model/fhir-resources"
 import {convertCourseOfTherapyType} from "../../../src/services/translation/prescription"
 
+function getTreatmentTypeCodeForGivenValue(code: string) {
+  const bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+  const fhirMedicationRequests = getResourcesOfType(bundle, new MedicationRequest())
+  const firstFhirMedicationRequest = fhirMedicationRequests[0]
+  firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = code
+  return convertCourseOfTherapyType(firstFhirMedicationRequest).value._attributes.code
+}
+
 test('convertCourseOfTherapyType returns "0001" prescription treatment type code when first therapy type code is "acute"', () => {
-  const bundle2 = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
-  const fhirMedicationRequests = getResourcesOfType(bundle2, new MedicationRequest())
-  const firstFhirMedicationRequest = fhirMedicationRequests[0]
-  firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = "acute"
-  const prescriptionTreatmentType = convertCourseOfTherapyType(firstFhirMedicationRequest)
-  expect(prescriptionTreatmentType.value._attributes.code).toEqual("0001")
+  expect(getTreatmentTypeCodeForGivenValue("acute")).toEqual("0001")
 })
 
-test('convertCourseOfTherapyType returns "0002" prescription treatment type code when first therapy type code is "repeat"', () => {
-  const bundle2 = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
-  const fhirMedicationRequests = getResourcesOfType(bundle2, new MedicationRequest())
-  const firstFhirMedicationRequest = fhirMedicationRequests[0]
-  firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = "repeat"
-  const prescriptionTreatmentType = convertCourseOfTherapyType(firstFhirMedicationRequest)
-  expect(prescriptionTreatmentType.value._attributes.code).toEqual("0002")
+test('convertCourseOfTherapyType returns "0002" prescription treatment type code when first therapy type code is "continuous"', () => {
+  expect(getTreatmentTypeCodeForGivenValue("continuous")).toEqual("0002")
 })
 
-test('convertCourseOfTherapyType returns "0003" prescription treatment type code when first therapy type code is "repeat-dispensing"', () => {
-  const bundle2 = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
-  const fhirMedicationRequests = getResourcesOfType(bundle2, new MedicationRequest())
-  const firstFhirMedicationRequest = fhirMedicationRequests[0]
-  firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = "repeat-dispensing"
-  const prescriptionTreatmentType = convertCourseOfTherapyType(firstFhirMedicationRequest)
-  expect(prescriptionTreatmentType.value._attributes.code).toEqual("0003")
+test('convertCourseOfTherapyType returns "0003" prescription treatment type code when first therapy type code is "continuous-repeat-dispensing"', () => {
+  expect(getTreatmentTypeCodeForGivenValue("continuous-repeat-dispensing")).toEqual("0003")
 })

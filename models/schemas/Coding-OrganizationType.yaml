@@ -8,11 +8,11 @@ properties:
     type: string
     description: The identification of the code system that defines the meaning of the symbol in the code.
     enum: 
-      - "urn:oid:2.16.840.1.113883.2.1.3.2.4.17.94"
-    example: "urn:oid:2.16.840.1.113883.2.1.3.2.4.17.94"
+      - "https://fhir.nhs.uk/R4/CodeSystem/organisation-type"
+    example: "https://fhir.nhs.uk/R4/CodeSystem/organisation-type"
   code:
     type: string
-    description: A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).
+    description: A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (such as post-coordination).
     example: "C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C"
   display:
     type: string

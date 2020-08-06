@@ -1,0 +1,20 @@
+type: object
+description: The verification/tracing status of the NHS number.
+required:
+  - system
+  - code
+properties:
+  system:
+    type: string
+    description: The identification of the code system that defines the meaning of the symbol in the code.
+    enum: 
+      - "https://fhir.nhs.uk/R4/CodeSystem/UKCore-NHSNumberVerificationStatus"
+    example: "https://fhir.nhs.uk/R4/CodeSystem/UKCore-NHSNumberVerificationStatus"
+  code:
+    type: string
+    description: A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (e.g. post-coordination).
+    example: "01"
+  display:
+    type: string
+    description: A representation of the meaning of the code in the system, following the rules of the system.
+    example: "Number present and verified"
