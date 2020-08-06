@@ -59,9 +59,6 @@
             "reference": "urn:uuid:B65DD3A2-9551-45A3-3E9D-342F8DE14D8F"
           },
           {
-            "reference": "urn:uuid:CC850777-B73F-43CD-23F8-A41A7F1E8459"
-          },
-          {
             "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
           }
         ]
@@ -103,9 +100,6 @@
           },
           {
             "reference": "urn:uuid:B65DD3A2-9551-45A3-3E9D-342F8DE14D8F"
-          },
-          {
-            "reference": "urn:uuid:CC850777-B73F-43CD-23F8-A41A7F1E8459"
           },
           {
             "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
@@ -196,7 +190,7 @@
           ]
         },
         "dispenseRequest": {
-          "extension":  [
+          "extension": [
             {
               "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
               "valueCoding": {
@@ -302,7 +296,7 @@
           ]
         },
         "dispenseRequest": {
-          "extension":  [
+          "extension": [
             {
               "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
               "valueCoding": {
@@ -408,7 +402,7 @@
           ]
         },
         "dispenseRequest": {
-          "extension":  [
+          "extension": [
             {
               "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
               "valueCoding": {
@@ -514,7 +508,7 @@
           ]
         },
         "dispenseRequest": {
-          "extension":  [
+          "extension": [
             {
               "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
               "valueCoding": {
@@ -750,7 +744,7 @@
           {
             "coding": [
               {
-                "system": "urn:oid:2.16.840.1.113883.2.1.3.2.4.17.94",
+                "system": "https://fhir.nhs.uk/R4/CodeSystem/organisation-type",
                 "code": "001",
                 "display": "General Medical Practice"
               }
@@ -776,37 +770,9 @@
             "district": "DERBYSHIRE",
             "postalCode": "DE1 1FW"
           }
-        ],
-        "partOf": {
-          "reference": "urn:uuid:CC850777-B73F-43CD-23F8-A41A7F1E8459"
-        }
+        ]
       },
       "fullUrl": "urn:uuid:B65DD3A2-9551-45A3-3E9D-342F8DE14D8F"
-    },
-    {
-      "resource": {
-        "resourceType": "Organization",
-        "id": "CC850777-B73F-43CD-23F8-A41A7F1E8459",
-        "identifier": [
-          {
-            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "5EX"
-          }
-        ],
-        "type": [
-          {
-            "coding": [
-              {
-                "system": "urn:oid:2.16.840.1.113883.2.1.3.2.4.17.94",
-                "code": "005",
-                "display": "Primary Care Trust"
-              }
-            ]
-          }
-        ],
-        "name": "GREATER DERBY PCT"
-      },
-      "fullUrl": "urn:uuid:CC850777-B73F-43CD-23F8-A41A7F1E8459"
     },
     {
       "resource": {

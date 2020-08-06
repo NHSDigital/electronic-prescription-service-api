@@ -31,7 +31,7 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
     (bundle: Bundle) => verifyBundleContainsExactly(bundle, 1, "Patient"),
     (bundle: Bundle) => verifyBundleContainsAtLeast(bundle, 1, "PractitionerRole"),
     (bundle: Bundle) => verifyBundleContainsAtLeast(bundle, 1, "Practitioner"),
-    (bundle: Bundle) => verifyBundleContainsAtLeast(bundle, 2, "Organization")
+    (bundle: Bundle) => verifyBundleContainsAtLeast(bundle, 1, "Organization")
   ]
   if (requireSignature) {
     bundleValidators.push((bundle: Bundle) => verifyBundleContainsExactly(bundle, 1, "Provenance"))
