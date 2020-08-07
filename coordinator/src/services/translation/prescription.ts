@@ -1,16 +1,15 @@
 import * as core from "../../model/hl7-v3-datatypes-core"
+import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
 import * as fhir from "../../model/fhir-resources"
-import {CodingExtension, IdentifierExtension, MedicationRequest} from "../../model/fhir-resources"
+import * as peoplePlaces from "../../model/hl7-v3-people-places"
 import {getExtensionForUrl, getResourcesOfType, onlyElement, resolveReference} from "./common"
 import {convertAuthor, convertResponsibleParty} from "./practitioner"
-import * as codes from "../../model/hl7-v3-datatypes-codes"
 import {convertOrganization} from "./organization"
-import * as peoplePlaces from "../../model/hl7-v3-people-places"
 import {convertMedicationRequestToLineItem} from "./line-item"
 
 export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescriptions.Prescription {
-  const fhirMedicationRequests = getResourcesOfType(fhirBundle, new MedicationRequest())
+  const fhirMedicationRequests = getResourcesOfType(fhirBundle, new fhir.MedicationRequest())
   const fhirFirstMedicationRequest = fhirMedicationRequests[0]
 
   const hl7V3Prescription = new prescriptions.Prescription(
@@ -36,7 +35,7 @@ function convertPrescriptionIds(
   fhirFirstMedicationRequest: fhir.MedicationRequest
 ): [codes.GlobalIdentifier, codes.ShortFormPrescriptionIdentifier] {
   const groupIdentifier = fhirFirstMedicationRequest.groupIdentifier
-  const prescriptionIdExtension = getExtensionForUrl(groupIdentifier.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId") as IdentifierExtension
+  const prescriptionIdExtension = getExtensionForUrl(groupIdentifier.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId") as fhir.IdentifierExtension
   const prescriptionId = prescriptionIdExtension.valueIdentifier.value
   const prescriptionShortFormId = groupIdentifier.value
   return [
@@ -78,7 +77,7 @@ function convertPrescriptionPertinentInformation1(fhirFirstMedicationRequest: fh
 }
 
 function convertDispensingSitePreference(fhirFirstMedicationRequest: fhir.MedicationRequest): prescriptions.DispensingSitePreference {
-  const performerSiteType = getExtensionForUrl(fhirFirstMedicationRequest.dispenseRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType") as CodingExtension
+  const performerSiteType = getExtensionForUrl(fhirFirstMedicationRequest.dispenseRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType") as fhir.CodingExtension
   const dispensingSitePreferenceValue = new codes.DispensingSitePreferenceCode(performerSiteType.valueCoding.code)
   return new prescriptions.DispensingSitePreference(dispensingSitePreferenceValue)
 }

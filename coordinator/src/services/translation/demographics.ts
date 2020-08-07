@@ -57,7 +57,7 @@ function convertTelecomUse(fhirTelecomUse: string) {
 export function convertAddress(fhirAddress: fhir.Address): core.Address {
   const hl7V3AddressUse = convertAddressUse(fhirAddress.use, fhirAddress.type)
   const allAddressLines = [
-    ...fhirAddress.line,
+    ...(fhirAddress.line ? fhirAddress.line : []),
     fhirAddress.city,
     fhirAddress.district,
     fhirAddress.state

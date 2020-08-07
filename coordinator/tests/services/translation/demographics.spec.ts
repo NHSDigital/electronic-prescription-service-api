@@ -108,21 +108,20 @@ describe("convertTelecom should convert correct use", () => {
 
 describe("convertAddress should return correct addresses", () => {
   test("Throw TypeError when no use or type", () => {
-    const fhirAddress = {line: [""]}
+    const fhirAddress = {}
     expect(() => demographics.convertAddress(fhirAddress)).toThrow(TypeError)
   })
 
   test("address type as postal and use as anything else should return use as core.AddressUse.POSTAL", () => {
-    const fhirAddress = {type: "postal", use:"home", line: [""]}
+    const fhirAddress = {type: "postal", use:"home"}
     const result = demographics.convertAddress(fhirAddress)
     expect(result._attributes).toEqual({use: core.AddressUse.POSTAL})
-    expect(result.streetAddressLine).toHaveLength(1)
   })
 
   test("address type not postal and use as allowed value should return correct value", () => {
-    const fhirAddressHome = {type: "example", use:"home", line: [""]}
-    const fhirAddressWork = {type: "example", use:"work", line: [""]}
-    const fhirAddressTemp = {type: "example", use:"temp", line: [""]}
+    const fhirAddressHome = {type: "example", use:"home"}
+    const fhirAddressWork = {type: "example", use:"work"}
+    const fhirAddressTemp = {type: "example", use:"temp"}
 
     const resultHome = demographics.convertAddress(fhirAddressHome)
     const resultWork = demographics.convertAddress(fhirAddressWork)
