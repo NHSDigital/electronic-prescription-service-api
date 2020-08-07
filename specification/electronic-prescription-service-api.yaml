@@ -105,8 +105,8 @@ info:
 
     ## Testing
     You can test this API in:
-    * our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing) for initial developer testing (coming soon)
-    * our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing) for formal integration testing (coming soon)
+    * our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing) for initial developer testing
+    * our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing) for formal integration testing
 
     Our sandbox environment is a very basic simulation of the live service. It only covers a limited set of scenarios and is stateless, so does not actually persist any updates.
 
@@ -140,7 +140,7 @@ paths:
       requestBody:
         required: true
         content:
-          #application/fhir+json: #FIXME - should be set to this but we have had to change it due to an Apigee SmartDocs bug.
+         #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
           application/json:
             schema:
               $ref: components/schemas/Bundle.yaml
@@ -153,7 +153,7 @@ paths:
         '200':
           description: Successful conversion.
           content:
-            #application/fhir+json: #FIXME - should be set to this but we have had to change it due to a FHIR validator bug
+            #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
             application/json:
               schema:
                 $ref: components/schemas/Parameters.yaml
@@ -192,7 +192,7 @@ paths:
       requestBody:
         required: true
         content:
-          #application/fhir+json: FIXME - should be set to this but we have had to change it due to an Apigee SmartDocs bug.
+          #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
           application/json:
             schema:
               $ref: components/schemas/Bundle.yaml
