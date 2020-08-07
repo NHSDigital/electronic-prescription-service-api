@@ -13,7 +13,7 @@ describe("convertOrganization", ()=> {
     firstFhirOrganization = getResourcesOfType(bundle, new Organization())[0]
   })
 
-  test("convertOrganization maps identifier from fhir organization to AgentPerson.representedOrganization", () => {
+  test("maps identifier from fhir organization to AgentPerson.representedOrganization", () => {
     firstFhirOrganization.identifier = [{system: "https://fhir.nhs.uk/Id/ods-organization-code", value: "identifier"}]
     const fhirIdentifier = firstFhirOrganization.identifier.reduce(onlyElement).value
 
@@ -23,7 +23,7 @@ describe("convertOrganization", ()=> {
     expect(hl7v3Id).toEqual(fhirIdentifier)
   })
 
-  test("convertOrganization maps name from fhir organization to AgentPerson.representedOrganization", () => {
+  test("maps name from fhir organization to AgentPerson.representedOrganization", () => {
     firstFhirOrganization.name = "name"
     const fhirName = firstFhirOrganization.name
 
@@ -33,7 +33,7 @@ describe("convertOrganization", ()=> {
     expect(hl7v3Name).toEqual(fhirName)
   })
 
-  test("convertOrganization maps telecom from fhir organization to AgentPerson.representedOrganization when present", () => {
+  test("maps telecom from fhir organization to AgentPerson.representedOrganization when present", () => {
     firstFhirOrganization.telecom = [{use: "work", value: "tel:01234567890"}]
     const fhirTelecom = firstFhirOrganization.telecom.reduce(onlyElement).value
 
@@ -43,7 +43,7 @@ describe("convertOrganization", ()=> {
     expect(hl7v3Telecom).toEqual(fhirTelecom)
   })
 
-  test("convertOrganization maps address from fhir organization to AgentPerson.representedOrganization when present", () => {
+  test("maps address from fhir organization to AgentPerson.representedOrganization when present", () => {
     firstFhirOrganization.address = [{use: "work", line: ["53 Address"], postalCode: "P0STC0D3"}]
     const fhirAddress = firstFhirOrganization.address.reduce(onlyElement)
 
@@ -54,7 +54,7 @@ describe("convertOrganization", ()=> {
     expect(hl7v3Address.postalCode._text).toEqual(fhirAddress.postalCode)
   })
 
-  test("convertOrganization does not throw when minimum required fields are provided", () => {
+  test("does not throw when minimum required fields are provided", () => {
     firstFhirOrganization.address = undefined
     firstFhirOrganization.partOf = undefined
     firstFhirOrganization.telecom = undefined
