@@ -134,16 +134,13 @@ paths:
     post:
       operationId: prepare-prescription
       summary: Convert prescription to signature fragments
-      description: 
-      ## /Prepare
-      
-      Convert a prescription in FHIR format into the canonicalised HL7 V3 signature fragments which should be signed by the prescriber.
+      description: Convert a prescription in FHIR format into the canonicalised HL7 V3 signature fragments which should be signed by the prescriber.
       tags:
         - prescribing
       requestBody:
         required: true
         content:
-          #application/fhir+json: #FIXME - should be set to this but we have had to change it due to an Apigee SmartDocs bug.
+         #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
           application/json:
             schema:
               $ref: components/schemas/Bundle.yaml
@@ -156,7 +153,7 @@ paths:
         '200':
           description: Successful conversion.
           content:
-            #application/fhir+json: #FIXME - should be set to this but we have had to change it due to a FHIR validator bug
+            #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
             application/json:
               schema:
                 $ref: components/schemas/Parameters.yaml
@@ -189,16 +186,13 @@ paths:
     post:
       operationId: send-prescription
       summary: Send a signed prescription to Spine
-      description: 
-      ## /Send
-      
-      Submit a signed prescription to EPS
+      description: Submit a signed prescription to EPS
       tags:
         - prescribing
       requestBody:
         required: true
         content:
-          #application/fhir+json: FIXME - should be set to this but we have had to change it due to an Apigee SmartDocs bug.
+          #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
           application/json:
             schema:
               $ref: components/schemas/Bundle.yaml
@@ -246,10 +240,7 @@ paths:
     post:
       operationId: convert-prescription
       summary: Convert a prescription to a format used for signing
-      description: 
-      ## /Convert
-      
-      Convert a prescription from FHIR format into a HL7 V3 representation which can be used to verify signing operations.
+      description: Convert a prescription from FHIR format into a HL7 V3 representation which can be used to verify signing operations.
       tags:
         - prescribing
       requestBody:
@@ -295,10 +286,7 @@ paths:
     get:
       operationId: prescription-poll
       summary: Obtain the response to an asynchronous spine request
-      description: 
-      ## /_Poll
-      
-      Obtain the respone to an asynchronous spine request, using the location provided by the `/Send` endpoint
+      description: Obtain the respone to an asynchronous spine request, using the location provided by the `/Send` endpoint
       tags:
         - prescribing
       responses:
