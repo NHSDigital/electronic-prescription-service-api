@@ -10,7 +10,8 @@ describe("convertName fills correct fields only", () => {
     expect(result._attributes).toEqual({"use": undefined})
   })
 
-  const keyCases = [["prefix", {prefix: ["example"]}],
+  const keyCases = [
+    ["prefix", {prefix: ["example"]}],
     ["given", {given: ["example"]}],
     ["suffix", {suffix: ["example"]}]]
 
@@ -38,7 +39,8 @@ describe("convertName fills correct fields only", () => {
     expect(result.suffix).toEqual([{_text: ""}])
   })
 
-  const cases = [["usual", core.NameUse.USUAL],
+  const cases = [
+    ["usual", core.NameUse.USUAL],
     ["official", core.NameUse.USUAL],
     ["nickname", core.NameUse.ALIAS]]
 
@@ -60,7 +62,8 @@ describe("convertTelecom should convert correct use", () => {
     expect(() => demographics.convertTelecom(fhirTelecom)).toThrow(TypeError)
   })
 
-  const cases = [["home", core.TelecomUse.PERMANENT_HOME],
+  const cases = [
+    ["home", core.TelecomUse.PERMANENT_HOME],
     ["work", core.TelecomUse.WORKPLACE],
     ["temp", core.TelecomUse.TEMPORARY],
     ["mobile", core.TelecomUse.MOBILE]]
@@ -98,7 +101,8 @@ describe("convertAddress should return correct addresses", () => {
 })
 
 describe("convertGender should return correct gender", () => {
-  const cases = [["male", codes.SexCode.MALE],
+  const cases = [
+    ["male", codes.SexCode.MALE],
     ["female", codes.SexCode.FEMALE],
     ["other", codes.SexCode.INDETERMINATE],
     ["unknown", codes.SexCode.UNKNOWN]]
