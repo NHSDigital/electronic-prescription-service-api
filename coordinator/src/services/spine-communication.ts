@@ -2,8 +2,9 @@ import axios from "axios"
 import https from "https"
 import {addEbXmlWrapper} from "./request-builder"
 
-const SPINE_ENDPOINT = "https://veit07.devspineservices.nhs.uk"
+const SPINE_ENDPOINT = process.env.SPINE_ENV === "INT" ? process.env.INT_SPINE_URL : process.env.TEST_SPINE_URL
 const SPINE_PATH = "/Prescription"
+const SPINE_URL_SCHEME = "https"
 
 type SpineResponse = SpineDirectResponse | SpinePollableResponse
 
@@ -15,11 +16,6 @@ export interface SpineDirectResponse {
 export interface SpinePollableResponse {
   pollingUrl: string
   statusCode: number
-}
-
-export interface SpinePollableResponse {
-    pollingUrl: string
-    statusCode: number
 }
 
 export function isDirect(spineResponse: SpineResponse): spineResponse is SpineDirectResponse {
@@ -53,12 +49,13 @@ export class RequestHandler {
 
   async request(message: string): Promise<SpineResponse> {
     const wrappedMessage = this.ebXMLBuilder(message)
+    const address = `${SPINE_URL_SCHEME}://${this.spineEndpoint}${this.spinePath}`
 
-    console.log(`Attempting to send the following message to spine:\n${wrappedMessage}`)
+    console.log(`Attempting to send the following message to ${address}:\n${wrappedMessage}`)
 
     try {
       const result = await axios.post<string>(
-        `${this.spineEndpoint}${this.spinePath}`,
+        address,
         wrappedMessage,
         {
           httpsAgent,
@@ -100,9 +97,13 @@ export class RequestHandler {
       }
     }
 
+    const address = `${SPINE_URL_SCHEME}://${this.spineEndpoint}/_poll/${path}`
+
+    console.log(`Attempting to send polling message to ${address}`)
+
     try {
       const result = await axios.get<string>(
-        `${this.spineEndpoint}/_poll/${path}`,
+        address,
         {
           httpsAgent,
           headers: {"nhsd-asid": process.env.FROM_ASID}
