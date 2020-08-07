@@ -62,7 +62,7 @@ export function convertAddress(fhirAddress: fhir.Address): core.Address {
     fhirAddress.state
   ].filter(line => line !== undefined)
   const hl7V3Address = new core.Address()
-  if (fhirAddress.use !== undefined)
+  if (fhirAddress.use !== undefined && fhirAddress.type !== undefined)
     hl7V3Address.setUse(convertAddressUse(fhirAddress.use, fhirAddress.type))
   hl7V3Address.streetAddressLine = allAddressLines.map(line => new core.Text(line))
   hl7V3Address.postalCode = new core.Text(fhirAddress.postalCode)
