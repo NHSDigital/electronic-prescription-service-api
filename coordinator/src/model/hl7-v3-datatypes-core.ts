@@ -3,138 +3,137 @@ import {GlobalIdentifier, SdsUniqueIdentifier} from "./hl7-v3-datatypes-codes"
 import {Attributes, ElementCompact} from "xml-js"
 
 export interface AttributeTypeCode extends Attributes {
-    typeCode: "AUT" | "COMP" | "FLFS" | "LA" | "PART" | "PERT" | "PRD" | "PRF" | "RESP" | "RCT" | "SBJ"
+  typeCode: "AUT" | "COMP" | "FLFS" | "LA" | "PART" | "PERT" | "PRD" | "PRF" | "RESP" | "RCT" | "SBJ"
 }
 
 export interface AttributeContextControlCode extends Attributes {
-    contextControlCode: "OP"
+  contextControlCode: "OP"
 }
 
 export interface AttributeClassCode extends Attributes {
-    classCode: "AGNT" | "CACT" | "CATEGORY" | "DEV" | "INFO" | "MANU" | "MMAT" | "OBS" | "ORG" | "PAT" | "PCPR" | "PROV" | "PSN" | "ROL" | "SBADM" | "SPLY"
+  classCode: "AGNT" | "CACT" | "CATEGORY" | "DEV" | "INFO" | "MANU" | "MMAT" | "OBS" | "ORG" | "PAT" | "PCPR" | "PROV" | "PSN" | "ROL" | "SBADM" | "SPLY"
 }
 
 export interface AttributeDeterminerCode extends Attributes {
-    determinerCode: "INSTANCE" | "KIND"
+  determinerCode: "INSTANCE" | "KIND"
 }
 
 export interface AttributeMoodCode extends Attributes {
-    moodCode: "EVN" | "RQO"
+  moodCode: "EVN" | "RQO"
 }
 
 type BooleanString = "true" | "false"
 
 export interface AttributeContextConductionInd extends Attributes {
-    contextConductionInd: BooleanString
+  contextConductionInd: BooleanString
 }
 
 export interface AttributeInversionInd extends Attributes {
-    inversionInd: BooleanString
+  inversionInd: BooleanString
 }
 
 export interface AttributeNegationInd extends Attributes {
-    negationInd: BooleanString
+  negationInd: BooleanString
 }
 
 export class Text {
-    _text: string
+  _text: string
 
-    constructor(text: string) {
-      this._text = text
-    }
+  constructor(text: string) {
+    this._text = text
+  }
 }
 
 export enum AddressUse {
-    HOME = "H",
-    PRIMARY_HOME = "HP",
-    TEMPORARY = "TMP",
-    POSTAL = "PST",
-    WORK = "WP"
+  HOME = "H",
+  PRIMARY_HOME = "HP",
+  TEMPORARY = "TMP",
+  POSTAL = "PST",
+  WORK = "WP"
 }
 
 export class Address implements ElementCompact {
-    _attributes: {
-        use: AddressUse
-    }
+  _attributes?: {
+    use: AddressUse
+  }
+  streetAddressLine: Array<Text>
+  postalCode: Text
 
-    streetAddressLine: Array<Text>
-    postalCode: Text
-
-    constructor(use: AddressUse) {
-      this._attributes = {
-        use: use
-      }
+  setUse(use: AddressUse): void {
+    this._attributes = {
+      use: use
     }
+  }
 }
 
 export class BooleanValue implements ElementCompact {
-    _attributes: {
-        value: BooleanString
-    }
+  _attributes: {
+    value: BooleanString
+  }
 
-    constructor(value: boolean) {
-      this._attributes = {
-        value: value ? "true" : "false"
-      }
+  constructor(value: boolean) {
+    this._attributes = {
+      value: value ? "true" : "false"
     }
+  }
 }
 
 export enum NameUse {
-    USUAL = "L",
-    ALIAS = "A"
+  USUAL = "L",
+  ALIAS = "A"
 }
 
 export class Name implements ElementCompact {
-    _attributes: {
-        use?: NameUse
-    }
+  _attributes: {
+    use?: NameUse
+  }
 
-    family?: Text
-    given?: Text | Array<Text>
-    prefix?: Text | Array<Text>
-    suffix?: Text | Array<Text>
+  family?: Text
+  given?: Text | Array<Text>
+  prefix?: Text | Array<Text>
+  suffix?: Text | Array<Text>
 
-    constructor(use?: NameUse) {
-      this._attributes = {
-        use: use
-      }
+  constructor(use?: NameUse) {
+    this._attributes = {
+      use: use
     }
+  }
 }
 
 enum NullFlavor {
-    NOT_APPLICABLE = "NA"
+  NOT_APPLICABLE = "NA"
 }
 
 export class Null implements ElementCompact {
-    _attributes: {
-        nullFlavor: NullFlavor
-    }
+  _attributes: {
+    nullFlavor: NullFlavor
+  }
 
-    constructor(nullFlavor: NullFlavor) {
-      this._attributes = {
-        nullFlavor: nullFlavor
-      }
+  constructor(nullFlavor: NullFlavor) {
+    this._attributes = {
+      nullFlavor: nullFlavor
     }
+  }
 
-    static NOT_APPLICABLE = new Null(NullFlavor.NOT_APPLICABLE)
+  static NOT_APPLICABLE = new Null(NullFlavor.NOT_APPLICABLE)
 }
 
 class QuantityTranslation implements ElementCompact {
-    _attributes: {
-        value: string,
-        codeSystem: string,
-        code: string,
-        displayName: string
-    }
+  _attributes: {
+    value: string,
+    codeSystem: string,
+    code: string,
+    displayName: string
+  }
 
-    constructor(alternativeUnitValue: string, alternativeUnitCode: codes.SnomedCode) {
-      this._attributes = {
-        value: alternativeUnitValue,
-        codeSystem: alternativeUnitCode._attributes.codeSystem,
-        code: alternativeUnitCode._attributes.code,
-        displayName: alternativeUnitCode._attributes.displayName
-      }
+  constructor(alternativeUnitValue: string, alternativeUnitCode: codes.SnomedCode) {
+    this._attributes = {
+      value: alternativeUnitValue,
+      codeSystem: alternativeUnitCode._attributes.codeSystem,
+      code: alternativeUnitCode._attributes.code,
+      displayName: alternativeUnitCode._attributes.displayName
     }
+  }
 }
 
 /**
@@ -142,216 +141,216 @@ class QuantityTranslation implements ElementCompact {
  * This flavour is used for representing medication dose form quantities recorded using the dm+d coded units of measure.
  */
 export class QuantityInAlternativeUnits implements ElementCompact {
-    _attributes: {
-        value: string
-        unit: string
+  _attributes: {
+    value: string
+    unit: string
+  }
+
+  translation: QuantityTranslation
+
+  constructor(approvedUnitValue: string, alternativeUnitValue: string, alternativeUnitCode: codes.SnomedCode) {
+    this._attributes = {
+      value: approvedUnitValue,
+      unit: "1"
     }
 
-    translation: QuantityTranslation
-
-    constructor(approvedUnitValue: string, alternativeUnitValue: string, alternativeUnitCode: codes.SnomedCode) {
-      this._attributes = {
-        value: approvedUnitValue,
-        unit: "1"
-      }
-
-      this.translation = new QuantityTranslation(alternativeUnitValue, alternativeUnitCode)
-    }
+    this.translation = new QuantityTranslation(alternativeUnitValue, alternativeUnitCode)
+  }
 }
 
 export enum TelecomUse {
-    PERMANENT_HOME = "HP",
-    TEMPORARY = "HV",
-    WORKPLACE = "WP",
-    MOBILE = "MC",
-    PAGER = "PG",
-    EMERGENCY_CONTACT = "EC"
+  PERMANENT_HOME = "HP",
+  TEMPORARY = "HV",
+  WORKPLACE = "WP",
+  MOBILE = "MC",
+  PAGER = "PG",
+  EMERGENCY_CONTACT = "EC"
 }
 
 export class Telecom implements ElementCompact {
-    _attributes: {
-        use: TelecomUse
-        value: string
-    }
+  _attributes: {
+    use: TelecomUse
+    value: string
+  }
 
-    constructor(use: TelecomUse, value: string) {
-      this._attributes = {
-        use: use,
-        value: value
-      }
+  constructor(use: TelecomUse, value: string) {
+    this._attributes = {
+      use: use,
+      value: value
     }
+  }
 }
 
 export class Timestamp implements ElementCompact {
-    _attributes: {
-        value: string
-    }
+  _attributes: {
+    value: string
+  }
 
-    constructor(value: string) {
-      this._attributes = {
-        value: value
-      }
+  constructor(value: string) {
+    this._attributes = {
+      value: value
     }
+  }
 }
 
 export class IntervalComplete {
-    low: Timestamp
-    high: Timestamp
+  low: Timestamp
+  high: Timestamp
 }
 
 export class IntervalUnanchored {
-    width: {
-        value: number
-        unit: string
-    }
+  width: {
+    value: number
+    unit: string
+  }
 }
 
 export class SendMessagePayload<T> {
-    id: GlobalIdentifier
-    creationTime: Timestamp
-    versionCode: codes.Hl7StandardVersionCode
-    interactionId: codes.Hl7InteractionIdentifier
-    processingCode: codes.ProcessingId
-    processingModeCode: codes.ProcessingMode
-    acceptAckCode: codes.AcceptAckCode
-    communicationFunctionRcv: CommunicationFunction
-    communicationFunctionSnd: CommunicationFunction
-    ControlActEvent: ControlActEvent<T>
+  id: GlobalIdentifier
+  creationTime: Timestamp
+  versionCode: codes.Hl7StandardVersionCode
+  interactionId: codes.Hl7InteractionIdentifier
+  processingCode: codes.ProcessingId
+  processingModeCode: codes.ProcessingMode
+  acceptAckCode: codes.AcceptAckCode
+  communicationFunctionRcv: CommunicationFunction
+  communicationFunctionSnd: CommunicationFunction
+  ControlActEvent: ControlActEvent<T>
 
-    constructor(id: GlobalIdentifier, creationTime: Timestamp, interactionId: codes.Hl7InteractionIdentifier) {
-      this.id = id
-      this.creationTime = creationTime
-      this.versionCode = codes.Hl7StandardVersionCode.V3_NPFIT_4_2_00
-      this.interactionId = interactionId
-      this.processingCode = codes.ProcessingId.PRODUCTION
-      this.processingModeCode = codes.ProcessingMode.ONLINE
-      this.acceptAckCode = codes.AcceptAckCode.NEVER
-    }
+  constructor(id: GlobalIdentifier, creationTime: Timestamp, interactionId: codes.Hl7InteractionIdentifier) {
+    this.id = id
+    this.creationTime = creationTime
+    this.versionCode = codes.Hl7StandardVersionCode.V3_NPFIT_4_2_00
+    this.interactionId = interactionId
+    this.processingCode = codes.ProcessingId.PRODUCTION
+    this.processingModeCode = codes.ProcessingMode.ONLINE
+    this.acceptAckCode = codes.AcceptAckCode.NEVER
+  }
 }
 
 export class CommunicationFunction {
-    device: Device
+  device: Device
 
-    constructor(device: Device) {
-      this.device = device
-    }
+  constructor(device: Device) {
+    this.device = device
+  }
 }
 
 export class Device {
-    _attributes: AttributeClassCode & AttributeDeterminerCode = {
-      classCode: "DEV",
-      determinerCode: "INSTANCE"
-    }
+  _attributes: AttributeClassCode & AttributeDeterminerCode = {
+    classCode: "DEV",
+    determinerCode: "INSTANCE"
+  }
 
-    id: codes.AccreditedSystemIdentifier
+  id: codes.AccreditedSystemIdentifier
 
-    constructor(id: codes.AccreditedSystemIdentifier) {
-      this.id = id
-    }
+  constructor(id: codes.AccreditedSystemIdentifier) {
+    this.id = id
+  }
 }
 
 export class ControlActEvent<T> {
-    _attributes: AttributeClassCode & AttributeMoodCode = {
-      classCode: "CACT",
-      moodCode: "EVN"
-    }
+  _attributes: AttributeClassCode & AttributeMoodCode = {
+    classCode: "CACT",
+    moodCode: "EVN"
+  }
 
-    author: SendMessagePayloadAuthorPersonSds
-    author1: SendMessagePayloadAuthorSystemSds
-    subject: T
+  author: SendMessagePayloadAuthorPersonSds
+  author1: SendMessagePayloadAuthorSystemSds
+  subject: T
 }
 
 abstract class SendMessagePayloadAuthor {
-    _attributes: AttributeTypeCode = {
-      typeCode: "AUT"
-    }
+  _attributes: AttributeTypeCode = {
+    typeCode: "AUT"
+  }
 }
 
 export class SendMessagePayloadAuthorPersonSds extends SendMessagePayloadAuthor {
-    AgentPersonSDS: AgentPersonSds
+  AgentPersonSDS: AgentPersonSds
 
-    constructor(agentPersonSds: AgentPersonSds) {
-      super()
-      this.AgentPersonSDS = agentPersonSds
-    }
+  constructor(agentPersonSds: AgentPersonSds) {
+    super()
+    this.AgentPersonSDS = agentPersonSds
+  }
 }
 
 export class SendMessagePayloadAuthorSystemSds extends SendMessagePayloadAuthor {
-    AgentSystemSDS: AgentSystemSds
+  AgentSystemSDS: AgentSystemSds
 
-    constructor(agentSystemSds: AgentSystemSds) {
-      super()
-      this.AgentSystemSDS = agentSystemSds
-    }
+  constructor(agentSystemSds: AgentSystemSds) {
+    super()
+    this.AgentSystemSDS = agentSystemSds
+  }
 }
 
 abstract class SendMessagePayloadAgent {
-    _attributes: AttributeClassCode = {
-      classCode: "AGNT"
-    }
+  _attributes: AttributeClassCode = {
+    classCode: "AGNT"
+  }
 }
 
 export class AgentPersonSds extends SendMessagePayloadAgent {
-    id: codes.SdsRoleProfileIdentifier
-    agentPersonSDS: AgentPersonPersonSds
-    part: AgentPersonPart
+  id: codes.SdsRoleProfileIdentifier
+  agentPersonSDS: AgentPersonPersonSds
+  part: AgentPersonPart
 }
 
 export class AgentPersonPersonSds {
-    _attributes: AttributeClassCode & AttributeDeterminerCode = {
-      classCode: "PSN",
-      determinerCode: "INSTANCE"
-    }
+  _attributes: AttributeClassCode & AttributeDeterminerCode = {
+    classCode: "PSN",
+    determinerCode: "INSTANCE"
+  }
 
-    id: SdsUniqueIdentifier
+  id: SdsUniqueIdentifier
 
-    constructor(id: SdsUniqueIdentifier) {
-      this.id = id
-    }
+  constructor(id: SdsUniqueIdentifier) {
+    this.id = id
+  }
 }
 
 export class AgentPersonPart {
-    _attributes: AttributeTypeCode = {
-      typeCode: "PART"
-    }
+  _attributes: AttributeTypeCode = {
+    typeCode: "PART"
+  }
 
-    partSDSRole: SdsRole
+  partSDSRole: SdsRole
 
-    constructor(sdsRole: SdsRole) {
-      this.partSDSRole = sdsRole
-    }
+  constructor(sdsRole: SdsRole) {
+    this.partSDSRole = sdsRole
+  }
 }
 
 export class SdsRole {
-    _attributes: AttributeClassCode = {
-      classCode: "ROL"
-    }
+  _attributes: AttributeClassCode = {
+    classCode: "ROL"
+  }
 
-    id: codes.SdsJobRoleIdentifier
+  id: codes.SdsJobRoleIdentifier
 
-    constructor(id: codes.SdsJobRoleIdentifier) {
-      this.id = id
-    }
+  constructor(id: codes.SdsJobRoleIdentifier) {
+    this.id = id
+  }
 }
 
 export class AgentSystemSds extends SendMessagePayloadAgent {
-    agentSystemSDS: AgentSystemSystemSds
+  agentSystemSDS: AgentSystemSystemSds
 
-    constructor(systemSds: AgentSystemSystemSds) {
-      super()
-      this.agentSystemSDS = systemSds
-    }
+  constructor(systemSds: AgentSystemSystemSds) {
+    super()
+    this.agentSystemSDS = systemSds
+  }
 }
 
 export class AgentSystemSystemSds {
-    _attributes: AttributeClassCode & AttributeDeterminerCode = {
-      classCode: "DEV",
-      determinerCode: "INSTANCE"
-    }
+  _attributes: AttributeClassCode & AttributeDeterminerCode = {
+    classCode: "DEV",
+    determinerCode: "INSTANCE"
+  }
 
-    id: codes.AccreditedSystemIdentifier
+  id: codes.AccreditedSystemIdentifier
 
-    constructor(id: codes.AccreditedSystemIdentifier) {
-      this.id = id
-    }
+  constructor(id: codes.AccreditedSystemIdentifier) {
+    this.id = id
+  }
 }
