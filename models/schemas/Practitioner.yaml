@@ -42,6 +42,6 @@ properties:
       $ref: "HumanName.yaml"
   telecom:
     type: array
-    description: "A contact detail for the practitioner, e.g. a telephone number or an email address."
+    description: "A contact detail for the practitioner - for example, a telephone number or an email address."
     items:
       $ref: "ContactPoint.yaml"
