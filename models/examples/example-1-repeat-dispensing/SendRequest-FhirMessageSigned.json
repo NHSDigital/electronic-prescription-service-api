@@ -201,6 +201,9 @@
         },
         "recorder": {
           "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
+        },
+        "substitution": {
+          "allowedBoolean": false
         }
       },
       "fullUrl": "urn:uuid:A7B86F8D-1D81-FC28-E050-D20AE3A215F0"
@@ -294,6 +297,9 @@
         },
         "recorder": {
           "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
+        },
+        "substitution": {
+          "allowedBoolean": false
         }
       },
       "fullUrl": "urn:uuid:A7B86F8D-1D86-FC28-E050-D20AE3A215F0"
@@ -387,6 +393,9 @@
         },
         "recorder": {
           "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
+        },
+        "substitution": {
+          "allowedBoolean": false
         }
       },
       "fullUrl": "urn:uuid:A7B86F8D-1D8B-FC28-E050-D20AE3A215F0"
@@ -480,6 +489,9 @@
         },
         "recorder": {
           "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
+        },
+        "substitution": {
+          "allowedBoolean": false
         }
       },
       "fullUrl": "urn:uuid:A7B86F8D-1D90-FC28-E050-D20AE3A215F0"
