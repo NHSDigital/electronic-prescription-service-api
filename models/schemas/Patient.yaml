@@ -1,5 +1,5 @@
 type: object
-description: Information about an individual or animal receiving health care services.
+description: Information about an individual receiving health care services.
 required:
   - resourceType
   - id
