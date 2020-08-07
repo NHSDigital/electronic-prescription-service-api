@@ -146,22 +146,7 @@ test("verifyPrescriptionBundle rejects bundle without Organization", () => {
     entry: [] as Array<Resource>
   }
   expect(validator.verifyPrescriptionBundle(bundle, false))
-    .toContainEqual(containAtLeastError("Organization", 2))
-})
-
-test("verifyPrescriptionBundle rejects bundle with 1 Organization", () => {
-  const bundle = {
-    resourceType: "Bundle",
-    id: "test-bundle",
-    entry: [
-      {
-        resource: {
-          resourceType: "Organization"
-        }
-      }]
-  }
-  expect(validator.verifyPrescriptionBundle(bundle, false))
-    .toContainEqual(containAtLeastError("Organization", 2))
+    .toContainEqual(containAtLeastError("Organization", 1))
 })
 
 test("verifyPrescriptionBundle rejects bundle without Provenance when requireSignature is true", () => {
