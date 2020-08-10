@@ -20,5 +20,5 @@ properties:
     example: "http://snomed.info/sct"
   code:
     type: string
-    description: A computer processable form of the unit in some unit representation system.
+    description: A computer-processable form of the unit in some unit representation system.
     example: "3319411000001109"

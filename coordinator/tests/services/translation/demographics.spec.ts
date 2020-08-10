@@ -10,35 +10,23 @@ describe("convertName fills correct fields only", () => {
     expect(result._attributes).toEqual({"use": undefined})
   })
 
-  test("prefix should add prefix key", () => {
-    const prefix = "example"
-    const fhirName = {prefix: [prefix]}
+  const keyCases = [
+    ["prefix", {prefix: ["example"]}],
+    ["given", {given: ["example"]}],
+    ["suffix", {suffix: ["example"]}]]
+
+  test.each(keyCases)("%p should add correct key", (key: string, fhirName:{prefix: string[]}) => {
     const result = demographics.convertName(fhirName)
     expect(Object.keys(result)).toHaveLength(2)
-    expect(result.prefix).toEqual([{_text: prefix}])
+    expect(Object.keys(result)).toContain(key)
   })
 
-  test("given should add given key", () => {
-    const given = "example"
-    const fhirName = {given: [given]}
-    const result = demographics.convertName(fhirName)
-    expect(Object.keys(result)).toHaveLength(2)
-    expect(result.given).toEqual([{_text: given}])
-  })
-  test("family should add family key", () => {
+  test("family should add correct key", () => {
     const family = "example"
     const fhirName = {family: family}
     const result = demographics.convertName(fhirName)
     expect(Object.keys(result)).toHaveLength(2)
-    expect(result.family).toEqual({_text: family})
-  })
-
-  test("suffix should add suffix key", () => {
-    const suffix = "example"
-    const fhirName = {suffix: [suffix]}
-    const result = demographics.convertName(fhirName)
-    expect(Object.keys(result)).toHaveLength(2)
-    expect(result.suffix).toEqual([{_text: suffix}])
+    expect(Object.keys(result)).toContain("family")
   })
 
   test("passing an object with all keys should add all keys", () => {
@@ -51,22 +39,15 @@ describe("convertName fills correct fields only", () => {
     expect(result.suffix).toEqual([{_text: ""}])
   })
 
-  test("usual should return USUAL", () => {
-    const fhirName = {"use": "usual"}
-    const result = demographics.convertName(fhirName)
-    expect(result._attributes).toEqual({use: core.NameUse.USUAL})
-  })
+  const cases = [
+    ["usual", core.NameUse.USUAL],
+    ["official", core.NameUse.USUAL],
+    ["nickname", core.NameUse.ALIAS]]
 
-  test("official should return USUAL", () => {
-    const fhirName = {"use": "official"}
+  test.each(cases)("use %p should return correct value", (argument: string, expected: core.NameUse) => {
+    const fhirName = {use: argument}
     const result = demographics.convertName(fhirName)
-    expect(result._attributes).toEqual({use: core.NameUse.USUAL})
-  })
-
-  test("nickname should return ALIAS", () => {
-    const fhirName = {"use": "nickname"}
-    const result = demographics.convertName(fhirName)
-    expect(result._attributes).toEqual({use: core.NameUse.ALIAS})
+    expect(result._attributes).toEqual({use: expected})
   })
 
   test("Other should throw TypeError", () => {
@@ -81,28 +62,16 @@ describe("convertTelecom should convert correct use", () => {
     expect(() => demographics.convertTelecom(fhirTelecom)).toThrow(TypeError)
   })
 
-  test("home should return PERMANENT_HOME", () => {
-    const fhirTelecom = {use: "home"}
-    const result = demographics.convertTelecom(fhirTelecom)
-    expect(result._attributes).toEqual({use: core.TelecomUse.PERMANENT_HOME})
-  })
+  const cases = [
+    ["home", core.TelecomUse.PERMANENT_HOME],
+    ["work", core.TelecomUse.WORKPLACE],
+    ["temp", core.TelecomUse.TEMPORARY],
+    ["mobile", core.TelecomUse.MOBILE]]
 
-  test("work should return WORKPLACE", () => {
-    const fhirTelecom = {use: "work"}
+  test.each(cases)("%p should return correct value", (argument: string, expected: core.TelecomUse) => {
+    const fhirTelecom = {use: argument}
     const result = demographics.convertTelecom(fhirTelecom)
-    expect(result._attributes).toEqual({use: core.TelecomUse.WORKPLACE})
-  })
-
-  test("temp should return TEMPORARY", () => {
-    const fhirTelecom = {use: "temp"}
-    const result = demographics.convertTelecom(fhirTelecom)
-    expect(result._attributes).toEqual({use: core.TelecomUse.TEMPORARY})
-  })
-
-  test("mobile should return MOBILE", () => {
-    const fhirTelecom = {use: "mobile"}
-    const result = demographics.convertTelecom(fhirTelecom)
-    expect(result._attributes).toEqual({use: core.TelecomUse.MOBILE})
+    expect(result._attributes).toEqual({use: expected})
   })
 })
 
@@ -112,35 +81,36 @@ describe("convertAddress should return correct addresses", () => {
     expect(() => demographics.convertAddress(fhirAddress)).toThrow(TypeError)
   })
 
-  test("address type as postal and use as anything else should return use as core.AddressUse.POSTAL", () => {
-    const fhirAddress = {type: "postal", use:"home", line: [""]}
+  const cases = [
+    ["home", {use: core.AddressUse.HOME}],
+    ["work", {use: core.AddressUse.WORK}],
+    ["temp", {use: core.AddressUse.TEMPORARY}]]
+
+  test.each(cases)("address type as postal and use as %p should return use as core.AddressUse.POSTAL", (argument: string) => {
+    const fhirAddress = {type: "postal", use:argument, line: [""]}
     const result = demographics.convertAddress(fhirAddress)
     expect(result._attributes).toEqual({use: core.AddressUse.POSTAL})
     expect(result.streetAddressLine).toHaveLength(1)
   })
 
-  test("address type not postal and use as allowed value should return correct value", () => {
-    const fhirAddressHome = {type: "example", use:"home", line: [""]}
-    const fhirAddressWork = {type: "example", use:"work", line: [""]}
-    const fhirAddressTemp = {type: "example", use:"temp", line: [""]}
-
-    const resultHome = demographics.convertAddress(fhirAddressHome)
-    const resultWork = demographics.convertAddress(fhirAddressWork)
-    const resultTemp = demographics.convertAddress(fhirAddressTemp)
-
-    expect(resultHome._attributes).toEqual({use: core.AddressUse.HOME})
-    expect(resultWork._attributes).toEqual({use: core.AddressUse.WORK})
-    expect(resultTemp._attributes).toEqual({use: core.AddressUse.TEMPORARY})
-  })
+  test.each(cases)(`address type not postal and use as %p should return correct value`,
+    (argument: string, expected) => {
+      const resultHome = demographics.convertAddress({type: "example", use:argument, line: [""]})
+      expect(resultHome._attributes).toEqual(expected)
+    })
 })
 
 describe("convertGender should return correct gender", () => {
-  test("valid fhirGender returns correct hl7 gender", () => {
-    expect(demographics.convertGender("male")).toEqual(codes.SexCode.MALE)
-    expect(demographics.convertGender("female")).toEqual(codes.SexCode.FEMALE)
-    expect(demographics.convertGender("other")).toEqual(codes.SexCode.INDETERMINATE)
-    expect(demographics.convertGender("unknown")).toEqual(codes.SexCode.UNKNOWN)
-  })
+  const cases = [
+    ["male", codes.SexCode.MALE],
+    ["female", codes.SexCode.FEMALE],
+    ["other", codes.SexCode.INDETERMINATE],
+    ["unknown", codes.SexCode.UNKNOWN]]
+
+  test.each(cases)("%p returns correct hl7 gender",
+    (actual:string, expected: codes.SexCode) => {
+      expect(demographics.convertGender(actual)).toEqual(expected)
+    })
 
   test("invalid fhirGender throws TypeError", () => {
     expect(() => demographics.convertGender("example")).toThrow(TypeError)
