@@ -683,9 +683,37 @@
             "district": "CAMBRIDGESHIRE",
             "postalCode": "PE13 4JA"
           }
-        ]
+        ],
+        "partOf": {
+          "reference": "urn:uuid:CC850777-B73F-43CD-23F8-A41A7F1E8459"
+        }
       },
       "fullUrl": "urn:uuid:B65DD3A2-9551-45A3-3E9D-342F8DE14D8F"
+    },
+    {
+      "resource": {
+        "resourceType": "Organization",
+        "id": "CC850777-B73F-43CD-23F8-A41A7F1E8459",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "5JK"
+          }
+        ],
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/R4/CodeSystem/organisation-type",
+                "code": "005",
+                "display": "Primary Care Trust"
+              }
+            ]
+          }
+        ],
+        "name": "GREATER DERBY PCT"
+      },
+      "fullUrl": "urn:uuid:CC850777-B73F-43CD-23F8-A41A7F1E8459"
     }
   ]
 }

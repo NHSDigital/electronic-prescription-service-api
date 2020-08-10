@@ -16,7 +16,7 @@ import {
 } from "./common"
 import * as XmlJs from "xml-js"
 import * as core from "../../model/hl7-v3-datatypes-core"
-import {convertOrganization} from "./organization"
+import {convertOrganizationAndProviderLicense} from "./organization"
 
 export function convertAuthor(
   fhirBundle: fhir.Bundle,
@@ -48,7 +48,7 @@ function convertPractitionerRole(fhirBundle: fhir.Bundle, fhirPractitionerRole: 
   const fhirPractitioner = resolveReference(fhirBundle, fhirPractitionerRole.practitioner)
   const hl7V3AgentPerson = createAgentPerson(fhirBundle, fhirPractitionerRole, fhirPractitioner)
   const fhirOrganization = resolveReference(fhirBundle, fhirPractitionerRole.organization)
-  hl7V3AgentPerson.representedOrganization = convertOrganization(fhirBundle, fhirOrganization)
+  hl7V3AgentPerson.representedOrganization = convertOrganizationAndProviderLicense(fhirBundle, fhirOrganization)
   return hl7V3AgentPerson
 }
 
