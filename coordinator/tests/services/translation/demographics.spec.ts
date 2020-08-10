@@ -76,9 +76,15 @@ describe("convertTelecom should convert correct use", () => {
 })
 
 describe("convertAddress should return correct addresses", () => {
-  test("Throw TypeError when no use or type", () => {
-    const fhirAddress = {}
+  test("Throw TypeError when no type and invalid use", () => {
+    const fhirAddress = {use: "example"}
     expect(() => demographics.convertAddress(fhirAddress)).toThrow(TypeError)
+  })
+
+  test("Empty address type and use do not add an _attributes key", () => {
+    const fhirAddress = {}
+    const result = demographics.convertAddress(fhirAddress)
+    expect(Object.keys(result)).not.toContain("_attributes")
   })
 
   const cases = [

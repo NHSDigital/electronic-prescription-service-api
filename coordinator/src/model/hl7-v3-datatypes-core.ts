@@ -59,6 +59,14 @@ export class Address implements ElementCompact {
   streetAddressLine: Array<Text>
   postalCode: Text
 
+  constructor(use: AddressUse | undefined) {
+    if (use !== undefined){
+      this._attributes = {
+        use: use
+      }
+    }
+  }
+
   setUse(use: AddressUse): void {
     this._attributes = {
       use: use
