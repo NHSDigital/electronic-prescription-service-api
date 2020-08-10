@@ -5,6 +5,9 @@ required:
   - when
   - who
   - data
+example:
+  value:
+    $ref: ../examples/signature.json
 properties:
   type:
     type: array
@@ -19,5 +22,5 @@ properties:
     $ref: "Reference.yaml"
   data:
     type: string
-    description: The base64 encoding of the Signature content.
-    example: "TODO"
+    description: The base64 encoded signature data.
+    example: "ZXhhbXBsZSBzaWduYXR1cmUgZGF0YQ=="
