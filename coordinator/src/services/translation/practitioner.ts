@@ -7,7 +7,7 @@ import * as prescriptions from "../../model/hl7-v3-prescriptions"
 import {
   convertIsoStringToDateTime,
   getCodeableConceptCodingForSystem,
-  getExtensionForUrl,
+  getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
   getIdentifierValueOrNullForSystem,
   getResourcesOfType,
@@ -37,8 +37,9 @@ export function convertResponsibleParty(
   convertPractitionerRoleFn = convertPractitionerRole
 ): prescriptions.ResponsibleParty {
   const responsibleParty = new prescriptions.ResponsibleParty()
-  const fhirResponsibleParty = getExtensionForUrl(fhirMedicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner") as fhir.ReferenceExtension<PractitionerRole>
-  const fhirResponsiblePartyPractitionerRole = resolveReference(fhirBundle, fhirResponsibleParty.valueReference)
+  const fhirResponsiblePartyExtension = getExtensionForUrlOrNull(fhirMedicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner") as fhir.ReferenceExtension<PractitionerRole>
+  const fhirResponsibleParty = fhirResponsiblePartyExtension ? fhirResponsiblePartyExtension.valueReference : fhirMedicationRequest.requester
+  const fhirResponsiblePartyPractitionerRole = resolveReference(fhirBundle, fhirResponsibleParty)
   responsibleParty.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirResponsiblePartyPractitionerRole)
   return responsibleParty
 }

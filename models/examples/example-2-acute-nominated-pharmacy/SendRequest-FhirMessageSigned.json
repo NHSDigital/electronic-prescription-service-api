@@ -57,9 +57,6 @@
           },
           {
             "reference": "urn:uuid:B65DD3A2-9551-45A3-3E9D-342F8DE14D8F"
-          },
-          {
-            "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
           }
         ]
       },
@@ -100,9 +97,6 @@
           },
           {
             "reference": "urn:uuid:B65DD3A2-9551-45A3-3E9D-342F8DE14D8F"
-          },
-          {
-            "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
           }
         ],
         "recorded": "2008-02-27T11:38:00+00:00",
@@ -206,7 +200,10 @@
             "code": "258773002"
           },
           "performer": {
-            "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
+            "identifier": {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "FA553"
+              }
           }
         },
         "authoredOn": "2020-06-10T12:06:00.000Z",
@@ -312,7 +309,10 @@
             "code": "258682000"
           },
           "performer": {
-            "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "FA553"
+            }
           }
         },
         "authoredOn": "2020-06-10T12:06:00.000Z",
@@ -418,7 +418,10 @@
             "code": "3317411000001100"
           },
           "performer": {
-            "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "FA553"
+            }
           }
         },
         "authoredOn": "2020-06-10T12:06:00.000Z",
@@ -524,7 +527,10 @@
             "code": "258773002"
           },
           "performer": {
-            "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "FA553"
+            }
           }
         },
         "authoredOn": "2020-06-10T12:06:00.000Z",
@@ -773,19 +779,6 @@
         ]
       },
       "fullUrl": "urn:uuid:B65DD3A2-9551-45A3-3E9D-342F8DE14D8F"
-    },
-    {
-      "resource": {
-        "resourceType": "Organization",
-        "id": "15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181",
-        "identifier": [
-          {
-            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "FA553"
-          }
-        ]
-      },
-      "fullUrl": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
     }
   ]
 }

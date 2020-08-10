@@ -3,9 +3,8 @@ import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
 import * as fhir from "../../model/fhir-resources"
 import * as peoplePlaces from "../../model/hl7-v3-people-places"
-import {getExtensionForUrl, getResourcesOfType, onlyElement, resolveReference} from "./common"
+import {getExtensionForUrl, getResourcesOfType, onlyElement} from "./common"
 import {convertAuthor, convertResponsibleParty} from "./practitioner"
-import {convertOrganization} from "./organization"
 import {convertMedicationRequestToLineItem} from "./line-item"
 
 export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescriptions.Prescription {
@@ -103,8 +102,8 @@ function convertPrescriptionPertinentInformation4(fhirFirstMedicationRequest: fh
 }
 
 function convertPerformer(fhirBundle: fhir.Bundle, performerReference: fhir.Reference<fhir.Organization>) {
-  const fhirOrganization = resolveReference(fhirBundle, performerReference)
-  const hl7V3Organization = convertOrganization(fhirBundle, fhirOrganization)
+  const hl7V3Organization = new peoplePlaces.Organization()
+  hl7V3Organization.id = new codes.SdsOrganizationIdentifier(performerReference.identifier.value)
   const hl7V3AgentOrganization = new peoplePlaces.AgentOrganization(hl7V3Organization)
   return new prescriptions.Performer(hl7V3AgentOrganization)
 }
