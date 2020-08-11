@@ -1,4 +1,4 @@
-import axios from "axios"
+import axios, {AxiosResponse} from "axios"
 import https from "https"
 import {addEbXmlWrapper} from "./request-builder"
 
@@ -36,10 +36,9 @@ const httpsAgent = new https.Agent({
 })
 
 export class RequestHandler {
-
-  private spineEndpoint: string
-  private spinePath: string
-  private ebXMLBuilder: (message: string) => string
+  private readonly spineEndpoint: string
+  private readonly spinePath: string
+  private readonly ebXMLBuilder: (message: string) => string
 
   constructor(spineEndpoint: string, spinePath: string, ebXMLBuilder: (message: string) => string) {
     this.spineEndpoint = spineEndpoint
@@ -65,26 +64,10 @@ export class RequestHandler {
           }
         }
       )
-
-      switch (result.status) {
-      case (202): {
-        console.log("Successful post request for prescription message")
-        const pollingUrl = result.headers["content-location"]
-        console.log(`Got polling URL ${pollingUrl}`)
-
-        return {
-          statusCode: result.status,
-          pollingUrl: pollingUrl
-        }
-      }
-      default: {
-        console.log(`Got the following response from spine:\n${result.data}`)
-        throw Error(`Unsupported status, expected 202, got ${result.status}`)
-      }
-      }
+      return RequestHandler.handlePollableOrImmediateResponse(result)
     } catch (error) {
       console.log(`Failed post request for prescription message. Error: ${error}`)
-      return this.handleError(error)
+      return RequestHandler.handleError(error)
     }
   }
 
@@ -109,37 +92,35 @@ export class RequestHandler {
           headers: {"nhsd-asid": process.env.FROM_ASID}
         }
       )
-
-      switch (result.status) {
-      case (200): {
-        console.log("Successful request for polling message")
-        return {
-          body: result.data,
-          statusCode: result.status
-        }
-      }
-      case (202): {
-        console.log("Successful request for polling message")
-        const pollingUrl = result.headers["content-location"]
-        console.log(`Got polling URL ${pollingUrl}`)
-
-        return {
-          statusCode: result.status,
-          pollingUrl: pollingUrl
-        }
-      }
-      default: {
-        throw Error(`Unsupported status, expected 200 or 202, got ${result.status}`)
-      }
-      }
+      return RequestHandler.handlePollableOrImmediateResponse(result)
     } catch (error) {
       console.log(`Failed polling request for polling path ${path}. Error: ${error}`)
-      return this.handleError(error)
+      return RequestHandler.handleError(error)
     }
   }
 
-  private handleError(error: Error): SpineResponse {
+  private static handlePollableOrImmediateResponse(result: AxiosResponse) {
+    switch (result.status) {
+    case (200):
+      console.log("Successful request, returning SpineDirectResponse")
+      return {
+        body: result.data,
+        statusCode: result.status
+      }
+    case (202):
+      console.log("Successful request, returning SpinePollableResponse")
+      console.log(`Got polling URL ${result.headers["content-location"]}`)
+      return {
+        statusCode: result.status,
+        pollingUrl: result.headers["content-location"]
+      }
+    default:
+      console.log(`Got the following response from spine:\n${result.data}`)
+      throw Error(`Unsupported status, expected 200 or 202, got ${result.status}`)
+    }
+  }
 
+  private static handleError(error: Error): SpineResponse {
     /* eslint-disable */
     const anyError = error as any
 
