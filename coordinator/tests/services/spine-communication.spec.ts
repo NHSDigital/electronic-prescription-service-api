@@ -5,7 +5,7 @@ import {RequestHandler, isPollable, SpinePollableResponse} from "../../src/servi
 
 describe("Spine communication", () => {
 
-  const requestHandler = new RequestHandler("http://localhost", "/Prescribe", (message) => `<wrap>${message}</wrap>`)
+  const requestHandler = new RequestHandler("localhost", "/Prescribe", (message) => `<wrap>${message}</wrap>`)
 
   beforeEach(() => {
     moxios.install(axios)
