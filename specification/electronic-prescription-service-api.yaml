@@ -285,11 +285,18 @@ paths:
                 example:
                   value:
                     $ref: components/examples/example-c-unhandled-error/Response-FhirError.json
-  /_poll:
+  /_poll/{pollingId}:
     get:
       operationId: prescription-poll
       summary: Obtain the response to an asynchronous spine request
       description: Obtain the respone to an asynchronous spine request, using the location provided by the `/Send` endpoint
+      parameters:
+        - in: path
+          name: pollingId
+          required: true
+          schema:
+            type: string
+          description: The identifier for the polling response, returned from the send endpoint
       tags:
         - prescribing
       responses:
