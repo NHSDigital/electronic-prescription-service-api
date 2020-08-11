@@ -84,7 +84,7 @@ describe("convertAddress should return correct addresses", () => {
 
   test("Empty address type and use do not add any attributes to the address XML tag", () => {
     const fhirAddress = {}
-    const options = {compact: true} as unknown as XmlJs.Options.JS2XML
+    const options = {compact: true}
     const result = demographics.convertAddress(fhirAddress)
     expect(XmlJs.js2xml({address: result}, options)).toBe("<address></address>")
   })
