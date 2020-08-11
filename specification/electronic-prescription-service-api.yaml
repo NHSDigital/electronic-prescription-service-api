@@ -31,7 +31,6 @@ info:
     * claim for a dispensed prescription
     * Track prescriptions or check a prescriptions status
 
-
     Currently, this API can only be accessed by healthcare professionals, authenticated with an NHS smartcard or equivalent.
     
     Please use the following values for courseOfTherapyType depending on the submitted prescription type:
