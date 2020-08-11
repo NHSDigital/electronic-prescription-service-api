@@ -21,8 +21,8 @@ properties:
               type: string
               description: Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
               enum:
-                - "https://fhir.nhs.uk/Id/prescription-parent-id"
-              example: "https://fhir.nhs.uk/Id/prescription-parent-id"
+                - "https://fhir.nhs.uk/Id/prescription"
+              example: "https://fhir.nhs.uk/Id/prescription"
             value:
               type: string
               description: The portion of the identifier typically relevant to the user and which is unique within the context of the system.
@@ -31,8 +31,8 @@ properties:
     type: string
     description: Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
     enum:
-      - "https://fhir.nhs.uk/Id/prescription-short-form"
-    example: "https://fhir.nhs.uk/Id/prescription-short-form"
+      - "https://fhir.nhs.uk/Id/prescription-order-number"
+    example: "https://fhir.nhs.uk/Id/prescription-order-number"
   value:
     type: string
     description: The portion of the identifier typically relevant to the user and which is unique within the context of the system.
