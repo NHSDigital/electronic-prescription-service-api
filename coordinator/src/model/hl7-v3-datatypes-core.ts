@@ -53,17 +53,15 @@ export enum AddressUse {
 }
 
 export class Address implements ElementCompact {
-  _attributes?: {
-    use: AddressUse
+  _attributes: {
+    use?: AddressUse
   }
   streetAddressLine: Array<Text>
   postalCode: Text
 
-  constructor(use: AddressUse | undefined) {
-    if (use !== undefined){
-      this._attributes = {
-        use: use
-      }
+  constructor(use?: AddressUse) {
+    this._attributes = {
+      use: use
     }
   }
 }

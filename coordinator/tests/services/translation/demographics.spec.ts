@@ -1,6 +1,7 @@
 import * as demographics from "../../../src/services/translation/demographics"
 import * as core from "../../../src/model/hl7-v3-datatypes-core"
 import * as codes from "../../../src/model/hl7-v3-datatypes-codes"
+import * as XmlJs from "xml-js"
 
 describe("convertName fills correct fields only", () => {
   test("no keys should add no keys", () => {
@@ -81,10 +82,11 @@ describe("convertAddress should return correct addresses", () => {
     expect(() => demographics.convertAddress(fhirAddress)).toThrow(TypeError)
   })
 
-  test("Empty address type and use do not add an _attributes key", () => {
+  test("Empty address type and use do not add any attributes to the address XML tag", () => {
     const fhirAddress = {}
+    const options = {compact: true} as unknown as XmlJs.Options.JS2XML
     const result = demographics.convertAddress(fhirAddress)
-    expect(Object.keys(result)).not.toContain("_attributes")
+    expect(XmlJs.js2xml({address: result}, options)).toBe("<address></address>")
   })
 
   const cases = [
