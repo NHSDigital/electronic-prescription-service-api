@@ -66,12 +66,6 @@ export class Address implements ElementCompact {
       }
     }
   }
-
-  setUse(use: AddressUse): void {
-    this._attributes = {
-      use: use
-    }
-  }
 }
 
 export class BooleanValue implements ElementCompact {
