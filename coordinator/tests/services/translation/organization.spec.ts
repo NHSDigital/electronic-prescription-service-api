@@ -1,7 +1,7 @@
 import {clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
 import {Bundle, Organization} from "../../../src/model/fhir-resources"
-import {getResourcesOfType, onlyElement} from "../../../src/services/translation/common"
+import {getResourcesOfType} from "../../../src/services/translation/common"
 import {convertOrganization} from "../../../src/services/translation/organization"
 
 describe("convertOrganization", ()=> {
@@ -14,44 +14,47 @@ describe("convertOrganization", ()=> {
   })
 
   test("maps identifier from fhir organization to AgentPerson.representedOrganization", () => {
-    firstFhirOrganization.identifier = [{system: "https://fhir.nhs.uk/Id/ods-organization-code", value: "identifier"}]
-    const fhirIdentifier = firstFhirOrganization.identifier.reduce(onlyElement).value
+    const expectedValue = "identifier"
+    firstFhirOrganization.identifier = [{system: "https://fhir.nhs.uk/Id/ods-organization-code", value: expectedValue}]
 
     const hl7v3AgentPersonRepresentedOrganization = convertOrganization(bundle, firstFhirOrganization)
-    const hl7v3Id = hl7v3AgentPersonRepresentedOrganization.id._attributes.extension
+    const attributes = hl7v3AgentPersonRepresentedOrganization.id._attributes
 
-    expect(hl7v3Id).toEqual(fhirIdentifier)
+    expect(attributes.root).toEqual("1.2.826.0.1285.0.1.10")
+    expect(attributes.extension).toEqual(expectedValue)
   })
 
   test("maps name from fhir organization to AgentPerson.representedOrganization", () => {
-    firstFhirOrganization.name = "name"
-    const fhirName = firstFhirOrganization.name
+    const expectedName = "name"
+    firstFhirOrganization.name = expectedName
 
     const hl7v3AgentPersonRepresentedOrganization = convertOrganization(bundle, firstFhirOrganization)
-    const hl7v3Name = hl7v3AgentPersonRepresentedOrganization.name._text
 
-    expect(hl7v3Name).toEqual(fhirName)
+    expect(hl7v3AgentPersonRepresentedOrganization.name._text).toEqual(expectedName)
   })
 
   test("maps telecom from fhir organization to AgentPerson.representedOrganization when present", () => {
-    firstFhirOrganization.telecom = [{use: "work", value: "tel:01234567890"}]
-    const fhirTelecom = firstFhirOrganization.telecom.reduce(onlyElement).value
+    const expectedTelecomValue = "tel:01234567890"
+    firstFhirOrganization.telecom = [{use: "work", value: expectedTelecomValue}]
 
     const hl7v3AgentPersonRepresentedOrganization = convertOrganization(bundle, firstFhirOrganization)
-    const hl7v3Telecom = hl7v3AgentPersonRepresentedOrganization.telecom._attributes.value
+    const attributes = hl7v3AgentPersonRepresentedOrganization.telecom._attributes
 
-    expect(hl7v3Telecom).toEqual(fhirTelecom)
+    expect(attributes.use).toEqual("WP")
+    expect(attributes.value).toEqual(expectedTelecomValue)
   })
 
   test("maps address from fhir organization to AgentPerson.representedOrganization when present", () => {
-    firstFhirOrganization.address = [{use: "work", line: ["53 Address"], postalCode: "P0STC0D3"}]
-    const fhirAddress = firstFhirOrganization.address.reduce(onlyElement)
+    const expectedAddressLine = "53 Address"
+    const expectedPostalCode = "P0STC0D3"
+    firstFhirOrganization.address = [{use: "work", line: [expectedAddressLine], postalCode: expectedPostalCode}]
 
     const hl7v3AgentPersonRepresentedOrganization = convertOrganization(bundle, firstFhirOrganization)
     const hl7v3Address = hl7v3AgentPersonRepresentedOrganization.addr
 
-    expect(hl7v3Address.streetAddressLine[0]._text).toEqual(fhirAddress.line[0])
-    expect(hl7v3Address.postalCode._text).toEqual(fhirAddress.postalCode)
+    expect(hl7v3Address._attributes.use).toEqual("WP")
+    expect(hl7v3Address.streetAddressLine[0]._text).toEqual(expectedAddressLine)
+    expect(hl7v3Address.postalCode._text).toEqual(expectedPostalCode)
   })
 
   test("does not throw when minimum required fields are provided", () => {
