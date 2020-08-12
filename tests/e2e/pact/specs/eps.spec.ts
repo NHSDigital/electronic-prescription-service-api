@@ -26,7 +26,7 @@ jestpact.pactWith(
     describe("eps e2e tests", () => {
 
       test("should be able to convert a FHIR repeat-dispensing parent-prescription-1 into a HL7V3 Spine interaction", async () => {
-        const apiPath = "/Convert"
+        const apiPath = "/$convert"
         const interaction: InteractionObject = {
           state: null,
           uponReceiving: "a request to convert a FHIR repeat-dispensing parent-prescription-1",
@@ -36,7 +36,7 @@ jestpact.pactWith(
               "NHSD-Session-URID": "1234"
             },
             method: "POST",
-            path: "/Convert",
+            path: "/$convert",
             body: JSON.parse(prepareRepeatDispensingPrescriptionRequest)
           },
           willRespondWith: {
@@ -57,7 +57,7 @@ jestpact.pactWith(
 
 
       test("should be able to prepare a repeat-dispensing parent-prescription-1", async () => {
-        const apiPath = "/Prepare"
+        const apiPath = "/$prepare"
         const interaction: InteractionObject = {
           state: null,
           uponReceiving: "a request to prepare a repeat-dispensing parent-prescription-1",
@@ -67,7 +67,7 @@ jestpact.pactWith(
               "NHSD-Session-URID": "1234"
             },
             method: "POST",
-            path: "/Prepare",
+            path: "/$prepare",
             body: JSON.parse(prepareRepeatDispensingPrescriptionRequest)
           },
           willRespondWith: {
@@ -95,7 +95,7 @@ jestpact.pactWith(
 
 
       test("should be able to send a repeat-dispensing parent-prescription-1", async () => {
-        const apiPath = "/Send"
+        const apiPath = "/$process-message"
           const body = JSON.parse(sendRepeatDispensingPrescriptionSendRequest) as Bundle
           body.identifier.value = uuid.v4()
           const interaction: InteractionObject = {
@@ -107,7 +107,7 @@ jestpact.pactWith(
               "NHSD-Session-URID": "1234"
             },
             method: "POST",
-            path: "/Send",
+            path: "/$process-message",
             body: body
           },
           willRespondWith: {
