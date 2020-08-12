@@ -103,7 +103,7 @@ export class Address {
   use?: string
   type?: string
   text?: string
-  line: Array<string>
+  line?: Array<string>
   city?: string
   district?: string
   state?: string
