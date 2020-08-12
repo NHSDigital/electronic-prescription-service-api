@@ -1,14 +1,11 @@
 import * as fhir from "../../model/fhir-resources"
 import * as peoplePlaces from "../../model/hl7-v3-people-places"
-import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem, onlyElement} from "./common"
+import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem, onlyElement, resolveReference} from "./common"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as core from "../../model/hl7-v3-datatypes-core"
 import {convertAddress, convertTelecom} from "./demographics"
 
-export function convertOrganization(
-  fhirBundle: fhir.Bundle,
-  fhirOrganization: fhir.Organization
-): peoplePlaces.Organization {
+function convertOrganization(fhirOrganization: fhir.Organization) {
   const hl7V3Organization = new peoplePlaces.Organization()
 
   const organizationSdsId = getIdentifierValueForSystem(fhirOrganization.identifier, "https://fhir.nhs.uk/Id/ods-organization-code")
@@ -31,5 +28,21 @@ export function convertOrganization(
     hl7V3Organization.addr = fhirOrganization.address.map(convertAddress).reduce(onlyElement)
   }
 
+  return hl7V3Organization
+}
+
+/**
+ * TODO - This mapping is a temporary measure for testing. We're reasonably confident that it's correct for primary
+ * care prescriptions, but we've not yet agreed where the two organizations should come from for secondary care
+ * prescriptions.
+ */
+export function convertOrganizationAndProviderLicense(
+  fhirBundle: fhir.Bundle,
+  fhirOrganization: fhir.Organization
+): peoplePlaces.Organization {
+  const hl7V3Organization = convertOrganization(fhirOrganization)
+  const fhirParentOrganization = fhirOrganization.partOf ? resolveReference(fhirBundle, fhirOrganization.partOf) : fhirOrganization
+  const hl7V3ParentOrganization = convertOrganization(fhirParentOrganization)
+  hl7V3Organization.healthCareProviderLicense = new peoplePlaces.HealthCareProviderLicense(hl7V3ParentOrganization)
   return hl7V3Organization
 }
