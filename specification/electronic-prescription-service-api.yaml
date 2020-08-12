@@ -31,7 +31,6 @@ info:
     * claim for a dispensed prescription
     * Track prescriptions or check a prescriptions status
 
-
     Currently, this API can only be accessed by healthcare professionals, authenticated with an NHS smartcard or equivalent.
     
     Please use the following values for courseOfTherapyType depending on the submitted prescription type:
@@ -46,6 +45,9 @@ info:
     1. POST a prescription in FHIR format to the `/Prepare` endpoint
     2. Sign the response and put the result in a Provenance resource in the original FHIR prescription
     3. POST the signed prescription in FHIR format to the `/Send` endpoint
+
+    ### Digital signatures
+    To provide a signature for your prescription, you can use the example signature from the Provenance schema [here](./types/Provenance).
 
     ## Legal Use
     This API can only be used where there is a legal basis to do so. You should make an access request before you go too far with your development.
@@ -63,6 +65,7 @@ info:
     The API is currently available for sandbox testing and integration testing, but not for production use.
 
     The following items are on our roadmap, in rough priority order:
+    * A service to allow the generation of digital signatures
     * Cancellation
     * Primary care prescribing
     * Dispensing
