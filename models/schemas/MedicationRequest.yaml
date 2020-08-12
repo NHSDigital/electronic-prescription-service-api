@@ -104,4 +104,7 @@ properties:
       quantity:
         $ref: "SimpleQuantity.yaml"
       performer:
-        $ref: "Reference.yaml"
+        type: object
+        properties:
+          identifier:
+            $ref: "Identifier-OdsOrganizationCode.yaml"

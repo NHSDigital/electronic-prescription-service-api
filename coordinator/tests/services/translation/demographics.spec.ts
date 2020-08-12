@@ -1,6 +1,7 @@
 import * as demographics from "../../../src/services/translation/demographics"
 import * as core from "../../../src/model/hl7-v3-datatypes-core"
 import * as codes from "../../../src/model/hl7-v3-datatypes-codes"
+import * as XmlJs from "xml-js"
 
 describe("convertName fills correct fields only", () => {
   test("no keys should add no keys", () => {
@@ -76,9 +77,16 @@ describe("convertTelecom should convert correct use", () => {
 })
 
 describe("convertAddress should return correct addresses", () => {
-  test("Throw TypeError when no use or type", () => {
-    const fhirAddress = {line: [""]}
+  test("Throw TypeError when no type and invalid use", () => {
+    const fhirAddress = {use: "example"}
     expect(() => demographics.convertAddress(fhirAddress)).toThrow(TypeError)
+  })
+
+  test("Empty address type and use do not add any attributes to the address XML tag", () => {
+    const fhirAddress = {}
+    const options = {compact: true}
+    const result = demographics.convertAddress(fhirAddress)
+    expect(XmlJs.js2xml({address: result}, options)).toBe("<address></address>")
   })
 
   const cases = [
@@ -87,15 +95,14 @@ describe("convertAddress should return correct addresses", () => {
     ["temp", {use: core.AddressUse.TEMPORARY}]]
 
   test.each(cases)("address type as postal and use as %p should return use as core.AddressUse.POSTAL", (argument: string) => {
-    const fhirAddress = {type: "postal", use:argument, line: [""]}
+    const fhirAddress = {type: "postal", use:argument}
     const result = demographics.convertAddress(fhirAddress)
     expect(result._attributes).toEqual({use: core.AddressUse.POSTAL})
-    expect(result.streetAddressLine).toHaveLength(1)
   })
 
   test.each(cases)(`address type not postal and use as %p should return correct value`,
     (argument: string, expected) => {
-      const resultHome = demographics.convertAddress({type: "example", use:argument, line: [""]})
+      const resultHome = demographics.convertAddress({type: "example", use:argument})
       expect(resultHome._attributes).toEqual(expected)
     })
 })

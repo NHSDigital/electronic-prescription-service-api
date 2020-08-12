@@ -55,8 +55,8 @@ export class Organization implements ElementCompact {
     }
 
     id: codes.SdsOrganizationIdentifier
-    code: codes.OrganizationTypeCode
-    name: Text
+    code?: codes.OrganizationTypeCode
+    name?: Text
     telecom?: core.Telecom
     addr?: core.Address
     healthCareProviderLicense?: HealthCareProviderLicense
