@@ -48,6 +48,13 @@ export function getExtensionForUrl(extensions: Array<fhir.Extension>, url: strin
     .reduce(onlyElement)
 }
 
+export function getExtensionForUrlOrNull(extensions: Array<fhir.Extension>, url: string): fhir.Extension {
+  const filtered = extensions
+    .filter(extension => extension.url === url)
+  if (filtered.length > 1) throw TypeError(`Expected 1 or less elements but got ${filtered.length}: ${JSON.stringify(filtered)}`)
+  return filtered.shift()
+}
+
 export function getCodeableConceptCodingForSystem(codeableConcept: Array<fhir.CodeableConcept>, system: string): fhir.Coding {
   const coding = codeableConcept
     .flatMap(codeableConcept => codeableConcept.coding)

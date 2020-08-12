@@ -39,3 +39,5 @@ properties:
     description: An address for the organization.
     items:
       $ref: "Address.yaml"
+  partOf:
+    $ref: "Reference.yaml"

@@ -60,9 +60,6 @@
           },
           {
             "reference": "urn:uuid:CC850777-B73F-43CD-23F8-A41A7F1E8459"
-          },
-          {
-            "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
           }
         ]
       },
@@ -106,9 +103,6 @@
           },
           {
             "reference": "urn:uuid:CC850777-B73F-43CD-23F8-A41A7F1E8459"
-          },
-          {
-            "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
           }
         ],
         "recorded": "2008-02-27T11:38:00+00:00",
@@ -203,7 +197,10 @@
             "code": "258773002"
           },
           "performer": {
-            "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "FA553"
+            }
           }
         },
         "authoredOn": "2020-06-10T12:06:00.000Z",
@@ -300,7 +297,10 @@
             "code": "258682000"
           },
           "performer": {
-            "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "FA553"
+            }
           }
         },
         "authoredOn": "2020-06-10T12:06:00.000Z",
@@ -397,7 +397,10 @@
             "code": "3317411000001100"
           },
           "performer": {
-            "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "FA553"
+            }
           }
         },
         "authoredOn": "2020-06-10T12:06:00.000Z",
@@ -494,7 +497,10 @@
             "code": "258773002"
           },
           "performer": {
-            "reference": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "FA553"
+            }
           }
         },
         "authoredOn": "2020-06-10T12:06:00.000Z",
@@ -740,19 +746,6 @@
         "name": "GREATER DERBY PCT"
       },
       "fullUrl": "urn:uuid:CC850777-B73F-43CD-23F8-A41A7F1E8459"
-    },
-    {
-      "resource": {
-        "resourceType": "Organization",
-        "id": "15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181",
-        "identifier": [
-          {
-            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "FA553"
-          }
-        ]
-      },
-      "fullUrl": "urn:uuid:15AA7FC0-83A2-44FF-9FB6-C9AFFF3FD181"
     }
   ]
 }

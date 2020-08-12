@@ -55,20 +55,24 @@ function convertTelecomUse(fhirTelecomUse: string) {
 }
 
 export function convertAddress(fhirAddress: fhir.Address): core.Address {
-  const hl7V3AddressUse = convertAddressUse(fhirAddress.use, fhirAddress.type)
   const allAddressLines = [
-    ...fhirAddress.line,
+    ...(fhirAddress.line ? fhirAddress.line : []),
     fhirAddress.city,
     fhirAddress.district,
     fhirAddress.state
   ].filter(line => line !== undefined)
-  const hl7V3Address = new core.Address(hl7V3AddressUse)
+  const hl7V3Address = new core.Address(convertAddressUse(fhirAddress.use, fhirAddress.type))
   hl7V3Address.streetAddressLine = allAddressLines.map(line => new core.Text(line))
-  hl7V3Address.postalCode = new core.Text(fhirAddress.postalCode)
+  if (fhirAddress.postalCode !== undefined){
+    hl7V3Address.postalCode = new core.Text(fhirAddress.postalCode)
+  }
   return hl7V3Address
 }
 
 function convertAddressUse(fhirAddressUse: string, fhirAddressType: string) {
+  if (fhirAddressUse === undefined && fhirAddressType === undefined){
+    return undefined
+  }
   if (fhirAddressType === "postal") {
     return core.AddressUse.POSTAL
   }
