@@ -133,7 +133,7 @@ tags:
   - name: dispensing
   - name: prescribing
 paths:
-  /Prepare:
+  /$prepare:
     post:
       operationId: prepare-prescription
       summary: Convert prescription to signature fragments
@@ -185,7 +185,7 @@ paths:
                   value:
                     $ref: components/examples/example-c-unhandled-error/Response-FhirError.json
           headers: {}
-  /Send:
+  /$process-message:
     post:
       operationId: send-prescription
       summary: Send a signed prescription to Spine
@@ -239,7 +239,7 @@ paths:
                   value:
                     $ref: components/examples/example-b-spine-error-patient-deceased/SendResponse-FhirError.json
           headers: {}
-  /Convert:
+  /$convert:
     post:
       operationId: convert-prescription
       summary: Convert a prescription to a format used for signing
