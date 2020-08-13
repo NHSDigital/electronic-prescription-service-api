@@ -23,9 +23,9 @@ describe("convertMedicationRequestToLineItem", () => {
     firstFhirMedicationRequest.identifier[0].value = idValue
 
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest)
-    const resultMappedValues = result.id._attributes.root
+    const resultIdValue = result.id._attributes.root
 
-    expect(resultMappedValues).toBe(idValue)
+    expect(resultIdValue).toBe(idValue)
   })
 
   test("medicationCodeableConcept converted and added to correct section of hl7 message", () => {
@@ -34,51 +34,51 @@ describe("convertMedicationRequestToLineItem", () => {
     firstFhirMedicationRequest.medicationCodeableConcept.coding[0].code = codeValue
     firstFhirMedicationRequest.medicationCodeableConcept.coding[0].display = displayValue
 
-    const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest).product
-    const resultMappedValues = result.manufacturedProduct.manufacturedRequestedMaterial.code._attributes
+    const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest)
+    const resultCodeAttributes = result.product.manufacturedProduct.manufacturedRequestedMaterial.code._attributes
 
-    expect(resultMappedValues.code).toBe(codeValue)
-    expect(resultMappedValues.displayName).toBe(displayValue)
+    expect(resultCodeAttributes.code).toBe(codeValue)
+    expect(resultCodeAttributes.displayName).toBe(displayValue)
   })
 
   test("dispenseRequest.quantity.code added to correct section of hl7 message", () => {
     const codeValue = "exampleCode"
     firstFhirMedicationRequest.dispenseRequest.quantity.code = codeValue
 
-    const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest).component
-    const resultMappedValues = result.lineItemQuantity.quantity.translation._attributes.code
+    const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest)
+    const resultTranslationCode = result.component.lineItemQuantity.quantity.translation._attributes.code
 
-    expect(resultMappedValues).toBe(codeValue)
+    expect(resultTranslationCode).toBe(codeValue)
   })
 
   test("dispenseRequest.quantity.unit added to correct section of hl7 message", () => {
     const unitValue = "exampleUnit"
     firstFhirMedicationRequest.dispenseRequest.quantity.unit = unitValue
 
-    const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest).component
-    const resultMappedValues = result.lineItemQuantity.quantity
+    const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest)
+    const resultLineItemQuantity = result.component.lineItemQuantity.quantity
 
-    expect(resultMappedValues.translation._attributes.displayName).toBe(unitValue)
+    expect(resultLineItemQuantity.translation._attributes.displayName).toBe(unitValue)
   })
 
   test("dispenseRequest.quantity.value added to correct section of hl7 message", () => {
     const testValue = "exampleValue"
     firstFhirMedicationRequest.dispenseRequest.quantity.value = testValue
 
-    const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest).component
-    const resultMappedValues = result.lineItemQuantity.quantity
+    const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest)
+    const resultLineItemQuantity = result.component.lineItemQuantity.quantity
 
-    expect(resultMappedValues._attributes.value).toBe(testValue)
-    expect(resultMappedValues.translation._attributes.value).toBe(testValue)
+    expect(resultLineItemQuantity._attributes.value).toBe(testValue)
+    expect(resultLineItemQuantity.translation._attributes.value).toBe(testValue)
   })
 
   test("dosageInstructions converted and added to correct section of hl7 message", () => {
     const dosageInstructionValue = "exampleText"
     firstFhirMedicationRequest.dosageInstruction[0].text = dosageInstructionValue
 
-    const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest).pertinentInformation2
-    const resultMappedValues = result.pertinentDosageInstructions.value
+    const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest)
+    const resultDosageinstructionValue = result.pertinentInformation2.pertinentDosageInstructions.value
 
-    expect(resultMappedValues).toBe(dosageInstructionValue)
+    expect(resultDosageinstructionValue).toBe(dosageInstructionValue)
   })
 })
