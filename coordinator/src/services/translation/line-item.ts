@@ -1,5 +1,5 @@
 import * as fhir from "../../model/fhir-resources"
-import {getCodingForSystem, getIdentifierValueForSystem, onlyElement} from "./common"
+import {getCodingForSystem, getIdentifierValueForSystem, getNumericValueAsString, onlyElement} from "./common"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
 import * as core from "../../model/hl7-v3-datatypes-core"
@@ -20,10 +20,11 @@ function convertDosageInstructions(dosageInstruction: Array<fhir.Dosage>) {
   return new prescriptions.LineItemPertinentInformation2(hl7V3DosageInstructions)
 }
 
-function convertLineItemComponent(fhirQuantity: fhir.SimpleQuantity) {
+export function convertLineItemComponent(fhirQuantity: fhir.SimpleQuantity): prescriptions.LineItemComponent {
   const hl7V3LineItemQuantity = new prescriptions.LineItemQuantity()
   const hl7V3UnitCode = new codes.SnomedCode(fhirQuantity.code, fhirQuantity.unit)
-  hl7V3LineItemQuantity.quantity = new core.QuantityInAlternativeUnits(fhirQuantity.value, fhirQuantity.value, hl7V3UnitCode)
+  const value = getNumericValueAsString(fhirQuantity.value)
+  hl7V3LineItemQuantity.quantity = new core.QuantityInAlternativeUnits(value, value, hl7V3UnitCode)
   return new prescriptions.LineItemComponent(hl7V3LineItemQuantity)
 }
 

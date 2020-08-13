@@ -35,7 +35,7 @@ jestpact.pactWith(
             },
             method: "POST",
             path: "/$convert",
-            body: JSON.parse(prepareRepeatDispensingPrescriptionRequest)
+            body: prepareRepeatDispensingPrescriptionRequest
           },
           willRespondWith: {
             headers: {
@@ -65,13 +65,13 @@ jestpact.pactWith(
             },
             method: "POST",
             path: "/$prepare",
-            body: JSON.parse(prepareRepeatDispensingPrescriptionRequest)
+            body: prepareRepeatDispensingPrescriptionRequest
           },
           willRespondWith: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
-            body: JSON.parse(prepareRepeatDispensingPrescriptionResponse),
+            body: prepareRepeatDispensingPrescriptionResponse,
             status: 200
           }
         }
@@ -96,7 +96,7 @@ jestpact.pactWith(
             },
             method: "POST",
             path: "/$process-message",
-            body: JSON.parse(sendRepeatDispensingPrescriptionSendRequest)
+            body: sendRepeatDispensingPrescriptionSendRequest
           },
           willRespondWith: {
             headers: {

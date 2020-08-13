@@ -5,6 +5,7 @@ import * as fs from 'fs'
 import * as path from "path"
 import * as uuid from "uuid"
 import {Bundle} from "../resources/fhir-resources"
+import * as LosslessJson from "lossless-json"
 
 const prepareRepeatDispensingPrescriptionRequest = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareRequest-FhirMessageUnsigned.json"), "utf8")
 const prepareRepeatDispensingPrescriptionResponse = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareResponse-FhirMessageDigest.json"), "utf8")
@@ -37,7 +38,7 @@ jestpact.pactWith(
             },
             method: "POST",
             path: "/$convert",
-            body: JSON.parse(prepareRepeatDispensingPrescriptionRequest)
+            body: prepareRepeatDispensingPrescriptionRequest
           },
           willRespondWith: {
             headers: {
@@ -68,7 +69,7 @@ jestpact.pactWith(
             },
             method: "POST",
             path: "/$prepare",
-            body: JSON.parse(prepareRepeatDispensingPrescriptionRequest)
+            body: prepareRepeatDispensingPrescriptionRequest
           },
           willRespondWith: {
             headers: {
@@ -78,7 +79,10 @@ jestpact.pactWith(
               resourceType: "Parameters",
               parameter: Matchers.eachLike({
                 name: "message-digest",
-                valueString: Matchers.term({ generate: JSON.parse(prepareRepeatDispensingPrescriptionResponse).parameter[0].valueString, matcher: "(DigestValue)" })
+                valueString: Matchers.term({
+                  generate: JSON.parse(prepareRepeatDispensingPrescriptionResponse).parameter[0].valueString,
+                  matcher: "(DigestValue)"
+                })
               })
             },
             status: 200
@@ -96,9 +100,10 @@ jestpact.pactWith(
 
       test("should be able to send a repeat-dispensing parent-prescription-1", async () => {
         const apiPath = "/$process-message"
-          const body = JSON.parse(sendRepeatDispensingPrescriptionSendRequest) as Bundle
-          body.identifier.value = uuid.v4()
-          const interaction: InteractionObject = {
+        const bodyObj = LosslessJson.parse(sendRepeatDispensingPrescriptionSendRequest) as Bundle
+        bodyObj.identifier.value = uuid.v4()
+        const body = LosslessJson.stringify(bodyObj)
+        const interaction: InteractionObject = {
           state: null,
           uponReceiving: "a request to send a repeat-dispensing parent-prescription-1 to Spine",
           withRequest: {

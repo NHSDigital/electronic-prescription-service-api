@@ -4,6 +4,7 @@ import {Bundle, OperationOutcome} from "../model/fhir-resources"
 import * as requestValidator from "../validators/request-validator"
 import {ValidationError} from "../validators/request-validator"
 import {wrapInOperationOutcome} from "../services/translation/common"
+import * as LosslessJson from "lossless-json"
 
 export function handlePollableResponse(spineResponse: SpineDirectResponse | SpinePollableResponse, responseToolkit: Hapi.ResponseToolkit): Hapi.ResponseObject {
   if (isPollable(spineResponse)) {
@@ -33,7 +34,7 @@ export function validatingHandler(requireSignature: boolean, handler: Handler<Bu
 }
 
 function getPayload(request: Hapi.Request): unknown {
-  return request.payload || {}
+  return typeof request.payload === "string" ? LosslessJson.parse(request.payload) : {}
 }
 
 function toFhirError(validation: Array<ValidationError>): OperationOutcome {

@@ -2,6 +2,7 @@ import * as fhir from "../../model/fhir-resources"
 import moment from "moment"
 import * as core from "../../model/hl7-v3-datatypes-core"
 import {SpineDirectResponse} from "../spine-communication"
+import {LosslessNumber} from "lossless-json"
 
 export function getResourcesOfType<T extends fhir.Resource>(fhirBundle: fhir.Bundle, type: T): Array<T> {
   const typeGuard = (resource: fhir.Resource): resource is T => resource.resourceType === type.resourceType
@@ -95,4 +96,14 @@ export function wrapInOperationOutcome(message: SpineDirectResponse): fhir.Opera
   const response = new fhir.OperationOutcome()
   response.issue = [operationOutcomeIssue]
   return response
+}
+
+export function getNumericValueAsString(fhirQuantity: string | number | LosslessNumber): string {
+  if (typeof fhirQuantity === "number") {
+    throw new TypeError("Got a number but expected a LosslessNumber. Use LosslessJson.parse() instead of JSON.parse() or precision may be lost.")
+  } else if (typeof fhirQuantity === "string") {
+    return fhirQuantity
+  } else {
+    return fhirQuantity.toString()
+  }
 }

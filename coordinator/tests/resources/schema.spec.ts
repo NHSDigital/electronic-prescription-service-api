@@ -1,7 +1,7 @@
 import * as fs from "fs"
 import * as path from "path"
 import Ajv = require("ajv")
-import $RefParser = require("@apidevtools/json-schema-ref-parser");
+import $RefParser = require("@apidevtools/json-schema-ref-parser")
 
 const validator = new Ajv()
 
