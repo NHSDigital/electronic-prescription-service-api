@@ -137,20 +137,15 @@ export class Organization extends Resource {
   partOf?: Reference<Organization>
 }
 
-export class OperationOutcomeIssue {
-  severity: string
-  code: string
+export interface OperationOutcomeIssue {
+  severity: "information" | "warning" | "error" | "fatal"
+  code: "informational" | "value" | "invalid"
   details?: CodeableConcept
   diagnostics?: string
-
-  constructor(severity: string, code: string) {
-    this.severity = severity
-    this.code = code
-  }
 }
 
-export class OperationOutcome extends Resource {
-  readonly resourceType = "OperationOutcome"
+export interface OperationOutcome extends Resource {
+  resourceType: "OperationOutcome"
   issue: Array<OperationOutcomeIssue>
 }
 
