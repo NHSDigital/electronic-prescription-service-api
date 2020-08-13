@@ -39,12 +39,12 @@ info:
     * repeat-dispensing => continuous-repeat-dispensing
 
     ## Using this API
-    Electronic prescription messages are digitally signed to protect against tampering and to prevent repudiation. While the messages themselves are FHIR-based, for reasons of backwards compatibility, the signatures must be represented in HL7 V3 format. To make this easier, you can POST a prescription to the `/Prepare` endpoint to receive exactly the HL7 V3 fragments which need to be signed to conform to the specification.
+    Electronic prescription messages are digitally signed to protect against tampering and to prevent repudiation. While the messages themselves are FHIR-based, for reasons of backwards compatibility, the signatures must be represented in HL7 V3 format. To make this easier, you can POST a prescription to the `/$prepare` endpoint to receive exactly the HL7 V3 fragments which need to be signed to conform to the specification.
     
     To create a prescription:
-    1. POST a prescription in FHIR format to the `/Prepare` endpoint
+    1. POST a prescription in FHIR format to the `/$prepare` endpoint
     2. Sign the response and put the result in a Provenance resource in the original FHIR prescription
-    3. POST the signed prescription in FHIR format to the `/Send` endpoint
+    3. POST the signed prescription in FHIR format to the `/$process-message` endpoint
 
     ### Digital signatures
     To provide a signature for your prescription, you can use the example signature from the Provenance schema [here](./types/Provenance).
@@ -84,7 +84,6 @@ info:
 
     You don’t need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.
     In particular:
-    - resource names are capitalised and singular, for example the /Prepare not /prepare
     - array names are singular, for example `line` not `lines` for address lines
     - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
 
@@ -122,9 +121,9 @@ info:
 
     ## Endpoints
     To see details for specific endpoints, select from the list on the left hand side of the page:
-    * `POST /Prepare` - convert a FHIR prescription into the HL7 V3 signature fragments to be signed by the prescriber
-    * `POST /Convert` - convert a FHIR prescription to HL7 V3 to verify client signature implementations
-    * `POST /Send` - send a signed FHIR prescription to Spine
+    * `POST /$prepare` - convert a FHIR prescription into the HL7 V3 signature fragments to be signed by the prescriber
+    * `POST /$convert` - convert a FHIR prescription to HL7 V3 to verify client signature implementations
+    * `POST /$process-message` - send a signed FHIR prescription to Spine
     * `GET /_poll` - Obtain the response to an asynchronous spine request
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
@@ -133,7 +132,7 @@ tags:
   - name: dispensing
   - name: prescribing
 paths:
-  /Prepare:
+  /$prepare:
     post:
       operationId: prepare-prescription
       summary: Convert prescription to signature fragments
@@ -185,7 +184,7 @@ paths:
                   value:
                     $ref: components/examples/example-c-unhandled-error/Response-FhirError.json
           headers: {}
-  /Send:
+  /$process-message:
     post:
       operationId: send-prescription
       summary: Send a signed prescription to Spine
@@ -239,7 +238,7 @@ paths:
                   value:
                     $ref: components/examples/example-b-spine-error-patient-deceased/SendResponse-FhirError.json
           headers: {}
-  /Convert:
+  /$convert:
     post:
       operationId: convert-prescription
       summary: Convert a prescription to a format used for signing
@@ -289,7 +288,7 @@ paths:
     get:
       operationId: prescription-poll
       summary: Obtain the response to an asynchronous spine request
-      description: Obtain the respone to an asynchronous spine request, using the location provided by the `/Send` endpoint
+      description: Obtain the respone to an asynchronous spine request, using the location provided by the `/$process-message` endpoint
       parameters:
         - in: path
           name: pollingId
