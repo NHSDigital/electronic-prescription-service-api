@@ -7,6 +7,8 @@ export function getStatusCode(validation: Array<ValidationError>): number {
 }
 
 export function verifyPrescriptionBundle(bundle: unknown, requireSignature: boolean): Array<ValidationError> {
+  console.log(bundle)
+
   if (!verifyResourceTypeIsBundle(bundle)) {
     return [{
       message: "ResourceType must be 'Bundle' on request",

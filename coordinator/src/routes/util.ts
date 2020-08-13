@@ -34,7 +34,13 @@ export function validatingHandler(requireSignature: boolean, handler: Handler<Bu
 }
 
 function getPayload(request: Hapi.Request): unknown {
-  return typeof request.payload === "string" ? LosslessJson.parse(request.payload) : {}
+  if (Buffer.isBuffer(request.payload)) {
+    return LosslessJson.parse(request.payload.toString())
+  } else if (typeof request.payload === "string") {
+    return LosslessJson.parse(request.payload)
+  } else {
+    return {}
+  }
 }
 
 function toFhirError(validation: Array<ValidationError>): OperationOutcome {

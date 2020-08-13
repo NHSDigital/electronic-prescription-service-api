@@ -11,7 +11,7 @@ import * as fhir from "../../../src/model/fhir-resources"
 import {Identifier, MedicationRequest} from "../../../src/model/fhir-resources"
 import {clone} from "../../resources/test-helpers"
 import {SpineDirectResponse} from "../../../src/services/spine-communication"
-import * as LosslessJson from "lossless-json";
+import * as LosslessJson from "lossless-json"
 
 test("getResourcesOfType returns correct resources", () => {
   const result = getResourcesOfType(TestResources.examplePrescription1.fhirMessageUnsigned, new MedicationRequest())
