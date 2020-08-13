@@ -98,12 +98,12 @@ export function wrapInOperationOutcome(message: SpineDirectResponse): fhir.Opera
   return response
 }
 
-export function getNumericValueAsString(fhirQuantity: string | number | LosslessNumber): string {
-  if (typeof fhirQuantity === "number") {
+export function getNumericValueAsString(numericValue: string | number | LosslessNumber): string {
+  if (typeof numericValue === "number") {
     throw new TypeError("Got a number but expected a LosslessNumber. Use LosslessJson.parse() instead of JSON.parse() or precision may be lost.")
-  } else if (typeof fhirQuantity === "string") {
-    return fhirQuantity
+  } else if (typeof numericValue === "string") {
+    return numericValue
   } else {
-    return fhirQuantity.toString()
+    return numericValue.toString()
   }
 }
