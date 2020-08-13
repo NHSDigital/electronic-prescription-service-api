@@ -41,20 +41,18 @@ function toFhirError(validation: Array<ValidationError>): OperationOutcome {
     * v.operationOutcomeCode: from the [IssueType ValueSet](https://www.hl7.org/fhir/valueset-issue-type.html)
     * v.apiErrorCode: Our own code defined for each particular error. Refer to OAS.
   */
-  const mapValidationErrorToOperationOutcomeIssue = (ve: ValidationError) => {
-    return {
-      severity: ve.severity,
-      code: ve.operationOutcomeCode,
-      details: {
-        coding: [{
-          system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
-          version: 1,
-          code: ve.apiErrorCode,
-          display: ve.message
-        }]
-      }
+  const mapValidationErrorToOperationOutcomeIssue = (ve: ValidationError) => ({
+    severity: ve.severity,
+    code: ve.operationOutcomeCode,
+    details: {
+      coding: [{
+        system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+        version: 1,
+        code: ve.apiErrorCode,
+        display: ve.message
+      }]
     }
-  }
+  })
 
   return {
     resourceType: "OperationOutcome",

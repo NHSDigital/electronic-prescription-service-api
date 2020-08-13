@@ -87,14 +87,12 @@ export function onlyElement<T>(previousValue: T, currentValue: T, currentIndex: 
 }
 
 export function wrapInOperationOutcome(message: SpineDirectResponse): fhir.OperationOutcome {
-  const operationOutcomeIssue: fhir.OperationOutcomeIssue = {
-    code: message.statusCode <= 299 ? "informational" : "invalid",
-    severity: message.statusCode <= 299 ? "information" : "error",
-    diagnostics: message.body
-  }
-
   return {
     resourceType: "OperationOutcome",
-    issue: [operationOutcomeIssue]
+    issue: [{
+      code: message.statusCode <= 299 ? "informational" : "invalid",
+      severity: message.statusCode <= 299 ? "information" : "error",
+      diagnostics: message.body
+    }]
   }
 }
