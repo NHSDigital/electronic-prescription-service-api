@@ -4,6 +4,9 @@ import * as core from "../../model/hl7-v3-datatypes-core"
 import {SpineDirectResponse} from "../spine-communication"
 import {LosslessNumber} from "lossless-json"
 
+const FHIR_DATE_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$/
+const FHIR_DATE_TIME_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$/
+
 export function getResourcesOfType<T extends fhir.Resource>(fhirBundle: fhir.Bundle, type: T): Array<T> {
   const typeGuard = (resource: fhir.Resource): resource is T => resource.resourceType === type.resourceType
   return fhirBundle.entry
@@ -68,6 +71,9 @@ export function convertMomentToDateTime(dateTime: moment.Moment): core.Timestamp
 }
 
 export function convertIsoStringToDateTime(isoDateTimeStr: string): core.Timestamp {
+  if (!FHIR_DATE_TIME_REGEX.test(isoDateTimeStr)) {
+    throw new TypeError(`Incorrect format for date time string ${isoDateTimeStr}`)
+  }
   const dateTime = moment.utc(isoDateTimeStr, moment.ISO_8601, true)
   return convertMomentToDateTime(dateTime)
 }
@@ -78,6 +84,9 @@ export function convertMomentToDate(dateTime: moment.Moment): core.Timestamp {
 }
 
 export function convertIsoStringToDate(isoDateStr: string): core.Timestamp {
+  if (!FHIR_DATE_REGEX.test(isoDateStr)) {
+    throw new TypeError(`Incorrect format for date string ${isoDateStr}`)
+  }
   const dateTime = moment.utc(isoDateStr, moment.ISO_8601, true)
   return convertMomentToDate(dateTime)
 }

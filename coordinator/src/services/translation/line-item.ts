@@ -20,7 +20,7 @@ function convertDosageInstructions(dosageInstruction: Array<fhir.Dosage>) {
   return new prescriptions.LineItemPertinentInformation2(hl7V3DosageInstructions)
 }
 
-export function convertLineItemComponent(fhirQuantity: fhir.SimpleQuantity): prescriptions.LineItemComponent {
+function convertLineItemComponent(fhirQuantity: fhir.SimpleQuantity) {
   const hl7V3LineItemQuantity = new prescriptions.LineItemQuantity()
   const hl7V3UnitCode = new codes.SnomedCode(fhirQuantity.code, fhirQuantity.unit)
   const value = getNumericValueAsString(fhirQuantity.value)
