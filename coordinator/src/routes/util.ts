@@ -35,12 +35,17 @@ export function validatingHandler(requireSignature: boolean, handler: Handler<Bu
 
 function getPayload(request: Hapi.Request): unknown {
   if (Buffer.isBuffer(request.payload)) {
-    return LosslessJson.parse(request.payload.toString())
+    return LosslessJson.parse(convertUuidsToUpperCase(request.payload.toString()))
   } else if (typeof request.payload === "string") {
-    return LosslessJson.parse(request.payload)
+    return LosslessJson.parse(convertUuidsToUpperCase(request.payload))
   } else {
     return {}
   }
+}
+
+function convertUuidsToUpperCase(requestPayload: string): string {
+  const re = /[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/gi
+  return requestPayload.replace(re, (x) => x.toUpperCase())
 }
 
 function toFhirError(validation: Array<ValidationError>): OperationOutcome {
