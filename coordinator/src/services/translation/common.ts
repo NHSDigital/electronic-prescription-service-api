@@ -2,6 +2,7 @@ import * as fhir from "../../model/fhir-resources"
 import moment from "moment"
 import * as core from "../../model/hl7-v3-datatypes-core"
 import {SpineDirectResponse} from "../spine-communication"
+import {LosslessNumber} from "lossless-json"
 
 const FHIR_DATE_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$/
 const FHIR_DATE_TIME_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$/
@@ -104,4 +105,14 @@ export function wrapInOperationOutcome(message: SpineDirectResponse): fhir.Opera
   const response = new fhir.OperationOutcome()
   response.issue = [operationOutcomeIssue]
   return response
+}
+
+export function getNumericValueAsString(numericValue: string | number | LosslessNumber): string {
+  if (typeof numericValue === "number") {
+    throw new TypeError("Got a number but expected a LosslessNumber. Use LosslessJson.parse() instead of JSON.parse() or precision may be lost.")
+  } else if (typeof numericValue === "string") {
+    return numericValue
+  } else {
+    return numericValue.toString()
+  }
 }
