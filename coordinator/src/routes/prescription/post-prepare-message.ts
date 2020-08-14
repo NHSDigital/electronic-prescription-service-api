@@ -11,7 +11,7 @@ export default [
     */
   {
     method: "POST",
-    path: "/Prepare",
+    path: "/$prepare",
     handler: validatingHandler(
       false,
       (requestPayload: Bundle, responseToolkit: Hapi.ResponseToolkit) => {

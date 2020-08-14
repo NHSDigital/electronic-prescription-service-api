@@ -10,7 +10,7 @@ export default [
     */
   {
     method: "POST",
-    path: "/Send",
+    path: "/$process-message",
     handler: validatingHandler(
       false,
       async (requestPayload: Bundle, responseToolkit: Hapi.ResponseToolkit) => {
