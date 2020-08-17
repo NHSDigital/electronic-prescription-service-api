@@ -143,7 +143,7 @@ function verifyBundleContainsExactly(bundle: Bundle, number: number, resourceTyp
 
 export interface ValidationError {
     message: string,
-    operationOutcomeCode: string,
+    operationOutcomeCode: "value",
     apiErrorCode: string,
-    severity: string
+    severity: "error" | "fatal"
 }
