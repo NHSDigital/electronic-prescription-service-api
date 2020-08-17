@@ -126,7 +126,7 @@ export class GlobalIdentifier extends Identifier<string> {
         extension: undefined
     }
     constructor(root: string) {
-      super(root)
+      isUUID(root) ? super(root.toUpperCase()) : super(root)
     }
 }
 
@@ -196,4 +196,9 @@ export class SdsJobRoleIdentifier extends Identifier<"1.2.826.0.1285.0.2.1.104">
   constructor(extension: string) {
     super("1.2.826.0.1285.0.2.1.104", extension)
   }
+}
+
+function isUUID(s: string): boolean {
+  const re = /[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/i
+  return re.test(s)
 }
