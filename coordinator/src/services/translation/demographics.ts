@@ -23,7 +23,6 @@ export function convertName(fhirHumanName: fhir.HumanName): core.Name {
 function convertNameUse(fhirNameUse: string) {
   switch (fhirNameUse) {
   case "usual":
-    return core.NameUse.USUAL
   case "official":
     return core.NameUse.USUAL
   case "nickname":
