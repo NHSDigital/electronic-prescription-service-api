@@ -1,8 +1,9 @@
 import * as XmlJs from "xml-js"
 import {sortAttributes} from "../../src/services/translation/xml"
+import * as LosslessJson from "lossless-json"
 
 export function clone<T>(input: T): T {
-  return JSON.parse(JSON.stringify(input))
+  return LosslessJson.parse(LosslessJson.stringify(input))
 }
 
 export function xmlTest(actualRoot: XmlJs.ElementCompact, expectedRoot: XmlJs.ElementCompact): () => void {

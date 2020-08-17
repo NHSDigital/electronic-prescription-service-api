@@ -1,8 +1,8 @@
 import * as fhir from "../../model/fhir-resources"
-import {getCodingForSystem, getIdentifierValueForSystem, onlyElement} from "./common"
+import {getCodingForSystem, getIdentifierValueForSystem, getNumericValueAsString, onlyElement} from "./common"
+import * as core from "../../model/hl7-v3-datatypes-core"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
-import * as core from "../../model/hl7-v3-datatypes-core"
 
 function convertProduct(medicationCodeableConcept: fhir.CodeableConcept) {
   const fhirMedicationCode = getCodingForSystem(medicationCodeableConcept.coding, "http://snomed.info/sct")
@@ -12,19 +12,20 @@ function convertProduct(medicationCodeableConcept: fhir.CodeableConcept) {
   return new prescriptions.Product(manufacturedProduct)
 }
 
+function convertLineItemComponent(fhirQuantity: fhir.SimpleQuantity) {
+  const hl7V3LineItemQuantity = new prescriptions.LineItemQuantity()
+  const hl7V3UnitCode = new codes.SnomedCode(fhirQuantity.code, fhirQuantity.unit)
+  const value = getNumericValueAsString(fhirQuantity.value)
+  hl7V3LineItemQuantity.quantity = new core.QuantityInAlternativeUnits(value, value, hl7V3UnitCode)
+  return new prescriptions.LineItemComponent(hl7V3LineItemQuantity)
+}
+
 function convertDosageInstructions(dosageInstruction: Array<fhir.Dosage>) {
   const dosageInstructionsValue = dosageInstruction
     .map(dosageInstruction => dosageInstruction.text)
     .reduce(onlyElement)
   const hl7V3DosageInstructions = new prescriptions.DosageInstructions(dosageInstructionsValue)
   return new prescriptions.LineItemPertinentInformation2(hl7V3DosageInstructions)
-}
-
-function convertLineItemComponent(fhirQuantity: fhir.SimpleQuantity) {
-  const hl7V3LineItemQuantity = new prescriptions.LineItemQuantity()
-  const hl7V3UnitCode = new codes.SnomedCode(fhirQuantity.code, fhirQuantity.unit)
-  hl7V3LineItemQuantity.quantity = new core.QuantityInAlternativeUnits(fhirQuantity.value, fhirQuantity.value, hl7V3UnitCode)
-  return new prescriptions.LineItemComponent(hl7V3LineItemQuantity)
 }
 
 export function convertMedicationRequestToLineItem(fhirMedicationRequest: fhir.MedicationRequest): prescriptions.LineItem {

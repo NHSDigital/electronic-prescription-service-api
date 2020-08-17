@@ -3,6 +3,7 @@ import {
   convertIsoStringToDateTime,
   getIdentifierValueForSystem,
   getIdentifierValueOrNullForSystem,
+  getNumericValueAsString,
   getResourceForFullUrl,
   getResourcesOfType,
   wrapInOperationOutcome
@@ -12,6 +13,7 @@ import * as fhir from "../../../src/model/fhir-resources"
 import {Identifier, MedicationRequest} from "../../../src/model/fhir-resources"
 import {clone} from "../../resources/test-helpers"
 import {SpineDirectResponse} from "../../../src/services/spine-communication"
+import * as LosslessJson from "lossless-json"
 
 test("getResourcesOfType returns correct resources", () => {
   const result = getResourcesOfType(TestResources.examplePrescription1.fhirMessageUnsigned, new MedicationRequest())
@@ -146,5 +148,26 @@ describe("date conversion", () => {
   test("returns UTC timestamp when time not present", () => {
     const timestamp = convertIsoStringToDate("2020-06-22")
     expect(timestamp._attributes.value).toEqual("20200622")
+  })
+})
+
+describe("getNumericValueAsString preserves numeric precision", () => {
+  test.each([
+    ["20", "20"],
+    ["20.00", "20.00"],
+    ["1.1", "1.1"],
+    ["\"20\"", "20"],
+    ["\"20.00\"", "20.00"]
+  ])("when input is %s", (inputStr: string, expectedOutput: string) => {
+    const input = LosslessJson.parse(inputStr)
+    const actualOutput = getNumericValueAsString(input)
+    expect(actualOutput).toEqual(expectedOutput)
+  })
+
+  test("or an exception is thrown", () => {
+    expect(() => {
+      const input = JSON.parse("20.00")
+      getNumericValueAsString(input)
+    }).toThrow()
   })
 })

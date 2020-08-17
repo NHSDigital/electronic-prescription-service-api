@@ -1,3 +1,5 @@
+import {LosslessNumber} from "lossless-json"
+
 export abstract class Resource {
   id?: string
   resourceType: string
@@ -66,7 +68,7 @@ export class MedicationRequestDispenseRequest {
 }
 
 export class SimpleQuantity {
-  value?: string
+  value?: string | LosslessNumber
   unit?: string
   system?: string
   code?: string
