@@ -52,20 +52,20 @@ test("convertFhirMessageToHl7V3ParentPrescriptionMessage result has no lower cas
   const translatedMessage = translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(messageWithLowercaseUUIDs)
 
   const allNonUpperCaseUUIDS = getAllUUIDsNotUpperCase(translatedMessage)
-  expect(allNonUpperCaseUUIDS.size).toBe(0)
+  expect(allNonUpperCaseUUIDS.length).toBe(0)
 })
 
 function getMessageWithLowercaseUUIDs() {
   const re = /[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}/g
   let messageStr = LosslessJson.stringify(TestResources.examplePrescription1.fhirMessageUnsigned)
-  messageStr = messageStr.replace(re, (x) => x.toLowerCase())
+  messageStr = messageStr.replace(re, (uuid) => uuid.toLowerCase())
   return LosslessJson.parse(messageStr)
 }
 
 function getAllUUIDsNotUpperCase(translatedMessage: string) {
-  const uppercaseUUIDRe = /[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}/g
   const caseInsensitiveRe = /[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/gi
   const allUUIDS = translatedMessage.match(caseInsensitiveRe)
-  const allUpperUUIDS = new Set(translatedMessage.match(uppercaseUUIDRe))
-  return new Set(allUUIDS.filter(x => !allUpperUUIDS.has(x)))
+  const uppercaseUUIDRe = /[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}/g
+  const allUpperUUIDS = translatedMessage.match(uppercaseUUIDRe)
+  return allUUIDS.filter(uuid => !allUpperUUIDS.includes(uuid))
 }
