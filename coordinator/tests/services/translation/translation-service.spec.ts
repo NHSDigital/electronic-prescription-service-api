@@ -7,6 +7,7 @@ import * as TestResources from "../../resources/test-resources"
 import * as XmlJs from "xml-js"
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {xmlTest} from "../../resources/test-helpers"
+import * as LosslessJson from "lossless-json"
 
 jest.mock("uuid", () => {
   return {
@@ -44,3 +45,27 @@ test(
     TestResources.examplePrescription1.hl7V3Message
   )
 )
+
+test("convertFhirMessageToHl7V3ParentPrescriptionMessage result has no lower case UUIDs", () => {
+  const messageWithLowercaseUUIDs = getMessageWithLowercaseUUIDs()
+
+  const translatedMessage = translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(messageWithLowercaseUUIDs)
+
+  const allNonUpperCaseUUIDS = getAllUUIDsNotUpperCase(translatedMessage)
+  expect(allNonUpperCaseUUIDS.size).toBe(0)
+})
+
+function getMessageWithLowercaseUUIDs() {
+  const re = /[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}/g
+  let messageStr = LosslessJson.stringify(TestResources.examplePrescription1.fhirMessageUnsigned)
+  messageStr = messageStr.replace(re, (x) => x.toLowerCase())
+  return LosslessJson.parse(messageStr)
+}
+
+function getAllUUIDsNotUpperCase(translatedMessage: string) {
+  const uppercaseUUIDRe = /[A-F0-9]{8}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{4}-[A-F0-9]{12}/g
+  const caseInsensitiveRe = /[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}/gi
+  const allUUIDS = translatedMessage.match(caseInsensitiveRe)
+  const allUpperUUIDS = new Set(translatedMessage.match(uppercaseUUIDRe))
+  return new Set(allUUIDS.filter(x => !allUpperUUIDS.has(x)))
+}
