@@ -40,13 +40,13 @@ export class MedicationRequest extends Resource {
   extension?: Array<Extension>
 }
 
-export class CodeableConcept {
+export interface CodeableConcept {
   coding: Array<Coding>
 }
 
-export class Coding {
-  system?: string
-  code?: string
+export interface Coding {
+  system: string
+  code: string
   display?: string
   version?: number
 }

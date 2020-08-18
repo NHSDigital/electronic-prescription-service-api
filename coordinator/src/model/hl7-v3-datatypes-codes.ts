@@ -39,7 +39,7 @@ export class PatientCareProvisionTypeCode extends Code<"2.16.840.1.113883.2.1.3.
 }
 
 export class SnomedCode extends Code<"2.16.840.1.113883.2.1.3.2.4.15"> {
-  constructor(code: string, desc: string) {
+  constructor(code: string, desc?: string) {
     super("2.16.840.1.113883.2.1.3.2.4.15", code, desc)
   }
 }
