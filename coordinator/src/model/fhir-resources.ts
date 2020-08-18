@@ -16,13 +16,13 @@ class BundleEntry {
   resource?: Resource
 }
 
-export class Identifier {
-  system?: string
-  value?: string
+export interface Identifier {
+  system: string
+  value: string
 }
 
-class MedicationRequestGroupIdentifier extends Identifier {
-  extension?: Array<IdentifierExtension>
+interface MedicationRequestGroupIdentifier extends Identifier {
+  extension: Array<IdentifierExtension>
 }
 
 export class MedicationRequest extends Resource {
@@ -33,7 +33,7 @@ export class MedicationRequest extends Resource {
   subject: Reference<Patient>
   authoredOn?: string
   requester?: Reference<PractitionerRole>
-  groupIdentifier?: MedicationRequestGroupIdentifier
+  groupIdentifier: MedicationRequestGroupIdentifier
   courseOfTherapyType?: CodeableConcept
   dosageInstruction: Array<Dosage>
   dispenseRequest?: MedicationRequestDispenseRequest
