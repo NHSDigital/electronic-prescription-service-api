@@ -35,18 +35,18 @@ export class MedicationRequest extends Resource {
   requester?: Reference<PractitionerRole>
   groupIdentifier?: MedicationRequestGroupIdentifier
   courseOfTherapyType?: CodeableConcept
-  dosageInstruction?: Array<Dosage>
+  dosageInstruction: Array<Dosage>
   dispenseRequest?: MedicationRequestDispenseRequest
   extension?: Array<Extension>
 }
 
-export class CodeableConcept {
+export interface CodeableConcept {
   coding: Array<Coding>
 }
 
-export class Coding {
-  system?: string
-  code?: string
+export interface Coding {
+  system: string
+  code: string
   display?: string
   version?: number
 }
@@ -56,8 +56,8 @@ export class Reference<T extends Resource> {
   identifier?: Identifier
 }
 
-export class Dosage {
-  text?: string
+export interface Dosage {
+  text: string
 }
 
 export class MedicationRequestDispenseRequest {
