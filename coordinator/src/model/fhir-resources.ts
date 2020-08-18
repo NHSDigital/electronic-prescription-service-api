@@ -51,9 +51,12 @@ export interface Coding {
   version?: number
 }
 
-export class Reference<T extends Resource> {
-  reference?: string
-  identifier?: Identifier
+export interface Reference<T extends Resource> {
+  reference: string
+}
+
+export interface IdentifierReference<T extends Resource> {
+  identifier: Identifier
 }
 
 export interface Dosage {
@@ -63,7 +66,7 @@ export interface Dosage {
 export class MedicationRequestDispenseRequest {
   extension?: Array<Extension>
   quantity?: SimpleQuantity
-  performer?: Reference<Organization>
+  performer?: IdentifierReference<Organization>
   validityPeriod?: Period
 }
 
@@ -83,7 +86,7 @@ export class Patient extends Resource {
   birthDate?: string
   address?: Array<Address>
   generalPractitioner?: Array<Reference<PractitionerRole>>
-  managingOrganization: Reference<Organization>
+  managingOrganization: IdentifierReference<Organization>
 }
 
 export class HumanName {

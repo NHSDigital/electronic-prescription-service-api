@@ -101,7 +101,7 @@ function convertPrescriptionPertinentInformation4(fhirFirstMedicationRequest: fh
   return new prescriptions.PrescriptionPertinentInformation4(prescriptionType)
 }
 
-function convertPerformer(fhirBundle: fhir.Bundle, performerReference: fhir.Reference<fhir.Organization>) {
+function convertPerformer(fhirBundle: fhir.Bundle, performerReference: fhir.IdentifierReference<fhir.Organization>) {
   const hl7V3Organization = new peoplePlaces.Organization()
   hl7V3Organization.id = new codes.SdsOrganizationIdentifier(performerReference.identifier.value)
   const hl7V3AgentOrganization = new peoplePlaces.AgentOrganization(hl7V3Organization)
