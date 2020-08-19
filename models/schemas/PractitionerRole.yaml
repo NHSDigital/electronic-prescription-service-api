@@ -60,7 +60,7 @@ properties:
             properties: 
               system:
                 type: string
-                description: "	Identity of the terminology system"
+                description: "Identity of the terminology system"
                 enum: ["https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName"]
                 example: "https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName"
               code: 
@@ -73,7 +73,7 @@ properties:
                 example: "General Medical Practitioner"
   telecom:
     type: array
-    description: "A contact detail for the practitioner, e.g. a telephone number or an email address."
+    description: "A contact detail for the practitioner. For example, a telephone number or an email address."
     items:
       $ref: "ContactPoint.yaml"
 
