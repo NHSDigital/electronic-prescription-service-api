@@ -191,13 +191,16 @@ test("Should reject message where MedicationRequests have different authoredOn",
 })
 
 test("Should reject message where MedicationRequests have different dispenseRequest.performer", () => {
+  const performer = {identifier: {system: "system", value: "value"}}
+  const performerDiff = {identifier: {system: "system2", value: "value2"}}
+
   const bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
   const medicationRequests = validator.getMatchingEntries(bundle, "MedicationRequest") as Array<MedicationRequest>
-  medicationRequests.forEach(medicationRequest => medicationRequest.dispenseRequest.performer = {reference: "pharmacy1"})
-  medicationRequests[3].dispenseRequest.performer = {reference: "pharmacy2"}
+  medicationRequests.forEach(medicationRequest => medicationRequest.dispenseRequest.performer = performer)
+  medicationRequests[3].dispenseRequest.performer = performerDiff
   expect(validator.verifyPrescriptionBundle(bundle, false)).toEqual([{
     "apiErrorCode": "INVALID_VALUE",
-    "message": 'Expected all MedicationRequests to have the same value for dispenseRequest.performer. Received {"reference":"pharmacy1"},{"reference":"pharmacy2"}.',
+    "message": `Expected all MedicationRequests to have the same value for dispenseRequest.performer. Received ${JSON.stringify(performer)},${JSON.stringify(performerDiff)}.`,
     "operationOutcomeCode": "value",
     "severity": "error"
   }])
