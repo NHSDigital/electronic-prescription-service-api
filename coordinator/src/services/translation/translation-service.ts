@@ -88,7 +88,7 @@ function createBase64Display(): string {
   return Buffer.from(hardCodedResponse).toString("base64")
 }
 
-function createParameters(base64Payload: string) {
+function createParameters(base64Payload: string): fhir.Parameters {
   const parameters: Array<fhir.Parameter> = []
   parameters.push({name: "payload", valueString: base64Payload})
   parameters.push({name: "display", valueString: createBase64Display()})
