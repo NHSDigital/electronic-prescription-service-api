@@ -32,10 +32,20 @@ export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle):
   const digestValue = crypto.SHA1(fragmentsToBeHashedStr).toString(crypto.enc.Base64)
   const signedInfo = createSignedInfo(digestValue)
   const xmlString = writeXmlStringCanonicalized(signedInfo)
+  const base64Payload = Buffer.from(xmlString).toString("base64")
+  const base64Display = createBase64Display()
   const parameters = new fhir.Parameters([
     {
-      name: "message-digest",
-      valueString: xmlString
+      name: "payload",
+      valueString: base64Payload
+    },
+    {
+      name: "display",
+      valueString: base64Display
+    },
+    {
+      name: "algorithm",
+      valueString: "RS1"
     }
   ])
   return JSON.stringify(parameters, null, 2)
@@ -85,6 +95,11 @@ function createSignedInfo(digestValue: string): XmlJs.ElementCompact {
       }
     }
   } as XmlJs.ElementCompact
+}
+
+function createBase64Display(): string {
+  const hardCodedResponse = "####Patient**NHS Number**: 945 374 0586**Name**: PENSON, HEADLEY TED (Mr)**Date of Birth**: 1977-03-27**Address (Home)**:  10 CRECY CLOSE,  DERBY,  DE22 3JU####Author**Name**: CHANDLER, ANDREW**Telecom (Work)**: 01945700223####Organisation**Name**: PARSON DROVE SURGERY**Telecom (Work)**: 01945700223**Address (Work)**:  240 MAIN ROAD,  PARSON DROVE,  WISBECH,  CAMBRIDGESHIRE,  PE13 4JA####Medication Requested|Name|Dose|Quantity|Unit||----|----|--------|----||Microgynon 30 tablets (Bayer Plc)|As Directed|63|tabletetc."
+  return Buffer.from(hardCodedResponse).toString("base64")
 }
 
 class AlgorithmIdentifier implements XmlJs.ElementCompact {
