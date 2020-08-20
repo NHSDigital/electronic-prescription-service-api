@@ -84,7 +84,7 @@ function createSignedInfo(digestValue: string): XmlJs.ElementCompact {
 }
 
 function createBase64Display(): string {
-  const hardCodedResponse = "####Patient**NHS Number**: 945 374 0586**Name**: PENSON, HEADLEY TED (Mr)**Date of Birth**: 1977-03-27**Address (Home)**:  10 CRECY CLOSE,  DERBY,  DE22 3JU####Author**Name**: CHANDLER, ANDREW**Telecom (Work)**: 01945700223####Organisation**Name**: PARSON DROVE SURGERY**Telecom (Work)**: 01945700223**Address (Work)**:  240 MAIN ROAD,  PARSON DROVE,  WISBECH,  CAMBRIDGESHIRE,  PE13 4JA####Medication Requested|Name|Dose|Quantity|Unit||----|----|--------|----||Microgynon 30 tablets (Bayer Plc)|As Directed|63|tabletetc."
+  const hardCodedResponse = "####Patient\\r\\n\\r\\n**NHS Number**: 945 374 0586\\r\\n\\r\\n**Name**: PENSON, HEADLEY TED (Mr)\\r\\n\\r\\n**Date of Birth**: 1977-03-27\\r\\n\\r\\n**Address (Home)**:  \\r\\n10 CRECY CLOSE,  \\r\\nDERBY,  \\r\\nDE22 3JU\\r\\n\\r\\n####Author\\r\\n\\r\\n**Name**: CHANDLER, ANDREW\\r\\n\\r\\n**Telecom (Work)**: 01945700223\\r\\n\\r\\n####Organisation\\r\\n\\r\\n**Name**: PARSON DROVE SURGERY\\r\\n\\r\\n**Telecom (Work)**: 01945700223\\r\\n\\r\\n**Address (Work)**:  \\r\\n240 MAIN ROAD,  \\r\\nPARSON DROVE,  \\r\\nWISBECH,  \\r\\nCAMBRIDGESHIRE,  \\r\\nPE13 4JA\\r\\n\\r\\n####Medication Requested\\r\\n\\r\\n|Name|Dose|Quantity|Unit|\\r\\n|----|----|--------|----|\\r\\n|Microgynon 30 tablets (Bayer Plc)|As Directed|63|tablet\\r\\n\\r\\netc."
   return Buffer.from(hardCodedResponse).toString("base64")
 }
 
