@@ -99,13 +99,12 @@ describe("additionalInstructions", () => {
   })
 
   test("controlledDrugWords show up correctly", () => {
-    const controlledDrugWordsExtension = new fhir.StringExtension
-    controlledDrugWordsExtension.url = "https://fhir.nhs.uk/R4/StructureDefinition/Extension-controlled-drug-quantity-words"
-    const exampleValueString = "test1"
-    controlledDrugWordsExtension.valueString = exampleValueString
+    const exampleControlledDrugString = "test1"
+    const controlledDrugURL = "https://fhir.nhs.uk/R4/StructureDefinition/Extension-controlled-drug-quantity-words"
+    const controlledDrugWordsExtension: fhir.StringExtension = {url: controlledDrugURL, valueString: exampleControlledDrugString}
     firstFhirMedicationRequest.dispenseRequest.extension.push(controlledDrugWordsExtension)
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, "")
-    expect(result.pertinentInformation1.pertinentAdditionalInstructions.value).toBe(`CD: ${exampleValueString}\n`)
+    expect(result.pertinentInformation1.pertinentAdditionalInstructions.value).toBe(`CD: ${exampleControlledDrugString}\n`)
   })
 
   test("patientInstruction show up correctly", () => {
@@ -122,10 +121,9 @@ describe("additionalInstructions", () => {
   })
 
   test("all info shows up in correct order", () => {
-    const controlledDrugWordsExtension = new fhir.StringExtension
-    controlledDrugWordsExtension.url = "https://fhir.nhs.uk/R4/StructureDefinition/Extension-controlled-drug-quantity-words"
-    const exampleControlledDrugString = "testControlledDrug"
-    controlledDrugWordsExtension.valueString = exampleControlledDrugString
+    const exampleControlledDrugString = "test1"
+    const controlledDrugURL = "https://fhir.nhs.uk/R4/StructureDefinition/Extension-controlled-drug-quantity-words"
+    const controlledDrugWordsExtension: fhir.StringExtension = {url: controlledDrugURL, valueString: exampleControlledDrugString}
     firstFhirMedicationRequest.dispenseRequest.extension.push(controlledDrugWordsExtension)
     const patientInstruction = "testPatientInstruction"
     firstFhirMedicationRequest.dosageInstruction[0].patientInstruction = patientInstruction
