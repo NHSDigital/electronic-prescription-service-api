@@ -15,8 +15,8 @@ export function getPatient(fhirBundle: fhir.Bundle): fhir.Patient {
   return getResourcesOfType<fhir.Patient>(fhirBundle, "Patient").reduce(onlyElement)
 }
 
-export function getOrganization(fhirBundle: fhir.Bundle): fhir.Organization {
-  return getResourcesOfType<fhir.Organization>(fhirBundle, "Organization").reduce(onlyElement)
+export function getOrganizations(fhirBundle: fhir.Bundle): Array<fhir.Organization> {
+  return getResourcesOfType<fhir.Organization>(fhirBundle, "Organization")
 }
 
 export function getProvenances(fhirBundle: fhir.Bundle): Array<fhir.Provenance> {

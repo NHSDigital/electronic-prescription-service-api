@@ -1,7 +1,7 @@
 import {clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
 import {Bundle, Organization} from "../../../src/model/fhir-resources"
-import {getOrganization} from "../../../src/services/translation/common/getResourcesOfType"
+import {getOrganizations} from "../../../src/services/translation/common/getResourcesOfType"
 import {convertOrganizationAndProviderLicense} from "../../../src/services/translation/organization"
 
 describe("convertOrganizationAndProviderLicense", ()=> {
@@ -10,7 +10,7 @@ describe("convertOrganizationAndProviderLicense", ()=> {
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
-    firstFhirOrganization = getOrganization(bundle)
+    firstFhirOrganization = getOrganizations(bundle)[0]
   })
 
   test("maps identifier from fhir organization to AgentPerson.representedOrganization", () => {
