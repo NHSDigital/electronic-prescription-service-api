@@ -91,6 +91,6 @@ describe("PertinentInformation2", () => {
 
     const result = translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(bundle)
     expect(result.includes(`&lt;patientInfo&gt;${contentString1}&lt;/patientInfo&gt;`)).toBe(true)
-    expect(result.includes(`<patientInfo>${contentString1}</patientInfo>`)).not.toBe(true)
+    expect(result.includes(`<patientInfo>${contentString1}</patientInfo>`)).toBe(false)
   })
 })
