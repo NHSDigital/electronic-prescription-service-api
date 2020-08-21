@@ -46,7 +46,7 @@ function convertAdditionalInstructions(fhirMedicationRequest: fhir.MedicationReq
 
   const additionalInstructionsValue = `${patientInfoStr}${controlledDrugStr}${patientInstructionStr}`
   const hl7V3AdditionalInstructions = new prescriptions.AdditionalInstructions(additionalInstructionsValue)
-  return additionalInstructionsValue != "" ? new prescriptions.LineItemPertinentInformation1(hl7V3AdditionalInstructions) : undefined
+  return new prescriptions.LineItemPertinentInformation1(hl7V3AdditionalInstructions)
 }
 
 export function convertMedicationRequestToLineItem(fhirMedicationRequest: fhir.MedicationRequest, patientInfoStr = ""): prescriptions.LineItem {
@@ -58,7 +58,7 @@ export function convertMedicationRequestToLineItem(fhirMedicationRequest: fhir.M
   hl7V3LineItem.component = convertLineItemComponent(fhirMedicationRequest.dispenseRequest.quantity)
   hl7V3LineItem.pertinentInformation2 = convertDosageInstructions(fhirMedicationRequest.dosageInstruction)
   const pertinentInformation1 = convertAdditionalInstructions(fhirMedicationRequest, patientInfoStr)
-  if (pertinentInformation1)
+  if (pertinentInformation1.pertinentAdditionalInstructions.value != "")
     hl7V3LineItem.pertinentInformation1 = pertinentInformation1
 
   return hl7V3LineItem

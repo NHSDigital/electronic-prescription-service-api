@@ -83,27 +83,32 @@ function convertDispensingSitePreference(fhirFirstMedicationRequest: fhir.Medica
   return new prescriptions.DispensingSitePreference(dispensingSitePreferenceValue)
 }
 
-function isContentString(contentType: fhir.ContentString | fhir.ContentReference): contentType is fhir.ContentString{
+function isContentString(contentType: fhir.ContentString | fhir.ContentReference): contentType is fhir.ContentString {
   return (contentType as fhir.ContentString).contentString !== undefined
 }
 
-function patientInfoString(fhirCommunicationRequest: fhir.CommunicationRequest): string {
+function formatPatientInfo(previousResult: string, newResult: string): string {
+  return `${previousResult}<patientInfo>${newResult}</patientInfo>`
+}
+
+function createPatientInfoString(fhirCommunicationRequest: fhir.CommunicationRequest): string {
   return fhirCommunicationRequest.payload
     .filter(isContentString)
     .map(contentString => contentString.contentString)
-    .reduce((a, b) => `<patientInfo>${a}</patientInfo>${b}`, "")
+    // .reduce((previousResult, newResult) => `${previousResult}<patientInfo>${newResult}</patientInfo>`, "")
+    .reduce(formatPatientInfo, "")
 }
 
 function isFirstRequestAndCommunicationRequestPresent(request: number, fhirCommunicationRequest: Array<fhir.CommunicationRequest>) {
   return (request == 0 && fhirCommunicationRequest.length > 0)
 }
 
-function convertPrescriptionPertinentInformation2(fhirCommunicationRequest: Array<fhir.CommunicationRequest>, fhirMedicationRequests: Array<fhir.MedicationRequest>) {
+function convertPrescriptionPertinentInformation2(fhirCommunicationRequest: Array<fhir.CommunicationRequest>,
+  fhirMedicationRequests: Array<fhir.MedicationRequest>) {
   const pertinentInformation2 = []
 
   for (let i = 0; i < fhirMedicationRequests.length; i++) {
-    const result = isFirstRequestAndCommunicationRequestPresent(i, fhirCommunicationRequest) ? patientInfoString(fhirCommunicationRequest[0]) : ""
-
+    const result = isFirstRequestAndCommunicationRequestPresent(i, fhirCommunicationRequest) ? createPatientInfoString(fhirCommunicationRequest[0]) : ""
     const pertinentLineItem = convertMedicationRequestToLineItem(fhirMedicationRequests[i], result)
     pertinentInformation2.push(new prescriptions.PrescriptionPertinentInformation2(pertinentLineItem))
   }
