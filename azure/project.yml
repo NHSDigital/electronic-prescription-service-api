@@ -1,0 +1,6 @@
+variables:
+  service_name: electronic-prescription-service
+  short_service_name: eps
+  service_base_path: oauth2
+  product_display_name: Electronic Prescription Service
+  product_description: Placeholder description
