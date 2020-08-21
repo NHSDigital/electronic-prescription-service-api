@@ -3,6 +3,7 @@ import * as TestResources from "../../resources/test-resources"
 import {getResourcesOfType} from "../../../src/services/translation/common"
 import {Bundle, CommunicationRequest, MedicationRequest} from "../../../src/model/fhir-resources"
 import {convertBundleToPrescription, convertCourseOfTherapyType} from "../../../src/services/translation/prescription"
+import * as translator from "../../../src/services/translation/translation-service"
 
 describe("convertCourseOfTherapyType", () => {
   const cases = [
@@ -82,5 +83,13 @@ describe("PertinentInformation2", () => {
 
     expect(pertinentInformation2Array.shift()).not.toBe(undefined)
     pertinentInformation2Array.forEach((pertinentInformation1) => expect(pertinentInformation1).toBe(undefined))
+  })
+
+  test("additionalInfo XML escaped after final conversion", () => {
+    const contentString1 = "examplePatientInfo1"
+    fhirCommunicationRequests[0].payload.push({contentString: contentString1})
+
+    const result = translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(bundle)
+    expect(result.includes(`&lt;patientInfo&gt;${contentString1}&lt;/patientInfo&gt;`)).toBe(true)
   })
 })
