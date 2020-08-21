@@ -85,27 +85,23 @@ function isContentString(contentType: fhir.ContentString | fhir.ContentReference
   return (contentType as fhir.ContentString).contentString !== undefined
 }
 
-function firstMedicationRequestPertinentInf2(fhirMedicationRequests: Array<fhir.MedicationRequest>, fhirBundle: fhir.Bundle) {
-  const fhirCommunicationRequest = getResourcesOfType(fhirBundle, new fhir.CommunicationRequest)
-  let patientInfoString = ""
-  if (fhirCommunicationRequest.length > 0) {
-    patientInfoString = fhirCommunicationRequest[0].payload
-      .filter(isContentString)
-      .map(contentString => contentString.contentString)
-      .reduce((a, b) => `<patientInfo>${a}</patientInfo>${b}`, "")
-  }
-  return new prescriptions.PrescriptionPertinentInformation2(convertMedicationRequestToLineItem(fhirMedicationRequests[0], patientInfoString))
+function patientInfoString(fhirCommunicationRequest: fhir.CommunicationRequest): string {
+  return fhirCommunicationRequest.payload
+    .filter(isContentString)
+    .map(contentString => contentString.contentString)
+    .reduce((a, b) => `<patientInfo>${a}</patientInfo>${b}`, "")
+}
+
+function isFirstRequestAndCommunicationRequestPresent(request: number, fhirCommunicationRequest: Array<fhir.CommunicationRequest>) {
+  return (request == 0 && fhirCommunicationRequest.length > 0)
 }
 
 function convertPrescriptionPertinentInformation2(fhirBundle: fhir.Bundle, fhirMedicationRequests: Array<fhir.MedicationRequest>) {
   const pertinentinformation2 = []
-  let i: number
-  for (i = 0; i < fhirMedicationRequests.length; i++) {
-    if (i == 0) {
-      pertinentinformation2.push(firstMedicationRequestPertinentInf2(fhirMedicationRequests, fhirBundle))
-    } else {
-      pertinentinformation2.push(new prescriptions.PrescriptionPertinentInformation2(convertMedicationRequestToLineItem(fhirMedicationRequests[i])))
-    }
+  const fhirCommunicationRequest = getResourcesOfType(fhirBundle, new fhir.CommunicationRequest)
+  for (let i = 0; i < fhirMedicationRequests.length; i++) {
+    const result = isFirstRequestAndCommunicationRequestPresent(i, fhirCommunicationRequest) ? patientInfoString(fhirCommunicationRequest[0]) : ""
+    pertinentinformation2.push(new prescriptions.PrescriptionPertinentInformation2(convertMedicationRequestToLineItem(fhirMedicationRequests[i], result)))
   }
   return pertinentinformation2
 }

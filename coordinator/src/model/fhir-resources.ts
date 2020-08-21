@@ -58,7 +58,7 @@ export class Reference<T extends Resource> {
 
 export interface Dosage {
   text: string
-  patientInstruction: string
+  patientInstruction?: string
 }
 
 export class MedicationRequestDispenseRequest {

@@ -126,7 +126,6 @@ export class LineItemPertinentInformation2 implements ElementCompact {
   constructor(pertinentDosageInstructions: DosageInstructions) {
     this.pertinentDosageInstructions = pertinentDosageInstructions
   }
-
 }
 
 /**
@@ -144,7 +143,6 @@ export class LineItemPertinentInformation1 implements ElementCompact {
   constructor(pertinentAdditionalInstructions: AdditionalInstructions) {
     this.pertinentAdditionalInstructions = pertinentAdditionalInstructions
   }
-
 }
 
 /**
