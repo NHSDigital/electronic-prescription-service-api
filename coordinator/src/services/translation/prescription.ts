@@ -95,7 +95,6 @@ function createPatientInfoString(fhirCommunicationRequest: fhir.CommunicationReq
   return fhirCommunicationRequest.payload
     .filter(isContentString)
     .map(contentString => contentString.contentString)
-    // .reduce((previousResult, newResult) => `${previousResult}<patientInfo>${newResult}</patientInfo>`, "")
     .reduce(formatPatientInfo, "")
 }
 
