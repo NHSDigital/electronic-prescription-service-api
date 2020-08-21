@@ -25,19 +25,19 @@ interface MedicationRequestGroupIdentifier extends Identifier {
   extension: Array<IdentifierExtension>
 }
 
-export class MedicationRequest extends Resource {
-  readonly resourceType = "MedicationRequest"
-  identifier?: Array<Identifier>
+export interface MedicationRequest extends Resource {
+  resourceType: "MedicationRequest"
+  identifier: Array<Identifier>
   category?: Array<CodeableConcept>
   medicationCodeableConcept: CodeableConcept
   subject: Reference<Patient>
-  authoredOn?: string
-  requester?: Reference<PractitionerRole>
+  authoredOn: string
+  requester: Reference<PractitionerRole>
   groupIdentifier: MedicationRequestGroupIdentifier
-  courseOfTherapyType?: CodeableConcept
+  courseOfTherapyType: CodeableConcept
   dosageInstruction: Array<Dosage>
-  dispenseRequest?: MedicationRequestDispenseRequest
-  extension?: Array<Extension>
+  dispenseRequest: MedicationRequestDispenseRequest
+  extension: Array<IdentifierExtension | ReferenceExtension<PractitionerRole> | CodingExtension>
 }
 
 export interface CodeableConcept {
@@ -64,9 +64,9 @@ export interface Dosage {
 }
 
 export class MedicationRequestDispenseRequest {
-  extension?: Array<Extension>
-  quantity?: SimpleQuantity
-  performer?: IdentifierReference<Organization>
+  extension: Array<CodingExtension>
+  quantity: SimpleQuantity
+  performer: IdentifierReference<Organization>
   validityPeriod?: Period
 }
 
@@ -169,19 +169,19 @@ export class Parameter {
   valueString: string
 }
 
-export abstract class Extension {
+export interface Extension {
   url: string
 }
 
-export class IdentifierExtension extends Extension {
+export interface IdentifierExtension extends Extension {
   valueIdentifier: Identifier
 }
 
-export class CodingExtension extends Extension {
+export interface CodingExtension extends Extension {
   valueCoding: Coding
 }
 
-export class ReferenceExtension<T extends Resource> extends Extension {
+export interface ReferenceExtension<T extends Resource> extends Extension {
   valueReference: Reference<T>
 }
 

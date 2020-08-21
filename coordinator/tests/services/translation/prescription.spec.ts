@@ -1,8 +1,7 @@
 import {clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
-import {getResourcesOfType} from "../../../src/services/translation/common"
-import {MedicationRequest} from "../../../src/model/fhir-resources"
 import {convertCourseOfTherapyType} from "../../../src/services/translation/prescription"
+import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
 
 const cases = [
   ["acute", "0001"],
@@ -13,7 +12,7 @@ const cases = [
 test.each(cases)("when first therapy type code is %p, convertCourseOfTherapyType returns prescription treatment type code %p",
   (code: string, expected: string) => {
     const bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
-    const fhirMedicationRequests = getResourcesOfType(bundle, new MedicationRequest())
+    const fhirMedicationRequests = getMedicationRequests(bundle)
     const firstFhirMedicationRequest = fhirMedicationRequests[0]
     firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = code
 

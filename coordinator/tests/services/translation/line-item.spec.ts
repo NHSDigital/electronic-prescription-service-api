@@ -2,7 +2,7 @@ import {convertMedicationRequestToLineItem} from "../../../src/services/translat
 import {Bundle, MedicationRequest} from "../../../src/model/fhir-resources"
 import {clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
-import {getResourcesOfType} from "../../../src/services/translation/common"
+import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
 
 describe("convertMedicationRequestToLineItem", () => {
   let bundle: Bundle
@@ -10,7 +10,7 @@ describe("convertMedicationRequestToLineItem", () => {
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
-    firstFhirMedicationRequest = getResourcesOfType(bundle, new MedicationRequest())[0]
+    firstFhirMedicationRequest = getMedicationRequests(bundle)[0]
   })
 
   test("Throws TypeError when passed multiple order item numbers", () => {

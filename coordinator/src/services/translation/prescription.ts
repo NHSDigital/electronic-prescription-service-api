@@ -2,13 +2,14 @@ import * as core from "../../model/hl7-v3-datatypes-core"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
 import * as fhir from "../../model/fhir-resources"
-import {getExtensionForUrl, getResourcesOfType, onlyElement} from "./common"
+import {getExtensionForUrl, onlyElement} from "./common"
 import {convertAuthor, convertResponsibleParty} from "./practitioner"
 import * as peoplePlaces from "../../model/hl7-v3-people-places"
 import {convertMedicationRequestToLineItem} from "./line-item"
+import {getMedicationRequests} from "./common/getResourcesOfType"
 
 export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescriptions.Prescription {
-  const fhirMedicationRequests = getResourcesOfType(fhirBundle, new fhir.MedicationRequest())
+  const fhirMedicationRequests = getMedicationRequests(fhirBundle)
   const fhirFirstMedicationRequest = fhirMedicationRequests[0]
 
   const hl7V3Prescription = new prescriptions.Prescription(
