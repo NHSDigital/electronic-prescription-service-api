@@ -32,12 +32,8 @@ export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle):
   const digestValue = crypto.SHA1(fragmentsToBeHashedStr).toString(crypto.enc.Base64)
   const signedInfo = createSignedInfo(digestValue)
   const xmlString = writeXmlStringCanonicalized(signedInfo)
-  const parameters = new fhir.Parameters([
-    {
-      name: "message-digest",
-      valueString: xmlString
-    }
-  ])
+  const base64Payload = Buffer.from(xmlString).toString("base64")
+  const parameters = createParameters(base64Payload)
   return JSON.stringify(parameters, null, 2)
 }
 
@@ -85,6 +81,19 @@ function createSignedInfo(digestValue: string): XmlJs.ElementCompact {
       }
     }
   } as XmlJs.ElementCompact
+}
+
+function createBase64Display(): string {
+  const hardCodedResponse = "####Patient\r\n\r\n**NHS Number**: 945 374 0586\r\n\r\n**Name**: PENSON, HEADLEY TED (Mr)\r\n\r\n**Date of Birth**: 1977-03-27\r\n\r\n**Address (Home)**:  \r\n10 CRECY CLOSE,  \r\nDERBY,  \r\nDE22 3JU\r\n\r\n####Author\r\n\r\n**Name**: CHANDLER, ANDREW\r\n\r\n**Telecom (Work)**: 01945700223\r\n\r\n####Organisation\r\n\r\n**Name**: PARSON DROVE SURGERY\r\n\r\n**Telecom (Work)**: 01945700223\r\n\r\n**Address (Work)**:  \r\n240 MAIN ROAD,  \r\nPARSON DROVE,  \r\nWISBECH,  \r\nCAMBRIDGESHIRE,  \r\nPE13 4JA\r\n\r\n####Medication Requested\r\n\r\n|Name|Dose|Quantity|Unit|\r\n|----|----|--------|----|\r\n|Microgynon 30 tablets (Bayer Plc)|As Directed|63|tablet\r\n\r\netc."
+  return Buffer.from(hardCodedResponse).toString("base64")
+}
+
+function createParameters(base64Payload: string): fhir.Parameters {
+  const parameters: Array<fhir.Parameter> = []
+  parameters.push({name: "payload", valueString: base64Payload})
+  parameters.push({name: "display", valueString: createBase64Display()})
+  parameters.push({name: "algorithm", valueString: "RS1"})
+  return new fhir.Parameters(parameters)
 }
 
 class AlgorithmIdentifier implements XmlJs.ElementCompact {

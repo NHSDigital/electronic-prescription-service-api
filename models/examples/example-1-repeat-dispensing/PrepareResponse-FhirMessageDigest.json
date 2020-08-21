@@ -2,8 +2,16 @@
   "resourceType": "Parameters",
   "parameter": [
     {
-      "name": "message-digest",
-      "valueString": "<SignedInfo><CanonicalizationMethod Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"></CanonicalizationMethod><SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\"></SignatureMethod><Reference><Transforms><Transform Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"></Transform></Transforms><DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\"></DigestMethod><DigestValue>9QHzQaFi2m/jg61XktDC7LkuhDU=</DigestValue></Reference></SignedInfo>"
+      "name": "payload",
+      "valueString": "PFNpZ25lZEluZm8+PENhbm9uaWNhbGl6YXRpb25NZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiPjwvQ2Fub25pY2FsaXphdGlvbk1ldGhvZD48U2lnbmF0dXJlTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI3JzYS1zaGExIj48L1NpZ25hdHVyZU1ldGhvZD48UmVmZXJlbmNlPjxUcmFuc2Zvcm1zPjxUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiPjwvVHJhbnNmb3JtPjwvVHJhbnNmb3Jtcz48RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI3NoYTEiPjwvRGlnZXN0TWV0aG9kPjxEaWdlc3RWYWx1ZT45UUh6UWFGaTJtL2pnNjFYa3REQzdMa3VoRFU9PC9EaWdlc3RWYWx1ZT48L1JlZmVyZW5jZT48L1NpZ25lZEluZm8+"
+    },
+    {
+      "name": "display",
+      "valueString": "IyMjI1BhdGllbnQNCg0KKipOSFMgTnVtYmVyKio6IDk0NSAzNzQgMDU4Ng0KDQoqKk5hbWUqKjogUEVOU09OLCBIRUFETEVZIFRFRCAoTXIpDQoNCioqRGF0ZSBvZiBCaXJ0aCoqOiAxOTc3LTAzLTI3DQoNCioqQWRkcmVzcyAoSG9tZSkqKjogIA0KMTAgQ1JFQ1kgQ0xPU0UsICANCkRFUkJZLCAgDQpERTIyIDNKVQ0KDQojIyMjQXV0aG9yDQoNCioqTmFtZSoqOiBDSEFORExFUiwgQU5EUkVXDQoNCioqVGVsZWNvbSAoV29yaykqKjogMDE5NDU3MDAyMjMNCg0KIyMjI09yZ2FuaXNhdGlvbg0KDQoqKk5hbWUqKjogUEFSU09OIERST1ZFIFNVUkdFUlkNCg0KKipUZWxlY29tIChXb3JrKSoqOiAwMTk0NTcwMDIyMw0KDQoqKkFkZHJlc3MgKFdvcmspKio6ICANCjI0MCBNQUlOIFJPQUQsICANClBBUlNPTiBEUk9WRSwgIA0KV0lTQkVDSCwgIA0KQ0FNQlJJREdFU0hJUkUsICANClBFMTMgNEpBDQoNCiMjIyNNZWRpY2F0aW9uIFJlcXVlc3RlZA0KDQp8TmFtZXxEb3NlfFF1YW50aXR5fFVuaXR8DQp8LS0tLXwtLS0tfC0tLS0tLS0tfC0tLS18DQp8TWljcm9neW5vbiAzMCB0YWJsZXRzIChCYXllciBQbGMpfEFzIERpcmVjdGVkfDYzfHRhYmxldA0KDQpldGMu"
+    },
+    {
+      "name": "algorithm",
+      "valueString": "RS1"
     }
   ]
 }
