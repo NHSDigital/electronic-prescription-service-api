@@ -34,7 +34,7 @@ export class LineItem implements ElementCompact {
     //TODO - repeatNumber
     product: Product
     component: LineItemComponent
-    //TODO - pertinentInformation1
+    pertinentInformation1?: LineItemPertinentInformation1
     //TODO - pertinentInformation3
     pertinentInformation2: LineItemPertinentInformation2
     //TODO - inFulfillmentOf2
@@ -115,17 +115,35 @@ export class LineItemComponent implements ElementCompact {
  * An act relationship to allow the specification of dosage instructions in human readable form.
  */
 export class LineItemPertinentInformation2 implements ElementCompact {
-    _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
-      typeCode: "PERT",
-      contextConductionInd: "true"
-    }
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
 
-    seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-    pertinentDosageInstructions: DosageInstructions
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  pertinentDosageInstructions: DosageInstructions
 
-    constructor(pertinentDosageInstructions: DosageInstructions) {
-      this.pertinentDosageInstructions = pertinentDosageInstructions
-    }
+  constructor(pertinentDosageInstructions: DosageInstructions) {
+    this.pertinentDosageInstructions = pertinentDosageInstructions
+  }
+
+}
+
+/**
+ * An act relationship used to associate additional medication instructions to the line item.
+ */
+export class LineItemPertinentInformation1 implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
+
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  pertinentAdditionalInstructions: AdditionalInstructions
+
+  constructor(pertinentAdditionalInstructions: AdditionalInstructions) {
+    this.pertinentAdditionalInstructions = pertinentAdditionalInstructions
+  }
 
 }
 
@@ -407,12 +425,24 @@ export class PrescriptionType extends PrescriptionAnnotation {
  * The dosage and medication instructions in human readable form.
  */
 export class DosageInstructions extends PrescriptionAnnotation {
-    value: string
+  value: string
 
-    constructor(value: string) {
-      super(new codes.PrescriptionAnnotationCode("DI"))
-      this.value = value
-    }
+  constructor(value: string) {
+    super(new codes.PrescriptionAnnotationCode("DI"))
+    this.value = value
+  }
+}
+
+/**
+ * Additional Instructions provided with the prescription Line Item.
+ */
+export class AdditionalInstructions extends PrescriptionAnnotation {
+  value: string
+
+  constructor(value: string) {
+    super(new codes.PrescriptionAnnotationCode("AI"))
+    this.value = value
+  }
 }
 
 /**

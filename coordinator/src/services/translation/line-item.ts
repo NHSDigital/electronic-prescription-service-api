@@ -1,5 +1,11 @@
 import * as fhir from "../../model/fhir-resources"
-import {getCodingForSystem, getIdentifierValueForSystem, getNumericValueAsString, onlyElement} from "./common"
+import {
+  getCodingForSystem,
+  getExtensionForUrlOrNull,
+  getIdentifierValueForSystem,
+  getNumericValueAsString,
+  onlyElement
+} from "./common"
 import * as core from "../../model/hl7-v3-datatypes-core"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
@@ -28,7 +34,22 @@ function convertDosageInstructions(dosageInstruction: Array<fhir.Dosage>) {
   return new prescriptions.LineItemPertinentInformation2(hl7V3DosageInstructions)
 }
 
-export function convertMedicationRequestToLineItem(fhirMedicationRequest: fhir.MedicationRequest): prescriptions.LineItem {
+function convertAdditionalInstructions(fhirMedicationRequest: fhir.MedicationRequest, patientInfoStr: string)  {
+  const controlledDrugWordsExtension = getExtensionForUrlOrNull(fhirMedicationRequest.dispenseRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-controlled-drug-quantity-words") as fhir.StringExtension
+  const controlledDrugWords = controlledDrugWordsExtension?.valueString
+  const controlledDrugStr = controlledDrugWords ? `CD: ${controlledDrugWords}\n` : ""
+
+  const patientInstruction = fhirMedicationRequest.dosageInstruction
+    .map(dosageInstruction => dosageInstruction.patientInstruction)
+    .reduce(onlyElement)
+  const patientInstructionStr = patientInstruction ? patientInstruction : ""
+
+  const additionalInstructionsValue = `${patientInfoStr}${controlledDrugStr}${patientInstructionStr}`
+  const hl7V3AdditionalInstructions = new prescriptions.AdditionalInstructions(additionalInstructionsValue)
+  return additionalInstructionsValue != "" ? new prescriptions.LineItemPertinentInformation1(hl7V3AdditionalInstructions) : undefined
+}
+
+export function convertMedicationRequestToLineItem(fhirMedicationRequest: fhir.MedicationRequest, patientInfoStr = ""): prescriptions.LineItem {
   const hl7V3LineItem = new prescriptions.LineItem(
     new codes.GlobalIdentifier(getIdentifierValueForSystem(fhirMedicationRequest.identifier, "https://fhir.nhs.uk/Id/prescription-order-item-number"))
   )
@@ -36,5 +57,9 @@ export function convertMedicationRequestToLineItem(fhirMedicationRequest: fhir.M
   hl7V3LineItem.product = convertProduct(fhirMedicationRequest.medicationCodeableConcept)
   hl7V3LineItem.component = convertLineItemComponent(fhirMedicationRequest.dispenseRequest.quantity)
   hl7V3LineItem.pertinentInformation2 = convertDosageInstructions(fhirMedicationRequest.dosageInstruction)
+  const pertinentInformation1 = convertAdditionalInstructions(fhirMedicationRequest, patientInfoStr)
+  if (pertinentInformation1)
+    hl7V3LineItem.pertinentInformation1 = pertinentInformation1
+
   return hl7V3LineItem
 }

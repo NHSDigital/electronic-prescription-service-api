@@ -58,6 +58,7 @@ export class Reference<T extends Resource> {
 
 export interface Dosage {
   text: string
+  patientInstruction: string
 }
 
 export class MedicationRequestDispenseRequest {
@@ -178,6 +179,10 @@ export class CodingExtension extends Extension {
   valueCoding: Coding
 }
 
+export class StringExtension extends Extension {
+  valueString: string
+}
+
 export class ReferenceExtension<T extends Resource> extends Extension {
   valueReference: Reference<T>
 }
@@ -195,4 +200,20 @@ export class Provenance extends Resource {
 export class Period {
   start: string
   end: string
+}
+
+export class CommunicationRequest extends Resource {
+  readonly resourceType = "CommunicationRequest"
+  status: string
+  subject: Reference<Patient>
+  payload: Array<ContentReference | ContentString>
+}
+
+export interface ContentString {
+  contentString: string
+}
+
+export interface ContentReference {
+  reference: string
+  display: string
 }
