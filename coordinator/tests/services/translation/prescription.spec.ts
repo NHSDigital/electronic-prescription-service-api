@@ -4,7 +4,7 @@ import {getResourcesOfType} from "../../../src/services/translation/common"
 import {Bundle, CommunicationRequest, MedicationRequest} from "../../../src/model/fhir-resources"
 import {convertBundleToPrescription, convertCourseOfTherapyType} from "../../../src/services/translation/prescription"
 import * as translator from "../../../src/services/translation/translation-service"
-import {LineItemPertinentInformation1} from "../../../src/model/hl7-v3-prescriptions";
+import {LineItemPertinentInformation1} from "../../../src/model/hl7-v3-prescriptions"
 
 describe("convertCourseOfTherapyType", () => {
   const cases = [
@@ -31,22 +31,15 @@ describe("PertinentInformation2", () => {
   let fhirCommunicationRequests: Array<CommunicationRequest>
 
   beforeEach(() => {
-    bundle = getBundleWithEmptyCommunicationRequestAndAtLeast2MedicationRequests()
+    bundle = getBundleWithEmptyCommunicationRequest()
     fhirCommunicationRequests = getResourcesOfType(bundle, new CommunicationRequest())
   })
 
-  function getBundleWithEmptyCommunicationRequestAndAtLeast2MedicationRequests() {
+  function getBundleWithEmptyCommunicationRequest() {
     const result = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     result.entry = result.entry.filter((entry) => entry.resource.resourceType !== "CommunicationRequest")
     addEmptyCommunicationRequestToBundle(result)
-    ensureAtLeast2MedicationRequests(result)
     return result
-  }
-
-  function ensureAtLeast2MedicationRequests(bundle: Bundle) {
-    const fhirMedicationRequests = getResourcesOfType(bundle, new MedicationRequest())
-    if (fhirMedicationRequests.length == 1)
-      bundle.entry.push({resource: fhirMedicationRequests[0]})
   }
 
   function addEmptyCommunicationRequestToBundle(bundle: Bundle) {
@@ -79,10 +72,17 @@ describe("PertinentInformation2", () => {
     expect(additionalInstructions).toContain(`<patientInfo>${contentString1}</patientInfo><patientInfo>${contentString2}</patientInfo>`)
   })
 
+  function ensureAtLeast2MedicationRequests(bundle: Bundle) {
+    const fhirMedicationRequests = getResourcesOfType(bundle, new MedicationRequest())
+    if (fhirMedicationRequests.length == 1)
+      bundle.entry.push({resource: fhirMedicationRequests[0]})
+  }
+
   test("PatientInfo display on first LineItem only", () => {
     const contentString = "examplePatientInfo1"
     const expected = `<patientInfo>${contentString}</patientInfo>`
     fhirCommunicationRequests[0].payload.push({contentString: contentString})
+    ensureAtLeast2MedicationRequests(bundle)
 
     const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
       .map((pertinentInformation2) => pertinentInformation2.pertinentLineItem.pertinentInformation1)
