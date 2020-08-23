@@ -90,7 +90,7 @@ describe("PertinentInformation2", () => {
     const firstPertinentInformation1 = pertinentInformation2Array.shift()
     expect(firstPertinentInformation1.pertinentAdditionalInstructions.value).toContain(expected)
 
-    pertinentInformation2Array.forEach((pertinentInformation1) => checkValueDoesNotContainExpected(pertinentInformation1))
+    pertinentInformation2Array.forEach(checkValueDoesNotContainExpected)
 
     function checkValueDoesNotContainExpected(pertinentInformation1: LineItemPertinentInformation1) {
       const actual = pertinentInformation1?.pertinentAdditionalInstructions?.value
