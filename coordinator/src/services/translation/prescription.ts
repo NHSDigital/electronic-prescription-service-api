@@ -11,6 +11,8 @@ export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescripti
   const fhirMedicationRequests = getResourcesOfType(fhirBundle, new fhir.MedicationRequest())
   const fhirFirstMedicationRequest = fhirMedicationRequests[0]
 
+  const fhirCommunicationRequest = getResourcesOfType(fhirBundle, new fhir.CommunicationRequest)
+
   const hl7V3Prescription = new prescriptions.Prescription(
     ...convertPrescriptionIds(fhirFirstMedicationRequest)
   )
@@ -23,7 +25,7 @@ export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescripti
 
   hl7V3Prescription.pertinentInformation5 = convertPrescriptionPertinentInformation5(fhirFirstMedicationRequest)
   hl7V3Prescription.pertinentInformation1 = convertPrescriptionPertinentInformation1(fhirFirstMedicationRequest)
-  hl7V3Prescription.pertinentInformation2 = convertPrescriptionPertinentInformation2(fhirMedicationRequests)
+  hl7V3Prescription.pertinentInformation2 = convertPrescriptionPertinentInformation2(fhirCommunicationRequest, fhirMedicationRequests)
   hl7V3Prescription.pertinentInformation8 = convertPrescriptionPertinentInformation8()
   hl7V3Prescription.pertinentInformation4 = convertPrescriptionPertinentInformation4(fhirFirstMedicationRequest)
 
@@ -81,10 +83,36 @@ function convertDispensingSitePreference(fhirFirstMedicationRequest: fhir.Medica
   return new prescriptions.DispensingSitePreference(dispensingSitePreferenceValue)
 }
 
-function convertPrescriptionPertinentInformation2(fhirMedicationRequests: Array<fhir.MedicationRequest>) {
-  return fhirMedicationRequests
-    .map(convertMedicationRequestToLineItem)
-    .map(hl7V3LineItem => new prescriptions.PrescriptionPertinentInformation2(hl7V3LineItem))
+function isContentString(contentType: fhir.ContentString | fhir.ContentReference): contentType is fhir.ContentString {
+  return (contentType as fhir.ContentString).contentString !== undefined
+}
+
+function formatPatientInfo(previousResult: string, newResult: string): string {
+  return `${previousResult}<patientInfo>${newResult}</patientInfo>`
+}
+
+function createPatientInfoString(fhirCommunicationRequest: fhir.CommunicationRequest): string {
+  return fhirCommunicationRequest.payload
+    .filter(isContentString)
+    .map(contentString => contentString.contentString)
+    .reduce(formatPatientInfo, "")
+}
+
+function isFirstRequestAndCommunicationRequestPresent(request: number, fhirCommunicationRequest: Array<fhir.CommunicationRequest>) {
+  return (request == 0 && fhirCommunicationRequest.length > 0)
+}
+
+function convertPrescriptionPertinentInformation2(fhirCommunicationRequest: Array<fhir.CommunicationRequest>,
+  fhirMedicationRequests: Array<fhir.MedicationRequest>) {
+  const pertinentInformation2 = []
+
+  for (let i = 0; i < fhirMedicationRequests.length; i++) {
+    const result = isFirstRequestAndCommunicationRequestPresent(i, fhirCommunicationRequest) ? createPatientInfoString(fhirCommunicationRequest[0]) : ""
+    const pertinentLineItem = convertMedicationRequestToLineItem(fhirMedicationRequests[i], result)
+    pertinentInformation2.push(new prescriptions.PrescriptionPertinentInformation2(pertinentLineItem))
+  }
+
+  return pertinentInformation2
 }
 
 function convertPrescriptionPertinentInformation8() {
