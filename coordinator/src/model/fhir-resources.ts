@@ -61,10 +61,11 @@ export interface IdentifierReference<T extends Resource> {
 
 export interface Dosage {
   text: string
+  patientInstruction?: string
 }
 
-export class MedicationRequestDispenseRequest {
-  extension: Array<CodingExtension>
+export interface MedicationRequestDispenseRequest {
+  extension: Array<CodingExtension | StringExtension>
   quantity: SimpleQuantity
   performer: IdentifierReference<Organization>
   validityPeriod?: Period
@@ -181,6 +182,10 @@ export interface CodingExtension extends Extension {
   valueCoding: Coding
 }
 
+export interface StringExtension extends Extension {
+  valueString: string
+}
+
 export interface ReferenceExtension<T extends Resource> extends Extension {
   valueReference: Reference<T>
 }
@@ -198,4 +203,20 @@ export class Provenance extends Resource {
 export class Period {
   start: string
   end: string
+}
+
+export interface CommunicationRequest extends Resource {
+  resourceType: "CommunicationRequest"
+  status?: string
+  subject: Reference<Patient>
+  payload: Array<ContentReference | ContentString>
+}
+
+export interface ContentString {
+  contentString: string
+}
+
+export interface ContentReference {
+  reference: string
+  display: string
 }

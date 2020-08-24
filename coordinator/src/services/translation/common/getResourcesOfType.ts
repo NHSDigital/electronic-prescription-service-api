@@ -11,6 +11,10 @@ export function getMedicationRequests(fhirBundle: fhir.Bundle): Array<fhir.Medic
   return getResourcesOfType<fhir.MedicationRequest>(fhirBundle, "MedicationRequest")
 }
 
+export function getCommunicationRequests(fhirBundle: fhir.Bundle): Array<fhir.CommunicationRequest> {
+  return getResourcesOfType<fhir.CommunicationRequest>(fhirBundle, "CommunicationRequest")
+}
+
 export function getPatient(fhirBundle: fhir.Bundle): fhir.Patient {
   return getResourcesOfType<fhir.Patient>(fhirBundle, "Patient").reduce(onlyElement)
 }
