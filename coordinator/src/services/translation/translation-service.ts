@@ -3,11 +3,16 @@ import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as core from "../../model/hl7-v3-datatypes-core"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
 import * as fhir from "../../model/fhir-resources"
+import path from "path"
 import * as crypto from "crypto-js"
+import Mustache from "mustache"
+import fs from "fs"
 import {createSendMessagePayload} from "./send-message-payload"
 import {namespacedCopyOf, writeXmlStringCanonicalized, writeXmlStringPretty} from "./xml"
 import {convertParentPrescription} from "./parent-prescription"
+import {extractFragments, convertFragmentsToDisplayableFormat, convertFragmentsToHashableFormat} from "./signing"
 import {getIdentifierValueForSystem} from "./common"
+import {Display} from "../../model/signing"
 
 export function convertFhirMessageToHl7V3ParentPrescriptionMessage(fhirMessage: fhir.Bundle): string {
   const root = {
@@ -27,48 +32,24 @@ export function createParentPrescriptionSendMessagePayload(fhirBundle: fhir.Bund
 
 export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle): string {
   const parentPrescription = convertParentPrescription(fhirMessage)
-  const fragmentsToBeHashed = extractSignatureFragments(parentPrescription)
-  const fragmentsToBeHashedStr = writeXmlStringCanonicalized(fragmentsToBeHashed)
-  const digestValue = crypto.SHA1(fragmentsToBeHashedStr).toString(crypto.enc.Base64)
-  const signedInfo = createSignedInfo(digestValue)
-  const xmlString = writeXmlStringCanonicalized(signedInfo)
-  const base64Payload = Buffer.from(xmlString).toString("base64")
-  const parameters = createParameters(base64Payload)
+
+  const fragments = extractFragments(parentPrescription)
+
+  const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
+  const payload = createParametersPayload(fragmentsToBeHashed)
+
+  const fragmentsToDisplay = convertFragmentsToDisplayableFormat(fragments)
+  const display = createParametersDisplay(fragmentsToDisplay)
+
+  const parameters = createParameters(payload, display)
+
   return JSON.stringify(parameters, null, 2)
 }
 
-export function extractSignatureFragments(parentPrescription: prescriptions.ParentPrescription): XmlJs.ElementCompact {
-  const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
-  const fragments = []
+function createParametersPayload(fragmentsToBeHashed: string): string {
+  const digestValue = crypto.SHA1(fragmentsToBeHashed).toString(crypto.enc.Base64)
 
-  fragments.push({
-    time: namespacedCopyOf(pertinentPrescription.author.time),
-    id: namespacedCopyOf(pertinentPrescription.id[0])
-  })
-
-  fragments.push({
-    AgentPerson: namespacedCopyOf(pertinentPrescription.author.AgentPerson)
-  })
-
-  fragments.push({
-    recordTarget: namespacedCopyOf(parentPrescription.recordTarget)
-  })
-
-  pertinentPrescription.pertinentInformation2.forEach(
-    pertinentInformation2 => fragments.push({
-      pertinentLineItem: namespacedCopyOf(pertinentInformation2.pertinentLineItem)
-    })
-  )
-
-  return {
-    FragmentsToBeHashed: {
-      Fragment: fragments
-    }
-  } as XmlJs.ElementCompact
-}
-
-function createSignedInfo(digestValue: string): XmlJs.ElementCompact {
-  return {
+  const signedInfo = {
     SignedInfo: {
       CanonicalizationMethod: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#"),
       SignatureMethod: new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#rsa-sha1"),
@@ -81,17 +62,20 @@ function createSignedInfo(digestValue: string): XmlJs.ElementCompact {
       }
     }
   } as XmlJs.ElementCompact
+
+  return Buffer.from(writeXmlStringCanonicalized(signedInfo)).toString("base64")
 }
 
-function createBase64Display(): string {
-  const hardCodedResponse = "####Patient\r\n\r\n**NHS Number**: 945 374 0586\r\n\r\n**Name**: PENSON, HEADLEY TED (Mr)\r\n\r\n**Date of Birth**: 1977-03-27\r\n\r\n**Address (Home)**:  \r\n10 CRECY CLOSE,  \r\nDERBY,  \r\nDE22 3JU\r\n\r\n####Author\r\n\r\n**Name**: CHANDLER, ANDREW\r\n\r\n**Telecom (Work)**: 01945700223\r\n\r\n####Organisation\r\n\r\n**Name**: PARSON DROVE SURGERY\r\n\r\n**Telecom (Work)**: 01945700223\r\n\r\n**Address (Work)**:  \r\n240 MAIN ROAD,  \r\nPARSON DROVE,  \r\nWISBECH,  \r\nCAMBRIDGESHIRE,  \r\nPE13 4JA\r\n\r\n####Medication Requested\r\n\r\n|Name|Dose|Quantity|Unit|\r\n|----|----|--------|----|\r\n|Microgynon 30 tablets (Bayer Plc)|As Directed|63|tablet\r\n\r\netc."
-  return Buffer.from(hardCodedResponse).toString("base64")
+function createParametersDisplay(fragmentsToDisplay: Display) : string {
+  const displayTemplate = fs.readFileSync(path.join(__dirname, "../../resources/message_display.mustache"), "utf-8")
+    .replace(/\n/g, "\r\n")
+  return Buffer.from(Mustache.render(displayTemplate, fragmentsToDisplay)).toString("base64")
 }
 
-function createParameters(base64Payload: string): fhir.Parameters {
+function createParameters(base64Payload: string, base64Display: string): fhir.Parameters {
   const parameters: Array<fhir.Parameter> = []
   parameters.push({name: "payload", valueString: base64Payload})
-  parameters.push({name: "display", valueString: createBase64Display()})
+  parameters.push({name: "display", valueString: base64Display})
   parameters.push({name: "algorithm", valueString: "RS1"})
   return new fhir.Parameters(parameters)
 }
