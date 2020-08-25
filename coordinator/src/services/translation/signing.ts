@@ -108,8 +108,8 @@ export function convertFragmentsToDisplayableFormat(fragments: Fragments): Displ
   }
 }
 
-function joinCoreText(seperator: string, ...values: Array<core.Text | Array<core.Text>>) : string {
-  return values.map(unpackCoreText).filter(Boolean).join(seperator)
+function joinCoreText(separator: string, ...values: Array<core.Text | Array<core.Text>>) : string {
+  return values.map(unpackCoreText).filter(Boolean).join(separator)
 }
 
 function unpackCoreText(value: core.Text | core.Text[]) : string {
