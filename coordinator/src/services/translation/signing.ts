@@ -112,6 +112,7 @@ export function convertFragmentsToDisplayableFormat(fragments: Fragments): Displ
   return display
 }
 
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 function joinCoreText(seperator: string, ...values: any[]) : string {
   return values.map(unpackCoreText).filter(Boolean).join(seperator)
 }
