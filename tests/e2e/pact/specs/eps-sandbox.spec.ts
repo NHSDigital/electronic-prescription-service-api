@@ -6,7 +6,7 @@ import * as path from "path"
 
 const prepareRepeatDispensingPrescriptionRequest = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareRequest-FhirMessageUnsigned.json"), "utf8")
 const prepareRepeatDispensingPrescriptionResponse = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareResponse-FhirMessageDigest.json"), "utf8")
-const sendRepeatDispensingPrescriptionSendRequest = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/SendRequest-FhirMessageSigned.json"), "utf8")
+const sendRepeatDispensingPrescriptionRequest = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/SendRequest-FhirMessageSigned.json"), "utf8")
 
 jestpact.pactWith(
   {
@@ -96,7 +96,14 @@ jestpact.pactWith(
             },
             method: "POST",
             path: "/$process-message",
-            body: JSON.parse(sendRepeatDispensingPrescriptionSendRequest)
+            body: {
+              resourceType: "OperationOutcome",
+              issue: Matchers.eachLike({
+                severity: Matchers.string("information"),
+                code: Matchers.string("informational"),
+                diagnostics: Matchers.string("Message Sent")
+              })
+            }
           },
           willRespondWith: {
             headers: {
@@ -110,7 +117,7 @@ jestpact.pactWith(
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('NHSD-Session-URID', '1234')
-          .send(sendRepeatDispensingPrescriptionSendRequest)
+          .send(sendRepeatDispensingPrescriptionRequest)
           .expect(202)
       })
 
@@ -131,14 +138,7 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
-            body: {
-              resourceType: "OperationOutcome",
-              issue: Matchers.eachLike({
-                severity: Matchers.string("information"),
-                code: Matchers.string("informational"),
-                diagnostics: Matchers.string("Message Sent")
-              })
-            },
+            body: JSON.parse(sendRepeatDispensingPrescriptionRequest),
             status: 200
           }
         }

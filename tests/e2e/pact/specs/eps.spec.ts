@@ -9,6 +9,7 @@ import {Bundle} from "../resources/fhir-resources"
 const prepareRepeatDispensingPrescriptionRequest = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareRequest-FhirMessageUnsigned.json"), "utf8")
 const prepareRepeatDispensingPrescriptionResponse = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareResponse-FhirMessageDigest.json"), "utf8")
 const sendRepeatDispensingPrescriptionSendRequest = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/SendRequest-FhirMessageSigned.json"), "utf8")
+const prepareRepeatDispensingPrescriptionResponseJson =  JSON.parse(prepareRepeatDispensingPrescriptionResponse)
 
 jestpact.pactWith(
   {
@@ -76,10 +77,20 @@ jestpact.pactWith(
             },
             body: {
               resourceType: "Parameters",
-              parameter: Matchers.eachLike({
-                name: "message-digest",
-                valueString: Matchers.term({ generate: JSON.parse(prepareRepeatDispensingPrescriptionResponse).parameter[0].valueString, matcher: "(DigestValue)" })
-              })
+              parameter: [
+                {
+                  name: "payload",
+                  valueString: Matchers.string(prepareRepeatDispensingPrescriptionResponseJson.parameter[0].valueString)
+                },
+                {
+                  name: "display",
+                  valueString: Matchers.string(prepareRepeatDispensingPrescriptionResponseJson.parameter[1].valueString)
+                },
+                {
+                  name: "algorithm",
+                  valueString: "RS1"
+                }
+              ]
             },
             status: 200
           }
