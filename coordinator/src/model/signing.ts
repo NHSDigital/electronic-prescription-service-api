@@ -3,7 +3,7 @@ import {GlobalIdentifier} from "./hl7-v3-datatypes-codes"
 import {AgentPerson} from "./hl7-v3-people-places"
 import * as prescriptions from "./hl7-v3-prescriptions"
 
-export class Fragments {
+export interface Fragments {
   time: core.Timestamp
   id: GlobalIdentifier
   agentPerson: AgentPerson
@@ -11,7 +11,7 @@ export class Fragments {
   pertinentLineItem: Array<prescriptions.LineItem>
 }
 
-export class Display {
+export interface Display {
   prescriptionStartDate: string
   patientName: string
   patientDob: string

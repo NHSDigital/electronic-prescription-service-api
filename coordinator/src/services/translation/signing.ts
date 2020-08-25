@@ -8,7 +8,7 @@ import {Display, DisplayMedication, Fragments} from "../../model/signing"
 export function extractFragments(parentPrescription: prescriptions.ParentPrescription): Fragments {
   const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
 
-  const fragments: Fragments = {
+  return {
     id: namespacedCopyOf(pertinentPrescription.id[0]),
     time: namespacedCopyOf(pertinentPrescription.author.time),
     agentPerson: namespacedCopyOf(pertinentPrescription.author.AgentPerson),
@@ -17,8 +17,6 @@ export function extractFragments(parentPrescription: prescriptions.ParentPrescri
       pertinentInformation2 => namespacedCopyOf(pertinentInformation2.pertinentLineItem)
     )
   }
-
-  return fragments
 }
 
 export function convertFragmentsToHashableFormat(fragments: Fragments) : string {
@@ -95,7 +93,7 @@ export function convertFragmentsToDisplayableFormat(fragments: Fragments): Displ
       })
     })
 
-  const display: Display = {
+  return {
     prescriptionStartDate: prescriptionStartDate,
     patientName: patientName,
     patientDob: patientDob,
@@ -108,12 +106,9 @@ export function convertFragmentsToDisplayableFormat(fragments: Fragments): Displ
     prescriberAddress: prescriberAddress,
     medication: medication
   }
-
-  return display
 }
 
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-function joinCoreText(seperator: string, ...values: any[]) : string {
+function joinCoreText(seperator: string, ...values: Array<core.Text | Array<core.Text>>) : string {
   return values.map(unpackCoreText).filter(Boolean).join(seperator)
 }
 
@@ -122,7 +117,7 @@ function unpackCoreText(value: core.Text | core.Text[]) : string {
     return value.map(v => v._text).join(" ")
   } else {
     const text = value as core.Text
-    return text !== undefined ? text._text : ""
+    return text ? text._text : ""
   }
 }
 
