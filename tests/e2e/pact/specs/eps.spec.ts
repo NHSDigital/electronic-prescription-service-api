@@ -8,7 +8,7 @@ import {Bundle} from "../resources/fhir-resources"
 
 const prepareRepeatDispensingPrescriptionRequest = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareRequest-FhirMessageUnsigned.json"), "utf8")
 const prepareRepeatDispensingPrescriptionResponse = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareResponse-FhirMessageDigest.json"), "utf8")
-const sendRepeatDispensingPrescriptionSendRequest = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/SendRequest-FhirMessageSigned.json"), "utf8")
+const sendRepeatDispensingPrescriptionRequest = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/SendRequest-FhirMessageSigned.json"), "utf8")
 const prepareRepeatDispensingPrescriptionResponseJson =  JSON.parse(prepareRepeatDispensingPrescriptionResponse)
 
 jestpact.pactWith(
@@ -107,7 +107,7 @@ jestpact.pactWith(
 
       test("should be able to send a repeat-dispensing parent-prescription-1", async () => {
         const apiPath = "/$process-message"
-          const body = JSON.parse(sendRepeatDispensingPrescriptionSendRequest) as Bundle
+          const body = JSON.parse(sendRepeatDispensingPrescriptionRequest) as Bundle
           body.identifier.value = uuid.v4()
           const interaction: InteractionObject = {
           state: null,
