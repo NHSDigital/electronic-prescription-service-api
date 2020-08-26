@@ -1,4 +1,4 @@
-import {clone} from "../../resources/test-helpers"
+import {addEmptyCommunicationRequestToBundle, clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
 import * as fhir from "../../../src/model/fhir-resources"
 import {convertBundleToPrescription, convertCourseOfTherapyType} from "../../../src/services/translation/prescription"
@@ -43,14 +43,6 @@ describe("PertinentInformation2", () => {
     result.entry = result.entry.filter((entry) => entry.resource.resourceType !== "CommunicationRequest")
     addEmptyCommunicationRequestToBundle(result)
     return result
-  }
-
-  function addEmptyCommunicationRequestToBundle(bundle: fhir.Bundle) {
-    const communicationRequest: fhir.CommunicationRequest = {
-      resourceType: "CommunicationRequest",
-      subject: undefined,
-      payload: []}
-    bundle.entry.push({resource: communicationRequest})
   }
 
   test("PatientInfo comes from communicationRequest and displays correctly", () => {

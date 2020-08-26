@@ -1,17 +1,28 @@
 import * as TestResources from "../../../resources/test-resources"
 import {
-  getMedicationRequests,
+  getCommunicationRequests,
+  getMedicationRequests, getOrganizations,
   getPatient,
   getProvenances
 } from "../../../../src/services/translation/common/getResourcesOfType"
+import {addEmptyCommunicationRequestToBundle} from "../../../resources/test-helpers"
 
 describe("getResourcesOfType", () => {
-  const bundle = TestResources.examplePrescription1.fhirMessageUnsigned
+  const bundle = TestResources.examplePrescription1.fhirMessageSigned
+  addEmptyCommunicationRequestToBundle(bundle)
 
   test("getMedicationRequests", () => {
-    const medicationRequest = getMedicationRequests(bundle)
+    const medicationRequests = getMedicationRequests(bundle)
 
-    medicationRequest.map((medicationRequest) => expect(medicationRequest.resourceType).toBe("MedicationRequest"))
+    expect(medicationRequests.length).toBeGreaterThan(0)
+    medicationRequests.map((medicationRequest) => expect(medicationRequest.resourceType).toBe("MedicationRequest"))
+  })
+
+  test("getCommunicationRequests", () => {
+    const communicationRequests = getCommunicationRequests(bundle)
+
+    expect(communicationRequests.length).toBeGreaterThan(0)
+    communicationRequests.map((communicationRequest) => expect(communicationRequest.resourceType).toBe("CommunicationRequest"))
   })
 
   test("getPatient", () => {
@@ -20,9 +31,17 @@ describe("getResourcesOfType", () => {
     expect(patient.resourceType).toBe("Patient")
   })
 
-  test("getProvenance", () => {
+  test("getOrganizations", () => {
+    const organizations = getOrganizations(bundle)
+
+    expect(organizations.length).toBeGreaterThan(0)
+    organizations.map((organizations) => expect(organizations.resourceType).toBe("Organization"))
+  })
+
+  test("getProvenances", () => {
     const provenances = getProvenances(bundle)
 
-    provenances.map((provenance) => expect(provenance.resourceType).toBe("Pro"))
+    expect(provenances.length).toBeGreaterThan(0)
+    provenances.map((provenance) => expect(provenance.resourceType).toBe("Provenance"))
   })
 })

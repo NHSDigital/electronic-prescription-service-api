@@ -21,7 +21,7 @@ export interface Identifier {
   value: string
 }
 
-interface MedicationRequestGroupIdentifier extends Identifier {
+export interface MedicationRequestGroupIdentifier extends Identifier {
   extension: Array<IdentifierExtension>
 }
 
@@ -71,11 +71,11 @@ export interface MedicationRequestDispenseRequest {
   validityPeriod?: Period
 }
 
-export class SimpleQuantity {
-  value?: string | LosslessNumber
-  unit?: string
+export interface SimpleQuantity {
+  value: string | LosslessNumber
+  unit: string
   system?: string
-  code?: string
+  code: string
 }
 
 export class Patient extends Resource {
