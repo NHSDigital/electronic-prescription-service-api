@@ -2,9 +2,9 @@ import {convertPatient} from "../../../src/services/translation/patient"
 import {Bundle, Patient} from "../../../src/model/fhir-resources"
 import {clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
-import {getResourcesOfType} from "../../../src/services/translation/common"
 import {Address, Name} from "../../../src/model/hl7-v3-datatypes-core"
 import {SexCode} from "../../../src/model/hl7-v3-datatypes-codes"
+import {getPatient} from "../../../src/services/translation/common/getResourcesOfType"
 
 describe("convertPatient", () => {
   let bundle: Bundle
@@ -23,7 +23,7 @@ describe("convertPatient", () => {
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
-    fhirPatient = getResourcesOfType(bundle, new Patient())[0]
+    fhirPatient = getPatient(bundle)
   })
 
   test("Throws TypeError when passed multiple copies of identifier", () => {

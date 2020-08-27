@@ -2,16 +2,17 @@ import * as core from "../../model/hl7-v3-datatypes-core"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
 import * as fhir from "../../model/fhir-resources"
-import {getExtensionForUrl, getResourcesOfType, onlyElement} from "./common"
+import {getExtensionForUrl, onlyElement} from "./common"
 import {convertAuthor, convertResponsibleParty} from "./practitioner"
 import * as peoplePlaces from "../../model/hl7-v3-people-places"
 import {convertMedicationRequestToLineItem} from "./line-item"
+import {getCommunicationRequests, getMedicationRequests} from "./common/getResourcesOfType"
 
 export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescriptions.Prescription {
-  const fhirMedicationRequests = getResourcesOfType(fhirBundle, new fhir.MedicationRequest())
+  const fhirMedicationRequests = getMedicationRequests(fhirBundle)
   const fhirFirstMedicationRequest = fhirMedicationRequests[0]
 
-  const fhirCommunicationRequest = getResourcesOfType(fhirBundle, new fhir.CommunicationRequest)
+  const fhirCommunicationRequest = getCommunicationRequests(fhirBundle)
 
   const hl7V3Prescription = new prescriptions.Prescription(
     ...convertPrescriptionIds(fhirFirstMedicationRequest)
@@ -129,7 +130,7 @@ function convertPrescriptionPertinentInformation4(fhirFirstMedicationRequest: fh
   return new prescriptions.PrescriptionPertinentInformation4(prescriptionType)
 }
 
-function convertPerformer(fhirBundle: fhir.Bundle, performerReference: fhir.Reference<fhir.Organization>) {
+function convertPerformer(fhirBundle: fhir.Bundle, performerReference: fhir.IdentifierReference<fhir.Organization>) {
   const hl7V3Organization = new peoplePlaces.Organization()
   hl7V3Organization.id = new codes.SdsOrganizationIdentifier(performerReference.identifier.value)
   const hl7V3AgentOrganization = new peoplePlaces.AgentOrganization(hl7V3Organization)

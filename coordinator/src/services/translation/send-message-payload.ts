@@ -6,10 +6,10 @@ import {
   convertMomentToDateTime,
   getCodeableConceptCodingForSystem,
   getIdentifierValueForSystem,
-  getResourcesOfType,
   resolveReference
 } from "./common"
-import {Bundle, MedicationRequest} from "../../model/fhir-resources"
+import {Bundle} from "../../model/fhir-resources"
+import {getMedicationRequests} from "./common/getResourcesOfType"
 
 export function createSendMessagePayload<T>(
   messageId: string,
@@ -48,7 +48,7 @@ function createControlActEvent<T>(
 function convertRequesterToControlActAuthor(
   bundle: Bundle
 ) {
-  const firstMedicationRequest = getResourcesOfType(bundle, new MedicationRequest())[0]
+  const firstMedicationRequest = getMedicationRequests(bundle)[0]
   const authorPractitionerRole = resolveReference(bundle, firstMedicationRequest.requester)
   const authorPractitioner = resolveReference(bundle, authorPractitionerRole.practitioner)
   const sdsUniqueIdentifier = getIdentifierValueForSystem(authorPractitioner.identifier, "https://fhir.nhs.uk/Id/sds-user-id")
