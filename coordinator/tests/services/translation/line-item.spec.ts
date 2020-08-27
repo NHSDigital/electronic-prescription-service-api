@@ -1,17 +1,16 @@
 import {convertMedicationRequestToLineItem} from "../../../src/services/translation/line-item"
-import {Bundle, MedicationRequest} from "../../../src/model/fhir-resources"
 import {clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
-import {getResourcesOfType} from "../../../src/services/translation/common"
+import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
 import * as fhir from "../../../src/model/fhir-resources"
 
 describe("convertMedicationRequestToLineItem", () => {
-  let bundle: Bundle
-  let firstFhirMedicationRequest: MedicationRequest
+  let bundle: fhir.Bundle
+  let firstFhirMedicationRequest: fhir.MedicationRequest
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
-    firstFhirMedicationRequest = getResourcesOfType(bundle, new MedicationRequest())[0]
+    firstFhirMedicationRequest = getMedicationRequests(bundle)[0]
   })
 
   test("Throws TypeError when passed multiple order item numbers", () => {
@@ -85,12 +84,12 @@ describe("convertMedicationRequestToLineItem", () => {
 })
 
 describe("additionalInstructions", () => {
-  let bundle: Bundle
-  let firstFhirMedicationRequest: MedicationRequest
+  let bundle: fhir.Bundle
+  let firstFhirMedicationRequest: fhir.MedicationRequest
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
-    firstFhirMedicationRequest = getResourcesOfType(bundle, new MedicationRequest())[0]
+    firstFhirMedicationRequest = getMedicationRequests(bundle)[0]
   })
 
   test("no controlledDrugWords, patientInstruction, or patientInfo doesn't create a pertinentInformation1", () => {

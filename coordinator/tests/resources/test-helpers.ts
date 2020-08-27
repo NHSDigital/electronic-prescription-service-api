@@ -1,6 +1,7 @@
 import * as XmlJs from "xml-js"
 import {sortAttributes} from "../../src/services/translation/xml"
 import * as LosslessJson from "lossless-json"
+import * as fhir from "../../src/model/fhir-resources"
 
 export function clone<T>(input: T): T {
   return LosslessJson.parse(LosslessJson.stringify(input))
@@ -19,7 +20,14 @@ export function xmlTest(actualRoot: XmlJs.ElementCompact, expectedRoot: XmlJs.El
   }
 }
 
-export{}
+export function addEmptyCommunicationRequestToBundle(bundle: fhir.Bundle): void {
+  const communicationRequest: fhir.CommunicationRequest = {
+    resourceType: "CommunicationRequest",
+    subject: undefined,
+    payload: []}
+  bundle.entry.push({resource: communicationRequest})
+}
+
 declare global {
   interface Array<T> {
     removeAll(elems: T[]): void;

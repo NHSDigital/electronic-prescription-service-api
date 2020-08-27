@@ -16,28 +16,28 @@ class BundleEntry {
   resource?: Resource
 }
 
-export class Identifier {
-  system?: string
-  value?: string
+export interface Identifier {
+  system: string
+  value: string
 }
 
-class MedicationRequestGroupIdentifier extends Identifier {
-  extension?: Array<IdentifierExtension>
+export interface MedicationRequestGroupIdentifier extends Identifier {
+  extension: Array<IdentifierExtension>
 }
 
-export class MedicationRequest extends Resource {
-  readonly resourceType = "MedicationRequest"
-  identifier?: Array<Identifier>
+export interface MedicationRequest extends Resource {
+  resourceType: "MedicationRequest"
+  identifier: Array<Identifier>
   category?: Array<CodeableConcept>
   medicationCodeableConcept: CodeableConcept
   subject: Reference<Patient>
-  authoredOn?: string
-  requester?: Reference<PractitionerRole>
-  groupIdentifier?: MedicationRequestGroupIdentifier
-  courseOfTherapyType?: CodeableConcept
+  authoredOn: string
+  requester: Reference<PractitionerRole>
+  groupIdentifier: MedicationRequestGroupIdentifier
+  courseOfTherapyType: CodeableConcept
   dosageInstruction: Array<Dosage>
-  dispenseRequest?: MedicationRequestDispenseRequest
-  extension?: Array<Extension>
+  dispenseRequest: MedicationRequestDispenseRequest
+  extension: Array<IdentifierExtension | ReferenceExtension<PractitionerRole> | CodingExtension>
 }
 
 export interface CodeableConcept {
@@ -51,9 +51,12 @@ export interface Coding {
   version?: number
 }
 
-export class Reference<T extends Resource> {
-  reference?: string
-  identifier?: Identifier
+export interface Reference<T extends Resource> {
+  reference: string
+}
+
+export interface IdentifierReference<T extends Resource> {
+  identifier: Identifier
 }
 
 export interface Dosage {
@@ -61,18 +64,18 @@ export interface Dosage {
   patientInstruction?: string
 }
 
-export class MedicationRequestDispenseRequest {
-  extension?: Array<Extension>
-  quantity?: SimpleQuantity
-  performer?: Reference<Organization>
+export interface MedicationRequestDispenseRequest {
+  extension: Array<CodingExtension | StringExtension>
+  quantity: SimpleQuantity
+  performer: IdentifierReference<Organization>
   validityPeriod?: Period
 }
 
-export class SimpleQuantity {
-  value?: string | LosslessNumber
-  unit?: string
+export interface SimpleQuantity {
+  value: string | LosslessNumber
+  unit: string
   system?: string
-  code?: string
+  code: string
 }
 
 export class Patient extends Resource {
@@ -84,7 +87,7 @@ export class Patient extends Resource {
   birthDate?: string
   address?: Array<Address>
   generalPractitioner?: Array<Reference<PractitionerRole>>
-  managingOrganization: Reference<Organization>
+  managingOrganization: IdentifierReference<Organization>
 }
 
 export class HumanName {
@@ -167,27 +170,27 @@ export class Parameter {
   valueString: string
 }
 
-export abstract class Extension {
+export interface Extension {
   url: string
 }
 
-export class IdentifierExtension extends Extension {
+export interface IdentifierExtension extends Extension {
   valueIdentifier: Identifier
 }
 
-export class CodingExtension extends Extension {
+export interface CodingExtension extends Extension {
   valueCoding: Coding
 }
 
-export class CodeableConceptExtension extends Extension {
+export interface CodeableConceptExtension extends Extension {
   valueCodeableConcept: CodeableConcept
 }
 
-export class StringExtension extends Extension {
+export interface StringExtension extends Extension {
   valueString: string
 }
 
-export class ReferenceExtension<T extends Resource> extends Extension {
+export interface ReferenceExtension<T extends Resource> extends Extension {
   valueReference: Reference<T>
 }
 
@@ -206,9 +209,9 @@ export class Period {
   end: string
 }
 
-export class CommunicationRequest extends Resource {
-  readonly resourceType = "CommunicationRequest"
-  status: string
+export interface CommunicationRequest extends Resource {
+  resourceType: "CommunicationRequest"
+  status?: string
   subject: Reference<Patient>
   payload: Array<ContentReference | ContentString>
 }

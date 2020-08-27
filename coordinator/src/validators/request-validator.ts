@@ -39,16 +39,56 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
   const bundleValidationErrors = validate(bundle, ...bundleValidators)
 
   const medicationRequestConsistencyValidators = [
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "groupIdentifier", (medicationRequest) => medicationRequest.groupIdentifier),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "category", (medicationRequest) => medicationRequest.category),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "authoredOn", (medicationRequest) => medicationRequest.authoredOn),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "courseOfTherapyType", (medicationRequest) => medicationRequest.courseOfTherapyType),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "subject", (medicationRequest) => medicationRequest.subject),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "requester", (medicationRequest) => medicationRequest.requester),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "dispenseRequest.performer", (medicationRequest) => medicationRequest.dispenseRequest.performer),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "dispenseRequest.extension (performer site type)", (medicationRequest) => getExtensionForUrl(medicationRequest.dispenseRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType")),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "extension (prescription type)", (medicationRequest) => getExtensionForUrl(medicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType")),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(medicationRequests, "extension (responsible practitioner)", (medicationRequest) => getExtensionForUrlOrNull(medicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner"))
+    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+      medicationRequests,
+      "groupIdentifier",
+      (medicationRequest) => medicationRequest.groupIdentifier
+    ),
+    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+      medicationRequests,
+      "category",
+      (medicationRequest) => medicationRequest.category
+    ),
+    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+      medicationRequests,
+      "authoredOn",
+      (medicationRequest) => medicationRequest.authoredOn
+    ),
+    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+      medicationRequests,
+      "courseOfTherapyType",
+      (medicationRequest) => medicationRequest.courseOfTherapyType
+    ),
+    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+      medicationRequests,
+      "subject",
+      (medicationRequest) => medicationRequest.subject
+    ),
+    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+      medicationRequests,
+      "requester",
+      (medicationRequest) => medicationRequest.requester
+    ),
+    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+      medicationRequests,
+      "dispenseRequest.performer",
+      (medicationRequest) => medicationRequest.dispenseRequest.performer
+    ),
+    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+      medicationRequests,
+      "dispenseRequest.extension (performer site type)",
+      (medicationRequest) => getExtensionForUrl(medicationRequest.dispenseRequest.extension,"https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType")
+    ),
+    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+      medicationRequests,
+      "extension (prescription type)",
+      (medicationRequest) => getExtensionForUrl(medicationRequest.extension,"https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType")
+    ),
+    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+      medicationRequests,
+      "extension (responsible practitioner)",
+      (medicationRequest) => getExtensionForUrlOrNull(medicationRequest.extension,"https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner")
+    )
   ]
   const medicationRequests = getMatchingEntries(bundle, "MedicationRequest") as Array<MedicationRequest>
   const medicationRequestConsistencyValidationErrors = validate(medicationRequests, ...medicationRequestConsistencyValidators)
