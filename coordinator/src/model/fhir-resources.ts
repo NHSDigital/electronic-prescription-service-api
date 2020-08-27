@@ -179,6 +179,10 @@ export class CodingExtension extends Extension {
   valueCoding: Coding
 }
 
+export class CodeableConceptExtension extends Extension {
+  valueCodeableConcept: CodeableConcept
+}
+
 export class StringExtension extends Extension {
   valueString: string
 }

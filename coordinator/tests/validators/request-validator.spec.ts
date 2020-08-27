@@ -19,6 +19,15 @@ function containAtLeastError(resource: string, numberOfResources: number) {
   }
 }
 
+function containBetweenError(resource: string, minNumberOfResources: number, maxNumberOfResources: number) {
+  return {
+    message: `Bundle must contain between ${minNumberOfResources} and ${maxNumberOfResources} resource(s) of type ${resource}`,
+    operationOutcomeCode: "value",
+    apiErrorCode: "MISSING_FIELD",
+    severity: "error"
+  }
+}
+
 function containExactlyError(resource: string, numberOfResources: number) {
   return {
     message: `Bundle must contain exactly ${numberOfResources} resource(s) of type ${resource}`,
@@ -85,7 +94,7 @@ test("verifyPrescriptionBundle rejects bundle without MedicationRequest", () => 
     entry: [] as Array<Resource>
   }
   expect(validator.verifyPrescriptionBundle(bundle, false))
-    .toContainEqual(containAtLeastError("MedicationRequest", 1))
+    .toContainEqual(containBetweenError("MedicationRequest", 1, 4))
 })
 
 test("verifyPrescriptionBundle rejects bundle without Patient", () => {

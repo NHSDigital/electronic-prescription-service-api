@@ -18,3 +18,19 @@ export function xmlTest(actualRoot: XmlJs.ElementCompact, expectedRoot: XmlJs.El
     expect(actualXmlStr).toEqual(expectedXmlStr)
   }
 }
+
+export{}
+declare global {
+  interface Array<T> {
+    removeAll(elems: T[]): void;
+  }
+}
+
+if (!Array.prototype.removeAll) {
+  Array.prototype.removeAll = function<T>(this: T[], elems: T[]): void {
+    elems.reverse().forEach(e => {
+      const index = this.indexOf(e)
+      this.splice(index, 1)
+    })
+  }
+}

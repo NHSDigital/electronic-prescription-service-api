@@ -35,7 +35,7 @@ export class LineItem implements ElementCompact {
   product: Product
   component: LineItemComponent
   pertinentInformation1?: LineItemPertinentInformation1
-  //TODO - pertinentInformation3
+  pertinentInformation3?: LineItemPertinentInformation3[]
   pertinentInformation2: LineItemPertinentInformation2
   //TODO - inFulfillmentOf2
   //TODO - inFulfillmentOf1
@@ -108,6 +108,23 @@ export class LineItemComponent implements ElementCompact {
 
   constructor(lineItemQuantity: LineItemQuantity) {
     this.lineItemQuantity = lineItemQuantity
+  }
+}
+
+/**
+ * An act relationship to endorse a controlled drug.
+ */
+export class LineItemPertinentInformation3 implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
+
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  pertinentPrescriberEndorsement : PrescriptionEndorsement
+
+  constructor(pertinentPrescriberEndorsement : PrescriptionEndorsement) {
+    this.pertinentPrescriberEndorsement  = pertinentPrescriberEndorsement
   }
 }
 
@@ -404,6 +421,18 @@ export class TokenIssued extends PrescriptionAnnotation {
 
   constructor(value: core.BooleanValue) {
     super(new codes.PrescriptionAnnotationCode("TI"))
+    this.value = value
+  }
+}
+
+/**
+ * Details about the prescriber's endorsement of a controlled drug.
+ */
+export class PrescriptionEndorsement extends PrescriptionAnnotation {
+  value: codes.PrescriptionEndorsementCode
+
+  constructor(value: codes.PrescriptionEndorsementCode) {
+    super(new codes.PrescriptionAnnotationCode("PE"))
     this.value = value
   }
 }
