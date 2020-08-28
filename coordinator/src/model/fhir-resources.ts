@@ -152,7 +152,7 @@ export interface HealthcareService extends Resource {
   telecom?: Array<ContactPoint>
   active?: string
   providedBy?: {identifier: Identifier}
-  location?: Reference<Location>
+  location?: Array<Reference<Location>>
 }
 
 export interface Location extends Resource {

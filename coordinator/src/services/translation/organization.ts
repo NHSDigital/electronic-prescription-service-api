@@ -2,14 +2,14 @@ import * as fhir from "../../model/fhir-resources"
 import * as peoplePlaces from "../../model/hl7-v3-people-places"
 import {
   getCodeableConceptCodingForSystemOrNull,
-  getIdentifierValueForSystem,
+  getIdentifierValueForSystem, getResourceForFullUrl,
   onlyElement,
   resolveReference
 } from "./common"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as core from "../../model/hl7-v3-datatypes-core"
 import {convertAddress, convertTelecom} from "./demographics"
-import {getHealthcareServices, getLocation} from "./common/getResourcesOfType"
+import {getHealthcareServices} from "./common/getResourcesOfType"
 
 /**
  * TODO - This mapping is a temporary measure for testing. We're reasonably confident that it's correct for primary
@@ -48,12 +48,6 @@ abstract class CostCentre {
   telecom?: Array<fhir.ContactPoint>
   address?: Array<fhir.Address>
 
-  constructor(identifier: Array<fhir.Identifier>, name: string, telecom: Array<fhir.ContactPoint>){
-    this.identifier = identifier
-    this.name = name
-    this.telecom = telecom
-  }
-
   getOrganizationId() {
     const organizationSdsId = getIdentifierValueForSystem(this.identifier, "https://fhir.nhs.uk/Id/ods-organization-code")
     return new codes.SdsOrganizationIdentifier(organizationSdsId)
@@ -86,14 +80,10 @@ abstract class CostCentre {
 class Organization extends CostCentre implements fhir.Organization {
   resourceType: "Organization"
   type?: Array<fhir.CodeableConcept>
-  address?: Array<fhir.Address>
-  partOf?: fhir.Reference<fhir.Organization>
 
   constructor(fhirOrganization: fhir.Organization) {
-    super(fhirOrganization.identifier, fhirOrganization.name, fhirOrganization.telecom)
-    this.type = fhirOrganization.type
-    this.address = fhirOrganization.address
-    this.partOf = fhirOrganization.partOf
+    super()
+    Object.assign(this, fhirOrganization)
   }
 
   getCode() {
@@ -107,20 +97,17 @@ class Organization extends CostCentre implements fhir.Organization {
 
 class HealthcareService extends CostCentre implements fhir.HealthcareService{
   resourceType: "HealthcareService"
-  id?: string
-  active?: string
-  providedBy?: {identifier: fhir.Identifier}
-  location?: fhir.Reference<fhir.Location>
-  address?: Array<fhir.Address>
+  location?: Array<fhir.Reference<fhir.Location>>
 
   constructor(healthcareService: fhir.HealthcareService, fhirBundle: fhir.Bundle){
-    super(healthcareService.identifier, healthcareService.name, healthcareService.telecom)
-    this.id = healthcareService.id
-    this.active = healthcareService.active
-    this.providedBy = healthcareService.providedBy
-    this.location = healthcareService.location
+    super()
+    Object.assign(this, healthcareService)
+    this.getAddress(fhirBundle)
+  }
+
+  getAddress(fhirBundle: fhir.Bundle) {
     if (this.location !== undefined) {
-      const location = (getLocation(fhirBundle)[0] as fhir.Location)
+      const location = (getResourceForFullUrl(fhirBundle, this.location[0].reference) as fhir.Location)
       if (location?.address != undefined) {
         this.address = [location.address]
       }

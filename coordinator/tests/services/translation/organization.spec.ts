@@ -1,8 +1,12 @@
 import {clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
-import {Bundle, Organization} from "../../../src/model/fhir-resources"
-import {getOrganizations} from "../../../src/services/translation/common/getResourcesOfType"
+import {Bundle, Location, Organization} from "../../../src/model/fhir-resources"
+import {
+  getHealthcareServices,
+  getOrganizations
+} from "../../../src/services/translation/common/getResourcesOfType"
 import {convertOrganizationAndProviderLicense} from "../../../src/services/translation/organization"
+import {getResourceForFullUrl} from "../../../src/services/translation/common"
 
 describe("convertOrganizationAndProviderLicense", () => {
   let bundle: Bundle
@@ -89,5 +93,14 @@ describe("Homecare Prescription Organization Conversion", () => {
     const result = convertOrganizationAndProviderLicense(bundle, firstFhirOrganization)
     expect(result.healthCareProviderLicense.Organization.addr).toBe(undefined)
     expect(result.healthCareProviderLicense.Organization.telecom).toBe(undefined)
+  })
+
+  test("If Location in HomecarePrescription bundle, it's address is the responsibleOrganization address", () => {
+    const locationRef = getHealthcareServices(bundle)[0].location[0].reference
+    const locationAddress = (getResourceForFullUrl(bundle, locationRef) as Location).address
+    const resultAddress = convertOrganizationAndProviderLicense(bundle, firstFhirOrganization).addr
+    locationAddress.line.forEach(line => expect(resultAddress.streetAddressLine.map(line => line._text)).toContain(line))
+    expect(resultAddress.streetAddressLine.map(line => line._text)).toContain(locationAddress.city)
+    expect(resultAddress.postalCode._text).toBe(locationAddress.postalCode)
   })
 })
