@@ -1,0 +1,7 @@
+variables:
+  service_name: electronic-prescription-service-api
+  short_service_name: eps
+  service_base_path: electronic-prescriptions
+  product_display_name: Electronic Prescription Service
+  product_description: Placeholder description
+  spec_file: electronic-prescription-service-api.json
