@@ -53,7 +53,7 @@ abstract class CostCentre {
     return new codes.SdsOrganizationIdentifier(organizationSdsId)
   }
 
-  abstract getCode(): codes.OrganizationTypeCode | undefined
+  abstract getCode(): codes.OrganizationTypeCode
 
   convertRepresentedOrganization(){
     const result = this.convertHealthCareProviderLicense()
@@ -96,7 +96,7 @@ class Organization extends CostCentre implements fhir.Organization {
       const organizationTypeCoding = getCodeableConceptCodingForSystemOrNull(this.type, "https://fhir.nhs.uk/R4/CodeSystem/organisation-type")
       return new codes.OrganizationTypeCode(organizationTypeCoding ? organizationTypeCoding.code : "008")
     }
-    return undefined
+    return new codes.OrganizationTypeCode("008")
   }
 }
 
