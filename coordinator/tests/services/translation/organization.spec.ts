@@ -4,7 +4,7 @@ import {Bundle, Organization} from "../../../src/model/fhir-resources"
 import {getOrganizations} from "../../../src/services/translation/common/getResourcesOfType"
 import {convertOrganizationAndProviderLicense} from "../../../src/services/translation/organization"
 
-describe("convertOrganizationAndProviderLicense", ()=> {
+describe("convertOrganizationAndProviderLicense", () => {
   let bundle: Bundle
   let firstFhirOrganization: Organization
 
@@ -63,5 +63,31 @@ describe("convertOrganizationAndProviderLicense", ()=> {
     firstFhirOrganization.telecom = undefined
 
     expect(() => convertOrganizationAndProviderLicense(bundle, firstFhirOrganization)).not.toThrow()
+  })
+})
+
+describe("Homecare Prescription Organization Conversion", () => {
+  let bundle: Bundle
+  let firstFhirOrganization: Organization
+
+  beforeEach(() => {
+    bundle = clone(TestResources.examplePrescription3.fhirMessageUnsignedHomecare)
+    firstFhirOrganization = getOrganizations(bundle)[0]
+  })
+
+  test("if Organization has code value RO197, should have 999 in representedOrganization code", () => {
+    const result = convertOrganizationAndProviderLicense(bundle, firstFhirOrganization)
+    expect(result.code._attributes.code).toBe("999")
+  })
+
+  test("If HealthcareProviderLicense Organization doesn't have a type code, should put 008 in type code", () => {
+    const result = convertOrganizationAndProviderLicense(bundle, firstFhirOrganization)
+    expect(result.healthCareProviderLicense.Organization.code._attributes.code).toBe("008")
+  })
+
+  test("Doesn't convert address or telephone number in HealthcareProvider Licence", () => {
+    const result = convertOrganizationAndProviderLicense(bundle, firstFhirOrganization)
+    expect(result.healthCareProviderLicense.Organization.addr).toBe(undefined)
+    expect(result.healthCareProviderLicense.Organization.telecom).toBe(undefined)
   })
 })

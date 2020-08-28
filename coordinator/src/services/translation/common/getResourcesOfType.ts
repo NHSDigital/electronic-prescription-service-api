@@ -26,3 +26,7 @@ export function getOrganizations(fhirBundle: fhir.Bundle): Array<fhir.Organizati
 export function getProvenances(fhirBundle: fhir.Bundle): Array<fhir.Provenance> {
   return getResourcesOfType<fhir.Provenance>(fhirBundle, "Provenance")
 }
+
+export function getHealthcareServices(fhirBundle: fhir.Bundle): Array<fhir.HealthcareService> {
+  return getResourcesOfType<fhir.HealthcareService>(fhirBundle, "HealthcareService")
+}
