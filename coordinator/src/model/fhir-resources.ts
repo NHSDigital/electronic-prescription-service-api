@@ -134,8 +134,8 @@ export class Practitioner extends Resource {
   address?: Array<Address>
 }
 
-export class Organization extends Resource {
-  readonly resourceType = "Organization"
+export interface Organization extends Resource {
+  readonly resourceType: "Organization"
   identifier?: Array<Identifier>
   type?: Array<CodeableConcept>
   name?: string

@@ -13,13 +13,11 @@ const hl7V3SignatureFragments1Str = fs.readFileSync(path.join(__dirname, "./pare
 const hl7V3SignatureFragmentsCanonicalized1 = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/PrepareIntermediate-Hl7V3SignatureFragmentsCanonicalized.txt"), "utf8")
 const fhirMessageDigest1Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/PrepareResponse-FhirMessageDigest.json"), "utf8")
 
-
 const fhirMessageUnsigned1 = LosslessJson.parse(fhirMessageUnsigned1Str) as Bundle
 const fhirMessageSigned1 = LosslessJson.parse(fhirMessageSigned1Str) as Bundle
 const hl7V3Message1 = XmlJs.xml2js(hl7V3Message1Str, {compact: true}) as ElementCompact
 const hl7V3SignatureFragments1 = XmlJs.xml2js(hl7V3SignatureFragments1Str, {compact: true}) as ElementCompact
 const fhirMessageDigest1 = LosslessJson.parse(fhirMessageDigest1Str) as Parameters
-
 
 export const examplePrescription1 = {
   fhirMessageUnsigned: fhirMessageUnsigned1,

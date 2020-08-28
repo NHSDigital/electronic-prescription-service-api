@@ -30,3 +30,7 @@ export function getProvenances(fhirBundle: fhir.Bundle): Array<fhir.Provenance> 
 export function getHealthcareServices(fhirBundle: fhir.Bundle): Array<fhir.HealthcareService> {
   return getResourcesOfType<fhir.HealthcareService>(fhirBundle, "HealthcareService")
 }
+
+export function getLocation(fhirBundle: fhir.Bundle): Array<fhir.Location> {
+  return getResourcesOfType<fhir.Location>(fhirBundle, "Location")
+}
