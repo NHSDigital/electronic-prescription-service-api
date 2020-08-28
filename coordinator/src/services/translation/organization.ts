@@ -34,12 +34,12 @@ export function convertOrganizationAndProviderLicense(
 function convertRepresentedOrganization(fhirOrganization: fhir.Organization, fhirBundle: fhir.Bundle) {
   const organizationTypeCoding = getCodeableConceptCodingForSystemOrNull(fhirOrganization.type, "https://fhir.nhs.uk/R4/CodeSystem/organisation-role")
   const representedOrganization = (organizationTypeCoding?.code === "RO197") ? new HealthcareService(getHealthcareServices(fhirBundle)[0], fhirBundle) : new Organization(fhirOrganization)
-  return representedOrganization.convert(false)
+  return representedOrganization.convertRepresentedOrganization()
 }
 
 function convertHealthCareProviderLicense(fhirOrganization: fhir.Organization, fhirBundle: fhir.Bundle) {
   const fhirParentOrganization = new Organization(fhirOrganization.partOf ? resolveReference(fhirBundle, fhirOrganization.partOf) : fhirOrganization)
-  return new peoplePlaces.HealthCareProviderLicense(fhirParentOrganization.convert(true))
+  return new peoplePlaces.HealthCareProviderLicense(fhirParentOrganization.convertHealthCareProviderLicense())
 }
 
 abstract class CostCentre {
@@ -55,7 +55,21 @@ abstract class CostCentre {
 
   abstract getCode(): codes.OrganizationTypeCode | undefined
 
-  convert(isHealthcareProviderLicense: boolean){
+  convertRepresentedOrganization(){
+    const result = this.convertHealthCareProviderLicense()
+
+    if (this.telecom !== undefined) {
+      result.telecom = this.telecom.map(convertTelecom).reduce(onlyElement)
+    }
+
+    if (this.address != undefined) {
+      result.addr = this.address.map(convertAddress).reduce(onlyElement)
+    }
+
+    return result
+  }
+
+  convertHealthCareProviderLicense(){
     const result = new peoplePlaces.Organization()
     result.id = this.getOrganizationId()
 
@@ -63,15 +77,6 @@ abstract class CostCentre {
 
     if (this.name !== undefined) {
       result.name = new core.Text(this.name)
-    }
-
-    if (!isHealthcareProviderLicense) {
-      if (this.telecom !== undefined) {
-        result.telecom = this.telecom.map(convertTelecom).reduce(onlyElement)
-      }
-      if (this.address != undefined) {
-        result.addr = this.address.map(convertAddress).reduce(onlyElement)
-      }
     }
     return result
   }
