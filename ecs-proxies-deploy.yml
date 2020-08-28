@@ -9,6 +9,8 @@ docker_service:
           value: production
         - name: LOG_LEVEL
           value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
+        - name: SANDBOX
+          value: "{{ SANDBOX }}"
         - name: SPINE_ENV
           value: "{{ 'INT' if APIGEE_ENVIRONMENT == 'int' else 'TEST' }}"
     secrets:
