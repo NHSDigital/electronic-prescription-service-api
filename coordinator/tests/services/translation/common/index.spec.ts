@@ -5,22 +5,14 @@ import {
   getIdentifierValueOrNullForSystem,
   getNumericValueAsString,
   getResourceForFullUrl,
-  getResourcesOfType,
   wrapInOperationOutcome
-} from "../../../src/services/translation/common"
-import * as TestResources from "../../resources/test-resources"
-import * as fhir from "../../../src/model/fhir-resources"
-import {Identifier, MedicationRequest} from "../../../src/model/fhir-resources"
-import {clone} from "../../resources/test-helpers"
-import {SpineDirectResponse} from "../../../src/services/spine-communication"
+} from "../../../../src/services/translation/common"
+import * as TestResources from "../../../resources/test-resources"
+import * as fhir from "../../../../src/model/fhir-resources"
+import {Identifier} from "../../../../src/model/fhir-resources"
+import {clone} from "../../../resources/test-helpers"
+import {SpineDirectResponse} from "../../../../src/services/spine-communication"
 import * as LosslessJson from "lossless-json"
-
-test("getResourcesOfType returns correct resources", () => {
-  const result = getResourcesOfType(TestResources.examplePrescription1.fhirMessageUnsigned, new MedicationRequest())
-  expect(result).toBeInstanceOf(Array)
-  expect(result).toHaveLength(4)
-  result.map(x => expect((x as fhir.Resource).resourceType).toBe("MedicationRequest"))
-})
 
 test("getResourceForFullUrl returns correct resources", () => {
   const result = getResourceForFullUrl(TestResources.examplePrescription1.fhirMessageUnsigned, "urn:uuid:A7B86F8D-1D81-FC28-E050-D20AE3A215F0")

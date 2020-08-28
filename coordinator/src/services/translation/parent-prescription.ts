@@ -2,9 +2,9 @@ import * as fhir from "../../model/fhir-resources"
 import {convertPatient} from "./patient"
 import {convertBundleToPrescription} from "./prescription"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
-import {convertIsoStringToDateTime, getResourcesOfType} from "./common"
+import {convertIsoStringToDateTime} from "./common"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
-import {MedicationRequest} from "../../model/fhir-resources"
+import {getMedicationRequests, getPatient} from "./common/getResourcesOfType"
 
 export function convertParentPrescription(
   fhirBundle: fhir.Bundle,
@@ -12,7 +12,7 @@ export function convertParentPrescription(
   convertBundleToPrescriptionFn = convertBundleToPrescription,
   convertCareRecordElementCategoriesFn = convertCareRecordElementCategories
 ): prescriptions.ParentPrescription {
-  const fhirMedicationRequests = getResourcesOfType(fhirBundle, new MedicationRequest())
+  const fhirMedicationRequests = getMedicationRequests(fhirBundle)
   const fhirFirstMedicationRequest = fhirMedicationRequests[0]
 
   const hl7V3ParentPrescription = new prescriptions.ParentPrescription(
@@ -20,7 +20,7 @@ export function convertParentPrescription(
     convertIsoStringToDateTime(fhirFirstMedicationRequest.authoredOn)
   )
 
-  const fhirPatient = getResourcesOfType(fhirBundle, new fhir.Patient())[0]
+  const fhirPatient = getPatient(fhirBundle)
   const hl7V3Patient = convertPatientFn(fhirBundle, fhirPatient)
   hl7V3ParentPrescription.recordTarget = new prescriptions.RecordTarget(hl7V3Patient)
 

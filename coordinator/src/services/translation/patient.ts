@@ -6,7 +6,6 @@ import {convertAddress, convertGender, convertName} from "./demographics"
 import {convertIsoStringToDate, getIdentifierValueForSystem} from "./common"
 
 function convertPatientToProviderPatient(
-  bundle: fhir.Bundle,
   patient: fhir.Patient
 ) {
   const managingOrganizationIdentifier = patient.managingOrganization.identifier.value
@@ -29,21 +28,21 @@ function convertPatientToPatientPerson(
   hl7V3PatientPerson.name = patient.name.map(convertNameFn)
   hl7V3PatientPerson.administrativeGenderCode = convertGenderFn(patient.gender)
   hl7V3PatientPerson.birthTime = convertIsoStringToDate(patient.birthDate)
-  hl7V3PatientPerson.playedProviderPatient = convertPatientToProviderPatient(bundle, patient)
+  hl7V3PatientPerson.playedProviderPatient = convertPatientToProviderPatient(patient)
   return hl7V3PatientPerson
 }
 
 export function convertPatient(
-  fhirBundle: fhir.Bundle,
-  fhirPatient: fhir.Patient,
+  bundle: fhir.Bundle,
+  patient: fhir.Patient,
   convertAddressFn = convertAddress,
   convertNameFn = convertName,
   convertGenderFn = convertGender
 ): peoplePlaces.Patient {
   const hl7V3Patient = new peoplePlaces.Patient()
-  const nhsNumber = getIdentifierValueForSystem(fhirPatient.identifier, "https://fhir.nhs.uk/Id/nhs-number")
+  const nhsNumber = getIdentifierValueForSystem(patient.identifier, "https://fhir.nhs.uk/Id/nhs-number")
   hl7V3Patient.id = new codes.NhsNumber(nhsNumber)
-  hl7V3Patient.addr = fhirPatient.address.map(convertAddressFn)
-  hl7V3Patient.patientPerson = convertPatientToPatientPerson(fhirBundle, fhirPatient, convertNameFn, convertGenderFn)
+  hl7V3Patient.addr = patient.address.map(convertAddressFn)
+  hl7V3Patient.patientPerson = convertPatientToPatientPerson(bundle, patient, convertNameFn, convertGenderFn)
   return hl7V3Patient
 }
