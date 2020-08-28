@@ -104,7 +104,6 @@ describe("verifyPrescriptionBundle simple fail", () => {
   }
 
   const atLeastTestCases = [
-    ["MedicationRequest", 1, false],
     ["PractitionerRole", 1, false],
     ["Practitioner", 1, false],
     ["Organization", 1, false]
@@ -113,6 +112,15 @@ describe("verifyPrescriptionBundle simple fail", () => {
   test.each(atLeastTestCases)("rejects bundle without %p", (resource: string, requiredNumber: number, requiredSig: boolean) => {
     expect(validator.verifyPrescriptionBundle(semiPopulatedBundle, requiredSig))
       .toContainEqual(containAtLeastError(resource, requiredNumber))
+  })
+
+  const betweenTestCases = [
+    ["MedicationRequest", 1, 4, false]
+  ]
+
+  test.each(betweenTestCases)("rejects bundle without %p", (resource: string, min: number, max: number, requiredSig: boolean) => {
+    expect(validator.verifyPrescriptionBundle(semiPopulatedBundle, requiredSig))
+      .toContainEqual(containBetweenError(resource, min, max))
   })
 
   const exactlyTestCases = [
