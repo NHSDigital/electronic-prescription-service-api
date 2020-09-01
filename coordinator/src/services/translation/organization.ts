@@ -15,9 +15,6 @@ import {getHealthcareServices} from "./common/getResourcesOfType"
  * TODO - This mapping is a temporary measure for testing. We're reasonably confident that it's correct for primary
  * care prescriptions, but we've not yet agreed where the two organizations should come from for secondary care
  * prescriptions.
- */
-
-/**
  * TODO - possible bug, does current implementation depend on ordering of Organizations in FHIR message?
  */
 export function convertOrganizationAndProviderLicense(
@@ -33,13 +30,39 @@ export function convertOrganizationAndProviderLicense(
 
 function convertRepresentedOrganization(fhirOrganization: fhir.Organization, fhirBundle: fhir.Bundle) {
   const organizationTypeCoding = getCodeableConceptCodingForSystemOrNull(fhirOrganization.type, "https://fhir.nhs.uk/R4/CodeSystem/organisation-role")
-  const representedOrganization = (organizationTypeCoding?.code === "RO197") ? new HealthcareService(getHealthcareServices(fhirBundle)[0], fhirBundle) : new Organization(fhirOrganization)
-  return representedOrganization.convertRepresentedOrganization()
+  const representedOrganization = (organizationTypeCoding?.code === "RO197") ? new CostCentreHealthcareService(getHealthcareServices(fhirBundle)[0], fhirBundle) : new CostCentreOrganization(fhirOrganization)
+  return convertRepresentedOrganizationDetails(representedOrganization)
 }
 
 function convertHealthCareProviderLicense(fhirOrganization: fhir.Organization, fhirBundle: fhir.Bundle) {
-  const fhirParentOrganization = new Organization(fhirOrganization.partOf ? resolveReference(fhirBundle, fhirOrganization.partOf) : fhirOrganization)
-  return new peoplePlaces.HealthCareProviderLicense(fhirParentOrganization.convertHealthCareProviderLicense())
+  const fhirParentOrganization = new CostCentreOrganization(fhirOrganization.partOf ? resolveReference(fhirBundle, fhirOrganization.partOf) : fhirOrganization)
+  return new peoplePlaces.HealthCareProviderLicense(convertHealthCareProviderLicenseDetails(fhirParentOrganization))
+}
+
+function convertRepresentedOrganizationDetails(costCentre: CostCentre): peoplePlaces.Organization {
+  const result = convertHealthCareProviderLicenseDetails(costCentre)
+
+  if (costCentre.telecom !== undefined) {
+    result.telecom = costCentre.telecom.map(convertTelecom).reduce(onlyElement)
+  }
+
+  if (costCentre.address != undefined) {
+    result.addr = costCentre.address.map(convertAddress).reduce(onlyElement)
+  }
+
+  return result
+}
+
+function convertHealthCareProviderLicenseDetails(costCentre: CostCentre): peoplePlaces.Organization {
+  const result = new peoplePlaces.Organization()
+  result.id = costCentre.getOrganizationId()
+
+  result.code = costCentre.getCode()
+
+  if (costCentre.name !== undefined) {
+    result.name = new core.Text(costCentre.name)
+  }
+  return result
 }
 
 abstract class CostCentre {
@@ -54,35 +77,9 @@ abstract class CostCentre {
   }
 
   abstract getCode(): codes.OrganizationTypeCode
-
-  convertRepresentedOrganization(){
-    const result = this.convertHealthCareProviderLicense()
-
-    if (this.telecom !== undefined) {
-      result.telecom = this.telecom.map(convertTelecom).reduce(onlyElement)
-    }
-
-    if (this.address != undefined) {
-      result.addr = this.address.map(convertAddress).reduce(onlyElement)
-    }
-
-    return result
-  }
-
-  convertHealthCareProviderLicense(){
-    const result = new peoplePlaces.Organization()
-    result.id = this.getOrganizationId()
-
-    result.code = this.getCode()
-
-    if (this.name !== undefined) {
-      result.name = new core.Text(this.name)
-    }
-    return result
-  }
 }
 
-class Organization extends CostCentre implements fhir.Organization {
+class CostCentreOrganization extends CostCentre implements fhir.Organization {
   resourceType: "Organization"
   type?: Array<fhir.CodeableConcept>
 
@@ -91,16 +88,17 @@ class Organization extends CostCentre implements fhir.Organization {
     Object.assign(this, fhirOrganization)
   }
 
+  /**
+   *  Currently hard coded 008 when there is no type code
+   *  confirmed with Chris this is correct, but eventually this may need to be replaced with a map of values
+   */
   getCode() {
-    if (this.type !== undefined) {
-      const organizationTypeCoding = getCodeableConceptCodingForSystemOrNull(this.type, "https://fhir.nhs.uk/R4/CodeSystem/organisation-type")
-      return new codes.OrganizationTypeCode(organizationTypeCoding ? organizationTypeCoding.code : "008")
-    }
-    return new codes.OrganizationTypeCode("008")
+    const organizationTypeCoding = getCodeableConceptCodingForSystemOrNull(this?.type, "https://fhir.nhs.uk/R4/CodeSystem/organisation-type")
+    return new codes.OrganizationTypeCode(organizationTypeCoding ? organizationTypeCoding.code : "008")
   }
 }
 
-class HealthcareService extends CostCentre implements fhir.HealthcareService{
+class CostCentreHealthcareService extends CostCentre implements fhir.HealthcareService{
   resourceType: "HealthcareService"
   location?: Array<fhir.Reference<fhir.Location>>
 
