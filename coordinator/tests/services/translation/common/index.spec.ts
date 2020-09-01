@@ -1,6 +1,6 @@
 import {
-  convertIsoStringToDate,
-  convertIsoStringToDateTime,
+  convertIsoStringToHl7V3Date,
+  convertIsoStringToHl7V3DateTime,
   getIdentifierValueForSystem,
   getIdentifierValueOrNullForSystem,
   getNumericValueAsString,
@@ -105,27 +105,27 @@ describe("wrapInOperationOutcome", () => {
 describe("date time conversion", () => {
   test("throws when no timezone present", () => {
     expect(() => {
-      convertIsoStringToDateTime("2020-01-21T11:15:30.000")
+      convertIsoStringToHl7V3DateTime("2020-01-21T11:15:30.000")
     }).toThrow()
   })
 
   test("returns UTC timestamp when zulu timezone present and local time is GMT", () => {
-    const timestamp = convertIsoStringToDateTime("2020-02-01T23:05:05.000Z")
+    const timestamp = convertIsoStringToHl7V3DateTime("2020-02-01T23:05:05.000Z")
     expect(timestamp._attributes.value).toEqual("20200201230505")
   })
 
   test("returns UTC timestamp when zulu timezone present and local time is BST", () => {
-    const timestamp = convertIsoStringToDateTime("2020-07-01T01:15:00.000Z")
+    const timestamp = convertIsoStringToHl7V3DateTime("2020-07-01T01:15:00.000Z")
     expect(timestamp._attributes.value).toEqual("20200701011500")
   })
 
   test("returns UTC timestamp when timezone present and local time is GMT", () => {
-    const timestamp = convertIsoStringToDateTime("2020-01-15T02:30:30.000+02:00")
+    const timestamp = convertIsoStringToHl7V3DateTime("2020-01-15T02:30:30.000+02:00")
     expect(timestamp._attributes.value).toEqual("20200115003030")
   })
 
   test("returns UTC timestamp when timezone present and local time is BST", () => {
-    const timestamp = convertIsoStringToDateTime("2020-06-22T12:50:30.000+02:00")
+    const timestamp = convertIsoStringToHl7V3DateTime("2020-06-22T12:50:30.000+02:00")
     expect(timestamp._attributes.value).toEqual("20200622105030")
   })
 })
@@ -133,12 +133,12 @@ describe("date time conversion", () => {
 describe("date conversion", () => {
   test("throws when time present", () => {
     expect(() => {
-      convertIsoStringToDate("2020-01-21T11:15:30.000Z")
+      convertIsoStringToHl7V3Date("2020-01-21T11:15:30.000Z")
     }).toThrow()
   })
 
   test("returns UTC timestamp when time not present", () => {
-    const timestamp = convertIsoStringToDate("2020-06-22")
+    const timestamp = convertIsoStringToHl7V3Date("2020-06-22")
     expect(timestamp._attributes.value).toEqual("20200622")
   })
 })

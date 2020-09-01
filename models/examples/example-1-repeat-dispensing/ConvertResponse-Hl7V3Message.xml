@@ -240,6 +240,10 @@ uxDjI+7ehyFpapfOXVBmLTacLxLF1Dy/7+GIXbdIwbedet4p2IcEaRX0eWT0U//ZJSeBqnOOpXo6
                 <id root="A7B86F8D-1D81-FC28-E050-D20AE3A215F0"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
+                <repeatNumber>
+                  <low value="1"/>
+                  <high value="6"/>
+                </repeatNumber>
                 <product contextControlCode="OP" typeCode="PRD">
                   <manufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
@@ -272,6 +276,10 @@ uxDjI+7ehyFpapfOXVBmLTacLxLF1Dy/7+GIXbdIwbedet4p2IcEaRX0eWT0U//ZJSeBqnOOpXo6
                 <id root="A7B86F8D-1D86-FC28-E050-D20AE3A215F0"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
+                <repeatNumber>
+                  <low value="1"/>
+                  <high value="6"/>
+                </repeatNumber>
                 <product contextControlCode="OP" typeCode="PRD">
                   <manufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
@@ -304,6 +312,10 @@ uxDjI+7ehyFpapfOXVBmLTacLxLF1Dy/7+GIXbdIwbedet4p2IcEaRX0eWT0U//ZJSeBqnOOpXo6
                 <id root="A7B86F8D-1D8B-FC28-E050-D20AE3A215F0"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
+                <repeatNumber>
+                  <low value="1"/>
+                  <high value="6"/>
+                </repeatNumber>
                 <product contextControlCode="OP" typeCode="PRD">
                   <manufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
@@ -336,6 +348,10 @@ uxDjI+7ehyFpapfOXVBmLTacLxLF1Dy/7+GIXbdIwbedet4p2IcEaRX0eWT0U//ZJSeBqnOOpXo6
                 <id root="A7B86F8D-1D90-FC28-E050-D20AE3A215F0"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
+                <repeatNumber>
+                  <low value="1"/>
+                  <high value="6"/>
+                </repeatNumber>
                 <product contextControlCode="OP" typeCode="PRD">
                   <manufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">

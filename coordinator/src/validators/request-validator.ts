@@ -98,11 +98,6 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
       medicationRequests,
       "extension (responsible practitioner)",
       (medicationRequest) => getExtensionForUrlOrNull(medicationRequest.extension,"https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner")
-    ),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
-      medicationRequests,
-      "extension (repeat information)",
-      (medicationRequest) => getExtensionForUrlOrNull(medicationRequest.extension,"https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation")
     )
   ]
   const medicationRequests = getMatchingEntries(bundle, "MedicationRequest") as Array<MedicationRequest>

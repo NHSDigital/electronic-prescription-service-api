@@ -28,7 +28,7 @@ export class Author implements ElementCompact {
 /**
  * Medication line item in the prescription.
  */
-export class LineItem implements ElementCompact {
+export class LineItem implements ElementCompact, Repeatable {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "SBADM",
     moodCode: "RQO"
@@ -37,7 +37,7 @@ export class LineItem implements ElementCompact {
   id: codes.GlobalIdentifier
   code: codes.SnomedCode
   effectiveTime: core.Null
-  //TODO - repeatNumber
+  repeatNumber: core.IntervalComplete<NumericValue>
   product: Product
   component: LineItemComponent
   pertinentInformation1?: LineItemPertinentInformation1
@@ -48,7 +48,6 @@ export class LineItem implements ElementCompact {
 
   constructor(id: GlobalIdentifier) {
     this.id = id
-    //TODO do we need to support child codes of this?
     this.code = new codes.SnomedCode("225426007", "Administration of therapeutic substance (procedure)")
     this.effectiveTime = core.Null.NOT_APPLICABLE
   }
@@ -225,10 +224,14 @@ export class ParentPrescriptionPertinentInformation1 implements ElementCompact {
   }
 }
 
+export interface Repeatable {
+  repeatNumber?: core.IntervalComplete<NumericValue>
+}
+
 /**
  * This act represents the distinct parts of the administration part for a single item on a Prescription.
  */
-export class Prescription implements ElementCompact {
+export class Prescription implements ElementCompact, Repeatable {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "SBADM",
     moodCode: "RQO"

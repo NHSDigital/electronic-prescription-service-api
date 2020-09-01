@@ -15,7 +15,20 @@ export function extractFragments(parentPrescription: prescriptions.ParentPrescri
     recordTarget: namespacedCopyOf(parentPrescription.recordTarget),
     pertinentLineItem: pertinentPrescription.pertinentInformation2.map(
       pertinentInformation2 => namespacedCopyOf(pertinentInformation2.pertinentLineItem)
-    )
+    ).map(getLineItemWithoutRepeatNumberLow)
+  }
+}
+
+function getLineItemWithoutRepeatNumberLow(lineItem: prescriptions.LineItem) {
+  if (lineItem.repeatNumber) {
+    return {
+      ...lineItem,
+      repeatNumber: {
+        high: lineItem.repeatNumber.high
+      }
+    }
+  } else {
+    return lineItem
   }
 }
 

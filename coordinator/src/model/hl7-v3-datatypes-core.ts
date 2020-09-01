@@ -208,7 +208,7 @@ export class NumericValue implements ElementCompact {
 }
 
 export class IntervalComplete<T> {
-  low: T
+  low?: T
   high: T
 
   constructor(low: T, high: T) {

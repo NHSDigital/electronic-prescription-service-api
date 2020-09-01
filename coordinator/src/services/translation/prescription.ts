@@ -1,14 +1,15 @@
 import * as core from "../../model/hl7-v3-datatypes-core"
-import {IntervalComplete, IntervalUnanchored, NumericValue, Timestamp} from "../../model/hl7-v3-datatypes-core"
+import {IntervalComplete, IntervalUnanchored, Timestamp} from "../../model/hl7-v3-datatypes-core"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
 import {DaysSupply, PrescriptionPertinentInformation7, ReviewDate} from "../../model/hl7-v3-prescriptions"
 import * as fhir from "../../model/fhir-resources"
-import {DateTimeExtension, RepeatInformationExtension, UnsignedIntExtension} from "../../model/fhir-resources"
+import {DateTimeExtension, RepeatInformationExtension} from "../../model/fhir-resources"
 import {
-  convertIsoStringToDate,
+  convertIsoDateStringToMoment,
+  convertIsoStringToHl7V3Date,
+  convertMomentToHl7V3Date,
   getExtensionForUrl,
-  getExtensionForUrlOrNull,
   getNumericValueAsString,
   onlyElement
 } from "./common"
@@ -16,6 +17,8 @@ import {convertAuthor, convertResponsibleParty} from "./practitioner"
 import * as peoplePlaces from "../../model/hl7-v3-people-places"
 import {convertMedicationRequestToLineItem} from "./line-item"
 import {getCommunicationRequests, getMedicationRequests} from "./common/getResourcesOfType"
+import {getRepeatInformation, populateRepeatNumber} from "./common/repeatInformation"
+import moment from "moment"
 
 export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescriptions.Prescription {
   const fhirMedicationRequests = getMedicationRequests(fhirBundle)
@@ -27,10 +30,7 @@ export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescripti
     ...convertPrescriptionIds(fhirFirstMedicationRequest)
   )
 
-  const repeatInformationExtension = getExtensionForUrlOrNull(fhirFirstMedicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation") as RepeatInformationExtension
-  if (repeatInformationExtension) {
-    hl7V3Prescription.repeatNumber = convertRepeatNumber(repeatInformationExtension)
-  }
+  populateRepeatNumber(hl7V3Prescription, fhirMedicationRequests)
 
   const performer = fhirFirstMedicationRequest.dispenseRequest.performer
   if (performer) {
@@ -44,8 +44,10 @@ export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescripti
   if (validityPeriod || expectedSupplyDuration) {
     hl7V3Prescription.component1 = convertPrescriptionComponent1(validityPeriod, expectedSupplyDuration)
   }
-  if (repeatInformationExtension) {
-    hl7V3Prescription.pertinentInformation7 = convertPrescriptionPertinentInformation7(repeatInformationExtension)
+
+  const repeatInformation = getRepeatInformation(fhirMedicationRequests)
+  if (repeatInformation.length) {
+    hl7V3Prescription.pertinentInformation7 = convertPrescriptionPertinentInformation7(repeatInformation)
   }
   hl7V3Prescription.pertinentInformation5 = convertPrescriptionPertinentInformation5(fhirFirstMedicationRequest)
   hl7V3Prescription.pertinentInformation1 = convertPrescriptionPertinentInformation1(fhirFirstMedicationRequest)
@@ -69,18 +71,11 @@ function convertPrescriptionIds(
   ]
 }
 
-function convertRepeatNumber(repeatInformationExtension: RepeatInformationExtension) {
-  const numberOfRepeatPrescriptionsAllowed = getExtensionForUrl(repeatInformationExtension.extension, "numberOfRepeatPrescriptionsAllowed") as UnsignedIntExtension
-  const low = new NumericValue("1")
-  const high = new NumericValue(numberOfRepeatPrescriptionsAllowed.valueUnsignedInt)
-  return new IntervalComplete<NumericValue>(low, high)
-}
-
 function convertPrescriptionComponent1(validityPeriod: fhir.Period, expectedSupplyDuration: fhir.SimpleQuantity) {
   const daysSupply = new DaysSupply()
   if (validityPeriod) {
-    const low = convertIsoStringToDate(validityPeriod.start)
-    const high = convertIsoStringToDate(validityPeriod.end)
+    const low = convertIsoStringToHl7V3Date(validityPeriod.start)
+    const high = convertIsoStringToHl7V3Date(validityPeriod.end)
     daysSupply.effectiveTime = new IntervalComplete<Timestamp>(low, high)
   }
   if (expectedSupplyDuration) {
@@ -90,9 +85,14 @@ function convertPrescriptionComponent1(validityPeriod: fhir.Period, expectedSupp
   return new prescriptions.Component1(daysSupply)
 }
 
-function convertPrescriptionPertinentInformation7(repeatInformationExtension: RepeatInformationExtension) {
-  const authorisationExpiryDate = getExtensionForUrl(repeatInformationExtension.extension, "authorisationExpiryDate") as DateTimeExtension
-  const reviewDate = new ReviewDate(convertIsoStringToDate(authorisationExpiryDate.valueDateTime))
+function convertPrescriptionPertinentInformation7(repeatInformation: Array<RepeatInformationExtension>) {
+  const nearestReviewDate = repeatInformation
+    .map(repeatInformationExtension => getExtensionForUrl(repeatInformationExtension.extension, "authorisationExpiryDate") as DateTimeExtension)
+    .map(dateTimeExtension => dateTimeExtension.valueDateTime)
+    .map(convertIsoDateStringToMoment)
+    .reduce((dateTime1, dateTime2) => moment.min(dateTime1, dateTime2))
+  const nearestReviewDateStr = convertMomentToHl7V3Date(nearestReviewDate)
+  const reviewDate = new ReviewDate(nearestReviewDateStr)
   return new PrescriptionPertinentInformation7(reviewDate)
 }
 

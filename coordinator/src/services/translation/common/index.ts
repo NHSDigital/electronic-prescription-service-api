@@ -58,30 +58,38 @@ export function getCodeableConceptCodingForSystem(codeableConcept: Array<fhir.Co
   return getCodingForSystem(coding, system)
 }
 
-export function convertMomentToDateTime(dateTime: moment.Moment): core.Timestamp {
+export function convertIsoStringToHl7V3DateTime(isoDateTimeStr: string): core.Timestamp {
+  const dateTimeMoment = convertIsoDateTimeStringToMoment(isoDateTimeStr)
+  return convertMomentToHl7V3DateTime(dateTimeMoment)
+}
+
+export function convertIsoDateTimeStringToMoment(isoDateTimeStr: string): moment.Moment {
+  if (!FHIR_DATE_TIME_REGEX.test(isoDateTimeStr)) {
+    throw new TypeError(`Incorrect format for date time string ${isoDateTimeStr}`)
+  }
+  return moment.utc(isoDateTimeStr, moment.ISO_8601, true)
+}
+
+export function convertMomentToHl7V3DateTime(dateTime: moment.Moment): core.Timestamp {
   const hl7V3DateTimeStr = dateTime.format("YYYYMMDDHHmmss")
   return new core.Timestamp(hl7V3DateTimeStr)
 }
 
-export function convertIsoStringToDateTime(isoDateTimeStr: string): core.Timestamp {
-  if (!FHIR_DATE_TIME_REGEX.test(isoDateTimeStr)) {
-    throw new TypeError(`Incorrect format for date time string ${isoDateTimeStr}`)
-  }
-  const dateTime = moment.utc(isoDateTimeStr, moment.ISO_8601, true)
-  return convertMomentToDateTime(dateTime)
+export function convertIsoStringToHl7V3Date(isoDateStr: string): core.Timestamp {
+  const dateTimeMoment = convertIsoDateStringToMoment(isoDateStr)
+  return convertMomentToHl7V3Date(dateTimeMoment)
 }
 
-export function convertMomentToDate(dateTime: moment.Moment): core.Timestamp {
-  const hl7V3DateStr = dateTime.format("YYYYMMDD")
-  return new core.Timestamp(hl7V3DateStr)
-}
-
-export function convertIsoStringToDate(isoDateStr: string): core.Timestamp {
+export function convertIsoDateStringToMoment(isoDateStr: string): moment.Moment {
   if (!FHIR_DATE_REGEX.test(isoDateStr)) {
     throw new TypeError(`Incorrect format for date string ${isoDateStr}`)
   }
-  const dateTime = moment.utc(isoDateStr, moment.ISO_8601, true)
-  return convertMomentToDate(dateTime)
+  return moment.utc(isoDateStr, moment.ISO_8601, true)
+}
+
+export function convertMomentToHl7V3Date(dateTime: moment.Moment): core.Timestamp {
+  const hl7V3DateStr = dateTime.format("YYYYMMDD")
+  return new core.Timestamp(hl7V3DateStr)
 }
 
 //TODO - replace usage of this method with something which returns more user-friendly error messages
@@ -108,4 +116,20 @@ export function getNumericValueAsString(numericValue: string | number | Lossless
   } else {
     return numericValue.toString()
   }
+}
+
+export function getNumericValueAsNumber(numericValue: string | number | LosslessNumber): number {
+  if (typeof numericValue === "number") {
+    throw new TypeError("Got a number but expected a LosslessNumber. Use LosslessJson.parse() instead of JSON.parse() or precision may be lost.")
+  } else if (typeof numericValue === "string") {
+    return new LosslessNumber(numericValue).valueOf()
+  } else {
+    return numericValue.valueOf()
+  }
+}
+
+export function getCourseOfTherapyTypeCode(fhirMedicationRequest: fhir.MedicationRequest): string {
+  return fhirMedicationRequest.courseOfTherapyType.coding
+    .map(coding => coding.code)
+    .reduce(onlyElement)
 }

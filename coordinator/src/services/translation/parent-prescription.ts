@@ -2,7 +2,7 @@ import * as fhir from "../../model/fhir-resources"
 import {convertPatient} from "./patient"
 import {convertBundleToPrescription} from "./prescription"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
-import {convertIsoStringToDateTime} from "./common"
+import {convertIsoStringToHl7V3DateTime} from "./common"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
 import {getMedicationRequests, getPatient} from "./common/getResourcesOfType"
 
@@ -17,7 +17,7 @@ export function convertParentPrescription(
 
   const hl7V3ParentPrescription = new prescriptions.ParentPrescription(
     new codes.GlobalIdentifier(fhirBundle.id),
-    convertIsoStringToDateTime(fhirFirstMedicationRequest.authoredOn)
+    convertIsoStringToHl7V3DateTime(fhirFirstMedicationRequest.authoredOn)
   )
 
   const fhirPatient = getPatient(fhirBundle)
