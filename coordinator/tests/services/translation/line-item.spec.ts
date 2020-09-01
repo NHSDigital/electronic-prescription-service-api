@@ -3,9 +3,9 @@ import {clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
 import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
 import * as fhir from "../../../src/model/fhir-resources"
-import { getExtensionForUrlOrNull } from "../../../src/services/translation/common"
-import { convertBundleToPrescription } from "../../../src/services/translation/prescription"
-import { convertFhirMessageToHl7V3ParentPrescriptionMessage } from "../../../src/services/translation/translation-service"
+import {getExtensionForUrlOrNull} from "../../../src/services/translation/common"
+import {convertBundleToPrescription} from "../../../src/services/translation/prescription"
+import {convertFhirMessageToHl7V3ParentPrescriptionMessage} from "../../../src/services/translation/translation-service"
 
 describe("convertMedicationRequestToLineItem", () => {
   let bundle: fhir.Bundle
