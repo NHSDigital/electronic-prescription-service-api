@@ -1,6 +1,8 @@
 import * as codes from "./hl7-v3-datatypes-codes"
 import {GlobalIdentifier, SdsUniqueIdentifier} from "./hl7-v3-datatypes-codes"
 import {Attributes, ElementCompact} from "xml-js"
+import {LosslessNumber} from "lossless-json"
+import {getNumericValueAsString} from "../services/translation/common"
 
 export interface AttributeTypeCode extends Attributes {
   typeCode: "AUT" | "COMP" | "FLFS" | "LA" | "PART" | "PERT" | "PRD" | "PRF" | "RESP" | "RCT" | "SBJ"
@@ -193,15 +195,43 @@ export class Timestamp implements ElementCompact {
   }
 }
 
-export class IntervalComplete {
-  low: Timestamp
-  high: Timestamp
+export class NumericValue implements ElementCompact {
+  _attributes: {
+    value: string
+  }
+
+  constructor(value: string | LosslessNumber) {
+    this._attributes = {
+      value: getNumericValueAsString(value)
+    }
+  }
+}
+
+export class IntervalComplete<T> {
+  low: T
+  high: T
+
+  constructor(low: T, high: T) {
+    this.low = low
+    this.high = high
+  }
 }
 
 export class IntervalUnanchored {
   width: {
-    value: number
-    unit: string
+    _attributes: {
+      value: string
+      unit: string
+    }
+  }
+
+  constructor(value: string, unit: string) {
+    this.width = {
+      _attributes: {
+        value,
+        unit
+      }
+    }
   }
 }
 

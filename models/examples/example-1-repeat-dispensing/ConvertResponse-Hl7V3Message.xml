@@ -83,6 +83,10 @@
             <id extension="4D62E6-D81015-07E5FD" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
             <effectiveTime nullFlavor="NA"/>
+            <repeatNumber>
+              <low value="1"/>
+              <high value="6"/>
+            </repeatNumber>
             <author contextControlCode="OP" typeCode="AUT">
               <time value="20200610120600"/>
               <signatureText>
@@ -195,6 +199,26 @@ uxDjI+7ehyFpapfOXVBmLTacLxLF1Dy/7+GIXbdIwbedet4p2IcEaRX0eWT0U//ZJSeBqnOOpXo6
                 </representedOrganization>
               </AgentPerson>
             </responsibleParty>
+            <component1 typeCode="COMP">
+              <seperatableInd value="true"/>
+              <daysSupply classCode="SPLY" moodCode="RQO">
+                <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
+                <effectiveTime>
+                  <low value="20200610"/>
+                  <high value="20201207"/>
+                </effectiveTime>
+                <expectedUseTime>
+                  <width unit="d" value="28"/>
+                </expectedUseTime>
+              </daysSupply>
+            </component1>
+            <pertinentInformation7 contextConductionInd="true" typeCode="PERT">
+              <seperatableInd value="false"/>
+              <pertinentReviewDate classCode="OBS" moodCode="EVN">
+                <code code="RD" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                <value value="20201207"/>
+              </pertinentReviewDate>
+            </pertinentInformation7>
             <pertinentInformation5 contextConductionInd="true" typeCode="PERT">
               <seperatableInd value="false"/>
               <pertinentPrescriptionTreatmentType classCode="OBS" moodCode="EVN">

@@ -25,6 +25,10 @@ export interface MedicationRequestGroupIdentifier extends Identifier {
   extension: Array<IdentifierExtension>
 }
 
+export interface RepeatInformationExtension extends Extension {
+  extension: Array<UnsignedIntExtension | DateTimeExtension>
+}
+
 export interface MedicationRequest extends Resource {
   resourceType: "MedicationRequest"
   identifier: Array<Identifier>
@@ -37,7 +41,7 @@ export interface MedicationRequest extends Resource {
   courseOfTherapyType: CodeableConcept
   dosageInstruction: Array<Dosage>
   dispenseRequest: MedicationRequestDispenseRequest
-  extension: Array<IdentifierExtension | ReferenceExtension<PractitionerRole> | CodingExtension>
+  extension: Array<IdentifierExtension | ReferenceExtension<PractitionerRole> | CodingExtension | RepeatInformationExtension>
 }
 
 export interface CodeableConcept {
@@ -67,6 +71,7 @@ export interface Dosage {
 export interface MedicationRequestDispenseRequest {
   extension: Array<CodingExtension | StringExtension>
   quantity: SimpleQuantity
+  expectedSupplyDuration?: SimpleQuantity
   performer: IdentifierReference<Organization>
   validityPeriod?: Period
 }
@@ -188,6 +193,14 @@ export interface StringExtension extends Extension {
 
 export interface ReferenceExtension<T extends Resource> extends Extension {
   valueReference: Reference<T>
+}
+
+export interface UnsignedIntExtension extends Extension {
+  valueUnsignedInt: LosslessNumber | string
+}
+
+export interface DateTimeExtension extends Extension {
+  valueDateTime: string
 }
 
 class Signature {

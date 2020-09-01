@@ -12,7 +12,7 @@ const preResponse = function (request: Hapi.Request, responseToolkit: Hapi.Respo
 
 const init = async () => {
   const server = Hapi.server({
-    port: 9000,
+    port: 9001,
     host: "0.0.0.0",
     routes: {
       cors: true, // Won't run as Apigee hosted target without this

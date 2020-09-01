@@ -1,5 +1,11 @@
 import * as core from "./hl7-v3-datatypes-core"
-import {AttributeClassCode, AttributeMoodCode, AttributeTypeCode, Timestamp} from "./hl7-v3-datatypes-core"
+import {
+  AttributeClassCode,
+  AttributeMoodCode,
+  AttributeTypeCode,
+  NumericValue,
+  Timestamp
+} from "./hl7-v3-datatypes-core"
 import * as codes from "./hl7-v3-datatypes-codes"
 import {GlobalIdentifier, ShortFormPrescriptionIdentifier, SnomedCode} from "./hl7-v3-datatypes-codes"
 import * as peoplePlaces from "./hl7-v3-people-places"
@@ -231,13 +237,13 @@ export class Prescription implements ElementCompact {
   id: [codes.GlobalIdentifier, codes.ShortFormPrescriptionIdentifier]
   code: codes.SnomedCode
   effectiveTime: core.Null
-  //TODO - repeatNumber
+  repeatNumber?: core.IntervalComplete<NumericValue>
   performer: Performer
   author: Author
   //TODO - legalAuthenticator
   responsibleParty: ResponsibleParty
   component1: Component1
-  //TODO - pertinentInformation7
+  pertinentInformation7: PrescriptionPertinentInformation7
   pertinentInformation5: PrescriptionPertinentInformation5
   //TODO - pertinentInformation6
   pertinentInformation1: PrescriptionPertinentInformation1
@@ -322,6 +328,24 @@ export class PrescriptionPertinentInformation4 implements ElementCompact {
 
   constructor(pertinentPrescriptionType: PrescriptionType) {
     this.pertinentPrescriptionType = pertinentPrescriptionType
+  }
+}
+
+/**
+ * An act relationship used to provide information on repeat dispensing prescriptions, informing the dispenser of the
+ * anticipated date of the review of the prescription details by the prescriber.
+ */
+export class PrescriptionPertinentInformation7 implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
+
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  pertinentReviewDate: ReviewDate
+
+  constructor(pertinentReviewDate: ReviewDate) {
+    this.pertinentReviewDate = pertinentReviewDate
   }
 }
 
@@ -445,6 +469,19 @@ export class AdditionalInstructions extends PrescriptionAnnotation {
 }
 
 /**
+ * For repeat dispensing prescriptions, these are the details about the date at which the prescriber would like to
+ * review the patient with regard to their treatment with this set of medications.
+ */
+export class ReviewDate extends PrescriptionAnnotation {
+  value: Timestamp
+
+  constructor(value: Timestamp) {
+    super(new codes.PrescriptionAnnotationCode("RD"))
+    this.value = value
+  }
+}
+
+/**
  * A participation used to provide a link to the healthcare professional who has direct responsibility for the patient.
  */
 export class ResponsibleParty implements ElementCompact {
@@ -534,6 +571,10 @@ export class Component1 {
 
   seperatableInd: core.BooleanValue = new core.BooleanValue(true)
   daysSupply: DaysSupply
+
+  constructor(daysSupply: DaysSupply) {
+    this.daysSupply = daysSupply
+  }
 }
 
 /**
@@ -547,7 +588,7 @@ export class DaysSupply {
   }
 
   code: codes.SnomedCode = new codes.SnomedCode("373784005", "Dispensing medication (procedure)")
-  effectiveTime: core.IntervalComplete
+  effectiveTime: core.IntervalComplete<core.Timestamp>
   expectedUseTime: core.IntervalUnanchored
 }
 
