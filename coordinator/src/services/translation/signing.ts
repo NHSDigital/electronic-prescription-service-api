@@ -112,7 +112,7 @@ function joinCoreText(separator: string, ...values: Array<core.Text | Array<core
   return values.map(unpackCoreText).filter(Boolean).join(separator)
 }
 
-function unpackCoreText(value: core.Text | core.Text[]) : string {
+function unpackCoreText(value: core.Text | Array<core.Text>) : string {
   if (isCoreTextArray(value)) {
     return value.map(v => v._text).join(" ")
   } else {
@@ -121,8 +121,8 @@ function unpackCoreText(value: core.Text | core.Text[]) : string {
   }
 }
 
-function isCoreTextArray(value: core.Text | core.Text[]) : value is core.Text[] {
-  const valueArray = value as core.Text[]
+function isCoreTextArray(value: core.Text | Array<core.Text>) : value is Array<core.Text> {
+  const valueArray = value as Array<core.Text>
   return valueArray !== undefined && valueArray.length > 0
 }
 

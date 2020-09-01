@@ -35,7 +35,7 @@ export class LineItem implements ElementCompact {
   product: Product
   component: LineItemComponent
   pertinentInformation1?: LineItemPertinentInformation1
-  pertinentInformation3?: LineItemPertinentInformation3[]
+  pertinentInformation3?: Array<LineItemPertinentInformation3>
   pertinentInformation2: LineItemPertinentInformation2
   //TODO - inFulfillmentOf2
   //TODO - inFulfillmentOf1

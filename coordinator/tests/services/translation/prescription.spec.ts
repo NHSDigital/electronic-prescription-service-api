@@ -1,7 +1,6 @@
 import {addEmptyCommunicationRequestToBundle, clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
 import * as fhir from "../../../src/model/fhir-resources"
-import {getExtensionForUrlOrNull} from "../../../src/services/translation/common"
 import {convertBundleToPrescription, convertCourseOfTherapyType} from "../../../src/services/translation/prescription"
 import * as translator from "../../../src/services/translation/translation-service"
 import {LineItemPertinentInformation1} from "../../../src/model/hl7-v3-prescriptions"
@@ -104,51 +103,5 @@ describe("PertinentInformation2", () => {
     const result = translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(bundle)
     expect(result).toContain(`&lt;patientInfo&gt;${contentString1}&lt;/patientInfo&gt;`)
     expect(result).not.toContain(`<patientInfo>${contentString1}</patientInfo>`)
-  })
-
-  test("Prescriber Endorsements are translated when present", () => {
-    const medicationRequests = getMedicationRequests(bundle)
-
-    const prescriptionEndorsements = medicationRequests
-      .map(medicationRequest =>
-        getExtensionForUrlOrNull(medicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionEndorsement") as fhir.CodeableConceptExtension)
-
-    expect(prescriptionEndorsements.length).toBeGreaterThan(0)
-
-    prescriptionEndorsements.map(prescriptionEndorsement =>
-      expect(prescriptionEndorsement.valueCodeableConcept.coding.length).toBeGreaterThan(0)
-    )
-
-    const hl7v3Prescription = convertBundleToPrescription(bundle)
-
-    const hl7v3PrescriptionEndorsements = hl7v3Prescription.pertinentInformation2
-      .flatMap(pi2 => pi2.pertinentLineItem.pertinentInformation3)
-
-    expect(hl7v3PrescriptionEndorsements.length).toBeGreaterThan(0)
-
-    hl7v3Prescription.pertinentInformation2
-      .flatMap(pi2 => pi2.pertinentLineItem.pertinentInformation3)
-      .map(pi3 => expect(pi3.pertinentPrescriberEndorsement.value._attributes.code).toEqual("SLS"))
-  })
-
-  test("Prescriber Endorsements are optional for translation", () => {
-    const medicationRequests = getMedicationRequests(bundle)
-
-    const prescriptionEndorsementsFn = (medicationRequest: fhir.MedicationRequest) => medicationRequest.extension
-      .filter(extension => extension.url === "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionEndorsement")
-
-    medicationRequests.forEach(medicationRequest => {
-      const prescriptionEndorsements = prescriptionEndorsementsFn(medicationRequest)
-      medicationRequest.extension.removeAll(prescriptionEndorsements)
-      expect(prescriptionEndorsementsFn(medicationRequest)).toEqual([])
-    })
-
-    const hl7v3Prescription = convertBundleToPrescription(bundle)
-
-    const hl7v3PrescriptionEndorsements = hl7v3Prescription.pertinentInformation2.flatMap(pi2 => pi2.pertinentLineItem.pertinentInformation3)
-
-    expect(hl7v3PrescriptionEndorsements.length).toBeGreaterThan(0)
-
-    hl7v3PrescriptionEndorsements.map(endorsement => expect(endorsement).toEqual(undefined))
   })
 })

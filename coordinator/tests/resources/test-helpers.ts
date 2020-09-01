@@ -30,15 +30,13 @@ export function addEmptyCommunicationRequestToBundle(bundle: fhir.Bundle): void 
 
 declare global {
   interface Array<T> {
-    removeAll(elems: T[]): void;
+    remove(elem: T): void;
   }
 }
 
-if (!Array.prototype.removeAll) {
-  Array.prototype.removeAll = function<T>(this: T[], elems: T[]): void {
-    elems.reverse().forEach(e => {
-      const index = this.indexOf(e)
+if (!Array.prototype.remove) {
+  Array.prototype.remove = function<T>(this: Array<T>, elem: T): void {
+      const index = this.indexOf(elem)
       this.splice(index, 1)
-    })
   }
 }

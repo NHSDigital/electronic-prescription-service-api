@@ -34,7 +34,7 @@ function convertDosageInstructions(dosageInstruction: Array<fhir.Dosage>) {
   return new prescriptions.LineItemPertinentInformation2(hl7V3DosageInstructions)
 }
 
-function convertPrescriptionEndorsements(fhirMedicationRequest: fhir.MedicationRequest, hl7V3LineItem: prescriptions.LineItem) : void {
+export function convertPrescriptionEndorsements(fhirMedicationRequest: fhir.MedicationRequest, hl7V3LineItem: prescriptions.LineItem): void {
   const fhirMedicationPrescriptionEndorsementExtension = getExtensionForUrlOrNull(fhirMedicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionEndorsement") as fhir.CodeableConceptExtension
 
   if (fhirMedicationPrescriptionEndorsementExtension) {
