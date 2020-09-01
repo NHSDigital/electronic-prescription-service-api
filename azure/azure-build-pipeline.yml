@@ -17,6 +17,7 @@ resources:
     - repository: common
       type: github
       name: NHSDigital/api-management-utils
+      ref: apm-1316-common-pipelines
       endpoint: NHSDigital
 
 variables:
@@ -27,3 +28,7 @@ extends:
   parameters:
     service_name: ${{ variables.service_name }}
     short_service_name: ${{ variables.short_service_name }}
+    post_ecs_push:
+      - bash: "scripts/populate_ssm_parameters.sh"
+        displayName: Copy secrets from secrets manager to SSM
+        workingDirectory: ${{ variables.service_name }}
