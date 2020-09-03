@@ -13,10 +13,14 @@ export function extractFragments(parentPrescription: prescriptions.ParentPrescri
     time: namespacedCopyOf(pertinentPrescription.author.time),
     agentPerson: namespacedCopyOf(pertinentPrescription.author.AgentPerson),
     recordTarget: namespacedCopyOf(parentPrescription.recordTarget),
-    pertinentLineItem: pertinentPrescription.pertinentInformation2
-      .map(pertinentInformation2 => namespacedCopyOf(pertinentInformation2.pertinentLineItem))
-      .map(getLineItemWithoutRepeatNumberLow)
+    pertinentLineItem: pertinentPrescription.pertinentInformation2.map(getLineItemFragment)
   }
+}
+
+function getLineItemFragment(prescriptionPertinentInformation2: prescriptions.PrescriptionPertinentInformation2) {
+  const lineItem = prescriptionPertinentInformation2.pertinentLineItem
+  const lineItemWithoutRepeatNumberLow = getLineItemWithoutRepeatNumberLow(lineItem)
+  return namespacedCopyOf(lineItemWithoutRepeatNumberLow)
 }
 
 function getLineItemWithoutRepeatNumberLow(lineItem: prescriptions.LineItem) {

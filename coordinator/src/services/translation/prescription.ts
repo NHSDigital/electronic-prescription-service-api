@@ -15,7 +15,7 @@ import {convertAuthor, convertResponsibleParty} from "./practitioner"
 import * as peoplePlaces from "../../model/hl7-v3-people-places"
 import {convertMedicationRequestToLineItem} from "./line-item"
 import {getCommunicationRequests, getMedicationRequests} from "./common/getResourcesOfType"
-import {populateRepeatNumber} from "./common/repeatInformation"
+import {populateRepeatNumber} from "./common/repeatNumber"
 import moment from "moment"
 import {CourseOfTherapyTypeCode, getCourseOfTherapyTypeCode} from "./common/courseOfTherapyType"
 
