@@ -1,5 +1,5 @@
 import * as core from "../../model/hl7-v3-datatypes-core"
-import {IntervalComplete, IntervalUnanchored, Timestamp} from "../../model/hl7-v3-datatypes-core"
+import {Interval, IntervalUnanchored, Timestamp} from "../../model/hl7-v3-datatypes-core"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
 import {DaysSupply, PrescriptionPertinentInformation7, ReviewDate} from "../../model/hl7-v3-prescriptions"
@@ -8,17 +8,16 @@ import {DateTimeExtension, RepeatInformationExtension} from "../../model/fhir-re
 import {
   convertIsoDateStringToMoment,
   convertIsoStringToHl7V3Date,
-  convertMomentToHl7V3Date,
-  getExtensionForUrl,
-  getNumericValueAsString,
-  onlyElement
+  convertMomentToHl7V3Date, getExtensionForUrl,
+  getNumericValueAsString
 } from "./common"
 import {convertAuthor, convertResponsibleParty} from "./practitioner"
 import * as peoplePlaces from "../../model/hl7-v3-people-places"
 import {convertMedicationRequestToLineItem} from "./line-item"
 import {getCommunicationRequests, getMedicationRequests} from "./common/getResourcesOfType"
-import {getRepeatInformation, populateRepeatNumber} from "./common/repeatInformation"
+import {populateRepeatNumber} from "./common/repeatInformation"
 import moment from "moment"
+import {CourseOfTherapyTypeCode, getCourseOfTherapyTypeCode} from "./common/courseOfTherapyType"
 
 export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescriptions.Prescription {
   const fhirMedicationRequests = getMedicationRequests(fhirBundle)
@@ -36,6 +35,7 @@ export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescripti
   if (performer) {
     hl7V3Prescription.performer = convertPerformer(fhirBundle, performer)
   }
+
   hl7V3Prescription.author = convertAuthor(fhirBundle, fhirFirstMedicationRequest)
   hl7V3Prescription.responsibleParty = convertResponsibleParty(fhirBundle, fhirFirstMedicationRequest)
 
@@ -45,10 +45,11 @@ export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescripti
     hl7V3Prescription.component1 = convertPrescriptionComponent1(validityPeriod, expectedSupplyDuration)
   }
 
-  const repeatInformation = getRepeatInformation(fhirMedicationRequests)
-  if (repeatInformation.length) {
-    hl7V3Prescription.pertinentInformation7 = convertPrescriptionPertinentInformation7(repeatInformation)
+  const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(fhirFirstMedicationRequest)
+  if (courseOfTherapyTypeCode === CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING) {
+    hl7V3Prescription.pertinentInformation7 = convertPrescriptionPertinentInformation7(fhirMedicationRequests)
   }
+
   hl7V3Prescription.pertinentInformation5 = convertPrescriptionPertinentInformation5(fhirFirstMedicationRequest)
   hl7V3Prescription.pertinentInformation1 = convertPrescriptionPertinentInformation1(fhirFirstMedicationRequest)
   hl7V3Prescription.pertinentInformation2 = convertPrescriptionPertinentInformation2(fhirCommunicationRequest, fhirMedicationRequests)
@@ -76,24 +77,31 @@ function convertPrescriptionComponent1(validityPeriod: fhir.Period, expectedSupp
   if (validityPeriod) {
     const low = convertIsoStringToHl7V3Date(validityPeriod.start)
     const high = convertIsoStringToHl7V3Date(validityPeriod.end)
-    daysSupply.effectiveTime = new IntervalComplete<Timestamp>(low, high)
+    daysSupply.effectiveTime = new Interval<Timestamp>(low, high)
   }
   if (expectedSupplyDuration) {
+    if (expectedSupplyDuration.code !== "d") {
+      throw new TypeError("Expected supply duration must be specified in days")
+    }
     const expectedSupplyDurationStr = getNumericValueAsString(expectedSupplyDuration.value)
     daysSupply.expectedUseTime = new IntervalUnanchored(expectedSupplyDurationStr, "d")
   }
   return new prescriptions.Component1(daysSupply)
 }
 
-function convertPrescriptionPertinentInformation7(repeatInformation: Array<RepeatInformationExtension>) {
-  const nearestReviewDate = repeatInformation
-    .map(repeatInformationExtension => getExtensionForUrl(repeatInformationExtension.extension, "authorisationExpiryDate") as DateTimeExtension)
-    .map(dateTimeExtension => dateTimeExtension.valueDateTime)
-    .map(convertIsoDateStringToMoment)
-    .reduce((dateTime1, dateTime2) => moment.min(dateTime1, dateTime2))
-  const nearestReviewDateStr = convertMomentToHl7V3Date(nearestReviewDate)
-  const reviewDate = new ReviewDate(nearestReviewDateStr)
+function convertPrescriptionPertinentInformation7(medicationRequests: Array<fhir.MedicationRequest>) {
+  const reviewDates = medicationRequests.map(extractReviewDate)
+  const nearestReviewDate = reviewDates.reduce((dateTime1, dateTime2) => moment.min(dateTime1, dateTime2))
+  const nearestReviewDateTimestamp = convertMomentToHl7V3Date(nearestReviewDate)
+  const reviewDate = new ReviewDate(nearestReviewDateTimestamp)
   return new PrescriptionPertinentInformation7(reviewDate)
+}
+
+function extractReviewDate(medicationRequest: fhir.MedicationRequest) {
+  const repeatInformationExtension = getExtensionForUrl(medicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation") as RepeatInformationExtension
+  const reviewDateExtension = getExtensionForUrl(repeatInformationExtension.extension, "authorisationExpiryDate") as DateTimeExtension
+  const reviewDateExtensionValue = reviewDateExtension.valueDateTime
+  return convertIsoDateStringToMoment(reviewDateExtensionValue)
 }
 
 function convertPrescriptionPertinentInformation5(fhirFirstMedicationRequest: fhir.MedicationRequest) {
@@ -102,21 +110,18 @@ function convertPrescriptionPertinentInformation5(fhirFirstMedicationRequest: fh
 }
 
 export function convertCourseOfTherapyType(fhirFirstMedicationRequest: fhir.MedicationRequest): prescriptions.PrescriptionTreatmentType {
-  const courseOfTherapyTypeCode = fhirFirstMedicationRequest
-    .courseOfTherapyType.coding.map(coding => coding.code)
-    .reduce(onlyElement)
-
+  const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(fhirFirstMedicationRequest)
   const prescriptionTreatmentTypeCode = convertCourseOfTherapyTypeCode(courseOfTherapyTypeCode)
   return new prescriptions.PrescriptionTreatmentType(prescriptionTreatmentTypeCode)
 }
 
 function convertCourseOfTherapyTypeCode(courseOfTherapyTypeValue: string) {
   switch (courseOfTherapyTypeValue) {
-  case "acute":
+  case CourseOfTherapyTypeCode.ACUTE:
     return codes.PrescriptionTreatmentTypeCode.ACUTE
-  case "continuous":
+  case CourseOfTherapyTypeCode.CONTINUOUS:
     return codes.PrescriptionTreatmentTypeCode.CONTINUOUS
-  case "continuous-repeat-dispensing":
+  case CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING:
     return codes.PrescriptionTreatmentTypeCode.CONTINUOUS_REPEAT_DISPENSING
   default:
     throw TypeError("Unhandled courseOfTherapyType " + courseOfTherapyTypeValue)

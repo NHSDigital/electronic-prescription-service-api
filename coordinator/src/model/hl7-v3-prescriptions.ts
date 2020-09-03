@@ -37,7 +37,7 @@ export class LineItem implements ElementCompact, Repeatable {
   id: codes.GlobalIdentifier
   code: codes.SnomedCode
   effectiveTime: core.Null
-  repeatNumber: core.IntervalComplete<NumericValue>
+  repeatNumber?: core.Interval<NumericValue>
   product: Product
   component: LineItemComponent
   pertinentInformation1?: LineItemPertinentInformation1
@@ -225,7 +225,7 @@ export class ParentPrescriptionPertinentInformation1 implements ElementCompact {
 }
 
 export interface Repeatable {
-  repeatNumber?: core.IntervalComplete<NumericValue>
+  repeatNumber?: core.Interval<NumericValue>
 }
 
 /**
@@ -240,13 +240,13 @@ export class Prescription implements ElementCompact, Repeatable {
   id: [codes.GlobalIdentifier, codes.ShortFormPrescriptionIdentifier]
   code: codes.SnomedCode
   effectiveTime: core.Null
-  repeatNumber?: core.IntervalComplete<NumericValue>
-  performer: Performer
+  repeatNumber?: core.Interval<NumericValue>
+  performer?: Performer
   author: Author
   //TODO - legalAuthenticator
   responsibleParty: ResponsibleParty
-  component1: Component1
-  pertinentInformation7: PrescriptionPertinentInformation7
+  component1?: Component1
+  pertinentInformation7?: PrescriptionPertinentInformation7
   pertinentInformation5: PrescriptionPertinentInformation5
   //TODO - pertinentInformation6
   pertinentInformation1: PrescriptionPertinentInformation1
@@ -591,8 +591,8 @@ export class DaysSupply {
   }
 
   code: codes.SnomedCode = new codes.SnomedCode("373784005", "Dispensing medication (procedure)")
-  effectiveTime: core.IntervalComplete<core.Timestamp>
-  expectedUseTime: core.IntervalUnanchored
+  effectiveTime?: core.Interval<core.Timestamp>
+  expectedUseTime?: core.IntervalUnanchored
 }
 
 export class ParentPrescriptionRoot {

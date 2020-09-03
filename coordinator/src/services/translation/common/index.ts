@@ -128,8 +128,3 @@ export function getNumericValueAsNumber(numericValue: string | number | Lossless
   }
 }
 
-export function getCourseOfTherapyTypeCode(fhirMedicationRequest: fhir.MedicationRequest): string {
-  return fhirMedicationRequest.courseOfTherapyType.coding
-    .map(coding => coding.code)
-    .reduce(onlyElement)
-}
