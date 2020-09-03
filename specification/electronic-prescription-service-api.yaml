@@ -47,7 +47,7 @@ info:
     3. POST the signed prescription in FHIR format to the `/$process-message` endpoint
 
     ### Digital signatures
-    To provide a signature for your prescription, you can use the example signature from the Provenance schema [here](./types/Provenance).
+    To generate a signature for your prescription, you can use the digital signature service. In order to access the service, you can email your request to the [API management team](api.management@nhs.net). Alternatively, for testing purposes, you can use the example signature from the Provenance schema [here](./types/Provenance).
 
     ## Legal Use
     This API can only be used where there is a legal basis to do so. You should make an access request before you go too far with your development.
