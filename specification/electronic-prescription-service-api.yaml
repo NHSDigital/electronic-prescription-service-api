@@ -87,8 +87,12 @@ info:
     - array names are singular, for example `line` not `lines` for address lines
     - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
 
+    ## Network access
+    
     This API is available on the Internet, although access using NHS smartcards (see below)
     currently requires a connection to the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).
+    
+    For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
 
     ## Authorisation
     This API is [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis),
@@ -105,7 +109,14 @@ info:
 
     For more details, see [user-restricted APIs](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis).
 
-    ## Testing
+    ## Environment and Testing
+    
+    | Purpose           | URL                                                                        |
+    | -------------     | ---------------------------------------------------------------------------|
+    | Sandbox           | `https://sandbox.api.service.nhs.uk/electronic-prescription-service`       |
+    | Integration test  | `https://int.api.service.nhs.uk/electronic-prescription-service`           |
+    | Production        | `https://api.service.nhs.uk/electronic-prescription-service`               |
+
     You can test this API in:
     * our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing) for initial developer testing
     * our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing) for formal integration testing
