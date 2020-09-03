@@ -41,6 +41,8 @@ extends:
           dockerVersion: 17.09.0-ce
           releaseType: stable
       - bash: |
+          echo "IDENTITY_URL => $(IDENTITY_URL)"
+
           export SERVICE_NAME=$(SERVICE_NAME)
           export SERVICE_ARTIFACT_NAME=`ls $SERVICE_NAME`
           
