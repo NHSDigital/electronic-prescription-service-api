@@ -38,6 +38,7 @@ extends:
     apigee_deployments:
       - environment: internal-dev
       - environment: internal-dev-sandbox
+        proxy_path: sandbox
     post_deploy:
       - task: DockerInstaller@0
         displayName: Docker Installer
