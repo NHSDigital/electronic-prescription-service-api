@@ -74,7 +74,7 @@ extends:
           if [[ $SERVICE_ARTIFACT_NAME == v* ]]; then
             export BUILD_VERSION=`echo $SERVICE_ARTIFACT_NAME | grep -o "v[0-9]\+\.[0-9]\+\.[0-9]\+-[[:alpha:]]\+" | tail -1`
           else
-            export BUILD_VERSION="${{ parameters.fully_qualified_service_name }}"
+            export BUILD_VERSION="${{ variables.service_base_path_pr }}"
           fi
           
           # Publish
