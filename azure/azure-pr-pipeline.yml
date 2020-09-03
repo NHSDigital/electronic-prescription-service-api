@@ -25,6 +25,7 @@ pool:
 variables:
   - template: project.yml
   - group: pact
+  - group: env-internal-dev
 
 extends:
   template: azure/common/apigee-deployment.yml@common
@@ -41,7 +42,7 @@ extends:
           dockerVersion: 17.09.0-ce
           releaseType: stable
       - bash: |
-          echo "IDENTITY_URL => $(IDENTITY_URL)"
+          echo "IDP_URL => $(IDP_URL)"
 
           export SERVICE_NAME=$(SERVICE_NAME)
           export SERVICE_ARTIFACT_NAME=`ls $SERVICE_NAME`
@@ -103,7 +104,7 @@ extends:
             docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest verify $PACT_BROKER_URL/pacts/provider/$PACT_PROVIDER/consumer/$PACT_CONSUMER/version/$GIT_TAG$RELEASE_COMMIT_SHORT_ID --provider-base-url=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk$SERVICE_BASE_PATH --provider-app-version=$GIT_TAG$RELEASE_COMMIT_SHORT_ID --publish-verification-results
           
           else
-            export APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest $(IDENTITY_URL))
+            export APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest $(IDP_URL))
           
             docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest verify $PACT_BROKER_URL/pacts/provider/$PACT_PROVIDER/consumer/$PACT_CONSUMER/version/$GIT_TAG$RELEASE_COMMIT_SHORT_ID --provider-base-url=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk$SERVICE_BASE_PATH --custom-provider-header="Authorization: Bearer $APIGEE_ACCESS_TOKEN" --provider-app-version=$GIT_TAG$RELEASE_COMMIT_SHORT_ID --publish-verification-results
           fi
