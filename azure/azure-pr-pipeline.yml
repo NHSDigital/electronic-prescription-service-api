@@ -34,6 +34,10 @@ extends:
     service_base_path: ${{ variables.service_base_path }}
     product_display_name: ${{ variables.product_display_name }}
     product_description: ${{ variables.product_description }}
+    expose:
+      apigee_environment: ${{ parameters.environment }}
+      fully_qualified_service_name: ${{ parameters.fully_qualified_service_name }}
+      service_base_path: ${{ parameters.service_base_path }}
     post_deploy:
       - task: DockerInstaller@0
         displayName: Docker Installer
