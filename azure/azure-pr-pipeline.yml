@@ -49,15 +49,6 @@ extends:
             exit 0
           fi
           
-          if [ "$(NAMESPACE)" == "from_branchname" ]; then
-            export NAMESPACE=`echo $(Release.Artifacts.$(SERVICE_NAME).BuildNumber) | tr '+' '\n' | head -n 1 | sed -e "s/\./_/g"`
-            export NAMESPACE="-$NAMESPACE"
-            export RELEASE_COMMIT_ID=$(Build.SourceVersion)
-            export RELEASE_COMMIT_SHORT_ID="-${RELEASE_COMMIT_ID:0:7}"
-          else
-            unset NAMESPACE
-          fi
-          
           export SANDBOX=0
           
           if [ $(FORCE_SANDBOX) == "true" ]; then
@@ -69,7 +60,7 @@ extends:
             export SANDBOX=1
           fi
           
-          export SERVICE_BASE_PATH="$(SERVICE_BASE_PATH)$NAMESPACE"
+          export SERVICE_BASE_PATH="${{ parameters.fully_qualified_service_name }}"
           export GIT_TAG=`echo $SERVICE_ARTIFACT_NAME | grep -o "v[0-9]\+\.[0-9]\+\.[0-9]\+-[[:alpha:]]\+" | tail -1`
           export PACT_BROKER_URL=$(PACT_BROKER_URL)
           export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
@@ -90,7 +81,7 @@ extends:
           
           # Poll deploying API until our deployed version matches the release version
           
-          url="https://$APIGEE_ENVIRONMENT.api.service.nhs.uk$SERVICE_BASE_PATH/_ping"
+          url="https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH/_ping"
           interval_in_seconds=5
           releaseCommit="$(Build.SourceVersion)"
           path=".commitId"
@@ -124,4 +115,3 @@ extends:
           # Can I Deploy
           docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest broker can-i-deploy --pacticipant $PACT_PROVIDER --version $GIT_TAG$RELEASE_COMMIT_SHORT_ID --pacticipant $PACT_CONSUMER --version $GIT_TAG$RELEASE_COMMIT_SHORT_ID
         displayName: Run Smoke Tests
-
