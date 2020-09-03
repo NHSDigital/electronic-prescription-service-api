@@ -60,7 +60,7 @@ extends:
             export SANDBOX=1
           fi
           
-          export SERVICE_BASE_PATH="${{ parameters.fully_qualified_service_name }}"
+          export SERVICE_BASE_PATH="$(SERVICE_BASE_PATH)"
           export GIT_TAG=`echo $SERVICE_ARTIFACT_NAME | grep -o "v[0-9]\+\.[0-9]\+\.[0-9]\+-[[:alpha:]]\+" | tail -1`
           export PACT_BROKER_URL=$(PACT_BROKER_URL)
           export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
