@@ -14,10 +14,11 @@ export function convertParentPrescription(
 ): prescriptions.ParentPrescription {
   const fhirMedicationRequests = getMedicationRequests(fhirBundle)
   const fhirFirstMedicationRequest = fhirMedicationRequests[0]
+  const effectiveTime = extractEffectiveTime(fhirFirstMedicationRequest)
 
   const hl7V3ParentPrescription = new prescriptions.ParentPrescription(
     new codes.GlobalIdentifier(fhirBundle.id),
-    convertIsoStringToHl7V3DateTime(fhirFirstMedicationRequest.authoredOn)
+    convertIsoStringToHl7V3DateTime(effectiveTime)
   )
 
   const fhirPatient = getPatient(fhirBundle)
@@ -32,6 +33,15 @@ export function convertParentPrescription(
   hl7V3ParentPrescription.pertinentInformation2 = new prescriptions.ParentPrescriptionPertinentInformation2(careRecordElementCategory)
 
   return hl7V3ParentPrescription
+}
+
+function extractEffectiveTime(medicationRequest: fhir.MedicationRequest) {
+  const validityPeriod = medicationRequest.dispenseRequest.validityPeriod
+  if (validityPeriod) {
+    return validityPeriod.start
+  } else {
+    return medicationRequest.authoredOn
+  }
 }
 
 function convertCareRecordElementCategories(lineItems: Array<prescriptions.LineItem>) {
