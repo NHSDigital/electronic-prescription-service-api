@@ -10,7 +10,7 @@ docker_service:
         - name: LOG_LEVEL
           value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
         - name: SANDBOX
-          value: "{{ SANDBOX }}"
+          value: "{{ '1' if APIGEE_ENVIRONMENT == 'internal-dev-sandbox' else '0' }}"
         - name: SPINE_ENV
           value: "{{ 'INT' if APIGEE_ENVIRONMENT == 'int' else 'TEST' }}"
     secrets:
