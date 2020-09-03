@@ -46,12 +46,12 @@ export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescripti
     hl7V3Prescription.component1 = convertPrescriptionComponent1(validityPeriod, expectedSupplyDuration)
   }
 
-  const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(fhirFirstMedicationRequest)
+  const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(fhirMedicationRequests)
   if (courseOfTherapyTypeCode === CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING) {
     hl7V3Prescription.pertinentInformation7 = convertPrescriptionPertinentInformation7(fhirMedicationRequests)
   }
 
-  hl7V3Prescription.pertinentInformation5 = convertPrescriptionPertinentInformation5(fhirFirstMedicationRequest)
+  hl7V3Prescription.pertinentInformation5 = convertPrescriptionPertinentInformation5(fhirMedicationRequests)
   hl7V3Prescription.pertinentInformation1 = convertPrescriptionPertinentInformation1(fhirFirstMedicationRequest)
   hl7V3Prescription.pertinentInformation2 = convertPrescriptionPertinentInformation2(fhirCommunicationRequest, fhirMedicationRequests)
   hl7V3Prescription.pertinentInformation8 = convertPrescriptionPertinentInformation8()
@@ -109,13 +109,13 @@ function extractReviewDate(medicationRequest: fhir.MedicationRequest) {
   return convertIsoDateStringToMoment(reviewDateExtensionValue)
 }
 
-function convertPrescriptionPertinentInformation5(fhirFirstMedicationRequest: fhir.MedicationRequest) {
-  const prescriptionTreatmentType = convertCourseOfTherapyType(fhirFirstMedicationRequest)
+function convertPrescriptionPertinentInformation5(fhirMedicationRequests: Array<fhir.MedicationRequest>) {
+  const prescriptionTreatmentType = convertCourseOfTherapyType(fhirMedicationRequests)
   return new prescriptions.PrescriptionPertinentInformation5(prescriptionTreatmentType)
 }
 
-export function convertCourseOfTherapyType(fhirFirstMedicationRequest: fhir.MedicationRequest): prescriptions.PrescriptionTreatmentType {
-  const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(fhirFirstMedicationRequest)
+export function convertCourseOfTherapyType(fhirMedicationRequests: Array<fhir.MedicationRequest>): prescriptions.PrescriptionTreatmentType {
+  const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(fhirMedicationRequests)
   const prescriptionTreatmentTypeCode = convertCourseOfTherapyTypeCode(courseOfTherapyTypeCode)
   return new prescriptions.PrescriptionTreatmentType(prescriptionTreatmentTypeCode)
 }

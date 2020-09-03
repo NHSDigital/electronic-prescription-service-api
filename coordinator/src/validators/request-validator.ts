@@ -56,11 +56,6 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
     ),
     (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
       medicationRequests,
-      "courseOfTherapyType",
-      (medicationRequest) => medicationRequest.courseOfTherapyType
-    ),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
-      medicationRequests,
       "subject",
       (medicationRequest) => medicationRequest.subject
     ),

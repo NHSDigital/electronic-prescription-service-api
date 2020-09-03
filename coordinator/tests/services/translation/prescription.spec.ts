@@ -15,6 +15,8 @@ import {
   getMedicationRequests
 } from "../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl} from "../../../src/services/translation/common"
+import {setCourseOfTherapyTypeCode} from "./common/courseOfTherapyType.spec"
+import {CourseOfTherapyTypeCode} from "../../../src/services/translation/common/courseOfTherapyType"
 
 describe("convertCourseOfTherapyType", () => {
   const cases = [
@@ -24,13 +26,12 @@ describe("convertCourseOfTherapyType", () => {
   ]
 
   test.each(cases)("when first therapy type code is %p, convertCourseOfTherapyType returns prescription treatment type code %p",
-    (code: string, expected: string) => {
+    (code: CourseOfTherapyTypeCode, expected: string) => {
       const bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
       const fhirMedicationRequests = getMedicationRequests(bundle)
-      const firstFhirMedicationRequest = fhirMedicationRequests[0]
-      firstFhirMedicationRequest.courseOfTherapyType.coding[0].code = code
+      fhirMedicationRequests.map(medicationRequest => setCourseOfTherapyTypeCode(medicationRequest, code))
 
-      const treatmentTypeCode = convertCourseOfTherapyType(firstFhirMedicationRequest).value._attributes.code
+      const treatmentTypeCode = convertCourseOfTherapyType(fhirMedicationRequests).value._attributes.code
 
       expect(treatmentTypeCode).toEqual(expected)
     })

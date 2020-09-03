@@ -9,7 +9,7 @@ import {Repeatable} from "../../../model/hl7-v3-prescriptions"
 import {CourseOfTherapyTypeCode, getCourseOfTherapyTypeCode} from "./courseOfTherapyType"
 
 export function populateRepeatNumber(repeatable: Repeatable, medicationRequests: Array<MedicationRequest>): void {
-  const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests[0])
+  const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
   if (courseOfTherapyTypeCode === CourseOfTherapyTypeCode.CONTINUOUS) {
     repeatable.repeatNumber = createRepeatNumber("1")
   } else if (courseOfTherapyTypeCode === CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING) {
