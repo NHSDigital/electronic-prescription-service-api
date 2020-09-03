@@ -8,7 +8,8 @@ import {DateTimeExtension, RepeatInformationExtension} from "../../model/fhir-re
 import {
   convertIsoDateStringToMoment,
   convertIsoStringToHl7V3Date,
-  convertMomentToHl7V3Date, getExtensionForUrl,
+  convertMomentToHl7V3Date,
+  getExtensionForUrl,
   getNumericValueAsString
 } from "./common"
 import {convertAuthor, convertResponsibleParty} from "./practitioner"
@@ -72,7 +73,7 @@ function convertPrescriptionIds(
   ]
 }
 
-function convertPrescriptionComponent1(validityPeriod: fhir.Period, expectedSupplyDuration: fhir.SimpleQuantity) {
+export function convertPrescriptionComponent1(validityPeriod?: fhir.Period, expectedSupplyDuration?: fhir.SimpleQuantity): prescriptions.Component1 {
   const daysSupply = new DaysSupply()
   if (validityPeriod) {
     const low = convertIsoStringToHl7V3Date(validityPeriod.start)
@@ -90,11 +91,15 @@ function convertPrescriptionComponent1(validityPeriod: fhir.Period, expectedSupp
 }
 
 function convertPrescriptionPertinentInformation7(medicationRequests: Array<fhir.MedicationRequest>) {
-  const reviewDates = medicationRequests.map(extractReviewDate)
-  const nearestReviewDate = reviewDates.reduce((dateTime1, dateTime2) => moment.min(dateTime1, dateTime2))
-  const nearestReviewDateTimestamp = convertMomentToHl7V3Date(nearestReviewDate)
+  const nearestReviewDateTimestamp = convertNearestReviewDate(medicationRequests)
   const reviewDate = new ReviewDate(nearestReviewDateTimestamp)
   return new PrescriptionPertinentInformation7(reviewDate)
+}
+
+export function convertNearestReviewDate(medicationRequests: Array<fhir.MedicationRequest>): Timestamp {
+  const reviewDates = medicationRequests.map(extractReviewDate)
+  const nearestReviewDate = reviewDates.reduce((dateTime1, dateTime2) => moment.min(dateTime1, dateTime2))
+  return convertMomentToHl7V3Date(nearestReviewDate)
 }
 
 function extractReviewDate(medicationRequest: fhir.MedicationRequest) {
