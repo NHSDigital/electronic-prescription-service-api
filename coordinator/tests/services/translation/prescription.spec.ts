@@ -117,7 +117,7 @@ describe("PertinentInformation2", () => {
 describe("convertNearestReviewDate converts nearest review date", () => {
   let medicationRequests: Array<MedicationRequest>
   beforeEach(() => {
-    const prescription = TestResources.examplePrescription1.fhirMessageUnsigned
+    const prescription = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     medicationRequests = getMedicationRequests(prescription)
   })
 
@@ -142,12 +142,33 @@ describe("convertNearestReviewDate converts nearest review date", () => {
     const converted = convertNearestReviewDate(medicationRequests)
     expect(converted._attributes.value).toEqual("20200903")
   })
+
+  test("for multiple medication requests, some without review dates", () => {
+    setReviewDate(medicationRequests[0], "2020-09-03")
+    clearReviewDate(medicationRequests[1])
+    clearReviewDate(medicationRequests[2])
+    setReviewDate(medicationRequests[3], "2020-09-03")
+    const converted = convertNearestReviewDate(medicationRequests)
+    expect(converted._attributes.value).toEqual("20200903")
+  })
+
+  test("for multiple medication requests, all without review dates", () => {
+    medicationRequests.forEach(medicationRequest => clearReviewDate(medicationRequest))
+    const converted = convertNearestReviewDate(medicationRequests)
+    expect(converted).toBeFalsy()
+  })
 })
 
 function setReviewDate(medicationRequest: MedicationRequest, newReviewDate: string) {
   const repeatInformationExtension = getExtensionForUrl(medicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation") as RepeatInformationExtension
   const reviewDateExtension = getExtensionForUrl(repeatInformationExtension.extension, "authorisationExpiryDate") as DateTimeExtension
   reviewDateExtension.valueDateTime = newReviewDate
+}
+
+function clearReviewDate(medicationRequest: MedicationRequest) {
+  const repeatInformationExtension = getExtensionForUrl(medicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation") as RepeatInformationExtension
+  const reviewDateExtension = getExtensionForUrl(repeatInformationExtension.extension, "authorisationExpiryDate") as DateTimeExtension
+  repeatInformationExtension.extension.splice(repeatInformationExtension.extension.indexOf(reviewDateExtension), 1)
 }
 
 describe("convertPrescriptionComponent1", () => {
