@@ -25,7 +25,7 @@ pool:
 variables:
   - template: project.yml
   - group: pact
-  - group: env-internal-dev
+  
 
 extends:
   template: azure/common/apigee-deployment.yml@common
@@ -70,7 +70,12 @@ extends:
           export PACT_PROVIDER=nhsd-apim-eps
           export PACT_CONSUMER=nhsd-apim-eps-test-client
           export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
-          export BUILD_VERSION=$(Build.SourceBranchName)
+
+          if [[ $SERVICE_ARTIFACT_NAME == v* ]]; then
+            export BUILD_VERSION=`echo $SERVICE_ARTIFACT_NAME | grep -o "v[0-9]\+\.[0-9]\+\.[0-9]\+-[[:alpha:]]\+" | tail -1`
+          else
+            export BUILD_VERSION="${{ parameters.fully_qualified_service_name }}"
+          fi
           
           # Publish
           
