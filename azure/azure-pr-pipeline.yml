@@ -34,10 +34,7 @@ extends:
     service_base_path: ${{ variables.service_base_path }}
     product_display_name: ${{ variables.product_display_name }}
     product_description: ${{ variables.product_description }}
-    expose:
-      apigee_environment: ${{ parameters.environment }}
-      fully_qualified_service_name: ${{ parameters.fully_qualified_service_name }}
-      service_base_path: ${{ parameters.service_base_path }}
+    service_base_path_pr: ${{ variables.service_base_path }}-pr-${{ replace(replace(replace(variables['Build.SourceBranch'], '/merge', ''), 'refs/pull/', ''), '/', '_') }}
     post_deploy:
       - task: DockerInstaller@0
         displayName: Docker Installer
@@ -64,7 +61,7 @@ extends:
             export SANDBOX=1
           fi
           
-          export SERVICE_BASE_PATH="$(SERVICE_BASE_PATH)"
+          export SERVICE_BASE_PATH="${{ parameters.service_base_path_pr }}"
           export GIT_TAG=`echo $SERVICE_ARTIFACT_NAME | grep -o "v[0-9]\+\.[0-9]\+\.[0-9]\+-[[:alpha:]]\+" | tail -1`
           export PACT_BROKER_URL=$(PACT_BROKER_URL)
           export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
