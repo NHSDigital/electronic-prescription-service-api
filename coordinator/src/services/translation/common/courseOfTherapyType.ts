@@ -11,11 +11,21 @@ export function getCourseOfTherapyTypeCode(medicationRequests: Array<MedicationR
     .flatMap(medicationRequest => medicationRequest.courseOfTherapyType.coding)
     .map(coding => coding.code)
   const codeSet = new Set(codeList)
-  if (codeSet.size === 1) {
+  if (isSingleCourseOfTherapyType(codeSet)) {
     return codeSet.values().next().value
-  } else if (codeSet.size === 2 && codeSet.has(CourseOfTherapyTypeCode.ACUTE) && codeSet.has(CourseOfTherapyTypeCode.CONTINUOUS)) {
+  } else if (isMixedAcuteAndContinuousCourseOfTherapyType(codeSet)) {
     return CourseOfTherapyTypeCode.ACUTE
   } else {
     throw new TypeError("Course of therapy type must either match for all MedicationRequests or be a mixture of acute and continuous")
   }
+}
+
+function isSingleCourseOfTherapyType(codeSet: Set<string>) {
+  return codeSet.size === 1
+}
+
+function isMixedAcuteAndContinuousCourseOfTherapyType(codeSet: Set<string>) {
+  return codeSet.size === 2
+    && codeSet.has(CourseOfTherapyTypeCode.ACUTE)
+    && codeSet.has(CourseOfTherapyTypeCode.CONTINUOUS)
 }
