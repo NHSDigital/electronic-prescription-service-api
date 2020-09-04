@@ -42,5 +42,4 @@ extends:
         proxy_path: live
         depends_on:
           - internal_dev_sandbox
-    post_deploy:
-      template: smoke-tests.yml
+    post_deploy: ${{ variables.post_deploy }}

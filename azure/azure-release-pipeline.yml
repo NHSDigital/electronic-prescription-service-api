@@ -22,6 +22,7 @@ pool:
 
 variables:
   - template: project.yml
+  - template: smoke-tests.yml
   - group: pact
   - group: eps-temp
 
@@ -44,6 +45,4 @@ extends:
         proxy_path: live
         depends_on:
           - internal_dev
-    post_deploy:
-      steps:
-        - template: smoke-tests.yml
+    post_deploy: ${{ variables.smoke_tests }}
