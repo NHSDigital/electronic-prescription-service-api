@@ -23,6 +23,7 @@ pool:
 variables:
   - template: project.yml
   - group: pact
+  - group: env-internal-dev
 
 extends:
   template: azure/common/apigee-deployment.yml@common
@@ -77,9 +78,10 @@ extends:
           export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD) 
           export PACT_CONSUMER=nhsd-apim-eps-test-client
           export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
-          export ENV_VARIABLE_GROUP=$(curl -X GET https://dev.azure.com/NHSD-APIM/API%20Platform/_apis/distributedtask/variablegroups?groupName=env-$APIGEE_ENVIRONMENT)
-          echo $ENV_VARIABLE_GROUP
-          export IDP_URL="$(echo $ENV_VARIABLE_GROUP | jq --raw-output '.value[0].variables.IDP_URL.value')"
+          #export ENV_VARIABLE_GROUP=$(curl -X GET https://dev.azure.com/NHSD-APIM/API%20Platform/_apis/distributedtask/variablegroups?groupName=env-$APIGEE_ENVIRONMENT)
+          #echo $ENV_VARIABLE_GROUP
+          #export IDP_URL="$(echo $ENV_VARIABLE_GROUP | jq --raw-output '.value[0].variables.IDP_URL.value')"
+          export IDP_URL=$(IDP_URL)
 
           if [ "$SANDBOX" == "1" ]; then
             export PACT_PROVIDER=nhsd-apim-eps-sandbox
