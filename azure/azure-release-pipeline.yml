@@ -59,10 +59,11 @@ extends:
             exit 0
           fi
 
+          # todo: remove conditional, should always be v*
           if [[ $SERVICE_ARTIFACT_NAME == v* ]]; then
             export BUILD_VERSION=`echo $SERVICE_ARTIFACT_NAME | grep -o "v[0-9]\+\.[0-9]\+\.[0-9]\+-[[:alpha:]]\+" | tail -1`
           else
-            export BUILD_VERSION="${{ variables.service_base_path_pr }}"
+            export BUILD_VERSION="${{ variables.service_base_path }}"
           fi
 
           export SANDBOX=0
@@ -70,7 +71,7 @@ extends:
             export SANDBOX=1
           fi
           
-          export SERVICE_BASE_PATH="${{ variables.service_base_path_pr }}"
+          export SERVICE_BASE_PATH="${{ variables.service_base_path }}"
           export PACT_BROKER_URL=$(PACT_BROKER_URL)
           export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
           export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD) 
