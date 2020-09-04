@@ -1,0 +1,469 @@
+{
+	"info": {
+		"_postman_id": "aee2c8cf-6d4f-4c65-9863-9a6620a4a7ac",
+		"name": "10a)  EPS Issue Codes",
+		"description": "See ticket AEA-475 and Page 67 of the Compliance spec\r\n\r\nhttps://nhsd-confluence.digital.nhs.uk/display/APIMC/Error+Handling\r\n\r\nEPS Issue Codes:\r\nhttps://simplifier.net/nhsdigitalspine/eps-issuecode\r\n\r\nCodeSystem: https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode\r\n\r\nOld EPS Code\tNew EPS Code\tDisplay\tFHIR Issue Type\tResponse Code\tDefinition\r\n0001\r\n\r\nPATIENT_DECEASED\tPatient is recorded as dead\tbusiness-rule\t422\tNot applicable to prescribing systems Note. The Spine will not reject a prescription for a dead patient however the requirement to check PDS for death status before prescribing prevents this scenario occurring.\r\n0002\r\n\r\nDUPLICATE_PRESCRIPTION_ID\tDuplicate prescription ID exists\tduplicate\t422\tThe System must create a new prescription UUID and re-submit the prescription to the Spine.\r\n0003\r\n\r\nMISSING_DIGITAL_SIGNATURE\tDigital signature not found\tbusiness-rule\t422\tThe System must create and apply a digital signature to the prescription and re-submit the prescription to the Spine\r\n0009\t\r\nINVALID_MESSAGE\r\n\r\nInvalid Message\tstructure\t400\t\r\nThe prescription message has failed structural validation at the Spine. A defect report should be raised against the local System or the Spine (whichever is in error). The prescriber must be notified accordingly to use a paper FP10 prescription.\r\n\r\n0010\r\n\r\nINVALID_NUMBER_MEDICATIONREQUESTS\tNumber of items on a prescription should be between 1 and 4\tbusiness-rule\t422\tThe prescriber must be notified accordingly and asked to split the items across separate prescriptions.\r\n0018\r\n\r\nMISMATCH_AUTHORISED_REPEAT_COUNT\tMismatch in authorised repeat counts\tbusiness-rule\t422\tThe “repeatNumber” attribute exists at both the prescription and item level. An item cannot be authorised for more repeats than the prescription.\r\n0019\r\n\r\nINVALID_REPEAT_COUNT\tRepeat count should be between 1 and 99\tbusiness-rule\t422\tThe maximum “high” value for the “repeatNumber” attribute is 99.\r\n5008\r\n\r\nDUPLICATE_MEDICATIONREQUEST_ID\tDuplicate item ID exists\tduplicate \t422\tThe System must create a new line item UUID and re-submit the prescription to the Spine.\r\n5009\r\n\r\nINVALID_CHECK_DIGIT\tError in check digit\tvalue\t400\tThe System must re-calculate / correct the check digit and re-submit the prescription to the Spine.\r\n\r\n\r\n\r\n",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "0001 Patient is recorded as dead",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "499774e3-90fc-44d2-83fa-58153de72ba1",
+						"exec": [
+							"console.log('base_url: ' + pm.environment.get('base_url'));\r",
+							"\r",
+							"console.log(\"EPS Issue Codes Displays - Patient is recorded as dead\");\r",
+							"\r",
+							"pm.test(\"Status code is 422\", function () {\r",
+							"    pm.response.to.have.status(422);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "NHSD-Session-URID",
+						"value": "1234",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": ""
+				},
+				"description": "See ticket AEA-475 and Page 67 of the Compliance spec"
+			},
+			"response": []
+		},
+		{
+			"name": "0002 Duplicate prescription ID exists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "747cfd60-9b2c-49ea-ab76-65539831cef2",
+						"exec": [
+							"console.log('base_url: ' + pm.environment.get('base_url'));\r",
+							"\r",
+							"console.log(\"EPS Issue Codes Displays - Duplicate prescription ID exists\");\r",
+							"\r",
+							"pm.test(\"Status code is 422\", function () {\r",
+							"    pm.response.to.have.status(422);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "NHSD-Session-URID",
+						"value": "1234",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": ""
+				},
+				"description": "ee ticket AEA-475 and Page 67 of the Compliance spec"
+			},
+			"response": []
+		},
+		{
+			"name": "0003 Digital signature not found",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f81f7ff8-c505-4cbd-8bf2-24daa242a520",
+						"exec": [
+							"console.log('base_url: ' + pm.environment.get('base_url'));\r",
+							"\r",
+							"console.log(\"EPS Issue Code Displays - Digital signature not found\");\r",
+							"\r",
+							"pm.test(\"Status code is 422\", function () {\r",
+							"    pm.response.to.have.status(422);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "NHSD-Session-URID",
+						"value": "1234",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0009 Invalid message",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "54e52b25-f50b-43d6-b39a-4436762c33ad",
+						"exec": [
+							"console.log('base_url: ' + pm.environment.get('base_url'));\r",
+							"\r",
+							"console.log(\"EPS Issue Code Displays - Invalid Message\");\r",
+							"\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "NHSD-Session-URID",
+						"value": "1234",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0010 Number of items on a prescription should be between 1 and 4",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5907e89b-ae3e-4973-b266-f569aceece59",
+						"exec": [
+							"console.log('base_url: ' + pm.environment.get('base_url'));\r",
+							"\r",
+							"console.log(\"EPS Issue Code Displays - Number of items on a prescription should be between 1 and 4\");\r",
+							"\r",
+							"pm.test(\"Status code is 422\", function () {\r",
+							"    pm.response.to.have.status(422);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "NHSD-Session-URID",
+						"value": "1234",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0018 Mismatch in authorised repeat counts",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "021916aa-8ade-4076-a611-0712ecf4f279",
+						"exec": [
+							"console.log('base_url: ' + pm.environment.get('base_url'));\r",
+							"\r",
+							"console.log(\"EPS Issue Code Displays - Mismatch in authorised repeat counts\");\r",
+							"\r",
+							"pm.test(\"Status code is 422\", function () {\r",
+							"    pm.response.to.have.status(422);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "NHSD-Session-URID",
+						"value": "1234",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0019 Repeat count should be between 1 and 9",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "83880229-f719-4263-b4f3-dc49dd945a63",
+						"exec": [
+							"console.log('base_url: ' + pm.environment.get('base_url'));\r",
+							"\r",
+							"console.log(\"EPS Issue Code Displays - Repeat count should be between 1 and 9\");\r",
+							"\r",
+							"pm.test(\"Status code is 422\", function () {\r",
+							"    pm.response.to.have.status(422);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "NHSD-Session-URID",
+						"value": "1234",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5008 Duplicate item ID exists",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6b8350cd-da84-4161-beb9-d2e29fd39a5b",
+						"exec": [
+							"console.log('base_url: ' + pm.environment.get('base_url'));\r",
+							"\r",
+							"console.log(\"EPS Issue Code Displays - Duplicate item ID exists\");\r",
+							"\r",
+							"pm.test(\"Status code is 422\", function () {\r",
+							"    pm.response.to.have.status(422);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "NHSD-Session-URID",
+						"value": "1234",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5009 Error in check digit",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "46b07d4f-aba2-4ae2-a207-778bb1f44b25",
+						"exec": [
+							"console.log('base_url: ' + pm.environment.get('base_url'));\r",
+							"\r",
+							"console.log(\"EPS Issue Code Displays - Error in check digit\");\r",
+							"\r",
+							"pm.test(\"Status code is 400\", function () {\r",
+							"    pm.response.to.have.status(400);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "NHSD-Session-URID",
+						"value": "1234",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "9006 Format of date passed is invalid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5612820e-55cb-4480-a9bd-1207a993ccf2",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "NHSD-Session-URID",
+						"value": "1234",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "a4905be0-ad9f-4075-b623-584c7b0faa6d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "f26c8172-0d19-4774-9d5d-eaebef1c2656",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
