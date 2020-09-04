@@ -24,7 +24,6 @@ pool:
 
 variables:
   - template: project.yml
-  - template: smoke-tests.yml
   - group: pact
   - group: eps-temp
 
