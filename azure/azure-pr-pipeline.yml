@@ -43,13 +43,14 @@ extends:
         depends_on:
           - internal_dev_sandbox
     post_deploy: 
-      - task: DockerInstaller@0
-        displayName: Docker Installer
-        inputs:
-          dockerVersion: 17.09.0-ce
-          releaseType: stable
-      - task: Bash@3
-        inputs:
-          targetType: 'filePath'
-          filePath: ${{ variables.service_name }}/$(SERVICE_ARTIFACT_NAME)/smoke_tests.sh
-        displayName: Run Smoke Tests
+      - bash: ls -R
+      # - task: DockerInstaller@0
+      #   displayName: Docker Installer
+      #   inputs:
+      #     dockerVersion: 17.09.0-ce
+      #     releaseType: stable
+      # - task: Bash@3
+      #   inputs:
+      #     targetType: 'filePath'
+      #     filePath: ${{ variables.service_name }}/$(SERVICE_ARTIFACT_NAME)/smoke_tests.sh
+      #   displayName: Run Smoke Tests
