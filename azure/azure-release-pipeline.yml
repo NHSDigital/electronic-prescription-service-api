@@ -31,6 +31,17 @@ extends:
     service_base_path: ${{ variables.service_base_path }}
     product_display_name: ${{ variables.product_display_name }}
     product_description: ${{ variables.product_description }}
+    apigee_deployments:
+      - environment: internal-dev
+        proxy_path: live
+      - environment: internal-qa-sandbox
+        proxy_path: sandbox
+        depends_on:
+          - internal_dev
+      - environment: internal-qa
+        proxy_path: live
+        depends_on:
+          - internal_dev
     post_deploy:
       - task: DockerInstaller@0
         displayName: Docker Installer
