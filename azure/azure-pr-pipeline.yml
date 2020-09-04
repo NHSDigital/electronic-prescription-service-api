@@ -43,7 +43,9 @@ extends:
         depends_on:
           - internal_dev_sandbox
     post_deploy:
-      - bash: ls -R
+      - bash: |
+        ls -R
+        echo ${{ variables.service_name }}/$(SERVICE_ARTIFACT_NAME)/smoke_tests.sh
       # - task: DockerInstaller@0
       #   displayName: Docker Installer
       #   inputs:
