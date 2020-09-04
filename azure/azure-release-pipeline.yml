@@ -63,6 +63,5 @@ extends:
       - task: Bash@3
         inputs:
           targetType: 'filePath'
-          filePath: smoke_tests.sh
-          workingDirectory: ${{ variables.service_name }}/$(SERVICE_ARTIFACT_NAME)
+          filePath: ${{ variables.service_name }}/$(SERVICE_ARTIFACT_NAME)/smoke_tests.sh
         displayName: Run Smoke Tests
