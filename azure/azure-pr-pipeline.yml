@@ -52,19 +52,19 @@ extends:
           # Set variables
           export SERVICE_NAME=$(SERVICE_NAME)
           export SERVICE_ARTIFACT_NAME=`ls $SERVICE_NAME`
-          
+
           if [ ! -d "$SERVICE_NAME/$SERVICE_ARTIFACT_NAME/pact" ]; then
               echo "No pacts found. Exiting"
             exit 0
           fi
-          
-          export SANDBOX=0
-          
-          if [ $(FORCE_SANDBOX) == "true" ]; then
-            export NAMESPACE="$NAMESPACE-sandbox"
-            export SANDBOX=1
+
+          if [[ $SERVICE_ARTIFACT_NAME == v* ]]; then
+            export BUILD_VERSION=`echo $SERVICE_ARTIFACT_NAME | grep -o "v[0-9]\+\.[0-9]\+\.[0-9]\+-[[:alpha:]]\+" | tail -1`
+          else
+            export BUILD_VERSION="${{ variables.service_base_path_pr }}"
           fi
-          
+
+          export SANDBOX=0
           if [[ $(APIGEE_ENVIRONMENT) == *"sandbox"* ]]; then
             export SANDBOX=1
           fi
@@ -73,14 +73,13 @@ extends:
           export PACT_BROKER_URL=$(PACT_BROKER_URL)
           export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
           export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD) 
-          export PACT_PROVIDER=nhsd-apim-eps
           export PACT_CONSUMER=nhsd-apim-eps-test-client
           export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
 
-          if [[ $SERVICE_ARTIFACT_NAME == v* ]]; then
-            export BUILD_VERSION=`echo $SERVICE_ARTIFACT_NAME | grep -o "v[0-9]\+\.[0-9]\+\.[0-9]\+-[[:alpha:]]\+" | tail -1`
+          if [ "$SANDBOX" == "1" ]; then
+            export PACT_PROVIDER=nhsd-apim-eps-sandbox
           else
-            export BUILD_VERSION="${{ variables.service_base_path_pr }}"
+          export PACT_PROVIDER=nhsd-apim-eps
           fi
           
           # Publish
