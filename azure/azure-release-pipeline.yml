@@ -45,5 +45,4 @@ extends:
         proxy_path: live
         depends_on:
           - internal_dev
-    post_deploy:
-      ${{ variables.smoke_tests }}
+    post_deploy: ${{ variables.smoke_tests }}
