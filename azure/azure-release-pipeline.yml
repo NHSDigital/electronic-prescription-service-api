@@ -45,4 +45,5 @@ extends:
         depends_on:
           - internal_dev
     post_deploy:
-      template: smoke-tests.yml
+      steps:
+        - template: smoke-tests.yml
