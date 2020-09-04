@@ -50,11 +50,11 @@ extends:
           - internal_qa
           - internal_qa_sandbox
       - environment: int
-          proxy_path: live
-          depends_on:
-            - internal_qa
-            - internal_qa_sandbox
-            - sandbox
+        proxy_path: live
+        depends_on:
+          - internal_qa
+          - internal_qa_sandbox
+          - sandbox
     post_deploy: 
       - task: DockerInstaller@0
         displayName: Docker Installer
