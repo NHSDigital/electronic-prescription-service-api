@@ -44,4 +44,13 @@ extends:
         depends_on:
           - internal_dev_sandbox
     post_deploy: 
-      ${{ each step in variables.smoke_tests }}
+      - task: DockerInstaller@0
+        displayName: Docker Installer
+        inputs:
+          dockerVersion: 17.09.0-ce
+          releaseType: stable
+      - task: Bash@3
+        inputs:
+          targetType: 'filePath'
+          filePath: smoke_tests.sh
+        displayName: Run Smoke Tests
