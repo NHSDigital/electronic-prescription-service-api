@@ -28,7 +28,10 @@ properties:
     type: array
     description: Additional content defined by implementations
     items:
-      $ref: "Extension-RepeatInformation.yaml"
+      anyOf:
+        - $ref: "Extension-RepeatInformation.yaml"
+        - $ref: "Extension-PrescriptionType.yaml"
+        - $ref: "Extension-ResponsiblePractitioner.yaml"
   status:
     type: string
     enum: 
