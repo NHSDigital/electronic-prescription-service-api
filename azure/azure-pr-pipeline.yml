@@ -42,7 +42,7 @@ extends:
         proxy_path: live
         depends_on:
           - internal_dev_sandbox
-    post_deploy: 
+    post_deploy:
       - bash: ls -R
       # - task: DockerInstaller@0
       #   displayName: Docker Installer
