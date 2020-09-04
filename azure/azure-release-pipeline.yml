@@ -64,4 +64,5 @@ extends:
         inputs:
           targetType: 'filePath'
           filePath: smoke_tests.sh
+        workingDirectory: ${{ parameters.service_name }}/$(SERVICE_ARTIFACT_NAME)
         displayName: Run Smoke Tests
