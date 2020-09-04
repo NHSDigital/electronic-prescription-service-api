@@ -55,14 +55,13 @@ extends:
           - internal_qa
           - internal_qa_sandbox
     post_deploy:
-      - bash: ls -R
-      # - task: DockerInstaller@0
-      #   displayName: Docker Installer
-      #   inputs:
-      #     dockerVersion: 17.09.0-ce
-      #     releaseType: stable
-      # - task: Bash@3
-      #   inputs:
-      #     targetType: 'filePath'
-      #     filePath: ${{ variables.service_name }}/$(SERVICE_ARTIFACT_NAME)/smoke_tests.sh
-      #   displayName: Run Smoke Tests
+      - task: DockerInstaller@0
+        displayName: Docker Installer
+        inputs:
+          dockerVersion: 17.09.0-ce
+          releaseType: stable
+      - task: Bash@3
+        inputs:
+          targetType: 'filePath'
+          filePath: $(System.ArtifactsDirectory)/${{ variables.service_name }}/$(SERVICE_ARTIFACT_NAME)/smoke_tests.sh
+        displayName: Run Smoke Tests
