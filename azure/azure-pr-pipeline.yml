@@ -45,7 +45,7 @@ extends:
     post_deploy:
       - bash: |
           ls -R
-          echo ${{ variables.service_name }}/$(SERVICE_ARTIFACT_NAME)/smoke_tests.sh
+          echo $(System.ArtifactsDirectory)/${{ variables.service_name }}/$(SERVICE_ARTIFACT_NAME)/smoke_tests.sh
       # - task: DockerInstaller@0
       #   displayName: Docker Installer
       #   inputs:
