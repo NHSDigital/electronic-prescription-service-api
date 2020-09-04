@@ -54,7 +54,6 @@ extends:
         depends_on:
           - internal_qa
           - internal_qa_sandbox
-          - sandbox
     post_deploy: 
       - task: DockerInstaller@0
         displayName: Docker Installer
