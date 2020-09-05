@@ -22,7 +22,6 @@ extends:
     service_base_path: ${{ parameters.service_base_path }}
     product_display_name: ${{ parameters.product_display_name }}
     product_description: ${{ parameters.product_description }}
-    service_base_path_pr: ${{ parameters.service_base_path_pr }}
     apigee_deployments: ${{ parameters.apigee_deployments }}
     post_deploy:
       - task: DockerInstaller@0
@@ -45,7 +44,7 @@ extends:
             export SERVICE_BASE_PATH="${{ variables.service_base_path }}"
           else
             export BUILD_VERSION="${{ variables.service_base_path }}"
-            export SERVICE_BASE_PATH="${{ variables.service_base_path_pr }}"
+            export SERVICE_BASE_PATH="${{ parameters.service_base_path_pr }}"
           fi
 
           export SANDBOX=0
