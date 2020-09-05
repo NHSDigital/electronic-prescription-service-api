@@ -22,11 +22,6 @@ resources:
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-  - template: project.yml
-  - group: pact
-  - group: eps-temp
-
 extends:
   template: azure-release-template.yml
   parameters:
