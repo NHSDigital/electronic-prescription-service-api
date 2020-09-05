@@ -56,10 +56,16 @@ extends:
           - internal_qa_sandbox
     post_deploy:
       - task: DockerInstaller@0
-        displayName: Docker Installer
+        displayName: Install docker
         inputs:
           dockerVersion: 17.09.0-ce
           releaseType: stable
+      - task: Bash@3
+        inputs:
+          targetType: 'inline'
+          script: chmod +x $(System.ArtifactsDirectory)/${{ variables.service_name }}/$(SERVICE_ARTIFACT_NAME)/smoke_tests.sh
+        displayName: Make smoke test script executable
+        displayName: Run smoke tests
       - task: Bash@3
         inputs:
           targetType: 'filePath'
