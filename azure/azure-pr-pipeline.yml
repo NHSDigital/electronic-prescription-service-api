@@ -1,4 +1,14 @@
+name: "$(SourceBranchName)+$(BuildID)"
+
+trigger: none
+pr: none
+
 resources:
+  repositories:
+    - repository: common
+      type: github
+      name: NHSDigital/api-management-utils
+      endpoint: NHSDigital
   pipelines:
   - pipeline: build_pipeline
     source: "Electronic-Prescription-Service-Build"
@@ -8,6 +18,14 @@ resources:
           - master
           - refs/heads/master
           - refs/tags/v*
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  - template: project.yml
+  - group: pact
+  - group: eps-temp
 
 extends:
   template: azure-release-template.yml
