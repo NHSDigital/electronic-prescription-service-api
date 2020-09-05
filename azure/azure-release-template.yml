@@ -1,6 +1,16 @@
 parameters:
   - name: service_name
     type: string
+  - name: short_service_name
+    type: string
+  - name: service_base_path
+    type: string
+  - name: product_display_name
+    type: string
+  - name: product_description
+    type: string
+  - name: service_base_path_pr
+    type: string
   - name: apigee_deployments
     type: object
 
@@ -8,10 +18,11 @@ extends:
   template: azure/common/apigee-deployment.yml@common
   parameters:
     service_name: ${{ parameters.service_name }}
-    short_service_name: ${{ variables.short_service_name }}
-    service_base_path: ${{ variables.service_base_path }}
-    product_display_name: ${{ variables.product_display_name }}
-    product_description: ${{ variables.product_description }}
+    short_service_name: ${{ parameters.short_service_name }}
+    service_base_path: ${{ parameters.service_base_path }}
+    product_display_name: ${{ parameters.product_display_name }}
+    product_description: ${{ parameters.product_description }}
+    service_base_path_pr: ${{ parameters.service_base_path_pr }}
     apigee_deployments: ${{ parameters.apigee_deployments }}
     post_deploy:
       - task: DockerInstaller@0

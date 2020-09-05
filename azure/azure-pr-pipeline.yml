@@ -31,6 +31,11 @@ extends:
   template: azure-release-template.yml
   parameters:
     service_name: ${{ variables.service_name }}
+    short_service_name: ${{ variables.short_service_name }}
+    service_base_path: ${{ variables.service_base_path }}
+    product_display_name: ${{ variables.product_display_name }}
+    product_description: ${{ variables.product_description }}
+    service_base_path_pr: ${{ variables.service_base_path_pr }}
     apigee_deployments:
       - environment: internal-dev-sandbox
         proxy_path: sandbox
