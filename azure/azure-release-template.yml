@@ -10,7 +10,7 @@ extends:
     service_base_path: ${{ variables.service_base_path }}
     product_display_name: ${{ variables.product_display_name }}
     product_description: ${{ variables.product_description }}
-    apigee_deployments: ${{ parameters.post_deploy }}
+    apigee_deployments: ${{ parameters.apigee_deployments }}
     post_deploy:
       - task: DockerInstaller@0
         displayName: Install docker
