@@ -2,11 +2,6 @@ parameters:
   - name: apigee_deployments
     type: object
 
-variables:
-  - template: project.yml
-  - group: pact
-  - group: eps-temp
-
 extends:
   template: azure/common/apigee-deployment.yml@common
   parameters:
