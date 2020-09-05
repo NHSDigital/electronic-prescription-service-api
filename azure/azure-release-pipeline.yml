@@ -33,7 +33,7 @@ extends:
     service_base_path: ${{ variables.service_base_path }}
     product_display_name: ${{ variables.product_display_name }}
     product_description: ${{ variables.product_description }}
-    service_base_path_pr: ${{ variables.service_base_path_pr }}
+    service_base_path_pr: none
     apigee_deployments:
       - environment: internal-dev
         proxy_path: live

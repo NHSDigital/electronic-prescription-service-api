@@ -44,7 +44,11 @@ extends:
             export SERVICE_BASE_PATH="${{ parameters.service_base_path }}"
           else
             export BUILD_VERSION="${{ parameters.service_base_path }}"
-            export SERVICE_BASE_PATH="${{ parameters.service_base_path_pr }}"
+            if [[ ${{ parameters.service_base_path_pr }} == "none" ]]; then
+              export SERVICE_BASE_PATH="${{ parameters.service_base_path }}"
+            else
+              export SERVICE_BASE_PATH="${{ parameters.service_base_path_pr }}"
+            fi
           fi
 
           export SANDBOX=0
