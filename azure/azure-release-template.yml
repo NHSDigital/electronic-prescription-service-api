@@ -1,11 +1,13 @@
 parameters:
+  - name: service_name
+    type: string
   - name: apigee_deployments
     type: object
 
 extends:
   template: azure/common/apigee-deployment.yml@common
   parameters:
-    service_name: ${{ variables.service_name }}
+    service_name: ${{ parameters.service_name }}
     short_service_name: ${{ variables.short_service_name }}
     service_base_path: ${{ variables.service_base_path }}
     product_display_name: ${{ variables.product_display_name }}

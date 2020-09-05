@@ -30,6 +30,7 @@ variables:
 extends:
   template: azure-release-template.yml
   parameters:
+    service_name: ${{ variables.service_name }}
     apigee_deployments:
       - environment: internal-dev-sandbox
         proxy_path: sandbox
