@@ -65,9 +65,8 @@ extends:
           targetType: 'inline'
           script: chmod +x $(System.ArtifactsDirectory)/${{ variables.service_name }}/$(SERVICE_ARTIFACT_NAME)/smoke_tests.sh
         displayName: Make smoke test script executable
-        displayName: Run smoke tests
       - task: Bash@3
         inputs:
           targetType: 'filePath'
           filePath: $(System.ArtifactsDirectory)/${{ variables.service_name }}/$(SERVICE_ARTIFACT_NAME)/smoke_tests.sh
-        displayName: Run Smoke Tests
+        displayName: Run smoke tests
