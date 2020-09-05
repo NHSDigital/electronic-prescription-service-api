@@ -43,18 +43,4 @@ extends:
         depends_on:
           - internal_dev_sandbox
     post_deploy:
-      - task: DockerInstaller@0
-        displayName: Install docker
-        inputs:
-          dockerVersion: 17.09.0-ce
-          releaseType: stable
-      - task: Bash@3
-        inputs:
-          targetType: 'inline'
-          script: chmod +x $(System.ArtifactsDirectory)/${{ variables.service_name }}/$(SERVICE_ARTIFACT_NAME)/smoke_tests.sh
-        displayName: Make smoke test script executable
-      - task: Bash@3
-        inputs:
-          targetType: 'filePath'
-          filePath: $(System.ArtifactsDirectory)/${{ variables.service_name }}/$(SERVICE_ARTIFACT_NAME)/smoke_tests.sh
-        displayName: Run smoke tests
+      template: smoke-tests.yml
