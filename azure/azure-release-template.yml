@@ -11,6 +11,7 @@ parameters:
     type: string
   - name: service_base_path_pr
     type: string
+    default: ''
   - name: apigee_deployments
     type: object
 
