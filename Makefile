@@ -27,7 +27,6 @@ release:
 	for env in internal-dev internal-dev-sandbox internal-qa-sandbox int sandbox; do \
 		cp ecs-proxies-deploy.yml dist/ecs-deploy-$$env.yml; \
 	done
-	cat azure/smoke-tests.yml
 
 clean:
 	rm -rf dist
