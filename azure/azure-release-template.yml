@@ -11,6 +11,8 @@ parameters:
     type: string
   - name: service_base_path_pr
     type: string
+  - name: spec_file
+    type: string
   - name: apigee_deployments
     type: object
 
@@ -22,6 +24,7 @@ extends:
     service_base_path: ${{ parameters.service_base_path }}
     product_display_name: ${{ parameters.product_display_name }}
     product_description: ${{ parameters.product_description }}
+    spec_file: ${{ parameters.spec_file }}
     apigee_deployments: ${{ parameters.apigee_deployments }}
     post_deploy:
       - task: DockerInstaller@0
