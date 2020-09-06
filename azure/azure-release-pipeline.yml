@@ -34,24 +34,4 @@ extends:
     product_display_name: ${{ variables.product_display_name }}
     product_description: ${{ variables.product_description }}
     service_base_path_pr: none
-    apigee_deployments:
-      - environment: internal-dev
-        proxy_path: live
-      - environment: internal-qa-sandbox
-        proxy_path: sandbox
-        depends_on:
-          - internal_dev
-      - environment: internal-qa
-        proxy_path: live
-        depends_on:
-          - internal_dev
-      - environment: sandbox
-        proxy_path: sandbox
-        depends_on:
-          - internal_qa
-          - internal_qa_sandbox
-      - environment: int
-        proxy_path: live
-        depends_on:
-          - internal_qa
-          - internal_qa_sandbox
+
