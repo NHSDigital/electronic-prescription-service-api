@@ -14,7 +14,7 @@ resources:
     source: "Electronic-Prescription-Service-Build"
     trigger:
       branches:
-        include:
+        exclude:
           - refs/tags/v*
 
 pool:
