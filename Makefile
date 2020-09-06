@@ -24,8 +24,11 @@ release:
 	cp -r specification/dist/. dist
 	cp -r terraform dist
 	rsync -av --progress --copy-links tests/e2e/pact dist --exclude node_modules
-	for env in internal-dev internal-dev-sandbox internal-qa-sandbox int sandbox; do \
-		cp ecs-proxies-deploy.yml dist/ecs-deploy-$$env.yml; \
+	for env in internal-dev-sandbox internal-qa-sandbox sandbox; do \
+		cat ecs-proxies-deploy.yml | sed -e 's/{{ SANDBOX_MODE_ENABLED }}/1/g' > dist/ecs-deploy-$$env.yml; \
+	done
+	for env in internal-dev internal-qa int; do \
+		cat ecs-proxies-deploy.yml | sed -e 's/{{ SANDBOX_MODE_ENABLED }}/0/g' > dist/ecs-deploy-$$env.yml; \
 	done
 
 clean:
