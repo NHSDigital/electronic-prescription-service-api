@@ -11,8 +11,8 @@ parameters:
     type: string
   - name: service_base_path_pr
     type: string
-  # - name: apigee_deployments
-  #   type: object
+  - name: apigee_deployments
+    type: object
 
 extends:
   template: azure/common/apigee-deployment.yml@common
@@ -22,7 +22,7 @@ extends:
     service_base_path: ${{ parameters.service_base_path }}
     product_display_name: ${{ parameters.product_display_name }}
     product_description: ${{ parameters.product_description }}
-    # apigee_deployments: ${{ parameters.apigee_deployments }}
+    apigee_deployments: ${{ parameters.apigee_deployments }}
     post_deploy:
       - task: DockerInstaller@0
         displayName: Install docker
