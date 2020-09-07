@@ -27,6 +27,10 @@
         "comma-dangle": ["error", "never"],
         "indent": ["error", 2],
         "no-multiple-empty-lines": ["error", {"max": 1}],
-        "no-trailing-spaces": "error"
+        "no-trailing-spaces": "error",
+        "@typescript-eslint/array-type": [
+            "error",
+            { "default": "generic" }
+          ]
     }
 }

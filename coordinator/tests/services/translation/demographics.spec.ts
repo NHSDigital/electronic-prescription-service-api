@@ -16,7 +16,7 @@ describe("convertName fills correct fields only", () => {
     ["given", {given: ["example"]}],
     ["suffix", {suffix: ["example"]}]]
 
-  test.each(keyCases)("%p should add correct key", (key: string, fhirName:{prefix: string[]}) => {
+  test.each(keyCases)("%p should add correct key", (key: string, fhirName:{prefix: Array<string>}) => {
     const result = demographics.convertName(fhirName)
     expect(Object.keys(result)).toHaveLength(2)
     expect(Object.keys(result)).toContain(key)
