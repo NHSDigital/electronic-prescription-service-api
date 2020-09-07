@@ -1,28 +1,19 @@
 import {Bundle, MedicationRequest, Resource} from "../model/fhir-resources"
 import {getExtensionForUrl, getExtensionForUrlOrNull} from "../services/translation/common"
+import * as errors from "../../errors/errors"
 
 // Validate Status
-export function getStatusCode(validation: Array<ValidationError>): number {
+export function getStatusCode(validation: Array<errors.ValidationError>): number {
   return validation.length > 0 ? 400 : 200
 }
 
-export function verifyPrescriptionBundle(bundle: unknown, requireSignature: boolean): Array<ValidationError> {
+export function verifyPrescriptionBundle(bundle: unknown, requireSignature: boolean): Array<errors.ValidationError> {
   if (!verifyResourceTypeIsBundle(bundle)) {
-    return [{
-      message: "ResourceType must be 'Bundle' on request",
-      operationOutcomeCode: "value",
-      apiErrorCode: "INCORRECT_RESOURCETYPE",
-      severity: "fatal"
-    }]
+    return [new errors.RequestNotBundleError()]
   }
 
   if (!verifyBundleContainsEntries(bundle)) {
-    return [{
-      message: "ResourceType Bundle must contain 'entry' field",
-      operationOutcomeCode: "value",
-      apiErrorCode: "MISSING_FIELD",
-      severity: "fatal"
-    }]
+    return [new errors.NoEntryInBundleError()]
   }
 
   const bundleValidators = [
@@ -102,10 +93,10 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
 function notEmpty<T>(value: T | null | undefined): value is T {
   return value !== null && value !== undefined
 }
-type Validator<T> = (input: T) => ValidationError | null
+type Validator<T> = (input: T) => errors.ValidationError | null
 
 // Validate
-function validate<T>(input: T, ...validators: Array<Validator<T>>): Array<ValidationError> {
+function validate<T>(input: T, ...validators: Array<Validator<T>>): Array<errors.ValidationError> {
   return validators.map(v => v(input))
     .filter(notEmpty)
 }
@@ -114,25 +105,15 @@ function verifyValueIdenticalForAllMedicationRequests<U>(
   medicationRequests: Array<MedicationRequest>,
   fieldName: string,
   fieldAccessor: (resource: MedicationRequest) => U
-): ValidationError | null {
+): errors.ValidationError | null {
   const fieldValues = medicationRequests.map(fieldAccessor)
   const serializedFieldValues = fieldValues.map(value => JSON.stringify(value))
   const uniqueFieldValues = new Set(serializedFieldValues)
-  return uniqueFieldValues.size === 1 ? null : {
-    message: `Expected all MedicationRequests to have the same value for ${fieldName}. Received ${[...uniqueFieldValues]}.`,
-    operationOutcomeCode: "value",
-    apiErrorCode: "INVALID_VALUE",
-    severity: "error"
-  }
+  return uniqueFieldValues.size === 1 ? null : new errors.MedicationRequestValueError(fieldName, [...uniqueFieldValues])
 }
 
-function verifyHasId(bundle: Bundle): ValidationError | null {
-  return bundle.id !== undefined ? null : {
-    message: "ResourceType Bundle must contain 'id' field",
-    operationOutcomeCode: "value",
-    apiErrorCode: "MISSING_FIELD",
-    severity: "error"
-  }
+function verifyHasId(bundle: Bundle): errors.ValidationError | null {
+  return bundle.id !== undefined ? null : new errors.MissingIdError()
 }
 
 function verifyMessageIsResource(message: unknown): message is Resource {
@@ -155,48 +136,26 @@ export function getMatchingEntries(bundle: Bundle, resourceType: string): Array<
     .filter(resource => resource.resourceType === resourceType)
 }
 
-function verifyBundleContainsAtLeast(bundle: Bundle, number: number, resourceType: string): ValidationError | null {
+function verifyBundleContainsAtLeast(bundle: Bundle, number: number, resourceType: string): errors.ValidationError | null {
   const matchingEntries = getMatchingEntries(bundle, resourceType)
   if (matchingEntries.length < number) {
-    return {
-      message: `Bundle must contain at least ${number} resource(s) of type ${resourceType}`,
-      operationOutcomeCode: "value",
-      apiErrorCode: "MISSING_FIELD",
-      severity: "error"
-    }
+    return new errors.ContainsAtLeastError(number, resourceType)
   }
   return null
 }
 
-function verifyBundleContainsBetween(bundle: Bundle, min: number, max: number, resourceType: string): ValidationError | null {
+function verifyBundleContainsBetween(bundle: Bundle, min: number, max: number, resourceType: string): errors.ValidationError | null {
   const matchingEntries = getMatchingEntries(bundle, resourceType)
   if (matchingEntries.length < min || matchingEntries.length > max) {
-    return {
-      message: `Bundle must contain between ${min} and ${max} resource(s) of type ${resourceType}`,
-      operationOutcomeCode: "value",
-      apiErrorCode: "MISSING_FIELD",
-      severity: "error"
-    }
+    return new errors.ContainsBetweenError(min, max, resourceType)
   }
   return null
 }
 
-function verifyBundleContainsExactly(bundle: Bundle, number: number, resourceType: string): ValidationError | null {
+function verifyBundleContainsExactly(bundle: Bundle, number: number, resourceType: string): errors.ValidationError | null {
   const matchingEntries = getMatchingEntries(bundle, resourceType)
   if (matchingEntries.length !== number) {
-    return {
-      message: `Bundle must contain exactly ${number} resource(s) of type ${resourceType}`,
-      operationOutcomeCode: "value",
-      apiErrorCode: "MISSING_FIELD",
-      severity: "error"
-    }
+    return new errors.ContainsExactlyError(number, resourceType)
   }
   return null
-}
-
-export interface ValidationError {
-    message: string,
-    operationOutcomeCode: "value",
-    apiErrorCode: string,
-    severity: "error" | "fatal"
 }

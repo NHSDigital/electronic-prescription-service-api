@@ -2,43 +2,9 @@ import * as validator from "../../src/validators/request-validator"
 import {Bundle, MedicationRequest, Resource} from "../../src/model/fhir-resources"
 import * as TestResources from "../resources/test-resources"
 import {clone} from "../resources/test-helpers"
-import {ValidationError} from "../../src/validators/request-validator"
+import * as errors from "../../errors/errors"
 
-const resourceNotABundleError = [{
-  message: "ResourceType must be 'Bundle' on request",
-  operationOutcomeCode: "value",
-  apiErrorCode: "INCORRECT_RESOURCETYPE",
-  severity: "fatal"
-}]
-
-function containAtLeastError(resource: string, numberOfResources: number) {
-  return {
-    message: `Bundle must contain at least ${numberOfResources} resource(s) of type ${resource}`,
-    operationOutcomeCode: "value",
-    apiErrorCode: "MISSING_FIELD",
-    severity: "error"
-  }
-}
-
-function containBetweenError(resource: string, minNumberOfResources: number, maxNumberOfResources: number) {
-  return {
-    message: `Bundle must contain between ${minNumberOfResources} and ${maxNumberOfResources} resource(s) of type ${resource}`,
-    operationOutcomeCode: "value",
-    apiErrorCode: "MISSING_FIELD",
-    severity: "error"
-  }
-}
-
-function containExactlyError(resource: string, numberOfResources: number) {
-  return {
-    message: `Bundle must contain exactly ${numberOfResources} resource(s) of type ${resource}`,
-    operationOutcomeCode: "value",
-    apiErrorCode: "MISSING_FIELD",
-    severity: "error"
-  }
-}
-
-function validateValidationErrors (validationErrors: Array<ValidationError>) {
+function validateValidationErrors (validationErrors: Array<errors.ValidationError>) {
   expect(validationErrors).toHaveLength(1)
   const validationError = validationErrors[0]
   expect(validationError.apiErrorCode).toEqual("INVALID_VALUE")
@@ -49,17 +15,17 @@ function validateValidationErrors (validationErrors: Array<ValidationError>) {
 describe("verifyPrescriptionBundle simple fail", () => {
   test("rejects null", () => {
     expect(validator.verifyPrescriptionBundle(null, false))
-      .toEqual(resourceNotABundleError)
+      .toEqual([new errors.RequestNotBundleError()])
   })
 
   test("rejects undefined", () => {
     expect(validator.verifyPrescriptionBundle(undefined, false))
-      .toEqual(resourceNotABundleError)
+      .toEqual([new errors.RequestNotBundleError()])
   })
 
   test("rejects object which is not a resource", () => {
     expect(validator.verifyPrescriptionBundle({}, false))
-      .toEqual(resourceNotABundleError)
+      .toEqual([new errors.RequestNotBundleError()])
   })
 
   test("rejects resource which is not a bundle", () => {
@@ -67,7 +33,7 @@ describe("verifyPrescriptionBundle simple fail", () => {
       resourceType: "Patient"
     }
     expect(validator.verifyPrescriptionBundle(patient, false))
-      .toEqual(resourceNotABundleError)
+      .toEqual([new errors.RequestNotBundleError()])
   })
 
   test("rejects bundle without entries", () => {
@@ -75,12 +41,7 @@ describe("verifyPrescriptionBundle simple fail", () => {
       resourceType: "Bundle"
     }
     expect(validator.verifyPrescriptionBundle(bundle, false))
-      .toEqual([{
-        message: "ResourceType Bundle must contain 'entry' field",
-        operationOutcomeCode: "value",
-        apiErrorCode: "MISSING_FIELD",
-        severity: "fatal"
-      }])
+      .toEqual([new errors.NoEntryInBundleError()])
   })
 
   test("rejects bundle without id", () => {
@@ -89,12 +50,7 @@ describe("verifyPrescriptionBundle simple fail", () => {
       entry: [] as Array<Resource>
     }
     expect(validator.verifyPrescriptionBundle(bundle, false))
-      .toContainEqual({
-        message: "ResourceType Bundle must contain 'id' field",
-        operationOutcomeCode: "value",
-        apiErrorCode: "MISSING_FIELD",
-        severity: "error"
-      })
+      .toContainEqual(new errors.MissingIdError())
   })
 
   const semiPopulatedBundle = {
@@ -111,7 +67,7 @@ describe("verifyPrescriptionBundle simple fail", () => {
 
   test.each(atLeastTestCases)("rejects bundle without %p", (resource: string, requiredNumber: number, requiredSig: boolean) => {
     expect(validator.verifyPrescriptionBundle(semiPopulatedBundle, requiredSig))
-      .toContainEqual(containAtLeastError(resource, requiredNumber))
+      .toContainEqual(new errors.ContainsAtLeastError(requiredNumber, resource))
   })
 
   const betweenTestCases = [
@@ -120,7 +76,7 @@ describe("verifyPrescriptionBundle simple fail", () => {
 
   test.each(betweenTestCases)("rejects bundle without %p", (resource: string, min: number, max: number, requiredSig: boolean) => {
     expect(validator.verifyPrescriptionBundle(semiPopulatedBundle, requiredSig))
-      .toContainEqual(containBetweenError(resource, min, max))
+      .toContainEqual(new errors.ContainsBetweenError(min, max, resource))
   })
 
   const exactlyTestCases = [
@@ -130,7 +86,7 @@ describe("verifyPrescriptionBundle simple fail", () => {
 
   test.each(exactlyTestCases)("rejects bundle without %p", (resource: string, requiredNumber: number, requiredSig: boolean) => {
     expect(validator.verifyPrescriptionBundle(semiPopulatedBundle, requiredSig))
-      .toContainEqual(containExactlyError(resource, requiredNumber))
+      .toContainEqual(new errors.ContainsExactlyError(requiredNumber, resource))
   })
 
   test("rejects bundle with two Patients", () => {
@@ -151,7 +107,7 @@ describe("verifyPrescriptionBundle simple fail", () => {
       ]
     }
     expect(validator.verifyPrescriptionBundle(bundle, false))
-      .toContainEqual(containExactlyError("Patient", 1))
+      .toContainEqual(new errors.ContainsExactlyError(1, "Patient"))
   })
 
   test("rejects bundle without Organization", () => {
@@ -161,7 +117,7 @@ describe("verifyPrescriptionBundle simple fail", () => {
       entry: [] as Array<Resource>
     }
     expect(validator.verifyPrescriptionBundle(bundle, false))
-      .toContainEqual(containAtLeastError("Organization", 1))
+      .toContainEqual(new errors.ContainsAtLeastError(1, "Organization"))
   })
 
   test("rejects bundle without Provenance when requireSignature is true", () => {
@@ -170,7 +126,7 @@ describe("verifyPrescriptionBundle simple fail", () => {
       entry: [] as Array<Resource>
     }
     expect(validator.verifyPrescriptionBundle(bundle, true))
-      .toContainEqual(containExactlyError("Provenance", 1))
+      .toContainEqual(new errors.ContainsExactlyError(1, "Provenance"))
   })
 })
 
@@ -198,19 +154,22 @@ describe("verifyPrescriptionBundle simple pass", () => {
 describe("verifyPrescriptionBundle throws INVALID_VALUE on MedicationRequest resources under certain conditions", () => {
   let bundle: Bundle
   let medicationRequests: Array<MedicationRequest>
+
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     medicationRequests = validator.getMatchingEntries(bundle, "MedicationRequest") as Array<MedicationRequest>
   })
 
   test("Should reject message where MedicationRequests have different authoredOn", () => {
-    medicationRequests.forEach(medicationRequest => medicationRequest.authoredOn = "2020-01-02T00:00:00.000Z")
-    medicationRequests[0].authoredOn = "2020-01-01T00:00:00.000Z"
+    const defaultAuthoredOn = "2020-01-02T00:00:00.000Z"
+    medicationRequests.forEach(medicationRequest => medicationRequest.authoredOn = defaultAuthoredOn)
+    const differentAuthoredOn = "2020-01-01T00:00:00.000Z"
+    medicationRequests[0].authoredOn = differentAuthoredOn
 
     const validationErrors = validator.verifyPrescriptionBundle(bundle, false)
 
     validateValidationErrors(validationErrors)
-    expect(validationErrors[0].message).toEqual("Expected all MedicationRequests to have the same value for authoredOn. Received \"2020-01-01T00:00:00.000Z\",\"2020-01-02T00:00:00.000Z\".")
+    expect(validationErrors).toContainEqual(new errors.MedicationRequestValueError("authoredOn", [`"${differentAuthoredOn}"`, `"${defaultAuthoredOn}"`]))
   })
 
   test("Should reject message where MedicationRequests have different dispenseRequest.performer", () => {
@@ -223,7 +182,7 @@ describe("verifyPrescriptionBundle throws INVALID_VALUE on MedicationRequest res
     const validationErrors = validator.verifyPrescriptionBundle(bundle, false)
 
     validateValidationErrors(validationErrors)
-    expect(validationErrors[0].message).toEqual(`Expected all MedicationRequests to have the same value for dispenseRequest.performer. Received ${JSON.stringify(performer)},${JSON.stringify(performerDiff)}.`)
+    expect(validationErrors).toContainEqual(new errors.MedicationRequestValueError("dispenseRequest.performer", [`${JSON.stringify(performer)},${JSON.stringify(performerDiff)}`]))
   })
 
   test("Null should contribute to the count of unique values", () => {
