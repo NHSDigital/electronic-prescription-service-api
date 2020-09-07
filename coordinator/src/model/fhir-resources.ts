@@ -37,7 +37,7 @@ export interface MedicationRequest extends Resource {
   courseOfTherapyType: CodeableConcept
   dosageInstruction: Array<Dosage>
   dispenseRequest: MedicationRequestDispenseRequest
-  extension: Array<IdentifierExtension | ReferenceExtension<PractitionerRole> | CodingExtension>
+  extension: Array<IdentifierExtension | ReferenceExtension<PractitionerRole> | CodingExtension | CodeableConceptExtension>
 }
 
 export interface CodeableConcept {
@@ -180,6 +180,10 @@ export interface IdentifierExtension extends Extension {
 
 export interface CodingExtension extends Extension {
   valueCoding: Coding
+}
+
+export interface CodeableConceptExtension extends Extension {
+  valueCodeableConcept: CodeableConcept
 }
 
 export interface StringExtension extends Extension {

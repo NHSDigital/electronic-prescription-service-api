@@ -22,7 +22,7 @@ export interface Display {
   prescriberCode: string
   prescriberOrg: string
   prescriberAddress: string
-  medication: DisplayMedication[]
+  medication: Array<DisplayMedication>
 }
 
 export class DisplayMedication {
