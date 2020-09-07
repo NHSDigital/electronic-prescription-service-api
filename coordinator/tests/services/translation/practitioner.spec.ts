@@ -1,17 +1,20 @@
-import {ContactPoint, Identifier} from "../../../src/model/fhir-resources"
+import * as fhir from "../../../src/model/fhir-resources"
 import {Telecom, TelecomUse} from "../../../src/model/hl7-v3-datatypes-core"
-import {getAgentPersonPersonId, getAgentPersonTelecom} from "../../../src/services/translation/practitioner"
+import {getAgentPersonPersonId, getAgentPersonTelecom, convertAuthor} from "../../../src/services/translation/practitioner"
 import {BsaPrescribingIdentifier, SdsUniqueIdentifier} from "../../../src/model/hl7-v3-datatypes-codes"
+import {clone} from "../../resources/test-helpers"
+import * as TestResources from "../../resources/test-resources"
+import {getMedicationRequests, getPractitionerRoles} from "../../../src/services/translation/common/getResourcesOfType"
 
 describe("getAgentPersonTelecom", () => {
-  const roleTelecom: Array<ContactPoint> = [
+  const roleTelecom: Array<fhir.ContactPoint> = [
     {
       "system": "phone",
       "value": "tel:01512631737",
       "use": "work"
     }
   ]
-  const practitionerTelecom: Array<ContactPoint> = [
+  const practitionerTelecom: Array<fhir.ContactPoint> = [
     {
       "system": "phone",
       "value": "tel:01",
@@ -52,15 +55,15 @@ describe("getAgentPersonTelecom", () => {
 })
 
 describe("getAgentPersonPersonId", () => {
-  const spuriousIdentifier: Identifier = {
+  const spuriousIdentifier: fhir.Identifier = {
     "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
     "value": "spurious"
   }
-  const dinIdentifier: Identifier = {
+  const dinIdentifier: fhir.Identifier = {
     "system": "https://fhir.hl7.org.uk/Id/din-number",
     "value": "din"
   }
-  const userIdentifier: Identifier = {
+  const userIdentifier: fhir.Identifier = {
     "system": "https://fhir.nhs.uk/Id/sds-user-id",
     "value": "8412511"
   }
@@ -87,5 +90,45 @@ describe("getAgentPersonPersonId", () => {
     expect(() => getAgentPersonPersonId(
       [], []
     )).toThrow()
+  })
+})
+
+describe("convertAuthor", () => {
+  let bundle: fhir.Bundle
+  let fhirFirstMedicationRequest: fhir.MedicationRequest
+  let fhirPractitionerRole: fhir.PractitionerRole
+  const display = "testDisplay"
+  const identifierValue = "testIdentifier"
+
+  beforeEach(() => {
+    bundle = clone(TestResources.examplePrescription3.fhirMessageUnsignedHomecare)
+    fhirFirstMedicationRequest = getMedicationRequests(bundle)[0]
+    fhirPractitionerRole = getPractitionerRoles(bundle)[0]
+    fhirPractitionerRole.organization = {
+      display: display,
+      identifier: [{
+        system: "https://fhir.nhs.uk/Id/ods-organization-code",
+        value: identifierValue
+      }]
+    }
+  })
+
+  test("when PractitionerRole has a minimal Organization healthCareProviderLicense still gets converted correctly", () => {
+    const result = convertAuthor(bundle, fhirFirstMedicationRequest).AgentPerson.representedOrganization
+
+    expect(result.healthCareProviderLicense.Organization.name._text).toBe(display)
+    expect(result.healthCareProviderLicense.Organization.id._attributes.extension).toBe(identifierValue)
+    expect(result.healthCareProviderLicense.Organization.code._attributes.code).toBe("008")
+  })
+
+  test("when PractitionerRole has a minimal Organization representedOrganization still gets converted correctly", () => {
+    const bundle2 = clone(TestResources.examplePrescription3.fhirMessageUnsignedHomecare)
+
+    const result = convertAuthor(bundle, fhirFirstMedicationRequest).AgentPerson.representedOrganization
+    const result2 = convertAuthor(bundle2, fhirFirstMedicationRequest).AgentPerson.representedOrganization
+
+    delete result.healthCareProviderLicense
+    delete result2.healthCareProviderLicense
+    expect(result).toEqual(result2)
   })
 })

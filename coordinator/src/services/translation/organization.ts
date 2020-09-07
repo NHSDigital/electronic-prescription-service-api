@@ -9,7 +9,8 @@ import {
 import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as core from "../../model/hl7-v3-datatypes-core"
 import {convertAddress, convertTelecom} from "./demographics"
-import {getHealthcareServices} from "./common/getResourcesOfType"
+
+const NHS_TRUST_CODE = "RO197"
 
 /**
  * TODO - This mapping is a temporary measure for testing. We're reasonably confident that it's correct for primary
@@ -19,18 +20,19 @@ import {getHealthcareServices} from "./common/getResourcesOfType"
  */
 export function convertOrganizationAndProviderLicense(
   fhirBundle: fhir.Bundle,
-  fhirOrganization: fhir.Organization
+  fhirOrganization: fhir.Organization,
+  fhirHealthcareService: fhir.HealthcareService
 ): peoplePlaces.Organization {
-  const hl7V3Organization = convertRepresentedOrganization(fhirOrganization, fhirBundle)
+  const hl7V3Organization = convertRepresentedOrganization(fhirOrganization, fhirHealthcareService, fhirBundle)
 
   hl7V3Organization.healthCareProviderLicense = convertHealthCareProviderLicense(fhirOrganization, fhirBundle)
 
   return hl7V3Organization
 }
 
-function convertRepresentedOrganization(fhirOrganization: fhir.Organization, fhirBundle: fhir.Bundle) {
+function convertRepresentedOrganization(fhirOrganization: fhir.Organization, fhirHealthcareService: fhir.HealthcareService, fhirBundle: fhir.Bundle) {
   const organizationTypeCoding = getCodeableConceptCodingForSystemOrNull(fhirOrganization.type, "https://fhir.nhs.uk/R4/CodeSystem/organisation-role")
-  const representedOrganization = (organizationTypeCoding?.code === "RO197") ? new CostCentreHealthcareService(getHealthcareServices(fhirBundle)[0], fhirBundle) : new CostCentreOrganization(fhirOrganization)
+  const representedOrganization = (organizationTypeCoding?.code === NHS_TRUST_CODE) ? new CostCentreHealthcareService(fhirHealthcareService, fhirBundle) : new CostCentreOrganization(fhirOrganization)
   return convertRepresentedOrganizationDetails(representedOrganization)
 }
 
