@@ -77,17 +77,29 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
     (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
       medicationRequests,
       "dispenseRequest.extension (performer site type)",
-      (medicationRequest) => getExtensionForUrl(medicationRequest.dispenseRequest.extension,"https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType")
+      (medicationRequest) => getExtensionForUrl(
+        medicationRequest.dispenseRequest.extension,
+        "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
+        "MedicationRequest.dispenseRequest.extension"
+      )
     ),
     (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
       medicationRequests,
       "extension (prescription type)",
-      (medicationRequest) => getExtensionForUrl(medicationRequest.extension,"https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType")
+      (medicationRequest) => getExtensionForUrl(
+        medicationRequest.extension,
+        "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType",
+        "MedicationRequest.extension"
+      )
     ),
     (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
       medicationRequests,
       "extension (responsible practitioner)",
-      (medicationRequest) => getExtensionForUrlOrNull(medicationRequest.extension,"https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner")
+      (medicationRequest) => getExtensionForUrlOrNull(
+        medicationRequest.extension,
+        "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+        "MedicationRequest.extension"
+      )
     )
   ]
   const medicationRequests = getMatchingEntries(bundle, "MedicationRequest") as Array<MedicationRequest>

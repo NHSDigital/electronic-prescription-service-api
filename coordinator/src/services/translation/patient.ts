@@ -1,7 +1,6 @@
 import * as fhir from "../../model/fhir-resources"
 import * as peoplePlaces from "../../model/hl7-v3-people-places"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
-import * as core from "../../model/hl7-v3-datatypes-core"
 import {convertAddress, convertGender, convertName} from "./demographics"
 import {convertIsoStringToDate, getIdentifierValueForSystem} from "./common"
 
@@ -21,13 +20,13 @@ function convertPatientToProviderPatient(
 function convertPatientToPatientPerson(
   bundle: fhir.Bundle,
   patient: fhir.Patient,
-  convertNameFn: (name: fhir.HumanName) => core.Name,
-  convertGenderFn: (gender: string) => codes.SexCode
+  convertNameFn = convertName,
+  convertGenderFn = convertGender
 ) {
   const hl7V3PatientPerson = new peoplePlaces.PatientPerson()
-  hl7V3PatientPerson.name = patient.name.map(convertNameFn)
-  hl7V3PatientPerson.administrativeGenderCode = convertGenderFn(patient.gender)
-  hl7V3PatientPerson.birthTime = convertIsoStringToDate(patient.birthDate)
+  hl7V3PatientPerson.name = patient.name.map(name => convertNameFn(name, "Patient.name"))
+  hl7V3PatientPerson.administrativeGenderCode = convertGenderFn(patient.gender, "Patient.gender")
+  hl7V3PatientPerson.birthTime = convertIsoStringToDate(patient.birthDate, "Patient.birthDate")
   hl7V3PatientPerson.playedProviderPatient = convertPatientToProviderPatient(patient)
   return hl7V3PatientPerson
 }
@@ -35,14 +34,16 @@ function convertPatientToPatientPerson(
 export function convertPatient(
   bundle: fhir.Bundle,
   patient: fhir.Patient,
-  convertAddressFn = convertAddress,
-  convertNameFn = convertName,
-  convertGenderFn = convertGender
+  convertAddressFn = convertAddress
 ): peoplePlaces.Patient {
   const hl7V3Patient = new peoplePlaces.Patient()
-  const nhsNumber = getIdentifierValueForSystem(patient.identifier, "https://fhir.nhs.uk/Id/nhs-number")
+  const nhsNumber = getIdentifierValueForSystem(
+    patient.identifier,
+    "https://fhir.nhs.uk/Id/nhs-number",
+    "Patient.identifier"
+  )
   hl7V3Patient.id = new codes.NhsNumber(nhsNumber)
-  hl7V3Patient.addr = patient.address.map(convertAddressFn)
-  hl7V3Patient.patientPerson = convertPatientToPatientPerson(bundle, patient, convertNameFn, convertGenderFn)
+  hl7V3Patient.addr = patient.address.map(address => convertAddressFn(address, "Patient.address"))
+  hl7V3Patient.patientPerson = convertPatientToPatientPerson(bundle, patient)
   return hl7V3Patient
 }

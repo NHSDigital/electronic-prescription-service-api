@@ -8,11 +8,19 @@ import {convertAddress, convertTelecom} from "./demographics"
 function convertOrganization(fhirOrganization: fhir.Organization) {
   const hl7V3Organization = new peoplePlaces.Organization()
 
-  const organizationSdsId = getIdentifierValueForSystem(fhirOrganization.identifier, "https://fhir.nhs.uk/Id/ods-organization-code")
+  const organizationSdsId = getIdentifierValueForSystem(
+    fhirOrganization.identifier,
+    "https://fhir.nhs.uk/Id/ods-organization-code",
+    "Organization.identifier"
+  )
   hl7V3Organization.id = new codes.SdsOrganizationIdentifier(organizationSdsId)
 
   if (fhirOrganization.type !== undefined) {
-    const organizationTypeCoding = getCodeableConceptCodingForSystem(fhirOrganization.type, "https://fhir.nhs.uk/R4/CodeSystem/organisation-type")
+    const organizationTypeCoding = getCodeableConceptCodingForSystem(
+      fhirOrganization.type,
+      "https://fhir.nhs.uk/R4/CodeSystem/organisation-type",
+      "Organization.type"
+    )
     hl7V3Organization.code = new codes.OrganizationTypeCode(organizationTypeCoding.code)
   }
 
@@ -21,11 +29,17 @@ function convertOrganization(fhirOrganization: fhir.Organization) {
   }
 
   if (fhirOrganization.telecom !== undefined) {
-    hl7V3Organization.telecom = fhirOrganization.telecom.map(convertTelecom).reduce(onlyElement)
+    hl7V3Organization.telecom = onlyElement(
+      fhirOrganization.telecom.map(telecom => convertTelecom(telecom, "Organization.telecom")),
+      "Organization.telecom"
+    )
   }
 
   if (fhirOrganization.address !== undefined) {
-    hl7V3Organization.addr = fhirOrganization.address.map(convertAddress).reduce(onlyElement)
+    hl7V3Organization.addr = onlyElement(
+      fhirOrganization.address.map(address => convertAddress(address, "Organization.address")),
+      "Organization.address"
+    )
   }
 
   return hl7V3Organization

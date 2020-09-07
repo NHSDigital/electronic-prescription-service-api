@@ -2,6 +2,7 @@ import * as demographics from "../../../src/services/translation/demographics"
 import * as core from "../../../src/model/hl7-v3-datatypes-core"
 import * as codes from "../../../src/model/hl7-v3-datatypes-codes"
 import * as XmlJs from "xml-js"
+import {InvalidValueUserFacingError} from "../../../src/error"
 
 describe("convertName fills correct fields only", () => {
   test("no keys should add no keys", () => {
@@ -51,16 +52,16 @@ describe("convertName fills correct fields only", () => {
     expect(result._attributes).toEqual({use: expected})
   })
 
-  test("Other should throw TypeError", () => {
+  test("Other should throw InvalidValueUserFacingError", () => {
     const fhirName = {"use": ""}
-    expect(() => demographics.convertName(fhirName)).toThrow(TypeError)
+    expect(() => demographics.convertName(fhirName)).toThrow(InvalidValueUserFacingError)
   })
 })
 
 describe("convertTelecom should convert correct use", () => {
-  test("empty telecom should throw TypeError", () => {
+  test("empty telecom should throw InvalidValueUserFacingError", () => {
     const fhirTelecom = {}
-    expect(() => demographics.convertTelecom(fhirTelecom)).toThrow(TypeError)
+    expect(() => demographics.convertTelecom(fhirTelecom)).toThrow(InvalidValueUserFacingError)
   })
 
   const cases = [
@@ -77,9 +78,9 @@ describe("convertTelecom should convert correct use", () => {
 })
 
 describe("convertAddress should return correct addresses", () => {
-  test("Throw TypeError when no type and invalid use", () => {
+  test("Throw InvalidValueUserFacingError when no type and invalid use", () => {
     const fhirAddress = {use: "example"}
-    expect(() => demographics.convertAddress(fhirAddress)).toThrow(TypeError)
+    expect(() => demographics.convertAddress(fhirAddress)).toThrow(InvalidValueUserFacingError)
   })
 
   test("Empty address type and use do not add any attributes to the address XML tag", () => {
@@ -119,7 +120,7 @@ describe("convertGender should return correct gender", () => {
       expect(demographics.convertGender(actual)).toEqual(expected)
     })
 
-  test("invalid fhirGender throws TypeError", () => {
-    expect(() => demographics.convertGender("example")).toThrow(TypeError)
+  test("invalid fhirGender throws InvalidValueUserFacingError", () => {
+    expect(() => demographics.convertGender("example")).toThrow(InvalidValueUserFacingError)
   })
 })

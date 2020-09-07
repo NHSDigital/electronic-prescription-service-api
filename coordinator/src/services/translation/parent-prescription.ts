@@ -17,7 +17,7 @@ export function convertParentPrescription(
 
   const hl7V3ParentPrescription = new prescriptions.ParentPrescription(
     new codes.GlobalIdentifier(fhirBundle.id),
-    convertIsoStringToDateTime(fhirFirstMedicationRequest.authoredOn)
+    convertIsoStringToDateTime(fhirFirstMedicationRequest.authoredOn, "MedicationRequest.authoredOn")
   )
 
   const fhirPatient = getPatient(fhirBundle)

@@ -148,6 +148,7 @@ export interface OperationOutcomeIssue {
   code: "informational" | "value" | "invalid"
   details?: CodeableConcept
   diagnostics?: string
+  expression?: string
 }
 
 export interface OperationOutcome extends Resource {

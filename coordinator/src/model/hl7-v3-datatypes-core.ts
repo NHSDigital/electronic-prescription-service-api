@@ -92,12 +92,6 @@ export class Name implements ElementCompact {
   given?: Text | Array<Text>
   prefix?: Text | Array<Text>
   suffix?: Text | Array<Text>
-
-  constructor(use?: NameUse) {
-    this._attributes = {
-      use: use
-    }
-  }
 }
 
 enum NullFlavor {

@@ -1,26 +1,31 @@
 import * as fhir from "../../model/fhir-resources"
 import * as core from "../../model/hl7-v3-datatypes-core"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
+import {InvalidValueUserFacingError} from "../../error"
 
-export function convertName(fhirHumanName: fhir.HumanName): core.Name {
-  const nameUse = fhirHumanName.use !== undefined ? convertNameUse(fhirHumanName.use) : undefined
-  const name = new core.Name(nameUse)
-  if (fhirHumanName.prefix !== undefined) {
+export function convertName(fhirHumanName: fhir.HumanName, fhirPath: string): core.Name {
+  const name = new core.Name()
+  if (fhirHumanName.use) {
+    name._attributes = {
+      use: convertNameUse(fhirHumanName.use, fhirPath)
+    }
+  }
+  if (fhirHumanName.prefix) {
     name.prefix = fhirHumanName.prefix.map(name => new core.Text(name))
   }
-  if (fhirHumanName.given !== undefined) {
+  if (fhirHumanName.given) {
     name.given = fhirHumanName.given.map(name => new core.Text(name))
   }
-  if (fhirHumanName.family !== undefined) {
+  if (fhirHumanName.family) {
     name.family = new core.Text(fhirHumanName.family)
   }
-  if (fhirHumanName.suffix !== undefined) {
+  if (fhirHumanName.suffix) {
     name.suffix = fhirHumanName.suffix.map(name => new core.Text(name))
   }
   return name
 }
 
-function convertNameUse(fhirNameUse: string) {
+function convertNameUse(fhirNameUse: string, fhirPath: string) {
   switch (fhirNameUse) {
   case "usual":
   case "official":
@@ -28,17 +33,17 @@ function convertNameUse(fhirNameUse: string) {
   case "nickname":
     return core.NameUse.ALIAS
   default:
-    throw TypeError("Unhandled name use " + fhirNameUse)
+    throw new InvalidValueUserFacingError(`Unhandled name use '${fhirNameUse}'.`, fhirPath + ".use")
   }
 }
 
-export function convertTelecom(fhirTelecom: fhir.ContactPoint): core.Telecom {
-  const hl7V3TelecomUse = convertTelecomUse(fhirTelecom.use)
+export function convertTelecom(fhirTelecom: fhir.ContactPoint, fhirPath: string): core.Telecom {
+  const hl7V3TelecomUse = convertTelecomUse(fhirTelecom.use, fhirPath)
   //TODO - do we need to add "tel:", "mailto:" to the value?
   return new core.Telecom(hl7V3TelecomUse, fhirTelecom.value)
 }
 
-function convertTelecomUse(fhirTelecomUse: string) {
+function convertTelecomUse(fhirTelecomUse: string, fhirPath: string) {
   switch (fhirTelecomUse) {
   case "home":
     return core.TelecomUse.PERMANENT_HOME
@@ -49,18 +54,18 @@ function convertTelecomUse(fhirTelecomUse: string) {
   case "mobile":
     return core.TelecomUse.MOBILE
   default:
-    throw TypeError("Unhandled telecom use " + fhirTelecomUse)
+    throw new InvalidValueUserFacingError(`Unhandled telecom use '${fhirTelecomUse}'.`, fhirPath + ".use")
   }
 }
 
-export function convertAddress(fhirAddress: fhir.Address): core.Address {
+export function convertAddress(fhirAddress: fhir.Address, fhirPath: string): core.Address {
   const allAddressLines = [
-    ...(fhirAddress.line ? fhirAddress.line : []),
+    fhirAddress.line,
     fhirAddress.city,
     fhirAddress.district,
     fhirAddress.state
-  ].filter(line => line !== undefined)
-  const hl7V3Address = new core.Address(convertAddressUse(fhirAddress.use, fhirAddress.type))
+  ].flat().filter(Boolean)
+  const hl7V3Address = new core.Address(convertAddressUse(fhirAddress.use, fhirAddress.type, fhirPath))
   hl7V3Address.streetAddressLine = allAddressLines.map(line => new core.Text(line))
   if (fhirAddress.postalCode !== undefined){
     hl7V3Address.postalCode = new core.Text(fhirAddress.postalCode)
@@ -68,7 +73,7 @@ export function convertAddress(fhirAddress: fhir.Address): core.Address {
   return hl7V3Address
 }
 
-function convertAddressUse(fhirAddressUse: string, fhirAddressType: string) {
+function convertAddressUse(fhirAddressUse: string, fhirAddressType: string, fhirPath: string) {
   if (fhirAddressUse === undefined && fhirAddressType === undefined){
     return undefined
   }
@@ -83,11 +88,11 @@ function convertAddressUse(fhirAddressUse: string, fhirAddressType: string) {
   case "temp":
     return core.AddressUse.TEMPORARY
   default:
-    throw TypeError("Unhandled address use " + fhirAddressUse)
+    throw new InvalidValueUserFacingError(`Unhandled address use '${fhirAddressUse}'.`, fhirPath + ".use")
   }
 }
 
-export function convertGender(fhirGender: string): codes.SexCode {
+export function convertGender(fhirGender: string, fhirPath: string): codes.SexCode {
   switch (fhirGender) {
   case "male":
     return codes.SexCode.MALE
@@ -98,6 +103,6 @@ export function convertGender(fhirGender: string): codes.SexCode {
   case "unknown":
     return codes.SexCode.UNKNOWN
   default:
-    throw new TypeError("Unhandled gender " + fhirGender)
+    throw new InvalidValueUserFacingError(`Unhandled gender '${fhirGender}'.`, fhirPath)
   }
 }
