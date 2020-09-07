@@ -94,16 +94,16 @@ describe("getAgentPersonPersonId", () => {
 })
 
 describe("convertAuthor", () => {
-  let bundle: fhir.Bundle
+  let fhirBundle: fhir.Bundle
   let fhirFirstMedicationRequest: fhir.MedicationRequest
   let fhirPractitionerRole: fhir.PractitionerRole
   const display = "testDisplay"
   const identifierValue = "testIdentifier"
 
   beforeEach(() => {
-    bundle = clone(TestResources.examplePrescription3.fhirMessageUnsignedHomecare)
-    fhirFirstMedicationRequest = getMedicationRequests(bundle)[0]
-    fhirPractitionerRole = getPractitionerRoles(bundle)[0]
+    fhirBundle = clone(TestResources.examplePrescription3.fhirMessageUnsignedHomecare)
+    fhirFirstMedicationRequest = getMedicationRequests(fhirBundle)[0]
+    fhirPractitionerRole = getPractitionerRoles(fhirBundle)[0]
     fhirPractitionerRole.organization = {
       display: display,
       identifier: [{
@@ -114,7 +114,7 @@ describe("convertAuthor", () => {
   })
 
   test("when PractitionerRole has a minimal Organization healthCareProviderLicense still gets converted correctly", () => {
-    const result = convertAuthor(bundle, fhirFirstMedicationRequest).AgentPerson.representedOrganization
+    const result = convertAuthor(fhirBundle, fhirFirstMedicationRequest).AgentPerson.representedOrganization
 
     expect(result.healthCareProviderLicense.Organization.name._text).toBe(display)
     expect(result.healthCareProviderLicense.Organization.id._attributes.extension).toBe(identifierValue)
@@ -122,13 +122,13 @@ describe("convertAuthor", () => {
   })
 
   test("when PractitionerRole has a minimal Organization representedOrganization still gets converted correctly", () => {
-    const bundle2 = clone(TestResources.examplePrescription3.fhirMessageUnsignedHomecare)
+    const controlBundle = clone(TestResources.examplePrescription3.fhirMessageUnsignedHomecare)
 
-    const result = convertAuthor(bundle, fhirFirstMedicationRequest).AgentPerson.representedOrganization
-    const result2 = convertAuthor(bundle2, fhirFirstMedicationRequest).AgentPerson.representedOrganization
-
+    const result = convertAuthor(fhirBundle, fhirFirstMedicationRequest).AgentPerson.representedOrganization
+    const controlResult = convertAuthor(controlBundle, fhirFirstMedicationRequest).AgentPerson.representedOrganization
     delete result.healthCareProviderLicense
-    delete result2.healthCareProviderLicense
-    expect(result).toEqual(result2)
+    delete controlResult.healthCareProviderLicense
+
+    expect(result).toEqual(controlResult)
   })
 })
