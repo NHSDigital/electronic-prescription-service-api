@@ -17,8 +17,9 @@ class BundleEntry {
 }
 
 export interface Identifier {
-  system: string
-  value: string
+  use?: string
+  system?: string
+  value?: string
 }
 
 export interface MedicationRequestGroupIdentifier extends Identifier {
@@ -122,6 +123,7 @@ export class PractitionerRole extends Resource {
   practitioner?: Reference<Practitioner>
   organization?: Reference<Organization>
   code?: Array<CodeableConcept>
+  healthcareService?: Array<Reference<HealthcareService>>
   telecom: Array<ContactPoint>
 }
 
@@ -133,14 +135,34 @@ export class Practitioner extends Resource {
   address?: Array<Address>
 }
 
-export class Organization extends Resource {
-  readonly resourceType = "Organization"
+export interface Organization extends Resource {
+  readonly resourceType: "Organization"
   identifier?: Array<Identifier>
   type?: Array<CodeableConcept>
   name?: string
   telecom?: Array<ContactPoint>
   address?: Array<Address>
   partOf?: Reference<Organization>
+}
+
+export interface HealthcareService extends Resource {
+  resourceType: "HealthcareService"
+  identifier?: Array<Identifier>
+  id?: string
+  name?: string
+  telecom?: Array<ContactPoint>
+  active?: string
+  providedBy?: {identifier: Identifier}
+  location?: Array<Reference<Location>>
+}
+
+export interface Location extends Resource {
+  resourceType: "Location"
+  id?: string
+  identifier?: Array<Identifier>
+  status?: string
+  mode?: string
+  address?: Address
 }
 
 export interface OperationOutcomeIssue {
