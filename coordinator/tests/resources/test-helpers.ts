@@ -1,5 +1,5 @@
 import * as XmlJs from "xml-js"
-import {sortAttributes} from "../../src/services/translation/xml"
+import {writeXmlStringPretty} from "../../src/services/translation/xml"
 import * as LosslessJson from "lossless-json"
 import * as fhir from "../../src/model/fhir-resources"
 
@@ -9,13 +9,8 @@ export function clone<T>(input: T): T {
 
 export function xmlTest(actualRoot: XmlJs.ElementCompact, expectedRoot: XmlJs.ElementCompact): () => void {
   return () => {
-    const options = {
-      compact: true,
-      spaces: 4,
-      attributesFn: sortAttributes
-    } as unknown as XmlJs.Options.JS2XML
-    const actualXmlStr = XmlJs.js2xml(actualRoot, options)
-    const expectedXmlStr = XmlJs.js2xml(expectedRoot, options)
+    const actualXmlStr = writeXmlStringPretty(actualRoot)
+    const expectedXmlStr = writeXmlStringPretty(expectedRoot)
     expect(actualXmlStr).toEqual(expectedXmlStr)
   }
 }

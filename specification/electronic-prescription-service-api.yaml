@@ -363,3 +363,7 @@ components:
       $ref: components/schemas/Parameters.yaml
     Provenance:
       $ref: components/schemas/Provenance.yaml
+    HealthcareService:
+      $ref: components/schemas/HealthcareService.yaml
+    Location:
+      $ref: components/schemas/LocationResource.yaml

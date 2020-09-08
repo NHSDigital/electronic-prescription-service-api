@@ -9,6 +9,7 @@ import {
 import * as core from "../../model/hl7-v3-datatypes-core"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
+import {populateRepeatNumber} from "./common/repeatNumber"
 
 function convertProduct(medicationCodeableConcept: fhir.CodeableConcept) {
   const fhirMedicationCode = getCodingForSystem(medicationCodeableConcept.coding, "http://snomed.info/sct")
@@ -67,6 +68,8 @@ export function convertMedicationRequestToLineItem(fhirMedicationRequest: fhir.M
   const hl7V3LineItem = new prescriptions.LineItem(
     new codes.GlobalIdentifier(getIdentifierValueForSystem(fhirMedicationRequest.identifier, "https://fhir.nhs.uk/Id/prescription-order-item-number"))
   )
+
+  populateRepeatNumber(hl7V3LineItem, [fhirMedicationRequest])
 
   hl7V3LineItem.product = convertProduct(fhirMedicationRequest.medicationCodeableConcept)
   hl7V3LineItem.component = convertLineItemComponent(fhirMedicationRequest.dispenseRequest.quantity)
