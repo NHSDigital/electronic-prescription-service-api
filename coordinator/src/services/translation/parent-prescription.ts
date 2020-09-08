@@ -2,7 +2,7 @@ import * as fhir from "../../model/fhir-resources"
 import {convertPatient} from "./patient"
 import {convertBundleToPrescription} from "./prescription"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
-import {convertIsoStringToDateTime} from "./common"
+import {convertIsoStringToHl7V3DateTime} from "./common"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
 import {getMedicationRequests, getPatient} from "./common/getResourcesOfType"
 
@@ -14,10 +14,11 @@ export function convertParentPrescription(
 ): prescriptions.ParentPrescription {
   const fhirMedicationRequests = getMedicationRequests(fhirBundle)
   const fhirFirstMedicationRequest = fhirMedicationRequests[0]
+  const effectiveTime = extractEffectiveTime(fhirFirstMedicationRequest)
 
   const hl7V3ParentPrescription = new prescriptions.ParentPrescription(
     new codes.GlobalIdentifier(fhirBundle.id),
-    convertIsoStringToDateTime(fhirFirstMedicationRequest.authoredOn, "MedicationRequest.authoredOn")
+    effectiveTime
   )
 
   const fhirPatient = getPatient(fhirBundle)
@@ -32,6 +33,15 @@ export function convertParentPrescription(
   hl7V3ParentPrescription.pertinentInformation2 = new prescriptions.ParentPrescriptionPertinentInformation2(careRecordElementCategory)
 
   return hl7V3ParentPrescription
+}
+
+function extractEffectiveTime(medicationRequest: fhir.MedicationRequest) {
+  const validityPeriod = medicationRequest.dispenseRequest.validityPeriod
+  if (validityPeriod) {
+    return convertIsoStringToHl7V3DateTime(validityPeriod.start, "MedicationRequest.dispenseRequest.validityPeriod.start")
+  } else {
+    return convertIsoStringToHl7V3DateTime(medicationRequest.authoredOn, "MedicationRequest.authoredOn")
+  }
 }
 
 function convertCareRecordElementCategories(lineItems: Array<prescriptions.LineItem>) {

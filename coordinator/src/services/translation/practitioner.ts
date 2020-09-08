@@ -5,7 +5,7 @@ import * as codes from "../../model/hl7-v3-datatypes-codes"
 import {convertName, convertTelecom} from "./demographics"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
 import {
-  convertIsoStringToDateTime,
+  convertIsoStringToHl7V3DateTime,
   getCodeableConceptCodingForSystem,
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
@@ -23,7 +23,7 @@ export function convertAuthor(
   convertPractitionerRoleFn = convertPractitionerRole
 ): prescriptions.Author {
   const hl7V3Author = new prescriptions.Author()
-  hl7V3Author.time = convertIsoStringToDateTime(fhirFirstMedicationRequest.authoredOn, "MedicationRequest.authoredOn")
+  hl7V3Author.time = convertIsoStringToHl7V3DateTime(fhirFirstMedicationRequest.authoredOn, "MedicationRequest.authoredOn")
   hl7V3Author.signatureText = convertSignatureText(fhirBundle, fhirFirstMedicationRequest.requester)
   const fhirAuthorPractitionerRole = resolveReference(fhirBundle, fhirFirstMedicationRequest.requester)
   hl7V3Author.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirAuthorPractitionerRole)
@@ -49,14 +49,17 @@ export function convertResponsibleParty(
 
 function convertPractitionerRole(fhirBundle: fhir.Bundle, fhirPractitionerRole: fhir.PractitionerRole): peoplePlaces.AgentPerson {
   const fhirPractitioner = resolveReference(fhirBundle, fhirPractitionerRole.practitioner)
-  const hl7V3AgentPerson = createAgentPerson(fhirBundle, fhirPractitionerRole, fhirPractitioner)
+  const hl7V3AgentPerson = createAgentPerson(fhirPractitionerRole, fhirPractitioner)
   const fhirOrganization = resolveReference(fhirBundle, fhirPractitionerRole.organization)
-  hl7V3AgentPerson.representedOrganization = convertOrganizationAndProviderLicense(fhirBundle, fhirOrganization)
+  let fhirHealthcareService: fhir.HealthcareService
+  if (fhirPractitionerRole.healthcareService) {
+    fhirHealthcareService = resolveReference<fhir.HealthcareService>(fhirBundle, fhirPractitionerRole.healthcareService[0])
+  }
+  hl7V3AgentPerson.representedOrganization = convertOrganizationAndProviderLicense(fhirBundle, fhirOrganization, fhirHealthcareService)
   return hl7V3AgentPerson
 }
 
 function createAgentPerson(
-  fhirBundle: fhir.Bundle,
   fhirPractitionerRole: fhir.PractitionerRole,
   fhirPractitioner: fhir.Practitioner,
   convertAgentPersonPersonFn = convertAgentPersonPerson

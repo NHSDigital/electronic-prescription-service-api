@@ -3,7 +3,7 @@ import {GlobalIdentifier, SdsRoleProfileIdentifier, SdsUniqueIdentifier} from ".
 import * as core from "../../model/hl7-v3-datatypes-core"
 import moment from "moment"
 import {
-  convertMomentToDateTime,
+  convertMomentToHl7V3DateTime,
   getCodeableConceptCodingForSystem,
   getIdentifierValueForSystem,
   resolveReference
@@ -19,7 +19,7 @@ export function createSendMessagePayload<T>(
 ): core.SendMessagePayload<T> {
   const sendMessagePayload = new core.SendMessagePayload<T>(
     new GlobalIdentifier(messageId),
-    convertMomentToDateTime(moment.utc()),
+    convertMomentToHl7V3DateTime(moment.utc()),
     interactionId
   )
   sendMessagePayload.communicationFunctionRcv = createCommunicationFunction(process.env.TO_ASID)

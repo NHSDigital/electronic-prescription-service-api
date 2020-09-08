@@ -24,6 +24,15 @@ properties:
     type: string
     description: Logical id of this artifact.
     example: "7B38DE32-877F-6D53-D27C-86E1BA35016C"
+  extension:
+    type: array
+    description: Additional content defined by implementations
+    items:
+      anyOf:
+        - $ref: "Extension-RepeatInformation.yaml"
+        - $ref: "Extension-PrescriptionType.yaml"
+        - $ref: "Extension-ResponsiblePractitioner.yaml"
+        - $ref: "Extension-PrescriptionEndorsement.yaml"
   status:
     type: string
     enum: 
@@ -108,3 +117,41 @@ properties:
         properties:
           identifier:
             $ref: "Identifier-OdsOrganizationCode.yaml"
+      validityPeriod:
+        type: object
+        description: Indicates when the prescription becomes valid, and when it ceases to be a dispensable prescription. Required for continuous-repeat-dispensing MedicationRequests only
+        properties:
+          start:
+            type: string
+            description: The date when the prescription becomes valid
+            example: "2020-09-01"
+          end:
+            type: string
+            description: The date when the prescription ceases to be dispensable
+            example: "2021-03-01"
+      expectedSupplyDuration:
+        type: object
+        description: Number of days supply per dispense. Required for continuous-repeat-dispensing MedicationRequests only
+        required:
+          - system
+          - code
+          - value
+        properties:
+          system:
+            type: string
+            enum:
+              - "http://unitsofmeasure.org"
+            example: "http://unitsofmeasure.org"
+          code:
+            type: string
+            enum:
+              - "d"
+            example: "d"
+          value:
+            type: number
+            example: 28
+          unit:
+            type: string
+            enum:
+              - "days"
+            example: "days"

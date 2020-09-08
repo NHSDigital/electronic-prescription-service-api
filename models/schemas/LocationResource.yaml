@@ -1,0 +1,36 @@
+type: object
+description: Details and position information for a physical place where services are provided and resources and participants may be stored, found, contained, or accommodated.
+required:
+  - resourceType
+  - id
+  - identifier
+properties:
+  resourceType:
+    type: string
+    description: FHIR Resource type.
+    enum:
+      - "Location"
+    example: "Location"
+  id:
+    type: string
+    description: Logical id of this artifact.
+    example: "7EB02341-5F62-4A76-2CD3-34F523452356"
+  identifier:
+    $ref: "Identifier-Location.yaml"
+  status:
+    type: string
+    description: The status property covers the general availability of the resource, not the current value which may be covered by the operationStatus, or by a schedule/slots if they are configured for the location.
+    enum:
+      - "active"
+      - "suspended"
+      - "inactive"
+    example: "active"
+  mode:
+    type: string
+    description: When using a Location resource for scheduling or orders, we need to be able to refer to a class of Locations instead of a specific Location.
+    enum:
+      - "instance"
+      - "kind"
+    example: "instance"
+  address:
+    $ref: "Address.yaml"
