@@ -27,7 +27,7 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
 
   const bundleValidators = [
     verifyHasId,
-    (bundle: Bundle) => verifyBundleContainsAtLeast(bundle, 1, "MedicationRequest"),
+    (bundle: Bundle) => verifyBundleContainsBetween(bundle, 1, 4, "MedicationRequest"),
     (bundle: Bundle) => verifyBundleContainsExactly(bundle, 1, "Patient"),
     (bundle: Bundle) => verifyBundleContainsAtLeast(bundle, 1, "PractitionerRole"),
     (bundle: Bundle) => verifyBundleContainsAtLeast(bundle, 1, "Practitioner"),
@@ -165,6 +165,19 @@ function verifyBundleContainsAtLeast(bundle: Bundle, number: number, resourceTyp
   if (matchingEntries.length < number) {
     return {
       message: `Bundle must contain at least ${number} resource(s) of type ${resourceType}`,
+      operationOutcomeCode: "value",
+      apiErrorCode: "MISSING_FIELD",
+      severity: "error"
+    }
+  }
+  return null
+}
+
+function verifyBundleContainsBetween(bundle: Bundle, min: number, max: number, resourceType: string): ValidationError | null {
+  const matchingEntries = getMatchingEntries(bundle, resourceType)
+  if (matchingEntries.length < min || matchingEntries.length > max) {
+    return {
+      message: `Bundle must contain between ${min} and ${max} resource(s) of type ${resourceType}`,
       operationOutcomeCode: "value",
       apiErrorCode: "MISSING_FIELD",
       severity: "error"

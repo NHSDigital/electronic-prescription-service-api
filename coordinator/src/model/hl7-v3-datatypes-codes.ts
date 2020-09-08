@@ -78,6 +78,12 @@ export class DispensingSitePreferenceCode extends Code<"2.16.840.1.113883.2.1.3.
   }
 }
 
+export class PrescriptionEndorsementCode extends Code<"2.16.840.1.113883.2.1.3.2.4.16.32"> {
+  constructor(code: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.16.32", code)
+  }
+}
+
 export class PrescriptionTypeCode extends Code<"2.16.840.1.113883.2.1.3.2.4.17.25"> {
   constructor(code: string) {
     super("2.16.840.1.113883.2.1.3.2.4.17.25", code)

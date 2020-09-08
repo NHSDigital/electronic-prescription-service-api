@@ -137,6 +137,18 @@
             }
           },
           {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionEndorsement",
+            "valueCodeableConcept": {
+                "coding":  [
+                    {
+                        "system": "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-endorsement",
+                        "code": "SLS",
+                        "display": "Selected List Scheme"
+                    }
+                ]
+            }
+          },
+          {
             "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
             "extension": [
               {
@@ -253,6 +265,18 @@
             "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
             "valueReference": {
               "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
+            }
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionEndorsement",
+            "valueCodeableConcept": {
+                "coding":  [
+                    {
+                        "system": "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-endorsement",
+                        "code": "SLS",
+                        "display": "Selected List Scheme"
+                    }
+                ]
             }
           },
           {
@@ -375,6 +399,18 @@
             }
           },
           {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionEndorsement",
+            "valueCodeableConcept": {
+                "coding":  [
+                    {
+                        "system": "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-endorsement",
+                        "code": "SLS",
+                        "display": "Selected List Scheme"
+                    }
+                ]
+            }
+          },
+          {
             "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
             "extension": [
               {
@@ -491,6 +527,18 @@
             "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
             "valueReference": {
               "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
+            }
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionEndorsement",
+            "valueCodeableConcept": {
+                "coding":  [
+                    {
+                        "system": "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-endorsement",
+                        "code": "SLS",
+                        "display": "Selected List Scheme"
+                    }
+                ]
             }
           },
           {

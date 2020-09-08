@@ -93,7 +93,7 @@ export function convertMomentToHl7V3Date(dateTime: moment.Moment): core.Timestam
 }
 
 //TODO - replace usage of this method with something which returns more user-friendly error messages
-export function onlyElement<T>(previousValue: T, currentValue: T, currentIndex: number, array: T[]): never {
+export function onlyElement<T>(previousValue: T, currentValue: T, currentIndex: number, array: Array<T>): never {
   throw TypeError("Expected 1 element but got " + array.length + ": " + JSON.stringify(array))
 }
 

@@ -27,3 +27,16 @@ export function addEmptyCommunicationRequestToBundle(bundle: fhir.Bundle): void 
     payload: []}
   bundle.entry.push({resource: communicationRequest})
 }
+
+declare global {
+  interface Array<T> {
+    remove(elem: T): void;
+  }
+}
+
+if (!Array.prototype.remove) {
+  Array.prototype.remove = function<T>(this: Array<T>, elem: T): void {
+    const index = this.indexOf(elem)
+    this.splice(index, 1)
+  }
+}

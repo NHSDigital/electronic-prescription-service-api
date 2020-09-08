@@ -32,6 +32,7 @@ properties:
         - $ref: "Extension-RepeatInformation.yaml"
         - $ref: "Extension-PrescriptionType.yaml"
         - $ref: "Extension-ResponsiblePractitioner.yaml"
+        - $ref: "Extension-PrescriptionEndorsement.yaml"
   status:
     type: string
     enum: 
