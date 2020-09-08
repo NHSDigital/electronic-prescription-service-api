@@ -9,7 +9,7 @@ import {
   getCodeableConceptCodingForSystem,
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
-  getIdentifierValueOrNullForSystem, onlyElement,
+  getIdentifierValueOrNullForSystem, onlyElement, onlyElementOrNull,
   resolveReference
 } from "./common"
 import * as XmlJs from "xml-js"
@@ -96,8 +96,8 @@ function convertAgentPersonPerson(fhirPractitionerRole: fhir.PractitionerRole, f
   const id = getAgentPersonPersonId(fhirPractitionerRole.identifier, fhirPractitioner.identifier)
   const hl7V3AgentPersonPerson = new peoplePlaces.AgentPersonPerson(id)
   if (fhirPractitioner.name !== undefined) {
-    hl7V3AgentPersonPerson.name = onlyElement(
-      fhirPractitioner.name.map(name => convertName(name, "Practitioner.name")),
+    hl7V3AgentPersonPerson.name = convertName(
+      onlyElement(fhirPractitioner.name, "Practitioner.name"),
       "Practitioner.name"
     )
   }
@@ -135,8 +135,12 @@ function convertSignatureText(fhirBundle: fhir.Bundle, signatory: fhir.Reference
   const fhirProvenances = getProvenances(fhirBundle)
   const requesterSignatures = fhirProvenances.flatMap(provenance => provenance.signature)
     .filter(signature => signature.who.reference === signatory.reference)
-  if (requesterSignatures.length !== 0) {
-    const requesterSignature = onlyElement(requesterSignatures, "Provenance.signature", `who.reference == '${signatory.reference}'`)
+  const requesterSignature = onlyElementOrNull(
+    requesterSignatures,
+    "Provenance.signature",
+    `who.reference == '${signatory.reference}'`
+  )
+  if (requesterSignature) {
     const signatureData = requesterSignature.data
     const decodedSignatureData = Buffer.from(signatureData, "base64").toString("utf-8")
     return XmlJs.xml2js(decodedSignatureData, {compact: true})

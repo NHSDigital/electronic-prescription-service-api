@@ -13,16 +13,17 @@ import {Identifier} from "../../../../src/model/fhir-resources"
 import {clone} from "../../../resources/test-helpers"
 import {SpineDirectResponse} from "../../../../src/services/spine-communication"
 import * as LosslessJson from "lossless-json"
+import {TooManyValuesUserFacingError} from "../../../../src/error"
 
 test("getResourceForFullUrl returns correct resources", () => {
   const result = getResourceForFullUrl(TestResources.examplePrescription1.fhirMessageUnsigned, "urn:uuid:A7B86F8D-1D81-FC28-E050-D20AE3A215F0")
   expect((result as fhir.Resource).resourceType).toBe("MedicationRequest")
 })
 
-test("getResourceForFullUrl throws error when finding multiple resources", () => {
+test("getResourceForFullUrl throws TooManyValuesUserFacingError when finding multiple resources", () => {
   const bundle2 = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
   bundle2.entry[1].fullUrl = bundle2.entry[0].fullUrl
-  expect(() => getResourceForFullUrl(bundle2, bundle2.entry[0].fullUrl)).toThrow(TypeError)
+  expect(() => getResourceForFullUrl(bundle2, bundle2.entry[0].fullUrl)).toThrow(TooManyValuesUserFacingError)
 })
 
 describe("getIdentifierValueForSystem", () => {
@@ -42,16 +43,16 @@ describe("getIdentifierValueForSystem", () => {
   ]
 
   test("getIdentifierValueForSystem throws error for no value of system", () => {
-    expect(() => getIdentifierValueForSystem(identifierArray, "bob")).toThrow()
+    expect(() => getIdentifierValueForSystem(identifierArray, "bob", "fhirPath")).toThrow()
   })
 
   test("getIdentifierValueForSystem returns correct value for system", () => {
-    const result = getIdentifierValueForSystem(identifierArray, "https://fhir.nhs.uk/Id/sds-role-profile-id")
+    const result = getIdentifierValueForSystem(identifierArray, "https://fhir.nhs.uk/Id/sds-role-profile-id", "fhirPath")
     expect(result).toBe("100112897984")
   })
 
   test("getIdentifierValueForSystem throws error when finding multiple values for system", () => {
-    expect(() => getIdentifierValueForSystem(identifierArray, "https://fhir.nhs.uk/Id/prescription-order-item-number")).toThrow()
+    expect(() => getIdentifierValueForSystem(identifierArray, "https://fhir.nhs.uk/Id/prescription-order-item-number", "fhirPath")).toThrow()
   })
 })
 
@@ -72,17 +73,17 @@ describe("getIdentifierValueOrNullForSystem", () => {
   ]
 
   test("getIdentifierValueForSystem throws error for no value of system", () => {
-    const result = getIdentifierValueOrNullForSystem(identifierArray, "bob")
+    const result = getIdentifierValueOrNullForSystem(identifierArray, "bob", "fhirPath")
     expect(result).toBe(undefined)
   })
 
   test("getIdentifierValueForSystem returns correct value for system", () => {
-    const result = getIdentifierValueOrNullForSystem(identifierArray, "https://fhir.nhs.uk/Id/sds-role-profile-id")
+    const result = getIdentifierValueOrNullForSystem(identifierArray, "https://fhir.nhs.uk/Id/sds-role-profile-id", "fhirPath")
     expect(result).toBe("100112897984")
   })
 
   test("getIdentifierValueForSystem throws error when finding multiple values for system", () => {
-    expect(() => getIdentifierValueOrNullForSystem(identifierArray, "https://fhir.nhs.uk/Id/prescription-order-item-number")).toThrow()
+    expect(() => getIdentifierValueOrNullForSystem(identifierArray, "https://fhir.nhs.uk/Id/prescription-order-item-number", "fhirPath")).toThrow()
   })
 })
 
@@ -105,27 +106,27 @@ describe("wrapInOperationOutcome", () => {
 describe("date time conversion", () => {
   test("throws when no timezone present", () => {
     expect(() => {
-      convertIsoStringToDateTime("2020-01-21T11:15:30.000")
+      convertIsoStringToDateTime("2020-01-21T11:15:30.000", "fhirPath")
     }).toThrow()
   })
 
   test("returns UTC timestamp when zulu timezone present and local time is GMT", () => {
-    const timestamp = convertIsoStringToDateTime("2020-02-01T23:05:05.000Z")
+    const timestamp = convertIsoStringToDateTime("2020-02-01T23:05:05.000Z", "fhirPath")
     expect(timestamp._attributes.value).toEqual("20200201230505")
   })
 
   test("returns UTC timestamp when zulu timezone present and local time is BST", () => {
-    const timestamp = convertIsoStringToDateTime("2020-07-01T01:15:00.000Z")
+    const timestamp = convertIsoStringToDateTime("2020-07-01T01:15:00.000Z", "fhirPath")
     expect(timestamp._attributes.value).toEqual("20200701011500")
   })
 
   test("returns UTC timestamp when timezone present and local time is GMT", () => {
-    const timestamp = convertIsoStringToDateTime("2020-01-15T02:30:30.000+02:00")
+    const timestamp = convertIsoStringToDateTime("2020-01-15T02:30:30.000+02:00", "fhirPath")
     expect(timestamp._attributes.value).toEqual("20200115003030")
   })
 
   test("returns UTC timestamp when timezone present and local time is BST", () => {
-    const timestamp = convertIsoStringToDateTime("2020-06-22T12:50:30.000+02:00")
+    const timestamp = convertIsoStringToDateTime("2020-06-22T12:50:30.000+02:00", "fhirPath")
     expect(timestamp._attributes.value).toEqual("20200622105030")
   })
 })
@@ -133,12 +134,12 @@ describe("date time conversion", () => {
 describe("date conversion", () => {
   test("throws when time present", () => {
     expect(() => {
-      convertIsoStringToDate("2020-01-21T11:15:30.000Z")
+      convertIsoStringToDate("2020-01-21T11:15:30.000Z", "fhirPath")
     }).toThrow()
   })
 
   test("returns UTC timestamp when time not present", () => {
-    const timestamp = convertIsoStringToDate("2020-06-22")
+    const timestamp = convertIsoStringToDate("2020-06-22", "fhirPath")
     expect(timestamp._attributes.value).toEqual("20200622")
   })
 })

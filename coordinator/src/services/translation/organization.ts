@@ -29,15 +29,15 @@ function convertOrganization(fhirOrganization: fhir.Organization) {
   }
 
   if (fhirOrganization.telecom !== undefined) {
-    hl7V3Organization.telecom = onlyElement(
-      fhirOrganization.telecom.map(telecom => convertTelecom(telecom, "Organization.telecom")),
+    hl7V3Organization.telecom = convertTelecom(
+      onlyElement(fhirOrganization.telecom, "Organization.telecom"),
       "Organization.telecom"
     )
   }
 
   if (fhirOrganization.address !== undefined) {
-    hl7V3Organization.addr = onlyElement(
-      fhirOrganization.address.map(address => convertAddress(address, "Organization.address")),
+    hl7V3Organization.addr = convertAddress(
+      onlyElement(fhirOrganization.address, "Organization.address"),
       "Organization.address"
     )
   }

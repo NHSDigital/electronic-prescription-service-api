@@ -2,9 +2,9 @@ import {convertPatient} from "../../../src/services/translation/patient"
 import {Bundle, Patient} from "../../../src/model/fhir-resources"
 import {clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
-import {Address, Name} from "../../../src/model/hl7-v3-datatypes-core"
-import {SexCode} from "../../../src/model/hl7-v3-datatypes-codes"
+import {Address} from "../../../src/model/hl7-v3-datatypes-core"
 import {getPatient} from "../../../src/services/translation/common/getResourcesOfType"
+import {TooManyValuesUserFacingError} from "../../../src/error"
 
 describe("convertPatient", () => {
   let bundle: Bundle
@@ -13,22 +13,15 @@ describe("convertPatient", () => {
   const convertAddressFn = (value: never) => {
     return new Address()
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const convertNameFn = (value: never) => {
-    return new Name()
-  }
-  const convertGenderFn = (value: string) => {
-    return new SexCode(value)
-  }
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     fhirPatient = getPatient(bundle)
   })
 
-  test("Throws TypeError when passed multiple copies of identifier", () => {
+  test("Throws TooManyValuesUserFacingError when passed multiple copies of identifier", () => {
     fhirPatient.identifier.push(fhirPatient.identifier[0])
-    expect(() => convertPatient(bundle, fhirPatient)).toThrow(TypeError)
+    expect(() => convertPatient(bundle, fhirPatient)).toThrow(TooManyValuesUserFacingError)
   })
 
   test("ID gets put in correct field", () => {
@@ -49,30 +42,5 @@ describe("convertPatient", () => {
 
     expect(mockConvertAddress.mock.calls.length).toBe(1)
     expect(mockConvertAddress.mock.calls[0][0]).toEqual(addressValue)
-  })
-
-  test("name gets passed through convertName function", () => {
-    const mockConvertAddress = jest.fn(convertAddressFn)
-    const mockConvertName = jest.fn(convertNameFn)
-    const nameValue = {use: "example"}
-    fhirPatient.name = [nameValue]
-
-    convertPatient(bundle, fhirPatient, mockConvertAddress, mockConvertName)
-
-    expect(mockConvertName.mock.calls.length).toBe(1)
-    expect(mockConvertName.mock.calls[0][0]).toEqual(nameValue)
-  })
-
-  test("gender gets passed through convertGender function", () => {
-    const mockConvertAddress = jest.fn(convertAddressFn)
-    const mockConvertName = jest.fn(convertNameFn)
-    const mockConvertGender = jest.fn(convertGenderFn)
-    const genderValue = "male"
-    fhirPatient.gender = genderValue
-
-    convertPatient(bundle, fhirPatient, mockConvertAddress, mockConvertName, mockConvertGender)
-
-    expect(mockConvertGender.mock.calls.length).toBe(1)
-    expect(mockConvertGender.mock.calls[0][0]).toEqual(genderValue)
   })
 })
