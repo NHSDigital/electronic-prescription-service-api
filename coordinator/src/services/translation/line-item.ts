@@ -9,6 +9,7 @@ import {
 import * as core from "../../model/hl7-v3-datatypes-core"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
+import {populateRepeatNumber} from "./common/repeatNumber"
 
 function convertProduct(medicationCodeableConcept: fhir.CodeableConcept) {
   const fhirMedicationCode = getCodingForSystem(medicationCodeableConcept.coding, "http://snomed.info/sct")
@@ -34,6 +35,20 @@ function convertDosageInstructions(dosageInstruction: Array<fhir.Dosage>) {
   return new prescriptions.LineItemPertinentInformation2(hl7V3DosageInstructions)
 }
 
+export function convertPrescriptionEndorsements(fhirMedicationRequest: fhir.MedicationRequest, hl7V3LineItem: prescriptions.LineItem): void {
+  const fhirMedicationPrescriptionEndorsementExtension = getExtensionForUrlOrNull(fhirMedicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionEndorsement") as fhir.CodeableConceptExtension
+
+  if (fhirMedicationPrescriptionEndorsementExtension) {
+    hl7V3LineItem.pertinentInformation3 = fhirMedicationPrescriptionEndorsementExtension.valueCodeableConcept.coding.map(coding => {
+      const prescriptionEndorsementValue = new codes.PrescriptionEndorsementCode(coding.code)
+      const prescriptionEndorsement = new prescriptions.PrescriptionEndorsement(prescriptionEndorsementValue)
+      return new prescriptions.LineItemPertinentInformation3(prescriptionEndorsement)
+    })
+  } else {
+    delete hl7V3LineItem.pertinentInformation3
+  }
+}
+
 function convertAdditionalInstructions(fhirMedicationRequest: fhir.MedicationRequest, patientInfoStr: string)  {
   const controlledDrugWordsExtension = getExtensionForUrlOrNull(fhirMedicationRequest.dispenseRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-controlled-drug-quantity-words") as fhir.StringExtension
   const controlledDrugWords = controlledDrugWordsExtension?.valueString
@@ -54,9 +69,13 @@ export function convertMedicationRequestToLineItem(fhirMedicationRequest: fhir.M
     new codes.GlobalIdentifier(getIdentifierValueForSystem(fhirMedicationRequest.identifier, "https://fhir.nhs.uk/Id/prescription-order-item-number"))
   )
 
+  populateRepeatNumber(hl7V3LineItem, [fhirMedicationRequest])
+
   hl7V3LineItem.product = convertProduct(fhirMedicationRequest.medicationCodeableConcept)
   hl7V3LineItem.component = convertLineItemComponent(fhirMedicationRequest.dispenseRequest.quantity)
+  convertPrescriptionEndorsements(fhirMedicationRequest, hl7V3LineItem)
   hl7V3LineItem.pertinentInformation2 = convertDosageInstructions(fhirMedicationRequest.dosageInstruction)
+
   const pertinentInformation1 = convertAdditionalInstructions(fhirMedicationRequest, patientInfoStr)
   if (pertinentInformation1.pertinentAdditionalInstructions.value != "")
     hl7V3LineItem.pertinentInformation1 = pertinentInformation1

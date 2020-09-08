@@ -1,5 +1,11 @@
 import * as core from "./hl7-v3-datatypes-core"
-import {AttributeClassCode, AttributeMoodCode, AttributeTypeCode, Timestamp} from "./hl7-v3-datatypes-core"
+import {
+  AttributeClassCode,
+  AttributeMoodCode,
+  AttributeTypeCode,
+  NumericValue,
+  Timestamp
+} from "./hl7-v3-datatypes-core"
 import * as codes from "./hl7-v3-datatypes-codes"
 import {GlobalIdentifier, ShortFormPrescriptionIdentifier, SnomedCode} from "./hl7-v3-datatypes-codes"
 import * as peoplePlaces from "./hl7-v3-people-places"
@@ -22,7 +28,7 @@ export class Author implements ElementCompact {
 /**
  * Medication line item in the prescription.
  */
-export class LineItem implements ElementCompact {
+export class LineItem implements ElementCompact, Repeatable {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "SBADM",
     moodCode: "RQO"
@@ -31,18 +37,17 @@ export class LineItem implements ElementCompact {
   id: codes.GlobalIdentifier
   code: codes.SnomedCode
   effectiveTime: core.Null
-  //TODO - repeatNumber
+  repeatNumber?: core.Interval<NumericValue>
   product: Product
   component: LineItemComponent
   pertinentInformation1?: LineItemPertinentInformation1
-  //TODO - pertinentInformation3
+  pertinentInformation3?: Array<LineItemPertinentInformation3>
   pertinentInformation2: LineItemPertinentInformation2
   //TODO - inFulfillmentOf2
   //TODO - inFulfillmentOf1
 
   constructor(id: GlobalIdentifier) {
     this.id = id
-    //TODO do we need to support child codes of this?
     this.code = new codes.SnomedCode("225426007", "Administration of therapeutic substance (procedure)")
     this.effectiveTime = core.Null.NOT_APPLICABLE
   }
@@ -108,6 +113,23 @@ export class LineItemComponent implements ElementCompact {
 
   constructor(lineItemQuantity: LineItemQuantity) {
     this.lineItemQuantity = lineItemQuantity
+  }
+}
+
+/**
+ * An act relationship to endorse a controlled drug.
+ */
+export class LineItemPertinentInformation3 implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
+
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  pertinentPrescriberEndorsement : PrescriptionEndorsement
+
+  constructor(pertinentPrescriberEndorsement : PrescriptionEndorsement) {
+    this.pertinentPrescriberEndorsement  = pertinentPrescriberEndorsement
   }
 }
 
@@ -219,10 +241,14 @@ export class ParentPrescriptionPertinentInformation1 implements ElementCompact {
   }
 }
 
+export interface Repeatable {
+  repeatNumber?: core.Interval<NumericValue>
+}
+
 /**
  * This act represents the distinct parts of the administration part for a single item on a Prescription.
  */
-export class Prescription implements ElementCompact {
+export class Prescription implements ElementCompact, Repeatable {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "SBADM",
     moodCode: "RQO"
@@ -231,13 +257,13 @@ export class Prescription implements ElementCompact {
   id: [codes.GlobalIdentifier, codes.ShortFormPrescriptionIdentifier]
   code: codes.SnomedCode
   effectiveTime: core.Null
-  //TODO - repeatNumber
-  performer: Performer
+  repeatNumber?: core.Interval<NumericValue>
+  performer?: Performer
   author: Author
   //TODO - legalAuthenticator
   responsibleParty: ResponsibleParty
-  component1: Component1
-  //TODO - pertinentInformation7
+  component1?: Component1
+  pertinentInformation7?: PrescriptionPertinentInformation7
   pertinentInformation5: PrescriptionPertinentInformation5
   //TODO - pertinentInformation6
   pertinentInformation1: PrescriptionPertinentInformation1
@@ -326,6 +352,24 @@ export class PrescriptionPertinentInformation4 implements ElementCompact {
 }
 
 /**
+ * An act relationship used to provide information on repeat dispensing prescriptions, informing the dispenser of the
+ * anticipated date of the review of the prescription details by the prescriber.
+ */
+export class PrescriptionPertinentInformation7 implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
+
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  pertinentReviewDate: ReviewDate
+
+  constructor(pertinentReviewDate: ReviewDate) {
+    this.pertinentReviewDate = pertinentReviewDate
+  }
+}
+
+/**
  * An act relationship used to qualify the type of prescription (acute, repeat prescription or repeat dispensing).
  */
 export class PrescriptionPertinentInformation5 implements ElementCompact {
@@ -409,6 +453,18 @@ export class TokenIssued extends PrescriptionAnnotation {
 }
 
 /**
+ * Details about the prescriber's endorsement of a controlled drug.
+ */
+export class PrescriptionEndorsement extends PrescriptionAnnotation {
+  value: codes.PrescriptionEndorsementCode
+
+  constructor(value: codes.PrescriptionEndorsementCode) {
+    super(new codes.PrescriptionAnnotationCode("PE"))
+    this.value = value
+  }
+}
+
+/**
  * Details about the type of prescriber and a reason for the prescription.
  */
 export class PrescriptionType extends PrescriptionAnnotation {
@@ -440,6 +496,19 @@ export class AdditionalInstructions extends PrescriptionAnnotation {
 
   constructor(value: string) {
     super(new codes.PrescriptionAnnotationCode("AI"))
+    this.value = value
+  }
+}
+
+/**
+ * For repeat dispensing prescriptions, these are the details about the date at which the prescriber would like to
+ * review the patient with regard to their treatment with this set of medications.
+ */
+export class ReviewDate extends PrescriptionAnnotation {
+  value: Timestamp
+
+  constructor(value: Timestamp) {
+    super(new codes.PrescriptionAnnotationCode("RD"))
     this.value = value
   }
 }
@@ -534,6 +603,10 @@ export class Component1 {
 
   seperatableInd: core.BooleanValue = new core.BooleanValue(true)
   daysSupply: DaysSupply
+
+  constructor(daysSupply: DaysSupply) {
+    this.daysSupply = daysSupply
+  }
 }
 
 /**
@@ -547,8 +620,8 @@ export class DaysSupply {
   }
 
   code: codes.SnomedCode = new codes.SnomedCode("373784005", "Dispensing medication (procedure)")
-  effectiveTime: core.IntervalComplete
-  expectedUseTime: core.IntervalUnanchored
+  effectiveTime?: core.Interval<core.Timestamp>
+  expectedUseTime?: core.IntervalUnanchored
 }
 
 export class ParentPrescriptionRoot {

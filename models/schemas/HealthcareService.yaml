@@ -1,0 +1,42 @@
+type: object
+description: Used to describe a single healthcare service or category of services that are provided by an organization at a location.
+required:
+  - resourceType
+  - id
+  - identifier
+properties:
+  resourceType:
+    type: string
+    description: FHIR Resource type.
+    enum:
+      - "HealthcareService"
+    example: "HealthcareService"
+  id:
+    type: string
+    description: Logical id of this artifact.
+    example: "7EB02341-5F62-4A76-2CD3-34F523452356"
+  identifier:
+    $ref: "Identifier-HealthcareServiceIdentifier.yaml"
+  active:
+    type: boolean
+    description: The specific type of service that may be delivered or performed
+    example: True
+  providedBy:
+    type: object
+    description: The organization that provides this healthcare service
+    properties:
+      identifier:
+        $ref: "Identifier-HealthcareServiceProvidedBy.yaml"
+      reference:
+        $ref: "Reference.yaml"
+  location:
+    type: array
+    description: The location(s) where this healthcare service may be provided
+    items:
+      $ref: "Reference.yaml"
+  name:
+    type: string
+    description: Further description of the service as it would be presented to a consumer while searching.
+    example: "SOMERSET BOWEL CANCER SCREENING CENTRE"
+  telecom:
+    $ref: "ContactPoint.yaml"

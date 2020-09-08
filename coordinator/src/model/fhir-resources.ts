@@ -17,12 +17,17 @@ class BundleEntry {
 }
 
 export interface Identifier {
-  system: string
-  value: string
+  use?: string
+  system?: string
+  value?: string
 }
 
 export interface MedicationRequestGroupIdentifier extends Identifier {
   extension: Array<IdentifierExtension>
+}
+
+export interface RepeatInformationExtension extends Extension {
+  extension: Array<UnsignedIntExtension | DateTimeExtension>
 }
 
 export interface MedicationRequest extends Resource {
@@ -37,7 +42,7 @@ export interface MedicationRequest extends Resource {
   courseOfTherapyType: CodeableConcept
   dosageInstruction: Array<Dosage>
   dispenseRequest: MedicationRequestDispenseRequest
-  extension: Array<IdentifierExtension | ReferenceExtension<PractitionerRole> | CodingExtension>
+  extension: Array<IdentifierExtension | ReferenceExtension<PractitionerRole> | CodingExtension | CodeableConceptExtension | RepeatInformationExtension>
 }
 
 export interface CodeableConcept {
@@ -67,6 +72,7 @@ export interface Dosage {
 export interface MedicationRequestDispenseRequest {
   extension: Array<CodingExtension | StringExtension>
   quantity: SimpleQuantity
+  expectedSupplyDuration?: SimpleQuantity
   performer: IdentifierReference<Organization>
   validityPeriod?: Period
 }
@@ -122,6 +128,7 @@ export class PractitionerRole extends Resource {
   practitioner?: Reference<Practitioner>
   organization?: Reference<Organization>
   code?: Array<CodeableConcept>
+  healthcareService?: Array<Reference<HealthcareService>>
   telecom: Array<ContactPoint>
 }
 
@@ -133,14 +140,34 @@ export class Practitioner extends Resource {
   address?: Array<Address>
 }
 
-export class Organization extends Resource {
-  readonly resourceType = "Organization"
+export interface Organization extends Resource {
+  readonly resourceType: "Organization"
   identifier?: Array<Identifier>
   type?: Array<CodeableConcept>
   name?: string
   telecom?: Array<ContactPoint>
   address?: Array<Address>
   partOf?: Reference<Organization>
+}
+
+export interface HealthcareService extends Resource {
+  resourceType: "HealthcareService"
+  identifier?: Array<Identifier>
+  id?: string
+  name?: string
+  telecom?: Array<ContactPoint>
+  active?: string
+  providedBy?: {identifier: Identifier}
+  location?: Array<Reference<Location>>
+}
+
+export interface Location extends Resource {
+  resourceType: "Location"
+  id?: string
+  identifier?: Array<Identifier>
+  status?: string
+  mode?: string
+  address?: Address
 }
 
 export interface OperationOutcomeIssue {
@@ -182,12 +209,24 @@ export interface CodingExtension extends Extension {
   valueCoding: Coding
 }
 
+export interface CodeableConceptExtension extends Extension {
+  valueCodeableConcept: CodeableConcept
+}
+
 export interface StringExtension extends Extension {
   valueString: string
 }
 
 export interface ReferenceExtension<T extends Resource> extends Extension {
   valueReference: Reference<T>
+}
+
+export interface UnsignedIntExtension extends Extension {
+  valueUnsignedInt: LosslessNumber | string
+}
+
+export interface DateTimeExtension extends Extension {
+  valueDateTime: string
 }
 
 class Signature {

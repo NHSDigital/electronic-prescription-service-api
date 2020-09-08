@@ -13,9 +13,26 @@ export function extractFragments(parentPrescription: prescriptions.ParentPrescri
     time: namespacedCopyOf(pertinentPrescription.author.time),
     agentPerson: namespacedCopyOf(pertinentPrescription.author.AgentPerson),
     recordTarget: namespacedCopyOf(parentPrescription.recordTarget),
-    pertinentLineItem: pertinentPrescription.pertinentInformation2.map(
-      pertinentInformation2 => namespacedCopyOf(pertinentInformation2.pertinentLineItem)
-    )
+    pertinentLineItem: pertinentPrescription.pertinentInformation2.map(getLineItemFragment)
+  }
+}
+
+function getLineItemFragment(prescriptionPertinentInformation2: prescriptions.PrescriptionPertinentInformation2) {
+  const lineItem = prescriptionPertinentInformation2.pertinentLineItem
+  const lineItemWithoutRepeatNumberLow = getLineItemWithoutRepeatNumberLow(lineItem)
+  return namespacedCopyOf(lineItemWithoutRepeatNumberLow)
+}
+
+function getLineItemWithoutRepeatNumberLow(lineItem: prescriptions.LineItem) {
+  if (lineItem.repeatNumber) {
+    return {
+      ...lineItem,
+      repeatNumber: {
+        high: lineItem.repeatNumber.high
+      }
+    }
+  } else {
+    return lineItem
   }
 }
 
@@ -112,7 +129,7 @@ function joinCoreText(separator: string, ...values: Array<core.Text | Array<core
   return values.map(unpackCoreText).filter(Boolean).join(separator)
 }
 
-function unpackCoreText(value: core.Text | core.Text[]) : string {
+function unpackCoreText(value: core.Text | Array<core.Text>) : string {
   if (isCoreTextArray(value)) {
     return value.map(v => v._text).join(" ")
   } else {
@@ -121,8 +138,8 @@ function unpackCoreText(value: core.Text | core.Text[]) : string {
   }
 }
 
-function isCoreTextArray(value: core.Text | core.Text[]) : value is core.Text[] {
-  const valueArray = value as core.Text[]
+function isCoreTextArray(value: core.Text | Array<core.Text>) : value is Array<core.Text> {
+  const valueArray = value as Array<core.Text>
   return valueArray !== undefined && valueArray.length > 0
 }
 

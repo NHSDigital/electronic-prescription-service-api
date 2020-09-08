@@ -8,17 +8,28 @@ all:
 	make test >> build.log
 	make release >> build.log
 
+.PHONY: install build test publish release clean
+
 install: install-node install-python install-hooks
 
 build: build-models build-specification build-coordinator build-proxies
 
 test: validate-models lint check-licenses test-coordinator
 
+publish:
+	echo Publish
+
 release:
 	mkdir -p dist
 	cp -r specification/dist/. dist
 	cp -r terraform dist
 	rsync -av --progress --copy-links tests/e2e/pact dist --exclude node_modules
+	for env in internal-dev-sandbox internal-qa-sandbox sandbox; do \
+		cat ecs-proxies-deploy.yml | sed -e 's/{{ SANDBOX_MODE_ENABLED }}/1/g' > dist/ecs-deploy-$$env.yml; \
+	done
+	for env in internal-dev internal-qa int; do \
+		cat ecs-proxies-deploy.yml | sed -e 's/{{ SANDBOX_MODE_ENABLED }}/0/g' > dist/ecs-deploy-$$env.yml; \
+	done
 
 clean:
 	rm -rf dist
@@ -109,7 +120,7 @@ validate-models:
 	test -f models/build/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > models/build/org.hl7.fhir.validator.jar
 	java -jar models/build/org.hl7.fhir.validator.jar models/examples/*/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt
 
-lint:
+lint: build
 	cd specification && npm run lint
 	cd coordinator && npm run lint
 	cd tests/e2e/pact && make lint

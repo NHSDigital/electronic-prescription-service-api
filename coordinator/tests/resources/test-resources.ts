@@ -43,3 +43,10 @@ export const examplePrescription2 = {
   hl7V3Message: hl7V3Message2,
   hl7V3ParentPrescription: hl7V3Message2.PORX_IN020101SM31.ControlActEvent.subject.ParentPrescription as ParentPrescription
 }
+
+const fhirMessageUnsignedHomecareStr = fs.readFileSync(path.join(__dirname, "./parent-prescription-3/PrepareRequest-FhirMessageUnsigned.json"), "utf8")
+const fhirMessageUnsignedHomecare = LosslessJson.parse(fhirMessageUnsignedHomecareStr)
+
+export const examplePrescription3 = {
+  fhirMessageUnsignedHomecare: fhirMessageUnsignedHomecare
+}
