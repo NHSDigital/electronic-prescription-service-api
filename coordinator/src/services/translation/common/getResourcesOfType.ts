@@ -34,7 +34,3 @@ export function getHealthcareServices(fhirBundle: fhir.Bundle): Array<fhir.Healt
 export function getLocations(fhirBundle: fhir.Bundle): Array<fhir.Location> {
   return getResourcesOfType<fhir.Location>(fhirBundle, "Location")
 }
-
-export function getPractitionerRoles(fhirBundle: fhir.Bundle): Array<fhir.PractitionerRole> {
-  return getResourcesOfType<fhir.PractitionerRole>(fhirBundle, "PractitionerRole")
-}

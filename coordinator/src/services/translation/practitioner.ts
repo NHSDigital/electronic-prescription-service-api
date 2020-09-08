@@ -47,37 +47,13 @@ export function convertResponsibleParty(
 function convertPractitionerRole(fhirBundle: fhir.Bundle, fhirPractitionerRole: fhir.PractitionerRole): peoplePlaces.AgentPerson {
   const fhirPractitioner = resolveReference(fhirBundle, fhirPractitionerRole.practitioner)
   const hl7V3AgentPerson = createAgentPerson(fhirPractitionerRole, fhirPractitioner)
-  const fhirOrganization = resolveOrganizationReference(fhirBundle, fhirPractitionerRole.organization)
+  const fhirOrganization = resolveReference(fhirBundle, fhirPractitionerRole.organization)
   let fhirHealthcareService: fhir.HealthcareService
   if (fhirPractitionerRole.healthcareService) {
     fhirHealthcareService = resolveReference<fhir.HealthcareService>(fhirBundle, fhirPractitionerRole.healthcareService[0])
   }
   hl7V3AgentPerson.representedOrganization = convertOrganizationAndProviderLicense(fhirBundle, fhirOrganization, fhirHealthcareService)
   return hl7V3AgentPerson
-}
-
-function isReference(reference: fhir.PractitionerRoleOrganization): reference is fhir.Reference<fhir.Organization> {
-  return (reference as fhir.Reference<fhir.Organization>).reference !== undefined
-}
-
-function resolveOrganizationReference(fhirBundle: fhir.Bundle, practitionerRoleOrganization: fhir.PractitionerRoleOrganization): fhir.Organization {
-  if (isReference(practitionerRoleOrganization)) {
-    return resolveReference(fhirBundle, practitionerRoleOrganization)
-  }
-  return createMiniumumOrganization(practitionerRoleOrganization.display, practitionerRoleOrganization.identifier)
-}
-
-function createMiniumumOrganization(display: string, identifier: Array<fhir.Identifier>){
-  return {
-    name: display,
-    identifier,
-    type: [{
-      coding: [{
-        system: "https://fhir.nhs.uk/R4/CodeSystem/organisation-role",
-        code: "RO197"
-      }]
-    }]
-  } as fhir.Organization
 }
 
 function createAgentPerson(

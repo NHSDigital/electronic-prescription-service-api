@@ -1,10 +1,7 @@
 import * as fhir from "../../../src/model/fhir-resources"
 import {Telecom, TelecomUse} from "../../../src/model/hl7-v3-datatypes-core"
-import {getAgentPersonPersonId, getAgentPersonTelecom, convertAuthor} from "../../../src/services/translation/practitioner"
+import {getAgentPersonPersonId, getAgentPersonTelecom} from "../../../src/services/translation/practitioner"
 import {BsaPrescribingIdentifier, SdsUniqueIdentifier} from "../../../src/model/hl7-v3-datatypes-codes"
-import {clone} from "../../resources/test-helpers"
-import * as TestResources from "../../resources/test-resources"
-import {getMedicationRequests, getPractitionerRoles} from "../../../src/services/translation/common/getResourcesOfType"
 
 describe("getAgentPersonTelecom", () => {
   const roleTelecom: Array<fhir.ContactPoint> = [
@@ -90,45 +87,5 @@ describe("getAgentPersonPersonId", () => {
     expect(() => getAgentPersonPersonId(
       [], []
     )).toThrow()
-  })
-})
-
-describe("convertAuthor", () => {
-  let fhirBundle: fhir.Bundle
-  let fhirFirstMedicationRequest: fhir.MedicationRequest
-  let fhirPractitionerRole: fhir.PractitionerRole
-  const display = "testDisplay"
-  const identifierValue = "testIdentifier"
-
-  beforeEach(() => {
-    fhirBundle = clone(TestResources.examplePrescription3.fhirMessageUnsignedHomecare)
-    fhirFirstMedicationRequest = getMedicationRequests(fhirBundle)[0]
-    fhirPractitionerRole = getPractitionerRoles(fhirBundle)[0]
-    fhirPractitionerRole.organization = {
-      display: display,
-      identifier: [{
-        system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: identifierValue
-      }]
-    }
-  })
-
-  test("when PractitionerRole has a minimal Organization healthCareProviderLicense still gets converted correctly", () => {
-    const result = convertAuthor(fhirBundle, fhirFirstMedicationRequest).AgentPerson.representedOrganization
-
-    expect(result.healthCareProviderLicense.Organization.name._text).toBe(display)
-    expect(result.healthCareProviderLicense.Organization.id._attributes.extension).toBe(identifierValue)
-    expect(result.healthCareProviderLicense.Organization.code._attributes.code).toBe("008")
-  })
-
-  test("when PractitionerRole has a minimal Organization representedOrganization still gets converted correctly", () => {
-    const controlBundle = clone(TestResources.examplePrescription3.fhirMessageUnsignedHomecare)
-
-    const result = convertAuthor(fhirBundle, fhirFirstMedicationRequest).AgentPerson.representedOrganization
-    const controlResult = convertAuthor(controlBundle, fhirFirstMedicationRequest).AgentPerson.representedOrganization
-    delete result.healthCareProviderLicense
-    delete controlResult.healthCareProviderLicense
-
-    expect(result).toEqual(controlResult)
   })
 })

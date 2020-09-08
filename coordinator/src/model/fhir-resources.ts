@@ -121,17 +121,10 @@ export class PractitionerRole extends Resource {
   readonly resourceType = "PractitionerRole"
   identifier?: Array<Identifier>
   practitioner?: Reference<Practitioner>
-  organization?: PractitionerRoleOrganization
+  organization?: Reference<Organization>
   code?: Array<CodeableConcept>
   healthcareService?: Array<Reference<HealthcareService>>
   telecom: Array<ContactPoint>
-}
-
-export type PractitionerRoleOrganization = PractitionerRoleOrganizationIdentifier | Reference<Organization>
-
-export interface PractitionerRoleOrganizationIdentifier {
-  identifier: Array<Identifier>
-  display: string
 }
 
 export class Practitioner extends Resource {
