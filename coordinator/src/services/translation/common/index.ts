@@ -39,6 +39,12 @@ export function getCodingForSystem(coding: Array<fhir.Coding>, system: string): 
     .reduce(onlyElement)
 }
 
+export function getCodingForSystemOrNull(coding: Array<fhir.Coding>, system: string): fhir.Coding {
+  return coding
+    .filter(coding => coding.system === system)
+    .shift()
+}
+
 export function getExtensionForUrl(extensions: Array<fhir.Extension>, url: string): fhir.Extension {
   return extensions
     .filter(extension => extension.url === url)
@@ -56,6 +62,12 @@ export function getCodeableConceptCodingForSystem(codeableConcept: Array<fhir.Co
   const coding = codeableConcept
     .flatMap(codeableConcept => codeableConcept.coding)
   return getCodingForSystem(coding, system)
+}
+
+export function getCodeableConceptCodingForSystemOrNull(codeableConcept: Array<fhir.CodeableConcept>, system: string): fhir.Coding {
+  const coding = codeableConcept
+    .flatMap(codeableConcept => codeableConcept.coding)
+  return getCodingForSystemOrNull(coding, system)
 }
 
 export function convertIsoStringToHl7V3DateTime(isoDateTimeStr: string): core.Timestamp {

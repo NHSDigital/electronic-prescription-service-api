@@ -46,14 +46,17 @@ export function convertResponsibleParty(
 
 function convertPractitionerRole(fhirBundle: fhir.Bundle, fhirPractitionerRole: fhir.PractitionerRole): peoplePlaces.AgentPerson {
   const fhirPractitioner = resolveReference(fhirBundle, fhirPractitionerRole.practitioner)
-  const hl7V3AgentPerson = createAgentPerson(fhirBundle, fhirPractitionerRole, fhirPractitioner)
+  const hl7V3AgentPerson = createAgentPerson(fhirPractitionerRole, fhirPractitioner)
   const fhirOrganization = resolveReference(fhirBundle, fhirPractitionerRole.organization)
-  hl7V3AgentPerson.representedOrganization = convertOrganizationAndProviderLicense(fhirBundle, fhirOrganization)
+  let fhirHealthcareService: fhir.HealthcareService
+  if (fhirPractitionerRole.healthcareService) {
+    fhirHealthcareService = resolveReference<fhir.HealthcareService>(fhirBundle, fhirPractitionerRole.healthcareService[0])
+  }
+  hl7V3AgentPerson.representedOrganization = convertOrganizationAndProviderLicense(fhirBundle, fhirOrganization, fhirHealthcareService)
   return hl7V3AgentPerson
 }
 
 function createAgentPerson(
-  fhirBundle: fhir.Bundle,
   fhirPractitionerRole: fhir.PractitionerRole,
   fhirPractitioner: fhir.Practitioner,
   convertAgentPersonPersonFn = convertAgentPersonPerson

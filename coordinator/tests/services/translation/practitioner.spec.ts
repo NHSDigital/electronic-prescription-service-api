@@ -1,17 +1,17 @@
-import {ContactPoint, Identifier} from "../../../src/model/fhir-resources"
+import * as fhir from "../../../src/model/fhir-resources"
 import {Telecom, TelecomUse} from "../../../src/model/hl7-v3-datatypes-core"
 import {getAgentPersonPersonId, getAgentPersonTelecom} from "../../../src/services/translation/practitioner"
 import {BsaPrescribingIdentifier, SdsUniqueIdentifier} from "../../../src/model/hl7-v3-datatypes-codes"
 
 describe("getAgentPersonTelecom", () => {
-  const roleTelecom: Array<ContactPoint> = [
+  const roleTelecom: Array<fhir.ContactPoint> = [
     {
       "system": "phone",
       "value": "tel:01512631737",
       "use": "work"
     }
   ]
-  const practitionerTelecom: Array<ContactPoint> = [
+  const practitionerTelecom: Array<fhir.ContactPoint> = [
     {
       "system": "phone",
       "value": "tel:01",
@@ -52,15 +52,15 @@ describe("getAgentPersonTelecom", () => {
 })
 
 describe("getAgentPersonPersonId", () => {
-  const spuriousIdentifier: Identifier = {
+  const spuriousIdentifier: fhir.Identifier = {
     "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
     "value": "spurious"
   }
-  const dinIdentifier: Identifier = {
+  const dinIdentifier: fhir.Identifier = {
     "system": "https://fhir.hl7.org.uk/Id/din-number",
     "value": "din"
   }
-  const userIdentifier: Identifier = {
+  const userIdentifier: fhir.Identifier = {
     "system": "https://fhir.nhs.uk/Id/sds-user-id",
     "value": "8412511"
   }
