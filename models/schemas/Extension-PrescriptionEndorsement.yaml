@@ -1,0 +1,34 @@
+type: object
+description: Extension to carry prescription endorsements
+required:
+  - url
+  - valueCodeableConcept
+properties:
+  url:
+    type: string
+    description: Identifies the meaning of the extension
+    enum:
+      - "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionEndorsement"
+    example: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionEndorsement"
+  valueCodeableConcept:
+    type: object
+    description: Prescription endorsements
+    required:
+      - coding
+    properties:
+      coding:
+        type: array
+        items:
+          type: object
+          required:
+            - system
+            - code
+          properties:
+            system:
+              type: string
+              enum:
+                - "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-endorsement"
+              example: "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-endorsement"
+            code:
+              type: string
+              example: "CC"

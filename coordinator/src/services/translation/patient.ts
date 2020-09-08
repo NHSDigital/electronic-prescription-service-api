@@ -3,7 +3,7 @@ import * as peoplePlaces from "../../model/hl7-v3-people-places"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as core from "../../model/hl7-v3-datatypes-core"
 import {convertAddress, convertGender, convertName} from "./demographics"
-import {convertIsoStringToDate, getIdentifierValueForSystem} from "./common"
+import {convertIsoStringToHl7V3Date, getIdentifierValueForSystem} from "./common"
 
 function convertPatientToProviderPatient(
   patient: fhir.Patient
@@ -27,7 +27,7 @@ function convertPatientToPatientPerson(
   const hl7V3PatientPerson = new peoplePlaces.PatientPerson()
   hl7V3PatientPerson.name = patient.name.map(convertNameFn)
   hl7V3PatientPerson.administrativeGenderCode = convertGenderFn(patient.gender)
-  hl7V3PatientPerson.birthTime = convertIsoStringToDate(patient.birthDate)
+  hl7V3PatientPerson.birthTime = convertIsoStringToHl7V3Date(patient.birthDate)
   hl7V3PatientPerson.playedProviderPatient = convertPatientToProviderPatient(patient)
   return hl7V3PatientPerson
 }

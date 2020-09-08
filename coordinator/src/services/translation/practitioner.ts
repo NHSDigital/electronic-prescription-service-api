@@ -5,7 +5,7 @@ import * as codes from "../../model/hl7-v3-datatypes-codes"
 import {convertName, convertTelecom} from "./demographics"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
 import {
-  convertIsoStringToDateTime,
+  convertIsoStringToHl7V3DateTime,
   getCodeableConceptCodingForSystem,
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
@@ -24,7 +24,7 @@ export function convertAuthor(
   convertPractitionerRoleFn = convertPractitionerRole
 ): prescriptions.Author {
   const hl7V3Author = new prescriptions.Author()
-  hl7V3Author.time = convertIsoStringToDateTime(fhirFirstMedicationRequest.authoredOn)
+  hl7V3Author.time = convertIsoStringToHl7V3DateTime(fhirFirstMedicationRequest.authoredOn)
   hl7V3Author.signatureText = convertSignatureText(fhirBundle, fhirFirstMedicationRequest.requester)
   const fhirAuthorPractitionerRole = resolveReference(fhirBundle, fhirFirstMedicationRequest.requester)
   hl7V3Author.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirAuthorPractitionerRole)

@@ -147,6 +147,19 @@
                     }
                 ]
             }
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+            "extension": [
+              {
+                "url": "numberOfRepeatPrescriptionsAllowed",
+                "valueUnsignedInt": 6
+              },
+              {
+                "url": "authorisationExpiryDate",
+                "valueDateTime": "2020-12-07"
+              }
+            ]
           }
         ],
         "identifier": [
@@ -189,11 +202,21 @@
               }
             }
           ],
+          "validityPeriod": {
+            "start": "2020-06-10",
+            "end": "2020-12-07"
+          },
           "quantity": {
             "value": 1,
             "unit": "device",
             "system": "http://snomed.info/sct",
             "code": "3318711000001107"
+          },
+          "expectedSupplyDuration": {
+            "value": 28,
+            "unit": "days",
+            "system": "http://unitsofmeasure.org",
+            "code": "d"
           }
         },
         "authoredOn": "2020-06-10T12:06:00+00:00",
@@ -255,6 +278,19 @@
                     }
                 ]
             }
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+            "extension": [
+              {
+                "url": "numberOfRepeatPrescriptionsAllowed",
+                "valueUnsignedInt": 6
+              },
+              {
+                "url": "authorisationExpiryDate",
+                "valueDateTime": "2020-12-07"
+              }
+            ]
           }
         ],
         "identifier": [
@@ -297,11 +333,21 @@
               }
             }
           ],
+          "validityPeriod": {
+            "start": "2020-06-10",
+            "end": "2020-12-07"
+          },
           "quantity": {
             "value": 63,
             "unit": "tablet",
             "system": "http://snomed.info/sct",
             "code": "428673006"
+          },
+          "expectedSupplyDuration": {
+            "value": 28,
+            "unit": "days",
+            "system": "http://unitsofmeasure.org",
+            "code": "d"
           }
         },
         "authoredOn": "2020-06-10T12:06:00+00:00",
@@ -363,6 +409,19 @@
                     }
                 ]
             }
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+            "extension": [
+              {
+                "url": "numberOfRepeatPrescriptionsAllowed",
+                "valueUnsignedInt": 6
+              },
+              {
+                "url": "authorisationExpiryDate",
+                "valueDateTime": "2020-12-07"
+              }
+            ]
           }
         ],
         "identifier": [
@@ -405,11 +464,21 @@
               }
             }
           ],
+          "validityPeriod": {
+            "start": "2020-06-10",
+            "end": "2020-12-07"
+          },
           "quantity": {
             "value": 10,
             "unit": "catheter",
             "system": "http://snomed.info/sct",
             "code": "3319911000001101"
+          },
+          "expectedSupplyDuration": {
+            "value": 28,
+            "unit": "days",
+            "system": "http://unitsofmeasure.org",
+            "code": "d"
           }
         },
         "authoredOn": "2020-06-10T12:06:00+00:00",
@@ -471,6 +540,19 @@
                     }
                 ]
             }
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+            "extension": [
+              {
+                "url": "numberOfRepeatPrescriptionsAllowed",
+                "valueUnsignedInt": 6
+              },
+              {
+                "url": "authorisationExpiryDate",
+                "valueDateTime": "2020-12-07"
+              }
+            ]
           }
         ],
         "identifier": [
@@ -513,11 +595,21 @@
               }
             }
           ],
+          "validityPeriod": {
+            "start": "2020-06-10",
+            "end": "2020-12-07"
+          },
           "quantity": {
             "value": 54,
             "unit": "sachet",
             "system": "http://snomed.info/sct",
             "code": "3318911000001109"
+          },
+          "expectedSupplyDuration": {
+            "value": 28,
+            "unit": "days",
+            "system": "http://unitsofmeasure.org",
+            "code": "d"
           }
         },
         "authoredOn": "2020-06-10T12:06:00+00:00",
