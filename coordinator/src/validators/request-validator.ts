@@ -47,11 +47,6 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
     ),
     (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
       medicationRequests,
-      "courseOfTherapyType",
-      (medicationRequest) => medicationRequest.courseOfTherapyType
-    ),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
-      medicationRequests,
       "subject",
       (medicationRequest) => medicationRequest.subject
     ),
@@ -64,6 +59,16 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
       medicationRequests,
       "dispenseRequest.performer",
       (medicationRequest) => medicationRequest.dispenseRequest.performer
+    ),
+    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+      medicationRequests,
+      "dispenseRequest.validityPeriod",
+      (medicationRequest) => medicationRequest.dispenseRequest.validityPeriod
+    ),
+    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+      medicationRequests,
+      "dispenseRequest.expectedSupplyDuration",
+      (medicationRequest) => medicationRequest.dispenseRequest.expectedSupplyDuration
     ),
     (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
       medicationRequests,

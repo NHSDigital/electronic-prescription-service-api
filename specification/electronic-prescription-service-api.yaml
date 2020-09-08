@@ -147,7 +147,7 @@ paths:
     post:
       operationId: prepare-prescription
       summary: Convert prescription to signature fragments
-      description: Convert a prescription in FHIR format into the canonicalised HL7 V3 signature fragments which should be signed by the prescriber.
+      description: Convert a prescription in FHIR format into the canonicalised HL7 V3 signature fragments which should be signed by the prescriber. A Link to the implementation guide for this endpoint can be found [here](https://simplifier.net/guide/DigitalMedicines/prescription-order).
       tags:
         - prescribing
       requestBody:
@@ -199,7 +199,7 @@ paths:
     post:
       operationId: send-prescription
       summary: Send a signed prescription to Spine
-      description: Submit a signed prescription to EPS
+      description: Submit a signed prescription to EPS. A Link to the implementation guide for this endpoint can be found [here](https://simplifier.net/guide/DigitalMedicines/prescription-order).
       tags:
         - prescribing
       requestBody:
@@ -363,3 +363,7 @@ components:
       $ref: components/schemas/Parameters.yaml
     Provenance:
       $ref: components/schemas/Provenance.yaml
+    HealthcareService:
+      $ref: components/schemas/HealthcareService.yaml
+    Location:
+      $ref: components/schemas/LocationResource.yaml
