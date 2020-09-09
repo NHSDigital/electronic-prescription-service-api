@@ -61,7 +61,11 @@ function convertPrescriptionIds(
   fhirFirstMedicationRequest: fhir.MedicationRequest
 ): [codes.GlobalIdentifier, codes.ShortFormPrescriptionIdentifier] {
   const groupIdentifier = fhirFirstMedicationRequest.groupIdentifier
-  const prescriptionIdExtension = getExtensionForUrl(groupIdentifier.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId") as fhir.IdentifierExtension
+  const prescriptionIdExtension = getExtensionForUrl(
+    groupIdentifier.extension,
+    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
+    "MedicationRequest.groupIdentifier.extension"
+  ) as fhir.IdentifierExtension
   const prescriptionId = prescriptionIdExtension.valueIdentifier.value
   const prescriptionShortFormId = groupIdentifier.value
   return [
@@ -73,8 +77,8 @@ function convertPrescriptionIds(
 export function convertPrescriptionComponent1(validityPeriod?: fhir.Period, expectedSupplyDuration?: fhir.SimpleQuantity): prescriptions.Component1 {
   const daysSupply = new DaysSupply()
   if (validityPeriod) {
-    const low = convertIsoStringToHl7V3Date(validityPeriod.start)
-    const high = convertIsoStringToHl7V3Date(validityPeriod.end)
+    const low = convertIsoStringToHl7V3Date(validityPeriod.start, "MedicationRequest.dispenseRequest.validityPeriod.start")
+    const high = convertIsoStringToHl7V3Date(validityPeriod.end, "MedicationRequest.dispenseRequest.validityPeriod.end")
     daysSupply.effectiveTime = new Interval<Timestamp>(low, high)
   }
   if (expectedSupplyDuration) {
@@ -105,16 +109,26 @@ export function convertNearestReviewDate(medicationRequests: Array<fhir.Medicati
 }
 
 function extractReviewDate(medicationRequest: fhir.MedicationRequest) {
-  const repeatInformationExtension = getExtensionForUrlOrNull(medicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation") as RepeatInformationExtension
+  const repeatInformationExtension = getExtensionForUrlOrNull(
+    medicationRequest.extension,
+    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+    "MedicationRequest.extension"
+  ) as RepeatInformationExtension
   if (!repeatInformationExtension) {
     return null
   }
-  const reviewDateExtension = getExtensionForUrlOrNull(repeatInformationExtension.extension, "authorisationExpiryDate") as DateTimeExtension
+
+  const reviewDateExtension = getExtensionForUrlOrNull(
+    repeatInformationExtension.extension,
+    "authorisationExpiryDate",
+    "MedicationRequest.extension.extension"
+  ) as DateTimeExtension
   if (!reviewDateExtension) {
     return null
   }
+
   const reviewDateExtensionValue = reviewDateExtension.valueDateTime
-  return convertIsoDateStringToMoment(reviewDateExtensionValue)
+  return convertIsoDateStringToMoment(reviewDateExtensionValue, "MedicationRequest.extension.extension.valueDateTime")
 }
 
 function convertPrescriptionPertinentInformation5(fhirMedicationRequests: Array<fhir.MedicationRequest>) {
@@ -147,7 +161,11 @@ function convertPrescriptionPertinentInformation1(fhirFirstMedicationRequest: fh
 }
 
 function convertDispensingSitePreference(fhirFirstMedicationRequest: fhir.MedicationRequest): prescriptions.DispensingSitePreference {
-  const performerSiteType = getExtensionForUrl(fhirFirstMedicationRequest.dispenseRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType") as fhir.CodingExtension
+  const performerSiteType = getExtensionForUrl(
+    fhirFirstMedicationRequest.dispenseRequest.extension,
+    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
+    "MedicationRequest.dispenseRequest.extension"
+  ) as fhir.CodingExtension
   const dispensingSitePreferenceValue = new codes.DispensingSitePreferenceCode(performerSiteType.valueCoding.code)
   return new prescriptions.DispensingSitePreference(dispensingSitePreferenceValue)
 }
@@ -192,7 +210,11 @@ function convertPrescriptionPertinentInformation8() {
 }
 
 function convertPrescriptionPertinentInformation4(fhirFirstMedicationRequest: fhir.MedicationRequest) {
-  const fhirMedicationPrescriptionTypeExtension = getExtensionForUrl(fhirFirstMedicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType") as fhir.CodingExtension
+  const fhirMedicationPrescriptionTypeExtension = getExtensionForUrl(
+    fhirFirstMedicationRequest.extension,
+    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType",
+    "MedicationRequest.extension"
+  ) as fhir.CodingExtension
   const prescriptionTypeValue = new codes.PrescriptionTypeCode(fhirMedicationPrescriptionTypeExtension.valueCoding.code)
   const prescriptionType = new prescriptions.PrescriptionType(prescriptionTypeValue)
   return new prescriptions.PrescriptionPertinentInformation4(prescriptionType)

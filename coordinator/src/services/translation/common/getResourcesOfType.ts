@@ -1,5 +1,5 @@
 import * as fhir from "../../../model/fhir-resources"
-import {onlyElement} from "."
+import {onlyElement} from "./index"
 
 function getResourcesOfType<T extends fhir.Resource>(fhirBundle: fhir.Bundle, resourceType: string): Array<T> {
   return fhirBundle.entry
@@ -16,7 +16,11 @@ export function getCommunicationRequests(fhirBundle: fhir.Bundle): Array<fhir.Co
 }
 
 export function getPatient(fhirBundle: fhir.Bundle): fhir.Patient {
-  return getResourcesOfType<fhir.Patient>(fhirBundle, "Patient").reduce(onlyElement)
+  return onlyElement(
+    getResourcesOfType<fhir.Patient>(fhirBundle, "Patient"),
+    "Bundle.entry",
+    "resource.resourceType == 'Patient'"
+  )
 }
 
 export function getOrganizations(fhirBundle: fhir.Bundle): Array<fhir.Organization> {
