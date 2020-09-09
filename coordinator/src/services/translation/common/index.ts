@@ -3,7 +3,7 @@ import moment from "moment"
 import * as core from "../../../model/hl7-v3-datatypes-core"
 import {SpineDirectResponse} from "../../spine-communication"
 import {LosslessNumber} from "lossless-json"
-import {InvalidValueUserFacingError, TooFewValuesUserFacingError, TooManyValuesUserFacingError} from "../../../error"
+import {InvalidValueError, TooFewValuesError, TooManyValuesError} from "../../../model/errors"
 
 const FHIR_DATE_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$/
 const FHIR_DATE_TIME_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$/
@@ -12,11 +12,11 @@ export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, addition
   const iterator = iterable[Symbol.iterator]()
   const first = iterator.next()
   if (first.done) {
-    throw new TooFewValuesUserFacingError(`Too few values submitted. Expected 1 element${additionalContext ? " where " : ""}${additionalContext ? additionalContext : ""}.`, fhirPath)
+    throw new TooFewValuesError(`Too few values submitted. Expected 1 element${additionalContext ? " where " : ""}${additionalContext ? additionalContext : ""}.`, fhirPath)
   }
   const value = first.value
   if (!iterator.next().done) {
-    throw new TooManyValuesUserFacingError(`Too many values submitted. Expected 1 element${additionalContext ? " where " : ""}${additionalContext ? additionalContext : ""}.`, fhirPath)
+    throw new TooManyValuesError(`Too many values submitted. Expected 1 element${additionalContext ? " where " : ""}${additionalContext ? additionalContext : ""}.`, fhirPath)
   }
   return value
 }
@@ -25,7 +25,7 @@ export function onlyElementOrNull<T>(iterable: Iterable<T>, fhirPath: string, ad
   const iterator = iterable[Symbol.iterator]()
   const value = iterator.next().value
   if (!iterator.next().done) {
-    throw new TooManyValuesUserFacingError(`Too many values submitted. Expected at most 1 element${additionalContext ? " where " : ""}${additionalContext ? additionalContext : ""}.`, fhirPath)
+    throw new TooManyValuesError(`Too many values submitted. Expected at most 1 element${additionalContext ? " where " : ""}${additionalContext ? additionalContext : ""}.`, fhirPath)
   }
   return value
 }
@@ -107,7 +107,7 @@ export function convertIsoStringToHl7V3DateTime(isoDateTimeStr: string, fhirPath
 
 export function convertIsoDateTimeStringToMoment(isoDateTimeStr: string, fhirPath: string): moment.Moment {
   if (!FHIR_DATE_TIME_REGEX.test(isoDateTimeStr)) {
-    throw new InvalidValueUserFacingError(`Incorrect format for date time string '${isoDateTimeStr}'.`, fhirPath)
+    throw new InvalidValueError(`Incorrect format for date time string '${isoDateTimeStr}'.`, fhirPath)
   }
   return moment.utc(isoDateTimeStr, moment.ISO_8601, true)
 }
@@ -124,7 +124,7 @@ export function convertIsoStringToHl7V3Date(isoDateStr: string, fhirPath: string
 
 export function convertIsoDateStringToMoment(isoDateStr: string, fhirPath: string): moment.Moment {
   if (!FHIR_DATE_REGEX.test(isoDateStr)) {
-    throw new InvalidValueUserFacingError(`Incorrect format for date string '${isoDateStr}'.`, fhirPath)
+    throw new InvalidValueError(`Incorrect format for date string '${isoDateStr}'.`, fhirPath)
   }
   return moment.utc(isoDateStr, moment.ISO_8601, true)
 }

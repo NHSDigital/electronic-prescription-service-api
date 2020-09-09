@@ -1,6 +1,6 @@
-import {OperationOutcome} from "./model/fhir-resources"
+import {OperationOutcome} from "./fhir-resources"
 
-export class UserFacingError extends Error {
+export class FhirMessageProcessingError extends Error {
   message: string
   userErrorCode: string
   userErrorMessage: string
@@ -13,25 +13,25 @@ export class UserFacingError extends Error {
   }
 }
 
-export class InvalidValueUserFacingError extends UserFacingError {
+export class InvalidValueError extends FhirMessageProcessingError {
   constructor(userErrorDesc: string, userErrorFhirPath?: string) {
     super("INVALID_VALUE", userErrorDesc, userErrorFhirPath)
   }
 }
 
-export class TooFewValuesUserFacingError extends UserFacingError {
+export class TooFewValuesError extends FhirMessageProcessingError {
   constructor(userErrorDesc: string, userErrorFhirPath?: string) {
     super("TOO_FEW_VALUES_SUBMITTED", userErrorDesc, userErrorFhirPath)
   }
 }
 
-export class TooManyValuesUserFacingError extends UserFacingError {
+export class TooManyValuesError extends FhirMessageProcessingError {
   constructor(userErrorDesc: string, userErrorFhirPath?: string) {
     super("TOO_MANY_VALUES_SUBMITTED", userErrorDesc, userErrorFhirPath)
   }
 }
 
-export function toOperationOutcome(response: UserFacingError): OperationOutcome {
+export function toOperationOutcome(response: FhirMessageProcessingError): OperationOutcome {
   return {
     resourceType: "OperationOutcome",
     issue: [{

@@ -1,7 +1,7 @@
 import * as fhir from "../../model/fhir-resources"
 import * as core from "../../model/hl7-v3-datatypes-core"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
-import {InvalidValueUserFacingError} from "../../error"
+import {InvalidValueError} from "../../model/errors"
 
 export function convertName(fhirHumanName: fhir.HumanName, fhirPath: string): core.Name {
   const name = new core.Name()
@@ -33,7 +33,7 @@ function convertNameUse(fhirNameUse: string, fhirPath: string) {
   case "nickname":
     return core.NameUse.ALIAS
   default:
-    throw new InvalidValueUserFacingError(`Unhandled name use '${fhirNameUse}'.`, fhirPath + ".use")
+    throw new InvalidValueError(`Unhandled name use '${fhirNameUse}'.`, fhirPath + ".use")
   }
 }
 
@@ -54,7 +54,7 @@ function convertTelecomUse(fhirTelecomUse: string, fhirPath: string) {
   case "mobile":
     return core.TelecomUse.MOBILE
   default:
-    throw new InvalidValueUserFacingError(`Unhandled telecom use '${fhirTelecomUse}'.`, fhirPath + ".use")
+    throw new InvalidValueError(`Unhandled telecom use '${fhirTelecomUse}'.`, fhirPath + ".use")
   }
 }
 
@@ -88,7 +88,7 @@ function convertAddressUse(fhirAddressUse: string, fhirAddressType: string, fhir
   case "temp":
     return core.AddressUse.TEMPORARY
   default:
-    throw new InvalidValueUserFacingError(`Unhandled address use '${fhirAddressUse}'.`, fhirPath + ".use")
+    throw new InvalidValueError(`Unhandled address use '${fhirAddressUse}'.`, fhirPath + ".use")
   }
 }
 
@@ -103,6 +103,6 @@ export function convertGender(fhirGender: string, fhirPath: string): codes.SexCo
   case "unknown":
     return codes.SexCode.UNKNOWN
   default:
-    throw new InvalidValueUserFacingError(`Unhandled gender '${fhirGender}'.`, fhirPath)
+    throw new InvalidValueError(`Unhandled gender '${fhirGender}'.`, fhirPath)
   }
 }

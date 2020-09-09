@@ -1,13 +1,13 @@
 import {Boom} from "@hapi/boom"
 import Hapi from "@hapi/hapi"
 import routes from "./routes"
-import {toOperationOutcome, UserFacingError} from "./error"
+import {toOperationOutcome, FhirMessageProcessingError} from "./model/errors"
 
 const preResponse = function (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) {
   const response = request.response
   if (response instanceof Boom) {
     console.log(response)
-    if (response instanceof UserFacingError) {
+    if (response instanceof FhirMessageProcessingError) {
       return responseToolkit.response(toOperationOutcome(response)).code(400)
     }
   }

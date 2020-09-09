@@ -9,7 +9,7 @@ import * as fhir from "../../../src/model/fhir-resources"
 import {getExtensionForUrlOrNull} from "../../../src/services/translation/common"
 import {convertBundleToPrescription} from "../../../src/services/translation/prescription"
 import {convertFhirMessageToHl7V3ParentPrescriptionMessage} from "../../../src/services/translation/translation-service"
-import {TooManyValuesUserFacingError} from "../../../src/error"
+import {TooManyValuesError} from "../../../src/model/errors"
 
 describe("convertMedicationRequestToLineItem", () => {
   let bundle: fhir.Bundle
@@ -22,7 +22,7 @@ describe("convertMedicationRequestToLineItem", () => {
 
   test("Throws TooManyValuesUserFacingError when passed multiple order item numbers", () => {
     firstFhirMedicationRequest.identifier.push(firstFhirMedicationRequest.identifier[0])
-    expect(() => convertMedicationRequestToLineItem(firstFhirMedicationRequest)).toThrow(TooManyValuesUserFacingError)
+    expect(() => convertMedicationRequestToLineItem(firstFhirMedicationRequest)).toThrow(TooManyValuesError)
   })
 
   test("ID added to correct section of hl7 message", () => {

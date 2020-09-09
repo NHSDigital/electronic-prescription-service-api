@@ -2,7 +2,7 @@ import * as demographics from "../../../src/services/translation/demographics"
 import * as core from "../../../src/model/hl7-v3-datatypes-core"
 import * as codes from "../../../src/model/hl7-v3-datatypes-codes"
 import * as XmlJs from "xml-js"
-import {InvalidValueUserFacingError} from "../../../src/error"
+import {InvalidValueError} from "../../../src/model/errors"
 
 describe("convertName fills correct fields only", () => {
   test("no keys should add no keys", () => {
@@ -61,14 +61,14 @@ describe("convertName fills correct fields only", () => {
 
   test("Other should throw InvalidValueUserFacingError", () => {
     const fhirName = {"use": "nope"}
-    expect(() => demographics.convertName(fhirName, "fhirPath")).toThrow(InvalidValueUserFacingError)
+    expect(() => demographics.convertName(fhirName, "fhirPath")).toThrow(InvalidValueError)
   })
 })
 
 describe("convertTelecom should convert correct use", () => {
   test("empty telecom should throw InvalidValueUserFacingError", () => {
     const fhirTelecom = {}
-    expect(() => demographics.convertTelecom(fhirTelecom, "fhirPath")).toThrow(InvalidValueUserFacingError)
+    expect(() => demographics.convertTelecom(fhirTelecom, "fhirPath")).toThrow(InvalidValueError)
   })
 
   const cases = [
@@ -88,7 +88,7 @@ describe("convertTelecom should convert correct use", () => {
 describe("convertAddress should return correct addresses", () => {
   test("Throw InvalidValueUserFacingError when no type and invalid use", () => {
     const fhirAddress = {use: "example"}
-    expect(() => demographics.convertAddress(fhirAddress, "fhirPath")).toThrow(InvalidValueUserFacingError)
+    expect(() => demographics.convertAddress(fhirAddress, "fhirPath")).toThrow(InvalidValueError)
   })
 
   test("Empty address type and use do not add any attributes to the address XML tag", () => {
@@ -131,6 +131,6 @@ describe("convertGender should return correct gender", () => {
     })
 
   test("invalid fhirGender throws InvalidValueUserFacingError", () => {
-    expect(() => demographics.convertGender("example", "fhirPath")).toThrow(InvalidValueUserFacingError)
+    expect(() => demographics.convertGender("example", "fhirPath")).toThrow(InvalidValueError)
   })
 })

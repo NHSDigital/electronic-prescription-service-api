@@ -4,7 +4,7 @@ import {clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
 import {Address} from "../../../src/model/hl7-v3-datatypes-core"
 import {getPatient} from "../../../src/services/translation/common/getResourcesOfType"
-import {TooManyValuesUserFacingError} from "../../../src/error"
+import {TooManyValuesError} from "../../../src/model/errors"
 
 describe("convertPatient", () => {
   let bundle: Bundle
@@ -21,7 +21,7 @@ describe("convertPatient", () => {
 
   test("Throws TooManyValuesUserFacingError when passed multiple copies of identifier", () => {
     fhirPatient.identifier.push(fhirPatient.identifier[0])
-    expect(() => convertPatient(bundle, fhirPatient)).toThrow(TooManyValuesUserFacingError)
+    expect(() => convertPatient(bundle, fhirPatient)).toThrow(TooManyValuesError)
   })
 
   test("ID gets put in correct field", () => {

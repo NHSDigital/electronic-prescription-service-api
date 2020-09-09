@@ -13,7 +13,7 @@ import {Identifier} from "../../../../src/model/fhir-resources"
 import {clone} from "../../../resources/test-helpers"
 import {SpineDirectResponse} from "../../../../src/services/spine-communication"
 import * as LosslessJson from "lossless-json"
-import {TooManyValuesUserFacingError} from "../../../../src/error"
+import {TooManyValuesError} from "../../../../src/model/errors"
 
 test("getResourceForFullUrl returns correct resources", () => {
   const result = getResourceForFullUrl(TestResources.examplePrescription1.fhirMessageUnsigned, "urn:uuid:A7B86F8D-1D81-FC28-E050-D20AE3A215F0")
@@ -23,7 +23,7 @@ test("getResourceForFullUrl returns correct resources", () => {
 test("getResourceForFullUrl throws TooManyValuesUserFacingError when finding multiple resources", () => {
   const bundle2 = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
   bundle2.entry[1].fullUrl = bundle2.entry[0].fullUrl
-  expect(() => getResourceForFullUrl(bundle2, bundle2.entry[0].fullUrl)).toThrow(TooManyValuesUserFacingError)
+  expect(() => getResourceForFullUrl(bundle2, bundle2.entry[0].fullUrl)).toThrow(TooManyValuesError)
 })
 
 describe("getIdentifierValueForSystem", () => {
