@@ -160,14 +160,30 @@ describe("convertNearestReviewDate converts nearest review date", () => {
 })
 
 function setReviewDate(medicationRequest: MedicationRequest, newReviewDate: string) {
-  const repeatInformationExtension = getExtensionForUrl(medicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation") as RepeatInformationExtension
-  const reviewDateExtension = getExtensionForUrl(repeatInformationExtension.extension, "authorisationExpiryDate") as DateTimeExtension
+  const repeatInformationExtension = getExtensionForUrl(
+    medicationRequest.extension,
+    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+    "MedicationRequest.extension"
+  ) as RepeatInformationExtension
+  const reviewDateExtension = getExtensionForUrl(
+    repeatInformationExtension.extension,
+    "authorisationExpiryDate",
+    "MedicationRequest.extension.extension"
+  ) as DateTimeExtension
   reviewDateExtension.valueDateTime = newReviewDate
 }
 
 function clearReviewDate(medicationRequest: MedicationRequest) {
-  const repeatInformationExtension = getExtensionForUrl(medicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation") as RepeatInformationExtension
-  const reviewDateExtension = getExtensionForUrl(repeatInformationExtension.extension, "authorisationExpiryDate") as DateTimeExtension
+  const repeatInformationExtension = getExtensionForUrl(
+    medicationRequest.extension,
+    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+    "MedicationRequest.extension"
+  ) as RepeatInformationExtension
+  const reviewDateExtension = getExtensionForUrl(
+    repeatInformationExtension.extension,
+    "authorisationExpiryDate",
+    "MedicationRequest.extension.extension"
+  ) as DateTimeExtension
   repeatInformationExtension.extension.splice(repeatInformationExtension.extension.indexOf(reviewDateExtension), 1)
 }
 

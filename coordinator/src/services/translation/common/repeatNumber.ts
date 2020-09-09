@@ -24,8 +24,16 @@ function createRepeatNumberForRepeatDispensingPrescription(medicationRequests: A
 }
 
 function extractRepeatNumberHighValue(medicationRequest: MedicationRequest): number {
-  const repeatInformationExtension = getExtensionForUrl(medicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation") as RepeatInformationExtension
-  const repeatNumberExtension = getExtensionForUrl(repeatInformationExtension.extension, "numberOfRepeatPrescriptionsAllowed") as UnsignedIntExtension
+  const repeatInformationExtension = getExtensionForUrl(
+    medicationRequest.extension,
+    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+    "MedicationRequest.extension"
+  ) as RepeatInformationExtension
+  const repeatNumberExtension = getExtensionForUrl(
+    repeatInformationExtension.extension,
+    "numberOfRepeatPrescriptionsAllowed",
+    "MedicationRequest.extension.extension"
+  ) as UnsignedIntExtension
   const repeatNumberExtensionValue = repeatNumberExtension.valueUnsignedInt
   return getNumericValueAsNumber(repeatNumberExtensionValue)
 }
