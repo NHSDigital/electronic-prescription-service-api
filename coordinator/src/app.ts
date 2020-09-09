@@ -10,6 +10,8 @@ const preResponse = function (request: Hapi.Request, responseToolkit: Hapi.Respo
   return responseToolkit.continue
 }
 
+console.log("Starting the server")
+
 const init = async () => {
   const server = Hapi.server({
     port: 9000,
