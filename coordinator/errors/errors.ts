@@ -1,15 +1,15 @@
 export interface ValidationError {
-  message: string;
-  operationOutcomeCode: "value";
-  apiErrorCode: string;
-  severity: "error" | "fatal";
+  message: string
+  operationOutcomeCode: "value"
+  apiErrorCode: string
+  severity: "error" | "fatal"
 }
 
 class ValueError implements ValidationError {
-  message: string;
-  operationOutcomeCode = "value" as const;
-  apiErrorCode = "MISSING_FIELD";
-  severity = "error" as const;
+  message: string
+  operationOutcomeCode = "value" as const
+  apiErrorCode = "MISSING_FIELD"
+  severity = "error" as const
 }
 
 export class ContainsExactlyError extends ValueError {
@@ -50,13 +50,13 @@ export class MedicationRequestValueError extends ValueError {
 }
 
 class FatalError implements ValidationError {
-  operationOutcomeCode = "value" as const;
-  severity = "fatal" as const;
-  message: string;
-  apiErrorCode: string;
+  operationOutcomeCode = "value" as const
+  severity = "fatal" as const
+  message: string
+  apiErrorCode: string
 }
 
-export class NoEntryInBundleError extends FatalError{
+export class NoEntryInBundleError extends FatalError {
   apiErrorCode: "MISSING_FIELD"
 
   constructor() {
@@ -65,7 +65,7 @@ export class NoEntryInBundleError extends FatalError{
   }
 }
 
-export class RequestNotBundleError extends FatalError{
+export class RequestNotBundleError extends FatalError {
   apiErrorCode = "INCORRECT_RESOURCETYPE"
 
   constructor() {
