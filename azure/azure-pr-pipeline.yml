@@ -38,4 +38,4 @@ extends:
     service_base_path_pr: ${{ variables.service_base_path_pr }}
     spec_file: ${{ variables.spec_file }}
     deploy_review_sandbox: true
-      apigee_deployments: []
+    apigee_deployments: []
