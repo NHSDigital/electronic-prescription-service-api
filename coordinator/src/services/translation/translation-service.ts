@@ -23,7 +23,11 @@ export function convertFhirMessageToHl7V3ParentPrescriptionMessage(fhirMessage: 
 }
 
 export function createParentPrescriptionSendMessagePayload(fhirBundle: fhir.Bundle): core.SendMessagePayload<prescriptions.ParentPrescriptionRoot> {
-  const messageId = getIdentifierValueForSystem([fhirBundle.identifier], "https://tools.ietf.org/html/rfc4122")
+  const messageId = getIdentifierValueForSystem(
+    [fhirBundle.identifier],
+    "https://tools.ietf.org/html/rfc4122",
+    "Bundle.identifier"
+  )
   const parentPrescription = convertParentPrescription(fhirBundle)
   const parentPrescriptionRoot = new prescriptions.ParentPrescriptionRoot(parentPrescription)
   const interactionId = codes.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT

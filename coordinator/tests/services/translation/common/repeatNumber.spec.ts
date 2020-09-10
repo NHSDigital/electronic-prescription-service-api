@@ -76,7 +76,15 @@ describe("populateRepeatNumber", () => {
 })
 
 function setRepeatNumber(medicationRequest: MedicationRequest, newRepeatNumber: LosslessNumber | string) {
-  const repeatInformationExtension = getExtensionForUrl(medicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation") as RepeatInformationExtension
-  const repeatNumberExtension = getExtensionForUrl(repeatInformationExtension.extension, "numberOfRepeatPrescriptionsAllowed") as UnsignedIntExtension
+  const repeatInformationExtension = getExtensionForUrl(
+    medicationRequest.extension,
+    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+    "MedicationRequest.extension"
+  ) as RepeatInformationExtension
+  const repeatNumberExtension = getExtensionForUrl(
+    repeatInformationExtension.extension,
+    "numberOfRepeatPrescriptionsAllowed",
+    "MedicationRequest.extension.extension"
+  ) as UnsignedIntExtension
   repeatNumberExtension.valueUnsignedInt = newRepeatNumber
 }

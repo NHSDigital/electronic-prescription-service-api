@@ -1,4 +1,7 @@
-import {convertMedicationRequestToLineItem,convertPrescriptionEndorsements} from "../../../src/services/translation/line-item"
+import {
+  convertMedicationRequestToLineItem,
+  convertPrescriptionEndorsements
+} from "../../../src/services/translation/line-item"
 import {clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
 import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
@@ -6,6 +9,7 @@ import * as fhir from "../../../src/model/fhir-resources"
 import {getExtensionForUrlOrNull} from "../../../src/services/translation/common"
 import {convertBundleToPrescription} from "../../../src/services/translation/prescription"
 import {convertFhirMessageToHl7V3ParentPrescriptionMessage} from "../../../src/services/translation/translation-service"
+import {TooManyValuesError} from "../../../src/model/errors"
 
 describe("convertMedicationRequestToLineItem", () => {
   let bundle: fhir.Bundle
@@ -16,9 +20,9 @@ describe("convertMedicationRequestToLineItem", () => {
     firstFhirMedicationRequest = getMedicationRequests(bundle)[0]
   })
 
-  test("Throws TypeError when passed multiple order item numbers", () => {
+  test("Throws TooManyValuesUserFacingError when passed multiple order item numbers", () => {
     firstFhirMedicationRequest.identifier.push(firstFhirMedicationRequest.identifier[0])
-    expect(() => convertMedicationRequestToLineItem(firstFhirMedicationRequest)).toThrow(TypeError)
+    expect(() => convertMedicationRequestToLineItem(firstFhirMedicationRequest)).toThrow(TooManyValuesError)
   })
 
   test("ID added to correct section of hl7 message", () => {
@@ -103,7 +107,10 @@ describe("additionalInstructions", () => {
   test("controlledDrugWords show up correctly", () => {
     const exampleControlledDrugString = "test1"
     const controlledDrugURL = "https://fhir.nhs.uk/R4/StructureDefinition/Extension-controlled-drug-quantity-words"
-    const controlledDrugWordsExtension: fhir.StringExtension = {url: controlledDrugURL, valueString: exampleControlledDrugString}
+    const controlledDrugWordsExtension: fhir.StringExtension = {
+      url: controlledDrugURL,
+      valueString: exampleControlledDrugString
+    }
     firstFhirMedicationRequest.dispenseRequest.extension.push(controlledDrugWordsExtension)
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, "")
     expect(result.pertinentInformation1.pertinentAdditionalInstructions.value).toBe(`CD: ${exampleControlledDrugString}\n`)
@@ -125,7 +132,10 @@ describe("additionalInstructions", () => {
   test("all info shows up in correct order", () => {
     const exampleControlledDrugString = "test1"
     const controlledDrugURL = "https://fhir.nhs.uk/R4/StructureDefinition/Extension-controlled-drug-quantity-words"
-    const controlledDrugWordsExtension: fhir.StringExtension = {url: controlledDrugURL, valueString: exampleControlledDrugString}
+    const controlledDrugWordsExtension: fhir.StringExtension = {
+      url: controlledDrugURL,
+      valueString: exampleControlledDrugString
+    }
     firstFhirMedicationRequest.dispenseRequest.extension.push(controlledDrugWordsExtension)
     const patientInstruction = "testPatientInstruction"
     firstFhirMedicationRequest.dosageInstruction[0].patientInstruction = patientInstruction
@@ -151,9 +161,13 @@ describe("prescriptionEndorsements", () => {
   test("are translated when present", () => {
     const medicationRequests = getMedicationRequests(bundle)
 
-    const prescriptionEndorsements = medicationRequests
-      .map(medicationRequest =>
-        getExtensionForUrlOrNull(medicationRequest.extension, "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionEndorsement") as fhir.CodeableConceptExtension)
+    const prescriptionEndorsements = medicationRequests.map(medicationRequest =>
+      getExtensionForUrlOrNull(
+        medicationRequest.extension,
+        "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionEndorsement",
+        "MedicationRequest.extension"
+      ) as fhir.CodeableConceptExtension
+    )
 
     expect(prescriptionEndorsements.length).toBeGreaterThan(0)
 
@@ -177,7 +191,8 @@ describe("prescriptionEndorsements", () => {
     const prescriptionEndorsementsFn = (medicationRequest: fhir.MedicationRequest): fhir.CodeableConceptExtension =>
       getExtensionForUrlOrNull(
         medicationRequest.extension,
-        "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionEndorsement"
+        "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionEndorsement",
+        "MedicationRequest.extension"
       ) as fhir.CodeableConceptExtension
 
     medicationRequests.forEach(medicationRequest => {

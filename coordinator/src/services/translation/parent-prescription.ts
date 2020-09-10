@@ -18,7 +18,7 @@ export function convertParentPrescription(
 
   const hl7V3ParentPrescription = new prescriptions.ParentPrescription(
     new codes.GlobalIdentifier(fhirBundle.id),
-    convertIsoStringToHl7V3DateTime(effectiveTime)
+    effectiveTime
   )
 
   const fhirPatient = getPatient(fhirBundle)
@@ -38,9 +38,9 @@ export function convertParentPrescription(
 function extractEffectiveTime(medicationRequest: fhir.MedicationRequest) {
   const validityPeriod = medicationRequest.dispenseRequest.validityPeriod
   if (validityPeriod) {
-    return validityPeriod.start
+    return convertIsoStringToHl7V3DateTime(validityPeriod.start, "MedicationRequest.dispenseRequest.validityPeriod.start")
   } else {
-    return medicationRequest.authoredOn
+    return convertIsoStringToHl7V3DateTime(medicationRequest.authoredOn, "MedicationRequest.authoredOn")
   }
 }
 
