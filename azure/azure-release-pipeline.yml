@@ -35,6 +35,7 @@ extends:
     product_description: ${{ variables.product_description }}
     service_base_path_pr: none
     spec_file: ${{ variables.spec_file }}
+    apigee_environment: ${{ variables.apigee_environment }}
     apigee_deployments:
       - environment: internal-dev
         proxy_path: live
