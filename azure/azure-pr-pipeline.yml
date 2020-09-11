@@ -37,5 +37,8 @@ extends:
     product_description: ${{ variables.product_description }}
     service_base_path_pr: ${{ variables.service_base_path_pr }}
     spec_file: ${{ variables.spec_file }}
-    deploy_review_sandbox: true
-    apigee_deployments: []
+    apigee_deployments:
+      - environment: internal-dev-sandbox
+        proxy_path: sandbox
+      - environment: internal-dev
+        proxy_path: live

@@ -35,10 +35,7 @@ extends:
     product_description: ${{ variables.product_description }}
     service_base_path_pr: none
     spec_file: ${{ variables.spec_file }}
-    deploy_review_sandbox: false
     apigee_deployments:
-      - environment: internal-dev-sandbox
-        proxy_path: sandbox
       - environment: internal-dev
         proxy_path: live
       - environment: internal-qa-sandbox
