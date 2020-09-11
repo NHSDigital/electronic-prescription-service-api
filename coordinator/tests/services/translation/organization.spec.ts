@@ -78,7 +78,7 @@ describe("Homecare Prescription Organization Conversion", () => {
   let firstFhirHealthcareService: HealthcareService
 
   beforeEach(() => {
-    bundle = clone(TestResources.examplePrescription3.fhirMessageUnsignedHomecare)
+    bundle = clone(TestResources.examplePrescription3.fhirMessageUnsigned)
     firstFhirOrganization = getOrganizations(bundle)[0]
     firstFhirHealthcareService = getHealthcareServices(bundle)[0]
   })

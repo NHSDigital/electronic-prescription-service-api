@@ -7,9 +7,10 @@ import * as fhir from "../../model/fhir-resources"
 import {DateTimeExtension, RepeatInformationExtension} from "../../model/fhir-resources"
 import {
   convertIsoDateStringToMoment,
-  convertIsoStringToHl7V3Date,
+  convertIsoDateTimeStringToHl7V3Date,
   convertMomentToHl7V3Date,
-  getExtensionForUrl, getExtensionForUrlOrNull,
+  getExtensionForUrl,
+  getExtensionForUrlOrNull,
   getNumericValueAsString
 } from "./common"
 import {convertAuthor, convertResponsibleParty} from "./practitioner"
@@ -77,8 +78,8 @@ function convertPrescriptionIds(
 export function convertPrescriptionComponent1(validityPeriod?: fhir.Period, expectedSupplyDuration?: fhir.SimpleQuantity): prescriptions.Component1 {
   const daysSupply = new DaysSupply()
   if (validityPeriod) {
-    const low = convertIsoStringToHl7V3Date(validityPeriod.start, "MedicationRequest.dispenseRequest.validityPeriod.start")
-    const high = convertIsoStringToHl7V3Date(validityPeriod.end, "MedicationRequest.dispenseRequest.validityPeriod.end")
+    const low = convertIsoDateTimeStringToHl7V3Date(validityPeriod.start, "MedicationRequest.dispenseRequest.validityPeriod.start")
+    const high = convertIsoDateTimeStringToHl7V3Date(validityPeriod.end, "MedicationRequest.dispenseRequest.validityPeriod.end")
     daysSupply.effectiveTime = new Interval<Timestamp>(low, high)
   }
   if (expectedSupplyDuration) {

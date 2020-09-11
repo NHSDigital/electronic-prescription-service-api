@@ -402,7 +402,7 @@
           "numberOfRepeatsAllowed": 4,
           "expectedSupplyDuration": {
             "value": 7,
-            "unit": "day",
+            "unit": "days",
             "system": "http://unitsofmeasure.org",
             "code": "d"
           },
