@@ -26,7 +26,7 @@ const prescriptionIdExtension: IdentifierExtension =  {
   url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
   valueIdentifier: {
     system: "https://fhir.nhs.uk/Id/prescription",
-    value: "A7B86F8D-1D02-FC28-E050-D20AE3A215F0"
+    value: "a7b86f8d-1d02-fc28-e050-d20ae3a215f0"
   }
 }
 
