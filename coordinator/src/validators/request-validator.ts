@@ -1,6 +1,6 @@
 import {Bundle, MedicationRequest, Resource} from "../model/fhir-resources"
 import {getExtensionForUrl, getExtensionForUrlOrNull} from "../services/translation/common"
-import * as errors from "../../errors/errors"
+import * as errors from "../errors/errors"
 
 // Validate Status
 export function getStatusCode(validation: Array<errors.ValidationError>): number {

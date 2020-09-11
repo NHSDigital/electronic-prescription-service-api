@@ -2,7 +2,7 @@ import * as validator from "../../src/validators/request-validator"
 import {Bundle, MedicationRequest, Resource} from "../../src/model/fhir-resources"
 import * as TestResources from "../resources/test-resources"
 import {clone} from "../resources/test-helpers"
-import * as errors from "../../errors/errors"
+import * as errors from "../../src/errors/errors"
 
 function validateValidationErrors (validationErrors: Array<errors.ValidationError>) {
   expect(validationErrors).toHaveLength(1)
