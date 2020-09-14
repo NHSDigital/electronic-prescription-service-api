@@ -3,7 +3,7 @@ import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../resources/test-resources"
 import {Bundle, Parameters} from "../resources/fhir-resources"
-import LosslessJson from "lossless-json"
+import * as LosslessJson from "lossless-json"
 
 jestpact.pactWith(
   {

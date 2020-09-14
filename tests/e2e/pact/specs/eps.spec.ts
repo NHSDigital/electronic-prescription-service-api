@@ -4,7 +4,7 @@ import supertest from "supertest"
 import * as uuid from "uuid"
 import {Bundle, Parameters} from "../resources/fhir-resources"
 import * as TestResources from "../resources/test-resources"
-import LosslessJson from "lossless-json"
+import * as LosslessJson from "lossless-json"
 
 jestpact.pactWith(
   {
