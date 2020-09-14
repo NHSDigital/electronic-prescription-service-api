@@ -2,7 +2,7 @@ import {isPollable, SpineDirectResponse, SpinePollableResponse} from "../service
 import Hapi from "@hapi/hapi"
 import {Bundle, OperationOutcome} from "../model/fhir-resources"
 import * as requestValidator from "../validators/request-validator"
-import {ValidationError} from "../validators/request-validator"
+import {ValidationError} from "../errors/errors"
 import {wrapInOperationOutcome} from "../services/translation/common"
 import * as LosslessJson from "lossless-json"
 
