@@ -2,7 +2,7 @@ import * as XmlJs from "xml-js"
 import {ElementCompact} from "xml-js"
 import * as fs from "fs"
 import * as path from "path"
-import {Bundle, Parameters} from "../../src/model/fhir-resources"
+import {Bundle, Parameters} from "./fhir-resources"
 import * as LosslessJson from "lossless-json"
 
 export class ExamplePrescription {
