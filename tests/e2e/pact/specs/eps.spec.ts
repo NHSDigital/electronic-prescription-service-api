@@ -2,8 +2,8 @@ import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as uuid from "uuid"
-import {Bundle, Parameters} from "../resources/fhir-resources"
-import * as TestResources from "../../../../coordinator/tests/resources/test-resources"
+import {Bundle, Parameters} from "../model/fhir-resources"
+import * as TestResources from "../resources/test-resources"
 import LosslessJson from "lossless-json"
 
 jestpact.pactWith(
@@ -30,7 +30,7 @@ jestpact.pactWith(
         const messageStr = LosslessJson.stringify(message)
         const interaction: InteractionObject = {
           state: null,
-          uponReceiving: "a request to convert a FHIR repeat-dispensing parent-prescription-1",
+          uponReceiving: `a request to convert ${desc} message`,
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",
@@ -55,7 +55,6 @@ jestpact.pactWith(
           .send(messageStr)
           .expect(200)
       })
-
 
       const prepareCases = TestResources.all.map(example => [example.description, example.fhirMessageUnsigned, example.fhirMessageDigest])
 
@@ -115,7 +114,7 @@ jestpact.pactWith(
         const messageStr = LosslessJson.stringify(message)
         const interaction: InteractionObject = {
           state: null,
-          uponReceiving: "a request to send a repeat-dispensing parent-prescription-1 to Spine",
+          uponReceiving: `a request to send ${desc} message to Spine`,
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",

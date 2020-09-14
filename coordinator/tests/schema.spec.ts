@@ -1,6 +1,6 @@
 import * as path from "path"
-import * as TestResources from "../resources/test-resources"
-import {Bundle} from "../../src/model/fhir-resources"
+import * as TestResources from "./resources/test-resources"
+import {Bundle} from "../src/model/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import Ajv = require("ajv");
 import $RefParser = require("@apidevtools/json-schema-ref-parser");
