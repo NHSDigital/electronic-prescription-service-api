@@ -16,7 +16,10 @@ properties:
     description: Logical id of this artifact.
     example: "7EB02341-5F62-4A76-2CD3-34F523452356"
   identifier:
-    $ref: "Identifier-Location.yaml"
+    type: array
+    description: Unique code or number identifying the location to its users
+    items:
+      $ref: "Identifier-Location.yaml"
   status:
     type: string
     description: The status property covers the general availability of the resource, not the current value which may be covered by the operationStatus, or by a schedule/slots if they are configured for the location.
