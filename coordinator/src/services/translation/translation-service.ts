@@ -1,8 +1,8 @@
 import * as XmlJs from "xml-js"
-import * as codes from "../../model/hl7-v3-datatypes-codes"
-import * as core from "../../model/hl7-v3-datatypes-core"
-import * as prescriptions from "../../model/hl7-v3-prescriptions"
-import * as fhir from "../../model/fhir-resources"
+import * as codes from "model/hl7-v3-datatypes-codes"
+import * as core from "model/hl7-v3-datatypes-core"
+import * as prescriptions from "model/hl7-v3-prescriptions"
+import * as fhir from "model/fhir-resources"
 import path from "path"
 import * as crypto from "crypto-js"
 import Mustache from "mustache"
@@ -12,8 +12,8 @@ import {namespacedCopyOf, writeXmlStringCanonicalized, writeXmlStringPretty} fro
 import {convertParentPrescription} from "./parent-prescription"
 import {extractFragments, convertFragmentsToDisplayableFormat, convertFragmentsToHashableFormat} from "./signing"
 import {getIdentifierValueForSystem} from "./common"
-import {Display} from "../../model/signing"
-import {identifyMessageType} from "../../routes/util"
+import {Display} from "model/signing"
+import {identifyMessageType} from "routes/util"
 
 export function convertFhirMessage(fhirMessage: fhir.Bundle): string {
   const messageType = identifyMessageType(fhirMessage)
