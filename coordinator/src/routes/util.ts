@@ -8,10 +8,9 @@ import * as LosslessJson from "lossless-json"
 
 export function handleResponse(spineResponse: SpineDirectResponse | SpinePollableResponse, responseToolkit: Hapi.ResponseToolkit): Hapi.ResponseObject {
   if (isPollable(spineResponse)) {
-
-    // return responseToolkit.response()
-    //   .code(spineResponse.statusCode)
-    //   .header("Content-Location", spineResponse.pollingUrl)
+    return responseToolkit.response()
+      .code(spineResponse.statusCode)
+      .header("Content-Location", spineResponse.pollingUrl)
   } else {
     return responseToolkit.response(wrapInOperationOutcome(spineResponse))
       .code(spineResponse.statusCode)
