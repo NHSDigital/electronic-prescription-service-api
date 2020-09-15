@@ -1,7 +1,8 @@
-import axios, {AxiosResponse} from "axios"
+import axios, {AxiosError, AxiosResponse} from "axios"
 import https from "https"
 import {addEbXmlWrapper} from "./request-builder"
 import {Hl7InteractionIdentifier} from "../model/hl7-v3-datatypes-codes"
+import {OperationOutcome} from "../model/fhir-resources"
 
 const SPINE_ENDPOINT = process.env.SPINE_ENV === "INT" ? process.env.INT_SPINE_URL : process.env.TEST_SPINE_URL
 const SPINE_PATH = "/Prescription"
@@ -12,10 +13,10 @@ export interface SpineRequest {
   interactionId: string
 }
 
-type SpineResponse = SpineDirectResponse | SpinePollableResponse
+type SpineResponse<T> = SpineDirectResponse<T> | SpinePollableResponse
 
-export interface SpineDirectResponse {
-  body: string
+export interface SpineDirectResponse<T> {
+  body: T
   statusCode: number
 }
 
@@ -24,11 +25,11 @@ export interface SpinePollableResponse {
   statusCode: number
 }
 
-export function isDirect(spineResponse: SpineResponse): spineResponse is SpineDirectResponse {
+export function isDirect<T>(spineResponse: SpineResponse<T>): spineResponse is SpineDirectResponse<T> {
   return !isPollable(spineResponse)
 }
 
-export function isPollable(spineResponse: SpineResponse): spineResponse is SpinePollableResponse {
+export function isPollable<T>(spineResponse: SpineResponse<T>): spineResponse is SpinePollableResponse {
   return "pollingUrl" in spineResponse
 }
 
@@ -42,15 +43,15 @@ const httpsAgent = new https.Agent({
 })
 
 export interface RequestHandler {
-  send(spineRequest: SpineRequest): Promise<SpineResponse>
-  poll(path: string): Promise<SpineResponse>
+  send(spineRequest: SpineRequest): Promise<SpineResponse<unknown>>
+  poll(path: string): Promise<SpineResponse<unknown>>
 }
 
 export class SandboxRequestHandler implements RequestHandler {
   parentPrescriptionPollingId = "9807d292_074a_49e8_b48d_52e5bbf785ed"
   cancellationPollingId = "a549d4d6_e6aa_4664_95f8_6c0cac17bd77"
 
-  async send(spineRequest: SpineRequest): Promise<SpineResponse> {
+  async send(spineRequest: SpineRequest): Promise<SpineResponse<string>> {
     if (spineRequest.interactionId === Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT._attributes.extension) {
       return Promise.resolve({
         pollingUrl: `_poll/${this.parentPrescriptionPollingId}`,
@@ -69,24 +70,42 @@ export class SandboxRequestHandler implements RequestHandler {
     }
   }
 
-  async poll(path: string): Promise<SpineResponse> {
+  async poll(path: string): Promise<SpineResponse<string | OperationOutcome>> {
     if (path === this.parentPrescriptionPollingId) {
       //TODO - add realistic response
       return {
         statusCode: 200,
-        body: "Prescription message sent"
+        body: "Prescription Message Sent"
       }
     } else if (path === this.cancellationPollingId) {
       //TODO - add realistic response
       return {
         statusCode: 200,
-        body: "Cancellation message sent"
+        body: "Cancellation Message Sent"
       }
     } else {
-      //TODO - add realistic response
+      const notFoundOperationOutcome: OperationOutcome = {
+        resourceType: "OperationOutcome",
+        issue: [
+          {
+            code: "informational",
+            severity: "information",
+            details: {
+              coding: [
+                {
+                  code: "POLLING_ID_NOT_FOUND",
+                  display: "The polling id was not found",
+                  system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+                  version: "1"
+                }
+              ]
+            }
+          }
+        ]
+      }
       return {
         statusCode: 404,
-        body: "Polling ID not found"
+        body: notFoundOperationOutcome
       }
     }
   }
@@ -103,7 +122,7 @@ export class LiveRequestHandler implements RequestHandler {
     this.ebXMLBuilder = ebXMLBuilder
   }
 
-  async send(spineRequest: SpineRequest): Promise<SpineResponse> {
+  async send(spineRequest: SpineRequest): Promise<SpineResponse<unknown>> {
     const wrappedMessage = this.ebXMLBuilder(spineRequest)
     const address = `${SPINE_URL_SCHEME}://${this.spineEndpoint}${this.spinePath}`
 
@@ -128,7 +147,7 @@ export class LiveRequestHandler implements RequestHandler {
     }
   }
 
-  async poll(path: string): Promise<SpineResponse> {
+  async poll(path: string): Promise<SpineResponse<unknown>> {
     const address = `${SPINE_URL_SCHEME}://${this.spineEndpoint}/_poll/${path}`
 
     console.log(`Attempting to send polling message to ${address}`)
@@ -169,23 +188,21 @@ export class LiveRequestHandler implements RequestHandler {
     }
   }
 
-  private static handleError(error: Error): SpineResponse {
-    /* eslint-disable */
-    const anyError = error as any
-
-    if (anyError.response) {
+  private static handleError(error: Error): SpineResponse<unknown> {
+    const axiosError = error as AxiosError
+    if (axiosError.response) {
       return {
-        body: anyError.response.data,
-        statusCode: anyError.response.status
+        body: axiosError.response.data,
+        statusCode: axiosError.response.status
       }
-    } else if (anyError.request) {
+    } else if (axiosError.request) {
       return {
-        body: anyError.request.data,
+        body: axiosError.request.data,
         statusCode: 408
       }
     } else {
       return {
-        body: anyError.message,
+        body: axiosError.message,
         statusCode: 500
       }
     }
