@@ -45,14 +45,14 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
   })
 
   test.each(cases)("returns correct value for %s", (desc: string, input: Bundle, output: ElementCompact) => {
-    const translated = translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(input)
+    const translated = translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(input).message
     xmlTest(XmlJs.xml2js(translated, {compact: true}), output)()
   })
 
   test("produces result with no lower case UUIDs", () => {
     const messageWithLowercaseUUIDs = getMessageWithLowercaseUUIDs()
 
-    const translatedMessage = translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(messageWithLowercaseUUIDs)
+    const translatedMessage = translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(messageWithLowercaseUUIDs).message
 
     const allNonUpperCaseUUIDS = getAllUUIDsNotUpperCase(translatedMessage)
     expect(allNonUpperCaseUUIDS.length).toBe(0)

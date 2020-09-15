@@ -190,6 +190,7 @@ export class Hl7InteractionIdentifier extends Identifier<"2.16.840.1.113883.2.1.
   }
 
     static PARENT_PRESCRIPTION_URGENT = new Hl7InteractionIdentifier("PORX_IN020101SM31")
+    static CANCEL_REQUEST = new Hl7InteractionIdentifier("XXXXX")
 }
 
 export class AccreditedSystemIdentifier extends Identifier<"1.2.826.0.1285.0.2.0.107"> {

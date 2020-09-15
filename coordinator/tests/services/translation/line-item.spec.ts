@@ -206,7 +206,7 @@ describe("prescriptionEndorsements", () => {
     expect(hl7v3PrescriptionEndorsements.length).toBeGreaterThan(0)
     hl7v3PrescriptionEndorsements.map(endorsement => expect(endorsement).toEqual(undefined))
 
-    const hl7v3PrescriptionXml = convertFhirMessageToHl7V3ParentPrescriptionMessage(bundle)
+    const hl7v3PrescriptionXml = convertFhirMessageToHl7V3ParentPrescriptionMessage(bundle).message
     expect(hl7v3PrescriptionXml).not.toContain("pertinentInformation3")
   })
 })

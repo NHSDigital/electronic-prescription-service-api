@@ -54,7 +54,7 @@ function toFhirError(validation: Array<ValidationError>): OperationOutcome {
     details: {
       coding: [{
         system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
-        version: 1,
+        version: "1",
         code: ve.apiErrorCode,
         display: ve.message
       }]
