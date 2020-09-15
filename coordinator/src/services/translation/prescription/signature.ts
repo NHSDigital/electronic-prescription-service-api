@@ -1,9 +1,9 @@
 import * as XmlJs from "xml-js"
-import * as core from "../../model/hl7-v3-datatypes-core"
-import * as codes from "../../model/hl7-v3-datatypes-codes"
-import * as prescriptions from "../../model/hl7-v3-prescriptions"
-import {namespacedCopyOf, writeXmlStringCanonicalized} from "./xml"
-import {Display, DisplayMedication, Fragments} from "../../model/signing"
+import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
+import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
+import * as prescriptions from "../../../models/hl7-v3/hl7-v3-prescriptions"
+import {namespacedCopyOf, writeXmlStringCanonicalized} from "../../serialisation/xml"
+import {Display, DisplayMedication, Fragments} from "../../../models/signature"
 
 export function extractFragments(parentPrescription: prescriptions.ParentPrescription): Fragments {
   const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription

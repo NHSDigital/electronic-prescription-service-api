@@ -1,5 +1,5 @@
-import * as translator from "../../../src/services/translation/translation-service"
-import {convertFhirMessageToSignedInfoMessage} from "../../../src/services/translation/translation-service"
+import * as translator from "../../../src/services/translation"
+import {convertFhirMessageToSignedInfoMessage} from "../../../src/services/translation"
 import * as TestResources from "../../resources/test-resources"
 import * as XmlJs from "xml-js"
 import {MomentFormatSpecification, MomentInput} from "moment"

@@ -1,13 +1,13 @@
-import * as fhir from "../../model/fhir-resources"
-import * as peoplePlaces from "../../model/hl7-v3-people-places"
+import * as fhir from "../../../models/fhir/fhir-resources"
+import * as peoplePlaces from "../../../models/hl7-v3/hl7-v3-people-places"
 import {
   getCodeableConceptCodingForSystemOrNull,
   getIdentifierValueForSystem,
   onlyElement,
   resolveReference
-} from "./common"
-import * as codes from "../../model/hl7-v3-datatypes-codes"
-import * as core from "../../model/hl7-v3-datatypes-core"
+} from "../common"
+import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
+import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {convertAddress, convertTelecom} from "./demographics"
 
 const NHS_TRUST_CODE = "RO197"

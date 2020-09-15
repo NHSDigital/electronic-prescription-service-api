@@ -1,7 +1,7 @@
-import * as fhir from "../../../src/model/fhir-resources"
-import {Telecom, TelecomUse} from "../../../src/model/hl7-v3-datatypes-core"
-import {getAgentPersonPersonId, getAgentPersonTelecom} from "../../../src/services/translation/practitioner"
-import {BsaPrescribingIdentifier, SdsUniqueIdentifier} from "../../../src/model/hl7-v3-datatypes-codes"
+import * as fhir from "../../../src/models/fhir/fhir-resources"
+import {Telecom, TelecomUse} from "../../../src/models/hl7-v3/hl7-v3-datatypes-core"
+import {getAgentPersonPersonId, getAgentPersonTelecom} from "../../../src/services/translation/prescription/practitioner"
+import {BsaPrescribingIdentifier, SdsUniqueIdentifier} from "../../../src/models/hl7-v3/hl7-v3-datatypes-codes"
 
 describe("getAgentPersonTelecom", () => {
   const roleTelecom: Array<fhir.ContactPoint> = [

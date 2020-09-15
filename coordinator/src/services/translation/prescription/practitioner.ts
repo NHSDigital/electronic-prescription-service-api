@@ -1,9 +1,9 @@
-import * as fhir from "../../model/fhir-resources"
-import {PractitionerRole} from "../../model/fhir-resources"
-import * as peoplePlaces from "../../model/hl7-v3-people-places"
-import * as codes from "../../model/hl7-v3-datatypes-codes"
+import * as fhir from "../../../models/fhir/fhir-resources"
+import {PractitionerRole} from "../../../models/fhir/fhir-resources"
+import * as peoplePlaces from "../../../models/hl7-v3/hl7-v3-people-places"
+import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {convertName, convertTelecom} from "./demographics"
-import * as prescriptions from "../../model/hl7-v3-prescriptions"
+import * as prescriptions from "../../../models/hl7-v3/hl7-v3-prescriptions"
 import {
   convertIsoStringToHl7V3DateTime,
   getCodeableConceptCodingForSystem,
@@ -11,11 +11,11 @@ import {
   getIdentifierValueForSystem,
   getIdentifierValueOrNullForSystem, onlyElement, onlyElementOrNull,
   resolveReference
-} from "./common"
+} from "../common"
 import * as XmlJs from "xml-js"
-import * as core from "../../model/hl7-v3-datatypes-core"
+import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {convertOrganizationAndProviderLicense} from "./organization"
-import {getProvenances} from "./common/getResourcesOfType"
+import {getProvenances} from "../common/getResourcesOfType"
 
 export function convertAuthor(
   fhirBundle: fhir.Bundle,

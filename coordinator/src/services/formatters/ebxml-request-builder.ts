@@ -4,7 +4,7 @@ import moment from "moment"
 import path from "path"
 import * as uuid from "uuid"
 
-const ebxmlRequestTemplate = fs.readFileSync(path.join(__dirname, "../resources/ebxml_request.mustache"), "utf-8").replace(/\n/g, "\r\n")
+const ebxmlRequestTemplate = fs.readFileSync(path.join(__dirname, "../../resources/ebxml_request.mustache"), "utf-8").replace(/\n/g, "\r\n")
 const cpaIdMap = new Map<string, string>(JSON.parse(process.env.CPA_ID_MAP))
 
 class EbXmlRequest {

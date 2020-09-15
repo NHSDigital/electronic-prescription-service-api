@@ -1,7 +1,7 @@
-import * as core from "./hl7-v3-datatypes-core"
-import {GlobalIdentifier} from "./hl7-v3-datatypes-codes"
-import {AgentPerson} from "./hl7-v3-people-places"
-import * as prescriptions from "./hl7-v3-prescriptions"
+import * as core from "../hl7-v3/hl7-v3-datatypes-core"
+import {GlobalIdentifier} from "../hl7-v3/hl7-v3-datatypes-codes"
+import {AgentPerson} from "../hl7-v3/hl7-v3-people-places"
+import * as prescriptions from "../hl7-v3/hl7-v3-prescriptions"
 
 export interface Fragments {
   time: core.Timestamp

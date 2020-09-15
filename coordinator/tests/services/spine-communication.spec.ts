@@ -1,11 +1,12 @@
 import "jest"
 import * as moxios from "moxios"
 import axios from "axios"
-import {RequestHandler, isPollable, SpinePollableResponse} from "../../src/services/spine-communication"
+import {isPollable, SpinePollableResponse} from "../../src/models/spine/responses"
+import {SpineHandler} from "../../src/services/handlers/spine-handler"
 
 describe("Spine communication", () => {
 
-  const requestHandler = new RequestHandler("localhost", "/Prescribe", (message) => `<wrap>${message}</wrap>`)
+  const requestHandler = new SpineHandler("localhost", "/Prescribe", (message) => `<wrap>${message}</wrap>`)
 
   beforeEach(() => {
     moxios.install(axios)
@@ -15,7 +16,7 @@ describe("Spine communication", () => {
     moxios.uninstall(axios)
   })
 
-  test("Successful sendData response returns pollable result", async () => {
+  test("Successful send response returns pollable result", async () => {
     moxios.wait(() => {
       const request = moxios.requests.mostRecent()
       request.respondWith({
@@ -27,20 +28,20 @@ describe("Spine communication", () => {
       })
     })
 
-    const spineResponse = await requestHandler.sendData("test")
+    const spineResponse = await requestHandler.send("test")
 
     expect(spineResponse.statusCode).toBe(202)
     expect(isPollable(spineResponse)).toBe(true)
     expect((spineResponse as SpinePollableResponse).pollingUrl).toBe("http://test-content-location")
   })
 
-  test("Unsuccesful sendData response returns non-pollable result", async () => {
+  test("Unsuccesful send response returns non-pollable result", async () => {
     moxios.wait(() => {
       const request = moxios.requests.mostRecent()
       request.respondWith({status: 400})
     })
 
-    const spineResponse = await requestHandler.sendData("test")
+    const spineResponse = await requestHandler.send("test")
 
     expect(isPollable(spineResponse)).toBe(false)
   })

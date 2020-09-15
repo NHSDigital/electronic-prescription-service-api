@@ -1,30 +1,12 @@
 import axios, {AxiosResponse} from "axios"
 import https from "https"
-import {addEbXmlWrapper} from "./request-builder"
+import {Handler} from "."
+import {SpineResponse} from "../../models/spine/responses"
+import {addEbXmlWrapper} from "../formatters/ebxml-request-builder"
 
+const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_ENV === "INT" ? process.env.INT_SPINE_URL : process.env.TEST_SPINE_URL
 const SPINE_PATH = "/Prescription"
-const SPINE_URL_SCHEME = "https"
-
-type SpineResponse = SpineDirectResponse | SpinePollableResponse
-
-export interface SpineDirectResponse {
-  body: string
-  statusCode: number
-}
-
-export interface SpinePollableResponse {
-  pollingUrl: string
-  statusCode: number
-}
-
-export function isDirect(spineResponse: SpineResponse): spineResponse is SpineDirectResponse {
-  return !isPollable(spineResponse)
-}
-
-export function isPollable(spineResponse: SpineResponse): spineResponse is SpinePollableResponse {
-  return "pollingUrl" in spineResponse
-}
 
 const httpsAgent = new https.Agent({
   cert: process.env.CLIENT_CERT,
@@ -35,18 +17,18 @@ const httpsAgent = new https.Agent({
   ]
 })
 
-export class RequestHandler {
+export class SpineHandler implements Handler {
   private readonly spineEndpoint: string
   private readonly spinePath: string
   private readonly ebXMLBuilder: (message: string) => string
 
-  constructor(spineEndpoint: string, spinePath: string, ebXMLBuilder: (message: string) => string) {
-    this.spineEndpoint = spineEndpoint
-    this.spinePath = spinePath
-    this.ebXMLBuilder = ebXMLBuilder
+  constructor(spineEndpoint: string = null, spinePath: string = null, ebXMLBuilder: (message: string) => string = null) {
+    this.spineEndpoint = spineEndpoint || SPINE_ENDPOINT
+    this.spinePath = spinePath || SPINE_PATH
+    this.ebXMLBuilder = ebXMLBuilder || addEbXmlWrapper
   }
 
-  async request(message: string): Promise<SpineResponse> {
+  async send(message: string): Promise<SpineResponse> {
     const wrappedMessage = this.ebXMLBuilder(message)
     const address = `${SPINE_URL_SCHEME}://${this.spineEndpoint}${this.spinePath}`
 
@@ -64,22 +46,14 @@ export class RequestHandler {
           }
         }
       )
-      return RequestHandler.handlePollableOrImmediateResponse(result)
+      return SpineHandler.handlePollableOrImmediateResponse(result)
     } catch (error) {
       console.log(`Failed post request for prescription message. Error: ${error}`)
-      return RequestHandler.handleError(error)
+      return SpineHandler.handleError(error)
     }
   }
 
   async poll(path: string): Promise<SpineResponse> {
-    if (process.env.SANDBOX === "1") {
-      console.log("Sandbox Mode. Returning fixed polling response")
-      return {
-        statusCode: 200,
-        body: "Message Sent"
-      }
-    }
-
     const address = `${SPINE_URL_SCHEME}://${this.spineEndpoint}/_poll/${path}`
 
     console.log(`Attempting to send polling message to ${address}`)
@@ -92,10 +66,10 @@ export class RequestHandler {
           headers: {"nhsd-asid": process.env.FROM_ASID}
         }
       )
-      return RequestHandler.handlePollableOrImmediateResponse(result)
+      return SpineHandler.handlePollableOrImmediateResponse(result)
     } catch (error) {
       console.log(`Failed polling request for polling path ${path}. Error: ${error}`)
-      return RequestHandler.handleError(error)
+      return SpineHandler.handleError(error)
     }
   }
 
@@ -141,17 +115,4 @@ export class RequestHandler {
       }
     }
   }
-
-  async sendData(message: string): Promise<SpineResponse> {
-    return (
-      process.env.SANDBOX === "1" ?
-        Promise.resolve({
-          pollingUrl: '_poll/9807d292_074a_49e8_b48d_52e5bbf785ed',
-          statusCode: 202
-        }) :
-        await this.request(message)
-    )
-  }
 }
-
-export const defaultRequestHandler = new RequestHandler(SPINE_ENDPOINT, SPINE_PATH, addEbXmlWrapper)

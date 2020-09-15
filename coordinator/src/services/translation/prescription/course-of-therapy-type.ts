@@ -1,4 +1,4 @@
-import {MedicationRequest} from "../../../model/fhir-resources"
+import {MedicationRequest} from "../../../models/fhir/fhir-resources"
 
 export enum CourseOfTherapyTypeCode {
   ACUTE = "acute",

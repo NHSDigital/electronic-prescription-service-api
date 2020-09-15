@@ -1,16 +1,17 @@
-import {isPollable, SpineDirectResponse, SpinePollableResponse} from "../services/spine-communication"
+import {isPollable, SpineDirectResponse, SpinePollableResponse} from "../models/spine/responses"
 import Hapi from "@hapi/hapi"
-import {Bundle, OperationOutcome} from "../model/fhir-resources"
-import * as requestValidator from "../validators/request-validator"
-import {ValidationError} from "../errors/errors"
+import {Bundle, OperationOutcome} from "../models/fhir/fhir-resources"
+import * as requestValidator from "../services/validation/bundle-validator"
+import {ValidationError} from "../models/errors/validation-errors"
 import {wrapInOperationOutcome} from "../services/translation/common"
 import * as LosslessJson from "lossless-json"
 
-export function handlePollableResponse(spineResponse: SpineDirectResponse | SpinePollableResponse, responseToolkit: Hapi.ResponseToolkit): Hapi.ResponseObject {
+export function handleResponse(spineResponse: SpineDirectResponse | SpinePollableResponse, responseToolkit: Hapi.ResponseToolkit): Hapi.ResponseObject {
   if (isPollable(spineResponse)) {
-    return responseToolkit.response()
-      .code(spineResponse.statusCode)
-      .header("Content-Location", spineResponse.pollingUrl)
+
+    // return responseToolkit.response()
+    //   .code(spineResponse.statusCode)
+    //   .header("Content-Location", spineResponse.pollingUrl)
   } else {
     return responseToolkit.response(wrapInOperationOutcome(spineResponse))
       .code(spineResponse.statusCode)

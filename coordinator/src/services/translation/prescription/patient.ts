@@ -1,8 +1,8 @@
-import * as fhir from "../../model/fhir-resources"
-import * as peoplePlaces from "../../model/hl7-v3-people-places"
-import * as codes from "../../model/hl7-v3-datatypes-codes"
+import * as fhir from "../../../models/fhir/fhir-resources"
+import * as peoplePlaces from "../../../models/hl7-v3/hl7-v3-people-places"
+import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {convertAddress, convertGender, convertName} from "./demographics"
-import {convertIsoStringToHl7V3Date, getIdentifierValueForSystem} from "./common"
+import {convertIsoStringToHl7V3Date, getIdentifierValueForSystem} from "../common"
 
 function convertPatientToProviderPatient(
   patient: fhir.Patient

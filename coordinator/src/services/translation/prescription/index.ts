@@ -1,24 +1,24 @@
-import * as core from "../../model/hl7-v3-datatypes-core"
-import {Interval, IntervalUnanchored, Timestamp} from "../../model/hl7-v3-datatypes-core"
-import * as codes from "../../model/hl7-v3-datatypes-codes"
-import * as prescriptions from "../../model/hl7-v3-prescriptions"
-import {DaysSupply, PrescriptionPertinentInformation7, ReviewDate} from "../../model/hl7-v3-prescriptions"
-import * as fhir from "../../model/fhir-resources"
-import {DateTimeExtension, RepeatInformationExtension} from "../../model/fhir-resources"
+import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
+import {Interval, IntervalUnanchored, Timestamp} from "../../../models/hl7-v3/hl7-v3-datatypes-core"
+import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
+import * as prescriptions from "../../../models/hl7-v3/hl7-v3-prescriptions"
+import {DaysSupply, PrescriptionPertinentInformation7, ReviewDate} from "../../../models/hl7-v3/hl7-v3-prescriptions"
+import * as fhir from "../../../models/fhir/fhir-resources"
+import {DateTimeExtension, RepeatInformationExtension} from "../../../models/fhir/fhir-resources"
 import {
   convertIsoDateStringToMoment,
   convertIsoStringToHl7V3Date,
   convertMomentToHl7V3Date,
   getExtensionForUrl, getExtensionForUrlOrNull,
   getNumericValueAsString
-} from "./common"
+} from "../common"
 import {convertAuthor, convertResponsibleParty} from "./practitioner"
-import * as peoplePlaces from "../../model/hl7-v3-people-places"
+import * as peoplePlaces from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertMedicationRequestToLineItem} from "./line-item"
-import {getCommunicationRequests, getMedicationRequests} from "./common/getResourcesOfType"
-import {populateRepeatNumber} from "./common/repeatNumber"
+import {getCommunicationRequests, getMedicationRequests} from "../common/getResourcesOfType"
+import {populateRepeatNumber} from "../common/repeatNumber"
 import moment from "moment"
-import {CourseOfTherapyTypeCode, getCourseOfTherapyTypeCode} from "./common/courseOfTherapyType"
+import {CourseOfTherapyTypeCode, getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 
 export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescriptions.Prescription {
   const fhirMedicationRequests = getMedicationRequests(fhirBundle)

@@ -1,14 +1,14 @@
-import * as fhir from "../../model/fhir-resources"
+import * as fhir from "../../../models/fhir/fhir-resources"
 import {
   getCodingForSystem,
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
   getNumericValueAsString, onlyElement
-} from "./common"
-import * as core from "../../model/hl7-v3-datatypes-core"
-import * as codes from "../../model/hl7-v3-datatypes-codes"
-import * as prescriptions from "../../model/hl7-v3-prescriptions"
-import {populateRepeatNumber} from "./common/repeatNumber"
+} from "../common"
+import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
+import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
+import * as prescriptions from "../../../models/hl7-v3/hl7-v3-prescriptions"
+import {populateRepeatNumber} from "../common/repeatNumber"
 
 function convertProduct(medicationCodeableConcept: fhir.CodeableConcept) {
   const fhirMedicationCode = getCodingForSystem(

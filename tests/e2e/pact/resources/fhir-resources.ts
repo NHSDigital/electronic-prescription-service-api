@@ -1,1 +1,1 @@
-../../../../coordinator/src/model/fhir-resources.ts
+../../../../coordinator/src/models/fhir/fhir-resources.ts

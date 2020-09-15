@@ -1,11 +1,11 @@
 import {clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
-import {Bundle, HealthcareService, Location, Organization} from "../../../src/model/fhir-resources"
+import {Bundle, HealthcareService, Location, Organization} from "../../../src/models/fhir/fhir-resources"
 import {
   getHealthcareServices,
   getOrganizations
 } from "../../../src/services/translation/common/getResourcesOfType"
-import {convertOrganizationAndProviderLicense} from "../../../src/services/translation/organization"
+import {convertOrganizationAndProviderLicense} from "../../../src/services/translation/prescription/organization"
 import {getResourceForFullUrl} from "../../../src/services/translation/common"
 
 describe("convertOrganizationAndProviderLicense", () => {

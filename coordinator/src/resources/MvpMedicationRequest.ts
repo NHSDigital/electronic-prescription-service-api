@@ -4,7 +4,7 @@ import {
   IdentifierExtension,
   MedicationRequest,
   MedicationRequestDispenseRequest, MedicationRequestGroupIdentifier
-} from "../../model/fhir-resources"
+} from "../models/fhir/fhir-resources"
 
 const performerSiteTypeExtension: CodingExtension = {
   url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",

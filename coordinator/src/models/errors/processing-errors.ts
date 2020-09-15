@@ -1,4 +1,4 @@
-import {OperationOutcome} from "./fhir-resources"
+import {OperationOutcome} from "../fhir/fhir-resources"
 
 export class FhirMessageProcessingError extends Error {
   message: string

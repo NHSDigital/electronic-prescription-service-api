@@ -1,7 +1,7 @@
-import * as fhir from "../../model/fhir-resources"
-import * as core from "../../model/hl7-v3-datatypes-core"
-import * as codes from "../../model/hl7-v3-datatypes-codes"
-import {InvalidValueError} from "../../model/errors"
+import * as fhir from "../../../models/fhir/fhir-resources"
+import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
+import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
+import {InvalidValueError} from "../../../models/errors/processing-errors"
 
 export function convertName(fhirHumanName: fhir.HumanName, fhirPath: string): core.Name {
   const name = new core.Name()

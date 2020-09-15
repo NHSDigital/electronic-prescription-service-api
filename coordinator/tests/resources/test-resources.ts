@@ -1,8 +1,8 @@
 import * as XmlJs from "xml-js"
 import * as fs from "fs"
 import * as path from "path"
-import {ParentPrescription} from "../../src/model/hl7-v3-prescriptions"
-import {Bundle, Parameters} from "../../src/model/fhir-resources"
+import {ParentPrescription} from "../../src/models/hl7-v3/hl7-v3-prescriptions"
+import {Bundle, Parameters} from "../../src/models/fhir/fhir-resources"
 import {ElementCompact} from "xml-js"
 import * as LosslessJson from "lossless-json"
 

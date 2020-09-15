@@ -1,4 +1,4 @@
-import * as fhir from "../../../model/fhir-resources"
+import * as fhir from "../../../models/fhir/fhir-resources"
 import {onlyElement} from "./index"
 
 function getResourcesOfType<T extends fhir.Resource>(fhirBundle: fhir.Bundle, resourceType: string): Array<T> {

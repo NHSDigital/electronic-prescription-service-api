@@ -1,15 +1,15 @@
-import * as codes from "../../model/hl7-v3-datatypes-codes"
-import {GlobalIdentifier, SdsRoleProfileIdentifier, SdsUniqueIdentifier} from "../../model/hl7-v3-datatypes-codes"
-import * as core from "../../model/hl7-v3-datatypes-core"
+import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
+import {GlobalIdentifier, SdsRoleProfileIdentifier, SdsUniqueIdentifier} from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
+import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import moment from "moment"
 import {
   convertMomentToHl7V3DateTime,
   getCodeableConceptCodingForSystem,
   getIdentifierValueForSystem,
   resolveReference
-} from "./common"
-import {Bundle} from "../../model/fhir-resources"
-import {getMedicationRequests} from "./common/getResourcesOfType"
+} from "../common"
+import {Bundle} from "../../../models/fhir/fhir-resources"
+import {getMedicationRequests} from "../common/getResourcesOfType"
 
 export function createSendMessagePayload<T>(
   messageId: string,

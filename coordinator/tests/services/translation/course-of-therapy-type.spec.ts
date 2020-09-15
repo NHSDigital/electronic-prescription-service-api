@@ -1,11 +1,11 @@
-import * as TestResources from "../../../resources/test-resources"
-import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
+import * as TestResources from "../../resources/test-resources"
+import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
 import {
   CourseOfTherapyTypeCode,
   getCourseOfTherapyTypeCode
-} from "../../../../src/services/translation/common/courseOfTherapyType"
-import {clone} from "../../../resources/test-helpers"
-import {MedicationRequest} from "../../../../src/model/fhir-resources"
+} from "../../../src/services/translation/prescription/course-of-therapy-type"
+import {clone} from "../../resources/test-helpers"
+import {MedicationRequest} from "../../../src/models/fhir/fhir-resources"
 
 describe("getCourseOfTherapyTypeCode", () => {
   let medicationRequests: Array<MedicationRequest>

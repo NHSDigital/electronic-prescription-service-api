@@ -2,7 +2,7 @@ import * as codes from "./hl7-v3-datatypes-codes"
 import {GlobalIdentifier, SdsUniqueIdentifier} from "./hl7-v3-datatypes-codes"
 import {Attributes, ElementCompact} from "xml-js"
 import {LosslessNumber} from "lossless-json"
-import {getNumericValueAsString} from "../services/translation/common"
+import {getNumericValueAsString} from "../../services/translation/common"
 
 export interface AttributeTypeCode extends Attributes {
   typeCode: "AUT" | "COMP" | "FLFS" | "LA" | "PART" | "PERT" | "PRD" | "PRF" | "RESP" | "RCT" | "SBJ"

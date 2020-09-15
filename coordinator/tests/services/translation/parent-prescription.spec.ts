@@ -1,4 +1,4 @@
-import {convertParentPrescription} from "../../../src/services/translation/parent-prescription"
+import {convertParentPrescription} from "../../../src/services/translation/prescription/parent-prescription"
 import * as TestResources from "../../resources/test-resources"
 import {xmlTest} from "../../resources/test-helpers"
 
