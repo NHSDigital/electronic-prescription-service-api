@@ -16,7 +16,7 @@ import * as LosslessJson from "lossless-json"
 import {TooManyValuesError} from "../../../../src/model/errors"
 
 test("getResourceForFullUrl returns correct resources", () => {
-  const result = getResourceForFullUrl(TestResources.examplePrescription1.fhirMessageUnsigned, "urn:uuid:A7B86F8D-1D81-FC28-E050-D20AE3A215F0")
+  const result = getResourceForFullUrl(TestResources.examplePrescription1.fhirMessageUnsigned, "urn:uuid:a7b86f8d-1d81-fc28-e050-d20ae3a215f0")
   expect((result as fhir.Resource).resourceType).toBe("MedicationRequest")
 })
 
@@ -34,11 +34,11 @@ describe("getIdentifierValueForSystem", () => {
     },
     {
       "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-      "value": "A7B86F8D-1D81-FC28-E050-D20AE3A215F0"
+      "value": "a7b86f8d-1d81-fc28-e050-d20ae3a215f0"
     },
     {
       "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-      "value": "A7B86F8D-1D81-FC28-E050-D20AE3A215F0"
+      "value": "a7b86f8d-1d81-fc28-e050-d20ae3a215f0"
     }
   ]
 
@@ -64,11 +64,11 @@ describe("getIdentifierValueOrNullForSystem", () => {
     },
     {
       "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-      "value": "A7B86F8D-1D81-FC28-E050-D20AE3A215F0"
+      "value": "a7b86f8d-1d81-fc28-e050-d20ae3a215f0"
     },
     {
       "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-      "value": "A7B86F8D-1D81-FC28-E050-D20AE3A215F0"
+      "value": "a7b86f8d-1d81-fc28-e050-d20ae3a215f0"
     }
   ]
 
