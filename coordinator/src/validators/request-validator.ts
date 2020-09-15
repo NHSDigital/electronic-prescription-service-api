@@ -1,24 +1,27 @@
 import {Bundle, MedicationRequest, Resource} from "../model/fhir-resources"
 import {getExtensionForUrl, getExtensionForUrlOrNull} from "../services/translation/common"
 import * as errors from "../errors/errors"
-import {MessageType} from "../routes/util"
+import {identifyMessageType} from "../routes/util"
 
 // Validate Status
 export function getStatusCode(validation: Array<errors.ValidationError>): number {
   return validation.length > 0 ? 400 : 200
 }
 
-export function verifyBundle(bundle: Bundle, requireSignature: boolean, messageType: MessageType): Array<errors.ValidationError> {
-  return messageType === "Prescription" ? verifyPrescriptionBundle(bundle, requireSignature) : verifyCancellationBundle(bundle, requireSignature)
+export function verifyBundle(bundle: unknown, requireSignature: boolean): Array<errors.ValidationError> {
+  const messageType = identifyMessageType(bundle as Bundle)
+  return messageType === "Prescription"
+    ? verifyPrescriptionBundle(bundle, requireSignature)
+    : verifyCancellationBundle(bundle, requireSignature)
 }
 
-function verifyCancellationBundle(bundle: Bundle, requireSignature: boolean): Array<errors.ValidationError> {
+function verifyCancellationBundle(bundle: unknown, requireSignature: boolean): Array<errors.ValidationError> {
   bundle
   requireSignature
   return []
 }
 
-export function verifyPrescriptionBundle(bundle: Bundle, requireSignature: boolean): Array<errors.ValidationError> {
+export function verifyPrescriptionBundle(bundle: unknown, requireSignature: boolean): Array<errors.ValidationError> {
   if (!verifyResourceTypeIsBundle(bundle)) {
     return [new errors.RequestNotBundleError()]
   }
