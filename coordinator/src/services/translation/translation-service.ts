@@ -13,8 +13,22 @@ import {convertParentPrescription} from "./parent-prescription"
 import {extractFragments, convertFragmentsToDisplayableFormat, convertFragmentsToHashableFormat} from "./signing"
 import {getIdentifierValueForSystem} from "./common"
 import {Display} from "../../model/signing"
+import {identifyMessageType} from "../../routes/util"
 
-export function convertFhirMessageToHl7V3ParentPrescriptionMessage(fhirMessage: fhir.Bundle): string {
+export function convertFhirMessage(fhirMessage: fhir.Bundle): string {
+  const messageType = identifyMessageType(fhirMessage)
+  console.log(`Type of message: ${messageType}`)
+  return messageType === "Prescription"
+    ? convertFhirMessageToHl7V3ParentPrescriptionMessage(fhirMessage)
+    : convertFhirCancellationMessageToHl7V3CancellationMessage(fhirMessage)
+}
+
+function convertFhirCancellationMessageToHl7V3CancellationMessage(fhirMessage: fhir.Bundle) {
+  fhirMessage
+  return "ya message got cancelled :+1:"
+}
+
+function convertFhirMessageToHl7V3ParentPrescriptionMessage(fhirMessage: fhir.Bundle): string {
   const root = {
     _declaration: new XmlDeclaration(),
     PORX_IN020101SM31: namespacedCopyOf(createParentPrescriptionSendMessagePayload(fhirMessage))

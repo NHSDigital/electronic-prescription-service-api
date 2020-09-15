@@ -15,7 +15,7 @@ export default [
     handler: validatingHandler(
       false,
       (requestPayload: Bundle, responseToolkit: Hapi.ResponseToolkit) => {
-        const response = translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(requestPayload)
+        const response = translator.convertFhirMessage(requestPayload)
         return responseToolkit.response(response).code(200).header("Content-Type", CONTENT_TYPE)
       }
     )
