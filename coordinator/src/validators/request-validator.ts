@@ -13,7 +13,21 @@ export function verifyBundle(bundle: unknown, requireSignature: boolean): Array<
     return [new errors.RequestNotBundleError()]
   }
 
+  if (!verifyBundleContainsEntries(bundle)) {
+    return [new errors.NoEntryInBundleError()]
+  }
+
   const bundleValidationErrors = verifyCommonErrors(bundle, requireSignature)
+
+  const messageHeaderError = verifyBundleContainsExactly(bundle, 1, "MessageHeader")
+  if (messageHeaderError) {
+    return [messageHeaderError, ...bundleValidationErrors]
+  }
+
+  // bit annoying that we call identifyMessageType on line 50 (through verifyTypeOfBundle) and on line 18
+  if (!verifyTypeOfBundle(bundle)) {
+    return [new errors.MessageTypeError(), ...bundleValidationErrors]
+  }
 
   const messageType = identifyMessageType(bundle)
   const specificValidationErrors = messageType === MessageType.PRESCRIPTION
@@ -24,10 +38,6 @@ export function verifyBundle(bundle: unknown, requireSignature: boolean): Array<
 }
 
 function verifyCommonErrors(bundle: fhir.Bundle, requireSignature: boolean): Array<errors.ValidationError> {
-  if (!verifyBundleContainsEntries(bundle)) {
-    return [new errors.NoEntryInBundleError()]
-  }
-
   const bundleValidators = [
     verifyHasId,
     (bundle: fhir.Bundle) => verifyBundleContainsBetween(bundle, 1, 4, "MedicationRequest"),
@@ -39,17 +49,7 @@ function verifyCommonErrors(bundle: fhir.Bundle, requireSignature: boolean): Arr
   if (requireSignature) {
     bundleValidators.push((bundle: fhir.Bundle) => verifyBundleContainsExactly(bundle, 1, "Provenance"))
   }
-  const bundleValidationErrors = validate(bundle, ...bundleValidators)
-
-  const messageHeaderError = verifyBundleContainsExactly(bundle, 1, "MessageHeader")
-  if (messageHeaderError) {
-    return [messageHeaderError, ...bundleValidationErrors]
-  }
-
-  // bit annoying that we call identifyMessageType on line 50 (through verifyTypeOfBundle) and on line 18
-  if (!verifyTypeOfBundle(bundle)) {
-    return [new errors.MessageTypeError(), ...bundleValidationErrors]
-  }
+  return validate(bundle, ...bundleValidators)
 }
 
 function verifyCancellationBundle(bundle: fhir.Bundle): Array<errors.ValidationError> {
