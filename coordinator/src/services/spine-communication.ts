@@ -209,4 +209,12 @@ export class LiveRequestHandler implements RequestHandler {
   }
 }
 
-export const defaultRequestHandler = process.env.SANDBOX === "1" ? new SandboxRequestHandler() : new LiveRequestHandler(SPINE_ENDPOINT, SPINE_PATH, addEbXmlWrapper)
+function createDefaultRequestHandler(): RequestHandler {
+  if (process.env.SANDBOX === "1") {
+    return new SandboxRequestHandler()
+  } else {
+    return new LiveRequestHandler(SPINE_ENDPOINT, SPINE_PATH, addEbXmlWrapper)
+  }
+}
+
+export const defaultRequestHandler = createDefaultRequestHandler()
