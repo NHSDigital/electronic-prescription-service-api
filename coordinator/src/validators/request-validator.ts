@@ -2,7 +2,7 @@ import * as fhir from "../model/fhir-resources"
 import {getExtensionForUrl, getExtensionForUrlOrNull} from "../services/translation/common"
 import * as errors from "../errors/errors"
 import {identifyMessageType, MessageType} from "../routes/util"
-import {getMedicationRequests} from "services/translation/common/getResourcesOfType"
+import {getMedicationRequests} from "../services/translation/common/getResourcesOfType"
 
 // Validate Status
 export function getStatusCode(validation: Array<errors.ValidationError>): number {
