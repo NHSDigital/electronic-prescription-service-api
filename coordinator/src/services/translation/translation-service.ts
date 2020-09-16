@@ -13,11 +13,11 @@ import {convertParentPrescription} from "./parent-prescription"
 import {extractFragments, convertFragmentsToDisplayableFormat, convertFragmentsToHashableFormat} from "./signing"
 import {getIdentifierValueForSystem} from "./common"
 import {Display} from "../../model/signing"
-import {identifyMessageType} from "../../routes/util"
+import {identifyMessageType, MessageType} from "../../routes/util"
 
 export function convertFhirMessage(fhirMessage: fhir.Bundle): string {
   const messageType = identifyMessageType(fhirMessage)
-  return messageType === "Prescription"
+  return messageType === MessageType.PRESCRIPTION
     ? convertFhirMessageToHl7V3ParentPrescriptionMessage(fhirMessage)
     : convertFhirCancellationMessageToHl7V3CancellationMessage(fhirMessage)
 }
