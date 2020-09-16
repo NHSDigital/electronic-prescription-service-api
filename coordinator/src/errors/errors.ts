@@ -1,3 +1,5 @@
+import {MessageType} from "../routes/util"
+
 export interface ValidationError {
   message: string
   operationOutcomeCode: "value"
@@ -34,10 +36,7 @@ export class ContainsAtLeastError extends ValueError {
 }
 
 export class MissingIdError extends ValueError {
-  constructor() {
-    super()
-    this.message = "ResourceType Bundle must contain 'id' field"
-  }
+  message = "ResourceType Bundle must contain 'id' field"
 }
 
 export class MedicationRequestValueError extends ValueError {
@@ -58,18 +57,15 @@ class FatalError implements ValidationError {
 
 export class NoEntryInBundleError extends FatalError {
   apiErrorCode: "MISSING_FIELD"
-
-  constructor() {
-    super()
-    this.message = "ResourceType Bundle must contain 'entry' field"
-  }
+  message = "ResourceType Bundle must contain 'entry' field"
 }
 
 export class RequestNotBundleError extends FatalError {
   apiErrorCode = "INCORRECT_RESOURCETYPE"
+  message = "ResourceType must be 'Bundle' on request"
+}
 
-  constructor() {
-    super()
-    this.message = "ResourceType must be 'Bundle' on request"
-  }
+export class MessageTypeError extends FatalError {
+  apiErrorCode = "INVALID_VALUE"
+  message = `MessageType must be one of ${MessageType.PRESCRIPTION} or ${MessageType.CANCELLATION}`
 }
