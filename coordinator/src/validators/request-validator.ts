@@ -2,6 +2,7 @@ import * as fhir from "../model/fhir-resources"
 import {getExtensionForUrl, getExtensionForUrlOrNull} from "../services/translation/common"
 import * as errors from "../errors/errors"
 import {identifyMessageType, MessageType} from "../routes/util"
+import {getMedicationRequests} from "services/translation/common/getResourcesOfType"
 
 // Validate Status
 export function getStatusCode(validation: Array<errors.ValidationError>): number {
@@ -127,7 +128,7 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
       )
     )
   ]
-  const medicationRequests = getMatchingEntries(bundle, "MedicationRequest") as Array<fhir.MedicationRequest>
+  const medicationRequests = getMedicationRequests(bundle)
 
   return validate(medicationRequests, ...medicationRequestConsistencyValidators)
 }
