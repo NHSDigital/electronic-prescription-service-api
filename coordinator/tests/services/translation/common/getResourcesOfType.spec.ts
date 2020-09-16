@@ -1,15 +1,18 @@
 import * as getResources from "../../../../src/services/translation/common/getResourcesOfType"
 import * as TestResources from "../../../resources/test-resources"
-import {addEmptyCommunicationRequestToBundle} from "../../../resources/test-helpers"
+import {
+  addEmptyCommunicationRequestToBundle,
+  addEmptyHealthcareServiceToBundle,
+  addEmptyLocationToBundle
+} from "../../../resources/test-helpers"
 
 describe("getResourcesOfType", () => {
   const bundle = TestResources.examplePrescription1.fhirMessageSigned
-  addEmptyCommunicationRequestToBundle(bundle)
 
   test("getMessageHeader", () => {
     const messageHeader = getResources.getMessageHeader(bundle)
 
-    expect(messageHeader.resourceType).toBe("messageHeader")
+    expect(messageHeader.resourceType).toBe("MessageHeader")
   })
 
   test("getMedicationRequests", () => {
@@ -22,6 +25,7 @@ describe("getResourcesOfType", () => {
   })
 
   test("getCommunicationRequests", () => {
+    addEmptyCommunicationRequestToBundle(bundle)
     const communicationRequests = getResources.getCommunicationRequests(bundle)
 
     expect(communicationRequests.length).toBeGreaterThan(0)
@@ -48,5 +52,24 @@ describe("getResourcesOfType", () => {
 
     expect(provenances.length).toBeGreaterThan(0)
     provenances.map((provenance) => expect(provenance.resourceType).toBe("Provenance"))
+  })
+
+  test("getHealthcareServices", () => {
+    addEmptyHealthcareServiceToBundle(bundle)
+    const healthcareServices = getResources.getHealthcareServices(bundle)
+
+    expect(healthcareServices.length).toBeGreaterThan(0)
+    healthcareServices.map(
+      (healthcareService) =>
+        expect(healthcareService.resourceType).toBe("HealthcareService")
+    )
+  })
+
+  test("getLocations", () => {
+    addEmptyLocationToBundle(bundle)
+    const locations = getResources.getLocations(bundle)
+
+    expect(locations.length).toBeGreaterThan(0)
+    locations.map((location) => expect(location.resourceType).toBe("Location"))
   })
 })
