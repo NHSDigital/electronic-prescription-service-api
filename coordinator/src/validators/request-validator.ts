@@ -24,7 +24,7 @@ export function verifyBundle(bundle: unknown, requireSignature: boolean): Array<
     return [messageHeaderError, ...bundleValidationErrors]
   }
 
-  // bit annoying that we call identifyMessageType on line 50 (through verifyTypeOfBundle) and on line 18
+  // bit annoying that we call identifyMessageType on line 28 (through verifyTypeOfBundle) and on line 32
   if (!verifyTypeOfBundle(bundle)) {
     return [new errors.MessageTypeError(), ...bundleValidationErrors]
   }
