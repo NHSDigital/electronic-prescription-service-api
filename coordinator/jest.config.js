@@ -1,10 +1,10 @@
 module.exports = {
-  roots: ['./tests'],
+  roots: ["./tests"],
   transform: {
-    '^.+\\.tsx?$': 'ts-jest',
+    "^.+\\.tsx?$": "ts-jest"
   },
-  testRegex: '(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$',
-  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+  testRegex: "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$",
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   coveragePathIgnorePatterns: ["/node_modules/", "/tests/"],
   setupFiles: ["./jest/setEnvVars.js"]
 }
