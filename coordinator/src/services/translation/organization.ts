@@ -15,22 +15,25 @@ const NHS_TRUST_CODE = "RO197"
 export function convertOrganizationAndProviderLicense(
   fhirBundle: fhir.Bundle,
   fhirOrganization: fhir.Organization,
-  fhirHealthcareService: fhir.HealthcareService
+  fhirHealthcareService: fhir.HealthcareService,
+  isCancellation = false
 ): peoplePlaces.Organization {
-  const hl7V3Organization = convertRepresentedOrganization(fhirOrganization, fhirHealthcareService, fhirBundle)
+  const hl7V3Organization = convertRepresentedOrganization(fhirOrganization, fhirHealthcareService, fhirBundle, isCancellation)
 
-  hl7V3Organization.healthCareProviderLicense = convertHealthCareProviderLicense(fhirOrganization, fhirBundle)
+  if (!isCancellation){
+    hl7V3Organization.healthCareProviderLicense = convertHealthCareProviderLicense(fhirOrganization, fhirBundle)
+  }
 
   return hl7V3Organization
 }
 
-function convertRepresentedOrganization(fhirOrganization: fhir.Organization, fhirHealthcareService: fhir.HealthcareService, fhirBundle: fhir.Bundle) {
+function convertRepresentedOrganization(fhirOrganization: fhir.Organization, fhirHealthcareService: fhir.HealthcareService, fhirBundle: fhir.Bundle, isCancellation: boolean) {
   const organizationTypeCoding = getCodeableConceptCodingForSystemOrNull(
     fhirOrganization.type,
     "https://fhir.nhs.uk/R4/CodeSystem/organisation-role",
     "Organization.type"
   )
-  const representedOrganization = (organizationTypeCoding?.code === NHS_TRUST_CODE) ? new CostCentreHealthcareService(fhirHealthcareService) : new CostCentreOrganization(fhirOrganization)
+  const representedOrganization = (organizationTypeCoding?.code === NHS_TRUST_CODE && !isCancellation) ? new CostCentreHealthcareService(fhirHealthcareService) : new CostCentreOrganization(fhirOrganization)
   return convertRepresentedOrganizationDetails(representedOrganization, fhirBundle)
 }
 

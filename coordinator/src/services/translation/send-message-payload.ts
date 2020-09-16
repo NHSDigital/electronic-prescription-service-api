@@ -10,6 +10,7 @@ import {
 } from "./common"
 import {Bundle} from "../../model/fhir-resources"
 import {getMedicationRequests} from "./common/getResourcesOfType"
+import * as cancellations from "../../model/hl7-v3-cancellation"
 
 export function createSendMessagePayload<T>(
   messageId: string,
@@ -25,6 +26,14 @@ export function createSendMessagePayload<T>(
   sendMessagePayload.communicationFunctionRcv = createCommunicationFunction(process.env.TO_ASID)
   sendMessagePayload.communicationFunctionSnd = createCommunicationFunction(process.env.FROM_ASID)
   sendMessagePayload.ControlActEvent = createControlActEvent(bundle, subject)
+  return sendMessagePayload
+}
+
+export function createSendCancelMessagePayload(
+  subject: cancellations.CancellationPrescription
+): core.SendCancelMessagePayload {
+  const sendMessagePayload = new core.SendCancelMessagePayload()
+  sendMessagePayload.ParentPrescription = subject
   return sendMessagePayload
 }
 

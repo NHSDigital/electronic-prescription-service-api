@@ -20,19 +20,21 @@ import {getProvenances} from "./common/getResourcesOfType"
 export function convertAuthor(
   fhirBundle: fhir.Bundle,
   fhirFirstMedicationRequest: fhir.MedicationRequest,
+  isCancellation: boolean,
   convertPractitionerRoleFn = convertPractitionerRole
 ): prescriptions.Author {
   const hl7V3Author = new prescriptions.Author()
   hl7V3Author.time = convertIsoDateTimeStringToHl7V3DateTime(fhirFirstMedicationRequest.authoredOn, "MedicationRequest.authoredOn")
   hl7V3Author.signatureText = convertSignatureText(fhirBundle, fhirFirstMedicationRequest.requester)
   const fhirAuthorPractitionerRole = resolveReference(fhirBundle, fhirFirstMedicationRequest.requester)
-  hl7V3Author.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirAuthorPractitionerRole)
+  hl7V3Author.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirAuthorPractitionerRole, isCancellation)
   return hl7V3Author
 }
 
 export function convertResponsibleParty(
   fhirBundle: fhir.Bundle,
   fhirMedicationRequest: fhir.MedicationRequest,
+  isCancellation: boolean,
   convertPractitionerRoleFn = convertPractitionerRole
 ): prescriptions.ResponsibleParty {
   const responsibleParty = new prescriptions.ResponsibleParty()
@@ -43,11 +45,11 @@ export function convertResponsibleParty(
   ) as fhir.ReferenceExtension<PractitionerRole>
   const fhirResponsibleParty = fhirResponsiblePartyExtension ? fhirResponsiblePartyExtension.valueReference : fhirMedicationRequest.requester
   const fhirResponsiblePartyPractitionerRole = resolveReference(fhirBundle, fhirResponsibleParty)
-  responsibleParty.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirResponsiblePartyPractitionerRole)
+  responsibleParty.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirResponsiblePartyPractitionerRole, isCancellation)
   return responsibleParty
 }
 
-function convertPractitionerRole(fhirBundle: fhir.Bundle, fhirPractitionerRole: fhir.PractitionerRole): peoplePlaces.AgentPerson {
+function convertPractitionerRole(fhirBundle: fhir.Bundle, fhirPractitionerRole: fhir.PractitionerRole, isCancellation: boolean): peoplePlaces.AgentPerson {
   const fhirPractitioner = resolveReference(fhirBundle, fhirPractitionerRole.practitioner)
   const hl7V3AgentPerson = createAgentPerson(fhirPractitionerRole, fhirPractitioner)
   const fhirOrganization = resolveReference(fhirBundle, fhirPractitionerRole.organization)
@@ -55,7 +57,7 @@ function convertPractitionerRole(fhirBundle: fhir.Bundle, fhirPractitionerRole: 
   if (fhirPractitionerRole.healthcareService) {
     fhirHealthcareService = resolveReference<fhir.HealthcareService>(fhirBundle, fhirPractitionerRole.healthcareService[0])
   }
-  hl7V3AgentPerson.representedOrganization = convertOrganizationAndProviderLicense(fhirBundle, fhirOrganization, fhirHealthcareService)
+  hl7V3AgentPerson.representedOrganization = convertOrganizationAndProviderLicense(fhirBundle, fhirOrganization, fhirHealthcareService, isCancellation)
   return hl7V3AgentPerson
 }
 

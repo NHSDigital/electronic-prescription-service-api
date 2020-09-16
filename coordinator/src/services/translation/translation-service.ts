@@ -7,9 +7,10 @@ import path from "path"
 import * as crypto from "crypto-js"
 import Mustache from "mustache"
 import fs from "fs"
-import {createSendMessagePayload} from "./send-message-payload"
+import {createSendMessagePayload, createSendCancelMessagePayload} from "./send-message-payload"
 import {namespacedCopyOf, writeXmlStringCanonicalized, writeXmlStringPretty} from "./xml"
 import {convertParentPrescription} from "./parent-prescription"
+import {convertCancellation} from "./cancellation"
 import {extractFragments, convertFragmentsToDisplayableFormat, convertFragmentsToHashableFormat} from "./signing"
 import {getIdentifierValueForSystem} from "./common"
 import {Display} from "../../model/signing"
@@ -18,6 +19,14 @@ export function convertFhirMessageToHl7V3ParentPrescriptionMessage(fhirMessage: 
   const root = {
     _declaration: new XmlDeclaration(),
     PORX_IN020101SM31: namespacedCopyOf(createParentPrescriptionSendMessagePayload(fhirMessage))
+  }
+  return writeXmlStringPretty(root)
+}
+
+export function convertFhirCancellationMessageToHl7V3CancellationMessage(fhirMessage: fhir.Bundle): string {
+  const root = {
+    _declaration: new XmlDeclaration(),
+    PORX_IN030101SM32: namespacedCopyOf(createCancellationSendMessagePayload(fhirMessage))
   }
   return writeXmlStringPretty(root)
 }
@@ -32,6 +41,11 @@ export function createParentPrescriptionSendMessagePayload(fhirBundle: fhir.Bund
   const parentPrescriptionRoot = new prescriptions.ParentPrescriptionRoot(parentPrescription)
   const interactionId = codes.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT
   return createSendMessagePayload(messageId, interactionId, fhirBundle, parentPrescriptionRoot)
+}
+
+export function createCancellationSendMessagePayload(fhirBundle: fhir.Bundle): core.SendCancelMessagePayload {
+  const parentPrescription = convertCancellation(fhirBundle)
+  return createSendCancelMessagePayload(parentPrescription)
 }
 
 export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle): string {
