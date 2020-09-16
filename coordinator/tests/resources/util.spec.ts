@@ -1,6 +1,6 @@
 import {clone} from "./test-helpers"
 import * as TestResources from "./test-resources"
-import {identifyMessageType} from "../../src/routes/util"
+import {identifyMessageType, MessageType} from "../../src/routes/util"
 import * as fhir from "../../src/model/fhir-resources"
 import {getMessageHeader} from "../../src/services/translation/common/getResourcesOfType"
 
@@ -14,15 +14,8 @@ describe("identifyMessageType", () => {
   })
 
   test("identifies a prescription message correctly", () => {
-    messageHeader.eventCoding.code = "prescription-order"
-    expect(identifyMessageType(bundle)).toBe("Prescription")
-  })
-  test("identifies a cancellation message correctly", () => {
-    messageHeader.eventCoding.code = "prescription-order-update"
-    expect(identifyMessageType(bundle)).toBe("Cancellation")
-  })
-  test("throws on any other message", () => {
-    messageHeader.eventCoding.code = "some-guff"
-    expect(() => identifyMessageType(bundle)).toThrow()
+    const messageType = MessageType.PRESCRIPTION
+    messageHeader.eventCoding.code = messageType
+    expect(identifyMessageType(bundle)).toBe(messageType)
   })
 })

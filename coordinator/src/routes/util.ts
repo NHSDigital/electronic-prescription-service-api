@@ -23,18 +23,13 @@ type Handler<T> = (
   requestPayload: T, responseToolkit: Hapi.ResponseToolkit
 ) => Hapi.ResponseObject | Promise<Hapi.ResponseObject>
 
-export type MessageType = "Prescription" | "Cancellation"
-
-function getMessageType(messageHeader: fhir.MessageHeader): MessageType {
-  const eventCode = messageHeader.eventCoding.code
-  if (eventCode === "prescription-order") return "Prescription"
-  else if (eventCode === "prescription-order-update") return "Cancellation"
-  else throw new Error(`Unknown Message Type: ${eventCode}`)
+export enum MessageType {
+  PRESCRIPTION = "prescription-order",
+  CANCELLATION = "prescription-order-update"
 }
 
-export function identifyMessageType(bundle: fhir.Bundle): MessageType {
-  const messageHeader = getMessageHeader(bundle)
-  return getMessageType(messageHeader)
+export function identifyMessageType(bundle: fhir.Bundle): string {
+  return getMessageHeader(bundle).eventCoding?.code
 }
 
 export function validatingHandler(requireSignature: boolean, handler: Handler<fhir.Bundle>) {
