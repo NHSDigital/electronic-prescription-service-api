@@ -16,12 +16,10 @@ import {Display} from "../../model/signing"
 import * as requestBuilder from "../request-builder"
 import {SpineRequest} from "../spine-communication"
 
-export function convertFhirMessageToHl7V3ParentPrescriptionMessage(fhirMessage: fhir.Bundle): SpineRequest {
+export function convertFhirMessageToSpineRequest(fhirMessage: fhir.Bundle): SpineRequest {
+  //TODO - check message header and perform the appropriate translation
   const sendMessagePayload = createParentPrescriptionSendMessagePayload(fhirMessage)
-  return {
-    message: requestBuilder.writeToString(sendMessagePayload),
-    interactionId: requestBuilder.extractInteractionId(sendMessagePayload)
-  }
+  return requestBuilder.toSpineRequest(sendMessagePayload)
 }
 
 export function createParentPrescriptionSendMessagePayload(fhirBundle: fhir.Bundle): core.SendMessagePayload<prescriptions.ParentPrescriptionRoot> {
@@ -37,6 +35,7 @@ export function createParentPrescriptionSendMessagePayload(fhirBundle: fhir.Bund
 }
 
 export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle): string {
+  //TODO - check message header and reject if this is not an order
   const parentPrescription = convertParentPrescription(fhirMessage)
 
   const fragments = extractFragments(parentPrescription)

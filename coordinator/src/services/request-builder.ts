@@ -37,7 +37,6 @@ class EbXmlRequest {
 
 export function addEbXmlWrapper(spineRequest: SpineRequest): string {
   const cpaId = cpaIdMap.get(spineRequest.interactionId)
-
   if (!cpaId) {
     throw new Error(`Could not identify CPA ID for interaction ${spineRequest.interactionId}`)
   }
@@ -45,11 +44,18 @@ export function addEbXmlWrapper(spineRequest: SpineRequest): string {
   return Mustache.render(ebxmlRequestTemplate, new EbXmlRequest(spineRequest.interactionId, cpaId, spineRequest.message))
 }
 
-export function extractInteractionId<T>(sendMessagePayload: SendMessagePayload<T>): string {
+export function toSpineRequest<T>(sendMessagePayload: SendMessagePayload<T>): SpineRequest {
+  return {
+    interactionId: extractInteractionId(sendMessagePayload),
+    message: writeToString(sendMessagePayload)
+  }
+}
+
+function extractInteractionId<T>(sendMessagePayload: SendMessagePayload<T>): string {
   return sendMessagePayload.interactionId._attributes.extension
 }
 
-export function writeToString<T>(sendMessagePayload: SendMessagePayload<T>): string {
+function writeToString<T>(sendMessagePayload: SendMessagePayload<T>): string {
   const root = {
     _declaration: new XmlDeclaration()
   } as ElementCompact

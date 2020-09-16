@@ -108,7 +108,7 @@ describe("PertinentInformation2", () => {
     const contentString1 = "examplePatientInfo1"
     fhirCommunicationRequests[0].payload.push({contentString: contentString1})
 
-    const result = translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(bundle).message
+    const result = translator.convertFhirMessageToSpineRequest(bundle).message
     expect(result).toContain(`&lt;patientInfo&gt;${contentString1}&lt;/patientInfo&gt;`)
     expect(result).not.toContain(`<patientInfo>${contentString1}</patientInfo>`)
   })

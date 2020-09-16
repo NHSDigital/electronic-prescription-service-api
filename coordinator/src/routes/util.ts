@@ -18,7 +18,7 @@ export function handlePollableResponse<T>(spineResponse: SpineDirectResponse<T> 
   }
 }
 
-function asOperationOutcome<T>(spineResponse: SpineDirectResponse<T>) {
+export function asOperationOutcome<T>(spineResponse: SpineDirectResponse<T>): OperationOutcome {
   if (isOperationOutcome(spineResponse.body)) {
     return spineResponse.body
   } else {

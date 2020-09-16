@@ -14,7 +14,7 @@ export default [
     handler: validatingHandler(
       false,
       async (requestPayload: Bundle, responseToolkit: Hapi.ResponseToolkit) => {
-        const spineRequest = translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(requestPayload)
+        const spineRequest = translator.convertFhirMessageToSpineRequest(requestPayload)
         const spineResponse = await defaultRequestHandler.send(spineRequest)
         return handlePollableResponse(spineResponse, responseToolkit)
       }
