@@ -1,47 +1,75 @@
+import * as getResources from "../../../../src/services/translation/common/getResourcesOfType"
 import * as TestResources from "../../../resources/test-resources"
 import {
-  getCommunicationRequests,
-  getMedicationRequests, getOrganizations,
-  getPatient,
-  getProvenances
-} from "../../../../src/services/translation/common/getResourcesOfType"
-import {addEmptyCommunicationRequestToBundle} from "../../../resources/test-helpers"
+  addEmptyCommunicationRequestToBundle,
+  addEmptyHealthcareServiceToBundle,
+  addEmptyLocationToBundle
+} from "../../../resources/test-helpers"
 
 describe("getResourcesOfType", () => {
   const bundle = TestResources.examplePrescription1.fhirMessageSigned
-  addEmptyCommunicationRequestToBundle(bundle)
+
+  test("getMessageHeader", () => {
+    const messageHeader = getResources.getMessageHeader(bundle)
+
+    expect(messageHeader.resourceType).toBe("MessageHeader")
+  })
 
   test("getMedicationRequests", () => {
-    const medicationRequests = getMedicationRequests(bundle)
+    const medicationRequests = getResources.getMedicationRequests(bundle)
 
     expect(medicationRequests.length).toBeGreaterThan(0)
-    medicationRequests.map((medicationRequest) => expect(medicationRequest.resourceType).toBe("MedicationRequest"))
+    medicationRequests.map(
+      (medicationRequest) => expect(medicationRequest.resourceType).toBe("MedicationRequest")
+    )
   })
 
   test("getCommunicationRequests", () => {
-    const communicationRequests = getCommunicationRequests(bundle)
+    addEmptyCommunicationRequestToBundle(bundle)
+    const communicationRequests = getResources.getCommunicationRequests(bundle)
 
     expect(communicationRequests.length).toBeGreaterThan(0)
-    communicationRequests.map((communicationRequest) => expect(communicationRequest.resourceType).toBe("CommunicationRequest"))
+    communicationRequests.map(
+      (communicationRequest) =>
+        expect(communicationRequest.resourceType).toBe("CommunicationRequest"))
   })
 
   test("getPatient", () => {
-    const patient = getPatient(bundle)
+    const patient = getResources.getPatient(bundle)
 
     expect(patient.resourceType).toBe("Patient")
   })
 
   test("getOrganizations", () => {
-    const organizations = getOrganizations(bundle)
+    const organizations = getResources.getOrganizations(bundle)
 
     expect(organizations.length).toBeGreaterThan(0)
     organizations.map((organizations) => expect(organizations.resourceType).toBe("Organization"))
   })
 
   test("getProvenances", () => {
-    const provenances = getProvenances(bundle)
+    const provenances = getResources.getProvenances(bundle)
 
     expect(provenances.length).toBeGreaterThan(0)
     provenances.map((provenance) => expect(provenance.resourceType).toBe("Provenance"))
+  })
+
+  test("getHealthcareServices", () => {
+    addEmptyHealthcareServiceToBundle(bundle)
+    const healthcareServices = getResources.getHealthcareServices(bundle)
+
+    expect(healthcareServices.length).toBeGreaterThan(0)
+    healthcareServices.map(
+      (healthcareService) =>
+        expect(healthcareService.resourceType).toBe("HealthcareService")
+    )
+  })
+
+  test("getLocations", () => {
+    addEmptyLocationToBundle(bundle)
+    const locations = getResources.getLocations(bundle)
+
+    expect(locations.length).toBeGreaterThan(0)
+    locations.map((location) => expect(location.resourceType).toBe("Location"))
   })
 })
