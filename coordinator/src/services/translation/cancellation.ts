@@ -26,17 +26,20 @@ export function convertCancellation(
   hl7V3CancellationPrescription.responsibleParty = convertResponsibleParty(fhirBundle, fhirFirstMedicationRequest, true)
 
   hl7V3CancellationPrescription.pertinentInformation2 = new cancellations.PertinentInformation2(fhirFirstMedicationRequest.groupIdentifier.value)
+
   const lineItemToCancel = getIdentifierValueForSystem(
     fhirFirstMedicationRequest.identifier,
     "https://fhir.nhs.uk/Id/prescription-order-item-number",
     "MedicationRequest.identifier"
   )
   hl7V3CancellationPrescription.pertinentInformation1 = new cancellations.PertinentInformation1(lineItemToCancel)
+
   const statusReason = common.getCodingForSystem(
     fhirFirstMedicationRequest.statusReason[0].coding,
     "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-status-reason",
     "MedicationRequest.statusReason")
   hl7V3CancellationPrescription.pertinentInformation = new cancellations.PertinentInformation(statusReason.code, statusReason.display)
+
   const prescriptionToCancel = getExtensionForUrl(
     fhirFirstMedicationRequest.groupIdentifier.extension,
     "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
