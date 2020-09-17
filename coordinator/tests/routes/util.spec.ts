@@ -1,4 +1,8 @@
-import {asOperationOutcome} from "../../src/routes/util"
+import {asOperationOutcome, identifyMessageType, MessageType} from "../../src/routes/util"
+import * as fhir from "../../src/model/fhir-resources"
+import {clone} from "../resources/test-helpers"
+import * as TestResources from "../resources/test-resources"
+import {getMessageHeader} from "../../src/services/translation/common/getResourcesOfType"
 
 describe("asOperationOutcome", () => {
   const operationOutcome = {
@@ -38,5 +42,21 @@ describe("asOperationOutcome", () => {
         diagnostics: "Something went terribly wrong"
       }]
     })
+  })
+})
+
+describe("identifyMessageType", () => {
+  let bundle: fhir.Bundle
+  let messageHeader: fhir.MessageHeader
+
+  beforeEach(() => {
+    bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    messageHeader = getMessageHeader(bundle)
+  })
+
+  test("identifies a prescription message correctly", () => {
+    const messageType = MessageType.PRESCRIPTION
+    messageHeader.eventCoding.code = messageType
+    expect(identifyMessageType(bundle)).toBe(messageType)
   })
 })
