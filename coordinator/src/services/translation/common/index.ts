@@ -139,13 +139,13 @@ export function convertMomentToHl7V3DateTime(dateTime: moment.Moment): core.Time
   return new core.Timestamp(hl7V3DateTimeStr)
 }
 
-export function wrapInOperationOutcome(message: SpineDirectResponse): fhir.OperationOutcome {
+export function wrapInOperationOutcome<T>(message: SpineDirectResponse<T>): fhir.OperationOutcome {
   return {
     resourceType: "OperationOutcome",
     issue: [{
       code: message.statusCode <= 299 ? "informational" : "invalid",
       severity: message.statusCode <= 299 ? "information" : "error",
-      diagnostics: message.body
+      diagnostics: message.body.toString()
     }]
   }
 }
