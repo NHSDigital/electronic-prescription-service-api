@@ -3,6 +3,10 @@ import fs from "fs"
 import moment from "moment"
 import path from "path"
 import * as uuid from "uuid"
+import {ElementCompact} from "xml-js"
+import {namespacedCopyOf, writeXmlStringPretty} from "./translation/xml"
+import {SendMessagePayload} from "../model/hl7-v3-datatypes-core"
+import {SpineRequest} from "./spine-communication"
 
 const ebxmlRequestTemplate = fs.readFileSync(path.join(__dirname, "../resources/ebxml_request.mustache"), "utf-8").replace(/\n/g, "\r\n")
 const cpaIdMap = new Map<string, string>(JSON.parse(process.env.CPA_ID_MAP))
@@ -15,8 +19,6 @@ class EbXmlRequest {
     to_party_id = process.env.TO_PARTY_KEY
     service = "urn:nhs:names:services:mm"
 
-    //These are the parameters for async reliable, as this is the only messaging pattern we need for now.
-    //TODO - If we change from async reliable, change these parameters.
     duplicate_elimination = true
     ack_requested = true
     ack_soap_actor = "urn:oasis:names:tc:ebxml-msg:actor:toPartyMSH"
@@ -33,13 +35,38 @@ class EbXmlRequest {
     }
 }
 
-export function addEbXmlWrapper(hl7V3Message: string): string {
-  const interactionId = "PORX_IN020101SM31"
-  const cpaId = cpaIdMap.get(interactionId)
-
+export function addEbXmlWrapper(spineRequest: SpineRequest): string {
+  const cpaId = cpaIdMap.get(spineRequest.interactionId)
   if (!cpaId) {
-    throw new Error(`Could not identify CPA ID for interaction ${interactionId}`)
+    throw new Error(`Could not identify CPA ID for interaction ${spineRequest.interactionId}`)
   }
 
-  return Mustache.render(ebxmlRequestTemplate, new EbXmlRequest(interactionId, cpaId, hl7V3Message))
+  return Mustache.render(ebxmlRequestTemplate, new EbXmlRequest(spineRequest.interactionId, cpaId, spineRequest.message))
+}
+
+export function toSpineRequest<T>(sendMessagePayload: SendMessagePayload<T>): SpineRequest {
+  return {
+    interactionId: extractInteractionId(sendMessagePayload),
+    message: writeToString(sendMessagePayload)
+  }
+}
+
+function extractInteractionId<T>(sendMessagePayload: SendMessagePayload<T>): string {
+  return sendMessagePayload.interactionId._attributes.extension
+}
+
+function writeToString<T>(sendMessagePayload: SendMessagePayload<T>): string {
+  const root = {
+    _declaration: new XmlDeclaration()
+  } as ElementCompact
+  const interactionId = extractInteractionId(sendMessagePayload)
+  root[interactionId] = namespacedCopyOf(sendMessagePayload)
+  return writeXmlStringPretty(root)
+}
+
+export class XmlDeclaration {
+  _attributes = {
+    version: "1.0",
+    encoding: "UTF-8"
+  }
 }

@@ -89,14 +89,14 @@ describe("getIdentifierValueOrNullForSystem", () => {
 
 describe("wrapInOperationOutcome", () => {
   test("returns informational OperationOutcome for status code <= 299", () => {
-    const spineResponse: SpineDirectResponse = {statusCode: 299, body: "test"}
+    const spineResponse: SpineDirectResponse<string> = {statusCode: 299, body: "test"}
     const result = wrapInOperationOutcome(spineResponse)
     expect(result.issue[0].severity).toEqual("information")
     expect(result.issue[0].code).toEqual("informational")
   })
 
   test("returns error OperationOutcome for status code > 299", () => {
-    const spineResponse: SpineDirectResponse = {statusCode: 300, body: "test"}
+    const spineResponse: SpineDirectResponse<string> = {statusCode: 300, body: "test"}
     const result = wrapInOperationOutcome(spineResponse)
     expect(result.issue[0].severity).toEqual("error")
     expect(result.issue[0].code).toEqual("invalid")
