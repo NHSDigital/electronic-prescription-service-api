@@ -18,6 +18,10 @@ jestpact.pactWith(
       return supertest(url)
     }
 
+    test("DELIBERATELY BREAKING PACT TESTS", () => {
+      expect(1).toEqual(2)
+    })
+
     describe("eps sandbox e2e tests", () => {
       const convertCases = [
         ...TestResources.all.map(example => [`unsigned ${example.description}`, example.fhirMessageUnsigned]),
