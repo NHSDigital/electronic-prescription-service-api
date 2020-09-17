@@ -1,22 +1,37 @@
 import * as spineCommunication from "../services/spine-communication"
 import Hapi from "@hapi/hapi"
 import * as fhir from "../model/fhir-resources"
+import {OperationOutcome, Resource} from "../model/fhir-resources"
 import * as requestValidator from "../validators/request-validator"
 import * as errors from "../errors/errors"
 import {wrapInOperationOutcome} from "../services/translation/common"
 import * as LosslessJson from "lossless-json"
 import {getMessageHeader} from "../services/translation/common/getResourcesOfType"
 
-export function handlePollableResponse(spineResponse: spineCommunication.SpineDirectResponse | spineCommunication.SpinePollableResponse, responseToolkit: Hapi.ResponseToolkit): Hapi.ResponseObject {
+export function handlePollableResponse<T>(spineResponse: spineCommunication.SpineDirectResponse<T> | spineCommunication.SpinePollableResponse, responseToolkit: Hapi.ResponseToolkit): Hapi.ResponseObject {
   if (spineCommunication.isPollable(spineResponse)) {
     return responseToolkit.response()
       .code(spineResponse.statusCode)
       .header("Content-Location", spineResponse.pollingUrl)
   } else {
-    return responseToolkit.response(wrapInOperationOutcome(spineResponse))
+    return responseToolkit.response(asOperationOutcome(spineResponse))
       .code(spineResponse.statusCode)
       .header("Content-Type", "application/fhir+json; fhirVersion=4.0")
   }
+}
+
+export function asOperationOutcome<T>(spineResponse: spineCommunication.SpineDirectResponse<T>): OperationOutcome {
+  if (isOperationOutcome(spineResponse.body)) {
+    return spineResponse.body
+  } else {
+    return wrapInOperationOutcome(spineResponse)
+  }
+}
+
+function isOperationOutcome(body: unknown): body is OperationOutcome {
+  return typeof body === "object"
+    && "resourceType" in body
+    && (body as Resource).resourceType === "OperationOutcome"
 }
 
 type Handler<T> = (
@@ -68,7 +83,7 @@ function toFhirError(validation: Array<errors.ValidationError>): fhir.OperationO
     details: {
       coding: [{
         system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
-        version: 1,
+        version: "1",
         code: ve.apiErrorCode,
         display: ve.message
       }]

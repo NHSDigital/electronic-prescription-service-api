@@ -15,7 +15,7 @@ export default [
     handler: validatingHandler(
       false,
       (requestPayload: Bundle, responseToolkit: Hapi.ResponseToolkit) => {
-        const response = translator.convertFhirMessage(requestPayload)
+        const response = translator.convertFhirMessageToSpineRequest(requestPayload).message
         return responseToolkit.response(response).code(200).header("Content-Type", CONTENT_TYPE)
       }
     )

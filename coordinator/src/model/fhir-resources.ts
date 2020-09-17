@@ -53,7 +53,7 @@ export interface Coding {
   system: string
   code: string
   display?: string
-  version?: number
+  version?: string
 }
 
 export interface Reference<T extends Resource> {
