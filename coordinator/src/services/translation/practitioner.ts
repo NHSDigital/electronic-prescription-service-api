@@ -24,8 +24,10 @@ export function convertAuthor(
   convertPractitionerRoleFn = convertPractitionerRole
 ): prescriptions.Author {
   const hl7V3Author = new prescriptions.Author()
-  hl7V3Author.time = convertIsoDateTimeStringToHl7V3DateTime(fhirFirstMedicationRequest.authoredOn, "MedicationRequest.authoredOn")
-  hl7V3Author.signatureText = convertSignatureText(fhirBundle, fhirFirstMedicationRequest.requester)
+  if (!isCancellation) {
+    hl7V3Author.time = convertIsoDateTimeStringToHl7V3DateTime(fhirFirstMedicationRequest.authoredOn, "MedicationRequest.authoredOn")
+    hl7V3Author.signatureText = convertSignatureText(fhirBundle, fhirFirstMedicationRequest.requester)
+  }
   const fhirAuthorPractitionerRole = resolveReference(fhirBundle, fhirFirstMedicationRequest.requester)
   hl7V3Author.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirAuthorPractitionerRole, isCancellation)
   return hl7V3Author

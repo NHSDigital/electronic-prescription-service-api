@@ -2,12 +2,13 @@ import * as XmlJs from "xml-js"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as core from "../../model/hl7-v3-datatypes-core"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
+import * as cancellations from "../../model/hl7-v3-cancellation"
 import * as fhir from "../../model/fhir-resources"
 import path from "path"
 import * as crypto from "crypto-js"
 import Mustache from "mustache"
 import fs from "fs"
-import {createSendMessagePayload, createSendCancelMessagePayload} from "./send-message-payload"
+import {createSendMessagePayload} from "./send-message-payload"
 import {namespacedCopyOf, writeXmlStringCanonicalized, writeXmlStringPretty} from "./xml"
 import {convertParentPrescription} from "./parent-prescription"
 import {convertCancellation} from "./cancellation"
@@ -43,9 +44,16 @@ export function createParentPrescriptionSendMessagePayload(fhirBundle: fhir.Bund
   return createSendMessagePayload(messageId, interactionId, fhirBundle, parentPrescriptionRoot)
 }
 
-export function createCancellationSendMessagePayload(fhirBundle: fhir.Bundle): core.SendCancelMessagePayload {
-  const parentPrescription = convertCancellation(fhirBundle)
-  return createSendCancelMessagePayload(parentPrescription)
+export function createCancellationSendMessagePayload(fhirBundle: fhir.Bundle): core.SendMessagePayload<cancellations.CancellationPrescriptionRoot> {
+  const messageId = getIdentifierValueForSystem(
+    [fhirBundle.identifier],
+    "https://tools.ietf.org/html/rfc4122",
+    "Bundle.identifier"
+  )
+  const cancellationRequest = convertCancellation(fhirBundle)
+  const cancellationRequestRoot = new cancellations.CancellationPrescriptionRoot(cancellationRequest)
+  const interactionId = codes.Hl7InteractionIdentifier.CANCELLATION_REQUEST
+  return createSendMessagePayload(messageId, interactionId, fhirBundle, cancellationRequestRoot)
 }
 
 export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle): string {

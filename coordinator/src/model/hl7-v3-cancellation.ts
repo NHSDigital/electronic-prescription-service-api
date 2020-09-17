@@ -3,6 +3,15 @@ import * as codes from "./hl7-v3-datatypes-codes"
 import {ElementCompact} from "xml-js"
 import * as prescription from "./hl7-v3-prescriptions"
 
+export class CancellationPrescriptionRoot {
+  CancellationRequest: CancellationPrescription
+
+  constructor(cancellationPrescription: CancellationPrescription) {
+    this.CancellationRequest = cancellationPrescription
+  }
+
+}
+
 export class CancellationPrescription implements ElementCompact {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "INFO",
@@ -93,22 +102,13 @@ class PertinentLineItemRef {
     classCode: string
     moodCode: string
   }
-  id: {
-    _attributes: {
-      root: string
-    }
-  }
-
+  id: codes.GlobalIdentifier
   constructor(lineItemRef: string) {
     this._attributes = {
       classCode: "SBADM",
       moodCode: "RQO"
     }
-    this.id = {
-      _attributes: {
-        root: lineItemRef
-      }
-    }
+    this.id = new codes.GlobalIdentifier(lineItemRef)
   }
 }
 
@@ -117,11 +117,8 @@ export class PertinentInformation {
     typeCode: string
     contextConductionInd: string
   }
-
   seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-
   pertinentCancellationReason: PertinentCancellationReason
-
   constructor(cancellationCode: string, cancellationDisplay: string) {
     this._attributes = {
       typeCode: "PERT",
@@ -136,15 +133,11 @@ class PertinentCancellationReason {
     classCode: string
     moodCode: string
   }
-
   code: codes.PrescriptionAnnotationCode
-
   text: {
     _text: string
   }
-
   value: codes.CancellationCode
-
   constructor(cancellationCode: string, cancellationDisplay: string){
     this._attributes = {
       classCode: "OBS",
@@ -161,11 +154,8 @@ export class PertinentInformation3 {
     typeCode: string
     contextConductionInd: string
   }
-
   seperatableInd: core.BooleanValue = new core.BooleanValue(true)
-
   pertinentOriginalPrescriptionRef: PertinentOriginalPrescriptionRef
-
   constructor(lineItemRef: string) {
     this._attributes = {
       typeCode: "PERT",
@@ -180,21 +170,12 @@ class PertinentOriginalPrescriptionRef {
     classCode: string
     moodCode: string
   }
-  id: {
-    _attributes: {
-      root: string
-    }
-  }
-
+  id: codes.GlobalIdentifier
   constructor(lineItemRef: string) {
     this._attributes = {
       classCode: "SBADM",
       moodCode: "RQO"
     }
-    this.id = {
-      _attributes: {
-        root: lineItemRef
-      }
-    }
+    this.id = new codes.GlobalIdentifier(lineItemRef)
   }
 }

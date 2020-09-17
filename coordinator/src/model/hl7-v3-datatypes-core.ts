@@ -254,7 +254,7 @@ export class SendMessagePayload<T> {
 }
 
 export class SendCancelMessagePayload {
-  ParentPrescription: cancellations.CancellationPrescription
+  CancellationRequest: cancellations.CancellationPrescription
 }
 
 export class CommunicationFunction {

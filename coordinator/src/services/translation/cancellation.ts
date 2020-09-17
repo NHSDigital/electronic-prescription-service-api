@@ -6,6 +6,7 @@ import * as codes from "../../model/hl7-v3-datatypes-codes"
 import {getPatient, getMedicationRequests} from "./common/getResourcesOfType"
 import {convertAuthor, convertResponsibleParty} from "./practitioner"
 import * as common from "./common"
+import {getExtensionForUrl, getIdentifierValueForSystem} from "./common"
 
 export function convertCancellation(
   fhirBundle: fhir.Bundle,
@@ -25,13 +26,23 @@ export function convertCancellation(
   hl7V3CancellationPrescription.responsibleParty = convertResponsibleParty(fhirBundle, fhirFirstMedicationRequest, true)
 
   hl7V3CancellationPrescription.pertinentInformation2 = new cancellations.PertinentInformation2(fhirFirstMedicationRequest.groupIdentifier.value)
-  hl7V3CancellationPrescription.pertinentInformation1 = new cancellations.PertinentInformation1(fhirFirstMedicationRequest.id)
+  const lineItemToCancel = getIdentifierValueForSystem(
+    fhirFirstMedicationRequest.identifier,
+    "https://fhir.nhs.uk/Id/prescription-order-item-number",
+    "MedicationRequest.identifier"
+  )
+  hl7V3CancellationPrescription.pertinentInformation1 = new cancellations.PertinentInformation1(lineItemToCancel)
   const statusReason = common.getCodingForSystem(
     fhirFirstMedicationRequest.statusReason[0].coding,
     "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-status-reason",
     "MedicationRequest.statusReason")
   hl7V3CancellationPrescription.pertinentInformation = new cancellations.PertinentInformation(statusReason.code, statusReason.display)
-  hl7V3CancellationPrescription.pertinentInformation3 = new cancellations.PertinentInformation3(fhirFirstMedicationRequest.id)
+  const prescriptionToCancel = getExtensionForUrl(
+    fhirFirstMedicationRequest.groupIdentifier.extension,
+    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
+    "MedicationRequest.groupIdentifier.extension"
+  ) as fhir.IdentifierExtension
+  hl7V3CancellationPrescription.pertinentInformation3 = new cancellations.PertinentInformation3(prescriptionToCancel.valueIdentifier.value)
 
   return hl7V3CancellationPrescription
 }
