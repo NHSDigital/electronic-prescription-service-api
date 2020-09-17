@@ -22,15 +22,14 @@ export function verifyBundle(bundle: unknown, requireSignature: boolean): Array<
 
   const messageHeaderError = verifyBundleContainsExactly(bundle, 1, "MessageHeader")
   if (messageHeaderError) {
-    return [messageHeaderError, ...bundleValidationErrors]
-  }
-
-  // bit annoying that we call identifyMessageType on line 28 (through verifyTypeOfBundle) and on line 32
-  if (!verifyTypeOfBundle(bundle)) {
-    return [new errors.MessageTypeError(), ...bundleValidationErrors]
+    return [...bundleValidationErrors, messageHeaderError]
   }
 
   const messageType = identifyMessageType(bundle)
+  if (!verifyMessageType(messageType)) {
+    return [...bundleValidationErrors, new errors.MessageTypeError()]
+  }
+
   const specificValidationErrors = messageType === MessageType.PRESCRIPTION
     ? verifyPrescriptionBundle(bundle)
     : verifyCancellationBundle(bundle)
@@ -54,6 +53,7 @@ function verifyCommonErrors(bundle: fhir.Bundle, requireSignature: boolean): Arr
 }
 
 function verifyCancellationBundle(bundle: fhir.Bundle): Array<errors.ValidationError> {
+  //TODO - implement cancellation-specific validation
   bundle
   return []
 }
@@ -203,7 +203,6 @@ function verifyBundleContainsExactly(bundle: fhir.Bundle, number: number, resour
   return null
 }
 
-function verifyTypeOfBundle(bundle: fhir.Bundle): boolean {
-  const messageType = identifyMessageType(bundle)
+function verifyMessageType(messageType: string): messageType is MessageType {
   return messageType === MessageType.PRESCRIPTION || messageType === MessageType.CANCELLATION
 }

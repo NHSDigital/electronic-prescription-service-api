@@ -261,7 +261,7 @@ export interface ContentReference {
   display: string
 }
 
-interface BackboneElement {
+interface MessageHeaderSource {
   name?: string
   endpoint: string
 }
@@ -270,6 +270,6 @@ export interface MessageHeader extends Resource {
   resourceType: "MessageHeader",
   eventCoding: Coding,
   sender: Reference<PractitionerRole>
-  source: BackboneElement
+  source: MessageHeaderSource
   focus: Array<Reference<Resource>>
 }

@@ -17,26 +17,26 @@ class ValueError implements ValidationError {
 export class ContainsExactlyError extends ValueError {
   constructor(number: number, resourceType: string) {
     super()
-    this.message = `Bundle must contain exactly ${number} resource(s) of type ${resourceType}`
+    this.message = `Bundle must contain exactly ${number} resource(s) of type ${resourceType}.`
   }
 }
 
 export class ContainsBetweenError extends ValueError {
   constructor(min: number, max: number, resourceType: string) {
     super()
-    this.message = `Bundle must contain between ${min} and ${max} resource(s) of type ${resourceType}`
+    this.message = `Bundle must contain between ${min} and ${max} resource(s) of type ${resourceType}.`
   }
 }
 
 export class ContainsAtLeastError extends ValueError {
   constructor(number: number, resourceType: string) {
     super()
-    this.message = `Bundle must contain at least ${number} resource(s) of type ${resourceType}`
+    this.message = `Bundle must contain at least ${number} resource(s) of type ${resourceType}.`
   }
 }
 
 export class MissingIdError extends ValueError {
-  message = "ResourceType Bundle must contain 'id' field"
+  message = "ResourceType Bundle must contain 'id' field."
 }
 
 export class MedicationRequestValueError extends ValueError {
@@ -57,15 +57,15 @@ class FatalError implements ValidationError {
 
 export class NoEntryInBundleError extends FatalError {
   apiErrorCode: "MISSING_FIELD"
-  message = "ResourceType Bundle must contain 'entry' field"
+  message = "ResourceType Bundle must contain 'entry' field."
 }
 
 export class RequestNotBundleError extends FatalError {
   apiErrorCode = "INCORRECT_RESOURCETYPE"
-  message = "ResourceType must be 'Bundle' on request"
+  message = "ResourceType must be 'Bundle' on request."
 }
 
 export class MessageTypeError extends FatalError {
   apiErrorCode = "INVALID_VALUE"
-  message = `MessageType must be one of ${MessageType.PRESCRIPTION} or ${MessageType.CANCELLATION}`
+  message = `MessageHeader.eventCoding.code must be one of '${MessageType.PRESCRIPTION}' or '${MessageType.CANCELLATION}'.`
 }
