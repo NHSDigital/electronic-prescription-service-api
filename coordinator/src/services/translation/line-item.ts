@@ -3,12 +3,14 @@ import {
   getCodingForSystem,
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
-  getNumericValueAsString, onlyElement
+  getNumericValueAsString,
+  onlyElement
 } from "./common"
 import * as core from "../../model/hl7-v3-datatypes-core"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
 import {populateRepeatNumber} from "./common/repeatNumber"
+import {ElementCompact, js2xml} from "xml-js"
 
 function convertProduct(medicationCodeableConcept: fhir.CodeableConcept) {
   const fhirMedicationCode = getCodingForSystem(
@@ -57,27 +59,32 @@ export function convertPrescriptionEndorsements(fhirMedicationRequest: fhir.Medi
   }
 }
 
-function convertAdditionalInstructions(fhirMedicationRequest: fhir.MedicationRequest, patientInfoStr: string)  {
+function convertAdditionalInstructions(fhirMedicationRequest: fhir.MedicationRequest, patientInfoText: Array<core.Text>)  {
   const controlledDrugWordsExtension = getExtensionForUrlOrNull(
     fhirMedicationRequest.dispenseRequest.extension,
     "https://fhir.nhs.uk/R4/StructureDefinition/Extension-controlled-drug-quantity-words",
     "MedicationRequest.dispenseRequest.extension"
   ) as fhir.StringExtension
   const controlledDrugWords = controlledDrugWordsExtension?.valueString
-  const controlledDrugStr = controlledDrugWords ? `CD: ${controlledDrugWords}\n` : ""
+  const controlledDrugWordsWithPrefix = controlledDrugWords ? `CD: ${controlledDrugWords}` : ""
 
   const patientInstruction = onlyElement(
     fhirMedicationRequest.dosageInstruction,
     "MedicationRequest.dosageInstruction"
   ).patientInstruction
-  const patientInstructionStr = patientInstruction ? patientInstruction : ""
 
-  const additionalInstructionsValue = `${patientInfoStr}${controlledDrugStr}${patientInstructionStr}`
-  const hl7V3AdditionalInstructions = new prescriptions.AdditionalInstructions(additionalInstructionsValue)
+  const additionalInstructionsValueObj = {} as ElementCompact
+  if (patientInfoText?.length) {
+    additionalInstructionsValueObj.patientInfo = patientInfoText
+  }
+  additionalInstructionsValueObj._text = [controlledDrugWordsWithPrefix, patientInstruction].filter(Boolean).join("\n")
+  const additionalInstructionsValueStr = js2xml(additionalInstructionsValueObj, {compact: true})
+
+  const hl7V3AdditionalInstructions = new prescriptions.AdditionalInstructions(additionalInstructionsValueStr)
   return new prescriptions.LineItemPertinentInformation1(hl7V3AdditionalInstructions)
 }
 
-export function convertMedicationRequestToLineItem(fhirMedicationRequest: fhir.MedicationRequest, patientInfoStr = ""): prescriptions.LineItem {
+export function convertMedicationRequestToLineItem(fhirMedicationRequest: fhir.MedicationRequest, patientInfoText: Array<core.Text>): prescriptions.LineItem {
   const lineItemId = getIdentifierValueForSystem(
     fhirMedicationRequest.identifier,
     "https://fhir.nhs.uk/Id/prescription-order-item-number",
@@ -94,7 +101,7 @@ export function convertMedicationRequestToLineItem(fhirMedicationRequest: fhir.M
   convertPrescriptionEndorsements(fhirMedicationRequest, hl7V3LineItem)
   hl7V3LineItem.pertinentInformation2 = convertDosageInstructions(fhirMedicationRequest.dosageInstruction)
 
-  const pertinentInformation1 = convertAdditionalInstructions(fhirMedicationRequest, patientInfoStr)
+  const pertinentInformation1 = convertAdditionalInstructions(fhirMedicationRequest, patientInfoText)
   if (pertinentInformation1.pertinentAdditionalInstructions.value != "")
     hl7V3LineItem.pertinentInformation1 = pertinentInformation1
 
