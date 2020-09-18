@@ -197,9 +197,9 @@
           },
           "performer": {
             "identifier": {
-                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "FA553"
-              }
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "FA553"
+            }
           }
         },
         "authoredOn": "2020-06-10T12:06:00.000Z",

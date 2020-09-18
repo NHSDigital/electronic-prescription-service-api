@@ -6,7 +6,7 @@
     "value": "bf84d5ce-7af0-4b59-b1c8-7c6225d11105"
   },
   "type": "message",
-  "entry":  [
+  "entry": [
     {
       "fullUrl": "urn:uuid:311316d3-1de0-4f7c-8109-c950ead1c717",
       "resource": {
@@ -22,7 +22,7 @@
           "display": "RAZIA|ALI"
         },
         "source": {
-          "extension":  [
+          "extension": [
             {
               "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-spineEndpoint",
               "valueIdentifier": {
@@ -34,7 +34,7 @@
           "name": "DJM",
           "endpoint": "https://mait.digital.nhs.uk/"
         },
-        "focus":  [
+        "focus": [
           {
             "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
           },
@@ -102,13 +102,13 @@
       "resource": {
         "resourceType": "Patient",
         "id": "78d3c2eb-009e-4ec8-a358-b042954aa9b2",
-        "identifier":  [
+        "identifier": [
           {
-            "extension":  [
+            "extension": [
               {
                 "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHSNumberVerificationStatus",
                 "valueCodeableConcept": {
-                  "coding":  [
+                  "coding": [
                     {
                       "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-NHSNumberVerificationStatus",
                       "code": "01",
@@ -122,21 +122,21 @@
             "value": "9453740519"
           }
         ],
-        "name":  [
+        "name": [
           {
             "use": "official",
             "family": "CORY",
-            "given":  [
+            "given": [
               "ETTA"
             ],
-            "prefix":  [
+            "prefix": [
               "MISS"
             ]
           }
         ],
         "gender": "female",
         "birthDate": "1999-01-04",
-        "address":  [
+        "address": [
           {
             "use": "home",
             "postalCode": "DE21 4QH"
@@ -155,7 +155,7 @@
       "resource": {
         "resourceType": "Practitioner",
         "id": "a8c85454-f8cb-498d-9629-78e2cb5fa47a",
-        "identifier":  [
+        "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/sds-user-id",
             "value": "3415870201"
@@ -165,13 +165,13 @@
             "value": "123456"
           }
         ],
-        "name":  [
+        "name": [
           {
             "family": "ALI",
-            "given":  [
+            "given": [
               "RAZIA"
             ],
-            "prefix":  [
+            "prefix": [
               "DR"
             ]
           }
@@ -183,15 +183,15 @@
       "resource": {
         "resourceType": "Organization",
         "id": "3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
-        "identifier":  [
+        "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
             "value": "RBA"
           }
         ],
-        "type":  [
+        "type": [
           {
-            "coding":  [
+            "coding": [
               {
                 "system": "https://fhir.nhs.uk/R4/CodeSystem/organisation-role",
                 "code": "RO197",
@@ -201,9 +201,9 @@
           }
         ],
         "name": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST",
-        "address":  [
+        "address": [
           {
-            "line":  [
+            "line": [
               "MUSGROVE PARK HOSPITAL",
               "PARKFIELD DRIVE",
               "TAUNTON"
@@ -211,7 +211,7 @@
             "postalCode": "TA1 5DA"
           }
         ],
-        "telecom":  [
+        "telecom": [
           {
             "system": "phone",
             "value": "01823333444",
@@ -225,7 +225,7 @@
       "resource": {
         "resourceType": "PractitionerRole",
         "id": "56166769-c1c4-4d07-afa8-132b5dfca666",
-        "identifier":  [
+        "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
             "value": "100102238986"
@@ -241,9 +241,9 @@
         "organization": {
           "reference": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
         },
-        "code":  [
+        "code": [
           {
-            "coding":  [
+            "coding": [
               {
                 "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName",
                 "code": "R8000",
@@ -252,13 +252,13 @@
             ]
           }
         ],
-        "healthcareService":  [
+        "healthcareService": [
           {
             "reference": "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e",
             "display": "SOMERSET BOWEL CANCER SCREENING CENTRE"
           }
         ],
-        "telecom":  [
+        "telecom": [
           {
             "system": "phone",
             "value": "01234567890",
@@ -272,7 +272,7 @@
       "resource": {
         "resourceType": "MedicationRequest",
         "id": "a54219b8-f741-4c47-b662-e4f8dfa49ab6",
-        "extension":  [
+        "extension": [
           {
             "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType",
             "valueCoding": {
@@ -282,7 +282,7 @@
             }
           }
         ],
-        "identifier":  [
+        "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
             "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
@@ -290,9 +290,9 @@
         ],
         "status": "active",
         "intent": "order",
-        "category":  [
+        "category": [
           {
-            "coding":  [
+            "coding": [
               {
                 "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
                 "code": "outpatient",
@@ -302,7 +302,7 @@
           }
         ],
         "medicationCodeableConcept": {
-          "coding":  [
+          "coding": [
             {
               "system": "http://snomed.info/sct",
               "code": "15517911000001104",
@@ -318,7 +318,7 @@
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
         "groupIdentifier": {
-          "extension":  [
+          "extension": [
             {
               "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
               "valueIdentifier": {
@@ -331,7 +331,7 @@
           "value": "DC2C66-A1B2C3-23407B"
         },
         "courseOfTherapyType": {
-          "coding":  [
+          "coding": [
             {
               "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
               "code": "continuous",
@@ -339,7 +339,7 @@
             }
           ]
         },
-        "dosageInstruction":  [
+        "dosageInstruction": [
           {
             "text": "10 milligram, Inject, Subcutaneous route, once weekly",
             "timing": {
@@ -356,7 +356,7 @@
               }
             },
             "method": {
-              "coding":  [
+              "coding": [
                 {
                   "system": "http://snomed.info/sct",
                   "code": "422145002",
@@ -365,7 +365,7 @@
               ]
             },
             "route": {
-              "coding":  [
+              "coding": [
                 {
                   "system": "http://snomed.info/sct",
                   "code": "34206005",
@@ -373,7 +373,7 @@
                 }
               ]
             },
-            "doseAndRate":  [
+            "doseAndRate": [
               {
                 "doseQuantity": {
                   "value": 10,
@@ -386,7 +386,7 @@
           }
         ],
         "dispenseRequest": {
-          "extension":  [
+          "extension": [
             {
               "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
               "valueCoding": {
@@ -429,7 +429,7 @@
       "resource": {
         "resourceType": "HealthcareService",
         "id": "54b0506d-49af-4245-9d40-d7d64902055e",
-        "identifier":  [
+        "identifier": [
           {
             "use": "official",
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -443,13 +443,13 @@
             "value": "RBA"
           }
         },
-        "location":  [
+        "location": [
           {
             "reference": "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
           }
         ],
         "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
-        "telecom":  [
+        "telecom": [
           {
             "system": "phone",
             "value": "01823 333444",
@@ -463,7 +463,7 @@
       "resource": {
         "resourceType": "Location",
         "id": "8a5d7d67-64fb-44ec-9802-2dc214bb3dcb",
-        "identifier":  [
+        "identifier": [
           {
             "value": "10008800708"
           }
@@ -472,7 +472,7 @@
         "mode": "instance",
         "address": {
           "use": "work",
-          "line":  [
+          "line": [
             "MUSGROVE PARK HOSPITAL"
           ],
           "city": "TAUNTON",
