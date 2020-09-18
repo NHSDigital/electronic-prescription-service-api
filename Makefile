@@ -66,7 +66,7 @@ install-hooks:
 
 build-models:
 	$(foreach file, \
-	$(wildcard models/examples/**/SendRequest-FhirMessageSigned.json), \
+	$(wildcard models/examples/specification/**/SendRequest-FhirMessageSigned.json), \
 	cat $(file) \
 	| jq 'del(.entry[] | select(.resource.resourceType == "Provenance"))' \
 	| jq 'del(.entry[0].resource.focus[0])' \
@@ -76,7 +76,7 @@ build-specification:
 	cd specification \
 	&& mkdir -p build/components/examples \
 	&& mkdir -p build/components/schemas \
-	&& cp -r ../models/examples build/components \
+	&& cp -r ../models/examples/specification/** build/components/examples \
 	&& cp -r ../models/schemas build/components \
 	&& cp electronic-prescription-service-api.yaml build/electronic-prescription-service-api.yaml \
 	&& npm run resolve \
@@ -118,7 +118,10 @@ test-integration-coordinator:
 validate-models:
 	mkdir -p models/build
 	test -f models/build/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > models/build/org.hl7.fhir.validator.jar
-	java -jar models/build/org.hl7.fhir.validator.jar models/examples/*/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt
+	#for dir in specification primary-care secondary-care; do
+	for dir in specification; do \
+		java -jar models/build/org.hl7.fhir.validator.jar models/examples/$$dir/**/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt; \
+	done
 
 lint: build
 	cd specification && npm run lint
