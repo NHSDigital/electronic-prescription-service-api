@@ -16,6 +16,7 @@ info:
     You can:
     * prepare a secondary care (outpatient) prescription for signing
     * create a secondary care (outpatient) prescription
+    * cancel a secondary care (outpatient) prescription
     * evaluate prescription signing client implementations
 
     You cannot currently use this API to:
@@ -25,7 +26,6 @@ info:
     * create a secondary care (other than outpatient) prescription
     * prepare a tertiary care prescription for signing
     * create a tertiary care prescription
-    * cancel a prescription
     * check the status of a prescription
     * release a prescription for dispensing
     * claim for a dispensed prescription
@@ -45,6 +45,9 @@ info:
     1. POST a prescription in FHIR format to the `/$prepare` endpoint
     2. Sign the response and put the result in a Provenance resource in the original FHIR prescription
     3. POST the signed prescription in FHIR format to the `/$process-message` endpoint
+
+    To cancel a prescription:
+    1. POST the prescription in FHIR format to the `/$process-message` endpoint 
 
     ### Digital signatures
     To generate a signature for your prescription, you can use the digital signature service. In order to access the service, you can email your request to the [API management team](api.management@nhs.net). Alternatively, for testing purposes, you can use the example signature from the Provenance schema [here](./types/Provenance).
@@ -134,7 +137,7 @@ info:
     To see details for specific endpoints, select from the list on the left hand side of the page:
     * `POST /$prepare` - convert a FHIR prescription into the HL7 V3 signature fragments to be signed by the prescriber
     * `POST /$convert` - convert a FHIR prescription to HL7 V3 to verify client signature implementations
-    * `POST /$process-message` - send a signed FHIR prescription to Spine
+    * `POST /$process-message` - send a signed FHIR prescription/cancellation to Spine
     * `GET /_poll` - Obtain the response to an asynchronous spine request
     
     ## Resources
@@ -204,7 +207,9 @@ paths:
     post:
       operationId: send-prescription
       summary: Send a signed prescription to Spine
-      description: Submit a signed prescription to EPS. A Link to the implementation guide for this endpoint can be found [here](https://simplifier.net/guide/DigitalMedicines/prescription-order).
+      description: | 
+        Submit a signed prescription to EPS. A Link to the implementation guide for this endpoint can be found [here](https://simplifier.net/guide/DigitalMedicines/prescription-order). 
+        A message with `prescription-order-update` code in the MesageHeader resource will be used to cancel a message. 
       tags:
         - prescribing
       requestBody:
@@ -258,7 +263,9 @@ paths:
     post:
       operationId: convert-prescription
       summary: Convert a prescription to a format used for signing
-      description: Convert a prescription from FHIR format into a HL7 V3 representation which can be used to verify signing operations.
+      description: |
+        Convert a prescription from FHIR format into a HL7 V3 representation which can be used to verify signing operations.
+        A message with `prescription-order-update` code in the MesageHeader resource will be converted to a HL7 V3 cancellation message.
       tags:
         - prescribing
       requestBody:
