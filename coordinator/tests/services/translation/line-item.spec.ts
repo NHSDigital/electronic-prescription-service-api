@@ -10,7 +10,7 @@ import {getExtensionForUrlOrNull} from "../../../src/services/translation/common
 import {convertBundleToPrescription} from "../../../src/services/translation/prescription"
 import {convertFhirMessageToSpineRequest} from "../../../src/services/translation/translation-service"
 import {TooManyValuesError} from "../../../src/model/errors"
-import {Text} from "../../../src/model/hl7-v3-datatypes-core";
+import {Text} from "../../../src/model/hl7-v3-datatypes-core"
 
 describe("convertMedicationRequestToLineItem", () => {
   let bundle: fhir.Bundle
@@ -150,12 +150,12 @@ describe("additionalInstructions", () => {
   })
 
   test("XML characters are escaped in patientInfo", () => {
-    const patientInfo = [new Text("Take if systolic BP < 120")]
+    const patientInfo = [new Text("Phone practice if BP < 90/60 mmHg")]
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, patientInfo)
     expect(
       result.pertinentInformation1.pertinentAdditionalInstructions.value
     ).toBe(
-      "<patientInfo>Take if systolic BP &lt; 120</patientInfo>"
+      "<patientInfo>Phone practice if BP &lt; 90/60 mmHg</patientInfo>"
     )
   })
 
