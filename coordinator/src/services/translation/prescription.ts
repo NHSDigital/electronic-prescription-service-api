@@ -85,7 +85,10 @@ export function convertPrescriptionComponent1(validityPeriod?: fhir.Period, expe
   }
   if (expectedSupplyDuration) {
     if (expectedSupplyDuration.code !== "d") {
-      throw new InvalidValueError("Expected supply duration must be specified in days", "MedicationRequest.dispenseRequest.expectedSupplyDuration.code")
+      throw new InvalidValueError(
+        "Expected supply duration must be specified in days.",
+        "MedicationRequest.dispenseRequest.expectedSupplyDuration.code"
+      )
     }
     const expectedSupplyDurationStr = getNumericValueAsString(expectedSupplyDuration.value)
     daysSupply.expectedUseTime = new IntervalUnanchored(expectedSupplyDurationStr, "d")
@@ -154,7 +157,7 @@ function convertCourseOfTherapyTypeCode(courseOfTherapyTypeCode: string) {
     return codes.PrescriptionTreatmentTypeCode.CONTINUOUS_REPEAT_DISPENSING
   default:
     throw new InvalidValueError(
-      `Unhandled courseOfTherapyType code '${courseOfTherapyTypeCode}'`,
+      `Unhandled course of therapy type code '${courseOfTherapyTypeCode}'.`,
       "MedicationRequest.courseOfTherapyType.coding.code"
     )
   }
