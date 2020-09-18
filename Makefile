@@ -103,8 +103,10 @@ build-proxies:
 # Test
 
 test-coordinator:
+	cp models/examples/specification/signature.json models/examples/signature.json 
 	cd coordinator \
 	&& npm run test
+	rm models/examples/signature.json
 
 # Integration Test
 
