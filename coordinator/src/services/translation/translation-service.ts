@@ -15,10 +15,13 @@ import {getIdentifierValueForSystem} from "./common"
 import {Display} from "../../model/signing"
 import * as requestBuilder from "../request-builder"
 import {SpineRequest} from "../spine-communication"
+import {identifyMessageType, MessageType} from "../../routes/util"
 
 export function convertFhirMessageToSpineRequest(fhirMessage: fhir.Bundle): SpineRequest {
-  //TODO - check message header and perform the appropriate translation
-  const sendMessagePayload = createParentPrescriptionSendMessagePayload(fhirMessage)
+  const messageType = identifyMessageType(fhirMessage)
+  const sendMessagePayload = messageType === MessageType.PRESCRIPTION
+    ? createParentPrescriptionSendMessagePayload(fhirMessage)
+    : createCancellationRequestSendMessagePayload(fhirMessage)
   return requestBuilder.toSpineRequest(sendMessagePayload)
 }
 
@@ -31,6 +34,19 @@ export function createParentPrescriptionSendMessagePayload(fhirBundle: fhir.Bund
   const parentPrescription = convertParentPrescription(fhirBundle)
   const parentPrescriptionRoot = new prescriptions.ParentPrescriptionRoot(parentPrescription)
   const interactionId = codes.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT
+  return createSendMessagePayload(messageId, interactionId, fhirBundle, parentPrescriptionRoot)
+}
+
+export function createCancellationRequestSendMessagePayload(fhirBundle: fhir.Bundle): core.SendMessagePayload<prescriptions.ParentPrescriptionRoot> {
+  const messageId = getIdentifierValueForSystem(
+    [fhirBundle.identifier],
+    "https://tools.ietf.org/html/rfc4122",
+    "Bundle.identifier"
+  )
+  //TODO - replace with cancellation translations
+  const parentPrescription = convertParentPrescription(fhirBundle)
+  const parentPrescriptionRoot = new prescriptions.ParentPrescriptionRoot(parentPrescription)
+  const interactionId = codes.Hl7InteractionIdentifier.CANCEL_REQUEST
   return createSendMessagePayload(messageId, interactionId, fhirBundle, parentPrescriptionRoot)
 }
 
