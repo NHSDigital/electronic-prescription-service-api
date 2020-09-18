@@ -1,4 +1,5 @@
 import {MedicationRequest} from "../../../model/fhir-resources"
+import {InvalidValueError} from "../../../model/errors"
 
 export enum CourseOfTherapyTypeCode {
   ACUTE = "acute",
@@ -16,7 +17,10 @@ export function getCourseOfTherapyTypeCode(medicationRequests: Array<MedicationR
   } else if (isMixedAcuteAndContinuousCourseOfTherapyType(codeSet)) {
     return CourseOfTherapyTypeCode.ACUTE
   } else {
-    throw new TypeError("Course of therapy type must either match for all MedicationRequests or be a mixture of acute and continuous")
+    throw new InvalidValueError(
+      "Course of therapy type must either match for all MedicationRequests or be a mixture of 'acute' and 'continuous'.",
+      "MedicationRequest.courseOfTherapyType.coding"
+    )
   }
 }
 
