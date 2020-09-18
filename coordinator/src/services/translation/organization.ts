@@ -16,7 +16,7 @@ export function convertOrganizationAndProviderLicense(
   fhirBundle: fhir.Bundle,
   fhirOrganization: fhir.Organization,
   fhirHealthcareService: fhir.HealthcareService,
-  isCancellation = false
+  isCancellation: boolean
 ): peoplePlaces.Organization {
   const hl7V3Organization = convertRepresentedOrganization(fhirOrganization, fhirHealthcareService, fhirBundle, isCancellation)
 
