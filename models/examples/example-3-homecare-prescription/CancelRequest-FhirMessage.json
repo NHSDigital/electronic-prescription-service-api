@@ -13,7 +13,7 @@
                 "resourceType": "MessageHeader",
                 "id": "4f51f97f-a4b8-4756-bac9-b9bc7af8dc23",
                 "eventCoding": {
-                    "system": "https://fhir.nhs.uk/R4/CodeSystem/message-event",
+                    "system": "https://fhir.nhs.uk/CodeSystem/message-event",
                     "code": "prescription-order-update",
                     "display": "Prescription Order Update"
                 },
@@ -348,8 +348,7 @@
                         "MUSGROVE PARK HOSPITAL"
                     ],
                     "city": "TAUNTON",
-                    "postalCode": "TA1 5DA",
-                    "country": "NLD"
+                    "postalCode": "TA1 5DA"
                 }
             }
         },
