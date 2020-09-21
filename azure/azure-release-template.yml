@@ -64,6 +64,7 @@ extends:
           export APIGEE_ENVIRONMENT=$(ENVIRONMENT)
           export NAMESPACE=$(NAMESPACE)
           export ENV_VARIABLE_GROUP=$(curl https://dev.azure.com/NHSD-APIM/API%20Platform/_apis/distributedtask/variablegroups?groupName=env-$APIGEE_ENVIRONMENT -u $(variable-group-read-token))
+          echo $ENV_VARIABLE_GROUP
           export IDP_URL="$(echo $ENV_VARIABLE_GROUP | jq --raw-output '.value[0].variables.IDP_URL.value')"
 
           if [ "$SANDBOX" == "1" ]; then
