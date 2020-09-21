@@ -35,6 +35,7 @@ extends:
     service_base_path: ${{ variables.service_base_path }}
     product_display_name: ${{ variables.product_display_name }}
     product_description: ${{ variables.product_description }}
+    service_base_path_pr: ${{ variables.service_base_path_pr }}
     spec_file: ${{ variables.spec_file }}
     apigee_deployments:
       - environment: internal-dev-sandbox

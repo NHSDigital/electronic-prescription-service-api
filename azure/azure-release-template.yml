@@ -9,6 +9,8 @@ parameters:
     type: string
   - name: product_description
     type: string
+  - name: service_base_path_pr
+    type: string
   - name: spec_file
     type: string
   - name: apigee_deployments
@@ -44,8 +46,10 @@ extends:
 
           if [[ $SERVICE_ARTIFACT_NAME == v* ]]; then
             export BUILD_VERSION=`echo $SERVICE_ARTIFACT_NAME | grep -o "v[0-9]\+\.[0-9]\+\.[0-9]\+-[[:alpha:]]\+" | tail -1`
+            export SERVICE_BASE_PATH="${{ parameters.service_base_path }}"
           else
-            export BUILD_VERSION="$(SERVICE_BASE_PATH)"
+            export BUILD_VERSION="${{ parameters.service_base_path_pr }}"
+            export SERVICE_BASE_PATH="${{ parameters.service_base_path_pr }}"
           fi
 
           export SANDBOX=0
@@ -59,8 +63,9 @@ extends:
           export PACT_CONSUMER=nhsd-apim-eps-test-client
           export APIGEE_ENVIRONMENT=$(ENVIRONMENT)
           export NAMESPACE=$(NAMESPACE)
-          export SERVICE_BASE_PATH="$(SERVICE_BASE_PATH)"
-          export IDP_URL=$(IDP_URL)
+          export ENV_VARIABLE_GROUP=$(curl https://dev.azure.com/NHSD-APIM/API%20Platform/_apis/distributedtask/variablegroups?groupName=env-$APIGEE_ENVIRONMENT -u $(variable-group-read-token))
+          echo $ENV_VARIABLE_GROUP
+          export IDP_URL="$(echo $ENV_VARIABLE_GROUP | jq --raw-output '.value[0].variables.IDP_URL.value')"
 
           if [ "$SANDBOX" == "1" ]; then
             export PACT_PROVIDER=nhsd-apim-eps-sandbox

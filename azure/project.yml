@@ -4,4 +4,5 @@ variables:
   service_base_path: electronic-prescriptions
   product_display_name: Electronic Prescription Service
   product_description: " "
+  service_base_path_pr: ${{ variables.service_base_path }}-pr-${{ replace(replace(replace(variables['Build.SourceBranch'], '/merge', ''), 'refs/pull/', ''), '/', '_') }}
   spec_file: electronic-prescription-service-api.json
