@@ -38,12 +38,15 @@ extends:
     apigee_deployments:
       - environment: internal-dev
         proxy_path: live
+        make_spec_visible: true
       - environment: internal-qa-sandbox
         proxy_path: sandbox
+        make_spec_visible: true
         depends_on:
           - internal_dev
       - environment: internal-qa
         proxy_path: live
+        make_spec_visible: true
         depends_on:
           - internal_dev
       - environment: sandbox
