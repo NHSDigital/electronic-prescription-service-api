@@ -3,7 +3,6 @@ import {GlobalIdentifier, SdsUniqueIdentifier} from "./hl7-v3-datatypes-codes"
 import {Attributes, ElementCompact} from "xml-js"
 import {LosslessNumber} from "lossless-json"
 import {getNumericValueAsString} from "../services/translation/common"
-import * as cancellations from "./hl7-v3-cancellation"
 
 export interface AttributeTypeCode extends Attributes {
   typeCode: "AUT" | "COMP" | "FLFS" | "LA" | "PART" | "PERT" | "PRD" | "PRF" | "RESP" | "RCT" | "SBJ"
@@ -251,10 +250,6 @@ export class SendMessagePayload<T> {
     this.processingModeCode = codes.ProcessingMode.ONLINE
     this.acceptAckCode = codes.AcceptAckCode.NEVER
   }
-}
-
-export class SendCancelMessagePayload {
-  ParentPrescription: cancellations.CancellationPrescription
 }
 
 export class CommunicationFunction {

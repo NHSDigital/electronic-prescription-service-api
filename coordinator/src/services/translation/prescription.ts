@@ -20,6 +20,7 @@ import {getCommunicationRequests, getMedicationRequests} from "./common/getResou
 import {populateRepeatNumber} from "./common/repeatNumber"
 import moment from "moment"
 import {CourseOfTherapyTypeCode, getCourseOfTherapyTypeCode} from "./common/courseOfTherapyType"
+import {InvalidValueError} from "../../model/errors"
 
 export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescriptions.Prescription {
   const fhirMedicationRequests = getMedicationRequests(fhirBundle)
@@ -84,7 +85,10 @@ export function convertPrescriptionComponent1(validityPeriod?: fhir.Period, expe
   }
   if (expectedSupplyDuration) {
     if (expectedSupplyDuration.code !== "d") {
-      throw new TypeError("Expected supply duration must be specified in days")
+      throw new InvalidValueError(
+        "Expected supply duration must be specified in days.",
+        "MedicationRequest.dispenseRequest.expectedSupplyDuration.code"
+      )
     }
     const expectedSupplyDurationStr = getNumericValueAsString(expectedSupplyDuration.value)
     daysSupply.expectedUseTime = new IntervalUnanchored(expectedSupplyDurationStr, "d")
@@ -143,8 +147,8 @@ export function convertCourseOfTherapyType(fhirMedicationRequests: Array<fhir.Me
   return new prescriptions.PrescriptionTreatmentType(prescriptionTreatmentTypeCode)
 }
 
-function convertCourseOfTherapyTypeCode(courseOfTherapyTypeValue: string) {
-  switch (courseOfTherapyTypeValue) {
+function convertCourseOfTherapyTypeCode(courseOfTherapyTypeCode: string) {
+  switch (courseOfTherapyTypeCode) {
   case CourseOfTherapyTypeCode.ACUTE:
     return codes.PrescriptionTreatmentTypeCode.ACUTE
   case CourseOfTherapyTypeCode.CONTINUOUS:
@@ -152,7 +156,10 @@ function convertCourseOfTherapyTypeCode(courseOfTherapyTypeValue: string) {
   case CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING:
     return codes.PrescriptionTreatmentTypeCode.CONTINUOUS_REPEAT_DISPENSING
   default:
-    throw TypeError("Unhandled courseOfTherapyType " + courseOfTherapyTypeValue)
+    throw new InvalidValueError(
+      `Unhandled course of therapy type code '${courseOfTherapyTypeCode}'.`,
+      "MedicationRequest.courseOfTherapyType.coding.code"
+    )
   }
 }
 

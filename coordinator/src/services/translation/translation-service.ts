@@ -2,33 +2,28 @@ import * as XmlJs from "xml-js"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as core from "../../model/hl7-v3-datatypes-core"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
+import * as cancellations from "../../model/hl7-v3-cancellation"
 import * as fhir from "../../model/fhir-resources"
 import path from "path"
 import * as crypto from "crypto-js"
 import Mustache from "mustache"
 import fs from "fs"
-import {createSendMessagePayload, createSendCancelMessagePayload} from "./send-message-payload"
-import {namespacedCopyOf, writeXmlStringCanonicalized, writeXmlStringPretty} from "./xml"
+import {createSendMessagePayload} from "./send-message-payload"
+import {writeXmlStringCanonicalized} from "./xml"
 import {convertParentPrescription} from "./parent-prescription"
 import {convertCancellation} from "./cancellation"
-import {extractFragments, convertFragmentsToDisplayableFormat, convertFragmentsToHashableFormat} from "./signing"
+import {convertFragmentsToDisplayableFormat, convertFragmentsToHashableFormat, extractFragments} from "./signing"
 import {getIdentifierValueForSystem} from "./common"
 import {Display} from "../../model/signing"
+import * as requestBuilder from "../request-builder"
+import {SpineRequest} from "../spine-communication"
+import {identifyMessageType, MessageType} from "../../routes/util"
 
-export function convertFhirMessageToHl7V3ParentPrescriptionMessage(fhirMessage: fhir.Bundle): string {
-  const root = {
-    _declaration: new XmlDeclaration(),
-    PORX_IN020101SM31: namespacedCopyOf(createParentPrescriptionSendMessagePayload(fhirMessage))
-  }
-  return writeXmlStringPretty(root)
-}
-
-export function convertFhirCancellationMessageToHl7V3CancellationMessage(fhirMessage: fhir.Bundle): string {
-  const root = {
-    _declaration: new XmlDeclaration(),
-    PORX_IN030101SM32: namespacedCopyOf(createCancellationSendMessagePayload(fhirMessage))
-  }
-  return writeXmlStringPretty(root)
+export function convertFhirMessageToSpineRequest(fhirMessage: fhir.Bundle): SpineRequest {
+  const messageType = identifyMessageType(fhirMessage)
+  return messageType === MessageType.PRESCRIPTION
+    ? requestBuilder.toSpineRequest(createParentPrescriptionSendMessagePayload(fhirMessage))
+    : requestBuilder.toSpineRequest(createCancellationSendMessagePayload(fhirMessage))
 }
 
 export function createParentPrescriptionSendMessagePayload(fhirBundle: fhir.Bundle): core.SendMessagePayload<prescriptions.ParentPrescriptionRoot> {
@@ -43,12 +38,20 @@ export function createParentPrescriptionSendMessagePayload(fhirBundle: fhir.Bund
   return createSendMessagePayload(messageId, interactionId, fhirBundle, parentPrescriptionRoot)
 }
 
-export function createCancellationSendMessagePayload(fhirBundle: fhir.Bundle): core.SendCancelMessagePayload {
-  const parentPrescription = convertCancellation(fhirBundle)
-  return createSendCancelMessagePayload(parentPrescription)
+export function createCancellationSendMessagePayload(fhirBundle: fhir.Bundle): core.SendMessagePayload<cancellations.CancellationPrescriptionRoot> {
+  const messageId = getIdentifierValueForSystem(
+    [fhirBundle.identifier],
+    "https://tools.ietf.org/html/rfc4122",
+    "Bundle.identifier"
+  )
+  const cancellationRequest = convertCancellation(fhirBundle)
+  const cancellationRequestRoot = new cancellations.CancellationPrescriptionRoot(cancellationRequest)
+  const interactionId = codes.Hl7InteractionIdentifier.CANCEL_REQUEST
+  return createSendMessagePayload(messageId, interactionId, fhirBundle, cancellationRequestRoot)
 }
 
 export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle): string {
+  //TODO - check message header and reject if this is not an order
   const parentPrescription = convertParentPrescription(fhirMessage)
 
   const fragments = extractFragments(parentPrescription)
@@ -84,7 +87,7 @@ function createParametersPayload(fragmentsToBeHashed: string): string {
   return Buffer.from(writeXmlStringCanonicalized(signedInfo)).toString("base64")
 }
 
-function createParametersDisplay(fragmentsToDisplay: Display) : string {
+function createParametersDisplay(fragmentsToDisplay: Display): string {
   const displayTemplate = fs.readFileSync(path.join(__dirname, "../../resources/message_display.mustache"), "utf-8")
     .replace(/\n/g, "\r\n")
   return Buffer.from(Mustache.render(displayTemplate, fragmentsToDisplay)).toString("base64")
@@ -99,20 +102,13 @@ function createParameters(base64Payload: string, base64Display: string): fhir.Pa
 }
 
 class AlgorithmIdentifier implements XmlJs.ElementCompact {
-    _attributes: {
-        Algorithm: string
-    }
+  _attributes: {
+    Algorithm: string
+  }
 
-    constructor(algorithm: string) {
-      this._attributes = {
-        Algorithm: algorithm
-      }
+  constructor(algorithm: string) {
+    this._attributes = {
+      Algorithm: algorithm
     }
-}
-
-class XmlDeclaration {
-    _attributes = {
-      version: "1.0",
-      encoding: "UTF-8"
-    }
+  }
 }

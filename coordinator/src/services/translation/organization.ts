@@ -16,7 +16,7 @@ export function convertOrganizationAndProviderLicense(
   fhirBundle: fhir.Bundle,
   fhirOrganization: fhir.Organization,
   fhirHealthcareService: fhir.HealthcareService,
-  isCancellation = false
+  isCancellation: boolean
 ): peoplePlaces.Organization {
   const hl7V3Organization = convertRepresentedOrganization(fhirOrganization, fhirHealthcareService, fhirBundle, isCancellation)
 
@@ -33,7 +33,8 @@ function convertRepresentedOrganization(fhirOrganization: fhir.Organization, fhi
     "https://fhir.nhs.uk/R4/CodeSystem/organisation-role",
     "Organization.type"
   )
-  const representedOrganization = (organizationTypeCoding?.code === NHS_TRUST_CODE && !isCancellation) ? new CostCentreHealthcareService(fhirHealthcareService) : new CostCentreOrganization(fhirOrganization)
+  const representedOrganization = (organizationTypeCoding?.code === NHS_TRUST_CODE && !isCancellation) ?
+    new CostCentreHealthcareService(fhirHealthcareService) : new CostCentreOrganization(fhirOrganization)
   return convertRepresentedOrganizationDetails(representedOrganization, fhirBundle)
 }
 

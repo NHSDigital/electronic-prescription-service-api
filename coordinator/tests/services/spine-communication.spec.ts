@@ -1,11 +1,16 @@
 import "jest"
 import * as moxios from "moxios"
 import axios from "axios"
-import {RequestHandler, isPollable, SpinePollableResponse} from "../../src/services/spine-communication"
+import {
+  isPollable,
+  SpinePollableResponse,
+  SpineRequest,
+  LiveRequestHandler
+} from "../../src/services/spine-communication"
 
 describe("Spine communication", () => {
 
-  const requestHandler = new RequestHandler("localhost", "/Prescribe", (message) => `<wrap>${message}</wrap>`)
+  const requestHandler = new LiveRequestHandler("localhost", "/Prescribe", (spineRequest: SpineRequest) => `<wrap>${spineRequest.message}</wrap>`)
 
   beforeEach(() => {
     moxios.install(axios)
@@ -27,7 +32,7 @@ describe("Spine communication", () => {
       })
     })
 
-    const spineResponse = await requestHandler.sendData("test")
+    const spineResponse = await requestHandler.send({message: "test", interactionId: "test2"})
 
     expect(spineResponse.statusCode).toBe(202)
     expect(isPollable(spineResponse)).toBe(true)
@@ -40,7 +45,7 @@ describe("Spine communication", () => {
       request.respondWith({status: 400})
     })
 
-    const spineResponse = await requestHandler.sendData("test")
+    const spineResponse = await requestHandler.send({message: "test", interactionId: "test2"})
 
     expect(isPollable(spineResponse)).toBe(false)
   })

@@ -23,6 +23,16 @@ export function addEmptyCommunicationRequestToBundle(bundle: fhir.Bundle): void 
   bundle.entry.push({resource: communicationRequest})
 }
 
+export function addEmptyHealthcareServiceToBundle(bundle: fhir.Bundle): void {
+  const healthcareService: fhir.HealthcareService = {resourceType: "HealthcareService"}
+  bundle.entry.push({resource: healthcareService})
+}
+
+export function addEmptyLocationToBundle(bundle: fhir.Bundle): void {
+  const location: fhir.Location = {resourceType: "Location"}
+  bundle.entry.push({resource: location})
+}
+
 declare global {
   interface Array<T> {
     remove(elem: T): void;

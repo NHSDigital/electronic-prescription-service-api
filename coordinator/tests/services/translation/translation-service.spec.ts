@@ -7,6 +7,7 @@ import {xmlTest} from "../../resources/test-helpers"
 import * as LosslessJson from "lossless-json"
 import {Bundle, Parameters} from "../../../src/model/fhir-resources"
 import {ElementCompact} from "xml-js"
+import {Hl7InteractionIdentifier} from "../../../src/model/hl7-v3-datatypes-codes"
 
 jest.mock("uuid", () => {
   return {
@@ -41,18 +42,19 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
   const cases = TestResources.all.map(example => [example.description, example.fhirMessageSigned, example.hl7V3Message])
 
   test.each(cases)("accepts %s", (desc: string, message: Bundle) => {
-    expect(() => translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(message)).not.toThrow()
+    expect(() => translator.convertFhirMessageToSpineRequest(message)).not.toThrow()
   })
 
   test.each(cases)("returns correct value for %s", (desc: string, input: Bundle, output: ElementCompact) => {
-    const translated = translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(input)
-    xmlTest(XmlJs.xml2js(translated, {compact: true}), output)()
+    const spineRequest = translator.convertFhirMessageToSpineRequest(input)
+    xmlTest(XmlJs.xml2js(spineRequest.message, {compact: true}), output)()
+    expect(spineRequest.interactionId).toEqual(Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT._attributes.extension)
   })
 
   test("produces result with no lower case UUIDs", () => {
     const messageWithLowercaseUUIDs = getMessageWithLowercaseUUIDs()
 
-    const translatedMessage = translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(messageWithLowercaseUUIDs)
+    const translatedMessage = translator.convertFhirMessageToSpineRequest(messageWithLowercaseUUIDs).message
 
     const allNonUpperCaseUUIDS = getAllUUIDsNotUpperCase(translatedMessage)
     expect(allNonUpperCaseUUIDS.length).toBe(0)
