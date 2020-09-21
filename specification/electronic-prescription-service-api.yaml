@@ -204,7 +204,7 @@ paths:
       summary: Send a signed prescription to Spine
       description: | 
         Submit a signed prescription to EPS. A Link to the implementation guide for this endpoint can be found [here](https://simplifier.net/guide/DigitalMedicines/prescription-order). 
-        A message with `prescription-order-update` code in the MesageHeader resource will be used to cancel a message. 
+        A message with `prescription-order-update` code in the MessageHeader resource will be used to cancel a message. 
       tags:
         - prescribing
       requestBody:
@@ -260,7 +260,7 @@ paths:
       summary: Convert a prescription to a format used for signing
       description: |
         Convert a prescription from FHIR format into a HL7 V3 representation which can be used to verify signing operations.
-        A message with `prescription-order-update` code in the MesageHeader resource will be converted to a HL7 V3 cancellation message.
+        A message with `prescription-order-update` code in the MessageHeader resource will be converted to a HL7 V3 cancellation message.
       tags:
         - prescribing
       requestBody:
