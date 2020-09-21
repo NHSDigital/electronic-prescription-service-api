@@ -10,10 +10,7 @@
   },
   "author": "NHS Digital",
   "license": "MIT",
-  "dependencies": {
-    "lossless-json": "^1.0.4",
-    "uuid": "^8.3.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@pact-foundation/pact": "9.11.0",
     "@pact-foundation/pact-node": "10.9.7",
@@ -27,9 +24,12 @@
     "jest": "^26.0.1",
     "jest-pact": "0.6.0",
     "license-checker": "^25.0.1",
+    "lossless-json": "^1.0.4",
     "supertest": "4.0.2",
     "ts-jest": "^26.1.0",
     "ts-node": "8.10.2",
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.5",
+    "uuid": "^8.3.0",
+    "xml-js": "^1.6.11"
   }
 }

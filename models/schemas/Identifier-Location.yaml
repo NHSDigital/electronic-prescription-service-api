@@ -1,7 +1,6 @@
 type: object
 description: Unique code or number identifying the location to its users
 required:
-  - system
   - value
 properties:
   value:

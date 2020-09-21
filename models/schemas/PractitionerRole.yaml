@@ -45,6 +45,17 @@ properties:
               type: string
               description: "The value that is unique"
               example: "G6123456"
+        - type: object
+          description: "Other code"
+          properties:
+            system:
+              type: string
+              description: "The namespace for the identifier value"
+              example: "https://fhir.nhs.uk/Id/prescribing-code"
+            value:
+              type: string
+              description: "The value that is unique"
+              example: "123456"
   code: 
     type: array
     description: "Roles which this practitioner may perform"

@@ -53,7 +53,7 @@ export interface Coding {
   system: string
   code: string
   display?: string
-  version?: number
+  version?: string
 }
 
 export interface Reference<T extends Resource> {
@@ -259,4 +259,17 @@ export interface ContentString {
 export interface ContentReference {
   reference: string
   display: string
+}
+
+interface MessageHeaderSource {
+  name?: string
+  endpoint: string
+}
+
+export interface MessageHeader extends Resource {
+  resourceType: "MessageHeader",
+  eventCoding: Coding,
+  sender: Reference<PractitionerRole>
+  source: MessageHeaderSource
+  focus: Array<Reference<Resource>>
 }
