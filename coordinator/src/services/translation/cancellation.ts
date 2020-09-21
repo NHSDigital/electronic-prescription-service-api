@@ -35,7 +35,7 @@ export function convertCancellation(
   hl7V3CancellationPrescription.pertinentInformation1 = new cancellations.PertinentInformation1(lineItemToCancel)
 
   const statusReason = common.getCodingForSystem(
-    fhirFirstMedicationRequest.statusReason[0].coding,
+    fhirFirstMedicationRequest.statusReason.coding,
     "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-status-reason",
     "MedicationRequest.statusReason")
   hl7V3CancellationPrescription.pertinentInformation = new cancellations.PertinentInformation(statusReason.code, statusReason.display)

@@ -43,7 +43,7 @@ export interface MedicationRequest extends Resource {
   dosageInstruction: Array<Dosage>
   dispenseRequest: MedicationRequestDispenseRequest
   extension: Array<IdentifierExtension | ReferenceExtension<PractitionerRole> | CodingExtension | CodeableConceptExtension | RepeatInformationExtension>
-  statusReason?: Array<CodeableConcept>
+  statusReason?: CodeableConcept
 }
 
 export interface CodeableConcept {
