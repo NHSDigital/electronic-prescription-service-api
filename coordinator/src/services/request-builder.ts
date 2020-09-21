@@ -7,7 +7,6 @@ import {ElementCompact} from "xml-js"
 import {namespacedCopyOf, writeXmlStringPretty} from "./translation/xml"
 import {SendMessagePayload} from "../model/hl7-v3-datatypes-core"
 import {SpineRequest} from "./spine-communication"
-import * as fhir from '../model/fhir-resources'
 
 const ebxmlRequestTemplate = fs.readFileSync(path.join(__dirname, "../resources/ebxml_request.mustache"), "utf-8").replace(/\n/g, "\r\n")
 const cpaIdMap = new Map<string, string>(JSON.parse(process.env.CPA_ID_MAP))
@@ -50,12 +49,6 @@ export function toSpineRequest<T>(sendMessagePayload: SendMessagePayload<T>): Sp
     interactionId: extractInteractionId(sendMessagePayload),
     message: writeToString(sendMessagePayload)
   }
-}
-
-export function toParameters(spineRequest: SpineRequest) : fhir.Parameters {
-  const parameters: Array<fhir.Parameter> = []
-  parameters.push({name: "hl7v3", valueString: spineRequest.message})
-  return new fhir.Parameters(parameters)
 }
 
 function extractInteractionId<T>(sendMessagePayload: SendMessagePayload<T>): string {

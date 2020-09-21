@@ -21,12 +21,12 @@ jestpact.pactWith(
 
     describe("eps e2e tests", () => {
       const convertCases = [
-        ...TestResources.all.map(example => [`unsigned ${example.description}`, example.fhirMessageUnsigned, example.hl7V3Message]),
-        ...TestResources.all.map(example => [`signed ${example.description}`, example.fhirMessageSigned, example.hl7V3Message]),
-        ...TestResources.all.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel, example.hl7V3MessageCancel])
+        ...TestResources.all.map(example => [`unsigned ${example.description}`, example.fhirMessageUnsigned]),
+        ...TestResources.all.map(example => [`signed ${example.description}`, example.fhirMessageSigned]),
+        ...TestResources.all.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel])
       ]
 
-      test.each(convertCases)("should be able to convert %s message to HL7V3", async (desc: string, message: Bundle, translated: string) => {
+      test.each(convertCases)("should be able to convert %s message to HL7V3", async (desc: string, message: Bundle) => {
         const apiPath = "/$convert"
         const messageStr = LosslessJson.stringify(message)
         const interaction: InteractionObject = {
@@ -44,15 +44,6 @@ jestpact.pactWith(
           willRespondWith: {
             headers: {
               "Content-Type": "application/xml"
-            },
-            body: {
-              resourceType: "Parameters",
-              parameter: [
-                {
-                  name: "hl7v3",
-                  valueString: translated
-                }
-              ],
             },
             status: 200
           }
