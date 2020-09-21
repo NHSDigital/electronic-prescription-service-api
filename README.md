@@ -22,16 +22,38 @@ The contents of this repository are protected by Crown Copyright (C).
 
 ## Development
 
-### Requirements
+
+### Setup
+
+First time fresh install Ubuntu 20.04, dependencies:
+
 * make
 * jq
 * nodejs + npm/yarn
-* [poetry](https://github.com/python-poetry/poetry)
+* poetry
+* curl
+* python3
+* shellcheck
+* curl
+* java
 
-### Install
+These can be installed by running the following commands:
+
+```
+& sudo apt update
+$ sudo apt install git make curl npm python3-apt python3-distutils python3-venv default-jre shellcheck build-essential checkinstall libssl-dev -y
+$ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3
+$ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.35.1/install.sh | bash
+$ nvm install v12.18.3
+```
+
+Install packages:
+
 ```
 $ make install
 ```
+
+You can then verify everything is installed correctly by running the default `make` target see [Make commands](#make-commands)
 
 #### Pre-commit hooks
 Some pre-commit hooks are installed as part of the install above to ensure you can't commit invalid spec changes by accident. A combination of these checks are also run in CI.
@@ -45,10 +67,15 @@ Various scripts and commands rely on environment variables being set. These are 
 There are further `make` commands that help alias some functionality during development.
 
 #### Common commands
-Common commands needed for development can be run by running the default `make` command. This outputs to `build.log` and runs the following targets:
+Common commands needed for development can be run by running the default `make` command. 
+
+```
+$ make
+```
+
+This outputs to `build.log` and runs the following targets:
 
  * `clean` -- Removes the output from the build and release commands
- * `install` -- Installs package dependencies for all components
  * `build` -- Outputs the FHIR R4 validated models and artifacts for the: specification, coordinator and apigee proxies into the corresponding `dist/` directories
  * `test` -- Performs quality checks including linting, licence checking of dependencies and unit/low level integration tests
  * `release` -- Pulls all the artifacts for the individual components together and arranges them in a format ready to deploy; used mainly by CI but useful to check the output matches expectations
