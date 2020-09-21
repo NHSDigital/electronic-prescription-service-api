@@ -1,12 +1,9 @@
 import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
-import * as fs from 'fs'
-import * as path from "path"
-
-const prepareRepeatDispensingPrescriptionRequest = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareRequest-FhirMessageUnsigned.json"), "utf8")
-const prepareRepeatDispensingPrescriptionResponse = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/PrepareResponse-FhirMessageDigest.json"), "utf8")
-const sendRepeatDispensingPrescriptionRequest = fs.readFileSync(path.join(__dirname, "../resources/example-1-repeat-dispensing/SendRequest-FhirMessageSigned.json"), "utf8")
+import * as TestResources from "../resources/test-resources"
+import {Bundle, Parameters} from "../resources/fhir-resources"
+import * as LosslessJson from "lossless-json"
 
 jestpact.pactWith(
   {
@@ -22,12 +19,17 @@ jestpact.pactWith(
     }
 
     describe("eps sandbox e2e tests", () => {
+      const convertCases = [
+        ...TestResources.all.map(example => [`unsigned ${example.description}`, example.fhirMessageUnsigned]),
+        ...TestResources.all.map(example => [`signed ${example.description}`, example.fhirMessageSigned])
+      ]
 
-      test("should be able to convert a FHIR repeat-dispensing parent-prescription-1 into a HL7V3 Spine interaction", async () => {
+      test.each(convertCases)("should be able to convert %s message to HL7V3", async (desc: string, message: Bundle) => {
         const apiPath = "/$convert"
+        const messageStr = LosslessJson.stringify(message)
         const interaction: InteractionObject = {
           state: null,
-          uponReceiving: "a request to convert a FHIR repeat-dispensing parent-prescription-1",
+          uponReceiving: `a request to convert ${desc} message`,
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",
@@ -35,7 +37,7 @@ jestpact.pactWith(
             },
             method: "POST",
             path: "/$convert",
-            body: JSON.parse(prepareRepeatDispensingPrescriptionRequest)
+            body: JSON.parse(messageStr)
           },
           willRespondWith: {
             headers: {
@@ -49,15 +51,20 @@ jestpact.pactWith(
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('NHSD-Session-URID', '1234')
-          .send(prepareRepeatDispensingPrescriptionRequest)
+          .send(messageStr)
           .expect(200)
       })
 
-      test("should be able to prepare a repeat-dispensing parent-prescription-1", async () => {
+
+      const prepareCases = TestResources.all.map(example => [example.description, example.fhirMessageUnsigned, example.fhirMessageDigest])
+
+      test.each(prepareCases)("should be able to prepare a %s message", async (desc: string, inputMessage: Bundle, outputMessage: Parameters) => {
         const apiPath = "/$prepare"
+        const inputMessageStr = LosslessJson.stringify(inputMessage)
+        const outputMessageStr = LosslessJson.stringify(outputMessage)
         const interaction: InteractionObject = {
           state: null,
-          uponReceiving: "a request to prepare a repeat-dispensing parent-prescription-1",
+          uponReceiving: `a request to prepare a ${desc} message`,
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",
@@ -65,13 +72,13 @@ jestpact.pactWith(
             },
             method: "POST",
             path: "/$prepare",
-            body: JSON.parse(prepareRepeatDispensingPrescriptionRequest)
+            body: JSON.parse(inputMessageStr)
           },
           willRespondWith: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
-            body: JSON.parse(prepareRepeatDispensingPrescriptionResponse),
+            body: JSON.parse(outputMessageStr),
             status: 200
           }
         }
@@ -80,15 +87,18 @@ jestpact.pactWith(
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('NHSD-Session-URID', '1234')
-          .send(prepareRepeatDispensingPrescriptionRequest)
+          .send(inputMessageStr)
           .expect(200)
       })
 
-      test("should be able to send a repeat-dispensing parent-prescription-1", async () => {
+      const sendCases = TestResources.all.map(example => [example.description, example.fhirMessageSigned])
+
+      test.each(sendCases)("should be able to send %s", async (desc: string, message: Bundle) => {
         const apiPath = "/$process-message"
+        const messageStr = LosslessJson.stringify(message)
         const interaction: InteractionObject = {
           state: null,
-          uponReceiving: "a request to send a repeat-dispensing parent-prescription-1 to Spine",
+          uponReceiving: `a request to send ${desc} message to Spine`,
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",
@@ -96,7 +106,7 @@ jestpact.pactWith(
             },
             method: "POST",
             path: "/$process-message",
-            body: JSON.parse(sendRepeatDispensingPrescriptionRequest)
+            body: JSON.parse(messageStr)
           },
           willRespondWith: {
             headers: {
@@ -110,7 +120,7 @@ jestpact.pactWith(
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('NHSD-Session-URID', '1234')
-          .send(sendRepeatDispensingPrescriptionRequest)
+          .send(messageStr)
           .expect(202)
       })
 

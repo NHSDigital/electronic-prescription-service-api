@@ -1,10 +1,18 @@
 import * as fhir from "../../../model/fhir-resources"
-import {onlyElement} from "."
+import {onlyElement} from "./index"
 
 function getResourcesOfType<T extends fhir.Resource>(fhirBundle: fhir.Bundle, resourceType: string): Array<T> {
   return fhirBundle.entry
     .map(entry => entry.resource)
     .filter(resource => resource.resourceType === resourceType) as Array<T>
+}
+
+export function getMessageHeader(fhirBundle: fhir.Bundle): fhir.MessageHeader {
+  return onlyElement(
+    getResourcesOfType<fhir.MessageHeader>(fhirBundle, "MessageHeader"),
+    "Bundle.entry",
+    "resource.resourceType == 'MessageHeader'"
+  )
 }
 
 export function getMedicationRequests(fhirBundle: fhir.Bundle): Array<fhir.MedicationRequest> {
@@ -16,7 +24,11 @@ export function getCommunicationRequests(fhirBundle: fhir.Bundle): Array<fhir.Co
 }
 
 export function getPatient(fhirBundle: fhir.Bundle): fhir.Patient {
-  return getResourcesOfType<fhir.Patient>(fhirBundle, "Patient").reduce(onlyElement)
+  return onlyElement(
+    getResourcesOfType<fhir.Patient>(fhirBundle, "Patient"),
+    "Bundle.entry",
+    "resource.resourceType == 'Patient'"
+  )
 }
 
 export function getOrganizations(fhirBundle: fhir.Bundle): Array<fhir.Organization> {
@@ -25,4 +37,12 @@ export function getOrganizations(fhirBundle: fhir.Bundle): Array<fhir.Organizati
 
 export function getProvenances(fhirBundle: fhir.Bundle): Array<fhir.Provenance> {
   return getResourcesOfType<fhir.Provenance>(fhirBundle, "Provenance")
+}
+
+export function getHealthcareServices(fhirBundle: fhir.Bundle): Array<fhir.HealthcareService> {
+  return getResourcesOfType<fhir.HealthcareService>(fhirBundle, "HealthcareService")
+}
+
+export function getLocations(fhirBundle: fhir.Bundle): Array<fhir.Location> {
+  return getResourcesOfType<fhir.Location>(fhirBundle, "Location")
 }

@@ -3,7 +3,7 @@ import {GlobalIdentifier, SdsRoleProfileIdentifier, SdsUniqueIdentifier} from ".
 import * as core from "../../model/hl7-v3-datatypes-core"
 import moment from "moment"
 import {
-  convertMomentToDateTime,
+  convertMomentToHl7V3DateTime,
   getCodeableConceptCodingForSystem,
   getIdentifierValueForSystem,
   resolveReference
@@ -19,7 +19,7 @@ export function createSendMessagePayload<T>(
 ): core.SendMessagePayload<T> {
   const sendMessagePayload = new core.SendMessagePayload<T>(
     new GlobalIdentifier(messageId),
-    convertMomentToDateTime(moment.utc()),
+    convertMomentToHl7V3DateTime(moment.utc()),
     interactionId
   )
   sendMessagePayload.communicationFunctionRcv = createCommunicationFunction(process.env.TO_ASID)
@@ -51,9 +51,21 @@ function convertRequesterToControlActAuthor(
   const firstMedicationRequest = getMedicationRequests(bundle)[0]
   const authorPractitionerRole = resolveReference(bundle, firstMedicationRequest.requester)
   const authorPractitioner = resolveReference(bundle, authorPractitionerRole.practitioner)
-  const sdsUniqueIdentifier = getIdentifierValueForSystem(authorPractitioner.identifier, "https://fhir.nhs.uk/Id/sds-user-id")
-  const sdsJobRoleCode = getCodeableConceptCodingForSystem(authorPractitionerRole.code, "https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName").code
-  const sdsRoleProfileIdentifier = getIdentifierValueForSystem(authorPractitionerRole.identifier, "https://fhir.nhs.uk/Id/sds-role-profile-id")
+  const sdsUniqueIdentifier = getIdentifierValueForSystem(
+    authorPractitioner.identifier,
+    "https://fhir.nhs.uk/Id/sds-user-id",
+    "Practitioner.identifier"
+  )
+  const sdsJobRoleCode = getCodeableConceptCodingForSystem(
+    authorPractitionerRole.code,
+    "https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName",
+    "PractitionerRole.code"
+  ).code
+  const sdsRoleProfileIdentifier = getIdentifierValueForSystem(
+    authorPractitionerRole.identifier,
+    "https://fhir.nhs.uk/Id/sds-role-profile-id",
+    "PractitionerRole.identifier"
+  )
   return createControlActEventAuthor(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier)
 }
 

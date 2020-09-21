@@ -78,6 +78,12 @@ export class DispensingSitePreferenceCode extends Code<"2.16.840.1.113883.2.1.3.
   }
 }
 
+export class PrescriptionEndorsementCode extends Code<"2.16.840.1.113883.2.1.3.2.4.16.32"> {
+  constructor(code: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.16.32", code)
+  }
+}
+
 export class PrescriptionTypeCode extends Code<"2.16.840.1.113883.2.1.3.2.4.17.25"> {
   constructor(code: string) {
     super("2.16.840.1.113883.2.1.3.2.4.17.25", code)
@@ -184,6 +190,7 @@ export class Hl7InteractionIdentifier extends Identifier<"2.16.840.1.113883.2.1.
   }
 
     static PARENT_PRESCRIPTION_URGENT = new Hl7InteractionIdentifier("PORX_IN020101SM31")
+    static CANCEL_REQUEST = new Hl7InteractionIdentifier("PORX_IN030101SM32")
 }
 
 export class AccreditedSystemIdentifier extends Identifier<"1.2.826.0.1285.0.2.0.107"> {

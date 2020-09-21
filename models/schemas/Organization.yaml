@@ -24,7 +24,9 @@ properties:
     type: array
     description: The kind(s) of organization that this is.
     items:
-      $ref: "CodeableConcept-OrganizationType.yaml"
+      anyOf:
+        - $ref: "CodeableConcept-OrganizationType.yaml"
+        - $ref: "CodeableConcept-OrganizationRole.yaml"
   name:
     type: string
     description: A name associated with the organization.
