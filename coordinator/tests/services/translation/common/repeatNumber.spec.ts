@@ -2,16 +2,16 @@ import {populateRepeatNumber} from "../../../../src/services/translation/common/
 import {clone} from "../../../resources/test-helpers"
 import * as TestResources from "../../../resources/test-resources"
 import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
-import {CourseOfTherapyTypeCode} from "../../../../src/services/translation/common/courseOfTherapyType"
+import {CourseOfTherapyTypeCode} from "../../../../src/services/translation/prescription/course-of-therapy-type"
 import {
   MedicationRequest,
   RepeatInformationExtension,
   UnsignedIntExtension
-} from "../../../../src/model/fhir-resources"
-import {Repeatable} from "../../../../src/model/hl7-v3-prescriptions"
+} from "../../../../src/models/fhir/fhir-resources"
+import {Repeatable} from "../../../../src/models/hl7-v3/hl7-v3-prescriptions"
 import {getExtensionForUrl} from "../../../../src/services/translation/common"
 import {LosslessNumber} from "lossless-json"
-import {setCourseOfTherapyTypeCode} from "./courseOfTherapyType.spec"
+import {setCourseOfTherapyTypeCode} from "../course-of-therapy-type.spec"
 
 describe("populateRepeatNumber", () => {
   let medicationRequests: Array<MedicationRequest>

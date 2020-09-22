@@ -1,8 +1,8 @@
-import * as validator from "../../src/validators/request-validator"
-import * as fhir from "../../src/model/fhir-resources"
+import * as validator from "../../src/services/validation/bundle-validator"
+import * as fhir from "../../src/models/fhir/fhir-resources"
 import * as TestResources from "../resources/test-resources"
 import {clone} from "../resources/test-helpers"
-import * as errors from "../../src/errors/errors"
+import * as errors from "../../src/models/errors/validation-errors"
 
 function validateValidationErrors (validationErrors: Array<errors.ValidationError>) {
   expect(validationErrors).toHaveLength(1)
