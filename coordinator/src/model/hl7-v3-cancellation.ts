@@ -19,7 +19,6 @@ export class CancellationPrescription implements ElementCompact {
   }
 
   id: codes.GlobalIdentifier
-  code: codes.SnomedCode
   effectiveTime: core.Timestamp
   typeId: codes.TypeIdentifier
   recordTarget: prescription.RecordTarget
@@ -30,9 +29,9 @@ export class CancellationPrescription implements ElementCompact {
   pertinentInformation: PertinentInformation
   pertinentInformation3: PertinentInformation3
 
-  constructor(id: codes.GlobalIdentifier) {
+  constructor(id: codes.GlobalIdentifier, effectiveTime: core.Timestamp) {
     this.id = id
-    this.code = new codes.SnomedCode("163501000000109", "Prescription - FocusActOrEvent (record artifact)")
+    this.effectiveTime = effectiveTime
     this.typeId = new codes.TypeIdentifier("PORX_MT135001UK32")
   }
 }
