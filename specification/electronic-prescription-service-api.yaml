@@ -53,9 +53,9 @@ info:
     To generate a signature for your prescription, you can use the digital signature service. In order to access the service, you can email your request to the [API management team](api.management@nhs.net). Alternatively, for testing purposes, you can use the example signature from the Provenance schema [here](./types/Provenance).
 
     ## Legal Use
-    This API can only be used where there is a legal basis to do so. You should make an access request before you go too far with your development.
-
-    You must have made this request before you can go live (see ‘Onboarding’ below).
+    This API can only be used where there is a legal basis to do so. Make sure you have a [valid use case](https://digital.nhs.uk/services/electronic-prescription-service/enabling-eps-for-your-service) before you go too far with your development. 
+    
+    You must do this before you can go live (see ‘Onboarding’ below).
     
     ## Related APIs
     The following APIs also give access to the Electronic Prescription Service:
