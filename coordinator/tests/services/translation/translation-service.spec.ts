@@ -1,13 +1,13 @@
-import * as translator from "../../../src/services/translation/translation-service"
-import {convertFhirMessageToSignedInfoMessage} from "../../../src/services/translation/translation-service"
+import * as translator from "../../../src/services/translation"
+import {convertFhirMessageToSignedInfoMessage} from "../../../src/services/translation"
 import * as TestResources from "../../resources/test-resources"
 import * as XmlJs from "xml-js"
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {xmlTest} from "../../resources/test-helpers"
 import * as LosslessJson from "lossless-json"
-import {Bundle, Parameters} from "../../../src/model/fhir-resources"
+import {Bundle, Parameters} from "../../../src/models/fhir/fhir-resources"
 import {ElementCompact} from "xml-js"
-import {Hl7InteractionIdentifier} from "../../../src/model/hl7-v3-datatypes-codes"
+import {Hl7InteractionIdentifier} from "../../../src/models/hl7-v3/hl7-v3-datatypes-codes"
 
 jest.mock("uuid", () => {
   return {

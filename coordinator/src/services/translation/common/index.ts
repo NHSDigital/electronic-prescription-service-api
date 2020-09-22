@@ -1,9 +1,9 @@
-import * as fhir from "../../../model/fhir-resources"
+import * as fhir from "../../../models/fhir/fhir-resources"
 import moment from "moment"
-import * as core from "../../../model/hl7-v3-datatypes-core"
-import {SpineDirectResponse} from "../../spine-communication"
+import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
+import {SpineDirectResponse} from "../../../models/spine"
 import {LosslessNumber} from "lossless-json"
-import {InvalidValueError, TooFewValuesError, TooManyValuesError} from "../../../model/errors"
+import {InvalidValueError, TooFewValuesError, TooManyValuesError} from "../../../models/errors/processing-errors"
 
 const FHIR_DATE_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$/
 const FHIR_DATE_TIME_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$/
