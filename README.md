@@ -31,7 +31,6 @@ First time fresh install Ubuntu 20.04, dependencies:
 * jq
 * nodejs + npm/yarn
 * poetry
-* curl
 * python3
 * shellcheck
 * curl
