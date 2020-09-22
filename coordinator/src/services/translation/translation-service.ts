@@ -2,6 +2,7 @@ import * as XmlJs from "xml-js"
 import * as codes from "../../model/hl7-v3-datatypes-codes"
 import * as core from "../../model/hl7-v3-datatypes-core"
 import * as prescriptions from "../../model/hl7-v3-prescriptions"
+import * as cancellations from "../../model/hl7-v3-cancellation"
 import * as fhir from "../../model/fhir-resources"
 import path from "path"
 import * as crypto from "crypto-js"
@@ -10,6 +11,7 @@ import fs from "fs"
 import {createSendMessagePayload} from "./send-message-payload"
 import {writeXmlStringCanonicalized} from "./xml"
 import {convertParentPrescription} from "./parent-prescription"
+import {convertCancellation} from "./cancellation"
 import {convertFragmentsToDisplayableFormat, convertFragmentsToHashableFormat, extractFragments} from "./signing"
 import {getIdentifierValueForSystem} from "./common"
 import {Display} from "../../model/signing"
@@ -19,10 +21,9 @@ import {identifyMessageType, MessageType} from "../../routes/util"
 
 export function convertFhirMessageToSpineRequest(fhirMessage: fhir.Bundle): SpineRequest {
   const messageType = identifyMessageType(fhirMessage)
-  const sendMessagePayload = messageType === MessageType.PRESCRIPTION
-    ? createParentPrescriptionSendMessagePayload(fhirMessage)
-    : createCancellationRequestSendMessagePayload(fhirMessage)
-  return requestBuilder.toSpineRequest(sendMessagePayload)
+  return messageType === MessageType.PRESCRIPTION
+    ? requestBuilder.toSpineRequest(createParentPrescriptionSendMessagePayload(fhirMessage))
+    : requestBuilder.toSpineRequest(createCancellationSendMessagePayload(fhirMessage))
 }
 
 export function createParentPrescriptionSendMessagePayload(fhirBundle: fhir.Bundle): core.SendMessagePayload<prescriptions.ParentPrescriptionRoot> {
@@ -37,17 +38,16 @@ export function createParentPrescriptionSendMessagePayload(fhirBundle: fhir.Bund
   return createSendMessagePayload(messageId, interactionId, fhirBundle, parentPrescriptionRoot)
 }
 
-export function createCancellationRequestSendMessagePayload(fhirBundle: fhir.Bundle): core.SendMessagePayload<prescriptions.ParentPrescriptionRoot> {
+export function createCancellationSendMessagePayload(fhirBundle: fhir.Bundle): core.SendMessagePayload<cancellations.CancellationPrescriptionRoot> {
   const messageId = getIdentifierValueForSystem(
     [fhirBundle.identifier],
     "https://tools.ietf.org/html/rfc4122",
     "Bundle.identifier"
   )
-  //TODO - replace with cancellation translations
-  const parentPrescription = convertParentPrescription(fhirBundle)
-  const parentPrescriptionRoot = new prescriptions.ParentPrescriptionRoot(parentPrescription)
+  const cancellationRequest = convertCancellation(fhirBundle)
+  const cancellationRequestRoot = new cancellations.CancellationPrescriptionRoot(cancellationRequest)
   const interactionId = codes.Hl7InteractionIdentifier.CANCEL_REQUEST
-  return createSendMessagePayload(messageId, interactionId, fhirBundle, parentPrescriptionRoot)
+  return createSendMessagePayload(messageId, interactionId, fhirBundle, cancellationRequestRoot)
 }
 
 export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle): string {
