@@ -10,7 +10,11 @@ import {
 
 describe("Spine communication", () => {
 
-  const requestHandler = new LiveRequestHandler("localhost", "/Prescribe", (spineRequest: SpineRequest) => `<wrap>${spineRequest.message}</wrap>`)
+  const requestHandler = new LiveRequestHandler(
+    "localhost",
+    "/Prescribe",
+    (spineRequest: SpineRequest) => `<wrap>${spineRequest.message}</wrap>`
+  )
 
   beforeEach(() => {
     moxios.install(axios)

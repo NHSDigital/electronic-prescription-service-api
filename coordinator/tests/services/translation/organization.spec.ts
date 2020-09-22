@@ -20,7 +20,12 @@ describe("convertOrganizationAndProviderLicense non-homecare represented organiz
     const expectedValue = "identifier"
     firstFhirOrganization.identifier = [{system: "https://fhir.nhs.uk/Id/ods-organization-code", value: expectedValue}]
 
-    const hl7v3AgentPersonRepresentedOrganization = convertOrganizationAndProviderLicense(bundle, firstFhirOrganization, firstFhirHealthcareService, true)
+    const hl7v3AgentPersonRepresentedOrganization = convertOrganizationAndProviderLicense(
+      bundle,
+      firstFhirOrganization,
+      firstFhirHealthcareService,
+      true
+    )
     const attributes = hl7v3AgentPersonRepresentedOrganization.id._attributes
 
     expect(attributes.root).toEqual("1.2.826.0.1285.0.1.10")
@@ -31,7 +36,12 @@ describe("convertOrganizationAndProviderLicense non-homecare represented organiz
     const expectedName = "name"
     firstFhirOrganization.name = expectedName
 
-    const hl7v3AgentPersonRepresentedOrganization = convertOrganizationAndProviderLicense(bundle, firstFhirOrganization, firstFhirHealthcareService, true)
+    const hl7v3AgentPersonRepresentedOrganization = convertOrganizationAndProviderLicense(
+      bundle,
+      firstFhirOrganization,
+      firstFhirHealthcareService,
+      true
+    )
 
     expect(hl7v3AgentPersonRepresentedOrganization.name._text).toEqual(expectedName)
   })
@@ -40,7 +50,12 @@ describe("convertOrganizationAndProviderLicense non-homecare represented organiz
     const expectedTelecomValue = "tel:01234567890"
     firstFhirOrganization.telecom = [{use: "work", value: expectedTelecomValue}]
 
-    const hl7v3AgentPersonRepresentedOrganization = convertOrganizationAndProviderLicense(bundle, firstFhirOrganization, firstFhirHealthcareService, true)
+    const hl7v3AgentPersonRepresentedOrganization = convertOrganizationAndProviderLicense(
+      bundle,
+      firstFhirOrganization,
+      firstFhirHealthcareService,
+      true
+    )
     const attributes = hl7v3AgentPersonRepresentedOrganization.telecom._attributes
 
     expect(attributes.use).toEqual("WP")
@@ -52,7 +67,12 @@ describe("convertOrganizationAndProviderLicense non-homecare represented organiz
     const expectedPostalCode = "P0STC0D3"
     firstFhirOrganization.address = [{use: "work", line: [expectedAddressLine], postalCode: expectedPostalCode}]
 
-    const hl7v3AgentPersonRepresentedOrganization = convertOrganizationAndProviderLicense(bundle, firstFhirOrganization, firstFhirHealthcareService, true)
+    const hl7v3AgentPersonRepresentedOrganization = convertOrganizationAndProviderLicense(
+      bundle,
+      firstFhirOrganization,
+      firstFhirHealthcareService,
+      true
+    )
     const hl7v3Address = hl7v3AgentPersonRepresentedOrganization.addr
 
     expect(hl7v3Address._attributes.use).toEqual("WP")
@@ -65,7 +85,14 @@ describe("convertOrganizationAndProviderLicense non-homecare represented organiz
     firstFhirOrganization.partOf = undefined
     firstFhirOrganization.telecom = undefined
 
-    expect(() => convertOrganizationAndProviderLicense(bundle, firstFhirOrganization, firstFhirHealthcareService, true)).not.toThrow()
+    expect(() =>
+      convertOrganizationAndProviderLicense(
+        bundle,
+        firstFhirOrganization,
+        firstFhirHealthcareService,
+        true
+      )
+    ).not.toThrow()
   })
 })
 
@@ -81,12 +108,22 @@ describe("Homecare Prescription representedOrganization Conversion", () => {
   })
 
   test("if Organization has code value RO197, should have 999 in representedOrganization code", () => {
-    const result = convertOrganizationAndProviderLicense(bundle, firstFhirOrganization, firstFhirHealthcareService, false)
+    const result = convertOrganizationAndProviderLicense(
+      bundle,
+      firstFhirOrganization,
+      firstFhirHealthcareService,
+      false
+    )
     expect(result.code._attributes.code).toBe("999")
   })
 
   test("If passed a cancellation, the representedOrganization should have a code of 008", () => {
-    const result = convertOrganizationAndProviderLicense(bundle, firstFhirOrganization, firstFhirHealthcareService, true)
+    const result = convertOrganizationAndProviderLicense(
+      bundle,
+      firstFhirOrganization,
+      firstFhirHealthcareService,
+      true
+    )
     expect(result.code._attributes.code).toBe("008")
   })
 
@@ -95,7 +132,12 @@ describe("Homecare Prescription representedOrganization Conversion", () => {
     firstFhirOrganization.name = organizationName
     firstFhirHealthcareService.name = "distinct name"
 
-    const result = convertOrganizationAndProviderLicense(bundle, firstFhirOrganization, firstFhirHealthcareService, true)
+    const result = convertOrganizationAndProviderLicense(
+      bundle,
+      firstFhirOrganization,
+      firstFhirHealthcareService,
+      true
+    )
 
     expect(result.name._text).toBe(organizationName)
   })
@@ -104,8 +146,15 @@ describe("Homecare Prescription representedOrganization Conversion", () => {
     const locationRef = getHealthcareServices(bundle)[0].location[0].reference
     const locationAddress = (getResourceForFullUrl(bundle, locationRef) as Location).address
     firstFhirOrganization.address = [{line: ["bluh", "testvalue"], postalCode: "test"}]
-    const resultAddress = convertOrganizationAndProviderLicense(bundle, firstFhirOrganization, firstFhirHealthcareService, false).addr
-    locationAddress.line.forEach(line => expect(resultAddress.streetAddressLine.map(line => line._text)).toContain(line))
+    const resultAddress = convertOrganizationAndProviderLicense(
+      bundle,
+      firstFhirOrganization,
+      firstFhirHealthcareService,
+      false
+    ).addr
+    locationAddress.line.forEach(line =>
+      expect(resultAddress.streetAddressLine.map(line => line._text)).toContain(line)
+    )
     expect(resultAddress.streetAddressLine.map(line => line._text)).toContain(locationAddress.city)
     expect(resultAddress.postalCode._text).toBe(locationAddress.postalCode)
   })
@@ -123,18 +172,33 @@ describe("Homecare Prescription healthcareProviderLicence Conversion", () => {
   })
 
   test("If HealthcareProviderLicense Organization doesn't have a type code, should put 008 in type code", () => {
-    const result = convertOrganizationAndProviderLicense(bundle, firstFhirOrganization, firstFhirHealthcareService, false)
+    const result = convertOrganizationAndProviderLicense(
+      bundle,
+      firstFhirOrganization,
+      firstFhirHealthcareService,
+      false
+    )
     expect(result.healthCareProviderLicense.Organization.code._attributes.code).toBe("008")
   })
 
   test("Doesn't convert address or telephone number in HealthcareProvider Licence", () => {
-    const result = convertOrganizationAndProviderLicense(bundle, firstFhirOrganization, firstFhirHealthcareService, false)
+    const result = convertOrganizationAndProviderLicense(
+      bundle,
+      firstFhirOrganization,
+      firstFhirHealthcareService,
+      false
+    )
     expect(result.healthCareProviderLicense.Organization.addr).toBe(undefined)
     expect(result.healthCareProviderLicense.Organization.telecom).toBe(undefined)
   })
 
   test("If passed a cancellation message, there shouldn't be a healthcareProviderLicence", () => {
-    const result = convertOrganizationAndProviderLicense(bundle, firstFhirOrganization, firstFhirHealthcareService, true)
+    const result = convertOrganizationAndProviderLicense(
+      bundle,
+      firstFhirOrganization,
+      firstFhirHealthcareService,
+      true
+    )
     expect(Object.keys(result)).not.toContain("healthcareProviderLicence")
   })
 })

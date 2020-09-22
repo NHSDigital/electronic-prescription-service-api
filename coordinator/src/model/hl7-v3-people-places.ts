@@ -4,7 +4,8 @@ import {ElementCompact} from "xml-js"
 import {Text} from "./hl7-v3-datatypes-core"
 
 /**
- * Identifies or provides detailed information about a person fulfilling a specific role when it is not known whether all of the role profile, player and scoper details are available from SDS.
+ * Identifies or provides detailed information about a person fulfilling a specific role when it is not known whether
+ * all of the role profile, player and scoper details are available from SDS.
  */
 export class AgentPerson implements ElementCompact {
     _attributes: core.AttributeClassCode = {
@@ -78,7 +79,8 @@ export class HealthCareProviderLicense implements ElementCompact {
 }
 
 /**
- * Provides information about a patient's demographics and healthcare provision in a way that conforms to the PDS patient structure.
+ * Provides information about a patient's demographics and healthcare provision in a way that conforms to the PDS
+ * patient structure.
  */
 export class Patient implements ElementCompact {
     _attributes: core.AttributeClassCode = {

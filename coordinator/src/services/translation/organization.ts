@@ -18,7 +18,12 @@ export function convertOrganizationAndProviderLicense(
   fhirHealthcareService: fhir.HealthcareService,
   isCancellation: boolean
 ): peoplePlaces.Organization {
-  const hl7V3Organization = convertRepresentedOrganization(fhirOrganization, fhirHealthcareService, fhirBundle, isCancellation)
+  const hl7V3Organization = convertRepresentedOrganization(
+    fhirOrganization,
+    fhirHealthcareService,
+    fhirBundle,
+    isCancellation
+  )
 
   if (!isCancellation){
     hl7V3Organization.healthCareProviderLicense = convertHealthCareProviderLicense(fhirOrganization, fhirBundle)
@@ -27,7 +32,12 @@ export function convertOrganizationAndProviderLicense(
   return hl7V3Organization
 }
 
-function convertRepresentedOrganization(fhirOrganization: fhir.Organization, fhirHealthcareService: fhir.HealthcareService, fhirBundle: fhir.Bundle, isCancellation: boolean) {
+function convertRepresentedOrganization(
+  fhirOrganization: fhir.Organization,
+  fhirHealthcareService: fhir.HealthcareService,
+  fhirBundle: fhir.Bundle,
+  isCancellation: boolean
+) {
   const organizationTypeCoding = getCodeableConceptCodingForSystemOrNull(
     fhirOrganization.type,
     "https://fhir.nhs.uk/R4/CodeSystem/organisation-role",
@@ -39,11 +49,16 @@ function convertRepresentedOrganization(fhirOrganization: fhir.Organization, fhi
 }
 
 function convertHealthCareProviderLicense(fhirOrganization: fhir.Organization, fhirBundle: fhir.Bundle) {
-  const fhirParentOrganization = new CostCentreOrganization(fhirOrganization.partOf ? resolveReference(fhirBundle, fhirOrganization.partOf) : fhirOrganization)
+  const fhirParentOrganization = new CostCentreOrganization(
+    fhirOrganization.partOf ? resolveReference(fhirBundle, fhirOrganization.partOf) : fhirOrganization
+  )
   return new peoplePlaces.HealthCareProviderLicense(convertCommonOrganizationDetails(fhirParentOrganization))
 }
 
-function convertRepresentedOrganizationDetails(costCentre: CostCentre, fhirBundle: fhir.Bundle): peoplePlaces.Organization {
+function convertRepresentedOrganizationDetails(
+  costCentre: CostCentre,
+  fhirBundle: fhir.Bundle
+): peoplePlaces.Organization {
   const result = convertCommonOrganizationDetails(costCentre)
 
   const telecom = costCentre.getTelecom()

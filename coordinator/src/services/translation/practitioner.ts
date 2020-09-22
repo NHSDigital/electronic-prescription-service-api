@@ -25,7 +25,10 @@ export function convertAuthor(
 ): prescriptions.Author {
   const hl7V3Author = new prescriptions.Author()
   if (!isCancellation) {
-    hl7V3Author.time = convertIsoDateTimeStringToHl7V3DateTime(fhirFirstMedicationRequest.authoredOn, "MedicationRequest.authoredOn")
+    hl7V3Author.time = convertIsoDateTimeStringToHl7V3DateTime(
+      fhirFirstMedicationRequest.authoredOn,
+      "MedicationRequest.authoredOn"
+    )
     hl7V3Author.signatureText = convertSignatureText(fhirBundle, fhirFirstMedicationRequest.requester)
   }
   const fhirAuthorPractitionerRole = resolveReference(fhirBundle, fhirFirstMedicationRequest.requester)
@@ -45,21 +48,36 @@ export function convertResponsibleParty(
     "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
     "MedicationRequest.extension"
   ) as fhir.ReferenceExtension<PractitionerRole>
-  const fhirResponsibleParty = fhirResponsiblePartyExtension ? fhirResponsiblePartyExtension.valueReference : fhirMedicationRequest.requester
+  const fhirResponsibleParty = fhirResponsiblePartyExtension
+    ? fhirResponsiblePartyExtension.valueReference
+    : fhirMedicationRequest.requester
   const fhirResponsiblePartyPractitionerRole = resolveReference(fhirBundle, fhirResponsibleParty)
-  responsibleParty.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirResponsiblePartyPractitionerRole, isCancellation)
+  responsibleParty.AgentPerson = convertPractitionerRoleFn(
+    fhirBundle,
+    fhirResponsiblePartyPractitionerRole,
+    isCancellation
+  )
   return responsibleParty
 }
 
-function convertPractitionerRole(fhirBundle: fhir.Bundle, fhirPractitionerRole: fhir.PractitionerRole, isCancellation: boolean): peoplePlaces.AgentPerson {
+function convertPractitionerRole(
+  fhirBundle: fhir.Bundle,
+  fhirPractitionerRole: fhir.PractitionerRole,
+  isCancellation: boolean
+): peoplePlaces.AgentPerson {
   const fhirPractitioner = resolveReference(fhirBundle, fhirPractitionerRole.practitioner)
   const hl7V3AgentPerson = createAgentPerson(fhirPractitionerRole, fhirPractitioner)
   const fhirOrganization = resolveReference(fhirBundle, fhirPractitionerRole.organization)
   let fhirHealthcareService: fhir.HealthcareService
   if (fhirPractitionerRole.healthcareService) {
-    fhirHealthcareService = resolveReference<fhir.HealthcareService>(fhirBundle, fhirPractitionerRole.healthcareService[0])
+    fhirHealthcareService = resolveReference(fhirBundle, fhirPractitionerRole.healthcareService[0])
   }
-  hl7V3AgentPerson.representedOrganization = convertOrganizationAndProviderLicense(fhirBundle, fhirOrganization, fhirHealthcareService, isCancellation)
+  hl7V3AgentPerson.representedOrganization = convertOrganizationAndProviderLicense(
+    fhirBundle,
+    fhirOrganization,
+    fhirHealthcareService,
+    isCancellation
+  )
   return hl7V3AgentPerson
 }
 
@@ -91,7 +109,10 @@ function createAgentPerson(
   return hl7V3AgentPerson
 }
 
-export function getAgentPersonTelecom(fhirPractitionerRoleTelecom: Array<fhir.ContactPoint>, fhirPractitionerTelecom: Array<fhir.ContactPoint>): Array<core.Telecom> {
+export function getAgentPersonTelecom(
+  fhirPractitionerRoleTelecom: Array<fhir.ContactPoint>,
+  fhirPractitionerTelecom: Array<fhir.ContactPoint>
+): Array<core.Telecom> {
   if (fhirPractitionerRoleTelecom !== undefined) {
     return fhirPractitionerRoleTelecom.map(telecom => convertTelecom(telecom, "PractitionerRole.telecom"))
   } else if (fhirPractitionerTelecom !== undefined) {
@@ -111,7 +132,10 @@ function convertAgentPersonPerson(fhirPractitionerRole: fhir.PractitionerRole, f
   return hl7V3AgentPersonPerson
 }
 
-export function getAgentPersonPersonId(fhirPractitionerRoleIdentifier: Array<fhir.Identifier>, fhirPractitionerIdentifier: Array<fhir.Identifier>): peoplePlaces.PrescriptionAuthorId {
+export function getAgentPersonPersonId(
+  fhirPractitionerRoleIdentifier: Array<fhir.Identifier>,
+  fhirPractitionerIdentifier: Array<fhir.Identifier>
+): peoplePlaces.PrescriptionAuthorId {
   const spuriousCode = getIdentifierValueOrNullForSystem(
     fhirPractitionerRoleIdentifier,
     "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",

@@ -18,7 +18,11 @@ export function getCourseOfTherapyTypeCode(medicationRequests: Array<MedicationR
     return CourseOfTherapyTypeCode.ACUTE
   } else {
     throw new InvalidValueError(
-      "Course of therapy type must either match for all MedicationRequests or be a mixture of 'acute' and 'continuous'.",
+      `Course of therapy type must either match for all MedicationRequests or be a mixture of '${
+        CourseOfTherapyTypeCode.ACUTE
+      }' and '${
+        CourseOfTherapyTypeCode.CONTINUOUS
+      }'.`,
       "MedicationRequest.courseOfTherapyType.coding"
     )
   }

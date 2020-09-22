@@ -44,7 +44,11 @@ export class MedicationRequestValueError extends ValueError {
 
   constructor(fieldName: string, uniqueFieldValues: Array<string>) {
     super()
-    this.message = `Expected all MedicationRequests to have the same value for ${fieldName}. Received ${[...uniqueFieldValues]}.`
+    this.message = `Expected all MedicationRequests to have the same value for ${
+      fieldName
+    }. Received ${[
+      ...uniqueFieldValues
+    ]}.`
   }
 }
 
@@ -67,5 +71,9 @@ export class RequestNotBundleError extends FatalError {
 
 export class MessageTypeError extends FatalError {
   apiErrorCode = "INVALID_VALUE"
-  message = `MessageHeader.eventCoding.code must be one of '${MessageType.PRESCRIPTION}' or '${MessageType.CANCELLATION}'.`
+  message = `MessageHeader.eventCoding.code must be one of '${
+    MessageType.PRESCRIPTION
+  }' or '${
+    MessageType.CANCELLATION
+  }'.`
 }

@@ -69,7 +69,11 @@ function convertRequesterToControlActAuthor(
   return createControlActEventAuthor(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier)
 }
 
-function createControlActEventAuthor(sdsUniqueIdentifierStr: string, sdsJobRoleCodeStr: string, sdsRoleProfileIdentifierStr: string) {
+function createControlActEventAuthor(
+  sdsUniqueIdentifierStr: string,
+  sdsJobRoleCodeStr: string,
+  sdsRoleProfileIdentifierStr: string
+) {
   const sdsUniqueIdentifier = new SdsUniqueIdentifier(sdsUniqueIdentifierStr)
   const authorAgentPersonPerson = new core.AgentPersonPersonSds(sdsUniqueIdentifier)
 

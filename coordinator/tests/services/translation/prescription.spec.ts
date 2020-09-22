@@ -25,7 +25,8 @@ describe("convertCourseOfTherapyType", () => {
     ["continuous-repeat-dispensing", "0003"]
   ]
 
-  test.each(cases)("when first therapy type code is %p, convertCourseOfTherapyType returns prescription treatment type code %p",
+  test.each(cases)(
+    "when first therapy type code is %p, convertCourseOfTherapyType returns prescription treatment type code %p",
     (code: CourseOfTherapyTypeCode, expected: string) => {
       const bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
       const fhirMedicationRequests = getMedicationRequests(bundle)
@@ -34,7 +35,8 @@ describe("convertCourseOfTherapyType", () => {
       const treatmentTypeCode = convertCourseOfTherapyType(fhirMedicationRequests).value._attributes.code
 
       expect(treatmentTypeCode).toEqual(expected)
-    })
+    }
+  )
 })
 
 describe("PertinentInformation2", () => {
@@ -60,7 +62,8 @@ describe("PertinentInformation2", () => {
     const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
-    const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1.pertinentAdditionalInstructions.value
+    const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
+      .pertinentAdditionalInstructions.value
     const expected = `<patientInfo>${contentString}</patientInfo>`
     expect(additionalInstructions).toContain(expected)
   })
@@ -73,8 +76,13 @@ describe("PertinentInformation2", () => {
     const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
-    const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1.pertinentAdditionalInstructions.value
-    expect(additionalInstructions).toContain(`<patientInfo>${contentString1}</patientInfo><patientInfo>${contentString2}</patientInfo>`)
+    const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
+      .pertinentAdditionalInstructions.value
+    expect(
+      additionalInstructions
+    ).toContain(
+      `<patientInfo>${contentString1}</patientInfo><patientInfo>${contentString2}</patientInfo>`
+    )
   })
 
   function ensureAtLeast2MedicationRequests(bundle: fhir.Bundle) {

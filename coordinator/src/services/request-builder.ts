@@ -8,7 +8,10 @@ import {namespacedCopyOf, writeXmlStringPretty} from "./translation/xml"
 import {SendMessagePayload} from "../model/hl7-v3-datatypes-core"
 import {SpineRequest} from "./spine-communication"
 
-const ebxmlRequestTemplate = fs.readFileSync(path.join(__dirname, "../resources/ebxml_request.mustache"), "utf-8").replace(/\n/g, "\r\n")
+const ebxmlRequestTemplate = fs.readFileSync(
+  path.join(__dirname, "../resources/ebxml_request.mustache"),
+  "utf-8"
+).replace(/\n/g, "\r\n")
 const cpaIdMap = new Map<string, string>(JSON.parse(process.env.CPA_ID_MAP))
 
 class EbXmlRequest {
@@ -41,7 +44,8 @@ export function addEbXmlWrapper(spineRequest: SpineRequest): string {
     throw new Error(`Could not identify CPA ID for interaction ${spineRequest.interactionId}`)
   }
 
-  return Mustache.render(ebxmlRequestTemplate, new EbXmlRequest(spineRequest.interactionId, cpaId, spineRequest.message))
+  const ebXmlRequest = new EbXmlRequest(spineRequest.interactionId, cpaId, spineRequest.message)
+  return Mustache.render(ebxmlRequestTemplate, ebXmlRequest)
 }
 
 export function toSpineRequest<T>(sendMessagePayload: SendMessagePayload<T>): SpineRequest {

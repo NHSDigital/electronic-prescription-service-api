@@ -179,7 +179,11 @@ export function getMatchingEntries(bundle: fhir.Bundle, resourceType: string): A
     .filter(resource => resource.resourceType === resourceType)
 }
 
-function verifyBundleContainsAtLeast(bundle: fhir.Bundle, number: number, resourceType: string): errors.ValidationError | null {
+function verifyBundleContainsAtLeast(
+  bundle: fhir.Bundle,
+  number: number,
+  resourceType: string
+): errors.ValidationError | null {
   const matchingEntries = getMatchingEntries(bundle, resourceType)
   if (matchingEntries.length < number) {
     return new errors.ContainsAtLeastError(number, resourceType)
@@ -187,7 +191,12 @@ function verifyBundleContainsAtLeast(bundle: fhir.Bundle, number: number, resour
   return null
 }
 
-function verifyBundleContainsBetween(bundle: fhir.Bundle, min: number, max: number, resourceType: string): errors.ValidationError | null {
+function verifyBundleContainsBetween(
+  bundle: fhir.Bundle,
+  min: number,
+  max: number,
+  resourceType: string
+): errors.ValidationError | null {
   const matchingEntries = getMatchingEntries(bundle, resourceType)
   if (matchingEntries.length < min || matchingEntries.length > max) {
     return new errors.ContainsBetweenError(min, max, resourceType)
@@ -195,7 +204,11 @@ function verifyBundleContainsBetween(bundle: fhir.Bundle, min: number, max: numb
   return null
 }
 
-function verifyBundleContainsExactly(bundle: fhir.Bundle, number: number, resourceType: string): errors.ValidationError | null {
+function verifyBundleContainsExactly(
+  bundle: fhir.Bundle,
+  number: number,
+  resourceType: string
+): errors.ValidationError | null {
   const matchingEntries = getMatchingEntries(bundle, resourceType)
   if (matchingEntries.length !== number) {
     return new errors.ContainsExactlyError(number, resourceType)

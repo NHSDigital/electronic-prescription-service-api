@@ -27,11 +27,16 @@ export function convertParentPrescription(
   hl7V3ParentPrescription.recordTarget = new prescriptions.RecordTarget(hl7V3Patient)
 
   const hl7V3Prescription = convertBundleToPrescriptionFn(fhirBundle)
-  hl7V3ParentPrescription.pertinentInformation1 = new prescriptions.ParentPrescriptionPertinentInformation1(hl7V3Prescription)
+  hl7V3ParentPrescription.pertinentInformation1 = new prescriptions.ParentPrescriptionPertinentInformation1(
+    hl7V3Prescription
+  )
 
-  const lineItems = hl7V3ParentPrescription.pertinentInformation1.pertinentPrescription.pertinentInformation2.map(info => info.pertinentLineItem)
+  const lineItems = hl7V3ParentPrescription.pertinentInformation1.pertinentPrescription.pertinentInformation2
+    .map(info => info.pertinentLineItem)
   const careRecordElementCategory = convertCareRecordElementCategoriesFn(lineItems)
-  hl7V3ParentPrescription.pertinentInformation2 = new prescriptions.ParentPrescriptionPertinentInformation2(careRecordElementCategory)
+  hl7V3ParentPrescription.pertinentInformation2 = new prescriptions.ParentPrescriptionPertinentInformation2(
+    careRecordElementCategory
+  )
 
   return hl7V3ParentPrescription
 }
@@ -39,9 +44,15 @@ export function convertParentPrescription(
 export function extractEffectiveTime(medicationRequest: fhir.MedicationRequest): core.Timestamp {
   const validityPeriod = medicationRequest.dispenseRequest?.validityPeriod
   if (validityPeriod) {
-    return convertIsoDateTimeStringToHl7V3DateTime(validityPeriod.start, "MedicationRequest.dispenseRequest.validityPeriod.start")
+    return convertIsoDateTimeStringToHl7V3DateTime(
+      validityPeriod.start,
+      "MedicationRequest.dispenseRequest.validityPeriod.start"
+    )
   } else {
-    return convertIsoDateTimeStringToHl7V3DateTime(medicationRequest.authoredOn, "MedicationRequest.authoredOn")
+    return convertIsoDateTimeStringToHl7V3DateTime(
+      medicationRequest.authoredOn,
+      "MedicationRequest.authoredOn"
+    )
   }
 }
 

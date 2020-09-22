@@ -1,5 +1,8 @@
 import {convertParentPrescription} from "../../../src/services/translation/parent-prescription"
-import {extractFragments,convertFragmentsToHashableFormat,convertFragmentsToDisplayableFormat} from "../../../src/services/translation/signing"
+import {extractFragments,
+  convertFragmentsToHashableFormat,
+  convertFragmentsToDisplayableFormat
+} from "../../../src/services/translation/signing"
 import * as TestResources from "../../resources/test-resources"
 import * as XmlJs from "xml-js"
 import {xmlTest} from "../../resources/test-helpers"

@@ -16,7 +16,10 @@ import * as LosslessJson from "lossless-json"
 import {TooManyValuesError} from "../../../../src/model/errors"
 
 test("getResourceForFullUrl returns correct resources", () => {
-  const result = getResourceForFullUrl(TestResources.examplePrescription1.fhirMessageUnsigned, "urn:uuid:a7b86f8d-1d81-fc28-e050-d20ae3a215f0")
+  const result = getResourceForFullUrl(
+    TestResources.examplePrescription1.fhirMessageUnsigned,
+    "urn:uuid:a7b86f8d-1d81-fc28-e050-d20ae3a215f0"
+  )
   expect((result as fhir.Resource).resourceType).toBe("MedicationRequest")
 })
 
@@ -47,12 +50,22 @@ describe("getIdentifierValueForSystem", () => {
   })
 
   test("getIdentifierValueForSystem returns correct value for system", () => {
-    const result = getIdentifierValueForSystem(identifierArray, "https://fhir.nhs.uk/Id/sds-role-profile-id", "fhirPath")
+    const result = getIdentifierValueForSystem(
+      identifierArray,
+      "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      "fhirPath"
+    )
     expect(result).toBe("100112897984")
   })
 
   test("getIdentifierValueForSystem throws error when finding multiple values for system", () => {
-    expect(() => getIdentifierValueForSystem(identifierArray, "https://fhir.nhs.uk/Id/prescription-order-item-number", "fhirPath")).toThrow()
+    expect(() =>
+      getIdentifierValueForSystem(
+        identifierArray,
+        "https://fhir.nhs.uk/Id/prescription-order-item-number",
+        "fhirPath"
+      )
+    ).toThrow()
   })
 })
 
@@ -78,12 +91,22 @@ describe("getIdentifierValueOrNullForSystem", () => {
   })
 
   test("getIdentifierValueForSystem returns correct value for system", () => {
-    const result = getIdentifierValueOrNullForSystem(identifierArray, "https://fhir.nhs.uk/Id/sds-role-profile-id", "fhirPath")
+    const result = getIdentifierValueOrNullForSystem(
+      identifierArray,
+      "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      "fhirPath"
+    )
     expect(result).toBe("100112897984")
   })
 
   test("getIdentifierValueForSystem throws error when finding multiple values for system", () => {
-    expect(() => getIdentifierValueOrNullForSystem(identifierArray, "https://fhir.nhs.uk/Id/prescription-order-item-number", "fhirPath")).toThrow()
+    expect(() =>
+      getIdentifierValueOrNullForSystem(
+        identifierArray,
+        "https://fhir.nhs.uk/Id/prescription-order-item-number",
+        "fhirPath"
+      )
+    ).toThrow()
   })
 })
 

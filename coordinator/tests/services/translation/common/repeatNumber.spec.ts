@@ -25,7 +25,9 @@ describe("populateRepeatNumber", () => {
   })
 
   test("does nothing for acute prescriptions", () => {
-    medicationRequests.forEach(medicationRequest => setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.ACUTE))
+    medicationRequests.forEach(medicationRequest =>
+      setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.ACUTE)
+    )
 
     populateRepeatNumber(repeatable, medicationRequests)
 
@@ -44,7 +46,9 @@ describe("populateRepeatNumber", () => {
   })
 
   test("sets 1-1 for repeat prescribing prescriptions", () => {
-    medicationRequests.forEach(medicationRequest => setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS))
+    medicationRequests.forEach(medicationRequest =>
+      setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS)
+    )
 
     populateRepeatNumber(repeatable, medicationRequests)
 
@@ -53,7 +57,9 @@ describe("populateRepeatNumber", () => {
   })
 
   test("sets 1-X for repeat dispensing prescriptions with consistent repeat numbers X", () => {
-    medicationRequests.forEach(medicationRequest => setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING))
+    medicationRequests.forEach(medicationRequest =>
+      setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
+    )
 
     populateRepeatNumber(repeatable, medicationRequests)
 
@@ -66,7 +72,9 @@ describe("populateRepeatNumber", () => {
     setRepeatNumber(medicationRequests[1], "6")
     setRepeatNumber(medicationRequests[2], "12")
     setRepeatNumber(medicationRequests[3], "6")
-    medicationRequests.forEach(medicationRequest => setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING))
+    medicationRequests.forEach(medicationRequest =>
+      setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
+    )
 
     populateRepeatNumber(repeatable, medicationRequests)
 

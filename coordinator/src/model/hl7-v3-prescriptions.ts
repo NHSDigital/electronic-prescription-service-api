@@ -282,7 +282,8 @@ export class Prescription implements ElementCompact, Repeatable {
 }
 
 /**
- * A link to the details of the patient's nominated pharmacy that they have indicated they wish the prescription to be dispensed at.
+ * A link to the details of the patient's nominated pharmacy that they have indicated they wish the prescription to be
+ * dispensed at.
  */
 export class Performer implements ElementCompact {
   _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
@@ -318,12 +319,13 @@ export class PrescriptionPertinentInformation1 implements ElementCompact {
  * An act relationship to associate the prescribed medication (line items) to the prescription.
  */
 export class PrescriptionPertinentInformation2 implements ElementCompact {
-  _attributes: core.AttributeTypeCode & core.AttributeInversionInd & core.AttributeContextConductionInd & core.AttributeNegationInd = {
-    typeCode: "PERT",
-    inversionInd: "false",
-    contextConductionInd: "true",
-    negationInd: "false"
-  }
+  _attributes: core.AttributeTypeCode & core.AttributeInversionInd & core.AttributeContextConductionInd
+    & core.AttributeNegationInd = {
+      typeCode: "PERT",
+      inversionInd: "false",
+      contextConductionInd: "true",
+      negationInd: "false"
+    }
 
   seperatableInd: core.BooleanValue = new core.BooleanValue(true)
   templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.sourceOf2")
@@ -543,7 +545,8 @@ export class ParentPrescriptionPertinentInformation2 implements ElementCompact {
 
 /**
  * An act used to categorise clinical statements within the message into care record element categories.
- * The CareRecordElementCategory act can reference multiple ActRef acts to 'group' multiple clinical statements under a single category.
+ * The CareRecordElementCategory act can reference multiple ActRef acts to 'group' multiple clinical statements under a
+ * single category.
  */
 export class CareRecordElementCategory implements ElementCompact {
   _attributes: core.AttributeClassCode & AttributeMoodCode = {
@@ -556,7 +559,8 @@ export class CareRecordElementCategory implements ElementCompact {
 }
 
 /**
- * An act relationship used to convey that the ActRef act forms a component of the acts within the CareRecordElementCategory.
+ * An act relationship used to convey that the ActRef act forms a component of the acts within the
+ * CareRecordElementCategory.
  */
 export class CareRecordElementCategoryComponent implements ElementCompact {
   _attributes: AttributeTypeCode = {
@@ -593,7 +597,8 @@ export class ActRef implements ElementCompact {
 }
 
 /**
- * An act relationship used to provide information on the number of days' treatment that the current prescription's medication provides for.
+ * An act relationship used to provide information on the number of days' treatment that the current prescription's
+ * medication provides for.
  * Applicable to repeat dispensing prescriptions only.
  */
 export class Component1 {
