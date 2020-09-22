@@ -7,9 +7,10 @@ import * as fhir from "../../../models/fhir/fhir-resources"
 import {DateTimeExtension, RepeatInformationExtension} from "../../../models/fhir/fhir-resources"
 import {
   convertIsoDateStringToMoment,
-  convertIsoStringToHl7V3Date,
+  convertIsoDateTimeStringToHl7V3Date,
   convertMomentToHl7V3Date,
-  getExtensionForUrl, getExtensionForUrlOrNull,
+  getExtensionForUrl,
+  getExtensionForUrlOrNull,
   getNumericValueAsString
 } from "../common"
 import {convertAuthor, convertResponsibleParty} from "./practitioner"
@@ -19,6 +20,7 @@ import {getCommunicationRequests, getMedicationRequests} from "../common/getReso
 import {populateRepeatNumber} from "../common/repeatNumber"
 import moment from "moment"
 import {CourseOfTherapyTypeCode, getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
+import {InvalidValueError} from "../../../models/errors/processing-errors"
 
 export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescriptions.Prescription {
   const fhirMedicationRequests = getMedicationRequests(fhirBundle)
@@ -34,11 +36,11 @@ export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescripti
 
   const performer = fhirFirstMedicationRequest.dispenseRequest.performer
   if (performer) {
-    hl7V3Prescription.performer = convertPerformer(fhirBundle, performer)
+    hl7V3Prescription.performer = convertPerformer(performer)
   }
 
-  hl7V3Prescription.author = convertAuthor(fhirBundle, fhirFirstMedicationRequest)
-  hl7V3Prescription.responsibleParty = convertResponsibleParty(fhirBundle, fhirFirstMedicationRequest)
+  hl7V3Prescription.author = convertAuthor(fhirBundle, fhirFirstMedicationRequest, false)
+  hl7V3Prescription.responsibleParty = convertResponsibleParty(fhirBundle, fhirFirstMedicationRequest, false)
 
   const validityPeriod = fhirFirstMedicationRequest.dispenseRequest.validityPeriod
   const expectedSupplyDuration = fhirFirstMedicationRequest.dispenseRequest.expectedSupplyDuration
@@ -77,13 +79,16 @@ function convertPrescriptionIds(
 export function convertPrescriptionComponent1(validityPeriod?: fhir.Period, expectedSupplyDuration?: fhir.SimpleQuantity): prescriptions.Component1 {
   const daysSupply = new DaysSupply()
   if (validityPeriod) {
-    const low = convertIsoStringToHl7V3Date(validityPeriod.start, "MedicationRequest.dispenseRequest.validityPeriod.start")
-    const high = convertIsoStringToHl7V3Date(validityPeriod.end, "MedicationRequest.dispenseRequest.validityPeriod.end")
+    const low = convertIsoDateTimeStringToHl7V3Date(validityPeriod.start, "MedicationRequest.dispenseRequest.validityPeriod.start")
+    const high = convertIsoDateTimeStringToHl7V3Date(validityPeriod.end, "MedicationRequest.dispenseRequest.validityPeriod.end")
     daysSupply.effectiveTime = new Interval<Timestamp>(low, high)
   }
   if (expectedSupplyDuration) {
     if (expectedSupplyDuration.code !== "d") {
-      throw new TypeError("Expected supply duration must be specified in days")
+      throw new InvalidValueError(
+        "Expected supply duration must be specified in days.",
+        "MedicationRequest.dispenseRequest.expectedSupplyDuration.code"
+      )
     }
     const expectedSupplyDurationStr = getNumericValueAsString(expectedSupplyDuration.value)
     daysSupply.expectedUseTime = new IntervalUnanchored(expectedSupplyDurationStr, "d")
@@ -142,8 +147,8 @@ export function convertCourseOfTherapyType(fhirMedicationRequests: Array<fhir.Me
   return new prescriptions.PrescriptionTreatmentType(prescriptionTreatmentTypeCode)
 }
 
-function convertCourseOfTherapyTypeCode(courseOfTherapyTypeValue: string) {
-  switch (courseOfTherapyTypeValue) {
+function convertCourseOfTherapyTypeCode(courseOfTherapyTypeCode: string) {
+  switch (courseOfTherapyTypeCode) {
   case CourseOfTherapyTypeCode.ACUTE:
     return codes.PrescriptionTreatmentTypeCode.ACUTE
   case CourseOfTherapyTypeCode.CONTINUOUS:
@@ -151,7 +156,10 @@ function convertCourseOfTherapyTypeCode(courseOfTherapyTypeValue: string) {
   case CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING:
     return codes.PrescriptionTreatmentTypeCode.CONTINUOUS_REPEAT_DISPENSING
   default:
-    throw TypeError("Unhandled courseOfTherapyType " + courseOfTherapyTypeValue)
+    throw new InvalidValueError(
+      `Unhandled course of therapy type code '${courseOfTherapyTypeCode}'.`,
+      "MedicationRequest.courseOfTherapyType.coding.code"
+    )
   }
 }
 
@@ -220,7 +228,7 @@ function convertPrescriptionPertinentInformation4(fhirFirstMedicationRequest: fh
   return new prescriptions.PrescriptionPertinentInformation4(prescriptionType)
 }
 
-function convertPerformer(fhirBundle: fhir.Bundle, performerReference: fhir.IdentifierReference<fhir.Organization>) {
+function convertPerformer(performerReference: fhir.IdentifierReference<fhir.Organization>) {
   const hl7V3Organization = new peoplePlaces.Organization()
   hl7V3Organization.id = new codes.SdsOrganizationIdentifier(performerReference.identifier.value)
   const hl7V3AgentOrganization = new peoplePlaces.AgentOrganization(hl7V3Organization)

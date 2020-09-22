@@ -7,6 +7,14 @@ function getResourcesOfType<T extends fhir.Resource>(fhirBundle: fhir.Bundle, re
     .filter(resource => resource.resourceType === resourceType) as Array<T>
 }
 
+export function getMessageHeader(fhirBundle: fhir.Bundle): fhir.MessageHeader {
+  return onlyElement(
+    getResourcesOfType<fhir.MessageHeader>(fhirBundle, "MessageHeader"),
+    "Bundle.entry",
+    "resource.resourceType == 'MessageHeader'"
+  )
+}
+
 export function getMedicationRequests(fhirBundle: fhir.Bundle): Array<fhir.MedicationRequest> {
   return getResourcesOfType<fhir.MedicationRequest>(fhirBundle, "MedicationRequest")
 }

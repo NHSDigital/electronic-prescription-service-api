@@ -1,15 +1,15 @@
-import {SpineHandler} from "./spine-handler"
+import {LiveRequestHandler} from "./spine-handler"
 import {SandboxHandler} from "./sandbox-handler"
-import {SpineResponse} from "../../models/spine/responses"
+import {SpineRequest,SpineResponse} from "../../models/spine"
 
-export interface Handler {
-    send(message: string): Promise<SpineResponse>
-    poll(path: string): Promise<SpineResponse>
+export interface RequestHandler {
+  send(spineRequest: SpineRequest): Promise<SpineResponse<unknown>>
+  poll(path: string): Promise<SpineResponse<unknown>>
 }
 
-function getHandler(liveMode: boolean): Handler {
+function getHandler(liveMode: boolean): RequestHandler {
   return liveMode
-    ? new SpineHandler()
+    ? new LiveRequestHandler()
     : new SandboxHandler()
 }
 

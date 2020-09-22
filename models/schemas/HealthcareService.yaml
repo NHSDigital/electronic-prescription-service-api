@@ -16,7 +16,10 @@ properties:
     description: Logical id of this artifact.
     example: "7EB02341-5F62-4A76-2CD3-34F523452356"
   identifier:
-    $ref: "Identifier-HealthcareServiceIdentifier.yaml"
+    type: array
+    description: External identifiers for this service
+    items:
+      $ref: "Identifier-OdsOrganizationCode.yaml"
   active:
     type: boolean
     description: The specific type of service that may be delivered or performed
@@ -39,4 +42,7 @@ properties:
     description: Further description of the service as it would be presented to a consumer while searching.
     example: "SOMERSET BOWEL CANCER SCREENING CENTRE"
   telecom:
-    $ref: "ContactPoint.yaml"
+    type: array
+    description: Contacts related to the service
+    items:
+      $ref: "ContactPoint.yaml"

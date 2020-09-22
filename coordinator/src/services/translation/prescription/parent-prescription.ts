@@ -2,7 +2,7 @@ import * as fhir from "../../../models/fhir/fhir-resources"
 import {convertPatient} from "./patient"
 import {convertBundleToPrescription} from "."
 import * as prescriptions from "../../../models/hl7-v3/hl7-v3-prescriptions"
-import {convertIsoStringToHl7V3DateTime} from "../common"
+import {convertIsoDateTimeStringToHl7V3DateTime} from "../common"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {getMedicationRequests, getPatient} from "../common/getResourcesOfType"
 
@@ -38,9 +38,9 @@ export function convertParentPrescription(
 function extractEffectiveTime(medicationRequest: fhir.MedicationRequest) {
   const validityPeriod = medicationRequest.dispenseRequest.validityPeriod
   if (validityPeriod) {
-    return convertIsoStringToHl7V3DateTime(validityPeriod.start, "MedicationRequest.dispenseRequest.validityPeriod.start")
+    return convertIsoDateTimeStringToHl7V3DateTime(validityPeriod.start, "MedicationRequest.dispenseRequest.validityPeriod.start")
   } else {
-    return convertIsoStringToHl7V3DateTime(medicationRequest.authoredOn, "MedicationRequest.authoredOn")
+    return convertIsoDateTimeStringToHl7V3DateTime(medicationRequest.authoredOn, "MedicationRequest.authoredOn")
   }
 }
 

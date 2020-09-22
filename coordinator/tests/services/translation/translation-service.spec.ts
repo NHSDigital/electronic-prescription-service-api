@@ -5,6 +5,9 @@ import * as XmlJs from "xml-js"
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {xmlTest} from "../../resources/test-helpers"
 import * as LosslessJson from "lossless-json"
+import {Bundle, Parameters} from "../../../src/models/fhir/fhir-resources"
+import {ElementCompact} from "xml-js"
+import {Hl7InteractionIdentifier} from "../../../src/models/hl7-v3/hl7-v3-datatypes-codes"
 
 jest.mock("uuid", () => {
   return {
@@ -21,27 +24,41 @@ jest.mock("moment", () => {
   }
 })
 
-test("convertFhirMessageToHl7V3SignedInfo returns correct value", () => {
-  const actualOutput = convertFhirMessageToSignedInfoMessage(TestResources.examplePrescription1.fhirMessageUnsigned)
-  const expectedOutput = JSON.stringify(TestResources.examplePrescription1.fhirMessageDigest, null, 2)
-  expect(actualOutput).toEqual(expectedOutput)
+describe("convertFhirMessageToSignedInfoMessage", () => {
+  const cases = TestResources.all.map(example => [example.description, example.fhirMessageUnsigned, example.fhirMessageDigest])
+
+  test.each(cases)("accepts %s", (desc: string, message: Bundle) => {
+    expect(() => convertFhirMessageToSignedInfoMessage(message)).not.toThrow()
+  })
+
+  test.each(cases)("returns correct value for %s", (desc: string, input: Bundle, output: Parameters) => {
+    const actualOutput = convertFhirMessageToSignedInfoMessage(input)
+    const expectedOutput = JSON.stringify(output, null, 2)
+    expect(actualOutput).toEqual(expectedOutput)
+  })
 })
 
-test(
-  "convertFhirMessageToHl7V3ParentPrescription returns correct value",
-  xmlTest(
-    XmlJs.xml2js(translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(TestResources.examplePrescription1.fhirMessageSigned), {compact: true}),
-    TestResources.examplePrescription1.hl7V3Message
-  )
-)
+describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
+  const cases = TestResources.all.map(example => [example.description, example.fhirMessageSigned, example.hl7V3Message])
 
-test("convertFhirMessageToHl7V3ParentPrescriptionMessage result has no lower case UUIDs", () => {
-  const messageWithLowercaseUUIDs = getMessageWithLowercaseUUIDs()
+  test.each(cases)("accepts %s", (desc: string, message: Bundle) => {
+    expect(() => translator.convertFhirMessageToSpineRequest(message)).not.toThrow()
+  })
 
-  const translatedMessage = translator.convertFhirMessageToHl7V3ParentPrescriptionMessage(messageWithLowercaseUUIDs)
+  test.each(cases)("returns correct value for %s", (desc: string, input: Bundle, output: ElementCompact) => {
+    const spineRequest = translator.convertFhirMessageToSpineRequest(input)
+    xmlTest(XmlJs.xml2js(spineRequest.message, {compact: true}), output)()
+    expect(spineRequest.interactionId).toEqual(Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT._attributes.extension)
+  })
 
-  const allNonUpperCaseUUIDS = getAllUUIDsNotUpperCase(translatedMessage)
-  expect(allNonUpperCaseUUIDS.length).toBe(0)
+  test("produces result with no lower case UUIDs", () => {
+    const messageWithLowercaseUUIDs = getMessageWithLowercaseUUIDs()
+
+    const translatedMessage = translator.convertFhirMessageToSpineRequest(messageWithLowercaseUUIDs).message
+
+    const allNonUpperCaseUUIDS = getAllUUIDsNotUpperCase(translatedMessage)
+    expect(allNonUpperCaseUUIDS.length).toBe(0)
+  })
 })
 
 function getMessageWithLowercaseUUIDs() {

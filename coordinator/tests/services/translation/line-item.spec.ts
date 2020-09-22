@@ -8,7 +8,7 @@ import {getMedicationRequests} from "../../../src/services/translation/common/ge
 import * as fhir from "../../../src/models/fhir/fhir-resources"
 import {getExtensionForUrlOrNull} from "../../../src/services/translation/common"
 import {convertBundleToPrescription} from "../../../src/services/translation/prescription"
-import {convertFhirMessageToHl7V3ParentPrescriptionMessage} from "../../../src/services/translation"
+import {convertFhirMessageToSpineRequest} from "../../../src/services/translation"
 import {TooManyValuesError} from "../../../src/models/errors/processing-errors"
 
 describe("convertMedicationRequestToLineItem", () => {
@@ -206,7 +206,7 @@ describe("prescriptionEndorsements", () => {
     expect(hl7v3PrescriptionEndorsements.length).toBeGreaterThan(0)
     hl7v3PrescriptionEndorsements.map(endorsement => expect(endorsement).toEqual(undefined))
 
-    const hl7v3PrescriptionXml = convertFhirMessageToHl7V3ParentPrescriptionMessage(bundle)
+    const hl7v3PrescriptionXml = convertFhirMessageToSpineRequest(bundle).message
     expect(hl7v3PrescriptionXml).not.toContain("pertinentInformation3")
   })
 })

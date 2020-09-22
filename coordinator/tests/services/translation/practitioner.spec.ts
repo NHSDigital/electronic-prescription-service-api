@@ -1,7 +1,10 @@
 import * as fhir from "../../../src/models/fhir/fhir-resources"
 import {Telecom, TelecomUse} from "../../../src/models/hl7-v3/hl7-v3-datatypes-core"
-import {getAgentPersonPersonId, getAgentPersonTelecom} from "../../../src/services/translation/prescription/practitioner"
 import {BsaPrescribingIdentifier, SdsUniqueIdentifier} from "../../../src/models/hl7-v3/hl7-v3-datatypes-codes"
+import * as practitioner from "../../../src/services/translation/prescription/practitioner"
+import * as helpers from "../../resources/test-helpers"
+import * as TestResources from "../../resources/test-resources"
+import * as common from "../../../src/services/translation/common/getResourcesOfType"
 
 describe("getAgentPersonTelecom", () => {
   const roleTelecom: Array<fhir.ContactPoint> = [
@@ -38,15 +41,15 @@ describe("getAgentPersonTelecom", () => {
   ]
 
   test("if practitionerRole has telecom then we return that", () => {
-    const output = getAgentPersonTelecom(roleTelecom, practitionerTelecom)
+    const output = practitioner.getAgentPersonTelecom(roleTelecom, practitionerTelecom)
     expect(output).toEqual(roleTelecomExpected)
   })
   test("if practitionerRole has no telecom and practitioner has telecom then we return that", () => {
-    const output = getAgentPersonTelecom(undefined, practitionerTelecom)
+    const output = practitioner.getAgentPersonTelecom(undefined, practitionerTelecom)
     expect(output).toEqual(practitionerTelecomExpected)
   })
   test("if neither practitionerRole or practitioner has telecom then we return undefined", () => {
-    const output = getAgentPersonTelecom(undefined, undefined)
+    const output = practitioner.getAgentPersonTelecom(undefined, undefined)
     expect(output).toEqual(undefined)
   })
 })
@@ -66,26 +69,50 @@ describe("getAgentPersonPersonId", () => {
   }
 
   test("if all 3 codes are present we return spurious", () => {
-    const output = getAgentPersonPersonId(
+    const output = practitioner.getAgentPersonPersonId(
       [spuriousIdentifier], [dinIdentifier, userIdentifier]
     )
     expect(output).toEqual(new BsaPrescribingIdentifier(spuriousIdentifier.value))
   })
   test("if spurious code is missing we return DIN", () => {
-    const output = getAgentPersonPersonId(
+    const output = practitioner.getAgentPersonPersonId(
       [], [dinIdentifier, userIdentifier]
     )
     expect(output).toEqual(new BsaPrescribingIdentifier(dinIdentifier.value))
   })
   test("if spurious code and din are missing we return user", () => {
-    const output = getAgentPersonPersonId(
+    const output = practitioner.getAgentPersonPersonId(
       [], [userIdentifier]
     )
     expect(output).toEqual(new SdsUniqueIdentifier(userIdentifier.value))
   })
   test("if all 3 are missing then throw", () => {
-    expect(() => getAgentPersonPersonId(
+    expect(() => practitioner.getAgentPersonPersonId(
       [], []
     )).toThrow()
+  })
+})
+
+describe("convertAuthor", () => {
+  let bundle: fhir.Bundle
+  let fhirFirstMedicationRequest: fhir.MedicationRequest
+
+  beforeEach(() => {
+    bundle = helpers.clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    fhirFirstMedicationRequest = common.getMedicationRequests(bundle)[0]
+  })
+
+  test("includes a time or signatureText field for a message which isn't a cancellation", () => {
+    const isCancellation = false
+    const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest, isCancellation)
+    expect(Object.keys(result)).toContain("time")
+    expect(Object.keys(result)).toContain("signatureText")
+  })
+
+  test("doesn't include a time or signatureText field for a cancellation message", () => {
+    const isCancellation = true
+    const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest, isCancellation)
+    expect(Object.keys(result)).not.toContain("time")
+    expect(Object.keys(result)).not.toContain("signatureText")
   })
 })

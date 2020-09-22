@@ -1,52 +1,48 @@
 import * as XmlJs from "xml-js"
+import {ElementCompact} from "xml-js"
 import * as fs from "fs"
 import * as path from "path"
-import {ParentPrescription} from "../../src/models/hl7-v3/hl7-v3-prescriptions"
 import {Bundle, Parameters} from "../../src/models/fhir/fhir-resources"
-import {ElementCompact} from "xml-js"
 import * as LosslessJson from "lossless-json"
 
-const fhirMessageUnsigned1Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/PrepareRequest-FhirMessageUnsigned.json"), "utf8")
-const fhirMessageSigned1Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/SendRequest-FhirMessageSigned.json"), "utf8")
-const hl7V3Message1Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/ConvertResponse-Hl7V3Message.xml"), "utf8")
+export class ExamplePrescription {
+  description: string
+  fhirMessageUnsigned: Bundle
+  fhirMessageSigned: Bundle
+  fhirMessageDigest: Parameters
+  hl7V3Message: ElementCompact
+
+  hl7V3SignatureFragments?: ElementCompact
+  hl7V3FragmentsCanonicalized?: string
+
+  constructor(description: string, location: string) {
+    const fhirMessageUnsignedStr = fs.readFileSync(path.join(__dirname, location, "PrepareRequest-FhirMessageUnsigned.json"), "utf-8")
+    const fhirMessageSignedStr = fs.readFileSync(path.join(__dirname, location, "SendRequest-FhirMessageSigned.json"), "utf-8")
+    const fhirMessageDigestStr = fs.readFileSync(path.join(__dirname, location, "PrepareResponse-FhirMessageDigest.json"), "utf-8")
+    const hl7V3MessageStr = fs.readFileSync(path.join(__dirname, location, "ConvertResponse-Hl7V3Message.xml"), "utf-8")
+    this.description = description
+    this.fhirMessageUnsigned = LosslessJson.parse(fhirMessageUnsignedStr)
+    this.fhirMessageSigned = LosslessJson.parse(fhirMessageSignedStr)
+    this.fhirMessageDigest = LosslessJson.parse(fhirMessageDigestStr)
+    this.hl7V3Message = XmlJs.xml2js(hl7V3MessageStr, {compact: true})
+  }
+}
+
+export const examplePrescription1 = new ExamplePrescription("repeat dispensing", "parent-prescription-1")
+
 const hl7V3SignatureFragments1Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/PrepareIntermediate-Hl7V3SignatureFragments.xml"), "utf8")
-const hl7V3SignatureFragmentsCanonicalized1 = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/PrepareIntermediate-Hl7V3SignatureFragmentsCanonicalized.txt"), "utf8")
-const fhirMessageDigest1Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/PrepareResponse-FhirMessageDigest.json"), "utf8")
-
-const fhirMessageUnsigned1 = LosslessJson.parse(fhirMessageUnsigned1Str) as Bundle
-const fhirMessageSigned1 = LosslessJson.parse(fhirMessageSigned1Str) as Bundle
-const hl7V3Message1 = XmlJs.xml2js(hl7V3Message1Str, {compact: true}) as ElementCompact
 const hl7V3SignatureFragments1 = XmlJs.xml2js(hl7V3SignatureFragments1Str, {compact: true}) as ElementCompact
-const fhirMessageDigest1 = LosslessJson.parse(fhirMessageDigest1Str) as Parameters
+examplePrescription1.hl7V3SignatureFragments = hl7V3SignatureFragments1
 
-export const examplePrescription1 = {
-  fhirMessageUnsigned: fhirMessageUnsigned1,
-  fhirMessageSigned: fhirMessageSigned1,
-  hl7V3Message: hl7V3Message1,
-  hl7V3ParentPrescription: hl7V3Message1.PORX_IN020101SM31.ControlActEvent.subject.ParentPrescription as ParentPrescription,
-  hl7V3SignatureFragments: hl7V3SignatureFragments1,
-  hl7V3FragmentsCanonicalized: hl7V3SignatureFragmentsCanonicalized1.replace("\n", ""),
-  fhirMessageDigest: fhirMessageDigest1
-}
+const hl7V3SignatureFragmentsCanonicalized1 = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/PrepareIntermediate-Hl7V3SignatureFragmentsCanonicalized.txt"), "utf8")
+examplePrescription1.hl7V3FragmentsCanonicalized = hl7V3SignatureFragmentsCanonicalized1.replace("\n", "")
 
-const fhirMessageUnsigned2Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-2/PrepareRequest-FhirMessageUnsigned.json"), "utf8")
-const fhirMessageSigned2Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-2/SendRequest-FhirMessageSigned.json"), "utf8")
-const hl7V3Message2Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-2/ConvertResponse-Hl7V3Message.xml"), "utf8")
+export const examplePrescription2 = new ExamplePrescription("acute, nominated pharmacy", "parent-prescription-2")
 
-const fhirMessageUnsigned2 = LosslessJson.parse(fhirMessageUnsigned2Str) as Bundle
-const fhirMessageSigned2 = LosslessJson.parse(fhirMessageSigned2Str) as Bundle
-const hl7V3Message2 = XmlJs.xml2js(hl7V3Message2Str, {compact: true}) as ElementCompact
+export const examplePrescription3 = new ExamplePrescription("homecare", "parent-prescription-3")
 
-export const examplePrescription2 = {
-  fhirMessageUnsigned: fhirMessageUnsigned2,
-  fhirMessageSigned: fhirMessageSigned2,
-  hl7V3Message: hl7V3Message2,
-  hl7V3ParentPrescription: hl7V3Message2.PORX_IN020101SM31.ControlActEvent.subject.ParentPrescription as ParentPrescription
-}
-
-const fhirMessageUnsignedHomecareStr = fs.readFileSync(path.join(__dirname, "./parent-prescription-3/PrepareRequest-FhirMessageUnsigned.json"), "utf8")
-const fhirMessageUnsignedHomecare = LosslessJson.parse(fhirMessageUnsignedHomecareStr)
-
-export const examplePrescription3 = {
-  fhirMessageUnsignedHomecare: fhirMessageUnsignedHomecare
-}
+export const all = [
+  examplePrescription1,
+  examplePrescription2,
+  examplePrescription3
+]

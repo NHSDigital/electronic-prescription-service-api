@@ -1,7 +1,7 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import moment from "moment"
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
-import {SpineDirectResponse} from "../../../models/spine/responses"
+import {SpineDirectResponse} from "../../../models/spine"
 import {LosslessNumber} from "lossless-json"
 import {InvalidValueError, TooFewValuesError, TooManyValuesError} from "../../../models/errors/processing-errors"
 
@@ -100,9 +100,19 @@ export function getCodeableConceptCodingForSystemOrNull(codeableConcept: Array<f
   return getCodingForSystemOrNull(coding, system, fhirPath + ".coding")
 }
 
-export function convertIsoStringToHl7V3DateTime(isoDateTimeStr: string, fhirPath: string): core.Timestamp {
+export function convertIsoDateTimeStringToHl7V3DateTime(isoDateTimeStr: string, fhirPath: string): core.Timestamp {
   const dateTimeMoment = convertIsoDateTimeStringToMoment(isoDateTimeStr, fhirPath)
   return convertMomentToHl7V3DateTime(dateTimeMoment)
+}
+
+export function convertIsoDateTimeStringToHl7V3Date(isoDateStr: string, fhirPath: string): core.Timestamp {
+  const dateTimeMoment = convertIsoDateTimeStringToMoment(isoDateStr, fhirPath)
+  return convertMomentToHl7V3Date(dateTimeMoment)
+}
+
+export function convertIsoDateStringToHl7V3Date(isoDateStr: string, fhirPath: string): core.Timestamp {
+  const dateTimeMoment = convertIsoDateStringToMoment(isoDateStr, fhirPath)
+  return convertMomentToHl7V3Date(dateTimeMoment)
 }
 
 export function convertIsoDateTimeStringToMoment(isoDateTimeStr: string, fhirPath: string): moment.Moment {
@@ -110,16 +120,6 @@ export function convertIsoDateTimeStringToMoment(isoDateTimeStr: string, fhirPat
     throw new InvalidValueError(`Incorrect format for date time string '${isoDateTimeStr}'.`, fhirPath)
   }
   return moment.utc(isoDateTimeStr, moment.ISO_8601, true)
-}
-
-export function convertMomentToHl7V3DateTime(dateTime: moment.Moment): core.Timestamp {
-  const hl7V3DateTimeStr = dateTime.format("YYYYMMDDHHmmss")
-  return new core.Timestamp(hl7V3DateTimeStr)
-}
-
-export function convertIsoStringToHl7V3Date(isoDateStr: string, fhirPath: string): core.Timestamp {
-  const dateTimeMoment = convertIsoDateStringToMoment(isoDateStr, fhirPath)
-  return convertMomentToHl7V3Date(dateTimeMoment)
 }
 
 export function convertIsoDateStringToMoment(isoDateStr: string, fhirPath: string): moment.Moment {
@@ -134,13 +134,18 @@ export function convertMomentToHl7V3Date(dateTime: moment.Moment): core.Timestam
   return new core.Timestamp(hl7V3DateStr)
 }
 
-export function wrapInOperationOutcome(message: SpineDirectResponse): fhir.OperationOutcome {
+export function convertMomentToHl7V3DateTime(dateTime: moment.Moment): core.Timestamp {
+  const hl7V3DateTimeStr = dateTime.format("YYYYMMDDHHmmss")
+  return new core.Timestamp(hl7V3DateTimeStr)
+}
+
+export function wrapInOperationOutcome<T>(message: SpineDirectResponse<T>): fhir.OperationOutcome {
   return {
     resourceType: "OperationOutcome",
     issue: [{
       code: message.statusCode <= 299 ? "informational" : "invalid",
       severity: message.statusCode <= 299 ? "information" : "error",
-      diagnostics: message.body
+      diagnostics: message.body.toString()
     }]
   }
 }

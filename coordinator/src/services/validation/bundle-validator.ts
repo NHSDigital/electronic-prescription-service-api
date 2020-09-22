@@ -1,13 +1,15 @@
-import {Bundle, MedicationRequest, Resource} from "../../models/fhir/fhir-resources"
+import * as fhir from "../../models/fhir/fhir-resources"
 import {getExtensionForUrl, getExtensionForUrlOrNull} from "../translation/common"
 import * as errors from "../../models/errors/validation-errors"
+import {identifyMessageType, MessageType} from "../../routes/util"
+import {getMedicationRequests} from "../../services/translation/common/getResourcesOfType"
 
 // Validate Status
 export function getStatusCode(validation: Array<errors.ValidationError>): number {
   return validation.length > 0 ? 400 : 200
 }
 
-export function verifyPrescriptionBundle(bundle: unknown, requireSignature: boolean): Array<errors.ValidationError> {
+export function verifyBundle(bundle: unknown, requireSignature: boolean): Array<errors.ValidationError> {
   if (!verifyResourceTypeIsBundle(bundle)) {
     return [new errors.RequestNotBundleError()]
   }
@@ -16,61 +18,89 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
     return [new errors.NoEntryInBundleError()]
   }
 
+  const bundleValidationErrors = verifyCommonErrors(bundle, requireSignature)
+
+  const messageHeaderError = verifyBundleContainsExactly(bundle, 1, "MessageHeader")
+  if (messageHeaderError) {
+    return [...bundleValidationErrors, messageHeaderError]
+  }
+
+  const messageType = identifyMessageType(bundle)
+  if (!verifyMessageType(messageType)) {
+    return [...bundleValidationErrors, new errors.MessageTypeError()]
+  }
+
+  const specificValidationErrors = messageType === MessageType.PRESCRIPTION
+    ? verifyPrescriptionBundle(bundle)
+    : verifyCancellationBundle(bundle)
+
+  return [...bundleValidationErrors, ...specificValidationErrors]
+}
+
+function verifyCommonErrors(bundle: fhir.Bundle, requireSignature: boolean): Array<errors.ValidationError> {
   const bundleValidators = [
     verifyHasId,
-    (bundle: Bundle) => verifyBundleContainsBetween(bundle, 1, 4, "MedicationRequest"),
-    (bundle: Bundle) => verifyBundleContainsExactly(bundle, 1, "Patient"),
-    (bundle: Bundle) => verifyBundleContainsAtLeast(bundle, 1, "PractitionerRole"),
-    (bundle: Bundle) => verifyBundleContainsAtLeast(bundle, 1, "Practitioner"),
-    (bundle: Bundle) => verifyBundleContainsAtLeast(bundle, 1, "Organization")
+    (bundle: fhir.Bundle) => verifyBundleContainsBetween(bundle, 1, 4, "MedicationRequest"),
+    (bundle: fhir.Bundle) => verifyBundleContainsExactly(bundle, 1, "Patient"),
+    (bundle: fhir.Bundle) => verifyBundleContainsAtLeast(bundle, 1, "PractitionerRole"),
+    (bundle: fhir.Bundle) => verifyBundleContainsAtLeast(bundle, 1, "Practitioner"),
+    (bundle: fhir.Bundle) => verifyBundleContainsAtLeast(bundle, 1, "Organization")
   ]
   if (requireSignature) {
-    bundleValidators.push((bundle: Bundle) => verifyBundleContainsExactly(bundle, 1, "Provenance"))
+    bundleValidators.push((bundle: fhir.Bundle) => verifyBundleContainsExactly(bundle, 1, "Provenance"))
   }
-  const bundleValidationErrors = validate(bundle, ...bundleValidators)
+  return validate(bundle, ...bundleValidators)
+}
 
+function verifyCancellationBundle(bundle: fhir.Bundle): Array<errors.ValidationError> {
+  //TODO - implement cancellation-specific validation
+  bundle
+  return []
+}
+
+export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.ValidationError> {
   const medicationRequestConsistencyValidators = [
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+    (medicationRequests: Array<fhir.MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
       medicationRequests,
       "groupIdentifier",
       (medicationRequest) => medicationRequest.groupIdentifier
     ),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+    (medicationRequests: Array<fhir.MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
       medicationRequests,
       "category",
       (medicationRequest) => medicationRequest.category
     ),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+    (medicationRequests: Array<fhir.MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
       medicationRequests,
       "authoredOn",
       (medicationRequest) => medicationRequest.authoredOn
     ),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+    (medicationRequests: Array<fhir.MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
       medicationRequests,
       "subject",
       (medicationRequest) => medicationRequest.subject
     ),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+    (medicationRequests: Array<fhir.MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
       medicationRequests,
       "requester",
       (medicationRequest) => medicationRequest.requester
     ),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+    (medicationRequests: Array<fhir.MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
       medicationRequests,
       "dispenseRequest.performer",
       (medicationRequest) => medicationRequest.dispenseRequest.performer
     ),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+    (medicationRequests: Array<fhir.MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
       medicationRequests,
       "dispenseRequest.validityPeriod",
       (medicationRequest) => medicationRequest.dispenseRequest.validityPeriod
     ),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+    (medicationRequests: Array<fhir.MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
       medicationRequests,
       "dispenseRequest.expectedSupplyDuration",
       (medicationRequest) => medicationRequest.dispenseRequest.expectedSupplyDuration
     ),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+    (medicationRequests: Array<fhir.MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
       medicationRequests,
       "dispenseRequest.extension (performer site type)",
       (medicationRequest) => getExtensionForUrl(
@@ -79,7 +109,7 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
         "MedicationRequest.dispenseRequest.extension"
       )
     ),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+    (medicationRequests: Array<fhir.MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
       medicationRequests,
       "extension (prescription type)",
       (medicationRequest) => getExtensionForUrl(
@@ -88,7 +118,7 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
         "MedicationRequest.extension"
       )
     ),
-    (medicationRequests: Array<MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+    (medicationRequests: Array<fhir.MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
       medicationRequests,
       "extension (responsible practitioner)",
       (medicationRequest) => getExtensionForUrlOrNull(
@@ -98,13 +128,9 @@ export function verifyPrescriptionBundle(bundle: unknown, requireSignature: bool
       )
     )
   ]
-  const medicationRequests = getMatchingEntries(bundle, "MedicationRequest") as Array<MedicationRequest>
-  const medicationRequestConsistencyValidationErrors = validate(medicationRequests, ...medicationRequestConsistencyValidators)
+  const medicationRequests = getMedicationRequests(bundle)
 
-  return [
-    ...bundleValidationErrors,
-    ...medicationRequestConsistencyValidationErrors
-  ]
+  return validate(medicationRequests, ...medicationRequestConsistencyValidators)
 }
 
 function notEmpty<T>(value: T | null | undefined): value is T {
@@ -119,9 +145,9 @@ function validate<T>(input: T, ...validators: Array<Validator<T>>): Array<errors
 }
 
 function verifyValueIdenticalForAllMedicationRequests<U>(
-  medicationRequests: Array<MedicationRequest>,
+  medicationRequests: Array<fhir.MedicationRequest>,
   fieldName: string,
-  fieldAccessor: (resource: MedicationRequest) => U
+  fieldAccessor: (resource: fhir.MedicationRequest) => U
 ): errors.ValidationError | null {
   const fieldValues = medicationRequests.map(fieldAccessor)
   const serializedFieldValues = fieldValues.map(value => JSON.stringify(value))
@@ -129,31 +155,31 @@ function verifyValueIdenticalForAllMedicationRequests<U>(
   return uniqueFieldValues.size === 1 ? null : new errors.MedicationRequestValueError(fieldName, [...uniqueFieldValues])
 }
 
-function verifyHasId(bundle: Bundle): errors.ValidationError | null {
+function verifyHasId(bundle: fhir.Bundle): errors.ValidationError | null {
   return bundle.id !== undefined ? null : new errors.MissingIdError()
 }
 
-function verifyMessageIsResource(message: unknown): message is Resource {
-  return (message as Resource)?.resourceType !== undefined
+function verifyMessageIsResource(message: unknown): message is fhir.Resource {
+  return (message as fhir.Resource)?.resourceType !== undefined
 }
 
-function verifyResourceTypeIsBundle(resource: unknown): resource is Bundle {
+function verifyResourceTypeIsBundle(resource: unknown): resource is fhir.Bundle {
   return verifyMessageIsResource(resource)
         && resource.resourceType === "Bundle"
 }
 
-function verifyBundleContainsEntries(bundle: Bundle) {
+function verifyBundleContainsEntries(bundle: fhir.Bundle) {
   return bundle.entry !== undefined
 }
 
-export function getMatchingEntries(bundle: Bundle, resourceType: string): Array<Resource> {
+export function getMatchingEntries(bundle: fhir.Bundle, resourceType: string): Array<fhir.Resource> {
   return bundle.entry
     .map(entry => entry.resource)
     .filter(notEmpty)
     .filter(resource => resource.resourceType === resourceType)
 }
 
-function verifyBundleContainsAtLeast(bundle: Bundle, number: number, resourceType: string): errors.ValidationError | null {
+function verifyBundleContainsAtLeast(bundle: fhir.Bundle, number: number, resourceType: string): errors.ValidationError | null {
   const matchingEntries = getMatchingEntries(bundle, resourceType)
   if (matchingEntries.length < number) {
     return new errors.ContainsAtLeastError(number, resourceType)
@@ -161,7 +187,7 @@ function verifyBundleContainsAtLeast(bundle: Bundle, number: number, resourceTyp
   return null
 }
 
-function verifyBundleContainsBetween(bundle: Bundle, min: number, max: number, resourceType: string): errors.ValidationError | null {
+function verifyBundleContainsBetween(bundle: fhir.Bundle, min: number, max: number, resourceType: string): errors.ValidationError | null {
   const matchingEntries = getMatchingEntries(bundle, resourceType)
   if (matchingEntries.length < min || matchingEntries.length > max) {
     return new errors.ContainsBetweenError(min, max, resourceType)
@@ -169,10 +195,14 @@ function verifyBundleContainsBetween(bundle: Bundle, min: number, max: number, r
   return null
 }
 
-function verifyBundleContainsExactly(bundle: Bundle, number: number, resourceType: string): errors.ValidationError | null {
+function verifyBundleContainsExactly(bundle: fhir.Bundle, number: number, resourceType: string): errors.ValidationError | null {
   const matchingEntries = getMatchingEntries(bundle, resourceType)
   if (matchingEntries.length !== number) {
     return new errors.ContainsExactlyError(number, resourceType)
   }
   return null
+}
+
+function verifyMessageType(messageType: string): messageType is MessageType {
+  return messageType === MessageType.PRESCRIPTION || messageType === MessageType.CANCELLATION
 }

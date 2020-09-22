@@ -1,6 +1,6 @@
 import {
-  convertIsoStringToHl7V3Date,
-  convertIsoStringToHl7V3DateTime,
+  convertIsoDateStringToHl7V3Date,
+  convertIsoDateTimeStringToHl7V3DateTime,
   getIdentifierValueForSystem,
   getIdentifierValueOrNullForSystem,
   getNumericValueAsString,
@@ -11,7 +11,7 @@ import * as TestResources from "../../../resources/test-resources"
 import * as fhir from "../../../../src/models/fhir/fhir-resources"
 import {Identifier} from "../../../../src/models/fhir/fhir-resources"
 import {clone} from "../../../resources/test-helpers"
-import {SpineDirectResponse} from "../../../../src/models/spine/responses"
+import {SpineDirectResponse} from "../../../../src/models/spine"
 import * as LosslessJson from "lossless-json"
 import {TooManyValuesError} from "../../../../src/models/errors/processing-errors"
 
@@ -89,14 +89,14 @@ describe("getIdentifierValueOrNullForSystem", () => {
 
 describe("wrapInOperationOutcome", () => {
   test("returns informational OperationOutcome for status code <= 299", () => {
-    const spineResponse: SpineDirectResponse = {statusCode: 299, body: "test"}
+    const spineResponse: SpineDirectResponse<string> = {statusCode: 299, body: "test"}
     const result = wrapInOperationOutcome(spineResponse)
     expect(result.issue[0].severity).toEqual("information")
     expect(result.issue[0].code).toEqual("informational")
   })
 
   test("returns error OperationOutcome for status code > 299", () => {
-    const spineResponse: SpineDirectResponse = {statusCode: 300, body: "test"}
+    const spineResponse: SpineDirectResponse<string> = {statusCode: 300, body: "test"}
     const result = wrapInOperationOutcome(spineResponse)
     expect(result.issue[0].severity).toEqual("error")
     expect(result.issue[0].code).toEqual("invalid")
@@ -106,27 +106,27 @@ describe("wrapInOperationOutcome", () => {
 describe("date time conversion", () => {
   test("throws when no timezone present", () => {
     expect(() => {
-      convertIsoStringToHl7V3DateTime("2020-01-21T11:15:30.000", "fhirPath")
+      convertIsoDateTimeStringToHl7V3DateTime("2020-01-21T11:15:30.000", "fhirPath")
     }).toThrow()
   })
 
   test("returns UTC timestamp when zulu timezone present and local time is GMT", () => {
-    const timestamp = convertIsoStringToHl7V3DateTime("2020-02-01T23:05:05.000Z", "fhirPath")
+    const timestamp = convertIsoDateTimeStringToHl7V3DateTime("2020-02-01T23:05:05.000Z", "fhirPath")
     expect(timestamp._attributes.value).toEqual("20200201230505")
   })
 
   test("returns UTC timestamp when zulu timezone present and local time is BST", () => {
-    const timestamp = convertIsoStringToHl7V3DateTime("2020-07-01T01:15:00.000Z", "fhirPath")
+    const timestamp = convertIsoDateTimeStringToHl7V3DateTime("2020-07-01T01:15:00.000Z", "fhirPath")
     expect(timestamp._attributes.value).toEqual("20200701011500")
   })
 
   test("returns UTC timestamp when timezone present and local time is GMT", () => {
-    const timestamp = convertIsoStringToHl7V3DateTime("2020-01-15T02:30:30.000+02:00", "fhirPath")
+    const timestamp = convertIsoDateTimeStringToHl7V3DateTime("2020-01-15T02:30:30.000+02:00", "fhirPath")
     expect(timestamp._attributes.value).toEqual("20200115003030")
   })
 
   test("returns UTC timestamp when timezone present and local time is BST", () => {
-    const timestamp = convertIsoStringToHl7V3DateTime("2020-06-22T12:50:30.000+02:00", "fhirPath")
+    const timestamp = convertIsoDateTimeStringToHl7V3DateTime("2020-06-22T12:50:30.000+02:00", "fhirPath")
     expect(timestamp._attributes.value).toEqual("20200622105030")
   })
 })
@@ -134,12 +134,12 @@ describe("date time conversion", () => {
 describe("date conversion", () => {
   test("throws when time present", () => {
     expect(() => {
-      convertIsoStringToHl7V3Date("2020-01-21T11:15:30.000Z", "fhirPath")
+      convertIsoDateStringToHl7V3Date("2020-01-21T11:15:30.000Z", "fhirPath")
     }).toThrow()
   })
 
   test("returns UTC timestamp when time not present", () => {
-    const timestamp = convertIsoStringToHl7V3Date("2020-06-22", "fhirPath")
+    const timestamp = convertIsoDateStringToHl7V3Date("2020-06-22", "fhirPath")
     expect(timestamp._attributes.value).toEqual("20200622")
   })
 })

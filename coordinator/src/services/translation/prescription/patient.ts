@@ -2,7 +2,7 @@ import * as fhir from "../../../models/fhir/fhir-resources"
 import * as peoplePlaces from "../../../models/hl7-v3/hl7-v3-people-places"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {convertAddress, convertGender, convertName} from "./demographics"
-import {convertIsoStringToHl7V3Date, getIdentifierValueForSystem} from "../common"
+import {convertIsoDateStringToHl7V3Date, getIdentifierValueForSystem} from "../common"
 
 function convertPatientToProviderPatient(
   patient: fhir.Patient
@@ -26,7 +26,7 @@ function convertPatientToPatientPerson(
   const hl7V3PatientPerson = new peoplePlaces.PatientPerson()
   hl7V3PatientPerson.name = patient.name.map(name => convertNameFn(name, "Patient.name"))
   hl7V3PatientPerson.administrativeGenderCode = convertGenderFn(patient.gender, "Patient.gender")
-  hl7V3PatientPerson.birthTime = convertIsoStringToHl7V3Date(patient.birthDate, "Patient.birthDate")
+  hl7V3PatientPerson.birthTime = convertIsoDateStringToHl7V3Date(patient.birthDate, "Patient.birthDate")
   hl7V3PatientPerson.playedProviderPatient = convertPatientToProviderPatient(patient)
   return hl7V3PatientPerson
 }
