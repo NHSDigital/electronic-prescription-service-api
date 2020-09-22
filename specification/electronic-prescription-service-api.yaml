@@ -139,6 +139,11 @@ info:
     * `POST /$convert` - convert a FHIR prescription to HL7 V3 to verify client signature implementations
     * `POST /$process-message` - send a signed FHIR prescription/cancellation to Spine
     * `GET /_poll` - Obtain the response to an asynchronous spine request
+    
+    ## Resources
+    Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/DigitalMedicines) to assist with your integration.
+    This is the FHIR specification for Digital Medicines starting with the assets required for an electronic prescription sent to the EPS.
+    
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
     description: 'Sandbox environment.'

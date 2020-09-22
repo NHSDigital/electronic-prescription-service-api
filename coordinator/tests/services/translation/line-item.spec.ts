@@ -1,15 +1,15 @@
 import {
   convertMedicationRequestToLineItem,
   convertPrescriptionEndorsements
-} from "../../../src/services/translation/line-item"
+} from "../../../src/services/translation/prescription/line-item"
 import {clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
 import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
-import * as fhir from "../../../src/model/fhir-resources"
+import * as fhir from "../../../src/models/fhir/fhir-resources"
 import {getExtensionForUrlOrNull} from "../../../src/services/translation/common"
 import {convertBundleToPrescription} from "../../../src/services/translation/prescription"
-import {convertFhirMessageToSpineRequest} from "../../../src/services/translation/translation-service"
-import {TooManyValuesError} from "../../../src/model/errors"
+import {convertFhirMessageToSpineRequest} from "../../../src/services/translation"
+import {TooManyValuesError} from "../../../src/models/errors/processing-errors"
 
 describe("convertMedicationRequestToLineItem", () => {
   let bundle: fhir.Bundle

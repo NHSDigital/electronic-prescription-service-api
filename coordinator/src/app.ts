@@ -1,7 +1,7 @@
 import {Boom} from "@hapi/boom"
 import Hapi from "@hapi/hapi"
 import routes from "./routes"
-import {toOperationOutcome, FhirMessageProcessingError} from "./model/errors"
+import {toOperationOutcome, FhirMessageProcessingError} from "./models/errors/processing-errors"
 
 const preResponse = function (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) {
   const response = request.response

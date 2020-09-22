@@ -1,13 +1,13 @@
-import {convertParentPrescription} from "../../../src/services/translation/parent-prescription"
+import {convertParentPrescription} from "../../../src/services/translation/prescription/parent-prescription"
 import {extractFragments,
   convertFragmentsToHashableFormat,
   convertFragmentsToDisplayableFormat
-} from "../../../src/services/translation/signing"
+} from "../../../src/services/translation/prescription/signature"
 import * as TestResources from "../../resources/test-resources"
 import * as XmlJs from "xml-js"
 import {xmlTest} from "../../resources/test-helpers"
-import {Fragments} from "../../../src/model/signing"
-import {ParentPrescription} from "../../../src/model/hl7-v3-prescriptions"
+import {Fragments} from "../../../src/models/signature"
+import {ParentPrescription} from "../../../src/models/hl7-v3/hl7-v3-prescriptions"
 
 let hl7V3ParentPrescription: ParentPrescription
 let fragments: Fragments

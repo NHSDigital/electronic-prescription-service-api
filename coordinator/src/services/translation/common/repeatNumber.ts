@@ -1,12 +1,12 @@
-import {MedicationRequest, RepeatInformationExtension, UnsignedIntExtension} from "../../../model/fhir-resources"
+import {MedicationRequest, RepeatInformationExtension, UnsignedIntExtension} from "../../../models/fhir/fhir-resources"
 import {
   getExtensionForUrl,
   getNumericValueAsNumber
 } from "./index"
 import {LosslessNumber} from "lossless-json"
-import {Interval, NumericValue} from "../../../model/hl7-v3-datatypes-core"
-import {Repeatable} from "../../../model/hl7-v3-prescriptions"
-import {CourseOfTherapyTypeCode, getCourseOfTherapyTypeCode} from "./courseOfTherapyType"
+import {Interval, NumericValue} from "../../../models/hl7-v3/hl7-v3-datatypes-core"
+import {Repeatable} from "../../../models/hl7-v3/hl7-v3-prescriptions"
+import {CourseOfTherapyTypeCode, getCourseOfTherapyTypeCode} from "../prescription/course-of-therapy-type"
 
 export function populateRepeatNumber(repeatable: Repeatable, medicationRequests: Array<MedicationRequest>): void {
   const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)

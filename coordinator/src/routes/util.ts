@@ -1,18 +1,18 @@
-import * as spineCommunication from "../services/spine-communication"
+import {isPollable, SpineDirectResponse, SpinePollableResponse} from "../models/spine"
 import Hapi from "@hapi/hapi"
-import * as fhir from "../model/fhir-resources"
-import {OperationOutcome, Resource} from "../model/fhir-resources"
-import * as requestValidator from "../validators/request-validator"
-import * as errors from "../errors/errors"
+import * as fhir from "../models/fhir/fhir-resources"
+import * as requestValidator from "../services/validation/bundle-validator"
+import {OperationOutcome, Resource} from "../models/fhir/fhir-resources"
+import * as errors from "../models/errors/validation-errors"
 import {wrapInOperationOutcome} from "../services/translation/common"
 import * as LosslessJson from "lossless-json"
 import {getMessageHeader} from "../services/translation/common/getResourcesOfType"
 
-export function handlePollableResponse<T>(
-  spineResponse: spineCommunication.SpineDirectResponse<T> | spineCommunication.SpinePollableResponse,
+export function handleResponse<T>(
+  spineResponse: SpineDirectResponse<T> | SpinePollableResponse,
   responseToolkit: Hapi.ResponseToolkit
 ): Hapi.ResponseObject {
-  if (spineCommunication.isPollable(spineResponse)) {
+  if (isPollable(spineResponse)) {
     return responseToolkit.response()
       .code(spineResponse.statusCode)
       .header("Content-Location", spineResponse.pollingUrl)
@@ -23,7 +23,7 @@ export function handlePollableResponse<T>(
   }
 }
 
-export function asOperationOutcome<T>(spineResponse: spineCommunication.SpineDirectResponse<T>): OperationOutcome {
+export function asOperationOutcome<T>(spineResponse: SpineDirectResponse<T>): OperationOutcome {
   if (isOperationOutcome(spineResponse.body)) {
     return spineResponse.body
   } else {

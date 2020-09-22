@@ -8,12 +8,12 @@ import {
   wrapInOperationOutcome
 } from "../../../../src/services/translation/common"
 import * as TestResources from "../../../resources/test-resources"
-import * as fhir from "../../../../src/model/fhir-resources"
-import {Identifier} from "../../../../src/model/fhir-resources"
+import * as fhir from "../../../../src/models/fhir/fhir-resources"
+import {Identifier} from "../../../../src/models/fhir/fhir-resources"
 import {clone} from "../../../resources/test-helpers"
-import {SpineDirectResponse} from "../../../../src/services/spine-communication"
+import {SpineDirectResponse} from "../../../../src/models/spine"
 import * as LosslessJson from "lossless-json"
-import {TooManyValuesError} from "../../../../src/model/errors"
+import {TooManyValuesError} from "../../../../src/models/errors/processing-errors"
 
 test("getResourceForFullUrl returns correct resources", () => {
   const result = getResourceForFullUrl(

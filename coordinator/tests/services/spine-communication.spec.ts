@@ -1,12 +1,8 @@
 import "jest"
 import * as moxios from "moxios"
 import axios from "axios"
-import {
-  isPollable,
-  SpinePollableResponse,
-  SpineRequest,
-  LiveRequestHandler
-} from "../../src/services/spine-communication"
+import {isPollable, SpinePollableResponse, SpineRequest} from "../../src/models/spine"
+import {LiveRequestHandler} from "../../src/services/handlers/spine-handler"
 
 describe("Spine communication", () => {
 
@@ -24,7 +20,7 @@ describe("Spine communication", () => {
     moxios.uninstall(axios)
   })
 
-  test("Successful sendData response returns pollable result", async () => {
+  test("Successful send response returns pollable result", async () => {
     moxios.wait(() => {
       const request = moxios.requests.mostRecent()
       request.respondWith({
@@ -43,7 +39,7 @@ describe("Spine communication", () => {
     expect((spineResponse as SpinePollableResponse).pollingUrl).toBe("http://test-content-location")
   })
 
-  test("Unsuccesful sendData response returns non-pollable result", async () => {
+  test("Unsuccesful send response returns non-pollable result", async () => {
     moxios.wait(() => {
       const request = moxios.requests.mostRecent()
       request.respondWith({status: 400})

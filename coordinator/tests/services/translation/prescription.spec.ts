@@ -1,22 +1,22 @@
 import {addEmptyCommunicationRequestToBundle, clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
-import * as fhir from "../../../src/model/fhir-resources"
-import {DateTimeExtension, MedicationRequest, RepeatInformationExtension} from "../../../src/model/fhir-resources"
+import * as fhir from "../../../src/models/fhir/fhir-resources"
+import {DateTimeExtension, MedicationRequest, RepeatInformationExtension} from "../../../src/models/fhir/fhir-resources"
 import {
   convertBundleToPrescription,
   convertCourseOfTherapyType,
   convertNearestReviewDate,
   convertPrescriptionComponent1
 } from "../../../src/services/translation/prescription"
-import * as translator from "../../../src/services/translation/translation-service"
-import {LineItemPertinentInformation1} from "../../../src/model/hl7-v3-prescriptions"
+import * as translator from "../../../src/services/translation"
+import {LineItemPertinentInformation1} from "../../../src/models/hl7-v3/hl7-v3-prescriptions"
 import {
   getCommunicationRequests,
   getMedicationRequests
 } from "../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl} from "../../../src/services/translation/common"
-import {setCourseOfTherapyTypeCode} from "./common/courseOfTherapyType.spec"
-import {CourseOfTherapyTypeCode} from "../../../src/services/translation/common/courseOfTherapyType"
+import {setCourseOfTherapyTypeCode} from "./course-of-therapy-type.spec"
+import {CourseOfTherapyTypeCode} from "../../../src/services/translation/prescription/course-of-therapy-type"
 
 describe("convertCourseOfTherapyType", () => {
   const cases = [
