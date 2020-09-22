@@ -1,5 +1,5 @@
 import {asOperationOutcome, identifyMessageType, MessageType} from "../../src/routes/util"
-import * as fhir from "../../src/model/fhir-resources"
+import * as fhir from "../../src/models/fhir/fhir-resources"
 import {clone} from "../resources/test-helpers"
 import * as TestResources from "../resources/test-resources"
 import {getMessageHeader} from "../../src/services/translation/common/getResourcesOfType"

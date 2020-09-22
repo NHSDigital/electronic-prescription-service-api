@@ -1,10 +1,10 @@
-import {convertPatient} from "../../../src/services/translation/patient"
-import {Bundle, Patient} from "../../../src/model/fhir-resources"
+import {convertPatient} from "../../../src/services/translation/prescription/patient"
+import {Bundle, Patient} from "../../../src/models/fhir/fhir-resources"
 import {clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
-import {Address} from "../../../src/model/hl7-v3-datatypes-core"
+import {Address} from "../../../src/models/hl7-v3/hl7-v3-datatypes-core"
 import {getPatient} from "../../../src/services/translation/common/getResourcesOfType"
-import {TooManyValuesError} from "../../../src/model/errors"
+import {TooManyValuesError} from "../../../src/models/errors/processing-errors"
 
 describe("convertPatient", () => {
   let bundle: Bundle
