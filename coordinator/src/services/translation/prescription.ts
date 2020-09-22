@@ -36,11 +36,11 @@ export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescripti
 
   const performer = fhirFirstMedicationRequest.dispenseRequest.performer
   if (performer) {
-    hl7V3Prescription.performer = convertPerformer(fhirBundle, performer)
+    hl7V3Prescription.performer = convertPerformer(performer)
   }
 
-  hl7V3Prescription.author = convertAuthor(fhirBundle, fhirFirstMedicationRequest)
-  hl7V3Prescription.responsibleParty = convertResponsibleParty(fhirBundle, fhirFirstMedicationRequest)
+  hl7V3Prescription.author = convertAuthor(fhirBundle, fhirFirstMedicationRequest, false)
+  hl7V3Prescription.responsibleParty = convertResponsibleParty(fhirBundle, fhirFirstMedicationRequest, false)
 
   const validityPeriod = fhirFirstMedicationRequest.dispenseRequest.validityPeriod
   const expectedSupplyDuration = fhirFirstMedicationRequest.dispenseRequest.expectedSupplyDuration
@@ -228,7 +228,7 @@ function convertPrescriptionPertinentInformation4(fhirFirstMedicationRequest: fh
   return new prescriptions.PrescriptionPertinentInformation4(prescriptionType)
 }
 
-function convertPerformer(fhirBundle: fhir.Bundle, performerReference: fhir.IdentifierReference<fhir.Organization>) {
+function convertPerformer(performerReference: fhir.IdentifierReference<fhir.Organization>) {
   const hl7V3Organization = new peoplePlaces.Organization()
   hl7V3Organization.id = new codes.SdsOrganizationIdentifier(performerReference.identifier.value)
   const hl7V3AgentOrganization = new peoplePlaces.AgentOrganization(hl7V3Organization)
