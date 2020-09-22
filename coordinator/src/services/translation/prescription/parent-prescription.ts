@@ -4,6 +4,7 @@ import {convertBundleToPrescription} from "."
 import * as prescriptions from "../../../models/hl7-v3/hl7-v3-prescriptions"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../common"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
+import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {getMedicationRequests, getPatient} from "../common/getResourcesOfType"
 
 export function convertParentPrescription(
@@ -35,8 +36,8 @@ export function convertParentPrescription(
   return hl7V3ParentPrescription
 }
 
-function extractEffectiveTime(medicationRequest: fhir.MedicationRequest) {
-  const validityPeriod = medicationRequest.dispenseRequest.validityPeriod
+export function extractEffectiveTime(medicationRequest: fhir.MedicationRequest): core.Timestamp {
+  const validityPeriod = medicationRequest.dispenseRequest?.validityPeriod
   if (validityPeriod) {
     return convertIsoDateTimeStringToHl7V3DateTime(validityPeriod.start, "MedicationRequest.dispenseRequest.validityPeriod.start")
   } else {

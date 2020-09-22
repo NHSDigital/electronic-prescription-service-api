@@ -7,21 +7,23 @@ import {getPatient, getMedicationRequests} from "../common/getResourcesOfType"
 import {convertAuthor, convertResponsibleParty} from "./practitioner"
 import * as common from "../common"
 import {getExtensionForUrl, getIdentifierValueForSystem} from "../common"
+import {extractEffectiveTime} from "./parent-prescription"
 
 export function convertCancellation(
   fhirBundle: fhir.Bundle,
   convertPatientFn = convertPatient,
 ): cancellations.CancellationPrescription {
+  const fhirFirstMedicationRequest = getMedicationRequests(fhirBundle)[0]
+  const effectiveTime = extractEffectiveTime(fhirFirstMedicationRequest)
 
   const hl7V3CancellationPrescription = new cancellations.CancellationPrescription(
-    new codes.GlobalIdentifier(fhirBundle.id)
+    new codes.GlobalIdentifier(fhirBundle.id), effectiveTime
   )
 
   const fhirPatient = getPatient(fhirBundle)
   const hl7V3Patient = convertPatientFn(fhirBundle, fhirPatient)
   hl7V3CancellationPrescription.recordTarget = new prescriptions.RecordTarget(hl7V3Patient)
 
-  const fhirFirstMedicationRequest = getMedicationRequests(fhirBundle)[0]
   hl7V3CancellationPrescription.author = convertAuthor(fhirBundle, fhirFirstMedicationRequest, true)
   hl7V3CancellationPrescription.responsibleParty = convertResponsibleParty(fhirBundle, fhirFirstMedicationRequest, true)
 
