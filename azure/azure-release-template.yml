@@ -63,8 +63,12 @@ extends:
           export PACT_CONSUMER=nhsd-apim-eps-test-client
           export APIGEE_ENVIRONMENT=$(ENVIRONMENT)
           export NAMESPACE=$(NAMESPACE)
-          export ENV_VARIABLE_GROUP=$(curl https://dev.azure.com/NHSD-APIM/API%20Platform/_apis/distributedtask/variablegroups?groupName=env-$APIGEE_ENVIRONMENT -u $(variable-group-read-token))
-          export IDP_URL="$(echo $ENV_VARIABLE_GROUP | jq --raw-output '.value[0].variables.IDP_URL.value')"
+
+          if [ "$APIGEE_ENVIRONMENT" == "int" ]; then
+            export IDP_URL=https://nhsd-apim-testing-$(ENVIRONMENT)-ns.herokuapp.com
+          else
+            export IDP_URL=https://nhsd-apim-testing-$(ENVIRONMENT).herokuapp.com
+          fi
 
           if [ "$SANDBOX" == "1" ]; then
             export PACT_PROVIDER=nhsd-apim-eps-sandbox
