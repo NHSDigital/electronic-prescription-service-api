@@ -21,7 +21,8 @@ jestpact.pactWith(
     describe("eps sandbox e2e tests", () => {
       const convertCases = [
         ...TestResources.all.map(example => [`unsigned ${example.description}`, example.fhirMessageUnsigned]),
-        ...TestResources.all.map(example => [`signed ${example.description}`, example.fhirMessageSigned])
+        ...TestResources.all.map(example => [`signed ${example.description}`, example.fhirMessageSigned]),
+        ...TestResources.all.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel])
       ]
 
       test.each(convertCases)("should be able to convert %s message to HL7V3", async (desc: string, message: Bundle) => {
@@ -91,7 +92,10 @@ jestpact.pactWith(
           .expect(200)
       })
 
-      const sendCases = TestResources.all.map(example => [example.description, example.fhirMessageSigned])
+      const sendCases = [
+        ...TestResources.all.map(example => [example.description, example.fhirMessageSigned]),
+        ...TestResources.all.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel])
+      ]
 
       test.each(sendCases)("should be able to send %s", async (desc: string, message: Bundle) => {
         const apiPath = "/$process-message"

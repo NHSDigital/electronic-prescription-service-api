@@ -9,8 +9,10 @@ export class ExamplePrescription {
   description: string
   fhirMessageUnsigned: Bundle
   fhirMessageSigned: Bundle
+  fhirMessageCancel: Bundle
   fhirMessageDigest: Parameters
   hl7V3Message: ElementCompact
+  hl7V3MessageCancel: ElementCompact
 
   hl7V3SignatureFragments?: ElementCompact
   hl7V3FragmentsCanonicalized?: string
@@ -20,11 +22,25 @@ export class ExamplePrescription {
     const fhirMessageSignedStr = fs.readFileSync(path.join(__dirname, location, "SendRequest-FhirMessageSigned.json"), "utf-8")
     const fhirMessageDigestStr = fs.readFileSync(path.join(__dirname, location, "PrepareResponse-FhirMessageDigest.json"), "utf-8")
     const hl7V3MessageStr = fs.readFileSync(path.join(__dirname, location, "ConvertResponse-Hl7V3Message.xml"), "utf-8")
+
     this.description = description
     this.fhirMessageUnsigned = LosslessJson.parse(fhirMessageUnsignedStr)
     this.fhirMessageSigned = LosslessJson.parse(fhirMessageSignedStr)
     this.fhirMessageDigest = LosslessJson.parse(fhirMessageDigestStr)
     this.hl7V3Message = XmlJs.xml2js(hl7V3MessageStr, {compact: true})
+
+    const fhirMessageCancelPath = path.join(__dirname, location, "CancelRequest-FhirMessage.json")
+    if (fs.existsSync(fhirMessageCancelPath)) {
+      const fhirMessageCancelStr = fs.readFileSync(fhirMessageCancelPath, "utf-8")
+      this.fhirMessageCancel = LosslessJson.parse(fhirMessageCancelStr)
+    }
+
+    const hl7V3MessageCancelPath = path.join(__dirname, location, "CancelResponse-Hl7V3Message.xml")
+    if (fs.existsSync(hl7V3MessageCancelPath)) {
+      const hl7V3MessageCancelStr = fs.readFileSync(hl7V3MessageCancelPath, "utf-8")
+      this.hl7V3MessageCancel = XmlJs.xml2js(hl7V3MessageCancelStr, {compact: true})
+    }
+
   }
 }
 
@@ -41,8 +57,11 @@ export const examplePrescription2 = new ExamplePrescription("acute, nominated ph
 
 export const examplePrescription3 = new ExamplePrescription("homecare", "parent-prescription-3")
 
+//export const examplePrescription4 = new ExamplePrescription("homecare repeat dispensing", "parent-prescription-4")
+
 export const all = [
   examplePrescription1,
   examplePrescription2,
   examplePrescription3
+  //examplePrescription4
 ]
