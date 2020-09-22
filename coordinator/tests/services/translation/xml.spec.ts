@@ -1,4 +1,4 @@
-import {writeXmlStringCanonicalized} from "../../../src/services/translation/xml"
+import {writeXmlStringCanonicalized} from "../../../src/services/serialisation/xml"
 import * as TestResources from "../../resources/test-resources"
 
 test("writeXmlStringCanonicalized returns correct value", () => {

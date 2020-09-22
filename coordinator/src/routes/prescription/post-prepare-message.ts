@@ -1,5 +1,5 @@
-import * as translator from "../../services/translation/translation-service"
-import {Bundle} from "../../model/fhir-resources"
+import * as translator from "../../services/translation"
+import {Bundle} from "../../models/fhir/fhir-resources"
 import Hapi from "@hapi/hapi"
 import {validatingHandler} from "../util"
 

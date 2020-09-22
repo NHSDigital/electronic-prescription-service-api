@@ -1,8 +1,8 @@
-import {convertParentPrescription} from "../../../src/services/translation/parent-prescription"
+import {convertParentPrescription} from "../../../src/services/translation/prescription/parent-prescription"
 import * as TestResources from "../../resources/test-resources"
 import {xmlTest} from "../../resources/test-helpers"
-import {Bundle} from "../../../src/model/fhir-resources"
-import {ParentPrescription} from "../../../src/model/hl7-v3-prescriptions"
+import {Bundle} from "../../../src/models/fhir/fhir-resources"
+import {ParentPrescription} from "../../../src/models/hl7-v3/hl7-v3-prescriptions"
 
 describe("convertParentPrescription", () => {
   const cases = TestResources.all.map(example => [

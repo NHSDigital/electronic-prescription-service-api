@@ -1,6 +1,6 @@
-import * as translator from "../../services/translation/translation-service"
+import * as translator from "../../services/translation"
 import Hapi from "@hapi/hapi"
-import {Bundle} from "../../model/fhir-resources"
+import {Bundle} from "../../models/fhir/fhir-resources"
 import {validatingHandler} from "../util"
 
 const CONTENT_TYPE = "application/xml"
