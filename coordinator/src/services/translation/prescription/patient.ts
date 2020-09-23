@@ -10,7 +10,9 @@ function convertPatientToProviderPatient(
   const managingOrganizationIdentifier = patient.managingOrganization.identifier.value
   const hl7V3HealthCareProvider = new peoplePlaces.HealthCareProvider()
   hl7V3HealthCareProvider.id = new codes.SdsOrganizationIdentifier(managingOrganizationIdentifier)
-  const hl7V3PatientCareProvision = new peoplePlaces.PatientCareProvision(codes.PatientCareProvisionTypeCode.PRIMARY_CARE)
+  const hl7V3PatientCareProvision = new peoplePlaces.PatientCareProvision(
+    codes.PatientCareProvisionTypeCode.PRIMARY_CARE
+  )
   hl7V3PatientCareProvision.responsibleParty = new peoplePlaces.ResponsibleParty(hl7V3HealthCareProvider)
   const hl7V3ProviderPatient = new peoplePlaces.ProviderPatient()
   hl7V3ProviderPatient.subjectOf = new peoplePlaces.SubjectOf(hl7V3PatientCareProvision)

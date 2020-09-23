@@ -113,7 +113,11 @@ describe("additionalInstructions", () => {
     }
     firstFhirMedicationRequest.dispenseRequest.extension.push(controlledDrugWordsExtension)
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, "")
-    expect(result.pertinentInformation1.pertinentAdditionalInstructions.value).toBe(`CD: ${exampleControlledDrugString}\n`)
+    expect(
+      result.pertinentInformation1.pertinentAdditionalInstructions.value
+    ).toBe(
+      `CD: ${exampleControlledDrugString}\n`
+    )
   })
 
   test("patientInstruction show up correctly", () => {
@@ -141,7 +145,11 @@ describe("additionalInstructions", () => {
     firstFhirMedicationRequest.dosageInstruction[0].patientInstruction = patientInstruction
     const patientInfo = "testPatientInfo"
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, patientInfo)
-    expect(result.pertinentInformation1.pertinentAdditionalInstructions.value).toBe(`${patientInfo}CD: ${exampleControlledDrugString}\n${patientInstruction}`)
+    expect(
+      result.pertinentInformation1.pertinentAdditionalInstructions.value
+    ).toBe(
+      `${patientInfo}CD: ${exampleControlledDrugString}\n${patientInstruction}`
+    )
   })
 })
 
@@ -202,7 +210,8 @@ describe("prescriptionEndorsements", () => {
     })
 
     const hl7v3Prescription = convertBundleToPrescription(bundle)
-    const hl7v3PrescriptionEndorsements = hl7v3Prescription.pertinentInformation2.flatMap(pi2 => pi2.pertinentLineItem.pertinentInformation3)
+    const hl7v3PrescriptionEndorsements = hl7v3Prescription.pertinentInformation2
+      .flatMap(pi2 => pi2.pertinentLineItem.pertinentInformation3)
     expect(hl7v3PrescriptionEndorsements.length).toBeGreaterThan(0)
     hl7v3PrescriptionEndorsements.map(endorsement => expect(endorsement).toEqual(undefined))
 

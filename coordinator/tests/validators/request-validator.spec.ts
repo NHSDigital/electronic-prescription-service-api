@@ -65,19 +65,25 @@ describe("verifyBundle simple fail", () => {
     ["Organization", 1, false]
   ]
 
-  test.each(atLeastTestCases)("rejects bundle without %p", (resource: string, requiredNumber: number, requiredSig: boolean) => {
-    expect(validator.verifyBundle(semiPopulatedBundle as fhir.Bundle, requiredSig))
-      .toContainEqual(new errors.ContainsAtLeastError(requiredNumber, resource))
-  })
+  test.each(atLeastTestCases)(
+    "rejects bundle without %p",
+    (resource: string, requiredNumber: number, requiredSig: boolean) => {
+      expect(validator.verifyBundle(semiPopulatedBundle as fhir.Bundle, requiredSig))
+        .toContainEqual(new errors.ContainsAtLeastError(requiredNumber, resource))
+    }
+  )
 
   const betweenTestCases = [
     ["MedicationRequest", 1, 4, false]
   ]
 
-  test.each(betweenTestCases)("rejects bundle without %p", (resource: string, min: number, max: number, requiredSig: boolean) => {
-    expect(validator.verifyBundle(semiPopulatedBundle as fhir.Bundle, requiredSig))
-      .toContainEqual(new errors.ContainsBetweenError(min, max, resource))
-  })
+  test.each(betweenTestCases)(
+    "rejects bundle without %p",
+    (resource: string, min: number, max: number, requiredSig: boolean) => {
+      expect(validator.verifyBundle(semiPopulatedBundle as fhir.Bundle, requiredSig))
+        .toContainEqual(new errors.ContainsBetweenError(min, max, resource))
+    }
+  )
 
   const exactlyTestCases = [
     ["Patient", 1, false],
@@ -85,10 +91,13 @@ describe("verifyBundle simple fail", () => {
     ["MessageHeader", 1, false]
   ]
 
-  test.each(exactlyTestCases)("rejects bundle without %p", (resource: string, requiredNumber: number, requiredSig: boolean) => {
-    expect(validator.verifyBundle(semiPopulatedBundle as fhir.Bundle, requiredSig))
-      .toContainEqual(new errors.ContainsExactlyError(requiredNumber, resource))
-  })
+  test.each(exactlyTestCases)(
+    "rejects bundle without %p",
+    (resource: string, requiredNumber: number, requiredSig: boolean) => {
+      expect(validator.verifyBundle(semiPopulatedBundle as fhir.Bundle, requiredSig))
+        .toContainEqual(new errors.ContainsExactlyError(requiredNumber, resource))
+    }
+  )
 
   test("rejects bundle with two Patients", () => {
     const bundle = {
@@ -146,7 +155,7 @@ describe("verifyBundle simple pass", () => {
   })
 })
 
-describe("verifyPrescriptionBundle throws INVALID_VALUE on MedicationRequest resources under certain conditions", () => {
+describe("verifyPrescriptionBundle throws INVALID_VALUE if MedicationRequests are inconsistent", () => {
   let bundle: fhir.Bundle
   let medicationRequests: Array<fhir.MedicationRequest>
 
@@ -164,7 +173,17 @@ describe("verifyPrescriptionBundle throws INVALID_VALUE on MedicationRequest res
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
 
     validateValidationErrors(validationErrors)
-    expect(validationErrors).toContainEqual(new errors.MedicationRequestValueError("authoredOn", [`"${differentAuthoredOn}"`, `"${defaultAuthoredOn}"`]))
+    expect(
+      validationErrors
+    ).toContainEqual(
+      new errors.MedicationRequestValueError(
+        "authoredOn",
+        [
+          `"${differentAuthoredOn}"`,
+          `"${defaultAuthoredOn}"`
+        ]
+      )
+    )
   })
 
   test("Should reject message where MedicationRequests have different dispenseRequest.performer", () => {
@@ -177,7 +196,17 @@ describe("verifyPrescriptionBundle throws INVALID_VALUE on MedicationRequest res
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
 
     validateValidationErrors(validationErrors)
-    expect(validationErrors).toContainEqual(new errors.MedicationRequestValueError("dispenseRequest.performer", [`${JSON.stringify(performer)},${JSON.stringify(performerDiff)}`]))
+    expect(
+      validationErrors
+    ).toContainEqual(
+      new errors.MedicationRequestValueError(
+        "dispenseRequest.performer",
+        [
+          JSON.stringify(performer),
+          JSON.stringify(performerDiff)
+        ]
+      )
+    )
   })
 
   test("Null should contribute to the count of unique values", () => {

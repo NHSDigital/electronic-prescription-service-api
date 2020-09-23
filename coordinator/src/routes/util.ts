@@ -8,7 +8,10 @@ import {wrapInOperationOutcome} from "../services/translation/common"
 import * as LosslessJson from "lossless-json"
 import {getMessageHeader} from "../services/translation/common/getResourcesOfType"
 
-export function handleResponse<T>(spineResponse: SpineDirectResponse<T> | SpinePollableResponse, responseToolkit: Hapi.ResponseToolkit): Hapi.ResponseObject {
+export function handleResponse<T>(
+  spineResponse: SpineDirectResponse<T> | SpinePollableResponse,
+  responseToolkit: Hapi.ResponseToolkit
+): Hapi.ResponseObject {
   if (isPollable(spineResponse)) {
     return responseToolkit.response()
       .code(spineResponse.statusCode)

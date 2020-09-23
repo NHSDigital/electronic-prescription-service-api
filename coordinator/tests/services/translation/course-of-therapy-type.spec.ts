@@ -15,19 +15,25 @@ describe("getCourseOfTherapyTypeCode", () => {
   })
 
   test("returns acute for acute prescription", () => {
-    medicationRequests.forEach(medicationRequest => setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.ACUTE))
+    medicationRequests.forEach(medicationRequest =>
+      setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.ACUTE)
+    )
     const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
     expect(courseOfTherapyTypeCode).toEqual(CourseOfTherapyTypeCode.ACUTE)
   })
 
   test("returns continuous for repeat prescribing prescription", () => {
-    medicationRequests.forEach(medicationRequest => setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS))
+    medicationRequests.forEach(medicationRequest =>
+      setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS)
+    )
     const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
     expect(courseOfTherapyTypeCode).toEqual(CourseOfTherapyTypeCode.CONTINUOUS)
   })
 
   test("returns continuous-repeat-dispensing for repeat dispensing prescription", () => {
-    medicationRequests.forEach(medicationRequest => setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING))
+    medicationRequests.forEach(medicationRequest =>
+      setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
+    )
     const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
     expect(courseOfTherapyTypeCode).toEqual(CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
   })
@@ -62,6 +68,9 @@ describe("getCourseOfTherapyTypeCode", () => {
   })
 })
 
-export function setCourseOfTherapyTypeCode(medicationRequest: MedicationRequest, newCourseOfTherapyTypeCode: CourseOfTherapyTypeCode): void {
+export function setCourseOfTherapyTypeCode(
+  medicationRequest: MedicationRequest,
+  newCourseOfTherapyTypeCode: CourseOfTherapyTypeCode
+): void {
   medicationRequest.courseOfTherapyType.coding.forEach(coding => coding.code = newCourseOfTherapyTypeCode)
 }
