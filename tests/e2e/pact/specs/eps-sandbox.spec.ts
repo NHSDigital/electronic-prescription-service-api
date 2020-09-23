@@ -20,9 +20,9 @@ jestpact.pactWith(
 
     describe("eps sandbox e2e tests", () => {
       const convertCases = [
-        ...TestResources.all.map(example => [`unsigned ${example.description}`, example.fhirMessageUnsigned]),
-        ...TestResources.all.map(example => [`signed ${example.description}`, example.fhirMessageSigned]),
-        ...TestResources.all.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel])
+        ...TestResources.specification.map(example => [`unsigned ${example.description}`, example.fhirMessageUnsigned]),
+        ...TestResources.specification.map(example => [`signed ${example.description}`, example.fhirMessageSigned]),
+        ...TestResources.specification.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel])
       ]
 
       test.each(convertCases)("should be able to convert %s message to HL7V3", async (desc: string, message: Bundle) => {
@@ -57,7 +57,7 @@ jestpact.pactWith(
       })
 
 
-      const prepareCases = TestResources.all.map(example => [example.description, example.fhirMessageUnsigned, example.fhirMessageDigest])
+      const prepareCases = TestResources.specification.map(example => [example.description, example.fhirMessageUnsigned, example.fhirMessageDigest])
 
       test.each(prepareCases)("should be able to prepare a %s message", async (desc: string, inputMessage: Bundle, outputMessage: Parameters) => {
         const apiPath = "/$prepare"
@@ -93,8 +93,9 @@ jestpact.pactWith(
       })
 
       const sendCases = [
-        ...TestResources.all.map(example => [example.description, example.fhirMessageSigned]),
-        ...TestResources.all.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel])
+        ...TestResources.specification.map(example => [example.description, example.fhirMessageSigned]),
+        ...TestResources.sendSpecs.map(spec => [spec.description, spec.request]),
+        ...TestResources.specification.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel])
       ]
 
       test.each(sendCases)("should be able to send %s", async (desc: string, message: Bundle) => {

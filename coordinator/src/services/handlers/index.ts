@@ -1,5 +1,5 @@
 import {LiveRequestHandler} from "./spine-handler"
-import {SandboxHandler} from "./sandbox-handler"
+import {SandboxRequestHandler} from "./sandbox-handler"
 import {SpineRequest,SpineResponse} from "../../models/spine"
 
 export interface RequestHandler {
@@ -10,7 +10,7 @@ export interface RequestHandler {
 function getHandler(liveMode: boolean): RequestHandler {
   return liveMode
     ? new LiveRequestHandler()
-    : new SandboxHandler()
+    : new SandboxRequestHandler()
 }
 
 export const requestHandler = getHandler(process.env.SANDBOX !== "1")

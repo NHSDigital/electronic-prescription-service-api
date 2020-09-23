@@ -2,7 +2,7 @@ import * as XmlJs from "xml-js"
 import {ElementCompact} from "xml-js"
 import * as fs from "fs"
 import * as path from "path"
-import {Bundle, Parameters} from "./fhir-resources"
+import {Bundle, OperationOutcome, Parameters} from "./fhir-resources"
 import * as LosslessJson from "lossless-json"
 
 export class ExamplePrescription {
@@ -59,9 +59,59 @@ export const examplePrescription3 = new ExamplePrescription("homecare", "parent-
 
 //export const examplePrescription4 = new ExamplePrescription("homecare repeat dispensing", "parent-prescription-4")
 
-export const all = [
+export const specification = [
   examplePrescription1,
   examplePrescription2,
   examplePrescription3
   //examplePrescription4
+]
+
+export class ConvertPrescriptionSpec {
+  request: Bundle
+  response: ElementCompact
+
+  constructor(request: Bundle, response: ElementCompact) {
+    this.request = request
+    this.response = response
+  }
+}
+
+export class PreparePrescriptionSpec {
+  request: Bundle
+  response: Parameters
+
+  constructor(request: Bundle, response: Parameters) {
+    this.request = request
+    this.response = response
+  }
+}
+
+export class SendPrescriptionSpec {
+  description: string
+  request: Bundle
+
+  constructor(baseLocation: string, location: string, requestFile: string) {
+    const requestString = fs.readFileSync(path.join(__dirname, baseLocation, location, requestFile), "utf-8")
+
+    const requestJson = LosslessJson.parse(requestString)
+
+    this.description = location.replace("/", " ")
+    this.request = requestJson
+  }
+}
+
+export class CancelPrescriptionSpec {
+  request: Bundle
+  response: OperationOutcome
+
+  constructor(request: Bundle, response: OperationOutcome) {
+    this.request = request
+    this.response = response
+  }
+}
+
+export const sendSpec1 = new SendPrescriptionSpec("./parent-prescription", "secondary-care/homecare/acute/no-nominated-pharmacy", "Success-SendRequest-1.json")
+
+export const sendSpecs = [
+  sendSpec1
 ]

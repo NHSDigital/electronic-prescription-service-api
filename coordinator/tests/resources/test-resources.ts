@@ -59,7 +59,7 @@ export const examplePrescription3 = new ExamplePrescription("homecare", "parent-
 
 //export const examplePrescription4 = new ExamplePrescription("homecare repeat dispensing", "parent-prescription-4")
 
-export const all = [
+export const specification = [
   examplePrescription1,
   examplePrescription2,
   examplePrescription3
