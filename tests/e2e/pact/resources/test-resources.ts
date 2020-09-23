@@ -84,7 +84,6 @@ export class ConvertPrescriptionSpec {
 
     this.description = location
     this.request = requestJson
-    this.request.identifier.value = uuid.v4()
     this.response = responseJson
   }
 }
