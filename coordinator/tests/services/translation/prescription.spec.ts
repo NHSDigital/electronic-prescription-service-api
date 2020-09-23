@@ -1,22 +1,22 @@
 import {addEmptyCommunicationRequestToBundle, clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
-import * as fhir from "../../../src/model/fhir-resources"
-import {DateTimeExtension, MedicationRequest, RepeatInformationExtension} from "../../../src/model/fhir-resources"
+import * as fhir from "../../../src/models/fhir/fhir-resources"
+import {DateTimeExtension, MedicationRequest, RepeatInformationExtension} from "../../../src/models/fhir/fhir-resources"
 import {
   convertBundleToPrescription,
   convertCourseOfTherapyType,
   convertNearestReviewDate,
   convertPrescriptionComponent1
 } from "../../../src/services/translation/prescription"
-import * as translator from "../../../src/services/translation/translation-service"
-import {LineItemPertinentInformation1} from "../../../src/model/hl7-v3-prescriptions"
+import * as translator from "../../../src/services/translation"
+import {LineItemPertinentInformation1} from "../../../src/models/hl7-v3/hl7-v3-prescriptions"
 import {
   getCommunicationRequests,
   getMedicationRequests
 } from "../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl} from "../../../src/services/translation/common"
-import {setCourseOfTherapyTypeCode} from "./common/courseOfTherapyType.spec"
-import {CourseOfTherapyTypeCode} from "../../../src/services/translation/common/courseOfTherapyType"
+import {setCourseOfTherapyTypeCode} from "./course-of-therapy-type.spec"
+import {CourseOfTherapyTypeCode} from "../../../src/services/translation/prescription/course-of-therapy-type"
 
 describe("convertCourseOfTherapyType", () => {
   const cases = [
@@ -25,7 +25,8 @@ describe("convertCourseOfTherapyType", () => {
     ["continuous-repeat-dispensing", "0003"]
   ]
 
-  test.each(cases)("when first therapy type code is %p, convertCourseOfTherapyType returns prescription treatment type code %p",
+  test.each(cases)(
+    "when first therapy type code is %p, convertCourseOfTherapyType returns prescription treatment type code %p",
     (code: CourseOfTherapyTypeCode, expected: string) => {
       const bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
       const fhirMedicationRequests = getMedicationRequests(bundle)
@@ -34,7 +35,8 @@ describe("convertCourseOfTherapyType", () => {
       const treatmentTypeCode = convertCourseOfTherapyType(fhirMedicationRequests).value._attributes.code
 
       expect(treatmentTypeCode).toEqual(expected)
-    })
+    }
+  )
 })
 
 describe("PertinentInformation2", () => {
@@ -60,7 +62,8 @@ describe("PertinentInformation2", () => {
     const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
-    const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1.pertinentAdditionalInstructions.value
+    const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
+      .pertinentAdditionalInstructions.value
     const expected = `<patientInfo>${contentString}</patientInfo>`
     expect(additionalInstructions).toContain(expected)
   })
@@ -73,8 +76,13 @@ describe("PertinentInformation2", () => {
     const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
-    const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1.pertinentAdditionalInstructions.value
-    expect(additionalInstructions).toContain(`<patientInfo>${contentString1}</patientInfo><patientInfo>${contentString2}</patientInfo>`)
+    const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
+      .pertinentAdditionalInstructions.value
+    expect(
+      additionalInstructions
+    ).toContain(
+      `<patientInfo>${contentString1}</patientInfo><patientInfo>${contentString2}</patientInfo>`
+    )
   })
 
   function ensureAtLeast2MedicationRequests(bundle: fhir.Bundle) {

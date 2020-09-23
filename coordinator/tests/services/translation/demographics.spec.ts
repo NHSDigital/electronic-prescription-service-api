@@ -1,8 +1,8 @@
-import * as demographics from "../../../src/services/translation/demographics"
-import * as core from "../../../src/model/hl7-v3-datatypes-core"
-import * as codes from "../../../src/model/hl7-v3-datatypes-codes"
+import * as demographics from "../../../src/services/translation/prescription/demographics"
+import * as core from "../../../src/models/hl7-v3/hl7-v3-datatypes-core"
+import * as codes from "../../../src/models/hl7-v3/hl7-v3-datatypes-codes"
 import * as XmlJs from "xml-js"
-import {InvalidValueError} from "../../../src/model/errors"
+import {InvalidValueError} from "../../../src/models/errors/processing-errors"
 
 describe("convertName fills correct fields only", () => {
   test("no keys should add no keys", () => {
@@ -104,11 +104,14 @@ describe("convertAddress should return correct addresses", () => {
     ["temp", {use: core.AddressUse.TEMPORARY}]
   ]
 
-  test.each(cases)("address type as postal and use as %p should return use as core.AddressUse.POSTAL", (argument: string) => {
-    const fhirAddress = {type: "postal", use:argument}
-    const result = demographics.convertAddress(fhirAddress, "fhirPath")
-    expect(result._attributes).toEqual({use: core.AddressUse.POSTAL})
-  })
+  test.each(cases)(
+    "address type as postal and use as %p should return use as core.AddressUse.POSTAL",
+    (argument: string) => {
+      const fhirAddress = {type: "postal", use: argument}
+      const result = demographics.convertAddress(fhirAddress, "fhirPath")
+      expect(result._attributes).toEqual({use: core.AddressUse.POSTAL})
+    }
+  )
 
   test.each(cases)(`address type not postal and use as %p should return correct value`,
     (argument: string, expected) => {

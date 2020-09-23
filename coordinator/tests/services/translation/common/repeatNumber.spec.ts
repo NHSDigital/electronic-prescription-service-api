@@ -2,16 +2,16 @@ import {populateRepeatNumber} from "../../../../src/services/translation/common/
 import {clone} from "../../../resources/test-helpers"
 import * as TestResources from "../../../resources/test-resources"
 import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
-import {CourseOfTherapyTypeCode} from "../../../../src/services/translation/common/courseOfTherapyType"
+import {CourseOfTherapyTypeCode} from "../../../../src/services/translation/prescription/course-of-therapy-type"
 import {
   MedicationRequest,
   RepeatInformationExtension,
   UnsignedIntExtension
-} from "../../../../src/model/fhir-resources"
-import {Repeatable} from "../../../../src/model/hl7-v3-prescriptions"
+} from "../../../../src/models/fhir/fhir-resources"
+import {Repeatable} from "../../../../src/models/hl7-v3/hl7-v3-prescriptions"
 import {getExtensionForUrl} from "../../../../src/services/translation/common"
 import {LosslessNumber} from "lossless-json"
-import {setCourseOfTherapyTypeCode} from "./courseOfTherapyType.spec"
+import {setCourseOfTherapyTypeCode} from "../course-of-therapy-type.spec"
 
 describe("populateRepeatNumber", () => {
   let medicationRequests: Array<MedicationRequest>
@@ -25,7 +25,9 @@ describe("populateRepeatNumber", () => {
   })
 
   test("does nothing for acute prescriptions", () => {
-    medicationRequests.forEach(medicationRequest => setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.ACUTE))
+    medicationRequests.forEach(medicationRequest =>
+      setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.ACUTE)
+    )
 
     populateRepeatNumber(repeatable, medicationRequests)
 
@@ -44,7 +46,9 @@ describe("populateRepeatNumber", () => {
   })
 
   test("sets 1-1 for repeat prescribing prescriptions", () => {
-    medicationRequests.forEach(medicationRequest => setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS))
+    medicationRequests.forEach(medicationRequest =>
+      setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS)
+    )
 
     populateRepeatNumber(repeatable, medicationRequests)
 
@@ -53,7 +57,9 @@ describe("populateRepeatNumber", () => {
   })
 
   test("sets 1-X for repeat dispensing prescriptions with consistent repeat numbers X", () => {
-    medicationRequests.forEach(medicationRequest => setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING))
+    medicationRequests.forEach(medicationRequest =>
+      setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
+    )
 
     populateRepeatNumber(repeatable, medicationRequests)
 
@@ -66,7 +72,9 @@ describe("populateRepeatNumber", () => {
     setRepeatNumber(medicationRequests[1], "6")
     setRepeatNumber(medicationRequests[2], "12")
     setRepeatNumber(medicationRequests[3], "6")
-    medicationRequests.forEach(medicationRequest => setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING))
+    medicationRequests.forEach(medicationRequest =>
+      setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
+    )
 
     populateRepeatNumber(repeatable, medicationRequests)
 
