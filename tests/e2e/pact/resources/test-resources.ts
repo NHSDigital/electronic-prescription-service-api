@@ -95,7 +95,8 @@ export class SendPrescriptionSpec {
 
     const requestJson = LosslessJson.parse(requestString)
 
-    this.description = location.replace("/", " ")
+     /* eslint-disable-next-line no-useless-escape */
+    this.description = location.replace("/\//g", " ")
     this.request = requestJson
   }
 }
@@ -110,7 +111,10 @@ export class CancelPrescriptionSpec {
   }
 }
 
-export const sendSpec1 = new SendPrescriptionSpec("./parent-prescription", "secondary-care/homecare/acute/no-nominated-pharmacy", "SendRequest-Success-1.json")
+export const sendSpec1 = new SendPrescriptionSpec(
+  "./parent-prescription", 
+  "secondary-care/homecare/acute/no-nominated-pharmacy",
+  "SendRequest-Success-1.json")
 
 export const sendSpecs = [
   sendSpec1

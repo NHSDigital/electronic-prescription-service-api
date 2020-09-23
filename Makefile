@@ -121,7 +121,7 @@ test-integration-coordinator:
 validate-models:
 	mkdir -p models/build
 	test -f models/build/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > models/build/org.hl7.fhir.validator.jar
-	for dir in "specification/**" "primary-care/**/**/**/**" "secondary-care/**/**/**/**"; do \
+	for dir in "specification/**" "primary-care/**/**" "secondary-care/**/**/**"; do \
 		java -jar models/build/org.hl7.fhir.validator.jar models/examples/$$dir/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt; \
 	done
 

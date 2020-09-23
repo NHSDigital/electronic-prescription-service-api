@@ -172,12 +172,6 @@
 							}
 						}
 					],
-					"performer": {
-						"identifier": {
-							"system": "https://fhir.nhs.uk/Id/ods-organization-code",
-							"value": "VME51"
-						}
-					},
 					"quantity": {
 						"value": 1,
 						"unit": "pre-filled disposable injection",

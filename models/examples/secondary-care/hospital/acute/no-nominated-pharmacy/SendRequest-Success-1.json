@@ -110,9 +110,9 @@
 				"courseOfTherapyType": {
 					"coding": [
 						{
-							"system": "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-course-of-therapy",
-							"code": "continous-repeat-dispensing",
-							"display": "Continuous long term (repeat dispensing)"
+							"system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+							"code": "acute",
+							"display": "Short course (acute) therapy"
 						}
 					]
 				},
@@ -168,27 +168,10 @@
 							"url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
 							"valueCoding": {
 								"system": "https://fhir.nhs.uk/R4/CodeSystem/dispensing-site-preference",
-								"code": "P1"
+								"code": "0004"
 							}
 						}
 					],
-					"validityPeriod": {
-						"start": "2020-07-13T12:00:00+00:00",
-						"end": "2020-08-07T12:00:00+00:00"
-					},
-					"numberOfRepeatsAllowed": 4,
-					"expectedSupplyDuration": {
-						"value": 7,
-						"unit": "days",
-						"system": "http://unitsofmeasure.org",
-						"code": "d"
-					},
-					"performer": {
-						"identifier": {
-							"system": "https://fhir.nhs.uk/Id/ods-organization-code",
-							"value": "VNE51"
-						}
-					},
 					"quantity": {
 						"value": 1,
 						"unit": "pre-filled disposable injection",
