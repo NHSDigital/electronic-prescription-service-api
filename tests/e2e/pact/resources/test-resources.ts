@@ -109,7 +109,6 @@ export class SendPrescriptionSpec {
 
     this.description = location
     this.request = requestJson
-    this.request.identifier.value = uuid.v4()
   }
 }
 
