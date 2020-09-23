@@ -9,7 +9,8 @@
         </Step>
       </Response>
       <Condition>
-        request.verb == "OPTIONS" AND request.header.origin != null AND request.header.Access-Control-Request-Method != null
+        request.verb == "OPTIONS" AND request.header.origin != null AND request.header.Access-Control-Request-Method !=
+        null
       </Condition>
     </Flow>
     <Flow name="AddPayloadToPing">
@@ -30,13 +31,20 @@
   </HTTPProxyConnection>
   <RouteRule name="NoRoute">
     <Condition>
-      request.verb == "OPTIONS" AND request.header.origin != null AND request.header.Access-Control-Request-Method != null
+      request.verb == "OPTIONS" AND request.header.origin != null AND request.header.Access-Control-Request-Method !=
+      null
     </Condition>
   </RouteRule>
   <RouteRule name="NoRoutePing">
     <Condition>
       (proxy.pathsuffix MatchesPath "/_ping") and ((request.verb = "GET") or (request.verb = "HEAD"))
     </Condition>
+  </RouteRule>
+  <RouteRule name="sync-wrap">
+    <Condition>
+      request.verb = "POST" and request.header.prefer != "respond-async" and request.header.x-sync-wrapped != "true"
+    </Condition>
+    <TargetEndpoint>sync-wrap</TargetEndpoint>
   </RouteRule>
   <RouteRule name="apim">
     <TargetEndpoint>apim</TargetEndpoint>
