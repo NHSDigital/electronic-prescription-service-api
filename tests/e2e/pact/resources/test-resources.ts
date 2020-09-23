@@ -110,7 +110,7 @@ export class CancelPrescriptionSpec {
   }
 }
 
-export const sendSpec1 = new SendPrescriptionSpec("./parent-prescription", "secondary-care/homecare/acute/no-nominated-pharmacy", "Success-SendRequest-1.json")
+export const sendSpec1 = new SendPrescriptionSpec("./parent-prescription", "secondary-care/homecare/acute/no-nominated-pharmacy", "SendRequest-Success-1.json")
 
 export const sendSpecs = [
   sendSpec1
