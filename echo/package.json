@@ -1,0 +1,15 @@
+{
+  "name": "echo",
+  "version": "0.0.1",
+  "description": "echo",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "NHS Digital",
+  "license": "MIT",
+  "dependencies": {
+    "@hapi/boom": "^9.1.0",
+    "@hapi/hapi": "18.4.1"
+  }
+}

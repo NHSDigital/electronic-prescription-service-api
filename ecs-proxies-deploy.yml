@@ -39,3 +39,13 @@ docker_service:
     health_check:
         matcher: "200"
         path: "/_status"
+  - name: echo
+    expose: true
+    environment:
+        - name: NODE_ENV
+          value: production
+        - name: LOG_LEVEL
+          value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
+    health_check:
+        matcher: "200"
+        path: "/_status"

@@ -94,6 +94,9 @@ build-coordinator:
 	mkdir -p coordinator/dist/resources
 	cp coordinator/src/resources/ebxml_request.mustache coordinator/dist/resources/
 	cp coordinator/src/resources/message_display.mustache coordinator/dist/resources/
+	mkdir -p echo/dist
+	cp echo/package.json echo/dist/
+	cp echo/app.js echo/dist
 
 build-proxies:
 	mkdir -p dist/proxies/sandbox

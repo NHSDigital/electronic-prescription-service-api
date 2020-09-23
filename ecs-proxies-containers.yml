@@ -2,3 +2,6 @@ docker_containers:
     - name: eps-coordinator
       dockerfile: "coordinator/Dockerfile"
       path: "coordinator"
+    - name: echo
+      dockerfile: "echo/Dockerfile"
+      path: "echo"
