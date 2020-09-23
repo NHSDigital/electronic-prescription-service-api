@@ -1,5 +1,9 @@
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
-import {GlobalIdentifier, SdsRoleProfileIdentifier, SdsUniqueIdentifier} from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
+import {
+  GlobalIdentifier,
+  SdsRoleProfileIdentifier,
+  SdsUniqueIdentifier
+} from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import moment from "moment"
 import {
@@ -69,7 +73,11 @@ function convertRequesterToControlActAuthor(
   return createControlActEventAuthor(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier)
 }
 
-function createControlActEventAuthor(sdsUniqueIdentifierStr: string, sdsJobRoleCodeStr: string, sdsRoleProfileIdentifierStr: string) {
+function createControlActEventAuthor(
+  sdsUniqueIdentifierStr: string,
+  sdsJobRoleCodeStr: string,
+  sdsRoleProfileIdentifierStr: string
+) {
   const sdsUniqueIdentifier = new SdsUniqueIdentifier(sdsUniqueIdentifierStr)
   const authorAgentPersonPerson = new core.AgentPersonPersonSds(sdsUniqueIdentifier)
 

@@ -42,7 +42,8 @@ export interface MedicationRequest extends Resource {
   courseOfTherapyType: CodeableConcept
   dosageInstruction: Array<Dosage>
   dispenseRequest: MedicationRequestDispenseRequest
-  extension: Array<IdentifierExtension | ReferenceExtension<PractitionerRole> | CodingExtension | CodeableConceptExtension | RepeatInformationExtension>
+  extension: Array<IdentifierExtension | ReferenceExtension<PractitionerRole> | CodingExtension
+    | CodeableConceptExtension | RepeatInformationExtension>
   statusReason?: CodeableConcept
 }
 
@@ -158,7 +159,7 @@ export interface HealthcareService extends Resource {
   name?: string
   telecom?: Array<ContactPoint>
   active?: string
-  providedBy?: {identifier: Identifier}
+  providedBy?: { identifier: Identifier }
   location?: Array<Reference<Location>>
 }
 

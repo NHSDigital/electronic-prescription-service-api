@@ -20,12 +20,17 @@ jest.mock("uuid", () => {
 jest.mock("moment", () => {
   return {
     ...jest.requireActual("moment"),
-    utc: (input?: MomentInput, format?: MomentFormatSpecification) => jest.requireActual("moment").utc(input ? input : "2020-06-10T10:26:31.000Z", format)
+    utc: (input?: MomentInput, format?: MomentFormatSpecification) =>
+      jest.requireActual("moment").utc(input ? input : "2020-06-10T10:26:31.000Z", format)
   }
 })
 
 describe("convertFhirMessageToSignedInfoMessage", () => {
-  const cases = TestResources.specification.map(example => [example.description, example.fhirMessageUnsigned, example.fhirMessageDigest])
+  const cases = TestResources.specification.map(example => [
+    example.description,
+    example.fhirMessageUnsigned,
+    example.fhirMessageDigest
+  ])
 
   test.each(cases)("accepts %s", (desc: string, message: Bundle) => {
     expect(() => convertFhirMessageToSignedInfoMessage(message)).not.toThrow()
@@ -39,7 +44,10 @@ describe("convertFhirMessageToSignedInfoMessage", () => {
 })
 
 describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
-  const cases = TestResources.specification.map(example => [example.description, example.fhirMessageSigned, example.hl7V3Message])
+  const cases = TestResources.specification.map(example => [
+    example.description,
+    example.fhirMessageSigned,
+    example.hl7V3Message])
 
   test.each(cases)("accepts %s", (desc: string, message: Bundle) => {
     expect(() => translator.convertFhirMessageToSpineRequest(message)).not.toThrow()
@@ -48,7 +56,11 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
   test.each(cases)("returns correct value for %s", (desc: string, input: Bundle, output: ElementCompact) => {
     const spineRequest = translator.convertFhirMessageToSpineRequest(input)
     xmlTest(XmlJs.xml2js(spineRequest.message, {compact: true}), output)()
-    expect(spineRequest.interactionId).toEqual(Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT._attributes.extension)
+    expect(
+      spineRequest.interactionId
+    ).toEqual(
+      Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT._attributes.extension
+    )
   })
 
   test("produces result with no lower case UUIDs", () => {

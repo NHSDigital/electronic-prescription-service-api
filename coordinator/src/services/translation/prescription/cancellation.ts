@@ -27,7 +27,9 @@ export function convertCancellation(
   hl7V3CancellationPrescription.author = convertAuthor(fhirBundle, fhirFirstMedicationRequest, true)
   hl7V3CancellationPrescription.responsibleParty = convertResponsibleParty(fhirBundle, fhirFirstMedicationRequest, true)
 
-  hl7V3CancellationPrescription.pertinentInformation2 = new cancellations.PertinentInformation2(fhirFirstMedicationRequest.groupIdentifier.value)
+  hl7V3CancellationPrescription.pertinentInformation2 = new cancellations.PertinentInformation2(
+    fhirFirstMedicationRequest.groupIdentifier.value
+  )
 
   const lineItemToCancel = getIdentifierValueForSystem(
     fhirFirstMedicationRequest.identifier,
@@ -40,14 +42,19 @@ export function convertCancellation(
     fhirFirstMedicationRequest.statusReason.coding,
     "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-status-reason",
     "MedicationRequest.statusReason")
-  hl7V3CancellationPrescription.pertinentInformation = new cancellations.PertinentInformation(statusReason.code, statusReason.display)
+  hl7V3CancellationPrescription.pertinentInformation = new cancellations.PertinentInformation(
+    statusReason.code,
+    statusReason.display
+  )
 
   const prescriptionToCancel = getExtensionForUrl(
     fhirFirstMedicationRequest.groupIdentifier.extension,
     "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
     "MedicationRequest.groupIdentifier.extension"
   ) as fhir.IdentifierExtension
-  hl7V3CancellationPrescription.pertinentInformation3 = new cancellations.PertinentInformation3(prescriptionToCancel.valueIdentifier.value)
+  hl7V3CancellationPrescription.pertinentInformation3 = new cancellations.PertinentInformation3(
+    prescriptionToCancel.valueIdentifier.value
+  )
 
   return hl7V3CancellationPrescription
 }

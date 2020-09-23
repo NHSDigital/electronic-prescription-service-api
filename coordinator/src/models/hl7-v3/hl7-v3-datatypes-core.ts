@@ -13,7 +13,8 @@ export interface AttributeContextControlCode extends Attributes {
 }
 
 export interface AttributeClassCode extends Attributes {
-  classCode: "AGNT" | "CACT" | "CATEGORY" | "DEV" | "INFO" | "MANU" | "MMAT" | "OBS" | "ORG" | "PAT" | "PCPR" | "PROV" | "PSN" | "ROL" | "SBADM" | "SPLY"
+  classCode: "AGNT" | "CACT" | "CATEGORY" | "DEV" | "INFO" | "MANU" | "MMAT" | "OBS" | "ORG" | "PAT" | "PCPR" | "PROV"
+    | "PSN" | "ROL" | "SBADM" | "SPLY"
 }
 
 export interface AttributeDeterminerCode extends Attributes {
@@ -133,7 +134,8 @@ class QuantityTranslation implements ElementCompact {
 }
 
 /**
- * This flavour of the physical quantity data type should be used where the quantity is converted into the approved UCUM representation from an original recording in an alternative set of recognised units.
+ * This flavour of the physical quantity data type should be used where the quantity is converted into the approved UCUM
+ * representation from an original recording in an alternative set of recognised units.
  * This flavour is used for representing medication dose form quantities recorded using the dm+d coded units of measure.
  */
 export class QuantityInAlternativeUnits implements ElementCompact {

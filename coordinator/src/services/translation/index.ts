@@ -12,7 +12,11 @@ import {createSendMessagePayload} from "./messaging/send-message-payload"
 import {writeXmlStringCanonicalized} from "../serialisation/xml"
 import {convertParentPrescription} from "./prescription/parent-prescription"
 import {convertCancellation} from "./prescription/cancellation"
-import {convertFragmentsToDisplayableFormat, convertFragmentsToHashableFormat, extractFragments} from "./prescription/signature"
+import {
+  convertFragmentsToDisplayableFormat,
+  convertFragmentsToHashableFormat,
+  extractFragments
+} from "./prescription/signature"
 import {getIdentifierValueForSystem} from "./common"
 import {Display} from "../../models/signature"
 import * as requestBuilder from "../formatters/ebxml-request-builder"
@@ -26,7 +30,9 @@ export function convertFhirMessageToSpineRequest(fhirMessage: fhir.Bundle): Spin
     : requestBuilder.toSpineRequest(createCancellationSendMessagePayload(fhirMessage))
 }
 
-export function createParentPrescriptionSendMessagePayload(fhirBundle: fhir.Bundle): core.SendMessagePayload<prescriptions.ParentPrescriptionRoot> {
+export function createParentPrescriptionSendMessagePayload(
+  fhirBundle: fhir.Bundle
+): core.SendMessagePayload<prescriptions.ParentPrescriptionRoot> {
   const messageId = getIdentifierValueForSystem(
     [fhirBundle.identifier],
     "https://tools.ietf.org/html/rfc4122",
@@ -38,7 +44,9 @@ export function createParentPrescriptionSendMessagePayload(fhirBundle: fhir.Bund
   return createSendMessagePayload(messageId, interactionId, fhirBundle, parentPrescriptionRoot)
 }
 
-export function createCancellationSendMessagePayload(fhirBundle: fhir.Bundle): core.SendMessagePayload<cancellations.CancellationPrescriptionRoot> {
+export function createCancellationSendMessagePayload(
+  fhirBundle: fhir.Bundle
+): core.SendMessagePayload<cancellations.CancellationPrescriptionRoot> {
   const messageId = getIdentifierValueForSystem(
     [fhirBundle.identifier],
     "https://tools.ietf.org/html/rfc4122",

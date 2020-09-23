@@ -39,7 +39,10 @@ function convertDosageInstructions(dosageInstruction: Array<fhir.Dosage>) {
   return new prescriptions.LineItemPertinentInformation2(hl7V3DosageInstructions)
 }
 
-export function convertPrescriptionEndorsements(fhirMedicationRequest: fhir.MedicationRequest, hl7V3LineItem: prescriptions.LineItem): void {
+export function convertPrescriptionEndorsements(
+  fhirMedicationRequest: fhir.MedicationRequest,
+  hl7V3LineItem: prescriptions.LineItem
+): void {
   const fhirMedicationPrescriptionEndorsementExtension = getExtensionForUrlOrNull(
     fhirMedicationRequest.extension,
     "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionEndorsement",
@@ -47,11 +50,12 @@ export function convertPrescriptionEndorsements(fhirMedicationRequest: fhir.Medi
   ) as fhir.CodeableConceptExtension
 
   if (fhirMedicationPrescriptionEndorsementExtension) {
-    hl7V3LineItem.pertinentInformation3 = fhirMedicationPrescriptionEndorsementExtension.valueCodeableConcept.coding.map(coding => {
-      const prescriptionEndorsementValue = new codes.PrescriptionEndorsementCode(coding.code)
-      const prescriptionEndorsement = new prescriptions.PrescriptionEndorsement(prescriptionEndorsementValue)
-      return new prescriptions.LineItemPertinentInformation3(prescriptionEndorsement)
-    })
+    hl7V3LineItem.pertinentInformation3 = fhirMedicationPrescriptionEndorsementExtension.valueCodeableConcept.coding
+      .map(coding => {
+        const prescriptionEndorsementValue = new codes.PrescriptionEndorsementCode(coding.code)
+        const prescriptionEndorsement = new prescriptions.PrescriptionEndorsement(prescriptionEndorsementValue)
+        return new prescriptions.LineItemPertinentInformation3(prescriptionEndorsement)
+      })
   } else {
     delete hl7V3LineItem.pertinentInformation3
   }
@@ -77,7 +81,10 @@ function convertAdditionalInstructions(fhirMedicationRequest: fhir.MedicationReq
   return new prescriptions.LineItemPertinentInformation1(hl7V3AdditionalInstructions)
 }
 
-export function convertMedicationRequestToLineItem(fhirMedicationRequest: fhir.MedicationRequest, patientInfoStr = ""): prescriptions.LineItem {
+export function convertMedicationRequestToLineItem(
+  fhirMedicationRequest: fhir.MedicationRequest,
+  patientInfoStr = ""
+): prescriptions.LineItem {
   const lineItemId = getIdentifierValueForSystem(
     fhirMedicationRequest.identifier,
     "https://fhir.nhs.uk/Id/prescription-order-item-number",

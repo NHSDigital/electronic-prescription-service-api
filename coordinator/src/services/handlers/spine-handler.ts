@@ -22,7 +22,11 @@ export class LiveRequestHandler implements RequestHandler {
   private readonly spinePath: string
   private readonly ebXMLBuilder: (spineRequest: SpineRequest) => string
 
-  constructor(spineEndpoint: string = null, spinePath: string = null, ebXMLBuilder: (spineRequest: SpineRequest) => string = null) {
+  constructor(
+    spineEndpoint: string = null,
+    spinePath: string = null,
+    ebXMLBuilder: (spineRequest: SpineRequest) => string = null
+  ) {
     this.spineEndpoint = spineEndpoint || SPINE_ENDPOINT
     this.spinePath = spinePath || SPINE_PATH
     this.ebXMLBuilder = ebXMLBuilder || addEbXmlWrapper
@@ -41,7 +45,10 @@ export class LiveRequestHandler implements RequestHandler {
         {
           httpsAgent,
           headers: {
-            "Content-Type": 'multipart/related; boundary="--=_MIME-Boundary"; type=text/xml; start=ebXMLHeader@spine.nhs.uk',
+            "Content-Type": "multipart/related;" +
+              " boundary=\"--=_MIME-Boundary\";" +
+              " type=text/xml;" +
+              " start=ebXMLHeader@spine.nhs.uk",
             "SOAPAction": `urn:nhs:names:services:mm/${spineRequest.interactionId}`
           }
         }
