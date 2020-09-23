@@ -4,6 +4,7 @@ import * as fs from "fs"
 import * as path from "path"
 import {Bundle, OperationOutcome, Parameters} from "./fhir-resources"
 import * as LosslessJson from "lossless-json"
+import * as uuid from "uuid"
 
 export class ExamplePrescription {
   description: string
@@ -28,6 +29,9 @@ export class ExamplePrescription {
     this.fhirMessageSigned = LosslessJson.parse(fhirMessageSignedStr)
     this.fhirMessageDigest = LosslessJson.parse(fhirMessageDigestStr)
     this.hl7V3Message = XmlJs.xml2js(hl7V3MessageStr, {compact: true})
+
+    this.fhirMessageUnsigned.identifier.value = uuid.v4()
+    this.fhirMessageSigned.identifier.value = uuid.v4()
 
     const fhirMessageCancelPath = path.join(__dirname, location, "CancelRequest-FhirMessage.json")
     if (fs.existsSync(fhirMessageCancelPath)) {
@@ -67,12 +71,21 @@ export const specification = [
 ]
 
 export class ConvertPrescriptionSpec {
+  description: string
   request: Bundle
-  response: ElementCompact
+  response: Parameters
 
-  constructor(request: Bundle, response: ElementCompact) {
-    this.request = request
-    this.response = response
+  constructor(baseLocation: string, location: string, requestFile: string, responseFile: string) {
+    const requestString = fs.readFileSync(path.join(__dirname, baseLocation, location, requestFile), "utf-8")
+    const requestJson = LosslessJson.parse(requestString)
+
+    const responseString = fs.readFileSync(path.join(__dirname, baseLocation, location, responseFile), "utf-8")
+    const responseJson = LosslessJson.parse(responseString)
+
+    this.description = location
+    this.request = requestJson
+    this.request.identifier.value = uuid.v4()
+    this.response = responseJson
   }
 }
 
@@ -95,9 +108,9 @@ export class SendPrescriptionSpec {
 
     const requestJson = LosslessJson.parse(requestString)
 
-     /* eslint-disable-next-line no-useless-escape */
-    this.description = location.replace("/\//g", " ")
+    this.description = location
     this.request = requestJson
+    this.request.identifier.value = uuid.v4()
   }
 }
 
@@ -115,6 +128,16 @@ export const sendSpec1 = new SendPrescriptionSpec(
   "./parent-prescription", 
   "secondary-care/homecare/acute/no-nominated-pharmacy",
   "SendRequest-Success-1.json")
+
+export const convertSpec1 = new ConvertPrescriptionSpec(
+  "./parent-prescription", 
+  "secondary-care/homecare/acute/no-nominated-pharmacy",
+  "SendRequest-Success-1.json",
+  "ConvertResponse-Success-1.json")
+
+export const convertSpecs = [
+  convertSpec1
+]
 
 export const sendSpecs = [
   sendSpec1

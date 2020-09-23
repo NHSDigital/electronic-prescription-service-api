@@ -20,14 +20,14 @@ jestpact.pactWith(
 
     describe("eps sandbox e2e tests", () => {
       const convertCases = [
-        ...TestResources.specification.map(example => [`unsigned ${example.description}`, example.fhirMessageUnsigned]),
-        ...TestResources.specification.map(example => [`signed ${example.description}`, example.fhirMessageSigned]),
-        ...TestResources.specification.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel])
+        ...TestResources.specification.map(example => [`unsigned ${example.description}`, example.fhirMessageUnsigned, {}]),
+        ...TestResources.specification.map(example => [`signed ${example.description}`, example.fhirMessageSigned, {}]),
+        ...TestResources.convertSpecs.map(spec => [spec.description, spec.request, spec.response]),
+        ...TestResources.specification.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel, {}])
       ]
 
-      test.each(convertCases)("should be able to convert %s message to HL7V3", async (desc: string, message: Bundle) => {
+      test.each(convertCases)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: Parameters) => {
         const apiPath = "/$convert"
-        const messageStr = LosslessJson.stringify(message)
         const interaction: InteractionObject = {
           state: null,
           uponReceiving: `a request to convert ${desc} message`,
@@ -38,12 +38,13 @@ jestpact.pactWith(
             },
             method: "POST",
             path: "/$convert",
-            body: JSON.parse(messageStr)
+            body: request
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/xml"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
+            body: response,
             status: 200
           }
         }
@@ -52,7 +53,7 @@ jestpact.pactWith(
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('NHSD-Session-URID', '1234')
-          .send(messageStr)
+          .send(JSON.stringify(request))
           .expect(200)
       })
 
