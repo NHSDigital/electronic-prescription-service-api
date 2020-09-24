@@ -3,7 +3,7 @@ import Hapi from "@hapi/hapi"
 import {Bundle} from "../../models/fhir/fhir-resources"
 import {validatingHandler} from "../util"
 
-const CONTENT_TYPE = "application/fhir+json; fhirVersion=4.0"
+const CONTENT_TYPE = "application/xml"
 
 export default [
   /*
@@ -15,8 +15,7 @@ export default [
     handler: validatingHandler(
       false,
       (requestPayload: Bundle, responseToolkit: Hapi.ResponseToolkit) => {
-        const spineRequest = translator.convertFhirMessageToSpineRequest(requestPayload)
-        const response = translator.convertSpineRequestToParameters(spineRequest)
+        const response = translator.convertFhirMessageToSpineRequest(requestPayload)
         return responseToolkit.response(response).code(200).header("Content-Type", CONTENT_TYPE)
       }
     )

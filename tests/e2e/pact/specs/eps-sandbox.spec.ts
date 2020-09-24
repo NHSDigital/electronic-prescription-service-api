@@ -1,10 +1,9 @@
-import {InteractionObject, Matchers} from "@pact-foundation/pact"
+import {InteractionObject, Matchers, XmlBuilder} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../resources/test-resources"
 import {Bundle, Parameters} from "../resources/fhir-resources"
 import * as LosslessJson from "lossless-json"
-import {MomentFormatSpecification, MomentInput} from "moment"
 
 jestpact.pactWith(
   {
@@ -19,23 +18,15 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    jest.mock("moment", () => {
-      return {
-        ...jest.requireActual("moment"),
-        utc: (input?: MomentInput, format?: MomentFormatSpecification) =>
-          jest.requireActual("moment").utc(input ? input : "2020-06-10T10:26:31.000Z", format)
-      }
-    })
-    
     describe("eps sandbox e2e tests", () => {
       const convertCases = [
-        ...TestResources.specification.map(example => [`unsigned ${example.description}`, example.fhirMessageUnsigned, {}]),
-        ...TestResources.specification.map(example => [`signed ${example.description}`, example.fhirMessageSigned, {}]),
-        ...TestResources.convertSpecs.map(spec => [spec.description, spec.request, spec.response]),
-        ...TestResources.specification.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel, {}])
+        ...TestResources.specification.map(example => [`unsigned ${example.description}`, example.fhirMessageUnsigned]),
+        ...TestResources.specification.map(example => [`signed ${example.description}`, example.fhirMessageSigned]),
+        ...TestResources.specification.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel]),
+        ...TestResources.convertSpecs.map(spec => [spec.description, spec.request])
       ]
 
-      test.each(convertCases)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: Parameters) => {
+      test.each(convertCases)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle) => {
         const apiPath = "/$convert"
         const interaction: InteractionObject = {
           state: null,
@@ -51,9 +42,13 @@ jestpact.pactWith(
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
+              "Content-Type": "application/xml"
             },
-            body: response,
+            body: new XmlBuilder("1.0", "UTF-8", "PORX_IN020101SM31").build((el) => {
+              el.setAttributes(new Map([
+                ["xmlns", "urn:hl7-org:v3"],
+              ]))
+            }),
             status: 200
           }
         }

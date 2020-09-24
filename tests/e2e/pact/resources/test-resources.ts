@@ -73,18 +73,13 @@ export const specification = [
 export class ConvertPrescriptionSpec {
   description: string
   request: Bundle
-  response: Parameters
 
-  constructor(baseLocation: string, location: string, requestFile: string, responseFile: string) {
+  constructor(baseLocation: string, location: string, requestFile: string) {
     const requestString = fs.readFileSync(path.join(__dirname, baseLocation, location, requestFile), "utf-8")
     const requestJson = LosslessJson.parse(requestString)
 
-    const responseString = fs.readFileSync(path.join(__dirname, baseLocation, location, responseFile), "utf-8")
-    const responseJson = LosslessJson.parse(responseString)
-
     this.description = location
     this.request = requestJson
-    this.response = responseJson
   }
 }
 
@@ -130,8 +125,7 @@ export const sendSpec1 = new SendPrescriptionSpec(
 export const convertSpec1 = new ConvertPrescriptionSpec(
   "./parent-prescription", 
   "secondary-care/homecare/acute/no-nominated-pharmacy",
-  "SendRequest-Success-1.json",
-  "ConvertResponse-Success-1.json")
+  "SendRequest-Success-1.json")
 
 export const convertSpecs = [
   convertSpec1

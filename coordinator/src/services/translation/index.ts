@@ -30,12 +30,6 @@ export function convertFhirMessageToSpineRequest(fhirMessage: fhir.Bundle): Spin
     : requestBuilder.toSpineRequest(createCancellationSendMessagePayload(fhirMessage))
 }
 
-export function convertSpineRequestToParameters(SpineRequest: SpineRequest): fhir.Parameters {
-  const parameters: Array<fhir.Parameter> = []
-  parameters.push({name: "hl7-v3", valueString: SpineRequest.message})
-  return new fhir.Parameters(parameters)
-}
-
 export function createParentPrescriptionSendMessagePayload(
   fhirBundle: fhir.Bundle
 ): core.SendMessagePayload<prescriptions.ParentPrescriptionRoot> {

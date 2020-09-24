@@ -12,7 +12,7 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "@pact-foundation/pact": "9.11.0",
+    "@pact-foundation/pact": "^10.0.0-beta.15",
     "@pact-foundation/pact-node": "10.9.7",
     "@types/jest": "^26.0.0",
     "@types/lossless-json": "^1.0.0",
