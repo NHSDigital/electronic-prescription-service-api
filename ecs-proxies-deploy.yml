@@ -13,6 +13,8 @@ docker_service:
           value: "{{ SANDBOX_MODE_ENABLED }}"
         - name: SPINE_ENV
           value: "{{ 'INT' if APIGEE_ENVIRONMENT == 'int' else 'TEST' }}"
+        - name: BASE_PATH
+          value: "{{ SERVICE_BASE_PATH }}"
     secrets:
         - name: INT_SPINE_URL
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/int/host'
