@@ -1,12 +1,13 @@
+/* eslint-disable */ 
 import * as XmlJs from "xml-js"
 import {ElementCompact} from "xml-js"
 import * as fs from "fs"
 import * as path from "path"
-import {Bundle, OperationOutcome, Parameters} from "./fhir-resources"
+import {Bundle, Parameters} from "./fhir-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 
-export class ExamplePrescription {
+class ExamplePrescription {
   description: string
   fhirMessageUnsigned: Bundle
   fhirMessageSigned: Bundle
@@ -48,7 +49,7 @@ export class ExamplePrescription {
   }
 }
 
-export const examplePrescription1 = new ExamplePrescription("repeat dispensing", "parent-prescription-1")
+const examplePrescription1 = new ExamplePrescription("repeat dispensing", "parent-prescription-1")
 
 const hl7V3SignatureFragments1Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/PrepareIntermediate-Hl7V3SignatureFragments.xml"), "utf8")
 const hl7V3SignatureFragments1 = XmlJs.xml2js(hl7V3SignatureFragments1Str, {compact: true}) as ElementCompact
@@ -57,23 +58,24 @@ examplePrescription1.hl7V3SignatureFragments = hl7V3SignatureFragments1
 const hl7V3SignatureFragmentsCanonicalized1 = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/PrepareIntermediate-Hl7V3SignatureFragmentsCanonicalized.txt"), "utf8")
 examplePrescription1.hl7V3FragmentsCanonicalized = hl7V3SignatureFragmentsCanonicalized1.replace("\n", "")
 
-export const examplePrescription2 = new ExamplePrescription("acute, nominated pharmacy", "parent-prescription-2")
+const examplePrescription2 = new ExamplePrescription("acute, nominated pharmacy", "parent-prescription-2")
 
-export const examplePrescription3 = new ExamplePrescription("homecare", "parent-prescription-3")
+const examplePrescription3 = new ExamplePrescription("homecare", "parent-prescription-3")
 
 //export const examplePrescription4 = new ExamplePrescription("homecare repeat dispensing", "parent-prescription-4")
 
-export const specification = [
+const specification = [
   examplePrescription1,
   examplePrescription2,
   examplePrescription3
   //examplePrescription4
 ]
 
-export class ConvertPrescriptionSpec {
+class ConvertPrescriptionSpec {
   description: string
   request: Bundle
   response: string
+  responseMatcher: string
 
   constructor(baseLocation: string, location: string, requestFile: string, responseFile: string) {
     const requestString = fs.readFileSync(path.join(__dirname, baseLocation, location, requestFile), "utf-8")
@@ -81,23 +83,27 @@ export class ConvertPrescriptionSpec {
 
     const responseXmlString = fs.readFileSync(path.join(__dirname, baseLocation, location, responseFile), "utf-8")
 
+    const responseMatcher = responseXmlString
+      .replace(/<creationTime value=\"[0-9]*\"\/>/g, "<creationTime value=\"[0-9]*\"\/>") // replace creation time with regex pattern
+      .replace(/\"/g, "\\\"")   // prepend quotes with backslash
+      .replace(/\//g, "\\/")    // prepend forward slash with backslash
+      .replace(/\./g, "\\.")    // prepend fullstop with backslash
+      .replace(/\?/g, "\\?")    // prepend question mark with backslash
+      .replace(/\r\n/g, "\r\n") // replace carriage returns
+      .replace(/\t/g, "  ")     // replace tabs with 2 spaces
+      .replace(/\(/g, "\\(")    // prepend opening bracket with backslash 
+      .replace(/\)/g, "\\)")    // prepend closing bracket with backslash
+
+      //fs.writeFileSync(path.join(__dirname, "responseMatcher.txt"), responseMatcher)
+
     this.description = location
     this.request = requestJson
     this.response = responseXmlString
+    this.responseMatcher = responseMatcher
   }
 }
 
-export class PreparePrescriptionSpec {
-  request: Bundle
-  response: Parameters
-
-  constructor(request: Bundle, response: Parameters) {
-    this.request = request
-    this.response = response
-  }
-}
-
-export class SendPrescriptionSpec {
+class SendPrescriptionSpec {
   description: string
   request: Bundle
 
@@ -111,22 +117,12 @@ export class SendPrescriptionSpec {
   }
 }
 
-export class CancelPrescriptionSpec {
-  request: Bundle
-  response: OperationOutcome
-
-  constructor(request: Bundle, response: OperationOutcome) {
-    this.request = request
-    this.response = response
-  }
-}
-
-export const sendSpec1 = new SendPrescriptionSpec(
+const sendSpec1 = new SendPrescriptionSpec(
   "./parent-prescription", 
   "secondary-care/homecare/acute/no-nominated-pharmacy",
   "SendRequest-Success-1.json")
 
-export const convertSpec1 = new ConvertPrescriptionSpec(
+const convertSpec1 = new ConvertPrescriptionSpec(
   "./parent-prescription", 
   "secondary-care/homecare/acute/no-nominated-pharmacy",
   "SendRequest-Success-1.json",
@@ -145,18 +141,14 @@ export const prepareCases = [
 ]
 
 export const convertCases = [
-  // eslint-disable
   //...TestResources.specification.map(example => [`unsigned ${example.description}`, example.fhirMessageUnsigned]),
   //...TestResources.specification.map(example => [`signed ${example.description}`, example.fhirMessageSigned]),
   //...TestResources.specification.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel]),
-  ...convertSpecs.map(spec => [spec.description, spec.request, spec.response])
-  // eslint-enable
+  ...convertSpecs.map(spec => [spec.description, spec.request, spec.response, spec.responseMatcher])
 ]
 
 export const sendCases = [
-  // eslint-disable
   //...TestResources.specification.map(example => [example.description, example.fhirMessageSigned]),
   //...TestResources.specification.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel]),
   ...sendSpecs.map(spec => [spec.description, spec.request])
-  // eslint-enable
 ]

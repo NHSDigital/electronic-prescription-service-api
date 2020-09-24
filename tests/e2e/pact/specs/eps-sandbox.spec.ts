@@ -21,7 +21,7 @@ jestpact.pactWith(
 
     describe("eps sandbox e2e tests", () => {
 
-      test.each(TestResources.convertCases)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: string) => {
+      test.each(TestResources.convertCases)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: string, responseMatcher: string) => {
         const apiPath = "/$convert"
         const interaction: InteractionObject = {
           state: null,
@@ -39,7 +39,7 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/xml"
             },
-            body: response,
+            body: Matchers.term({ generate: response, matcher: responseMatcher }),
             status: 200
           }
         }
