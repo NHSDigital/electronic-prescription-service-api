@@ -137,7 +137,7 @@ const sendSpecs = [
 ]
 
 export const prepareCases = [
-  ...specification.map(example => [example.description, example.fhirMessageUnsigned, example.fhirMessageDigest])
+  //...specification.map(example => [example.description, example.fhirMessageUnsigned, example.fhirMessageDigest])
 ]
 
 export const convertCases = [
@@ -150,5 +150,5 @@ export const convertCases = [
 export const sendCases = [
   //...TestResources.specification.map(example => [example.description, example.fhirMessageSigned]),
   //...TestResources.specification.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel]),
-  ...sendSpecs.map(spec => [spec.description, spec.request])
+  //...sendSpecs.map(spec => [spec.description, spec.request])
 ]
