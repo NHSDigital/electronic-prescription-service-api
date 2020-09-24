@@ -4,6 +4,7 @@
 docker_service:
   - name: eps-coordinator
     expose: true
+    port: 9000
     environment:
         - name: NODE_ENV
           value: production
@@ -41,6 +42,7 @@ docker_service:
         path: "/_status"
   - name: echo
     expose: false
+    port: 9001
     environment:
         - name: NODE_ENV
           value: production
