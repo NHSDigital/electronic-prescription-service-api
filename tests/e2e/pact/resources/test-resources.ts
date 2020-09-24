@@ -73,13 +73,17 @@ export const specification = [
 export class ConvertPrescriptionSpec {
   description: string
   request: Bundle
+  response: string
 
-  constructor(baseLocation: string, location: string, requestFile: string) {
+  constructor(baseLocation: string, location: string, requestFile: string, responseFile: string) {
     const requestString = fs.readFileSync(path.join(__dirname, baseLocation, location, requestFile), "utf-8")
     const requestJson = LosslessJson.parse(requestString)
 
+    const responseXmlString = fs.readFileSync(path.join(__dirname, baseLocation, location, responseFile), "utf-8")
+
     this.description = location
     this.request = requestJson
+    this.response = responseXmlString
   }
 }
 
@@ -125,12 +129,34 @@ export const sendSpec1 = new SendPrescriptionSpec(
 export const convertSpec1 = new ConvertPrescriptionSpec(
   "./parent-prescription", 
   "secondary-care/homecare/acute/no-nominated-pharmacy",
-  "SendRequest-Success-1.json")
+  "SendRequest-Success-1.json",
+  "ConvertResponse-Success-1.xml")
 
-export const convertSpecs = [
+const convertSpecs = [
   convertSpec1
 ]
 
-export const sendSpecs = [
+const sendSpecs = [
   sendSpec1
+]
+
+export const prepareCases = [
+  ...specification.map(example => [example.description, example.fhirMessageUnsigned, example.fhirMessageDigest])
+]
+
+export const convertCases = [
+  // eslint-disable
+  //...TestResources.specification.map(example => [`unsigned ${example.description}`, example.fhirMessageUnsigned]),
+  //...TestResources.specification.map(example => [`signed ${example.description}`, example.fhirMessageSigned]),
+  //...TestResources.specification.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel]),
+  ...convertSpecs.map(spec => [spec.description, spec.request, spec.response])
+  // eslint-enable
+]
+
+export const sendCases = [
+  // eslint-disable
+  //...TestResources.specification.map(example => [example.description, example.fhirMessageSigned]),
+  //...TestResources.specification.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel]),
+  ...sendSpecs.map(spec => [spec.description, spec.request])
+  // eslint-enable
 ]

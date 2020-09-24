@@ -20,14 +20,8 @@ jestpact.pactWith(
     }
 
     describe("eps sandbox e2e tests", () => {
-      const convertCases = [
-        ...TestResources.specification.map(example => [`unsigned ${example.description}`, example.fhirMessageUnsigned]),
-        ...TestResources.specification.map(example => [`signed ${example.description}`, example.fhirMessageSigned]),
-        ...TestResources.specification.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel]),
-        ...TestResources.convertSpecs.map(spec => [spec.description, spec.request])
-      ]
 
-      test.each(convertCases)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle) => {
+      test.each(TestResources.convertCases)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: string) => {
         const apiPath = "/$convert"
         const interaction: InteractionObject = {
           state: null,
@@ -45,7 +39,7 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/xml"
             },
-            body: "<?xml/>",
+            body: response,
             status: 200
           }
         }
@@ -59,9 +53,7 @@ jestpact.pactWith(
       })
 
 
-      const prepareCases = TestResources.specification.map(example => [example.description, example.fhirMessageUnsigned, example.fhirMessageDigest])
-
-      test.each(prepareCases)("should be able to prepare a %s message", async (desc: string, inputMessage: Bundle, outputMessage: Parameters) => {
+      test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (desc: string, inputMessage: Bundle, outputMessage: Parameters) => {
         const apiPath = "/$prepare"
         const inputMessageStr = LosslessJson.stringify(inputMessage)
         const outputMessageStr = LosslessJson.stringify(outputMessage)
@@ -94,13 +86,7 @@ jestpact.pactWith(
           .expect(200)
       })
 
-      const sendCases = [
-        ...TestResources.specification.map(example => [example.description, example.fhirMessageSigned]),
-        ...TestResources.sendSpecs.map(spec => [spec.description, spec.request]),
-        ...TestResources.specification.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel])
-      ]
-
-      test.each(sendCases)("should be able to send %s", async (desc: string, message: Bundle) => {
+      test.each(TestResources.sendCases)("should be able to send %s", async (desc: string, message: Bundle) => {
         const apiPath = "/$process-message"
         const messageStr = LosslessJson.stringify(message)
         const interaction: InteractionObject = {
