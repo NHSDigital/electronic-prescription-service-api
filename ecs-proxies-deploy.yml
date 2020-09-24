@@ -14,7 +14,7 @@ docker_service:
         - name: SPINE_ENV
           value: "{{ 'INT' if APIGEE_ENVIRONMENT == 'int' else 'TEST' }}"
         - name: BASE_PATH
-          value: "{{ SERVICE_BASE_PATH }}"
+          value: "{{ '' if APIGEE_ENVIRONMENT == 'prod' else APIGEE_ENVIRONMENT + '.' }}api.service.nhs.uk/{{ SERVICE_BASE_PATH }}"
     secrets:
         - name: INT_SPINE_URL
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/int/host'
