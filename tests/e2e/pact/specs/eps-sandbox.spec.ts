@@ -1,4 +1,4 @@
-import {InteractionObject, Matchers, XmlBuilder} from "@pact-foundation/pact"
+import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../resources/test-resources"
@@ -45,11 +45,7 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/xml"
             },
-            body: new XmlBuilder("1.0", "UTF-8", "PORX_IN020101SM31").build((el) => {
-              el.setAttributes(new Map([
-                ["xmlns", "urn:hl7-org:v3"],
-              ]))
-            }),
+            body: "<?xml/>",
             status: 200
           }
         }
