@@ -7,6 +7,7 @@ import * as LosslessJson from "lossless-json"
 
 jestpact.pactWith(
   {
+    spec: 3,
     consumer: "nhsd-apim-eps-test-client",
     provider: "nhsd-apim-eps",
     pactfileWriteMode: "overwrite"
