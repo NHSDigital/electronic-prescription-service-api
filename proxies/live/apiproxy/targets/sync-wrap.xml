@@ -26,6 +26,6 @@
   <LocalTargetConnection>
     <APIProxy>sync-wrap-{{ APIGEE_ENVIRONMENT }}</APIProxy>
     <ProxyEndpoint>default</ProxyEndpoint>
-    <Path>{{ SERVICE_BASE_PATH }}</Path>
+    <Path>/sync-wrap/{{ SERVICE_BASE_PATH }}</Path>
   </LocalTargetConnection>
 </TargetEndpoint>
