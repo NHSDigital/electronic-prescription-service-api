@@ -40,7 +40,7 @@ docker_service:
         matcher: "200"
         path: "/_status"
   - name: echo
-    expose: true
+    expose: false
     environment:
         - name: NODE_ENV
           value: production

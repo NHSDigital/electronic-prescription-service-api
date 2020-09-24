@@ -2,6 +2,7 @@ import {Boom} from "@hapi/boom"
 import Hapi from "@hapi/hapi"
 import routes from "./routes"
 import {toOperationOutcome, FhirMessageProcessingError} from "./models/errors/processing-errors"
+import axios from "axios"
 
 const preResponse = function (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) {
   const response = request.response
@@ -11,6 +12,12 @@ const preResponse = function (request: Hapi.Request, responseToolkit: Hapi.Respo
       return responseToolkit.response(toOperationOutcome(response)).code(400)
     }
   }
+  return responseToolkit.continue
+}
+
+const preHandler = async function (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) {
+  const result = await axios.post("http://localhost:9001", request.payload)
+  console.log(`echo request returned ${result.status}`)
   return responseToolkit.continue
 }
 
@@ -25,6 +32,7 @@ const init = async () => {
       }
     }
   })
+  server.ext("onPreHandler", preHandler)
   server.ext("onPreResponse", preResponse)
 
   server.route(routes)

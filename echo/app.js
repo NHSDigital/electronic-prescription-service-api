@@ -2,7 +2,7 @@ const Hapi = require("@hapi/hapi")
 
 const init = async () => {
   const server = Hapi.server({
-    port: 9000,
+    port: 9001,
     host: "0.0.0.0",
     routes: {
       cors: true, // Won't run as Apigee hosted target without this
@@ -16,6 +16,7 @@ const init = async () => {
     method: "POST",
     path: "/{param*}",
     handler: async (request, responseToolkit) => {
+      console.log("received echo request")
       return responseToolkit.response(request.payload)
     }
   })
