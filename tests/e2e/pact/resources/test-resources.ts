@@ -91,7 +91,7 @@ class ConvertPrescriptionSpec {
       .replace(/\?/g, "\\?")    // prepend question mark with backslash
       .replace(/\+/g, "\\+")    // prepend plus with backslash
       .replace(/\n/g, "*")      // replace newlines with regex whitespace pattern
-      .replace(/*/g, "")        // replace all whitespace
+      .replace(/\s/g, "")       // replace all spaces
       .replace(/\t/g, "")       // replace tabs
       .replace(/\(/g, "\\(")    // prepend opening bracket with backslash 
       .replace(/\)/g, "\\)")    // prepend closing bracket with backslash
