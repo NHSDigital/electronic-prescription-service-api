@@ -80,6 +80,9 @@ function createParametersPayload(fragmentsToBeHashed: string): string {
 
   const signedInfo = {
     SignedInfo: {
+      _attributes: {
+        xmlns: "http://www.w3.org/2000/09/xmldsig#"
+      },
       CanonicalizationMethod: new AlgorithmIdentifier("http://www.w3.org/2001/10/xml-exc-c14n#"),
       SignatureMethod: new AlgorithmIdentifier("http://www.w3.org/2000/09/xmldsig#rsa-sha1"),
       Reference: {
