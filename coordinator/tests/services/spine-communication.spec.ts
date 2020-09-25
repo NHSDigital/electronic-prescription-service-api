@@ -27,7 +27,7 @@ describe("Spine communication", () => {
         status: 202,
         statusText: "OK",
         headers: {
-          "content-location": "http://test-content-location"
+          "content-location": "/_poll/test-content-location"
         }
       })
     })
@@ -36,7 +36,7 @@ describe("Spine communication", () => {
 
     expect(spineResponse.statusCode).toBe(202)
     expect(isPollable(spineResponse)).toBe(true)
-    expect((spineResponse as SpinePollableResponse).pollingUrl).toBe("http://test-content-location")
+    expect((spineResponse as SpinePollableResponse).pollingUrl).toBe("example.com/eps/_poll/test-content-location")
   })
 
   test("Unsuccesful send response returns non-pollable result", async () => {
@@ -57,7 +57,7 @@ describe("Spine communication", () => {
         status: 202,
         statusText: "OK",
         headers: {
-          "content-location": "http://test-content-location"
+          "content-location": "/_poll/test-content-location"
         }
       })
     })
@@ -66,7 +66,7 @@ describe("Spine communication", () => {
 
     expect(spineResponse.statusCode).toBe(202)
     expect(isPollable(spineResponse)).toBe(true)
-    expect((spineResponse as SpinePollableResponse).pollingUrl).toBe("http://test-content-location")
+    expect((spineResponse as SpinePollableResponse).pollingUrl).toBe("example.com/eps/_poll/test-content-location")
   })
 
   test("Successful polling complete response returns non pollable result", async () => {
