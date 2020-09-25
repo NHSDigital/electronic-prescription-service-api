@@ -91,11 +91,15 @@ class ConvertPrescriptionSpec {
       .replace(/\?/g, "\\?")    // prepend question mark with backslash
       .replace(/\+/g, "\\+")    // prepend plus with backslash
       .replace(/\r\n/g, "\r\n") // replace carriage returns
-      .replace(/\t/g, "  ")     // replace tabs with 2 spaces
+      .replace(/\t/g, "    ")   // replace tabs with 4 spaces
       .replace(/\(/g, "\\(")    // prepend opening bracket with backslash 
       .replace(/\)/g, "\\)")    // prepend closing bracket with backslash
 
-      fs.writeFileSync(path.join(__dirname, "responseMatcher.txt"), responseMatcher)
+    //fs.writeFileSync(path.join(__dirname, "response.txt"), responseXmlString)
+    //fs.writeFileSync(path.join(__dirname, "responseMatcher.txt"), responseMatcher)
+
+    //const responseTest = fs.readFileSync(path.join(__dirname, "response.txt"), "utf-8")
+    //const responseMatcherTest = fs.readFileSync(path.join(__dirname, "responseMatcher.txt"), "utf-8")
 
     this.description = location
     this.request = requestJson
