@@ -92,7 +92,7 @@ class ConvertPrescriptionSpec {
       .replace(/\+/g, "\\+")    // prepend plus with backslash
       .replace(/\(/g, "\\(")    // prepend opening bracket with backslash 
       .replace(/\)/g, "\\)")    // prepend closing bracket with backslash
-      .replace(/\n/g, "\\n")    // replace newlines with string literal \n
+      //.replace(/\n/g, "\\n")    // replace newlines with string literal \n
 
     //const responseTest = fs.readFileSync(path.join(__dirname, "response.txt"), "utf-8")
     //const responseMatcherTest = fs.readFileSync(path.join(__dirname, "responseMatcher.txt"), "utf-8")
