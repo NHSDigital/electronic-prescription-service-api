@@ -28,7 +28,6 @@ jestpact.pactWith(
 
         const requestStr = LosslessJson.stringify(request)
         const requestJson = JSON.parse(requestStr)
-        expect(requestJson).not.toHaveProperty("type", "LosslessNumber")
         
         const apiPath = "/$convert"
         const interaction: InteractionObject = {

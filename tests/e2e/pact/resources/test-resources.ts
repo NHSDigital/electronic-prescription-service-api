@@ -90,17 +90,18 @@ class ConvertPrescriptionSpec {
       .replace(/\./g, "\\.")    // prepend fullstop with backslash
       .replace(/\?/g, "\\?")    // prepend question mark with backslash
       .replace(/\+/g, "\\+")    // prepend plus with backslash
-      .replace(/[\s]+(?![^><]*>)/g, "*")   // replace whitespace outside xml tags with regex whitespace pattern
-      //.replace(/\s/g, "")       // replace all spaces
-      //.replace(/\t/g, "")       // replace tabs
+      .replace(/\t/g, "  ")     // replace tabs with 2 spaces
       .replace(/\(/g, "\\(")    // prepend opening bracket with backslash 
       .replace(/\)/g, "\\)")    // prepend closing bracket with backslash
 
-    //fs.writeFileSync(path.join(__dirname, "response.txt"), responseXmlString)
-    //fs.writeFileSync(path.join(__dirname, "responseMatcher.txt"), responseMatcher)
-
     //const responseTest = fs.readFileSync(path.join(__dirname, "response.txt"), "utf-8")
     //const responseMatcherTest = fs.readFileSync(path.join(__dirname, "responseMatcher.txt"), "utf-8")
+    //const testSpec = fs.readFileSync(path.join(__dirname, "../pact/pacts/nhsd-apim-eps-test-client-nhsd-apim-eps.json"), "utf-8")
+    //const testSpecJson = JSON.parse(testSpec)
+    //const matcherFromSpec = testSpecJson.interactions[0].response.matchingRules["$.body"].regex
+
+    //fs.writeFileSync(path.join(__dirname, "response.txt"), responseXmlString)
+    //fs.writeFileSync(path.join(__dirname, "responseMatcher.txt"), matcherFromSpec)
 
     this.description = location
     this.request = requestJson
