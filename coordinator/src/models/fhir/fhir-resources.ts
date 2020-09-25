@@ -251,19 +251,11 @@ export interface CommunicationRequest extends Resource {
   resourceType: "CommunicationRequest"
   status?: string
   subject: Reference<Patient>
-  payload: Array<ContentString | ContentAttachment | ContentReference>
+  payload: Array<ContentString>
 }
 
 export interface ContentString {
   contentString: string
-}
-
-export interface ContentAttachment {
-  contentAttachment: never
-}
-
-export interface ContentReference {
-  contentReference: Reference<never>
 }
 
 interface MessageHeaderSource {

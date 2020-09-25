@@ -200,15 +200,9 @@ function convertDispensingSitePreference(
   return new prescriptions.DispensingSitePreference(dispensingSitePreferenceValue)
 }
 
-function isContentString(contentType: fhir.ContentString | fhir.ContentReference): contentType is fhir.ContentString {
-  return !!(contentType as fhir.ContentString).contentString
-}
-
 function extractText(fhirCommunicationRequests: Array<fhir.CommunicationRequest>): Array<core.Text> {
-  //TODO - fail if we're sent a content attachment or reference?
   return fhirCommunicationRequests
     .flatMap(communicationRequest => communicationRequest.payload)
-    .filter(isContentString)
     .map(contentString => new core.Text(contentString.contentString))
 }
 

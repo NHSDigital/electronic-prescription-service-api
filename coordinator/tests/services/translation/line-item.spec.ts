@@ -10,7 +10,7 @@ import {getExtensionForUrlOrNull} from "../../../src/services/translation/common
 import {convertBundleToPrescription} from "../../../src/services/translation/prescription"
 import {convertFhirMessageToSpineRequest} from "../../../src/services/translation"
 import {TooManyValuesError} from "../../../src/models/errors/processing-errors"
-import {Text} from "../../../src/model/hl7-v3-datatypes-core"
+import {Text} from "../../../src/models/hl7-v3/hl7-v3-datatypes-core"
 
 describe("convertMedicationRequestToLineItem", () => {
   let bundle: fhir.Bundle
