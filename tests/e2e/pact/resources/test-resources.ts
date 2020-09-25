@@ -92,7 +92,7 @@ class ConvertPrescriptionSpec {
       .replace(/\+/g, "\\+")    // prepend plus with backslash
       .replace(/\(/g, "\\(")    // prepend opening bracket with backslash 
       .replace(/\)/g, "\\)")    // prepend closing bracket with backslash
-      .replace(/\n/g, "\n")     // include newlines
+      .replace(/\n/g, "\\n")    // replace newlines with string literal \n
 
     //const responseTest = fs.readFileSync(path.join(__dirname, "response.txt"), "utf-8")
     //const responseMatcherTest = fs.readFileSync(path.join(__dirname, "responseMatcher.txt"), "utf-8")
@@ -100,8 +100,8 @@ class ConvertPrescriptionSpec {
     //const testSpecJson = JSON.parse(testSpec)
     //const matcherFromSpec = testSpecJson.interactions[0].response.matchingRules["$.body"].regex
 
-    //fs.writeFileSync(path.join(__dirname, "response.txt"), responseXmlString)
-    //fs.writeFileSync(path.join(__dirname, "responseMatcher.txt"), responseMatcher)
+    fs.writeFileSync(path.join(__dirname, "response.txt"), responseXmlString)
+    fs.writeFileSync(path.join(__dirname, "responseMatcher.txt"), responseMatcher)
 
     this.description = location
     this.request = requestJson
