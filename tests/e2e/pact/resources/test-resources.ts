@@ -90,9 +90,9 @@ class ConvertPrescriptionSpec {
       .replace(/\./g, "\\.")    // prepend fullstop with backslash
       .replace(/\?/g, "\\?")    // prepend question mark with backslash
       .replace(/\+/g, "\\+")    // prepend plus with backslash
-      .replace(/\r\n/g, "*")    // replace newlines with regex whitespace pattern
-      .replace(/\s/g, "")       // replace all spaces
-      .replace(/\t/g, "")       // replace tabs
+      .replace(/[\s]+(?![^><]*>)/g, "*")   // replace whitespace outside xml tags with regex whitespace pattern
+      //.replace(/\s/g, "")       // replace all spaces
+      //.replace(/\t/g, "")       // replace tabs
       .replace(/\(/g, "\\(")    // prepend opening bracket with backslash 
       .replace(/\)/g, "\\)")    // prepend closing bracket with backslash
 
