@@ -6,7 +6,10 @@
     "test": "jest",
     "lint": "eslint . --ext .ts --max-warnings 0 --fix",
     "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL",
-    "postman": "ts-node postman-pact.ts --use_strict"
+    "postman": "ts-node postman-pact.ts --use_strict",
+    "create": "npm t",
+    "publish": "ts-node ./broker/publish.ts --use_strict",
+    "verify": "ts-node ./broker/verify.ts --use_strict"
   },
   "author": "NHS Digital",
   "license": "MIT",

@@ -92,16 +92,7 @@ class ConvertPrescriptionSpec {
       .replace(/\+/g, "\\+")    // prepend plus with backslash
       .replace(/\(/g, "\\(")    // prepend opening bracket with backslash 
       .replace(/\)/g, "\\)")    // prepend closing bracket with backslash
-      //.replace(/\n/g, "\\n")    // replace newlines with string literal \n
-
-    //const responseTest = fs.readFileSync(path.join(__dirname, "response.txt"), "utf-8")
-    //const responseMatcherTest = fs.readFileSync(path.join(__dirname, "responseMatcher.txt"), "utf-8")
-    //const testSpec = fs.readFileSync(path.join(__dirname, "../pact/pacts/nhsd-apim-eps-test-client-nhsd-apim-eps.json"), "utf-8")
-    //const testSpecJson = JSON.parse(testSpec)
-    //const matcherFromSpec = testSpecJson.interactions[0].response.matchingRules["$.body"].regex
-
-    fs.writeFileSync(path.join(__dirname, "response.txt"), responseXmlString)
-    fs.writeFileSync(path.join(__dirname, "responseMatcher.txt"), responseMatcher)
+      .replace(/\n/g, "\n")     // replace newlines
 
     this.description = location
     this.request = requestJson
@@ -148,14 +139,14 @@ export const prepareCases = [
 ]
 
 export const convertCases = [
-  //...TestResources.specification.map(example => [`unsigned ${example.description}`, example.fhirMessageUnsigned]),
-  //...TestResources.specification.map(example => [`signed ${example.description}`, example.fhirMessageSigned]),
-  //...TestResources.specification.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel]),
+  //...specification.map(example => [`unsigned ${example.description}`, example.fhirMessageUnsigned]),
+  //...specification.map(example => [`signed ${example.description}`, example.fhirMessageSigned]),
+  //...specification.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel]),
   ...convertSpecs.map(spec => [spec.description, spec.request, spec.response, spec.responseMatcher])
 ]
 
 export const sendCases = [
-  //...TestResources.specification.map(example => [example.description, example.fhirMessageSigned]),
-  //...TestResources.specification.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel]),
+  ...specification.map(example => [example.description, example.fhirMessageSigned]),
+  ...specification.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel]),
   ...sendSpecs.map(spec => [spec.description, spec.request])
 ]

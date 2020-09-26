@@ -44,7 +44,7 @@ jestpact.pactWith(
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "text/plain"
+              "Content-Type": "application/xml"
             },
             body: Matchers.term({ generate: response, matcher: responseMatcher }),
             status: 200

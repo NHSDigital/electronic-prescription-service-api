@@ -6,10 +6,13 @@ install:
 	npm install
 
 create:
-	npm t
+	npm run create
 
 publish:
-	./broker/publish.sh
+	npm run publish
+
+verify:
+	npm run verify
 
 postman:
 	mkdir -p ../postman/collections

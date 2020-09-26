@@ -44,7 +44,7 @@ jestpact.pactWith(
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "text/plain"
+              "Content-Type": "application/xml"
             },
             body: Matchers.term({ generate: response, matcher: responseMatcher }),
             status: 200
@@ -58,7 +58,6 @@ jestpact.pactWith(
           .send(requestJson)
           .expect(200)
       })
-
 
       test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (desc: string, inputMessage: Bundle, outputMessage: Parameters) => {
         const apiPath = "/$prepare"
