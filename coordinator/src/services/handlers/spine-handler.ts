@@ -8,6 +8,8 @@ const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_ENV === "INT" ? process.env.INT_SPINE_URL : process.env.TEST_SPINE_URL
 const SPINE_PATH = "/Prescription"
 
+const BASE_PATH = process.env.BASE_PATH
+
 const httpsAgent = new https.Agent({
   cert: process.env.CLIENT_CERT,
   key: process.env.CLIENT_KEY,
@@ -93,7 +95,7 @@ export class LiveRequestHandler implements RequestHandler {
       console.log(`Got polling URL ${result.headers["content-location"]}`)
       return {
         statusCode: result.status,
-        pollingUrl: result.headers["content-location"]
+        pollingUrl: `${BASE_PATH}${result.headers["content-location"]}`
       }
     default:
       console.log(`Got the following response from spine:\n${result.data}`)

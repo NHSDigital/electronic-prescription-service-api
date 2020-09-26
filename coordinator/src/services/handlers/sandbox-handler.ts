@@ -11,12 +11,12 @@ export class SandboxRequestHandler implements RequestHandler {
     if (spineRequest.interactionId === Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT._attributes.extension) {
       return Promise.resolve({
         pollingUrl: `_poll/${this.parentPrescriptionPollingId}`,
-        statusCode: 202
+        statusCode: 200
       })
     } else if (spineRequest.interactionId === Hl7InteractionIdentifier.CANCEL_REQUEST._attributes.extension) {
       return Promise.resolve({
         pollingUrl: `_poll/${this.cancellationPollingId}`,
-        statusCode: 202
+        statusCode: 200
       })
     } else {
       return Promise.resolve({
@@ -45,7 +45,7 @@ export class SandboxRequestHandler implements RequestHandler {
         body: parentPrescriptionOperationOutcome
       }
     } else if (path === this.cancellationPollingId) {
-      const cancellationRequestOperationOutcome: OperationOutcome = {
+      const cancellationOperationOutcome: OperationOutcome = {
         resourceType: "OperationOutcome",
         issue: [
           {
@@ -59,7 +59,7 @@ export class SandboxRequestHandler implements RequestHandler {
       }
       return {
         statusCode: 200,
-        body: cancellationRequestOperationOutcome
+        body: cancellationOperationOutcome
       }
     } else {
       const notFoundOperationOutcome: OperationOutcome = {
