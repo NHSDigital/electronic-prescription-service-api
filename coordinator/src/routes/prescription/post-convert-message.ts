@@ -3,7 +3,7 @@ import Hapi from "@hapi/hapi"
 import {Bundle} from "../../models/fhir/fhir-resources"
 import {validatingHandler} from "../util"
 
-const CONTENT_TYPE = "application/xml"
+const CONTENT_TYPE = "text/plain"
 
 export default [
   /*
