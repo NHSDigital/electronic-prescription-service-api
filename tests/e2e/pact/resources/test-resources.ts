@@ -27,8 +27,8 @@ export const prepareCases = [
 ]
 
 export const convertCases = [
-  //...specification.map(example => [`unsigned ${example.description}`, example.fhirMessageUnsigned]),
-  //...specification.map(example => [`signed ${example.description}`, example.fhirMessageSigned]),
+  ...specificationSpecs.map(example => [`unsigned ${example.description}`, example.fhirMessageUnsigned, example.hl7V3MessageUnsignedStr, example.hl7V3MessageUnsignedMatcher]),
+  ...specificationSpecs.map(example => [`signed ${example.description}`, example.fhirMessageSigned, example.hl7V3MessageSignedStr, example.hl7V3MessageSignedMatcher]),
   //...specification.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel]),
   ...convertSpecs.map(spec => [spec.description, spec.request, spec.response, spec.responseMatcher])
 ]

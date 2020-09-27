@@ -31,7 +31,7 @@ export class ExamplePrescription {
       "utf-8"
     )
     const hl7V3MessageStr = fs.readFileSync(
-      path.join(__dirname, location, "ConvertResponse-Hl7V3Message.xml"),
+      path.join(__dirname, location, "ConvertResponse-SignedHl7V3Message.xml"),
       "utf-8"
     )
 
