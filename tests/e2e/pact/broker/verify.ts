@@ -1,6 +1,6 @@
 import { VerifierV3 } from "@pact-foundation/pact"
 
-async function verify(provider: string, customProviderHeaders: string[]) { 
+async function verify(provider: string) { 
   const verifier =  new VerifierV3({
     publishVerificationResult: true,
     consumerVersionTag: process.env.BUILD_VERSION,
@@ -11,16 +11,17 @@ async function verify(provider: string, customProviderHeaders: string[]) {
     provider: provider,
     providerBaseUrl: `https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/${process.env.SERVICE_BASE_PATH}`,
     logLevel: "info",
-    customProviderHeaders: customProviderHeaders
+    requestFilter: (req) => {
+      req.headers["x-smoke-test"] = "1"
+      if (process.env.APIGEE_ACCESS_TOKEN)
+      {
+        req.headers["Authorization"] = `Bearer: ${process.env.APIGEE_ACCESS_TOKEN}`
+      }
+      return req
+    }
   })
   
   await verifier.verifyProvider().catch(err => console.log(err))
 }
 
-function getCustomProviderHeaders(): string[] {
-  return process.env.SANDBOX === "1"
-  ? ["x-smoke-test: 1"]
-  : ["x-smoke-test: true", `Authorization: Bearer ${process.env.APIGEE_ACCESS_TOKEN}`]
-}
-
-verify(process.env.PACT_PROVIDER, getCustomProviderHeaders())
+verify(process.env.PACT_PROVIDER)

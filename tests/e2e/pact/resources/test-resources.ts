@@ -91,7 +91,9 @@ class ConvertPrescriptionSpec {
 
   private buildResponseMatcher(responseXml: string): string {
     const regexPattern = this.escapeRegexSpecialCharacters(responseXml)
-    return this.replaceDynamicsWithRegexPatterns(regexPattern)
+    const responseMatcher = this.replaceDynamicsWithRegexPatterns(regexPattern)
+    //fs.writeFileSync(path.join(__dirname, "./responseMatcher.txt"), responseMatcher)
+    return responseMatcher
   }
 
   /* Build up a response match regex pattern by taking the response xml and escaping:
@@ -128,7 +130,7 @@ class ConvertPrescriptionSpec {
   */
   private replaceDynamicsWithRegexPatterns(responseXml: string): string {
     return responseXml
-      .replace(/<creationTime value=\"[0-9]*\"\/>/g, "<creationTime value=\"[0-9]*\"\/>") 
+      .replace(/<creationTime value=\\\"[0-9]*\\\"\\\/>/g, "<creationTime value=\\\"[0-9]*\\\"\\\/>")
   }  
 }
 
