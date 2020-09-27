@@ -2,7 +2,7 @@ import * as XmlJs from "xml-js"
 import { ElementCompact } from "xml-js"
 import * as fs from "fs"
 import * as path from "path"
-import { Bundle, Parameter } from "./fhir-resources"
+import { Bundle, Parameters } from "./fhir-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import { ConvertSpec } from "./test-convert-specs"
@@ -12,7 +12,7 @@ class ExamplePrescription {
   fhirMessageUnsigned: Bundle
   fhirMessageSigned: Bundle
   fhirMessageCancel: Bundle
-  fhirMessageDigest: Parameter
+  fhirMessageDigest: Parameters
   hl7V3Message: ElementCompact
   hl7V3MessageSignedStr: string
   hl7V3MessageUnsignedStr: string
