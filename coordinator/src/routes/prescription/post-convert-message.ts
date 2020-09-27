@@ -3,7 +3,8 @@ import Hapi from "@hapi/hapi"
 import {Bundle} from "../../models/fhir/fhir-resources"
 import {validatingHandler} from "../util"
 
-const CONTENT_TYPE = "text/plain"
+const CONTENT_TYPE_XML = "application/xml"
+const CONTENT_TYPE_PLAIN_TEXT = "text/plain"
 
 export default [
   /*
@@ -14,10 +15,12 @@ export default [
     path: "/$convert",
     handler: validatingHandler(
       false,
-      (requestPayload: Bundle, responseToolkit: Hapi.ResponseToolkit) => {
+      (requestPayload: Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+        const isSmokeTest = request.headers["x-smoke-test"]
+        const contentType = isSmokeTest ? CONTENT_TYPE_PLAIN_TEXT : CONTENT_TYPE_XML
         const response = translator.convertFhirMessageToSpineRequest(requestPayload).message
-        return responseToolkit.response(response).code(200).header("Content-Type", CONTENT_TYPE)
+        return responseToolkit.response(response).code(200).header("Content-Type", contentType)
       }
     )
-  }
+  } as Hapi.ServerRoute
 ]

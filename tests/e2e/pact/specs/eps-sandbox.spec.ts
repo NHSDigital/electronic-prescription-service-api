@@ -2,7 +2,7 @@ import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../resources/test-resources"
-import {Bundle} from "../resources/fhir-resources"
+import {Bundle, Parameters } from "../resources/fhir-resources"
 import * as LosslessJson from "lossless-json"
 
 jestpact.pactWith(
@@ -60,41 +60,41 @@ jestpact.pactWith(
       })
     })
 
-    // describe("prepare sandbox e2e tests", () => {
+    describe("prepare sandbox e2e tests", () => {
 
-    //   test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (desc: string, inputMessage: Bundle, outputMessage: Parameters) => {
-    //     const apiPath = "/$prepare"
-    //     const inputMessageStr = LosslessJson.stringify(inputMessage)
-    //     const outputMessageStr = LosslessJson.stringify(outputMessage)
-    //     const interaction: InteractionObject = {
-    //       state: null,
-    //       uponReceiving: `a request to prepare a ${desc} message`,
-    //       withRequest: {
-    //         headers: {
-    //           "Content-Type": "application/fhir+json; fhirVersion=4.0",
-    //           "NHSD-Session-URID": "1234"
-    //         },
-    //         method: "POST",
-    //         path: "/$prepare",
-    //         body: JSON.parse(inputMessageStr)
-    //       },
-    //       willRespondWith: {
-    //         headers: {
-    //           "Content-Type": "application/fhir+json; fhirVersion=4.0"
-    //         },
-    //         body: JSON.parse(outputMessageStr),
-    //         status: 200
-    //       }
-    //     }
-    //     await provider.addInteraction(interaction)
-    //     await client()
-    //       .post(apiPath)
-    //       .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-    //       .set('NHSD-Session-URID', '1234')
-    //       .send(inputMessageStr)
-    //       .expect(200)
-    //   })
-    // })
+      test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (desc: string, inputMessage: Bundle, outputMessage: Parameters) => {
+        const apiPath = "/$prepare"
+        const inputMessageStr = LosslessJson.stringify(inputMessage)
+        const outputMessageStr = LosslessJson.stringify(outputMessage)
+        const interaction: InteractionObject = {
+          state: null,
+          uponReceiving: `a request to prepare a ${desc} message`,
+          withRequest: {
+            headers: {
+              "Content-Type": "application/fhir+json; fhirVersion=4.0",
+              "NHSD-Session-URID": "1234"
+            },
+            method: "POST",
+            path: "/$prepare",
+            body: JSON.parse(inputMessageStr)
+          },
+          willRespondWith: {
+            headers: {
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
+            },
+            body: JSON.parse(outputMessageStr),
+            status: 200
+          }
+        }
+        await provider.addInteraction(interaction)
+        await client()
+          .post(apiPath)
+          .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+          .set('NHSD-Session-URID', '1234')
+          .send(inputMessageStr)
+          .expect(200)
+      })
+    })
 
     // describe("process-message sandbox e2e tests", () => {
 
