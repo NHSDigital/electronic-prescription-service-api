@@ -1,9 +1,9 @@
-/* eslint-disable */ 
+/* eslint-disable */
 import * as XmlJs from "xml-js"
-import {ElementCompact} from "xml-js"
+import { ElementCompact } from "xml-js"
 import * as fs from "fs"
 import * as path from "path"
-import {Bundle, Parameters} from "./fhir-resources"
+import { Bundle, Parameters } from "./fhir-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 
@@ -29,7 +29,7 @@ class ExamplePrescription {
     this.fhirMessageUnsigned = LosslessJson.parse(fhirMessageUnsignedStr)
     this.fhirMessageSigned = LosslessJson.parse(fhirMessageSignedStr)
     this.fhirMessageDigest = LosslessJson.parse(fhirMessageDigestStr)
-    this.hl7V3Message = XmlJs.xml2js(hl7V3MessageStr, {compact: true})
+    this.hl7V3Message = XmlJs.xml2js(hl7V3MessageStr, { compact: true })
 
     this.fhirMessageUnsigned.identifier.value = uuid.v4()
     this.fhirMessageSigned.identifier.value = uuid.v4()
@@ -43,7 +43,7 @@ class ExamplePrescription {
     const hl7V3MessageCancelPath = path.join(__dirname, location, "CancelResponse-Hl7V3Message.xml")
     if (fs.existsSync(hl7V3MessageCancelPath)) {
       const hl7V3MessageCancelStr = fs.readFileSync(hl7V3MessageCancelPath, "utf-8")
-      this.hl7V3MessageCancel = XmlJs.xml2js(hl7V3MessageCancelStr, {compact: true})
+      this.hl7V3MessageCancel = XmlJs.xml2js(hl7V3MessageCancelStr, { compact: true })
     }
 
   }
@@ -52,7 +52,7 @@ class ExamplePrescription {
 const examplePrescription1 = new ExamplePrescription("repeat dispensing", "parent-prescription-1")
 
 const hl7V3SignatureFragments1Str = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/PrepareIntermediate-Hl7V3SignatureFragments.xml"), "utf8")
-const hl7V3SignatureFragments1 = XmlJs.xml2js(hl7V3SignatureFragments1Str, {compact: true}) as ElementCompact
+const hl7V3SignatureFragments1 = XmlJs.xml2js(hl7V3SignatureFragments1Str, { compact: true }) as ElementCompact
 examplePrescription1.hl7V3SignatureFragments = hl7V3SignatureFragments1
 
 const hl7V3SignatureFragmentsCanonicalized1 = fs.readFileSync(path.join(__dirname, "./parent-prescription-1/PrepareIntermediate-Hl7V3SignatureFragmentsCanonicalized.txt"), "utf8")
@@ -83,22 +83,53 @@ class ConvertPrescriptionSpec {
 
     const responseXmlString = fs.readFileSync(path.join(__dirname, baseLocation, location, responseFile), "utf-8")
 
-    const responseMatcher = responseXmlString
-      .replace(/<creationTime value=\"[0-9]*\"\/>/g, "<creationTime value=\"[0-9]*\"\/>") // replace creation time with regex pattern
-      .replace(/\"/g, "\\\"")   // prepend quotes with backslash
-      .replace(/\//g, "\\/")    // prepend forward slash with backslash
-      .replace(/\./g, "\\.")    // prepend fullstop with backslash
-      .replace(/\?/g, "\\?")    // prepend question mark with backslash
-      .replace(/\+/g, "\\+")    // prepend plus with backslash
-      .replace(/\(/g, "\\(")    // prepend opening bracket with backslash 
-      .replace(/\)/g, "\\)")    // prepend closing bracket with backslash
-      .replace(/\n/g, "\n")     // replace newlines
-
     this.description = location
     this.request = requestJson
     this.response = responseXmlString
-    this.responseMatcher = responseMatcher
+    this.responseMatcher = this.buildResponseMatcher(responseXmlString)
   }
+
+  private buildResponseMatcher(responseXml: string): string {
+    const regexPattern = this.escapeRegexSpecialCharacters(responseXml)
+    return this.replaceDynamicsWithRegexPatterns(regexPattern)
+  }
+
+  /* Build up a response match regex pattern by taking the response xml and escaping:
+    *   Regex special characters^,
+    *   Quotes
+    *  and replacing dynamic datetimes 
+    * 
+    *  ^  Note that pact-js is a wrapper for the ruby cli so the regex format must follow ruby conventions
+    *     See https://bneijt.nl/pr/ruby-regular-expressions
+    */
+  private escapeRegexSpecialCharacters(responseXml: string): string {
+    return responseXml
+      .replace(/\\/g, "\\")     // prepend backslash with backslash
+      .replace(/\./g, "\\.")    // prepend fullstop with backslash
+      .replace(/\|/g, "\\|")    // prepend pipe with backslash
+      .replace(/\(/g, "\\(")    // prepend opening bracket with backslash 
+      .replace(/\)/g, "\\)")    // prepend closing bracket with backslash
+      .replace(/\[/g, "\\[")    // prepend opening square bracket with backslash 
+      .replace(/\]/g, "\\]")    // prepend closing square bracket with backslash
+      .replace(/\{/g, "\\{")    // prepend opening braces with backslash 
+      .replace(/\}/g, "\\}")    // prepend closing braces with backslash
+      .replace(/\+/g, "\\+")    // prepend plus with backslash
+      .replace(/\^/g, "\\^")    // prepend ^ with backslash
+      .replace(/\$/g, "\\$")    // prepend dollarsign with backslash
+      .replace(/\*/g, "\\*")    // prepend star with backslash
+      .replace(/\?/g, "\\?")    // prepend question mark with backslash
+      .replace(/\"/g, "\\\"")   // prepend quotes with backslash
+      .replace(/\//g, "\\/")    // prepend forward slash with backslash
+      .replace(/\n/g, "\n")     // replace newlines
+  }
+
+  /*
+  * Replace any dynamic fields in the response xml which change at runtime with regex pattern match
+  */
+  private replaceDynamicsWithRegexPatterns(responseXml: string): string {
+    return responseXml
+      .replace(/<creationTime value=\"[0-9]*\"\/>/g, "<creationTime value=\"[0-9]*\"\/>") 
+  }  
 }
 
 class SendPrescriptionSpec {
@@ -116,12 +147,12 @@ class SendPrescriptionSpec {
 }
 
 const sendSpec1 = new SendPrescriptionSpec(
-  "./parent-prescription", 
+  "./parent-prescription",
   "secondary-care/homecare/acute/no-nominated-pharmacy",
   "SendRequest-Success-1.json")
 
 const convertSpec1 = new ConvertPrescriptionSpec(
-  "./parent-prescription", 
+  "./parent-prescription",
   "secondary-care/homecare/acute/no-nominated-pharmacy",
   "SendRequest-Success-1.json",
   "ConvertResponse-Success-1.xml")

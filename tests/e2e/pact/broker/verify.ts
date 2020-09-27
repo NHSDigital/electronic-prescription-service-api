@@ -20,7 +20,7 @@ async function verify(provider: string, customProviderHeaders: string[]) {
 function getCustomProviderHeaders(): string[] {
   return process.env.SANDBOX === "1"
   ? ["x-smoke-test: 1"]
-  : ["x-smoke-test: 1", `Authorization: Bearer ${process.env.APIGEE_ACCESS_TOKEN}`]
+  : ["x-smoke-test: true", `Authorization: Bearer ${process.env.APIGEE_ACCESS_TOKEN}`]
 }
 
 verify(process.env.PACT_PROVIDER, getCustomProviderHeaders())
