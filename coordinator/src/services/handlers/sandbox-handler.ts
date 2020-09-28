@@ -7,27 +7,8 @@ export class SandboxRequestHandler implements RequestHandler {
   parentPrescriptionPollingId = "9807d292_074a_49e8_b48d_52e5bbf785ed"
   cancellationPollingId = "a549d4d6_e6aa_4664_95f8_6c0cac17bd77"
 
-  async send(spineRequest: SpineRequest): Promise<SpineResponse<string>> {
+  async send(spineRequest: SpineRequest): Promise<SpineResponse<OperationOutcome>> {
     if (spineRequest.interactionId === Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT._attributes.extension) {
-      return Promise.resolve({
-        pollingUrl: `_poll/${this.parentPrescriptionPollingId}`,
-        statusCode: 200
-      })
-    } else if (spineRequest.interactionId === Hl7InteractionIdentifier.CANCEL_REQUEST._attributes.extension) {
-      return Promise.resolve({
-        pollingUrl: `_poll/${this.cancellationPollingId}`,
-        statusCode: 200
-      })
-    } else {
-      return Promise.resolve({
-        body: "Interaction not supported by sandbox",
-        statusCode: 400
-      })
-    }
-  }
-
-  async poll(path: string): Promise<SpineResponse<OperationOutcome>> {
-    if (path === this.parentPrescriptionPollingId) {
       const parentPrescriptionOperationOutcome: OperationOutcome = {
         resourceType: "OperationOutcome",
         issue: [
@@ -40,11 +21,11 @@ export class SandboxRequestHandler implements RequestHandler {
           }
         ]
       }
-      return {
+      return Promise.resolve({
         statusCode: 200,
         body: parentPrescriptionOperationOutcome
-      }
-    } else if (path === this.cancellationPollingId) {
+      })
+    } else if (spineRequest.interactionId === Hl7InteractionIdentifier.CANCEL_REQUEST._attributes.extension) {
       const cancellationOperationOutcome: OperationOutcome = {
         resourceType: "OperationOutcome",
         issue: [
@@ -57,34 +38,43 @@ export class SandboxRequestHandler implements RequestHandler {
           }
         ]
       }
-      return {
+      return Promise.resolve({
         statusCode: 200,
         body: cancellationOperationOutcome
-      }
+      })
     } else {
-      const notFoundOperationOutcome: OperationOutcome = {
-        resourceType: "OperationOutcome",
-        issue: [
+      return Promise.resolve({
+        statusCode: 400,
+        body: notSupporedOperationOutcome
+      })
+    }
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async poll(path: string): Promise<SpineResponse<OperationOutcome>> {
+    return Promise.resolve({
+      statusCode: 400,
+      body: notSupporedOperationOutcome
+    })
+  }
+}
+
+const notSupporedOperationOutcome: OperationOutcome = {
+  resourceType: "OperationOutcome",
+  issue: [
+    {
+      code: "informational",
+      severity: "information",
+      details: {
+        coding: [
           {
-            code: "informational",
-            severity: "information",
-            details: {
-              coding: [
-                {
-                  code: "POLLING_ID_NOT_FOUND",
-                  display: "The polling id was not found",
-                  system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
-                  version: "1"
-                }
-              ]
-            }
+            code: "INTERACTION_NOT_SUPPORTED_BY_SANDBOX",
+            display: "Interaction not supported by sandbox",
+            system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+            version: "1"
           }
         ]
       }
-      return {
-        statusCode: 404,
-        body: notFoundOperationOutcome
-      }
     }
-  }
+  ]
 }
