@@ -74,6 +74,7 @@ extends:
             export PACT_PROVIDER=nhsd-apim-eps-sandbox
           else
             export PACT_PROVIDER=nhsd-apim-eps
+            export APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest $IDP_URL)
           fi
 
           # Publish
