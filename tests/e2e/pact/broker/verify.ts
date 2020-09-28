@@ -18,14 +18,10 @@ async function verify(provider: string): Promise<any> {
     providerVersion: process.env.BUILD_VERSION,
     providerBaseUrl: `https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/${process.env.SERVICE_BASE_PATH}`,
     logLevel: "info",
-    requestFilter: (req, res, next) => {
-      req.headers["x-smoke-test"] = "1"
-      if (process.env.APIGEE_ACCESS_TOKEN)
-      {
-        req.headers["Authorization"] = `Bearer: ${process.env.APIGEE_ACCESS_TOKEN}`
-      }
-      next()
-    }
+    customProviderHeaders: [
+      "x-smoke-test: 1",
+      `Authorization: Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
+    ]
   })
   
   return await verifier.verifyProvider()
