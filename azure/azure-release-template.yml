@@ -63,7 +63,7 @@ extends:
           export PACT_CONSUMER=nhsd-apim-eps-test-client
           export APIGEE_ENVIRONMENT=$(ENVIRONMENT)
           export NAMESPACE=$(NAMESPACE)
-          export COMMIT_SHA=$(COMMIT_SHA)
+          export COMMIT_SHA=$(Build.SourceVersion)
 
           if [ "$APIGEE_ENVIRONMENT" == "int" ]; then
             export IDP_URL=https://nhsd-apim-testing-$(ENVIRONMENT)-ns.herokuapp.com
