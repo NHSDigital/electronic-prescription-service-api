@@ -45,10 +45,10 @@ extends:
           fi
 
           if [[ $SERVICE_ARTIFACT_NAME == v* ]]; then
-            export BUILD_VERSION=`echo $SERVICE_ARTIFACT_NAME | grep -o "v[0-9]\+\.[0-9]\+\.[0-9]\+-[[:alpha:]]\+" | tail -1`
+            export BUILD_VERSION=`echo ${SERVICE_ARTIFACT_NAME | grep -o "v[0-9]\+\.[0-9]\+\.[0-9]\+-[[:alpha:]]\+" | tail -1}+$(Build.SourceVersion)`
             export SERVICE_BASE_PATH="${{ parameters.service_base_path }}"
           else
-            export BUILD_VERSION="${{ parameters.service_base_path_pr }}"
+            export BUILD_VERSION="${{ parameters.service_base_path_pr }}+$(Build.SourceVersion)"
             export SERVICE_BASE_PATH="${{ parameters.service_base_path_pr }}"
           fi
 
@@ -63,6 +63,7 @@ extends:
           export PACT_CONSUMER=nhsd-apim-eps-test-client
           export APIGEE_ENVIRONMENT=$(ENVIRONMENT)
           export NAMESPACE=$(NAMESPACE)
+          export COMMIT_SHA=$(COMMIT_SHA)
 
           if [ "$APIGEE_ENVIRONMENT" == "int" ]; then
             export IDP_URL=https://nhsd-apim-testing-$(ENVIRONMENT)-ns.herokuapp.com

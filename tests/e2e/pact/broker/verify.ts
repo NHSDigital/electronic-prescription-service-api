@@ -10,7 +10,8 @@ async function verify(provider: string): Promise<any> {
     consumerVersionSelectors: [
       {
         pacticipant: process.env.PACT_CONSUMER,
-        version: process.env.BUILD_VERSION,
+        version: process.env.COMMIT_SHA,
+        tag: process.env.BUILD_VERSION,
         all: false
       }
     ],
@@ -21,7 +22,7 @@ async function verify(provider: string): Promise<any> {
     customProviderHeaders: [
       "x-smoke-test: 1",
       `Authorization: Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
-    ]
+    ],
   })
   
   return await verifier.verifyProvider()
