@@ -6,16 +6,13 @@ async function publish(): Promise<Array<string>> {
     pactBroker: process.env.PACT_BROKER_URL,
     pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
     pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
-    consumerVersion: process.env.COMMIT_SHA,
-    tags: [process.env.BUILD_VERSION],
+    consumerVersion: process.env.BUILD_VERSION,
     pactFilesOrDirs: [
       path.join(__dirname, "../pact/pacts")
     ]
   })
   .publishPacts()
 }
-
-
 
 (async () => {
   publish()

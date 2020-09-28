@@ -9,8 +9,8 @@ import * as LosslessJson from "lossless-json"
 jestpact.pactWith(
   {
     spec: 3,
-    consumer: "nhsd-apim-eps-test-client",
-    provider: "nhsd-apim-eps-sandbox",
+    consumer: `nhsd-apim-eps-test-client-${process.env.COMMIT_SHA}`,
+    provider: `nhsd-apim-eps-sandbox-${process.env.COMMIT_SHA}`,
     pactfileWriteMode: "overwrite"
   },
   /* eslint-disable  @typescript-eslint/no-explicit-any */

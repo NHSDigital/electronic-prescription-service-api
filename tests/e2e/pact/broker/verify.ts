@@ -9,21 +9,20 @@ async function verify(provider: string): Promise<any> {
     pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
     consumerVersionSelectors: [
       {
-        pacticipant: process.env.PACT_CONSUMER,
-        version: process.env.COMMIT_SHA,
-        tag: process.env.BUILD_VERSION,
+        pacticipant: `${process.env.PACT_CONSUMER}-${process.env.COMMIT_SHA}`,
+        version: process.env.BUILD_VERSION,
         latest: false,
         all: false
       }
     ],
-    provider: provider,
-    providerVersion: process.env.COMMIT_SHA,
+    provider: `${provider}-${process.env.COMMIT_SHA}`,
+    providerVersion: process.env.BUILD_VERSION,
     providerBaseUrl: `https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/${process.env.SERVICE_BASE_PATH}`,
     logLevel: "info",
     customProviderHeaders: [
       "x-smoke-test: 1",
       `Authorization: Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
-    ],
+    ]
   })
   
   return await verifier.verifyProvider()
