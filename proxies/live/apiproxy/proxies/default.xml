@@ -20,7 +20,8 @@
           <Name>AssignMessage.AddPayloadToPing</Name>
         </Step>
       </Response>
-      <Condition>(proxy.pathsuffix MatchesPath "/_ping") and ((request.verb = "GET") or (request.verb = "HEAD"))
+      <Condition>
+        (proxy.pathsuffix MatchesPath "/_ping") AND ((request.verb = "GET") or (request.verb = "HEAD"))
       </Condition>
     </Flow>
   </Flows>
@@ -35,8 +36,14 @@
   </RouteRule>
   <RouteRule name="NoRoutePing">
     <Condition>
-      (proxy.pathsuffix MatchesPath "/_ping") and ((request.verb = "GET") or (request.verb = "HEAD"))
+      (proxy.pathsuffix MatchesPath "/_ping") AND ((request.verb = "GET") or (request.verb = "HEAD"))
     </Condition>
+  </RouteRule>
+  <RouteRule name="sync-wrap">
+    <Condition>
+      request.verb = "POST" AND (proxy.pathsuffix MatchesPath "/$process-message") AND request.header.prefer != "respond-async" AND request.header.x-sync-wrapped != "true"
+    </Condition>
+    <TargetEndpoint>sync-wrap</TargetEndpoint>
   </RouteRule>
   <RouteRule name="apim">
     <TargetEndpoint>apim</TargetEndpoint>
