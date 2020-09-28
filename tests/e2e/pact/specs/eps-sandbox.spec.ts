@@ -135,42 +135,6 @@ jestpact.pactWith(
           .send(messageStr)
           .expect(200)
       })
-
-      test("should be able to poll for a prescription response", async () => {
-        const apiPath = "/_poll/9807d292_074a_49e8_b48d_52e5bbf785ed"
-        const interaction: InteractionObject = {
-          state: null,
-          uponReceiving: "a request to poll for a prescription response",
-          withRequest: {
-            headers: {
-              "Content-Type": "application/json",
-              "NHSD-Session-URID": "1234"
-            },
-            method: "GET",
-            path: apiPath
-          },
-          willRespondWith: {
-            headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
-            },
-            body: {
-              resourceType: "OperationOutcome",
-              issue: [{
-                code: "informational",
-                severity: "error",
-                diagnostics: "no longer in use"
-              }]
-            },
-            status: 200
-          }
-        }
-        await provider.addInteraction(interaction)
-        await client()
-          .get(apiPath)
-          .set('Content-Type', 'application/json')
-          .set('NHSD-Session-URID', '1234')
-          .expect(200)
-      })
     })
   }
 )
