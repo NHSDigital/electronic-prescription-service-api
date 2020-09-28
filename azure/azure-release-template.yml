@@ -81,9 +81,9 @@ extends:
           # Publish
           cd $SERVICE_NAME/$SERVICE_ARTIFACT_NAME/pact
           rm -rf node_modules && npm install
-          make create
+          make create-pacts
           chmod +x ./broker/publish.ts
-          make publish
+          make publish-pacts
 
           # Poll deploying API until our deployed version matches the release version
           url="https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH/_ping"
@@ -103,7 +103,7 @@ extends:
 
           # Verify
           chmod +x ./broker/verify.ts
-          make verify
+          make verify-pacts
 
           # Tag
           docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest broker create-version-tag --pacticipant=$PACT_CONSUMER --version=$COMMIT_SHA --tag=$APIGEE_ENVIRONMENT$NAMESPACE

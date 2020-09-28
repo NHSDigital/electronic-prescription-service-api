@@ -3,7 +3,7 @@ import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../resources/test-resources"
-import {Bundle, Parameters } from "../resources/fhir-resources"
+import {Bundle, Parameters} from "../resources/fhir-resources"
 import * as LosslessJson from "lossless-json"
 
 jestpact.pactWith(

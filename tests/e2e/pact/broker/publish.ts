@@ -1,8 +1,8 @@
 import path from "path"
 import { Publisher } from "@pact-foundation/pact"
 
-async function publish() { 
-  await new Publisher({
+async function publish(): Promise<string[]> { 
+  return await new Publisher({
     pactBroker: process.env.PACT_BROKER_URL,
     pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
     pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
@@ -15,4 +15,8 @@ async function publish() {
   .publishPacts()
 }
 
-publish()
+
+
+(async () => {
+  publish()
+})()
