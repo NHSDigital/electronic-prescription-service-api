@@ -12,6 +12,7 @@ async function verify(provider: string): Promise<any> {
         pacticipant: process.env.PACT_CONSUMER,
         version: process.env.COMMIT_SHA,
         tag: process.env.BUILD_VERSION,
+        latest: false,
         all: false
       }
     ],
