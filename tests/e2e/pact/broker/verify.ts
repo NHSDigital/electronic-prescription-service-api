@@ -10,12 +10,12 @@ async function verify(provider: string): Promise<any> {
     consumerVersionSelectors: [
       {
         pacticipant: process.env.PACT_CONSUMER,
-        version: process.env.BUILD_VERSION
+        version: process.env.BUILD_VERSION,
+        all: false
       }
     ],
     provider: provider,
     providerVersion: process.env.BUILD_VERSION,
-    providerVersionTags: [process.env.BUILD_VERSION],
     providerBaseUrl: `https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/${process.env.SERVICE_BASE_PATH}`,
     logLevel: "info",
     customProviderHeaders: [
