@@ -11,8 +11,7 @@ async function verify(provider: string): Promise<any> {
     consumerVersionSelectors: [
       {
         pacticipant: process.env.PACT_CONSUMER,
-        version: process.env.BUILD_VERSION,
-        tag: process.env.BUILD_VERSION
+        version: process.env.BUILD_VERSION
       }
     ],
     provider: provider,

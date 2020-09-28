@@ -7,7 +7,6 @@ async function publish() {
     pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
     pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
     consumerVersion: process.env.BUILD_VERSION,
-    tags: [process.env.BUILD_VERSION],
     pactFilesOrDirs: [
       path.join(__dirname, "../pact/pacts")
     ]
