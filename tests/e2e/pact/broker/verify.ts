@@ -16,6 +16,7 @@ async function verify(provider: string): Promise<any> {
     ],
     provider: provider,
     providerVersion: process.env.BUILD_VERSION,
+    providerVersionTags: [process.env.BUILD_VERSION],
     providerBaseUrl: `https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/${process.env.SERVICE_BASE_PATH}`,
     logLevel: "info",
     customProviderHeaders: [
