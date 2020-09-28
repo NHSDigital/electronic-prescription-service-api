@@ -1,11 +1,11 @@
 /* eslint-disable */
 import { ConvertSpec } from "./test-convert-specs"
+import { PrepareSpec } from "./test-prepare-specs"
 import { ProcessSpec } from "./test-process-specs"
-import { specificationSpecs } from "./test-specification-specs"
 
 // Convert
 
-const convertUnsignedSpecificationSuccessExamples = [1].map(i => new ConvertSpec(
+const convertUnsignedSpecificationSuccessExamples = [1,2,3,4].map(i => new ConvertSpec(
   `./parent-prescription-${i}`,
   ".",
   "PrepareRequest-FhirMessageUnsigned.json",
@@ -41,32 +41,44 @@ const convertSpecs = [
 
 // Prepare
 
+const prepareSpecificationSuccessExamples = [1,2].map(i => new PrepareSpec(
+  `./parent-prescription-${i}`,
+  ".",
+  "PrepareRequest-FhirMessageUnsigned.json",
+  "PrepareResponse-FhirMessageDigest.json",
+  `parent-prescription-${i} specification example unsigned`))
 
+const prepareHomecareAcuteNoNominatedPharmacySuccess = new PrepareSpec(
+  "./parent-prescription",
+  "secondary-care/homecare/acute/no-nominated-pharmacy",
+  "PrepareRequest-Success-1.json",
+  "PrepareResponse-Success-1.json")
+
+const prepareSpecs = [
+  ...prepareSpecificationSuccessExamples,
+  prepareHomecareAcuteNoNominatedPharmacySuccess
+]
 
 // Send
 
-const sendSpec1 = new ProcessSpec(
+const sendSpecificationSuccessExamples = [1,2].map(i => new ProcessSpec(
+  `./parent-prescription-${i}`,
+  ".",
+  "SendRequest-FhirMessageSigned.json",
+  `parent-prescription-${i} specification example unsigned`))
+
+const sendHomecareAcuteNoNominatedPharmacySuccess = new ProcessSpec(
   "./parent-prescription",
   "secondary-care/homecare/acute/no-nominated-pharmacy",
   "SendRequest-Success-1.json")
 
 const sendSpecs = [
-  sendSpec1
+  ...sendSpecificationSuccessExamples,
+  sendHomecareAcuteNoNominatedPharmacySuccess
 ]
 
-export const convertCases = [
-  //...specificationSpecs.map(example => [`unsigned ${example.description}`, example.fhirMessageUnsigned, example.hl7V3MessageUnsignedStr, example.hl7V3MessageUnsignedMatcher]),
-  //...specificationSpecs.map(example => [`signed ${example.description}`, example.fhirMessageSigned, example.hl7V3MessageSignedStr, example.hl7V3MessageSignedMatcher]),
-  //...specification.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel]),
-  ...convertSpecs.map(spec => [spec.description, spec.request, spec.response, spec.responseMatcher])
-]
+// Export Test Cases
 
-export const prepareCases = [
-  ...specificationSpecs.map(example => [example.description, example.fhirMessageUnsigned, example.fhirMessageDigest])
-]
-
-export const sendCases = [
-  //...specificationSpecs.map(example => [example.description, example.fhirMessageSigned]),
-  //...specificationSpecs.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel]),
-  ...sendSpecs.map(spec => [spec.description, spec.request])
-]
+export const convertCases = convertSpecs.map(spec => [spec.description, spec.request, spec.response, spec.responseMatcher])
+export const prepareCases = prepareSpecs.map(spec => [spec.description, spec.request, spec.response])
+export const sendCases = sendSpecs.map(spec => [spec.description, spec.request])

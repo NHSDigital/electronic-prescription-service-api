@@ -1,17 +1,20 @@
-import { VerifierV3 } from "@pact-foundation/pact"
+/* eslint-disable */
+import path from "path"
+import { Verifier } from "@pact-foundation/pact"
 
-async function verify(provider: string): Promise<void> { 
-  const verifier =  new VerifierV3({
+async function verify(provider: string): Promise<any> { 
+  const verifier =  new Verifier({
     publishVerificationResult: true,
     providerVersion: process.env.BUILD_VERSION,
-    consumerVersionTag: process.env.BUILD_VERSION,
-    providerVersionTag: process.env.BUILD_VERSION,
-    pactBrokerUrl: process.env.PACT_BROKER_URL,
+    consumerVersionTags: process.env.BUILD_VERSION,
+    providerVersionTags: process.env.BUILD_VERSION,
     pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
     pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
     provider: provider,
+    changeOrigin: true,
+    validateSSL: false,
     providerBaseUrl: `https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/${process.env.SERVICE_BASE_PATH}`,
-    logLevel: "trace",
+    logLevel: "info",
     requestFilter: (req) => {
       req.headers["x-smoke-test"] = "1"
       if (process.env.APIGEE_ACCESS_TOKEN)
@@ -21,11 +24,15 @@ async function verify(provider: string): Promise<void> {
       return req
     },
     pactUrls: [
-      `${process.cwd()}/pact/pacts/${process.env.PACT_CONSUMER}-${process.env.PACT_PROVIDER}.json`
+      //`${process.env.PACT_BROKER_URL}/pacts/provider/${process.env.PACT_PROVIDER}/consumer/${process.env.PACT_CONSUMER}/version/${process.env.BUILD_VERSION}`,
+      path.resolve(process.cwd(), `pact/pacts/${process.env.PACT_CONSUMER}-${process.env.PACT_PROVIDER}.json`)
     ]
   })
   
-  await verifier.verifyProvider().then(() => "ran verify provider")
+  return await verifier.verifyProvider()
 }
 
-verify(process.env.PACT_PROVIDER).then(() => console.log("ran main")).catch(console.error)
+(async () => {
+  verify(process.env.PACT_PROVIDER).catch(console.error)
+})()
+

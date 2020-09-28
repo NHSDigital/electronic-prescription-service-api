@@ -8,12 +8,12 @@ export class ProcessSpec {
   description: string
   request: Bundle
 
-  constructor(baseLocation: string, location: string, requestFile: string) {
+  constructor(baseLocation: string, location: string, requestFile: string, description: string = null) {
     const requestString = fs.readFileSync(path.join(__dirname, baseLocation, location, requestFile), "utf-8")
 
     const requestJson = LosslessJson.parse(requestString)
 
-    this.description = location
+    this.description = description || location.replace(/\//g, " ")
     this.request = requestJson
   }
 }

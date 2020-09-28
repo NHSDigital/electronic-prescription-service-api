@@ -16,10 +16,7 @@ export class ConvertSpec {
 
     const responseXmlString = fs.readFileSync(path.join(__dirname, baseLocation, location, responseFile), "utf-8")
 
-    this.description = 
-      description  
-        ? description 
-        : location.replace(/\//g, " ")
+    this.description = description || location.replace(/\//g, " ")
 
     this.request = requestJson
     this.response = responseXmlString
