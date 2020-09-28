@@ -25,3 +25,4 @@ export BUILD_VERSION=electronic-prescriptions-local-$USER
 export APIGEE_ENVIRONMENT=internal-dev-sandbox
 export APIGEE_ACCESS_TOKEN=
 export SERVICE_BASE_PATH=electronic-prescriptions-pr-171
+export COMMIT_SHA=8f70bfd1976924c3533bc6f5977d075786e873f8
