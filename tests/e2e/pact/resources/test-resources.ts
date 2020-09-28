@@ -12,7 +12,7 @@ const convertUnsignedSpecificationSuccessExamples = [1,2,3,4].map(i => new Conve
   "ConvertResponse-UnsignedHl7V3Message.xml",
   `parent-prescription-${i} specification example unsigned`))
 
-const convertSignedSpecificationSuccessExamples = [2].map(i => new ConvertSpec(
+const convertSignedSpecificationSuccessExamples = [1,2,3,4].map(i => new ConvertSpec(
   `./parent-prescription-${i}`,
   ".",
   "SendRequest-FhirMessageSigned.json",
@@ -41,7 +41,7 @@ const convertSpecs = [
 
 // Prepare
 
-const prepareSpecificationSuccessExamples = [1,2].map(i => new PrepareSpec(
+const prepareSpecificationSuccessExamples = [1,2,3,4].map(i => new PrepareSpec(
   `./parent-prescription-${i}`,
   ".",
   "PrepareRequest-FhirMessageUnsigned.json",
@@ -61,7 +61,7 @@ const prepareSpecs = [
 
 // Send
 
-const sendSpecificationSuccessExamples = [1,2].map(i => new ProcessSpec(
+const sendSpecificationSuccessExamples = [1,2,3,4].map(i => new ProcessSpec(
   `./parent-prescription-${i}`,
   ".",
   "SendRequest-FhirMessageSigned.json",
