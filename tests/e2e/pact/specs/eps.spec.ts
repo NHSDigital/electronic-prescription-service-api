@@ -82,23 +82,23 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
-            body: {
-              resourceType: "Parameters",
-              parameter: [
-                {
-                  name: "payload",
-                  valueString: Matchers.string(outputMessage.parameter[0].valueString)
-                },
-                {
-                  name: "display",
-                  valueString: Matchers.string(outputMessage.parameter[1].valueString)
-                },
-                {
-                  name: "algorithm",
-                  valueString: "RS1"
-                }
-              ]
-            },
+            // body: {
+            //   resourceType: "Parameters",
+            //   parameter: [
+            //     {
+            //       name: "payload",
+            //       valueString: Matchers.string(outputMessage.parameter[0].valueString)
+            //     },
+            //     {
+            //       name: "display",
+            //       valueString: Matchers.string(outputMessage.parameter[1].valueString)
+            //     },
+            //     {
+            //       name: "algorithm",
+            //       valueString: "RS1"
+            //     }
+            //   ]
+            // },
             status: 200
           }
         }

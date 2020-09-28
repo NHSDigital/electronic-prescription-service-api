@@ -83,7 +83,7 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
-            body: JSON.parse(outputMessageStr),
+            //body: JSON.parse(outputMessageStr),
             status: 200
           }
         }
