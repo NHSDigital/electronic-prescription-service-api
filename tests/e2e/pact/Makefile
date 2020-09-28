@@ -5,6 +5,9 @@ SHELL=/bin/bash -euo pipefail
 install:
 	npm install
 
+test:
+	npm run test
+
 create-pacts:
 	npm run create-pacts
 
