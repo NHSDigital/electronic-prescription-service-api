@@ -63,13 +63,13 @@ jestpact.pactWith(
 
     describe("prepare sandbox e2e tests", () => {
 
-      test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (desc: string, inputMessage: Bundle, outputMessage: Parameters) => {
+      test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (description: string, request: Bundle, response: Parameters) => {
         const apiPath = "/$prepare"
-        const inputMessageStr = LosslessJson.stringify(inputMessage)
-        const outputMessageStr = LosslessJson.stringify(outputMessage)
+        const requestStr = LosslessJson.stringify(request)
+        const responseStr = LosslessJson.stringify(response)
         const interaction: InteractionObject = {
           state: null,
-          uponReceiving: `a request to prepare a ${desc} message`,
+          uponReceiving: `a request to prepare a ${description} message`,
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",
@@ -77,13 +77,13 @@ jestpact.pactWith(
             },
             method: "POST",
             path: "/$prepare",
-            body: JSON.parse(inputMessageStr)
+            body: JSON.parse(requestStr)
           },
           willRespondWith: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
-            //body: JSON.parse(outputMessageStr),
+            body: JSON.parse(responseStr),
             status: 200
           }
         }
@@ -92,7 +92,7 @@ jestpact.pactWith(
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('NHSD-Session-URID', '1234')
-          .send(inputMessageStr)
+          .send(requestStr)
           .expect(200)
       })
     })
