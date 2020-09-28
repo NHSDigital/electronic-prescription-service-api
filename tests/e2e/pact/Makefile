@@ -6,13 +6,13 @@ install:
 	npm install
 
 create-pacts:
-	npm run create
+	npm run create-pacts
 
 publish-pacts:
-	npm run publish
+	npm run publish-pacts
 
 verify-pacts:
-	npm run verify
+	npm run verify-pacts
 
 generate-postman-collection:
 	mkdir -p ../postman/collections
