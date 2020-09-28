@@ -1,7 +1,6 @@
-/* eslint-disable */
-import path from "path"
 import { Verifier } from "@pact-foundation/pact"
 
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verify(provider: string): Promise<any> { 
   const verifier =  new Verifier({
     publishVerificationResult: true,
