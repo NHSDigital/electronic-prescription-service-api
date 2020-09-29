@@ -25,7 +25,7 @@ const conventionBasedConvertExamples: ConvertCase[] = convertResponsePaths.map(c
 	convertRequestPaths.find(convertRequestPath =>
 		path.parse(convertRequestPath).dir === path.parse(convertResponsePath).dir
 		&& path.basename(convertRequestPath).split("-")[1] === path.basename(convertResponsePath).split("-")[3]
-		&& path.parse(convertRequestPath).name.split("-")[4] === path.parse(convertResponsePath).name.split("-")[5]
+		&& path.parse(convertRequestPath).name.split("-")[0] === path.parse(convertResponsePath).name.split("-")[0]
 	),
 	convertResponsePath
 ))
