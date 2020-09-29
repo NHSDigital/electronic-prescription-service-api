@@ -58,6 +58,12 @@ export function createCancellationSendMessagePayload(
   return createSendMessagePayload(messageId, interactionId, fhirBundle, cancellationRequestRoot)
 }
 
+export function convertFhirMessageToCanonicalisedXml(fhirMessage: fhir.Bundle): string {
+  const parentPrescription = convertParentPrescription(fhirMessage)
+  const fragments = extractFragments(parentPrescription)
+  return JSON.stringify(fragments, null, 2)
+}
+
 export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle): string {
   //TODO - check message header and reject if this is not an order
   const parentPrescription = convertParentPrescription(fhirMessage)

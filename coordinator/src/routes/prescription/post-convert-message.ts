@@ -22,5 +22,18 @@ export default [
         return responseToolkit.response(response).code(200).header("Content-Type", contentType)
       }
     )
-  } as Hapi.ServerRoute
+  },
+  {
+    method: "POST",
+    path: "/$convert-processed",
+    handler: validatingHandler(
+      false,
+      (requestPayload: Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+        const isSmokeTest = request.headers["x-smoke-test"]
+        const contentType = isSmokeTest ? CONTENT_TYPE_PLAIN_TEXT : CONTENT_TYPE_XML
+        const response = translator.convertFhirMessageToCanonicalisedXml(requestPayload)
+        return responseToolkit.response(response).code(200).header("Content-Type", contentType)
+      }
+    )
+  }
 ]
