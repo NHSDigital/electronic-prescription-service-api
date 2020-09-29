@@ -7,7 +7,6 @@ import {addEbXmlWrapper} from "../formatters/ebxml-request-builder"
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_ENV === "INT" ? process.env.INT_SPINE_URL : process.env.TEST_SPINE_URL
 const SPINE_PATH = "/Prescription"
-
 const BASE_PATH = process.env.BASE_PATH
 
 const httpsAgent = new https.Agent({

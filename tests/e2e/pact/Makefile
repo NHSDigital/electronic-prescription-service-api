@@ -5,13 +5,19 @@ SHELL=/bin/bash -euo pipefail
 install:
 	npm install
 
-create:
-	npm t
+test:
+	npm run test
 
-publish:
-	./broker/publish.sh
+create-pacts:
+	npm run create-pacts
 
-postman:
+publish-pacts:
+	npm run publish-pacts
+
+verify-pacts:
+	npm run verify-pacts
+
+generate-postman-collection:
 	mkdir -p ../postman/collections
 	npm run postman
 

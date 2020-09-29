@@ -26,7 +26,7 @@ jest.mock("moment", () => {
 })
 
 describe("convertFhirMessageToSignedInfoMessage", () => {
-  const cases = TestResources.all.map(example => [
+  const cases = TestResources.specification.map(example => [
     example.description,
     example.fhirMessageUnsigned,
     example.fhirMessageDigest
@@ -44,7 +44,10 @@ describe("convertFhirMessageToSignedInfoMessage", () => {
 })
 
 describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
-  const cases = TestResources.all.map(example => [example.description, example.fhirMessageSigned, example.hl7V3Message])
+  const cases = TestResources.specification.map(example => [
+    example.description,
+    example.fhirMessageSigned,
+    example.hl7V3Message])
 
   test.each(cases)("accepts %s", (desc: string, message: Bundle) => {
     expect(() => translator.convertFhirMessageToSpineRequest(message)).not.toThrow()

@@ -25,7 +25,7 @@ async function schemaTest(losslessMessage: Bundle) {
 }
 
 describe("Unsigned messages", () => {
-  const unsignedCases = TestResources.all.map(example => [example.description, example.fhirMessageUnsigned])
+  const unsignedCases = TestResources.specification.map(example => [example.description, example.fhirMessageUnsigned])
 
   test.each(unsignedCases)("%s passes schema validation", async (desc: string, losslessMessage: Bundle) => {
     await schemaTest(losslessMessage)
@@ -33,7 +33,7 @@ describe("Unsigned messages", () => {
 })
 
 describe("Signed messages", () => {
-  const signedCases = TestResources.all.map(example => [example.description, example.fhirMessageUnsigned])
+  const signedCases = TestResources.specification.map(example => [example.description, example.fhirMessageUnsigned])
 
   test.each(signedCases)("%s passes schema validation", async (desc: string, losslessMessage: Bundle) => {
     await schemaTest(losslessMessage)
