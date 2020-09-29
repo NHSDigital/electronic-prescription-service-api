@@ -9,7 +9,7 @@ const convertResponsePaths = allExamplePaths.filter(examplePath => {
 
 const convertRequestPaths: Array<string> = allExamplePaths.filter(examplePath => {
 	const filename = path.basename(examplePath)
-	const isRequestFile = filename.endsWith(".json") && filename.split("-")[1] === "Request"
+	const isRequestFile = filename.endsWith(".json") && filename.split("-")[2] === "Request"
 	if (isRequestFile) {
 		const id = filename.split("-")[0]
 		const requestEndpoint = filename.split("-")[1]
