@@ -22,7 +22,8 @@ const convertRequestPaths: Array<string> = allExamplePaths.filter(examplePath =>
 const conventionBasedConvertExamples: ConvertCase[] = convertResponsePaths.map(convertResponsePath => new ConvertCase(
 	path.parse(path.relative(path.join(__dirname, rootPath), convertResponsePath)).dir.replace(/\./g, "").replace(/\//g, " ") + " " + path.parse(convertResponsePath).name.split("-")[2].toLowerCase() + " " + path.parse(convertResponsePath).name.split("-")[3] + "_OK example no. " + path.parse(convertResponsePath).name.split("-")[4],
 	convertRequestPaths.find(convertRequestPath =>
-		path.basename(convertRequestPath).split("-")[0] === path.basename(convertResponsePath).split("-")[2]
+		path.parse(convertRequestPath).dir === path.parse(convertResponsePath).dir
+		&& path.basename(convertRequestPath).split("-")[0] === path.basename(convertResponsePath).split("-")[2]
 		&& path.parse(convertRequestPath).name.split("-")[3] === path.parse(convertResponsePath).name.split("-")[4]
 	),
 	convertResponsePath
