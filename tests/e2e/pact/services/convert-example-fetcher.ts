@@ -11,20 +11,21 @@ const convertRequestPaths: Array<string> = allExamplePaths.filter(examplePath =>
 	const filename = path.basename(examplePath)
 	const isRequestFile = filename.endsWith(".json") && filename.split("-")[1] === "Request"
 	if (isRequestFile) {
-		const requestEndpoint = filename.split("-")[0]
+		const id = filename.split("-")[0]
+		const requestEndpoint = filename.split("-")[1]
 		const convertResponseFilenames = convertResponsePaths.map(convertResponsePath => path.basename(convertResponsePath))
-		const hasConvertResponse = convertResponseFilenames.some(convertResponseFilename => convertResponseFilename.startsWith(`Convert-Response-${requestEndpoint}`))
+		const hasConvertResponse = convertResponseFilenames.some(convertResponseFilename => convertResponseFilename.startsWith(`${id}-Convert-Response-${requestEndpoint}`))
 		return hasConvertResponse
 	}
 	return false
 })
 
 const conventionBasedConvertExamples: ConvertCase[] = convertResponsePaths.map(convertResponsePath => new ConvertCase(
-	path.parse(path.relative(path.join(__dirname, rootPath), convertResponsePath)).dir.replace(/\./g, "").replace(/\//g, " ") + " " + path.parse(convertResponsePath).name.split("-")[2].toLowerCase() + " " + path.parse(convertResponsePath).name.split("-")[3] + " " + path.parse(convertResponsePath).name.split("-")[4],
+	path.parse(path.relative(path.join(__dirname, rootPath), convertResponsePath)).dir.replace(/\./g, "").replace(/\//g, " ")+ " - " + path.parse(convertResponsePath).name.split("-")[0] + " " + path.parse(convertResponsePath).name.split("-")[3].toLowerCase() + " " + path.parse(convertResponsePath).name.split("-")[4] + " ",
 	convertRequestPaths.find(convertRequestPath =>
 		path.parse(convertRequestPath).dir === path.parse(convertResponsePath).dir
-		&& path.basename(convertRequestPath).split("-")[0] === path.basename(convertResponsePath).split("-")[2]
-		&& path.parse(convertRequestPath).name.split("-")[3] === path.parse(convertResponsePath).name.split("-")[4]
+		&& path.basename(convertRequestPath).split("-")[1] === path.basename(convertResponsePath).split("-")[3]
+		&& path.parse(convertRequestPath).name.split("-")[4] === path.parse(convertResponsePath).name.split("-")[5]
 	),
 	convertResponsePath
 ))
