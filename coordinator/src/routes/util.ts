@@ -38,7 +38,7 @@ function isOperationOutcome(body: unknown): body is OperationOutcome {
 }
 
 type Handler<T> = (
-  requestPayload: T, responseToolkit: Hapi.ResponseToolkit
+  requestPayload: T, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
 ) => Hapi.ResponseObject | Promise<Hapi.ResponseObject>
 
 export enum MessageType {
@@ -60,7 +60,7 @@ export function validatingHandler(requireSignature: boolean, handler: Handler<fh
       return responseToolkit.response(response).code(statusCode)
     } else {
       const validatedPayload = requestPayload as fhir.Bundle
-      return handler(validatedPayload, responseToolkit)
+      return handler(validatedPayload, request, responseToolkit)
     }
   }
 }

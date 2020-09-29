@@ -15,7 +15,7 @@ install: install-node install-python install-hooks
 build: build-models build-specification build-coordinator build-proxies
 
 test: validate-models lint check-licenses test-coordinator
-	cd tests/e2e/pact && make create
+	cd tests/e2e/pact && make test
 
 publish:
 	echo Publish
@@ -67,7 +67,7 @@ install-hooks:
 
 build-models:
 	$(foreach file, \
-	$(wildcard models/examples/**/SendRequest-FhirMessageSigned.json), \
+	$(wildcard models/examples/specification/**/SendRequest-FhirMessageSigned.json), \
 	cat $(file) \
 	| jq 'del(.entry[] | select(.resource.resourceType == "Provenance"))' \
 	| jq 'del(.entry[0].resource.focus[0])' \
@@ -77,7 +77,7 @@ build-specification:
 	cd specification \
 	&& mkdir -p build/components/examples \
 	&& mkdir -p build/components/schemas \
-	&& cp -r ../models/examples build/components \
+	&& cp -r ../models/examples/specification/** build/components/examples \
 	&& cp -r ../models/schemas build/components \
 	&& cp electronic-prescription-service-api.yaml build/electronic-prescription-service-api.yaml \
 	&& npm run resolve \
@@ -104,8 +104,10 @@ build-proxies:
 # Test
 
 test-coordinator:
+	cp models/examples/specification/signature.json models/examples/signature.json 
 	cd coordinator \
 	&& npm run test
+	rm models/examples/signature.json
 
 # Integration Test
 
@@ -119,7 +121,9 @@ test-integration-coordinator:
 validate-models:
 	mkdir -p models/build
 	test -f models/build/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > models/build/org.hl7.fhir.validator.jar
-	java -jar models/build/org.hl7.fhir.validator.jar models/examples/*/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt
+	for dir in "specification/**" "secondary-care/**/**/**"; do \
+		java -jar models/build/org.hl7.fhir.validator.jar models/examples/$$dir/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt; \
+	done
 
 lint: build
 	cd specification && npm run lint

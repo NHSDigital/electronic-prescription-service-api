@@ -13,11 +13,11 @@ export default [
     path: "/$process-message",
     handler: validatingHandler(
       false,
-      async (requestPayload: Bundle, responseToolkit: Hapi.ResponseToolkit) => {
+      async (requestPayload: Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const spineRequest = translator.convertFhirMessageToSpineRequest(requestPayload)
         const spineResponse = await requestHandler.send(spineRequest)
         return handleResponse(spineResponse, responseToolkit)
       }
     )
-  }
+  } as Hapi.ServerRoute
 ]
