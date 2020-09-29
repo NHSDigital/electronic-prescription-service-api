@@ -75,7 +75,7 @@ export const examplePrescription2 = new ExamplePrescription("acute, nominated ph
 
 export const examplePrescription3 = new ExamplePrescription("homecare", "parent-prescription-3")
 
-//export const examplePrescription4 = new ExamplePrescription("homecare repeat dispensing", "parent-prescription-4")
+export const examplePrescription4 = new ExamplePrescription("homecare repeat dispensing", "parent-prescription-4")
 
 export const specification = [
   examplePrescription1,
