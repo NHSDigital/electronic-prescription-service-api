@@ -10,14 +10,13 @@ export class ConvertSpec {
   response: string
   responseMatcher: string
 
-  constructor(baseLocation: string, location: string, requestFile: string, responseFile: string, description: string = null) {
-    const requestString = fs.readFileSync(path.join(__dirname, baseLocation, location, requestFile), "utf-8")
+  constructor(description: string, requestFilePath: string, responseFilePath: string) {
+    const requestString = fs.readFileSync(requestFilePath, "utf-8")
     const requestJson = LosslessJson.parse(requestString)
 
-    const responseXmlString = fs.readFileSync(path.join(__dirname, baseLocation, location, responseFile), "utf-8")
+    const responseXmlString = fs.readFileSync(responseFilePath, "utf-8")
 
-    this.description = description || location.replace(/\//g, " ")
-
+    this.description = description
     this.request = requestJson
     this.response = responseXmlString
     this.responseMatcher = this.buildResponseMatcher(responseXmlString)
