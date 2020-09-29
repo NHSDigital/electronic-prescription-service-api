@@ -43,7 +43,7 @@ const convertRequestPaths: Array<string> = allExamplePaths.filter(examplePath =>
 
 const convertExamples: string[][] = convertResponsePaths.map(convertResponsePath => 
   [
-    path.parse(path.relative(path.join(__dirname, "parent-prescription"), convertResponsePath)).dir.replace(/\./g, "").replace(/\//g, " ") + uuid.v4(),
+    path.parse(path.relative(path.join(__dirname, "parent-prescription"), convertResponsePath)).dir.replace(/\./g, "").replace(/\//g, " ") + " " + path.parse(convertResponsePath).name.split("-")[2].toLowerCase() + " " + path.parse(convertResponsePath).name.split("-")[3] + "_OK example no. " + path.parse(convertResponsePath).name.split("-")[4],
     convertRequestPaths.find(convertRequestPath =>
       path.basename(convertRequestPath).split("-")[0] === path.basename(convertResponsePath).split("-")[2]
       && path.parse(convertRequestPath).name.split("-")[3] === path.parse(convertResponsePath).name.split("-")[4]
