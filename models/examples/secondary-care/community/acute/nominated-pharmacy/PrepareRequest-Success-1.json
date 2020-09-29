@@ -3,7 +3,7 @@
 	"id": "aef77afb-7e3c-427a-8657-2c427f71a271",
 	"identifier": {
 		"system": "https://tools.ietf.org/html/rfc4122",
-		"value": "aef77afb-7e3c-427a-8657-2c427f71a271"
+		"value": "b668b48f-ba04-4881-a521-961fac440f53"
 	},
 	"type": "message",
 	"entry": [
@@ -54,8 +54,8 @@
 						"url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType",
 						"valueCoding": {
 							"system": "https://fhir.nhs.uk/R4/CodeSystem/prescription-type",
-							"code": "1201",
-							"display": "Outpatient Homecare Prescriber - Medical Prescriber"
+							"code": "1001",
+							"display": "Outpatient Community Prescriber - Medical Prescriber"
 						}
 					}
 				],
@@ -90,7 +90,7 @@
 				"subject": {
 					"reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
 				},
-				"authoredOn": "2020-09-18T12:00:00+00:00",
+				"authoredOn": "2020-09-29T12:00:00+00:00",
 				"requester": {
 					"reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
 				},
@@ -100,12 +100,12 @@
 							"url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
 							"valueIdentifier": {
 								"system": "https://fhir.nhs.uk/Id/prescription",
-								"value": "ad945a29-85f8-439a-b590-6789719adc16"
+								"value": "454fc887-488a-4519-b529-11000b6791df"
 							}
 						}
 					],
 					"system": "https://fhir.nhs.uk/Id/prescription-order-number",
-					"value": "523BFE-Z8AF99-11EAAX"
+					"value": "1DF0D3-ZFA026-11EBBH"
 				},
 				"courseOfTherapyType": {
 					"coding": [
@@ -168,7 +168,7 @@
 							"url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
 							"valueCoding": {
 								"system": "https://fhir.nhs.uk/R4/CodeSystem/dispensing-site-preference",
-								"code": "0004"
+								"code": "P1"
 							}
 						}
 					],
@@ -177,7 +177,13 @@
 						"unit": "pre-filled disposable injection",
 						"system": "http://snomed.info/sct",
 						"code": "3318611000001103"
-					}
+					},
+          "performer": {
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "FH542"
+            }
+          }
 				},
 				"substitution": {
 					"allowedBoolean": false
@@ -206,7 +212,7 @@
 							}
 						],
 						"system": "https://fhir.nhs.uk/Id/nhs-number",
-						"value": "5900188353"
+						"value": "9449305552"
 					}
 				],
 				"name": [
