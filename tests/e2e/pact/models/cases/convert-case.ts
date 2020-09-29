@@ -1,10 +1,9 @@
-/* eslint-disable */
+/* eslint-disable no-useless-escape */
 import * as fs from "fs"
-import * as path from "path"
-import { Bundle } from "./fhir-resources"
+import { Bundle } from "../fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 
-export class ConvertSpec {
+export class ConvertCase {
   description: string
   request: Bundle
   response: string
