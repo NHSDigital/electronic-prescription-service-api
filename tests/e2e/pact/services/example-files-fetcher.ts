@@ -11,7 +11,8 @@ const walk = function(dir) {
       if (stat && stat.isDirectory()) { 
           results = results.concat(walk(file))
       } else {
-          if (file.endsWith(".json") || file.endsWith(".xml")) {
+          const fileExt = path.parse(file).ext
+          if (fileExt.includes("json") || fileExt.includes("xml")) {
               results.push(file)
           }
       }

@@ -56,7 +56,7 @@ jestpact.pactWith(
 
     describe("process-message e2e tests", () => {
       
-      test.each(TestResources.sendCases)("should be able to process %s", async (desc: string, message: Bundle) => {
+      test.each(TestResources.processCases)("should be able to process %s", async (desc: string, message: Bundle) => {
         const apiPath = "/$process-message"
         const messageStr = LosslessJson.stringify(message)
         const interaction: InteractionObject = {
