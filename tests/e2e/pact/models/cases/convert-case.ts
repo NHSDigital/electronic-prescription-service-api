@@ -18,7 +18,7 @@ export class ConvertCase {
     this.description = description
     this.request = requestJson
     this.response = responseXmlString
-    this.responseMatcher = this.buildResponseMatcher(responseXmlString)
+    this.responseMatcher = this.buildResponseMatcher(responseXmlString).trimEnd()
   }
 
   private buildResponseMatcher(responseXml: string): string {
