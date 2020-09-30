@@ -24,7 +24,6 @@ export class ConvertCase {
   private buildResponseMatcher(responseXml: string): string {
     const regexPattern = this.escapeRegexSpecialCharacters(responseXml)
     const responseMatcher = this.replaceDynamicsWithRegexPatterns(regexPattern)
-    //fs.writeFileSync(path.join(__dirname, "./responseMatcher.txt"), responseMatcher)
     return responseMatcher
   }
 

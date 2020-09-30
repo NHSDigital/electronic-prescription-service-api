@@ -56,12 +56,12 @@ jestpact.pactWith(
 
     describe("process-message e2e tests", () => {
       
-      test.each(TestResources.sendCases)("should be able to send %s", async (desc: string, message: Bundle) => {
+      test.each(TestResources.sendCases)("should be able to process %s", async (desc: string, message: Bundle) => {
         const apiPath = "/$process-message"
         const messageStr = LosslessJson.stringify(message)
         const interaction: InteractionObject = {
           state: null,
-          uponReceiving: `a request to send ${desc} message to Spine`,
+          uponReceiving: `a request to process ${desc} message to Spine`,
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",
