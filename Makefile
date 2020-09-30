@@ -108,13 +108,6 @@ test-coordinator:
 	cd coordinator \
 	&& npm run test
 
-# Integration Test
-
-test-integration-coordinator:
-	cd coordinator \
-	&& export API_TEST_ENV_FILE_PATH=$(or $(API_TEST_ENV_FILE_PATH),../tests/e2e/postman/environments/local.postman_environment.json) \
-	&& npm run integration-test
-
 ## Quality Checks
 
 validate-models:
