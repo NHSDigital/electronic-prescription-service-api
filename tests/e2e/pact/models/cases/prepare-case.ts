@@ -7,7 +7,7 @@ export class PrepareCase {
 	request: Bundle
 	response: Parameters
 
-  constructor(description: string, requestFile: string, responseFile) {
+  constructor(description: string, requestFile: string, responseFile: string) {
 		const requestString = fs.readFileSync(requestFile, "utf-8")
 		const responseString = fs.readFileSync(responseFile, "utf-8")
 
