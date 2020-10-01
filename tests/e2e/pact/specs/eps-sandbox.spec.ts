@@ -1,3 +1,4 @@
+/* eslint-disable */
 import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
@@ -7,8 +8,9 @@ import * as LosslessJson from "lossless-json"
 
 jestpact.pactWith(
   {
-    consumer: "nhsd-apim-eps-test-client",
-    provider: "nhsd-apim-eps-sandbox",
+    spec: 3,
+    consumer: `nhsd-apim-eps-test-client-${process.env.COMMIT_SHA}`,
+    provider: `nhsd-apim-eps-sandbox-${process.env.COMMIT_SHA}`,
     pactfileWriteMode: "overwrite"
   },
   /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -19,15 +21,16 @@ jestpact.pactWith(
     }
 
     describe("convert sandbox e2e tests", () => {
-      const convertCases = [
-        ...TestResources.all.map(example => [`unsigned ${example.description}`, example.fhirMessageUnsigned]),
-        ...TestResources.all.map(example => [`signed ${example.description}`, example.fhirMessageSigned]),
-        ...TestResources.all.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel])
-      ]
 
-      test.each(convertCases)("should be able to convert %s message to HL7V3", async (desc: string, message: Bundle) => {
+      test.each(TestResources.convertCases)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: string, responseMatcher: string) => {
+        const regex = new RegExp(responseMatcher)
+        const isMatch = regex.test(response)
+        expect(isMatch).toBe(true)
+
+        const requestStr = LosslessJson.stringify(request)
+        const requestJson = JSON.parse(requestStr)
+        
         const apiPath = "/$convert"
-        const messageStr = LosslessJson.stringify(message)
         const interaction: InteractionObject = {
           state: null,
           uponReceiving: `a request to convert ${desc} message`,
@@ -38,12 +41,13 @@ jestpact.pactWith(
             },
             method: "POST",
             path: "/$convert",
-            body: JSON.parse(messageStr)
+            body: requestJson
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/xml"
+              "Content-Type": "text/plain; charset=utf-8"
             },
+            //body: Matchers.term({ generate: response, matcher: responseMatcher }),
             status: 200
           }
         }
@@ -52,21 +56,20 @@ jestpact.pactWith(
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('NHSD-Session-URID', '1234')
-          .send(messageStr)
+          .send(requestJson)
           .expect(200)
       })
     })
+
     describe("prepare sandbox e2e tests", () => {
 
-      const prepareCases = TestResources.all.map(example => [example.description, example.fhirMessageUnsigned, example.fhirMessageDigest])
-
-      test.each(prepareCases)("should be able to prepare a %s message", async (desc: string, inputMessage: Bundle, outputMessage: Parameters) => {
+      test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (description: string, request: Bundle, response: Parameters) => {
         const apiPath = "/$prepare"
-        const inputMessageStr = LosslessJson.stringify(inputMessage)
-        const outputMessageStr = LosslessJson.stringify(outputMessage)
+        const requestStr = LosslessJson.stringify(request)
+        const responseStr = LosslessJson.stringify(response)
         const interaction: InteractionObject = {
           state: null,
-          uponReceiving: `a request to prepare a ${desc} message`,
+          uponReceiving: `a request to prepare a ${description} message`,
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",
@@ -74,13 +77,13 @@ jestpact.pactWith(
             },
             method: "POST",
             path: "/$prepare",
-            body: JSON.parse(inputMessageStr)
+            body: JSON.parse(requestStr)
           },
           willRespondWith: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
-            body: JSON.parse(outputMessageStr),
+            body: JSON.parse(responseStr),
             status: 200
           }
         }
@@ -89,17 +92,14 @@ jestpact.pactWith(
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('NHSD-Session-URID', '1234')
-          .send(inputMessageStr)
+          .send(requestStr)
           .expect(200)
       })
     })
-    describe("process-message sandbox e2e tests", () => {
-      const processMessageCases = [
-        ...TestResources.all.map(example => [example.description, example.fhirMessageSigned]),
-        ...TestResources.all.filter(example => example.fhirMessageCancel).map(example => [`cancel ${example.description}`, example.fhirMessageCancel])
-      ]
 
-      test.each(processMessageCases)("should be able to send %s", async (desc: string, message: Bundle) => {
+    describe("process-message sandbox e2e tests", () => {
+
+      test.each(TestResources.sendCases)("should be able to send %s", async (desc: string, message: Bundle) => {
         const apiPath = "/$process-message"
         const messageStr = LosslessJson.stringify(message)
         const interaction: InteractionObject = {
@@ -115,6 +115,9 @@ jestpact.pactWith(
             body: JSON.parse(messageStr)
           },
           willRespondWith: {
+            headers: {
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
+            },
             body: {
               resourceType: "OperationOutcome",
               issue: [
@@ -134,42 +137,6 @@ jestpact.pactWith(
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('NHSD-Session-URID', '1234')
           .send(messageStr)
-          .expect(200)
-      })
-
-      test("should be able to poll for a prescription response", async () => {
-        const apiPath = "/_poll/9807d292_074a_49e8_b48d_52e5bbf785ed"
-        const interaction: InteractionObject = {
-          state: null,
-          uponReceiving: "a request to poll for a prescription response",
-          withRequest: {
-            headers: {
-              "Content-Type": "application/json",
-              "NHSD-Session-URID": "1234"
-            },
-            method: "GET",
-            path: apiPath
-          },
-          willRespondWith: {
-            headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
-            },
-            body: {
-              resourceType: "OperationOutcome",
-              issue: [{
-                code: "informational",
-                severity: "error",
-                diagnostics: "no longer in use"
-              }]
-            },
-            status: 200
-          }
-        }
-        await provider.addInteraction(interaction)
-        await client()
-          .get(apiPath)
-          .set('Content-Type', 'application/json')
-          .set('NHSD-Session-URID', '1234')
           .expect(200)
       })
     })

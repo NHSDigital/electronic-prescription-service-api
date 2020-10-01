@@ -31,7 +31,7 @@ export class ExamplePrescription {
       "utf-8"
     )
     const hl7V3MessageStr = fs.readFileSync(
-      path.join(__dirname, location, "ConvertResponse-Hl7V3Message.xml"),
+      path.join(__dirname, location, "ConvertResponse-SignedHl7V3Message.xml"),
       "utf-8"
     )
 
@@ -75,9 +75,9 @@ export const examplePrescription2 = new ExamplePrescription("acute, nominated ph
 
 export const examplePrescription3 = new ExamplePrescription("homecare", "parent-prescription-3")
 
-//export const examplePrescription4 = new ExamplePrescription("homecare repeat dispensing", "parent-prescription-4")
+export const examplePrescription4 = new ExamplePrescription("homecare repeat dispensing", "parent-prescription-4")
 
-export const all = [
+export const specification = [
   examplePrescription1,
   examplePrescription2,
   examplePrescription3
