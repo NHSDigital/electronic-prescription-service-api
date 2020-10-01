@@ -1,7 +1,7 @@
 import { Verifier } from "@pact-foundation/pact"
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
-async function verify(provider: string): Promise<any> {
+async function verify(): Promise<any> {
   const isLocal = process.env.PACT_PROVIDER_URL == "http://localhost:9000" 
   const verifier =  new Verifier({
     publishVerificationResult: process.env.PACT_PUBLISH_VERIFICATION_RESULTS === "true",
@@ -16,7 +16,7 @@ async function verify(provider: string): Promise<any> {
         all: false
       }
     ],
-    provider: `${provider}+${process.env.BUILD_VERSION}`,
+    provider: `${process.env.PACT_PROVIDER}+${process.env.BUILD_VERSION}`,
     providerVersion: process.env.BUILD_VERSION,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
     logLevel: "info",
@@ -35,6 +35,6 @@ async function verify(provider: string): Promise<any> {
 }
 
 (async () => {
-  verify(process.env.PACT_PROVIDER).catch(verify)
+  verify().catch(verify)
 })()
 
