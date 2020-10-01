@@ -26,4 +26,5 @@ export APIGEE_ENVIRONMENT=internal-dev-sandbox
 export SERVICE_BASE_PATH=electronic-prescriptions-pr-186
 export BUILD_VERSION=$SERVICE_BASE_PATH
 export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH
+export PACT_PROVIDER_URL=http://localhost:9000
 export PACT_PUBLISH_VERIFICATION_RESULTS=false
