@@ -1,6 +1,6 @@
 import fs from "fs"
 import path from "path"
-import { ExampleFile as ExampleFile } from "../models/files/example-file"
+import { ExampleFile } from "../models/files/example-file"
 
 const walk = function(dir) {
   let results = []

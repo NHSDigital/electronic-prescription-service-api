@@ -14,7 +14,7 @@ const convertRequestFiles = exampleFiles.filter(exampleFile =>
 			&& convertResponseFile.number === exampleFile.number))
 
 const conventionBasedConvertExamples: ConvertCase[] = convertResponseFiles.map(convertResponseFile => new ConvertCase(
-	path.parse(path.relative(path.join(__dirname, examplesRootPath), convertResponseFile.path)).dir.replace(/\./g, "").replace(/\//g, " ") + " "
+	path.parse(path.relative(path.join(__dirname, examplesRootPath), convertResponseFile.path)).dir.replace(/\//g, " ") + " "
 		+ `${convertResponseFile.number} ${convertResponseFile.operation} ${convertResponseFile.statusCode}`,
 	convertRequestFiles.find(convertRequestFile =>
 		convertRequestFile.dir === convertResponseFile.dir
