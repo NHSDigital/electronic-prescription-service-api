@@ -1,5 +1,7 @@
 FROM node:12.18.1-alpine
 
+ENV NO_UPDATE_NOTIFIER true
+
 WORKDIR /app
 
 COPY package*.json ./
