@@ -29,6 +29,6 @@ async function verify(provider: string): Promise<any> {
 }
 
 (async () => {
-  verify(process.env.PACT_PROVIDER).catch(console.error)
+  verify(process.env.PACT_PROVIDER).catch(verify)
 })()
 
