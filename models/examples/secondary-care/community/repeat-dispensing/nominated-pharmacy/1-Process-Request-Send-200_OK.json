@@ -36,7 +36,7 @@
         },
         "focus": [
           {
-            "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
+            "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
           },
           {
             "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
@@ -57,6 +57,19 @@
               "code": "1001",
               "display": "Outpatient Community Prescriber - Medical Prescriber"
             }
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+            "extension": [
+              {
+                "url": "numberOfRepeatPrescriptionsAllowed",
+                "valueUnsignedInt": 6
+              },
+              {
+                "url": "authorisationExpiryDate",
+                "valueDateTime": "2020-12-07"
+              }
+            ]
           }
         ],
         "identifier": [
@@ -110,9 +123,9 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
-              "code": "acute",
-              "display": "Short course (acute) therapy"
+              "system": "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-course-of-therapy",
+              "code": "continuous-repeat-dispensing",
+              "display": "Continuous long term (repeat dispensing)"
             }
           ]
         },
@@ -172,11 +185,21 @@
               }
             }
           ],
+          "validityPeriod": {
+            "start": "2020-06-10",
+            "end": "2020-12-07"
+          },
           "quantity": {
-            "value": 1,
-            "unit": "pre-filled disposable injection",
+            "value": 63,
+            "unit": "tablet",
             "system": "http://snomed.info/sct",
-            "code": "3318611000001103"
+            "code": "428673006"
+          },
+          "expectedSupplyDuration": {
+            "value": 28,
+            "unit": "days",
+            "system": "http://unitsofmeasure.org",
+            "code": "d"
           },
           "performer": {
             "identifier": {

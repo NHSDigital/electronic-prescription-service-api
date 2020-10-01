@@ -2,9 +2,9 @@ import { VerifierV3 } from "@pact-foundation/pact"
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verify(): Promise<any> { 
-  const isLocal = process.env.PACT_PROVIDER_URL == "http://localhost:9000"
+  const isLocal = process.env.PACT_PROVIDER_URL === "http://localhost:9000"
   const verifier =  new VerifierV3({
-    publishVerificationResult: process.env.PACT_PUBLISH_VERIFICATION_RESULTS === "true",
+    publishVerificationResult: !isLocal,
     pactBrokerUrl: isLocal ? undefined : process.env.PACT_BROKER_URL,
     pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
     pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
@@ -12,7 +12,7 @@ async function verify(): Promise<any> {
     provider: `${process.env.PACT_PROVIDER}-convert+${process.env.BUILD_VERSION}`,
     providerVersion: process.env.BUILD_VERSION,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
-    logLevel: "info",
+    logLevel: isLocal? "debug" : "info",
     requestFilter: (req) => {
       req.headers["x-smoke-test"] = "1"
       req.headers["Authorization"] = `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
@@ -29,6 +29,6 @@ async function verify(): Promise<any> {
 }
 
 (async () => {
-  verify().catch(verify)
+  verify().catch(verify).catch(verify)
 })()
 
