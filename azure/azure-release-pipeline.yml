@@ -66,8 +66,9 @@ extends:
           - internal_qa
           - internal_qa_sandbox
       - environment: ref
-        make_spec_visible: true
+        make_spec_visible: false
         proxy_path: live
         depends_on:
-          - int
-          - sandbox
+          - internal_dev_sandbox
+        #  - int
+        #  - sandbox

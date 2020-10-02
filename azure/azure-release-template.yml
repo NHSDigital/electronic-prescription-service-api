@@ -34,6 +34,14 @@ extends:
           releaseType: stable
       - bash: |
           set -euo pipefail
+          
+          # Skip smoke tests for ref
+          export APIGEE_ENVIRONMENT=$(ENVIRONMENT)
+          
+          if [ $APIGEE_ENVIRONMENT == "ref" ]; then
+              echo "Skipping smoke tests for ref"
+            exit 0
+          fi
 
           # Set variables
           export SERVICE_NAME=$(SERVICE_NAME)
@@ -62,7 +70,6 @@ extends:
           export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
           export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH
           export PACT_CONSUMER=nhsd-apim-eps-test-client
-          export APIGEE_ENVIRONMENT=$(ENVIRONMENT)
 
           if [ "$APIGEE_ENVIRONMENT" == "int" ]; then
             export IDP_URL=https://nhsd-apim-testing-$(ENVIRONMENT)-ns.herokuapp.com
