@@ -37,7 +37,6 @@ extends:
         displayName: 'Get ref access token'
         inputs:
           secureFile: 'get_ref_access_token.sh'
-        condition: 
       - bash: |
           set -euo pipefail
 
