@@ -32,11 +32,16 @@ extends:
         inputs:
           dockerVersion: 17.09.0-ce
           releaseType: stable
+      - task: DockerInstaller@0
+        displayName: Install docker x2
+        inputs:
+          dockerVersion: 17.09.0-ce
+          releaseType: stable
       - task: DownloadSecureFile@1
         name: getRefAccessToken
-        displayName: 'Get ref access token'
+        displayName: Get ref access token
         inputs:
-          secureFile: 'get_ref_access_token.sh'
+          secureFile: get_ref_access_token.sh
       - bash: |
           set -euo pipefail
 
