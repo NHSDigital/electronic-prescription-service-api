@@ -68,7 +68,4 @@ extends:
       - environment: ref
         make_spec_visible: false
         proxy_path: live
-        depends_on:
-          - internal_dev_sandbox
-        #  - int
-        #  - sandbox
+        depends_on: []
