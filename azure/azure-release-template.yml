@@ -37,6 +37,7 @@ extends:
         displayName: 'Get ref access token'
         inputs:
           secureFile: 'get_ref_access_token.sh'
+        condition: 
       - bash: |
           set -euo pipefail
 
@@ -68,6 +69,7 @@ extends:
           export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
           export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
           export PACT_CONSUMER=nhsd-apim-eps-test-client
+          export COMMIT_SHA=$(resources.pipeline.build_pipeline.sourceCommit)
 
           if [ "$APIGEE_ENVIRONMENT" == "int" ]; then
             export IDP_URL=https://nhsd-apim-testing-$(ENVIRONMENT)-ns.herokuapp.com
