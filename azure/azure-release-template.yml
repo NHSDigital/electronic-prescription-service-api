@@ -83,6 +83,7 @@ extends:
           else
             export PACT_PROVIDER=nhsd-apim-eps
             if [ "$APIGEE_ENVIRONMENT" == "ref" ]; then
+              chmod +x $(getRefAccessToken.secureFilePath)
               source $(getRefAccessToken.secureFilePath)
             else
               export APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest $IDP_URL)
