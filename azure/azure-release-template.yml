@@ -32,11 +32,6 @@ extends:
         inputs:
           dockerVersion: 17.09.0-ce
           releaseType: stable
-      - task: DownloadSecureFile@1
-        name: getRefAccessToken
-        displayName: 'Get ref access token'
-        inputs:
-          secureFile: 'get_ref_access_token.sh'
       - bash: |
           set -euo pipefail
 
@@ -82,8 +77,30 @@ extends:
           else
             export PACT_PROVIDER=nhsd-apim-eps
             if [ "$APIGEE_ENVIRONMENT" == "ref" ]; then
-              chmod +x $(getRefAccessToken.secureFilePath)
-              source $(getRefAccessToken.secureFilePath)
+              export APIGEE_STATE=$(curl -s -i -L "$(REF_AUTH)" | grep -oP '(?<=value=")[^"]*'  | awk $'{$1=$1;print}')
+
+              curl -s -i "$(REF_AUTH_2)" \
+                -H 'Content-Type: application/x-www-form-urlencoded' \
+                --data-raw "state=$APIGEE_STATE" \
+                --compressed > .temp_curl_ouput
+
+              export APIGEE_CALLBACK_URL="$(cat .temp_curl_ouput | grep -oP '(?<=Location: )[^&]*'  | awk $'{$1=$1;print}')"
+
+              export CALLBACK_URL=$(curl -s -i -L "$APIGEE_CALLBACK_URL&state=$APIGEE_STATE&client-id=$(CLIENT_ID)" \
+                --compressed | grep -oP '(?<=Location: )[^&]*' | awk '{$1=$1;print}')
+
+              curl -s -L "$CALLBACK_URL" --compressed > .temp_curl_ouput
+
+              export APIGEE_CODE=$(echo $APIGEE_CALLBACK_URL | grep -oP '(?<=code=)[^&]*'  | awk $'{$1=$1;print}')
+
+              curl -s -i -H 'Content-Type: application/x-www-form-urlencoded' \
+              -H "Authorization: Basic $(REF_AUTH_HEADER)" \
+              -X POST "$(REF_URL)" \
+              -d "code=$APIGEE_CODE&grant_type=authorization_code&redirect_uri=$(REDIRECT_URL)" > .temp_curl_ouput
+
+              export APIGEE_ACCESS_TOKEN=$(cat .temp_curl_ouput | grep -oP '(?<=access_token": ")[^"]*'  | awk $'{$1=$1;print}')
+
+              rm -f .temp_curl_ouput
             else
               export APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest $IDP_URL)
             fi
