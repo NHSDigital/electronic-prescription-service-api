@@ -32,16 +32,13 @@ extends:
         inputs:
           dockerVersion: 17.09.0-ce
           releaseType: stable
+      - task: DownloadSecureFile@1
+        name: getRefAccessToken
+        displayName: 'Get ref access token'
+        inputs:
+          secureFile: 'get_ref_access_token.sh'
       - bash: |
           set -euo pipefail
-          
-          # Skip smoke tests for ref
-          export APIGEE_ENVIRONMENT=$(ENVIRONMENT)
-          
-          if [ $APIGEE_ENVIRONMENT == "ref" ]; then
-              echo "Skipping smoke tests for ref"
-            exit 0
-          fi
 
           # Set variables
           export SERVICE_NAME=$(SERVICE_NAME)
@@ -60,8 +57,10 @@ extends:
             export SERVICE_BASE_PATH="${{ parameters.service_base_path_pr }}"
           fi
 
+          export APIGEE_ENVIRONMENT=$(ENVIRONMENT)
+
           export SANDBOX=0
-          if [[ $(ENVIRONMENT) == *"sandbox"* ]]; then
+          if [[ $APIGEE_ENVIRONMENT == *"sandbox"* ]]; then
             export SANDBOX=1
           fi
 
@@ -76,12 +75,17 @@ extends:
           else
             export IDP_URL=https://nhsd-apim-testing-$(ENVIRONMENT).herokuapp.com
           fi
-
+          
           if [ "$SANDBOX" == "1" ]; then
             export PACT_PROVIDER=nhsd-apim-eps-sandbox
           else
             export PACT_PROVIDER=nhsd-apim-eps
-            export APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest $IDP_URL)
+            if [ "$APIGEE_ENVIRONMENT" == "ref" ]; then
+              chmod +x $(getRefAccessToken.secureFilePath)
+              source $(getRefAccessToken.secureFilePath)
+            else
+              export APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest $IDP_URL)
+            fi
           fi
 
           # Publish
