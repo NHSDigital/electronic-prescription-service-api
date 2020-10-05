@@ -72,15 +72,18 @@ extends:
             export PACT_PROVIDER=nhsd-apim-eps-sandbox
           else
             export PACT_PROVIDER=nhsd-apim-eps
-            if [ "$APIGEE_ENVIRONMENT" == "int" ]; then
-              export IDP_URL=https://nhsd-apim-testing-$(ENVIRONMENT)-ns.herokuapp.com
-              export APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest $IDP_URL)
-            else if [ "$APIGEE_ENVIRONMENT" == "ref" ]; then
+            if [ "$APIGEE_ENVIRONMENT" == "int" ]
+            then
+              export IDP_URL="https://nhsd-apim-testing-$(ENVIRONMENT)-ns.herokuapp.com"
+              export APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest "$IDP_URL")
+            elif [ "$APIGEE_ENVIRONMENT" == "ref" ]
+            then
               export IDP_URL="$(REF_IDP_URL)"
-              export APIGEE_ACCESS_TOKEN=$(docker run --rm -e AUTH_BEARER_TOKEN=$(REF_AUTH_BEARER_TOKEN) booshi/nhsd-login-docker:latest $IDP_URL)
+              export AUTH_BEARER_TOKEN="$(REF_AUTH_BEARER_TOKEN)""
+              export APIGEE_ACCESS_TOKEN=$(docker run --rm -e AUTH_BEARER_TOKEN=$AUTH_BEARER_TOKEN booshi/nhsd-login-docker:latest "$IDP_URL")
             else
-              export IDP_URL=https://nhsd-apim-testing-$(ENVIRONMENT).herokuapp.com
-              export APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest $IDP_URL)
+              export IDP_URL="https://nhsd-apim-testing-$(ENVIRONMENT).herokuapp.com"
+              export APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest "$IDP_URL")
             fi
           fi
 
