@@ -8,9 +8,9 @@ async function verify(): Promise<any> {
     pactBrokerUrl: isLocal ? undefined : process.env.PACT_BROKER_URL,
     pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
     pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
-    consumerVersionTag: process.env.BUILD_VERSION,
-    provider: `${process.env.PACT_PROVIDER}-convert+${process.env.BUILD_VERSION}`,
-    providerVersion: process.env.BUILD_VERSION,
+    consumerVersionTag: process.env.PACT_VERSION,
+    provider: `${process.env.PACT_PROVIDER}-convert+${process.env.PACT_VERSION}`,
+    providerVersion: process.env.PACT_VERSION,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
     logLevel: isLocal? "debug" : "info",
     requestFilter: (req) => {
@@ -20,7 +20,7 @@ async function verify(): Promise<any> {
     },
     pactUrls: isLocal 
       ? [
-        `${process.cwd()}/pact/pacts/${process.env.PACT_CONSUMER}+${process.env.BUILD_VERSION}-${process.env.PACT_PROVIDER}-convert+${process.env.BUILD_VERSION}.json`
+        `${process.cwd()}/pact/pacts/${process.env.PACT_CONSUMER}+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}-convert+${process.env.PACT_VERSION}.json`
       ]
       : []
   })
