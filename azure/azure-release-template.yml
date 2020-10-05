@@ -37,11 +37,6 @@ extends:
 
           export APIGEE_ENVIRONMENT=$(ENVIRONMENT)
 
-          if [[ $APIGEE_ENVIRONMENT == "ref" ]]; then
-            echo "Skipping smoke tests for ref"
-            exit 0
-          fi
-
           # Set variables
           export SERVICE_NAME=$(SERVICE_NAME)
           export SERVICE_ARTIFACT_NAME=`ls $SERVICE_NAME`
