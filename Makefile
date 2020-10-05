@@ -1,4 +1,4 @@
-SHELL=/bin/bash -euo pipefail
+SHELL=/bin/bash -euo pipefail -O globstar
 
 ## Common
 
@@ -77,7 +77,8 @@ build-specification:
 	cd specification \
 	&& mkdir -p build/components/examples \
 	&& mkdir -p build/components/schemas \
-	&& cp -r ../models/examples/specification/** build/components/examples \
+	&& cp ../models/examples/signature.json build/components/examples/. \
+	&& cp -r ../models/examples/specification/. build/components/examples/. \
 	&& cp -r ../models/schemas build/components \
 	&& cp electronic-prescription-service-api.yaml build/electronic-prescription-service-api.yaml \
 	&& npm run resolve \
@@ -104,24 +105,15 @@ build-proxies:
 # Test
 
 test-coordinator:
-	cp models/examples/specification/signature.json models/examples/signature.json 
 	cd coordinator \
 	&& npm run test
-	rm models/examples/signature.json
-
-# Integration Test
-
-test-integration-coordinator:
-	cd coordinator \
-	&& export API_TEST_ENV_FILE_PATH=$(or $(API_TEST_ENV_FILE_PATH),../tests/e2e/postman/environments/local.postman_environment.json) \
-	&& npm run integration-test
 
 ## Quality Checks
 
 validate-models:
 	mkdir -p models/build
 	test -f models/build/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > models/build/org.hl7.fhir.validator.jar
-	for dir in "specification/**" "secondary-care/**/**/**"; do \
+	for dir in "specification/**" "secondary-care/**"; do \
 		java -jar models/build/org.hl7.fhir.validator.jar models/examples/$$dir/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt; \
 	done
 
