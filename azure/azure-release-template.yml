@@ -66,8 +66,6 @@ extends:
           export NAMESPACE=$(NAMESPACE)
           export COMMIT_SHA=$(resources.pipeline.build_pipeline.sourceCommit)
 
-          export APIGEE_ENVIRONMENT=$(ENVIRONMENT)
-
           if [ "$SANDBOX" == "1" ]; then
             export PACT_PROVIDER=nhsd-apim-eps-sandbox
           else
@@ -79,7 +77,7 @@ extends:
             elif [ "$APIGEE_ENVIRONMENT" == "ref" ]
             then
               export IDP_URL="$(REF_IDP_URL)"
-              export AUTH_BEARER_TOKEN="$(REF_AUTH_BEARER_TOKEN)""
+              export AUTH_BEARER_TOKEN="$(REF_AUTH_BEARER_TOKEN)"
               export APIGEE_ACCESS_TOKEN=$(docker run --rm -e AUTH_BEARER_TOKEN=$AUTH_BEARER_TOKEN booshi/nhsd-login-docker:latest "$IDP_URL")
             else
               export IDP_URL="https://nhsd-apim-testing-$(ENVIRONMENT).herokuapp.com"
