@@ -95,7 +95,7 @@ npm t
 ```
 
 #### End-to-end tests
-New examples can be added in the relevant directory under `models/primary-care|secondary-care`
+New examples can be added in the relevant directory under `models/examples/primary-care|secondary-care`
 
 Following the convention:
 
