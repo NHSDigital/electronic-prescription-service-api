@@ -9,13 +9,14 @@
     "generate-postman-collection": "ts-node postman-pact.ts --use_strict",
     "create-pacts": "jest",
     "publish-pacts": "ts-node ./broker/publish.ts --use_strict",
-    "verify-pacts": "ts-node ./broker/verify.ts --use_strict"
+    "verify-pacts": "ts-node ./broker/verify.ts --use_strict",
+    "verify-convert-pacts": "ts-node ./broker/verify-v3.ts --use_strict"
   },
   "author": "NHS Digital",
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "@pact-foundation/pact": "9.12.1",
+    "@pact-foundation/pact": "^10.0.0-beta.16",
     "@pact-foundation/pact-node": "10.9.7",
     "@types/jest": "^26.0.0",
     "@types/lossless-json": "^1.0.0",

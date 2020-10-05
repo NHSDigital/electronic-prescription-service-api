@@ -95,25 +95,26 @@ npm t
 ```
 
 #### End-to-end tests
-In order for tests under the make target `test-integration-coordinator` to work, you must have built and be running the coordindator locally. In a seperate shell run:
+New examples can be added in the relevant directory under `models/examples/primary-care|secondary-care`
+
+Following the convention:
+
+`{number}-{endpoint}-{request|response}-{?operation}-{status}.{ext}`
+
+Number is a way to group requests and responses together in each directory, for example in the below 
 
 ```
-make build
-make run-coordinator
+1-Convert-Response-Send-200_OK.xml
+1-Process-Request-Send-200_OK.json
 ```
 
-Once the coordinator is up and displaying the port number, in another shell run:
+the convert response would be set as the expected response for the process request
 
-```
-make test-integration-coordindator
-```
+These examples are then loaded into smoke tests (e2e tests) run during continous deployment
 
-To run all other tests locally (includes unit and low level integration tests): while in the root folder, run
+Operation can be omitted for prepare examples as there is only one operation for this endpoint
 
-```
-make build
-make test
-```
+The smoke test description is built up from the directory and the filename so tests can be renamed by changing the folder structure
 
 ### VS Code Plugins
 
