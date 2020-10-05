@@ -179,7 +179,7 @@ export function wrapInOperationOutcome<T>(message: SpineDirectResponse<T>): fhir
     issue: [{
       code: message.statusCode <= 299 ? "informational" : "invalid",
       severity: message.statusCode <= 299 ? "information" : "error",
-      diagnostics: message.body.toString()
+      diagnostics: message.body?.toString()
     }]
   }
 }
