@@ -35,13 +35,6 @@ extends:
       - bash: |
           set -euo pipefail
 
-          export APIGEE_ENVIRONMENT=$(ENVIRONMENT)
-
-          if [[ $APIGEE_ENVIRONMENT == "ref" ]]; then
-            echo "Skipping smoke tests for ref"
-            exit 0
-          fi
-
           # Set variables
           export SERVICE_NAME=$(SERVICE_NAME)
           export SERVICE_ARTIFACT_NAME=`ls $SERVICE_NAME`
@@ -71,17 +64,22 @@ extends:
           export NAMESPACE=$(NAMESPACE)
           export COMMIT_SHA=$(resources.pipeline.build_pipeline.sourceCommit)
 
-          if [ "$APIGEE_ENVIRONMENT" == "int" ]; then
-            export IDP_URL=https://nhsd-apim-testing-$(ENVIRONMENT)-ns.herokuapp.com
-          else
-            export IDP_URL=https://nhsd-apim-testing-$(ENVIRONMENT).herokuapp.com
-          fi
-          
+          export APIGEE_ENVIRONMENT=$(ENVIRONMENT)
+
           if [ "$SANDBOX" == "1" ]; then
             export PACT_PROVIDER=nhsd-apim-eps-sandbox
           else
             export PACT_PROVIDER=nhsd-apim-eps
-            export APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest $IDP_URL)
+            if [ "$APIGEE_ENVIRONMENT" == "int" ]; then
+              export IDP_URL=https://nhsd-apim-testing-$(ENVIRONMENT)-ns.herokuapp.com
+              export APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest $IDP_URL)
+            else if [ "$APIGEE_ENVIRONMENT" == "ref" ]; then
+              export IDP_URL="$(REF_IDP_URL)"
+              export APIGEE_ACCESS_TOKEN=$(docker run --rm -e AUTH_BEARER_TOKEN=$(REF_AUTH_BEARER_TOKEN) booshi/nhsd-login-docker:latest $IDP_URL)
+            else
+              export IDP_URL=https://nhsd-apim-testing-$(ENVIRONMENT).herokuapp.com
+              export APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest $IDP_URL)
+            fi
           fi
 
           # Publish
