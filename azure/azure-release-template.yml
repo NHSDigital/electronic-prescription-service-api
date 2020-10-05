@@ -32,20 +32,17 @@ extends:
         inputs:
           dockerVersion: 17.09.0-ce
           releaseType: stable
-      - task: DownloadSecureFile@1
-        name: getRefAccessToken
-        displayName: 'Get ref access token'
-        inputs:
-          secureFile: 'get_ref_access_token.sh'
       - bash: |
           set -euo pipefail
+
+          export APIGEE_ENVIRONMENT=$(ENVIRONMENT)
 
           # Set variables
           export SERVICE_NAME=$(SERVICE_NAME)
           export SERVICE_ARTIFACT_NAME=`ls $SERVICE_NAME`
 
           if [ ! -d "$SERVICE_NAME/$SERVICE_ARTIFACT_NAME/pact" ]; then
-              echo "No pacts found. Exiting"
+            echo "No pacts found. Exiting"
             exit 0
           fi
 
@@ -56,8 +53,6 @@ extends:
             export BUILD_VERSION="${{ parameters.service_base_path_pr }}"
             export SERVICE_BASE_PATH="${{ parameters.service_base_path_pr }}"
           fi
-
-          export APIGEE_ENVIRONMENT=$(ENVIRONMENT)
 
           export SANDBOX=0
           if [[ $APIGEE_ENVIRONMENT == *"sandbox"* ]]; then
@@ -70,21 +65,22 @@ extends:
           export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH
           export PACT_CONSUMER=nhsd-apim-eps-test-client
 
-          if [ "$APIGEE_ENVIRONMENT" == "int" ]; then
-            export IDP_URL=https://nhsd-apim-testing-$(ENVIRONMENT)-ns.herokuapp.com
-          else
-            export IDP_URL=https://nhsd-apim-testing-$(ENVIRONMENT).herokuapp.com
-          fi
-          
           if [ "$SANDBOX" == "1" ]; then
             export PACT_PROVIDER=nhsd-apim-eps-sandbox
           else
             export PACT_PROVIDER=nhsd-apim-eps
-            if [ "$APIGEE_ENVIRONMENT" == "ref" ]; then
-              chmod +x $(getRefAccessToken.secureFilePath)
-              source $(getRefAccessToken.secureFilePath)
+            if [ "$APIGEE_ENVIRONMENT" == "int" ]
+            then
+              export IDP_URL="https://nhsd-apim-testing-$(ENVIRONMENT)-ns.herokuapp.com"
+              export APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest "$IDP_URL")
+            elif [ "$APIGEE_ENVIRONMENT" == "ref" ]
+            then
+              export IDP_URL="$(REF_IDP_URL)"
+              export AUTH_BEARER_TOKEN="$(REF_AUTH_BEARER_TOKEN)"
+              export APIGEE_ACCESS_TOKEN=$(docker run --rm -e AUTH_BEARER_TOKEN=$AUTH_BEARER_TOKEN booshi/nhsd-login-docker:latest "$IDP_URL")
             else
-              export APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest $IDP_URL)
+              export IDP_URL="https://nhsd-apim-testing-$(ENVIRONMENT).herokuapp.com"
+              export APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest "$IDP_URL")
             fi
           fi
 

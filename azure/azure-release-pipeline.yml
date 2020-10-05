@@ -24,6 +24,7 @@ variables:
   - template: project.yml
   - group: pact
   - group: variable-group-read
+  - group: eps-ref-smoke-tests
 
 extends:
   template: azure-release-template.yml
@@ -68,7 +69,4 @@ extends:
       - environment: ref
         make_spec_visible: false
         proxy_path: live
-        depends_on:
-          - internal_dev_sandbox
-        #  - int
-        #  - sandbox
+        depends_on: []
