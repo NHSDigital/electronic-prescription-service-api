@@ -72,9 +72,3 @@ extends:
         depends_on:
           - int
           - sandbox
-      - environment: prod
-        make_spec_visible: true
-        proxy_path: live
-        depends_on:
-          - ref
-
