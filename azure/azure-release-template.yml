@@ -58,7 +58,7 @@ extends:
           export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH
           export PACT_CONSUMER=nhsd-apim-eps-test-client
 
-          export ENVIRONMENT=$(ENVIRONMENT)
+          export ENVIRONMENT=$(APIGEE_ENVIRONMENT)
 
           if [ "$ENVIRONMENT" == *"sandbox"* ]; then
             export PACT_PROVIDER=nhsd-apim-eps-sandbox
