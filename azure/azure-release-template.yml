@@ -63,7 +63,7 @@ extends:
           if [[ "$APIGEE_ENVIRONMENT" == *"sandbox"* ]]; then
             export PACT_PROVIDER=nhsd-apim-eps-sandbox
           else
-            export PACT_P[ROVIDER=nhsd-apim-eps
+            export PACT_PROVIDER=nhsd-apim-eps
             if [ "$APIGEE_ENVIRONMENT" == "int" ]
             then
               export IDP_URL="https://nhsd-apim-testing-$APIGEE_ENVIRONMENT-ns.herokuapp.com"
