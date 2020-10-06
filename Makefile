@@ -26,11 +26,13 @@ release:
 	cp -r terraform dist
 	rsync -av --progress --copy-links tests/e2e/pact dist --exclude node_modules
 	for env in internal-dev-sandbox internal-qa-sandbox sandbox; do \
-		cat ecs-proxies-deploy.yml | sed -e 's/{{ SANDBOX_MODE_ENABLED }}/1/g' > dist/ecs-deploy-$$env.yml; \
+		cat ecs-proxies-deploy.yml | sed -e 's/{{ SPINE_ENV }}/TEST/g' | sed -e 's/{{ SANDBOX_MODE_ENABLED }}/1/g' > dist/ecs-deploy-$$env.yml; \
 	done
-	for env in internal-dev internal-qa int; do \
-		cat ecs-proxies-deploy.yml | sed -e 's/{{ SANDBOX_MODE_ENABLED }}/0/g' > dist/ecs-deploy-$$env.yml; \
+	for env in internal-dev internal-qa; do \
+		cat ecs-proxies-deploy.yml | sed -e 's/{{ SPINE_ENV }}/TEST/g' -e 's/{{ SANDBOX_MODE_ENABLED }}/0/g' > dist/ecs-deploy-$$env.yml; \
 	done
+	cat ecs-proxies-deploy.yml | sed -e 's/{{ SPINE_ENV }}/INT/g' -e 's/{{ SANDBOX_MODE_ENABLED }}/0/g' > dist/ecs-deploy-int.yml
+	cat ecs-proxies-deploy.yml | sed -e 's/{{ SPINE_ENV }}/REF/g' -e 's/{{ SANDBOX_MODE_ENABLED }}/0/g' > dist/ecs-deploy-ref.yml
 
 clean:
 	rm -rf dist

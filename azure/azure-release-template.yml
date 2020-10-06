@@ -27,36 +27,29 @@ extends:
     spec_file: ${{ parameters.spec_file }}
     apigee_deployments: ${{ parameters.apigee_deployments }}
     post_deploy:
+      - bash: |
+          if [[ -d "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact" ]]; then
+            echo "##vso[task.setvariable variable=run_smoke_tests]true"
+          else
+            echo "##vso[task.setvariable variable=run_smoke_tests]false"
+          fi
+        displayName: Check for smoke tests
       - task: DockerInstaller@0
         displayName: Install docker
         inputs:
           dockerVersion: 17.09.0-ce
           releaseType: stable
+        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - bash: |
           set -euo pipefail
 
-          export APIGEE_ENVIRONMENT=$(ENVIRONMENT)
-
-          # Set variables
-          export SERVICE_NAME=$(SERVICE_NAME)
-          export SERVICE_ARTIFACT_NAME=`ls $SERVICE_NAME`
-
-          if [ ! -d "$SERVICE_NAME/$SERVICE_ARTIFACT_NAME/pact" ]; then
-            echo "No pacts found. Exiting"
-            exit 0
-          fi
+          export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
+          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
 
           if [[ $SERVICE_ARTIFACT_NAME == v* ]]; then
-            export BUILD_VERSION=`echo $SERVICE_ARTIFACT_NAME | grep -o "v[0-9]\+\.[0-9]\+\.[0-9]\+-[[:alpha:]]\+" | tail -1`
-            export SERVICE_BASE_PATH="${{ parameters.service_base_path }}"
+            export PACT_VERSION=`echo $SERVICE_ARTIFACT_NAME | grep -o "v[0-9]\+\.[0-9]\+\.[0-9]\+-[[:alpha:]]\+" | tail -1`
           else
-            export BUILD_VERSION="${{ parameters.service_base_path_pr }}"
-            export SERVICE_BASE_PATH="${{ parameters.service_base_path_pr }}"
-          fi
-
-          export SANDBOX=0
-          if [[ $APIGEE_ENVIRONMENT == *"sandbox"* ]]; then
-            export SANDBOX=1
+            export PACT_VERSION="$SERVICE_BASE_PATH"
           fi
 
           export PACT_BROKER_URL=$(PACT_BROKER_URL)
@@ -65,15 +58,17 @@ extends:
           export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH
           export PACT_CONSUMER=nhsd-apim-eps-test-client
 
-          if [ "$SANDBOX" == "1" ]; then
+          export ENVIRONMENT=$(ENVIRONMENT)
+
+          if [ "$ENVIRONMENT" == *"sandbox"* ]; then
             export PACT_PROVIDER=nhsd-apim-eps-sandbox
           else
             export PACT_PROVIDER=nhsd-apim-eps
-            if [ "$APIGEE_ENVIRONMENT" == "int" ]
+            if [ "$ENVIRONMENT" == "int" ]
             then
               export IDP_URL="https://nhsd-apim-testing-$(ENVIRONMENT)-ns.herokuapp.com"
               export APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest "$IDP_URL")
-            elif [ "$APIGEE_ENVIRONMENT" == "ref" ]
+            elif [ "$ENVIRONMENT" == "ref" ]
             then
               export IDP_URL="$(REF_IDP_URL)"
               export AUTH_BEARER_TOKEN="$(REF_AUTH_BEARER_TOKEN)"
@@ -84,6 +79,11 @@ extends:
             fi
           fi
 
+          export PACT_BROKER_URL=$(PACT_BROKER_URL)
+          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
+          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
+          export PACT_CONSUMER=nhsd-apim-eps-test-client
+
           # Publish
           cd $SERVICE_NAME/$SERVICE_ARTIFACT_NAME/pact
           rm -rf node_modules && npm install
@@ -92,7 +92,7 @@ extends:
           make publish-pacts
 
           # Poll deploying API until our deployed version matches the release version
-          url="https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH/_ping"
+          url="https://$ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH/_ping"
           interval_in_seconds=5
           releaseCommit="$(Build.SourceVersion)"
           path=".commitId"
@@ -112,14 +112,15 @@ extends:
           make verify-pacts
 
           # Tag
-          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest broker create-version-tag --pacticipant=$PACT_CONSUMER+$BUILD_VERSION --version=$BUILD_VERSION --tag=$APIGEE_ENVIRONMENT
-          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest broker create-version-tag --pacticipant=$PACT_PROVIDER+$BUILD_VERSION --version=$BUILD_VERSION --tag=$APIGEE_ENVIRONMENT
-          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest broker create-version-tag --pacticipant=$PACT_PROVIDER-convert+$BUILD_VERSION --version=$BUILD_VERSION --tag=$APIGEE_ENVIRONMENT
+          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest broker create-version-tag --pacticipant=$PACT_CONSUMER+$PACT_VERSION --version=$PACT_VERSION --tag=$APIGEE_ENVIRONMENT
+          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest broker create-version-tag --pacticipant=$PACT_PROVIDER+$PACT_VERSION --version=$PACT_VERSION --tag=$APIGEE_ENVIRONMENT
+          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest broker create-version-tag --pacticipant=$PACT_PROVIDER-convert+$PACT_VERSION --version=$PACT_VERSION --tag=$APIGEE_ENVIRONMENT
 
           # Link to pact on broker
-          echo "View Pact: $PACT_BROKER_URL/matrix?q%5B%5Dpacticipant=$PACT_CONSUMER+$BUILD_VERSION&q%5B%5Dtag=$APIGEE_ENVIRONMENT&q%5B%5Dpacticipant=$PACT_PROVIDER+$BUILD_VERSION&q%5B%5Dtag=$APIGEE_ENVIRONMENT&latestby=cvpv&limit=100"
+          echo "View Pact: $PACT_BROKER_URL/matrix?q%5B%5Dpacticipant=$PACT_CONSUMER+$PACT_VERSION&q%5B%5Dtag=$APIGEE_ENVIRONMENT&q%5B%5Dpacticipant=$PACT_PROVIDER+$PACT_VERSION&q%5B%5Dtag=$APIGEE_ENVIRONMENT&latestby=cvpv&limit=100"
 
           # Can I Deploy
-          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest broker can-i-deploy --pacticipant $PACT_PROVIDER+$BUILD_VERSION --version $BUILD_VERSION --pacticipant $PACT_CONSUMER+$BUILD_VERSION --version $BUILD_VERSION
-          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest broker can-i-deploy --pacticipant $PACT_PROVIDER-convert+$BUILD_VERSION --version $BUILD_VERSION --pacticipant $PACT_CONSUMER+$BUILD_VERSION --version $BUILD_VERSION
+          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest broker can-i-deploy --pacticipant $PACT_PROVIDER+$PACT_VERSION --version $PACT_VERSION --pacticipant $PACT_CONSUMER+$PACT_VERSION --version $PACT_VERSION
+          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest broker can-i-deploy --pacticipant $PACT_PROVIDER-convert+$PACT_VERSION --version $PACT_VERSION --pacticipant $PACT_CONSUMER+$PACT_VERSION --version $PACT_VERSION
         displayName: Run smoke tests
+        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))

@@ -24,6 +24,6 @@ export PACT_PROVIDER=nhsd-apim-eps-sandbox
 export APIGEE_ACCESS_TOKEN=
 export APIGEE_ENVIRONMENT=internal-dev-sandbox
 export SERVICE_BASE_PATH=electronic-prescriptions-pr-189
-export BUILD_VERSION=$SERVICE_BASE_PATH
+export PACT_VERSION=$SERVICE_BASE_PATH
 export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH
 export PACT_PROVIDER_URL=http://localhost:9000
