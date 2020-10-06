@@ -27,7 +27,7 @@
     </Request>
   </PreFlow>
   <LocalTargetConnection>
-    <APIProxy>sync-wrap-pr-22/APIProxy>
+    <APIProxy>sync-wrap-pr-22</APIProxy>
     <ProxyEndpoint>default</ProxyEndpoint>
     <Path>/sync-wrap-pr-22/{{ SERVICE_BASE_PATH }}</Path>
   </LocalTargetConnection>
