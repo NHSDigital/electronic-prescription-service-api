@@ -16,12 +16,8 @@ docker_service:
         - name: BASE_PATH
           value: "https://{{ '' if APIGEE_ENVIRONMENT == 'prod' else APIGEE_ENVIRONMENT + '.' }}api.service.nhs.uk/electronic-prescriptions{{ '-pr-' + pr_number if pr_number else '' }}"
     secrets:
-        - name: INT_SPINE_URL
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/int/host'
-        - name: REF_SPINE_URL
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/ref/host'
-        - name: TEST_SPINE_URL
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/test/host'
+        - name: SPINE_URL
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/{{ SPINE_ENV | lower }}/host'
         - name: CLIENT_KEY
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/private-key'
         - name: CLIENT_CERT
