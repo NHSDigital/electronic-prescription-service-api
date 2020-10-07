@@ -37,11 +37,11 @@ extends:
     service_base_path_pr: none
     spec_file: ${{ variables.spec_file }}
     apigee_deployments:
-      - environment: internal-dev
-        proxy_path: live
-        make_spec_visible: true
       - environment: internal-dev-sandbox
         proxy_path: sandbox
+        make_spec_visible: true
+      - environment: internal-dev
+        proxy_path: live
         make_spec_visible: true
       - environment: internal-qa-sandbox
         proxy_path: sandbox
@@ -69,4 +69,6 @@ extends:
       - environment: ref
         make_spec_visible: false
         proxy_path: live
-        depends_on: []
+        depends_on:
+          - int
+          - sandbox
