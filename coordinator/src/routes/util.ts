@@ -1,12 +1,13 @@
 import {isPollable, SpineDirectResponse, SpinePollableResponse} from "../models/spine"
 import Hapi from "@hapi/hapi"
 import * as fhir from "../models/fhir/fhir-resources"
-import * as requestValidator from "../services/validation/bundle-validator"
 import {OperationOutcome, Resource} from "../models/fhir/fhir-resources"
+import * as requestValidator from "../services/validation/bundle-validator"
 import * as errors from "../models/errors/validation-errors"
 import {wrapInOperationOutcome} from "../services/translation/common"
 import * as LosslessJson from "lossless-json"
 import {getMessageHeader} from "../services/translation/common/getResourcesOfType"
+import axios from "axios";
 
 export function handleResponse<T>(
   spineResponse: SpineDirectResponse<T> | SpinePollableResponse,
@@ -53,15 +54,21 @@ export function identifyMessageType(bundle: fhir.Bundle): string {
 export function validatingHandler(requireSignature: boolean, handler: Handler<fhir.Bundle>) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     const requestPayload = getPayload(request)
+
+    const fhirValidation = await axios.post("http://localhost:9001/$validate", requestPayload)
+    if (fhirValidation) {
+      console.error(`Would have returned the following error response:\n${fhirValidation}`)
+    }
+
     const validation = requestValidator.verifyBundle(requestPayload, requireSignature)
     if (validation.length > 0) {
       const response = toFhirError(validation)
       const statusCode = requestValidator.getStatusCode(validation)
       return responseToolkit.response(response).code(statusCode)
-    } else {
-      const validatedPayload = requestPayload as fhir.Bundle
-      return handler(validatedPayload, request, responseToolkit)
     }
+
+    const validatedPayload = requestPayload as fhir.Bundle
+    return handler(validatedPayload, request, responseToolkit)
   }
 }
 
