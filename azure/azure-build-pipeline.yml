@@ -18,6 +18,7 @@ resources:
       type: github
       name: NHSDigital/api-management-utils
       endpoint: NHSDigital
+      ref: AEA-365-checkout-submodules
 
 variables:
   - template: project.yml
