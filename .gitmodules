@@ -1,0 +1,3 @@
+[submodule "validator"]
+	path = validator
+	url = git@github.com:NHSDigital/validation-service-fhir-r4.git
