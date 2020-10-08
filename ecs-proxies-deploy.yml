@@ -1,5 +1,5 @@
 #docker_service_cpu: 256
-#docker_service_memory: 512
+docker_service_memory: 1024
 
 docker_service:
   - name: eps-coordinator

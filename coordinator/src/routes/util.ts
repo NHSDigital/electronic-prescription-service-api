@@ -7,7 +7,7 @@ import * as errors from "../models/errors/validation-errors"
 import {wrapInOperationOutcome} from "../services/translation/common"
 import * as LosslessJson from "lossless-json"
 import {getMessageHeader} from "../services/translation/common/getResourcesOfType"
-import axios from "axios";
+import axios from "axios"
 
 export function handleResponse<T>(
   spineResponse: SpineDirectResponse<T> | SpinePollableResponse,
