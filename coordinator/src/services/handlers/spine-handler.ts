@@ -124,10 +124,10 @@ export class LiveRequestHandler implements RequestHandler {
 
   private getSpineUrlForPrescription() {
     if (this.spineEndpoint.includes("ref")) {
-      return `${SPINE_URL_SCHEME}://${this.spineEndpoint.replace(/msg/g, "prescriptions")}/activesite/prescriptions_async`
+      return `${SPINE_URL_SCHEME}://${this.spineEndpoint.replace(/msg/g, "prescriptions")}`
     }
 
-    return `${SPINE_URL_SCHEME}://prescriptions.refspineservices.nhs.uk/activesite/prescriptions_async`
+    return `${SPINE_URL_SCHEME}://prescriptions.refspineservices.nhs.uk`
   }
   
   private getSpineUrlForPolling(path: string) {
