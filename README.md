@@ -4,7 +4,7 @@
 
 This is a RESTful HL7® FHIR® API specification for the *Electronic Prescription Service API*.
 
-* `azure/` Holds definition of CI/CD pipeline.
+* `azure/` Defines CI/CD pipeline.
 * `coordinator/` Deals with message translation and distribution to other services. Backend for the production EPS FHIR API.
 * `models/` A common, single source of truth directory for requests, responses and schemas used by the various components of this solution.
 * `proxies/` Apigee API Proxies

@@ -11,11 +11,25 @@ npm install
 npm run serve
 ```
 
+### Directories
+- `/models` Typescript interface/class definitions
+- `/resources` mustache template files for xml responses
+- `/routes` API endpoint definitions
+- `/services` FHIR translations
+  - `/formatters` builds xml
+  - `/handlers` defines spine and sandbox handlers - how each of the endpoints respond to requests
+  - `/serialisation` xml serialisation
+  - `/translation` conversion of valid HL7 FHIR message to HL7V3 ParentPrescription message
+  - `/validation` incoming FHIR payload validation on API request
+
 ## Deployment
 
 Redeploy the API Proxy. See the main [README.md](../README.md).
 
 ## Endpoints
+
+Endpoints are found in `/src/routes`.
+Prescription endpoints relate to functionality of the API, health routes relate to current API status.
 
 - [ ] POST `/$convert` Convert a FHIR prescription message into an HL7 V3 ParentPrescription message
 - [ ] POST `/$poll/{poll_path}` Send a poll request to SPINE
