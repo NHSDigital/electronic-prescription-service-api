@@ -35,7 +35,7 @@ export class LiveRequestHandler implements RequestHandler {
 
   async send(spineRequest: SpineRequest): Promise<SpineResponse<unknown>> {
     const wrappedMessage = this.ebXMLBuilder(spineRequest)
-    const address = `${SPINE_URL_SCHEME}://${this.spineEndpoint}${this.spinePath}`
+    const address = this.getSpineUrlForPrescription()
 
     console.log(`Attempting to send the following message to ${address}:\n${wrappedMessage}`)
 
@@ -62,7 +62,7 @@ export class LiveRequestHandler implements RequestHandler {
   }
 
   async poll(path: string): Promise<SpineResponse<unknown>> {
-    const address = `${SPINE_URL_SCHEME}://${this.spineEndpoint}/_poll/${path}`
+    const address = this.getSpineUrlForPolling(path)
 
     console.log(`Attempting to send polling message to ${address}`)
 
@@ -120,5 +120,17 @@ export class LiveRequestHandler implements RequestHandler {
         statusCode: 500
       }
     }
+  }
+
+  private getSpineUrlForPrescription() {
+    if (this.spineEndpoint.includes("test")) {
+      `${SPINE_URL_SCHEME}://${this.spineEndpoint.replace(/msg/g, "prescriptions")}`
+    }
+
+    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}${this.spinePath}`
+  }
+  
+  private getSpineUrlForPolling(path: string) {
+    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/_poll/${path}`
   }
 }
