@@ -53,7 +53,8 @@ export function identifyMessageType(bundle: fhir.Bundle): string {
 
 export function validatingHandler(requireSignature: boolean, handler: Handler<fhir.Bundle>) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-    const fhirValidation = await axios.post("http://localhost:9001/$validate", request.payload)
+    console.info(`Sending this to the validator:\n${request.payload.toString()}`)
+    const fhirValidation = await axios.post("http://localhost:9001/$validate", request.payload.toString())
     if (fhirValidation) {
       console.error(`Would have returned the following error response:\n${fhirValidation}`)
     }
