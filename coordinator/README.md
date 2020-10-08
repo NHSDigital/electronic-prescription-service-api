@@ -17,6 +17,7 @@ Redeploy the API Proxy. See the main [README.md](../README.md).
 
 ## Endpoints
 
-- [ ] POST `/ConvertFullMessage`
-- [ ] POST `/ConvertSignatureFragments`
-- [ ]
+- [ ] POST `/$convert` Convert a FHIR prescription message into an HL7 V3 ParentPrescription message
+- [ ] POST `/$poll/{poll_path}` Send a poll request to SPINE
+- [ ] POST `/$prepare` Convert a FHIR prescription into the HL7 V3 signature fragments to be signed by the prescriber
+- [ ] POST `/$process_message` Convert a FHIR prescription message into an HL7 V3 ParentPrescription message and send to SPINE
