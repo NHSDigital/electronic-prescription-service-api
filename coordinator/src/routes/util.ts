@@ -61,7 +61,13 @@ export function validatingHandler(requireSignature: boolean, handler: Handler<fh
       }
     )
     if (fhirValidation) {
-      console.error(`Would have returned the following error response:\n${fhirValidation}`)
+      if (!isOperationOutcome(fhirValidation)) {
+        throw new TypeError("Expected an OperationOutcome from validator but got " + JSON.stringify(fhirValidation))
+      }
+      const errors = fhirValidation.issue.filter(issue => issue.severity === "error" || issue.severity === "fatal")
+      if (errors) {
+        return responseToolkit.response(fhirValidation).code(400)
+      }
     }
 
     const requestPayload = getPayload(request)
