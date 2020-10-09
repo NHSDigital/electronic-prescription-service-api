@@ -11,7 +11,7 @@ info:
     email: "api.management@nhs.net"
   description: |
     ## Overview
-    Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service) - the national service used to send electronic prescriptions from GP surgeries to pharmacies.
+    Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service) - the national service used to send electronic prescriptions from secondary care prescribers to dispensers.
 
     You can:
     * prepare a secondary care (outpatient) prescription for signing
@@ -29,31 +29,26 @@ info:
     * check the status of a prescription
     * release a prescription for dispensing
     * claim for a dispensed prescription
-    * Track prescriptions or check a prescriptions status
+    * track prescriptions or check a prescriptions status
 
-    Currently, this API can only be accessed by healthcare professionals, authenticated with an NHS smartcard or equivalent.
+    This API can only be accessed by healthcare professionals, authenticated with an NHS smartcard or equivalent.
     
-    Please use the following values for courseOfTherapyType depending on the submitted prescription type:
-    * acute => acute
-    * repeat => continuous
-    * repeat-dispensing => continuous-repeat-dispensing
-
     ## Using this API
     Electronic prescription messages are digitally signed to protect against tampering and to prevent repudiation. While the messages themselves are FHIR-based, for reasons of backwards compatibility, the signatures must be represented in HL7 V3 format. To make this easier, you can POST a prescription to the `/$prepare` endpoint to receive exactly the HL7 V3 fragments which need to be signed to conform to the specification.
     
     To create a prescription:
     1. POST a prescription in FHIR format to the `/$prepare` endpoint
-    2. Sign the response and put the result in a Provenance resource in the original FHIR prescription
+    2. sign the response and put the result in a `Provenance` resource in the original FHIR prescription
     3. POST the signed prescription in FHIR format to the `/$process-message` endpoint
 
     To cancel a prescription:
-    1. POST the prescription in FHIR format to the `/$process-message` endpoint 
+    1. POST a prescription-order-update message to the /$process-message endpoint, more information can be found [here](https://simplifier.net/guide/DigitalMedicines/prescription-order-update)
 
     ### Digital signatures
-    To generate a signature for your prescription, you can use the digital signature service. In order to access the service, you can email your request to the [API management team](api.management@nhs.net). Alternatively, for testing purposes, you can use the example signature from the Provenance schema [here](./types/Provenance).
+    To generate a signature for your prescription, you can use the digital signature service. To access the service, [contact us](https://digital.nhs.uk/developer/help-and-support). Alternatively, for testing purposes, you can use the example signature from the `Provenance` schema [here](./types/Provenance).
 
     ## Legal Use
-    This API can only be used where there is a legal basis to do so. Make sure you have a [valid use case](https://digital.nhs.uk/services/electronic-prescription-service/enabling-eps-for-your-service) before you go too far with your development. 
+    This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
     
     You must do this before you can go live (see ‘Onboarding’ below).
     
@@ -67,22 +62,13 @@ info:
     
     The API is currently available for sandbox testing and integration testing, but not for production use.
 
-    The following items are on our roadmap, in rough priority order:
-    * A service to allow the generation of digital signatures
-    * Cancellation
-    * Primary care prescribing
-    * Dispensing
-    * Prescription tracking
-    * Other prescribing scenarios
-
-    We are extremely keen to receive feedback on the API during alpha and beta,
-    for example if there are data fields missing that you think you need.
-    [Get in touch](https://digital.nhs.uk/developer/help-and-support) with any comments or suggestions.
-
+    To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?tag=eps-fhir-api).
+    
+    If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
+    
     ## Technology
-    This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
-
-    It also conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir) global standard for health care data exchange.
+    
+    This API conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir) global standard for health care data exchange.
     Specifically, it is aligned with [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), which is built on FHIR Release 4.
 
     You don’t need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.
@@ -91,10 +77,8 @@ info:
     - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
 
     ## Network access
-    
-    This API is available on the Internet, although access using NHS smartcards (see below)
-    currently requires a connection to the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).
-    
+    This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network). To use this API with NHS smartcards (see below) you do need an HSCN connection, although internet-facing alternatives are available.
+
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
 
     ## Authorisation
@@ -118,27 +102,37 @@ info:
     | -------------     | ---------------------------------------------------------------------------|
     | Sandbox           | `https://sandbox.api.service.nhs.uk/electronic-prescription-service`       |
     | Integration test  | `https://int.api.service.nhs.uk/electronic-prescription-service`           |
+    | Production        | Not yet available                                                          |
 
-    You can test this API in:
-    * our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing) for initial developer testing
-    * our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing) for formal integration testing
+    ### Sandbox testing
+    Our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing):
 
-    Our sandbox environment is a very basic simulation of the live service. It only covers a limited set of scenarios and is stateless, so does not actually persist any updates.
-
+    * is for early developer testing
+    * only covers a limited set of scenarios
+    * is stateless, so it does not actually persist any updates
+    * is open access, so does not allow you to test authorisation
+    
     For more details on sandbox testing, or to try out the sandbox using our "Try this API" feature, see the documentation for each endpoint.
 
+    ### Integration testing
+    Our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing):
+
+    * is for formal integration testing
+    * is stateful, so persists updates
+    * includes authorisation, with smartcard and non-smartcard options
+    * For read-only testing, you can either use our PDS FHIR API test data packs or set up your own test data.
+
+    To test updating patient details, you must set up your own test data.
+
+    For more details see [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).   
+    
+    
     ## Onboarding
-    We are hoping to make the assurance process as lightweight and as self-service as possible.
+    We are hoping to make the onboarding process as lightweight and as self-service as possible.
 
     More details to follow.
 
-    ## Endpoints
-    To see details for specific endpoints, select from the list on the left hand side of the page:
-    * `POST /$prepare` - convert a FHIR prescription into the HL7 V3 signature fragments to be signed by the prescriber
-    * `POST /$convert` - convert a FHIR prescription to HL7 V3 to verify client signature implementations
-    * `POST /$process-message` - send a signed FHIR prescription/cancellation to Spine
-    * `GET /_poll` - Obtain the response to an asynchronous spine request
-    
+      
     ## Resources
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/DigitalMedicines) to assist with your integration.
     This is the FHIR specification for Digital Medicines starting with the assets required for an electronic prescription sent to the EPS.
@@ -154,7 +148,7 @@ paths:
     post:
       operationId: prepare-prescription
       summary: Convert prescription to signature fragments
-      description: Convert a prescription in FHIR format into the canonicalised HL7 V3 signature fragments which should be signed by the prescriber. A Link to the implementation guide for this endpoint can be found [here](https://simplifier.net/guide/DigitalMedicines/prescription-order).
+      description: Use this endpoint to convert a prescription in FHIR format into HL7 V3 signature fragments which can then be signed by the prescriber. For more details, see  [implementation guide for this endpoint](https://simplifier.net/guide/DigitalMedicines/prescription-order).
       tags:
         - prescribing
       requestBody:
@@ -205,10 +199,10 @@ paths:
   /$process-message:
     post:
       operationId: send-prescription
-      summary: Send a signed prescription to Spine
+      summary: Send a signed prescription
       description: | 
-        Submit a signed prescription to EPS. A Link to the implementation guide for this endpoint can be found [here](https://simplifier.net/guide/DigitalMedicines/prescription-order). 
-        A message with `prescription-order-update` code in the MessageHeader resource will be used to cancel a message. 
+        Use this endpoint to send a signed prescription to EPS. For more details, see  [implementation guide for this endpoint](https://simplifier.net/guide/DigitalMedicines/prescription-order). 
+        To cancel a prescription, use the `prescription-order-update` code in the `MessageHeader`. 
       tags:
         - prescribing
       requestBody:
@@ -228,7 +222,7 @@ paths:
         description: ''
       responses:
         '200':
-          description: Successfully submitted
+          description: Successfully submitted.
           content:
             application/fhir+json:
               schema:
@@ -263,8 +257,10 @@ paths:
       operationId: convert-prescription
       summary: Convert a prescription to a format used for signing
       description: |
-        Convert a prescription from FHIR format into a HL7 V3 representation which can be used to verify signing operations.
-        A message with `prescription-order-update` code in the MessageHeader resource will be converted to a HL7 V3 cancellation message.
+        Use this endpoint to convert a prescription from FHIR format into a HL7 V3 representation which can then be used for signing.
+        A request with the `prescription-order-update` code in the `MessageHeader` resource will be converted to a HL7 V3 cancellation message.
+        
+        This endpoint is asynchronous - it responds with details of an endpoint which you then need to poll to retrieve the outcome of the operation.
       tags:
         - prescribing
       requestBody:
