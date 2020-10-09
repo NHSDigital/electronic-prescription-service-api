@@ -123,18 +123,18 @@ export class LiveRequestHandler implements RequestHandler {
   }
 
   private getSpineUrlForPrescription() {
-    if (this.spineEndpoint.includes("ref")) {
-      return `${SPINE_URL_SCHEME}://${this.spineEndpoint.replace(/msg/g, "prescriptions")}`
+    if (true || this.spineEndpoint.includes("ref")) {
+      return `${SPINE_URL_SCHEME}://${this.spineEndpoint.replace(/msg/g, "prescriptions")}/Prescription`
     }
 
-    return `${SPINE_URL_SCHEME}://prescriptions.refspineservices.nhs.uk`
+    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}${this.spinePath}`
   }
   
   private getSpineUrlForPolling(path: string) {
-    if (this.spineEndpoint.includes("ref")) {
+    if (true || this.spineEndpoint.includes("ref")) {
       return `${SPINE_URL_SCHEME}://${this.spineEndpoint.replace(/msg/g, "prescriptions")}/_poll/${path}`
     }
 
-    return `${SPINE_URL_SCHEME}://prescriptions.refspineservices.nhs.uk/_poll/${path}`
+    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/_poll/${path}`
   }
 }
