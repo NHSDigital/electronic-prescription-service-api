@@ -28,15 +28,14 @@ jestpact.pactWith(
 
         const requestStr = LosslessJson.stringify(request)
         const requestJson = JSON.parse(requestStr)
-        
+
         const apiPath = "/$convert"
         const interaction: InteractionObject = {
           state: null,
           uponReceiving: `a request to convert ${desc} message`,
           withRequest: {
             headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0",
-              "NHSD-Session-URID": "1234"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             method: "POST",
             path: "/$convert",
@@ -54,7 +53,6 @@ jestpact.pactWith(
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-          .set('NHSD-Session-URID', '1234')
           .send(requestJson)
           .expect(200)
       })
