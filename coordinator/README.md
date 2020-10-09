@@ -11,7 +11,7 @@ npm install
 npm run serve
 ```
 
-### Directories
+### Directories in /src
 - `/models` Typescript interface/class definitions
 - `/resources` mustache template files for xml responses
 - `/routes` API endpoint definitions
