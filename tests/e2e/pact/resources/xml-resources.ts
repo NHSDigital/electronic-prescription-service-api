@@ -1,1 +1,0 @@
-../../../../coordinator/src/services/serialisation/xml.ts

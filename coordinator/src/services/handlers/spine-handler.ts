@@ -5,8 +5,8 @@ import {SpineRequest, SpineResponse} from "../../models/spine"
 import {addEbXmlWrapper} from "../formatters/ebxml-request-builder"
 
 const SPINE_URL_SCHEME = "https"
-const SPINE_ENDPOINT = process.env.SPINE_ENV === "INT" ? process.env.INT_SPINE_URL : process.env.TEST_SPINE_URL
-const SPINE_PATH = "/Prescription"
+const SPINE_ENDPOINT = process.env.SPINE_URL
+const SPINE_PATH = "Prescription"
 const BASE_PATH = process.env.BASE_PATH
 
 const httpsAgent = new https.Agent({
@@ -35,7 +35,7 @@ export class LiveRequestHandler implements RequestHandler {
 
   async send(spineRequest: SpineRequest): Promise<SpineResponse<unknown>> {
     const wrappedMessage = this.ebXMLBuilder(spineRequest)
-    const address = `${SPINE_URL_SCHEME}://${this.spineEndpoint}${this.spinePath}`
+    const address = this.getSpineUrlForPrescription()
 
     console.log(`Attempting to send the following message to ${address}:\n${wrappedMessage}`)
 
@@ -62,7 +62,7 @@ export class LiveRequestHandler implements RequestHandler {
   }
 
   async poll(path: string): Promise<SpineResponse<unknown>> {
-    const address = `${SPINE_URL_SCHEME}://${this.spineEndpoint}/_poll/${path}`
+    const address = this.getSpineUrlForPolling(path)
 
     console.log(`Attempting to send polling message to ${address}`)
 
@@ -120,5 +120,21 @@ export class LiveRequestHandler implements RequestHandler {
         statusCode: 500
       }
     }
+  }
+
+  private getSpineUrlForPrescription() {
+    if (this.spineEndpoint.includes("ref")) {
+      return `${SPINE_URL_SCHEME}://${this.spineEndpoint.replace(/msg/g, "prescriptions")}/${this.spinePath}`
+    }
+
+    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/${this.spinePath}`
+  }
+  
+  private getSpineUrlForPolling(path: string) {
+    if (this.spineEndpoint.includes("ref")) {
+      return `${SPINE_URL_SCHEME}://${this.spineEndpoint.replace(/msg/g, "prescriptions")}/_poll/${path}`
+    }
+
+    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/_poll/${path}`
   }
 }

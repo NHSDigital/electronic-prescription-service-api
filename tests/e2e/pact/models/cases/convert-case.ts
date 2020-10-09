@@ -1,32 +1,29 @@
-/* eslint-disable */
+/* eslint-disable no-useless-escape */
 import * as fs from "fs"
-import * as path from "path"
-import { Bundle } from "./fhir-resources"
+import { Bundle } from "../fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 
-export class ConvertSpec {
+export class ConvertCase {
   description: string
   request: Bundle
   response: string
   responseMatcher: string
 
-  constructor(baseLocation: string, location: string, requestFile: string, responseFile: string, description: string = null) {
-    const requestString = fs.readFileSync(path.join(__dirname, baseLocation, location, requestFile), "utf-8")
+  constructor(description: string, requestFilePath: string, responseFilePath: string) {
+    const requestString = fs.readFileSync(requestFilePath, "utf-8")
     const requestJson = LosslessJson.parse(requestString)
 
-    const responseXmlString = fs.readFileSync(path.join(__dirname, baseLocation, location, responseFile), "utf-8")
+    const responseXmlString = fs.readFileSync(responseFilePath, "utf-8")
 
-    this.description = description || location.replace(/\//g, " ")
-
+    this.description = description
     this.request = requestJson
     this.response = responseXmlString
-    this.responseMatcher = this.buildResponseMatcher(responseXmlString)
+    this.responseMatcher = this.buildResponseMatcher(responseXmlString).trimEnd()
   }
 
   private buildResponseMatcher(responseXml: string): string {
     const regexPattern = this.escapeRegexSpecialCharacters(responseXml)
     const responseMatcher = this.replaceDynamicsWithRegexPatterns(regexPattern)
-    //fs.writeFileSync(path.join(__dirname, "./responseMatcher.txt"), responseMatcher)
     return responseMatcher
   }
 
