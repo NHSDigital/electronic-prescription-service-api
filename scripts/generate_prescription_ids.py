@@ -1,4 +1,6 @@
 import uuid
+
+
 def shortPrescID():
     """Create R2 (short format) Prescription ID
     Build the prescription ID and add the required checkdigit.
@@ -16,5 +18,7 @@ def shortPrescID():
     checkValue = _PRESC_CHECKDIGIT_VALUES[checkValue]
     prescriptionID += checkValue
     return prescriptionID
+
+
 print(str(uuid.uuid4()).upper())
 print(shortPrescID())
