@@ -24,6 +24,7 @@ variables:
   - template: project.yml
   - group: pact
   - group: variable-group-read
+  - group: eps-ref-smoke-tests
 
 extends:
   template: azure-release-template.yml
@@ -36,6 +37,9 @@ extends:
     service_base_path_pr: none
     spec_file: ${{ variables.spec_file }}
     apigee_deployments:
+      - environment: internal-dev-sandbox
+        proxy_path: sandbox
+        make_spec_visible: true
       - environment: internal-dev
         proxy_path: live
         make_spec_visible: true
@@ -44,11 +48,13 @@ extends:
         make_spec_visible: true
         depends_on:
           - internal_dev
+          - internal_dev_sandbox
       - environment: internal-qa
         proxy_path: live
         make_spec_visible: true
         depends_on:
           - internal_dev
+          - internal_dev_sandbox
       - environment: sandbox
         proxy_path: sandbox
         depends_on:
@@ -60,3 +66,9 @@ extends:
         depends_on:
           - internal_qa
           - internal_qa_sandbox
+      - environment: ref
+        make_spec_visible: false
+        proxy_path: live
+        depends_on:
+          - int
+          - sandbox

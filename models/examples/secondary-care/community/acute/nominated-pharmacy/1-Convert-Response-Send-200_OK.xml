@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN020101SM31 xmlns="urn:hl7-org:v3">
-  <id root="AD945A29-85F8-439A-B590-6789719ADC16"/>
-  <creationTime value="20200610102631"/>
+  <id root="B668B48F-BA04-4881-A521-961FAC440F53"/>
+  <creationTime value="20200929160503"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN020101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -40,13 +40,13 @@
     </author1>
     <subject>
       <ParentPrescription classCode="INFO" moodCode="EVN">
-        <id root="homecare"/>
+        <id root="AEF77AFB-7E3C-427A-8657-2C427F71A271"/>
         <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Prescription - FocusActOrEvent (record artifact)"/>
-        <effectiveTime value="20200713120000"/>
+        <effectiveTime value="20200929120000"/>
         <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <Patient classCode="PAT">
-            <id extension="9453740519" root="2.16.840.1.113883.2.1.4.1"/>
+            <id extension="9449305552" root="2.16.840.1.113883.2.1.4.1"/>
             <addr use="H">
               <streetAddressLine>123 Dale Avenue</streetAddressLine>
               <streetAddressLine>Long Eaton</streetAddressLine>
@@ -79,34 +79,50 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentPrescription classCode="SBADM" moodCode="RQO">
-            <id root="AD945A29-85F8-439A-B590-6789719ADC16"/>
-            <id extension="DC2C66-A1B2C3-23407B" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+            <id root="454FC887-488A-4519-B529-11000B6791DF"/>
+            <id extension="1DF0D3-ZFA026-11EBBH" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
             <effectiveTime nullFlavor="NA"/>
-            <repeatNumber>
-              <low value="1"/>
-              <high value="1"/>
-            </repeatNumber>
             <performer contextControlCode="OP" typeCode="PRF">
               <AgentOrgSDS classCode="AGNT">
                 <agentOrganizationSDS classCode="ORG" determinerCode="INSTANCE">
-                  <id extension="VNE51" root="1.2.826.0.1285.0.1.10"/>
+                  <id extension="FH542" root="1.2.826.0.1285.0.1.10"/>
                 </agentOrganizationSDS>
               </AgentOrgSDS>
             </performer>
             <author contextControlCode="OP" typeCode="AUT">
-              <time value="20200713120000"/>
-              <signatureText nullFlavor="NA"/>
+              <time value="20200929120000"/>
+              <signatureText>
+                <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+                  <SignedInfo>
+                    <CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+                    <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+                    <Reference>
+                      <Transforms>
+                        <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+                      </Transforms>
+                      <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+                      <DigestValue>gcat4qEGps2ffHgaawezoEO34RI=</DigestValue>
+                    </Reference>
+                  </SignedInfo>
+                  <SignatureValue>QDbL8tIVFEoq9UcS17Px+4GcMqOBSpI9MaQRPKsGUkaA925dfBLavgSm1U7hii/1z0Z3HJI6bPo+fpbRzRZwvm7J4qx2zqdRKw978WgY+piCxr6sUiM+UvUQJ/GtAHmK3MGXIXnK/BMGYnmpYuX3OiQvVJiycEWIcj1u+ymVgBUppneLdcWJCdA+ysJbfKWGx3dCFMNAV71897jP1JLSwTfXo50lpT8qglGFTfInA/YAmZWIfmXy+L2z1KliugbgOIAQCCUgRIA7q2v+9L8SuxX2C13RBm312rfuMQ13hoocL/Rn1DBz+6LNbWuAXq6iMiP6J7Hv+Aln+6hAg46Syg==</SignatureValue>
+                  <KeyInfo>
+                    <X509Data>
+                      <X509Certificate>MIIDnTCCAoWgAwIBAgIEbbWU8DANBgkqhkiG9w0BAQsFADB/MQswCQYDVQQGEwJHQjEXMBUGA1UECBMOV2VzdCBZb3Jrc2hpcmUxDjAMBgNVBAcTBUxlZWRzMRUwEwYDVQQKEwxPcmdhbml6YXRpb24xHDAaBgNVBAsTE09yZ2FuaXNhdGlvbmFsIFVuaXQxEjAQBgNVBAMTCVRlc3QgVXNlcjAeFw0yMDA0MjMxNTQ1NTVaFw0yMDA3MjIxNTQ1NTVaMH8xCzAJBgNVBAYTAkdCMRcwFQYDVQQIEw5XZXN0IFlvcmtzaGlyZTEOMAwGA1UEBxMFTGVlZHMxFTATBgNVBAoTDE9yZ2FuaXphdGlvbjEcMBoGA1UECxMTT3JnYW5pc2F0aW9uYWwgVW5pdDESMBAGA1UEAxMJVGVzdCBVc2VyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq9GduKLSVO6rSboEH3OxcMUCR6/Y2JGecDEGDV4O1k+nvWo5IwZY0zkgJOow9l0iaViUJPRN7mpsb/x/xDomVDAL+xzlQV+T8sB7Zb4l9fWhUI5dQljVHmwZi8Iq0MpZl/a29XKMThw5Zf79hjfgwZhu7amwL+iO/TJso0ApeckzQeZP3gcagrfkBmGuw09rHarq1LvlpOXF/wXEd43XhDPhD+2sGiRV6wEVhWoMWKO2AuXBpIaGlMRECTQ1AdgY57ZJQyTdOjfTD5QWUFLQoWkayLRXT0KrAeK9QLLaUZACLOasQ+N/CnCgMosv2y7zWIBnxCvvB2JMIoyUo1pBfwIDAQABoyEwHzAdBgNVHQ4EFgQUTD37tQuA69g3mMlvuWqI3QrLlQ4wDQYJKoZIhvcNAQELBQADggEBAHO3rv3nKKOXH/UA4OXGCHDURh8eYN3hScnnM4/L52VR9zj5xB3pxUEfVbLXoKpM+8aojOHwd0/oMidsZsFkvNQH3HOPDx3F2KjK7XA2XYhWXcmm383gp9QSVZbVUAZNUte1Wvt3Zwot2dnzzyqcqONPG1qHo8+v79+fFRcK1XbIR13c1B6XaRK26pkSiybNDFb68naBo/KjCGC41er6GeSYo+b9ufM+d9rJg3Ug4UlzNnCG9SfAeXmokqbeqTzKclyRFeDc2jcnb4tLmdYtGXIc5HPcqyBeDxWersqpasjO/OjIAX3xiJfLnglV9aZgduiloAQ7Az9KUYQSyE1sNtI=</X509Certificate>
+                    </X509Data>
+                  </KeyInfo>
+                </Signature>
+              </signatureText>
               <AgentPerson classCode="AGNT">
                 <id extension="100102238986" root="1.2.826.0.1285.0.2.0.67"/>
                 <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
                 <telecom use="WP" value="01234567890"/>
                 <agentPerson classCode="PSN" determinerCode="INSTANCE">
-                  <id extension="1234567" root="1.2.826.0.1285.0.2.1.54"/>
+                  <id extension="3415870201" root="1.2.826.0.1285.0.2.0.65"/>
                   <name>
                     <prefix>DR</prefix>
-                    <given>RAZIA</given>
-                    <family>ALI</family>
+                    <given>Thomas</given>
+                    <family>Edwards</family>
                   </name>
                 </agentPerson>
                 <representedOrganization classCode="ORG" determinerCode="INSTANCE">
@@ -135,11 +151,11 @@
                 <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
                 <telecom use="WP" value="01234567890"/>
                 <agentPerson classCode="PSN" determinerCode="INSTANCE">
-                  <id extension="1234567" root="1.2.826.0.1285.0.2.1.54"/>
+                  <id extension="3415870201" root="1.2.826.0.1285.0.2.0.65"/>
                   <name>
                     <prefix>DR</prefix>
-                    <given>RAZIA</given>
-                    <family>ALI</family>
+                    <given>Thomas</given>
+                    <family>Edwards</family>
                   </name>
                 </agentPerson>
                 <representedOrganization classCode="ORG" determinerCode="INSTANCE">
@@ -162,31 +178,18 @@
                 </representedOrganization>
               </AgentPerson>
             </responsibleParty>
-            <component1 typeCode="COMP">
-              <seperatableInd value="true"/>
-              <daysSupply classCode="SPLY" moodCode="RQO">
-                <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
-                <effectiveTime>
-                  <low value="20200713"/>
-                  <high value="20200807"/>
-                </effectiveTime>
-                <expectedUseTime>
-                  <width unit="d" value="7"/>
-                </expectedUseTime>
-              </daysSupply>
-            </component1>
             <pertinentInformation5 contextConductionInd="true" typeCode="PERT">
               <seperatableInd value="false"/>
               <pertinentPrescriptionTreatmentType classCode="OBS" moodCode="EVN">
                 <code code="PTT" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                <value code="0002" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.36"/>
+                <value code="0001" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.36"/>
               </pertinentPrescriptionTreatmentType>
             </pertinentInformation5>
             <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
               <seperatableInd value="true"/>
               <pertinentDispensingSitePreference classCode="OBS" moodCode="EVN">
                 <code code="DSP" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                <value code="P2" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.21"/>
+                <value code="P1" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.21"/>
               </pertinentDispensingSitePreference>
             </pertinentInformation1>
             <pertinentInformation2 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT">
@@ -196,10 +199,6 @@
                 <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
-                <repeatNumber>
-                  <low value="1"/>
-                  <high value="1"/>
-                </repeatNumber>
                 <product contextControlCode="OP" typeCode="PRD">
                   <manufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
@@ -236,7 +235,7 @@
               <seperatableInd value="false"/>
               <pertinentPrescriptionType classCode="OBS" moodCode="EVN">
                 <code code="PT" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                <value code="1201" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.25"/>
+                <value code="1001" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.25"/>
               </pertinentPrescriptionType>
             </pertinentInformation4>
           </pertinentPrescription>

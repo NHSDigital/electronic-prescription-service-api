@@ -97,7 +97,7 @@ info:
     For more details, see [user-restricted APIs](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis).
 
     ## Environment and Testing
-    
+
     | Purpose           | URL                                                                        |
     | -------------     | ---------------------------------------------------------------------------|
     | Sandbox           | `https://sandbox.api.service.nhs.uk/electronic-prescription-service`       |
