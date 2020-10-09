@@ -53,21 +53,26 @@ export function identifyMessageType(bundle: fhir.Bundle): string {
 
 export function validatingHandler(requireSignature: boolean, handler: Handler<fhir.Bundle>) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-    const fhirValidation = await axios.post(
+    const validatorResponse = await axios.post(
       "http://localhost:9001/$validate",
       request.payload.toString(),
       {
         headers: request.headers
       }
     )
-    if (fhirValidation) {
-      if (!isOperationOutcome(fhirValidation)) {
-        throw new TypeError("Expected an OperationOutcome from validator but got " + JSON.stringify(fhirValidation))
-      }
-      const errors = fhirValidation.issue.filter(issue => issue.severity === "error" || issue.severity === "fatal")
-      if (errors) {
-        return responseToolkit.response(fhirValidation).code(400)
-      }
+
+    const validatorResponseData = validatorResponse.data
+    if (!validatorResponseData) {
+      throw new TypeError("No response from validator")
+    }
+
+    if (!isOperationOutcome(validatorResponseData)) {
+      throw new TypeError(`Unexpected response from validator:\n${JSON.stringify(validatorResponseData)}`)
+    }
+
+    const error = validatorResponseData.issue.find(issue => issue.severity === "error" || issue.severity === "fatal")
+    if (error) {
+      return responseToolkit.response(validatorResponseData).code(400)
     }
 
     const requestPayload = getPayload(request)
