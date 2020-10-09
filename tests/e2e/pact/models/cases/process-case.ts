@@ -9,9 +9,11 @@ export class ProcessCase {
   constructor(description: string, requestFile: string) {
     const requestString = fs.readFileSync(requestFile, "utf-8")
 
-    const requestJson = LosslessJson.parse(requestString)
+    const bundleRequest = LosslessJson.parse(requestString) as Bundle
+    bundleRequest.identifier.value = uuid.v4()
+
 
     this.description = description
-    this.request = requestJson
+    this.request = bundleRequest
   }
 }
