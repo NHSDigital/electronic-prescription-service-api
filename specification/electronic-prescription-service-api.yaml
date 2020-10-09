@@ -183,17 +183,6 @@ paths:
                 example:
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
-        '5XX':
-          description: Server error.
-          content:
-            application/fhir+json:
-              schema:
-                $ref: components/schemas/OperationOutcome-5XX.yaml
-              examples:
-                example:
-                  value:
-                    $ref: components/examples/example-c-unhandled-error/Response-FhirError.json
-          headers: {}
   /$process-message:
     post:
       operationId: send-message
@@ -242,17 +231,6 @@ paths:
                 example:
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
-        '5XX':
-          description: Server error.
-          content:
-            application/fhir+json:
-              schema:
-                $ref: components/schemas/OperationOutcome-5XX-send.yaml
-              examples:
-                patient-deceased:
-                  value:
-                    $ref: components/examples/example-b-spine-error-patient-deceased/SendResponse-FhirError.json
-          headers: {}
   /$convert:
     post:
       operationId: convert-message
@@ -289,16 +267,6 @@ paths:
                 example:
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
-        '5XX':
-          description: Server error.
-          content:
-            application/fhir+json:
-              schema:
-                $ref: components/schemas/OperationOutcome-5XX.yaml
-              examples:
-                example:
-                  value:
-                    $ref: components/examples/example-c-unhandled-error/Response-FhirError.json
 components:
   schemas:
     Bundle:
