@@ -6,7 +6,7 @@ import {addEbXmlWrapper} from "../formatters/ebxml-request-builder"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
-const SPINE_PATH = "/Prescription"
+const SPINE_PATH = "Prescription"
 const BASE_PATH = process.env.BASE_PATH
 
 const httpsAgent = new https.Agent({
@@ -123,10 +123,18 @@ export class LiveRequestHandler implements RequestHandler {
   }
 
   private getSpineUrlForPrescription() {
-    return `${SPINE_URL_SCHEME}://prescriptions.refspineservices.nhs.uk/Prescription`
+    if (this.spineEndpoint.includes("ref")) {
+      return `${SPINE_URL_SCHEME}://${this.spineEndpoint.replace(/msg/g, "prescriptions")}/${this.spinePath}`
+    }
+
+    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/${this.spinePath}`
   }
   
   private getSpineUrlForPolling(path: string) {
-    return `${SPINE_URL_SCHEME}://prescriptions.refspineservices.nhs.uk/_poll/${path}`
+    if (this.spineEndpoint.includes("ref")) {
+      return `${SPINE_URL_SCHEME}://${this.spineEndpoint.replace(/msg/g, "prescriptions")}/_poll/${path}`
+    }
+
+    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/_poll/${path}`
   }
 }
