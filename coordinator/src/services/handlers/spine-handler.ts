@@ -129,7 +129,7 @@ export class LiveRequestHandler implements RequestHandler {
 
     return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/${this.spinePath}`
   }
-  
+
   private getSpineUrlForPolling(path: string) {
     if (this.spineEndpoint.includes("ref")) {
       return `${SPINE_URL_SCHEME}://${this.spineEndpoint.replace(/msg/g, "prescriptions")}/_poll/${path}`

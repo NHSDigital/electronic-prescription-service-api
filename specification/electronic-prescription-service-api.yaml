@@ -29,7 +29,7 @@ info:
     * check the status of a prescription
     * release a prescription for dispensing
     * claim for a dispensed prescription
-    * track prescriptions or check a prescriptions status
+    * track prescriptions or check a prescription's status
 
     This API can only be accessed by healthcare professionals, authenticated with an NHS smartcard or equivalent.
     
@@ -121,7 +121,8 @@ info:
     * is for formal integration testing
     * is stateful, so persists updates
     * includes authorisation, with smartcard and non-smartcard options
-    * For read-only testing, you can either use our PDS FHIR API test data packs or set up your own test data.
+    
+    For read-only testing, you can either use our PDS FHIR API test data packs or set up your own test data.
 
     To test updating patient details, you must set up your own test data.
 
