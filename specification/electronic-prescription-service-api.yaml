@@ -11,7 +11,7 @@ info:
     email: "api.management@nhs.net"
   description: |
     ## Overview
-    Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service) - the national service used to send electronic prescriptions from secondary care prescribers to dispensers.
+    Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service) - the national service used to send electronic prescription messages between prescribers and dispensers.
 
     You can:
     * prepare a secondary care (outpatient) prescription for signing
@@ -33,20 +33,21 @@ info:
 
     This API can only be accessed by healthcare professionals, authenticated with an NHS smartcard or equivalent.
     
-    ## Using this API
+    ## Digital signatures
     Electronic prescription messages are digitally signed to protect against tampering and to prevent repudiation. While the messages themselves are FHIR-based, for reasons of backwards compatibility, the signatures must be represented in HL7 V3 format. To make this easier, you can POST a prescription to the `/$prepare` endpoint to receive exactly the HL7 V3 fragments which need to be signed to conform to the specification.
-    
+
+    To generate a signature for your prescription, you can use the digital signature service. To access the service, [contact us](https://digital.nhs.uk/developer/help-and-support).
+
+    ## Using this API
     To create a prescription:
-    1. POST a prescription in FHIR format to the `/$prepare` endpoint
-    2. sign the response and put the result in a `Provenance` resource in the original FHIR prescription
-    3. POST the signed prescription in FHIR format to the `/$process-message` endpoint
+    1. POST a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) to the `/$prepare` endpoint
+    2. sign the response and put the result in a `Provenance` resource
+    3. add the `Provenance` to the prescription-order message
+    4. POST the signed prescription-order message to the `/$process-message` endpoint
 
     To cancel a prescription:
-    1. POST a prescription-order-update message to the /$process-message endpoint, more information can be found [here](https://simplifier.net/guide/DigitalMedicines/prescription-order-update)
-
-    ### Digital signatures
-    To generate a signature for your prescription, you can use the digital signature service. To access the service, [contact us](https://digital.nhs.uk/developer/help-and-support). Alternatively, for testing purposes, you can use the example signature from the `Provenance` schema [here](./types/Provenance).
-
+    1. POST a [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update) to the `/$process-message` endpoint
+    
     ## Legal Use
     This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
     
@@ -98,11 +99,11 @@ info:
 
     ## Environment and Testing
 
-    | Purpose           | URL                                                                        |
-    | -------------     | ---------------------------------------------------------------------------|
-    | Sandbox           | `https://sandbox.api.service.nhs.uk/electronic-prescription-service`       |
-    | Integration test  | `https://int.api.service.nhs.uk/electronic-prescription-service`           |
-    | Production        | Not yet available                                                          |
+    | Purpose           | URL                                                                 |
+    | -------------     | --------------------------------------------------------------------|
+    | Sandbox           | `https://sandbox.api.service.nhs.uk/electronic-prescriptions`       |
+    | Integration test  | `https://int.api.service.nhs.uk/electronic-prescriptions`           |
+    | Production        | Not yet available                                                   |
 
     ### Sandbox testing
     Our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing):
@@ -147,8 +148,9 @@ paths:
   /$prepare:
     post:
       operationId: prepare-prescription
-      summary: Convert prescription to signature fragments
-      description: Use this endpoint to convert a prescription in FHIR format into HL7 V3 signature fragments which can then be signed by the prescriber. For more details, see  [implementation guide for this endpoint](https://simplifier.net/guide/DigitalMedicines/prescription-order).
+      summary: Convert a prescription message to signature fragments
+      description: |
+        Use this endpoint to convert a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) in FHIR format into HL7 V3 signature fragments which can then be signed by the prescriber.
       tags:
         - prescribing
       requestBody:
@@ -198,11 +200,14 @@ paths:
           headers: {}
   /$process-message:
     post:
-      operationId: send-prescription
-      summary: Send a signed prescription
-      description: | 
-        Use this endpoint to send a signed prescription to EPS. For more details, see  [implementation guide for this endpoint](https://simplifier.net/guide/DigitalMedicines/prescription-order). 
-        To cancel a prescription, use the `prescription-order-update` code in the `MessageHeader`. 
+      operationId: send-message
+      summary: Send a prescription message to EPS
+      description: |
+        Use this endpoint to send a prescription message to EPS.
+        
+        The effect of calling this endpoint depends on the type of the message, which is determined by the `MessageHeader` resource:
+        * To create a prescription, send a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order). The message must include a digital signature.
+        * To cancel a prescription, send a [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update).
       tags:
         - prescribing
       requestBody:
@@ -254,13 +259,14 @@ paths:
           headers: {}
   /$convert:
     post:
-      operationId: convert-prescription
-      summary: Convert a prescription to a format used for signing
+      operationId: convert-message
+      summary: Convert a prescription message from FHIR to HL7 V3
       description: |
-        Use this endpoint to convert a prescription from FHIR format into a HL7 V3 representation which can then be used for signing.
-        A request with the `prescription-order-update` code in the `MessageHeader` resource will be converted to a HL7 V3 cancellation message.
+        Use this endpoint to convert a prescription message in FHIR format into an equivalent HL7 V3 representation.
         
-        This endpoint is asynchronous - it responds with details of an endpoint which you then need to poll to retrieve the outcome of the operation.
+        The result of calling this endpoint depends on the type of the message, which is determined by the `MessageHeader` resource:
+        * A [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) will be converted into a HL7 V3 Parent Prescription message.
+        * A [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update) will be converted to a HL7 V3 Cancel Request message.
       tags:
         - prescribing
       requestBody:
@@ -275,13 +281,8 @@ paths:
                   $ref: components/examples/example-1-repeat-dispensing/SendRequest-FhirMessageSigned.json
         description: ''
       responses:
-        '202':
-          description: Accepted
-          headers:
-            content-location:
-              description: The polling location for the client to call to check for spine updates
-              schema:
-                type: string
+        '200':
+          description: Success
         '4XX':
           description: Invalid request.
           content:
