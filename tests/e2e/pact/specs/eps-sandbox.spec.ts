@@ -30,8 +30,7 @@ jestpact.pactWith(
           uponReceiving: `a request to prepare a ${description} message`,
           withRequest: {
             headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0",
-              "NHSD-Session-URID": "1234"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             method: "POST",
             path: "/$prepare",
@@ -49,7 +48,6 @@ jestpact.pactWith(
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-          .set('NHSD-Session-URID', '1234')
           .send(requestStr)
           .expect(200)
       })
@@ -65,8 +63,7 @@ jestpact.pactWith(
           uponReceiving: `a request to process ${desc} message to Spine`,
           withRequest: {
             headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0",
-              "NHSD-Session-URID": "1234"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             method: "POST",
             path: "/$process-message",
@@ -92,7 +89,6 @@ jestpact.pactWith(
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-          .set('NHSD-Session-URID', '1234')
           .send(messageStr)
           .expect(200)
       })
