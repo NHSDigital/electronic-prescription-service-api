@@ -132,26 +132,32 @@ info:
     ## Responses
     ### 2xx responses
     **Note: This section is under development and subject to change. All Spine responses are returned with 200 HTTP codes until a Spine translation service is built. This does not affect the sandbox environment.**
-    | Endpoint              | HTTP code | Response format                                                                                                                                             |
-    | --------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-    | POST /$prepare        | 200       | [See /$prepare response body](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Prescribing-preparePrescription)      |
-    | POST /$process-message| 200       | [See /$process-message response body](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Prescribing-sendPrescription) |
+    
+    | Endpoint               | HTTP code | Response format                                                                                                                                             |
+    | ---------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+    | POST /$prepare         | 200       | [See /$prepare response body](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Prescribing-preparePrescription)      |
+    | POST /$process-message | 200       | [See /$process-message response body](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Prescribing-sendPrescription) |
+    
     ### 4xx responses
     **Note: This section is under development and subject to change. All Spine responses are returned with 200 HTTP codes until a Spine translation service is built. This does not affect the sandbox environment.**
+    
     | Endpoint              | HTTP code | Response format                           | Environment      | Cause                 |
     | --------------------- | --------- | ----------------------------------------- | ---------------- | --------------------- |
     | Any                   | 400       | See "Unsupported operation" example below | Sandbox          | Unsupported operation |
     | Any                   | 408       | Returns original request data             | Integration test | Request timeout       |
+    
     #### Validation errors
     The following errors may be returned by any endpoint in any environment and will all return a 400 HTTP status code.
-    | Issue severity | Issue type | Error code             | Cause                 |
-    | -------------- | ---------- | ---------------------- | --------------------- |
+    
+    | Issue severity | Issue type | Error code             | Cause                                                           |
+    | -------------- | ---------- | ---------------------- | ---------------------                                           |
     | error          | value      | MISSING_FIELD          | Bundle contains incorrect number of resources of a certain type |
-    | error          | value      | MISSING_FIELD          | Bundle does not contain "id" field |
-    | error          | value      | INVALID_VALUE          | Invalid value in MedicationRequest |
-    | fatal          | value      | MISSING_FIELD          | Bundle does not contain "entry" field |
-    | fatal          | value      | INCORRECT_RESOURCETYPE | ResourceType is not "Bundle" |
-    | fatal          | value      | INVALID_VALUE          | MessageHeader indicates invalid MessageType |
+    | error          | value      | MISSING_FIELD          | Bundle does not contain "id" field                              |
+    | error          | value      | INVALID_VALUE          | Invalid value in MedicationRequest                              |
+    | fatal          | value      | MISSING_FIELD          | Bundle does not contain "entry" field                           |
+    | fatal          | value      | INCORRECT_RESOURCETYPE | ResourceType is not "Bundle"                                    |
+    | fatal          | value      | INVALID_VALUE          | MessageHeader indicates invalid MessageType                     |
+    
     #### Example: Unsupported operation
     If attempting to call the `/_poll` endpoint in the sandbox environment, the following error would be returned:
       ```
