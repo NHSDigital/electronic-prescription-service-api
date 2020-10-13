@@ -51,6 +51,19 @@ export function identifyMessageType(bundle: fhir.Bundle): string {
   return getMessageHeader(bundle).eventCoding?.code
 }
 
+const getCircularReplacer = () => {
+  const seen = new WeakSet()
+  return (key: string, value: unknown) => {
+    if (typeof value === "object" && value !== null) {
+      if (seen.has(value)) {
+        return
+      }
+      seen.add(value)
+    }
+    return value
+  }
+}
+
 export function validatingHandler(requireSignature: boolean, handler: Handler<fhir.Bundle>) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     const validatorResponse = await axios.post(
@@ -67,7 +80,9 @@ export function validatingHandler(requireSignature: boolean, handler: Handler<fh
     }
 
     if (!isOperationOutcome(validatorResponseData)) {
-      throw new TypeError(`Unexpected response from validator:\n${JSON.stringify(validatorResponseData)}`)
+      throw new TypeError(`Unexpected response from validator:\n${
+        JSON.stringify(validatorResponseData, getCircularReplacer())
+      }`)
     }
 
     const error = validatorResponseData.issue.find(issue => issue.severity === "error" || issue.severity === "fatal")
