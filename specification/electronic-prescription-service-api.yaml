@@ -122,26 +122,21 @@ info:
     * is stateful, so persists updates
     * includes authorisation, with smartcard and non-smartcard options
     
-    For read-only testing, you can either use our PDS FHIR API test data packs or set up your own test data.
-
-    To test updating patient details, you must set up your own test data.
-
     For more details see [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).   
-    
     
     ## Onboarding
     We are hoping to make the onboarding process as lightweight and as self-service as possible.
 
     More details to follow.
 
-      
     ## Resources
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/DigitalMedicines) to assist with your integration.
     This is the FHIR specification for Digital Medicines starting with the assets required for an electronic prescription sent to the EPS.
-    
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
-    description: 'Sandbox environment.'
+    description: 'Sandbox'
+  - url: 'https://int.api.service.nhs.uk/electronic-prescriptions'
+    description: 'Integration test'
 tags:
   - name: dispensing
   - name: prescribing
