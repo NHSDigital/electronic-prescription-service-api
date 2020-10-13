@@ -150,7 +150,7 @@ info:
     The following errors may be returned by any endpoint in any environment and will all return a 400 HTTP status code.
     
     | Issue severity | Issue type | Error code             | Cause                                                           |
-    | -------------- | ---------- | ---------------------- | ---------------------                                           |
+    | -------------- | ---------- | ---------------------- | --------------------------------------------------------------- |
     | error          | value      | MISSING_FIELD          | Bundle contains incorrect number of resources of a certain type |
     | error          | value      | MISSING_FIELD          | Bundle does not contain "id" field                              |
     | error          | value      | INVALID_VALUE          | Invalid value in MedicationRequest                              |
