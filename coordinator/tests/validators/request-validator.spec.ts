@@ -12,112 +12,10 @@ function validateValidationErrors (validationErrors: Array<errors.ValidationErro
   expect(validationError.severity).toEqual("error")
 }
 
-describe("verifyBundle simple fail", () => {
-  test("rejects null", () => {
-    expect(validator.verifyBundle(null, false))
-      .toEqual([new errors.RequestNotBundleError()])
-  })
-
-  test("rejects undefined", () => {
-    expect(validator.verifyBundle(undefined, false))
-      .toEqual([new errors.RequestNotBundleError()])
-  })
-
-  test("rejects object which is not a resource", () => {
-    expect(validator.verifyBundle({}, false))
-      .toEqual([new errors.RequestNotBundleError()])
-  })
-
-  test("rejects resource which is not a bundle", () => {
-    const patient = {
-      resourceType: "Patient"
-    }
-    expect(validator.verifyBundle(patient, false))
-      .toEqual([new errors.RequestNotBundleError()])
-  })
-
-  test("rejects bundle without entries", () => {
-    const bundle = {
-      resourceType: "Bundle"
-    }
-    expect(validator.verifyBundle(bundle, false))
-      .toEqual([new errors.NoEntryInBundleError()])
-  })
-
-  test("rejects bundle without id", () => {
-    const bundle = {
-      resourceType: "Bundle",
-      entry: [] as Array<fhir.Resource>
-    }
-    expect(validator.verifyBundle(bundle, false))
-      .toContainEqual(new errors.MissingIdError())
-  })
-
-  const semiPopulatedBundle = {
-    resourceType: "Bundle",
-    id: "test-bundle",
-    entry: [] as Array<fhir.Resource>
-  }
-
-  const atLeastTestCases = [
-    ["PractitionerRole", 1, false],
-    ["Practitioner", 1, false],
-    ["Organization", 1, false]
-  ]
-
-  test.each(atLeastTestCases)(
-    "rejects bundle without %p",
-    (resource: string, requiredNumber: number, requiredSig: boolean) => {
-      expect(validator.verifyBundle(semiPopulatedBundle as fhir.Bundle, requiredSig))
-        .toContainEqual(new errors.ContainsAtLeastError(requiredNumber, resource))
-    }
-  )
-
-  const betweenTestCases = [
-    ["MedicationRequest", 1, 4, false]
-  ]
-
-  test.each(betweenTestCases)(
-    "rejects bundle without %p",
-    (resource: string, min: number, max: number, requiredSig: boolean) => {
-      expect(validator.verifyBundle(semiPopulatedBundle as fhir.Bundle, requiredSig))
-        .toContainEqual(new errors.ContainsBetweenError(min, max, resource))
-    }
-  )
-
-  const exactlyTestCases = [
-    ["Patient", 1, false],
-    ["Provenance", 1, true],
-    ["MessageHeader", 1, false]
-  ]
-
-  test.each(exactlyTestCases)(
-    "rejects bundle without %p",
-    (resource: string, requiredNumber: number, requiredSig: boolean) => {
-      expect(validator.verifyBundle(semiPopulatedBundle as fhir.Bundle, requiredSig))
-        .toContainEqual(new errors.ContainsExactlyError(requiredNumber, resource))
-    }
-  )
-
-  test("rejects bundle with two Patients", () => {
-    const bundle = {
-      resourceType: "Bundle",
-      id: "test-bundle",
-      entry: [
-        {
-          resource: {
-            resourceType: "Patient"
-          }
-        },
-        {
-          resource: {
-            resourceType: "Patient"
-          }
-        }
-      ]
-    }
-    expect(validator.verifyBundle(bundle as fhir.Bundle, false))
-      .toContainEqual(new errors.ContainsExactlyError(1, "Patient"))
+describe("Bundle checks", () => {
+  test("verifyPrescriptionBundle accepts bundle with required Resources", () => {
+    expect(validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned))
+      .toEqual([])
   })
 
   test("rejects bundle with unusual bundle type", () => {
@@ -138,24 +36,12 @@ describe("verifyBundle simple fail", () => {
         }
       ]
     }
-    expect(validator.verifyBundle(bundle as fhir.Bundle, false))
+    expect(validator.verifyBundle(bundle as fhir.Bundle))
       .toContainEqual(new errors.MessageTypeError())
   })
 })
 
-describe("verifyBundle simple pass", () => {
-  test("verifyPrescriptionBundle accepts bundle with required Resources", () => {
-    expect(validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned, false))
-      .toEqual([])
-  })
-
-  test("verifyPrescriptionBundle accepts bundle with required Resources when requireSignature is true", () => {
-    expect(validator.verifyBundle(TestResources.examplePrescription1.fhirMessageSigned, true))
-      .toEqual([])
-  })
-})
-
-describe("verifyPrescriptionBundle throws INVALID_VALUE if MedicationRequests are inconsistent", () => {
+describe("MedicationRequest checks", () => {
   let bundle: fhir.Bundle
   let medicationRequests: Array<fhir.MedicationRequest>
 

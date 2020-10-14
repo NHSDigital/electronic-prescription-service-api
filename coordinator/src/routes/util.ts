@@ -50,10 +50,10 @@ export function identifyMessageType(bundle: fhir.Bundle): string {
   return getMessageHeader(bundle).eventCoding?.code
 }
 
-export function validatingHandler(requireSignature: boolean, handler: Handler<fhir.Bundle>) {
+export function validatingHandler(handler: Handler<fhir.Bundle>) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     const requestPayload = getPayload(request)
-    const validation = requestValidator.verifyBundle(requestPayload, requireSignature)
+    const validation = requestValidator.verifyBundle((requestPayload as fhir.Bundle))
     if (validation.length > 0) {
       const response = toFhirError(validation)
       const statusCode = requestValidator.getStatusCode(validation)
