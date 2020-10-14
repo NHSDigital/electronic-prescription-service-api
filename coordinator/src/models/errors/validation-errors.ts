@@ -5,6 +5,7 @@ export interface ValidationError {
   operationOutcomeCode: "value"
   apiErrorCode: string
   severity: "error" | "fatal"
+  expression: Array<string>
 }
 
 export class MedicationRequestValueError implements ValidationError {
@@ -12,6 +13,7 @@ export class MedicationRequestValueError implements ValidationError {
   message: string
   operationOutcomeCode = "value" as const
   severity = "error" as const
+  expression: Array<string>
 
   constructor(fieldName: string, uniqueFieldValues: Array<string>) {
     this.message = `Expected all MedicationRequests to have the same value for ${
@@ -19,6 +21,7 @@ export class MedicationRequestValueError implements ValidationError {
     }. Received ${[
       ...uniqueFieldValues
     ]}.`
+    this.expression = [`Bundle.entry.resource.ofType(MedicationRequests).${fieldName.split(" ")[0]}`]
   }
 }
 
@@ -31,4 +34,5 @@ export class MessageTypeError implements ValidationError {
   }' or '${
     MessageType.CANCELLATION
   }'.`
+  expression = ["Bundle.entry.resource.ofType(MessageHeader).eventCoding.code"]
 }

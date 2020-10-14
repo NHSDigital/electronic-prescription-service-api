@@ -83,14 +83,8 @@ function toFhirError(validation: Array<errors.ValidationError>): fhir.OperationO
   const mapValidationErrorToOperationOutcomeIssue = (ve: errors.ValidationError) => ({
     severity: ve.severity,
     code: ve.operationOutcomeCode,
-    details: {
-      coding: [{
-        system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
-        version: "1",
-        code: ve.apiErrorCode,
-        display: ve.message
-      }]
-    }
+    diagnostics: ve.message,
+    expression: ve.expression
   })
 
   return {
