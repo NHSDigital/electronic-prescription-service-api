@@ -3,13 +3,11 @@ import {MessageType} from "../../routes/util"
 export interface ValidationError {
   message: string
   operationOutcomeCode: "value"
-  apiErrorCode: string
   severity: "error" | "fatal"
   expression: Array<string>
 }
 
 export class MedicationRequestValueError implements ValidationError {
-  apiErrorCode = "INVALID_VALUE"
   message: string
   operationOutcomeCode = "value" as const
   severity = "error" as const
@@ -26,13 +24,12 @@ export class MedicationRequestValueError implements ValidationError {
 }
 
 export class MessageTypeError implements ValidationError {
-  operationOutcomeCode = "value" as const
-  severity = "fatal" as const
-  apiErrorCode = "INVALID_VALUE"
   message = `MessageHeader.eventCoding.code must be one of '${
     MessageType.PRESCRIPTION
   }' or '${
     MessageType.CANCELLATION
   }'.`
+  operationOutcomeCode = "value" as const
+  severity = "fatal" as const
   expression = ["Bundle.entry.resource.ofType(MessageHeader).eventCoding.code"]
 }
