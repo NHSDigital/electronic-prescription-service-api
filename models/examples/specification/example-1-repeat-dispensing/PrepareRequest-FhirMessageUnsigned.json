@@ -650,7 +650,7 @@
           },
           {
             "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
-            "value": "123456"
+            "value": "SP123456"
           }
         ],
         "code": [
@@ -684,7 +684,7 @@
           },
           {
             "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-            "value": "123456"
+            "value": "G6123456"
           }
         ],
         "name": [

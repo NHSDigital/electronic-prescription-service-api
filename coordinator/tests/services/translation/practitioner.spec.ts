@@ -53,7 +53,7 @@ describe("getAgentPersonTelecom", () => {
   })
 })
 
-describe("getAgentPersonPersonId", () => {
+describe("getAgentPersonPersonIdForAuthor", () => {
   const gmcCode: fhir.Identifier = {
     "system": "https://fhir.hl7.org.uk/Id/gmc-number",
     "value": "gmc"
@@ -64,12 +64,12 @@ describe("getAgentPersonPersonId", () => {
   }
 
   test("if more than 1 professional code is present for a practitioner then throw", () => {
-    expect(() => practitioner.getAgentPersonPersonId(
+    expect(() => practitioner.getAgentPersonPersonIdForAuthor(
       [gmcCode, gmpCode]
     )).toThrow()
   })
   test("if no professional code is specified for a practitioner then throw", () => {
-    expect(() => practitioner.getAgentPersonPersonId(
+    expect(() => practitioner.getAgentPersonPersonIdForAuthor(
       []
     )).toThrow()
   })

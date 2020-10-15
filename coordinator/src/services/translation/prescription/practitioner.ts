@@ -70,7 +70,7 @@ function convertPractitionerRole(
   fhirPractitionerRole: fhir.PractitionerRole,
   isCancellation: boolean,
   convertAgentPersonPersonFn = convertAgentPersonPerson,
-  getAgentPersonPersonIdFn = getAgentPersonPersonId
+  getAgentPersonPersonIdFn = getAgentPersonPersonIdForAuthor
 ): peoplePlaces.AgentPerson {
   const fhirPractitioner = resolveReference(fhirBundle, fhirPractitionerRole.practitioner)
   const hl7V3AgentPerson =
@@ -97,7 +97,7 @@ function createAgentPerson(
   fhirPractitionerRole: fhir.PractitionerRole,
   fhirPractitioner: fhir.Practitioner,
   convertAgentPersonPersonFn = convertAgentPersonPerson,
-  getAgentPersonPersonIdFn = getAgentPersonPersonId
+  getAgentPersonPersonIdFn = getAgentPersonPersonIdForAuthor
 ): peoplePlaces.AgentPerson {
   const hl7V3AgentPerson = new peoplePlaces.AgentPerson()
 
@@ -140,7 +140,7 @@ export function getAgentPersonTelecom(
 function convertAgentPersonPerson(
   fhirPractitionerRole: fhir.PractitionerRole,
   fhirPractitioner: fhir.Practitioner,
-  getAgentPersonPersonIdFn = getAgentPersonPersonId) {
+  getAgentPersonPersonIdFn = getAgentPersonPersonIdForAuthor) {
   const id = getAgentPersonPersonIdFn(fhirPractitioner.identifier, fhirPractitionerRole.identifier)
   const hl7V3AgentPersonPerson = new peoplePlaces.AgentPersonPerson(id)
   if (fhirPractitioner.name !== undefined) {
@@ -152,7 +152,7 @@ function convertAgentPersonPerson(
   return hl7V3AgentPersonPerson
 }
 
-export function getAgentPersonPersonId(
+export function getAgentPersonPersonIdForAuthor(
   fhirPractitionerIdentifier: Array<fhir.Identifier>,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   fhirPractitionerRoleIdentifier: Array<fhir.Identifier> = []
@@ -252,7 +252,7 @@ export function getAgentPersonPersonIdForResponsibleParty(
 
   return prescribingCode.length === 1
     ? prescribingCode[0]
-    : getAgentPersonPersonId(fhirPractitionerIdentifier)
+    : getAgentPersonPersonIdForAuthor(fhirPractitionerIdentifier)
 }
 
 function convertSignatureText(fhirBundle: fhir.Bundle, signatory: fhir.Reference<fhir.PractitionerRole>) {
