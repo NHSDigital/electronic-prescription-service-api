@@ -1,6 +1,6 @@
 import * as fhir from "../../../src/models/fhir/fhir-resources"
 import {Telecom, TelecomUse} from "../../../src/models/hl7-v3/hl7-v3-datatypes-core"
-import {BsaPrescribingIdentifier, SdsUniqueIdentifier} from "../../../src/models/hl7-v3/hl7-v3-datatypes-codes"
+import {ProfessionalCode, SdsUniqueIdentifier} from "../../../src/models/hl7-v3/hl7-v3-datatypes-codes"
 import * as practitioner from "../../../src/services/translation/prescription/practitioner"
 import * as helpers from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
@@ -70,25 +70,25 @@ describe("getAgentPersonPersonId", () => {
 
   test("if all 3 codes are present we return spurious", () => {
     const output = practitioner.getAgentPersonPersonId(
-      [spuriousIdentifier], [dinIdentifier, userIdentifier]
+      [spuriousIdentifier, dinIdentifier, userIdentifier]
     )
-    expect(output).toEqual(new BsaPrescribingIdentifier(spuriousIdentifier.value))
+    expect(output).toEqual(new ProfessionalCode(spuriousIdentifier.value))
   })
   test("if spurious code is missing we return DIN", () => {
     const output = practitioner.getAgentPersonPersonId(
-      [], [dinIdentifier, userIdentifier]
+      [dinIdentifier, userIdentifier]
     )
-    expect(output).toEqual(new BsaPrescribingIdentifier(dinIdentifier.value))
+    expect(output).toEqual(new ProfessionalCode(dinIdentifier.value))
   })
   test("if spurious code and din are missing we return user", () => {
     const output = practitioner.getAgentPersonPersonId(
-      [], [userIdentifier]
+      [userIdentifier]
     )
     expect(output).toEqual(new SdsUniqueIdentifier(userIdentifier.value))
   })
   test("if all 3 are missing then throw", () => {
     expect(() => practitioner.getAgentPersonPersonId(
-      [], []
+      []
     )).toThrow()
   })
 })

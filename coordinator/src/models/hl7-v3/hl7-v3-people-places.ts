@@ -140,7 +140,7 @@ export class PatientPerson implements ElementCompact {
     playedProviderPatient: ProviderPatient
 }
 
-export type PrescriptionAuthorId = codes.BsaPrescribingIdentifier | codes.SdsUniqueIdentifier
+export type PrescriptionAuthorId = codes.ProfessionalCode
 
 /**
  * Details of a person on SDS.

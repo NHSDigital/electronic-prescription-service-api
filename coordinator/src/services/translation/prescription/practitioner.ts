@@ -16,6 +16,7 @@ import * as XmlJs from "xml-js"
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {convertOrganizationAndProviderLicense} from "./organization"
 import {getProvenances} from "../common/getResourcesOfType"
+import * as errors from "../../../models/errors/processing-errors"
 
 export function convertAuthor(
   fhirBundle: fhir.Bundle,
@@ -121,7 +122,7 @@ export function getAgentPersonTelecom(
 }
 
 function convertAgentPersonPerson(fhirPractitionerRole: fhir.PractitionerRole, fhirPractitioner: fhir.Practitioner) {
-  const id = getAgentPersonPersonId(fhirPractitionerRole.identifier, fhirPractitioner.identifier)
+  const id = getAgentPersonPersonId(fhirPractitionerRole.identifier)
   const hl7V3AgentPersonPerson = new peoplePlaces.AgentPersonPerson(id)
   if (fhirPractitioner.name !== undefined) {
     hl7V3AgentPersonPerson.name = convertName(
@@ -133,52 +134,70 @@ function convertAgentPersonPerson(fhirPractitionerRole: fhir.PractitionerRole, f
 }
 
 export function getAgentPersonPersonId(
-  fhirPractitionerRoleIdentifier: Array<fhir.Identifier>,
-  fhirPractitionerIdentifier: Array<fhir.Identifier>
+  fhirPractitionerRoleIdentifier: Array<fhir.Identifier>
 ): peoplePlaces.PrescriptionAuthorId {
+  const professionalCode: Array<codes.ProfessionalCode> = []
+
   const gmcCode = getIdentifierValueOrNullForSystem(
-    fhirPractitionerIdentifier,
+    fhirPractitionerRoleIdentifier,
     "https://fhir.hl7.org.uk/Id/gmc-number",
-    "Practitioner.identifier"
+    "PractitionerRole.identifier"
   )
   if (gmcCode) {
-    return new codes.ProfessionalCode(gmcCode)
+    professionalCode.push(new codes.ProfessionalCode(gmcCode))
   }
 
   const gmpCode = getIdentifierValueOrNullForSystem(
-    fhirPractitionerIdentifier,
+    fhirPractitionerRoleIdentifier,
     "https://fhir.hl7.org.uk/Id/gmp-number",
-    "Practitioner.identifier"
+    "PractitionerRole.identifier"
   )
   if (gmpCode) {
-    return new codes.ProfessionalCode(gmpCode)
+    professionalCode.push(new codes.ProfessionalCode(gmpCode))
   }
 
   const nmcCode = getIdentifierValueOrNullForSystem(
-    fhirPractitionerIdentifier,
+    fhirPractitionerRoleIdentifier,
     "https://fhir.hl7.org.uk/Id/nmc-number",
-    "Practitioner.identifier"
+    "PractitionerRole.identifier"
   )
   if (nmcCode) {
-    return new codes.ProfessionalCode(nmcCode)
+    professionalCode.push(new codes.ProfessionalCode(nmcCode))
   }
 
   const gphcCode = getIdentifierValueOrNullForSystem(
-    fhirPractitionerIdentifier,
+    fhirPractitionerRoleIdentifier,
     "https://fhir.hl7.org.uk/Id/gphc-number",
-    "Practitioner.identifier"
+    "PractitionerRole.identifier"
   )
   if (gphcCode) {
-    return new codes.ProfessionalCode(gphcCode)
+    professionalCode.push(new codes.ProfessionalCode(gphcCode))
   }
 
   const hcpcCode = getIdentifierValueOrNullForSystem(
-    fhirPractitionerIdentifier,
+    fhirPractitionerRoleIdentifier,
     "https://fhir.hl7.org.uk/Id/hcpc-number",
-    "Practitioner.identifier"
+    "PractitionerRole.identifier"
   )
+  if (hcpcCode) {
+    professionalCode.push(new codes.ProfessionalCode(hcpcCode))
+  }
 
-  return new codes.ProfessionalCode(hcpcCode)
+  if (professionalCode.length === 1) {
+    return professionalCode[0]
+  }
+
+  const error = "Expected exactly one professional code. One of GMC, GMP, NMC, GPhC or HCPC"
+  const errorAdditionalContext = professionalCode.map(code => code._attributes.extension).join(", ")
+  const errorMessage = `${error}. ${errorAdditionalContext.length > 0 ? "But got: " + errorAdditionalContext : ""}`
+  const errorPath = "PractitionerRole.identifier"
+
+  console.log(JSON.stringify(fhirPractitionerRoleIdentifier))
+  console.log(errorMessage)
+
+  throw professionalCode.length > 1
+    ? new errors.TooManyValuesError(errorMessage, errorPath)
+    : new errors.TooFewValuesError(errorMessage, errorPath)
 }
 
 function convertSignatureText(fhirBundle: fhir.Bundle, signatory: fhir.Reference<fhir.PractitionerRole>) {
