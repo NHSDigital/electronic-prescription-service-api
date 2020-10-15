@@ -80,6 +80,6 @@ export const examplePrescription4 = new ExamplePrescription("homecare repeat dis
 export const specification = [
   examplePrescription1,
   examplePrescription2,
-  //examplePrescription3,
+  examplePrescription3,
   //examplePrescription4
 ]

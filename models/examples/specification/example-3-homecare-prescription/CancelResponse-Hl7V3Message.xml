@@ -22,7 +22,7 @@
       <AgentPersonSDS classCode="AGNT">
         <id extension="100102238986" root="1.2.826.0.1285.0.2.0.67"/>
         <agentPersonSDS classCode="PSN" determinerCode="INSTANCE">
-          <id extension="2345213" root="1.2.826.0.1285.0.2.1.54"/>
+          <id extension="3415870201" root="1.2.826.0.1285.0.2.0.65"/>
         </agentPersonSDS>
         <part typeCode="PART">
           <partSDSRole classCode="ROL">
@@ -81,7 +81,7 @@
             <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
             <telecom use="WP" value="01234567890"/>
             <agentPerson classCode="PSN" determinerCode="INSTANCE">
-              <id extension="1234567" root="1.2.826.0.1285.0.2.1.54"/>
+              <id extension="G1234567" root="1.2.826.0.1285.0.2.1.54"/>
               <name>
                 <prefix>DR</prefix>
                 <given>RAZIA</given>
@@ -108,7 +108,7 @@
             <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
             <telecom/>
             <agentPerson classCode="PSN" determinerCode="INSTANCE">
-              <id extension="70201123456" root="1.2.826.0.1285.0.2.1.54"/>
+              <id extension="G9999999" root="1.2.826.0.1285.0.2.1.54"/>
               <name>
                 <prefix>DR</prefix>
                 <given>SAZ</given>
