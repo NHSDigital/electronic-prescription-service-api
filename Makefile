@@ -23,7 +23,6 @@ publish:
 release:
 	mkdir -p dist
 	cp -r specification/dist/. dist
-	cp -r terraform dist
 	rsync -av --progress --copy-links tests/e2e/pact dist --exclude node_modules
 	for env in internal-dev-sandbox internal-qa-sandbox sandbox; do \
 		cat ecs-proxies-deploy.yml | sed -e 's/{{ SPINE_ENV }}/test/g' | sed -e 's/{{ SANDBOX_MODE_ENABLED }}/1/g' > dist/ecs-deploy-$$env.yml; \
