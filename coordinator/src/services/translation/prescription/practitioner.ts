@@ -136,30 +136,49 @@ export function getAgentPersonPersonId(
   fhirPractitionerRoleIdentifier: Array<fhir.Identifier>,
   fhirPractitionerIdentifier: Array<fhir.Identifier>
 ): peoplePlaces.PrescriptionAuthorId {
-  const spuriousCode = getIdentifierValueOrNullForSystem(
-    fhirPractitionerRoleIdentifier,
-    "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
-    "PractitionerRole.identifier"
-  )
-  if (spuriousCode) {
-    return new codes.BsaPrescribingIdentifier(spuriousCode)
-  }
-
-  const dinCode = getIdentifierValueOrNullForSystem(
+  const gmcCode = getIdentifierValueOrNullForSystem(
     fhirPractitionerIdentifier,
-    "https://fhir.hl7.org.uk/Id/din-number",
+    "https://fhir.hl7.org.uk/Id/gmc-number",
     "Practitioner.identifier"
   )
-  if (dinCode) {
-    return new codes.BsaPrescribingIdentifier(dinCode)
+  if (gmcCode) {
+    return new codes.ProfessionalCode(gmcCode)
   }
 
-  const sdsUniqueIdentifier = getIdentifierValueForSystem(
+  const gmpCode = getIdentifierValueOrNullForSystem(
     fhirPractitionerIdentifier,
-    "https://fhir.nhs.uk/Id/sds-user-id",
+    "https://fhir.hl7.org.uk/Id/gmp-number",
     "Practitioner.identifier"
   )
-  return new codes.SdsUniqueIdentifier(sdsUniqueIdentifier)
+  if (gmpCode) {
+    return new codes.ProfessionalCode(gmpCode)
+  }
+
+  const nmcCode = getIdentifierValueOrNullForSystem(
+    fhirPractitionerIdentifier,
+    "https://fhir.hl7.org.uk/Id/nmc-number",
+    "Practitioner.identifier"
+  )
+  if (nmcCode) {
+    return new codes.ProfessionalCode(nmcCode)
+  }
+
+  const gphcCode = getIdentifierValueOrNullForSystem(
+    fhirPractitionerIdentifier,
+    "https://fhir.hl7.org.uk/Id/gphc-number",
+    "Practitioner.identifier"
+  )
+  if (gphcCode) {
+    return new codes.ProfessionalCode(gphcCode)
+  }
+
+  const hcpcCode = getIdentifierValueOrNullForSystem(
+    fhirPractitionerIdentifier,
+    "https://fhir.hl7.org.uk/Id/hcpc-number",
+    "Practitioner.identifier"
+  )
+
+  return new codes.ProfessionalCode(hcpcCode)
 }
 
 function convertSignatureText(fhirBundle: fhir.Bundle, signatory: fhir.Reference<fhir.PractitionerRole>) {
