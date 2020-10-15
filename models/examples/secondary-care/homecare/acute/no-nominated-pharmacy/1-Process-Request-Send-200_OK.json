@@ -253,8 +253,8 @@
 						"value": "100102238986"
 					},
 					{
-						"system": "https://fhir.nhs.uk/Id/prescribing-code",
-						"value": "2345213"
+						"system": "https://fhir.hl7.org.uk/Id/din-number",
+						"value": "70201123456"
 					}
 				],
 				"practitioner": {
@@ -297,11 +297,11 @@
 				"identifier": [
 					{
 						"system": "https://fhir.nhs.uk/Id/sds-user-id",
-						"value": "3415870201"
+						"value": "7020134158"
 					},
 					{
 						"system": "https://fhir.hl7.org.uk/Id/gmc-number",
-						"value": "4428981"
+						"value": "G9999999"
 					}
 				],
 				"name": [
