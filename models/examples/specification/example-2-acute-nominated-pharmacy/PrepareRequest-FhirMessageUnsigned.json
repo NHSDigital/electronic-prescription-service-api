@@ -536,10 +536,6 @@
           {
             "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
             "value": "100109391987"
-          },
-          {
-            "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-            "value": "123456"
           }
         ],
         "code": [
