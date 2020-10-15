@@ -78,8 +78,8 @@ export const examplePrescription3 = new ExamplePrescription("homecare", "parent-
 export const examplePrescription4 = new ExamplePrescription("homecare repeat dispensing", "parent-prescription-4")
 
 export const specification = [
-  examplePrescription1,
-  examplePrescription2,
-  examplePrescription3,
+  examplePrescription1
+  //examplePrescription2,
+  //examplePrescription3,
   //examplePrescription4
 ]

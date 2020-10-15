@@ -68,9 +68,31 @@ describe("getAgentPersonPersonId", () => {
       [gmcCode, gmpCode]
     )).toThrow()
   })
-  test("if no professional code is specified then throw", () => {
+  test("if no professional code is specified for a practitioner then throw", () => {
     expect(() => practitioner.getAgentPersonPersonId(
       []
+    )).toThrow()
+  })
+})
+
+describe("getAgentPersonPersonIdForResponsibleParty", () => {
+  const dinCode: fhir.Identifier = {
+    "system": "https://fhir.hl7.org.uk/Id/din-number",
+    "value": "din"
+  }
+  const spuriousCode : fhir.Identifier = {
+    "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
+    "value": "spurious"
+  }
+
+  test("if more than 1 prescribing code is present for a practitioner role then throw", () => {
+    expect(() => practitioner.getAgentPersonPersonIdForResponsibleParty(
+      [], [dinCode, spuriousCode]
+    )).toThrow()
+  })
+  test("if no prescribing code is specified for a practitioner role then throw", () => {
+    expect(() => practitioner.getAgentPersonPersonIdForResponsibleParty(
+      [], [dinCode, spuriousCode]
     )).toThrow()
   })
 })

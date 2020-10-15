@@ -709,6 +709,10 @@
           {
             "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
             "value": "100112897984"
+          },
+          {
+            "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
+            "value": "123456"
           }
         ],
         "code": [
