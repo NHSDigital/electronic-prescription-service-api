@@ -1,6 +1,5 @@
 import * as fhir from "../../../src/models/fhir/fhir-resources"
 import {Telecom, TelecomUse} from "../../../src/models/hl7-v3/hl7-v3-datatypes-core"
-import {ProfessionalCode, SdsUniqueIdentifier} from "../../../src/models/hl7-v3/hl7-v3-datatypes-codes"
 import * as practitioner from "../../../src/services/translation/prescription/practitioner"
 import * as helpers from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
@@ -55,38 +54,21 @@ describe("getAgentPersonTelecom", () => {
 })
 
 describe("getAgentPersonPersonId", () => {
-  const spuriousIdentifier: fhir.Identifier = {
-    "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
-    "value": "spurious"
+  const gmcCode: fhir.Identifier = {
+    "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+    "value": "gmc"
   }
-  const dinIdentifier: fhir.Identifier = {
-    "system": "https://fhir.hl7.org.uk/Id/din-number",
-    "value": "din"
-  }
-  const userIdentifier: fhir.Identifier = {
-    "system": "https://fhir.nhs.uk/Id/sds-user-id",
-    "value": "8412511"
+  const gmpCode : fhir.Identifier = {
+    "system": "https://fhir.hl7.org.uk/Id/gmp-number",
+    "value": "gmp"
   }
 
-  test("if all 3 codes are present we return spurious", () => {
-    const output = practitioner.getAgentPersonPersonId(
-      [spuriousIdentifier, dinIdentifier, userIdentifier]
-    )
-    expect(output).toEqual(new ProfessionalCode(spuriousIdentifier.value))
+  test("if more than 1 professional code is present for a practitioner then throw", () => {
+    expect(() => practitioner.getAgentPersonPersonId(
+      [gmcCode, gmpCode]
+    )).toThrow()
   })
-  test("if spurious code is missing we return DIN", () => {
-    const output = practitioner.getAgentPersonPersonId(
-      [dinIdentifier, userIdentifier]
-    )
-    expect(output).toEqual(new ProfessionalCode(dinIdentifier.value))
-  })
-  test("if spurious code and din are missing we return user", () => {
-    const output = practitioner.getAgentPersonPersonId(
-      [userIdentifier]
-    )
-    expect(output).toEqual(new SdsUniqueIdentifier(userIdentifier.value))
-  })
-  test("if all 3 are missing then throw", () => {
+  test("if no professional code is specified then throw", () => {
     expect(() => practitioner.getAgentPersonPersonId(
       []
     )).toThrow()

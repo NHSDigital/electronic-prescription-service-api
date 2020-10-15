@@ -122,7 +122,7 @@ export function getAgentPersonTelecom(
 }
 
 function convertAgentPersonPerson(fhirPractitionerRole: fhir.PractitionerRole, fhirPractitioner: fhir.Practitioner) {
-  const id = getAgentPersonPersonId(fhirPractitionerRole.identifier)
+  const id = getAgentPersonPersonId(fhirPractitioner.identifier)
   const hl7V3AgentPersonPerson = new peoplePlaces.AgentPersonPerson(id)
   if (fhirPractitioner.name !== undefined) {
     hl7V3AgentPersonPerson.name = convertName(
@@ -134,50 +134,50 @@ function convertAgentPersonPerson(fhirPractitionerRole: fhir.PractitionerRole, f
 }
 
 export function getAgentPersonPersonId(
-  fhirPractitionerRoleIdentifier: Array<fhir.Identifier>
+  fhirPractitionerIdentifier: Array<fhir.Identifier>
 ): peoplePlaces.PrescriptionAuthorId {
   const professionalCode: Array<codes.ProfessionalCode> = []
 
   const gmcCode = getIdentifierValueOrNullForSystem(
-    fhirPractitionerRoleIdentifier,
+    fhirPractitionerIdentifier,
     "https://fhir.hl7.org.uk/Id/gmc-number",
-    "PractitionerRole.identifier"
+    "Practitioner.identifier"
   )
   if (gmcCode) {
     professionalCode.push(new codes.ProfessionalCode(gmcCode))
   }
 
   const gmpCode = getIdentifierValueOrNullForSystem(
-    fhirPractitionerRoleIdentifier,
+    fhirPractitionerIdentifier,
     "https://fhir.hl7.org.uk/Id/gmp-number",
-    "PractitionerRole.identifier"
+    "Practitioner.identifier"
   )
   if (gmpCode) {
     professionalCode.push(new codes.ProfessionalCode(gmpCode))
   }
 
   const nmcCode = getIdentifierValueOrNullForSystem(
-    fhirPractitionerRoleIdentifier,
+    fhirPractitionerIdentifier,
     "https://fhir.hl7.org.uk/Id/nmc-number",
-    "PractitionerRole.identifier"
+    "Practitioner.identifier"
   )
   if (nmcCode) {
     professionalCode.push(new codes.ProfessionalCode(nmcCode))
   }
 
   const gphcCode = getIdentifierValueOrNullForSystem(
-    fhirPractitionerRoleIdentifier,
+    fhirPractitionerIdentifier,
     "https://fhir.hl7.org.uk/Id/gphc-number",
-    "PractitionerRole.identifier"
+    "Practitioner.identifier"
   )
   if (gphcCode) {
     professionalCode.push(new codes.ProfessionalCode(gphcCode))
   }
 
   const hcpcCode = getIdentifierValueOrNullForSystem(
-    fhirPractitionerRoleIdentifier,
+    fhirPractitionerIdentifier,
     "https://fhir.hl7.org.uk/Id/hcpc-number",
-    "PractitionerRole.identifier"
+    "Practitioner.identifier"
   )
   if (hcpcCode) {
     professionalCode.push(new codes.ProfessionalCode(hcpcCode))
@@ -192,7 +192,7 @@ export function getAgentPersonPersonId(
   const errorMessage = `${error}. ${errorAdditionalContext.length > 0 ? "But got: " + errorAdditionalContext : ""}`
   const errorPath = "PractitionerRole.identifier"
 
-  console.log(JSON.stringify(fhirPractitionerRoleIdentifier))
+  console.log(JSON.stringify(fhirPractitionerIdentifier))
   console.log(errorMessage)
 
   throw professionalCode.length > 1

@@ -106,10 +106,6 @@
           {
             "system": "https://fhir.nhs.uk/Id/sds-user-id",
             "value": "3415870201"
-          },
-          {
-            "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-            "value": "123456"
           }
         ],
         "name": [
@@ -178,7 +174,7 @@
             "value": "100102238986"
           },
           {
-            "system": "https://fhir.nhs.uk/Id/prescribing-code",
+            "system": "https://fhir.hl7.org.uk/Id/gmc-number",
             "value": "2345213"
           }
         ],

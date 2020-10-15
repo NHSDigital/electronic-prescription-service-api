@@ -22,7 +22,7 @@
       <AgentPersonSDS classCode="AGNT">
         <id extension="100102238986" root="1.2.826.0.1285.0.2.0.67"/>
         <agentPersonSDS classCode="PSN" determinerCode="INSTANCE">
-          <id extension="3415870201" root="1.2.826.0.1285.0.2.0.65"/>
+          <id extension="2345213" root="1.2.826.0.1285.0.2.1.54"/>
         </agentPersonSDS>
         <part typeCode="PART">
           <partSDSRole classCode="ROL">
