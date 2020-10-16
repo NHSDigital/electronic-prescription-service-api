@@ -34,12 +34,12 @@ properties:
               description: "The value that is unique"
               example: "100109391987"
         - type: object
-          description: "Prescribing code for doctors or consultants: DIN (doctor index number) or spurious code for those who don't have a DIN code, or whose DIN code is already in use at another practice"
+          description: "Prescribing code which overrides the prescribing code in practitioner"
           properties:
             system:
               type: string
               description: "The namespace for the identifier value"
-              enum: ["https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code", "https://fhir.hl7.org.uk/Id/din-number"]
+              enum: ["https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code"]
               example: "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code"
             value:
               type: string

@@ -23,7 +23,7 @@ properties:
       anyOf:
         - $ref: "Identifier-SdsUserId.yaml"
         - type: object
-          description: "Professional code for prescribers"
+          description: "Professional code"
           properties:
             system:
               type: string
@@ -34,6 +34,18 @@ properties:
               type: string
               description: "The value that is unique"
               example: "G6123456"
+        - type: object
+          description: "Prescribing code"
+          properties:
+            system:
+              type: string
+              description: "The namespace for the identifier value"
+              enum: ["https://fhir.hl7.org.uk/Id/din-number"]
+              example: "https://fhir.hl7.org.uk/Id/din-number"
+            value:
+              type: string
+              description: "The value that is unique"
+              example: "123456"
   name:
     type: array
     description: "The name(s) associated with the practitioner."
