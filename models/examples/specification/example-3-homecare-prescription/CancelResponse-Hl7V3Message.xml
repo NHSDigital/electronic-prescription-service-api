@@ -108,7 +108,7 @@
             <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
             <telecom/>
             <agentPerson classCode="PSN" determinerCode="INSTANCE">
-              <id extension="G9999999" root="1.2.826.0.1285.0.2.1.54"/>
+              <id extension="SP123456" root="1.2.826.0.1285.0.2.1.54"/>
               <name>
                 <prefix>DR</prefix>
                 <given>SAZ</given>

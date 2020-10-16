@@ -177,7 +177,7 @@ uxDjI+7ehyFpapfOXVBmLTacLxLF1Dy/7+GIXbdIwbedet4p2IcEaRX0eWT0U//ZJSeBqnOOpXo6
                 <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
                 <telecom use="WP" value="01234567890"/>
                 <agentPerson classCode="PSN" determinerCode="INSTANCE">
-                  <id extension="G1234567" root="1.2.826.0.1285.0.2.1.54"/>
+                  <id extension="SP123456" root="1.2.826.0.1285.0.2.1.54"/>
                   <name>
                     <prefix>DR</prefix>
                     <given>RAZIA</given>
