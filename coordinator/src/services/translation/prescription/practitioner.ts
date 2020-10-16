@@ -222,7 +222,6 @@ export function getAgentPersonPersonIdForResponsibleParty(
   fhirPractitionerIdentifier: Array<fhir.Identifier>,
   fhirPractitionerRoleIdentifier: Array<fhir.Identifier>
 ): peoplePlaces.PrescriptionAuthorId {
-  const prescribingCode: Array<codes.PrescribingCode> = []
 
   const spuriousCode = getIdentifierValueOrNullForSystem(
     fhirPractitionerRoleIdentifier,
@@ -230,29 +229,19 @@ export function getAgentPersonPersonIdForResponsibleParty(
     "PractitionerRole.identifier"
   )
   if (spuriousCode) {
-    prescribingCode.push(new codes.PrescribingCode(spuriousCode))
+    return new codes.PrescribingCode(spuriousCode)
   }
 
   const dinCode = getIdentifierValueOrNullForSystem(
-    fhirPractitionerRoleIdentifier,
+    fhirPractitionerIdentifier,
     "https://fhir.hl7.org.uk/Id/din-number",
-    "PractitionerRole.identifier"
+    "Practitioner.identifier"
   )
   if (dinCode) {
-    prescribingCode.push(new codes.PrescribingCode(dinCode))
+    return new codes.PrescribingCode(dinCode)
   }
 
-  if (prescribingCode.length > 1) {
-    const error = "Expected exactly one prescribing code. One of DIN|Spurious"
-    const errorAdditionalContext = prescribingCode.map(code => code._attributes.extension).join(", ")
-    const errorMessage = `${error}. ${errorAdditionalContext.length > 0 ? "But got: " + errorAdditionalContext : ""}`
-    const errorPath = "PractitionerRole.identifier"
-    throw new errors.TooManyValuesError(errorMessage, errorPath)
-  }
-
-  return prescribingCode.length === 1
-    ? prescribingCode[0]
-    : getAgentPersonPersonIdForAuthor(fhirPractitionerIdentifier)
+  return getAgentPersonPersonIdForAuthor(fhirPractitionerIdentifier)
 }
 
 function convertSignatureText(fhirBundle: fhir.Bundle, signatory: fhir.Reference<fhir.PractitionerRole>) {

@@ -85,14 +85,17 @@ describe("getAgentPersonPersonIdForResponsibleParty", () => {
     "value": "spurious"
   }
 
-  test("if more than 1 prescribing code is present for a practitioner role then throw", () => {
-    expect(() => practitioner.getAgentPersonPersonIdForResponsibleParty(
-      [], [dinCode, spuriousCode]
-    )).toThrow()
+  test("if spurious code is present for a practitioner role than use this as the prescribing code", () => {
+    const result = practitioner.getAgentPersonPersonIdForResponsibleParty([dinCode], [spuriousCode])
+    expect(result._attributes.extension).toEqual(spuriousCode.value)
   })
-  test("if no prescribing code is specified for a practitioner role then throw", () => {
+  test("if din code is present for practitioner then use this as the prescribing code", () => {
+    const result = practitioner.getAgentPersonPersonIdForResponsibleParty([dinCode], [])
+    expect(result._attributes.extension).toEqual(dinCode.value)
+  })
+  test("if no prescribing/professional code is specified for a practitioner/role then throw", () => {
     expect(() => practitioner.getAgentPersonPersonIdForResponsibleParty(
-      [], [dinCode, spuriousCode]
+      [], []
     )).toThrow()
   })
 })
