@@ -93,6 +93,14 @@ describe("getAgentPersonPersonIdForResponsibleParty", () => {
     const result = practitioner.getAgentPersonPersonIdForResponsibleParty([dinCode], [])
     expect(result._attributes.extension).toEqual(dinCode.value)
   })
+  test("if no prescribing code is present then use a professional code as the prescribing code", () => {
+    const gmcCode: fhir.Identifier = {
+      "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+      "value": "gmc"
+    }
+    const result = practitioner.getAgentPersonPersonIdForResponsibleParty([gmcCode], [])
+    expect(result._attributes.extension).toEqual(gmcCode.value)
+  })
   test("if no prescribing/professional code is specified for a practitioner/role then throw", () => {
     expect(() => practitioner.getAgentPersonPersonIdForResponsibleParty(
       [], []
