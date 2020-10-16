@@ -32,15 +32,11 @@ extends:
     apigee_deployments:
       - environment: sandbox
         proxy_path: sandbox
-        depends_on:
-          - internal_qa
-          - internal_qa_sandbox
+        depends_on: []
       - environment: int
         make_spec_visible: true
         proxy_path: live
-        depends_on:
-          - internal_qa
-          - internal_qa_sandbox
+        depends_on: []
       - environment: ref
         proxy_path: live
         depends_on:
