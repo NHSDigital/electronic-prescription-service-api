@@ -9,15 +9,15 @@ import {
 const performerSiteTypeExtension: CodingExtension = {
   url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
   valueCoding: {
-    system: "https://fhir.nhs.uk/R4/CodeSystem/dispensing-site-preference",
+    system: "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
     code: "0004"
   }
 }
 
 const epsPrescriptionTypeExtension: CodingExtension =  {
-  url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType",
+  url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
   valueCoding: {
-    system: "https://fhir.nhs.uk/R4/CodeSystem/prescription-type",
+    system: "https://fhir.nhs.uk/CodeSystem/prescription-type",
     code: "0101"
   }
 }

@@ -124,9 +124,9 @@
         "id": "a7b86f8d-1d81-fc28-e050-d20ae3a215f0",
         "extension": [
           {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType",
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
             "valueCoding": {
-              "system": "https://fhir.nhs.uk/R4/CodeSystem/prescription-type",
+              "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "0101"
             }
           },
@@ -197,7 +197,7 @@
             {
               "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
               "valueCoding": {
-                "system": "https://fhir.nhs.uk/R4/CodeSystem/dispensing-site-preference",
+                "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
                 "code": "0004"
               }
             }
@@ -255,9 +255,9 @@
         "id": "a7b86f8d-1d86-fc28-e050-d20ae3a215f0",
         "extension": [
           {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType",
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
             "valueCoding": {
-              "system": "https://fhir.nhs.uk/R4/CodeSystem/prescription-type",
+              "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "0101"
             }
           },
@@ -328,7 +328,7 @@
             {
               "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
               "valueCoding": {
-                "system": "https://fhir.nhs.uk/R4/CodeSystem/dispensing-site-preference",
+                "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
                 "code": "0004"
               }
             }
@@ -386,9 +386,9 @@
         "id": "a7b86f8d-1d8b-fc28-e050-d20ae3a215f0",
         "extension": [
           {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType",
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
             "valueCoding": {
-              "system": "https://fhir.nhs.uk/R4/CodeSystem/prescription-type",
+              "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "0101"
             }
           },
@@ -459,7 +459,7 @@
             {
               "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
               "valueCoding": {
-                "system": "https://fhir.nhs.uk/R4/CodeSystem/dispensing-site-preference",
+                "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
                 "code": "0004"
               }
             }
@@ -517,9 +517,9 @@
         "id": "a7b86f8d-1d90-fc28-e050-d20ae3a215f0",
         "extension": [
           {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType",
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
             "valueCoding": {
-              "system": "https://fhir.nhs.uk/R4/CodeSystem/prescription-type",
+              "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "0101"
             }
           },
@@ -590,7 +590,7 @@
             {
               "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
               "valueCoding": {
-                "system": "https://fhir.nhs.uk/R4/CodeSystem/dispensing-site-preference",
+                "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
                 "code": "0004"
               }
             }

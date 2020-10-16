@@ -99,8 +99,8 @@ properties:
                   type: string
                   description: "Identity of the terminology system"
                   enum:
-                    - "https://fhir.nhs.uk/R4/CodeSystem/dispensing-site-preference"
-                  example: "https://fhir.nhs.uk/R4/CodeSystem/dispensing-site-preference"
+                    - "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference"
+                  example: "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference"
                 value:
                   type: string
                   description: "Symbol in syntax defined by the system"
