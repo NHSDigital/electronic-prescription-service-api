@@ -26,7 +26,10 @@ function verifyCancellationBundle(bundle: fhir.Bundle): Array<errors.ValidationE
   return []
 }
 
-type medicationRequestValidator = {fieldName: string, fieldAccessor: (resource: fhir.MedicationRequest) => unknown}
+type medicationRequestValidator = {
+  fieldName: string,
+  fieldAccessor: (resource: fhir.MedicationRequest) => unknown
+}
 
 export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.ValidationError> {
   const consistencyValidators: Array<medicationRequestValidator> = [

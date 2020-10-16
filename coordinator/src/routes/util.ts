@@ -53,13 +53,13 @@ export function identifyMessageType(bundle: fhir.Bundle): string {
 export function validatingHandler(handler: Handler<fhir.Bundle>) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     const requestPayload = getPayload(request)
-    const validation = requestValidator.verifyBundle((requestPayload as fhir.Bundle))
+    const validatedPayload = requestPayload as fhir.Bundle
+    const validation = requestValidator.verifyBundle(validatedPayload)
     if (validation.length > 0) {
       const response = toFhirError(validation)
       const statusCode = requestValidator.getStatusCode(validation)
       return responseToolkit.response(response).code(statusCode)
     } else {
-      const validatedPayload = requestPayload as fhir.Bundle
       return handler(validatedPayload, request, responseToolkit)
     }
   }

@@ -7,7 +7,6 @@ import * as errors from "../../src/models/errors/validation-errors"
 function validateValidationErrors (validationErrors: Array<errors.ValidationError>) {
   expect(validationErrors).toHaveLength(1)
   const validationError = validationErrors[0]
-  expect(validationError.apiErrorCode).toEqual("INVALID_VALUE")
   expect(validationError.operationOutcomeCode).toEqual("value")
   expect(validationError.severity).toEqual("error")
 }
