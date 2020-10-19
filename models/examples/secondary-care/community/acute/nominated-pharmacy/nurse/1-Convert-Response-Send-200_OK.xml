@@ -26,7 +26,7 @@
         </agentPersonSDS>
         <part typeCode="PART">
           <partSDSRole classCode="ROL">
-            <id extension="R8000" root="1.2.826.0.1285.0.2.1.104"/>
+            <id extension="R8001" root="1.2.826.0.1285.0.2.1.104"/>
           </partSDSRole>
         </part>
       </AgentPersonSDS>
@@ -115,10 +115,10 @@
               </signatureText>
               <AgentPerson classCode="AGNT">
                 <id extension="100102238986" root="1.2.826.0.1285.0.2.0.67"/>
-                <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
+                <code code="R8001" codeSystem="1.2.826.0.1285.0.2.1.104"/>
                 <telecom use="WP" value="01234567890"/>
                 <agentPerson classCode="PSN" determinerCode="INSTANCE">
-                  <id extension="3415870201" root="1.2.826.0.1285.0.2.0.65"/>
+                  <id extension="4428981" root="1.2.826.0.1285.0.2.1.54"/>
                   <name>
                     <prefix>DR</prefix>
                     <given>Thomas</given>
@@ -148,10 +148,10 @@
             <responsibleParty contextControlCode="OP" typeCode="RESP">
               <AgentPerson classCode="AGNT">
                 <id extension="100102238986" root="1.2.826.0.1285.0.2.0.67"/>
-                <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
+                <code code="R8001" codeSystem="1.2.826.0.1285.0.2.1.104"/>
                 <telecom use="WP" value="01234567890"/>
                 <agentPerson classCode="PSN" determinerCode="INSTANCE">
-                  <id extension="3415870201" root="1.2.826.0.1285.0.2.0.65"/>
+                  <id extension="SP123456" root="1.2.826.0.1285.0.2.1.54"/>
                   <name>
                     <prefix>DR</prefix>
                     <given>Thomas</given>
