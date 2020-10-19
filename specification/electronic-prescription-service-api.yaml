@@ -231,7 +231,7 @@ paths:
         description: ''
       responses:
         '200':
-          description: Successfully submitted.
+          description: Successful conversion.
           content:
             #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
             application/json:
