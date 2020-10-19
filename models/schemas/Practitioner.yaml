@@ -18,29 +18,30 @@ properties:
     example: "C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C"
   identifier:
     type: array
-    description: "An identifier that applies to this person in this role."
+    description: "An identifier that applies to this person"
     items:
       anyOf:
         - $ref: "Identifier-SdsUserId.yaml"
         - type: object
-          description: "GP prescribing code"
+          description: "Professional code"
+          properties:
+            system:
+              type: string
+              description: "The namespace for the identifier value"
+              enum: ["https://fhir.hl7.org.uk/Id/gmc-number", "https://fhir.hl7.org.uk/Id/gmp-number", "https://fhir.hl7.org.uk/Id/nmc-number", "https://fhir.hl7.org.uk/Id/gphc-number", "https://fhir.hl7.org.uk/Id/hcpc-number"]
+              example: "https://fhir.hl7.org.uk/Id/gmc-number"
+            value:
+              type: string
+              description: "The value that is unique"
+              example: "G6123456"
+        - type: object
+          description: "Prescribing code"
           properties:
             system:
               type: string
               description: "The namespace for the identifier value"
               enum: ["https://fhir.hl7.org.uk/Id/din-number"]
               example: "https://fhir.hl7.org.uk/Id/din-number"
-            value:
-              type: string
-              description: "The value that is unique"
-              example: "123456"
-        - type: object
-          description: "Other code"
-          properties:
-            system:
-              type: string
-              description: "The namespace for the identifier value"
-              example: "https://fhir.hl7.org.uk/Id/gmc-number"
             value:
               type: string
               description: "The value that is unique"
