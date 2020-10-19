@@ -196,17 +196,3 @@ export function getNumericValueAsString(numericValue: string | number | Lossless
     return numericValue.toString()
   }
 }
-
-export function getNumericValueAsNumber(numericValue: string | number | LosslessNumber): number {
-  if (typeof numericValue === "number") {
-    throw new TypeError(
-      "Got a number but expected a LosslessNumber." +
-      " Use LosslessJson.parse() instead of JSON.parse() or precision may be lost."
-    )
-  } else if (typeof numericValue === "string") {
-    return new LosslessNumber(numericValue).valueOf()
-  } else {
-    return numericValue.valueOf()
-  }
-}
-

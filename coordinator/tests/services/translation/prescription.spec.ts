@@ -5,8 +5,7 @@ import {DateTimeExtension, MedicationRequest, RepeatInformationExtension} from "
 import {
   convertBundleToPrescription,
   convertCourseOfTherapyType,
-  convertNearestReviewDate,
-  convertPrescriptionComponent1
+  convertPrescriptionComponent1, createRepeatNumberForMedicationRequests, extractReviewDate
 } from "../../../src/services/translation/prescription"
 import * as translator from "../../../src/services/translation"
 import {LineItemPertinentInformation1} from "../../../src/models/hl7-v3/hl7-v3-prescriptions"
@@ -122,47 +121,22 @@ describe("PertinentInformation2", () => {
   })
 })
 
-describe("convertNearestReviewDate converts nearest review date", () => {
-  let medicationRequests: Array<MedicationRequest>
+describe("extractReviewDate returns the correct value", () => {
+  let medicationRequest: MedicationRequest
   beforeEach(() => {
     const prescription = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
-    medicationRequests = getMedicationRequests(prescription)
+    medicationRequest = getMedicationRequests(prescription)[0]
   })
 
-  test("for single medication request", () => {
-    const medicationRequest = medicationRequests[0]
+  test("for a medication request with a review date", () => {
     setReviewDate(medicationRequest, "2020-09-03")
-    const converted = convertNearestReviewDate([medicationRequest])
-    expect(converted._attributes.value).toEqual("20200903")
+    const converted = extractReviewDate(medicationRequest)
+    expect(converted.value._attributes.value).toEqual("20200903")
   })
 
-  test("for multiple medication requests with same review date", () => {
-    medicationRequests.forEach(medicationRequest => setReviewDate(medicationRequest, "2020-09-03"))
-    const converted = convertNearestReviewDate(medicationRequests)
-    expect(converted._attributes.value).toEqual("20200903")
-  })
-
-  test("for multiple medication requests with different review dates", () => {
-    setReviewDate(medicationRequests[0], "2020-12-03")
-    setReviewDate(medicationRequests[1], "2020-09-03")
-    setReviewDate(medicationRequests[2], "2020-12-03")
-    setReviewDate(medicationRequests[3], "2020-12-03")
-    const converted = convertNearestReviewDate(medicationRequests)
-    expect(converted._attributes.value).toEqual("20200903")
-  })
-
-  test("for multiple medication requests, some without review dates", () => {
-    setReviewDate(medicationRequests[0], "2020-09-03")
-    clearReviewDate(medicationRequests[1])
-    clearReviewDate(medicationRequests[2])
-    setReviewDate(medicationRequests[3], "2020-09-03")
-    const converted = convertNearestReviewDate(medicationRequests)
-    expect(converted._attributes.value).toEqual("20200903")
-  })
-
-  test("for multiple medication requests, all without review dates", () => {
-    medicationRequests.forEach(medicationRequest => clearReviewDate(medicationRequest))
-    const converted = convertNearestReviewDate(medicationRequests)
+  test("for a medication request without a review date", () => {
+    clearReviewDate(medicationRequest)
+    const converted = extractReviewDate(medicationRequest)
     expect(converted).toBeFalsy()
   })
 })
@@ -194,6 +168,57 @@ function clearReviewDate(medicationRequest: MedicationRequest) {
   ) as DateTimeExtension
   repeatInformationExtension.extension.splice(repeatInformationExtension.extension.indexOf(reviewDateExtension), 1)
 }
+
+describe("createRepeatNumberForMedicationRequests", () => {
+  let medicationRequests: Array<MedicationRequest>
+  beforeEach(() => {
+    const prescription = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    medicationRequests = getMedicationRequests(prescription)
+  })
+
+  test("does nothing for acute prescriptions", () => {
+    medicationRequests.forEach(medicationRequest =>
+      setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.ACUTE)
+    )
+
+    const repeatNumber = createRepeatNumberForMedicationRequests(medicationRequests)
+
+    expect(repeatNumber).toBeNull()
+  })
+
+  test("does nothing for mixed acute / repeat prescribing prescriptions", () => {
+    setCourseOfTherapyTypeCode(medicationRequests[0], CourseOfTherapyTypeCode.CONTINUOUS)
+    setCourseOfTherapyTypeCode(medicationRequests[1], CourseOfTherapyTypeCode.CONTINUOUS)
+    setCourseOfTherapyTypeCode(medicationRequests[2], CourseOfTherapyTypeCode.ACUTE)
+    setCourseOfTherapyTypeCode(medicationRequests[3], CourseOfTherapyTypeCode.ACUTE)
+
+    const repeatNumber = createRepeatNumberForMedicationRequests(medicationRequests)
+
+    expect(repeatNumber).toBeNull()
+  })
+
+  test("sets 1-1 for repeat prescribing prescriptions", () => {
+    medicationRequests.forEach(medicationRequest =>
+      setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS)
+    )
+
+    const repeatNumber = createRepeatNumberForMedicationRequests(medicationRequests)
+
+    expect(repeatNumber?.low?._attributes?.value).toEqual("1")
+    expect(repeatNumber?.high?._attributes?.value).toEqual("1")
+  })
+
+  test("sets 1-X for repeat dispensing prescriptions with consistent repeat numbers X", () => {
+    medicationRequests.forEach(medicationRequest =>
+      setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
+    )
+
+    const repeatNumber = createRepeatNumberForMedicationRequests(medicationRequests)
+
+    expect(repeatNumber?.low?._attributes?.value).toEqual("1")
+    expect(repeatNumber?.high?._attributes?.value).toEqual("6")
+  })
+})
 
 describe("convertPrescriptionComponent1", () => {
   const validityPeriod = {

@@ -1,14 +1,18 @@
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
-import {Interval, IntervalUnanchored, Timestamp} from "../../../models/hl7-v3/hl7-v3-datatypes-core"
+import {Interval, IntervalUnanchored, NumericValue, Timestamp} from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import * as prescriptions from "../../../models/hl7-v3/hl7-v3-prescriptions"
 import {DaysSupply, PrescriptionPertinentInformation7, ReviewDate} from "../../../models/hl7-v3/hl7-v3-prescriptions"
 import * as fhir from "../../../models/fhir/fhir-resources"
-import {DateTimeExtension, RepeatInformationExtension} from "../../../models/fhir/fhir-resources"
 import {
-  convertIsoDateStringToMoment,
+  DateTimeExtension,
+  MedicationRequest,
+  RepeatInformationExtension,
+  UnsignedIntExtension
+} from "../../../models/fhir/fhir-resources"
+import {
+  convertIsoDateStringToHl7V3Date,
   convertIsoDateTimeStringToHl7V3Date,
-  convertMomentToHl7V3Date,
   getExtensionForUrl,
   getExtensionForUrlOrNull,
   getNumericValueAsString
@@ -17,8 +21,6 @@ import {convertAuthor, convertResponsibleParty} from "./practitioner"
 import * as peoplePlaces from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertMedicationRequestToLineItem} from "./line-item"
 import {getCommunicationRequests, getMedicationRequests} from "../common/getResourcesOfType"
-import {populateRepeatNumber} from "../common/repeatNumber"
-import moment from "moment"
 import {CourseOfTherapyTypeCode, getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 
@@ -32,7 +34,10 @@ export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescripti
     ...convertPrescriptionIds(fhirFirstMedicationRequest)
   )
 
-  populateRepeatNumber(hl7V3Prescription, fhirMedicationRequests)
+  const repeatNumber = createRepeatNumberForMedicationRequests(fhirMedicationRequests)
+  if (repeatNumber) {
+    hl7V3Prescription.repeatNumber = repeatNumber
+  }
 
   const performer = fhirFirstMedicationRequest.dispenseRequest.performer
   if (performer) {
@@ -48,13 +53,17 @@ export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescripti
     hl7V3Prescription.component1 = convertPrescriptionComponent1(validityPeriod, expectedSupplyDuration)
   }
 
-  populatePrescriptionPertinentInformation7(hl7V3Prescription, fhirMedicationRequests)
+  const reviewDate = extractReviewDate(fhirFirstMedicationRequest)
+  if (reviewDate) {
+    hl7V3Prescription.pertinentInformation7 = new PrescriptionPertinentInformation7(reviewDate)
+  }
 
   hl7V3Prescription.pertinentInformation5 = convertPrescriptionPertinentInformation5(fhirMedicationRequests)
   hl7V3Prescription.pertinentInformation1 = convertPrescriptionPertinentInformation1(fhirFirstMedicationRequest)
   hl7V3Prescription.pertinentInformation2 = convertPrescriptionPertinentInformation2(
     fhirCommunicationRequest,
-    fhirMedicationRequests
+    fhirMedicationRequests,
+    repeatNumber
   )
   hl7V3Prescription.pertinentInformation8 = convertPrescriptionPertinentInformation8()
   hl7V3Prescription.pertinentInformation4 = convertPrescriptionPertinentInformation4(fhirFirstMedicationRequest)
@@ -106,52 +115,6 @@ export function convertPrescriptionComponent1(
     daysSupply.expectedUseTime = new IntervalUnanchored(expectedSupplyDurationStr, "d")
   }
   return new prescriptions.Component1(daysSupply)
-}
-
-function populatePrescriptionPertinentInformation7(
-  hl7V3Prescription: prescriptions.Prescription,
-  medicationRequests: Array<fhir.MedicationRequest>
-) {
-  const nearestReviewDateTimestamp = convertNearestReviewDate(medicationRequests)
-  if (nearestReviewDateTimestamp) {
-    const reviewDate = new ReviewDate(nearestReviewDateTimestamp)
-    hl7V3Prescription.pertinentInformation7 = new PrescriptionPertinentInformation7(reviewDate)
-  }
-}
-
-export function convertNearestReviewDate(medicationRequests: Array<fhir.MedicationRequest>): Timestamp {
-  const reviewDates = medicationRequests.map(extractReviewDate).filter(Boolean)
-  if (!reviewDates.length) {
-    return null
-  }
-  const nearestReviewDate = reviewDates.reduce((dateTime1, dateTime2) => moment.min(dateTime1, dateTime2))
-  return convertMomentToHl7V3Date(nearestReviewDate)
-}
-
-function extractReviewDate(medicationRequest: fhir.MedicationRequest) {
-  const repeatInformationExtension = getExtensionForUrlOrNull(
-    medicationRequest.extension,
-    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-    "MedicationRequest.extension"
-  ) as RepeatInformationExtension
-  if (!repeatInformationExtension) {
-    return null
-  }
-
-  const reviewDateExtension = getExtensionForUrlOrNull(
-    repeatInformationExtension.extension,
-    "authorisationExpiryDate",
-    "MedicationRequest.extension.extension"
-  ) as DateTimeExtension
-  if (!reviewDateExtension) {
-    return null
-  }
-
-  const reviewDateExtensionValue = reviewDateExtension.valueDateTime
-  return convertIsoDateStringToMoment(
-    reviewDateExtensionValue,
-    "MedicationRequest.extension.extension.valueDateTime"
-  )
 }
 
 function convertPrescriptionPertinentInformation5(fhirMedicationRequests: Array<fhir.MedicationRequest>) {
@@ -213,15 +176,22 @@ function isFirstRequestAndCommunicationRequestPresent(
   return (request == 0 && fhirCommunicationRequest.length > 0)
 }
 
-function convertPrescriptionPertinentInformation2(fhirCommunicationRequests: Array<fhir.CommunicationRequest>,
-  fhirMedicationRequests: Array<fhir.MedicationRequest>) {
+function convertPrescriptionPertinentInformation2(
+  fhirCommunicationRequests: Array<fhir.CommunicationRequest>,
+  fhirMedicationRequests: Array<fhir.MedicationRequest>,
+  repeatNumber: core.Interval<core.Timestamp>
+) {
   const pertinentInformation2 = []
 
   for (let i = 0; i < fhirMedicationRequests.length; i++) {
     const patientInfoText = isFirstRequestAndCommunicationRequestPresent(i, fhirCommunicationRequests)
       ? extractText(fhirCommunicationRequests)
       : []
-    const pertinentLineItem = convertMedicationRequestToLineItem(fhirMedicationRequests[i], patientInfoText)
+    const pertinentLineItem = convertMedicationRequestToLineItem(
+      fhirMedicationRequests[i],
+      repeatNumber,
+      patientInfoText
+    )
     pertinentInformation2.push(new prescriptions.PrescriptionPertinentInformation2(pertinentLineItem))
   }
 
@@ -251,4 +221,67 @@ function convertPerformer(performerReference: fhir.IdentifierReference<fhir.Orga
   hl7V3Organization.id = new codes.SdsOrganizationIdentifier(performerReference.identifier.value)
   const hl7V3AgentOrganization = new peoplePlaces.AgentOrganization(hl7V3Organization)
   return new prescriptions.Performer(hl7V3AgentOrganization)
+}
+
+export function createRepeatNumberForMedicationRequests(
+  medicationRequests: Array<MedicationRequest>
+): Interval<NumericValue> {
+  const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
+  if (courseOfTherapyTypeCode === CourseOfTherapyTypeCode.CONTINUOUS) {
+    return createRepeatNumber("1")
+  } else if (courseOfTherapyTypeCode === CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING) {
+    const repeatNumberHighValue = extractRepeatNumberHighValue(medicationRequests[0])
+    return createRepeatNumber(repeatNumberHighValue)
+  }
+  return null
+}
+
+function createRepeatNumber(highValue: string): Interval<NumericValue> {
+  return new Interval<NumericValue>(
+    new NumericValue("1"),
+    new NumericValue(highValue)
+  )
+}
+
+export function extractRepeatNumberHighValue(medicationRequest: MedicationRequest): string {
+  const repeatInformationExtension = getExtensionForUrl(
+    medicationRequest.extension,
+    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+    "MedicationRequest.extension"
+  ) as RepeatInformationExtension
+
+  const repeatNumberExtension = getExtensionForUrlOrNull(
+    repeatInformationExtension.extension,
+    "numberOfRepeatPrescriptionsAllowed",
+    "MedicationRequest.extension.extension"
+  ) as UnsignedIntExtension
+
+  const repeatNumberExtensionValue = repeatNumberExtension.valueUnsignedInt
+  return getNumericValueAsString(repeatNumberExtensionValue)
+}
+
+export function extractReviewDate(medicationRequest: fhir.MedicationRequest): ReviewDate {
+  const repeatInformationExtension = getExtensionForUrlOrNull(
+    medicationRequest.extension,
+    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+    "MedicationRequest.extension"
+  ) as RepeatInformationExtension
+  if (!repeatInformationExtension) {
+    return null
+  }
+
+  const reviewDateExtension = getExtensionForUrlOrNull(
+    repeatInformationExtension.extension,
+    "authorisationExpiryDate",
+    "MedicationRequest.extension.extension"
+  ) as DateTimeExtension
+  if (!reviewDateExtension) {
+    return null
+  }
+
+  const reviewDateTimestamp = convertIsoDateStringToHl7V3Date(
+    reviewDateExtension.valueDateTime,
+    "MedicationRequest.extension.extension.valueDateTime"
+  )
+  return new ReviewDate(reviewDateTimestamp)
 }
