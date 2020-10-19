@@ -22,11 +22,11 @@ properties:
     items: 
       anyOf:
         - type: object
-          description: "An identifier intended for computation"
+          description: "An identifier that applies to this person in this role"
           properties: 
             system:
               type: string
-              description: "The namespace for the identifier value"
+              description: "The RoleProfileId from Spine Directory Service"
               enum: ["https://fhir.nhs.uk/Id/sds-role-profile-id"]
               example: "https://fhir.nhs.uk/Id/sds-role-profile-id"
             value:
@@ -34,7 +34,7 @@ properties:
               description: "The value that is unique"
               example: "100109391987"
         - type: object
-          description: "Prescribing code for doctors who don't have a DIN code, or whose DIN code is already in use at another practice"
+          description: "Prescribing code which overrides the prescribing code in practitioner"
           properties:
             system:
               type: string
@@ -45,17 +45,6 @@ properties:
               type: string
               description: "The value that is unique"
               example: "G6123456"
-        - type: object
-          description: "Other code"
-          properties:
-            system:
-              type: string
-              description: "The namespace for the identifier value"
-              example: "https://fhir.nhs.uk/Id/prescribing-code"
-            value:
-              type: string
-              description: "The value that is unique"
-              example: "123456"
   code: 
     type: array
     description: "Roles which this practitioner may perform"
