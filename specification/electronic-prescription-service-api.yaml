@@ -188,7 +188,7 @@ info:
       }
       ```
     #### Validation errors
-    The endpoints return following errors based on the cause.
+    The endpoint can return the following errors:
     
     | HTTP code | Issue severity | Issue type | Error code             | Cause                                                           |
     | ----------| -------------- | ---------- | ---------------------- | --------------------------------------------------------------- |
