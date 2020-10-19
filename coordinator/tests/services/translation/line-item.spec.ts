@@ -10,7 +10,7 @@ import {getExtensionForUrlOrNull} from "../../../src/services/translation/common
 import {convertBundleToPrescription} from "../../../src/services/translation/prescription"
 import {convertFhirMessageToSpineRequest} from "../../../src/services/translation"
 import {TooManyValuesError} from "../../../src/models/errors/processing-errors"
-import {Text} from "../../../src/models/hl7-v3/hl7-v3-datatypes-core"
+import {Interval, NumericValue, Text} from "../../../src/models/hl7-v3/hl7-v3-datatypes-core"
 
 describe("convertMedicationRequestToLineItem", () => {
   let bundle: fhir.Bundle
@@ -34,6 +34,13 @@ describe("convertMedicationRequestToLineItem", () => {
     const resultIdValue = result.id._attributes.root
 
     expect(resultIdValue).toBe(idValue)
+  })
+
+  test("repeat number added to correct section of hl7 message", () => {
+    const repeatNumber = new Interval(new NumericValue("1"), new NumericValue("6"))
+    const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, repeatNumber, [])
+    const resultIdValue = result.repeatNumber
+    expect(resultIdValue).toBe(repeatNumber)
   })
 
   test("medicationCodeableConcept converted and added to correct section of hl7 message", () => {

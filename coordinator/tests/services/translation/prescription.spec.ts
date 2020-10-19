@@ -10,7 +10,7 @@ import {
 import {
   convertBundleToPrescription,
   convertCourseOfTherapyType,
-  convertPrescriptionComponent1, createRepeatNumberForMedicationRequests, extractReviewDate
+  convertPrescriptionComponent1, createRepeatNumber, extractReviewDate
 } from "../../../src/services/translation/prescription"
 import * as translator from "../../../src/services/translation"
 import {LineItemPertinentInformation1} from "../../../src/models/hl7-v3/hl7-v3-prescriptions"
@@ -186,7 +186,7 @@ describe("createRepeatNumberForMedicationRequests", () => {
       setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.ACUTE)
     )
 
-    const repeatNumber = createRepeatNumberForMedicationRequests(medicationRequests)
+    const repeatNumber = createRepeatNumber(medicationRequests)
 
     expect(repeatNumber).toBeNull()
   })
@@ -197,7 +197,7 @@ describe("createRepeatNumberForMedicationRequests", () => {
     setCourseOfTherapyTypeCode(medicationRequests[2], CourseOfTherapyTypeCode.ACUTE)
     setCourseOfTherapyTypeCode(medicationRequests[3], CourseOfTherapyTypeCode.ACUTE)
 
-    const repeatNumber = createRepeatNumberForMedicationRequests(medicationRequests)
+    const repeatNumber = createRepeatNumber(medicationRequests)
 
     expect(repeatNumber).toBeNull()
   })
@@ -207,7 +207,7 @@ describe("createRepeatNumberForMedicationRequests", () => {
       setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS)
     )
 
-    const repeatNumber = createRepeatNumberForMedicationRequests(medicationRequests)
+    const repeatNumber = createRepeatNumber(medicationRequests)
 
     expect(repeatNumber?.low?._attributes?.value).toEqual("1")
     expect(repeatNumber?.high?._attributes?.value).toEqual("1")
@@ -218,7 +218,7 @@ describe("createRepeatNumberForMedicationRequests", () => {
       setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
     )
 
-    const repeatNumber = createRepeatNumberForMedicationRequests(medicationRequests)
+    const repeatNumber = createRepeatNumber(medicationRequests)
 
     expect(repeatNumber?.low?._attributes?.value).toEqual("1")
     expect(repeatNumber?.high?._attributes?.value).toEqual("6")
@@ -231,7 +231,7 @@ describe("createRepeatNumberForMedicationRequests", () => {
     })
 
     expect(() => {
-      createRepeatNumberForMedicationRequests(medicationRequests)
+      createRepeatNumber(medicationRequests)
     }).toThrow()
   })
 })

@@ -34,7 +34,7 @@ export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescripti
     ...convertPrescriptionIds(fhirFirstMedicationRequest)
   )
 
-  const repeatNumber = createRepeatNumberForMedicationRequests(fhirMedicationRequests)
+  const repeatNumber = createRepeatNumber(fhirMedicationRequests)
   if (repeatNumber) {
     hl7V3Prescription.repeatNumber = repeatNumber
   }
@@ -223,24 +223,23 @@ function convertPerformer(performerReference: fhir.IdentifierReference<fhir.Orga
   return new prescriptions.Performer(hl7V3AgentOrganization)
 }
 
-export function createRepeatNumberForMedicationRequests(
+export function createRepeatNumber(
   medicationRequests: Array<MedicationRequest>
 ): Interval<NumericValue> {
   const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
   if (courseOfTherapyTypeCode === CourseOfTherapyTypeCode.CONTINUOUS) {
-    return createRepeatNumber("1")
+    return new Interval<NumericValue>(
+      new NumericValue("1"),
+      new NumericValue("1")
+    )
   } else if (courseOfTherapyTypeCode === CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING) {
     const repeatNumberHighValue = extractRepeatNumberHighValue(medicationRequests[0])
-    return createRepeatNumber(repeatNumberHighValue)
+    return new Interval<NumericValue>(
+      new NumericValue("1"),
+      new NumericValue(repeatNumberHighValue)
+    )
   }
   return null
-}
-
-function createRepeatNumber(highValue: string): Interval<NumericValue> {
-  return new Interval<NumericValue>(
-    new NumericValue("1"),
-    new NumericValue(highValue)
-  )
 }
 
 export function extractRepeatNumberHighValue(medicationRequest: MedicationRequest): string {
