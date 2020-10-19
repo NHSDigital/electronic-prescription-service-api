@@ -10,8 +10,8 @@ resources:
       name: NHSDigital/api-management-utils
       endpoint: NHSDigital
   pipelines:
-      - pipeline: build_pipeline
-        source: "Electronic-Prescription-Service-Build"
+    - pipeline: build_pipeline
+      source: "Electronic-Prescription-Service-Build"
 
 pool:
   vmImage: 'ubuntu-latest'
