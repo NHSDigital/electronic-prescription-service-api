@@ -147,7 +147,7 @@ info:
     This is the FHIR specification for Digital Medicines starting with the assets required for an electronic prescription sent to the EPS.
     
     ## Responses
-    ### 2xx responses
+    ### 2XX responses
     Note: This section is under development and subject to change. All Spine responses are returned with 200 HTTP codes until a Spine translation service is built. This does not affect the sandbox environment.
     
     | Endpoint               | HTTP code | Response format                                                                                                                                             |
@@ -155,7 +155,7 @@ info:
     | POST /$prepare         | 200       | [See /$prepare response body](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Prescribing-preparePrescription)      |
     | POST /$process-message | 200       | [See /$process-message response body](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Prescribing-sendPrescription) |
     
-    ### 4xx responses
+    ### 4XX responses
     Note: This section is under development and subject to change. All Spine responses are returned with 200 HTTP codes until a Spine translation service is built. This does not affect the sandbox environment.
     
     | Endpoint              | HTTP code | Response format                           | Environment      | Cause                 |
@@ -242,7 +242,7 @@ paths:
                 example:
                   value:
                     $ref: components/examples/example-1-repeat-dispensing/PrepareResponse-FhirMessageDigest.json
-        '4xx':
+        '4XX':
           description: Invalid request.
           content:
             application/fhir+json:
@@ -291,7 +291,7 @@ paths:
                 example:
                   value:
                     $ref: components/examples/example-1-repeat-dispensing/SendRequest-SuccessResponse.json
-        '4xx':
+        '4XX':
           description: Invalid request.
           content:
             application/fhir+json:
