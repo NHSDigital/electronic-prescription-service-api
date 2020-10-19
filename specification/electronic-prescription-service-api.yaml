@@ -187,7 +187,7 @@ info:
         ]
       }
       ```
-#### Validation errors
+    #### Validation errors
     The endpoint will return following errors in various environment  and will all return a 400 HTTP status code.
     
     | HTTP code | Issue severity | Issue type | Error code             | Cause                                                           |
