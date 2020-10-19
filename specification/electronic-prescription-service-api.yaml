@@ -148,7 +148,7 @@ info:
     
     ## Responses
     ### 2xx responses
-    Note: This section is under development and subject to change. All Spine responses are returned with 200 HTTP codes until a Spine translation service is built. This does not affect the sandbox environment.**
+    Note: This section is under development and subject to change. All Spine responses are returned with 200 HTTP codes until a Spine translation service is built. This does not affect the sandbox environment.
     
     | Endpoint               | HTTP code | Response format                                                                                                                                             |
     | ---------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -156,7 +156,7 @@ info:
     | POST /$process-message | 200       | [See /$process-message response body](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Prescribing-sendPrescription) |
     
     ### 4xx responses
-    Note: This section is under development and subject to change. All Spine responses are returned with 200 HTTP codes until a Spine translation service is built. This does not affect the sandbox environment.**
+    Note: This section is under development and subject to change. All Spine responses are returned with 200 HTTP codes until a Spine translation service is built. This does not affect the sandbox environment.
     
     | Endpoint              | HTTP code | Response format                           | Environment      | Cause                 |
     | --------------------- | --------- | ----------------------------------------- | ---------------- | --------------------- |
@@ -200,7 +200,7 @@ info:
     | 400       | fatal          | value      | INVALID_VALUE          | MessageHeader indicates invalid MessageType                     |
 
 
- servers:
+servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
     description: 'Sandbox'
   - url: 'https://int.api.service.nhs.uk/electronic-prescriptions'
@@ -214,7 +214,7 @@ paths:
       operationId: prepare-prescription
       summary: Convert a prescription message to signature fragments
       description: |
-      ## Overview
+        ## Overview
         Use this endpoint to convert a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) in FHIR format into HL7 V3 signature fragments which can then be signed by the prescriber.
       tags:
         - prescribing
