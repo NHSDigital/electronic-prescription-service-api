@@ -232,10 +232,6 @@
           {
             "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
             "value": "100102238986"
-          },
-          {
-            "system": "https://fhir.nhs.uk/Id/prescribing-code",
-            "value": "2345213"
           }
         ],
         "practitioner": {

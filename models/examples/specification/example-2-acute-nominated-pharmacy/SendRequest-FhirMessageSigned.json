@@ -664,6 +664,10 @@
           {
             "system": "https://fhir.nhs.uk/Id/sds-user-id",
             "value": "8412511"
+          },
+          {
+            "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+            "value": "123456"
           }
         ],
         "name": [
@@ -693,6 +697,10 @@
           {
             "system": "https://fhir.nhs.uk/Id/sds-user-id",
             "value": "981055"
+          },
+          {
+            "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+            "value": "123456"
           }
         ],
         "name": [

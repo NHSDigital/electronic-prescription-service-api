@@ -160,6 +160,24 @@ export class NhsNumber extends Identifier<"2.16.840.1.113883.2.1.4.1"> {
   }
 }
 
+export class AgentPersonIdCode extends Identifier<"1.2.826.0.1285.0.2.1.54"> {
+  constructor(extension: string) {
+    super("1.2.826.0.1285.0.2.1.54", extension)
+  }
+}
+
+export class PrescribingCode extends AgentPersonIdCode {
+  constructor(extension: string) {
+    super(extension)
+  }
+}
+
+export class ProfessionalCode extends AgentPersonIdCode {
+  constructor(extension: string) {
+    super(extension)
+  }
+}
+
 export class SdsUniqueIdentifier extends Identifier<"1.2.826.0.1285.0.2.0.65"> {
   constructor(extension: string) {
     super("1.2.826.0.1285.0.2.0.65", extension)
@@ -169,12 +187,6 @@ export class SdsUniqueIdentifier extends Identifier<"1.2.826.0.1285.0.2.0.65"> {
 export class SdsRoleProfileIdentifier extends Identifier<"1.2.826.0.1285.0.2.0.67"> {
   constructor(extension: string) {
     super("1.2.826.0.1285.0.2.0.67", extension)
-  }
-}
-
-export class BsaPrescribingIdentifier extends Identifier<"1.2.826.0.1285.0.2.1.54"> {
-  constructor(extension: string) {
-    super("1.2.826.0.1285.0.2.1.54", extension)
   }
 }
 

@@ -1,6 +1,5 @@
 import * as fhir from "../../../src/models/fhir/fhir-resources"
 import {Telecom, TelecomUse} from "../../../src/models/hl7-v3/hl7-v3-datatypes-core"
-import {BsaPrescribingIdentifier, SdsUniqueIdentifier} from "../../../src/models/hl7-v3/hl7-v3-datatypes-codes"
 import * as practitioner from "../../../src/services/translation/prescription/practitioner"
 import * as helpers from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
@@ -54,40 +53,56 @@ describe("getAgentPersonTelecom", () => {
   })
 })
 
-describe("getAgentPersonPersonId", () => {
-  const spuriousIdentifier: fhir.Identifier = {
-    "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
-    "value": "spurious"
+describe("getAgentPersonPersonIdForAuthor", () => {
+  const gmcCode: fhir.Identifier = {
+    "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+    "value": "gmc"
   }
-  const dinIdentifier: fhir.Identifier = {
+  const gmpCode : fhir.Identifier = {
+    "system": "https://fhir.hl7.org.uk/Id/gmp-number",
+    "value": "gmp"
+  }
+
+  test("if more than 1 professional code is present for a practitioner then throw", () => {
+    expect(() => practitioner.getAgentPersonPersonIdForAuthor(
+      [gmcCode, gmpCode]
+    )).toThrow()
+  })
+  test("if no professional code is specified for a practitioner then throw", () => {
+    expect(() => practitioner.getAgentPersonPersonIdForAuthor(
+      []
+    )).toThrow()
+  })
+})
+
+describe("getAgentPersonPersonIdForResponsibleParty", () => {
+  const dinCode: fhir.Identifier = {
     "system": "https://fhir.hl7.org.uk/Id/din-number",
     "value": "din"
   }
-  const userIdentifier: fhir.Identifier = {
-    "system": "https://fhir.nhs.uk/Id/sds-user-id",
-    "value": "8412511"
+  const spuriousCode : fhir.Identifier = {
+    "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
+    "value": "spurious"
   }
 
-  test("if all 3 codes are present we return spurious", () => {
-    const output = practitioner.getAgentPersonPersonId(
-      [spuriousIdentifier], [dinIdentifier, userIdentifier]
-    )
-    expect(output).toEqual(new BsaPrescribingIdentifier(spuriousIdentifier.value))
+  test("if spurious code is present for a practitioner role than use this as the prescribing code", () => {
+    const result = practitioner.getAgentPersonPersonIdForResponsibleParty([dinCode], [spuriousCode])
+    expect(result._attributes.extension).toEqual(spuriousCode.value)
   })
-  test("if spurious code is missing we return DIN", () => {
-    const output = practitioner.getAgentPersonPersonId(
-      [], [dinIdentifier, userIdentifier]
-    )
-    expect(output).toEqual(new BsaPrescribingIdentifier(dinIdentifier.value))
+  test("if din code is present for practitioner then use this as the prescribing code", () => {
+    const result = practitioner.getAgentPersonPersonIdForResponsibleParty([dinCode], [])
+    expect(result._attributes.extension).toEqual(dinCode.value)
   })
-  test("if spurious code and din are missing we return user", () => {
-    const output = practitioner.getAgentPersonPersonId(
-      [], [userIdentifier]
-    )
-    expect(output).toEqual(new SdsUniqueIdentifier(userIdentifier.value))
+  test("if no prescribing code is present then use a professional code as the prescribing code", () => {
+    const gmcCode: fhir.Identifier = {
+      "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+      "value": "gmc"
+    }
+    const result = practitioner.getAgentPersonPersonIdForResponsibleParty([gmcCode], [])
+    expect(result._attributes.extension).toEqual(gmcCode.value)
   })
-  test("if all 3 are missing then throw", () => {
-    expect(() => practitioner.getAgentPersonPersonId(
+  test("if no prescribing/professional code is specified for a practitioner/role then throw", () => {
+    expect(() => practitioner.getAgentPersonPersonIdForResponsibleParty(
       [], []
     )).toThrow()
   })

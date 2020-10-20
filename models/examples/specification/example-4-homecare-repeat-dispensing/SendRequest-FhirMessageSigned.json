@@ -262,8 +262,8 @@
             "value": "100102238986"
           },
           {
-            "system": "https://fhir.nhs.uk/Id/prescribing-code",
-            "value": "2345213"
+            "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
+            "value": "SP123456"
           }
         ],
         "practitioner": {
