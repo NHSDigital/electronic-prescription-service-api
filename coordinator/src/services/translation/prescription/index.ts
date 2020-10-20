@@ -34,7 +34,7 @@ export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescripti
     ...convertPrescriptionIds(fhirFirstMedicationRequest)
   )
 
-  const repeatNumber = createRepeatNumber(fhirMedicationRequests)
+  const repeatNumber = convertRepeatNumber(fhirMedicationRequests)
   if (repeatNumber) {
     hl7V3Prescription.repeatNumber = repeatNumber
   }
@@ -55,7 +55,7 @@ export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescripti
 
   const reviewDate = extractReviewDate(fhirFirstMedicationRequest)
   if (reviewDate) {
-    hl7V3Prescription.pertinentInformation7 = new PrescriptionPertinentInformation7(reviewDate)
+    hl7V3Prescription.pertinentInformation7 = convertPrescriptionPertinentInformation7(reviewDate)
   }
 
   hl7V3Prescription.pertinentInformation5 = convertPrescriptionPertinentInformation5(fhirMedicationRequests)
@@ -223,7 +223,7 @@ function convertPerformer(performerReference: fhir.IdentifierReference<fhir.Orga
   return new prescriptions.Performer(hl7V3AgentOrganization)
 }
 
-export function createRepeatNumber(
+export function convertRepeatNumber(
   medicationRequests: Array<MedicationRequest>
 ): Interval<NumericValue> {
   const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
@@ -249,7 +249,7 @@ export function extractRepeatNumberHighValue(medicationRequest: MedicationReques
     "MedicationRequest.extension"
   ) as RepeatInformationExtension
 
-  const repeatNumberExtension = getExtensionForUrlOrNull(
+  const repeatNumberExtension = getExtensionForUrl(
     repeatInformationExtension.extension,
     "numberOfRepeatPrescriptionsAllowed",
     "MedicationRequest.extension.extension"
@@ -259,7 +259,16 @@ export function extractRepeatNumberHighValue(medicationRequest: MedicationReques
   return getNumericValueAsString(repeatNumberExtensionValue)
 }
 
-export function extractReviewDate(medicationRequest: fhir.MedicationRequest): ReviewDate {
+function convertPrescriptionPertinentInformation7(reviewDateStr: string) {
+  const reviewDateTimestamp = convertIsoDateStringToHl7V3Date(
+    reviewDateStr,
+    "MedicationRequest.extension.extension.valueDateTime"
+  )
+  const reviewDate = new ReviewDate(reviewDateTimestamp)
+  return new PrescriptionPertinentInformation7(reviewDate)
+}
+
+export function extractReviewDate(medicationRequest: fhir.MedicationRequest): string {
   const repeatInformationExtension = getExtensionForUrlOrNull(
     medicationRequest.extension,
     "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
@@ -278,9 +287,5 @@ export function extractReviewDate(medicationRequest: fhir.MedicationRequest): Re
     return null
   }
 
-  const reviewDateTimestamp = convertIsoDateStringToHl7V3Date(
-    reviewDateExtension.valueDateTime,
-    "MedicationRequest.extension.extension.valueDateTime"
-  )
-  return new ReviewDate(reviewDateTimestamp)
+  return reviewDateExtension.valueDateTime
 }

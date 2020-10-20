@@ -10,7 +10,9 @@ import {
 import {
   convertBundleToPrescription,
   convertCourseOfTherapyType,
-  convertPrescriptionComponent1, createRepeatNumber, extractReviewDate
+  convertPrescriptionComponent1,
+  convertRepeatNumber,
+  extractReviewDate
 } from "../../../src/services/translation/prescription"
 import * as translator from "../../../src/services/translation"
 import {LineItemPertinentInformation1} from "../../../src/models/hl7-v3/hl7-v3-prescriptions"
@@ -136,11 +138,17 @@ describe("extractReviewDate returns the correct value", () => {
   test("for a medication request with a review date", () => {
     setReviewDate(medicationRequest, "2020-09-03")
     const converted = extractReviewDate(medicationRequest)
-    expect(converted.value._attributes.value).toEqual("20200903")
+    expect(converted).toEqual("2020-09-03")
   })
 
-  test("for a medication request without a review date", () => {
+  test("for a medication request with repeat information but without a review date", () => {
     clearRepeatInformationField(medicationRequest, "authorisationExpiryDate")
+    const converted = extractReviewDate(medicationRequest)
+    expect(converted).toBeFalsy()
+  })
+
+  test("for a medication request without repeat information", () => {
+    clearRepeatInformation(medicationRequest)
     const converted = extractReviewDate(medicationRequest)
     expect(converted).toBeFalsy()
   })
@@ -158,6 +166,15 @@ function setReviewDate(medicationRequest: MedicationRequest, newReviewDate: stri
     "MedicationRequest.extension.extension"
   ) as DateTimeExtension
   reviewDateExtension.valueDateTime = newReviewDate
+}
+
+function clearRepeatInformation(medicationRequest: MedicationRequest) {
+  const repeatInformationExtension = getExtensionForUrl(
+    medicationRequest.extension,
+    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+    "MedicationRequest.extension"
+  ) as RepeatInformationExtension
+  medicationRequest.extension.splice(medicationRequest.extension.indexOf(repeatInformationExtension), 1)
 }
 
 function clearRepeatInformationField(medicationRequest: MedicationRequest, url: string) {
@@ -186,7 +203,7 @@ describe("createRepeatNumberForMedicationRequests", () => {
       setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.ACUTE)
     )
 
-    const repeatNumber = createRepeatNumber(medicationRequests)
+    const repeatNumber = convertRepeatNumber(medicationRequests)
 
     expect(repeatNumber).toBeNull()
   })
@@ -197,7 +214,7 @@ describe("createRepeatNumberForMedicationRequests", () => {
     setCourseOfTherapyTypeCode(medicationRequests[2], CourseOfTherapyTypeCode.ACUTE)
     setCourseOfTherapyTypeCode(medicationRequests[3], CourseOfTherapyTypeCode.ACUTE)
 
-    const repeatNumber = createRepeatNumber(medicationRequests)
+    const repeatNumber = convertRepeatNumber(medicationRequests)
 
     expect(repeatNumber).toBeNull()
   })
@@ -207,7 +224,7 @@ describe("createRepeatNumberForMedicationRequests", () => {
       setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS)
     )
 
-    const repeatNumber = createRepeatNumber(medicationRequests)
+    const repeatNumber = convertRepeatNumber(medicationRequests)
 
     expect(repeatNumber?.low?._attributes?.value).toEqual("1")
     expect(repeatNumber?.high?._attributes?.value).toEqual("1")
@@ -218,7 +235,7 @@ describe("createRepeatNumberForMedicationRequests", () => {
       setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
     )
 
-    const repeatNumber = createRepeatNumber(medicationRequests)
+    const repeatNumber = convertRepeatNumber(medicationRequests)
 
     expect(repeatNumber?.low?._attributes?.value).toEqual("1")
     expect(repeatNumber?.high?._attributes?.value).toEqual("6")
@@ -231,7 +248,18 @@ describe("createRepeatNumberForMedicationRequests", () => {
     })
 
     expect(() => {
-      createRepeatNumber(medicationRequests)
+      convertRepeatNumber(medicationRequests)
+    }).toThrow()
+  })
+
+  test("throws for repeat dispensing prescriptions where repeat information is missing", () => {
+    medicationRequests.forEach(medicationRequest => {
+      setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
+      clearRepeatInformation(medicationRequest)
+    })
+
+    expect(() => {
+      convertRepeatNumber(medicationRequests)
     }).toThrow()
   })
 })
