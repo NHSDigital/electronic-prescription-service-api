@@ -127,17 +127,23 @@ info:
     ## Onboarding
     You need to get your software approved by us before it can go live with this API. We call this onboarding. We are hoping to make the onboarding process as lightweight and as self-service as possible however it can sometimes be quite long, so it’s worth planning well ahead.
 
-    To onboard for this API, follow the onboarding process for APIs by following the Supplier Conformance Assessment List (SCAL) process.
+    To onboard for this API, follow the onboarding process for APIs by following the Supplier Conformance Assessment List (SCAL) process.
 
     When following the SCAL process for the EPS API, please note that:
 
-    **In step 1:** To confirm your use case for this API, you need to contact the EPS team at epssupport@nhs.net
+    **In step 1:** To confirm your use case for this API, you need to contact the EPS team at epssupport@nhs.net
+    
     **In step 6:** When implementing your clinical risk management process, you must review and integrate the EPS FHIR API hazard log into your own risk log. You’ll find it embedded within the EPS FHIR API tab in the SCAL.
+    
     **In step 8:** You need to review and complete the EPS FHIR API risk log to show that you have understood and mitigated the various risks. You might be asked to provide evidence to prove that controls have been put in place. You’ll find the risk log embedded within the EPS FHIR API tab in the SCAL. This is separate from the clinical safety hazard log mentioned above.
-    **In step 9:** You must conduct penetration testing of your system to CHECK standards.
-    **In step 10:** When you complete the Service Desk Registration Form, send it to api.management@nhs.net.
-    **In step 11:** Submit your completed SCAL to api.management@nhs.net.
-    **In step 14:** To request production access, contact us at api.management@nhs.net.
+    
+    **In step 9:** You must conduct penetration testing of your system to CHECK standards.
+    
+    **In step 10:** When you complete the Service Desk Registration Form, send it to api.management@nhs.net.
+    
+    **In step 11:** Submit your completed SCAL to api.management@nhs.net.
+
+    **In step 14:** To request production access, contact us at api.management@nhs.net.
     
     ## Additional guidance
     For further details on common HTTP status codes, see [5xx status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide)
@@ -187,6 +193,7 @@ info:
         ]
       }
       ```
+
     #### Validation errors
     Our endpoints can return the following errors:
     
@@ -199,7 +206,7 @@ info:
     | 400       | fatal          | value      | INCORRECT_RESOURCETYPE | ResourceType is not "Bundle"                                    |
     | 400       | fatal          | value      | INVALID_VALUE          | MessageHeader indicates invalid MessageType                     |
 
-
+    
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
     description: 'Sandbox'
