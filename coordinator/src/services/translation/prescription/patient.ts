@@ -26,7 +26,7 @@ function convertPatientToPatientPerson(
   convertGenderFn = convertGender
 ) {
   const hl7V3PatientPerson = new peoplePlaces.PatientPerson()
-  hl7V3PatientPerson.name = patient.name.map(name => convertNameFn(name, "Patient.name"))
+  hl7V3PatientPerson.name = patient.name.map(name => convertNameFn(name, "Patient.name", patient.birthDate, name.period, patient.gender))
   hl7V3PatientPerson.administrativeGenderCode = convertGenderFn(patient.gender, "Patient.gender")
   hl7V3PatientPerson.birthTime = convertIsoDateStringToHl7V3Date(patient.birthDate, "Patient.birthDate")
   hl7V3PatientPerson.playedProviderPatient = convertPatientToProviderPatient(patient)

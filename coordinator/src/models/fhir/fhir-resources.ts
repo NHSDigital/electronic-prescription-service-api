@@ -104,6 +104,7 @@ export class HumanName {
   given?: Array<string>
   prefix?: Array<string>
   suffix?: Array<string>
+  period?: any
 }
 
 export class ContactPoint {

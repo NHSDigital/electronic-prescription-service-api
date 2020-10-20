@@ -3,11 +3,11 @@ import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 
-export function convertName(fhirHumanName: fhir.HumanName, fhirPath: string): core.Name {
+export function convertName(fhirHumanName: fhir.HumanName, fhirPath: string, fhirDob?: string, fhirNamePeriod?: any, fhirGender?: string): core.Name {
   const name = new core.Name()
   if (fhirHumanName.use) {
     name._attributes = {
-      use: convertNameUse(fhirHumanName.use, fhirPath)
+      use: convertNameUse(fhirHumanName.use, fhirPath, fhirDob || null, fhirGender || null)
     }
   }
   if (fhirHumanName.prefix) {
@@ -25,13 +25,19 @@ export function convertName(fhirHumanName: fhir.HumanName, fhirPath: string): co
   return name
 }
 
-function convertNameUse(fhirNameUse: string, fhirPath: string) {
+function convertNameUse(fhirNameUse: string, fhirPath: string, fhirDob?: string, fhirNamePeriod?: any, fhirGender?: string) {
   switch (fhirNameUse) {
   case "usual":
-  case "official":
     return core.NameUse.USUAL
-  case "nickname":
+  case "temp":
     return core.NameUse.ALIAS
+  case "nickname":
+    return core.NameUse.PREFERRED
+  case "old":
+    // can we map to this? we don't currently recognise period property
+    return fhirDob == fhirNamePeriod['start'] ? core.NameUse.NAME_PREVIOUS_BIRTH : core.NameUse.NAME_PREVIOUS
+  case "maiden":
+    return fhirGender == "male" ? core.NameUse.NAME_PREVIOUS_BACHELOR : core.NameUse.NAME_PREVIOUS_MAIDEN
   default:
     throw new InvalidValueError(`Unhandled name use '${fhirNameUse}'.`, fhirPath + ".use")
   }
@@ -87,6 +93,8 @@ function convertAddressUse(fhirAddressUse: string, fhirAddressType: string, fhir
     return core.AddressUse.WORK
   case "temp":
     return core.AddressUse.TEMPORARY
+  case "billing":
+    return core.AddressUse.POSTAL
   default:
     throw new InvalidValueError(`Unhandled address use '${fhirAddressUse}'.`, fhirPath + ".use")
   }

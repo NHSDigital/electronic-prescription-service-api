@@ -6,13 +6,11 @@ properties:
     description: Identifies the purpose for this name.
     enum:
       - "usual"
-      - "official"
       - "temp"
       - "nickname"
-      - "anonymous"
       - "old"
       - "maiden"
-    example: "official"
+    example: "usual"
   family:
     type: string
     description: The part of a name that links to the genealogy. In some cultures (for example, Eritrea) the family name of a son is the first name of his father.
