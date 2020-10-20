@@ -5,7 +5,9 @@ description: |
   Client errors (4XX error codes):
   | Code                       | Response Code | Description                                   |
   | -------------------------- | ------------- | --------------------------------------------- |
-  | VALIDATION_ERROR           | 400           | This it the "default" error thrown when no others are applicable. |
+  | MISSING_FIELD              | 400           | Validation error - posted resource is missing a required field. |
+  | INCORRECT_RESOURCETYPE     | 400           | Validation error - posted resource is not a bundle. |
+  | INVALID_VALUE              | 400           | Validation error - posted resource has an invalid field value. |
   | ACCESS_DENIED              | 401           | Used when the user does not have permission for a particular request. For example, when their asid does not have the correct interactions attached to it. |
   | RESOURCE_NOT_FOUND         | 404           | The resource was not found. |
 properties:

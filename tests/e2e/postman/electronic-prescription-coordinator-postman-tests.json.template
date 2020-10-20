@@ -21,13 +21,6 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [
-					{
-						"key": "NHSD-Session-URID",
-						"value": "1234",
-						"type": "text"
-					}
-				],
 				"body": {
 					"mode": "raw",
 					"raw": "REPLACED WHEN CALLING MAKE build-coordinator",
@@ -65,13 +58,6 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [
-					{
-						"key": "NHSD-Session-URID",
-						"value": "1234",
-						"type": "text"
-					}
-				],
 				"body": {
 					"mode": "raw",
 					"raw": "REPLACED WHEN CALLING MAKE build-coordinator",
@@ -109,13 +95,6 @@
 			],
 			"request": {
 				"method": "POST",
-				"header": [
-					{
-						"key": "NHSD-Session-URID",
-						"value": "1234",
-						"type": "text"
-					}
-				],
 				"body": {
 					"mode": "raw",
 					"raw": "REPLACED WHEN CALLING MAKE build-coordinator",

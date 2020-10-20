@@ -647,6 +647,10 @@
           {
             "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
             "value": "100112897984"
+          },
+          {
+            "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
+            "value": "SP123456"
           }
         ],
         "code": [
@@ -677,6 +681,10 @@
           {
             "system": "https://fhir.nhs.uk/Id/sds-user-id",
             "value": "8713353"
+          },
+          {
+            "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+            "value": "G6123455"
           }
         ],
         "name": [

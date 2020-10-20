@@ -21,6 +21,9 @@
       <Step>
         <Name>SpikeArrest</Name>
       </Step>
+      <Step>
+        <Name>AssignMessage.AddSyncWaitHeader</Name>
+      </Step>
     </Request>
   </PreFlow>
   <LocalTargetConnection>

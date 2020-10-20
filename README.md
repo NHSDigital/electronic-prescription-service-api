@@ -4,11 +4,13 @@
 
 This is a RESTful HL7® FHIR® API specification for the *Electronic Prescription Service API*.
 
-* `specification/` This [Open API Specification](https://swagger.io/docs/specification/about/) describes the endpoints, methods and messages exchanged by the API. Use it to generate interactive documentation; the contract between the API and its consumers.
-* `scripts/` Utilities helpful to developers of this specification.
-* `proxies/` Apigee API Proxies
+* `azure/` Defines CI/CD pipeline.
 * `coordinator/` Deals with message translation and distribution to other services. Backend for the production EPS FHIR API.
 * `models/` A common, single source of truth directory for requests, responses and schemas used by the various components of this solution.
+* `proxies/` Apigee API Proxies
+* `scripts/` Utilities helpful to developers of this specification.
+* `specification/` This [Open API Specification](https://swagger.io/docs/specification/about/) describes the endpoints, methods and messages exchanged by the API. Use it to generate interactive documentation; the contract between the API and its consumers.
+* `tests/` End-to-end testing of the EPS FHIR API.
 
 Consumers of the API will find developer documentation on the [NHS Digital Developer Hub](https://emea-demo8-nhsdportal.apigee.io/).
 
@@ -66,7 +68,7 @@ Various scripts and commands rely on environment variables being set. These are 
 There are further `make` commands that help alias some functionality during development.
 
 #### Common commands
-Common commands needed for development can be run by running the default `make` command. 
+Common commands needed for development can be run by running the default `make` command.
 
 ```
 $ make
@@ -78,7 +80,7 @@ This outputs to `build.log` and runs the following targets:
  * `build` -- Outputs the FHIR R4 validated models and artifacts for the: specification, coordinator and apigee proxies into the corresponding `dist/` directories
  * `test` -- Performs quality checks including linting, licence checking of dependencies and unit/low level integration tests
  * `release` -- Pulls all the artifacts for the individual components together and arranges them in a format ready to deploy; used mainly by CI but useful to check the output matches expectations
-   
+
 #### Run commands
  * `run-specification` -- Serves a preview of the specification in human-readable format
  * `run-coordinator` -- Run the coordinator locally
@@ -95,25 +97,26 @@ npm t
 ```
 
 #### End-to-end tests
-In order for tests under the make target `test-integration-coordinator` to work, you must have built and be running the coordindator locally. In a seperate shell run:
+New examples can be added in the relevant directory under `models/examples/primary-care|secondary-care`
+
+Following the convention:
+
+`{number}-{endpoint}-{request|response}-{?operation}-{status}.{ext}`
+
+Number is a way to group requests and responses together in each directory, for example in the below 
 
 ```
-make build
-make run-coordinator
+1-Convert-Response-Send-200_OK.xml
+1-Process-Request-Send-200_OK.json
 ```
 
-Once the coordinator is up and displaying the port number, in another shell run:
+the convert response would be set as the expected response for the process request
 
-```
-make test-integration-coordindator
-```
+These examples are then loaded into smoke tests (e2e tests) run during continous deployment
 
-To run all other tests locally (includes unit and low level integration tests): while in the root folder, run
+Operation can be omitted for prepare examples as there is only one operation for this endpoint
 
-```
-make build
-make test
-```
+The smoke test description is built up from the directory and the filename so tests can be renamed by changing the folder structure
 
 ### VS Code Plugins
 
