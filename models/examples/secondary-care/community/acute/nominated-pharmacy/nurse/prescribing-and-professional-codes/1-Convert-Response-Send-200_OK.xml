@@ -118,11 +118,11 @@
                 <code code="R8001" codeSystem="1.2.826.0.1285.0.2.1.104"/>
                 <telecom use="WP" value="01234567890"/>
                 <agentPerson classCode="PSN" determinerCode="INSTANCE">
-                  <id extension="4428981" root="1.2.826.0.1285.0.2.1.54"/>
+                  <id extension="12A3456B" root="1.2.826.0.1285.0.2.1.54"/>
                   <name>
-                    <prefix>DR</prefix>
-                    <given>Thomas</given>
-                    <family>Edwards</family>
+                    <prefix>MR</prefix>
+                    <given>Random</given>
+                    <family>Fiftyeight</family>
                   </name>
                 </agentPerson>
                 <representedOrganization classCode="ORG" determinerCode="INSTANCE">
@@ -151,7 +151,7 @@
                 <code code="R8001" codeSystem="1.2.826.0.1285.0.2.1.104"/>
                 <telecom use="WP" value="01234567890"/>
                 <agentPerson classCode="PSN" determinerCode="INSTANCE">
-                  <id extension="SP123456" root="1.2.826.0.1285.0.2.1.54"/>
+                  <id extension="612345" root="1.2.826.0.1285.0.2.1.54"/>
                   <name>
                     <prefix>DR</prefix>
                     <given>Thomas</given>
