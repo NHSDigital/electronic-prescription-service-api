@@ -27,8 +27,8 @@ properties:
             system:
               type: string
               enum:
-                - "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-endorsement"
-              example: "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-endorsement"
+                - "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement"
+              example: "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement"
             code:
               type: string
               example: "CC"

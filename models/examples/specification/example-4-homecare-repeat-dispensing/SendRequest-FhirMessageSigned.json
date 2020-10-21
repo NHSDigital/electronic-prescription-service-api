@@ -13,7 +13,7 @@
         "resourceType": "MessageHeader",
         "id": "3599c0e9-9292-413e-9270-9a1ef1ead99c",
         "eventCoding": {
-          "system": "https://fhir.nhs.uk/R4/CodeSystem/message-event",
+          "system": "https://fhir.nhs.uk/CodeSystem/message-event",
           "code": "prescription-order",
           "display": "Prescription Order"
         },
@@ -248,7 +248,13 @@
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
             "value": "B81001"
           }
-        }
+        },
+        "generalPractitioner": [{
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "B81001"
+          }
+        }]
       }
     },
     {
@@ -341,7 +347,7 @@
           {
             "coding": [
               {
-                "system": "https://fhir.nhs.uk/R4/CodeSystem/organisation-role",
+                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
                 "code": "RO197",
                 "display": "NHS TRUST"
               }
@@ -433,7 +439,7 @@
         "agent": [
           {
             "who": {
-              "reference": "urn:uuid:DBAA616B-E23C-4D53-0F82-B2D178DB79CA"
+              "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
             }
           }
         ],

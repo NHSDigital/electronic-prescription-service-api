@@ -12,7 +12,7 @@
         "resourceType": "MessageHeader",
         "id": "1e21d133-b39b-4c81-b10f-fce9b4570375",
         "eventCoding": {
-          "system": "https://fhir.nhs.uk/R4/CodeSystem/message-event",
+          "system": "https://fhir.nhs.uk/CodeSystem/message-event",
           "code": "prescription-order",
           "display": "Prescription Order"
         },

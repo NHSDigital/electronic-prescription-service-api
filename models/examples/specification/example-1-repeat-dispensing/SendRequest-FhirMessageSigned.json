@@ -12,7 +12,7 @@
         "resourceType": "MessageHeader",
         "id": "859f8240-d02f-4ea3-8f7f-0aed7b4d7d4e",
         "eventCoding": {
-          "system": "https://fhir.nhs.uk/R4/CodeSystem/message-event",
+          "system": "https://fhir.nhs.uk/CodeSystem/message-event",
           "code": "prescription-order",
           "display": "Prescription Order"
         },
@@ -141,7 +141,7 @@
             "valueCodeableConcept": {
                 "coding":  [
                     {
-                        "system": "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-endorsement",
+                        "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
                         "code": "SLS",
                         "display": "Selected List Scheme"
                     }
@@ -272,7 +272,7 @@
             "valueCodeableConcept": {
                 "coding":  [
                     {
-                        "system": "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-endorsement",
+                        "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
                         "code": "SLS",
                         "display": "Selected List Scheme"
                     }
@@ -403,7 +403,7 @@
             "valueCodeableConcept": {
                 "coding":  [
                     {
-                        "system": "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-endorsement",
+                        "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
                         "code": "SLS",
                         "display": "Selected List Scheme"
                     }
@@ -534,7 +534,7 @@
             "valueCodeableConcept": {
                 "coding":  [
                     {
-                        "system": "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-endorsement",
+                        "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
                         "code": "SLS",
                         "display": "Selected List Scheme"
                     }
@@ -652,6 +652,12 @@
             "system": "https://fhir.nhs.uk/Id/ods-organization-code"
           }
         },
+        "generalPractitioner": [{
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "D81015"
+          }
+        }],
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
