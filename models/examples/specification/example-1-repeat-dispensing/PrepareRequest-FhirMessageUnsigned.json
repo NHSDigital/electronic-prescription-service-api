@@ -590,12 +590,14 @@
             "system": "https://fhir.nhs.uk/Id/ods-organization-code"
           }
         },
-        "generalPractitioner": [{
-          "identifier": {
-            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "D81015"
+        "generalPractitioner": [
+          {
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "D81015"
+            }
           }
-        }],
+        ],
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
