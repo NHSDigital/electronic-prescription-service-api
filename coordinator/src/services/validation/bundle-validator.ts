@@ -3,6 +3,7 @@ import {getExtensionForUrl, getExtensionForUrlOrNull} from "../translation/commo
 import * as errors from "../../models/errors/validation-errors"
 import {identifyMessageType, MessageType} from "../../routes/util"
 import {getMedicationRequests} from "../translation/common/getResourcesOfType"
+import * as LosslessJson from "lossless-json"
 
 // Validate Status
 export function getStatusCode(validation: Array<errors.ValidationError>): number {
@@ -111,7 +112,7 @@ function verifyValueIdenticalForAllMedicationRequests<U>(
   fieldAccessor: (resource: fhir.MedicationRequest) => U
 ): errors.ValidationError | null {
   const fieldValues = medicationRequests.map(fieldAccessor)
-  const serializedFieldValues = fieldValues.map(value => JSON.stringify(value))
+  const serializedFieldValues = fieldValues.map(value => LosslessJson.stringify(value))
   const uniqueFieldValues = new Set(serializedFieldValues)
   return uniqueFieldValues.size === 1 ? null : new errors.MedicationRequestValueError(fieldName, [...uniqueFieldValues])
 }

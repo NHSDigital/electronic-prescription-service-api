@@ -16,6 +16,7 @@ import * as XmlJs from "xml-js"
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {convertOrganizationAndProviderLicense} from "./organization"
 import {getProvenances} from "../common/getResourcesOfType"
+import * as errors from "../../../models/errors/processing-errors"
 
 export function convertAuthor(
   fhirBundle: fhir.Bundle,
@@ -40,7 +41,9 @@ export function convertResponsibleParty(
   fhirBundle: fhir.Bundle,
   fhirMedicationRequest: fhir.MedicationRequest,
   isCancellation: boolean,
-  convertPractitionerRoleFn = convertPractitionerRole
+  convertPractitionerRoleFn = convertPractitionerRole,
+  convertAgentPersonPersonFn = convertAgentPersonPerson,
+  getAgentPersonPersonIdFn = getAgentPersonPersonIdForResponsibleParty
 ): prescriptions.ResponsibleParty {
   const responsibleParty = new prescriptions.ResponsibleParty()
   const fhirResponsiblePartyExtension = getExtensionForUrlOrNull(
@@ -55,7 +58,9 @@ export function convertResponsibleParty(
   responsibleParty.AgentPerson = convertPractitionerRoleFn(
     fhirBundle,
     fhirResponsiblePartyPractitionerRole,
-    isCancellation
+    isCancellation,
+    convertAgentPersonPersonFn,
+    getAgentPersonPersonIdFn
   )
   return responsibleParty
 }
@@ -63,10 +68,17 @@ export function convertResponsibleParty(
 function convertPractitionerRole(
   fhirBundle: fhir.Bundle,
   fhirPractitionerRole: fhir.PractitionerRole,
-  isCancellation: boolean
+  isCancellation: boolean,
+  convertAgentPersonPersonFn = convertAgentPersonPerson,
+  getAgentPersonPersonIdFn = getAgentPersonPersonIdForAuthor
 ): peoplePlaces.AgentPerson {
   const fhirPractitioner = resolveReference(fhirBundle, fhirPractitionerRole.practitioner)
-  const hl7V3AgentPerson = createAgentPerson(fhirPractitionerRole, fhirPractitioner)
+  const hl7V3AgentPerson =
+    createAgentPerson(
+      fhirPractitionerRole,
+      fhirPractitioner,
+      convertAgentPersonPersonFn,
+      getAgentPersonPersonIdFn)
   const fhirOrganization = resolveReference(fhirBundle, fhirPractitionerRole.organization)
   let fhirHealthcareService: fhir.HealthcareService
   if (fhirPractitionerRole.healthcareService) {
@@ -84,7 +96,8 @@ function convertPractitionerRole(
 function createAgentPerson(
   fhirPractitionerRole: fhir.PractitionerRole,
   fhirPractitioner: fhir.Practitioner,
-  convertAgentPersonPersonFn = convertAgentPersonPerson
+  convertAgentPersonPersonFn = convertAgentPersonPerson,
+  getAgentPersonPersonIdFn = getAgentPersonPersonIdForAuthor
 ): peoplePlaces.AgentPerson {
   const hl7V3AgentPerson = new peoplePlaces.AgentPerson()
 
@@ -104,7 +117,11 @@ function createAgentPerson(
 
   hl7V3AgentPerson.telecom = getAgentPersonTelecom(fhirPractitionerRole.telecom, fhirPractitioner.telecom)
 
-  hl7V3AgentPerson.agentPerson = convertAgentPersonPersonFn(fhirPractitionerRole, fhirPractitioner)
+  hl7V3AgentPerson.agentPerson =
+    convertAgentPersonPersonFn(
+      fhirPractitionerRole,
+      fhirPractitioner,
+      getAgentPersonPersonIdFn)
 
   return hl7V3AgentPerson
 }
@@ -120,8 +137,11 @@ export function getAgentPersonTelecom(
   }
 }
 
-function convertAgentPersonPerson(fhirPractitionerRole: fhir.PractitionerRole, fhirPractitioner: fhir.Practitioner) {
-  const id = getAgentPersonPersonId(fhirPractitionerRole.identifier, fhirPractitioner.identifier)
+function convertAgentPersonPerson(
+  fhirPractitionerRole: fhir.PractitionerRole,
+  fhirPractitioner: fhir.Practitioner,
+  getAgentPersonPersonIdFn = getAgentPersonPersonIdForAuthor) {
+  const id = getAgentPersonPersonIdFn(fhirPractitioner.identifier, fhirPractitionerRole.identifier)
   const hl7V3AgentPersonPerson = new peoplePlaces.AgentPersonPerson(id)
   if (fhirPractitioner.name !== undefined) {
     hl7V3AgentPersonPerson.name = convertName(
@@ -132,17 +152,84 @@ function convertAgentPersonPerson(fhirPractitionerRole: fhir.PractitionerRole, f
   return hl7V3AgentPersonPerson
 }
 
-export function getAgentPersonPersonId(
-  fhirPractitionerRoleIdentifier: Array<fhir.Identifier>,
-  fhirPractitionerIdentifier: Array<fhir.Identifier>
+export function getAgentPersonPersonIdForAuthor(
+  fhirPractitionerIdentifier: Array<fhir.Identifier>,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  fhirPractitionerRoleIdentifier: Array<fhir.Identifier> = []
 ): peoplePlaces.PrescriptionAuthorId {
+  const professionalCode: Array<codes.ProfessionalCode> = []
+
+  const gmcCode = getIdentifierValueOrNullForSystem(
+    fhirPractitionerIdentifier,
+    "https://fhir.hl7.org.uk/Id/gmc-number",
+    "Practitioner.identifier"
+  )
+  if (gmcCode) {
+    professionalCode.push(new codes.ProfessionalCode(gmcCode))
+  }
+
+  const gmpCode = getIdentifierValueOrNullForSystem(
+    fhirPractitionerIdentifier,
+    "https://fhir.hl7.org.uk/Id/gmp-number",
+    "Practitioner.identifier"
+  )
+  if (gmpCode) {
+    professionalCode.push(new codes.ProfessionalCode(gmpCode))
+  }
+
+  const nmcCode = getIdentifierValueOrNullForSystem(
+    fhirPractitionerIdentifier,
+    "https://fhir.hl7.org.uk/Id/nmc-number",
+    "Practitioner.identifier"
+  )
+  if (nmcCode) {
+    professionalCode.push(new codes.ProfessionalCode(nmcCode))
+  }
+
+  const gphcCode = getIdentifierValueOrNullForSystem(
+    fhirPractitionerIdentifier,
+    "https://fhir.hl7.org.uk/Id/gphc-number",
+    "Practitioner.identifier"
+  )
+  if (gphcCode) {
+    professionalCode.push(new codes.ProfessionalCode(gphcCode))
+  }
+
+  const hcpcCode = getIdentifierValueOrNullForSystem(
+    fhirPractitionerIdentifier,
+    "https://fhir.hl7.org.uk/Id/hcpc-number",
+    "Practitioner.identifier"
+  )
+  if (hcpcCode) {
+    professionalCode.push(new codes.ProfessionalCode(hcpcCode))
+  }
+
+  if (professionalCode.length === 1) {
+    return professionalCode[0]
+  }
+
+  const error = "Expected exactly one professional code. One of GMC|GMP|NMC|GPhC|HCPC"
+  const errorAdditionalContext = professionalCode.map(code => code._attributes.extension).join(", ")
+  const errorMessage = `${error}. ${errorAdditionalContext.length > 0 ? "But got: " + errorAdditionalContext : ""}`
+  const errorPath = "Practitioner.identifier"
+
+  throw professionalCode.length > 1
+    ? new errors.TooManyValuesError(errorMessage, errorPath)
+    : new errors.TooFewValuesError(errorMessage, errorPath)
+}
+
+export function getAgentPersonPersonIdForResponsibleParty(
+  fhirPractitionerIdentifier: Array<fhir.Identifier>,
+  fhirPractitionerRoleIdentifier: Array<fhir.Identifier>
+): peoplePlaces.PrescriptionAuthorId {
+
   const spuriousCode = getIdentifierValueOrNullForSystem(
     fhirPractitionerRoleIdentifier,
     "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
     "PractitionerRole.identifier"
   )
   if (spuriousCode) {
-    return new codes.BsaPrescribingIdentifier(spuriousCode)
+    return new codes.PrescribingCode(spuriousCode)
   }
 
   const dinCode = getIdentifierValueOrNullForSystem(
@@ -151,15 +238,10 @@ export function getAgentPersonPersonId(
     "Practitioner.identifier"
   )
   if (dinCode) {
-    return new codes.BsaPrescribingIdentifier(dinCode)
+    return new codes.PrescribingCode(dinCode)
   }
 
-  const sdsUniqueIdentifier = getIdentifierValueForSystem(
-    fhirPractitionerIdentifier,
-    "https://fhir.nhs.uk/Id/sds-user-id",
-    "Practitioner.identifier"
-  )
-  return new codes.SdsUniqueIdentifier(sdsUniqueIdentifier)
+  return getAgentPersonPersonIdForAuthor(fhirPractitionerIdentifier)
 }
 
 function convertSignatureText(fhirBundle: fhir.Bundle, signatory: fhir.Reference<fhir.PractitionerRole>) {
