@@ -28,10 +28,11 @@ export function convertName(fhirHumanName: fhir.HumanName, fhirPath: string): co
 function convertNameUse(fhirNameUse: string, fhirPath: string) {
   switch (fhirNameUse) {
   case "usual":
-  case "official":
     return core.NameUse.USUAL
-  case "nickname":
+  case "temp":
     return core.NameUse.ALIAS
+  case "nickname":
+    return core.NameUse.PREFERRED
   default:
     throw new InvalidValueError(`Unhandled name use '${fhirNameUse}'.`, fhirPath + ".use")
   }
@@ -87,6 +88,8 @@ function convertAddressUse(fhirAddressUse: string, fhirAddressType: string, fhir
     return core.AddressUse.WORK
   case "temp":
     return core.AddressUse.TEMPORARY
+  case "billing":
+    return core.AddressUse.POSTAL
   default:
     throw new InvalidValueError(`Unhandled address use '${fhirAddressUse}'.`, fhirPath + ".use")
   }
