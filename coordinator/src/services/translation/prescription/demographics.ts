@@ -3,11 +3,11 @@ import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 
-export function convertName(fhirHumanName: fhir.HumanName, fhirPath: string, fhirDob?: string, fhirNamePeriod?: any, fhirGender?: string): core.Name {
+export function convertName(fhirHumanName: fhir.HumanName, fhirPath: string): core.Name {
   const name = new core.Name()
   if (fhirHumanName.use) {
     name._attributes = {
-      use: convertNameUse(fhirHumanName.use, fhirPath, fhirDob || null, fhirGender || null)
+      use: convertNameUse(fhirHumanName.use, fhirPath)
     }
   }
   if (fhirHumanName.prefix) {
@@ -25,7 +25,7 @@ export function convertName(fhirHumanName: fhir.HumanName, fhirPath: string, fhi
   return name
 }
 
-function convertNameUse(fhirNameUse: string, fhirPath: string, fhirDob?: string, fhirNamePeriod?: any, fhirGender?: string) {
+function convertNameUse(fhirNameUse: string, fhirPath: string) {
   switch (fhirNameUse) {
   case "usual":
     return core.NameUse.USUAL
@@ -33,8 +33,6 @@ function convertNameUse(fhirNameUse: string, fhirPath: string, fhirDob?: string,
     return core.NameUse.ALIAS
   case "nickname":
     return core.NameUse.PREFERRED
-  case "maiden":
-    return fhirGender == "male" ? core.NameUse.NAME_PREVIOUS_BACHELOR : core.NameUse.NAME_PREVIOUS_MAIDEN
   default:
     throw new InvalidValueError(`Unhandled name use '${fhirNameUse}'.`, fhirPath + ".use")
   }
