@@ -8,7 +8,6 @@ properties:
       - "usual"
       - "temp"
       - "nickname"
-      - "old"
       - "maiden"
     example: "usual"
   family:

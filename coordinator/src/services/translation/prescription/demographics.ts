@@ -33,9 +33,6 @@ function convertNameUse(fhirNameUse: string, fhirPath: string, fhirDob?: string,
     return core.NameUse.ALIAS
   case "nickname":
     return core.NameUse.PREFERRED
-  case "old":
-    // can we map to this? we don't currently recognise period property
-    return fhirDob == fhirNamePeriod['start'] ? core.NameUse.NAME_PREVIOUS_BIRTH : core.NameUse.NAME_PREVIOUS
   case "maiden":
     return fhirGender == "male" ? core.NameUse.NAME_PREVIOUS_BACHELOR : core.NameUse.NAME_PREVIOUS_MAIDEN
   default:
