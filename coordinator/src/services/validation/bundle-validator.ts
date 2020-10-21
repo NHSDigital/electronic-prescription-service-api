@@ -3,6 +3,7 @@ import {getExtensionForUrl, getExtensionForUrlOrNull} from "../translation/commo
 import * as errors from "../../models/errors/validation-errors"
 import {identifyMessageType, MessageType} from "../../routes/util"
 import {getMedicationRequests} from "../../services/translation/common/getResourcesOfType"
+import * as LosslessJson from "lossless-json"
 
 // Validate Status
 export function getStatusCode(validation: Array<errors.ValidationError>): number {
@@ -126,6 +127,15 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
         "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
         "MedicationRequest.extension"
       )
+    ),
+    (medicationRequests: Array<fhir.MedicationRequest>) => verifyValueIdenticalForAllMedicationRequests(
+      medicationRequests,
+      "extension (repeat information)",
+      (medicationRequest) => getExtensionForUrlOrNull(
+        medicationRequest.extension,
+        "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+        "MedicationRequest.extension"
+      )
     )
   ]
   const medicationRequests = getMedicationRequests(bundle)
@@ -136,6 +146,7 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
 function notEmpty<T>(value: T | null | undefined): value is T {
   return value !== null && value !== undefined
 }
+
 type Validator<T> = (input: T) => errors.ValidationError | null
 
 // Validate
@@ -150,7 +161,7 @@ function verifyValueIdenticalForAllMedicationRequests<U>(
   fieldAccessor: (resource: fhir.MedicationRequest) => U
 ): errors.ValidationError | null {
   const fieldValues = medicationRequests.map(fieldAccessor)
-  const serializedFieldValues = fieldValues.map(value => JSON.stringify(value))
+  const serializedFieldValues = fieldValues.map(value => LosslessJson.stringify(value))
   const uniqueFieldValues = new Set(serializedFieldValues)
   return uniqueFieldValues.size === 1 ? null : new errors.MedicationRequestValueError(fieldName, [...uniqueFieldValues])
 }
@@ -165,7 +176,7 @@ function verifyMessageIsResource(message: unknown): message is fhir.Resource {
 
 function verifyResourceTypeIsBundle(resource: unknown): resource is fhir.Bundle {
   return verifyMessageIsResource(resource)
-        && resource.resourceType === "Bundle"
+    && resource.resourceType === "Bundle"
 }
 
 function verifyBundleContainsEntries(bundle: fhir.Bundle) {
