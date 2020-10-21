@@ -235,7 +235,7 @@ paths:
             examples:
               example:
                 value:
-                  $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes\1-Prepare-Request-200_OK.json
+                  $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Prepare-Request-200_OK.json
         description: ''
       responses:
         '200':
