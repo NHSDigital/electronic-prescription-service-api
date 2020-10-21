@@ -49,8 +49,8 @@ describe("convertName fills correct fields only", () => {
 
   const cases = [
     ["usual", core.NameUse.USUAL],
-    ["official", core.NameUse.USUAL],
-    ["nickname", core.NameUse.ALIAS]
+    ["temp", core.NameUse.ALIAS],
+    ["nickname", core.NameUse.PREFERRED]
   ]
 
   test.each(cases)("use %p should return correct value", (argument: string, expected: core.NameUse) => {

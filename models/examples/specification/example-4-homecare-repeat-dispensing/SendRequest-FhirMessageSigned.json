@@ -228,7 +228,7 @@
         ],
         "name": [
           {
-            "use": "official",
+            "use": "usual",
             "family": "CORY",
             "given": ["ETTA"],
             "prefix": ["MISS"]
@@ -371,7 +371,7 @@
         "id": "54b0506d-49af-4245-9d40-d7d64902055e",
         "identifier": [
           {
-            "use": "official",
+            "use": "usual",
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
             "value": "A99968"
           }
