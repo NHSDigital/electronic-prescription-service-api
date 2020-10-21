@@ -145,35 +145,31 @@ info:
 
     **In step 14:** To request production access, contact us at api.management@nhs.net.
     
+    ## Additional guidance
+    For further details on common HTTP status codes, see [5xx status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide)
+    
+    ## Resources
+    Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/DigitalMedicines) to assist with your integration.
+    This is the FHIR specification for Digital Medicines starting with the assets required for an electronic prescription sent to the EPS.
+    
     ## Responses
-    ### 2xx responses
-    **Note: This section is under development and subject to change. All Spine responses are returned with 200 HTTP codes until a Spine translation service is built. This does not affect the sandbox environment.**
+    ### 2XX responses
+    Note: This section is under development and subject to change. All Spine responses are returned with 200 HTTP codes until a Spine translation service is built. This does not affect the sandbox environment.
     
     | Endpoint               | HTTP code | Response format                                                                                                                                             |
     | ---------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
     | POST /$prepare         | 200       | [See /$prepare response body](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Prescribing-preparePrescription)      |
     | POST /$process-message | 200       | [See /$process-message response body](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Prescribing-sendPrescription) |
     
-    ### 4xx responses
-    **Note: This section is under development and subject to change. All Spine responses are returned with 200 HTTP codes until a Spine translation service is built. This does not affect the sandbox environment.**
+    ### 4XX responses
+    Note: This section is under development and subject to change. All Spine responses are returned with 200 HTTP codes until a Spine translation service is built. This does not affect the sandbox environment.
     
     | Endpoint              | HTTP code | Response format                           | Environment      | Cause                 |
     | --------------------- | --------- | ----------------------------------------- | ---------------- | --------------------- |
     | Any                   | 400       | See "Unsupported operation" example below | Sandbox          | Unsupported operation |
     | Any                   | 408       | Returns original request data             | Integration test | Request timeout       |
     
-    #### Validation errors
-    The following errors may be returned by any endpoint in any environment and will all return a 400 HTTP status code.
-    
-    | Issue severity | Issue type | Error code             | Cause                                                           |
-    | -------------- | ---------- | ---------------------- | --------------------------------------------------------------- |
-    | error          | value      | MISSING_FIELD          | Bundle contains incorrect number of resources of a certain type |
-    | error          | value      | MISSING_FIELD          | Bundle does not contain "id" field                              |
-    | error          | value      | INVALID_VALUE          | Invalid value in MedicationRequest                              |
-    | fatal          | value      | MISSING_FIELD          | Bundle does not contain "entry" field                           |
-    | fatal          | value      | INCORRECT_RESOURCETYPE | ResourceType is not "Bundle"                                    |
-    | fatal          | value      | INVALID_VALUE          | MessageHeader indicates invalid MessageType                     |
-    
+        
     #### Example: Unsupported operation
     If attempting to call the `/_poll` endpoint in the sandbox environment, the following error would be returned:
       ```
@@ -197,10 +193,20 @@ info:
         ]
       }
       ```
+
+    #### Validation errors
+    Our endpoints can return the following errors:
     
-    ## Resources
-    Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/DigitalMedicines) to assist with your integration.
-    This is the FHIR specification for Digital Medicines starting with the assets required for an electronic prescription sent to the EPS.
+    | HTTP code | Issue severity | Issue type | Error code             | Cause                                                           |
+    | ----------| -------------- | ---------- | ---------------------- | --------------------------------------------------------------- |
+    | 400       | error          | value      | MISSING_FIELD          | Bundle contains incorrect number of resources of a certain type |
+    | 400       | error          | value      | MISSING_FIELD          | Bundle does not contain "id" field                              |
+    | 400       | error          | value      | INVALID_VALUE          | Invalid value in MedicationRequest                              |
+    | 400       | fatal          | value      | MISSING_FIELD          | Bundle does not contain "entry" field                           |
+    | 400       | fatal          | value      | INCORRECT_RESOURCETYPE | ResourceType is not "Bundle"                                    |
+    | 400       | fatal          | value      | INVALID_VALUE          | MessageHeader indicates invalid MessageType                     |
+
+    
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
     description: 'Sandbox'
@@ -215,6 +221,7 @@ paths:
       operationId: prepare-prescription
       summary: Convert a prescription message to signature fragments
       description: |
+        ## Overview
         Use this endpoint to convert a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) in FHIR format into HL7 V3 signature fragments which can then be signed by the prescriber.
       tags:
         - prescribing
@@ -257,11 +264,12 @@ paths:
       operationId: send-message
       summary: Send a prescription message to EPS
       description: |
+        ## Overview
         Use this endpoint to send a prescription message to EPS.
         
         The effect of calling this endpoint depends on the type of the message, which is determined by the `MessageHeader` resource:
-        * To create a prescription, send a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order). The message must include a digital signature.
-        * To cancel a prescription, send a [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update).
+        * to create a prescription, send a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order). The message must include a digital signature.
+        * to cancel a prescription, send a [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update)
       tags:
         - prescribing
       requestBody:
