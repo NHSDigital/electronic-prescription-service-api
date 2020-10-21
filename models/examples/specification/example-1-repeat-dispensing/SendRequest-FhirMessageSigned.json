@@ -682,7 +682,7 @@
         "birthDate": "1977-03-27",
         "name": [
           {
-            "use": "official",
+            "use": "usual",
             "family": "PENSON",
             "given": [
               "HEADLEY",
@@ -757,7 +757,7 @@
         ],
         "name": [
           {
-            "use": "official",
+            "use": "usual",
             "family": "CHANDLER",
             "given": [
               "ANDREW"

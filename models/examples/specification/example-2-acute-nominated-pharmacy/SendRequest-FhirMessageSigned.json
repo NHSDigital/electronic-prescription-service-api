@@ -578,7 +578,7 @@
         "birthDate": "1973-05-25",
         "name": [
           {
-            "use": "official",
+            "use": "usual",
             "family": "AWAN",
             "given": [
               "LAYNE"
@@ -678,7 +678,7 @@
         ],
         "name": [
           {
-            "use": "official",
+            "use": "usual",
             "family": "MCQUADE",
             "given": [
               "PEPIN"
@@ -711,7 +711,7 @@
         ],
         "name": [
           {
-            "use": "official",
+            "use": "usual",
             "family": "AITCHISON",
             "given": [
               "PAVLOU"
