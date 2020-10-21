@@ -37,7 +37,6 @@ describe("convertPatient", () => {
     const mockConvertAddress = jest.fn(convertAddressFn)
     const addressValue = {use: "example"}
     fhirPatient.address = [addressValue]
-    console.log(fhirPatient)
 
     convertPatient(bundle, fhirPatient, mockConvertAddress)
 
