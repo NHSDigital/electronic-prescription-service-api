@@ -9,7 +9,6 @@ import {
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import * as prescriptions from "../../../models/hl7-v3/hl7-v3-prescriptions"
-import {populateRepeatNumber} from "../common/repeatNumber"
 import {ElementCompact, js2xml} from "xml-js"
 
 function convertProduct(medicationCodeableConcept: fhir.CodeableConcept) {
@@ -93,6 +92,7 @@ function convertAdditionalInstructions(
 
 export function convertMedicationRequestToLineItem(
   fhirMedicationRequest: fhir.MedicationRequest,
+  repeatNumber: core.Interval<core.Timestamp>,
   patientInfoText: Array<core.Text>
 ): prescriptions.LineItem {
   const lineItemId = getIdentifierValueForSystem(
@@ -104,7 +104,9 @@ export function convertMedicationRequestToLineItem(
     new codes.GlobalIdentifier(lineItemId)
   )
 
-  populateRepeatNumber(hl7V3LineItem, [fhirMedicationRequest])
+  if (repeatNumber) {
+    hl7V3LineItem.repeatNumber = repeatNumber
+  }
 
   hl7V3LineItem.product = convertProduct(fhirMedicationRequest.medicationCodeableConcept)
   hl7V3LineItem.component = convertLineItemComponent(fhirMedicationRequest.dispenseRequest.quantity)

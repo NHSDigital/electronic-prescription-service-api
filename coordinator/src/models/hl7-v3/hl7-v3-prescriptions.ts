@@ -28,7 +28,7 @@ export class Author implements ElementCompact {
 /**
  * Medication line item in the prescription.
  */
-export class LineItem implements ElementCompact, Repeatable {
+export class LineItem implements ElementCompact {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "SBADM",
     moodCode: "RQO"
@@ -241,14 +241,10 @@ export class ParentPrescriptionPertinentInformation1 implements ElementCompact {
   }
 }
 
-export interface Repeatable {
-  repeatNumber?: core.Interval<NumericValue>
-}
-
 /**
  * This act represents the distinct parts of the administration part for a single item on a Prescription.
  */
-export class Prescription implements ElementCompact, Repeatable {
+export class Prescription implements ElementCompact {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "SBADM",
     moodCode: "RQO"
