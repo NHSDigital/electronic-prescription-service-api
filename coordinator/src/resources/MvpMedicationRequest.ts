@@ -45,7 +45,7 @@ const medicationRequestGroupIdentifier: MedicationRequestGroupIdentifier = {
 const medicationRequestCourseOfTherapyTypeContinuousRepeatDispensing: CodeableConcept = {
   coding: [
     {
-      system: "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-course-of-therapy",
+      system: "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
       code: "continuous-repeat-dispensing"
     }
   ]

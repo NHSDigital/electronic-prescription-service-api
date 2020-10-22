@@ -223,7 +223,7 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-course-of-therapy",
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
               "code": "continuous-repeat-dispensing",
               "display": "Continuous long term (repeat dispensing)"
             }
@@ -354,7 +354,7 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-course-of-therapy",
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
               "code": "continuous-repeat-dispensing",
               "display": "Continuous long term (repeat dispensing)"
             }
@@ -485,7 +485,7 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-course-of-therapy",
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
               "code": "continuous-repeat-dispensing",
               "display": "Continuous long term (repeat dispensing)"
             }
@@ -616,7 +616,7 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-course-of-therapy",
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
               "code": "continuous-repeat-dispensing",
               "display": "Continuous long term (repeat dispensing)"
             }
