@@ -48,9 +48,6 @@
           },
           {
             "reference": "urn:uuid:b65dd3a2-9551-45a3-3e9d-342f8de14d8f"
-          },
-          {
-            "reference": "urn:uuid:cc850777-b73f-43cd-23f8-a41a7f1e8459"
           }
         ]
       },
@@ -677,7 +674,20 @@
         },
         "organization": {
           "reference": "urn:uuid:b65dd3a2-9551-45a3-3e9d-342f8de14d8f"
-        }
+        },
+        "healthcareService": [
+          {
+            "reference": "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e",
+            "display": "SOMERSET BOWEL CANCER SCREENING CENTRE"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "01234567890",
+            "use": "work"
+          }
+        ]
       },
       "fullUrl": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca"
     },
@@ -721,71 +731,96 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "D81015"
+            "value": "RBA"
           }
         ],
         "type": [
           {
             "coding": [
               {
-                "system": "https://fhir.nhs.uk/R4/CodeSystem/organisation-type",
-                "code": "001",
-                "display": "General Medical Practice"
+                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+                "code": "RO197",
+                "display": "NHS TRUST"
               }
             ]
           }
         ],
-        "name": "PARSON DROVE SURGERY",
+        "name": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST",
+        "address": [
+          {
+            "line": [
+              "MUSGROVE PARK HOSPITAL",
+              "PARKFIELD DRIVE",
+              "TAUNTON"
+            ],
+            "postalCode": "TA1 5DA"
+          }
+        ],
         "telecom": [
           {
             "system": "phone",
-            "value": "tel:01945700223",
+            "value": "01823333444",
             "use": "work"
           }
-        ],
-        "address": [
-          {
-            "use": "work",
-            "type": "both",
-            "line": [
-              "240 MAIN ROAD",
-              "PARSON DROVE"
-            ],
-            "city": "WISBECH",
-            "district": "CAMBRIDGESHIRE",
-            "postalCode": "PE13 4JA"
-          }
-        ],
-        "partOf": {
-          "reference": "urn:uuid:cc850777-b73f-43cd-23f8-a41a7f1e8459"
-        }
+        ]
       },
       "fullUrl": "urn:uuid:b65dd3a2-9551-45a3-3e9d-342f8de14d8f"
     },
     {
+      "fullUrl": "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e",
       "resource": {
-        "resourceType": "Organization",
-        "id": "cc850777-b73f-43cd-23f8-a41a7f1e8459",
+        "resourceType": "HealthcareService",
+        "id": "54b0506d-49af-4245-9d40-d7d64902055e",
         "identifier": [
           {
+            "use": "usual",
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "5JK"
+            "value": "A99968"
           }
         ],
-        "type": [
+        "active": true,
+        "providedBy": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA"
+          }
+        },
+        "location": [
           {
-            "coding": [
-              {
-                "system": "https://fhir.nhs.uk/R4/CodeSystem/organisation-type",
-                "code": "005",
-                "display": "Primary Care Trust"
-              }
-            ]
+            "reference": "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
           }
         ],
-        "name": "GREATER DERBY PCT"
-      },
-      "fullUrl": "urn:uuid:cc850777-b73f-43cd-23f8-a41a7f1e8459"
+        "name": "SOMERSET BOWEL CANCER SCREENING CENTRE",
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "01823 333444",
+            "use": "work"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb",
+      "resource": {
+        "resourceType": "Location",
+        "id": "8a5d7d67-64fb-44ec-9802-2dc214bb3dcb",
+        "identifier": [
+          {
+            "value": "10008800708"
+          }
+        ],
+        "status": "active",
+        "mode": "instance",
+        "address": {
+          "use": "work",
+          "line": [
+            "MUSGROVE PARK HOSPITAL"
+          ],
+          "city": "TAUNTON",
+          "postalCode": "TA1 5DA"
+        }
+      }
     }
   ]
 }

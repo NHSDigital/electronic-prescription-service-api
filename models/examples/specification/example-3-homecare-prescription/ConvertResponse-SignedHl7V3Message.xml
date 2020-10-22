@@ -93,7 +93,49 @@
             </performer>
             <author contextControlCode="OP" typeCode="AUT">
               <time value="20200713120000"/>
-              <signatureText nullFlavor="NA"/>
+              <signatureText>
+                <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+                  <SignedInfo>
+                    <CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+                    <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+                    <Reference>
+                      <Transforms>
+                        <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+                      </Transforms>
+                      <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+                      <DigestValue>3YlFQMOrw2Q0dUkytzs50JF7HUo=</DigestValue>
+                    </Reference>
+                  </SignedInfo>
+                  <SignatureValue>XpjsKXPfUW708rGPuOAphlr4/UA23f3bhdBOocEJ17BXV0Jruz1E1KLFQwq37EJfnVo/WCLTSjgk
+kp0BWj5bG3JjEfj78ZjI1yVSRbfbVXXQX0GLZmiSGJrhWnFZt8cFrxO1MFAtSLmKfyXKzbuHsLTm
+sHQKpXCRdZnFmKBojLmp7NBr0lLE8Phttu8F2Eaeu2wPQ84p1iNW91fo1H+SFVxC+BRoPI1polXg
+42ceTjoJ7+FqYPDHfC7nNFIgTYJZlQdboMNbndv6BPDuFq0wusQjDQ4zMZ+8ClpRdt3iKmylXNmK
+kJA15W0pFbGq0Xnf3S1MXWElkaCIUCdGK2WsPA==</SignatureValue>
+                  <KeyInfo>
+                    <X509Data>
+                      <X509Certificate>MIIEJDCCAwygAwIBAgIUK3xkEUlRhXPJKNVwryqLZRoNTQQwDQYJKoZIhvcNAQELBQAwRDEOMAwG
+A1UEChMFSFNDSUMxETAPBgNVBAsTCE9wZW50ZXN0MR8wHQYDVQQDExZFUFMgTm9uLXJlcHVkaWF0
+aW9uIENBMB4XDTIwMDIyNzEzMDcyMloXDTIyMDIyNjEzMDcyMlowOzEOMAwGA1UEChMFSFNDSUMx
+GzAZBgNVBAsTElNvbHV0aW9uIEFzc3VyYW5jZTEMMAoGA1UEAxMDRU1VMIIBIjANBgkqhkiG9w0B
+AQEFAAOCAQ8AMIIBCgKCAQEAp0G4Gac7S0mqlHY/sW+EFZZL8AU+FMRrSFIefISocA6DsHePgHpg
+0tJcdmj3N45VR6FHDrKx5Dg/005R/t8gbuIHF+iI1puTcV9jWPmakkurlVPARmiAy767WPk9mpUo
+lfoHdILKqfIWMzQzW7C4L8vFK55BIeV4/lIDvEpxZ+LHWbkmk/h1dWexupjOTfqTn/Uix+Lat2Tp
+qzYSrM0bep8p8ucndN5sqcm6UkPothsxNEi2Hjkd8aoH1H4KIVwgcBwWe+XrLXK5WarMW0Y9qgQK
+xMsnvW8oyHa83mkHY+e8OeN/SnqYjkag0I4pvbBTclrGfIScIfTZorVn2WvCIQIDAQABo4IBFTCC
+AREwCQYDVR0TBAIwADAOBgNVHQ8BAf8EBAMCBaAwIAYDVR0lAQH/BBYwFAYIKwYBBQUHAwEGCCsG
+AQUFBwMCMDYGCWCGSAGG+EIBDQQpFidPcGVudGVzdDogT3BlblNTTCBHZW5lcmF0ZWQgQ2VydGlm
+aWNhdGUwHQYDVR0OBBYEFAH4ptckOhsUzBfVjt/m05GiO8XRMHsGA1UdIwR0MHKAFNIRvX9omrl7
+ZXSqEINy6w2rPQduoU+kTTBLMRQwEgYDVQQKEwtOSFMgRGlnaXRhbDERMA8GA1UECxMIT3BlbnRl
+c3QxIDAeBgNVBAMTF09wZW50ZXN0IFJvb3QgQXV0aG9yaXR5ggkA6u0cXbLqKoQwDQYJKoZIhvcN
+AQELBQADggEBAEDcrPcdrIC5ufVHra62oGBP/lz5oJq3Ql93Phgw9BDbumPU74P+XgQoO9vw8xO2
+Yb4+PL7M2BuJo3fDqcDsW+4B4t9mdhWW7lRjN3WcujoLslPz23cfyxCgZnYMMDbOhBrJxVCzYeC6
+nx6OhkL1V3Yoe+OIyrReUzpzeBwsUX5q802dNaV1yrb6ai2icgxqpY+fOZYFLRefPIqutBK73hnD
+uxDjI+7ehyFpapfOXVBmLTacLxLF1Dy/7+GIXbdIwbedet4p2IcEaRX0eWT0U//ZJSeBqnOOpXo6
+4DfZtS9Vl2exHbHHqYc0RVNpKImaWVrMydC1qOexjUZSVBVd+Zo=</X509Certificate>
+                    </X509Data>
+                  </KeyInfo>
+                </Signature>
+              </signatureText>
               <AgentPerson classCode="AGNT">
                 <id extension="100102238986" root="1.2.826.0.1285.0.2.0.67"/>
                 <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
