@@ -80,6 +80,7 @@ build-specification:
 	&& mkdir -p build/components/schemas \
 	&& cp ../models/examples/signature.json build/components/examples/. \
 	&& cp -r ../models/examples/specification/. build/components/examples/. \
+	&& cp -r ../models/examples/. build/components/examples/. \
 	&& cp -r ../models/schemas build/components \
 	&& cp electronic-prescription-service-api.yaml build/electronic-prescription-service-api.yaml \
 	&& npm run resolve \
