@@ -65,7 +65,7 @@ describe("convertName fills correct fields only", () => {
   })
 })
 
-describe("convertTelecom should convert correct use", () => {
+describe("convertTelecom", () => {
   test("empty telecom should throw InvalidValueUserFacingError", () => {
     const fhirTelecom = {}
     expect(() => demographics.convertTelecom(fhirTelecom, "fhirPath")).toThrow(InvalidValueError)
@@ -82,6 +82,24 @@ describe("convertTelecom should convert correct use", () => {
     const fhirTelecom = {use: argument}
     const result = demographics.convertTelecom(fhirTelecom, "fhirPath")
     expect(result._attributes).toEqual({use: expected})
+  })
+
+  const testNumber = "01234567890"
+
+  const phoneNumbers = [
+    testNumber,
+    `tel:${testNumber}`
+  ]
+  test.each(phoneNumbers)("should add 'tel:' to the start of phone numbers", (phoneNumber: string) => {
+    const fhirTelecom = {use: "home", value: phoneNumber}
+    const result = demographics.convertTelecom(fhirTelecom, "fhirPath")
+    expect(result._attributes).toEqual({use: "HP", value: `tel:${testNumber}`})
+  })
+
+  test("should remove spaces from numbers", () => {
+    const fhirTelecom = {use: "home", value: "0 1 2 3       456 7890"}
+    const result = demographics.convertTelecom(fhirTelecom, "fhirPath")
+    expect(result._attributes).toEqual({use: "HP", value: `tel:${testNumber}`})
   })
 })
 
