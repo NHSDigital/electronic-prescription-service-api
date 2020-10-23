@@ -173,6 +173,12 @@ export class Telecom implements ElementCompact {
   }
 
   constructor(use: TelecomUse, value: string) {
+    if (value) {
+      value = value.replace(/\s/g, "")
+      if (!value.startsWith("tel:")) {
+        value = `tel:${value}`
+      }
+    }
     this._attributes = {
       use: use,
       value: value

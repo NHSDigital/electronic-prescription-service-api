@@ -97,7 +97,7 @@
               <AgentPerson classCode="AGNT">
                 <id extension="100102238986" root="1.2.826.0.1285.0.2.0.67"/>
                 <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
-                <telecom use="WP" value="01234567890"/>
+                <telecom use="WP" value="tel:01234567890"/>
                 <agentPerson classCode="PSN" determinerCode="INSTANCE">
                   <id extension="123456" root="1.2.826.0.1285.0.2.1.54"/>
                   <name>
@@ -110,7 +110,7 @@
                   <id extension="A99968" root="1.2.826.0.1285.0.1.10"/>
                   <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
                   <name>SOMERSET BOWEL CANCER SCREENING CENTRE</name>
-                  <telecom use="WP" value="01823 333444"/>
+                  <telecom use="WP" value="tel:01823333444"/>
                   <addr use="WP">
                     <streetAddressLine>MUSGROVE PARK HOSPITAL</streetAddressLine>
                     <streetAddressLine>TAUNTON</streetAddressLine>
@@ -130,7 +130,7 @@
               <AgentPerson classCode="AGNT">
                 <id extension="100102238986" root="1.2.826.0.1285.0.2.0.67"/>
                 <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
-                <telecom use="WP" value="01234567890"/>
+                <telecom use="WP" value="tel:01234567890"/>
                 <agentPerson classCode="PSN" determinerCode="INSTANCE">
                   <id extension="123456" root="1.2.826.0.1285.0.2.1.54"/>
                   <name>
@@ -143,7 +143,7 @@
                   <id extension="A99968" root="1.2.826.0.1285.0.1.10"/>
                   <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
                   <name>SOMERSET BOWEL CANCER SCREENING CENTRE</name>
-                  <telecom use="WP" value="01823 333444"/>
+                  <telecom use="WP" value="tel:01823333444"/>
                   <addr use="WP">
                     <streetAddressLine>MUSGROVE PARK HOSPITAL</streetAddressLine>
                     <streetAddressLine>TAUNTON</streetAddressLine>
