@@ -249,6 +249,34 @@
       }
     },
     {
+      "fullUrl": "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a",
+      "resource": {
+        "resourceType": "Practitioner",
+        "id": "a8c85454-f8cb-498d-9629-78e2cb5fa47a",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/sds-user-id",
+            "value": "555086690109"
+          },
+          {
+            "system": "https://fhir.hl7.org.uk/Id/nmc-number",
+            "value": "12A3456B"
+          }
+        ],
+        "name": [
+          {
+            "family": "Fiftyeight",
+            "given": [
+              "Random"
+            ],
+            "prefix": [
+              "MR"
+            ]
+          }
+        ]
+      }
+    },
+    {
       "fullUrl": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
       "resource": {
         "resourceType": "PractitionerRole",
@@ -260,7 +288,7 @@
           },
           {
             "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
-            "value": "SP123456"
+            "value": "612345"
           }
         ],
         "practitioner": {
@@ -291,34 +319,6 @@
             "system": "phone",
             "value": "01234567890",
             "use": "work"
-          }
-        ]
-      }
-    },
-    {
-      "fullUrl": "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a",
-      "resource": {
-        "resourceType": "Practitioner",
-        "id": "a8c85454-f8cb-498d-9629-78e2cb5fa47a",
-        "identifier": [
-          {
-            "system": "https://fhir.nhs.uk/Id/sds-user-id",
-            "value": "3415870201"
-          },
-          {
-            "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-            "value": "4428981"
-          }
-        ],
-        "name": [
-          {
-            "family": "Edwards",
-            "given": [
-              "Thomas"
-            ],
-            "prefix": [
-              "DR"
-            ]
           }
         ]
       }
