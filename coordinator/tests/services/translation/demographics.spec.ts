@@ -71,35 +71,22 @@ describe("convertTelecom", () => {
     expect(() => demographics.convertTelecom(fhirTelecom, "fhirPath")).toThrow(InvalidValueError)
   })
 
-  const cases = [
-    ["home", core.TelecomUse.PERMANENT_HOME],
-    ["work", core.TelecomUse.WORKPLACE],
-    ["temp", core.TelecomUse.TEMPORARY],
-    ["mobile", core.TelecomUse.MOBILE]
-  ]
-
-  test.each(cases)("%p should return correct value", (argument: string, expected: core.TelecomUse) => {
-    const fhirTelecom = {use: argument}
-    const result = demographics.convertTelecom(fhirTelecom, "fhirPath")
-    expect(result._attributes).toEqual({use: expected})
-  })
-
   const testNumber = "01234567890"
 
-  const phoneNumbers = [
-    testNumber,
-    `tel:${testNumber}`
+  const fullTranslationExpected = {use: core.TelecomUse.PERMANENT_HOME, value: `tel:${testNumber}`}
+  const cases = [
+    [{use: "home"}, {use: core.TelecomUse.PERMANENT_HOME}],
+    [{use: "work"}, {use: core.TelecomUse.WORKPLACE}],
+    [{use: "temp"}, {use: core.TelecomUse.TEMPORARY}],
+    [{use: "mobile"}, {use: core.TelecomUse.MOBILE}],
+    [{use: "home", value: testNumber}, fullTranslationExpected],
+    [{use: "home", value: `tel:${testNumber}`}, fullTranslationExpected],
+    [{use: "home", value: "0 1 2 3       456 7890"}, fullTranslationExpected]
   ]
-  test.each(phoneNumbers)("should add 'tel:' to the start of phone numbers", (phoneNumber: string) => {
-    const fhirTelecom = {use: "home", value: phoneNumber}
-    const result = demographics.convertTelecom(fhirTelecom, "fhirPath")
-    expect(result._attributes).toEqual({use: "HP", value: `tel:${testNumber}`})
-  })
 
-  test("should remove spaces from numbers", () => {
-    const fhirTelecom = {use: "home", value: "0 1 2 3       456 7890"}
-    const result = demographics.convertTelecom(fhirTelecom, "fhirPath")
-    expect(result._attributes).toEqual({use: "HP", value: `tel:${testNumber}`})
+  test.each(cases)("%p should translate correctly", (argument, expected) => {
+    const result = demographics.convertTelecom(argument, "fhirPath")
+    expect(result._attributes).toEqual(expected)
   })
 })
 
