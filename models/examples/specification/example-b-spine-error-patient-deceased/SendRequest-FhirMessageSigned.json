@@ -551,7 +551,7 @@
         "deceasedDateTime": "2015-02-07T13:28:17+00:00",
         "name": [
           {
-            "use": "official",
+            "use": "usual",
             "family": "AWAN",
             "given": [
               "LAYNE"
@@ -621,7 +621,7 @@
         ],
         "name": [
           {
-            "use": "official",
+            "use": "usual",
             "family": "MCQUADE",
             "given": [
               "PEPIN"
@@ -658,7 +658,7 @@
         ],
         "name": [
           {
-            "use": "official",
+            "use": "usual",
             "family": "AITCHISON",
             "given": [
               "PAVLOU"
