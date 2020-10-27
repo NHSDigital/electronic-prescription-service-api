@@ -32,6 +32,7 @@ extends:
     product_description: ${{ variables.product_description }}
     service_base_path_pr: none
     spec_file: ${{ variables.spec_file }}
+    enable_monitoring: true
     apigee_deployments:
       - environment: sandbox
         proxy_path: sandbox
