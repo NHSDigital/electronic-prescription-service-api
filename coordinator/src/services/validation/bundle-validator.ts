@@ -67,7 +67,7 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
       fieldAccessor: (medicationRequest) => medicationRequest.dispenseRequest.expectedSupplyDuration
     },
     {
-      fieldName: "dispenseRequest.extension (performer site type)",
+      fieldName: 'dispenseRequest.extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType")',
       fieldAccessor:(medicationRequest) => getExtensionForUrl(
         medicationRequest.dispenseRequest.extension,
         "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
@@ -75,7 +75,7 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
       )
     },
     {
-      fieldName: "extension (prescription type)",
+      fieldName: 'extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType")',
       fieldAccessor: (medicationRequest) => getExtensionForUrl(
         medicationRequest.extension,
         "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType",
@@ -83,7 +83,7 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
       )
     },
     {
-      fieldName: "extension (responsible practitioner)",
+      fieldName: 'extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner")',
       fieldAccessor: (medicationRequest) => getExtensionForUrlOrNull(
         medicationRequest.extension,
         "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
