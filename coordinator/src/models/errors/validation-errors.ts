@@ -19,7 +19,7 @@ export class MedicationRequestValueError implements ValidationError {
     }. Received ${[
       ...uniqueFieldValues
     ]}.`
-    this.expression = [`Bundle.entry.resource.ofType(MedicationRequests).${fieldName}`]
+    this.expression = [`Bundle.entry.resource.ofType(MedicationRequest).${fieldName}`]
   }
 }
 
