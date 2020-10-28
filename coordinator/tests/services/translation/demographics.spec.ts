@@ -65,23 +65,28 @@ describe("convertName fills correct fields only", () => {
   })
 })
 
-describe("convertTelecom should convert correct use", () => {
+describe("convertTelecom", () => {
   test("empty telecom should throw InvalidValueUserFacingError", () => {
     const fhirTelecom = {}
     expect(() => demographics.convertTelecom(fhirTelecom, "fhirPath")).toThrow(InvalidValueError)
   })
 
+  const testNumber = "01234567890"
+
+  const fullTranslationExpected = {use: core.TelecomUse.PERMANENT_HOME, value: `tel:${testNumber}`}
   const cases = [
-    ["home", core.TelecomUse.PERMANENT_HOME],
-    ["work", core.TelecomUse.WORKPLACE],
-    ["temp", core.TelecomUse.TEMPORARY],
-    ["mobile", core.TelecomUse.MOBILE]
+    [{use: "home"}, {use: core.TelecomUse.PERMANENT_HOME}],
+    [{use: "work"}, {use: core.TelecomUse.WORKPLACE}],
+    [{use: "temp"}, {use: core.TelecomUse.TEMPORARY}],
+    [{use: "mobile"}, {use: core.TelecomUse.MOBILE}],
+    [{use: "home", value: testNumber}, fullTranslationExpected],
+    [{use: "home", value: `tel:${testNumber}`}, fullTranslationExpected],
+    [{use: "home", value: "0 1 2 3       456 7890"}, fullTranslationExpected]
   ]
 
-  test.each(cases)("%p should return correct value", (argument: string, expected: core.TelecomUse) => {
-    const fhirTelecom = {use: argument}
-    const result = demographics.convertTelecom(fhirTelecom, "fhirPath")
-    expect(result._attributes).toEqual({use: expected})
+  test.each(cases)("%p should translate correctly", (argument, expected) => {
+    const result = demographics.convertTelecom(argument, "fhirPath")
+    expect(result._attributes).toEqual(expected)
   })
 })
 
