@@ -61,21 +61,20 @@ export function createCancellationSendMessagePayload(
 export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle): string {
   //TODO - check message header and reject if this is not an order
   const parentPrescription = convertParentPrescription(fhirMessage)
-
   const fragments = extractFragments(parentPrescription)
 
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
-  const payload = createParametersPayload(fragmentsToBeHashed)
+  const base64Fragments = Buffer.from(fragmentsToBeHashed).toString("base64")
+  const base64Digest = createParametersDigest(fragmentsToBeHashed)
 
   const fragmentsToDisplay = convertFragmentsToDisplayableFormat(fragments)
-  const display = createParametersDisplay(fragmentsToDisplay)
+  const base64Display = createParametersDisplay(fragmentsToDisplay)
 
-  const parameters = createParameters(payload, display)
-
+  const parameters = createParameters(base64Fragments, base64Digest, base64Display)
   return JSON.stringify(parameters, null, 2)
 }
 
-function createParametersPayload(fragmentsToBeHashed: string): string {
+function createParametersDigest(fragmentsToBeHashed: string): string {
   const digestValue = crypto.SHA1(fragmentsToBeHashed).toString(crypto.enc.Base64)
 
   const signedInfo = {
@@ -104,9 +103,10 @@ function createParametersDisplay(fragmentsToDisplay: Display): string {
   return Buffer.from(Mustache.render(displayTemplate, fragmentsToDisplay)).toString("base64")
 }
 
-function createParameters(base64Payload: string, base64Display: string): fhir.Parameters {
+function createParameters(base64Fragments: string, base64Digest: string, base64Display: string): fhir.Parameters {
   const parameters: Array<fhir.Parameter> = []
-  parameters.push({name: "payload", valueString: base64Payload})
+  parameters.push({name: "fragments", valueString: base64Fragments})
+  parameters.push({name: "digest", valueString: base64Digest})
   parameters.push({name: "display", valueString: base64Display})
   parameters.push({name: "algorithm", valueString: "RS1"})
   return new fhir.Parameters(parameters)
