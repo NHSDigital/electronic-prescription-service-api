@@ -36,11 +36,14 @@ extends:
     product_description: ${{ variables.product_description }}
     service_base_path_pr: none
     spec_file: ${{ variables.spec_file }}
+    enable_monitoring: true
     apigee_deployments:
       - environment: internal-dev-sandbox
         proxy_path: sandbox
+        enable_monitoring: false
         make_spec_visible: true
       - environment: internal-dev
+        enable_monitoring: false
         proxy_path: live
         make_spec_visible: true
       - environment: internal-qa-sandbox
