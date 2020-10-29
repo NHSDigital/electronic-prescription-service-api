@@ -8,8 +8,8 @@ properties:
     type: string
     description: Identifies the meaning of the extension
     enum:
-      - "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType"
-    example: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType"
+      - "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType"
+    example: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType"
   valueCoding:
     type: object
     description: Setting and HCP type for the prescription
@@ -20,8 +20,8 @@ properties:
       system:
         type: string
         enum:
-          - "https://fhir.nhs.uk/R4/CodeSystem/prescription-type"
-        example: "https://fhir.nhs.uk/R4/CodeSystem/prescription-type"
+          - "https://fhir.nhs.uk/CodeSystem/prescription-type"
+        example: "https://fhir.nhs.uk/CodeSystem/prescription-type"
       code:
         type: string
         example: "0101"

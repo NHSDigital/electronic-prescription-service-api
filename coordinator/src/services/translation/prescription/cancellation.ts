@@ -40,7 +40,7 @@ export function convertCancellation(
 
   const statusReason = common.getCodingForSystem(
     fhirFirstMedicationRequest.statusReason.coding,
-    "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-status-reason",
+    "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-reason",
     "MedicationRequest.statusReason")
   hl7V3CancellationPrescription.pertinentInformation = new cancellations.PertinentInformation(
     statusReason.code,
