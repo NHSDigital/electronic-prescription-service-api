@@ -1,10 +1,9 @@
-import * as validator from "../../src/services/validation/bundle-validator"
-import * as fhir from "../../src/models/fhir/fhir-resources"
-import * as TestResources from "../resources/test-resources"
-import {clone} from "../resources/test-helpers"
-import * as errors from "../../src/models/errors/validation-errors"
-import {getMedicationRequests} from "../../src/services/translation/common/getResourcesOfType"
-import * as LosslessJson from "lossless-json"
+import * as validator from "../../../src/services/validation/bundle-validator"
+import * as fhir from "../../../src/models/fhir/fhir-resources"
+import * as TestResources from "../../resources/test-resources"
+import {clone} from "../../resources/test-helpers"
+import * as errors from "../../../src/models/errors/validation-errors"
+import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
 
 function validateValidationErrors (validationErrors: Array<errors.ValidationError>) {
   expect(validationErrors).toHaveLength(1)
@@ -65,7 +64,7 @@ describe("MedicationRequest checks", () => {
     ).toContainEqual(
       new errors.MedicationRequestValueError(
         "authoredOn",
-        LosslessJson.stringify([differentAuthoredOn, defaultAuthoredOn])
+        [differentAuthoredOn, defaultAuthoredOn]
       )
     )
   })
@@ -85,7 +84,7 @@ describe("MedicationRequest checks", () => {
     ).toContainEqual(
       new errors.MedicationRequestValueError(
         "dispenseRequest.performer",
-        LosslessJson.stringify([performer, performerDiff])
+        [performer, performerDiff]
       )
     )
   })

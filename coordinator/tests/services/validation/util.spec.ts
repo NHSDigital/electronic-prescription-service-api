@@ -43,4 +43,12 @@ describe("getUniqueValues returns correct values", () => {
     expect(uniqueValues).toContainEqual({key1: "value"})
     expect(uniqueValues).toContainEqual({key: "value1"})
   })
+
+  test("when values include undefined or null", () => {
+    const uniqueValues = getUniqueValues([{key: "value"}, {key: "value"}, undefined, null])
+    expect(uniqueValues.length).toBe(3)
+    expect(uniqueValues).toContainEqual({key: "value"})
+    expect(uniqueValues).toContain(undefined)
+    expect(uniqueValues).toContain(null)
+  })
 })

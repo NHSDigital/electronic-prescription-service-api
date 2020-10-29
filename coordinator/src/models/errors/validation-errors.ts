@@ -1,4 +1,5 @@
 import {MessageType} from "../../routes/util"
+import * as LosslessJson from "lossless-json"
 
 export interface ValidationError {
   message: string
@@ -13,11 +14,11 @@ export class MedicationRequestValueError implements ValidationError {
   severity = "error" as const
   expression: Array<string>
 
-  constructor(fieldName: string, uniqueFieldValues: string) {
+  constructor(fieldName: string, uniqueFieldValues: Array<unknown>) {
     this.message = `Expected all MedicationRequests to have the same value for ${
       fieldName
     }. Received ${
-      uniqueFieldValues
+      LosslessJson.stringify(uniqueFieldValues)
     }.`
     this.expression = [`Bundle.entry.resource.ofType(MedicationRequest).${fieldName}`]
   }

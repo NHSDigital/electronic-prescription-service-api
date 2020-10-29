@@ -3,7 +3,6 @@ import {Bundle, MedicationRequest} from "../../models/fhir/fhir-resources"
 import * as errors from "../../models/errors/validation-errors"
 import {identifyMessageType, MessageType} from "../../routes/util"
 import {getMedicationRequests} from "../translation/common/getResourcesOfType"
-import * as LosslessJson from "lossless-json"
 import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues} from "./util"
 
@@ -62,8 +61,7 @@ function verifyIdenticalForAllMedicationRequests(
   const allFieldValues = applyFhirPath(bundle, medicationRequests, fhirPath)
   const uniqueFieldValues = getUniqueValues(allFieldValues)
   if (uniqueFieldValues.length > 1) {
-    const uniqueFieldValuesStr = LosslessJson.stringify(uniqueFieldValues)
-    return new errors.MedicationRequestValueError(fhirPath, uniqueFieldValuesStr)
+    return new errors.MedicationRequestValueError(fhirPath, uniqueFieldValues)
   }
   return null
 }
