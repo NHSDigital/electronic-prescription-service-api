@@ -208,7 +208,7 @@ function convertPrescriptionPertinentInformation8() {
 function convertPrescriptionPertinentInformation4(fhirFirstMedicationRequest: fhir.MedicationRequest) {
   const fhirMedicationPrescriptionTypeExtension = getExtensionForUrl(
     fhirFirstMedicationRequest.extension,
-    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType",
+    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
     "MedicationRequest.extension"
   ) as fhir.CodingExtension
   const prescriptionTypeValue = new codes.PrescriptionTypeCode(fhirMedicationPrescriptionTypeExtension.valueCoding.code)

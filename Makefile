@@ -12,7 +12,7 @@ all:
 
 install: install-node install-python install-hooks
 
-build: build-models build-specification build-coordinator build-proxies
+build: build-models build-specification build-coordinator build-validator build-proxies
 
 test: validate-models lint check-licenses test-coordinator
 	cd tests/e2e/pact && make test
@@ -97,6 +97,9 @@ build-coordinator:
 	mkdir -p coordinator/dist/resources
 	cp coordinator/src/resources/ebxml_request.mustache coordinator/dist/resources/
 	cp coordinator/src/resources/message_display.mustache coordinator/dist/resources/
+
+build-validator:
+	make -C validator build
 
 build-proxies:
 	mkdir -p dist/proxies/sandbox

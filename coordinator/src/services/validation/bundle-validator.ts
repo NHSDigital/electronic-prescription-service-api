@@ -78,7 +78,7 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
       fieldName: 'extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType")',
       fieldAccessor: (medicationRequest) => getExtensionForUrl(
         medicationRequest.extension,
-        "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType",
+        "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
         "MedicationRequest.extension"
       )
     },

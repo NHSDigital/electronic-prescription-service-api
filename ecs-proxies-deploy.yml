@@ -1,8 +1,9 @@
 #docker_service_cpu: 256
-#docker_service_memory: 512
+docker_service_memory: 2048
 
 docker_service:
   - name: eps-coordinator
+    port: 9000
     expose: true
     environment:
         - name: NODE_ENV
@@ -34,6 +35,12 @@ docker_service:
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/root-ca-certificate'
         - name: SUB_CA_CERT
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/sub-ca-certificate'
+    health_check:
+        matcher: "200"
+        path: "/_status"
+  - name: eps-validator
+    port: 9001
+    expose: false
     health_check:
         matcher: "200"
         path: "/_status"
