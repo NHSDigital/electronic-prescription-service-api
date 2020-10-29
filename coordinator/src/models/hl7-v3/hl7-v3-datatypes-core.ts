@@ -84,7 +84,9 @@ export class BooleanValue implements ElementCompact {
 export enum NameUse {
   USUAL = "L",
   ALIAS = "A",
-  PREFERRED = "PREFERRED"
+  PREFERRED = "PREFERRED",
+  PREVIOUS = "PREVIOUS",
+  PREVIOUS_MAIDEN = "PREVIOUS-MAIDEN"
 }
 
 export class Name implements ElementCompact {
