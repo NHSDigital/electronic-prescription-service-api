@@ -28,11 +28,17 @@ export function convertName(fhirHumanName: fhir.HumanName, fhirPath: string): co
 function convertNameUse(fhirNameUse: string, fhirPath: string) {
   switch (fhirNameUse) {
   case "usual":
+  case "official":
     return core.NameUse.USUAL
   case "temp":
+  case "anonymous":
     return core.NameUse.ALIAS
   case "nickname":
     return core.NameUse.PREFERRED
+  case "old":
+    return core.NameUse.PREVIOUS
+  case "maiden":
+    return core.NameUse.PREVIOUS_MAIDEN
   default:
     throw new InvalidValueError(`Unhandled name use '${fhirNameUse}'.`, fhirPath + ".use")
   }
