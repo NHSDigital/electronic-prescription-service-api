@@ -26,6 +26,16 @@ describe("getUniqueValues returns correct values", () => {
     expect(uniqueValues).toContainEqual({key: "value"})
   })
 
+  test("when all values are identical objects with different key ordering", () => {
+    const uniqueValues = getUniqueValues([
+      {key1: "value1", key2: "value2"},
+      {key2: "value2", key1: "value1"},
+      {key1: "value1", key2: "value2"}
+    ])
+    expect(uniqueValues.length).toBe(1)
+    expect(uniqueValues).toContainEqual({key1: "value1", key2: "value2"})
+  })
+
   test("when values are objects and not all equal", () => {
     const uniqueValues = getUniqueValues([{key: "value"}, {key1: "value"}, {key: "value1"}, {key: "value"}])
     expect(uniqueValues.length).toBe(3)

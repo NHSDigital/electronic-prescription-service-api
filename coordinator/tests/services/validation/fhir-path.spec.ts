@@ -1,7 +1,7 @@
 import {applyFhirPath} from "../../../src/services/validation/fhir-path"
 import * as TestResources from "../../resources/test-resources"
 import {Extension, Patient, PractitionerRole} from "../../../src/models/fhir/fhir-resources"
-import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType";
+import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
 
 describe("applyFhirPath returns correct value", () => {
   const bundle = TestResources.examplePrescription1.fhirMessageSigned
