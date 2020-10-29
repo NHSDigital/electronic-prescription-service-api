@@ -15,6 +15,8 @@ parameters:
     type: string
   - name: apigee_deployments
     type: object
+  - name: enable_monitoring
+    type: boolean
 
 extends:
   template: azure/common/apigee-deployment.yml@common
@@ -25,6 +27,7 @@ extends:
     product_display_name: ${{ parameters.product_display_name }}
     product_description: ${{ parameters.product_description }}
     spec_file: ${{ parameters.spec_file }}
+    enable_monitoring: ${{ parameters.enable_monitoring }}
     apigee_deployments: ${{ parameters.apigee_deployments }}
     post_deploy:
       - bash: |

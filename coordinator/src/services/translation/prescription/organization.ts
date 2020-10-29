@@ -40,7 +40,7 @@ function convertRepresentedOrganization(
 ) {
   const organizationTypeCoding = getCodeableConceptCodingForSystemOrNull(
     fhirOrganization.type,
-    "https://fhir.nhs.uk/R4/CodeSystem/organisation-role",
+    "https://fhir.nhs.uk/CodeSystem/organisation-role",
     "Organization.type"
   )
   const representedOrganization = (organizationTypeCoding?.code === NHS_TRUST_CODE && !isCancellation) ?

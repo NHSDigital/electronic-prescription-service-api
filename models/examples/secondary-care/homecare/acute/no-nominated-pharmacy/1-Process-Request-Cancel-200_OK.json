@@ -71,7 +71,7 @@
 				"statusReason": {
 					"coding": [
 						{
-							"system": "https://fhir.nhs.uk/R4/CodeSystem/medicationrequest-status-reason",
+							"system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-reason",
 							"code": "0001",
 							"display": "Prescribing Error"
 						}
@@ -107,6 +107,15 @@
 					"system": "https://fhir.nhs.uk/Id/prescription-order-number",
 					"value": "523BFE-Z8AF99-11EAAX"
 				},
+        "courseOfTherapyType": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+              "code": "acute",
+              "display": "Short course (acute) therapy"
+            }
+          ]
+        },
 				"substitution": {
 					"allowedBoolean": false
 				}
@@ -167,7 +176,13 @@
 						"system": "https://fhir.nhs.uk/Id/ods-organization-code",
 						"value": "B81001"
 					}
-				}
+				},
+        "generalPractitioner": [{
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "B81001"
+          }
+        }]
 			}
 		},
 		{
@@ -265,7 +280,7 @@
 					{
 						"coding": [
 							{
-								"system": "https://fhir.nhs.uk/R4/CodeSystem/organisation-role",
+								"system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
 								"code": "RO197",
 								"display": "NHS TRUST"
 							}

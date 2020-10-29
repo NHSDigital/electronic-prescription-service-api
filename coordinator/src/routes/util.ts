@@ -1,12 +1,13 @@
 import {isPollable, SpineDirectResponse, SpinePollableResponse} from "../models/spine"
 import Hapi from "@hapi/hapi"
 import * as fhir from "../models/fhir/fhir-resources"
-import * as requestValidator from "../services/validation/bundle-validator"
 import {OperationOutcome, Resource} from "../models/fhir/fhir-resources"
+import * as requestValidator from "../services/validation/bundle-validator"
 import * as errors from "../models/errors/validation-errors"
 import {wrapInOperationOutcome} from "../services/translation/common"
 import * as LosslessJson from "lossless-json"
 import {getMessageHeader} from "../services/translation/common/getResourcesOfType"
+import axios from "axios"
 
 export function handleResponse<T>(
   spineResponse: SpineDirectResponse<T> | SpinePollableResponse,
@@ -50,17 +51,58 @@ export function identifyMessageType(bundle: fhir.Bundle): string {
   return getMessageHeader(bundle).eventCoding?.code
 }
 
+const getCircularReplacer = () => {
+  const seen = new WeakSet()
+  return (key: string, value: unknown) => {
+    if (typeof value === "object" && value !== null) {
+      if (seen.has(value)) {
+        return
+      }
+      seen.add(value)
+    }
+    return value
+  }
+}
+
+async function fhirValidation(request: Hapi.Request) {
+  const validatorResponse = await axios.post(
+    "http://localhost:9001/$validate",
+    request.payload.toString(),
+    {
+      headers: request.headers
+    }
+  )
+
+  const validatorResponseData = validatorResponse.data
+  if (!validatorResponseData) {
+    throw new TypeError("No response from validator")
+  }
+
+  if (!isOperationOutcome(validatorResponseData)) {
+    throw new TypeError(`Unexpected response from validator:\n${
+      JSON.stringify(validatorResponseData, getCircularReplacer())
+    }`)
+  }
+  return validatorResponseData
+}
+
 export function validatingHandler(handler: Handler<fhir.Bundle>) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+    const validatorResponseData = await fhirValidation(request)
+
+    const error = validatorResponseData.issue.find(issue => issue.severity === "error" || issue.severity === "fatal")
+    if (error) {
+      return responseToolkit.response(validatorResponseData).code(400)
+    }
+
     const requestPayload = getPayload(request) as fhir.Bundle
     const validation = requestValidator.verifyBundle(requestPayload)
     if (validation.length > 0) {
       const response = toFhirError(validation)
       const statusCode = requestValidator.getStatusCode(validation)
       return responseToolkit.response(response).code(statusCode)
-    } else {
-      return handler(requestPayload, request, responseToolkit)
     }
+    return handler(requestPayload, request, responseToolkit)
   }
 }
 
