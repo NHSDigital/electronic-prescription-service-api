@@ -13,12 +13,12 @@ export class MedicationRequestValueError implements ValidationError {
   severity = "error" as const
   expression: Array<string>
 
-  constructor(fieldName: string, uniqueFieldValues: Array<string>) {
+  constructor(fieldName: string, uniqueFieldValues: string) {
     this.message = `Expected all MedicationRequests to have the same value for ${
       fieldName
-    }. Received ${[
-      ...uniqueFieldValues
-    ]}.`
+    }. Received ${
+      uniqueFieldValues
+    }.`
     this.expression = [`Bundle.entry.resource.ofType(MedicationRequest).${fieldName}`]
   }
 }
