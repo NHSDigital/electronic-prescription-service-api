@@ -12,7 +12,6 @@ export default [
     method: "POST",
     path: "/$process-message",
     handler: validatingHandler(
-      false,
       async (requestPayload: Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const spineRequest = translator.convertFhirMessageToSpineRequest(requestPayload)
         const spineResponse = await requestHandler.send(spineRequest)

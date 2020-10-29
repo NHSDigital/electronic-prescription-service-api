@@ -3,77 +3,33 @@ import {MessageType} from "../../routes/util"
 export interface ValidationError {
   message: string
   operationOutcomeCode: "value"
-  apiErrorCode: string
   severity: "error" | "fatal"
+  expression: Array<string>
 }
 
-class ValueError implements ValidationError {
+export class MedicationRequestValueError implements ValidationError {
   message: string
   operationOutcomeCode = "value" as const
-  apiErrorCode = "MISSING_FIELD"
   severity = "error" as const
-}
-
-export class ContainsExactlyError extends ValueError {
-  constructor(number: number, resourceType: string) {
-    super()
-    this.message = `Bundle must contain exactly ${number} resource(s) of type ${resourceType}.`
-  }
-}
-
-export class ContainsBetweenError extends ValueError {
-  constructor(min: number, max: number, resourceType: string) {
-    super()
-    this.message = `Bundle must contain between ${min} and ${max} resource(s) of type ${resourceType}.`
-  }
-}
-
-export class ContainsAtLeastError extends ValueError {
-  constructor(number: number, resourceType: string) {
-    super()
-    this.message = `Bundle must contain at least ${number} resource(s) of type ${resourceType}.`
-  }
-}
-
-export class MissingIdError extends ValueError {
-  message = "ResourceType Bundle must contain 'id' field."
-}
-
-export class MedicationRequestValueError extends ValueError {
-  apiErrorCode = "INVALID_VALUE"
+  expression: Array<string>
 
   constructor(fieldName: string, uniqueFieldValues: Array<string>) {
-    super()
     this.message = `Expected all MedicationRequests to have the same value for ${
       fieldName
     }. Received ${[
       ...uniqueFieldValues
     ]}.`
+    this.expression = [`Bundle.entry.resource.ofType(MedicationRequest).${fieldName}`]
   }
 }
 
-class FatalError implements ValidationError {
-  operationOutcomeCode = "value" as const
-  severity = "fatal" as const
-  message: string
-  apiErrorCode: string
-}
-
-export class NoEntryInBundleError extends FatalError {
-  apiErrorCode: "MISSING_FIELD"
-  message = "ResourceType Bundle must contain 'entry' field."
-}
-
-export class RequestNotBundleError extends FatalError {
-  apiErrorCode = "INCORRECT_RESOURCETYPE"
-  message = "ResourceType must be 'Bundle' on request."
-}
-
-export class MessageTypeError extends FatalError {
-  apiErrorCode = "INVALID_VALUE"
+export class MessageTypeError implements ValidationError {
   message = `MessageHeader.eventCoding.code must be one of '${
     MessageType.PRESCRIPTION
   }' or '${
     MessageType.CANCELLATION
   }'.`
+  operationOutcomeCode = "value" as const
+  severity = "fatal" as const
+  expression = ["Bundle.entry.resource.ofType(MessageHeader).eventCoding.code"]
 }
