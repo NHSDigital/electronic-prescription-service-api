@@ -71,7 +71,8 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
       fieldAccessor:(medicationRequest) => getExtensionForUrl(
         medicationRequest.dispenseRequest.extension,
         "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
-        "MedicationRequest.dispenseRequest.extension"
+        "MedicationRequest.dispenseRequest" +
+        '.extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType")'
       )
     },
     {
@@ -79,7 +80,8 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
       fieldAccessor: (medicationRequest) => getExtensionForUrl(
         medicationRequest.extension,
         "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
-        "MedicationRequest.extension"
+        "MedicationRequest" +
+        '.extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType")'
       )
     },
     {
@@ -87,7 +89,17 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
       fieldAccessor: (medicationRequest) => getExtensionForUrlOrNull(
         medicationRequest.extension,
         "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
-        "MedicationRequest.extension"
+        "MedicationRequest" +
+        '.extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner")'
+      )
+    },
+    {
+      fieldName: 'extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation")',
+      fieldAccessor: (medicationRequest) => getExtensionForUrlOrNull(
+        medicationRequest.extension,
+        "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+        "MedicationRequest" +
+        '.extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation")'
       )
     }
   ]
