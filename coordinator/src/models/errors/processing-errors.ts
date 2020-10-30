@@ -44,7 +44,7 @@ export function toOperationOutcome(response: FhirMessageProcessingError): Operat
           display: response.userErrorMessage
         }]
       },
-      expression: response.userErrorFhirPath
+      expression: [response.userErrorFhirPath]
     }]
   }
 }

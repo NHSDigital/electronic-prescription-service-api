@@ -177,7 +177,7 @@ export interface OperationOutcomeIssue {
   code: "informational" | "value" | "invalid"
   details?: CodeableConcept
   diagnostics?: string
-  expression?: string
+  expression?: Array<string>
 }
 
 export interface OperationOutcome extends Resource {

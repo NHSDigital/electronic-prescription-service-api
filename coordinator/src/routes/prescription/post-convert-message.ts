@@ -14,7 +14,6 @@ export default [
     method: "POST",
     path: "/$convert",
     handler: validatingHandler(
-      false,
       (requestPayload: Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const isSmokeTest = request.headers["x-smoke-test"]
         const contentType = isSmokeTest ? CONTENT_TYPE_PLAIN_TEXT : CONTENT_TYPE_XML
