@@ -12,7 +12,7 @@
         "resourceType": "MessageHeader",
         "id": "1e21d133-b39b-4c81-b10f-fce9b4570375",
         "eventCoding": {
-          "system": "https://fhir.nhs.uk/R4/CodeSystem/message-event",
+          "system": "https://fhir.nhs.uk/CodeSystem/message-event",
           "code": "prescription-order",
           "display": "Prescription Order"
         },
@@ -68,9 +68,9 @@
         "id": "a7b86f8d-1d45-fc28-e050-d20ae3a215f0",
         "extension": [
           {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType",
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
             "valueCoding": {
-              "system": "https://fhir.nhs.uk/R4/CodeSystem/prescription-type",
+              "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "0101"
             }
           },
@@ -168,9 +168,9 @@
         "id": "a7b86f8d-1d4a-fc28-e050-d20ae3a215f0",
         "extension": [
           {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType",
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
             "valueCoding": {
-              "system": "https://fhir.nhs.uk/R4/CodeSystem/prescription-type",
+              "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "0101"
             }
           },
@@ -268,9 +268,9 @@
         "id": "a7b86f8d-1d4f-fc28-e050-d20ae3a215f0",
         "extension": [
           {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType",
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
             "valueCoding": {
-              "system": "https://fhir.nhs.uk/R4/CodeSystem/prescription-type",
+              "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "0101"
             }
           },
@@ -368,9 +368,9 @@
         "id": "a7b86f8d-1d54-fc28-e050-d20ae3a215f0",
         "extension": [
           {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType",
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
             "valueCoding": {
-              "system": "https://fhir.nhs.uk/R4/CodeSystem/prescription-type",
+              "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "0101"
             }
           },
