@@ -24,12 +24,4 @@ const conventionBasedPrepareExamples: PrepareCase[] = prepareResponseFiles.map(p
 	prepareResponseFile.path
 ))
 
-const prepareSpecificationSuccessExamples = [1,2,3,4].map(i => new PrepareCase(
-  `parent-prescription-${i} specification example unsigned`,
-  path.join(__dirname, examplesRootPath, `/../parent-prescription-${i}/PrepareRequest-FhirMessageUnsigned.json`),
-  path.join(__dirname, examplesRootPath, `/../parent-prescription-${i}/PrepareResponse-FhirMessageDigest.json`)))
-
-export const prepareExamples = [
-	...prepareSpecificationSuccessExamples,
-	...conventionBasedPrepareExamples
-]
+export const prepareExamples = conventionBasedPrepareExamples

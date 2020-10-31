@@ -1,14 +1,14 @@
 {
   "resourceType": "Bundle",
-  "id": "homecare",
+  "id": "aef77afb-7e3c-427a-8657-2c427f71a271",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "ad945a29-85f8-439a-b590-6789719adc16"
+    "value": "b668b48f-ba04-4881-a521-961fac440f53"
   },
   "type": "message",
   "entry": [
     {
-      "fullUrl": "urn:uuid:311316d3-1de0-4f7c-8109-c950ead1c717",
+      "fullUrl": "urn:uuid:aef77afb-7e3c-427a-8657-2c427f71a271",
       "resource": {
         "resourceType": "MessageHeader",
         "id": "3599c0e9-9292-413e-9270-9a1ef1ead99c",
@@ -36,6 +36,9 @@
         },
         "focus": [
           {
+            "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+          },
+          {
             "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
           }
         ]
@@ -51,9 +54,22 @@
             "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
-              "code": "1201",
-              "display": "Outpatient Homecare Prescriber - Medical Prescriber"
+              "code": "1001",
+              "display": "Outpatient Community Prescriber - Medical Prescriber"
             }
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+            "extension": [
+              {
+                "url": "numberOfRepeatPrescriptionsAllowed",
+                "valueUnsignedInt": 6
+              },
+              {
+                "url": "authorisationExpiryDate",
+                "valueDateTime": "2020-12-07"
+              }
+            ]
           }
         ],
         "identifier": [
@@ -87,7 +103,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2020-07-13T12:00:00+00:00",
+        "authoredOn": "2020-09-29T12:00:00+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -97,19 +113,19 @@
               "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "ad945a29-85f8-439a-b590-6789719adc16"
+                "value": "454fc887-488a-4519-b529-11000b6791df"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "DC2C66-A1B2C3-23407B"
+          "value": "1DF0D3-ZFA026-11EBBH"
         },
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
-              "code": "continuous",
-              "display": "Continuous long term therapy"
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
+              "code": "continuous-repeat-dispensing",
+              "display": "Continuous long term (repeat dispensing)"
             }
           ]
         },
@@ -165,32 +181,31 @@
               "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
               "valueCoding": {
                 "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
-                "code": "P2"
+                "code": "P1"
               }
             }
           ],
           "validityPeriod": {
-            "start": "2020-07-13T12:00:00+00:00",
-            "end": "2020-08-07T12:00:00+00:00"
+            "start": "2020-06-10",
+            "end": "2020-12-07"
           },
-          "numberOfRepeatsAllowed": 4,
+          "quantity": {
+            "value": 63,
+            "unit": "tablet",
+            "system": "http://snomed.info/sct",
+            "code": "428673006"
+          },
           "expectedSupplyDuration": {
-            "value": 7,
-            "unit": "day",
+            "value": 28,
+            "unit": "days",
             "system": "http://unitsofmeasure.org",
             "code": "d"
           },
           "performer": {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "VNE51"
+              "value": "FH542"
             }
-          },
-          "quantity": {
-            "value": 1,
-            "unit": "pre-filled disposable injection",
-            "system": "http://snomed.info/sct",
-            "code": "3318611000001103"
           }
         },
         "substitution": {
@@ -220,7 +235,7 @@
               }
             ],
             "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "9453740519"
+            "value": "9449305552"
           }
         ],
         "name": [
@@ -254,14 +269,12 @@
             "value": "B81001"
           }
         },
-        "generalPractitioner": [
-          {
-            "identifier": {
-              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "B81001"
-            }
+        "generalPractitioner": [{
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "B81001"
           }
-        ]
+        }]
       }
     },
     {
@@ -323,18 +336,14 @@
           },
           {
             "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-            "value": "G1234567"
-          },
-          {
-            "system": "https://fhir.hl7.org.uk/Id/din-number",
-            "value": "1234567"
+            "value": "4428981"
           }
         ],
         "name": [
           {
-            "family": "ALI",
+            "family": "Edwards",
             "given": [
-              "RAZIA"
+              "Thomas"
             ],
             "prefix": [
               "DR"
@@ -437,9 +446,43 @@
             "MUSGROVE PARK HOSPITAL"
           ],
           "city": "TAUNTON",
-          "postalCode": "TA1 5DA",
-          "country": "NLD"
+          "postalCode": "TA1 5DA"
         }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:28828C55-8FA7-42D7-916F-FCF076E0C10E",
+      "resource": {
+        "resourceType": "Provenance",
+        "id": "28828C55-8FA7-42D7-916F-FCF076E0C10E",
+        "target": [
+          {
+            "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+          }
+        ],
+        "recorded": "2008-02-27T11:38:00+00:00",
+        "agent": [
+          {
+            "who": {
+              "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+            }
+          }
+        ],
+        "signature": [
+          {
+            "type": [
+              {
+                "system": "urn:iso-astm:E1762-95:2013",
+                "code": "1.2.840.10065.1.12.1.1"
+              }
+            ],
+            "when": "2020-09-02T11:38:00+00:00",
+            "who": {
+              "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+            },
+            "data": "PFNpZ25hdHVyZSB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnIyI+PFNpZ25lZEluZm8+PENhbm9uaWNhbGl6YXRpb25NZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiPjwvQ2Fub25pY2FsaXphdGlvbk1ldGhvZD48U2lnbmF0dXJlTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI3JzYS1zaGExIj48L1NpZ25hdHVyZU1ldGhvZD48UmVmZXJlbmNlPjxUcmFuc2Zvcm1zPjxUcmFuc2Zvcm0gQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzEwL3htbC1leGMtYzE0biMiPjwvVHJhbnNmb3JtPjwvVHJhbnNmb3Jtcz48RGlnZXN0TWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnI3NoYTEiPjwvRGlnZXN0TWV0aG9kPjxEaWdlc3RWYWx1ZT5nY2F0NHFFR3BzMmZmSGdhYXdlem9FTzM0Ukk9PC9EaWdlc3RWYWx1ZT48L1JlZmVyZW5jZT48L1NpZ25lZEluZm8+PFNpZ25hdHVyZVZhbHVlPlFEYkw4dElWRkVvcTlVY1MxN1B4KzRHY01xT0JTcEk5TWFRUlBLc0dVa2FBOTI1ZGZCTGF2Z1NtMVU3aGlpLzF6MFozSEpJNmJQbytmcGJSelJad3ZtN0o0cXgyenFkUkt3OTc4V2dZK3BpQ3hyNnNVaU0rVXZVUUovR3RBSG1LM01HWElYbksvQk1HWW5tcFl1WDNPaVF2VkppeWNFV0ljajF1K3ltVmdCVXBwbmVMZGNXSkNkQSt5c0piZktXR3gzZENGTU5BVjcxODk3alAxSkxTd1RmWG81MGxwVDhxZ2xHRlRmSW5BL1lBbVpXSWZtWHkrTDJ6MUtsaXVnYmdPSUFRQ0NVZ1JJQTdxMnYrOUw4U3V4WDJDMTNSQm0zMTJyZnVNUTEzaG9vY0wvUm4xREJ6KzZMTmJXdUFYcTZpTWlQNko3SHYrQWxuKzZoQWc0NlN5Zz09PC9TaWduYXR1cmVWYWx1ZT48S2V5SW5mbz48WDUwOURhdGE+PFg1MDlDZXJ0aWZpY2F0ZT5NSUlEblRDQ0FvV2dBd0lCQWdJRWJiV1U4REFOQmdrcWhraUc5dzBCQVFzRkFEQi9NUXN3Q1FZRFZRUUdFd0pIUWpFWE1CVUdBMVVFQ0JNT1YyVnpkQ0JaYjNKcmMyaHBjbVV4RGpBTUJnTlZCQWNUQlV4bFpXUnpNUlV3RXdZRFZRUUtFd3hQY21kaGJtbDZZWFJwYjI0eEhEQWFCZ05WQkFzVEUwOXlaMkZ1YVhOaGRHbHZibUZzSUZWdWFYUXhFakFRQmdOVkJBTVRDVlJsYzNRZ1ZYTmxjakFlRncweU1EQTBNak14TlRRMU5UVmFGdzB5TURBM01qSXhOVFExTlRWYU1IOHhDekFKQmdOVkJBWVRBa2RDTVJjd0ZRWURWUVFJRXc1WFpYTjBJRmx2Y210emFHbHlaVEVPTUF3R0ExVUVCeE1GVEdWbFpITXhGVEFUQmdOVkJBb1RERTl5WjJGdWFYcGhkR2x2YmpFY01Cb0dBMVVFQ3hNVFQzSm5ZVzVwYzJGMGFXOXVZV3dnVlc1cGRERVNNQkFHQTFVRUF4TUpWR1Z6ZENCVmMyVnlNSUlCSWpBTkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQXE5R2R1S0xTVk82clNib0VIM094Y01VQ1I2L1kySkdlY0RFR0RWNE8xaytudldvNUl3WlkwemtnSk9vdzlsMGlhVmlVSlBSTjdtcHNiL3gveERvbVZEQUwreHpsUVYrVDhzQjdaYjRsOWZXaFVJNWRRbGpWSG13Wmk4SXEwTXBabC9hMjlYS01UaHc1WmY3OWhqZmd3Wmh1N2Ftd0wraU8vVEpzbzBBcGVja3pRZVpQM2djYWdyZmtCbUd1dzA5ckhhcnExTHZscE9YRi93WEVkNDNYaERQaEQrMnNHaVJWNndFVmhXb01XS08yQXVYQnBJYUdsTVJFQ1RRMUFkZ1k1N1pKUXlUZE9qZlRENVFXVUZMUW9Xa2F5TFJYVDBLckFlSzlRTExhVVpBQ0xPYXNRK04vQ25DZ01vc3YyeTd6V0lCbnhDdnZCMkpNSW95VW8xcEJmd0lEQVFBQm95RXdIekFkQmdOVkhRNEVGZ1FVVEQzN3RRdUE2OWczbU1sdnVXcUkzUXJMbFE0d0RRWUpLb1pJaHZjTkFRRUxCUUFEZ2dFQkFITzNydjNuS0tPWEgvVUE0T1hHQ0hEVVJoOGVZTjNoU2Nubk00L0w1MlZSOXpqNXhCM3B4VUVmVmJMWG9LcE0rOGFvak9Id2QwL29NaWRzWnNGa3ZOUUgzSE9QRHgzRjJLaks3WEEyWFloV1hjbW0zODNncDlRU1ZaYlZVQVpOVXRlMVd2dDNad290MmRuenp5cWNxT05QRzFxSG84K3Y3OStmRlJjSzFYYklSMTNjMUI2WGFSSzI2cGtTaXliTkRGYjY4bmFCby9LakNHQzQxZXI2R2VTWW8rYjl1Zk0rZDlySmczVWc0VWx6Tm5DRzlTZkFlWG1va3FiZXFUektjbHlSRmVEYzJqY25iNHRMbWRZdEdYSWM1SFBjcXlCZUR4V2Vyc3FwYXNqTy9PaklBWDN4aUpmTG5nbFY5YVpnZHVpbG9BUTdBejlLVVlRU3lFMXNOdEk9PC9YNTA5Q2VydGlmaWNhdGU+PC9YNTA5RGF0YT48L0tleUluZm8+PC9TaWduYXR1cmU+"
+          }
+        ]
       }
     }
   ]

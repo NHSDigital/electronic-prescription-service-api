@@ -12,7 +12,7 @@ all:
 
 install: install-node install-python install-hooks
 
-build: build-models build-specification build-coordinator build-validator build-proxies
+build: build-specification build-coordinator build-validator build-proxies
 
 test: validate-models lint check-licenses test-coordinator
 	cd tests/e2e/pact && make test
@@ -51,6 +51,10 @@ run-specification:
 run-coordinator:
 	source ./scripts/set_env_vars.sh && cd coordinator/dist && npm run start
 
+run-validator:
+	cd validator && \
+	java -Xms1500m -Xms1500m -jar target/fhir-validator-*.jar
+
 ## Install
 
 install-python:
@@ -64,22 +68,12 @@ install-node:
 install-hooks:
 	cp scripts/pre-commit .git/hooks/pre-commit
 
-# Build
-
-build-models:
-	$(foreach file, \
-	$(wildcard models/examples/specification/**/SendRequest-FhirMessageSigned.json), \
-	cat $(file) \
-	| jq 'del(.entry[] | select(.resource.resourceType == "Provenance"))' \
-	| jq 'del(.entry[0].resource.focus[0])' \
-	> ""`echo $(file) | sed "s/SendRequest-FhirMessageSigned/PrepareRequest-FhirMessageUnsigned/"`"";)
-
 build-specification:
 	cd specification \
 	&& mkdir -p build/components/examples \
 	&& mkdir -p build/components/schemas \
 	&& cp ../models/examples/signature.json build/components/examples/. \
-	&& cp -r ../models/examples/specification/. build/components/examples/. \
+	&& cp -r ../models/examples/errors/. build/components/examples/. \
 	&& cp -r ../models/examples/. build/components/examples/. \
 	&& cp -r ../models/schemas build/components \
 	&& cp electronic-prescription-service-api.yaml build/electronic-prescription-service-api.yaml \
@@ -118,7 +112,7 @@ test-coordinator:
 validate-models:
 	mkdir -p models/build
 	test -f models/build/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > models/build/org.hl7.fhir.validator.jar
-	for dir in "specification/**" "secondary-care/**"; do \
+	for dir in "errors/**" "secondary-care/**"; do \
 		java -jar models/build/org.hl7.fhir.validator.jar models/examples/$$dir/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt; \
 	done
 

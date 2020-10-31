@@ -1,22 +1,18 @@
-/* eslint-disable no-useless-escape */
+/* eslint-disable */
 import * as fs from "fs"
-import { Bundle } from "../fhir/fhir-resources"
-import * as LosslessJson from "lossless-json"
+import * as fhir from "../fhir/fhir-resources"
+import {Case} from "./case"
 
-export class ConvertCase {
+export class ConvertCase extends Case {
   description: string
-  request: Bundle
+  request: fhir.Bundle
   response: string
   responseMatcher: string
 
   constructor(description: string, requestFilePath: string, responseFilePath: string) {
-    const requestString = fs.readFileSync(requestFilePath, "utf-8")
-    const requestJson = LosslessJson.parse(requestString)
+    super(description, requestFilePath)
 
     const responseXmlString = fs.readFileSync(responseFilePath, "utf-8")
-
-    this.description = description
-    this.request = requestJson
     this.response = responseXmlString
     this.responseMatcher = this.buildResponseMatcher(responseXmlString).trimEnd()
   }
@@ -29,8 +25,8 @@ export class ConvertCase {
 
   /* Build up a response match regex pattern by taking the response xml and escaping:
     *   Regex special characters^,
-    *   Quotes
-    *  and replacing dynamic datetimes 
+    *   Quotes,
+    *   Runtime variables
     * 
     *  ^  Note that pact-js is a wrapper for the ruby cli so the regex format must follow ruby conventions
     *     See https://bneijt.nl/pr/ruby-regular-expressions
@@ -61,6 +57,23 @@ export class ConvertCase {
   */
   private replaceDynamicsWithRegexPatterns(responseXml: string): string {
     return responseXml
-      .replace(/<creationTime value=\\\"[0-9]*\\\"\\\/>/g, "<creationTime value=\\\"[0-9]*\\\"\\\/>")
-  }  
+      .replace(
+        /<creationTime value=\\\"[0-9]*\\\"\\\/>/g,
+        "<creationTime value=\\\"[0-9]*\\\"\\\/>")
+      .replace(
+        /<id root=\\\"[0-9A-F\\-]*\\\"\\\/>/i,
+        "<id root=\\\"[0-9A-F-]*\\\"\\\/>")
+      .replace(
+        /<id extension=\\\"[0-9A-Z\\-]*\\\" root=\\\"2\\\.16\\\.840\\\.1\\\.113883\\\.2\\\.1\\\.3\\\.2\\\.4\\\.18\\\.8\\\"\\\/>/g,
+        "<id extension=\\\"[0-9A-Z-]*\\\" root=\\\"2\\\.16\\\.840\\\.1\\\.113883\\\.2\\\.1\\\.3\\\.2\\\.4\\\.18\\\.8\\\"\\\/>")
+      .replace(
+        /<value extension=\\\"[0-9A-Z\\-]*\\\" root=\\\"2\\\.16\\\.840\\\.1\\\.113883\\\.2\\\.1\\\.3\\\.2\\\.4\\\.18\\\.8\\\"\\\/>/g,
+        "<value extension=\\\"[0-9A-Z-]*\\\" root=\\\"2\\\.16\\\.840\\\.1\\\.113883\\\.2\\\.1\\\.3\\\.2\\\.4\\\.18\\\.8\\\"\\\/>")
+      .replace(
+        /<effectiveTime value=\\\"[0-9]*\\\"\\\/>/g,
+        "<effectiveTime value=\\\"[0-9]*\\\"\\\/>")
+      .replace(
+        /<time value=\\\"[0-9]*\\\"\\\/>/g,
+        "<time value=\\\"[0-9]*\\\"\\\/>")
+  }
 }

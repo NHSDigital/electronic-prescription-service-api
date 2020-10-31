@@ -12,11 +12,4 @@ const conventionBasedProcessExamples: ProcessCase[] = processRequestFiles.map(pr
 	processRequestFile.path
 ))
 
-const processSpecificationSuccessExamples = [1,2,3,4].map(i => new ProcessCase(
-  `parent-prescription-${i} specification example signed`,
-  path.join(__dirname, examplesRootPath, `/../parent-prescription-${i}/SendRequest-FhirMessageSigned.json`)))
-
-export const processExamples = [
-	...processSpecificationSuccessExamples,
-	...conventionBasedProcessExamples
-]
+export const processExamples = conventionBasedProcessExamples

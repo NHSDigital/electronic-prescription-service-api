@@ -28,11 +28,11 @@ test(
 test(
   "convertFragmentsToDisplayableFormat returns correct patient details", () => {
     const display = convertFragmentsToDisplayableFormat(fragments)
-    expect(display.patientName).toEqual("MR HEADLEY TED PENSON")
+    expect(display.patientName).toEqual("MISS ETTA CORY")
   })
 
 test(
   "convertFragmentsToDisplayableFormat returns correct prescriber details", () => {
     const display = convertFragmentsToDisplayableFormat(fragments)
-    expect(display.prescriberName).toEqual("ANDREW CHANDLER")
+    expect(display.prescriberName).toEqual("DR Thomas Edwards")
   })
