@@ -76,12 +76,12 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
       )
     },
     {
-      fieldName: 'extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType")',
+      fieldName: 'extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType")',
       fieldAccessor: (medicationRequest) => getExtensionForUrl(
         medicationRequest.extension,
         "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
         "MedicationRequest" +
-        '.extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType")'
+        '.extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType")'
       )
     },
     {
