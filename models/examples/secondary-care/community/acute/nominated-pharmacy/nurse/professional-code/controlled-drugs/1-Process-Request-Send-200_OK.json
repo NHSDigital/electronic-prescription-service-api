@@ -74,6 +74,11 @@
                 "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
                 "code": "outpatient",
                 "display": "Outpatient"
+              },
+              {
+                "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-controlled-drug",
+                "code": "CD2",
+                "display": "Schedule 2"
               }
             ]
           }
@@ -224,6 +229,11 @@
                 "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
                 "code": "outpatient",
                 "display": "Outpatient"
+              },
+              {
+                "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-controlled-drug",
+                "code": "CD2",
+                "display": "Schedule 2"
               }
             ]
           }
