@@ -2,7 +2,9 @@ import { Verifier } from "@pact-foundation/pact"
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verify(): Promise<any> {
-  const isLocal = process.env.PACT_PROVIDER_URL === "http://localhost:9000" 
+  const isLocal = process.env.PACT_PROVIDER_URL === "http://localhost:9000"
+  const isInt = process.env.PACT_PROVIDER_URL.includes("int")
+  const pactVersion = isInt ? `${process.env.PACT_VERSION}.int` : process.env.PACT_VERSION
   const verifier =  new Verifier({
     publishVerificationResult: !isLocal,
     pactBrokerUrl: isLocal ? undefined : process.env.PACT_BROKER_URL,
@@ -10,14 +12,14 @@ async function verify(): Promise<any> {
     pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
     consumerVersionSelectors: [
       {
-        pacticipant: `${process.env.PACT_CONSUMER}+${process.env.PACT_VERSION}`,
-        version: process.env.PACT_VERSION,
+        pacticipant: `${process.env.PACT_CONSUMER}+${pactVersion}`,
+        version: pactVersion,
         latest: false,
         all: false
       }
     ],
-    provider: `${process.env.PACT_PROVIDER}+${process.env.PACT_VERSION}`,
-    providerVersion: process.env.PACT_VERSION,
+    provider: `${process.env.PACT_PROVIDER}+${pactVersion}`,
+    providerVersion: pactVersion,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
     logLevel: isLocal? "debug" : "info",
     customProviderHeaders: [

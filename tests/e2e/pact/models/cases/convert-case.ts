@@ -1,7 +1,16 @@
 /* eslint-disable */
 import * as fs from "fs"
 import * as fhir from "../fhir/fhir-resources"
+import * as child from "child_process"
+import moment from "moment"
 import {Case} from "./case"
+
+const prescriptionIds = child.execSync("poetry run resources/generate_prescription_ids.py")
+  .toString()
+  .split("\n")
+
+const prescriptionId = prescriptionIds[0]
+const shortPrescriptionId = prescriptionIds[1]
 
 export class ConvertCase extends Case {
   description: string
@@ -56,24 +65,48 @@ export class ConvertCase extends Case {
   * Replace any dynamic fields in the response xml which change at runtime with regex pattern match
   */
   private replaceDynamicsWithRegexPatterns(responseXml: string): string {
-    return responseXml
+    const responseMatch = responseXml
       .replace(
         /<creationTime value=\\\"[0-9]*\\\"\\\/>/g,
         "<creationTime value=\\\"[0-9]*\\\"\\\/>")
-      .replace(
-        /<id root=\\\"[0-9A-F\\-]*\\\"\\\/>/i,
-        "<id root=\\\"[0-9A-F-]*\\\"\\\/>")
-      .replace(
-        /<id extension=\\\"[0-9A-Z\\-]*\\\" root=\\\"2\\\.16\\\.840\\\.1\\\.113883\\\.2\\\.1\\\.3\\\.2\\\.4\\\.18\\\.8\\\"\\\/>/g,
-        "<id extension=\\\"[0-9A-Z-]*\\\" root=\\\"2\\\.16\\\.840\\\.1\\\.113883\\\.2\\\.1\\\.3\\\.2\\\.4\\\.18\\\.8\\\"\\\/>")
-      .replace(
-        /<value extension=\\\"[0-9A-Z\\-]*\\\" root=\\\"2\\\.16\\\.840\\\.1\\\.113883\\\.2\\\.1\\\.3\\\.2\\\.4\\\.18\\\.8\\\"\\\/>/g,
-        "<value extension=\\\"[0-9A-Z-]*\\\" root=\\\"2\\\.16\\\.840\\\.1\\\.113883\\\.2\\\.1\\\.3\\\.2\\\.4\\\.18\\\.8\\\"\\\/>")
-      .replace(
-        /<effectiveTime value=\\\"[0-9]*\\\"\\\/>/g,
-        "<effectiveTime value=\\\"[0-9]*\\\"\\\/>")
-      .replace(
-        /<time value=\\\"[0-9]*\\\"\\\/>/g,
-        "<time value=\\\"[0-9]*\\\"\\\/>")
+
+      if (process.env.APIGEE_ENVIRONMENT !== "int") {
+        return responseMatch
+      }
+
+      /* Replace ids and authored on to create valid, easily traceable prescriptions in Spine int */
+      return responseMatch
+        .replace(
+          /<id root=\\\"[0-9A-F\\-]*\\\"\\\/>/i,
+          "<id root=\\\"[0-9A-F-]*\\\"\\\/>")
+        .replace(
+          /<id extension=\\\"[0-9A-Z\\-]*\\\" root=\\\"2\\\.16\\\.840\\\.1\\\.113883\\\.2\\\.1\\\.3\\\.2\\\.4\\\.18\\\.8\\\"\\\/>/g,
+          "<id extension=\\\"[0-9A-Z-]*\\\" root=\\\"2\\\.16\\\.840\\\.1\\\.113883\\\.2\\\.1\\\.3\\\.2\\\.4\\\.18\\\.8\\\"\\\/>")
+        .replace(
+          /<value extension=\\\"[0-9A-Z\\-]*\\\" root=\\\"2\\\.16\\\.840\\\.1\\\.113883\\\.2\\\.1\\\.3\\\.2\\\.4\\\.18\\\.8\\\"\\\/>/g,
+          "<value extension=\\\"[0-9A-Z-]*\\\" root=\\\"2\\\.16\\\.840\\\.1\\\.113883\\\.2\\\.1\\\.3\\\.2\\\.4\\\.18\\\.8\\\"\\\/>")
+        .replace(
+          /<effectiveTime value=\\\"[0-9]*\\\"\\\/>/g,
+          "<effectiveTime value=\\\"[0-9]*\\\"\\\/>")
+        .replace(
+          /<time value=\\\"[0-9]*\\\"\\\/>/g,
+          "<time value=\\\"[0-9]*\\\"\\\/>")
+  }
+
+  /* Replace ids and authored on to create valid, easily traceable prescriptions in Spine int */
+  updateIdsAndAuthoredOn(requestJson: fhir.Bundle) {
+    if (process.env.APIGEE_ENVIRONMENT !== "int") {
+      return
+    }
+
+    requestJson.identifier.value = prescriptionId
+    const medicationRequests = (requestJson.entry
+      .map(entry => entry.resource)
+      .filter(resource => resource.resourceType === "MedicationRequest") as Array<fhir.MedicationRequest>)
+  
+    medicationRequests.forEach(medicationRequest => {
+      medicationRequest.authoredOn = moment.utc().toISOString(true)
+      medicationRequest.groupIdentifier.value = shortPrescriptionId
+    })
   }
 }
