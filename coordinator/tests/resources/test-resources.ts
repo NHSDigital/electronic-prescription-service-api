@@ -58,7 +58,7 @@ export class ExamplePrescription {
 
 export const examplePrescription1 = new ExamplePrescription(
   "repeat dispensing",
-  "secondary-care/community/repeat-dispensing/nominated-pharmacy/multiple-medication-requests/prescriber-endorsed"
+  "secondary-care/community/repeat-dispensing/nominated-pharmacy/clinical-practitioner/multiple-medication-requests/prescriber-endorsed"
 )
 
 const hl7V3SignatureFragments1Str = fs.readFileSync(
@@ -81,7 +81,7 @@ export const examplePrescription2 = new ExamplePrescription(
 
 export const examplePrescription3 = new ExamplePrescription(
   "homecare",
-  "secondary-care/homecare/acute/no-nominated-pharmacy")
+  "secondary-care/homecare/acute/no-nominated-pharmacy/clinical-practitioner")
 
 /* todo: repeat-dispensing homecare example
 export const examplePrescription4 = new ExamplePrescription(
