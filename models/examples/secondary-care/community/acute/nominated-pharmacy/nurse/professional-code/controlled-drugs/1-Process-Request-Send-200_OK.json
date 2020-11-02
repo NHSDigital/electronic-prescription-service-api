@@ -82,8 +82,8 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "15517911000001104",
-              "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
+              "code": "322927002",
+              "display": "Phenobarbital 15mg/5ml elixir"
             }
           ]
         },
@@ -118,7 +118,7 @@
         },
         "dosageInstruction": [
           {
-            "text": "10 milligram, Inject, Subcutaneous route, once weekly",
+            "text": "2.5ML three times a day",
             "timing": {
               "repeat": {
                 "frequency": 5,
@@ -170,11 +170,165 @@
                 "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
                 "code": "P1"
               }
+            },
+            {
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-controlled-drug-quantity-words",
+              "valueString": "thirty seven point five"
             }
           ],
           "quantity": {
-            "value": 1,
-            "unit": "pre-filled disposable injection",
+            "value": 37.5,
+            "unit": "ml",
+            "system": "http://snomed.info/sct",
+            "code": "3318611000001103"
+          },
+          "performer": {
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "FH542"
+            }
+          }
+        },
+        "substitution": {
+          "allowedBoolean": false
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab5",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "a54219b8-f741-4c47-b662-e4f8dfa49ab5",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
+              "code": "1001",
+              "display": "Outpatient Community Prescriber - Medical Prescriber"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+          }
+        ],
+        "status": "active",
+        "intent": "order",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                "code": "outpatient",
+                "display": "Outpatient"
+              }
+            ]
+          }
+        ],
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "3453511000001105",
+              "display": "Oramorph 20mg/ml concentrated oral solution (Boehringer Ingelheim Ltd)"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
+        },
+        "authoredOn": "2020-10-09T12:00:00+00:00",
+        "requester": {
+          "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+        },
+        "groupIdentifier": {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
+              "valueIdentifier": {
+                "system": "https://fhir.nhs.uk/Id/prescription",
+                "value": "454fc887-488a-4519-b529-11000b6791df"
+              }
+            }
+          ],
+          "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+          "value": "9E0D11-ZB40A2-11EB9H"
+        },
+        "courseOfTherapyType": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+              "code": "acute",
+              "display": "Short course (acute) therapy"
+            }
+          ]
+        },
+        "dosageInstruction": [
+          {
+            "text": "2.5ml to be taken as directed",
+            "timing": {
+              "repeat": {
+                "frequency": 5,
+                "period": 1,
+                "periodUnit": "d",
+                "boundsDuration": {
+                  "value": 10,
+                  "unit": "day",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "d"
+                }
+              }
+            },
+            "method": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "422145002",
+                  "display": "Inject"
+                }
+              ]
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "34206005",
+                  "display": "Subcutaneous route"
+                }
+              ]
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 10,
+                  "unit": "milligram",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
+              }
+            ]
+          }
+        ],
+        "dispenseRequest": {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
+              "valueCoding": {
+                "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+                "code": "P1"
+              }
+            },
+            {
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-controlled-drug-quantity-words",
+              "valueString": "eighty seven point five"
+            }
+          ],
+          "quantity": {
+            "value": 87.5,
+            "unit": "ml",
             "system": "http://snomed.info/sct",
             "code": "3318611000001103"
           },
