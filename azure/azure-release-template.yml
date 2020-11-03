@@ -91,6 +91,7 @@ extends:
           cd $SERVICE_NAME/$SERVICE_ARTIFACT_NAME/pact
           rm -rf node_modules && npm install
           chmod +x ./resources/generate_prescription_ids.py
+          poetry run resources/generate_prescription_ids.py > prescription_ids.txt
           make create-pacts
           chmod +x ./broker/publish.ts
           make publish-pacts
