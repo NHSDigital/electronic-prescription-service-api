@@ -5,7 +5,7 @@ import * as TestResources from "../resources/test-resources"
 import {Bundle, Parameters} from "../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 
-const isInt = process.env.PACT_PROVIDER_URL.includes("int")
+const isInt = process.env.PACT_PROVIDER_URL?.includes("int")
 const pactVersion = isInt ? `${process.env.PACT_VERSION}.int` : process.env.PACT_VERSION
 
 jestpact.pactWith(
