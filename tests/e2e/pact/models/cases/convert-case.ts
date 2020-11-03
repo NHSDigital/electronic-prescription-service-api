@@ -1,10 +1,12 @@
 /* eslint-disable */
 import * as fs from "fs"
 import * as fhir from "../fhir/fhir-resources"
+import * as child from "child_process"
 import moment from "moment"
 import {Case} from "./case"
 
-const prescriptionIds = fs.readFileSync("prescription_ids.txt", "utf-8")
+const prescriptionIds = child.execSync("poetry run python resources/generate_prescription_ids.py")
+  .toString()
   .split("\n")
 
 const prescriptionId = prescriptionIds[0]
