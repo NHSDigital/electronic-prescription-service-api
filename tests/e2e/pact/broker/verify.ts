@@ -3,7 +3,7 @@ import { Verifier } from "@pact-foundation/pact"
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verify(): Promise<any> {
   const isLocal = process.env.PACT_PROVIDER_URL === "http://localhost:9000"
-  const isInt = process.env.PACT_PROVIDER_URL.includes("int")
+  const isInt = process.env.APIGEE_ENVIRONMENT === "int"
   const pactVersion = isInt ? `${process.env.PACT_VERSION}.int` : process.env.PACT_VERSION
   const verifier =  new Verifier({
     publishVerificationResult: !isLocal,

@@ -3,7 +3,7 @@ import { Publisher } from "@pact-foundation/pact"
 
 async function publish(): Promise<Array<string>> { 
   const isLocal = process.env.PACT_PROVIDER_URL == "http://localhost:9000"
-  const isInt = process.env.PACT_PROVIDER_URL.includes("int")
+  const isInt = process.env.APIGEE_ENVIRONMENT === "int"
   const pactVersion = isInt ? `${process.env.PACT_VERSION}.int` : process.env.PACT_VERSION
   if (!isLocal) {
     return await new Publisher({
