@@ -104,8 +104,10 @@ export class ConvertCase extends Case {
       .map(entry => entry.resource)
       .filter(resource => resource.resourceType === "MedicationRequest") as Array<fhir.MedicationRequest>)
   
+    const authoredOn = moment.utc().toISOString(true)
+
     medicationRequests.forEach(medicationRequest => {
-      medicationRequest.authoredOn = moment.utc().toISOString(true)
+      medicationRequest.authoredOn = authoredOn
       medicationRequest.groupIdentifier.value = shortPrescriptionId
     })
   }
