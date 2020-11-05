@@ -40,10 +40,8 @@ extends:
     apigee_deployments:
       - environment: internal-dev-sandbox
         proxy_path: sandbox
-        enable_monitoring: false
         make_spec_visible: true
       - environment: internal-dev
-        enable_monitoring: false
         proxy_path: live
         make_spec_visible: true
       - environment: internal-qa-sandbox
