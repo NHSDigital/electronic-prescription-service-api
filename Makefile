@@ -53,7 +53,7 @@ run-coordinator:
 
 run-validator:
 	cd validator && \
-	java -Xms1500m -Xms1500m -jar target/fhir-validator-*.jar
+	java -Xms1500m -Xmx1500m -jar target/fhir-validator-*.jar
 
 ## Install
 
