@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN020101SM31 xmlns="urn:hl7-org:v3">
   <id root="EB876732-ECBF-4B4C-BDF4-653D38F62DEA"/>
-  <creationTime value="20201106043925"/>
+  <creationTime value="20201106045057"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN020101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -102,10 +102,10 @@
                         <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
                       </Transforms>
                       <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                      <DigestValue>/U1GHY0kby/9hlDQK/eiM7tE+IM=</DigestValue>
+                      <DigestValue>StKacEdSLjSuFj0MQov8Todolqo=</DigestValue>
                     </Reference>
                   </SignedInfo>
-                  <SignatureValue>NuOfm5+u5eFBx4FrLYDh/LxFiGZJoMSQTj4oYxM9iLm8Q6/u9LKzKVw1zXQSghhrAjq1X5x46Ga0Slyq19ArmInjH9mIJeuRUBkWW6WVJ0ZA3dVy6TI+/7Tfv1qzVtz8tPiJAw/ifRyZh1f2MdQiz/5F8znlnYwmOIlhPRaoCKk=</SignatureValue>
+                  <SignatureValue>o2GCD3P3u0IRgDias1y6ziMKSSQr1JHzfgUuCPTdMAcEMFI8IU7LBDAVV9zvGSXnqZC1ddNntSu2QaMBQIBBtCDCOaJkYwgfa6c+bAu0MlyCv57EiFkrNqgeNm4LqSTsJu9+Ttse84VYKW0Znl3VzGtvlKH+i6OCogSc8tTVUb0=</SignatureValue>
                   <KeyInfo>
                     <X509Data>
                       <X509Certificate>MIIDuDCCAqCgAwIBAgIEXcmtHzANBgkqhkiG9w0BAQsFADA2MQwwCgYDVQQKEwNuaHMxCzAJBgNVBAsTAkNBMRkwFwYDVQQDExBOSFMgSU5UIExldmVsIDFEMB4XDTIwMTAyMjEwMjE1NVoXDTIyMTAyMjEwNTE1NVowQzEMMAoGA1UEChMDbmhzMQ8wDQYDVQQLEwZQZW9wbGUxIjAgBgNVBAMMGTU1NTI1MzUyMTEwOF9SQU5ET01fVVNFUlEwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKt4szNw7OAH7AQRrDe/xBImsMmMiS9EsrT3a3p/Lh3brdzI9aajTUZ2b/cvbOa7PeYd7u+K4a2Zd0Xk+0GFmYGzSVX6iYjblwr0vai31zV7G+lGvHxH6pSoLCwICaZAFwabeD5Oz94+yA3aWNWtGV0Dfh9qwH3ZFCIMRsverN1pAgMBAAGjggFDMIIBPzAOBgNVHQ8BAf8EBAMCBkAwZQYDVR0gAQH/BFswWTBXBgsqhjoAiXtmAAMCADBIMEYGCCsGAQUFBwIBFjpodHRwczovL3BraS5uaHMudWsvY2VydGlmaWNhdGVfcG9saWNpZXMvY29udGVudF9jb21taXRtZW50MDMGA1UdHwQsMCowKKAmoCSGImh0dHA6Ly9jcmwubmhzLnVrL2ludC8xZC9jcmxjMy5jcmwwKwYDVR0QBCQwIoAPMjAyMDEwMjIxMDIxNTVagQ8yMDIyMDMxNzEwNTE1NVowHwYDVR0jBBgwFoAUoJYfgYTNPd6EUKL6QLIzHxY5PFIwHQYDVR0OBBYEFLtyvYSyaqg60AEUZgxk0wrjRJc+MAkGA1UdEwQCMAAwGQYJKoZIhvZ9B0EABAwwChsEVjguMwMCBLAwDQYJKoZIhvcNAQELBQADggEBABczy8B8juPpIfaTNFcxrC22aCX/xYZmhrL/NvIBAaX1G5hjiwmkGKE2hRTIr67PxZxmXsJxigRBMHPlI+lY/+okzH0Gi7b5bqlw7pxGIgJO000w8pFsvo9w42IYhHodsvnDVSxhMT0J46Qhk9soE0LjoEULKQPPlYGke/Gl3m17ItFYwObQH0fMEwmiqByeIfz7gSccOzL5cIp6PcZTOjo2IqQpgEmhjOcRInEqANitSdjoiJAJzpaaZjYTRdHUX7i7ajEiH4m91nFW+4AqkNttlb4WcGKsSmWgfKKheF4IoZKME80xerSgMy8vtjLOBJCGXz0wLGmQuRmxMTq88q4=</X509Certificate>
@@ -196,7 +196,7 @@
               <seperatableInd value="true"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentLineItem classCode="SBADM" moodCode="RQO">
-                <id root="00D3DD04-D162-49CE-A808-6F220906F1C8"/>
+                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
                 <product contextControlCode="OP" typeCode="PRD">
@@ -219,7 +219,8 @@
                   <seperatableInd value="false"/>
                   <pertinentAdditionalInstructions classCode="OBS" moodCode="EVN">
                     <code code="AI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value>CD: twenty eight</value>
+                    <value>&lt;patientInfo&gt;Your medication review is due. Please make an appointment to see your GP.&lt;/patientInfo&gt;CD: twenty eight
+Dosage has been decreased on advice from the hospital.</value>
                   </pertinentAdditionalInstructions>
                 </pertinentInformation1>
                 <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
@@ -227,45 +228,6 @@
                   <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
                     <code code="DI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
                     <value>1 tablet, daily</value>
-                  </pertinentDosageInstructions>
-                </pertinentInformation2>
-              </pertinentLineItem>
-            </pertinentInformation2>
-            <pertinentInformation2 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT">
-              <seperatableInd value="true"/>
-              <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
-              <pertinentLineItem classCode="SBADM" moodCode="RQO">
-                <id root="1DE954AC-A1EA-49AB-BD4E-88E99F191186"/>
-                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
-                <effectiveTime nullFlavor="NA"/>
-                <product contextControlCode="OP" typeCode="PRD">
-                  <manufacturedProduct classCode="MANU">
-                    <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
-                      <code code="321196004" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Diazepam 2mg tablets"/>
-                    </manufacturedRequestedMaterial>
-                  </manufacturedProduct>
-                </product>
-                <component typeCode="COMP">
-                  <seperatableInd value="false"/>
-                  <lineItemQuantity classCode="SPLY" moodCode="RQO">
-                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
-                    <quantity unit="1" value="28">
-                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="28"/>
-                    </quantity>
-                  </lineItemQuantity>
-                </component>
-                <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
-                  <seperatableInd value="false"/>
-                  <pertinentAdditionalInstructions classCode="OBS" moodCode="EVN">
-                    <code code="AI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value>Dosage has been decreased on advice from the hospital.</value>
-                  </pertinentAdditionalInstructions>
-                </pertinentInformation1>
-                <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
-                  <seperatableInd value="false"/>
-                  <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
-                    <code code="DI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value>1 tablet, at NIGHT</value>
                   </pertinentDosageInstructions>
                 </pertinentInformation2>
               </pertinentLineItem>
@@ -292,12 +254,7 @@
             <code code="185361000000102" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Medication - care record element (record artifact)"/>
             <component typeCode="COMP">
               <actRef classCode="SBADM" moodCode="RQO">
-                <id root="00D3DD04-D162-49CE-A808-6F220906F1C8"/>
-              </actRef>
-            </component>
-            <component typeCode="COMP">
-              <actRef classCode="SBADM" moodCode="RQO">
-                <id root="1DE954AC-A1EA-49AB-BD4E-88E99F191186"/>
+                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
               </actRef>
             </component>
           </pertinentCareRecordElementCategory>

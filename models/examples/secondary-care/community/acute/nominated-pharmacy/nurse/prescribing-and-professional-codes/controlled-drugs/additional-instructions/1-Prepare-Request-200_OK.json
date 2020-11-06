@@ -36,6 +36,9 @@
         },
         "focus": [
           {
+            "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+          },
+          {
             "reference": "urn:uuid:00d3dd04-d162-49ce-a808-6f220906f1c8"
           },
           {
@@ -60,9 +63,155 @@
             "reference": "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
           },
           {
-            "reference": "urn:uuid:b2a46b68-9e1e-49e6-a132-88b3308ed561"
+            "reference": "urn:uuid:302ec192-3766-4964-a9f7-561a4a1bdada"
           }
         ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
+              "code": "1001",
+              "display": "Outpatient Community Prescriber - Medical Prescriber"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+          }
+        ],
+        "status": "active",
+        "intent": "order",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                "code": "outpatient",
+                "display": "Outpatient"
+              }
+            ]
+          }
+        ],
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "15517911000001104",
+              "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
+        },
+        "authoredOn": "2020-10-09T12:00:00+00:00",
+        "requester": {
+          "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+        },
+        "groupIdentifier": {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
+              "valueIdentifier": {
+                "system": "https://fhir.nhs.uk/Id/prescription",
+                "value": "454fc887-488a-4519-b529-11000b6791df"
+              }
+            }
+          ],
+          "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+          "value": "9E0D11-ZB40A2-11EB9H"
+        },
+        "courseOfTherapyType": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+              "code": "acute",
+              "display": "Short course (acute) therapy"
+            }
+          ]
+        },
+        "dosageInstruction": [
+          {
+            "text": "10 milligram, Inject, Subcutaneous route, once weekly",
+            "timing": {
+              "repeat": {
+                "frequency": 5,
+                "period": 1,
+                "periodUnit": "d",
+                "boundsDuration": {
+                  "value": 10,
+                  "unit": "day",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "d"
+                }
+              }
+            },
+            "method": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "422145002",
+                  "display": "Inject"
+                }
+              ]
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "34206005",
+                  "display": "Subcutaneous route"
+                }
+              ]
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 10,
+                  "unit": "milligram",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
+              }
+            ]
+          }
+        ],
+        "dispenseRequest": {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
+              "valueCoding": {
+                "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+                "code": "P1"
+              }
+            }
+          ],
+          "quantity": {
+            "value": 1,
+            "unit": "pre-filled disposable injection",
+            "system": "http://snomed.info/sct",
+            "code": "3318611000001103"
+          },
+          "performer": {
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "FH542"
+            }
+          }
+        },
+        "substitution": {
+          "allowedBoolean": false
+        }
       }
     },
     {
@@ -83,7 +232,7 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-            "value": "00d3dd04-d162-49ce-a808-6f220906f1c8"
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
           }
         ],
         "status": "active",
@@ -192,7 +341,7 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-            "value": "1de954ac-a1ea-49ab-bd4e-88e99f191186"
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
           }
         ],
         "status": "active",
@@ -336,14 +485,12 @@
             "value": "B81001"
           }
         },
-        "generalPractitioner": [
-          {
-            "identifier": {
-              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "B81001"
-            }
+        "generalPractitioner": [{
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "B81001"
           }
-        ]
+        }]
       }
     },
     {
@@ -520,60 +667,14 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:b2a46b68-9e1e-49e6-a132-88b3308ed561",
+      "fullUrl": "urn:uuid:302ec192-3766-4964-a9f7-561a4a1bdada",
       "resource": {
-        "resourceType": "Provenance",
-        "id": "b2a46b68-9e1e-49e6-a132-88b3308ed561",
-        "target": [
+        "resourceType": "CommunicationRequest",
+        "id": "302ec192-3766-4964-a9f7-561a4a1bdada",
+        "status": "active",
+        "payload": [
           {
-            "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
-          },
-          {
-            "reference": "urn:uuid:00d3dd04-d162-49ce-a808-6f220906f1c8"
-          },
-          {
-            "reference": "urn:uuid:1de954ac-a1ea-49ab-bd4e-88e99f191186"
-          },
-          {
-            "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
-          },
-          {
-            "reference": "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a"
-          },
-          {
-            "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
-          },
-          {
-            "reference": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
-          },
-          {
-            "reference": "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e"
-          },
-          {
-            "reference": "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
-          }
-        ],
-        "recorded": "2008-02-27T11:38:00+00:00",
-        "agent": [
-          {
-            "who": {
-              "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
-            }
-          }
-        ],
-        "signature": [
-          {
-            "type": [
-              {
-                "system": "urn:iso-astm:E1762-95:2013",
-                "code": "1.2.840.10065.1.12.1.1"
-              }
-            ],
-            "when": "2020-09-02T11:38:00+00:00",
-            "who": {
-              "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
-            },
-            "data": "DQo8U2lnbmF0dXJlIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjIj4NCiAgICA8U2lnbmVkSW5mbz48Q2Fub25pY2FsaXphdGlvbk1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMTAveG1sLWV4Yy1jMTRuIyI+PC9DYW5vbmljYWxpemF0aW9uTWV0aG9kPjxTaWduYXR1cmVNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjcnNhLXNoYTEiPjwvU2lnbmF0dXJlTWV0aG9kPjxSZWZlcmVuY2U+PFRyYW5zZm9ybXM+PFRyYW5zZm9ybSBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDEvMTAveG1sLWV4Yy1jMTRuIyI+PC9UcmFuc2Zvcm0+PC9UcmFuc2Zvcm1zPjxEaWdlc3RNZXRob2QgQWxnb3JpdGhtPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwLzA5L3htbGRzaWcjc2hhMSI+PC9EaWdlc3RNZXRob2Q+PERpZ2VzdFZhbHVlPi9VMUdIWTBrYnkvOWhsRFFLL2VpTTd0RStJTT08L0RpZ2VzdFZhbHVlPjwvUmVmZXJlbmNlPjwvU2lnbmVkSW5mbz4NCiAgICA8U2lnbmF0dXJlVmFsdWU+TnVPZm01K3U1ZUZCeDRGckxZRGgvTHhGaUdaSm9NU1FUajRvWXhNOWlMbThRNi91OUxLektWdzF6WFFTZ2hockFqcTFYNXg0NkdhMFNseXExOUFybUluakg5bUlKZXVSVUJrV1c2V1ZKMFpBM2RWeTZUSSsvN1RmdjFxelZ0ejh0UGlKQXcvaWZSeVpoMWYyTWRRaXovNUY4em5sbll3bU9JbGhQUmFvQ0trPTwvU2lnbmF0dXJlVmFsdWU+DQogICAgPEtleUluZm8+DQogICAgICAgIDxYNTA5RGF0YT4NCiAgICAgICAgICAgIDxYNTA5Q2VydGlmaWNhdGU+TUlJRHVEQ0NBcUNnQXdJQkFnSUVYY210SHpBTkJna3Foa2lHOXcwQkFRc0ZBREEyTVF3d0NnWURWUVFLRXdOdWFITXhDekFKQmdOVkJBc1RBa05CTVJrd0Z3WURWUVFERXhCT1NGTWdTVTVVSUV4bGRtVnNJREZFTUI0WERUSXdNVEF5TWpFd01qRTFOVm9YRFRJeU1UQXlNakV3TlRFMU5Wb3dRekVNTUFvR0ExVUVDaE1EYm1oek1ROHdEUVlEVlFRTEV3WlFaVzl3YkdVeElqQWdCZ05WQkFNTUdUVTFOVEkxTXpVeU1URXdPRjlTUVU1RVQwMWZWVk5GVWxFd2daOHdEUVlKS29aSWh2Y05BUUVCQlFBRGdZMEFNSUdKQW9HQkFLdDRzek53N09BSDdBUVJyRGUveEJJbXNNbU1pUzlFc3JUM2EzcC9MaDNicmR6STlhYWpUVVoyYi9jdmJPYTdQZVlkN3UrSzRhMlpkMFhrKzBHRm1ZR3pTVlg2aVlqYmx3cjB2YWkzMXpWN0crbEd2SHhINnBTb0xDd0lDYVpBRndhYmVENU96OTQreUEzYVdOV3RHVjBEZmg5cXdIM1pGQ0lNUnN2ZXJOMXBBZ01CQUFHamdnRkRNSUlCUHpBT0JnTlZIUThCQWY4RUJBTUNCa0F3WlFZRFZSMGdBUUgvQkZzd1dUQlhCZ3NxaGpvQWlYdG1BQU1DQURCSU1FWUdDQ3NHQVFVRkJ3SUJGanBvZEhSd2N6b3ZMM0JyYVM1dWFITXVkV3N2WTJWeWRHbG1hV05oZEdWZmNHOXNhV05wWlhNdlkyOXVkR1Z1ZEY5amIyMXRhWFJ0Wlc1ME1ETUdBMVVkSHdRc01Db3dLS0Ftb0NTR0ltaDBkSEE2THk5amNtd3VibWh6TG5WckwybHVkQzh4WkM5amNteGpNeTVqY213d0t3WURWUjBRQkNRd0lvQVBNakF5TURFd01qSXhNREl4TlRWYWdROHlNREl5TURNeE56RXdOVEUxTlZvd0h3WURWUjBqQkJnd0ZvQVVvSllmZ1lUTlBkNkVVS0w2UUxJekh4WTVQRkl3SFFZRFZSME9CQllFRkx0eXZZU3lhcWc2MEFFVVpneGswd3JqUkpjK01Ba0dBMVVkRXdRQ01BQXdHUVlKS29aSWh2WjlCMEVBQkF3d0Noc0VWamd1TXdNQ0JMQXdEUVlKS29aSWh2Y05BUUVMQlFBRGdnRUJBQmN6eThCOGp1UHBJZmFUTkZjeHJDMjJhQ1gveFlabWhyTC9OdklCQWFYMUc1aGppd21rR0tFMmhSVElyNjdQeFp4bVhzSnhpZ1JCTUhQbEkrbFkvK29rekgwR2k3YjVicWx3N3B4R0lnSk8wMDB3OHBGc3ZvOXc0MklZaEhvZHN2bkRWU3hoTVQwSjQ2UWhrOXNvRTBMam9FVUxLUVBQbFlHa2UvR2wzbTE3SXRGWXdPYlFIMGZNRXdtaXFCeWVJZno3Z1NjY096TDVjSXA2UGNaVE9qbzJJcVFwZ0VtaGpPY1JJbkVxQU5pdFNkam9pSkFKenBhYVpqWVRSZEhVWDdpN2FqRWlING05MW5GVys0QXFrTnR0bGI0V2NHS3NTbVdnZktLaGVGNElvWktNRTgweGVyU2dNeTh2dGpMT0JKQ0dYejB3TEdtUXVSbXhNVHE4OHE0PTwvWDUwOUNlcnRpZmljYXRlPg0KICAgICAgICA8L1g1MDlEYXRhPg0KICAgIDwvS2V5SW5mbz4NCjwvU2lnbmF0dXJlPg0K"
+            "contentString": "Your medication review is due. Please make an appointment to see your GP."
           }
         ]
       }
