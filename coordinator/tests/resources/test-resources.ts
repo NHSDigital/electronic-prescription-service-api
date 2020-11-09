@@ -19,19 +19,19 @@ export class ExamplePrescription {
 
   constructor(description: string, location: string) {
     const fhirMessageUnsignedStr = fs.readFileSync(
-      path.join(__dirname, location, "PrepareRequest-FhirMessageUnsigned.json"),
+      path.join(__dirname, location, "1-Prepare-Request-200_OK.json"),
       "utf-8"
     )
     const fhirMessageSignedStr = fs.readFileSync(
-      path.join(__dirname, location, "SendRequest-FhirMessageSigned.json"),
+      path.join(__dirname, location, "1-Process-Request-Send-200_OK.json"),
       "utf-8"
     )
     const fhirMessageDigestStr = fs.readFileSync(
-      path.join(__dirname, location, "PrepareResponse-FhirMessageDigest.json"),
+      path.join(__dirname, location, "1-Prepare-Response-200_OK.json"),
       "utf-8"
     )
     const hl7V3MessageStr = fs.readFileSync(
-      path.join(__dirname, location, "ConvertResponse-SignedHl7V3Message.xml"),
+      path.join(__dirname, location, "1-Convert-Response-Send-200_OK.xml"),
       "utf-8"
     )
 
@@ -56,26 +56,39 @@ export class ExamplePrescription {
   }
 }
 
-export const examplePrescription1 = new ExamplePrescription("repeat dispensing", "parent-prescription-1")
+export const examplePrescription1 = new ExamplePrescription(
+  "repeat dispensing",
+  // eslint-disable-next-line max-len
+  "secondary-care/community/repeat-dispensing/nominated-pharmacy/clinical-practitioner/multiple-medication-requests/prescriber-endorsed"
+)
 
 const hl7V3SignatureFragments1Str = fs.readFileSync(
-  path.join(__dirname, "./parent-prescription-1/PrepareIntermediate-Hl7V3SignatureFragments.xml"),
+  path.join(__dirname, "./signature-fragments/PrepareIntermediate-Hl7V3SignatureFragments.xml"),
   "utf8"
 )
 const hl7V3SignatureFragments1 = XmlJs.xml2js(hl7V3SignatureFragments1Str, {compact: true}) as ElementCompact
 examplePrescription1.hl7V3SignatureFragments = hl7V3SignatureFragments1
 
 const hl7V3SignatureFragmentsCanonicalized1 = fs.readFileSync(
-  path.join(__dirname, "./parent-prescription-1/PrepareIntermediate-Hl7V3SignatureFragmentsCanonicalized.txt"),
+  path.join(__dirname, "./signature-fragments/PrepareIntermediate-Hl7V3SignatureFragmentsCanonicalized.txt"),
   "utf8"
 )
 examplePrescription1.hl7V3FragmentsCanonicalized = hl7V3SignatureFragmentsCanonicalized1.replace("\n", "")
 
-export const examplePrescription2 = new ExamplePrescription("acute, nominated pharmacy", "parent-prescription-2")
+export const examplePrescription2 = new ExamplePrescription(
+  "acute, nominated pharmacy",
+  "secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes"
+)
 
-export const examplePrescription3 = new ExamplePrescription("homecare", "parent-prescription-3")
+export const examplePrescription3 = new ExamplePrescription(
+  "homecare",
+  "secondary-care/homecare/acute/no-nominated-pharmacy/clinical-practitioner")
 
-export const examplePrescription4 = new ExamplePrescription("homecare repeat dispensing", "parent-prescription-4")
+/* todo: repeat-dispensing homecare example
+export const examplePrescription4 = new ExamplePrescription(
+  "homecare repeat dispensing",
+  "secondary-care/homecare/acute/no-nominated-pharmacy"
+) */
 
 export const specification = [
   examplePrescription1,

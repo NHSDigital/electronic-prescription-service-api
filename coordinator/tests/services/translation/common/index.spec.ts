@@ -18,7 +18,7 @@ import {TooManyValuesError} from "../../../../src/models/errors/processing-error
 test("getResourceForFullUrl returns correct resources", () => {
   const result = getResourceForFullUrl(
     TestResources.examplePrescription1.fhirMessageUnsigned,
-    "urn:uuid:a7b86f8d-1d81-fc28-e050-d20ae3a215f0"
+    "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab7"
   )
   expect((result as fhir.Resource).resourceType).toBe("MedicationRequest")
 })
