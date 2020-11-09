@@ -42,7 +42,7 @@ These can be installed by running the following commands:
 
 ```
 & sudo apt update
-$ sudo apt install git make curl npm python3-apt python3-distutils python3-venv default-jre shellcheck build-essential checkinstall libssl-dev -y
+$ sudo apt install git make curl npm python3-apt python3-distutils python3-venv default-jre shellcheck build-essential checkinstall libssl-dev maven -y
 $ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3
 $ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.35.1/install.sh | bash
 $ nvm install v12.18.3

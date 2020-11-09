@@ -5,11 +5,14 @@ import * as TestResources from "../resources/test-resources"
 import {Bundle} from "../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 
+const isInt = process.env.APIGEE_ENVIRONMENT === "int"
+const pactVersion = isInt ? `${process.env.PACT_VERSION}.int` : process.env.PACT_VERSION
+
 jestpact.pactWith(
   {
     spec: 3,
-    consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-    provider: `nhsd-apim-eps-sandbox-convert+${process.env.PACT_VERSION}`,
+    consumer: `nhsd-apim-eps-test-client+${pactVersion}`,
+    provider: `nhsd-apim-eps-sandbox-convert+${pactVersion}`,
     pactfileWriteMode: "overwrite"
   },
   /* eslint-disable  @typescript-eslint/no-explicit-any */
