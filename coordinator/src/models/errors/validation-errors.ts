@@ -8,13 +8,13 @@ export interface ValidationError {
   expression: Array<string>
 }
 
-export class MedicationRequestValueError implements ValidationError {
+export class MedicationRequestValueError<T> implements ValidationError {
   message: string
   operationOutcomeCode = "value" as const
   severity = "error" as const
   expression: Array<string>
 
-  constructor(fieldName: string, uniqueFieldValues: Array<unknown>) {
+  constructor(fieldName: string, uniqueFieldValues: Array<T>) {
     this.message = `Expected all MedicationRequests to have the same value for ${
       fieldName
     }. Received ${
