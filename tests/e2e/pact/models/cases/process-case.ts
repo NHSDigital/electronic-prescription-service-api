@@ -1,11 +1,26 @@
-import {Bundle} from "../fhir/fhir-resources"
+import {Bundle, Parameters} from "../fhir/fhir-resources"
 import {Case} from "./case"
+import {exampleFiles} from "../../services/example-files-fetcher"
+import path from "path"
+import fs from "fs"
+
 
 export class ProcessCase extends Case {
   description: string
   request: Bundle
+  prepareResponse : Parameters
 
   constructor(description: string, requestFile: string) {
     super(description, requestFile)
+
+    const processRequest = exampleFiles.find(exampleFile => exampleFile.path === requestFile)
+
+    const prepareResponse = exampleFiles.find(exampleFile => 
+      exampleFile.dir === processRequest.dir
+      && exampleFile.number === processRequest.number
+      && exampleFile.endpoint === "prepare"
+      && exampleFile.isResponse)
+
+    this.prepareResponse = fs.readFileSync(prepareResponse.path, "utf-8")
   }
 }

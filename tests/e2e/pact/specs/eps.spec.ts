@@ -57,9 +57,41 @@ jestpact.pactWith(
 
     describe("process-message e2e tests", () => {
 
-      test.each(TestResources.processCases)("should be able to process %s", async (desc: string, message: Bundle) => {
+      test.each(TestResources.processCases)("should be able to process %s", async (desc: string, message: Bundle, prepareResponse: Parameters) => {
         const apiPath = "/$process-message"
-        const messageStr = LosslessJson.stringify(message)
+        const bundleStr = LosslessJson.stringify(message)
+        const bundle = JSON.parse(bundleStr) as Bundle
+
+        // X grab related prepare response from example files
+        // X upload payload and display from prepare response to signing service, get token
+
+        var headers = new Headers();
+        headers.append("Authorization", `Bearer ${process.env.AUTH_BEARER_TOKEN}`);
+        headers.append("Content-Type", "application/json");
+
+        const signatureRequest = {
+          "algorithm": prepareResponse.parameter[3].valueString,
+          "payload": prepareResponse.parameter[0].valueString,
+          "display": prepareResponse.parameter[2].valueString
+        }
+
+        var requestOptions = {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify(signatureRequest),
+          redirect: 'follow'
+        };
+
+        const response = await fetch(`https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/signing-service/api/v1/SignatureRequest`, requestOptions)
+        const responseJson = await response.json()
+        console.log(responseJson)
+
+        // ?? sign payload with smartcard ??
+        // upload signature to signing service
+        // get signature response from signing service
+        // build xmldsig from signing service signature response
+        // set provenance data as base64 string of xmldsig
+
         const interaction: InteractionObject = {
           state: null,
           uponReceiving: `a request to process ${desc} message to Spine`,
@@ -69,7 +101,7 @@ jestpact.pactWith(
             },
             method: "POST",
             path: "/$process-message",
-            body: JSON.parse(messageStr)
+            body: bundle
           },
           willRespondWith: {
             headers: {
@@ -91,7 +123,7 @@ jestpact.pactWith(
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-          .send(messageStr)
+          .send(bundleStr)
           .expect(200)
       })
     })
