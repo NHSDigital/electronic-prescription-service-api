@@ -297,7 +297,7 @@ paths:
               examples:
                 example:
                   value:
-                    $ref: components/examples/example-1-repeat-dispensing/SendRequest-SuccessResponse.json
+                    $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Process-Response-Send-200_OK.json
         '4XX':
           description: Invalid request.
           content:

@@ -24,24 +24,4 @@ const conventionBasedConvertExamples: ConvertCase[] = convertResponseFiles.map(c
 	convertResponseFile.path
 ))
 
-const convertUnsignedSpecificationSuccessExamples = [1, 2, 3, 4].map(i => new ConvertCase(
-	`parent-prescription-${i} specification example unsigned`,
-	path.join(__dirname, examplesRootPath, `/../parent-prescription-${i}/PrepareRequest-FhirMessageUnsigned.json`),
-	path.join(__dirname, examplesRootPath, `/../parent-prescription-${i}/ConvertResponse-UnsignedHl7V3Message.xml`)))
-
-const convertSignedSpecificationSuccessExamples = [1, 2, 3, 4].map(i => new ConvertCase(
-	`parent-prescription-${i} specification example signed`,
-	path.join(__dirname, examplesRootPath, `/../parent-prescription-${i}/SendRequest-FhirMessageSigned.json`),
-	path.join(__dirname, examplesRootPath, `/../parent-prescription-${i}/ConvertResponse-SignedHl7V3Message.xml`)))
-
-const convertCancelSpecificationSuccessExamples = [3].map(i => new ConvertCase(
-	`parent-prescription-${i} specification example cancel`,
-	path.join(__dirname, examplesRootPath, `/../parent-prescription-${i}/CancelRequest-FhirMessage.json`),
-	path.join(__dirname, examplesRootPath, `/../parent-prescription-${i}/CancelResponse-Hl7V3Message.xml`)))
-
-export const convertExamples = [
-	...convertUnsignedSpecificationSuccessExamples,
-	...convertSignedSpecificationSuccessExamples,
-	...convertCancelSpecificationSuccessExamples,
-	...conventionBasedConvertExamples
-]
+export const convertExamples = conventionBasedConvertExamples
