@@ -4,6 +4,7 @@ import supertest from "supertest"
 import * as TestResources from "../resources/test-resources"
 import {Bundle, Parameters} from "../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
+import * as fetch from "node-fetch"
 
 const isInt = process.env.APIGEE_ENVIRONMENT === "int"
 const pactVersion = isInt ? `${process.env.PACT_VERSION}.int` : process.env.PACT_VERSION
@@ -65,26 +66,26 @@ jestpact.pactWith(
         // X grab related prepare response from example files
         // X upload payload and display from prepare response to signing service, get token
 
-        var headers = new Headers();
-        headers.append("Authorization", `Bearer ${process.env.AUTH_BEARER_TOKEN}`);
-        headers.append("Content-Type", "application/json");
-
         const signatureRequest = {
           "algorithm": prepareResponse.parameter[3].valueString,
           "payload": prepareResponse.parameter[0].valueString,
           "display": prepareResponse.parameter[2].valueString
         }
 
-        var requestOptions = {
+        const requestOptions: RequestInit = {
           method: 'POST',
-          headers: headers,
-          body: JSON.stringify(signatureRequest),
-          redirect: 'follow'
-        };
+          headers: [
+            ["Authorization", `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`],
+            ["Content-Type", "application/json"]
+          ],
+          body: JSON.stringify(signatureRequest)
+        }
 
         const response = await fetch(`https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/signing-service/api/v1/SignatureRequest`, requestOptions)
         const responseJson = await response.json()
-        console.log(responseJson)
+
+        const token = responseJson.token
+        console.log(`Token: ${token}`)
 
         // ?? sign payload with smartcard ??
         // upload signature to signing service

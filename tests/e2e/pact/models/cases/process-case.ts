@@ -1,7 +1,6 @@
 import {Bundle, Parameters} from "../fhir/fhir-resources"
 import {Case} from "./case"
 import {exampleFiles} from "../../services/example-files-fetcher"
-import path from "path"
 import fs from "fs"
 
 
@@ -21,6 +20,6 @@ export class ProcessCase extends Case {
       && exampleFile.endpoint === "prepare"
       && exampleFile.isResponse)
 
-    this.prepareResponse = fs.readFileSync(prepareResponse.path, "utf-8")
+    this.prepareResponse = JSON.parse(fs.readFileSync(prepareResponse.path, "utf-8"))
   }
 }
