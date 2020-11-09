@@ -37,7 +37,7 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
     "dispenseRequest.validityPeriod",
     "dispenseRequest.expectedSupplyDuration",
     'dispenseRequest.extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType")',
-    'extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-prescriptionType")',
+    'extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType")',
     'extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner")',
     'extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation")'
   ]
