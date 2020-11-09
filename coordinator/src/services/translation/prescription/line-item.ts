@@ -111,11 +111,12 @@ export function convertMedicationRequestToLineItem(
   hl7V3LineItem.product = convertProduct(fhirMedicationRequest.medicationCodeableConcept)
   hl7V3LineItem.component = convertLineItemComponent(fhirMedicationRequest.dispenseRequest.quantity)
   convertPrescriptionEndorsements(fhirMedicationRequest, hl7V3LineItem)
-  hl7V3LineItem.pertinentInformation2 = convertDosageInstructions(fhirMedicationRequest.dosageInstruction)
 
   const pertinentInformation1 = convertAdditionalInstructions(fhirMedicationRequest, patientInfoText)
   if (pertinentInformation1.pertinentAdditionalInstructions.value != "")
     hl7V3LineItem.pertinentInformation1 = pertinentInformation1
+
+  hl7V3LineItem.pertinentInformation2 = convertDosageInstructions(fhirMedicationRequest.dosageInstruction)
 
   return hl7V3LineItem
 }

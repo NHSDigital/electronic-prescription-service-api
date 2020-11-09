@@ -1,21 +1,15 @@
-import { Bundle, Parameters } from "../fhir/fhir-resources"
+import * as fhir from "../fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import * as fs from "fs"
+import {Case} from "./case"
 
-export class PrepareCase {
-  description: string
-	request: Bundle
-	response: Parameters
+export class PrepareCase extends Case {
+  response: fhir.Parameters
 
   constructor(description: string, requestFile: string, responseFile: string) {
-		const requestString = fs.readFileSync(requestFile, "utf-8")
-		const responseString = fs.readFileSync(responseFile, "utf-8")
-
-		const requestJson = LosslessJson.parse(requestString)
-		const responseJson = LosslessJson.parse(responseString)
-
-    this.description = description
-		this.request = requestJson
-		this.response = responseJson
+    super(description, requestFile)
+    const responseString = fs.readFileSync(responseFile, "utf-8")
+    const responseJson = LosslessJson.parse(responseString)
+    this.response = responseJson
   }
 }
