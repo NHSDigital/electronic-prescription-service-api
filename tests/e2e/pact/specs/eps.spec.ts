@@ -69,7 +69,7 @@ jestpact.pactWith(
           "display": prepareResponse.parameter[2].valueString
         }
 
-        const requestOptions: RequestInit = {
+        const signatureRequestOptions: RequestInit = {
           method: 'POST',
           headers: [
             ["Authorization", `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`],
@@ -78,14 +78,40 @@ jestpact.pactWith(
           body: JSON.stringify(signatureRequest)
         }
 
-        const response = await fetch(`https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/signing-service/api/v1/SignatureRequest`, requestOptions)
-        const responseJson = await response.json()
+        const signatureResponse = await fetch(`https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/signing-service/api/v1/SignatureRequest`, signatureRequestOptions)
+        const signatureResponseJson = await signatureResponse.json()
 
-        const token = responseJson.token
-        console.log(`Token: ${token}`)
+        const token = signatureResponseJson.token
 
-        // ?? sign payload with smartcard ??
+        // X (already present in examples) ?? sign payload with smartcard ??
         // upload signature to signing service
+
+        const signatureRequestTokenOptions: RequestInit = {
+          method: 'POST',
+          headers: [
+            ["Authorization", `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`],
+            ["Content-Type", "application/json"]
+          ]
+        }
+
+        const signatureTokenResponse = await fetch(`https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/signing-service/api/v1/SignatureRequest/${token}`, signatureRequestTokenOptions)
+        console.log(JSON.stringify(signatureTokenResponse))
+
+        const signaturePostResponseOptions: RequestInit = {
+          method: 'POST',
+          headers: [
+            ["Authorization", `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`],
+            ["Content-Type", "application/json"]
+          ],
+          body: JSON.stringify({
+            "signature": "qwertyuiopasdfghjklzxcvbnm",
+            "certificate": "qwertyuiopasdfghjklzxcvbnm"
+          })
+        }
+
+        const signaturePostResponse = await fetch(`https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/signing-service/api/v1/SignatureResponse/${token}`, signaturePostResponseOptions)
+        console.log(JSON.stringify(signaturePostResponse))
+
         // get signature response from signing service
         // build xmldsig from signing service signature response
         // set provenance data as base64 string of xmldsig
