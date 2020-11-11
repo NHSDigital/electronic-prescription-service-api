@@ -78,7 +78,7 @@ jestpact.pactWith(
           body: JSON.stringify(signatureRequest)
         }
 
-        const signingServiceUrl = `https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/${process.env.SERVICE_BASE_PATH.replace(/electronic-prescriptions/g, "signing-service")}`
+        const signingServiceUrl = `https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/signing-service`
 
         const signatureResponse = await fetch(`${signingServiceUrl}/api/v1/SignatureRequest`, signatureRequestOptions)
         const signatureResponseJson = await signatureResponse.json()
