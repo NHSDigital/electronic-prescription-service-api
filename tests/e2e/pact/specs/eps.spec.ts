@@ -145,9 +145,11 @@ jestpact.pactWith(
           if (entry.resource.resourceType === "Provenance") {
             const provenance = entry.resource as Provenance
             let xmlDSig = Buffer.from(provenance.signature[0].data, "base64").toString()
+            const provenanceDSig = xmlDSig.repeat(1)
             xmlDSig = xmlDSig.replace(/(?<=<DigestValue>).*(?=<\/DigestValue>)/g, digestValue)
             xmlDSig = xmlDSig.replace(/(?<=<SignatureValue>).*(?=<\/SignatureValue>)/g, signature)
             xmlDSig = xmlDSig.replace(/(?<=<X509Certificate>).*(?=<\/X509Certificate>)/g, certificate)
+            expect(provenanceDSig).toBe(xmlDSig)
             provenance.signature[0].data = Buffer.from(xmlDSig).toString("base64")
           }
         })

@@ -49,7 +49,10 @@ def updatePrepareExamples(prepare, prescription_id, short_prescription_id, autho
     with open(prepare, 'w') as f:
         json.dump(prepareRequest, f, indent=2)
 
-    prepareResponseJson = requests.post('http://localhost:9000/$prepare', json=prepareRequest).json()
+    prepareResponseJson = requests.post(
+        'http://localhost:9000/$prepare',
+        data=json.dumps(prepareRequest),
+        headers={'Content-Type': 'application/json'}).json()
 
     dir = os.path.dirname(prepare)
     file = os.path.basename(prepare)
