@@ -4,7 +4,7 @@ import os
 import glob
 import json
 import uuid
-
+from datetime import datetime
 
 examples_root_dir = "../models/examples/"
 
@@ -36,6 +36,7 @@ def loadExamples():
 
 
 def updateExamples():
+    authored_on = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S+00:00')
     for example in loadExamples():
         if "Prepare-Request" in example:
             dir = os.path.dirname(example)
@@ -47,8 +48,10 @@ def updateExamples():
             with open(example) as f:
                 prepareJson = json.load(f)
             for entry in prepareJson['entry']:
-                if (entry["resource"]["resourceType"] == "MedicationRequest"):
-                    entry["resource"]["groupIdentifier"]["value"] = shortPrescID()
+                resource = entry["resource"]
+                if (resource["resourceType"] == "MedicationRequest"):
+                    resource["groupIdentifier"]["value"] = shortPrescID()
+                    resource["authoredOn"] = authored_on
             with open(example, 'w') as f:
                 json.dump(prepareJson, f, indent=2)
             # print(example)

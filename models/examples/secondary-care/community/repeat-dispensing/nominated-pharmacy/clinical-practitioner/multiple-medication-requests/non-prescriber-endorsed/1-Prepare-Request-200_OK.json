@@ -103,7 +103,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2020-09-29T12:00:00+00:00",
+        "authoredOn": "2020-11-11T14:21:05+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -118,7 +118,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "96919F-Z05242-11EB81"
+          "value": "223238-Z89242-11EB8Y"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -272,7 +272,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2020-09-29T12:00:00+00:00",
+        "authoredOn": "2020-11-11T14:21:05+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -287,7 +287,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "96919F-Z06242-11EB87"
+          "value": "223238-Z8A242-11EB83"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -441,7 +441,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2020-09-29T12:00:00+00:00",
+        "authoredOn": "2020-11-11T14:21:05+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -456,7 +456,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "96919F-Z07242-11EB8D"
+          "value": "223238-Z8B242-11EB89"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -610,7 +610,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2020-09-29T12:00:00+00:00",
+        "authoredOn": "2020-11-11T14:21:05+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -625,7 +625,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "96919F-Z08242-11EB8J"
+          "value": "223238-Z8C242-11EB8F"
         },
         "courseOfTherapyType": {
           "coding": [
