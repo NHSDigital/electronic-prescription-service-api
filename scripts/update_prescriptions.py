@@ -61,7 +61,7 @@ def updateExamples():
         number = filename_parts[0]
         status_code_and_ext = filename_parts[4] if len(filename_parts) == 5 else filename_parts[3]
 
-        for process in glob.iglob(dir + '/' + number + '-Process-Request-Send-' + status_code_and_ext):
+        for process in glob.iglob(dir + '/' + number + '-Process-Request-*-' + status_code_and_ext):
             replaceIdsAndAuthoredOn(process, prescription_id, short_prescription_id, authored_on)
 
 
