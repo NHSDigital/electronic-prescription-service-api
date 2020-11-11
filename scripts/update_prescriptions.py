@@ -28,33 +28,41 @@ def shortPrescID():
     return prescriptionID
 
 
-def loadExamples():
-    for filename in glob.iglob(examples_root_dir + '**/*.json', recursive=True):
-        if "signature" in filename:
-            continue
+def loadPrepareExamples():
+    for filename in glob.iglob(examples_root_dir + '**/*Prepare-Request*.json', recursive=True):
         yield filename
+
+
+def replaceIdsAndAuthoredOn(exampleFilePath, prescription_id, short_prescription_id, authored_on):
+    with open(exampleFilePath) as f:
+        prepareJson = json.load(f)
+    prepareJson["identifier"]["value"] = prescription_id
+    for entry in prepareJson['entry']:
+        resource = entry["resource"]
+        if (resource["resourceType"] == "MedicationRequest"):
+            resource["groupIdentifier"]["value"] = short_prescription_id
+            resource["authoredOn"] = authored_on
+    with open(exampleFilePath, 'w') as f:
+        json.dump(prepareJson, f, indent=2)
 
 
 def updateExamples():
     authored_on = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S+00:00')
-    for example in loadExamples():
-        if "Prepare-Request" in example:
-            dir = os.path.dirname(example)
-            file = os.path.basename(example)
-            number = file.split('-')[0]
-            print(dir)
-            print(file)
-            print(number)
-            with open(example) as f:
-                prepareJson = json.load(f)
-            prepareJson["identifier"]["value"] = str(uuid.uuid4())
-            for entry in prepareJson['entry']:
-                resource = entry["resource"]
-                if (resource["resourceType"] == "MedicationRequest"):
-                    resource["groupIdentifier"]["value"] = shortPrescID()
-                    resource["authoredOn"] = authored_on
-            with open(example, 'w') as f:
-                json.dump(prepareJson, f, indent=2)
+
+    for prepare in loadPrepareExamples():
+        prescription_id = str(uuid.uuid4())
+        short_prescription_id = shortPrescID()
+
+        replaceIdsAndAuthoredOn(prepare, prescription_id, short_prescription_id, authored_on)
+
+        dir = os.path.dirname(prepare)
+        file = os.path.basename(prepare)
+        filename_parts = file.split('-')
+        number = filename_parts[0]
+        status_code_and_ext = filename_parts[4] if len(filename_parts) == 5 else filename_parts[3]
+
+        for process in glob.iglob(dir + '/' + number + '-Process-Request-Send-' + status_code_and_ext):
+            replaceIdsAndAuthoredOn(process, prescription_id, short_prescription_id, authored_on)
 
 
 updateExamples()
