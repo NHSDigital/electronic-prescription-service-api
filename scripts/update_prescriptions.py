@@ -47,6 +47,7 @@ def updateExamples():
             print(number)
             with open(example) as f:
                 prepareJson = json.load(f)
+            prepareJson["identifier"]["value"] = str(uuid.uuid4())
             for entry in prepareJson['entry']:
                 resource = entry["resource"]
                 if (resource["resourceType"] == "MedicationRequest"):
@@ -54,9 +55,6 @@ def updateExamples():
                     resource["authoredOn"] = authored_on
             with open(example, 'w') as f:
                 json.dump(prepareJson, f, indent=2)
-            # print(example)
-            # print(str(uuid.uuid4()).upper())
-            # print(shortPrescID())
 
 
 updateExamples()
