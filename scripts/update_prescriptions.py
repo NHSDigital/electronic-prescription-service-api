@@ -47,7 +47,8 @@ def updateExamples():
             with open(example) as f:
                 prepareJson = json.load(f)
             for entry in prepareJson['entry']:
-                print(entry)
+                if (entry["resource"]["resourceType"] == "MedicationRequest"):
+                    entry["resource"]["groupIdentifier"]["value"] = shortPrescID()
             with open(example, 'w') as f:
                 json.dump(prepareJson, f, indent=2)
             # print(example)

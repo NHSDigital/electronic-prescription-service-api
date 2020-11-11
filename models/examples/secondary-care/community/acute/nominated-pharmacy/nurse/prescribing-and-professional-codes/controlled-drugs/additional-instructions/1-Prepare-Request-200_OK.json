@@ -129,7 +129,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "9E0D11-ZB40A2-11EB9H"
+          "value": "96919F-Z0E242-11EB8I"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -275,7 +275,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "9E0D11-ZB40A2-11EB9H"
+          "value": "96919F-Z0F242-11EB8O"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -384,7 +384,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "9E0D11-ZB40A2-11EB9H"
+          "value": "96919F-Z10242-11EB8K"
         },
         "courseOfTherapyType": {
           "coding": [
