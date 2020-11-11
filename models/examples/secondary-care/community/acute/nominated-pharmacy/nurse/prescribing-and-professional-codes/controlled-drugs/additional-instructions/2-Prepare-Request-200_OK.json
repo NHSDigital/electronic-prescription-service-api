@@ -228,12 +228,14 @@
             "value": "B81001"
           }
         },
-        "generalPractitioner": [{
-          "identifier": {
-            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "B81001"
+        "generalPractitioner": [
+          {
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "B81001"
+            }
           }
-        }]
+        ]
       }
     },
     {
