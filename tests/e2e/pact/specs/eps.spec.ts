@@ -2,9 +2,10 @@ import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../resources/test-resources"
-import {Bundle, Parameters} from "../models/fhir/fhir-resources"
+import {Bundle, Parameters, Provenance} from "../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import * as fetch from "node-fetch"
+import * as XmlJs from "xml-js"
 
 jestpact.pactWith(
   {
@@ -55,13 +56,12 @@ jestpact.pactWith(
 
     describe("process-message e2e tests", () => {
 
-      test.each(TestResources.processCases)("should be able to process %s", async (desc: string, message: Bundle, prepareResponse: Parameters) => {
+      test.each(TestResources.processCases)("should be able to process %s", async (desc: string, message: Bundle, prepareResponse: Parameters, convertResponse: XmlJs.ElementCompact) => {
         const apiPath = "/$process-message"
         const bundleStr = LosslessJson.stringify(message)
         const bundle = JSON.parse(bundleStr) as Bundle
 
-        // X grab related prepare response from example files
-        // X upload payload and display from prepare response to signing service, get token
+        // upload payload and display from matching prepare response to signing service, get token
 
         const signatureRequest = {
           "algorithm": prepareResponse.parameter[3].valueString,
@@ -80,22 +80,28 @@ jestpact.pactWith(
 
         const signatureResponse = await fetch(`https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/signing-service/api/v1/SignatureRequest`, signatureRequestOptions)
         const signatureResponseJson = await signatureResponse.json()
-
         const token = signatureResponseJson.token
 
-        // X (already present in examples) ?? sign payload with smartcard ??
-        // upload signature to signing service
+        // get uploaded payload from signing service using token and ignore (required to pass validation in signing service)
 
         const signatureRequestTokenOptions: RequestInit = {
-          method: 'POST',
+          method: 'GET',
           headers: [
             ["Authorization", `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`],
             ["Content-Type", "application/json"]
           ]
         }
 
-        const signatureTokenResponse = await fetch(`https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/signing-service/api/v1/SignatureRequest/${token}`, signatureRequestTokenOptions)
-        console.log(JSON.stringify(signatureTokenResponse))
+        await fetch(`https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/signing-service/api/v1/SignatureRequest/${token}`, signatureRequestTokenOptions)
+
+        const convertResponseInteraction = convertResponse.PORX_IN020101SM31 ?? convertResponse.PORX_IN020101SM32
+
+        if (!convertResponseInteraction)
+        {
+          return // todo: investigate why convert responses are missing for certain examples
+        }
+
+        // upload signature and certificate from matching pre-signed convert response example to signing service using token
 
         const signaturePostResponseOptions: RequestInit = {
           method: 'POST',
@@ -104,17 +110,47 @@ jestpact.pactWith(
             ["Content-Type", "application/json"]
           ],
           body: JSON.stringify({
-            "signature": "qwertyuiopasdfghjklzxcvbnm",
-            "certificate": "qwertyuiopasdfghjklzxcvbnm"
+            "signature": convertResponseInteraction.ControlActEvent.subject.ParentPrescription.pertinentInformation1.pertinentPrescription.author.signatureText.Signature.SignatureValue._text,
+            "certificate": convertResponseInteraction.ControlActEvent.subject.ParentPrescription.pertinentInformation1.pertinentPrescription.author.signatureText.Signature.KeyInfo.X509Data.X509Certificate._text
           })
         }
 
-        const signaturePostResponse = await fetch(`https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/signing-service/api/v1/SignatureResponse/${token}`, signaturePostResponseOptions)
-        console.log(JSON.stringify(signaturePostResponse))
+        await fetch(`https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/signing-service/api/v1/SignatureResponse/${token}`, signaturePostResponseOptions)
 
-        // get signature response from signing service
-        // build xmldsig from signing service signature response
-        // set provenance data as base64 string of xmldsig
+        // get uploaded signature and certificate from signing service using token
+
+        const signatureGetResponseOptions: RequestInit = {
+          method: 'GET',
+          headers: [
+            ["Authorization", `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`],
+            ["Content-Type", "application/json"]
+          ]
+        }
+
+        const signatureGetResponse = await fetch(`https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/signing-service/api/v1/SignatureResponse/${token}`, signatureGetResponseOptions)
+        const signatureGetResponseJson = await signatureGetResponse.json()
+
+        // get values to replace in provenance xmldsig from signing service signature response
+        
+        const digest = Buffer.from(prepareResponse.parameter[1].valueString, "base64").toString() // todo: can get this from signing-service ??
+        const regex = /(?<=<DigestValue>).*(?=<\/DigestValue>)/g
+        const digestValue = digest.match(regex)[0]
+
+        const signature = signatureGetResponseJson.signature
+        const certificate = signatureGetResponseJson.certificate
+
+        // update provenance xmldsig values from signing service
+
+        bundle.entry.forEach(entry => {
+          if (entry.resource.resourceType === "Provenance") {
+            const provenance = entry.resource as Provenance
+            let xmlDSig = Buffer.from(provenance.signature[0].data, "base64").toString()
+            xmlDSig = xmlDSig.replace(/(?<=<DigestValue>).*(?=<\/DigestValue>)/g, digestValue)
+            xmlDSig = xmlDSig.replace(/(?<=<SignatureValue>).*(?=<\/SignatureValue>)/g, signature)
+            xmlDSig = xmlDSig.replace(/(?<=<X509Certificate>).*(?=<\/X509Certificate>)/g, certificate)
+            provenance.signature[0].data = Buffer.from(xmlDSig).toString("base64")
+          }
+        })
 
         const interaction: InteractionObject = {
           state: null,
