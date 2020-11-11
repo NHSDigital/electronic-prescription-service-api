@@ -5,6 +5,7 @@ import glob
 import json
 import uuid
 from datetime import datetime
+import requests
 
 examples_root_dir = "../models/examples/"
 
@@ -33,17 +34,48 @@ def loadPrepareExamples():
         yield filename
 
 
-def replaceIdsAndAuthoredOn(exampleFilePath, prescription_id, short_prescription_id, authored_on):
-    with open(exampleFilePath) as f:
-        prepareJson = json.load(f)
-    prepareJson["identifier"]["value"] = prescription_id
-    for entry in prepareJson['entry']:
+def replaceIdsAndAuthoredOn(exampleJson, prescription_id, short_prescription_id, authored_on):
+    for entry in exampleJson['entry']:
         resource = entry["resource"]
         if (resource["resourceType"] == "MedicationRequest"):
             resource["groupIdentifier"]["value"] = short_prescription_id
             resource["authoredOn"] = authored_on
-    with open(exampleFilePath, 'w') as f:
-        json.dump(prepareJson, f, indent=2)
+
+
+def updatePrepareExamples(prepare, prescription_id, short_prescription_id, authored_on):
+    with open(prepare) as f:
+        prepareRequest = json.load(f)
+    replaceIdsAndAuthoredOn(prepareRequest, prescription_id, short_prescription_id, authored_on)
+    with open(prepare, 'w') as f:
+        json.dump(prepareRequest, f, indent=2)
+
+    prepareResponseJson = requests.post('http://localhost:9000/$prepare', json=prepareRequest).json()
+
+    dir = os.path.dirname(prepare)
+    file = os.path.basename(prepare)
+    filename_parts = file.split('-')
+    number = filename_parts[0]
+    status_code_and_ext = filename_parts[4] if len(filename_parts) == 5 else filename_parts[3]
+
+    prepareResponse = dir + '/' + number + '-Prepare-Response-' + status_code_and_ext
+
+    with open(prepareResponse, 'w') as f:
+        json.dump(prepareResponseJson, f, indent=2)
+
+
+def updateProcessExamples(prepare, prescription_id, short_prescription_id, authored_on):
+    dir = os.path.dirname(prepare)
+    file = os.path.basename(prepare)
+    filename_parts = file.split('-')
+    number = filename_parts[0]
+    status_code_and_ext = filename_parts[4] if len(filename_parts) == 5 else filename_parts[3]
+
+    for process in glob.iglob(dir + '/' + number + '-Process-Request-*-' + status_code_and_ext):
+        with open(process) as f:
+            processJson = json.load(f)
+        replaceIdsAndAuthoredOn(processJson, prescription_id, short_prescription_id, authored_on)
+        with open(process, 'w') as f:
+            json.dump(processJson, f, indent=2)
 
 
 def updateExamples():
@@ -53,16 +85,8 @@ def updateExamples():
         prescription_id = str(uuid.uuid4())
         short_prescription_id = shortPrescID()
 
-        replaceIdsAndAuthoredOn(prepare, prescription_id, short_prescription_id, authored_on)
-
-        dir = os.path.dirname(prepare)
-        file = os.path.basename(prepare)
-        filename_parts = file.split('-')
-        number = filename_parts[0]
-        status_code_and_ext = filename_parts[4] if len(filename_parts) == 5 else filename_parts[3]
-
-        for process in glob.iglob(dir + '/' + number + '-Process-Request-*-' + status_code_and_ext):
-            replaceIdsAndAuthoredOn(process, prescription_id, short_prescription_id, authored_on)
+        updatePrepareExamples(prepare, prescription_id, short_prescription_id, authored_on)
+        updateProcessExamples(prepare, prescription_id, short_prescription_id, authored_on)
 
 
 updateExamples()
