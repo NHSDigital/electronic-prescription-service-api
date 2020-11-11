@@ -78,7 +78,9 @@ jestpact.pactWith(
           body: JSON.stringify(signatureRequest)
         }
 
-        const signatureResponse = await fetch(`https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/signing-service/api/v1/SignatureRequest`, signatureRequestOptions)
+        const signingServiceUrl = `https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/${process.env.SERVICE_BASE_PATH.replace(/electronic-prescriptions/g, "signing-service")}`
+
+        const signatureResponse = await fetch(`${signingServiceUrl}/api/v1/SignatureRequest`, signatureRequestOptions)
         const signatureResponseJson = await signatureResponse.json()
         const token = signatureResponseJson.token
 
@@ -92,7 +94,7 @@ jestpact.pactWith(
           ]
         }
 
-        await fetch(`https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/signing-service/api/v1/SignatureRequest/${token}`, signatureRequestTokenOptions)
+        await fetch(`${signingServiceUrl}/api/v1/SignatureRequest/${token}`, signatureRequestTokenOptions)
 
         const convertResponseInteraction = convertResponse.PORX_IN020101SM31 ?? convertResponse.PORX_IN020101SM32
 
@@ -115,7 +117,7 @@ jestpact.pactWith(
           })
         }
 
-        await fetch(`https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/signing-service/api/v1/SignatureResponse/${token}`, signaturePostResponseOptions)
+        await fetch(`${signingServiceUrl}/api/v1/SignatureResponse/${token}`, signaturePostResponseOptions)
 
         // get uploaded signature and certificate from signing service using token
 
@@ -127,7 +129,7 @@ jestpact.pactWith(
           ]
         }
 
-        const signatureGetResponse = await fetch(`https://${process.env.APIGEE_ENVIRONMENT}.api.service.nhs.uk/signing-service/api/v1/SignatureResponse/${token}`, signatureGetResponseOptions)
+        const signatureGetResponse = await fetch(`${signingServiceUrl}/api/v1/SignatureResponse/${token}`, signatureGetResponseOptions)
         const signatureGetResponseJson = await signatureGetResponse.json()
 
         // get values to replace in provenance xmldsig from signing service signature response
