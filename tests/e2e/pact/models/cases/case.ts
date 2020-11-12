@@ -11,12 +11,7 @@ export class Case {
 
     const requestJson = LosslessJson.parse(requestString)
 
-    this.updateIdsAndAuthoredOn(requestJson)
-
     this.description = description
     this.request = requestJson
   }
-
-  /* eslint-disable-next-line */
-  protected updateIdsAndAuthoredOn(requestJson: fhir.Bundle): void {}
 }

@@ -3,15 +3,13 @@ import { Publisher } from "@pact-foundation/pact"
 
 async function publish(): Promise<Array<string>> { 
   const isLocal = process.env.PACT_PROVIDER_URL == "http://localhost:9000"
-  const isInt = process.env.APIGEE_ENVIRONMENT === "int"
-  const pactVersion = isInt ? `${process.env.PACT_VERSION}.int` : process.env.PACT_VERSION
   if (!isLocal) {
     return await new Publisher({
       pactBroker: process.env.PACT_BROKER_URL,
       pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
       pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
-      consumerVersion: pactVersion,
-      tags: [pactVersion],
+      consumerVersion: process.env.PACT_VERSION,
+      tags: [process.env.PACT_VERSION],
       pactFilesOrDirs: [
         path.join(__dirname, "../pact/pacts")
       ]

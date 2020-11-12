@@ -1,8 +1,9 @@
-import * as validator from "../../src/services/validation/bundle-validator"
-import * as fhir from "../../src/models/fhir/fhir-resources"
-import * as TestResources from "../resources/test-resources"
-import {clone} from "../resources/test-helpers"
-import * as errors from "../../src/models/errors/validation-errors"
+import * as validator from "../../../src/services/validation/bundle-validator"
+import * as fhir from "../../../src/models/fhir/fhir-resources"
+import * as TestResources from "../../resources/test-resources"
+import {clone} from "../../resources/test-helpers"
+import * as errors from "../../../src/models/errors/validation-errors"
+import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
 
 function validateValidationErrors (validationErrors: Array<errors.ValidationError>) {
   expect(validationErrors).toHaveLength(1)
@@ -46,7 +47,7 @@ describe("MedicationRequest checks", () => {
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
-    medicationRequests = validator.getMatchingEntries(bundle, "MedicationRequest") as Array<fhir.MedicationRequest>
+    medicationRequests = getMedicationRequests(bundle)
   })
 
   test("Should reject message where MedicationRequests have different authoredOn", () => {
@@ -63,10 +64,7 @@ describe("MedicationRequest checks", () => {
     ).toContainEqual(
       new errors.MedicationRequestValueError(
         "authoredOn",
-        [
-          `"${differentAuthoredOn}"`,
-          `"${defaultAuthoredOn}"`
-        ]
+        [differentAuthoredOn, defaultAuthoredOn]
       )
     )
   })
@@ -86,10 +84,7 @@ describe("MedicationRequest checks", () => {
     ).toContainEqual(
       new errors.MedicationRequestValueError(
         "dispenseRequest.performer",
-        [
-          JSON.stringify(performer),
-          JSON.stringify(performerDiff)
-        ]
+        [performer, performerDiff]
       )
     )
   })
