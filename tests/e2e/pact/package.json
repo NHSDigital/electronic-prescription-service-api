@@ -14,7 +14,9 @@
   },
   "author": "NHS Digital",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  },
   "devDependencies": {
     "@pact-foundation/pact": "^10.0.0-beta.16",
     "@pact-foundation/pact-node": "10.9.7",
