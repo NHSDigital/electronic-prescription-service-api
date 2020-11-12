@@ -3,6 +3,18 @@ import * as TestResources from "../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
 import {Bundle} from "../../../src/models/fhir/fhir-resources"
 
+describe("convertFhirMessageToSignedInfoMessage", () => {
+  const cases = TestResources.specification.map(example => [
+    example.description,
+    example.fhirMessageUnsigned,
+    example.fhirMessageDigest
+  ])
+
+  test.each(cases)("accepts %s", (desc: string, message: Bundle) => {
+    expect(() => convertFhirMessageToSignedInfoMessage(message)).not.toThrow()
+  })
+})
+
 describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
   const cases = TestResources.specification.map(example => [
     example.description,
