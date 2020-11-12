@@ -55,7 +55,7 @@ describe("asOperationOutcome", () => {
     })
   })
 
-  test("API only sends content-type header to validator", async () => {
+  test("API only forwards accept header to validator", async () => {
     moxios.stubRequest("http://localhost:9001/$validate", {
       status: 200,
       responseText: JSON.stringify({

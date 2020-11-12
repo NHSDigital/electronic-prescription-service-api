@@ -10,7 +10,6 @@ import {getMessageHeader} from "../services/translation/common/getResourcesOfTyp
 import axios from "axios"
 import stream from "stream"
 
-//
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
 export function handleResponse<T>(
@@ -73,7 +72,7 @@ export async function fhirValidation(
   requestHeaders: Hapi.Util.Dictionary<string>): Promise<fhir.OperationOutcome> {
   const validatorResponse = await axios.post(
     "http://localhost:9001/$validate",
-    payload,
+    payload.toString(),
     {
       headers: {
         "Content-Type": requestHeaders["content-type"]

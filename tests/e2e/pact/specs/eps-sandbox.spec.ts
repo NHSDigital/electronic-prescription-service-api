@@ -97,7 +97,7 @@ jestpact.pactWith(
           .expect(200)
       })
 
-      test("Should be able to process JSON content type", async () => {
+      test("Should be able to process a FHIR JSON Accept header", async () => {
         const testCase = processExamples[0]
 
         const apiPath = "/$process-message"
@@ -105,10 +105,11 @@ jestpact.pactWith(
 
         const interaction: InteractionObject = {
           state: null,
-          uponReceiving: `a request to process a message with a standard JSON content type header`,
+          uponReceiving: `a request to process a message with a FHIR JSON Accept header`,
           withRequest: {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0",
+              "Accept": "application/fhir+json"
             },
             method: "POST",
             path: "/$process-message",
@@ -121,35 +122,10 @@ jestpact.pactWith(
         await provider.addInteraction(interaction)
         await client()
           .post(apiPath)
-          .set('Content-Type', 'application/json')
+          .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+          .set('Accept', 'application/fhir+json')
           .send(messageStr)
           .expect(200)
-      })
-
-      test("Should reject unsupported content types", async () => {
-        const testCase = processExamples[0]
-        const apiPath = "/$process-message"
-        const messageStr = LosslessJson.stringify(testCase.request)
-        const interaction: InteractionObject = {
-          state: null,
-          uponReceiving: `a request to process a message with an unsupported content type header`,
-          withRequest: {
-            headers: {
-              "Content-Type": "video/mpeg"
-            },
-            method: "POST",
-            path: "/$process-message",
-            body: JSON.parse(messageStr)
-          },
-          willRespondWith: {
-            status: 415
-          }
-        }
-        await provider.addInteraction(interaction)
-        await client()
-          .post(apiPath)
-          .set('Content-Type', 'video/mpeg')
-          .send(messageStr)
       })
     })
   }
