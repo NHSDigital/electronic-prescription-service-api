@@ -101,7 +101,7 @@ build-proxies:
 	cp -Rv proxies/sandbox/apiproxy dist/proxies/sandbox
 	cp -Rv proxies/live/apiproxy dist/proxies/live
 
-# Test
+## Test
 
 test-coordinator:
 	cd coordinator \
@@ -128,3 +128,9 @@ check-licenses:
 	cd coordinator && npm run check-licenses
 	cd tests/e2e/pact && make check-licenses
 	scripts/check_python_licenses.sh
+
+## Tools
+
+update-prescriptions:
+	# Requires make run-coordinator and make run-validator in separate shells 
+	cd scripts && poetry run python update_prescriptions.py
