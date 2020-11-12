@@ -3,16 +3,14 @@ import { VerifierV3 } from "@pact-foundation/pact"
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verify(): Promise<any> { 
   const isLocal = process.env.PACT_PROVIDER_URL === "http://localhost:9000"
-  const isInt = process.env.APIGEE_ENVIRONMENT === "int"
-  const pactVersion = isInt ? `${process.env.PACT_VERSION}.int` : process.env.PACT_VERSION
   const verifier =  new VerifierV3({
     publishVerificationResult: !isLocal,
     pactBrokerUrl: isLocal ? undefined : process.env.PACT_BROKER_URL,
     pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
     pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
-    consumerVersionTag: pactVersion,
-    provider: `${process.env.PACT_PROVIDER}-convert+${pactVersion}`,
-    providerVersion: pactVersion,
+    consumerVersionTag: process.env.PACT_VERSION,
+    provider: `${process.env.PACT_PROVIDER}-convert+${process.env.PACT_VERSION}`,
+    providerVersion: process.env.PACT_VERSION,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
     logLevel: isLocal? "debug" : "info",
     requestFilter: (req) => {

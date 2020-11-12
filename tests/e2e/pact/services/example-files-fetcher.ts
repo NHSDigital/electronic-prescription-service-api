@@ -21,4 +21,4 @@ const walk = function(dir) {
 }
 
 const allExampleFilePaths: Array<string> = walk(path.join(__dirname, "../resources/parent-prescription"))
-export const exampleFiles: ExampleFile[] = allExampleFilePaths.map(examplePath => new ExampleFile(examplePath)) 
+export const exampleFiles: ExampleFile[] = allExampleFilePaths.map(examplePath => new ExampleFile(examplePath))
