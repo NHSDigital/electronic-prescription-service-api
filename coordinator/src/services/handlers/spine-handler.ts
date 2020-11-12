@@ -115,11 +115,6 @@ export class LiveRequestHandler implements RequestHandler {
         body: axiosError.response.data,
         statusCode: axiosError.response.status
       }
-    } else if (axiosError.request) {
-      return {
-        body: axiosError.request.data,
-        statusCode: 408
-      }
     } else {
       return {
         body: axiosError.message,

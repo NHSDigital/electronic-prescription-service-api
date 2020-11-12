@@ -50,6 +50,7 @@ describe("Spine communication", () => {
     const spineResponse = await requestHandler.send({message: "test", interactionId: "test2"})
 
     expect(isPollable(spineResponse)).toBe(false)
+    expect((spineResponse as SpineDirectResponse<string>).statusCode).toBe(400)
   })
 
   test("Successful polling pending response returns pollable result", async () => {
@@ -136,6 +137,18 @@ describe("Spine communication", () => {
 
     expect(spineResponse.statusCode).toBe(200)
     expect(isPollable(spineResponse)).toBe(false)
+  })
+
+  test("Spine communication failure returns a 500 error result", async () => {
+    moxios.wait(() => {
+      const request = moxios.requests.mostRecent()
+      request.respondWithTimeout()
+    })
+
+    const spineResponse = await requestHandler.send({message: "test", interactionId: "test2"})
+
+    expect(isPollable(spineResponse)).toBe(false)
+    expect((spineResponse as SpineDirectResponse<string>).statusCode).toBe(500)
   })
 })
 
