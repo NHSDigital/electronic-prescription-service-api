@@ -50,7 +50,7 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
   return [...identicalValueErrors, ...repeatDispensingErrors]
 }
 
-function verifyRepeatDispensingPrescription(
+export function verifyRepeatDispensingPrescription(
   medicationRequests: Array<fhir.MedicationRequest>
 ): Array<errors.ValidationError> {
   if (getCourseOfTherapyTypeCode(medicationRequests) !== CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING) {
@@ -75,7 +75,7 @@ function verifyRepeatDispensingPrescription(
   return validationErrors
 }
 
-function verifyCancellationBundle(bundle: fhir.Bundle): Array<errors.ValidationError> {
+export function verifyCancellationBundle(bundle: fhir.Bundle): Array<errors.ValidationError> {
   const medicationRequests = getMedicationRequests(bundle)
   if (medicationRequests.length != 1) {
     return [new errors.MedicationRequestNumberError()]

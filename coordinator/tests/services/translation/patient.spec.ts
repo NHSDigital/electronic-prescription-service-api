@@ -27,4 +27,20 @@ describe("convertPatient", () => {
 
     expect(actual).toBe(idValue)
   })
+
+  test("If there is a patient.telecom, it gets put in the right place", () => {
+    fhirPatient.telecom = [{use: "home", value: "0123456789"}]
+
+    const actual = convertPatient(bundle, fhirPatient).telecom[0]._attributes
+
+    expect(actual).toEqual({use: "HP", value: "tel:0123456789"})
+  })
+
+  test("If there isn't a patient.telecom, leave it off", () => {
+    delete fhirPatient.telecom
+
+    const actual = convertPatient(bundle, fhirPatient).telecom
+
+    expect(actual).toEqual(undefined)
+  })
 })
