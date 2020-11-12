@@ -83,7 +83,7 @@ export class LiveRequestHandler implements RequestHandler {
 
   private static handlePotentialFailureCaseForDirectResponse(data: string | undefined): SpineDirectResponse<string> {
     // If the body contains the magic tag, this represents an error and we should return a 400
-    const isSuccess = data && data.includes("acknowledgement typeCode=\"AA\"")
+    const isSuccess = data && data.includes('acknowledgement typeCode="AA"')
     return {
       body: data,
       statusCode: isSuccess ? 200 : 400
