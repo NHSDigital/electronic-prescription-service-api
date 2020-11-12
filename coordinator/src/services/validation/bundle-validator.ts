@@ -1,10 +1,11 @@
 import * as fhir from "../../models/fhir/fhir-resources"
-import {Bundle, MedicationRequest} from "../../models/fhir/fhir-resources"
 import * as errors from "../../models/errors/validation-errors"
 import {identifyMessageType, MessageType} from "../../routes/util"
 import {getMedicationRequests} from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues} from "./util"
+import {CourseOfTherapyTypeCode, getCourseOfTherapyTypeCode} from "../translation/prescription/course-of-therapy-type"
+import {getExtensionForUrlOrNull} from "../translation/common"
 
 // Validate Status
 export function getStatusCode(validation: Array<errors.ValidationError>): number {
@@ -42,20 +43,53 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
     'extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation")'
   ]
   const medicationRequests = getMedicationRequests(bundle)
-  return fhirPaths
+  const identicalValueErrors = fhirPaths
     .map((fhirPath) => verifyIdenticalForAllMedicationRequests(bundle, medicationRequests, fhirPath))
     .filter(Boolean)
+  const repeatDispensingErrors = verifyRepeatDispensingPrescription(medicationRequests)
+  return [...identicalValueErrors, ...repeatDispensingErrors]
+}
+
+function verifyRepeatDispensingPrescription(
+  medicationRequests: Array<fhir.MedicationRequest>
+): Array<errors.ValidationError> {
+  if (getCourseOfTherapyTypeCode(medicationRequests) !== CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING) {
+    return []
+  }
+  const firstMedicationRequest = medicationRequests[0]
+  const validationErrors = []
+  if (!firstMedicationRequest.dispenseRequest.validityPeriod) {
+    validationErrors.push(new errors.MedicationRequestMissingValueError("dispenseRequest.validityPeriod"))
+  }
+  if (!firstMedicationRequest.dispenseRequest.expectedSupplyDuration) {
+    validationErrors.push(new errors.MedicationRequestMissingValueError("dispenseRequest.expectedSupplyDuration"))
+  }
+  if (!getExtensionForUrlOrNull(
+    firstMedicationRequest.extension,
+    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+    "MedicationRequest.extension")) {
+    validationErrors.push(new errors.MedicationRequestMissingValueError(
+      'extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation")'
+    ))
+  }
+  return validationErrors
 }
 
 function verifyCancellationBundle(bundle: fhir.Bundle): Array<errors.ValidationError> {
-  //TODO - implement cancellation-specific validation
-  bundle
+  const medicationRequests = getMedicationRequests(bundle)
+  if (medicationRequests.length != 1) {
+    return [new errors.MedicationRequestNumberError()]
+  }
+  const onlyMedicationRequest = medicationRequests[0]
+  if (!onlyMedicationRequest.statusReason) {
+    return [new errors.MedicationRequestMissingValueError("statusReason")]
+  }
   return []
 }
 
 function verifyIdenticalForAllMedicationRequests(
-  bundle: Bundle,
-  medicationRequests: Array<MedicationRequest>,
+  bundle: fhir.Bundle,
+  medicationRequests: Array<fhir.MedicationRequest>,
   fhirPath: string
 ) {
   const allFieldValues = applyFhirPath(bundle, medicationRequests, fhirPath)

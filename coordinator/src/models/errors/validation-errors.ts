@@ -24,6 +24,25 @@ export class MedicationRequestValueError<T> implements ValidationError {
   }
 }
 
+export class MedicationRequestNumberError implements ValidationError {
+  operationOutcomeCode = "value" as const
+  severity = "error" as const
+  message = `Expected exactly one MedicationRequest in a prescriptionOrderUpdate message`
+  expression = [`Bundle.entry.resource.ofType(MedicationRequest)`]
+}
+
+export class MedicationRequestMissingValueError implements ValidationError {
+  message: string
+  operationOutcomeCode = "value" as const
+  severity = "error" as const
+  expression: Array<string>
+
+  constructor(fieldName: string) {
+    this.message = `Expected MedicationRequest to have a value for ${fieldName}`
+    this.expression = [`Bundle.entry.resource.ofType(MedicationRequest).${fieldName}`]
+  }
+}
+
 export class MessageTypeError implements ValidationError {
   message = `MessageHeader.eventCoding.code must be one of '${
     MessageType.PRESCRIPTION
