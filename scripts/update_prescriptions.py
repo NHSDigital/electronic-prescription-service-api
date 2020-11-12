@@ -80,6 +80,23 @@ def updateProcessExamples(prepare, prescription_id, short_prescription_id, autho
         with open(process, 'w') as f:
             json.dump(processJson, f, indent=2)
 
+        dir = os.path.dirname(process)
+        file = os.path.basename(process)
+        filename_parts = file.split('-')
+        number = filename_parts[0]
+        operation = filename_parts[3]
+        status_code_and_ext = filename_parts[4] if len(filename_parts) == 5 else filename_parts[3]
+        status_code_and_xml_ext = status_code_and_ext.replace("json", "xml")
+        convertResponse = dir + '/' + number + '-Convert-Response-' + operation + '-' + status_code_and_xml_ext
+
+        convertResponseXml = requests.post(
+            'http://localhost:9000/$convert',
+            data=json.dumps(processJson),
+            headers={'Content-Type': 'application/json'}).text
+
+        with open(convertResponse, 'w') as f:
+            f.write(convertResponseXml)
+
 
 def updateExamples():
     authored_on = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S+00:00')

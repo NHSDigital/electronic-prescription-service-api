@@ -61,7 +61,7 @@ jestpact.pactWith(
         const bundleStr = LosslessJson.stringify(message)
         const bundle = JSON.parse(bundleStr) as Bundle
 
-        if (process.env.APIGEE_ENVIRONMENT && !process.env.APIGEE_ENVIRONMENT.contains("sandbox")) {
+        if (process.env.APIGEE_ENVIRONMENT && !process.env.APIGEE_ENVIRONMENT.includes("sandbox")) {
 
           // upload payload and display from matching prepare response to signing service, get token
 
