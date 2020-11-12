@@ -4,6 +4,7 @@ import supertest from "supertest"
 import * as TestResources from "../resources/test-resources"
 import {Bundle, Parameters} from "../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
+import {processExamples} from "../services/process-example-fetcher"
 
 const isInt = process.env.APIGEE_ENVIRONMENT === "int"
 const pactVersion = isInt ? `${process.env.PACT_VERSION}.int` : process.env.PACT_VERSION
@@ -94,6 +95,66 @@ jestpact.pactWith(
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .send(messageStr)
           .expect(200)
+      })
+
+      test("Should be able to process JSON content type", async () => {
+        const testCase = processExamples[0]
+
+        const expectedRequestContentType = "application/json"
+
+        const apiPath = "/$process-message"
+        const messageStr = LosslessJson.stringify(testCase.request)
+        const interaction: InteractionObject = {
+          state: null,
+          uponReceiving: `a request to process a message with a standard JSON content type header`,
+          withRequest: {
+            headers: {
+              "Content-Type": expectedRequestContentType
+            },
+            method: "POST",
+            path: "/$process-message",
+            body: JSON.parse(messageStr)
+          },
+          willRespondWith: {
+            status: 200
+          }
+        }
+        await provider.addInteraction(interaction)
+        await client()
+          .post(apiPath)
+          .set('Content-Type', expectedRequestContentType)
+          .send(messageStr)
+          .expect(200)
+      })
+
+      test("Should reject unsupported content types", async () => {
+        const testCase = processExamples[0]
+
+        const expectedRequestContentType = "video/mpeg"
+
+        const apiPath = "/$process-message"
+        const messageStr = LosslessJson.stringify(testCase.request)
+        const interaction: InteractionObject = {
+          state: null,
+          uponReceiving: `a request to process a message with an unsupported content type header`,
+          withRequest: {
+            headers: {
+              "Content-Type": expectedRequestContentType
+            },
+            method: "POST",
+            path: apiPath,
+            body: JSON.parse(messageStr)
+          },
+          willRespondWith: {
+            status: 415
+          }
+        }
+        await provider.addInteraction(interaction)
+        await client()
+          .post(apiPath)
+          .set('Content-Type', expectedRequestContentType)
+          .send(messageStr)
+          .expect(415)
       })
     })
   }
