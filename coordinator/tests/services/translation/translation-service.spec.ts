@@ -2,7 +2,7 @@ import * as translator from "../../../src/services/translation"
 import * as TestResources from "../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
 import {Bundle} from "../../../src/models/fhir/fhir-resources"
-import { convertFhirMessageToSignedInfoMessage } from "../../../src/services/translation"
+import {convertFhirMessageToSignedInfoMessage} from "../../../src/services/translation"
 
 describe("convertFhirMessageToSignedInfoMessage", () => {
   const cases = TestResources.specification.map(example => [
