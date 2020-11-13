@@ -8,6 +8,9 @@ import {wrapInOperationOutcome} from "../services/translation/common"
 import * as LosslessJson from "lossless-json"
 import {getMessageHeader} from "../services/translation/common/getResourcesOfType"
 import axios from "axios"
+import stream from "stream"
+
+type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
 export function handleResponse<T>(
   spineResponse: SpineDirectResponse<T> | SpinePollableResponse,
@@ -64,12 +67,16 @@ const getCircularReplacer = () => {
   }
 }
 
-async function fhirValidation(request: Hapi.Request) {
+export async function fhirValidation(
+  payload: HapiPayload,
+  requestHeaders: Hapi.Util.Dictionary<string>): Promise<fhir.OperationOutcome> {
   const validatorResponse = await axios.post(
     "http://localhost:9001/$validate",
-    request.payload.toString(),
+    payload.toString(),
     {
-      headers: request.headers
+      headers: {
+        "Content-Type": requestHeaders["content-type"]
+      }
     }
   )
 
@@ -88,7 +95,7 @@ async function fhirValidation(request: Hapi.Request) {
 
 export function validatingHandler(handler: Handler<fhir.Bundle>) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-    const validatorResponseData = await fhirValidation(request)
+    const validatorResponseData = await fhirValidation(request.payload, request.headers)
 
     const error = validatorResponseData.issue.find(issue => issue.severity === "error" || issue.severity === "fatal")
     if (error) {

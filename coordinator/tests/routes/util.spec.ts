@@ -1,10 +1,21 @@
-import {asOperationOutcome, identifyMessageType, MessageType} from "../../src/routes/util"
+import {asOperationOutcome, fhirValidation, identifyMessageType, MessageType} from "../../src/routes/util"
 import * as fhir from "../../src/models/fhir/fhir-resources"
 import {clone} from "../resources/test-helpers"
 import * as TestResources from "../resources/test-resources"
 import {getMessageHeader} from "../../src/services/translation/common/getResourcesOfType"
+import axios from "axios"
+import moxios from "moxios"
 
 describe("asOperationOutcome", () => {
+
+  beforeEach(() => {
+    moxios.install(axios)
+  })
+
+  afterEach(() => {
+    moxios.uninstall(axios)
+  })
+
   const operationOutcome = {
     resourceType: "OperationOutcome",
     issue: [{
@@ -42,6 +53,26 @@ describe("asOperationOutcome", () => {
         diagnostics: "Something went terribly wrong"
       }]
     })
+  })
+
+  test("API only forwards accept header to validator", async () => {
+    moxios.stubRequest("http://localhost:9001/$validate", {
+      status: 200,
+      responseText: JSON.stringify({
+        "resourceType": "OperationOutcome"
+      })
+    })
+
+    const exampleHeaders = {
+      "accept": "application/json+fhir",
+      "content-type": "application/my-content-type"
+    }
+
+    await fhirValidation("data", exampleHeaders)
+    const requestHeaders = moxios.requests.mostRecent().headers
+
+    expect(requestHeaders["Accept"]).not.toBe("application/json+fhir")
+    expect(requestHeaders["Content-Type"]).toBe("application/my-content-type")
   })
 })
 
