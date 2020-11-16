@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<SOAP-ENV:Envelope xmlns:crs="http://national.carerecords.nhs.uk/schema/crs/" xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns="urn:hl7-org:v3" xmlns:hl7="urn:hl7-org:v3">
+  <SOAP-ENV:Header>
+    <wsa:MessageID>uuid:055BDBF6-DC7C-11EA-9C8B-000C29F50CF9</wsa:MessageID>
+    <wsa:Action>urn:nhs:names:services:mm/MCCI_IN010000UK13</wsa:Action>
+    <wsa:To/>
+    <wsa:From>
+      <wsa:Address>https://mm.national.ncrs.nhs.uk/syncservice</wsa:Address>
+    </wsa:From>
+    <communicationFunctionRcv typeCode="RCV">
+      <device classCode="DEV" determinerCode="INSTANCE">
+        <id root="1.2.826.0.1285.0.2.0.107" extension="200000001285"/>
+      </device>
+    </communicationFunctionRcv>
+    <communicationFunctionSnd typeCode="SND">
+      <device classCode="DEV" determinerCode="INSTANCE">
+        <id root="1.2.826.0.1285.0.2.0.107" extension="None"/>
+      </device>
+    </communicationFunctionSnd>
+    <wsa:RelatesTo>uuid:77495697-3E99-4982-B435-ED4A98F9BE56</wsa:RelatesTo>
+  </SOAP-ENV:Header>
+  <SOAP-ENV:Body>
+    <PrescriptionsResponse>
+      <MCCI_IN010000UK13>
+        <id root="055BDBF6-DC7C-11EA-9C8B-000C29F50CF9"/>
+        <creationTime value="20200812091301"/>
+        <versionCode code="1"/>
+        <interactionId root="2.16.840.1.113883.2.1.3.2.4.12" extension="MCCI_IN010000UK13"/>
+        <processingCode code="P"/>
+        <processingModeCode code="T"/>
+        <acceptAckCode code="NE"/>
+        <acknowledgement typeCode="AR">
+          <acknowledgementDetail typeCode="ER">
+            <code codeSystem="2.16.840.1.113883.2.1.3.2.4.17.32" code="202" displayName="Duplicate HL7 ID Error"/>
+          </acknowledgementDetail>
+          <messageRef>
+            <id root="77495697-3E99-4982-B435-ED4A98F9BE56"/>
+          </messageRef>
+        </acknowledgement>
+        <communicationFunctionRcv typeCode="RCV">
+          <device classCode="DEV" determinerCode="INSTANCE">
+            <id root="1.2.826.0.1285.0.2.0.107" extension="200000001285"/>
+          </device>
+        </communicationFunctionRcv>
+        <communicationFunctionSnd typeCode="SND">
+          <device classCode="DEV" determinerCode="INSTANCE">
+            <id root="1.2.826.0.1285.0.2.0.107" extension="None"/>
+          </device>
+        </communicationFunctionSnd>
+        <ControlActEvent classCode="CACT" moodCode="EVN">
+          <author1 typeCode="AUT">
+            <AgentSystemSDS classCode="AGNT">
+              <agentSystemSDS classCode="DEV" determinerCode="INSTANCE">
+                <id root="1.2.826.0.1285.0.2.0.107" extension="None"/>
+              </agentSystemSDS>
+            </AgentSystemSDS>
+          </author1>
+        </ControlActEvent>
+      </MCCI_IN010000UK13>
+    </PrescriptionsResponse>
+  </SOAP-ENV:Body>
+</SOAP-ENV:Envelope>

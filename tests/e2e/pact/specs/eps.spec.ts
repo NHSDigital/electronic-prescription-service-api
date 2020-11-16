@@ -1,4 +1,4 @@
-import { InteractionObject, Matchers } from "@pact-foundation/pact"
+import { InteractionObject } from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../resources/test-resources"
@@ -177,12 +177,12 @@ jestpact.pactWith(
               resourceType: "OperationOutcome",
               issue: [
                 {
-                  code: Matchers.string("informational"),
-                  severity: Matchers.string("information")
+                  code: "invalid",
+                  severity: "error"
                 }
               ]
             },
-            status: 200
+            status: 400
           }
         }
         await provider.addInteraction(interaction)
@@ -190,7 +190,7 @@ jestpact.pactWith(
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .send(bundleStr)
-          .expect(200)
+          .expect(400)
       })
     })
   }

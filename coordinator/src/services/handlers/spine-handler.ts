@@ -1,7 +1,7 @@
 import axios, {AxiosError, AxiosResponse} from "axios"
 import https from "https"
 import {RequestHandler} from "."
-import {SpineRequest, SpineResponse} from "../../models/spine"
+import {SpineDirectResponse, SpineRequest, SpineResponse} from "../../models/spine"
 import {addEbXmlWrapper} from "../formatters/ebxml-request-builder"
 
 const SPINE_URL_SCHEME = "https"
@@ -81,14 +81,20 @@ export class LiveRequestHandler implements RequestHandler {
     }
   }
 
+  private static handlePotentialFailureCaseForDirectResponse(data: string | undefined): SpineDirectResponse<string> {
+    // If the body contains the magic tag, this represents an error and we should return a 400
+    const isSuccess = data && data.includes('acknowledgement typeCode="AA"')
+    return {
+      body: data,
+      statusCode: isSuccess ? 200 : 400
+    }
+  }
+
   private static handlePollableOrImmediateResponse(result: AxiosResponse) {
     switch (result.status) {
     case (200):
       console.log("Successful request, returning SpineDirectResponse")
-      return {
-        body: result.data,
-        statusCode: result.status
-      }
+      return this.handlePotentialFailureCaseForDirectResponse(result.data)
     case (202):
       console.log("Successful request, returning SpinePollableResponse")
       console.log(`Got polling URL ${result.headers["content-location"]}`)
