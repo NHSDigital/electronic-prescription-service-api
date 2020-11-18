@@ -27,8 +27,8 @@ export class MedicationRequestValueError<T> implements ValidationError {
 export class MedicationRequestNumberError implements ValidationError {
   operationOutcomeCode = "value" as const
   severity = "error" as const
-  message = `Expected exactly one MedicationRequest in a prescriptionOrderUpdate message`
-  expression = [`Bundle.entry.resource.ofType(MedicationRequest)`]
+  message = "Expected exactly one MedicationRequest in a prescriptionOrderUpdate message"
+  expression = ["Bundle.entry.resource.ofType(MedicationRequest)"]
 }
 
 export class MedicationRequestMissingValueError implements ValidationError {

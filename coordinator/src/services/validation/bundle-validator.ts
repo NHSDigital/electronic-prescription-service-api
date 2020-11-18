@@ -46,32 +46,41 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
   const identicalValueErrors = fhirPaths
     .map((fhirPath) => verifyIdenticalForAllMedicationRequests(bundle, medicationRequests, fhirPath))
     .filter(Boolean)
-  const repeatDispensingErrors = verifyRepeatDispensingPrescription(medicationRequests)
-  return [...identicalValueErrors, ...repeatDispensingErrors]
+
+  const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
+  const isRepeatDispensing = courseOfTherapyTypeCode === CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
+  const repeatDispensingErrors = isRepeatDispensing ? verifyRepeatDispensingPrescription(medicationRequests) : []
+
+  return [
+    ...identicalValueErrors,
+    ...repeatDispensingErrors
+  ]
 }
 
 export function verifyRepeatDispensingPrescription(
   medicationRequests: Array<fhir.MedicationRequest>
 ): Array<errors.ValidationError> {
-  if (getCourseOfTherapyTypeCode(medicationRequests) !== CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING) {
-    return []
-  }
-  const firstMedicationRequest = medicationRequests[0]
   const validationErrors = []
+
+  const firstMedicationRequest = medicationRequests[0]
   if (!firstMedicationRequest.dispenseRequest.validityPeriod) {
     validationErrors.push(new errors.MedicationRequestMissingValueError("dispenseRequest.validityPeriod"))
   }
+
   if (!firstMedicationRequest.dispenseRequest.expectedSupplyDuration) {
     validationErrors.push(new errors.MedicationRequestMissingValueError("dispenseRequest.expectedSupplyDuration"))
   }
+
   if (!getExtensionForUrlOrNull(
     firstMedicationRequest.extension,
     "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-    "MedicationRequest.extension")) {
+    "MedicationRequest.extension"
+  )) {
     validationErrors.push(new errors.MedicationRequestMissingValueError(
       'extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation")'
     ))
   }
+
   return validationErrors
 }
 

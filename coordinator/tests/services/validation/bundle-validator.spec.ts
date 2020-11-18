@@ -125,9 +125,14 @@ describe("verifyRepeatDispensingPrescription", () => {
 
   test("Acute prescription gets no additional errors added", () => {
     medicationRequests.forEach(
-      req => req.courseOfTherapyType.coding[0].code = CourseOfTherapyTypeCode.ACUTE
+      req => {
+        req.courseOfTherapyType.coding[0].code = CourseOfTherapyTypeCode.ACUTE
+        delete req.dispenseRequest.validityPeriod
+        delete req.dispenseRequest.expectedSupplyDuration
+      }
     )
-    const returnedErrors = validator.verifyRepeatDispensingPrescription(medicationRequests)
+
+    const returnedErrors = validator.verifyPrescriptionBundle(bundle)
     expect(returnedErrors.length).toBe(0)
   })
 
@@ -144,9 +149,11 @@ describe("verifyRepeatDispensingPrescription", () => {
   })
 
   test("Repeat prescription with no extension adds an error", () => {
-    const extensionToRemove = getExtensionForUrl(firstMedicationRequest.extension,
+    const extensionToRemove = getExtensionForUrl(
+      firstMedicationRequest.extension,
       "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-      "bluh")
+      "bluh"
+    )
     firstMedicationRequest.extension.remove(extensionToRemove as RepeatInformationExtension)
     const returnedErrors = validator.verifyRepeatDispensingPrescription(medicationRequests)
     expect(returnedErrors.length).toBe(1)
