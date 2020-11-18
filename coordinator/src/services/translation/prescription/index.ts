@@ -166,14 +166,10 @@ function convertDispensingSitePreference(
 function extractText(fhirCommunicationRequests: Array<fhir.CommunicationRequest>): Array<core.Text> {
   return fhirCommunicationRequests
     .flatMap(communicationRequest => communicationRequest.payload)
-    .map(contentString => new core.Text(contentString.contentString))
-}
-
-function isFirstRequestAndCommunicationRequestPresent(
-  request: number,
-  fhirCommunicationRequest: Array<fhir.CommunicationRequest>
-) {
-  return (request == 0 && fhirCommunicationRequest.length > 0)
+    .filter(Boolean)
+    .map(payload => payload.contentString)
+    .filter(Boolean)
+    .map(contentString => new core.Text(contentString))
 }
 
 function convertPrescriptionPertinentInformation2(
@@ -184,9 +180,7 @@ function convertPrescriptionPertinentInformation2(
   const pertinentInformation2 = []
 
   for (let i = 0; i < fhirMedicationRequests.length; i++) {
-    const patientInfoText = isFirstRequestAndCommunicationRequestPresent(i, fhirCommunicationRequests)
-      ? extractText(fhirCommunicationRequests)
-      : []
+    const patientInfoText = i === 0 ? extractText(fhirCommunicationRequests) : []
     const pertinentLineItem = convertMedicationRequestToLineItem(
       fhirMedicationRequests[i],
       repeatNumber,

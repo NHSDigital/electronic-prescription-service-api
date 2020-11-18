@@ -9,6 +9,7 @@ import {
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {convertAddress, convertTelecom} from "./demographics"
+import {InvalidValueError} from "../../../models/errors/processing-errors"
 
 const NHS_TRUST_CODE = "RO197"
 
@@ -25,7 +26,7 @@ export function convertOrganizationAndProviderLicense(
     isCancellation
   )
 
-  if (!isCancellation){
+  if (!isCancellation) {
     hl7V3Organization.healthCareProviderLicense = convertHealthCareProviderLicense(fhirOrganization, fhirBundle)
   }
 
@@ -43,8 +44,10 @@ function convertRepresentedOrganization(
     "https://fhir.nhs.uk/CodeSystem/organisation-role",
     "Organization.type"
   )
-  const representedOrganization = (organizationTypeCoding?.code === NHS_TRUST_CODE && !isCancellation) ?
-    new CostCentreHealthcareService(fhirHealthcareService) : new CostCentreOrganization(fhirOrganization)
+  const shouldUseHealthcareService = organizationTypeCoding?.code === NHS_TRUST_CODE && !isCancellation
+  const representedOrganization = shouldUseHealthcareService
+    ? new CostCentreHealthcareService(fhirHealthcareService)
+    : new CostCentreOrganization(fhirOrganization)
   return convertRepresentedOrganizationDetails(representedOrganization, fhirBundle)
 }
 
@@ -111,13 +114,8 @@ abstract class CostCentre {
   }
 
   getTelecom() {
-    if (this.telecom) {
-      return convertTelecom(
-        onlyElement(this.telecom, `${this.resourceType}.telecom`),
-        `${this.resourceType}.telecom`
-      )
-    }
-    return null
+    const telecom = onlyElement(this.telecom, `${this.resourceType}.telecom`)
+    return convertTelecom(telecom, `${this.resourceType}.telecom`)
   }
 
   abstract getCode(): codes.OrganizationTypeCode
@@ -173,12 +171,11 @@ class CostCentreHealthcareService extends CostCentre implements fhir.HealthcareS
   }
 
   getAddress(fhirBundle: fhir.Bundle) {
-    if (this.location?.length) {
-      const location = resolveReference(fhirBundle, this.location[0])
-      if (location.address) {
-        return convertAddress(location.address, "Location.address")
-      }
+    const locationReference = onlyElement(this.location, "HealthcareService.location")
+    const location = resolveReference(fhirBundle, locationReference)
+    if (!location.address) {
+      throw new InvalidValueError("Address must be provided.", "Location.address")
     }
-    return null
+    return convertAddress(location.address, "Location.address")
   }
 }

@@ -81,9 +81,9 @@ describe("convertOrganizationAndProviderLicense non-homecare represented organiz
   })
 
   test("does not throw when minimum required fields are provided", () => {
-    firstFhirOrganization.address = undefined
+    //firstFhirOrganization.address = undefined
     firstFhirOrganization.partOf = undefined
-    firstFhirOrganization.telecom = undefined
+    //firstFhirOrganization.telecom = undefined
 
     expect(() =>
       convertOrganizationAndProviderLicense(

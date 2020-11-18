@@ -11,6 +11,9 @@ const FHIR_DATE_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0
 const FHIR_DATE_TIME_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$/
 
 export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, additionalContext?: string): T {
+  if (!iterable) {
+    throw new InvalidValueError("Required field missing.", fhirPath)
+  }
   const iterator = iterable[Symbol.iterator]()
   const first = iterator.next()
   if (first.done) {
@@ -32,6 +35,9 @@ export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, addition
 }
 
 export function onlyElementOrNull<T>(iterable: Iterable<T>, fhirPath: string, additionalContext?: string): T {
+  if (!iterable) {
+    return null
+  }
   const iterator = iterable[Symbol.iterator]()
   const value = iterator.next().value
   if (!iterator.next().done) {
@@ -61,6 +67,9 @@ export function getIdentifierValueForSystem(
   system: string,
   fhirPath: string
 ): string {
+  if (!identifier) {
+    throw new InvalidValueError("Required field missing.", fhirPath)
+  }
   return onlyElement(
     identifier.filter(identifier => identifier.system === system),
     fhirPath,
@@ -73,6 +82,9 @@ export function getIdentifierValueOrNullForSystem(
   system: string,
   fhirPath: string
 ): string {
+  if (!identifier) {
+    return null
+  }
   return onlyElementOrNull(
     identifier.filter(identifier => identifier.system === system),
     fhirPath,
