@@ -1,15 +1,15 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import * as peoplePlaces from "../../../models/hl7-v3/hl7-v3-people-places"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
-import {convertAddress, convertGender, convertName} from "./demographics"
-import {convertIsoDateStringToHl7V3Date, getIdentifierValueForSystem} from "../common"
+import {convertAddress, convertGender, convertName, convertTelecom} from "./demographics"
+import {convertIsoDateStringToHl7V3Date, getIdentifierValueForSystem, onlyElement} from "../common"
 
 function convertPatientToProviderPatient(
   patient: fhir.Patient
 ) {
-  const managingOrganizationIdentifier = patient.managingOrganization.identifier.value
+  const generalPractitionerId = onlyElement(patient.generalPractitioner, "Patient.generalPractitioner")
   const hl7V3HealthCareProvider = new peoplePlaces.HealthCareProvider()
-  hl7V3HealthCareProvider.id = new codes.SdsOrganizationIdentifier(managingOrganizationIdentifier)
+  hl7V3HealthCareProvider.id = new codes.SdsOrganizationIdentifier(generalPractitionerId.identifier.value)
   const hl7V3PatientCareProvision = new peoplePlaces.PatientCareProvision(
     codes.PatientCareProvisionTypeCode.PRIMARY_CARE
   )
@@ -35,8 +35,7 @@ function convertPatientToPatientPerson(
 
 export function convertPatient(
   bundle: fhir.Bundle,
-  patient: fhir.Patient,
-  convertAddressFn = convertAddress
+  patient: fhir.Patient
 ): peoplePlaces.Patient {
   const hl7V3Patient = new peoplePlaces.Patient()
   const nhsNumber = getIdentifierValueForSystem(
@@ -45,7 +44,10 @@ export function convertPatient(
     "Patient.identifier"
   )
   hl7V3Patient.id = new codes.NhsNumber(nhsNumber)
-  hl7V3Patient.addr = patient.address.map(address => convertAddressFn(address, "Patient.address"))
+  hl7V3Patient.addr = patient.address.map(address => convertAddress(address, "Patient.address"))
+  if (patient.telecom) {
+    hl7V3Patient.telecom = patient.telecom.map(tel => convertTelecom(tel, "Patient.telecom"))
+  }
   hl7V3Patient.patientPerson = convertPatientToPatientPerson(bundle, patient)
   return hl7V3Patient
 }
