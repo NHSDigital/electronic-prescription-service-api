@@ -33,7 +33,9 @@ properties:
         description: "Actual message source address or id"
         example: "urn:nhs-uk:addressing:ods:RBA"
   destination:
-    $ref: "MessageDestination.yaml"
+    type: array
+    items:
+      $ref: "MessageDestination.yaml"
   focus:
     type: array
     description: "The actual content of the message"
