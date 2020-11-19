@@ -72,7 +72,7 @@ export function convertAddress(fhirAddress: fhir.Address, fhirPath: string): cor
     fhirAddress.district,
     fhirAddress.state
   ].flat().filter(Boolean)
-  const hl7V3Address = new core.Address(convertAddressUse(fhirAddress.use, fhirAddress.type, fhirPath))
+  const hl7V3Address = new core.Address(convertAddressUse(fhirAddress.use, fhirPath))
   hl7V3Address.streetAddressLine = allAddressLines.map(line => new core.Text(line))
   if (fhirAddress.postalCode !== undefined){
     hl7V3Address.postalCode = new core.Text(fhirAddress.postalCode)
@@ -80,13 +80,7 @@ export function convertAddress(fhirAddress: fhir.Address, fhirPath: string): cor
   return hl7V3Address
 }
 
-function convertAddressUse(fhirAddressUse: string, fhirAddressType: string, fhirPath: string) {
-  if (fhirAddressUse === undefined && fhirAddressType === undefined){
-    return undefined
-  }
-  if (fhirAddressType === "postal") {
-    return core.AddressUse.POSTAL
-  }
+function convertAddressUse(fhirAddressUse: string, fhirPath: string) {
   switch (fhirAddressUse) {
   case "home":
     return core.AddressUse.HOME
@@ -96,6 +90,8 @@ function convertAddressUse(fhirAddressUse: string, fhirAddressType: string, fhir
     return core.AddressUse.TEMPORARY
   case "billing":
     return core.AddressUse.POSTAL
+  case undefined:
+    return undefined
   default:
     throw new InvalidValueError(`Unhandled address use '${fhirAddressUse}'.`, fhirPath + ".use")
   }
