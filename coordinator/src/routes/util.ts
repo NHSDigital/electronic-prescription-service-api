@@ -34,6 +34,7 @@ export function asOperationOutcome<T>(spineResponse: SpineDirectResponse<T>): Op
     return translateToOperationOutcome(spineResponse)
   }
 }
+
 function isOperationOutcome(body: unknown): body is OperationOutcome {
   return typeof body === "object"
     && "resourceType" in body
