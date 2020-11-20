@@ -13,6 +13,7 @@ import {Identifier} from "../../../../src/models/fhir/fhir-resources"
 import {clone} from "../../../resources/test-helpers"
 import * as LosslessJson from "lossless-json"
 import {TooManyValuesError} from "../../../../src/models/errors/processing-errors"
+import {SpineDirectResponse} from "../../../../src/models/spine"
 
 test("getResourceForFullUrl returns correct resources", () => {
   const result = getResourceForFullUrl(
@@ -119,7 +120,7 @@ describe("translateToOperationOutcome", () => {
   })
 
   test("returns error OperationOutcome for status code > 299", () => {
-    const spineResponse = {...spineResponses.singleErrors[0].response}
+    const spineResponse = spineResponses.singleErrors[0].response
     const result = translateToOperationOutcome(spineResponse)
     expect(result.issue[0].severity).toEqual("error")
     expect(result.issue[0].code).toEqual("invalid")
@@ -152,6 +153,15 @@ describe("translateToOperationOutcome", () => {
       expect(operationOutcomeIssue.details.coding[0].code).toBe(syncResponse.spineErrorCode.toString())
       expect(operationOutcomeIssue.details.coding[0].display).toBeTruthy()
     })
+  })
+
+  test("throws error on unexpected spine response", () => {
+    const spineResponse: SpineDirectResponse<string> = {
+      body: "this body doesnt pass the regex checks",
+      statusCode: 420
+    }
+
+    expect(() => translateToOperationOutcome(spineResponse)).toThrow()
   })
 })
 

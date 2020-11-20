@@ -38,21 +38,6 @@ describe("asOperationOutcome", () => {
     })
     expect(result).toBe(operationOutcome)
   })
-
-  test("returns OperationOutcome if body is a string", () => {
-    const result = asOperationOutcome({
-      statusCode: 400,
-      body: "Something went terribly wrong"
-    })
-    expect(result).toEqual({
-      resourceType: "OperationOutcome",
-      issue: [{
-        severity: "error",
-        code: "invalid",
-        diagnostics: "Something went terribly wrong"
-      }]
-    })
-  })
 })
 
 test("API only forwards accept header to validator", async () => {
