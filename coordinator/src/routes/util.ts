@@ -21,12 +21,19 @@ export function handleResponse<T>(
       .code(spineResponse.statusCode)
       .header("Content-Location", spineResponse.pollingUrl)
   } else {
-    return responseToolkit.response(translateToOperationOutcome(spineResponse))
+    return responseToolkit.response(asOperationOutcome(spineResponse))
       .code(spineResponse.statusCode)
       .header("Content-Type", "application/fhir+json; fhirVersion=4.0")
   }
 }
 
+export function asOperationOutcome<T>(spineResponse: SpineDirectResponse<T>): OperationOutcome {
+  if (isOperationOutcome(spineResponse.body)) {
+    return spineResponse.body
+  } else {
+    return translateToOperationOutcome(spineResponse)
+  }
+}
 function isOperationOutcome(body: unknown): body is OperationOutcome {
   return typeof body === "object"
     && "resourceType" in body
