@@ -12,7 +12,7 @@ all:
 
 install: install-node install-python install-hooks
 
-build: build-specification build-coordinator build-proxies
+build: build-specification build-coordinator build-validator build-proxies
 
 test: validate-models lint check-licenses test-coordinator
 	cd tests/e2e/pact && make test
