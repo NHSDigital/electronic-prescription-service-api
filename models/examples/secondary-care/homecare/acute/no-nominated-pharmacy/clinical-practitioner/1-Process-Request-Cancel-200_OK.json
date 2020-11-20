@@ -83,6 +83,17 @@
           ]
         },
         "intent": "order",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                "code": "outpatient",
+                "display": "Outpatient"
+              }
+            ]
+          }
+        ],
         "medicationCodeableConcept": {
           "coding": [
             {
@@ -120,6 +131,69 @@
               "display": "Short course (acute) therapy"
             }
           ]
+        },
+        "dosageInstruction": [
+          {
+            "text": "10 milligram, Inject, Subcutaneous route, once weekly",
+            "timing": {
+              "repeat": {
+                "frequency": 5,
+                "period": 1,
+                "periodUnit": "d",
+                "boundsDuration": {
+                  "value": 10,
+                  "unit": "day",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "d"
+                }
+              }
+            },
+            "method": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "422145002",
+                  "display": "Inject"
+                }
+              ]
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "34206005",
+                  "display": "Subcutaneous route"
+                }
+              ]
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 10,
+                  "unit": "milligram",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
+              }
+            ]
+          }
+        ],
+        "dispenseRequest": {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
+              "valueCoding": {
+                "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+                "code": "0004"
+              }
+            }
+          ],
+          "quantity": {
+            "value": 1,
+            "unit": "pre-filled disposable injection",
+            "system": "http://snomed.info/sct",
+            "code": "3318611000001103"
+          }
         },
         "substitution": {
           "allowedBoolean": false
