@@ -12,7 +12,7 @@ all:
 
 install: install-node install-python install-hooks
 
-build: build-specification build-coordinator build-validator build-proxies
+build: build-specification build-coordinator build-proxies
 
 test: validate-models lint check-licenses test-coordinator
 	cd tests/e2e/pact && make test
@@ -132,5 +132,5 @@ check-licenses:
 ## Tools
 
 update-prescriptions:
-	# Requires make run-coordinator and make run-validator in separate shells 
+	# Requires make run-coordinator and make run-validator in separate shells
 	cd scripts && poetry run python update_prescriptions.py

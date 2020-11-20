@@ -4,7 +4,7 @@ import * as fhir from "../models/fhir/fhir-resources"
 import {OperationOutcome, Resource} from "../models/fhir/fhir-resources"
 import * as requestValidator from "../services/validation/bundle-validator"
 import * as errors from "../models/errors/validation-errors"
-import {wrapInOperationOutcome} from "../services/translation/common"
+import {translateToOperationOutcome} from "../services/translation/common"
 import * as LosslessJson from "lossless-json"
 import {getMessageHeader} from "../services/translation/common/getResourcesOfType"
 import axios from "axios"
@@ -21,17 +21,9 @@ export function handleResponse<T>(
       .code(spineResponse.statusCode)
       .header("Content-Location", spineResponse.pollingUrl)
   } else {
-    return responseToolkit.response(asOperationOutcome(spineResponse))
+    return responseToolkit.response(translateToOperationOutcome(spineResponse))
       .code(spineResponse.statusCode)
       .header("Content-Type", "application/fhir+json; fhirVersion=4.0")
-  }
-}
-
-export function asOperationOutcome<T>(spineResponse: SpineDirectResponse<T>): OperationOutcome {
-  if (isOperationOutcome(spineResponse.body)) {
-    return spineResponse.body
-  } else {
-    return wrapInOperationOutcome(spineResponse)
   }
 }
 
