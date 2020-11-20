@@ -2,17 +2,12 @@ import {convertPatient} from "../../../src/services/translation/prescription/pat
 import {Bundle, Patient} from "../../../src/models/fhir/fhir-resources"
 import {clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
-import {Address} from "../../../src/models/hl7-v3/hl7-v3-datatypes-core"
 import {getPatient} from "../../../src/services/translation/common/getResourcesOfType"
 import {TooManyValuesError} from "../../../src/models/errors/processing-errors"
 
 describe("convertPatient", () => {
   let bundle: Bundle
   let fhirPatient: Patient
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const convertAddressFn = (value: never) => {
-    return new Address()
-  }
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
@@ -33,14 +28,19 @@ describe("convertPatient", () => {
     expect(actual).toBe(idValue)
   })
 
-  test("address gets passed through the convertAddress function", () => {
-    const mockConvertAddress = jest.fn(convertAddressFn)
-    const addressValue = {use: "example"}
-    fhirPatient.address = [addressValue]
+  test("If there is a patient.telecom, it gets put in the right place", () => {
+    fhirPatient.telecom = [{use: "home", value: "0123456789"}]
 
-    convertPatient(bundle, fhirPatient, mockConvertAddress)
+    const actual = convertPatient(bundle, fhirPatient).telecom[0]._attributes
 
-    expect(mockConvertAddress.mock.calls.length).toBe(1)
-    expect(mockConvertAddress.mock.calls[0][0]).toEqual(addressValue)
+    expect(actual).toEqual({use: "HP", value: "tel:0123456789"})
+  })
+
+  test("If there isn't a patient.telecom, leave it off", () => {
+    delete fhirPatient.telecom
+
+    const actual = convertPatient(bundle, fhirPatient).telecom
+
+    expect(actual).toEqual(undefined)
   })
 })

@@ -94,8 +94,7 @@ export class Patient extends Resource {
   gender?: string
   birthDate?: string
   address?: Array<Address>
-  generalPractitioner?: Array<Reference<PractitionerRole>>
-  managingOrganization: IdentifierReference<Organization>
+  generalPractitioner?: Array<IdentifierReference<Organization>>
 }
 
 export class HumanName {
