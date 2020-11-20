@@ -220,7 +220,7 @@
                   <pertinentAdditionalInstructions classCode="OBS" moodCode="EVN">
                     <code code="AI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
                     <value>&lt;patientInfo&gt;Your medication review is due. Please make an appointment to see your GP.&lt;/patientInfo&gt;CD: twenty eight
-                      Dosage has been decreased on advice from the hospital.</value>
+Dosage has been decreased on advice from the hospital.</value>
                   </pertinentAdditionalInstructions>
                 </pertinentInformation1>
                 <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
