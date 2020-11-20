@@ -29,12 +29,12 @@ interface Reason {
 }
 
 export interface AsyncMCCI {
-  "hl7:acknowledgement": {
-    _attributes: {
-      typeCode: acknowledgementCodes
-    }
-  },
   "hl7:MCCI_IN010000UK13": {
+    "hl7:acknowledgement": {
+      _attributes: {
+        typeCode: acknowledgementCodes
+      }
+    },
     "hl7:ControlActEvent": {
       "hl7:reason": Reason | Array<Reason>
     }
