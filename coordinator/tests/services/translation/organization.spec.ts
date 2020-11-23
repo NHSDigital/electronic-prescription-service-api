@@ -5,6 +5,10 @@ import {getHealthcareServices, getOrganizations} from "../../../src/services/tra
 import {convertOrganizationAndProviderLicense} from "../../../src/services/translation/prescription/organization"
 import {getResourceForFullUrl} from "../../../src/services/translation/common"
 
+describe("convertOrganizationAndProviderLicense", () => {
+  describe("")
+})
+
 describe("convertOrganizationAndProviderLicense non-homecare represented organization", () => {
   let bundle: Bundle
   let firstFhirOrganization: Organization
