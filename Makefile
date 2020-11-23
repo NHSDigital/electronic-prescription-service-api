@@ -132,5 +132,5 @@ check-licenses:
 ## Tools
 
 update-prescriptions:
-	# Requires make run-coordinator and make run-validator in separate shells 
+	# Requires make run-coordinator and make run-validator in separate shells
 	cd scripts && poetry run python update_prescriptions.py
