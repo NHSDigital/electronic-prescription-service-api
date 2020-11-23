@@ -1,0 +1,76 @@
+type: object
+description: Extension to carry the controlled drug
+required:
+  - url
+  - extension
+properties:
+  url:
+    type: string
+    description: Identifies the meaning of the extension
+    enum:
+      - "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug"
+    example: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug"
+  extension:
+    type: array
+    items:
+      anyOf:
+        - type: object
+          description: Extension to carry the requested quantity of the controlled drug
+          required:
+            - url
+            - valueString
+          properties:
+            url:
+              type: string
+              description: Identifies the meaning of the extension
+              enum:
+                - "quantityWords"
+              example: "quantityWords"
+            valueString:
+              type: string
+              description: The quantity, in words, of the controlled drug requested
+              example: "twenty eight"
+        - type: object
+          description: Extension to carry the schedule of the controlled drug
+          required:
+            - url
+            - valueCoding
+          properties:
+            url:
+              type: string
+              description: Identifies the meaning of the extension
+              enum:
+                - "schedule"
+              example: "schedule"
+            valueCoding:
+              type: object
+              properties:
+                system:
+                  type: string
+                  description: Identity of the terminology system
+                  enum:
+                    - "https://fhir.nhs.uk/CodeSystem/medicationrequest-controlled-drug"
+                  example: "https://fhir.nhs.uk/CodeSystem/medicationrequest-controlled-drug"
+                code:
+                  type: string
+                  description: Symbol in syntax defined by the system
+                  enum:
+                    - "CD1"
+                    - "CD2"
+                    - "CD3"
+                    - "CD4-1"
+                    - "CD4-2"
+                    - "CD5"
+                  example: "CD1"
+                display:
+                  type: string
+                  description: A representation of the meaning of the code in the system, following the rules of the system
+                  enum:
+                    - "Schedule 1"
+                    - "Schedule 2"
+                    - "Schedule 3"
+                    - "Schedule 4 (Part I)"
+                    - "Schedule 4 (Part II)"
+                    - "Schedule 5"
+                  example: "Schedule 1"
+
