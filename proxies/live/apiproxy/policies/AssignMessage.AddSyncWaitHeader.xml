@@ -1,7 +1,7 @@
 <AssignMessage async="false" continueOnError="false" enabled="true" name="AssignMessage.AddSyncWaitHeader">
   <Add>
       <Headers>
-          <Header name="X-Sync-Wait">30</Header>
+          <Header name="X-Sync-Wait">29</Header>
       </Headers>
   </Add>
   <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>

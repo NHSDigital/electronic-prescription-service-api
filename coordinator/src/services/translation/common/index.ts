@@ -233,7 +233,7 @@ export function translateToOperationOutcome<T>(message: SpineDirectResponse<T>):
     return {
       resourceType: "OperationOutcome",
       issue: [{
-        code:"invalid",
+        code: "invalid",
         severity: "error",
         diagnostics: message.body?.toString()
       }]
