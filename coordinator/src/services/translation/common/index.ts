@@ -230,9 +230,15 @@ export function translateToOperationOutcome<T>(message: SpineDirectResponse<T>):
   } else if (asyncMCCI) {
     codeableConceptArray = translateAsyncSpineResponse(asyncMCCI[0])
   } else {
-    throw new Error("Spine response doesnt match")
+    return {
+      resourceType: "OperationOutcome",
+      issue: [{
+        code:"invalid",
+        severity: "error",
+        diagnostics: message.body?.toString()
+      }]
+    }
   }
-
   return {
     resourceType: "OperationOutcome",
     issue: codeableConceptArray.map(codeableConcept => ({
