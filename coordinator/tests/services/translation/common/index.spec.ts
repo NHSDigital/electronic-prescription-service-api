@@ -155,13 +155,17 @@ describe("translateToOperationOutcome", () => {
     })
   })
 
-  test("throws error on unexpected spine response", () => {
+  test("returns specific response on unexpected spine response", () => {
+    const bodyString = "this body doesnt pass the regex checks"
     const spineResponse: SpineDirectResponse<string> = {
-      body: "this body doesnt pass the regex checks",
+      body: bodyString,
       statusCode: 420
     }
 
-    expect(() => translateToOperationOutcome(spineResponse)).toThrow()
+    const actualOperationOutcome = translateToOperationOutcome(spineResponse)
+
+    expect(actualOperationOutcome.issue).toHaveLength(1)
+    expect(actualOperationOutcome.issue[0].diagnostics).toBe(bodyString)
   })
 })
 

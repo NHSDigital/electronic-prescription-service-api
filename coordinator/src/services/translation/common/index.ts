@@ -239,6 +239,7 @@ export function translateToOperationOutcome<T>(message: SpineDirectResponse<T>):
       }]
     }
   }
+
   return {
     resourceType: "OperationOutcome",
     issue: codeableConceptArray.map(codeableConcept => ({
