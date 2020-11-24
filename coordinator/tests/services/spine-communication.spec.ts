@@ -112,7 +112,7 @@ describe("Spine communication", () => {
       request.respondWith({
         status: 200,
         statusText: "OK",
-        responseText: readFileAsString("async_success.txt")
+        responseText: readFileAsString("async_success.xml")
       })
     })
 

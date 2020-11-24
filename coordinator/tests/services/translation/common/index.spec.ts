@@ -5,15 +5,15 @@ import {
   getIdentifierValueOrNullForSystem,
   getNumericValueAsString,
   getResourceForFullUrl,
-  wrapInOperationOutcome
+  translateToOperationOutcome
 } from "../../../../src/services/translation/common"
 import * as TestResources from "../../../resources/test-resources"
 import * as fhir from "../../../../src/models/fhir/fhir-resources"
 import {Identifier} from "../../../../src/models/fhir/fhir-resources"
 import {clone} from "../../../resources/test-helpers"
-import {SpineDirectResponse} from "../../../../src/models/spine"
 import * as LosslessJson from "lossless-json"
 import {TooManyValuesError} from "../../../../src/models/errors/processing-errors"
+import {SpineDirectResponse} from "../../../../src/models/spine"
 
 test("getResourceForFullUrl returns correct resources", () => {
   const result = getResourceForFullUrl(
@@ -110,19 +110,62 @@ describe("getIdentifierValueOrNullForSystem", () => {
   })
 })
 
-describe("wrapInOperationOutcome", () => {
+describe("translateToOperationOutcome", () => {
+  const spineResponses = TestResources.spineResponses
   test("returns informational OperationOutcome for status code <= 299", () => {
-    const spineResponse: SpineDirectResponse<string> = {statusCode: 299, body: "test"}
-    const result = wrapInOperationOutcome(spineResponse)
+    const spineResponse = spineResponses.success.response
+    const result = translateToOperationOutcome(spineResponse)
     expect(result.issue[0].severity).toEqual("information")
     expect(result.issue[0].code).toEqual("informational")
   })
 
   test("returns error OperationOutcome for status code > 299", () => {
-    const spineResponse: SpineDirectResponse<string> = {statusCode: 300, body: "test"}
-    const result = wrapInOperationOutcome(spineResponse)
+    const spineResponse = spineResponses.singleErrors[0].response
+    const result = translateToOperationOutcome(spineResponse)
     expect(result.issue[0].severity).toEqual("error")
     expect(result.issue[0].code).toEqual("invalid")
+  })
+
+  test("converts spine successes", () => {
+    const spineResponse = spineResponses.success.response
+    const result = translateToOperationOutcome(spineResponse)
+
+    expect(result.issue[0].severity).toEqual("information")
+    expect(result.issue[0].code).toEqual("informational")
+    expect(result.issue[0].details).toBeFalsy()
+  })
+
+  test.each(TestResources.spineResponses.singleErrors)("converts spine single errors", (syncResponse) => {
+    const actualOperationOutcome = translateToOperationOutcome(syncResponse.response)
+
+    expect(actualOperationOutcome.issue).toHaveLength(1)
+    expect(actualOperationOutcome.issue[0].details.coding).toHaveLength(1)
+    expect(actualOperationOutcome.issue[0].details.coding[0].code).toBe(syncResponse.spineErrorCode.toString())
+    expect(actualOperationOutcome.issue[0].details.coding[0].display).toBeTruthy()
+  })
+
+  test.each(TestResources.spineResponses.multipleErrors)("converts multiple spine errors", (syncResponse) => {
+    const actualOperationOutcome = translateToOperationOutcome(syncResponse.response)
+
+    expect(actualOperationOutcome.issue.length).toBeGreaterThan(1)
+    actualOperationOutcome.issue.forEach(operationOutcomeIssue => {
+      expect(operationOutcomeIssue.details.coding).toHaveLength(1)
+      expect(operationOutcomeIssue.details.coding[0].code).toBe(syncResponse.spineErrorCode.toString())
+      expect(operationOutcomeIssue.details.coding[0].display).toBeTruthy()
+    })
+  })
+
+  test("returns specific response on unexpected spine response", () => {
+    const bodyString = "this body doesnt pass the regex checks"
+    const spineResponse: SpineDirectResponse<string> = {
+      body: bodyString,
+      statusCode: 420
+    }
+
+    const actualOperationOutcome = translateToOperationOutcome(spineResponse)
+
+    expect(actualOperationOutcome.issue).toHaveLength(1)
+    expect(actualOperationOutcome.issue[0].diagnostics).toBe(bodyString)
   })
 })
 

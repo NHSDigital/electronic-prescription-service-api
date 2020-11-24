@@ -18,22 +18,27 @@
           "display": "Prescription Order"
         },
         "sender": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA"
+          },
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
           "display": "RAZIA|ALI"
         },
         "source": {
-          "extension": [
-            {
-              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-spineEndpoint",
-              "valueIdentifier": {
-                "system": "https://fhir.nhs.uk/Id/spine-ASID",
-                "value": "12456789012"
+          "endpoint": "urn:nhs-uk:addressing:ods:RBA"
+        },
+        "destination": [
+          {
+            "endpoint": "urn:nhs-uk:addressing:ods:FH542",
+            "receiver": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "FH542"
               }
             }
-          ],
-          "name": "DJM",
-          "endpoint": "https://mait.digital.nhs.uk/"
-        },
+          }
+        ],
         "focus": [
           {
             "reference": "urn:uuid:00d3dd04-d162-49ce-a808-6f220906f1c8"
@@ -78,6 +83,23 @@
               "code": "1001",
               "display": "Outpatient Community Prescriber - Medical Prescriber"
             }
+          },
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug",
+            "extension":  [
+                {
+                  "url": "quantityWords",
+                  "valueString": "twenty eight"
+                },
+                {
+                  "url": "schedule",
+                  "valueCoding": {
+                      "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-controlled-drug",
+                      "code": "CD2",
+                      "display": "Schedule 2"
+                  }
+                }
+            ]
           }
         ],
         "identifier": [
@@ -151,10 +173,6 @@
                 "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
                 "code": "P1"
               }
-            },
-            {
-              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-controlled-drug-quantity-words",
-              "valueString": "twenty eight"
             }
           ],
           "quantity": {

@@ -66,11 +66,16 @@ function convertAdditionalInstructions(
   fhirMedicationRequest: fhir.MedicationRequest,
   patientInfoText: Array<core.Text>
 ) {
-  const controlledDrugWordsExtension = getExtensionForUrlOrNull(
-    fhirMedicationRequest.dispenseRequest.extension,
-    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-controlled-drug-quantity-words",
-    "MedicationRequest.dispenseRequest.extension"
-  ) as fhir.StringExtension
+  const controlledDrugExtension = getExtensionForUrlOrNull(
+    fhirMedicationRequest.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug",
+    "MedicationRequest.extension"
+  ) as fhir.ControlledDrugExtension
+  const controlledDrugWordsExtension = controlledDrugExtension ? getExtensionForUrlOrNull(
+    controlledDrugExtension.extension,
+    "quantityWords",
+    "MedicationRequest.extension.extension"
+  ) as fhir.StringExtension : null
   const controlledDrugWords = controlledDrugWordsExtension?.valueString
   const controlledDrugWordsWithPrefix = controlledDrugWords ? `CD: ${controlledDrugWords}` : ""
 
