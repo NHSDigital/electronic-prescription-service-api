@@ -30,11 +30,11 @@
         },
         "destination": [
           {
-            "endpoint": "https://sandbox.api.service.nhs.uk/electronic-prescriptions/$post-message",
+            "endpoint": "https://int.api.service.nhs.uk/electronic-prescriptions/$prepare",
             "receiver": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "X26"
+                "value": "FH542"
               }
             }
           }
@@ -130,7 +130,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2020-11-24T15:29:14+00:00",
+        "authoredOn": "2020-11-24T16:31:14+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -145,7 +145,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "CECA2B-ZAD2E6-11EB93"
+          "value": "7B98AD-Z632E7-11EB9G"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -235,7 +235,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2020-11-24T15:29:14+00:00",
+        "authoredOn": "2020-11-24T16:31:14+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -250,7 +250,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "CECA2B-ZAD2E6-11EB93"
+          "value": "7B98AD-Z632E7-11EB9G"
         },
         "courseOfTherapyType": {
           "coding": [
