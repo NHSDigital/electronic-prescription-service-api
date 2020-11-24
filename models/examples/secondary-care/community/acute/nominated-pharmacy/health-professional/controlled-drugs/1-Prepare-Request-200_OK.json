@@ -125,7 +125,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2020-11-24T15:25:36+00:00",
+        "authoredOn": "2020-11-24T15:29:14+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -140,7 +140,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "4D5803-ZB32E6-11EB9C"
+          "value": "CECA2B-ZAB2E6-11EB9S"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -230,7 +230,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2020-11-24T15:25:36+00:00",
+        "authoredOn": "2020-11-24T15:29:14+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -245,7 +245,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "4D5803-ZB32E6-11EB9C"
+          "value": "CECA2B-ZAB2E6-11EB9S"
         },
         "courseOfTherapyType": {
           "coding": [
