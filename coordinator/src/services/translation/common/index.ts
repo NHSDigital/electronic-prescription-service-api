@@ -13,6 +13,7 @@ const FHIR_DATE_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0
 const FHIR_DATE_TIME_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$/
 const SYNC_SPINE_RESPONSE_MCCI_REGEX = /(<MCCI_IN010000UK13>)([\s\S]*)(<\/MCCI_IN010000UK13>)/i
 const ASYNC_SPINE_RESPONSE_MCCI_REGEX = /(<hl7:MCCI_IN010000UK13[\s\S]*>)([\s\S]*)(<\/hl7:MCCI_IN010000UK13>)/i
+const SPINE_CANCELLATION_ERROR_RESPONSE_REGEX = /(<hl7:PORX_IN050101UK31[\s\S]*>)([\s\S]*)(<\/hl7:PORX_IN050101UK31>)/i
 
 export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, additionalContext?: string): T {
   const iterator = iterable[Symbol.iterator]()
@@ -209,43 +210,55 @@ function translateAsyncSpineResponse(message: string): Array<fhir.CodeableConcep
   }))
 }
 
-export function translateToOperationOutcome<T>(message: SpineDirectResponse<T>): fhir.OperationOutcome {
+function translateSpineCancelResponseIntoBundle(message: string): fhir.Bundle {
+  // const parsedMsg = readXml(message)
+  console.log(message)
+  //TODO add all necessary stuff
+  return new fhir.Bundle()
+}
+
+export function translateHl7ResponseToFhir<T>(message: SpineDirectResponse<T>): fhir.OperationOutcome | fhir.Bundle {
+  const bodyString = message.body.toString()
   if (message.statusCode <= 299) {
     return {
       resourceType: "OperationOutcome",
       issue: [{
         code: "informational",
         severity: "information",
-        diagnostics: message.body?.toString()
+        diagnostics: bodyString
       }]
     }
   }
-
-  const bodyString = message.body.toString()
   const syncMCCI = SYNC_SPINE_RESPONSE_MCCI_REGEX.exec(bodyString)
   const asyncMCCI = ASYNC_SPINE_RESPONSE_MCCI_REGEX.exec(bodyString)
-  let codeableConceptArray: Array<fhir.CodeableConcept> = []
+  const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(bodyString)
   if (syncMCCI) {
-    codeableConceptArray = translateSyncSpineResponse(syncMCCI[0])
+    return turnCodeableConceptArrayIntoOperationOutcome(translateSyncSpineResponse(syncMCCI[0]), bodyString)
   } else if (asyncMCCI) {
-    codeableConceptArray = translateAsyncSpineResponse(asyncMCCI[0])
-  } else {
-    return {
-      resourceType: "OperationOutcome",
-      issue: [{
-        code: "invalid",
-        severity: "error",
-        diagnostics: message.body?.toString()
-      }]
-    }
+    return turnCodeableConceptArrayIntoOperationOutcome(translateAsyncSpineResponse(asyncMCCI[0]), bodyString)
+  } else if (cancelResponse) {
+    return translateSpineCancelResponseIntoBundle(cancelResponse[0])
   }
+  return {
+    resourceType: "OperationOutcome",
+    issue: [{
+      code: "invalid",
+      severity: "error",
+      diagnostics: bodyString
+    }]
+  }
+}
 
+function turnCodeableConceptArrayIntoOperationOutcome(
+  codeableConceptArray: Array<fhir.CodeableConcept>,
+  message: string
+): fhir.OperationOutcome {
   return {
     resourceType: "OperationOutcome",
     issue: codeableConceptArray.map(codeableConcept => ({
       code:"invalid",
       severity: "error",
-      diagnostics: message.body?.toString(),
+      diagnostics: message,
       details: codeableConcept
     }))
   }

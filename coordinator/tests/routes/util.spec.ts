@@ -1,4 +1,4 @@
-import {asOperationOutcome, fhirValidation, identifyMessageType, MessageType} from "../../src/routes/util"
+import {formatResponseAsFhir, fhirValidation, identifyMessageType, MessageType} from "../../src/routes/util"
 import * as fhir from "../../src/models/fhir/fhir-resources"
 import {clone} from "../resources/test-helpers"
 import * as TestResources from "../resources/test-resources"
@@ -32,7 +32,7 @@ describe("asOperationOutcome", () => {
   }
 
   test("returns input if body is already an OperationOutcome", () => {
-    const result = asOperationOutcome({
+    const result = formatResponseAsFhir({
       statusCode: 400,
       body: operationOutcome
     })

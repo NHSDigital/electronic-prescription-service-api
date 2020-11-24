@@ -5,7 +5,7 @@ import {
   getIdentifierValueOrNullForSystem,
   getNumericValueAsString,
   getResourceForFullUrl,
-  translateToOperationOutcome
+  translateHl7ResponseToFhir
 } from "../../../../src/services/translation/common"
 import * as TestResources from "../../../resources/test-resources"
 import * as fhir from "../../../../src/models/fhir/fhir-resources"
@@ -114,21 +114,21 @@ describe("translateToOperationOutcome", () => {
   const spineResponses = TestResources.spineResponses
   test("returns informational OperationOutcome for status code <= 299", () => {
     const spineResponse = spineResponses.success.response
-    const result = translateToOperationOutcome(spineResponse)
+    const result = translateHl7ResponseToFhir(spineResponse)
     expect(result.issue[0].severity).toEqual("information")
     expect(result.issue[0].code).toEqual("informational")
   })
 
   test("returns error OperationOutcome for status code > 299", () => {
     const spineResponse = spineResponses.singleErrors[0].response
-    const result = translateToOperationOutcome(spineResponse)
+    const result = translateHl7ResponseToFhir(spineResponse)
     expect(result.issue[0].severity).toEqual("error")
     expect(result.issue[0].code).toEqual("invalid")
   })
 
   test("converts spine successes", () => {
     const spineResponse = spineResponses.success.response
-    const result = translateToOperationOutcome(spineResponse)
+    const result = translateHl7ResponseToFhir(spineResponse)
 
     expect(result.issue[0].severity).toEqual("information")
     expect(result.issue[0].code).toEqual("informational")
@@ -136,7 +136,7 @@ describe("translateToOperationOutcome", () => {
   })
 
   test.each(TestResources.spineResponses.singleErrors)("converts spine single errors", (syncResponse) => {
-    const actualOperationOutcome = translateToOperationOutcome(syncResponse.response)
+    const actualOperationOutcome = translateHl7ResponseToFhir(syncResponse.response)
 
     expect(actualOperationOutcome.issue).toHaveLength(1)
     expect(actualOperationOutcome.issue[0].details.coding).toHaveLength(1)
@@ -145,7 +145,7 @@ describe("translateToOperationOutcome", () => {
   })
 
   test.each(TestResources.spineResponses.multipleErrors)("converts multiple spine errors", (syncResponse) => {
-    const actualOperationOutcome = translateToOperationOutcome(syncResponse.response)
+    const actualOperationOutcome = translateHl7ResponseToFhir(syncResponse.response)
 
     expect(actualOperationOutcome.issue.length).toBeGreaterThan(1)
     actualOperationOutcome.issue.forEach(operationOutcomeIssue => {
@@ -162,7 +162,7 @@ describe("translateToOperationOutcome", () => {
       statusCode: 420
     }
 
-    const actualOperationOutcome = translateToOperationOutcome(spineResponse)
+    const actualOperationOutcome = translateHl7ResponseToFhir(spineResponse)
 
     expect(actualOperationOutcome.issue).toHaveLength(1)
     expect(actualOperationOutcome.issue[0].diagnostics).toBe(bodyString)
