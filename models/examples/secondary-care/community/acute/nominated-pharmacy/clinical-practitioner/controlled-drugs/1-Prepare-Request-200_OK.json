@@ -313,7 +313,7 @@
               "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
               "valueCoding": {
                 "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
-                "code": "0004"
+                "code": "P1"
               }
             }
           ],
