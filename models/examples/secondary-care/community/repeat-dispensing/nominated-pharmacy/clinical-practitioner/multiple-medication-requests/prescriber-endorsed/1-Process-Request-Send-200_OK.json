@@ -108,7 +108,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2020-11-19T15:33:55+00:00",
+        "authoredOn": "2020-11-24T15:25:36+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -123,7 +123,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "B9851F-Z562A7-11EB8C"
+          "value": "4D5803-ZAB2E6-11EB9B"
         },
         "courseOfTherapyType": {
           "coding": [

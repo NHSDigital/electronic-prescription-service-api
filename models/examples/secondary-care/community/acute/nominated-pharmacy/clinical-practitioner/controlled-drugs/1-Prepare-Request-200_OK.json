@@ -83,19 +83,19 @@
           },
           {
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug",
-            "extension":  [
-                {
-                  "url": "quantityWords",
-                  "valueString": "twenty eight"
-                },
-                {
-                  "url": "schedule",
-                  "valueCoding": {
-                      "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-controlled-drug",
-                      "code": "CD2",
-                      "display": "Schedule 2"
-                  }
+            "extension": [
+              {
+                "url": "quantityWords",
+                "valueString": "twenty eight"
+              },
+              {
+                "url": "schedule",
+                "valueCoding": {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-controlled-drug",
+                  "code": "CD2",
+                  "display": "Schedule 2"
                 }
+              }
             ]
           }
         ],
@@ -130,7 +130,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2020-11-19T15:33:55+00:00",
+        "authoredOn": "2020-11-24T15:25:36+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -145,7 +145,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "AD195F-Z082A7-11EB81"
+          "value": "4D5803-ZB52E6-11EB9O"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -235,7 +235,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2020-11-19T15:33:55+00:00",
+        "authoredOn": "2020-11-24T15:25:36+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -250,7 +250,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "A59F50-Z8A2A7-11EBBG"
+          "value": "4D5803-ZB52E6-11EB9O"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -322,6 +322,12 @@
             "unit": "pre-filled disposable injection",
             "system": "http://snomed.info/sct",
             "code": "3318611000001103"
+          },
+          "performer": {
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "FH542"
+            }
           }
         },
         "substitution": {
