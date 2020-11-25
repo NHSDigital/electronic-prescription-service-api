@@ -23,7 +23,6 @@ pool:
 variables:
   - template: project.yml
   - group: pact
-  - group: eps-ref-smoke-tests
 
 extends:
   template: azure-release-template.yml
