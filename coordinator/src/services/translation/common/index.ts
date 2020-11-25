@@ -4,15 +4,14 @@ import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {SpineDirectResponse} from "../../../models/spine"
 import {LosslessNumber} from "lossless-json"
 import {InvalidValueError, TooFewValuesError, TooManyValuesError} from "../../../models/errors/processing-errors"
-import {readXml} from "../../serialisation/xml"
-import {AsyncMCCI, SyncMCCI} from "../../../models/hl7-v3/hl7-v3-spine-response"
+import {
+  getAcknowledgement, getSpineErrors, translateAcknowledgementToStatusCode
+} from "../spineResponse"
 
 // eslint-disable-next-line max-len
 const FHIR_DATE_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$/
 // eslint-disable-next-line max-len
 const FHIR_DATE_TIME_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$/
-const SYNC_SPINE_RESPONSE_MCCI_REGEX = /(<MCCI_IN010000UK13>)([\s\S]*)(<\/MCCI_IN010000UK13>)/i
-const ASYNC_SPINE_RESPONSE_MCCI_REGEX = /(<hl7:MCCI_IN010000UK13[\s\S]*>)([\s\S]*)(<\/hl7:MCCI_IN010000UK13>)/i
 
 export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, additionalContext?: string): T {
   const iterator = iterable[Symbol.iterator]()
@@ -177,41 +176,24 @@ export function convertMomentToHl7V3DateTime(dateTime: moment.Moment): core.Time
   return new core.Timestamp(hl7V3DateTimeStr)
 }
 
-function toArray<T>(thing: T | Array<T>): Array<T> {
+export function toArray<T>(thing: T | Array<T>): Array<T> {
   return Array.isArray(thing) ? thing : [thing]
 }
 
-function translateSyncSpineResponse(message: string): Array<fhir.CodeableConcept> {
-  const parsedMsg = readXml(message) as SyncMCCI
-  const acknowledgementDetailElm = parsedMsg.MCCI_IN010000UK13.acknowledgement.acknowledgementDetail
-  const acknowledgementDetailArray = toArray(acknowledgementDetailElm)
-  return acknowledgementDetailArray.map(acknowledgementDetail => {
-    return {
-      coding: [{
-        code: acknowledgementDetail.code._attributes.code,
-        display: acknowledgementDetail.code._attributes.displayName,
-        system: ""
-      }]
-    }
-  })
+interface TranslatedSpineResponse {
+  operationOutcome: fhir.OperationOutcome
+  statusCode: number
 }
 
-function translateAsyncSpineResponse(message: string): Array<fhir.CodeableConcept> {
-  const parsedMsg = readXml(message) as AsyncMCCI
-  const reasonElm = parsedMsg["hl7:MCCI_IN010000UK13"]["hl7:ControlActEvent"]["hl7:reason"]
-  const reasonArray = toArray(reasonElm)
-  return reasonArray.map(reason => ({
-    coding: [{
-      code: reason["hl7:justifyingDetectedIssueEvent"]["hl7:code"]._attributes.code,
-      display: reason["hl7:justifyingDetectedIssueEvent"]["hl7:code"]._attributes.displayName,
-      system: ""
-    }]
-  }))
-}
+export function translateToOperationOutcome<T>(message: SpineDirectResponse<T>): TranslatedSpineResponse {
+  const hl7BodyString = message.body.toString()
+  const acknowledgement = getAcknowledgement(hl7BodyString)
+  console.log(`acknowledgement: ${acknowledgement}`)
+  const statusCode = translateAcknowledgementToStatusCode(acknowledgement)
+  // const statusCode = message.statusCode
 
-export function translateToOperationOutcome<T>(message: SpineDirectResponse<T>): fhir.OperationOutcome {
-  if (message.statusCode <= 299) {
-    return {
+  if (statusCode <= 299) {
+    const successfulOperationOutcome: fhir.OperationOutcome = {
       resourceType: "OperationOutcome",
       issue: [{
         code: "informational",
@@ -219,35 +201,28 @@ export function translateToOperationOutcome<T>(message: SpineDirectResponse<T>):
         diagnostics: message.body?.toString()
       }]
     }
-  }
-
-  const bodyString = message.body.toString()
-  const syncMCCI = SYNC_SPINE_RESPONSE_MCCI_REGEX.exec(bodyString)
-  const asyncMCCI = ASYNC_SPINE_RESPONSE_MCCI_REGEX.exec(bodyString)
-  let codeableConceptArray: Array<fhir.CodeableConcept> = []
-  if (syncMCCI) {
-    codeableConceptArray = translateSyncSpineResponse(syncMCCI[0])
-  } else if (asyncMCCI) {
-    codeableConceptArray = translateAsyncSpineResponse(asyncMCCI[0])
-  } else {
     return {
-      resourceType: "OperationOutcome",
-      issue: [{
+      operationOutcome: successfulOperationOutcome,
+      statusCode
+    }
+  } else {
+    const spineErrors = getSpineErrors(hl7BodyString)
+    const operationOutcomeIssues = spineErrors.map(
+      spineError => ({
         code: "invalid",
         severity: "error",
-        diagnostics: message.body?.toString()
-      }]
+        diagnostics: message.body?.toString(),
+        details: spineError
+      } as fhir.OperationOutcomeIssue)
+    )
+    const errorOperationOutcome: fhir.OperationOutcome = {
+      resourceType: "OperationOutcome",
+      issue: operationOutcomeIssues
     }
-  }
-
-  return {
-    resourceType: "OperationOutcome",
-    issue: codeableConceptArray.map(codeableConcept => ({
-      code:"invalid",
-      severity: "error",
-      diagnostics: message.body?.toString(),
-      details: codeableConcept
-    }))
+    return {
+      operationOutcome: errorOperationOutcome,
+      statusCode
+    }
   }
 }
 

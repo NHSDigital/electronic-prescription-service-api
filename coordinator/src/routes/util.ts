@@ -20,18 +20,15 @@ export function handleResponse<T>(
     return responseToolkit.response()
       .code(spineResponse.statusCode)
       .header("Content-Location", spineResponse.pollingUrl)
-  } else {
-    return responseToolkit.response(asOperationOutcome(spineResponse))
+  } else if (isOperationOutcome(spineResponse.body)) {
+    return responseToolkit.response(spineResponse.body)
       .code(spineResponse.statusCode)
       .header("Content-Type", "application/fhir+json; fhirVersion=4.0")
-  }
-}
-
-export function asOperationOutcome<T>(spineResponse: SpineDirectResponse<T>): OperationOutcome {
-  if (isOperationOutcome(spineResponse.body)) {
-    return spineResponse.body
   } else {
-    return translateToOperationOutcome(spineResponse)
+    const translatedSpineResponse = translateToOperationOutcome(spineResponse)
+    return responseToolkit.response(translatedSpineResponse.operationOutcome)
+      .code(translatedSpineResponse.statusCode)
+      .header("Content-Type", "application/fhir+json; fhirVersion=4.0")
   }
 }
 
@@ -69,7 +66,8 @@ const getCircularReplacer = () => {
 
 export async function fhirValidation(
   payload: HapiPayload,
-  requestHeaders: Hapi.Util.Dictionary<string>): Promise<fhir.OperationOutcome> {
+  requestHeaders: Hapi.Util.Dictionary<string>
+): Promise<fhir.OperationOutcome> {
   const validatorResponse = await axios.post(
     "http://localhost:9001/$validate",
     payload.toString(),

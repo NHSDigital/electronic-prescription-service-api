@@ -115,40 +115,42 @@ describe("translateToOperationOutcome", () => {
   test("returns informational OperationOutcome for status code <= 299", () => {
     const spineResponse = spineResponses.success.response
     const result = translateToOperationOutcome(spineResponse)
-    expect(result.issue[0].severity).toEqual("information")
-    expect(result.issue[0].code).toEqual("informational")
+    expect(result.operationOutcome.issue[0].severity).toEqual("information")
+    expect(result.operationOutcome.issue[0].code).toEqual("informational")
   })
 
   test("returns error OperationOutcome for status code > 299", () => {
     const spineResponse = spineResponses.singleErrors[0].response
     const result = translateToOperationOutcome(spineResponse)
-    expect(result.issue[0].severity).toEqual("error")
-    expect(result.issue[0].code).toEqual("invalid")
+    expect(result.operationOutcome.issue[0].severity).toEqual("error")
+    expect(result.operationOutcome.issue[0].code).toEqual("invalid")
   })
 
-  test("converts spine successes", () => {
+  it("converts spine successes", () => {
     const spineResponse = spineResponses.success.response
     const result = translateToOperationOutcome(spineResponse)
 
-    expect(result.issue[0].severity).toEqual("information")
-    expect(result.issue[0].code).toEqual("informational")
-    expect(result.issue[0].details).toBeFalsy()
+    expect(result.operationOutcome.issue[0].severity).toEqual("information")
+    expect(result.operationOutcome.issue[0].code).toEqual("informational")
+    expect(result.operationOutcome.issue[0].details).toBeFalsy()
   })
 
   test.each(TestResources.spineResponses.singleErrors)("converts spine single errors", (syncResponse) => {
     const actualOperationOutcome = translateToOperationOutcome(syncResponse.response)
 
-    expect(actualOperationOutcome.issue).toHaveLength(1)
-    expect(actualOperationOutcome.issue[0].details.coding).toHaveLength(1)
-    expect(actualOperationOutcome.issue[0].details.coding[0].code).toBe(syncResponse.spineErrorCode.toString())
-    expect(actualOperationOutcome.issue[0].details.coding[0].display).toBeTruthy()
+    expect(actualOperationOutcome.operationOutcome.issue).toHaveLength(1)
+    expect(actualOperationOutcome.operationOutcome.issue[0].details.coding).toHaveLength(1)
+    expect(actualOperationOutcome.operationOutcome.issue[0].details.coding[0].code).toBe(
+      syncResponse.spineErrorCode.toString()
+    )
+    expect(actualOperationOutcome.operationOutcome.issue[0].details.coding[0].display).toBeTruthy()
   })
 
   test.each(TestResources.spineResponses.multipleErrors)("converts multiple spine errors", (syncResponse) => {
     const actualOperationOutcome = translateToOperationOutcome(syncResponse.response)
 
-    expect(actualOperationOutcome.issue.length).toBeGreaterThan(1)
-    actualOperationOutcome.issue.forEach(operationOutcomeIssue => {
+    expect(actualOperationOutcome.operationOutcome.issue.length).toBeGreaterThan(1)
+    actualOperationOutcome.operationOutcome.issue.forEach(operationOutcomeIssue => {
       expect(operationOutcomeIssue.details.coding).toHaveLength(1)
       expect(operationOutcomeIssue.details.coding[0].code).toBe(syncResponse.spineErrorCode.toString())
       expect(operationOutcomeIssue.details.coding[0].display).toBeTruthy()
@@ -164,8 +166,8 @@ describe("translateToOperationOutcome", () => {
 
     const actualOperationOutcome = translateToOperationOutcome(spineResponse)
 
-    expect(actualOperationOutcome.issue).toHaveLength(1)
-    expect(actualOperationOutcome.issue[0].diagnostics).toBe(bodyString)
+    expect(actualOperationOutcome.operationOutcome.issue).toHaveLength(1)
+    expect(actualOperationOutcome.operationOutcome.issue[0].diagnostics).toBe(bodyString)
   })
 })
 
