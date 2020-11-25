@@ -17,13 +17,27 @@
           "display": "Prescription Order"
         },
         "sender": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA"
+          },
           "reference": "urn:uuid:dbaa616b-e23c-4d53-0f82-b2d178db79ca",
           "display": "PEPIN MCQUADE"
         },
         "source": {
-          "name": "PAS",
-          "endpoint": "https://fhir.mynhstrust.nhs.uk/R4"
+          "endpoint": "urn:nhs-uk:addressing:ods:RBA"
         },
+        "destination": [
+          {
+            "endpoint": "urn:nhs-uk:addressing:ods:FA553",
+            "receiver": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "FA553"
+              }
+            }
+          }
+        ],
         "focus": [
           {
             "reference": "urn:uuid:a7b86f8d-1d81-fc28-e050-d20ae3a215f0"

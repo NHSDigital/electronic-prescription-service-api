@@ -4,6 +4,9 @@ import * as TestResources from "../../resources/test-resources"
 import {clone} from "../../resources/test-helpers"
 import * as errors from "../../../src/models/errors/validation-errors"
 import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
+import {CourseOfTherapyTypeCode} from "../../../src/services/translation/prescription/course-of-therapy-type"
+import {getExtensionForUrl} from "../../../src/services/translation/common"
+import {RepeatInformationExtension} from "../../../src/models/fhir/fhir-resources"
 
 function validateValidationErrors (validationErrors: Array<errors.ValidationError>) {
   expect(validationErrors).toHaveLength(1)
@@ -103,5 +106,77 @@ describe("MedicationRequest checks", () => {
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
 
     validateValidationErrors(validationErrors)
+  })
+})
+
+describe("verifyRepeatDispensingPrescription", () => {
+  let bundle: fhir.Bundle
+  let medicationRequests: Array<fhir.MedicationRequest>
+  let firstMedicationRequest: fhir.MedicationRequest
+
+  beforeEach(() => {
+    bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    medicationRequests = getMedicationRequests(bundle)
+    medicationRequests.forEach(
+      req => req.courseOfTherapyType.coding[0].code = CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
+    )
+    firstMedicationRequest = medicationRequests[0]
+  })
+
+  test("Acute prescription gets no additional errors added", () => {
+    medicationRequests.forEach(
+      req => {
+        req.courseOfTherapyType.coding[0].code = CourseOfTherapyTypeCode.ACUTE
+        delete req.dispenseRequest.validityPeriod
+        delete req.dispenseRequest.expectedSupplyDuration
+      }
+    )
+
+    const returnedErrors = validator.verifyPrescriptionBundle(bundle)
+    expect(returnedErrors.length).toBe(0)
+  })
+
+  test("Repeat prescription with no dispenseRequest.validityPeriod adds an error", () => {
+    delete firstMedicationRequest.dispenseRequest.validityPeriod
+    const returnedErrors = validator.verifyRepeatDispensingPrescription(medicationRequests)
+    expect(returnedErrors.length).toBe(1)
+  })
+
+  test("Repeat prescription with no dispenseRequest.expectedSupplyDuration adds an error", () => {
+    delete firstMedicationRequest.dispenseRequest.expectedSupplyDuration
+    const returnedErrors = validator.verifyRepeatDispensingPrescription(medicationRequests)
+    expect(returnedErrors.length).toBe(1)
+  })
+
+  test("Repeat prescription with no extension adds an error", () => {
+    const extensionToRemove = getExtensionForUrl(
+      firstMedicationRequest.extension,
+      "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+      "bluh"
+    )
+    firstMedicationRequest.extension.remove(extensionToRemove as RepeatInformationExtension)
+    const returnedErrors = validator.verifyRepeatDispensingPrescription(medicationRequests)
+    expect(returnedErrors.length).toBe(1)
+  })
+})
+
+describe("verifyCancellationBundle", () => {
+  let bundle: fhir.Bundle
+
+  beforeEach(() => {
+    bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+  })
+
+  test("returns an error when passed more than 1 MedicationRequest", () => {
+    const returnedErrors = validator.verifyCancellationBundle(bundle)
+    expect(returnedErrors.length).toBeGreaterThan(0)
+  })
+
+  test("returns an error when MedicationRequest doesn't have a statusReason", () => {
+    const medicationRequestEntries = bundle.entry.filter((x) => x.resource.resourceType === "MedicationRequest")
+    medicationRequestEntries.slice(1).forEach(x => bundle.entry.remove(x))
+    delete (medicationRequestEntries[0].resource as fhir.MedicationRequest).statusReason
+    const returnedErrors = validator.verifyCancellationBundle(bundle)
+    expect(returnedErrors.length).toBeGreaterThan(0)
   })
 })

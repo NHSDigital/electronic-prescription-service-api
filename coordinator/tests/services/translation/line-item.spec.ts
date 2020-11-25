@@ -114,10 +114,14 @@ describe("additionalInstructions", () => {
 
   test("controlledDrugWords show up correctly", () => {
     const controlledDrugWordsExtension: fhir.StringExtension = {
-      url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-controlled-drug-quantity-words",
+      url: "quantityWords",
       valueString: "test1"
     }
-    firstFhirMedicationRequest.dispenseRequest.extension.push(controlledDrugWordsExtension)
+    const controlledDrugExtension: fhir.ControlledDrugExtension = {
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug",
+      extension: [controlledDrugWordsExtension]
+    }
+    firstFhirMedicationRequest.extension.push(controlledDrugExtension)
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, null, [])
     expect(
       result.pertinentInformation1.pertinentAdditionalInstructions.value
@@ -168,10 +172,14 @@ describe("additionalInstructions", () => {
 
   test("all info shows up in correct order with line break as separator", () => {
     const controlledDrugWordsExtension: fhir.StringExtension = {
-      url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-controlled-drug-quantity-words",
+      url: "quantityWords",
       valueString: "test1"
     }
-    firstFhirMedicationRequest.dispenseRequest.extension.push(controlledDrugWordsExtension)
+    const controlledDrugExtension: fhir.ControlledDrugExtension = {
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug",
+      extension: [controlledDrugWordsExtension]
+    }
+    firstFhirMedicationRequest.extension.push(controlledDrugExtension)
     firstFhirMedicationRequest.dosageInstruction[0].patientInstruction = "testPatientInstruction"
     const patientInfo = [new Text("testPatientInfo")]
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, null, patientInfo)

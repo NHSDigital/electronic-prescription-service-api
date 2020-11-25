@@ -47,3 +47,9 @@ export function sortAttributes(attributes: XmlJs.Attributes, currentElementName:
     .forEach(propertyName => newAttributes[propertyName] = attributes[propertyName])
   return newAttributes
 }
+
+export function readXml(text: string): XmlJs.ElementCompact {
+  return XmlJs.xml2js(text, {
+    compact: true
+  })
+}

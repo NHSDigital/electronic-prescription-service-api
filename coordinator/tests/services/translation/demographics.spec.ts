@@ -113,16 +113,7 @@ describe("convertAddress should return correct addresses", () => {
     ["temp", {use: core.AddressUse.TEMPORARY}]
   ]
 
-  test.each(cases)(
-    "address type as postal and use as %p should return use as core.AddressUse.POSTAL",
-    (argument: string) => {
-      const fhirAddress = {type: "postal", use: argument}
-      const result = demographics.convertAddress(fhirAddress, "fhirPath")
-      expect(result._attributes).toEqual({use: core.AddressUse.POSTAL})
-    }
-  )
-
-  test.each(cases)(`address type not postal and use as %p should return correct value`,
+  test.each(cases)(`address use as %p should return correct value`,
     (argument: string, expected) => {
       const resultHome = demographics.convertAddress({type: "example", use:argument}, "fhirPath")
       expect(resultHome._attributes).toEqual(expected)
