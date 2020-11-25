@@ -7,7 +7,6 @@ import axios from "axios"
 import moxios from "moxios"
 
 describe("asOperationOutcome", () => {
-
   beforeEach(() => {
     moxios.install(axios)
   })
@@ -39,41 +38,28 @@ describe("asOperationOutcome", () => {
     })
     expect(result).toBe(operationOutcome)
   })
+})
 
-  test("returns OperationOutcome if body is a string", () => {
-    const result = asOperationOutcome({
-      statusCode: 400,
-      body: "Something went terribly wrong"
-    })
-    expect(result).toEqual({
-      resourceType: "OperationOutcome",
-      issue: [{
-        severity: "error",
-        code: "invalid",
-        diagnostics: "Something went terribly wrong"
-      }]
+test("API only forwards accept header to validator", async () => {
+  moxios.install(axios)
+  moxios.stubRequest("http://localhost:9001/$validate", {
+    status: 200,
+    responseText: JSON.stringify({
+      "resourceType": "OperationOutcome"
     })
   })
 
-  test("API only forwards accept header to validator", async () => {
-    moxios.stubRequest("http://localhost:9001/$validate", {
-      status: 200,
-      responseText: JSON.stringify({
-        "resourceType": "OperationOutcome"
-      })
-    })
+  const exampleHeaders = {
+    "accept": "application/json+fhir",
+    "content-type": "application/my-content-type"
+  }
 
-    const exampleHeaders = {
-      "accept": "application/json+fhir",
-      "content-type": "application/my-content-type"
-    }
+  await fhirValidation("data", exampleHeaders)
+  const requestHeaders = moxios.requests.mostRecent().headers
 
-    await fhirValidation("data", exampleHeaders)
-    const requestHeaders = moxios.requests.mostRecent().headers
-
-    expect(requestHeaders["Accept"]).not.toBe("application/json+fhir")
-    expect(requestHeaders["Content-Type"]).toBe("application/my-content-type")
-  })
+  expect(requestHeaders["Accept"]).not.toBe("application/json+fhir")
+  expect(requestHeaders["Content-Type"]).toBe("application/my-content-type")
+  moxios.uninstall(axios)
 })
 
 describe("identifyMessageType", () => {

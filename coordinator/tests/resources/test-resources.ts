@@ -4,6 +4,8 @@ import * as fs from "fs"
 import * as path from "path"
 import {Bundle, Parameters} from "../../src/models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
+import {SpineDirectResponse} from "../../src/models/spine"
+import {acknowledgementCodes} from "../../src/models/hl7-v3/hl7-v3-spine-response"
 
 export class ExamplePrescription {
   description: string
@@ -96,3 +98,75 @@ export const specification = [
   examplePrescription3
   //examplePrescription4
 ]
+
+interface ExampleSpineResponse {
+  response: SpineDirectResponse<string>
+  spineErrorCode: number | undefined
+  acknowledgementCode: acknowledgementCodes
+}
+
+const asyncSuccess: ExampleSpineResponse = {
+  response: {
+    body: fs.readFileSync(
+      path.join(__dirname, "./spine-responses/async_success.xml"),
+      "utf8"
+    ),
+    statusCode: 200
+  },
+  spineErrorCode: undefined,
+  acknowledgementCode: "AA"
+}
+
+const syncError: ExampleSpineResponse = {
+  response: {
+    body: fs.readFileSync(
+      path.join(__dirname, "./spine-responses/sync_error.xml"),
+      "utf8"
+    ),
+    statusCode: 400
+  },
+  spineErrorCode: 202,
+  acknowledgementCode: "AR"
+}
+
+const asyncError: ExampleSpineResponse = {
+  response: {
+    body: fs.readFileSync(
+      path.join(__dirname, "./spine-responses/async_error.xml"),
+      "utf8"
+    ),
+    statusCode: 400
+  },
+  spineErrorCode: 5000,
+  acknowledgementCode: "AE"
+}
+
+const syncMultipleError: ExampleSpineResponse = {
+  response: {
+    body: fs.readFileSync(
+      path.join(__dirname, "./spine-responses/sync_multiple_error.xml"),
+      "utf8"
+    ),
+    statusCode: 400
+  },
+  spineErrorCode: 202,
+  acknowledgementCode: "AR"
+}
+
+const asyncMultipleError: ExampleSpineResponse = {
+  response: {
+    body: fs.readFileSync(
+      path.join(__dirname, "./spine-responses/async_multiple_error.xml"),
+      "utf8"
+    ),
+    statusCode: 400
+  },
+  spineErrorCode: 5000,
+  acknowledgementCode: "AE"
+}
+
+export const spineResponses = {
+  success: asyncSuccess,
+  singleErrors: [syncError, asyncError],
+  multipleErrors: [syncMultipleError, asyncMultipleError]
+}

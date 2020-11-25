@@ -18,22 +18,27 @@
           "display": "Prescription Order Update"
         },
         "sender": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA"
+          },
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
           "display": "RAZIA|ALI"
         },
         "source": {
-          "extension": [
-            {
-              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-spineEndpoint",
-              "valueIdentifier": {
-                "system": "https://fhir.nhs.uk/Id/spine-ASID",
-                "value": "12456789012"
+          "endpoint": "urn:nhs-uk:addressing:ods:RBA"
+        },
+        "destination": [
+          {
+            "endpoint": "https://sandbox.api.service.nhs.uk/electronic-prescriptions/$post-message",
+            "receiver": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "X26"
               }
             }
-          ],
-          "name": "DJM",
-          "endpoint": "https://mait.digital.nhs.uk/"
-        },
+          }
+        ],
         "focus": [
           {
             "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
@@ -78,6 +83,17 @@
           ]
         },
         "intent": "order",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                "code": "outpatient",
+                "display": "Outpatient"
+              }
+            ]
+          }
+        ],
         "medicationCodeableConcept": {
           "coding": [
             {
@@ -115,6 +131,69 @@
               "display": "Short course (acute) therapy"
             }
           ]
+        },
+        "dosageInstruction": [
+          {
+            "text": "10 milligram, Inject, Subcutaneous route, once weekly",
+            "timing": {
+              "repeat": {
+                "frequency": 5,
+                "period": 1,
+                "periodUnit": "d",
+                "boundsDuration": {
+                  "value": 10,
+                  "unit": "day",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "d"
+                }
+              }
+            },
+            "method": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "422145002",
+                  "display": "Inject"
+                }
+              ]
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "34206005",
+                  "display": "Subcutaneous route"
+                }
+              ]
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 10,
+                  "unit": "milligram",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
+              }
+            ]
+          }
+        ],
+        "dispenseRequest": {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
+              "valueCoding": {
+                "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+                "code": "0004"
+              }
+            }
+          ],
+          "quantity": {
+            "value": 1,
+            "unit": "pre-filled disposable injection",
+            "system": "http://snomed.info/sct",
+            "code": "3318611000001103"
+          }
         },
         "substitution": {
           "allowedBoolean": false
