@@ -6,14 +6,16 @@ import {LosslessNumber} from "lossless-json"
 import {InvalidValueError, TooFewValuesError, TooManyValuesError} from "../../../models/errors/processing-errors"
 import {readXml} from "../../serialisation/xml"
 import {AsyncMCCI, SyncMCCI} from "../../../models/hl7-v3/hl7-v3-spine-response"
+import * as cancellation from "../cancellation/cancellation-response"
 
 // eslint-disable-next-line max-len
 const FHIR_DATE_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$/
 // eslint-disable-next-line max-len
 const FHIR_DATE_TIME_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$/
-const SYNC_SPINE_RESPONSE_MCCI_REGEX = /(<MCCI_IN010000UK13>)([\s\S]*)(<\/MCCI_IN010000UK13>)/i
-const ASYNC_SPINE_RESPONSE_MCCI_REGEX = /(<hl7:MCCI_IN010000UK13[\s\S]*>)([\s\S]*)(<\/hl7:MCCI_IN010000UK13>)/i
-const SPINE_CANCELLATION_ERROR_RESPONSE_REGEX = /(<hl7:PORX_IN050101UK31[\s\S]*>)([\s\S]*)(<\/hl7:PORX_IN050101UK31>)/i
+const SYNC_SPINE_RESPONSE_MCCI_REGEX = /(?=<MCCI_IN010000UK13>)([\s\S]*)(?<=<\/MCCI_IN010000UK13>)/i
+const ASYNC_SPINE_RESPONSE_MCCI_REGEX = /(?=<hl7:MCCI_IN010000UK13[\s\S]*>)([\s\S]*)(?<=<\/hl7:MCCI_IN010000UK13>)/i
+// eslint-disable-next-line max-len
+export const SPINE_CANCELLATION_ERROR_RESPONSE_REGEX = /(?=<hl7:PORX_IN050101UK31[\s\S]*>)([\s\S]*)(?<=<\/hl7:PORX_IN050101UK31>)/i
 
 export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, additionalContext?: string): T {
   const iterator = iterable[Symbol.iterator]()
@@ -210,13 +212,6 @@ function translateAsyncSpineResponse(message: string): Array<fhir.CodeableConcep
   }))
 }
 
-function translateSpineCancelResponseIntoBundle(message: string): fhir.Bundle {
-  // const parsedMsg = readXml(message)
-  console.log(message)
-  //TODO add all necessary stuff
-  return new fhir.Bundle()
-}
-
 export function translateHl7ResponseToFhir<T>(message: SpineDirectResponse<T>): fhir.OperationOutcome | fhir.Bundle {
   const bodyString = message.body.toString()
   if (message.statusCode <= 299) {
@@ -237,7 +232,7 @@ export function translateHl7ResponseToFhir<T>(message: SpineDirectResponse<T>): 
   } else if (asyncMCCI) {
     return turnCodeableConceptArrayIntoOperationOutcome(translateAsyncSpineResponse(asyncMCCI[0]), bodyString)
   } else if (cancelResponse) {
-    return translateSpineCancelResponseIntoBundle(cancelResponse[0])
+    return cancellation.translateSpineCancelResponseIntoBundle(cancelResponse[0])
   }
   return {
     resourceType: "OperationOutcome",

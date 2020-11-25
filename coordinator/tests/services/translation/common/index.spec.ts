@@ -110,33 +110,33 @@ describe("getIdentifierValueOrNullForSystem", () => {
   })
 })
 
-describe("translateToOperationOutcome", () => {
+describe("translateHl7ResponseToFhir", () => {
   const spineResponses = TestResources.spineResponses
   test("returns informational OperationOutcome for status code <= 299", () => {
     const spineResponse = spineResponses.success.response
-    const result = translateHl7ResponseToFhir(spineResponse)
+    const result = translateHl7ResponseToFhir(spineResponse) as fhir.OperationOutcome
     expect(result.issue[0].severity).toEqual("information")
     expect(result.issue[0].code).toEqual("informational")
   })
 
-  test("returns error OperationOutcome for status code > 299", () => {
+  test("returns error OperationOutcome for status code > 299 and non cancellation response", () => {
     const spineResponse = spineResponses.singleErrors[0].response
-    const result = translateHl7ResponseToFhir(spineResponse)
+    const result = translateHl7ResponseToFhir(spineResponse) as fhir.OperationOutcome
     expect(result.issue[0].severity).toEqual("error")
     expect(result.issue[0].code).toEqual("invalid")
   })
 
   test("converts spine successes", () => {
     const spineResponse = spineResponses.success.response
-    const result = translateHl7ResponseToFhir(spineResponse)
+    const result = translateHl7ResponseToFhir(spineResponse) as fhir.OperationOutcome
 
     expect(result.issue[0].severity).toEqual("information")
     expect(result.issue[0].code).toEqual("informational")
     expect(result.issue[0].details).toBeFalsy()
   })
 
-  test.each(TestResources.spineResponses.singleErrors)("converts spine single errors", (syncResponse) => {
-    const actualOperationOutcome = translateHl7ResponseToFhir(syncResponse.response)
+  test.each(TestResources.spineResponses.singleErrors)("converts spine prescription single errors", (syncResponse) => {
+    const actualOperationOutcome = translateHl7ResponseToFhir(syncResponse.response) as fhir.OperationOutcome
 
     expect(actualOperationOutcome.issue).toHaveLength(1)
     expect(actualOperationOutcome.issue[0].details.coding).toHaveLength(1)
@@ -144,16 +144,17 @@ describe("translateToOperationOutcome", () => {
     expect(actualOperationOutcome.issue[0].details.coding[0].display).toBeTruthy()
   })
 
-  test.each(TestResources.spineResponses.multipleErrors)("converts multiple spine errors", (syncResponse) => {
-    const actualOperationOutcome = translateHl7ResponseToFhir(syncResponse.response)
+  test.each(TestResources.spineResponses.multipleErrors)("converts multiple spine prescription errors",
+    (syncResponse) => {
+      const actualOperationOutcome = translateHl7ResponseToFhir(syncResponse.response) as fhir.OperationOutcome
 
-    expect(actualOperationOutcome.issue.length).toBeGreaterThan(1)
-    actualOperationOutcome.issue.forEach(operationOutcomeIssue => {
-      expect(operationOutcomeIssue.details.coding).toHaveLength(1)
-      expect(operationOutcomeIssue.details.coding[0].code).toBe(syncResponse.spineErrorCode.toString())
-      expect(operationOutcomeIssue.details.coding[0].display).toBeTruthy()
+      expect(actualOperationOutcome.issue.length).toBeGreaterThan(1)
+      actualOperationOutcome.issue.forEach(operationOutcomeIssue => {
+        expect(operationOutcomeIssue.details.coding).toHaveLength(1)
+        expect(operationOutcomeIssue.details.coding[0].code).toBe(syncResponse.spineErrorCode.toString())
+        expect(operationOutcomeIssue.details.coding[0].display).toBeTruthy()
+      })
     })
-  })
 
   test("returns specific response on unexpected spine response", () => {
     const bodyString = "this body doesnt pass the regex checks"
@@ -162,7 +163,7 @@ describe("translateToOperationOutcome", () => {
       statusCode: 420
     }
 
-    const actualOperationOutcome = translateHl7ResponseToFhir(spineResponse)
+    const actualOperationOutcome = translateHl7ResponseToFhir(spineResponse) as fhir.OperationOutcome
 
     expect(actualOperationOutcome.issue).toHaveLength(1)
     expect(actualOperationOutcome.issue[0].diagnostics).toBe(bodyString)

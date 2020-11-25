@@ -40,3 +40,28 @@ export interface AsyncMCCI {
     }
   }
 }
+
+export interface SpineCancellationResponse {
+  "hl7:PORX_IN050101UK31": {
+    "hl7:ControlActEvent": {
+      "hl7:subject": {
+        CancellationResponse: CancellationResponse
+      }
+    }
+  }
+}
+
+export interface CancellationResponse {
+  pertinentInformation3: PertinentInformation3
+}
+
+export interface PertinentInformation3 {
+  pertinentResponse: {
+    value: {
+      _attributes: {
+        code: string
+        displayName: string
+      }
+    }
+  }
+}
