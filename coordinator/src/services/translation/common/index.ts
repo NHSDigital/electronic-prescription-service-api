@@ -1,12 +1,8 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import moment from "moment"
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
-import {SpineDirectResponse} from "../../../models/spine"
 import {LosslessNumber} from "lossless-json"
 import {InvalidValueError, TooFewValuesError, TooManyValuesError} from "../../../models/errors/processing-errors"
-import {
-  getAcknowledgement, getSpineErrors, translateAcknowledgementToStatusCode
-} from "../spineResponse"
 
 // eslint-disable-next-line max-len
 const FHIR_DATE_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$/
@@ -178,52 +174,6 @@ export function convertMomentToHl7V3DateTime(dateTime: moment.Moment): core.Time
 
 export function toArray<T>(thing: T | Array<T>): Array<T> {
   return Array.isArray(thing) ? thing : [thing]
-}
-
-interface TranslatedSpineResponse {
-  operationOutcome: fhir.OperationOutcome
-  statusCode: number
-}
-
-export function translateToOperationOutcome<T>(message: SpineDirectResponse<T>): TranslatedSpineResponse {
-  const hl7BodyString = message.body.toString()
-  const acknowledgement = getAcknowledgement(hl7BodyString)
-  console.log(`acknowledgement: ${acknowledgement}`)
-  const statusCode = translateAcknowledgementToStatusCode(acknowledgement)
-  // const statusCode = message.statusCode
-
-  if (statusCode <= 299) {
-    const successfulOperationOutcome: fhir.OperationOutcome = {
-      resourceType: "OperationOutcome",
-      issue: [{
-        code: "informational",
-        severity: "information",
-        diagnostics: message.body?.toString()
-      }]
-    }
-    return {
-      operationOutcome: successfulOperationOutcome,
-      statusCode
-    }
-  } else {
-    const spineErrors = getSpineErrors(hl7BodyString)
-    const operationOutcomeIssues = spineErrors.map(
-      spineError => ({
-        code: "invalid",
-        severity: "error",
-        diagnostics: message.body?.toString(),
-        details: spineError
-      } as fhir.OperationOutcomeIssue)
-    )
-    const errorOperationOutcome: fhir.OperationOutcome = {
-      resourceType: "OperationOutcome",
-      issue: operationOutcomeIssues
-    }
-    return {
-      operationOutcome: errorOperationOutcome,
-      statusCode
-    }
-  }
 }
 
 export function getNumericValueAsString(numericValue: string | number | LosslessNumber): string {
