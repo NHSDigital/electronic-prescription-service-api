@@ -54,4 +54,8 @@ describe("createMedicationRequest", () => {
       }
     )
   })
+
+  test("authoredOn", () => {
+    expect(medicationRequest.authoredOn).toBe("2020-11-18T09:25:23+00:00")
+  })
 })

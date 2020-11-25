@@ -9,6 +9,7 @@ export class Bundle extends Resource {
   readonly resourceType = "Bundle"
   identifier?: Identifier
   entry?: Array<BundleEntry>
+  type?: string
 }
 
 class BundleEntry {

@@ -12,5 +12,6 @@ export function translateSpineCancelResponseIntoBundle(message: string): fhir.Bu
     createPatient()
   ]
   bundle.entry = bundleElements.map(resource => ({fullUrl: "123456789", resource}))
+  bundle.type = "message"
   return bundle
 }

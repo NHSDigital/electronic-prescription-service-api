@@ -52,6 +52,11 @@ export interface SpineCancellationResponse {
 }
 
 export interface CancellationResponse {
+  effectiveTime: {
+    _attributes: {
+      value: string
+    }
+  }
   pertinentInformation3: PertinentInformation3
 }
 
