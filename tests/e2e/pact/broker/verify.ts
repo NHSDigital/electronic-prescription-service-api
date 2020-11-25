@@ -21,8 +21,7 @@ async function verify(): Promise<any> {
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
     logLevel: isLocal? "debug" : "info",
     customProviderHeaders: [
-      "x-smoke-test: 1",
-      `Authorization: Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
+      "x-smoke-test: 1"
     ],
     pactUrls: isLocal 
       ? [

@@ -15,7 +15,7 @@ async function verify(): Promise<any> {
     logLevel: isLocal? "debug" : "info",
     requestFilter: (req) => {
       req.headers["x-smoke-test"] = "1"
-      req.headers["Authorization"] = `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
+      req.headers["Authorization"] = req.headers["Authorization"] ?? `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
       return req
     },
     pactUrls: isLocal 
