@@ -41,7 +41,7 @@ function convertRepresentedOrganization(
 
 function isNhsTrust(fhirOrganization: fhir.Organization) {
   const organizationTypeCoding = getCodeableConceptCodingForSystemOrNull(
-    fhirOrganization.type,
+    fhirOrganization.type || [],
     "https://fhir.nhs.uk/CodeSystem/organisation-role",
     "Organization.type"
   )
@@ -84,6 +84,9 @@ function convertCommonOrganizationDetails(costCentre: CostCentre): peoplePlaces.
   )
   result.id = new codes.SdsOrganizationIdentifier(organizationSdsId)
   result.code = new codes.OrganizationTypeCode("999")
+  if (!costCentre.name) {
+    throw new InvalidValueError("Name must be provided.", `${costCentre.resourceType}.address`)
+  }
   result.name = new core.Text(costCentre.name)
 
   return result
