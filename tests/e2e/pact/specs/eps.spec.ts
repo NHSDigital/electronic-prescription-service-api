@@ -1,4 +1,4 @@
-import { InteractionObject } from "@pact-foundation/pact"
+import { InteractionObject, Matchers } from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../resources/test-resources"
@@ -26,14 +26,8 @@ jestpact.pactWith(
       test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (desc: string, inputMessage: Bundle, outputMessage: Parameters) => {
         const apiPath = "/$prepare"
         const inputMessageStr = LosslessJson.stringify(inputMessage)
-
-        // do not assert deprecated parameters
-        outputMessage.parameter =
-          outputMessage.parameter
-            .filter(p => p.name !== "fragments")
-            .filter(p => p.name !== "display")
-
-        console.log(JSON.stringify(outputMessage))
+        const outputMessageDigest = outputMessage.parameter
+          .find(p => p.name === "digest").valueString
 
         const interaction: InteractionObject = {
           state: null,
@@ -50,7 +44,27 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
-            body: outputMessage,
+            body: {
+              resourceType: "Parameters",
+              parameter: [
+                {
+                  name: "fragments",
+                  valueString: Matchers.string()
+                },
+                {
+                  name: "digest",
+                  valueString: `${outputMessageDigest}`
+                },
+                {
+                  name: "display",
+                  valueString: Matchers.string()
+                },
+                {
+                  name: "algorithm",
+                  valueString: "RS1"
+                }
+              ]
+            },
             status: 200
           }
         }
