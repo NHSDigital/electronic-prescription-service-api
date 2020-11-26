@@ -27,8 +27,13 @@ jestpact.pactWith(
         const apiPath = "/$prepare"
         const inputMessageStr = LosslessJson.stringify(inputMessage)
 
-        // remove display as this is both unstable and to be removed in future release
-        delete outputMessage["parameter"][2]
+        // do not assert deprecated parameters
+        outputMessage.parameter =
+          outputMessage.parameter
+            .filter(p => p.name !== "fragments")
+            .filter(p => p.name !== "display")
+
+        console.log(JSON.stringify(outputMessage))
 
         const interaction: InteractionObject = {
           state: null,
