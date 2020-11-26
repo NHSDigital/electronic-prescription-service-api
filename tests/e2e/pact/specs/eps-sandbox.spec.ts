@@ -25,7 +25,9 @@ jestpact.pactWith(
       test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (description: string, request: Bundle, response: Parameters) => {
         const apiPath = "/$prepare"
         const requestStr = LosslessJson.stringify(request)
-        const responseStr = LosslessJson.stringify(response)
+        const outputMessageDigest = response.parameter
+          .find(p => p.name === "digest").valueString
+          
         const interaction: InteractionObject = {
           state: null,
           uponReceiving: `a request to prepare a ${description} message`,
@@ -41,7 +43,27 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
-            body: JSON.parse(responseStr),
+            body: {
+              resourceType: "Parameters",
+              parameter: [
+                {
+                  name: "fragments",
+                  valueString: Matchers.string()
+                },
+                {
+                  name: "digest",
+                  valueString: `${outputMessageDigest}`
+                },
+                {
+                  name: "display",
+                  valueString: Matchers.string()
+                },
+                {
+                  name: "algorithm",
+                  valueString: "RS1"
+                }
+              ]
+            },
             status: 200
           }
         }
