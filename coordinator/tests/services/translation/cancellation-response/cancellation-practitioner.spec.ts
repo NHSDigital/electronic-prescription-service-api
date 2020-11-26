@@ -3,7 +3,7 @@ import {
   getIdentifierValueForSystem,
   SPINE_CANCELLATION_ERROR_RESPONSE_REGEX
 } from "../../../../src/services/translation/common"
-import {createPractitioner} from "../../../../src/services/translation/cancellation/cancellation-practitioner";
+import {createPractitioner} from "../../../../src/services/translation/cancellation/cancellation-practitioner"
 import {readXml} from "../../../../src/services/serialisation/xml"
 
 describe("createDispensePractitioner", () => {
