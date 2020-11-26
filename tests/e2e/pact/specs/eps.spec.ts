@@ -147,6 +147,7 @@ jestpact.pactWith(
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+          .set('Authorization', 'I am a bad access token')
           .send({})
           .expect(401)
       })
