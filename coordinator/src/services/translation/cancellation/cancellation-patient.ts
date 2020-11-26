@@ -1,5 +1,4 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
-import {SpineCancellationResponse} from "../../../models/hl7-v3/hl7-v3-spine-response"
 import {Patient} from "../../../models/hl7-v3/hl7-v3-people-places"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
@@ -8,11 +7,8 @@ import {IdentifierReference, Organization} from "../../../models/fhir/fhir-resou
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {toArray} from "../common"
 
-export function createPatient(message: SpineCancellationResponse): fhir.Patient {
+export function createPatient(hl7Patient: Patient): fhir.Patient {
   const patient = {resourceType: "Patient"} as fhir.Patient
-  const actEvent = message["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
-  const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
-  const hl7Patient = cancellationResponse.recordTarget.Patient
 
   patient.identifier = createNhsNumberIdentifier(hl7Patient)
 

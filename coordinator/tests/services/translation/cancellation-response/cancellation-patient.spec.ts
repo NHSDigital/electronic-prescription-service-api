@@ -1,17 +1,17 @@
 import * as TestResources from "../../../resources/test-resources"
-import {
-  SPINE_CANCELLATION_ERROR_RESPONSE_REGEX
-} from "../../../../src/services/translation/common"
+import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/common"
 import {readXml} from "../../../../src/services/serialisation/xml"
-import {SpineCancellationResponse} from "../../../../src/models/hl7-v3/hl7-v3-spine-response"
 import {createPatient} from "../../../../src/services/translation/cancellation/cancellation-patient"
 
 describe("createPatient", () => {
   const actualError = TestResources.spineResponses.cancellationError
   const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(actualError.response.body)[0]
-  const patient = createPatient(readXml(cancelResponse) as SpineCancellationResponse)
+  const parsedMsg = readXml(cancelResponse)
+  const actEvent = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
+  const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
+  const patient = createPatient(cancellationResponse.recordTarget.Patient)
 
-  test("returned patient has an identifier block with corect NHS number", ()=> {
+  test("returned patient has an identifier block with correct NHS number", () => {
     expect(patient.identifier).not.toBeUndefined()
     const nhsNumber = patient.identifier[0].value
     expect(nhsNumber).toBe("9453740519")
