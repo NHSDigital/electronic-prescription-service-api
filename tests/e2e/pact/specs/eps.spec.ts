@@ -31,7 +31,7 @@ jestpact.pactWith(
               "Authorization": "I am a bad access token"
             },
             method: "POST",
-            path: "/$convert",
+            path: "/$prepare",
             body: {}
           },
           willRespondWith: {
@@ -114,7 +114,7 @@ jestpact.pactWith(
               "Authorization": "I am a bad access token"
             },
             method: "POST",
-            path: "/$convert",
+            path: "/$process-message",
             body: {}
           },
           willRespondWith: {
