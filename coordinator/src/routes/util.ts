@@ -71,7 +71,7 @@ export async function fhirValidation(
   payload: HapiPayload,
   requestHeaders: Hapi.Util.Dictionary<string>): Promise<fhir.OperationOutcome> {
   const validatorResponse = await axios.post(
-    "http://localhost:9001/$validate",
+    "http://localhost:9003/$validate",
     payload.toString(),
     {
       headers: {

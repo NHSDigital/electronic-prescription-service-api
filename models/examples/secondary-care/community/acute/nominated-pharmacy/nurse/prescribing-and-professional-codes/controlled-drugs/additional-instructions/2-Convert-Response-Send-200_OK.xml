@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN020101SM31 xmlns="urn:hl7-org:v3">
   <id root="D11004E5-F29E-4F47-8C65-2B9C43594B80"/>
-  <creationTime value="20201125104439"/>
+  <creationTime value="20201126015050"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN020101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -42,7 +42,7 @@
       <ParentPrescription classCode="INFO" moodCode="EVN">
         <id root="AEF77AFB-7E3C-427A-8657-2C427F71A271"/>
         <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Prescription - FocusActOrEvent (record artifact)"/>
-        <effectiveTime value="20201125104408"/>
+        <effectiveTime value="20201126015019"/>
         <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <Patient classCode="PAT">
@@ -80,7 +80,7 @@
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentPrescription classCode="SBADM" moodCode="RQO">
             <id root="454FC887-488A-4519-B529-11000B6791DF"/>
-            <id extension="35478D-Z812F0-11EBAI" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+            <id extension="CCE116-ZCF2F8-11EBAK" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
             <effectiveTime nullFlavor="NA"/>
             <performer contextControlCode="OP" typeCode="PRF">
@@ -91,7 +91,7 @@
               </AgentOrgSDS>
             </performer>
             <author contextControlCode="OP" typeCode="AUT">
-              <time value="20201125104408"/>
+              <time value="20201126015019"/>
               <signatureText>
                 <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
                   <SignedInfo>
@@ -102,10 +102,10 @@
                         <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
                       </Transforms>
                       <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                      <DigestValue>FiPk1qe4ZOsUfNzZ3wsp/Ydf4UM=</DigestValue>
+                      <DigestValue>vvCwf988241pxthiOEWWqoV3Ru0=</DigestValue>
                     </Reference>
                   </SignedInfo>
-                  <SignatureValue>o7w9xZJKngrAo3Qb3C2tBb7Hxuk0LPSucGVkqMCgXzjsGBFmkBkOsT0CsynoY5eRKg6RJ26l1bs33+5YGLRMvCM2e66P3dS0bPiIXorxYbchmdogLz9l7B3xKwP+N/TPJej3U/Z0edrQYMlGQE+fEAh9OQ5hVbHODtZt3WjBdZQ=</SignatureValue>
+                  <SignatureValue>BBIUI7tchP2XDQYFfnCFIR3vBEfwpjjSYYjvATb0u8ZAKsQ93w7l3ujF5VVdLLOkWWoz4LDWsMeeCrU/i84WOUlk+Wp2zG8IOcp0e9j3eDoQ07+P+Og1bVPZ545OXlp7wyysIWUtsiDC/s+lHvLpBfizowNzTGFgIBXGQ0f3+Ec=</SignatureValue>
                   <KeyInfo>
                     <X509Data>
                       <X509Certificate>MIIDuDCCAqCgAwIBAgIEXcmtHzANBgkqhkiG9w0BAQsFADA2MQwwCgYDVQQKEwNuaHMxCzAJBgNVBAsTAkNBMRkwFwYDVQQDExBOSFMgSU5UIExldmVsIDFEMB4XDTIwMTAyMjEwMjE1NVoXDTIyMTAyMjEwNTE1NVowQzEMMAoGA1UEChMDbmhzMQ8wDQYDVQQLEwZQZW9wbGUxIjAgBgNVBAMMGTU1NTI1MzUyMTEwOF9SQU5ET01fVVNFUlEwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKt4szNw7OAH7AQRrDe/xBImsMmMiS9EsrT3a3p/Lh3brdzI9aajTUZ2b/cvbOa7PeYd7u+K4a2Zd0Xk+0GFmYGzSVX6iYjblwr0vai31zV7G+lGvHxH6pSoLCwICaZAFwabeD5Oz94+yA3aWNWtGV0Dfh9qwH3ZFCIMRsverN1pAgMBAAGjggFDMIIBPzAOBgNVHQ8BAf8EBAMCBkAwZQYDVR0gAQH/BFswWTBXBgsqhjoAiXtmAAMCADBIMEYGCCsGAQUFBwIBFjpodHRwczovL3BraS5uaHMudWsvY2VydGlmaWNhdGVfcG9saWNpZXMvY29udGVudF9jb21taXRtZW50MDMGA1UdHwQsMCowKKAmoCSGImh0dHA6Ly9jcmwubmhzLnVrL2ludC8xZC9jcmxjMy5jcmwwKwYDVR0QBCQwIoAPMjAyMDEwMjIxMDIxNTVagQ8yMDIyMDMxNzEwNTE1NVowHwYDVR0jBBgwFoAUoJYfgYTNPd6EUKL6QLIzHxY5PFIwHQYDVR0OBBYEFLtyvYSyaqg60AEUZgxk0wrjRJc+MAkGA1UdEwQCMAAwGQYJKoZIhvZ9B0EABAwwChsEVjguMwMCBLAwDQYJKoZIhvcNAQELBQADggEBABczy8B8juPpIfaTNFcxrC22aCX/xYZmhrL/NvIBAaX1G5hjiwmkGKE2hRTIr67PxZxmXsJxigRBMHPlI+lY/+okzH0Gi7b5bqlw7pxGIgJO000w8pFsvo9w42IYhHodsvnDVSxhMT0J46Qhk9soE0LjoEULKQPPlYGke/Gl3m17ItFYwObQH0fMEwmiqByeIfz7gSccOzL5cIp6PcZTOjo2IqQpgEmhjOcRInEqANitSdjoiJAJzpaaZjYTRdHUX7i7ajEiH4m91nFW+4AqkNttlb4WcGKsSmWgfKKheF4IoZKME80xerSgMy8vtjLOBJCGXz0wLGmQuRmxMTq88q4=</X509Certificate>
