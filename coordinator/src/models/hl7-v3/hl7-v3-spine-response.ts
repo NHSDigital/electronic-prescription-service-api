@@ -1,3 +1,5 @@
+import {Patient} from "./hl7-v3-people-places";
+
 export type acknowledgementCodes = "AA" | "AR"| "AE"
 
 interface Code {
@@ -56,6 +58,9 @@ export interface CancellationResponse {
     _attributes: {
       value: string
     }
+  }
+  recordTarget: {
+    Patient: Patient
   }
   pertinentInformation3: PertinentInformation3
 }

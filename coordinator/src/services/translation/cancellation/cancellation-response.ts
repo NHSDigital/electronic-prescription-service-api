@@ -9,7 +9,7 @@ export function translateSpineCancelResponseIntoBundle(message: string): fhir.Bu
   const bundle = new fhir.Bundle()
   const bundleElements = [
     createMedicationRequest(parsedMsg),
-    createPatient()
+    createPatient(parsedMsg)
   ]
   bundle.entry = bundleElements.map(resource => ({fullUrl: "123456789", resource}))
   bundle.type = "message"

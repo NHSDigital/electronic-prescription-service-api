@@ -21,6 +21,7 @@ export interface Identifier {
   use?: string
   system?: string
   value?: string
+  extension?: Array<CodeableConceptExtension | IdentifierExtension>
 }
 
 export interface MedicationRequestGroupIdentifier extends Identifier {
