@@ -1,4 +1,4 @@
-import {Patient} from "./hl7-v3-people-places"
+import {AgentPerson, Patient} from "./hl7-v3-people-places"
 
 export type acknowledgementCodes = "AA" | "AR"| "AE"
 
@@ -61,6 +61,12 @@ export interface CancellationResponse {
   }
   recordTarget: {
     Patient: Patient
+  }
+  author: {
+    AgentPerson: AgentPerson
+  }
+  responsibleParty: {
+    AgentPerson: AgentPerson
   }
   pertinentInformation3: PertinentInformation3
 }
