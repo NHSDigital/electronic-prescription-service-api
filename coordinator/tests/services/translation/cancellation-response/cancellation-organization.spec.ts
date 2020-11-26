@@ -1,10 +1,10 @@
-import * as TestResources from "../../../resources/test-resources";
+import * as TestResources from "../../../resources/test-resources"
 import {
   getIdentifierValueForSystem,
   SPINE_CANCELLATION_ERROR_RESPONSE_REGEX
-} from "../../../../src/services/translation/common";
-import {readXml} from "../../../../src/services/serialisation/xml";
-import {createOrganization} from "../../../../src/services/translation/cancellation/cancellation-organization";
+} from "../../../../src/services/translation/common"
+import {readXml} from "../../../../src/services/serialisation/xml"
+import {createOrganization} from "../../../../src/services/translation/cancellation/cancellation-organization"
 
 describe("createOrganization", () => {
   const actualError = TestResources.spineResponses.cancellationError

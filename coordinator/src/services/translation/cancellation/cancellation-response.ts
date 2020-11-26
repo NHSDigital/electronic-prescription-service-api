@@ -41,6 +41,7 @@ export function translateSpineCancelResponseIntoBundle(message: string): fhir.Bu
     fullUrl: uuid.v4().toLowerCase(),
     resource: createMedicationRequest(parsedMsg)
   }
+  //TODO PractitionerRoles for author and responsibleParty, MessageHeader
 
   bundle.entry = [
     fhirMedicationRequest,

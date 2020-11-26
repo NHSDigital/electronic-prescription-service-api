@@ -81,6 +81,7 @@ function getCodeAndDisplay(code: string, display: string) {
     return {fhirCode: "R-0008", fhirDisplay: "Prescription/item not found"}
   case "0009":
     return {fhirCode: "R-0009", fhirDisplay: "Cancellation functionality disabled in Spine"}
+  //TODO ticket AEA-683 relates to this missing code
   case "0010":
     return {fhirCode: "", fhirDisplay: ""}
   case "5000":
@@ -88,6 +89,7 @@ function getCodeAndDisplay(code: string, display: string) {
   case "5888":
     return {fhirCode: "R-5888", fhirDisplay: "Invalid message"}
   default:
+    //TODO error?
     return {}
   }
 }
