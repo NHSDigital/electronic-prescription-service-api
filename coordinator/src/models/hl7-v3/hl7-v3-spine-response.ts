@@ -1,4 +1,4 @@
-import {Patient} from "./hl7-v3-people-places";
+import {Patient} from "./hl7-v3-people-places"
 
 export type acknowledgementCodes = "AA" | "AR"| "AE"
 

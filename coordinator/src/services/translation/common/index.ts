@@ -180,7 +180,7 @@ export function convertMomentToHl7V3DateTime(dateTime: moment.Moment): core.Time
   return new core.Timestamp(hl7V3DateTimeStr)
 }
 
-function toArray<T>(thing: T | Array<T>): Array<T> {
+export function toArray<T>(thing: T | Array<T>): Array<T> {
   return Array.isArray(thing) ? thing : [thing]
 }
 
