@@ -1,26 +1,31 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
-import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
+import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
 import {toArray} from "../common"
+import {convertName} from "./common"
 
-export function createPractitioner(agentPerson: AgentPerson): fhir.Practitioner  {
+export function createPractitioner(hl7AgentPerson: hl7.AgentPerson): fhir.Practitioner  {
   const fhirPractitioner = {resourceType: "Practitioner"} as fhir.Practitioner
 
-  fhirPractitioner.identifier = getIdentifier(agentPerson)
+  const hl7RoleId = hl7AgentPerson.id._attributes.extension
+  const hl7PersonId = hl7AgentPerson.agentPerson.id._attributes.extension
+  const hl7PersonOId = hl7AgentPerson.agentPerson.id._attributes.root
+  fhirPractitioner.identifier = getIdentifier(hl7RoleId, hl7PersonId, hl7PersonOId)
 
-  fhirPractitioner.name = getName(agentPerson)
+  const hl7Name = toArray(hl7AgentPerson.agentPerson.name)
+  fhirPractitioner.name = convertName(hl7Name)
 
   return fhirPractitioner
 }
 
-function getIdentifier(agentPerson: AgentPerson) {
+function getIdentifier(roleId: string, personId: string, personOId: string) {
   return [
     {
       "system": "https://fhir.nhs.uk/Id/sds-user-id",
-      "value": agentPerson.id._attributes.extension
+      "value": roleId
     },
     {
-      "system": convertCodeSystem(agentPerson.agentPerson.id._attributes.root),
-      "value": agentPerson.agentPerson.id._attributes.extension
+      "system": convertCodeSystem(personOId),
+      "value": personId
     }
   ]
 }
@@ -31,12 +36,4 @@ function convertCodeSystem(codeSystem: string): string {
   default:
     return "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code"
   }
-}
-
-function getName(agentPerson: AgentPerson) {
-  return toArray(agentPerson.agentPerson.name).map(name => ({
-    family: name.family._text,
-    given: toArray(name.given).map(given => given._text),
-    prefix: toArray(name.prefix).map(prefix => prefix._text)
-  }))
 }

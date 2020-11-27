@@ -8,12 +8,14 @@ import {
   createMedicationRequest
 } from "../../../../src/services/translation/cancellation/cancellation-medication-conversion"
 import {readXml} from "../../../../src/services/serialisation/xml"
-import {SpineCancellationResponse} from "../../../../src/models/hl7-v3/hl7-v3-spine-response"
 
 describe("createMedicationRequest", () => {
   const actualError = TestResources.spineResponses.cancellationError
   const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(actualError.response.body)[0]
-  const medicationRequest = createMedicationRequest(readXml(cancelResponse) as SpineCancellationResponse)
+  const parsedMsg = readXml(cancelResponse)
+  const actEvent = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
+  const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
+  const medicationRequest = createMedicationRequest(cancellationResponse)
 
   test("has extensions", () => {
     expect(medicationRequest.extension).not.toBeUndefined()

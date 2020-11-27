@@ -1,19 +1,20 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
-import {Patient} from "../../../models/hl7-v3/hl7-v3-people-places"
+import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import moment from "moment"
 import {IdentifierReference, Organization} from "../../../models/fhir/fhir-resources"
-import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {toArray} from "../common"
+import {convertName, convertAddress} from "./common"
 
-export function createPatient(hl7Patient: Patient): fhir.Patient {
+export function createPatient(hl7Patient: hl7.Patient): fhir.Patient {
   const patient = {resourceType: "Patient"} as fhir.Patient
 
-  patient.identifier = createNhsNumberIdentifier(hl7Patient)
+  const hl7NhsNumber = hl7Patient.id._attributes.extension
+  patient.identifier = createNhsNumberIdentifier(hl7NhsNumber)
 
   const hl7Name = toArray(hl7Patient.patientPerson.name)
-  patient.name = createName(hl7Name)
+  patient.name = convertName(hl7Name)
 
   const hl7Gender = hl7Patient.patientPerson.administrativeGenderCode
   patient.gender = convertGender(hl7Gender)
@@ -22,15 +23,17 @@ export function createPatient(hl7Patient: Patient): fhir.Patient {
   patient.birthDate = convertHL7V3DateStringToISODate(hl7BirthDate)
 
   const hl7Address = toArray(hl7Patient.addr)
-  patient.address = createAddress(hl7Address)
+  patient.address = convertAddress(hl7Address)
 
-  patient.generalPractitioner = createGeneralPractitioner(hl7Patient)
+  //TODO multiple GPs? GP vs GP Practise vs Pharmacy?
+  const hl7PatientCareProvision = hl7Patient.patientPerson.playedProviderPatient.subjectOf.patientCareProvision
+  const hl7OdsCode = hl7PatientCareProvision.responsibleParty.healthCareProvider.id._attributes.extension
+  patient.generalPractitioner = createGeneralPractitioner(hl7OdsCode)
 
   return patient
 }
 
-function createNhsNumberIdentifier(patient: Patient) {
-  const nhsNumber = patient.id._attributes.extension
+function createNhsNumberIdentifier(nhsNumber: string) {
   return [
     {
       extension:  [
@@ -64,6 +67,7 @@ export function convertGender(hl7Gender: codes.SexCode): string {
   case codes.SexCode.UNKNOWN._attributes.code:
     return "unknown"
   default:
+    //TODO: how to handle invalid values from spine?
     throw new InvalidValueError(`Unhandled gender '${hl7Gender}'.`)
   }
 }
@@ -81,67 +85,9 @@ function convertHL7V3DateStringToISODate(hl7Date: string): string {
   return convertMomentToISODate(dateTimeMoment)
 }
 
-//TODO multiple GPs?
-function createGeneralPractitioner(patient: Patient): Array<IdentifierReference<Organization>> {
-  const hl7PatientCareProvision = patient.patientPerson.playedProviderPatient.subjectOf.patientCareProvision
-  const hl7OdsCode = hl7PatientCareProvision.responsibleParty.healthCareProvider.id._attributes.extension
+function createGeneralPractitioner(hl7OdsCode: string): Array<IdentifierReference<Organization>> {
   return [{identifier: {
     "system": "https://fhir.nhs.uk/Id/ods-organization-code",
     "value": hl7OdsCode
   }}]
-}
-
-function convertNameUse(hl7NameUse: string): string {
-  switch (hl7NameUse) {
-  //TODO NameUse.USUAL could be either "usual" or "official", how do we tell?
-  case core.NameUse.USUAL:
-  //case "usual":
-    return "official"
-  //TODO NameUse.PREFERRED could be either "temp" or "anonymous", how do we tell?
-  case core.NameUse.ALIAS:
-  //case "anonymous":
-    return "temp"
-  case core.NameUse.PREFERRED:
-    return "nickname"
-  case core.NameUse.PREVIOUS:
-    return "old"
-  case core.NameUse.PREVIOUS_MAIDEN:
-    return "maiden"
-  default:
-    throw new InvalidValueError(`Unhandled name use '${hl7NameUse}'.`)
-  }
-}
-
-function createName(hl7Name: Array<core.Name>) {
-  return hl7Name.map(name => ({
-    use: convertNameUse(name._attributes.use),
-    family: name.family._text,
-    given: toArray(name.given).map(given => given._text),
-    prefix: toArray(name.prefix).map(prefix => prefix._text)
-  }))
-}
-
-function convertAddressUse(fhirAddressUse: string): string {
-  switch (fhirAddressUse) {
-  case core.AddressUse.HOME:
-    return "home"
-  case core.AddressUse.WORK:
-    return "work"
-  case core.AddressUse.TEMPORARY:
-    return "temp"
-  case core.AddressUse.POSTAL:
-    return "billing"
-  case undefined:
-    return undefined
-  default:
-    throw new InvalidValueError(`Unhandled address use '${fhirAddressUse}'.`)
-  }
-}
-
-function createAddress(hl7Address: Array<core.Address>) {
-  return hl7Address.map(address => ({
-    use: convertAddressUse(address._attributes.use),
-    line: address.streetAddressLine.map(addressLine => addressLine._text),
-    postalCode: address.postalCode._text
-  }))
 }

@@ -1,13 +1,14 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
-import {PertinentInformation3, SpineCancellationResponse} from "../../../models/hl7-v3/hl7-v3-spine-response"
+import {
+  CancellationResponse,
+  PertinentInformation3
+} from "../../../models/hl7-v3/hl7-v3-spine-response"
 import moment from "moment"
 
-export function createMedicationRequest(message: SpineCancellationResponse): fhir.MedicationRequest {
+export function createMedicationRequest(cancellationResponse: CancellationResponse): fhir.MedicationRequest {
   const medicationRequest = {resourceType: "MedicationRequest"} as fhir.MedicationRequest
-  const actEvent = message["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
-  const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
-  const cancellationPertinentInformation3 = cancellationResponse.pertinentInformation3
-  medicationRequest.extension = createExtensions(cancellationPertinentInformation3)
+  const pertinentInformation3 = cancellationResponse.pertinentInformation3
+  medicationRequest.extension = createExtensions(pertinentInformation3)
   // medicationRequest.identifier = [{system: "", value: ""}]
   // medicationRequest.status = ""
   medicationRequest.intent = "order"

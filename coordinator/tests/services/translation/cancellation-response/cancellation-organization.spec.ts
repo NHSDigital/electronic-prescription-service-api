@@ -12,7 +12,7 @@ describe("createOrganization", () => {
   const parsedMsg = readXml(preParsedMsg)
   const actEvent = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
   const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
-  const authorOrganization = createOrganization(cancellationResponse.author.AgentPerson)
+  const authorOrganization = createOrganization(cancellationResponse.author.AgentPerson.representedOrganization)
 
   test("has an identifier block with the correct value", () => {
     expect(authorOrganization.identifier).not.toBeUndefined()
@@ -24,12 +24,11 @@ describe("createOrganization", () => {
     expect(identifierValue).toBe("RBA")
   })
 
-  //TODO unsure where these values are in the message
-  // test("has a type block with correct coding values", () => {
-  //   expect(authorOrganization.type).not.toBeUndefined()
-  //   expect(authorOrganization.type[0].coding[0].code).toBe("R8000")
-  //   expect(authorOrganization.type[0].coding[0].display).toBe("???")
-  // })
+  test("has a type block with correct coding values", () => {
+    expect(authorOrganization.type).not.toBeUndefined()
+    expect(authorOrganization.type[0].coding[0].code).toBe("RO197")
+    expect(authorOrganization.type[0].coding[0].display).toBeTruthy()
+  })
 
   test("has correct name value", () => {
     expect(authorOrganization.name).toBe("TAUNTON AND SOMERSET NHS FOUNDATION TRUST")
