@@ -50,7 +50,7 @@ jestpact.pactWith(
                         system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
                         version: "1",
                         code: "ACCESS_DENIED",
-                        display: "{faultstring}"
+                        display: "Invalid access token"
                       }
                     ]
                   }
@@ -133,7 +133,7 @@ jestpact.pactWith(
                         system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
                         version: "1",
                         code: "ACCESS_DENIED",
-                        display: "{faultstring}"
+                        display: "Invalid access token"
                       }
                     ]
                   }
