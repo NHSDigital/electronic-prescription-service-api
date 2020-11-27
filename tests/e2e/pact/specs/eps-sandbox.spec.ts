@@ -25,8 +25,13 @@ jestpact.pactWith(
       test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (description: string, request: Bundle, response: Parameters) => {
         const apiPath = "/$prepare"
         const requestStr = LosslessJson.stringify(request)
+
         const outputMessageDigest = response.parameter
           .find(p => p.name === "digest").valueString
+        const outputMessageFragments = response.parameter
+          .find(p => p.name === "fragments").valueString
+        const outputMessageDisplay = response.parameter
+          .find(p => p.name === "display").valueString
           
         const interaction: InteractionObject = {
           state: null,
@@ -48,7 +53,7 @@ jestpact.pactWith(
               parameter: [
                 {
                   name: "fragments",
-                  valueString: Matchers.string()
+                  valueString: Matchers.like(outputMessageFragments)
                 },
                 {
                   name: "digest",
@@ -56,7 +61,7 @@ jestpact.pactWith(
                 },
                 {
                   name: "display",
-                  valueString: Matchers.string()
+                  valueString: Matchers.like(outputMessageDisplay)
                 },
                 {
                   name: "algorithm",

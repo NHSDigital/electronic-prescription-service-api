@@ -28,6 +28,10 @@ jestpact.pactWith(
         const inputMessageStr = LosslessJson.stringify(inputMessage)
         const outputMessageDigest = outputMessage.parameter
           .find(p => p.name === "digest").valueString
+        const outputMessageFragments = outputMessage.parameter
+          .find(p => p.name === "fragments").valueString
+        const outputMessageDisplay = outputMessage.parameter
+          .find(p => p.name === "display").valueString
 
         const interaction: InteractionObject = {
           state: null,
@@ -49,7 +53,7 @@ jestpact.pactWith(
               parameter: [
                 {
                   name: "fragments",
-                  valueString: Matchers.string()
+                  valueString: Matchers.like(outputMessageFragments)
                 },
                 {
                   name: "digest",
@@ -57,7 +61,7 @@ jestpact.pactWith(
                 },
                 {
                   name: "display",
-                  valueString: Matchers.string()
+                  valueString: Matchers.like(outputMessageDisplay)
                 },
                 {
                   name: "algorithm",
@@ -88,10 +92,17 @@ jestpact.pactWith(
 
           // upload payload and display from matching prepare response to signing service, get token
 
+          const prepareResponseAlgorithm = prepareResponse.parameter
+          .find(p => p.name === "algorithm").valueString
+          const prepareResponseFragments = prepareResponse.parameter
+            .find(p => p.name === "fragments").valueString
+          const prepareResponseDisplay = prepareResponse.parameter
+            .find(p => p.name === "display").valueString
+
           const signatureRequest = {
-            "algorithm": prepareResponse.parameter[3].valueString,
-            "payload": prepareResponse.parameter[0].valueString,
-            "display": prepareResponse.parameter[2].valueString
+            "algorithm": prepareResponseAlgorithm,
+            "payload": prepareResponseFragments,
+            "display": prepareResponseDisplay
           }
 
           const signatureRequestOptions: RequestInit = {
