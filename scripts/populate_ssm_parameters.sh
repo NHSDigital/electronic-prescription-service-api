@@ -35,8 +35,8 @@ function copy-parameter {
         --overwrite
 }
 
-copy-secret "ptl/client/aws.api.veit07.devspineservices.nhs.uk/key" "/ptl/api-deployment/eps-coordinator/veit07.devspineservices.nhs.uk/private-key"
-copy-secret "ptl/client/aws.api.veit07.devspineservices.nhs.uk/crt" "/ptl/api-deployment/eps-coordinator/veit07.devspineservices.nhs.uk/certificate"
+copy-secret "ptl/eps/veit07.devspineservices.nhs.uk/private-key" "/ptl/api-deployment/eps-coordinator/veit07.devspineservices.nhs.uk/private-key"	copy-secret "ptl/client/aws.api.veit07.devspineservices.nhs.uk/key" "/ptl/api-deployment/eps-coordinator/veit07.devspineservices.nhs.uk/private-key"
+copy-secret "ptl/eps/veit07.devspineservices.nhs.uk/certificate" "/ptl/api-deployment/eps-coordinator/veit07.devspineservices.nhs.uk/certificate"
 copy-secret "ptl/veit07.devspineservices.nhs.uk/root-ca/crt" "/ptl/api-deployment/eps-coordinator/veit07.devspineservices.nhs.uk/root-ca-certificate"
 copy-secret "ptl/veit07.devspineservices.nhs.uk/sub-ca/crt" "/ptl/api-deployment/eps-coordinator/veit07.devspineservices.nhs.uk/sub-ca-certificate"
 
