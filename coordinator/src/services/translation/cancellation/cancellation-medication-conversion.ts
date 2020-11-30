@@ -1,8 +1,7 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import {
-  CancellationResponse,
-  PertinentInformation1,
-  PertinentInformation3
+  CancellationResponse,  PertinentInformation1,
+  PertinentInformation2, PertinentInformation3
 } from "../../../models/hl7-v3/hl7-v3-spine-response"
 import moment from "moment"
 
@@ -14,7 +13,7 @@ export function createMedicationRequest(
 ): fhir.MedicationRequest {
   const medicationRequest = {resourceType: "MedicationRequest"} as fhir.MedicationRequest
   const pertinentInformation1 = cancellationResponse.pertinentInformation1
-  // const pertinentInformation2 = cancellationResponse.pertinentInformation1
+  const pertinentInformation2 = cancellationResponse.pertinentInformation2
   const pertinentInformation3 = cancellationResponse.pertinentInformation3
   medicationRequest.extension = createExtensions(pertinentInformation3, responsiblePartyPractitionerRoleId)
   medicationRequest.identifier = createIdentifier(pertinentInformation1)
@@ -28,8 +27,10 @@ export function createMedicationRequest(
   medicationRequest.requester = {
     reference: authorPractitionerRoleId
   }
-  // medicationRequest.groupIdentifier = {}
-  // medicationRequest.dispenseRequest = {}
+  medicationRequest.groupIdentifier = getMedicationGroupIdentifier(pertinentInformation2)
+  if (medicationRequestHasDispenser()) {
+    medicationRequest.dispenseRequest = getDispenseRequest(cancellationResponse)
+  }
   return medicationRequest
 }
 
@@ -56,7 +57,6 @@ function createExtensions(cancellationPertinentInformation3: PertinentInformatio
       "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
       "valueReference": {
         "reference": practitionerRoleId
-      // "display": "DR SAZ RAZ"
       }
     }
   ]
@@ -128,4 +128,33 @@ function convertMomentToISODateTime(moment: moment.Moment): string {
 function convertHL7V3DateTimeStringToISODateTime(hl7Date: string): string {
   const dateTimeMoment = convertHL7V3DateTimeToMoment(hl7Date)
   return convertMomentToISODateTime(dateTimeMoment)
+}
+
+function getMedicationGroupIdentifier(pertinentInformation2: PertinentInformation2) {
+  return {
+    system: "https://fhir.nhs.uk/Id/prescription-order-number",
+    value: pertinentInformation2.pertinentPrescriptionID.value._attributes.extension
+  }
+}
+
+function medicationRequestHasDispenser() {
+  return false
+}
+
+function getDispenseRequest(cancellationResponse: CancellationResponse) {
+  cancellationResponse
+  return {
+    performer: {
+      extension: [{
+        url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DispensingPerformer",
+        valueReference: {
+          reference: "" //TODO: when we have dispense info we need to fill
+        }
+      }],
+      identifier: {
+        system: "https://fhir.nhs.uk/Id/ods-organization-code",
+        value: "" //TODO: when we have dispense info we need to fill
+      }
+    }
+  }
 }

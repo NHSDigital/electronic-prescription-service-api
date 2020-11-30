@@ -8,7 +8,6 @@ import {
   createMedicationRequest
 } from "../../../../src/services/translation/cancellation/cancellation-medication-conversion"
 import {readXml} from "../../../../src/services/serialisation/xml"
-import {generateFullUrl} from "../../../../src/services/translation/cancellation/common"
 
 describe("createMedicationRequest", () => {
   const actualError = TestResources.spineResponses.cancellationError
@@ -16,9 +15,12 @@ describe("createMedicationRequest", () => {
   const parsedMsg = readXml(cancelResponse)
   const actEvent = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
   const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
-  const practitionerRoleId = "testRoleId"
+  const responsiblePartyPractitionerRoleId = "test"
   const patientId = "testPatientId"
-  const medicationRequest = createMedicationRequest(cancellationResponse, practitionerRoleId, patientId)
+  const authorPrescriptionRoleId = "testAuthorRoleId"
+  const medicationRequest = createMedicationRequest(
+    cancellationResponse, responsiblePartyPractitionerRoleId, patientId, authorPrescriptionRoleId
+  )
 
   test("has extensions", () => {
     expect(medicationRequest.extension).not.toBeUndefined()
@@ -50,7 +52,7 @@ describe("createMedicationRequest", () => {
     ) as fhir.ReferenceExtension<fhir.PractitionerRole>
     expect(extension).not.toBeUndefined()
     const reference = extension.valueReference.reference
-    expect(reference).toBe(generateFullUrl(practitionerRoleId))
+    expect(reference).toBe(responsiblePartyPractitionerRoleId)
   })
 
   test("has identifier", () => {
@@ -86,5 +88,20 @@ describe("createMedicationRequest", () => {
 
   test("authoredOn", () => {
     expect(medicationRequest.authoredOn).toBe("2020-11-18T09:25:23+00:00")
+  })
+
+  test("requester", () => {
+    const requester = medicationRequest.requester
+    expect(requester.reference).toBe(authorPrescriptionRoleId)
+  })
+
+  test("groupIdentifier", () => {
+    const groupIdentifier = medicationRequest.groupIdentifier
+    expect(groupIdentifier.system).toBe("https://fhir.nhs.uk/Id/prescription-order-number")
+    expect(groupIdentifier.value).toBe("DA923E-Z8827F-11EBAK")
+  })
+
+  test("dispenseRequest", () => {
+    expect(medicationRequest.dispenseRequest).toBeFalsy()
   })
 })

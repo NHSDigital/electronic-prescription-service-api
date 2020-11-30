@@ -31,7 +31,8 @@ function getIdentifier(roleId: string, personId: string, personOId: string) {
 }
 
 function convertCodeSystem(codeSystem: string): string {
-  //TODO figure out how to tell what type of code this is. Looks like a one to many mapping
+  //TODO figure out how to tell what type of code this is. Looks like a one to many mapping: DIN in practitioner
+  // if AgentPerson.agentPerson.id._attributes.extension BEGINS with a G then GMP, otherwise a
   switch (codeSystem) {
   default:
     return "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code"

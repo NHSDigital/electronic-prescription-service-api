@@ -25,7 +25,9 @@ export interface Identifier {
 }
 
 export interface MedicationRequestGroupIdentifier extends Identifier {
-  extension: Array<IdentifierExtension>
+  extension?: Array<IdentifierExtension>
+  system?: string
+  value?: string
 }
 
 export interface RepeatInformationExtension extends Extension {
@@ -79,11 +81,17 @@ export interface Dosage {
   patientInstruction?: string
 }
 
+export interface Performer {
+  extension: Array<ReferenceExtension<PractitionerRole>>
+  identifier: Identifier
+  display?: string
+}
+
 export interface MedicationRequestDispenseRequest {
-  extension: Array<CodingExtension | StringExtension>
-  quantity: SimpleQuantity
+  extension?: Array<CodingExtension | StringExtension>
+  quantity?: SimpleQuantity
   expectedSupplyDuration?: SimpleQuantity
-  performer: IdentifierReference<Organization>
+  performer: Performer
   validityPeriod?: Period
 }
 

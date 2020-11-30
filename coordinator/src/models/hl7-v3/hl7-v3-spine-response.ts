@@ -69,6 +69,7 @@ export interface CancellationResponse {
     AgentPerson: AgentPerson
   }
   pertinentInformation1: PertinentInformation1
+  pertinentInformation2: PertinentInformation2
   pertinentInformation3: PertinentInformation3
 }
 
@@ -77,6 +78,16 @@ export interface PertinentInformation1 {
     id: {
       _attributes: {
         root: string
+      }
+    }
+  }
+}
+
+export interface PertinentInformation2 {
+  pertinentPrescriptionID: {
+    value: {
+      _attributes: {
+        extension: string
       }
     }
   }

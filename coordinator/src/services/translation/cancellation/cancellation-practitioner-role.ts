@@ -9,12 +9,11 @@ export function createPractitionerRole(
 ): fhir.PractitionerRole {
   const practitionerRole = {resourceType: "PractitionerRole"} as fhir.PractitionerRole
 
-  practitionerRole.identifier = [
-    {
-      system: "https://fhir.nhs.uk/Id/sds-role-profile-id"
-      //TODO where does this value come from?
-      // value: ""
-    }]
+  practitionerRole.identifier = [{
+    system: "https://fhir.nhs.uk/Id/sds-role-profile-id"
+    //TODO where does this value come from? AgentPerson.id.extension
+    // value: ""
+  }]
 
   practitionerRole.practitioner = getReference(practitionerReference)
 
@@ -23,22 +22,21 @@ export function createPractitionerRole(
   practitionerRole.code = getCode(practitionerCode)
 
   //TODO which telecom is used? organization?
-  // practitionerRole.telecom = []
+  // practitionerRole.telecom = [] AgentPerson.telecom
 
   return practitionerRole
 }
 
 function getCode(practitionerCode: string) {
-  return [
-    {
-      coding: [
-        {
-          system: "https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName",
-          code: practitionerCode,
-          display: "" //TODO ask Kevin about the display values, need a map?
-        }
-      ]
-    }]
+  return [{
+    coding: [
+      {
+        system: "https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName",
+        code: practitionerCode,
+        display: "" //TODO ask Kevin about the display values, need a map?
+      }
+    ]
+  }]
 }
 
 function getReference(referenceString: string) {
