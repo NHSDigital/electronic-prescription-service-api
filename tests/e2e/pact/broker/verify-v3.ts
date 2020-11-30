@@ -1,5 +1,4 @@
 import { VerifierV3 } from "@pact-foundation/pact"
-import child from "child_process"
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verify(): Promise<any> { 
