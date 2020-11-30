@@ -6,6 +6,7 @@ import {createMedicationRequest} from "./cancellation-medication-conversion"
 import {createPatient} from "./cancellation-patient"
 import {createPractitioner} from "./cancellation-practitioner"
 import {createOrganization} from "./cancellation-organization"
+import {createPractitionerRole} from "./cancellation-practitioner-role"
 import {generateFullUrl} from "./common"
 
 export function translateSpineCancelResponseIntoBundle(message: string): fhir.Bundle {
@@ -22,8 +23,9 @@ export function translateSpineCancelResponseIntoBundle(message: string): fhir.Bu
     resource: createPatient(cancellationResponse.recordTarget.Patient)
   }
 
+  const responsiblePartyCode = cancellationResponse.responsibleParty.AgentPerson.code._attributes.code
   const responsiblePartyPractitionerId = uuid.v4().toLowerCase()
-  const fhirResponsibleParty = {
+  const fhirResponsiblePartyPractitioner = {
     fullUrl: generateFullUrl(responsiblePartyPractitionerId),
     resource: createPractitioner(cancellationResponse.responsibleParty.AgentPerson)
   }
@@ -33,9 +35,19 @@ export function translateSpineCancelResponseIntoBundle(message: string): fhir.Bu
     resource: createOrganization(cancellationResponse.responsibleParty.AgentPerson.representedOrganization)
   }
   const responsiblePartyPractitionerRoleId = uuid.v4().toLowerCase()
+  const fhirResponsiblePartyPractitionerRole = {
+    fullUrl: generateFullUrl(responsiblePartyPractitionerRoleId),
+    resource: createPractitionerRole(
+      cancellationResponse,
+      fhirResponsiblePartyPractitioner.fullUrl,
+      responsiblePartyCode,
+      fhirResponsiblePartyOrganization.fullUrl
+    )
+  }
 
+  const authorCode = cancellationResponse.author.AgentPerson.code._attributes.code
   const authorPractitionerId = uuid.v4().toLowerCase()
-  const fhirAuthor = {
+  const fhirAuthorPractitioner = {
     fullUrl: generateFullUrl(authorPractitionerId),
     resource: createPractitioner(cancellationResponse.author.AgentPerson)
   }
@@ -44,22 +56,35 @@ export function translateSpineCancelResponseIntoBundle(message: string): fhir.Bu
     fullUrl: generateFullUrl(authorOrganizationId),
     resource: createOrganization(cancellationResponse.author.AgentPerson.representedOrganization)
   }
+  const authorPractitionerRoleId = uuid.v4().toLowerCase()
+  const fhirAuthorPractitionerRole = {
+    fullUrl: generateFullUrl(authorPractitionerRoleId),
+    resource: createPractitionerRole(
+      cancellationResponse,
+      fhirAuthorPractitioner.fullUrl,
+      authorCode,
+      fhirAuthorOrganization.fullUrl
+    )
+  }
 
-  //TODO these resources should reference the ones above in places, so we need to pass in references
   const medicationRequestId = uuid.v4().toLowerCase()
   const fhirMedicationRequest = {
     fullUrl: generateFullUrl(medicationRequestId),
-    resource: createMedicationRequest(cancellationResponse, responsiblePartyPractitionerRoleId, patientId)
+    resource: createMedicationRequest(
+      cancellationResponse, fhirResponsiblePartyPractitioner.fullUrl,
+      patientId, fhirAuthorPractitionerRole.fullUrl
+    )
   }
-  //TODO PractitionerRoles for author and responsibleParty, MessageHeader
 
   bundle.entry = [
     fhirMedicationRequest,
     fhirPatient,
-    fhirAuthor,
+    fhirAuthorPractitioner,
     fhirAuthorOrganization,
-    fhirResponsibleParty,
-    fhirResponsiblePartyOrganization
+    fhirAuthorPractitionerRole,
+    fhirResponsiblePartyPractitioner,
+    fhirResponsiblePartyOrganization,
+    fhirResponsiblePartyPractitionerRole
   ]
   //TODO some error types need to have extra resources in bundle (e.g. dispenser info), add them
 

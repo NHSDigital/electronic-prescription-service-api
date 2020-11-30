@@ -5,17 +5,18 @@ import {
   PertinentInformation3
 } from "../../../models/hl7-v3/hl7-v3-spine-response"
 import moment from "moment"
-import {generateFullUrl} from "./common"
 
 export function createMedicationRequest(
   cancellationResponse: CancellationResponse,
-  practitionerRoleId: string,
-  patientId: string
+  responsiblePartyPractitionerRoleId: string,
+  patientId: string,
+  authorPractitionerRoleId: string
 ): fhir.MedicationRequest {
   const medicationRequest = {resourceType: "MedicationRequest"} as fhir.MedicationRequest
   const pertinentInformation1 = cancellationResponse.pertinentInformation1
+  // const pertinentInformation2 = cancellationResponse.pertinentInformation1
   const pertinentInformation3 = cancellationResponse.pertinentInformation3
-  medicationRequest.extension = createExtensions(pertinentInformation3, practitionerRoleId)
+  medicationRequest.extension = createExtensions(pertinentInformation3, responsiblePartyPractitionerRoleId)
   medicationRequest.identifier = createIdentifier(pertinentInformation1)
   // medicationRequest.status = ""
   medicationRequest.intent = "order"
@@ -24,7 +25,9 @@ export function createMedicationRequest(
   medicationRequest.authoredOn = convertHL7V3DateTimeStringToISODateTime(
     cancellationResponse.effectiveTime._attributes.value
   )
-  // medicationRequest.requester = {}
+  medicationRequest.requester = {
+    reference: authorPractitionerRoleId
+  }
   // medicationRequest.groupIdentifier = {}
   // medicationRequest.dispenseRequest = {}
   return medicationRequest
@@ -52,7 +55,7 @@ function createExtensions(cancellationPertinentInformation3: PertinentInformatio
     {
       "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
       "valueReference": {
-        "reference": generateFullUrl(practitionerRoleId)
+        "reference": practitionerRoleId
       // "display": "DR SAZ RAZ"
       }
     }

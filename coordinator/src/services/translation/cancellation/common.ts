@@ -69,6 +69,6 @@ function convertAddressUse(fhirAddressUse: core.AddressUse): string {
   }
 }
 
-export function generateFullUrl(id: string) {
+export function generateFullUrl(id: string): string {
   return `urn:uuid:${id}`
 }
