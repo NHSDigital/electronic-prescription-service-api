@@ -1,17 +1,17 @@
 {
   "resourceType": "Bundle",
-  "id": "aef77afb-7e3c-427a-8657-2c427f71a271",
+  "id": "2C251CED-DC17-47FF-BD2F-36F4B8C27DDA",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "c77e51bd-360e-445a-bcb3-31c30558b526"
+    "value": "B3D0632F-2BF6-4736-E050-D20AE3A24DC4"
   },
   "type": "message",
   "entry": [
     {
-      "fullUrl": "urn:uuid:3599c0e9-9292-413e-9270-9a1ef1ead99c",
+      "fullUrl": "urn:uuid:2C251CED-DC17-47FF-BD2F-36F4B8C27DDA",
       "resource": {
         "resourceType": "MessageHeader",
-        "id": "3599c0e9-9292-413e-9270-9a1ef1ead99c",
+        "id": "A8F71A7D-B426-4B55-80A5-05436DE80486",
         "eventCoding": {
           "system": "https://fhir.nhs.uk/CodeSystem/message-event",
           "code": "prescription-order",
@@ -23,7 +23,7 @@
             "value": "RBA"
           },
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
-          "display": "RAZIA|ALI"
+          "display": "SEVEN|FIFTY"
         },
         "source": {
           "endpoint": "urn:nhs-uk:addressing:ods:RBA"
@@ -263,48 +263,8 @@
         },
         "dosageInstruction": [
           {
-            "text": "10 milligram, Inject, Subcutaneous route, once weekly",
-            "timing": {
-              "repeat": {
-                "frequency": 5,
-                "period": 1,
-                "periodUnit": "d",
-                "boundsDuration": {
-                  "value": 10,
-                  "unit": "day",
-                  "system": "http://unitsofmeasure.org",
-                  "code": "d"
-                }
-              }
-            },
-            "method": {
-              "coding": [
-                {
-                  "system": "http://snomed.info/sct",
-                  "code": "422145002",
-                  "display": "Inject"
-                }
-              ]
-            },
-            "route": {
-              "coding": [
-                {
-                  "system": "http://snomed.info/sct",
-                  "code": "34206005",
-                  "display": "Subcutaneous route"
-                }
-              ]
-            },
-            "doseAndRate": [
-              {
-                "doseQuantity": {
-                  "value": 10,
-                  "unit": "milligram",
-                  "system": "http://unitsofmeasure.org",
-                  "code": "mg"
-                }
-              }
-            ]
+            "text": "1 tablet, at NIGHT",
+            "patientInstruction": "Dosage has been decreased on advice from the hospital."
           }
         ],
         "dispenseRequest": {
@@ -318,10 +278,10 @@
             }
           ],
           "quantity": {
-            "value": 1,
-            "unit": "pre-filled disposable injection",
+            "value": 28,
+            "unit": "tablet",
             "system": "http://snomed.info/sct",
-            "code": "3318611000001103"
+            "code": "428673006"
           },
           "performer": {
             "identifier": {
