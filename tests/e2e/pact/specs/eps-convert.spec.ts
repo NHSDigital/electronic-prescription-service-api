@@ -36,7 +36,6 @@ jestpact.pactWith(
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",
-              "Authorization": `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
             },
             method: "POST",
             path: "/$convert",
@@ -54,7 +53,6 @@ jestpact.pactWith(
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-          .set("Authorization", `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`)
           .send(requestJson)
           .expect(200)
       })
