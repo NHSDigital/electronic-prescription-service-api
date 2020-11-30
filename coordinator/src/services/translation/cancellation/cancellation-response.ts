@@ -6,6 +6,32 @@ import {createPatient} from "./cancellation-patient"
 import {createPractitioner} from "./cancellation-practitioner"
 import {createOrganization} from "./cancellation-organization"
 import {createPractitionerRole} from "./cancellation-practitioner-role"
+import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
+
+function convertAgentPerson(agentPerson: AgentPerson) {
+  const responsiblePartyCode = agentPerson.code._attributes.code
+  const fhirPractitioner = {
+    fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
+    resource: createPractitioner(agentPerson)
+  }
+
+  const fhirOrganization = {
+    fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
+    resource: createOrganization(agentPerson.representedOrganization)
+  }
+  const responsiblePartyOrganizationTelecom = fhirOrganization.resource.telecom
+
+  const fhirPractitionerRole = {
+    fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
+    resource: createPractitionerRole(
+      fhirPractitioner.fullUrl,
+      responsiblePartyCode,
+      fhirOrganization.fullUrl,
+      responsiblePartyOrganizationTelecom
+    )
+  }
+  return {fhirPractitioner, fhirOrganization, fhirPractitionerRole}
+}
 
 export function translateSpineCancelResponseIntoBundle(message: SpineCancellationResponse): fhir.Bundle {
   const actEvent = message["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
@@ -13,64 +39,25 @@ export function translateSpineCancelResponseIntoBundle(message: SpineCancellatio
 
   const bundle = new fhir.Bundle()
 
-  const patientId = uuid.v4().toLowerCase()
   const fhirPatient = {
-    fullUrl: generateFullUrl(patientId),
+    fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
     resource: createPatient(cancellationResponse.recordTarget.Patient)
   }
+  const responsiblePartyStuff = convertAgentPerson(cancellationResponse.responsibleParty.AgentPerson)
+  const fhirResponsiblePartyPractitioner = responsiblePartyStuff.fhirPractitioner
+  const fhirResponsiblePartyOrganization = responsiblePartyStuff.fhirOrganization
+  const fhirResponsiblePartyPractitionerRole = responsiblePartyStuff.fhirPractitionerRole
 
-  const responsiblePartyCode = cancellationResponse.responsibleParty.AgentPerson.code._attributes.code
-  const responsiblePartyPractitionerId = uuid.v4().toLowerCase()
-  const fhirResponsiblePartyPractitioner = {
-    fullUrl: generateFullUrl(responsiblePartyPractitionerId),
-    resource: createPractitioner(cancellationResponse.responsibleParty.AgentPerson)
-  }
-  const responsiblePartyOrganizationId = uuid.v4().toLowerCase()
-  const fhirResponsiblePartyOrganization = {
-    fullUrl: generateFullUrl(responsiblePartyOrganizationId),
-    resource: createOrganization(cancellationResponse.responsibleParty.AgentPerson.representedOrganization)
-  }
-  const responsiblePartyOrganizationTelecom = fhirResponsiblePartyOrganization.resource.telecom
-  const responsiblePartyPractitionerRoleId = uuid.v4().toLowerCase()
-  const fhirResponsiblePartyPractitionerRole = {
-    fullUrl: generateFullUrl(responsiblePartyPractitionerRoleId),
-    resource: createPractitionerRole(
-      fhirResponsiblePartyPractitioner.fullUrl,
-      responsiblePartyCode,
-      fhirResponsiblePartyOrganization.fullUrl,
-      responsiblePartyOrganizationTelecom
-    )
-  }
-  const authorCode = cancellationResponse.author.AgentPerson.code._attributes.code
-  const authorPractitionerId = uuid.v4().toLowerCase()
-  const fhirAuthorPractitioner = {
-    fullUrl: generateFullUrl(authorPractitionerId),
-    resource: createPractitioner(cancellationResponse.author.AgentPerson)
-  }
-  const authorOrganizationId = uuid.v4().toLowerCase()
-  const fhirAuthorOrganization = {
-    fullUrl: generateFullUrl(authorOrganizationId),
-    resource: createOrganization(cancellationResponse.author.AgentPerson.representedOrganization)
-  }
-  const authorOrganizationTelecom = fhirResponsiblePartyOrganization.resource.telecom
+  const authorStuff = convertAgentPerson(cancellationResponse.responsibleParty.AgentPerson)
+  const fhirAuthorPractitioner = authorStuff.fhirPractitioner
+  const fhirAuthorOrganization = authorStuff.fhirOrganization
+  const fhirAuthorPractitionerRole = authorStuff.fhirPractitionerRole
 
-  const authorPractitionerRoleId = uuid.v4().toLowerCase()
-  const fhirAuthorPractitionerRole = {
-    fullUrl: generateFullUrl(authorPractitionerRoleId),
-    resource: createPractitionerRole(
-      fhirAuthorPractitioner.fullUrl,
-      authorCode,
-      fhirAuthorOrganization.fullUrl,
-      authorOrganizationTelecom
-    )
-  }
-
-  const medicationRequestId = uuid.v4().toLowerCase()
   const fhirMedicationRequest = {
-    fullUrl: generateFullUrl(medicationRequestId),
+    fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
     resource: createMedicationRequest(
       cancellationResponse, fhirResponsiblePartyPractitioner.fullUrl,
-      patientId, fhirAuthorPractitionerRole.fullUrl
+      fhirPatient.fullUrl, fhirAuthorPractitionerRole.fullUrl
     )
   }
 
