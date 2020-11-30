@@ -6,7 +6,7 @@ jestpact.pactWith(
   {
     spec: 3,
     consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-    provider: `nhsd-apim-eps+${process.env.PACT_VERSION}`,
+    provider: `nhsd-apim-eps-auth+${process.env.PACT_VERSION}`,
     pactfileWriteMode: "overwrite"
   },
   /* eslint-disable  @typescript-eslint/no-explicit-any */

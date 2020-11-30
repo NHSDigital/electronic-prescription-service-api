@@ -16,7 +16,7 @@ async function verify(): Promise<any> {
         all: false
       }
     ],
-    provider: `${process.env.PACT_PROVIDER}+${process.env.PACT_VERSION}`,
+    provider: `${process.env.PACT_PROVIDER}-auth+${process.env.PACT_VERSION}`,
     providerVersion: process.env.PACT_VERSION,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
     logLevel: isLocal? "debug" : "info",
