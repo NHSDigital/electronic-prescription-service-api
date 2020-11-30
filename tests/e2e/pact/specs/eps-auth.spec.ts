@@ -1,11 +1,6 @@
 import { InteractionObject } from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
-import * as TestResources from "../resources/test-resources"
-import { Bundle, Parameters, Provenance } from "../models/fhir/fhir-resources"
-import * as LosslessJson from "lossless-json"
-import * as fetch from "node-fetch"
-import * as XmlJs from "xml-js"
 
 jestpact.pactWith(
   {
