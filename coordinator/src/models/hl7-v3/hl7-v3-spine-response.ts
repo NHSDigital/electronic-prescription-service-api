@@ -52,7 +52,7 @@ export interface SpineCancellationResponse {
     }
     "hl7:acknowledgement": {
       _attributes: {
-        typeCode: string
+        typeCode: acknowledgementCodes
       }
     }
   }

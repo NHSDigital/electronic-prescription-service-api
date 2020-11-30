@@ -25,7 +25,7 @@ function isCancellationErrorResponse(message:string) {
   if (cancelResponse) {
     const parsedMsg = readXml(cancelResponse[0]) as SpineCancellationResponse
     const parsedMsgAcknowledgement = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:acknowledgement"]
-    const ackCode = parsedMsgAcknowledgement._attributes.typeCode as acknowledgementCodes
+    const ackCode = parsedMsgAcknowledgement._attributes.typeCode
     const statusCode = translateAcknowledgementTypeCodeToStatusCode(ackCode)
     if(statusCode == 400) {
       return parsedMsg
