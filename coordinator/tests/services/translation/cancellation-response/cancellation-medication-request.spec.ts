@@ -1,13 +1,11 @@
 import * as TestResources from "../../../resources/test-resources"
-import {
-  getExtensionForUrlOrNull,
-  SPINE_CANCELLATION_ERROR_RESPONSE_REGEX
-} from "../../../../src/services/translation/common"
+import {getExtensionForUrlOrNull} from "../../../../src/services/translation/common"
 import * as fhir from "../../../../src/models/fhir/fhir-resources"
 import {
   createMedicationRequest
 } from "../../../../src/services/translation/cancellation/cancellation-medication-conversion"
 import {readXml} from "../../../../src/services/serialisation/xml"
+import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/spine-response"
 
 describe("createMedicationRequest", () => {
   const actualError = TestResources.spineResponses.cancellationError

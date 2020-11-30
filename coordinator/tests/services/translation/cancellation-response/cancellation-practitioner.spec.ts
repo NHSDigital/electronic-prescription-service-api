@@ -1,9 +1,7 @@
 import * as TestResources from "../../../resources/test-resources"
-import {
-  getIdentifierValueForSystem,
-  SPINE_CANCELLATION_ERROR_RESPONSE_REGEX
-} from "../../../../src/services/translation/common"
+import {getIdentifierValueForSystem} from "../../../../src/services/translation/common"
 import {createPractitioner} from "../../../../src/services/translation/cancellation/cancellation-practitioner"
+import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/spine-response"
 import {readXml} from "../../../../src/services/serialisation/xml"
 
 describe("createDispensePractitioner", () => {

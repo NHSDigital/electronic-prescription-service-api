@@ -1,21 +1,13 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import moment from "moment"
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
-import {SpineDirectResponse} from "../../../models/spine"
 import {LosslessNumber} from "lossless-json"
 import {InvalidValueError, TooFewValuesError, TooManyValuesError} from "../../../models/errors/processing-errors"
-import {readXml} from "../../serialisation/xml"
-import {AsyncMCCI, SyncMCCI} from "../../../models/hl7-v3/hl7-v3-spine-response"
-import * as cancellation from "../cancellation/cancellation-response"
 
 // eslint-disable-next-line max-len
 const FHIR_DATE_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$/
 // eslint-disable-next-line max-len
-const FHIR_DATE_TIME_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$/
-const SYNC_SPINE_RESPONSE_MCCI_REGEX = /(?=<MCCI_IN010000UK13>)([\s\S]*)(?<=<\/MCCI_IN010000UK13>)/i
-const ASYNC_SPINE_RESPONSE_MCCI_REGEX = /(?=<hl7:MCCI_IN010000UK13[\s\S]*>)([\s\S]*)(?<=<\/hl7:MCCI_IN010000UK13>)/i
-// eslint-disable-next-line max-len
-export const SPINE_CANCELLATION_ERROR_RESPONSE_REGEX = /(?=<hl7:PORX_IN050101UK31[\s\S]*>)([\s\S]*)(?<=<\/hl7:PORX_IN050101UK31>)/i
+const FHIR_DATE_TIME_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|([+-])((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$/
 
 export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, additionalContext?: string): T {
   const iterator = iterable[Symbol.iterator]()
@@ -182,81 +174,6 @@ export function convertMomentToHl7V3DateTime(dateTime: moment.Moment): core.Time
 
 export function toArray<T>(thing: T | Array<T>): Array<T> {
   return Array.isArray(thing) ? thing : [thing]
-}
-
-function translateSyncSpineResponse(message: string): Array<fhir.CodeableConcept> {
-  const parsedMsg = readXml(message) as SyncMCCI
-  const acknowledgementDetailElm = parsedMsg.MCCI_IN010000UK13.acknowledgement.acknowledgementDetail
-  const acknowledgementDetailArray = toArray(acknowledgementDetailElm)
-  return acknowledgementDetailArray.map(acknowledgementDetail => {
-    return {
-      coding: [{
-        code: acknowledgementDetail.code._attributes.code,
-        display: acknowledgementDetail.code._attributes.displayName,
-        system: ""
-      }]
-    }
-  })
-}
-
-function translateAsyncSpineResponse(message: string): Array<fhir.CodeableConcept> {
-  const parsedMsg = readXml(message) as AsyncMCCI
-  const reasonElm = parsedMsg["hl7:MCCI_IN010000UK13"]["hl7:ControlActEvent"]["hl7:reason"]
-  const reasonArray = toArray(reasonElm)
-  return reasonArray.map(reason => ({
-    coding: [{
-      code: reason["hl7:justifyingDetectedIssueEvent"]["hl7:code"]._attributes.code,
-      display: reason["hl7:justifyingDetectedIssueEvent"]["hl7:code"]._attributes.displayName,
-      system: ""
-    }]
-  }))
-}
-
-export function translateHl7ResponseToFhir<T>(message: SpineDirectResponse<T>): fhir.OperationOutcome | fhir.Bundle {
-  const bodyString = message.body.toString()
-  if (message.statusCode <= 299) {
-    return {
-      resourceType: "OperationOutcome",
-      issue: [{
-        code: "informational",
-        severity: "information",
-        diagnostics: bodyString
-      }]
-    }
-  }
-  const syncMCCI = SYNC_SPINE_RESPONSE_MCCI_REGEX.exec(bodyString)
-  const asyncMCCI = ASYNC_SPINE_RESPONSE_MCCI_REGEX.exec(bodyString)
-  const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(bodyString)
-  if (syncMCCI) {
-    return turnCodeableConceptArrayIntoOperationOutcome(translateSyncSpineResponse(syncMCCI[0]), bodyString)
-  } else if (asyncMCCI) {
-    return turnCodeableConceptArrayIntoOperationOutcome(translateAsyncSpineResponse(asyncMCCI[0]), bodyString)
-  } else if (cancelResponse) {
-    return cancellation.translateSpineCancelResponseIntoBundle(cancelResponse[0])
-  }
-  return {
-    resourceType: "OperationOutcome",
-    issue: [{
-      code: "invalid",
-      severity: "error",
-      diagnostics: bodyString
-    }]
-  }
-}
-
-function turnCodeableConceptArrayIntoOperationOutcome(
-  codeableConceptArray: Array<fhir.CodeableConcept>,
-  message: string
-): fhir.OperationOutcome {
-  return {
-    resourceType: "OperationOutcome",
-    issue: codeableConceptArray.map(codeableConcept => ({
-      code:"invalid",
-      severity: "error",
-      diagnostics: message,
-      details: codeableConcept
-    }))
-  }
 }
 
 export function getNumericValueAsString(numericValue: string | number | LosslessNumber): string {

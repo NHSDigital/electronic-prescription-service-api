@@ -1,8 +1,8 @@
 import * as TestResources from "../../../resources/test-resources"
-import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/common"
 import {readXml} from "../../../../src/services/serialisation/xml"
 import {createPractitionerRole} from "../../../../src/services/translation/cancellation/cancellation-practitioner-role"
 import * as fhir from "../../../../src/models/fhir/fhir-resources"
+import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/spine-response"
 
 describe("createPractitionerRole", () => {
   const actualError = TestResources.spineResponses.cancellationError
