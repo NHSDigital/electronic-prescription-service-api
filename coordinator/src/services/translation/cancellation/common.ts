@@ -69,6 +69,25 @@ function convertAddressUse(fhirAddressUse: core.AddressUse): string {
   }
 }
 
-export function generateFullUrl(id: string): string {
-  return `urn:uuid:${id}`
+export function convertTelecom(telecom: Array<core.Telecom>): Array<fhir.ContactPoint> {
+  return telecom.map(value => ({
+    system: "phone",
+    value: value._attributes.value.split(":")[1],
+    use: convertTelecomUse(value._attributes.use)
+  }))
+}
+
+function convertTelecomUse(fhirTelecomUse: string): string {
+  switch (fhirTelecomUse) {
+  case core.TelecomUse.PERMANENT_HOME:
+    return "home"
+  case core.TelecomUse.WORKPLACE:
+    return "work"
+  case core.TelecomUse.TEMPORARY:
+    return "temp"
+  case core.TelecomUse.MOBILE:
+    return "mobile"
+  default:
+    throw new InvalidValueError(`Unhandled telecom use '${fhirTelecomUse}'.`)
+  }
 }

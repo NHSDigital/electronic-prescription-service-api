@@ -1,17 +1,18 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
+import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
+import {convertTelecom} from "./common"
 
 export function createPractitionerRole(
+  agentPerson: AgentPerson,
   practitionerReference: string,
   practitionerCode: string,
   organizationReference: string,
-  organizationTelecom: Array<fhir.ContactPoint>
 ): fhir.PractitionerRole {
   const practitionerRole = {resourceType: "PractitionerRole"} as fhir.PractitionerRole
 
   practitionerRole.identifier = [{
-    system: "https://fhir.nhs.uk/Id/sds-role-profile-id"
-    //TODO where does this value come from? AgentPerson.id.extension
-    // value: ""
+    system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
+    value: agentPerson.id._attributes.extension
   }]
 
   practitionerRole.practitioner = getReference(practitionerReference)
@@ -20,9 +21,7 @@ export function createPractitionerRole(
 
   practitionerRole.code = getCode(practitionerCode)
 
-  //TODO just used the organization telecom here, is this right?
-  // practitionerRole.telecom = [] AgentPerson.telecom
-  practitionerRole.telecom = organizationTelecom
+  practitionerRole.telecom = convertTelecom(agentPerson.telecom)
 
   return practitionerRole
 }

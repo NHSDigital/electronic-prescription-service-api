@@ -19,15 +19,14 @@ function convertAgentPerson(agentPerson: AgentPerson) {
     fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
     resource: createOrganization(agentPerson.representedOrganization)
   }
-  const responsiblePartyOrganizationTelecom = fhirOrganization.resource.telecom
 
   const fhirPractitionerRole = {
     fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
     resource: createPractitionerRole(
+      agentPerson,
       fhirPractitioner.fullUrl,
       responsiblePartyCode,
-      fhirOrganization.fullUrl,
-      responsiblePartyOrganizationTelecom
+      fhirOrganization.fullUrl
     )
   }
   return {fhirPractitioner, fhirOrganization, fhirPractitionerRole}
@@ -43,15 +42,15 @@ export function translateSpineCancelResponseIntoBundle(message: SpineCancellatio
     fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
     resource: createPatient(cancellationResponse.recordTarget.Patient)
   }
-  const responsiblePartyStuff = convertAgentPerson(cancellationResponse.responsibleParty.AgentPerson)
-  const fhirResponsiblePartyPractitioner = responsiblePartyStuff.fhirPractitioner
-  const fhirResponsiblePartyOrganization = responsiblePartyStuff.fhirOrganization
-  const fhirResponsiblePartyPractitionerRole = responsiblePartyStuff.fhirPractitionerRole
+  const convertedResponsibleParty = convertAgentPerson(cancellationResponse.responsibleParty.AgentPerson)
+  const fhirResponsiblePartyPractitioner = convertedResponsibleParty.fhirPractitioner
+  const fhirResponsiblePartyOrganization = convertedResponsibleParty.fhirOrganization
+  const fhirResponsiblePartyPractitionerRole = convertedResponsibleParty.fhirPractitionerRole
 
-  const authorStuff = convertAgentPerson(cancellationResponse.responsibleParty.AgentPerson)
-  const fhirAuthorPractitioner = authorStuff.fhirPractitioner
-  const fhirAuthorOrganization = authorStuff.fhirOrganization
-  const fhirAuthorPractitionerRole = authorStuff.fhirPractitionerRole
+  const convertedAuthor = convertAgentPerson(cancellationResponse.author.AgentPerson)
+  const fhirAuthorPractitioner = convertedAuthor.fhirPractitioner
+  const fhirAuthorOrganization = convertedAuthor.fhirOrganization
+  const fhirAuthorPractitionerRole = convertedAuthor.fhirPractitionerRole
 
   const fhirMedicationRequest = {
     fullUrl: generateFullUrl(uuid.v4().toLowerCase()),

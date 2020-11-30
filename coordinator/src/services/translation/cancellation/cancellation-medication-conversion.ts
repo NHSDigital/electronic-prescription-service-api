@@ -12,25 +12,36 @@ export function createMedicationRequest(
   authorPractitionerRoleId: string
 ): fhir.MedicationRequest {
   const medicationRequest = {resourceType: "MedicationRequest"} as fhir.MedicationRequest
-  const pertinentInformation1 = cancellationResponse.pertinentInformation1
-  const pertinentInformation2 = cancellationResponse.pertinentInformation2
+
   const pertinentInformation3 = cancellationResponse.pertinentInformation3
   medicationRequest.extension = createExtensions(pertinentInformation3, responsiblePartyPractitionerRoleId)
+
+  const pertinentInformation1 = cancellationResponse.pertinentInformation1
   medicationRequest.identifier = createIdentifier(pertinentInformation1)
-  // medicationRequest.status = ""
+
+  // TODO medicationRequest.status = ""
+
   medicationRequest.intent = "order"
+
   medicationRequest.medicationCodeableConcept = getMedicationCodeableConcept()
+
   medicationRequest.subject = createSubject(patientId)
+
   medicationRequest.authoredOn = convertHL7V3DateTimeStringToISODateTime(
     cancellationResponse.effectiveTime._attributes.value
   )
+
   medicationRequest.requester = {
     reference: authorPractitionerRoleId
   }
+
+  const pertinentInformation2 = cancellationResponse.pertinentInformation2
   medicationRequest.groupIdentifier = getMedicationGroupIdentifier(pertinentInformation2)
+
   if (medicationRequestHasDispenser()) {
     medicationRequest.dispenseRequest = getDispenseRequest(cancellationResponse)
   }
+
   return medicationRequest
 }
 
@@ -98,7 +109,10 @@ function getCodeAndDisplay(code: string, display: string) {
 
 function createIdentifier(pertinentInformation1: PertinentInformation1) {
   const id = pertinentInformation1.pertinentLineItemRef.id._attributes.root
-  return [{system: id.toLocaleLowerCase(), value: "https://fhir.nhs.uk/Id/prescription-order-item-number"}]
+  return [{
+    system: id.toLocaleLowerCase(),
+    value: "https://fhir.nhs.uk/Id/prescription-order-item-number"
+  }]
 }
 
 function getMedicationCodeableConcept() {

@@ -25,7 +25,6 @@ export function createPatient(hl7Patient: hl7.Patient): fhir.Patient {
   const hl7Address = toArray(hl7Patient.addr)
   patient.address = convertAddress(hl7Address)
 
-  //TODO multiple GPs? GP vs GP Practise vs Pharmacy?
   const hl7PatientCareProvision = hl7Patient.patientPerson.playedProviderPatient.subjectOf.patientCareProvision
   const hl7OdsCode = hl7PatientCareProvision.responsibleParty.healthCareProvider.id._attributes.extension
   patient.generalPractitioner = createGeneralPractitioner(hl7OdsCode)
@@ -67,7 +66,6 @@ export function convertGender(hl7Gender: codes.SexCode): string {
   case codes.SexCode.UNKNOWN._attributes.code:
     return "unknown"
   default:
-    //TODO: how to handle invalid values from spine?
     throw new InvalidValueError(`Unhandled gender '${hl7Gender}'.`)
   }
 }
@@ -86,8 +84,9 @@ function convertHL7V3DateStringToISODate(hl7Date: string): string {
 }
 
 function createGeneralPractitioner(hl7OdsCode: string): Array<IdentifierReference<Organization>> {
-  return [{identifier: {
-    "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-    "value": hl7OdsCode
-  }}]
+  return [{
+    identifier: {
+      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+      "value": hl7OdsCode
+    }}]
 }

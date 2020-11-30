@@ -1,9 +1,7 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
-import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
-import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {toArray} from "../common"
-import {convertAddress} from "./common"
+import {convertAddress, convertTelecom} from "./common"
 
 export function createOrganization(hl7Organization: hl7.Organization): fhir.Organization {
   const fhirOrganization = {resourceType: "Organization"} as fhir.Organization
@@ -32,29 +30,6 @@ function getIdentifier(organizationId: string) {
       "value": organizationId
     }
   ]
-}
-
-function convertTelecomUse(fhirTelecomUse: string): string {
-  switch (fhirTelecomUse) {
-  case core.TelecomUse.PERMANENT_HOME:
-    return "home"
-  case core.TelecomUse.WORKPLACE:
-    return "work"
-  case core.TelecomUse.TEMPORARY:
-    return "temp"
-  case core.TelecomUse.MOBILE:
-    return "mobile"
-  default:
-    throw new InvalidValueError(`Unhandled telecom use '${fhirTelecomUse}'.`)
-  }
-}
-
-function convertTelecom(telecom: Array<core.Telecom>) {
-  return telecom.map(value => ({
-    system: "phone",
-    value: value._attributes.value.split(":")[1],
-    use: convertTelecomUse(value._attributes.use)
-  }))
 }
 
 function getFixedOrganizationType() {
