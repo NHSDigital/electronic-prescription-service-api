@@ -301,7 +301,7 @@
           },
           {
             "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
-            "value": "612345"
+            "value": "12A3456B"
           }
         ],
         "practitioner": {
