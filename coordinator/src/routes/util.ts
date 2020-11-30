@@ -4,7 +4,7 @@ import * as fhir from "../models/fhir/fhir-resources"
 import {OperationOutcome, Resource} from "../models/fhir/fhir-resources"
 import * as requestValidator from "../services/validation/bundle-validator"
 import * as errors from "../models/errors/validation-errors"
-import {translateToOperationOutcome} from "../services/translation/common"
+import {translateToOperationOutcome} from "../services/translation/spine-response"
 import * as LosslessJson from "lossless-json"
 import {getMessageHeader} from "../services/translation/common/getResourcesOfType"
 import axios from "axios"
@@ -20,18 +20,15 @@ export function handleResponse<T>(
     return responseToolkit.response()
       .code(spineResponse.statusCode)
       .header("Content-Location", spineResponse.pollingUrl)
-  } else {
-    return responseToolkit.response(asOperationOutcome(spineResponse))
+  } else if (isOperationOutcome(spineResponse.body)) {
+    return responseToolkit.response(spineResponse.body)
       .code(spineResponse.statusCode)
       .header("Content-Type", "application/fhir+json; fhirVersion=4.0")
-  }
-}
-
-export function asOperationOutcome<T>(spineResponse: SpineDirectResponse<T>): OperationOutcome {
-  if (isOperationOutcome(spineResponse.body)) {
-    return spineResponse.body
   } else {
-    return translateToOperationOutcome(spineResponse)
+    const translatedSpineResponse = translateToOperationOutcome(spineResponse)
+    return responseToolkit.response(translatedSpineResponse.operationOutcome)
+      .code(translatedSpineResponse.statusCode)
+      .header("Content-Type", "application/fhir+json; fhirVersion=4.0")
   }
 }
 
@@ -69,7 +66,8 @@ const getCircularReplacer = () => {
 
 export async function fhirValidation(
   payload: HapiPayload,
-  requestHeaders: Hapi.Util.Dictionary<string>): Promise<fhir.OperationOutcome> {
+  requestHeaders: Hapi.Util.Dictionary<string>
+): Promise<fhir.OperationOutcome> {
   const validatorResponse = await axios.post(
     "http://localhost:9001/$validate",
     payload.toString(),

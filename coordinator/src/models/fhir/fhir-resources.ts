@@ -56,7 +56,7 @@ export interface CodeableConcept {
 }
 
 export interface Coding {
-  system: string
+  system?: string
   code: string
   display?: string
   version?: string
