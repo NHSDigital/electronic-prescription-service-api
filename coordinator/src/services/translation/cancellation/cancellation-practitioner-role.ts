@@ -1,8 +1,6 @@
-import {CancellationResponse} from "../../../models/hl7-v3/hl7-v3-spine-response"
 import * as fhir from "../../../models/fhir/fhir-resources"
 
 export function createPractitionerRole(
-  cancellationResponse: CancellationResponse,
   practitionerReference: string,
   practitionerCode: string,
   organizationReference: string,

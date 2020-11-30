@@ -35,7 +35,6 @@ export function translateSpineCancelResponseIntoBundle(message: SpineCancellatio
   const fhirResponsiblePartyPractitionerRole = {
     fullUrl: generateFullUrl(responsiblePartyPractitionerRoleId),
     resource: createPractitionerRole(
-      cancellationResponse,
       fhirResponsiblePartyPractitioner.fullUrl,
       responsiblePartyCode,
       fhirResponsiblePartyOrganization.fullUrl,
@@ -59,7 +58,6 @@ export function translateSpineCancelResponseIntoBundle(message: SpineCancellatio
   const fhirAuthorPractitionerRole = {
     fullUrl: generateFullUrl(authorPractitionerRoleId),
     resource: createPractitionerRole(
-      cancellationResponse,
       fhirAuthorPractitioner.fullUrl,
       authorCode,
       fhirAuthorOrganization.fullUrl,
