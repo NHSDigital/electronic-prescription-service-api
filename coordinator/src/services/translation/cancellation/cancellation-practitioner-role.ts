@@ -5,7 +5,8 @@ export function createPractitionerRole(
   cancellationResponse: CancellationResponse,
   practitionerReference: string,
   practitionerCode: string,
-  organizationReference: string
+  organizationReference: string,
+  organizationTelecom: Array<fhir.ContactPoint>
 ): fhir.PractitionerRole {
   const practitionerRole = {resourceType: "PractitionerRole"} as fhir.PractitionerRole
 
@@ -21,8 +22,9 @@ export function createPractitionerRole(
 
   practitionerRole.code = getCode(practitionerCode)
 
-  //TODO which telecom is used? organization?
+  //TODO just used the organization telecom here, is this right?
   // practitionerRole.telecom = [] AgentPerson.telecom
+  practitionerRole.telecom = organizationTelecom
 
   return practitionerRole
 }

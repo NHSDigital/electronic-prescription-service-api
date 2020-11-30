@@ -2,6 +2,7 @@ import * as TestResources from "../../../resources/test-resources"
 import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/common"
 import {readXml} from "../../../../src/services/serialisation/xml"
 import {createPractitionerRole} from "../../../../src/services/translation/cancellation/cancellation-practitioner-role"
+import * as fhir from "../../../../src/models/fhir/fhir-resources"
 
 describe("createPractitionerRole", () => {
   const actualError = TestResources.spineResponses.cancellationError
@@ -13,11 +14,14 @@ describe("createPractitionerRole", () => {
   const practitionerReference = "testReference"
   const practitionerCode = "R8000"
   const organizationReference = "anotherTestReference"
+  const organizationTelecom = [] as Array<fhir.ContactPoint>
+
   const practitionerRole = createPractitionerRole(
     cancellationResponse,
     practitionerReference,
     practitionerCode,
-    organizationReference
+    organizationReference,
+    organizationTelecom
   )
 
   test("returned PractitionerRole contains an identifier block with correct sds role profile id", () => {
@@ -38,7 +42,7 @@ describe("createPractitionerRole", () => {
     expect(practitionerRole.code[0].coding[0].system).toBe("https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName")
   })
 
-  // test("has correct telecom information", () => {
-  //   expect(practitionerRole.organization.reference).toBe(organizationReference)
-  // })
+  test("has correct telecom information", () => {
+    expect(practitionerRole.telecom).toBe(organizationTelecom)
+  })
 })

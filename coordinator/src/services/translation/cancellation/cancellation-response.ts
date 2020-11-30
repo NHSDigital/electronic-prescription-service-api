@@ -7,7 +7,6 @@ import {createPatient} from "./cancellation-patient"
 import {createPractitioner} from "./cancellation-practitioner"
 import {createOrganization} from "./cancellation-organization"
 import {createPractitionerRole} from "./cancellation-practitioner-role"
-import {generateFullUrl} from "./common"
 
 export function translateSpineCancelResponseIntoBundle(message: string): fhir.Bundle {
   const parsedMsg = readXml(message) as SpineCancellationResponse
@@ -34,6 +33,7 @@ export function translateSpineCancelResponseIntoBundle(message: string): fhir.Bu
     fullUrl: generateFullUrl(responsiblePartyOrganizationId),
     resource: createOrganization(cancellationResponse.responsibleParty.AgentPerson.representedOrganization)
   }
+  const responsiblePartyOrganizationTelecom = fhirResponsiblePartyOrganization.resource.telecom
   const responsiblePartyPractitionerRoleId = uuid.v4().toLowerCase()
   const fhirResponsiblePartyPractitionerRole = {
     fullUrl: generateFullUrl(responsiblePartyPractitionerRoleId),
@@ -41,10 +41,10 @@ export function translateSpineCancelResponseIntoBundle(message: string): fhir.Bu
       cancellationResponse,
       fhirResponsiblePartyPractitioner.fullUrl,
       responsiblePartyCode,
-      fhirResponsiblePartyOrganization.fullUrl
+      fhirResponsiblePartyOrganization.fullUrl,
+      responsiblePartyOrganizationTelecom
     )
   }
-
   const authorCode = cancellationResponse.author.AgentPerson.code._attributes.code
   const authorPractitionerId = uuid.v4().toLowerCase()
   const fhirAuthorPractitioner = {
@@ -56,6 +56,8 @@ export function translateSpineCancelResponseIntoBundle(message: string): fhir.Bu
     fullUrl: generateFullUrl(authorOrganizationId),
     resource: createOrganization(cancellationResponse.author.AgentPerson.representedOrganization)
   }
+  const authorOrganizationTelecom = fhirResponsiblePartyOrganization.resource.telecom
+
   const authorPractitionerRoleId = uuid.v4().toLowerCase()
   const fhirAuthorPractitionerRole = {
     fullUrl: generateFullUrl(authorPractitionerRoleId),
@@ -63,7 +65,8 @@ export function translateSpineCancelResponseIntoBundle(message: string): fhir.Bu
       cancellationResponse,
       fhirAuthorPractitioner.fullUrl,
       authorCode,
-      fhirAuthorOrganization.fullUrl
+      fhirAuthorOrganization.fullUrl,
+      authorOrganizationTelecom
     )
   }
 
@@ -90,4 +93,8 @@ export function translateSpineCancelResponseIntoBundle(message: string): fhir.Bu
 
   bundle.type = "message"
   return bundle
+}
+
+function generateFullUrl(id: string) {
+  return `urn:uuid:${id}`
 }
