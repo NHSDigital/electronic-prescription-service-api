@@ -21,55 +21,6 @@ jestpact.pactWith(
 
     describe("convert e2e tests", () => {
 
-      it('should reject unauthorised requests', async () => {
-        const apiPath = "/$convert"
-        const interaction: InteractionObject = {
-          state: null,
-          uponReceiving: `a request to convert a FHIR message`,
-          withRequest: {
-            headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0",
-              "Authorization": "invalid"
-            },
-            method: "POST",
-            path: "/$convert",
-            body: {}
-          },
-          willRespondWith: {
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: {
-              resourceType: "OperationOutcome",
-              issue: [
-                {
-                  severity: "error",
-                  code: "forbidden",
-                  details: {
-                    coding: [
-                      {
-                        system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
-                        version: "1",
-                        code: "ACCESS_DENIED",
-                        display: "Invalid access token"
-                      }
-                    ]
-                  }
-                }
-              ]
-            },
-            status: 401
-          }
-        }
-        await provider.addInteraction(interaction)
-        await client()
-          .post(apiPath)
-          .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-          .set('Authorization', "invalid")
-          .send({})
-          .expect(401)
-      })
-
       test.each(TestResources.convertCases)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: string, responseMatcher: string) => {
         const regex = new RegExp(responseMatcher)
         const isMatch = regex.test(response)

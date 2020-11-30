@@ -20,54 +20,6 @@ jestpact.pactWith(
     }
 
     describe("prepare e2e tests", () => {
-      it('should reject unauthorised requests', async () => {
-        const apiPath = "/$prepare"
-        const interaction: InteractionObject = {
-          state: null,
-          uponReceiving: `a request to prepare a message`,
-          withRequest: {
-            headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0",
-              "Authorization": "I am a bad access token"
-            },
-            method: "POST",
-            path: "/$prepare",
-            body: {}
-          },
-          willRespondWith: {
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: {
-              resourceType: "OperationOutcome",
-              issue: [
-                {
-                  severity: "error",
-                  code: "forbidden",
-                  details: {
-                    coding: [
-                      {
-                        system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
-                        version: "1",
-                        code: "ACCESS_DENIED",
-                        display: "Invalid access token"
-                      }
-                    ]
-                  }
-                }
-              ]
-            },
-            status: 401
-          }
-        }
-        await provider.addInteraction(interaction)
-        await client()
-          .post(apiPath)
-          .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-          .set('Authorization', 'I am a bad access token')
-          .send({})
-          .expect(401)
-      })
 
       test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (desc: string, inputMessage: Bundle, outputMessage: Parameters) => {
         const apiPath = "/$prepare"
@@ -77,8 +29,7 @@ jestpact.pactWith(
           uponReceiving: `a request to prepare ${desc} message`,
           withRequest: {
             headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0",
-              "Authorization": `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             method: "POST",
             path: "/$prepare",
@@ -96,61 +47,12 @@ jestpact.pactWith(
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-          .set('Authorization', `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`)
           .send(inputMessageStr)
           .expect(200)
       })
     })
 
     describe("process-message e2e tests", () => {
-      it('should reject unauthorised requests', async () => {
-        const apiPath = "/$process-message"
-        const interaction: InteractionObject = {
-          state: null,
-          uponReceiving: `a request to process a message to Spine`,
-          withRequest: {
-            headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0",
-              "Authorization": "I am a bad access token"
-            },
-            method: "POST",
-            path: "/$process-message",
-            body: {}
-          },
-          willRespondWith: {
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: {
-              resourceType: "OperationOutcome",
-              issue: [
-                {
-                  severity: "error",
-                  code: "forbidden",
-                  details: {
-                    coding: [
-                      {
-                        system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
-                        version: "1",
-                        code: "ACCESS_DENIED",
-                        display: "Invalid access token"
-                      }
-                    ]
-                  }
-                }
-              ]
-            },
-            status: 401
-          }
-        }
-        await provider.addInteraction(interaction)
-        await client()
-          .post(apiPath)
-          .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-          .set('Authorization', 'I am a bad access token')
-          .send({})
-          .expect(401)
-      })
 
       test.each(TestResources.processCases)("should be able to process %s", async (desc: string, message: Bundle) => {
         const apiPath = "/$process-message"
@@ -262,8 +164,7 @@ jestpact.pactWith(
           uponReceiving: `a request to process ${desc} message to Spine`,
           withRequest: {
             headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0",
-              "Authorization": `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             method: "POST",
             path: "/$process-message",
@@ -289,7 +190,6 @@ jestpact.pactWith(
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-          .set('Authorization', `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`)
           .send(bundleStr)
           .expect(400)
       })
