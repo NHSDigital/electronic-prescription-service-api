@@ -4,14 +4,12 @@ import {
   getIdentifierValueForSystem,
   getIdentifierValueOrNullForSystem,
   getNumericValueAsString,
-  getResourceForFullUrl,
-  wrapInOperationOutcome
+  getResourceForFullUrl
 } from "../../../../src/services/translation/common"
 import * as TestResources from "../../../resources/test-resources"
 import * as fhir from "../../../../src/models/fhir/fhir-resources"
 import {Identifier} from "../../../../src/models/fhir/fhir-resources"
 import {clone} from "../../../resources/test-helpers"
-import {SpineDirectResponse} from "../../../../src/models/spine"
 import * as LosslessJson from "lossless-json"
 import {TooManyValuesError} from "../../../../src/models/errors/processing-errors"
 
@@ -107,22 +105,6 @@ describe("getIdentifierValueOrNullForSystem", () => {
         "fhirPath"
       )
     ).toThrow()
-  })
-})
-
-describe("wrapInOperationOutcome", () => {
-  test("returns informational OperationOutcome for status code <= 299", () => {
-    const spineResponse: SpineDirectResponse<string> = {statusCode: 299, body: "test"}
-    const result = wrapInOperationOutcome(spineResponse)
-    expect(result.issue[0].severity).toEqual("information")
-    expect(result.issue[0].code).toEqual("informational")
-  })
-
-  test("returns error OperationOutcome for status code > 299", () => {
-    const spineResponse: SpineDirectResponse<string> = {statusCode: 300, body: "test"}
-    const result = wrapInOperationOutcome(spineResponse)
-    expect(result.issue[0].severity).toEqual("error")
-    expect(result.issue[0].code).toEqual("invalid")
   })
 })
 

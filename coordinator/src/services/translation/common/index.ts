@@ -1,7 +1,6 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import moment from "moment"
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
-import {SpineDirectResponse} from "../../../models/spine"
 import {LosslessNumber} from "lossless-json"
 import {InvalidValueError, TooFewValuesError, TooManyValuesError} from "../../../models/errors/processing-errors"
 
@@ -173,15 +172,8 @@ export function convertMomentToHl7V3DateTime(dateTime: moment.Moment): core.Time
   return new core.Timestamp(hl7V3DateTimeStr)
 }
 
-export function wrapInOperationOutcome<T>(message: SpineDirectResponse<T>): fhir.OperationOutcome {
-  return {
-    resourceType: "OperationOutcome",
-    issue: [{
-      code: message.statusCode <= 299 ? "informational" : "invalid",
-      severity: message.statusCode <= 299 ? "information" : "error",
-      diagnostics: message.body?.toString()
-    }]
-  }
+export function toArray<T>(thing: T | Array<T>): Array<T> {
+  return Array.isArray(thing) ? thing : [thing]
 }
 
 export function getNumericValueAsString(numericValue: string | number | LosslessNumber): string {

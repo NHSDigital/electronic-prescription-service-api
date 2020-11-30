@@ -6,6 +6,7 @@ required:
   - eventCoding
   - sender
   - source
+  - destination
 properties:
   resourceType:
     type: string
@@ -20,21 +21,21 @@ properties:
   eventCoding:
     $ref: "Coding-MessageDefinition.yaml"
   sender:
-    $ref: "Reference.yaml"
+    $ref: "SenderReference.yaml"
   source:
     type: object
     description: "Message source application"
     required:
       - endpoint
     properties:
-      name:
-        type: string
-        description: "Name of system"
-        example: "PAS"
       endpoint:
         type: string
         description: "Actual message source address or id"
-        example: "https://fhir.mynhstrust.nhs.uk/R4"
+        example: "urn:nhs-uk:addressing:ods:RBA"
+  destination:
+    type: array
+    items:
+      $ref: "MessageDestination.yaml"
   focus:
     type: array
     description: "The actual content of the message"

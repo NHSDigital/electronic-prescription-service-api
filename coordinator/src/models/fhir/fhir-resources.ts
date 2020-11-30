@@ -30,6 +30,10 @@ export interface RepeatInformationExtension extends Extension {
   extension: Array<UnsignedIntExtension | DateTimeExtension>
 }
 
+export interface ControlledDrugExtension extends Extension {
+  extension: Array<StringExtension | CodingExtension>
+}
+
 export interface MedicationRequest extends Resource {
   resourceType: "MedicationRequest"
   identifier: Array<Identifier>
@@ -43,7 +47,7 @@ export interface MedicationRequest extends Resource {
   dosageInstruction: Array<Dosage>
   dispenseRequest: MedicationRequestDispenseRequest
   extension: Array<IdentifierExtension | ReferenceExtension<PractitionerRole> | CodingExtension
-    | CodeableConceptExtension | RepeatInformationExtension>
+    | CodeableConceptExtension | RepeatInformationExtension | ControlledDrugExtension>
   statusReason?: CodeableConcept
 }
 
@@ -52,7 +56,7 @@ export interface CodeableConcept {
 }
 
 export interface Coding {
-  system: string
+  system?: string
   code: string
   display?: string
   version?: string

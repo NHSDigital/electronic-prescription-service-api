@@ -7,7 +7,6 @@ import {LiveRequestHandler} from "../../src/services/handlers/spine-handler"
 import path from "path"
 
 describe("Spine communication", () => {
-
   const requestHandler = new LiveRequestHandler(
     "localhost",
     "/Prescribe",
@@ -72,47 +71,13 @@ describe("Spine communication", () => {
     expect((spineResponse as SpinePollableResponse).pollingUrl).toBe("example.com/eps/_poll/test-content-location")
   })
 
-  test("Async responses that do not contain a successful ack code return a 400 response", async () => {
-    moxios.wait(() => {
-      const request = moxios.requests.mostRecent()
-      request.respondWith({
-        status: 200,
-        statusText: "OK",
-        responseText: readFileAsString("async_error.xml")
-      })
-    })
-
-    const spineResponse = await requestHandler.send({message: "test", interactionId: "test2"})
-
-    expect(spineResponse.statusCode).toBe(400)
-    expect(isDirect(spineResponse)).toBe(true)
-    expect((spineResponse as SpineDirectResponse<string>).body).toContain('<hl7:acknowledgement typeCode="AE">')
-  })
-
-  test("Sync responses that do not contain a successful ack code return a 400 response", async () => {
-    moxios.wait(() => {
-      const request = moxios.requests.mostRecent()
-      request.respondWith({
-        status: 200,
-        statusText: "OK",
-        responseText: readFileAsString("sync_error.xml")
-      })
-    })
-
-    const spineResponse = await requestHandler.send({message: "test", interactionId: "test2"})
-
-    expect(spineResponse.statusCode).toBe(400)
-    expect(isDirect(spineResponse)).toBe(true)
-    expect((spineResponse as SpineDirectResponse<string>).body).toContain('<acknowledgement typeCode="AR">')
-  })
-
   test("Async success messages returned from spine return a 200 response", async () => {
     moxios.wait(() => {
       const request = moxios.requests.mostRecent()
       request.respondWith({
         status: 200,
         statusText: "OK",
-        responseText: readFileAsString("async_success.txt")
+        responseText: readFileAsString("async_success.xml")
       })
     })
 
