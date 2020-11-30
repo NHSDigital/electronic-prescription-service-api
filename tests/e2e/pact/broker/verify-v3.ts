@@ -1,4 +1,5 @@
 import { VerifierV3 } from "@pact-foundation/pact"
+import child from 'child_process'
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verify(): Promise<any> { 
@@ -15,7 +16,7 @@ async function verify(): Promise<any> {
     logLevel: isLocal? "debug" : "info",
     requestFilter: (req) => {
       req.headers["x-smoke-test"] = "1"
-      req.headers["Authorization"] = `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
+      req.headers["Authorization"] = child.execSync(`docker run --rm artronics/nhsd-login-docker:latest "${process.env.IDP_URL}"`)
       return req
     },
     pactUrls: isLocal 
