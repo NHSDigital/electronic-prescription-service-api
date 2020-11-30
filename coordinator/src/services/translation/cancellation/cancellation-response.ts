@@ -6,7 +6,7 @@ import {createMedicationRequest} from "./cancellation-medication-conversion"
 import {createPatient} from "./cancellation-patient"
 import {createPractitioner} from "./cancellation-practitioner"
 import {createOrganization} from "./cancellation-organization"
-import {createPractitionerRole} from "./cancellation-practitioner-role";
+import {createPractitionerRole} from "./cancellation-practitioner-role"
 
 export function translateSpineCancelResponseIntoBundle(message: string): fhir.Bundle {
   const parsedMsg = readXml(message) as SpineCancellationResponse

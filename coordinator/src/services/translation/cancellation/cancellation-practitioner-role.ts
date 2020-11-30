@@ -9,7 +9,12 @@ export function createPractitionerRole(
 ): fhir.PractitionerRole {
   const practitionerRole = {resourceType: "PractitionerRole"} as fhir.PractitionerRole
 
-  // practitionerRole.identifier = []
+  practitionerRole.identifier = [
+    {
+      system: "https://fhir.nhs.uk/Id/sds-role-profile-id"
+      //TODO where does this value come from?
+      // value: ""
+    }]
 
   practitionerRole.practitioner = getReference(practitionerReference)
 
@@ -17,6 +22,7 @@ export function createPractitionerRole(
 
   practitionerRole.code = getCode(practitionerCode)
 
+  //TODO which telecom is used? organization?
   // practitionerRole.telecom = []
 
   return practitionerRole
