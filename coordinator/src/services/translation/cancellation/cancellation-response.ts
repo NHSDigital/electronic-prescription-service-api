@@ -6,6 +6,7 @@ import {createMedicationRequest} from "./cancellation-medication-conversion"
 import {createPatient} from "./cancellation-patient"
 import {createPractitioner} from "./cancellation-practitioner"
 import {createOrganization} from "./cancellation-organization"
+import {generateFullUrl} from "./common"
 
 export function translateSpineCancelResponseIntoBundle(message: string): fhir.Bundle {
   const parsedMsg = readXml(message) as SpineCancellationResponse
@@ -21,9 +22,9 @@ export function translateSpineCancelResponseIntoBundle(message: string): fhir.Bu
     resource: createPatient(cancellationResponse.recordTarget.Patient)
   }
 
-  const responsiblePartyId = uuid.v4().toLowerCase()
+  const responsiblePartyPractitionerId = uuid.v4().toLowerCase()
   const fhirResponsibleParty = {
-    fullUrl: generateFullUrl(responsiblePartyId),
+    fullUrl: generateFullUrl(responsiblePartyPractitionerId),
     resource: createPractitioner(cancellationResponse.responsibleParty.AgentPerson)
   }
   const responsiblePartyOrganizationId = uuid.v4().toLowerCase()
@@ -31,10 +32,11 @@ export function translateSpineCancelResponseIntoBundle(message: string): fhir.Bu
     fullUrl: generateFullUrl(responsiblePartyOrganizationId),
     resource: createOrganization(cancellationResponse.responsibleParty.AgentPerson.representedOrganization)
   }
+  const responsiblePartyPractitionerRoleId = uuid.v4().toLowerCase()
 
-  const authorId = uuid.v4().toLowerCase()
+  const authorPractitionerId = uuid.v4().toLowerCase()
   const fhirAuthor = {
-    fullUrl: generateFullUrl(authorId),
+    fullUrl: generateFullUrl(authorPractitionerId),
     resource: createPractitioner(cancellationResponse.author.AgentPerson)
   }
   const authorOrganizationId = uuid.v4().toLowerCase()
@@ -47,7 +49,7 @@ export function translateSpineCancelResponseIntoBundle(message: string): fhir.Bu
   const medicationRequestId = uuid.v4().toLowerCase()
   const fhirMedicationRequest = {
     fullUrl: generateFullUrl(medicationRequestId),
-    resource: createMedicationRequest(cancellationResponse)
+    resource: createMedicationRequest(cancellationResponse, responsiblePartyPractitionerRoleId, patientId)
   }
   //TODO PractitionerRoles for author and responsibleParty, MessageHeader
 
@@ -63,8 +65,4 @@ export function translateSpineCancelResponseIntoBundle(message: string): fhir.Bu
 
   bundle.type = "message"
   return bundle
-}
-
-function generateFullUrl(id: string) {
-  return `urn:uuid:${id}`
 }

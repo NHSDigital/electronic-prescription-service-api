@@ -1,19 +1,26 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import {
   CancellationResponse,
+  PertinentInformation1,
   PertinentInformation3
 } from "../../../models/hl7-v3/hl7-v3-spine-response"
 import moment from "moment"
+import {generateFullUrl} from "./common"
 
-export function createMedicationRequest(cancellationResponse: CancellationResponse): fhir.MedicationRequest {
+export function createMedicationRequest(
+  cancellationResponse: CancellationResponse,
+  practitionerRoleId: string,
+  patientId: string
+): fhir.MedicationRequest {
   const medicationRequest = {resourceType: "MedicationRequest"} as fhir.MedicationRequest
+  const pertinentInformation1 = cancellationResponse.pertinentInformation1
   const pertinentInformation3 = cancellationResponse.pertinentInformation3
-  medicationRequest.extension = createExtensions(pertinentInformation3)
-  // medicationRequest.identifier = [{system: "", value: ""}]
+  medicationRequest.extension = createExtensions(pertinentInformation3, practitionerRoleId)
+  medicationRequest.identifier = createIdentifier(pertinentInformation1)
   // medicationRequest.status = ""
   medicationRequest.intent = "order"
   medicationRequest.medicationCodeableConcept = getMedicationCodeableConcept()
-  // medicationRequest.subject = {}
+  medicationRequest.subject = createSubject(patientId)
   medicationRequest.authoredOn = convertHL7V3DateTimeStringToISODateTime(
     cancellationResponse.effectiveTime._attributes.value
   )
@@ -23,42 +30,33 @@ export function createMedicationRequest(cancellationResponse: CancellationRespon
   return medicationRequest
 }
 
-function getMedicationCodeableConcept() {
-  return {"coding":  [
-    {
-      "system": "http://snomed.info/sct",
-      "code": "763158003",
-      "display": "Medicinal product"
-    }
-  ]}
-}
-
-function createExtensions(cancellationPertinentInformation3: PertinentInformation3) {
+function createExtensions(cancellationPertinentInformation3: PertinentInformation3, practitionerRoleId: string) {
   const cancellationCode = cancellationPertinentInformation3.pertinentResponse.value._attributes.code
   const cancellationDisplay = cancellationPertinentInformation3.pertinentResponse.value._attributes.displayName
   const {fhirCode, fhirDisplay} = getCodeAndDisplay(cancellationCode, cancellationDisplay)
 
-  return [{
-    "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-PrescriptionStatusHistory",
-    "extension":  [
-      {
-        "url": "status",
-        "valueCoding": {
-          "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history",
-          "code": fhirCode,
-          "display": fhirDisplay
+  return [
+    {
+      "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-PrescriptionStatusHistory",
+      "extension":  [
+        {
+          "url": "status",
+          "valueCoding": {
+            "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history",
+            "code": fhirCode,
+            "display": fhirDisplay
+          }
         }
+      ]
+    },
+    {
+      "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+      "valueReference": {
+        "reference": generateFullUrl(practitionerRoleId)
+      // "display": "DR SAZ RAZ"
       }
-    ]
-    //TODO
-  // },
-  // {
-  //   "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
-  //   "valueReference": {
-  //     "reference": "urn:uuid:a5acefc1-f8ca-4989-a5ac-34ae36741466"
-  //     // "display": "DR SAZ RAZ"
-  //   }
-  }]
+    }
+  ]
 }
 
 function getCodeAndDisplay(code: string, display: string) {
@@ -92,6 +90,27 @@ function getCodeAndDisplay(code: string, display: string) {
   default:
     //TODO error?
     return {}
+  }
+}
+
+function createIdentifier(pertinentInformation1: PertinentInformation1) {
+  const id = pertinentInformation1.pertinentLineItemRef.id._attributes.root
+  return [{system: id.toLocaleLowerCase(), value: "https://fhir.nhs.uk/Id/prescription-order-item-number"}]
+}
+
+function getMedicationCodeableConcept() {
+  return {
+    "coding": [{
+      "system": "http://snomed.info/sct",
+      "code": "763158003",
+      "display": "Medicinal product"
+    }]
+  }
+}
+
+function createSubject(patientId: string) {
+  return {
+    reference: patientId
   }
 }
 

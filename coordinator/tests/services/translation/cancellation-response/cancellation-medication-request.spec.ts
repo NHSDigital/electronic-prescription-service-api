@@ -8,6 +8,7 @@ import {
   createMedicationRequest
 } from "../../../../src/services/translation/cancellation/cancellation-medication-conversion"
 import {readXml} from "../../../../src/services/serialisation/xml"
+import {generateFullUrl} from "../../../../src/services/translation/cancellation/common"
 
 describe("createMedicationRequest", () => {
   const actualError = TestResources.spineResponses.cancellationError
@@ -15,13 +16,15 @@ describe("createMedicationRequest", () => {
   const parsedMsg = readXml(cancelResponse)
   const actEvent = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
   const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
-  const medicationRequest = createMedicationRequest(cancellationResponse)
+  const practitionerRoleId = "testRoleId"
+  const patientId = "testPatientId"
+  const medicationRequest = createMedicationRequest(cancellationResponse, practitionerRoleId, patientId)
 
   test("has extensions", () => {
     expect(medicationRequest.extension).not.toBeUndefined()
   })
 
-  test("contains medicationrequest-status-history extension with correct code and display", () => {
+  test("contains status-history extension with correct code and display", () => {
     const extension = getExtensionForUrlOrNull(
       medicationRequest.extension,
       "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-PrescriptionStatusHistory",
@@ -39,8 +42,27 @@ describe("createMedicationRequest", () => {
     expect(valueCoding.display).toBe("Prescription/item not found")
   })
 
+  test("contains ResponsiblePractitioner extension with correct reference", () => {
+    const extension = getExtensionForUrlOrNull(
+      medicationRequest.extension,
+      "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+      "MedicationRequest.extension"
+    ) as fhir.ReferenceExtension<fhir.PractitionerRole>
+    expect(extension).not.toBeUndefined()
+    const reference = extension.valueReference.reference
+    expect(reference).toBe(generateFullUrl(practitionerRoleId))
+  })
+
+  test("has identifier", () => {
+    const identifier = medicationRequest.identifier
+    expect(identifier).toHaveLength(1)
+    expect(identifier[0].system).toBe("a54219b8-f741-4c47-b662-e4f8dfa49ab6")
+    expect(identifier[0].value).toBe("https://fhir.nhs.uk/Id/prescription-order-item-number")
+  })
+
   test("has 'order' in `intent` key", () => {
-    expect(medicationRequest.intent).toBe("order")
+    const intent = medicationRequest.intent
+    expect(intent).toBe("order")
   })
 
   test("has default medication in medicationCodeableConcept", () => {
@@ -55,6 +77,11 @@ describe("createMedicationRequest", () => {
           ]
       }
     )
+  })
+
+  test("subject", () => {
+    const subject = medicationRequest.subject
+    expect(subject.reference).toBe(patientId)
   })
 
   test("authoredOn", () => {

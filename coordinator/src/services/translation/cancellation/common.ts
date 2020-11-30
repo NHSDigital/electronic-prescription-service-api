@@ -68,3 +68,7 @@ function convertAddressUse(fhirAddressUse: core.AddressUse): string {
     throw new InvalidValueError(`Unhandled address use '${fhirAddressUse}'.`)
   }
 }
+
+export function generateFullUrl(id: string) {
+  return `urn:uuid:${id}`
+}

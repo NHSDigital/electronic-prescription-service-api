@@ -68,7 +68,18 @@ export interface CancellationResponse {
   responsibleParty: {
     AgentPerson: AgentPerson
   }
+  pertinentInformation1: PertinentInformation1
   pertinentInformation3: PertinentInformation3
+}
+
+export interface PertinentInformation1 {
+  pertinentLineItemRef: {
+    id: {
+      _attributes: {
+        root: string
+      }
+    }
+  }
 }
 
 export interface PertinentInformation3 {
