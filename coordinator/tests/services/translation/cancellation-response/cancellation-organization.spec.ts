@@ -1,10 +1,8 @@
 import * as TestResources from "../../../resources/test-resources"
-import {
-  getIdentifierValueForSystem,
-  SPINE_CANCELLATION_ERROR_RESPONSE_REGEX
-} from "../../../../src/services/translation/common"
+import {getIdentifierValueForSystem} from "../../../../src/services/translation/common"
 import {readXml} from "../../../../src/services/serialisation/xml"
 import {createOrganization} from "../../../../src/services/translation/cancellation/cancellation-organization"
+import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/spine-response"
 
 describe("createOrganization", () => {
   const actualError = TestResources.spineResponses.cancellationError

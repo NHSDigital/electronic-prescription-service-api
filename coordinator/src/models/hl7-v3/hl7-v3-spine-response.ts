@@ -50,6 +50,11 @@ export interface SpineCancellationResponse {
         CancellationResponse: CancellationResponse
       }
     }
+    "hl7:acknowledgement": {
+      _attributes: {
+        typeCode: string
+      }
+    }
   }
 }
 

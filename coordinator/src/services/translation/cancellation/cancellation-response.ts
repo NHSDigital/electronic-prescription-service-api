@@ -1,17 +1,14 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import {SpineCancellationResponse} from "../../../models/hl7-v3/hl7-v3-spine-response"
 import * as uuid from "uuid"
-import {readXml} from "../../serialisation/xml"
 import {createMedicationRequest} from "./cancellation-medication-conversion"
 import {createPatient} from "./cancellation-patient"
 import {createPractitioner} from "./cancellation-practitioner"
 import {createOrganization} from "./cancellation-organization"
 import {createPractitionerRole} from "./cancellation-practitioner-role"
 
-export function translateSpineCancelResponseIntoBundle(message: string): fhir.Bundle {
-  const parsedMsg = readXml(message) as SpineCancellationResponse
-
-  const actEvent = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
+export function translateSpineCancelResponseIntoBundle(message: SpineCancellationResponse): fhir.Bundle {
+  const actEvent = message["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
   const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
 
   const bundle = new fhir.Bundle()
