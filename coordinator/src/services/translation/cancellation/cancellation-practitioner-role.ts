@@ -32,7 +32,7 @@ function getCode(practitionerCode: string) {
       {
         system: "https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName",
         code: practitionerCode,
-        display: "" //TODO ask Kevin about the display values, need a map?
+        display: "" //TODO required field, Kevin seeing if we can remove
       }
     ]
   }]

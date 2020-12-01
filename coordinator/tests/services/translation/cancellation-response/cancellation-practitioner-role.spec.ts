@@ -1,23 +1,30 @@
 import {createPractitionerRole} from "../../../../src/services/translation/cancellation/cancellation-practitioner-role"
-import * as fhir from "../../../../src/models/fhir/fhir-resources"
+import * as TestResources from "../../../resources/test-resources"
+import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/spine-response"
+import {readXml} from "../../../../src/services/serialisation/xml"
 
 describe("createPractitionerRole", () => {
+  const actualError = TestResources.spineResponses.cancellationError
+  const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(actualError.response.body)[0]
+  const parsedMsg = readXml(cancelResponse)
+  const actEvent = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
+  const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
+  const authorAgentPerson = cancellationResponse.author.AgentPerson
 
   const practitionerReference = "testReference"
   const practitionerCode = "R8000"
   const organizationReference = "anotherTestReference"
-  const organizationTelecom = [] as Array<fhir.ContactPoint>
 
   const practitionerRole = createPractitionerRole(
+    authorAgentPerson,
     practitionerReference,
     practitionerCode,
-    organizationReference,
-    organizationTelecom
+    organizationReference
   )
 
   test("returned PractitionerRole contains an identifier block with correct sds role profile id", () => {
     expect(practitionerRole.identifier[0].system).toBe("https://fhir.nhs.uk/Id/sds-role-profile-id")
-    // expect(practitionerRole.identifier[0].value).toBe("something")
+    expect(practitionerRole.identifier[0].value).toBe(authorAgentPerson.id._attributes.extension)
   })
 
   test("has reference to Practitioner", () => {
@@ -34,6 +41,8 @@ describe("createPractitionerRole", () => {
   })
 
   test("has correct telecom information", () => {
-    expect(practitionerRole.telecom).toBe(organizationTelecom)
+    expect(practitionerRole.telecom[0].system).toBe("phone")
+    expect(practitionerRole.telecom[0].use).toBe("work")
+    expect(practitionerRole.telecom[0].value).toBe("01234567890")
   })
 })

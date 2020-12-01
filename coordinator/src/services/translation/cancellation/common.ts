@@ -70,7 +70,8 @@ function convertAddressUse(fhirAddressUse: core.AddressUse): string {
 }
 
 export function convertTelecom(telecom: Array<core.Telecom>): Array<fhir.ContactPoint> {
-  return telecom.map(value => ({
+  const telecomArray = toArray(telecom)
+  return telecomArray.map(value => ({
     system: "phone",
     value: value._attributes.value.split(":")[1],
     use: convertTelecomUse(value._attributes.use)
