@@ -82,7 +82,7 @@ export interface Dosage {
 }
 
 export interface Performer {
-  extension: Array<ReferenceExtension<PractitionerRole>>
+  extension?: Array<ReferenceExtension<PractitionerRole>>
   identifier: Identifier
   display?: string
 }

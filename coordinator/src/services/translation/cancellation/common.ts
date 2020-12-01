@@ -69,7 +69,7 @@ function convertAddressUse(fhirAddressUse: core.AddressUse): string {
   }
 }
 
-export function convertTelecom(telecom: Array<core.Telecom>): Array<fhir.ContactPoint> {
+export function convertTelecom(telecom: Array<core.Telecom> | core.Telecom): Array<fhir.ContactPoint> {
   const telecomArray = toArray(telecom)
   return telecomArray.map(value => ({
     system: "phone",

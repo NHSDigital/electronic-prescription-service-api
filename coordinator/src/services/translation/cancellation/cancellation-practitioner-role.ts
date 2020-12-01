@@ -1,6 +1,7 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertTelecom} from "./common"
+import {toArray} from "../common";
 
 export function createPractitionerRole(
   agentPerson: AgentPerson,
@@ -21,7 +22,9 @@ export function createPractitionerRole(
 
   practitionerRole.code = getCode(practitionerCode)
 
-  practitionerRole.telecom = convertTelecom(agentPerson.telecom)
+  if (toArray(agentPerson.telecom)[0]._attributes) {
+    practitionerRole.telecom = convertTelecom(agentPerson.telecom)
+  }
 
   return practitionerRole
 }
