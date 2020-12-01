@@ -20,7 +20,6 @@ async function verify(): Promise<any> {
       try {
         const command = `docker run --rm artronics/nhsd-login-docker:latest "${process.env.IDP_URL}"`
         const accessToken = child.execSync(command).toString().replace(/\n/g, "")
-        console.log(`Subcommand response: ${accessToken}`)
         req.headers["Authorization"] = `Bearer ${accessToken}`
         return req
       } catch (error) {
@@ -34,15 +33,22 @@ async function verify(): Promise<any> {
       : []
   })
   
-  return await verifier.verifyProvider()
+  try {
+    return await verifier.verifyProvider()
+  } catch (error) {
+    console.log("We got an error when running the verifier")
+    console.error(error)
+    return Promise.reject("Verification error")
+  }
 }
 
 (async () => {
   try {
-    await verify()
+    return await verify()
   } catch (error) {
     console.log("Got an error from the verify request")
     console.error(error)
+    return Promise.reject("Verification error (from wrapper)")
   }
 })()
 
