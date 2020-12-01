@@ -7,6 +7,7 @@ import {createPractitioner} from "./cancellation-practitioner"
 import {createOrganization} from "./cancellation-organization"
 import {createPractitionerRole} from "./cancellation-practitioner-role"
 import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
+import {createMessageHeader} from "./cancellation-message-header";
 
 export function translateSpineCancelResponseIntoBundle(message: SpineCancellationResponse): fhir.Bundle {
   const actEvent = message["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
@@ -37,7 +38,16 @@ export function translateSpineCancelResponseIntoBundle(message: SpineCancellatio
     )
   }
 
+  const fhirMessageHeader = {
+    fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
+    resource: createMessageHeader(
+      fhirPatient.fullUrl,
+      fhirMedicationRequest.fullUrl,
+    )
+  }
+
   bundle.entry = [
+    fhirMessageHeader,
     fhirMedicationRequest,
     fhirPatient,
     fhirAuthorPractitioner,

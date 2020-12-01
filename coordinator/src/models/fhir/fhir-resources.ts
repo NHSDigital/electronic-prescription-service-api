@@ -285,7 +285,14 @@ interface MessageHeaderSource {
 export interface MessageHeader extends Resource {
   resourceType: "MessageHeader",
   eventCoding: Coding,
-  sender: Reference<PractitionerRole>
+  sender: MessageHeaderSender
   source: MessageHeaderSource
   focus: Array<Reference<Resource>>
+  // extension?: Array<Extension>
+}
+
+interface MessageHeaderSender {
+  identifier?: Identifier
+  display?: string
+  reference?: string
 }
