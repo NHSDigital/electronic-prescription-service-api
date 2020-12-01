@@ -13,7 +13,7 @@ docker_service:
         - name: SANDBOX
           value: "{{ SANDBOX_MODE_ENABLED }}"
         - name: BASE_PATH
-          value: "https://{{ '' if APIGEE_ENVIRONMENT == 'prod' else APIGEE_ENVIRONMENT + '.' }}api.service.nhs.uk/electronic-prescriptions{{ '-pr-' + pr_number if pr_number else '' }}"
+          value: "https://{{ APIGEE_HOSTNAME }}/{{ SERVICE_BASE_PATH }}"
     secrets:
         - name: SPINE_URL
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/{{ SPINE_ENV }}/host'
