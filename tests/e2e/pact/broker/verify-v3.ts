@@ -38,6 +38,11 @@ async function verify(): Promise<any> {
 }
 
 (async () => {
-  verify().catch(verify).catch(verify)
+  try {
+    await verify()
+  } catch (error) {
+    console.log("Got an error from the verify request")
+    console.error(error)
+  }
 })()
 
