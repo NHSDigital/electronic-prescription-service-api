@@ -1,7 +1,7 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertTelecom} from "./common"
-import {toArray} from "../common";
+import {toArray} from "../common"
 
 export function createPractitionerRole(
   agentPerson: AgentPerson,
