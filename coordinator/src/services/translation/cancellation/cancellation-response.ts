@@ -38,6 +38,8 @@ export function translateSpineCancelResponseIntoBundle(message: SpineCancellatio
     )
   }
 
+  const authorRepresentedOrganization = cancellationResponse.author.AgentPerson.representedOrganization
+  const representedOrganizationId = authorRepresentedOrganization.id._attributes.extension
   const messageId = message["hl7:PORX_IN050101UK31"]["hl7:id"]._attributes.root
   const fhirMessageHeader = {
     fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
@@ -45,6 +47,7 @@ export function translateSpineCancelResponseIntoBundle(message: SpineCancellatio
       messageId,
       fhirPatient.fullUrl,
       fhirMedicationRequest.fullUrl,
+      representedOrganizationId
     )
   }
 

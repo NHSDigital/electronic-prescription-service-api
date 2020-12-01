@@ -5,10 +5,16 @@ import * as fhir from "../../../../src/models/fhir/fhir-resources"
 const messageIdUrl = "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-MessageHeader-messageId"
 
 describe("createMessageHeader", () => {
+  const representedOrganizationId = "testIdForRepOrg"
   const messageId = "testMessageId"
   const patientReference = "testReference"
   const medicationRequestReference = "testReference2"
-  const messageHeader = createMessageHeader(messageId, patientReference, medicationRequestReference)
+  const messageHeader = createMessageHeader(
+    messageId,
+    patientReference,
+    medicationRequestReference,
+    representedOrganizationId
+  )
 
   test("has correct extension", () => {
     const messageHeaderExtensions = messageHeader.extension
@@ -36,5 +42,20 @@ describe("createMessageHeader", () => {
   test("focus has references to Patient and MedicationRequest", () => {
     expect(messageHeader.focus).toContainEqual({reference: patientReference})
     expect(messageHeader.focus).toContainEqual({reference: medicationRequestReference})
+  })
+
+  test("source points to EPS endpoint", () => {
+    expect(messageHeader.source.name).toBe("NHS Spine")
+    expect(messageHeader.source.endpoint.endsWith(".api.service.nhs.uk/electronic-prescriptions/$process-message"))
+      .toBeTruthy()
+  })
+
+  test("destination field has info from author.agentPerson.representedOrganisation", () => {
+    expect(messageHeader.destination[0].endpoint)
+      .toBe(`urn:nhs-uk:addressing:ods:${representedOrganizationId}`)
+    expect(messageHeader.destination[0].receiver.identifier.system)
+      .toBe("https://fhir.nhs.uk/Id/ods-organization-code")
+    expect(messageHeader.destination[0].receiver.identifier.value)
+      .toBe(representedOrganizationId)
   })
 })

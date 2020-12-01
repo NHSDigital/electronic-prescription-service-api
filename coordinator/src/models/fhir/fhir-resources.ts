@@ -289,10 +289,16 @@ export interface MessageHeader extends Resource {
   source: MessageHeaderSource
   focus: Array<Reference<Resource>>
   extension?: Array<IdentifierExtension | CodingExtension>
+  destination?: Array<Destination>
 }
 
 interface MessageHeaderSender {
   identifier?: Identifier
   display?: string
   reference?: string
+}
+
+interface Destination {
+  endpoint: string
+  receiver: IdentifierReference<PractitionerRole | Organization | Practitioner>
 }
