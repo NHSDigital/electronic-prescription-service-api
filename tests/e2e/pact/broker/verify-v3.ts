@@ -1,5 +1,5 @@
 import { VerifierV3 } from "@pact-foundation/pact"
-import child from 'child_process'
+import { get_access_token } from "../util/browser"
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verify(): Promise<any> { 
@@ -18,8 +18,7 @@ async function verify(): Promise<any> {
       req.headers["x-smoke-test"] = "1"
       console.log(`Attempting to get access token for ${process.env.IDP_URL}`)
       try {
-        const command = `docker run --rm artronics/nhsd-login-docker:latest "${process.env.IDP_URL}"`
-        const accessToken = child.execSync(command).toString().replace(/\n/g, "")
+        const accessToken = get_access_token(process.env.IDP_URL)
         req.headers["Authorization"] = `Bearer ${accessToken}`
         return req
       } catch (error) {
@@ -33,22 +32,10 @@ async function verify(): Promise<any> {
       : []
   })
   
-  try {
-    return await verifier.verifyProvider()
-  } catch (error) {
-    console.log("We got an error when running the verifier")
-    console.error(error)
-    return Promise.reject("Verification error")
-  }
+  return await verifier.verifyProvider()
 }
 
 (async () => {
-  try {
-    return await verify()
-  } catch (error) {
-    console.log("Got an error from the verify request")
-    console.error(error)
-    return Promise.reject("Verification error (from wrapper)")
-  }
+  verify().catch(verify).catch(verify)
 })()
 
