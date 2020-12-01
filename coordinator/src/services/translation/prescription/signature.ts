@@ -4,6 +4,7 @@ import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import * as prescriptions from "../../../models/hl7-v3/hl7-v3-prescriptions"
 import {namespacedCopyOf, writeXmlStringCanonicalized} from "../../serialisation/xml"
 import {Display, DisplayMedication, Fragments} from "../../../models/signature"
+import {isTruthy} from "../common"
 
 export function extractFragments(parentPrescription: prescriptions.ParentPrescription): Fragments {
   const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
@@ -126,7 +127,7 @@ export function convertFragmentsToDisplayableFormat(fragments: Fragments): Displ
 }
 
 function joinCoreText(separator: string, ...values: Array<core.Text | Array<core.Text>>) : string {
-  return values.map(unpackCoreText).filter(Boolean).join(separator)
+  return values.map(unpackCoreText).filter(isTruthy).join(separator)
 }
 
 function unpackCoreText(value: core.Text | Array<core.Text>) : string {

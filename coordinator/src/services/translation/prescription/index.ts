@@ -15,7 +15,7 @@ import {
   convertIsoDateTimeStringToHl7V3Date,
   getExtensionForUrl,
   getExtensionForUrlOrNull,
-  getNumericValueAsString
+  getNumericValueAsString, isTruthy
 } from "../common"
 import {convertAuthor, convertResponsibleParty} from "./practitioner"
 import * as peoplePlaces from "../../../models/hl7-v3/hl7-v3-people-places"
@@ -44,8 +44,8 @@ export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescripti
     hl7V3Prescription.performer = convertPerformer(performer)
   }
 
-  hl7V3Prescription.author = convertAuthor(fhirBundle, fhirFirstMedicationRequest, false)
-  hl7V3Prescription.responsibleParty = convertResponsibleParty(fhirBundle, fhirFirstMedicationRequest, false)
+  hl7V3Prescription.author = convertAuthor(fhirBundle, fhirFirstMedicationRequest)
+  hl7V3Prescription.responsibleParty = convertResponsibleParty(fhirBundle, fhirFirstMedicationRequest)
 
   const validityPeriod = fhirFirstMedicationRequest.dispenseRequest.validityPeriod
   const expectedSupplyDuration = fhirFirstMedicationRequest.dispenseRequest.expectedSupplyDuration
@@ -166,9 +166,9 @@ function convertDispensingSitePreference(
 function extractText(fhirCommunicationRequests: Array<fhir.CommunicationRequest>): Array<core.Text> {
   return fhirCommunicationRequests
     .flatMap(communicationRequest => communicationRequest.payload)
-    .filter(Boolean)
-    .map(payload => payload.contentString)
-    .filter(Boolean)
+    .filter(isTruthy)
+    .map(contentStringPayload => contentStringPayload.contentString)
+    .filter(isTruthy)
     .map(contentString => new core.Text(contentString))
 }
 
@@ -177,19 +177,20 @@ function convertPrescriptionPertinentInformation2(
   fhirMedicationRequests: Array<fhir.MedicationRequest>,
   repeatNumber: core.Interval<core.Timestamp>
 ) {
-  const pertinentInformation2 = []
-
-  for (let i = 0; i < fhirMedicationRequests.length; i++) {
-    const patientInfoText = i === 0 ? extractText(fhirCommunicationRequests) : []
+  const patientInfoText = extractText(fhirCommunicationRequests)
+  return fhirMedicationRequests.map((medicationRequest, index) => {
+    const patientInfoTextForLineItem = shouldIncludePatientInfoText(index) ? patientInfoText : []
     const pertinentLineItem = convertMedicationRequestToLineItem(
-      fhirMedicationRequests[i],
+      medicationRequest,
       repeatNumber,
-      patientInfoText
+      patientInfoTextForLineItem
     )
-    pertinentInformation2.push(new prescriptions.PrescriptionPertinentInformation2(pertinentLineItem))
-  }
+    return new prescriptions.PrescriptionPertinentInformation2(pertinentLineItem)
+  })
+}
 
-  return pertinentInformation2
+function shouldIncludePatientInfoText(lineItemIndex: number) {
+  return lineItemIndex === 0
 }
 
 function convertPrescriptionPertinentInformation8() {

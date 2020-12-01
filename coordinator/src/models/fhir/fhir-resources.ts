@@ -252,10 +252,10 @@ export interface CommunicationRequest extends Resource {
   resourceType: "CommunicationRequest"
   status?: string
   subject: Reference<Patient>
-  payload: Array<ContentString>
+  payload: Array<ContentStringPayload>
 }
 
-export interface ContentString {
+export interface ContentStringPayload {
   contentString: string
 }
 

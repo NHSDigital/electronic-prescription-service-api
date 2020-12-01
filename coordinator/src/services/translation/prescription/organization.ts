@@ -10,18 +10,18 @@ import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {convertAddress, convertTelecom} from "./demographics"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
+import {identifyMessageType, MessageType} from "../../../routes/util"
 
 const NHS_TRUST_CODE = "RO197"
 
 export function convertOrganizationAndProviderLicense(
   fhirBundle: fhir.Bundle,
   fhirOrganization: fhir.Organization,
-  fhirHealthcareService: fhir.HealthcareService,
-  isCancellation: boolean
+  fhirHealthcareService: fhir.HealthcareService
 ): peoplePlaces.Organization {
   const hl7V3Organization = convertRepresentedOrganization(fhirOrganization, fhirHealthcareService, fhirBundle)
 
-  if (!isCancellation) {
+  if (identifyMessageType(fhirBundle) !== MessageType.CANCELLATION) {
     hl7V3Organization.healthCareProviderLicense = convertHealthCareProviderLicense(fhirOrganization, fhirBundle)
   }
 
@@ -41,7 +41,7 @@ function convertRepresentedOrganization(
 
 function isNhsTrust(fhirOrganization: fhir.Organization) {
   const organizationTypeCoding = getCodeableConceptCodingForSystemOrNull(
-    fhirOrganization.type || [],
+    fhirOrganization.type,
     "https://fhir.nhs.uk/CodeSystem/organisation-role",
     "Organization.type"
   )

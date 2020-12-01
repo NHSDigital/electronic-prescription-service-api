@@ -1,13 +1,15 @@
 import {
   Bundle,
   HealthcareService,
-  Location,
+  Location, MessageHeader,
   Organization,
   Resource
 } from "../../../src/models/fhir/fhir-resources"
 import {convertOrganizationAndProviderLicense} from "../../../src/services/translation/prescription/organization"
 import * as uuid from "uuid"
 import {FhirMessageProcessingError} from "../../../src/models/errors/processing-errors"
+import {getMessageHeader} from "../../../src/services/translation/common/getResourcesOfType"
+import {MessageType} from "../../../src/routes/util"
 
 function bundleOf(resources: Array<Resource>): Bundle {
   return {
@@ -18,6 +20,7 @@ function bundleOf(resources: Array<Resource>): Bundle {
 }
 
 describe("convertOrganizationAndProviderLicense", () => {
+  let messageHeader: MessageHeader
   let organization1: Organization
   let organization2: Organization
   let healthcareService: HealthcareService
@@ -25,6 +28,19 @@ describe("convertOrganizationAndProviderLicense", () => {
   let bundle: Bundle
 
   beforeEach(() => {
+    messageHeader = {
+      resourceType: "MessageHeader",
+      eventCoding: {
+        code: MessageType.PRESCRIPTION
+      },
+      sender: {
+        reference: ""
+      },
+      source: {
+        endpoint: ""
+      },
+      focus: []
+    }
     organization2 = {
       resourceType: "Organization",
       id: uuid.v4(),
@@ -102,28 +118,29 @@ describe("convertOrganizationAndProviderLicense", () => {
         reference: `urn:uuid:${location.id}`
       }]
     }
-    bundle = bundleOf([organization1, organization2, healthcareService, location])
+    bundle = bundleOf([messageHeader, organization1, organization2, healthcareService, location])
   })
 
   describe.each([
-    ["cancellations", true],
-    ["orders", false]
-  ])("representedOrganization mapping for %s", (desc: string, cancellation: boolean) => {
+    ["cancellations", MessageType.CANCELLATION],
+    ["orders", MessageType.PRESCRIPTION]
+  ])("representedOrganization mapping for %s", (desc: string, messageType: MessageType) => {
     describe("when organization is an NHS trust", () => {
       beforeEach(() => {
+        getMessageHeader(bundle).eventCoding.code = messageType
         organization1.type.forEach(type => type.coding.forEach(coding => coding.code = "RO197"))
       })
 
       test("throws if HealthcareService not passed to method", () => {
         expect(() => {
-          convertOrganizationAndProviderLicense(bundle, organization1, undefined, cancellation)
+          convertOrganizationAndProviderLicense(bundle, organization1, undefined)
         }).toThrowError(FhirMessageProcessingError)
       })
 
       test("throws if Location not present in bundle", () => {
         expect(() => {
-          bundle = bundleOf([organization1, organization2, healthcareService])
-          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService, cancellation)
+          bundle = bundleOf([messageHeader, organization1, organization2, healthcareService])
+          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
         }).toThrowError(FhirMessageProcessingError)
       })
 
@@ -132,7 +149,7 @@ describe("convertOrganizationAndProviderLicense", () => {
           healthcareService.location.push({
             reference: `urn:uuid:${uuid.v4()}`
           })
-          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService, cancellation)
+          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
         }).toThrowError(FhirMessageProcessingError)
       })
 
@@ -144,7 +161,7 @@ describe("convertOrganizationAndProviderLicense", () => {
       ])("throws if %s not present in HealthcareService", (field: string) => {
         expect(() => {
           delete (healthcareService as unknown as Record<string, unknown>)[field]
-          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService, cancellation)
+          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
         }).toThrowError(FhirMessageProcessingError)
       })
 
@@ -154,14 +171,14 @@ describe("convertOrganizationAndProviderLicense", () => {
             use: "work",
             value: "44444444444"
           })
-          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService, cancellation)
+          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
         }).toThrowError(FhirMessageProcessingError)
       })
 
       test("throws if address not present in Location", () => {
         expect(() => {
           delete location.address
-          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService, cancellation)
+          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
         }).toThrowError(FhirMessageProcessingError)
       })
 
@@ -172,12 +189,12 @@ describe("convertOrganizationAndProviderLicense", () => {
         delete organization1.partOf
         expect(() => {
           delete (organization1 as unknown as Record<string, unknown>)[field]
-          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService, false)
+          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
         }).not.toThrow()
       })
 
       test("uses HealthcareService for organization details", () => {
-        const org = convertOrganizationAndProviderLicense(bundle, organization1, healthcareService, cancellation)
+        const org = convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
         expect(org.id._attributes.extension).toBe("HS001")
         expect(org.code._attributes.code).toBe("999")
         expect(org.name._text).toBe("Healthcare Service")
@@ -200,7 +217,7 @@ describe("convertOrganizationAndProviderLicense", () => {
 
       test("does not throw if HealthcareService not passed to method", () => {
         expect(() => {
-          convertOrganizationAndProviderLicense(bundle, organization1, undefined, cancellation)
+          convertOrganizationAndProviderLicense(bundle, organization1, undefined)
         }).not.toThrow()
       })
 
@@ -212,7 +229,7 @@ describe("convertOrganizationAndProviderLicense", () => {
       ])("throws if %s not present in Organization", (field: string) => {
         expect(() => {
           delete (organization1 as unknown as Record<string, unknown>)[field]
-          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService, cancellation)
+          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
         }).toThrowError(FhirMessageProcessingError)
       })
 
@@ -222,7 +239,7 @@ describe("convertOrganizationAndProviderLicense", () => {
             use: "work",
             line: ["Organization 1 Mystery Alternative Address"]
           })
-          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService, cancellation)
+          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
         }).toThrowError(FhirMessageProcessingError)
       })
 
@@ -232,12 +249,12 @@ describe("convertOrganizationAndProviderLicense", () => {
             use: "work",
             value: "55555555555"
           })
-          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService, cancellation)
+          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
         }).toThrowError(FhirMessageProcessingError)
       })
 
       test("uses Organization for organization details", () => {
-        const org = convertOrganizationAndProviderLicense(bundle, organization1, healthcareService, cancellation)
+        const org = convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
         expect(org.id._attributes.extension).toBe("ORG001")
         expect(org.code._attributes.code).toBe("999")
         expect(org.name._text).toBe("Organization 1")
@@ -254,6 +271,7 @@ describe("convertOrganizationAndProviderLicense", () => {
       ["of an unspecified type", undefined]
     ])("when organization is %s", (desc: string, code: string) => {
       beforeEach(() => {
+        getMessageHeader(bundle).eventCoding.code = MessageType.CANCELLATION
         if (code) {
           organization1.type.forEach(type => type.coding.forEach(coding => coding.code = code))
         } else {
@@ -262,7 +280,7 @@ describe("convertOrganizationAndProviderLicense", () => {
       })
 
       test("is not performed", () => {
-        const org = convertOrganizationAndProviderLicense(bundle, organization1, healthcareService, true)
+        const org = convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
         expect(org.healthCareProviderLicense).toBeFalsy()
       })
     })
@@ -275,6 +293,7 @@ describe("convertOrganizationAndProviderLicense", () => {
       ["of an unspecified type", undefined]
     ])("when organization is %s", (desc: string, code: string) => {
       beforeEach(() => {
+        getMessageHeader(bundle).eventCoding.code = MessageType.PRESCRIPTION
         if (code) {
           organization1.type.forEach(type => type.coding.forEach(coding => coding.code = code))
         } else {
@@ -289,7 +308,7 @@ describe("convertOrganizationAndProviderLicense", () => {
         ])("throws if %s not present in parent Organization", (field: string) => {
           expect(() => {
             delete (organization2 as unknown as Record<string, unknown>)[field]
-            convertOrganizationAndProviderLicense(bundle, organization1, healthcareService, false)
+            convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
           }).toThrowError(FhirMessageProcessingError)
         })
 
@@ -299,12 +318,12 @@ describe("convertOrganizationAndProviderLicense", () => {
         ])("does not throw if %s not present in parent Organization", (field: string) => {
           expect(() => {
             delete (organization2 as unknown as Record<string, unknown>)[field]
-            convertOrganizationAndProviderLicense(bundle, organization1, healthcareService, false)
+            convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
           }).not.toThrow()
         })
 
         test("uses parent Organization for organization details", () => {
-          const org = convertOrganizationAndProviderLicense(bundle, organization1, healthcareService, false)
+          const org = convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
           const parentOrg = org.healthCareProviderLicense.Organization
           expect(parentOrg.id._attributes.extension).toBe("ORG002")
           expect(parentOrg.code._attributes.code).toBe("999")
@@ -325,12 +344,12 @@ describe("convertOrganizationAndProviderLicense", () => {
         ])("throws if %s not present in Organization", (field: string) => {
           expect(() => {
             delete (organization1 as unknown as Record<string, unknown>)[field]
-            convertOrganizationAndProviderLicense(bundle, organization1, healthcareService, false)
+            convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
           }).toThrowError(FhirMessageProcessingError)
         })
 
         test("uses Organization for organization details", () => {
-          const org = convertOrganizationAndProviderLicense(bundle, organization1, healthcareService, false)
+          const org = convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
           const parentOrg = org.healthCareProviderLicense.Organization
           expect(parentOrg.id._attributes.extension).toBe("ORG001")
           expect(parentOrg.code._attributes.code).toBe("999")
