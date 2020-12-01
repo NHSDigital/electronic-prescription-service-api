@@ -16,7 +16,7 @@ async function verify(): Promise<any> {
     logLevel: isLocal? "debug" : "info",
     requestFilter: (req) => {
       req.headers["x-smoke-test"] = "1"
-      req.headers["Authorization"] = child.execSync(`docker run --rm artronics/nhsd-login-docker:latest "${process.env.IDP_URL}"`)
+      req.headers["Authorization"] = `Bearer ${child.execSync(`docker run --rm artronics/nhsd-login-docker:latest "${process.env.IDP_URL}"`)}`
       return req
     },
     pactUrls: isLocal 
