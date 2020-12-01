@@ -1,12 +1,25 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 
 export function createMessageHeader(
+  messageId: string,
   patientReference: string,
   medicationRequestReference: string
 ): fhir.MessageHeader {
   const fhirMessageHeader = {resourceType: "MessageHeader"} as fhir.MessageHeader
 
-  // fhirMessageHeader.extension = [{url: ""}]
+  fhirMessageHeader.extension = [
+    {
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-MessageHeader-messageId",
+      valueIdentifier: {
+        system: "https://tools.ietf.org/html/rfc4122",
+        value: messageId.toLocaleLowerCase()
+      }
+    }
+    // {
+    //   url: "",
+    //   valueCoding: {code: ""} // TODO: ValueSet 'Message Status Codes' where do these come from?
+    // }
+  ]
 
   fhirMessageHeader.eventCoding = getEventCoding()
 

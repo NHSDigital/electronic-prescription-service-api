@@ -1,9 +1,25 @@
 import {createMessageHeader} from "../../../../src/services/translation/cancellation/cancellation-message-header"
+import {getExtensionForUrl} from "../../../../src/services/translation/common"
+import * as fhir from "../../../../src/models/fhir/fhir-resources"
+
+const messageIdUrl = "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-MessageHeader-messageId"
 
 describe("createMessageHeader", () => {
+  const messageId = "testMessageId"
   const patientReference = "testReference"
   const medicationRequestReference = "testReference2"
-  const messageHeader = createMessageHeader(patientReference, medicationRequestReference)
+  const messageHeader = createMessageHeader(messageId, patientReference, medicationRequestReference)
+
+  test("has correct extension", () => {
+    const messageHeaderExtensions = messageHeader.extension
+    expect(messageHeaderExtensions).toHaveLength(1)
+    expect(messageHeaderExtensions[0].url).toBe(messageIdUrl)
+    const messageIdExtension = getExtensionForUrl(
+      messageHeaderExtensions, messageIdUrl, "MessageHeader.extension"
+    ) as fhir.IdentifierExtension
+    expect(messageIdExtension.valueIdentifier.value).toBe(messageId.toLocaleLowerCase())
+    expect(messageIdExtension.valueIdentifier.system).toBe("https://tools.ietf.org/html/rfc4122")
+  })
 
   test("created MessageHeader has correct eventCoding", () => {
     expect(messageHeader.eventCoding.system).toBe("https://fhir.nhs.uk/CodeSystem/message-event")

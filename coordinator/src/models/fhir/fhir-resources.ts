@@ -288,7 +288,7 @@ export interface MessageHeader extends Resource {
   sender: MessageHeaderSender
   source: MessageHeaderSource
   focus: Array<Reference<Resource>>
-  // extension?: Array<Extension>
+  extension?: Array<IdentifierExtension | CodingExtension>
 }
 
 interface MessageHeaderSender {
