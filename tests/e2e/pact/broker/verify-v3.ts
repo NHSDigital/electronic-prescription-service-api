@@ -16,12 +16,16 @@ async function verify(): Promise<any> {
     logLevel: isLocal? "debug" : "info",
     requestFilter: (req) => {
       req.headers["x-smoke-test"] = "1"
-      console.log(`IDP_URL is: ${process.env.IDP_URL}`)
-      const accessToken = child.execSync(`docker run --rm artronics/nhsd-login-docker:latest "${process.env.IDP_URL}"`)
-                                .toString()
-                                .replace(/\n/g, "")
-      req.headers["Authorization"] = `Bearer ${accessToken}`
-      return req
+      console.log(`Attempting to get access token for ${process.env.IDP_URL}`)
+      try {
+        const command = `docker run --rm artronics/nhsd-login-docker:latest "${process.env.IDP_URL}"`
+        const accessToken = child.execSync(command).toString().replace(/\n/g, "")
+        console.log(`Subcommand response: ${accessToken}`)
+        req.headers["Authorization"] = `Bearer ${accessToken}`
+        return req
+      } catch (error) {
+        console.log(`Got an error fetching the access token: ${error}`)
+      }
     },
     pactUrls: isLocal 
       ? [
