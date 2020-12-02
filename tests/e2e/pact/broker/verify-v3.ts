@@ -1,5 +1,4 @@
 import { VerifierV3 } from "@pact-foundation/pact"
-//import { get_access_token } from "../util/browser"
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verify(): Promise<any> { 
@@ -14,7 +13,7 @@ async function verify(): Promise<any> {
     providerVersion: process.env.PACT_VERSION,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
     logLevel: isLocal? "debug" : "info",
-    requestFilter: req => {
+    requestFilter: async (req) => {
       req.headers["x-smoke-test"] = "1"
       req.headers["Authorization"] = `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
       return req
