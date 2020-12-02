@@ -14,11 +14,11 @@ async function verify(): Promise<any> {
     providerVersion: process.env.PACT_VERSION,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
     logLevel: isLocal? "debug" : "info",
-    requestFilter: (req) => {
+    requestFilter: async (req) => {
       req.headers["x-smoke-test"] = "1"
       console.log(`Attempting to get access token for ${process.env.IDP_URL}`)
       try {
-        const accessToken = get_access_token(process.env.IDP_URL)
+        const accessToken = await get_access_token(process.env.IDP_URL)
         console.log(`got access token ${accessToken}`)
         req.headers["Authorization"] = `Bearer ${accessToken}`
         return req
