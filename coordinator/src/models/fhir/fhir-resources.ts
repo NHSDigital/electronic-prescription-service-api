@@ -295,14 +295,14 @@ interface MessageHeaderDestination {
 }
 
 export interface MessageHeaderResponse {
-  identifier: string,
+  identifier: string
   code: "ok" | "transient-error" | "fatal-error"
-  details: Reference<OperationOutcome>
+  details?: Reference<OperationOutcome>
 }
 
 export interface MessageHeader extends Resource {
-  resourceType: "MessageHeader",
-  eventCoding: Coding,
+  resourceType: "MessageHeader"
+  eventCoding: Coding
   sender: MessageHeaderSender
   source: MessageHeaderSource
   focus: Array<Reference<Resource>>

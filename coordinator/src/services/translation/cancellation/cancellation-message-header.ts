@@ -93,9 +93,9 @@ function getDestination(representedOrganizationId: string) {
 function getMessageHeaderResponse(cancelRequestId: string): fhir.MessageHeaderResponse {
   return {
     identifier: cancelRequestId.toLocaleLowerCase(),
-    code: "ok", // TODO: how to determine code? maybe if response is 400 vs 500 do transient vs fatal error
-    details: {
-      reference: "" // TODO: details should be populated if code is not "ok" - need to double check how this works
-    }
+    code: "ok" // TODO: how to determine code? maybe if response is 400 vs 500 do transient vs fatal error
+    // details: {
+    //   reference: "" // TODO: details should be populated if code is not "ok" - need to double check how this works
+    // }
   }
 }
