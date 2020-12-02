@@ -81,6 +81,7 @@ export interface CancellationResponse {
   pertinentInformation1: PertinentInformation1
   pertinentInformation2: PertinentInformation2
   pertinentInformation3: PertinentInformation3
+  pertinentInformation4: PertinentInformation4
 }
 
 export interface PertinentInformation1 {
@@ -109,6 +110,16 @@ export interface PertinentInformation3 {
       _attributes: {
         code: string
         displayName: string
+      }
+    }
+  }
+}
+
+export interface PertinentInformation4 {
+  pertinentCancellationRequestRef: {
+    id: {
+      _attributes: {
+        root: string
       }
     }
   }

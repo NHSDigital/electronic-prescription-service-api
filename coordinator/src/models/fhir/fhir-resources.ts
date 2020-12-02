@@ -282,6 +282,23 @@ interface MessageHeaderSource {
   endpoint: string
 }
 
+interface MessageHeaderSender {
+  identifier?: Identifier
+  display?: string
+  reference?: string
+}
+
+interface MessageHeaderDestination {
+  endpoint: string
+  receiver: IdentifierReference<PractitionerRole | Organization | Practitioner>
+}
+
+export interface MessageHeaderResponse {
+  identifier: string,
+  code: "ok" | "transient-error" | "fatal-error"
+  details: Reference<OperationOutcome>
+}
+
 export interface MessageHeader extends Resource {
   resourceType: "MessageHeader",
   eventCoding: Coding,
@@ -289,16 +306,6 @@ export interface MessageHeader extends Resource {
   source: MessageHeaderSource
   focus: Array<Reference<Resource>>
   extension?: Array<IdentifierExtension | CodingExtension>
-  destination?: Array<Destination>
-}
-
-interface MessageHeaderSender {
-  identifier?: Identifier
-  display?: string
-  reference?: string
-}
-
-interface Destination {
-  endpoint: string
-  receiver: IdentifierReference<PractitionerRole | Organization | Practitioner>
+  destination?: Array<MessageHeaderDestination>
+  response?: MessageHeaderResponse
 }

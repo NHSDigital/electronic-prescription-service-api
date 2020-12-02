@@ -4,7 +4,8 @@ export function createMessageHeader(
   messageId: string,
   patientReference: string,
   medicationRequestReference: string,
-  representedOrganizationId: string
+  representedOrganizationId: string,
+  cancelRequestId: string
 ): fhir.MessageHeader {
   const fhirMessageHeader = {resourceType: "MessageHeader"} as fhir.MessageHeader
 
@@ -18,7 +19,7 @@ export function createMessageHeader(
 
   fhirMessageHeader.source = getSource()
 
-  // fhirMessageHeader.response = {}
+  fhirMessageHeader.response = getMessageHeaderResponse(cancelRequestId)
 
   fhirMessageHeader.focus = createFocus(patientReference, medicationRequestReference)
 
@@ -87,4 +88,14 @@ function getDestination(representedOrganizationId: string) {
       }
     }
   }]
+}
+
+function getMessageHeaderResponse(cancelRequestId: string): fhir.MessageHeaderResponse {
+  return {
+    identifier: cancelRequestId.toLocaleLowerCase(),
+    code: "ok", // TODO: how to determine code? maybe if response is 400 vs 500 do transient vs fatal error
+    details: {
+      reference: "" // TODO: details should be populated if code is not "ok" - need to double check how this works
+    }
+  }
 }
