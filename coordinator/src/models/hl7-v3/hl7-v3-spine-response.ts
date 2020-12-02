@@ -64,6 +64,11 @@ export interface SpineCancellationResponse {
 }
 
 export interface CancellationResponse {
+  id: {
+    _attributes: {
+      root: string
+    }
+  }
   effectiveTime: {
     _attributes: {
       value: string

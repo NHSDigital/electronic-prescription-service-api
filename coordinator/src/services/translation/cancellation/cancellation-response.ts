@@ -6,22 +6,22 @@ import {createPatient} from "./cancellation-patient"
 import {createPractitioner} from "./cancellation-practitioner"
 import {createOrganization} from "./cancellation-organization"
 import {createPractitionerRole} from "./cancellation-practitioner-role"
-import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
 import {createMessageHeader} from "./cancellation-message-header"
-import moment from "moment"
+import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
+import {convertHL7V3DateTimeStringToISODateTime} from "./common"
 
 export function translateSpineCancelResponseIntoBundle(message: SpineCancellationResponse): fhir.Bundle {
-  const porxWrapper = message["hl7:PORX_IN050101UK31"]
-  const cancellationResponse = porxWrapper["hl7:ControlActEvent"]["hl7:subject"].CancellationResponse
+  const actEvent = message["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
+  const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
 
   const bundle = new fhir.Bundle()
 
   bundle.type = "message"
   bundle.identifier = {
     system: "https://tools.ietf.org/html/rfc4122",
-    value: porxWrapper["hl7:id"]._attributes.root
+    value: cancellationResponse.id._attributes.root
   }
-  bundle.timestamp = moment().format()
+  bundle.timestamp = convertHL7V3DateTimeStringToISODateTime(cancellationResponse.effectiveTime._attributes.value)
 
   const fhirPatient = {
     fullUrl: generateFullUrl(uuid.v4().toLowerCase()),

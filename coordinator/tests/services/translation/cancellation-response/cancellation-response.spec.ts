@@ -10,6 +10,7 @@ import {
 import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/spine-response"
 import {readXml} from "../../../../src/services/serialisation/xml"
 import {SpineCancellationResponse} from "../../../../src/models/hl7-v3/hl7-v3-spine-response"
+import {hasCorrectISOFormat} from "./test-helpers"
 
 const actualError = TestResources.spineResponses.cancellationError
 const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(actualError.response.body)[0]
@@ -31,8 +32,8 @@ describe("bundle", () => {
     expect(bundleIdentifier.value).toBe(parsedCancelResponse["hl7:PORX_IN050101UK31"]["hl7:id"]._attributes.root)
   })
 
-  test("bundle has correct timestamp", () => {
-    expect(fhirBundle.timestamp).toBeTruthy()
+  test("bundle has correct timestamp format", () => {
+    expect(hasCorrectISOFormat(fhirBundle.timestamp)).toBe(true)
   })
 })
 

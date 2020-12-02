@@ -6,6 +6,7 @@ import {
 } from "../../../../src/services/translation/cancellation/cancellation-medication-conversion"
 import {readXml} from "../../../../src/services/serialisation/xml"
 import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/spine-response"
+import {hasCorrectISOFormat} from "./test-helpers"
 
 describe("createMedicationRequest", () => {
   const actualError = TestResources.spineResponses.cancellationError
@@ -85,7 +86,7 @@ describe("createMedicationRequest", () => {
   })
 
   test("authoredOn", () => {
-    expect(medicationRequest.authoredOn).toBe("2020-11-18T09:25:23+00:00")
+    expect(hasCorrectISOFormat(medicationRequest.authoredOn)).toBe(true)
   })
 
   test("requester", () => {

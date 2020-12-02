@@ -3,7 +3,7 @@ import {
   CancellationResponse,  PertinentInformation1,
   PertinentInformation2, PertinentInformation3
 } from "../../../models/hl7-v3/hl7-v3-spine-response"
-import moment from "moment"
+import {convertHL7V3DateTimeStringToISODateTime} from "./common"
 
 export function createMedicationRequest(
   cancellationResponse: CancellationResponse,
@@ -129,19 +129,6 @@ function createSubject(patientId: string) {
   return {
     reference: patientId
   }
-}
-
-function convertHL7V3DateTimeToMoment(hl7Date: string) {
-  return moment(hl7Date, "YYYYMMDDhhmmss")
-}
-
-function convertMomentToISODateTime(moment: moment.Moment): string {
-  return moment.format("YYYY-MM-DD[T]hh:mm:ssZ")
-}
-
-function convertHL7V3DateTimeStringToISODateTime(hl7Date: string): string {
-  const dateTimeMoment = convertHL7V3DateTimeToMoment(hl7Date)
-  return convertMomentToISODateTime(dateTimeMoment)
 }
 
 function getMedicationGroupIdentifier(pertinentInformation2: PertinentInformation2) {

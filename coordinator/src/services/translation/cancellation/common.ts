@@ -2,6 +2,7 @@ import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import * as fhir from "../../../models/fhir/fhir-resources"
 import {toArray} from "../common"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
+import moment from "moment"
 
 export function convertName(hl7Name: Array<core.Name>): Array<fhir.HumanName> {
   return hl7Name.map(name => {
@@ -91,4 +92,17 @@ function convertTelecomUse(fhirTelecomUse: string): string {
   default:
     throw new InvalidValueError(`Unhandled telecom use '${fhirTelecomUse}'.`)
   }
+}
+
+function convertHL7V3DateTimeToMoment(hl7Date: string) {
+  return moment(hl7Date, "YYYYMMDDhhmmss")
+}
+
+function convertMomentToISODateTime(moment: moment.Moment): string {
+  return moment.format("YYYY-MM-DD[T]hh:mm:ssZ")
+}
+
+export function convertHL7V3DateTimeStringToISODateTime(hl7Date: string): string {
+  const dateTimeMoment = convertHL7V3DateTimeToMoment(hl7Date)
+  return convertMomentToISODateTime(dateTimeMoment)
 }
