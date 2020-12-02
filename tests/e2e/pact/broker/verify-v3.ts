@@ -1,5 +1,5 @@
 import { VerifierV3 } from "@pact-foundation/pact"
-import { get_access_token } from "../util/browser"
+//import { get_access_token } from "../util/browser"
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verify(): Promise<any> { 
@@ -14,17 +14,10 @@ async function verify(): Promise<any> {
     providerVersion: process.env.PACT_VERSION,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
     logLevel: isLocal? "debug" : "info",
-    requestFilter: async (req) => {
+    requestFilter: req => {
       req.headers["x-smoke-test"] = "1"
-      console.log(`Attempting to get access token for ${process.env.IDP_URL}`)
-      try {
-        const accessToken = await get_access_token(process.env.IDP_URL)
-        console.log(`got access token ${accessToken}`)
-        req.headers["Authorization"] = `Bearer ${accessToken}`
-        return req
-      } catch (error) {
-        console.log(`Got an error fetching the access token: ${error}`)
-      }
+      req.headers["Authorization"] = `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
+      return req
     },
     pactUrls: isLocal 
       ? [
