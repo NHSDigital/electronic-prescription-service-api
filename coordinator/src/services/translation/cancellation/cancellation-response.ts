@@ -8,12 +8,20 @@ import {createOrganization} from "./cancellation-organization"
 import {createPractitionerRole} from "./cancellation-practitioner-role"
 import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
 import {createMessageHeader} from "./cancellation-message-header"
+import moment from "moment"
 
 export function translateSpineCancelResponseIntoBundle(message: SpineCancellationResponse): fhir.Bundle {
-  const actEvent = message["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
-  const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
+  const porxWrapper = message["hl7:PORX_IN050101UK31"]
+  const cancellationResponse = porxWrapper["hl7:ControlActEvent"]["hl7:subject"].CancellationResponse
 
   const bundle = new fhir.Bundle()
+
+  bundle.type = "message"
+  bundle.identifier = {
+    system: "https://tools.ietf.org/html/rfc4122",
+    value: porxWrapper["hl7:id"]._attributes.root
+  }
+  bundle.timestamp = moment().format()
 
   const fhirPatient = {
     fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
@@ -65,8 +73,6 @@ export function translateSpineCancelResponseIntoBundle(message: SpineCancellatio
     fhirResponsiblePartyPractitionerRole
   ]
   //TODO some error types need to have extra resources in bundle (e.g. dispenser info), add them
-
-  bundle.type = "message"
   return bundle
 }
 
@@ -74,22 +80,22 @@ function generateFullUrl(id: string) {
   return `urn:uuid:${id}`
 }
 
-function convertAgentPerson(agentPerson: AgentPerson) {
-  const responsiblePartyCode = agentPerson.code._attributes.code
+function convertAgentPerson(hl7AgentPerson: AgentPerson) {
+  const responsiblePartyCode = hl7AgentPerson.code._attributes.code
   const fhirPractitioner = {
     fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
-    resource: createPractitioner(agentPerson)
+    resource: createPractitioner(hl7AgentPerson)
   }
 
   const fhirOrganization = {
     fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
-    resource: createOrganization(agentPerson.representedOrganization)
+    resource: createOrganization(hl7AgentPerson.representedOrganization)
   }
 
   const fhirPractitionerRole = {
     fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
     resource: createPractitionerRole(
-      agentPerson,
+      hl7AgentPerson,
       fhirPractitioner.fullUrl,
       responsiblePartyCode,
       fhirOrganization.fullUrl

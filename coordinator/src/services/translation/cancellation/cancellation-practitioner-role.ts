@@ -4,7 +4,7 @@ import {convertTelecom} from "./common"
 import {toArray} from "../common"
 
 export function createPractitionerRole(
-  agentPerson: AgentPerson,
+  hl7AgentPerson: AgentPerson,
   practitionerReference: string,
   practitionerCode: string,
   organizationReference: string,
@@ -13,7 +13,7 @@ export function createPractitionerRole(
 
   practitionerRole.identifier = [{
     system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
-    value: agentPerson.id._attributes.extension
+    value: hl7AgentPerson.id._attributes.extension
   }]
 
   practitionerRole.practitioner = getReference(practitionerReference)
@@ -22,8 +22,8 @@ export function createPractitionerRole(
 
   practitionerRole.code = getCode(practitionerCode)
 
-  if (toArray(agentPerson.telecom)[0]._attributes) {
-    practitionerRole.telecom = convertTelecom(agentPerson.telecom)
+  if (toArray(hl7AgentPerson.telecom)[0]._attributes) {
+    practitionerRole.telecom = convertTelecom(hl7AgentPerson.telecom)
   }
 
   return practitionerRole

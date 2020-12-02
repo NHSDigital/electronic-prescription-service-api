@@ -10,6 +10,7 @@ export class Bundle extends Resource {
   identifier?: Identifier
   entry?: Array<BundleEntry>
   type?: string
+  timestamp: string
 }
 
 class BundleEntry {
