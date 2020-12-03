@@ -57,8 +57,8 @@ describe("createMedicationRequest", () => {
   test("has identifier", () => {
     const identifier = medicationRequest.identifier
     expect(identifier).toHaveLength(1)
-    expect(identifier[0].system).toBe("a54219b8-f741-4c47-b662-e4f8dfa49ab6")
-    expect(identifier[0].value).toBe("https://fhir.nhs.uk/Id/prescription-order-item-number")
+    expect(identifier[0].system).toBe("https://fhir.nhs.uk/Id/prescription-order-item-number")
+    expect(identifier[0].value).toBe("a54219b8-f741-4c47-b662-e4f8dfa49ab6")
   })
 
   test("has 'order' in `intent` key", () => {

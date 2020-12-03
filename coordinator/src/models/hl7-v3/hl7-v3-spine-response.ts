@@ -43,12 +43,10 @@ export interface AsyncMCCI {
   }
 }
 
-export interface SpineCancellationResponse {
+export interface PORX50101 {
   "hl7:PORX_IN050101UK31": {
     "hl7:ControlActEvent": {
-      "hl7:subject": {
-        CancellationResponse: CancellationResponse
-      }
+      "hl7:subject": hl7Subject
     }
     "hl7:acknowledgement": {
       _attributes: {
@@ -61,6 +59,10 @@ export interface SpineCancellationResponse {
       }
     }
   }
+}
+
+export interface hl7Subject {
+  CancellationResponse: CancellationResponse
 }
 
 export interface CancellationResponse {

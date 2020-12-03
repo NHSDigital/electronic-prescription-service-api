@@ -1,6 +1,5 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
-import {toArray} from "../common"
 import {convertName} from "./common"
 
 export function createPractitioner(hl7AgentPerson: hl7.AgentPerson): fhir.Practitioner  {
@@ -11,8 +10,7 @@ export function createPractitioner(hl7AgentPerson: hl7.AgentPerson): fhir.Practi
   const hl7PersonOId = hl7AgentPerson.agentPerson.id._attributes.root
   fhirPractitioner.identifier = getIdentifier(hl7RoleId, hl7PersonId, hl7PersonOId)
 
-  const hl7Name = toArray(hl7AgentPerson.agentPerson.name)
-  fhirPractitioner.name = convertName(hl7Name)
+  fhirPractitioner.name = convertName(hl7AgentPerson.agentPerson.name)
 
   return fhirPractitioner
 }
@@ -21,11 +19,11 @@ function getIdentifier(roleId: string, personId: string, personOId: string) {
   return [
     {
       "system": "https://fhir.nhs.uk/Id/sds-user-id",
-      "value": roleId
+      "value": personId // TODO: should this be person or role??
     },
     {
-      "system": convertCodeSystem(personOId),
-      "value": personId
+      "system": convertCodeSystem(personOId), // TODO: new ticket
+      "value": roleId
     }
   ]
 }

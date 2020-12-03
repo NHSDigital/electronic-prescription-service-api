@@ -20,7 +20,7 @@ describe("createDispensePractitioner", () => {
       author.identifier,
       "https://fhir.nhs.uk/Id/sds-user-id",
       "author.identifier")
-    expect(sdsIdentifier).toBe("100102238986")
+    expect(sdsIdentifier).toBe("4428981")
   })
 
   test("returned practitioner has correct family and given names, and prefix", () => {

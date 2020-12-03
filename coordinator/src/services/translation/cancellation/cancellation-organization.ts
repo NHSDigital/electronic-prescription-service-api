@@ -1,6 +1,5 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
-import {toArray} from "../common"
 import {convertAddress, convertTelecom} from "./common"
 
 export function createOrganization(hl7Organization: hl7.Organization): fhir.Organization {
@@ -14,11 +13,9 @@ export function createOrganization(hl7Organization: hl7.Organization): fhir.Orga
 
   fhirOrganization.name = hl7Organization.name._text
 
-  const hl7Telecom = toArray(hl7Organization.telecom)
-  fhirOrganization.telecom = convertTelecom(hl7Telecom)
+  fhirOrganization.telecom = convertTelecom(hl7Organization.telecom)
 
-  const hl7Address = toArray(hl7Organization.addr)
-  fhirOrganization.address = convertAddress(hl7Address)
+  fhirOrganization.address = convertAddress(hl7Organization.addr)
 
   return fhirOrganization
 }

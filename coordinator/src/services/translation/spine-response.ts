@@ -3,7 +3,7 @@ import {CodeableConcept} from "../../models/fhir/fhir-resources"
 import {readXml} from "../serialisation/xml"
 import {
   acknowledgementCodes,
-  AsyncMCCI, SpineCancellationResponse,
+  AsyncMCCI, PORX50101,
   SyncMCCI
 } from "../../models/hl7-v3/hl7-v3-spine-response"
 import {SpineDirectResponse} from "../../models/spine"
@@ -23,7 +23,7 @@ interface TranslatedSpineResponse {
 function isCancellationErrorResponse(message:string) {
   const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(message)
   if (cancelResponse) {
-    const parsedMsg = readXml(cancelResponse[0]) as SpineCancellationResponse
+    const parsedMsg = readXml(cancelResponse[0]) as PORX50101
     const parsedMsgAcknowledgement = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:acknowledgement"]
     const ackCode = parsedMsgAcknowledgement._attributes.typeCode
     const statusCode = translateAcknowledgementTypeCodeToStatusCode(ackCode)
@@ -38,9 +38,11 @@ export function translateToFhir<T>(message: SpineDirectResponse<T>): TranslatedS
   const hl7BodyString = message.body.toString()
   const {statusCode, errorCodes} = getStatusCodeAndErrorCodes(hl7BodyString)
   const cancellationErrorResponse = isCancellationErrorResponse(hl7BodyString)
-  if (cancellationErrorResponse){
+  if (cancellationErrorResponse) {
+    const actEvent = cancellationErrorResponse["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
+    const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
     return {
-      body: translateSpineCancelResponseIntoBundle(cancellationErrorResponse),
+      body: translateSpineCancelResponseIntoBundle(cancellationResponse),
       statusCode: 400
     }
   } else if (statusCode <= 299) {

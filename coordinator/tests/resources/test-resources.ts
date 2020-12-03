@@ -177,9 +177,21 @@ const cancellationError: ExampleSpineResponse = {
   acknowledgementCode: "AE"
 }
 
+const hl7Cancel = fs.readFileSync(
+  path.join(__dirname, "./spine-responses/complete-translation/CancellationResponse.xml"), "utf8"
+)
+
+const fhirCancel = JSON.parse(fs.readFileSync(
+  path.join(__dirname, "./spine-responses/complete-translation/TranslatedResponse.json"), "utf8"
+))
+
 export const spineResponses = {
   success: asyncSuccess,
   singleErrors: [syncError, asyncError],
   multipleErrors: [syncMultipleError, asyncMultipleError],
-  cancellationError: cancellationError
+  cancellationError: cancellationError,
+  cancelTranslation: {
+    hl7: hl7Cancel,
+    fhir: fhirCancel
+  }
 }

@@ -1,29 +1,23 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
+import {IdentifierReference, Organization} from "../../../models/fhir/fhir-resources"
 import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import moment from "moment"
-import {IdentifierReference, Organization} from "../../../models/fhir/fhir-resources"
-import {toArray} from "../common"
-import {convertName, convertAddress} from "./common"
+import {convertAddress, convertName} from "./common"
 
 export function createPatient(hl7Patient: hl7.Patient): fhir.Patient {
   const patient = {resourceType: "Patient"} as fhir.Patient
 
-  const hl7NhsNumber = hl7Patient.id._attributes.extension
-  patient.identifier = createNhsNumberIdentifier(hl7NhsNumber)
+  patient.identifier = createNhsNumberIdentifier(hl7Patient.id._attributes.extension)
 
-  const hl7Name = toArray(hl7Patient.patientPerson.name)
-  patient.name = convertName(hl7Name)
+  patient.name = convertName(hl7Patient.patientPerson.name)
 
-  const hl7Gender = hl7Patient.patientPerson.administrativeGenderCode
-  patient.gender = convertGender(hl7Gender)
+  patient.gender = convertGender(hl7Patient.patientPerson.administrativeGenderCode)
 
-  const hl7BirthDate = hl7Patient.patientPerson.birthTime._attributes.value
-  patient.birthDate = convertHL7V3DateStringToISODate(hl7BirthDate)
+  patient.birthDate = convertHL7V3DateStringToISODate(hl7Patient.patientPerson.birthTime._attributes.value)
 
-  const hl7Address = toArray(hl7Patient.addr)
-  patient.address = convertAddress(hl7Address)
+  patient.address = convertAddress(hl7Patient.addr)
 
   const hl7PatientCareProvision = hl7Patient.patientPerson.playedProviderPatient.subjectOf.patientCareProvision
   const hl7OdsCode = hl7PatientCareProvision.responsibleParty.healthCareProvider.id._attributes.extension

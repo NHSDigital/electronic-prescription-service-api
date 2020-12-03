@@ -9,13 +9,18 @@ import {
 } from "../../../../src/services/translation/common/getResourcesOfType"
 import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/spine-response"
 import {readXml} from "../../../../src/services/serialisation/xml"
-import {SpineCancellationResponse} from "../../../../src/models/hl7-v3/hl7-v3-spine-response"
+import {
+  CancellationResponse,
+  PORX50101
+} from "../../../../src/models/hl7-v3/hl7-v3-spine-response"
 import {hasCorrectISOFormat} from "./test-helpers"
 
 const actualError = TestResources.spineResponses.cancellationError
 const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(actualError.response.body)[0]
-const parsedCancelResponse = readXml(cancelResponse) as SpineCancellationResponse
-const fhirBundle = translateSpineCancelResponseIntoBundle(parsedCancelResponse)
+const parsedCancelResponse = readXml(cancelResponse) as PORX50101
+const controlActEvent = parsedCancelResponse["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
+const actualCancelResponse = controlActEvent["hl7:subject"].CancellationResponse as CancellationResponse
+const fhirBundle = translateSpineCancelResponseIntoBundle(actualCancelResponse)
 
 describe("bundle", () => {
   test("response is a bundle", () => {

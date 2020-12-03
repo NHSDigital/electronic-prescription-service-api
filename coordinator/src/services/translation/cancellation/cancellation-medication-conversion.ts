@@ -4,6 +4,7 @@ import {
   PertinentInformation2, PertinentInformation3
 } from "../../../models/hl7-v3/hl7-v3-spine-response"
 import {convertHL7V3DateTimeStringToISODateTime} from "./common"
+import {InvalidValueError} from "../../../models/errors/processing-errors"
 
 export function createMedicationRequest(
   cancellationResponse: CancellationResponse,
@@ -74,7 +75,7 @@ function createExtensions(cancellationPertinentInformation3: PertinentInformatio
 }
 
 function getCodeAndDisplay(code: string, display: string) {
-  const displayArray = display.split("-")
+  const extraInformation = display.split("-")[1]
   switch (code) {
   case "0001":
     return {fhirCode: "R-0001", fhirDisplay: "Prescription/item was cancelled"}
@@ -94,24 +95,22 @@ function getCodeAndDisplay(code: string, display: string) {
     return {fhirCode: "R-0008", fhirDisplay: "Prescription/item not found"}
   case "0009":
     return {fhirCode: "R-0009", fhirDisplay: "Cancellation functionality disabled in Spine"}
-  //TODO ticket AEA-683 relates to this missing code
   case "0010":
-    return {fhirCode: "", fhirDisplay: ""}
+    return {fhirCode: "R-0010", fhirDisplay: "Prescription/item was not cancelled. Prescription has been not dispensed"}
   case "5000":
-    return {fhirCode: "R-5000", fhirDisplay: `Unable to process message.${displayArray[1]}`}
+    return {fhirCode: "R-5000", fhirDisplay: `Unable to process message.${extraInformation}`}
   case "5888":
     return {fhirCode: "R-5888", fhirDisplay: "Invalid message"}
   default:
-    //TODO error?
-    return {}
+    throw InvalidValueError
   }
 }
 
 function createIdentifier(pertinentInformation1: PertinentInformation1) {
   const id = pertinentInformation1.pertinentLineItemRef.id._attributes.root
   return [{
-    system: id.toLocaleLowerCase(),
-    value: "https://fhir.nhs.uk/Id/prescription-order-item-number"
+    system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
+    value: id.toLocaleLowerCase()
   }]
 }
 

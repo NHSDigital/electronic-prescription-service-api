@@ -10,7 +10,7 @@ export class Bundle extends Resource {
   identifier?: Identifier
   entry?: Array<BundleEntry>
   type?: string
-  timestamp: string
+  timestamp?: string
 }
 
 class BundleEntry {
@@ -297,7 +297,6 @@ interface MessageHeaderDestination {
 export interface MessageHeaderResponse {
   identifier: string
   code: "ok" | "transient-error" | "fatal-error"
-  details?: Reference<OperationOutcome>
 }
 
 export interface MessageHeader extends Resource {

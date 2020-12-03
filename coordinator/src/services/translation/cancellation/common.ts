@@ -4,8 +4,9 @@ import {toArray} from "../common"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import moment from "moment"
 
-export function convertName(hl7Name: Array<core.Name>): Array<fhir.HumanName> {
-  return hl7Name.map(name => {
+export function convertName(hl7Name: Array<core.Name> | core.Name): Array<fhir.HumanName> {
+  const nameArray = toArray(hl7Name)
+  return nameArray.map(name => {
     return name._attributes?.use ? {
       use: convertNameUse(name._attributes.use),
       family: name.family._text,
@@ -40,8 +41,9 @@ function convertNameUse(hl7NameUse: string): string {
   }
 }
 
-export function convertAddress(hl7Address: Array<core.Address>): Array<fhir.Address> {
-  return hl7Address.map(address => {
+export function convertAddress(hl7Address: Array<core.Address> | core.Address): Array<fhir.Address> {
+  const addressArray = toArray(hl7Address)
+  return addressArray.map(address => {
     return address._attributes?.use ? {
       use: convertAddressUse(address._attributes.use),
       line: address.streetAddressLine.map(addressLine => addressLine._text),

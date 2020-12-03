@@ -1,5 +1,5 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
-import {SpineCancellationResponse} from "../../../models/hl7-v3/hl7-v3-spine-response"
+import {CancellationResponse} from "../../../models/hl7-v3/hl7-v3-spine-response"
 import * as uuid from "uuid"
 import {createMedicationRequest} from "./cancellation-medication-conversion"
 import {createPatient} from "./cancellation-patient"
@@ -10,10 +10,7 @@ import {createMessageHeader} from "./cancellation-message-header"
 import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertHL7V3DateTimeStringToISODateTime} from "./common"
 
-export function translateSpineCancelResponseIntoBundle(message: SpineCancellationResponse): fhir.Bundle {
-  const actEvent = message["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
-  const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
-
+export function translateSpineCancelResponseIntoBundle(cancellationResponse: CancellationResponse): fhir.Bundle {
   const bundle = new fhir.Bundle()
 
   bundle.type = "message"
@@ -48,7 +45,7 @@ export function translateSpineCancelResponseIntoBundle(message: SpineCancellatio
 
   const authorRepresentedOrganization = cancellationResponse.author.AgentPerson.representedOrganization
   const representedOrganizationId = authorRepresentedOrganization.id._attributes.extension
-  const messageId = message["hl7:PORX_IN050101UK31"]["hl7:id"]._attributes.root
+  const messageId = cancellationResponse.id._attributes.root
   const cancelRequestId = cancellationResponse.pertinentInformation4.pertinentCancellationRequestRef.id._attributes.root
   const fhirMessageHeader = {
     fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
@@ -89,7 +86,7 @@ function convertAgentPerson(hl7AgentPerson: AgentPerson) {
 
   const fhirOrganization = {
     fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
-    resource: createOrganization(hl7AgentPerson.representedOrganization)
+    resource: createOrganization(hl7AgentPerson.representedOrganization) //TODO: dont duplicate organization blocks
   }
 
   const fhirPractitionerRole = {
