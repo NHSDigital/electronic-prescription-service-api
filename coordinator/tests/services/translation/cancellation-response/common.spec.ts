@@ -8,6 +8,6 @@ describe("convertNameUse", () => {
       given: {_text: "given"},
       family: {_text: "last"}
     })
-    expect(actual).toEqual([{"family": "last", "given": ["given"], "prefix": ["prefix"], "use": undefined}])
+    expect(actual).toEqual([{"family": "last", "given": ["given"], "prefix": ["prefix"]}])
   })
 })
