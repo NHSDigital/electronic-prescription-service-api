@@ -18,7 +18,7 @@ function getIdentifier(personId: string) {
   return [
     {
       "system": convertCodeSystem(personId),
-      "value": personId // TODO: should this be person or role??
+      "value": personId
     }
   ]
 }

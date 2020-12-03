@@ -7,16 +7,17 @@ import moment from "moment"
 export function convertName(hl7Name: Array<core.Name> | core.Name): Array<fhir.HumanName> {
   const nameArray = toArray(hl7Name)
   return nameArray.map(name => {
-    return name._attributes?.use ? {
-      use: convertNameUse(name._attributes.use),
+    const returnValue = {
       family: name.family._text,
       given: toArray(name.given).map(given => given._text),
       prefix: toArray(name.prefix).map(prefix => prefix._text)
-    } : {
-      family: name.family._text,
-      given: toArray(name.given).map(given => given._text),
-      prefix: toArray(name.prefix).map(prefix => prefix._text)
+    } as fhir.HumanName
+
+    if (name._attributes?.use) {
+      returnValue.use = convertNameUse(name._attributes.use)
     }
+
+    return returnValue
   })
 }
 
