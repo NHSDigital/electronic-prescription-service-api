@@ -22,18 +22,16 @@ export function convertName(hl7Name: Array<core.Name> | core.Name): Array<fhir.H
 
 function convertNameUse(hl7NameUse: string): string {
   switch (hl7NameUse) {
-  //TODO NameUse.USUAL could be either "usual" or "official", how do we tell?
   case core.NameUse.USUAL:
-    //case "usual":
-    return "official"
-    //TODO NameUse.PREFERRED could be either "temp" or "anonymous", how do we tell?
+    return "usual"
   case core.NameUse.ALIAS:
-    //case "anonymous":
     return "temp"
   case core.NameUse.PREFERRED:
     return "nickname"
+  case core.NameUse.PREVIOUS_BIRTH:
   case core.NameUse.PREVIOUS:
     return "old"
+  case core.NameUse.PREVIOUS_BACHELOR:
   case core.NameUse.PREVIOUS_MAIDEN:
     return "maiden"
   default:
@@ -58,8 +56,10 @@ export function convertAddress(hl7Address: Array<core.Address> | core.Address): 
 function convertAddressUse(fhirAddressUse: core.AddressUse): string {
   switch (fhirAddressUse) {
   case core.AddressUse.HOME:
+  case core.AddressUse.PRIMARY_HOME:
     return "home"
   case core.AddressUse.WORK:
+  case core.AddressUse.BUSINESS:
     return "work"
   case core.AddressUse.TEMPORARY:
     return "temp"
@@ -84,13 +84,19 @@ export function convertTelecom(telecom: Array<core.Telecom> | core.Telecom): Arr
 function convertTelecomUse(fhirTelecomUse: string): string {
   switch (fhirTelecomUse) {
   case core.TelecomUse.PERMANENT_HOME:
+  case core.TelecomUse.HOME:
     return "home"
   case core.TelecomUse.WORKPLACE:
     return "work"
   case core.TelecomUse.TEMPORARY:
     return "temp"
   case core.TelecomUse.MOBILE:
+  case core.TelecomUse.PAGER:
     return "mobile"
+  //TODO these are possible values, but we don'e know what to map them to
+  // case core.TelecomUse.ANSWERING_MACHINE:
+  // case core.TelecomUse.EMERGENCY_CONTACT:
+  //   return "home+rank"
   default:
     throw new InvalidValueError(`Unhandled telecom use '${fhirTelecomUse}'.`)
   }

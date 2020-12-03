@@ -25,10 +25,16 @@ export function handleResponse<T>(
       .code(spineResponse.statusCode)
       .header("Content-Type", "application/fhir+json; fhirVersion=4.0")
   } else {
-    const translatedSpineResponse = translateToFhir(spineResponse)
-    return responseToolkit.response({fhir: translatedSpineResponse.body, hl7: spineResponse.body.toString()})
-      .code(translatedSpineResponse.statusCode)
-      .header("Content-Type", "application/fhir+json; fhirVersion=4.0")
+    try {
+      const translatedSpineResponse = translateToFhir(spineResponse)
+      return responseToolkit.response({fhir: translatedSpineResponse.body, hl7: spineResponse.body.toString()})
+        .code(translatedSpineResponse.statusCode)
+        .header("Content-Type", "application/fhir+json; fhirVersion=4.0")
+    } catch (e) {
+      return responseToolkit.response({error: e, hl7: spineResponse.body.toString()})
+        .code(500)
+        .header("Content-Type", "application/fhir+json; fhirVersion=4.0")
+    }
   }
 }
 

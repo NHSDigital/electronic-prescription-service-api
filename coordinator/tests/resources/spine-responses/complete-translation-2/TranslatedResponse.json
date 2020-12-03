@@ -1,0 +1,379 @@
+{
+  "resourceType": "Bundle",
+  "type": "message",
+  "identifier": {
+    "system": "https://tools.ietf.org/html/rfc4122",
+    "value": "15039154-E956-49D4-9804-761EE18B1158"
+  },
+  "timestamp": "2020-12-03T02:21:27+00:00",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:cbfdea54-f00d-41a7-b68d-79f87c0b2a41",
+      "resource": {
+        "resourceType": "MessageHeader",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-MessageHeader-messageId",
+            "valueIdentifier": {
+              "system": "https://tools.ietf.org/html/rfc4122",
+              "value": "15039154-e956-49d4-9804-761ee18b1158"
+            }
+          }
+        ],
+        "eventCoding": {
+          "system": "https://fhir.nhs.uk/CodeSystem/message-event",
+          "code": "prescription-order-response",
+          "display": "Prescription Order Response"
+        },
+        "destination": [
+          {
+            "endpoint": "urn:nhs-uk:addressing:ods:RBA",
+            "receiver": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "RBA"
+              }
+            }
+          }
+        ],
+        "sender": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "X2601"
+          },
+          "display": "NHS Digital Spine"
+        },
+        "source": {
+          "name": "NHS Spine",
+          "endpoint": "https://undefined.api.service.nhs.uk/electronic-prescriptions/$process-message"
+        },
+        "response": {
+          "identifier": "15039154-e956-49d4-9804-761ee18b1158",
+          "code": "ok"
+        },
+        "focus": [
+          {
+            "reference": "urn:uuid:30e06694-6d7e-4449-9260-22e2ba860d6f"
+          },
+          {
+            "reference": "urn:uuid:c0dc242a-d0ee-4f08-83f9-a2e164fec165"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:c0dc242a-d0ee-4f08-83f9-a2e164fec165",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-PrescriptionStatusHistory",
+            "extension": [
+              {
+                "url": "status",
+                "valueCoding": {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history",
+                  "code": "R-5000",
+                  "display": "Unable to process message. Mismatch between prescription and cancellation NHSNumber"
+                }
+              }
+            ]
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+            "valueReference": {
+              "reference": "urn:uuid:0fc3e34a-f790-4765-adb5-45379710d15d"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+          }
+        ],
+        "intent": "order",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "763158003",
+              "display": "Medicinal product"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:30e06694-6d7e-4449-9260-22e2ba860d6f"
+        },
+        "authoredOn": "2020-12-03T02:21:27+00:00",
+        "requester": {
+          "reference": "urn:uuid:a9e003c0-e466-43ee-8e64-bf7b425b94c7"
+        },
+        "groupIdentifier": {
+          "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+          "value": "7293D6-ZB6357-11EBAO"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:30e06694-6d7e-4449-9260-22e2ba860d6f",
+      "resource": {
+        "resourceType": "Patient",
+        "identifier": [
+          {
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHSNumberVerificationStatus",
+                "valueCodeableConcept": {
+                  "coding": [
+                    {
+                      "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-NHSNumberVerificationStatus",
+                      "code": "01",
+                      "display": "Number present and verified"
+                    }
+                  ]
+                }
+              }
+            ],
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9453740519"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "CORY",
+            "given": [
+              "ETTA"
+            ],
+            "prefix": [
+              "MISS"
+            ]
+          }
+        ],
+        "gender": "female",
+        "birthDate": "1999-01-04",
+        "address": [
+          {
+            "use": "home",
+            "line": [
+              "123 Dale Avenue",
+              "Long Eaton",
+              "Nottingham"
+            ],
+            "postalCode": "NG10 1NP"
+          }
+        ],
+        "generalPractitioner": [
+          {
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "B81001"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:4a73beda-80ed-41cd-ae60-509edc3ea7ac",
+      "resource": {
+        "resourceType": "Practitioner",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/sds-user-id",
+            "value": "4428981"
+          },
+          {
+            "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
+            "value": "100102238986"
+          }
+        ],
+        "name": [
+          {
+            "family": "Edwards",
+            "given": [
+              "Thomas"
+            ],
+            "prefix": [
+              "DR"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:4d20dc77-6519-4f22-acbf-12fa5de64e44",
+      "resource": {
+        "resourceType": "Organization",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA"
+          }
+        ],
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+                "code": "RO197",
+                "display": "NHS TRUST"
+              }
+            ]
+          }
+        ],
+        "name": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST",
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "01823333444",
+            "use": "work"
+          }
+        ],
+        "address": [
+          {
+            "line": [
+              "MUSGROVE PARK HOSPITAL",
+              "PARKFIELD DRIVE",
+              "TAUNTON"
+            ],
+            "postalCode": "TA1 5DA"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:a9e003c0-e466-43ee-8e64-bf7b425b94c7",
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+            "value": "100102238986"
+          }
+        ],
+        "practitioner": {
+          "reference": "urn:uuid:4a73beda-80ed-41cd-ae60-509edc3ea7ac"
+        },
+        "organization": {
+          "reference": "urn:uuid:4d20dc77-6519-4f22-acbf-12fa5de64e44"
+        },
+        "code": [
+          {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName",
+                "code": "R8000",
+                "display": ""
+              }
+            ]
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "01234567890",
+            "use": "work"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:0fc3e34a-f790-4765-adb5-45379710d15d",
+      "resource": {
+        "resourceType": "Practitioner",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/sds-user-id",
+            "value": "G9999999"
+          },
+          {
+            "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
+            "value": "10012345678"
+          }
+        ],
+        "name": [
+          {
+            "family": "RAZ",
+            "given": [
+              "SAZ"
+            ],
+            "prefix": [
+              "DR"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:7370b7e8-17ed-45ef-89f4-0506da5bff2a",
+      "resource": {
+        "resourceType": "Organization",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA"
+          }
+        ],
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+                "code": "RO197",
+                "display": "NHS TRUST"
+              }
+            ]
+          }
+        ],
+        "name": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST",
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "01823333444",
+            "use": "work"
+          }
+        ],
+        "address": [
+          {
+            "line": [
+              "MUSGROVE PARK HOSPITAL",
+              "PARKFIELD DRIVE",
+              "TAUNTON"
+            ],
+            "postalCode": "TA1 5DA"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:dcb93bb1-7920-4832-9cae-0ee73889246e",
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+            "value": "10012345678"
+          }
+        ],
+        "practitioner": {
+          "reference": "urn:uuid:0fc3e34a-f790-4765-adb5-45379710d15d"
+        },
+        "organization": {
+          "reference": "urn:uuid:7370b7e8-17ed-45ef-89f4-0506da5bff2a"
+        },
+        "code": [
+          {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName",
+                "code": "R8000",
+                "display": ""
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
