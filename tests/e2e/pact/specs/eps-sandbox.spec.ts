@@ -27,7 +27,7 @@ jestpact.pactWith(
         const requestStr = LosslessJson.stringify(request)
         const responseStr = LosslessJson.stringify(response)
         const interaction: InteractionObject = {
-          state: null,
+          state: "",
           uponReceiving: `a request to prepare a ${description} message`,
           withRequest: {
             headers: {
@@ -60,7 +60,7 @@ jestpact.pactWith(
         const apiPath = "/$process-message"
         const messageStr = LosslessJson.stringify(message)
         const interaction: InteractionObject = {
-          state: null,
+          state: "",
           uponReceiving: `a request to process ${desc} message to Spine`,
           withRequest: {
             headers: {
@@ -101,7 +101,7 @@ jestpact.pactWith(
         const messageStr = LosslessJson.stringify(testCase.request)
 
         const interaction: InteractionObject = {
-          state: null,
+          state: "",
           uponReceiving: `a request to process a message with a FHIR JSON Accept header`,
           withRequest: {
             headers: {

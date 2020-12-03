@@ -25,7 +25,7 @@ jestpact.pactWith(
         const apiPath = "/$prepare"
         const inputMessageStr = LosslessJson.stringify(inputMessage)
         const interaction: InteractionObject = {
-          state: null,
+          state: "",
           uponReceiving: `a request to prepare ${desc} message`,
           withRequest: {
             headers: {
@@ -160,7 +160,7 @@ jestpact.pactWith(
         }*/
 
         const interaction: InteractionObject = {
-          state: null,
+          state: "",
           uponReceiving: `a request to process ${desc} message to Spine`,
           withRequest: {
             headers: {

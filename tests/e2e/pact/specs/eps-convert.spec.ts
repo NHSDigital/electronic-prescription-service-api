@@ -31,7 +31,7 @@ jestpact.pactWith(
 
         const apiPath = "/$convert"
         const interaction: InteractionObject = {
-          state: null,
+          state: "",
           uponReceiving: `a request to convert ${desc} message`,
           withRequest: {
             headers: {
