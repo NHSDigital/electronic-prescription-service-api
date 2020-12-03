@@ -16,7 +16,7 @@ export function translateSpineCancelResponseIntoBundle(cancellationResponse: Can
   bundle.type = "message"
   bundle.identifier = {
     system: "https://tools.ietf.org/html/rfc4122",
-    value: cancellationResponse.id._attributes.root
+    value: cancellationResponse.id._attributes.root.toLowerCase()
   }
   bundle.timestamp = convertHL7V3DateTimeStringToISODateTime(cancellationResponse.effectiveTime._attributes.value)
 

@@ -4,7 +4,7 @@ import {createPractitioner} from "../../../../src/services/translation/cancellat
 import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/spine-response"
 import {readXml} from "../../../../src/services/serialisation/xml"
 
-describe("createDispensePractitioner", () => {
+describe("createPractitioner", () => {
   const actualError = TestResources.spineResponses.cancellationError
   const preParsedMsg = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(actualError.response.body)[0]
   const parsedMsg = readXml(preParsedMsg)
@@ -15,10 +15,10 @@ describe("createDispensePractitioner", () => {
 
   test("returned practitioner has an identifier with correct SDS user id", () => {
     expect(author.identifier).not.toBeUndefined()
-    expect(author.identifier.length).toBe(2)
+    expect(author.identifier.length).toBe(1)
     const sdsIdentifier = getIdentifierValueForSystem(
       author.identifier,
-      "https://fhir.nhs.uk/Id/sds-user-id",
+      "https://fhir.hl7.org.uk/Id/gphc-number",
       "author.identifier")
     expect(sdsIdentifier).toBe("4428981")
   })

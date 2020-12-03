@@ -34,7 +34,8 @@ describe("bundle", () => {
   test("bundle has identifier", () => {
     const bundleIdentifier = fhirBundle.identifier
     expect(bundleIdentifier.system).toBe("https://tools.ietf.org/html/rfc4122")
-    expect(bundleIdentifier.value).toBe(parsedCancelResponse["hl7:PORX_IN050101UK31"]["hl7:id"]._attributes.root)
+    expect(bundleIdentifier.value)
+      .toBe(parsedCancelResponse["hl7:PORX_IN050101UK31"]["hl7:id"]._attributes.root.toLowerCase())
   })
 
   test("bundle has correct timestamp format", () => {
