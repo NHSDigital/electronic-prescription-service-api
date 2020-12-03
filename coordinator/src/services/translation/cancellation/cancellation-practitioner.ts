@@ -30,9 +30,9 @@ function convertCodeSystem(codeValue: string): string {
     return "https://fhir.hl7.org.uk/Id/gmp-number"
   } else if (codeValue.startsWith("C")) {
     return "https://fhir.hl7.org.uk/Id/gmc-number"
-  } else if (codeValue.length === 6) {
+  } else if (codeValue.length === 6 && !isNaN(Number(codeValue))) {
     return "https://fhir.hl7.org.uk/Id/din-number"
-  } else if (codeValue.length === 7) {
+  } else if (codeValue.length === 7 && !isNaN(Number(codeValue))) {
     return "https://fhir.hl7.org.uk/Id/gphc-number"
   }
   throw new InvalidValueError(`unrecognised prescriber code ${codeValue}`)
