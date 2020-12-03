@@ -20,7 +20,7 @@ export function createMedicationRequest(
   const pertinentInformation1 = cancellationResponse.pertinentInformation1
   medicationRequest.identifier = createIdentifier(pertinentInformation1)
 
-  // TODO medicationRequest.status = ""
+  medicationRequest.status = getStatus(pertinentInformation3.pertinentResponse.value._attributes.code)
 
   medicationRequest.intent = "order"
 
@@ -72,6 +72,31 @@ function createExtensions(cancellationPertinentInformation3: PertinentInformatio
       }
     }
   ]
+}
+
+function getStatus(code: string) {
+  //active | on-hold | cancelled | completed | entered-in-error | stopped | draft | unknown
+  switch(code) {
+  case ("0001"):
+  case ("0006"):
+    return "cancelled"
+  case("0002"):
+  case("0003"):
+  case("0009"):
+  case("0010"):
+    return "active"
+  case("0004"):
+    return "completed"
+  case("0005"):
+    return "stopped"
+  case("0007"):
+  case("0008"):
+  case("5000"):
+  case("5888"):
+    return "unknown"
+  default:
+    throw InvalidValueError
+  }
 }
 
 function getCodeAndDisplay(code: string, display: string) {
