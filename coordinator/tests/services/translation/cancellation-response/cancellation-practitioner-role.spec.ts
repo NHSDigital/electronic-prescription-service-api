@@ -12,7 +12,6 @@ describe("createPractitionerRole", () => {
   const authorAgentPerson = cancellationResponse.author.AgentPerson
 
   const practitionerReference = "testReference"
-  const practitionerCode = "R8000"
   const organizationReference = "anotherTestReference"
 
   const practitionerRole = createPractitionerRole(
@@ -35,7 +34,7 @@ describe("createPractitionerRole", () => {
   })
 
   test("has correct code", () => {
-    expect(practitionerRole.code[0].coding[0].code).toBe(practitionerCode)
+    expect(practitionerRole.code[0].coding[0].code).toBe("R8000")
     expect(practitionerRole.code[0].coding[0].system).toBe("https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName")
   })
 
