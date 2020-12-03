@@ -26,7 +26,7 @@ export function handleResponse<T>(
       .header("Content-Type", "application/fhir+json; fhirVersion=4.0")
   } else {
     const translatedSpineResponse = translateToFhir(spineResponse)
-    return responseToolkit.response(translatedSpineResponse.body)
+    return responseToolkit.response({fhir: translatedSpineResponse.body, hl7: spineResponse.body.toString()})
       .code(translatedSpineResponse.statusCode)
       .header("Content-Type", "application/fhir+json; fhirVersion=4.0")
   }
