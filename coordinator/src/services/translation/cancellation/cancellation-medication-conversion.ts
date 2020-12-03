@@ -1,7 +1,8 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import {
-  CancellationResponse,  PertinentInformation1,
-  PertinentInformation2, PertinentInformation3
+  CancellationResponse,
+  PertinentInformation1,
+  PertinentInformation2
 } from "../../../models/hl7-v3/hl7-v3-spine-response"
 import {convertHL7V3DateTimeStringToISODateTime} from "./common"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
@@ -15,12 +16,16 @@ export function createMedicationRequest(
   const medicationRequest = {resourceType: "MedicationRequest"} as fhir.MedicationRequest
 
   const pertinentInformation3 = cancellationResponse.pertinentInformation3
-  medicationRequest.extension = createExtensions(pertinentInformation3, responsiblePartyPractitionerRoleId)
+  const cancellationCode = pertinentInformation3.pertinentResponse.value._attributes.code
+  const cancellationDisplay = pertinentInformation3.pertinentResponse.value._attributes.displayName
+  const {fhirCode, fhirDisplay, fhirStatus} = getCodeDisplayAndStatus(cancellationCode, cancellationDisplay)
+
+  medicationRequest.extension = createExtensions(responsiblePartyPractitionerRoleId, fhirCode, fhirDisplay)
 
   const pertinentInformation1 = cancellationResponse.pertinentInformation1
   medicationRequest.identifier = createIdentifier(pertinentInformation1)
 
-  medicationRequest.status = getStatus(pertinentInformation3.pertinentResponse.value._attributes.code)
+  medicationRequest.status = fhirStatus
 
   medicationRequest.intent = "order"
 
@@ -46,11 +51,7 @@ export function createMedicationRequest(
   return medicationRequest
 }
 
-function createExtensions(cancellationPertinentInformation3: PertinentInformation3, practitionerRoleId: string) {
-  const cancellationCode = cancellationPertinentInformation3.pertinentResponse.value._attributes.code
-  const cancellationDisplay = cancellationPertinentInformation3.pertinentResponse.value._attributes.displayName
-  const {fhirCode, fhirDisplay} = getCodeAndDisplay(cancellationCode, cancellationDisplay)
-
+function createExtensions(practitionerRoleId: string, fhirCode: string, fhirDisplay: string) {
   return [
     {
       "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-PrescriptionStatusHistory",
@@ -74,58 +75,81 @@ function createExtensions(cancellationPertinentInformation3: PertinentInformatio
   ]
 }
 
-function getStatus(code: string) {
-  //active | on-hold | cancelled | completed | entered-in-error | stopped | draft | unknown
-  switch(code) {
-  case ("0001"):
-  case ("0006"):
-    return "cancelled"
-  case("0002"):
-  case("0003"):
-  case("0009"):
-  case("0010"):
-    return "active"
-  case("0004"):
-    return "completed"
-  case("0005"):
-    return "stopped"
-  case("0007"):
-  case("0008"):
-  case("5000"):
-  case("5888"):
-    return "unknown"
-  default:
-    throw InvalidValueError
-  }
-}
-
-function getCodeAndDisplay(code: string, display: string) {
+function getCodeDisplayAndStatus(code: string, display: string) {
   const extraInformation = display.split("-")[1]
   switch (code) {
   case "0001":
-    return {fhirCode: "R-0001", fhirDisplay: "Prescription/item was cancelled"}
+    return {
+      fhirCode: "R-0001",
+      fhirDisplay: "Prescription/item was cancelled",
+      fhirStatus: "cancelled"
+    }
   case "0002":
-    return {fhirCode: "R-0002", fhirDisplay: "Prescription/item was not cancelled – With dispenser"}
+    return {
+      fhirCode: "R-0002",
+      fhirDisplay: "Prescription/item was not cancelled – With dispenser",
+      fhirStatus: "active"
+    }
   case "0003":
-    return {fhirCode: "R-0003", fhirDisplay: "Prescription item was not cancelled – With dispenser active"}
+    return {
+      fhirCode: "R-0003",
+      fhirDisplay: "Prescription item was not cancelled – With dispenser active",
+      fhirStatus: "active"
+    }
   case "0004":
-    return {fhirCode: "R-0004", fhirDisplay: "Prescription/item was not cancelled – Dispensed to Patient"}
+    return {
+      fhirCode: "R-0004",
+      fhirDisplay: "Prescription/item was not cancelled – Dispensed to Patient",
+      fhirStatus: "completed"
+    }
   case "0005":
-    return {fhirCode: "R-0005", fhirDisplay: "Prescription item had expired"}
+    return {
+      fhirCode: "R-0005",
+      fhirDisplay: "Prescription item had expired",
+      fhirStatus: "stopped"
+    }
   case "0006":
-    return {fhirCode: "R-0006", fhirDisplay: "Prescription/item had already been cancelled"}
+    return {
+      fhirCode: "R-0006",
+      fhirDisplay: "Prescription/item had already been cancelled",
+      fhirStatus: "cancelled"
+    }
   case "0007":
-    return {fhirCode: "R-0007", fhirDisplay: "Prescription/item cancellation requested by another prescriber"}
+    return {
+      fhirCode: "R-0007",
+      fhirDisplay: "Prescription/item cancellation requested by another prescriber",
+      fhirStatus: "unknown"
+    }
   case "0008":
-    return {fhirCode: "R-0008", fhirDisplay: "Prescription/item not found"}
+    return {
+      fhirCode: "R-0008",
+      fhirDisplay: "Prescription/item not found",
+      fhirStatus: "unknown"
+    }
   case "0009":
-    return {fhirCode: "R-0009", fhirDisplay: "Cancellation functionality disabled in Spine"}
+    return {
+      fhirCode: "R-0009",
+      fhirDisplay: "Cancellation functionality disabled in Spine",
+      fhirStatus: "active"
+    }
   case "0010":
-    return {fhirCode: "R-0010", fhirDisplay: "Prescription/item was not cancelled. Prescription has been not dispensed"}
+    return {
+      fhirCode: "R-0010",
+      fhirDisplay: "Prescription/item was not cancelled. Prescription has been not dispensed",
+      fhirStatus: "active"
+    }
   case "5000":
-    return {fhirCode: "R-5000", fhirDisplay: `Unable to process message.${extraInformation}`}
+    return {
+      fhirCode: "R-5000",
+      fhirDisplay: `Unable to process message.${extraInformation}`,
+      fhirStatus: "unknown"
+    }
   case "5888":
-    return {fhirCode: "R-5888", fhirDisplay: "Invalid message"}
+    return {
+      fhirCode: "R-5888",
+      fhirDisplay: "Invalid message",
+      fhirStatus: "unknown"
+    }
   default:
     throw InvalidValueError
   }
