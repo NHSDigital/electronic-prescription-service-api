@@ -10,7 +10,6 @@ describe("createPractitioner", () => {
   const parsedMsg = readXml(preParsedMsg)
   const actEvent = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
   const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
-  // const responsibleParty = createPractitioner(cancellationResponse.responsibleParty.AgentPerson)
   const author = createPractitioner(cancellationResponse.author.AgentPerson)
 
   test("returned practitioner has an identifier with correct SDS user id", () => {

@@ -1,7 +1,7 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertName} from "./common"
-import {InvalidValueError} from "../../../models/errors/processing-errors";
+import {InvalidValueError} from "../../../models/errors/processing-errors"
 
 export function createPractitioner(hl7AgentPerson: hl7.AgentPerson): fhir.Practitioner  {
   const fhirPractitioner = {resourceType: "Practitioner"} as fhir.Practitioner
