@@ -6,7 +6,6 @@ import {toArray} from "../common"
 export function createPractitionerRole(
   hl7AgentPerson: AgentPerson,
   practitionerReference: string,
-  practitionerCode: string,
   organizationReference: string,
 ): fhir.PractitionerRole {
   const practitionerRole = {resourceType: "PractitionerRole"} as fhir.PractitionerRole
@@ -20,7 +19,7 @@ export function createPractitionerRole(
 
   practitionerRole.organization = getReference(organizationReference)
 
-  practitionerRole.code = getCode(practitionerCode)
+  practitionerRole.code = getCode(hl7AgentPerson.code._attributes.code)
 
   if (toArray(hl7AgentPerson.telecom)[0]._attributes) {
     practitionerRole.telecom = convertTelecom(hl7AgentPerson.telecom)

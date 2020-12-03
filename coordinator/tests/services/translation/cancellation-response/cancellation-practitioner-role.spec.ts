@@ -18,7 +18,6 @@ describe("createPractitionerRole", () => {
   const practitionerRole = createPractitionerRole(
     authorAgentPerson,
     practitionerReference,
-    practitionerCode,
     organizationReference
   )
 

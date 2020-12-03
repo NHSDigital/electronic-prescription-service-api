@@ -19,7 +19,7 @@ describe("createPatient", () => {
 
   test("returned patient has correct name use", () => {
     expect(patient.name).not.toBeUndefined()
-    expect(patient.name[0].use).toBe("official")
+    expect(patient.name[0].use).toBe("usual")
   })
 
   test("returned patient has correct family and given names, and prefix", () => {

@@ -78,7 +78,6 @@ function generateFullUrl(id: string) {
 }
 
 function convertAgentPerson(hl7AgentPerson: AgentPerson) {
-  const responsiblePartyCode = hl7AgentPerson.code._attributes.code
   const fhirPractitioner = {
     fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
     resource: createPractitioner(hl7AgentPerson)
@@ -94,7 +93,6 @@ function convertAgentPerson(hl7AgentPerson: AgentPerson) {
     resource: createPractitionerRole(
       hl7AgentPerson,
       fhirPractitioner.fullUrl,
-      responsiblePartyCode,
       fhirOrganization.fullUrl
     )
   }
