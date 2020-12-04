@@ -18,7 +18,7 @@ publish-pacts:
 verify-pacts:
 	npm run verify-pacts
 	npm run verify-convert-pacts
-	ifneq (,$(findstring sandbox,$(APIGEE_ENVIRONMENT)))
+	ifneq sandbox, $(findstring sandbox,$(APIGEE_ENVIRONMENT))
 		npm run verify-auth-pacts
 	endif
 
