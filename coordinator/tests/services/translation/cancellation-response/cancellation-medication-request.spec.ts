@@ -71,7 +71,8 @@ describe("createMedicationRequest", () => {
       {
         "coding":
           [
-            {"code": "763158003",
+            {
+              "code": "763158003",
               "system": "http://snomed.info/sct",
               "display": "Medicinal product"
             }

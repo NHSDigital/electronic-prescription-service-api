@@ -136,7 +136,7 @@ function getCodeDisplayAndStatus(code: string, display: string) {
     return {
       fhirCode: "R-0010",
       fhirDisplay: "Prescription/item was not cancelled. Prescription has been not dispensed",
-      fhirStatus: "active"
+      fhirStatus: "stopped"
     }
   case "5000":
     return {
