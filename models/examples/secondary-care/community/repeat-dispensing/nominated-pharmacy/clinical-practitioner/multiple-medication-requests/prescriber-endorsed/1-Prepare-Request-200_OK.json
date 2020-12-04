@@ -210,7 +210,7 @@
             "value": 63,
             "unit": "tablet",
             "system": "http://snomed.info/sct",
-            "code": "428673006"
+            "code": "385055001"
           },
           "expectedSupplyDuration": {
             "value": 28,
@@ -391,7 +391,7 @@
             "value": 63,
             "unit": "tablet",
             "system": "http://snomed.info/sct",
-            "code": "428673006"
+            "code": "385055001"
           },
           "expectedSupplyDuration": {
             "value": 28,
@@ -572,7 +572,7 @@
             "value": 63,
             "unit": "tablet",
             "system": "http://snomed.info/sct",
-            "code": "428673006"
+            "code": "385055001"
           },
           "expectedSupplyDuration": {
             "value": 28,
@@ -753,7 +753,7 @@
             "value": 63,
             "unit": "tablet",
             "system": "http://snomed.info/sct",
-            "code": "428673006"
+            "code": "385055001"
           },
           "expectedSupplyDuration": {
             "value": 28,

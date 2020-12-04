@@ -330,7 +330,7 @@
             "value": 28,
             "unit": "tablet",
             "system": "http://snomed.info/sct",
-            "code": "428673006"
+            "code": "385055001"
           },
           "performer": {
             "identifier": {
@@ -436,7 +436,7 @@
             "value": 28,
             "unit": "tablet",
             "system": "http://snomed.info/sct",
-            "code": "428673006"
+            "code": "385055001"
           },
           "performer": {
             "identifier": {
