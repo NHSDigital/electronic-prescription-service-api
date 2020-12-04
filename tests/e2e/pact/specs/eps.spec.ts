@@ -2,10 +2,8 @@ import { InteractionObject } from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../resources/test-resources"
-import { Bundle, Parameters, Provenance } from "../models/fhir/fhir-resources"
+import { Bundle, Parameters } from "../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
-import * as fetch from "node-fetch"
-import * as XmlJs from "xml-js"
 
 jestpact.pactWith(
   {
@@ -60,12 +58,15 @@ jestpact.pactWith(
 
     describe("process-message e2e tests", () => {
 
-      test.each(TestResources.processCases)("should be able to process %s", async (desc: string, message: Bundle, prepareResponse: Parameters, convertResponse: XmlJs.ElementCompact) => {
+      test.each(TestResources.processCases)("should be able to process %s", async (desc: string, message: Bundle) => {
         const apiPath = "/$process-message"
         const bundleStr = LosslessJson.stringify(message)
         const bundle = JSON.parse(bundleStr) as Bundle
 
-        if (process.env.APIGEE_ENVIRONMENT && !process.env.APIGEE_ENVIRONMENT.includes("sandbox")) {
+        /**
+         * Don't think we need any of this
+         */
+        /*if (process.env.APIGEE_ENVIRONMENT && !process.env.APIGEE_ENVIRONMENT.includes("sandbox")) {
 
           // upload payload and display from matching prepare response to signing service, get token
 
@@ -160,7 +161,7 @@ jestpact.pactWith(
               provenance.signature[0].data = Buffer.from(xmlDSig).toString("base64")
             }
           })
-        }
+        }*/
 
         const interaction: InteractionObject = {
           state: null,
