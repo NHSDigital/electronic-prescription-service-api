@@ -1,204 +1,363 @@
-import {clone} from "../../resources/test-helpers"
-import * as TestResources from "../../resources/test-resources"
-import {Bundle, HealthcareService, Location, Organization} from "../../../src/models/fhir/fhir-resources"
-import {getHealthcareServices, getOrganizations} from "../../../src/services/translation/common/getResourcesOfType"
+import {
+  Bundle,
+  HealthcareService,
+  Location, MessageHeader,
+  Organization,
+  Resource
+} from "../../../src/models/fhir/fhir-resources"
 import {convertOrganizationAndProviderLicense} from "../../../src/services/translation/prescription/organization"
-import {getResourceForFullUrl} from "../../../src/services/translation/common"
+import * as uuid from "uuid"
+import {FhirMessageProcessingError} from "../../../src/models/errors/processing-errors"
+import {getMessageHeader} from "../../../src/services/translation/common/getResourcesOfType"
+import {MessageType} from "../../../src/routes/util"
 
-describe("convertOrganizationAndProviderLicense non-homecare represented organization", () => {
+function bundleOf(resources: Array<Resource>): Bundle {
+  return {
+    resourceType: "Bundle",
+    id: uuid.v4(),
+    entry: resources.map(resource => ({resource, fullUrl: `urn:uuid:${resource.id}`}))
+  }
+}
+
+describe("convertOrganizationAndProviderLicense", () => {
+  let messageHeader: MessageHeader
+  let organization1: Organization
+  let organization2: Organization
+  let healthcareService: HealthcareService
+  let location: Location
   let bundle: Bundle
-  let firstFhirOrganization: Organization
-  let firstFhirHealthcareService: HealthcareService
 
   beforeEach(() => {
-    bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
-    firstFhirOrganization = getOrganizations(bundle)[0]
-    firstFhirHealthcareService = getHealthcareServices(bundle)[0]
+    messageHeader = {
+      resourceType: "MessageHeader",
+      eventCoding: {
+        code: MessageType.PRESCRIPTION
+      },
+      sender: {
+        reference: ""
+      },
+      source: {
+        endpoint: ""
+      },
+      focus: []
+    }
+    organization2 = {
+      resourceType: "Organization",
+      id: uuid.v4(),
+      identifier: [{
+        system: "https://fhir.nhs.uk/Id/ods-organization-code",
+        value: "ORG002"
+      }],
+      type: [{
+        coding: [{
+          system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+          code: "RO197"
+        }]
+      }],
+      name: "Organization 2",
+      telecom: [{
+        use: "WP",
+        value: "22222222222"
+      }],
+      address: [{
+        use: "WP",
+        line: [
+          "Organization 2 Address"
+        ]
+      }]
+    }
+    organization1 = {
+      resourceType: "Organization",
+      id: uuid.v4(),
+      identifier: [{
+        system: "https://fhir.nhs.uk/Id/ods-organization-code",
+        value: "ORG001"
+      }],
+      type: [{
+        coding: [{
+          system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+          code: "RO198"
+        }]
+      }],
+      name: "Organization 1",
+      telecom: [{
+        use: "work",
+        value: "11111111111"
+      }],
+      address: [{
+        use: "work",
+        line: [
+          "Organization 1 Address"
+        ]
+      }],
+      partOf: {
+        reference: `urn:uuid:${organization2.id}`
+      }
+    }
+    location = {
+      resourceType: "Location",
+      id: uuid.v4(),
+      address: {
+        use: "work",
+        line: ["Healthcare Service Address"]
+      }
+    }
+    healthcareService = {
+      resourceType: "HealthcareService",
+      id: uuid.v4(),
+      identifier: [{
+        system: "https://fhir.nhs.uk/Id/ods-organization-code",
+        value: "HS001"
+      }],
+      name: "Healthcare Service",
+      telecom: [{
+        use: "work",
+        value: "33333333333"
+      }],
+      location: [{
+        reference: `urn:uuid:${location.id}`
+      }]
+    }
+    bundle = bundleOf([messageHeader, organization1, organization2, healthcareService, location])
   })
 
-  test("maps identifier from fhir organization to AgentPerson.representedOrganization", () => {
-    const expectedValue = "identifier"
-    firstFhirOrganization.identifier = [{system: "https://fhir.nhs.uk/Id/ods-organization-code", value: expectedValue}]
+  describe.each([
+    ["cancellations", MessageType.CANCELLATION],
+    ["orders", MessageType.PRESCRIPTION]
+  ])("representedOrganization mapping for %s", (desc: string, messageType: MessageType) => {
+    describe("when organization is an NHS trust", () => {
+      beforeEach(() => {
+        getMessageHeader(bundle).eventCoding.code = messageType
+        organization1.type.forEach(type => type.coding.forEach(coding => coding.code = "RO197"))
+      })
 
-    const hl7v3AgentPersonRepresentedOrganization = convertOrganizationAndProviderLicense(
-      bundle,
-      firstFhirOrganization,
-      firstFhirHealthcareService,
-      true
-    )
-    const attributes = hl7v3AgentPersonRepresentedOrganization.id._attributes
+      test("throws if HealthcareService not passed to method", () => {
+        expect(() => {
+          convertOrganizationAndProviderLicense(bundle, organization1, undefined)
+        }).toThrowError(FhirMessageProcessingError)
+      })
 
-    expect(attributes.root).toEqual("1.2.826.0.1285.0.1.10")
-    expect(attributes.extension).toEqual(expectedValue)
+      test("throws if Location not present in bundle", () => {
+        expect(() => {
+          bundle = bundleOf([messageHeader, organization1, organization2, healthcareService])
+          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+        }).toThrowError(FhirMessageProcessingError)
+      })
+
+      test("throws if Location is ambiguous", () => {
+        expect(() => {
+          healthcareService.location.push({
+            reference: `urn:uuid:${uuid.v4()}`
+          })
+          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+        }).toThrowError(FhirMessageProcessingError)
+      })
+
+      test.each([
+        "identifier",
+        "name",
+        "location",
+        "telecom"
+      ])("throws if %s not present in HealthcareService", (field: string) => {
+        expect(() => {
+          delete (healthcareService as unknown as Record<string, unknown>)[field]
+          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+        }).toThrowError(FhirMessageProcessingError)
+      })
+
+      test("throws if telecom is ambiguous", () => {
+        expect(() => {
+          healthcareService.telecom.push({
+            use: "work",
+            value: "44444444444"
+          })
+          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+        }).toThrowError(FhirMessageProcessingError)
+      })
+
+      test("throws if address not present in Location", () => {
+        expect(() => {
+          delete location.address
+          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+        }).toThrowError(FhirMessageProcessingError)
+      })
+
+      test.each([
+        "address",
+        "telecom"
+      ])("does not throw if %s not present in Organization", (field: string) => {
+        delete organization1.partOf
+        expect(() => {
+          delete (organization1 as unknown as Record<string, unknown>)[field]
+          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+        }).not.toThrow()
+      })
+
+      test("uses HealthcareService for organization details", () => {
+        const org = convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+        expect(org.id._attributes.extension).toBe("HS001")
+        expect(org.code._attributes.code).toBe("999")
+        expect(org.name._text).toBe("Healthcare Service")
+        expect(org.addr.streetAddressLine[0]._text).toBe("Healthcare Service Address")
+        expect(org.telecom._attributes.value).toBe("tel:33333333333")
+      })
+    })
+
+    describe.each([
+      ["not an NHS trust", "RO198"],
+      ["of an unspecified type", undefined]
+    ])("when organization is %s", (desc: string, code: string) => {
+      beforeEach(() => {
+        if (code) {
+          organization1.type.forEach(type => type.coding.forEach(coding => coding.code = code))
+        } else {
+          delete organization1.type
+        }
+      })
+
+      test("does not throw if HealthcareService not passed to method", () => {
+        expect(() => {
+          convertOrganizationAndProviderLicense(bundle, organization1, undefined)
+        }).not.toThrow()
+      })
+
+      test.each([
+        "identifier",
+        "name",
+        "address",
+        "telecom"
+      ])("throws if %s not present in Organization", (field: string) => {
+        expect(() => {
+          delete (organization1 as unknown as Record<string, unknown>)[field]
+          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+        }).toThrowError(FhirMessageProcessingError)
+      })
+
+      test("throws if address is ambiguous", () => {
+        expect(() => {
+          organization1.address.push({
+            use: "work",
+            line: ["Organization 1 Mystery Alternative Address"]
+          })
+          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+        }).toThrowError(FhirMessageProcessingError)
+      })
+
+      test("throws if telecom is ambiguous", () => {
+        expect(() => {
+          organization1.telecom.push({
+            use: "work",
+            value: "55555555555"
+          })
+          convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+        }).toThrowError(FhirMessageProcessingError)
+      })
+
+      test("uses Organization for organization details", () => {
+        const org = convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+        expect(org.id._attributes.extension).toBe("ORG001")
+        expect(org.code._attributes.code).toBe("999")
+        expect(org.name._text).toBe("Organization 1")
+        expect(org.addr.streetAddressLine[0]._text).toBe("Organization 1 Address")
+        expect(org.telecom._attributes.value).toBe("tel:11111111111")
+      })
+    })
   })
 
-  test("maps name from fhir organization to AgentPerson.representedOrganization", () => {
-    const expectedName = "name"
-    firstFhirOrganization.name = expectedName
+  describe("provider licence mapping for cancellations", () => {
+    describe.each([
+      ["an NHS trust", "RO197"],
+      ["not an NHS trust", "RO198"],
+      ["of an unspecified type", undefined]
+    ])("when organization is %s", (desc: string, code: string) => {
+      beforeEach(() => {
+        getMessageHeader(bundle).eventCoding.code = MessageType.CANCELLATION
+        if (code) {
+          organization1.type.forEach(type => type.coding.forEach(coding => coding.code = code))
+        } else {
+          delete organization1.type
+        }
+      })
 
-    const hl7v3AgentPersonRepresentedOrganization = convertOrganizationAndProviderLicense(
-      bundle,
-      firstFhirOrganization,
-      firstFhirHealthcareService,
-      true
-    )
-
-    expect(hl7v3AgentPersonRepresentedOrganization.name._text).toEqual(expectedName)
+      test("is not performed", () => {
+        const org = convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+        expect(org.healthCareProviderLicense).toBeFalsy()
+      })
+    })
   })
 
-  test("maps telecom from fhir organization to AgentPerson.representedOrganization when present", () => {
-    const expectedTelecomValue = "tel:01234567890"
-    firstFhirOrganization.telecom = [{use: "work", value: expectedTelecomValue}]
+  describe("provider licence mapping for orders", () => {
+    describe.each([
+      ["an NHS trust", "RO197"],
+      ["not an NHS trust", "RO198"],
+      ["of an unspecified type", undefined]
+    ])("when organization is %s", (desc: string, code: string) => {
+      beforeEach(() => {
+        getMessageHeader(bundle).eventCoding.code = MessageType.PRESCRIPTION
+        if (code) {
+          organization1.type.forEach(type => type.coding.forEach(coding => coding.code = code))
+        } else {
+          delete organization1.type
+        }
+      })
 
-    const hl7v3AgentPersonRepresentedOrganization = convertOrganizationAndProviderLicense(
-      bundle,
-      firstFhirOrganization,
-      firstFhirHealthcareService,
-      true
-    )
-    const attributes = hl7v3AgentPersonRepresentedOrganization.telecom._attributes
+      describe("when organization.partOf is present", () => {
+        test.each([
+          "identifier",
+          "name"
+        ])("throws if %s not present in parent Organization", (field: string) => {
+          expect(() => {
+            delete (organization2 as unknown as Record<string, unknown>)[field]
+            convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+          }).toThrowError(FhirMessageProcessingError)
+        })
 
-    expect(attributes.use).toEqual("WP")
-    expect(attributes.value).toEqual(expectedTelecomValue)
-  })
+        test.each([
+          "address",
+          "telecom"
+        ])("does not throw if %s not present in parent Organization", (field: string) => {
+          expect(() => {
+            delete (organization2 as unknown as Record<string, unknown>)[field]
+            convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+          }).not.toThrow()
+        })
 
-  test("maps address from fhir organization to AgentPerson.representedOrganization when present", () => {
-    const expectedAddressLine = "53 Address"
-    const expectedPostalCode = "P0STC0D3"
-    firstFhirOrganization.address = [{use: "work", line: [expectedAddressLine], postalCode: expectedPostalCode}]
+        test("uses parent Organization for organization details", () => {
+          const org = convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+          const parentOrg = org.healthCareProviderLicense.Organization
+          expect(parentOrg.id._attributes.extension).toBe("ORG002")
+          expect(parentOrg.code._attributes.code).toBe("999")
+          expect(parentOrg.name._text).toBe("Organization 2")
+          expect(parentOrg.addr).toBeFalsy()
+          expect(parentOrg.telecom).toBeFalsy()
+        })
+      })
 
-    const hl7v3AgentPersonRepresentedOrganization = convertOrganizationAndProviderLicense(
-      bundle,
-      firstFhirOrganization,
-      firstFhirHealthcareService,
-      true
-    )
-    const hl7v3Address = hl7v3AgentPersonRepresentedOrganization.addr
+      describe("when organization.partOf is not present", () => {
+        beforeEach(() => {
+          delete organization1.partOf
+        })
 
-    expect(hl7v3Address._attributes.use).toEqual("WP")
-    expect(hl7v3Address.streetAddressLine[0]._text).toEqual(expectedAddressLine)
-    expect(hl7v3Address.postalCode._text).toEqual(expectedPostalCode)
-  })
+        test.each([
+          "identifier",
+          "name"
+        ])("throws if %s not present in Organization", (field: string) => {
+          expect(() => {
+            delete (organization1 as unknown as Record<string, unknown>)[field]
+            convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+          }).toThrowError(FhirMessageProcessingError)
+        })
 
-  test("does not throw when minimum required fields are provided", () => {
-    firstFhirOrganization.address = undefined
-    firstFhirOrganization.partOf = undefined
-    firstFhirOrganization.telecom = undefined
-
-    expect(() =>
-      convertOrganizationAndProviderLicense(
-        bundle,
-        firstFhirOrganization,
-        firstFhirHealthcareService,
-        true
-      )
-    ).not.toThrow()
-  })
-})
-
-describe("Homecare Prescription representedOrganization Conversion", () => {
-  let bundle: Bundle
-  let firstFhirOrganization: Organization
-  let firstFhirHealthcareService: HealthcareService
-
-  beforeEach(() => {
-    bundle = clone(TestResources.examplePrescription3.fhirMessageUnsigned)
-    firstFhirOrganization = getOrganizations(bundle)[0]
-    firstFhirHealthcareService = getHealthcareServices(bundle)[0]
-  })
-
-  test("if Organization has code value RO197, should have 999 in representedOrganization code", () => {
-    const result = convertOrganizationAndProviderLicense(
-      bundle,
-      firstFhirOrganization,
-      firstFhirHealthcareService,
-      false
-    )
-    expect(result.code._attributes.code).toBe("999")
-  })
-
-  test("If passed a cancellation, the representedOrganization should have a code of 008", () => {
-    const result = convertOrganizationAndProviderLicense(
-      bundle,
-      firstFhirOrganization,
-      firstFhirHealthcareService,
-      true
-    )
-    expect(result.code._attributes.code).toBe("008")
-  })
-
-  test("If passed a cancellation message, uses the Organization instead of the HealthcareService", () => {
-    const organizationName = "test"
-    firstFhirOrganization.name = organizationName
-    firstFhirHealthcareService.name = "distinct name"
-
-    const result = convertOrganizationAndProviderLicense(
-      bundle,
-      firstFhirOrganization,
-      firstFhirHealthcareService,
-      true
-    )
-
-    expect(result.name._text).toBe(organizationName)
-  })
-
-  test("If Location in HomecarePrescription bundle, it's address is the responsibleOrganization address", () => {
-    const locationRef = getHealthcareServices(bundle)[0].location[0].reference
-    const locationAddress = (getResourceForFullUrl(bundle, locationRef) as Location).address
-    firstFhirOrganization.address = [{line: ["bluh", "testvalue"], postalCode: "test"}]
-    const resultAddress = convertOrganizationAndProviderLicense(
-      bundle,
-      firstFhirOrganization,
-      firstFhirHealthcareService,
-      false
-    ).addr
-    locationAddress.line.forEach(line =>
-      expect(resultAddress.streetAddressLine.map(line => line._text)).toContain(line)
-    )
-    expect(resultAddress.streetAddressLine.map(line => line._text)).toContain(locationAddress.city)
-    expect(resultAddress.postalCode._text).toBe(locationAddress.postalCode)
-  })
-})
-
-describe("Homecare Prescription healthcareProviderLicence Conversion", () => {
-  let bundle: Bundle
-  let firstFhirOrganization: Organization
-  let firstFhirHealthcareService: HealthcareService
-
-  beforeEach(() => {
-    bundle = clone(TestResources.examplePrescription3.fhirMessageUnsigned)
-    firstFhirOrganization = getOrganizations(bundle)[0]
-    firstFhirHealthcareService = getHealthcareServices(bundle)[0]
-  })
-
-  test("If HealthcareProviderLicense Organization doesn't have a type code, should put 008 in type code", () => {
-    const result = convertOrganizationAndProviderLicense(
-      bundle,
-      firstFhirOrganization,
-      firstFhirHealthcareService,
-      false
-    )
-    expect(result.healthCareProviderLicense.Organization.code._attributes.code).toBe("008")
-  })
-
-  test("Doesn't convert address or telephone number in HealthcareProvider Licence", () => {
-    const result = convertOrganizationAndProviderLicense(
-      bundle,
-      firstFhirOrganization,
-      firstFhirHealthcareService,
-      false
-    )
-    expect(result.healthCareProviderLicense.Organization.addr).toBe(undefined)
-    expect(result.healthCareProviderLicense.Organization.telecom).toBe(undefined)
-  })
-
-  test("If passed a cancellation message, there shouldn't be a healthcareProviderLicence", () => {
-    const result = convertOrganizationAndProviderLicense(
-      bundle,
-      firstFhirOrganization,
-      firstFhirHealthcareService,
-      true
-    )
-    expect(Object.keys(result)).not.toContain("healthcareProviderLicence")
+        test("uses Organization for organization details", () => {
+          const org = convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
+          const parentOrg = org.healthCareProviderLicense.Organization
+          expect(parentOrg.id._attributes.extension).toBe("ORG001")
+          expect(parentOrg.code._attributes.code).toBe("999")
+          expect(parentOrg.name._text).toBe("Organization 1")
+          expect(parentOrg.addr).toBeFalsy()
+          expect(parentOrg.telecom).toBeFalsy()
+        })
+      })
+    })
   })
 })
