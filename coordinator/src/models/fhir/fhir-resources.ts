@@ -158,7 +158,6 @@ export interface Organization extends Resource {
 export interface HealthcareService extends Resource {
   resourceType: "HealthcareService"
   identifier?: Array<Identifier>
-  id?: string
   name?: string
   telecom?: Array<ContactPoint>
   active?: string
@@ -168,7 +167,6 @@ export interface HealthcareService extends Resource {
 
 export interface Location extends Resource {
   resourceType: "Location"
-  id?: string
   identifier?: Array<Identifier>
   status?: string
   mode?: string
@@ -254,10 +252,10 @@ export interface CommunicationRequest extends Resource {
   resourceType: "CommunicationRequest"
   status?: string
   subject: Reference<Patient>
-  payload: Array<ContentString>
+  payload: Array<ContentStringPayload>
 }
 
-export interface ContentString {
+export interface ContentStringPayload {
   contentString: string
 }
 

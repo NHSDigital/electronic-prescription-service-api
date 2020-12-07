@@ -9,7 +9,9 @@ import {
   getCodeableConceptCodingForSystem,
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
-  getIdentifierValueOrNullForSystem, onlyElement, onlyElementOrNull,
+  getIdentifierValueOrNullForSystem,
+  onlyElement,
+  onlyElementOrNull,
   resolveReference
 } from "../common"
 import * as XmlJs from "xml-js"
@@ -17,15 +19,15 @@ import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {convertOrganizationAndProviderLicense} from "./organization"
 import {getProvenances} from "../common/getResourcesOfType"
 import * as errors from "../../../models/errors/processing-errors"
+import {identifyMessageType, MessageType} from "../../../routes/util"
 
 export function convertAuthor(
   fhirBundle: fhir.Bundle,
   fhirFirstMedicationRequest: fhir.MedicationRequest,
-  isCancellation: boolean,
   convertPractitionerRoleFn = convertPractitionerRole
 ): prescriptions.Author {
   const hl7V3Author = new prescriptions.Author()
-  if (!isCancellation) {
+  if (identifyMessageType(fhirBundle) !== MessageType.CANCELLATION) {
     hl7V3Author.time = convertIsoDateTimeStringToHl7V3DateTime(
       fhirFirstMedicationRequest.authoredOn,
       "MedicationRequest.authoredOn"
@@ -33,63 +35,69 @@ export function convertAuthor(
     hl7V3Author.signatureText = convertSignatureText(fhirBundle, fhirFirstMedicationRequest.requester)
   }
   const fhirAuthorPractitionerRole = resolveReference(fhirBundle, fhirFirstMedicationRequest.requester)
-  hl7V3Author.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirAuthorPractitionerRole, isCancellation)
+  hl7V3Author.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirAuthorPractitionerRole)
   return hl7V3Author
 }
 
 export function convertResponsibleParty(
   fhirBundle: fhir.Bundle,
   fhirMedicationRequest: fhir.MedicationRequest,
-  isCancellation: boolean,
   convertPractitionerRoleFn = convertPractitionerRole,
   convertAgentPersonPersonFn = convertAgentPersonPerson,
   getAgentPersonPersonIdFn = getAgentPersonPersonIdForResponsibleParty
 ): prescriptions.ResponsibleParty {
   const responsibleParty = new prescriptions.ResponsibleParty()
+
   const fhirResponsiblePartyExtension = getExtensionForUrlOrNull(
     fhirMedicationRequest.extension,
     "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
     "MedicationRequest.extension"
   ) as fhir.ReferenceExtension<PractitionerRole>
+
   const fhirResponsibleParty = fhirResponsiblePartyExtension
     ? fhirResponsiblePartyExtension.valueReference
     : fhirMedicationRequest.requester
+
   const fhirResponsiblePartyPractitionerRole = resolveReference(fhirBundle, fhirResponsibleParty)
+
   responsibleParty.AgentPerson = convertPractitionerRoleFn(
     fhirBundle,
     fhirResponsiblePartyPractitionerRole,
-    isCancellation,
     convertAgentPersonPersonFn,
     getAgentPersonPersonIdFn
   )
+
   return responsibleParty
 }
 
 function convertPractitionerRole(
   fhirBundle: fhir.Bundle,
   fhirPractitionerRole: fhir.PractitionerRole,
-  isCancellation: boolean,
   convertAgentPersonPersonFn = convertAgentPersonPerson,
   getAgentPersonPersonIdFn = getAgentPersonPersonIdForAuthor
 ): peoplePlaces.AgentPerson {
   const fhirPractitioner = resolveReference(fhirBundle, fhirPractitionerRole.practitioner)
-  const hl7V3AgentPerson =
-    createAgentPerson(
-      fhirPractitionerRole,
-      fhirPractitioner,
-      convertAgentPersonPersonFn,
-      getAgentPersonPersonIdFn)
+
+  const hl7V3AgentPerson = createAgentPerson(
+    fhirPractitionerRole,
+    fhirPractitioner,
+    convertAgentPersonPersonFn,
+    getAgentPersonPersonIdFn
+  )
+
   const fhirOrganization = resolveReference(fhirBundle, fhirPractitionerRole.organization)
+
   let fhirHealthcareService: fhir.HealthcareService
   if (fhirPractitionerRole.healthcareService) {
     fhirHealthcareService = resolveReference(fhirBundle, fhirPractitionerRole.healthcareService[0])
   }
+
   hl7V3AgentPerson.representedOrganization = convertOrganizationAndProviderLicense(
     fhirBundle,
     fhirOrganization,
-    fhirHealthcareService,
-    isCancellation
+    fhirHealthcareService
   )
+
   return hl7V3AgentPerson
 }
 
