@@ -3,6 +3,7 @@ description: |
   Outcome of an operation that does not result in a resource or bundle being returned (for example, error, async/batch submission).
   There are a number of possible error codes that can be returned along with a more detailed description in the `display` field.
   Client errors (4XX error codes):
+  
   | Code                       | Response Code | Description                                   |
   | -------------------------- | ------------- | --------------------------------------------- |
   | MISSING_FIELD              | 400           | Validation error - posted resource is missing a required field. |
