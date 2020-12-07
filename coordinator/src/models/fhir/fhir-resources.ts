@@ -29,13 +29,11 @@ export interface MedicationRequestGroupIdentifier extends Identifier {
   extension?: Array<IdentifierExtension>
 }
 
-export interface RepeatInformationExtension extends Extension {
-  extension: Array<UnsignedIntExtension | DateTimeExtension>
-}
+export type RepeatInformationExtension = ExtensionExtension<UnsignedIntExtension | DateTimeExtension>
 
-export interface ControlledDrugExtension extends Extension {
-  extension: Array<StringExtension | CodingExtension>
-}
+export type ControlledDrugExtension = ExtensionExtension<StringExtension | CodingExtension>
+
+export type PrescriptionStatusHistoryExtension = ExtensionExtension<CodingExtension>
 
 export interface MedicationRequest extends Resource {
   resourceType: "MedicationRequest"
@@ -50,7 +48,8 @@ export interface MedicationRequest extends Resource {
   dosageInstruction: Array<Dosage>
   dispenseRequest: MedicationRequestDispenseRequest
   extension: Array<IdentifierExtension | ReferenceExtension<PractitionerRole> | CodingExtension
-    | CodeableConceptExtension | RepeatInformationExtension | ControlledDrugExtension | ExtensionExtension>
+    | CodeableConceptExtension | RepeatInformationExtension | ControlledDrugExtension
+    | PrescriptionStatusHistoryExtension>
   statusReason?: CodeableConcept
   status?: string
   intent?: string
@@ -244,8 +243,8 @@ export interface DateTimeExtension extends Extension {
   valueDateTime: string
 }
 
-export interface ExtensionExtension extends Extension {
-  extension: Array<Extension>
+export interface ExtensionExtension<T extends Extension> extends Extension {
+  extension: Array<T>
 }
 
 class Signature {

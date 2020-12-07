@@ -3,8 +3,8 @@ import {IdentifierReference, Organization} from "../../../models/fhir/fhir-resou
 import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
-import moment from "moment"
 import {convertAddress, convertName} from "./common"
+import {convertHL7V3DateStringToISODate} from "../common"
 
 export function createPatient(hl7Patient: hl7.Patient): fhir.Patient {
   const patient = {resourceType: "Patient"} as fhir.Patient
@@ -62,19 +62,6 @@ export function convertGender(hl7Gender: codes.SexCode): string {
   default:
     throw new InvalidValueError(`Unhandled gender '${hl7Gender}'.`)
   }
-}
-
-function convertHL7V3DateToMoment(hl7Date: string) {
-  return moment(hl7Date, "YYYYMMDD")
-}
-
-function convertMomentToISODate(moment: moment.Moment): string {
-  return moment.format("YYYY-MM-DD")
-}
-
-function convertHL7V3DateStringToISODate(hl7Date: string): string {
-  const dateTimeMoment = convertHL7V3DateToMoment(hl7Date)
-  return convertMomentToISODate(dateTimeMoment)
 }
 
 function createGeneralPractitioner(hl7OdsCode: string): Array<IdentifierReference<Organization>> {

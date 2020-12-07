@@ -188,3 +188,32 @@ export function getNumericValueAsString(numericValue: string | number | Lossless
     return numericValue.toString()
   }
 }
+
+/* CANCELLATION */
+
+function convertHL7V3DateTimeToMoment(hl7Date: string) {
+  return moment(hl7Date, "YYYYMMDDhhmmss")
+}
+
+function convertMomentToISODateTime(moment: moment.Moment): string {
+  return moment.format("YYYY-MM-DD[T]hh:mm:ssZ")
+}
+
+export function convertHL7V3DateTimeStringToISODateTime(hl7Date: string): string {
+  const dateTimeMoment = convertHL7V3DateTimeToMoment(hl7Date)
+  return convertMomentToISODateTime(dateTimeMoment)
+}
+
+function convertHL7V3DateToMoment(hl7Date: string) {
+  return moment(hl7Date, "YYYYMMDD")
+}
+
+function convertMomentToISODate(moment: moment.Moment): string {
+  return moment.format("YYYY-MM-DD")
+}
+
+export function convertHL7V3DateStringToISODate(hl7Date: string): string {
+  const dateTimeMoment = convertHL7V3DateToMoment(hl7Date)
+  return convertMomentToISODate(dateTimeMoment)
+}
+

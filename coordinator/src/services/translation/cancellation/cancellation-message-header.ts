@@ -58,7 +58,7 @@ function createFocus(patientReference: string, medicationRequestReference: strin
 function getSource() {
   return {
     name: "NHS Spine",
-    endpoint: `https://${process.env.ENVIRONMENT}.api.service.nhs.uk/electronic-prescriptions/$process-message`
+    endpoint: `${process.env.BASE_PATH}/$process-message`
   }
 }
 
@@ -68,7 +68,7 @@ function getExtension(messageId: string) {
       url: "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-MessageHeader-messageId",
       valueIdentifier: {
         system: "https://tools.ietf.org/html/rfc4122",
-        value: messageId.toLocaleLowerCase()
+        value: messageId.toLowerCase()
       }
     }
   ]
@@ -88,7 +88,7 @@ function getDestination(representedOrganizationId: string) {
 
 function getMessageHeaderResponse(cancelRequestId: string): fhir.MessageHeaderResponse {
   return {
-    identifier: cancelRequestId.toLocaleLowerCase(),
+    identifier: cancelRequestId.toLowerCase(),
     code: "ok"
   }
 }

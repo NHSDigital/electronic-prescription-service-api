@@ -25,7 +25,7 @@ describe("createMessageHeader", () => {
     const messageIdExtension = getExtensionForUrl(
       messageHeaderExtensions, messageIdUrl, "MessageHeader.extension"
     ) as fhir.IdentifierExtension
-    expect(messageIdExtension.valueIdentifier.value).toBe(messageId.toLocaleLowerCase())
+    expect(messageIdExtension.valueIdentifier.value).toBe(messageId.toLowerCase())
     expect(messageIdExtension.valueIdentifier.system).toBe("https://tools.ietf.org/html/rfc4122")
   })
 
@@ -51,7 +51,7 @@ describe("createMessageHeader", () => {
   test("source points to EPS endpoint", () => {
     const source = messageHeader.source
     expect(source.name).toBe("NHS Spine")
-    expect(source.endpoint.endsWith(".api.service.nhs.uk/electronic-prescriptions/$process-message"))
+    expect(source.endpoint.endsWith("/$process-message"))
       .toBeTruthy()
   })
 
@@ -68,6 +68,6 @@ describe("createMessageHeader", () => {
 
   test("response is correct", () => {
     const response = messageHeader.response
-    expect(response.identifier).toBe(cancelRequestId.toLocaleLowerCase())
+    expect(response.identifier).toBe(cancelRequestId.toLowerCase())
   })
 })
