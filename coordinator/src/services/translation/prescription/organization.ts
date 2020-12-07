@@ -9,23 +9,19 @@ import {
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {convertAddress, convertTelecom} from "./demographics"
+import {InvalidValueError} from "../../../models/errors/processing-errors"
+import {identifyMessageType, MessageType} from "../../../routes/util"
 
 const NHS_TRUST_CODE = "RO197"
 
 export function convertOrganizationAndProviderLicense(
   fhirBundle: fhir.Bundle,
   fhirOrganization: fhir.Organization,
-  fhirHealthcareService: fhir.HealthcareService,
-  isCancellation: boolean
+  fhirHealthcareService: fhir.HealthcareService
 ): peoplePlaces.Organization {
-  const hl7V3Organization = convertRepresentedOrganization(
-    fhirOrganization,
-    fhirHealthcareService,
-    fhirBundle,
-    isCancellation
-  )
+  const hl7V3Organization = convertRepresentedOrganization(fhirOrganization, fhirHealthcareService, fhirBundle)
 
-  if (!isCancellation){
+  if (identifyMessageType(fhirBundle) !== MessageType.CANCELLATION) {
     hl7V3Organization.healthCareProviderLicense = convertHealthCareProviderLicense(fhirOrganization, fhirBundle)
   }
 
@@ -35,24 +31,30 @@ export function convertOrganizationAndProviderLicense(
 function convertRepresentedOrganization(
   fhirOrganization: fhir.Organization,
   fhirHealthcareService: fhir.HealthcareService,
-  fhirBundle: fhir.Bundle,
-  isCancellation: boolean
+  fhirBundle: fhir.Bundle
 ) {
+  const representedOrganization = isNhsTrust(fhirOrganization)
+    ? new CostCentreHealthcareService(fhirHealthcareService)
+    : new CostCentreOrganization(fhirOrganization)
+  return convertRepresentedOrganizationDetails(representedOrganization, fhirBundle)
+}
+
+function isNhsTrust(fhirOrganization: fhir.Organization) {
   const organizationTypeCoding = getCodeableConceptCodingForSystemOrNull(
     fhirOrganization.type,
     "https://fhir.nhs.uk/CodeSystem/organisation-role",
     "Organization.type"
   )
-  const representedOrganization = (organizationTypeCoding?.code === NHS_TRUST_CODE && !isCancellation) ?
-    new CostCentreHealthcareService(fhirHealthcareService) : new CostCentreOrganization(fhirOrganization)
-  return convertRepresentedOrganizationDetails(representedOrganization, fhirBundle)
+  return organizationTypeCoding?.code === NHS_TRUST_CODE
 }
 
 function convertHealthCareProviderLicense(fhirOrganization: fhir.Organization, fhirBundle: fhir.Bundle) {
-  const fhirParentOrganization = new CostCentreOrganization(
-    fhirOrganization.partOf ? resolveReference(fhirBundle, fhirOrganization.partOf) : fhirOrganization
-  )
-  return new peoplePlaces.HealthCareProviderLicense(convertCommonOrganizationDetails(fhirParentOrganization))
+  const fhirParentOrganization = fhirOrganization.partOf
+    ? resolveReference(fhirBundle, fhirOrganization.partOf)
+    : fhirOrganization
+  const costCentreParentOrganization = new CostCentreOrganization(fhirParentOrganization)
+  const hl7V3ParentOrganization = convertCommonOrganizationDetails(costCentreParentOrganization)
+  return new peoplePlaces.HealthCareProviderLicense(hl7V3ParentOrganization)
 }
 
 function convertRepresentedOrganizationDetails(
@@ -61,29 +63,31 @@ function convertRepresentedOrganizationDetails(
 ): peoplePlaces.Organization {
   const result = convertCommonOrganizationDetails(costCentre)
 
-  const telecom = costCentre.getTelecom()
-  if (telecom) {
-    result.telecom = telecom
-  }
+  const telecomFhirPath = `${costCentre.resourceType}.telecom`
+  const telecom = onlyElement(costCentre.telecom, telecomFhirPath)
+  result.telecom = convertTelecom(telecom, telecomFhirPath)
 
+  const addressFhirPath = costCentre.getAddressFhirPath()
   const address = costCentre.getAddress(fhirBundle)
-  if (address) {
-    result.addr = address
-  }
+  result.addr = convertAddress(address, addressFhirPath)
 
   return result
 }
 
 function convertCommonOrganizationDetails(costCentre: CostCentre): peoplePlaces.Organization {
   const result = new peoplePlaces.Organization()
-  result.id = costCentre.getOrganizationId()
 
-  result.code = costCentre.getCode()
-
-  const name = costCentre.getName()
-  if (name) {
-    result.name = name
+  const organizationSdsId = getIdentifierValueForSystem(
+    costCentre.identifier,
+    "https://fhir.nhs.uk/Id/ods-organization-code",
+    `${costCentre.resourceType}.identifier`
+  )
+  result.id = new codes.SdsOrganizationIdentifier(organizationSdsId)
+  result.code = new codes.OrganizationTypeCode("999")
+  if (!costCentre.name) {
+    throw new InvalidValueError("Name must be provided.", `${costCentre.resourceType}.address`)
   }
+  result.name = new core.Text(costCentre.name)
 
   return result
 }
@@ -94,35 +98,8 @@ abstract class CostCentre {
   name?: string
   telecom?: Array<fhir.ContactPoint>
 
-  getName() {
-    if (this.name) {
-      return new core.Text(this.name)
-    }
-    return null
-  }
-
-  getOrganizationId() {
-    const organizationSdsId = getIdentifierValueForSystem(
-      this.identifier,
-      "https://fhir.nhs.uk/Id/ods-organization-code",
-      `${this.resourceType}.identifier`
-    )
-    return new codes.SdsOrganizationIdentifier(organizationSdsId)
-  }
-
-  getTelecom() {
-    if (this.telecom) {
-      return convertTelecom(
-        onlyElement(this.telecom, `${this.resourceType}.telecom`),
-        `${this.resourceType}.telecom`
-      )
-    }
-    return null
-  }
-
-  abstract getCode(): codes.OrganizationTypeCode
-
-  abstract getAddress(fhirBundle: fhir.Bundle): core.Address
+  abstract getAddress(fhirBundle: fhir.Bundle): fhir.Address
+  abstract getAddressFhirPath(): string
 }
 
 class CostCentreOrganization extends CostCentre implements fhir.Organization {
@@ -135,27 +112,11 @@ class CostCentreOrganization extends CostCentre implements fhir.Organization {
     Object.assign(this, fhirOrganization)
   }
 
-  /**
-   *  Currently hard coded 008 when there is no type code
-   *  confirmed with Chris this is correct, but eventually this may need to be replaced with a map of values
-   */
-  getCode() {
-    const organizationTypeCoding = getCodeableConceptCodingForSystemOrNull(
-      this.type,
-      "https://fhir.nhs.uk/R4/CodeSystem/organisation-type",
-      "Organization.type"
-    )
-    return new codes.OrganizationTypeCode(organizationTypeCoding ? organizationTypeCoding.code : "008")
-  }
-
   getAddress() {
-    if (this.address) {
-      return convertAddress(
-        onlyElement(this.address, "Organization.address"),
-        "Organization.address"
-      )
-    }
-    return null
+    return onlyElement(this.address, "Organization.address")
+  }
+  getAddressFhirPath(): string {
+    return "Organization.address"
   }
 }
 
@@ -168,17 +129,15 @@ class CostCentreHealthcareService extends CostCentre implements fhir.HealthcareS
     Object.assign(this, healthcareService)
   }
 
-  getCode() {
-    return new codes.OrganizationTypeCode("999")
-  }
-
   getAddress(fhirBundle: fhir.Bundle) {
-    if (this.location?.length) {
-      const location = resolveReference(fhirBundle, this.location[0])
-      if (location.address) {
-        return convertAddress(location.address, "Location.address")
-      }
+    const locationReference = onlyElement(this.location, "HealthcareService.location")
+    const location = resolveReference(fhirBundle, locationReference)
+    if (!location.address) {
+      throw new InvalidValueError("Address must be provided.", "Location.address")
     }
-    return null
+    return location.address
+  }
+  getAddressFhirPath(): string {
+    return "Location.address"
   }
 }
