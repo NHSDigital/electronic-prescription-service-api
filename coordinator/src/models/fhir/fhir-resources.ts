@@ -27,8 +27,6 @@ export interface Identifier {
 
 export interface MedicationRequestGroupIdentifier extends Identifier {
   extension?: Array<IdentifierExtension>
-  system?: string
-  value?: string
 }
 
 export interface RepeatInformationExtension extends Extension {
@@ -82,10 +80,8 @@ export interface Dosage {
   patientInstruction?: string
 }
 
-export interface Performer {
+export interface Performer extends IdentifierReference<Organization> {
   extension: Array<ReferenceExtension<PractitionerRole>>
-  identifier: Identifier
-  display?: string
 }
 
 export interface MedicationRequestDispenseRequest {
@@ -302,7 +298,7 @@ export interface MessageHeaderResponse {
 export interface MessageHeader extends Resource {
   resourceType: "MessageHeader"
   eventCoding: Coding
-  sender: MessageHeaderSender
+  sender: IdentifierReference<Organization>  // TODO: this might also be a ReferenceReference
   source: MessageHeaderSource
   focus: Array<Reference<Resource>>
   extension?: Array<IdentifierExtension | CodingExtension>

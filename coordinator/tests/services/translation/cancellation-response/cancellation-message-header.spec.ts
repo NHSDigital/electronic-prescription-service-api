@@ -40,7 +40,6 @@ describe("createMessageHeader", () => {
     const sender = messageHeader.sender
     expect(sender.identifier.system).toBe("https://fhir.nhs.uk/Id/ods-organization-code")
     expect(sender.identifier.value).toBe("X2601")
-    expect(sender.display).toBe("NHS Digital Spine")
   })
 
   test("focus has references to Patient and MedicationRequest", () => {

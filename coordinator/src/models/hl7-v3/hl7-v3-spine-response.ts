@@ -1,4 +1,6 @@
 import {AgentPerson, Patient} from "./hl7-v3-people-places"
+import {GlobalIdentifier, CancellationResponseReason, ShortFormPrescriptionIdentifier} from "./hl7-v3-datatypes-codes"
+import {Timestamp} from "./hl7-v3-datatypes-core"
 
 export type acknowledgementCodes = "AA" | "AR"| "AE"
 
@@ -66,16 +68,8 @@ export interface hl7Subject {
 }
 
 export interface CancellationResponse {
-  id: {
-    _attributes: {
-      root: string
-    }
-  }
-  effectiveTime: {
-    _attributes: {
-      value: string
-    }
-  }
+  id: GlobalIdentifier
+  effectiveTime: Timestamp
   recordTarget: {
     Patient: Patient
   }
@@ -93,41 +87,24 @@ export interface CancellationResponse {
 
 export interface PertinentInformation1 {
   pertinentLineItemRef: {
-    id: {
-      _attributes: {
-        root: string
-      }
-    }
+    id: GlobalIdentifier
   }
 }
 
 export interface PertinentInformation2 {
   pertinentPrescriptionID: {
-    value: {
-      _attributes: {
-        extension: string
-      }
-    }
+    value: ShortFormPrescriptionIdentifier
   }
 }
 
 export interface PertinentInformation3 {
   pertinentResponse: {
-    value: {
-      _attributes: {
-        code: string
-        displayName: string
-      }
-    }
+    value: CancellationResponseReason
   }
 }
 
 export interface PertinentInformation4 {
   pertinentCancellationRequestRef: {
-    id: {
-      _attributes: {
-        root: string
-      }
-    }
+    id: GlobalIdentifier
   }
 }
