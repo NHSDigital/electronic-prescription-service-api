@@ -143,9 +143,12 @@
             "text": "As directed",
             "additionalInstruction": [
               {
-                "system": "http://snomed.info/sct",
-                "code": "421769005",
-                "display": "Follow directions"
+                "coding": {
+                  "system": "http://snomed.info/sct",
+                  "code": "421769005",
+                  "display": "Follow directions"
+                },
+                "text": "Follow directions"
               }
             ]
           }
