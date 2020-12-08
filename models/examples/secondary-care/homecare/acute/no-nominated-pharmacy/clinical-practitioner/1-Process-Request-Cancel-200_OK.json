@@ -106,7 +106,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2020-11-16T09:54:47+00:00",
+        "authoredOn": "2020-12-04T14:07:53+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -121,7 +121,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "DA923E-Z8827F-11EBAK"
+          "value": "19AD37-Z0E363-11EBBN"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -470,6 +470,12 @@
                 "display": "Clinical Practitioner Access Role"
               }
             ]
+          }
+        ],
+        "healthcareService": [
+          {
+            "reference": "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e",
+            "display": "SOMERSET BOWEL CANCER SCREENING CENTRE"
           }
         ]
       }

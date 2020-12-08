@@ -10,6 +10,9 @@ const FHIR_DATE_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0
 const FHIR_DATE_TIME_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|([+-])((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$/
 
 export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, additionalContext?: string): T {
+  if (!iterable) {
+    throw new InvalidValueError("Required field missing.", fhirPath)
+  }
   const iterator = iterable[Symbol.iterator]()
   const first = iterator.next()
   if (first.done) {
@@ -31,6 +34,9 @@ export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, addition
 }
 
 export function onlyElementOrNull<T>(iterable: Iterable<T>, fhirPath: string, additionalContext?: string): T {
+  if (!iterable) {
+    return null
+  }
   const iterator = iterable[Symbol.iterator]()
   const value = iterator.next().value
   if (!iterator.next().done) {
@@ -56,40 +62,46 @@ export function resolveReference<T extends fhir.Resource>(bundle: fhir.Bundle, r
 }
 
 export function getIdentifierValueForSystem(
-  identifier: Array<fhir.Identifier>,
+  identifiers: Array<fhir.Identifier>,
   system: string,
   fhirPath: string
 ): string {
+  if (!identifiers) {
+    throw new InvalidValueError("Required field missing.", fhirPath)
+  }
   return onlyElement(
-    identifier.filter(identifier => identifier.system === system),
+    identifiers.filter(identifier => identifier.system === system),
     fhirPath,
     `system == '${system}'`
   ).value
 }
 
 export function getIdentifierValueOrNullForSystem(
-  identifier: Array<fhir.Identifier>,
+  identifiers: Array<fhir.Identifier>,
   system: string,
   fhirPath: string
 ): string {
+  if (!identifiers) {
+    return null
+  }
   return onlyElementOrNull(
-    identifier.filter(identifier => identifier.system === system),
+    identifiers.filter(identifier => identifier.system === system),
     fhirPath,
     `system == '${system}'`
   )?.value
 }
 
-export function getCodingForSystem(coding: Array<fhir.Coding>, system: string, fhirPath: string): fhir.Coding {
+export function getCodingForSystem(codings: Array<fhir.Coding>, system: string, fhirPath: string): fhir.Coding {
   return onlyElement(
-    coding.filter(coding => coding.system === system),
+    codings.filter(coding => coding.system === system),
     fhirPath,
     `system == '${system}'`
   )
 }
 
-export function getCodingForSystemOrNull(coding: Array<fhir.Coding>, system: string, fhirPath: string): fhir.Coding {
+export function getCodingForSystemOrNull(codings: Array<fhir.Coding>, system: string, fhirPath: string): fhir.Coding {
   return onlyElementOrNull(
-    coding.filter(coding => coding.system === system),
+    codings.filter(coding => coding.system === system),
     fhirPath,
     `system == '${system}'`
   )
@@ -116,20 +128,26 @@ export function getExtensionForUrlOrNull(
 }
 
 export function getCodeableConceptCodingForSystem(
-  codeableConcept: Array<fhir.CodeableConcept>,
+  codeableConcepts: Array<fhir.CodeableConcept>,
   system: string,
   fhirPath: string
 ): fhir.Coding {
-  const coding = codeableConcept.flatMap(codeableConcept => codeableConcept.coding)
+  if (!codeableConcepts) {
+    throw new InvalidValueError("Required field missing.", fhirPath)
+  }
+  const coding = codeableConcepts.flatMap(codeableConcept => codeableConcept.coding)
   return getCodingForSystem(coding, system, fhirPath + ".coding")
 }
 
 export function getCodeableConceptCodingForSystemOrNull(
-  codeableConcept: Array<fhir.CodeableConcept>,
+  codeableConcepts: Array<fhir.CodeableConcept>,
   system: string,
   fhirPath: string
 ): fhir.Coding {
-  const coding = codeableConcept.flatMap(codeableConcept => codeableConcept.coding)
+  if (!codeableConcepts) {
+    return null
+  }
+  const coding = codeableConcepts.flatMap(codeableConcept => codeableConcept.coding)
   return getCodingForSystemOrNull(coding, system, fhirPath + ".coding")
 }
 
@@ -175,6 +193,8 @@ export function convertMomentToHl7V3DateTime(dateTime: moment.Moment): core.Time
 export function toArray<T>(thing: T | Array<T>): Array<T> {
   return Array.isArray(thing) ? thing : [thing]
 }
+
+export const isTruthy = Boolean
 
 export function getNumericValueAsString(numericValue: string | number | LosslessNumber): string {
   if (typeof numericValue === "number") {

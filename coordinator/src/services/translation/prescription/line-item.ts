@@ -3,7 +3,7 @@ import {
   getCodingForSystem,
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
-  getNumericValueAsString,
+  getNumericValueAsString, isTruthy,
   onlyElement
 } from "../common"
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
@@ -88,7 +88,7 @@ function convertAdditionalInstructions(
   if (patientInfoText?.length) {
     additionalInstructionsValueObj.patientInfo = patientInfoText
   }
-  additionalInstructionsValueObj._text = [controlledDrugWordsWithPrefix, patientInstruction].filter(Boolean).join("\n")
+  additionalInstructionsValueObj._text = [controlledDrugWordsWithPrefix, patientInstruction].filter(isTruthy).join("\n")
   const additionalInstructionsValueStr = js2xml(additionalInstructionsValueObj, {compact: true})
 
   const hl7V3AdditionalInstructions = new prescriptions.AdditionalInstructions(additionalInstructionsValueStr)

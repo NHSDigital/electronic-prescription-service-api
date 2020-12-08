@@ -2,6 +2,7 @@ import * as fhir from "../../../models/fhir/fhir-resources"
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
+import {isTruthy} from "../common"
 
 export function convertName(fhirHumanName: fhir.HumanName, fhirPath: string): core.Name {
   const name = new core.Name()
@@ -71,7 +72,7 @@ export function convertAddress(fhirAddress: fhir.Address, fhirPath: string): cor
     fhirAddress.city,
     fhirAddress.district,
     fhirAddress.state
-  ].flat().filter(Boolean)
+  ].flat().filter(isTruthy)
   const hl7V3Address = new core.Address(convertAddressUse(fhirAddress.use, fhirPath))
   hl7V3Address.streetAddressLine = allAddressLines.map(line => new core.Text(line))
   if (fhirAddress.postalCode !== undefined){
