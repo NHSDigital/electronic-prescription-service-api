@@ -21,9 +21,12 @@ async function verify(): Promise<any> {
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
     logLevel: isLocal? "debug" : "info",
     customProviderHeaders: [
-      "x-smoke-test: 1",
-      `Authorization: Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
+      "x-smoke-test: 1"
     ],
+    requestFilter: (req, res, next) => {
+      req.headers['Authorization'] = req.headers['Authorization'] ?? `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
+      next()
+    },
     pactUrls: isLocal 
       ? [
         `${process.cwd()}//pact/pacts/${process.env.PACT_CONSUMER}+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${process.env.PACT_VERSION}.json`
