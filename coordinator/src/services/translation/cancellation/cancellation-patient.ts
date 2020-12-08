@@ -5,9 +5,12 @@ import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {convertAddress, convertName} from "./common"
 import {convertHL7V3DateStringToISODate} from "../common"
+import * as uuid from "uuid"
 
 export function createPatient(hl7Patient: hl7.Patient): fhir.Patient {
   const patient = {resourceType: "Patient"} as fhir.Patient
+
+  patient.id = uuid.v4.toString().toLowerCase()
 
   patient.identifier = createNhsNumberIdentifier(hl7Patient.id._attributes.extension)
 

@@ -44,8 +44,8 @@ describe("createMessageHeader", () => {
 
   test("focus has references to Patient and MedicationRequest", () => {
     const focus = messageHeader.focus
-    expect(focus).toContainEqual({reference: patientReference})
-    expect(focus).toContainEqual({reference: medicationRequestReference})
+    expect(focus).toContainEqual({reference: `urn:uuid:${patientReference}`})
+    expect(focus).toContainEqual({reference: `urn:uuid:${medicationRequestReference}`})
   })
 
   test("source points to EPS endpoint", () => {

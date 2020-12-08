@@ -19,8 +19,10 @@ describe("createMedicationRequest", () => {
   const patientId = "testPatientId"
   const authorPrescriptionRoleId = "testAuthorRoleId"
   const medicationRequest = createMedicationRequest(
-    cancellationResponse, responsiblePartyPractitionerRoleId, patientId, authorPrescriptionRoleId
-  )
+    cancellationResponse,
+    responsiblePartyPractitionerRoleId,
+    patientId,
+    authorPrescriptionRoleId)
 
   test("has extensions", () => {
     expect(medicationRequest.extension).not.toBeUndefined()
@@ -52,7 +54,7 @@ describe("createMedicationRequest", () => {
     ) as fhir.ReferenceExtension<fhir.PractitionerRole>
     expect(extension).not.toBeUndefined()
     const reference = extension.valueReference.reference
-    expect(reference).toBe(responsiblePartyPractitionerRoleId)
+    expect(reference).toBe(`urn:uuid:${responsiblePartyPractitionerRoleId}`)
   })
 
   test("has identifier", () => {
@@ -84,7 +86,7 @@ describe("createMedicationRequest", () => {
 
   test("subject", () => {
     const subject = medicationRequest.subject
-    expect(subject.reference).toBe(patientId)
+    expect(subject.reference).toBe(`urn:uuid:${patientId}`)
   })
 
   test("authoredOn", () => {
@@ -93,7 +95,7 @@ describe("createMedicationRequest", () => {
 
   test("requester", () => {
     const requester = medicationRequest.requester
-    expect(requester.reference).toBe(authorPrescriptionRoleId)
+    expect(requester.reference).toBe(`urn:uuid:${authorPrescriptionRoleId}`)
   })
 
   test("groupIdentifier", () => {

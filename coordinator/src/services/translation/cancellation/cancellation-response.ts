@@ -1,6 +1,5 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import {CancellationResponse} from "../../../models/hl7-v3/hl7-v3-spine-response"
-import * as uuid from "uuid"
 import {createMedicationRequest} from "./cancellation-medication-conversion"
 import {createPatient} from "./cancellation-patient"
 import {createPractitioner} from "./cancellation-practitioner"
@@ -20,10 +19,7 @@ export function translateSpineCancelResponseIntoBundle(cancellationResponse: Can
   }
   bundle.timestamp = convertHL7V3DateTimeStringToISODateTime(cancellationResponse.effectiveTime._attributes.value)
 
-  const fhirPatient = {
-    fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
-    resource: createPatient(cancellationResponse.recordTarget.Patient)
-  }
+  const fhirPatient = createPatient(cancellationResponse.recordTarget.Patient)
 
   const convertedResponsibleParty = convertAgentPerson(cancellationResponse.responsibleParty.AgentPerson)
   const fhirResponsiblePartyPractitioner = convertedResponsibleParty.fhirPractitioner
@@ -35,28 +31,24 @@ export function translateSpineCancelResponseIntoBundle(cancellationResponse: Can
   const fhirAuthorOrganization = convertedAuthor.fhirOrganization
   const fhirAuthorPractitionerRole = convertedAuthor.fhirPractitionerRole
 
-  const fhirMedicationRequest = {
-    fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
-    resource: createMedicationRequest(
-      cancellationResponse, fhirResponsiblePartyPractitioner.fullUrl,
-      fhirPatient.fullUrl, fhirAuthorPractitionerRole.fullUrl
-    )
-  }
+  const fhirMedicationRequest = createMedicationRequest(
+    cancellationResponse,
+    fhirResponsiblePartyPractitioner.id,
+    fhirPatient.id,
+    fhirAuthorPractitionerRole.id
+  )
 
   const authorRepresentedOrganization = cancellationResponse.author.AgentPerson.representedOrganization
   const representedOrganizationId = authorRepresentedOrganization.id._attributes.extension
   const messageId = cancellationResponse.id._attributes.root
   const cancelRequestId = cancellationResponse.pertinentInformation4.pertinentCancellationRequestRef.id._attributes.root
-  const fhirMessageHeader = {
-    fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
-    resource: createMessageHeader(
-      messageId,
-      fhirPatient.fullUrl,
-      fhirMedicationRequest.fullUrl,
-      representedOrganizationId,
-      cancelRequestId
-    )
-  }
+  const fhirMessageHeader = createMessageHeader(
+    messageId,
+    fhirPatient.id,
+    fhirMedicationRequest.id,
+    representedOrganizationId,
+    cancelRequestId
+  )
 
   bundle.entry = [
     fhirMessageHeader,
@@ -68,33 +60,28 @@ export function translateSpineCancelResponseIntoBundle(cancellationResponse: Can
     fhirResponsiblePartyPractitioner,
     fhirResponsiblePartyOrganization,
     fhirResponsiblePartyPractitionerRole
-  ]
+  ].map(convertResourceToBundleEntry)
   //TODO some error types need to have extra resources in bundle (e.g. dispenser info), add them
   return bundle
 }
 
-function generateFullUrl(id: string) {
-  return `urn:uuid:${id}`
+function convertAgentPerson(hl7AgentPerson: AgentPerson) {
+  const fhirPractitioner = createPractitioner(hl7AgentPerson)
+
+  //TODO: dont duplicate organization blocks
+  const fhirOrganization = createOrganization(hl7AgentPerson.representedOrganization)
+
+  const fhirPractitionerRole = createPractitionerRole(
+    hl7AgentPerson,
+    fhirPractitioner.id,
+    fhirOrganization.id
+  )
+  return {fhirPractitioner, fhirOrganization, fhirPractitionerRole}
 }
 
-function convertAgentPerson(hl7AgentPerson: AgentPerson) {
-  const fhirPractitioner = {
-    fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
-    resource: createPractitioner(hl7AgentPerson)
+function convertResourceToBundleEntry(resource: fhir.Resource) {
+  return {
+    resource,
+    fullUrl: `urn:uuid:${resource.id}`
   }
-
-  const fhirOrganization = {
-    fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
-    resource: createOrganization(hl7AgentPerson.representedOrganization) //TODO: dont duplicate organization blocks
-  }
-
-  const fhirPractitionerRole = {
-    fullUrl: generateFullUrl(uuid.v4().toLowerCase()),
-    resource: createPractitionerRole(
-      hl7AgentPerson,
-      fhirPractitioner.fullUrl,
-      fhirOrganization.fullUrl
-    )
-  }
-  return {fhirPractitioner, fhirOrganization, fhirPractitionerRole}
 }

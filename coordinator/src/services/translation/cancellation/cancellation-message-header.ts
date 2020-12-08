@@ -1,19 +1,23 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
+import * as uuid from "uuid"
+import {getFullUrl} from "./common"
 
 export function createMessageHeader(
   messageId: string,
   patientReference: string,
   medicationRequestReference: string,
-  representedOrganizationId: string,
+  representedOrganizationReference: string,
   cancelRequestId: string
 ): fhir.MessageHeader {
   const fhirMessageHeader = {resourceType: "MessageHeader"} as fhir.MessageHeader
+
+  fhirMessageHeader.id = uuid.v4.toString().toLowerCase()
 
   fhirMessageHeader.extension = getExtension(messageId)
 
   fhirMessageHeader.eventCoding = getEventCoding()
 
-  fhirMessageHeader.destination = getDestination(representedOrganizationId)
+  fhirMessageHeader.destination = getDestination(representedOrganizationReference)
 
   fhirMessageHeader.sender = getNhsdSender()
 
@@ -21,7 +25,7 @@ export function createMessageHeader(
 
   fhirMessageHeader.response = getMessageHeaderResponse(cancelRequestId)
 
-  fhirMessageHeader.focus = createFocus(patientReference, medicationRequestReference)
+  fhirMessageHeader.focus = createFocus(getFullUrl(patientReference), getFullUrl(medicationRequestReference))
 
   return fhirMessageHeader
 }

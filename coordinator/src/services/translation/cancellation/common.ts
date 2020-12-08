@@ -6,13 +6,20 @@ import {InvalidValueError} from "../../../models/errors/processing-errors"
 export function convertName(hl7Name: Array<core.Name> | core.Name): Array<fhir.HumanName> {
   const nameArray = toArray(hl7Name)
   return nameArray.map(name => {
-    const convertedName = {
-      family: name.family._text,
+    let convertedName = {
       given: toArray(name.given).map(given => given._text),
       prefix: toArray(name.prefix).map(prefix => prefix._text)
     } as fhir.HumanName
 
-    return name._attributes?.use ? {...convertedName, use: convertNameUse(name._attributes.use)} : convertedName
+    convertedName = name._attributes?.use
+      ? {...convertedName, use: convertNameUse(name._attributes.use)}
+      : convertedName
+
+    convertedName = name.family?._text
+      ? {...convertedName, family: name.family._text}
+      : convertedName
+
+    return convertedName
   })
 }
 
@@ -95,4 +102,8 @@ function convertTelecomUse(fhirTelecomUse: string): string {
   default:
     throw new InvalidValueError(`Unhandled telecom use '${fhirTelecomUse}'.`)
   }
+}
+
+export function getFullUrl(uuid: string):string {
+  return `urn:uuid:${uuid}`
 }

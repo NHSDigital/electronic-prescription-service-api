@@ -1,7 +1,8 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
-import {convertTelecom} from "./common"
+import {convertTelecom, getFullUrl} from "./common"
 import {toArray} from "../common"
+import * as uuid from "uuid"
 
 export function createPractitionerRole(
   hl7AgentPerson: AgentPerson,
@@ -9,6 +10,8 @@ export function createPractitionerRole(
   organizationReference: string,
 ): fhir.PractitionerRole {
   const practitionerRole = {resourceType: "PractitionerRole"} as fhir.PractitionerRole
+
+  practitionerRole.id = uuid.v4.toString().toLowerCase()
 
   practitionerRole.identifier = [{
     system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -41,5 +44,5 @@ function createJobRoleNameCode(practitionerCode: string) {
 }
 
 function createReference(referenceString: string) {
-  return {reference: referenceString}
+  return {reference: getFullUrl(referenceString)}
 }

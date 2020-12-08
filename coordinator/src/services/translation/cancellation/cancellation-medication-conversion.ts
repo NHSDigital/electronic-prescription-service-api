@@ -6,14 +6,18 @@ import {
 } from "../../../models/hl7-v3/hl7-v3-spine-response"
 import {convertHL7V3DateTimeStringToISODateTime} from "../common"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
+import * as uuid from "uuid"
+import {getFullUrl} from "./common"
 
 export function createMedicationRequest(
   cancellationResponse: CancellationResponse,
-  responsiblePartyPractitionerRoleId: string,
-  patientId: string,
-  authorPractitionerRoleId: string
+  responsiblePartyPractitionerRoleReference: string,
+  patientReference: string,
+  authorPractitionerRoleReference: string
 ): fhir.MedicationRequest {
   const medicationRequest = {resourceType: "MedicationRequest"} as fhir.MedicationRequest
+
+  medicationRequest.id = uuid.v4.toString().toLowerCase()
 
   const pertinentInformation3 = cancellationResponse.pertinentInformation3
   const cancellationCode = pertinentInformation3.pertinentResponse.value._attributes.code
@@ -26,7 +30,7 @@ export function createMedicationRequest(
 
   medicationRequest.extension = createMedicationRequestExtensions(
     prescriptionStatusCode, prescriptionStatusDisplay,
-    responsiblePartyPractitionerRoleId
+    getFullUrl(responsiblePartyPractitionerRoleReference)
   )
 
   const pertinentInformation1 = cancellationResponse.pertinentInformation1
@@ -38,15 +42,13 @@ export function createMedicationRequest(
 
   medicationRequest.medicationCodeableConcept = getMedicationCodeableConcept()
 
-  medicationRequest.subject = createSubject(patientId)
+  medicationRequest.subject = createReference(patientReference)
 
   medicationRequest.authoredOn = convertHL7V3DateTimeStringToISODateTime(
     cancellationResponse.effectiveTime._attributes.value
   )
 
-  medicationRequest.requester = {
-    reference: authorPractitionerRoleId
-  }
+  medicationRequest.requester = createReference(authorPractitionerRoleReference)
 
   const pertinentInformation2 = cancellationResponse.pertinentInformation2
   medicationRequest.groupIdentifier = getMedicationGroupIdentifier(pertinentInformation2)
@@ -192,10 +194,8 @@ function getMedicationCodeableConcept() {
   }
 }
 
-function createSubject(patientId: string) {
-  return {
-    reference: patientId
-  }
+function createReference(reference: string) {
+  return {reference: getFullUrl(reference)}
 }
 
 function getMedicationGroupIdentifier(pertinentInformation2: PertinentInformation2) {

@@ -26,11 +26,11 @@ describe("createPractitionerRole", () => {
   })
 
   test("has reference to Practitioner", () => {
-    expect(practitionerRole.practitioner.reference).toBe(practitionerReference)
+    expect(practitionerRole.practitioner.reference).toBe(`urn:uuid:${practitionerReference}`)
   })
 
   test("has reference to Organization", () => {
-    expect(practitionerRole.organization.reference).toBe(organizationReference)
+    expect(practitionerRole.organization.reference).toBe(`urn:uuid:${organizationReference}`)
   })
 
   test("has correct code", () => {
