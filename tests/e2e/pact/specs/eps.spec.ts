@@ -25,9 +25,6 @@ jestpact.pactWith(
         const apiPath = "/$prepare"
         const inputMessageStr = LosslessJson.stringify(inputMessage)
 
-        // remove display as this is both unstable and to be removed in future release
-        delete outputMessage["parameter"][2]
-
         const interaction: InteractionObject = {
           state: null,
           uponReceiving: `a request to prepare ${desc} message`,
