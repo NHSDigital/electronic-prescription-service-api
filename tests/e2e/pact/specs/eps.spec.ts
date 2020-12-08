@@ -237,9 +237,9 @@ jestpact.pactWith(
     }
 
     const testCases = [
-      [`a request to convert a FHIR message`, '/$convert'],
-      [`a request to prepare a message`, '/$prepare'],
-      [`a request to process a message to Spine`, '/$process-message'],
+      [`a request to convert an unauthorised message`, '/$convert'],
+      [`a request to prepare an unauthorised message`, '/$prepare'],
+      [`a request to process an unauthorised message`, '/$process-message'],
     ]
 
     describe("endpoint authentication e2e tests", () => {
