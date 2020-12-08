@@ -4,6 +4,8 @@ import * as practitioner from "../../../src/services/translation/prescription/pr
 import * as helpers from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
 import * as common from "../../../src/services/translation/common/getResourcesOfType"
+import {getMessageHeader} from "../../../src/services/translation/common/getResourcesOfType"
+import {MessageType} from "../../../src/routes/util"
 
 describe("getAgentPersonTelecom", () => {
   const roleTelecom: Array<fhir.ContactPoint> = [
@@ -118,15 +120,15 @@ describe("convertAuthor", () => {
   })
 
   test("includes a time or signatureText field for a message which isn't a cancellation", () => {
-    const isCancellation = false
-    const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest, isCancellation)
+    getMessageHeader(bundle).eventCoding.code = MessageType.PRESCRIPTION
+    const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
     expect(Object.keys(result)).toContain("time")
     expect(Object.keys(result)).toContain("signatureText")
   })
 
   test("doesn't include a time or signatureText field for a cancellation message", () => {
-    const isCancellation = true
-    const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest, isCancellation)
+    getMessageHeader(bundle).eventCoding.code = MessageType.CANCELLATION
+    const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
     expect(Object.keys(result)).not.toContain("time")
     expect(Object.keys(result)).not.toContain("signatureText")
   })
