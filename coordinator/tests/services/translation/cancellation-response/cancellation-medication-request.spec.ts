@@ -7,7 +7,7 @@ import {
 import {readXml} from "../../../../src/services/serialisation/xml"
 import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/spine-response"
 import {hasCorrectISOFormat} from "./test-helpers"
-import {CodeableConceptExtension} from "../../../../src/models/fhir/fhir-resources";
+import {CodeableConceptExtension} from "../../../../src/models/fhir/fhir-resources"
 
 describe("createMedicationRequest", () => {
   const actualError = TestResources.spineResponses.cancellationError

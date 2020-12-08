@@ -6,17 +6,13 @@ import {InvalidValueError} from "../../../models/errors/processing-errors"
 export function convertName(hl7Name: Array<core.Name> | core.Name): Array<fhir.HumanName> {
   const nameArray = toArray(hl7Name)
   return nameArray.map(name => {
-    const returnValue = {
+    const convertedName = {
       family: name.family._text,
       given: toArray(name.given).map(given => given._text),
       prefix: toArray(name.prefix).map(prefix => prefix._text)
     } as fhir.HumanName
 
-    if (name._attributes?.use) {
-      returnValue.use = convertNameUse(name._attributes.use)
-    }
-
-    return returnValue
+    return name._attributes?.use ? {...convertedName, use: convertNameUse(name._attributes.use)} : convertedName
   })
 }
 
@@ -42,13 +38,13 @@ function convertNameUse(hl7NameUse: string): string {
 export function convertAddress(hl7Address: Array<core.Address> | core.Address): Array<fhir.Address> {
   const addressArray = toArray(hl7Address)
   return addressArray.map(address => {
-    const toReturn = {
+    const convertedAddress = {
       line: address.streetAddressLine.map(addressLine => addressLine._text),
       postalCode: address.postalCode._text
     }
     return address._attributes?.use
-      ? Object.assign(toReturn, {use: convertAddressUse(address._attributes.use)})
-      : toReturn
+      ? {...convertedAddress, use: convertAddressUse(address._attributes.use)}
+      : convertedAddress
   })
 }
 
