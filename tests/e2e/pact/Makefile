@@ -18,9 +18,6 @@ publish-pacts:
 verify-pacts:
 	npm run verify-pacts
 	npm run verify-convert-pacts
-ifneq (sandbox, $(findstring sandbox,$(APIGEE_ENVIRONMENT)))
-	npm run verify-auth-pacts
-endif
 
 generate-postman-collection:
 	mkdir -p ../postman/collections
