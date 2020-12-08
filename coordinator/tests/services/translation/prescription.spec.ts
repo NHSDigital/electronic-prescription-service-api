@@ -91,6 +91,22 @@ describe("PertinentInformation2", () => {
     )
   })
 
+  test("Missing payload is handled", () => {
+    delete fhirCommunicationRequests[0].payload
+    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const firstPertinentInformation2 = pertinentInformation2Array[0]
+    const pertinentInformation1 = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
+    expect(pertinentInformation1).toBeFalsy()
+  })
+
+  test("Missing contentString is handled", () => {
+    fhirCommunicationRequests[0].payload.push({contentString: undefined})
+    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const firstPertinentInformation2 = pertinentInformation2Array[0]
+    const pertinentInformation1 = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
+    expect(pertinentInformation1).toBeFalsy()
+  })
+
   function ensureAtLeast2MedicationRequests(bundle: fhir.Bundle) {
     const fhirMedicationRequests = getMedicationRequests(bundle)
     if (fhirMedicationRequests.length == 1)

@@ -5,7 +5,7 @@ import {getMedicationRequests} from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues} from "./util"
 import {CourseOfTherapyTypeCode, getCourseOfTherapyTypeCode} from "../translation/prescription/course-of-therapy-type"
-import {getExtensionForUrlOrNull} from "../translation/common"
+import {getExtensionForUrlOrNull, isTruthy} from "../translation/common"
 
 // Validate Status
 export function getStatusCode(validation: Array<errors.ValidationError>): number {
@@ -45,7 +45,7 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
   const medicationRequests = getMedicationRequests(bundle)
   const identicalValueErrors = fhirPaths
     .map((fhirPath) => verifyIdenticalForAllMedicationRequests(bundle, medicationRequests, fhirPath))
-    .filter(Boolean)
+    .filter(isTruthy)
 
   const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
   const isRepeatDispensing = courseOfTherapyTypeCode === CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
