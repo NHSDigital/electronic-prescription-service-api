@@ -295,7 +295,7 @@ export interface MessageHeaderResponse {
 export interface MessageHeader extends Resource {
   resourceType: "MessageHeader"
   eventCoding: Coding
-  sender: IdentifierReference<Organization>  // TODO: this might also be a ReferenceReference
+  sender: IdentifierReference<Organization> | Reference<Organization>
   source: MessageHeaderSource
   focus: Array<Reference<Resource>>
   extension?: Array<IdentifierExtension | CodingExtension>

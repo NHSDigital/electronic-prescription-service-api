@@ -42,14 +42,13 @@ function convertNameUse(hl7NameUse: string): string {
 export function convertAddress(hl7Address: Array<core.Address> | core.Address): Array<fhir.Address> {
   const addressArray = toArray(hl7Address)
   return addressArray.map(address => {
-    return address._attributes?.use ? {
-      use: convertAddressUse(address._attributes.use),
-      line: address.streetAddressLine.map(addressLine => addressLine._text),
-      postalCode: address.postalCode._text
-    } : {
+    const toReturn = {
       line: address.streetAddressLine.map(addressLine => addressLine._text),
       postalCode: address.postalCode._text
     }
+    return address._attributes?.use
+      ? Object.assign(toReturn, {use: convertAddressUse(address._attributes.use)})
+      : toReturn
   })
 }
 

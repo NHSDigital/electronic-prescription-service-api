@@ -35,5 +35,6 @@ function convertCodeSystem(codeValue: string): string {
   } else if (codeValue.length === 7 && !isNaN(Number(codeValue))) {
     return "https://fhir.hl7.org.uk/Id/gphc-number"
   }
+  //NMC
   throw new InvalidValueError(`unrecognised prescriber code ${codeValue}`)
 }

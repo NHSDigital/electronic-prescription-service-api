@@ -7,6 +7,7 @@ import {
 import {readXml} from "../../../../src/services/serialisation/xml"
 import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/spine-response"
 import {hasCorrectISOFormat} from "./test-helpers"
+import {CodeableConceptExtension} from "../../../../src/models/fhir/fhir-resources";
 
 describe("createMedicationRequest", () => {
   const actualError = TestResources.spineResponses.cancellationError
@@ -30,7 +31,7 @@ describe("createMedicationRequest", () => {
       medicationRequest.extension,
       "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-PrescriptionStatusHistory",
       "MedicationRequest.extension"
-    ) as fhir.ExtensionExtension
+    ) as fhir.ExtensionExtension<CodeableConceptExtension>
     expect(extension).not.toBeUndefined()
     const medicationStatusHistoryExtension = getExtensionForUrlOrNull(
       extension.extension,
