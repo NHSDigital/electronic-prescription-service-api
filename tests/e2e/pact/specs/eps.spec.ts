@@ -194,5 +194,65 @@ jestpact.pactWith(
           .expect(400)
       })
     })
+
+    const createUnauthorisedInteraction = (desc: string, path: string): InteractionObject => {
+      return {
+        state: null,
+        uponReceiving: desc,
+        withRequest: {
+          headers: {
+            "Content-Type": "application/fhir+json; fhirVersion=4.0",
+            "Authorization": "I am a bad access token"
+          },
+          method: "POST",
+          path: path,
+          body: {}
+        },
+        willRespondWith: {
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: {
+            resourceType: "OperationOutcome",
+            issue: [
+              {
+                severity: "error",
+                code: "forbidden",
+                details: {
+                  coding: [
+                    {
+                      system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+                      version: "1",
+                      code: "ACCESS_DENIED",
+                      display: "Invalid access token"
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          status: 401
+        }
+      }
+    }
+
+    const testCases = [
+      [`a request to convert a FHIR message`, '/$convert'],
+      [`a request to prepare a message`, '/$prepare'],
+      [`a request to process a message to Spine`, '/$process-message'],
+    ]
+
+    describe("endpoint authentication e2e tests", () => {
+        test.each(testCases)('should reject unauthorised requests', async (desc: string, apiPath: string) => {
+          const interaction: InteractionObject = createUnauthorisedInteraction(desc, apiPath)
+          await provider.addInteraction(interaction)
+          await client()
+            .post(apiPath)
+            .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+            .set('Authorization', `I am a bad access token`)
+            .send({})
+            .expect(401)
+        })
+    })
   }
 )
