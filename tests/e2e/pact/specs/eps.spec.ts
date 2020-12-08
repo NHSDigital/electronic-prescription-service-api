@@ -62,6 +62,7 @@ jestpact.pactWith(
 
         /**
          * Don't think we need any of this
+         * was an A/C on AEA-702, alternative solutions welcomed
          */
         /*if (process.env.APIGEE_ENVIRONMENT && !process.env.APIGEE_ENVIRONMENT.includes("sandbox")) {
 
