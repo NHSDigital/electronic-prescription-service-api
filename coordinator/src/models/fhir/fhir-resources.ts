@@ -35,24 +35,24 @@ export type ControlledDrugExtension = ExtensionExtension<StringExtension | Codin
 
 export type PrescriptionStatusHistoryExtension = ExtensionExtension<CodingExtension>
 
-export interface MedicationRequest extends Resource {
+interface BaseMedicationRequest extends Resource {
   resourceType: "MedicationRequest"
   identifier: Array<Identifier>
-  category?: Array<CodeableConcept>
   medicationCodeableConcept: CodeableConcept
   subject: Reference<Patient>
   authoredOn: string
   requester: Reference<PractitionerRole>
   groupIdentifier: MedicationRequestGroupIdentifier
+  dispenseRequest: MedicationRequestDispenseRequest
+}
+
+export interface MedicationRequest extends BaseMedicationRequest {
+  category?: Array<CodeableConcept>
   courseOfTherapyType: CodeableConcept
   dosageInstruction: Array<Dosage>
-  dispenseRequest: MedicationRequestDispenseRequest
   extension: Array<IdentifierExtension | ReferenceExtension<PractitionerRole> | CodingExtension
-    | CodeableConceptExtension | RepeatInformationExtension | ControlledDrugExtension
-    | PrescriptionStatusHistoryExtension>
+    | CodeableConceptExtension | RepeatInformationExtension | ControlledDrugExtension>
   statusReason?: CodeableConcept
-  status?: string
-  intent?: string
 }
 
 export interface CodeableConcept {
@@ -297,34 +297,8 @@ export interface MessageHeader extends Resource {
   response?: MessageHeaderResponse
 }
 
-export interface MedicationRequestOutcome extends Resource {
-  resourceType: "MedicationRequest"
+export interface MedicationRequestOutcome extends BaseMedicationRequest {
   extension: Array<ReferenceExtension<PractitionerRole> | PrescriptionStatusHistoryExtension>
-  identifier: Array<Identifier>
   status: string
-  statusReason?: CodeableConcept
   intent: string
-  medicationCodeableConcept: CodeableConcept
-  subject: Reference<Patient>
-  authoredOn: string
-  requester: Reference<PractitionerRole>
-  groupIdentifier: MedicationRequestGroupIdentifier
-  dispenseRequest: MedicationRequestDispenseRequest
 }
-
-// export interface MedicationRequest extends Resource {
-//   resourceType: "MedicationRequest"
-//   identifier: Array<Identifier>
-//   category?: Array<CodeableConcept>
-//   medicationCodeableConcept: CodeableConcept
-//   subject: Reference<Patient>
-//   authoredOn: string
-//   requester: Reference<PractitionerRole>
-//   groupIdentifier: MedicationRequestGroupIdentifier
-//   courseOfTherapyType: CodeableConcept
-//   dosageInstruction: Array<Dosage>
-//   dispenseRequest: MedicationRequestDispenseRequest
-//   extension: Array<IdentifierExtension | ReferenceExtension<PractitionerRole> | CodingExtension
-//     | CodeableConceptExtension | RepeatInformationExtension | ControlledDrugExtension
-//     | PrescriptionStatusHistoryExtension>
-// }
