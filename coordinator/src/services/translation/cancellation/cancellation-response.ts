@@ -10,7 +10,7 @@ import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertHL7V3DateTimeStringToISODateTime} from "../common"
 
 export function translateSpineCancelResponseIntoBundle(cancellationResponse: CancellationResponse): fhir.Bundle {
-  const bundle = new fhir.Bundle()
+  const bundle = {resourceType: "Bundle"} as fhir.Bundle
 
   bundle.type = "message"
   bundle.identifier = {

@@ -5,15 +5,15 @@ export abstract class Resource {
   resourceType: string
 }
 
-export class Bundle extends Resource {
-  readonly resourceType = "Bundle"
+export interface Bundle extends Resource {
+  resourceType: "Bundle"
   identifier?: Identifier
   entry?: Array<BundleEntry>
   type?: string
   timestamp?: string
 }
 
-class BundleEntry {
+interface BundleEntry {
   fullUrl?: string
   resource?: Resource
 }
