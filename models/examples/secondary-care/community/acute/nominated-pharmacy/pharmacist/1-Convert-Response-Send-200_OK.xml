@@ -235,7 +235,7 @@
               <seperatableInd value="false"/>
               <pertinentPrescriptionType classCode="OBS" moodCode="EVN">
                 <code code="PT" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                <value code="0108" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.25"/>
+                <value code="1008" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.25"/>
               </pertinentPrescriptionType>
             </pertinentInformation4>
           </pertinentPrescription>
