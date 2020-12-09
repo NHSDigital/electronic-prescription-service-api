@@ -3,7 +3,7 @@ import {getExtensionForUrlOrNull} from "../../../../src/services/translation/com
 import * as fhir from "../../../../src/models/fhir/fhir-resources"
 import {
   createMedicationRequest
-} from "../../../../src/services/translation/cancellation/cancellation-medication-conversion"
+} from "../../../../src/services/translation/cancellation/cancellation-medication-request"
 import {readXml} from "../../../../src/services/serialisation/xml"
 import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/spine-response"
 import {hasCorrectISOFormat} from "./test-helpers"

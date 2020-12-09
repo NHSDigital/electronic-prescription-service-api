@@ -9,25 +9,17 @@ export function createMessageHeader(
   representedOrganizationReference: string,
   cancelRequestId: string
 ): fhir.MessageHeader {
-  const fhirMessageHeader = {resourceType: "MessageHeader"} as fhir.MessageHeader
-
-  fhirMessageHeader.id = uuid.v4.toString().toLowerCase()
-
-  fhirMessageHeader.extension = getExtension(messageId)
-
-  fhirMessageHeader.eventCoding = getEventCoding()
-
-  fhirMessageHeader.destination = getDestination(representedOrganizationReference)
-
-  fhirMessageHeader.sender = getNhsdSender()
-
-  fhirMessageHeader.source = getSource()
-
-  fhirMessageHeader.response = getMessageHeaderResponse(cancelRequestId)
-
-  fhirMessageHeader.focus = createFocus(getFullUrl(patientReference), getFullUrl(medicationRequestReference))
-
-  return fhirMessageHeader
+  return {
+    resourceType: "MessageHeader",
+    id: uuid.v4.toString().toLowerCase(),
+    extension: getExtension(messageId),
+    eventCoding: getEventCoding(),
+    destination: getDestination(representedOrganizationReference),
+    sender: getNhsdSender(),
+    source: getSource(),
+    response: getMessageHeaderResponse(cancelRequestId),
+    focus: createFocus(patientReference, medicationRequestReference)
+  }
 }
 
 function getEventCoding() {
@@ -51,10 +43,10 @@ function getNhsdSender() {
 function createFocus(patientReference: string, medicationRequestReference: string) {
   return [
     {
-      reference: patientReference
+      reference: getFullUrl(patientReference)
     },
     {
-      reference: medicationRequestReference
+      reference: getFullUrl(medicationRequestReference)
     }
   ]
 }

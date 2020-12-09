@@ -8,25 +8,16 @@ import {convertHL7V3DateStringToISODate} from "../common"
 import * as uuid from "uuid"
 
 export function createPatient(hl7Patient: hl7.Patient): fhir.Patient {
-  const patient = {resourceType: "Patient"} as fhir.Patient
-
-  patient.id = uuid.v4.toString().toLowerCase()
-
-  patient.identifier = createNhsNumberIdentifier(hl7Patient.id._attributes.extension)
-
-  patient.name = convertName(hl7Patient.patientPerson.name)
-
-  patient.gender = convertGender(hl7Patient.patientPerson.administrativeGenderCode)
-
-  patient.birthDate = convertHL7V3DateStringToISODate(hl7Patient.patientPerson.birthTime._attributes.value)
-
-  patient.address = convertAddress(hl7Patient.addr)
-
-  const hl7PatientCareProvision = hl7Patient.patientPerson.playedProviderPatient.subjectOf.patientCareProvision
-  const hl7OdsCode = hl7PatientCareProvision.responsibleParty.healthCareProvider.id._attributes.extension
-  patient.generalPractitioner = createGeneralPractitioner(hl7OdsCode)
-
-  return patient
+  return {
+    resourceType: "Patient",
+    id: uuid.v4.toString().toLowerCase(),
+    identifier: createNhsNumberIdentifier(hl7Patient.id._attributes.extension),
+    name: convertName(hl7Patient.patientPerson.name),
+    gender: convertGender(hl7Patient.patientPerson.administrativeGenderCode),
+    birthDate: convertHL7V3DateStringToISODate(hl7Patient.patientPerson.birthTime._attributes.value),
+    address: convertAddress(hl7Patient.addr),
+    generalPractitioner: createGeneralPractitioner(hl7Patient)
+  }
 }
 
 function createNhsNumberIdentifier(nhsNumber: string) {
@@ -67,7 +58,9 @@ export function convertGender(hl7Gender: codes.SexCode): string {
   }
 }
 
-function createGeneralPractitioner(hl7OdsCode: string): Array<IdentifierReference<Organization>> {
+function createGeneralPractitioner(hl7Patient: hl7.Patient): Array<IdentifierReference<Organization>> {
+  const hl7PatientCareProvision = hl7Patient.patientPerson.playedProviderPatient.subjectOf.patientCareProvision
+  const hl7OdsCode = hl7PatientCareProvision.responsibleParty.healthCareProvider.id._attributes.extension
   return [{
     identifier: {
       "system": "https://fhir.nhs.uk/Id/ods-organization-code",

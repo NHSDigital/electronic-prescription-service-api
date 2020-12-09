@@ -1,6 +1,6 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import {CancellationResponse} from "../../../models/hl7-v3/hl7-v3-spine-response"
-import {createMedicationRequest} from "./cancellation-medication-conversion"
+import {createMedicationRequest} from "./cancellation-medication-request"
 import {createPatient} from "./cancellation-patient"
 import {createPractitioner} from "./cancellation-practitioner"
 import {createOrganization} from "./cancellation-organization"
