@@ -1,7 +1,6 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertName} from "./common"
-import {InvalidValueError} from "../../../models/errors/processing-errors"
 import * as uuid from "uuid"
 
 export function createPractitioner(hl7AgentPerson: hl7.AgentPerson): fhir.Practitioner  {
@@ -18,29 +17,26 @@ export function createPractitioner(hl7AgentPerson: hl7.AgentPerson): fhir.Practi
 }
 
 function getIdentifier(personId: string) {
+  let formattedPersonId = personId.toUpperCase()
+  if (formattedPersonId.match(/^G\d{7}$/)) {
+    formattedPersonId = formattedPersonId.substring(1,7)
+  }
   return [
     {
-      "system": convertCodeSystem(personId),
-      "value": personId
+      "system": getSystemForCode(formattedPersonId),
+      "value": formattedPersonId
     }
   ]
 }
 
-function convertCodeSystem(codeValue: string): string {
-  if (codeValue.startsWith("G6") || codeValue.startsWith("G7")) {
+function getSystemForCode(codeValue: string): string {
+  const NURSE_PROFESSIONAL_CODE_REGEX = /\d{2}[A-Z]\d{4}[A-Z]/
+  if (codeValue.length === 6 && codeValue.startsWith("6")) {
     return "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code"
-  } else if (codeValue.startsWith("G")) {
-    return "https://fhir.hl7.org.uk/Id/gmp-number"
-  } else if (codeValue.startsWith("C")) {
-    return "https://fhir.hl7.org.uk/Id/gmc-number"
-  } else if (codeValue.length === 6 && !isNaN(Number(codeValue))) {
+  } else if (codeValue.length === 6) {
     return "https://fhir.hl7.org.uk/Id/din-number"
-  } else if (codeValue.length === 7 && !isNaN(Number(codeValue))) {
-    return "https://fhir.hl7.org.uk/Id/gphc-number"
+  } else if (codeValue.match(NURSE_PROFESSIONAL_CODE_REGEX)) {
+    return "https://fhir.hl7.org.uk/Id/nmc-number"
   }
-  //NMC
-  // 6 digits DIN
-  // 6 digits starting with 6 call spurious code
-  // 8 characters, starting with G - remove G and drop last character, call DIN
-  throw new InvalidValueError(`unrecognised prescriber code ${codeValue}`)
+  return "https://fhir.hl7.org.uk/Id/professional-code"
 }
