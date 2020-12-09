@@ -10,15 +10,37 @@ import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertHL7V3DateTimeStringToISODateTime} from "../common"
 
 export function translateSpineCancelResponseIntoBundle(cancellationResponse: CancellationResponse): fhir.Bundle {
-  const bundle = {resourceType: "Bundle"} as fhir.Bundle
-
-  bundle.type = "message"
-  bundle.identifier = {
-    system: "https://tools.ietf.org/html/rfc4122",
-    value: cancellationResponse.id._attributes.root.toLowerCase()
+  return {
+    resourceType: "Bundle",
+    type: "message",
+    identifier: createBundleIdentifier(cancellationResponse),
+    timestamp: convertHL7V3DateTimeStringToISODateTime(cancellationResponse.effectiveTime._attributes.value),
+    entry: createBundleEntries(cancellationResponse)
   }
-  bundle.timestamp = convertHL7V3DateTimeStringToISODateTime(cancellationResponse.effectiveTime._attributes.value)
+}
 
+function convertAgentPerson(hl7AgentPerson: AgentPerson) {
+  const fhirPractitioner = createPractitioner(hl7AgentPerson)
+
+  //TODO: dont duplicate organization blocks
+  const fhirOrganization = createOrganization(hl7AgentPerson.representedOrganization)
+
+  const fhirPractitionerRole = createPractitionerRole(
+    hl7AgentPerson,
+    fhirPractitioner.id,
+    fhirOrganization.id
+  )
+  return {fhirPractitioner, fhirOrganization, fhirPractitionerRole}
+}
+
+function convertResourceToBundleEntry(resource: fhir.Resource) {
+  return {
+    resource,
+    fullUrl: `urn:uuid:${resource.id}`
+  }
+}
+
+function createBundleEntries(cancellationResponse: CancellationResponse) {
   const fhirPatient = createPatient(cancellationResponse.recordTarget.Patient)
 
   const convertedResponsibleParty = convertAgentPerson(cancellationResponse.responsibleParty.AgentPerson)
@@ -50,7 +72,8 @@ export function translateSpineCancelResponseIntoBundle(cancellationResponse: Can
     cancelRequestId
   )
 
-  bundle.entry = [
+  //TODO some error types need to have extra resources in bundle (e.g. dispenser info), add them
+  return [
     fhirMessageHeader,
     fhirMedicationRequest,
     fhirPatient,
@@ -61,27 +84,11 @@ export function translateSpineCancelResponseIntoBundle(cancellationResponse: Can
     fhirResponsiblePartyOrganization,
     fhirResponsiblePartyPractitionerRole
   ].map(convertResourceToBundleEntry)
-  //TODO some error types need to have extra resources in bundle (e.g. dispenser info), add them
-  return bundle
 }
 
-function convertAgentPerson(hl7AgentPerson: AgentPerson) {
-  const fhirPractitioner = createPractitioner(hl7AgentPerson)
-
-  //TODO: dont duplicate organization blocks
-  const fhirOrganization = createOrganization(hl7AgentPerson.representedOrganization)
-
-  const fhirPractitionerRole = createPractitionerRole(
-    hl7AgentPerson,
-    fhirPractitioner.id,
-    fhirOrganization.id
-  )
-  return {fhirPractitioner, fhirOrganization, fhirPractitionerRole}
-}
-
-function convertResourceToBundleEntry(resource: fhir.Resource) {
+function createBundleIdentifier(cancellationResponse: CancellationResponse) {
   return {
-    resource,
-    fullUrl: `urn:uuid:${resource.id}`
+    system: "https://tools.ietf.org/html/rfc4122",
+    value: cancellationResponse.id._attributes.root.toLowerCase()
   }
 }
