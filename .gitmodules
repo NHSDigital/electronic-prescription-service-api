@@ -1,4 +1,5 @@
 [submodule "validator"]
-    path = validator
-    url = https://github.com/NHSDigital/validation-service-fhir-r4.git
-    branch = master
+  path = validator
+  url = https://github.com/NHSDigital/validation-service-fhir-r4.git
+  branch = master
+  
