@@ -24,6 +24,7 @@ jestpact.pactWith(
       test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (desc: string, inputMessage: Bundle, outputMessage: Parameters) => {
         const apiPath = "/$prepare"
         const inputMessageStr = LosslessJson.stringify(inputMessage)
+
         const interaction: InteractionObject = {
           state: null,
           uponReceiving: `a request to prepare ${desc} message`,
@@ -61,6 +62,7 @@ jestpact.pactWith(
 
         /**
          * Don't think we need any of this
+         * was an A/C on AEA-702, alternative solutions welcomed
          */
         /*if (process.env.APIGEE_ENVIRONMENT && !process.env.APIGEE_ENVIRONMENT.includes("sandbox")) {
 
