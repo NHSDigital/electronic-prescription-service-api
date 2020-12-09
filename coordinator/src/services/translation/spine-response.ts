@@ -1,11 +1,7 @@
 import * as fhir from "../../models/fhir/fhir-resources"
 import {CodeableConcept} from "../../models/fhir/fhir-resources"
 import {readXml} from "../serialisation/xml"
-import {
-  acknowledgementCodes,
-  AsyncMCCI, PORX50101,
-  SyncMCCI
-} from "../../models/hl7-v3/hl7-v3-spine-response"
+import {acknowledgementCodes, AsyncMCCI, PORX50101, SyncMCCI} from "../../models/hl7-v3/hl7-v3-spine-response"
 import {SpineDirectResponse} from "../../models/spine"
 import {translateSpineCancelResponseIntoBundle} from "./cancellation/cancellation-response"
 import {toArray} from "./common"
@@ -20,45 +16,35 @@ interface TranslatedSpineResponse {
   statusCode: number
 }
 
-function isCancellationErrorResponse(message:string) {
-  const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(message)
-  if (cancelResponse) {
-    const parsedMsg = readXml(cancelResponse[0]) as PORX50101
-    const parsedMsgAcknowledgement = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:acknowledgement"]
-    const ackCode = parsedMsgAcknowledgement._attributes.typeCode
-    const statusCode = translateAcknowledgementTypeCodeToStatusCode(ackCode)
-    if(statusCode == 400) {
-      return parsedMsg
-    }
-  }
-  return undefined
-}
-
 export function translateToFhir<T>(message: SpineDirectResponse<T>): TranslatedSpineResponse {
   const hl7BodyString = message.body.toString()
-  const {statusCode, errorCodes} = getStatusCodeAndErrorCodes(hl7BodyString)
-  const cancellationErrorResponse = isCancellationErrorResponse(hl7BodyString)
-  if (cancellationErrorResponse) {
-    const actEvent = cancellationErrorResponse["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
-    const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
+  const {cancelStatusCode, fhirBundle} = getCancelStatusCodeAndErrorCodes(hl7BodyString)
+  const successfulOperationOutcome: fhir.OperationOutcome = {
+    resourceType: "OperationOutcome",
+    issue: [{
+      code: "informational",
+      severity: "information",
+      diagnostics: hl7BodyString
+    }]
+  }
+  if (cancelStatusCode <= 299) {
     return {
-      body: translateSpineCancelResponseIntoBundle(cancellationResponse),
-      statusCode: 400
+      body: successfulOperationOutcome,
+      statusCode: cancelStatusCode
     }
-  } else if (statusCode <= 299) {
-    const successfulOperationOutcome: fhir.OperationOutcome = {
-      resourceType: "OperationOutcome",
-      issue: [{
-        code: "informational",
-        severity: "information",
-        diagnostics: hl7BodyString
-      }]
+  } else if (fhirBundle) {
+    return {
+      body: fhirBundle,
+      statusCode: cancelStatusCode
     }
+  }
+  const {statusCode, errorCodes} = getStatusCodeAndErrorCodes(hl7BodyString)
+  if (statusCode <= 299) {
     return {
       body: successfulOperationOutcome,
       statusCode
     }
-  } else {
+  } else if (errorCodes) {
     const operationOutcomeIssues = errorCodes.length
       ? errorCodes.map(errorCode => createErrorOperationOutcomeIssue(hl7BodyString, errorCode))
       : [createErrorOperationOutcomeIssue(hl7BodyString)]
@@ -85,25 +71,45 @@ function createErrorOperationOutcomeIssue(
   }
 }
 
+function getCancelStatusCodeAndErrorCodes(hl7Message: string): {
+  cancelStatusCode: number,
+  fhirBundle: fhir.Bundle
+} {
+  const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(hl7Message)
+  if (cancelResponse) {
+    const parsedMsg = readXml(cancelResponse[0]) as PORX50101
+    const actEvent = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
+    const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
+    return {
+      cancelStatusCode: translateAcknowledgementTypeCodeToStatusCode(getCancelResponseTypeCode(parsedMsg)),
+      fhirBundle: translateSpineCancelResponseIntoBundle(cancellationResponse)
+    }
+  }
+  return {
+    cancelStatusCode: 400,
+    fhirBundle: undefined
+  }
+}
+
 function getStatusCodeAndErrorCodes(hl7Message: string): {
   statusCode: number,
   errorCodes: Array<CodeableConcept>
 } {
   const asyncMCCI = ASYNC_SPINE_RESPONSE_MCCI_REGEX.exec(hl7Message)
   if (asyncMCCI) {
-    const messageBody = asyncMCCI[0]
+    const parsedMsg = readXml(asyncMCCI[0]) as AsyncMCCI
     return {
-      statusCode: translateAcknowledgementTypeCodeToStatusCode(getAsyncAcknowledgementTypeCode(messageBody)),
-      errorCodes: translateAsyncSpineResponseErrorCodes(messageBody)
+      statusCode: translateAcknowledgementTypeCodeToStatusCode(getAsyncAcknowledgementTypeCode(parsedMsg)),
+      errorCodes: translateAsyncSpineResponseErrorCodes(parsedMsg)
     }
   }
 
   const syncMCCI = SYNC_SPINE_RESPONSE_MCCI_REGEX.exec(hl7Message)
   if (syncMCCI) {
-    const messageBody = syncMCCI[0]
+    const parsedMsg = readXml(syncMCCI[0]) as SyncMCCI
     return {
-      statusCode: translateAcknowledgementTypeCodeToStatusCode(getSyncAcknowledgementTypeCode(messageBody)),
-      errorCodes: translateSyncSpineResponseErrorCodes(messageBody)
+      statusCode: translateAcknowledgementTypeCodeToStatusCode(getSyncAcknowledgementTypeCode(parsedMsg)),
+      errorCodes: translateSyncSpineResponseErrorCodes(parsedMsg)
     }
   }
 
@@ -113,16 +119,19 @@ function getStatusCodeAndErrorCodes(hl7Message: string): {
   }
 }
 
-function getSyncAcknowledgementTypeCode(syncWrapper: string): acknowledgementCodes {
-  const parsedMsg = readXml(syncWrapper) as SyncMCCI
-  const acknowledgementElm = parsedMsg.MCCI_IN010000UK13.acknowledgement
+function getSyncAcknowledgementTypeCode(syncWrapper: SyncMCCI): acknowledgementCodes {
+  const acknowledgementElm = syncWrapper.MCCI_IN010000UK13.acknowledgement
   return acknowledgementElm._attributes.typeCode
 }
 
-function getAsyncAcknowledgementTypeCode(asyncWrapper: string): acknowledgementCodes {
-  const parsedMsg = readXml(asyncWrapper) as AsyncMCCI
-  const acknowledgementElm = parsedMsg["hl7:MCCI_IN010000UK13"]["hl7:acknowledgement"]
+function getAsyncAcknowledgementTypeCode(asyncWrapper: AsyncMCCI): acknowledgementCodes {
+  const acknowledgementElm = asyncWrapper["hl7:MCCI_IN010000UK13"]["hl7:acknowledgement"]
   return acknowledgementElm._attributes.typeCode
+}
+
+function getCancelResponseTypeCode(parsedMsg: PORX50101) {
+  const parsedMsgAcknowledgement = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:acknowledgement"]
+  return parsedMsgAcknowledgement._attributes.typeCode
 }
 
 function translateAcknowledgementTypeCodeToStatusCode(acknowledgementTypeCode: acknowledgementCodes): number {
@@ -136,9 +145,8 @@ function translateAcknowledgementTypeCodeToStatusCode(acknowledgementTypeCode: a
   }
 }
 
-function translateSyncSpineResponseErrorCodes(syncWrapper: string): Array<fhir.CodeableConcept> {
-  const parsedMsg = readXml(syncWrapper) as SyncMCCI
-  const acknowledgementDetailElm = parsedMsg.MCCI_IN010000UK13.acknowledgement.acknowledgementDetail
+function translateSyncSpineResponseErrorCodes(syncWrapper: SyncMCCI): Array<fhir.CodeableConcept> {
+  const acknowledgementDetailElm = syncWrapper.MCCI_IN010000UK13.acknowledgement.acknowledgementDetail
   if (!acknowledgementDetailElm) {
     return []
   }
@@ -154,9 +162,8 @@ function translateSyncSpineResponseErrorCodes(syncWrapper: string): Array<fhir.C
   })
 }
 
-function translateAsyncSpineResponseErrorCodes(asyncWrapper: string): Array<fhir.CodeableConcept> {
-  const parsedMsg = readXml(asyncWrapper) as AsyncMCCI
-  const reasonElm = parsedMsg["hl7:MCCI_IN010000UK13"]["hl7:ControlActEvent"]["hl7:reason"]
+function translateAsyncSpineResponseErrorCodes(asyncWrapper: AsyncMCCI): Array<fhir.CodeableConcept> {
+  const reasonElm = asyncWrapper["hl7:MCCI_IN010000UK13"]["hl7:ControlActEvent"]["hl7:reason"]
   if (!reasonElm) {
     return []
   }
