@@ -8,8 +8,7 @@ export function createOrganization(hl7Organization: hl7.Organization): fhir.Orga
 
   fhirOrganization.id = uuid.v4.toString().toLowerCase()
 
-  const hl7OrganizationId = hl7Organization.id._attributes.extension
-  fhirOrganization.identifier = getIdentifier(hl7OrganizationId)
+  fhirOrganization.identifier = getIdentifier(hl7Organization.id._attributes.extension)
 
   // confirmed with Chris that at this moment in time we will hardcode to RO197 with a fixed display
   fhirOrganization.type = getFixedOrganizationType()
@@ -20,7 +19,15 @@ export function createOrganization(hl7Organization: hl7.Organization): fhir.Orga
 
   fhirOrganization.address = convertAddress(hl7Organization.addr)
 
-  return fhirOrganization
+  return {
+    resourceType: "Organization",
+    id: uuid.v4.toString().toLowerCase(),
+    identifier: getIdentifier(hl7Organization.id._attributes.extension),
+    type: getFixedOrganizationType(),
+    name: hl7Organization.name._text,
+    telecom: convertTelecom(hl7Organization.telecom),
+    address: convertAddress(hl7Organization.addr)
+  }
 }
 
 function getIdentifier(organizationId: string) {

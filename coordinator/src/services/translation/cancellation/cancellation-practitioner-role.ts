@@ -4,31 +4,27 @@ import {convertTelecom, getFullUrl} from "./common"
 import {toArray} from "../common"
 import * as uuid from "uuid"
 
+function createRoleProfileIdentifier(hl7AgentPerson: AgentPerson) {
+  return [{
+    system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
+    value: hl7AgentPerson.id._attributes.extension
+  }]
+}
+
 export function createPractitionerRole(
   hl7AgentPerson: AgentPerson,
   practitionerReference: string,
   organizationReference: string,
 ): fhir.PractitionerRole {
-  const practitionerRole = {resourceType: "PractitionerRole"} as fhir.PractitionerRole
-
-  practitionerRole.id = uuid.v4.toString().toLowerCase()
-
-  practitionerRole.identifier = [{
-    system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
-    value: hl7AgentPerson.id._attributes.extension
-  }]
-
-  practitionerRole.practitioner = createReference(practitionerReference)
-
-  practitionerRole.organization = createReference(organizationReference)
-
-  practitionerRole.code = createJobRoleNameCode(hl7AgentPerson.code._attributes.code)
-
-  if (toArray(hl7AgentPerson.telecom)[0]._attributes) {
-    practitionerRole.telecom = convertTelecom(hl7AgentPerson.telecom)
+  return {
+    resourceType: "PractitionerRole",
+    id: uuid.v4.toString().toLowerCase(),
+    identifier: createRoleProfileIdentifier(hl7AgentPerson),
+    practitioner: createReference(practitionerReference),
+    organization: createReference(organizationReference),
+    code: createJobRoleNameCode(hl7AgentPerson.code._attributes.code),
+    telecom: toArray(hl7AgentPerson.telecom)[0]._attributes ? convertTelecom(hl7AgentPerson.telecom) : undefined
   }
-
-  return practitionerRole
 }
 
 function createJobRoleNameCode(practitionerCode: string) {

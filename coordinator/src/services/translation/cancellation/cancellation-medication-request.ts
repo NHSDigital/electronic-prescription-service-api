@@ -14,11 +14,7 @@ export function createMedicationRequest(
   responsiblePartyPractitionerRoleReference: string,
   patientReference: string,
   authorPractitionerRoleReference: string
-): fhir.MedicationRequest {
-  const medicationRequest = {resourceType: "MedicationRequest"} as fhir.MedicationRequest
-
-  medicationRequest.id = uuid.v4.toString().toLowerCase()
-
+): fhir.MedicationRequestOutcome {
   const pertinentInformation3 = cancellationResponse.pertinentInformation3
   const cancellationCode = pertinentInformation3.pertinentResponse.value._attributes.code
   const cancellationDisplay = pertinentInformation3.pertinentResponse.value._attributes.displayName
@@ -28,36 +24,28 @@ export function createMedicationRequest(
     medicationRequestStatus
   } = getPrescriptionStatusInformation(cancellationCode, cancellationDisplay)
 
-  medicationRequest.extension = createMedicationRequestExtensions(
-    prescriptionStatusCode, prescriptionStatusDisplay,
-    getFullUrl(responsiblePartyPractitionerRoleReference)
-  )
-
-  const pertinentInformation1 = cancellationResponse.pertinentInformation1
-  medicationRequest.identifier = createIdentifier(pertinentInformation1)
-
-  medicationRequest.status = medicationRequestStatus
-
-  medicationRequest.intent = "order"
-
-  medicationRequest.medicationCodeableConcept = getMedicationCodeableConcept()
-
-  medicationRequest.subject = createReference(patientReference)
-
-  medicationRequest.authoredOn = convertHL7V3DateTimeStringToISODateTime(
-    cancellationResponse.effectiveTime._attributes.value
-  )
-
-  medicationRequest.requester = createReference(authorPractitionerRoleReference)
-
-  const pertinentInformation2 = cancellationResponse.pertinentInformation2
-  medicationRequest.groupIdentifier = getMedicationGroupIdentifier(pertinentInformation2)
-
-  if (medicationRequestHasDispenser()) {
-    medicationRequest.dispenseRequest = getDispenseRequest(cancellationResponse)
+  return {
+    resourceType: "MedicationRequest",
+    id: uuid.v4.toString().toLowerCase(),
+    extension: createMedicationRequestExtensions(
+      prescriptionStatusCode,
+      prescriptionStatusDisplay,
+      responsiblePartyPractitionerRoleReference,
+    ),
+    identifier: createIdentifier(cancellationResponse.pertinentInformation1),
+    status: medicationRequestStatus,
+    //TODO: investigate statusReason from hl7 message
+    // see https://simplifier.net/ukdigitalmedicine/valueset-dm-medicationrequest-status-reason
+    intent: "order",
+    medicationCodeableConcept: getMedicationCodeableConcept(),
+    subject: createReference(patientReference),
+    authoredOn: convertHL7V3DateTimeStringToISODateTime(
+      cancellationResponse.effectiveTime._attributes.value
+    ),
+    requester: createReference(authorPractitionerRoleReference),
+    groupIdentifier: getMedicationGroupIdentifier(cancellationResponse.pertinentInformation2),
+    dispenseRequest: medicationRequestHasDispenser() ? getDispenseRequest(cancellationResponse) : undefined
   }
-
-  return medicationRequest
 }
 
 function createPrescriptionStatusHistoryExtension(
@@ -84,7 +72,7 @@ function createResponsiblePractitionerExtension(
   return {
     "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
     "valueReference": {
-      "reference": practitionerRoleId
+      "reference": getFullUrl(practitionerRoleId)
     }
   }
 }

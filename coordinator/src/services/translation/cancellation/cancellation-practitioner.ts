@@ -3,17 +3,13 @@ import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertName} from "./common"
 import * as uuid from "uuid"
 
-export function createPractitioner(hl7AgentPerson: hl7.AgentPerson): fhir.Practitioner  {
-  const fhirPractitioner = {resourceType: "Practitioner"} as fhir.Practitioner
-
-  fhirPractitioner.id = uuid.v4.toString().toLowerCase()
-
-  const hl7PersonId = hl7AgentPerson.agentPerson.id._attributes.extension
-  fhirPractitioner.identifier = getIdentifier(hl7PersonId)
-
-  fhirPractitioner.name = convertName(hl7AgentPerson.agentPerson.name)
-
-  return fhirPractitioner
+export function createPractitioner(hl7AgentPerson: hl7.AgentPerson): fhir.Practitioner {
+  return {
+    resourceType: "Practitioner",
+    id: uuid.v4.toString().toLowerCase(),
+    identifier: getIdentifier(hl7AgentPerson.agentPerson.id._attributes.extension),
+    name: convertName(hl7AgentPerson.agentPerson.name)
+  }
 }
 
 function getIdentifier(personId: string) {
