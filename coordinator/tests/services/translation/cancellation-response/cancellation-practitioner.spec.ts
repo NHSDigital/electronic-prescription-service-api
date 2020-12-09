@@ -17,7 +17,7 @@ describe("createPractitioner", () => {
     expect(author.identifier.length).toBe(1)
     const sdsIdentifier = getIdentifierValueForSystem(
       author.identifier,
-      "https://fhir.hl7.org.uk/Id/gphc-number",
+      "https://fhir.hl7.org.uk/Id/professional-code",
       "author.identifier")
     expect(sdsIdentifier).toBe("4428981")
   })

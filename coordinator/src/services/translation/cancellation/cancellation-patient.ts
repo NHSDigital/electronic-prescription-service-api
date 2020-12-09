@@ -20,7 +20,7 @@ export function createPatient(hl7Patient: hl7.Patient): fhir.Patient {
   }
 }
 
-function createNhsNumberIdentifier(nhsNumber: string) {
+function createNhsNumberIdentifier(nhsNumber: string): Array<fhir.PatientIdentifier> {
   return [
     {
       extension:  [
@@ -40,7 +40,7 @@ function createNhsNumberIdentifier(nhsNumber: string) {
       system: "https://fhir.nhs.uk/Id/nhs-number",
       value: nhsNumber
     }
-  ] as Array<fhir.Identifier>
+  ]
 }
 
 export function convertGender(hl7Gender: codes.SexCode): string {

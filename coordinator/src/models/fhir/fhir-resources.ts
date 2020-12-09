@@ -22,7 +22,6 @@ export interface Identifier {
   use?: string
   system?: string
   value?: string
-  extension?: Array<CodeableConceptExtension | IdentifierExtension>
 }
 
 export interface MedicationRequestGroupIdentifier extends Identifier {
@@ -98,9 +97,13 @@ export interface SimpleQuantity {
   code: string
 }
 
+export interface PatientIdentifier extends Identifier {
+  extension: Array<CodeableConceptExtension>
+}
+
 export class Patient extends Resource {
   readonly resourceType = "Patient"
-  identifier?: Array<Identifier>
+  identifier?: Array<PatientIdentifier>
   name?: Array<HumanName>
   telecom?: Array<ContactPoint>
   gender?: string
