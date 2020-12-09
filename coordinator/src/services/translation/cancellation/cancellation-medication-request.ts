@@ -34,8 +34,6 @@ export function createMedicationRequest(
     ),
     identifier: createIdentifier(cancellationResponse.pertinentInformation1),
     status: medicationRequestStatus,
-    //TODO: investigate statusReason from hl7 message
-    // see https://simplifier.net/ukdigitalmedicine/valueset-dm-medicationrequest-status-reason
     intent: "order",
     medicationCodeableConcept: getMedicationCodeableConcept(),
     subject: createReference(patientReference),

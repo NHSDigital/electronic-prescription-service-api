@@ -34,7 +34,10 @@ describe("convertOrganizationAndProviderLicense", () => {
         code: MessageType.PRESCRIPTION
       },
       sender: {
-        reference: ""
+        identifier: {
+          system: "",
+          value: ""
+        }
       },
       source: {
         endpoint: ""
