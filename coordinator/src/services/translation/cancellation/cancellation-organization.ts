@@ -1,7 +1,7 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertAddress, convertTelecom} from "./common"
-import * as uuid from "uuid";
+import * as uuid from "uuid"
 
 export function createOrganization(hl7Organization: hl7.Organization): fhir.Organization {
   const fhirOrganization = {resourceType: "Organization"} as fhir.Organization

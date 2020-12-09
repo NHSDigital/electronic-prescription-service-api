@@ -2,7 +2,7 @@ import * as fhir from "../../../models/fhir/fhir-resources"
 import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertName} from "./common"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
-import * as uuid from "uuid";
+import * as uuid from "uuid"
 
 export function createPractitioner(hl7AgentPerson: hl7.AgentPerson): fhir.Practitioner  {
   const fhirPractitioner = {resourceType: "Practitioner"} as fhir.Practitioner
@@ -39,5 +39,8 @@ function convertCodeSystem(codeValue: string): string {
     return "https://fhir.hl7.org.uk/Id/gphc-number"
   }
   //NMC
+  // 6 digits DIN
+  // 6 digits starting with 6 call spurious code
+  // 8 characters, starting with G - remove G and drop last character, call DIN
   throw new InvalidValueError(`unrecognised prescriber code ${codeValue}`)
 }
