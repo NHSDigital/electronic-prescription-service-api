@@ -7,9 +7,13 @@ import {convertIsoDateStringToHl7V3Date, getIdentifierValueForSystem, onlyElemen
 function convertPatientToProviderPatient(
   patient: fhir.Patient
 ) {
+  const UNKNOWN_GP_ODS_CODE = "V81999"
   const generalPractitionerId = onlyElement(patient.generalPractitioner, "Patient.generalPractitioner")
   const hl7V3HealthCareProvider = new peoplePlaces.HealthCareProvider()
-  hl7V3HealthCareProvider.id = new codes.SdsOrganizationIdentifier(generalPractitionerId.identifier.value)
+  const GpIdValue = generalPractitionerId.identifier.value
+  hl7V3HealthCareProvider.id = GpIdValue === UNKNOWN_GP_ODS_CODE
+    ? new codes.IdNullFlavor("UNK")
+    : new codes.SdsOrganizationIdentifier(GpIdValue)
   const hl7V3PatientCareProvision = new peoplePlaces.PatientCareProvision(
     codes.PatientCareProvisionTypeCode.PRIMARY_CARE
   )
