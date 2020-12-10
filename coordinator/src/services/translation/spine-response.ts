@@ -54,12 +54,12 @@ function getStatusCodeAndOperationOutcome(hl7Message: string): {
   }
   const asyncMCCI = ASYNC_SPINE_RESPONSE_MCCI_REGEX.exec(hl7Message)
   if (asyncMCCI) {
-    return getAsyncStuff(hl7Message, asyncMCCI)
+    return getAsyncResponseAndErrorCodes(hl7Message, asyncMCCI)
   }
 
   const syncMCCI = SYNC_SPINE_RESPONSE_MCCI_REGEX.exec(hl7Message)
   if (syncMCCI) {
-    return getSyncStuff(hl7Message, syncMCCI)
+    return getSyncResponseAndErrorCodes(hl7Message, syncMCCI)
   }
 
   return {
@@ -71,8 +71,8 @@ function getStatusCodeAndOperationOutcome(hl7Message: string): {
   }
 }
 
-function getAsyncStuff(hl7Message: string, asyncMCCI: RegExpExecArray) {
-  return aReallyAwesomeSoundingEagle<AsyncMCCI>(
+function getAsyncResponseAndErrorCodes(hl7Message: string, asyncMCCI: RegExpExecArray) {
+  return getFhirResponseAndErrorCodes<AsyncMCCI>(
     hl7Message,
     readXml(asyncMCCI[0]) as AsyncMCCI,
     getAsyncAcknowledgementTypeCode,
@@ -80,8 +80,8 @@ function getAsyncStuff(hl7Message: string, asyncMCCI: RegExpExecArray) {
   )
 }
 
-function getSyncStuff(hl7Message: string, syncMCCI: RegExpExecArray) {
-  return aReallyAwesomeSoundingEagle<SyncMCCI>(
+function getSyncResponseAndErrorCodes(hl7Message: string, syncMCCI: RegExpExecArray) {
+  return getFhirResponseAndErrorCodes<SyncMCCI>(
     hl7Message,
     readXml(syncMCCI[0]) as SyncMCCI,
     getSyncAcknowledgementTypeCode,
@@ -89,7 +89,7 @@ function getSyncStuff(hl7Message: string, syncMCCI: RegExpExecArray) {
   )
 }
 
-function aReallyAwesomeSoundingEagle<T extends AsyncMCCI | SyncMCCI>(
+function getFhirResponseAndErrorCodes<T extends AsyncMCCI | SyncMCCI>(
   hl7Message: string,
   MCCIWrapper: T,
   getStatusCodeFn: (async: T) => acknowledgementCodes,
