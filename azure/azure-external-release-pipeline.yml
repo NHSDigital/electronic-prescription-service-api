@@ -19,7 +19,6 @@ pool:
 variables:
   - template: project.yml
   - group: pact
-  - group: variable-group-read
   - group: eps-ref-smoke-tests
 
 extends:
