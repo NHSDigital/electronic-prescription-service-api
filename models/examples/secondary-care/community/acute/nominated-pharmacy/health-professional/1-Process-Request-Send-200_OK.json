@@ -1,17 +1,17 @@
 {
   "resourceType": "Bundle",
-  "id": "0A1FD9EF-A3D5-4E95-84CD-552070A03086",
+  "id": "F190329A-3854-4A31-9FF5-417969F2A40D",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "0A1FD9EF-A3D5-4E95-84CD-552070A03086"
+    "value": "F190329A-3854-4A31-9FF5-417969F2A40D"
   },
   "type": "message",
   "entry": [
     {
-      "fullUrl": "urn:uuid:0A1FD9EF-A3D5-4E95-84CD-552070A03086",
+      "fullUrl": "urn:uuid:F190329A-3854-4A31-9FF5-417969F2A40D",
       "resource": {
         "resourceType": "MessageHeader",
-        "id": "0A1FD9EF-A3D5-4E95-84CD-552070A03086",
+        "id": "F190329A-3854-4A31-9FF5-417969F2A40D",
         "eventCoding": {
           "system": "https://fhir.nhs.uk/CodeSystem/message-event",
           "code": "prescription-order",
