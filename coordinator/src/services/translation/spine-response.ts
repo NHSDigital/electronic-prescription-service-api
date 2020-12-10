@@ -1,5 +1,4 @@
 import * as fhir from "../../models/fhir/fhir-resources"
-import {CodeableConcept} from "../../models/fhir/fhir-resources"
 import {readXml} from "../serialisation/xml"
 import {acknowledgementCodes, AsyncMCCI, PORX50101, SyncMCCI} from "../../models/hl7-v3/hl7-v3-spine-response"
 import {SpineDirectResponse} from "../../models/spine"
@@ -18,43 +17,30 @@ interface TranslatedSpineResponse {
 
 export function translateToFhir<T>(message: SpineDirectResponse<T>): TranslatedSpineResponse {
   const hl7BodyString = message.body.toString()
-  const {cancelStatusCode, fhirBundle} = getCancelStatusCodeAndErrorCodes(hl7BodyString)
-  const successfulOperationOutcome: fhir.OperationOutcome = {
-    resourceType: "OperationOutcome",
-    issue: [{
-      code: "informational",
-      severity: "information",
-      diagnostics: hl7BodyString
-    }]
+  const temp = getCancelStatusCodeFhirBundle(hl7BodyString)
+  let statusCode = temp.statusCode
+  let fhirResponse: fhir.Bundle | fhir.OperationOutcome = temp.fhirResponse
+  if (!fhirResponse) {
+    const temp = getStatusCodeAndOperationOutcome(hl7BodyString)
+    statusCode = temp.statusCode
+    fhirResponse = temp.fhirResponse
   }
-  if (cancelStatusCode <= 299) {
-    return {
-      body: successfulOperationOutcome,
-      statusCode: cancelStatusCode
-    }
-  } else if (fhirBundle) {
-    return {
-      body: fhirBundle,
-      statusCode: cancelStatusCode
-    }
-  }
-  const {statusCode, errorCodes} = getStatusCodeAndErrorCodes(hl7BodyString)
   if (statusCode <= 299) {
     return {
-      body: successfulOperationOutcome,
-      statusCode
+      body: {
+        resourceType: "OperationOutcome",
+        issue: [{
+          code: "informational",
+          severity: "information",
+          diagnostics: hl7BodyString
+        }]
+      },
+      statusCode: statusCode
     }
-  } else if (errorCodes) {
-    const operationOutcomeIssues = errorCodes.length
-      ? errorCodes.map(errorCode => createErrorOperationOutcomeIssue(hl7BodyString, errorCode))
-      : [createErrorOperationOutcomeIssue(hl7BodyString)]
-    const errorOperationOutcome: fhir.OperationOutcome = {
-      resourceType: "OperationOutcome",
-      issue: operationOutcomeIssues
-    }
+  } else if (fhirResponse) {
     return {
-      body: errorOperationOutcome,
-      statusCode
+      body: fhirResponse,
+      statusCode: statusCode
     }
   }
 }
@@ -71,9 +57,9 @@ function createErrorOperationOutcomeIssue(
   }
 }
 
-function getCancelStatusCodeAndErrorCodes(hl7Message: string): {
-  cancelStatusCode: number,
-  fhirBundle: fhir.Bundle
+function getCancelStatusCodeFhirBundle(hl7Message: string): {
+  statusCode: number,
+  fhirResponse: fhir.Bundle
 } {
   const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(hl7Message)
   if (cancelResponse) {
@@ -81,41 +67,76 @@ function getCancelStatusCodeAndErrorCodes(hl7Message: string): {
     const actEvent = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
     const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
     return {
-      cancelStatusCode: translateAcknowledgementTypeCodeToStatusCode(getCancelResponseTypeCode(parsedMsg)),
-      fhirBundle: translateSpineCancelResponseIntoBundle(cancellationResponse)
+      statusCode: translateAcknowledgementTypeCodeToStatusCode(getCancelResponseTypeCode(parsedMsg)),
+      fhirResponse: translateSpineCancelResponseIntoBundle(cancellationResponse)
     }
   }
   return {
-    cancelStatusCode: 400,
-    fhirBundle: undefined
+    statusCode: 400,
+    fhirResponse: undefined
   }
 }
 
-function getStatusCodeAndErrorCodes(hl7Message: string): {
+function arase<T extends AsyncMCCI | SyncMCCI>(
+  hl7Message: string,
+  MCCIWrapper: T,
+  getStatusCodeFn: (async: T) => acknowledgementCodes,
+  getErrorCodes: (async: T) => Array<fhir.CodeableConcept>
+): {
   statusCode: number,
-  errorCodes: Array<CodeableConcept>
+  fhirResponse: fhir.OperationOutcome
+} {
+  const errorCodes = getErrorCodes(MCCIWrapper)
+  const operationOutcomeIssues = errorCodes.length
+    ? errorCodes.map(errorCode => createErrorOperationOutcomeIssue(hl7Message, errorCode))
+    : [createErrorOperationOutcomeIssue(hl7Message)]
+  return {
+    statusCode: translateAcknowledgementTypeCodeToStatusCode(getStatusCodeFn(MCCIWrapper)),
+    fhirResponse: {
+      resourceType: "OperationOutcome",
+      issue: operationOutcomeIssues
+    }
+  }
+}
+
+function getAsyncStuff(hl7Message: string, asyncMCCI: RegExpExecArray) {
+  return arase<AsyncMCCI>(
+    hl7Message,
+    readXml(asyncMCCI[0]) as AsyncMCCI,
+    getAsyncAcknowledgementTypeCode,
+    translateAsyncSpineResponseErrorCodes
+  )
+}
+
+function getSyncStuff(hl7Message: string, syncMCCI: RegExpExecArray) {
+  return arase<SyncMCCI>(
+    hl7Message,
+    readXml(syncMCCI[0]) as SyncMCCI,
+    getSyncAcknowledgementTypeCode,
+    translateSyncSpineResponseErrorCodes
+  )
+}
+
+function getStatusCodeAndOperationOutcome(hl7Message: string): {
+  statusCode: number,
+  fhirResponse: fhir.OperationOutcome
 } {
   const asyncMCCI = ASYNC_SPINE_RESPONSE_MCCI_REGEX.exec(hl7Message)
   if (asyncMCCI) {
-    const parsedMsg = readXml(asyncMCCI[0]) as AsyncMCCI
-    return {
-      statusCode: translateAcknowledgementTypeCodeToStatusCode(getAsyncAcknowledgementTypeCode(parsedMsg)),
-      errorCodes: translateAsyncSpineResponseErrorCodes(parsedMsg)
-    }
+    return getAsyncStuff(hl7Message, asyncMCCI)
   }
 
   const syncMCCI = SYNC_SPINE_RESPONSE_MCCI_REGEX.exec(hl7Message)
   if (syncMCCI) {
-    const parsedMsg = readXml(syncMCCI[0]) as SyncMCCI
-    return {
-      statusCode: translateAcknowledgementTypeCodeToStatusCode(getSyncAcknowledgementTypeCode(parsedMsg)),
-      errorCodes: translateSyncSpineResponseErrorCodes(parsedMsg)
-    }
+    return getSyncStuff(hl7Message, syncMCCI)
   }
 
   return {
     statusCode: 400,
-    errorCodes: []
+    fhirResponse: {
+      resourceType: "OperationOutcome",
+      issue: [createErrorOperationOutcomeIssue(hl7Message)]
+    }
   }
 }
 
