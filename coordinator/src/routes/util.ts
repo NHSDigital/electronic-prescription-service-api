@@ -4,7 +4,7 @@ import * as fhir from "../models/fhir/fhir-resources"
 import {OperationOutcome, Resource} from "../models/fhir/fhir-resources"
 import * as requestValidator from "../services/validation/bundle-validator"
 import * as errors from "../models/errors/validation-errors"
-import {translateToOperationOutcome} from "../services/translation/spine-response"
+import {translateToFhir} from "../services/translation/spine-response"
 import * as LosslessJson from "lossless-json"
 import {getMessageHeader} from "../services/translation/common/getResourcesOfType"
 import axios from "axios"
@@ -25,8 +25,8 @@ export function handleResponse<T>(
       .code(spineResponse.statusCode)
       .header("Content-Type", "application/fhir+json; fhirVersion=4.0")
   } else {
-    const translatedSpineResponse = translateToOperationOutcome(spineResponse)
-    return responseToolkit.response(translatedSpineResponse.operationOutcome)
+    const translatedSpineResponse = translateToFhir(spineResponse)
+    return responseToolkit.response(translatedSpineResponse.body)
       .code(translatedSpineResponse.statusCode)
       .header("Content-Type", "application/fhir+json; fhirVersion=4.0")
   }
