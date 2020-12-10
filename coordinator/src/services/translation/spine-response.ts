@@ -17,14 +17,7 @@ interface TranslatedSpineResponse {
 
 export function translateToFhir<T>(message: SpineDirectResponse<T>): TranslatedSpineResponse {
   const hl7BodyString = message.body.toString()
-  const temp = getCancelStatusCodeFhirBundle(hl7BodyString)
-  let statusCode = temp.statusCode
-  let fhirResponse: fhir.Bundle | fhir.OperationOutcome = temp.fhirResponse
-  if (!fhirResponse) {
-    const temp = getStatusCodeAndOperationOutcome(hl7BodyString)
-    statusCode = temp.statusCode
-    fhirResponse = temp.fhirResponse
-  }
+  const {statusCode, fhirResponse} = getStatusCodeAndOperationOutcome(hl7BodyString)
   if (statusCode <= 299) {
     return {
       body: {
@@ -45,21 +38,9 @@ export function translateToFhir<T>(message: SpineDirectResponse<T>): TranslatedS
   }
 }
 
-function createErrorOperationOutcomeIssue(
-  hl7Message: string,
-  details?: fhir.CodeableConcept
-): fhir.OperationOutcomeIssue {
-  return {
-    code: "invalid",
-    severity: "error",
-    diagnostics: hl7Message,
-    details: details
-  }
-}
-
-function getCancelStatusCodeFhirBundle(hl7Message: string): {
+function getStatusCodeAndOperationOutcome(hl7Message: string): {
   statusCode: number,
-  fhirResponse: fhir.Bundle
+  fhirResponse: fhir.OperationOutcome | fhir.Bundle
 } {
   const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(hl7Message)
   if (cancelResponse) {
@@ -71,13 +52,44 @@ function getCancelStatusCodeFhirBundle(hl7Message: string): {
       fhirResponse: translateSpineCancelResponseIntoBundle(cancellationResponse)
     }
   }
+  const asyncMCCI = ASYNC_SPINE_RESPONSE_MCCI_REGEX.exec(hl7Message)
+  if (asyncMCCI) {
+    return getAsyncStuff(hl7Message, asyncMCCI)
+  }
+
+  const syncMCCI = SYNC_SPINE_RESPONSE_MCCI_REGEX.exec(hl7Message)
+  if (syncMCCI) {
+    return getSyncStuff(hl7Message, syncMCCI)
+  }
+
   return {
     statusCode: 400,
-    fhirResponse: undefined
+    fhirResponse: {
+      resourceType: "OperationOutcome",
+      issue: [createErrorOperationOutcomeIssue(hl7Message)]
+    }
   }
 }
 
-function arase<T extends AsyncMCCI | SyncMCCI>(
+function getAsyncStuff(hl7Message: string, asyncMCCI: RegExpExecArray) {
+  return aReallyAwesomeSoundingEagle<AsyncMCCI>(
+    hl7Message,
+    readXml(asyncMCCI[0]) as AsyncMCCI,
+    getAsyncAcknowledgementTypeCode,
+    translateAsyncSpineResponseErrorCodes
+  )
+}
+
+function getSyncStuff(hl7Message: string, syncMCCI: RegExpExecArray) {
+  return aReallyAwesomeSoundingEagle<SyncMCCI>(
+    hl7Message,
+    readXml(syncMCCI[0]) as SyncMCCI,
+    getSyncAcknowledgementTypeCode,
+    translateSyncSpineResponseErrorCodes
+  )
+}
+
+function aReallyAwesomeSoundingEagle<T extends AsyncMCCI | SyncMCCI>(
   hl7Message: string,
   MCCIWrapper: T,
   getStatusCodeFn: (async: T) => acknowledgementCodes,
@@ -99,44 +111,15 @@ function arase<T extends AsyncMCCI | SyncMCCI>(
   }
 }
 
-function getAsyncStuff(hl7Message: string, asyncMCCI: RegExpExecArray) {
-  return arase<AsyncMCCI>(
-    hl7Message,
-    readXml(asyncMCCI[0]) as AsyncMCCI,
-    getAsyncAcknowledgementTypeCode,
-    translateAsyncSpineResponseErrorCodes
-  )
-}
-
-function getSyncStuff(hl7Message: string, syncMCCI: RegExpExecArray) {
-  return arase<SyncMCCI>(
-    hl7Message,
-    readXml(syncMCCI[0]) as SyncMCCI,
-    getSyncAcknowledgementTypeCode,
-    translateSyncSpineResponseErrorCodes
-  )
-}
-
-function getStatusCodeAndOperationOutcome(hl7Message: string): {
-  statusCode: number,
-  fhirResponse: fhir.OperationOutcome
-} {
-  const asyncMCCI = ASYNC_SPINE_RESPONSE_MCCI_REGEX.exec(hl7Message)
-  if (asyncMCCI) {
-    return getAsyncStuff(hl7Message, asyncMCCI)
-  }
-
-  const syncMCCI = SYNC_SPINE_RESPONSE_MCCI_REGEX.exec(hl7Message)
-  if (syncMCCI) {
-    return getSyncStuff(hl7Message, syncMCCI)
-  }
-
+function createErrorOperationOutcomeIssue(
+  hl7Message: string,
+  details?: fhir.CodeableConcept
+): fhir.OperationOutcomeIssue {
   return {
-    statusCode: 400,
-    fhirResponse: {
-      resourceType: "OperationOutcome",
-      issue: [createErrorOperationOutcomeIssue(hl7Message)]
-    }
+    code: "invalid",
+    severity: "error",
+    diagnostics: hl7Message,
+    details: details
   }
 }
 
