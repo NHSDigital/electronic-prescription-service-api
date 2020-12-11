@@ -13,6 +13,8 @@ describe("Spine communication", () => {
     (spineRequest: SpineRequest) => `<wrap>${spineRequest.message}</wrap>`
   )
 
+  const nullLogger: () => void = () => void
+
   beforeEach(() => {
     moxios.install(axios)
   })
@@ -33,7 +35,7 @@ describe("Spine communication", () => {
       })
     })
 
-    const spineResponse = await requestHandler.send({message: "test", interactionId: "test2"})
+    const spineResponse = await requestHandler.send({message: "test", interactionId: "test2"}, nullLogger)
 
     expect(spineResponse.statusCode).toBe(202)
     expect(isPollable(spineResponse)).toBe(true)
@@ -46,7 +48,7 @@ describe("Spine communication", () => {
       request.respondWith({status: 400})
     })
 
-    const spineResponse = await requestHandler.send({message: "test", interactionId: "test2"})
+    const spineResponse = await requestHandler.send({message: "test", interactionId: "test2"}, nullLogger)
 
     expect(isPollable(spineResponse)).toBe(false)
     expect((spineResponse as SpineDirectResponse<string>).statusCode).toBe(400)
@@ -64,7 +66,7 @@ describe("Spine communication", () => {
       })
     })
 
-    const spineResponse = await requestHandler.poll("test")
+    const spineResponse = await requestHandler.poll("test", nullLogger)
 
     expect(spineResponse.statusCode).toBe(202)
     expect(isPollable(spineResponse)).toBe(true)
@@ -81,7 +83,7 @@ describe("Spine communication", () => {
       })
     })
 
-    const spineResponse = await requestHandler.send({message: "test", interactionId: "test2"})
+    const spineResponse = await requestHandler.send({message: "test", interactionId: "test2"}, nullLogger)
 
     expect(spineResponse.statusCode).toBe(200)
     expect(isDirect(spineResponse)).toBe(true)
@@ -98,7 +100,7 @@ describe("Spine communication", () => {
       })
     })
 
-    const spineResponse = await requestHandler.poll("test")
+    const spineResponse = await requestHandler.poll("test", nullLogger)
 
     expect(spineResponse.statusCode).toBe(200)
     expect(isPollable(spineResponse)).toBe(false)
@@ -110,7 +112,7 @@ describe("Spine communication", () => {
       request.respondWithTimeout()
     })
 
-    const spineResponse = await requestHandler.send({message: "test", interactionId: "test2"})
+    const spineResponse = await requestHandler.send({message: "test", interactionId: "test2"}, nullLogger)
 
     expect(isPollable(spineResponse)).toBe(false)
     expect((spineResponse as SpineDirectResponse<string>).statusCode).toBe(500)
