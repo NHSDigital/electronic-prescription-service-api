@@ -101,7 +101,7 @@ export const specification = [
 
 interface ExampleSpineResponse {
   response: SpineDirectResponse<string>
-  spineErrorCode: number | undefined
+  spineErrorCode: string | undefined
   acknowledgementCode: acknowledgementCodes
 }
 
@@ -125,7 +125,7 @@ const syncError: ExampleSpineResponse = {
     ),
     statusCode: 400
   },
-  spineErrorCode: 202,
+  spineErrorCode: "202",
   acknowledgementCode: "AR"
 }
 
@@ -137,7 +137,7 @@ const asyncError: ExampleSpineResponse = {
     ),
     statusCode: 400
   },
-  spineErrorCode: 5000,
+  spineErrorCode: "5000",
   acknowledgementCode: "AE"
 }
 
@@ -149,7 +149,7 @@ const syncMultipleError: ExampleSpineResponse = {
     ),
     statusCode: 400
   },
-  spineErrorCode: 202,
+  spineErrorCode: "202",
   acknowledgementCode: "AR"
 }
 
@@ -161,12 +161,25 @@ const asyncMultipleError: ExampleSpineResponse = {
     ),
     statusCode: 400
   },
-  spineErrorCode: 5000,
+  spineErrorCode: "5000",
+  acknowledgementCode: "AE"
+}
+
+const cancellationError: ExampleSpineResponse = {
+  response: {
+    body: fs.readFileSync(
+      path.join(__dirname, "./spine-responses/cancel_error.xml"),
+      "utf8"
+    ),
+    statusCode: 400
+  },
+  spineErrorCode: "0008",
   acknowledgementCode: "AE"
 }
 
 export const spineResponses = {
   success: asyncSuccess,
   singleErrors: [syncError, asyncError],
-  multipleErrors: [syncMultipleError, asyncMultipleError]
+  multipleErrors: [syncMultipleError, asyncMultipleError],
+  cancellationError: cancellationError
 }

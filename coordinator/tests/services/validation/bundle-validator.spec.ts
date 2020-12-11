@@ -73,8 +73,21 @@ describe("MedicationRequest checks", () => {
   })
 
   test("Should reject message where MedicationRequests have different dispenseRequest.performer", () => {
-    const performer = {identifier: {system: "system", value: "value"}}
-    const performerDiff = {identifier: {system: "system2", value: "value2"}}
+    const performerExtension = {valueReference: {}, url: {}} as fhir.ReferenceExtension<fhir.PractitionerRole>
+    const performer = {
+      identifier: {
+        system: "system",
+        value: "value"
+      },
+      extension: [performerExtension]
+    } as fhir.Performer
+    const performerDiff = {
+      identifier: {
+        system: "system2",
+        value: "value2"
+      },
+      extension: [performerExtension]
+    } as fhir.Performer
 
     medicationRequests.forEach(medicationRequest => medicationRequest.dispenseRequest.performer = performer)
     medicationRequests[3].dispenseRequest.performer = performerDiff
