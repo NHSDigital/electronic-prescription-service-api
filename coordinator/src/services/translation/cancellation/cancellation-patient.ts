@@ -69,6 +69,6 @@ function createGeneralPractitioner(hl7Patient: hl7.Patient): Array<IdentifierRef
     }}]
 }
 
-function isIdNullFlavor(value: unknown): value is codes.IdNullFlavor {
-  return (value as codes.IdNullFlavor)._attributes.nullFlavor !== undefined
+function isIdNullFlavor(value: unknown): value is codes.NullFlavor {
+  return (value as codes.NullFlavor)._attributes.nullFlavor !== undefined
 }

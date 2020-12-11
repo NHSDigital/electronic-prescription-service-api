@@ -12,7 +12,7 @@ function convertPatientToProviderPatient(
   const hl7V3HealthCareProvider = new peoplePlaces.HealthCareProvider()
   const GpIdValue = generalPractitionerId.identifier.value
   hl7V3HealthCareProvider.id = GpIdValue === UNKNOWN_GP_ODS_CODE
-    ? new codes.IdNullFlavor("UNK")
+    ? new codes.NullFlavor("UNK")
     : new codes.SdsOrganizationIdentifier(GpIdValue)
   const hl7V3PatientCareProvision = new peoplePlaces.PatientCareProvision(
     codes.PatientCareProvisionTypeCode.PRIMARY_CARE

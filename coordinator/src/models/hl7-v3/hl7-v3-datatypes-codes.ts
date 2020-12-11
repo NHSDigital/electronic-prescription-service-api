@@ -208,7 +208,7 @@ export class SdsOrganizationIdentifier extends Identifier<"1.2.826.0.1285.0.1.10
   }
 }
 
-export class IdNullFlavor{
+export class NullFlavor{
   _attributes: {
     nullFlavor: string
   }
