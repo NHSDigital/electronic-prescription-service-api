@@ -7,7 +7,7 @@ import {InvalidValueError, TooFewValuesError, TooManyValuesError} from "../../..
 // eslint-disable-next-line max-len
 const FHIR_DATE_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$/
 // eslint-disable-next-line max-len
-const FHIR_DATE_TIME_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$/
+const FHIR_DATE_TIME_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|([+-])((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$/
 
 export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, additionalContext?: string): T {
   if (!iterable) {
@@ -208,3 +208,32 @@ export function getNumericValueAsString(numericValue: string | number | Lossless
     return numericValue.toString()
   }
 }
+
+/* CANCELLATION */
+
+function convertHL7V3DateTimeToMoment(hl7Date: string) {
+  return moment(hl7Date, "YYYYMMDDhhmmss")
+}
+
+function convertMomentToISODateTime(moment: moment.Moment): string {
+  return moment.format("YYYY-MM-DD[T]hh:mm:ssZ")
+}
+
+export function convertHL7V3DateTimeStringToISODateTime(hl7Date: string): string {
+  const dateTimeMoment = convertHL7V3DateTimeToMoment(hl7Date)
+  return convertMomentToISODateTime(dateTimeMoment)
+}
+
+function convertHL7V3DateToMoment(hl7Date: string) {
+  return moment(hl7Date, "YYYYMMDD")
+}
+
+function convertMomentToISODate(moment: moment.Moment): string {
+  return moment.format("YYYY-MM-DD")
+}
+
+export function convertHL7V3DateStringToISODate(hl7Date: string): string {
+  const dateTimeMoment = convertHL7V3DateToMoment(hl7Date)
+  return convertMomentToISODate(dateTimeMoment)
+}
+

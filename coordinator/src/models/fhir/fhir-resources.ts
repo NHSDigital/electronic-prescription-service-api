@@ -5,13 +5,15 @@ export abstract class Resource {
   resourceType: string
 }
 
-export class Bundle extends Resource {
-  readonly resourceType = "Bundle"
+export interface Bundle extends Resource {
+  resourceType: "Bundle"
   identifier?: Identifier
   entry?: Array<BundleEntry>
+  type?: string
+  timestamp?: string
 }
 
-class BundleEntry {
+interface BundleEntry {
   fullUrl?: string
   resource?: Resource
 }
@@ -23,29 +25,30 @@ export interface Identifier {
 }
 
 export interface MedicationRequestGroupIdentifier extends Identifier {
-  extension: Array<IdentifierExtension>
+  extension?: Array<IdentifierExtension>
 }
 
-export interface RepeatInformationExtension extends Extension {
-  extension: Array<UnsignedIntExtension | DateTimeExtension>
-}
+export type RepeatInformationExtension = ExtensionExtension<UnsignedIntExtension | DateTimeExtension>
 
-export interface ControlledDrugExtension extends Extension {
-  extension: Array<StringExtension | CodingExtension>
-}
+export type ControlledDrugExtension = ExtensionExtension<StringExtension | CodingExtension>
 
-export interface MedicationRequest extends Resource {
+export type PrescriptionStatusHistoryExtension = ExtensionExtension<CodingExtension>
+
+interface BaseMedicationRequest extends Resource {
   resourceType: "MedicationRequest"
   identifier: Array<Identifier>
-  category?: Array<CodeableConcept>
   medicationCodeableConcept: CodeableConcept
   subject: Reference<Patient>
   authoredOn: string
   requester: Reference<PractitionerRole>
   groupIdentifier: MedicationRequestGroupIdentifier
+  dispenseRequest: MedicationRequestDispenseRequest
+}
+
+export interface MedicationRequest extends BaseMedicationRequest {
+  category?: Array<CodeableConcept>
   courseOfTherapyType: CodeableConcept
   dosageInstruction: Array<Dosage>
-  dispenseRequest: MedicationRequestDispenseRequest
   extension: Array<IdentifierExtension | ReferenceExtension<PractitionerRole> | CodingExtension
     | CodeableConceptExtension | RepeatInformationExtension | ControlledDrugExtension>
   statusReason?: CodeableConcept
@@ -75,11 +78,15 @@ export interface Dosage {
   patientInstruction?: string
 }
 
+export interface Performer extends IdentifierReference<Organization> {
+  extension: Array<ReferenceExtension<PractitionerRole>>
+}
+
 export interface MedicationRequestDispenseRequest {
-  extension: Array<CodingExtension | StringExtension>
-  quantity: SimpleQuantity
+  extension?: Array<CodingExtension | StringExtension>
+  quantity?: SimpleQuantity
   expectedSupplyDuration?: SimpleQuantity
-  performer: IdentifierReference<Organization>
+  performer: Performer
   validityPeriod?: Period
 }
 
@@ -90,9 +97,13 @@ export interface SimpleQuantity {
   code: string
 }
 
+export interface PatientIdentifier extends Identifier {
+  extension: Array<CodeableConceptExtension>
+}
+
 export class Patient extends Resource {
   readonly resourceType = "Patient"
-  identifier?: Array<Identifier>
+  identifier?: Array<PatientIdentifier>
   name?: Array<HumanName>
   telecom?: Array<ContactPoint>
   gender?: string
@@ -233,6 +244,10 @@ export interface DateTimeExtension extends Extension {
   valueDateTime: string
 }
 
+export interface ExtensionExtension<T extends Extension> extends Extension {
+  extension: Array<T>
+}
+
 class Signature {
   who: Reference<PractitionerRole>
   data: string
@@ -264,10 +279,29 @@ interface MessageHeaderSource {
   endpoint: string
 }
 
+interface MessageHeaderDestination {
+  endpoint: string
+  receiver: IdentifierReference<PractitionerRole | Organization | Practitioner>
+}
+
+export interface MessageHeaderResponse {
+  identifier: string
+  code: "ok" | "transient-error" | "fatal-error"
+}
+
 export interface MessageHeader extends Resource {
-  resourceType: "MessageHeader",
-  eventCoding: Coding,
-  sender: Reference<PractitionerRole>
+  resourceType: "MessageHeader"
+  eventCoding: Coding
+  sender: IdentifierReference<Organization>
   source: MessageHeaderSource
   focus: Array<Reference<Resource>>
+  extension?: Array<IdentifierExtension | CodingExtension>
+  destination?: Array<MessageHeaderDestination>
+  response?: MessageHeaderResponse
+}
+
+export interface MedicationRequestOutcome extends BaseMedicationRequest {
+  extension: Array<ReferenceExtension<PractitionerRole> | PrescriptionStatusHistoryExtension>
+  status: string
+  intent: string
 }
