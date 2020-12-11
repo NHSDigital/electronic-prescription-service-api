@@ -1,35 +1,26 @@
-import { Verifier } from "@pact-foundation/pact"
+import { VerifierV3 } from "@pact-foundation/pact"
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
-async function verify(): Promise<any> {
+async function verify(): Promise<any> { 
   const isLocal = process.env.PACT_PROVIDER_URL === "http://localhost:9000"
-  const verifier =  new Verifier({
+  const verifier =  new VerifierV3({
     publishVerificationResult: !isLocal,
     pactBrokerUrl: isLocal ? undefined : process.env.PACT_BROKER_URL,
     pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
     pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
-    consumerVersionSelectors: [
-      {
-        pacticipant: `${process.env.PACT_CONSUMER}+${process.env.PACT_VERSION}`,
-        version: process.env.PACT_VERSION,
-        latest: false,
-        all: false
-      }
-    ],
+    consumerVersionTag: process.env.PACT_VERSION,
     provider: `${process.env.PACT_PROVIDER}+${process.env.PACT_VERSION}`,
     providerVersion: process.env.PACT_VERSION,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
     logLevel: isLocal? "debug" : "info",
-    customProviderHeaders: [
-      "x-smoke-test: 1"
-    ],
-    requestFilter: (req, res, next) => {
-      req.headers['Authorization'] = req.headers['Authorization'] ?? `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
-      next()
+    requestFilter: (req) => {
+      req.headers["x-smoke-test"] = "1"
+      req.headers["Authorization"] = `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
+      return req
     },
     pactUrls: isLocal 
       ? [
-        `${process.cwd()}//pact/pacts/${process.env.PACT_CONSUMER}+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${process.env.PACT_VERSION}.json`
+        `${process.cwd()}/pact/pacts/${process.env.PACT_CONSUMER}+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}-convert+${process.env.PACT_VERSION}.json`
       ]
       : []
   })
@@ -38,6 +29,10 @@ async function verify(): Promise<any> {
 }
 
 (async () => {
-  verify().catch(verify).catch(verify)
+  verify()
+    .catch(verify)
+    .catch(verify)
+    .catch(verify)
+    .catch(verify)
 })()
 

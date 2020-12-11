@@ -9,8 +9,7 @@
     "generate-postman-collection": "ts-node postman-pact.ts --use_strict",
     "create-pacts": "jest",
     "publish-pacts": "ts-node ./broker/publish.ts --use_strict",
-    "verify-pacts": "ts-node ./broker/verify.ts --use_strict",
-    "verify-convert-pacts": "ts-node ./broker/verify-v3.ts --use_strict"
+    "verify-pacts": "ts-node ./broker/verify.ts --use_strict"
   },
   "author": "NHS Digital",
   "license": "MIT",

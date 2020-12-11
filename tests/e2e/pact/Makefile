@@ -17,7 +17,6 @@ publish-pacts:
 
 verify-pacts:
 	npm run verify-pacts
-	npm run verify-convert-pacts
 
 generate-postman-collection:
 	mkdir -p ../postman/collections
