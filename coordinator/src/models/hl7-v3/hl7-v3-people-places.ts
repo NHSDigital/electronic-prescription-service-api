@@ -43,7 +43,7 @@ export class HealthCareProvider implements ElementCompact {
       classCode: "PROV"
     }
 
-    id: codes.SdsOrganizationIdentifier
+    id: codes.SdsOrganizationIdentifier | codes.NullFlavor
 }
 
 /**
