@@ -1,6 +1,5 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
-import * as uuid from "uuid"
-import {getFullUrl} from "./common"
+import {generateResourceId, getFullUrl} from "./common"
 
 export function createMessageHeader(
   messageId: string,
@@ -11,7 +10,7 @@ export function createMessageHeader(
 ): fhir.MessageHeader {
   return {
     resourceType: "MessageHeader",
-    id: uuid.v4.toString().toLowerCase(),
+    id: generateResourceId(),
     extension: getExtension(messageId),
     eventCoding: getEventCoding(),
     destination: getDestination(representedOrganizationReference),

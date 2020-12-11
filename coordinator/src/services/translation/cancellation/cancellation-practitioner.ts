@@ -1,12 +1,11 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
-import {convertName} from "./common"
-import * as uuid from "uuid"
+import {convertName, generateResourceId} from "./common"
 
 export function createPractitioner(hl7AgentPerson: hl7.AgentPerson): fhir.Practitioner {
   return {
     resourceType: "Practitioner",
-    id: uuid.v4.toString().toLowerCase(),
+    id: generateResourceId(),
     identifier: getIdentifier(hl7AgentPerson.agentPerson.id._attributes.extension),
     name: convertName(hl7AgentPerson.agentPerson.name)
   }

@@ -43,15 +43,17 @@ function convertResourceToBundleEntry(resource: fhir.Resource) {
 function createBundleEntries(cancellationResponse: CancellationResponse) {
   const fhirPatient = createPatient(cancellationResponse.recordTarget.Patient)
 
-  const convertedResponsibleParty = convertAgentPerson(cancellationResponse.responsibleParty.AgentPerson)
-  const fhirResponsiblePartyPractitioner = convertedResponsibleParty.fhirPractitioner
-  const fhirResponsiblePartyOrganization = convertedResponsibleParty.fhirOrganization
-  const fhirResponsiblePartyPractitionerRole = convertedResponsibleParty.fhirPractitionerRole
+  const {
+    fhirPractitioner: fhirResponsiblePartyPractitioner,
+    fhirPractitionerRole: fhirResponsiblePartyPractitionerRole,
+    fhirOrganization: fhirResponsiblePartyOrganization
+  } = convertAgentPerson(cancellationResponse.responsibleParty.AgentPerson)
 
-  const convertedAuthor = convertAgentPerson(cancellationResponse.author.AgentPerson)
-  const fhirAuthorPractitioner = convertedAuthor.fhirPractitioner
-  const fhirAuthorOrganization = convertedAuthor.fhirOrganization
-  const fhirAuthorPractitionerRole = convertedAuthor.fhirPractitionerRole
+  const {
+    fhirPractitioner: fhirAuthorPractitioner,
+    fhirPractitionerRole: fhirAuthorPractitionerRole,
+    fhirOrganization: fhirAuthorOrganization
+  } = convertAgentPerson(cancellationResponse.author.AgentPerson)
 
   const fhirMedicationRequest = createMedicationRequest(
     cancellationResponse,
