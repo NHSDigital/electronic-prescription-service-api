@@ -13,10 +13,10 @@ describe("convertNameUse", () => {
 })
 
 describe("resourceId", () => {
+  const UUID_REGEX = /[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}/
   test("generate", () => {
     const resourceId = generateResourceId()
-    expect(resourceId).toHaveLength(36)
-    expect(resourceId).toContain("-")
+    expect(UUID_REGEX.test(resourceId)).toBeTruthy()
   })
 
   test("getFullUrl", () => {
