@@ -2,6 +2,10 @@ import * as TestResources from "../../../resources/test-resources"
 import {readXml} from "../../../../src/services/serialisation/xml"
 import {createPatient} from "../../../../src/services/translation/cancellation/cancellation-patient"
 import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/spine-response"
+import {UNKNOWN_GP_ODS_CODE} from "../../../../src/services/translation/common"
+import * as fhir from "../../../../src/models/fhir/fhir-resources"
+import * as hl7 from "../../../../src/models/hl7-v3/hl7-v3-people-places"
+import {clone} from "../../../resources/test-helpers"
 
 describe("createPatient", () => {
   const actualError = TestResources.spineResponses.cancellationError
@@ -9,51 +13,68 @@ describe("createPatient", () => {
   const parsedMsg = readXml(cancelResponse)
   const actEvent = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
   const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
-  const patient = createPatient(cancellationResponse.recordTarget.Patient)
+  let hl7Patient:  hl7.Patient
+  let fhirPatient: fhir.Patient
+
+  beforeEach(() => {
+    hl7Patient = clone(cancellationResponse.recordTarget.Patient)
+    fhirPatient = createPatient(hl7Patient)
+  })
 
   test("returned patient has an identifier block with correct NHS number", () => {
-    expect(patient.identifier).not.toBeUndefined()
-    const nhsNumber = patient.identifier[0].value
+    expect(fhirPatient.identifier).not.toBeUndefined()
+    const nhsNumber = fhirPatient.identifier[0].value
     expect(nhsNumber).toBe("9453740519")
   })
 
   test("returned patient has correct name use", () => {
-    expect(patient.name).not.toBeUndefined()
-    expect(patient.name[0].use).toBe("usual")
+    expect(fhirPatient.name).not.toBeUndefined()
+    expect(fhirPatient.name[0].use).toBe("usual")
   })
 
   test("returned patient has correct family and given names, and prefix", () => {
-    expect(patient.name).not.toBeUndefined()
-    expect(patient.name[0].family).toBe("CORY")
-    expect(patient.name[0].given[0]).toBe("ETTA")
-    expect(patient.name[0].prefix[0]).toBe("MISS")
+    expect(fhirPatient.name).not.toBeUndefined()
+    expect(fhirPatient.name[0].family).toBe("CORY")
+    expect(fhirPatient.name[0].given[0]).toBe("ETTA")
+    expect(fhirPatient.name[0].prefix[0]).toBe("MISS")
   })
 
   test("returned patient has correct gender", () => {
-    expect(patient.gender).not.toBeUndefined()
-    expect(patient.gender).toBe("female")
+    expect(fhirPatient.gender).not.toBeUndefined()
+    expect(fhirPatient.gender).toBe("female")
   })
 
   test("returned patient has correct birthdate", () => {
-    expect(patient.birthDate).not.toBeUndefined()
-    expect(patient.birthDate).toBe("1999-01-04")
+    expect(fhirPatient.birthDate).not.toBeUndefined()
+    expect(fhirPatient.birthDate).toBe("1999-01-04")
+  })
+
+  test("returned patient has unknown gp code when passed nullFlavor of 'UNK", () => {
+    const nullFlavorObject = {nullFlavor: "UNK"}
+    const subjectOf = hl7Patient.patientPerson.playedProviderPatient.subjectOf
+    subjectOf.patientCareProvision.responsibleParty.healthCareProvider.id._attributes = nullFlavorObject
+    hl7Patient.patientPerson.playedProviderPatient.subjectOf = subjectOf
+
+    fhirPatient = createPatient(hl7Patient)
+    expect(fhirPatient.generalPractitioner).not.toBeUndefined()
+    expect(fhirPatient.generalPractitioner[0].identifier.value).toBe(UNKNOWN_GP_ODS_CODE)
   })
 
   test("returned patient has correct GP", () => {
-    expect(patient.generalPractitioner).not.toBeUndefined()
-    expect(patient.generalPractitioner[0].identifier.value).toBe("B81001")
+    expect(fhirPatient.generalPractitioner).not.toBeUndefined()
+    expect(fhirPatient.generalPractitioner[0].identifier.value).toBe("B81001")
   })
 
   test("returned patient has correct address use", () => {
-    expect(patient.address).not.toBeUndefined()
-    expect(patient.address[0].use).toBe("home")
+    expect(fhirPatient.address).not.toBeUndefined()
+    expect(fhirPatient.address[0].use).toBe("home")
   })
 
   test("returned patient has correct address", () => {
-    expect(patient.address[0].postalCode).toBe("NG10 1NP")
-    expect(patient.address[0].line.length).toBe(3)
-    expect(patient.address[0].line[0]).toBe("123 Dale Avenue")
-    expect(patient.address[0].line[1]).toBe("Long Eaton")
-    expect(patient.address[0].line[2]).toBe("Nottingham")
+    expect(fhirPatient.address[0].postalCode).toBe("NG10 1NP")
+    expect(fhirPatient.address[0].line.length).toBe(3)
+    expect(fhirPatient.address[0].line[0]).toBe("123 Dale Avenue")
+    expect(fhirPatient.address[0].line[1]).toBe("Long Eaton")
+    expect(fhirPatient.address[0].line[2]).toBe("Nottingham")
   })
 })

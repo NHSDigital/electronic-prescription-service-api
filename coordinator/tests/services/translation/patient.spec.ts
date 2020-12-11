@@ -4,6 +4,7 @@ import {clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
 import {getPatient} from "../../../src/services/translation/common/getResourcesOfType"
 import {TooManyValuesError} from "../../../src/models/errors/processing-errors"
+import {UNKNOWN_GP_ODS_CODE} from "../../../src/services/translation/common"
 
 describe("convertPatient", () => {
   let bundle: Bundle
@@ -45,7 +46,7 @@ describe("convertPatient", () => {
   })
 
   test("If the GP has ID 'V81999' make the Id have nullFlavor 'UNK'", () => {
-    fhirPatient.generalPractitioner = createGpWithIdValue("V81999")
+    fhirPatient.generalPractitioner = createGpWithIdValue(UNKNOWN_GP_ODS_CODE)
 
     const patientsubjectOf = convertPatient(bundle, fhirPatient).patientPerson.playedProviderPatient.subjectOf
     const actual = patientsubjectOf.patientCareProvision.responsibleParty.healthCareProvider.id._attributes
