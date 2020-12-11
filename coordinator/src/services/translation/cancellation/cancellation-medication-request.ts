@@ -6,8 +6,7 @@ import {
 } from "../../../models/hl7-v3/hl7-v3-spine-response"
 import {convertHL7V3DateTimeStringToISODateTime} from "../common"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
-import * as uuid from "uuid"
-import {getFullUrl} from "./common"
+import {generateResourceId, getFullUrl} from "./common"
 
 export function createMedicationRequest(
   cancellationResponse: CancellationResponse,
@@ -26,7 +25,7 @@ export function createMedicationRequest(
 
   return {
     resourceType: "MedicationRequest",
-    id: uuid.v4.toString().toLowerCase(),
+    id: generateResourceId(),
     extension: createMedicationRequestExtensions(
       prescriptionStatusCode,
       prescriptionStatusDisplay,
