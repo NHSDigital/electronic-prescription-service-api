@@ -1,8 +1,7 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
-import {convertTelecom, getFullUrl} from "./common"
+import {convertTelecom, generateResourceId, getFullUrl} from "./common"
 import {toArray} from "../common"
-import * as uuid from "uuid"
 
 function createRoleProfileIdentifier(hl7AgentPerson: AgentPerson) {
   return [{
@@ -18,7 +17,7 @@ export function createPractitionerRole(
 ): fhir.PractitionerRole {
   return {
     resourceType: "PractitionerRole",
-    id: uuid.v4.toString().toLowerCase(),
+    id: generateResourceId(),
     identifier: createRoleProfileIdentifier(hl7AgentPerson),
     practitioner: createReference(practitionerReference),
     organization: createReference(organizationReference),
