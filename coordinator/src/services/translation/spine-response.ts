@@ -11,7 +11,7 @@ const ASYNC_SPINE_RESPONSE_MCCI_REGEX = /(?=<hl7:MCCI_IN010000UK13[\s\S]*>)([\s\
 export const SPINE_CANCELLATION_ERROR_RESPONSE_REGEX = /(?=<hl7:PORX_IN050101UK31[\s\S]*>)([\s\S]*)(?<=<\/hl7:PORX_IN050101UK31>)/i
 
 interface TranslatedSpineResponse {
-  body: fhir.OperationOutcome | fhir.Bundle
+  fhirResponse: fhir.OperationOutcome | fhir.Bundle
   statusCode: number
 }
 
@@ -20,7 +20,7 @@ export function translateToFhir<T>(message: SpineDirectResponse<T>): TranslatedS
   const {statusCode, fhirResponse} = getStatusCodeAndOperationOutcome(hl7BodyString)
   if (statusCode <= 299) {
     return {
-      body: {
+      fhirResponse: {
         resourceType: "OperationOutcome",
         issue: [{
           code: "informational",
@@ -32,16 +32,13 @@ export function translateToFhir<T>(message: SpineDirectResponse<T>): TranslatedS
     }
   } else if (fhirResponse) {
     return {
-      body: fhirResponse,
+      fhirResponse: fhirResponse,
       statusCode: statusCode
     }
   }
 }
 
-function getStatusCodeAndOperationOutcome(hl7Message: string): {
-  statusCode: number,
-  fhirResponse: fhir.OperationOutcome | fhir.Bundle
-} {
+function getStatusCodeAndOperationOutcome(hl7Message: string): TranslatedSpineResponse {
   const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(hl7Message)
   if (cancelResponse) {
     const parsedMsg = readXml(cancelResponse[0]) as PORX50101
@@ -92,8 +89,8 @@ function getSyncResponseAndErrorCodes(hl7Message: string, syncMCCI: RegExpExecAr
 function getFhirResponseAndErrorCodes<T extends AsyncMCCI | SyncMCCI>(
   hl7Message: string,
   MCCIWrapper: T,
-  getStatusCodeFn: (async: T) => acknowledgementCodes,
-  getErrorCodes: (async: T) => Array<fhir.CodeableConcept>
+  getStatusCodeFn: (wrapper: T) => acknowledgementCodes,
+  getErrorCodes: (wrapper: T) => Array<fhir.CodeableConcept>
 ): {
   statusCode: number,
   fhirResponse: fhir.OperationOutcome

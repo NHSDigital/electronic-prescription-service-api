@@ -3,14 +3,13 @@ import {IdentifierReference, Organization} from "../../../models/fhir/fhir-resou
 import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
-import {convertAddress, convertName} from "./common"
+import {convertAddress, convertName, generateResourceId} from "./common"
 import {convertHL7V3DateStringToISODate} from "../common"
-import * as uuid from "uuid"
 
 export function createPatient(hl7Patient: hl7.Patient): fhir.Patient {
   return {
     resourceType: "Patient",
-    id: uuid.v4.toString().toLowerCase(),
+    id: generateResourceId(),
     identifier: createNhsNumberIdentifier(hl7Patient.id._attributes.extension),
     name: convertName(hl7Patient.patientPerson.name),
     gender: convertGender(hl7Patient.patientPerson.administrativeGenderCode),
