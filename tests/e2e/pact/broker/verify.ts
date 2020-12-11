@@ -32,9 +32,5 @@ async function verify(): Promise<any> {
 
 (async () => {
   verify()
-    .catch(verify)
-    .catch(verify)
-    .catch(verify)
-    .catch(verify)
 })()
 
