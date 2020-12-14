@@ -1,5 +1,6 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
-import {generateResourceId, getFullUrl} from "./common"
+import {generateResourceId} from "./common"
+import {createIdentifier, createReference} from "./fhir-base-types"
 
 export function createMessageHeader(
   messageId: string,
@@ -11,9 +12,9 @@ export function createMessageHeader(
   return {
     resourceType: "MessageHeader",
     id: generateResourceId(),
-    extension: getExtension(messageId),
+    extension: getExtensions(messageId),
     eventCoding: getEventCoding(),
-    destination: getDestination(representedOrganizationReference),
+    destination: getDestinations(representedOrganizationReference),
     sender: getNhsdSender(),
     source: getSource(),
     response: getMessageHeaderResponse(cancelRequestId),
@@ -40,14 +41,7 @@ function getNhsdSender() {
 }
 
 function createFocus(patientReference: string, medicationRequestReference: string) {
-  return [
-    {
-      reference: getFullUrl(patientReference)
-    },
-    {
-      reference: getFullUrl(medicationRequestReference)
-    }
-  ]
+  return [createReference(patientReference), createReference(medicationRequestReference)]
 }
 
 function getSource() {
@@ -57,26 +51,18 @@ function getSource() {
   }
 }
 
-function getExtension(messageId: string) {
-  return [
-    {
-      url: "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-MessageHeader-messageId",
-      valueIdentifier: {
-        system: "https://tools.ietf.org/html/rfc4122",
-        value: messageId.toLowerCase()
-      }
-    }
-  ]
+function getExtensions(messageId: string): Array<fhir.IdentifierExtension> {
+  return [{
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-MessageHeader-messageId",
+    valueIdentifier: createIdentifier("https://tools.ietf.org/html/rfc4122", messageId.toLowerCase())
+  }]
 }
 
-function getDestination(representedOrganizationId: string) {
+function getDestinations(representedOrganizationId: string): Array<fhir.MessageHeaderDestination> {
   return [{
     endpoint: `urn:nhs-uk:addressing:ods:${representedOrganizationId}`,
     receiver: {
-      identifier: {
-        system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: representedOrganizationId
-      }
+      identifier: createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", representedOrganizationId)
     }
   }]
 }
