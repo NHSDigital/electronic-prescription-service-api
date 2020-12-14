@@ -35,10 +35,17 @@ function copy-parameter {
         --overwrite
 }
 
-copy-secret "ptl/client/aws.api.veit07.devspineservices.nhs.uk/key" "/ptl/api-deployment/eps-coordinator/veit07.devspineservices.nhs.uk/private-key"
-copy-secret "ptl/client/aws.api.veit07.devspineservices.nhs.uk/crt" "/ptl/api-deployment/eps-coordinator/veit07.devspineservices.nhs.uk/certificate"
-copy-secret "ptl/veit07.devspineservices.nhs.uk/root-ca/crt" "/ptl/api-deployment/eps-coordinator/veit07.devspineservices.nhs.uk/root-ca-certificate"
-copy-secret "ptl/veit07.devspineservices.nhs.uk/sub-ca/crt" "/ptl/api-deployment/eps-coordinator/veit07.devspineservices.nhs.uk/sub-ca-certificate"
+# veit07
+copy-secret "ptl/client/aws.api.veit07.devspineservices.nhs.uk/key" "/ptl/api-deployment/eps-coordinator/certs/spine/veit07/key"
+copy-secret "ptl/client/aws.api.veit07.devspineservices.nhs.uk/crt" "/ptl/api-deployment/eps-coordinator/certs/spine/veit07/crt"
+
+# int
+copy-secret "ptl/client/aws.api.intspineservices.nhs.uk/key" "/ptl/api-deployment/eps-coordinator/certs/spine/int/key"
+copy-secret "ptl/client/aws.api.intspineservices.nhs.uk/crt" "/ptl/api-deployment/eps-coordinator/certs/spine/int/crt"
+
+# ptl envs root & sub ca
+copy-secret "ptl/veit07.devspineservices.nhs.uk/root-ca/crt" "/ptl/api-deployment/eps-coordinator/certs/nhsd-root-ca/ptl/crt"
+copy-secret "ptl/veit07.devspineservices.nhs.uk/sub-ca/crt" "/ptl/api-deployment/eps-coordinator/certs/nhsd-sub-ca/ptl/crt"
 
 copy-parameter "/ptl/platform-common/veit07.devspineservices.nhs.uk/cpa-id-map" "/ptl/api-deployment/eps-coordinator/veit07.devspineservices.nhs.uk/cpa-id-map"
 copy-parameter "/ptl/platform-common/veit07.devspineservices.nhs.uk/party-key" "/ptl/api-deployment/eps-coordinator/veit07.devspineservices.nhs.uk/to-party-key"
