@@ -4,7 +4,7 @@ import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {convertAddress, convertName, generateResourceId} from "./common"
-import {convertHL7V3DateStringToISODate} from "../common"
+import {convertHL7V3DateStringToISODate, UNKNOWN_GP_ODS_CODE} from "../common"
 
 export function createPatient(hl7Patient: hl7.Patient): fhir.Patient {
   return {
@@ -59,10 +59,17 @@ export function convertGender(hl7Gender: codes.SexCode): string {
 
 function createGeneralPractitioner(hl7Patient: hl7.Patient): Array<IdentifierReference<Organization>> {
   const hl7PatientCareProvision = hl7Patient.patientPerson.playedProviderPatient.subjectOf.patientCareProvision
-  const hl7OdsCode = hl7PatientCareProvision.responsibleParty.healthCareProvider.id._attributes.extension
+  const healthCareProviderId = hl7PatientCareProvision.responsibleParty.healthCareProvider.id
+  const hl7OdsCode = isNullFlavor(healthCareProviderId)
+    ? UNKNOWN_GP_ODS_CODE
+    : healthCareProviderId._attributes.extension
   return [{
     identifier: {
       "system": "https://fhir.nhs.uk/Id/ods-organization-code",
       "value": hl7OdsCode
     }}]
+}
+
+function isNullFlavor(value: unknown): value is codes.NullFlavor {
+  return (value as codes.NullFlavor)._attributes.nullFlavor !== undefined
 }
