@@ -119,8 +119,8 @@
               "patientInstruction": "One tablet three times daily",
               "timing": {
                 "repeat": {
-                  "frequency": "3",
-                  "period": "1",
+                  "frequency": 3,
+                  "period": 1,
                   "periodUnit": "d"
                 }
               },
@@ -251,8 +251,8 @@
               "patientInstruction": "One or two, four times daily",
               "timing": {
                 "repeat": {
-                  "frequency": "4",
-                  "period": "1",
+                  "frequency": 4,
+                  "period": 1,
                   "periodUnit": "d"
                 }
               },
@@ -373,8 +373,8 @@
               "patientInstruction": "One twice daily",
               "timing": {
                 "repeat": {
-                  "frequency": "2",
-                  "period": "1",
+                  "frequency": 2,
+                  "period": 1,
                   "periodUnit": "d"
                 }
               },
@@ -495,8 +495,8 @@
               "patientInstruction": "One every 72 hours",
               "timing": {
                 "repeat": {
-                  "frequency": "1",
-                  "period": "72",
+                  "frequency": 1,
+                  "period": 72,
                   "periodUnit": "hr"
                 }
               },
