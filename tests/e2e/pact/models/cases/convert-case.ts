@@ -8,13 +8,15 @@ export class ConvertCase extends Case {
   request: fhir.Bundle
   response: string
   responseMatcher: string
+  statusCode: string
 
-  constructor(description: string, requestFilePath: string, responseFilePath: string) {
+  constructor(description: string, requestFilePath: string, responseFilePath: string, statusCode: string) {
     super(description, requestFilePath)
 
     const responseXmlString = fs.readFileSync(responseFilePath, "utf-8")
     this.response = responseXmlString
     this.responseMatcher = this.buildResponseMatcher(responseXmlString).trimEnd()
+    this.statusCode = statusCode
   }
 
   private buildResponseMatcher(responseXml: string): string {

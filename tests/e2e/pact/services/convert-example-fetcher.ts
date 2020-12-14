@@ -17,7 +17,8 @@ const convertRequestFiles = exampleFiles.filter(exampleFile =>
 const conventionBasedConvertExamples: ConvertCase[] = convertResponseFiles.map(convertResponseFile => new ConvertCase(
 	getDescription(convertResponseFile),
 	getRequest(convertResponseFile),
-	getResponse(convertResponseFile)
+	getResponse(convertResponseFile),
+	getStatusCode(convertResponseFile)
 ))
 
 function getDescription(convertResponseFile: ExampleFile): string {
@@ -41,6 +42,10 @@ function getRequest(convertResponseFile: ExampleFile) {
 
 function getResponse(convertResponseFile: ExampleFile): string {
 	return convertResponseFile.path
+}
+
+function getStatusCode(convertResponseFile: ExampleFile): string {
+	return convertResponseFile.statusCode
 }
 
 export const convertExamples = conventionBasedConvertExamples

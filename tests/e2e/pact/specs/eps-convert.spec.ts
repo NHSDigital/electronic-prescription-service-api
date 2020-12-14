@@ -20,8 +20,9 @@ jestpact.pactWith(
     }
 
     describe("convert e2e tests", () => {
-
-      test.each(TestResources.convertCases)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: string, responseMatcher: string) => {
+      const successfulCases = TestResources.convertCases.filter(convertCase => convertCase[4] === "200")
+      const errorCases = TestResources.convertCases.filter(convertCase => convertCase[4] !== "200")
+      test.each(successfulCases)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: string, responseMatcher: string) => {
         const regex = new RegExp(responseMatcher)
         const isMatch = regex.test(response)
         expect(isMatch).toBe(true)
@@ -55,6 +56,42 @@ jestpact.pactWith(
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .send(requestJson)
           .expect(200)
+      })
+
+      test.each(errorCases)("should receive expected error code in response to %s message", async (desc: string, request: Bundle, response: string, responseMatcher: string, statusCode: string) => {
+        const regex = new RegExp(responseMatcher)
+        const isMatch = regex.test(response)
+        expect(isMatch).toBe(true)
+
+        const requestStr = LosslessJson.stringify(request)
+        const requestJson = JSON.parse(requestStr)
+
+        const apiPath = "/$convert"
+        const interaction: InteractionObject = {
+          state: null,
+          uponReceiving: `a request to convert ${desc} message`,
+          withRequest: {
+            headers: {
+              "Content-Type": "application/fhir+json; fhirVersion=4.0"
+            },
+            method: "POST",
+            path: "/$convert",
+            body: requestJson
+          },
+          willRespondWith: {
+            headers: {
+              "Content-Type": "text/plain; charset=utf-8"
+            },
+            body: Matchers.term({ generate: response, matcher: responseMatcher }),
+            status: parseInt(statusCode)
+          }
+        }
+        await provider.addInteraction(interaction)
+        await client()
+          .post(apiPath)
+          .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+          .send(requestJson)
+          .expect(parseInt(statusCode))
       })
     })
   }
