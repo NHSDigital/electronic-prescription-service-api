@@ -1,17 +1,17 @@
 {
   "resourceType": "Bundle",
-  "id": "0A1FD9EF-A3D5-4E95-84CD-552070A03086",
+  "id": "2DF4D4D2-FA89-4FC3-ACD1-53F8296B7B60",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "0A1FD9EF-A3D5-4E95-84CD-552070A03086"
+    "value": "2DF4D4D2-FA89-4FC3-ACD1-53F8296B7B60"
   },
   "type": "message",
   "entry": [
     {
-      "fullUrl": "urn:uuid:0A1FD9EF-A3D5-4E95-84CD-552070A03086",
+      "fullUrl": "urn:uuid:2DF4D4D2-FA89-4FC3-ACD1-53F8296B7B60",
       "resource": {
         "resourceType": "MessageHeader",
-        "id": "0A1FD9EF-A3D5-4E95-84CD-552070A03086",
+        "id": "2DF4D4D2-FA89-4FC3-ACD1-53F8296B7B60",
         "eventCoding": {
           "system": "https://fhir.nhs.uk/CodeSystem/message-event",
           "code": "prescription-order",
@@ -62,6 +62,18 @@
               "code": "1008",
               "display": "Outpatient Community Prescriber - Pharmacist Independent Supplementary prescriber"
             }
+          },
+          {
+            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionEndorsement",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
+                  "code": "FS",
+                  "display": "Sexual Health"
+                }
+              ]
+            }
           }
         ],
         "identifier": [
@@ -88,14 +100,14 @@
             {
               "system": "http://snomed.info/sct",
               "code": "408015000",
-              "display": "Product containing precisely moxifloxacin (as moxifloxacin hydrochloride) 400 milligram/1 each conventional release oral tablet (clinical drug)"
+              "display": "Moxifloxacin 400mg tablets"
             }
           ]
         },
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2020-12-09T11:17:09+00:00",
+        "authoredOn": "2020-12-14T15:14:53+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -110,7 +122,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "1451E4-Z383A1-11EB92"
+          "value": "1BEADA-A99968-11EB9S"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -123,14 +135,14 @@
         },
         "dosageInstruction": [
           {
-            "text": "7 tablets",
+            "text": "One to be taken daily",
             "timing": {
               "repeat": {
-                "frequency": 7,
+                "frequency": 5,
                 "period": 1,
                 "periodUnit": "d",
                 "boundsDuration": {
-                  "value": 7,
+                  "value": 5,
                   "unit": "day",
                   "system": "http://unitsofmeasure.org",
                   "code": "d"
@@ -158,7 +170,7 @@
             "doseAndRate": [
               {
                 "doseQuantity": {
-                  "value": 10,
+                  "value": 400,
                   "unit": "milligram",
                   "system": "http://unitsofmeasure.org",
                   "code": "mg"
@@ -177,11 +189,15 @@
               }
             }
           ],
+          "validityPeriod": {
+            "start": "2021-01-23",
+            "end": "2021-01-23"
+          },
           "quantity": {
             "value": 1,
-            "unit": "pre-filled disposable injection",
+            "unit": "tablet",
             "system": "http://snomed.info/sct",
-            "code": "3318611000001103"
+            "code": "428673006"
           },
           "performer": {
             "identifier": {
@@ -273,7 +289,7 @@
           },
           {
             "system": "https://fhir.hl7.org.uk/Id/gphc-number",
-            "value": "R8803"
+            "value": "2083469"
           }
         ],
         "name": [
@@ -298,10 +314,6 @@
           {
             "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
             "value": "601986680555"
-          },
-          {
-            "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
-            "value": "683458"
           }
         ],
         "practitioner": {
