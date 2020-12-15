@@ -1,8 +1,8 @@
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import * as fhir from "../../../models/fhir/fhir-resources"
+import * as uuid from "uuid"
 import {toArray} from "../common"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
-import * as uuid from "uuid"
 
 export function convertName(hl7Name: Array<core.Name> | core.Name): Array<fhir.HumanName> {
   const nameArray = toArray(hl7Name)
