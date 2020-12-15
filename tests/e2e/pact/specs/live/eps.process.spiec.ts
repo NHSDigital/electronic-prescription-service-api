@@ -1,4 +1,4 @@
-import { InteractionObject, Matchers, MatchersV3 } from "@pact-foundation/pact"
+import { InteractionObject } from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
@@ -20,10 +20,7 @@ jestpact.pactWith(
     }
 
     describe("process-message e2e tests", () => {
-
-      const processCasesSubset = TestResources.processCases.splice(0, 5)
-
-      test.each(processCasesSubset)("should be able to process %s", async (desc: string, message: Bundle) => {
+      test.each(TestResources.processCases)("should be able to process %s", async (desc: string, message: Bundle) => {
         const apiPath = "/$process-message"
         const bundleStr = LosslessJson.stringify(message)
         const bundle = JSON.parse(bundleStr) as Bundle
@@ -48,7 +45,15 @@ jestpact.pactWith(
               issue: [
                 {
                   code: "invalid",
-                  severity: "error"
+                  severity: "error",
+                  details: {
+                    coding: [
+                      {
+                        code: "202",
+                        display: "Duplicate HL7 ID Error"
+                      }
+                    ]
+                  }
                 }
               ]
             },
@@ -56,6 +61,11 @@ jestpact.pactWith(
           }
         }
         await provider.addInteraction(interaction)
+        await client()
+          .post(apiPath)
+          .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+          .send(bundleStr)
+          .expect(400)
       })
     })
   }
