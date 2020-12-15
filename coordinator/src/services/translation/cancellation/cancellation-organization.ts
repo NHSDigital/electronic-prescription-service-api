@@ -1,28 +1,13 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
-import {convertAddress, convertTelecom} from "./common"
-import * as uuid from "uuid"
+import {convertAddress, convertTelecom, generateResourceId} from "./common"
+import {createIdentifier} from "./fhir-base-types"
 
 export function createOrganization(hl7Organization: hl7.Organization): fhir.Organization {
-  const fhirOrganization = {resourceType: "Organization"} as fhir.Organization
-
-  fhirOrganization.id = uuid.v4.toString().toLowerCase()
-
-  fhirOrganization.identifier = getIdentifier(hl7Organization.id._attributes.extension)
-
-  // confirmed with Chris that at this moment in time we will hardcode to RO197 with a fixed display
-  fhirOrganization.type = getFixedOrganizationType()
-
-  fhirOrganization.name = hl7Organization.name._text
-
-  fhirOrganization.telecom = convertTelecom(hl7Organization.telecom)
-
-  fhirOrganization.address = convertAddress(hl7Organization.addr)
-
   return {
     resourceType: "Organization",
-    id: uuid.v4.toString().toLowerCase(),
-    identifier: getIdentifier(hl7Organization.id._attributes.extension),
+    id: generateResourceId(),
+    identifier: getOrganizationCodeIdentifier(hl7Organization.id._attributes.extension),
     type: getFixedOrganizationType(),
     name: hl7Organization.name._text,
     telecom: convertTelecom(hl7Organization.telecom),
@@ -30,13 +15,8 @@ export function createOrganization(hl7Organization: hl7.Organization): fhir.Orga
   }
 }
 
-function getIdentifier(organizationId: string) {
-  return [
-    {
-      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-      "value": organizationId
-    }
-  ]
+function getOrganizationCodeIdentifier(organizationId: string) {
+  return [createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", organizationId)]
 }
 
 function getFixedOrganizationType() {

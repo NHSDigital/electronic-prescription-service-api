@@ -9,7 +9,7 @@ describe("translateToOperationOutcome", () => {
   it("converts spine successes", () => {
     const spineResponse = spineResponses.success.response
     const returnedValues = translateToFhir(spineResponse)
-    const body = returnedValues.body as fhir.OperationOutcome
+    const body = returnedValues.fhirResponse as fhir.OperationOutcome
     const statusCode = returnedValues.statusCode
     expect(body.issue).toHaveLength(1)
     expect(body.issue[0].severity).toEqual("information")
@@ -20,7 +20,7 @@ describe("translateToOperationOutcome", () => {
 
   test.each(TestResources.spineResponses.singleErrors)("converts spine single errors", (syncResponse) => {
     const returnedValues = translateToFhir(syncResponse.response)
-    const body = returnedValues.body as fhir.OperationOutcome
+    const body = returnedValues.fhirResponse as fhir.OperationOutcome
     const statusCode = returnedValues.statusCode
 
     expect(body.issue).toHaveLength(1)
@@ -32,7 +32,7 @@ describe("translateToOperationOutcome", () => {
 
   test.each(TestResources.spineResponses.multipleErrors)("converts multiple spine errors", (syncResponse) => {
     const returnedValues = translateToFhir(syncResponse.response)
-    const body = returnedValues.body as fhir.OperationOutcome
+    const body = returnedValues.fhirResponse as fhir.OperationOutcome
     const statusCode = returnedValues.statusCode
 
     expect(body.issue.length).toBeGreaterThan(1)
@@ -52,7 +52,7 @@ describe("translateToOperationOutcome", () => {
     }
 
     const returnedValues = translateToFhir(spineResponse)
-    const body = returnedValues.body as fhir.OperationOutcome
+    const body = returnedValues.fhirResponse as fhir.OperationOutcome
     const statusCode = returnedValues.statusCode
 
     expect(body.issue).toHaveLength(1)

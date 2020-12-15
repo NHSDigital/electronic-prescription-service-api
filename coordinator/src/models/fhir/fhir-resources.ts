@@ -279,7 +279,7 @@ interface MessageHeaderSource {
   endpoint: string
 }
 
-interface MessageHeaderDestination {
+export interface MessageHeaderDestination {
   endpoint: string
   receiver: IdentifierReference<PractitionerRole | Organization | Practitioner>
 }

@@ -1,5 +1,6 @@
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import * as fhir from "../../../models/fhir/fhir-resources"
+import * as uuid from "uuid"
 import {toArray} from "../common"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 
@@ -102,6 +103,10 @@ function convertTelecomUse(fhirTelecomUse: string): string {
   default:
     throw new InvalidValueError(`Unhandled telecom use '${fhirTelecomUse}'.`)
   }
+}
+
+export function generateResourceId(): string {
+  return uuid.v4().toString().toLowerCase()
 }
 
 export function getFullUrl(uuid: string):string {

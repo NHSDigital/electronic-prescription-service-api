@@ -3,14 +3,14 @@ import {IdentifierReference, Organization} from "../../../models/fhir/fhir-resou
 import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
-import {convertAddress, convertName} from "./common"
-import {convertHL7V3DateStringToISODate} from "../common"
-import * as uuid from "uuid"
+import {convertAddress, convertName, generateResourceId} from "./common"
+import {convertHL7V3DateStringToISODate, UNKNOWN_GP_ODS_CODE} from "../common"
+import {createIdentifier} from "./fhir-base-types"
 
 export function createPatient(hl7Patient: hl7.Patient): fhir.Patient {
   return {
     resourceType: "Patient",
-    id: uuid.v4.toString().toLowerCase(),
+    id: generateResourceId(),
     identifier: createNhsNumberIdentifier(hl7Patient.id._attributes.extension),
     name: convertName(hl7Patient.patientPerson.name),
     gender: convertGender(hl7Patient.patientPerson.administrativeGenderCode),
@@ -60,10 +60,13 @@ export function convertGender(hl7Gender: codes.SexCode): string {
 
 function createGeneralPractitioner(hl7Patient: hl7.Patient): Array<IdentifierReference<Organization>> {
   const hl7PatientCareProvision = hl7Patient.patientPerson.playedProviderPatient.subjectOf.patientCareProvision
-  const hl7OdsCode = hl7PatientCareProvision.responsibleParty.healthCareProvider.id._attributes.extension
-  return [{
-    identifier: {
-      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-      "value": hl7OdsCode
-    }}]
+  const healthCareProviderId = hl7PatientCareProvision.responsibleParty.healthCareProvider.id
+  const hl7OdsCode = isNullFlavor(healthCareProviderId)
+    ? UNKNOWN_GP_ODS_CODE
+    : healthCareProviderId._attributes.extension
+  return [{identifier: createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", hl7OdsCode)}]
+}
+
+function isNullFlavor(value: unknown): value is codes.NullFlavor {
+  return (value as codes.NullFlavor)._attributes.nullFlavor !== undefined
 }
