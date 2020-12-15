@@ -7,6 +7,7 @@ import {
 import {convertHL7V3DateTimeStringToISODateTime} from "../common"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {generateResourceId, getFullUrl} from "./common"
+import {createIdentifier, createReference} from "./fhir-base-types"
 
 export function createMedicationRequest(
   cancellationResponse: CancellationResponse,
@@ -31,7 +32,7 @@ export function createMedicationRequest(
       prescriptionStatusDisplay,
       responsiblePartyPractitionerRoleReference,
     ),
-    identifier: createIdentifier(cancellationResponse.pertinentInformation1),
+    identifier: createItemNumberIdentifier(cancellationResponse.pertinentInformation1),
     status: medicationRequestStatus,
     intent: "order",
     medicationCodeableConcept: getMedicationCodeableConcept(),
@@ -161,12 +162,9 @@ function getPrescriptionStatusInformation(code: string, display: string) {
   }
 }
 
-function createIdentifier(pertinentInformation1: PertinentInformation1) {
+function createItemNumberIdentifier(pertinentInformation1: PertinentInformation1) {
   const id = pertinentInformation1.pertinentLineItemRef.id._attributes.root
-  return [{
-    system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
-    value: id.toLowerCase()
-  }]
+  return [createIdentifier("https://fhir.nhs.uk/Id/prescription-order-item-number", id.toLowerCase())]
 }
 
 function getMedicationCodeableConcept() {
@@ -179,15 +177,9 @@ function getMedicationCodeableConcept() {
   }
 }
 
-function createReference(reference: string) {
-  return {reference: getFullUrl(reference)}
-}
-
 function getMedicationGroupIdentifier(pertinentInformation2: PertinentInformation2) {
-  return {
-    system: "https://fhir.nhs.uk/Id/prescription-order-number",
-    value: pertinentInformation2.pertinentPrescriptionID.value._attributes.extension
-  }
+  const id = pertinentInformation2.pertinentPrescriptionID.value._attributes.extension
+  return createIdentifier("https://fhir.nhs.uk/Id/prescription-order-number", id)
 }
 
 function medicationRequestHasDispenser() {
