@@ -9,7 +9,8 @@ const processRequestFiles = exampleFiles.filter(exampleFile => exampleFile.isReq
 const conventionBasedProcessExamples: ProcessCase[] = processRequestFiles.map(processRequestFile => new ProcessCase(
 	path.parse(path.relative(path.join(__dirname, examplesRootPath), processRequestFile.path)).dir.replace(/\//g, " ") + " "
 		+ `${processRequestFile.number} ${processRequestFile.statusCode} ${processRequestFile.operation}`,
-	processRequestFile.path
+	processRequestFile.path,
+	processRequestFile.statusCode
 ))
 
 export const processExamples = conventionBasedProcessExamples

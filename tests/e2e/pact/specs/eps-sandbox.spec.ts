@@ -82,8 +82,8 @@ jestpact.pactWith(
     })
 
     describe("process-message sandbox e2e tests", () => {
-
-      test.each(TestResources.processCases)("should be able to process %s", async (desc: string, message: Bundle) => {
+      const successfulCases = TestResources.processCases.filter(processCase => processCase[4] === "200-OK")
+      test.each(successfulCases)("should be able to process %s", async (desc: string, message: Bundle) => {
         const apiPath = "/$process-message"
         const messageStr = LosslessJson.stringify(message)
         const interaction: InteractionObject = {
@@ -122,7 +122,7 @@ jestpact.pactWith(
       })
 
       test("Should be able to process a FHIR JSON Accept header", async () => {
-        const testCase = processExamples[0]
+        const testCase = processExamples.filter(example => example.statusCode === "200-OK")[0]
 
         const apiPath = "/$process-message"
         const messageStr = LosslessJson.stringify(testCase.request)
