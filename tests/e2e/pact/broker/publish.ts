@@ -5,9 +5,8 @@ async function publish(): Promise<Array<string>> {
   const isLocal = process.env.PACT_PROVIDER_URL == "http://localhost:9000"
   if (!isLocal) {
     return await new Publisher({
-      pactBroker: process.env.PACT_BROKER_URL,
-      pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
-      pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
+      pactBroker: process.env.PACT_BROKER_NEXT_URL,
+      pactBrokerToken: process.env.PACT_BROKER_NEXT_TOKEN,
       consumerVersion: process.env.PACT_VERSION,
       tags: [process.env.PACT_VERSION],
       pactFilesOrDirs: [
