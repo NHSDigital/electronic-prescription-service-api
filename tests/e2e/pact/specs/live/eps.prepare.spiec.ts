@@ -1,6 +1,5 @@
 import { InteractionObject } from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
-import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
 import { Bundle, Parameters } from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
@@ -14,11 +13,6 @@ jestpact.pactWith(
   },
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
-    const client = () => {
-      const url = `${provider.mockService.baseUrl}`
-      return supertest(url)
-    }
-
     describe("prepare e2e tests", () => {
 
       const prepareCasesSubset = TestResources.prepareCases.splice(0, 5)
