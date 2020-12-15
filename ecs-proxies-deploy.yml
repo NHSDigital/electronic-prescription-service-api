@@ -20,7 +20,7 @@ docker_service:
         - name: CLIENT_KEY
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/certs/spine/{{ SPINE_ENV }}/key'
         - name: CLIENT_CERT
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/certs/spine/{{ SPINE_ENV }}/certificate'
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/certs/spine/{{ SPINE_ENV }}/crt'
         - name: FROM_ASID
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/from-asid'
         - name: TO_ASID
