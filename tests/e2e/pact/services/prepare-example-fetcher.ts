@@ -21,7 +21,8 @@ const conventionBasedPrepareExamples: PrepareCase[] = prepareResponseFiles.map(p
 		&& prepareRequestFile.endpoint === prepareResponseFile.endpoint
 		&& prepareRequestFile.number === prepareResponseFile.number
 	).path,
-	prepareResponseFile.path
+	prepareResponseFile.path,
+	prepareResponseFile.statusCode
 ))
 
 export const prepareExamples = conventionBasedPrepareExamples
