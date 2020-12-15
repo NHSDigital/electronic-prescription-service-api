@@ -1,16 +1,16 @@
 import {Boom} from "@hapi/boom"
 import Hapi from "@hapi/hapi"
 import routes from "./routes"
-import {toOperationOutcome, FhirMessageProcessingError} from "./models/errors/processing-errors"
+import {FhirMessageProcessingError, toOperationOutcome} from "./models/errors/processing-errors"
 import HapiPino from "hapi-pino"
 
 const preResponse = function (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) {
   const response = request.response
-  if (response instanceof Boom) {
-    request.log("error", response)
-  } else if (response instanceof FhirMessageProcessingError) {
+  if (response instanceof FhirMessageProcessingError) {
     request.log("info", response)
     return responseToolkit.response(toOperationOutcome(response)).code(400)
+  } else if (response instanceof Boom) {
+    request.log("error", response)
   }
   return responseToolkit.continue
 }
