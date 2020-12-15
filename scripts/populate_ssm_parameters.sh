@@ -36,8 +36,8 @@ function copy-parameter {
 }
 
 # veit07
-copy-secret "ptl/client/aws.api.veit07.devspineservices.nhs.uk/key" "/ptl/api-deployment/eps-coordinator/certs/spine/veit07/key"
-copy-secret "ptl/client/aws.api.veit07.devspineservices.nhs.uk/crt" "/ptl/api-deployment/eps-coordinator/certs/spine/veit07/crt"
+copy-secret "ptl/client/aws.api.veit07.devspineservices.nhs.uk/key" "/ptl/api-deployment/eps-coordinator/certs/spine/test/key"
+copy-secret "ptl/client/aws.api.veit07.devspineservices.nhs.uk/crt" "/ptl/api-deployment/eps-coordinator/certs/spine/test/crt"
 
 # int
 copy-secret "ptl/client/aws.api.intspineservices.nhs.uk/key" "/ptl/api-deployment/eps-coordinator/certs/spine/int/key"
