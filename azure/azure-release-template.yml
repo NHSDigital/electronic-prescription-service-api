@@ -96,7 +96,7 @@ extends:
 
           # Poll deploying API until our deployed version matches the release version
           url="https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH/_ping"
-          interval_in_seconds=5
+          interval_in_seconds=30
           releaseCommit="$(Build.SourceVersion)"
           path=".commitId"
           printf "\nPolling '$url' every $interval_in_seconds seconds, until commit is: '$releaseCommit'\n"
