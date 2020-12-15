@@ -96,6 +96,12 @@ export class CancellationCode extends Code<"2.16.840.1.113883.2.1.3.2.4.16.27"> 
   }
 }
 
+export class CancellationResponseReason extends Code<"2.16.840.1.113883.2.1.3.2.4.17.19"> {
+  constructor(code: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.17.19", code)
+  }
+}
+
 class CodeWithoutSystem extends Code<undefined> {
   constructor(code: string) {
     super(undefined, code)
@@ -199,6 +205,17 @@ export class ShortFormPrescriptionIdentifier extends Identifier<"2.16.840.1.1138
 export class SdsOrganizationIdentifier extends Identifier<"1.2.826.0.1285.0.1.10"> {
   constructor(extension: string) {
     super("1.2.826.0.1285.0.1.10", extension)
+  }
+}
+
+export class NullFlavor{
+  _attributes: {
+    nullFlavor: string
+  }
+  constructor(nullFlavor: string) {
+    this._attributes= {
+      nullFlavor
+    }
   }
 }
 
