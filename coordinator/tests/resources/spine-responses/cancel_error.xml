@@ -1,0 +1,198 @@
+----=_MIME-Boundary
+  Content-Id: <ebXMLHeader@spine.nhs.uk>
+  Content-Type: text/xml
+  Content-Transfer-Encoding: 8bit
+
+<?xml version='1.0' encoding='UTF-8'?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <soap:Header>
+    <eb:MessageHeader eb:version="2.0" soap:mustUnderstand="1">
+      <eb:From>
+        <eb:PartyId eb:type="urn:nhs:names:partyType:ocs+serviceInstance">YES-0000806</eb:PartyId>
+      </eb:From>
+      <eb:To>
+        <eb:PartyId eb:type="urn:nhs:names:partyType:ocs+serviceInstance">T141D-822234</eb:PartyId>
+      </eb:To>
+      <eb:CPAId>S20001A000126</eb:CPAId>
+      <eb:ConversationId>219D1B67-CE7F-425C-BA28-AB7517CB740F</eb:ConversationId>
+      <eb:Service>urn:nhs:names:services:mm</eb:Service>
+      <eb:Action>PORX_IN050101UK31</eb:Action>
+      <eb:MessageData>
+        <eb:MessageId>A5F94965-2E2F-4005-A0FB-DB8E7E9B8CE8</eb:MessageId>
+        <eb:Timestamp>2020-11-18T09:25:23Z</eb:Timestamp>
+        <eb:RefToMessageId>88E39AD8-DAB2-4E0C-9257-870B508DA7C7</eb:RefToMessageId>
+      </eb:MessageData>
+      <eb:DuplicateElimination/>
+    </eb:MessageHeader>
+    <eb:AckRequested eb:version="2.0" soap:mustUnderstand="1" soap:actor="urn:oasis:names:tc:ebxml-msg:actor:toPartyMSH" eb:signed="false"/>
+    <eb:SyncReply eb:version="2.0" soap:mustUnderstand="1" soap:actor="http://schemas.xmlsoap.org/soap/actor/next"/>
+  </soap:Header>
+  <soap:Body>
+    <eb:Manifest xmlns:hl7ebxml="urn:hl7-org:transport/ebXML/DSTUv1.0" eb:version="2.0">
+      <eb:Reference xlink:href="cid:A5F94965-2E2F-4005-A0FB-DB8E7E9B8CE8@spine.nhs.uk">
+        <eb:Schema eb:location="urn:hl7-org:v3_PORX_IN050101UK31.xsd" eb:version="31"/>
+        <eb:Description xml:lang="en">The HL7 payload</eb:Description>
+        <hl7ebxml:Payload style="HL7" encoding="XML" version="3.0"/>
+      </eb:Reference>
+    </eb:Manifest>
+  </soap:Body>
+</soap:Envelope>
+
+  ----=_MIME-Boundary
+  Content-Id: <A5F94965-2E2F-4005-A0FB-DB8E7E9B8CE8@spine.nhs.uk>
+  Content-Type: application/xml
+  Content-Transfer-Encoding: 8bit
+
+<?xml version='1.0' encoding='UTF-8'?>
+<hl7:PORX_IN050101UK31 xmlns:hl7="urn:hl7-org:v3">
+  <hl7:id root="A5F94965-2E2F-4005-A0FB-DB8E7E9B8CE8"/>
+  <hl7:creationTime value="20201118092523"/>
+  <hl7:versionCode code="V3NPfIT4.2.00"/>
+  <hl7:interactionId root="2.16.840.1.113883.2.1.3.2.4.12" extension="PORX_IN050101UK31"/>
+  <hl7:processingCode code="P"/>
+  <hl7:processingModeCode code="T"/>
+  <hl7:acceptAckCode code="NE"/>
+  <hl7:acknowledgement typeCode="AE">
+    <hl7:messageRef>
+      <hl7:id root="A5F94965-2E2F-4005-A0FB-DB8E7E9B8CE8"/>
+    </hl7:messageRef>
+  </hl7:acknowledgement>
+  <hl7:communicationFunctionRcv typeCode="RCV">
+    <hl7:device classCode="DEV" determinerCode="INSTANCE">
+      <hl7:id root="1.2.826.0.1285.0.2.0.107" extension="200000001285"/>
+    </hl7:device>
+  </hl7:communicationFunctionRcv>
+  <hl7:communicationFunctionSnd typeCode="SND">
+    <hl7:device classCode="DEV" determinerCode="INSTANCE">
+      <hl7:id root="1.2.826.0.1285.0.2.0.107" extension="567456789789"/>
+    </hl7:device>
+  </hl7:communicationFunctionSnd>
+  <hl7:ControlActEvent classCode="CACT" moodCode="EVN">
+    <hl7:author1 typeCode="AUT">
+      <hl7:AgentSystemSDS classCode="AGNT">
+        <hl7:agentSystemSDS classCode="DEV" determinerCode="INSTANCE">
+          <hl7:id root="1.2.826.0.1285.0.2.0.107" extension="567456789789"/>
+        </hl7:agentSystemSDS>
+      </hl7:AgentSystemSDS>
+    </hl7:author1>
+    <hl7:subject typeCode="SUBJ" contextConductionInd="false">
+      <CancellationResponse xmlns:eb="http://www.oasis-open.org/committees/ebxml-msg/schema/msg-header-2_0.xsd" xmlns="urn:hl7-org:v3" xmlns:soap="http://www.w3.org/2001/12/soap-envelope" classCode="INFRM" moodCode="EVN">
+        <id root="A5F94965-2E2F-4005-A0FB-DB8E7E9B8CE8"/>
+        <effectiveTime value="20201118092523"/>
+        <recordTarget typeCode="RCT">
+          <Patient classCode="PAT">
+            <id extension="9453740519" root="2.16.840.1.113883.2.1.4.1"/>
+            <addr use="H">
+              <streetAddressLine>123 Dale Avenue</streetAddressLine>
+              <streetAddressLine>Long Eaton</streetAddressLine>
+              <streetAddressLine>Nottingham</streetAddressLine>
+              <postalCode>NG10 1NP</postalCode>
+            </addr>
+            <patientPerson classCode="PSN" determinerCode="INSTANCE">
+              <name use="L">
+                <prefix>MISS</prefix>
+                <given>ETTA</given>
+                <family>CORY</family>
+              </name>
+              <administrativeGenderCode code="2" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.25"/>
+              <birthTime value="19990104"/>
+              <playedProviderPatient classCode="PAT">
+                <subjectOf typeCode="SBJ">
+                  <patientCareProvision classCode="PCPR" moodCode="EVN">
+                    <code code="1" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.37"/>
+                    <responsibleParty typeCode="RESP">
+                      <healthCareProvider classCode="PROV">
+                        <id extension="B81001" root="1.2.826.0.1285.0.1.10"/>
+                      </healthCareProvider>
+                    </responsibleParty>
+                  </patientCareProvision>
+                </subjectOf>
+              </playedProviderPatient>
+            </patientPerson>
+          </Patient>
+        </recordTarget>
+        <author contextControlCode="OP" typeCode="AUT">
+          <AgentPerson classCode="AGNT">
+            <id extension="100102238986" root="1.2.826.0.1285.0.2.0.67"/>
+            <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
+            <telecom use="WP" value="tel:01234567890"/>
+            <agentPerson classCode="PSN" determinerCode="INSTANCE">
+              <id extension="4428981" root="1.2.826.0.1285.0.2.1.54"/>
+              <name>
+                <prefix>DR</prefix>
+                <given>Thomas</given>
+                <family>Edwards</family>
+              </name>
+            </agentPerson>
+            <representedOrganization classCode="ORG" determinerCode="INSTANCE">
+              <id extension="RBA" root="1.2.826.0.1285.0.1.10"/>
+              <code code="008" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
+              <name>TAUNTON AND SOMERSET NHS FOUNDATION TRUST</name>
+              <telecom use="WP" value="tel:01823333444"/>
+              <addr>
+                <streetAddressLine>MUSGROVE PARK HOSPITAL</streetAddressLine>
+                <streetAddressLine>PARKFIELD DRIVE</streetAddressLine>
+                <streetAddressLine>TAUNTON</streetAddressLine>
+                <postalCode>TA1 5DA</postalCode>
+              </addr>
+            </representedOrganization>
+          </AgentPerson>
+        </author>
+        <responsibleParty contextControlCode="OP" typeCode="RESP">
+          <AgentPerson classCode="AGNT">
+            <id extension="10012345678" root="1.2.826.0.1285.0.2.0.67"/>
+            <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
+            <telecom/>
+            <agentPerson classCode="PSN" determinerCode="INSTANCE">
+              <id extension="G9999999" root="1.2.826.0.1285.0.2.1.54"/>
+              <name>
+                <prefix>DR</prefix>
+                <given>SAZ</given>
+                <family>RAZ</family>
+              </name>
+            </agentPerson>
+            <representedOrganization classCode="ORG" determinerCode="INSTANCE">
+              <id extension="RBA" root="1.2.826.0.1285.0.1.10"/>
+              <code code="008" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
+              <name>TAUNTON AND SOMERSET NHS FOUNDATION TRUST</name>
+              <telecom use="WP" value="tel:01823333444"/>
+              <addr>
+                <streetAddressLine>MUSGROVE PARK HOSPITAL</streetAddressLine>
+                <streetAddressLine>PARKFIELD DRIVE</streetAddressLine>
+                <streetAddressLine>TAUNTON</streetAddressLine>
+                <postalCode>TA1 5DA</postalCode>
+              </addr>
+            </representedOrganization>
+          </AgentPerson>
+        </responsibleParty>
+        <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
+          <seperatableInd value="false"/>
+          <pertinentPrescriptionID classCode="OBS" moodCode="EVN">
+            <code code="PID" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+            <value extension="DA923E-Z8827F-11EBAK" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+          </pertinentPrescriptionID>
+        </pertinentInformation2>
+        <pertinentInformation1 inversionInd="false" negationInd="false" typeCode="PERT">
+          <seperatableInd value="true"/>
+          <pertinentLineItemRef classCode="SBADM" moodCode="RQO">
+            <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
+          </pertinentLineItemRef>
+        </pertinentInformation1>
+        <pertinentInformation3 typeCode="PERT" contextConductionInd="true">
+          <seperatableInd value="false"/>
+          <pertinentResponse classCode="OBS" moodCode="EVN">
+            <code code="CRR" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+            <value codeSystem="2.16.840.1.113883.2.1.3.2.4.17.19" code="0008" displayName="Prescription/item not found"/>
+          </pertinentResponse>
+        </pertinentInformation3>
+        <pertinentInformation4 typeCode="PERT" inversionInd="false" negationInd="false">
+          <seperatableInd value="true"/>
+          <pertinentCancellationRequestRef classCode="ACTN" moodCode="RQO">
+            <id root="AEF77AFB-7E3C-427A-8657-2C427F71A271"/>
+          </pertinentCancellationRequestRef>
+        </pertinentInformation4>
+      </CancellationResponse>
+    </hl7:subject>
+  </hl7:ControlActEvent>
+</hl7:PORX_IN050101UK31>
+  ----=_MIME-Boundary--

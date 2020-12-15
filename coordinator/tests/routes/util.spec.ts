@@ -4,7 +4,7 @@ import {clone} from "../resources/test-helpers"
 import * as TestResources from "../resources/test-resources"
 import {getMessageHeader} from "../../src/services/translation/common/getResourcesOfType"
 import axios from "axios"
-import moxios from "moxios"
+import * as moxios from "moxios"
 
 test("API only forwards accept header to validator", async () => {
   moxios.install(axios)
