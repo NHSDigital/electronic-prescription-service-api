@@ -2,8 +2,16 @@ import { VerifierV3 } from "@pact-foundation/pact"
 
 let token: string
 
+let sleepMs: number = 0
+
+function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verify(): Promise<any> { 
+  await sleep(sleepMs)
+  sleepMs = (sleepMs + 5000) * 2
   const isLocal = process.env.PACT_PROVIDER_URL === "http://localhost:9000"
   const verifier =  new VerifierV3({
     publishVerificationResult: !isLocal,

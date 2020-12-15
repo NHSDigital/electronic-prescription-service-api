@@ -88,21 +88,20 @@ extends:
 
           # Publish
           cd $SERVICE_NAME/$SERVICE_ARTIFACT_NAME/pact
-          rm -rf node_modules && npm install
-          make create-pacts
+          rm -rf node_modules && npm install > /dev/null 2>&1
+          make create-pacts > /dev/null 2>&1
           chmod +x ./broker/publish.ts
-          make publish-pacts
+          make publish-pacts > /dev/null 2>&1
 
           # Poll deploying API until our deployed version matches the release version
           url="https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH/_ping"
-          interval_in_seconds=30
+          interval_in_seconds=5
           releaseCommit="$(Build.SourceVersion)"
           path=".commitId"
           printf "\nPolling '$url' every $interval_in_seconds seconds, until commit is: '$releaseCommit'\n"
           while true;
           do
             deployedCommit=`curl $url -s | jq -r $path`
-            printf "\r$deployedCommit";
             if [[ "$deployedCommit" == "$releaseCommit" ]]; then
               break;
             fi;

@@ -19,5 +19,5 @@ async function publish(): Promise<Array<string>> {
 }
 
 (async () => {
-  publish().then(result => console.log(result)).catch(publish).catch(publish)
+  publish().catch(publish).catch(publish)
 })()
