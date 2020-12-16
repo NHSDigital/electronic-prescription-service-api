@@ -21,9 +21,7 @@ jestpact.pactWith(
     
     describe("convert sandbox e2e tests", () => {
 
-      const convertCasesSubset = TestResources.convertCases.splice(0, 5)
-
-      test.each(convertCasesSubset)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: string, responseMatcher: string) => {
+      test.each(TestResources.convertCases)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: string, responseMatcher: string) => {
         const regex = new RegExp(responseMatcher)
         const isMatch = regex.test(response)
         expect(isMatch).toBe(true)

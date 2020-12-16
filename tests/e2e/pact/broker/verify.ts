@@ -25,7 +25,7 @@ async function verify(): Promise<any> {
     provider: `${process.env.PACT_PROVIDER}+${process.env.PACT_VERSION}`,
     providerVersion: process.env.PACT_VERSION,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
-    logLevel: "debug",
+    logLevel: "info",
     stateHandlers: {
       "is authenticated": () => {
         token = `${process.env.APIGEE_ACCESS_TOKEN}`
