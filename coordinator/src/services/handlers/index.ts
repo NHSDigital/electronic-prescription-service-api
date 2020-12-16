@@ -1,10 +1,11 @@
 import {LiveRequestHandler} from "./spine-handler"
 import {SandboxRequestHandler} from "./sandbox-handler"
 import {SpineRequest,SpineResponse} from "../../models/spine"
+import {Logger} from "pino"
 
 export interface RequestHandler {
-  send(spineRequest: SpineRequest): Promise<SpineResponse<unknown>>
-  poll(path: string): Promise<SpineResponse<unknown>>
+  send(spineRequest: SpineRequest, logger: Logger): Promise<SpineResponse<unknown>>
+  poll(path: string, logger: Logger): Promise<SpineResponse<unknown>>
 }
 
 function getHandler(liveMode: boolean): RequestHandler {
