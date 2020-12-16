@@ -42,6 +42,7 @@ const init = async () => {
 
   await server.start()
   server.log("info", `Server running on ${server.info.uri}`)
+  server.logger
 }
 
 process.on("unhandledRejection", (err) => {
