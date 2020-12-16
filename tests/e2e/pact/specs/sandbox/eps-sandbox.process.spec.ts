@@ -28,7 +28,7 @@ jestpact.pactWith(
         const apiPath = "/$process-message"
         const messageStr = LosslessJson.stringify(message)
         const interaction: InteractionObject = {
-          state: null,
+          state: "is not authenticated",
           uponReceiving: `a request to process ${desc} message to Spine`,
           withRequest: {
             headers: {
@@ -39,9 +39,9 @@ jestpact.pactWith(
             body: JSON.parse(messageStr)
           },
           willRespondWith: {
-            headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
-            },
+            // headers: {
+            //   "Content-Type": "application/fhir+json; fhirVersion=4.0"
+            // },
             body: {
               resourceType: "OperationOutcome",
               issue: [
@@ -69,7 +69,7 @@ jestpact.pactWith(
         const messageStr = LosslessJson.stringify(testCase.request)
 
         const interaction: InteractionObject = {
-          state: null,
+          state: "is not authenticated",
           uponReceiving: `a request to process a message with a FHIR JSON Accept header`,
           withRequest: {
             headers: {
