@@ -1,4 +1,4 @@
-import {InteractionObject, Matchers, MatchersV3} from "@pact-foundation/pact"
+import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
