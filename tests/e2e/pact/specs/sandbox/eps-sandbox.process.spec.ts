@@ -39,6 +39,9 @@ jestpact.pactWith(
             body: JSON.parse(messageStr)
           },
           willRespondWith: {
+            headers: {
+              "Content-Type": "application/fhir;fhirversion=4.0"
+            },
             body: {
               resourceType: "OperationOutcome",
               issue: [
