@@ -35,7 +35,7 @@ jestpact.pactWith(
           .find(p => p.name === "display").valueString
           
         const interaction: InteractionObject = {
-          state: null,
+          state: "is not authenticated",
           uponReceiving: `a request to prepare a ${description} message`,
           withRequest: {
             headers: {
@@ -46,9 +46,6 @@ jestpact.pactWith(
             body: JSON.parse(requestStr)
           },
           willRespondWith: {
-            headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
-            },
             body: {
               resourceType: "Parameters",
               parameter: [
