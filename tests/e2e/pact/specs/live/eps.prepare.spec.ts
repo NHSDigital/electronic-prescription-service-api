@@ -15,7 +15,7 @@ jestpact.pactWith(
   async (provider: any) => {
     describe("prepare e2e tests", () => {
 
-      const prepareCasesSubset = TestResources.prepareCases.splice(0, 5)
+      const prepareCasesSubset = TestResources.prepareCases.splice(0, 10)
 
       test.each(prepareCasesSubset)("should be able to prepare a %s message", async (desc: string, inputMessage: Bundle, outputMessage: Parameters) => {
         const apiPath = "/$prepare"
@@ -34,7 +34,7 @@ jestpact.pactWith(
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
+              "Content-Type": "application/json"
             },
             body: outputMessage,
             status: 200

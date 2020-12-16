@@ -1,8 +1,8 @@
-import { InteractionObject, MatchersV3 } from "@pact-foundation/pact"
+import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
-import { Bundle } from "../../models/fhir/fhir-resources"
+import {Bundle} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 
 jestpact.pactWith(
@@ -21,7 +21,7 @@ jestpact.pactWith(
 
     describe("convert e2e tests", () => {
 
-      const convertCasesSubset = TestResources.convertCases.splice(0, 5)
+      const convertCasesSubset = TestResources.convertCases.splice(0, 10)
 
       test.each(convertCasesSubset)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: string, responseMatcher: string) => {
         const regex = new RegExp(responseMatcher)
@@ -47,7 +47,7 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "text/plain; charset=utf-8"
             },
-            body: MatchersV3.regex(responseMatcher, response),
+            body: Matchers.regex({ matcher: responseMatcher, generate: response }),
             status: 200
           }
         }
