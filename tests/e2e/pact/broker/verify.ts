@@ -4,13 +4,17 @@ let token: string
 
 let sleepMs: number = 0
 
-function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+function sleep(milliseconds: number) {
+  const date = Date.now();
+  let currentDate = null;
+  do {
+    currentDate = Date.now();
+  } while (currentDate - date < milliseconds);
 }
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verify(): Promise<any> { 
-  await sleep(sleepMs)
+  sleep(sleepMs)
   sleepMs = (sleepMs + 5000) * 2
   const isLocal = process.env.PACT_PROVIDER_URL === "http://localhost:9000"
   const verifier =  new VerifierV3({
