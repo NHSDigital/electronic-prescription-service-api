@@ -13,7 +13,7 @@ export default [
     method: "POST",
     path: "/$prepare",
     handler: validatingHandler(
-      (requestPayload: Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+      (requestPayload: Bundle, _: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const response = translator.convertFhirMessageToSignedInfoMessage(requestPayload)
         return responseToolkit.response(response).code(200).header("Content-Type", CONTENT_TYPE)
       }
