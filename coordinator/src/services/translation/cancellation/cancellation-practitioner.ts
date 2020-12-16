@@ -1,6 +1,7 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertName, generateResourceId} from "./common"
+import {createIdentifier} from "./fhir-base-types"
 
 export function createPractitioner(hl7AgentPerson: hl7.AgentPerson): fhir.Practitioner {
   return {
@@ -16,12 +17,7 @@ function getIdentifier(personId: string) {
   if (formattedPersonId.match(/^G\d{7}$/)) {
     formattedPersonId = formattedPersonId.substring(1,7)
   }
-  return [
-    {
-      "system": getSystemForCode(formattedPersonId),
-      "value": formattedPersonId
-    }
-  ]
+  return [createIdentifier(getSystemForCode(formattedPersonId), formattedPersonId)]
 }
 
 function getSystemForCode(codeValue: string): string {

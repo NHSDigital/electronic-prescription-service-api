@@ -5,6 +5,7 @@ import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {convertAddress, convertName, generateResourceId} from "./common"
 import {convertHL7V3DateStringToISODate, UNKNOWN_GP_ODS_CODE} from "../common"
+import {createIdentifier} from "./fhir-base-types"
 
 export function createPatient(hl7Patient: hl7.Patient): fhir.Patient {
   return {
@@ -63,11 +64,7 @@ function createGeneralPractitioner(hl7Patient: hl7.Patient): Array<IdentifierRef
   const hl7OdsCode = isNullFlavor(healthCareProviderId)
     ? UNKNOWN_GP_ODS_CODE
     : healthCareProviderId._attributes.extension
-  return [{
-    identifier: {
-      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-      "value": hl7OdsCode
-    }}]
+  return [{identifier: createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", hl7OdsCode)}]
 }
 
 function isNullFlavor(value: unknown): value is codes.NullFlavor {
