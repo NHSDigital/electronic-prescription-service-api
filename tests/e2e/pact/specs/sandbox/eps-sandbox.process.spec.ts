@@ -24,7 +24,7 @@ jestpact.pactWith(
 
       const processCasesSubset = TestResources.processCases.splice(0, 10)
 
-      test.each(TestResources.processCases)("should be able to process %s", async (desc: string, message: Bundle) => {
+      test.each(processCasesSubset)("should be able to process %s", async (desc: string, message: Bundle) => {
         const apiPath = "/$process-message"
         const messageStr = LosslessJson.stringify(message)
         const interaction: InteractionObject = {
