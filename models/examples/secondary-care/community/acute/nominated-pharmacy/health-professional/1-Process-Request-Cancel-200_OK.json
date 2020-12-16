@@ -59,8 +59,8 @@
             "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
-              "code": "1001",
-              "display": "Outpatient Community Prescriber - Medical Prescriber"
+              "code": "1008",
+              "display": "Outpatient Community Prescriber - Pharmacist Independent/Supplementary prescriber"
             }
           }
         ],
