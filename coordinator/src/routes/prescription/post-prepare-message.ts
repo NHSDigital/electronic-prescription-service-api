@@ -14,7 +14,7 @@ export default [
     method: "POST",
     path: "/$prepare",
     handler: validatingHandler(
-      (requestPayload: Bundle, _: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+      (requestPayload: Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const isSmokeTest = request.headers["x-smoke-test"]
         const contentType = isSmokeTest ? CONTENT_TYPE_JSON : CONTENT_TYPE_FHIR
         const response = translator.convertFhirMessageToSignedInfoMessage(requestPayload)
