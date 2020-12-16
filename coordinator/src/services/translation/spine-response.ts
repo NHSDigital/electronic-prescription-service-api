@@ -17,13 +17,7 @@ interface TranslatedSpineResponse {
 
 export function translateToFhir<T>(message: SpineDirectResponse<T>): TranslatedSpineResponse {
   const hl7BodyString = message.body.toString()
-  const {statusCode, fhirResponse} = getStatusCodeAndOperationOutcome(hl7BodyString)
-  if (fhirResponse) {
-    return {
-      fhirResponse: fhirResponse,
-      statusCode: statusCode
-    }
-  }
+  return getStatusCodeAndOperationOutcome(hl7BodyString)
 }
 
 function getStatusCodeAndOperationOutcome(hl7Message: string): TranslatedSpineResponse {
