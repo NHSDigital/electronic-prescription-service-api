@@ -23,7 +23,7 @@
             "value": "RBA"
           },
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
-          "display": "BOOTH|PHIL"
+          "display": "RAZIA|ALI"
         },
         "source": {
           "endpoint": "urn:nhs-uk:addressing:ods:RBA"
@@ -59,8 +59,8 @@
             "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
-              "code": "1001",
-              "display": "Outpatient Community Prescriber - Medical Prescriber"
+              "code": "1004",
+              "display": "Outpatient Community Prescriber - Nurse Independent/Supplementary prescriber"
             }
           }
         ],
@@ -232,26 +232,26 @@
         "name": [
           {
             "use": "usual",
-            "family": "DAVIS",
+            "family": "CORY",
             "given": [
-              "JANE"
+              "ETTA"
             ],
             "prefix": [
-              "MRS"
+              "MISS"
             ]
           }
         ],
         "gender": "female",
-        "birthDate": "1999-11-25",
+        "birthDate": "1999-01-04",
         "address": [
           {
             "use": "home",
             "line": [
-              "53 Harrogate Road",
-              "Chapel Allerton",
-              "Leeds"
+              "123 Dale Avenue",
+              "Long Eaton",
+              "Nottingham"
             ],
-            "postalCode": "LS7 3PY"
+            "postalCode": "NG10 1NP"
           }
         ],
         "managingOrganization": {
@@ -307,6 +307,10 @@
           {
             "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
             "value": "100102238986"
+          },
+          {
+            "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
+            "value": "12A3456B"
           }
         ],
         "practitioner": {
