@@ -15,29 +15,7 @@
 							"listen": "test",
 							"script": {
 								"id": "b7955da6-df85-48b9-a946-980b7c7cef0a",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									"\r",
-									"console.log(\"Patient Section - Patient has a valid NHS number .\");\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"NHS Number is 9449305552 (Element Attribute)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"    \r",
-									"        let extension = $('ParentPrescription > recordTarget > Patient > id').attr('extension');\r",
-									"\r",
-									"        pm.expect(extension).to.eql ('9449305552');\r",
-									"    }\r",
-									");"
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", "\r", "console.log(\"Patient Section - Patient has a valid NHS number .\");\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "\r", "pm.test(\"NHS Number is 9449305552 (Element Attribute)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "    \r", "        let extension = $('ParentPrescription > recordTarget > Patient > id').attr('extension');\r", "\r", "        pm.expect(extension).to.eql ('9449305552');\r", "    }\r", ");"],
 								"type": "text/javascript"
 							}
 						}
@@ -63,12 +41,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						}
 					},
 					"response": []
@@ -86,33 +60,7 @@
 							"listen": "test",
 							"script": {
 								"id": "e6e72d40-d4f4-48bd-b188-07648dd95a00",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									"\r",
-									"console.log(\"Patient Section - Gender is Unknown is 0 .\");\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Body matches and contains administrativeGenderCode\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"administrativeGenderCode\");\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Admin Gender Code is 0 (Element Attribute)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"    \r",
-									"        let code = $('ParentPrescription > recordTarget > Patient > patientPerson > administrativeGenderCode').attr('code');\r",
-									"\r",
-									"        pm.expect(code).to.eql('0');\r",
-									"    }\r",
-									");"
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", "\r", "console.log(\"Patient Section - Gender is Unknown is 0 .\");\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "pm.test(\"Body matches and contains administrativeGenderCode\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"administrativeGenderCode\");\r", "});\r", "\r", "\r", "pm.test(\"Admin Gender Code is 0 (Element Attribute)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "    \r", "        let code = $('ParentPrescription > recordTarget > Patient > patientPerson > administrativeGenderCode').attr('code');\r", "\r", "        pm.expect(code).to.eql('0');\r", "    }\r", ");"],
 								"type": "text/javascript"
 							}
 						}
@@ -141,12 +89,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						}
 					},
 					"response": []
@@ -158,33 +102,7 @@
 							"listen": "test",
 							"script": {
 								"id": "10a29404-d8cb-46a7-afb1-d4be2229299d",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									"\r",
-									"console.log(\"Patient Section - Gender is Unknown is 0 .\");\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Body matches and contains administrativeGenderCode\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"administrativeGenderCode\");\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Admin Gender Code is 1 (Element Attribute)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"    \r",
-									"        let code = $('ParentPrescription > recordTarget > Patient > patientPerson > administrativeGenderCode').attr('code');\r",
-									"\r",
-									"        pm.expect(code).to.eql('1');\r",
-									"    }\r",
-									");"
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", "\r", "console.log(\"Patient Section - Gender is Unknown is 0 .\");\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "pm.test(\"Body matches and contains administrativeGenderCode\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"administrativeGenderCode\");\r", "});\r", "\r", "\r", "pm.test(\"Admin Gender Code is 1 (Element Attribute)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "    \r", "        let code = $('ParentPrescription > recordTarget > Patient > patientPerson > administrativeGenderCode').attr('code');\r", "\r", "        pm.expect(code).to.eql('1');\r", "    }\r", ");"],
 								"type": "text/javascript"
 							}
 						}
@@ -209,12 +127,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						}
 					},
 					"response": []
@@ -226,33 +140,7 @@
 							"listen": "test",
 							"script": {
 								"id": "b3687a2c-47b7-4633-8e21-e26530fa70ba",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									"\r",
-									"console.log(\"Patient Section - Gender is Female 2 .\");\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Body matches and contains administrativeGenderCode\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"administrativeGenderCode\");\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Admin Gender Code is Female (Element Attribute)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"    \r",
-									"        let code = $('ParentPrescription > recordTarget > Patient > patientPerson > administrativeGenderCode').attr('code');\r",
-									"\r",
-									"        pm.expect(code).to.eql('2');\r",
-									"    }\r",
-									");"
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", "\r", "console.log(\"Patient Section - Gender is Female 2 .\");\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "pm.test(\"Body matches and contains administrativeGenderCode\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"administrativeGenderCode\");\r", "});\r", "\r", "\r", "pm.test(\"Admin Gender Code is Female (Element Attribute)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "    \r", "        let code = $('ParentPrescription > recordTarget > Patient > patientPerson > administrativeGenderCode').attr('code');\r", "\r", "        pm.expect(code).to.eql('2');\r", "    }\r", ");"],
 								"type": "text/javascript"
 							}
 						}
@@ -277,12 +165,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						}
 					},
 					"response": []
@@ -300,33 +184,7 @@
 							"listen": "test",
 							"script": {
 								"id": "c04031f2-fea0-4abe-99c9-5b841a962949",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									" console.log(\"Patient Section -Address Details Home,Work etc.\");\r",
-									"\r",
-									"pm.test(\"Body contains element of either home,work etc\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"use\");\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Patient address usual is home work etc (Element value)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"        \r",
-									"        let use = $('ParentPrescription > recordTarget > Patient > addr').attr('use');\r",
-									"\r",
-									"        pm.expect(use).to.eql('H');\r",
-									"    }\r",
-									");\r",
-									""
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", " console.log(\"Patient Section -Address Details Home,Work etc.\");\r", "\r", "pm.test(\"Body contains element of either home,work etc\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"use\");\r", "});\r", "\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "pm.test(\"Patient address usual is home work etc (Element value)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "        \r", "        let use = $('ParentPrescription > recordTarget > Patient > addr').attr('use');\r", "\r", "        pm.expect(use).to.eql('H');\r", "    }\r", ");\r", ""],
 								"type": "text/javascript"
 							}
 						}
@@ -351,12 +209,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						},
 						"description": "https://data.developer.nhs.uk/dms/mim/4.2.00/Index.htm\r\n\r\nHL7 standard address use types supported by NPfIT:\r\n\r\n\"H\" - Home address\r\n\"HP\" - Primary home\r\n\"TMP\" -Temporary address\r\n“PST” - Correspondence address\r\n“WP” - Work address\r\n\r\nLow Priority as in the Compliance spec we have the following requirement 5.2.12 The System must not automatically synchronise PDS telecom numbers, including all ‘use’ attributes, as these are prone to synchronisation failures that then prevent the subsequent use of national services like the EPS until manually resolved."
 					},
@@ -369,33 +223,7 @@
 							"listen": "test",
 							"script": {
 								"id": "622e88ee-7f9e-45c0-9185-e37974194376",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									" console.log(\"Patient Section -Address Details Home,Work etc.\");\r",
-									"\r",
-									"pm.test(\"Body contains element of either home,work etc\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"use\");\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Patient address usual is temp (Element value)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"        \r",
-									"        let use = $('ParentPrescription > recordTarget > Patient > addr').attr('use');\r",
-									"\r",
-									"        pm.expect(use).to.eql('TMP');\r",
-									"    }\r",
-									");\r",
-									""
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", " console.log(\"Patient Section -Address Details Home,Work etc.\");\r", "\r", "pm.test(\"Body contains element of either home,work etc\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"use\");\r", "});\r", "\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "pm.test(\"Patient address usual is temp (Element value)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "        \r", "        let use = $('ParentPrescription > recordTarget > Patient > addr').attr('use');\r", "\r", "        pm.expect(use).to.eql('TMP');\r", "    }\r", ");\r", ""],
 								"type": "text/javascript"
 							}
 						}
@@ -420,12 +248,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						},
 						"description": "https://data.developer.nhs.uk/dms/mim/4.2.00/Index.htm\r\n\r\nHL7 standard address use types supported by NPfIT:\r\n\r\n\"H\" - Home address\r\n\"HP\" - Primary home\r\n\"TMP\" -Temporary address\r\n“PST” - Correspondence address\r\n“WP” - Work address\r\n\r\nLow Priority as in the Compliance spec we have the following requirement 5.2.12 The System must not automatically synchronise PDS telecom numbers, including all ‘use’ attributes, as these are prone to synchronisation failures that then prevent the subsequent use of national services like the EPS until manually resolved."
 					},
@@ -438,33 +262,7 @@
 							"listen": "test",
 							"script": {
 								"id": "7289a30b-9c78-409e-941d-19025a811932",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									" console.log(\"Patient Section -Address Details Home,Work etc.\");\r",
-									"\r",
-									"pm.test(\"Body contains element of either home,work etc\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"use\");\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Patient address usual is Billing (Element value)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"        \r",
-									"        let use = $('ParentPrescription > recordTarget > Patient > addr').attr('use');\r",
-									"\r",
-									"        pm.expect(use).to.eql('PST');\r",
-									"    }\r",
-									");\r",
-									""
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", " console.log(\"Patient Section -Address Details Home,Work etc.\");\r", "\r", "pm.test(\"Body contains element of either home,work etc\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"use\");\r", "});\r", "\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "pm.test(\"Patient address usual is Billing (Element value)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "        \r", "        let use = $('ParentPrescription > recordTarget > Patient > addr').attr('use');\r", "\r", "        pm.expect(use).to.eql('PST');\r", "    }\r", ");\r", ""],
 								"type": "text/javascript"
 							}
 						}
@@ -489,12 +287,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						},
 						"description": "https://data.developer.nhs.uk/dms/mim/4.2.00/Index.htm\r\n\r\nHL7 standard address use types supported by NPfIT:\r\n\r\n\"H\" - Home address\r\n\"HP\" - Primary home\r\n\"TMP\" -Temporary address\r\n“PST” - Correspondence address\r\n“WP” - Work address\r\n\r\nLow Priority as in the Compliance spec we have the following requirement 5.2.12 The System must not automatically synchronise PDS telecom numbers, including all ‘use’ attributes, as these are prone to synchronisation failures that then prevent the subsequent use of national services like the EPS until manually resolved."
 					},
@@ -507,32 +301,7 @@
 							"listen": "test",
 							"script": {
 								"id": "8d243074-4f41-4787-a5b8-d2439021e85a",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									" console.log(\"Patient Section -Address Details Home,Work etc.\");\r",
-									"\r",
-									"pm.test(\"Body contains element of either home,work etc\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"use\");\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Patient address usual is Work (Element value)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"        \r",
-									"        let use = $('ParentPrescription > recordTarget > Patient > addr').attr('use');\r",
-									"\r",
-									"        pm.expect(use).to.eql('WP');\r",
-									"    }\r",
-									");"
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", " console.log(\"Patient Section -Address Details Home,Work etc.\");\r", "\r", "pm.test(\"Body contains element of either home,work etc\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"use\");\r", "});\r", "\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "pm.test(\"Patient address usual is Work (Element value)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "        \r", "        let use = $('ParentPrescription > recordTarget > Patient > addr').attr('use');\r", "\r", "        pm.expect(use).to.eql('WP');\r", "    }\r", ");"],
 								"type": "text/javascript"
 							}
 						}
@@ -557,12 +326,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						},
 						"description": "https://data.developer.nhs.uk/dms/mim/4.2.00/Index.htm\r\n\r\nHL7 standard address use types supported by NPfIT:\r\n\r\n\"H\" - Home address\r\n\"HP\" - Primary home\r\n\"TMP\" -Temporary address\r\n“PST” - Correspondence address\r\n“WP” - Work address\r\n\r\nLow Priority as in the Compliance spec we have the following requirement 5.2.12 The System must not automatically synchronise PDS telecom numbers, including all ‘use’ attributes, as these are prone to synchronisation failures that then prevent the subsequent use of national services like the EPS until manually resolved."
 					},
@@ -575,34 +340,7 @@
 							"listen": "test",
 							"script": {
 								"id": "e5306af3-2fb6-425c-a55e-f23955f103c7",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									" console.log(\"Patient Section Address Line/lines.\");\r",
-									"\r",
-									"pm.test(\"Body contains element contains the correct Address Line/Lines\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"streetAddressLine\");\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Patient Address given 35 STEVENS LANE CLAYGATE SURREY (Element value)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"        \r",
-									"        let streetAddressLine = $('ParentPrescription > recordTarget > Patient > addr > streetAddressLine').text();\r",
-									" \r",
-									"        pm.expect(streetAddressLine).to.eql('35 STEVENS LANECLAYGATESURREY');\r",
-									"    }\r",
-									");\r",
-									"\r",
-									""
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", " console.log(\"Patient Section Address Line/lines.\");\r", "\r", "pm.test(\"Body contains element contains the correct Address Line/Lines\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"streetAddressLine\");\r", "});\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "\r", "pm.test(\"Patient Address given 35 STEVENS LANE CLAYGATE SURREY (Element value)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "        \r", "        let streetAddressLine = $('ParentPrescription > recordTarget > Patient > addr > streetAddressLine').text();\r", " \r", "        pm.expect(streetAddressLine).to.eql('35 STEVENS LANECLAYGATESURREY');\r", "    }\r", ");\r", "\r", ""],
 								"type": "text/javascript"
 							}
 						}
@@ -627,12 +365,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						}
 					},
 					"response": []
@@ -644,34 +378,7 @@
 							"listen": "test",
 							"script": {
 								"id": "7c7140dc-9765-418b-a0e0-8c34d7ae42a2",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									" console.log(\"Patient Section Postal Code.\");\r",
-									"\r",
-									"pm.test(\"Body contains the correct Postcode\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"postalCode\");\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Patient Patient Postcode Given (Element value)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"        \r",
-									"        let postalCode = $('ParentPrescription > recordTarget > Patient > addr > postalCode').text();\r",
-									" \r",
-									"        pm.expect(postalCode).to.eql('KT10 0TQ');\r",
-									"    }\r",
-									");\r",
-									"\r",
-									""
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", " console.log(\"Patient Section Postal Code.\");\r", "\r", "pm.test(\"Body contains the correct Postcode\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"postalCode\");\r", "});\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "\r", "pm.test(\"Patient Patient Postcode Given (Element value)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "        \r", "        let postalCode = $('ParentPrescription > recordTarget > Patient > addr > postalCode').text();\r", " \r", "        pm.expect(postalCode).to.eql('KT10 0TQ');\r", "    }\r", ");\r", "\r", ""],
 								"type": "text/javascript"
 							}
 						}
@@ -696,12 +403,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						}
 					},
 					"response": []
@@ -719,37 +422,7 @@
 							"listen": "test",
 							"script": {
 								"id": "3691585f-8b59-4643-86b8-d81b7c442b69",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									" console.log(\"Patient Section - Use is on FHIR not Hl7.\");\r",
-									"\r",
-									"pm.test(\"Body contains the correct Patients Name details\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"patientPerson\");\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Patient name usual is Official,usual etc (Element value)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"        \r",
-									"        let use = $('ParentPrescription > recordTarget > Patient > patientPerson > name ').attr('use');\r",
-									"\r",
-									"        pm.expect(use).to.eql('L');\r",
-									"    }\r",
-									");\r",
-									"\r",
-									"\r",
-									"\r",
-									""
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", " console.log(\"Patient Section - Use is on FHIR not Hl7.\");\r", "\r", "pm.test(\"Body contains the correct Patients Name details\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"patientPerson\");\r", "});\r", "\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "\r", "pm.test(\"Patient name usual is Official,usual etc (Element value)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "        \r", "        let use = $('ParentPrescription > recordTarget > Patient > patientPerson > name ').attr('use');\r", "\r", "        pm.expect(use).to.eql('L');\r", "    }\r", ");\r", "\r", "\r", "\r", ""],
 								"type": "text/javascript"
 							}
 						}
@@ -789,12 +462,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						},
 						"description": "HL7 standard name types supported by NPfIT:\r\n\r\n\"L\" - Usual (current) name\r\n\"A\" - Alias name\r\n \r\n\r\nNPfIT additions to the set of HL7 standard name types (NPfIT will be pursuing getting these [or suitable equivalents] added into the HL7 standard):\r\n\r\n\"PREFERRED\" - Preferred name\r\n\"PREVIOUS-BIRTH\" - Birth name\r\n\"PREVIOUS-BACHELOR\" - Bachelor name\r\n\"PREVIOUS-MAIDEN\" - Maiden name\r\n\"PREVIOUS\" - Other previous name\r\n\r\nLow Priority as in the Compliance spec we have the following requirement 5.2.12 The System must not automatically synchronise PDS telecom numbers, including all ‘use’ attributes, as these are prone to synchronisation failures that then prevent the subsequent use of national services like the EPS until manually resolved."
 					},
@@ -807,35 +476,7 @@
 							"listen": "test",
 							"script": {
 								"id": "8de7f745-6ca3-4e68-b107-397747d85038",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									" console.log(\"Patient Section - Use is on FHIR not Hl7.\");\r",
-									"\r",
-									"pm.test(\"Body contains the correct Patients Name details\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"patientPerson\");\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Patient name 'use' field is 'usual' and is equal to 'L' c (Element value)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"        \r",
-									"        let use = $('ParentPrescription > recordTarget > Patient > patientPerson > name ').attr('use');\r",
-									"\r",
-									"        pm.expect(use).to.eql('L');\r",
-									"    }\r",
-									");\r",
-									"\r",
-									""
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", " console.log(\"Patient Section - Use is on FHIR not Hl7.\");\r", "\r", "pm.test(\"Body contains the correct Patients Name details\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"patientPerson\");\r", "});\r", "\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "\r", "pm.test(\"Patient name 'use' field is 'usual' and is equal to 'L' c (Element value)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "        \r", "        let use = $('ParentPrescription > recordTarget > Patient > patientPerson > name ').attr('use');\r", "\r", "        pm.expect(use).to.eql('L');\r", "    }\r", ");\r", "\r", ""],
 								"type": "text/javascript"
 							}
 						}
@@ -875,12 +516,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						},
 						"description": "HL7 standard name types supported by NPfIT:\r\n\r\n\"L\" - Usual (current) name\r\n\"A\" - Alias name\r\n \r\n\r\nNPfIT additions to the set of HL7 standard name types (NPfIT will be pursuing getting these [or suitable equivalents] added into the HL7 standard):\r\n\r\n\"PREFERRED\" - Preferred name\r\n\"PREVIOUS-BIRTH\" - Birth name\r\n\"PREVIOUS-BACHELOR\" - Bachelor name\r\n\"PREVIOUS-MAIDEN\" - Maiden name\r\n\"PREVIOUS\" - Other previous name\r\n\r\nLow Priority as in the Compliance spec we have the following requirement 5.2.12 The System must not automatically synchronise PDS telecom numbers, including all ‘use’ attributes, as these are prone to synchronisation failures that then prevent the subsequent use of national services like the EPS until manually resolved."
 					},
@@ -893,34 +530,7 @@
 							"listen": "test",
 							"script": {
 								"id": "19007f47-1e47-4158-9174-943d701f1b8d",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									" console.log(\"Patient Section - Use is on FHIR not Hl7.\");\r",
-									"\r",
-									"pm.test(\"Body contains the correct Patients Name details\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"patientPerson\");\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Patient name 'use' field is 'Temp' and subsumes to 'A' (Element value)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"        \r",
-									"        let use = $('ParentPrescription > recordTarget > Patient > patientPerson > name ').attr('use');\r",
-									"\r",
-									"        pm.expect(use).to.eql('A');\r",
-									"    }\r",
-									");\r",
-									""
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", " console.log(\"Patient Section - Use is on FHIR not Hl7.\");\r", "\r", "pm.test(\"Body contains the correct Patients Name details\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"patientPerson\");\r", "});\r", "\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "\r", "pm.test(\"Patient name 'use' field is 'Temp' and subsumes to 'A' (Element value)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "        \r", "        let use = $('ParentPrescription > recordTarget > Patient > patientPerson > name ').attr('use');\r", "\r", "        pm.expect(use).to.eql('A');\r", "    }\r", ");\r", ""],
 								"type": "text/javascript"
 							}
 						}
@@ -960,12 +570,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						},
 						"description": "HL7 standard name types supported by NPfIT:\r\n\r\n\"L\" - Usual (current) name\r\n\"A\" - Alias name\r\n \r\n\r\nNPfIT additions to the set of HL7 standard name types (NPfIT will be pursuing getting these [or suitable equivalents] added into the HL7 standard):\r\n\r\n\"PREFERRED\" - Preferred name\r\n\"PREVIOUS-BIRTH\" - Birth name\r\n\"PREVIOUS-BACHELOR\" - Bachelor name\r\n\"PREVIOUS-MAIDEN\" - Maiden name\r\n\"PREVIOUS\" - Other previous name\r\n\r\nLow Priority as in the Compliance spec we have the following requirement 5.2.12 The System must not automatically synchronise PDS telecom numbers, including all ‘use’ attributes, as these are prone to synchronisation failures that then prevent the subsequent use of national services like the EPS until manually resolved."
 					},
@@ -978,34 +584,7 @@
 							"listen": "test",
 							"script": {
 								"id": "46bd3667-9db2-4dd4-b5a1-e3c54f8e3fe9",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									" console.log(\"Patient Section - Use is on FHIR not Hl7.\");\r",
-									"\r",
-									"pm.test(\"Body contains the correct Patients Name details\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"patientPerson\");\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Patient name 'use' field is 'anonymous' and equivalent to 'A' (Element value)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"        \r",
-									"        let use = $('ParentPrescription > recordTarget > Patient > patientPerson > name ').attr('use');\r",
-									"\r",
-									"        pm.expect(use).to.eql('A');\r",
-									"    }\r",
-									");\r",
-									""
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", " console.log(\"Patient Section - Use is on FHIR not Hl7.\");\r", "\r", "pm.test(\"Body contains the correct Patients Name details\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"patientPerson\");\r", "});\r", "\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "\r", "pm.test(\"Patient name 'use' field is 'anonymous' and equivalent to 'A' (Element value)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "        \r", "        let use = $('ParentPrescription > recordTarget > Patient > patientPerson > name ').attr('use');\r", "\r", "        pm.expect(use).to.eql('A');\r", "    }\r", ");\r", ""],
 								"type": "text/javascript"
 							}
 						}
@@ -1045,12 +624,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						},
 						"description": "HL7 standard name types supported by NPfIT:\r\n\r\n\"L\" - Usual (current) name\r\n\"A\" - Alias name\r\n \r\n\r\nNPfIT additions to the set of HL7 standard name types (NPfIT will be pursuing getting these [or suitable equivalents] added into the HL7 standard):\r\n\r\n\"PREFERRED\" - Preferred name\r\n\"PREVIOUS-BIRTH\" - Birth name\r\n\"PREVIOUS-BACHELOR\" - Bachelor name\r\n\"PREVIOUS-MAIDEN\" - Maiden name\r\n\"PREVIOUS\" - Other previous name\r\n\r\nLow Priority as in the Compliance spec we have the following requirement 5.2.12 The System must not automatically synchronise PDS telecom numbers, including all ‘use’ attributes, as these are prone to synchronisation failures that then prevent the subsequent use of national services like the EPS until manually resolved."
 					},
@@ -1063,34 +638,7 @@
 							"listen": "test",
 							"script": {
 								"id": "33bb9790-b443-4a0c-af00-2b23de6101b5",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									" console.log(\"Patient Section - Use is on FHIR not Hl7.\");\r",
-									"\r",
-									"pm.test(\"Body contains the correct Patients Name details\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"patientPerson\");\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Patient name 'use' field is 'nickname' and subsume to 'PREFERRED' (Element value)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"        \r",
-									"        let use = $('ParentPrescription > recordTarget > Patient > patientPerson > name ').attr('use');\r",
-									"\r",
-									"        pm.expect(use).to.eql('PREFERRED');\r",
-									"    }\r",
-									");\r",
-									""
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", " console.log(\"Patient Section - Use is on FHIR not Hl7.\");\r", "\r", "pm.test(\"Body contains the correct Patients Name details\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"patientPerson\");\r", "});\r", "\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "\r", "pm.test(\"Patient name 'use' field is 'nickname' and subsume to 'PREFERRED' (Element value)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "        \r", "        let use = $('ParentPrescription > recordTarget > Patient > patientPerson > name ').attr('use');\r", "\r", "        pm.expect(use).to.eql('PREFERRED');\r", "    }\r", ");\r", ""],
 								"type": "text/javascript"
 							}
 						}
@@ -1130,12 +678,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						},
 						"description": "HL7 standard name types supported by NPfIT:\r\n\r\n\"L\" - Usual (current) name\r\n\"A\" - Alias name\r\n \r\n\r\nNPfIT additions to the set of HL7 standard name types (NPfIT will be pursuing getting these [or suitable equivalents] added into the HL7 standard):\r\n\r\n\"PREFERRED\" - Preferred name\r\n\"PREVIOUS-BIRTH\" - Birth name\r\n\"PREVIOUS-BACHELOR\" - Bachelor name\r\n\"PREVIOUS-MAIDEN\" - Maiden name\r\n\"PREVIOUS\" - Other previous name\r\n\r\nLow Priority as in the Compliance spec we have the following requirement 5.2.12 The System must not automatically synchronise PDS telecom numbers, including all ‘use’ attributes, as these are prone to synchronisation failures that then prevent the subsequent use of national services like the EPS until manually resolved."
 					},
@@ -1148,34 +692,7 @@
 							"listen": "test",
 							"script": {
 								"id": "75387101-e886-46fd-aaa7-4c63730a7ee6",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									" console.log(\"Patient Section - Use is on FHIR not Hl7.\");\r",
-									"\r",
-									"pm.test(\"Body contains the correct Patients Name details\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"patientPerson\");\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Patient name 'use' field is 'old' and equivalent to 'PREVIOUS' (Element value)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"        \r",
-									"        let use = $('ParentPrescription > recordTarget > Patient > patientPerson > name ').attr('use');\r",
-									"\r",
-									"        pm.expect(use).to.eql('PREVIOUS');\r",
-									"    }\r",
-									");\r",
-									""
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", " console.log(\"Patient Section - Use is on FHIR not Hl7.\");\r", "\r", "pm.test(\"Body contains the correct Patients Name details\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"patientPerson\");\r", "});\r", "\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "\r", "pm.test(\"Patient name 'use' field is 'old' and equivalent to 'PREVIOUS' (Element value)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "        \r", "        let use = $('ParentPrescription > recordTarget > Patient > patientPerson > name ').attr('use');\r", "\r", "        pm.expect(use).to.eql('PREVIOUS');\r", "    }\r", ");\r", ""],
 								"type": "text/javascript"
 							}
 						}
@@ -1215,12 +732,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						},
 						"description": "HL7 standard name types supported by NPfIT:\r\n\r\n\"L\" - Usual (current) name\r\n\"A\" - Alias name\r\n \r\n\r\nNPfIT additions to the set of HL7 standard name types (NPfIT will be pursuing getting these [or suitable equivalents] added into the HL7 standard):\r\n\r\n\"PREFERRED\" - Preferred name\r\n\"PREVIOUS-BIRTH\" - Birth name\r\n\"PREVIOUS-BACHELOR\" - Bachelor name\r\n\"PREVIOUS-MAIDEN\" - Maiden name\r\n\"PREVIOUS\" - Other previous name\r\n\r\nLow Priority as in the Compliance spec we have the following requirement 5.2.12 The System must not automatically synchronise PDS telecom numbers, including all ‘use’ attributes, as these are prone to synchronisation failures that then prevent the subsequent use of national services like the EPS until manually resolved."
 					},
@@ -1233,34 +746,7 @@
 							"listen": "test",
 							"script": {
 								"id": "39d19087-f475-4d56-a816-fa59874e26b8",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									" console.log(\"Patient Section - Use is on FHIR not Hl7.\");\r",
-									"\r",
-									"pm.test(\"Body contains the correct Patients Name details\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"patientPerson\");\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Patient name 'use' field is 'maiden' and equal to 'PREVIOUS-MAIDEN' (Element value)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"        \r",
-									"        let use = $('ParentPrescription > recordTarget > Patient > patientPerson > name ').attr('use');\r",
-									"\r",
-									"        pm.expect(use).to.eql('PREVIOUS-MAIDEN');\r",
-									"    }\r",
-									");\r",
-									""
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", " console.log(\"Patient Section - Use is on FHIR not Hl7.\");\r", "\r", "pm.test(\"Body contains the correct Patients Name details\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"patientPerson\");\r", "});\r", "\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "\r", "pm.test(\"Patient name 'use' field is 'maiden' and equal to 'PREVIOUS-MAIDEN' (Element value)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "        \r", "        let use = $('ParentPrescription > recordTarget > Patient > patientPerson > name ').attr('use');\r", "\r", "        pm.expect(use).to.eql('PREVIOUS-MAIDEN');\r", "    }\r", ");\r", ""],
 								"type": "text/javascript"
 							}
 						}
@@ -1300,12 +786,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						},
 						"description": "HL7 standard name types supported by NPfIT:\r\n\r\n\"L\" - Usual (current) name\r\n\"A\" - Alias name\r\n \r\n\r\nNPfIT additions to the set of HL7 standard name types (NPfIT will be pursuing getting these [or suitable equivalents] added into the HL7 standard):\r\n\r\n\"PREFERRED\" - Preferred name\r\n\"PREVIOUS-BIRTH\" - Birth name\r\n\"PREVIOUS-BACHELOR\" - Bachelor name\r\n\"PREVIOUS-MAIDEN\" - Maiden name\r\n\"PREVIOUS\" - Other previous name\r\n\r\nLow Priority as in the Compliance spec we have the following requirement 5.2.12 The System must not automatically synchronise PDS telecom numbers, including all ‘use’ attributes, as these are prone to synchronisation failures that then prevent the subsequent use of national services like the EPS until manually resolved."
 					},
@@ -1318,33 +800,7 @@
 							"listen": "test",
 							"script": {
 								"id": "db391759-d43e-4274-85c6-483c52a03ff2",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									" console.log(\"Patient Section - Family is Surname.\");\r",
-									"\r",
-									"pm.test(\"Body contains the correct Patients Name details\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"family\");\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Family Surname is CORY (Element value)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"        \r",
-									"        let family = $('ParentPrescription > recordTarget > Patient > patientPerson > name > family').text();\r",
-									"\r",
-									"        pm.expect(family).to.eql('CORY');\r",
-									"    }\r",
-									");\r",
-									"\r",
-									""
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", " console.log(\"Patient Section - Family is Surname.\");\r", "\r", "pm.test(\"Body contains the correct Patients Name details\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"family\");\r", "});\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "pm.test(\"Family Surname is CORY (Element value)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "        \r", "        let family = $('ParentPrescription > recordTarget > Patient > patientPerson > name > family').text();\r", "\r", "        pm.expect(family).to.eql('CORY');\r", "    }\r", ");\r", "\r", ""],
 								"type": "text/javascript"
 							}
 						}
@@ -1369,12 +825,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						}
 					},
 					"response": []
@@ -1386,34 +838,7 @@
 							"listen": "test",
 							"script": {
 								"id": "0f54b161-2241-40a2-a872-817f2059e6e1",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									" console.log(\"Patient Section - Name Given.\");\r",
-									"\r",
-									"pm.test(\"Body contains the correct Patients Name details\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"given\");\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"Patient name given 'James' (Element value)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"        \r",
-									"        let given = $('ParentPrescription > recordTarget > Patient > patientPerson > name > given').text();\r",
-									" \r",
-									"        pm.expect(given).to.eql('James');\r",
-									"    }\r",
-									");\r",
-									"\r",
-									""
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", " console.log(\"Patient Section - Name Given.\");\r", "\r", "pm.test(\"Body contains the correct Patients Name details\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"given\");\r", "});\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "\r", "pm.test(\"Patient name given 'James' (Element value)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "        \r", "        let given = $('ParentPrescription > recordTarget > Patient > patientPerson > name > given').text();\r", " \r", "        pm.expect(given).to.eql('James');\r", "    }\r", ");\r", "\r", ""],
 								"type": "text/javascript"
 							}
 						}
@@ -1438,12 +863,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						}
 					},
 					"response": []
@@ -1455,34 +876,7 @@
 							"listen": "test",
 							"script": {
 								"id": "5f3fe427-bda3-4b73-baf4-f5f3109d0d60",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									" console.log(\"Patient Section - Title of Patient.\");\r",
-									"\r",
-									"pm.test(\"Body contains the correct Patients Name details\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"prefix\");\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Patient name prefix is MR (Element value)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"        \r",
-									"        let prefix = $('ParentPrescription > recordTarget > Patient > patientPerson > name > prefix').text();\r",
-									"\r",
-									"        pm.expect(prefix).to.eql('Mr');\r",
-									"    }\r",
-									");\r",
-									"\r",
-									"\r",
-									""
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", " console.log(\"Patient Section - Title of Patient.\");\r", "\r", "pm.test(\"Body contains the correct Patients Name details\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"prefix\");\r", "});\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "pm.test(\"Patient name prefix is MR (Element value)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "        \r", "        let prefix = $('ParentPrescription > recordTarget > Patient > patientPerson > name > prefix').text();\r", "\r", "        pm.expect(prefix).to.eql('Mr');\r", "    }\r", ");\r", "\r", "\r", ""],
 								"type": "text/javascript"
 							}
 						}
@@ -1507,12 +901,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						}
 					},
 					"response": []
@@ -1524,34 +914,7 @@
 							"listen": "test",
 							"script": {
 								"id": "b5382404-e0e6-4036-9aca-ee5fbf3b4a36",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									" console.log(\"Patient Section - Title of Patient.\");\r",
-									"\r",
-									"pm.test(\"Body contains the correct Patients Name details\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"prefix\");\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Patient name prefix is MRS (Element value)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"        \r",
-									"        let prefix = $('ParentPrescription > recordTarget > Patient > patientPerson > name > prefix').text();\r",
-									"\r",
-									"        pm.expect(prefix).to.eql('MRS');\r",
-									"    }\r",
-									");\r",
-									"\r",
-									"\r",
-									""
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", " console.log(\"Patient Section - Title of Patient.\");\r", "\r", "pm.test(\"Body contains the correct Patients Name details\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"prefix\");\r", "});\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "pm.test(\"Patient name prefix is MRS (Element value)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "        \r", "        let prefix = $('ParentPrescription > recordTarget > Patient > patientPerson > name > prefix').text();\r", "\r", "        pm.expect(prefix).to.eql('MRS');\r", "    }\r", ");\r", "\r", "\r", ""],
 								"type": "text/javascript"
 							}
 						}
@@ -1576,12 +939,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						}
 					},
 					"response": []
@@ -1593,34 +952,7 @@
 							"listen": "test",
 							"script": {
 								"id": "ec855fec-e8fd-470a-a1f2-6408221af73e",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									" console.log(\"Patient Section - Title of Patient.\");\r",
-									"\r",
-									"pm.test(\"Body contains the correct Patients Name details\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"prefix\");\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Patient name prefix is MISS (Element value)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"        \r",
-									"        let prefix = $('ParentPrescription > recordTarget > Patient > patientPerson > name > prefix').text();\r",
-									"\r",
-									"        pm.expect(prefix).to.eql('MISS');\r",
-									"    }\r",
-									");\r",
-									"\r",
-									"\r",
-									""
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", " console.log(\"Patient Section - Title of Patient.\");\r", "\r", "pm.test(\"Body contains the correct Patients Name details\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"prefix\");\r", "});\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "pm.test(\"Patient name prefix is MISS (Element value)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "        \r", "        let prefix = $('ParentPrescription > recordTarget > Patient > patientPerson > name > prefix').text();\r", "\r", "        pm.expect(prefix).to.eql('MISS');\r", "    }\r", ");\r", "\r", "\r", ""],
 								"type": "text/javascript"
 							}
 						}
@@ -1645,12 +977,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						}
 					},
 					"response": []
@@ -1668,33 +996,7 @@
 							"listen": "test",
 							"script": {
 								"id": "5f3b8915-c934-457d-b2a2-fd914ca63b0c",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									"\r",
-									"console.log(\"Patient Section - Valid Date of birth .\");\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Bodycontains BirthTime\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"birthTime\");\r",
-									"});\r",
-									"\r",
-									"\r",
-									"pm.test(\"birthTime is 19730525 (Element Attribute)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"    \r",
-									"        let value = $('ParentPrescription > recordTarget > Patient > patientPerson > birthTime').attr('value');\r",
-									"console.log(value);\r",
-									"        pm.expect(value).to.eql ('19990104');\r",
-									"    }\r",
-									");"
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", "\r", "console.log(\"Patient Section - Valid Date of birth .\");\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "pm.test(\"Bodycontains BirthTime\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"birthTime\");\r", "});\r", "\r", "\r", "pm.test(\"birthTime is 19730525 (Element Attribute)\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "    \r", "        let value = $('ParentPrescription > recordTarget > Patient > patientPerson > birthTime').attr('value');\r", "console.log(value);\r", "        pm.expect(value).to.eql ('19990104');\r", "    }\r", ");"],
 								"type": "text/javascript"
 							}
 						}
@@ -1719,12 +1021,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						}
 					},
 					"response": []
@@ -1807,12 +1105,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						}
 					},
 					"response": []
@@ -1824,47 +1118,7 @@
 							"listen": "test",
 							"script": {
 								"id": "eca7e616-6abe-4e8a-bd1c-b7213295b3aa",
-								"exec": [
-									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
-									"\r",
-									"console.log(\"Patient Section - Patients GP Surgery.\");\r",
-									"\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Body contains the Patients Current GP Surgery\", function () {\r",
-									"    pm.expect(pm.response.text()).to.include(\"healthCareProvider\");\r",
-									"});\r",
-									"\r",
-									"pm.test(\"Patient's GP Surgery is mapped to the correct NPFIT Ref 1.2.826.0.1285.0.1.10 (Element value)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"        \r",
-									"        let healthCareProviderRoot = $('ParentPrescription > recordTarget > Patient > patientPerson > playedProviderPatient > subjectOf > patientCareProvision > responsibleParty > healthCareProvider > id').attr('root');\r",
-									"\r",
-									"        pm.expect(healthCareProviderRoot).to.eql('1.2.826.0.1285.0.1.10');\r",
-									"    }\r",
-									");\r",
-									"\r",
-									"//EPS ParentPrescription mapping recordTarget .Patient .patientPerson .playedProviderPatient .subjectOf .playedProviderPatient .patientCareProvision\r",
-									"\r",
-									"pm.test(\"Patient's GP Surgery is Branch Surgery is H81109 (Element Attribute)\", \r",
-									"    function () {\r",
-									"        const $ = cheerio.load(pm.response.text(), {\r",
-									"            normalizeWhitespace: true,\r",
-									"            xmlMode: true\r",
-									"        });\r",
-									"    \r",
-									"        let code = $('ParentPrescription > recordTarget > Patient > patientPerson > playedProviderPatient > subjectOf > patientCareProvision > responsibleParty > healthCareProvider > id').attr('nullFlavor');\r",
-									"\r",
-									"        pm.expect(code).to.eql('UNK');\r",
-									"    }\r",
-									");"
-								],
+								"exec": ["console.log('base_url: ' + pm.environment.get('base_url'));\r", "\r", "console.log(\"Patient Section - Patients GP Surgery.\");\r", "\r", "pm.test(\"Status code is 200\", function () {\r", "    pm.response.to.have.status(200);\r", "});\r", "\r", "pm.test(\"Body contains the Patients Current GP Surgery\", function () {\r", "    pm.expect(pm.response.text()).to.include(\"healthCareProvider\");\r", "});\r", "\r", "//EPS ParentPrescription mapping recordTarget .Patient .patientPerson .playedProviderPatient .subjectOf .playedProviderPatient .patientCareProvision\r", "\r", "pm.test(\"Patient's GP Surgery is nullFlavor 'UNK'\", \r", "    function () {\r", "        const $ = cheerio.load(pm.response.text(), {\r", "            normalizeWhitespace: true,\r", "            xmlMode: true\r", "        });\r", "    \r", "        let code = $('ParentPrescription > recordTarget > Patient > patientPerson > playedProviderPatient > subjectOf > patientCareProvision > responsibleParty > healthCareProvider > id').attr('nullFlavor');\r", "\r", "        pm.expect(code).to.eql('UNK');\r", "    }\r", ");"],
 								"type": "text/javascript"
 							}
 						}
@@ -1904,12 +1158,8 @@
 						},
 						"url": {
 							"raw": "{{base_url}}{{route}}/$convert",
-							"host": [
-								"{{base_url}}{{route}}"
-							],
-							"path": [
-								"$convert"
-							]
+							"host": ["{{base_url}}{{route}}"],
+							"path": ["$convert"]
 						}
 					},
 					"response": []
