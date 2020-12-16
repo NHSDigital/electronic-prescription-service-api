@@ -167,9 +167,9 @@
           ],
           "quantity": {
             "value": 63,
-            "unit": "tablet",
+            "unit": "Tablet",
             "system": "http://snomed.info/sct",
-            "code": "428673006"
+            "code": "385055001"
           },
           "performer": {
             "identifier": {
