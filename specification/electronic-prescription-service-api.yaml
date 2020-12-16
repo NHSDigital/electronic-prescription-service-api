@@ -11,6 +11,7 @@ info:
     email: "api.management@nhs.net"
   description: |
     ## Overview
+    <style>.codeinline.example {word-wrap: anywhere;}</style>
     Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service) - the national service used to send electronic prescription messages between prescribers and dispensers.
 
     You can:
