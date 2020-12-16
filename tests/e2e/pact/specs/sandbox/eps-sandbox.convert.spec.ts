@@ -1,4 +1,4 @@
-import {InteractionObject, Matchers} from "@pact-foundation/pact"
+import {InteractionObject, Matchers } from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
@@ -40,14 +40,14 @@ jestpact.pactWith(
               "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             method: "POST",
-            path: "/$convert",
+            path: apiPath,
             body: requestJson
           },
           willRespondWith: {
             headers: {
               "Content-Type": "text/plain; charset=utf-8"
             },
-            body: Matchers.term({ generate: response, matcher: responseMatcher }),
+            body: Matchers.regex({ matcher: responseMatcher, generate: response }),
             status: 200
           }
         }
@@ -55,7 +55,7 @@ jestpact.pactWith(
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-          .send(requestJson)
+          .send(requestStr)
           .expect(200)
       })
     })
