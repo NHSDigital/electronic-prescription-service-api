@@ -3,7 +3,7 @@
   "id": "0A1FD9EF-A3D5-4E95-84CD-552070A03083",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "0A1FD9EF-A3D5-4E95-84CD-552070A03083"
+    "value": "0A1FD9EF-A3D5-4E95-84CD-252070A23086"
   },
   "type": "message",
   "entry": [
@@ -278,18 +278,18 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/sds-user-id",
-            "value": "555086689106"
+            "value": "555086690109"
           },
           {
-            "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-            "value": "6150129"
+            "system": "https://fhir.hl7.org.uk/Id/nmc-number",
+            "value": "12A3456B"
           }
         ],
         "name": [
           {
-            "family": "FIFTYSEVEN",
+            "family": "Userq",
             "given": [
-              "RANDOM"
+              "Random"
             ],
             "prefix": [
               "MR"
@@ -306,11 +306,7 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-            "value": "601986680555"
-          },
-          {
-            "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
-            "value": "683458"
+            "value": "100102238986"
           }
         ],
         "practitioner": {
@@ -324,8 +320,8 @@
             "coding": [
               {
                 "system": "https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName",
-                "code": "R8000",
-                "display": "Clinical Practitioner Access Role "
+                "code": "R8001",
+                "display": "Nurse Access Role"
               }
             ]
           }
