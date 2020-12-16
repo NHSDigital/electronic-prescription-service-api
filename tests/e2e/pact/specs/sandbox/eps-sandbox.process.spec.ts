@@ -39,18 +39,18 @@ jestpact.pactWith(
             body: JSON.parse(messageStr)
           },
           willRespondWith: {
-            // headers: {
-            //   "Content-Type": "application/fhir+json; fhirVersion=4.0"
-            // },
-            // body: {
-            //   resourceType: "OperationOutcome",
-            //   issue: [
-            //     {
-            //       code: Matchers.string("informational"),
-            //       severity: Matchers.string("information")
-            //     }
-            //   ]
-            // },
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: {
+              resourceType: "OperationOutcome",
+              issue: [
+                {
+                  code: Matchers.string("informational"),
+                  severity: Matchers.string("information")
+                }
+              ]
+            },
             status: 200
           }
         }
