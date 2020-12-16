@@ -56,11 +56,10 @@ extends:
           fi
 
           export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
-
           export PACT_BROKER_NEXT_URL=$(PACT_BROKER_NEXT_URL)
           export PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
-          export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH
           export PACT_CONSUMER=nhsd-apim-eps-test-client
+          export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH
 
           if [[ "$APIGEE_ENVIRONMENT" == *"sandbox"* ]]; then
             export PACT_PROVIDER=nhsd-apim-eps-sandbox
@@ -83,11 +82,6 @@ extends:
               export APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest "$IDP_URL")
             fi
           fi
-
-          export PACT_BROKER_URL=$(PACT_BROKER_URL)
-          export PACT_BROKER_BASIC_AUTH_USERNAME=$(PACT_BROKER_BASIC_AUTH_USERNAME)
-          export PACT_BROKER_BASIC_AUTH_PASSWORD=$(PACT_BROKER_BASIC_AUTH_PASSWORD)
-          export PACT_CONSUMER=nhsd-apim-eps-test-client
 
           # Publish
           cd $SERVICE_NAME/$SERVICE_ARTIFACT_NAME/pact
@@ -112,8 +106,10 @@ extends:
           done
 
           # Verify
-          chmod +x ./broker/verify.ts
-          make verify-pacts
+          #chmod +x ./broker/verify.ts
+          #make verify-pacts
+          docker pull pactfoundation/pact-cli:latest > /dev/null 2>&1
+          docker run -it --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_NEXT_URL -e PACT_BROKER_TOKEN=$PACT_BROKER_NEXT_TOKEN -e PACT_BROKER_PUBLISH_VERIFICATION_RESULTS=true -e PACT_PROVIDER=$PACT_PROVIDER -e PACT_VERSION=$PACT_VERSION -e PACT_PROVIDER_URL=$PACT_PROVIDER_URL pactfoundation/pact-cli:latest verify --provider-base-url $PACT_PROVIDER_URL --provider $PACT_PROVIDER+$PACT_VERSION --provider-app-version $PACT_VERSION
 
           # # Tag
           # docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest broker create-version-tag --pacticipant=$PACT_PROVIDER+$PACT_VERSION --version=$PACT_VERSION --tag=$APIGEE_ENVIRONMENT

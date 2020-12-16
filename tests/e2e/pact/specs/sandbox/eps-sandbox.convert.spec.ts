@@ -1,4 +1,4 @@
-import {InteractionObject, MatchersV3} from "@pact-foundation/pact"
+import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
@@ -47,7 +47,7 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "text/plain; charset=utf-8"
             },
-            body: MatchersV3.regex(responseMatcher, response),
+            body: Matchers.regex({ matcher: responseMatcher, generate: response }),
             status: 200
           }
         }
