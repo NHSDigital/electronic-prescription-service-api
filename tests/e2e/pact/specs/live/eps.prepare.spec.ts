@@ -37,9 +37,7 @@ jestpact.pactWith(
 
     describe("prepare e2e tests", () => {
 
-      const prepareCasesSubset = TestResources.prepareCases.splice(0, 5)
-
-      test.each(prepareCasesSubset)("should be able to prepare a %s message", async (desc: string, inputMessage: Bundle, outputMessage: Parameters) => {
+      test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (desc: string, inputMessage: Bundle, outputMessage: Parameters) => {
         const apiPath = "/$prepare"
         const inputMessageStr = LosslessJson.stringify(inputMessage)
 
