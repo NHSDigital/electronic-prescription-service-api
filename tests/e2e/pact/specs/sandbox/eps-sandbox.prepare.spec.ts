@@ -24,13 +24,6 @@ jestpact.pactWith(
       test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (description: string, request: Bundle, response: Parameters) => {
         const apiPath = "/$prepare"
         const requestStr = LosslessJson.stringify(request)
-
-        const outputMessageDigest = response.parameter
-          .find(p => p.name === "digest").valueString
-        const outputMessageFragments = response.parameter
-          .find(p => p.name === "fragments").valueString
-        const outputMessageDisplay = response.parameter
-          .find(p => p.name === "display").valueString
           
         const interaction: InteractionObject = {
           state: "is not authenticated",
@@ -47,27 +40,7 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/json"
             },
-            body: {
-              resourceType: "Parameters",
-              parameter: [
-                {
-                  name: "fragments",
-                  valueString: Matchers.like(outputMessageFragments)
-                },
-                {
-                  name: "digest",
-                  valueString: `${outputMessageDigest}`
-                },
-                {
-                  name: "display",
-                  valueString: Matchers.like(outputMessageDisplay)
-                },
-                {
-                  name: "algorithm",
-                  valueString: "RS1"
-                }
-              ]
-            },
+            body: response,
             status: 200
           }
         }
