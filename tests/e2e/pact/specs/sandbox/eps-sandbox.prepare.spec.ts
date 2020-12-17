@@ -21,7 +21,7 @@ jestpact.pactWith(
 
     describe("prepare sandbox e2e tests", () => {
 
-      const prepareCasesSubset = TestResources.prepareCases.splice(0, 10)
+      const prepareCasesSubset = TestResources.prepareCases.splice(0, 5)
 
       test.each(prepareCasesSubset)("should be able to prepare a %s message", async (description: string, request: Bundle, response: Parameters) => {
         const apiPath = "/$prepare"

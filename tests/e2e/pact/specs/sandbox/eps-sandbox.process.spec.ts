@@ -22,7 +22,7 @@ jestpact.pactWith(
 
     describe("process-message sandbox e2e tests", () => {
 
-      const processCasesSubset = TestResources.processCases.splice(0, 10)
+      const processCasesSubset = TestResources.processCases.splice(0, 5)
 
       test.each(processCasesSubset)("should be able to process %s", async (desc: string, message: Bundle) => {
         const apiPath = "/$process-message"
