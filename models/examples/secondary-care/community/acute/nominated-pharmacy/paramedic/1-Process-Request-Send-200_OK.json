@@ -87,7 +87,7 @@
             "coding": [
               {
                 "system": "http://snomed.info/sct",
-                "code": "321249002",
+                "code": "321247000",
                 "display": "Chlordiazepoxide 5mg capsules"
               }
             ]
@@ -319,7 +319,7 @@
             "coding": [
               {
                 "system": "http://snomed.info/sct",
-                "code": "376689003",
+                "code": "321881001",
                 "display": "Trazodone 50mg capsules"
               }
             ]
@@ -435,7 +435,7 @@
             "coding": [
               {
                 "system": "http://snomed.info/sct",
-                "code": "415165003",
+                "code": "38020011000001104",
                 "display": "Pregabalin 300mg tablets"
               }
             ]
@@ -497,7 +497,7 @@
             ],
             "quantity": {
               "value": 10,
-              "unit": "Tablet",
+              "unit": "tablet",
               "system": "http://snomed.info/sct",
               "code": "385055001"
             },
@@ -591,7 +591,7 @@
             },
             {
               "system": "https://fhir.hl7.org.uk/Id/gphc-number",
-              "value": "2083469"
+              "value": "PA083469"
             }
           ],
           "name": [
