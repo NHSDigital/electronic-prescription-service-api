@@ -3,7 +3,8 @@ import {Bundle} from "../../models/fhir/fhir-resources"
 import Hapi from "@hapi/hapi"
 import {validatingHandler} from "../util"
 
-const CONTENT_TYPE = "application/fhir+json; fhirVersion=4.0"
+const CONTENT_TYPE_FHIR = "application/fhir+json; fhirVersion=4.0"
+const CONTENT_TYPE_JSON = "application/json"
 
 export default [
   /*
@@ -13,9 +14,11 @@ export default [
     method: "POST",
     path: "/$prepare",
     handler: validatingHandler(
-      (requestPayload: Bundle, _: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+      (requestPayload: Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+        const isSmokeTest = request.headers["x-smoke-test"]
+        const contentType = isSmokeTest ? CONTENT_TYPE_JSON : CONTENT_TYPE_FHIR
         const response = translator.convertFhirMessageToSignedInfoMessage(requestPayload)
-        return responseToolkit.response(response).code(200).header("Content-Type", CONTENT_TYPE)
+        return responseToolkit.response(response).code(200).header("Content-Type", contentType)
       }
     )
   } as Hapi.ServerRoute
