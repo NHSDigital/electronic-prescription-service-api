@@ -26,7 +26,6 @@ pool:
 variables:
   - template: project.yml
   - group: pact
-  - group: variable-group-read
 
 extends:
   template: azure-release-template.yml
