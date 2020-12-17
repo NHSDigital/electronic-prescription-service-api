@@ -33,7 +33,7 @@ jestpact.pactWith(
           .find(p => p.name === "display").valueString
           
         const interaction: InteractionObject = {
-          state: "",
+          state: "is not authenticated",
           uponReceiving: `a request to prepare a ${description} message`,
           withRequest: {
             headers: {

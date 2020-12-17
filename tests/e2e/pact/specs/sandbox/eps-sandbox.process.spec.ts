@@ -26,7 +26,7 @@ jestpact.pactWith(
         const apiPath = "/$process-message"
         const messageStr = LosslessJson.stringify(message)
         const interaction: InteractionObject = {
-          state: "",
+          state: "is not authenticated",
           uponReceiving: `a request to process ${desc} message to Spine`,
           withRequest: {
             headers: {
