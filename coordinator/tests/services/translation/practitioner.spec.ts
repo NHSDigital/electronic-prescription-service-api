@@ -6,7 +6,7 @@ import * as TestResources from "../../resources/test-resources"
 import * as common from "../../../src/services/translation/common/getResourcesOfType"
 import {getMessageHeader, getProvenances} from "../../../src/services/translation/common/getResourcesOfType"
 import {MessageType} from "../../../src/routes/util"
-import {InvalidValueError} from "../../../src/models/errors/processing-errors";
+import {InvalidValueError} from "../../../src/models/errors/processing-errors"
 
 describe("getAgentPersonTelecom", () => {
   const roleTelecom: Array<fhir.ContactPoint> = [
@@ -136,7 +136,7 @@ describe("convertAuthor", () => {
 
   test("includes N/A signatureText field for a message which isn't signed", () => {
     getMessageHeader(bundle).eventCoding.code = MessageType.PRESCRIPTION
-    bundle.entry.filter(e => e.resource.resourceType === "Provenance").forEach(bundle.entry.remove)
+    bundle.entry.filter(e => e.resource.resourceType === "Provenance").forEach(e => bundle.entry.remove(e))
     const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
     expect(Object.keys(result)).toContain("signatureText")
     expect(result.signatureText._attributes.nullFlavor).toEqual("NA")
