@@ -15,7 +15,7 @@ export default [
       async (requestPayload: Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const spineRequest = translator.convertFhirMessageToSpineRequest(requestPayload)
         const spineResponse = await requestHandler.send(spineRequest, request.logger)
-        return handleResponse(spineResponse, responseToolkit)
+        return handleResponse(request, spineResponse, responseToolkit)
       }
     )
   } as Hapi.ServerRoute

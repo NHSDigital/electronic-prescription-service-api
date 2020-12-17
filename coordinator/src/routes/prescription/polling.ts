@@ -8,6 +8,6 @@ export default [{
   path: "/_poll/{poll_path}",
   handler: async (request: Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     const spineResponse = await requestHandler.poll(request.params.poll_path, request.logger)
-    return handleResponse(spineResponse, responseToolkit)
+    return handleResponse(request, spineResponse, responseToolkit)
   }
 }]
