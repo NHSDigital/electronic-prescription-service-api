@@ -1,5 +1,4 @@
 import { VerifierV3 } from "@pact-foundation/pact"
-import { pactWith } from "jest-pact";
 
 let endpoint: string
 
