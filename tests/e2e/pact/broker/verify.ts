@@ -17,7 +17,7 @@ function sleep(milliseconds: number) {
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verify(): Promise<any> { 
     sleep(sleepMs)
-    sleepMs = Math.min((sleepMs + 5000) * 2, 70000)
+    sleepMs = (sleepMs + 5000) * 2
     const isLocal = process.env.PACT_PROVIDER_URL === "http://localhost:9000"
     const verifier =  new VerifierV3({
       publishVerificationResult: !isLocal,
@@ -58,18 +58,21 @@ async function verify(): Promise<any> {
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyConvert(): Promise<any> {
   endpoint = "convert"
+  sleepMs = 0
   await verify().catch(verify).catch(verify)
 }
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyPrepare(): Promise<any> { 
   endpoint = "prepare"
+  sleepMs = 0
   await verify().catch(verify).catch(verify)
 }
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyProcess(): Promise<any> { 
   endpoint = "process"
+  sleepMs = 0
   await verify().catch(verify).catch(verify)
 }
 
