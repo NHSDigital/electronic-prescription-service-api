@@ -165,6 +165,18 @@ const asyncMultipleError: ExampleSpineResponse = {
   acknowledgementCode: "AE"
 }
 
+const cancellationSuccess: ExampleSpineResponse = {
+  response: {
+    body: fs.readFileSync(
+      path.join(__dirname, "./spine-responses/cancel_success.xml"),
+      "utf8"
+    ),
+    statusCode: 200
+  },
+  spineErrorCode: "0001",
+  acknowledgementCode: "AA"
+}
+
 const cancellationError: ExampleSpineResponse = {
   response: {
     body: fs.readFileSync(
@@ -181,5 +193,6 @@ export const spineResponses = {
   success: asyncSuccess,
   singleErrors: [syncError, asyncError],
   multipleErrors: [syncMultipleError, asyncMultipleError],
+  cancellationSuccess: cancellationSuccess,
   cancellationError: cancellationError
 }
