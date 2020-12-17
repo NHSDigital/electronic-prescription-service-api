@@ -3,16 +3,38 @@ import * as jestpact from "jest-pact"
 import * as TestResources from "../../resources/test-resources"
 import { Bundle, Parameters } from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
+import { createUnauthorisedInteraction } from "./eps-auth"
+import supertest from "supertest"
 
 jestpact.pactWith(
   {
     spec: 3,
     consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-    provider: `nhsd-apim-eps+${process.env.PACT_VERSION}`,
+    provider: `nhsd-apim-eps+prepare+${process.env.PACT_VERSION}`,
     pactfileWriteMode: "merge"
   },
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
+    const client = () => {
+      const url = `${provider.mockService.baseUrl}`
+      return supertest(url)
+    }
+
+    const authenticationTestDescription = "a request to prepare an unauthorised message"
+    
+    describe("endpoint authentication e2e tests", () => {
+      test(authenticationTestDescription, async () => {
+        const apiPath = "/$prepare"
+        const interaction: InteractionObject = createUnauthorisedInteraction(authenticationTestDescription, apiPath)
+        await provider.addInteraction(interaction)
+        await client()
+          .post(apiPath)
+          .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+          .send({})
+          .expect(401)
+      })
+    })
+
     describe("prepare e2e tests", () => {
 
       const prepareCasesSubset = TestResources.prepareCases.splice(0, 5)
@@ -22,7 +44,7 @@ jestpact.pactWith(
         const inputMessageStr = LosslessJson.stringify(inputMessage)
 
         const interaction: InteractionObject = {
-          state: "",
+          state: "is authenticated",
           uponReceiving: `a request to prepare ${desc} message`,
           withRequest: {
             headers: {
@@ -41,6 +63,11 @@ jestpact.pactWith(
           }
         }
         await provider.addInteraction(interaction)
+        await client()
+            .post(apiPath)
+            .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+            .send(inputMessageStr)
+            .expect(200)
       })
     })
   }

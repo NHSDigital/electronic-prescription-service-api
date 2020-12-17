@@ -4,12 +4,13 @@ import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
 import {Bundle} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
+import {createUnauthorisedInteraction} from "./eps-auth"
 
 jestpact.pactWith(
   {
     spec: 3,
     consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-    provider: `nhsd-apim-eps+${process.env.PACT_VERSION}`,
+    provider: `nhsd-apim-eps+convert+${process.env.PACT_VERSION}`,
     pactfileWriteMode: "merge"
   },
   /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -18,6 +19,21 @@ jestpact.pactWith(
       const url = `${provider.mockService.baseUrl}`
       return supertest(url)
     }
+
+    const authenticationTestDescription = "a request to convert an unauthorised message"
+    
+    describe("endpoint authentication e2e tests", () => {
+      test(authenticationTestDescription, async () => {
+        const apiPath = "/$convert"
+        const interaction: InteractionObject = createUnauthorisedInteraction(authenticationTestDescription, apiPath)
+        await provider.addInteraction(interaction)
+        await client()
+          .post(apiPath)
+          .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+          .send({})
+          .expect(401)
+      })
+    })
 
     describe("convert e2e tests", () => {
 
