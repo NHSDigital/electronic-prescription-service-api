@@ -99,7 +99,7 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "408015000",
+              "code": "123456789",
               "display": "Moxifloxacin 400mg tablets"
             }
           ]
