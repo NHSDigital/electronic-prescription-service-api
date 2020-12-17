@@ -9,7 +9,7 @@ jestpact.pactWith(
   {
     spec: 3,
     consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-    provider: `nhsd-apim-eps-sandbox+${process.env.PACT_VERSION}`,
+    provider: `nhsd-apim-eps-sandbox_prepare+${process.env.PACT_VERSION}`,
     pactfileWriteMode: "merge"
   },
   /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -21,9 +21,7 @@ jestpact.pactWith(
 
     describe("prepare sandbox e2e tests", () => {
 
-      const prepareCasesSubset = TestResources.prepareCases.splice(0, 5)
-
-      test.each(prepareCasesSubset)("should be able to prepare a %s message", async (description: string, request: Bundle, response: Parameters) => {
+      test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (description: string, request: Bundle, response: Parameters) => {
         const apiPath = "/$prepare"
         const requestStr = LosslessJson.stringify(request)
 
