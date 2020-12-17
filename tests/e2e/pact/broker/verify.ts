@@ -48,7 +48,7 @@ async function verify(): Promise<any> {
       },
       pactUrls: isLocal 
         ? [
-          `${process.cwd()}/pact/pacts/${process.env.PACT_CONSUMER}_${endpoint}+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${process.env.PACT_VERSION}.json`
+          `${process.cwd()}/pact/pacts/${process.env.PACT_CONSUMER}+${endpoint}+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${process.env.PACT_VERSION}.json`
         ]
         : []
     })
