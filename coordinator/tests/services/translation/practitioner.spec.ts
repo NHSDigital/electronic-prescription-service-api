@@ -4,7 +4,7 @@ import * as practitioner from "../../../src/services/translation/prescription/pr
 import * as helpers from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
 import * as common from "../../../src/services/translation/common/getResourcesOfType"
-import {getMessageHeader} from "../../../src/services/translation/common/getResourcesOfType"
+import {getMessageHeader, getProvenances} from "../../../src/services/translation/common/getResourcesOfType"
 import {MessageType} from "../../../src/routes/util"
 
 describe("getAgentPersonTelecom", () => {
@@ -131,5 +131,21 @@ describe("convertAuthor", () => {
     const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
     expect(Object.keys(result)).not.toContain("time")
     expect(Object.keys(result)).not.toContain("signatureText")
+  })
+
+  test("includes N/A signatureText field for a message which isn't signed", () => {
+    getMessageHeader(bundle).eventCoding.code = MessageType.PRESCRIPTION
+    bundle.entry.filter(e => e.resource.resourceType === "Provenance").forEach(bundle.entry.remove)
+    const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
+    expect(Object.keys(result)).toContain("signatureText")
+    expect(result.signatureText._attributes.nullFlavor).toEqual("NA")
+  })
+
+  test("includes N/A signatureText field for a message which isn't signed by the requester", () => {
+    getMessageHeader(bundle).eventCoding.code = MessageType.PRESCRIPTION
+    getProvenances(bundle).flatMap(p => p.signature).forEach(s => s.who.reference = "some-other-practitioner")
+    const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
+    expect(Object.keys(result)).toContain("signatureText")
+    expect(result.signatureText._attributes.nullFlavor).toEqual("NA")
   })
 })
