@@ -1,5 +1,7 @@
 import { VerifierV3 } from "@pact-foundation/pact"
 
+let endpoint: string
+
 let token: string
 
 let sleepMs: number = 0
@@ -14,9 +16,8 @@ function sleep(milliseconds: number) {
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verify(): Promise<any> { 
-  return await ["convert", "prepare", "process"].map(endpoint => {
     sleep(sleepMs)
-    sleepMs = (sleepMs + 5000) * 2
+    sleepMs = Math.min((sleepMs + 5000) * 2, 70000)
     const isLocal = process.env.PACT_PROVIDER_URL === "http://localhost:9000"
     const verifier =  new VerifierV3({
       publishVerificationResult: !isLocal,
@@ -44,17 +45,36 @@ async function verify(): Promise<any> {
       },
       pactUrls: isLocal 
         ? [
-          `${process.cwd()}/pact/pacts/${process.env.PACT_CONSUMER}_convert+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${process.env.PACT_VERSION}.json`,
-          `${process.cwd()}/pact/pacts/${process.env.PACT_CONSUMER}_prepare+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${process.env.PACT_VERSION}.json`,
-          `${process.cwd()}/pact/pacts/${process.env.PACT_CONSUMER}_process+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${process.env.PACT_VERSION}.json`
+          `${process.cwd()}/pact/pacts/${process.env.PACT_CONSUMER}_${endpoint}+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${process.env.PACT_VERSION}.json`
         ]
         : []
     })
-    return verifier.verifyProvider()
-  })
+    return await verifier.verifyProvider()
+}
+
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+async function verifyConvert(): Promise<any> {
+  endpoint = "convert"
+  await verify().catch(verify).catch(verify)
+}
+
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+async function verifyPrepare(): Promise<any> { 
+  endpoint = "prepare"
+  await verify().catch(verify).catch(verify)
+}
+
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+async function verifyProcess(): Promise<any> { 
+  endpoint = "process"
+  await verify().catch(verify).catch(verify)
 }
 
 (async () => {  
-    verify().catch(verify).catch(verify)
+  verifyConvert()
+    .catch()
+    .finally(verifyPrepare)
+    .catch()
+    .finally(verifyProcess)
 })()
 
