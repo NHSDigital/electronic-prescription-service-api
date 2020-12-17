@@ -113,17 +113,17 @@ extends:
           make verify-pacts
 
           # Tag
-          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest broker create-version-tag --pacticipant=$(PACT_PROVIDER)_convert+$PACT_VERSION --version=$PACT_VERSION --tag=$APIGEE_ENVIRONMENT
-          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest broker create-version-tag --pacticipant=$(PACT_PROVIDER)_prepare+$PACT_VERSION --version=$PACT_VERSION --tag=$APIGEE_ENVIRONMENT
-          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest broker create-version-tag --pacticipant=$(PACT_PROVIDER)_process+$PACT_VERSION --version=$PACT_VERSION --tag=$APIGEE_ENVIRONMENT
+          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest broker create-version-tag --pacticipant=$PACT_PROVIDER_convert+$PACT_VERSION --version=$PACT_VERSION --tag=$APIGEE_ENVIRONMENT
+          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest broker create-version-tag --pacticipant=$PACT_PROVIDER_prepare+$PACT_VERSION --version=$PACT_VERSION --tag=$APIGEE_ENVIRONMENT
+          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest broker create-version-tag --pacticipant=$PACT_PROVIDER_process+$PACT_VERSION --version=$PACT_VERSION --tag=$APIGEE_ENVIRONMENT
           
 
           # Link to pact on broker
           # echo "View Pact: $PACT_BROKER_URL/matrix?q%5B%5Dpacticipant=$PACT_CONSUMER+$PACT_VERSION&q%5B%5Dtag=$APIGEE_ENVIRONMENT&q%5B%5Dpacticipant=$PACT_PROVIDER+$PACT_VERSION&q%5B%5Dtag=$APIGEE_ENVIRONMENT&latestby=cvpv&limit=100"
 
           # Can I Deploy
-          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME pactfoundation/pact-cli:latest broker can-i-deploy --pacticipant $(PACT_PROVIDER)_convert+$PACT_VERSION --version $PACT_VERSION --pacticipant $PACT_CONSUMER+$PACT_VERSION --version $PACT_VERSION
-          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME pactfoundation/pact-cli:latest broker can-i-deploy --pacticipant $(PACT_PROVIDER)_prepare+$PACT_VERSION --version $PACT_VERSION --pacticipant $PACT_CONSUMER+$PACT_VERSION --version $PACT_VERSION
-          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME pactfoundation/pact-cli:latest broker can-i-deploy --pacticipant $(PACT_PROVIDER)_process+$PACT_VERSION --version $PACT_VERSION --pacticipant $PACT_CONSUMER+$PACT_VERSION --version $PACT_VERSION
+          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME pactfoundation/pact-cli:latest broker can-i-deploy --pacticipant $PACT_PROVIDER_convert+$PACT_VERSION --version $PACT_VERSION --pacticipant $PACT_CONSUMER+$PACT_VERSION --version $PACT_VERSION
+          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME pactfoundation/pact-cli:latest broker can-i-deploy --pacticipant $PACT_PROVIDER_prepare+$PACT_VERSION --version $PACT_VERSION --pacticipant $PACT_CONSUMER+$PACT_VERSION --version $PACT_VERSION
+          docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME pactfoundation/pact-cli:latest broker can-i-deploy --pacticipant $PACT_PROVIDER_process+$PACT_VERSION --version $PACT_VERSION --pacticipant $PACT_CONSUMER+$PACT_VERSION --version $PACT_VERSION
         displayName: Run smoke tests
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
