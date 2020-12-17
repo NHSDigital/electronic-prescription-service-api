@@ -27,7 +27,7 @@ async function verify(): Promise<any> {
       pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
       pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
       consumerVersionTag: process.env.PACT_VERSION,
-      provider: `${process.env.PACT_PROVIDER}_${endpoint}+${process.env.PACT_VERSION}`,
+      provider: `${process.env.PACT_PROVIDER}+${endpoint}+${process.env.PACT_VERSION}`,
       providerVersion: process.env.PACT_VERSION,
       providerBaseUrl: process.env.PACT_PROVIDER_URL,
       logLevel: "info",
