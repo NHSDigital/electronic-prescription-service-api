@@ -1,4 +1,5 @@
 import { VerifierV3 } from "@pact-foundation/pact"
+import { pactWith } from "jest-pact";
 
 let endpoint: string
 
@@ -21,8 +22,11 @@ async function verify(): Promise<any> {
     const isLocal = process.env.PACT_PROVIDER_URL === "http://localhost:9000"
     const verifier =  new VerifierV3({
       publishVerificationResult: !isLocal,
-      pactBrokerUrl: isLocal ? undefined : process.env.PACT_BROKER_NEXT_URL,
-      pactBrokerToken: process.env.PACT_BROKER_NEXT_TOKEN,
+      /*pactBrokerUrl: isLocal ? undefined : process.env.PACT_BROKER_NEXT_URL,
+      pactBrokerToken: process.env.PACT_BROKER_NEXT_TOKEN,*/
+      pactBrokerUrl: isLocal ? undefined : process.env.PACT_BROKER_URL,
+      pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
+      pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
       consumerVersionTag: process.env.PACT_VERSION,
       provider: `${process.env.PACT_PROVIDER}_${endpoint}+${process.env.PACT_VERSION}`,
       providerVersion: process.env.PACT_VERSION,
