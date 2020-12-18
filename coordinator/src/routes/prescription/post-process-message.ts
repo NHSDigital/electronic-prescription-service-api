@@ -14,8 +14,8 @@ export default [
     handler: validatingHandler(
       async (requestPayload: Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const spineRequest = translator.convertFhirMessageToSpineRequest(requestPayload)
-        const spineResponse = await requestHandler.send(spineRequest)
-        return handleResponse(spineResponse, responseToolkit)
+        const spineResponse = await requestHandler.send(spineRequest, request.logger)
+        return handleResponse(request, spineResponse, responseToolkit)
       }
     )
   } as Hapi.ServerRoute

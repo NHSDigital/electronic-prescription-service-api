@@ -3,10 +3,10 @@ import {translateToFhir} from "../../../src/services/translation/spine-response"
 import {SpineDirectResponse} from "../../../src/models/spine"
 import * as fhir from "../../../src/models/fhir/fhir-resources"
 
-describe("translateToOperationOutcome", () => {
+describe("translateToFhir", () => {
   const spineResponses = TestResources.spineResponses
 
-  it("converts spine successes", () => {
+  it("converts spine prescription-order successes", () => {
     const spineResponse = spineResponses.success.response
     const returnedValues = translateToFhir(spineResponse)
     const body = returnedValues.fhirResponse as fhir.OperationOutcome
@@ -58,5 +58,13 @@ describe("translateToOperationOutcome", () => {
     expect(body.issue).toHaveLength(1)
     expect(body.issue[0].diagnostics).toBe(bodyString)
     expect(statusCode).toBe(400)
+  })
+
+  const cancellationResponses = [spineResponses.cancellationSuccess, spineResponses.cancellationError]
+  test.each(cancellationResponses)("cancellation returns Bundle", (spineResponse) => {
+    const translatedResponse = translateToFhir(spineResponse.response)
+
+    expect(translatedResponse.fhirResponse.resourceType).toBe("Bundle")
+    expect(translatedResponse.statusCode).toBe(spineResponse.response.statusCode)
   })
 })

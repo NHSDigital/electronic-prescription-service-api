@@ -1,16 +1,17 @@
-import {Matchers} from "@pact-foundation/pact"
+import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
-import * as TestResources from "../resources/test-resources"
-import {Bundle} from "../models/fhir/fhir-resources"
+import * as TestResources from "../../resources/test-resources"
+import {Bundle} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
+import {createUnauthorisedInteraction} from "./eps-auth"
 
 jestpact.pactWith(
   {
     spec: 3,
     consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-    provider: `nhsd-apim-eps-convert+${process.env.PACT_VERSION}`,
-    pactfileWriteMode: "overwrite"
+    provider: `nhsd-apim-eps+convert+${process.env.PACT_VERSION}`,
+    pactfileWriteMode: "merge"
   },
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
@@ -19,13 +20,23 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    const apiPath = "/$convert"
+    const authenticationTestDescription = "a request to convert an unauthorised message"
+
+    describe("endpoint authentication e2e tests", () => {
+      test(authenticationTestDescription, async () => {
+        const apiPath = "/$convert"
+        const interaction: InteractionObject = createUnauthorisedInteraction(authenticationTestDescription, apiPath)
+        await provider.addInteraction(interaction)
+        await client()
+          .post(apiPath)
+          .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+          .send({})
+          .expect(401)
+      })
+    })
 
     describe("convert e2e tests", () => {
-      const successfulCases = TestResources.convertCases.filter(convertCase => convertCase[4] === "200-OK")
-      const errorCases = TestResources.convertCases.filter(convertCase => convertCase[4] !== "200-OK")
-
-      test.each(successfulCases)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: string, responseMatcher: string) => {
+      test.each(TestResources.convertCases)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: string, responseMatcher: string) => {
         const regex = new RegExp(responseMatcher)
         const isMatch = regex.test(response)
         expect(isMatch).toBe(true)
@@ -33,8 +44,9 @@ jestpact.pactWith(
         const requestStr = LosslessJson.stringify(request)
         const requestJson = JSON.parse(requestStr)
 
-        const interaction = {
-          state: null,
+        const apiPath = "/$convert"
+        const interaction: InteractionObject = {
+          state: "is authenticated",
           uponReceiving: `a request to convert ${desc} message`,
           withRequest: {
             headers: {
@@ -48,19 +60,19 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "text/plain; charset=utf-8"
             },
-            body: Matchers.term({ generate: response, matcher: responseMatcher }),
+            body: Matchers.regex({ matcher: responseMatcher, generate: response }),
             status: 200
           }
         }
         await provider.addInteraction(interaction)
         await client()
-          .post(apiPath)
-          .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-          .send(requestJson)
-          .expect(200)
+            .post(apiPath)
+            .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+            .send(requestStr)
+            .expect(200)
       })
 
-      test.each(errorCases)("should receive expected error code in response to %s message", async (desc: string, request: Bundle, response: string, responseMatcher: string, statusCode: string) => {
+      test.each(TestResources.convertErrorCases)("should receive expected error code in response to %s message", async (desc: string, request: Bundle, response: string, responseMatcher: string, statusCode: string) => {
         const regex = new RegExp(responseMatcher)
         const isMatch = regex.test(response)
         expect(isMatch).toBe(true)
@@ -68,6 +80,7 @@ jestpact.pactWith(
         const requestStr = LosslessJson.stringify(request)
         const requestJson = JSON.parse(requestStr)
 
+        const apiPath = "/$convert"
         const interaction = {
           state: null,
           uponReceiving: `a request to convert ${desc} message`,

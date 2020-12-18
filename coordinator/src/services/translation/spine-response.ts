@@ -15,31 +15,9 @@ interface TranslatedSpineResponse {
   statusCode: number
 }
 
-export function translateToFhir<T>(message: SpineDirectResponse<T>): TranslatedSpineResponse {
-  const hl7BodyString = message.body.toString()
-  const {statusCode, fhirResponse} = getStatusCodeAndOperationOutcome(hl7BodyString)
-  if (statusCode <= 299) {
-    return {
-      fhirResponse: {
-        resourceType: "OperationOutcome",
-        issue: [{
-          code: "informational",
-          severity: "information",
-          diagnostics: hl7BodyString
-        }]
-      },
-      statusCode: statusCode
-    }
-  } else if (fhirResponse) {
-    return {
-      fhirResponse: fhirResponse,
-      statusCode: statusCode
-    }
-  }
-}
-
-function getStatusCodeAndOperationOutcome(hl7Message: string): TranslatedSpineResponse {
-  const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(hl7Message)
+export function translateToFhir<T>(hl7Message: SpineDirectResponse<T>): TranslatedSpineResponse {
+  const bodyString = hl7Message.body.toString()
+  const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(bodyString)
   if (cancelResponse) {
     const parsedMsg = readXml(cancelResponse[0]) as PORX50101
     const actEvent = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
@@ -49,21 +27,21 @@ function getStatusCodeAndOperationOutcome(hl7Message: string): TranslatedSpineRe
       fhirResponse: translateSpineCancelResponseIntoBundle(cancellationResponse)
     }
   }
-  const asyncMCCI = ASYNC_SPINE_RESPONSE_MCCI_REGEX.exec(hl7Message)
+  const asyncMCCI = ASYNC_SPINE_RESPONSE_MCCI_REGEX.exec(bodyString)
   if (asyncMCCI) {
-    return getAsyncResponseAndErrorCodes(hl7Message, asyncMCCI)
+    return getAsyncResponseAndErrorCodes(bodyString, asyncMCCI)
   }
 
-  const syncMCCI = SYNC_SPINE_RESPONSE_MCCI_REGEX.exec(hl7Message)
+  const syncMCCI = SYNC_SPINE_RESPONSE_MCCI_REGEX.exec(bodyString)
   if (syncMCCI) {
-    return getSyncResponseAndErrorCodes(hl7Message, syncMCCI)
+    return getSyncResponseAndErrorCodes(bodyString, syncMCCI)
   }
 
   return {
     statusCode: 400,
     fhirResponse: {
       resourceType: "OperationOutcome",
-      issue: [createErrorOperationOutcomeIssue(hl7Message)]
+      issue: [createOperationOutcomeIssue(400, bodyString)]
     }
   }
 }
@@ -91,16 +69,14 @@ function getFhirResponseAndErrorCodes<T extends AsyncMCCI | SyncMCCI>(
   MCCIWrapper: T,
   getStatusCodeFn: (wrapper: T) => acknowledgementCodes,
   getErrorCodes: (wrapper: T) => Array<fhir.CodeableConcept>
-): {
-  statusCode: number,
-  fhirResponse: fhir.OperationOutcome
-} {
+): TranslatedSpineResponse {
+  const statusCode = translateAcknowledgementTypeCodeToStatusCode(getStatusCodeFn(MCCIWrapper))
   const errorCodes = getErrorCodes(MCCIWrapper)
   const operationOutcomeIssues = errorCodes.length
-    ? errorCodes.map(errorCode => createErrorOperationOutcomeIssue(hl7Message, errorCode))
-    : [createErrorOperationOutcomeIssue(hl7Message)]
+    ? errorCodes.map(errorCode => createOperationOutcomeIssue(statusCode, hl7Message, errorCode))
+    : [createOperationOutcomeIssue(statusCode, hl7Message)]
   return {
-    statusCode: translateAcknowledgementTypeCodeToStatusCode(getStatusCodeFn(MCCIWrapper)),
+    statusCode: statusCode,
     fhirResponse: {
       resourceType: "OperationOutcome",
       issue: operationOutcomeIssues
@@ -108,13 +84,15 @@ function getFhirResponseAndErrorCodes<T extends AsyncMCCI | SyncMCCI>(
   }
 }
 
-function createErrorOperationOutcomeIssue(
+function createOperationOutcomeIssue(
+  statusCode: number,
   hl7Message: string,
   details?: fhir.CodeableConcept
 ): fhir.OperationOutcomeIssue {
+  const successfulMessage = statusCode <= 299
   return {
-    code: "invalid",
-    severity: "error",
+    code: successfulMessage ? "informational" : "invalid",
+    severity: successfulMessage ? "information" : "error",
     diagnostics: hl7Message,
     details: details
   }

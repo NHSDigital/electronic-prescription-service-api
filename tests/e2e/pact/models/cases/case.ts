@@ -6,6 +6,7 @@ export class Case {
   description: string
   request: fhir.Bundle
   statusCode: string
+  isSuccess: boolean
 
   constructor(description: string, requestFile: string, statusCode: string) {
     const requestString = fs.readFileSync(requestFile, "utf-8")
@@ -15,5 +16,6 @@ export class Case {
     this.description = description
     this.request = requestJson
     this.statusCode = statusCode
+    this.isSuccess = statusCode === "200_OK"
   }
 }
