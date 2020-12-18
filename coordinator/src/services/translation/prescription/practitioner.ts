@@ -20,6 +20,7 @@ import {convertOrganizationAndProviderLicense} from "./organization"
 import {getProvenances} from "../common/getResourcesOfType"
 import * as errors from "../../../models/errors/processing-errors"
 import {identifyMessageType, MessageType} from "../../../routes/util"
+import {InvalidValueError} from "../../../models/errors/processing-errors"
 
 export function convertAuthor(
   fhirBundle: fhir.Bundle,
@@ -263,8 +264,12 @@ function convertSignatureText(fhirBundle: fhir.Bundle, signatory: fhir.Reference
   )
   if (requesterSignature) {
     const signatureData = requesterSignature.data
-    const decodedSignatureData = Buffer.from(signatureData, "base64").toString("utf-8")
-    return XmlJs.xml2js(decodedSignatureData, {compact: true})
+    try {
+      const decodedSignatureData = Buffer.from(signatureData, "base64").toString("utf-8")
+      return XmlJs.xml2js(decodedSignatureData, {compact: true})
+    } catch (e) {
+      throw new InvalidValueError("Invalid signature format.", "Provenance.signature.data")
+    }
   }
   return core.Null.NOT_APPLICABLE
 }
