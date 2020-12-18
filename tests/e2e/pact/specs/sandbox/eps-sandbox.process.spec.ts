@@ -1,4 +1,4 @@
-import {InteractionObject,Matchers} from "@pact-foundation/pact"
+import {InteractionObject} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
@@ -41,13 +41,11 @@ jestpact.pactWith(
               "Content-Type": "application/json"
             },
             body: {
-              resourceType: "OperationOutcome",
-              issue: [
-                {
-                  code: Matchers.string("informational"),
-                  severity: Matchers.string("information")
-                }
-              ]
+              resourceType: "Bundle",
+              identifier: {
+                "system": "https://tools.ietf.org/html/rfc4122",
+                "value": "444309a2-81d9-85ae-4925-282c40d2f1d6"
+              }
             },
             status: 200
           }
