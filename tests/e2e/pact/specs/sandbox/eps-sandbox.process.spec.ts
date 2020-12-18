@@ -60,10 +60,10 @@ jestpact.pactWith(
       })
 
       test("Should be able to process a FHIR JSON Accept header", async () => {
-        const example = processExamples[0]
+        const testCase = processExamples[0]
 
         const apiPath = "/$process-message"
-        const messageStr = LosslessJson.stringify(example.request)
+        const messageStr = LosslessJson.stringify(testCase.request)
 
         const interaction: InteractionObject = {
           state: "is not authenticated",
