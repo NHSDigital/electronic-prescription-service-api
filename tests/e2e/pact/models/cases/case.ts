@@ -16,6 +16,6 @@ export class Case {
     this.description = description
     this.request = requestJson
     this.statusCode = statusCode
-    this.isSuccess = statusCode === "200_OK"
+    this.isSuccess = statusCode === "200-OK"
   }
 }
