@@ -59,7 +59,7 @@ function createPostmanItem(interaction) {
 
 // Events (Tests)
 
-function getTests(interaction: any) {
+function getTests(interaction) {
     return isControlledDrugWithAdditionalInstructionTest(interaction)
         ? [controlledDrugsWithAdditionalInstructions(interaction)]
         : []
