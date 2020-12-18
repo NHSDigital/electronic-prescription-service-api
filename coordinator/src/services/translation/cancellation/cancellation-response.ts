@@ -96,8 +96,9 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
     } = convertAgentPerson(performerAgentPerson)
     const performerPractitionerId = fhirPerformerPractitioner.id
     const performerOrganizationCode = performerAgentPerson.representedOrganization.id._attributes.extension
+    const performerOrganizationName = performerAgentPerson.representedOrganization.name._text
     fhirMedicationRequest.dispenseRequest = createDispenserInfoReference(
-      performerPractitionerId, performerOrganizationCode
+      performerPractitionerId, performerOrganizationCode, performerOrganizationName
     )
     bundleResources.push(fhirPerformerPractitioner, fhirPerformerPractitionerRole, fhirPerformerOrganization)
   }
@@ -105,7 +106,7 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
   return bundleResources.map(convertResourceToBundleEntry)
 }
 
-function createDispenserInfoReference(practitionerId: string, organizationCode: string) {
+function createDispenserInfoReference(practitionerId: string, organizationCode: string, organizationName: string) {
   return {
     performer: {
       extension:  [
@@ -114,7 +115,8 @@ function createDispenserInfoReference(practitionerId: string, organizationCode: 
           valueReference: createReference(practitionerId)
         }
       ],
-      identifier: createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", organizationCode)
+      identifier: createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", organizationCode),
+      display: organizationName
     }
     //TODO: does this reference & identifier need a display name? if so, how to show?
   }
