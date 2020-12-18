@@ -83,7 +83,8 @@ export interface Performer extends IdentifierReference<Organization> {
 }
 
 export interface MedicationRequestDispenseRequest {
-  extension?: Array<CodingExtension | StringExtension>
+  extension?: Array<CodingExtension | StringExtension | ReferenceExtension<PractitionerRole>>
+  identifier?: Identifier
   quantity?: SimpleQuantity
   expectedSupplyDuration?: SimpleQuantity
   performer: Performer

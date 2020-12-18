@@ -7,8 +7,8 @@ import {
   getMessageHeader,
   getOrganizations,
   getPatient,
-  getPractitioner,
-  getPractitionerRole
+  getPractitioners,
+  getPractitionerRoles
 } from "../../../../src/services/translation/common/getResourcesOfType"
 import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/spine-response"
 import {readXml} from "../../../../src/services/serialisation/xml"
@@ -52,7 +52,7 @@ describe("bundle entries", () => {
   })
 
   test("entries contains two Practitioner", () => {
-    expect(getPractitioner(fhirBundle)).toHaveLength(2)
+    expect(getPractitioners(fhirBundle)).toHaveLength(2)
   })
 
   test("entries contains two Organizations", () => {
@@ -60,14 +60,43 @@ describe("bundle entries", () => {
   })
 
   test("entries contains two PractitionerRole", () => {
-    expect(getPractitionerRole(fhirBundle)).toHaveLength(2)
+    expect(getPractitionerRoles(fhirBundle)).toHaveLength(2)
   })
 
-  test("entries contains a MedicationRequest", () => {
-    expect(getMedicationRequests(fhirBundle).length).toBeGreaterThan(0)
+  test("entries contains a MedicationRequest (without dispenseRequest)", () => {
+    const medicationRequests = getMedicationRequests(fhirBundle)
+    expect(medicationRequests.length).toEqual(1)
+    expect(medicationRequests[0].dispenseRequest).toBeUndefined()
   })
 
   test("entries contains a MessageHeader", () => {
     expect(() => getMessageHeader(fhirBundle)).not.toThrow()
+  })
+
+  const cancellationErrorDispensedResponse = getCancellationResponse(
+    TestResources.spineResponses.cancellationDispensedError
+  )
+  const performerFhirBundle = translateSpineCancelResponseIntoBundle(cancellationErrorDispensedResponse)
+
+  test("performer field in hl7 message adds performer practitioner", () => {
+    const practitioners = getPractitioners(performerFhirBundle)
+    const nameArray = practitioners.map(practitioner => practitioner.name[0].text)
+    expect(nameArray).toContain("Taylor Paul")
+  })
+
+  test("performer field in hl7 message adds performer practitionerRole", () => {
+    const practitionerRoles = getPractitionerRoles(performerFhirBundle)
+    const codeArray = practitionerRoles.map(practitionerRole => practitionerRole.code[0].coding[0].code)
+    expect(codeArray).toContain("S8000:G8000:R8003")
+  })
+
+  test("performer field in hl7 message adds performer organization", () => {
+    const organizations = getOrganizations(performerFhirBundle)
+    const codeArray = organizations.map(organization => organization.name)
+    expect(codeArray).toContain("CRx PM Chetna2 EPS")
+  })
+
+  test("performer field in hl7 message adds dispense reference to MedicationRequest", () => {
+    expect(getMedicationRequests(performerFhirBundle)[0].dispenseRequest).toBeDefined()
   })
 })

@@ -8,6 +8,7 @@ import {createPractitionerRole} from "./cancellation-practitioner-role"
 import {createMessageHeader} from "./cancellation-message-header"
 import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertHL7V3DateTimeStringToISODateTime} from "../common"
+import {createIdentifier, createReference} from "./fhir-base-types"
 
 export function translateSpineCancelResponseIntoBundle(cancellationResponse: CancellationResponse): fhir.Bundle {
   return {
@@ -86,18 +87,37 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
     fhirResponsiblePartyPractitionerRole
   ]
 
-  if (cancellationResponse.performer != undefined) {
+  if (cancellationResponse.performer) {
+    const performerAgentPerson = cancellationResponse.performer.AgentPerson
     const {
       fhirPractitioner: fhirPerformerPractitioner,
       fhirPractitionerRole: fhirPerformerPractitionerRole,
       fhirOrganization: fhirPerformerOrganization
-    } = convertAgentPerson(cancellationResponse.performer.AgentPerson)
-    //TODO
-    // fhirMedicationRequest.dispenseRequest = createDisperInfoReference(fhirPerformerPractitioner)
+    } = convertAgentPerson(performerAgentPerson)
+    const performerPractitionerId = fhirPerformerPractitioner.id
+    const performerOrganizationCode = performerAgentPerson.representedOrganization.id._attributes.extension
+    fhirMedicationRequest.dispenseRequest = createDispenserInfoReference(
+      performerPractitionerId, performerOrganizationCode
+    )
     bundleResources.push(fhirPerformerPractitioner, fhirPerformerPractitionerRole, fhirPerformerOrganization)
   }
 
   return bundleResources.map(convertResourceToBundleEntry)
+}
+
+function createDispenserInfoReference(practitionerId: string, organizationCode: string) {
+  return {
+    performer: {
+      extension:  [
+        {
+          url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DispensingPerformer",
+          valueReference: createReference(practitionerId)
+        }
+      ],
+      identifier: createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", organizationCode)
+    }
+    //TODO: does this reference & identifier need a display name? if so, how to show?
+  }
 }
 
 function createBundleIdentifier(cancellationResponse: CancellationResponse) {
