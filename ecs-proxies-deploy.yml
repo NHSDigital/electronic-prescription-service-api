@@ -16,11 +16,11 @@ docker_service:
           value: "https://{{ APIGEE_HOSTNAME }}/{{ SERVICE_BASE_PATH }}"
     secrets:
         - name: SPINE_URL
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/int/host'
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/{{ SPINE_ENV }}/host'
         - name: CLIENT_KEY
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/certs/spine/int/key'
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/certs/spine/{{ SPINE_ENV }}/key'
         - name: CLIENT_CERT
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/certs/spine/int/crt'
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/certs/spine/{{ SPINE_ENV }}/crt'
         - name: FROM_ASID
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/from-asid'
         - name: TO_ASID

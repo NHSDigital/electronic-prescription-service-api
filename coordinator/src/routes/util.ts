@@ -33,10 +33,7 @@ export function handleResponse<T>(
       .header("Content-Type", contentType)
   } else {
     const translatedSpineResponse = translateToFhir(spineResponse)
-    return responseToolkit.response({
-      fhir: translatedSpineResponse.fhirResponse,
-      hl7: spineResponse.body.toString()
-    })
+    return responseToolkit.response(translatedSpineResponse.fhirResponse)
       .code(translatedSpineResponse.statusCode)
       .header("Content-Type", contentType)
   }
