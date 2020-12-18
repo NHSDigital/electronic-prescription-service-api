@@ -92,11 +92,11 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
       fhirPractitionerRole: fhirPerformerPractitionerRole,
       fhirOrganization: fhirPerformerOrganization
     } = convertAgentPerson(cancellationResponse.performer.AgentPerson)
+    //TODO
     // fhirMedicationRequest.dispenseRequest = createDisperInfoReference(fhirPerformerPractitioner)
     bundleResources.push(fhirPerformerPractitioner, fhirPerformerPractitionerRole, fhirPerformerOrganization)
   }
 
-  //TODO some error types need to have extra resources in bundle (e.g. dispenser info), add them
   return bundleResources.map(convertResourceToBundleEntry)
 }
 
@@ -106,5 +106,3 @@ function createBundleIdentifier(cancellationResponse: CancellationResponse) {
     value: cancellationResponse.id._attributes.root.toLowerCase()
   }
 }
-
-
