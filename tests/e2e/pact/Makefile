@@ -24,7 +24,10 @@ verify-pacts:
 
 generate-postman-collection:
 	mkdir -p ../postman/collections
-	npm run postman
+	npm run generate-postman-collection
+
+run-postman-tests:
+	npm run run-postman-tests
 
 # Quality Checks
 

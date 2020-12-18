@@ -124,3 +124,15 @@ extends:
           docker run --rm -e PACT_BROKER_BASE_URL=$PACT_BROKER_URL -e PACT_BROKER_USERNAME=$PACT_BROKER_BASIC_AUTH_USERNAME -e PACT_BROKER_PASSWORD=$PACT_BROKER_BASIC_AUTH_PASSWORD pactfoundation/pact-cli:latest broker can-i-deploy --pacticipant $PACT_PROVIDER+process+$PACT_VERSION --version $PACT_VERSION --pacticipant $PACT_CONSUMER+$PACT_VERSION --version $PACT_VERSION
         displayName: Run smoke tests
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+      - bash: |
+          cd $SERVICE_NAME/$SERVICE_ARTIFACT_NAME/pact
+          make generate-postman-collection
+          make run-postman-tests
+        displayName: Run postman tests generated from pacts
+        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+      - task: PublishTestResults@2
+        inputs:
+          testResultsFormat: 'JUnit'
+          testResultsFiles: 'newman/*.xml'
+          failTaskOnFailedTests: true
+          workingDirectory: $(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact
