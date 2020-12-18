@@ -1,7 +1,7 @@
 import {convertParentPrescription} from "../../../src/services/translation/prescription/parent-prescription"
-import {extractFragments,
+import {
   convertFragmentsToHashableFormat,
-  convertFragmentsToDisplayableFormat
+  extractFragments
 } from "../../../src/services/translation/prescription/signature"
 import * as TestResources from "../../resources/test-resources"
 import * as XmlJs from "xml-js"
@@ -17,22 +17,14 @@ beforeAll(() => {
   fragments = extractFragments(hl7V3ParentPrescription)
 })
 
-test(
-  "convertFragmentsToHashableFormat returns correct value", () => {
-    xmlTest(
-      XmlJs.xml2js(convertFragmentsToHashableFormat(fragments)),
-      TestResources.examplePrescription1.hl7V3SignatureFragments
-    )
-  })
-
-test(
-  "convertFragmentsToDisplayableFormat returns correct patient details", () => {
-    const display = convertFragmentsToDisplayableFormat(fragments)
-    expect(display.patientName).toEqual("MISS ETTA CORY")
-  })
-
-test(
-  "convertFragmentsToDisplayableFormat returns correct prescriber details", () => {
-    const display = convertFragmentsToDisplayableFormat(fragments)
-    expect(display.prescriberName).toEqual("DR Thomas Edwards")
-  })
+test("convertFragmentsToHashableFormat returns correct value", () => {
+  const output = convertFragmentsToHashableFormat(fragments)
+  const outputWithFixedTime = output.replace(
+    /<time xmlns="urn:hl7-org:v3" value="\d{14}">/,
+    '<time xmlns="urn:hl7-org:v3" value="20201218123434">'
+  )
+  xmlTest(
+    XmlJs.xml2js(outputWithFixedTime, {compact: true}),
+    TestResources.examplePrescription1.hl7V3SignatureFragments
+  )()
+})

@@ -14,7 +14,7 @@ import {convertHL7V3DateTimeStringToISODateTime, getIdentifierValueForSystem} fr
 import * as requestBuilder from "../formatters/ebxml-request-builder"
 import {SpineRequest} from "../../models/spine"
 import {identifyMessageType, MessageType} from "../../routes/util"
-import {InvalidValueError} from "../../models/errors/processing-errors";
+import {InvalidValueError} from "../../models/errors/processing-errors"
 
 export function convertFhirMessageToSpineRequest(fhirMessage: fhir.Bundle): SpineRequest {
   const messageType = identifyMessageType(fhirMessage)
