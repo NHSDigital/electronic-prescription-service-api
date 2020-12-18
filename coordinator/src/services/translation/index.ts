@@ -10,7 +10,7 @@ import {writeXmlStringCanonicalized} from "../serialisation/xml"
 import {convertParentPrescription} from "./prescription/parent-prescription"
 import {convertCancellation} from "./prescription/cancellation"
 import {convertFragmentsToHashableFormat, extractFragments} from "./prescription/signature"
-import {convertHL7V3DateTimeStringToISODateTime, getIdentifierValueForSystem} from "./common"
+import {convertHL7V3DateTimeToIsoDateTimeString, getIdentifierValueForSystem} from "./common"
 import * as requestBuilder from "../formatters/ebxml-request-builder"
 import {SpineRequest} from "../../models/spine"
 import {identifyMessageType, MessageType} from "../../routes/util"
@@ -64,7 +64,7 @@ export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle):
   const fragments = extractFragments(parentPrescription)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
   const base64Digest = createParametersDigest(fragmentsToBeHashed)
-  const isoTimestamp = convertHL7V3DateTimeStringToISODateTime(fragments.time._attributes.value)
+  const isoTimestamp = convertHL7V3DateTimeToIsoDateTimeString(fragments.time)
 
   const parameters = createParameters(base64Digest, isoTimestamp)
   return JSON.stringify(parameters, null, 2)
