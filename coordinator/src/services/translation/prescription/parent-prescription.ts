@@ -13,13 +13,9 @@ export function convertParentPrescription(
   convertBundleToPrescriptionFn = convertBundleToPrescription,
   convertCareRecordElementCategoriesFn = convertCareRecordElementCategories
 ): prescriptions.ParentPrescription {
-  const fhirMedicationRequests = getMedicationRequests(fhirBundle)
-  const fhirFirstMedicationRequest = fhirMedicationRequests[0]
-  const effectiveTime = extractEffectiveTime(fhirFirstMedicationRequest)
-
   const hl7V3ParentPrescription = new prescriptions.ParentPrescription(
     new codes.GlobalIdentifier(fhirBundle.id),
-    effectiveTime
+    new core.Timestamp("PLACEHOLDER")
   )
 
   const fhirPatient = getPatient(fhirBundle)
@@ -30,6 +26,17 @@ export function convertParentPrescription(
   hl7V3ParentPrescription.pertinentInformation1 = new prescriptions.ParentPrescriptionPertinentInformation1(
     hl7V3Prescription
   )
+
+  const fhirMedicationRequests = getMedicationRequests(fhirBundle)
+  const fhirFirstMedicationRequest = fhirMedicationRequests[0]
+  const validityPeriod = fhirFirstMedicationRequest.dispenseRequest.validityPeriod
+
+  hl7V3ParentPrescription.effectiveTime = validityPeriod
+    ? convertIsoDateTimeStringToHl7V3DateTime(
+      validityPeriod.start,
+      "MedicationRequest.dispenseRequest.validityPeriod.start"
+    )
+    : hl7V3Prescription.author.time
 
   const lineItems = hl7V3ParentPrescription.pertinentInformation1.pertinentPrescription.pertinentInformation2
     .map(info => info.pertinentLineItem)

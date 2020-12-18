@@ -249,12 +249,14 @@ export interface ExtensionExtension<T extends Extension> extends Extension {
 }
 
 class Signature {
+  when: string
   who: Reference<PractitionerRole>
   data: string
 }
 
 export class Provenance extends Resource {
   readonly resourceType = "Provenance"
+  occurredDateTime: string
   signature: Array<Signature>
 }
 
