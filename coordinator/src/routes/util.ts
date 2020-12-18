@@ -12,10 +12,17 @@ import stream from "stream"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
+const CONTENT_TYPE_FHIR = "application/fhir+json; fhirVersion=4.0"
+const CONTENT_TYPE_JSON = "application/json"
+
 export function handleResponse<T>(
+  request: Hapi.Request,
   spineResponse: SpineDirectResponse<T> | SpinePollableResponse,
   responseToolkit: Hapi.ResponseToolkit
 ): Hapi.ResponseObject {
+  const isSmokeTest = request.headers["x-smoke-test"]
+  const contentType = isSmokeTest ? CONTENT_TYPE_JSON : CONTENT_TYPE_FHIR
+
   if (isPollable(spineResponse)) {
     return responseToolkit.response()
       .code(spineResponse.statusCode)
@@ -23,7 +30,7 @@ export function handleResponse<T>(
   } else if (isOperationOutcome(spineResponse.body)) {
     return responseToolkit.response(spineResponse.body)
       .code(spineResponse.statusCode)
-      .header("Content-Type", "application/fhir+json; fhirVersion=4.0")
+      .header("Content-Type", contentType)
   } else {
     const translatedSpineResponse = translateToFhir(spineResponse)
     return responseToolkit.response({
@@ -31,7 +38,7 @@ export function handleResponse<T>(
       hl7: spineResponse.body.toString()
     })
       .code(translatedSpineResponse.statusCode)
-      .header("Content-Type", "application/fhir+json; fhirVersion=4.0")
+      .header("Content-Type", contentType)
   }
 }
 
