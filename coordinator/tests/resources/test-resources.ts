@@ -99,7 +99,7 @@ export const specification = [
   //examplePrescription4
 ]
 
-interface ExampleSpineResponse {
+export interface ExampleSpineResponse {
   response: SpineDirectResponse<string>
   spineErrorCode: string | undefined
   acknowledgementCode: acknowledgementCodes
@@ -189,10 +189,23 @@ const cancellationError: ExampleSpineResponse = {
   acknowledgementCode: "AE"
 }
 
+const cancellationDispensedError: ExampleSpineResponse = {
+  response: {
+    body: fs.readFileSync(
+      path.join(__dirname, "./spine-responses/cancel_error_dispensed.xml"),
+      "utf8"
+    ),
+    statusCode: 400
+  },
+  spineErrorCode: "0004",
+  acknowledgementCode: "AE"
+}
+
 export const spineResponses = {
   success: asyncSuccess,
   singleErrors: [syncError, asyncError],
   multipleErrors: [syncMultipleError, asyncMultipleError],
-  cancellationSuccess: cancellationSuccess,
-  cancellationError: cancellationError
+  cancellationSuccess,
+  cancellationError,
+  cancellationDispensedError
 }

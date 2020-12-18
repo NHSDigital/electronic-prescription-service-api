@@ -74,8 +74,7 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
     cancelRequestId
   )
 
-  //TODO some error types need to have extra resources in bundle (e.g. dispenser info), add them
-  return [
+  const bundleResources = [
     fhirMessageHeader,
     fhirMedicationRequest,
     fhirPatient,
@@ -85,7 +84,20 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
     fhirResponsiblePartyPractitioner,
     fhirResponsiblePartyOrganization,
     fhirResponsiblePartyPractitionerRole
-  ].map(convertResourceToBundleEntry)
+  ]
+
+  if (cancellationResponse.performer != undefined) {
+    const {
+      fhirPractitioner: fhirPerformerPractitioner,
+      fhirPractitionerRole: fhirPerformerPractitionerRole,
+      fhirOrganization: fhirPerformerOrganization
+    } = convertAgentPerson(cancellationResponse.performer.AgentPerson)
+    // fhirMedicationRequest.dispenseRequest = createDisperInfoReference(fhirPerformerPractitioner)
+    bundleResources.push(fhirPerformerPractitioner, fhirPerformerPractitionerRole, fhirPerformerOrganization)
+  }
+
+  //TODO some error types need to have extra resources in bundle (e.g. dispenser info), add them
+  return bundleResources.map(convertResourceToBundleEntry)
 }
 
 function createBundleIdentifier(cancellationResponse: CancellationResponse) {
@@ -94,3 +106,5 @@ function createBundleIdentifier(cancellationResponse: CancellationResponse) {
     value: cancellationResponse.id._attributes.root.toLowerCase()
   }
 }
+
+
