@@ -4,8 +4,9 @@ import * as practitioner from "../../../src/services/translation/prescription/pr
 import * as helpers from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
 import * as common from "../../../src/services/translation/common/getResourcesOfType"
-import {getMessageHeader} from "../../../src/services/translation/common/getResourcesOfType"
+import {getMessageHeader, getProvenances} from "../../../src/services/translation/common/getResourcesOfType"
 import {MessageType} from "../../../src/routes/util"
+import {InvalidValueError} from "../../../src/models/errors/processing-errors"
 
 describe("getAgentPersonTelecom", () => {
   const roleTelecom: Array<fhir.ContactPoint> = [
@@ -115,7 +116,7 @@ describe("convertAuthor", () => {
   let fhirFirstMedicationRequest: fhir.MedicationRequest
 
   beforeEach(() => {
-    bundle = helpers.clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    bundle = helpers.clone(TestResources.examplePrescription1.fhirMessageSigned)
     fhirFirstMedicationRequest = common.getMedicationRequests(bundle)[0]
   })
 
@@ -131,5 +132,29 @@ describe("convertAuthor", () => {
     const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
     expect(Object.keys(result)).not.toContain("time")
     expect(Object.keys(result)).not.toContain("signatureText")
+  })
+
+  test("includes N/A signatureText field for a message which isn't signed", () => {
+    getMessageHeader(bundle).eventCoding.code = MessageType.PRESCRIPTION
+    bundle.entry.filter(e => e.resource.resourceType === "Provenance").forEach(e => bundle.entry.remove(e))
+    const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
+    expect(Object.keys(result)).toContain("signatureText")
+    expect(result.signatureText._attributes.nullFlavor).toEqual("NA")
+  })
+
+  test("includes N/A signatureText field for a message which isn't signed by the requester", () => {
+    getMessageHeader(bundle).eventCoding.code = MessageType.PRESCRIPTION
+    getProvenances(bundle).flatMap(p => p.signature).forEach(s => s.who.reference = "some-other-practitioner")
+    const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
+    expect(Object.keys(result)).toContain("signatureText")
+    expect(result.signatureText._attributes.nullFlavor).toEqual("NA")
+  })
+
+  test("throws for a signature which isn't in the correct format", () => {
+    getMessageHeader(bundle).eventCoding.code = MessageType.PRESCRIPTION
+    getProvenances(bundle).flatMap(p => p.signature).forEach(s => s.data = "this is not a valid signature")
+    expect(() => {
+      practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
+    }).toThrow(InvalidValueError)
   })
 })

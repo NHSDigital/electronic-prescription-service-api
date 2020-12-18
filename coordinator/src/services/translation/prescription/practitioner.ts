@@ -22,6 +22,7 @@ import {getProvenances} from "../common/getResourcesOfType"
 import * as errors from "../../../models/errors/processing-errors"
 import {identifyMessageType, MessageType} from "../../../routes/util"
 import moment from "moment"
+import {InvalidValueError} from "../../../models/errors/processing-errors"
 
 export function convertAuthor(
   fhirBundle: fhir.Bundle,
@@ -30,18 +31,26 @@ export function convertAuthor(
   const hl7V3Author = new prescriptions.Author()
   if (identifyMessageType(fhirBundle) !== MessageType.CANCELLATION) {
     const requesterSignature = findRequesterSignature(fhirBundle, fhirFirstMedicationRequest.requester)
-    if (requesterSignature) {
-      hl7V3Author.time = convertIsoDateTimeStringToHl7V3DateTime(requesterSignature.when, "Provenance.signature.when")
-      const decodedSignatureData = Buffer.from(requesterSignature.data, "base64").toString("utf-8")
-      hl7V3Author.signatureText = XmlJs.xml2js(decodedSignatureData, {compact: true})
-    } else {
-      hl7V3Author.time = convertMomentToHl7V3DateTime(moment.utc())
-      hl7V3Author.signatureText = core.Null.NOT_APPLICABLE
-    }
+    setSignatureTimeAndText(hl7V3Author, requesterSignature)
   }
   const fhirAuthorPractitionerRole = resolveReference(fhirBundle, fhirFirstMedicationRequest.requester)
   hl7V3Author.AgentPerson = convertPractitionerRole(fhirBundle, fhirAuthorPractitionerRole)
   return hl7V3Author
+}
+
+function setSignatureTimeAndText(hl7V3Author: prescriptions.Author, requesterSignature?: fhir.Signature) {
+  if (requesterSignature) {
+    hl7V3Author.time = convertIsoDateTimeStringToHl7V3DateTime(requesterSignature.when, "Provenance.signature.when")
+    try {
+      const decodedSignatureData = Buffer.from(requesterSignature.data, "base64").toString("utf-8")
+      hl7V3Author.signatureText = XmlJs.xml2js(decodedSignatureData, {compact: true})
+    } catch (e) {
+      throw new InvalidValueError("Invalid signature format.", "Provenance.signature.data")
+    }
+  } else {
+    hl7V3Author.time = convertMomentToHl7V3DateTime(moment.utc())
+    hl7V3Author.signatureText = core.Null.NOT_APPLICABLE
+  }
 }
 
 export function convertResponsibleParty(

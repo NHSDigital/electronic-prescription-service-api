@@ -248,7 +248,7 @@ export interface ExtensionExtension<T extends Extension> extends Extension {
   extension: Array<T>
 }
 
-class Signature {
+export interface Signature {
   when: string
   who: Reference<PractitionerRole>
   data: string
