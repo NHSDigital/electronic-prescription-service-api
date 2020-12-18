@@ -3,6 +3,8 @@ import * as TestResources from "../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
 import {Bundle} from "../../../src/models/fhir/fhir-resources"
 import {convertFhirMessageToSignedInfoMessage} from "../../../src/services/translation"
+import {InvalidValueError} from "../../../src/models/errors/processing-errors"
+import {isTruthy} from "../../../src/services/translation/common"
 
 describe("convertFhirMessageToSignedInfoMessage", () => {
   const cases = TestResources.specification.map(example => [
@@ -14,13 +16,19 @@ describe("convertFhirMessageToSignedInfoMessage", () => {
   test.each(cases)("accepts %s", (desc: string, message: Bundle) => {
     expect(() => convertFhirMessageToSignedInfoMessage(message)).not.toThrow()
   })
+
+  test("rejects a cancellation message", () => {
+    const cancellationMessage = TestResources.specification.map(s => s.fhirMessageCancel).filter(isTruthy)[0]
+    expect(() => convertFhirMessageToSignedInfoMessage(cancellationMessage)).toThrow(InvalidValueError)
+  })
 })
 
 describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
   const cases = TestResources.specification.map(example => [
     example.description,
     example.fhirMessageSigned,
-    example.hl7V3Message])
+    example.hl7V3Message
+  ])
 
   test.each(cases)("accepts %s", (desc: string, message: Bundle) => {
     expect(() => translator.convertFhirMessageToSpineRequest(message)).not.toThrow()

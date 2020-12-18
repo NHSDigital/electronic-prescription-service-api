@@ -309,4 +309,14 @@ describe("convertPrescriptionComponent1", () => {
       })
     }).toThrow()
   })
+
+  test("is not called for an acute prescription", () => {
+    const prescription = clone(TestResources.examplePrescription2.fhirMessageUnsigned)
+    getMedicationRequests(prescription).forEach(medicationRequest => {
+      medicationRequest.dispenseRequest.validityPeriod = validityPeriod
+      medicationRequest.dispenseRequest.expectedSupplyDuration = expectedSupplyDuration
+    })
+    const result = convertBundleToPrescription(prescription)
+    expect(result.component1).toBeFalsy()
+  })
 })

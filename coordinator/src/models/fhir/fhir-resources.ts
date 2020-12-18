@@ -256,13 +256,12 @@ export interface Signature {
 
 export class Provenance extends Resource {
   readonly resourceType = "Provenance"
-  occurredDateTime: string
   signature: Array<Signature>
 }
 
-export class Period {
-  start: string
-  end: string
+export interface Period {
+  start?: string
+  end?: string
 }
 
 export interface CommunicationRequest extends Resource {

@@ -14,8 +14,7 @@ export function convertParentPrescription(
   convertCareRecordElementCategoriesFn = convertCareRecordElementCategories
 ): prescriptions.ParentPrescription {
   const hl7V3ParentPrescription = new prescriptions.ParentPrescription(
-    new codes.GlobalIdentifier(fhirBundle.id),
-    new core.Timestamp("PLACEHOLDER")
+    new codes.GlobalIdentifier(fhirBundle.id)
   )
 
   const fhirPatient = getPatient(fhirBundle)
