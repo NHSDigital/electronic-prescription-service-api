@@ -125,6 +125,9 @@ extends:
         displayName: Run smoke tests
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - bash: |
+          export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
+          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
+          export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH
           cd $SERVICE_NAME/$SERVICE_ARTIFACT_NAME/pact
           make generate-postman-collection
           make run-postman-tests
