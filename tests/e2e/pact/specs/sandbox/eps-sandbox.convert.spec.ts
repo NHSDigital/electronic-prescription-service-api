@@ -79,7 +79,7 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/json"
             },
-            body: Matchers.term({ generate: response, matcher: responseMatcher }),
+            body: response,
             status: parseInt(statusCode)
           }
         }
