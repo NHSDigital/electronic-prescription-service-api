@@ -10,14 +10,17 @@ test:
 
 create-pacts:
 	rm -rf pact
-	npm run create-pacts
+ifeq (sandbox, $(findstring sandbox,$(APIGEE_ENVIRONMENT)))
+	npm run create-sandbox-pacts
+else
+	npm run create-live-pacts
+endif
 
 publish-pacts:
 	npm run publish-pacts
 
 verify-pacts:
 	npm run verify-pacts
-	npm run verify-convert-pacts
 
 generate-postman-collection:
 	mkdir -p ../postman/collections
