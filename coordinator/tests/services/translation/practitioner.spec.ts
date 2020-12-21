@@ -7,6 +7,13 @@ import * as common from "../../../src/services/translation/common/getResourcesOf
 import {getMessageHeader, getProvenances} from "../../../src/services/translation/common/getResourcesOfType"
 import {MessageType} from "../../../src/routes/util"
 import {InvalidValueError} from "../../../src/models/errors/processing-errors"
+import requireActual = jest.requireActual
+import {MomentInput} from "moment"
+
+const actualMoment = requireActual("moment")
+jest.mock("moment", () => ({
+  utc: (input?: MomentInput) => actualMoment.utc(input || "2020-12-18T12:34:34Z")
+}))
 
 describe("getAgentPersonTelecom", () => {
   const roleTelecom: Array<fhir.ContactPoint> = [
@@ -26,19 +33,19 @@ describe("getAgentPersonTelecom", () => {
   const roleTelecomExpected: Array<Telecom> = [
     {
       _attributes:
-                {
-                  "use": TelecomUse.WORKPLACE,
-                  "value": "tel:01512631737"
-                }
+        {
+          "use": TelecomUse.WORKPLACE,
+          "value": "tel:01512631737"
+        }
     }
   ]
   const practitionerTelecomExpected: Array<Telecom> = [
     {
       _attributes:
-                {
-                  "use": TelecomUse.WORKPLACE,
-                  "value": "tel:01"
-                }
+        {
+          "use": TelecomUse.WORKPLACE,
+          "value": "tel:01"
+        }
     }
   ]
 
@@ -120,41 +127,48 @@ describe("convertAuthor", () => {
     fhirFirstMedicationRequest = common.getMedicationRequests(bundle)[0]
   })
 
-  test("includes a time or signatureText field for a message which isn't a cancellation", () => {
-    getMessageHeader(bundle).eventCoding.code = MessageType.PRESCRIPTION
-    const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
-    expect(Object.keys(result)).toContain("time")
-    expect(Object.keys(result)).toContain("signatureText")
+  describe("for a cancellation", () => {
+    beforeEach(() => {
+      getMessageHeader(bundle).eventCoding.code = MessageType.CANCELLATION
+    })
+
+    test("doesn't include a time or signatureText field", () => {
+      const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
+      expect(Object.keys(result)).not.toContain("time")
+      expect(Object.keys(result)).not.toContain("signatureText")
+    })
   })
 
-  test("doesn't include a time or signatureText field for a cancellation message", () => {
-    getMessageHeader(bundle).eventCoding.code = MessageType.CANCELLATION
-    const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
-    expect(Object.keys(result)).not.toContain("time")
-    expect(Object.keys(result)).not.toContain("signatureText")
-  })
+  describe("for an order", () => {
+    beforeEach(() => {
+      getMessageHeader(bundle).eventCoding.code = MessageType.PRESCRIPTION
+    })
 
-  test("includes N/A signatureText field for a message which isn't signed", () => {
-    getMessageHeader(bundle).eventCoding.code = MessageType.PRESCRIPTION
-    bundle.entry.filter(e => e.resource.resourceType === "Provenance").forEach(e => bundle.entry.remove(e))
-    const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
-    expect(Object.keys(result)).toContain("signatureText")
-    expect(result.signatureText._attributes.nullFlavor).toEqual("NA")
-  })
+    test("includes the time and signatureText from the Provenance if present", () => {
+      const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
+      expect(result.time._attributes.value).toEqual("20200902113800")
+      expect(result.signatureText).toHaveProperty("Signature")
+    })
 
-  test("includes N/A signatureText field for a message which isn't signed by the requester", () => {
-    getMessageHeader(bundle).eventCoding.code = MessageType.PRESCRIPTION
-    getProvenances(bundle).flatMap(p => p.signature).forEach(s => s.who.reference = "some-other-practitioner")
-    const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
-    expect(Object.keys(result)).toContain("signatureText")
-    expect(result.signatureText._attributes.nullFlavor).toEqual("NA")
-  })
+    test("includes time: now and signatureText: N/A for a message which isn't signed", () => {
+      bundle.entry.filter(e => e.resource.resourceType === "Provenance").forEach(e => bundle.entry.remove(e))
+      const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
+      expect(result.time._attributes.value).toEqual("20201218123434")
+      expect(result.signatureText._attributes.nullFlavor).toEqual("NA")
+    })
 
-  test("throws for a signature which isn't in the correct format", () => {
-    getMessageHeader(bundle).eventCoding.code = MessageType.PRESCRIPTION
-    getProvenances(bundle).flatMap(p => p.signature).forEach(s => s.data = "this is not a valid signature")
-    expect(() => {
-      practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
-    }).toThrow(InvalidValueError)
+    test("includes time: now and signatureText: N/A for a message which isn't signed by the requester", () => {
+      getProvenances(bundle).flatMap(p => p.signature).forEach(s => s.who.reference = "some-other-practitioner")
+      const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
+      expect(result.time._attributes.value).toEqual("20201218123434")
+      expect(result.signatureText._attributes.nullFlavor).toEqual("NA")
+    })
+
+    test("throws for a signature which isn't in the correct format", () => {
+      getProvenances(bundle).flatMap(p => p.signature).forEach(s => s.data = "this is not a valid signature")
+      expect(() => {
+        practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
+      }).toThrow(InvalidValueError)
+    })
   })
 })

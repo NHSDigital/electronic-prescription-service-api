@@ -250,7 +250,8 @@ export interface ExtensionExtension<T extends Extension> extends Extension {
   extension: Array<T>
 }
 
-class Signature {
+export interface Signature {
+  when: string
   who: Reference<PractitionerRole>
   data: string
 }
@@ -260,9 +261,9 @@ export class Provenance extends Resource {
   signature: Array<Signature>
 }
 
-export class Period {
-  start: string
-  end: string
+export interface Period {
+  start?: string
+  end?: string
 }
 
 export interface CommunicationRequest extends Resource {
