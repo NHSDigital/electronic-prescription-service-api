@@ -4,14 +4,14 @@ let endpoint: string
 
 let token: string
 
-let sleepMs: number = 0
+let sleepMs = 0
 
 function sleep(milliseconds: number) {
-  const date = Date.now();
-  let currentDate = null;
+  const date = Date.now()
+  let currentDate = null
   do {
-    currentDate = Date.now();
-  } while (currentDate - date < milliseconds);
+    currentDate = Date.now()
+  } while (currentDate - date < milliseconds)
 }
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
