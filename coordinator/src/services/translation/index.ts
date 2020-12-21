@@ -4,24 +4,17 @@ import * as core from "../../models/hl7-v3/hl7-v3-datatypes-core"
 import * as prescriptions from "../../models/hl7-v3/hl7-v3-prescriptions"
 import * as fhir from "../../models/fhir/fhir-resources"
 import * as cancellations from "../../models/hl7-v3/hl7-v3-cancellation"
-import path from "path"
 import * as crypto from "crypto-js"
-import Mustache from "mustache"
-import fs from "fs"
 import {createSendMessagePayload} from "./messaging/send-message-payload"
 import {writeXmlStringCanonicalized} from "../serialisation/xml"
 import {convertParentPrescription} from "./prescription/parent-prescription"
 import {convertCancellation} from "./prescription/cancellation"
-import {
-  convertFragmentsToDisplayableFormat,
-  convertFragmentsToHashableFormat,
-  extractFragments
-} from "./prescription/signature"
-import {getIdentifierValueForSystem} from "./common"
-import {Display} from "../../models/signature"
+import {convertFragmentsToHashableFormat, extractFragments} from "./prescription/signature"
+import {convertHL7V3DateTimeToIsoDateTimeString, getIdentifierValueForSystem} from "./common"
 import * as requestBuilder from "../formatters/ebxml-request-builder"
 import {SpineRequest} from "../../models/spine"
 import {identifyMessageType, MessageType} from "../../routes/util"
+import {InvalidValueError} from "../../models/errors/processing-errors"
 
 export function convertFhirMessageToSpineRequest(fhirMessage: fhir.Bundle): SpineRequest {
   const messageType = identifyMessageType(fhirMessage)
@@ -59,18 +52,21 @@ export function createCancellationSendMessagePayload(
 }
 
 export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle): string {
-  //TODO - check message header and reject if this is not an order
+  const messageType = identifyMessageType(fhirMessage)
+  if (messageType !== MessageType.PRESCRIPTION) {
+    throw new InvalidValueError(
+      "MessageHeader.eventCoding.code must be 'prescription-order'.",
+      "MessageHeader.eventCoding.code"
+    )
+  }
+
   const parentPrescription = convertParentPrescription(fhirMessage)
   const fragments = extractFragments(parentPrescription)
-
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
-  const base64Fragments = Buffer.from(fragmentsToBeHashed).toString("base64")
   const base64Digest = createParametersDigest(fragmentsToBeHashed)
+  const isoTimestamp = convertHL7V3DateTimeToIsoDateTimeString(fragments.time)
 
-  const fragmentsToDisplay = convertFragmentsToDisplayableFormat(fragments)
-  const base64Display = createParametersDisplay(fragmentsToDisplay)
-
-  const parameters = createParameters(base64Fragments, base64Digest, base64Display)
+  const parameters = createParameters(base64Digest, isoTimestamp)
   return JSON.stringify(parameters, null, 2)
 }
 
@@ -97,17 +93,10 @@ function createParametersDigest(fragmentsToBeHashed: string): string {
   return Buffer.from(writeXmlStringCanonicalized(signedInfo)).toString("base64")
 }
 
-function createParametersDisplay(fragmentsToDisplay: Display): string {
-  const displayTemplate = fs.readFileSync(path.join(__dirname, "../../resources/message_display.mustache"), "utf-8")
-    .replace(/\n/g, "\r\n")
-  return Buffer.from(Mustache.render(displayTemplate, fragmentsToDisplay)).toString("base64")
-}
-
-function createParameters(base64Fragments: string, base64Digest: string, base64Display: string): fhir.Parameters {
+function createParameters(base64Digest: string, isoTimestamp: string): fhir.Parameters {
   const parameters: Array<fhir.Parameter> = []
-  parameters.push({name: "fragments", valueString: base64Fragments})
   parameters.push({name: "digest", valueString: base64Digest})
-  parameters.push({name: "display", valueString: base64Display})
+  parameters.push({name: "timestamp", valueString: isoTimestamp})
   parameters.push({name: "algorithm", valueString: "RS1"})
   return new fhir.Parameters(parameters)
 }

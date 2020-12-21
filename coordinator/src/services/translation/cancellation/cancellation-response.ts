@@ -7,14 +7,14 @@ import {createOrganization} from "./cancellation-organization"
 import {createPractitionerRole} from "./cancellation-practitioner-role"
 import {createMessageHeader} from "./cancellation-message-header"
 import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
-import {convertHL7V3DateTimeStringToISODateTime} from "../common"
+import {convertHL7V3DateTimeToIsoDateTimeString} from "../common"
 
 export function translateSpineCancelResponseIntoBundle(cancellationResponse: CancellationResponse): fhir.Bundle {
   return {
     resourceType: "Bundle",
     type: "message",
     identifier: createBundleIdentifier(cancellationResponse),
-    timestamp: convertHL7V3DateTimeStringToISODateTime(cancellationResponse.effectiveTime._attributes.value),
+    timestamp: convertHL7V3DateTimeToIsoDateTimeString(cancellationResponse.effectiveTime),
     entry: createBundleEntries(cancellationResponse)
   }
 }

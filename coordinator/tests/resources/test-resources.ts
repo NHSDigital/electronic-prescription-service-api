@@ -43,18 +43,17 @@ export class ExamplePrescription {
     this.fhirMessageDigest = LosslessJson.parse(fhirMessageDigestStr)
     this.hl7V3Message = XmlJs.xml2js(hl7V3MessageStr, {compact: true})
 
-    const fhirMessageCancelPath = path.join(__dirname, location, "CancelRequest-FhirMessage.json")
+    const fhirMessageCancelPath = path.join(__dirname, location, "1-Process-Request-Cancel-200_OK.json")
     if (fs.existsSync(fhirMessageCancelPath)) {
       const fhirMessageCancelStr = fs.readFileSync(fhirMessageCancelPath, "utf-8")
       this.fhirMessageCancel = LosslessJson.parse(fhirMessageCancelStr)
     }
 
-    const hl7V3MessageCancelPath = path.join(__dirname, location, "CancelResponse-Hl7V3Message.xml")
+    const hl7V3MessageCancelPath = path.join(__dirname, location, "1-Convert-Response-Cancel-200_OK.xml")
     if (fs.existsSync(hl7V3MessageCancelPath)) {
       const hl7V3MessageCancelStr = fs.readFileSync(hl7V3MessageCancelPath, "utf-8")
       this.hl7V3MessageCancel = XmlJs.xml2js(hl7V3MessageCancelStr, {compact: true})
     }
-
   }
 }
 
