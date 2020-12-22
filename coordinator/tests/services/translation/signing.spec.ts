@@ -9,11 +9,12 @@ import {xmlTest} from "../../resources/test-helpers"
 import {Fragments} from "../../../src/models/signature"
 import {ParentPrescription} from "../../../src/models/hl7-v3/hl7-v3-prescriptions"
 import requireActual = jest.requireActual
-import {MomentInput} from "moment"
+import {MomentFormatSpecification, MomentInput} from "moment"
 
 const actualMoment = requireActual("moment")
 jest.mock("moment", () => ({
-  utc: (input?: MomentInput) => actualMoment.utc(input || "2020-12-18T12:34:34Z")
+  utc: (input?: MomentInput, format?: MomentFormatSpecification) =>
+    actualMoment.utc(input || "2020-12-18T12:34:34Z", format)
 }))
 
 let hl7V3ParentPrescription: ParentPrescription
