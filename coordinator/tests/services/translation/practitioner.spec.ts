@@ -64,9 +64,11 @@ describe("getAgentPersonTelecom", () => {
 })
 
 describe("getAgentPersonPersonIdForAuthor", () => {
+  const gmcCodeValue = "123425516"
+
   const gmcCode: fhir.Identifier = {
     "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-    "value": "gmc"
+    "value": `C${gmcCodeValue}`
   }
   const gmpCode : fhir.Identifier = {
     "system": "https://fhir.hl7.org.uk/Id/gmp-number",
@@ -82,6 +84,10 @@ describe("getAgentPersonPersonIdForAuthor", () => {
     expect(() => practitioner.getAgentPersonPersonIdForAuthor(
       []
     )).toThrow()
+  })
+  test("Removes leading C from GMC code", () => {
+    expect(practitioner.getAgentPersonPersonIdForAuthor([gmcCode])._attributes.extension)
+      .toBe(gmcCodeValue)
   })
 })
 
