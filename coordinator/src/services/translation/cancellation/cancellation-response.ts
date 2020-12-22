@@ -94,11 +94,11 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
       fhirPractitionerRole: fhirPerformerPractitionerRole,
       fhirOrganization: fhirPerformerOrganization
     } = convertAgentPerson(performerAgentPerson)
-    const performerPractitionerId = fhirPerformerPractitioner.id
+    const performerPractitionerRoleId = fhirPerformerPractitionerRole.id
     const performerOrganizationCode = performerAgentPerson.representedOrganization.id._attributes.extension
     const performerOrganizationName = performerAgentPerson.representedOrganization.name._text
     fhirMedicationRequest.dispenseRequest = createDispenserInfoReference(
-      performerPractitionerId, performerOrganizationCode, performerOrganizationName
+      performerPractitionerRoleId, performerOrganizationCode, performerOrganizationName
     )
     bundleResources.push(fhirPerformerPractitioner, fhirPerformerPractitionerRole, fhirPerformerOrganization)
   }
