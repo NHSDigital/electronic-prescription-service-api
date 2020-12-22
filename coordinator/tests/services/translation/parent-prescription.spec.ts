@@ -3,13 +3,15 @@ import * as TestResources from "../../resources/test-resources"
 import {Bundle} from "../../../src/models/fhir/fhir-resources"
 import {ParentPrescription} from "../../../src/models/hl7-v3/hl7-v3-prescriptions"
 import {clone} from "../../resources/test-helpers"
-import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
+import {getMedicationRequests, getProvenances} from "../../../src/services/translation/common/getResourcesOfType"
 import requireActual = jest.requireActual
-import {MomentInput} from "moment"
+import {MomentFormatSpecification, MomentInput} from "moment"
+import {convertIsoDateTimeStringToHl7V3DateTime, onlyElement} from "../../../src/services/translation/common"
 
 const actualMoment = requireActual("moment")
 jest.mock("moment", () => ({
-  utc: (input?: MomentInput) => actualMoment.utc(input || "2020-12-18T12:34:34Z")
+  utc: (input?: MomentInput, format?: MomentFormatSpecification) =>
+    actualMoment.utc(input || "2020-12-18T12:34:34Z", format)
 }))
 
 describe("convertParentPrescription", () => {
@@ -38,8 +40,11 @@ describe("effectiveTime", () => {
 
   test("or is Provenance.signature.when if present", () => {
     const prescription = clone(TestResources.examplePrescription2.fhirMessageSigned)
+    const provenance = onlyElement(getProvenances(prescription), "Bundle.entry.ofType(Provenance)")
+    const signature = onlyElement(provenance.signature, "Provenance.signature")
+    const expectedTime = convertIsoDateTimeStringToHl7V3DateTime(signature.when, "Provenance.signature.when")
     const result = convertParentPrescription(prescription)
-    expect(result.effectiveTime._attributes.value).toEqual("20200902113800")
+    expect(result.effectiveTime).toEqual(expectedTime)
   })
 
   test("or is now if not overridden", () => {
