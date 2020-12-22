@@ -208,7 +208,7 @@ function convertMomentToHl7V3Date(dateTime: moment.Moment): core.Timestamp {
 }
 
 function convertHL7V3DateToMoment(hl7Date: core.Timestamp) {
-  return moment(hl7Date._attributes.value, HL7_V3_DATE_FORMAT)
+  return moment.utc(hl7Date._attributes.value, HL7_V3_DATE_FORMAT)
 }
 
 export function convertMomentToHl7V3DateTime(dateTime: moment.Moment): core.Timestamp {
@@ -217,7 +217,7 @@ export function convertMomentToHl7V3DateTime(dateTime: moment.Moment): core.Time
 }
 
 function convertHL7V3DateTimeToMoment(hl7Date: core.Timestamp) {
-  return moment(hl7Date._attributes.value, HL7_V3_DATE_TIME_FORMAT)
+  return moment.utc(hl7Date._attributes.value, HL7_V3_DATE_TIME_FORMAT)
 }
 
 function convertIsoDateTimeStringToMoment(isoDateTimeStr: string, fhirPath: string): moment.Moment {
