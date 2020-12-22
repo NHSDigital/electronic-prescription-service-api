@@ -13,7 +13,7 @@ export interface Bundle extends Resource {
   timestamp?: string
 }
 
-interface BundleEntry {
+export interface BundleEntry {
   fullUrl?: string
   resource?: Resource
 }
