@@ -181,12 +181,15 @@ export function getAgentPersonPersonIdForAuthor(
 ): peoplePlaces.PrescriptionAuthorId {
   const professionalCode: Array<codes.ProfessionalCode> = []
 
-  const gmcCode = getIdentifierValueOrNullForSystem(
+  let gmcCode = getIdentifierValueOrNullForSystem(
     fhirPractitionerIdentifier,
     "https://fhir.hl7.org.uk/Id/gmc-number",
     "Practitioner.identifier"
   )
   if (gmcCode) {
+    if(gmcCode.toUpperCase().startsWith("C")) {
+      gmcCode = gmcCode.substring(1)
+    }
     professionalCode.push(new codes.ProfessionalCode(gmcCode))
   }
 
