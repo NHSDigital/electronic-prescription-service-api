@@ -1,4 +1,4 @@
-import {InteractionObject} from "@pact-foundation/pact"
+import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
@@ -23,7 +23,7 @@ jestpact.pactWith(
       test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (description: string, request: Bundle, response: Parameters) => {
         const apiPath = "/$prepare"
         const requestStr = LosslessJson.stringify(request)
-          
+
         const interaction: InteractionObject = {
           state: "is not authenticated",
           uponReceiving: `a request to prepare a ${description} message`,
@@ -39,7 +39,23 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/json"
             },
-            body: response,
+            body: {
+              resourceType: "Parameters",
+              parameter: [
+                {
+                  name: "digest",
+                  valueString: Matchers.like(response.parameter.find(p => p.name === "digest").valueString)
+                },
+                {
+                  name: "timestamp",
+                  valueString: Matchers.like(response.parameter.find(p => p.name === "timestamp").valueString)
+                },
+                {
+                  name: "algorithm",
+                  valueString: "RS1"
+                }
+              ]
+            },
             status: 200
           }
         }

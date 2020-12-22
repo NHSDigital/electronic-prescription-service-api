@@ -1,4 +1,4 @@
-import { InteractionObject } from "@pact-foundation/pact"
+import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import * as TestResources from "../../resources/test-resources"
 import { Bundle, Parameters } from "../../models/fhir/fhir-resources"
@@ -21,7 +21,7 @@ jestpact.pactWith(
     }
 
     const authenticationTestDescription = "a request to prepare an unauthorised message"
-    
+
     describe("endpoint authentication e2e tests", () => {
       test(authenticationTestDescription, async () => {
         const apiPath = "/$prepare"
@@ -55,7 +55,23 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/json"
             },
-            body: outputMessage,
+            body: {
+              resourceType: "Parameters",
+              parameter: [
+                {
+                  name: "digest",
+                  valueString: Matchers.like(outputMessage.parameter.find(p => p.name === "digest").valueString)
+                },
+                {
+                  name: "timestamp",
+                  valueString: Matchers.like(outputMessage.parameter.find(p => p.name === "timestamp").valueString)
+                },
+                {
+                  name: "algorithm",
+                  valueString: "RS1"
+                }
+              ]
+            },
             status: 200
           }
         }
