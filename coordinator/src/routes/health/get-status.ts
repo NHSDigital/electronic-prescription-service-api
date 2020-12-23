@@ -16,7 +16,7 @@ export default [
           return h.response().code(400)
         }
       } catch (err) {
-        console.log(`Got error when making request for validator status: ${err}`)
+        request.logger.error(`Got error when making request for validator status: ${err}`)
         return h.response().code(400)
       }
 
