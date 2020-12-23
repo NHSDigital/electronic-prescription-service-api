@@ -13,9 +13,11 @@ export default [
         const response = await axios.get<string>(`${VALIDATOR_HOST}/_status`, {timeout: 2})
 
         if (response.status == 200 && response.data != "Validator is alive") {
-          validator = true;
+          validator = true
         } else {
-          request.logger.warn("Did not get positive response from validator status check")
+          const responseSummary = `Status: ${response.status}, data: ${response.data ?? "No Data"}`
+          const msg = `Did not get positive response from validator status check. ${responseSummary}`
+          request.logger.warn(msg)
         }
       } catch (err) {
         request.logger.error(`Got error when making request for validator status: ${err}`)
