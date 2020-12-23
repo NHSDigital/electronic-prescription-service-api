@@ -61,7 +61,7 @@ attempts=0
 success=0
 until [ $attempts -eq 10 ]
 do
-deployedCommit=$(curl "$url" -s | jq -r $path)
+deployedCommit=$(curl -H "apiKey: $STATUS_ENDPOINT_API_KEY" "$url" -s | jq -r $path)
 if [[ "$deployedCommit" == "$releaseCommit" ]]; then
     success=1
     break;
