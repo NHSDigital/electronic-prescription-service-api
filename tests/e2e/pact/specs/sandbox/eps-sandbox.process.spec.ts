@@ -40,9 +40,9 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/json"
             },
-            body: {
-              resourceType: "Bundle"
-            },
+            // body: {
+            //   resourceType: "Bundle"
+            // },
             status: 200
           }
         }
