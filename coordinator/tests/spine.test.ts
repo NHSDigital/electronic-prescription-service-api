@@ -8,6 +8,7 @@ import * as fs from "fs"
 import * as path from "path"
 import * as fhir from "../src/models/fhir/fhir-resources"
 import {getExtensionForUrl} from "../src/services/translation/common"
+import * as LosslessJson from "lossless-json"
 
 function generateCancelMessage(requestPayload: fhir.Bundle, x: string) {
   const cancelMessage = JSON.parse(JSON.stringify(requestPayload))
@@ -37,12 +38,12 @@ function convertPrescriber(defaultPrescriptionMessage: fhir.Bundle, x: string) {
   const prescriptionTypeExtension = getExtensionForUrl(
     medicationRequest[0].extension, prescriptionTypeUrl, ""
   ) as fhir.CodingExtension
-  prescriptionTypeExtension.valueCoding = prescriberStuffMap.get(x)
+  prescriptionTypeExtension.valueCoding = prescriptionTypeExtensionMap.get(x)
   medicationRequest[0].authoredOn = new Date().toISOString()
 
   const bundleEntries = prescriptionMessage.entry.filter(
-    (bluh: fhir.BundleEntry) => bluh.resource.resourceType !== "Practitioner"
-      && bluh.resource.resourceType !== "PractitionerRole")
+    (entry: fhir.BundleEntry) => entry.resource.resourceType !== "Practitioner"
+      && entry.resource.resourceType !== "PractitionerRole")
   bundleEntries.push(practitionerStuffMap.get(x))
   bundleEntries.push(practitionerRoleStuffMap.get(x))
   prescriptionMessage.entry = bundleEntries
@@ -50,18 +51,18 @@ function convertPrescriber(defaultPrescriptionMessage: fhir.Bundle, x: string) {
   return prescriptionMessage
 }
 
-const prescriberStuffMap = new Map()
-prescriberStuffMap.set("doctor", {
+const prescriptionTypeExtensionMap = new Map()
+prescriptionTypeExtensionMap.set("doctor", {
   "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
   "code": "1001",
   "display": "Outpatient Community Prescriber - Medical Prescriber"
 })
-prescriberStuffMap.set("nurse", {
+prescriptionTypeExtensionMap.set("nurse", {
   "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
   "code": "1004",
   "display": "Outpatient Community Prescriber - Nurse Independent/Supplementary prescriber"
 })
-prescriberStuffMap.set("pharmacist", {
+prescriptionTypeExtensionMap.set("pharmacist", {
   "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
   "code": "1008",
   "display": "Outpatient Community Prescriber - Pharmacist Independent/Supplementary prescriber"
@@ -318,12 +319,12 @@ describe("generate prescription-order and prescription-order-update messages", (
     const convertedPrescriptionMessage = convertPrescriber(prescriptionMessage, prescriber)
     fs.writeFileSync(
       path.join(__dirname, `${shortFormId+prescriber+canceller}-prescription-order.json`),
-      JSON.stringify(convertedPrescriptionMessage), "utf-8"
+      LosslessJson.stringify(convertedPrescriptionMessage), "utf-8"
     )
 
     fs.writeFileSync(
       path.join(__dirname, `${shortFormId+prescriber+canceller}-prescription-order-update.json`),
-      JSON.stringify(generateCancelMessage(convertedPrescriptionMessage, canceller)), "utf-8"
+      LosslessJson.stringify(generateCancelMessage(convertedPrescriptionMessage, canceller)), "utf-8"
     )
   })
 })
@@ -343,12 +344,13 @@ function getStatusReason(statusCode: string) {
 function generateShortFormID() {
   const _PRESC_CHECKDIGIT_VALUES = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+"
   const hexString = (generateResourceId()).replace(/-/g, "").toUpperCase()
-  let prescriptionID = hexString.substring(0, 6) + "-" + "A99968" + "-" + hexString.substring(12, 18)
-  const prscID = prescriptionID.replace("-", "")
+  let prescriptionID = hexString.substring(0, 6) + "-" + "A99968" + "-" + hexString.substring(12, 17)
+  const prscID = prescriptionID.replace(/-/g, "")
   const prscIDLength = prscID.length
   let runningTotal = 0
   let checkValue
-  prscID.split("").forEach((character, index) => {
+  const strings = prscID.split("")
+  strings.forEach((character, index) => {
     runningTotal = runningTotal + parseInt(character, 36) * (2 ** (prscIDLength - index))
   })
   checkValue = (38 - runningTotal % 37) % 37
