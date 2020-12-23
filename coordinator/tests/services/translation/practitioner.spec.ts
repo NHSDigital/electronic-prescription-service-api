@@ -8,11 +8,13 @@ import {getMessageHeader, getProvenances} from "../../../src/services/translatio
 import {MessageType} from "../../../src/routes/util"
 import {InvalidValueError} from "../../../src/models/errors/processing-errors"
 import requireActual = jest.requireActual
-import {MomentInput} from "moment"
+import {MomentInput, MomentFormatSpecification} from "moment"
+import {convertIsoDateTimeStringToHl7V3DateTime, onlyElement} from "../../../src/services/translation/common"
 
 const actualMoment = requireActual("moment")
 jest.mock("moment", () => ({
-  utc: (input?: MomentInput) => actualMoment.utc(input || "2020-12-18T12:34:34Z")
+  utc: (input?: MomentInput, format?: MomentFormatSpecification) =>
+    actualMoment.utc(input || "2020-12-18T12:34:34Z", format)
 }))
 
 describe("getAgentPersonTelecom", () => {
@@ -64,9 +66,11 @@ describe("getAgentPersonTelecom", () => {
 })
 
 describe("getAgentPersonPersonIdForAuthor", () => {
+  const gmcCodeValue = "123425516"
+
   const gmcCode: fhir.Identifier = {
     "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-    "value": "gmc"
+    "value": `C${gmcCodeValue}`
   }
   const gmpCode : fhir.Identifier = {
     "system": "https://fhir.hl7.org.uk/Id/gmp-number",
@@ -82,6 +86,10 @@ describe("getAgentPersonPersonIdForAuthor", () => {
     expect(() => practitioner.getAgentPersonPersonIdForAuthor(
       []
     )).toThrow()
+  })
+  test("Removes leading C from GMC code", () => {
+    expect(practitioner.getAgentPersonPersonIdForAuthor([gmcCode])._attributes.extension)
+      .toBe(gmcCodeValue)
   })
 })
 
@@ -145,8 +153,11 @@ describe("convertAuthor", () => {
     })
 
     test("includes the time and signatureText from the Provenance if present", () => {
+      const provenance = onlyElement(getProvenances(bundle), "Bundle.entry.ofType(Provenance)")
+      const signature = onlyElement(provenance.signature, "Provenance.signature")
+      const expectedTime = convertIsoDateTimeStringToHl7V3DateTime(signature.when, "Provenance.signature.when")
       const result = practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
-      expect(result.time._attributes.value).toEqual("20200902113800")
+      expect(result.time).toEqual(expectedTime)
       expect(result.signatureText).toHaveProperty("Signature")
     })
 

@@ -51,7 +51,7 @@ export function createCancellationSendMessagePayload(
   return createSendMessagePayload(messageId, interactionId, fhirBundle, cancellationRequestRoot)
 }
 
-export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle): string {
+export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle): fhir.Parameters {
   const messageType = identifyMessageType(fhirMessage)
   if (messageType !== MessageType.PRESCRIPTION) {
     throw new InvalidValueError(
@@ -65,9 +65,7 @@ export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle):
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
   const base64Digest = createParametersDigest(fragmentsToBeHashed)
   const isoTimestamp = convertHL7V3DateTimeToIsoDateTimeString(fragments.time)
-
-  const parameters = createParameters(base64Digest, isoTimestamp)
-  return JSON.stringify(parameters, null, 2)
+  return createParameters(base64Digest, isoTimestamp)
 }
 
 function createParametersDigest(fragmentsToBeHashed: string): string {
