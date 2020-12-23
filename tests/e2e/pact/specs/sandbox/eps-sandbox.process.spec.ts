@@ -41,11 +41,7 @@ jestpact.pactWith(
               "Content-Type": "application/json"
             },
             body: {
-              resourceType: "Bundle",
-              identifier: {
-                "system": "https://tools.ietf.org/html/rfc4122",
-                "value": "444309a2-81d9-85ae-4925-282c40d2f1d6"
-              }
+              resourceType: "Bundle"
             },
             status: 200
           }
