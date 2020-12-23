@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import Axios from "axios"
+import axios from "axios"
 import {VALIDATOR_HOST} from "../util"
 
 export default [
@@ -9,7 +9,7 @@ export default [
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
 
       try {
-        const response = await Axios.get<string>(`${VALIDATOR_HOST}/_status`, {timeout: 2})
+        const response = await axios.get<string>(`${VALIDATOR_HOST}/_status`, {timeout: 2})
 
         if (response.status != 200 || response.data != "Validator is alive") {
           request.logger.warn("Did not get positive response from validator status check")
