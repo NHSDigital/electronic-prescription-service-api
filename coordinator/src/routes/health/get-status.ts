@@ -12,7 +12,7 @@ export default [
       try {
         const response = await axios.get<string>(`${VALIDATOR_HOST}/_status`, {timeout: 2})
 
-        if (response.status == 200 && response.data != "Validator is alive") {
+        if (response.status == 200 && response.data == "Validator is alive") {
           validator = true
         } else {
           const responseSummary = `Status: ${response.status}, data: ${response.data ?? "No Data"}`
@@ -26,7 +26,6 @@ export default [
       return h.response({
         coordinator: true,
         validator,
-        message: "Coordinator is alive",
         commitId: process.env.COMMIT_ID
       })
     }
