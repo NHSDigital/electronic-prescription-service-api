@@ -101,13 +101,14 @@ extends:
           url="https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH/_status"
           interval_in_seconds=5
           releaseCommit="$(Build.SourceVersion)"
+          statusEndpointApiKey=$(aws secretsmanager get-secret-value --secret-id ptl/monitoring/status-endpoint-api-key | jq .SecretString)
           path=".commitId"
           printf "\nPolling %s every %s seconds, until commit is: %s\n" "$url" "$interval_in_seconds" "$releaseCommit"
           attempts=0
           success=0
-          until [ $attempts -eq 10 ]
+          until [ $attempts -eq 15 ]
           do
-          deployedCommit=$(curl -H "apiKey: $STATUS_ENDPOINT_API_KEY" "$url" -s | jq -r $path)
+          deployedCommit=$(curl -H "apiKey: $statusEndpointApiKey" "$url" -s | jq -r $path)
           if [[ "$deployedCommit" == "$releaseCommit" ]]; then
               success=1
               break;
