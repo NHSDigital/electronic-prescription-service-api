@@ -101,7 +101,7 @@ extends:
           url="https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH/_status"
           interval_in_seconds=5
           releaseCommit="$(Build.SourceVersion)"
-          statusEndpointApiKey=$(aws secretsmanager get-secret-value --secret-id ptl/monitoring/status-endpoint-api-key | jq .SecretString)
+          statusEndpointApiKey=$(aws secretsmanager get-secret-value --secret-id ptl/monitoring/status-endpoint-api-key --region eu-west-2 | jq .SecretString)
           path=".commitId"
           printf "\nPolling %s every %s seconds, until commit is: %s\n" "$url" "$interval_in_seconds" "$releaseCommit"
           attempts=0
