@@ -37,6 +37,7 @@ export function createMedicationRequest(
     intent: "order",
     medicationCodeableConcept: getMedicationCodeableConcept(),
     subject: createReference(patientReference),
+    //TODO - effectiveTime should probably be the timestamp of the status, not authoredOn
     authoredOn: convertHL7V3DateTimeToIsoDateTimeString(cancellationResponse.effectiveTime),
     requester: createReference(authorPractitionerRoleReference),
     groupIdentifier: getMedicationGroupIdentifier(cancellationResponse.pertinentInformation2),

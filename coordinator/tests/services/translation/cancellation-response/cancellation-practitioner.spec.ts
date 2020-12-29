@@ -1,31 +1,49 @@
 import * as TestResources from "../../../resources/test-resources"
 import {getIdentifierValueForSystem} from "../../../../src/services/translation/common"
 import {createPractitioner} from "../../../../src/services/translation/cancellation/cancellation-practitioner"
-import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/spine-response"
-import {readXml} from "../../../../src/services/serialisation/xml"
+import {getCancellationResponse} from "./test-helpers"
+import {AgentPerson} from "../../../../src/models/hl7-v3/hl7-v3-people-places"
+import {Practitioner} from "../../../../src/models/fhir/fhir-resources"
 
 describe("createPractitioner", () => {
-  const actualError = TestResources.spineResponses.cancellationError
-  const preParsedMsg = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(actualError.response.body)[0]
-  const parsedMsg = readXml(preParsedMsg)
-  const actEvent = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
-  const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
-  const author = createPractitioner(cancellationResponse.author.AgentPerson)
+  const cancellationErrorResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)
+  const cancellationErrorDispensedResponse = getCancellationResponse(
+    TestResources.spineResponses.cancellationDispensedError
+  )
+  const authorAgentPerson = cancellationErrorResponse.author.AgentPerson
+  const performerAgentPerson = cancellationErrorDispensedResponse.performer.AgentPerson
 
-  test("returned practitioner has an identifier with correct SDS user id", () => {
-    expect(author.identifier).not.toBeUndefined()
-    expect(author.identifier.length).toBe(1)
-    const sdsIdentifier = getIdentifierValueForSystem(
-      author.identifier,
-      "https://fhir.hl7.org.uk/Id/professional-code",
-      "author.identifier")
-    expect(sdsIdentifier).toBe("4428981")
+  const authorPractitioner = createPractitioner(
+    authorAgentPerson
+  )
+
+  const performerPractitioner = createPractitioner(
+    performerAgentPerson
+  )
+
+  const cases = [
+    ["authorPractitioner", authorAgentPerson, authorPractitioner],
+    ["performerPractitioner", performerAgentPerson, performerPractitioner]
+  ]
+
+  test.each(cases)(
+    "%p has an identifier with correct SDS user id",
+    (name: string, hl7Practitioner: AgentPerson, fhirPractitioner: Practitioner) => {
+      const sdsIdentifier = getIdentifierValueForSystem(
+        fhirPractitioner.identifier,
+        "https://fhir.hl7.org.uk/Id/professional-code",
+        "author.identifier")
+      expect(sdsIdentifier).toBe(hl7Practitioner.agentPerson.id._attributes.extension)
+    })
+
+  test("author practitioner has correct family and given names, and prefix", () => {
+    expect(authorPractitioner.name).not.toBeUndefined()
+    expect(authorPractitioner.name[0].family).toBe("Edwards")
+    expect(authorPractitioner.name[0].given[0]).toBe("Thomas")
+    expect(authorPractitioner.name[0].prefix[0]).toBe("DR")
   })
 
-  test("returned practitioner has correct family and given names, and prefix", () => {
-    expect(author.name).not.toBeUndefined()
-    expect(author.name[0].family).toBe("Edwards")
-    expect(author.name[0].given[0]).toBe("Thomas")
-    expect(author.name[0].prefix[0]).toBe("DR")
+  test("performer practitioner has correct name", () => {
+    expect(performerPractitioner.name[0].text).toBe(performerAgentPerson.agentPerson.name._text)
   })
 })

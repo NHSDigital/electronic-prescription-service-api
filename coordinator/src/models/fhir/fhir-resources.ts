@@ -83,7 +83,8 @@ export interface Performer extends IdentifierReference<Organization> {
 }
 
 export interface MedicationRequestDispenseRequest {
-  extension?: Array<CodingExtension | StringExtension>
+  extension?: Array<CodingExtension | StringExtension | ReferenceExtension<PractitionerRole>>
+  identifier?: Identifier
   quantity?: SimpleQuantity
   expectedSupplyDuration?: SimpleQuantity
   performer: Performer
@@ -118,6 +119,7 @@ export class HumanName {
   given?: Array<string>
   prefix?: Array<string>
   suffix?: Array<string>
+  text?: string
 }
 
 export class ContactPoint {

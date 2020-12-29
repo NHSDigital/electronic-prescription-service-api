@@ -16,7 +16,7 @@ export function createPractitionerRole(
     practitioner: createReference(practitionerReference),
     organization: createReference(organizationReference),
     code: createJobRoleNameCode(hl7AgentPerson.code._attributes.code),
-    telecom: toArray(hl7AgentPerson.telecom)[0]._attributes ? convertTelecom(hl7AgentPerson.telecom) : undefined
+    telecom: toArray(hl7AgentPerson.telecom)[0]?._attributes ? convertTelecom(hl7AgentPerson.telecom) : undefined
   }
 }
 
