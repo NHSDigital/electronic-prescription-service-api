@@ -3,9 +3,6 @@
     <Flow name="Status">
       <Request>
         <Step>
-          <Name>KeyValueMapOperations.GetSecureVariables</Name>
-        </Step>
-        <Step>
           <Name>KeyValueMapOperations.GetSharedSecureVariables</Name>
         </Step>
         <Step>
