@@ -18,16 +18,51 @@ export function verifyBundle(bundle: fhir.Bundle): Array<errors.ValidationError>
     return [new errors.MessageTypeError()]
   }
 
-  return messageType === MessageType.PRESCRIPTION
+  const commonErrors = verifyCommonBundle(bundle)
+
+  const messageTypeSpecificErrors = messageType === MessageType.PRESCRIPTION
     ? verifyPrescriptionBundle(bundle)
     : verifyCancellationBundle(bundle)
+
+  return [
+    ...commonErrors,
+    ...messageTypeSpecificErrors
+  ]
 }
 
 function verifyMessageType(messageType: string): messageType is MessageType {
   return messageType === MessageType.PRESCRIPTION || messageType === MessageType.CANCELLATION
 }
 
+export function verifyCommonBundle(bundle: fhir.Bundle): Array<errors.ValidationError> {
+  const incorrectValueErrors = []
+
+  const medicationRequests = getMedicationRequests(bundle)
+  if (medicationRequests.some(medicationRequest => medicationRequest.intent !== "order")) {
+    incorrectValueErrors.push({
+      message: "MedicationRequest.intent must be 'order'.",
+      operationOutcomeCode: "value" as const,
+      severity: "error" as const,
+      expression: ["MedicationRequest.intent"]
+    })
+  }
+
+  return incorrectValueErrors
+}
+
 export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.ValidationError> {
+  const medicationRequests = getMedicationRequests(bundle)
+
+  const incorrectValueErrors = []
+  if (medicationRequests.some(medicationRequest => medicationRequest.status !== "active")) {
+    incorrectValueErrors.push({
+      message: "MedicationRequest.status must be 'active'.",
+      operationOutcomeCode: "value" as const,
+      severity: "error" as const,
+      expression: ["MedicationRequest.status"]
+    })
+  }
+
   const fhirPaths = [
     "groupIdentifier",
     "category",
@@ -42,8 +77,7 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
     'extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner")',
     'extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation")'
   ]
-  const medicationRequests = getMedicationRequests(bundle)
-  const identicalValueErrors = fhirPaths
+  const inconsistentValueErrors = fhirPaths
     .map((fhirPath) => verifyIdenticalForAllMedicationRequests(bundle, medicationRequests, fhirPath))
     .filter(isTruthy)
 
@@ -52,7 +86,8 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
   const repeatDispensingErrors = isRepeatDispensing ? verifyRepeatDispensingPrescription(medicationRequests) : []
 
   return [
-    ...identicalValueErrors,
+    ...incorrectValueErrors,
+    ...inconsistentValueErrors,
     ...repeatDispensingErrors
   ]
 }

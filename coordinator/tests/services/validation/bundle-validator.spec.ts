@@ -44,7 +44,65 @@ describe("Bundle checks", () => {
   })
 })
 
-describe("MedicationRequest checks", () => {
+describe("verifyCommonBundle", () => {
+  let bundle: fhir.Bundle
+  let medicationRequests: Array<fhir.MedicationRequest>
+
+  beforeEach(() => {
+    bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    medicationRequests = getMedicationRequests(bundle)
+  })
+
+  test("Should accept a prescription-order message where all MedicationRequests have intent order", () => {
+    const validationErrors = validator.verifyCommonBundle(bundle)
+    expect(validationErrors).toHaveLength(0)
+  })
+
+  test("Should reject a message where one MedicationRequest has intent plan", () => {
+    medicationRequests[0].intent = "plan"
+    const validationErrors = validator.verifyCommonBundle(bundle)
+    expect(validationErrors).toHaveLength(1)
+    expect(validationErrors[0].expression).toContainEqual("MedicationRequest.intent")
+  })
+
+  test("Should reject a message where all MedicationRequests have intent plan", () => {
+    medicationRequests.forEach(medicationRequest => medicationRequest.intent = "plan")
+    const validationErrors = validator.verifyCommonBundle(bundle)
+    expect(validationErrors).toHaveLength(1)
+    expect(validationErrors[0].expression).toContainEqual("MedicationRequest.intent")
+  })
+})
+
+describe("verifyPrescriptionBundle status check", () => {
+  let bundle: fhir.Bundle
+  let medicationRequests: Array<fhir.MedicationRequest>
+
+  beforeEach(() => {
+    bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    medicationRequests = getMedicationRequests(bundle)
+  })
+
+  test("Should accept a message where all MedicationRequests have status active", () => {
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    expect(validationErrors).toHaveLength(0)
+  })
+
+  test("Should reject a message where one MedicationRequest has status cancelled", () => {
+    medicationRequests[0].status = "cancelled"
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    expect(validationErrors).toHaveLength(1)
+    expect(validationErrors[0].expression).toContainEqual("MedicationRequest.status")
+  })
+
+  test("Should reject a message where all MedicationRequests have status cancelled", () => {
+    medicationRequests.forEach(medicationRequest => medicationRequest.status = "cancelled")
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    expect(validationErrors).toHaveLength(1)
+    expect(validationErrors[0].expression).toContainEqual("MedicationRequest.status")
+  })
+})
+
+describe("MedicationRequest consistency checks", () => {
   let bundle: fhir.Bundle
   let medicationRequests: Array<fhir.MedicationRequest>
 
