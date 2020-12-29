@@ -15,6 +15,8 @@ type HapiPayload = string | object | Buffer | stream //eslint-disable-line @type
 const CONTENT_TYPE_FHIR = "application/fhir+json; fhirVersion=4.0"
 const CONTENT_TYPE_JSON = "application/json"
 
+export const VALIDATOR_HOST = "http://localhost:9001"
+
 export function handleResponse<T>(
   request: Hapi.Request,
   spineResponse: SpineDirectResponse<T> | SpinePollableResponse,
@@ -76,7 +78,7 @@ export async function fhirValidation(
   requestHeaders: Hapi.Util.Dictionary<string>
 ): Promise<fhir.OperationOutcome> {
   const validatorResponse = await axios.post(
-    "http://localhost:9001/$validate",
+    `${VALIDATOR_HOST}/$validate`,
     payload.toString(),
     {
       headers: {
