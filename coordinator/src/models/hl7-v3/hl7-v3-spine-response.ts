@@ -79,6 +79,9 @@ export interface CancellationResponse {
   responsibleParty: {
     AgentPerson: AgentPerson
   }
+  performer: {
+    AgentPerson: AgentPerson
+  }
   pertinentInformation1: PertinentInformation1
   pertinentInformation2: PertinentInformation2
   pertinentInformation3: PertinentInformation3

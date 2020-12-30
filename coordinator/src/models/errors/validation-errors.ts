@@ -8,7 +8,7 @@ export interface ValidationError {
   expression: Array<string>
 }
 
-export class MedicationRequestValueError<T> implements ValidationError {
+export class MedicationRequestInconsistentValueError<T> implements ValidationError {
   message: string
   operationOutcomeCode = "value" as const
   severity = "error" as const
@@ -39,6 +39,18 @@ export class MedicationRequestMissingValueError implements ValidationError {
 
   constructor(fieldName: string) {
     this.message = `Expected MedicationRequest to have a value for ${fieldName}`
+    this.expression = [`Bundle.entry.resource.ofType(MedicationRequest).${fieldName}`]
+  }
+}
+
+export class MedicationRequestIncorrectValueError implements ValidationError {
+  message: string
+  operationOutcomeCode = "value" as const
+  severity = "error" as const
+  expression: Array<string>
+
+  constructor(fieldName: string, requiredFieldValue: string) {
+    this.message = `MedicationRequest.${fieldName} must be '${requiredFieldValue}'.`
     this.expression = [`Bundle.entry.resource.ofType(MedicationRequest).${fieldName}`]
   }
 }

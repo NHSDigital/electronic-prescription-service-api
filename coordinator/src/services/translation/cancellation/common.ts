@@ -7,6 +7,9 @@ import {InvalidValueError} from "../../../models/errors/processing-errors"
 export function convertName(hl7Name: Array<core.Name> | core.Name): Array<fhir.HumanName> {
   const nameArray = toArray(hl7Name)
   return nameArray.map(name => {
+    if (name._text) {
+      return {text: name._text}
+    }
     let convertedName = {
       given: toArray(name.given).map(given => given._text),
       prefix: toArray(name.prefix).map(prefix => prefix._text)
@@ -46,6 +49,9 @@ function convertNameUse(hl7NameUse: string): string {
 export function convertAddress(hl7Address: Array<core.Address> | core.Address): Array<fhir.Address> {
   const addressArray = toArray(hl7Address)
   return addressArray.map(address => {
+    if (address._text) {
+      return {text: address._text}
+    }
     const convertedAddress = {
       line: address.streetAddressLine.map(addressLine => addressLine._text),
       postalCode: address.postalCode._text

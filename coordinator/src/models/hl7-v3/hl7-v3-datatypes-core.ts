@@ -60,6 +60,7 @@ export class Address implements ElementCompact {
   _attributes: {
     use?: AddressUse
   }
+  _text?: string
   streetAddressLine: Array<Text>
   postalCode: Text
 
@@ -96,6 +97,8 @@ export class Name implements ElementCompact {
   _attributes: {
     use?: NameUse
   }
+
+  _text?: string
 
   family?: Text
   given?: Text | Array<Text>

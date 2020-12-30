@@ -37,6 +37,8 @@ export type PrescriptionStatusHistoryExtension = ExtensionExtension<CodingExtens
 interface BaseMedicationRequest extends Resource {
   resourceType: "MedicationRequest"
   identifier: Array<Identifier>
+  status: string
+  intent: string
   medicationCodeableConcept: CodeableConcept
   subject: Reference<Patient>
   authoredOn: string
@@ -83,7 +85,8 @@ export interface Performer extends IdentifierReference<Organization> {
 }
 
 export interface MedicationRequestDispenseRequest {
-  extension?: Array<CodingExtension | StringExtension>
+  extension?: Array<CodingExtension | StringExtension | ReferenceExtension<PractitionerRole>>
+  identifier?: Identifier
   quantity?: SimpleQuantity
   expectedSupplyDuration?: SimpleQuantity
   performer: Performer
@@ -118,6 +121,7 @@ export class HumanName {
   given?: Array<string>
   prefix?: Array<string>
   suffix?: Array<string>
+  text?: string
 }
 
 export class ContactPoint {
@@ -248,7 +252,8 @@ export interface ExtensionExtension<T extends Extension> extends Extension {
   extension: Array<T>
 }
 
-class Signature {
+export interface Signature {
+  when: string
   who: Reference<PractitionerRole>
   data: string
 }
@@ -258,9 +263,9 @@ export class Provenance extends Resource {
   signature: Array<Signature>
 }
 
-export class Period {
-  start: string
-  end: string
+export interface Period {
+  start?: string
+  end?: string
 }
 
 export interface CommunicationRequest extends Resource {
@@ -302,6 +307,4 @@ export interface MessageHeader extends Resource {
 
 export interface MedicationRequestOutcome extends BaseMedicationRequest {
   extension: Array<ReferenceExtension<PractitionerRole> | PrescriptionStatusHistoryExtension>
-  status: string
-  intent: string
 }

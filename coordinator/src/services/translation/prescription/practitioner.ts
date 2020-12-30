@@ -6,6 +6,7 @@ import {convertName, convertTelecom} from "./demographics"
 import * as prescriptions from "../../../models/hl7-v3/hl7-v3-prescriptions"
 import {
   convertIsoDateTimeStringToHl7V3DateTime,
+  convertMomentToHl7V3DateTime,
   getCodeableConceptCodingForSystem,
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
@@ -20,23 +21,36 @@ import {convertOrganizationAndProviderLicense} from "./organization"
 import {getProvenances} from "../common/getResourcesOfType"
 import * as errors from "../../../models/errors/processing-errors"
 import {identifyMessageType, MessageType} from "../../../routes/util"
+import moment from "moment"
+import {InvalidValueError} from "../../../models/errors/processing-errors"
 
 export function convertAuthor(
   fhirBundle: fhir.Bundle,
-  fhirFirstMedicationRequest: fhir.MedicationRequest,
-  convertPractitionerRoleFn = convertPractitionerRole
+  fhirFirstMedicationRequest: fhir.MedicationRequest
 ): prescriptions.Author {
   const hl7V3Author = new prescriptions.Author()
   if (identifyMessageType(fhirBundle) !== MessageType.CANCELLATION) {
-    hl7V3Author.time = convertIsoDateTimeStringToHl7V3DateTime(
-      fhirFirstMedicationRequest.authoredOn,
-      "MedicationRequest.authoredOn"
-    )
-    hl7V3Author.signatureText = convertSignatureText(fhirBundle, fhirFirstMedicationRequest.requester)
+    const requesterSignature = findRequesterSignature(fhirBundle, fhirFirstMedicationRequest.requester)
+    setSignatureTimeAndText(hl7V3Author, requesterSignature)
   }
   const fhirAuthorPractitionerRole = resolveReference(fhirBundle, fhirFirstMedicationRequest.requester)
-  hl7V3Author.AgentPerson = convertPractitionerRoleFn(fhirBundle, fhirAuthorPractitionerRole)
+  hl7V3Author.AgentPerson = convertPractitionerRole(fhirBundle, fhirAuthorPractitionerRole)
   return hl7V3Author
+}
+
+function setSignatureTimeAndText(hl7V3Author: prescriptions.Author, requesterSignature?: fhir.Signature) {
+  if (requesterSignature) {
+    hl7V3Author.time = convertIsoDateTimeStringToHl7V3DateTime(requesterSignature.when, "Provenance.signature.when")
+    try {
+      const decodedSignatureData = Buffer.from(requesterSignature.data, "base64").toString("utf-8")
+      hl7V3Author.signatureText = XmlJs.xml2js(decodedSignatureData, {compact: true})
+    } catch (e) {
+      throw new InvalidValueError("Invalid signature format.", "Provenance.signature.data")
+    }
+  } else {
+    hl7V3Author.time = convertMomentToHl7V3DateTime(moment.utc())
+    hl7V3Author.signatureText = core.Null.NOT_APPLICABLE
+  }
 }
 
 export function convertResponsibleParty(
@@ -167,12 +181,15 @@ export function getAgentPersonPersonIdForAuthor(
 ): peoplePlaces.PrescriptionAuthorId {
   const professionalCode: Array<codes.ProfessionalCode> = []
 
-  const gmcCode = getIdentifierValueOrNullForSystem(
+  let gmcCode = getIdentifierValueOrNullForSystem(
     fhirPractitionerIdentifier,
     "https://fhir.hl7.org.uk/Id/gmc-number",
     "Practitioner.identifier"
   )
   if (gmcCode) {
+    if(gmcCode.toUpperCase().startsWith("C")) {
+      gmcCode = gmcCode.substring(1)
+    }
     professionalCode.push(new codes.ProfessionalCode(gmcCode))
   }
 
@@ -252,19 +269,13 @@ export function getAgentPersonPersonIdForResponsibleParty(
   return getAgentPersonPersonIdForAuthor(fhirPractitionerIdentifier)
 }
 
-function convertSignatureText(fhirBundle: fhir.Bundle, signatory: fhir.Reference<fhir.PractitionerRole>) {
+function findRequesterSignature(fhirBundle: fhir.Bundle, signatory: fhir.Reference<PractitionerRole>) {
   const fhirProvenances = getProvenances(fhirBundle)
   const requesterSignatures = fhirProvenances.flatMap(provenance => provenance.signature)
     .filter(signature => signature.who.reference === signatory.reference)
-  const requesterSignature = onlyElementOrNull(
+  return onlyElementOrNull(
     requesterSignatures,
     "Provenance.signature",
     `who.reference == '${signatory.reference}'`
   )
-  if (requesterSignature) {
-    const signatureData = requesterSignature.data
-    const decodedSignatureData = Buffer.from(signatureData, "base64").toString("utf-8")
-    return XmlJs.xml2js(decodedSignatureData, {compact: true})
-  }
-  return core.Null.NOT_APPLICABLE
 }
