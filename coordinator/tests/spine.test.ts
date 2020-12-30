@@ -109,7 +109,7 @@ function toBundleEntry(resource: fhir.Resource) {
   }
 }
 
-describe.skip("generate prescription-order and prescription-order-update messages", () => {
+describe.skip("tool to generate prescription-order and prescription-order-update messages", () => {
   const originalPrescriptionMessage = specification[1].fhirMessageSigned
   const cases = [
     ["nurse", "nurse"],
@@ -123,28 +123,30 @@ describe.skip("generate prescription-order and prescription-order-update message
     ["pharmacist", "pharmacist"]
   ]
 
-  test.each(cases)("^", async (prescriber: string, canceller: string) => {
-    let prescriptionOrderMessage = removeResourcesOfType(originalPrescriptionMessage, "Practitioner")
-    prescriptionOrderMessage = removeResourcesOfType(prescriptionOrderMessage, "PractitionerRole")
-    const shortFormId = setIdsAndTimestamps(prescriptionOrderMessage)
-    setPrescriptionTypeOnMedicationRequests(prescriptionOrderMessage, prescriber)
-    setRequesterOnMedicationRequests(prescriptionOrderMessage, prescriber)
+  test.each(cases)(
+    "create prescription-order messages that are cancelled by a different user",
+    async (prescriber: string, canceller: string) => {
+      let prescriptionOrderMessage = removeResourcesOfType(originalPrescriptionMessage, "Practitioner")
+      prescriptionOrderMessage = removeResourcesOfType(prescriptionOrderMessage, "PractitionerRole")
+      const shortFormId = setIdsAndTimestamps(prescriptionOrderMessage)
+      setPrescriptionTypeOnMedicationRequests(prescriptionOrderMessage, prescriber)
+      setRequesterOnMedicationRequests(prescriptionOrderMessage, prescriber)
 
-    fs.writeFileSync(
-      path.join(__dirname, `${shortFormId+prescriber+canceller}-prescription-order.json`),
-      LosslessJson.stringify(prescriptionOrderMessage), "utf-8"
-    )
+      fs.writeFileSync(
+        path.join(__dirname, `${shortFormId+prescriber+canceller}-prescription-order.json`),
+        LosslessJson.stringify(prescriptionOrderMessage), "utf-8"
+      )
 
-    const cancelMessage = generateCancelMessage(prescriptionOrderMessage, 0)
-    if (prescriber !== canceller) {
-      setResponsiblePartyOnMedicationRequests(cancelMessage, canceller)
-    }
+      const cancelMessage = generateCancelMessage(prescriptionOrderMessage, 0)
+      if (prescriber !== canceller) {
+        setResponsiblePartyOnMedicationRequests(cancelMessage, canceller)
+      }
 
-    fs.writeFileSync(
-      path.join(__dirname, `${shortFormId+prescriber+canceller}-prescription-order-update.json`),
-      LosslessJson.stringify(cancelMessage), "utf-8"
-    )
-  })
+      fs.writeFileSync(
+        path.join(__dirname, `${shortFormId+prescriber+canceller}-prescription-order-update.json`),
+        LosslessJson.stringify(cancelMessage), "utf-8"
+      )
+    })
 
   function setIdsAndTimestamps(bundle: fhir.Bundle) {
     bundle.identifier.value = generateResourceId()
