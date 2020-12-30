@@ -56,10 +56,7 @@ jestpact.pactWith(
           .expect(200)
       })
 
-      test.each(TestResources.convertErrorCases)("should receive expected error code in response to %s message", async (desc: string, request: Bundle, response: string, responseMatcher: string, statusCode: string) => {
-        const regex = new RegExp(responseMatcher)
-        const isMatch = regex.test(response)
-        expect(isMatch).toBe(true)
+      test.each(TestResources.convertErrorCases)("should receive expected error code in response to %s message", async (desc: string, request: Bundle, response: string, statusCode: string) => {
 
         const requestStr = LosslessJson.stringify(request)
         const requestJson = JSON.parse(requestStr)
