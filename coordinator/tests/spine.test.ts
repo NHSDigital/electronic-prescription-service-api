@@ -1,6 +1,10 @@
 import {specification} from "./resources/test-resources"
 import {generateResourceId, getFullUrl} from "../src/services/translation/cancellation/common"
-import {getMedicationRequests, getMessageHeader} from "../src/services/translation/common/getResourcesOfType"
+import {
+  getMedicationRequests,
+  getMessageHeader,
+  getProvenances
+} from "../src/services/translation/common/getResourcesOfType"
 import practitioners from "./resources/message-fragments/practitioner"
 import practitionerRoles from "./resources/message-fragments/practitionerRole"
 import prescriptionTypeExtensions from "./resources/message-fragments/extensions"
@@ -36,7 +40,7 @@ function generateCancelMessage(
   cancelMessageMedicationRequest[0].statusReason = getStatusReason(statusCode)
   cancelMessageMedicationRequest[0].status = "cancelled"
 
-  return cancelMessage
+  return removeResourcesOfType(cancelMessage, "Provenance")
 }
 
 function setPrescriptionTypeOnMedicationRequests(bundle: fhir.Bundle, practitionerType: string) {
@@ -55,13 +59,16 @@ function setPrescriptionTypeOnMedicationRequests(bundle: fhir.Bundle, practition
   return bundle
 }
 
-function setRequesterOnMedicationRequests(bundle: fhir.Bundle, practitionerType: string) {
+function setRequesterOnMedicationRequestsAndProvenance(bundle: fhir.Bundle, practitionerType: string) {
   const practitioner = practitioners.get(practitionerType)
   const practitionerRole = practitionerRoles.get(practitionerType)
 
-  const medicationRequests = getMedicationRequests(bundle)
-  medicationRequests.forEach(medicationRequest => {
+  getMedicationRequests(bundle).forEach(medicationRequest => {
     medicationRequest.requester.reference = getFullUrl(practitionerRole.id)
+  })
+
+  getProvenances(bundle).flatMap(provenance => provenance.signature).forEach(signature => {
+    signature.who.reference = getFullUrl(practitionerRole.id)
   })
 
   bundle.entry.push(toBundleEntry(practitioner))
@@ -130,7 +137,7 @@ describe.skip("tool to generate prescription-order and prescription-order-update
       prescriptionOrderMessage = removeResourcesOfType(prescriptionOrderMessage, "PractitionerRole")
       const shortFormId = setIdsAndTimestamps(prescriptionOrderMessage)
       setPrescriptionTypeOnMedicationRequests(prescriptionOrderMessage, prescriber)
-      setRequesterOnMedicationRequests(prescriptionOrderMessage, prescriber)
+      setRequesterOnMedicationRequestsAndProvenance(prescriptionOrderMessage, prescriber)
 
       fs.writeFileSync(
         path.join(__dirname, `${shortFormId+prescriber+canceller}-prescription-order.json`),
