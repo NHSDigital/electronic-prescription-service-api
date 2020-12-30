@@ -6,6 +6,7 @@ import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues} from "./util"
 import {CourseOfTherapyTypeCode, getCourseOfTherapyTypeCode} from "../translation/prescription/course-of-therapy-type"
 import {getExtensionForUrlOrNull, isTruthy} from "../translation/common"
+import {MedicationRequestIncorrectValueError} from "../../models/errors/validation-errors"
 
 // Validate Status
 export function getStatusCode(validation: Array<errors.ValidationError>): number {
@@ -39,12 +40,7 @@ export function verifyCommonBundle(bundle: fhir.Bundle): Array<errors.Validation
 
   const medicationRequests = getMedicationRequests(bundle)
   if (medicationRequests.some(medicationRequest => medicationRequest.intent !== "order")) {
-    incorrectValueErrors.push({
-      message: "MedicationRequest.intent must be 'order'.",
-      operationOutcomeCode: "value" as const,
-      severity: "error" as const,
-      expression: ["MedicationRequest.intent"]
-    })
+    incorrectValueErrors.push(new MedicationRequestIncorrectValueError("intent", "order"))
   }
 
   return incorrectValueErrors
@@ -55,12 +51,7 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
 
   const incorrectValueErrors = []
   if (medicationRequests.some(medicationRequest => medicationRequest.status !== "active")) {
-    incorrectValueErrors.push({
-      message: "MedicationRequest.status must be 'active'.",
-      operationOutcomeCode: "value" as const,
-      severity: "error" as const,
-      expression: ["MedicationRequest.status"]
-    })
+    incorrectValueErrors.push(new MedicationRequestIncorrectValueError("status", "active"))
   }
 
   const fhirPaths = [
@@ -120,15 +111,22 @@ export function verifyRepeatDispensingPrescription(
 }
 
 export function verifyCancellationBundle(bundle: fhir.Bundle): Array<errors.ValidationError> {
+  const validationErrors = []
+
   const medicationRequests = getMedicationRequests(bundle)
   if (medicationRequests.length != 1) {
-    return [new errors.MedicationRequestNumberError()]
+    validationErrors.push(new errors.MedicationRequestNumberError())
   }
-  const onlyMedicationRequest = medicationRequests[0]
-  if (!onlyMedicationRequest.statusReason) {
-    return [new errors.MedicationRequestMissingValueError("statusReason")]
+
+  if (medicationRequests.some(medicationRequest => medicationRequest.status !== "cancelled")) {
+    validationErrors.push(new MedicationRequestIncorrectValueError("status", "cancelled"))
   }
-  return []
+
+  if (medicationRequests.some(medicationRequest => !medicationRequest.statusReason)) {
+    validationErrors.push(new errors.MedicationRequestMissingValueError("statusReason"))
+  }
+
+  return validationErrors
 }
 
 function verifyIdenticalForAllMedicationRequests(
@@ -139,7 +137,7 @@ function verifyIdenticalForAllMedicationRequests(
   const allFieldValues = applyFhirPath(bundle, medicationRequests, fhirPath)
   const uniqueFieldValues = getUniqueValues(allFieldValues)
   if (uniqueFieldValues.length > 1) {
-    return new errors.MedicationRequestValueError(fhirPath, uniqueFieldValues)
+    return new errors.MedicationRequestInconsistentValueError(fhirPath, uniqueFieldValues)
   }
   return null
 }
