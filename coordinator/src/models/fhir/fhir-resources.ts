@@ -37,6 +37,8 @@ export type PrescriptionStatusHistoryExtension = ExtensionExtension<CodingExtens
 interface BaseMedicationRequest extends Resource {
   resourceType: "MedicationRequest"
   identifier: Array<Identifier>
+  status: string
+  intent: string
   medicationCodeableConcept: CodeableConcept
   subject: Reference<Patient>
   authoredOn: string
@@ -305,6 +307,4 @@ export interface MessageHeader extends Resource {
 
 export interface MedicationRequestOutcome extends BaseMedicationRequest {
   extension: Array<ReferenceExtension<PractitionerRole> | PrescriptionStatusHistoryExtension>
-  status: string
-  intent: string
 }
