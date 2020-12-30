@@ -227,7 +227,7 @@ function convertIsoDateTimeStringToMoment(isoDateTimeStr: string, fhirPath: stri
   return moment.utc(isoDateTimeStr, moment.ISO_8601, true)
 }
 
-function convertMomentToISODateTime(moment: moment.Moment): string {
+export function convertMomentToISODateTime(moment: moment.Moment): string {
   return moment.format(ISO_DATE_TIME_FORMAT)
 }
 
