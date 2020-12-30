@@ -1,10 +1,8 @@
 import * as fhir from "../../../src/models/fhir/fhir-resources"
 
-const practitionerRoleFullUrl = "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
-
 const doctorPractitionerRole: fhir.PractitionerRole = {
   resourceType: "PractitionerRole",
-  id: "56166769-c1c4-4d07-afa8-132b5dfca666",
+  id: "3d597ba8-68fe-408c-b30f-c21478fa5721",
   identifier: [
     {
       system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -16,7 +14,7 @@ const doctorPractitionerRole: fhir.PractitionerRole = {
     }
   ],
   practitioner: {
-    reference: "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a"
+    reference: "urn:uuid:dd586f2d-6bf0-4fa3-b7a7-ffabb0bc1bf0"
   },
   organization: {
     reference: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
@@ -49,7 +47,7 @@ const doctorPractitionerRole: fhir.PractitionerRole = {
 
 const nursePractitionerRole: fhir.PractitionerRole = {
   resourceType: "PractitionerRole",
-  id: "56166769-c1c4-4d07-afa8-132b5dfca666",
+  id: "56a7d6e0-05e2-4fc6-85f5-717390120bb9",
   identifier: [
     {
       system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -61,7 +59,7 @@ const nursePractitionerRole: fhir.PractitionerRole = {
     }
   ],
   practitioner: {
-    reference: "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a"
+    reference: "urn:uuid:20dab9e9-bb2d-4cbb-b2a5-57cfa9698217"
   },
   organization: {
     reference: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
@@ -94,7 +92,7 @@ const nursePractitionerRole: fhir.PractitionerRole = {
 
 const pharmacistPractitionerRole: fhir.PractitionerRole = {
   resourceType: "PractitionerRole",
-  id: "56166769-c1c4-4d07-afa8-132b5dfca666",
+  id: "ea81e4eb-2ec9-4c1d-93a0-e31e2f5d48ac",
   identifier: [
     {
       system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -106,7 +104,7 @@ const pharmacistPractitionerRole: fhir.PractitionerRole = {
     }
   ],
   practitioner: {
-    reference: "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a"
+    reference: "urn:uuid:7771ac38-a6af-425b-b252-ba79aa489c1e"
   },
   organization: {
     reference: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
@@ -137,24 +135,10 @@ const pharmacistPractitionerRole: fhir.PractitionerRole = {
   ]
 }
 
-const doctorBundleEntry: fhir.BundleEntry = {
-  fullUrl: practitionerRoleFullUrl,
-  resource: doctorPractitionerRole
-}
-
-const nurseBundleEntry: fhir.BundleEntry = {
-  fullUrl: practitionerRoleFullUrl,
-  resource: nursePractitionerRole
-}
-
-const pharmacistBundleEntry: fhir.BundleEntry = {
-  fullUrl: practitionerRoleFullUrl,
-  resource: pharmacistPractitionerRole
-}
-
-const practitionerRoles = new Map<string, fhir.BundleEntry>()
-practitionerRoles.set("doctor", doctorBundleEntry)
-practitionerRoles.set("nurse", nurseBundleEntry)
-practitionerRoles.set("pharmacist", pharmacistBundleEntry)
+const practitionerRoles = new Map<string, fhir.PractitionerRole>([
+  ["doctor", doctorPractitionerRole],
+  ["nurse", nursePractitionerRole],
+  ["pharmacist", pharmacistPractitionerRole]
+])
 
 export default practitionerRoles

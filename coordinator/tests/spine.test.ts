@@ -1,5 +1,5 @@
 import {specification} from "./resources/test-resources"
-import {generateResourceId} from "../src/services/translation/cancellation/common"
+import {generateResourceId, getFullUrl} from "../src/services/translation/cancellation/common"
 import {getMedicationRequests, getMessageHeader} from "../src/services/translation/common/getResourcesOfType"
 import practitioners from "./resources/message-fragments/practitioner"
 import practitionerRoles from "./resources/message-fragments/practitionerRole"
@@ -8,67 +8,104 @@ import medicationRequests from "./resources/message-fragments/medicationRequest"
 import * as fs from "fs"
 import * as path from "path"
 import * as fhir from "../src/models/fhir/fhir-resources"
-import {convertMomentToISODateTime, getExtensionForUrl} from "../src/services/translation/common"
+import {
+  convertMomentToISODateTime,
+  getExtensionForUrl,
+  getExtensionForUrlOrNull
+} from "../src/services/translation/common"
 import * as LosslessJson from "lossless-json"
 import moment from "moment"
+import {clone} from "./resources/test-helpers"
 
 function generateCancelMessage(
-  requestPayload: fhir.Bundle, cancelRole = "nurse", index = 0, statusCode = "0001"
+  requestPayload: fhir.Bundle, itemIndexToCancel = 0, statusCode = "0001"
 ) {
-  const cancelMessage = JSON.parse(JSON.stringify(requestPayload)) as fhir.Bundle
+  const cancelMessage = clone(requestPayload)
   cancelMessage.identifier.value = generateResourceId()
   const cancelMessageHeader = getMessageHeader(cancelMessage)
   cancelMessageHeader.eventCoding.code = "prescription-order-update"
   cancelMessageHeader.eventCoding.display = "Prescription Order Update"
 
   const entryToKeep = cancelMessage.entry
-    .filter(entry => entry.resource.resourceType === "MedicationRequest")[index]
+    .filter(entry => entry.resource.resourceType === "MedicationRequest")[itemIndexToCancel]
 
-  const emptyBundle = removeMedicationRequests(cancelMessage)
+  const emptyBundle = removeResourcesOfType(cancelMessage, "MedicationRequest")
   emptyBundle.entry.push(entryToKeep)
 
   const cancelMessageMedicationRequest = getMedicationRequests(cancelMessage)
   cancelMessageMedicationRequest[0].statusReason = getStatusReason(statusCode)
   cancelMessageMedicationRequest[0].status = "cancelled"
 
-  const bundleEntries = cancelMessage.entry.filter(
-    (entry: fhir.BundleEntry) => entry.resource.resourceType !== "Practitioner"
-  )
-  bundleEntries.push(practitioners.get(cancelRole))
-  cancelMessage.entry = bundleEntries
-
   return cancelMessage
 }
 
-function convertPrescriber(defaultPrescriptionMessage: fhir.Bundle, x: string) {
-  const prescriptionTypeUrl = "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType"
+function setPrescriptionTypeOnMedicationRequests(bundle: fhir.Bundle, practitionerType: string) {
+  const practitionerTypeExtension = prescriptionTypeExtensions.get(practitionerType)
 
-  const prescriptionMessage = JSON.parse(JSON.stringify(defaultPrescriptionMessage))
-  prescriptionMessage.identifier.value = generateResourceId()
+  const medicationRequests = getMedicationRequests(bundle)
+  medicationRequests.forEach(medicationRequest => {
+    const prescriptionTypeExtension = getExtensionForUrl(
+      medicationRequest.extension,
+      "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
+      "MedicationRequest.extension"
+    ) as fhir.CodingExtension
+    prescriptionTypeExtension.valueCoding = practitionerTypeExtension.valueCoding
+  })
 
-  const medicationRequest = getMedicationRequests(prescriptionMessage)
-  const prescriptionTypeExtension = getExtensionForUrl(
-    medicationRequest[0].extension, prescriptionTypeUrl, ""
-  ) as fhir.CodingExtension
-  prescriptionTypeExtension.valueCoding = prescriptionTypeExtensions.get(x).valueCoding
-  medicationRequest[0].authoredOn = new Date().toISOString()
-
-  const bundleEntries = prescriptionMessage.entry.filter(
-    (entry: fhir.BundleEntry) => entry.resource.resourceType !== "Practitioner"
-      && entry.resource.resourceType !== "PractitionerRole")
-  bundleEntries.push(practitioners.get(x))
-  bundleEntries.push(practitionerRoles.get(x))
-  prescriptionMessage.entry = bundleEntries
-
-  return prescriptionMessage
+  return bundle
 }
 
-function removeMedicationRequests(fhirBundle: fhir.Bundle): fhir.Bundle {
-  const entries = fhirBundle.entry
-    .filter(entry => entry.resource.resourceType !== "MedicationRequest")
+function setRequesterOnMedicationRequests(bundle: fhir.Bundle, practitionerType: string) {
+  const practitioner = practitioners.get(practitionerType)
+  const practitionerRole = practitionerRoles.get(practitionerType)
+
+  const medicationRequests = getMedicationRequests(bundle)
+  medicationRequests.forEach(medicationRequest => {
+    medicationRequest.requester.reference = getFullUrl(practitionerRole.id)
+  })
+
+  bundle.entry.push(toBundleEntry(practitioner))
+  bundle.entry.push(toBundleEntry(practitionerRole))
+  return bundle
+}
+
+function setResponsiblePartyOnMedicationRequests(bundle: fhir.Bundle, practitionerType: string) {
+  const practitioner = practitioners.get(practitionerType)
+  const practitionerRole = practitionerRoles.get(practitionerType)
+
+  const medicationRequests = getMedicationRequests(bundle)
+  medicationRequests.forEach(medicationRequest => {
+    const existingExtension = getExtensionForUrlOrNull(
+      medicationRequest.extension,
+      "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+      "MedicationRequest.extension"
+    ) as fhir.ReferenceExtension<fhir.PractitionerRole>
+    medicationRequest.extension.remove(existingExtension)
+    medicationRequest.extension.push({
+      url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+      valueReference: {
+        reference: getFullUrl(practitionerRole.id)
+      }
+    })
+  })
+
+  bundle.entry.push(toBundleEntry(practitioner))
+  bundle.entry.push(toBundleEntry(practitionerRole))
+  return bundle
+}
+
+function removeResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): fhir.Bundle {
+  const entriesToRetain = fhirBundle.entry.filter(entry => entry.resource.resourceType !== resourceType)
   return {
     ...fhirBundle,
-    entry: entries
+    entry: entriesToRetain
+  }
+}
+
+function toBundleEntry(resource: fhir.Resource) {
+  return {
+    resource: resource,
+    fullUrl: getFullUrl(resource.id)
   }
 }
 
@@ -87,21 +124,29 @@ describe.skip("generate prescription-order and prescription-order-update message
   ]
 
   test.each(cases)("^", async (prescriber: string, canceller: string) => {
-    const shortFormId = newPrescriptionOrder(originalPrescriptionMessage)
+    let prescriptionOrderMessage = removeResourcesOfType(originalPrescriptionMessage, "Practitioner")
+    prescriptionOrderMessage = removeResourcesOfType(prescriptionOrderMessage, "PractitionerRole")
+    const shortFormId = setIdsAndTimestamps(prescriptionOrderMessage)
+    setPrescriptionTypeOnMedicationRequests(prescriptionOrderMessage, prescriber)
+    setRequesterOnMedicationRequests(prescriptionOrderMessage, prescriber)
 
-    const convertedPrescriptionMessage = convertPrescriber(originalPrescriptionMessage, prescriber)
     fs.writeFileSync(
       path.join(__dirname, `${shortFormId+prescriber+canceller}-prescription-order.json`),
-      LosslessJson.stringify(convertedPrescriptionMessage), "utf-8"
+      LosslessJson.stringify(prescriptionOrderMessage), "utf-8"
     )
+
+    const cancelMessage = generateCancelMessage(prescriptionOrderMessage, 0)
+    if (prescriber !== canceller) {
+      setResponsiblePartyOnMedicationRequests(cancelMessage, canceller)
+    }
 
     fs.writeFileSync(
       path.join(__dirname, `${shortFormId+prescriber+canceller}-prescription-order-update.json`),
-      LosslessJson.stringify(generateCancelMessage(convertedPrescriptionMessage, canceller, 0)), "utf-8"
+      LosslessJson.stringify(cancelMessage), "utf-8"
     )
   })
 
-  function newPrescriptionOrder(bundle: fhir.Bundle) {
+  function setIdsAndTimestamps(bundle: fhir.Bundle) {
     bundle.identifier.value = generateResourceId()
     const timeNow = convertMomentToISODateTime(moment.utc())
 
@@ -112,7 +157,7 @@ describe.skip("generate prescription-order and prescription-order-update message
         const extension = getExtensionForUrl(
           medicationRequest.groupIdentifier.extension,
           "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
-          ""
+          "MedicationRequest.groupIdentifier.extension"
         ) as fhir.IdentifierExtension
         extension.valueIdentifier.value = generateResourceId()
         medicationRequest.authoredOn = timeNow
@@ -121,22 +166,20 @@ describe.skip("generate prescription-order and prescription-order-update message
   }
 
   test("create a prescription-order message with multiple medicationRequests", () => {
-    const newPrescriptionMessage = removeMedicationRequests(originalPrescriptionMessage)
-    expect(getMedicationRequests(newPrescriptionMessage)).toHaveLength(0)
+    const newPrescriptionMessage = removeResourcesOfType(originalPrescriptionMessage, "MedicationRequest")
+    const medicationNames = ["nystatin", "phosphates", "diclofenac", "water"]
+    medicationNames
+      .map(medicationName => medicationRequests.get(medicationName))
+      .map(medicationRequest => toBundleEntry(medicationRequest))
+      .forEach(medicationRequest => newPrescriptionMessage.entry.push(medicationRequest))
+    setIdsAndTimestamps(newPrescriptionMessage)
 
-    medicationRequests.forEach(bundleEntry => newPrescriptionMessage.entry.push(bundleEntry))
-    const medicationShortFormId = newPrescriptionOrder(newPrescriptionMessage)
-    expect(getMedicationRequests(newPrescriptionMessage)).toHaveLength(4)
-
-    const withoutMedicationRequest = removeMedicationRequests(newPrescriptionMessage)
-    withoutMedicationRequest.entry.push(medicationRequests.get("nystatin"))
-    getMedicationRequests(withoutMedicationRequest)[0].groupIdentifier.value = medicationShortFormId
-    expect(getMedicationRequests(withoutMedicationRequest)).toHaveLength(1)
-    const cancelMessage = generateCancelMessage(withoutMedicationRequest, "nurse", 0)
     fs.writeFileSync(
       path.join(__dirname, `multi-prescription-order.json`),
       LosslessJson.stringify(newPrescriptionMessage), "utf-8"
     )
+
+    const cancelMessage = generateCancelMessage(newPrescriptionMessage, 0)
 
     fs.writeFileSync(
       path.join(__dirname, `multi-prescription-order-update.json`),
@@ -156,13 +199,13 @@ describe.skip("generate prescription-order and prescription-order-update message
   ])(
     "create a cancellation pair that has different status reason %s",
     (statusCode: string) => {
-      newPrescriptionOrder(originalPrescriptionMessage)
+      setIdsAndTimestamps(originalPrescriptionMessage)
       fs.writeFileSync(
         path.join(__dirname, `${statusCode}-prescription-order.json`),
         LosslessJson.stringify(originalPrescriptionMessage), "utf-8"
       )
 
-      const cancelMessage = generateCancelMessage(originalPrescriptionMessage, "nurse", 0, statusCode)
+      const cancelMessage = generateCancelMessage(originalPrescriptionMessage, 0, statusCode)
       fs.writeFileSync(
         path.join(__dirname, `${statusCode}-prescription-order-update.json`),
         LosslessJson.stringify(cancelMessage), "utf-8"

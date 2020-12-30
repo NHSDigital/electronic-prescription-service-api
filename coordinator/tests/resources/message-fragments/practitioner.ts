@@ -1,10 +1,8 @@
 import * as fhir from "../../../src/models/fhir/fhir-resources"
 
-const practitionerFullUrl = "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a"
-
 const doctorPractitioner: fhir.Practitioner = {
   resourceType: "Practitioner",
-  id: "a8c85454-f8cb-498d-9629-78e2cb5fa47a",
+  id: "dd586f2d-6bf0-4fa3-b7a7-ffabb0bc1bf0",
   identifier: [
     {
       system: "https://fhir.nhs.uk/Id/sds-user-id",
@@ -30,7 +28,7 @@ const doctorPractitioner: fhir.Practitioner = {
 
 const nursePractitioner: fhir.Practitioner = {
   resourceType: "Practitioner",
-  id: "a8c85454-f8cb-498d-9629-78e2cb5fa47a",
+  id: "20dab9e9-bb2d-4cbb-b2a5-57cfa9698217",
   identifier: [
     {
       system: "https://fhir.nhs.uk/Id/sds-user-id",
@@ -56,7 +54,7 @@ const nursePractitioner: fhir.Practitioner = {
 
 const pharmacistPractitioner: fhir.Practitioner = {
   resourceType: "Practitioner",
-  id: "a8c85454-f8cb-498d-9629-78e2cb5fa47a",
+  id: "7771ac38-a6af-425b-b252-ba79aa489c1e",
   identifier: [
     {
       system: "https://fhir.nhs.uk/Id/sds-user-id",
@@ -80,18 +78,10 @@ const pharmacistPractitioner: fhir.Practitioner = {
   ]
 }
 
-const practitioners = new Map<string, fhir.BundleEntry>()
-practitioners.set("doctor", {
-  fullUrl: practitionerFullUrl,
-  resource: doctorPractitioner
-})
-practitioners.set("nurse", {
-  fullUrl: practitionerFullUrl,
-  resource: nursePractitioner
-})
-practitioners.set("pharmacist", {
-  fullUrl: practitionerFullUrl,
-  resource: pharmacistPractitioner
-})
+const practitioners = new Map<string, fhir.Practitioner>([
+  ["doctor", doctorPractitioner],
+  ["nurse", nursePractitioner],
+  ["pharmacist", pharmacistPractitioner]
+])
 
 export default practitioners

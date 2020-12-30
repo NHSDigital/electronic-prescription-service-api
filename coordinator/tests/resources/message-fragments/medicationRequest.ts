@@ -162,34 +162,23 @@ const createMedicationRequestForLineItem = (
   }
 })
 
-const medicationRequests = new Map<string, fhir.BundleEntry>()
-medicationRequests.set("nystatin", {
-  fullUrl: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6",
-  resource: createMedicationRequestForLineItem(
-    nystatinMedication,
-    createDispenseInfoFromQuantity(nystatinQuantity)
-  )
-})
-medicationRequests.set("phosphates", {
-  fullUrl: "urn:uuid:dd994697-df0e-4202-bd5a-a8e3080bf0bc",
-  resource: createMedicationRequestForLineItem(
-    phosphatesMedication,
-    createDispenseInfoFromQuantity(phosphatesQuantity)
-  )
-})
-medicationRequests.set("diclofenac", {
-  fullUrl: "urn:uuid:1e35d3a9-a256-4985-8476-0294bb12d37e",
-  resource: createMedicationRequestForLineItem(
-    diclofenacMedication,
-    createDispenseInfoFromQuantity(diclofenacQuantity)
-  )
-})
-medicationRequests.set("water", {
-  fullUrl:"urn:uuid:a51041ce-9a43-4bc4-a277-cffa434bdd63",
-  resource: createMedicationRequestForLineItem(
-    waterMedication,
-    createDispenseInfoFromQuantity(waterQuantity)
-  )
-})
+const medicationRequests = new Map<string, fhir.MedicationRequest>([
+  [
+    "nystatin",
+    createMedicationRequestForLineItem(nystatinMedication, createDispenseInfoFromQuantity(nystatinQuantity))
+  ],
+  [
+    "phosphates",
+    createMedicationRequestForLineItem(phosphatesMedication, createDispenseInfoFromQuantity(phosphatesQuantity))
+  ],
+  [
+    "diclofenac",
+    createMedicationRequestForLineItem(diclofenacMedication, createDispenseInfoFromQuantity(diclofenacQuantity))
+  ],
+  [
+    "water",
+    createMedicationRequestForLineItem(waterMedication, createDispenseInfoFromQuantity(waterQuantity))
+  ]
+])
 
 export default medicationRequests
