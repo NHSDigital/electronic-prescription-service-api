@@ -43,6 +43,11 @@ interface BaseMedicationRequest extends Resource {
   requester: Reference<PractitionerRole>
   groupIdentifier: MedicationRequestGroupIdentifier
   dispenseRequest: MedicationRequestDispenseRequest
+  status?: string
+  intent?: string
+  substitution?: {
+    allowedBoolean: false
+  }
 }
 
 export interface MedicationRequest extends BaseMedicationRequest {
@@ -66,7 +71,8 @@ export interface Coding {
 }
 
 export interface Reference<T extends Resource> {
-  reference: string
+  reference: string,
+  display?: string
 }
 
 export interface IdentifierReference<T extends Resource> {
@@ -76,10 +82,11 @@ export interface IdentifierReference<T extends Resource> {
 export interface Dosage {
   text: string
   patientInstruction?: string
+  additionalInstruction?: Array<CodeableConcept>
 }
 
 export interface Performer extends IdentifierReference<Organization> {
-  extension: Array<ReferenceExtension<PractitionerRole>>
+  extension?: Array<ReferenceExtension<PractitionerRole>>
 }
 
 export interface MedicationRequestDispenseRequest {
@@ -303,6 +310,4 @@ export interface MessageHeader extends Resource {
 
 export interface MedicationRequestOutcome extends BaseMedicationRequest {
   extension: Array<ReferenceExtension<PractitionerRole> | PrescriptionStatusHistoryExtension>
-  status: string
-  intent: string
 }
