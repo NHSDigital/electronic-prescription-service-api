@@ -6,15 +6,17 @@ import {createIdentifier, createReference} from "./fhir-base-types"
 
 export function createPractitionerRole(
   hl7AgentPerson: AgentPerson,
-  practitionerReference: string,
-  organizationReference: string,
+  practitionerId: string,
+  healthcareServiceId: string
 ): fhir.PractitionerRole {
   return {
     resourceType: "PractitionerRole",
     id: generateResourceId(),
     identifier: createRoleProfileIdentifier(hl7AgentPerson),
-    practitioner: createReference(practitionerReference),
-    organization: createReference(organizationReference),
+    practitioner: createReference(practitionerId),
+    healthcareService: [
+      createReference(healthcareServiceId)
+    ],
     code: createJobRoleNameCode(hl7AgentPerson.code._attributes.code),
     telecom: toArray(hl7AgentPerson.telecom)[0]?._attributes ? convertTelecom(hl7AgentPerson.telecom) : undefined
   }

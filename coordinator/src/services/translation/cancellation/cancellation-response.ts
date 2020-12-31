@@ -3,7 +3,7 @@ import {CancellationResponse} from "../../../models/hl7-v3/hl7-v3-spine-response
 import {createMedicationRequest} from "./cancellation-medication-request"
 import {createPatient} from "./cancellation-patient"
 import {createPractitioner} from "./cancellation-practitioner"
-import {createOrganization} from "./cancellation-organization"
+import {createHealthcareService, createLocations} from "./cancellation-organization"
 import {createPractitionerRole} from "./cancellation-practitioner-role"
 import {createMessageHeader} from "./cancellation-message-header"
 import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
@@ -22,16 +22,15 @@ export function translateSpineCancelResponseIntoBundle(cancellationResponse: Can
 
 function convertAgentPerson(hl7AgentPerson: AgentPerson) {
   const fhirPractitioner = createPractitioner(hl7AgentPerson)
-
-  //TODO: dont duplicate organization blocks
-  const fhirOrganization = createOrganization(hl7AgentPerson.representedOrganization)
+  const fhirLocations = createLocations(hl7AgentPerson.representedOrganization)
+  const fhirHealthcareService = createHealthcareService(hl7AgentPerson.representedOrganization, fhirLocations)
 
   const fhirPractitionerRole = createPractitionerRole(
     hl7AgentPerson,
     fhirPractitioner.id,
-    fhirOrganization.id
+    fhirHealthcareService.id
   )
-  return {fhirPractitioner, fhirOrganization, fhirPractitionerRole}
+  return {fhirPractitioner, fhirLocations, fhirHealthcareService, fhirPractitionerRole}
 }
 
 function convertResourceToBundleEntry(resource: fhir.Resource) {
@@ -46,14 +45,16 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
 
   const {
     fhirPractitioner: fhirResponsiblePartyPractitioner,
-    fhirPractitionerRole: fhirResponsiblePartyPractitionerRole,
-    fhirOrganization: fhirResponsiblePartyOrganization
+    fhirLocations: fhirResponsiblePartyLocations,
+    fhirHealthcareService: fhirResponsiblePartyHealthcareService,
+    fhirPractitionerRole: fhirResponsiblePartyPractitionerRole
   } = convertAgentPerson(cancellationResponse.responsibleParty.AgentPerson)
 
   const {
     fhirPractitioner: fhirAuthorPractitioner,
-    fhirPractitionerRole: fhirAuthorPractitionerRole,
-    fhirOrganization: fhirAuthorOrganization
+    fhirLocations: fhirAuthorLocations,
+    fhirHealthcareService: fhirAuthorHealthcareService,
+    fhirPractitionerRole: fhirAuthorPractitionerRole
   } = convertAgentPerson(cancellationResponse.author.AgentPerson)
 
   const fhirMedicationRequest = createMedicationRequest(
@@ -80,10 +81,12 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
     fhirMedicationRequest,
     fhirPatient,
     fhirAuthorPractitioner,
-    fhirAuthorOrganization,
+    ...fhirAuthorLocations,
+    fhirAuthorHealthcareService,
     fhirAuthorPractitionerRole,
     fhirResponsiblePartyPractitioner,
-    fhirResponsiblePartyOrganization,
+    ...fhirResponsiblePartyLocations,
+    fhirResponsiblePartyHealthcareService,
     fhirResponsiblePartyPractitionerRole
   ]
 
@@ -91,8 +94,9 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
     const performerAgentPerson = cancellationResponse.performer.AgentPerson
     const {
       fhirPractitioner: fhirPerformerPractitioner,
-      fhirPractitionerRole: fhirPerformerPractitionerRole,
-      fhirOrganization: fhirPerformerOrganization
+      fhirLocations: fhirPerformerLocations,
+      fhirHealthcareService: fhirPerformerHealthcareService,
+      fhirPractitionerRole: fhirPerformerPractitionerRole
     } = convertAgentPerson(performerAgentPerson)
     const performerPractitionerRoleId = fhirPerformerPractitionerRole.id
     const performerOrganizationCode = performerAgentPerson.representedOrganization.id._attributes.extension
@@ -100,7 +104,12 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
     fhirMedicationRequest.dispenseRequest = createDispenserInfoReference(
       performerPractitionerRoleId, performerOrganizationCode, performerOrganizationName
     )
-    bundleResources.push(fhirPerformerPractitioner, fhirPerformerPractitionerRole, fhirPerformerOrganization)
+    bundleResources.push(
+      fhirPerformerPractitioner,
+      ...fhirPerformerLocations,
+      fhirPerformerHealthcareService,
+      fhirPerformerPractitionerRole
+    )
   }
 
   return bundleResources.map(convertResourceToBundleEntry)
