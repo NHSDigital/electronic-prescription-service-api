@@ -100,7 +100,7 @@ describe("bundle entries", () => {
     expect(postcodes).toContain("PR26 7QN")
   })
 
-  test("performer field in hl7 message adds performer healthcareService and location", () => {
+  test("performer field in hl7 message adds performer healthcareService", () => {
     const healthcareServices = getHealthcareServices(performerFhirBundle)
     const healthcareServiceNames = healthcareServices.map(healthcareService => healthcareService.name)
     expect(healthcareServiceNames).toContain("CRx PM Chetna2 EPS")
