@@ -3,9 +3,9 @@ import {
   translateSpineCancelResponseIntoBundle
 } from "../../../../src/services/translation/cancellation/cancellation-response"
 import {
+  getHealthcareServices, getLocations,
   getMedicationRequests,
   getMessageHeader,
-  getOrganizations,
   getPatient,
   getPractitioners,
   getPractitionerRoles
@@ -55,8 +55,12 @@ describe("bundle entries", () => {
     expect(getPractitioners(fhirBundle)).toHaveLength(2)
   })
 
-  test("entries contains two Organizations", () => {
-    expect(getOrganizations(fhirBundle)).toHaveLength(2)
+  test("entries contains two HealthcareServices", () => {
+    expect(getHealthcareServices(fhirBundle)).toHaveLength(2)
+  })
+
+  test("entries contains two Locations", () => {
+    expect(getLocations(fhirBundle)).toHaveLength(2)
   })
 
   test("entries contains two PractitionerRole", () => {
@@ -90,10 +94,16 @@ describe("bundle entries", () => {
     expect(codeArray).toContain("S8000:G8000:R8003")
   })
 
-  test("performer field in hl7 message adds performer organization", () => {
-    const organizations = getOrganizations(performerFhirBundle)
-    const codeArray = organizations.map(organization => organization.name)
-    expect(codeArray).toContain("CRx PM Chetna2 EPS")
+  test("performer field in hl7 message adds performer location", () => {
+    const locations = getLocations(performerFhirBundle)
+    const postcodes = locations.map(location => location.address.postalCode)
+    expect(postcodes).toContain("PR26 7QN")
+  })
+
+  test("performer field in hl7 message adds performer healthcareService and location", () => {
+    const healthcareServices = getHealthcareServices(performerFhirBundle)
+    const healthcareServiceNames = healthcareServices.map(healthcareService => healthcareService.name)
+    expect(healthcareServiceNames).toContain("CRx PM Chetna2 EPS")
   })
 
   test("performer field in hl7 message adds dispense reference to MedicationRequest", () => {
