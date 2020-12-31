@@ -11,9 +11,9 @@ import {createIdentifier, createReference} from "./fhir-base-types"
 
 export function createMedicationRequest(
   cancellationResponse: CancellationResponse,
-  responsiblePartyPractitionerRoleReference: string,
-  patientReference: string,
-  authorPractitionerRoleReference: string
+  cancelRequesterPractitionerRoleId: string,
+  patientId: string,
+  originalPrescriptionAuthorPractitionerRoleId: string
 ): fhir.MedicationRequestOutcome {
   const pertinentInformation3 = cancellationResponse.pertinentInformation3
   const cancellationCode = pertinentInformation3.pertinentResponse.value._attributes.code
@@ -30,16 +30,16 @@ export function createMedicationRequest(
     extension: createMedicationRequestExtensions(
       prescriptionStatusCode,
       prescriptionStatusDisplay,
-      responsiblePartyPractitionerRoleReference,
+      cancelRequesterPractitionerRoleId,
     ),
     identifier: createItemNumberIdentifier(cancellationResponse.pertinentInformation1),
     status: medicationRequestStatus,
     intent: "order",
     medicationCodeableConcept: getMedicationCodeableConcept(),
-    subject: createReference(patientReference),
+    subject: createReference(patientId),
     //TODO - effectiveTime should probably be the timestamp of the status, not authoredOn
     authoredOn: convertHL7V3DateTimeToIsoDateTimeString(cancellationResponse.effectiveTime),
-    requester: createReference(authorPractitionerRoleReference),
+    requester: createReference(originalPrescriptionAuthorPractitionerRoleId),
     groupIdentifier: getMedicationGroupIdentifier(cancellationResponse.pertinentInformation2),
     dispenseRequest: medicationRequestHasDispenser() ? getDispenseRequest(cancellationResponse) : undefined
   }

@@ -44,22 +44,22 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
   const fhirPatient = createPatient(cancellationResponse.recordTarget.Patient)
 
   const {
-    fhirPractitioner: fhirResponsiblePartyPractitioner,
-    fhirPractitionerRole: fhirResponsiblePartyPractitionerRole,
-    fhirOrganization: fhirResponsiblePartyOrganization
-  } = convertAgentPerson(cancellationResponse.responsibleParty.AgentPerson)
+    fhirPractitioner: fhirCancelRequesterPractitioner,
+    fhirPractitionerRole: fhirCancelRequesterPractitionerRole,
+    fhirOrganization: fhirCancelRequesterOrganization
+  } = convertAgentPerson(cancellationResponse.author.AgentPerson)
 
   const {
-    fhirPractitioner: fhirAuthorPractitioner,
-    fhirPractitionerRole: fhirAuthorPractitionerRole,
-    fhirOrganization: fhirAuthorOrganization
-  } = convertAgentPerson(cancellationResponse.author.AgentPerson)
+    fhirPractitioner: fhirOriginalPrescriptionAuthorPractitioner,
+    fhirPractitionerRole: fhirOriginalPrescriptionAuthorPractitionerRole,
+    fhirOrganization: fhirOriginalPrescriptionAuthorOrganization
+  } = convertAgentPerson(cancellationResponse.responsibleParty.AgentPerson)
 
   const fhirMedicationRequest = createMedicationRequest(
     cancellationResponse,
-    fhirResponsiblePartyPractitioner.id,
+    fhirCancelRequesterPractitioner.id,
     fhirPatient.id,
-    fhirAuthorPractitionerRole.id
+    fhirOriginalPrescriptionAuthorPractitionerRole.id
   )
 
   const authorRepresentedOrganization = cancellationResponse.author.AgentPerson.representedOrganization
@@ -79,12 +79,12 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
     fhirMessageHeader,
     fhirMedicationRequest,
     fhirPatient,
-    fhirAuthorPractitioner,
-    fhirAuthorOrganization,
-    fhirAuthorPractitionerRole,
-    fhirResponsiblePartyPractitioner,
-    fhirResponsiblePartyOrganization,
-    fhirResponsiblePartyPractitionerRole
+    fhirOriginalPrescriptionAuthorPractitioner,
+    fhirOriginalPrescriptionAuthorOrganization,
+    fhirOriginalPrescriptionAuthorPractitionerRole,
+    fhirCancelRequesterPractitioner,
+    fhirCancelRequesterOrganization,
+    fhirCancelRequesterPractitionerRole
   ].map(convertResourceToBundleEntry)
 }
 
