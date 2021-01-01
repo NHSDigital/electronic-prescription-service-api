@@ -124,7 +124,7 @@ extends:
           printf "\nPolling %s every %s seconds, until commit is: %s\n" "$url" "$interval_in_seconds" "$releaseCommit"
           attempts=0
           success=0
-          until [ $attempts -eq 15 ]
+          until [ $attempts -eq 60 ]
           do
           responseData=$(curl -H "apiKey: $(status-endpoint-api-key)" "$url" -s)
           deployedCommit=$(echo "$responseData" | jq -r ".commitId")
