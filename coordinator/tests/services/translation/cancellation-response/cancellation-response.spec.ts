@@ -3,12 +3,13 @@ import {
   translateSpineCancelResponseIntoBundle
 } from "../../../../src/services/translation/cancellation/cancellation-response"
 import {
-  getHealthcareServices, getLocations,
+  getHealthcareServices,
+  getLocations,
   getMedicationRequests,
   getMessageHeader,
   getPatient,
-  getPractitioners,
-  getPractitionerRoles
+  getPractitionerRoles,
+  getPractitioners
 } from "../../../../src/services/translation/common/getResourcesOfType"
 import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/spine-response"
 import {readXml} from "../../../../src/services/serialisation/xml"
@@ -108,5 +109,16 @@ describe("bundle entries", () => {
 
   test("performer field in hl7 message adds dispense reference to MedicationRequest", () => {
     expect(getMedicationRequests(performerFhirBundle)[0].dispenseRequest).toBeDefined()
+  })
+
+  test("entries are not duplicated", () => {
+    const dispenseError = getCancellationResponse(TestResources.spineResponses.cancellationDispensedError)
+    dispenseError.performer = dispenseError.author
+    dispenseError.responsibleParty = dispenseError.author
+    const translatedDispenseBundle = translateSpineCancelResponseIntoBundle(dispenseError)
+    expect(getPractitioners(translatedDispenseBundle)).toHaveLength(1)
+    expect(getPractitionerRoles(translatedDispenseBundle)).toHaveLength(1)
+    expect(getHealthcareServices(translatedDispenseBundle)).toHaveLength(1)
+    expect(getLocations(translatedDispenseBundle)).toHaveLength(1)
   })
 })

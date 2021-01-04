@@ -9,6 +9,7 @@ import {createMessageHeader} from "./cancellation-message-header"
 import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../common"
 import {createIdentifier, createReference} from "./fhir-base-types"
+import {isDeepStrictEqual} from "util"
 
 export function translateSpineCancelResponseIntoBundle(cancellationResponse: CancellationResponse): fhir.Bundle {
   return {
@@ -50,18 +51,41 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
     fhirPractitionerRole: fhirResponsiblePartyPractitionerRole
   } = convertAgentPerson(cancellationResponse.responsibleParty.AgentPerson)
 
-  const {
-    fhirPractitioner: fhirAuthorPractitioner,
-    fhirLocations: fhirAuthorLocations,
-    fhirHealthcareService: fhirAuthorHealthcareService,
-    fhirPractitionerRole: fhirAuthorPractitionerRole
-  } = convertAgentPerson(cancellationResponse.author.AgentPerson)
+  const bundleResources: Array<fhir.Resource> = [
+    fhirPatient,
+    fhirResponsiblePartyPractitioner,
+    ...fhirResponsiblePartyLocations,
+    fhirResponsiblePartyHealthcareService,
+    fhirResponsiblePartyPractitionerRole
+  ]
+
+  let requesterId = fhirResponsiblePartyPractitioner.id
+
+  if (!isDeepStrictEqual(
+    cancellationResponse.responsibleParty.AgentPerson,
+    cancellationResponse.author.AgentPerson)) {
+    const {
+      fhirPractitioner: fhirAuthorPractitioner,
+      fhirLocations: fhirAuthorLocations,
+      fhirHealthcareService: fhirAuthorHealthcareService,
+      fhirPractitionerRole: fhirAuthorPractitionerRole
+    } = convertAgentPerson(cancellationResponse.author.AgentPerson)
+
+    requesterId = fhirAuthorPractitionerRole.id
+
+    bundleResources.push(
+      fhirAuthorPractitioner,
+      ...fhirAuthorLocations,
+      fhirAuthorHealthcareService,
+      fhirAuthorPractitionerRole
+    )
+  }
 
   const fhirMedicationRequest = createMedicationRequest(
     cancellationResponse,
     fhirResponsiblePartyPractitioner.id,
     fhirPatient.id,
-    fhirAuthorPractitionerRole.id
+    requesterId
   )
 
   const authorRepresentedOrganization = cancellationResponse.author.AgentPerson.representedOrganization
@@ -76,39 +100,40 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
     cancelRequestId
   )
 
-  const bundleResources = [
-    fhirMessageHeader,
-    fhirMedicationRequest,
-    fhirPatient,
-    fhirAuthorPractitioner,
-    ...fhirAuthorLocations,
-    fhirAuthorHealthcareService,
-    fhirAuthorPractitionerRole,
-    fhirResponsiblePartyPractitioner,
-    ...fhirResponsiblePartyLocations,
-    fhirResponsiblePartyHealthcareService,
-    fhirResponsiblePartyPractitionerRole
-  ]
+  bundleResources.push(fhirMedicationRequest, fhirMessageHeader)
 
   if (cancellationResponse.performer) {
     const performerAgentPerson = cancellationResponse.performer.AgentPerson
-    const {
-      fhirPractitioner: fhirPerformerPractitioner,
-      fhirLocations: fhirPerformerLocations,
-      fhirHealthcareService: fhirPerformerHealthcareService,
-      fhirPractitionerRole: fhirPerformerPractitionerRole
-    } = convertAgentPerson(performerAgentPerson)
-    const performerPractitionerRoleId = fhirPerformerPractitionerRole.id
+    let performerId
+    if (isDeepStrictEqual(
+      cancellationResponse.performer.AgentPerson,
+      cancellationResponse.responsibleParty.AgentPerson
+    )) {
+      performerId = fhirResponsiblePartyPractitionerRole.id
+    } else if (isDeepStrictEqual(
+      cancellationResponse.performer.AgentPerson,
+      cancellationResponse.author.AgentPerson
+    )) {
+      performerId = requesterId
+    } else {
+      const {
+        fhirPractitioner: fhirPerformerPractitioner,
+        fhirLocations: fhirPerformerLocations,
+        fhirHealthcareService: fhirPerformerHealthcareService,
+        fhirPractitionerRole: fhirPerformerPractitionerRole
+      } = convertAgentPerson(performerAgentPerson)
+      performerId = fhirPerformerPractitionerRole.id
+      bundleResources.push(
+        fhirPerformerPractitioner,
+        ...fhirPerformerLocations,
+        fhirPerformerHealthcareService,
+        fhirPerformerPractitionerRole
+      )
+    }
     const performerOrganizationCode = performerAgentPerson.representedOrganization.id._attributes.extension
     const performerOrganizationName = performerAgentPerson.representedOrganization.name._text
     fhirMedicationRequest.dispenseRequest = createDispenserInfoReference(
-      performerPractitionerRoleId, performerOrganizationCode, performerOrganizationName
-    )
-    bundleResources.push(
-      fhirPerformerPractitioner,
-      ...fhirPerformerLocations,
-      fhirPerformerHealthcareService,
-      fhirPerformerPractitionerRole
+      performerId, performerOrganizationCode, performerOrganizationName
     )
   }
 
