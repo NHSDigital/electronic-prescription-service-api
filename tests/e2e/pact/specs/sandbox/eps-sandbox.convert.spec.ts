@@ -62,7 +62,7 @@ jestpact.pactWith(
         const requestJson = JSON.parse(requestStr)
 
         const interaction = {
-          state: null,
+          state: "is not authenticated",
           uponReceiving: `a request to convert ${desc} message`,
           withRequest: {
             headers: {

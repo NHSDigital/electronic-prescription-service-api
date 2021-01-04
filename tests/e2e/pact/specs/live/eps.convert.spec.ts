@@ -79,7 +79,7 @@ jestpact.pactWith(
 
         const apiPath = "/$convert"
         const interaction = {
-          state: null,
+          state: "is authenticated",
           uponReceiving: `a request to convert ${desc} message`,
           withRequest: {
             headers: {
