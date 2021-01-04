@@ -12,19 +12,19 @@ describe("createPractitionerRole", () => {
   const authorAgentPerson = cancellationErrorResponse.author.AgentPerson
   const performerParticipant = cancellationErrorDispensedResponse.performer.AgentPerson
 
-  const practitionerReference = "testReference"
-  const organizationReference = "anotherTestReference"
+  const practitionerId = "testReference"
+  const healthcareServiceId = "anotherTestReference"
 
   const practitionerRole = createPractitionerRole(
     authorAgentPerson,
-    practitionerReference,
-    organizationReference
+    practitionerId,
+    healthcareServiceId
   )
 
   const performerParticipantPractitionerRole = createPractitionerRole(
     performerParticipant,
-    practitionerReference,
-    organizationReference
+    practitionerId,
+    healthcareServiceId
   )
 
   const cases = [
@@ -39,13 +39,18 @@ describe("createPractitionerRole", () => {
       expect(practitionerRole.identifier[0].value).toBe(agentPerson.id._attributes.extension)
     })
 
-  test.each(cases)("has reference to Practitioner", (agentPerson: AgentPerson, practitionerRole:PractitionerRole) => {
-    expect(practitionerRole.practitioner.reference).toBe(`urn:uuid:${practitionerReference}`)
+  test.each(cases)("has reference to Practitioner", (agentPerson: AgentPerson, practitionerRole: PractitionerRole) => {
+    expect(practitionerRole.practitioner.reference).toBe(`urn:uuid:${practitionerId}`)
   })
 
-  test.each(cases)("has reference to Organization", (agentPerson: AgentPerson, practitionerRole:PractitionerRole) => {
-    expect(practitionerRole.organization.reference).toBe(`urn:uuid:${organizationReference}`)
-  })
+  test.each(cases)(
+    "has reference to HealthcareService",
+    (agentPerson: AgentPerson, practitionerRole: PractitionerRole) => {
+      expect(practitionerRole.healthcareService).toContainEqual({
+        reference: `urn:uuid:${healthcareServiceId}`
+      })
+    }
+  )
 
   test.each(cases)("has correct code", (agentPerson: AgentPerson, practitionerRole:PractitionerRole) => {
     expect(practitionerRole.code[0].coding[0].code).toBe(agentPerson.code._attributes.code)

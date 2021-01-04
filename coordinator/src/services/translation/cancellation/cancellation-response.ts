@@ -3,12 +3,13 @@ import {CancellationResponse} from "../../../models/hl7-v3/hl7-v3-spine-response
 import {createMedicationRequest} from "./cancellation-medication-request"
 import {createPatient} from "./cancellation-patient"
 import {createPractitioner} from "./cancellation-practitioner"
-import {createOrganization} from "./cancellation-organization"
+import {createHealthcareService, createLocations} from "./cancellation-organization"
 import {createPractitionerRole} from "./cancellation-practitioner-role"
 import {createMessageHeader} from "./cancellation-message-header"
 import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../common"
 import {createIdentifier, createReference} from "./fhir-base-types"
+import {isDeepStrictEqual} from "util"
 
 export function translateSpineCancelResponseIntoBundle(cancellationResponse: CancellationResponse): fhir.Bundle {
   return {
@@ -22,16 +23,15 @@ export function translateSpineCancelResponseIntoBundle(cancellationResponse: Can
 
 function convertAgentPerson(hl7AgentPerson: AgentPerson) {
   const fhirPractitioner = createPractitioner(hl7AgentPerson)
-
-  //TODO: dont duplicate organization blocks
-  const fhirOrganization = createOrganization(hl7AgentPerson.representedOrganization)
+  const fhirLocations = createLocations(hl7AgentPerson.representedOrganization)
+  const fhirHealthcareService = createHealthcareService(hl7AgentPerson.representedOrganization, fhirLocations)
 
   const fhirPractitionerRole = createPractitionerRole(
     hl7AgentPerson,
     fhirPractitioner.id,
-    fhirOrganization.id
+    fhirHealthcareService.id
   )
-  return {fhirPractitioner, fhirOrganization, fhirPractitionerRole}
+  return {fhirPractitioner, fhirLocations, fhirHealthcareService, fhirPractitionerRole}
 }
 
 function convertResourceToBundleEntry(resource: fhir.Resource) {
@@ -44,27 +44,52 @@ function convertResourceToBundleEntry(resource: fhir.Resource) {
 function createBundleEntries(cancellationResponse: CancellationResponse) {
   const fhirPatient = createPatient(cancellationResponse.recordTarget.Patient)
 
-  const {
-    fhirPractitioner: fhirResponsiblePartyPractitioner,
-    fhirPractitionerRole: fhirResponsiblePartyPractitionerRole,
-    fhirOrganization: fhirResponsiblePartyOrganization
-  } = convertAgentPerson(cancellationResponse.responsibleParty.AgentPerson)
+  const hl7ResponsiblePartyAgentPerson = cancellationResponse.responsibleParty.AgentPerson
+  const hl7AuthorAgentPerson = cancellationResponse.author.AgentPerson
 
   const {
-    fhirPractitioner: fhirAuthorPractitioner,
-    fhirPractitionerRole: fhirAuthorPractitionerRole,
-    fhirOrganization: fhirAuthorOrganization
-  } = convertAgentPerson(cancellationResponse.author.AgentPerson)
+    fhirPractitioner: fhirResponsiblePartyPractitioner,
+    fhirLocations: fhirResponsiblePartyLocations,
+    fhirHealthcareService: fhirResponsiblePartyHealthcareService,
+    fhirPractitionerRole: fhirResponsiblePartyPractitionerRole
+  } = convertAgentPerson(hl7ResponsiblePartyAgentPerson)
+
+  const unorderedBundleResources: Array<fhir.Resource> = [
+    fhirPatient,
+    fhirResponsiblePartyPractitioner,
+    ...fhirResponsiblePartyLocations,
+    fhirResponsiblePartyHealthcareService,
+    fhirResponsiblePartyPractitionerRole
+  ]
+
+  let requesterId = fhirResponsiblePartyPractitioner.id
+
+  if (!isDeepStrictEqual(hl7ResponsiblePartyAgentPerson, hl7AuthorAgentPerson)) {
+    const {
+      fhirPractitioner: fhirAuthorPractitioner,
+      fhirLocations: fhirAuthorLocations,
+      fhirHealthcareService: fhirAuthorHealthcareService,
+      fhirPractitionerRole: fhirAuthorPractitionerRole
+    } = convertAgentPerson(hl7AuthorAgentPerson)
+
+    requesterId = fhirAuthorPractitionerRole.id
+
+    unorderedBundleResources.push(
+      fhirAuthorPractitioner,
+      ...fhirAuthorLocations,
+      fhirAuthorHealthcareService,
+      fhirAuthorPractitionerRole
+    )
+  }
 
   const fhirMedicationRequest = createMedicationRequest(
     cancellationResponse,
     fhirResponsiblePartyPractitioner.id,
     fhirPatient.id,
-    fhirAuthorPractitionerRole.id
+    requesterId
   )
 
-  const authorRepresentedOrganization = cancellationResponse.author.AgentPerson.representedOrganization
-  const representedOrganizationId = authorRepresentedOrganization.id._attributes.extension
+  const representedOrganizationId = hl7AuthorAgentPerson.representedOrganization.id._attributes.extension
   const messageId = cancellationResponse.id._attributes.root
   const cancelRequestId = cancellationResponse.pertinentInformation4.pertinentCancellationRequestRef.id._attributes.root
   const fhirMessageHeader = createMessageHeader(
@@ -75,35 +100,42 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
     cancelRequestId
   )
 
-  const bundleResources = [
+  const orderedBundleResources = [
     fhirMessageHeader,
     fhirMedicationRequest,
-    fhirPatient,
-    fhirAuthorPractitioner,
-    fhirAuthorOrganization,
-    fhirAuthorPractitionerRole,
-    fhirResponsiblePartyPractitioner,
-    fhirResponsiblePartyOrganization,
-    fhirResponsiblePartyPractitionerRole
+    ...unorderedBundleResources
   ]
 
   if (cancellationResponse.performer) {
     const performerAgentPerson = cancellationResponse.performer.AgentPerson
-    const {
-      fhirPractitioner: fhirPerformerPractitioner,
-      fhirPractitionerRole: fhirPerformerPractitionerRole,
-      fhirOrganization: fhirPerformerOrganization
-    } = convertAgentPerson(performerAgentPerson)
-    const performerPractitionerRoleId = fhirPerformerPractitionerRole.id
+    let performerId
+    if (isDeepStrictEqual(performerAgentPerson, hl7ResponsiblePartyAgentPerson)) {
+      performerId = fhirResponsiblePartyPractitionerRole.id
+    } else if (isDeepStrictEqual(performerAgentPerson, hl7AuthorAgentPerson)) {
+      performerId = requesterId
+    } else {
+      const {
+        fhirPractitioner: fhirPerformerPractitioner,
+        fhirLocations: fhirPerformerLocations,
+        fhirHealthcareService: fhirPerformerHealthcareService,
+        fhirPractitionerRole: fhirPerformerPractitionerRole
+      } = convertAgentPerson(performerAgentPerson)
+      performerId = fhirPerformerPractitionerRole.id
+      orderedBundleResources.push(
+        fhirPerformerPractitioner,
+        ...fhirPerformerLocations,
+        fhirPerformerHealthcareService,
+        fhirPerformerPractitionerRole
+      )
+    }
     const performerOrganizationCode = performerAgentPerson.representedOrganization.id._attributes.extension
     const performerOrganizationName = performerAgentPerson.representedOrganization.name._text
     fhirMedicationRequest.dispenseRequest = createDispenserInfoReference(
-      performerPractitionerRoleId, performerOrganizationCode, performerOrganizationName
+      performerId, performerOrganizationCode, performerOrganizationName
     )
-    bundleResources.push(fhirPerformerPractitioner, fhirPerformerPractitionerRole, fhirPerformerOrganization)
   }
 
-  return bundleResources.map(convertResourceToBundleEntry)
+  return orderedBundleResources.map(convertResourceToBundleEntry)
 }
 
 function createDispenserInfoReference(practitionerId: string, organizationCode: string, organizationName: string) {
