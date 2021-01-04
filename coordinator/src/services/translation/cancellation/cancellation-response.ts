@@ -61,9 +61,10 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
 
   let requesterId = fhirResponsiblePartyPractitioner.id
 
-  if (!isDeepStrictEqual(
-    cancellationResponse.responsibleParty.AgentPerson,
-    cancellationResponse.author.AgentPerson)) {
+  const hl7ResponsiblePartyAgentPerson = cancellationResponse.responsibleParty.AgentPerson
+  const hl7AuthorAgentPerson = cancellationResponse.author.AgentPerson
+
+  if (!isDeepStrictEqual(hl7ResponsiblePartyAgentPerson, hl7AuthorAgentPerson)) {
     const {
       fhirPractitioner: fhirAuthorPractitioner,
       fhirLocations: fhirAuthorLocations,
@@ -109,15 +110,9 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
   if (cancellationResponse.performer) {
     const performerAgentPerson = cancellationResponse.performer.AgentPerson
     let performerId
-    if (isDeepStrictEqual(
-      cancellationResponse.performer.AgentPerson,
-      cancellationResponse.responsibleParty.AgentPerson
-    )) {
+    if (isDeepStrictEqual(performerAgentPerson, hl7ResponsiblePartyAgentPerson)) {
       performerId = fhirResponsiblePartyPractitionerRole.id
-    } else if (isDeepStrictEqual(
-      cancellationResponse.performer.AgentPerson,
-      cancellationResponse.author.AgentPerson
-    )) {
+    } else if (isDeepStrictEqual(performerAgentPerson, hl7AuthorAgentPerson)) {
       performerId = requesterId
     } else {
       const {
