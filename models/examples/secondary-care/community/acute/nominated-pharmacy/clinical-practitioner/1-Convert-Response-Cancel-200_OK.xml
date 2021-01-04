@@ -81,7 +81,7 @@
             <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
             <telecom use="WP" value="tel:01234567890"/>
             <agentPerson classCode="PSN" determinerCode="INSTANCE">
-              <id extension="6150129" root="1.2.826.0.1285.0.2.1.54"/>
+              <id extension="683458" root="1.2.826.0.1285.0.2.1.54"/>
               <name>
                 <prefix>MR</prefix>
                 <given>RANDOM</given>
@@ -107,7 +107,7 @@
             <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
             <telecom use="WP" value="tel:01234567890"/>
             <agentPerson classCode="PSN" determinerCode="INSTANCE">
-              <id extension="683458" root="1.2.826.0.1285.0.2.1.54"/>
+              <id extension="6150129" root="1.2.826.0.1285.0.2.1.54"/>
               <name>
                 <prefix>MR</prefix>
                 <given>RANDOM</given>
