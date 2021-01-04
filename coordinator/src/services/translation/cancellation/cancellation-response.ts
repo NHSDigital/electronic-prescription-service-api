@@ -3,11 +3,12 @@ import {CancellationResponse} from "../../../models/hl7-v3/hl7-v3-spine-response
 import {createMedicationRequest} from "./cancellation-medication-request"
 import {createPatient} from "./cancellation-patient"
 import {createPractitioner} from "./cancellation-practitioner"
-import {createOrganization} from "./cancellation-organization"
+import {createHealthcareService, createLocations} from "./cancellation-organization"
 import {createPractitionerRole} from "./cancellation-practitioner-role"
 import {createMessageHeader} from "./cancellation-message-header"
 import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../common"
+import {createIdentifier, createReference} from "./fhir-base-types"
 
 export function translateSpineCancelResponseIntoBundle(cancellationResponse: CancellationResponse): fhir.Bundle {
   return {
@@ -21,16 +22,15 @@ export function translateSpineCancelResponseIntoBundle(cancellationResponse: Can
 
 function convertAgentPerson(hl7AgentPerson: AgentPerson) {
   const fhirPractitioner = createPractitioner(hl7AgentPerson)
-
-  //TODO: dont duplicate organization blocks
-  const fhirOrganization = createOrganization(hl7AgentPerson.representedOrganization)
+  const fhirLocations = createLocations(hl7AgentPerson.representedOrganization)
+  const fhirHealthcareService = createHealthcareService(hl7AgentPerson.representedOrganization, fhirLocations)
 
   const fhirPractitionerRole = createPractitionerRole(
     hl7AgentPerson,
     fhirPractitioner.id,
-    fhirOrganization.id
+    fhirHealthcareService.id
   )
-  return {fhirPractitioner, fhirOrganization, fhirPractitionerRole}
+  return {fhirPractitioner, fhirLocations, fhirHealthcareService, fhirPractitionerRole}
 }
 
 function convertResourceToBundleEntry(resource: fhir.Resource) {
@@ -45,14 +45,16 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
 
   const {
     fhirPractitioner: fhirCancelRequesterPractitioner,
-    fhirPractitionerRole: fhirCancelRequesterPractitionerRole,
-    fhirOrganization: fhirCancelRequesterOrganization
-  } = convertAgentPerson(cancellationResponse.author.AgentPerson)
+    fhirLocations: fhirCancelRequesterLocations,
+    fhirHealthcareService: fhirCancelRequesterHealthcareService,
+    fhirPractitionerRole: fhirCancelRequesterPractitionerRole
+  } = convertAgentPerson(cancellationResponse.responsibleParty.AgentPerson)
 
   const {
     fhirPractitioner: fhirOriginalPrescriptionAuthorPractitioner,
-    fhirPractitionerRole: fhirOriginalPrescriptionAuthorPractitionerRole,
-    fhirOrganization: fhirOriginalPrescriptionAuthorOrganization
+    fhirLocations: fhirOriginalPrescriptionAuthorLocations,
+    fhirHealthcareService: fhirOriginalPrescriptionAuthorHealthcareService,
+    fhirPractitionerRole: fhirOriginalPrescriptionAuthorPractitionerRole
   } = convertAgentPerson(cancellationResponse.responsibleParty.AgentPerson)
 
   const fhirMedicationRequest = createMedicationRequest(
@@ -74,18 +76,59 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
     cancelRequestId
   )
 
-  //TODO some error types need to have extra resources in bundle (e.g. dispenser info), add them
-  return [
+  const bundleResources = [
     fhirMessageHeader,
     fhirMedicationRequest,
     fhirPatient,
     fhirOriginalPrescriptionAuthorPractitioner,
-    fhirOriginalPrescriptionAuthorOrganization,
+    ...fhirOriginalPrescriptionAuthorLocations,
+    fhirOriginalPrescriptionAuthorHealthcareService,
     fhirOriginalPrescriptionAuthorPractitionerRole,
     fhirCancelRequesterPractitioner,
-    fhirCancelRequesterOrganization,
+    ...fhirCancelRequesterLocations,
+    fhirCancelRequesterHealthcareService,
     fhirCancelRequesterPractitionerRole
-  ].map(convertResourceToBundleEntry)
+  ]
+
+  if (cancellationResponse.performer) {
+    const performerAgentPerson = cancellationResponse.performer.AgentPerson
+    const {
+      fhirPractitioner: fhirPerformerPractitioner,
+      fhirLocations: fhirPerformerLocations,
+      fhirHealthcareService: fhirPerformerHealthcareService,
+      fhirPractitionerRole: fhirPerformerPractitionerRole
+    } = convertAgentPerson(performerAgentPerson)
+    const performerPractitionerRoleId = fhirPerformerPractitionerRole.id
+    const performerOrganizationCode = performerAgentPerson.representedOrganization.id._attributes.extension
+    const performerOrganizationName = performerAgentPerson.representedOrganization.name._text
+    fhirMedicationRequest.dispenseRequest = createDispenserInfoReference(
+      performerPractitionerRoleId, performerOrganizationCode, performerOrganizationName
+    )
+    bundleResources.push(
+      fhirPerformerPractitioner,
+      ...fhirPerformerLocations,
+      fhirPerformerHealthcareService,
+      fhirPerformerPractitionerRole
+    )
+  }
+
+  return bundleResources.map(convertResourceToBundleEntry)
+}
+
+function createDispenserInfoReference(practitionerId: string, organizationCode: string, organizationName: string) {
+  return {
+    performer: {
+      extension:  [
+        {
+          url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DispensingPerformer",
+          valueReference: createReference(practitionerId)
+        }
+      ],
+      identifier: createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", organizationCode),
+      display: organizationName
+    }
+    //TODO: does this reference & identifier need a display name? if so, how to show?
+  }
 }
 
 function createBundleIdentifier(cancellationResponse: CancellationResponse) {

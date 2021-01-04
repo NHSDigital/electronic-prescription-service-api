@@ -4,17 +4,11 @@ import * as fhir from "../../../../src/models/fhir/fhir-resources"
 import {
   createMedicationRequest
 } from "../../../../src/services/translation/cancellation/cancellation-medication-request"
-import {readXml} from "../../../../src/services/serialisation/xml"
-import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/spine-response"
-import {hasCorrectISOFormat} from "./test-helpers"
+import {getCancellationResponse, hasCorrectISOFormat} from "./test-helpers"
 import {CodeableConceptExtension} from "../../../../src/models/fhir/fhir-resources"
 
 describe("createMedicationRequest", () => {
-  const actualError = TestResources.spineResponses.cancellationError
-  const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(actualError.response.body)[0]
-  const parsedMsg = readXml(cancelResponse)
-  const actEvent = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
-  const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
+  const cancellationResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)
   const responsiblePartyPractitionerRoleId = "test"
   const patientId = "testPatientId"
   const authorPrescriptionRoleId = "testAuthorRoleId"
