@@ -48,6 +48,14 @@ describe("bundle entries", () => {
     expect(fhirBundle.entry.length).toBeGreaterThan(0)
   })
 
+  test("entries contains a MessageHeader", () => {
+    expect(() => getMessageHeader(fhirBundle)).not.toThrow()
+  })
+
+  test("the first entry is a MessageHeader", () => {
+    expect(fhirBundle.entry[0].resource.resourceType).toBe("MessageHeader")
+  })
+
   test("response bundle entries contains a Patient", () => {
     expect(() => getPatient(fhirBundle)).not.toThrow()
   })
@@ -72,10 +80,6 @@ describe("bundle entries", () => {
     const medicationRequests = getMedicationRequests(fhirBundle)
     expect(medicationRequests.length).toEqual(1)
     expect(medicationRequests[0].dispenseRequest).toBeUndefined()
-  })
-
-  test("entries contains a MessageHeader", () => {
-    expect(() => getMessageHeader(fhirBundle)).not.toThrow()
   })
 
   const cancellationErrorDispensedResponse = getCancellationResponse(

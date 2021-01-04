@@ -51,7 +51,7 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
     fhirPractitionerRole: fhirResponsiblePartyPractitionerRole
   } = convertAgentPerson(cancellationResponse.responsibleParty.AgentPerson)
 
-  const bundleResources: Array<fhir.Resource> = [
+  const unorderedBundleResources: Array<fhir.Resource> = [
     fhirPatient,
     fhirResponsiblePartyPractitioner,
     ...fhirResponsiblePartyLocations,
@@ -73,7 +73,7 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
 
     requesterId = fhirAuthorPractitionerRole.id
 
-    bundleResources.push(
+    unorderedBundleResources.push(
       fhirAuthorPractitioner,
       ...fhirAuthorLocations,
       fhirAuthorHealthcareService,
@@ -100,7 +100,11 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
     cancelRequestId
   )
 
-  bundleResources.push(fhirMedicationRequest, fhirMessageHeader)
+  const orderedBundleResources = [
+    fhirMessageHeader,
+    fhirMedicationRequest,
+    ...unorderedBundleResources
+  ]
 
   if (cancellationResponse.performer) {
     const performerAgentPerson = cancellationResponse.performer.AgentPerson
@@ -123,7 +127,7 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
         fhirPractitionerRole: fhirPerformerPractitionerRole
       } = convertAgentPerson(performerAgentPerson)
       performerId = fhirPerformerPractitionerRole.id
-      bundleResources.push(
+      orderedBundleResources.push(
         fhirPerformerPractitioner,
         ...fhirPerformerLocations,
         fhirPerformerHealthcareService,
@@ -137,7 +141,7 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
     )
   }
 
-  return bundleResources.map(convertResourceToBundleEntry)
+  return orderedBundleResources.map(convertResourceToBundleEntry)
 }
 
 function createDispenserInfoReference(practitionerId: string, organizationCode: string, organizationName: string) {
