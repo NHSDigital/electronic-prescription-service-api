@@ -44,12 +44,15 @@ function convertResourceToBundleEntry(resource: fhir.Resource) {
 function createBundleEntries(cancellationResponse: CancellationResponse) {
   const fhirPatient = createPatient(cancellationResponse.recordTarget.Patient)
 
+  const hl7ResponsiblePartyAgentPerson = cancellationResponse.responsibleParty.AgentPerson
+  const hl7AuthorAgentPerson = cancellationResponse.author.AgentPerson
+
   const {
     fhirPractitioner: fhirResponsiblePartyPractitioner,
     fhirLocations: fhirResponsiblePartyLocations,
     fhirHealthcareService: fhirResponsiblePartyHealthcareService,
     fhirPractitionerRole: fhirResponsiblePartyPractitionerRole
-  } = convertAgentPerson(cancellationResponse.responsibleParty.AgentPerson)
+  } = convertAgentPerson(hl7ResponsiblePartyAgentPerson)
 
   const unorderedBundleResources: Array<fhir.Resource> = [
     fhirPatient,
@@ -61,16 +64,13 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
 
   let requesterId = fhirResponsiblePartyPractitioner.id
 
-  const hl7ResponsiblePartyAgentPerson = cancellationResponse.responsibleParty.AgentPerson
-  const hl7AuthorAgentPerson = cancellationResponse.author.AgentPerson
-
   if (!isDeepStrictEqual(hl7ResponsiblePartyAgentPerson, hl7AuthorAgentPerson)) {
     const {
       fhirPractitioner: fhirAuthorPractitioner,
       fhirLocations: fhirAuthorLocations,
       fhirHealthcareService: fhirAuthorHealthcareService,
       fhirPractitionerRole: fhirAuthorPractitionerRole
-    } = convertAgentPerson(cancellationResponse.author.AgentPerson)
+    } = convertAgentPerson(hl7AuthorAgentPerson)
 
     requesterId = fhirAuthorPractitionerRole.id
 
@@ -89,8 +89,7 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
     requesterId
   )
 
-  const authorRepresentedOrganization = cancellationResponse.author.AgentPerson.representedOrganization
-  const representedOrganizationId = authorRepresentedOrganization.id._attributes.extension
+  const representedOrganizationId = hl7AuthorAgentPerson.representedOrganization.id._attributes.extension
   const messageId = cancellationResponse.id._attributes.root
   const cancelRequestId = cancellationResponse.pertinentInformation4.pertinentCancellationRequestRef.id._attributes.root
   const fhirMessageHeader = createMessageHeader(
