@@ -1,18 +1,13 @@
 import * as TestResources from "../../../resources/test-resources"
-import {readXml} from "../../../../src/services/serialisation/xml"
 import {createPatient} from "../../../../src/services/translation/cancellation/cancellation-patient"
-import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/spine-response"
 import {UNKNOWN_GP_ODS_CODE} from "../../../../src/services/translation/common"
 import * as fhir from "../../../../src/models/fhir/fhir-resources"
 import * as hl7 from "../../../../src/models/hl7-v3/hl7-v3-people-places"
 import {clone} from "../../../resources/test-helpers"
+import {getCancellationResponse} from "./test-helpers"
 
 describe("createPatient", () => {
-  const actualError = TestResources.spineResponses.cancellationError
-  const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(actualError.response.body)[0]
-  const parsedMsg = readXml(cancelResponse)
-  const actEvent = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
-  const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
+  const cancellationResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)
   let hl7Patient:  hl7.Patient
   let fhirPatient: fhir.Patient
 

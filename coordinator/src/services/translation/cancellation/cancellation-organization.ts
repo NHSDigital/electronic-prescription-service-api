@@ -1,7 +1,7 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertAddress, convertTelecom, generateResourceId} from "./common"
-import {createIdentifier} from "./fhir-base-types"
+import {createIdentifier, createReference} from "./fhir-base-types"
 
 export function createOrganization(hl7Organization: hl7.Organization): fhir.Organization {
   return {
@@ -12,6 +12,31 @@ export function createOrganization(hl7Organization: hl7.Organization): fhir.Orga
     name: hl7Organization.name._text,
     telecom: convertTelecom(hl7Organization.telecom),
     address: convertAddress(hl7Organization.addr)
+  }
+}
+
+export function createLocations(hl7Organization: hl7.Organization): Array<fhir.Location> {
+  const addresses = convertAddress(hl7Organization.addr)
+  return addresses.map(
+    address => ({
+      resourceType: "Location",
+      id: generateResourceId(),
+      address: address
+    })
+  )
+}
+
+export function createHealthcareService(
+  hl7Organization: hl7.Organization,
+  locations: Array<fhir.Location>
+): fhir.HealthcareService {
+  return {
+    resourceType: "HealthcareService",
+    id: generateResourceId(),
+    identifier: getOrganizationCodeIdentifier(hl7Organization.id._attributes.extension),
+    location: locations.map(location => createReference(location.id)),
+    name: hl7Organization.name._text,
+    telecom: convertTelecom(hl7Organization.telecom)
   }
 }
 
