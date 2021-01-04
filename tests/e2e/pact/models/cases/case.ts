@@ -5,17 +5,19 @@ import * as fs from "fs"
 export class Case {
   description: string
   request: fhir.Bundle
-  statusCode: string
+  statusText: string
+  statusCode: number
   isSuccess: boolean
 
-  constructor(description: string, requestFile: string, statusCode: string) {
+  constructor(description: string, requestFile: string, statusText: string) {
     const requestString = fs.readFileSync(requestFile, "utf-8")
 
     const requestJson = LosslessJson.parse(requestString)
 
     this.description = description
     this.request = requestJson
-    this.statusCode = statusCode
-    this.isSuccess = statusCode === "200-OK"
+    this.statusText = statusText
+    this.isSuccess = statusText === "200-OK"
+    this.statusCode = parseInt(statusText.split("-")[0])
   }
 }
