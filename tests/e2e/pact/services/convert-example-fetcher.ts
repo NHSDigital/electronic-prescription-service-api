@@ -18,12 +18,12 @@ const conventionBasedConvertExamples: ConvertCase[] = convertResponseFiles.map(c
 	getDescription(convertResponseFile),
 	getRequest(convertResponseFile),
 	getResponse(convertResponseFile),
-	getStatusCode(convertResponseFile)
+	getStatusText(convertResponseFile)
 ))
 
 function getDescription(convertResponseFile: ExampleFile): string {
 	return path.parse(path.relative(path.join(__dirname, examplesRootPath), convertResponseFile.path)).dir.replace(/\//g, " ") + " "
-		+ `${convertResponseFile.number} ${convertResponseFile.operation} ${convertResponseFile.statusCode}`
+		+ `${convertResponseFile.number} ${convertResponseFile.operation} ${convertResponseFile.statusText}`
 }
 
 function getRequest(convertResponseFile: ExampleFile) {
@@ -44,8 +44,8 @@ function getResponse(convertResponseFile: ExampleFile): string {
 	return convertResponseFile.path
 }
 
-function getStatusCode(convertResponseFile: ExampleFile): string {
-	return convertResponseFile.statusCode
+function getStatusText(convertResponseFile: ExampleFile): string {
+	return convertResponseFile.statusText
 }
 
 export const convertExamples = conventionBasedConvertExamples

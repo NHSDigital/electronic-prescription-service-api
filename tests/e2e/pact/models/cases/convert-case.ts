@@ -9,10 +9,10 @@ export class ConvertCase extends Case {
   request: fhir.Bundle
   response: string
   responseMatcher: string
-  statusCode: string
+  statusText: string
 
-  constructor(description: string, requestFilePath: string, responseFilePath: string, statusCode: string) {
-    super(description, requestFilePath, statusCode)
+  constructor(description: string, requestFilePath: string, responseFilePath: string, statusText: string) {
+    super(description, requestFilePath, statusText)
 
     const responseString = fs.readFileSync(responseFilePath, "utf-8")
     this.response = this.isSuccess ? responseString : JSON.parse(LosslessJson.stringify(responseString))

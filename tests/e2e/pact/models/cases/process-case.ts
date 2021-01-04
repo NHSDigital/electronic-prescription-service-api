@@ -10,8 +10,8 @@ export class ProcessCase extends Case {
   prepareResponse : fhir.Parameters
   convertResponse: XmlJs.ElementCompact | string
 
-  constructor(description: string, requestFile: string, statusCode: string) {
-    super(description, requestFile, statusCode)
+  constructor(description: string, requestFile: string, statusText: string) {
+    super(description, requestFile, statusText)
 
     const processRequest = exampleFiles.find(exampleFile => exampleFile.path === requestFile)
 
@@ -30,6 +30,6 @@ export class ProcessCase extends Case {
       && exampleFile.isResponse)
 
     const convertResponseStr = fs.readFileSync(convertResponse.path, "utf-8")
-    this.convertResponse = statusCode === "200-OK" ? XmlJs.xml2js(convertResponseStr, {compact: true}) : convertResponseStr
+    this.convertResponse = statusText === "200-OK" ? XmlJs.xml2js(convertResponseStr, {compact: true}) : convertResponseStr
   }
 }

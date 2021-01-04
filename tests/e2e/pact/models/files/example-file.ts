@@ -6,7 +6,7 @@ export class ExampleFile {
   number: string
   endpoint: string
   operation: string
-  statusCode: string
+  statusText: string
   description: string
   isRequest: boolean
   isResponse: boolean
@@ -23,7 +23,7 @@ export class ExampleFile {
     this.number = filenameSplit[0]
     this.endpoint = filenameSplit[1].toLowerCase()
     this.operation = filenameSplit[3].toLowerCase()
-    this.statusCode = filenameSplit[4] || filenameSplit[3]
+    this.statusText = filenameSplit[4] || filenameSplit[3]
 
     this.isRequest = filename.includes("Request")
     this.isResponse = filename.includes("Response")

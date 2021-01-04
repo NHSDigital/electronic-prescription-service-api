@@ -56,7 +56,7 @@ jestpact.pactWith(
           .expect(200)
       })
 
-      test.each(TestResources.convertErrorCases)("should receive expected error code in response to %s message", async (desc: string, request: Bundle, response: string, statusCode: string) => {
+      test.each(TestResources.convertErrorCases)("should receive expected error code in response to %s message", async (desc: string, request: Bundle, response: string, statusCode: number) => {
 
         const requestStr = LosslessJson.stringify(request)
         const requestJson = JSON.parse(requestStr)
@@ -77,7 +77,7 @@ jestpact.pactWith(
               "Content-Type": "application/json"
             },
             body: response,
-            status: parseInt(statusCode)
+            status: statusCode
           }
         }
         await provider.addInteraction(interaction)
@@ -85,7 +85,7 @@ jestpact.pactWith(
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .send(requestJson)
-          .expect(parseInt(statusCode))
+          .expect(statusCode)
       })
     })
   }

@@ -15,14 +15,14 @@ const prepareRequestFiles = exampleFiles.filter(exampleFile =>
 
 const conventionBasedPrepareExamples: PrepareCase[] = prepareResponseFiles.map(prepareResponseFile => new PrepareCase(
 	path.parse(path.relative(path.join(__dirname, examplesRootPath), prepareResponseFile.path)).dir.replace(/\//g, " ") + " "
-		+ `${prepareResponseFile.number} ${prepareResponseFile.statusCode}`,
+		+ `${prepareResponseFile.number} ${prepareResponseFile.statusText}`,
 	prepareRequestFiles.find(prepareRequestFile =>
 		prepareRequestFile.dir === prepareResponseFile.dir
 		&& prepareRequestFile.endpoint === prepareResponseFile.endpoint
 		&& prepareRequestFile.number === prepareResponseFile.number
 	).path,
 	prepareResponseFile.path,
-	prepareResponseFile.statusCode
+	prepareResponseFile.statusText
 ))
 
 export const prepareExamples = conventionBasedPrepareExamples

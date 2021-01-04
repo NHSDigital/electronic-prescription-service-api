@@ -5,10 +5,10 @@ import {Case} from "./case"
 
 export class PrepareCase extends Case {
   response: fhir.Parameters
-  statusCode: string
+  statusText: string
 
-  constructor(description: string, requestFile: string, responseFile: string, statusCode: string) {
-    super(description, requestFile, statusCode)
+  constructor(description: string, requestFile: string, responseFile: string, statusText: string) {
+    super(description, requestFile, statusText)
     const responseString = fs.readFileSync(responseFile, "utf-8")
     const responseJson = LosslessJson.parse(responseString)
     this.response = responseJson
