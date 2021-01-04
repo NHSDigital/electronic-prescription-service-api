@@ -3,12 +3,13 @@ import {
   translateSpineCancelResponseIntoBundle
 } from "../../../../src/services/translation/cancellation/cancellation-response"
 import {
-  getHealthcareServices, getLocations,
+  getHealthcareServices,
+  getLocations,
   getMedicationRequests,
   getMessageHeader,
   getPatient,
-  getPractitioners,
-  getPractitionerRoles
+  getPractitionerRoles,
+  getPractitioners
 } from "../../../../src/services/translation/common/getResourcesOfType"
 import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/spine-response"
 import {readXml} from "../../../../src/services/serialisation/xml"
@@ -47,6 +48,14 @@ describe("bundle entries", () => {
     expect(fhirBundle.entry.length).toBeGreaterThan(0)
   })
 
+  test("entries contains a MessageHeader", () => {
+    expect(() => getMessageHeader(fhirBundle)).not.toThrow()
+  })
+
+  test("the first entry is a MessageHeader", () => {
+    expect(fhirBundle.entry[0].resource.resourceType).toBe("MessageHeader")
+  })
+
   test("response bundle entries contains a Patient", () => {
     expect(() => getPatient(fhirBundle)).not.toThrow()
   })
@@ -71,10 +80,6 @@ describe("bundle entries", () => {
     const medicationRequests = getMedicationRequests(fhirBundle)
     expect(medicationRequests.length).toEqual(1)
     expect(medicationRequests[0].dispenseRequest).toBeUndefined()
-  })
-
-  test("entries contains a MessageHeader", () => {
-    expect(() => getMessageHeader(fhirBundle)).not.toThrow()
   })
 
   const cancellationErrorDispensedResponse = getCancellationResponse(
@@ -108,5 +113,16 @@ describe("bundle entries", () => {
 
   test("performer field in hl7 message adds dispense reference to MedicationRequest", () => {
     expect(getMedicationRequests(performerFhirBundle)[0].dispenseRequest).toBeDefined()
+  })
+
+  test("entries are not duplicated", () => {
+    const dispenseError = getCancellationResponse(TestResources.spineResponses.cancellationDispensedError)
+    dispenseError.performer = dispenseError.author
+    dispenseError.responsibleParty = dispenseError.author
+    const translatedDispenseBundle = translateSpineCancelResponseIntoBundle(dispenseError)
+    expect(getPractitioners(translatedDispenseBundle)).toHaveLength(1)
+    expect(getPractitionerRoles(translatedDispenseBundle)).toHaveLength(1)
+    expect(getHealthcareServices(translatedDispenseBundle)).toHaveLength(1)
+    expect(getLocations(translatedDispenseBundle)).toHaveLength(1)
   })
 })
