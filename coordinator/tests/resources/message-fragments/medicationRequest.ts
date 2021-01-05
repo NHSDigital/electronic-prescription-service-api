@@ -1,4 +1,5 @@
 import * as fhir from "../../../src/models/fhir/fhir-resources"
+import {generateResourceId} from "../../../src/services/translation/cancellation/common"
 
 const nystatinMedication: fhir.Coding = {
   system: "http://snomed.info/sct",
@@ -74,93 +75,96 @@ const createDispenseInfoFromQuantity = (quantity: fhir.SimpleQuantity): fhir.Med
 const createMedicationRequestForLineItem = (
   medication: fhir.Coding,
   dispenseRequest: fhir.MedicationRequestDispenseRequest
-): fhir.MedicationRequest => ({
-  resourceType: "MedicationRequest",
-  id: "a54219b8-f741-4c47-b662-e4f8dfa49ab6",
-  extension: [
-    {
-      url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
-      valueCoding: {
-        system: "https://fhir.nhs.uk/CodeSystem/prescription-type",
-        code: "1005",
-        display: "Outpatient Community Prescriber - Community Practitioner Nurse prescriber"
-      }
-    }
-  ],
-  identifier: [
-    {
-      system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
-      value: "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
-    }
-  ],
-  status: "active",
-  intent: "order",
-  category: [
-    {
-      coding: [
-        {
-          system: "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
-          code: "outpatient",
-          display: "Outpatient"
-        }
-      ]
-    }
-  ],
-  medicationCodeableConcept: {
-    coding: [
-      medication
-    ]
-  },
-  subject: {
-    reference: "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
-  },
-  authoredOn: "2020-12-21T18:15:29+00:00",
-  requester: {
-    reference: "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
-  },
-  groupIdentifier: {
+): fhir.MedicationRequest => {
+  const resourceId = generateResourceId()
+  return {
+    resourceType: "MedicationRequest",
+    id: resourceId,
     extension: [
       {
-        url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
-        valueIdentifier: {
-          system: "https://fhir.nhs.uk/Id/prescription",
-          value: "8add098c-4ed7-4596-b0d6-b6329e3ef88f"
+        url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
+        valueCoding: {
+          system: "https://fhir.nhs.uk/CodeSystem/prescription-type",
+          code: "1005",
+          display: "Outpatient Community Prescriber - Community Practitioner Nurse prescriber"
         }
       }
     ],
-    system: "https://fhir.nhs.uk/Id/prescription-order-number",
-    value: "85380F-ZC643B-11EBAH"
-  },
-  courseOfTherapyType: {
-    coding: [
+    identifier: [
       {
-        system: "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
-        code: "acute",
-        display: "Short course (acute) therapy"
+        system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
+        value: resourceId
       }
-    ]
-  },
-  dosageInstruction: [
-    {
-      text: "As directed",
-      additionalInstruction: [
+    ],
+    status: "active",
+    intent: "order",
+    category: [
+      {
+        coding: [
+          {
+            system: "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+            code: "outpatient",
+            display: "Outpatient"
+          }
+        ]
+      }
+    ],
+    medicationCodeableConcept: {
+      coding: [
+        medication
+      ]
+    },
+    subject: {
+      reference: "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
+    },
+    authoredOn: "2020-12-21T18:15:29+00:00",
+    requester: {
+      reference: "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+    },
+    groupIdentifier: {
+      extension: [
         {
-          coding: [
-            {
-              system: "http://snomed.info/sct",
-              code: "421769005",
-              display: "Follow directions"
-            }
-          ]
+          url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
+          valueIdentifier: {
+            system: "https://fhir.nhs.uk/Id/prescription",
+            value: "8add098c-4ed7-4596-b0d6-b6329e3ef88f"
+          }
+        }
+      ],
+      system: "https://fhir.nhs.uk/Id/prescription-order-number",
+      value: "85380F-ZC643B-11EBAH"
+    },
+    courseOfTherapyType: {
+      coding: [
+        {
+          system: "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+          code: "acute",
+          display: "Short course (acute) therapy"
         }
       ]
+    },
+    dosageInstruction: [
+      {
+        text: "As directed",
+        additionalInstruction: [
+          {
+            coding: [
+              {
+                system: "http://snomed.info/sct",
+                code: "421769005",
+                display: "Follow directions"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    dispenseRequest: dispenseRequest,
+    substitution: {
+      allowedBoolean: false
     }
-  ],
-  dispenseRequest: dispenseRequest,
-  substitution: {
-    allowedBoolean: false
   }
-})
+}
 
 const medicationRequests = new Map<string, fhir.MedicationRequest>([
   [

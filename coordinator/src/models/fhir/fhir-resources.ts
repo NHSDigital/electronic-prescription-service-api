@@ -266,6 +266,7 @@ export interface Signature {
 export class Provenance extends Resource {
   readonly resourceType = "Provenance"
   signature: Array<Signature>
+  target: Array<Reference<MedicationRequest>>
 }
 
 export interface Period {
