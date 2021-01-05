@@ -14,6 +14,8 @@ docker_service:
           value: "{{ SANDBOX_MODE_ENABLED }}"
         - name: BASE_PATH
           value: "https://{{ APIGEE_HOSTNAME }}/{{ SERVICE_BASE_PATH }}"
+        - name: COMMIT_ID
+          value: "{{ SOURCE_COMMIT_ID }}"
     secrets:
         - name: SPINE_URL
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/{{ SPINE_ENV }}/host'

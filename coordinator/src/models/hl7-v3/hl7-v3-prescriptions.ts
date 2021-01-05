@@ -201,10 +201,10 @@ export class ParentPrescription implements ElementCompact {
   pertinentInformation1: ParentPrescriptionPertinentInformation1
   pertinentInformation2: ParentPrescriptionPertinentInformation2
 
-  constructor(id: codes.GlobalIdentifier, effectiveTime: core.Timestamp) {
+  constructor(id: codes.GlobalIdentifier) {
     this.id = id
     this.code = new codes.SnomedCode("163501000000109", "Prescription - FocusActOrEvent (record artifact)")
-    this.effectiveTime = effectiveTime
+    this.effectiveTime = new core.Timestamp("PLACEHOLDER")
     this.typeId = new codes.TypeIdentifier("PORX_MT132004UK31")
   }
 }

@@ -58,6 +58,8 @@ const medicationRequestIdentifier: Identifier = {
 
 export const medicationRequest: MedicationRequest = {
   resourceType: "MedicationRequest",
+  status: "active",
+  intent: "order",
   authoredOn: "2020-01-01T12:00:00+00:00",
   courseOfTherapyType: medicationRequestCourseOfTherapyTypeContinuousRepeatDispensing,
   dispenseRequest: medicationRequestDispenseRequest,

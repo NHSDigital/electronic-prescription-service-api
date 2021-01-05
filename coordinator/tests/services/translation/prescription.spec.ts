@@ -292,21 +292,6 @@ describe("convertPrescriptionComponent1", () => {
     code: "d"
   }
 
-  test("works when only validityPeriod is specified", () => {
-    const converted = convertPrescriptionComponent1(validityPeriod, null)
-
-    expect(converted.daysSupply.effectiveTime?.low?._attributes?.value).toEqual("20200903")
-    expect(converted.daysSupply.effectiveTime?.high?._attributes?.value).toEqual("20210303")
-    expect(converted.daysSupply.expectedUseTime).toBeFalsy()
-  })
-
-  test("works when only expectedSupplyDuration is specified", () => {
-    const converted = convertPrescriptionComponent1(null, expectedSupplyDuration)
-
-    expect(converted.daysSupply.effectiveTime).toBeFalsy()
-    expect(converted.daysSupply.expectedUseTime?.width?._attributes?.value).toEqual("28")
-  })
-
   test("works when validityPeriod and expectedSupplyDuration are specified", () => {
     const converted = convertPrescriptionComponent1(validityPeriod, expectedSupplyDuration)
 
@@ -323,5 +308,15 @@ describe("convertPrescriptionComponent1", () => {
         code: "s"
       })
     }).toThrow()
+  })
+
+  test("is not called for an acute prescription", () => {
+    const prescription = clone(TestResources.examplePrescription2.fhirMessageUnsigned)
+    getMedicationRequests(prescription).forEach(medicationRequest => {
+      medicationRequest.dispenseRequest.validityPeriod = validityPeriod
+      medicationRequest.dispenseRequest.expectedSupplyDuration = expectedSupplyDuration
+    })
+    const result = convertBundleToPrescription(prescription)
+    expect(result.component1).toBeFalsy()
   })
 })

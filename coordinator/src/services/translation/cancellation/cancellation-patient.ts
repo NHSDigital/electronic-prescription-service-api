@@ -4,7 +4,7 @@ import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {convertAddress, convertName, generateResourceId} from "./common"
-import {convertHL7V3DateStringToISODate, UNKNOWN_GP_ODS_CODE} from "../common"
+import {convertHL7V3DateToIsoDateString, UNKNOWN_GP_ODS_CODE} from "../common"
 import {createIdentifier} from "./fhir-base-types"
 
 export function createPatient(hl7Patient: hl7.Patient): fhir.Patient {
@@ -14,7 +14,7 @@ export function createPatient(hl7Patient: hl7.Patient): fhir.Patient {
     identifier: createNhsNumberIdentifier(hl7Patient.id._attributes.extension),
     name: convertName(hl7Patient.patientPerson.name),
     gender: convertGender(hl7Patient.patientPerson.administrativeGenderCode),
-    birthDate: convertHL7V3DateStringToISODate(hl7Patient.patientPerson.birthTime._attributes.value),
+    birthDate: convertHL7V3DateToIsoDateString(hl7Patient.patientPerson.birthTime),
     address: convertAddress(hl7Patient.addr),
     generalPractitioner: createGeneralPractitioner(hl7Patient)
   }

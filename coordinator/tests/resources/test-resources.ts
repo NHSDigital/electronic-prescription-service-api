@@ -43,18 +43,17 @@ export class ExamplePrescription {
     this.fhirMessageDigest = LosslessJson.parse(fhirMessageDigestStr)
     this.hl7V3Message = XmlJs.xml2js(hl7V3MessageStr, {compact: true})
 
-    const fhirMessageCancelPath = path.join(__dirname, location, "CancelRequest-FhirMessage.json")
+    const fhirMessageCancelPath = path.join(__dirname, location, "1-Process-Request-Cancel-200_OK.json")
     if (fs.existsSync(fhirMessageCancelPath)) {
       const fhirMessageCancelStr = fs.readFileSync(fhirMessageCancelPath, "utf-8")
       this.fhirMessageCancel = LosslessJson.parse(fhirMessageCancelStr)
     }
 
-    const hl7V3MessageCancelPath = path.join(__dirname, location, "CancelResponse-Hl7V3Message.xml")
+    const hl7V3MessageCancelPath = path.join(__dirname, location, "1-Convert-Response-Cancel-200_OK.xml")
     if (fs.existsSync(hl7V3MessageCancelPath)) {
       const hl7V3MessageCancelStr = fs.readFileSync(hl7V3MessageCancelPath, "utf-8")
       this.hl7V3MessageCancel = XmlJs.xml2js(hl7V3MessageCancelStr, {compact: true})
     }
-
   }
 }
 
@@ -99,7 +98,7 @@ export const specification = [
   //examplePrescription4
 ]
 
-interface ExampleSpineResponse {
+export interface ExampleSpineResponse {
   response: SpineDirectResponse<string>
   spineErrorCode: string | undefined
   acknowledgementCode: acknowledgementCodes
@@ -189,10 +188,23 @@ const cancellationError: ExampleSpineResponse = {
   acknowledgementCode: "AE"
 }
 
+const cancellationDispensedError: ExampleSpineResponse = {
+  response: {
+    body: fs.readFileSync(
+      path.join(__dirname, "./spine-responses/cancel_error_dispensed.xml"),
+      "utf8"
+    ),
+    statusCode: 400
+  },
+  spineErrorCode: "0004",
+  acknowledgementCode: "AE"
+}
+
 export const spineResponses = {
   success: asyncSuccess,
   singleErrors: [syncError, asyncError],
   multipleErrors: [syncMultipleError, asyncMultipleError],
-  cancellationSuccess: cancellationSuccess,
-  cancellationError: cancellationError
+  cancellationSuccess,
+  cancellationError,
+  cancellationDispensedError
 }
