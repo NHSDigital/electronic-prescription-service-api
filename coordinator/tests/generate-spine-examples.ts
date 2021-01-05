@@ -45,6 +45,9 @@ function generateCancelMessage(
 
   const emptyBundle = removeResourcesOfType(cancelMessage, "MedicationRequest")
   emptyBundle.entry.push(entryToKeep)
+  cancelMessage.entry = emptyBundle.entry
+
+  updateMessageHeaderAndProvenance(cancelMessage)
 
   const cancelMessageMedicationRequest = getMedicationRequests(cancelMessage)
   cancelMessageMedicationRequest[0].statusReason = getStatusReason(statusCode)
@@ -241,7 +244,8 @@ function createPrescriptionOrderWithMultipleLineItems() {
     LosslessJson.stringify(multipleLineItemPrescription), "utf-8"
   )
 
-  const cancelMessage = generateCancelMessage(multipleLineItemPrescription, 2)
+  const cancelMessage = generateCancelMessage(multipleLineItemPrescription, 3)
+  setResponsiblePartyOnMedicationRequests(cancelMessage, "pharmacist")
 
   fs.writeFileSync(
     path.join(__dirname, `multi-prescription-order-update.json`),
