@@ -1,5 +1,5 @@
-import {ElementCompact, xml2js} from "xml-js"
-import {writeXmlStringCanonicalized} from "../src/services/serialisation/xml"
+import {ElementCompact} from "xml-js"
+import {readXml, writeXmlStringCanonicalized} from "../src/services/serialisation/xml"
 import * as crypto from "crypto"
 import {readFileSync} from "fs"
 import * as path from "path"
@@ -9,8 +9,6 @@ import {createParametersDigest} from "../src/services/translation"
 import {convertFragmentsToHashableFormat, extractFragments} from "../src/services/translation/prescription/signature"
 import {toArray} from "../src/services/translation/common"
 import {specification} from "./resources/test-resources"
-
-const verify = crypto.createVerify("RSA-SHA1")
 
 function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
   const signature = signatureRoot.Signature
@@ -27,8 +25,9 @@ function verifySignatureValid(signatureRoot: ElementCompact) {
   const signatureValue = signature.SignatureValue._text
   const certificateValue = signature.KeyInfo.X509Data.X509Certificate._text
   const certificateValueWithStuff = `-----BEGIN CERTIFICATE-----\n${certificateValue}\n-----END CERTIFICATE-----`
-  verify.update(digest)
-  return verify.verify(certificateValueWithStuff, signatureValue, "base64")
+  const signatureVerifier = crypto.createVerify("RSA-SHA1")
+  signatureVerifier.update(digest)
+  return signatureVerifier.verify(certificateValueWithStuff, signatureValue, "base64")
 }
 
 function verifySignatureValidAndMatchesPrescription(prescriptionRoot: ElementCompact) {
@@ -53,9 +52,9 @@ function verifySignatureValidAndMatchesPrescription(prescriptionRoot: ElementCom
 
 test.skip("verify prescription signature for specific prescription", () => {
   //eslint-disable-next-line max-len
-  const prescriptionPath = "../../models/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Convert-Response-Send-200_OK.xml";
+  const prescriptionPath = "../../models/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Convert-Response-Send-200_OK.xml"
   const prescriptionStr = readFileSync(path.join(__dirname, prescriptionPath), "utf-8")
-  const prescriptionRoot = xml2js(prescriptionStr, {compact: true})
+  const prescriptionRoot = readXml(prescriptionStr)
   const result = verifySignatureValidAndMatchesPrescription(prescriptionRoot)
   expect(result).toBeTruthy()
 })
