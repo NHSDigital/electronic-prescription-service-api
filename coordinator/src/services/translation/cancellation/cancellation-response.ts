@@ -44,15 +44,15 @@ function convertResourceToBundleEntry(resource: fhir.Resource) {
 function createBundleEntries(cancellationResponse: CancellationResponse) {
   const fhirPatient = createPatient(cancellationResponse.recordTarget.Patient)
 
-  const hl7ResponsiblePartyAgentPerson = cancellationResponse.responsibleParty.AgentPerson
   const hl7AuthorAgentPerson = cancellationResponse.author.AgentPerson
+  const hl7ResponsiblePartyAgentPerson = cancellationResponse.responsibleParty?.AgentPerson
 
   const {
     fhirPractitioner: fhirCancelRequesterPractitioner,
     fhirLocations: fhirCancelRequesterLocations,
     fhirHealthcareService: fhirCancelRequesterHealthcareService,
     fhirPractitionerRole: fhirCancelRequesterPractitionerRole
-  } = convertAgentPerson(hl7ResponsiblePartyAgentPerson)
+  } = convertAgentPerson(hl7AuthorAgentPerson)
 
   const unorderedBundleResources: Array<fhir.Resource> = [
     fhirPatient,
@@ -64,13 +64,13 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
 
   let requesterId = fhirCancelRequesterPractitioner.id
 
-  if (!isDeepStrictEqual(hl7ResponsiblePartyAgentPerson, hl7AuthorAgentPerson)) {
+  if (hl7ResponsiblePartyAgentPerson && !isDeepStrictEqual(hl7ResponsiblePartyAgentPerson, hl7AuthorAgentPerson)) {
     const {
       fhirPractitioner: fhirOriginalPrescriptionAuthorPractitioner,
       fhirLocations: fhirOriginalPrescriptionAuthorLocations,
       fhirHealthcareService: fhirOriginalPrescriptionAuthorHealthcareService,
       fhirPractitionerRole: fhirOriginalPrescriptionAuthorPractitionerRole
-    } = convertAgentPerson(hl7AuthorAgentPerson)
+    } = convertAgentPerson(hl7ResponsiblePartyAgentPerson)
 
     requesterId = fhirOriginalPrescriptionAuthorPractitionerRole.id
 
