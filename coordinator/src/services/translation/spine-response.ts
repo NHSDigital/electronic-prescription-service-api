@@ -41,7 +41,7 @@ export function translateToFhir<T>(hl7Message: SpineDirectResponse<T>): Translat
     statusCode: 400,
     fhirResponse: {
       resourceType: "OperationOutcome",
-      issue: [createOperationOutcomeIssue(400, bodyString)]
+      issue: [createOperationOutcomeIssue(400)]
     }
   }
 }
@@ -86,7 +86,7 @@ function getFhirResponseAndErrorCodes<T extends AsyncMCCI | SyncMCCI>(
 
 function createOperationOutcomeIssue(
   statusCode: number,
-  hl7Message: string,
+  hl7Message?: string,
   details?: fhir.CodeableConcept
 ): fhir.OperationOutcomeIssue {
   const successfulMessage = statusCode <= 299
