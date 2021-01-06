@@ -62,7 +62,7 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
     fhirCancelRequesterPractitionerRole
   ]
 
-  let requesterId = fhirCancelRequesterPractitioner.id
+  let originalPrescriptionAuthorId = fhirCancelRequesterPractitioner.id
 
   if (hl7ResponsiblePartyAgentPerson && !isDeepStrictEqual(hl7ResponsiblePartyAgentPerson, hl7AuthorAgentPerson)) {
     const {
@@ -72,7 +72,7 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
       fhirPractitionerRole: fhirOriginalPrescriptionAuthorPractitionerRole
     } = convertAgentPerson(hl7ResponsiblePartyAgentPerson)
 
-    requesterId = fhirOriginalPrescriptionAuthorPractitionerRole.id
+    originalPrescriptionAuthorId = fhirOriginalPrescriptionAuthorPractitionerRole.id
 
     unorderedBundleResources.push(
       fhirOriginalPrescriptionAuthorPractitioner,
@@ -86,7 +86,7 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
     cancellationResponse,
     fhirCancelRequesterPractitioner.id,
     fhirPatient.id,
-    requesterId
+    originalPrescriptionAuthorId
   )
 
   const representedOrganizationId = hl7AuthorAgentPerson.representedOrganization.id._attributes.extension
@@ -109,10 +109,10 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
   if (cancellationResponse.performer) {
     const performerAgentPerson = cancellationResponse.performer.AgentPerson
     let performerId
-    if (isDeepStrictEqual(performerAgentPerson, hl7ResponsiblePartyAgentPerson)) {
+    if (isDeepStrictEqual(performerAgentPerson, hl7AuthorAgentPerson)) {
       performerId = fhirCancelRequesterPractitioner.id
-    } else if (isDeepStrictEqual(performerAgentPerson, hl7AuthorAgentPerson)) {
-      performerId = requesterId
+    } else if (isDeepStrictEqual(performerAgentPerson, hl7ResponsiblePartyAgentPerson)) {
+      performerId = originalPrescriptionAuthorId
     } else {
       const {
         fhirPractitioner: fhirPerformerPractitioner,
