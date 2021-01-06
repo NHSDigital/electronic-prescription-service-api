@@ -31,6 +31,7 @@ function getRequest(convertResponseFile: ExampleFile) {
 		convertRequestFile.dir === convertResponseFile.dir
 		&& convertRequestFile.operation === convertResponseFile.operation
 		&& convertRequestFile.number === convertResponseFile.number
+		&& convertRequestFile.isRequest
 	)?.path || ""
 
 	if (!requestPath) {
