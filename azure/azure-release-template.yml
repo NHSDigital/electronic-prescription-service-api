@@ -132,10 +132,10 @@ extends:
           make generate-postman-collection
           make run-postman-tests
         displayName: Run postman tests generated from pacts
-        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'), eq(variables['APIGEE_ENVIRONMENT'], 'internal-dev-sandbox'))
       - task: PublishTestResults@2
         inputs:
           testResultsFormat: 'JUnit'
-          testResultsFiles: 'newman/*.xml'
+          testResultsFiles: 'newman/*.html'
           failTaskOnFailedTests: true
           workingDirectory: $(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact
