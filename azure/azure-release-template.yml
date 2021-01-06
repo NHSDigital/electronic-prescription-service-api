@@ -172,6 +172,5 @@ extends:
       - task: PublishTestResults@2
         inputs:
           testResultsFormat: 'JUnit'
-          testResultsFiles: 'newman/*.html'
+          testResultsFiles: './$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/newman/test-report.xml'
           failTaskOnFailedTests: true
-          workingDirectory: $(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact

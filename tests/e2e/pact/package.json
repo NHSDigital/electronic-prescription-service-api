@@ -7,7 +7,7 @@
     "lint": "eslint . --ext .ts --max-warnings 0 --fix",
     "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL",
     "generate-postman-collection": "ts-node postman-pact.ts --use_strict",
-    "run-postman-tests": "node_modules/.bin/newman run ../postman/collections/electronic-prescription-service-collection.json --reporters html,cli,htmlextra,junit --reporter-htmlextra-logs --reporter-htmlextra-darkTheme",
+    "run-postman-tests": "node_modules/.bin/newman run ../postman/collections/electronic-prescription-service-collection.json --reporters cli,junit --reporter-junit-export newman/test-report.xml",
     "create-sandbox-pacts": "jest sandbox",
     "create-live-pacts": "jest live",
     "publish-pacts": "ts-node ./broker/publish.ts --use_strict",
