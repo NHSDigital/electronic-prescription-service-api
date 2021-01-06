@@ -1,4 +1,4 @@
-import {InteractionObject,Matchers} from "@pact-foundation/pact"
+import {InteractionObject} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
@@ -40,15 +40,9 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/json"
             },
-            body: {
-              resourceType: "OperationOutcome",
-              issue: [
-                {
-                  code: Matchers.string("informational"),
-                  severity: Matchers.string("information")
-                }
-              ]
-            },
+            // body: {
+            //   resourceType: "Bundle"
+            // },
             status: 200
           }
         }

@@ -4,16 +4,16 @@ import {
   PertinentInformation1,
   PertinentInformation2
 } from "../../../models/hl7-v3/hl7-v3-spine-response"
-import {convertHL7V3DateTimeStringToISODateTime} from "../common"
+import {convertHL7V3DateTimeToIsoDateTimeString} from "../common"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {generateResourceId, getFullUrl} from "./common"
 import {createIdentifier, createReference} from "./fhir-base-types"
 
 export function createMedicationRequest(
   cancellationResponse: CancellationResponse,
-  responsiblePartyPractitionerRoleReference: string,
-  patientReference: string,
-  authorPractitionerRoleReference: string
+  cancelRequesterPractitionerRoleId: string,
+  patientId: string,
+  originalPrescriptionAuthorPractitionerRoleId: string
 ): fhir.MedicationRequestOutcome {
   const pertinentInformation3 = cancellationResponse.pertinentInformation3
   const cancellationCode = pertinentInformation3.pertinentResponse.value._attributes.code
@@ -30,17 +30,16 @@ export function createMedicationRequest(
     extension: createMedicationRequestExtensions(
       prescriptionStatusCode,
       prescriptionStatusDisplay,
-      responsiblePartyPractitionerRoleReference,
+      cancelRequesterPractitionerRoleId,
     ),
     identifier: createItemNumberIdentifier(cancellationResponse.pertinentInformation1),
     status: medicationRequestStatus,
     intent: "order",
     medicationCodeableConcept: getMedicationCodeableConcept(),
-    subject: createReference(patientReference),
-    authoredOn: convertHL7V3DateTimeStringToISODateTime(
-      cancellationResponse.effectiveTime._attributes.value
-    ),
-    requester: createReference(authorPractitionerRoleReference),
+    subject: createReference(patientId),
+    //TODO - effectiveTime should probably be the timestamp of the status, not authoredOn
+    authoredOn: convertHL7V3DateTimeToIsoDateTimeString(cancellationResponse.effectiveTime),
+    requester: createReference(originalPrescriptionAuthorPractitionerRoleId),
     groupIdentifier: getMedicationGroupIdentifier(cancellationResponse.pertinentInformation2),
     dispenseRequest: medicationRequestHasDispenser() ? getDispenseRequest(cancellationResponse) : undefined
   }

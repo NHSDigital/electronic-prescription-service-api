@@ -60,7 +60,7 @@
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "1025",
-              "display": "Outpatient Community Prescriber – Paramedic Independent Supplementary prescriber"
+              "display": "Outpatient Community Prescriber \u2013 Paramedic Independent Supplementary prescriber"
             }
           }
         ],
@@ -87,7 +87,7 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "321247000",
+              "code": "321249002",
               "display": "Chlordiazepoxide 5mg capsules"
             }
           ]
@@ -95,7 +95,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2020-11-16T09:54:47+00:00",
+        "authoredOn": "2020-12-21T18:15:29+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -105,12 +105,12 @@
               "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "FDF1958F-690F-49D9-97A9-AAC74C1850BC"
+                "value": "4c4cf83b-515f-4913-a392-4337c682c149"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "EE73F8-A99968-11EB9C"
+          "value": "82D996-Z9343B-11EBAE"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -176,7 +176,7 @@
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "1025",
-              "display": "Outpatient Community Prescriber – Paramedic Independent Supplementary prescriber"
+              "display": "Outpatient Community Prescriber \u2013 Paramedic Independent Supplementary prescriber"
             }
           }
         ],
@@ -211,7 +211,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2020-11-16T09:54:47+00:00",
+        "authoredOn": "2020-12-21T18:15:29+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -221,12 +221,12 @@
               "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "FDF1958F-690F-49D9-97A9-AAC74C1850BC"
+                "value": "4c4cf83b-515f-4913-a392-4337c682c149"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "EE73F8-A99968-11EB9C"
+          "value": "82D996-Z9343B-11EBAE"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -292,7 +292,7 @@
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "1025",
-              "display": "Outpatient Community Prescriber – Paramedic Independent Supplementary prescriber"
+              "display": "Outpatient Community Prescriber \u2013 Paramedic Independent Supplementary prescriber"
             }
           }
         ],
@@ -319,7 +319,7 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "321881001",
+              "code": "376689003",
               "display": "Trazodone 50mg capsules"
             }
           ]
@@ -327,7 +327,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2020-11-16T09:54:47+00:00",
+        "authoredOn": "2020-12-21T18:15:29+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -337,12 +337,12 @@
               "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "FDF1958F-690F-49D9-97A9-AAC74C1850BC"
+                "value": "4c4cf83b-515f-4913-a392-4337c682c149"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "EE73F8-A99968-11EB9C"
+          "value": "82D996-Z9343B-11EBAE"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -408,7 +408,7 @@
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "1025",
-              "display": "Outpatient Community Prescriber – Paramedic Independent Supplementary prescriber"
+              "display": "Outpatient Community Prescriber \u2013 Paramedic Independent Supplementary prescriber"
             }
           }
         ],
@@ -435,7 +435,7 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "38020011000001104",
+              "code": "415165003",
               "display": "Pregabalin 300mg tablets"
             }
           ]
@@ -443,7 +443,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2020-11-16T09:54:47+00:00",
+        "authoredOn": "2020-12-21T18:15:29+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -453,12 +453,12 @@
               "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "FDF1958F-690F-49D9-97A9-AAC74C1850BC"
+                "value": "4c4cf83b-515f-4913-a392-4337c682c149"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "EE73F8-A99968-11EB9C"
+          "value": "82D996-Z9343B-11EBAE"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -497,7 +497,7 @@
           ],
           "quantity": {
             "value": 10,
-            "unit": "tablet",
+            "unit": "Tablet",
             "system": "http://snomed.info/sct",
             "code": "385055001"
           },
@@ -591,7 +591,7 @@
           },
           {
             "system": "https://fhir.hl7.org.uk/Id/gphc-number",
-            "value": "PA083469"
+            "value": "2083469"
           }
         ],
         "name": [
