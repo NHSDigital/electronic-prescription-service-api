@@ -10,6 +10,50 @@ import {convertFragmentsToHashableFormat, extractFragments} from "../src/service
 import {toArray} from "../src/services/translation/common"
 import {specification} from "./resources/test-resources"
 
+test.skip("verify prescription signature for specific prescription", () => {
+  //eslint-disable-next-line max-len
+  const prescriptionPath = "../../models/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Convert-Response-Send-200_OK.xml"
+  const prescriptionStr = readFileSync(path.join(__dirname, prescriptionPath), "utf-8")
+  const prescriptionRoot = readXml(prescriptionStr)
+  expectSignatureMatchesPrescriptionAndIsValid(prescriptionRoot)
+})
+
+const cases = specification.map(examplePrescription => [
+  examplePrescription.description,
+  examplePrescription.hl7V3Message
+])
+
+test.skip.each(cases)("verify prescription signature for %s", (desc: string, hl7V3Message: ElementCompact) => {
+  expectSignatureMatchesPrescriptionAndIsValid(hl7V3Message)
+})
+
+function expectSignatureMatchesPrescriptionAndIsValid(prescriptionRoot: ElementCompact) {
+  const signatureMatchesPrescription = verifyPrescriptionSignatureMatchesPrescription(prescriptionRoot)
+  const signatureValid = verifyPrescriptionSignatureValid(prescriptionRoot)
+  console.log(`Signature matches prescription: ${signatureMatchesPrescription}. Signature valid: ${signatureValid}`)
+  expect(signatureMatchesPrescription).toBeTruthy()
+  expect(signatureValid).toBeTruthy()
+}
+
+function verifyPrescriptionSignatureMatchesPrescription(prescriptionRoot: ElementCompact) {
+  const signatureRoot = extractSignatureRootFromPrescriptionRoot(prescriptionRoot)
+  const digestFromSignature = extractDigestFromSignatureRoot(signatureRoot)
+  const digestFromPrescription = calculateDigestFromPrescriptionRoot(prescriptionRoot)
+  return digestFromPrescription === digestFromSignature
+}
+
+function verifyPrescriptionSignatureValid(prescriptionRoot: ElementCompact) {
+  const signatureRoot = extractSignatureRootFromPrescriptionRoot(prescriptionRoot)
+  return verifySignatureValid(signatureRoot)
+}
+
+function extractSignatureRootFromPrescriptionRoot(prescriptionRoot: ElementCompact): ElementCompact {
+  const sendMessagePayload = prescriptionRoot.PORX_IN020101SM31 as SendMessagePayload<ParentPrescriptionRoot>
+  const parentPrescription = sendMessagePayload.ControlActEvent.subject.ParentPrescription
+  const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
+  return pertinentPrescription.author.signatureText
+}
+
 function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
   const signature = signatureRoot.Signature
   const signedInfo = signature.SignedInfo
@@ -19,52 +63,30 @@ function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
   return writeXmlStringCanonicalized({SignedInfo: signedInfo})
 }
 
-function verifySignatureValid(signatureRoot: ElementCompact) {
-  const digest = extractDigestFromSignatureRoot(signatureRoot)
-  const signature = signatureRoot.Signature
-  const signatureValue = signature.SignatureValue._text
-  const certificateValue = signature.KeyInfo.X509Data.X509Certificate._text
-  const certificateValueWithStuff = `-----BEGIN CERTIFICATE-----\n${certificateValue}\n-----END CERTIFICATE-----`
-  const signatureVerifier = crypto.createVerify("RSA-SHA1")
-  signatureVerifier.update(digest)
-  return signatureVerifier.verify(certificateValueWithStuff, signatureValue, "base64")
-}
-
-function verifySignatureValidAndMatchesPrescription(prescriptionRoot: ElementCompact) {
+function calculateDigestFromPrescriptionRoot(prescriptionRoot: ElementCompact) {
+  ensureLineItemArray(prescriptionRoot)
   const sendMessagePayload = prescriptionRoot.PORX_IN020101SM31 as SendMessagePayload<ParentPrescriptionRoot>
   const parentPrescription = sendMessagePayload.ControlActEvent.subject.ParentPrescription
-  const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
-  const signatureRoot = pertinentPrescription.author.signatureText as ElementCompact
-  const digestFromSignature = extractDigestFromSignatureRoot(signatureRoot)
-
-  pertinentPrescription.pertinentInformation2 = toArray(pertinentPrescription.pertinentInformation2)
   const fragments = extractFragments(parentPrescription)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
   const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed)
-  const digestFromPrescription = Buffer.from(digestFromPrescriptionBase64, "base64").toString("utf-8")
-
-  if (digestFromPrescription !== digestFromSignature) {
-    return false
-  }
-
-  return verifySignatureValid(signatureRoot)
+  return Buffer.from(digestFromPrescriptionBase64, "base64").toString("utf-8")
 }
 
-test.skip("verify prescription signature for specific prescription", () => {
-  //eslint-disable-next-line max-len
-  const prescriptionPath = "../../models/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Convert-Response-Send-200_OK.xml"
-  const prescriptionStr = readFileSync(path.join(__dirname, prescriptionPath), "utf-8")
-  const prescriptionRoot = readXml(prescriptionStr)
-  const result = verifySignatureValidAndMatchesPrescription(prescriptionRoot)
-  expect(result).toBeTruthy()
-})
+function ensureLineItemArray(prescriptionRoot: ElementCompact) {
+  const sendMessagePayload = prescriptionRoot.PORX_IN020101SM31 as SendMessagePayload<ParentPrescriptionRoot>
+  const parentPrescription = sendMessagePayload.ControlActEvent.subject.ParentPrescription
+  const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
+  pertinentPrescription.pertinentInformation2 = toArray(pertinentPrescription.pertinentInformation2)
+}
 
-const cases = specification.map(examplePrescription => [
-  examplePrescription.description,
-  examplePrescription.hl7V3Message
-])
-
-test.skip.each(cases)("verify prescription signature for %s", (desc: string, hl7V3Message: ElementCompact) => {
-  const result = verifySignatureValidAndMatchesPrescription(hl7V3Message)
-  expect(result).toBeTruthy()
-})
+function verifySignatureValid(signatureRoot: ElementCompact) {
+  const signatureVerifier = crypto.createVerify("RSA-SHA1")
+  const digest = extractDigestFromSignatureRoot(signatureRoot)
+  signatureVerifier.update(digest)
+  const signature = signatureRoot.Signature
+  const signatureValue = signature.SignatureValue._text
+  const x509Certificate = signature.KeyInfo.X509Data.X509Certificate._text
+  const x509CertificatePem = `-----BEGIN CERTIFICATE-----\n${x509Certificate}\n-----END CERTIFICATE-----`
+  return signatureVerifier.verify(x509CertificatePem, signatureValue, "base64")
+}
