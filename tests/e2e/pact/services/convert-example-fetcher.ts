@@ -17,12 +17,13 @@ const convertRequestFiles = exampleFiles.filter(exampleFile =>
 const conventionBasedConvertExamples: ConvertCase[] = convertResponseFiles.map(convertResponseFile => new ConvertCase(
 	getDescription(convertResponseFile),
 	getRequest(convertResponseFile),
-	getResponse(convertResponseFile)
+	getResponse(convertResponseFile),
+	getStatusText(convertResponseFile)
 ))
 
 function getDescription(convertResponseFile: ExampleFile): string {
 	return path.parse(path.relative(path.join(__dirname, examplesRootPath), convertResponseFile.path)).dir.replace(/\//g, " ") + " "
-		+ `${convertResponseFile.number} ${convertResponseFile.operation} ${convertResponseFile.statusCode}`
+		+ `${convertResponseFile.number} ${convertResponseFile.operation} ${convertResponseFile.statusText}`
 }
 
 function getRequest(convertResponseFile: ExampleFile) {
@@ -30,6 +31,7 @@ function getRequest(convertResponseFile: ExampleFile) {
 		convertRequestFile.dir === convertResponseFile.dir
 		&& convertRequestFile.operation === convertResponseFile.operation
 		&& convertRequestFile.number === convertResponseFile.number
+		&& convertRequestFile.isRequest
 	)?.path || ""
 
 	if (!requestPath) {
@@ -41,6 +43,10 @@ function getRequest(convertResponseFile: ExampleFile) {
 
 function getResponse(convertResponseFile: ExampleFile): string {
 	return convertResponseFile.path
+}
+
+function getStatusText(convertResponseFile: ExampleFile): string {
+	return convertResponseFile.statusText
 }
 
 export const convertExamples = conventionBasedConvertExamples

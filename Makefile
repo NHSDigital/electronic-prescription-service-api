@@ -133,3 +133,27 @@ check-licenses:
 update-prescriptions:
 	# Requires make run-coordinator and make run-validator in separate shells
 	cd scripts && poetry run python update_prescriptions.py
+
+# Example:
+# make pr=284 run-sandbox-smoke-tests
+run-sandbox-smoke-tests:
+	source .envrc \
+	&& export PACT_PROVIDER=nhsd-apim-eps-sandbox \
+	&& export APIGEE_ENVIRONMENT=internal-dev-sandbox \
+	&& export SERVICE_BASE_PATH=electronic-prescriptions-pr-$(pr) \
+	&& cd tests/e2e/pact \
+	&& make create-pacts \
+	&& make publish-pacts \
+	&& make verify-pacts
+
+# make pr=284 token=qvgsB5OR0QUKppg2pGbDagVMrj65 run-live-smoke-tests
+run-live-smoke-tests:
+	source .envrc \
+	&& export PACT_PROVIDER=nhsd-apim-eps \
+	&& export APIGEE_ENVIRONMENT=internal-dev \
+	&& export APIGEE_ACCESS_TOKEN=$(token) \
+	&& export SERVICE_BASE_PATH=electronic-prescriptions-pr-$(pr) \
+	&& cd tests/e2e/pact \
+	&& make create-pacts \
+	&& make publish-pacts \
+	&& make verify-pacts
