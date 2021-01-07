@@ -15,7 +15,7 @@ install: install-node install-python install-hooks
 build: build-specification build-coordinator build-validator build-proxies
 
 test: lint validate-models check-licenses test-coordinator
-	cd tests/e2e/pact && make test
+	cd tests/e2e && make test
 
 publish:
 	echo Publish
@@ -63,7 +63,7 @@ install-python:
 install-node:
 	cd specification && npm install
 	cd coordinator && npm install
-	cd tests/e2e/pact && make install
+	cd tests/e2e && make install
 
 install-hooks:
 	cp scripts/pre-commit .git/hooks/pre-commit
@@ -118,14 +118,14 @@ validate-models:
 lint: build
 	cd specification && npm run lint
 	cd coordinator && npm run lint
-	cd tests/e2e/pact && make lint
+	cd tests/e2e && make lint
 	poetry run flake8 scripts/*.py --config .flake8
 	shellcheck scripts/*.sh
 
 check-licenses:
 	cd specification && npm run check-licenses
 	cd coordinator && npm run check-licenses
-	cd tests/e2e/pact && make check-licenses
+	cd tests/e2e && make check-licenses
 	scripts/check_python_licenses.sh
 
 ## Tools
