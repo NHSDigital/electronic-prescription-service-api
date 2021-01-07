@@ -24,8 +24,13 @@ export function convertCancellation(
   const hl7V3Patient = convertPatientFn(fhirBundle, fhirPatient)
   hl7V3CancellationPrescription.recordTarget = new prescriptions.RecordTarget(hl7V3Patient)
 
-  hl7V3CancellationPrescription.author = convertAuthor(fhirBundle, fhirFirstMedicationRequest)
-  hl7V3CancellationPrescription.responsibleParty = convertResponsibleParty(fhirBundle, fhirFirstMedicationRequest)
+  const hl7V3CancelRequester = convertResponsibleParty(fhirBundle, fhirFirstMedicationRequest)
+  hl7V3CancellationPrescription.author = new prescriptions.Author()
+  hl7V3CancellationPrescription.author.AgentPerson = hl7V3CancelRequester.AgentPerson
+
+  const hl7V3OriginalPrescriptionAuthor = convertAuthor(fhirBundle, fhirFirstMedicationRequest)
+  hl7V3CancellationPrescription.responsibleParty = new prescriptions.ResponsibleParty()
+  hl7V3CancellationPrescription.responsibleParty.AgentPerson = hl7V3OriginalPrescriptionAuthor.AgentPerson
 
   hl7V3CancellationPrescription.pertinentInformation2 = new cancellations.PertinentInformation2(
     fhirFirstMedicationRequest.groupIdentifier.value
