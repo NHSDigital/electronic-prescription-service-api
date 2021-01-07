@@ -38,7 +38,7 @@ export class LiveRequestHandler implements RequestHandler {
     const wrappedMessage = this.ebXMLBuilder(spineRequest)
     const address = this.getSpineUrlForPrescription()
 
-    logger.info(`Attempting to send the following message to ${address}:\n${wrappedMessage}`)
+    logger.info(`Attempting to send message to ${address}`)
 
     try {
       const result = await axios.post<string>(
