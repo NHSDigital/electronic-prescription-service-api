@@ -23,7 +23,7 @@ publish:
 release:
 	mkdir -p dist
 	cp -r specification/dist/. dist
-	rsync -av --progress --copy-links tests/e2e/pact dist --exclude node_modules
+	rsync -av --progress --copy-links tests/e2e/ dist/tests --exclude node_modules
 	for env in internal-dev-sandbox internal-qa-sandbox sandbox; do \
 		cat ecs-proxies-deploy.yml | sed -e 's/{{ SPINE_ENV }}/test/g' | sed -e 's/{{ SANDBOX_MODE_ENABLED }}/1/g' > dist/ecs-deploy-$$env.yml; \
 	done
@@ -141,7 +141,7 @@ run-sandbox-smoke-tests:
 	&& export PACT_PROVIDER=nhsd-apim-eps-sandbox \
 	&& export APIGEE_ENVIRONMENT=internal-dev-sandbox \
 	&& export SERVICE_BASE_PATH=electronic-prescriptions-pr-$(pr) \
-	&& cd tests/e2e/pact \
+	&& cd tests/e2e \
 	&& make create-pacts \
 	&& make publish-pacts \
 	&& make verify-pacts
@@ -153,7 +153,7 @@ run-live-smoke-tests:
 	&& export APIGEE_ENVIRONMENT=internal-dev \
 	&& export APIGEE_ACCESS_TOKEN=$(token) \
 	&& export SERVICE_BASE_PATH=electronic-prescriptions-pr-$(pr) \
-	&& cd tests/e2e/pact \
+	&& cd tests/e2e \
 	&& make create-pacts \
 	&& make publish-pacts \
 	&& make verify-pacts
