@@ -68,7 +68,7 @@ export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle):
   return createParameters(base64Digest, isoTimestamp)
 }
 
-function createParametersDigest(fragmentsToBeHashed: string): string {
+export function createParametersDigest(fragmentsToBeHashed: string): string {
   const digestValue = crypto.SHA1(fragmentsToBeHashed).toString(crypto.enc.Base64)
 
   const signedInfo = {

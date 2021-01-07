@@ -20,7 +20,6 @@ jestpact.pactWith(
     }
 
     describe("prepare sandbox e2e tests", () => {
-
       test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (description: string, request: Bundle, response: Parameters) => {
         const apiPath = "/$prepare"
         const requestStr = LosslessJson.stringify(request)
