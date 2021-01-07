@@ -44,49 +44,49 @@ function convertResourceToBundleEntry(resource: fhir.Resource) {
 function createBundleEntries(cancellationResponse: CancellationResponse) {
   const fhirPatient = createPatient(cancellationResponse.recordTarget.Patient)
 
-  const hl7ResponsiblePartyAgentPerson = cancellationResponse.responsibleParty.AgentPerson
   const hl7AuthorAgentPerson = cancellationResponse.author.AgentPerson
+  const hl7ResponsiblePartyAgentPerson = cancellationResponse.responsibleParty?.AgentPerson
 
   const {
-    fhirPractitioner: fhirResponsiblePartyPractitioner,
-    fhirLocations: fhirResponsiblePartyLocations,
-    fhirHealthcareService: fhirResponsiblePartyHealthcareService,
-    fhirPractitionerRole: fhirResponsiblePartyPractitionerRole
-  } = convertAgentPerson(hl7ResponsiblePartyAgentPerson)
+    fhirPractitioner: fhirCancelRequesterPractitioner,
+    fhirLocations: fhirCancelRequesterLocations,
+    fhirHealthcareService: fhirCancelRequesterHealthcareService,
+    fhirPractitionerRole: fhirCancelRequesterPractitionerRole
+  } = convertAgentPerson(hl7AuthorAgentPerson)
 
   const unorderedBundleResources: Array<fhir.Resource> = [
     fhirPatient,
-    fhirResponsiblePartyPractitioner,
-    ...fhirResponsiblePartyLocations,
-    fhirResponsiblePartyHealthcareService,
-    fhirResponsiblePartyPractitionerRole
+    fhirCancelRequesterPractitioner,
+    ...fhirCancelRequesterLocations,
+    fhirCancelRequesterHealthcareService,
+    fhirCancelRequesterPractitionerRole
   ]
 
-  let requesterId = fhirResponsiblePartyPractitioner.id
+  let originalPrescriptionAuthorId = fhirCancelRequesterPractitioner.id
 
-  if (!isDeepStrictEqual(hl7ResponsiblePartyAgentPerson, hl7AuthorAgentPerson)) {
+  if (hl7ResponsiblePartyAgentPerson && !isDeepStrictEqual(hl7ResponsiblePartyAgentPerson, hl7AuthorAgentPerson)) {
     const {
-      fhirPractitioner: fhirAuthorPractitioner,
-      fhirLocations: fhirAuthorLocations,
-      fhirHealthcareService: fhirAuthorHealthcareService,
-      fhirPractitionerRole: fhirAuthorPractitionerRole
-    } = convertAgentPerson(hl7AuthorAgentPerson)
+      fhirPractitioner: fhirOriginalPrescriptionAuthorPractitioner,
+      fhirLocations: fhirOriginalPrescriptionAuthorLocations,
+      fhirHealthcareService: fhirOriginalPrescriptionAuthorHealthcareService,
+      fhirPractitionerRole: fhirOriginalPrescriptionAuthorPractitionerRole
+    } = convertAgentPerson(hl7ResponsiblePartyAgentPerson)
 
-    requesterId = fhirAuthorPractitionerRole.id
+    originalPrescriptionAuthorId = fhirOriginalPrescriptionAuthorPractitionerRole.id
 
     unorderedBundleResources.push(
-      fhirAuthorPractitioner,
-      ...fhirAuthorLocations,
-      fhirAuthorHealthcareService,
-      fhirAuthorPractitionerRole
+      fhirOriginalPrescriptionAuthorPractitioner,
+      ...fhirOriginalPrescriptionAuthorLocations,
+      fhirOriginalPrescriptionAuthorHealthcareService,
+      fhirOriginalPrescriptionAuthorPractitionerRole
     )
   }
 
   const fhirMedicationRequest = createMedicationRequest(
     cancellationResponse,
-    fhirResponsiblePartyPractitioner.id,
+    fhirCancelRequesterPractitioner.id,
     fhirPatient.id,
-    requesterId
+    originalPrescriptionAuthorId
   )
 
   const representedOrganizationId = hl7AuthorAgentPerson.representedOrganization.id._attributes.extension
@@ -109,10 +109,10 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
   if (cancellationResponse.performer) {
     const performerAgentPerson = cancellationResponse.performer.AgentPerson
     let performerId
-    if (isDeepStrictEqual(performerAgentPerson, hl7ResponsiblePartyAgentPerson)) {
-      performerId = fhirResponsiblePartyPractitionerRole.id
-    } else if (isDeepStrictEqual(performerAgentPerson, hl7AuthorAgentPerson)) {
-      performerId = requesterId
+    if (isDeepStrictEqual(performerAgentPerson, hl7AuthorAgentPerson)) {
+      performerId = fhirCancelRequesterPractitioner.id
+    } else if (isDeepStrictEqual(performerAgentPerson, hl7ResponsiblePartyAgentPerson)) {
+      performerId = originalPrescriptionAuthorId
     } else {
       const {
         fhirPractitioner: fhirPerformerPractitioner,

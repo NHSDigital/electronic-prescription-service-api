@@ -10,7 +10,9 @@
     "start-with-env": ". ../../scripts/set_env_vars.sh && node app.js --use_strict",
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts",
     "test": "jest",
-    "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
+    "integration-test": "node_modules/.bin/newman run ../tests/e2e/postman/electronic-prescription-coordinator-postman-tests.json -e $API_TEST_ENV_FILE_PATH --reporters html,cli,htmlextra,junit --reporter-htmlextra-logs --reporter-htmlextra-darkTheme",
+    "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL",
+    "create-examples": "ts-node tests/generate-spine-examples.ts"
   },
   "author": "NHS Digital",
   "license": "MIT",

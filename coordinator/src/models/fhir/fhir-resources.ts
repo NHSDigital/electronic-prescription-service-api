@@ -13,7 +13,7 @@ export interface Bundle extends Resource {
   timestamp?: string
 }
 
-interface BundleEntry {
+export interface BundleEntry {
   fullUrl?: string
   resource?: Resource
 }
@@ -45,6 +45,9 @@ interface BaseMedicationRequest extends Resource {
   requester: Reference<PractitionerRole>
   groupIdentifier: MedicationRequestGroupIdentifier
   dispenseRequest: MedicationRequestDispenseRequest
+  substitution?: {
+    allowedBoolean: false
+  }
 }
 
 export interface MedicationRequest extends BaseMedicationRequest {
@@ -68,7 +71,8 @@ export interface Coding {
 }
 
 export interface Reference<T extends Resource> {
-  reference: string
+  reference: string,
+  display?: string
 }
 
 export interface IdentifierReference<T extends Resource> {
@@ -78,10 +82,11 @@ export interface IdentifierReference<T extends Resource> {
 export interface Dosage {
   text: string
   patientInstruction?: string
+  additionalInstruction?: Array<CodeableConcept>
 }
 
 export interface Performer extends IdentifierReference<Organization> {
-  extension: Array<ReferenceExtension<PractitionerRole>>
+  extension?: Array<ReferenceExtension<PractitionerRole>>
 }
 
 export interface MedicationRequestDispenseRequest {
@@ -261,6 +266,7 @@ export interface Signature {
 export class Provenance extends Resource {
   readonly resourceType = "Provenance"
   signature: Array<Signature>
+  target: Array<Reference<MedicationRequest>>
 }
 
 export interface Period {
