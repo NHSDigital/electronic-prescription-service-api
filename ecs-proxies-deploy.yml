@@ -1,4 +1,4 @@
-#docker_service_cpu: 256
+docker_service_cpu: 1024
 docker_service_memory: 2048
 
 docker_service:
