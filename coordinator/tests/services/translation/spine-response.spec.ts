@@ -56,7 +56,7 @@ describe("translateToFhir", () => {
     const statusCode = returnedValues.statusCode
 
     expect(body.issue).toHaveLength(1)
-    expect(body.issue[0].diagnostics).toBe(bodyString)
+    expect(body.issue[0].diagnostics).toBeUndefined()
     expect(statusCode).toBe(400)
   })
 

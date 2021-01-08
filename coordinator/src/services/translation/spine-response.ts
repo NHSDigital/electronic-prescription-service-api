@@ -29,35 +29,33 @@ export function translateToFhir<T>(hl7Message: SpineDirectResponse<T>): Translat
   }
   const asyncMCCI = ASYNC_SPINE_RESPONSE_MCCI_REGEX.exec(bodyString)
   if (asyncMCCI) {
-    return getAsyncResponseAndErrorCodes(bodyString, asyncMCCI)
+    return getAsyncResponseAndErrorCodes(asyncMCCI)
   }
 
   const syncMCCI = SYNC_SPINE_RESPONSE_MCCI_REGEX.exec(bodyString)
   if (syncMCCI) {
-    return getSyncResponseAndErrorCodes(bodyString, syncMCCI)
+    return getSyncResponseAndErrorCodes(syncMCCI)
   }
 
   return {
     statusCode: 400,
     fhirResponse: {
       resourceType: "OperationOutcome",
-      issue: [createOperationOutcomeIssue(400, bodyString)]
+      issue: [createOperationOutcomeIssue(400)]
     }
   }
 }
 
-function getAsyncResponseAndErrorCodes(hl7Message: string, asyncMCCI: RegExpExecArray) {
+function getAsyncResponseAndErrorCodes(asyncMCCI: RegExpExecArray) {
   return getFhirResponseAndErrorCodes<AsyncMCCI>(
-    hl7Message,
     readXml(asyncMCCI[0]) as AsyncMCCI,
     getAsyncAcknowledgementTypeCode,
     translateAsyncSpineResponseErrorCodes
   )
 }
 
-function getSyncResponseAndErrorCodes(hl7Message: string, syncMCCI: RegExpExecArray) {
+function getSyncResponseAndErrorCodes(syncMCCI: RegExpExecArray) {
   return getFhirResponseAndErrorCodes<SyncMCCI>(
-    hl7Message,
     readXml(syncMCCI[0]) as SyncMCCI,
     getSyncAcknowledgementTypeCode,
     translateSyncSpineResponseErrorCodes
@@ -65,7 +63,6 @@ function getSyncResponseAndErrorCodes(hl7Message: string, syncMCCI: RegExpExecAr
 }
 
 function getFhirResponseAndErrorCodes<T extends AsyncMCCI | SyncMCCI>(
-  hl7Message: string,
   MCCIWrapper: T,
   getStatusCodeFn: (wrapper: T) => acknowledgementCodes,
   getErrorCodes: (wrapper: T) => Array<fhir.CodeableConcept>
@@ -73,8 +70,8 @@ function getFhirResponseAndErrorCodes<T extends AsyncMCCI | SyncMCCI>(
   const statusCode = translateAcknowledgementTypeCodeToStatusCode(getStatusCodeFn(MCCIWrapper))
   const errorCodes = getErrorCodes(MCCIWrapper)
   const operationOutcomeIssues = errorCodes.length
-    ? errorCodes.map(errorCode => createOperationOutcomeIssue(statusCode, hl7Message, errorCode))
-    : [createOperationOutcomeIssue(statusCode, hl7Message)]
+    ? errorCodes.map(errorCode => createOperationOutcomeIssue(statusCode, errorCode))
+    : [createOperationOutcomeIssue(statusCode)]
   return {
     statusCode: statusCode,
     fhirResponse: {
@@ -86,14 +83,12 @@ function getFhirResponseAndErrorCodes<T extends AsyncMCCI | SyncMCCI>(
 
 function createOperationOutcomeIssue(
   statusCode: number,
-  hl7Message: string,
   details?: fhir.CodeableConcept
 ): fhir.OperationOutcomeIssue {
   const successfulMessage = statusCode <= 299
   return {
     code: successfulMessage ? "informational" : "invalid",
     severity: successfulMessage ? "information" : "error",
-    diagnostics: hl7Message,
     details: details
   }
 }
