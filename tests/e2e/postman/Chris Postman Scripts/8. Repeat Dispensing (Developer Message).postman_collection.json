@@ -14,7 +14,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "657711bf-83ac-4c86-b246-c5ca9983f7a3",
 								"exec": [
 									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
 									"\r",
@@ -76,7 +75,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "58932555-ee0d-466f-84e0-e6a06967e369",
 								"exec": [
 									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
 									"\r",
@@ -138,7 +136,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "67a0d295-aad6-49aa-8988-c054ae607650",
 								"exec": [
 									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
 									"\r",
@@ -195,8 +192,7 @@
 					},
 					"response": []
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Number of Repeats",
@@ -207,7 +203,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "f379c933-7bf6-4845-9ffe-1759110898ff",
 								"exec": [
 									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
 									"\r",
@@ -270,7 +265,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "5cce92b3-02b4-45ae-ab79-6e6fe3565d28",
 								"exec": [
 									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
 									"\r",
@@ -332,7 +326,6 @@
 						{
 							"listen": "test",
 							"script": {
-								"id": "c96d8792-6109-489e-87c2-cef38f95e8ce",
 								"exec": [
 									"console.log('base_url: ' + pm.environment.get('base_url'));\r",
 									"\r",
@@ -405,7 +398,6 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "210d1900-b1cc-4e58-b23e-1b43cdfcb3d9",
 						"type": "text/javascript",
 						"exec": [
 							""
@@ -415,15 +407,13 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "3ae0fa51-6582-406c-9aaa-8dca6937501c",
 						"type": "text/javascript",
 						"exec": [
 							""
 						]
 					}
 				}
-			],
-			"protocolProfileBehavior": {}
+			]
 		},
 		{
 			"name": "Continuous long term (repeat dispensing) 0003",
@@ -431,7 +421,6 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "6f854f24-2ae6-44dd-ab00-665acecf9263",
 						"exec": [
 							"console.log('base_url: ' + pm.environment.get('base_url'));\r",
 							"\r",
@@ -501,7 +490,6 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "4708c32c-b9ae-446b-bde5-a58ee0ea064e",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -511,13 +499,11 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "ed8d7848-a6ea-493f-ab91-e229f2b2b3d7",
 				"type": "text/javascript",
 				"exec": [
 					""
 				]
 			}
 		}
-	],
-	"protocolProfileBehavior": {}
+	]
 }

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "baaa8196-08e4-429d-86c3-603296bd41ee",
+		"_postman_id": "9ae74f73-1518-4ca6-8110-542e9678b606",
 		"name": "2. Patient",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -115,9 +115,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "noauth"
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -741,21 +738,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "oauth2",
-							"oauth2": [
-								{
-									"key": "accessToken",
-									"value": "DGAkreaZm9USmawMH7HaLZHxgH45",
-									"type": "string"
-								},
-								{
-									"key": "addTokenTo",
-									"value": "queryParams",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -826,21 +808,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "oauth2",
-							"oauth2": [
-								{
-									"key": "accessToken",
-									"value": "DGAkreaZm9USmawMH7HaLZHxgH45",
-									"type": "string"
-								},
-								{
-									"key": "addTokenTo",
-									"value": "queryParams",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -910,21 +877,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "oauth2",
-							"oauth2": [
-								{
-									"key": "accessToken",
-									"value": "DGAkreaZm9USmawMH7HaLZHxgH45",
-									"type": "string"
-								},
-								{
-									"key": "addTokenTo",
-									"value": "queryParams",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -994,21 +946,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "oauth2",
-							"oauth2": [
-								{
-									"key": "accessToken",
-									"value": "DGAkreaZm9USmawMH7HaLZHxgH45",
-									"type": "string"
-								},
-								{
-									"key": "addTokenTo",
-									"value": "queryParams",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -1078,21 +1015,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "oauth2",
-							"oauth2": [
-								{
-									"key": "accessToken",
-									"value": "DGAkreaZm9USmawMH7HaLZHxgH45",
-									"type": "string"
-								},
-								{
-									"key": "addTokenTo",
-									"value": "queryParams",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -1162,21 +1084,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "oauth2",
-							"oauth2": [
-								{
-									"key": "accessToken",
-									"value": "DGAkreaZm9USmawMH7HaLZHxgH45",
-									"type": "string"
-								},
-								{
-									"key": "addTokenTo",
-									"value": "queryParams",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -1246,21 +1153,6 @@
 						}
 					],
 					"request": {
-						"auth": {
-							"type": "oauth2",
-							"oauth2": [
-								{
-									"key": "accessToken",
-									"value": "DGAkreaZm9USmawMH7HaLZHxgH45",
-									"type": "string"
-								},
-								{
-									"key": "addTokenTo",
-									"value": "queryParams",
-									"type": "string"
-								}
-							]
-						},
 						"method": "POST",
 						"header": [
 							{
@@ -1789,6 +1681,36 @@
 					"response": []
 				}
 			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "2SbGf9HiNAUGQpH9IAOR99PQVF7N",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
 		}
 	]
 }
