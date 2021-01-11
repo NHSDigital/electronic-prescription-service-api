@@ -52,13 +52,15 @@ export enum AddressUse {
   PRIMARY_HOME = "HP",
   TEMPORARY = "TMP",
   POSTAL = "PST",
-  WORK = "WP"
+  WORK = "WP",
+  BUSINESS = "BP"
 }
 
 export class Address implements ElementCompact {
   _attributes: {
     use?: AddressUse
   }
+  _text?: string
   streetAddressLine: Array<Text>
   postalCode: Text
 
@@ -86,13 +88,17 @@ export enum NameUse {
   ALIAS = "A",
   PREFERRED = "PREFERRED",
   PREVIOUS = "PREVIOUS",
-  PREVIOUS_MAIDEN = "PREVIOUS-MAIDEN"
+  PREVIOUS_BIRTH = "PREVIOUS-BIRTH",
+  PREVIOUS_MAIDEN = "PREVIOUS-MAIDEN",
+  PREVIOUS_BACHELOR = "PREVIOUS-BACHELOR"
 }
 
 export class Name implements ElementCompact {
   _attributes: {
     use?: NameUse
   }
+
+  _text?: string
 
   family?: Text
   given?: Text | Array<Text>
@@ -160,9 +166,11 @@ export class QuantityInAlternativeUnits implements ElementCompact {
 }
 
 export enum TelecomUse {
+  HOME = "H",
   PERMANENT_HOME = "HP",
   TEMPORARY = "HV",
   WORKPLACE = "WP",
+  ANSWERING_MACHINE = "AS",
   MOBILE = "MC",
   PAGER = "PG",
   EMERGENCY_CONTACT = "EC"

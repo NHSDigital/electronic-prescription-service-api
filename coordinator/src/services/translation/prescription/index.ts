@@ -15,7 +15,8 @@ import {
   convertIsoDateTimeStringToHl7V3Date,
   getExtensionForUrl,
   getExtensionForUrlOrNull,
-  getNumericValueAsString
+  getNumericValueAsString,
+  isTruthy
 } from "../common"
 import {convertAuthor, convertResponsibleParty} from "./practitioner"
 import * as peoplePlaces from "../../../models/hl7-v3/hl7-v3-people-places"
@@ -44,12 +45,12 @@ export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescripti
     hl7V3Prescription.performer = convertPerformer(performer)
   }
 
-  hl7V3Prescription.author = convertAuthor(fhirBundle, fhirFirstMedicationRequest, false)
-  hl7V3Prescription.responsibleParty = convertResponsibleParty(fhirBundle, fhirFirstMedicationRequest, false)
+  hl7V3Prescription.author = convertAuthor(fhirBundle, fhirFirstMedicationRequest)
+  hl7V3Prescription.responsibleParty = convertResponsibleParty(fhirBundle, fhirFirstMedicationRequest)
 
-  const validityPeriod = fhirFirstMedicationRequest.dispenseRequest.validityPeriod
-  const expectedSupplyDuration = fhirFirstMedicationRequest.dispenseRequest.expectedSupplyDuration
-  if (validityPeriod || expectedSupplyDuration) {
+  if (getCourseOfTherapyTypeCode(fhirMedicationRequests) === CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING) {
+    const validityPeriod = fhirFirstMedicationRequest.dispenseRequest.validityPeriod
+    const expectedSupplyDuration = fhirFirstMedicationRequest.dispenseRequest.expectedSupplyDuration
     hl7V3Prescription.component1 = convertPrescriptionComponent1(validityPeriod, expectedSupplyDuration)
   }
 
@@ -89,31 +90,30 @@ function convertPrescriptionIds(
 }
 
 export function convertPrescriptionComponent1(
-  validityPeriod?: fhir.Period,
-  expectedSupplyDuration?: fhir.SimpleQuantity
+  validityPeriod: fhir.Period,
+  expectedSupplyDuration: fhir.SimpleQuantity
 ): prescriptions.Component1 {
   const daysSupply = new DaysSupply()
-  if (validityPeriod) {
-    const low = convertIsoDateTimeStringToHl7V3Date(
-      validityPeriod.start,
-      "MedicationRequest.dispenseRequest.validityPeriod.start"
+
+  const low = convertIsoDateTimeStringToHl7V3Date(
+    validityPeriod.start,
+    "MedicationRequest.dispenseRequest.validityPeriod.start"
+  )
+  const high = convertIsoDateTimeStringToHl7V3Date(
+    validityPeriod.end,
+    "MedicationRequest.dispenseRequest.validityPeriod.end"
+  )
+  daysSupply.effectiveTime = new Interval<Timestamp>(low, high)
+
+  if (expectedSupplyDuration.code !== "d") {
+    throw new InvalidValueError(
+      "Expected supply duration must be specified in days.",
+      "MedicationRequest.dispenseRequest.expectedSupplyDuration.code"
     )
-    const high = convertIsoDateTimeStringToHl7V3Date(
-      validityPeriod.end,
-      "MedicationRequest.dispenseRequest.validityPeriod.end"
-    )
-    daysSupply.effectiveTime = new Interval<Timestamp>(low, high)
   }
-  if (expectedSupplyDuration) {
-    if (expectedSupplyDuration.code !== "d") {
-      throw new InvalidValueError(
-        "Expected supply duration must be specified in days.",
-        "MedicationRequest.dispenseRequest.expectedSupplyDuration.code"
-      )
-    }
-    const expectedSupplyDurationStr = getNumericValueAsString(expectedSupplyDuration.value)
-    daysSupply.expectedUseTime = new IntervalUnanchored(expectedSupplyDurationStr, "d")
-  }
+  const expectedSupplyDurationStr = getNumericValueAsString(expectedSupplyDuration.value)
+  daysSupply.expectedUseTime = new IntervalUnanchored(expectedSupplyDurationStr, "d")
+
   return new prescriptions.Component1(daysSupply)
 }
 
@@ -166,14 +166,10 @@ function convertDispensingSitePreference(
 function extractText(fhirCommunicationRequests: Array<fhir.CommunicationRequest>): Array<core.Text> {
   return fhirCommunicationRequests
     .flatMap(communicationRequest => communicationRequest.payload)
-    .map(contentString => new core.Text(contentString.contentString))
-}
-
-function isFirstRequestAndCommunicationRequestPresent(
-  request: number,
-  fhirCommunicationRequest: Array<fhir.CommunicationRequest>
-) {
-  return (request == 0 && fhirCommunicationRequest.length > 0)
+    .filter(isTruthy)
+    .map(contentStringPayload => contentStringPayload.contentString)
+    .filter(isTruthy)
+    .map(contentString => new core.Text(contentString))
 }
 
 function convertPrescriptionPertinentInformation2(
@@ -181,21 +177,20 @@ function convertPrescriptionPertinentInformation2(
   fhirMedicationRequests: Array<fhir.MedicationRequest>,
   repeatNumber: core.Interval<core.Timestamp>
 ) {
-  const pertinentInformation2 = []
-
-  for (let i = 0; i < fhirMedicationRequests.length; i++) {
-    const patientInfoText = isFirstRequestAndCommunicationRequestPresent(i, fhirCommunicationRequests)
-      ? extractText(fhirCommunicationRequests)
-      : []
+  const patientInfoText = extractText(fhirCommunicationRequests)
+  return fhirMedicationRequests.map((medicationRequest, index) => {
+    const patientInfoTextForLineItem = shouldIncludePatientInfoText(index) ? patientInfoText : []
     const pertinentLineItem = convertMedicationRequestToLineItem(
-      fhirMedicationRequests[i],
+      medicationRequest,
       repeatNumber,
-      patientInfoText
+      patientInfoTextForLineItem
     )
-    pertinentInformation2.push(new prescriptions.PrescriptionPertinentInformation2(pertinentLineItem))
-  }
+    return new prescriptions.PrescriptionPertinentInformation2(pertinentLineItem)
+  })
+}
 
-  return pertinentInformation2
+function shouldIncludePatientInfoText(lineItemIndex: number) {
+  return lineItemIndex === 0
 }
 
 function convertPrescriptionPertinentInformation8() {

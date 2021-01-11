@@ -2,19 +2,21 @@
 import * as fs from "fs"
 import * as fhir from "../fhir/fhir-resources"
 import {Case} from "./case"
+import * as LosslessJson from "lossless-json"
 
 export class ConvertCase extends Case {
   description: string
   request: fhir.Bundle
   response: string
   responseMatcher: string
+  statusText: string
 
-  constructor(description: string, requestFilePath: string, responseFilePath: string) {
-    super(description, requestFilePath)
+  constructor(description: string, requestFilePath: string, responseFilePath: string, statusText: string) {
+    super(description, requestFilePath, statusText)
 
-    const responseXmlString = fs.readFileSync(responseFilePath, "utf-8")
-    this.response = responseXmlString
-    this.responseMatcher = this.buildResponseMatcher(responseXmlString).trimEnd()
+    const responseString = fs.readFileSync(responseFilePath, "utf-8")
+    this.response = this.isSuccess ? responseString : JSON.parse(LosslessJson.stringify(responseString))
+    this.responseMatcher =  this.isSuccess ? this.buildResponseMatcher(this.response).trimEnd() : ""
   }
 
   private buildResponseMatcher(responseXml: string): string {

@@ -8,18 +8,18 @@ resources:
     - repository: common
       type: github
       name: NHSDigital/api-management-utils
+      ref: refs/heads/edge
       endpoint: NHSDigital
   pipelines:
     - pipeline: build_pipeline
       source: "Electronic-Prescription-Service-Build"
 
 pool:
-  vmImage: 'ubuntu-latest'
+  name: 'AWS-ECS'
 
 variables:
   - template: project.yml
   - group: pact
-  - group: variable-group-read
   - group: eps-ref-smoke-tests
 
 extends:

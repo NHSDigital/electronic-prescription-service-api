@@ -17,6 +17,7 @@ resources:
     - repository: common
       type: github
       name: NHSDigital/api-management-utils
+      ref: refs/heads/edge
       endpoint: NHSDigital
 
 variables:
@@ -31,12 +32,6 @@ extends:
       - bash: "make test"
         displayName: Run Quality Checks
         workingDirectory: "${{ variables.service_name }}"
-      - task: PublishTestResults@2
-        inputs:
-          testResultsFormat: 'JUnit'
-          testResultsFiles: 'coordinator/newman/*.xml'
-          failTaskOnFailedTests: true
-          workingDirectory: ${{ variables.service_name }}
     post_ecs_push:
       - bash: "scripts/populate_ssm_parameters.sh"
         displayName: Copy secrets from secrets manager to SSM

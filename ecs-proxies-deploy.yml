@@ -1,4 +1,4 @@
-#docker_service_cpu: 256
+docker_service_cpu: 1024
 docker_service_memory: 2048
 
 docker_service:
@@ -14,13 +14,15 @@ docker_service:
           value: "{{ SANDBOX_MODE_ENABLED }}"
         - name: BASE_PATH
           value: "https://{{ APIGEE_HOSTNAME }}/{{ SERVICE_BASE_PATH }}"
+        - name: COMMIT_ID
+          value: "{{ SOURCE_COMMIT_ID }}"
     secrets:
         - name: SPINE_URL
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/{{ SPINE_ENV }}/host'
         - name: CLIENT_KEY
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/private-key'
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/certs/spine/{{ SPINE_ENV }}/key'
         - name: CLIENT_CERT
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/certificate'
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/certs/spine/{{ SPINE_ENV }}/crt'
         - name: FROM_ASID
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/from-asid'
         - name: TO_ASID
@@ -32,9 +34,9 @@ docker_service:
         - name: CPA_ID_MAP
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/cpa-id-map'
         - name: ROOT_CA_CERT
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/root-ca-certificate'
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/certs/nhsd-root-ca/{{ account }}/crt'
         - name: SUB_CA_CERT
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/sub-ca-certificate'
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/certs/nhsd-sub-ca/{{ account }}/crt'
     health_check:
         matcher: "200"
         path: "/_status"

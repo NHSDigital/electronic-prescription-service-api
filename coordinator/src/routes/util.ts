@@ -4,7 +4,7 @@ import * as fhir from "../models/fhir/fhir-resources"
 import {OperationOutcome, Resource} from "../models/fhir/fhir-resources"
 import * as requestValidator from "../services/validation/bundle-validator"
 import * as errors from "../models/errors/validation-errors"
-import {translateToOperationOutcome} from "../services/translation/spine-response"
+import {translateToFhir} from "../services/translation/spine-response"
 import * as LosslessJson from "lossless-json"
 import {getMessageHeader} from "../services/translation/common/getResourcesOfType"
 import axios from "axios"
@@ -12,10 +12,19 @@ import stream from "stream"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
+const CONTENT_TYPE_FHIR = "application/fhir+json; fhirVersion=4.0"
+const CONTENT_TYPE_JSON = "application/json"
+
+export const VALIDATOR_HOST = "http://localhost:9001"
+
 export function handleResponse<T>(
+  request: Hapi.Request,
   spineResponse: SpineDirectResponse<T> | SpinePollableResponse,
   responseToolkit: Hapi.ResponseToolkit
 ): Hapi.ResponseObject {
+  const isSmokeTest = request.headers["x-smoke-test"]
+  const contentType = isSmokeTest ? CONTENT_TYPE_JSON : CONTENT_TYPE_FHIR
+
   if (isPollable(spineResponse)) {
     return responseToolkit.response()
       .code(spineResponse.statusCode)
@@ -23,12 +32,12 @@ export function handleResponse<T>(
   } else if (isOperationOutcome(spineResponse.body)) {
     return responseToolkit.response(spineResponse.body)
       .code(spineResponse.statusCode)
-      .header("Content-Type", "application/fhir+json; fhirVersion=4.0")
+      .header("Content-Type", contentType)
   } else {
-    const translatedSpineResponse = translateToOperationOutcome(spineResponse)
-    return responseToolkit.response(translatedSpineResponse.operationOutcome)
+    const translatedSpineResponse = translateToFhir(spineResponse)
+    return responseToolkit.response(translatedSpineResponse.fhirResponse)
       .code(translatedSpineResponse.statusCode)
-      .header("Content-Type", "application/fhir+json; fhirVersion=4.0")
+      .header("Content-Type", contentType)
   }
 }
 
@@ -69,7 +78,7 @@ export async function fhirValidation(
   requestHeaders: Hapi.Util.Dictionary<string>
 ): Promise<fhir.OperationOutcome> {
   const validatorResponse = await axios.post(
-    "http://localhost:9001/$validate",
+    `${VALIDATOR_HOST}/$validate`,
     payload.toString(),
     {
       headers: {
@@ -93,11 +102,14 @@ export async function fhirValidation(
 
 export function validatingHandler(handler: Handler<fhir.Bundle>) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-    const validatorResponseData = await fhirValidation(request.payload, request.headers)
-
-    const error = validatorResponseData.issue.find(issue => issue.severity === "error" || issue.severity === "fatal")
-    if (error) {
-      return responseToolkit.response(validatorResponseData).code(400)
+    if (request.headers["x-skip-validation"]) {
+      request.log("info", "Skipping call to FHIR validator")
+    } else {
+      const validatorResponseData = await fhirValidation(request.payload, request.headers)
+      const error = validatorResponseData.issue.find(issue => issue.severity === "error" || issue.severity === "fatal")
+      if (error) {
+        return responseToolkit.response(validatorResponseData).code(400)
+      }
     }
 
     const requestPayload = getPayload(request) as fhir.Bundle

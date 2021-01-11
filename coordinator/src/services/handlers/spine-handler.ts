@@ -1,5 +1,6 @@
 import axios, {AxiosError, AxiosResponse} from "axios"
 import https from "https"
+import {Logger} from "pino"
 import {RequestHandler} from "."
 import {SpineRequest, SpineResponse} from "../../models/spine"
 import {addEbXmlWrapper} from "../formatters/ebxml-request-builder"
@@ -33,11 +34,11 @@ export class LiveRequestHandler implements RequestHandler {
     this.ebXMLBuilder = ebXMLBuilder || addEbXmlWrapper
   }
 
-  async send(spineRequest: SpineRequest): Promise<SpineResponse<unknown>> {
+  async send(spineRequest: SpineRequest, logger: Logger): Promise<SpineResponse<unknown>> {
     const wrappedMessage = this.ebXMLBuilder(spineRequest)
     const address = this.getSpineUrlForPrescription()
 
-    console.log(`Attempting to send the following message to ${address}:\n${wrappedMessage}`)
+    logger.info(`Attempting to send message to ${address}`)
 
     try {
       const result = await axios.post<string>(
@@ -54,17 +55,17 @@ export class LiveRequestHandler implements RequestHandler {
           }
         }
       )
-      return LiveRequestHandler.handlePollableOrImmediateResponse(result)
+      return LiveRequestHandler.handlePollableOrImmediateResponse(result, logger)
     } catch (error) {
-      console.log(`Failed post request for prescription message. Error: ${error}`)
+      logger.error(`Failed post request for prescription message. Error: ${error}`)
       return LiveRequestHandler.handleError(error)
     }
   }
 
-  async poll(path: string): Promise<SpineResponse<unknown>> {
+  async poll(path: string, logger: Logger): Promise<SpineResponse<unknown>> {
     const address = this.getSpineUrlForPolling(path)
 
-    console.log(`Attempting to send polling message to ${address}`)
+    logger.info(`Attempting to send polling message to ${address}`)
 
     try {
       const result = await axios.get<string>(
@@ -74,30 +75,30 @@ export class LiveRequestHandler implements RequestHandler {
           headers: {"nhsd-asid": process.env.FROM_ASID}
         }
       )
-      return LiveRequestHandler.handlePollableOrImmediateResponse(result)
+      return LiveRequestHandler.handlePollableOrImmediateResponse(result, logger)
     } catch (error) {
-      console.log(`Failed polling request for polling path ${path}. Error: ${error}`)
+      logger.error(`Failed polling request for polling path ${path}. Error: ${error}`)
       return LiveRequestHandler.handleError(error)
     }
   }
 
-  private static handlePollableOrImmediateResponse(result: AxiosResponse) {
+  private static handlePollableOrImmediateResponse(result: AxiosResponse, logger: Logger) {
     switch (result.status) {
     case (200):
-      console.log("Successful request, returning SpineDirectResponse")
+      logger.info("Successful request, returning SpineDirectResponse")
       return {
         body: result.data,
         statusCode: result.status
       }
     case (202):
-      console.log("Successful request, returning SpinePollableResponse")
-      console.log(`Got polling URL ${result.headers["content-location"]}`)
+      logger.info("Successful request, returning SpinePollableResponse")
+      logger.info(`Got polling URL ${result.headers["content-location"]}`)
       return {
         statusCode: result.status,
         pollingUrl: `${BASE_PATH}${result.headers["content-location"]}`
       }
     default:
-      console.log(`Got the following response from spine:\n${result.data}`)
+      logger.error(`Got the following response from spine:\n${result.data}`)
       throw Error(`Unsupported status, expected 200 or 202, got ${result.status}`)
     }
   }

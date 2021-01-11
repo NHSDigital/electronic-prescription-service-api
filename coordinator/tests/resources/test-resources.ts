@@ -43,18 +43,17 @@ export class ExamplePrescription {
     this.fhirMessageDigest = LosslessJson.parse(fhirMessageDigestStr)
     this.hl7V3Message = XmlJs.xml2js(hl7V3MessageStr, {compact: true})
 
-    const fhirMessageCancelPath = path.join(__dirname, location, "CancelRequest-FhirMessage.json")
+    const fhirMessageCancelPath = path.join(__dirname, location, "1-Process-Request-Cancel-200_OK.json")
     if (fs.existsSync(fhirMessageCancelPath)) {
       const fhirMessageCancelStr = fs.readFileSync(fhirMessageCancelPath, "utf-8")
       this.fhirMessageCancel = LosslessJson.parse(fhirMessageCancelStr)
     }
 
-    const hl7V3MessageCancelPath = path.join(__dirname, location, "CancelResponse-Hl7V3Message.xml")
+    const hl7V3MessageCancelPath = path.join(__dirname, location, "1-Convert-Response-Cancel-200_OK.xml")
     if (fs.existsSync(hl7V3MessageCancelPath)) {
       const hl7V3MessageCancelStr = fs.readFileSync(hl7V3MessageCancelPath, "utf-8")
       this.hl7V3MessageCancel = XmlJs.xml2js(hl7V3MessageCancelStr, {compact: true})
     }
-
   }
 }
 
@@ -99,9 +98,9 @@ export const specification = [
   //examplePrescription4
 ]
 
-interface ExampleSpineResponse {
+export interface ExampleSpineResponse {
   response: SpineDirectResponse<string>
-  spineErrorCode: number | undefined
+  spineErrorCode: string | undefined
   acknowledgementCode: acknowledgementCodes
 }
 
@@ -125,7 +124,7 @@ const syncError: ExampleSpineResponse = {
     ),
     statusCode: 400
   },
-  spineErrorCode: 202,
+  spineErrorCode: "202",
   acknowledgementCode: "AR"
 }
 
@@ -137,7 +136,7 @@ const asyncError: ExampleSpineResponse = {
     ),
     statusCode: 400
   },
-  spineErrorCode: 5000,
+  spineErrorCode: "5000",
   acknowledgementCode: "AE"
 }
 
@@ -149,7 +148,7 @@ const syncMultipleError: ExampleSpineResponse = {
     ),
     statusCode: 400
   },
-  spineErrorCode: 202,
+  spineErrorCode: "202",
   acknowledgementCode: "AR"
 }
 
@@ -161,12 +160,51 @@ const asyncMultipleError: ExampleSpineResponse = {
     ),
     statusCode: 400
   },
-  spineErrorCode: 5000,
+  spineErrorCode: "5000",
+  acknowledgementCode: "AE"
+}
+
+const cancellationSuccess: ExampleSpineResponse = {
+  response: {
+    body: fs.readFileSync(
+      path.join(__dirname, "./spine-responses/cancel_success.xml"),
+      "utf8"
+    ),
+    statusCode: 200
+  },
+  spineErrorCode: "0001",
+  acknowledgementCode: "AA"
+}
+
+const cancellationError: ExampleSpineResponse = {
+  response: {
+    body: fs.readFileSync(
+      path.join(__dirname, "./spine-responses/cancel_error.xml"),
+      "utf8"
+    ),
+    statusCode: 400
+  },
+  spineErrorCode: "0008",
+  acknowledgementCode: "AE"
+}
+
+const cancellationDispensedError: ExampleSpineResponse = {
+  response: {
+    body: fs.readFileSync(
+      path.join(__dirname, "./spine-responses/cancel_error_dispensed.xml"),
+      "utf8"
+    ),
+    statusCode: 400
+  },
+  spineErrorCode: "0004",
   acknowledgementCode: "AE"
 }
 
 export const spineResponses = {
   success: asyncSuccess,
   singleErrors: [syncError, asyncError],
-  multipleErrors: [syncMultipleError, asyncMultipleError]
+  multipleErrors: [syncMultipleError, asyncMultipleError],
+  cancellationSuccess,
+  cancellationError,
+  cancellationDispensedError
 }

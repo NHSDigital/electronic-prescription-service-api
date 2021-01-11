@@ -35,6 +35,14 @@ export function getOrganizations(fhirBundle: fhir.Bundle): Array<fhir.Organizati
   return getResourcesOfType<fhir.Organization>(fhirBundle, "Organization")
 }
 
+export function getPractitioners(fhirBundle: fhir.Bundle): Array<fhir.Practitioner> {
+  return getResourcesOfType<fhir.Practitioner>(fhirBundle, "Practitioner")
+}
+
+export function getPractitionerRoles(fhirBundle: fhir.Bundle): Array<fhir.PractitionerRole> {
+  return getResourcesOfType<fhir.PractitionerRole>(fhirBundle, "PractitionerRole")
+}
+
 export function getProvenances(fhirBundle: fhir.Bundle): Array<fhir.Provenance> {
   return getResourcesOfType<fhir.Provenance>(fhirBundle, "Provenance")
 }
