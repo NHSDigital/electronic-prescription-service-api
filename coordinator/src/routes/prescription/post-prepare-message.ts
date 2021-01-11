@@ -17,6 +17,7 @@ export default [
       (requestPayload: Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const isSmokeTest = request.headers["x-smoke-test"]
         const contentType = isSmokeTest ? CONTENT_TYPE_JSON : CONTENT_TYPE_FHIR
+        request.log("info", "Encoding HL7V3 signature fragments")
         const response = translator.convertFhirMessageToSignedInfoMessage(requestPayload)
         return responseToolkit.response(response).code(200).header("Content-Type", contentType)
       }
