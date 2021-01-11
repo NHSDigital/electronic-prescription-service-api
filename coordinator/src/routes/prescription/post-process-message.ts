@@ -15,6 +15,8 @@ export default [
       async (requestPayload: Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const spineRequest = translator.convertFhirMessageToSpineRequest(requestPayload)
         const spineResponse = await requestHandler.send(spineRequest, request.logger)
+        request.log("audit", {messageType: "Inbound FHIR message", payload: requestPayload})
+        request.log("audit", {messageType: "Spine request message", outbound: spineRequest})
         return handleResponse(request, spineResponse, responseToolkit)
       }
     )

@@ -18,6 +18,8 @@ export default [
         const isSmokeTest = request.headers["x-smoke-test"]
         const contentType = isSmokeTest ? CONTENT_TYPE_JSON : CONTENT_TYPE_FHIR
         const response = translator.convertFhirMessageToSignedInfoMessage(requestPayload)
+        request.log("audit", {messageType: "Inbound FHIR message", payload: requestPayload})
+        request.log("audit", {messageType: "Outbound signed info message", outbound: response})
         return responseToolkit.response(response).code(200).header("Content-Type", contentType)
       }
     )
