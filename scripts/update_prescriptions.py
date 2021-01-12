@@ -8,6 +8,7 @@ from datetime import datetime
 import requests
 
 examples_root_dir = "../models/examples/temp"
+api_base_url = "https://internal-dev-sandbox.api.service.nhs.uk/electronic-prescriptions-pr-321"
 
 
 def generate_short_form_id():
@@ -58,7 +59,7 @@ def update_prepare_examples(prepare_request_path, prescription_id, short_prescri
         json.dump(prepare_request_json, f, indent=2)
 
     prepare_response_json = requests.post(
-        'https://internal-dev-sandbox.api.service.nhs.uk/electronic-prescriptions-pr-321/$prepare',
+        api_base_url + '/$prepare',
         data=json.dumps(prepare_request_json),
         headers={'Content-Type': 'application/json'}
     ).json()
@@ -93,7 +94,7 @@ def update_process_examples(prepare_request_path, prescription_id, short_prescri
             json.dump(process_request_json, f, indent=2)
 
         convert_response_xml = requests.post(
-            'http://localhost:9000/$convert',
+            api_base_url + '/$convert',
             data=json.dumps(process_request_json),
             headers={'Content-Type': 'application/json'}
         ).text
