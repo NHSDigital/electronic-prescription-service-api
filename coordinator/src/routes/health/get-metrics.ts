@@ -4,7 +4,7 @@ import * as osu from "node-os-utils"
 export default [
   {
     method: "GET",
-    path: "/_status",
+    path: "/_metrics",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const cpu = osu.cpu
       const cpuUsage = await cpu.usage()
