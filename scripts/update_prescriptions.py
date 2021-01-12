@@ -7,7 +7,7 @@ import uuid
 from datetime import datetime
 import requests
 
-examples_root_dir = "../models/examples/"
+examples_root_dir = "../models/examples/temp"
 
 
 def generate_short_form_id():
