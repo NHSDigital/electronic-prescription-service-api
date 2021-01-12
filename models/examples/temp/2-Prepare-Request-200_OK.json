@@ -95,7 +95,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2020-11-25T10:44:08+00:00",
+        "authoredOn": "2021-01-12T03:37:42+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -105,12 +105,12 @@
               "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "FDF1958F-690F-49D9-97A9-AAC74C1850BC"
+                "value": "6f3c6fe2-3805-4589-9808-f15d767434f4"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "8632DD-A99968-11EB9T"
+          "value": "874524-ZBE548-11EBAI"
         },
         "courseOfTherapyType": {
           "coding": [

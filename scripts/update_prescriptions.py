@@ -58,7 +58,7 @@ def update_prepare_examples(prepare_request_path, prescription_id, short_prescri
         json.dump(prepare_request_json, f, indent=2)
 
     prepare_response_json = requests.post(
-        'http://localhost:9000/$prepare',
+        'https://internal-dev-sandbox.api.service.nhs.uk/electronic-prescriptions-pr-321/$prepare',
         data=json.dumps(prepare_request_json),
         headers={'Content-Type': 'application/json'}
     ).json()
