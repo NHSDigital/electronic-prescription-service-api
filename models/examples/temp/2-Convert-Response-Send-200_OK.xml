@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN020101SM31 xmlns="urn:hl7-org:v3">
   <id root="0A1FD9EF-A3D5-4E95-86CD-552070A03096"/>
-  <creationTime value="20210112034913"/>
+  <creationTime value="20210112035228"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN020101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -42,7 +42,7 @@
       <ParentPrescription classCode="INFO" moodCode="EVN">
         <id root="0A1FD1EF-A3D5-4E95-84CD-552070A03086"/>
         <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Prescription - FocusActOrEvent (record artifact)"/>
-        <effectiveTime value="20210112034653"/>
+        <effectiveTime value="20210112035228"/>
         <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <Patient classCode="PAT">
@@ -79,8 +79,8 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentPrescription classCode="SBADM" moodCode="RQO">
-            <id root="1DB71997-EC88-40BF-8649-E843F463035A"/>
-            <id extension="CD50B4-ZAE548-11EBAK" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+            <id root="2D57F4B1-6ECE-4F31-83D3-ACFCE9096AE7"/>
+            <id extension="94F0B9-Z46548-11EB9A" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
             <effectiveTime nullFlavor="NA"/>
             <performer contextControlCode="OP" typeCode="PRF">
@@ -91,7 +91,7 @@
               </AgentOrgSDS>
             </performer>
             <author contextControlCode="OP" typeCode="AUT">
-              <time value="20210112034653"/>
+              <time value="20210112035228"/>
               <signatureText>
                 <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
                   <SignedInfo>
