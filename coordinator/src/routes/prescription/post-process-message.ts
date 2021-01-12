@@ -13,7 +13,9 @@ export default [
     path: "/$process-message",
     handler: validatingHandler(
       async (requestPayload: Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+        request.logger.info("Building Spine request")
         const spineRequest = translator.convertFhirMessageToSpineRequest(requestPayload)
+        request.logger.info("Awaiting response")
         const spineResponse = await requestHandler.send(spineRequest, request.logger)
         request.log("audit", {messageType: "Inbound FHIR message", payload: requestPayload})
         request.log("audit", {messageType: "Spine request message", outbound: spineRequest})

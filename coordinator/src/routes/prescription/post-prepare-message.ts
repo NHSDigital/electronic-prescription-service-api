@@ -17,6 +17,7 @@ export default [
       (requestPayload: Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const isSmokeTest = request.headers["x-smoke-test"]
         const contentType = isSmokeTest ? CONTENT_TYPE_JSON : CONTENT_TYPE_FHIR
+        request.logger.info("Encoding HL7V3 signature fragments")
         const response = translator.convertFhirMessageToSignedInfoMessage(requestPayload)
         request.log("audit", {messageType: "Inbound FHIR message", payload: requestPayload})
         request.log("audit", {messageType: "Outbound signed info message", outbound: response})
