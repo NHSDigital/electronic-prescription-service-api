@@ -3,13 +3,15 @@ import axios from "axios"
 import {VALIDATOR_HOST} from "../util"
 async function checkValidatorStatus(request: Hapi.Request) {
   try {
+    request.logger.info("Checking validator status")
     const response = await axios.get<string>(`${VALIDATOR_HOST}/_status`, {timeout: 2})
 
     if (response.status == 200 && response.data == "Validator is alive") {
       return true
     } else {
       const responseSummary = `Status: ${response.status}, data: ${response.data ?? "No Data"}`
-      request.logger.warn(`Did not get positive response from validator status check. ${responseSummary}`)
+      const msg = `Did not get positive response from validator status check. ${responseSummary}`
+      request.logger.warn(msg)
     }
   } catch (err) {
     request.logger.error(`Got error when making request for validator status: ${err}`)
