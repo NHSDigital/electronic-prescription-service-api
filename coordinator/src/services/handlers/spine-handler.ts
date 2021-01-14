@@ -7,7 +7,7 @@ import {addEbXmlWrapper} from "../formatters/ebxml-request-builder"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
-const SPINE_PATH = "Prescription"
+const SPINE_PATH = "/Prescription"
 
 const httpsAgent = new https.Agent({
   cert: process.env.CLIENT_CERT,
@@ -119,8 +119,8 @@ export class LiveRequestHandler implements RequestHandler {
 
   private getSpineUrl(path: string) {
     if (this.spineEndpoint.includes("ref")) {
-      return `${SPINE_URL_SCHEME}://${this.spineEndpoint.replace(/msg/g, "prescriptions")}/${path}`
+      return `${SPINE_URL_SCHEME}://${this.spineEndpoint.replace(/msg/g, "prescriptions")}${path}`
     }
-    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/${path}`
+    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}${path}`
   }
 }
