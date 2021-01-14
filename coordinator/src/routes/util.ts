@@ -188,5 +188,5 @@ async function pollForResponse(
   }
 
   const newDelay = Math.min(delay * 2, 5000)
-  return pollForResponse(spineResponse.pollingUrl, newDelay, endTime, logger)
+  return pollForResponse(spineResponse.pollingUrl || pollingUrl, newDelay, endTime, logger)
 }
