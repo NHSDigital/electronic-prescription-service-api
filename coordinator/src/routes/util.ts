@@ -9,6 +9,8 @@ import * as LosslessJson from "lossless-json"
 import {getMessageHeader} from "../services/translation/common/getResourcesOfType"
 import axios from "axios"
 import stream from "stream"
+import {requestHandler} from "../services/handlers"
+import {Logger} from "pino"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
@@ -17,19 +19,20 @@ const CONTENT_TYPE_JSON = "application/json"
 
 export const VALIDATOR_HOST = "http://localhost:9001"
 
-export function handleResponse<T>(
+export async function handleResponse(
   request: Hapi.Request,
-  spineResponse: SpineDirectResponse<T> | SpinePollableResponse,
+  spineResponse: SpineDirectResponse<unknown> | SpinePollableResponse,
   responseToolkit: Hapi.ResponseToolkit
-): Hapi.ResponseObject {
+): Promise<Hapi.ResponseObject> {
   const isSmokeTest = request.headers["x-smoke-test"]
   const contentType = isSmokeTest ? CONTENT_TYPE_JSON : CONTENT_TYPE_FHIR
 
   if (isPollable(spineResponse)) {
-    return responseToolkit.response()
-      .code(spineResponse.statusCode)
-      .header("Content-Location", spineResponse.pollingUrl)
-  } else if (isOperationOutcome(spineResponse.body)) {
+    const pollEndTime = new Date().getTime() + 29000
+    spineResponse = await pollForResponse(spineResponse.pollingUrl, 250, pollEndTime, request.logger)
+  }
+
+  if (isOperationOutcome(spineResponse.body)) {
     return responseToolkit.response(spineResponse.body)
       .code(spineResponse.statusCode)
       .header("Content-Type", contentType)
@@ -126,7 +129,7 @@ export function validatingHandler(handler: Handler<fhir.Bundle>) {
 }
 
 function getPayload(request: Hapi.Request): unknown {
-  request.logger.info('Parsing request payload')
+  request.logger.info("Parsing request payload")
   if (Buffer.isBuffer(request.payload)) {
     return LosslessJson.parse(request.payload.toString())
   } else if (typeof request.payload === "string") {
@@ -152,4 +155,38 @@ function toFhirError(validation: Array<errors.ValidationError>): fhir.OperationO
     resourceType: "OperationOutcome",
     issue: validation.map(mapValidationErrorToOperationOutcomeIssue)
   }
+}
+
+function sleep(durationMillis: number) {
+  return new Promise((resolve) => setTimeout(resolve, durationMillis))
+}
+
+async function pollForResponse(
+  pollingUrl: string,
+  delay: number,
+  endTime: number,
+  logger: Logger
+): Promise<SpineDirectResponse<unknown>> {
+  await sleep(delay)
+  const spineResponse = await requestHandler.poll(pollingUrl, logger)
+
+  if (!isPollable(spineResponse)) {
+    return spineResponse
+  }
+
+  if (new Date().getTime() > endTime) {
+    return {
+      body: {
+        resourceType: "OperationOutcome",
+        issue: [{
+          severity: "fatal",
+          code: "value"
+        }]
+      },
+      statusCode: 504
+    }
+  }
+
+  const newDelay = Math.min(delay * 2, 5000)
+  return pollForResponse(spineResponse.pollingUrl, newDelay, endTime, logger)
 }
