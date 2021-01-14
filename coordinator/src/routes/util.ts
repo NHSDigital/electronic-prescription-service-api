@@ -19,17 +19,27 @@ const CONTENT_TYPE_JSON = "application/json"
 
 export const VALIDATOR_HOST = "http://localhost:9001"
 
+const INITIAL_DELAY_MILLIS = 250
+const MAX_DELAY_MILLIS = 5000
+const TIMEOUT_MILLIS = 29000
+
 export async function handleResponse(
   request: Hapi.Request,
   spineResponse: SpineDirectResponse<unknown> | SpinePollableResponse,
   responseToolkit: Hapi.ResponseToolkit
 ): Promise<Hapi.ResponseObject> {
   const isSmokeTest = request.headers["x-smoke-test"]
+  const respondAsync = request.headers["prefer"] === "respond-async"
   const contentType = isSmokeTest ? CONTENT_TYPE_JSON : CONTENT_TYPE_FHIR
 
   if (isPollable(spineResponse)) {
-    const pollEndTime = new Date().getTime() + 29000
-    spineResponse = await pollForResponse(spineResponse.pollingUrl, 250, pollEndTime, request.logger)
+    if (respondAsync) {
+      return responseToolkit.response()
+        .code(spineResponse.statusCode)
+        .header("Content-Location", `${process.env.BASE_PATH}${spineResponse.pollingUrl}`)
+    }
+    const pollEndTime = new Date().getTime() + TIMEOUT_MILLIS
+    spineResponse = await pollForResponse(spineResponse.pollingUrl, INITIAL_DELAY_MILLIS, pollEndTime, request.logger)
   }
 
   if (isOperationOutcome(spineResponse.body)) {
@@ -173,7 +183,7 @@ async function pollForResponse(
     return spineResponse
   }
 
-  const newDelay = Math.min(delay * 2, 5000)
+  const newDelay = Math.min(delay * 2, MAX_DELAY_MILLIS)
   if (new Date().getTime() + newDelay > endTime) {
     return {
       body: {
