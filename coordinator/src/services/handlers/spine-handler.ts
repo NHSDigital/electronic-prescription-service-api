@@ -8,7 +8,6 @@ import {addEbXmlWrapper} from "../formatters/ebxml-request-builder"
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
 const SPINE_PATH = "Prescription"
-const BASE_PATH = process.env.BASE_PATH
 
 const httpsAgent = new https.Agent({
   cert: process.env.CLIENT_CERT,
@@ -36,7 +35,7 @@ export class LiveRequestHandler implements RequestHandler {
 
   async send(spineRequest: SpineRequest, logger: Logger): Promise<SpineResponse<unknown>> {
     const wrappedMessage = this.ebXMLBuilder(spineRequest)
-    const address = this.getSpineUrlForPrescription()
+    const address = this.getSpineUrl(this.spinePath)
 
     logger.info(`Attempting to send message to ${address}`)
 
@@ -63,7 +62,7 @@ export class LiveRequestHandler implements RequestHandler {
   }
 
   async poll(path: string, logger: Logger): Promise<SpineResponse<unknown>> {
-    const address = this.getSpineUrlForPolling(path)
+    const address = this.getSpineUrl(path)
 
     logger.info(`Attempting to send polling message to ${address}`)
 
@@ -95,7 +94,7 @@ export class LiveRequestHandler implements RequestHandler {
       logger.info(`Got polling URL ${result.headers["content-location"]}`)
       return {
         statusCode: result.status,
-        pollingUrl: `${BASE_PATH}${result.headers["content-location"]}`
+        pollingUrl: result.headers["content-location"]
       }
     default:
       logger.error(`Got the following response from spine:\n${result.data}`)
@@ -118,19 +117,10 @@ export class LiveRequestHandler implements RequestHandler {
     }
   }
 
-  private getSpineUrlForPrescription() {
+  private getSpineUrl(path: string) {
     if (this.spineEndpoint.includes("ref")) {
-      return `${SPINE_URL_SCHEME}://${this.spineEndpoint.replace(/msg/g, "prescriptions")}/${this.spinePath}`
+      return `${SPINE_URL_SCHEME}://${this.spineEndpoint.replace(/msg/g, "prescriptions")}/${path}`
     }
-
-    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/${this.spinePath}`
-  }
-
-  private getSpineUrlForPolling(path: string) {
-    if (this.spineEndpoint.includes("ref")) {
-      return `${SPINE_URL_SCHEME}://${this.spineEndpoint.replace(/msg/g, "prescriptions")}/_poll/${path}`
-    }
-
-    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/_poll/${path}`
+    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/${path}`
   }
 }
