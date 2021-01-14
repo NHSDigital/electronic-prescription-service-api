@@ -169,12 +169,12 @@ async function pollForResponse(
 ): Promise<SpineDirectResponse<unknown>> {
   await sleep(delay)
   const spineResponse = await requestHandler.poll(pollingUrl, logger)
-
   if (!isPollable(spineResponse)) {
     return spineResponse
   }
 
-  if (new Date().getTime() > endTime) {
+  const newDelay = Math.min(delay * 2, 5000)
+  if (new Date().getTime() + newDelay > endTime) {
     return {
       body: {
         resourceType: "OperationOutcome",
@@ -186,7 +186,5 @@ async function pollForResponse(
       statusCode: 504
     }
   }
-
-  const newDelay = Math.min(delay * 2, 5000)
   return pollForResponse(spineResponse.pollingUrl || pollingUrl, newDelay, endTime, logger)
 }
