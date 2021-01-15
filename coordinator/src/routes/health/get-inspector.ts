@@ -101,8 +101,8 @@ export default [
       const duration = durationStr ? parseInt(durationStr) : 30000
       const profile = await runCpuProfiler(duration)
       const profileStr = JSON.stringify(profile)
-      const compressedCpuProfile = gzipSync(profileStr).toString("base64")
-      return h.response(compressedCpuProfile)
+      const compressedCpuProfile = gzipSync(profileStr)
+      return h.response(compressedCpuProfile).header("Content-Type", "application/gzip")
     }
   }
   // {
