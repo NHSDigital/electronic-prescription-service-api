@@ -126,7 +126,7 @@ export function validatingHandler(handler: Handler<fhir.Bundle>) {
 }
 
 function getPayload(request: Hapi.Request): unknown {
-  request.logger.info('Parsing request payload')
+  request.logger.info("Parsing request payload")
   if (Buffer.isBuffer(request.payload)) {
     return LosslessJson.parse(request.payload.toString())
   } else if (typeof request.payload === "string") {
@@ -152,4 +152,8 @@ function toFhirError(validation: Array<errors.ValidationError>): fhir.OperationO
     resourceType: "OperationOutcome",
     issue: validation.map(mapValidationErrorToOperationOutcomeIssue)
   }
+}
+
+export function sleep(durationMillis: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, durationMillis))
 }
