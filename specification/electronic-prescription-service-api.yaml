@@ -49,13 +49,15 @@ info:
     6. POST the signed prescription-order message to the `/$process-message` endpoint
 
     Example code to generate an XML-DSig: 
-    ```private fun toXmlSignature(digest: ByteArray, signature: ByteArray, certificate: ByteArray): ByteArray {
+    ```
+    private fun toXmlSignature(digest: ByteArray, signature: ByteArray, certificate: ByteArray): ByteArray {
          val digestStr = String(digest, StandardCharsets.UTF_8).replaceFirst("""<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">""", "<SignedInfo>")
          val signatureStr = Base64.getEncoder().encode(signature).toString(StandardCharsets.UTF_8)
          val x509CertificateStr = Base64.getEncoder().encode(certificate).toString(StandardCharsets.UTF_8)
          val xmlSignature = """<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">$digestStr<SignatureValue>$signatureStr</SignatureValue><KeyInfo><X509Data><X509Certificate>$x509CertificateStr</X509Certificate></X509Data></KeyInfo></Signature>"""
          return xmlSignature.toByteArray(StandardCharsets.UTF_8)
-     }```
+     }
+    ```
 
     To cancel a prescription:
     1. POST a [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update) to the `/$process-message` endpoint
