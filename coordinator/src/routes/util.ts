@@ -103,9 +103,11 @@ export async function fhirValidation(
 export function validatingHandler(handler: Handler<fhir.Bundle>) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     if (request.headers["x-skip-validation"]) {
-      request.log("info", "Skipping call to FHIR validator")
+      request.logger.info("Skipping call to FHIR validator")
     } else {
+      request.logger.info("Making call to FHIR validator")
       const validatorResponseData = await fhirValidation(request.payload, request.headers)
+      request.logger.info("Received response from FHIR validator")
       const error = validatorResponseData.issue.find(issue => issue.severity === "error" || issue.severity === "fatal")
       if (error) {
         return responseToolkit.response(validatorResponseData).code(400)
@@ -124,6 +126,7 @@ export function validatingHandler(handler: Handler<fhir.Bundle>) {
 }
 
 function getPayload(request: Hapi.Request): unknown {
+  request.logger.info('Parsing request payload')
   if (Buffer.isBuffer(request.payload)) {
     return LosslessJson.parse(request.payload.toString())
   } else if (typeof request.payload === "string") {
