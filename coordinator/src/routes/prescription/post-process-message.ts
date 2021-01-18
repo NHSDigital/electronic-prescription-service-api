@@ -15,7 +15,7 @@ export default [
       async (requestPayload: Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         request.logger.info("Building Spine request")
         const spineRequest = translator.convertFhirMessageToSpineRequest(requestPayload)
-        request.logger.info({"audit": createHash(JSON.stringify(requestPayload))})
+        request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(requestPayload))})
         request.logger.info("Awaiting response")
         const spineResponse = await requestHandler.send(spineRequest, request.logger)
         return handleResponse(request, spineResponse, responseToolkit)

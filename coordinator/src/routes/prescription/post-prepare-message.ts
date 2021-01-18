@@ -19,8 +19,8 @@ export default [
         const contentType = isSmokeTest ? CONTENT_TYPE_JSON : CONTENT_TYPE_FHIR
         request.logger.info("Encoding HL7V3 signature fragments")
         const response = translator.convertFhirMessageToSignedInfoMessage(requestPayload)
-        request.logger.info({"audit": createHash(JSON.stringify(requestPayload))})
-        request.logger.info({"audit": response})
+        request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(requestPayload))})
+        request.log("audit",  {"PrepareEndpointResponse": response})
         return responseToolkit.response(response).code(200).header("Content-Type", contentType)
       }
     )
