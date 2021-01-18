@@ -48,15 +48,19 @@ info:
     5. add the `Provenance` to the prescription-order message
     6. POST the signed prescription-order message to the `/$process-message` endpoint
 
+    To generate an XML-DSig: 
+    1. get the encoded prescription data from the `$/prepare` endpoint of the EPS API
+    2. get the signature and certificate from the `/SignatureResponse` endpoint of the Signing Service
+    3. assemble an XML-DSig (javascript example seen below)
+
     Example code to generate an XML-DSig: 
-    ```
-    private fun toXmlSignature(digest: ByteArray, signature: ByteArray, certificate: ByteArray): ByteArray {
-         val digestStr = String(digest, StandardCharsets.UTF_8).replaceFirst("""<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">""", "<SignedInfo>")
-         val signatureStr = Base64.getEncoder().encode(signature).toString(StandardCharsets.UTF_8)
-         val x509CertificateStr = Base64.getEncoder().encode(certificate).toString(StandardCharsets.UTF_8)
-         val xmlSignature = """<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">$digestStr<SignatureValue>$signatureStr</SignatureValue><KeyInfo><X509Data><X509Certificate>$x509CertificateStr</X509Certificate></X509Data></KeyInfo></Signature>"""
-         return xmlSignature.toByteArray(StandardCharsets.UTF_8)
-     }
+    ```javascript
+      function toXmlSignature(digest: string, signature: string, certificate: string): string {
+        const decodedDigest = Buffer.from(digest, "base64").toString("utf-8") 
+        const digestWithoutNamespace = decodedDigest.replace("<SignedInfo xmlns=\"http://www.w3.org/2000/09/xmldsig#\">", "<SignedInfo>")
+        const xmlSignature = `<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">${digestWithoutNamespace}<SignatureValue>${signature}</SignatureValue><KeyInfo><X509Data><X509Certificate>${certificate}</X509Certificate></X509Data></KeyInfo></Signature>`
+        return Buffer.from(xmlSignature, "utf-8").toString("base64")
+      }
     ```
 
     To cancel a prescription:
