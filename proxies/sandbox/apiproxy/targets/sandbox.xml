@@ -7,14 +7,7 @@
     <Response/>
   </PostFlow>
   <PreFlow name="PreFlow">
-    <Request>
-      <Step>
-        <Name>Quota</Name>
-      </Step>
-      <Step>
-        <Name>SpikeArrest</Name>
-      </Step>
-    </Request>
+    <Request/>
     <Response>
       <Step>
         <Name>AssignMessage.AddCors</Name>
