@@ -20,7 +20,7 @@ export default [
         request.logger.info("Encoding HL7V3 signature fragments")
         const response = translator.convertFhirMessageToSignedInfoMessage(requestPayload)
         request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(requestPayload))})
-        request.log("audit",  {"PrepareEndpointResponse": response})
+        request.log("audit", {"PrepareEndpointResponse": response})
         return responseToolkit.response(response).code(200).header("Content-Type", contentType)
       }
     )
