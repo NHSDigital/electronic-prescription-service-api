@@ -10,7 +10,7 @@ export default [
       let validator = false
 
       try {
-        request.logger.info('Checking validator status')
+        request.logger.info("Checking validator status")
         const response = await axios.get<string>(`${VALIDATOR_HOST}/_status`, {timeout: 2})
 
         if (response.status == 200 && response.data == "Validator is alive") {
