@@ -37,14 +37,31 @@ info:
     ## Digital signatures
     Electronic prescription messages are digitally signed to protect against tampering and to prevent repudiation. While the messages themselves are FHIR-based, for reasons of backwards compatibility, the signatures must be represented in HL7 V3 format. To make this easier, you can POST a prescription to the `/$prepare` endpoint to receive exactly the HL7 V3 fragments which need to be signed to conform to the specification.
 
-    To generate a signature for your prescription, you can use the digital signature service. To access the service, [contact us](https://digital.nhs.uk/developer/help-and-support).
+    To generate a signature for your prescription, you can use the Signing Service. To access the service, [contact us](https://digital.nhs.uk/developer/help-and-support).
 
     ## Using this API
     To create a prescription:
-    1. POST a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) to the `/$prepare` endpoint
-    2. sign the response and put the result in a `Provenance` resource
-    3. add the `Provenance` to the prescription-order message
-    4. POST the signed prescription-order message to the `/$process-message` endpoint
+    1. POST a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) to the `/$prepare` endpoint to get the encoded prescription data that requires a signature
+    2. sign the encoded prescription data using the Signing Service to get the signed prescription data
+    3. generate an XML-DSig using the signed prescription data (see below)
+    4. put the XML-DSig in a `Provenance` resource
+    5. add the `Provenance` to the prescription-order message
+    6. POST the signed prescription-order message to the `/$process-message` endpoint
+
+    To generate an XML-DSig: 
+    1. get the encoded prescription data from the `$/prepare` endpoint of the EPS API
+    2. get the signature and certificate from the `/SignatureResponse` endpoint of the Signing Service
+    3. assemble an XML-DSig (javascript example seen below)
+
+    Example code to generate an XML-DSig: 
+    ```javascript
+      function toXmlSignature(digest: string, signature: string, certificate: string): string {
+        const decodedDigest = Buffer.from(digest, "base64").toString("utf-8") 
+        const digestWithoutNamespace = decodedDigest.replace("<SignedInfo xmlns=\"http://www.w3.org/2000/09/xmldsig#\">", "<SignedInfo>")
+        const xmlSignature = `<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">${digestWithoutNamespace}<SignatureValue>${signature}</SignatureValue><KeyInfo><X509Data><X509Certificate>${certificate}</X509Certificate></X509Data></KeyInfo></Signature>`
+        return Buffer.from(xmlSignature, "utf-8").toString("base64")
+      }
+    ```
 
     To cancel a prescription:
     1. POST a [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update) to the `/$process-message` endpoint
@@ -57,6 +74,7 @@ info:
     ## Related APIs
     The following APIs also give access to the Electronic Prescription Service:
     - [Electronic Prescription Service (HL7 V3) API](https://data.developer.nhs.uk/dms/mim/4.2.00/Index.htm) - use this if you want to use functions that are not yet available on the FHIR API
+    - [Signing Service](https://digital.nhs.uk/developer/api-catalogue/signing-service) - use this to digitally sign a prescription
     - [Prescription Tracker API](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to obtain information about a patient’s prescriptions
 
     ## API status and roadmap
