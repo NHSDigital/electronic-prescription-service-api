@@ -131,9 +131,8 @@ check-licenses:
 ## Tools
 
 # Example:
-# make api_base_url=https://internal-dev-sandbox.api.service.nhs.uk/electronic-prescriptions-pr-331 update-prescriptions
+# make api_base_url=https://internal-dev-sandbox.api.service.nhs.uk/electronic-prescriptions-pr-333 update-prescriptions
 update-prescriptions:
-	# Requires make run-coordinator and make run-validator in separate shells
 	cd scripts && poetry run python update_prescriptions.py $(api_base_url)
 
 #sign-prescriptions:

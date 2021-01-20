@@ -16,6 +16,7 @@ from docopt import docopt
 
 examples_root_dir = "../models/examples/"
 
+
 def generate_short_form_id():
     """Create R2 (short format) Prescription ID
     Build the prescription ID and add the required checkdigit.
@@ -87,7 +88,9 @@ def derive_prepare_response_path(prepare_request_path):
     return f'{example_dir}/{number}-Prepare-Response-{status_code_and_ext}'
 
 
-def update_process_examples(api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on, signature_time):
+def update_process_examples(
+    api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on, signature_time
+):
     process_request_path_pattern = derive_process_request_path_pattern(prepare_request_path)
     for process_request_path in glob.iglob(process_request_path_pattern):
         with open(process_request_path) as f:
@@ -140,13 +143,15 @@ def update_examples(api_base_url):
             api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on
         )
         update_process_examples(
-            api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on, signature_time
+            api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on,
+            signature_time
         )
 
 
 def main(arguments):
     arguments = docopt(__doc__, version="0")
     update_examples(arguments["API_BASE_URL"])
+
 
 if __name__ == "__main__":
     main(arguments=docopt(__doc__, version="0"))
