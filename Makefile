@@ -68,6 +68,8 @@ install-node:
 install-hooks:
 	cp scripts/pre-commit .git/hooks/pre-commit
 
+## Build
+
 build-specification:
 	cd specification \
 	&& mkdir -p build/components/examples \
@@ -130,34 +132,34 @@ check-licenses:
 
 ## Tools
 
+ifdef pr
+pr-prefix = -pr-
+endif
+
+ifneq (,$(findstring sandbox,$(env)))
+pact-provider = nhsd-apim-eps-sandbox
+else
+pact-provider = nhsd-apim-eps
+endif
+
 # Example:
-# make api_base_url=https://internal-dev-sandbox.api.service.nhs.uk/electronic-prescriptions-pr-333 update-prescriptions
+# make env=internal-dev-sandbox update-prescriptions
+# make env=internal-dev-sandbox pr=333 update-prescriptions
 update-prescriptions:
-	cd scripts && poetry run python update_prescriptions.py $(api_base_url)
+	cd scripts && poetry run python update_prescriptions.py https://$(env).api.service.nhs.uk/electronic-prescriptions$(pr-prefix)$(pr)
 
 #sign-prescriptions:
 #
 
 # Example:
-# make pr=284 run-sandbox-smoke-tests
-run-sandbox-smoke-tests:
+# make env=internal-dev-sandbox pr=333 run-smoke-tests
+# make env=internal-dev pr=333 token=qvgsB5OR0QUKppg2pGbDagVMrj65 run-smoke-tests
+run-smoke-tests:
 	source .envrc \
-	&& export PACT_PROVIDER=nhsd-apim-eps-sandbox \
-	&& export APIGEE_ENVIRONMENT=internal-dev-sandbox \
-	&& export SERVICE_BASE_PATH=electronic-prescriptions-pr-$(pr) \
-	&& cd tests/e2e/pact \
-	&& make create-pacts \
-	&& make publish-pacts \
-	&& make verify-pacts
-
-# Example:
-# make pr=284 token=qvgsB5OR0QUKppg2pGbDagVMrj65 run-live-smoke-tests
-run-live-smoke-tests:
-	source .envrc \
-	&& export PACT_PROVIDER=nhsd-apim-eps \
-	&& export APIGEE_ENVIRONMENT=internal-dev \
+	&& export PACT_PROVIDER=$(pact-provider) \
+	&& export APIGEE_ENVIRONMENT=$(env) \
 	&& export APIGEE_ACCESS_TOKEN=$(token) \
-	&& export SERVICE_BASE_PATH=electronic-prescriptions-pr-$(pr) \
+	&& export SERVICE_BASE_PATH=electronic-prescriptions$(pr-prefix)$(pr) \
 	&& cd tests/e2e/pact \
 	&& make create-pacts \
 	&& make publish-pacts \
