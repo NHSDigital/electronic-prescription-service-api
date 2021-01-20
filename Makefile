@@ -132,6 +132,8 @@ check-licenses:
 
 ## Tools
 
+# Variables
+
 ifdef pr
 pr-prefix = -pr-
 endif
@@ -142,25 +144,35 @@ else
 pact-provider = nhsd-apim-eps
 endif
 
+export SERVICE_BASE_PATH=electronic-prescriptions$(pr-prefix)$(pr)
+export PACT_PROVIDER=$(pact-provider)
+export APIGEE_ENVIRONMENT=$(env)
+export APIGEE_ACCESS_TOKEN=$(token)
+
 # Example:
 # make env=internal-dev-sandbox update-prescriptions
 # make env=internal-dev-sandbox pr=333 update-prescriptions
 update-prescriptions:
 	cd scripts && poetry run python update_prescriptions.py https://$(env).api.service.nhs.uk/electronic-prescriptions$(pr-prefix)$(pr)
 
+# Example:
+# make sign-prescriptions
 #sign-prescriptions:
 #
+
+# Example:
+# make env=internal-dev-sandbox pr=333 create-smoke-tests
+# make env=internal-dev pr=333 token=qvgsB5OR0QUKppg2pGbDagVMrj65 create-smoke-tests
+create-smoke-tests:
+	source .envrc \
+	&& cd tests/e2e/pact \
+	&& make create-pacts \
+	&& make publish-pacts
 
 # Example:
 # make env=internal-dev-sandbox pr=333 run-smoke-tests
 # make env=internal-dev pr=333 token=qvgsB5OR0QUKppg2pGbDagVMrj65 run-smoke-tests
 run-smoke-tests:
 	source .envrc \
-	&& export PACT_PROVIDER=$(pact-provider) \
-	&& export APIGEE_ENVIRONMENT=$(env) \
-	&& export APIGEE_ACCESS_TOKEN=$(token) \
-	&& export SERVICE_BASE_PATH=electronic-prescriptions$(pr-prefix)$(pr) \
 	&& cd tests/e2e/pact \
-	&& make create-pacts \
-	&& make publish-pacts \
 	&& make verify-pacts
