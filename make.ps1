@@ -1,12 +1,14 @@
 # Run the command below to add make facade commands to powershell: 
 # . .\make.ps1
-
 function make() { 
     $make_args = $args[0..($args.count-2)]
     $make_command = $args[-1]
     Invoke-Expression ". .\make.ps1; $make_command $make_args" 
 }
 
+# Example:
+# make env=internal-dev-sandbox update-prescriptions
+# make env=internal-dev-sandbox pr=333 update-prescriptions
 function update-prescriptions() {
     foreach ($arg in $args) {
         $split_args = $arg.Split("=")
