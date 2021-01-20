@@ -6,19 +6,10 @@ export default [
     method: "GET",
     path: "/_metrics",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const cpu = osu.cpu
-      const cpuUsage = await cpu.usage()
-
-      const memory = osu.mem
-      const memoryInfo = await memory.info()
-
-      const netStat = osu.netstat
-      const netInfo = await netStat.stats()
-
       return h.response({
-        cpuUsage,
-        memoryInfo,
-        netInfo,
+        cpuUsage: await osu.cpu.usage(),
+        memoryInfo: await osu.mem.info(),
+        netInfo: await osu.netstat.stats(),
         commitId: process.env.COMMIT_ID
       })
     }
