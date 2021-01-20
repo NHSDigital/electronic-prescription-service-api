@@ -1,14 +1,20 @@
 #!/usr/bin/env python
 
+"""
+update_prescriptions.py
+
+Usage:
+  update_prescriptions.py API_BASE_URL
+"""
 import os
 import glob
 import json
 import uuid
 from datetime import datetime
 import requests
+from docopt import docopt
 
 examples_root_dir = "../models/examples/"
-
 
 def generate_short_form_id():
     """Create R2 (short format) Prescription ID
@@ -50,7 +56,7 @@ def replace_ids_and_timestamps(bundle_json, prescription_id, short_prescription_
                 signature["when"] = signature_time
 
 
-def update_prepare_examples(prepare_request_path, prescription_id, short_prescription_id, authored_on):
+def update_prepare_examples(api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on):
     with open(prepare_request_path) as f:
         prepare_request_json = json.load(f)
     replace_ids_and_timestamps(prepare_request_json, prescription_id, short_prescription_id, authored_on, None)
@@ -58,7 +64,7 @@ def update_prepare_examples(prepare_request_path, prescription_id, short_prescri
         json.dump(prepare_request_json, f, indent=2)
 
     prepare_response_json = requests.post(
-        'http://localhost:9000/$prepare',
+        api_base_url + '/$prepare',
         data=json.dumps(prepare_request_json),
         headers={'Content-Type': 'application/json'}
     ).json()
@@ -81,7 +87,7 @@ def derive_prepare_response_path(prepare_request_path):
     return f'{example_dir}/{number}-Prepare-Response-{status_code_and_ext}'
 
 
-def update_process_examples(prepare_request_path, prescription_id, short_prescription_id, authored_on, signature_time):
+def update_process_examples(api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on, signature_time):
     process_request_path_pattern = derive_process_request_path_pattern(prepare_request_path)
     for process_request_path in glob.iglob(process_request_path_pattern):
         with open(process_request_path) as f:
@@ -93,7 +99,7 @@ def update_process_examples(prepare_request_path, prescription_id, short_prescri
             json.dump(process_request_json, f, indent=2)
 
         convert_response_xml = requests.post(
-            'http://localhost:9000/$convert',
+            api_base_url + '/$convert',
             data=json.dumps(process_request_json),
             headers={'Content-Type': 'application/json'}
         ).text
@@ -123,7 +129,7 @@ def derive_convert_response_path(process_request_path):
     return f'{example_dir}/{number}-Convert-Response-{operation}-{status_code_and_xml_ext}'
 
 
-def update_examples():
+def update_examples(api_base_url):
     authored_on = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S+00:00')
 
     for prepare_request_path in find_prepare_request_paths():
@@ -131,11 +137,16 @@ def update_examples():
         short_prescription_id = generate_short_form_id()
 
         signature_time = update_prepare_examples(
-            prepare_request_path, prescription_id, short_prescription_id, authored_on
+            api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on
         )
         update_process_examples(
-            prepare_request_path, prescription_id, short_prescription_id, authored_on, signature_time
+            api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on, signature_time
         )
 
 
-update_examples()
+def main(arguments):
+    arguments = docopt(__doc__, version="0")
+    update_examples(arguments["API_BASE_URL"])
+
+if __name__ == "__main__":
+    main(arguments=docopt(__doc__, version="0"))

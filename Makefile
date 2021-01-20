@@ -130,9 +130,14 @@ check-licenses:
 
 ## Tools
 
+# Example:
+# make api_base_url=https://internal-dev-sandbox.api.service.nhs.uk/electronic-prescriptions-pr-331 update-prescriptions
 update-prescriptions:
 	# Requires make run-coordinator and make run-validator in separate shells
-	cd scripts && poetry run python update_prescriptions.py
+	cd scripts && poetry run python update_prescriptions.py $(api_base_url)
+
+#sign-prescriptions:
+#
 
 # Example:
 # make pr=284 run-sandbox-smoke-tests
@@ -146,6 +151,7 @@ run-sandbox-smoke-tests:
 	&& make publish-pacts \
 	&& make verify-pacts
 
+# Example:
 # make pr=284 token=qvgsB5OR0QUKppg2pGbDagVMrj65 run-live-smoke-tests
 run-live-smoke-tests:
 	source .envrc \
