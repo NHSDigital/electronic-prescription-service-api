@@ -39,7 +39,7 @@ def generate_short_form_id():
 
 
 def find_prepare_request_paths():
-    for filename in glob.iglob(examples_root_dir + '**/*Prepare-Request*.json', recursive=True):
+    for filename in glob.iglob(examples_root_dir + '**/*Prepare-Request*200_OK*.json', recursive=True):
         yield filename
 
 
