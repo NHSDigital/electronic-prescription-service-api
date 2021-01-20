@@ -10,6 +10,11 @@
           <Name>RaiseFault.403Forbidden</Name>
         </Step>
       </Request>
+      <Response>
+        <Step>
+          <Name>AssignMessage.SetStatusResponse</Name>
+        </Step>
+      </Response>
       <Condition>(proxy.pathsuffix MatchesPath "/_status") and ((request.verb = "GET") or (request.verb = "HEAD"))</Condition>
     </Flow>
     <Flow name="Default">
