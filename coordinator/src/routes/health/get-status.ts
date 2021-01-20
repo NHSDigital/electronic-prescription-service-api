@@ -1,6 +1,7 @@
 import Hapi from "@hapi/hapi"
 import axios from "axios"
 import {VALIDATOR_HOST} from "../util"
+
 async function checkValidatorStatus(request: Hapi.Request) {
   try {
     request.logger.info("Checking validator status")
@@ -24,11 +25,9 @@ export default [
     method: "GET",
     path: "/_status",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const validator = await checkValidatorStatus(request)
-
       return h.response({
         coordinator: true,
-        validator,
+        validator: await checkValidatorStatus(request),
         commitId: process.env.COMMIT_ID
       })
     }
