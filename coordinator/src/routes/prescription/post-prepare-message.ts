@@ -1,7 +1,7 @@
 import * as translator from "../../services/translation"
 import {Bundle} from "../../models/fhir/fhir-resources"
 import Hapi from "@hapi/hapi"
-import {validatingHandler} from "../util"
+import {createHash, validatingHandler} from "../util"
 
 const CONTENT_TYPE_FHIR = "application/fhir+json; fhirVersion=4.0"
 const CONTENT_TYPE_JSON = "application/json"
@@ -19,6 +19,8 @@ export default [
         const contentType = isSmokeTest ? CONTENT_TYPE_JSON : CONTENT_TYPE_FHIR
         request.logger.info("Encoding HL7V3 signature fragments")
         const response = translator.convertFhirMessageToSignedInfoMessage(requestPayload)
+        request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(requestPayload))})
+        request.log("audit", {"PrepareEndpointResponse": response})
         return responseToolkit.response(response).code(200).header("Content-Type", contentType)
       }
     )
