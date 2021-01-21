@@ -11,5 +11,6 @@ tests/e2e/postman/collections/electronic-prescription-service-collection.json
 .#*
 __pycache__/
 .envrc
+envrc.ps1
 .idea
 .vscode

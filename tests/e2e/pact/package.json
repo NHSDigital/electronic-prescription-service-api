@@ -14,12 +14,12 @@
   },
   "author": "NHS Digital",
   "license": "MIT",
-  "dependencies": {
-    "node-fetch": "^2.6.1"
+  "config": {
+    "pact_binary_location": ".",
+    "pact_do_not_track": true
   },
   "devDependencies": {
-    "@pact-foundation/pact": "^10.0.0-beta.16",
-    "@pact-foundation/pact-node": "10.9.7",
+    "@pact-foundation/pact": "10.0.0-beta.22",
     "@types/jest": "^26.0.0",
     "@types/lossless-json": "^1.0.0",
     "@types/node": "^14.0.13",

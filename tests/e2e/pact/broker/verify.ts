@@ -57,7 +57,10 @@ async function verify(): Promise<any> {
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyConvert(): Promise<any> {
-  endpoint = "convert"
+  endpoint = "convert-1"
+  sleepMs = 0
+  await verify().catch(verify).catch(verify)
+  endpoint = "convert-2"
   sleepMs = 0
   await verify().catch(verify).catch(verify)
 }
@@ -71,7 +74,10 @@ async function verifyPrepare(): Promise<any> {
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyProcess(): Promise<any> { 
-  endpoint = "process"
+  endpoint = "process-1"
+  sleepMs = 0
+  await verify().catch(verify).catch(verify)
+  endpoint = "process-2"
   sleepMs = 0
   await verify().catch(verify).catch(verify)
 }
