@@ -10,7 +10,7 @@
           <Name>RaiseFault.403Forbidden</Name>
         </Step>
       </Request>
-      <Condition>((proxy.pathsuffix MatchesPath "/_status") or (proxy.pathsuffix MatchesPath "/_metrics")) and ((request.verb = "GET") or (request.verb = "HEAD"))</Condition>
+      <Condition>((proxy.pathsuffix MatchesPath "/_status") or (proxy.pathsuffix MatchesPath "/_validatormetrics") or (proxy.pathsuffix MatchesPath "/_validatormetrics/**")) and ((request.verb = "GET") or (request.verb = "HEAD"))</Condition>
     </Flow>
     <Flow name="Default">
       <Request>
