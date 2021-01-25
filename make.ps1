@@ -36,8 +36,8 @@ function install-smoke-tests() {
 }
 
 # Example:
-# make env=internal-dev-sandbox pr=333 create-smoke-tests
-# make env=internal-dev pr=333 token=qvgsB5OR0QUKppg2pGbDagVMrj65 create-smoke-tests
+# make mode=sandbox create-smoke-tests
+# make mode=live create-smoke-tests
 function create-smoke-tests() {
     foreach ($arg in $args) {
         $split_args = $arg.Split("=")
@@ -49,11 +49,17 @@ function create-smoke-tests() {
         }
     }
     . ./envrc.ps1
-    $env:PACT_VERSION="electronic-prescriptions$pr_prefix$pr"
+    $env:PACT_VERSION="$env:USERNAME".replace(' ','')
     #$env:LOG_LEVEL="debug"
     Remove-Item Env:\LOG_LEVEL -ErrorAction SilentlyContinue
     cd tests/e2e/pact
-    if ($env.Indexof("sandbox")) {
+    Remove-Item './pact' -Recurse -ErrorAction SilentlyContinue
+    '..\..\..\models\examples' | Get-ChildItem -Recurse -File -Include *.json, *.xml | ForEach-Object {
+        if ($_.FullName) {
+            (Get-Content $_.FullName -Raw).Replace("`r`n","`n") | Set-Content $_.FullName -Force 
+        }
+    }
+    if ($mode -eq "sandbox") {
         npm run create-sandbox-pacts 
     }
     else {
@@ -77,16 +83,17 @@ function run-smoke-tests() {
         }
     }
     . ./envrc.ps1
-    if ($env.Indexof("sandbox")) {
+    if ($env -match "sandbox") {
         $provider_suffix="-sandbox"
     }
     $env:PACT_PROVIDER="nhsd-apim-eps$provider_suffix"
     $env:SERVICE_BASE_PATH="electronic-prescriptions$pr_prefix$pr"
-    $env:PACT_VERSION="electronic-prescriptions$pr_prefix$pr"
+    $env:PACT_VERSION="$env:USERNAME".replace(' ','')
+    $env:APIGEE_ACCESS_TOKEN="$token"
     $env:PACT_PROVIDER_URL="https://$env.api.service.nhs.uk/$env:SERVICE_BASE_PATH"
     #$env:LOG_LEVEL="debug"
     Remove-Item Env:\LOG_LEVEL -ErrorAction SilentlyContinue
     cd tests/e2e/pact
-	npm run verify-pacts
+	npm run verify-pacts | Out-String -Stream | Select-String -Pattern "is not authenticated" -NotMatch | Select-String -Pattern "is authenticated" -NotMatch
     cd ../../..
 }
