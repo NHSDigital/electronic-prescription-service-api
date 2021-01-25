@@ -14,7 +14,8 @@ const prepareRequestFiles = exampleFiles.filter(exampleFile =>
 			&& prepareResponseFile.number === exampleFile.number))
 
 const conventionBasedPrepareExamples: PrepareCase[] = prepareResponseFiles.map(prepareResponseFile => new PrepareCase(
-	path.parse(path.relative(path.join(__dirname, examplesRootPath), prepareResponseFile.path)).dir.replace(/\//g, " ") + " "
+	path.parse(path.relative(path.join(__dirname, examplesRootPath), prepareResponseFile.path))
+		.dir.replace(/\//g, " ").replace(/\\/g, " ") + " "
 		+ `${prepareResponseFile.number} ${prepareResponseFile.statusText}`,
 	prepareRequestFiles.find(prepareRequestFile =>
 		prepareRequestFile.dir === prepareResponseFile.dir
