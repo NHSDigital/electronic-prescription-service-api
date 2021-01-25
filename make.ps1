@@ -94,6 +94,17 @@ function run-smoke-tests() {
     #$env:LOG_LEVEL="debug"
     Remove-Item Env:\LOG_LEVEL -ErrorAction SilentlyContinue
     cd tests/e2e/pact
-	npm run verify-pacts | Out-String -Stream | Select-String -Pattern "is not authenticated" -NotMatch | Select-String -Pattern "is authenticated" -NotMatch
+    npm run verify-pacts | `
+        Out-String -Stream | `
+        Select-String -Pattern "is not authenticated" -NotMatch | `
+        Select-String -Pattern "is authenticated" -NotMatch
+	npm run verify-pacts | `
+        Out-String -Stream | `
+        Select-String -Pattern "is not authenticated" -NotMatch | `
+        Select-String -Pattern "is authenticated" -NotMatch | ` 
+        Select-String -Pattern "Verifying a pact between" | `
+        % { `
+            "https://nhsd-pact.herokuapp.com/matrix/provider/nhsd-apim-eps$provider_suffix%2B"+ $_.toString().split("+")[2] + "%2B$env:PACT_VERSION/consumer/nhsd-apim-eps-test-client%2B$env:PACT_VERSION"
+        }
     cd ../../..
 }
