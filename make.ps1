@@ -23,11 +23,10 @@ function update-prescriptions() {
 }
 
 # Example:
-# make env=internal-dev-sandbox pr=333 create-smoke-tests
-# make env=internal-dev pr=333 token=qvgsB5OR0QUKppg2pGbDagVMrj65 create-smoke-tests
+# make install-smoke-tests
 function install-smoke-tests() {
     cd tests/e2e/pact
-    #rm -rf pact
+    Remove-Item './pact' -Recurse -ErrorAction SilentlyContinue
     npm install -g jest
     npm install -g node-gyp
     npm install -g node-pre-gyp
@@ -70,6 +69,7 @@ function create-smoke-tests() {
 }
 
 # Example:
+# make env=internal-dev-sandbox run-smoke-tests
 # make env=internal-dev-sandbox pr=333 run-smoke-tests
 # make env=internal-dev pr=333 token=qvgsB5OR0QUKppg2pGbDagVMrj65 run-smoke-tests
 function run-smoke-tests() {
