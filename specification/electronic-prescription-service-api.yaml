@@ -19,6 +19,7 @@ info:
     * create a secondary care (outpatient) prescription
     * cancel a secondary care (outpatient) prescription
     * evaluate prescription signing client implementations
+    * release a prescription for dispensing
 
     You cannot currently use this API to:
     * prepare a primary care prescription for signing
@@ -28,7 +29,6 @@ info:
     * prepare a tertiary care prescription for signing
     * create a tertiary care prescription
     * check the status of a prescription
-    * release a prescription for dispensing
     * claim for a dispensed prescription
     * track prescriptions or check a prescription's status
 
@@ -40,7 +40,7 @@ info:
     To generate a signature for your prescription, you can use the Signing Service. To access the service, [contact us](https://digital.nhs.uk/developer/help-and-support).
 
     ## Using this API
-    To create a prescription:
+    ### To create a prescription:
     1. POST a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) to the `/$prepare` endpoint to get the encoded prescription data that requires a signature
     2. sign the encoded prescription data using the Signing Service to get the signed prescription data
     3. generate an XML-DSig using the signed prescription data (see below)
@@ -63,8 +63,12 @@ info:
       }
     ```
 
-    To cancel a prescription:
+    ### To cancel a prescription:
     1. POST a [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update) to the `/$process-message` endpoint
+    
+    ### To dispense a prescription: 
+    1. POST a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to the `/Task/$release` endpoint to mark the prescription as released
+    2. POST a [prescription-dispense-notification](https://simplifier.net/guide/DigitalMedicines/prescription-dispense) message to the `/dispense/$process-message` endpoint to inform SPINE of a partial/successful dispense
     
     ## Legal Use
     This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
@@ -327,6 +331,69 @@ paths:
                 example:
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
+  /Task/$release:
+    post:
+      operationId: release
+      summary: Send a prescription release request to EPS
+      description: |
+        ## Overview
+        Use this endpoint to send a prescription release request to EPS.
+
+        This will gather a set of prescriptions based on the information passed to the endpoint: 
+        * to gather prescription information for an entire pharmacy, send owner information
+        * to gather prescription information for a specific prescription, send the group identifier for that prescription
+      tags: 
+        - dispensing
+      requestBody: 
+        required: true
+        content: 
+          application/json: 
+            examples: 
+              group-identifier: 
+                value:
+                  $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Release-Request-200_OK.json
+              owner: 
+                value:
+                  $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/2-Release-Request-200_OK.json
+      responses: 
+        '200': 
+          description: Successfully released a set of prescriptions
+          content:
+            application/fhir+json:
+              examples:
+                group-identifier: 
+                  value: 'Unknown'
+                owner: 
+                  value: 'Unknown'
+  /dispense/$process-message:
+    post:
+      operationId: dispense
+      summary: Send a prescription dispense request to EPS
+      description: |
+        ## Overview
+        Use this endpoint to send a prescription dispense request to EPS.
+      tags:
+        - dispensing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            examples:
+              example:
+                value:
+                  $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Dispense-Request-200_OK.json
+      responses:
+        '200':
+          description: Successfully released a set of prescriptions
+          content:
+            application/fhir+json:
+              examples:
+                example:
+                  value:
+                    $ref: components/schemas/OperationOutcome-2XX.yaml
+              
+              
+        
 components:
   schemas:
     Bundle:

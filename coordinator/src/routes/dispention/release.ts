@@ -19,7 +19,8 @@ export default [
           id: messageId,
           identifier: {
             value: messageId
-          }
+          },
+          entry: []
           //TODO: find reasonable task response
         }
         return responseToolkit.response(sandboxResponse)
