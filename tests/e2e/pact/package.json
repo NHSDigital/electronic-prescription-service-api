@@ -15,7 +15,6 @@
   "author": "NHS Digital",
   "license": "MIT",
   "config": {
-    "pact_binary_location": ".",
     "pact_do_not_track": true
   },
   "devDependencies": {

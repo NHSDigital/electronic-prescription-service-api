@@ -8,9 +8,16 @@ install:
 test:
 	npm run test
 
+space :=
+space += 
+mode = $(mode) || $(APIGEE_ENVIRONMENT)
+ifndef PACT_VERSION
+PACT_VERSION = $(PACT_VERSION) || $(subst $(space),,$(USERNAME))
+endif
+
 create-pacts:
 	rm -rf pact
-ifeq (sandbox, $(findstring sandbox,$(APIGEE_ENVIRONMENT)))
+ifeq (sandbox, $(findstring sandbox,$(mode)))
 	npm run create-sandbox-pacts
 else
 	npm run create-live-pacts
