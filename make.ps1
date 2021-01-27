@@ -22,6 +22,11 @@ function update-prescriptions() {
     ./scripts/update-prescriptions.ps1
 }
 
+
+function sign-prescriptions() {
+    .\sign\SigningHarness.exe
+}
+
 # Example:
 # make install-smoke-tests
 function install-smoke-tests() {
@@ -98,14 +103,7 @@ function run-smoke-tests() {
     npm run verify-pacts | `
         Out-String -Stream | `
         Select-String -Pattern "is not authenticated" -NotMatch | `
-        Select-String -Pattern "is authenticated" -NotMatch
-	npm run verify-pacts | `
-        Out-String -Stream | `
-        Select-String -Pattern "is not authenticated" -NotMatch | `
-        Select-String -Pattern "is authenticated" -NotMatch | ` 
-        Select-String -Pattern "Verifying a pact between" | `
-        % { `
-            "https://nhsd-pact.herokuapp.com/matrix/provider/nhsd-apim-eps$provider_suffix%2B"+ $_.toString().split("+")[2] + "%2B$env:PACT_VERSION/consumer/nhsd-apim-eps-test-client%2B$env:PACT_VERSION"
-        }
+        Select-String -Pattern "is authenticated" -NotMatch | `
+        % { $_.toString() -replace 'Verifying a pact between [^\+]*\+[^\+]*\+([^\+]*).*$', "`$0 -> https://nhsd-pact.herokuapp.com/matrix/provider/nhsd-apim-eps$provider_suffix%2B`$1%2B$env:PACT_VERSION/consumer/nhsd-apim-eps-test-client%2B$env:PACT_VERSION" }
     cd ../../..
 }
