@@ -20,6 +20,11 @@ function update-prescriptions() {
         }
     }
     ./scripts/update-prescriptions.ps1
+    '.\models\examples' | Get-ChildItem -Recurse -File -Include *.json, *.xml | ForEach-Object {
+        if ($_.FullName) {
+            (Get-Content $_.FullName -Raw).Replace("`r`n","`n") | Set-Content $_.FullName -Force 
+        }
+    }
 }
 
 
@@ -58,11 +63,6 @@ function create-smoke-tests() {
     Remove-Item Env:\LOG_LEVEL -ErrorAction SilentlyContinue
     cd tests/e2e/pact
     Remove-Item './pact' -Recurse -ErrorAction SilentlyContinue
-    '..\..\..\models\examples' | Get-ChildItem -Recurse -File -Include *.json, *.xml | ForEach-Object {
-        if ($_.FullName) {
-            (Get-Content $_.FullName -Raw).Replace("`r`n","`n") | Set-Content $_.FullName -Force 
-        }
-    }
     if ($mode -eq "sandbox") {
         npm run create-sandbox-pacts 
     }
