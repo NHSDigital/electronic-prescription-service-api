@@ -222,7 +222,7 @@ export interface Parameter {
   name: string
 }
 
-interface StringParameter extends Parameter {
+export interface StringParameter extends Parameter {
   valueString: string
 }
 
