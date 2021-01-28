@@ -4,7 +4,11 @@ import * as TestResources from "../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
 import * as fhir from "../../../src/models/fhir/fhir-resources"
 import {InvalidValueError} from "../../../src/models/errors/processing-errors"
-import {convertHL7V3DateTimeToIsoDateTimeString, isTruthy} from "../../../src/services/translation/common"
+import {
+  convertHL7V3DateTimeToIsoDateTimeString,
+  getStringParameterByName,
+  isTruthy
+} from "../../../src/services/translation/common"
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {xmlTest} from "../../resources/test-helpers"
 import {ElementCompact} from "xml-js"
@@ -34,8 +38,7 @@ describe("convertFhirMessageToSignedInfoMessage", () => {
   test.each(cases)(
     "produces expected result for %s",
     (desc: string, message: fhir.Bundle, expectedParameters: fhir.Parameters) => {
-      const timestamp = expectedParameters.parameter.find(p => p.name === "timestamp") as fhir.StringParameter
-      mockTime.value = timestamp.valueString
+      mockTime.value = getStringParameterByName(expectedParameters, "timestamp").valueString
       const actualParameters = convertFhirMessageToSignedInfoMessage(message)
       expect(actualParameters).toEqual(expectedParameters)
     }

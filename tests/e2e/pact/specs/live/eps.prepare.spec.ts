@@ -5,6 +5,7 @@ import { Bundle, Parameters } from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import { createUnauthorisedInteraction } from "./eps-auth"
 import supertest from "supertest"
+import {getStringParameterByName} from "../../../../../coordinator/src/services/translation/common"
 
 jestpact.pactWith(
   {
@@ -60,11 +61,11 @@ jestpact.pactWith(
               parameter: [
                 {
                   name: "digest",
-                  valueString: Matchers.like(outputMessage.parameter.find(p => p.name === "digest").valueString)
+                  valueString: Matchers.like(getStringParameterByName(outputMessage, "digest").valueString)
                 },
                 {
                   name: "timestamp",
-                  valueString: Matchers.like(outputMessage.parameter.find(p => p.name === "timestamp").valueString)
+                  valueString: Matchers.like(getStringParameterByName(outputMessage, "timestamp").valueString)
                 },
                 {
                   name: "algorithm",
