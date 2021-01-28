@@ -8,7 +8,8 @@ resources:
     - repository: common
       type: github
       name: NHSDigital/api-management-utils
-      ref: refs/heads/edge
+      #TODO - REVERT AFTER TESTING
+      ref: refs/heads/master
       endpoint: NHSDigital
   pipelines:
   - pipeline: build_pipeline
