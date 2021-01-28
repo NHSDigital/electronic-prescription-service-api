@@ -5,7 +5,7 @@ import { Bundle, Parameters } from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import { createUnauthorisedInteraction } from "./eps-auth"
 import supertest from "supertest"
-import {getStringParameterByName} from "../../../../../coordinator/src/services/translation/common"
+import {getStringParameterByName} from "../../resources/common"
 
 jestpact.pactWith(
   {
