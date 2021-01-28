@@ -357,13 +357,11 @@ paths:
                   $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/2-Release-Request-200_OK.json
       responses:
         '200':
-          description: Successfully released a set of prescriptions
+          description: Successfully dispensed a prescription
           content:
             application/fhir+json:
               examples:
-                group-identifier:
-                  value: 'Unknown'
-                owner:
+                example:
                   value: 'Unknown'
   /dispense/$process-message:
     post:
@@ -387,11 +385,10 @@ paths:
           description: Successfully released a set of prescriptions
           content:
             application/fhir+json:
-              schema:
-                $ref: components/schemas/OperationOutcome-2XX.yaml
               examples:
                 example: 
-                  value: 'Unknown'
+                  value: 
+                    $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Process-Response-200_OK.json
 components:
   schemas:
     Bundle:
