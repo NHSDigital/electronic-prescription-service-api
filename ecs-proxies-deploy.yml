@@ -2,7 +2,7 @@ docker_service_cpu: 1024
 docker_service_memory: 2048
 docker_service_autoscaling:
     service_metric: ALBRequestCountPerTarget
-    target_value: 1800
+    target_value: 900
 docker_service_health_check_grace_period_seconds: 180
 docker_service:
   - name: eps-coordinator
