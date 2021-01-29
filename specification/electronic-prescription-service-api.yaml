@@ -68,7 +68,7 @@ info:
 
     ### To dispense a prescription: 
     1. POST a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to the `/Task/$release` endpoint to mark the prescription as released
-    2. POST a [prescription-dispense-notification](https://simplifier.net/guide/DigitalMedicines/prescription-dispense) message to the `/dispense/$process-message` endpoint to inform SPINE of a partial/successful dispense
+    2. POST a [prescription-dispense-notification](https://simplifier.net/guide/DigitalMedicines/prescription-dispense) message to the `/$process-message` endpoint to inform SPINE of a partial/successful dispense
 
     ## Legal Use
     This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
@@ -288,12 +288,14 @@ paths:
       summary: Send a prescription message to EPS
       description: |
         ## Overview
-        Use this endpoint to send a prescription message to EPS.
+        Use this endpoint to send a message to EPS.
 
         The effect of calling this endpoint depends on the type of the message, which is determined by the `MessageHeader` resource:
         * to create a prescription, send a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order). The message must include a digital signature.
-        * to cancel a prescription, send a [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update)
+        * to cancel a prescription, send a [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update).
+        * to notify EPS of a partial/successful dispense, send a [dispense-notification message](https://simplifier.net/guide/DigitalMedicines/prescription-dispense).
       tags:
+        - dispensing
         - prescribing
       requestBody:
         required: true
@@ -303,9 +305,12 @@ paths:
             schema:
               $ref: components/schemas/Bundle.yaml
             examples:
-              success:
+              prescribe-success:
                 value:
                   $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Process-Request-Send-200_OK.json
+              dispense-success:
+                value:
+                  $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Dispense-Request-200_OK.json
               patient-deceased:
                 value:
                   $ref: components/examples/example-b-spine-error-patient-deceased/SendRequest-FhirMessageSigned.json
@@ -339,9 +344,9 @@ paths:
         ## Overview
         Use this endpoint to send a prescription release request to EPS.
 
-        This will gather a set of prescriptions based on the information passed to the endpoint: 
-        * to gather prescription information for an entire pharmacy, send owner information
-        * to gather prescription information for a specific prescription, send the group identifier for that prescription
+        This will return a set of prescriptions based on the information passed to the endpoint: 
+        * to acquire prescription information for an entire pharmacy, send owner information
+        * to acquire prescription information for a specific prescription, send the group identifier for that prescription
       tags:
         - dispensing
       requestBody:
@@ -363,32 +368,6 @@ paths:
               examples:
                 example:
                   value: 'Unknown'
-  /dispense/$process-message:
-    post:
-      operationId: dispense
-      summary: Send a prescription dispense request to EPS
-      description: |
-        ## Overview
-        Use this endpoint to send a prescription dispense request to EPS.
-      tags:
-        - dispensing
-      requestBody:
-        required: true
-        content:
-          application/json:
-            examples:
-              example:
-                value:
-                  $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Dispense-Request-200_OK.json
-      responses:
-        '200':
-          description: Successfully released a set of prescriptions
-          content:
-            application/fhir+json:
-              examples:
-                example: 
-                  value: 
-                    $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Process-Response-200_OK.json
 components:
   schemas:
     Bundle:
