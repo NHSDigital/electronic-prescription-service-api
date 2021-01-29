@@ -22,20 +22,20 @@ const httpsAgent = new https.Agent({
 export class LiveRequestHandler implements RequestHandler {
   private readonly spineEndpoint: string
   private readonly spinePath: string
-  private readonly ebXMLBuilder: (spineRequest: SpineRequest) => string
+  private readonly ebXMLBuilder: (spineRequest: SpineRequest, xRequestIdHeader: string) => string
 
   constructor(
     spineEndpoint: string = null,
     spinePath: string = null,
-    ebXMLBuilder: (spineRequest: SpineRequest) => string = null
+    ebXMLBuilder: (spineRequest: SpineRequest, xRequestIdHeader: string) => string = null
   ) {
     this.spineEndpoint = spineEndpoint || SPINE_ENDPOINT
     this.spinePath = spinePath || SPINE_PATH
     this.ebXMLBuilder = ebXMLBuilder || addEbXmlWrapper
   }
 
-  async send(spineRequest: SpineRequest, logger: Logger): Promise<SpineResponse<unknown>> {
-    const wrappedMessage = this.ebXMLBuilder(spineRequest)
+  async send(spineRequest: SpineRequest, xRequestIdHeader: string, logger: Logger): Promise<SpineResponse<unknown>> {
+    const wrappedMessage = this.ebXMLBuilder(spineRequest, xRequestIdHeader)
     const address = this.getSpineUrlForPrescription()
 
     logger.info(`Attempting to send message to ${address}`)
