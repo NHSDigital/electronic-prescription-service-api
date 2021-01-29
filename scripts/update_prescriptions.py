@@ -44,17 +44,26 @@ def find_prepare_request_paths():
 
 
 def replace_ids_and_timestamps(bundle_json, prescription_id, short_prescription_id, authored_on, signature_time):
-    for entry in bundle_json['entry']:
+    short_prescription_id_split = short_prescription_id.split("-")
+    short_prescription_id_first = short_prescription_id_split[0]
+    short_prescription_id_middle = ""
+    short_prescription_id_last = short_prescription_id_split[2]
+    
+    for entry in reversed(bundle_json['entry']):
         resource = entry["resource"]
+        if resource["resourceType"] == "Provenance":
+            for signature in resource["signature"]:
+                signature["when"] = signature_time
+        if resource["resourceType"] == "HealthcareService":
+            for identifier in resource["identifier"]:
+                organisationCode = identifier["value"]
+                short_prescription_id_middle = organisationCode
         if resource["resourceType"] == "MedicationRequest":
-            resource["groupIdentifier"]["value"] = short_prescription_id
+            resource["groupIdentifier"]["value"] = short_prescription_id_first + "-" + short_prescription_id_middle + "-" + short_prescription_id_last
             for extension in resource["groupIdentifier"]["extension"]:
                 if extension["url"] == "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId":
                     extension["valueIdentifier"]["value"] = prescription_id
             resource["authoredOn"] = authored_on
-        if resource["resourceType"] == "Provenance":
-            for signature in resource["signature"]:
-                signature["when"] = signature_time
 
 
 def update_prepare_examples(api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on):
