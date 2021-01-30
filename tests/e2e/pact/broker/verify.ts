@@ -24,8 +24,6 @@ async function verify(): Promise<any> {
       : process.env.PACT_VERSION
     const verifier =  new VerifierV3({
       publishVerificationResult: !isLocal,
-      /*pactBrokerUrl: isLocal ? undefined : process.env.PACT_BROKER_NEXT_URL,
-      pactBrokerToken: process.env.PACT_BROKER_NEXT_TOKEN,*/
       pactBrokerUrl: isLocal ? undefined : process.env.PACT_BROKER_URL,
       pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
       pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
@@ -60,10 +58,7 @@ async function verify(): Promise<any> {
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyConvert(): Promise<any> {
-  endpoint = "convert-1"
-  sleepMs = 0
-  await verify().catch(verify).catch(verify)
-  endpoint = "convert-2"
+  endpoint = "convert"
   sleepMs = 0
   await verify().catch(verify).catch(verify)
 }
@@ -77,10 +72,7 @@ async function verifyPrepare(): Promise<any> {
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyProcess(): Promise<any> { 
-  endpoint = "process-1"
-  sleepMs = 0
-  await verify().catch(verify).catch(verify)
-  endpoint = "process-2"
+  endpoint = "process"
   sleepMs = 0
   await verify().catch(verify).catch(verify)
 }

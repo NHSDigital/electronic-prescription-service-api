@@ -45,9 +45,9 @@ def find_prepare_request_paths():
 
 def replace_ids_and_timestamps(bundle_json, prescription_id, short_prescription_id, authored_on, signature_time):
     short_prescription_id_split = short_prescription_id.split("-")
-    short_prescription_id_first = short_prescription_id_split[0]
-    short_prescription_id_middle = ""
-    short_prescription_id_last = short_prescription_id_split[2]
+    spid_first = short_prescription_id_split[0]
+    spid_middle = ""
+    spid_last = short_prescription_id_split[2]
 
     for entry in reversed(bundle_json['entry']):
         resource = entry["resource"]
@@ -57,10 +57,9 @@ def replace_ids_and_timestamps(bundle_json, prescription_id, short_prescription_
         if resource["resourceType"] == "HealthcareService":
             for identifier in resource["identifier"]:
                 organisationCode = identifier["value"]
-                short_prescription_id_middle = organisationCode
+                spid_middle = organisationCode
         if resource["resourceType"] == "MedicationRequest":
-            resource["groupIdentifier"]["value"] =
-                f'{short_prescription_id_first}-{short_prescription_id_middle}-{short_prescription_id_last}'
+            resource["groupIdentifier"]["value"] = f'{spid_first}-{spid_middle}-{spid_last}'
             for extension in resource["groupIdentifier"]["extension"]:
                 if extension["url"] == "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId":
                     extension["valueIdentifier"]["value"] = prescription_id

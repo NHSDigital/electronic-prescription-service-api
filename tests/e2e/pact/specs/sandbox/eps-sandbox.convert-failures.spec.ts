@@ -1,4 +1,3 @@
-import {InteractionObject} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
@@ -9,7 +8,7 @@ jestpact.pactWith(
   {
     spec: 3,
     consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-    provider: `nhsd-apim-eps-sandbox+process-2+${process.env.PACT_VERSION}`,
+    provider: `nhsd-apim-eps-sandbox+convert+${process.env.PACT_VERSION}`,
     pactfileWriteMode: "merge"
   },
   /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -18,35 +17,40 @@ jestpact.pactWith(
       const url = `${provider.mockService.baseUrl}`
       return supertest(url)
     }
+    
+    describe("convert sandbox e2e tests", () => {
+      const apiPath = "/$convert"
 
-    describe("process-message sandbox e2e tests", () => {
-      test.each(TestResources.processCases.filter((v, i) => i > 15))("should be able to process %s", async (desc: string, message: Bundle) => {
-        const apiPath = "/$process-message"
-        const messageStr = LosslessJson.stringify(message)
-        const interaction: InteractionObject = {
+      test.each(TestResources.convertErrorCases)("should receive expected error code in response to %s message", async (desc: string, request: Bundle, response: string, statusCode: number) => {
+
+        const requestStr = LosslessJson.stringify(request)
+        const requestJson = JSON.parse(requestStr)
+
+        const interaction = {
           state: "is not authenticated",
-          uponReceiving: `a request to process ${desc} message to Spine`,
+          uponReceiving: `a request to convert ${desc} message`,
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0"
             },
             method: "POST",
-            path: "/$process-message",
-            body: JSON.parse(messageStr)
+            path: apiPath,
+            body: requestJson
           },
           willRespondWith: {
             headers: {
               "Content-Type": "application/json"
             },
-            status: 200
+            body: response,
+            status: statusCode
           }
         }
         await provider.addInteraction(interaction)
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-          .send(messageStr)
-          .expect(200)
+          .send(requestJson)
+          .expect(statusCode)
       })
     })
   }
