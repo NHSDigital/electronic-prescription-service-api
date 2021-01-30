@@ -39,7 +39,7 @@ def generate_short_form_id():
 
 
 def find_prepare_request_paths():
-    for filename in glob.iglob(examples_root_dir + '**/*Prepare-Request*200_OK*.json', recursive=True):
+    for filename in glob.iglob(f'{examples_root_dir}**/*Prepare-Request*200_OK*.json', recursive=True):
         yield filename
 
 
@@ -75,7 +75,7 @@ def update_prepare_examples(api_base_url, prepare_request_path, prescription_id,
         json.dump(prepare_request_json, f, indent=2)
 
     prepare_response_json = requests.post(
-        api_base_url + '/$prepare',
+        f'{api_base_url}/$prepare',
         data=json.dumps(prepare_request_json),
         headers={'Content-Type': 'application/json'}
     ).json()
@@ -112,7 +112,7 @@ def update_process_examples(
             json.dump(process_request_json, f, indent=2)
 
         convert_response_xml = requests.post(
-            api_base_url + '/$convert',
+            f'{api_base_url}/$convert',
             data=json.dumps(process_request_json),
             headers={'Content-Type': 'application/json'}
         ).text
