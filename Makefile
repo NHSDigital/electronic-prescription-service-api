@@ -156,6 +156,11 @@ update-prescriptions:
 	cd scripts && poetry run python update_prescriptions.py https://$(env).api.service.nhs.uk/electronic-prescriptions$(pr-prefix)$(pr)
 
 # Example:
+# make install-smoke-tests
+install-smoke-tests:
+	cd tests/e2e/pact && make install
+
+# Example:
 # make mode=sandbox create-smoke-tests
 # make mode=live create-smoke-tests
 create-smoke-tests:
