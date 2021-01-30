@@ -9,7 +9,7 @@ jestpact.pactWith(
   {
     spec: 3,
     consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-    provider: `nhsd-apim-eps+process-2+${process.env.PACT_VERSION}`,
+    provider: `nhsd-apim-eps+process+${process.env.PACT_VERSION}`,
     pactfileWriteMode: "merge"
   },
   /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -20,7 +20,7 @@ jestpact.pactWith(
     }
 
     describe("process-message e2e tests", () => {
-      test.each(TestResources.processCases.filter((v, i) => i > 15))("should be able to process %s", async (desc: string, message: Bundle) => {
+      test.each(TestResources.processCases)("should be able to process %s", async (desc: string, message: Bundle) => {
         const apiPath = "/$process-message"
         const bundleStr = LosslessJson.stringify(message)
         const bundle = JSON.parse(bundleStr) as Bundle

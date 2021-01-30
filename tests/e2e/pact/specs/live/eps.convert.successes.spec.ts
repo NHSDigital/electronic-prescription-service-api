@@ -9,7 +9,7 @@ jestpact.pactWith(
   {
     spec: 3,
     consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-    provider: `nhsd-apim-eps+convert-2+${process.env.PACT_VERSION}`,
+    provider: `nhsd-apim-eps+convert+${process.env.PACT_VERSION}`,
     pactfileWriteMode: "merge"
   },
   /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -20,7 +20,7 @@ jestpact.pactWith(
     }
 
     describe("convert e2e tests", () => {
-      test.each(TestResources.convertCases.filter((v, i) => i > 15))("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: string, responseMatcher: string) => {
+      test.each(TestResources.convertCases)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: string, responseMatcher: string) => {
         const regex = new RegExp(responseMatcher)
         const isMatch = regex.test(response)
         expect(isMatch).toBe(true)
