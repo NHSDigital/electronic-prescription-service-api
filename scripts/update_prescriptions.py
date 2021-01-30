@@ -46,7 +46,7 @@ def find_prepare_request_paths():
 def replace_ids_and_timestamps(bundle_json, prescription_id, short_prescription_id, authored_on, signature_time):
     short_prescription_id_split = short_prescription_id.split("-")
     spid_first = short_prescription_id_split[0]
-    spid_middle = ""
+    spid_middle = short_prescription_id_split[1]
     spid_last = short_prescription_id_split[2]
 
     for entry in reversed(bundle_json['entry']):
@@ -54,10 +54,10 @@ def replace_ids_and_timestamps(bundle_json, prescription_id, short_prescription_
         if resource["resourceType"] == "Provenance":
             for signature in resource["signature"]:
                 signature["when"] = signature_time
-        if resource["resourceType"] == "HealthcareService":
-            for identifier in resource["identifier"]:
-                organisationCode = identifier["value"]
-                spid_middle = organisationCode
+        # if resource["resourceType"] == "HealthcareService":
+        #     for identifier in resource["identifier"]:
+        #         organisationCode = identifier["value"]
+        #         spid_middle = organisationCode
         if resource["resourceType"] == "MedicationRequest":
             resource["groupIdentifier"]["value"] = f'{spid_first}-{spid_middle}-{spid_last}'
             for extension in resource["groupIdentifier"]["extension"]:
