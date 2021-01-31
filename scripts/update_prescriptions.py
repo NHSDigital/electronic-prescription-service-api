@@ -10,7 +10,7 @@ import os
 import glob
 import json
 import uuid
-from datetime import date, datetime 
+from datetime import date, datetime
 import requests
 from docopt import docopt
 
