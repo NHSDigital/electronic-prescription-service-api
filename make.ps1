@@ -108,7 +108,7 @@ function run-smoke-tests() {
     cd ../../..
 }
 
-
+# requires: make mode=live create-smoke-tests
 function generate-postman-collection() {
     mkdir tests/e2e/postman/collections -ErrorAction SilentlyContinue
 	cd tests/e2e/pact 
