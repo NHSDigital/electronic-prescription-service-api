@@ -119,6 +119,8 @@ Operation can be omitted for prepare examples as there is only one operation for
 
 The smoke test description is built up from the directory and the filename so tests can be renamed by changing the folder structure
 
+TODO: add instructions for running on Windows and Linux (sign/ folder, dispensing rules, pact broker variables in envrc.ps1/.envrc)
+
 ### VS Code Plugins
 
  * [openapi-lint](https://marketplace.visualstudio.com/items?itemName=mermade.openapi-lint) resolves links and validates entire spec with the 'OpenAPI Resolve and Validate' command

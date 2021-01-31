@@ -8,13 +8,8 @@ install:
 test:
 	npm run test
 
-space :=
-space += 
 ifndef mode
 mode = $(APIGEE_ENVIRONMENT)
-endif
-ifndef PACT_VERSION
-export PACT_VERSION = $(subst $(space),,$(USERNAME))
 endif
 
 create-pacts:
