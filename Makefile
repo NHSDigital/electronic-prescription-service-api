@@ -151,13 +151,9 @@ export APIGEE_ACCESS_TOKEN=$(token)
 
 space :=
 space += 
-ifndef PACT_VERSION
 export PACT_VERSION = $(subst $(space),,$(USERNAME))
-endif
-
-ifndef PACT_PROVIDER_URL
 export PACT_PROVIDER_URL=https://$(env).api.service.nhs.uk/$(SERVICE_BASE_PATH)
-endif
+export PACT_TAG=$(env)
 
 # Example:
 # make env=internal-dev-sandbox update-prescriptions
