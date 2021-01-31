@@ -10,7 +10,7 @@ import os
 import glob
 import json
 import uuid
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 import requests
 from docopt import docopt
 
@@ -65,7 +65,8 @@ def replace_ids_and_timestamps(bundle_json, prescription_id, short_prescription_
                     extension["valueIdentifier"]["value"] = prescription_id
             resource["authoredOn"] = authored_on
             if "validityPeriod" in resource["dispenseRequest"]:
-                resource["dispenseRequest"]["validityPeriod"]["end"] = date.today().isoformat()
+                resource["dispenseRequest"]["validityPeriod"]["start"] = date.today().isoformat()
+                resource["dispenseRequest"]["validityPeriod"]["end"] = (date.today() + timedelta(weeks=4)).isoformat()
 
 
 def update_prepare_examples(api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on):
