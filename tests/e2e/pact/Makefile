@@ -13,9 +13,8 @@ space +=
 ifndef mode
 mode = $(APIGEE_ENVIRONMENT)
 endif
-
-ifndef $PACT_VERSION
-PACT_VERSION = $(subst $(space),,$(USERNAME))
+ifndef PACT_VERSION
+PACT_VERSION = $(PACT_VERSION) || $(subst $(space),,$(USERNAME))
 endif
 
 create-pacts:
