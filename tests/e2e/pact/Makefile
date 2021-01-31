@@ -26,10 +26,6 @@ publish-pacts:
 verify-pacts:
 	npm run verify-pacts
 
-generate-postman-collection:
-	mkdir -p ../postman/collections
-	npm run postman
-
 # Quality Checks
 
 lint:

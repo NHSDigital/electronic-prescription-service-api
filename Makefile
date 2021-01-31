@@ -186,3 +186,11 @@ run-smoke-tests:
 	source .envrc \
 	&& cd tests/e2e/pact \
 	&& make verify-pacts
+
+# Example:
+# make generate-postman-collection
+generate-postman-collection:
+	# requires: make mode=live create-smoke-tests
+	mkdir -p tests/e2e/postman/collections
+	cd tests/e2e/pact \
+	&& npm run generate-postman-collection
