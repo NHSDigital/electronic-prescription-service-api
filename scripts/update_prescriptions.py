@@ -10,7 +10,7 @@ import os
 import glob
 import json
 import uuid
-from datetime import datetime
+from datetime import date, datetime 
 import requests
 from docopt import docopt
 
@@ -64,6 +64,8 @@ def replace_ids_and_timestamps(bundle_json, prescription_id, short_prescription_
                 if extension["url"] == "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId":
                     extension["valueIdentifier"]["value"] = prescription_id
             resource["authoredOn"] = authored_on
+            if "validityPeriod" in resource["dispenseRequest"]:
+                resource["dispenseRequest"]["validityPeriod"]["end"] = date.today().isoformat()
 
 
 def update_prepare_examples(api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on):
