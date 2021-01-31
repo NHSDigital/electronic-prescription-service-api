@@ -107,3 +107,11 @@ function run-smoke-tests() {
         % { $_.toString() -replace 'Verifying a pact between [^\+]*\+[^\+]*\+([^\+]*).*$', "`$0 -> https://nhsd-pact.herokuapp.com/matrix/provider/nhsd-apim-eps$provider_suffix%2B`$1%2B$env:PACT_VERSION/consumer/nhsd-apim-eps-test-client%2B$env:PACT_VERSION" }
     cd ../../..
 }
+
+
+function generate-postman-collection() {
+    mkdir tests/e2e/postman/collections -ErrorAction SilentlyContinue
+	cd tests/e2e/pact 
+	npm run generate-postman-collection
+    cd ../../..
+}
