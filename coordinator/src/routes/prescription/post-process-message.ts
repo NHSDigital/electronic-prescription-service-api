@@ -21,7 +21,7 @@ export default [
     */
   {
     method: "POST",
-    path: "$process-message",
+    path: "/$process-message",
     handler: validatingHandler(
       async (bundle: fhir.Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         if (isDispenseMessage(bundle)) {
