@@ -99,7 +99,7 @@ npm t
 
 #### End-to-end tests
 
-See [end to end tests](./tests/e2e/README.md) README for more details
+See [end to end tests](./tests/e2e/README.md) for more details
 
 ### VS Code Plugins
 

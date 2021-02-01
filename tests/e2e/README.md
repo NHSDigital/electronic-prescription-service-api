@@ -6,9 +6,9 @@ Once setup see:
 
 **[Add a new example](./docs/AddingExamples.md)**
 
-**[Running smoke tests on windows](./docs/AddingExamples.md)**
+**[Running smoke tests on windows](./docs/WindowsTesting.md)**
 
-**[Testing with dispensers on windows](./docs/AddingExamples.md)**
+**[Testing with dispensers on windows](./docs/WindowsTestingDispensing.md)**
 
 ## Setup
 
