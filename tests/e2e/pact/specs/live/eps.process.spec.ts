@@ -21,7 +21,7 @@ jestpact.pactWith(
     }
 
     const authenticationTestDescription = "a request to process an unauthorised message"
-    
+
     describe("endpoint authentication e2e tests", () => {
       test(authenticationTestDescription, async () => {
         const apiPath = "/$process-message"
@@ -46,7 +46,8 @@ jestpact.pactWith(
           uponReceiving: `a request to process ${desc} message to Spine`,
           withRequest: {
             headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0",
+              "X-Request-ID": "8DBEA9FC-3CE4-4311-9F10-D28505DA28D4"
             },
             method: "POST",
             path: "/$process-message",
