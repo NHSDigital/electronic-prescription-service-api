@@ -1,0 +1,17 @@
+{
+  "resourceType": "Parameters",
+  "id": "patientParmacyReleaseRequest",
+  "parameter":  [
+    {
+      "name": "group-identifier",
+      "valueIdentifier": {
+        "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+        "value": "82D996-C81010-11DB12"
+      }
+    },
+    {
+      "name": "status",
+      "valueCode": "accepted"
+    }
+  ]
+}
