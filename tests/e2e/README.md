@@ -6,9 +6,11 @@ Once setup see:
 
 **[Add a new example](./docs/AddingExamples.md)**
 
-**[Running smoke tests on windows](./docs/WindowsTesting.md)**
+**[Running smoke tests on Windows](./docs/WindowsTesting.md)**
 
-**[Testing with dispensers on windows](./docs/WindowsTestingDispensing.md)**
+**[Testing with dispensers on Windows](./docs/WindowsTestingDispensing.md)**
+
+**[Generating postman collections on Windows](./docs/WindowsPostman.md)**
 
 ## Setup
 
