@@ -15,7 +15,7 @@ export default [
     options: {
       validate:{
         headers: Joi.object({
-          "X-Request-ID": Joi.string().guid().required()
+          "x-request-id": Joi.string().guid().required()
         }),
         options: {
           allowUnknown: true

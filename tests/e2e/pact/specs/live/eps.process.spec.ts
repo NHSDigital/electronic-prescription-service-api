@@ -81,6 +81,7 @@ jestpact.pactWith(
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+          .set('X-Request-ID', '8DBEA9FC-3CE4-4311-9F10-D28505DA28D4')
           .send(bundleStr)
           .expect(400)
       })
