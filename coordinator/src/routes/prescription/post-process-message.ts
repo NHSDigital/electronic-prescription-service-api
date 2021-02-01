@@ -28,7 +28,7 @@ export default [
         const spineRequest = translator.convertFhirMessageToSpineRequest(requestPayload)
         request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(requestPayload))})
         request.logger.info("Awaiting response")
-        const spineResponse = await requestHandler.send(spineRequest, request.headers["X-Request-ID"], request.logger)
+        const spineResponse = await requestHandler.send(spineRequest, request.headers["x-request-id"], request.logger)
         return handleResponse(request, spineResponse, responseToolkit)
       }
     )
