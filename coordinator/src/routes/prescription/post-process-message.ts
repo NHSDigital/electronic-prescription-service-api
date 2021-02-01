@@ -6,11 +6,6 @@ import {createHash, handleResponse, validatingHandler} from "../util"
 import {createOperationOutcomeIssue} from "../../services/translation/spine-response"
 import {getMessageHeader} from "../../services/translation/common/getResourcesOfType"
 
-const sandboxDispenseNotificationResponse: fhir.OperationOutcome = {
-  resourceType: "OperationOutcome",
-  issue: [createOperationOutcomeIssue(200)]
-}
-
 function isDispenseMessage(bundle: fhir.Bundle) {
   return getMessageHeader(bundle).eventCoding.code === "prescription-dispense"
 }
@@ -25,7 +20,10 @@ export default [
     handler: validatingHandler(
       async (bundle: fhir.Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         if (isDispenseMessage(bundle)) {
-          return responseToolkit.response(sandboxDispenseNotificationResponse).code(200)
+          return responseToolkit.response({
+            resourceType: "OperationOutcome",
+            issue: [createOperationOutcomeIssue(200)]
+          }).code(200)
         }
         request.logger.info("Building Spine request")
         const spineRequest = translator.convertFhirMessageToSpineRequest(bundle)
