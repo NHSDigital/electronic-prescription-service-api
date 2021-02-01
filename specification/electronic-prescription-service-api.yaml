@@ -344,7 +344,7 @@ paths:
         ## Overview
         Use this endpoint to send a prescription release request to EPS.
 
-        This will return a set of prescriptions based on the information passed to the endpoint: 
+        This returns a set of prescriptions based on the information passed to the endpoint: 
         * to acquire prescription information for an entire pharmacy, send owner information
         * to acquire prescription information for a specific prescription, send the group identifier for that prescription
       tags:
