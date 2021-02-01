@@ -19,16 +19,17 @@ async function verify(): Promise<any> {
     sleep(sleepMs)
     sleepMs = (sleepMs + 5000) * 2
     const isLocal = process.env.PACT_PROVIDER_URL === "http://localhost:9000"
+    const providerVersion = process.env.PACT_TAG
+      ? `${process.env.PACT_VERSION} (${process.env.PACT_TAG})`
+      : process.env.PACT_VERSION
     const verifier =  new VerifierV3({
       publishVerificationResult: !isLocal,
-      /*pactBrokerUrl: isLocal ? undefined : process.env.PACT_BROKER_NEXT_URL,
-      pactBrokerToken: process.env.PACT_BROKER_NEXT_TOKEN,*/
       pactBrokerUrl: isLocal ? undefined : process.env.PACT_BROKER_URL,
       pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
       pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
       consumerVersionTag: process.env.PACT_VERSION,
       provider: `${process.env.PACT_PROVIDER}+${endpoint}+${process.env.PACT_VERSION}`,
-      providerVersion: process.env.PACT_VERSION,
+      providerVersion: providerVersion,
       providerBaseUrl: process.env.PACT_PROVIDER_URL,
       logLevel: "info",
       stateHandlers: {

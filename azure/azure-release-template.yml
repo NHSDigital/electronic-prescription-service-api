@@ -157,6 +157,5 @@ extends:
           docker run --rm -e PACT_BROKER_BASE_URL="$PACT_BROKER_URL" -e PACT_BROKER_USERNAME="$PACT_BROKER_BASIC_AUTH_USERNAME" -e PACT_BROKER_PASSWORD="$PACT_BROKER_BASIC_AUTH_PASSWORD" pactfoundation/pact-cli:latest broker can-i-deploy --pacticipant "$PACT_PROVIDER+convert+$PACT_VERSION" --version "$PACT_VERSION" --pacticipant $PACT_CONSUMER+"$PACT_VERSION" --version "$PACT_VERSION"
           docker run --rm -e PACT_BROKER_BASE_URL="$PACT_BROKER_URL" -e PACT_BROKER_USERNAME="$PACT_BROKER_BASIC_AUTH_USERNAME" -e PACT_BROKER_PASSWORD="$PACT_BROKER_BASIC_AUTH_PASSWORD" pactfoundation/pact-cli:latest broker can-i-deploy --pacticipant "$PACT_PROVIDER+prepare+$PACT_VERSION" --version "$PACT_VERSION" --pacticipant $PACT_CONSUMER+"$PACT_VERSION" --version "$PACT_VERSION"
           docker run --rm -e PACT_BROKER_BASE_URL="$PACT_BROKER_URL" -e PACT_BROKER_USERNAME="$PACT_BROKER_BASIC_AUTH_USERNAME" -e PACT_BROKER_PASSWORD="$PACT_BROKER_BASIC_AUTH_PASSWORD" pactfoundation/pact-cli:latest broker can-i-deploy --pacticipant "$PACT_PROVIDER+process+$PACT_VERSION" --version "$PACT_VERSION" --pacticipant $PACT_CONSUMER+"$PACT_VERSION" --version "$PACT_VERSION"
-
         displayName: Run smoke tests
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))

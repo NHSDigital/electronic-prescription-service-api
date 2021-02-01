@@ -4,7 +4,6 @@ import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
 import {Bundle} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
-import {processExamples} from "../../services/process-example-fetcher"
 
 jestpact.pactWith(
   {
@@ -39,9 +38,6 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/json"
             },
-            // body: {
-            //   resourceType: "Bundle"
-            // },
             status: 200
           }
         }
@@ -49,37 +45,6 @@ jestpact.pactWith(
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-          .send(messageStr)
-          .expect(200)
-      })
-
-      test("Should be able to process a FHIR JSON Accept header", async () => {
-        const testCase = processExamples[0]
-
-        const apiPath = "/$process-message"
-        const messageStr = LosslessJson.stringify(testCase.request)
-
-        const interaction: InteractionObject = {
-          state: "is not authenticated",
-          uponReceiving: `a request to process a message with a FHIR JSON Accept header`,
-          withRequest: {
-            headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0",
-              "Accept": "application/fhir+json"
-            },
-            method: "POST",
-            path: "/$process-message",
-            body: JSON.parse(messageStr)
-          },
-          willRespondWith: {
-            status: 200
-          }
-        }
-        await provider.addInteraction(interaction)
-        await client()
-          .post(apiPath)
-          .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-          .set('Accept', 'application/fhir+json')
           .send(messageStr)
           .expect(200)
       })

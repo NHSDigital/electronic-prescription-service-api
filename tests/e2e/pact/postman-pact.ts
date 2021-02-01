@@ -2,21 +2,28 @@ import * as fs from 'fs'
 import * as path from "path"
 
 function createPostmanCollection() {
-    const pactString = fs.readFileSync(path.join(__dirname, "pact/pacts/nhsd-apim-eps-test-client-nhsd-apim-eps.json"), "utf8")
-    const pact = JSON.parse(pactString)
+    const livePactProviderNameParts = ["Prepare", "Process"]
 
-    const postmanCollection = {
-        info: {
-            name: "Electronic Prescription Service API",
-            schema: "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-          },
-          item: []
-    }
-    const postmanItems = pact.interactions.map(interaction => createPostmanItem(interaction))
-    postmanCollection.item = postmanItems
+    livePactProviderNameParts.forEach(provider => {
+        const providerLower = provider.toLowerCase()
 
-    const postmanCollectionString = JSON.stringify(postmanCollection, null, 2)
-    fs.writeFileSync(path.join(__dirname, "../postman/collections/electronic-prescription-service-collection.json"), postmanCollectionString)
+        const pactString = fs.readFileSync(path.join(__dirname, `pact/pacts/nhsd-apim-eps-test-client+${process.env.PACT_VERSION}-nhsd-apim-eps+${providerLower}+${process.env.PACT_VERSION}.json`), "utf8")
+        
+        const pact = JSON.parse(pactString)
+
+        const postmanCollection = {
+            info: {
+                name: `Electronic Prescription Service API - ${provider} Examples`,
+                schema: "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+            },
+            item: []
+        }
+        const postmanItems = pact.interactions.map(interaction => createPostmanItem(interaction))
+        postmanCollection.item = postmanItems
+
+        const postmanCollectionString = JSON.stringify(postmanCollection, null, 2)
+        fs.writeFileSync(path.join(__dirname, `../postman/collections/electronic-prescription-service-${provider}.json`), postmanCollectionString)
+    });
 }
 
 createPostmanCollection()

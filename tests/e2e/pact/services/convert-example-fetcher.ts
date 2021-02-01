@@ -22,7 +22,8 @@ const conventionBasedConvertExamples: ConvertCase[] = convertResponseFiles.map(c
 ))
 
 function getDescription(convertResponseFile: ExampleFile): string {
-	return path.parse(path.relative(path.join(__dirname, examplesRootPath), convertResponseFile.path)).dir.replace(/\//g, " ") + " "
+	return path.parse(path.relative(path.join(__dirname, examplesRootPath), convertResponseFile.path))
+			.dir.replace(/\//g, " ").replace(/\\/g, " ") + " "
 		+ `${convertResponseFile.number} ${convertResponseFile.operation} ${convertResponseFile.statusText}`
 }
 
