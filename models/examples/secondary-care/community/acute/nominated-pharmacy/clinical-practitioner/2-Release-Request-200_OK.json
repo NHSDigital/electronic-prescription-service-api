@@ -1,0 +1,17 @@
+{
+  "resourceType": "Parameters",
+  "id": "nominatedParmacyReleaseRequest",
+  "parameter":  [
+    {
+      "name": "owner",
+      "valueIdentifier": {
+        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+        "value": "VNE51"
+      }
+    },
+    {
+      "name": "status",
+      "valueCode": "accepted"
+    }
+  ]
+}
