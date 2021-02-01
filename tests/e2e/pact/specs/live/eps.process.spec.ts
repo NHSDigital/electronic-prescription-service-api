@@ -5,6 +5,7 @@ import * as TestResources from "../../resources/test-resources"
 import { Bundle } from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import { createUnauthorisedInteraction } from "./eps-auth"
+import * as uuid from "uuid"
 
 jestpact.pactWith(
   {
@@ -40,6 +41,7 @@ jestpact.pactWith(
         const apiPath = "/$process-message"
         const bundleStr = LosslessJson.stringify(message)
         const bundle = JSON.parse(bundleStr) as Bundle
+        const requestId = uuid.v4().toString().toLowerCase()
 
         const interaction: InteractionObject = {
           state: "is authenticated",
@@ -47,7 +49,7 @@ jestpact.pactWith(
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",
-              "X-Request-ID": "8DBEA9FC-3CE4-4311-9F10-D28505DA28D4"
+              "X-Request-ID": requestId
             },
             method: "POST",
             path: "/$process-message",
@@ -81,7 +83,7 @@ jestpact.pactWith(
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-          .set('X-Request-ID', '8DBEA9FC-3CE4-4311-9F10-D28505DA28D4')
+          .set('X-Request-ID', requestId)
           .send(bundleStr)
           .expect(400)
       })
