@@ -4,15 +4,10 @@ import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
 import {Bundle, Parameters} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
-import {getStringParameterByName} from "../../resources/common"
+import {getStringParameterByName, pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
-  {
-    spec: 3,
-    consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-    provider: `nhsd-apim-eps-sandbox+prepare+${process.env.PACT_VERSION}`,
-    pactfileWriteMode: "merge"
-  },
+  pactOptions(true, "prepare"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {

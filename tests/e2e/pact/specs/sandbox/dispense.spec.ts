@@ -7,7 +7,7 @@ import * as LosslessJson from "lossless-json"
 import {InteractionObject} from "@pact-foundation/pact"
 
 jestPact.pactWith(
-  pactOptions,
+  pactOptions(true, "release"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {

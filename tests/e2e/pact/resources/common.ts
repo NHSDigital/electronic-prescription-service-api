@@ -3,11 +3,13 @@ import {JestPactOptions} from "jest-pact"
 import path from "path"
 import {ExampleFile} from "../models/files/example-file"
 
-export const pactOptions: JestPactOptions = {
+export function pactOptions(sandbox: boolean, endpoint: "prepare" | "process" | "convert" | "release"): JestPactOptions {
+return {
   spec: 3,
-  consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-  provider: `nhsd-apim-eps+prepare+${process.env.PACT_VERSION}`,
-  pactfileWriteMode: "merge"
+    consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
+    provider: `nhsd-apim-eps${sandbox ? "-sandbox" : ""}+${endpoint}+${process.env.PACT_VERSION}`,
+    pactfileWriteMode: "merge"
+}
 }
 
 function isStringParameter(parameter: fhir.Parameter): parameter is fhir.StringParameter {
