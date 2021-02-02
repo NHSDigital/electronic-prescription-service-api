@@ -102,11 +102,9 @@ async function verifyProcess(): Promise<any> {
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyRelease(): Promise<any> {
-  if (!process.env.PACT_PROVIDER_URL.includes("sandbox")) {
-    endpoint = "release"
-    sleepMs = 0
-    await verify().catch(verify).catch(verify)
-  }
+  endpoint = "release"
+  sleepMs = 0
+  await verify().catch(verify).catch(verify)
 }
 
 (async () => {

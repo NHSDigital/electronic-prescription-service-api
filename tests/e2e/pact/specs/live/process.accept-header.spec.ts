@@ -23,7 +23,7 @@ jestpact.pactWith(
         const messageStr = LosslessJson.stringify(testCase.request)
 
         const interaction: InteractionObject = {
-          state: "is authenticated",
+          state: "is not authenticated",
           uponReceiving: `a request to process a message with a FHIR JSON Accept header`,
           withRequest: {
             headers: {
