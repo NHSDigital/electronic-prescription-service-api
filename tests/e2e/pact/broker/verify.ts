@@ -15,7 +15,7 @@ function sleep(milliseconds: number) {
 }
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
-async function verify(): Promise<any> { 
+async function verify(): Promise<any> {
     sleep(sleepMs)
     sleepMs = (sleepMs + 5000) * 2
     const isLocal = process.env.PACT_PROVIDER_URL === "http://localhost:9000"
@@ -47,7 +47,7 @@ async function verify(): Promise<any> {
         req.headers["Authorization"] = `Bearer ${token}`
         return req
       },
-      pactUrls: isLocal 
+      pactUrls: isLocal
         ? [
           `${process.cwd()}/pact/pacts/${process.env.PACT_CONSUMER}+${endpoint}+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${process.env.PACT_VERSION}.json`
         ]
@@ -73,7 +73,7 @@ async function verifyConvert(): Promise<any> {
 }
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
-async function verifyPrepare(): Promise<any> { 
+async function verifyPrepare(): Promise<any> {
   endpoint = "prepare"
   sleepMs = 0
   await verify().catch(verify).catch(verify)
@@ -81,8 +81,10 @@ async function verifyPrepare(): Promise<any> {
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyProcess(): Promise<any> {
-  if (!process.env.PACT_PROVIDER_URL.includes("sandbox"))
-  {
+    endpoint = "process-accept-header"
+    sleepMs = 0
+    await verify().catch(verify).catch(verify)
+  if (!process.env.PACT_PROVIDER_URL.includes("sandbox")) {
     endpoint = "process-failures"
     sleepMs = 0
     await verify().catch(verify).catch(verify)
@@ -98,11 +100,20 @@ async function verifyProcess(): Promise<any> {
   await verify().catch(verify).catch(verify)
 }
 
-(async () => {  
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+async function verifyRelease(): Promise<any> {
+  endpoint = "release"
+  sleepMs = 0
+  await verify().catch(verify).catch(verify)
+}
+
+(async () => {
   verifyConvert()
     .catch()
     .finally(verifyPrepare)
     .catch()
     .finally(verifyProcess)
+    .catch()
+    .finally(verifyRelease)
 })()
 

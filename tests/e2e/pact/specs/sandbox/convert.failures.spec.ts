@@ -3,21 +3,17 @@ import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
 import {Bundle} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
+import {pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
-  {
-    spec: 3,
-    consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-    provider: `nhsd-apim-eps-sandbox+convert-failures+${process.env.PACT_VERSION}`,
-    pactfileWriteMode: "merge"
-  },
+  pactOptions("sandbox", "convert", "failures"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
       const url = `${provider.mockService.baseUrl}`
       return supertest(url)
     }
-    
+
     describe("convert sandbox e2e tests", () => {
       const apiPath = "/$convert"
 

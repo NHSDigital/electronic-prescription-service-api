@@ -4,8 +4,9 @@ import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
 import { Bundle } from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
+import { PactGroup, pactOptions } from "../../resources/common"
 
-const pactGroups = [
+const processPactGroups = [
   {
     name: "secondarycare-community-acute",
     cases: TestResources.processSecondaryCareCommunityAcuteCases
@@ -20,17 +21,12 @@ const pactGroups = [
   }
 ]
 
-pactGroups.forEach(pactGroup => {
-  const pactName = pactGroup.name
-  const pactTestCases = pactGroup.cases
+processPactGroups.forEach(pactGroup => {
+  const pactGroupName = pactGroup.name
+  const pactGroupTestCases = pactGroup.cases
 
   jestpact.pactWith(
-    {
-      spec: 3,
-      consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-      provider: `nhsd-apim-eps+process-${pactName}+${process.env.PACT_VERSION}`,
-      pactfileWriteMode: "merge"
-    },
+    pactOptions("live", "process", pactGroupName as PactGroup),
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     async (provider: any) => {
       const client = () => {
@@ -39,7 +35,7 @@ pactGroups.forEach(pactGroup => {
       }
 
       describe("process-message e2e tests", () => {
-        test.each(pactTestCases)("should be able to process %s", async (desc: string, message: Bundle) => {
+        test.each(pactGroupTestCases)("should be able to process %s", async (desc: string, message: Bundle) => {
           const apiPath = "/$process-message"
           const bundleStr = LosslessJson.stringify(message)
           const bundle = JSON.parse(bundleStr) as Bundle

@@ -81,7 +81,7 @@ function getFhirResponseAndErrorCodes<T extends AsyncMCCI | SyncMCCI>(
   }
 }
 
-function createOperationOutcomeIssue(
+export function createOperationOutcomeIssue(
   statusCode: number,
   details?: fhir.CodeableConcept
 ): fhir.OperationOutcomeIssue {

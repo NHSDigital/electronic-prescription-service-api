@@ -3,14 +3,10 @@ import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as LosslessJson from "lossless-json"
 import {processExamples} from "../../services/process-example-fetcher"
+import {pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
-  {
-    spec: 3,
-    consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-    provider: `nhsd-apim-eps-sandbox+process+${process.env.PACT_VERSION}`,
-    pactfileWriteMode: "merge"
-  },
+  pactOptions("sandbox", "process", "accept-header"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
@@ -39,7 +35,27 @@ jestpact.pactWith(
             body: JSON.parse(messageStr)
           },
           willRespondWith: {
-            status: 200
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: {
+              resourceType: "OperationOutcome",
+              issue: [
+                {
+                  code: "invalid",
+                  severity: "error",
+                  details: {
+                    coding: [
+                      {
+                        code: "202",
+                        display: "Duplicate HL7 ID Error"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            status: 400
           }
         }
         await provider.addInteraction(interaction)

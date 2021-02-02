@@ -46,7 +46,7 @@ extends:
       - bash: |
           #!/bin/bash
 
-          set -euo pipefail
+          #set -euo pipefail
 
           SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
           export SERVICE_ARTIFACT_NAME
@@ -146,5 +146,24 @@ extends:
           # Verify
           chmod +x ./broker/verify.ts
           make verify-pacts
+
+          # todo: determine the 'need' for the below
+          # # Tag
+          # docker pull pactfoundation/pact-cli:latest > /dev/null
+          # docker run --rm -e PACT_BROKER_BASE_URL="$PACT_BROKER_URL" -e PACT_BROKER_USERNAME="$PACT_BROKER_BASIC_AUTH_USERNAME" -e PACT_BROKER_PASSWORD="$PACT_BROKER_BASIC_AUTH_PASSWORD" pactfoundation/pact-cli:latest broker create-version-tag --pacticipant="$PACT_PROVIDER+convert+$PACT_VERSION" --version="$PACT_VERSION" --tag="$APIGEE_ENVIRONMENT"
+          # docker run --rm -e PACT_BROKER_BASE_URL="$PACT_BROKER_URL" -e PACT_BROKER_USERNAME="$PACT_BROKER_BASIC_AUTH_USERNAME" -e PACT_BROKER_PASSWORD="$PACT_BROKER_BASIC_AUTH_PASSWORD" pactfoundation/pact-cli:latest broker create-version-tag --pacticipant="$PACT_PROVIDER+prepare+$PACT_VERSION" --version="$PACT_VERSION" --tag="$APIGEE_ENVIRONMENT"
+          # docker run --rm -e PACT_BROKER_BASE_URL="$PACT_BROKER_URL" -e PACT_BROKER_USERNAME="$PACT_BROKER_BASIC_AUTH_USERNAME" -e PACT_BROKER_PASSWORD="$PACT_BROKER_BASIC_AUTH_PASSWORD" pactfoundation/pact-cli:latest broker create-version-tag --pacticipant="$PACT_PROVIDER+process+$PACT_VERSION" --version="$PACT_VERSION" --tag="$APIGEE_ENVIRONMENT"
+          # if [[ "$APIGEE_ENVIRONMENT" == *"sandbox"* ]]; then
+          #     docker run --rm -e PACT_BROKER_BASE_URL="$PACT_BROKER_URL" -e PACT_BROKER_USERNAME="$PACT_BROKER_BASIC_AUTH_USERNAME" -e PACT_BROKER_PASSWORD="$PACT_BROKER_BASIC_AUTH_PASSWORD" pactfoundation/pact-cli:latest broker create-version-tag --pacticipant="$PACT_PROVIDER+release+$PACT_VERSION" --version="$PACT_VERSION" --tag="$APIGEE_ENVIRONMENT"
+          # fi;
+
+          # # Can I Deploy
+          # docker run --rm -e PACT_BROKER_BASE_URL="$PACT_BROKER_URL" -e PACT_BROKER_USERNAME="$PACT_BROKER_BASIC_AUTH_USERNAME" -e PACT_BROKER_PASSWORD="$PACT_BROKER_BASIC_AUTH_PASSWORD" pactfoundation/pact-cli:latest broker can-i-deploy --pacticipant "$PACT_PROVIDER+convert+$PACT_VERSION" --version "$PACT_VERSION" --pacticipant $PACT_CONSUMER+"$PACT_VERSION" --version "$PACT_VERSION"
+          # docker run --rm -e PACT_BROKER_BASE_URL="$PACT_BROKER_URL" -e PACT_BROKER_USERNAME="$PACT_BROKER_BASIC_AUTH_USERNAME" -e PACT_BROKER_PASSWORD="$PACT_BROKER_BASIC_AUTH_PASSWORD" pactfoundation/pact-cli:latest broker can-i-deploy --pacticipant "$PACT_PROVIDER+prepare+$PACT_VERSION" --version "$PACT_VERSION" --pacticipant $PACT_CONSUMER+"$PACT_VERSION" --version "$PACT_VERSION"
+          # docker run --rm -e PACT_BROKER_BASE_URL="$PACT_BROKER_URL" -e PACT_BROKER_USERNAME="$PACT_BROKER_BASIC_AUTH_USERNAME" -e PACT_BROKER_PASSWORD="$PACT_BROKER_BASIC_AUTH_PASSWORD" pactfoundation/pact-cli:latest broker can-i-deploy --pacticipant "$PACT_PROVIDER+process+$PACT_VERSION" --version "$PACT_VERSION" --pacticipant $PACT_CONSUMER+"$PACT_VERSION" --version "$PACT_VERSION"
+          # if [[ "$APIGEE_ENVIRONMENT" == *"sandbox"* ]]; then
+          #     docker run --rm -e PACT_BROKER_BASE_URL="$PACT_BROKER_URL" -e PACT_BROKER_USERNAME="$PACT_BROKER_BASIC_AUTH_USERNAME" -e PACT_BROKER_PASSWORD="$PACT_BROKER_BASIC_AUTH_PASSWORD" pactfoundation/pact-cli:latest broker can-i-deploy --pacticipant "$PACT_PROVIDER+release+$PACT_VERSION" --version "$PACT_VERSION" --pacticipant $PACT_CONSUMER+"$PACT_VERSION" --version "$PACT_VERSION"
+          # fi;
+
         displayName: Run smoke tests
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))

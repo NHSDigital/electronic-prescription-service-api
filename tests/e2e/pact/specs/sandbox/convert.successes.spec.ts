@@ -4,8 +4,9 @@ import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
 import {Bundle} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
+import { PactGroup, pactOptions } from "../../resources/common"
 
-const pactGroups = [
+const pactConvertGroups = [
   {
     name: "secondarycare-community-acute",
     cases: TestResources.convertSecondaryCareCommunityAcuteCases
@@ -20,17 +21,12 @@ const pactGroups = [
   }
 ]
 
-pactGroups.forEach(pactGroup => {
-  const pactName = pactGroup.name
-  const pactTestCases = pactGroup.cases
+pactConvertGroups.forEach(pactGroup => {
+  const pactGroupName = pactGroup.name
+  const pactGroupTestCases = pactGroup.cases
 
   jestpact.pactWith(
-    {
-      spec: 3,
-      consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-      provider: `nhsd-apim-eps-sandbox+convert-${pactName}+${process.env.PACT_VERSION}`,
-      pactfileWriteMode: "merge"
-    },
+    pactOptions("sandbox", "convert", pactGroupName as PactGroup),
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     async (provider: any) => {
       const client = () => {
@@ -40,7 +36,7 @@ pactGroups.forEach(pactGroup => {
       
       describe("convert sandbox e2e tests", () => {
         const apiPath = "/$convert"
-        test.each(pactTestCases)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: string, responseMatcher: string) => {
+        test.each(pactGroupTestCases)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: string, responseMatcher: string) => {
           const regex = new RegExp(responseMatcher)
           const isMatch = regex.test(response)
           expect(isMatch).toBe(true)

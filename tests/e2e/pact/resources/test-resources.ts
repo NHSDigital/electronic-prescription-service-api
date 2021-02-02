@@ -1,9 +1,7 @@
 import {processExamples} from "../services/process-example-fetcher"
 import {convertExamples} from "../services/convert-example-fetcher"
 import {prepareExamples} from "../services/prepare-example-fetcher"
-
-export const convertCases = []
-export const processCases = []
+import {releaseExamples} from "../services/dispense-example-fetcher"
 
 export const convertSecondaryCareCommunityAcuteCases =
     convertExamples
@@ -43,3 +41,5 @@ export const processSecondaryCareHomecareCases =
             .filter(e => e.isSuccess)
             .filter(e => e.description.includes("secondary-care community acute"))
             .map(spec => [spec.description, spec.request, spec.prepareResponse, spec.convertResponse, spec.statusCode])
+
+export const releaseCases = releaseExamples.filter(e => e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
