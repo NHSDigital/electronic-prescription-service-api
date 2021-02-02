@@ -2,6 +2,8 @@ import {processExamples} from "../services/process-example-fetcher"
 import {convertExamples} from "../services/convert-example-fetcher"
 import {prepareExamples} from "../services/prepare-example-fetcher"
 
+export const convertCases = []
+
 export const convertSecondaryCareCommunityAcuteCases =
     convertExamples
         .filter(e => e.isSuccess)
