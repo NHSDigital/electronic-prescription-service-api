@@ -63,10 +63,10 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
     "dispenseRequest.performer",
     "dispenseRequest.validityPeriod",
     "dispenseRequest.expectedSupplyDuration",
-    'dispenseRequest.extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType")',
-    'extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType")',
-    'extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner")',
-    'extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation")'
+    'dispenseRequest.extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType")',
+    'extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType")',
+    'extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner")',
+    'extension("https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation")'
   ]
   const inconsistentValueErrors = fhirPaths
     .map((fhirPath) => verifyIdenticalForAllMedicationRequests(bundle, medicationRequests, fhirPath))
@@ -99,11 +99,11 @@ export function verifyRepeatDispensingPrescription(
 
   if (!getExtensionForUrlOrNull(
     firstMedicationRequest.extension,
-    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+    "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
     "MedicationRequest.extension"
   )) {
     validationErrors.push(new errors.MedicationRequestMissingValueError(
-      'extension("https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation")'
+      'extension("https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation")'
     ))
   }
 

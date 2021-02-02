@@ -54,7 +54,7 @@ export function convertCancellation(
 
   const prescriptionToCancel = getExtensionForUrl(
     fhirFirstMedicationRequest.groupIdentifier.extension,
-    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
+    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
     "MedicationRequest.groupIdentifier.extension"
   ) as fhir.IdentifierExtension
   hl7V3CancellationPrescription.pertinentInformation3 = new cancellations.PertinentInformation3(

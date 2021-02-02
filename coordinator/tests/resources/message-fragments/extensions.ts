@@ -1,6 +1,6 @@
 import * as fhir from "../../../src/models/fhir/fhir-resources"
 
-const prescriptionTypeExtensionUrl = "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType"
+const prescriptionTypeExtensionUrl = "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType"
 
 const doctorPrescriptionType: fhir.Coding = {
   system: "https://fhir.nhs.uk/CodeSystem/prescription-type",

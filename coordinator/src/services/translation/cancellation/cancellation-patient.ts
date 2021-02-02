@@ -25,11 +25,11 @@ function createNhsNumberIdentifier(nhsNumber: string): Array<fhir.PatientIdentif
     {
       extension:  [
         {
-          url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-NHSNumberVerificationStatus",
+          url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-NHSNumberVerificationStatus",
           valueCodeableConcept: {
             coding:  [
               {
-                system: "https://fhir.nhs.uk/R4/CodeSystem/UKCore-NHSNumberVerificationStatus",
+                system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus",
                 code: "01",
                 display: "Number present and verified"
               }

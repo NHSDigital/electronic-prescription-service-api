@@ -143,7 +143,7 @@ function createDispenserInfoReference(practitionerId: string, organizationCode: 
     performer: {
       extension:  [
         {
-          url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DispensingPerformer",
+          url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-DispensingPerformer",
           valueReference: createReference(practitionerId)
         }
       ],

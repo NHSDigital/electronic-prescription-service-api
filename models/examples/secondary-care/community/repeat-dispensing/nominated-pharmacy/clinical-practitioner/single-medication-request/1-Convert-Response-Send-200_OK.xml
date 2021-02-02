@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN020101SM31 xmlns="urn:hl7-org:v3">
   <id root="0C44A712-22B7-4FA9-A495-9889860B7EEF"/>
-  <creationTime value="20201221181531"/>
+  <creationTime value="20210129154828"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN020101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -79,8 +79,8 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentPrescription classCode="SBADM" moodCode="RQO">
-            <id root="D61DF424-604D-49BE-B9AD-9E2064785E18"/>
-            <id extension="82D996-Z9243B-11EBA8" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+            <id root="5F651E35-87A1-474A-8B3C-17B16791A27B"/>
+            <id extension="6D9486-ZAE624-11EB8L" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
             <effectiveTime nullFlavor="NA"/>
             <repeatNumber>
@@ -95,7 +95,7 @@
               </AgentOrgSDS>
             </performer>
             <author contextControlCode="OP" typeCode="AUT">
-              <time value="20201221181531"/>
+              <time value="20210129154828"/>
               <signatureText>
                 <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
                   <SignedInfo>

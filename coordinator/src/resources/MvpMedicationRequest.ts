@@ -7,7 +7,7 @@ import {
 } from "../models/fhir/fhir-resources"
 
 const performerSiteTypeExtension: CodingExtension = {
-  url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
+  url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
   valueCoding: {
     system: "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
     code: "0004"
@@ -15,7 +15,7 @@ const performerSiteTypeExtension: CodingExtension = {
 }
 
 const epsPrescriptionTypeExtension: CodingExtension =  {
-  url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
+  url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
   valueCoding: {
     system: "https://fhir.nhs.uk/CodeSystem/prescription-type",
     code: "0101"
@@ -23,7 +23,7 @@ const epsPrescriptionTypeExtension: CodingExtension =  {
 }
 
 const prescriptionIdExtension: IdentifierExtension =  {
-  url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
+  url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
   valueIdentifier: {
     system: "https://fhir.nhs.uk/Id/prescription",
     value: "a7b86f8d-1d02-fc28-e050-d20ae3a215f0"

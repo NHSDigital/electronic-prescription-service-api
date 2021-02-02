@@ -62,7 +62,7 @@ function convertRequesterToControlActAuthor(
   )
   const sdsJobRoleCode = getCodeableConceptCodingForSystem(
     authorPractitionerRole.code,
-    "https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName",
+    "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
     "PractitionerRole.code"
   ).code
   const sdsRoleProfileIdentifier = getIdentifierValueForSystem(

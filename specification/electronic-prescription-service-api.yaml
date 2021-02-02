@@ -249,8 +249,6 @@ paths:
         content:
          #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
           application/json:
-            schema:
-              $ref: components/schemas/Bundle.yaml
             examples:
               example:
                 value:
@@ -262,8 +260,6 @@ paths:
           content:
             #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
             application/json:
-              schema:
-                $ref: components/schemas/Parameters.yaml
               examples:
                 example:
                   value:
@@ -272,8 +268,6 @@ paths:
           description: Invalid request.
           content:
             application/fhir+json:
-              schema:
-                $ref: components/schemas/OperationOutcome-4XX.yaml
               examples:
                 example:
                   value:
@@ -296,8 +290,6 @@ paths:
         content:
           #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
           application/json:
-            schema:
-              $ref: components/schemas/Bundle.yaml
             examples:
               success:
                 value:
@@ -311,8 +303,6 @@ paths:
           description: Successfully submitted.
           content:
             application/fhir+json:
-              schema:
-                $ref: components/schemas/OperationOutcome-2XX.yaml
               examples:
                 example:
                   value:
@@ -321,33 +311,7 @@ paths:
           description: Invalid request.
           content:
             application/fhir+json:
-              schema:
-                $ref: components/schemas/OperationOutcome-4XX.yaml
               examples:
                 example:
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
-components:
-  schemas:
-    Bundle:
-      $ref: components/schemas/Bundle.yaml
-    MessageHeader:
-      $ref: components/schemas/MessageHeader.yaml
-    MedicationRequest:
-      $ref: components/schemas/MedicationRequest.yaml
-    Patient:
-      $ref: components/schemas/Patient.yaml
-    Practitioner:
-      $ref: components/schemas/Practitioner.yaml
-    PractitionerRole:
-      $ref: components/schemas/PractitionerRole.yaml
-    Organization:
-      $ref: components/schemas/Organization.yaml
-    Parameters:
-      $ref: components/schemas/Parameters.yaml
-    Provenance:
-      $ref: components/schemas/Provenance.yaml
-    HealthcareService:
-      $ref: components/schemas/HealthcareService.yaml
-    Location:
-      $ref: components/schemas/LocationResource.yaml

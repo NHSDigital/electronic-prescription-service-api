@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN020101SM31 xmlns="urn:hl7-org:v3">
   <id root="A5F94965-2E2F-4005-A0FB-DB8E7E9B8CE8"/>
-  <creationTime value="20201221181530"/>
+  <creationTime value="20210129154827"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN020101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -42,7 +42,7 @@
       <ParentPrescription classCode="INFO" moodCode="EVN">
         <id root="AEF77AFB-7E3C-427A-8657-2C427F71A271"/>
         <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Prescription - FocusActOrEvent (record artifact)"/>
-        <effectiveTime value="20201221181530"/>
+        <effectiveTime value="20210129154827"/>
         <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <Patient classCode="PAT">
@@ -79,12 +79,12 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentPrescription classCode="SBADM" moodCode="RQO">
-            <id root="A5C11D95-9D0D-4932-B38B-C1A783C7AA24"/>
-            <id extension="81EBD1-Z2843B-11EBAU" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+            <id root="7623F30F-4C3D-4E5A-A0BE-07450BF4CC3F"/>
+            <id extension="6CA0E5-ZC4624-11EB8R" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
             <effectiveTime nullFlavor="NA"/>
             <author contextControlCode="OP" typeCode="AUT">
-              <time value="20201221181530"/>
+              <time value="20210129154827"/>
               <signatureText>
                 <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
                   <SignedInfo>

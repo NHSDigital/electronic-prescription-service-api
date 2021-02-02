@@ -49,7 +49,7 @@ function createPrescriptionStatusHistoryExtension(
   fhirCode: string, fhirDisplay: string
 ): fhir.PrescriptionStatusHistoryExtension {
   return {
-    "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-PrescriptionStatusHistory",
+    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionTaskStatusReason",
     "extension": [
       {
         "url": "status",
@@ -67,7 +67,7 @@ function createResponsiblePractitionerExtension(
   practitionerRoleId: string
 ): fhir.ReferenceExtension<fhir.PractitionerRole> {
   return {
-    "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
     "valueReference": {
       "reference": getFullUrl(practitionerRoleId)
     }
@@ -190,7 +190,7 @@ function getDispenseRequest(cancellationResponse: CancellationResponse) {
   return {
     performer: {
       extension: [{
-        url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DispensingPerformer",
+        url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-DispensingPerformer",
         valueReference: {
           reference: "" //TODO: when we have dispense info we need to fill
         }
