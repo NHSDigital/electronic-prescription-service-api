@@ -1,8 +1,6 @@
 <TargetEndpoint name="sandbox">
   <Description/>
   <FaultRules/>
-  <Flows/>
-
   <Flows>
     <Flow name="Default">
       <Request>
@@ -27,6 +25,18 @@
           <Condition>(original-request-details.header.X-Request-ID ~~ ".+")</Condition>
         </Step>
       </Response>
+    </Flow>
+    <Flow name="Status">
+      <Request>
+        <Step>
+          <Name>KeyValueMapOperations.GetSharedSecureVariables</Name>
+        </Step>
+        <Step>
+          <Condition>private.apigee.status-endpoint-api-key NotEquals request.header.apikey</Condition>
+          <Name>RaiseFault.403Forbidden</Name>
+        </Step>
+      </Request>
+      <Condition>((proxy.pathsuffix MatchesPath "/_status") or (proxy.pathsuffix MatchesPath "/_validatormetrics") or (proxy.pathsuffix MatchesPath "/_validatormetrics/**")) and ((request.verb = "GET") or (request.verb = "HEAD"))</Condition>
     </Flow>
   </Flows>
 
