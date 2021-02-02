@@ -58,7 +58,13 @@ async function verify(): Promise<any> {
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyConvert(): Promise<any> {
-  endpoint = "convert"
+  endpoint = "convert-secondarycare-community-acute"
+  sleepMs = 0
+  await verify().catch(verify).catch(verify)
+  endpoint = "convert-secondarycare-community-repeatdispensing"
+  sleepMs = 0
+  await verify().catch(verify).catch(verify)
+  endpoint = "convert-secondarycare-homecare"
   sleepMs = 0
   await verify().catch(verify).catch(verify)
 }
