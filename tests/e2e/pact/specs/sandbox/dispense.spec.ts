@@ -37,7 +37,6 @@ jestPact.pactWith(
             headers: {
               "Content-Type": "application/json"
             },
-            body: response,
             status: 200
           }
         }

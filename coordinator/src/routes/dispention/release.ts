@@ -2,7 +2,7 @@ import * as fhir from "../../models/fhir/fhir-resources"
 import * as Hapi from "@hapi/hapi"
 import {taskValidatorHandler} from "../util"
 
-const bundle1Id = ""
+const bundle1Id = "eff31db2-a914-44a9-b89d-1a33f6de727e"
 const genericBundle1: fhir.Bundle = {
   resourceType: "Bundle",
   type: "message",
@@ -12,7 +12,7 @@ const genericBundle1: fhir.Bundle = {
   }
 }
 
-const bundle2Id = ""
+const bundle2Id = "f6f2fd4a-0f5a-4cee-82a0-e6d08d64c2b4"
 const genericBundle2: fhir.Bundle = {
   resourceType: "Bundle",
   type: "message",
@@ -41,8 +41,8 @@ export default [
             value: messageId
           },
           entry: [
-            {resource: genericBundle1, fullUrl: bundle1Id},
-            {resource: genericBundle2, fullUrl: bundle2Id}
+            {resource: genericBundle1, fullUrl: `urn:uuid:${bundle1Id}`},
+            {resource: genericBundle2, fullUrl: `urn:uuid:${bundle2Id}`}
           ]
           //TODO: find reasonable task response
         }
