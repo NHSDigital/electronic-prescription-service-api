@@ -4,7 +4,7 @@ import * as fs from "fs"
 
 export class Case {
   description: string
-  request: fhir.Bundle
+  request: fhir.Bundle | fhir.Parameters
   statusText: string
   statusCode: number
   isSuccess: boolean

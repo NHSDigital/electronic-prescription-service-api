@@ -92,7 +92,7 @@ export function createParametersDigest(fragmentsToBeHashed: string): string {
 }
 
 function createParameters(base64Digest: string, isoTimestamp: string): fhir.Parameters {
-  const parameters: Array<fhir.Parameter> = []
+  const parameters = []
   parameters.push({name: "digest", valueString: base64Digest})
   parameters.push({name: "timestamp", valueString: isoTimestamp})
   parameters.push({name: "algorithm", valueString: "RS1"})

@@ -5,14 +5,10 @@ import * as TestResources from "../../resources/test-resources"
 import { Bundle } from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import { createUnauthorisedInteraction } from "./eps-auth"
+import {pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
-  {
-    spec: 3,
-    consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-    provider: `nhsd-apim-eps+process+${process.env.PACT_VERSION}`,
-    pactfileWriteMode: "merge"
-  },
+  pactOptions(false, "process"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
@@ -21,7 +17,7 @@ jestpact.pactWith(
     }
 
     const authenticationTestDescription = "a request to process an unauthorised message"
-    
+
     describe("endpoint authentication e2e tests", () => {
       test(authenticationTestDescription, async () => {
         const apiPath = "/$process-message"
