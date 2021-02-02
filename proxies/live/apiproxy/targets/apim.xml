@@ -14,9 +14,6 @@
         <Step>
           <Name>JavaScript.SetStatusResponse</Name>
         </Step>
-        <Step>
-          <Name>AssignMessage.SetStatusResponse</Name>
-        </Step>
       </Response>
       <Condition>(proxy.pathsuffix MatchesPath "/_status") and ((request.verb = "GET") or (request.verb = "HEAD"))</Condition>
     </Flow>
