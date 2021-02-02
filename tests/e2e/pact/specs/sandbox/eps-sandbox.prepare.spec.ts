@@ -4,6 +4,7 @@ import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
 import {Bundle, Parameters} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
+import * as uuid from "uuid"
 
 jestpact.pactWith(
   {
@@ -23,13 +24,15 @@ jestpact.pactWith(
       test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (description: string, request: Bundle, response: Parameters) => {
         const apiPath = "/$prepare"
         const requestStr = LosslessJson.stringify(request)
+        const requestId = uuid.v4().toString().toLowerCase()
 
         const interaction: InteractionObject = {
           state: "is not authenticated",
           uponReceiving: `a request to prepare a ${description} message`,
           withRequest: {
             headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0",
+              "X-Request-ID": requestId
             },
             method: "POST",
             path: "/$prepare",
@@ -63,6 +66,7 @@ jestpact.pactWith(
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+          .set('X-Request-ID', requestId)
           .send(requestStr)
           .expect(200)
       })

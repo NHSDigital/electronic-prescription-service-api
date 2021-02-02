@@ -27,10 +27,12 @@ jestpact.pactWith(
       test(authenticationTestDescription, async () => {
         const apiPath = "/$process-message"
         const interaction: InteractionObject = createUnauthorisedInteraction(authenticationTestDescription, apiPath)
+        const requestId = uuid.v4().toString().toLowerCase()
         await provider.addInteraction(interaction)
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+          .set('X-Request-ID', requestId)
           .send({})
           .expect(401)
       })

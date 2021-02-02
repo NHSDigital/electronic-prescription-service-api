@@ -5,6 +5,7 @@ import * as TestResources from "../../resources/test-resources"
 import {Bundle} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import {createUnauthorisedInteraction} from "./eps-auth"
+import * as uuid from "uuid"
 
 jestpact.pactWith(
   {
@@ -26,10 +27,12 @@ jestpact.pactWith(
       test(authenticationTestDescription, async () => {
         const apiPath = "/$convert"
         const interaction: InteractionObject = createUnauthorisedInteraction(authenticationTestDescription, apiPath)
+        const requestId = uuid.v4().toString().toLowerCase()
         await provider.addInteraction(interaction)
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+          .set('X-Request-ID', requestId)
           .send({})
           .expect(401)
       })
@@ -43,6 +46,7 @@ jestpact.pactWith(
 
         const requestStr = LosslessJson.stringify(request)
         const requestJson = JSON.parse(requestStr)
+        const requestId = uuid.v4().toString().toLowerCase()
 
         const apiPath = "/$convert"
         const interaction: InteractionObject = {
@@ -50,7 +54,8 @@ jestpact.pactWith(
           uponReceiving: `a request to convert ${desc} message`,
           withRequest: {
             headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0",
+              "X-Request-ID": requestId
             },
             method: "POST",
             path: apiPath,
@@ -68,6 +73,7 @@ jestpact.pactWith(
         await client()
             .post(apiPath)
             .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+            .set('X-Request-ID', requestId)
             .send(requestStr)
             .expect(200)
       })
@@ -76,6 +82,7 @@ jestpact.pactWith(
 
         const requestStr = LosslessJson.stringify(request)
         const requestJson = JSON.parse(requestStr)
+        const requestId = uuid.v4().toString().toLowerCase()
 
         const apiPath = "/$convert"
         const interaction = {
@@ -83,7 +90,8 @@ jestpact.pactWith(
           uponReceiving: `a request to convert ${desc} message`,
           withRequest: {
             headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0",
+              "X-Request-ID": requestId
             },
             method: "POST",
             path: apiPath,
@@ -101,6 +109,7 @@ jestpact.pactWith(
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+          .set('X-Request-ID', requestId)
           .send(requestJson)
           .expect(statusCode)
       })

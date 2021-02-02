@@ -5,6 +5,7 @@ import { Bundle, Parameters } from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import { createUnauthorisedInteraction } from "./eps-auth"
 import supertest from "supertest"
+import * as uuid from "uuid"
 
 jestpact.pactWith(
   {
@@ -21,6 +22,7 @@ jestpact.pactWith(
     }
 
     const authenticationTestDescription = "a request to prepare an unauthorised message"
+    const requestId = uuid.v4().toString().toLowerCase()
 
     describe("endpoint authentication e2e tests", () => {
       test(authenticationTestDescription, async () => {
@@ -30,6 +32,7 @@ jestpact.pactWith(
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+          .set('X-Request-ID', requestId)
           .send({})
           .expect(401)
       })
@@ -39,13 +42,15 @@ jestpact.pactWith(
       test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (desc: string, inputMessage: Bundle, outputMessage: Parameters) => {
         const apiPath = "/$prepare"
         const inputMessageStr = LosslessJson.stringify(inputMessage)
+        const requestId = uuid.v4().toString().toLowerCase()
 
         const interaction: InteractionObject = {
           state: "is authenticated",
           uponReceiving: `a request to prepare ${desc} message`,
           withRequest: {
             headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0",
+              "X-Request-ID": requestId
             },
             method: "POST",
             path: apiPath,
@@ -79,6 +84,7 @@ jestpact.pactWith(
         await client()
             .post(apiPath)
             .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+            .set('X-Request-ID', requestId)
             .send(inputMessageStr)
             .expect(200)
       })
