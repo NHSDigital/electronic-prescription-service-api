@@ -3,6 +3,7 @@ import {convertExamples} from "../services/convert-example-fetcher"
 import {prepareExamples} from "../services/prepare-example-fetcher"
 
 export const convertCases = []
+export const processCases = []
 
 export const convertSecondaryCareCommunityAcuteCases =
     convertExamples
@@ -24,4 +25,21 @@ export const convertSecondaryCareHomecareCases =
 
 export const convertErrorCases = convertExamples.filter(e => !e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
 export const prepareCases = prepareExamples.filter(e => e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
-export const processCases = processExamples.filter(e => e.isSuccess).map(spec => [spec.description, spec.request, spec.prepareResponse, spec.convertResponse, spec.statusCode])
+
+export const processSecondaryCareCommunityAcuteCases =
+    processExamples
+        .filter(e => e.isSuccess)
+        .filter(e => e.description.includes("secondary-care community acute"))
+        .map(spec => [spec.description, spec.request, spec.prepareResponse, spec.convertResponse, spec.statusCode])
+
+export const processSecondaryCareCommunityRepeatDispensingCases =
+    processExamples
+        .filter(e => e.isSuccess)
+        .filter(e => e.description.includes("secondary-care community acute"))
+        .map(spec => [spec.description, spec.request, spec.prepareResponse, spec.convertResponse, spec.statusCode])
+
+export const processSecondaryCareHomecareCases =
+        processExamples
+            .filter(e => e.isSuccess)
+            .filter(e => e.description.includes("secondary-care community acute"))
+            .map(spec => [spec.description, spec.request, spec.prepareResponse, spec.convertResponse, spec.statusCode])

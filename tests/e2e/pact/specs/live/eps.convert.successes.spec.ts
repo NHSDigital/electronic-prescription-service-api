@@ -1,4 +1,4 @@
-import {InteractionObject} from "@pact-foundation/pact"
+import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
@@ -8,15 +8,15 @@ import * as LosslessJson from "lossless-json"
 const pactGroups = [
   {
     name: "secondarycare-community-acute",
-    cases: TestResources.processSecondaryCareCommunityAcuteCases
+    cases: TestResources.convertSecondaryCareCommunityAcuteCases
   },
   {
     name: "secondarycare-community-repeatdispensing",
-    cases: TestResources.processSecondaryCareCommunityRepeatDispensingCases
+    cases: TestResources.convertSecondaryCareCommunityRepeatDispensingCases
   },
   {
     name: "secondarycare-homecare",
-    cases: TestResources.processSecondaryCareHomecareCases
+    cases: TestResources.convertSecondaryCareHomecareCases
   }
 ]
 
@@ -28,7 +28,7 @@ pactGroups.forEach(pactGroup => {
     {
       spec: 3,
       consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-      provider: `nhsd-apim-eps-sandbox+process-${pactName}+${process.env.PACT_VERSION}`,
+      provider: `nhsd-apim-eps+convert-${pactName}+${process.env.PACT_VERSION}`,
       pactfileWriteMode: "merge"
     },
     /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -37,38 +37,44 @@ pactGroups.forEach(pactGroup => {
         const url = `${provider.mockService.baseUrl}`
         return supertest(url)
       }
-
-      describe("process-message sandbox e2e tests", () => {
-        test.each(pactTestCases)("should be able to process %s", async (desc: string, message: Bundle) => {
-          const apiPath = "/$process-message"
-          const messageStr = LosslessJson.stringify(message)
+  
+      describe("convert e2e tests", () => {
+        test.each(pactTestCases)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: string, responseMatcher: string) => {
+          const regex = new RegExp(responseMatcher)
+          const isMatch = regex.test(response)
+          expect(isMatch).toBe(true)
+  
+          const requestStr = LosslessJson.stringify(request)
+          const requestJson = JSON.parse(requestStr)
+  
+          const apiPath = "/$convert"
           const interaction: InteractionObject = {
-            state: "is not authenticated",
-            uponReceiving: `a request to process ${desc} message to Spine`,
+            state: "is authenticated",
+            uponReceiving: `a request to convert ${desc} message`,
             withRequest: {
               headers: {
                 "Content-Type": "application/fhir+json; fhirVersion=4.0"
               },
               method: "POST",
-              path: "/$process-message",
-              body: JSON.parse(messageStr)
+              path: apiPath,
+              body: requestJson
             },
             willRespondWith: {
               headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "text/plain; charset=utf-8"
               },
+              body: Matchers.regex({ matcher: responseMatcher, generate: response }),
               status: 200
             }
           }
           await provider.addInteraction(interaction)
           await client()
-            .post(apiPath)
-            .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-            .send(messageStr)
-            .expect(200)
+              .post(apiPath)
+              .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+              .send(requestStr)
+              .expect(200)
         })
       })
     }
   )
-
-})
+});
