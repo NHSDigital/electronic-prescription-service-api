@@ -6,7 +6,7 @@ import {processExamples} from "../../services/process-example-fetcher"
 import {pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
-  pactOptions("sandbox", "process", "accept-header"),
+  pactOptions("live", "process", "accept-header"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
@@ -64,7 +64,7 @@ jestpact.pactWith(
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('Accept', 'application/fhir+json')
           .send(messageStr)
-          .expect(200)
+          .expect(400)
       })
     })
   }
