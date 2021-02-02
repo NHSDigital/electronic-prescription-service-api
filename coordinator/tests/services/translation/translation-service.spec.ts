@@ -2,9 +2,13 @@ import * as translator from "../../../src/services/translation"
 import {convertFhirMessageToSignedInfoMessage} from "../../../src/services/translation"
 import * as TestResources from "../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
-import {Bundle, Parameters} from "../../../src/models/fhir/fhir-resources"
+import * as fhir from "../../../src/models/fhir/fhir-resources"
 import {InvalidValueError} from "../../../src/models/errors/processing-errors"
-import {convertHL7V3DateTimeToIsoDateTimeString, isTruthy} from "../../../src/services/translation/common"
+import {
+  convertHL7V3DateTimeToIsoDateTimeString,
+  getStringParameterByName,
+  isTruthy
+} from "../../../src/services/translation/common"
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {xmlTest} from "../../resources/test-helpers"
 import {ElementCompact} from "xml-js"
@@ -22,7 +26,7 @@ describe("convertFhirMessageToSignedInfoMessage", () => {
     example.fhirMessageDigest
   ])
 
-  test.each(cases)("accepts %s", (desc: string, message: Bundle) => {
+  test.each(cases)("accepts %s", (desc: string, message: fhir.Bundle) => {
     expect(() => convertFhirMessageToSignedInfoMessage(message)).not.toThrow()
   })
 
@@ -33,8 +37,8 @@ describe("convertFhirMessageToSignedInfoMessage", () => {
 
   test.each(cases)(
     "produces expected result for %s",
-    (desc: string, message: Bundle, expectedParameters: Parameters) => {
-      mockTime.value = expectedParameters.parameter.find(p => p.name === "timestamp").valueString
+    (desc: string, message: fhir.Bundle, expectedParameters: fhir.Parameters) => {
+      mockTime.value = getStringParameterByName(expectedParameters, "timestamp").valueString
       const actualParameters = convertFhirMessageToSignedInfoMessage(message)
       expect(actualParameters).toEqual(expectedParameters)
     }
@@ -48,13 +52,13 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
     example.hl7V3Message
   ])
 
-  test.each(cases)("accepts %s", (desc: string, message: Bundle) => {
+  test.each(cases)("accepts %s", (desc: string, message: fhir.Bundle) => {
     expect(() => translator.convertFhirMessageToSpineRequest(message)).not.toThrow()
   })
 
   test.each(cases)(
     "produces expected result for %s",
-    (desc: string, message: Bundle, expectedOutput: ElementCompact) => {
+    (desc: string, message: fhir.Bundle, expectedOutput: ElementCompact) => {
       mockTime.value = convertHL7V3DateTimeToIsoDateTimeString(expectedOutput.PORX_IN020101SM31.creationTime)
       const actualMessage = translator.createParentPrescriptionSendMessagePayload(message)
       xmlTest(actualMessage, expectedOutput.PORX_IN020101SM31)()
