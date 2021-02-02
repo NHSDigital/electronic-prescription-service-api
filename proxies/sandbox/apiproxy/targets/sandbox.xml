@@ -2,6 +2,34 @@
   <Description/>
   <FaultRules/>
   <Flows/>
+
+  <Flows>
+    <Flow name="Default">
+      <Request>
+        <Step>
+          <!-- Header NHSD-Request-ID must be in the correct format (GUID) -->
+          <Name>RaiseFault.400BadRequest</Name>
+          <Condition>(not original-request-details.header.X-Request-ID ~~ "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")</Condition>
+        </Step>
+        <Step>
+          <!--This should always be the last Step - as it is just before the message is sent - so the initial request stays intact for as long as possible.
+                      The Swapping of the Request Headers converts X-Request-ID and X-Correlation-ID to NHSD-Request-ID and NHSD-Correlation-ID before sending to backend. -->
+          <Name>AssignMessage.Swap.RequestHeaders</Name>
+        </Step>
+      </Request>
+      <Response>
+        <Step>
+          <Name>AssignMessage.Mirror.CorrelationID</Name>
+          <Condition>(original-request-details.header.X-Correlation-ID ~~ ".+")</Condition>
+        </Step>
+        <Step>
+          <Name>AssignMessage.Mirror.RequestID</Name>
+          <Condition>(original-request-details.header.X-Request-ID ~~ ".+")</Condition>
+        </Step>
+      </Response>
+    </Flow>
+  </Flows>
+
   <PostFlow name="PostFlow">
     <Request/>
     <Response/>
@@ -26,6 +54,14 @@
   <DefaultFaultRule>
     <Step>
       <Name>AssignMessage.CatchallErrorMessage</Name>
+    </Step>
+    <Step>
+      <Name>AssignMessage.Mirror.CorrelationID</Name>
+      <Condition>(original-request-details.header.X-Correlation-ID ~~ ".+")</Condition>
+    </Step>
+    <Step>
+      <Name>AssignMessage.Mirror.RequestID</Name>
+      <Condition>(original-request-details.header.X-Request-ID ~~ ".+")</Condition>
     </Step>
   </DefaultFaultRule>
 </TargetEndpoint>
