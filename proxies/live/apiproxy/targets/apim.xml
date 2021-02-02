@@ -23,7 +23,7 @@
         </Step>
         <Step>
           <!-- Header NHSD-Request-ID must be in the correct format (GUID) -->
-          <Name>RaiseFault.400BadRequest</Name>
+          <Name>RaiseFault.400MissingHeader</Name>
           <Condition>(not original-request-details.header.X-Request-ID ~~ "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")</Condition>
         </Step>
 
