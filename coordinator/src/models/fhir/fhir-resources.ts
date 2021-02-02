@@ -9,6 +9,7 @@ export interface Bundle extends Resource {
   resourceType: "Bundle"
   identifier?: Identifier
   entry?: Array<BundleEntry>
+  total?: number
   type?: string
   timestamp?: string
 }

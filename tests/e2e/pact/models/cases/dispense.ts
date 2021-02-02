@@ -8,14 +8,5 @@ export class ReleaseCase extends Case {
 
   constructor(description: string, path: string, statusText: string) {
     super(description, path, statusText)
-
-    this.response = {
-      resourceType: "Bundle",
-      id: "",
-      identifier: {
-        value: ""
-      },
-      entry: []
-    }
   }
 }

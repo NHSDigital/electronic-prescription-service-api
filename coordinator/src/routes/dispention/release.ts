@@ -35,7 +35,8 @@ export default [
         const messageId = "d5a20db9-6d76-4aeb-a190-9a85843b01bf"
         const sandboxResponse: fhir.Bundle = {
           resourceType: "Bundle",
-          type: "searchSet",
+          type: "searchset",
+          total: 2,
           id: messageId,
           identifier: {
             value: messageId
