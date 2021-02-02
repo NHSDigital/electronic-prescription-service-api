@@ -59,7 +59,8 @@ jestpact.pactWith(
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+              "X-Request-ID": requestId
             },
             body: {
               resourceType: "OperationOutcome",

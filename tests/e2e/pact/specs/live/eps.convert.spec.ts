@@ -63,7 +63,8 @@ jestpact.pactWith(
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "text/plain; charset=utf-8"
+              "Content-Type": "text/plain; charset=utf-8",
+              "X-Request-ID": requestId
             },
             body: Matchers.regex({ matcher: responseMatcher, generate: response }),
             status: 200
@@ -99,7 +100,8 @@ jestpact.pactWith(
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+              "X-Request-ID": requestId
             },
             body: response,
             status: statusCode

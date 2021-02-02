@@ -40,7 +40,8 @@ jestpact.pactWith(
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+              "X-Request-ID": requestId
             },
             // body: {
             //   resourceType: "Bundle"
@@ -78,7 +79,10 @@ jestpact.pactWith(
             body: JSON.parse(messageStr)
           },
           willRespondWith: {
-            status: 200
+            status: 200,
+            headers: {
+              "X-Request-ID": requestId
+            },
           }
         }
         await provider.addInteraction(interaction)
