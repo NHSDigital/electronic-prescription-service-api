@@ -9,8 +9,8 @@
     "generate-postman-collection": "ts-node postman-pact.ts --use_strict",
     "create-sandbox-pacts": "jest sandbox",
     "create-live-pacts": "jest live",
-    "publish-pacts": "ts-node ./broker/publish.ts --use_strict",
-    "verify-pacts": "ts-node ./broker/verify.ts --use_strict"
+    "publish-pacts": "ts-node-dev ./broker/publish.ts --use_strict",
+    "verify-pacts": "ts-node-dev ./broker/verify.ts --use_strict"
   },
   "author": "NHS Digital",
   "license": "MIT",
@@ -32,7 +32,7 @@
     "lossless-json": "1.0.4",
     "supertest": "4.0.2",
     "ts-jest": "26.1.0",
-    "ts-node": "8.10.2",
+    "ts-node-dev": "1.1.1",
     "typescript": "3.9.5",
     "uuid": "8.3.0",
     "xml-js": "1.6.11"
