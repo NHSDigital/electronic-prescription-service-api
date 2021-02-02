@@ -1,4 +1,18 @@
 <ProxyEndpoint name="default">
+  <PreFlow>
+    <Request>
+      <Step>
+        <Name>AssignMessage.Copy.RequestHeaders</Name>
+      </Step>
+    </Request>
+  </PreFlow>
+  <PostFlow>
+    <Response>
+      <Step>
+        <Name>AssignMessage.Revert.RequestHeaders</Name>
+      </Step>
+    </Response>
+  </PostFlow>
   <Flows>
     <Flow name="OptionsPreFlight">
       <Request/>
