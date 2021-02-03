@@ -6,7 +6,7 @@ import {processExamples} from "../../services/process-example-fetcher"
 import {pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
-  pactOptions("sandbox", "process", "accept-header"),
+  pactOptions("sandbox", "process", ["accept-header"]),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {

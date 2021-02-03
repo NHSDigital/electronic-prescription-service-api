@@ -8,7 +8,7 @@ import {createUnauthorisedInteraction} from "./auth"
 import {pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
-  pactOptions("live", "convert", "failures"),
+  pactOptions("live", "convert", ["failures"]),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {

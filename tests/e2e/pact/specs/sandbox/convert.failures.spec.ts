@@ -6,7 +6,7 @@ import * as LosslessJson from "lossless-json"
 import {pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
-  pactOptions("sandbox", "convert", "failures"),
+  pactOptions("sandbox", "convert", ["failures"]),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
