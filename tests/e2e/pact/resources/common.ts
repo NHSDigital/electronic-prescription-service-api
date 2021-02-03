@@ -7,12 +7,14 @@ export type ApiMode = "live" | "sandbox"
 
 export type ApiEndpoint = "prepare" | "process" | "convert" | "release"
 
-export type PactGroup =
-  "accept-header"
-  | "failures"
-  | "secondarycare-community-acute"
-  | "secondarycare-community-repeatdispensing"
-  | "secondarycare-homecare"
+export const PactGroups = [
+  "accept-header",
+  "failures",
+  "secondarycare-community-acute",
+  "secondarycare-community-repeatdispensing",
+  "secondarycare-homecare"
+]
+export type PactGroup = typeof PactGroups
 
 export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, group?: PactGroup): JestPactOptions {
 const sandbox = mode === "sandbox"

@@ -1,6 +1,9 @@
-import { VerifierV3 } from "@pact-foundation/pact"
+import { Pact, VerifierV3 } from "@pact-foundation/pact"
+import { group } from "console"
+import { PactGroups } from "../resources/common"
 
 let endpoint: string
+let pactGroup: string
 
 let token: string
 
@@ -28,7 +31,7 @@ async function verify(): Promise<any> {
       pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
       pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
       consumerVersionTag: process.env.PACT_VERSION,
-      provider: `${process.env.PACT_PROVIDER}+${endpoint}+${process.env.PACT_VERSION}`,
+      provider: `${process.env.PACT_PROVIDER}+${endpoint}${pactGroup ? "-" + pactGroup : ""}+${process.env.PACT_VERSION}`,
       providerVersion: providerVersion,
       providerBaseUrl: process.env.PACT_PROVIDER_URL,
       logLevel: "info",
@@ -56,56 +59,61 @@ async function verify(): Promise<any> {
     return await verifier.verifyProvider()
 }
 
+function resetBackOffRetryTimer() {
+  sleepMs = 0
+}
+
+async function verifyWith2Retries() {
+  await verify()
+    .catch(verify)
+    .catch(verify)
+    .catch(error => { throw error })
+}
+
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyConvert(): Promise<any> {
-  endpoint = "convert-failures"
-  sleepMs = 0
-  await verify().catch(verify).catch(verify)
-  endpoint = "convert-secondarycare-community-acute"
-  sleepMs = 0
-  await verify().catch(verify).catch(verify)
-  endpoint = "convert-secondarycare-community-repeatdispensing"
-  sleepMs = 0
-  await verify().catch(verify).catch(verify)
-  endpoint = "convert-secondarycare-homecare"
-  sleepMs = 0
-  await verify().catch(verify).catch(verify)
+  const pactGroups = PactGroups.filter(g => g !== "accept-header")
+
+  await pactGroups.reduce(async (promise, group) => {
+    await promise;
+    endpoint = "convert"
+    pactGroup = group
+    resetBackOffRetryTimer()
+    await verifyWith2Retries()
+  }, Promise.resolve());
 }
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyPrepare(): Promise<any> {
   endpoint = "prepare"
-  sleepMs = 0
-  await verify().catch(verify).catch(verify)
+  pactGroup = ""
+  resetBackOffRetryTimer()
+  await verifyWith2Retries()
 }
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyProcess(): Promise<any> {
-    endpoint = "process-accept-header"
-    sleepMs = 0
-    await verify().catch(verify).catch(verify)
-  if (!process.env.PACT_PROVIDER_URL.includes("sandbox")) {
-    endpoint = "process-failures"
-    sleepMs = 0
-    await verify().catch(verify).catch(verify)
-  }
-  endpoint = "process-secondarycare-community-acute"
-  sleepMs = 0
-  await verify().catch(verify).catch(verify)
-  endpoint = "process-secondarycare-community-repeatdispensing"
-  sleepMs = 0
-  await verify().catch(verify).catch(verify)
-  endpoint = "process-secondarycare-homecare"
-  sleepMs = 0
-  await verify().catch(verify).catch(verify)
+    const pactGroups =
+      process.env.PACT_PROVIDER_URL.includes("sandbox")
+      ? PactGroups.filter(g => g !== "failures")
+      : PactGroups
+
+    await pactGroups.reduce(async (promise, group) => {
+      await promise;
+      endpoint = "process"
+      pactGroup = group
+      resetBackOffRetryTimer()
+      await verifyWith2Retries()
+    }, Promise.resolve());
 }
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyRelease(): Promise<any> {
   //if (process.env.PACT_PROVIDER_URL.includes("sandbox")) {
     endpoint = "release"
-    sleepMs = 0
-    await verify().catch(verify).catch(verify)
+    pactGroup = ""
+    resetBackOffRetryTimer()
+    await verifyWith2Retries()
   //} 
 }
 

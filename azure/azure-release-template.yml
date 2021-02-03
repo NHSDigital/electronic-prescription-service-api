@@ -46,7 +46,7 @@ extends:
       - bash: |
           #!/bin/bash
 
-          set -euo
+          set -euo pipefail
 
           SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
           export SERVICE_ARTIFACT_NAME
