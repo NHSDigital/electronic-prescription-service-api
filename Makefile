@@ -10,7 +10,7 @@ all:
 
 .PHONY: install build test publish release clean
 
-install: install-node install-python install-hooks
+install: install-validator install-node install-python install-hooks
 
 build: build-specification build-coordinator build-validator build-proxies
 
@@ -52,14 +52,14 @@ run-coordinator:
 	source ./scripts/set_env_vars.sh && cd coordinator/dist && npm run start
 
 run-validator:
-	cd validator && \
-	java -Xms1500m -Xmx1500m -jar target/fhir-validator-*.jar
+	make -C validator run
 
 ## Install
+install-validator:
+	make -C validator install
 
 install-python:
 	poetry install
-	make -C validator install
 
 install-node:
 	cd specification && npm install
