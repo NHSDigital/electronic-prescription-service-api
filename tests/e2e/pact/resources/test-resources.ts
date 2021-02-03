@@ -39,7 +39,7 @@ export const processSecondaryCareCommunityRepeatDispensingCases =
 export const processSecondaryCareHomecareCases =
         processExamples
             .filter(e => e.isSuccess)
-            .filter(e => e.description.includes("secondary-care community acute"))
+            .filter(e => e.description.includes("secondary-care homecare"))
             .map(spec => [spec.description, spec.request, spec.prepareResponse, spec.convertResponse, spec.statusCode])
 
 export const releaseCases = releaseExamples.filter(e => e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])

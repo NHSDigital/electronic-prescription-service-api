@@ -23,7 +23,7 @@ function createPostmanCollection() {
 
         const postmanCollectionString = JSON.stringify(postmanCollection, null, 2)
         fs.writeFileSync(path.join(__dirname, `../postman/collections/electronic-prescription-service-${provider}.json`), postmanCollectionString)
-    });
+    })
 }
 
 createPostmanCollection()

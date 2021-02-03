@@ -1,5 +1,4 @@
-import { Pact, VerifierV3 } from "@pact-foundation/pact"
-import { group } from "console"
+import { VerifierV3 } from "@pact-foundation/pact"
 import { PactGroups } from "../resources/common"
 
 let endpoint: string
@@ -75,12 +74,12 @@ async function verifyConvert(): Promise<any> {
   const pactGroups = PactGroups.filter(g => g !== "accept-header")
 
   await pactGroups.reduce(async (promise, group) => {
-    await promise;
+    await promise
     endpoint = "convert"
     pactGroup = group
     resetBackOffRetryTimer()
     await verifyWith2Retries()
-  }, Promise.resolve());
+  }, Promise.resolve())
 }
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -99,12 +98,12 @@ async function verifyProcess(): Promise<any> {
       : PactGroups
 
     await pactGroups.reduce(async (promise, group) => {
-      await promise;
+      await promise
       endpoint = "process"
       pactGroup = group
       resetBackOffRetryTimer()
       await verifyWith2Retries()
-    }, Promise.resolve());
+    }, Promise.resolve())
 }
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */

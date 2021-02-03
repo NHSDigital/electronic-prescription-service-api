@@ -26,7 +26,7 @@ processPactGroups.forEach(pactGroup => {
   const pactGroupTestCases = pactGroup.cases
 
   jestpact.pactWith(
-    pactOptions("sandbox", "process", pactGroupName as PactGroup),
+    pactOptions("sandbox", "process", [pactGroupName]),
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     async (provider: any) => {
       const client = () => {

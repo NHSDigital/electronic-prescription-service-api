@@ -4,7 +4,7 @@ import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
 import { Bundle } from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
-import { PactGroup, pactOptions } from "../../resources/common"
+import { pactOptions } from "../../resources/common"
 
 const processPactGroups = [
   {
@@ -26,7 +26,7 @@ processPactGroups.forEach(pactGroup => {
   const pactGroupTestCases = pactGroup.cases
 
   jestpact.pactWith(
-    pactOptions("live", "process", pactGroupName as PactGroup),
+    pactOptions("live", "process", [pactGroupName]),
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     async (provider: any) => {
       const client = () => {

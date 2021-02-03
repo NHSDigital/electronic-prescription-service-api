@@ -26,7 +26,7 @@ pactConvertGroups.forEach(pactGroup => {
   const pactGroupTestCases = pactGroup.cases
 
   jestpact.pactWith(
-    pactOptions("sandbox", "convert", pactGroupName as PactGroup),
+    pactOptions("sandbox", "convert", [pactGroupName]),
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     async (provider: any) => {
       const client = () => {
@@ -73,4 +73,4 @@ pactConvertGroups.forEach(pactGroup => {
       })
     }
   )  
-});
+})
