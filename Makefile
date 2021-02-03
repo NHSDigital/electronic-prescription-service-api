@@ -59,6 +59,7 @@ run-validator:
 
 install-python:
 	poetry install
+	make -C validator install
 
 install-node:
 	cd specification && npm install
