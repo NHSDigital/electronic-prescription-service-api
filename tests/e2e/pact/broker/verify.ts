@@ -109,11 +109,8 @@ async function verifyRelease(): Promise<any> {
 
 (async () => {
   verifyConvert()
-    .catch()
-    .finally(verifyPrepare)
-    .catch()
-    .finally(verifyProcess)
-    .catch()
-    .finally(verifyRelease)
+    .then(verifyPrepare)
+    .then(verifyProcess)
+    .then(verifyRelease)
 })()
 
