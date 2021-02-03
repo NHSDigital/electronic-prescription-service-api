@@ -115,6 +115,7 @@ validate-models:
 lint: build
 	cd specification && npm run lint
 	cd coordinator && npm run lint
+	make -C validator lint
 	cd tests/e2e/pact && make lint
 	poetry run flake8 scripts/*.py --config .flake8
 	shellcheck scripts/*.sh
@@ -122,6 +123,7 @@ lint: build
 check-licenses:
 	cd specification && npm run check-licenses
 	cd coordinator && npm run check-licenses
+	make -C validator lint
 	cd tests/e2e/pact && make check-licenses
 	scripts/check_python_licenses.sh
 
