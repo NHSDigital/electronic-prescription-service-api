@@ -83,6 +83,9 @@
       </Step>
       <Condition>oauthV2.OauthV2.VerifyAccessToken.failed</Condition>
     </FaultRule>
+    <FaultRule name="missing-header">
+      <Condition>(fault.name = "RaiseFault.400MissingHeader")</Condition>
+    </FaultRule>
   </FaultRules>
   <DefaultFaultRule>
     <Step>

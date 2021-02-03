@@ -57,6 +57,11 @@
     </Properties>
     {{ HOSTED_TARGET_CONNECTION }}
   </HTTPTargetConnection>
+  <FaultRules>
+    <FaultRule name="missing-header">
+      <Condition>(fault.name = "RaiseFault.400MissingHeader")</Condition>
+    </FaultRule>
+  </FaultRules>
   <DefaultFaultRule>
     <Step>
       <Name>AssignMessage.CatchallErrorMessage</Name>
