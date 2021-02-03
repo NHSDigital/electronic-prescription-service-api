@@ -108,12 +108,12 @@ async function verifyProcess(): Promise<any> {
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyRelease(): Promise<any> {
-  //if (process.env.PACT_PROVIDER_URL.includes("sandbox")) {
+  if (process.env.PACT_PROVIDER_URL.includes("sandbox")) {
     endpoint = "release"
     pactGroup = ""
     resetBackOffRetryTimer()
     await verifyWith2Retries()
-  //} 
+  } 
 }
 
 (async () => {
