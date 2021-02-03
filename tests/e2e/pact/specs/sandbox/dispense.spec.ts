@@ -22,7 +22,7 @@ jestPact.pactWith(
         async (description: string, request: fhir.Parameters, response: fhir.Bundle, statusCode: string) => {
         const apiPath = "/Task/$release"
         const requestStr = LosslessJson.stringify(request)
-          const requestId = uuid.v4().toString().toLowerCase()
+        const requestId = uuid.v4()
 
         const interaction: InteractionObject = {
           state: "",

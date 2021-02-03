@@ -25,7 +25,7 @@ jestpact.pactWith(
 
         const requestStr = LosslessJson.stringify(request)
         const requestJson = JSON.parse(requestStr)
-        const requestId = uuid.v4().toString().toLowerCase()
+        const requestId = uuid.v4()
 
         const interaction: InteractionObject = {
           state: "is not authenticated",
@@ -61,7 +61,7 @@ jestpact.pactWith(
 
         const requestStr = LosslessJson.stringify(request)
         const requestJson = JSON.parse(requestStr)
-        const requestId = uuid.v4().toString().toLowerCase()
+        const requestId = uuid.v4()
 
         const interaction = {
           state: "is not authenticated",

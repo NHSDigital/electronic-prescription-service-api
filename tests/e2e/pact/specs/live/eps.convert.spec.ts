@@ -42,7 +42,7 @@ jestpact.pactWith(
 
         const requestStr = LosslessJson.stringify(request)
         const requestJson = JSON.parse(requestStr)
-        const requestId = uuid.v4().toString().toLowerCase()
+        const requestId = uuid.v4()
 
         const apiPath = "/$convert"
         const interaction: InteractionObject = {
@@ -79,7 +79,7 @@ jestpact.pactWith(
 
         const requestStr = LosslessJson.stringify(request)
         const requestJson = JSON.parse(requestStr)
-        const requestId = uuid.v4().toString().toLowerCase()
+        const requestId = uuid.v4()
 
         const apiPath = "/$convert"
         const interaction = {

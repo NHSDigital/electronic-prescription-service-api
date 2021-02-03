@@ -20,7 +20,7 @@ jestpact.pactWith(
       test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (description: string, request: Bundle, response: Parameters) => {
         const apiPath = "/$prepare"
         const requestStr = LosslessJson.stringify(request)
-        const requestId = uuid.v4().toString().toLowerCase()
+        const requestId = uuid.v4()
 
         const interaction: InteractionObject = {
           state: "is not authenticated",

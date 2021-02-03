@@ -23,7 +23,7 @@ jestpact.pactWith(
       test(authenticationTestDescription, async () => {
         const apiPath = "/$process-message"
         const interaction: InteractionObject = createUnauthorisedInteraction(authenticationTestDescription, apiPath)
-        const requestId = uuid.v4().toString().toLowerCase()
+        const requestId = uuid.v4()
         await provider.addInteraction(interaction)
         await client()
           .post(apiPath)
@@ -39,7 +39,7 @@ jestpact.pactWith(
         const apiPath = "/$process-message"
         const bundleStr = LosslessJson.stringify(message)
         const bundle = JSON.parse(bundleStr) as Bundle
-        const requestId = uuid.v4().toString().toLowerCase()
+        const requestId = uuid.v4()
 
         const interaction: InteractionObject = {
           state: "is authenticated",

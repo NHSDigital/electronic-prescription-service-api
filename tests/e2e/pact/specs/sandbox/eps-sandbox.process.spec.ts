@@ -21,7 +21,7 @@ jestpact.pactWith(
       test.each(TestResources.processCases)("should be able to process %s", async (desc: string, message: Bundle) => {
         const apiPath = "/$process-message"
         const messageStr = LosslessJson.stringify(message)
-        const requestId = uuid.v4().toString().toLowerCase()
+        const requestId = uuid.v4()
         const interaction: InteractionObject = {
           state: "is not authenticated",
           uponReceiving: `a request to process ${desc} message to Spine`,
@@ -59,7 +59,7 @@ jestpact.pactWith(
 
         const apiPath = "/$process-message"
         const messageStr = LosslessJson.stringify(testCase.request)
-        const requestId = uuid.v4().toString().toLowerCase()
+        const requestId = uuid.v4()
 
         const interaction: InteractionObject = {
           state: "is not authenticated",
