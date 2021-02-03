@@ -1,11 +1,11 @@
-import {InteractionObject} from "@pact-foundation/pact"
+import { InteractionObject } from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
-import {Bundle} from "../../models/fhir/fhir-resources"
+import { Bundle } from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
-import {createUnauthorisedInteraction} from "./auth"
-import {pactOptions} from "../../resources/common"
+import { createUnauthorisedInteraction } from "./auth"
+import { pactOptions } from "../../resources/common"
 
 jestpact.pactWith(
   pactOptions("live", "convert", ["failures"]),
