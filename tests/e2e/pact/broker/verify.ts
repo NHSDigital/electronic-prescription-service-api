@@ -66,7 +66,7 @@ async function verifyWith2Retries() {
   await verify()
     .catch(verify)
     .catch(verify)
-    .catch(error => { throw error })
+    .catch(() => process.exit(1))
 }
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
