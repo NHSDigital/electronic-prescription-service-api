@@ -1,4 +1,4 @@
-## Generating Postman collections on Windows
+## Generating Postman collections
 
 Run create-smoke-tests to create a live pact then generate-postman-collection to create postman collections from the pacts. These will be created under `tests/e2e/postman/collections`
 
