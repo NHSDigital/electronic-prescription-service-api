@@ -4,7 +4,7 @@ import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
 import {Bundle} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
-import { PactGroup, pactOptions } from "../../resources/common"
+import {pactOptions} from "../../resources/common"
 
 const pactConvertGroups = [
   {
