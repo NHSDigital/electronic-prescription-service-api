@@ -1,4 +1,4 @@
-## Testing Dispensing on Windows
+## Testing Dispensing
 
 1. **Update prescriptions** - Update example prescriptions with new ids to be able to send to spine int - script updates ids in request examples, sends them to a deployed sandbox api (can be a pr version) and updates the expected convert and prepare responses 
 2. **Sign prescriptions** -  Sign updated example prescriptions now that the ids have changed - prescription signer signs prescriptions so they can be sent to int for a dispenser to verify
@@ -18,7 +18,7 @@ OR
 make env=internal-dev-sandbox pr=333 update-prescriptions
 ```
 
-#### Sign prescriptions
+#### Sign prescriptions (Windows Only)
 ---
 
 Use prescription signer tool shared with nimbus dev team to sign the prescriptions, build project, copy output files into C://e/sign, update settings.txt as needed

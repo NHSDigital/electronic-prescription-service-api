@@ -1,4 +1,4 @@
-## Testing on Windows
+## Testing
 
 ### Sandbox Proxies
 ```
