@@ -6,14 +6,10 @@ import {Bundle} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import {processExamples} from "../../services/process-example-fetcher"
 import * as uuid from "uuid"
+import {pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
-  {
-    spec: 3,
-    consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-    provider: `nhsd-apim-eps-sandbox+process+${process.env.PACT_VERSION}`,
-    pactfileWriteMode: "merge"
-  },
+  pactOptions(true, "process"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {

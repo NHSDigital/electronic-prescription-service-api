@@ -1,30 +1,23 @@
-import path from "path"
 import { ConvertCase } from "../models/cases/convert-case"
 import { exampleFiles } from "./example-files-fetcher"
 import { ExampleFile } from "../models/files/example-file"
-
-const examplesRootPath = "../resources/parent-prescription"
+import {createExampleDescription} from "../resources/common"
 
 const convertResponseFiles = exampleFiles.filter(exampleFile => exampleFile.isResponse && exampleFile.endpoint === "convert")
 
 const convertRequestFiles = exampleFiles.filter(exampleFile =>
 	exampleFile.isRequest
-	&& convertResponseFiles.some(convertResponseFile => 
+	&& convertResponseFiles.some(convertResponseFile =>
 			convertResponseFile.dir === exampleFile.dir
 			&& convertResponseFile.operation === exampleFile.operation
 			&& convertResponseFile.number === exampleFile.number))
 
 const conventionBasedConvertExamples: ConvertCase[] = convertResponseFiles.map(convertResponseFile => new ConvertCase(
-	getDescription(convertResponseFile),
+	createExampleDescription(convertResponseFile),
 	getRequest(convertResponseFile),
-	getResponse(convertResponseFile),
-	getStatusText(convertResponseFile)
+  convertResponseFile.path,
+  convertResponseFile.statusText
 ))
-
-function getDescription(convertResponseFile: ExampleFile): string {
-	return path.parse(path.relative(path.join(__dirname, examplesRootPath), convertResponseFile.path)).dir.replace(/\//g, " ") + " "
-		+ `${convertResponseFile.number} ${convertResponseFile.operation} ${convertResponseFile.statusText}`
-}
 
 function getRequest(convertResponseFile: ExampleFile) {
 	const requestPath = convertRequestFiles.find(convertRequestFile =>
@@ -39,14 +32,6 @@ function getRequest(convertResponseFile: ExampleFile) {
 	}
 
 	return requestPath
-}
-
-function getResponse(convertResponseFile: ExampleFile): string {
-	return convertResponseFile.path
-}
-
-function getStatusText(convertResponseFile: ExampleFile): string {
-	return convertResponseFile.statusText
 }
 
 export const convertExamples = conventionBasedConvertExamples

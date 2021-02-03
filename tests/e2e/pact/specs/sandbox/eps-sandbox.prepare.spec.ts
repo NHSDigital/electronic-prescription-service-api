@@ -5,14 +5,10 @@ import * as TestResources from "../../resources/test-resources"
 import {Bundle, Parameters} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
+import {getStringParameterByName, pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
-  {
-    spec: 3,
-    consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-    provider: `nhsd-apim-eps-sandbox+prepare+${process.env.PACT_VERSION}`,
-    pactfileWriteMode: "merge"
-  },
+  pactOptions(true, "prepare"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
@@ -48,11 +44,11 @@ jestpact.pactWith(
               parameter: [
                 {
                   name: "digest",
-                  valueString: Matchers.like(response.parameter.find(p => p.name === "digest").valueString)
+                  valueString: Matchers.like(getStringParameterByName(response, "digest").valueString)
                 },
                 {
                   name: "timestamp",
-                  valueString: Matchers.like(response.parameter.find(p => p.name === "timestamp").valueString)
+                  valueString: Matchers.like(getStringParameterByName(response, "timestamp").valueString)
                 },
                 {
                   name: "algorithm",

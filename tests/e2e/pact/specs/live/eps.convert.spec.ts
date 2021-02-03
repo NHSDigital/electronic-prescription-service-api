@@ -6,14 +6,10 @@ import {Bundle} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import {createUnauthorisedInteraction} from "./eps-auth"
 import * as uuid from "uuid"
+import {pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
-  {
-    spec: 3,
-    consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-    provider: `nhsd-apim-eps+convert+${process.env.PACT_VERSION}`,
-    pactfileWriteMode: "merge"
-  },
+  pactOptions(false, "convert"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
