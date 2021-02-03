@@ -1,4 +1,4 @@
-<RaiseFault async="false" continueOnError="false" enabled="true" name="RaiseFault.400BadRequest">
+<RaiseFault async="false" continueOnError="false" enabled="true" name="RaiseFault.400MissingHeader">
     <FaultResponse>
         <Set>
           <Payload contentType="application/fhir+json">
