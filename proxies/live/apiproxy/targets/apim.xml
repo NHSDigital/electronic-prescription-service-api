@@ -26,7 +26,6 @@
           <Name>RaiseFault.400MissingHeader</Name>
           <Condition>(not original-request-details.header.X-Request-ID ~~ "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")</Condition>
         </Step>
-
         <Step>
           <Name>Quota</Name>
         </Step>

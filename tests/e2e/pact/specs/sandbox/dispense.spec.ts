@@ -5,6 +5,7 @@ import * as TestResources from "../../resources/test-resources"
 import * as fhir from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import {InteractionObject} from "@pact-foundation/pact"
+import * as uuid from "uuid"
 
 jestPact.pactWith(
   pactOptions(true, "release"),
@@ -21,13 +22,15 @@ jestPact.pactWith(
         async (description: string, request: fhir.Parameters, response: fhir.Bundle, statusCode: string) => {
         const apiPath = "/Task/$release"
         const requestStr = LosslessJson.stringify(request)
+          const requestId = uuid.v4().toString().toLowerCase()
 
         const interaction: InteractionObject = {
           state: "",
           uponReceiving: `a request to release a ${description} message`,
           withRequest: {
             headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0",
+              "X-Request-ID": requestId
             },
             method: "POST",
             path: apiPath,
@@ -35,7 +38,8 @@ jestPact.pactWith(
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+              "X-Request-ID": requestId
             },
             body: {
               "resourceType": "Bundle",
@@ -78,6 +82,7 @@ jestPact.pactWith(
         await client()
           .post(apiPath)
           .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
+          .set('X-Request-ID', requestId)
           .send(requestStr)
           .expect(statusCode)
       })
