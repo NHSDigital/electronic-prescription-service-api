@@ -6,13 +6,13 @@ Once setup see:
 
 **[Add a new example](./docs/AddingExamples.md)**
 
-**[Running smoke tests on Windows](./docs/WindowsTesting.md)**
+**[Running smoke tests](./docs/Testing.md)**
 
-**[Testing with dispensers on Windows](./docs/WindowsTestingDispensing.md)**
+**[Testing with dispensers](./docs/TestingDispensing.md)**
 
-**[Generating postman collections on Windows](./docs/WindowsPostman.md)**
+**[Generating postman collections](./docs/Postman.md)**
 
-## Setup
+## Setup for Windows
 
 ### Download
 

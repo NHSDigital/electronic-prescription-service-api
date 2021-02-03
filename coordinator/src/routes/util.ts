@@ -10,6 +10,7 @@ import {getMessageHeader} from "../services/translation/common/getResourcesOfTyp
 import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
+import {MessageTypeError} from "../models/errors/validation-errors"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
@@ -103,6 +104,31 @@ export async function fhirValidation(
     }`)
   }
   return validatorResponseData
+}
+
+export function taskValidatorHandler(handler: Handler<fhir.Parameters>) {
+  return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+    if (request.headers["x-skip-validation"]) {
+      request.logger.info("Skipping call to FHIR validator")
+    } else {
+      request.logger.info("Making call to FHIR validator")
+      const validatorResponseData = await fhirValidation(request.payload, request.headers)
+      request.logger.info("Received response from FHIR validator")
+      const error = validatorResponseData.issue.find(issue => issue.severity === "error" || issue.severity === "fatal")
+      if (error) {
+        return responseToolkit.response(validatorResponseData).code(400)
+      }
+    }
+
+    const requestPayload = getPayload(request) as fhir.Resource
+    if (requestPayload.resourceType !== "Parameters") {
+      const error = new MessageTypeError()
+      const response = toFhirError([error])
+      const statusCode = requestValidator.getStatusCode([error])
+      return responseToolkit.response(response).code(statusCode)
+    }
+    return handler(requestPayload as fhir.Parameters, request, responseToolkit)
+  }
 }
 
 export function validatingHandler(handler: Handler<fhir.Bundle>) {
