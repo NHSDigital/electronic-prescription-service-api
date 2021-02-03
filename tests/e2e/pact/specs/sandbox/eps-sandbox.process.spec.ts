@@ -18,10 +18,11 @@ jestpact.pactWith(
     }
 
     describe("process-message sandbox e2e tests", () => {
-      test.each(TestResources.processCases)("should be able to process %s", async (desc: string, message: Bundle) => {
+      test.each(TestResources.processCases)("should be able to process %s", async (desc: string, request: Bundle) => {
         const apiPath = "/$process-message"
-        const messageStr = LosslessJson.stringify(message)
+        const messageStr = LosslessJson.stringify(request)
         const requestId = uuid.v4()
+
         const interaction: InteractionObject = {
           state: "is not authenticated",
           uponReceiving: `a request to process ${desc} message to Spine`,
@@ -31,7 +32,7 @@ jestpact.pactWith(
               "X-Request-ID": requestId
             },
             method: "POST",
-            path: "/$process-message",
+            path: apiPath,
             body: JSON.parse(messageStr)
           },
           willRespondWith: {
@@ -71,7 +72,7 @@ jestpact.pactWith(
               "X-Request-ID": requestId
             },
             method: "POST",
-            path: "/$process-message",
+            path: apiPath,
             body: JSON.parse(messageStr)
           },
           willRespondWith: {

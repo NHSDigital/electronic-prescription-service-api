@@ -17,21 +17,21 @@ jestpact.pactWith(
     }
 
     describe("prepare sandbox e2e tests", () => {
-      test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (description: string, request: Bundle, response: Parameters) => {
+      test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (desc: string, request: Bundle, response: Parameters) => {
         const apiPath = "/$prepare"
         const requestStr = LosslessJson.stringify(request)
         const requestId = uuid.v4()
 
         const interaction: InteractionObject = {
           state: "is not authenticated",
-          uponReceiving: `a request to prepare a ${description} message`,
+          uponReceiving: `a request to prepare a ${desc} message`,
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",
               "X-Request-ID": requestId
             },
             method: "POST",
-            path: "/$prepare",
+            path: apiPath,
             body: JSON.parse(requestStr)
           },
           willRespondWith: {

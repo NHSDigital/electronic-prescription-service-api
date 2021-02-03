@@ -24,7 +24,6 @@ jestpact.pactWith(
         expect(isMatch).toBe(true)
 
         const requestStr = LosslessJson.stringify(request)
-        const requestJson = JSON.parse(requestStr)
         const requestId = uuid.v4()
 
         const interaction: InteractionObject = {
@@ -37,7 +36,7 @@ jestpact.pactWith(
             },
             method: "POST",
             path: apiPath,
-            body: requestJson
+            body: JSON.parse(requestStr)
           },
           willRespondWith: {
             headers: {
@@ -60,7 +59,6 @@ jestpact.pactWith(
       test.each(TestResources.convertErrorCases)("should receive expected error code in response to %s message", async (desc: string, request: Bundle, response: string, statusCode: number) => {
 
         const requestStr = LosslessJson.stringify(request)
-        const requestJson = JSON.parse(requestStr)
         const requestId = uuid.v4()
 
         const interaction = {
@@ -73,7 +71,7 @@ jestpact.pactWith(
             },
             method: "POST",
             path: apiPath,
-            body: requestJson
+            body: JSON.parse(requestStr)
           },
           willRespondWith: {
             headers: {
@@ -89,7 +87,7 @@ jestpact.pactWith(
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('X-Request-ID', requestId)
-          .send(requestJson)
+          .send(requestStr)
           .expect(statusCode)
       })
     })

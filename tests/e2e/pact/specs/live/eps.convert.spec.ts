@@ -22,8 +22,8 @@ jestpact.pactWith(
     describe("endpoint authentication e2e tests", () => {
       test(authenticationTestDescription, async () => {
         const apiPath = "/$convert"
+        const requestId = uuid.v4()
         const interaction: InteractionObject = createUnauthorisedInteraction(authenticationTestDescription, apiPath)
-        const requestId = uuid.v4().toString().toLowerCase()
         await provider.addInteraction(interaction)
         await client()
           .post(apiPath)
@@ -40,11 +40,10 @@ jestpact.pactWith(
         const isMatch = regex.test(response)
         expect(isMatch).toBe(true)
 
+        const apiPath = "/$convert"
         const requestStr = LosslessJson.stringify(request)
-        const requestJson = JSON.parse(requestStr)
         const requestId = uuid.v4()
 
-        const apiPath = "/$convert"
         const interaction: InteractionObject = {
           state: "is authenticated",
           uponReceiving: `a request to convert ${desc} message`,
@@ -55,7 +54,7 @@ jestpact.pactWith(
             },
             method: "POST",
             path: apiPath,
-            body: requestJson
+            body: JSON.parse(requestStr)
           },
           willRespondWith: {
             headers: {
@@ -76,12 +75,10 @@ jestpact.pactWith(
       })
 
       test.each(TestResources.convertErrorCases)("should receive expected error code in response to %s message", async (desc: string, request: Bundle, response: string, statusCode: number) => {
-
+        const apiPath = "/$convert"
         const requestStr = LosslessJson.stringify(request)
-        const requestJson = JSON.parse(requestStr)
         const requestId = uuid.v4()
 
-        const apiPath = "/$convert"
         const interaction = {
           state: "is authenticated",
           uponReceiving: `a request to convert ${desc} message`,
@@ -92,7 +89,7 @@ jestpact.pactWith(
             },
             method: "POST",
             path: apiPath,
-            body: requestJson
+            body: JSON.parse(requestStr)
           },
           willRespondWith: {
             headers: {
@@ -108,7 +105,7 @@ jestpact.pactWith(
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('X-Request-ID', requestId)
-          .send(requestJson)
+          .send(requestStr)
           .expect(statusCode)
       })
     })

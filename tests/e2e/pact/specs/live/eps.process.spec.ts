@@ -1,10 +1,10 @@
-import { InteractionObject } from "@pact-foundation/pact"
+import {InteractionObject} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
-import { Bundle } from "../../models/fhir/fhir-resources"
+import {Bundle} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
-import { createUnauthorisedInteraction } from "./eps-auth"
+import {createUnauthorisedInteraction} from "./eps-auth"
 import * as uuid from "uuid"
 import {pactOptions} from "../../resources/common"
 
@@ -35,10 +35,9 @@ jestpact.pactWith(
     })
 
     describe("process-message e2e tests", () => {
-      test.each(TestResources.processCases)("should be able to process %s", async (desc: string, message: Bundle) => {
+      test.each(TestResources.processCases)("should be able to process a %s message", async (desc: string, request: Bundle) => {
         const apiPath = "/$process-message"
-        const bundleStr = LosslessJson.stringify(message)
-        const bundle = JSON.parse(bundleStr) as Bundle
+        const requestStr = LosslessJson.stringify(request)
         const requestId = uuid.v4()
 
         const interaction: InteractionObject = {
@@ -50,8 +49,8 @@ jestpact.pactWith(
               "X-Request-ID": requestId
             },
             method: "POST",
-            path: "/$process-message",
-            body: bundle
+            path: apiPath,
+            body: JSON.parse(requestStr)
           },
           willRespondWith: {
             headers: {
@@ -83,7 +82,7 @@ jestpact.pactWith(
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('X-Request-ID', requestId)
-          .send(bundleStr)
+          .send(requestStr)
           .expect(400)
       })
     })
