@@ -4,7 +4,7 @@ import {SpineRequest,SpineResponse} from "../../models/spine"
 import {Logger} from "pino"
 
 export interface RequestHandler {
-  send(spineRequest: SpineRequest, xRequestIdHeader: string, logger: Logger): Promise<SpineResponse<unknown>>
+  send(spineRequest: SpineRequest, logger: Logger): Promise<SpineResponse<unknown>>
   poll(path: string, logger: Logger): Promise<SpineResponse<unknown>>
 }
 

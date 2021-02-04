@@ -39,13 +39,13 @@ class EbXmlRequest {
   }
 }
 
-export function addEbXmlWrapper(spineRequest: SpineRequest, requestId: string): string {
+export function addEbXmlWrapper(spineRequest: SpineRequest): string {
   const cpaId = cpaIdMap.get(spineRequest.interactionId)
   if (!cpaId) {
     throw new Error(`Could not identify CPA ID for interaction ${spineRequest.interactionId}`)
   }
 
-  const ebXmlRequest = new EbXmlRequest(spineRequest.interactionId, cpaId, spineRequest.message, requestId)
+  const ebXmlRequest = new EbXmlRequest(spineRequest.interactionId, cpaId, spineRequest.message, spineRequest.messageId)
   return Mustache.render(ebxmlRequestTemplate, ebXmlRequest)
 }
 
