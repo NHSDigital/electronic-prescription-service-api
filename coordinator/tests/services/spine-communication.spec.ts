@@ -24,8 +24,6 @@ describe("Spine communication", () => {
     moxios.uninstall(axios)
   })
 
-  const mockXRequestIdHeader = "ExampleMessageId"
-
   test("Successful send response returns pollable result", async () => {
     moxios.wait(() => {
       const request = moxios.requests.mostRecent()
@@ -40,7 +38,6 @@ describe("Spine communication", () => {
 
     const spineResponse = await requestHandler.send(
       {message: "test", interactionId: "test2"},
-      mockXRequestIdHeader,
       logger
     )
 
@@ -57,7 +54,6 @@ describe("Spine communication", () => {
 
     const spineResponse = await requestHandler.send(
       {message: "test", interactionId: "test2"},
-      mockXRequestIdHeader,
       logger
     )
 
@@ -96,7 +92,6 @@ describe("Spine communication", () => {
 
     const spineResponse = await requestHandler.send(
       {message: "test", interactionId: "test2"},
-      mockXRequestIdHeader,
       logger
     )
 
@@ -129,7 +124,6 @@ describe("Spine communication", () => {
 
     const spineResponse = await requestHandler.send(
       {message: "test", interactionId: "test2"},
-      mockXRequestIdHeader,
       logger
     )
 
