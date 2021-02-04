@@ -19,7 +19,8 @@ info:
     * create a secondary care (outpatient) prescription
     * cancel a secondary care (outpatient) prescription
     * evaluate prescription signing client implementations
-    * release a prescription for dispensing
+    * release a prescription for dispensing (sandbox implementation)
+    * send a dispense notification to EPS (sandbox implementation)
 
     You cannot currently use this API to:
     * prepare a primary care prescription for signing
@@ -175,15 +176,6 @@ info:
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/DigitalMedicines) to assist with your integration.
     This is the FHIR specification for Digital Medicines starting with the assets required for an electronic prescription sent to the EPS.
 
-    ## Responses
-    ### 2XX responses
-    Note: This section is under development and subject to change. All Spine responses are returned with 200 HTTP codes until a Spine translation service is built. This does not affect the sandbox environment.
-
-    | Endpoint               | HTTP code | Response format                                                                                                                                             |
-    | ---------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-    | POST /$prepare         | 200       | [See /$prepare response body](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Prescribing-preparePrescription)      |
-    | POST /$process-message | 200       | [See /$process-message response body](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Prescribing-sendPrescription) |
-
     ### 4XX responses
     Note: This section is under development and subject to change. All Spine responses are returned with 200 HTTP codes until a Spine translation service is built. This does not affect the sandbox environment.
 
@@ -191,31 +183,6 @@ info:
     | --------------------- | --------- | ----------------------------------------- | ---------------- | --------------------- |
     | Any                   | 400       | See "Unsupported operation" example below | Sandbox          | Unsupported operation |
     | Any                   | 408       | Returns original request data             | Integration test | Request timeout       |
-
-
-    #### Example: Unsupported operation
-    If attempting to call the `/_poll` endpoint in the sandbox environment, the following error would be returned:
-      ```
-      {
-        resourceType: "OperationOutcome",
-        issue: [
-          {
-            code: "informational",
-            severity: "information",
-            details: {
-              coding: [
-                {
-                  code: "INTERACTION_NOT_SUPPORTED_BY_SANDBOX",
-                  display: "Interaction not supported by sandbox",
-                  system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
-                  version: "1"
-                }
-              ]
-            }
-          }
-        ]
-      }
-      ```
 
     #### Validation errors
     Our endpoints can return the following errors:
