@@ -22,20 +22,20 @@ const httpsAgent = new https.Agent({
 export class LiveRequestHandler implements RequestHandler {
   private readonly spineEndpoint: string
   private readonly spinePath: string
-  private readonly ebXMLBuilder: (spineRequest: SpineRequest, xRequestIdHeader: string) => string
+  private readonly ebXMLBuilder: (spineRequest: SpineRequest, requestId: string) => string
 
   constructor(
     spineEndpoint: string = null,
     spinePath: string = null,
-    ebXMLBuilder: (spineRequest: SpineRequest, xRequestIdHeader: string) => string = null
+    ebXMLBuilder: (spineRequest: SpineRequest, requestId: string) => string = null
   ) {
     this.spineEndpoint = spineEndpoint || SPINE_ENDPOINT
     this.spinePath = spinePath || SPINE_PATH
     this.ebXMLBuilder = ebXMLBuilder || addEbXmlWrapper
   }
 
-  async send(spineRequest: SpineRequest, xRequestIdHeader: string, logger: Logger): Promise<SpineResponse<unknown>> {
-    const wrappedMessage = this.ebXMLBuilder(spineRequest, xRequestIdHeader)
+  async send(spineRequest: SpineRequest, requestId: string, logger: Logger): Promise<SpineResponse<unknown>> {
+    const wrappedMessage = this.ebXMLBuilder(spineRequest, requestId)
     const address = this.getSpineUrlForPrescription()
 
     logger.info(`Attempting to send message to ${address}`)
@@ -52,7 +52,7 @@ export class LiveRequestHandler implements RequestHandler {
               " type=text/xml;" +
               " start=ebXMLHeader@spine.nhs.uk",
             "SOAPAction": `urn:nhs:names:services:mm/${spineRequest.interactionId}`,
-            "NHSD-Request-ID": xRequestIdHeader
+            "NHSD-Request-ID": requestId
           }
         }
       )

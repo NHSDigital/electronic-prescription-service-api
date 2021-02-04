@@ -31,21 +31,21 @@ class EbXmlRequest {
   cpa_id: string
   hl7_message: string
 
-  constructor(interactionId: string, cpaId: string, hl7V3Message: string, xRequestIdHeader: string) {
+  constructor(interactionId: string, cpaId: string, hl7V3Message: string, requestId: string) {
     this.action = interactionId
     this.cpa_id = cpaId
     this.hl7_message = hl7V3Message
-    this.message_id = xRequestIdHeader
+    this.message_id = requestId
   }
 }
 
-export function addEbXmlWrapper(spineRequest: SpineRequest, xRequestIdHeader: string): string {
+export function addEbXmlWrapper(spineRequest: SpineRequest, requestId: string): string {
   const cpaId = cpaIdMap.get(spineRequest.interactionId)
   if (!cpaId) {
     throw new Error(`Could not identify CPA ID for interaction ${spineRequest.interactionId}`)
   }
 
-  const ebXmlRequest = new EbXmlRequest(spineRequest.interactionId, cpaId, spineRequest.message, xRequestIdHeader)
+  const ebXmlRequest = new EbXmlRequest(spineRequest.interactionId, cpaId, spineRequest.message, requestId)
   return Mustache.render(ebxmlRequestTemplate, ebXmlRequest)
 }
 
