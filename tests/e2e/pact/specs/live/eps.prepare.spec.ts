@@ -1,10 +1,10 @@
 import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import * as TestResources from "../../resources/test-resources"
-import { Bundle, Parameters } from "../../models/fhir/fhir-resources"
+import {Bundle, Parameters} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import supertest from "supertest"
-import { createUnauthorisedInteraction } from "./eps-auth"
+import {createUnauthorisedInteraction} from "./eps-auth"
 import * as uuid from "uuid"
 import {getStringParameterByName, pactOptions} from "../../resources/common"
 
@@ -24,11 +24,13 @@ jestpact.pactWith(
         const apiPath = "/$prepare"
         const interaction: InteractionObject = createUnauthorisedInteraction(authenticationTestDescription, apiPath)
         const requestId = uuid.v4()
+        const correlationId = uuid.v4()
         await provider.addInteraction(interaction)
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('X-Request-ID', requestId)
+          .set('X-Correlation-ID', correlationId)
           .send({})
           .expect(401)
       })
@@ -39,6 +41,7 @@ jestpact.pactWith(
         const apiPath = "/$prepare"
         const requestStr = LosslessJson.stringify(request)
         const requestId = uuid.v4()
+        const correlationId = uuid.v4()
 
         const interaction: InteractionObject = {
           state: "is authenticated",
@@ -46,7 +49,8 @@ jestpact.pactWith(
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",
-              "X-Request-ID": requestId
+              "X-Request-ID": requestId,
+              "X-Correlation-ID": correlationId
             },
             method: "POST",
             path: apiPath,
@@ -55,7 +59,8 @@ jestpact.pactWith(
           willRespondWith: {
             headers: {
               "Content-Type": "application/json",
-              "X-Request-ID": requestId
+              "X-Request-ID": requestId,
+              "X-Correlation-ID": correlationId
             },
             body: {
               resourceType: "Parameters",
@@ -79,11 +84,12 @@ jestpact.pactWith(
         }
         await provider.addInteraction(interaction)
         await client()
-            .post(apiPath)
-            .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-            .set('X-Request-ID', requestId)
-            .send(requestStr)
-            .expect(200)
+          .post(apiPath)
+          .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+          .set('X-Request-ID', requestId)
+          .set('X-Correlation-ID', correlationId)
+          .send(requestStr)
+          .expect(200)
       })
     })
   }

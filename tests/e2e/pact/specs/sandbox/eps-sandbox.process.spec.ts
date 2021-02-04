@@ -22,6 +22,7 @@ jestpact.pactWith(
         const apiPath = "/$process-message"
         const messageStr = LosslessJson.stringify(request)
         const requestId = uuid.v4()
+        const correlationId = uuid.v4()
 
         const interaction: InteractionObject = {
           state: "is not authenticated",
@@ -29,7 +30,8 @@ jestpact.pactWith(
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",
-              "X-Request-ID": requestId
+              "X-Request-ID": requestId,
+              "X-Correlation-ID": correlationId
             },
             method: "POST",
             path: apiPath,
@@ -38,7 +40,8 @@ jestpact.pactWith(
           willRespondWith: {
             headers: {
               "Content-Type": "application/json",
-              "X-Request-ID": requestId
+              "X-Request-ID": requestId,
+              "X-Correlation-ID": correlationId
             },
             // body: {
             //   resourceType: "Bundle"
@@ -51,6 +54,7 @@ jestpact.pactWith(
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('X-Request-ID', requestId)
+          .set('X-Correlation-ID', correlationId)
           .send(messageStr)
           .expect(200)
       })
@@ -61,6 +65,7 @@ jestpact.pactWith(
         const apiPath = "/$process-message"
         const messageStr = LosslessJson.stringify(testCase.request)
         const requestId = uuid.v4()
+        const correlationId = uuid.v4()
 
         const interaction: InteractionObject = {
           state: "is not authenticated",
@@ -68,8 +73,8 @@ jestpact.pactWith(
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",
-              "Accept": "application/fhir+json",
-              "X-Request-ID": requestId
+              "X-Request-ID": requestId,
+              "X-Correlation-ID": correlationId
             },
             method: "POST",
             path: apiPath,
@@ -78,7 +83,9 @@ jestpact.pactWith(
           willRespondWith: {
             status: 200,
             headers: {
-              "X-Request-ID": requestId
+              "Content-Type": "application/json",
+              "X-Request-ID": requestId,
+              "X-Correlation-ID": correlationId
             },
           }
         }
@@ -88,6 +95,7 @@ jestpact.pactWith(
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('Accept', 'application/fhir+json')
           .set('X-Request-ID', requestId)
+          .set('X-Correlation-ID', correlationId)
           .send(messageStr)
           .expect(200)
       })
