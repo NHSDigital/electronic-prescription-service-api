@@ -6,7 +6,7 @@
               "resourceType": "OperationOutcome",
               "issue": [
                 {
-                  "severity": "error",
+                  "severity": "fatal",
                   "code": "value",
                   "details": {
                     "coding": [
