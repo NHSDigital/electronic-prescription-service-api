@@ -20,7 +20,7 @@ function validateValidationErrors (validationErrors: Array<errors.ValidationErro
 }
 
 describe("Bundle checks", () => {
-  test("verifyPrescriptionBundle accepts bundle with required Resources", () => {
+  test("verifyBundle accepts bundle with required Resources", () => {
     expect(validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned))
       .toEqual([])
   })

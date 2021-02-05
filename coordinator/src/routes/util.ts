@@ -60,7 +60,8 @@ type Handler<T> = (
 
 export enum MessageType {
   PRESCRIPTION = "prescription-order",
-  CANCELLATION = "prescription-order-update"
+  CANCELLATION = "prescription-order-update",
+  DISPENSE = "prescription-dispense"
 }
 
 export function identifyMessageType(bundle: fhir.Bundle): string {

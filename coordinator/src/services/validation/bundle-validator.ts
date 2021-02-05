@@ -21,9 +21,18 @@ export function verifyBundle(bundle: fhir.Bundle): Array<errors.ValidationError>
 
   const commonErrors = verifyCommonBundle(bundle)
 
-  const messageTypeSpecificErrors = messageType === MessageType.PRESCRIPTION
-    ? verifyPrescriptionBundle(bundle)
-    : verifyCancellationBundle(bundle)
+  let messageTypeSpecificErrors
+  switch (messageType) {
+  case MessageType.PRESCRIPTION:
+    messageTypeSpecificErrors = verifyPrescriptionBundle(bundle)
+    break
+  case MessageType.CANCELLATION:
+    messageTypeSpecificErrors = verifyCancellationBundle(bundle)
+    break
+  case MessageType.DISPENSE:
+    messageTypeSpecificErrors = verifyDispenseBundle(bundle)
+    break
+  }
 
   return [
     ...commonErrors,
@@ -32,7 +41,9 @@ export function verifyBundle(bundle: fhir.Bundle): Array<errors.ValidationError>
 }
 
 function verifyMessageType(messageType: string): messageType is MessageType {
-  return messageType === MessageType.PRESCRIPTION || messageType === MessageType.CANCELLATION
+  return messageType === MessageType.PRESCRIPTION ||
+    messageType === MessageType.CANCELLATION ||
+    messageType === MessageType.DISPENSE
 }
 
 export function verifyCommonBundle(bundle: fhir.Bundle): Array<errors.ValidationError> {
@@ -127,6 +138,11 @@ export function verifyCancellationBundle(bundle: fhir.Bundle): Array<errors.Vali
   }
 
   return validationErrors
+}
+
+function verifyDispenseBundle(bundle: fhir.Bundle): Array<errors.ValidationError> {
+  bundle
+  return []
 }
 
 function verifyIdenticalForAllMedicationRequests(
