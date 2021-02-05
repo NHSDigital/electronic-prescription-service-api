@@ -1,7 +1,7 @@
 import * as translator from "../../services/translation"
 import Hapi from "@hapi/hapi"
 import {Bundle} from "../../models/fhir/fhir-resources"
-import {validatingHandler} from "../util"
+import {basePath, validatingHandler} from "../util"
 
 const CONTENT_TYPE_XML = "application/xml"
 const CONTENT_TYPE_PLAIN_TEXT = "text/plain"
@@ -12,7 +12,7 @@ export default [
     */
   {
     method: "POST",
-    path: "/$convert",
+    path: `${basePath}/$convert`,
     handler: validatingHandler(
       (requestPayload: Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const isSmokeTest = request.headers["x-smoke-test"]

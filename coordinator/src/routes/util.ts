@@ -18,6 +18,7 @@ const CONTENT_TYPE_FHIR = "application/fhir+json; fhirVersion=4.0"
 const CONTENT_TYPE_JSON = "application/json"
 
 export const VALIDATOR_HOST = "http://localhost:9001"
+export const basePath = "/FHIR/R4"
 
 export function createHash(thingsToHash: string): string {
   return crypto.SHA256(thingsToHash).toString()

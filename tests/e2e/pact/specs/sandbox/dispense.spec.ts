@@ -1,5 +1,5 @@
 import * as jestPact from "jest-pact"
-import {pactOptions} from "../../resources/common"
+import {basePath, pactOptions} from "../../resources/common"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
 import * as fhir from "../../models/fhir/fhir-resources"
@@ -16,11 +16,12 @@ jestPact.pactWith(
       return supertest(url)
     }
 
+    const apiPath = `${basePath}/Task/$release`
+
     describe("sandbox dispense interactions", () => {
       test.each(TestResources.releaseCases)(
         "should be able to acquire prescription info on a prescription release",
         async (description: string, request: fhir.Parameters, response: fhir.Bundle, statusCode: string) => {
-          const apiPath = "/Task/$release"
           const requestStr = LosslessJson.stringify(request)
           const requestId = uuid.v4()
           const correlationId = uuid.v4()

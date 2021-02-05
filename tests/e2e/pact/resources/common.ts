@@ -3,13 +3,15 @@ import {JestPactOptions} from "jest-pact"
 import path from "path"
 import {ExampleFile} from "../models/files/example-file"
 
+export const basePath = "/FHIR/R4"
+
 export function pactOptions(sandbox: boolean, endpoint: "prepare" | "process" | "convert" | "release"): JestPactOptions {
-return {
-  spec: 3,
-    consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-    provider: `nhsd-apim-eps${sandbox ? "-sandbox" : ""}+${endpoint}+${process.env.PACT_VERSION}`,
-    pactfileWriteMode: "merge"
-}
+  return {
+    spec: 3,
+      consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
+      provider: `nhsd-apim-eps${sandbox ? "-sandbox" : ""}+${endpoint}+${process.env.PACT_VERSION}`,
+      pactfileWriteMode: "merge"
+  }
 }
 
 function isStringParameter(parameter: fhir.Parameter): parameter is fhir.StringParameter {
