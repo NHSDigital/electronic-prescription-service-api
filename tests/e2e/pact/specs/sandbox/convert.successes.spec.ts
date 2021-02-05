@@ -53,7 +53,7 @@ pactConvertGroups.forEach(pactGroup => {
             uponReceiving: `a request to convert ${desc} message`,
             withRequest: {
               headers: {
-                "Content-Type": "text/plain; charset=utf-8",
+                "Content-Type": "application/fhir+json; fhirVersion=4.0",
                 "X-Request-ID": requestId,
                 "X-Correlation-ID": correlationId
               },
