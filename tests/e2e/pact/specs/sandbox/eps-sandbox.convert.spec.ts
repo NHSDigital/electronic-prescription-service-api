@@ -4,6 +4,7 @@ import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
 import {Bundle} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
+import * as uuid from "uuid"
 import {pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
@@ -23,24 +24,29 @@ jestpact.pactWith(
         expect(isMatch).toBe(true)
 
         const requestStr = LosslessJson.stringify(request)
-        const requestJson = JSON.parse(requestStr)
+        const requestId = uuid.v4()
+        const correlationId = uuid.v4()
 
         const interaction: InteractionObject = {
           state: "is not authenticated",
           uponReceiving: `a request to convert ${desc} message`,
           withRequest: {
             headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0",
+              "X-Request-ID": requestId,
+              "X-Correlation-ID": correlationId
             },
             method: "POST",
             path: apiPath,
-            body: requestJson
+            body: JSON.parse(requestStr)
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "text/plain; charset=utf-8"
+              "Content-Type": "text/plain; charset=utf-8",
+              "X-Request-ID": requestId,
+              "X-Correlation-ID": correlationId
             },
-            body: Matchers.regex({ matcher: responseMatcher, generate: response }),
+            body: Matchers.regex({matcher: responseMatcher, generate: response}),
             status: 200
           }
         }
@@ -48,6 +54,8 @@ jestpact.pactWith(
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+          .set('X-Request-ID', requestId)
+          .set('X-Correlation-ID', correlationId)
           .send(requestStr)
           .expect(200)
       })
@@ -55,22 +63,27 @@ jestpact.pactWith(
       test.each(TestResources.convertErrorCases)("should receive expected error code in response to %s message", async (desc: string, request: Bundle, response: string, statusCode: number) => {
 
         const requestStr = LosslessJson.stringify(request)
-        const requestJson = JSON.parse(requestStr)
+        const requestId = uuid.v4()
+        const correlationId = uuid.v4()
 
         const interaction = {
           state: "is not authenticated",
           uponReceiving: `a request to convert ${desc} message`,
           withRequest: {
             headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0",
+              "X-Request-ID": requestId,
+              "X-Correlation-ID": correlationId
             },
             method: "POST",
             path: apiPath,
-            body: requestJson
+            body: JSON.parse(requestStr)
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+              "X-Request-ID": requestId,
+              "X-Correlation-ID": correlationId
             },
             body: response,
             status: statusCode
@@ -80,7 +93,9 @@ jestpact.pactWith(
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-          .send(requestJson)
+          .set('X-Request-ID', requestId)
+          .set('X-Correlation-ID', correlationId)
+          .send(requestStr)
           .expect(statusCode)
       })
     })

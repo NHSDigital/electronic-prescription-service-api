@@ -36,7 +36,10 @@ describe("Spine communication", () => {
       })
     })
 
-    const spineResponse = await requestHandler.send({message: "test", interactionId: "test2"}, logger)
+    const spineResponse = await requestHandler.send(
+      {message: "test", interactionId: "test2"},
+      logger
+    )
 
     expect(spineResponse.statusCode).toBe(202)
     expect(isPollable(spineResponse)).toBe(true)
@@ -49,7 +52,10 @@ describe("Spine communication", () => {
       request.respondWith({status: 400})
     })
 
-    const spineResponse = await requestHandler.send({message: "test", interactionId: "test2"}, logger)
+    const spineResponse = await requestHandler.send(
+      {message: "test", interactionId: "test2"},
+      logger
+    )
 
     expect(isPollable(spineResponse)).toBe(false)
     expect((spineResponse as SpineDirectResponse<string>).statusCode).toBe(400)
@@ -84,7 +90,10 @@ describe("Spine communication", () => {
       })
     })
 
-    const spineResponse = await requestHandler.send({message: "test", interactionId: "test2"}, logger)
+    const spineResponse = await requestHandler.send(
+      {message: "test", interactionId: "test2"},
+      logger
+    )
 
     expect(spineResponse.statusCode).toBe(200)
     expect(isDirect(spineResponse)).toBe(true)
@@ -113,7 +122,10 @@ describe("Spine communication", () => {
       request.respondWithTimeout()
     })
 
-    const spineResponse = await requestHandler.send({message: "test", interactionId: "test2"}, logger)
+    const spineResponse = await requestHandler.send(
+      {message: "test", interactionId: "test2"},
+      logger
+    )
 
     expect(isPollable(spineResponse)).toBe(false)
     expect((spineResponse as SpineDirectResponse<string>).statusCode).toBe(500)

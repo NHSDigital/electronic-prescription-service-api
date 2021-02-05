@@ -102,6 +102,8 @@ info:
 
     ## Network access
     This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network). To use this API with NHS smartcards (see below) you do need an HSCN connection, although internet-facing alternatives are available.
+    
+    All requests to this API require a unique GUUID incluuded in a `X-Request-ID` header.
 
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
 
@@ -228,6 +230,7 @@ info:
     | 400       | fatal          | value      | MISSING_FIELD          | Bundle does not contain "entry" field                           |
     | 400       | fatal          | value      | INCORRECT_RESOURCETYPE | ResourceType is not "Bundle"                                    |
     | 400       | fatal          | value      | INVALID_VALUE          | MessageHeader indicates invalid MessageType                     |
+    | 400       | fatal          | value      | MISSING_FIELD          | X-Request-ID header missing or malformed                     |
 
 
 servers:

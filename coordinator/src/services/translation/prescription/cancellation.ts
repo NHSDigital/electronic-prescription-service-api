@@ -16,8 +16,14 @@ export function convertCancellation(
   const fhirFirstMedicationRequest = getMedicationRequests(fhirBundle)[0]
   const effectiveTime = extractEffectiveTime(fhirFirstMedicationRequest)
 
+  const messageId = getIdentifierValueForSystem(
+    [fhirBundle.identifier],
+    "https://tools.ietf.org/html/rfc4122",
+    "Bundle.identifier"
+  )
+
   const hl7V3CancellationPrescription = new cancellations.CancellationPrescription(
-    new codes.GlobalIdentifier(fhirBundle.id), effectiveTime
+    new codes.GlobalIdentifier(messageId), effectiveTime
   )
 
   const fhirPatient = getPatient(fhirBundle)
