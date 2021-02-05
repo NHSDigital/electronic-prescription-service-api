@@ -63,7 +63,7 @@
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "0101",
-              "display": "Primary Care Prescriber \u2013 Medical Prescriber"
+              "display": "Primary Care Prescriber - Medical Prescriber"
             }
           }
         ],
@@ -187,7 +187,7 @@
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "0101",
-              "display": "Primary Care Prescriber \u2013 Medical Prescriber"
+              "display": "Primary Care Prescriber - Medical Prescriber"
             }
           }
         ],

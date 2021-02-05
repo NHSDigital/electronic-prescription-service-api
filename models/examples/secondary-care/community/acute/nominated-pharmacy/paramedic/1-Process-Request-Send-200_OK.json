@@ -60,7 +60,7 @@
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "1025",
-              "display": "Outpatient Community Prescriber \u2013 Paramedic Independent Supplementary prescriber"
+              "display": "Outpatient Community Prescriber - Paramedic Independent Supplementary prescriber"
             }
           }
         ],
@@ -176,7 +176,7 @@
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "1025",
-              "display": "Outpatient Community Prescriber \u2013 Paramedic Independent Supplementary prescriber"
+              "display": "Outpatient Community Prescriber - Paramedic Independent Supplementary prescriber"
             }
           }
         ],
@@ -292,7 +292,7 @@
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "1025",
-              "display": "Outpatient Community Prescriber \u2013 Paramedic Independent Supplementary prescriber"
+              "display": "Outpatient Community Prescriber - Paramedic Independent Supplementary prescriber"
             }
           }
         ],
@@ -408,7 +408,7 @@
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "1025",
-              "display": "Outpatient Community Prescriber \u2013 Paramedic Independent Supplementary prescriber"
+              "display": "Outpatient Community Prescriber - Paramedic Independent Supplementary prescriber"
             }
           }
         ],
