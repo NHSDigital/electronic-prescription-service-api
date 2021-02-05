@@ -6,7 +6,7 @@ import * as fhir from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import {InteractionObject} from "@pact-foundation/pact"
 import * as uuid from "uuid"
-import {createUnauthorisedInteraction} from "./eps-auth";
+import {createUnauthorisedInteraction} from "./eps-auth"
 
 jestPact.pactWith(
   pactOptions(false, "release"),
