@@ -83,7 +83,7 @@ info:
     - [Prescription Tracker API](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to obtain information about a patient’s prescriptions
 
     ## API status and roadmap
-    All endpoints are in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status) - expect further breaking changes.
+    Prescribing flows for EPS FHIR API are in technical go-live. Dispense flows for EPS FHIR API are in sandbox only.
 
     The API is currently available for sandbox testing and integration testing, but not for production use.
 
