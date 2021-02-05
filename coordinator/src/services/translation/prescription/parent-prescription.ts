@@ -2,7 +2,7 @@ import * as fhir from "../../../models/fhir/fhir-resources"
 import {convertPatient} from "./patient"
 import {convertBundleToPrescription} from "."
 import * as prescriptions from "../../../models/hl7-v3/hl7-v3-prescriptions"
-import {convertIsoDateTimeStringToHl7V3DateTime} from "../common"
+import {convertIsoDateTimeStringToHl7V3DateTime, getIdentifierValueForSystem} from "../common"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {getMedicationRequests, getPatient} from "../common/getResourcesOfType"
@@ -13,8 +13,13 @@ export function convertParentPrescription(
   convertBundleToPrescriptionFn = convertBundleToPrescription,
   convertCareRecordElementCategoriesFn = convertCareRecordElementCategories
 ): prescriptions.ParentPrescription {
+  const messageId = getIdentifierValueForSystem(
+    [fhirBundle.identifier],
+    "https://tools.ietf.org/html/rfc4122",
+    "Bundle.identifier"
+  )
   const hl7V3ParentPrescription = new prescriptions.ParentPrescription(
-    new codes.GlobalIdentifier(fhirBundle.id)
+    new codes.GlobalIdentifier(messageId)
   )
 
   const fhirPatient = getPatient(fhirBundle)
