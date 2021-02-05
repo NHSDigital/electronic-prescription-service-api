@@ -5,6 +5,7 @@ import * as TestResources from "../../resources/test-resources"
 import {Bundle} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import {processExamples} from "../../services/process-example-fetcher"
+import * as uuid from "uuid"
 import {pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
@@ -17,23 +18,30 @@ jestpact.pactWith(
     }
 
     describe("process-message sandbox e2e tests", () => {
-      test.each(TestResources.processCases)("should be able to process %s", async (desc: string, message: Bundle) => {
+      test.each(TestResources.processCases)("should be able to process %s", async (desc: string, request: Bundle) => {
         const apiPath = "/$process-message"
-        const messageStr = LosslessJson.stringify(message)
+        const messageStr = LosslessJson.stringify(request)
+        const requestId = uuid.v4()
+        const correlationId = uuid.v4()
+
         const interaction: InteractionObject = {
           state: "is not authenticated",
           uponReceiving: `a request to process ${desc} message to Spine`,
           withRequest: {
             headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0"
+              "Content-Type": "application/fhir+json; fhirVersion=4.0",
+              "X-Request-ID": requestId,
+              "X-Correlation-ID": correlationId
             },
             method: "POST",
-            path: "/$process-message",
+            path: apiPath,
             body: JSON.parse(messageStr)
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
+              "X-Request-ID": requestId,
+              "X-Correlation-ID": correlationId
             },
             // body: {
             //   resourceType: "Bundle"
@@ -45,6 +53,8 @@ jestpact.pactWith(
         await client()
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+          .set('X-Request-ID', requestId)
+          .set('X-Correlation-ID', correlationId)
           .send(messageStr)
           .expect(200)
       })
@@ -54,6 +64,8 @@ jestpact.pactWith(
 
         const apiPath = "/$process-message"
         const messageStr = LosslessJson.stringify(testCase.request)
+        const requestId = uuid.v4()
+        const correlationId = uuid.v4()
 
         const interaction: InteractionObject = {
           state: "is not authenticated",
@@ -61,14 +73,20 @@ jestpact.pactWith(
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",
-              "Accept": "application/fhir+json"
+              "X-Request-ID": requestId,
+              "X-Correlation-ID": correlationId
             },
             method: "POST",
-            path: "/$process-message",
+            path: apiPath,
             body: JSON.parse(messageStr)
           },
           willRespondWith: {
-            status: 200
+            status: 200,
+            headers: {
+              "Content-Type": "application/json",
+              "X-Request-ID": requestId,
+              "X-Correlation-ID": correlationId
+            },
           }
         }
         await provider.addInteraction(interaction)
@@ -76,6 +94,8 @@ jestpact.pactWith(
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('Accept', 'application/fhir+json')
+          .set('X-Request-ID', requestId)
+          .set('X-Correlation-ID', correlationId)
           .send(messageStr)
           .expect(200)
       })

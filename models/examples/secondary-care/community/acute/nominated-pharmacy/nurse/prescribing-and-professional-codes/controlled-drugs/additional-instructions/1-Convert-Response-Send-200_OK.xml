@@ -40,7 +40,7 @@
     </author1>
     <subject>
       <ParentPrescription classCode="INFO" moodCode="EVN">
-        <id root="AEF77AFB-7E3C-427A-8657-2C427F71A271"/>
+        <id root="1C07C70E-FB9C-46D6-BB77-A8DFC301B8FC"/>
         <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Prescription - FocusActOrEvent (record artifact)"/>
         <effectiveTime value="20201221181536"/>
         <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>

@@ -21,8 +21,7 @@ export class ConvertCase extends Case {
 
   private buildResponseMatcher(responseXml: string): string {
     const regexPattern = this.escapeRegexSpecialCharacters(responseXml)
-    const responseMatcher = this.replaceDynamicsWithRegexPatterns(regexPattern)
-    return responseMatcher
+    return this.replaceDynamicsWithRegexPatterns(regexPattern)
   }
 
   /* Build up a response match regex pattern by taking the response xml and escaping:
