@@ -3,6 +3,7 @@ import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as LosslessJson from "lossless-json"
 import {processExamples} from "../../services/process-example-fetcher"
+import * as uuid from "uuid"
 import {pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
@@ -21,6 +22,8 @@ jestpact.pactWith(
 
         const apiPath = "/$process-message"
         const messageStr = LosslessJson.stringify(testCase.request)
+        const requestId = uuid.v4()
+        const correlationId = uuid.v4()
 
         const interaction: InteractionObject = {
           state: "is authenticated",
@@ -28,10 +31,11 @@ jestpact.pactWith(
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",
-              "Accept": "application/fhir+json"
+              "X-Request-ID": requestId,
+              "X-Correlation-ID": correlationId
             },
             method: "POST",
-            path: "/$process-message",
+            path: apiPath,
             body: JSON.parse(messageStr)
           },
           willRespondWith: {
@@ -63,6 +67,8 @@ jestpact.pactWith(
           .post(apiPath)
           .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
           .set('Accept', 'application/fhir+json')
+          .set('X-Request-ID', requestId)
+          .set('X-Correlation-ID', correlationId)
           .send(messageStr)
           .expect(400)
       })

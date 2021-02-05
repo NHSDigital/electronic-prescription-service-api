@@ -16,16 +16,22 @@ import {Bundle} from "../../../models/fhir/fhir-resources"
 import {getMedicationRequests} from "../common/getResourcesOfType"
 
 export function createSendMessagePayload<T>(
-  messageId: string,
   interactionId: codes.Hl7InteractionIdentifier,
   bundle: Bundle,
   subject: T
 ): core.SendMessagePayload<T> {
+  const messageId = getIdentifierValueForSystem(
+    [bundle.identifier],
+    "https://tools.ietf.org/html/rfc4122",
+    "Bundle.identifier"
+  )
+
   const sendMessagePayload = new core.SendMessagePayload<T>(
     new GlobalIdentifier(messageId),
     convertMomentToHl7V3DateTime(moment.utc()),
     interactionId
   )
+
   sendMessagePayload.communicationFunctionRcv = createCommunicationFunction(process.env.TO_ASID)
   sendMessagePayload.communicationFunctionSnd = createCommunicationFunction(process.env.FROM_ASID)
   sendMessagePayload.ControlActEvent = createControlActEvent(bundle, subject)

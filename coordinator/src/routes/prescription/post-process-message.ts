@@ -27,9 +27,13 @@ export default [
         }
         request.logger.info("Building Spine request")
         const spineRequest = translator.convertFhirMessageToSpineRequest(bundle)
+        spineRequest.messageId = request.headers["nhsd-request-id"]
         request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(bundle))})
         request.logger.info("Awaiting response")
-        const spineResponse = await requestHandler.send(spineRequest, request.logger)
+        const spineResponse = await requestHandler.send(
+          spineRequest,
+          request.logger
+        )
         return handleResponse(request, spineResponse, responseToolkit)
       }
     )

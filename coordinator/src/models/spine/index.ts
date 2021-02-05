@@ -1,6 +1,7 @@
 export interface SpineRequest {
   message: string
   interactionId: string
+  messageId?: string
 }
 
 export type SpineResponse<T> = SpineDirectResponse<T> | SpinePollableResponse
