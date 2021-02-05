@@ -26,7 +26,7 @@ jestPact.pactWith(
           const correlationId = uuid.v4()
 
           const interaction: InteractionObject = {
-            state: "",
+            state: "is not authenticated",
             uponReceiving: `a request to release a ${description} message`,
             withRequest: {
               headers: {
