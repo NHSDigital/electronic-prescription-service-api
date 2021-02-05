@@ -178,28 +178,28 @@ info:
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/DigitalMedicines) to assist with your integration.
     This is the FHIR specification for Digital Medicines starting with the assets required for an electronic prescription sent to the EPS.
 
-    ### 4XX responses
-    Note: This section is under development and subject to change. All Spine responses are returned with 200 HTTP codes until a Spine translation service is built. This does not affect the sandbox environment.
 
-    | Endpoint              | HTTP code | Response format                           | Environment      | Cause                 |
-    | --------------------- | --------- | ----------------------------------------- | ---------------- | --------------------- |
-    | Any                   | 400       | See "Unsupported operation" example below | Sandbox          | Unsupported operation |
-    | Any                   | 408       | Returns original request data             | Integration test | Request timeout       |
-
-    #### Validation errors
-    Our endpoints can return the following errors:
-
-    | HTTP code | Issue severity | Issue type | Error code             | Cause                                                           |
-    | ----------| -------------- | ---------- | ---------------------- | --------------------------------------------------------------- |
-    | 400       | error          | value      | MISSING_FIELD          | Bundle contains incorrect number of resources of a certain type |
-    | 400       | error          | value      | MISSING_FIELD          | Bundle does not contain "id" field                              |
-    | 400       | error          | value      | INVALID_VALUE          | Invalid value in MedicationRequest                              |
-    | 400       | fatal          | value      | MISSING_FIELD          | Bundle does not contain "entry" field                           |
-    | 400       | fatal          | value      | INCORRECT_RESOURCETYPE | ResourceType is not "Bundle"                                    |
-    | 400       | fatal          | value      | INVALID_VALUE          | MessageHeader indicates invalid MessageType                     |
-    | 400       | fatal          | value      | MISSING_FIELD          | X-Request-ID header missing or malformed                     |
-
-
+    ## Errors
+    ### Endpoint specific errors
+    | Error Code  | HTTP Code | Endpoint                          | Description / Example                               | FHIR type        |
+    | ----------- | --------- | --------------------------------- | --------------------------------------------------- | ---------------- |
+    | BAD_REQUEST | 400       | /$process-message, /Task/$release | Error from Spine / duplicate prescription ID exists | OperationOutcome |
+    | BAD_REQUEST | 400       | /$process-message, /Task/$release | Error from Spine / prescription not found           | Bundle           |
+    
+    ### API specific errors
+    | Error Code             | HTTP Code | Description / Example                          |
+    | ---------------------- | --------- | ---------------------------------------------- |
+    | MISSING_FIELD          | 400       | A required field is missing within the request |
+    | INVALID_VALUE          | 400       | Invalid value in message                       |
+    | INCORRECT_RESOURCETYPE | 400       | FHIR resource has incorrect resourceType       |
+    | NOT_FOUND              | 404       | Resource not found                             |
+    
+    ### Platform-wide errors
+    | Error Code    | HTTP Code | Description / Example                                  |
+    | ------------- | --------- | ------------------------------------------------------ |
+    | MISSING_FIELD | 400       | X-Request-ID header missing or malformed               |
+    | ACCESS_DENIED | 401       | User does not have permission for a particular request |
+    | NOT_FOUND     | 404       | Resource not found                                     |
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
     description: 'Sandbox'
