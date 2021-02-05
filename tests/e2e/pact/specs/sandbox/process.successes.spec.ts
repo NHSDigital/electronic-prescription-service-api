@@ -4,6 +4,7 @@ import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
 import {Bundle} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
+import * as uuid from "uuid"
 import {pactOptions} from "../../resources/common"
 
 const processPactGroups = [
@@ -38,12 +39,16 @@ processPactGroups.forEach(pactGroup => {
         test.each(pactGroupTestCases)("should be able to process %s", async (desc: string, message: Bundle) => {
           const apiPath = "/$process-message"
           const messageStr = LosslessJson.stringify(message)
+          const requestId = uuid.v4()
+          const correlationId = uuid.v4()
           const interaction: InteractionObject = {
             state: "is not authenticated",
             uponReceiving: `a request to process ${desc} message to Spine`,
             withRequest: {
               headers: {
-                "Content-Type": "application/fhir+json; fhirVersion=4.0"
+                "Content-Type": "application/fhir+json; fhirVersion=4.0",
+                "X-Request-ID": requestId,
+                "X-Correlation-ID": correlationId
               },
               method: "POST",
               path: "/$process-message",
@@ -51,7 +56,9 @@ processPactGroups.forEach(pactGroup => {
             },
             willRespondWith: {
               headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "X-Request-ID": requestId,
+                "X-Correlation-ID": correlationId
               },
               status: 200
             }
@@ -60,6 +67,8 @@ processPactGroups.forEach(pactGroup => {
           await client()
             .post(apiPath)
             .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+            .set('X-Request-ID', requestId)
+            .set('X-Correlation-ID', correlationId)
             .send(messageStr)
             .expect(200)
         })
