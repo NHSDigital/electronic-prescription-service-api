@@ -296,8 +296,8 @@ paths:
             
             | HTTP status | Error code                 | Description | FHIR type        |
             | ----------- | -------------------------- | ------------| -----------------|
-            | 400         | BAD_REQUEST        | Invalid NHS Number. | OperationOutcome |
-            | 400         | BAD_REQUEST        | Missing NHS Number. | Bundle           |
+            | 400         | BAD_REQUEST        | Spine Error - duplicate prescription ID exists. | OperationOutcome |
+            | 400         | BAD_REQUEST        | Spine ERror - prescription not found. | Bundle           |
 
           content:
             application/fhir+json:
@@ -318,6 +318,8 @@ paths:
         This returns a set of prescriptions based on the information passed to the endpoint: 
         * to acquire prescription information for an entire pharmacy, send owner information
         * to acquire prescription information for a specific prescription, send the group identifier for that prescription
+        
+        This endpoint is only available in sandbox mode.
       tags:
         - dispensing
       requestBody:
@@ -333,7 +335,7 @@ paths:
                   $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/2-Release-Request-200_OK.json
       responses:
         '200':
-          description: Successfully dispensed a prescription
+          description: Successfully released a prescription for dispensing
           content:
             application/fhir+json:
               examples:
@@ -345,15 +347,27 @@ paths:
             
             | HTTP status | Error code         | Description         | FHIR type        |
             | ----------- | -------------------| --------------------| -----------------|
-            | 400         | BAD_REQUEST        | Invalid NHS Number. | OperationOutcome |
+            | 400         | BAD_REQUEST        | Invalid request bundle | OperationOutcome |
             | 400         | BAD_REQUEST        | Missing NHS Number. | Bundle           |
 
           content:
             application/fhir+json:
               examples:
                 example:
-                  value:
-                    $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
+                  value: |
+                    {
+                      "resourceType": "OperationOutcome",
+                      "issue": [
+                        {
+                          "severity": "fatal",
+                          "code": "value",
+                          "diagnostics": "MessageHeader.eventCoding.code must be one of 'prescription-order' or 'prescription-order-update'.",
+                          "expression": [
+                              "Bundle.entry.resource.ofType(MessageHeader).eventCoding.code"
+                          ]
+                        }
+                      ]
+                    }
 
 components:
   schemas:
