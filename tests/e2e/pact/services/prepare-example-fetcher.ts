@@ -1,8 +1,7 @@
-import path from "path"
 import { PrepareCase } from "../models/cases/prepare-case"
+import { ExampleFile } from "../models/files/example-file"
 import { exampleFiles } from "./example-files-fetcher"
-
-const examplesRootPath = "../resources/parent-prescription"
+import { createExampleDescription } from "../resources/common"
 
 const prepareResponseFiles = exampleFiles.filter(exampleFile => exampleFile.isResponse && exampleFile.endpoint === "prepare")
 
@@ -14,15 +13,25 @@ const prepareRequestFiles = exampleFiles.filter(exampleFile =>
 			&& prepareResponseFile.number === exampleFile.number))
 
 const conventionBasedPrepareExamples: PrepareCase[] = prepareResponseFiles.map(prepareResponseFile => new PrepareCase(
-	path.parse(path.relative(path.join(__dirname, examplesRootPath), prepareResponseFile.path)).dir.replace(/\//g, " ") + " "
-		+ `${prepareResponseFile.number} ${prepareResponseFile.statusText}`,
-	prepareRequestFiles.find(prepareRequestFile =>
-		prepareRequestFile.dir === prepareResponseFile.dir
+	createExampleDescription(prepareResponseFile),
+	getRequest(prepareResponseFile),
+	getResponse(prepareResponseFile),
+	getStatusText(prepareResponseFile)
+))
+
+function getRequest(prepareResponseFile: ExampleFile): string {
+	return prepareRequestFiles.find(prepareRequestFile => prepareRequestFile.dir === prepareResponseFile.dir
 		&& prepareRequestFile.endpoint === prepareResponseFile.endpoint
 		&& prepareRequestFile.number === prepareResponseFile.number
-	).path,
-	prepareResponseFile.path,
-	prepareResponseFile.statusText
-))
+	).path
+}
+
+function getResponse(prepareResponseFile: ExampleFile): string {
+	return prepareResponseFile.path
+}
+
+function getStatusText(prepareResponseFile: ExampleFile): string {
+	return prepareResponseFile.statusText
+}
 
 export const prepareExamples = conventionBasedPrepareExamples

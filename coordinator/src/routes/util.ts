@@ -10,6 +10,7 @@ import {getMessageHeader} from "../services/translation/common/getResourcesOfTyp
 import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
+import {MessageTypeError} from "../models/errors/validation-errors"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
@@ -17,6 +18,7 @@ const CONTENT_TYPE_FHIR = "application/fhir+json; fhirVersion=4.0"
 const CONTENT_TYPE_JSON = "application/json"
 
 export const VALIDATOR_HOST = "http://localhost:9001"
+export const basePath = "/FHIR/R4"
 
 export function createHash(thingsToHash: string): string {
   return crypto.SHA256(thingsToHash).toString()
@@ -58,7 +60,8 @@ type Handler<T> = (
 
 export enum MessageType {
   PRESCRIPTION = "prescription-order",
-  CANCELLATION = "prescription-order-update"
+  CANCELLATION = "prescription-order-update",
+  DISPENSE = "prescription-dispense"
 }
 
 export function identifyMessageType(bundle: fhir.Bundle): string {
@@ -103,6 +106,31 @@ export async function fhirValidation(
     }`)
   }
   return validatorResponseData
+}
+
+export function taskValidatorHandler(handler: Handler<fhir.Parameters>) {
+  return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+    if (request.headers["x-skip-validation"]) {
+      request.logger.info("Skipping call to FHIR validator")
+    } else {
+      request.logger.info("Making call to FHIR validator")
+      const validatorResponseData = await fhirValidation(request.payload, request.headers)
+      request.logger.info("Received response from FHIR validator")
+      const error = validatorResponseData.issue.find(issue => issue.severity === "error" || issue.severity === "fatal")
+      if (error) {
+        return responseToolkit.response(validatorResponseData).code(400)
+      }
+    }
+
+    const requestPayload = getPayload(request) as fhir.Resource
+    if (requestPayload.resourceType !== "Parameters") {
+      const error = new MessageTypeError()
+      const response = toFhirError([error])
+      const statusCode = requestValidator.getStatusCode([error])
+      return responseToolkit.response(response).code(statusCode)
+    }
+    return handler(requestPayload as fhir.Parameters, request, responseToolkit)
+  }
 }
 
 export function validatingHandler(handler: Handler<fhir.Bundle>) {

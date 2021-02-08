@@ -9,6 +9,7 @@ export interface Bundle extends Resource {
   resourceType: "Bundle"
   identifier?: Identifier
   entry?: Array<BundleEntry>
+  total?: number
   type?: string
   timestamp?: string
 }
@@ -206,19 +207,32 @@ export interface OperationOutcome extends Resource {
   issue: Array<OperationOutcomeIssue>
 }
 
+type ParameterTypes = StringParameter | IdentifierParameter | CodeParameter
+
 export class Parameters extends Resource {
   readonly resourceType = "Parameters"
-  parameter: Array<Parameter>
+  parameter: Array<ParameterTypes>
 
-  constructor(parameters: Array<Parameter>) {
+  constructor(parameters: Array<ParameterTypes>) {
     super()
     this.parameter = parameters
   }
 }
 
-export class Parameter {
+export interface Parameter {
   name: string
+}
+
+export interface StringParameter extends Parameter {
   valueString: string
+}
+
+interface IdentifierParameter extends Parameter {
+  valueIdentifier: Identifier
+}
+
+interface CodeParameter extends Parameter {
+  valueCode: string
 }
 
 export interface Extension {

@@ -10,7 +10,7 @@
           <Name>RaiseFault.403Forbidden</Name>
         </Step>
       </Request>
-      <Condition>(proxy.pathsuffix MatchesPath "/_status") and ((request.verb = "GET") or (request.verb = "HEAD"))</Condition>
+      <Condition>((proxy.pathsuffix MatchesPath "/_status") or (proxy.pathsuffix MatchesPath "/_validatormetrics") or (proxy.pathsuffix MatchesPath "/_validatormetrics/**")) and ((request.verb = "GET") or (request.verb = "HEAD"))</Condition>
     </Flow>
     <Flow name="Default">
       <Request>
@@ -20,6 +20,11 @@
         <Step>
           <Name>RaiseFault.403Forbidden</Name>
           <Condition>!(accesstoken.id_token-acr StartsWith "AAL3")</Condition>
+        </Step>
+        <Step>
+          <!-- Header NHSD-Request-ID must be in the correct format (GUID) -->
+          <Name>RaiseFault.400MissingHeader</Name>
+          <Condition>(not original-request-details.header.X-Request-ID ~~ "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")</Condition>
         </Step>
         <Step>
           <Name>Quota</Name>
@@ -33,7 +38,22 @@
         <Step>
           <Name>AssignMessage.AddIssuerHeader</Name>
         </Step>
+        <Step>
+          <!--This should always be the last Step - as it is just before the message is sent - so the initial request stays intact for as long as possible.
+                      The Swapping of the Request Headers converts X-Request-ID and X-Correlation-ID to NHSD-Request-ID and NHSD-Correlation-ID before sending to backend. -->
+          <Name>AssignMessage.Swap.RequestHeaders</Name>
+        </Step>
       </Request>
+      <Response>
+        <Step>
+          <Name>AssignMessage.Mirror.CorrelationID</Name>
+          <Condition>(original-request-details.header.X-Correlation-ID ~~ ".+")</Condition>
+        </Step>
+        <Step>
+          <Name>AssignMessage.Mirror.RequestID</Name>
+          <Condition>(original-request-details.header.X-Request-ID ~~ ".+")</Condition>
+        </Step>
+      </Response>
     </Flow>
   </Flows>
   <HTTPTargetConnection>
@@ -51,14 +71,33 @@
         <Name>ExtractVariables.OAuthErrorFaultString</Name>
       </Step>
       <Step>
+        <Name>AssignMessage.Mirror.CorrelationID</Name>
+        <Condition>(original-request-details.header.X-Correlation-ID ~~ ".+")</Condition>
+      </Step>
+      <Step>
+        <Name>AssignMessage.Mirror.RequestID</Name>
+        <Condition>(original-request-details.header.X-Request-ID ~~ ".+")</Condition>
+      </Step>
+      <Step>
         <Name>AssignMessage.OAuthPolicyErrorResponse</Name>
       </Step>
       <Condition>oauthV2.OauthV2.VerifyAccessToken.failed</Condition>
+    </FaultRule>
+    <FaultRule name="missing-header">
+      <Condition>(fault.name = "RaiseFault")</Condition>
     </FaultRule>
   </FaultRules>
   <DefaultFaultRule>
     <Step>
       <Name>AssignMessage.CatchallErrorMessage</Name>
+    </Step>
+    <Step>
+      <Name>AssignMessage.Mirror.CorrelationID</Name>
+      <Condition>(original-request-details.header.X-Correlation-ID ~~ ".+")</Condition>
+    </Step>
+    <Step>
+      <Name>AssignMessage.Mirror.RequestID</Name>
+      <Condition>(original-request-details.header.X-Request-ID ~~ ".+")</Condition>
     </Step>
   </DefaultFaultRule>
 </TargetEndpoint>
