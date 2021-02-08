@@ -5,12 +5,26 @@ import {ExampleFile} from "../models/files/example-file"
 
 export const basePath = "/FHIR/R4"
 
-export function pactOptions(sandbox: boolean, endpoint: "prepare" | "process" | "convert" | "release"): JestPactOptions {
-  return {
-    spec: 3,
-      consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-      provider: `nhsd-apim-eps${sandbox ? "-sandbox" : ""}+${endpoint}+${process.env.PACT_VERSION}`,
-      pactfileWriteMode: "merge"
+export type ApiMode = "live" | "sandbox"
+
+export type ApiEndpoint = "prepare" | "process" | "convert" | "release"
+
+export const PactGroups = [
+  "accept-header",
+  "failures",
+  "secondarycare-community-acute",
+  "secondarycare-community-repeatdispensing",
+  "secondarycare-homecare"
+]
+export type PactGroup = typeof PactGroups
+
+export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, group?: PactGroup): JestPactOptions {
+  const sandbox = mode === "sandbox"
+return {
+      spec: 3,
+    consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
+    provider: `nhsd-apim-eps${sandbox ? "-sandbox" : ""}+${endpoint}${group ? "-" + group : ""}+${process.env.PACT_VERSION}`,
+      pactfileWriteMode: "overwrite"
   }
 }
 
@@ -26,6 +40,10 @@ export function getStringParameterByName(parameters: fhir.Parameters, name: stri
 
 const examplesRootPath = "../resources/parent-prescription"
 export function createExampleDescription(exampleFile: ExampleFile): string {
-  return path.parse(path.relative(path.join(__dirname, examplesRootPath), exampleFile.path)).dir.replace(/\//g, " ") + " "
+  return path.parse(path.relative(path.join(__dirname, examplesRootPath), exampleFile.path))
+    .dir
+    .replace(/\//g, " ")
+    .replace(/\\/g, " ")
+    + " "
     + `${exampleFile.number} ${exampleFile.statusText} ${exampleFile.operation}`
 }

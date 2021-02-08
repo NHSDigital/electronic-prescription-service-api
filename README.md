@@ -44,8 +44,8 @@ These can be installed by running the following commands:
 & sudo apt update
 $ sudo apt install git make curl npm python3-apt python3-distutils python3-venv default-jre shellcheck build-essential checkinstall libssl-dev maven -y
 $ curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python3
-$ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.35.1/install.sh | bash
-$ nvm install v12.18.3
+$ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.37.2/install.sh | bash
+$ nvm install v14.15.4
 ```
 
 Install packages:
@@ -98,26 +98,8 @@ npm t
 ```
 
 #### End-to-end tests
-New examples can be added in the relevant directory under `models/examples/primary-care|secondary-care`
 
-Following the convention:
-
-`{number}-{endpoint}-{request|response}-{?operation}-{status}.{ext}`
-
-Number is a way to group requests and responses together in each directory, for example in the below 
-
-```
-1-Convert-Response-Send-200_OK.xml
-1-Process-Request-Send-200_OK.json
-```
-
-the convert response would be set as the expected response for the process request
-
-These examples are then loaded into smoke tests (e2e tests) run during continous deployment
-
-Operation can be omitted for prepare examples as there is only one operation for this endpoint
-
-The smoke test description is built up from the directory and the filename so tests can be renamed by changing the folder structure
+See [end to end tests](./tests/e2e/README.md) for more details
 
 ### VS Code Plugins
 

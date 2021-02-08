@@ -8,9 +8,13 @@ install:
 test:
 	npm run test
 
+ifndef mode
+mode = $(APIGEE_ENVIRONMENT)
+endif
+
 create-pacts:
 	rm -rf pact
-ifeq (sandbox, $(findstring sandbox,$(APIGEE_ENVIRONMENT)))
+ifeq (sandbox, $(findstring sandbox,$(mode)))
 	npm run create-sandbox-pacts
 else
 	npm run create-live-pacts
@@ -21,10 +25,6 @@ publish-pacts:
 
 verify-pacts:
 	npm run verify-pacts
-
-generate-postman-collection:
-	mkdir -p ../postman/collections
-	npm run postman
 
 # Quality Checks
 
