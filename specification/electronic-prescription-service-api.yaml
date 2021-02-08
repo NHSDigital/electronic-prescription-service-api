@@ -294,10 +294,10 @@ paths:
           description: |
             An error occurred as follows:
             
-            | HTTP status | Error code                 | Description | FHIR type        |
-            | ----------- | -------------------------- | ------------| -----------------|
-            | 400         | BAD_REQUEST        | Spine Error - duplicate prescription ID exists. | OperationOutcome |
-            | 400         | BAD_REQUEST        | Spine ERror - prescription not found. | Bundle           |
+            | HTTP status | Error code         | Description                                    | FHIR type        |
+            | ----------- | ------------------ | ---------------------------------------------- | -----------------|
+            | 400         | BAD_REQUEST        | Spine Error - duplicate prescription ID exists | OperationOutcome |
+            | 400         | BAD_REQUEST        | Spine Error - prescription not found           | Bundle           |
 
           content:
             application/fhir+json:
@@ -378,8 +378,8 @@ paths:
           description: |
             An error occurred as follows:
             
-            | HTTP status | Error code         | Description         | FHIR type        |
-            | ----------- | -------------------| --------------------| -----------------|
+            | HTTP status | Error code         | Description            | FHIR type        |
+            | ----------- | -------------------| ---------------------- | -----------------|
             | 400         | BAD_REQUEST        | Invalid request bundle | OperationOutcome |
 
           content:
