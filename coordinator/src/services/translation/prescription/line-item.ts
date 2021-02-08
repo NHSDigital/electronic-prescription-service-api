@@ -46,7 +46,7 @@ export function convertPrescriptionEndorsements(
 ): void {
   const fhirMedicationPrescriptionEndorsementExtension = getExtensionForUrlOrNull(
     fhirMedicationRequest.extension,
-    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionEndorsement",
+    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement",
     "MedicationRequest.extension"
   ) as fhir.CodeableConceptExtension
 

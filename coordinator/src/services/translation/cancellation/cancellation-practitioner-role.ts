@@ -30,7 +30,7 @@ function createJobRoleNameCode(practitionerCode: string) {
   return [{
     coding: [
       {
-        system: "https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName",
+        system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
         code: practitionerCode,
         display: "" //TODO required field, Kevin seeing if we can remove
       }

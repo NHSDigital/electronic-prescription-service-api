@@ -1,14 +1,15 @@
 import * as jestPact from "jest-pact"
-import { basePath,pactOptions } from "../../resources/common"
+import {pactOptions} from "../../resources/common"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
 import * as fhir from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
-import { InteractionObject } from "@pact-foundation/pact"
+import {InteractionObject} from "@pact-foundation/pact"
 import * as uuid from "uuid"
+import {createUnauthorisedInteraction} from "./auth"
 
 jestPact.pactWith(
-  pactOptions("sandbox", "release"),
+  pactOptions("live", "release"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
@@ -16,17 +17,35 @@ jestPact.pactWith(
       return supertest(url)
     }
 
-    describe("sandbox dispense interactions", () => {
+    const authenticationTestDescription = "an unauthorised request to release"
+    describe("endpoint authentication e2e tests", () => {
+      test(authenticationTestDescription, async () => {
+        const apiPath = "/Task/$release"
+        const interaction: InteractionObject = createUnauthorisedInteraction(authenticationTestDescription, apiPath)
+        const requestId = uuid.v4()
+        const correlationId = uuid.v4()
+        await provider.addInteraction(interaction)
+        await client()
+          .post(apiPath)
+          .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
+          .set('X-Request-ID', requestId)
+          .set('X-Correlation-ID', correlationId)
+          .send({})
+          .expect(401)
+      })
+    })
+
+    describe("dispense e2e tests", () => {
       test.each(TestResources.releaseCases)(
         "should be able to acquire prescription info on a prescription release",
         async (description: string, request: fhir.Parameters, response: fhir.Bundle, statusCode: string) => {
-          const apiPath = `${basePath}/Task/$release`
+          const apiPath = "/Task/$release"
           const requestStr = LosslessJson.stringify(request)
           const requestId = uuid.v4()
           const correlationId = uuid.v4()
 
           const interaction: InteractionObject = {
-            state: "is not authenticated",
+            state: "is authenticated",
             uponReceiving: `a request to release a ${description} message`,
             withRequest: {
               headers: {
@@ -85,8 +104,8 @@ jestPact.pactWith(
           await client()
             .post(apiPath)
             .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
-            .set("X-Request-ID", requestId)
-            .set("X-Correlation-ID", correlationId)
+            .set('X-Request-ID', requestId)
+            .set('X-Correlation-ID', correlationId)
             .send(requestStr)
             .expect(statusCode)
         })

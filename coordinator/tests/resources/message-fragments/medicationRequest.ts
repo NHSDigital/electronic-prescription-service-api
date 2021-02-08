@@ -56,7 +56,7 @@ const waterQuantity: fhir.SimpleQuantity = {
 const createDispenseInfoFromQuantity = (quantity: fhir.SimpleQuantity): fhir.MedicationRequestDispenseRequest => ({
   extension: [
     {
-      url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType",
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
       valueCoding: {
         system: "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
         code: "P1"
@@ -82,7 +82,7 @@ const createMedicationRequestForLineItem = (
     id: resourceId,
     extension: [
       {
-        url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
+        url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
         valueCoding: {
           system: "https://fhir.nhs.uk/CodeSystem/prescription-type",
           code: "1005",
@@ -124,7 +124,7 @@ const createMedicationRequestForLineItem = (
     groupIdentifier: {
       extension: [
         {
-          url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
+          url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
           valueIdentifier: {
             system: "https://fhir.nhs.uk/Id/prescription",
             value: "8add098c-4ed7-4596-b0d6-b6329e3ef88f"
