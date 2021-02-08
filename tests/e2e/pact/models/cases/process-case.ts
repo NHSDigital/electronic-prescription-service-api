@@ -13,6 +13,11 @@ export class ProcessCase extends Case {
   constructor(description: string, requestFile: string, statusText: string) {
     super(description, requestFile, statusText)
 
+    const medicationRequest = this.request.entry.map(e => e.resource)
+      .find(r => r.resourceType == "MedicationRequest") as fhir.MedicationRequest
+    const prescriptionId = medicationRequest.groupIdentifier.value
+    this.description = `prescription: ${prescriptionId} - ${description}`
+
     const processRequest = exampleFiles.find(exampleFile => exampleFile.path === requestFile)
 
     const prepareResponse = exampleFiles.find(exampleFile => 
