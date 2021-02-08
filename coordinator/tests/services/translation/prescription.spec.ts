@@ -173,7 +173,7 @@ describe("extractReviewDate returns the correct value", () => {
 function setReviewDate(medicationRequest: MedicationRequest, newReviewDate: string) {
   const repeatInformationExtension = getExtensionForUrl(
     medicationRequest.extension,
-    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+    "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
     "MedicationRequest.extension"
   ) as RepeatInformationExtension
   const reviewDateExtension = getExtensionForUrl(
@@ -187,7 +187,7 @@ function setReviewDate(medicationRequest: MedicationRequest, newReviewDate: stri
 function clearRepeatInformation(medicationRequest: MedicationRequest) {
   const repeatInformationExtension = getExtensionForUrl(
     medicationRequest.extension,
-    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+    "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
     "MedicationRequest.extension"
   ) as RepeatInformationExtension
   medicationRequest.extension.splice(medicationRequest.extension.indexOf(repeatInformationExtension), 1)
@@ -196,7 +196,7 @@ function clearRepeatInformation(medicationRequest: MedicationRequest) {
 function clearRepeatInformationField(medicationRequest: MedicationRequest, url: string) {
   const repeatInformationExtension = getExtensionForUrl(
     medicationRequest.extension,
-    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+    "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
     "MedicationRequest.extension"
   ) as RepeatInformationExtension
   const reviewDateExtension = getExtensionForUrl(

@@ -1,7 +1,0 @@
-type: object
-description: Real world sender of the message
-required:
-  - identifier
-properties:
-  identifier:
-    $ref: "Identifier-OdsOrganizationCode.yaml"

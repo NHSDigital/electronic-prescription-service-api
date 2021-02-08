@@ -210,7 +210,7 @@ describe("prescriptionEndorsements", () => {
     const prescriptionEndorsements = medicationRequests.map(medicationRequest =>
       getExtensionForUrlOrNull(
         medicationRequest.extension,
-        "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionEndorsement",
+        "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement",
         "MedicationRequest.extension"
       ) as fhir.CodeableConceptExtension
     )
@@ -237,7 +237,7 @@ describe("prescriptionEndorsements", () => {
     const prescriptionEndorsementsFn = (medicationRequest: fhir.MedicationRequest): fhir.CodeableConceptExtension =>
       getExtensionForUrlOrNull(
         medicationRequest.extension,
-        "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionEndorsement",
+        "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement",
         "MedicationRequest.extension"
       ) as fhir.CodeableConceptExtension
 
