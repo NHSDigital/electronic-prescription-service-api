@@ -41,15 +41,15 @@ info:
 
     ## Using this API
     ### To create a prescription:
-    1. POST a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) to the `/$prepare` endpoint to get the encoded prescription data that requires a signature
+    1. POST a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) to the `/FHIR/R4/$prepare` endpoint to get the encoded prescription data that requires a signature
     2. sign the encoded prescription data using the Signing Service to get the signed prescription data
     3. generate an XML-DSig using the signed prescription data (see below)
     4. put the XML-DSig in a `Provenance` resource
     5. add the `Provenance` to the prescription-order message
-    6. POST the signed prescription-order message to the `/$process-message` endpoint
+    6. POST the signed prescription-order message to the `/FHIR/R4/$process-message` endpoint
 
     To generate an XML-DSig: 
-    1. get the encoded prescription data from the `$/prepare` endpoint of the EPS API
+    1. get the encoded prescription data from the `/FHIR/R4/$prepare` endpoint of the EPS API
     2. get the signature and certificate from the `/SignatureResponse` endpoint of the Signing Service
     3. assemble an XML-DSig (javascript example seen below)
 
@@ -64,11 +64,11 @@ info:
     ```
 
     ### To cancel a prescription:
-    1. POST a [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update) to the `/$process-message` endpoint
+    1. POST a [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update) to the `/FHIR/R4/$process-message` endpoint
 
     ### To dispense a prescription: 
-    1. POST a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to the `/Task/$release` endpoint to mark the prescription as released
-    2. POST a [prescription-dispense-notification](https://simplifier.net/guide/DigitalMedicines/prescription-dispense) message to the `/$process-message` endpoint to inform SPINE of a partial/successful dispense
+    1. POST a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to the `/FHIR/R4/Task/$release` endpoint to mark the prescription as released
+    2. POST a [prescription-dispense-notification](https://simplifier.net/guide/DigitalMedicines/prescription-dispense) message to the `/FHIR/R4/$process-message` endpoint to inform SPINE of a partial/successful dispense
 
     ## Legal Use
     This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
@@ -102,6 +102,8 @@ info:
 
     ## Network access
     This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network). To use this API with NHS smartcards (see below) you do need an HSCN connection, although internet-facing alternatives are available.
+    
+    All requests to this API require a unique GUUID incluuded in a `X-Request-ID` header.
 
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
 
@@ -228,6 +230,7 @@ info:
     | 400       | fatal          | value      | MISSING_FIELD          | Bundle does not contain "entry" field                           |
     | 400       | fatal          | value      | INCORRECT_RESOURCETYPE | ResourceType is not "Bundle"                                    |
     | 400       | fatal          | value      | INVALID_VALUE          | MessageHeader indicates invalid MessageType                     |
+    | 400       | fatal          | value      | MISSING_FIELD          | X-Request-ID header missing or malformed                     |
 
 
 servers:
@@ -239,7 +242,7 @@ tags:
   - name: dispensing
   - name: prescribing
 paths:
-  /$prepare:
+  /FHIR/R4/$prepare:
     post:
       operationId: prepare-prescription
       summary: Convert a prescription message to signature fragments
@@ -276,7 +279,7 @@ paths:
                 example:
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
-  /$process-message:
+  /FHIR/R4/$process-message:
     post:
       operationId: send-message
       summary: Send a prescription message to EPS
@@ -324,7 +327,7 @@ paths:
                 example:
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
-  /Task/$release:
+  /FHIR/R4/Task/$release:
     post:
       operationId: release
       summary: Send a prescription release request to EPS

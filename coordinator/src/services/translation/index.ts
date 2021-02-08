@@ -10,7 +10,7 @@ import {writeXmlStringCanonicalized} from "../serialisation/xml"
 import {convertParentPrescription} from "./prescription/parent-prescription"
 import {convertCancellation} from "./prescription/cancellation"
 import {convertFragmentsToHashableFormat, extractFragments} from "./prescription/signature"
-import {convertHL7V3DateTimeToIsoDateTimeString, getIdentifierValueForSystem} from "./common"
+import {convertHL7V3DateTimeToIsoDateTimeString} from "./common"
 import * as requestBuilder from "../formatters/ebxml-request-builder"
 import {SpineRequest} from "../../models/spine"
 import {identifyMessageType, MessageType} from "../../routes/util"
@@ -26,29 +26,19 @@ export function convertFhirMessageToSpineRequest(fhirMessage: fhir.Bundle): Spin
 export function createParentPrescriptionSendMessagePayload(
   fhirBundle: fhir.Bundle
 ): core.SendMessagePayload<prescriptions.ParentPrescriptionRoot> {
-  const messageId = getIdentifierValueForSystem(
-    [fhirBundle.identifier],
-    "https://tools.ietf.org/html/rfc4122",
-    "Bundle.identifier"
-  )
   const parentPrescription = convertParentPrescription(fhirBundle)
   const parentPrescriptionRoot = new prescriptions.ParentPrescriptionRoot(parentPrescription)
   const interactionId = codes.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT
-  return createSendMessagePayload(messageId, interactionId, fhirBundle, parentPrescriptionRoot)
+  return createSendMessagePayload(interactionId, fhirBundle, parentPrescriptionRoot)
 }
 
 export function createCancellationSendMessagePayload(
   fhirBundle: fhir.Bundle
 ): core.SendMessagePayload<cancellations.CancellationPrescriptionRoot> {
-  const messageId = getIdentifierValueForSystem(
-    [fhirBundle.identifier],
-    "https://tools.ietf.org/html/rfc4122",
-    "Bundle.identifier"
-  )
   const cancellationRequest = convertCancellation(fhirBundle)
   const cancellationRequestRoot = new cancellations.CancellationPrescriptionRoot(cancellationRequest)
   const interactionId = codes.Hl7InteractionIdentifier.CANCEL_REQUEST
-  return createSendMessagePayload(messageId, interactionId, fhirBundle, cancellationRequestRoot)
+  return createSendMessagePayload(interactionId, fhirBundle, cancellationRequestRoot)
 }
 
 export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle): fhir.Parameters {

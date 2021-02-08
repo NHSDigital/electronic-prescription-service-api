@@ -1,0 +1,30 @@
+<RaiseFault async="false" continueOnError="false" enabled="true" name="RaiseFault.400MissingHeader">
+    <FaultResponse>
+        <Set>
+          <Payload contentType="application/fhir+json">
+            {
+              "resourceType": "OperationOutcome",
+              "issue": [
+                {
+                  "severity": "fatal",
+                  "code": "value",
+                  "details": {
+                    "coding": [
+                      {
+                        "system": "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+                        "version": "1",
+                        "code": "MISSING_FIELD",
+                        "display": "X-Request-ID header missing or malformed"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          </Payload>
+          <StatusCode>400</StatusCode>
+          <ReasonPhrase>Bad Request</ReasonPhrase>
+        </Set>
+    </FaultResponse>
+    <IgnoreUnresolvedVariables>true</IgnoreUnresolvedVariables>
+</RaiseFault>

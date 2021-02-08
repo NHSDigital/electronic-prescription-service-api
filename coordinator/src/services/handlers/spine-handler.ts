@@ -51,7 +51,8 @@ export class LiveRequestHandler implements RequestHandler {
               " boundary=\"--=_MIME-Boundary\";" +
               " type=text/xml;" +
               " start=ebXMLHeader@spine.nhs.uk",
-            "SOAPAction": `urn:nhs:names:services:mm/${spineRequest.interactionId}`
+            "SOAPAction": `urn:nhs:names:services:mm/${spineRequest.interactionId}`,
+            "NHSD-Request-ID": spineRequest.messageId
           }
         }
       )

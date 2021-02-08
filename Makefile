@@ -69,6 +69,8 @@ install-node:
 install-hooks:
 	cp scripts/pre-commit .git/hooks/pre-commit
 
+## Build
+
 build-specification:
 	cd specification \
 	&& mkdir -p build/components/examples \
@@ -130,30 +132,60 @@ check-licenses:
 
 ## Tools
 
-update-prescriptions:
-	# Requires make run-coordinator and make run-validator in separate shells
-	cd scripts && poetry run python update_prescriptions.py
+# Variables
+
+ifdef pr
+pr-prefix = -pr-
+endif
+
+ifneq (,$(findstring sandbox,$(env)))
+pact-provider = nhsd-apim-eps-sandbox
+else
+pact-provider = nhsd-apim-eps
+endif
+
+export SERVICE_BASE_PATH=electronic-prescriptions$(pr-prefix)$(pr)
+export PACT_PROVIDER=$(pact-provider)
+export APIGEE_ENVIRONMENT=$(env)
+export APIGEE_ACCESS_TOKEN=$(token)
+
+space := $(subst ,, )
+export PACT_VERSION = $(subst $(space),,$(USERNAME))
+export PACT_PROVIDER_URL=https://$(env).api.service.nhs.uk/$(SERVICE_BASE_PATH)
+export PACT_TAG=$(env)
 
 # Example:
-# make pr=284 run-sandbox-smoke-tests
-run-sandbox-smoke-tests:
+# make env=internal-dev-sandbox update-prescriptions
+# make env=internal-dev-sandbox pr=333 update-prescriptions
+update-prescriptions:
+	cd scripts && poetry run python update_prescriptions.py https://$(env).api.service.nhs.uk/electronic-prescriptions$(pr-prefix)$(pr)
+
+# Example:
+# make install-smoke-tests
+install-smoke-tests:
+	cd tests/e2e/pact && make install
+
+# Example:
+# make mode=sandbox create-smoke-tests
+# make mode=live create-smoke-tests
+create-smoke-tests:
 	source .envrc \
-	&& export PACT_PROVIDER=nhsd-apim-eps-sandbox \
-	&& export APIGEE_ENVIRONMENT=internal-dev-sandbox \
-	&& export SERVICE_BASE_PATH=electronic-prescriptions-pr-$(pr) \
 	&& cd tests/e2e/pact \
 	&& make create-pacts \
-	&& make publish-pacts \
+	&& make publish-pacts
+
+# Example:
+# make env=internal-dev-sandbox pr=333 run-smoke-tests
+# make env=internal-dev pr=333 token=qvgsB5OR0QUKppg2pGbDagVMrj65 run-smoke-tests
+run-smoke-tests:
+	source .envrc \
+	&& cd tests/e2e/pact \
 	&& make verify-pacts
 
-# make pr=284 token=qvgsB5OR0QUKppg2pGbDagVMrj65 run-live-smoke-tests
-run-live-smoke-tests:
-	source .envrc \
-	&& export PACT_PROVIDER=nhsd-apim-eps \
-	&& export APIGEE_ENVIRONMENT=internal-dev \
-	&& export APIGEE_ACCESS_TOKEN=$(token) \
-	&& export SERVICE_BASE_PATH=electronic-prescriptions-pr-$(pr) \
-	&& cd tests/e2e/pact \
-	&& make create-pacts \
-	&& make publish-pacts \
-	&& make verify-pacts
+# Example:
+# make generate-postman-collection
+generate-postman-collection:
+	# requires: make mode=live create-smoke-tests
+	mkdir -p tests/e2e/postman/collections
+	cd tests/e2e/pact \
+	&& npm run generate-postman-collection

@@ -1,11 +1,18 @@
 #!/usr/bin/env python
 
+"""
+update_prescriptions.py
+
+Usage:
+  update_prescriptions.py API_BASE_URL
+"""
 import os
 import glob
 import json
 import uuid
-from datetime import datetime
+from datetime import date, datetime, timedelta
 import requests
+from docopt import docopt
 
 examples_root_dir = "../models/examples/"
 
@@ -32,25 +39,37 @@ def generate_short_form_id():
 
 
 def find_prepare_request_paths():
-    for filename in glob.iglob(examples_root_dir + '**/*Prepare-Request*.json', recursive=True):
+    for filename in glob.iglob(f'{examples_root_dir}**/*Prepare-Request*200_OK*.json', recursive=True):
         yield filename
 
 
 def replace_ids_and_timestamps(bundle_json, prescription_id, short_prescription_id, authored_on, signature_time):
-    for entry in bundle_json['entry']:
+    short_prescription_id_split = short_prescription_id.split("-")
+    spid_first = short_prescription_id_split[0]
+    spid_middle = short_prescription_id_split[1]
+    spid_last = short_prescription_id_split[2]
+
+    for entry in reversed(bundle_json['entry']):
         resource = entry["resource"]
+        if resource["resourceType"] == "Provenance":
+            for signature in resource["signature"]:
+                signature["when"] = signature_time
+        # if resource["resourceType"] == "HealthcareService":
+        #     for identifier in resource["identifier"]:
+        #         organisationCode = identifier["value"]
+        #         spid_middle = organisationCode
         if resource["resourceType"] == "MedicationRequest":
-            resource["groupIdentifier"]["value"] = short_prescription_id
+            resource["groupIdentifier"]["value"] = f'{spid_first}-{spid_middle}-{spid_last}'
             for extension in resource["groupIdentifier"]["extension"]:
                 if extension["url"] == "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId":
                     extension["valueIdentifier"]["value"] = prescription_id
             resource["authoredOn"] = authored_on
-        if resource["resourceType"] == "Provenance":
-            for signature in resource["signature"]:
-                signature["when"] = signature_time
+            if "validityPeriod" in resource["dispenseRequest"]:
+                resource["dispenseRequest"]["validityPeriod"]["start"] = date.today().isoformat()
+                resource["dispenseRequest"]["validityPeriod"]["end"] = (date.today() + timedelta(weeks=4)).isoformat()
 
 
-def update_prepare_examples(prepare_request_path, prescription_id, short_prescription_id, authored_on):
+def update_prepare_examples(api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on):
     try:
         with open(prepare_request_path) as f:
             prepare_request_json = json.load(f)
@@ -59,7 +78,7 @@ def update_prepare_examples(prepare_request_path, prescription_id, short_prescri
             json.dump(prepare_request_json, f, indent=2)
 
         prepare_response_json = requests.post(
-            'http://localhost:9000/$prepare',
+            f'{api_base_url}/$prepare',
             data=json.dumps(prepare_request_json),
             headers={'Content-Type': 'application/json'}
         ).json()
@@ -85,7 +104,9 @@ def derive_prepare_response_path(prepare_request_path):
     return f'{example_dir}/{number}-Prepare-Response-{status_code_and_ext}'
 
 
-def update_process_examples(prepare_request_path, prescription_id, short_prescription_id, authored_on, signature_time):
+def update_process_examples(
+    api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on, signature_time
+):
     try:
         process_request_path_pattern = derive_process_request_path_pattern(prepare_request_path)
         for process_request_path in glob.iglob(process_request_path_pattern):
@@ -98,7 +119,7 @@ def update_process_examples(prepare_request_path, prescription_id, short_prescri
                 json.dump(process_request_json, f, indent=2)
 
             convert_response_xml = requests.post(
-                'http://localhost:9000/$convert',
+                f'{api_base_url}/$convert',
                 data=json.dumps(process_request_json),
                 headers={'Content-Type': 'application/json'}
             ).text
@@ -131,7 +152,7 @@ def derive_convert_response_path(process_request_path):
     return f'{example_dir}/{number}-Convert-Response-{operation}-{status_code_and_xml_ext}'
 
 
-def update_examples():
+def update_examples(api_base_url):
     authored_on = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S+00:00')
 
     for prepare_request_path in find_prepare_request_paths():
@@ -139,11 +160,18 @@ def update_examples():
         short_prescription_id = generate_short_form_id()
 
         signature_time = update_prepare_examples(
-            prepare_request_path, prescription_id, short_prescription_id, authored_on
+            api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on
         )
         update_process_examples(
-            prepare_request_path, prescription_id, short_prescription_id, authored_on, signature_time
+            api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on,
+            signature_time
         )
 
 
-update_examples()
+def main(arguments):
+    arguments = docopt(__doc__, version="0")
+    update_examples(arguments["API_BASE_URL"])
+
+
+if __name__ == "__main__":
+    main(arguments=docopt(__doc__, version="0"))
