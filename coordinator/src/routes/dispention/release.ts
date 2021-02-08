@@ -1,6 +1,6 @@
 import * as fhir from "../../models/fhir/fhir-resources"
 import * as Hapi from "@hapi/hapi"
-import {taskValidatorHandler} from "../util"
+import {basePath, taskValidatorHandler} from "../util"
 
 const bundle1Id = "eff31db2-a914-44a9-b89d-1a33f6de727e"
 const genericBundle1: fhir.Bundle = {
@@ -28,7 +28,7 @@ export default [
   */
   {
     method: "POST",
-    path: "/Task/$release",
+    path: `${basePath}/Task/$release`,
     handler: taskValidatorHandler(
       async (bundle: fhir.Parameters, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         request.logger.info("Sandbox release response")

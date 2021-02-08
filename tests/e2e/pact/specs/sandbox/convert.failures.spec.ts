@@ -4,7 +4,7 @@ import * as TestResources from "../../resources/test-resources"
 import { Bundle } from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
-import { pactOptions } from "../../resources/common"
+import { basePath, pactOptions } from "../../resources/common"
 
 jestpact.pactWith(
   pactOptions("sandbox", "convert", ["failures"]),
@@ -16,10 +16,9 @@ jestpact.pactWith(
     }
 
     describe("convert sandbox e2e tests", () => {
-      const apiPath = "/$convert"
+      const apiPath = `${basePath}/$convert`
 
       test.each(TestResources.convertErrorCases)("should receive expected error code in response to %s message", async (desc: string, request: Bundle, response: string, statusCode: number) => {
-
         const requestStr = LosslessJson.stringify(request)
         const requestId = uuid.v4()
         const correlationId = uuid.v4()

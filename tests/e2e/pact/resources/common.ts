@@ -3,6 +3,8 @@ import {JestPactOptions} from "jest-pact"
 import path from "path"
 import {ExampleFile} from "../models/files/example-file"
 
+export const basePath = "/FHIR/R4"
+
 export type ApiMode = "live" | "sandbox"
 
 export type ApiEndpoint = "prepare" | "process" | "convert" | "release"
@@ -17,12 +19,12 @@ export const PactGroups = [
 export type PactGroup = typeof PactGroups
 
 export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, group?: PactGroup): JestPactOptions {
-const sandbox = mode === "sandbox"
+  const sandbox = mode === "sandbox"
 return {
       spec: 3,
     consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
     provider: `nhsd-apim-eps${sandbox ? "-sandbox" : ""}+${endpoint}${group ? "-" + group : ""}+${process.env.PACT_VERSION}`,
-    pactfileWriteMode: "overwrite"
+      pactfileWriteMode: "overwrite"
   }
 }
 

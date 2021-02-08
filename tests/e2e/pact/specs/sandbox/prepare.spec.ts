@@ -5,7 +5,7 @@ import * as TestResources from "../../resources/test-resources"
 import {Bundle, Parameters} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
-import {getStringParameterByName, pactOptions} from "../../resources/common"
+import {basePath, getStringParameterByName, pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
   pactOptions("sandbox", "prepare"),
@@ -18,7 +18,7 @@ jestpact.pactWith(
 
     describe("prepare sandbox e2e tests", () => {
       test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (desc: string, request: Bundle, response: Parameters) => {
-        const apiPath = "/$prepare"
+        const apiPath = `${basePath}/$prepare`
         const requestStr = LosslessJson.stringify(request)
         const requestId = uuid.v4()
         const correlationId = uuid.v4()
