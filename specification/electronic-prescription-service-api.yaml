@@ -180,12 +180,6 @@ info:
 
 
     ## Errors
-    ### Endpoint specific errors
-    | Error Code  | HTTP Code | Endpoint                          | Description / Example                               | FHIR type        |
-    | ----------- | --------- | --------------------------------- | --------------------------------------------------- | ---------------- |
-    | BAD_REQUEST | 400       | /$process-message, /Task/$release | Error from Spine / duplicate prescription ID exists | OperationOutcome |
-    | BAD_REQUEST | 400       | /$process-message, /Task/$release | Error from Spine / prescription not found           | Bundle           |
-    
     ### API specific errors
     | Error Code             | HTTP Code | Description / Example                          |
     | ---------------------- | --------- | ---------------------------------------------- |
@@ -297,7 +291,14 @@ paths:
                   value:
                     $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Process-Response-Send-200_OK.json
         '4XX':
-          description: Invalid request.
+          description: |
+            An error occurred as follows:
+            
+            | HTTP status | Error code                 | Description | FHIR type        |
+            | ----------- | -------------------------- | ------------| -----------------|
+            | 400         | BAD_REQUEST        | Invalid NHS Number. | OperationOutcome |
+            | 400         | BAD_REQUEST        | Missing NHS Number. | Bundle           |
+
           content:
             application/fhir+json:
               schema:
@@ -338,6 +339,22 @@ paths:
               examples:
                 example:
                   value: 'Unknown'
+        '4XX':
+          description: |
+            An error occurred as follows:
+            
+            | HTTP status | Error code         | Description         | FHIR type        |
+            | ----------- | -------------------| --------------------| -----------------|
+            | 400         | BAD_REQUEST        | Invalid NHS Number. | OperationOutcome |
+            | 400         | BAD_REQUEST        | Missing NHS Number. | Bundle           |
+
+          content:
+            application/fhir+json:
+              examples:
+                example:
+                  value:
+                    $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
+
 components:
   schemas:
     Bundle:
