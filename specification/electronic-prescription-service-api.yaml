@@ -83,7 +83,7 @@ info:
     - [Prescription Tracker API](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to obtain information about a patient’s prescriptions
 
     ## API status and roadmap
-    Prescribing flows for EPS FHIR API are in technical go-live. Dispense flows for EPS FHIR API are in sandbox only.
+    Prescribing flows for EPS FHIR API are in technical go-live. Dispensing flows for EPS FHIR API are in sandbox environment only.
 
     The API is currently available for sandbox testing and integration testing, but not for production use.
 
@@ -181,7 +181,7 @@ info:
 
     ## Errors
     ### API specific errors
-    | HTTP Code     | Error Code             | Description                                    |
+    | HTTP Status   | Error Code             | Description                                    |
     | --------------| ---------------------- | ---------------------------------------------- |
     | 400           | MISSING_FIELD          | A required field is missing within the request |
     | 400           | INVALID_VALUE          | Invalid value in message                       |
@@ -190,7 +190,7 @@ info:
     
     ### Platform-wide errors
     
-    | HTTP Code     | Error Code      | Description                                            |
+    | HTTP Status   | Error Code      | Description                                            |
     | ------------- | --------------- | ------------------------------------------------------ |
     | 400           | MISSING_FIELD   | X-Request-ID header missing or malformed               |
     | 401           | ACCESS_DENIED   | User does not have permission for a particular request |
@@ -320,7 +320,7 @@ paths:
         * to acquire prescription information for an entire pharmacy, send owner information
         * to acquire prescription information for a specific prescription, send the group identifier for that prescription
         
-        This endpoint is only available in sandbox mode.
+        This endpoint is only available in sandbox environment.
       tags:
         - dispensing
       requestBody:
