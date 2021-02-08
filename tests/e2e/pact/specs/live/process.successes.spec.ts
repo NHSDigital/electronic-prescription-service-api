@@ -5,7 +5,7 @@ import * as TestResources from "../../resources/test-resources"
 import { Bundle } from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
-import { pactOptions } from "../../resources/common"
+import {basePath, pactOptions} from "../../resources/common"
 
 const processPactGroups = [
   {
@@ -37,7 +37,7 @@ processPactGroups.forEach(pactGroup => {
 
       describe("process-message e2e tests", () => {
         test.each(pactGroupTestCases)("should be able to process %s", async (desc: string, message: Bundle) => {
-          const apiPath = "/$process-message"
+          const apiPath = `${basePath}/$process-message`
           const bundleStr = LosslessJson.stringify(message)
           const bundle = JSON.parse(bundleStr) as Bundle
 
@@ -54,7 +54,7 @@ processPactGroups.forEach(pactGroup => {
                 "X-Correlation-ID": correlationId
               },
               method: "POST",
-              path: "/$process-message",
+              path: apiPath,
               body: bundle
             },
             willRespondWith: {
@@ -84,9 +84,9 @@ processPactGroups.forEach(pactGroup => {
           await provider.addInteraction(interaction)
           await client()
             .post(apiPath)
-            .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-            .set('X-Request-ID', requestId)
-            .set('X-Correlation-ID', correlationId)
+            .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
+            .set("X-Request-ID", requestId)
+            .set("X-Correlation-ID", correlationId)
             .send(bundleStr)
             .expect(400)
         })

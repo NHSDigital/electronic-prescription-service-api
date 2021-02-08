@@ -4,7 +4,7 @@ import supertest from "supertest"
 import * as LosslessJson from "lossless-json"
 import { processExamples } from "../../services/process-example-fetcher"
 import * as uuid from "uuid"
-import { pactOptions } from "../../resources/common"
+import {basePath, pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
   pactOptions("sandbox", "process", ["accept-header"]),
@@ -20,7 +20,7 @@ jestpact.pactWith(
       test("Should be able to process a FHIR JSON Accept header", async () => {
         const testCase = processExamples[0]
 
-        const apiPath = "/$process-message"
+        const apiPath = `${basePath}/$process-message`
         const messageStr = LosslessJson.stringify(testCase.request)
         const requestId = uuid.v4()
         const correlationId = uuid.v4()
@@ -51,10 +51,10 @@ jestpact.pactWith(
         await provider.addInteraction(interaction)
         await client()
           .post(apiPath)
-          .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-          .set('Accept', 'application/fhir+json')
-          .set('X-Request-ID', requestId)	
-          .set('X-Correlation-ID', correlationId)
+          .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
+          .set("Accept", "application/fhir+json")
+          .set("X-Request-ID", requestId)
+          .set("X-Correlation-ID", correlationId)
           .send(messageStr)
           .expect(200)
       })

@@ -5,7 +5,7 @@ import * as TestResources from "../../resources/test-resources"
 import { Bundle } from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
-import { pactOptions } from "../../resources/common"
+import {basePath, pactOptions} from "../../resources/common"
 
 const pactConvertGroups = [
   {
@@ -36,7 +36,7 @@ pactConvertGroups.forEach(pactGroup => {
       }
 
       describe("convert sandbox e2e tests", () => {
-        const apiPath = "/$convert"
+        const apiPath = `${basePath}/$convert`
         test.each(pactGroupTestCases)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: string, responseMatcher: string) => {
           const regex = new RegExp(responseMatcher)
           const isMatch = regex.test(response)
@@ -74,9 +74,9 @@ pactConvertGroups.forEach(pactGroup => {
           await provider.addInteraction(interaction)
           await client()
             .post(apiPath)
-            .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-            .set('X-Request-ID', requestId)
-            .set('X-Correlation-ID', correlationId)
+            .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
+            .set("X-Request-ID", requestId)
+            .set("X-Correlation-ID", correlationId)
             .send(requestStr)
             .expect(200)
         })

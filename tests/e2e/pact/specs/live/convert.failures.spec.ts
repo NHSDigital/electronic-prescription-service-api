@@ -6,7 +6,7 @@ import { Bundle } from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import { createUnauthorisedInteraction } from "./auth"
 import * as uuid from "uuid"
-import { pactOptions } from "../../resources/common"
+import {basePath, pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
   pactOptions("live", "convert", ["failures"]),
@@ -21,16 +21,16 @@ jestpact.pactWith(
 
     describe("endpoint authentication e2e tests", () => {
       test(authenticationTestDescription, async () => {
-        const apiPath = "/$convert"
+        const apiPath = `${basePath}/$convert`
         const requestId = uuid.v4()
         const correlationId = uuid.v4()
         const interaction: InteractionObject = createUnauthorisedInteraction(authenticationTestDescription, apiPath)
         await provider.addInteraction(interaction)
         await client()
           .post(apiPath)
-          .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-          .set('X-Request-ID', requestId)
-          .set('X-Correlation-ID', correlationId)
+          .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
+          .set("X-Request-ID", requestId)
+          .set("X-Correlation-ID", correlationId)
           .send({})
           .expect(401)
       })
@@ -38,7 +38,7 @@ jestpact.pactWith(
 
     describe("convert e2e tests", () => {
       test.each(TestResources.convertErrorCases)("should receive expected error code in response to %s message", async (desc: string, request: Bundle, response: string, statusCode: number) => {
-        const apiPath = "/$convert"
+        const apiPath = `${basePath}/$convert`
         const requestStr = LosslessJson.stringify(request)
         const requestId = uuid.v4()
         const correlationId = uuid.v4()
@@ -69,9 +69,9 @@ jestpact.pactWith(
         await provider.addInteraction(interaction)
         await client()
           .post(apiPath)
-          .set('Content-Type', 'application/fhir+json; fhirVersion=4.0')
-          .set('X-Request-ID', requestId)
-          .set('X-Correlation-ID', correlationId)
+          .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
+          .set("X-Request-ID", requestId)
+          .set("X-Correlation-ID", correlationId)
           .send(requestStr)
           .expect(statusCode)
       })
