@@ -5,7 +5,7 @@ import * as TestResources from "../../resources/test-resources"
 import {Bundle} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
-import {pactOptions} from "../../resources/common"
+import {basePath, pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
   pactOptions(true, "convert"),
@@ -16,8 +16,9 @@ jestpact.pactWith(
       return supertest(url)
     }
 
+    const apiPath = `${basePath}/$convert`
+
     describe("convert sandbox e2e tests", () => {
-      const apiPath = "/$convert"
       test.each(TestResources.convertCases)("should be able to convert %s message to HL7V3", async (desc: string, request: Bundle, response: string, responseMatcher: string) => {
         const regex = new RegExp(responseMatcher)
         const isMatch = regex.test(response)
@@ -61,7 +62,6 @@ jestpact.pactWith(
       })
 
       test.each(TestResources.convertErrorCases)("should receive expected error code in response to %s message", async (desc: string, request: Bundle, response: string, statusCode: number) => {
-
         const requestStr = LosslessJson.stringify(request)
         const requestId = uuid.v4()
         const correlationId = uuid.v4()

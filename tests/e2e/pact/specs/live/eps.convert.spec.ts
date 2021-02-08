@@ -6,7 +6,7 @@ import {Bundle} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import {createUnauthorisedInteraction} from "./eps-auth"
 import * as uuid from "uuid"
-import {pactOptions} from "../../resources/common"
+import {basePath, pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
   pactOptions(false, "convert"),
@@ -18,10 +18,10 @@ jestpact.pactWith(
     }
 
     const authenticationTestDescription = "a request to convert an unauthorised message"
+    const apiPath = `${basePath}/$convert`
 
     describe("endpoint authentication e2e tests", () => {
       test(authenticationTestDescription, async () => {
-        const apiPath = "/$convert"
         const requestId = uuid.v4()
         const correlationId = uuid.v4()
         const interaction: InteractionObject = createUnauthorisedInteraction(authenticationTestDescription, apiPath)
@@ -42,7 +42,6 @@ jestpact.pactWith(
         const isMatch = regex.test(response)
         expect(isMatch).toBe(true)
 
-        const apiPath = "/$convert"
         const requestStr = LosslessJson.stringify(request)
         const requestId = uuid.v4()
         const correlationId = uuid.v4()
@@ -81,7 +80,6 @@ jestpact.pactWith(
       })
 
       test.each(TestResources.convertErrorCases)("should receive expected error code in response to %s message", async (desc: string, request: Bundle, response: string, statusCode: number) => {
-        const apiPath = "/$convert"
         const requestStr = LosslessJson.stringify(request)
         const requestId = uuid.v4()
         const correlationId = uuid.v4()

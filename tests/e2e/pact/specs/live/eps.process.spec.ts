@@ -6,7 +6,7 @@ import {Bundle} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import {createUnauthorisedInteraction} from "./eps-auth"
 import * as uuid from "uuid"
-import {pactOptions} from "../../resources/common"
+import {basePath, pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
   pactOptions(false, "process"),
@@ -18,10 +18,10 @@ jestpact.pactWith(
     }
 
     const authenticationTestDescription = "a request to process an unauthorised message"
+    const apiPath = `${basePath}/$process-message`
 
     describe("endpoint authentication e2e tests", () => {
       test(authenticationTestDescription, async () => {
-        const apiPath = "/$process-message"
         const interaction: InteractionObject = createUnauthorisedInteraction(authenticationTestDescription, apiPath)
         const requestId = uuid.v4()
         const correlationId = uuid.v4()
@@ -38,7 +38,6 @@ jestpact.pactWith(
 
     describe("process-message e2e tests", () => {
       test.each(TestResources.processCases)("should be able to process a %s message", async (desc: string, request: Bundle) => {
-        const apiPath = "/$process-message"
         const requestStr = LosslessJson.stringify(request)
         const requestId = uuid.v4()
         const correlationId = uuid.v4()
