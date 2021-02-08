@@ -4,42 +4,54 @@ import {prepareExamples} from "../services/prepare-example-fetcher"
 import {releaseExamples} from "../services/dispense-example-fetcher"
 
 export const convertSecondaryCareCommunityAcuteCases =
-    convertExamples
-        .filter(e => e.isSuccess)
-        .filter(e => e.description.includes("secondary-care community acute"))
-        .map(spec => [spec.description, spec.request, spec.response, spec.responseMatcher, spec.statusCode])
-        
+  convertExamples
+    .filter(e => e.isSuccess)
+    .filter(e => e.description.includes("secondary-care community acute"))
+    .map(spec => [spec.description, spec.request, spec.response, spec.responseMatcher, spec.statusCode])
+
 export const convertSecondaryCareCommunityRepeatDispensingCases =
-    convertExamples
-        .filter(e => e.isSuccess)
-        .filter(e => e.description.includes("secondary-care community repeat-dispensing"))
-        .map(spec => [spec.description, spec.request, spec.response, spec.responseMatcher, spec.statusCode])
+  convertExamples
+    .filter(e => e.isSuccess)
+    .filter(e => e.description.includes("secondary-care community repeat-dispensing"))
+    .map(spec => [spec.description, spec.request, spec.response, spec.responseMatcher, spec.statusCode])
 
 export const convertSecondaryCareHomecareCases =
-    convertExamples
-        .filter(e => e.isSuccess)
-        .filter(e => e.description.includes("secondary-care homecare"))
-        .map(spec => [spec.description, spec.request, spec.response, spec.responseMatcher, spec.statusCode])
+  convertExamples
+    .filter(e => e.isSuccess)
+    .filter(e => e.description.includes("secondary-care homecare"))
+    .map(spec => [spec.description, spec.request, spec.response, spec.responseMatcher, spec.statusCode])
+
+export const convertPrimaryCareCases =
+  convertExamples
+    .filter(e => e.isSuccess)
+    .filter(e => e.description.includes("primary-care"))
+    .map(spec => [spec.description, spec.request, spec.response, spec.responseMatcher, spec.statusCode])
 
 export const convertErrorCases = convertExamples.filter(e => !e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
 export const prepareCases = prepareExamples.filter(e => e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
 
 export const processSecondaryCareCommunityAcuteCases =
-    processExamples
-        .filter(e => e.isSuccess)
-        .filter(e => e.description.includes("secondary-care community acute"))
-        .map(spec => [spec.description, spec.request, spec.prepareResponse, spec.convertResponse, spec.statusCode])
+  processExamples
+    .filter(e => e.isSuccess)
+    .filter(e => e.description.includes("secondary-care community acute"))
+    .map(spec => [spec.description, spec.request, spec.prepareResponse, spec.convertResponse, spec.statusCode])
 
 export const processSecondaryCareCommunityRepeatDispensingCases =
-    processExamples
-        .filter(e => e.isSuccess)
-        .filter(e => e.description.includes("secondary-care community repeat-dispensing"))
-        .map(spec => [spec.description, spec.request, spec.prepareResponse, spec.convertResponse, spec.statusCode])
+  processExamples
+    .filter(e => e.isSuccess)
+    .filter(e => e.description.includes("secondary-care community repeat-dispensing"))
+    .map(spec => [spec.description, spec.request, spec.prepareResponse, spec.convertResponse, spec.statusCode])
 
 export const processSecondaryCareHomecareCases =
-        processExamples
-            .filter(e => e.isSuccess)
-            .filter(e => e.description.includes("secondary-care homecare"))
-            .map(spec => [spec.description, spec.request, spec.prepareResponse, spec.convertResponse, spec.statusCode])
+  processExamples
+    .filter(e => e.isSuccess)
+    .filter(e => e.description.includes("secondary-care homecare"))
+    .map(spec => [spec.description, spec.request, spec.prepareResponse, spec.convertResponse, spec.statusCode])
+
+export const processPrimaryCareCases =
+  processExamples
+    .filter(e => e.isSuccess)
+    .filter(e => e.description.includes("primary-care"))
+    .map(spec => [spec.description, spec.request, spec.prepareResponse, spec.convertResponse, spec.statusCode])
 
 export const releaseCases = releaseExamples.filter(e => e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])

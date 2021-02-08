@@ -19,6 +19,10 @@ const processPactGroups = [
   {
     name: "secondarycare-homecare",
     cases: TestResources.processSecondaryCareHomecareCases
+  },
+  {
+    name: "primarycare",
+    cases: TestResources.processPrimaryCareCases
   }
 ]
 
