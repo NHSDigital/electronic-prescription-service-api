@@ -9,7 +9,7 @@
 			"name": "Universal Unique Identifiers (UUIDs)",
 			"item": [
 				{
-					"name": "groupidentifier (UUID)",
+					"name": "PORX identifier (UUID)",
 					"event": [
 						{
 							"listen": "test",
@@ -80,7 +80,7 @@
 					"response": []
 				},
 				{
-					"name": "UUID (Line6 value in JSON)",
+					"name": "ParentPrescription identifier UUID",
 					"event": [
 						{
 							"listen": "test",
@@ -102,7 +102,7 @@
 									"            xmlMode: true\r",
 									"        });\r",
 									"    \r",
-									"        let root = $('PORX_IN020101SM31 > id').attr('root');\r",
+									"        let root = $('PORX_IN020101SM31 > ControlActEvent > subject > ParentPrescription > id').attr('root');\r",
 									"\r",
 									"        pm.expect(root).to.eql ('0A1FD9EF-A3D5-4E95-84CD-552070A03086');\r",
 									"    }\r",
