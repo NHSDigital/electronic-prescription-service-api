@@ -149,8 +149,7 @@ export PACT_PROVIDER=$(pact-provider)
 export APIGEE_ENVIRONMENT=$(env)
 export APIGEE_ACCESS_TOKEN=$(token)
 
-space :=
-space +=
+space := $(subst ,, )
 export PACT_VERSION = $(subst $(space),,$(USERNAME))
 export PACT_PROVIDER_URL=https://$(env).api.service.nhs.uk/$(SERVICE_BASE_PATH)
 export PACT_TAG=$(env)
