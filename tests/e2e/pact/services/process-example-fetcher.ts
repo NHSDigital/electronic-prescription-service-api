@@ -1,6 +1,6 @@
 import { ProcessCase } from "../models/cases/process-case"
 import { exampleFiles } from "./example-files-fetcher"
-import {createExampleDescription} from "../resources/common"
+import { createExampleDescription } from "../resources/common"
 
 const processRequestFiles = exampleFiles.filter(exampleFile => exampleFile.isRequest && exampleFile.endpoint === "process")
 

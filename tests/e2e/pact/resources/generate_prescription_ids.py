@@ -1,1 +1,0 @@
-../../../../scripts/generate_prescription_ids.py

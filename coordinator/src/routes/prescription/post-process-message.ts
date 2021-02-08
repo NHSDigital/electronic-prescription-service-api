@@ -2,7 +2,7 @@ import * as translator from "../../services/translation"
 import * as fhir from "../../models/fhir/fhir-resources"
 import {requestHandler} from "../../services/handlers"
 import Hapi from "@hapi/hapi"
-import {createHash, handleResponse, validatingHandler} from "../util"
+import {basePath, createHash, handleResponse, validatingHandler} from "../util"
 import {createOperationOutcomeIssue} from "../../services/translation/spine-response"
 import {getMessageHeader} from "../../services/translation/common/getResourcesOfType"
 
@@ -16,7 +16,7 @@ export default [
     */
   {
     method: "POST",
-    path: "/$process-message",
+    path: `${basePath}/$process-message`,
     handler: validatingHandler(
       async (bundle: fhir.Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         if (isDispenseMessage(bundle)) {

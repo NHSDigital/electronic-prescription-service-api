@@ -1,14 +1,13 @@
-import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
-import {Bundle, Parameters} from "../../models/fhir/fhir-resources"
+import { Bundle } from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
-import {basePath, getStringParameterByName, pactOptions} from "../../resources/common"
+import { basePath, pactOptions } from "../../resources/common"
 
 jestpact.pactWith(
-  pactOptions("sandbox", "prepare"),
+  pactOptions("sandbox", "convert", ["failures"]),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
@@ -16,16 +15,17 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    describe("prepare sandbox e2e tests", () => {
-      test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (desc: string, request: Bundle, response: Parameters) => {
-        const apiPath = `${basePath}/$prepare`
+    describe("convert sandbox e2e tests", () => {
+      const apiPath = `${basePath}/$convert`
+
+      test.each(TestResources.convertErrorCases)("should receive expected error code in response to %s message", async (desc: string, request: Bundle, response: string, statusCode: number) => {
         const requestStr = LosslessJson.stringify(request)
         const requestId = uuid.v4()
         const correlationId = uuid.v4()
 
-        const interaction: InteractionObject = {
+        const interaction = {
           state: "is not authenticated",
-          uponReceiving: `a request to prepare a ${desc} message`,
+          uponReceiving: `a request to convert ${desc} message`,
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",
@@ -42,24 +42,8 @@ jestpact.pactWith(
               "X-Request-ID": requestId,
               "X-Correlation-ID": correlationId
             },
-            body: {
-              resourceType: "Parameters",
-              parameter: [
-                {
-                  name: "digest",
-                  valueString: Matchers.like(getStringParameterByName(response, "digest").valueString)
-                },
-                {
-                  name: "timestamp",
-                  valueString: Matchers.like(getStringParameterByName(response, "timestamp").valueString)
-                },
-                {
-                  name: "algorithm",
-                  valueString: "RS1"
-                }
-              ]
-            },
-            status: 200
+            body: response,
+            status: statusCode
           }
         }
         await provider.addInteraction(interaction)
@@ -69,7 +53,7 @@ jestpact.pactWith(
           .set("X-Request-ID", requestId)
           .set("X-Correlation-ID", correlationId)
           .send(requestStr)
-          .expect(200)
+          .expect(statusCode)
       })
     })
   }
