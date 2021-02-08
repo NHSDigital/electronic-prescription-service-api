@@ -131,7 +131,7 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
               "code": "continuous-repeat-dispensing",
               "display": "Continuous long term (repeat dispensing)"
             }
@@ -274,7 +274,7 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
               "code": "continuous-repeat-dispensing",
               "display": "Continuous long term (repeat dispensing)"
             }
