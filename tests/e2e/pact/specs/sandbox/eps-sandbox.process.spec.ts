@@ -6,7 +6,7 @@ import {Bundle} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import {processExamples} from "../../services/process-example-fetcher"
 import * as uuid from "uuid"
-import {pactOptions} from "../../resources/common"
+import {basePath, pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
   pactOptions(true, "process"),
@@ -17,9 +17,10 @@ jestpact.pactWith(
       return supertest(url)
     }
 
+    const apiPath = `${basePath}/$process-message`
+
     describe("process-message sandbox e2e tests", () => {
       test.each(TestResources.processCases)("should be able to process %s", async (desc: string, request: Bundle) => {
-        const apiPath = "/$process-message"
         const messageStr = LosslessJson.stringify(request)
         const requestId = uuid.v4()
         const correlationId = uuid.v4()
@@ -62,7 +63,6 @@ jestpact.pactWith(
       test("Should be able to process a FHIR JSON Accept header", async () => {
         const testCase = processExamples[0]
 
-        const apiPath = "/$process-message"
         const messageStr = LosslessJson.stringify(testCase.request)
         const requestId = uuid.v4()
         const correlationId = uuid.v4()

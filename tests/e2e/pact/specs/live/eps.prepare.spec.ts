@@ -6,7 +6,7 @@ import * as LosslessJson from "lossless-json"
 import supertest from "supertest"
 import {createUnauthorisedInteraction} from "./eps-auth"
 import * as uuid from "uuid"
-import {getStringParameterByName, pactOptions} from "../../resources/common"
+import {basePath, getStringParameterByName, pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
   pactOptions(false, "prepare"),
@@ -18,10 +18,10 @@ jestpact.pactWith(
     }
 
     const authenticationTestDescription = "a request to prepare an unauthorised message"
+    const apiPath = `${basePath}/$prepare`
 
     describe("endpoint authentication e2e tests", () => {
       test(authenticationTestDescription, async () => {
-        const apiPath = "/$prepare"
         const interaction: InteractionObject = createUnauthorisedInteraction(authenticationTestDescription, apiPath)
         const requestId = uuid.v4()
         const correlationId = uuid.v4()
@@ -38,7 +38,6 @@ jestpact.pactWith(
 
     describe("prepare e2e tests", () => {
       test.each(TestResources.prepareCases)("should be able to prepare a %s message", async (desc: string, request: Bundle, response: Parameters) => {
-        const apiPath = "/$prepare"
         const requestStr = LosslessJson.stringify(request)
         const requestId = uuid.v4()
         const correlationId = uuid.v4()
