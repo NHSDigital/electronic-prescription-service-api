@@ -63,7 +63,7 @@ function setPrescriptionTypeOnMedicationRequests(bundle: fhir.Bundle, practition
   medicationRequests.forEach(medicationRequest => {
     const prescriptionTypeExtension = getExtensionForUrl(
       medicationRequest.extension,
-      "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
+      "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
       "MedicationRequest.extension"
     ) as fhir.CodingExtension
     prescriptionTypeExtension.valueCoding = practitionerTypeExtension.valueCoding
@@ -97,12 +97,12 @@ function setResponsiblePartyOnMedicationRequests(bundle: fhir.Bundle, practition
   medicationRequests.forEach(medicationRequest => {
     const existingExtension = getExtensionForUrlOrNull(
       medicationRequest.extension,
-      "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+      "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
       "MedicationRequest.extension"
     ) as fhir.ReferenceExtension<fhir.PractitionerRole>
     medicationRequest.extension.remove(existingExtension)
     medicationRequest.extension.push({
-      url: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
       valueReference: {
         reference: getFullUrl(practitionerRole.id)
       }
@@ -181,7 +181,7 @@ function setIdsAndTimestamps(bundle: fhir.Bundle) {
       medicationRequest.groupIdentifier.value = medicationShortFormId
       const extension = getExtensionForUrl(
         medicationRequest.groupIdentifier.extension,
-        "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
+        "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
         "MedicationRequest.groupIdentifier.extension"
       ) as fhir.IdentifierExtension
       extension.valueIdentifier.value = medicationLongFormId

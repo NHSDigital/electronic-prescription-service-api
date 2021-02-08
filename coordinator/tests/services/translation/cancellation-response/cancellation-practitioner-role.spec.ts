@@ -54,7 +54,7 @@ describe("createPractitionerRole", () => {
 
   test.each(cases)("has correct code", (agentPerson: AgentPerson, practitionerRole:PractitionerRole) => {
     expect(practitionerRole.code[0].coding[0].code).toBe(agentPerson.code._attributes.code)
-    expect(practitionerRole.code[0].coding[0].system).toBe("https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName")
+    expect(practitionerRole.code[0].coding[0].system).toBe("https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName")
   })
 
   test("practitionerRole has correct telecom information", () => {

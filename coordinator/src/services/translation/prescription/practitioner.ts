@@ -64,7 +64,7 @@ export function convertResponsibleParty(
 
   const fhirResponsiblePartyExtension = getExtensionForUrlOrNull(
     fhirMedicationRequest.extension,
-    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
     "MedicationRequest.extension"
   ) as fhir.ReferenceExtension<PractitionerRole>
 
@@ -132,7 +132,7 @@ function createAgentPerson(
 
   const sdsJobRoleCode = getCodeableConceptCodingForSystem(
     fhirPractitionerRole.code,
-    "https://fhir.nhs.uk/R4/CodeSystem/UKCore-SDSJobRoleName",
+    "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
     "PractitionerRole.code"
   )
   hl7V3AgentPerson.code = new codes.SdsJobRoleCode(sdsJobRoleCode.code)
