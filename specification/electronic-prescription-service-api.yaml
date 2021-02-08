@@ -181,19 +181,20 @@ info:
 
     ## Errors
     ### API specific errors
-    | Error Code             | HTTP Code | Description / Example                          |
-    | ---------------------- | --------- | ---------------------------------------------- |
-    | MISSING_FIELD          | 400       | A required field is missing within the request |
-    | INVALID_VALUE          | 400       | Invalid value in message                       |
-    | INCORRECT_RESOURCETYPE | 400       | FHIR resource has incorrect resourceType       |
-    | NOT_FOUND              | 404       | Resource not found                             |
+    | HTTP Code     | Error Code             | Description                                    |
+    | --------------| ---------------------- | ---------------------------------------------- |
+    | 400           |  MISSING_FIELD         | A required field is missing within the request |
+    | 400           | INVALID_VALUE          | Invalid value in message                       |
+    | 400           | INCORRECT_RESOURCETYPE | FHIR resource has incorrect resourceType       |
+    | 404           | NOT_FOUND              | Resource not found                             |
     
     ### Platform-wide errors
-    | Error Code    | HTTP Code | Description / Example                                  |
-    | ------------- | --------- | ------------------------------------------------------ |
-    | MISSING_FIELD | 400       | X-Request-ID header missing or malformed               |
-    | ACCESS_DENIED | 401       | User does not have permission for a particular request |
-    | NOT_FOUND     | 404       | Resource not found                                     |
+    
+    | Error Code    | HTTP Code       | Description                                            |
+    | ------------- | --------------- | ------------------------------------------------------ |
+    | 400           | MISSING_FIELD   | X-Request-ID header missing or malformed               |
+    | 401           | ACCESS_DENIED   | User does not have permission for a particular request |
+    | 404           | NOT_FOUND       | Resource not found                                     |
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
     description: 'Sandbox'
