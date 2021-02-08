@@ -60,6 +60,11 @@
 						"key": "NHSD-Session-URID",
 						"value": "1234",
 						"type": "text"
+					},
+					{
+						"key": "X-Request-ID",
+						"type": "text",
+						"value": "8DC070B2-3C42-4ED5-810D-2DD820204CEF"
 					}
 				],
 				"body": {
@@ -139,6 +144,11 @@
 						"key": "NHSD-Session-URID",
 						"value": "1234",
 						"type": "text"
+					},
+					{
+						"key": "X-Request-ID",
+						"type": "text",
+						"value": "8DC070B2-3C42-4ED5-810D-2DD820204CEF"
 					}
 				],
 				"body": {
@@ -218,6 +228,11 @@
 						"key": "NHSD-Session-URID",
 						"value": "1234",
 						"type": "text"
+					},
+					{
+						"key": "X-Request-ID",
+						"type": "text",
+						"value": "8DC070B2-3C42-4ED5-810D-2DD820204CEF"
 					}
 				],
 				"body": {
@@ -297,6 +312,11 @@
 						"key": "NHSD-Session-URID",
 						"value": "1234",
 						"type": "text"
+					},
+					{
+						"key": "X-Request-ID",
+						"type": "text",
+						"value": "8DC070B2-3C42-4ED5-810D-2DD820204CEF"
 					}
 				],
 				"body": {
@@ -364,6 +384,11 @@
 						"key": "NHSD-Session-URID",
 						"value": "1234",
 						"type": "text"
+					},
+					{
+						"key": "X-Request-ID",
+						"type": "text",
+						"value": "8DC070B2-3C42-4ED5-810D-2DD820204CEF"
 					}
 				],
 				"body": {
@@ -444,6 +469,11 @@
 						"key": "NHSD-Session-URID",
 						"value": "1234",
 						"type": "text"
+					},
+					{
+						"key": "X-Request-ID",
+						"type": "text",
+						"value": "8DC070B2-3C42-4ED5-810D-2DD820204CEF"
 					}
 				],
 				"body": {
