@@ -63,7 +63,7 @@ jestpact.pactWith(
           .set("X-Request-ID", requestId)
           .set("X-Correlation-ID", correlationId)
           .send(messageStr)
-          .expect(400)
+          .expect(200)
       })
     })
   }
