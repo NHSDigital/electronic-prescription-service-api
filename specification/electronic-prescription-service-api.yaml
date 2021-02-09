@@ -289,7 +289,6 @@ paths:
             | ----------- | ------------------ | ---------------------------------------------- | -----------------|
             | 400         | BAD_REQUEST        | Spine Error - duplicate prescription ID exists | OperationOutcome |
             | 400         | BAD_REQUEST        | Spine Error - prescription not found           | Bundle           |
-
           content:
             application/fhir+json:
               examples:
@@ -308,7 +307,7 @@ paths:
         * to acquire prescription information for an entire pharmacy, send owner information
         * to acquire prescription information for a specific prescription, send the group identifier for that prescription
         
-        This endpoint is only available in sandbox environment.
+        This endpoint is only available in the sandbox environment.
       tags:
         - dispensing
       requestBody:
@@ -329,40 +328,8 @@ paths:
             application/fhir+json:
               examples:
                 example:
-                  value: |
-                    {
-                      "resourceType": "Bundle",
-                      "type": "searchset",
-                      "total": 2,
-                      "id": "d5a20db9-6d76-4aeb-a190-9a85843b01bf",
-                      "identifier": {
-                        "value": "d5a20db9-6d76-4aeb-a190-9a85843b01bf"
-                      },
-                      "entry": [
-                        {
-                          "resource": {
-                            "resourceType": "Bundle",
-                            "type": "message",
-                            "id": "eff31db2-a914-44a9-b89d-1a33f6de727e",
-                            "identifier": {
-                              "value": "eff31db2-a914-44a9-b89d-1a33f6de727e"
-                            }
-                          },
-                          "fullUrl": "urn:uuid:eff31db2-a914-44a9-b89d-1a33f6de727e"
-                        },
-                        {
-                          "resource": {
-                            "resourceType": "Bundle",
-                            "type": "message",
-                            "id": "f6f2fd4a-0f5a-4cee-82a0-e6d08d64c2b4",
-                            "identifier": {
-                              "value": "f6f2fd4a-0f5a-4cee-82a0-e6d08d64c2b4"
-                            }
-                          },
-                          "fullUrl": "urn:uuid:f6f2fd4a-0f5a-4cee-82a0-e6d08d64c2b4"
-                        }
-                      ]
-                    }
+                  value:
+                    $ref: components/examples/sandbox/Release-Response-200_OK.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -370,23 +337,9 @@ paths:
             | HTTP status | Error code         | Description            | FHIR type        |
             | ----------- | -------------------| ---------------------- | -----------------|
             | 400         | BAD_REQUEST        | Invalid request bundle | OperationOutcome |
-
           content:
             application/fhir+json:
               examples:
                 example:
-                  value: |
-                    {
-                      "resourceType": "OperationOutcome",
-                      "issue": [
-                        {
-                          "severity": "fatal",
-                          "code": "value",
-                          "diagnostics": "MessageHeader.eventCoding.code must be one of 'prescription-order' or 'prescription-order-update'.",
-                          "expression": [
-                              "Bundle.entry.resource.ofType(MessageHeader).eventCoding.code"
-                          ]
-                        }
-                      ]
-                    }
-
+                  value: 
+                    $ref: components/examples/errors/release/validation-error.json
