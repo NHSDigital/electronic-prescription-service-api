@@ -148,7 +148,7 @@ def derive_convert_response_path(process_request_path):
 def update_examples(api_base_url):
     authored_on = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S+00:00')
 
-    for prepare_request_path in find_prepare_request_paths():        
+    for prepare_request_path in find_prepare_request_paths():
         prescription_id = str(uuid.uuid4())
 
         short_prescription_id, signature_time = update_prepare_examples(
