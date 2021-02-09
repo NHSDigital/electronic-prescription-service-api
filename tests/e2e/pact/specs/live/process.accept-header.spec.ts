@@ -47,20 +47,12 @@ jestpact.pactWith(
               resourceType: "OperationOutcome",
               issue: [
                 {
-                  code: "invalid",
-                  severity: "error",
-                  details: {
-                    coding: [
-                      {
-                        code: "202",
-                        display: "Duplicate HL7 ID Error"
-                      }
-                    ]
-                  }
+                  code: "informational",
+                  severity: "information",
                 }
               ]
             },
-            status: 400
+            status: 200
           }
         }
         await provider.addInteraction(interaction)
