@@ -5,7 +5,10 @@ import * as TestResources from "../../resources/test-resources"
 import { Bundle } from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
-import {basePath, pactOptions, updatePrescriptionIds} from "../../resources/common"
+import {basePath, pactOptions} from "../../resources/common"
+import {regeneratePrescriptionIds} from "../../services/process-example-fetcher"
+
+regeneratePrescriptionIds()
 
 const processPactGroups = [
   {
@@ -38,7 +41,6 @@ processPactGroups.forEach(pactGroup => {
       describe("process-message e2e tests", () => {
         test.each(pactGroupTestCases)("should be able to process %s", async (desc: string, message: Bundle) => {
           const apiPath = `${basePath}/$process-message`
-          updatePrescriptionIds(message)
           const bundleStr = LosslessJson.stringify(message)
           const bundle = JSON.parse(bundleStr) as Bundle
 
@@ -66,8 +68,8 @@ processPactGroups.forEach(pactGroup => {
                 resourceType: "OperationOutcome",
                 issue: [
                   {
-                    code: "information",
-                    severity: "informational",
+                    code: "informational",
+                    severity: "information",
                   }
                 ]
               },
