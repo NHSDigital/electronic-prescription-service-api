@@ -52,7 +52,7 @@ export function regeneratePrescriptionIds(): void {
     const firstGroupIdentifier = getMedicationRequests(bundle)[0].groupIdentifier
 
     const originalBundleIdentifier = bundle.identifier.value
-    const newBundleIdentifier = replacements.get(originalBundleIdentifier)
+    const newBundleIdentifier = replacements.get(originalBundleIdentifier) ?? originalBundleIdentifier
 
     const originalShortFormId = firstGroupIdentifier.value
     const newShortFormId = replacements.get(originalShortFormId)
