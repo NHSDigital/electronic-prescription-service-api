@@ -2,7 +2,7 @@ import { InteractionObject } from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
-import { Bundle } from "../../models/fhir/fhir-resources"
+import {Bundle, MedicationRequest} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
@@ -47,9 +47,13 @@ processPactGroups.forEach(pactGroup => {
           const requestId = uuid.v4()
           const correlationId = uuid.v4()
 
+          const firstMedicationRequest = message.entry.map(e => e.resource)
+            .find(r => r.resourceType == "MedicationRequest") as MedicationRequest
+          const prescriptionId = firstMedicationRequest.groupIdentifier.value
+
           const interaction: InteractionObject = {
             state: "is authenticated",
-            uponReceiving: `a request to process ${desc} message to Spine`,
+            uponReceiving: `a request to process prescription: ${prescriptionId} - ${desc} message to Spine`,
             withRequest: {
               headers: {
                 "Content-Type": "application/fhir+json; fhirVersion=4.0",

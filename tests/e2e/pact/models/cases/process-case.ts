@@ -5,7 +5,6 @@ import fs from "fs"
 import * as XmlJs from "xml-js"
 
 export class ProcessCase extends Case {
-  description: string
   request: fhir.Bundle
   prepareResponse : fhir.Parameters
   convertResponse: XmlJs.ElementCompact | string
@@ -13,14 +12,9 @@ export class ProcessCase extends Case {
   constructor(description: string, requestFile: string, statusText: string) {
     super(description, requestFile, statusText)
 
-    const medicationRequest = this.request.entry.map(e => e.resource)
-      .find(r => r.resourceType == "MedicationRequest") as fhir.MedicationRequest
-    const prescriptionId = medicationRequest.groupIdentifier.value
-    this.description = `prescription: ${prescriptionId} - ${description}`
-
     const processRequest = exampleFiles.find(exampleFile => exampleFile.path === requestFile)
 
-    const prepareResponse = exampleFiles.find(exampleFile => 
+    const prepareResponse = exampleFiles.find(exampleFile =>
       exampleFile.dir === processRequest.dir
       && exampleFile.number === processRequest.number
       && exampleFile.endpoint === "prepare"
@@ -28,7 +22,7 @@ export class ProcessCase extends Case {
 
     this.prepareResponse = JSON.parse(fs.readFileSync(prepareResponse.path, "utf-8"))
 
-    const convertResponse = exampleFiles.find(exampleFile => 
+    const convertResponse = exampleFiles.find(exampleFile =>
       exampleFile.dir === processRequest.dir
       && exampleFile.number === processRequest.number
       && exampleFile.endpoint === "convert"

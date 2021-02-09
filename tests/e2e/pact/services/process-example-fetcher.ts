@@ -44,22 +44,32 @@ export function regeneratePrescriptionIds(): void {
     const newLongFormId = uuid.v4()
     replacements.set(originalLongFormId, newLongFormId)
 
-    updatePrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
+    setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
   })
 
   prescriptionOrderUpdateExamples.forEach(processCase => {
     const bundle = processCase.request
     const firstGroupIdentifier = getMedicationRequests(bundle)[0].groupIdentifier
 
-    const newBundleIdentifier = replacements.get(bundle.identifier.value)
-    const newShortFormId = replacements.get(firstGroupIdentifier.value)
-    const newLongFormId = replacements.get(getLongFormIdExtension(firstGroupIdentifier.extension).valueIdentifier.value)
+    const originalBundleIdentifier = bundle.identifier.value
+    const newBundleIdentifier = replacements.get(originalBundleIdentifier)
 
-    updatePrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
+    const originalShortFormId = firstGroupIdentifier.value
+    const newShortFormId = replacements.get(originalShortFormId)
+
+    const originalLongFormId = getLongFormIdExtension(firstGroupIdentifier.extension).valueIdentifier.value
+    const newLongFormId = replacements.get(originalLongFormId)
+
+    setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
   })
 }
 
-function updatePrescriptionIds(bundle: fhir.Bundle, newBundleIdentifier: string, newShortFormId: string, newLongFormId: string) {
+export function setPrescriptionIds(
+  bundle: fhir.Bundle,
+  newBundleIdentifier: string,
+  newShortFormId: string,
+  newLongFormId: string
+): void {
   bundle.identifier.value = newBundleIdentifier
   getMedicationRequests(bundle).forEach(medicationRequest => {
     const groupIdentifier = medicationRequest.groupIdentifier
@@ -72,7 +82,7 @@ function updatePrescriptionIds(bundle: fhir.Bundle, newBundleIdentifier: string,
  * The following methods contain a lot of duplicated code from the coordinator module.
  * TODO - Find a better way to share this code.
  */
-function generateShortFormId() {
+export function generateShortFormId(): string {
   const _PRESC_CHECKDIGIT_VALUES = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+"
   const hexString = (uuid.v4()).replace(/-/g, "").toUpperCase()
   let prescriptionID = hexString.substring(0, 6) + "-" + "A99968" + "-" + hexString.substring(12, 17)

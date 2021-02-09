@@ -1,11 +1,7 @@
 import path from "path"
 import { Publisher } from "@pact-foundation/pact"
-import {regeneratePrescriptionIds} from "../services/process-example-fetcher"
 
 async function publish(): Promise<Array<string>> {
-  //TODO - explain
-  regeneratePrescriptionIds()
-
   const isLocal = process.env.PACT_PROVIDER_URL == "http://localhost:9000"
   if (!isLocal) {
     return await new Publisher({
