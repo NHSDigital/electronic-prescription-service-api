@@ -18,14 +18,14 @@ examples_root_dir = "../models/examples/"
 api_prefix_url = "FHIR/R4"
 
 
-def generate_short_form_id():
+def generate_short_form_id(organisationCode):
     """Create R2 (short format) Prescription ID
     Build the prescription ID and add the required checkdigit.
     Checkdigit is selected from the PRESCRIPTION_CHECKDIGIT_VALUES constant
     """
     _PRESCRIPTION_CHECKDIGIT_VALUES = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+'
     hex_string = str(uuid.uuid1()).replace('-', '').upper()
-    prescription_id = f'{hex_string[:6]}-Z{hex_string[6:11]}-{hex_string[12:17]}'
+    prescription_id = f'{hex_string[:6]}-{organisationCode}-{hex_string[12:17]}'
     prescription_id_digits = prescription_id.replace('-', '')
     prescription_id_digits_length = len(prescription_id_digits)
     running_total = 0
@@ -45,22 +45,13 @@ def find_prepare_request_paths():
 
 
 def replace_ids_and_timestamps(bundle_json, prescription_id, short_prescription_id, authored_on, signature_time):
-    short_prescription_id_split = short_prescription_id.split("-")
-    spid_first = short_prescription_id_split[0]
-    spid_middle = short_prescription_id_split[1]
-    spid_last = short_prescription_id_split[2]
-
     for entry in reversed(bundle_json['entry']):
         resource = entry["resource"]
         if resource["resourceType"] == "Provenance":
             for signature in resource["signature"]:
                 signature["when"] = signature_time
-        # if resource["resourceType"] == "HealthcareService":
-        #     for identifier in resource["identifier"]:
-        #         organisationCode = identifier["value"]
-        #         spid_middle = organisationCode
         if resource["resourceType"] == "MedicationRequest":
-            resource["groupIdentifier"]["value"] = f'{spid_first}-{spid_middle}-{spid_last}'
+            resource["groupIdentifier"]["value"] = short_prescription_id
             for extension in resource["groupIdentifier"]["extension"]:
                 if extension["url"] == "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId":
                     extension["valueIdentifier"]["value"] = prescription_id
@@ -70,10 +61,19 @@ def replace_ids_and_timestamps(bundle_json, prescription_id, short_prescription_
                 resource["dispenseRequest"]["validityPeriod"]["end"] = (date.today() + timedelta(weeks=4)).isoformat()
 
 
-def update_prepare_examples(api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on):
+def update_prepare_examples(api_base_url, prepare_request_path, prescription_id, authored_on):
     with open(prepare_request_path) as f:
         prepare_request_json = json.load(f)
+
+    for entry in reversed(prepare_request_json['entry']):
+        resource = entry["resource"]
+        if resource["resourceType"] == "HealthcareService":
+            for identifier in resource["identifier"]:
+                organisationCode = identifier["value"]
+                short_prescription_id = generate_short_form_id(organisationCode)
+
     replace_ids_and_timestamps(prepare_request_json, prescription_id, short_prescription_id, authored_on, None)
+
     with open(prepare_request_path, 'w') as f:
         json.dump(prepare_request_json, f, indent=2)
 
@@ -89,16 +89,7 @@ def update_prepare_examples(api_base_url, prepare_request_path, prescription_id,
 
     for parameter in prepare_response_json["parameter"]:
         if parameter["name"] == "timestamp":
-            return parameter["valueString"]
-
-
-def derive_prepare_response_path(prepare_request_path):
-    example_dir = os.path.dirname(prepare_request_path)
-    file = os.path.basename(prepare_request_path)
-    filename_parts = file.split('-')
-    number = filename_parts[0]
-    status_code_and_ext = filename_parts[-1]
-    return f'{example_dir}/{number}-Prepare-Response-{status_code_and_ext}'
+            return short_prescription_id, parameter["valueString"]
 
 
 def update_process_examples(
@@ -125,6 +116,15 @@ def update_process_examples(
             f.write(convert_response_xml)
 
 
+def derive_prepare_response_path(prepare_request_path):
+    example_dir = os.path.dirname(prepare_request_path)
+    file = os.path.basename(prepare_request_path)
+    filename_parts = file.split('-')
+    number = filename_parts[0]
+    status_code_and_ext = filename_parts[-1]
+    return f'{example_dir}/{number}-Prepare-Response-{status_code_and_ext}'
+
+
 def derive_process_request_path_pattern(prepare_request_path):
     example_dir = os.path.dirname(prepare_request_path)
     file = os.path.basename(prepare_request_path)
@@ -148,12 +148,11 @@ def derive_convert_response_path(process_request_path):
 def update_examples(api_base_url):
     authored_on = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S+00:00')
 
-    for prepare_request_path in find_prepare_request_paths():
+    for prepare_request_path in find_prepare_request_paths():        
         prescription_id = str(uuid.uuid4())
-        short_prescription_id = generate_short_form_id()
 
-        signature_time = update_prepare_examples(
-            api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on
+        short_prescription_id, signature_time = update_prepare_examples(
+            api_base_url, prepare_request_path, prescription_id, authored_on
         )
         update_process_examples(
             api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on,
