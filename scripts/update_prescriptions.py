@@ -15,6 +15,7 @@ import requests
 from docopt import docopt
 
 examples_root_dir = "../models/examples/"
+api_prefix_url = "FHIR/R4"
 
 
 def generate_short_form_id():
@@ -77,9 +78,9 @@ def update_prepare_examples(api_base_url, prepare_request_path, prescription_id,
         json.dump(prepare_request_json, f, indent=2)
 
     prepare_response_json = requests.post(
-        f'{api_base_url}/$prepare',
+        f'{api_base_url}/{api_prefix_url}/$prepare',
         data=json.dumps(prepare_request_json),
-        headers={'Content-Type': 'application/json'}
+        headers={'Content-Type': 'application/json', 'X-Request-ID': str(uuid.uuid4())}
     ).json()
 
     prepare_response_path = derive_prepare_response_path(prepare_request_path)
@@ -114,9 +115,9 @@ def update_process_examples(
             json.dump(process_request_json, f, indent=2)
 
         convert_response_xml = requests.post(
-            f'{api_base_url}/$convert',
+            f'{api_base_url}/{api_prefix_url}/$convert',
             data=json.dumps(process_request_json),
-            headers={'Content-Type': 'application/json'}
+            headers={'Content-Type': 'application/json', 'X-Request-ID': str(uuid.uuid4())}
         ).text
 
         convert_response_path = derive_convert_response_path(process_request_path)
