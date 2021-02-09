@@ -45,7 +45,7 @@ def find_prepare_request_paths():
 
 
 def replace_ids_and_timestamps(bundle_json, prescription_id, short_prescription_id, authored_on, signature_time):
-    for entry in reversed(bundle_json['entry']):
+    for entry in bundle_json['entry']:
         resource = entry["resource"]
         if resource["resourceType"] == "Provenance":
             for signature in resource["signature"]:
@@ -65,7 +65,7 @@ def update_prepare_examples(api_base_url, prepare_request_path, prescription_id,
     with open(prepare_request_path) as f:
         prepare_request_json = json.load(f)
 
-    for entry in reversed(prepare_request_json['entry']):
+    for entry in prepare_request_json['entry']:
         resource = entry["resource"]
         if resource["resourceType"] == "HealthcareService":
             for identifier in resource["identifier"]:
