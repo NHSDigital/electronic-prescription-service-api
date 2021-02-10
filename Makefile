@@ -16,6 +16,7 @@ build: build-specification build-coordinator build-validator build-proxies
 
 test: lint validate-models check-licenses test-coordinator
 	cd tests/e2e/pact && make test
+	poetry run pytest -q .\scripts\update_prescriptions.py
 
 publish:
 	echo Publish

@@ -39,7 +39,7 @@ def generate_short_form_id(organisationCode):
     return prescription_id
 
 
-def find_prepare_request_paths():
+def find_prepare_request_paths(examples_root_dir):
     for filename in glob.iglob(f'{examples_root_dir}**/*Prepare-Request*200_OK*.json', recursive=True):
         yield filename
 
@@ -148,7 +148,7 @@ def derive_convert_response_path(process_request_path):
 def update_examples(api_base_url):
     authored_on = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S+00:00')
 
-    for prepare_request_path in find_prepare_request_paths():
+    for prepare_request_path in find_prepare_request_paths(examples_root_dir):
         prescription_id = str(uuid.uuid4())
 
         short_prescription_id, signature_time = update_prepare_examples(
@@ -167,3 +167,16 @@ def main(arguments):
 
 if __name__ == "__main__":
     main(arguments=docopt(__doc__, version="0"))
+
+
+def test_generate_short_form_id__contains_org_code():
+    assert generate_short_form_id("testOrgCode").split("-")[1] == "testOrgCode"
+
+
+def test_find_prepare_request_paths__is_not_empty():
+    examples_root_dir = "./models/examples/"
+    assert next(find_prepare_request_paths(examples_root_dir)) != -1
+
+
+def test_replace_ids_and_timestamps__replaces_ids_and_timestamps():
+    assert False
