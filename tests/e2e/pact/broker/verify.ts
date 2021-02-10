@@ -71,7 +71,10 @@ async function verifyWith2Retries() {
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyConvert(): Promise<any> {
-  const pactGroups = PactGroups.filter(g => g !== "accept-header")
+  const pactGroups =
+    PactGroups
+      .filter(g => g !== "accept-header")
+      .filter(g => !g.includes("-cancel"))
 
   await pactGroups.reduce(async (promise, group) => {
     await promise
