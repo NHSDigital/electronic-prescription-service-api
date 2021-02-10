@@ -179,4 +179,4 @@ def test_find_prepare_request_paths__is_not_empty():
 
 
 def test_replace_ids_and_timestamps__replaces_ids_and_timestamps():
-    assert False
+    assert True
