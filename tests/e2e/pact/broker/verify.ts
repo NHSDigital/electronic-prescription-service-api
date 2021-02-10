@@ -62,6 +62,11 @@ function resetBackOffRetryTimer() {
   sleepMs = 0
 }
 
+async function verifyOnce() {
+  await verify()
+    .catch(() => process.exit(1))
+}
+
 async function verifyWith2Retries() {
   await verify()
     .catch(verify)
@@ -107,7 +112,7 @@ async function verifyProcess(): Promise<any> {
       endpoint = "process"
       pactGroup = group
       resetBackOffRetryTimer()
-      await verifyWith2Retries()
+      await verifyOnce()
     }, Promise.resolve())
 }
 
