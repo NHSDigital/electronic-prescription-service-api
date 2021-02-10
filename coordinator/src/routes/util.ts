@@ -10,7 +10,7 @@ import {getMessageHeader} from "../services/translation/common/getResourcesOfTyp
 import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
-import {MessageTypeError} from "../models/errors/validation-errors"
+import {ResourceTypeError} from "../models/errors/validation-errors"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
@@ -124,7 +124,7 @@ export function taskValidatorHandler(handler: Handler<fhir.Parameters>) {
 
     const requestPayload = getPayload(request) as fhir.Resource
     if (requestPayload.resourceType !== "Parameters") {
-      const error = new MessageTypeError()
+      const error = new ResourceTypeError("Parameters")
       const response = toFhirError([error])
       const statusCode = requestValidator.getStatusCode([error])
       return responseToolkit.response(response).code(statusCode)
