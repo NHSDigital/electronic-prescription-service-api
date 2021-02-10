@@ -3,6 +3,7 @@ import * as fs from "fs"
 import * as fhir from "../fhir/fhir-resources"
 import {Case} from "./case"
 import * as LosslessJson from "lossless-json"
+import {ExampleFile} from "../files/example-file"
 
 export class ConvertCase extends Case {
   description: string
@@ -11,10 +12,10 @@ export class ConvertCase extends Case {
   responseMatcher: string
   statusText: string
 
-  constructor(description: string, requestFilePath: string, responseFilePath: string, statusText: string) {
-    super(description, requestFilePath, statusText)
+  constructor(requestFile: ExampleFile, responseFile: ExampleFile) {
+    super(requestFile, responseFile)
 
-    const responseString = fs.readFileSync(responseFilePath, "utf-8")
+    const responseString = fs.readFileSync(responseFile.path, "utf-8")
     this.response = this.isSuccess ? responseString : JSON.parse(LosslessJson.stringify(responseString))
     this.responseMatcher =  this.isSuccess ? this.buildResponseMatcher(this.response).trimEnd() : ""
   }
@@ -61,5 +62,9 @@ export class ConvertCase extends Case {
       .replace(
         /<creationTime value=\\"[0-9]*\\"\\\/>/g,
         "<creationTime value=\\\"[0-9]*\\\"\\/>")
+  }
+
+  toJestCase(): [string, fhir.Bundle, string, string, number] {
+    return [this.description, this.request, this.response, this.responseMatcher, this.statusCode]
   }
 }
