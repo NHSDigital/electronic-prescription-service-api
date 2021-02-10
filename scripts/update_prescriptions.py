@@ -265,6 +265,7 @@ def test_update_prescription__updates_signature_time():
     else:
         raise Exception('Failed to update signature_time on Provenance')
 
+
 def test_update_prescription__updates_authored_on():
     bundle_json = {
         "entry": [
@@ -305,7 +306,7 @@ def test_update_prescription__updates_validity_period():
                         "extension": []
                     },
                     "dispenseRequest": {
-                         "validityPeriod": {
+                        "validityPeriod": {
                             "start": {"valueToUpdate"},
                             "end": {"valueToUpdate"}
                         }
@@ -322,7 +323,8 @@ def test_update_prescription__updates_validity_period():
         if resource["resourceType"] == "MedicationRequest":
             if "validityPeriod" in resource["dispenseRequest"]:
                 assert resource["dispenseRequest"]["validityPeriod"]["start"] == date.today().isoformat()
-                assert resource["dispenseRequest"]["validityPeriod"]["end"] == (date.today() + timedelta(weeks=4)).isoformat()
+                assert resource["dispenseRequest"]["validityPeriod"]["end"] ==
+                    (date.today() + timedelta(weeks=4)).isoformat()
             break
     else:
         raise Exception('Failed to update validity_period on MedicationRequest')
