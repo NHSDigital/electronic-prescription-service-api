@@ -1,6 +1,7 @@
 import * as fhir from "../../models/fhir/fhir-resources"
 import * as Hapi from "@hapi/hapi"
-import {basePath, taskValidatorHandler} from "../util"
+import {basePath, externalFHIRValidation, getPayload, toFhirError} from "../util"
+import {ResourceTypeError} from "../../models/errors/validation-errors"
 
 const bundle1Id = "eff31db2-a914-44a9-b89d-1a33f6de727e"
 const genericBundle1: fhir.Bundle = {
@@ -29,26 +30,36 @@ export default [
   {
     method: "POST",
     path: `${basePath}/Task/$release`,
-    handler: taskValidatorHandler(
-      async (bundle: fhir.Parameters, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
-        request.logger.info("Sandbox release response")
-        const messageId = "d5a20db9-6d76-4aeb-a190-9a85843b01bf"
-        const sandboxResponse: fhir.Bundle = {
-          resourceType: "Bundle",
-          type: "searchset",
-          total: 2,
-          id: messageId,
-          identifier: {
-            value: messageId
-          },
-          entry: [
-            {resource: genericBundle1, fullUrl: `urn:uuid:${bundle1Id}`},
-            {resource: genericBundle2, fullUrl: `urn:uuid:${bundle2Id}`}
-          ]
-          //TODO: find reasonable task response
-        }
-        return responseToolkit.response(sandboxResponse)
+    handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+      const fhirValidatorResponse = await externalFHIRValidation(request)
+      if (fhirValidatorResponse.issue.length > 0) {
+        return responseToolkit.response(fhirValidatorResponse).code(400)
       }
-    )
+
+      const requestPayload = getPayload(request) as fhir.Resource
+
+      if (requestPayload.resourceType !== "Parameters") {
+        const validationError = toFhirError([new ResourceTypeError("Parameters")])
+        return responseToolkit.response(validationError).code(400)
+      }
+
+      request.logger.info("Sandbox release response")
+      const messageId = "d5a20db9-6d76-4aeb-a190-9a85843b01bf"
+      const sandboxResponse: fhir.Bundle = {
+        resourceType: "Bundle",
+        type: "searchset",
+        total: 2,
+        id: messageId,
+        identifier: {
+          value: messageId
+        },
+        entry: [
+          {resource: genericBundle1, fullUrl: `urn:uuid:${bundle1Id}`},
+          {resource: genericBundle2, fullUrl: `urn:uuid:${bundle2Id}`}
+        ]
+      }
+      return responseToolkit.response(sandboxResponse)
+    }
+
   } as Hapi.ServerRoute
 ]

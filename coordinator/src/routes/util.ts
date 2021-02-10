@@ -10,7 +10,6 @@ import {getMessageHeader} from "../services/translation/common/getResourcesOfTyp
 import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
-import {ResourceTypeError} from "../models/errors/validation-errors"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
@@ -108,43 +107,31 @@ export async function fhirValidation(
   return validatorResponseData
 }
 
-export function taskValidatorHandler(handler: Handler<fhir.Parameters>) {
-  return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-    if (request.headers["x-skip-validation"]) {
-      request.logger.info("Skipping call to FHIR validator")
-    } else {
-      request.logger.info("Making call to FHIR validator")
-      const validatorResponseData = await fhirValidation(request.payload, request.headers)
-      request.logger.info("Received response from FHIR validator")
-      const error = validatorResponseData.issue.find(issue => issue.severity === "error" || issue.severity === "fatal")
-      if (error) {
-        return responseToolkit.response(validatorResponseData).code(400)
-      }
+export async function externalFHIRValidation(
+  request: Hapi.Request
+): Promise<fhir.OperationOutcome> {
+  if (request.headers["x-skip-validation"]) {
+    request.logger.info("Skipping call to FHIR validator")
+  } else {
+    request.logger.info("Making call to FHIR validator")
+    const validatorResponseData = await fhirValidation(request.payload, request.headers)
+    request.logger.info("Received response from FHIR validator")
+    const error = validatorResponseData.issue.find(issue => issue.severity === "error" || issue.severity === "fatal")
+    if (error) {
+      return validatorResponseData
     }
-
-    const requestPayload = getPayload(request) as fhir.Resource
-    if (requestPayload.resourceType !== "Parameters") {
-      const error = new ResourceTypeError("Parameters")
-      const response = toFhirError([error])
-      const statusCode = requestValidator.getStatusCode([error])
-      return responseToolkit.response(response).code(statusCode)
-    }
-    return handler(requestPayload as fhir.Parameters, request, responseToolkit)
+  }
+  return {
+    resourceType: "OperationOutcome",
+    issue: []
   }
 }
 
 export function validatingHandler(handler: Handler<fhir.Bundle>) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-    if (request.headers["x-skip-validation"]) {
-      request.logger.info("Skipping call to FHIR validator")
-    } else {
-      request.logger.info("Making call to FHIR validator")
-      const validatorResponseData = await fhirValidation(request.payload, request.headers)
-      request.logger.info("Received response from FHIR validator")
-      const error = validatorResponseData.issue.find(issue => issue.severity === "error" || issue.severity === "fatal")
-      if (error) {
-        return responseToolkit.response(validatorResponseData).code(400)
-      }
+    const fhirValidatorResponse = await externalFHIRValidation(request)
+    if (fhirValidatorResponse.issue.length > 0) {
+      return responseToolkit.response(fhirValidatorResponse).code(400)
     }
 
     const requestPayload = getPayload(request) as fhir.Bundle
@@ -158,7 +145,7 @@ export function validatingHandler(handler: Handler<fhir.Bundle>) {
   }
 }
 
-function getPayload(request: Hapi.Request): unknown {
+export function getPayload(request: Hapi.Request): unknown {
   request.logger.info("Parsing request payload")
   if (Buffer.isBuffer(request.payload)) {
     return LosslessJson.parse(request.payload.toString())
@@ -169,7 +156,7 @@ function getPayload(request: Hapi.Request): unknown {
   }
 }
 
-function toFhirError(validation: Array<errors.ValidationError>): fhir.OperationOutcome {
+export function toFhirError(validation: Array<errors.ValidationError>): fhir.OperationOutcome {
   /* Reformat errors to FHIR spec
     * v.operationOutcomeCode: from the [IssueType ValueSet](https://www.hl7.org/fhir/valueset-issue-type.html)
     * v.apiErrorCode: Our own code defined for each particular error. Refer to OAS.
