@@ -10,28 +10,39 @@ import {regeneratePrescriptionIds} from "../../services/process-example-fetcher"
 
 regeneratePrescriptionIds()
 
-const processPactGroups = [
+const orderPactGroups = [
   {
     name: "secondarycare-community-acute",
-    orderCases: TestResources.processSecondaryCareCommunityAcuteOrderCases,
-    orderUpdateCases: TestResources.processSecondaryCareCommunityAcuteOrderUpdateCases
+    cases: TestResources.processSecondaryCareCommunityAcuteOrderCases,
   },
   {
     name: "secondarycare-community-repeatdispensing",
-    orderCases: TestResources.processSecondaryCareCommunityRepeatDispensingOrderCases,
-    orderUpdateCases: TestResources.processSecondaryCareCommunityRepeatDispensingOrderUpdateCases
+    cases: TestResources.processSecondaryCareCommunityRepeatDispensingOrderCases,
   },
   {
     name: "secondarycare-homecare",
-    orderCases: TestResources.processSecondaryCareHomecareOrderCases,
-    orderUpdateCases: TestResources.processSecondaryCareHomecareOrderUpdateCases
+    cases: TestResources.processSecondaryCareHomecareOrderCases,
   }
 ]
 
-processPactGroups.forEach(pactGroup => {
+const orderUpdatePactGroups = [
+  {
+    name: "secondarycare-community-acute-cancel",
+    cases: TestResources.processSecondaryCareCommunityAcuteOrderUpdateCases
+  },
+  {
+    name: "secondarycare-community-repeatdispensing-cancel",
+    cases: TestResources.processSecondaryCareCommunityRepeatDispensingOrderUpdateCases
+  },
+  {
+    name: "secondarycare-homecare-cancel",
+    cases: TestResources.processSecondaryCareHomecareOrderUpdateCases
+  }
+]
+
+orderPactGroups.forEach(pactGroup => {
   const pactGroupName = pactGroup.name
-  const pactGroupOrderTestCases = pactGroup.orderCases
-  const pactGroupOrderUpdateTestCases = pactGroup.orderUpdateCases
+  const pactGroupTestCases = pactGroup.cases
 
   jestpact.pactWith(
     pactOptions("live", "process", [pactGroupName]),
@@ -43,7 +54,7 @@ processPactGroups.forEach(pactGroup => {
       }
 
       describe("process-message e2e tests", () => {
-        test.each(pactGroupOrderTestCases)("should be able to process %s", async (desc: string, message: Bundle) => {
+        test.each(pactGroupTestCases)("should be able to process %s", async (desc: string, message: Bundle) => {
           const apiPath = `${basePath}/$process-message`
           const bundleStr = LosslessJson.stringify(message)
           const bundle = JSON.parse(bundleStr) as Bundle
@@ -93,9 +104,27 @@ processPactGroups.forEach(pactGroup => {
             .send(bundleStr)
             .expect(200)
         })
+      })
+    }
+  )
+})
 
-        if (pactGroupOrderUpdateTestCases.length) {
-          test.each(pactGroupOrderUpdateTestCases)("should be able to process %s", async (desc: string, message: Bundle) => {
+orderUpdatePactGroups.forEach(pactGroup => {
+  const pactGroupName = pactGroup.name
+  const pactGroupTestCases = pactGroup.cases
+
+  jestpact.pactWith(
+    pactOptions("live", "process", [pactGroupName]),
+    /* eslint-disable  @typescript-eslint/no-explicit-any */
+    async (provider: any) => {
+      const client = () => {
+        const url = `${provider.mockService.baseUrl}`
+        return supertest(url)
+      }
+
+      describe("process-message e2e tests", () => {
+        if (pactGroupTestCases.length) {
+          test.each(pactGroupTestCases)("should be able to process %s", async (desc: string, message: Bundle) => {
             const apiPath = `${basePath}/$process-message`
             const bundleStr = LosslessJson.stringify(message)
             const bundle = JSON.parse(bundleStr) as Bundle
