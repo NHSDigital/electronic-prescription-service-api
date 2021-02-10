@@ -292,11 +292,26 @@ export interface CommunicationRequest extends Resource {
   resourceType: "CommunicationRequest"
   status?: string
   subject: Reference<Patient>
-  payload: Array<ContentStringPayload>
+  payload: Array<ContentStringPayload | ContentReferencePayload>
 }
 
 export interface ContentStringPayload {
   contentString: string
+}
+
+export interface ContentReferencePayload {
+  contentReference: Reference<List>
+}
+
+export interface List extends Resource {
+  resourceType: "List"
+  entry: Array<ListEntry>
+}
+
+export interface ListEntry {
+  item: {
+    display: string
+  }
 }
 
 interface MessageHeaderSource {

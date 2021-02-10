@@ -5,6 +5,8 @@ import * as prescriptions from "../../../models/hl7-v3/hl7-v3-prescriptions"
 import {DaysSupply, PrescriptionPertinentInformation7, ReviewDate} from "../../../models/hl7-v3/hl7-v3-prescriptions"
 import * as fhir from "../../../models/fhir/fhir-resources"
 import {
+  ContentReferencePayload,
+  ContentStringPayload,
   DateTimeExtension,
   MedicationRequest,
   RepeatInformationExtension,
@@ -16,7 +18,7 @@ import {
   getExtensionForUrl,
   getExtensionForUrlOrNull,
   getNumericValueAsString,
-  isTruthy
+  isTruthy, resolveReference
 } from "../common"
 import {convertAuthor, convertResponsibleParty} from "./practitioner"
 import * as peoplePlaces from "../../../models/hl7-v3/hl7-v3-people-places"
@@ -29,7 +31,7 @@ export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescripti
   const fhirMedicationRequests = getMedicationRequests(fhirBundle)
   const fhirFirstMedicationRequest = fhirMedicationRequests[0]
 
-  const fhirCommunicationRequest = getCommunicationRequests(fhirBundle)
+  const fhirCommunicationRequests = getCommunicationRequests(fhirBundle)
 
   const hl7V3Prescription = new prescriptions.Prescription(
     ...convertPrescriptionIds(fhirFirstMedicationRequest)
@@ -62,7 +64,8 @@ export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescripti
   hl7V3Prescription.pertinentInformation5 = convertPrescriptionPertinentInformation5(fhirMedicationRequests)
   hl7V3Prescription.pertinentInformation1 = convertPrescriptionPertinentInformation1(fhirFirstMedicationRequest)
   hl7V3Prescription.pertinentInformation2 = convertPrescriptionPertinentInformation2(
-    fhirCommunicationRequest,
+    fhirBundle,
+    fhirCommunicationRequests,
     fhirMedicationRequests,
     repeatNumber
   )
@@ -163,33 +166,62 @@ function convertDispensingSitePreference(
   return new prescriptions.DispensingSitePreference(dispensingSitePreferenceValue)
 }
 
-function extractText(fhirCommunicationRequests: Array<fhir.CommunicationRequest>): Array<core.Text> {
+function isContentStringPayload(
+  payload: ContentStringPayload | ContentReferencePayload
+): payload is ContentStringPayload {
+  return !!(payload as ContentStringPayload).contentString
+}
+
+function isContentReferencePayload(
+  payload: ContentStringPayload | ContentReferencePayload
+): payload is ContentReferencePayload {
+  return !!(payload as ContentReferencePayload).contentReference
+}
+
+function extractPatientInfoText(fhirCommunicationRequests: Array<fhir.CommunicationRequest>): Array<core.Text> {
   return fhirCommunicationRequests
     .flatMap(communicationRequest => communicationRequest.payload)
     .filter(isTruthy)
-    .map(contentStringPayload => contentStringPayload.contentString)
-    .filter(isTruthy)
+    .filter(isContentStringPayload)
+    .map(payload => payload.contentString)
     .map(contentString => new core.Text(contentString))
 }
 
+function extractMedicationListText(
+  fhirBundle: fhir.Bundle,
+  fhirCommunicationRequests: Array<fhir.CommunicationRequest>
+): Array<core.Text> {
+  return fhirCommunicationRequests
+    .flatMap(communicationRequest => communicationRequest.payload)
+    .filter(isTruthy)
+    .filter(isContentReferencePayload)
+    .map(payload => resolveReference(fhirBundle, payload.contentReference))
+    .flatMap(list => list.entry)
+    .map(listEntry => new core.Text(listEntry.item.display))
+}
+
 function convertPrescriptionPertinentInformation2(
+  fhirBundle: fhir.Bundle,
   fhirCommunicationRequests: Array<fhir.CommunicationRequest>,
   fhirMedicationRequests: Array<fhir.MedicationRequest>,
   repeatNumber: core.Interval<core.Timestamp>
 ) {
-  const patientInfoText = extractText(fhirCommunicationRequests)
+  const medicationListText = extractMedicationListText(fhirBundle, fhirCommunicationRequests)
+  const patientInfoText = extractPatientInfoText(fhirCommunicationRequests)
   return fhirMedicationRequests.map((medicationRequest, index) => {
-    const patientInfoTextForLineItem = shouldIncludePatientInfoText(index) ? patientInfoText : []
+    const medicationListTextForLineItem = shouldIncludePatientAdditionalInstructions(index) ? medicationListText : []
+    const patientInfoTextForLineItem = shouldIncludePatientAdditionalInstructions(index) ? patientInfoText : []
     const pertinentLineItem = convertMedicationRequestToLineItem(
       medicationRequest,
       repeatNumber,
+      medicationListTextForLineItem,
       patientInfoTextForLineItem
     )
     return new prescriptions.PrescriptionPertinentInformation2(pertinentLineItem)
   })
 }
 
-function shouldIncludePatientInfoText(lineItemIndex: number) {
+function shouldIncludePatientAdditionalInstructions(lineItemIndex: number) {
   return lineItemIndex === 0
 }
 
