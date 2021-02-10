@@ -10,8 +10,8 @@ import os
 import glob
 import json
 import uuid
-from datetime import date, datetime, timedelta
 import requests
+from datetime import date, datetime, timedelta
 from docopt import docopt
 
 examples_root_dir = "../models/examples/"
@@ -31,8 +31,8 @@ def generate_short_form_id(organisationCode):
     running_total = 0
     for string_position in range(prescription_id_digits_length):
         running_total = running_total\
-                       + int(prescription_id_digits[string_position], 36)\
-                       * (2 ** (prescription_id_digits_length - string_position))
+            + int(prescription_id_digits[string_position], 36)\
+            * (2 ** (prescription_id_digits_length - string_position))
     check_value = (38 - running_total % 37) % 37
     check_value = _PRESCRIPTION_CHECKDIGIT_VALUES[check_value]
     prescription_id += check_value
@@ -44,7 +44,7 @@ def find_prepare_request_paths(examples_root_dir):
         yield filename
 
 
-def replace_ids_and_timestamps(bundle_json, prescription_id, short_prescription_id, authored_on, signature_time):
+def update_prescription(bundle_json, prescription_id, short_prescription_id, authored_on, signature_time):
     for entry in bundle_json['entry']:
         resource = entry["resource"]
         if resource["resourceType"] == "Provenance":
@@ -72,7 +72,7 @@ def update_prepare_examples(api_base_url, prepare_request_path, prescription_id,
                 organisationCode = identifier["value"]
                 short_prescription_id = generate_short_form_id(organisationCode)
 
-    replace_ids_and_timestamps(prepare_request_json, prescription_id, short_prescription_id, authored_on, None)
+    update_prescription(prepare_request_json, prescription_id, short_prescription_id, authored_on, None)
 
     with open(prepare_request_path, 'w') as f:
         json.dump(prepare_request_json, f, indent=2)
@@ -99,7 +99,7 @@ def update_process_examples(
     for process_request_path in glob.iglob(process_request_path_pattern):
         with open(process_request_path) as f:
             process_request_json = json.load(f)
-        replace_ids_and_timestamps(
+        update_prescription(
             process_request_json, prescription_id, short_prescription_id, authored_on, signature_time
         )
         with open(process_request_path, 'w') as f:
@@ -173,10 +173,156 @@ def test_generate_short_form_id__contains_org_code():
     assert generate_short_form_id("testOrgCode").split("-")[1] == "testOrgCode"
 
 
-def test_find_prepare_request_paths__is_not_empty():
+def test_find_prepare_request_paths__finds_prepare_examples():
     examples_root_dir = "./models/examples/"
-    assert next(find_prepare_request_paths(examples_root_dir)) != -1
+    for prepareRequest in find_prepare_request_paths(examples_root_dir):
+        break
+    else:
+        raise Exception('Failed to find any prepare examples')
 
 
-def test_replace_ids_and_timestamps__replaces_ids_and_timestamps():
-    assert True
+def test_update_prescription__updates_prescription_id():
+    bundle_json = {
+        "entry": [
+            {
+                "resource": {
+                    "resourceType": "MedicationRequest",
+                    "groupIdentifier": {
+                        "value": "valueToUpdate",
+                        "extension": []
+                    },
+                    "dispenseRequest": {}
+                }
+            }
+        ]
+    }
+    prescription_id = "newValue"
+    update_prescription(
+        bundle_json, prescription_id, None, None, None
+    )
+    for entry in bundle_json['entry']:
+        resource = entry["resource"]
+        if resource["resourceType"] == "MedicationRequest":
+            for extension in resource["groupIdentifier"]["extension"]:
+                if extension["url"] == "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId":
+                    assert extension["valueIdentifier"]["value"] == prescription_id
+            break
+    else:
+        raise Exception('Failed to update short_prescription_id on MedicationRequest')
+
+
+def test_update_prescription__updates_short_prescription_id():
+    bundle_json = {
+        "entry": [
+            {
+                "resource": {
+                    "resourceType": "MedicationRequest",
+                    "groupIdentifier": {
+                        "value": "valueToUpdate",
+                        "extension": []
+                    },
+                    "dispenseRequest": {}
+                }
+            }
+        ]
+    }
+    short_prescription_id = "newValue"
+    update_prescription(
+        bundle_json, None, short_prescription_id, None, None
+    )
+    for entry in bundle_json['entry']:
+        resource = entry["resource"]
+        if resource["resourceType"] == "MedicationRequest":
+            assert resource["groupIdentifier"]["value"] == short_prescription_id
+        break
+    else:
+        raise Exception('Failed to update short_prescription_id on MedicationRequest')
+
+
+def test_update_prescription__updates_signature_time():
+    bundle_json = {
+        "entry": [
+            {
+                "resource": {
+                    "resourceType": "Provenance",
+                    "signature": [
+                        {"when": "oldValue"}
+                    ]
+                }
+            }
+        ]
+    }
+    signature_time = "newValue"
+    update_prescription(
+        bundle_json, None, None, None, signature_time
+    )
+    for entry in bundle_json['entry']:
+        resource = entry["resource"]
+        if resource["resourceType"] == "Provenance":
+            for signature in resource["signature"]:
+                assert signature["when"] == signature_time
+        break
+    else:
+        raise Exception('Failed to update signature_time on Provenance')
+
+def test_update_prescription__updates_authored_on():
+    bundle_json = {
+        "entry": [
+            {
+                "resource": {
+                    "resourceType": "MedicationRequest",
+                    "groupIdentifier": {
+                        "value": "valueToUpdate",
+                        "extension": []
+                    },
+                    "authoredOn": "oldValue",
+                    "dispenseRequest": {}
+                }
+            }
+        ]
+    }
+    authored_on = "newValue"
+    update_prescription(
+        bundle_json, None, None, authored_on, None
+    )
+    for entry in bundle_json['entry']:
+        resource = entry["resource"]
+        if resource["resourceType"] == "MedicationRequest":
+            assert resource["authoredOn"] == authored_on
+            break
+    else:
+        raise Exception('Failed to update authored_on on MedicationRequest')
+
+
+def test_update_prescription__updates_validity_period():
+    bundle_json = {
+        "entry": [
+            {
+                "resource": {
+                    "resourceType": "MedicationRequest",
+                    "groupIdentifier": {
+                        "value": "",
+                        "extension": []
+                    },
+                    "dispenseRequest": {
+                         "validityPeriod": {
+                            "start": {"valueToUpdate"},
+                            "end": {"valueToUpdate"}
+                        }
+                    }
+                }
+            }
+        ]
+    }
+    update_prescription(
+        bundle_json, None, None, None, None
+    )
+    for entry in bundle_json['entry']:
+        resource = entry["resource"]
+        if resource["resourceType"] == "MedicationRequest":
+            if "validityPeriod" in resource["dispenseRequest"]:
+                assert resource["dispenseRequest"]["validityPeriod"]["start"] == date.today().isoformat()
+                assert resource["dispenseRequest"]["validityPeriod"]["end"] == (date.today() + timedelta(weeks=4)).isoformat()
+            break
+    else:
+        raise Exception('Failed to update validity_period on MedicationRequest')
