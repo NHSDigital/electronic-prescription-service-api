@@ -29,10 +29,6 @@ const orderUpdatePactGroups = [
   {
     name: "secondarycare-community-acute-cancel",
     cases: TestResources.processSecondaryCareCommunityAcuteOrderUpdateCases
-  },
-  {
-    name: "secondarycare-homecare-cancel",
-    cases: TestResources.processSecondaryCareHomecareOrderUpdateCases
   }
 ]
 
