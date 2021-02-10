@@ -13,21 +13,25 @@ regeneratePrescriptionIds()
 const processPactGroups = [
   {
     name: "secondarycare-community-acute",
-    cases: TestResources.processSecondaryCareCommunityAcuteCases
+    orderCases: TestResources.processSecondaryCareCommunityAcuteOrderCases,
+    orderUpdateCases: TestResources.processSecondaryCareCommunityAcuteOrderUpdateCases
   },
   {
     name: "secondarycare-community-repeatdispensing",
-    cases: TestResources.processSecondaryCareCommunityRepeatDispensingCases
+    orderCases: TestResources.processSecondaryCareCommunityRepeatDispensingOrderCases,
+    orderUpdateCases: TestResources.processSecondaryCareCommunityRepeatDispensingOrderUpdateCases
   },
   {
     name: "secondarycare-homecare",
-    cases: TestResources.processSecondaryCareHomecareCases
+    orderCases: TestResources.processSecondaryCareHomecareOrderCases,
+    orderUpdateCases: TestResources.processSecondaryCareHomecareOrderUpdateCases
   }
 ]
 
 processPactGroups.forEach(pactGroup => {
   const pactGroupName = pactGroup.name
-  const pactGroupTestCases = pactGroup.cases
+  const pactGroupOrderTestCases = pactGroup.orderCases
+  const pactGroupOrderUpdateTestCases = pactGroup.orderUpdateCases
 
   jestpact.pactWith(
     pactOptions("live", "process", [pactGroupName]),
@@ -39,7 +43,7 @@ processPactGroups.forEach(pactGroup => {
       }
 
       describe("process-message e2e tests", () => {
-        test.each(pactGroupTestCases)("should be able to process %s", async (desc: string, message: Bundle) => {
+        test.each(pactGroupOrderTestCases)("should be able to process %s", async (desc: string, message: Bundle) => {
           const apiPath = `${basePath}/$process-message`
           const bundleStr = LosslessJson.stringify(message)
           const bundle = JSON.parse(bundleStr) as Bundle
@@ -89,6 +93,51 @@ processPactGroups.forEach(pactGroup => {
             .send(bundleStr)
             .expect(200)
         })
+
+        if (pactGroupOrderUpdateTestCases.length) {
+          test.each(pactGroupOrderUpdateTestCases)("should be able to process %s", async (desc: string, message: Bundle) => {
+            const apiPath = `${basePath}/$process-message`
+            const bundleStr = LosslessJson.stringify(message)
+            const bundle = JSON.parse(bundleStr) as Bundle
+
+            const requestId = uuid.v4()
+            const correlationId = uuid.v4()
+
+            const firstMedicationRequest = message.entry.map(e => e.resource)
+              .find(r => r.resourceType == "MedicationRequest") as MedicationRequest
+            const prescriptionId = firstMedicationRequest.groupIdentifier.value
+
+            const interaction: InteractionObject = {
+              state: "is authenticated",
+              uponReceiving: `a request to process prescription: ${prescriptionId} - ${desc} message to Spine`,
+              withRequest: {
+                headers: {
+                  "Content-Type": "application/fhir+json; fhirVersion=4.0",
+                  "X-Request-ID": requestId,
+                  "X-Correlation-ID": correlationId
+                },
+                method: "POST",
+                path: apiPath,
+                body: bundle
+              },
+              willRespondWith: {
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                //TODO - Verify response body for cancellations
+                status: 200
+              }
+            }
+            await provider.addInteraction(interaction)
+            await client()
+              .post(apiPath)
+              .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
+              .set("X-Request-ID", requestId)
+              .set("X-Correlation-ID", correlationId)
+              .send(bundleStr)
+              .expect(200)
+          })
+        }
       })
     }
   )

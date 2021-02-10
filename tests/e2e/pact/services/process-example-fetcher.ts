@@ -1,24 +1,17 @@
 import {ProcessCase} from "../models/cases/process-case"
 import {exampleFiles} from "./example-files-fetcher"
-import {createExampleDescription} from "../resources/common"
-import {ExampleFile} from "../models/files/example-file"
 import * as uuid from "uuid"
 import * as fhir from "../models/fhir/fhir-resources"
 
 const processRequestFiles = exampleFiles.filter(exampleFile => exampleFile.isRequest && exampleFile.endpoint === "process")
 const prescriptionOrderFiles = processRequestFiles.filter(exampleFile => exampleFile.operation === "send")
 const prescriptionOrderUpdateFiles = processRequestFiles.filter(exampleFile => exampleFile.operation === "cancel")
-const prescriptionOrderExamples: ProcessCase[] = prescriptionOrderFiles.map(toProcessCase)
-const prescriptionOrderUpdateExamples: ProcessCase[] = prescriptionOrderUpdateFiles.map(toProcessCase)
-
-function toProcessCase(processRequestFile: ExampleFile)
-{
-  return new ProcessCase(
-    createExampleDescription(processRequestFile),
-    processRequestFile.path,
-    processRequestFile.statusText
-  )
-}
+const prescriptionOrderExamples: ProcessCase[] = prescriptionOrderFiles.map(processRequestFile =>
+  new ProcessCase(processRequestFile, null)
+)
+const prescriptionOrderUpdateExamples: ProcessCase[] = prescriptionOrderUpdateFiles.map(processRequestFile =>
+  new ProcessCase(processRequestFile, null)
+)
 
 export const processExamples = [
   ...prescriptionOrderExamples,
