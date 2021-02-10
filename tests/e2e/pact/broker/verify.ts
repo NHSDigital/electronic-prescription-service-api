@@ -97,7 +97,9 @@ async function verifyPrepare(): Promise<any> {
 async function verifyProcess(): Promise<any> {
     const pactGroups =
       process.env.PACT_PROVIDER_URL.includes("sandbox")
-      ? PactGroups.filter(g => g !== "failures")
+      ? PactGroups
+          .filter(g => g !== "failures")
+          .filter(g => !g.includes("-cancel"))
       : PactGroups
 
     await pactGroups.reduce(async (promise, group) => {
