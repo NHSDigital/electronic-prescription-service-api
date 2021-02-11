@@ -197,7 +197,9 @@ function extractMedicationListText(
     .filter(isContentReferencePayload)
     .map(payload => resolveReference(fhirBundle, payload.contentReference))
     .flatMap(list => list.entry)
-    .map(listEntry => new core.Text(listEntry.item.display))
+    .map(listEntry => listEntry?.item?.display)
+    .filter(isTruthy)
+    .map(display => new core.Text(display))
 }
 
 function convertPrescriptionPertinentInformation2(
