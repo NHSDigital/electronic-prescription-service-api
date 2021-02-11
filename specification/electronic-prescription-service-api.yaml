@@ -19,7 +19,8 @@ info:
     * create a secondary care (outpatient) prescription
     * cancel a secondary care (outpatient) prescription
     * evaluate prescription signing client implementations
-    * release a prescription for dispensing
+    * release a prescription for dispensing (sandbox implementation)
+    * send a dispense notification to EPS (sandbox implementation)
 
     You cannot currently use this API to:
     * prepare a primary care prescription for signing
@@ -82,7 +83,7 @@ info:
     - [Prescription Tracker API](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to obtain information about a patient’s prescriptions
 
     ## API status and roadmap
-    All endpoints are in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status) - expect further breaking changes.
+    Prescribing flows for EPS FHIR API are in technical go-live. Dispensing flows for EPS FHIR API are in sandbox environment only.
 
     The API is currently available for sandbox testing and integration testing, but not for production use.
 
@@ -177,62 +178,23 @@ info:
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/DigitalMedicines) to assist with your integration.
     This is the FHIR specification for Digital Medicines starting with the assets required for an electronic prescription sent to the EPS.
 
-    ## Responses
-    ### 2XX responses
-    Note: This section is under development and subject to change. All Spine responses are returned with 200 HTTP codes until a Spine translation service is built. This does not affect the sandbox environment.
 
-    | Endpoint               | HTTP code | Response format                                                                                                                                             |
-    | ---------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-    | POST /$prepare         | 200       | [See /$prepare response body](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Prescribing-preparePrescription)      |
-    | POST /$process-message | 200       | [See /$process-message response body](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Prescribing-sendPrescription) |
-
-    ### 4XX responses
-    Note: This section is under development and subject to change. All Spine responses are returned with 200 HTTP codes until a Spine translation service is built. This does not affect the sandbox environment.
-
-    | Endpoint              | HTTP code | Response format                           | Environment      | Cause                 |
-    | --------------------- | --------- | ----------------------------------------- | ---------------- | --------------------- |
-    | Any                   | 400       | See "Unsupported operation" example below | Sandbox          | Unsupported operation |
-    | Any                   | 408       | Returns original request data             | Integration test | Request timeout       |
-
-
-    #### Example: Unsupported operation
-    If attempting to call the `/_poll` endpoint in the sandbox environment, the following error would be returned:
-      ```
-      {
-        resourceType: "OperationOutcome",
-        issue: [
-          {
-            code: "informational",
-            severity: "information",
-            details: {
-              coding: [
-                {
-                  code: "INTERACTION_NOT_SUPPORTED_BY_SANDBOX",
-                  display: "Interaction not supported by sandbox",
-                  system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
-                  version: "1"
-                }
-              ]
-            }
-          }
-        ]
-      }
-      ```
-
-    #### Validation errors
-    Our endpoints can return the following errors:
-
-    | HTTP code | Issue severity | Issue type | Error code             | Cause                                                           |
-    | ----------| -------------- | ---------- | ---------------------- | --------------------------------------------------------------- |
-    | 400       | error          | value      | MISSING_FIELD          | Bundle contains incorrect number of resources of a certain type |
-    | 400       | error          | value      | MISSING_FIELD          | Bundle does not contain "id" field                              |
-    | 400       | error          | value      | INVALID_VALUE          | Invalid value in MedicationRequest                              |
-    | 400       | fatal          | value      | MISSING_FIELD          | Bundle does not contain "entry" field                           |
-    | 400       | fatal          | value      | INCORRECT_RESOURCETYPE | ResourceType is not "Bundle"                                    |
-    | 400       | fatal          | value      | INVALID_VALUE          | MessageHeader indicates invalid MessageType                     |
-    | 400       | fatal          | value      | MISSING_FIELD          | X-Request-ID header missing or malformed                     |
-
-
+    ## Errors
+    ### API specific errors
+    | HTTP Status   | Error Code             | Description                                    |
+    | --------------| ---------------------- | ---------------------------------------------- |
+    | 400           | MISSING_FIELD          | A required field is missing within the request |
+    | 400           | INVALID_VALUE          | Invalid value in message                       |
+    | 400           | INCORRECT_RESOURCETYPE | FHIR resource has incorrect resourceType       |
+    | 404           | NOT_FOUND              | Route not found                                |
+    
+    ### Platform-wide errors
+    | HTTP Status   | Error Code      | Description                                            |
+    | ------------- | --------------- | ------------------------------------------------------ |
+    | 400           | MISSING_FIELD   | X-Request-ID header missing or malformed               |
+    | 401           | ACCESS_DENIED   | User does not have permission for a particular request |
+    | 403           | FORBIDDEN       | Insufficient authorization                             |
+    | 404           | NOT_FOUND       | Resource not found                                     |
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
     description: 'Sandbox'
@@ -320,7 +282,13 @@ paths:
                   value:
                     $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Process-Response-Send-200_OK.json
         '4XX':
-          description: Invalid request.
+          description: |
+            An error occurred as follows:
+            
+            | HTTP status | Error code         | Description                                    | FHIR type        |
+            | ----------- | ------------------ | ---------------------------------------------- | -----------------|
+            | 400         | BAD_REQUEST        | Spine Error - duplicate prescription ID exists | OperationOutcome |
+            | 400         | BAD_REQUEST        | Spine Error - prescription not found           | Bundle           |
           content:
             application/fhir+json:
               examples:
@@ -338,6 +306,8 @@ paths:
         This returns a set of prescriptions based on the information passed to the endpoint: 
         * to acquire prescription information for an entire pharmacy, send owner information
         * to acquire prescription information for a specific prescription, send the group identifier for that prescription
+        
+        This endpoint is only available in the sandbox environment.
       tags:
         - dispensing
       requestBody:
@@ -353,9 +323,23 @@ paths:
                   $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/2-Release-Request-200_OK.json
       responses:
         '200':
-          description: Successfully dispensed a prescription
+          description: Successfully released a prescription for dispensing
           content:
             application/fhir+json:
               examples:
                 example:
-                  value: 'Unknown'
+                  value:
+                    $ref: components/examples/sandbox/Release-Response-200_OK.json
+        '4XX':
+          description: |
+            An error occurred as follows:
+            
+            | HTTP status | Error code         | Description            |
+            | ----------- | -------------------| ---------------------- |
+            | 400         | BAD_REQUEST        | Invalid request bundle |
+          content:
+            application/fhir+json:
+              examples:
+                example:
+                  value: 
+                    $ref: components/examples/errors/release/validation-error.json
