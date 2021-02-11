@@ -82,7 +82,7 @@ def create_short_form_id(prepare_request_json):
                 return generate_short_form_id(organisationCode)
 
 
-def update_prepare_examples(api_base_url, prepare_request_json, prescription_id, authored_on):
+def update_prepare_examples(api_base_url, prepare_request_path, prepare_request_json, prescription_id, authored_on):
     short_prescription_id = create_short_form_id(prepare_request_json)
     update_prescription(prepare_request_json, prescription_id, short_prescription_id, authored_on, None)
     save_prepare_request(prepare_request_path, prepare_request_json)
@@ -164,7 +164,7 @@ def update_examples(api_base_url):
         prepare_request_json = load_prepare_request(prepare_request_path)
 
         short_prescription_id, signature_time = update_prepare_examples(
-            api_base_url, prepare_request_json, prescription_id, authored_on
+            api_base_url, prepare_request_path, prepare_request_json, prescription_id, authored_on
         )
         update_process_examples(
             api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on,
@@ -191,7 +191,7 @@ test_examples_root_dir = f".{os.path.sep}models{os.path.sep}examples{os.path.sep
 def test_bundle_json():
     process_request_path_root = f'{test_examples_root_dir}{os.path.sep}**{os.path.sep}'
     process_request_sub_path = f'repeat-dispensing{os.path.sep}**{os.path.sep}'
-    process_request_file = f'1-Process-Request-Send-200_OK.json'
+    process_request_file = '1-Process-Request-Send-200_OK.json'
     process_request_path_pattern = f'{process_request_path_root}{process_request_sub_path}{process_request_file}'
     process_request_path = next(glob.iglob(process_request_path_pattern, recursive=True))
     with open(process_request_path) as f:
