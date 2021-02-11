@@ -18,7 +18,8 @@ import {
   getExtensionForUrl,
   getExtensionForUrlOrNull,
   getNumericValueAsString,
-  isTruthy, resolveReference
+  isTruthy,
+  resolveReference
 } from "../common"
 import {convertAuthor, convertResponsibleParty} from "./practitioner"
 import * as peoplePlaces from "../../../models/hl7-v3/hl7-v3-people-places"
