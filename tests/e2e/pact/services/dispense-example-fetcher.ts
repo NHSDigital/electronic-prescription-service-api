@@ -1,14 +1,9 @@
 import {exampleFiles} from "./example-files-fetcher"
-import {ReleaseCase} from "../models/cases/dispense"
-import {createExampleDescription} from "../resources/common"
+import {ReleaseCase} from "../models/cases/release-case"
 
 export const releaseExamples = exampleFiles
   .filter(exampleFile => exampleFile.isRequest && exampleFile.endpoint === "release")
-  .map(
-    exampleFile => new ReleaseCase(createExampleDescription(exampleFile),
-    exampleFile.path,
-    exampleFile.statusText
-  ))
+  .map(exampleFile => new ReleaseCase(exampleFile, null))
 
 export const dispenseExamples = exampleFiles.filter(
   exampleFile => exampleFile.isRequest && exampleFile.endpoint === "dispense"

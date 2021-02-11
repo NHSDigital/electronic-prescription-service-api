@@ -10,25 +10,32 @@ import {basePath, pactOptions} from "../../resources/common"
 const processPactGroups = [
   {
     name: "secondarycare-community-acute",
-    cases: TestResources.processSecondaryCareCommunityAcuteCases
+    orderCases: TestResources.processSecondaryCareCommunityAcuteOrderCases,
+    orderUpdateCases: TestResources.processSecondaryCareCommunityAcuteOrderUpdateCases
   },
   {
     name: "secondarycare-community-repeatdispensing",
-    cases: TestResources.processSecondaryCareCommunityRepeatDispensingCases
+    orderCases: TestResources.processSecondaryCareCommunityRepeatDispensingOrderCases,
+    orderUpdateCases: TestResources.processSecondaryCareCommunityRepeatDispensingOrderUpdateCases
   },
   {
     name: "secondarycare-homecare",
-    cases: TestResources.processSecondaryCareHomecareCases
+    orderCases: TestResources.processSecondaryCareHomecareOrderCases,
+    orderUpdateCases: TestResources.processSecondaryCareHomecareOrderUpdateCases
   },
   {
     name: "primarycare",
-    cases: TestResources.processPrimaryCareCases
+    orderCases: TestResources.processPrimaryCareOrderCases,
+    orderUpdateCases: TestResources.processPrimaryCareOrderUpdateCases
   }
 ]
 
 processPactGroups.forEach(pactGroup => {
   const pactGroupName = pactGroup.name
-  const pactGroupTestCases = pactGroup.cases
+  const pactGroupTestCases = [
+    ...pactGroup.orderCases,
+    ...pactGroup.orderUpdateCases
+  ]
 
   jestpact.pactWith(
     pactOptions("sandbox", "process", [pactGroupName]),
@@ -79,5 +86,4 @@ processPactGroups.forEach(pactGroup => {
       })
     }
   )
-
 })
