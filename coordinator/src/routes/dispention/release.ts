@@ -39,8 +39,9 @@ export default [
       const requestPayload = getPayload(request) as fhir.Resource
 
       if (requestPayload.resourceType !== "Parameters") {
-        const validationError = toFhirError([new ResourceTypeError("Parameters")])
-        return responseToolkit.response(validationError).code(400)
+        return responseToolkit
+          .response(toFhirError([new ResourceTypeError("Parameters")]))
+          .code(400)
       }
 
       request.logger.info("Sandbox release response")

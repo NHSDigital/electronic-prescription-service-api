@@ -4,6 +4,7 @@ import * as fhir from "../models/fhir/fhir-resources"
 import {OperationOutcome, Resource} from "../models/fhir/fhir-resources"
 import * as requestValidator from "../services/validation/bundle-validator"
 import * as errors from "../models/errors/validation-errors"
+import {ResourceTypeError} from "../models/errors/validation-errors"
 import {translateToFhir} from "../services/translation/spine-response"
 import * as LosslessJson from "lossless-json"
 import {getMessageHeader} from "../services/translation/common/getResourcesOfType"
@@ -134,14 +135,22 @@ export function validatingHandler(handler: Handler<fhir.Bundle>) {
       return responseToolkit.response(fhirValidatorResponse).code(400)
     }
 
-    const requestPayload = getPayload(request) as fhir.Bundle
-    const validation = requestValidator.verifyBundle(requestPayload)
+    const validFHIRPayload = getPayload(request) as fhir.Resource
+
+    if (validFHIRPayload.resourceType !== "Bundle") {
+      return responseToolkit
+        .response(toFhirError([new ResourceTypeError("Bundle")]))
+        .code(400)
+    }
+
+    const bundle = validFHIRPayload as fhir.Bundle
+    const validation = requestValidator.verifyBundle(bundle)
     if (validation.length > 0) {
       const response = toFhirError(validation)
       const statusCode = requestValidator.getStatusCode(validation)
       return responseToolkit.response(response).code(statusCode)
     }
-    return handler(requestPayload, request, responseToolkit)
+    return handler(bundle, request, responseToolkit)
   }
 }
 

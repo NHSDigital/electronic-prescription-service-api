@@ -72,7 +72,7 @@ export class ResourceTypeError implements ValidationError {
   message: string
   operationOutcomeCode = "value" as const
   severity = "error" as const
-  expression = [""]
+  expression: Array<string> = []
 
   constructor(expectedResourceType: string) {
     this.message = `Incorrect FHIR resource type. Expected ${expectedResourceType}.`
