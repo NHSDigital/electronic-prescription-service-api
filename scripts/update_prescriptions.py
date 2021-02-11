@@ -10,6 +10,7 @@ import glob
 import json
 import os
 import pytest
+import re
 import requests
 import uuid
 from datetime import date, datetime, timedelta
@@ -40,11 +41,6 @@ def generate_short_form_id(organisationCode):
     return prescription_id
 
 
-def find_prepare_request_paths(examples_root_dir):
-    for filename in glob.iglob(f'{examples_root_dir}**/*Prepare-Request*200_OK*.json', recursive=True):
-        yield filename
-
-
 def update_prescription(bundle_json, prescription_id, short_prescription_id, authored_on, signature_time):
     for entry in bundle_json['entry']:
         resource = entry["resource"]
@@ -62,21 +58,34 @@ def update_prescription(bundle_json, prescription_id, short_prescription_id, aut
                 resource["dispenseRequest"]["validityPeriod"]["end"] = (date.today() + timedelta(weeks=4)).isoformat()
 
 
-def update_prepare_examples(api_base_url, prepare_request_path, prescription_id, authored_on):
-    with open(prepare_request_path) as f:
-        prepare_request_json = json.load(f)
+def find_prepare_request_paths(examples_root_dir):
+    for filename in glob.iglob(f'{examples_root_dir}**/*Prepare-Request*200_OK*.json', recursive=True):
+        yield filename
 
+
+def load_prepare_request(prepare_request_path):
+    with open(prepare_request_path) as f:
+        return json.load(f)
+
+
+def save_prepare_request(prepare_request_path, prepare_request_json):
+    with open(prepare_request_path, 'w') as f:
+        json.dump(prepare_request_json, f, indent=2)
+
+
+def create_short_form_id(prepare_request_json):
     for entry in prepare_request_json['entry']:
         resource = entry["resource"]
         if resource["resourceType"] == "HealthcareService":
             for identifier in resource["identifier"]:
                 organisationCode = identifier["value"]
-                short_prescription_id = generate_short_form_id(organisationCode)
+                return generate_short_form_id(organisationCode)
 
+
+def update_prepare_examples(api_base_url, prepare_request_json, prescription_id, authored_on):
+    short_prescription_id = create_short_form_id(prepare_request_json)
     update_prescription(prepare_request_json, prescription_id, short_prescription_id, authored_on, None)
-
-    with open(prepare_request_path, 'w') as f:
-        json.dump(prepare_request_json, f, indent=2)
+    save_prepare_request(prepare_request_path, prepare_request_json)
 
     prepare_response_json = requests.post(
         f'{api_base_url}/{api_prefix_url}/$prepare',
@@ -152,8 +161,10 @@ def update_examples(api_base_url):
     for prepare_request_path in find_prepare_request_paths(examples_root_dir):
         prescription_id = str(uuid.uuid4())
 
+        prepare_request_json = load_prepare_request(prepare_request_path)
+
         short_prescription_id, signature_time = update_prepare_examples(
-            api_base_url, prepare_request_path, prescription_id, authored_on
+            api_base_url, prepare_request_json, prescription_id, authored_on
         )
         update_process_examples(
             api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on,
@@ -162,7 +173,6 @@ def update_examples(api_base_url):
 
 
 def main(arguments):
-    arguments = docopt(__doc__, version="0")
     update_examples(arguments["API_BASE_URL"])
 
 
@@ -173,6 +183,7 @@ if __name__ == "__main__":
 # Tests
 
 test_examples_root_dir = f".{os.path.sep}models{os.path.sep}examples{os.path.sep}"
+
 
 # repeat-dispensing example to cover validity_period test in addition to base tests
 
@@ -188,8 +199,13 @@ def test_bundle_json():
     return process_request_json
 
 
-def test_generate_short_form_id__contains_org_code():
-    assert generate_short_form_id("testOrgCode").split("-")[1] == "testOrgCode"
+def test_generate_short_form_id__contains_org_code_in_middle():
+    organisationCode = "testOrgCode"
+    short_form_id = generate_short_form_id(organisationCode)
+    short_form_id_split = short_form_id.split("-")
+    assert len(short_form_id_split) == 3
+    short_form_id_middle = short_form_id_split[1]
+    assert short_form_id_middle == organisationCode
 
 
 def test_find_prepare_request_paths__finds_prepare_examples():
@@ -207,10 +223,8 @@ def test_update_prescription__updates_prescription_id(test_bundle_json):
         if resource["resourceType"] == "MedicationRequest":
             for extension in resource["groupIdentifier"]["extension"]:
                 if extension["url"] == "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId":
-                    assert extension["valueIdentifier"]["value"] == prescription_id
-                    break
-            else:
-                raise Exception('Failed to update prescription_id on MedicationRequest')
+                    prescription_id_updated = extension["valueIdentifier"]["value"]
+    assert prescription_id == prescription_id_updated
 
 
 def test_update_prescription__updates_short_prescription_id(test_bundle_json):
@@ -219,10 +233,8 @@ def test_update_prescription__updates_short_prescription_id(test_bundle_json):
     for entry in test_bundle_json['entry']:
         resource = entry["resource"]
         if resource["resourceType"] == "MedicationRequest":
-            assert resource["groupIdentifier"]["value"] == short_prescription_id
-            break
-    else:
-        raise Exception('Failed to update short_prescription_id on MedicationRequest')
+            short_prescription_id_updated = resource["groupIdentifier"]["value"]
+    assert short_prescription_id == short_prescription_id_updated
 
 
 def test_update_prescription__updates_signature_time(test_bundle_json):
@@ -232,10 +244,9 @@ def test_update_prescription__updates_signature_time(test_bundle_json):
         resource = entry["resource"]
         if resource["resourceType"] == "Provenance":
             for signature in resource["signature"]:
-                assert signature["when"] == signature_time
+                signature_time_updated = signature["when"]
                 break
-            else:
-                raise Exception('Failed to update signature_time on Provenance')
+    assert signature_time == signature_time_updated
 
 
 def test_update_prescription__updates_authored_on(test_bundle_json):
@@ -244,22 +255,27 @@ def test_update_prescription__updates_authored_on(test_bundle_json):
     for entry in test_bundle_json['entry']:
         resource = entry["resource"]
         if resource["resourceType"] == "MedicationRequest":
-            assert resource["authoredOn"] == authored_on
-            break
-    else:
-        raise Exception('Failed to update authored_on on MedicationRequest')
+            authored_on_updated = resource["authoredOn"]
+    assert authored_on == authored_on_updated
 
 
-def test_update_prescription__updates_validity_period(test_bundle_json):
+def test_update_prescription__sets_validity_period_for_4_weeks_from_today(test_bundle_json):
     update_prescription(test_bundle_json, None, None, None, None)
     for entry in test_bundle_json['entry']:
         resource = entry["resource"]
         if resource["resourceType"] == "MedicationRequest":
             if "validityPeriod" in resource["dispenseRequest"]:
-                assert resource["dispenseRequest"]["validityPeriod"]["start"] == date.today().isoformat()
-                assert resource["dispenseRequest"]["validityPeriod"]["end"] == (
-                    date.today() + timedelta(weeks=4)
-                ).isoformat()
-                break
-    else:
-        raise Exception('Failed to update validity_period on MedicationRequest')
+                validityStart = resource["dispenseRequest"]["validityPeriod"]["start"]
+                validityEnd = resource["dispenseRequest"]["validityPeriod"]["end"]
+    assert validityStart == date.today().isoformat()
+    assert validityEnd == (date.today() + timedelta(weeks=4)).isoformat()
+
+
+def test_create_short_form_id__creates_short_form_id_with_org_code(test_bundle_json):
+    short_form_id = create_short_form_id(test_bundle_json)
+    for entry in test_bundle_json['entry']:
+        resource = entry["resource"]
+        if resource["resourceType"] == "HealthcareService":
+            for identifier in resource["identifier"]:
+                organisationCode = identifier["value"]
+    assert organisationCode in short_form_id
