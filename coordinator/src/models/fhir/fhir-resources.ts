@@ -77,7 +77,8 @@ export interface Reference<T extends Resource> {
 }
 
 export interface IdentifierReference<T extends Resource> {
-  identifier: Identifier
+  identifier: Identifier,
+  display?: string
 }
 
 export interface Dosage {
@@ -173,7 +174,7 @@ export interface Organization extends Resource {
   name?: string
   telecom?: Array<ContactPoint>
   address?: Array<Address>
-  partOf?: Reference<Organization>
+  partOf?: Reference<Organization> | IdentifierReference<Organization>
 }
 
 export interface HealthcareService extends Resource {

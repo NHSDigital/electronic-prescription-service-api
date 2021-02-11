@@ -161,30 +161,38 @@ def derive_convert_response_path(process_request_path):
 
 
 def update_prepare_examples(api_base_url, prepare_request_path, prepare_request_json, prescription_id, authored_on):
-    organisation_code = get_organisation_code(prepare_request_json)
-    short_prescription_id = generate_short_form_id(organisation_code)
-    update_prescription(prepare_request_json, prescription_id, short_prescription_id, authored_on, None)
-    save_prepare_request(prepare_request_path, prepare_request_json)
-    prepare_response_json = get_prepare_response_from_a_sandbox_api(api_base_url, prepare_request_json)
-    prepare_response_path = derive_prepare_response_path(prepare_request_path)
-    save_prepare_response(prepare_response_path, prepare_response_json)
-    signature_time = get_signature_timestamp_from_prepare_response(prepare_response_json)
-    return short_prescription_id, signature_time
+    try:
+        organisation_code = get_organisation_code(prepare_request_json)
+        short_prescription_id = generate_short_form_id(organisation_code)
+        update_prescription(prepare_request_json, prescription_id, short_prescription_id, authored_on, None)
+        save_prepare_request(prepare_request_path, prepare_request_json)
+        prepare_response_json = get_prepare_response_from_a_sandbox_api(api_base_url, prepare_request_json)
+        prepare_response_path = derive_prepare_response_path(prepare_request_path)
+        save_prepare_response(prepare_response_path, prepare_response_json)
+        signature_time = get_signature_timestamp_from_prepare_response(prepare_response_json)
+        return short_prescription_id, signature_time
+    except BaseException as e:
+        print(f"Failed to process example {prepare_request_path}")
+        raise e
 
 
 def update_process_examples(
     api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on, signature_time
 ):
-    process_request_path_pattern = derive_process_request_path_pattern(prepare_request_path)
-    for process_request_path in glob.iglob(process_request_path_pattern):
-        process_request_json = load_process_request(process_request_path)
-        update_prescription(
-            process_request_json, prescription_id, short_prescription_id, authored_on, signature_time
-        )
-        save_process_request(process_request_path, process_request_json)
-        convert_response_xml = get_convert_response_from_a_sandbox_api(api_base_url, process_request_json)
-        convert_response_path = derive_convert_response_path(process_request_path)
-        save_convert_response(convert_response_path, convert_response_xml)
+    try:
+        process_request_path_pattern = derive_process_request_path_pattern(prepare_request_path)
+        for process_request_path in glob.iglob(process_request_path_pattern):
+            process_request_json = load_process_request(process_request_path)
+            update_prescription(
+                process_request_json, prescription_id, short_prescription_id, authored_on, signature_time
+            )
+            save_process_request(process_request_path, process_request_json)
+            convert_response_xml = get_convert_response_from_a_sandbox_api(api_base_url, process_request_json)
+            convert_response_path = derive_convert_response_path(process_request_path)
+            save_convert_response(convert_response_path, convert_response_xml)
+    except BaseException as e:
+        print(f"Failed to process example {prepare_request_path}")
+        raise e
 
 
 def update_examples(api_base_url):

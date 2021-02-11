@@ -22,6 +22,10 @@ const orderPactGroups = [
   {
     name: "secondarycare-homecare",
     cases: TestResources.processSecondaryCareHomecareOrderCases,
+  },
+  {
+    name: "primarycare",
+    cases: TestResources.processPrimaryCareOrderCases
   }
 ]
 
@@ -29,6 +33,10 @@ const orderUpdatePactGroups = [
   {
     name: "secondarycare-community-acute-cancel",
     cases: TestResources.processSecondaryCareCommunityAcuteOrderUpdateCases
+  },
+  {
+    name: "primarycare-cancel",
+    cases: TestResources.processPrimaryCareOrderUpdateCases
   }
 ]
 
