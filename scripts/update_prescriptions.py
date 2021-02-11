@@ -10,7 +10,6 @@ import glob
 import json
 import os
 import pytest
-import re
 import requests
 import uuid
 from datetime import date, datetime, timedelta
