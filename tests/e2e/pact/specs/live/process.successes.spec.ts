@@ -33,10 +33,6 @@ const orderUpdatePactGroups = [
   {
     name: "secondarycare-community-acute-cancel",
     cases: TestResources.processSecondaryCareCommunityAcuteOrderUpdateCases
-  },
-  {
-    name: "primarycare-cancel",
-    cases: TestResources.processPrimaryCareOrderUpdateCases
   }
 ]
 
