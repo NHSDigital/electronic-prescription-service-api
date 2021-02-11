@@ -6,7 +6,7 @@ import {createPractitioner} from "./cancellation-practitioner"
 import {createHealthcareService, createLocations} from "./cancellation-organization"
 import {createPractitionerRole} from "./cancellation-practitioner-role"
 import {createMessageHeader} from "./cancellation-message-header"
-import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
+import {AgentPerson, Patient} from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../common"
 import {createIdentifier, createReference} from "./fhir-base-types"
 import {isDeepStrictEqual} from "util"
@@ -21,19 +21,6 @@ export function translateSpineCancelResponseIntoBundle(cancellationResponse: Can
   }
 }
 
-function convertAgentPerson(hl7AgentPerson: AgentPerson) {
-  const fhirPractitioner = createPractitioner(hl7AgentPerson)
-  const fhirLocations = createLocations(hl7AgentPerson.representedOrganization)
-  const fhirHealthcareService = createHealthcareService(hl7AgentPerson.representedOrganization, fhirLocations)
-
-  const fhirPractitionerRole = createPractitionerRole(
-    hl7AgentPerson,
-    fhirPractitioner.id,
-    fhirHealthcareService.id
-  )
-  return {fhirPractitioner, fhirLocations, fhirHealthcareService, fhirPractitionerRole}
-}
-
 function convertResourceToBundleEntry(resource: fhir.Resource) {
   return {
     resource,
@@ -42,50 +29,26 @@ function convertResourceToBundleEntry(resource: fhir.Resource) {
 }
 
 function createBundleEntries(cancellationResponse: CancellationResponse) {
-  const fhirPatient = createPatient(cancellationResponse.recordTarget.Patient)
+  const unorderedBundleResources: Array<fhir.Resource> = []
 
+  const hl7Patient = cancellationResponse.recordTarget.Patient
+  const patientId = translateAndAddPatient(hl7Patient, unorderedBundleResources)
+
+  //The Author represents the author of the cancel request, not necessarily the author of the original prescription
   const hl7AuthorAgentPerson = cancellationResponse.author.AgentPerson
+  const cancelRequesterId = translateAndAddAgentPerson(hl7AuthorAgentPerson, unorderedBundleResources)
+
+  //The ResponsibleParty represents the author of the original prescription (if different to the cancel requester)
   const hl7ResponsiblePartyAgentPerson = cancellationResponse.responsibleParty?.AgentPerson
-
-  const {
-    fhirPractitioner: fhirCancelRequesterPractitioner,
-    fhirLocations: fhirCancelRequesterLocations,
-    fhirHealthcareService: fhirCancelRequesterHealthcareService,
-    fhirPractitionerRole: fhirCancelRequesterPractitionerRole
-  } = convertAgentPerson(hl7AuthorAgentPerson)
-
-  const unorderedBundleResources: Array<fhir.Resource> = [
-    fhirPatient,
-    fhirCancelRequesterPractitioner,
-    ...fhirCancelRequesterLocations,
-    fhirCancelRequesterHealthcareService,
-    fhirCancelRequesterPractitionerRole
-  ]
-
-  let originalPrescriptionAuthorId = fhirCancelRequesterPractitioner.id
-
+  let originalPrescriptionAuthorId = cancelRequesterId
   if (hl7ResponsiblePartyAgentPerson && !isDeepStrictEqual(hl7ResponsiblePartyAgentPerson, hl7AuthorAgentPerson)) {
-    const {
-      fhirPractitioner: fhirOriginalPrescriptionAuthorPractitioner,
-      fhirLocations: fhirOriginalPrescriptionAuthorLocations,
-      fhirHealthcareService: fhirOriginalPrescriptionAuthorHealthcareService,
-      fhirPractitionerRole: fhirOriginalPrescriptionAuthorPractitionerRole
-    } = convertAgentPerson(hl7ResponsiblePartyAgentPerson)
-
-    originalPrescriptionAuthorId = fhirOriginalPrescriptionAuthorPractitionerRole.id
-
-    unorderedBundleResources.push(
-      fhirOriginalPrescriptionAuthorPractitioner,
-      ...fhirOriginalPrescriptionAuthorLocations,
-      fhirOriginalPrescriptionAuthorHealthcareService,
-      fhirOriginalPrescriptionAuthorPractitionerRole
-    )
+    originalPrescriptionAuthorId = translateAndAddAgentPerson(hl7ResponsiblePartyAgentPerson, unorderedBundleResources)
   }
 
   const fhirMedicationRequest = createMedicationRequest(
     cancellationResponse,
-    fhirCancelRequesterPractitioner.id,
-    fhirPatient.id,
+    cancelRequesterId,
+    patientId,
     originalPrescriptionAuthorId
   )
 
@@ -94,7 +57,7 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
   const cancelRequestId = cancellationResponse.pertinentInformation4.pertinentCancellationRequestRef.id._attributes.root
   const fhirMessageHeader = createMessageHeader(
     messageId,
-    fhirPatient.id,
+    patientId,
     fhirMedicationRequest.id,
     representedOrganizationId,
     cancelRequestId
@@ -110,23 +73,11 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
     const performerAgentPerson = cancellationResponse.performer.AgentPerson
     let performerId
     if (isDeepStrictEqual(performerAgentPerson, hl7AuthorAgentPerson)) {
-      performerId = fhirCancelRequesterPractitioner.id
+      performerId = cancelRequesterId
     } else if (isDeepStrictEqual(performerAgentPerson, hl7ResponsiblePartyAgentPerson)) {
       performerId = originalPrescriptionAuthorId
     } else {
-      const {
-        fhirPractitioner: fhirPerformerPractitioner,
-        fhirLocations: fhirPerformerLocations,
-        fhirHealthcareService: fhirPerformerHealthcareService,
-        fhirPractitionerRole: fhirPerformerPractitionerRole
-      } = convertAgentPerson(performerAgentPerson)
-      performerId = fhirPerformerPractitionerRole.id
-      orderedBundleResources.push(
-        fhirPerformerPractitioner,
-        ...fhirPerformerLocations,
-        fhirPerformerHealthcareService,
-        fhirPerformerPractitionerRole
-      )
+      performerId = translateAndAddAgentPerson(performerAgentPerson, orderedBundleResources)
     }
     const performerOrganizationCode = performerAgentPerson.representedOrganization.id._attributes.extension
     const performerOrganizationName = performerAgentPerson.representedOrganization.name._text
@@ -136,6 +87,37 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
   }
 
   return orderedBundleResources.map(convertResourceToBundleEntry)
+}
+
+// TODO - consider building up the list and sorting afterwards, e.g.:
+//
+// function sorted(resources: Array<fhir.Resource>) {
+//   return resources.sort((a, b) => {
+//     const indexA = getIndexForComparison(a)
+//     const indexB = getIndexForComparison(b)
+//     return Math.sign(indexA - indexB)
+//   })
+// }
+//
+// function getIndexForComparison(resource: fhir.Resource) {
+//   const resourceOrder = ["MessageHeader", "MedicationRequest", "Patient"]
+//   const index = resourceOrder.indexOf(resource.resourceType)
+//   return index === -1 ? resourceOrder.length : index
+// }
+
+function translateAndAddPatient(hl7Patient: Patient, resources: Array<fhir.Resource>) {
+  const fhirPatient = createPatient(hl7Patient)
+  resources.push(fhirPatient)
+  return fhirPatient.id
+}
+
+function translateAndAddAgentPerson(hl7AgentPerson: AgentPerson, resources: Array<fhir.Resource>) {
+  const fhirPractitioner = createPractitioner(hl7AgentPerson)
+  const fhirLocations = createLocations(hl7AgentPerson.representedOrganization)
+  const fhirHealthcareService = createHealthcareService(hl7AgentPerson.representedOrganization, fhirLocations)
+  const fhirPractitionerRole = createPractitionerRole(hl7AgentPerson, fhirPractitioner.id, fhirHealthcareService.id)
+  resources.push(fhirPractitioner, ...fhirLocations, fhirHealthcareService, fhirPractitionerRole)
+  return fhirPractitionerRole.id
 }
 
 function createDispenserInfoReference(practitionerId: string, organizationCode: string, organizationName: string) {
