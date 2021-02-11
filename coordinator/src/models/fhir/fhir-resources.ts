@@ -45,7 +45,7 @@ interface BaseMedicationRequest extends Resource {
   authoredOn: string
   requester: Reference<PractitionerRole>
   groupIdentifier: MedicationRequestGroupIdentifier
-  dispenseRequest: MedicationRequestDispenseRequest
+  dispenseRequest?: MedicationRequestDispenseRequest
   substitution?: {
     allowedBoolean: false
   }
@@ -58,6 +58,7 @@ export interface MedicationRequest extends BaseMedicationRequest {
   extension: Array<IdentifierExtension | ReferenceExtension<PractitionerRole> | CodingExtension
     | CodeableConceptExtension | RepeatInformationExtension | ControlledDrugExtension>
   statusReason?: CodeableConcept
+  dispenseRequest: MedicationRequestDispenseRequest
 }
 
 export interface CodeableConcept {

@@ -2,6 +2,7 @@ import * as fhir from "../../../models/fhir/fhir-resources"
 import {IdentifierReference, Organization} from "../../../models/fhir/fhir-resources"
 import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
+import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {convertAddress, convertName, generateResourceId} from "./common"
 import {convertHL7V3DateToIsoDateString, UNKNOWN_GP_ODS_CODE} from "../common"
@@ -67,6 +68,6 @@ function createGeneralPractitioner(hl7Patient: hl7.Patient): Array<IdentifierRef
   return [{identifier: createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", hl7OdsCode)}]
 }
 
-function isNullFlavor(value: unknown): value is codes.NullFlavor {
-  return (value as codes.NullFlavor)._attributes.nullFlavor !== undefined
+function isNullFlavor(value: unknown): value is core.Null {
+  return (value as core.Null)._attributes.nullFlavor !== undefined
 }

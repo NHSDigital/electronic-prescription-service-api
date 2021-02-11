@@ -1,6 +1,7 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import * as peoplePlaces from "../../../models/hl7-v3/hl7-v3-people-places"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
+import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {convertAddress, convertGender, convertName, convertTelecom} from "./demographics"
 import {convertIsoDateStringToHl7V3Date, getIdentifierValueForSystem, onlyElement, UNKNOWN_GP_ODS_CODE} from "../common"
 
@@ -9,10 +10,10 @@ function convertPatientToProviderPatient(
 ) {
   const generalPractitionerId = onlyElement(patient.generalPractitioner, "Patient.generalPractitioner")
   const hl7V3HealthCareProvider = new peoplePlaces.HealthCareProvider()
-  const GpIdValue = generalPractitionerId.identifier.value
-  hl7V3HealthCareProvider.id = GpIdValue === UNKNOWN_GP_ODS_CODE
-    ? new codes.NullFlavor("UNK")
-    : new codes.SdsOrganizationIdentifier(GpIdValue)
+  const gpIdValue = generalPractitionerId.identifier.value
+  hl7V3HealthCareProvider.id = gpIdValue === UNKNOWN_GP_ODS_CODE
+    ? core.Null.UNKNOWN
+    : new codes.SdsOrganizationIdentifier(gpIdValue)
   const hl7V3PatientCareProvision = new peoplePlaces.PatientCareProvision(
     codes.PatientCareProvisionTypeCode.PRIMARY_CARE
   )

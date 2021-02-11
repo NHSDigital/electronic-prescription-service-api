@@ -40,8 +40,7 @@ export function createMedicationRequest(
     //TODO - effectiveTime should probably be the timestamp of the status, not authoredOn
     authoredOn: convertHL7V3DateTimeToIsoDateTimeString(cancellationResponse.effectiveTime),
     requester: createReference(originalPrescriptionAuthorPractitionerRoleId),
-    groupIdentifier: getMedicationGroupIdentifier(cancellationResponse.pertinentInformation2),
-    dispenseRequest: medicationRequestHasDispenser() ? getDispenseRequest(cancellationResponse) : undefined
+    groupIdentifier: getMedicationGroupIdentifier(cancellationResponse.pertinentInformation2)
   }
 }
 
@@ -179,26 +178,4 @@ function getMedicationCodeableConcept() {
 function getMedicationGroupIdentifier(pertinentInformation2: PertinentInformation2) {
   const id = pertinentInformation2.pertinentPrescriptionID.value._attributes.extension
   return createIdentifier("https://fhir.nhs.uk/Id/prescription-order-number", id)
-}
-
-function medicationRequestHasDispenser() {
-  return false
-}
-
-function getDispenseRequest(cancellationResponse: CancellationResponse) {
-  cancellationResponse
-  return {
-    performer: {
-      extension: [{
-        url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-DispensingPerformer",
-        valueReference: {
-          reference: "" //TODO: when we have dispense info we need to fill
-        }
-      }],
-      identifier: {
-        system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "" //TODO: when we have dispense info we need to fill
-      }
-    }
-  }
 }

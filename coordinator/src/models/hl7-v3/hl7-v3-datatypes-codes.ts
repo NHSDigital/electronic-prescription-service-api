@@ -208,17 +208,6 @@ export class SdsOrganizationIdentifier extends Identifier<"1.2.826.0.1285.0.1.10
   }
 }
 
-export class NullFlavor{
-  _attributes: {
-    nullFlavor: string
-  }
-  constructor(nullFlavor: string) {
-    this._attributes= {
-      nullFlavor
-    }
-  }
-}
-
 export class Hl7InteractionIdentifier extends Identifier<"2.16.840.1.113883.2.1.3.2.4.12"> {
   constructor(extension: string) {
     super("2.16.840.1.113883.2.1.3.2.4.12", extension)
