@@ -15,7 +15,8 @@ export const PactGroups = [
   "secondarycare-community-acute",
   "secondarycare-community-repeatdispensing",
   "secondarycare-homecare",
-  "primarycare"
+  "primarycare",
+  "secondarycare-community-acute-cancel",
 ]
 export type PactGroup = typeof PactGroups
 
