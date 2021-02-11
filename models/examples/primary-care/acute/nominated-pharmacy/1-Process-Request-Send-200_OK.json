@@ -156,8 +156,8 @@
             }
           ],
           "validityPeriod": {
-            "start": "2020-06-10",
-            "end": "2020-12-07"
+            "start": "2021-02-04",
+            "end": "2021-03-04"
           },
           "expectedSupplyDuration": {
             "value": 40,
@@ -286,8 +286,8 @@
             }
           ],
           "validityPeriod": {
-            "start": "2020-06-10",
-            "end": "2020-12-07"
+            "start": "2021-02-04",
+            "end": "2021-03-04"
           },
           "expectedSupplyDuration": {
             "value": 40,

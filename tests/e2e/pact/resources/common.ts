@@ -16,6 +16,7 @@ export const PactGroups = [
   "secondarycare-community-repeatdispensing",
   "secondarycare-homecare",
   "primarycare"
+  //TODO - Add "primarycare-cancel" when Alex's fix (for cancellation ID generation) is merged
 ]
 export type PactGroup = typeof PactGroups
 
