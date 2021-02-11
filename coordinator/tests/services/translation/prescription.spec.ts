@@ -28,7 +28,7 @@ import {
   ContentReferencePayload,
   ContentStringPayload,
   ListEntry
-} from "../../../../tests/e2e/pact/models/fhir/fhir-resources";
+} from "../../../../tests/e2e/pact/models/fhir/fhir-resources"
 
 describe("convertCourseOfTherapyType", () => {
   const cases = [
