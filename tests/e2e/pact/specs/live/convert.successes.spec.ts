@@ -19,6 +19,10 @@ const pactConvertGroups = [
   {
     name: "secondarycare-homecare",
     cases: TestResources.convertSecondaryCareHomecareCases
+  },
+  {
+    name: "primarycare",
+    cases: TestResources.convertPrimaryCareCases
   }
 ]
 

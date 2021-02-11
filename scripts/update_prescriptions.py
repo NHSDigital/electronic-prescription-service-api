@@ -70,25 +70,29 @@ def replace_ids_and_timestamps(bundle_json, prescription_id, short_prescription_
 
 
 def update_prepare_examples(api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on):
-    with open(prepare_request_path) as f:
-        prepare_request_json = json.load(f)
-    replace_ids_and_timestamps(prepare_request_json, prescription_id, short_prescription_id, authored_on, None)
-    with open(prepare_request_path, 'w') as f:
-        json.dump(prepare_request_json, f, indent=2)
+    try:
+        with open(prepare_request_path) as f:
+            prepare_request_json = json.load(f)
+        replace_ids_and_timestamps(prepare_request_json, prescription_id, short_prescription_id, authored_on, None)
+        with open(prepare_request_path, 'w') as f:
+            json.dump(prepare_request_json, f, indent=2)
 
-    prepare_response_json = requests.post(
-        f'{api_base_url}/$prepare',
-        data=json.dumps(prepare_request_json),
-        headers={'Content-Type': 'application/json'}
-    ).json()
+        prepare_response_json = requests.post(
+            f'{api_base_url}/$prepare',
+            data=json.dumps(prepare_request_json),
+            headers={'Content-Type': 'application/json'}
+        ).json()
 
-    prepare_response_path = derive_prepare_response_path(prepare_request_path)
-    with open(prepare_response_path, 'w') as f:
-        json.dump(prepare_response_json, f, indent=2)
+        prepare_response_path = derive_prepare_response_path(prepare_request_path)
+        with open(prepare_response_path, 'w') as f:
+            json.dump(prepare_response_json, f, indent=2)
 
-    for parameter in prepare_response_json["parameter"]:
-        if parameter["name"] == "timestamp":
-            return parameter["valueString"]
+        for parameter in prepare_response_json["parameter"]:
+            if parameter["name"] == "timestamp":
+                return parameter["valueString"]
+    except BaseException as e:
+        print(f"Failed to process example at {prepare_request_path}")
+        raise e
 
 
 def derive_prepare_response_path(prepare_request_path):
@@ -103,25 +107,29 @@ def derive_prepare_response_path(prepare_request_path):
 def update_process_examples(
     api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on, signature_time
 ):
-    process_request_path_pattern = derive_process_request_path_pattern(prepare_request_path)
-    for process_request_path in glob.iglob(process_request_path_pattern):
-        with open(process_request_path) as f:
-            process_request_json = json.load(f)
-        replace_ids_and_timestamps(
-            process_request_json, prescription_id, short_prescription_id, authored_on, signature_time
-        )
-        with open(process_request_path, 'w') as f:
-            json.dump(process_request_json, f, indent=2)
+    try:
+        process_request_path_pattern = derive_process_request_path_pattern(prepare_request_path)
+        for process_request_path in glob.iglob(process_request_path_pattern):
+            with open(process_request_path) as f:
+                process_request_json = json.load(f)
+            replace_ids_and_timestamps(
+                process_request_json, prescription_id, short_prescription_id, authored_on, signature_time
+            )
+            with open(process_request_path, 'w') as f:
+                json.dump(process_request_json, f, indent=2)
 
-        convert_response_xml = requests.post(
-            f'{api_base_url}/$convert',
-            data=json.dumps(process_request_json),
-            headers={'Content-Type': 'application/json'}
-        ).text
+            convert_response_xml = requests.post(
+                f'{api_base_url}/$convert',
+                data=json.dumps(process_request_json),
+                headers={'Content-Type': 'application/json'}
+            ).text
 
-        convert_response_path = derive_convert_response_path(process_request_path)
-        with open(convert_response_path, 'w') as f:
-            f.write(convert_response_xml)
+            convert_response_path = derive_convert_response_path(process_request_path)
+            with open(convert_response_path, 'w') as f:
+                f.write(convert_response_xml)
+    except BaseException as e:
+        print(f"Failed to process example at {prepare_request_path}")
+        raise e
 
 
 def derive_process_request_path_pattern(prepare_request_path):
