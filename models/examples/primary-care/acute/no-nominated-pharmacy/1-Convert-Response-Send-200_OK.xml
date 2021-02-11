@@ -188,7 +188,7 @@
               <seperatableInd value="true"/>
               <pertinentDispensingSitePreference classCode="OBS" moodCode="EVN">
                 <code code="DSP" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                <value code="P1" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.21"/>
+                <value code="0004" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.21"/>
               </pertinentDispensingSitePreference>
             </pertinentInformation1>
             <pertinentInformation2 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT">

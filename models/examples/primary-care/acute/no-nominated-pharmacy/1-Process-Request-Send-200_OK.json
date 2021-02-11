@@ -151,7 +151,7 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
               "valueCoding": {
                 "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
-                "code": "P1"
+                "code": "0004"
               }
             }
           ],
@@ -275,7 +275,7 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-performerSiteType",
               "valueCoding": {
                 "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
-                "code": "P1"
+                "code": "0004"
               }
             }
           ],
