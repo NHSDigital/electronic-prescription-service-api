@@ -1,5 +1,5 @@
 import * as TestResources from "../../../resources/test-resources"
-import {createPatient} from "../../../../src/services/translation/cancellation/cancellation-patient"
+import {createPatient} from "../../../../src/services/translation/incoming/patient"
 import {UNKNOWN_GP_ODS_CODE} from "../../../../src/services/translation/common"
 import * as fhir from "../../../../src/models/fhir/fhir-resources"
 import * as hl7 from "../../../../src/models/hl7-v3/hl7-v3-people-places"

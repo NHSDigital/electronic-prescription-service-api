@@ -1,4 +1,4 @@
-import {createMessageHeader} from "../../../../src/services/translation/cancellation/cancellation-message-header"
+import {createMessageHeader} from "../../../../src/services/translation/incoming/message-header"
 import {getExtensionForUrl} from "../../../../src/services/translation/common"
 import * as fhir from "../../../../src/models/fhir/fhir-resources"
 

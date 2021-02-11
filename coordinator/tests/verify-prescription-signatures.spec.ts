@@ -7,7 +7,6 @@ import {SendMessagePayload} from "../src/models/hl7-v3/hl7-v3-datatypes-core"
 import {ParentPrescriptionRoot} from "../src/models/hl7-v3/hl7-v3-prescriptions"
 import {createParametersDigest} from "../src/services/translation"
 import {convertFragmentsToHashableFormat, extractFragments} from "../src/services/translation/prescription/signature"
-import {toArray} from "../src/services/translation/common"
 import {specification} from "./resources/test-resources"
 
 test.skip("verify prescription signature for specific prescription", () => {
@@ -64,20 +63,12 @@ function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
 }
 
 function calculateDigestFromPrescriptionRoot(prescriptionRoot: ElementCompact) {
-  ensureLineItemArray(prescriptionRoot)
   const sendMessagePayload = prescriptionRoot.PORX_IN020101SM31 as SendMessagePayload<ParentPrescriptionRoot>
   const parentPrescription = sendMessagePayload.ControlActEvent.subject.ParentPrescription
   const fragments = extractFragments(parentPrescription)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
   const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed)
   return Buffer.from(digestFromPrescriptionBase64, "base64").toString("utf-8")
-}
-
-function ensureLineItemArray(prescriptionRoot: ElementCompact) {
-  const sendMessagePayload = prescriptionRoot.PORX_IN020101SM31 as SendMessagePayload<ParentPrescriptionRoot>
-  const parentPrescription = sendMessagePayload.ControlActEvent.subject.ParentPrescription
-  const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
-  pertinentPrescription.pertinentInformation2 = toArray(pertinentPrescription.pertinentInformation2)
 }
 
 function verifySignatureValid(signatureRoot: ElementCompact) {

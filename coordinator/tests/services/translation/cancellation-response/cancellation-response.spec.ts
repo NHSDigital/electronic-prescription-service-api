@@ -1,7 +1,7 @@
 import * as TestResources from "../../../resources/test-resources"
 import {
   translateSpineCancelResponseIntoBundle
-} from "../../../../src/services/translation/cancellation/cancellation-response"
+} from "../../../../src/services/translation/incoming/cancellation/cancellation-response"
 import {
   getHealthcareServices,
   getLocations,

@@ -1,15 +1,11 @@
-import * as fhir from "../../../models/fhir/fhir-resources"
-import {CancellationResponse} from "../../../models/hl7-v3/hl7-v3-spine-response"
+import * as fhir from "../../../../models/fhir/fhir-resources"
+import {CancellationResponse} from "../../../../models/hl7-v3/hl7-v3-spine-response"
 import {createMedicationRequest} from "./cancellation-medication-request"
-import {createPatient} from "./cancellation-patient"
-import {createPractitioner} from "./cancellation-practitioner"
-import {createHealthcareService, createLocations} from "./cancellation-organization"
-import {createPractitionerRole} from "./cancellation-practitioner-role"
-import {createMessageHeader} from "./cancellation-message-header"
-import {AgentPerson, Patient} from "../../../models/hl7-v3/hl7-v3-people-places"
-import {convertHL7V3DateTimeToIsoDateTimeString} from "../common"
-import {createIdentifier, createReference} from "./fhir-base-types"
+import {createMessageHeader} from "../message-header"
+import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common"
+import {createIdentifier, createReference} from "../fhir-base-types"
 import {isDeepStrictEqual} from "util"
+import {convertResourceToBundleEntry, translateAndAddAgentPerson, translateAndAddPatient} from "../common"
 
 export function translateSpineCancelResponseIntoBundle(cancellationResponse: CancellationResponse): fhir.Bundle {
   return {
@@ -18,13 +14,6 @@ export function translateSpineCancelResponseIntoBundle(cancellationResponse: Can
     identifier: createBundleIdentifier(cancellationResponse),
     timestamp: convertHL7V3DateTimeToIsoDateTimeString(cancellationResponse.effectiveTime),
     entry: createBundleEntries(cancellationResponse)
-  }
-}
-
-function convertResourceToBundleEntry(resource: fhir.Resource) {
-  return {
-    resource,
-    fullUrl: `urn:uuid:${resource.id}`
   }
 }
 
@@ -104,21 +93,6 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
 //   const index = resourceOrder.indexOf(resource.resourceType)
 //   return index === -1 ? resourceOrder.length : index
 // }
-
-function translateAndAddPatient(hl7Patient: Patient, resources: Array<fhir.Resource>) {
-  const fhirPatient = createPatient(hl7Patient)
-  resources.push(fhirPatient)
-  return fhirPatient.id
-}
-
-function translateAndAddAgentPerson(hl7AgentPerson: AgentPerson, resources: Array<fhir.Resource>) {
-  const fhirPractitioner = createPractitioner(hl7AgentPerson)
-  const fhirLocations = createLocations(hl7AgentPerson.representedOrganization)
-  const fhirHealthcareService = createHealthcareService(hl7AgentPerson.representedOrganization, fhirLocations)
-  const fhirPractitionerRole = createPractitionerRole(hl7AgentPerson, fhirPractitioner.id, fhirHealthcareService.id)
-  resources.push(fhirPractitioner, ...fhirLocations, fhirHealthcareService, fhirPractitionerRole)
-  return fhirPractitionerRole.id
-}
 
 function createDispenserInfoReference(practitionerId: string, organizationCode: string, organizationName: string) {
   return {

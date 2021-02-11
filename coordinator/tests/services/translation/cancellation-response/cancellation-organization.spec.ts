@@ -4,7 +4,7 @@ import {
   createHealthcareService,
   createLocations,
   createOrganization
-} from "../../../../src/services/translation/cancellation/cancellation-organization"
+} from "../../../../src/services/translation/incoming/organization"
 import {getCancellationResponse} from "./test-helpers"
 import * as fhir from "../../../../src/models/fhir/fhir-resources"
 import * as hl7 from "../../../../src/models/hl7-v3/hl7-v3-people-places"

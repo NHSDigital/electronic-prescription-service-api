@@ -1,13 +1,13 @@
-import * as fhir from "../../../models/fhir/fhir-resources"
+import * as fhir from "../../../../models/fhir/fhir-resources"
 import {
   CancellationResponse,
   PertinentInformation1,
   PertinentInformation2
-} from "../../../models/hl7-v3/hl7-v3-spine-response"
-import {convertHL7V3DateTimeToIsoDateTimeString} from "../common"
-import {InvalidValueError} from "../../../models/errors/processing-errors"
-import {generateResourceId, getFullUrl} from "./common"
-import {createIdentifier, createReference} from "./fhir-base-types"
+} from "../../../../models/hl7-v3/hl7-v3-spine-response"
+import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common"
+import {InvalidValueError} from "../../../../models/errors/processing-errors"
+import {generateResourceId, getFullUrl} from "../common"
+import {createIdentifier, createReference} from "../fhir-base-types"
 
 export function createMedicationRequest(
   cancellationResponse: CancellationResponse,

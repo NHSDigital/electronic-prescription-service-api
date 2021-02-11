@@ -6,7 +6,7 @@ import {clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
 import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
 import * as fhir from "../../../src/models/fhir/fhir-resources"
-import {getExtensionForUrlOrNull} from "../../../src/services/translation/common"
+import {getExtensionForUrlOrNull, toArray} from "../../../src/services/translation/common"
 import {convertBundleToPrescription} from "../../../src/services/translation/prescription"
 import {convertFhirMessageToSpineRequest} from "../../../src/services/translation"
 import {TooManyValuesError} from "../../../src/models/errors/processing-errors"
@@ -248,7 +248,7 @@ describe("prescriptionEndorsements", () => {
     })
 
     const hl7v3Prescription = convertBundleToPrescription(bundle)
-    const hl7v3PrescriptionEndorsements = hl7v3Prescription.pertinentInformation2
+    const hl7v3PrescriptionEndorsements = toArray(hl7v3Prescription.pertinentInformation2)
       .flatMap(pi2 => pi2.pertinentLineItem.pertinentInformation3)
     expect(hl7v3PrescriptionEndorsements.length).toBeGreaterThan(0)
     hl7v3PrescriptionEndorsements.map(endorsement => expect(endorsement).toEqual(undefined))

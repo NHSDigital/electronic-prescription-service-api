@@ -20,7 +20,7 @@ import {
   getCommunicationRequests,
   getMedicationRequests
 } from "../../../src/services/translation/common/getResourcesOfType"
-import {getExtensionForUrl} from "../../../src/services/translation/common"
+import {getExtensionForUrl, toArray} from "../../../src/services/translation/common"
 import {setCourseOfTherapyTypeCode} from "./course-of-therapy-type.spec"
 import {CourseOfTherapyTypeCode} from "../../../src/services/translation/prescription/course-of-therapy-type"
 
@@ -65,7 +65,7 @@ describe("PertinentInformation2", () => {
     const contentString = "examplePatientInfo"
     fhirCommunicationRequests[0].payload.push({contentString: contentString})
 
-    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
@@ -79,7 +79,7 @@ describe("PertinentInformation2", () => {
     const contentString2 = "secondExamplePatientInfo"
     fhirCommunicationRequests[0].payload.push({contentString: contentString1}, {contentString: contentString2})
 
-    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
@@ -93,7 +93,7 @@ describe("PertinentInformation2", () => {
 
   test("Missing payload is handled", () => {
     delete fhirCommunicationRequests[0].payload
-    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const pertinentInformation1 = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
     expect(pertinentInformation1).toBeFalsy()
@@ -101,7 +101,7 @@ describe("PertinentInformation2", () => {
 
   test("Missing contentString is handled", () => {
     fhirCommunicationRequests[0].payload.push({contentString: undefined})
-    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const pertinentInformation1 = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
     expect(pertinentInformation1).toBeFalsy()
@@ -119,13 +119,14 @@ describe("PertinentInformation2", () => {
     fhirCommunicationRequests[0].payload.push({contentString: contentString})
     ensureAtLeast2MedicationRequests(bundle)
 
-    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
+    const pertinentInformation1Array = pertinentInformation2Array
       .map((pertinentInformation2) => pertinentInformation2.pertinentLineItem.pertinentInformation1)
 
-    const firstPertinentInformation1 = pertinentInformation2Array.shift()
+    const firstPertinentInformation1 = pertinentInformation1Array.shift()
     expect(firstPertinentInformation1.pertinentAdditionalInstructions.value).toContain(expected)
 
-    pertinentInformation2Array.forEach(checkValueDoesNotContainExpected)
+    pertinentInformation1Array.forEach(checkValueDoesNotContainExpected)
 
     function checkValueDoesNotContainExpected(pertinentInformation1: LineItemPertinentInformation1) {
       const actual = pertinentInformation1?.pertinentAdditionalInstructions?.value

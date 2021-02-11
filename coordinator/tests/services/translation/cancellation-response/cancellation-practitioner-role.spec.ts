@@ -1,4 +1,4 @@
-import {createPractitionerRole} from "../../../../src/services/translation/cancellation/cancellation-practitioner-role"
+import {createPractitionerRole} from "../../../../src/services/translation/incoming/practitioner-role"
 import * as TestResources from "../../../resources/test-resources"
 import {getCancellationResponse} from "./test-helpers"
 import {AgentPerson} from "../../../../src/models/hl7-v3/hl7-v3-people-places"

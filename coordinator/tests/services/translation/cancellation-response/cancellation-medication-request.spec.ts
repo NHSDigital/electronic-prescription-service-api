@@ -3,7 +3,7 @@ import {getExtensionForUrlOrNull} from "../../../../src/services/translation/com
 import * as fhir from "../../../../src/models/fhir/fhir-resources"
 import {
   createMedicationRequest
-} from "../../../../src/services/translation/cancellation/cancellation-medication-request"
+} from "../../../../src/services/translation/incoming/cancellation/cancellation-medication-request"
 import {getCancellationResponse, hasCorrectISOFormat} from "./test-helpers"
 import {CodeableConceptExtension} from "../../../../src/models/fhir/fhir-resources"
 
