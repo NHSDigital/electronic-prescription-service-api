@@ -102,11 +102,31 @@ def save_xml(path, body):
 
 
 def get_organisation_code(prepare_request_json):
-    for entry in prepare_request_json['entry']:
+    # secondary-care
+    for entry in prepare_request_json["entry"]:
         resource = entry["resource"]
         if resource["resourceType"] == "HealthcareService":
             for identifier in resource["identifier"]:
                 return identifier["value"]
+    # primary care
+    resources = map(getResource, prepare_request_json['entry'])
+    organisations = filter(getOrganisations, resources)
+    sorted_organisations = sorted(organisations, key=sortByMainOrganistionLast)
+    for organisation in sorted_organisations:
+        for identifier in organisation["identifier"]:
+            return identifier["value"]
+
+
+def getResource(entry):
+    return entry["resource"]
+
+
+def getOrganisations(resource):
+    return resource["resourceType"] == "Organization"
+
+
+def sortByMainOrganistionLast(organisation):
+    "partOf" in organisation
 
 
 def get_prepare_response_from_a_sandbox_api(api_base_url, prepare_request_json):
@@ -221,11 +241,9 @@ if __name__ == "__main__":
 test_examples_root_dir = f".{os.path.sep}models{os.path.sep}examples{os.path.sep}"
 
 
-@pytest.fixture
-# ensure example is repeat-dispensing to cover validity_period test in addition to other test
-def test_bundle_json():
-    process_request_path_root = f'{test_examples_root_dir}{os.path.sep}**{os.path.sep}'
-    process_request_sub_path = f'repeat-dispensing{os.path.sep}**{os.path.sep}'
+def getRepeatDispensingProcessRequestExample(careSetting):
+    process_request_path_root = f'{test_examples_root_dir}{os.path.sep}{careSetting}{os.path.sep}'
+    process_request_sub_path = f'**{os.path.sep}repeat-dispensing{os.path.sep}**{os.path.sep}'
     process_request_file = '1-Process-Request-Send-200_OK.json'
     process_request_path_pattern = f'{process_request_path_root}{process_request_sub_path}{process_request_file}'
     process_request_path = next(glob.iglob(process_request_path_pattern, recursive=True))
@@ -235,7 +253,18 @@ def test_bundle_json():
 
 
 @pytest.fixture
-def test_prepare_response_json():
+# ensure process request examples are repeat-dispensing to cover validity_period test
+def secondary_care_repeat_dispensing_process_request():
+    return getRepeatDispensingProcessRequestExample("secondary-care")
+
+
+@pytest.fixture
+def primary_care_repeat_dispensing_process_request():
+    return getRepeatDispensingProcessRequestExample("primary-care")
+
+
+@pytest.fixture
+def success_prepare_response_json():
     prepare_response_path_root = f'{test_examples_root_dir}{os.path.sep}**{os.path.sep}'
     prepare_response_file = '1-Prepare-Response-200_OK.json'
     prepare_response_path_pattern = f'{prepare_response_path_root}{prepare_response_file}'
@@ -261,10 +290,10 @@ def test_find_prepare_request_paths__finds_prepare_examples():
         raise Exception('Failed to find any prepare examples')
 
 
-def test_update_prescription__updates_prescription_id(test_bundle_json):
+def test_update_prescription__updates_prescription_id(secondary_care_repeat_dispensing_process_request):
     prescription_id = "newValue"
-    update_prescription(test_bundle_json, prescription_id, None, None, None)
-    for entry in test_bundle_json['entry']:
+    update_prescription(secondary_care_repeat_dispensing_process_request, prescription_id, None, None, None)
+    for entry in secondary_care_repeat_dispensing_process_request['entry']:
         resource = entry["resource"]
         if resource["resourceType"] == "MedicationRequest":
             for extension in resource["groupIdentifier"]["extension"]:
@@ -273,20 +302,20 @@ def test_update_prescription__updates_prescription_id(test_bundle_json):
     assert prescription_id == prescription_id_updated
 
 
-def test_update_prescription__updates_short_prescription_id(test_bundle_json):
+def test_update_prescription__updates_short_prescription_id(secondary_care_repeat_dispensing_process_request):
     short_prescription_id = "newValue"
-    update_prescription(test_bundle_json, None, short_prescription_id, None, None)
-    for entry in test_bundle_json['entry']:
+    update_prescription(secondary_care_repeat_dispensing_process_request, None, short_prescription_id, None, None)
+    for entry in secondary_care_repeat_dispensing_process_request['entry']:
         resource = entry["resource"]
         if resource["resourceType"] == "MedicationRequest":
             short_prescription_id_updated = resource["groupIdentifier"]["value"]
     assert short_prescription_id == short_prescription_id_updated
 
 
-def test_update_prescription__updates_signature_time(test_bundle_json):
+def test_update_prescription__updates_signature_time(secondary_care_repeat_dispensing_process_request):
     signature_time = "newValue"
-    update_prescription(test_bundle_json, None, None, None, signature_time)
-    for entry in test_bundle_json['entry']:
+    update_prescription(secondary_care_repeat_dispensing_process_request, None, None, None, signature_time)
+    for entry in secondary_care_repeat_dispensing_process_request['entry']:
         resource = entry["resource"]
         if resource["resourceType"] == "Provenance":
             for signature in resource["signature"]:
@@ -295,19 +324,19 @@ def test_update_prescription__updates_signature_time(test_bundle_json):
     assert signature_time == signature_time_updated
 
 
-def test_update_prescription__updates_authored_on(test_bundle_json):
+def test_update_prescription__updates_authored_on(secondary_care_repeat_dispensing_process_request):
     authored_on = "newValue"
-    update_prescription(test_bundle_json, None, None, authored_on, None)
-    for entry in test_bundle_json['entry']:
+    update_prescription(secondary_care_repeat_dispensing_process_request, None, None, authored_on, None)
+    for entry in secondary_care_repeat_dispensing_process_request['entry']:
         resource = entry["resource"]
         if resource["resourceType"] == "MedicationRequest":
             authored_on_updated = resource["authoredOn"]
     assert authored_on == authored_on_updated
 
 
-def test_update_prescription__sets_validity_period_for_4_weeks_from_today(test_bundle_json):
-    update_prescription(test_bundle_json, None, None, None, None)
-    for entry in test_bundle_json['entry']:
+def test_update_prescription__sets_validity_period_for_4_weeks_from_today(secondary_care_repeat_dispensing_process_request):
+    update_prescription(secondary_care_repeat_dispensing_process_request, None, None, None, None)
+    for entry in secondary_care_repeat_dispensing_process_request['entry']:
         resource = entry["resource"]
         if resource["resourceType"] == "MedicationRequest":
             if "validityPeriod" in resource["dispenseRequest"]:
@@ -317,9 +346,9 @@ def test_update_prescription__sets_validity_period_for_4_weeks_from_today(test_b
     assert validityEnd == (date.today() + timedelta(weeks=4)).isoformat()
 
 
-def test_get_organisation_code__gets_org_code_from_bundle(test_bundle_json):
-    organisationCode = get_organisation_code(test_bundle_json)
-    for entry in test_bundle_json['entry']:
+def test_get_organisation_code__gets_org_code_from_secondary_care(secondary_care_repeat_dispensing_process_request):
+    organisationCode = get_organisation_code(secondary_care_repeat_dispensing_process_request)
+    for entry in secondary_care_repeat_dispensing_process_request['entry']:
         resource = entry["resource"]
         if resource["resourceType"] == "HealthcareService":
             for identifier in resource["identifier"]:
@@ -327,11 +356,22 @@ def test_get_organisation_code__gets_org_code_from_bundle(test_bundle_json):
     assert organisationCode == actualOrganisationCode
 
 
-def test_get_signature_timestamp_from_prepare_response(test_prepare_response_json):
-    print(test_prepare_response_json)
+def test_get_organisation_code__gets_org_code_from_primary_care(primary_care_repeat_dispensing_process_request):
+    organisationCode = get_organisation_code(primary_care_repeat_dispensing_process_request)
+    resources = map(getResource, primary_care_repeat_dispensing_process_request['entry'])
+    organisations = filter(getOrganisations, resources)
+    sorted_organisations = sorted(organisations, key=sortByMainOrganistionLast)
+    for organisation in sorted_organisations:
+        for identifier in organisation["identifier"]:
+            actualOrganisationCode = identifier["value"]
+    assert organisationCode == actualOrganisationCode
+    
+
+def test_get_signature_timestamp_from_prepare_response(success_prepare_response_json):
+    print(success_prepare_response_json)
     signature_time = "newValue"
-    for parameter in test_prepare_response_json["parameter"]:
+    for parameter in success_prepare_response_json["parameter"]:
         if parameter["name"] == "timestamp":
             parameter["valueString"] = signature_time
-    signature_time_updated = get_signature_timestamp_from_prepare_response(test_prepare_response_json)
+    signature_time_updated = get_signature_timestamp_from_prepare_response(success_prepare_response_json)
     assert signature_time == signature_time_updated
