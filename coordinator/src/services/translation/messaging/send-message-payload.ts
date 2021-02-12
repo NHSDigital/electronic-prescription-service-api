@@ -12,7 +12,7 @@ import {
   getIdentifierValueForSystem,
   resolveReference
 } from "../common"
-import {Bundle, Resource} from "../../../models/fhir/fhir-resources"
+import {Bundle} from "../../../models/fhir/fhir-resources"
 import {getMedicationRequests} from "../common/getResourcesOfType"
 import * as uuid from "uuid"
 
@@ -110,7 +110,6 @@ function createControlActEventAuthor1(asid: string) {
 
 export function createReleaseRequestSendMessagePayload<T>(
   interactionId: codes.Hl7InteractionIdentifier,
-  parameters: Resource,
   subject: T
 ): core.SendMessagePayload<T> {
   const messageId = uuid.v4()
@@ -123,24 +122,23 @@ export function createReleaseRequestSendMessagePayload<T>(
 
   sendMessagePayload.communicationFunctionRcv = createCommunicationFunction(process.env.TO_ASID)
   sendMessagePayload.communicationFunctionSnd = createCommunicationFunction(process.env.FROM_ASID)
-  sendMessagePayload.ControlActEvent = createReleaseControlActEvent(parameters, subject)
+  sendMessagePayload.ControlActEvent = createReleaseControlActEvent(subject)
   return sendMessagePayload
 }
 
 function createReleaseControlActEvent<T>(
-  parameters: Resource,
   subject: T
 ) {
   const controlActEvent = new core.ControlActEvent<T>()
-  controlActEvent.author = convertRequesterToReleaseControlActAuthor(parameters)
+  controlActEvent.author = convertRequesterToReleaseControlActAuthor(subject)
   controlActEvent.author1 = createControlActEventAuthor1(process.env.FROM_ASID)
   controlActEvent.subject = subject
   return controlActEvent
 }
 
-function convertRequesterToReleaseControlActAuthor(
+function convertRequesterToReleaseControlActAuthor<T>(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  bundle: Resource
+  hl7ReleaseRequest: T
 ) {
   const sdsUniqueIdentifier = "G9999999"
 

@@ -26,8 +26,10 @@ export default [
           .code(400)
       }
 
+      const payloadAsParameters = requestPayload as fhir.Parameters
+
       request.logger.info("Building Spine release request")
-      const spineRequest = translator.convertFhirMessageToReleaseRequest(requestPayload)
+      const spineRequest = translator.convertFhirMessageToReleaseRequest(payloadAsParameters)
       spineRequest.messageId = request.headers["nhsd-request-id"].toUpperCase()
 
       request.logger.info("Awaiting response")

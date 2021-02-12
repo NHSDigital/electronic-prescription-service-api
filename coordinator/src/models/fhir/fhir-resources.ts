@@ -228,7 +228,7 @@ export interface StringParameter extends Parameter {
   valueString: string
 }
 
-interface IdentifierParameter extends Parameter {
+export interface IdentifierParameter extends Parameter {
   valueIdentifier: Identifier
 }
 

@@ -102,14 +102,14 @@ class AlgorithmIdentifier implements XmlJs.ElementCompact {
   }
 }
 
-export function convertFhirMessageToReleaseRequest(fhirMessage: fhir.Resource): SpineRequest {
+export function convertFhirMessageToReleaseRequest(fhirMessage: fhir.Parameters): SpineRequest {
   return  requestBuilder.toSpineRequest(createReleaserequestSendMessagePayload(fhirMessage))
 }
 
 function createReleaserequestSendMessagePayload(
-  hl7ReleaseRequest: fhir.Resource
+  fhirReleaseRequest: fhir.Parameters
 ) {
-  const fhirReleaseRequest = translateReleaseRequest()
+  const hl7ReleaseRequest = translateReleaseRequest(fhirReleaseRequest)
   const interactionId = codes.Hl7InteractionIdentifier.NOMINATED_PRESCRIPTION_RELEASE_REQUEST
-  return createReleaseRequestSendMessagePayload(interactionId, hl7ReleaseRequest, fhirReleaseRequest)
+  return createReleaseRequestSendMessagePayload(interactionId, hl7ReleaseRequest)
 }
