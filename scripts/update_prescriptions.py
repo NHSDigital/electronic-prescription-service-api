@@ -238,16 +238,14 @@ if __name__ == "__main__":
 
 
 # Tests
-test_examples_root_dir = f".{os.path.sep}models{os.path.sep}examples{os.path.sep}"
+test_examples_root_dir = f".{os.path.sep}models{os.path.sep}examples"
+secondary_care_example_dir = f"secondary-care{os.path.sep}community{os.path.sep}repeat-dispensing{os.path.sep}nominated-pharmacy{os.path.sep}clinical-practitioner{os.path.sep}single-medication-request" # noqa E501
+
 
 
 def getRepeatDispensingProcessRequestExample(careSetting):
-    process_request_path_root = f'{test_examples_root_dir}{os.path.sep}{careSetting}{os.path.sep}'
-    process_request_sub_path = f'**{os.path.sep}repeat-dispensing{os.path.sep}**{os.path.sep}'
-    process_request_file = '1-Process-Request-Send-200_OK.json'
-    process_request_path_pattern = f'{process_request_path_root}{process_request_sub_path}{process_request_file}'
-    process_request_path = next(glob.iglob(process_request_path_pattern, recursive=True))
-    with open(process_request_path) as f:
+    process_request_file = f'{test_examples_root_dir}{os.path.sep}{secondary_care_example_dir}{os.path.sep}1-Process-Request-Send-200_OK.json' # noqa E501
+    with open(process_request_file) as f:
         process_request_json = json.load(f)
     return process_request_json
 
