@@ -80,7 +80,7 @@ async function verifyConvert(): Promise<any> {
     PactGroups
       .filter(g => g !== "accept-header")
       // cancel conversions are included in main convert group
-      .filter(g => g !== "-cancel")
+      .filter(g => g.includes("-cancel"))
 
   await pactGroups.reduce(async (promise, group) => {
     await promise
