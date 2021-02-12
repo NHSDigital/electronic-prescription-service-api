@@ -37,11 +37,16 @@ export function translateToFhir<T>(hl7Message: SpineDirectResponse<T>): Translat
     return getSyncResponseAndErrorCodes(syncMCCI)
   }
 
+  const codeableConcept = {coding: [{
+    code: "",
+    display: bodyString
+  }]}
+
   return {
     statusCode: 400,
     fhirResponse: {
       resourceType: "OperationOutcome",
-      issue: [createOperationOutcomeIssue(400)]
+      issue: [createOperationOutcomeIssue(400, codeableConcept)]
     }
   }
 }

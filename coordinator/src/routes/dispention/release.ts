@@ -29,11 +29,13 @@ export default [
       request.logger.info("Building Spine release request")
       const spineRequest = translator.convertFhirMessageToReleaseRequest(requestPayload)
       spineRequest.messageId = request.headers["nhsd-request-id"].toUpperCase()
+
       request.logger.info("Awaiting response")
       const spineResponse = await requestHandler.send(
         spineRequest,
         request.logger
       )
+
       return handleResponse(request, spineResponse, responseToolkit)
     }
 
