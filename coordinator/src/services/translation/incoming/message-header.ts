@@ -4,8 +4,7 @@ import {createIdentifier, createReference} from "./fhir-base-types"
 
 export function createMessageHeader(
   messageId: string,
-  patientReference: string,
-  medicationRequestReference: string,
+  focusIds: Array<string>,
   representedOrganizationReference: string,
   cancelRequestId: string
 ): fhir.MessageHeader {
@@ -18,7 +17,7 @@ export function createMessageHeader(
     sender: getNhsdSender(),
     source: getSource(),
     response: getMessageHeaderResponse(cancelRequestId),
-    focus: createFocus(patientReference, medicationRequestReference)
+    focus: createFocus(focusIds)
   }
 }
 
@@ -40,8 +39,8 @@ function getNhsdSender() {
   }
 }
 
-function createFocus(patientReference: string, medicationRequestReference: string) {
-  return [createReference(patientReference), createReference(medicationRequestReference)]
+function createFocus(focusIds: Array<string>) {
+  return focusIds.map(createReference)
 }
 
 function getSource() {

@@ -46,8 +46,7 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
   const cancelRequestId = cancellationResponse.pertinentInformation4.pertinentCancellationRequestRef.id._attributes.root
   const fhirMessageHeader = createMessageHeader(
     messageId,
-    patientId,
-    fhirMedicationRequest.id,
+    [patientId, fhirMedicationRequest.id],
     representedOrganizationId,
     cancelRequestId
   )

@@ -4,29 +4,42 @@ import {isDeepStrictEqual} from "util"
 import {convertResourceToBundleEntry, translateAndAddAgentPerson, translateAndAddPatient} from "../common"
 import {toArray} from "../../common"
 import {createMedicationRequest} from "./medication-request"
+import {createMessageHeader} from "../message-header"
 
 export function createBundleEntries(parentPrescription: ParentPrescription): Array<fhir.BundleEntry> {
-  const unorderedBundleResources: Array<fhir.Resource> = []
+  const bundleResources: Array<fhir.Resource> = []
+  const focusIds: Array<string> = []
 
   const hl7Patient = parentPrescription.recordTarget.Patient
-  const patientId = translateAndAddPatient(hl7Patient, unorderedBundleResources)
+  const patientId = translateAndAddPatient(hl7Patient, bundleResources)
+  focusIds.push(patientId)
 
   const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
-
   const hl7AuthorAgentPerson = pertinentPrescription.author.AgentPerson
-  const authorId = translateAndAddAgentPerson(hl7AuthorAgentPerson, unorderedBundleResources)
+  const authorId = translateAndAddAgentPerson(hl7AuthorAgentPerson, bundleResources)
 
   const hl7ResponsiblePartyAgentPerson = pertinentPrescription.responsibleParty?.AgentPerson
   let responsiblePartyId = authorId
   if (hl7ResponsiblePartyAgentPerson && !isDeepStrictEqual(hl7ResponsiblePartyAgentPerson, hl7AuthorAgentPerson)) {
-    responsiblePartyId = translateAndAddAgentPerson(hl7ResponsiblePartyAgentPerson, unorderedBundleResources)
+    responsiblePartyId = translateAndAddAgentPerson(hl7ResponsiblePartyAgentPerson, bundleResources)
   }
 
   const hl7LineItems = toArray(pertinentPrescription.pertinentInformation2).map(pi2 => pi2.pertinentLineItem)
   hl7LineItems.forEach(hl7LineItem => {
     const medicationRequest = createMedicationRequest(hl7LineItem, patientId, authorId, responsiblePartyId)
-    unorderedBundleResources.push(medicationRequest)
+    bundleResources.push(medicationRequest)
+    focusIds.push(medicationRequest.id)
   })
 
-  return unorderedBundleResources.map(convertResourceToBundleEntry)
+  const messageId = parentPrescription.id._attributes.root
+  const representedOrganizationId = hl7AuthorAgentPerson.representedOrganization.id._attributes.extension
+  const messageHeader = createMessageHeader(
+    messageId,
+    focusIds,
+    representedOrganizationId,
+    "otherMessageId" //TODO - do we have the original message id?
+  )
+  bundleResources.unshift(messageHeader)
+
+  return bundleResources.map(convertResourceToBundleEntry)
 }
