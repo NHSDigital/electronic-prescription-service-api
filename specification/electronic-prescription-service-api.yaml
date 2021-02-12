@@ -295,6 +295,10 @@ paths:
                 example:
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
+                example:
+                  value:
+                    $ref: components/examples/prescription-order-update/bundle-error.json
+
   /FHIR/R4/Task/$release:
     post:
       operationId: release
