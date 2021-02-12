@@ -42,7 +42,9 @@ class EbXmlRequest {
 export function addEbXmlWrapper(spineRequest: SpineRequest): string {
   const cpaId = cpaIdMap.get(spineRequest.interactionId)
   if (!cpaId) {
-    throw new Error(`Could not identify CPA ID for interaction ${spineRequest.interactionId}`)
+    const errorString = `Could not identify CPA ID for interaction ${spineRequest.interactionId}`
+    console.log(errorString)
+    throw new Error(errorString)
   }
 
   const ebXmlRequest = new EbXmlRequest(spineRequest.interactionId, cpaId, spineRequest.message, spineRequest.messageId)
