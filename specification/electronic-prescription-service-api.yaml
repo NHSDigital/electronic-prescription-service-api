@@ -292,10 +292,10 @@ paths:
           content:
             application/fhir+json:
               examples:
-                example:
+                OperationOutcome:
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
-                example:
+                Bundle:
                   value:
                     $ref: components/examples/prescription-order-update/bundle-error.json
 
