@@ -201,23 +201,25 @@ function convertPrescriptionPertinentInformation2(
   fhirMedicationRequests: Array<fhir.MedicationRequest>,
   repeatNumber: core.Interval<core.Timestamp>
 ) {
-  const medicationListText = extractMedicationListText(fhirBundle, fhirCommunicationRequests)
-  const patientInfoText = extractPatientInfoText(fhirCommunicationRequests)
-  return fhirMedicationRequests.map((medicationRequest, index) => {
-    const medicationListTextForLineItem = shouldIncludePatientAdditionalInstructions(index) ? medicationListText : []
-    const patientInfoTextForLineItem = shouldIncludePatientAdditionalInstructions(index) ? patientInfoText : []
-    const pertinentLineItem = convertMedicationRequestToLineItem(
-      medicationRequest,
-      repeatNumber,
-      medicationListTextForLineItem,
-      patientInfoTextForLineItem
-    )
-    return new prescriptions.PrescriptionPertinentInformation2(pertinentLineItem)
-  })
-}
+  const lineItems = []
 
-function shouldIncludePatientAdditionalInstructions(lineItemIndex: number) {
-  return lineItemIndex === 0
+  lineItems.push(convertMedicationRequestToLineItem(
+    fhirMedicationRequests[0],
+    repeatNumber,
+    extractMedicationListText(fhirBundle, fhirCommunicationRequests),
+    extractPatientInfoText(fhirCommunicationRequests)
+  ))
+
+  for (let i=1; i<fhirMedicationRequests.length; i++) {
+    lineItems.push(convertMedicationRequestToLineItem(
+      fhirMedicationRequests[i],
+      repeatNumber,
+      [],
+      []
+    ))
+  }
+
+  return lineItems.map(pertinentLineItem => new prescriptions.PrescriptionPertinentInformation2(pertinentLineItem))
 }
 
 function convertPrescriptionPertinentInformation8() {
