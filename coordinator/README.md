@@ -1,5 +1,5 @@
 # Prescription Coordinator
-Handles message translation between FHIR and HL7v3, and distribution to other services.
+Handles message translation between FHIR and HL7 V3, and distribution to other services.
 Backend for the production EPS FHIR API.
 
 API Server built using [hapi](https://hapi.dev/) framework deployable as a [Apigee Hosted Target](https://docs.apigee.com/api-platform/hosted-targets/hosted-targets-overview).
@@ -31,10 +31,10 @@ Redeploy the API Proxy. See the main [README.md](../README.md).
 Prescription/dispention endpoints relate to functionality of the API, health routes relate to current API status.
 
 Private Beta:
-- [ ] POST `/$convert` Convert a FHIR prescription message into an HL7 V3 ParentPrescription message
+- [ ] POST `/$convert` Translate a FHIR message into an HL7 V3  message
 - [ ] POST `/$poll/{poll_path}` Send a poll request to SPINE
-- [ ] POST `/$prepare` Convert a FHIR prescription into the HL7 V3 signature fragments to be signed by the prescriber
-- [ ] POST `/$process_message` Convert a FHIR prescription message into an HL7 V3 ParentPrescription message and send to SPINE
+- [ ] POST `/$prepare` Generate HL7 V3 signature fragments to be signed by the prescriber from a FHIR prescription
+- [ ] POST `/$process_message` Translate a FHIR message into an HL7 V3 message, send to SPINE and translate response back to FHIR
 
 Technical Alpha:
 - [ ] POST `/Task/$release` Download a prescription for dispensing
