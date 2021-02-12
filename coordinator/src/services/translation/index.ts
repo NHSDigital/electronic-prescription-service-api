@@ -5,7 +5,7 @@ import * as prescriptions from "../../models/hl7-v3/hl7-v3-prescriptions"
 import * as fhir from "../../models/fhir/fhir-resources"
 import * as cancellations from "../../models/hl7-v3/hl7-v3-cancellation"
 import * as crypto from "crypto-js"
-import {createSendMessagePayload} from "./messaging/send-message-payload"
+import {createReleaseRequestSendMessagePayload, createSendMessagePayload} from "./messaging/send-message-payload"
 import {writeXmlStringCanonicalized} from "../serialisation/xml"
 import {convertParentPrescription} from "./prescription/parent-prescription"
 import {convertCancellation} from "./prescription/cancellation"
@@ -15,6 +15,7 @@ import * as requestBuilder from "../formatters/ebxml-request-builder"
 import {SpineRequest} from "../../models/spine"
 import {identifyMessageType, MessageType} from "../../routes/util"
 import {InvalidValueError} from "../../models/errors/processing-errors"
+import {translateReleaseRequest} from "./dispention/release"
 
 export function convertFhirMessageToSpineRequest(fhirMessage: fhir.Bundle): SpineRequest {
   const messageType = identifyMessageType(fhirMessage)
@@ -99,4 +100,16 @@ class AlgorithmIdentifier implements XmlJs.ElementCompact {
       Algorithm: algorithm
     }
   }
+}
+
+export function convertFhirMessageToReleaseRequest(fhirMessage: fhir.Resource): SpineRequest {
+  return  requestBuilder.toSpineRequest(createReleaserequestSendMessagePayload(fhirMessage))
+}
+
+function createReleaserequestSendMessagePayload(
+  hl7ReleaseRequest: fhir.Resource
+) {
+  const fhirReleaseRequest = translateReleaseRequest()
+  const interactionId = codes.Hl7InteractionIdentifier.NOMINATED_PRESCRIPTION_RELEASE_REQUEST
+  return createReleaseRequestSendMessagePayload(interactionId, hl7ReleaseRequest, fhirReleaseRequest)
 }

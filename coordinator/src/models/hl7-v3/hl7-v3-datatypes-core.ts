@@ -3,6 +3,7 @@ import {GlobalIdentifier, SdsUniqueIdentifier} from "./hl7-v3-datatypes-codes"
 import {Attributes, ElementCompact} from "xml-js"
 import {LosslessNumber} from "lossless-json"
 import {getNumericValueAsString} from "../../services/translation/common"
+import {AgentPerson} from "./hl7-v3-people-places"
 
 export interface AttributeTypeCode extends Attributes {
   typeCode: "AUT" | "COMP" | "FLFS" | "LA" | "PART" | "PERT" | "PRD" | "PRF" | "RESP" | "RCT" | "SBJ"
@@ -324,6 +325,15 @@ export class SendMessagePayloadAuthorSystemSds extends SendMessagePayloadAuthor 
   constructor(agentSystemSds: AgentSystemSds) {
     super()
     this.AgentSystemSDS = agentSystemSds
+  }
+}
+
+export class SendMessagePayloadAuthorAgentPerson extends SendMessagePayloadAuthor {
+  AgentPerson: AgentPerson
+
+  constructor(agentPerson: AgentPerson) {
+    super()
+    this.AgentPerson = agentPerson
   }
 }
 

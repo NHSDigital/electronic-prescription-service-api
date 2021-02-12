@@ -12,8 +12,9 @@ import {
   getIdentifierValueForSystem,
   resolveReference
 } from "../common"
-import {Bundle} from "../../../models/fhir/fhir-resources"
+import {Bundle, Resource} from "../../../models/fhir/fhir-resources"
 import {getMedicationRequests} from "../common/getResourcesOfType"
+import * as uuid from "uuid"
 
 export function createSendMessagePayload<T>(
   interactionId: codes.Hl7InteractionIdentifier,
@@ -105,4 +106,46 @@ function createControlActEventAuthor1(asid: string) {
   const agentSystemSystemSds = new core.AgentSystemSystemSds(id)
   const agentSystemSds = new core.AgentSystemSds(agentSystemSystemSds)
   return new core.SendMessagePayloadAuthorSystemSds(agentSystemSds)
+}
+
+export function createReleaseRequestSendMessagePayload<T>(
+  interactionId: codes.Hl7InteractionIdentifier,
+  parameters: Resource,
+  subject: T
+): core.SendMessagePayload<T> {
+  const messageId = uuid.v4()
+
+  const sendMessagePayload = new core.SendMessagePayload<T>(
+    new GlobalIdentifier(messageId),
+    convertMomentToHl7V3DateTime(moment.utc()),
+    interactionId
+  )
+
+  sendMessagePayload.communicationFunctionRcv = createCommunicationFunction(process.env.TO_ASID)
+  sendMessagePayload.communicationFunctionSnd = createCommunicationFunction(process.env.FROM_ASID)
+  sendMessagePayload.ControlActEvent = createReleaseControlActEvent(parameters, subject)
+  return sendMessagePayload
+}
+
+function createReleaseControlActEvent<T>(
+  parameters: Resource,
+  subject: T
+) {
+  const controlActEvent = new core.ControlActEvent<T>()
+  controlActEvent.author = convertRequesterToReleaseControlActAuthor(parameters)
+  controlActEvent.author1 = createControlActEventAuthor1(process.env.FROM_ASID)
+  controlActEvent.subject = subject
+  return controlActEvent
+}
+
+function convertRequesterToReleaseControlActAuthor(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  bundle: Resource
+) {
+  const sdsUniqueIdentifier = "G9999999"
+
+  const sdsJobRoleCode = "R8000"
+
+  const sdsRoleProfileIdentifier = "100102238986"
+  return createControlActEventAuthor(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier)
 }
