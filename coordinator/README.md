@@ -30,7 +30,7 @@ You can also include a `x-skip-validation` (set to `true`) to avoid running the 
 Redeploy the API Proxy. See the main [README.md](../README.md).
 
 ## Endpoints
-Prescription/dispention endpoints relate to functionality of the API, health routes relate to current API status.
+Prescribe/dispense endpoints relate to functionality of the API, health routes relate to current API status.
 
 Private Beta:
 - [ ] POST `/$convert` Translate a FHIR message into an HL7 V3  message
