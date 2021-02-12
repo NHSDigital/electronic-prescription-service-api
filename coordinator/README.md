@@ -11,7 +11,9 @@ npm run serve
 ```
 
 To run in dev mode, `npm run start-dev`.
-This calls to a FHIR validator on the local system, so any requests to the locally running coordinator will need a `x-skip-validation` header to be `true`.
+Calls to translation endpoints require the FHIR validator running on the local system.
+[Run the validator](../validator/README.md).
+You can also include a `x-skip-validation` (set to `true`) to avoid running the validator.
 
 ### Directories in /src
 - `/models` Typescript interface/class definitions
