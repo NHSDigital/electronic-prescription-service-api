@@ -79,7 +79,6 @@ async function verifyConvert(): Promise<any> {
   const pactGroups =
     PactGroups
       .filter(g => g !== "accept-header")
-      .filter(g => !g.includes("-cancel"))
 
   await pactGroups.reduce(async (promise, group) => {
     await promise
@@ -98,14 +97,16 @@ async function verifyPrepare(): Promise<any> {
   await verifyWith2Retries()
 }
 
+function isSandbox() {
+  return process.env.PACT_PROVIDER_URL.includes("sandbox")
+}
+
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyProcess(): Promise<any> {
     const pactGroups =
-      process.env.PACT_PROVIDER_URL.includes("sandbox")
-      ? PactGroups
-          .filter(g => g !== "failures")
-          .filter(g => !g.includes("-cancel"))
-      : PactGroups
+      isSandbox()
+        ? PactGroups.filter(g => g !== "failures")
+        : PactGroups
 
     await pactGroups.reduce(async (promise, group) => {
       await promise
