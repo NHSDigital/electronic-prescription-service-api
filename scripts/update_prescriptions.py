@@ -334,7 +334,9 @@ def test_update_prescription__updates_authored_on(secondary_care_repeat_dispensi
     assert authored_on == authored_on_updated
 
 
-def test_update_prescription__sets_validity_period_for_4_weeks_from_today(secondary_care_repeat_dispensing_process_request):
+def test_update_prescription__sets_validity_period_for_4_weeks_from_today(
+    secondary_care_repeat_dispensing_process_request
+):
     update_prescription(secondary_care_repeat_dispensing_process_request, None, None, None, None)
     for entry in secondary_care_repeat_dispensing_process_request['entry']:
         resource = entry["resource"]
@@ -365,7 +367,7 @@ def test_get_organisation_code__gets_org_code_from_primary_care(primary_care_rep
         for identifier in organisation["identifier"]:
             actualOrganisationCode = identifier["value"]
     assert organisationCode == actualOrganisationCode
-    
+
 
 def test_get_signature_timestamp_from_prepare_response(success_prepare_response_json):
     print(success_prepare_response_json)
