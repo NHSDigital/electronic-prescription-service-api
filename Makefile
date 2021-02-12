@@ -16,7 +16,7 @@ build: build-specification build-coordinator build-validator build-proxies
 
 test: validate-models check-licenses test-coordinator
 	cd tests/e2e/pact && make test
-	poetry run pytest -q ./scripts/update_prescriptions.py -W ignore::DeprecationWarning
+	poetry run pytest ./scripts/update_prescriptions.py
 
 publish:
 	echo Publish
