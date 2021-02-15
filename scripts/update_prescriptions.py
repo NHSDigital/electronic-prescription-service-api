@@ -239,12 +239,15 @@ if __name__ == "__main__":
 
 # Tests
 test_examples_root_dir = f".{os.path.sep}models{os.path.sep}examples"
-secondary_care_example_dir = f"secondary-care{os.path.sep}community{os.path.sep}repeat-dispensing{os.path.sep}nominated-pharmacy{os.path.sep}clinical-practitioner{os.path.sep}single-medication-request" # noqa E501
-
+secondary_care_example_dir = f"community{os.path.sep}repeat-dispensing{os.path.sep}nominated-pharmacy{os.path.sep}clinical-practitioner{os.path.sep}single-medication-request" # noqa E501
+primary_care_example_dir = f"repeat-dispensing{os.path.sep}nominated-pharmacy{os.path.sep}" # noqa E501
 
 
 def getRepeatDispensingProcessRequestExample(careSetting):
-    process_request_file = f'{test_examples_root_dir}{os.path.sep}{secondary_care_example_dir}{os.path.sep}1-Process-Request-Send-200_OK.json' # noqa E501
+    if (careSetting == "secondary-care"):
+        process_request_file = f'{test_examples_root_dir}{os.path.sep}{careSetting}{os.path.sep}{secondary_care_example_dir}{os.path.sep}1-Process-Request-Send-200_OK.json' # noqa E501
+    elif (careSetting == "primary-care"):
+        process_request_file = f'{test_examples_root_dir}{os.path.sep}{careSetting}{os.path.sep}{primary_care_example_dir}{os.path.sep}1-Process-Request-Send-200_OK.json' # noqa E501
     with open(process_request_file) as f:
         process_request_json = json.load(f)
     return process_request_json
@@ -263,11 +266,8 @@ def primary_care_repeat_dispensing_process_request():
 
 @pytest.fixture
 def success_prepare_response_json():
-    prepare_response_path_root = f'{test_examples_root_dir}{os.path.sep}**{os.path.sep}'
-    prepare_response_file = '1-Prepare-Response-200_OK.json'
-    prepare_response_path_pattern = f'{prepare_response_path_root}{prepare_response_file}'
-    prepare_response_path = next(glob.iglob(prepare_response_path_pattern, recursive=True))
-    with open(prepare_response_path) as f:
+    prepare_response_file = f'{test_examples_root_dir}{os.path.sep}primary-care{os.path.sep}{primary_care_example_dir}1-Prepare-Response-200_OK.json' # noqa E501
+    with open(prepare_response_file) as f:
         prepare_response_json = json.load(f)
     return prepare_response_json
 
@@ -282,7 +282,7 @@ def test_generate_short_form_id__contains_org_code_in_middle():
 
 
 def test_find_prepare_request_paths__finds_prepare_examples():
-    for prepareRequest in find_prepare_request_paths(test_examples_root_dir):
+    for prepareRequest in find_prepare_request_paths(f'{test_examples_root_dir}{os.path.sep}'):
         break
     else:
         raise Exception('Failed to find any prepare examples')
