@@ -44,7 +44,6 @@ function getAgentPersonPerson(): AgentPersonPerson {
   return agentPerson
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function getRepresentedOrganization(fhirReleaseRequest: fhir.Parameters): Organization {
   const hl7Organization = new Organization()
 
