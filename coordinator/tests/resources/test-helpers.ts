@@ -2,6 +2,7 @@ import * as XmlJs from "xml-js"
 import {writeXmlStringPretty} from "../../src/services/serialisation/xml"
 import * as LosslessJson from "lossless-json"
 import * as fhir from "../../src/models/fhir/fhir-resources"
+import * as uuid from "uuid"
 
 export function clone<T>(input: T): T {
   return LosslessJson.parse(LosslessJson.stringify(input))
@@ -21,6 +22,18 @@ export function addEmptyCommunicationRequestToBundle(bundle: fhir.Bundle): void 
     subject: undefined,
     payload: []}
   bundle.entry.push({resource: communicationRequest})
+}
+
+export function addEmptyListToBundle(bundle: fhir.Bundle): void {
+  const list: fhir.List = {
+    resourceType: "List",
+    id: uuid.v4(),
+    entry: []
+  }
+  bundle.entry.push({
+    resource: list,
+    fullUrl: `urn:uuid:${list.id}`
+  })
 }
 
 export function addEmptyHealthcareServiceToBundle(bundle: fhir.Bundle): void {
