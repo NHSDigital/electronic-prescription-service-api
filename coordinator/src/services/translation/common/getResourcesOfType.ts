@@ -23,6 +23,10 @@ export function getCommunicationRequests(fhirBundle: fhir.Bundle): Array<fhir.Co
   return getResourcesOfType<fhir.CommunicationRequest>(fhirBundle, "CommunicationRequest")
 }
 
+export function getLists(fhirBundle: fhir.Bundle): Array<fhir.List> {
+  return getResourcesOfType<fhir.List>(fhirBundle, "List")
+}
+
 export function getPatient(fhirBundle: fhir.Bundle): fhir.Patient {
   return onlyElement(
     getResourcesOfType<fhir.Patient>(fhirBundle, "Patient"),

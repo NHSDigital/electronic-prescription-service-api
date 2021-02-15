@@ -64,6 +64,7 @@ export function convertPrescriptionEndorsements(
 
 function convertAdditionalInstructions(
   fhirMedicationRequest: fhir.MedicationRequest,
+  medicationListText: Array<core.Text>,
   patientInfoText: Array<core.Text>
 ) {
   const controlledDrugExtension = getExtensionForUrlOrNull(
@@ -85,6 +86,9 @@ function convertAdditionalInstructions(
   ).patientInstruction
 
   const additionalInstructionsValueObj = {} as ElementCompact
+  if (medicationListText?.length) {
+    additionalInstructionsValueObj.medication = medicationListText
+  }
   if (patientInfoText?.length) {
     additionalInstructionsValueObj.patientInfo = patientInfoText
   }
@@ -98,6 +102,7 @@ function convertAdditionalInstructions(
 export function convertMedicationRequestToLineItem(
   fhirMedicationRequest: fhir.MedicationRequest,
   repeatNumber: core.Interval<core.Timestamp>,
+  medicationListText: Array<core.Text>,
   patientInfoText: Array<core.Text>
 ): prescriptions.LineItem {
   const lineItemId = getIdentifierValueForSystem(
@@ -117,7 +122,11 @@ export function convertMedicationRequestToLineItem(
   hl7V3LineItem.component = convertLineItemComponent(fhirMedicationRequest.dispenseRequest.quantity)
   convertPrescriptionEndorsements(fhirMedicationRequest, hl7V3LineItem)
 
-  const pertinentInformation1 = convertAdditionalInstructions(fhirMedicationRequest, patientInfoText)
+  const pertinentInformation1 = convertAdditionalInstructions(
+    fhirMedicationRequest,
+    medicationListText,
+    patientInfoText
+  )
   if (pertinentInformation1.pertinentAdditionalInstructions.value != "")
     hl7V3LineItem.pertinentInformation1 = pertinentInformation1
 
