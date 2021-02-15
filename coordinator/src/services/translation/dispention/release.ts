@@ -7,6 +7,7 @@ import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import * as uuid from "uuid"
 import {AgentPerson, AgentPersonPerson, Organization} from "../../../models/hl7-v3/hl7-v3-people-places"
 import * as fhir from "../../../models/fhir/fhir-resources"
+import {getIdentifierParameterByName} from "../common"
 
 export function translateReleaseRequest(
   fhirReleaseRequest: fhir.Parameters
@@ -47,7 +48,8 @@ function getAgentPersonPerson(): AgentPersonPerson {
 function getRepresentedOrganization(fhirReleaseRequest: fhir.Parameters): Organization {
   const hl7Organization = new Organization()
 
-  const organizationCode = (fhirReleaseRequest.parameter[0] as fhir.IdentifierParameter).valueIdentifier.value
+  const organizationParameter = getIdentifierParameterByName(fhirReleaseRequest.parameter, "owner", "")
+  const organizationCode = organizationParameter.valueIdentifier.value
   hl7Organization.id = new codes.SdsOrganizationIdentifier(organizationCode)
   hl7Organization.code = new codes.OrganizationTypeCode("999")
   hl7Organization.name = new core.Text("SOMERSET BOWEL CANCER SCREENING CENTRE")

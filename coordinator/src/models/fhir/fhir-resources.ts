@@ -208,7 +208,7 @@ export interface OperationOutcome extends Resource {
   issue: Array<OperationOutcomeIssue>
 }
 
-type ParameterTypes = StringParameter | IdentifierParameter | CodeParameter
+export type ParameterTypes = StringParameter | IdentifierParameter | CodeParameter
 
 export class Parameters extends Resource {
   readonly resourceType = "Parameters"

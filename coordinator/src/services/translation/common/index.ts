@@ -139,6 +139,18 @@ export function getExtensionForUrlOrNull(
   )
 }
 
+export function getIdentifierParameterByName(
+  parameters: Array<fhir.ParameterTypes>,
+  name: string,
+  fhirPath: string
+): fhir.IdentifierParameter {
+  return onlyElementOrNull(
+    parameters.filter(parameter => parameter.name === name),
+    fhirPath,
+    `name == '${name}'`
+  ) as fhir.IdentifierParameter
+}
+
 export function getCodeableConceptCodingForSystem(
   codeableConcepts: Array<fhir.CodeableConcept>,
   system: string,
