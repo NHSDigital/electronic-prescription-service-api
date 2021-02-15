@@ -478,11 +478,11 @@ export class PrescriptionType extends PrescriptionAnnotation {
  * The dosage and medication instructions in human readable form.
  */
 export class DosageInstructions extends PrescriptionAnnotation {
-  value: string
+  value: core.Text
 
   constructor(value: string) {
     super(new codes.PrescriptionAnnotationCode("DI"))
-    this.value = value
+    this.value = new core.Text(value)
   }
 }
 

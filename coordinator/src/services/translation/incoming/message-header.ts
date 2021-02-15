@@ -4,16 +4,17 @@ import {createIdentifier, createReference} from "./fhir-base-types"
 
 export function createMessageHeader(
   messageId: string,
+  eventCoding: fhir.Coding,
   focusIds: Array<string>,
-  representedOrganizationReference: string,
+  destinationOrganizationId: string,
   cancelRequestId: string
 ): fhir.MessageHeader {
   return {
     resourceType: "MessageHeader",
     id: generateResourceId(),
     extension: getExtensions(messageId),
-    eventCoding: getEventCoding(),
-    destination: getDestinations(representedOrganizationReference),
+    eventCoding: eventCoding,
+    destination: getDestinations(destinationOrganizationId),
     sender: getNhsdSender(),
     source: getSource(),
     response: getMessageHeaderResponse(cancelRequestId),
@@ -21,13 +22,18 @@ export function createMessageHeader(
   }
 }
 
-function getEventCoding() {
-  return {
+export const EVENT_CODING: Record<string, fhir.Coding> = Object.freeze({
+  PRESCRIPTION_ORDER_RESPONSE: {
     system: "https://fhir.nhs.uk/CodeSystem/message-event",
     code: "prescription-order-response",
     display: "Prescription Order Response"
+  },
+  PRESCRIPTION_ORDER: {
+    system: "https://fhir.nhs.uk/CodeSystem/message-event",
+    code: "prescription-order",
+    display: "Prescription Order"
   }
-}
+})
 
 function getNhsdSender() {
   return {
@@ -58,12 +64,16 @@ function getExtensions(messageId: string): Array<fhir.IdentifierExtension> {
 }
 
 function getDestinations(representedOrganizationId: string): Array<fhir.MessageHeaderDestination> {
-  return [{
-    endpoint: `urn:nhs-uk:addressing:ods:${representedOrganizationId}`,
-    receiver: {
-      identifier: createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", representedOrganizationId)
-    }
-  }]
+  if (representedOrganizationId) {
+    return [{
+      endpoint: `urn:nhs-uk:addressing:ods:${representedOrganizationId}`,
+      receiver: {
+        identifier: createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", representedOrganizationId)
+      }
+    }]
+  } else {
+    return []
+  }
 }
 
 function getMessageHeaderResponse(cancelRequestId: string): fhir.MessageHeaderResponse {

@@ -3,8 +3,8 @@ import * as fhir from "../../../../models/fhir/fhir-resources"
 import {isDeepStrictEqual} from "util"
 import {convertResourceToBundleEntry, translateAndAddAgentPerson, translateAndAddPatient} from "../common"
 import {toArray} from "../../common"
-import {createMedicationRequest} from "./medication-request"
-import {createMessageHeader} from "../message-header"
+import {createMedicationRequest} from "./release-medication-request"
+import {createMessageHeader, EVENT_CODING} from "../message-header"
 
 export function createBundleEntries(parentPrescription: ParentPrescription): Array<fhir.BundleEntry> {
   const bundleResources: Array<fhir.Resource> = []
@@ -26,17 +26,26 @@ export function createBundleEntries(parentPrescription: ParentPrescription): Arr
 
   const hl7LineItems = toArray(pertinentPrescription.pertinentInformation2).map(pi2 => pi2.pertinentLineItem)
   hl7LineItems.forEach(hl7LineItem => {
-    const medicationRequest = createMedicationRequest(hl7LineItem, patientId, authorId, responsiblePartyId)
+    const medicationRequest = createMedicationRequest(
+      pertinentPrescription,
+      hl7LineItem,
+      patientId,
+      authorId,
+      responsiblePartyId
+    )
     bundleResources.push(medicationRequest)
     focusIds.push(medicationRequest.id)
   })
 
   const messageId = parentPrescription.id._attributes.root
-  const representedOrganizationId = hl7AuthorAgentPerson.representedOrganization.id._attributes.extension
+  const performerOrganizationId = pertinentPrescription.performer
+    ? pertinentPrescription.performer.AgentOrgSDS.agentOrganizationSDS.id._attributes.extension
+    : undefined
   const messageHeader = createMessageHeader(
     messageId,
+    EVENT_CODING.PRESCRIPTION_ORDER,
     focusIds,
-    representedOrganizationId,
+    performerOrganizationId,
     "otherMessageId" //TODO - do we have the original message id?
   )
   bundleResources.unshift(messageHeader)

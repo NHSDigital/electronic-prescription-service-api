@@ -1,7 +1,7 @@
 import * as fhir from "../../../../models/fhir/fhir-resources"
 import {CancellationResponse} from "../../../../models/hl7-v3/hl7-v3-spine-response"
 import {createMedicationRequest} from "./cancellation-medication-request"
-import {createMessageHeader} from "../message-header"
+import {createMessageHeader, EVENT_CODING} from "../message-header"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common"
 import {createIdentifier, createReference} from "../fhir-base-types"
 import {isDeepStrictEqual} from "util"
@@ -46,6 +46,7 @@ function createBundleEntries(cancellationResponse: CancellationResponse) {
   const cancelRequestId = cancellationResponse.pertinentInformation4.pertinentCancellationRequestRef.id._attributes.root
   const fhirMessageHeader = createMessageHeader(
     messageId,
+    EVENT_CODING.PRESCRIPTION_ORDER_RESPONSE,
     [patientId, fhirMedicationRequest.id],
     representedOrganizationId,
     cancelRequestId

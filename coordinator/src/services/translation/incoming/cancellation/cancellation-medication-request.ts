@@ -7,7 +7,8 @@ import {
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common"
 import {InvalidValueError} from "../../../../models/errors/processing-errors"
 import {generateResourceId, getFullUrl} from "../common"
-import {createIdentifier, createReference} from "../fhir-base-types"
+import {createCodeableConcept, createIdentifier, createReference} from "../fhir-base-types"
+import {createGroupIdentifier} from "../medication-request"
 
 export function createMedicationRequest(
   cancellationResponse: CancellationResponse,
@@ -35,12 +36,12 @@ export function createMedicationRequest(
     identifier: createItemNumberIdentifier(cancellationResponse.pertinentInformation1),
     status: medicationRequestStatus,
     intent: "order",
-    medicationCodeableConcept: getMedicationCodeableConcept(),
+    medicationCodeableConcept: createMedicationCodeableConcept(),
     subject: createReference(patientId),
     //TODO - effectiveTime should probably be the timestamp of the status, not authoredOn
     authoredOn: convertHL7V3DateTimeToIsoDateTimeString(cancellationResponse.effectiveTime),
     requester: createReference(originalPrescriptionAuthorPractitionerRoleId),
-    groupIdentifier: getMedicationGroupIdentifier(cancellationResponse.pertinentInformation2)
+    groupIdentifier: createGroupIdentifierFromPertinentInformation2(cancellationResponse.pertinentInformation2)
   }
 }
 
@@ -165,17 +166,11 @@ function createItemNumberIdentifier(pertinentInformation1: PertinentInformation1
   return [createIdentifier("https://fhir.nhs.uk/Id/prescription-order-item-number", id.toLowerCase())]
 }
 
-function getMedicationCodeableConcept() {
-  return {
-    "coding": [{
-      "system": "http://snomed.info/sct",
-      "code": "763158003",
-      "display": "Medicinal product"
-    }]
-  }
+function createMedicationCodeableConcept() {
+  return createCodeableConcept("http://snomed.info/sct", "763158003", "Medicinal product")
 }
 
-function getMedicationGroupIdentifier(pertinentInformation2: PertinentInformation2) {
-  const id = pertinentInformation2.pertinentPrescriptionID.value._attributes.extension
-  return createIdentifier("https://fhir.nhs.uk/Id/prescription-order-number", id)
+function createGroupIdentifierFromPertinentInformation2(pertinentInformation2: PertinentInformation2) {
+  const shortFormId = pertinentInformation2.pertinentPrescriptionID.value._attributes.extension
+  return createGroupIdentifier(shortFormId, null)
 }

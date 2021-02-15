@@ -1,11 +1,11 @@
-import * as TestResources from "../../../resources/test-resources"
-import {getExtensionForUrlOrNull} from "../../../../src/services/translation/common"
-import * as fhir from "../../../../src/models/fhir/fhir-resources"
+import * as TestResources from "../../../../resources/test-resources"
+import {getExtensionForUrlOrNull} from "../../../../../src/services/translation/common"
+import * as fhir from "../../../../../src/models/fhir/fhir-resources"
 import {
   createMedicationRequest
-} from "../../../../src/services/translation/incoming/cancellation/cancellation-medication-request"
-import {getCancellationResponse, hasCorrectISOFormat} from "./test-helpers"
-import {CodeableConceptExtension} from "../../../../src/models/fhir/fhir-resources"
+} from "../../../../../src/services/translation/incoming/cancellation/cancellation-medication-request"
+import {getCancellationResponse, hasCorrectISOFormat} from "../test-helpers"
+import {CodeableConceptExtension} from "../../../../../src/models/fhir/fhir-resources"
 
 describe("createMedicationRequest", () => {
   const cancellationResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)

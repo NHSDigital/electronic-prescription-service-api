@@ -35,8 +35,9 @@ export type ControlledDrugExtension = ExtensionExtension<StringExtension | Codin
 
 export type PrescriptionStatusHistoryExtension = ExtensionExtension<CodingExtension>
 
-interface BaseMedicationRequest extends Resource {
+export interface BaseMedicationRequest extends Resource {
   resourceType: "MedicationRequest"
+  extension: Array<Extension>
   identifier: Array<Identifier>
   status: string
   intent: string
@@ -96,7 +97,7 @@ export interface MedicationRequestDispenseRequest {
   identifier?: Identifier
   quantity?: SimpleQuantity
   expectedSupplyDuration?: SimpleQuantity
-  performer: Performer
+  performer?: Performer
   validityPeriod?: Period
 }
 
