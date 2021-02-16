@@ -3,7 +3,7 @@
   "issue": [
     {
       "code": "informational",
-      "severity": "information",
+      "severity": "information"
     }
   ]
 }
