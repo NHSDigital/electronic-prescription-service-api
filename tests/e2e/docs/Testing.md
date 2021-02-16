@@ -1,5 +1,8 @@
 ## Testing
 
+Limitations: fresh ids are generated when running these smoke tests so signatures will not be valid
+For testing with a valid prescription see **[Testing Dispensing](./TestingDispensing.md)**
+
 ### Sandbox Proxies
 ```
 make mode=sandbox create-smoke-tests

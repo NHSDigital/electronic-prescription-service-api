@@ -30,12 +30,7 @@ make sign-prescriptions
 #### Send Prescriptions to int
 ---
 
-Run smoke tests against int manually OR merge PR with updated and signed examples and release a new version to int through pipeline. Manual method below:
-
-```
-make mode=live create-smoke-tests
-make env=int token=iy8f2ZV8zsIqQilurliBlRIK3a01 run-smoke-tests
-```
+Grab an example which has been signed above (under `models/examples/...`) and send to int through postman
 
 #### Verify with dispenser
 ---
