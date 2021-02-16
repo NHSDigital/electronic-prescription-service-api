@@ -52,7 +52,7 @@ jestPact.pactWith(
                   "display": "Release interaction"
                 }]
               },
-              status: 400
+              status: 200
             }
           }
 
