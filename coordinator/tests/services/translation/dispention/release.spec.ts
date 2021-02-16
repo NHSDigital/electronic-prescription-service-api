@@ -11,22 +11,18 @@ describe("translateReleaseRequest", () => {
   }])
   const translatedRelease = translateReleaseRequest(parameters)
 
-  test("translated release contains AgentPerson", () => {
+  test("translated release contains agentPersonPerson and representedOrganization", () => {
     const author = translatedRelease.NominatedPrescriptionReleaseRequest.author
     expect(author).not.toBeUndefined()
     const agentPerson = author.AgentPerson
     expect(agentPerson).not.toBeUndefined()
-  })
-
-  test("translated release contains agentPersonPerson and representedOrganization", () => {
-    const agentPerson = translatedRelease.NominatedPrescriptionReleaseRequest.author.AgentPerson
     const agentPersonPerson = agentPerson.agentPerson
     const representedOrganization = agentPerson.representedOrganization
     expect(agentPersonPerson).not.toBeUndefined()
     expect(representedOrganization).not.toBeUndefined()
   })
 
-  test("", () => {
+  test("translates organizationId correctly", () => {
     const agentPerson = translatedRelease.NominatedPrescriptionReleaseRequest.author.AgentPerson
     const organizationId = agentPerson.representedOrganization.id._attributes.extension
     expect(organizationId).toBe("VNE51")

@@ -17,7 +17,7 @@ import {identifyMessageType, MessageType} from "../../routes/util"
 import {InvalidValueError} from "../../models/errors/processing-errors"
 import {translateReleaseRequest} from "./dispention/release"
 
-export function convertFhirMessageToSpineRequest(fhirMessage: fhir.Bundle): SpineRequest {
+export function convertBundleToSpineRequest(fhirMessage: fhir.Bundle): SpineRequest {
   const messageType = identifyMessageType(fhirMessage)
   return messageType === MessageType.PRESCRIPTION
     ? requestBuilder.toSpineRequest(createParentPrescriptionSendMessagePayload(fhirMessage))
@@ -102,7 +102,7 @@ class AlgorithmIdentifier implements XmlJs.ElementCompact {
   }
 }
 
-export function convertFhirMessageToReleaseRequest(fhirMessage: fhir.Parameters): SpineRequest {
+export function convertParametersToSpineRequest(fhirMessage: fhir.Parameters): SpineRequest {
   const hl7ReleaseRequest = translateReleaseRequest(fhirMessage)
   const interactionId = codes.Hl7InteractionIdentifier.NOMINATED_PRESCRIPTION_RELEASE_REQUEST
   return  requestBuilder.toSpineRequest(createReleaseRequestSendMessagePayload(interactionId, hl7ReleaseRequest))
