@@ -38,7 +38,7 @@ make sign-prescriptions
 #### Send Prescriptions to int
 ---
 
-Grab an example which has been signed above (under `models/examples/`) and send to int through postman
+Grab an example which has been signed above (under `models/examples/`) and send to int
 
 #### Verify with dispenser
 ---
