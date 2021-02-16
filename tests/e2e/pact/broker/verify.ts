@@ -33,7 +33,7 @@ async function verify(): Promise<any> {
       provider: `${process.env.PACT_PROVIDER}+${endpoint}${pactGroup ? "-" + pactGroup : ""}+${process.env.PACT_VERSION}`,
       providerVersion: providerVersion,
       providerBaseUrl: process.env.PACT_PROVIDER_URL,
-      logLevel: "info",
+      logLevel: "debug",
       stateHandlers: {
         "is authenticated": () => {
           token = `${process.env.APIGEE_ACCESS_TOKEN}`
@@ -62,6 +62,11 @@ function resetBackOffRetryTimer() {
   sleepMs = 0
 }
 
+async function verifyOnce() {
+  await verify()
+    .catch(() => process.exit(1))
+}
+
 async function verifyWith2Retries() {
   await verify()
     .catch(verify)
@@ -71,7 +76,11 @@ async function verifyWith2Retries() {
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyConvert(): Promise<any> {
-  const pactGroups = PactGroups.filter(g => g !== "accept-header")
+  const pactGroups =
+    PactGroups
+      .filter(g => g !== "accept-header")
+      // cancel conversions are included in main convert group
+      .filter(g => !g.includes("-cancel"))
 
   await pactGroups.reduce(async (promise, group) => {
     await promise
@@ -90,19 +99,23 @@ async function verifyPrepare(): Promise<any> {
   await verifyWith2Retries()
 }
 
+function isSandbox() {
+  return process.env.PACT_PROVIDER_URL.includes("sandbox")
+}
+
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyProcess(): Promise<any> {
     const pactGroups =
-      process.env.PACT_PROVIDER_URL.includes("sandbox")
-      ? PactGroups.filter(g => g !== "failures")
-      : PactGroups
+      isSandbox()
+        ? PactGroups.filter(g => g !== "failures")
+        : PactGroups
 
     await pactGroups.reduce(async (promise, group) => {
       await promise
       endpoint = "process"
       pactGroup = group
       resetBackOffRetryTimer()
-      await verifyWith2Retries()
+      await verifyOnce()
     }, Promise.resolve())
 }
 
@@ -113,7 +126,7 @@ async function verifyRelease(): Promise<any> {
     pactGroup = ""
     resetBackOffRetryTimer()
     await verifyWith2Retries()
-  } 
+  }
 }
 
 (async () => {

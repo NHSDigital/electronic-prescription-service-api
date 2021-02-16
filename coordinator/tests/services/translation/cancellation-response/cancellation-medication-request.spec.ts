@@ -25,7 +25,7 @@ describe("createMedicationRequest", () => {
   test("contains status-history extension with correct code and display", () => {
     const extension = getExtensionForUrlOrNull(
       medicationRequest.extension,
-      "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-PrescriptionStatusHistory",
+      "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionTaskStatusReason",
       "MedicationRequest.extension"
     ) as fhir.ExtensionExtension<CodeableConceptExtension>
     expect(extension).not.toBeUndefined()
@@ -43,7 +43,7 @@ describe("createMedicationRequest", () => {
   test("contains ResponsiblePractitioner extension with correct reference", () => {
     const extension = getExtensionForUrlOrNull(
       medicationRequest.extension,
-      "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+      "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
       "MedicationRequest.extension"
     ) as fhir.ReferenceExtension<fhir.PractitionerRole>
     expect(extension).not.toBeUndefined()

@@ -1,7 +1,0 @@
-type: object
-description: A link to a resource representing the Patients Registered GP Surgery as recorded in Spine PDS.
-required:
-  - identifier
-properties:
-  identifier:
-    $ref: "Identifier-OdsOrganizationCode.yaml"

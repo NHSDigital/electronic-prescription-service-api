@@ -20,7 +20,7 @@ function validateValidationErrors (validationErrors: Array<errors.ValidationErro
 }
 
 describe("Bundle checks", () => {
-  test("verifyPrescriptionBundle accepts bundle with required Resources", () => {
+  test("verifyBundle accepts bundle with required Resources", () => {
     expect(validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned))
       .toEqual([])
   })
@@ -230,7 +230,7 @@ describe("verifyRepeatDispensingPrescription", () => {
   test("Repeat prescription with no extension adds an error", () => {
     const extensionToRemove = getExtensionForUrl(
       firstMedicationRequest.extension,
-      "https://fhir.nhs.uk/R4/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+      "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
       "bluh"
     )
     firstMedicationRequest.extension.remove(extensionToRemove as RepeatInformationExtension)

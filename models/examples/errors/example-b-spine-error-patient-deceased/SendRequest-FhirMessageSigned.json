@@ -150,14 +150,14 @@
         "id": "a7b86f8d-1d45-fc28-e050-d20ae3a215f0",
         "extension": [
           {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "0101"
             }
           },
           {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
             "valueReference": {
               "reference": "urn:uuid:9b4c1a77-cccc-418a-b835-4112fbcb14f3"
             }
@@ -172,7 +172,7 @@
         "groupIdentifier": {
           "extension": [
             {
-              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription-parent-id",
                 "value": "a7b86f8d-1cf2-fc28-e050-d20ae3a215f0"
@@ -250,14 +250,14 @@
         "id": "a7b86f8d-1d4a-fc28-e050-d20ae3a215f0",
         "extension": [
           {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "0101"
             }
           },
           {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
             "valueReference": {
               "reference": "urn:uuid:9b4c1a77-cccc-418a-b835-4112fbcb14f3"
             }
@@ -272,7 +272,7 @@
         "groupIdentifier": {
           "extension": [
             {
-              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription-parent-id",
                 "value": "a7b86f8d-1cf2-fc28-e050-d20ae3a215f0"
@@ -350,14 +350,14 @@
         "id": "a7b86f8d-1d4f-fc28-e050-d20ae3a215f0",
         "extension": [
           {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "0101"
             }
           },
           {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
             "valueReference": {
               "reference": "urn:uuid:9b4c1a77-cccc-418a-b835-4112fbcb14f3"
             }
@@ -372,7 +372,7 @@
         "groupIdentifier": {
           "extension": [
             {
-              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription-parent-id",
                 "value": "a7b86f8d-1cf2-fc28-e050-d20ae3a215f0"
@@ -450,14 +450,14 @@
         "id": "a7b86f8d-1d54-fc28-e050-d20ae3a215f0",
         "extension": [
           {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-prescriptionType",
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
               "code": "0101"
             }
           },
           {
-            "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
             "valueReference": {
               "reference": "urn:uuid:9b4c1a77-cccc-418a-b835-4112fbcb14f3"
             }
@@ -472,7 +472,7 @@
         "groupIdentifier": {
           "extension": [
             {
-              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription-parent-id",
                 "value": "a7b86f8d-1cf2-fc28-e050-d20ae3a215f0"

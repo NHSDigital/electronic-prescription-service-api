@@ -77,7 +77,8 @@ export interface Reference<T extends Resource> {
 }
 
 export interface IdentifierReference<T extends Resource> {
-  identifier: Identifier
+  identifier: Identifier,
+  display?: string
 }
 
 export interface Dosage {
@@ -173,7 +174,7 @@ export interface Organization extends Resource {
   name?: string
   telecom?: Array<ContactPoint>
   address?: Array<Address>
-  partOf?: Reference<Organization>
+  partOf?: Reference<Organization> | IdentifierReference<Organization>
 }
 
 export interface HealthcareService extends Resource {
@@ -292,11 +293,26 @@ export interface CommunicationRequest extends Resource {
   resourceType: "CommunicationRequest"
   status?: string
   subject: Reference<Patient>
-  payload: Array<ContentStringPayload>
+  payload: Array<ContentStringPayload | ContentReferencePayload>
 }
 
 export interface ContentStringPayload {
   contentString: string
+}
+
+export interface ContentReferencePayload {
+  contentReference: Reference<List>
+}
+
+export interface List extends Resource {
+  resourceType: "List"
+  entry: Array<ListEntry>
+}
+
+export interface ListEntry {
+  item: {
+    display: string
+  }
 }
 
 interface MessageHeaderSource {

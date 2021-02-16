@@ -16,8 +16,14 @@ export function convertCancellation(
   const fhirFirstMedicationRequest = getMedicationRequests(fhirBundle)[0]
   const effectiveTime = extractEffectiveTime(fhirFirstMedicationRequest)
 
+  const messageId = getIdentifierValueForSystem(
+    [fhirBundle.identifier],
+    "https://tools.ietf.org/html/rfc4122",
+    "Bundle.identifier"
+  )
+
   const hl7V3CancellationPrescription = new cancellations.CancellationPrescription(
-    new codes.GlobalIdentifier(fhirBundle.id), effectiveTime
+    new codes.GlobalIdentifier(messageId), effectiveTime
   )
 
   const fhirPatient = getPatient(fhirBundle)
@@ -54,7 +60,7 @@ export function convertCancellation(
 
   const prescriptionToCancel = getExtensionForUrl(
     fhirFirstMedicationRequest.groupIdentifier.extension,
-    "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId",
+    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
     "MedicationRequest.groupIdentifier.extension"
   ) as fhir.IdentifierExtension
   hl7V3CancellationPrescription.pertinentInformation3 = new cancellations.PertinentInformation3(

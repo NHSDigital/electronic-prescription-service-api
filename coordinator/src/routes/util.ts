@@ -4,13 +4,13 @@ import * as fhir from "../models/fhir/fhir-resources"
 import {OperationOutcome, Resource} from "../models/fhir/fhir-resources"
 import * as requestValidator from "../services/validation/bundle-validator"
 import * as errors from "../models/errors/validation-errors"
+import {ResourceTypeError} from "../models/errors/validation-errors"
 import {translateToFhir} from "../services/translation/spine-response"
 import * as LosslessJson from "lossless-json"
 import {getMessageHeader} from "../services/translation/common/getResourcesOfType"
 import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
-import {MessageTypeError} from "../models/errors/validation-errors"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
@@ -18,6 +18,7 @@ const CONTENT_TYPE_FHIR = "application/fhir+json; fhirVersion=4.0"
 const CONTENT_TYPE_JSON = "application/json"
 
 export const VALIDATOR_HOST = "http://localhost:9001"
+export const basePath = "/FHIR/R4"
 
 export function createHash(thingsToHash: string): string {
   return crypto.SHA256(thingsToHash).toString()
@@ -59,7 +60,8 @@ type Handler<T> = (
 
 export enum MessageType {
   PRESCRIPTION = "prescription-order",
-  CANCELLATION = "prescription-order-update"
+  CANCELLATION = "prescription-order-update",
+  DISPENSE = "prescription-dispense"
 }
 
 export function identifyMessageType(bundle: fhir.Bundle): string {
@@ -106,57 +108,53 @@ export async function fhirValidation(
   return validatorResponseData
 }
 
-export function taskValidatorHandler(handler: Handler<fhir.Parameters>) {
-  return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-    if (request.headers["x-skip-validation"]) {
-      request.logger.info("Skipping call to FHIR validator")
-    } else {
-      request.logger.info("Making call to FHIR validator")
-      const validatorResponseData = await fhirValidation(request.payload, request.headers)
-      request.logger.info("Received response from FHIR validator")
-      const error = validatorResponseData.issue.find(issue => issue.severity === "error" || issue.severity === "fatal")
-      if (error) {
-        return responseToolkit.response(validatorResponseData).code(400)
-      }
+export async function externalFHIRValidation(
+  request: Hapi.Request
+): Promise<fhir.OperationOutcome> {
+  if (request.headers["x-skip-validation"]) {
+    request.logger.info("Skipping call to FHIR validator")
+  } else {
+    request.logger.info("Making call to FHIR validator")
+    const validatorResponseData = await fhirValidation(request.payload, request.headers)
+    request.logger.info("Received response from FHIR validator")
+    const error = validatorResponseData.issue.find(issue => issue.severity === "error" || issue.severity === "fatal")
+    if (error) {
+      return validatorResponseData
     }
-
-    const requestPayload = getPayload(request) as fhir.Resource
-    if (requestPayload.resourceType !== "Parameters") {
-      const error = new MessageTypeError()
-      const response = toFhirError([error])
-      const statusCode = requestValidator.getStatusCode([error])
-      return responseToolkit.response(response).code(statusCode)
-    }
-    return handler(requestPayload as fhir.Parameters, request, responseToolkit)
+  }
+  return {
+    resourceType: "OperationOutcome",
+    issue: []
   }
 }
 
 export function validatingHandler(handler: Handler<fhir.Bundle>) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-    if (request.headers["x-skip-validation"]) {
-      request.logger.info("Skipping call to FHIR validator")
-    } else {
-      request.logger.info("Making call to FHIR validator")
-      const validatorResponseData = await fhirValidation(request.payload, request.headers)
-      request.logger.info("Received response from FHIR validator")
-      const error = validatorResponseData.issue.find(issue => issue.severity === "error" || issue.severity === "fatal")
-      if (error) {
-        return responseToolkit.response(validatorResponseData).code(400)
-      }
+    const fhirValidatorResponse = await externalFHIRValidation(request)
+    if (fhirValidatorResponse.issue.length > 0) {
+      return responseToolkit.response(fhirValidatorResponse).code(400)
     }
 
-    const requestPayload = getPayload(request) as fhir.Bundle
-    const validation = requestValidator.verifyBundle(requestPayload)
+    const validFHIRPayload = getPayload(request) as fhir.Resource
+
+    if (validFHIRPayload.resourceType !== "Bundle") {
+      return responseToolkit
+        .response(toFhirError([new ResourceTypeError("Bundle")]))
+        .code(400)
+    }
+
+    const bundle = validFHIRPayload as fhir.Bundle
+    const validation = requestValidator.verifyBundle(bundle)
     if (validation.length > 0) {
       const response = toFhirError(validation)
       const statusCode = requestValidator.getStatusCode(validation)
       return responseToolkit.response(response).code(statusCode)
     }
-    return handler(requestPayload, request, responseToolkit)
+    return handler(bundle, request, responseToolkit)
   }
 }
 
-function getPayload(request: Hapi.Request): unknown {
+export function getPayload(request: Hapi.Request): unknown {
   request.logger.info("Parsing request payload")
   if (Buffer.isBuffer(request.payload)) {
     return LosslessJson.parse(request.payload.toString())
@@ -167,7 +165,7 @@ function getPayload(request: Hapi.Request): unknown {
   }
 }
 
-function toFhirError(validation: Array<errors.ValidationError>): fhir.OperationOutcome {
+export function toFhirError(validation: Array<errors.ValidationError>): fhir.OperationOutcome {
   /* Reformat errors to FHIR spec
     * v.operationOutcomeCode: from the [IssueType ValueSet](https://www.hl7.org/fhir/valueset-issue-type.html)
     * v.apiErrorCode: Our own code defined for each particular error. Refer to OAS.

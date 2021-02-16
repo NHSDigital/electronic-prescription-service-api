@@ -8,7 +8,7 @@ const walk = function(dir) {
   list.forEach(function(file) {
       file = dir + '/' + file
       const stat = fs.statSync(file)
-      if (stat && stat.isDirectory()) { 
+      if (stat && stat.isDirectory()) {
           results = results.concat(walk(file))
       } else {
           const fileExt = path.parse(file).ext

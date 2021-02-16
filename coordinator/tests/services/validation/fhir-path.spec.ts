@@ -31,12 +31,12 @@ describe("applyFhirPath returns correct value", () => {
     const extensions = applyFhirPath(
       bundle,
       medicationRequests,
-      "dispenseRequest.extension(\"https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType\")"
+      "dispenseRequest.extension(\"https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType\")"
     ) as Array<Extension>
     expect(extensions.length).toBe(medicationRequests.length)
     extensions.map(
       extension =>
-        expect(extension.url).toBe("https://fhir.nhs.uk/R4/StructureDefinition/Extension-performerSiteType")
+        expect(extension.url).toBe("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType")
     )
   })
 })

@@ -19,7 +19,8 @@ info:
     * create a secondary care (outpatient) prescription
     * cancel a secondary care (outpatient) prescription
     * evaluate prescription signing client implementations
-    * release a prescription for dispensing
+    * release a prescription for dispensing (sandbox implementation)
+    * send a dispense notification to EPS (sandbox implementation)
 
     You cannot currently use this API to:
     * prepare a primary care prescription for signing
@@ -41,15 +42,15 @@ info:
 
     ## Using this API
     ### To create a prescription:
-    1. POST a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) to the `/$prepare` endpoint to get the encoded prescription data that requires a signature
+    1. POST a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) to the `/FHIR/R4/$prepare` endpoint to get the encoded prescription data that requires a signature
     2. sign the encoded prescription data using the Signing Service to get the signed prescription data
     3. generate an XML-DSig using the signed prescription data (see below)
     4. put the XML-DSig in a `Provenance` resource
     5. add the `Provenance` to the prescription-order message
-    6. POST the signed prescription-order message to the `/$process-message` endpoint
+    6. POST the signed prescription-order message to the `/FHIR/R4/$process-message` endpoint
 
     To generate an XML-DSig: 
-    1. get the encoded prescription data from the `$/prepare` endpoint of the EPS API
+    1. get the encoded prescription data from the `/FHIR/R4/$prepare` endpoint of the EPS API
     2. get the signature and certificate from the `/SignatureResponse` endpoint of the Signing Service
     3. assemble an XML-DSig (javascript example seen below)
 
@@ -64,11 +65,11 @@ info:
     ```
 
     ### To cancel a prescription:
-    1. POST a [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update) to the `/$process-message` endpoint
+    1. POST a [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update) to the `/FHIR/R4/$process-message` endpoint
 
     ### To dispense a prescription: 
-    1. POST a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to the `/Task/$release` endpoint to mark the prescription as released
-    2. POST a [prescription-dispense-notification](https://simplifier.net/guide/DigitalMedicines/prescription-dispense) message to the `/$process-message` endpoint to inform SPINE of a partial/successful dispense
+    1. POST a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to the `/FHIR/R4/Task/$release` endpoint to mark the prescription as released
+    2. POST a [prescription-dispense-notification](https://simplifier.net/guide/DigitalMedicines/prescription-dispense) message to the `/FHIR/R4/$process-message` endpoint to inform SPINE of a partial/successful dispense
 
     ## Legal Use
     This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
@@ -82,7 +83,7 @@ info:
     - [Prescription Tracker API](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to obtain information about a patient’s prescriptions
 
     ## API status and roadmap
-    All endpoints are in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status) - expect further breaking changes.
+    Prescribing flows for EPS FHIR API are in technical go-live. Dispensing flows for EPS FHIR API are in sandbox environment only.
 
     The API is currently available for sandbox testing and integration testing, but not for production use.
 
@@ -102,6 +103,8 @@ info:
 
     ## Network access
     This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network). To use this API with NHS smartcards (see below) you do need an HSCN connection, although internet-facing alternatives are available.
+    
+    All requests to this API require a unique GUUID incluuded in a `X-Request-ID` header.
 
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
 
@@ -175,61 +178,23 @@ info:
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/DigitalMedicines) to assist with your integration.
     This is the FHIR specification for Digital Medicines starting with the assets required for an electronic prescription sent to the EPS.
 
-    ## Responses
-    ### 2XX responses
-    Note: This section is under development and subject to change. All Spine responses are returned with 200 HTTP codes until a Spine translation service is built. This does not affect the sandbox environment.
 
-    | Endpoint               | HTTP code | Response format                                                                                                                                             |
-    | ---------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
-    | POST /$prepare         | 200       | [See /$prepare response body](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Prescribing-preparePrescription)      |
-    | POST /$process-message | 200       | [See /$process-message response body](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-Prescribing-sendPrescription) |
-
-    ### 4XX responses
-    Note: This section is under development and subject to change. All Spine responses are returned with 200 HTTP codes until a Spine translation service is built. This does not affect the sandbox environment.
-
-    | Endpoint              | HTTP code | Response format                           | Environment      | Cause                 |
-    | --------------------- | --------- | ----------------------------------------- | ---------------- | --------------------- |
-    | Any                   | 400       | See "Unsupported operation" example below | Sandbox          | Unsupported operation |
-    | Any                   | 408       | Returns original request data             | Integration test | Request timeout       |
-
-
-    #### Example: Unsupported operation
-    If attempting to call the `/_poll` endpoint in the sandbox environment, the following error would be returned:
-      ```
-      {
-        resourceType: "OperationOutcome",
-        issue: [
-          {
-            code: "informational",
-            severity: "information",
-            details: {
-              coding: [
-                {
-                  code: "INTERACTION_NOT_SUPPORTED_BY_SANDBOX",
-                  display: "Interaction not supported by sandbox",
-                  system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
-                  version: "1"
-                }
-              ]
-            }
-          }
-        ]
-      }
-      ```
-
-    #### Validation errors
-    Our endpoints can return the following errors:
-
-    | HTTP code | Issue severity | Issue type | Error code             | Cause                                                           |
-    | ----------| -------------- | ---------- | ---------------------- | --------------------------------------------------------------- |
-    | 400       | error          | value      | MISSING_FIELD          | Bundle contains incorrect number of resources of a certain type |
-    | 400       | error          | value      | MISSING_FIELD          | Bundle does not contain "id" field                              |
-    | 400       | error          | value      | INVALID_VALUE          | Invalid value in MedicationRequest                              |
-    | 400       | fatal          | value      | MISSING_FIELD          | Bundle does not contain "entry" field                           |
-    | 400       | fatal          | value      | INCORRECT_RESOURCETYPE | ResourceType is not "Bundle"                                    |
-    | 400       | fatal          | value      | INVALID_VALUE          | MessageHeader indicates invalid MessageType                     |
-
-
+    ## Errors
+    ### API specific errors
+    | HTTP Status   | Error Code             | Description                                    |
+    | --------------| ---------------------- | ---------------------------------------------- |
+    | 400           | MISSING_FIELD          | A required field is missing within the request |
+    | 400           | INVALID_VALUE          | Invalid value in message                       |
+    | 400           | INCORRECT_RESOURCETYPE | FHIR resource has incorrect resourceType       |
+    | 404           | NOT_FOUND              | Route not found                                |
+    
+    ### Platform-wide errors
+    | HTTP Status   | Error Code      | Description                                            |
+    | ------------- | --------------- | ------------------------------------------------------ |
+    | 400           | MISSING_FIELD   | X-Request-ID header missing or malformed               |
+    | 401           | ACCESS_DENIED   | User does not have permission for a particular request |
+    | 403           | FORBIDDEN       | Insufficient authorization                             |
+    | 404           | NOT_FOUND       | Resource not found                                     |
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
     description: 'Sandbox'
@@ -239,7 +204,7 @@ tags:
   - name: dispensing
   - name: prescribing
 paths:
-  /$prepare:
+  /FHIR/R4/$prepare:
     post:
       operationId: prepare-prescription
       summary: Convert a prescription message to signature fragments
@@ -253,8 +218,6 @@ paths:
         content:
           #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
           application/json:
-            schema:
-              $ref: components/schemas/Bundle.yaml
             examples:
               example:
                 value:
@@ -266,8 +229,6 @@ paths:
           content:
             #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
             application/json:
-              schema:
-                $ref: components/schemas/Parameters.yaml
               examples:
                 example:
                   value:
@@ -276,13 +237,11 @@ paths:
           description: Invalid request.
           content:
             application/fhir+json:
-              schema:
-                $ref: components/schemas/OperationOutcome-4XX.yaml
               examples:
                 example:
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
-  /$process-message:
+  /FHIR/R4/$process-message:
     post:
       operationId: send-message
       summary: Send a prescription message to EPS
@@ -302,8 +261,6 @@ paths:
         content:
           #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
           application/json:
-            schema:
-              $ref: components/schemas/Bundle.yaml
             examples:
               prescribe-success:
                 value:
@@ -320,23 +277,25 @@ paths:
           description: Successfully submitted.
           content:
             application/fhir+json:
-              schema:
-                $ref: components/schemas/OperationOutcome-2XX.yaml
               examples:
                 example:
                   value:
                     $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Process-Response-Send-200_OK.json
         '4XX':
-          description: Invalid request.
+          description: |
+            An error occurred as follows:
+            
+            | HTTP status | Error code         | Description                                    | FHIR type        |
+            | ----------- | ------------------ | ---------------------------------------------- | -----------------|
+            | 400         | BAD_REQUEST        | Spine Error - duplicate prescription ID exists | OperationOutcome |
+            | 400         | BAD_REQUEST        | Spine Error - prescription not found           | Bundle           |
           content:
             application/fhir+json:
-              schema:
-                $ref: components/schemas/OperationOutcome-4XX.yaml
               examples:
                 example:
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
-  /Task/$release:
+  /FHIR/R4/Task/$release:
     post:
       operationId: release
       summary: Send a prescription release request to EPS
@@ -347,6 +306,8 @@ paths:
         This returns a set of prescriptions based on the information passed to the endpoint: 
         * to acquire prescription information for an entire pharmacy, send owner information
         * to acquire prescription information for a specific prescription, send the group identifier for that prescription
+        
+        This endpoint is only available in the sandbox environment.
       tags:
         - dispensing
       requestBody:
@@ -362,33 +323,23 @@ paths:
                   $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/2-Release-Request-200_OK.json
       responses:
         '200':
-          description: Successfully dispensed a prescription
+          description: Successfully released a prescription for dispensing
           content:
             application/fhir+json:
               examples:
                 example:
-                  value: 'Unknown'
-components:
-  schemas:
-    Bundle:
-      $ref: components/schemas/Bundle.yaml
-    MessageHeader:
-      $ref: components/schemas/MessageHeader.yaml
-    MedicationRequest:
-      $ref: components/schemas/MedicationRequest.yaml
-    Patient:
-      $ref: components/schemas/Patient.yaml
-    Practitioner:
-      $ref: components/schemas/Practitioner.yaml
-    PractitionerRole:
-      $ref: components/schemas/PractitionerRole.yaml
-    Organization:
-      $ref: components/schemas/Organization.yaml
-    Parameters:
-      $ref: components/schemas/Parameters.yaml
-    Provenance:
-      $ref: components/schemas/Provenance.yaml
-    HealthcareService:
-      $ref: components/schemas/HealthcareService.yaml
-    Location:
-      $ref: components/schemas/LocationResource.yaml
+                  value:
+                    $ref: components/examples/sandbox/Release-Response-200_OK.json
+        '4XX':
+          description: |
+            An error occurred as follows:
+            
+            | HTTP status | Error code         | Description            |
+            | ----------- | -------------------| ---------------------- |
+            | 400         | BAD_REQUEST        | Invalid request bundle |
+          content:
+            application/fhir+json:
+              examples:
+                example:
+                  value: 
+                    $ref: components/examples/errors/release/validation-error.json
