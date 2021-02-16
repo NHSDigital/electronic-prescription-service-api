@@ -47,7 +47,7 @@ def update_prescription(bundle_json, prescription_id, short_prescription_id, aut
             for signature in resource["signature"]:
                 signature["when"] = signature_time
         if resource["resourceType"] == "MedicationRequest":
-            resource["groupIdentifier"]["value"] = f'{spid_first}-{spid_middle}-{spid_last}'
+            resource["groupIdentifier"]["value"] = short_prescription_id
             for extension in resource["groupIdentifier"]["extension"]:
                 if extension["url"] == "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId":
                     extension["valueIdentifier"]["value"] = prescription_id
