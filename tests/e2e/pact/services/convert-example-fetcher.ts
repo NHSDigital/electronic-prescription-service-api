@@ -7,9 +7,9 @@ const convertResponseFiles = exampleFiles.filter(exampleFile => exampleFile.isRe
 const convertRequestFiles = exampleFiles.filter(exampleFile =>
 	exampleFile.isRequest
 	&& convertResponseFiles.some(convertResponseFile =>
-		convertResponseFile.dir === exampleFile.dir
-		&& convertResponseFile.operation === exampleFile.operation
-		&& convertResponseFile.number === exampleFile.number))
+			convertResponseFile.dir === exampleFile.dir
+			&& convertResponseFile.operation === exampleFile.operation
+			&& convertResponseFile.number === exampleFile.number))
 
 const conventionBasedConvertExamples: ConvertCase[] = convertResponseFiles.map(convertResponseFile =>
   new ConvertCase(getRequestFile(convertResponseFile), convertResponseFile)
