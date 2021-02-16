@@ -1,15 +1,19 @@
 # Prescription Coordinator
+Handles message translation between FHIR and HL7 V3, and distribution to other services.
+Backend for the production EPS FHIR API.
 
 API Server built using [hapi](https://hapi.dev/) framework deployable as a [Apigee Hosted Target](https://docs.apigee.com/api-platform/hosted-targets/hosted-targets-overview).
 
-Deals with message translation and distribution to other services. Backend for the production EPS FHIR API.
-
 ## Developing
-
 ```
 npm install
 npm run serve
 ```
+
+To run in dev mode, `npm run start-dev`.
+Calls to translation endpoints require the FHIR validator running on the local system.
+[Run the validator](../validator/README.md).
+You can also include a `x-skip-validation` (set to `true`) to avoid running the validator.
 
 ### Directories in /src
 - `/models` Typescript interface/class definitions
@@ -17,21 +21,25 @@ npm run serve
 - `/routes` API endpoint definitions
 - `/services` FHIR translations
   - `/formatters` builds xml
-  - `/handlers` defines spine and sandbox handlers - how each of the endpoints respond to requests
+  - `/handlers` definitions of how each endpoint responds to requests
   - `/serialisation` xml serialisation
-  - `/translation` conversion of valid HL7 FHIR message to HL7V3 ParentPrescription message
+  - `/translation` conversion between FHIR messages and equivalent HL7V3 messages
   - `/validation` incoming FHIR payload validation on API request
 
 ## Deployment
-
 Redeploy the API Proxy. See the main [README.md](../README.md).
 
 ## Endpoints
+Prescribe/dispense endpoints relate to functionality of the API, health routes relate to current API status.
 
-Endpoints are found in `/src/routes`.
-Prescription endpoints relate to functionality of the API, health routes relate to current API status.
-
-- [ ] POST `/$convert` Convert a FHIR prescription message into an HL7 V3 ParentPrescription message
+Private Beta:
+- [ ] POST `/$convert` Translate a FHIR message into an HL7 V3  message
 - [ ] POST `/$poll/{poll_path}` Send a poll request to SPINE
-- [ ] POST `/$prepare` Convert a FHIR prescription into the HL7 V3 signature fragments to be signed by the prescriber
-- [ ] POST `/$process_message` Convert a FHIR prescription message into an HL7 V3 ParentPrescription message and send to SPINE
+- [ ] POST `/$prepare` Generate HL7 V3 signature fragments to be signed by the prescriber from a FHIR prescription
+- [ ] POST `/$process_message` Translate a FHIR message into an HL7 V3 message, send to SPINE and translate response back to FHIR
+
+Technical Alpha:
+- [ ] POST `/Task/$release` Download a prescription for dispensing
+
+### Example generation
+Valid FHIR messages can be generated using `npm run create-examples` that can be used to test various parts of the system.
