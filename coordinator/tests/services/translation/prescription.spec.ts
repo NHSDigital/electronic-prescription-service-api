@@ -84,7 +84,7 @@ describe("PertinentInformation2", () => {
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
-      .pertinentAdditionalInstructions.value
+      .pertinentAdditionalInstructions.value._text
     const expected = `<medication>Medication 1</medication><medication>Medication 2</medication>`
     expect(additionalInstructions).toContain(expected)
   })
@@ -103,7 +103,7 @@ describe("PertinentInformation2", () => {
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
-      .pertinentAdditionalInstructions.value
+      .pertinentAdditionalInstructions.value._text
     const expected = "<medication>Medication 1</medication><medication>Medication 2</medication>"
       + "<medication>Medication 3</medication><medication>Medication 4</medication>"
     expect(additionalInstructions).toContain(expected)
@@ -117,7 +117,7 @@ describe("PertinentInformation2", () => {
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
-      .pertinentAdditionalInstructions.value
+      .pertinentAdditionalInstructions.value._text
     const expected = `<patientInfo>${contentString}</patientInfo>`
     expect(additionalInstructions).toContain(expected)
   })
@@ -131,7 +131,7 @@ describe("PertinentInformation2", () => {
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
-      .pertinentAdditionalInstructions.value
+      .pertinentAdditionalInstructions.value._text
     expect(
       additionalInstructions
     ).toContain(
@@ -150,7 +150,7 @@ describe("PertinentInformation2", () => {
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
-      .pertinentAdditionalInstructions.value
+      .pertinentAdditionalInstructions.value._text
     const expected = "<medication>Medication 1</medication><medication>Medication 2</medication>" +
       "<patientInfo>examplePatientInfo</patientInfo>"
     expect(additionalInstructions).toContain(expected)
@@ -167,7 +167,7 @@ describe("PertinentInformation2", () => {
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
-      .pertinentAdditionalInstructions.value
+      .pertinentAdditionalInstructions.value._text
     const expected = "<medication>Medication 1</medication><medication>Medication 2</medication>" +
       "<patientInfo>examplePatientInfo</patientInfo>"
     expect(additionalInstructions).toContain(expected)
@@ -263,12 +263,12 @@ describe("PertinentInformation2", () => {
       .map((pertinentInformation2) => pertinentInformation2.pertinentLineItem.pertinentInformation1)
 
     const firstPertinentInformation1 = pertinentInformation1Array.shift()
-    expect(firstPertinentInformation1.pertinentAdditionalInstructions.value).toContain(expected)
+    expect(firstPertinentInformation1.pertinentAdditionalInstructions.value._text).toContain(expected)
 
     pertinentInformation1Array.forEach(checkValueDoesNotContainExpected)
 
     function checkValueDoesNotContainExpected(pertinentInformation1: LineItemPertinentInformation1) {
-      const actual = pertinentInformation1?.pertinentAdditionalInstructions?.value
+      const actual = pertinentInformation1?.pertinentAdditionalInstructions?.value?._text
       if (actual)
         expect(actual).not.toContain(expected)
     }
@@ -285,12 +285,12 @@ describe("PertinentInformation2", () => {
       .map((pertinentInformation2) => pertinentInformation2.pertinentLineItem.pertinentInformation1)
 
     const firstPertinentInformation1 = pertinentInformation1Array.shift()
-    expect(firstPertinentInformation1.pertinentAdditionalInstructions.value).toContain(expected)
+    expect(firstPertinentInformation1.pertinentAdditionalInstructions.value._text).toContain(expected)
 
     pertinentInformation1Array.forEach(checkValueDoesNotContainExpected)
 
     function checkValueDoesNotContainExpected(pertinentInformation1: LineItemPertinentInformation1) {
-      const actual = pertinentInformation1?.pertinentAdditionalInstructions?.value
+      const actual = pertinentInformation1?.pertinentAdditionalInstructions?.value?._text
       if (actual)
         expect(actual).not.toContain(expected)
     }
