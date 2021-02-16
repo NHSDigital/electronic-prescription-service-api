@@ -14,8 +14,9 @@ install: install-validator install-node install-python install-hooks
 
 build: build-specification build-coordinator build-validator build-proxies
 
-test: lint validate-models check-licenses test-coordinator
+test: validate-models check-licenses test-coordinator
 	cd tests/e2e/pact && make test
+	poetry run pytest ./scripts/update_prescriptions.py
 
 publish:
 	echo Publish
