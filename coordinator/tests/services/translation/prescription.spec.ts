@@ -1,4 +1,4 @@
-import {addEmptyCommunicationRequestToBundle, clone} from "../../resources/test-helpers"
+import {addEmptyCommunicationRequestToBundle, addEmptyListToBundle, clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
 import * as fhir from "../../../src/models/fhir/fhir-resources"
 import {
@@ -18,11 +18,17 @@ import * as translator from "../../../src/services/translation"
 import {LineItemPertinentInformation1} from "../../../src/models/hl7-v3/hl7-v3-prescriptions"
 import {
   getCommunicationRequests,
+  getLists,
   getMedicationRequests
 } from "../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl} from "../../../src/services/translation/common"
 import {setCourseOfTherapyTypeCode} from "./course-of-therapy-type.spec"
 import {CourseOfTherapyTypeCode} from "../../../src/services/translation/prescription/course-of-therapy-type"
+import {
+  ContentReferencePayload,
+  ContentStringPayload,
+  ListEntry
+} from "../../../../tests/e2e/pact/models/fhir/fhir-resources"
 
 describe("convertCourseOfTherapyType", () => {
   const cases = [
@@ -48,20 +54,62 @@ describe("convertCourseOfTherapyType", () => {
 describe("PertinentInformation2", () => {
   let bundle: fhir.Bundle
   let fhirCommunicationRequests: Array<fhir.CommunicationRequest>
+  let fhirLists: Array<fhir.List>
 
   beforeEach(() => {
-    bundle = getBundleWithEmptyCommunicationRequest()
+    bundle = getBundleWithEmptyCommunicationRequestAndList()
     fhirCommunicationRequests = getCommunicationRequests(bundle)
+    fhirLists = getLists(bundle)
   })
 
-  function getBundleWithEmptyCommunicationRequest() {
+  function getBundleWithEmptyCommunicationRequestAndList() {
     const result = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
-    result.entry = result.entry.filter((entry) => entry.resource.resourceType !== "CommunicationRequest")
+    result.entry = result.entry.filter((entry) =>
+      entry.resource.resourceType !== "CommunicationRequest" && entry.resource.resourceType !== "List"
+    )
     addEmptyCommunicationRequestToBundle(result)
+    addEmptyListToBundle(result)
     return result
   }
 
-  test("PatientInfo comes from communicationRequest and displays correctly", () => {
+  function toListEntries(...display: Array<string>): Array<ListEntry> {
+    return display.map(display => ({item: {display}}))
+  }
+
+  test("Medication comes from contentReference and displays correctly", () => {
+    fhirLists[0].entry = toListEntries("Medication 1", "Medication 2")
+    fhirCommunicationRequests[0].payload.push({contentReference: {reference: `urn:uuid:${fhirLists[0].id}`}})
+
+    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+
+    const firstPertinentInformation2 = pertinentInformation2Array[0]
+    const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
+      .pertinentAdditionalInstructions.value
+    const expected = `<medication>Medication 1</medication><medication>Medication 2</medication>`
+    expect(additionalInstructions).toContain(expected)
+  })
+
+  test("CommunicationRequest with multiple contentReferences displays correctly", () => {
+    addEmptyListToBundle(bundle)
+    fhirLists = getLists(bundle)
+    fhirLists[0].entry = toListEntries("Medication 1", "Medication 2")
+    fhirLists[1].entry = toListEntries("Medication 3", "Medication 4")
+    fhirCommunicationRequests[0].payload.push(
+      {contentReference: {reference: `urn:uuid:${fhirLists[0].id}`}},
+      {contentReference: {reference: `urn:uuid:${fhirLists[1].id}`}}
+    )
+
+    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+
+    const firstPertinentInformation2 = pertinentInformation2Array[0]
+    const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
+      .pertinentAdditionalInstructions.value
+    const expected = "<medication>Medication 1</medication><medication>Medication 2</medication>"
+      + "<medication>Medication 3</medication><medication>Medication 4</medication>"
+    expect(additionalInstructions).toContain(expected)
+  })
+
+  test("PatientInfo comes from contentString and displays correctly", () => {
     const contentString = "examplePatientInfo"
     fhirCommunicationRequests[0].payload.push({contentString: contentString})
 
@@ -74,7 +122,7 @@ describe("PertinentInformation2", () => {
     expect(additionalInstructions).toContain(expected)
   })
 
-  test("multiple PatientInfos display correctly", () => {
+  test("CommunicationRequest with multiple contentStrings display correctly", () => {
     const contentString1 = "examplePatientInfo1"
     const contentString2 = "secondExamplePatientInfo"
     fhirCommunicationRequests[0].payload.push({contentString: contentString1}, {contentString: contentString2})
@@ -91,9 +139,45 @@ describe("PertinentInformation2", () => {
     )
   })
 
+  test("CommunicationRequest with contentReference and contentString displays correctly", () => {
+    fhirLists[0].entry = toListEntries("Medication 1", "Medication 2")
+    fhirCommunicationRequests[0].payload.push(
+      {contentReference: {reference: `urn:uuid:${fhirLists[0].id}`}},
+      {contentString: "examplePatientInfo"}
+    )
+
+    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+
+    const firstPertinentInformation2 = pertinentInformation2Array[0]
+    const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
+      .pertinentAdditionalInstructions.value
+    const expected = "<medication>Medication 1</medication><medication>Medication 2</medication>" +
+      "<patientInfo>examplePatientInfo</patientInfo>"
+    expect(additionalInstructions).toContain(expected)
+  })
+
+  test("Multiple CommunicationRequests display correctly", () => {
+    addEmptyCommunicationRequestToBundle(bundle)
+    fhirCommunicationRequests = getCommunicationRequests(bundle)
+    fhirLists[0].entry = toListEntries("Medication 1", "Medication 2")
+    fhirCommunicationRequests[0].payload.push({contentReference: {reference: `urn:uuid:${fhirLists[0].id}`}})
+    fhirCommunicationRequests[1].payload.push({contentString: "examplePatientInfo"})
+
+    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+
+    const firstPertinentInformation2 = pertinentInformation2Array[0]
+    const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
+      .pertinentAdditionalInstructions.value
+    const expected = "<medication>Medication 1</medication><medication>Medication 2</medication>" +
+      "<patientInfo>examplePatientInfo</patientInfo>"
+    expect(additionalInstructions).toContain(expected)
+  })
+
   test("Missing payload is handled", () => {
     delete fhirCommunicationRequests[0].payload
+
     const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const pertinentInformation1 = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
     expect(pertinentInformation1).toBeFalsy()
@@ -101,7 +185,62 @@ describe("PertinentInformation2", () => {
 
   test("Missing contentString is handled", () => {
     fhirCommunicationRequests[0].payload.push({contentString: undefined})
+
     const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+
+    const firstPertinentInformation2 = pertinentInformation2Array[0]
+    const pertinentInformation1 = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
+    expect(pertinentInformation1).toBeFalsy()
+  })
+
+  test("Missing contentReference is handled", () => {
+    fhirCommunicationRequests[0].payload.push({contentReference: undefined})
+
+    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+
+    const firstPertinentInformation2 = pertinentInformation2Array[0]
+    const pertinentInformation1 = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
+    expect(pertinentInformation1).toBeFalsy()
+  })
+
+  test("Missing contentString and contentReference is handled", () => {
+    fhirCommunicationRequests[0].payload.push({} as ContentStringPayload | ContentReferencePayload)
+
+    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+
+    const firstPertinentInformation2 = pertinentInformation2Array[0]
+    const pertinentInformation1 = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
+    expect(pertinentInformation1).toBeFalsy()
+  })
+
+  test("Missing entry is handled", () => {
+    delete fhirLists[0].entry
+    fhirCommunicationRequests[0].payload.push({contentReference: {reference: `urn:uuid:${fhirLists[0].id}`}})
+
+    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+
+    const firstPertinentInformation2 = pertinentInformation2Array[0]
+    const pertinentInformation1 = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
+    expect(pertinentInformation1).toBeFalsy()
+  })
+
+  test("Missing item is handled", () => {
+    fhirLists[0].entry = [{} as fhir.ListEntry]
+    fhirCommunicationRequests[0].payload.push({contentReference: {reference: `urn:uuid:${fhirLists[0].id}`}})
+
+    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+
+    const firstPertinentInformation2 = pertinentInformation2Array[0]
+    const pertinentInformation1 = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
+    expect(pertinentInformation1).toBeFalsy()
+  })
+
+  test("Missing display is handled", () => {
+    fhirLists[0].entry = [{item: {}} as fhir.ListEntry]
+    fhirCommunicationRequests[0].payload.push({contentReference: {reference: `urn:uuid:${fhirLists[0].id}`}})
+
+    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const pertinentInformation1 = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
     expect(pertinentInformation1).toBeFalsy()
@@ -113,10 +252,31 @@ describe("PertinentInformation2", () => {
       bundle.entry.push({resource: fhirMedicationRequests[0]})
   }
 
-  test("PatientInfo display on first LineItem only", () => {
+  test("PatientInfo included in first LineItem only", () => {
     const contentString = "examplePatientInfo1"
     const expected = `<patientInfo>${contentString}</patientInfo>`
     fhirCommunicationRequests[0].payload.push({contentString: contentString})
+    ensureAtLeast2MedicationRequests(bundle)
+
+    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+      .map((pertinentInformation2) => pertinentInformation2.pertinentLineItem.pertinentInformation1)
+
+    const firstPertinentInformation1 = pertinentInformation2Array.shift()
+    expect(firstPertinentInformation1.pertinentAdditionalInstructions.value).toContain(expected)
+
+    pertinentInformation2Array.forEach(checkValueDoesNotContainExpected)
+
+    function checkValueDoesNotContainExpected(pertinentInformation1: LineItemPertinentInformation1) {
+      const actual = pertinentInformation1?.pertinentAdditionalInstructions?.value
+      if (actual)
+        expect(actual).not.toContain(expected)
+    }
+  })
+
+  test("Medication included in first LineItem only", () => {
+    const expected = `<medication>Medication 1</medication><medication>Medication 2</medication>`
+    fhirLists[0].entry = toListEntries("Medication 1", "Medication 2")
+    fhirCommunicationRequests[0].payload.push({contentReference: {reference: `urn:uuid:${fhirLists[0].id}`}})
     ensureAtLeast2MedicationRequests(bundle)
 
     const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
