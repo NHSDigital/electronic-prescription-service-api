@@ -38,7 +38,7 @@ describe("convertFhirMessageToSignedInfoMessage", () => {
   test.each(cases)(
     "produces expected result for %s",
     (desc: string, message: fhir.Bundle, expectedParameters: fhir.Parameters) => {
-      mockTime.value = getStringParameterByName(expectedParameters, "timestamp").valueString
+      mockTime.value = getStringParameterByName(expectedParameters.parameter, "timestamp").valueString
       const actualParameters = convertFhirMessageToSignedInfoMessage(message)
       expect(actualParameters).toEqual(expectedParameters)
     }

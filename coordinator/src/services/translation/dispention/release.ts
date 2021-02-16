@@ -47,7 +47,7 @@ function getAgentPersonPerson(): AgentPersonPerson {
 function getRepresentedOrganization(fhirReleaseRequest: fhir.Parameters): Organization {
   const hl7Organization = new Organization()
 
-  const organizationParameter = getIdentifierParameterByName(fhirReleaseRequest.parameter, "owner", "")
+  const organizationParameter = getIdentifierParameterByName(fhirReleaseRequest.parameter, "owner")
   const organizationCode = organizationParameter.valueIdentifier.value
   hl7Organization.id = new codes.SdsOrganizationIdentifier(organizationCode)
   hl7Organization.code = new codes.OrganizationTypeCode("999")

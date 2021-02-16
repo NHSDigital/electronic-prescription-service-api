@@ -51,16 +51,6 @@ export function onlyElementOrNull<T>(iterable: Iterable<T>, fhirPath: string, ad
   return value
 }
 
-function isStringParameter(parameter: fhir.Parameter): parameter is fhir.StringParameter {
-  return (parameter as fhir.StringParameter).valueString !== undefined
-}
-
-export function getStringParameterByName(parameters: fhir.Parameters, name: string): fhir.StringParameter {
-  return onlyElement(parameters.parameter
-    .filter(parameter => isStringParameter(parameter))
-    .filter(parameter => parameter.name === name), "", "") as fhir.StringParameter
-}
-
 export function getResourceForFullUrl(fhirBundle: fhir.Bundle, resourceFullUrl: string): fhir.Resource {
   return onlyElement(
     fhirBundle.entry.filter(entry => entry.fullUrl === resourceFullUrl),
@@ -137,18 +127,6 @@ export function getExtensionForUrlOrNull(
     fhirPath,
     `url == '${url}'`
   )
-}
-
-export function getIdentifierParameterByName(
-  parameters: Array<fhir.ParameterTypes>,
-  name: string,
-  fhirPath: string
-): fhir.IdentifierParameter {
-  return onlyElementOrNull(
-    parameters.filter(parameter => parameter.name === name),
-    fhirPath,
-    `name == '${name}'`
-  ) as fhir.IdentifierParameter
 }
 
 export function getCodeableConceptCodingForSystem(
@@ -262,4 +240,32 @@ function convertIsoDateStringToMoment(isoDateStr: string, fhirPath: string): mom
 
 function convertMomentToISODate(moment: moment.Moment): string {
   return moment.format(ISO_DATE_FORMAT)
+}
+
+function isStringParameter(parameter: fhir.Parameter): parameter is fhir.StringParameter {
+  return (parameter as fhir.StringParameter).valueString !== undefined
+}
+
+function isIdentifierParameter(parameter: fhir.Parameter): parameter is fhir.IdentifierParameter {
+  return (parameter as fhir.IdentifierParameter).valueIdentifier !== undefined
+}
+
+export function getStringParameterByName(
+  parameters: Array<fhir.ParameterTypes>,
+  name: string,
+  fhirPath = ""
+): fhir.StringParameter {
+  return onlyElement(parameters
+    .filter(parameter => isStringParameter(parameter))
+    .filter(parameter => parameter.name === name), fhirPath, `name == '${name}'`) as fhir.StringParameter
+}
+
+export function getIdentifierParameterByName(
+  parameters: Array<fhir.ParameterTypes>,
+  name: string,
+  fhirPath = ""
+): fhir.IdentifierParameter {
+  return onlyElement(parameters
+    .filter(parameter => isIdentifierParameter(parameter))
+    .filter(parameter => parameter.name === name), fhirPath, `name == '${name}'`) as fhir.IdentifierParameter
 }
