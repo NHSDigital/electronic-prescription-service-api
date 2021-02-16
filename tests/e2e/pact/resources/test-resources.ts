@@ -12,6 +12,7 @@ function getConvertCases(searchString: string) {
 export const convertSecondaryCareCommunityAcuteCases = getConvertCases("secondary-care community acute")
 export const convertSecondaryCareCommunityRepeatDispensingCases = getConvertCases("secondary-care community repeat-dispensing")
 export const convertSecondaryCareHomecareCases = getConvertCases("secondary-care homecare")
+export const convertPrimaryCareCases = getConvertCases("primary-care")
 
 export const convertErrorCases = convertExamples.filter(e => !e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
 export const prepareCases = prepareExamples.filter(e => e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
@@ -29,5 +30,7 @@ export const processSecondaryCareCommunityRepeatDispensingOrderCases = getProces
 export const processSecondaryCareCommunityRepeatDispensingOrderUpdateCases = getProcessCases("secondary-care community repeat-dispensing", "cancel")
 export const processSecondaryCareHomecareOrderCases = getProcessCases("secondary-care homecare", "send")
 export const processSecondaryCareHomecareOrderUpdateCases = getProcessCases("secondary-care homecare", "cancel")
+export const processPrimaryCareOrderCases = getProcessCases("primary-care", "send")
+export const processPrimaryCareOrderUpdateCases = getProcessCases("primary-care", "cancel")
 
 export const releaseCases = releaseExamples.filter(e => e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])

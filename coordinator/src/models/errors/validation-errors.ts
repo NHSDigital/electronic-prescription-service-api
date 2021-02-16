@@ -58,10 +58,23 @@ export class MedicationRequestIncorrectValueError implements ValidationError {
 export class MessageTypeError implements ValidationError {
   message = `MessageHeader.eventCoding.code must be one of '${
     MessageType.PRESCRIPTION
-  }' or '${
+  }', '${
     MessageType.CANCELLATION
+  }' or '${
+    MessageType.DISPENSE
   }'.`
   operationOutcomeCode = "value" as const
   severity = "fatal" as const
   expression = ["Bundle.entry.resource.ofType(MessageHeader).eventCoding.code"]
+}
+
+export class ResourceTypeError implements ValidationError {
+  message: string
+  operationOutcomeCode = "value" as const
+  severity = "error" as const
+  expression: Array<string> = []
+
+  constructor(expectedResourceType: string) {
+    this.message = `Incorrect FHIR resource type. Expected ${expectedResourceType}.`
+  }
 }

@@ -11,6 +11,7 @@ import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {convertAddress, convertTelecom} from "./demographics"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {identifyMessageType, MessageType} from "../../../routes/util"
+import {Resource} from "../../../models/fhir/fhir-resources"
 
 const NHS_TRUST_CODE = "RO197"
 
@@ -33,7 +34,14 @@ function convertRepresentedOrganization(
   fhirHealthcareService: fhir.HealthcareService,
   fhirBundle: fhir.Bundle
 ) {
-  const representedOrganization = isNhsTrust(fhirOrganization)
+  const shouldUseHealthcareService = isNhsTrust(fhirOrganization)
+  if (shouldUseHealthcareService && !fhirHealthcareService) {
+    throw new InvalidValueError(
+      `A HealthcareService must be provided if the Organization role is '${NHS_TRUST_CODE}'.`,
+      "PractitionerRole.healthcareService"
+    )
+  }
+  const representedOrganization = shouldUseHealthcareService
     ? new CostCentreHealthcareService(fhirHealthcareService)
     : new CostCentreOrganization(fhirOrganization)
   return convertRepresentedOrganizationDetails(representedOrganization, fhirBundle)
@@ -48,10 +56,29 @@ function isNhsTrust(fhirOrganization: fhir.Organization) {
   return organizationTypeCoding?.code === NHS_TRUST_CODE
 }
 
+function isDirectReference<T extends Resource>(
+  reference: fhir.Reference<T> | fhir.IdentifierReference<T>
+): reference is fhir.Reference<T> {
+  return !!(reference as fhir.Reference<T>).reference
+}
+
 function convertHealthCareProviderLicense(fhirOrganization: fhir.Organization, fhirBundle: fhir.Bundle) {
-  const fhirParentOrganization = fhirOrganization.partOf
-    ? resolveReference(fhirBundle, fhirOrganization.partOf)
-    : fhirOrganization
+  let fhirParentOrganization = fhirOrganization
+  const partOf = fhirOrganization.partOf
+  if (partOf) {
+    if (isDirectReference(partOf)) {
+      fhirParentOrganization = resolveReference(fhirBundle, partOf)
+    } else {
+      //TODO - Fix error FHIR paths for this case?
+      fhirParentOrganization = {
+        resourceType: "Organization",
+        identifier: [
+          partOf.identifier
+        ],
+        name: partOf.display
+      }
+    }
+  }
   const costCentreParentOrganization = new CostCentreOrganization(fhirParentOrganization)
   const hl7V3ParentOrganization = convertCommonOrganizationDetails(costCentreParentOrganization)
   return new peoplePlaces.HealthCareProviderLicense(hl7V3ParentOrganization)
