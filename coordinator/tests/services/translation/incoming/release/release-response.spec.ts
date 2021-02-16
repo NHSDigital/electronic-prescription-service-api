@@ -2,6 +2,9 @@ import {createBundleEntries} from "../../../../../src/services/translation/incom
 import {readXml} from "../../../../../src/services/serialisation/xml"
 import {ParentPrescription} from "../../../../../src/models/hl7-v3/hl7-v3-prescriptions"
 import * as LosslessJson from "lossless-json"
+import {
+  parseAdditionalInstructionsText
+} from "../../../../../src/services/translation/incoming/release/release-medication-request"
 
 test("testing testing", () => {
   const result = createBundleEntries(getExample())
@@ -13,6 +16,126 @@ function getExample() {
   const resp = exampleObj["hl7:PORX_IN070101UK31"]["hl7:ControlActEvent"]["hl7:subject"]["PrescriptionReleaseResponse"]
   return resp["component"]["ParentPrescription"] as ParentPrescription
 }
+
+test("handles single patientInfo", () => {
+  const thing = parseAdditionalInstructionsText(
+    "<patientInfo>Patient info</patientInfo>"
+  )
+  expect(thing.medication).toEqual([])
+  expect(thing.patientInfo).toEqual(["Patient info"])
+  expect(thing.controlledDrugWords).toEqual("")
+  expect(thing.additionalInstructions).toEqual("")
+})
+
+test("handles multiple patientInfo", () => {
+  const thing = parseAdditionalInstructionsText(
+    "<patientInfo>Patient info 1</patientInfo><patientInfo>Patient info 2</patientInfo>"
+  )
+  expect(thing.medication).toEqual([])
+  expect(thing.patientInfo).toEqual(["Patient info 1", "Patient info 2"])
+  expect(thing.controlledDrugWords).toEqual("")
+  expect(thing.additionalInstructions).toEqual("")
+})
+
+test("handles single medication", () => {
+  const thing = parseAdditionalInstructionsText(
+    "<medication>Medication</medication>"
+  )
+  expect(thing.medication).toEqual(["Medication"])
+  expect(thing.patientInfo).toEqual([])
+  expect(thing.controlledDrugWords).toEqual("")
+  expect(thing.additionalInstructions).toEqual("")
+})
+
+test("handles multiple medication", () => {
+  const thing = parseAdditionalInstructionsText(
+    "<medication>Medication 1</medication><medication>Medication 2</medication>"
+  )
+  expect(thing.medication).toEqual(["Medication 1", "Medication 2"])
+  expect(thing.patientInfo).toEqual([])
+  expect(thing.controlledDrugWords).toEqual("")
+  expect(thing.additionalInstructions).toEqual("")
+})
+
+test("handles controlled drug words", () => {
+  const thing = parseAdditionalInstructionsText(
+    "CD: twenty eight"
+  )
+  expect(thing.medication).toEqual([])
+  expect(thing.patientInfo).toEqual([])
+  expect(thing.controlledDrugWords).toEqual("twenty eight")
+  expect(thing.additionalInstructions).toEqual("")
+})
+
+test("handles additional instructions", () => {
+  const thing = parseAdditionalInstructionsText(
+    "Additional instructions"
+  )
+  expect(thing.medication).toEqual([])
+  expect(thing.patientInfo).toEqual([])
+  expect(thing.controlledDrugWords).toEqual("")
+  expect(thing.additionalInstructions).toEqual("Additional instructions")
+})
+
+test("handles medication and patientInfo", () => {
+  const thing = parseAdditionalInstructionsText(
+    "<medication>Medication</medication><patientInfo>Patient info</patientInfo>"
+  )
+  expect(thing.medication).toEqual(["Medication"])
+  expect(thing.patientInfo).toEqual(["Patient info"])
+  expect(thing.controlledDrugWords).toEqual("")
+  expect(thing.additionalInstructions).toEqual("")
+})
+
+test("handles controlled drug words and medication", () => {
+  const thing = parseAdditionalInstructionsText(
+    "<medication>Medication 1</medication>CD: twenty eight"
+  )
+  expect(thing.medication).toEqual(["Medication 1"])
+  expect(thing.patientInfo).toEqual([])
+  expect(thing.controlledDrugWords).toEqual("twenty eight")
+  expect(thing.additionalInstructions).toEqual("")
+})
+
+test("handles controlled drug words and other instructions", () => {
+  const thing = parseAdditionalInstructionsText(
+    "CD: twenty eight\nAdditional instructions"
+  )
+  expect(thing.medication).toEqual([])
+  expect(thing.patientInfo).toEqual([])
+  expect(thing.controlledDrugWords).toEqual("twenty eight")
+  expect(thing.additionalInstructions).toEqual("Additional instructions")
+})
+
+test("handles multiline additional instructions", () => {
+  const thing = parseAdditionalInstructionsText(
+    "Additional instructions line 1\nAdditional instructions line 2"
+  )
+  expect(thing.medication).toEqual([])
+  expect(thing.patientInfo).toEqual([])
+  expect(thing.controlledDrugWords).toEqual("")
+  expect(thing.additionalInstructions).toEqual("Additional instructions line 1\nAdditional instructions line 2")
+})
+
+test("handles controlled drug words and multiline additional instructions", () => {
+  const thing = parseAdditionalInstructionsText(
+    "CD: twenty eight\nAdditional instructions line 1\nAdditional instructions line 2"
+  )
+  expect(thing.medication).toEqual([])
+  expect(thing.patientInfo).toEqual([])
+  expect(thing.controlledDrugWords).toEqual("twenty eight")
+  expect(thing.additionalInstructions).toEqual("Additional instructions line 1\nAdditional instructions line 2")
+})
+
+test("handles all fields", () => {
+  const thing = parseAdditionalInstructionsText(
+    "<medication>Medication</medication><patientInfo>Patient info</patientInfo>CD: twenty eight\nInstructions"
+  )
+  expect(thing.medication).toEqual(["Medication"])
+  expect(thing.patientInfo).toEqual(["Patient info"])
+  expect(thing.controlledDrugWords).toEqual("twenty eight")
+  expect(thing.additionalInstructions).toEqual("Instructions")
+})
 
 /* eslint-disable max-len */
 

@@ -4,9 +4,13 @@ import {
   DispensingSitePreference,
   DosageInstructions,
   LineItem,
-  LineItemQuantity, Performer,
+  LineItemQuantity,
+  Performer,
   Prescription,
-  PrescriptionTreatmentType, PrescriptionType
+  PrescriptionEndorsement,
+  PrescriptionTreatmentType,
+  PrescriptionType,
+  ReviewDate
 } from "../../../../models/hl7-v3/hl7-v3-prescriptions"
 import * as uuid from "uuid"
 import {
@@ -19,8 +23,9 @@ import * as codes from "../../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {PrescriptionTreatmentTypeCode, SnomedCode} from "../../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {CourseOfTherapyTypeCode} from "../../prescription/course-of-therapy-type"
 import {Interval, IntervalUnanchored, NumericValue, Timestamp} from "../../../../models/hl7-v3/hl7-v3-datatypes-core"
-import {convertHL7V3DateToIsoDateString} from "../../common"
-import {Organization} from "../../../../models/hl7-v3/hl7-v3-people-places";
+import {convertHL7V3DateToIsoDateString, toArray} from "../../common"
+import {Organization} from "../../../../models/hl7-v3/hl7-v3-people-places"
+import {ElementCompact, xml2js} from "xml-js"
 
 export function createMedicationRequest(
   prescription: Prescription,
@@ -32,13 +37,7 @@ export function createMedicationRequest(
   return {
     resourceType: "MedicationRequest",
     id: uuid.v4(),
-    extension: [
-      //TODO - repeat information
-      createResponsiblePractitionerExtension(responsiblePartyId),
-      //TODO - endorsements
-      createPrescriptionTypeExtension(prescription.pertinentInformation4.pertinentPrescriptionType)
-      //TODO - controlled drugs
-    ],
+    extension: createMedicationRequestExtensions(prescription, lineItem, responsiblePartyId),
     identifier: [
       createItemNumberIdentifier(lineItem.id._attributes.root)
     ],
@@ -68,6 +67,72 @@ export function createMedicationRequest(
   }
 }
 
+function createMedicationRequestExtensions(prescription: Prescription, lineItem: LineItem, responsiblePartyId: string) {
+  const extensions: Array<fhir.MedicationRequestExtension> = [
+    createResponsiblePractitionerExtension(responsiblePartyId),
+    createPrescriptionTypeExtension(prescription.pertinentInformation4.pertinentPrescriptionType)
+  ]
+  if (lineItem.repeatNumber) {
+    const repeatInformationExtension = createRepeatInformationExtension(
+      prescription.pertinentInformation7.pertinentReviewDate,
+      lineItem.repeatNumber
+    )
+    extensions.push(repeatInformationExtension)
+  }
+  if (lineItem.pertinentInformation3) {
+    const endorsementExtensions = lineItem.pertinentInformation3.map(pi3 =>
+      createEndorsementExtension(pi3.pertinentPrescriberEndorsement)
+    )
+    extensions.push(...endorsementExtensions)
+  }
+  if (lineItem.pertinentInformation1) {
+    const additionalInstructionsParts = parseAdditionalInstructionsText(
+      lineItem.pertinentInformation1.pertinentAdditionalInstructions.value._text
+    )
+    if (additionalInstructionsParts.controlledDrugWords) {
+      const controlledDrugExtension = createControlledDrugExtension(additionalInstructionsParts.controlledDrugWords)
+      extensions.push(controlledDrugExtension)
+    }
+  }
+  return extensions
+}
+
+function createRepeatInformationExtension(
+  reviewDate: ReviewDate,
+  lineItemRepeatNumber: Interval<NumericValue>
+): fhir.RepeatInformationExtension {
+  return {
+    url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+    extension: [
+      {
+        url: "authorisationExpiryDate",
+        valueDateTime: convertHL7V3DateToIsoDateString(reviewDate.value)
+      },
+      {
+        url: "numberOfRepeatPrescriptionsIssued",
+        valueUnsignedInt: lineItemRepeatNumber.low._attributes.value
+      },
+      {
+        url: "numberOfRepeatPrescriptionsAllowed",
+        valueUnsignedInt: lineItemRepeatNumber.high._attributes.value
+      }
+    ]
+  }
+}
+
+function createEndorsementExtension(prescriptionEndorsement: PrescriptionEndorsement): fhir.CodeableConceptExtension {
+  return {
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-PrescriptionEndorsement",
+    valueCodeableConcept: {
+      coding: [{
+        code: prescriptionEndorsement.value._attributes.code,
+        system: "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
+        display: prescriptionEndorsement.value._attributes.displayName
+      }]
+    }
+  }
+}
+
 function createPrescriptionTypeExtension(pertinentPrescriptionType: PrescriptionType): fhir.CodingExtension {
   return {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
@@ -76,6 +141,66 @@ function createPrescriptionTypeExtension(pertinentPrescriptionType: Prescription
       code: pertinentPrescriptionType.value._attributes.code,
       display: pertinentPrescriptionType.value._attributes.displayName
     }
+  }
+}
+
+interface AdditionalInstructionsParseResult {
+  parts: AdditionalInstructionsParts
+}
+
+interface AdditionalInstructionsParts extends ElementCompact {
+  medication: Array<ElementCompact> | ElementCompact,
+  patientInfo: Array<ElementCompact> | ElementCompact
+}
+
+const controlledDrugMatcher = /^CD: (.*)\n?/
+
+export function parseAdditionalInstructionsText(additionalInstructionsText: string): {
+  medication: Array<string>,
+  patientInfo: Array<string>,
+  controlledDrugWords: string,
+  additionalInstructions: string
+} {
+  const parseResult = xml2js(
+    `<parts>${additionalInstructionsText}</parts>`,
+    {compact: true}
+  ) as AdditionalInstructionsParseResult
+
+  const textStringOrNumber = parseResult.parts._text || ""
+
+  let text = textStringOrNumber.toString()
+  let controlledDrugWords = ""
+  const controlledDrugMatch = controlledDrugMatcher.exec(text)
+  if (controlledDrugMatch) {
+    controlledDrugWords = controlledDrugMatch[1]
+    text = text.substring(controlledDrugMatch[0].length)
+  }
+
+  // TODO - Is this easier or harder to follow than using regex?
+  // if (text.startsWith("CD: ")) {
+  //   const textParts = text.split("\n")
+  //   controlledDrugWords = textParts[0].substring(4)
+  //   text = textParts[1]
+  // }
+
+  const medication = parseResult.parts.medication || []
+  const patientInfo = parseResult.parts.patientInfo || []
+
+  return {
+    medication: toArray(medication).map(m => m._text.toString()),
+    patientInfo: toArray(patientInfo).map(p => p._text.toString()),
+    controlledDrugWords: controlledDrugWords,
+    additionalInstructions: text
+  }
+}
+
+function createControlledDrugExtension(controlledDrugWords: string): fhir.ControlledDrugExtension {
+  return {
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug",
+    extension: [{
+      url: "quantityWords",
+      valueString: controlledDrugWords
+    }]
   }
 }
 

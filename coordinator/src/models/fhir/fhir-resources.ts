@@ -52,12 +52,15 @@ export interface BaseMedicationRequest extends Resource {
   }
 }
 
+//TODO - at what point do we just use Extension instead of a union type? What benefit is this providing?
+export type MedicationRequestExtension = IdentifierExtension | ReferenceExtension<PractitionerRole>
+  | CodingExtension | CodeableConceptExtension | RepeatInformationExtension | ControlledDrugExtension
+
 export interface MedicationRequest extends BaseMedicationRequest {
   category?: Array<CodeableConcept>
   courseOfTherapyType: CodeableConcept
   dosageInstruction: Array<Dosage>
-  extension: Array<IdentifierExtension | ReferenceExtension<PractitionerRole> | CodingExtension
-    | CodeableConceptExtension | RepeatInformationExtension | ControlledDrugExtension>
+  extension: Array<MedicationRequestExtension>
   statusReason?: CodeableConcept
   dispenseRequest: MedicationRequestDispenseRequest
 }

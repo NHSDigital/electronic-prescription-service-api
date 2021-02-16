@@ -490,11 +490,11 @@ export class DosageInstructions extends PrescriptionAnnotation {
  * Additional Instructions provided with the prescription Line Item.
  */
 export class AdditionalInstructions extends PrescriptionAnnotation {
-  value: string
+  value: core.Text
 
   constructor(value: string) {
     super(new codes.PrescriptionAnnotationCode("AI"))
-    this.value = value
+    this.value = new core.Text(value)
   }
 }
 
