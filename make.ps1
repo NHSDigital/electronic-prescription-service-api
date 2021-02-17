@@ -104,7 +104,7 @@ function run-smoke-tests() {
         Out-String -Stream | `
         Select-String -Pattern "is not authenticated" -NotMatch | `
         Select-String -Pattern "is authenticated" -NotMatch | `
-        % { $_.toString() -replace 'Verifying a pact between [^\+]*\+[^\+]*\+([^\+]*).*$', "`$0 -> https://nhsd-pact.herokuapp.com/matrix/provider/nhsd-apim-eps$provider_suffix%2B`$1%2B$env:PACT_VERSION/consumer/nhsd-apim-eps-test-client%2B$env:PACT_VERSION" }
+        % { $_.toString() -replace 'Verifying a pact between [^\+]*\+[^\+]*\+([^\+]*).*$', "`$0 -> $env:PACT_BROKER_URL/matrix/provider/nhsd-apim-eps$provider_suffix%2B`$1%2B$env:PACT_VERSION/consumer/nhsd-apim-eps-test-client%2B$env:PACT_VERSION" }
     cd ../../..
 }
 
