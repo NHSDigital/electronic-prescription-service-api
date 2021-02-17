@@ -23,9 +23,10 @@ import * as codes from "../../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {PrescriptionTreatmentTypeCode, SnomedCode} from "../../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {CourseOfTherapyTypeCode} from "../../prescription/course-of-therapy-type"
 import {Interval, IntervalUnanchored, NumericValue, Timestamp} from "../../../../models/hl7-v3/hl7-v3-datatypes-core"
-import {convertHL7V3DateToIsoDateString, toArray} from "../../common"
+import {toArray} from "../../common"
 import {Organization} from "../../../../models/hl7-v3/hl7-v3-people-places"
 import {parseAdditionalInstructions} from "./additional-instructions"
+import {convertHL7V3DateToIsoDateString} from "../../common/dateTime";
 
 export const COURSE_OF_THERAPY_TYPE = Object.freeze({
   ACUTE: createCodeableConcept(

@@ -4,7 +4,7 @@ import {
   PertinentInformation1,
   PertinentInformation2
 } from "../../../../models/hl7-v3/hl7-v3-spine-response"
-import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common"
+import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
 import {InvalidValueError} from "../../../../models/errors/processing-errors"
 import {generateResourceId, getFullUrl} from "../common"
 import {createCodeableConcept, createIdentifier, createReference} from "../fhir-base-types"

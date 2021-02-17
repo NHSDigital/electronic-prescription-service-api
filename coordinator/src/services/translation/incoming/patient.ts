@@ -5,8 +5,9 @@ import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {convertAddress, convertName, generateResourceId} from "./common"
-import {convertHL7V3DateToIsoDateString, UNKNOWN_GP_ODS_CODE} from "../common"
+import {UNKNOWN_GP_ODS_CODE} from "../common"
 import {createIdentifier} from "./fhir-base-types"
+import {convertHL7V3DateToIsoDateString} from "../common/dateTime"
 
 export function createPatient(hl7Patient: hl7.Patient): fhir.Patient {
   return {

@@ -1,13 +1,6 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
-import moment from "moment"
-import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {LosslessNumber} from "lossless-json"
 import {InvalidValueError, TooFewValuesError, TooManyValuesError} from "../../../models/errors/processing-errors"
-
-// eslint-disable-next-line max-len
-const FHIR_DATE_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$/
-// eslint-disable-next-line max-len
-const FHIR_DATE_TIME_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1])(T([01][0-9]|2[0-3]):[0-5][0-9]:([0-5][0-9]|60)(\.[0-9]+)?(Z|([+-])((0[0-9]|1[0-3]):[0-5][0-9]|14:00)))?)?)?$/
 
 export const UNKNOWN_GP_ODS_CODE = "V81999"
 
@@ -180,74 +173,4 @@ export function getNumericValueAsString(numericValue: string | number | Lossless
   } else {
     return numericValue.toString()
   }
-}
-
-const HL7_V3_DATE_FORMAT = "YYYYMMDD"
-const HL7_V3_DATE_TIME_FORMAT = "YYYYMMDDHHmmss"
-const ISO_DATE_FORMAT = "YYYY-MM-DD"
-const ISO_DATE_TIME_FORMAT = "YYYY-MM-DD[T]HH:mm:ssZ"
-
-export function convertIsoDateTimeStringToHl7V3DateTime(isoDateTimeStr: string, fhirPath: string): core.Timestamp {
-  const dateTimeMoment = convertIsoDateTimeStringToMoment(isoDateTimeStr, fhirPath)
-  return convertMomentToHl7V3DateTime(dateTimeMoment)
-}
-
-export function convertIsoDateTimeStringToHl7V3Date(isoDateStr: string, fhirPath: string): core.Timestamp {
-  const dateTimeMoment = convertIsoDateTimeStringToMoment(isoDateStr, fhirPath)
-  return convertMomentToHl7V3Date(dateTimeMoment)
-}
-
-export function convertIsoDateStringToHl7V3Date(isoDateStr: string, fhirPath: string): core.Timestamp {
-  const dateTimeMoment = convertIsoDateStringToMoment(isoDateStr, fhirPath)
-  return convertMomentToHl7V3Date(dateTimeMoment)
-}
-
-export function convertHL7V3DateTimeToIsoDateTimeString(hl7Date: core.Timestamp): string {
-  const dateTimeMoment = convertHL7V3DateTimeToMoment(hl7Date)
-  return convertMomentToISODateTime(dateTimeMoment)
-}
-
-export function convertHL7V3DateToIsoDateString(hl7Date: core.Timestamp): string {
-  const dateTimeMoment = convertHL7V3DateToMoment(hl7Date)
-  return convertMomentToISODate(dateTimeMoment)
-}
-
-function convertMomentToHl7V3Date(dateTime: moment.Moment): core.Timestamp {
-  const hl7V3DateStr = dateTime.format(HL7_V3_DATE_FORMAT)
-  return new core.Timestamp(hl7V3DateStr)
-}
-
-function convertHL7V3DateToMoment(hl7Date: core.Timestamp) {
-  return moment.utc(hl7Date._attributes.value, HL7_V3_DATE_FORMAT)
-}
-
-export function convertMomentToHl7V3DateTime(dateTime: moment.Moment): core.Timestamp {
-  const hl7V3DateTimeStr = dateTime.format(HL7_V3_DATE_TIME_FORMAT)
-  return new core.Timestamp(hl7V3DateTimeStr)
-}
-
-function convertHL7V3DateTimeToMoment(hl7Date: core.Timestamp) {
-  return moment.utc(hl7Date._attributes.value, HL7_V3_DATE_TIME_FORMAT)
-}
-
-function convertIsoDateTimeStringToMoment(isoDateTimeStr: string, fhirPath: string): moment.Moment {
-  if (!FHIR_DATE_TIME_REGEX.test(isoDateTimeStr)) {
-    throw new InvalidValueError(`Incorrect format for date time string '${isoDateTimeStr}'.`, fhirPath)
-  }
-  return moment.utc(isoDateTimeStr, moment.ISO_8601, true)
-}
-
-export function convertMomentToISODateTime(moment: moment.Moment): string {
-  return moment.format(ISO_DATE_TIME_FORMAT)
-}
-
-function convertIsoDateStringToMoment(isoDateStr: string, fhirPath: string): moment.Moment {
-  if (!FHIR_DATE_REGEX.test(isoDateStr)) {
-    throw new InvalidValueError(`Incorrect format for date string '${isoDateStr}'.`, fhirPath)
-  }
-  return moment.utc(isoDateStr, moment.ISO_8601, true)
-}
-
-function convertMomentToISODate(moment: moment.Moment): string {
-  return moment.format(ISO_DATE_FORMAT)
 }
