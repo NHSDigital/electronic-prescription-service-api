@@ -25,9 +25,7 @@ export function regeneratePrescriptionIds(): void {
     const bundle = processCase.request
     const firstGroupIdentifier = getMedicationRequests(bundle)[0].groupIdentifier
 
-    const originalBundleIdentifier = bundle.identifier.value
     const newBundleIdentifier = uuid.v4()
-    replacements.set(originalBundleIdentifier, newBundleIdentifier)
 
     const originalShortFormId = firstGroupIdentifier.value
     const newShortFormId = generateShortFormId()
@@ -44,8 +42,7 @@ export function regeneratePrescriptionIds(): void {
     const bundle = processCase.request
     const firstGroupIdentifier = getMedicationRequests(bundle)[0].groupIdentifier
 
-    const originalBundleIdentifier = bundle.identifier.value
-    const newBundleIdentifier = replacements.get(originalBundleIdentifier) ?? originalBundleIdentifier
+    const newBundleIdentifier = uuid.v4()
 
     const originalShortFormId = firstGroupIdentifier.value
     const newShortFormId = replacements.get(originalShortFormId)

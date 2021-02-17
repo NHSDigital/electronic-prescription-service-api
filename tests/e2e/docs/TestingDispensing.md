@@ -18,10 +18,18 @@ OR
 make env=internal-dev-sandbox pr=333 update-prescriptions
 ```
 
-#### Sign prescriptions (Windows Only)
+#### Sign prescriptions
 ---
 
-Use prescription signer tool shared with nimbus dev team to sign the prescriptions, build project, copy output files into C://e/sign, update settings.txt as needed
+To sign using a smartcard use prescription signer tool shared with nimbus dev team to sign the prescriptions, build project, copy output files into C://e/sign and create settings.txt here. Set following config  
+
+settings.txt
+```
+ExamplesDir=<full-path-to-examples-dir>
+CardreaderName=<From registry entry: Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Cryptography\Calais\Readers>
+```
+
+Then sign prescriptions from repo root with
 
 ```
 make sign-prescriptions
@@ -30,12 +38,7 @@ make sign-prescriptions
 #### Send Prescriptions to int
 ---
 
-Run smoke tests against int manually OR merge PR with updated and signed examples and release a new version to int through pipeline. Manual method below:
-
-```
-make mode=live create-smoke-tests
-make env=int token=iy8f2ZV8zsIqQilurliBlRIK3a01 run-smoke-tests
-```
+Grab an example which has been signed above (under `models/examples/`) and send to int
 
 #### Verify with dispenser
 ---
