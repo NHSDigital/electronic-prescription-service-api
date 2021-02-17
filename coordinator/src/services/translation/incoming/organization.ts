@@ -4,15 +4,22 @@ import {convertAddress, convertTelecom, generateResourceId} from "./common"
 import {createIdentifier, createReference} from "./fhir-base-types"
 
 export function createOrganization(hl7Organization: hl7.Organization): fhir.Organization {
-  return {
+  const organization: fhir.Organization = {
     resourceType: "Organization",
     id: generateResourceId(),
     identifier: getOrganizationCodeIdentifier(hl7Organization.id._attributes.extension),
-    type: getFixedOrganizationType(),
-    name: hl7Organization.name._text,
-    telecom: convertTelecom(hl7Organization.telecom),
-    address: convertAddress(hl7Organization.addr)
+    type: getFixedOrganizationType()
   }
+  if (hl7Organization.name) {
+    organization.name = hl7Organization.name._text
+  }
+  if (hl7Organization.telecom) {
+    organization.telecom = convertTelecom(hl7Organization.telecom)
+  }
+  if (hl7Organization.addr) {
+    organization.address = convertAddress(hl7Organization.addr)
+  }
+  return organization
 }
 
 export function createLocations(hl7Organization: hl7.Organization): Array<fhir.Location> {

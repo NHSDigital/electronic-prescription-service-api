@@ -6,8 +6,21 @@ import {toArray} from "../../common"
 import {createMedicationRequest} from "./release-medication-request"
 import {createMessageHeader, EVENT_CODING} from "../message-header"
 import {createAndAddCommunicationRequest, parseAdditionalInstructions} from "./additional-instructions"
+import * as uuid from "uuid"
 
-export function createBundleEntries(parentPrescription: ParentPrescription): Array<fhir.BundleEntry> {
+export function createBundle(parentPrescription: ParentPrescription): fhir.Bundle {
+  return {
+    resourceType: "Bundle",
+    id: uuid.v4(),
+    identifier: {
+      system: "https://tools.ietf.org/html/rfc4122",
+      value: parentPrescription.id._attributes.root
+    },
+    entry: createBundleResources(parentPrescription).map(convertResourceToBundleEntry)
+  }
+}
+
+export function createBundleResources(parentPrescription: ParentPrescription): Array<fhir.Resource> {
   const bundleResources: Array<fhir.Resource> = []
   const focusIds: Array<string> = []
 
@@ -55,5 +68,5 @@ export function createBundleEntries(parentPrescription: ParentPrescription): Arr
   )
   bundleResources.unshift(messageHeader)
 
-  return bundleResources.map(convertResourceToBundleEntry)
+  return bundleResources
 }

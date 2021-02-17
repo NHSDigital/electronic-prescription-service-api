@@ -5,9 +5,10 @@ import {toArray} from "../common"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {AgentPerson, Patient} from "../../../models/hl7-v3/hl7-v3-people-places"
 import {createPractitioner} from "./practitioner"
-import {createHealthcareService, createLocations} from "./organization"
+import {createHealthcareService, createLocations, createOrganization} from "./organization"
 import {createPractitionerRole} from "./practitioner-role"
 import {createPatient} from "./patient"
+import {createReference} from "./fhir-base-types";
 
 export function convertName(hl7Name: Array<core.Name> | core.Name): Array<fhir.HumanName> {
   const nameArray = toArray(hl7Name)
@@ -143,5 +144,13 @@ export function translateAndAddAgentPerson(hl7AgentPerson: AgentPerson, resource
   const fhirHealthcareService = createHealthcareService(hl7AgentPerson.representedOrganization, fhirLocations)
   const fhirPractitionerRole = createPractitionerRole(hl7AgentPerson, fhirPractitioner.id, fhirHealthcareService.id)
   resources.push(fhirPractitioner, ...fhirLocations, fhirHealthcareService, fhirPractitionerRole)
+
+  const healthCareProviderLicense = hl7AgentPerson.representedOrganization.healthCareProviderLicense
+  if (healthCareProviderLicense) {
+    const fhirOrganization = createOrganization(healthCareProviderLicense.Organization)
+    fhirPractitionerRole.organization = createReference(fhirOrganization.id)
+    resources.push(fhirOrganization)
+  }
+
   return fhirPractitionerRole.id
 }

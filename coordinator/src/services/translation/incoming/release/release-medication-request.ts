@@ -61,7 +61,7 @@ export function createMedicationRequest(
       responsiblePartyId,
       prescription.pertinentInformation4.pertinentPrescriptionType,
       lineItem.repeatNumber,
-      prescription.pertinentInformation7.pertinentReviewDate,
+      prescription.pertinentInformation7?.pertinentReviewDate,
       toArray(lineItem.pertinentInformation3 ?? []).map(pi3 => pi3.pertinentPrescriberEndorsement),
       additionalInstructions.controlledDrugWords
     ),
@@ -219,10 +219,14 @@ function createDispenseRequestQuantity(lineItemQuantity: LineItemQuantity): fhir
 }
 
 function createValidityPeriod(effectiveTime: Interval<Timestamp>): fhir.Period {
-  return {
-    start: convertHL7V3DateToIsoDateString(effectiveTime.low),
-    end: convertHL7V3DateToIsoDateString(effectiveTime.high)
+  const validityPeriod: fhir.Period = {}
+  if (effectiveTime.low) {
+    validityPeriod.start = convertHL7V3DateToIsoDateString(effectiveTime.low)
   }
+  if (effectiveTime.high) {
+    validityPeriod.end = convertHL7V3DateToIsoDateString(effectiveTime.high)
+  }
+  return validityPeriod
 }
 
 function createExpectedSupplyDuration(expectedUseTime: IntervalUnanchored): fhir.SimpleQuantity {
@@ -246,10 +250,10 @@ export function createDispenseRequest(
     ],
     quantity: createDispenseRequestQuantity(lineItemQuantity)
   }
-  if (daysSupply?.effectiveTime) {
+  if (daysSupply?.effectiveTime?.low || daysSupply?.effectiveTime?.high) {
     dispenseRequest.validityPeriod = createValidityPeriod(daysSupply.effectiveTime)
   }
-  if (daysSupply?.expectedUseTime) {
+  if (daysSupply?.expectedUseTime?.width) {
     dispenseRequest.expectedSupplyDuration = createExpectedSupplyDuration(daysSupply.expectedUseTime)
   }
   if (performer) {

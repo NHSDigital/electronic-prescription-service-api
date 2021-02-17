@@ -354,6 +354,26 @@ describe("dispenseRequest", () => {
     })
   })
 
+  test("validity period start only", () => {
+    const daysSupply = new DaysSupply()
+    daysSupply.effectiveTime = {low: new Timestamp("20210101")}
+    const result = createDispenseRequest(exampleDispensingSitePreference, exampleLineItemQuantity, daysSupply, null)
+    expect(result.expectedSupplyDuration).toBeFalsy()
+    expect(result.validityPeriod).toEqual({
+      start: "2021-01-01"
+    })
+  })
+
+  test("validity period end only", () => {
+    const daysSupply = new DaysSupply()
+    daysSupply.effectiveTime = {high: new Timestamp("20210301")}
+    const result = createDispenseRequest(exampleDispensingSitePreference, exampleLineItemQuantity, daysSupply, null)
+    expect(result.expectedSupplyDuration).toBeFalsy()
+    expect(result.validityPeriod).toEqual({
+      end: "2021-03-01"
+    })
+  })
+
   test("expected supply duration", () => {
     const daysSupply = new DaysSupply()
     daysSupply.expectedUseTime = exampleExpectedUseTime
