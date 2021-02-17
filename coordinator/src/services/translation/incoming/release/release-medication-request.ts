@@ -25,7 +25,7 @@ import {CourseOfTherapyTypeCode} from "../../prescription/course-of-therapy-type
 import {Interval, IntervalUnanchored, NumericValue, Timestamp} from "../../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {convertHL7V3DateToIsoDateString, toArray} from "../../common"
 import {Organization} from "../../../../models/hl7-v3/hl7-v3-people-places"
-import {ElementCompact, xml2js} from "xml-js"
+import {parseAdditionalInstructions} from "./additional-instructions"
 
 export function createMedicationRequest(
   prescription: Prescription,
@@ -34,10 +34,24 @@ export function createMedicationRequest(
   requesterId: string,
   responsiblePartyId: string
 ): fhir.MedicationRequest {
+  const additionalInstructionsText = lineItem.pertinentInformation1
+    ? lineItem.pertinentInformation1.pertinentAdditionalInstructions.value._text
+    : ""
+  const additionalInstructions = parseAdditionalInstructions(additionalInstructionsText)
+  const pertinentInformation3Array = lineItem.pertinentInformation3
+    ? toArray(lineItem.pertinentInformation3)
+    : []
   return {
     resourceType: "MedicationRequest",
     id: uuid.v4(),
-    extension: createMedicationRequestExtensions(prescription, lineItem, responsiblePartyId),
+    extension: createMedicationRequestExtensions(
+      responsiblePartyId,
+      prescription.pertinentInformation4.pertinentPrescriptionType,
+      lineItem.repeatNumber,
+      prescription.pertinentInformation7.pertinentReviewDate,
+      pertinentInformation3Array.map(pi3 => pi3.pertinentPrescriberEndorsement),
+      additionalInstructions.controlledDrugWords
+    ),
     identifier: [
       createItemNumberIdentifier(lineItem.id._attributes.root)
     ],
@@ -55,7 +69,10 @@ export function createMedicationRequest(
       lineItem.repeatNumber
     ),
     dosageInstruction: [
-      createDosage(lineItem.pertinentInformation2.pertinentDosageInstructions)
+      createDosage(
+        lineItem.pertinentInformation2.pertinentDosageInstructions,
+        additionalInstructions.additionalInstructions
+      )
     ],
     dispenseRequest: createDispenseRequest(
       prescription.pertinentInformation1.pertinentDispensingSitePreference,
@@ -67,32 +84,27 @@ export function createMedicationRequest(
   }
 }
 
-function createMedicationRequestExtensions(prescription: Prescription, lineItem: LineItem, responsiblePartyId: string) {
+function createMedicationRequestExtensions(
+  responsiblePartyId: string,
+  prescriptionType: PrescriptionType,
+  lineItemRepeatNumber: Interval<NumericValue>,
+  reviewDate: ReviewDate,
+  lineItemEndorsements: Array<PrescriptionEndorsement>,
+  controlledDrugWords: string
+) {
   const extensions: Array<fhir.MedicationRequestExtension> = [
     createResponsiblePractitionerExtension(responsiblePartyId),
-    createPrescriptionTypeExtension(prescription.pertinentInformation4.pertinentPrescriptionType)
+    createPrescriptionTypeExtension(prescriptionType),
+    ...lineItemEndorsements.map(createEndorsementExtension)
   ]
-  if (lineItem.repeatNumber) {
-    const repeatInformationExtension = createRepeatInformationExtension(
-      prescription.pertinentInformation7.pertinentReviewDate,
-      lineItem.repeatNumber
-    )
+  //TODO - is this the correct condition? could we have a review date without a repeat number?
+  if (lineItemRepeatNumber) {
+    const repeatInformationExtension = createRepeatInformationExtension(reviewDate, lineItemRepeatNumber)
     extensions.push(repeatInformationExtension)
   }
-  if (lineItem.pertinentInformation3) {
-    const endorsementExtensions = lineItem.pertinentInformation3.map(pi3 =>
-      createEndorsementExtension(pi3.pertinentPrescriberEndorsement)
-    )
-    extensions.push(...endorsementExtensions)
-  }
-  if (lineItem.pertinentInformation1) {
-    const additionalInstructionsParts = parseAdditionalInstructionsText(
-      lineItem.pertinentInformation1.pertinentAdditionalInstructions.value._text
-    )
-    if (additionalInstructionsParts.controlledDrugWords) {
-      const controlledDrugExtension = createControlledDrugExtension(additionalInstructionsParts.controlledDrugWords)
-      extensions.push(controlledDrugExtension)
-    }
+  if (controlledDrugWords) {
+    const controlledDrugExtension = createControlledDrugExtension(controlledDrugWords)
+    extensions.push(controlledDrugExtension)
   }
   return extensions
 }
@@ -144,56 +156,6 @@ function createPrescriptionTypeExtension(pertinentPrescriptionType: Prescription
   }
 }
 
-interface AdditionalInstructionsParseResult {
-  parts: AdditionalInstructionsParts
-}
-
-interface AdditionalInstructionsParts extends ElementCompact {
-  medication: Array<ElementCompact> | ElementCompact,
-  patientInfo: Array<ElementCompact> | ElementCompact
-}
-
-const controlledDrugMatcher = /^CD: (.*)\n?/
-
-export function parseAdditionalInstructionsText(additionalInstructionsText: string): {
-  medication: Array<string>,
-  patientInfo: Array<string>,
-  controlledDrugWords: string,
-  additionalInstructions: string
-} {
-  const parseResult = xml2js(
-    `<parts>${additionalInstructionsText}</parts>`,
-    {compact: true}
-  ) as AdditionalInstructionsParseResult
-
-  const textStringOrNumber = parseResult.parts._text || ""
-
-  let text = textStringOrNumber.toString()
-  let controlledDrugWords = ""
-  const controlledDrugMatch = controlledDrugMatcher.exec(text)
-  if (controlledDrugMatch) {
-    controlledDrugWords = controlledDrugMatch[1]
-    text = text.substring(controlledDrugMatch[0].length)
-  }
-
-  // TODO - Is this easier or harder to follow than using regex?
-  // if (text.startsWith("CD: ")) {
-  //   const textParts = text.split("\n")
-  //   controlledDrugWords = textParts[0].substring(4)
-  //   text = textParts[1]
-  // }
-
-  const medication = parseResult.parts.medication || []
-  const patientInfo = parseResult.parts.patientInfo || []
-
-  return {
-    medication: toArray(medication).map(m => m._text.toString()),
-    patientInfo: toArray(patientInfo).map(p => p._text.toString()),
-    controlledDrugWords: controlledDrugWords,
-    additionalInstructions: text
-  }
-}
-
 function createControlledDrugExtension(controlledDrugWords: string): fhir.ControlledDrugExtension {
   return {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug",
@@ -235,11 +197,14 @@ function createSnomedCodeableConcept(code: SnomedCode) {
   return createCodeableConcept("http://snomed.info/sct", code._attributes.code, code._attributes.displayName)
 }
 
-function createDosage(dosageInstructions: DosageInstructions): fhir.Dosage {
-  //TODO - additional instructions
-  return {
+function createDosage(dosageInstructions: DosageInstructions, additionalInstructions: string): fhir.Dosage {
+  const dosage: fhir.Dosage = {
     text: dosageInstructions.value._text
   }
+  if (additionalInstructions) {
+    dosage.patientInstruction = additionalInstructions
+  }
+  return dosage
 }
 
 function createDispenseRequestQuantity(lineItemQuantity: LineItemQuantity): fhir.SimpleQuantity {
