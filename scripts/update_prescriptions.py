@@ -41,6 +41,7 @@ def generate_short_form_id(organisationCode):
 
 
 def update_prescription(bundle_json, prescription_id, short_prescription_id, authored_on, signature_time):
+    bundle_json["identifier"]["value"] = str(uuid.uuid4())
     for entry in bundle_json['entry']:
         resource = entry["resource"]
         if resource["resourceType"] == "Provenance":
