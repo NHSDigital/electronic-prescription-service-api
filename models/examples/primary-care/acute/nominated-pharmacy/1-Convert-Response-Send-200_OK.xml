@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN020101SM31 xmlns="urn:hl7-org:v3">
-  <id root="8B779E73-6CB2-43FA-8FF3-BC466630D31B"/>
-  <creationTime value="20210217112133"/>
+  <id root="C97DE832-56F8-44CF-800D-F712076AD9B2"/>
+  <creationTime value="20210217160152"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN020101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -22,7 +22,7 @@
       <AgentPersonSDS classCode="AGNT">
         <id extension="200102238987" root="1.2.826.0.1285.0.2.0.67"/>
         <agentPersonSDS classCode="PSN" determinerCode="INSTANCE">
-          <id extension="44151870302" root="1.2.826.0.1285.0.2.0.65"/>
+          <id extension="555086689106" root="1.2.826.0.1285.0.2.0.65"/>
         </agentPersonSDS>
         <part typeCode="PART">
           <partSDSRole classCode="ROL">
@@ -40,7 +40,7 @@
     </author1>
     <subject>
       <ParentPrescription classCode="INFO" moodCode="EVN">
-        <id root="8B779E73-6CB2-43FA-8FF3-BC466630D31B"/>
+        <id root="C97DE832-56F8-44CF-800D-F712076AD9B2"/>
         <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Prescription - FocusActOrEvent (record artifact)"/>
         <effectiveTime value="20210217000000"/>
         <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
@@ -79,8 +79,8 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentPrescription classCode="SBADM" moodCode="RQO">
-            <id root="D0C8F1C4-C4A4-4A18-8062-D3137671D4CB"/>
-            <id extension="499F63-C81010-11EBAN" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+            <id root="1AAF66D9-0B9D-418C-B3BA-53E410FC88DC"/>
+            <id extension="71C8AC-C81010-11EB91" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
             <effectiveTime nullFlavor="NA"/>
             <performer contextControlCode="OP" typeCode="PRF">
@@ -91,7 +91,7 @@
               </AgentOrgSDS>
             </performer>
             <author contextControlCode="OP" typeCode="AUT">
-              <time value="20210217112133"/>
+              <time value="20210217160151"/>
               <signatureText>
                 <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
                   <SignedInfo>
@@ -232,7 +232,7 @@
                   <seperatableInd value="false"/>
                   <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
                     <code code="DI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value>100 tablets. One tablet to be taken four times a day</value>
+                    <value>One tablet to be taken four times a day</value>
                   </pertinentDosageInstructions>
                 </pertinentInformation2>
               </pertinentLineItem>
@@ -264,7 +264,7 @@
                   <seperatableInd value="false"/>
                   <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
                     <code code="DI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value>200 tablets. One dose to be taken five times a day</value>
+                    <value>One dose to be taken five times a day</value>
                   </pertinentDosageInstructions>
                 </pertinentInformation2>
               </pertinentLineItem>
