@@ -83,19 +83,12 @@ export const examplePrescription2 = new ExamplePrescription(
 
 export const examplePrescription3 = new ExamplePrescription(
   "homecare",
-  "secondary-care/homecare/acute/no-nominated-pharmacy/clinical-practitioner")
-
-/* todo: repeat-dispensing homecare example
-export const examplePrescription4 = new ExamplePrescription(
-  "homecare repeat dispensing",
-  "secondary-care/homecare/acute/no-nominated-pharmacy"
-) */
+  "secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner")
 
 export const specification = [
   examplePrescription1,
   examplePrescription2,
   examplePrescription3
-  //examplePrescription4
 ]
 
 export interface ExampleSpineResponse {

@@ -10,11 +10,11 @@ import {writeXmlStringCanonicalized} from "../serialisation/xml"
 import {convertParentPrescription} from "./prescription/parent-prescription"
 import {convertCancellation} from "./prescription/cancellation"
 import {convertFragmentsToHashableFormat, extractFragments} from "./prescription/signature"
-import {convertHL7V3DateTimeToIsoDateTimeString} from "./common"
 import * as requestBuilder from "../formatters/ebxml-request-builder"
 import {SpineRequest} from "../../models/spine"
 import {identifyMessageType, MessageType} from "../../routes/util"
 import {InvalidValueError} from "../../models/errors/processing-errors"
+import {convertHL7V3DateTimeToIsoDateTimeString} from "./common/dateTime"
 import {translateReleaseRequest} from "./dispention/release"
 
 export function convertBundleToSpineRequest(fhirMessage: fhir.Bundle): SpineRequest {

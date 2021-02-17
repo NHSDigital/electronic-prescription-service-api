@@ -6,7 +6,8 @@ import {clone} from "../../resources/test-helpers"
 import {getMedicationRequests, getProvenances} from "../../../src/services/translation/common/getResourcesOfType"
 import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"
-import {convertIsoDateTimeStringToHl7V3DateTime, onlyElement} from "../../../src/services/translation/common"
+import {onlyElement} from "../../../src/services/translation/common"
+import {convertIsoDateTimeStringToHl7V3DateTime} from "../../../src/services/translation/common/dateTime"
 
 const actualMoment = requireActual("moment")
 jest.mock("moment", () => ({

@@ -2,10 +2,11 @@ import * as fhir from "../../../models/fhir/fhir-resources"
 import {convertPatient} from "./patient"
 import {convertBundleToPrescription} from "."
 import * as prescriptions from "../../../models/hl7-v3/hl7-v3-prescriptions"
-import {convertIsoDateTimeStringToHl7V3DateTime, getIdentifierValueForSystem} from "../common"
+import {getIdentifierValueForSystem} from "../common"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {getMedicationRequests, getPatient} from "../common/getResourcesOfType"
+import {convertIsoDateTimeStringToHl7V3DateTime} from "../common/dateTime"
 
 export function convertParentPrescription(
   fhirBundle: fhir.Bundle,

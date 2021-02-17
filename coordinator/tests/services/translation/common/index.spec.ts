@@ -1,6 +1,4 @@
 import {
-  convertIsoDateStringToHl7V3Date,
-  convertIsoDateTimeStringToHl7V3DateTime,
   getIdentifierValueForSystem,
   getIdentifierValueOrNullForSystem,
   getNumericValueAsString,
@@ -12,6 +10,10 @@ import {Identifier} from "../../../../src/models/fhir/fhir-resources"
 import {clone} from "../../../resources/test-helpers"
 import * as LosslessJson from "lossless-json"
 import {TooManyValuesError} from "../../../../src/models/errors/processing-errors"
+import {
+  convertIsoDateStringToHl7V3Date,
+  convertIsoDateTimeStringToHl7V3DateTime
+} from "../../../../src/services/translation/common/dateTime"
 
 test("getResourceForFullUrl returns correct resources", () => {
   const result = getResourceForFullUrl(
