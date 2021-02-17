@@ -9,7 +9,8 @@ import {MessageType} from "../../../src/routes/util"
 import {InvalidValueError} from "../../../src/models/errors/processing-errors"
 import requireActual = jest.requireActual
 import {MomentInput, MomentFormatSpecification} from "moment"
-import {convertIsoDateTimeStringToHl7V3DateTime, onlyElement} from "../../../src/services/translation/common"
+import {onlyElement} from "../../../src/services/translation/common"
+import {convertIsoDateTimeStringToHl7V3DateTime} from "../../../src/services/translation/common/dateTime"
 
 const actualMoment = requireActual("moment")
 jest.mock("moment", () => ({

@@ -5,8 +5,6 @@ import * as prescriptions from "../../../models/hl7-v3/hl7-v3-prescriptions"
 import {DaysSupply, PrescriptionPertinentInformation7, ReviewDate} from "../../../models/hl7-v3/hl7-v3-prescriptions"
 import * as fhir from "../../../models/fhir/fhir-resources"
 import {
-  convertIsoDateStringToHl7V3Date,
-  convertIsoDateTimeStringToHl7V3Date,
   getExtensionForUrl,
   getExtensionForUrlOrNull,
   getNumericValueAsString,
@@ -19,6 +17,7 @@ import {convertMedicationRequestToLineItem} from "./line-item"
 import {getCommunicationRequests, getMedicationRequests} from "../common/getResourcesOfType"
 import {CourseOfTherapyTypeCode, getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
+import {convertIsoDateStringToHl7V3Date, convertIsoDateTimeStringToHl7V3Date} from "../common/dateTime"
 
 export function convertBundleToPrescription(fhirBundle: fhir.Bundle): prescriptions.Prescription {
   const fhirMedicationRequests = getMedicationRequests(fhirBundle)
