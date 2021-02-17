@@ -7,9 +7,9 @@ import {createHealthcareService, createLocations} from "./cancellation-organizat
 import {createPractitionerRole} from "./cancellation-practitioner-role"
 import {createMessageHeader} from "./cancellation-message-header"
 import {AgentPerson} from "../../../models/hl7-v3/hl7-v3-people-places"
-import {convertHL7V3DateTimeToIsoDateTimeString} from "../common"
 import {createIdentifier, createReference} from "./fhir-base-types"
 import {isDeepStrictEqual} from "util"
+import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
 
 export function translateSpineCancelResponseIntoBundle(cancellationResponse: CancellationResponse): fhir.Bundle {
   return {

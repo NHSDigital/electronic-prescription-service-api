@@ -7,13 +7,13 @@ import {
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import moment from "moment"
 import {
-  convertMomentToHl7V3DateTime,
   getCodeableConceptCodingForSystem,
   getIdentifierValueForSystem,
   resolveReference
 } from "../common"
 import {Bundle} from "../../../models/fhir/fhir-resources"
 import {getMedicationRequests} from "../common/getResourcesOfType"
+import {convertMomentToHl7V3DateTime} from "../common/dateTime"
 
 export function createSendMessagePayload<T>(
   interactionId: codes.Hl7InteractionIdentifier,
