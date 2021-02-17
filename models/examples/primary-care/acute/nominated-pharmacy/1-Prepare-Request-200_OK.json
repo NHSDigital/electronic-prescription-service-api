@@ -126,7 +126,7 @@
         },
         "dosageInstruction": [
           {
-            "text": "100 tablets. One tablet to be taken four times a day",
+            "text": "One tablet to be taken four times a day",
             "timing": {
               "repeat": {
                 "frequency": 4,
@@ -256,7 +256,7 @@
         },
         "dosageInstruction": [
           {
-            "text": "200 tablets. One dose to be taken five times a day",
+            "text": "One dose to be taken five times a day",
             "timing": {
               "repeat": {
                 "frequency": 5,
@@ -415,7 +415,7 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/sds-user-id",
-            "value": "44151870302"
+            "value": "555086689106"
           },
           {
             "system": "https://fhir.hl7.org.uk/Id/gmp-number",
