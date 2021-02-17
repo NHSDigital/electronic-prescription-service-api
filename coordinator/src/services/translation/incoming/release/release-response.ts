@@ -5,10 +5,7 @@ import {convertResourceToBundleEntry, translateAndAddAgentPerson, translateAndAd
 import {toArray} from "../../common"
 import {createMedicationRequest} from "./release-medication-request"
 import {createMessageHeader, EVENT_CODING} from "../message-header"
-import {
-  createAndAddCommunicationRequest,
-  parseAdditionalInstructions
-} from "./additional-instructions"
+import {createAndAddCommunicationRequest, parseAdditionalInstructions} from "./additional-instructions"
 
 export function createBundleEntries(parentPrescription: ParentPrescription): Array<fhir.BundleEntry> {
   const bundleResources: Array<fhir.Resource> = []
@@ -29,14 +26,15 @@ export function createBundleEntries(parentPrescription: ParentPrescription): Arr
   }
 
   const hl7LineItems = toArray(pertinentPrescription.pertinentInformation2).map(pi2 => pi2.pertinentLineItem)
-  if (hl7LineItems[0].pertinentInformation1) {
-    const additionalInstructions = hl7LineItems[0].pertinentInformation1.pertinentAdditionalInstructions.value._text
-    const parts = parseAdditionalInstructions(additionalInstructions)
-    const medication = parts.medication
-    const patientInfo = parts.patientInfo
-    if (medication.length || patientInfo.length) {
-      createAndAddCommunicationRequest(patientId, medication, patientInfo, bundleResources)
-    }
+
+  const firstLineItemAdditionalInstructionsText = hl7LineItems[0].pertinentInformation1
+    ? hl7LineItems[0].pertinentInformation1.pertinentAdditionalInstructions.value._text
+    : ""
+  const firstLineItemAdditionalInstructions = parseAdditionalInstructions(firstLineItemAdditionalInstructionsText)
+  const medication = firstLineItemAdditionalInstructions.medication
+  const patientInfo = firstLineItemAdditionalInstructions.patientInfo
+  if (medication.length || patientInfo.length) {
+    createAndAddCommunicationRequest(patientId, medication, patientInfo, bundleResources)
   }
 
   hl7LineItems.forEach(hl7LineItem => {

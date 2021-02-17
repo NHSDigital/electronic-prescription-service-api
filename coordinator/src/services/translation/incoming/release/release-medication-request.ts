@@ -27,6 +27,24 @@ import {convertHL7V3DateToIsoDateString, toArray} from "../../common"
 import {Organization} from "../../../../models/hl7-v3/hl7-v3-people-places"
 import {parseAdditionalInstructions} from "./additional-instructions"
 
+export const COURSE_OF_THERAPY_TYPE = Object.freeze({
+  ACUTE: createCodeableConcept(
+    "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+    CourseOfTherapyTypeCode.ACUTE,
+    "Short course (acute) therapy"
+  ),
+  CONTINUOUS: createCodeableConcept(
+    "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+    CourseOfTherapyTypeCode.CONTINUOUS,
+    "Continuous long term therapy"
+  ),
+  CONTINOUS_REPEAT_DISPENSING: createCodeableConcept(
+    "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
+    CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING,
+    "Continuous long term (repeat dispensing)"
+  )
+})
+
 export function createMedicationRequest(
   prescription: Prescription,
   lineItem: LineItem,
@@ -84,14 +102,14 @@ export function createMedicationRequest(
   }
 }
 
-function createMedicationRequestExtensions(
+export function createMedicationRequestExtensions(
   responsiblePartyId: string,
   prescriptionType: PrescriptionType,
   lineItemRepeatNumber: Interval<NumericValue>,
   reviewDate: ReviewDate,
   lineItemEndorsements: Array<PrescriptionEndorsement>,
   controlledDrugWords: string
-) {
+): Array<fhir.MedicationRequestExtension> {
   const extensions: Array<fhir.MedicationRequestExtension> = [
     createResponsiblePractitionerExtension(responsiblePartyId),
     createPrescriptionTypeExtension(prescriptionType),
@@ -166,38 +184,26 @@ function createControlledDrugExtension(controlledDrugWords: string): fhir.Contro
   }
 }
 
-function createCourseOfTherapyType(
+export function createCourseOfTherapyType(
   prescriptionTreatmentType: PrescriptionTreatmentType,
   lineItemRepeatNumber: Interval<NumericValue>
-) {
+): fhir.CodeableConcept {
   const isRepeatDispensing = prescriptionTreatmentType.value._attributes.code
     === PrescriptionTreatmentTypeCode.CONTINUOUS_REPEAT_DISPENSING._attributes.code
   if (isRepeatDispensing) {
-    return createCodeableConcept(
-      "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
-      CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING,
-      "Continuous long term (repeat dispensing)"
-    )
+    return COURSE_OF_THERAPY_TYPE.CONTINOUS_REPEAT_DISPENSING
   } else if (lineItemRepeatNumber) {
-    return createCodeableConcept(
-      "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
-      CourseOfTherapyTypeCode.CONTINUOUS,
-      "Continuous long term therapy"
-    )
+    return COURSE_OF_THERAPY_TYPE.CONTINUOUS
   } else {
-    return createCodeableConcept(
-      "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
-      CourseOfTherapyTypeCode.ACUTE,
-      "Short course (acute) therapy"
-    )
+    return COURSE_OF_THERAPY_TYPE.ACUTE
   }
 }
 
-function createSnomedCodeableConcept(code: SnomedCode) {
+export function createSnomedCodeableConcept(code: SnomedCode): fhir.CodeableConcept {
   return createCodeableConcept("http://snomed.info/sct", code._attributes.code, code._attributes.displayName)
 }
 
-function createDosage(dosageInstructions: DosageInstructions, additionalInstructions: string): fhir.Dosage {
+export function createDosage(dosageInstructions: DosageInstructions, additionalInstructions: string): fhir.Dosage {
   const dosage: fhir.Dosage = {
     text: dosageInstructions.value._text
   }
@@ -233,7 +239,7 @@ function createExpectedSupplyDuration(expectedUseTime: IntervalUnanchored): fhir
   }
 }
 
-function createDispenseRequest(
+export function createDispenseRequest(
   dispensingSitePreference: DispensingSitePreference,
   lineItemQuantity: LineItemQuantity,
   daysSupply: DaysSupply,
@@ -245,8 +251,10 @@ function createDispenseRequest(
     ],
     quantity: createDispenseRequestQuantity(lineItemQuantity)
   }
-  if (daysSupply) {
+  if (daysSupply?.effectiveTime) {
     dispenseRequest.validityPeriod = createValidityPeriod(daysSupply.effectiveTime)
+  }
+  if (daysSupply?.expectedUseTime) {
     dispenseRequest.expectedSupplyDuration = createExpectedSupplyDuration(daysSupply.expectedUseTime)
   }
   if (performer) {
@@ -274,9 +282,9 @@ function createPerformer(performerOrganization: Organization): fhir.Performer {
   }
 }
 
-function createGroupIdentifierFromPrescriptionIds(
+export function createGroupIdentifierFromPrescriptionIds(
   prescriptionIds: [codes.GlobalIdentifier, codes.ShortFormPrescriptionIdentifier]
-) {
+): fhir.MedicationRequestGroupIdentifier {
   const shortFormId = prescriptionIds[1]._attributes.extension
   const longFormId = prescriptionIds[0]._attributes.root //TODO - lower case?
   return createGroupIdentifier(shortFormId, longFormId)
