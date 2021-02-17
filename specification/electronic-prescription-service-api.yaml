@@ -183,7 +183,7 @@ info:
     ### API specific errors
     | HTTP Status   | Error Code             | Description                                    |
     | --------------| ---------------------- | ---------------------------------------------- |
-    | 400           | MISSING_FIELD          | A required field is missing within the request |
+    | 400           | MISSING_FIELD          | A required field is missing within the request, see `display` field in response |
     | 400           | INVALID_VALUE          | Invalid value in message                       |
     | 400           | INCORRECT_RESOURCETYPE | FHIR resource has incorrect resourceType       |
     | 404           | NOT_FOUND              | Route not found                                |
@@ -191,7 +191,6 @@ info:
     ### Platform-wide errors
     | HTTP Status   | Error Code      | Description                                            |
     | ------------- | --------------- | ------------------------------------------------------ |
-    | 400           | MISSING_FIELD   | X-Request-ID header missing or malformed               |
     | 401           | ACCESS_DENIED   | User does not have permission for a particular request |
     | 403           | FORBIDDEN       | Insufficient authorization                             |
     | 404           | NOT_FOUND       | Resource not found                                     |
