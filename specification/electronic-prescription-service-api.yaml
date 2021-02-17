@@ -180,7 +180,7 @@ info:
 
 
     ## Errors
-    ### API specific errors
+    ### API wide errors
     | HTTP Status   | Error Code             | Description                                    |
     | --------------| ---------------------- | ---------------------------------------------- |
     | 400           | MISSING_FIELD          | A required field is missing within the request, see `display` field in response. |
@@ -188,7 +188,7 @@ info:
     | 400           | INCORRECT_RESOURCETYPE | FHIR resource has incorrect resourceType.       |
     | 404           | NOT_FOUND              | Route not found.                                |
     
-    ### Platform-wide errors
+    ### Platform wide errors
     | HTTP Status   | Error Code      | Description                                             |
     | ------------- | --------------- | ------------------------------------------------------- |
     | 401           | ACCESS_DENIED   | User does not have permission for a particular request. |
