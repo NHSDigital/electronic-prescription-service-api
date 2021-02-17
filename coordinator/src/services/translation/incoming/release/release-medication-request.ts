@@ -52,13 +52,8 @@ export function createMedicationRequest(
   requesterId: string,
   responsiblePartyId: string
 ): fhir.MedicationRequest {
-  const additionalInstructionsText = lineItem.pertinentInformation1
-    ? lineItem.pertinentInformation1.pertinentAdditionalInstructions.value._text
-    : ""
-  const additionalInstructions = parseAdditionalInstructions(additionalInstructionsText)
-  const pertinentInformation3Array = lineItem.pertinentInformation3
-    ? toArray(lineItem.pertinentInformation3)
-    : []
+  const text = lineItem.pertinentInformation1?.pertinentAdditionalInstructions?.value?._text ?? ""
+  const additionalInstructions = parseAdditionalInstructions(text)
   return {
     resourceType: "MedicationRequest",
     id: uuid.v4(),
@@ -67,7 +62,7 @@ export function createMedicationRequest(
       prescription.pertinentInformation4.pertinentPrescriptionType,
       lineItem.repeatNumber,
       prescription.pertinentInformation7.pertinentReviewDate,
-      pertinentInformation3Array.map(pi3 => pi3.pertinentPrescriberEndorsement),
+      toArray(lineItem.pertinentInformation3 ?? []).map(pi3 => pi3.pertinentPrescriberEndorsement),
       additionalInstructions.controlledDrugWords
     ),
     identifier: [

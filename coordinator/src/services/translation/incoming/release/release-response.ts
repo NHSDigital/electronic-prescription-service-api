@@ -11,8 +11,7 @@ export function createBundleEntries(parentPrescription: ParentPrescription): Arr
   const bundleResources: Array<fhir.Resource> = []
   const focusIds: Array<string> = []
 
-  const hl7Patient = parentPrescription.recordTarget.Patient
-  const patientId = translateAndAddPatient(hl7Patient, bundleResources)
+  const patientId = translateAndAddPatient(parentPrescription.recordTarget.Patient, bundleResources)
   focusIds.push(patientId)
 
   const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
@@ -27,12 +26,10 @@ export function createBundleEntries(parentPrescription: ParentPrescription): Arr
 
   const hl7LineItems = toArray(pertinentPrescription.pertinentInformation2).map(pi2 => pi2.pertinentLineItem)
 
-  const firstLineItemAdditionalInstructionsText = hl7LineItems[0].pertinentInformation1
-    ? hl7LineItems[0].pertinentInformation1.pertinentAdditionalInstructions.value._text
-    : ""
-  const firstLineItemAdditionalInstructions = parseAdditionalInstructions(firstLineItemAdditionalInstructionsText)
-  const medication = firstLineItemAdditionalInstructions.medication
-  const patientInfo = firstLineItemAdditionalInstructions.patientInfo
+  const firstItemText = hl7LineItems[0].pertinentInformation1?.pertinentAdditionalInstructions?.value?._text ?? ""
+  const firstItemAdditionalInstructions = parseAdditionalInstructions(firstItemText)
+  const medication = firstItemAdditionalInstructions.medication
+  const patientInfo = firstItemAdditionalInstructions.patientInfo
   if (medication.length || patientInfo.length) {
     createAndAddCommunicationRequest(patientId, medication, patientInfo, bundleResources)
   }
@@ -49,15 +46,11 @@ export function createBundleEntries(parentPrescription: ParentPrescription): Arr
     focusIds.push(medicationRequest.id)
   })
 
-  const messageId = parentPrescription.id._attributes.root
-  const performerOrganizationId = pertinentPrescription.performer
-    ? pertinentPrescription.performer.AgentOrgSDS.agentOrganizationSDS.id._attributes.extension
-    : undefined
   const messageHeader = createMessageHeader(
-    messageId,
+    parentPrescription.id._attributes.root,
     EVENT_CODING.PRESCRIPTION_ORDER,
     focusIds,
-    performerOrganizationId,
+    pertinentPrescription.performer?.AgentOrgSDS?.agentOrganizationSDS?.id?._attributes?.extension,
     "otherMessageId" //TODO - do we have the original message id?
   )
   bundleResources.unshift(messageHeader)
