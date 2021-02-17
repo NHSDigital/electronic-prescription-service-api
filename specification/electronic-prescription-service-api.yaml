@@ -183,17 +183,17 @@ info:
     ### API specific errors
     | HTTP Status   | Error Code             | Description                                    |
     | --------------| ---------------------- | ---------------------------------------------- |
-    | 400           | MISSING_FIELD          | A required field is missing within the request, see `display` field in response |
-    | 400           | INVALID_VALUE          | Invalid value in message                       |
-    | 400           | INCORRECT_RESOURCETYPE | FHIR resource has incorrect resourceType       |
-    | 404           | NOT_FOUND              | Route not found                                |
+    | 400           | MISSING_FIELD          | A required field is missing within the request, see `display` field in response. |
+    | 400           | INVALID_VALUE          | Invalid value in message.                       |
+    | 400           | INCORRECT_RESOURCETYPE | FHIR resource has incorrect resourceType.       |
+    | 404           | NOT_FOUND              | Route not found.                                |
     
     ### Platform-wide errors
-    | HTTP Status   | Error Code      | Description                                            |
-    | ------------- | --------------- | ------------------------------------------------------ |
-    | 401           | ACCESS_DENIED   | User does not have permission for a particular request |
-    | 403           | FORBIDDEN       | Insufficient authorization                             |
-    | 404           | NOT_FOUND       | Resource not found                                     |
+    | HTTP Status   | Error Code      | Description                                             |
+    | ------------- | --------------- | ------------------------------------------------------- |
+    | 401           | ACCESS_DENIED   | User does not have permission for a particular request. |
+    | 403           | FORBIDDEN       | Insufficient authorization.                             |
+    | 404           | NOT_FOUND       | Resource not found.                                     |
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
     description: 'Sandbox'
@@ -286,8 +286,8 @@ paths:
             
             | HTTP status | Error code         | Description                                    | FHIR type        |
             | ----------- | ------------------ | ---------------------------------------------- | -----------------|
-            | 400         | BAD_REQUEST        | Spine Error - duplicate prescription ID exists | OperationOutcome |
-            | 400         | BAD_REQUEST        | Spine Error - prescription not found           | Bundle           |
+            | 400         | BAD_REQUEST        | Spine Error - duplicate prescription ID exists. | OperationOutcome |
+            | 400         | BAD_REQUEST        | Spine Error - prescription not found.           | Bundle           |
           content:
             application/fhir+json:
               examples:
@@ -337,9 +337,9 @@ paths:
           description: |
             An error occurred as follows:
             
-            | HTTP status | Error code         | Description            |
-            | ----------- | -------------------| ---------------------- |
-            | 400         | BAD_REQUEST        | Invalid request bundle |
+            | HTTP status | Error code         | Description             |
+            | ----------- | -------------------| ----------------------- |
+            | 400         | BAD_REQUEST        | Invalid request bundle. |
           content:
             application/fhir+json:
               examples:
