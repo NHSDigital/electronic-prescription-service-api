@@ -102,6 +102,12 @@ export class CancellationResponseReason extends Code<"2.16.840.1.113883.2.1.3.2.
   }
 }
 
+export class ItemStatusCode extends Code<"2.16.840.1.113883.2.1.3.2.4.17.23"> {
+  constructor(code: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.17.23", code)
+  }
+}
+
 class CodeWithoutSystem extends Code<undefined> {
   constructor(code: string) {
     super(undefined, code)

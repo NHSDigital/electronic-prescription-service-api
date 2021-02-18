@@ -56,7 +56,7 @@ export function createMedicationRequest(
     identifier: [
       createItemNumberIdentifier(lineItem.id._attributes.root)
     ],
-    status: "active", //TODO - check this
+    status: getStatus(lineItem.pertinentInformation4.pertinentItemStatus),
     intent: "order",
     medicationCodeableConcept: createSnomedCodeableConcept(
       lineItem.product.manufacturedProduct.manufacturedRequestedMaterial.code
@@ -183,6 +183,26 @@ export function createCourseOfTherapyType(
     return COURSE_OF_THERAPY_TYPE.CONTINUOUS
   } else {
     return COURSE_OF_THERAPY_TYPE.ACUTE
+  }
+}
+
+export function getStatus(pertinentItemStatus: prescriptions.ItemStatus): string {
+  const itemStatusCode = pertinentItemStatus.value._attributes.code
+  switch (itemStatusCode) {
+  case "0001":
+    return "completed"
+  case "0002":
+  case "0006":
+    return "stopped"
+  case "0003":
+  case "0004":
+  case "0007":
+  case "0008":
+    return "active"
+  case "0005":
+    return "cancelled"
+  default:
+    throw new TypeError(`Unhandled item status code ${itemStatusCode}`)
   }
 }
 

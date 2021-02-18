@@ -155,13 +155,13 @@ describe("communication request", () => {
     bundleResources = []
   })
 
-  test("id", () => {
+  test("contains id", () => {
     createAndAddCommunicationRequest(examplePatientId, [], [], bundleResources)
     const communicationRequest = bundleResources.find(resource => resource.resourceType === "CommunicationRequest")
     expect(communicationRequest.id).toBeTruthy()
   })
 
-  test("patient reference", () => {
+  test("contains patient reference", () => {
     createAndAddCommunicationRequest(examplePatientId, [], [], bundleResources)
     const communicationRequest = bundleResources.find(resource => resource.resourceType === "CommunicationRequest")
     expect(communicationRequest).toMatchObject<Partial<CommunicationRequest>>({
@@ -171,7 +171,7 @@ describe("communication request", () => {
     })
   })
 
-  test("single patient info payload", () => {
+  test("handles single patient info", () => {
     createAndAddCommunicationRequest(examplePatientId, [], ["Patient info"], bundleResources)
     const list = bundleResources.find(resource => resource.resourceType === "List")
     expect(list).toBeFalsy()
@@ -183,7 +183,7 @@ describe("communication request", () => {
     })
   })
 
-  test("multiple patient info payloads", () => {
+  test("handles multiple patient info", () => {
     createAndAddCommunicationRequest(examplePatientId, [], ["Patient info 1", "Patient info 2"], bundleResources)
     const list = bundleResources.find(resource => resource.resourceType === "List")
     expect(list).toBeFalsy()
@@ -200,7 +200,7 @@ describe("communication request", () => {
     })
   })
 
-  test("single medication payload", () => {
+  test("handles single medication", () => {
     createAndAddCommunicationRequest(examplePatientId, ["Medication"], [], bundleResources)
     const list = bundleResources.find(resource => resource.resourceType === "List")
     expect(list).toMatchObject<Partial<List>>({
@@ -220,7 +220,7 @@ describe("communication request", () => {
     })
   })
 
-  test("multiple medication payloads", () => {
+  test("handles multiple medication", () => {
     createAndAddCommunicationRequest(examplePatientId, ["Medication 1", "Medication 2"], [], bundleResources)
     const list = bundleResources.find(resource => resource.resourceType === "List")
     expect(list).toMatchObject<Partial<List>>({
@@ -254,13 +254,13 @@ describe("list", () => {
     bundleResources = []
   })
 
-  test("id", () => {
+  test("contains id", () => {
     createAndAddList(["Item"], bundleResources)
     const list = bundleResources.find(resource => resource.resourceType === "List")
     expect(list.id).toBeTruthy()
   })
 
-  test("single entry", () => {
+  test("handles single entry", () => {
     createAndAddList(["Item"], bundleResources)
     const list = bundleResources.find(resource => resource.resourceType === "List")
     expect(list).toMatchObject<Partial<List>>({
@@ -272,7 +272,7 @@ describe("list", () => {
     })
   })
 
-  test("multiple entries", () => {
+  test("handles multiple entries", () => {
     createAndAddList(["Item 1", "Item 2"], bundleResources)
     const list = bundleResources.find(resource => resource.resourceType === "List")
     expect(list).toMatchObject<Partial<List>>({
