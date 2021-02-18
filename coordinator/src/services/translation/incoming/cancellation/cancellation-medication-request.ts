@@ -10,6 +10,12 @@ import {generateResourceId, getFullUrl} from "../common"
 import {createCodeableConcept, createIdentifier, createReference} from "../fhir-base-types"
 import {createGroupIdentifier} from "../medication-request"
 
+const MEDICINAL_PRODUCT_CODEABLE_CONCEPT = createCodeableConcept(
+  "http://snomed.info/sct",
+  "763158003",
+  "Medicinal product"
+)
+
 export function createMedicationRequest(
   cancellationResponse: CancellationResponse,
   cancelRequesterPractitionerRoleId: string,
@@ -36,7 +42,7 @@ export function createMedicationRequest(
     identifier: createItemNumberIdentifier(cancellationResponse.pertinentInformation1),
     status: medicationRequestStatus,
     intent: "order",
-    medicationCodeableConcept: createMedicationCodeableConcept(),
+    medicationCodeableConcept: MEDICINAL_PRODUCT_CODEABLE_CONCEPT,
     subject: createReference(patientId),
     //TODO - effectiveTime should probably be the timestamp of the status, not authoredOn
     authoredOn: convertHL7V3DateTimeToIsoDateTimeString(cancellationResponse.effectiveTime),
@@ -164,10 +170,6 @@ function getPrescriptionStatusInformation(code: string, display: string) {
 function createItemNumberIdentifier(pertinentInformation1: PertinentInformation1) {
   const id = pertinentInformation1.pertinentLineItemRef.id._attributes.root
   return [createIdentifier("https://fhir.nhs.uk/Id/prescription-order-item-number", id.toLowerCase())]
-}
-
-function createMedicationCodeableConcept() {
-  return createCodeableConcept("http://snomed.info/sct", "763158003", "Medicinal product")
 }
 
 function createGroupIdentifierFromPertinentInformation2(pertinentInformation2: PertinentInformation2) {
