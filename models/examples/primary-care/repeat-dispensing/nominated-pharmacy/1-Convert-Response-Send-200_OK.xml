@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN020101SM31 xmlns="urn:hl7-org:v3">
-  <id root="59B703A2-5FB3-494D-A2B2-44C799AD6062"/>
-  <creationTime value="20210217112134"/>
+  <id root="1D841872-750E-4291-8281-C715D4CFB997"/>
+  <creationTime value="20210218121131"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN020101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -40,9 +40,9 @@
     </author1>
     <subject>
       <ParentPrescription classCode="INFO" moodCode="EVN">
-        <id root="59B703A2-5FB3-494D-A2B2-44C799AD6062"/>
+        <id root="1D841872-750E-4291-8281-C715D4CFB997"/>
         <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Prescription - FocusActOrEvent (record artifact)"/>
-        <effectiveTime value="20210217000000"/>
+        <effectiveTime value="20210218000000"/>
         <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <Patient classCode="PAT">
@@ -79,8 +79,8 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentPrescription classCode="SBADM" moodCode="RQO">
-            <id root="4CFE4E07-C9E3-4F97-9079-CBD17AA3AFE5"/>
-            <id extension="4A08EA-C81010-11EBAI" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+            <id root="DB54C421-332A-49B2-BDCE-9FC37AEDAA6A"/>
+            <id extension="6EFDA2-C81010-11EB9H" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
             <effectiveTime nullFlavor="NA"/>
             <repeatNumber>
@@ -95,7 +95,7 @@
               </AgentOrgSDS>
             </performer>
             <author contextControlCode="OP" typeCode="AUT">
-              <time value="20210217112134"/>
+              <time value="20210218121130"/>
               <signatureText>
                 <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
                   <SignedInfo>
@@ -106,10 +106,10 @@
                         <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
                       </Transforms>
                       <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                      <DigestValue>6UAzp4NwRucQdR4k3zMgfqVZDuo=</DigestValue>
+                      <DigestValue>77+xNv/fNnDRdo3KUcEAEI/3djs=</DigestValue>
                     </Reference>
                   </SignedInfo>
-                  <SignatureValue>dOiKZOuqjevjrgD+4FQwVCKETCnb9OHQKS8SDmNtAebbsW8GQ6pNmi0wqWEJMSHZn2ZbH354Fw9G6unHIq17VzzNZwrd8W4OQWvXPF/ztJ6Ypn9Zhzct2PNWJgC5qhwQL7QCPG6KWNR7puZ/ljgv8mWWc0C3kWCeaPOmvuL6wTE=</SignatureValue>
+                  <SignatureValue>PdHCt0fakpJQ/JdCEIyiM9Gfl5D2maYJbvHcZ1sY0rvLYBKZ7LDMVcKYs6hgn0Lf3RmWPFH3OAIR+NMSTkqDTycflZNwW8rfqtcGeNJJ9/tTuzmlQw6EEeOWmRLhrWzBOh1dlDknRo+Yv+b//GtsUd5uv1/5zWLa3cjIKbhK5M4=</SignatureValue>
                   <KeyInfo>
                     <X509Data>
                       <X509Certificate>MIIDuDCCAqCgAwIBAgIEXcmtHzANBgkqhkiG9w0BAQsFADA2MQwwCgYDVQQKEwNuaHMxCzAJBgNVBAsTAkNBMRkwFwYDVQQDExBOSFMgSU5UIExldmVsIDFEMB4XDTIwMTAyMjEwMjE1NVoXDTIyMTAyMjEwNTE1NVowQzEMMAoGA1UEChMDbmhzMQ8wDQYDVQQLEwZQZW9wbGUxIjAgBgNVBAMMGTU1NTI1MzUyMTEwOF9SQU5ET01fVVNFUlEwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKt4szNw7OAH7AQRrDe/xBImsMmMiS9EsrT3a3p/Lh3brdzI9aajTUZ2b/cvbOa7PeYd7u+K4a2Zd0Xk+0GFmYGzSVX6iYjblwr0vai31zV7G+lGvHxH6pSoLCwICaZAFwabeD5Oz94+yA3aWNWtGV0Dfh9qwH3ZFCIMRsverN1pAgMBAAGjggFDMIIBPzAOBgNVHQ8BAf8EBAMCBkAwZQYDVR0gAQH/BFswWTBXBgsqhjoAiXtmAAMCADBIMEYGCCsGAQUFBwIBFjpodHRwczovL3BraS5uaHMudWsvY2VydGlmaWNhdGVfcG9saWNpZXMvY29udGVudF9jb21taXRtZW50MDMGA1UdHwQsMCowKKAmoCSGImh0dHA6Ly9jcmwubmhzLnVrL2ludC8xZC9jcmxjMy5jcmwwKwYDVR0QBCQwIoAPMjAyMDEwMjIxMDIxNTVagQ8yMDIyMDMxNzEwNTE1NVowHwYDVR0jBBgwFoAUoJYfgYTNPd6EUKL6QLIzHxY5PFIwHQYDVR0OBBYEFLtyvYSyaqg60AEUZgxk0wrjRJc+MAkGA1UdEwQCMAAwGQYJKoZIhvZ9B0EABAwwChsEVjguMwMCBLAwDQYJKoZIhvcNAQELBQADggEBABczy8B8juPpIfaTNFcxrC22aCX/xYZmhrL/NvIBAaX1G5hjiwmkGKE2hRTIr67PxZxmXsJxigRBMHPlI+lY/+okzH0Gi7b5bqlw7pxGIgJO000w8pFsvo9w42IYhHodsvnDVSxhMT0J46Qhk9soE0LjoEULKQPPlYGke/Gl3m17ItFYwObQH0fMEwmiqByeIfz7gSccOzL5cIp6PcZTOjo2IqQpgEmhjOcRInEqANitSdjoiJAJzpaaZjYTRdHUX7i7ajEiH4m91nFW+4AqkNttlb4WcGKsSmWgfKKheF4IoZKME80xerSgMy8vtjLOBJCGXz0wLGmQuRmxMTq88q4=</X509Certificate>
@@ -193,8 +193,8 @@
               <daysSupply classCode="SPLY" moodCode="RQO">
                 <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
                 <effectiveTime>
-                  <low value="20210217"/>
-                  <high value="20210317"/>
+                  <low value="20210218"/>
+                  <high value="20210318"/>
                 </effectiveTime>
                 <expectedUseTime>
                   <width unit="d" value="40"/>
