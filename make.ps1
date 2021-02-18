@@ -93,6 +93,8 @@ function run-smoke-tests() {
     }
     $env:PACT_PROVIDER="nhsd-apim-eps$provider_suffix"
     $env:SERVICE_BASE_PATH="electronic-prescriptions$pr_prefix$pr"
+    $env:PACT_TAG="$env"	
+    $env:PACT_VERSION="$env:USERNAME".replace(' ','')
     $env:APIGEE_ACCESS_TOKEN="$token"
     $env:PACT_PROVIDER_URL="https://$env.api.service.nhs.uk/$env:SERVICE_BASE_PATH"
     #$env:LOG_LEVEL="debug"
