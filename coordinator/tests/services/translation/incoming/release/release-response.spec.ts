@@ -1,5 +1,5 @@
 import {
-  createBundleResources,
+  createBundleResources, createInnerBundle,
   createOuterBundle
 } from "../../../../../src/services/translation/incoming/release/release-response"
 import {readXml} from "../../../../../src/services/serialisation/xml"
@@ -15,9 +15,79 @@ describe("outer bundle", () => {
   const result = createOuterBundle(getExamplePrescriptionReleaseResponse())
   console.log(LosslessJson.stringify(result))
 
-  test("contains only bundles", () => {
+  test("contains id", () => {
+    expect(result.id).toBeTruthy()
+  })
+
+  test("contains meta with correct value", () => {
+    expect(result.meta).toEqual({
+      lastUpdated: "2013-12-10T17:22:07+00:00"
+    })
+  })
+
+  test("contains identifier with correct value", () => {
+    expect(result.identifier).toEqual({
+      system: "https://tools.ietf.org/html/rfc4122",
+      value: "285e5cce-8bc8-a7be-6b05-675051da69b0"
+    })
+  })
+
+  test("contains type with correct value", () => {
+    expect(result.type).toEqual("searchset")
+  })
+
+  test("contains total with correct value", () => {
+    expect(result.total).toEqual(1)
+  })
+
+  test("contains entry containing only bundles", () => {
     const resourceTypes = result.entry.map(entry => entry.resource.resourceType)
     expect(getUniqueValues(resourceTypes)).toEqual(["Bundle"])
+  })
+
+  describe("when the release response message contains only old format prescriptions", () => {
+    const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse()
+    toArray(examplePrescriptionReleaseResponse.component)
+      .forEach(component => component.templateId._attributes.extension = "PORX_MT122003UK30")
+    const result = createOuterBundle(examplePrescriptionReleaseResponse)
+
+    test("contains total with correct value", () => {
+      expect(result.total).toEqual(0)
+    })
+
+    test("contains entry which is empty", () => {
+      expect(result.entry).toHaveLength(0)
+    })
+  })
+})
+
+describe("inner bundle", () => {
+  const result = createInnerBundle(getExampleParentPrescription(), "ReleaseRequestId")
+  console.log(LosslessJson.stringify(result))
+
+  test("contains id", () => {
+    expect(result.id).toBeTruthy()
+  })
+
+  test("contains meta with correct value", () => {
+    expect(result.meta).toEqual({
+      lastUpdated: "2013-11-21T12:11:00+00:00"
+    })
+  })
+
+  test("contains identifier with correct value", () => {
+    expect(result.identifier).toEqual({
+      system: "https://tools.ietf.org/html/rfc4122",
+      value: "83df678d-daa5-1a24-9776-14806d837ca7"
+    })
+  })
+
+  test("contains type with correct value", () => {
+    expect(result.type).toEqual("message")
+  })
+
+  test("contains entry", () => {
+    expect(result.entry.length).toBeGreaterThan(0)
   })
 })
 
