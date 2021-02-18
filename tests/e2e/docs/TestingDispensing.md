@@ -38,9 +38,17 @@ make sign-prescriptions
 #### Send Prescriptions to int
 ---
 
-Grab an example which has been signed above (under `models/examples/`) and send to int
+Grab an example which has been signed above (under `models/examples/`)
+
+##### Internal Checks
+
+  * Check signature is valid by pointing `coordinator\tests\verify-prescription-signatures.spec.ts` to your example and running the test
+  * Check prescription can be verified using https://github.com/DamianJMurphy/PrescriptionSignatureVerifier
+  * Check TKW validation passes for the HL7v3 representation
+
+Send the example to int
 
 #### Verify with dispenser
 ---
 
-Lookup shortform prescription id in pact and use this to find prescription in eps tracker. Ask dispenser to verify
+Copy shortform prescription id from example and use this to find prescription in eps tracker. Ask dispenser to verify
