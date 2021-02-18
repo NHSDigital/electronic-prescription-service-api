@@ -295,7 +295,7 @@ def test_find_prepare_request_paths__finds_prepare_examples():
 
 def test_update_prescription__updates_prescription_id(secondary_care_repeat_dispensing_process_request):
     prescription_id = "newValue"
-    update_prescription(secondary_care_repeat_dispensing_process_request, prescription_id, None, None, None)
+    update_prescription(secondary_care_repeat_dispensing_process_request, None, prescription_id, None, None, None)
     for entry in secondary_care_repeat_dispensing_process_request['entry']:
         resource = entry["resource"]
         if resource["resourceType"] == "MedicationRequest":
@@ -307,7 +307,7 @@ def test_update_prescription__updates_prescription_id(secondary_care_repeat_disp
 
 def test_update_prescription__updates_short_prescription_id(secondary_care_repeat_dispensing_process_request):
     short_prescription_id = "newValue"
-    update_prescription(secondary_care_repeat_dispensing_process_request, None, short_prescription_id, None, None)
+    update_prescription(secondary_care_repeat_dispensing_process_request, None, None, short_prescription_id, None, None)
     for entry in secondary_care_repeat_dispensing_process_request['entry']:
         resource = entry["resource"]
         if resource["resourceType"] == "MedicationRequest":
@@ -317,7 +317,7 @@ def test_update_prescription__updates_short_prescription_id(secondary_care_repea
 
 def test_update_prescription__updates_signature_time(secondary_care_repeat_dispensing_process_request):
     signature_time = "newValue"
-    update_prescription(secondary_care_repeat_dispensing_process_request, None, None, None, signature_time)
+    update_prescription(secondary_care_repeat_dispensing_process_request, None, None, None, None, signature_time)
     for entry in secondary_care_repeat_dispensing_process_request['entry']:
         resource = entry["resource"]
         if resource["resourceType"] == "Provenance":
@@ -329,7 +329,7 @@ def test_update_prescription__updates_signature_time(secondary_care_repeat_dispe
 
 def test_update_prescription__updates_authored_on(secondary_care_repeat_dispensing_process_request):
     authored_on = "newValue"
-    update_prescription(secondary_care_repeat_dispensing_process_request, None, None, authored_on, None)
+    update_prescription(secondary_care_repeat_dispensing_process_request, None, None, None, authored_on, None)
     for entry in secondary_care_repeat_dispensing_process_request['entry']:
         resource = entry["resource"]
         if resource["resourceType"] == "MedicationRequest":
@@ -340,7 +340,7 @@ def test_update_prescription__updates_authored_on(secondary_care_repeat_dispensi
 def test_update_prescription__sets_validity_period_for_4_weeks_from_today(
     secondary_care_repeat_dispensing_process_request
 ):
-    update_prescription(secondary_care_repeat_dispensing_process_request, None, None, None, None)
+    update_prescription(secondary_care_repeat_dispensing_process_request, None, None, None, None, None)
     for entry in secondary_care_repeat_dispensing_process_request['entry']:
         resource = entry["resource"]
         if resource["resourceType"] == "MedicationRequest":
