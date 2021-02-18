@@ -1,17 +1,8 @@
 import * as fhir from "../../../../models/fhir/fhir-resources"
-import {
-  DaysSupply,
-  DispensingSitePreference,
-  DosageInstructions,
-  LineItem,
-  LineItemQuantity,
-  Performer,
-  Prescription,
-  PrescriptionEndorsement,
-  PrescriptionTreatmentType,
-  PrescriptionType,
-  ReviewDate
-} from "../../../../models/hl7-v3/hl7-v3-prescriptions"
+import * as codes from "../../../../models/hl7-v3/hl7-v3-datatypes-codes"
+import * as core from "../../../../models/hl7-v3/hl7-v3-datatypes-core"
+import * as organisations from "../../../../models/hl7-v3/hl7-v3-people-places"
+import * as prescriptions from "../../../../models/hl7-v3/hl7-v3-prescriptions"
 import * as uuid from "uuid"
 import {
   createGroupIdentifier,
@@ -19,12 +10,8 @@ import {
   createResponsiblePractitionerExtension
 } from "../medication-request"
 import {createCodeableConcept, createReference} from "../fhir-base-types"
-import * as codes from "../../../../models/hl7-v3/hl7-v3-datatypes-codes"
-import {PrescriptionTreatmentTypeCode, SnomedCode} from "../../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {CourseOfTherapyTypeCode} from "../../prescription/course-of-therapy-type"
-import {Interval, IntervalUnanchored, NumericValue, Timestamp} from "../../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {toArray} from "../../common"
-import {Organization} from "../../../../models/hl7-v3/hl7-v3-people-places"
 import {parseAdditionalInstructions} from "./additional-instructions"
 import {convertHL7V3DateToIsoDateString} from "../../common/dateTime"
 
@@ -47,8 +34,8 @@ export const COURSE_OF_THERAPY_TYPE = Object.freeze({
 })
 
 export function createMedicationRequest(
-  prescription: Prescription,
-  lineItem: LineItem,
+  prescription: prescriptions.Prescription,
+  lineItem: prescriptions.LineItem,
   patientId: string,
   requesterId: string,
   responsiblePartyId: string
@@ -100,10 +87,10 @@ export function createMedicationRequest(
 
 export function createMedicationRequestExtensions(
   responsiblePartyId: string,
-  prescriptionType: PrescriptionType,
-  lineItemRepeatNumber: Interval<NumericValue>,
-  reviewDate: ReviewDate,
-  lineItemEndorsements: Array<PrescriptionEndorsement>,
+  prescriptionType: prescriptions.PrescriptionType,
+  lineItemRepeatNumber: core.Interval<core.NumericValue>,
+  reviewDate: prescriptions.ReviewDate,
+  lineItemEndorsements: Array<prescriptions.PrescriptionEndorsement>,
   controlledDrugWords: string
 ): Array<fhir.MedicationRequestExtension> {
   const extensions: Array<fhir.MedicationRequestExtension> = [
@@ -124,8 +111,8 @@ export function createMedicationRequestExtensions(
 }
 
 function createRepeatInformationExtension(
-  reviewDate: ReviewDate,
-  lineItemRepeatNumber: Interval<NumericValue>
+  reviewDate: prescriptions.ReviewDate,
+  lineItemRepeatNumber: core.Interval<core.NumericValue>
 ): fhir.RepeatInformationExtension {
   return {
     url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
@@ -146,7 +133,9 @@ function createRepeatInformationExtension(
   }
 }
 
-function createEndorsementExtension(prescriptionEndorsement: PrescriptionEndorsement): fhir.CodeableConceptExtension {
+function createEndorsementExtension(
+  prescriptionEndorsement: prescriptions.PrescriptionEndorsement
+): fhir.CodeableConceptExtension {
   return {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-PrescriptionEndorsement",
     valueCodeableConcept: {
@@ -159,7 +148,9 @@ function createEndorsementExtension(prescriptionEndorsement: PrescriptionEndorse
   }
 }
 
-function createPrescriptionTypeExtension(pertinentPrescriptionType: PrescriptionType): fhir.CodingExtension {
+function createPrescriptionTypeExtension(
+  pertinentPrescriptionType: prescriptions.PrescriptionType
+): fhir.CodingExtension {
   return {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
     valueCoding: {
@@ -181,11 +172,11 @@ function createControlledDrugExtension(controlledDrugWords: string): fhir.Contro
 }
 
 export function createCourseOfTherapyType(
-  prescriptionTreatmentType: PrescriptionTreatmentType,
-  lineItemRepeatNumber: Interval<NumericValue>
+  prescriptionTreatmentType: prescriptions.PrescriptionTreatmentType,
+  lineItemRepeatNumber: core.Interval<core.NumericValue>
 ): fhir.CodeableConcept {
   const isRepeatDispensing = prescriptionTreatmentType.value._attributes.code
-    === PrescriptionTreatmentTypeCode.CONTINUOUS_REPEAT_DISPENSING._attributes.code
+    === codes.PrescriptionTreatmentTypeCode.CONTINUOUS_REPEAT_DISPENSING._attributes.code
   if (isRepeatDispensing) {
     return COURSE_OF_THERAPY_TYPE.CONTINOUS_REPEAT_DISPENSING
   } else if (lineItemRepeatNumber) {
@@ -195,11 +186,14 @@ export function createCourseOfTherapyType(
   }
 }
 
-export function createSnomedCodeableConcept(code: SnomedCode): fhir.CodeableConcept {
+export function createSnomedCodeableConcept(code: codes.SnomedCode): fhir.CodeableConcept {
   return createCodeableConcept("http://snomed.info/sct", code._attributes.code, code._attributes.displayName)
 }
 
-export function createDosage(dosageInstructions: DosageInstructions, additionalInstructions: string): fhir.Dosage {
+export function createDosage(
+  dosageInstructions: prescriptions.DosageInstructions,
+  additionalInstructions: string
+): fhir.Dosage {
   const dosage: fhir.Dosage = {
     text: dosageInstructions.value._text
   }
@@ -209,7 +203,7 @@ export function createDosage(dosageInstructions: DosageInstructions, additionalI
   return dosage
 }
 
-function createDispenseRequestQuantity(lineItemQuantity: LineItemQuantity): fhir.SimpleQuantity {
+function createDispenseRequestQuantity(lineItemQuantity: prescriptions.LineItemQuantity): fhir.SimpleQuantity {
   const lineItemQuantityTranslation = lineItemQuantity.quantity.translation
   return {
     value: lineItemQuantityTranslation._attributes.value,
@@ -219,7 +213,7 @@ function createDispenseRequestQuantity(lineItemQuantity: LineItemQuantity): fhir
   }
 }
 
-function createValidityPeriod(effectiveTime: Interval<Timestamp>): fhir.Period {
+function createValidityPeriod(effectiveTime: core.Interval<core.Timestamp>): fhir.Period {
   const validityPeriod: fhir.Period = {}
   if (effectiveTime.low) {
     validityPeriod.start = convertHL7V3DateToIsoDateString(effectiveTime.low)
@@ -230,7 +224,7 @@ function createValidityPeriod(effectiveTime: Interval<Timestamp>): fhir.Period {
   return validityPeriod
 }
 
-function createExpectedSupplyDuration(expectedUseTime: IntervalUnanchored): fhir.SimpleQuantity {
+function createExpectedSupplyDuration(expectedUseTime: core.IntervalUnanchored): fhir.SimpleQuantity {
   return {
     unit: "day",
     value: expectedUseTime.width._attributes.value,
@@ -240,10 +234,10 @@ function createExpectedSupplyDuration(expectedUseTime: IntervalUnanchored): fhir
 }
 
 export function createDispenseRequest(
-  dispensingSitePreference: DispensingSitePreference,
-  lineItemQuantity: LineItemQuantity,
-  daysSupply: DaysSupply,
-  performer: Performer
+  dispensingSitePreference: prescriptions.DispensingSitePreference,
+  lineItemQuantity: prescriptions.LineItemQuantity,
+  daysSupply: prescriptions.DaysSupply,
+  performer: prescriptions.Performer
 ): fhir.MedicationRequestDispenseRequest {
   const dispenseRequest: fhir.MedicationRequestDispenseRequest = {
     extension: [
@@ -263,7 +257,9 @@ export function createDispenseRequest(
   return dispenseRequest
 }
 
-function createPerformerSiteTypeExtension(dispensingSitePreference: DispensingSitePreference): fhir.CodingExtension {
+function createPerformerSiteTypeExtension(
+  dispensingSitePreference: prescriptions.DispensingSitePreference
+): fhir.CodingExtension {
   return {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-performerSiteType",
     valueCoding: {
@@ -273,7 +269,7 @@ function createPerformerSiteTypeExtension(dispensingSitePreference: DispensingSi
   }
 }
 
-function createPerformer(performerOrganization: Organization): fhir.Performer {
+function createPerformer(performerOrganization: organisations.Organization): fhir.Performer {
   return {
     identifier: {
       system: "https://fhir.nhs.uk/Id/ods-organization-code",
