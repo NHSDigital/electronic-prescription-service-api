@@ -9,12 +9,19 @@ import {createParametersDigest} from "../src/services/translation"
 import {convertFragmentsToHashableFormat, extractFragments} from "../src/services/translation/prescription/signature"
 import {specification} from "./resources/test-resources"
 
-test.skip("verify prescription signature for specific prescription", () => {
-  //eslint-disable-next-line max-len
-  const prescriptionPath = "../../models/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Convert-Response-Send-200_OK.xml"
+//eslint-disable-next-line max-len
+const prescriptionPath = "../../models/examples/primary-care/acute/no-nominated-pharmacy/1-Convert-Response-Send-200_OK.xml"
+
+test("verify digest for specific prescription", () => {
   const prescriptionStr = readFileSync(path.join(__dirname, prescriptionPath), "utf-8")
   const prescriptionRoot = readXml(prescriptionStr)
-  expectSignatureMatchesPrescriptionAndIsValid(prescriptionRoot)
+  expectDigestMatchesPrescription(prescriptionRoot)
+})
+
+test.skip("verify signature for specific prescription", () => {
+  const prescriptionStr = readFileSync(path.join(__dirname, prescriptionPath), "utf-8")
+  const prescriptionRoot = readXml(prescriptionStr)
+  expectSignatureIsValid(prescriptionRoot)
 })
 
 const cases = specification.map(examplePrescription => [
@@ -23,22 +30,23 @@ const cases = specification.map(examplePrescription => [
 ])
 
 test.skip.each(cases)("verify prescription signature for %s", (desc: string, hl7V3Message: ElementCompact) => {
-  expectSignatureMatchesPrescriptionAndIsValid(hl7V3Message)
+  expectDigestMatchesPrescription(hl7V3Message)
+  expectSignatureIsValid(hl7V3Message)
 })
 
-function expectSignatureMatchesPrescriptionAndIsValid(prescriptionRoot: ElementCompact) {
-  const signatureMatchesPrescription = verifyPrescriptionSignatureMatchesPrescription(prescriptionRoot)
+function expectSignatureIsValid(prescriptionRoot: ElementCompact) {
   const signatureValid = verifyPrescriptionSignatureValid(prescriptionRoot)
-  console.log(`Signature matches prescription: ${signatureMatchesPrescription}. Signature valid: ${signatureValid}`)
-  expect(signatureMatchesPrescription).toBeTruthy()
+  console.log(`Signature valid: ${signatureValid}`)
   expect(signatureValid).toBeTruthy()
 }
 
-function verifyPrescriptionSignatureMatchesPrescription(prescriptionRoot: ElementCompact) {
+function expectDigestMatchesPrescription(prescriptionRoot: ElementCompact) {
   const signatureRoot = extractSignatureRootFromPrescriptionRoot(prescriptionRoot)
   const digestFromSignature = extractDigestFromSignatureRoot(signatureRoot)
   const digestFromPrescription = calculateDigestFromPrescriptionRoot(prescriptionRoot)
-  return digestFromPrescription === digestFromSignature
+  const digestMatches = digestFromPrescription === digestFromSignature
+  console.log(`Signature matches prescription: ${digestMatches}`)
+  expect(digestMatches).toBeTruthy()
 }
 
 function verifyPrescriptionSignatureValid(prescriptionRoot: ElementCompact) {
