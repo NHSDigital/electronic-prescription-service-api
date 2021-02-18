@@ -251,7 +251,7 @@ describe("groupIdentifier", () => {
           url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
           valueIdentifier: {
             system: "https://fhir.nhs.uk/Id/prescription",
-            value: "B2FC79F0-2793-4736-9B2D-0976C21E73A5"
+            value: "b2fc79f0-2793-4736-9b2d-0976c21e73a5"
           }
         }
       ],
