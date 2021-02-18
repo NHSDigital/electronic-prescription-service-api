@@ -13,9 +13,19 @@ export const convertSecondaryCareCommunityAcuteCases = getConvertCases("secondar
 export const convertSecondaryCareCommunityRepeatDispensingCases = getConvertCases("secondary-care community repeat-dispensing")
 export const convertSecondaryCareHomecareCases = getConvertCases("secondary-care homecare")
 export const convertPrimaryCareCases = getConvertCases("primary-care")
-
 export const convertErrorCases = convertExamples.filter(e => !e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
-export const prepareCases = prepareExamples.filter(e => e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
+
+export const prepareSecondaryCareCommunityAcuteCases = getPrepareCases("secondary-care community acute")
+export const prepareSecondaryCareCommunityRepeatDispensingCases = getPrepareCases("secondary-care community repeat-dispensing")
+export const prepareSecondaryCareHomecareCases = getPrepareCases("secondary-care homecare")
+export const preparePrimaryCareCases = getPrepareCases("primary-care")
+
+function getPrepareCases(searchString: string) {
+  return prepareExamples
+    .filter(e => e.isSuccess)
+    .filter(e => e.description.includes(searchString))
+    .map(spec => spec.toJestCase())
+}
 
 function getProcessCases(searchString: string, operation: string) {
   return processExamples

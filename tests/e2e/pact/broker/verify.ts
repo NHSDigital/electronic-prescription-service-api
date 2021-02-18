@@ -78,6 +78,7 @@ async function verifyWith2Retries() {
 async function verifyConvert(): Promise<any> {
   const pactGroups =
     PactGroups
+      // this group is only valid for process
       .filter(g => g !== "accept-header")
       // cancel conversions are included in main convert group
       .filter(g => !g.includes("-cancel"))
@@ -93,10 +94,18 @@ async function verifyConvert(): Promise<any> {
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyPrepare(): Promise<any> {
-  endpoint = "prepare"
-  pactGroup = ""
-  resetBackOffRetryTimer()
-  await verifyWith2Retries()
+  const pactGroups =
+      isSandbox()
+        ? PactGroups.filter(g => g !== "failures").filter(g => g !== "accept-header").filter(g => !g.includes("cancel"))
+        : PactGroups.filter(g => g !== "accept-header").filter(g => !g.includes("cancel"))
+
+    await pactGroups.reduce(async (promise, group) => {
+      await promise
+      endpoint = "prepare"
+      pactGroup = group
+      resetBackOffRetryTimer()
+      await verifyOnce()
+    }, Promise.resolve())
 }
 
 function isSandbox() {

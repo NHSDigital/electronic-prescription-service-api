@@ -93,8 +93,6 @@ function run-smoke-tests() {
     }
     $env:PACT_PROVIDER="nhsd-apim-eps$provider_suffix"
     $env:SERVICE_BASE_PATH="electronic-prescriptions$pr_prefix$pr"
-    $env:PACT_TAG="$env"
-    $env:PACT_VERSION="$env:USERNAME".replace(' ','')
     $env:APIGEE_ACCESS_TOKEN="$token"
     $env:PACT_PROVIDER_URL="https://$env.api.service.nhs.uk/$env:SERVICE_BASE_PATH"
     #$env:LOG_LEVEL="debug"
@@ -110,6 +108,14 @@ function run-smoke-tests() {
 
 # requires: make mode=live create-smoke-tests
 function generate-postman-collection() {
+    foreach ($arg in $args) {
+        $split_args = $arg.Split("=")
+        $arg_name = $split_args[0]
+        $arg_value = $split_args[1]
+        Invoke-Expression `$$arg_name="""$arg_value"""
+    }
+    $env:APIGEE_ACCESS_TOKEN="$token"
+    $env:APIGEE_ENVIRONMENT="$env"
     mkdir tests/e2e/postman/collections -ErrorAction SilentlyContinue
 	cd tests/e2e/pact 
 	npm run generate-postman-collection

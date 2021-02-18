@@ -6,11 +6,11 @@
     "test": "jest",
     "lint": "eslint . --ext .ts --max-warnings 0 --fix",
     "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL",
-    "generate-postman-collection": "ts-node postman-pact.ts --use_strict",
+    "generate-postman-collection": "ts-node postman-pact.ts --use_strict --transpile-only",
     "create-sandbox-pacts": "jest sandbox",
     "create-live-pacts": "jest live",
-    "publish-pacts": "ts-node ./broker/publish.ts --use_strict",
-    "verify-pacts": "ts-node ./broker/verify.ts --use_strict"
+    "publish-pacts": "ts-node ./broker/publish.ts --use_strict --transpile-only",
+    "verify-pacts": "ts-node ./broker/verify.ts --use_strict --transpile-only"
   },
   "author": "NHS Digital",
   "license": "MIT",
