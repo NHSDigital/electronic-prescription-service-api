@@ -21,6 +21,8 @@ info:
     * evaluate prescription signing client implementations
     * release a prescription for dispensing (sandbox implementation)
     * send a dispense notification to EPS (sandbox implementation)
+    * return a prescription after downloading (spec only)
+    * withdraw a dispense notificaton (spec only)
 
     You cannot currently use this API to:
     * prepare a primary care prescription for signing
@@ -96,7 +98,7 @@ info:
     The API is currently available for sandbox testing and integration testing, but not for production use.
 
     ### Dispensing API
-    Download and the mark as dispensed dispensing flows for the EPS FHIR API are in the sandbox environment only, withdraw and return and currently only referenced in this spec.
+    Download and the mark as dispensed dispensing flows for the EPS FHIR API are in the sandbox environment only, withdraw and return are currently only referenced in this spec.
 
     ## Technology
 
