@@ -63,11 +63,10 @@ info:
     ## Using this API as a dispenser
     ### To download a prescription to be dispensed: 
     1. POST a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to the `/FHIR/R4/Task/$release` endpoint to mark the prescription as released
-    2. POST a [prescription-dispense-notification](https://simplifier.net/guide/DigitalMedicines/prescription-dispense) message to the `/FHIR/R4/$process-message` endpoint to inform SPINE of a partial/successful dispense
-
+   
     ### To notify Spine that a prescription has been dispensed:
-    1. TBC
-    
+    1. POST a [prescription-dispense-notification](https://simplifier.net/guide/DigitalMedicines/prescription-dispense) message to the `/FHIR/R4/$process-message` endpoint to inform SPINE of a partial/successful dispense
+
     ### To withdraw a prescription notification:
     1. TBC
     
@@ -97,7 +96,7 @@ info:
     The API is currently available for sandbox testing and integration testing, but not for production use.
 
     ### Dispensing API
-    Dispensing flows for EPS FHIR API are in the sandbox environment only.
+    Download and the mark as dispensed dispensing flows for the EPS FHIR API are in the sandbox environment only, withdraw and return and currently only referenced in this spec.
 
     ## Technology
 
