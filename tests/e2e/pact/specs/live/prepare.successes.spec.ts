@@ -4,7 +4,6 @@ import * as TestResources from "../../resources/test-resources"
 import { Bundle, Parameters } from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import supertest from "supertest"
-import { createUnauthorisedInteraction } from "./auth"
 import * as uuid from "uuid"
 import { basePath, getStringParameterByName, pactOptions } from "../../resources/common"
 
