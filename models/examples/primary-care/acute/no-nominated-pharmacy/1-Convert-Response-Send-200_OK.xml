@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN020101SM31 xmlns="urn:hl7-org:v3">
-  <id root="76392765-ECA2-47CF-BC18-A9CDBCDE9EB7"/>
-  <creationTime value="20210217112133"/>
+  <id root="81C9280A-51B6-4980-ADE8-3159FB9B95E6"/>
+  <creationTime value="20210218121129"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN020101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -22,7 +22,7 @@
       <AgentPersonSDS classCode="AGNT">
         <id extension="200102238987" root="1.2.826.0.1285.0.2.0.67"/>
         <agentPersonSDS classCode="PSN" determinerCode="INSTANCE">
-          <id extension="44151870302" root="1.2.826.0.1285.0.2.0.65"/>
+          <id extension="555086689106" root="1.2.826.0.1285.0.2.0.65"/>
         </agentPersonSDS>
         <part typeCode="PART">
           <partSDSRole classCode="ROL">
@@ -40,9 +40,9 @@
     </author1>
     <subject>
       <ParentPrescription classCode="INFO" moodCode="EVN">
-        <id root="76392765-ECA2-47CF-BC18-A9CDBCDE9EB7"/>
+        <id root="81C9280A-51B6-4980-ADE8-3159FB9B95E6"/>
         <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Prescription - FocusActOrEvent (record artifact)"/>
-        <effectiveTime value="20210217000000"/>
+        <effectiveTime value="20210218000000"/>
         <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <Patient classCode="PAT">
@@ -79,12 +79,12 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentPrescription classCode="SBADM" moodCode="RQO">
-            <id root="87812214-BAF3-4DCD-91A5-1727098274B7"/>
-            <id extension="491355-C81010-11EBBA" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+            <id root="09161FD3-9318-4F1F-A1C3-856D47BD535A"/>
+            <id extension="6E522E-C81010-11EB9F" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
             <effectiveTime nullFlavor="NA"/>
             <author contextControlCode="OP" typeCode="AUT">
-              <time value="20210217112132"/>
+              <time value="20210218121129"/>
               <signatureText>
                 <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
                   <SignedInfo>
@@ -95,10 +95,10 @@
                         <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
                       </Transforms>
                       <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                      <DigestValue>MufoXgTwc5Xqvp3ZPdcg5usev7A=</DigestValue>
+                      <DigestValue>Bpm3nPy18eZTF0ZTTOyZqQV+qtc=</DigestValue>
                     </Reference>
                   </SignedInfo>
-                  <SignatureValue>Tv9von2d3uEWIifXQI/tPQwh996hVg4BQ4rJf0Gxx9PoCKR09fW33HioJTwT9f/Hy0lQ80OVjYj9XDlPth1ZLsO0rVF1dUIA6Wt7Nkc+TU/Q9yDRG+sRYhiVGAghyh67K+j6PJQ8Mm0Ti5AhiTXWaW4qWio4q0WLEFDMuDrotqY=</SignatureValue>
+                  <SignatureValue>YteTOPn5ytYdbGdEo5nIQ3s2xwQEVjfFs+DHG/kopCiXFBvP7bYNUkGYtq5nLU/LQwLEmomg+GSWmTGluSNmUAsm4ChlRAdGNvBy7iTrKA47GDnrO1CQkyfbs9jHkkvP1gSxn4YhREe0UUOREgEDogUb987x5dl2G84Sx2zwEhY=</SignatureValue>
                   <KeyInfo>
                     <X509Data>
                       <X509Certificate>MIIDuDCCAqCgAwIBAgIEXcmtHzANBgkqhkiG9w0BAQsFADA2MQwwCgYDVQQKEwNuaHMxCzAJBgNVBAsTAkNBMRkwFwYDVQQDExBOSFMgSU5UIExldmVsIDFEMB4XDTIwMTAyMjEwMjE1NVoXDTIyMTAyMjEwNTE1NVowQzEMMAoGA1UEChMDbmhzMQ8wDQYDVQQLEwZQZW9wbGUxIjAgBgNVBAMMGTU1NTI1MzUyMTEwOF9SQU5ET01fVVNFUlEwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKt4szNw7OAH7AQRrDe/xBImsMmMiS9EsrT3a3p/Lh3brdzI9aajTUZ2b/cvbOa7PeYd7u+K4a2Zd0Xk+0GFmYGzSVX6iYjblwr0vai31zV7G+lGvHxH6pSoLCwICaZAFwabeD5Oz94+yA3aWNWtGV0Dfh9qwH3ZFCIMRsverN1pAgMBAAGjggFDMIIBPzAOBgNVHQ8BAf8EBAMCBkAwZQYDVR0gAQH/BFswWTBXBgsqhjoAiXtmAAMCADBIMEYGCCsGAQUFBwIBFjpodHRwczovL3BraS5uaHMudWsvY2VydGlmaWNhdGVfcG9saWNpZXMvY29udGVudF9jb21taXRtZW50MDMGA1UdHwQsMCowKKAmoCSGImh0dHA6Ly9jcmwubmhzLnVrL2ludC8xZC9jcmxjMy5jcmwwKwYDVR0QBCQwIoAPMjAyMDEwMjIxMDIxNTVagQ8yMDIyMDMxNzEwNTE1NVowHwYDVR0jBBgwFoAUoJYfgYTNPd6EUKL6QLIzHxY5PFIwHQYDVR0OBBYEFLtyvYSyaqg60AEUZgxk0wrjRJc+MAkGA1UdEwQCMAAwGQYJKoZIhvZ9B0EABAwwChsEVjguMwMCBLAwDQYJKoZIhvcNAQELBQADggEBABczy8B8juPpIfaTNFcxrC22aCX/xYZmhrL/NvIBAaX1G5hjiwmkGKE2hRTIr67PxZxmXsJxigRBMHPlI+lY/+okzH0Gi7b5bqlw7pxGIgJO000w8pFsvo9w42IYhHodsvnDVSxhMT0J46Qhk9soE0LjoEULKQPPlYGke/Gl3m17ItFYwObQH0fMEwmiqByeIfz7gSccOzL5cIp6PcZTOjo2IqQpgEmhjOcRInEqANitSdjoiJAJzpaaZjYTRdHUX7i7ajEiH4m91nFW+4AqkNttlb4WcGKsSmWgfKKheF4IoZKME80xerSgMy8vtjLOBJCGXz0wLGmQuRmxMTq88q4=</X509Certificate>
@@ -225,7 +225,7 @@
                   <seperatableInd value="false"/>
                   <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
                     <code code="DI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value>100 tablets. One tablet to be taken four times a day</value>
+                    <value>One tablet to be taken four times a day</value>
                   </pertinentDosageInstructions>
                 </pertinentInformation2>
               </pertinentLineItem>
@@ -257,7 +257,7 @@
                   <seperatableInd value="false"/>
                   <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
                     <code code="DI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value>200 tablets. One dose to be taken five times a day</value>
+                    <value>One dose to be taken five times a day</value>
                   </pertinentDosageInstructions>
                 </pertinentInformation2>
               </pertinentLineItem>
