@@ -181,7 +181,9 @@ def derive_convert_response_path(process_request_path):
     return f'{example_dir}/{number}-Convert-Response-{operation}-{status_code_and_xml_ext}'
 
 
-def update_prepare_examples(api_base_url, prepare_request_path, prepare_request_json, bundle_id, prescription_id, authored_on):
+def update_prepare_examples(
+    api_base_url, prepare_request_path, prepare_request_json, bundle_id, prescription_id, authored_on
+):
     try:
         organisation_code = get_organisation_code(prepare_request_json)
         short_prescription_id = generate_short_form_id(organisation_code)
