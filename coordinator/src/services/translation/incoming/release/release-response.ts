@@ -7,20 +7,54 @@ import {createMedicationRequest} from "./release-medication-request"
 import {createMessageHeader, EVENT_CODING} from "../message-header"
 import {createAndAddCommunicationRequest, parseAdditionalInstructions} from "./additional-instructions"
 import * as uuid from "uuid"
+import {PrescriptionReleaseResponse} from "../../../../models/hl7-v3/hl7-v3-release"
+import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
 
-export function createBundle(parentPrescription: ParentPrescription): fhir.Bundle {
+const SUPPORTED_MESSAGE_TYPE = "PORX_MT122003UK32"
+
+export function createOuterBundle(releaseResponse: PrescriptionReleaseResponse): fhir.Bundle {
+  const releaseRequestId = releaseResponse.inFulfillmentOf.priorDownloadRequestRef.id._attributes.root
+  const parentPrescriptions = toArray(releaseResponse.component)
+    .filter(component => component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE)
+    .map(component => component.ParentPrescription)
   return {
     resourceType: "Bundle",
     id: uuid.v4(),
+    meta: {
+      lastUpdated: convertHL7V3DateTimeToIsoDateTimeString(releaseResponse.effectiveTime)
+    },
     identifier: {
       system: "https://tools.ietf.org/html/rfc4122",
-      value: parentPrescription.id._attributes.root
+      value: releaseResponse.id._attributes.root.toLowerCase()
     },
-    entry: createBundleResources(parentPrescription).map(convertResourceToBundleEntry)
+    type: "searchset",
+    total: parentPrescriptions.length,
+    entry: parentPrescriptions
+      .map(parentPrescription => createInnerBundle(parentPrescription, releaseRequestId))
+      .map(convertResourceToBundleEntry)
   }
 }
 
-export function createBundleResources(parentPrescription: ParentPrescription): Array<fhir.Resource> {
+export function createInnerBundle(parentPrescription: ParentPrescription, releaseRequestId: string): fhir.Bundle {
+  return {
+    resourceType: "Bundle",
+    id: uuid.v4(),
+    meta: {
+      lastUpdated: convertHL7V3DateTimeToIsoDateTimeString(parentPrescription.effectiveTime)
+    },
+    identifier: {
+      system: "https://tools.ietf.org/html/rfc4122",
+      value: parentPrescription.id._attributes.root.toLowerCase()
+    },
+    type: "message",
+    entry: createBundleResources(parentPrescription, releaseRequestId).map(convertResourceToBundleEntry)
+  }
+}
+
+export function createBundleResources(
+  parentPrescription: ParentPrescription,
+  releaseRequestId: string
+): Array<fhir.Resource> {
   const bundleResources: Array<fhir.Resource> = []
   const focusIds: Array<string> = []
 
@@ -64,7 +98,7 @@ export function createBundleResources(parentPrescription: ParentPrescription): A
     EVENT_CODING.PRESCRIPTION_ORDER,
     focusIds,
     pertinentPrescription.performer?.AgentOrgSDS?.agentOrganizationSDS?.id?._attributes?.extension,
-    "otherMessageId" //TODO - do we have the original message id?
+    releaseRequestId
   )
   bundleResources.unshift(messageHeader)
 

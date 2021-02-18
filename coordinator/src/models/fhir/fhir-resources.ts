@@ -2,7 +2,12 @@ import {LosslessNumber} from "lossless-json"
 
 export abstract class Resource {
   id?: string
+  meta?: Meta
   resourceType: string
+}
+
+export interface Meta {
+  lastUpdated: string
 }
 
 export interface Bundle extends Resource {

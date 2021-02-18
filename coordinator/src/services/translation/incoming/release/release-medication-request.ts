@@ -26,7 +26,7 @@ import {Interval, IntervalUnanchored, NumericValue, Timestamp} from "../../../..
 import {toArray} from "../../common"
 import {Organization} from "../../../../models/hl7-v3/hl7-v3-people-places"
 import {parseAdditionalInstructions} from "./additional-instructions"
-import {convertHL7V3DateToIsoDateString} from "../../common/dateTime";
+import {convertHL7V3DateToIsoDateString} from "../../common/dateTime"
 
 export const COURSE_OF_THERAPY_TYPE = Object.freeze({
   ACUTE: createCodeableConcept(
@@ -286,7 +286,7 @@ export function createGroupIdentifierFromPrescriptionIds(
   prescriptionIds: [codes.GlobalIdentifier, codes.ShortFormPrescriptionIdentifier]
 ): fhir.MedicationRequestGroupIdentifier {
   const shortFormId = prescriptionIds[1]._attributes.extension
-  const longFormId = prescriptionIds[0]._attributes.root //TODO - lower case?
+  const longFormId = prescriptionIds[0]._attributes.root.toLowerCase()
   return createGroupIdentifier(shortFormId, longFormId)
 }
 

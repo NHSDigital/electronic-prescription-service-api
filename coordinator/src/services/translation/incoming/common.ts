@@ -8,7 +8,7 @@ import {createPractitioner} from "./practitioner"
 import {createHealthcareService, createLocations, createOrganization} from "./organization"
 import {createPractitionerRole} from "./practitioner-role"
 import {createPatient} from "./patient"
-import {createReference} from "./fhir-base-types";
+import {createReference} from "./fhir-base-types"
 
 export function convertName(hl7Name: Array<core.Name> | core.Name): Array<fhir.HumanName> {
   const nameArray = toArray(hl7Name)

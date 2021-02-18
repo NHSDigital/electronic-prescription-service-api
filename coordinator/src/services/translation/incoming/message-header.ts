@@ -7,7 +7,7 @@ export function createMessageHeader(
   eventCoding: fhir.Coding,
   focusIds: Array<string>,
   destinationOrganizationId: string,
-  cancelRequestId: string
+  requestMessageId: string
 ): fhir.MessageHeader {
   return {
     resourceType: "MessageHeader",
@@ -17,7 +17,7 @@ export function createMessageHeader(
     destination: getDestinations(destinationOrganizationId),
     sender: getNhsdSender(),
     source: getSource(),
-    response: getMessageHeaderResponse(cancelRequestId),
+    response: getMessageHeaderResponse(requestMessageId),
     focus: createFocus(focusIds)
   }
 }
@@ -76,9 +76,9 @@ function getDestinations(representedOrganizationId: string): Array<fhir.MessageH
   }
 }
 
-function getMessageHeaderResponse(cancelRequestId: string): fhir.MessageHeaderResponse {
+function getMessageHeaderResponse(requestMessageId: string): fhir.MessageHeaderResponse {
   return {
-    identifier: cancelRequestId.toLowerCase(),
+    identifier: requestMessageId.toLowerCase(),
     code: "ok"
   }
 }

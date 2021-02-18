@@ -1,12 +1,28 @@
-import {createBundleResources} from "../../../../../src/services/translation/incoming/release/release-response"
+import {
+  createBundleResources,
+  createOuterBundle
+} from "../../../../../src/services/translation/incoming/release/release-response"
 import {readXml} from "../../../../../src/services/serialisation/xml"
 import {ParentPrescription} from "../../../../../src/models/hl7-v3/hl7-v3-prescriptions"
 import * as LosslessJson from "lossless-json"
 import * as fs from "fs"
 import * as path from "path"
+import {PrescriptionReleaseResponse} from "../../../../../src/models/hl7-v3/hl7-v3-release"
+import {getUniqueValues} from "../../../../../src/services/validation/util"
+import {toArray} from "../../../../../src/services/translation/common"
+
+describe("outer bundle", () => {
+  const result = createOuterBundle(getExamplePrescriptionReleaseResponse())
+  console.log(LosslessJson.stringify(result))
+
+  test("contains only bundles", () => {
+    const resourceTypes = result.entry.map(entry => entry.resource.resourceType)
+    expect(getUniqueValues(resourceTypes)).toEqual(["Bundle"])
+  })
+})
 
 describe("bundle resources", () => {
-  const result = createBundleResources(getExample())
+  const result = createBundleResources(getExampleParentPrescription(), "ReleaseRequestId")
   console.log(LosslessJson.stringify(result))
 
   test("contains MessageHeader", () => {
@@ -54,9 +70,12 @@ describe("bundle resources", () => {
   })
 })
 
-function getExample() {
+function getExamplePrescriptionReleaseResponse(): PrescriptionReleaseResponse {
   const exampleStr = fs.readFileSync(path.join(__dirname, "release_success.xml"), "utf8")
   const exampleObj = readXml(exampleStr)
-  const resp = exampleObj["hl7:PORX_IN070101UK31"]["hl7:ControlActEvent"]["hl7:subject"]["PrescriptionReleaseResponse"]
-  return resp["component"]["ParentPrescription"] as ParentPrescription
+  return exampleObj["hl7:PORX_IN070101UK31"]["hl7:ControlActEvent"]["hl7:subject"]["PrescriptionReleaseResponse"]
+}
+
+function getExampleParentPrescription(): ParentPrescription {
+  return toArray(getExamplePrescriptionReleaseResponse().component)[0].ParentPrescription
 }
