@@ -1,5 +1,11 @@
 ## Testing
 
+Limitations in automated e2e tests: 
+  * Fresh IDs are generated when running these smoke tests so signatures will not be valid
+  * Short form prescription ID on generated prescription IDs has a hard-coded organisation code of 'A99968'
+
+For testing prescriptions with valid signatures which we would expect to be able to be dispensed see **[Testing with Dispensers](./TestingDispensing.md)**
+
 ### Sandbox Proxies
 ```
 make mode=sandbox create-smoke-tests

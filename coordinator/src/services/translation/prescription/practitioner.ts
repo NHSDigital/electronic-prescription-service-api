@@ -5,8 +5,6 @@ import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {convertName, convertTelecom} from "./demographics"
 import * as prescriptions from "../../../models/hl7-v3/hl7-v3-prescriptions"
 import {
-  convertIsoDateTimeStringToHl7V3DateTime,
-  convertMomentToHl7V3DateTime,
   getCodeableConceptCodingForSystem,
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
@@ -23,6 +21,7 @@ import * as errors from "../../../models/errors/processing-errors"
 import {identifyMessageType, MessageType} from "../../../routes/util"
 import moment from "moment"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
+import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../common/dateTime"
 
 export function convertAuthor(
   fhirBundle: fhir.Bundle,
