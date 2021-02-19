@@ -1,5 +1,4 @@
 import * as uuid from "uuid"
-import {createReference} from "../fhir-base-types"
 import * as fhir from "../../../../models/fhir"
 
 const MEDICATION_TAG_MATCHER = /^<medication>(.*?)<\/medication>/
@@ -71,13 +70,13 @@ export function createAndAddCommunicationRequest(
   const payload: Array<fhir.ContentReferencePayload | fhir.ContentStringPayload> = []
   if (medication.length) {
     const listId = createAndAddList(medication, bundleResources)
-    payload.push({contentReference: createReference(listId)})
+    payload.push({contentReference: fhir.createReference(listId)})
   }
   patientInfo.forEach(patientInfoEntry => payload.push({contentString: patientInfoEntry}))
   const communicationRequest: fhir.CommunicationRequest = {
     resourceType: "CommunicationRequest",
     id: uuid.v4(),
-    subject: createReference(patientId),
+    subject: fhir.createReference(patientId),
     payload: payload
   }
   bundleResources.push(communicationRequest)

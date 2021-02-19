@@ -13,33 +13,33 @@ import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
 
-export function convertFhirMessageToSpineRequest(fhirMessage: fhir.Bundle): SpineRequest {
-  const messageType = identifyMessageType(fhirMessage)
+export function convertFhirMessageToSpineRequest(bundle: fhir.Bundle): SpineRequest {
+  const messageType = identifyMessageType(bundle)
   return messageType === fhir.EventCodingCode.PRESCRIPTION
-    ? requestBuilder.toSpineRequest(createParentPrescriptionSendMessagePayload(fhirMessage))
-    : requestBuilder.toSpineRequest(createCancellationSendMessagePayload(fhirMessage))
+    ? requestBuilder.toSpineRequest(createParentPrescriptionSendMessagePayload(bundle))
+    : requestBuilder.toSpineRequest(createCancellationSendMessagePayload(bundle))
 }
 
 export function createParentPrescriptionSendMessagePayload(
-  fhirBundle: fhir.Bundle
+  bundle: fhir.Bundle
 ): hl7V3.SendMessagePayload<hl7V3.ParentPrescriptionRoot> {
-  const parentPrescription = convertParentPrescription(fhirBundle)
+  const parentPrescription = convertParentPrescription(bundle)
   const parentPrescriptionRoot = new hl7V3.ParentPrescriptionRoot(parentPrescription)
   const interactionId = hl7V3.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT
-  return createSendMessagePayload(interactionId, fhirBundle, parentPrescriptionRoot)
+  return createSendMessagePayload(interactionId, bundle, parentPrescriptionRoot)
 }
 
 export function createCancellationSendMessagePayload(
-  fhirBundle: fhir.Bundle
+  bundle: fhir.Bundle
 ): hl7V3.SendMessagePayload<hl7V3.CancellationRequestRoot> {
-  const cancellationRequest = convertCancellation(fhirBundle)
+  const cancellationRequest = convertCancellation(bundle)
   const cancellationRequestRoot = new hl7V3.CancellationRequestRoot(cancellationRequest)
   const interactionId = hl7V3.Hl7InteractionIdentifier.CANCEL_REQUEST
-  return createSendMessagePayload(interactionId, fhirBundle, cancellationRequestRoot)
+  return createSendMessagePayload(interactionId, bundle, cancellationRequestRoot)
 }
 
-export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle): fhir.Parameters {
-  const messageType = identifyMessageType(fhirMessage)
+export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle): fhir.Parameters {
+  const messageType = identifyMessageType(bundle)
   if (messageType !== fhir.EventCodingCode.PRESCRIPTION) {
     throw new InvalidValueError(
       "MessageHeader.eventCoding.code must be 'prescription-order'.",
@@ -47,7 +47,7 @@ export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle):
     )
   }
 
-  const parentPrescription = convertParentPrescription(fhirMessage)
+  const parentPrescription = convertParentPrescription(bundle)
   const fragments = extractFragments(parentPrescription)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
   const base64Digest = createParametersDigest(fragmentsToBeHashed)

@@ -7,15 +7,12 @@ import {extractEffectiveTime} from "../prescription/parent-prescription"
 import * as hl7V3 from "../../../../models/hl7-v3"
 import * as fhir from "../../../../models/fhir"
 
-export function convertCancellation(
-  fhirBundle: fhir.Bundle,
-  convertPatientFn = convertPatient,
-): hl7V3.CancellationRequest {
-  const fhirFirstMedicationRequest = getMedicationRequests(fhirBundle)[0]
+export function convertCancellation(bundle: fhir.Bundle, convertPatientFn = convertPatient): hl7V3.CancellationRequest {
+  const fhirFirstMedicationRequest = getMedicationRequests(bundle)[0]
   const effectiveTime = extractEffectiveTime(fhirFirstMedicationRequest)
 
   const messageId = getIdentifierValueForSystem(
-    [fhirBundle.identifier],
+    [bundle.identifier],
     "https://tools.ietf.org/html/rfc4122",
     "Bundle.identifier"
   )
@@ -24,15 +21,15 @@ export function convertCancellation(
     new hl7V3.GlobalIdentifier(messageId), effectiveTime
   )
 
-  const fhirPatient = getPatient(fhirBundle)
-  const hl7V3Patient = convertPatientFn(fhirBundle, fhirPatient)
+  const fhirPatient = getPatient(bundle)
+  const hl7V3Patient = convertPatientFn(bundle, fhirPatient)
   cancellationRequest.recordTarget = new hl7V3.RecordTarget(hl7V3Patient)
 
-  const hl7V3CancelRequester = convertResponsibleParty(fhirBundle, fhirFirstMedicationRequest)
+  const hl7V3CancelRequester = convertResponsibleParty(bundle, fhirFirstMedicationRequest)
   cancellationRequest.author = new hl7V3.Author()
   cancellationRequest.author.AgentPerson = hl7V3CancelRequester.AgentPerson
 
-  const hl7V3OriginalPrescriptionAuthor = convertAuthor(fhirBundle, fhirFirstMedicationRequest)
+  const hl7V3OriginalPrescriptionAuthor = convertAuthor(bundle, fhirFirstMedicationRequest)
   cancellationRequest.responsibleParty = new hl7V3.ResponsibleParty()
   cancellationRequest.responsibleParty.AgentPerson = hl7V3OriginalPrescriptionAuthor.AgentPerson
 

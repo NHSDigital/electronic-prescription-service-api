@@ -54,9 +54,9 @@ export function getStringParameterByName(parameters: fhir.Parameters, name: stri
     .filter(parameter => parameter.name === name), "", "") as fhir.StringParameter
 }
 
-export function getResourceForFullUrl(fhirBundle: fhir.Bundle, resourceFullUrl: string): fhir.Resource {
+export function getResourceForFullUrl(bundle: fhir.Bundle, resourceFullUrl: string): fhir.Resource {
   return onlyElement(
-    fhirBundle.entry.filter(entry => entry.fullUrl === resourceFullUrl),
+    bundle.entry.filter(entry => entry.fullUrl === resourceFullUrl),
     "Bundle.entry",
     `fullUrl == '${resourceFullUrl}'`
   ).resource

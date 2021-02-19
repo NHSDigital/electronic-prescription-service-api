@@ -4,9 +4,7 @@ import {convertIsoDateStringToHl7V3Date} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
 
-function convertPatientToProviderPatient(
-  patient: fhir.Patient
-) {
+function convertPatientToProviderPatient(patient: fhir.Patient) {
   const generalPractitionerId = onlyElement(patient.generalPractitioner, "Patient.generalPractitioner")
   const hl7V3HealthCareProvider = new hl7V3.HealthCareProvider()
   const gpIdValue = generalPractitionerId.identifier.value
@@ -28,29 +26,26 @@ function convertPatientToPatientPerson(
   convertNameFn = convertName,
   convertGenderFn = convertGender
 ) {
-  const hl7V3PatientPerson = new hl7V3.PatientPerson()
-  hl7V3PatientPerson.name = patient.name.map(name => convertNameFn(name, "Patient.name"))
-  hl7V3PatientPerson.administrativeGenderCode = convertGenderFn(patient.gender, "Patient.gender")
-  hl7V3PatientPerson.birthTime = convertIsoDateStringToHl7V3Date(patient.birthDate, "Patient.birthDate")
-  hl7V3PatientPerson.playedProviderPatient = convertPatientToProviderPatient(patient)
-  return hl7V3PatientPerson
+  const patientPerson = new hl7V3.PatientPerson()
+  patientPerson.name = patient.name.map(name => convertNameFn(name, "Patient.name"))
+  patientPerson.administrativeGenderCode = convertGenderFn(patient.gender, "Patient.gender")
+  patientPerson.birthTime = convertIsoDateStringToHl7V3Date(patient.birthDate, "Patient.birthDate")
+  patientPerson.playedProviderPatient = convertPatientToProviderPatient(patient)
+  return patientPerson
 }
 
-export function convertPatient(
-  bundle: fhir.Bundle,
-  patient: fhir.Patient
-): hl7V3.Patient {
+export function convertPatient(bundle: fhir.Bundle, fhirPatient: fhir.Patient): hl7V3.Patient {
   const hl7V3Patient = new hl7V3.Patient()
   const nhsNumber = getIdentifierValueForSystem(
-    patient.identifier,
+    fhirPatient.identifier,
     "https://fhir.nhs.uk/Id/nhs-number",
     "Patient.identifier"
   )
   hl7V3Patient.id = new hl7V3.NhsNumber(nhsNumber)
-  hl7V3Patient.addr = patient.address.map(address => convertAddress(address, "Patient.address"))
-  if (patient.telecom) {
-    hl7V3Patient.telecom = patient.telecom.map(tel => convertTelecom(tel, "Patient.telecom"))
+  hl7V3Patient.addr = fhirPatient.address.map(address => convertAddress(address, "Patient.address"))
+  if (fhirPatient.telecom) {
+    hl7V3Patient.telecom = fhirPatient.telecom.map(tel => convertTelecom(tel, "Patient.telecom"))
   }
-  hl7V3Patient.patientPerson = convertPatientToPatientPerson(bundle, patient)
+  hl7V3Patient.patientPerson = convertPatientToPatientPerson(bundle, fhirPatient)
   return hl7V3Patient
 }

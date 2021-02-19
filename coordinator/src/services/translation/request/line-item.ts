@@ -22,52 +22,52 @@ function convertProduct(medicationCodeableConcept: fhir.CodeableConcept) {
   return new hl7V3.Product(manufacturedProduct)
 }
 
-function convertLineItemComponent(fhirQuantity: fhir.SimpleQuantity) {
-  const hl7V3LineItemQuantity = new hl7V3.LineItemQuantity()
-  const hl7V3UnitCode = new hl7V3.SnomedCode(fhirQuantity.code, fhirQuantity.unit)
-  const value = getNumericValueAsString(fhirQuantity.value)
-  hl7V3LineItemQuantity.quantity = new hl7V3.QuantityInAlternativeUnits(value, value, hl7V3UnitCode)
-  return new hl7V3.LineItemComponent(hl7V3LineItemQuantity)
+function convertLineItemComponent(simpleQuantity: fhir.SimpleQuantity) {
+  const lineItemQuantity = new hl7V3.LineItemQuantity()
+  const unitSnomedCode = new hl7V3.SnomedCode(simpleQuantity.code, simpleQuantity.unit)
+  const value = getNumericValueAsString(simpleQuantity.value)
+  lineItemQuantity.quantity = new hl7V3.QuantityInAlternativeUnits(value, value, unitSnomedCode)
+  return new hl7V3.LineItemComponent(lineItemQuantity)
 }
 
-function convertDosageInstructions(dosageInstruction: Array<fhir.Dosage>) {
-  const dosageInstructionsValue = onlyElement(
-    dosageInstruction,
+function convertDosageInstructions(dosages: Array<fhir.Dosage>) {
+  const dosage = onlyElement(
+    dosages,
     "MedicationRequest.dosageInstruction"
   ).text
-  const hl7V3DosageInstructions = new hl7V3.DosageInstructions(dosageInstructionsValue)
+  const hl7V3DosageInstructions = new hl7V3.DosageInstructions(dosage)
   return new hl7V3.LineItemPertinentInformation2(hl7V3DosageInstructions)
 }
 
 export function convertPrescriptionEndorsements(
-  fhirMedicationRequest: fhir.MedicationRequest,
-  hl7V3LineItem: hl7V3.LineItem
+  medicationRequest: fhir.MedicationRequest,
+  lineItem: hl7V3.LineItem
 ): void {
-  const fhirMedicationPrescriptionEndorsementExtension = getExtensionForUrlOrNull(
-    fhirMedicationRequest.extension,
+  const endorsementExtension = getExtensionForUrlOrNull(
+    medicationRequest.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement",
     "MedicationRequest.extension"
   ) as fhir.CodeableConceptExtension
 
-  if (fhirMedicationPrescriptionEndorsementExtension) {
-    hl7V3LineItem.pertinentInformation3 = fhirMedicationPrescriptionEndorsementExtension.valueCodeableConcept.coding
+  if (endorsementExtension) {
+    lineItem.pertinentInformation3 = endorsementExtension.valueCodeableConcept.coding
       .map(coding => {
         const prescriptionEndorsementValue = new hl7V3.PrescriptionEndorsementCode(coding.code)
         const prescriptionEndorsement = new hl7V3.PrescriptionEndorsement(prescriptionEndorsementValue)
         return new hl7V3.LineItemPertinentInformation3(prescriptionEndorsement)
       })
   } else {
-    delete hl7V3LineItem.pertinentInformation3
+    delete lineItem.pertinentInformation3
   }
 }
 
 function convertAdditionalInstructions(
-  fhirMedicationRequest: fhir.MedicationRequest,
+  medicationRequest: fhir.MedicationRequest,
   medicationListText: Array<hl7V3.Text>,
   patientInfoText: Array<hl7V3.Text>
 ) {
   const controlledDrugExtension = getExtensionForUrlOrNull(
-    fhirMedicationRequest.extension,
+    medicationRequest.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug",
     "MedicationRequest.extension"
   ) as fhir.ControlledDrugExtension
@@ -80,7 +80,7 @@ function convertAdditionalInstructions(
   const controlledDrugWordsWithPrefix = controlledDrugWords ? `CD: ${controlledDrugWords}` : ""
 
   const patientInstruction = onlyElement(
-    fhirMedicationRequest.dosageInstruction,
+    medicationRequest.dosageInstruction,
     "MedicationRequest.dosageInstruction"
   ).patientInstruction
 
@@ -94,43 +94,43 @@ function convertAdditionalInstructions(
   additionalInstructionsValueObj._text = [controlledDrugWordsWithPrefix, patientInstruction].filter(isTruthy).join("\n")
   const additionalInstructionsValueStr = js2xml(additionalInstructionsValueObj, {compact: true})
 
-  const hl7V3AdditionalInstructions = new hl7V3.AdditionalInstructions(additionalInstructionsValueStr)
-  return new hl7V3.LineItemPertinentInformation1(hl7V3AdditionalInstructions)
+  const additionalInstructions = new hl7V3.AdditionalInstructions(additionalInstructionsValueStr)
+  return new hl7V3.LineItemPertinentInformation1(additionalInstructions)
 }
 
 export function convertMedicationRequestToLineItem(
-  fhirMedicationRequest: fhir.MedicationRequest,
+  medicationRequest: fhir.MedicationRequest,
   repeatNumber: hl7V3.Interval<hl7V3.Timestamp>,
   medicationListText: Array<hl7V3.Text>,
   patientInfoText: Array<hl7V3.Text>
 ): hl7V3.LineItem {
   const lineItemId = getIdentifierValueForSystem(
-    fhirMedicationRequest.identifier,
+    medicationRequest.identifier,
     "https://fhir.nhs.uk/Id/prescription-order-item-number",
     "MedicationRequest.identifier"
   )
-  const hl7V3LineItem = new hl7V3.LineItem(
+  const lineItem = new hl7V3.LineItem(
     new hl7V3.GlobalIdentifier(lineItemId)
   )
 
   if (repeatNumber) {
-    hl7V3LineItem.repeatNumber = repeatNumber
+    lineItem.repeatNumber = repeatNumber
   }
 
-  hl7V3LineItem.product = convertProduct(fhirMedicationRequest.medicationCodeableConcept)
-  hl7V3LineItem.component = convertLineItemComponent(fhirMedicationRequest.dispenseRequest.quantity)
-  convertPrescriptionEndorsements(fhirMedicationRequest, hl7V3LineItem)
+  lineItem.product = convertProduct(medicationRequest.medicationCodeableConcept)
+  lineItem.component = convertLineItemComponent(medicationRequest.dispenseRequest.quantity)
+  convertPrescriptionEndorsements(medicationRequest, lineItem)
 
   const pertinentInformation1 = convertAdditionalInstructions(
-    fhirMedicationRequest,
+    medicationRequest,
     medicationListText,
     patientInfoText
   )
   if (pertinentInformation1.pertinentAdditionalInstructions.value._text) {
-    hl7V3LineItem.pertinentInformation1 = pertinentInformation1
+    lineItem.pertinentInformation1 = pertinentInformation1
   }
 
-  hl7V3LineItem.pertinentInformation2 = convertDosageInstructions(fhirMedicationRequest.dosageInstruction)
+  lineItem.pertinentInformation2 = convertDosageInstructions(medicationRequest.dosageInstruction)
 
-  return hl7V3LineItem
+  return lineItem
 }

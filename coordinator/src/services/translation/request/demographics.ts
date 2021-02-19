@@ -3,24 +3,24 @@ import {isTruthy} from "../common"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
 
-export function convertName(fhirHumanName: fhir.HumanName, fhirPath: string): hl7V3.Name {
+export function convertName(humanName: fhir.HumanName, fhirPath: string): hl7V3.Name {
   const name = new hl7V3.Name()
-  if (fhirHumanName.use) {
+  if (humanName.use) {
     name._attributes = {
-      use: convertNameUse(fhirHumanName.use, fhirPath)
+      use: convertNameUse(humanName.use, fhirPath)
     }
   }
-  if (fhirHumanName.prefix) {
-    name.prefix = fhirHumanName.prefix.map(name => new hl7V3.Text(name))
+  if (humanName.prefix) {
+    name.prefix = humanName.prefix.map(prefix => new hl7V3.Text(prefix))
   }
-  if (fhirHumanName.given) {
-    name.given = fhirHumanName.given.map(name => new hl7V3.Text(name))
+  if (humanName.given) {
+    name.given = humanName.given.map(given => new hl7V3.Text(given))
   }
-  if (fhirHumanName.family) {
-    name.family = new hl7V3.Text(fhirHumanName.family)
+  if (humanName.family) {
+    name.family = new hl7V3.Text(humanName.family)
   }
-  if (fhirHumanName.suffix) {
-    name.suffix = fhirHumanName.suffix.map(name => new hl7V3.Text(name))
+  if (humanName.suffix) {
+    name.suffix = humanName.suffix.map(suffix => new hl7V3.Text(suffix))
   }
   return name
 }
@@ -44,10 +44,10 @@ function convertNameUse(fhirNameUse: string, fhirPath: string) {
   }
 }
 
-export function convertTelecom(fhirTelecom: fhir.ContactPoint, fhirPath: string): hl7V3.Telecom {
-  const hl7V3TelecomUse = convertTelecomUse(fhirTelecom.use, fhirPath)
+export function convertTelecom(contactPoint: fhir.ContactPoint, fhirPath: string): hl7V3.Telecom {
+  const telecomUse = convertTelecomUse(contactPoint.use, fhirPath)
   //TODO - do we need to add "tel:", "mailto:" to the value?
-  return new hl7V3.Telecom(hl7V3TelecomUse, fhirTelecom.value)
+  return new hl7V3.Telecom(telecomUse, contactPoint.value)
 }
 
 function convertTelecomUse(fhirTelecomUse: string, fhirPath: string) {

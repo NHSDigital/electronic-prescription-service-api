@@ -5,12 +5,11 @@ import {createPractitioner} from "./practitioner"
 import {createHealthcareService, createLocations, createOrganization} from "./organization"
 import {createPractitionerRole} from "./practitioner-role"
 import {createPatient} from "./patient"
-import {createReference} from "./fhir-base-types"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
 
-export function convertName(hl7Name: Array<hl7V3.Name> | hl7V3.Name): Array<fhir.HumanName> {
-  const nameArray = toArray(hl7Name)
+export function convertName(name: Array<hl7V3.Name> | hl7V3.Name): Array<fhir.HumanName> {
+  const nameArray = toArray(name)
   return nameArray.map(name => {
     if (name._text) {
       return {text: name._text}
@@ -51,8 +50,8 @@ function convertNameUse(hl7NameUse: string): string {
   }
 }
 
-export function convertAddress(hl7Address: Array<hl7V3.Address> | hl7V3.Address): Array<fhir.Address> {
-  const addressArray = toArray(hl7Address)
+export function convertAddress(address: Array<hl7V3.Address> | hl7V3.Address): Array<fhir.Address> {
+  const addressArray = toArray(address)
   return addressArray.map(address => {
     if (address._text) {
       return {text: address._text}
@@ -137,19 +136,19 @@ export function translateAndAddPatient(hl7Patient: hl7V3.Patient, resources: Arr
   return fhirPatient.id
 }
 
-export function translateAndAddAgentPerson(hl7AgentPerson: hl7V3.AgentPerson, resources: Array<fhir.Resource>): string {
-  const fhirPractitioner = createPractitioner(hl7AgentPerson)
-  const fhirLocations = createLocations(hl7AgentPerson.representedOrganization)
-  const fhirHealthcareService = createHealthcareService(hl7AgentPerson.representedOrganization, fhirLocations)
-  const fhirPractitionerRole = createPractitionerRole(hl7AgentPerson, fhirPractitioner.id, fhirHealthcareService.id)
-  resources.push(fhirPractitioner, ...fhirLocations, fhirHealthcareService, fhirPractitionerRole)
+export function translateAndAddAgentPerson(agentPerson: hl7V3.AgentPerson, resources: Array<fhir.Resource>): string {
+  const practitioner = createPractitioner(agentPerson)
+  const locations = createLocations(agentPerson.representedOrganization)
+  const healthcareService = createHealthcareService(agentPerson.representedOrganization, locations)
+  const practitionerRole = createPractitionerRole(agentPerson, practitioner.id, healthcareService.id)
+  resources.push(practitioner, ...locations, healthcareService, practitionerRole)
 
-  const healthCareProviderLicense = hl7AgentPerson.representedOrganization.healthCareProviderLicense
+  const healthCareProviderLicense = agentPerson.representedOrganization.healthCareProviderLicense
   if (healthCareProviderLicense) {
-    const fhirOrganization = createOrganization(healthCareProviderLicense.Organization)
-    fhirPractitionerRole.organization = createReference(fhirOrganization.id)
-    resources.push(fhirOrganization)
+    const organization = createOrganization(healthCareProviderLicense.Organization)
+    practitionerRole.organization = fhir.createReference(organization.id)
+    resources.push(organization)
   }
 
-  return fhirPractitionerRole.id
+  return practitionerRole.id
 }
