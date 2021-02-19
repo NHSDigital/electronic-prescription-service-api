@@ -87,12 +87,18 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
   const isRepeatDispensing = courseOfTherapyTypeCode === CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
   const repeatDispensingErrors = isRepeatDispensing ? verifyRepeatDispensingPrescription(medicationRequests) : []
 
-  return [
+  const errorArray = [
     ...incorrectValueErrors,
     ...inconsistentValueErrors,
-    ...repeatDispensingErrors,
-    verifyUniqueIdentifierForAllMedicationRequests(medicationRequests)
+    ...repeatDispensingErrors
   ]
+
+  const duplicateIdentifierError = verifyUniqueIdentifierForAllMedicationRequests(medicationRequests)
+  if(duplicateIdentifierError){
+    errorArray.push(duplicateIdentifierError)
+  }
+
+  return errorArray
 }
 
 export function verifyRepeatDispensingPrescription(
