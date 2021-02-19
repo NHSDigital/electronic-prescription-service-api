@@ -21,4 +21,4 @@ Operation can be omitted for prepare examples as there is only one operation for
 
 The smoke test description is built up from the directory and the filename so tests can be renamed by changing the folder structure
 
-Make sure if you're adding/changing directories that they are added to `pactGroups` in `tests/e2e/pact/resources/common.ts`
+Make sure if you're adding/changing directories that they are present in `pactGroups` in `tests/e2e/pact/resources/common.ts`
