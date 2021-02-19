@@ -1,9 +1,9 @@
-import * as translator from "../../services/translation"
+import * as translator from "../../services/translation/request"
 import * as fhir from "../../models/fhir/fhir-resources"
-import {requestHandler} from "../../services/handlers"
+import {spineClient} from "../../services/communication"
 import Hapi from "@hapi/hapi"
 import {basePath, createHash, handleResponse, validatingHandler} from "../util"
-import {createOperationOutcomeIssue} from "../../services/translation/spine-response"
+import {createOperationOutcomeIssue} from "../../services/translation/response"
 import {getMessageHeader} from "../../services/translation/common/getResourcesOfType"
 
 function isDispenseMessage(bundle: fhir.Bundle) {
@@ -30,7 +30,7 @@ export default [
         spineRequest.messageId = request.headers["nhsd-request-id"].toUpperCase()
         request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(bundle))})
         request.logger.info("Awaiting response")
-        const spineResponse = await requestHandler.send(
+        const spineResponse = await spineClient.send(
           spineRequest,
           request.logger
         )

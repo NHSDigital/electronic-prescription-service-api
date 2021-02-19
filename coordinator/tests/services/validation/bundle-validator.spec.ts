@@ -3,14 +3,21 @@ import * as fhir from "../../../src/models/fhir/fhir-resources"
 import * as TestResources from "../../resources/test-resources"
 import {clone} from "../../resources/test-helpers"
 import * as errors from "../../../src/models/errors/validation-errors"
-import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
-import {CourseOfTherapyTypeCode} from "../../../src/services/translation/prescription/course-of-therapy-type"
-import {getExtensionForUrl, isTruthy} from "../../../src/services/translation/common"
-import {RepeatInformationExtension} from "../../../src/models/fhir/fhir-resources"
 import {
-  MedicationRequestIncorrectValueError, MedicationRequestMissingValueError,
+  MedicationRequestIncorrectValueError,
+  MedicationRequestMissingValueError,
   MedicationRequestNumberError
 } from "../../../src/models/errors/validation-errors"
+import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
+import {getExtensionForUrl, isTruthy} from "../../../src/services/translation/common"
+import {
+  CourseOfTherapyTypeCode,
+  MedicationRequest,
+  MedicationRequestStatus,
+  Performer,
+  RepeatInformationExtension
+} from "../../../src/models/fhir/medication-request"
+import {MessageHeader} from "../../../src/models/fhir/message-header"
 
 function validateValidationErrors (validationErrors: Array<errors.ValidationError>) {
   expect(validationErrors).toHaveLength(1)
@@ -26,7 +33,7 @@ describe("Bundle checks", () => {
   })
 
   test("rejects bundle with unusual bundle type", () => {
-    const messageHeader: fhir.MessageHeader = {
+    const messageHeader: MessageHeader = {
       resourceType: "MessageHeader",
       eventCoding: {
         system: undefined,
@@ -50,7 +57,7 @@ describe("Bundle checks", () => {
 
 describe("verifyCommonBundle", () => {
   let bundle: fhir.Bundle
-  let medicationRequests: Array<fhir.MedicationRequest>
+  let medicationRequests: Array<MedicationRequest>
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
@@ -81,7 +88,7 @@ describe("verifyCommonBundle", () => {
 
 describe("verifyPrescriptionBundle status check", () => {
   let bundle: fhir.Bundle
-  let medicationRequests: Array<fhir.MedicationRequest>
+  let medicationRequests: Array<MedicationRequest>
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
@@ -94,7 +101,7 @@ describe("verifyPrescriptionBundle status check", () => {
   })
 
   test("Should reject a message where one MedicationRequest has status cancelled", () => {
-    medicationRequests[0].status = "cancelled"
+    medicationRequests[0].status = MedicationRequestStatus.CANCELLED
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0]).toBeInstanceOf(MedicationRequestIncorrectValueError)
@@ -102,7 +109,7 @@ describe("verifyPrescriptionBundle status check", () => {
   })
 
   test("Should reject a message where all MedicationRequests have status cancelled", () => {
-    medicationRequests.forEach(medicationRequest => medicationRequest.status = "cancelled")
+    medicationRequests.forEach(medicationRequest => medicationRequest.status = MedicationRequestStatus.CANCELLED)
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0]).toBeInstanceOf(MedicationRequestIncorrectValueError)
@@ -112,7 +119,7 @@ describe("verifyPrescriptionBundle status check", () => {
 
 describe("MedicationRequest consistency checks", () => {
   let bundle: fhir.Bundle
-  let medicationRequests: Array<fhir.MedicationRequest>
+  let medicationRequests: Array<MedicationRequest>
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
@@ -146,14 +153,14 @@ describe("MedicationRequest consistency checks", () => {
         value: "value"
       },
       extension: [performerExtension]
-    } as fhir.Performer
+    } as Performer
     const performerDiff = {
       identifier: {
         system: "system2",
         value: "value2"
       },
       extension: [performerExtension]
-    } as fhir.Performer
+    } as Performer
 
     medicationRequests.forEach(medicationRequest => medicationRequest.dispenseRequest.performer = performer)
     medicationRequests[3].dispenseRequest.performer = performerDiff
@@ -190,8 +197,8 @@ describe("MedicationRequest consistency checks", () => {
 
 describe("verifyRepeatDispensingPrescription", () => {
   let bundle: fhir.Bundle
-  let medicationRequests: Array<fhir.MedicationRequest>
-  let firstMedicationRequest: fhir.MedicationRequest
+  let medicationRequests: Array<MedicationRequest>
+  let firstMedicationRequest: MedicationRequest
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
@@ -262,7 +269,7 @@ describe("verifyCancellationBundle", () => {
 
   test("returns an error when status is not cancelled", () => {
     const medicationRequest = getMedicationRequests(bundle)[0]
-    medicationRequest.status = "active"
+    medicationRequest.status = MedicationRequestStatus.ACTIVE
     const returnedErrors = validator.verifyCancellationBundle(bundle)
     expect(returnedErrors.length).toBe(1)
     expect(returnedErrors[0]).toBeInstanceOf(MedicationRequestIncorrectValueError)

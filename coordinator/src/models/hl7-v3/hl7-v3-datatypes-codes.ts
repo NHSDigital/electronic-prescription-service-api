@@ -106,6 +106,15 @@ export class ItemStatusCode extends Code<"2.16.840.1.113883.2.1.3.2.4.17.23"> {
   constructor(code: string) {
     super("2.16.840.1.113883.2.1.3.2.4.17.23", code)
   }
+
+  static FULLY_DISPENSED = new ItemStatusCode("0001")
+  static NOT_DISPENSED = new ItemStatusCode("0002")
+  static DISPENSED_PARTIAL = new ItemStatusCode("0003")
+  static NOT_DISPENSED_OWING = new ItemStatusCode("0004")
+  static CANCELLED = new ItemStatusCode("0005")
+  static EXPIRED = new ItemStatusCode("0006")
+  static TO_BE_DISPENSED = new ItemStatusCode("0007")
+  static WITH_DISPENSER = new ItemStatusCode("0008")
 }
 
 class CodeWithoutSystem extends Code<undefined> {

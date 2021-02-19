@@ -1,5 +1,5 @@
-import {MessageType} from "../../routes/util"
 import * as LosslessJson from "lossless-json"
+import {EventCodingCode} from "../fhir/message-header"
 
 export interface ValidationError {
   message: string
@@ -57,11 +57,11 @@ export class MedicationRequestIncorrectValueError implements ValidationError {
 
 export class MessageTypeError implements ValidationError {
   message = `MessageHeader.eventCoding.code must be one of '${
-    MessageType.PRESCRIPTION
+    EventCodingCode.PRESCRIPTION
   }', '${
-    MessageType.CANCELLATION
+    EventCodingCode.CANCELLATION
   }' or '${
-    MessageType.DISPENSE
+    EventCodingCode.DISPENSE
   }'.`
   operationOutcomeCode = "value" as const
   severity = "fatal" as const

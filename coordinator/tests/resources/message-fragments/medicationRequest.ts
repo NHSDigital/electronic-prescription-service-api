@@ -1,5 +1,6 @@
 import * as fhir from "../../../src/models/fhir/fhir-resources"
-import {generateResourceId} from "../../../src/services/translation/incoming/common"
+import {generateResourceId} from "../../../src/services/translation/response/common"
+import {MedicationRequest, MedicationRequestDispenseRequest} from "../../../src/models/fhir/medication-request"
 
 const nystatinMedication: fhir.Coding = {
   system: "http://snomed.info/sct",
@@ -53,7 +54,7 @@ const waterQuantity: fhir.SimpleQuantity = {
   code: "413516001"
 }
 
-const createDispenseInfoFromQuantity = (quantity: fhir.SimpleQuantity): fhir.MedicationRequestDispenseRequest => ({
+const createDispenseInfoFromQuantity = (quantity: fhir.SimpleQuantity): MedicationRequestDispenseRequest => ({
   extension: [
     {
       url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
@@ -74,8 +75,8 @@ const createDispenseInfoFromQuantity = (quantity: fhir.SimpleQuantity): fhir.Med
 
 const createMedicationRequestForLineItem = (
   medication: fhir.Coding,
-  dispenseRequest: fhir.MedicationRequestDispenseRequest
-): fhir.MedicationRequest => {
+  dispenseRequest: MedicationRequestDispenseRequest
+): MedicationRequest => {
   const resourceId = generateResourceId()
   return {
     resourceType: "MedicationRequest",
@@ -166,7 +167,7 @@ const createMedicationRequestForLineItem = (
   }
 }
 
-const medicationRequests = new Map<string, fhir.MedicationRequest>([
+const medicationRequests = new Map<string, MedicationRequest>([
   [
     "nystatin",
     createMedicationRequestForLineItem(nystatinMedication, createDispenseInfoFromQuantity(nystatinQuantity))

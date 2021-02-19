@@ -1,4 +1,4 @@
-import * as translator from "../../services/translation"
+import * as translator from "../../services/translation/request"
 import Hapi from "@hapi/hapi"
 import {Bundle} from "../../models/fhir/fhir-resources"
 import {basePath, validatingHandler} from "../util"

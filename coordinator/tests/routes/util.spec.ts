@@ -1,10 +1,11 @@
-import {fhirValidation, identifyMessageType, MessageType, VALIDATOR_HOST} from "../../src/routes/util"
+import {fhirValidation, identifyMessageType, VALIDATOR_HOST} from "../../src/routes/util"
 import * as fhir from "../../src/models/fhir/fhir-resources"
 import {clone} from "../resources/test-helpers"
 import * as TestResources from "../resources/test-resources"
 import {getMessageHeader} from "../../src/services/translation/common/getResourcesOfType"
 import axios from "axios"
 import * as moxios from "moxios"
+import {MessageHeader, EventCodingCode} from "../../src/models/fhir/message-header"
 
 test("API only forwards accept header to validator", async () => {
   moxios.install(axios)
@@ -30,7 +31,7 @@ test("API only forwards accept header to validator", async () => {
 
 describe("identifyMessageType", () => {
   let bundle: fhir.Bundle
-  let messageHeader: fhir.MessageHeader
+  let messageHeader: MessageHeader
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
@@ -38,7 +39,7 @@ describe("identifyMessageType", () => {
   })
 
   test("identifies a prescription message correctly", () => {
-    const messageType = MessageType.PRESCRIPTION
+    const messageType = EventCodingCode.PRESCRIPTION
     messageHeader.eventCoding.code = messageType
     expect(identifyMessageType(bundle)).toBe(messageType)
   })

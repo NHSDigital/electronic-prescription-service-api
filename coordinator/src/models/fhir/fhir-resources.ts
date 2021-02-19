@@ -1,4 +1,5 @@
 import {LosslessNumber} from "lossless-json"
+import {MedicationRequest} from "./medication-request"
 
 export abstract class Resource {
   id?: string
@@ -30,46 +31,6 @@ export interface Identifier {
   value?: string
 }
 
-export interface MedicationRequestGroupIdentifier extends Identifier {
-  extension?: Array<IdentifierExtension>
-}
-
-export type RepeatInformationExtension = ExtensionExtension<UnsignedIntExtension | DateTimeExtension>
-
-export type ControlledDrugExtension = ExtensionExtension<StringExtension | CodingExtension>
-
-export type PrescriptionStatusHistoryExtension = ExtensionExtension<CodingExtension>
-
-export interface BaseMedicationRequest extends Resource {
-  resourceType: "MedicationRequest"
-  extension: Array<Extension>
-  identifier: Array<Identifier>
-  status: string
-  intent: string
-  medicationCodeableConcept: CodeableConcept
-  subject: Reference<Patient>
-  authoredOn: string
-  requester: Reference<PractitionerRole>
-  groupIdentifier: MedicationRequestGroupIdentifier
-  dispenseRequest?: MedicationRequestDispenseRequest
-  substitution?: {
-    allowedBoolean: false
-  }
-}
-
-//TODO - at what point do we just use Extension instead of a union type? What benefit is this providing?
-export type MedicationRequestExtension = IdentifierExtension | ReferenceExtension<PractitionerRole>
-  | CodingExtension | CodeableConceptExtension | RepeatInformationExtension | ControlledDrugExtension
-
-export interface MedicationRequest extends BaseMedicationRequest {
-  category?: Array<CodeableConcept>
-  courseOfTherapyType: CodeableConcept
-  dosageInstruction: Array<Dosage>
-  extension: Array<MedicationRequestExtension>
-  statusReason?: CodeableConcept
-  dispenseRequest: MedicationRequestDispenseRequest
-}
-
 export interface CodeableConcept {
   coding: Array<Coding>
 }
@@ -89,25 +50,6 @@ export interface Reference<T extends Resource> {
 export interface IdentifierReference<T extends Resource> {
   identifier: Identifier,
   display?: string
-}
-
-export interface Dosage {
-  text: string
-  patientInstruction?: string
-  additionalInstruction?: Array<CodeableConcept>
-}
-
-export interface Performer extends IdentifierReference<Organization> {
-  extension?: Array<ReferenceExtension<PractitionerRole>>
-}
-
-export interface MedicationRequestDispenseRequest {
-  extension?: Array<CodingExtension | StringExtension | ReferenceExtension<PractitionerRole>>
-  identifier?: Identifier
-  quantity?: SimpleQuantity
-  expectedSupplyDuration?: SimpleQuantity
-  performer?: Performer
-  validityPeriod?: Period
 }
 
 export interface SimpleQuantity {
@@ -325,32 +267,3 @@ export interface ListEntry {
   }
 }
 
-interface MessageHeaderSource {
-  name?: string
-  endpoint: string
-}
-
-export interface MessageHeaderDestination {
-  endpoint: string
-  receiver: IdentifierReference<PractitionerRole | Organization | Practitioner>
-}
-
-export interface MessageHeaderResponse {
-  identifier: string
-  code: "ok" | "transient-error" | "fatal-error"
-}
-
-export interface MessageHeader extends Resource {
-  resourceType: "MessageHeader"
-  eventCoding: Coding
-  sender: IdentifierReference<Organization>
-  source: MessageHeaderSource
-  focus: Array<Reference<Resource>>
-  extension?: Array<IdentifierExtension | CodingExtension>
-  destination?: Array<MessageHeaderDestination>
-  response?: MessageHeaderResponse
-}
-
-export interface MedicationRequestOutcome extends BaseMedicationRequest {
-  extension: Array<ReferenceExtension<PractitionerRole> | PrescriptionStatusHistoryExtension>
-}

@@ -2,6 +2,7 @@ import {ProcessCase} from "../models/cases/process-case"
 import {exampleFiles} from "./example-files-fetcher"
 import * as uuid from "uuid"
 import * as fhir from "../models/fhir/fhir-resources"
+import {MedicationRequest} from "../../../../coordinator/src/models/fhir/medication-request"
 
 const processRequestFiles = exampleFiles.filter(exampleFile => exampleFile.isRequest && exampleFile.endpoint === "process")
 const prescriptionOrderFiles = processRequestFiles.filter(exampleFile => exampleFile.operation === "send")
@@ -96,8 +97,8 @@ function getLongFormIdExtension(extensions: Array<fhir.Extension>): fhir.Identif
   ) as fhir.IdentifierExtension
 }
 
-function getMedicationRequests(bundle: fhir.Bundle): Array<fhir.MedicationRequest> {
+function getMedicationRequests(bundle: fhir.Bundle): Array<MedicationRequest> {
   return bundle.entry
     .filter(entry => entry.resource.resourceType === "MedicationRequest")
-    .map(entry => entry.resource) as Array<fhir.MedicationRequest>
+    .map(entry => entry.resource) as Array<MedicationRequest>
 }

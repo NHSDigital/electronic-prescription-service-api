@@ -1,5 +1,7 @@
 import * as fhir from "../../../models/fhir/fhir-resources"
 import {onlyElement} from "./index"
+import {MedicationRequest} from "../../../models/fhir/medication-request"
+import {MessageHeader} from "../../../models/fhir/message-header"
 
 function getResourcesOfType<T extends fhir.Resource>(fhirBundle: fhir.Bundle, resourceType: string): Array<T> {
   return fhirBundle.entry
@@ -7,16 +9,16 @@ function getResourcesOfType<T extends fhir.Resource>(fhirBundle: fhir.Bundle, re
     .filter(resource => resource.resourceType === resourceType) as Array<T>
 }
 
-export function getMessageHeader(fhirBundle: fhir.Bundle): fhir.MessageHeader {
+export function getMessageHeader(fhirBundle: fhir.Bundle): MessageHeader {
   return onlyElement(
-    getResourcesOfType<fhir.MessageHeader>(fhirBundle, "MessageHeader"),
+    getResourcesOfType<MessageHeader>(fhirBundle, "MessageHeader"),
     "Bundle.entry",
     "resource.resourceType == 'MessageHeader'"
   )
 }
 
-export function getMedicationRequests(fhirBundle: fhir.Bundle): Array<fhir.MedicationRequest> {
-  return getResourcesOfType<fhir.MedicationRequest>(fhirBundle, "MedicationRequest")
+export function getMedicationRequests(fhirBundle: fhir.Bundle): Array<MedicationRequest> {
+  return getResourcesOfType<MedicationRequest>(fhirBundle, "MedicationRequest")
 }
 
 export function getCommunicationRequests(fhirBundle: fhir.Bundle): Array<fhir.CommunicationRequest> {
