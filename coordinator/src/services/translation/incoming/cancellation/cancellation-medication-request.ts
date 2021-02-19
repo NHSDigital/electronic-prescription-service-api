@@ -1,13 +1,20 @@
-import * as fhir from "../../../models/fhir/fhir-resources"
+import * as fhir from "../../../../models/fhir/fhir-resources"
 import {
   CancellationResponse,
   PertinentInformation1,
   PertinentInformation2
-} from "../../../models/hl7-v3/hl7-v3-spine-response"
-import {InvalidValueError} from "../../../models/errors/processing-errors"
-import {generateResourceId, getFullUrl} from "./common"
-import {createIdentifier, createReference} from "./fhir-base-types"
-import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
+} from "../../../../models/hl7-v3/hl7-v3-spine-response"
+import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
+import {InvalidValueError} from "../../../../models/errors/processing-errors"
+import {generateResourceId, getFullUrl} from "../common"
+import {createCodeableConcept, createIdentifier, createReference} from "../fhir-base-types"
+import {createGroupIdentifier} from "../medication-request"
+
+const MEDICINAL_PRODUCT_CODEABLE_CONCEPT = createCodeableConcept(
+  "http://snomed.info/sct",
+  "763158003",
+  "Medicinal product"
+)
 
 export function createMedicationRequest(
   cancellationResponse: CancellationResponse,
@@ -35,13 +42,12 @@ export function createMedicationRequest(
     identifier: createItemNumberIdentifier(cancellationResponse.pertinentInformation1),
     status: medicationRequestStatus,
     intent: "order",
-    medicationCodeableConcept: getMedicationCodeableConcept(),
+    medicationCodeableConcept: MEDICINAL_PRODUCT_CODEABLE_CONCEPT,
     subject: createReference(patientId),
     //TODO - effectiveTime should probably be the timestamp of the status, not authoredOn
     authoredOn: convertHL7V3DateTimeToIsoDateTimeString(cancellationResponse.effectiveTime),
     requester: createReference(originalPrescriptionAuthorPractitionerRoleId),
-    groupIdentifier: getMedicationGroupIdentifier(cancellationResponse.pertinentInformation2),
-    dispenseRequest: medicationRequestHasDispenser() ? getDispenseRequest(cancellationResponse) : undefined
+    groupIdentifier: createGroupIdentifierFromPertinentInformation2(cancellationResponse.pertinentInformation2)
   }
 }
 
@@ -166,39 +172,7 @@ function createItemNumberIdentifier(pertinentInformation1: PertinentInformation1
   return [createIdentifier("https://fhir.nhs.uk/Id/prescription-order-item-number", id.toLowerCase())]
 }
 
-function getMedicationCodeableConcept() {
-  return {
-    "coding": [{
-      "system": "http://snomed.info/sct",
-      "code": "763158003",
-      "display": "Medicinal product"
-    }]
-  }
-}
-
-function getMedicationGroupIdentifier(pertinentInformation2: PertinentInformation2) {
-  const id = pertinentInformation2.pertinentPrescriptionID.value._attributes.extension
-  return createIdentifier("https://fhir.nhs.uk/Id/prescription-order-number", id)
-}
-
-function medicationRequestHasDispenser() {
-  return false
-}
-
-function getDispenseRequest(cancellationResponse: CancellationResponse) {
-  cancellationResponse
-  return {
-    performer: {
-      extension: [{
-        url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-DispensingPerformer",
-        valueReference: {
-          reference: "" //TODO: when we have dispense info we need to fill
-        }
-      }],
-      identifier: {
-        system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "" //TODO: when we have dispense info we need to fill
-      }
-    }
-  }
+function createGroupIdentifierFromPertinentInformation2(pertinentInformation2: PertinentInformation2) {
+  const shortFormId = pertinentInformation2.pertinentPrescriptionID.value._attributes.extension
+  return createGroupIdentifier(shortFormId, null)
 }

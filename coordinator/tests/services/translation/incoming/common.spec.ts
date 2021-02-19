@@ -1,4 +1,4 @@
-import {convertName, generateResourceId, getFullUrl} from "../../../../src/services/translation/cancellation/common"
+import {convertName, generateResourceId, getFullUrl} from "../../../../src/services/translation/incoming/common"
 
 describe("convertNameUse", () => {
   test("doesn't display a use key if no use passed in", () => {

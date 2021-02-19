@@ -13,3 +13,13 @@ export function createReference<T extends fhir.Resource>(reference: string): fhi
     reference: getFullUrl(reference)
   }
 }
+
+export function createCodeableConcept(system: string, code: string, display: string): fhir.CodeableConcept {
+  return {
+    coding: [{
+      system: system,
+      code: code,
+      display: display
+    }]
+  }
+}

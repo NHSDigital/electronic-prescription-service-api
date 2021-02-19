@@ -127,8 +127,9 @@ export function convertMedicationRequestToLineItem(
     medicationListText,
     patientInfoText
   )
-  if (pertinentInformation1.pertinentAdditionalInstructions.value != "")
+  if (pertinentInformation1.pertinentAdditionalInstructions.value._text) {
     hl7V3LineItem.pertinentInformation1 = pertinentInformation1
+  }
 
   hl7V3LineItem.pertinentInformation2 = convertDosageInstructions(fhirMedicationRequest.dosageInstruction)
 

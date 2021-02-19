@@ -1,5 +1,5 @@
 import {specification} from "./resources/test-resources"
-import {generateResourceId, getFullUrl} from "../src/services/translation/cancellation/common"
+import {generateResourceId, getFullUrl} from "../src/services/translation/incoming/common"
 import {
   getMedicationRequests,
   getMessageHeader, getPatient,
@@ -19,7 +19,7 @@ import {
 import * as LosslessJson from "lossless-json"
 import * as moment from "moment"
 import {clone} from "./resources/test-helpers"
-import {createReference} from "../src/services/translation/cancellation/fhir-base-types"
+import {createReference} from "../src/services/translation/incoming/fhir-base-types"
 import {convertMomentToISODateTime} from "../src/services/translation/common/dateTime"
 
 function updateMessageHeaderAndProvenance(bundle: fhir.Bundle) {

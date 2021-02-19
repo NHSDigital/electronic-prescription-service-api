@@ -6,7 +6,7 @@ import {clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
 import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
 import * as fhir from "../../../src/models/fhir/fhir-resources"
-import {getExtensionForUrlOrNull} from "../../../src/services/translation/common"
+import {getExtensionForUrlOrNull, toArray} from "../../../src/services/translation/common"
 import {convertBundleToPrescription} from "../../../src/services/translation/prescription"
 import {convertFhirMessageToSpineRequest} from "../../../src/services/translation"
 import {TooManyValuesError} from "../../../src/models/errors/processing-errors"
@@ -94,7 +94,7 @@ describe("convertMedicationRequestToLineItem", () => {
     firstFhirMedicationRequest.dosageInstruction[0].text = dosageInstructionValue
 
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, null, [], [])
-    const resultDosageinstructionValue = result.pertinentInformation2.pertinentDosageInstructions.value
+    const resultDosageinstructionValue = result.pertinentInformation2.pertinentDosageInstructions.value._text
 
     expect(resultDosageinstructionValue).toBe(dosageInstructionValue)
   })
@@ -126,7 +126,7 @@ describe("additionalInstructions", () => {
     firstFhirMedicationRequest.extension.push(controlledDrugExtension)
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, null, [], [])
     expect(
-      result.pertinentInformation1.pertinentAdditionalInstructions.value
+      result.pertinentInformation1.pertinentAdditionalInstructions.value._text
     ).toBe(
       "CD: test1"
     )
@@ -136,7 +136,7 @@ describe("additionalInstructions", () => {
     firstFhirMedicationRequest.dosageInstruction[0].patientInstruction = "test1"
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, null, [], [])
     expect(
-      result.pertinentInformation1.pertinentAdditionalInstructions.value
+      result.pertinentInformation1.pertinentAdditionalInstructions.value._text
     ).toBe(
       "test1"
     )
@@ -146,7 +146,7 @@ describe("additionalInstructions", () => {
     const medication = [new Text("test1")]
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, null, medication, [])
     expect(
-      result.pertinentInformation1.pertinentAdditionalInstructions.value
+      result.pertinentInformation1.pertinentAdditionalInstructions.value._text
     ).toBe(
       "<medication>test1</medication>"
     )
@@ -156,7 +156,7 @@ describe("additionalInstructions", () => {
     const medication = [new Text("test1"), new Text("test2")]
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, null, medication, [])
     expect(
-      result.pertinentInformation1.pertinentAdditionalInstructions.value
+      result.pertinentInformation1.pertinentAdditionalInstructions.value._text
     ).toBe(
       "<medication>test1</medication><medication>test2</medication>"
     )
@@ -166,7 +166,7 @@ describe("additionalInstructions", () => {
     const patientInfo = [new Text("test1")]
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, null, [], patientInfo)
     expect(
-      result.pertinentInformation1.pertinentAdditionalInstructions.value
+      result.pertinentInformation1.pertinentAdditionalInstructions.value._text
     ).toBe(
       "<patientInfo>test1</patientInfo>"
     )
@@ -176,7 +176,7 @@ describe("additionalInstructions", () => {
     const patientInfo = [new Text("test1"), new Text("test2")]
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, null, [], patientInfo)
     expect(
-      result.pertinentInformation1.pertinentAdditionalInstructions.value
+      result.pertinentInformation1.pertinentAdditionalInstructions.value._text
     ).toBe(
       "<patientInfo>test1</patientInfo><patientInfo>test2</patientInfo>"
     )
@@ -186,7 +186,7 @@ describe("additionalInstructions", () => {
     const patientInfo = [new Text("Phone practice if BP < 90/60 mmHg")]
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, null, [], patientInfo)
     expect(
-      result.pertinentInformation1.pertinentAdditionalInstructions.value
+      result.pertinentInformation1.pertinentAdditionalInstructions.value._text
     ).toBe(
       "<patientInfo>Phone practice if BP &lt; 90/60 mmHg</patientInfo>"
     )
@@ -207,7 +207,7 @@ describe("additionalInstructions", () => {
     const patientInfo = [new Text("testPatientInfo")]
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, null, medication, patientInfo)
     expect(
-      result.pertinentInformation1.pertinentAdditionalInstructions.value
+      result.pertinentInformation1.pertinentAdditionalInstructions.value._text
     ).toBe(
       // eslint-disable-next-line max-len
       "<medication>testMedication</medication><patientInfo>testPatientInfo</patientInfo>CD: test1\ntestPatientInstruction"
@@ -272,7 +272,7 @@ describe("prescriptionEndorsements", () => {
     })
 
     const hl7v3Prescription = convertBundleToPrescription(bundle)
-    const hl7v3PrescriptionEndorsements = hl7v3Prescription.pertinentInformation2
+    const hl7v3PrescriptionEndorsements = toArray(hl7v3Prescription.pertinentInformation2)
       .flatMap(pi2 => pi2.pertinentLineItem.pertinentInformation3)
     expect(hl7v3PrescriptionEndorsements.length).toBeGreaterThan(0)
     hl7v3PrescriptionEndorsements.map(endorsement => expect(endorsement).toEqual(undefined))

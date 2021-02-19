@@ -1,5 +1,5 @@
 import * as fhir from "../../../src/models/fhir/fhir-resources"
-import {generateResourceId} from "../../../src/services/translation/cancellation/common"
+import {generateResourceId} from "../../../src/services/translation/incoming/common"
 
 const nystatinMedication: fhir.Coding = {
   system: "http://snomed.info/sct",

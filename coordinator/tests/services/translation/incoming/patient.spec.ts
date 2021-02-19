@@ -1,8 +1,9 @@
 import * as TestResources from "../../../resources/test-resources"
-import {createPatient} from "../../../../src/services/translation/cancellation/cancellation-patient"
+import {createPatient} from "../../../../src/services/translation/incoming/patient"
 import {UNKNOWN_GP_ODS_CODE} from "../../../../src/services/translation/common"
 import * as fhir from "../../../../src/models/fhir/fhir-resources"
 import * as hl7 from "../../../../src/models/hl7-v3/hl7-v3-people-places"
+import * as core from "../../../../src/models/hl7-v3/hl7-v3-datatypes-core"
 import {clone} from "../../../resources/test-helpers"
 import {getCancellationResponse} from "./test-helpers"
 
@@ -45,9 +46,8 @@ describe("createPatient", () => {
   })
 
   test("returned patient has unknown gp code when passed nullFlavor of 'UNK", () => {
-    const nullFlavorObject = {nullFlavor: "UNK"}
     const subjectOf = hl7Patient.patientPerson.playedProviderPatient.subjectOf
-    subjectOf.patientCareProvision.responsibleParty.healthCareProvider.id._attributes = nullFlavorObject
+    subjectOf.patientCareProvision.responsibleParty.healthCareProvider.id = core.Null.UNKNOWN
     hl7Patient.patientPerson.playedProviderPatient.subjectOf = subjectOf
 
     fhirPatient = createPatient(hl7Patient)
