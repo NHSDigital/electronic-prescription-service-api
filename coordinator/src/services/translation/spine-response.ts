@@ -2,7 +2,7 @@ import * as fhir from "../../models/fhir/fhir-resources"
 import {readXml} from "../serialisation/xml"
 import {acknowledgementCodes, AsyncMCCI, PORX50101, SyncMCCI} from "../../models/hl7-v3/hl7-v3-spine-response"
 import {SpineDirectResponse} from "../../models/spine"
-import {translateSpineCancelResponseIntoBundle} from "./cancellation/cancellation-response"
+import {translateSpineCancelResponseIntoBundle} from "./incoming/cancellation/cancellation-response"
 import {toArray} from "./common"
 
 const SYNC_SPINE_RESPONSE_MCCI_REGEX = /(?=<MCCI_IN010000UK13>)([\s\S]*)(?<=<\/MCCI_IN010000UK13>)/i

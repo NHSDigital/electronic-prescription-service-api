@@ -1,7 +1,7 @@
-import * as TestResources from "../../../resources/test-resources"
+import * as TestResources from "../../../../resources/test-resources"
 import {
   translateSpineCancelResponseIntoBundle
-} from "../../../../src/services/translation/cancellation/cancellation-response"
+} from "../../../../../src/services/translation/incoming/cancellation/cancellation-response"
 import {
   getHealthcareServices,
   getLocations,
@@ -10,11 +10,11 @@ import {
   getPatient,
   getPractitionerRoles,
   getPractitioners
-} from "../../../../src/services/translation/common/getResourcesOfType"
-import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../src/services/translation/spine-response"
-import {readXml} from "../../../../src/services/serialisation/xml"
-import {PORX50101} from "../../../../src/models/hl7-v3/hl7-v3-spine-response"
-import {getCancellationResponse, hasCorrectISOFormat} from "./test-helpers"
+} from "../../../../../src/services/translation/common/getResourcesOfType"
+import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../../src/services/translation/spine-response"
+import {readXml} from "../../../../../src/services/serialisation/xml"
+import {PORX50101} from "../../../../../src/models/hl7-v3/hl7-v3-spine-response"
+import {getCancellationResponse, hasCorrectISOFormat} from "../test-helpers"
 
 const actualError = TestResources.spineResponses.cancellationError
 const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(actualError.response.body)[0]

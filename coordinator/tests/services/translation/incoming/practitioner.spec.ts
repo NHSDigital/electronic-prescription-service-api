@@ -1,6 +1,6 @@
 import * as TestResources from "../../../resources/test-resources"
 import {getIdentifierValueForSystem} from "../../../../src/services/translation/common"
-import {createPractitioner} from "../../../../src/services/translation/cancellation/cancellation-practitioner"
+import {createPractitioner} from "../../../../src/services/translation/incoming/practitioner"
 import {getCancellationResponse} from "./test-helpers"
 import {AgentPerson} from "../../../../src/models/hl7-v3/hl7-v3-people-places"
 import {Practitioner} from "../../../../src/models/fhir/fhir-resources"
