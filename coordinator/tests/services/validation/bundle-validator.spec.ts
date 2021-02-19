@@ -186,6 +186,28 @@ describe("MedicationRequest consistency checks", () => {
 
     validateValidationErrors(validationErrors)
   })
+
+  test("Should reject message where 2 or more medication requests share an identifier", () => {
+    const identifier = [
+      {
+        "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+        "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab5"
+      }
+    ] as Array<fhir.Identifier>
+
+    medicationRequests.forEach(medicationRequest => medicationRequest.identifier = identifier)
+
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+
+    validateValidationErrors(validationErrors)
+    expect(
+      validationErrors
+    ).toContainEqual(
+      new errors.MedicationRequestDuplicateValueError(
+        [identifier]
+      )
+    )
+  })
 })
 
 describe("verifyRepeatDispensingPrescription", () => {
