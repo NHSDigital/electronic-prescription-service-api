@@ -340,3 +340,4 @@ paths:
                 example:
                   value: 
                     $ref: components/examples/errors/release/validation-error.json
+components: {}
