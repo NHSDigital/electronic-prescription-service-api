@@ -1,7 +1,4 @@
 import * as XmlJs from "xml-js"
-import * as codes from "../../../models/hl7-v3/codes"
-import * as prescriptions from "../../../models/hl7-v3/parent-prescription"
-import * as cancellations from "../../../models/hl7-v3/cancellation-request"
 import * as crypto from "crypto-js"
 import {createSendMessagePayload} from "./send-message-payload"
 import {writeXmlStringCanonicalized} from "../../serialisation/xml"
@@ -13,39 +10,37 @@ import {SpineRequest} from "../../../models/spine"
 import {identifyMessageType} from "../../../routes/util"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
-import {EventCodingCode} from "../../../models/fhir/message-header"
-import {SendMessagePayload} from "../../../models/hl7-v3/messaging"
-import {Parameters} from "../../../models/fhir/parameters"
-import {Bundle} from "../../../models/fhir/bundle"
+import * as hl7V3 from "../../../models/hl7-v3"
+import * as fhir from "../../../models/fhir"
 
-export function convertFhirMessageToSpineRequest(fhirMessage: Bundle): SpineRequest {
+export function convertFhirMessageToSpineRequest(fhirMessage: fhir.Bundle): SpineRequest {
   const messageType = identifyMessageType(fhirMessage)
-  return messageType === EventCodingCode.PRESCRIPTION
+  return messageType === fhir.EventCodingCode.PRESCRIPTION
     ? requestBuilder.toSpineRequest(createParentPrescriptionSendMessagePayload(fhirMessage))
     : requestBuilder.toSpineRequest(createCancellationSendMessagePayload(fhirMessage))
 }
 
 export function createParentPrescriptionSendMessagePayload(
-  fhirBundle: Bundle
-): SendMessagePayload<prescriptions.ParentPrescriptionRoot> {
+  fhirBundle: fhir.Bundle
+): hl7V3.SendMessagePayload<hl7V3.ParentPrescriptionRoot> {
   const parentPrescription = convertParentPrescription(fhirBundle)
-  const parentPrescriptionRoot = new prescriptions.ParentPrescriptionRoot(parentPrescription)
-  const interactionId = codes.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT
+  const parentPrescriptionRoot = new hl7V3.ParentPrescriptionRoot(parentPrescription)
+  const interactionId = hl7V3.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT
   return createSendMessagePayload(interactionId, fhirBundle, parentPrescriptionRoot)
 }
 
 export function createCancellationSendMessagePayload(
-  fhirBundle: Bundle
-): SendMessagePayload<cancellations.CancellationRequestRoot> {
+  fhirBundle: fhir.Bundle
+): hl7V3.SendMessagePayload<hl7V3.CancellationRequestRoot> {
   const cancellationRequest = convertCancellation(fhirBundle)
-  const cancellationRequestRoot = new cancellations.CancellationRequestRoot(cancellationRequest)
-  const interactionId = codes.Hl7InteractionIdentifier.CANCEL_REQUEST
+  const cancellationRequestRoot = new hl7V3.CancellationRequestRoot(cancellationRequest)
+  const interactionId = hl7V3.Hl7InteractionIdentifier.CANCEL_REQUEST
   return createSendMessagePayload(interactionId, fhirBundle, cancellationRequestRoot)
 }
 
-export function convertFhirMessageToSignedInfoMessage(fhirMessage: Bundle): Parameters {
+export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle): fhir.Parameters {
   const messageType = identifyMessageType(fhirMessage)
-  if (messageType !== EventCodingCode.PRESCRIPTION) {
+  if (messageType !== fhir.EventCodingCode.PRESCRIPTION) {
     throw new InvalidValueError(
       "MessageHeader.eventCoding.code must be 'prescription-order'.",
       "MessageHeader.eventCoding.code"
@@ -83,12 +78,12 @@ export function createParametersDigest(fragmentsToBeHashed: string): string {
   return Buffer.from(writeXmlStringCanonicalized(signedInfo)).toString("base64")
 }
 
-function createParameters(base64Digest: string, isoTimestamp: string): Parameters {
+function createParameters(base64Digest: string, isoTimestamp: string): fhir.Parameters {
   const parameters = []
   parameters.push({name: "digest", valueString: base64Digest})
   parameters.push({name: "timestamp", valueString: isoTimestamp})
   parameters.push({name: "algorithm", valueString: "RS1"})
-  return new Parameters(parameters)
+  return new fhir.Parameters(parameters)
 }
 
 class AlgorithmIdentifier implements XmlJs.ElementCompact {
