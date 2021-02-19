@@ -1,44 +1,18 @@
 import {InteractionObject} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
-import * as TestResources from "../../resources/test-resources"
 import {Bundle} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
+import * as TestResources from "../../resources/test-resources"
 
-const orderPactGroups = [
-  {
-    name: "secondarycare-community-acute",
-    cases: TestResources.processSecondaryCareCommunityAcuteOrderCases
-  },
-  {
-    name: "secondarycare-community-repeatdispensing",
-    cases: TestResources.processSecondaryCareCommunityRepeatDispensingOrderCases
-  },
-  {
-    name: "secondarycare-homecare",
-    cases: TestResources.processSecondaryCareHomecareOrderCases
-  },
-  {
-    name: "primarycare",
-    cases: TestResources.processPrimaryCareOrderCases
-  }
-]
-
-const orderUpdatePactGroups = [
-  {
-    name: "secondarycare-community-acute-cancel",
-    cases: TestResources.processSecondaryCareCommunityAcuteOrderUpdateCases
-  }
-]
-
-orderPactGroups.forEach(pactGroup => {
+TestResources.processOrderCaseGroups.forEach(pactGroup => {
   const pactGroupName = pactGroup.name
   const pactGroupTestCases = pactGroup.cases
 
   jestpact.pactWith(
-    pactOptions("sandbox", "process", [pactGroupName]),
+    pactOptions("sandbox", "process", pactGroupName),
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     async (provider: any) => {
       const client = () => {
@@ -88,12 +62,12 @@ orderPactGroups.forEach(pactGroup => {
   )
 })
 
-orderUpdatePactGroups.forEach(pactGroup => {
+TestResources.processOrderUpdateCaseGroups.forEach(pactGroup => {
   const pactGroupName = pactGroup.name
   const pactGroupTestCases = pactGroup.cases
 
   jestpact.pactWith(
-    pactOptions("sandbox", "process", [pactGroupName]),
+    pactOptions("sandbox", "process", pactGroupName, "cancel"),
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     async (provider: any) => {
       const client = () => {
@@ -143,4 +117,3 @@ orderUpdatePactGroups.forEach(pactGroup => {
     }
   )
 })
-

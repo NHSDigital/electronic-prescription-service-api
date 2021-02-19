@@ -63,6 +63,7 @@ function create-smoke-tests() {
     Remove-Item Env:\LOG_LEVEL -ErrorAction SilentlyContinue
     cd tests/e2e/pact
     Remove-Item './pact' -Recurse -ErrorAction SilentlyContinue
+    npm run clear-cache
     if ($mode -eq "sandbox") {
         npm run create-sandbox-pacts 
     }
