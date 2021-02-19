@@ -2,6 +2,7 @@ import * as XmlJs from "xml-js"
 import * as prescriptions from "../../../models/hl7-v3/hl7-v3-prescriptions"
 import {namespacedCopyOf, writeXmlStringCanonicalized} from "../../serialisation/xml"
 import {Fragments} from "../../../models/signature"
+import {toArray} from "../common"
 
 export function extractFragments(parentPrescription: prescriptions.ParentPrescription): Fragments {
   const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
@@ -11,7 +12,7 @@ export function extractFragments(parentPrescription: prescriptions.ParentPrescri
     time: namespacedCopyOf(pertinentPrescription.author.time),
     agentPerson: namespacedCopyOf(pertinentPrescription.author.AgentPerson),
     recordTarget: namespacedCopyOf(parentPrescription.recordTarget),
-    pertinentLineItem: pertinentPrescription.pertinentInformation2.map(getLineItemFragment)
+    pertinentLineItem: toArray(pertinentPrescription.pertinentInformation2).map(getLineItemFragment)
   }
 }
 

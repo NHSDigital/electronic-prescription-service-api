@@ -21,7 +21,7 @@ import {
   getLists,
   getMedicationRequests
 } from "../../../src/services/translation/common/getResourcesOfType"
-import {getExtensionForUrl} from "../../../src/services/translation/common"
+import {getExtensionForUrl, toArray} from "../../../src/services/translation/common"
 import {setCourseOfTherapyTypeCode} from "./course-of-therapy-type.spec"
 import {CourseOfTherapyTypeCode} from "../../../src/services/translation/prescription/course-of-therapy-type"
 import {
@@ -80,11 +80,11 @@ describe("PertinentInformation2", () => {
     fhirLists[0].entry = toListEntries("Medication 1", "Medication 2")
     fhirCommunicationRequests[0].payload.push({contentReference: {reference: `urn:uuid:${fhirLists[0].id}`}})
 
-    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
-      .pertinentAdditionalInstructions.value
+      .pertinentAdditionalInstructions.value._text
     const expected = `<medication>Medication 1</medication><medication>Medication 2</medication>`
     expect(additionalInstructions).toContain(expected)
   })
@@ -99,11 +99,11 @@ describe("PertinentInformation2", () => {
       {contentReference: {reference: `urn:uuid:${fhirLists[1].id}`}}
     )
 
-    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
-      .pertinentAdditionalInstructions.value
+      .pertinentAdditionalInstructions.value._text
     const expected = "<medication>Medication 1</medication><medication>Medication 2</medication>"
       + "<medication>Medication 3</medication><medication>Medication 4</medication>"
     expect(additionalInstructions).toContain(expected)
@@ -113,11 +113,11 @@ describe("PertinentInformation2", () => {
     const contentString = "examplePatientInfo"
     fhirCommunicationRequests[0].payload.push({contentString: contentString})
 
-    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
-      .pertinentAdditionalInstructions.value
+      .pertinentAdditionalInstructions.value._text
     const expected = `<patientInfo>${contentString}</patientInfo>`
     expect(additionalInstructions).toContain(expected)
   })
@@ -127,11 +127,11 @@ describe("PertinentInformation2", () => {
     const contentString2 = "secondExamplePatientInfo"
     fhirCommunicationRequests[0].payload.push({contentString: contentString1}, {contentString: contentString2})
 
-    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
-      .pertinentAdditionalInstructions.value
+      .pertinentAdditionalInstructions.value._text
     expect(
       additionalInstructions
     ).toContain(
@@ -146,11 +146,11 @@ describe("PertinentInformation2", () => {
       {contentString: "examplePatientInfo"}
     )
 
-    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
-      .pertinentAdditionalInstructions.value
+      .pertinentAdditionalInstructions.value._text
     const expected = "<medication>Medication 1</medication><medication>Medication 2</medication>" +
       "<patientInfo>examplePatientInfo</patientInfo>"
     expect(additionalInstructions).toContain(expected)
@@ -163,11 +163,11 @@ describe("PertinentInformation2", () => {
     fhirCommunicationRequests[0].payload.push({contentReference: {reference: `urn:uuid:${fhirLists[0].id}`}})
     fhirCommunicationRequests[1].payload.push({contentString: "examplePatientInfo"})
 
-    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const additionalInstructions = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
-      .pertinentAdditionalInstructions.value
+      .pertinentAdditionalInstructions.value._text
     const expected = "<medication>Medication 1</medication><medication>Medication 2</medication>" +
       "<patientInfo>examplePatientInfo</patientInfo>"
     expect(additionalInstructions).toContain(expected)
@@ -176,7 +176,7 @@ describe("PertinentInformation2", () => {
   test("Missing payload is handled", () => {
     delete fhirCommunicationRequests[0].payload
 
-    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const pertinentInformation1 = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
@@ -186,7 +186,7 @@ describe("PertinentInformation2", () => {
   test("Missing contentString is handled", () => {
     fhirCommunicationRequests[0].payload.push({contentString: undefined})
 
-    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const pertinentInformation1 = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
@@ -196,7 +196,7 @@ describe("PertinentInformation2", () => {
   test("Missing contentReference is handled", () => {
     fhirCommunicationRequests[0].payload.push({contentReference: undefined})
 
-    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const pertinentInformation1 = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
@@ -206,7 +206,7 @@ describe("PertinentInformation2", () => {
   test("Missing contentString and contentReference is handled", () => {
     fhirCommunicationRequests[0].payload.push({} as ContentStringPayload | ContentReferencePayload)
 
-    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const pertinentInformation1 = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
@@ -217,7 +217,7 @@ describe("PertinentInformation2", () => {
     delete fhirLists[0].entry
     fhirCommunicationRequests[0].payload.push({contentReference: {reference: `urn:uuid:${fhirLists[0].id}`}})
 
-    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const pertinentInformation1 = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
@@ -228,7 +228,7 @@ describe("PertinentInformation2", () => {
     fhirLists[0].entry = [{} as fhir.ListEntry]
     fhirCommunicationRequests[0].payload.push({contentReference: {reference: `urn:uuid:${fhirLists[0].id}`}})
 
-    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const pertinentInformation1 = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
@@ -239,7 +239,7 @@ describe("PertinentInformation2", () => {
     fhirLists[0].entry = [{item: {}} as fhir.ListEntry]
     fhirCommunicationRequests[0].payload.push({contentReference: {reference: `urn:uuid:${fhirLists[0].id}`}})
 
-    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
 
     const firstPertinentInformation2 = pertinentInformation2Array[0]
     const pertinentInformation1 = firstPertinentInformation2.pertinentLineItem.pertinentInformation1
@@ -258,16 +258,17 @@ describe("PertinentInformation2", () => {
     fhirCommunicationRequests[0].payload.push({contentString: contentString})
     ensureAtLeast2MedicationRequests(bundle)
 
-    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
+    const pertinentInformation1Array = pertinentInformation2Array
       .map((pertinentInformation2) => pertinentInformation2.pertinentLineItem.pertinentInformation1)
 
-    const firstPertinentInformation1 = pertinentInformation2Array.shift()
-    expect(firstPertinentInformation1.pertinentAdditionalInstructions.value).toContain(expected)
+    const firstPertinentInformation1 = pertinentInformation1Array.shift()
+    expect(firstPertinentInformation1.pertinentAdditionalInstructions.value._text).toContain(expected)
 
-    pertinentInformation2Array.forEach(checkValueDoesNotContainExpected)
+    pertinentInformation1Array.forEach(checkValueDoesNotContainExpected)
 
     function checkValueDoesNotContainExpected(pertinentInformation1: LineItemPertinentInformation1) {
-      const actual = pertinentInformation1?.pertinentAdditionalInstructions?.value
+      const actual = pertinentInformation1?.pertinentAdditionalInstructions?.value?._text
       if (actual)
         expect(actual).not.toContain(expected)
     }
@@ -279,16 +280,17 @@ describe("PertinentInformation2", () => {
     fhirCommunicationRequests[0].payload.push({contentReference: {reference: `urn:uuid:${fhirLists[0].id}`}})
     ensureAtLeast2MedicationRequests(bundle)
 
-    const pertinentInformation2Array = convertBundleToPrescription(bundle).pertinentInformation2
+    const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
+    const pertinentInformation1Array = pertinentInformation2Array
       .map((pertinentInformation2) => pertinentInformation2.pertinentLineItem.pertinentInformation1)
 
-    const firstPertinentInformation1 = pertinentInformation2Array.shift()
-    expect(firstPertinentInformation1.pertinentAdditionalInstructions.value).toContain(expected)
+    const firstPertinentInformation1 = pertinentInformation1Array.shift()
+    expect(firstPertinentInformation1.pertinentAdditionalInstructions.value._text).toContain(expected)
 
-    pertinentInformation2Array.forEach(checkValueDoesNotContainExpected)
+    pertinentInformation1Array.forEach(checkValueDoesNotContainExpected)
 
     function checkValueDoesNotContainExpected(pertinentInformation1: LineItemPertinentInformation1) {
-      const actual = pertinentInformation1?.pertinentAdditionalInstructions?.value
+      const actual = pertinentInformation1?.pertinentAdditionalInstructions?.value?._text
       if (actual)
         expect(actual).not.toContain(expected)
     }

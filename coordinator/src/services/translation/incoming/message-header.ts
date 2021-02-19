@@ -4,31 +4,36 @@ import {createIdentifier, createReference} from "./fhir-base-types"
 
 export function createMessageHeader(
   messageId: string,
-  patientReference: string,
-  medicationRequestReference: string,
-  representedOrganizationReference: string,
-  cancelRequestId: string
+  eventCoding: fhir.Coding,
+  focusIds: Array<string>,
+  destinationOrganizationId: string,
+  requestMessageId: string
 ): fhir.MessageHeader {
   return {
     resourceType: "MessageHeader",
     id: generateResourceId(),
     extension: getExtensions(messageId),
-    eventCoding: getEventCoding(),
-    destination: getDestinations(representedOrganizationReference),
+    eventCoding: eventCoding,
+    destination: getDestinations(destinationOrganizationId),
     sender: getNhsdSender(),
     source: getSource(),
-    response: getMessageHeaderResponse(cancelRequestId),
-    focus: createFocus(patientReference, medicationRequestReference)
+    response: getMessageHeaderResponse(requestMessageId),
+    focus: createFocus(focusIds)
   }
 }
 
-function getEventCoding() {
-  return {
+export const EVENT_CODING: Record<string, fhir.Coding> = Object.freeze({
+  PRESCRIPTION_ORDER_RESPONSE: {
     system: "https://fhir.nhs.uk/CodeSystem/message-event",
     code: "prescription-order-response",
     display: "Prescription Order Response"
+  },
+  PRESCRIPTION_ORDER: {
+    system: "https://fhir.nhs.uk/CodeSystem/message-event",
+    code: "prescription-order",
+    display: "Prescription Order"
   }
-}
+})
 
 function getNhsdSender() {
   return {
@@ -40,8 +45,8 @@ function getNhsdSender() {
   }
 }
 
-function createFocus(patientReference: string, medicationRequestReference: string) {
-  return [createReference(patientReference), createReference(medicationRequestReference)]
+function createFocus(focusIds: Array<string>) {
+  return focusIds.map(createReference)
 }
 
 function getSource() {
@@ -59,17 +64,21 @@ function getExtensions(messageId: string): Array<fhir.IdentifierExtension> {
 }
 
 function getDestinations(representedOrganizationId: string): Array<fhir.MessageHeaderDestination> {
-  return [{
-    endpoint: `urn:nhs-uk:addressing:ods:${representedOrganizationId}`,
-    receiver: {
-      identifier: createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", representedOrganizationId)
-    }
-  }]
+  if (representedOrganizationId) {
+    return [{
+      endpoint: `urn:nhs-uk:addressing:ods:${representedOrganizationId}`,
+      receiver: {
+        identifier: createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", representedOrganizationId)
+      }
+    }]
+  } else {
+    return []
+  }
 }
 
-function getMessageHeaderResponse(cancelRequestId: string): fhir.MessageHeaderResponse {
+function getMessageHeaderResponse(requestMessageId: string): fhir.MessageHeaderResponse {
   return {
-    identifier: cancelRequestId.toLowerCase(),
+    identifier: requestMessageId.toLowerCase(),
     code: "ok"
   }
 }

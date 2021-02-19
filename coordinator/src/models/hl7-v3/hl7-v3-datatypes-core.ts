@@ -107,7 +107,8 @@ export class Name implements ElementCompact {
 }
 
 enum NullFlavor {
-  NOT_APPLICABLE = "NA"
+  NOT_APPLICABLE = "NA",
+  UNKNOWN = "UNK"
 }
 
 export class Null implements ElementCompact {
@@ -122,6 +123,7 @@ export class Null implements ElementCompact {
   }
 
   static NOT_APPLICABLE = new Null(NullFlavor.NOT_APPLICABLE)
+  static UNKNOWN = new Null(NullFlavor.UNKNOWN)
 }
 
 class QuantityTranslation implements ElementCompact {

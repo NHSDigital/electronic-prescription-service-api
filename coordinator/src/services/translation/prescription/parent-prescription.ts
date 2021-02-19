@@ -2,7 +2,7 @@ import * as fhir from "../../../models/fhir/fhir-resources"
 import {convertPatient} from "./patient"
 import {convertBundleToPrescription} from "."
 import * as prescriptions from "../../../models/hl7-v3/hl7-v3-prescriptions"
-import {getIdentifierValueForSystem} from "../common"
+import {getIdentifierValueForSystem, toArray} from "../common"
 import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {getMedicationRequests, getPatient} from "../common/getResourcesOfType"
@@ -43,8 +43,8 @@ export function convertParentPrescription(
     )
     : hl7V3Prescription.author.time
 
-  const lineItems = hl7V3ParentPrescription.pertinentInformation1.pertinentPrescription.pertinentInformation2
-    .map(info => info.pertinentLineItem)
+  const lineItems = toArray(hl7V3ParentPrescription.pertinentInformation1.pertinentPrescription.pertinentInformation2)
+    .map(pertinentInformation2 => pertinentInformation2.pertinentLineItem)
   const careRecordElementCategory = convertCareRecordElementCategoriesFn(lineItems)
   hl7V3ParentPrescription.pertinentInformation2 = new prescriptions.ParentPrescriptionPertinentInformation2(
     careRecordElementCategory

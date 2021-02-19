@@ -1,4 +1,4 @@
-import {createMessageHeader} from "../../../../src/services/translation/cancellation/cancellation-message-header"
+import {createMessageHeader, EVENT_CODING} from "../../../../src/services/translation/incoming/message-header"
 import {getExtensionForUrl} from "../../../../src/services/translation/common"
 import * as fhir from "../../../../src/models/fhir/fhir-resources"
 
@@ -12,8 +12,8 @@ describe("createMessageHeader", () => {
   const cancelRequestId = "testCancelId"
   const messageHeader = createMessageHeader(
     messageId,
-    patientReference,
-    medicationRequestReference,
+    EVENT_CODING.PRESCRIPTION_ORDER_RESPONSE,
+    [patientReference, medicationRequestReference],
     representedOrganizationId,
     cancelRequestId
   )

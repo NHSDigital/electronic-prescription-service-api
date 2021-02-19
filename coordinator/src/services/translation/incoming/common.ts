@@ -3,6 +3,12 @@ import * as fhir from "../../../models/fhir/fhir-resources"
 import * as uuid from "uuid"
 import {toArray} from "../common"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
+import {AgentPerson, Patient} from "../../../models/hl7-v3/hl7-v3-people-places"
+import {createPractitioner} from "./practitioner"
+import {createHealthcareService, createLocations, createOrganization} from "./organization"
+import {createPractitionerRole} from "./practitioner-role"
+import {createPatient} from "./patient"
+import {createReference} from "./fhir-base-types"
 
 export function convertName(hl7Name: Array<core.Name> | core.Name): Array<fhir.HumanName> {
   const nameArray = toArray(hl7Name)
@@ -112,9 +118,39 @@ function convertTelecomUse(fhirTelecomUse: string): string {
 }
 
 export function generateResourceId(): string {
-  return uuid.v4().toString().toLowerCase()
+  return uuid.v4()
 }
 
 export function getFullUrl(uuid: string):string {
   return `urn:uuid:${uuid}`
+}
+
+export function convertResourceToBundleEntry(resource: fhir.Resource): fhir.BundleEntry {
+  return {
+    resource,
+    fullUrl: `urn:uuid:${resource.id}`
+  }
+}
+
+export function translateAndAddPatient(hl7Patient: Patient, resources: Array<fhir.Resource>): string {
+  const fhirPatient = createPatient(hl7Patient)
+  resources.push(fhirPatient)
+  return fhirPatient.id
+}
+
+export function translateAndAddAgentPerson(hl7AgentPerson: AgentPerson, resources: Array<fhir.Resource>): string {
+  const fhirPractitioner = createPractitioner(hl7AgentPerson)
+  const fhirLocations = createLocations(hl7AgentPerson.representedOrganization)
+  const fhirHealthcareService = createHealthcareService(hl7AgentPerson.representedOrganization, fhirLocations)
+  const fhirPractitionerRole = createPractitionerRole(hl7AgentPerson, fhirPractitioner.id, fhirHealthcareService.id)
+  resources.push(fhirPractitioner, ...fhirLocations, fhirHealthcareService, fhirPractitionerRole)
+
+  const healthCareProviderLicense = hl7AgentPerson.representedOrganization.healthCareProviderLicense
+  if (healthCareProviderLicense) {
+    const fhirOrganization = createOrganization(healthCareProviderLicense.Organization)
+    fhirPractitionerRole.organization = createReference(fhirOrganization.id)
+    resources.push(fhirOrganization)
+  }
+
+  return fhirPractitionerRole.id
 }

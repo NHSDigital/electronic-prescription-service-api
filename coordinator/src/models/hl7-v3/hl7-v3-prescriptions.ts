@@ -40,6 +40,7 @@ export class LineItem implements ElementCompact {
   repeatNumber?: core.Interval<NumericValue>
   product: Product
   component: LineItemComponent
+  pertinentInformation4?: LineItemPertinentInformation4
   pertinentInformation1?: LineItemPertinentInformation1
   pertinentInformation3?: Array<LineItemPertinentInformation3>
   pertinentInformation2: LineItemPertinentInformation2
@@ -147,6 +148,24 @@ export class LineItemPertinentInformation2 implements ElementCompact {
 
   constructor(pertinentDosageInstructions: DosageInstructions) {
     this.pertinentDosageInstructions = pertinentDosageInstructions
+  }
+}
+
+/**
+ * Used in dispensing messages only!
+ * Link to the status of the prescription line item at the point of the release event.
+ */
+export class LineItemPertinentInformation4 implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
+
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  pertinentItemStatus: ItemStatus
+
+  constructor(pertinentItemStatus: ItemStatus) {
+    this.pertinentItemStatus = pertinentItemStatus
   }
 }
 
@@ -263,7 +282,7 @@ export class Prescription implements ElementCompact {
   pertinentInformation5: PrescriptionPertinentInformation5
   //TODO - pertinentInformation6
   pertinentInformation1: PrescriptionPertinentInformation1
-  pertinentInformation2: Array<PrescriptionPertinentInformation2>
+  pertinentInformation2: PrescriptionPertinentInformation2 | Array<PrescriptionPertinentInformation2>
   pertinentInformation8: PrescriptionPertinentInformation8
   //TODO - pertinentInformation3
   pertinentInformation4: PrescriptionPertinentInformation4
@@ -478,11 +497,11 @@ export class PrescriptionType extends PrescriptionAnnotation {
  * The dosage and medication instructions in human readable form.
  */
 export class DosageInstructions extends PrescriptionAnnotation {
-  value: string
+  value: core.Text
 
   constructor(value: string) {
     super(new codes.PrescriptionAnnotationCode("DI"))
-    this.value = value
+    this.value = new core.Text(value)
   }
 }
 
@@ -490,11 +509,11 @@ export class DosageInstructions extends PrescriptionAnnotation {
  * Additional Instructions provided with the prescription Line Item.
  */
 export class AdditionalInstructions extends PrescriptionAnnotation {
-  value: string
+  value: core.Text
 
   constructor(value: string) {
     super(new codes.PrescriptionAnnotationCode("AI"))
-    this.value = value
+    this.value = new core.Text(value)
   }
 }
 
@@ -508,6 +527,18 @@ export class ReviewDate extends PrescriptionAnnotation {
   constructor(value: Timestamp) {
     super(new codes.PrescriptionAnnotationCode("RD"))
     this.value = value
+  }
+}
+
+/**
+ * Describes the status of the prescription Line Item as a result of the dispense event.
+ */
+export class ItemStatus extends PrescriptionAnnotation {
+  value: codes.ItemStatusCode
+
+  constructor(value: string) {
+    super(new codes.PrescriptionAnnotationCode("IS"))
+    this.value = new codes.ItemStatusCode(value)
   }
 }
 
