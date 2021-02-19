@@ -1,10 +1,9 @@
 import * as fs from 'fs'
 import * as path from "path"
-import { PactGroups } from './resources/common'
+import { pactGroupNames } from './resources/common'
 
 function createPostmanCollection() {
     const endpoints = ["Prepare", "Process"]
-    const groups = PactGroups
     const pactVersion = process.env.PACT_VERSION.toLowerCase()
 
     endpoints.forEach(endpoint => {
@@ -18,12 +17,7 @@ function createPostmanCollection() {
 
         const endpointLower = endpoint.toLowerCase()
 
-        const successGroups = groups
-            .filter(g => g !== "accept-header")
-            .filter(g => !g.includes("cancel"))
-            .filter(g => !g.includes("failures"))
-
-        successGroups.forEach(group => {
+        pactGroupNames.forEach(group => {
             const pactString = fs.readFileSync(path.join(__dirname, `pact/pacts/nhsd-apim-eps-test-client+${pactVersion}-nhsd-apim-eps+${endpointLower}-${group}+${pactVersion}.json`), "utf8")
             const pact = JSON.parse(pactString)
             const postmanItems = pact.interactions.map(interaction => createPostmanItem(interaction))

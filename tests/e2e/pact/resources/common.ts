@@ -65,7 +65,7 @@ export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, group?: AllPac
 // get pact groups for verification
 // convert pact group name from directory search string format to single string
 // matching the published pact's name
-const pactGroupNames = pactGroups.map(g => g.replace(/-/g, "").replace(/\s/g, "-"))
+export const pactGroupNames = pactGroups.map(g => g.replace(/-/g, "").replace(/\s/g, "-"))
 const cancelPactGroupNames = cancelPactGroups.map(g => g.replace(/-/g, "").replace(/\s/g, "-"))
 
 const isSandbox = process.env.APIGEE_ENVIRONMENT.includes("sandbox")

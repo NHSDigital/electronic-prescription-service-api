@@ -120,6 +120,7 @@ function generate-postman-collection() {
     }
     $env:APIGEE_ACCESS_TOKEN="$token"
     $env:APIGEE_ENVIRONMENT="$env"
+    $env:PACT_VERSION="$env:USERNAME".replace(' ','')
     mkdir tests/e2e/postman/collections -ErrorAction SilentlyContinue
 	cd tests/e2e/pact 
 	npm run generate-postman-collection
