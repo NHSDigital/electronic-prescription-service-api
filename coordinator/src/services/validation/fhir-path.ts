@@ -1,5 +1,5 @@
-import {Bundle, Extension, Reference, Resource} from "../../models/fhir/fhir-resources"
 import {resolveReference} from "../translation/common"
+import * as fhir from "../../models/fhir"
 
 /**
  * Implementation of simple FHIR paths
@@ -10,7 +10,7 @@ const FHIR_PATH_MATCHER = /("[^"]*"|[^".]+)+/g
 const EXTENSION_MATCHER = /extension\("(\S+)"\)/
 const OF_TYPE_MATCHER = /ofType\((\S+)\)/
 
-export function applyFhirPath(bundle: Bundle, input: Array<unknown>, path: string): Array<unknown> {
+export function applyFhirPath(bundle: fhir.Bundle, input: Array<unknown>, path: string): Array<unknown> {
   const pathElements = splitFhirPath(path)
   return pathElements.reduce(
     (previousOutput, nextPathElement) => applyFhirPathElement(bundle, previousOutput, nextPathElement),
@@ -29,16 +29,16 @@ function splitFhirPath(path: string) {
   return result
 }
 
-function applyFhirPathElement(bundle: Bundle, input: Array<unknown>, pathElement: string): Array<unknown> {
+function applyFhirPathElement(bundle: fhir.Bundle, input: Array<unknown>, pathElement: string): Array<unknown> {
   if (pathElement === "resolve()") {
-    const references = input as Array<Reference<Resource>>
+    const references = input as Array<fhir.Reference<fhir.Resource>>
     return references.map(i => resolveReference(bundle, i))
   }
 
   const records = input as Array<Record<string, unknown>>
   const extensionMatch = EXTENSION_MATCHER.exec(pathElement)
   if (extensionMatch) {
-    return records.flatMap(i => i.extension as Array<Extension>)
+    return records.flatMap(i => i.extension as Array<fhir.Extension>)
       .filter(extension => extension.url === extensionMatch[1])
   }
 

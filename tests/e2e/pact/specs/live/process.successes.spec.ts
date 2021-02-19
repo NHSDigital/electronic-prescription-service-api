@@ -1,12 +1,12 @@
-import { InteractionObject } from "@pact-foundation/pact"
+import {InteractionObject} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
-import {Bundle, MedicationRequest} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
 import {regeneratePrescriptionIds} from "../../services/process-example-fetcher"
+import * as fhir from "../../models/fhir"
 
 regeneratePrescriptionIds()
 
@@ -97,13 +97,13 @@ TestResources.processOrderUpdateCaseGroups.forEach(pactGroup => {
           test.each(pactGroupTestCases)("should be able to process %s", async (desc: string, message: Bundle) => {
             const apiPath = `${basePath}/$process-message`
             const bundleStr = LosslessJson.stringify(message)
-            const bundle = JSON.parse(bundleStr) as Bundle
+            const bundle = JSON.parse(bundleStr) as fhir.Bundle
 
             const requestId = uuid.v4()
             const correlationId = uuid.v4()
 
             const firstMedicationRequest = message.entry.map(e => e.resource)
-              .find(r => r.resourceType == "MedicationRequest") as MedicationRequest
+              .find(r => r.resourceType == "MedicationRequest") as fhir.MedicationRequest
             const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
             const interaction: InteractionObject = {
@@ -123,7 +123,15 @@ TestResources.processOrderUpdateCaseGroups.forEach(pactGroup => {
                 headers: {
                   "Content-Type": "application/json"
                 },
-                //TODO - Verify response body for cancellations
+                body: {
+                  resourceType: "OperationOutcome",
+                  issue: [
+                    {
+                      code: "informational",
+                      severity: "information"
+                    }
+                  ]
+                },
                 status: 200
               }
             }
@@ -135,9 +143,9 @@ TestResources.processOrderUpdateCaseGroups.forEach(pactGroup => {
               .set("X-Correlation-ID", correlationId)
               .send(bundleStr)
               .expect(200)
-          })
-        }
-      })
-    }
-  )
+          }
+        )
+      }
+    })
+  })
 })

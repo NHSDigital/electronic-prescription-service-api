@@ -1,10 +1,10 @@
-import {fhirValidation, identifyMessageType, MessageType, VALIDATOR_HOST} from "../../src/routes/util"
-import * as fhir from "../../src/models/fhir/fhir-resources"
+import {fhirValidation, identifyMessageType, VALIDATOR_HOST} from "../../src/routes/util"
 import {clone} from "../resources/test-helpers"
 import * as TestResources from "../resources/test-resources"
 import {getMessageHeader} from "../../src/services/translation/common/getResourcesOfType"
 import axios from "axios"
 import * as moxios from "moxios"
+import * as fhir from "../../src/models/fhir"
 
 test("API only forwards accept header to validator", async () => {
   moxios.install(axios)
@@ -38,7 +38,7 @@ describe("identifyMessageType", () => {
   })
 
   test("identifies a prescription message correctly", () => {
-    const messageType = MessageType.PRESCRIPTION
+    const messageType = fhir.EventCodingCode.PRESCRIPTION
     messageHeader.eventCoding.code = messageType
     expect(identifyMessageType(bundle)).toBe(messageType)
   })

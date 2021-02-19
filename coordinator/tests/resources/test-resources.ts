@@ -2,17 +2,17 @@ import * as XmlJs from "xml-js"
 import {ElementCompact} from "xml-js"
 import * as fs from "fs"
 import * as path from "path"
-import {Bundle, Parameters} from "../../src/models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import {SpineDirectResponse} from "../../src/models/spine"
-import {acknowledgementCodes} from "../../src/models/hl7-v3/hl7-v3-spine-response"
+import * as hl7V3 from "../../src/models/hl7-v3"
+import * as fhir from "../../src/models/fhir"
 
 export class ExamplePrescription {
   description: string
-  fhirMessageUnsigned: Bundle
-  fhirMessageSigned: Bundle
-  fhirMessageCancel: Bundle
-  fhirMessageDigest: Parameters
+  fhirMessageUnsigned: fhir.Bundle
+  fhirMessageSigned: fhir.Bundle
+  fhirMessageCancel: fhir.Bundle
+  fhirMessageDigest: fhir.Parameters
   hl7V3Message: ElementCompact
   hl7V3MessageCancel: ElementCompact
 
@@ -94,7 +94,7 @@ export const specification = [
 export interface ExampleSpineResponse {
   response: SpineDirectResponse<string>
   spineErrorCode: string | undefined
-  acknowledgementCode: acknowledgementCodes
+  acknowledgementCode: hl7V3.AcknowledgementTypeCode
 }
 
 const asyncSuccess: ExampleSpineResponse = {
@@ -106,7 +106,7 @@ const asyncSuccess: ExampleSpineResponse = {
     statusCode: 200
   },
   spineErrorCode: undefined,
-  acknowledgementCode: "AA"
+  acknowledgementCode: hl7V3.AcknowledgementTypeCode.ACKNOWLEDGED
 }
 
 const syncError: ExampleSpineResponse = {
@@ -118,7 +118,7 @@ const syncError: ExampleSpineResponse = {
     statusCode: 400
   },
   spineErrorCode: "202",
-  acknowledgementCode: "AR"
+  acknowledgementCode: hl7V3.AcknowledgementTypeCode.REJECTED
 }
 
 const asyncError: ExampleSpineResponse = {
@@ -130,7 +130,7 @@ const asyncError: ExampleSpineResponse = {
     statusCode: 400
   },
   spineErrorCode: "5000",
-  acknowledgementCode: "AE"
+  acknowledgementCode: hl7V3.AcknowledgementTypeCode.ERROR
 }
 
 const syncMultipleError: ExampleSpineResponse = {
@@ -142,7 +142,7 @@ const syncMultipleError: ExampleSpineResponse = {
     statusCode: 400
   },
   spineErrorCode: "202",
-  acknowledgementCode: "AR"
+  acknowledgementCode: hl7V3.AcknowledgementTypeCode.REJECTED
 }
 
 const asyncMultipleError: ExampleSpineResponse = {
@@ -154,7 +154,7 @@ const asyncMultipleError: ExampleSpineResponse = {
     statusCode: 400
   },
   spineErrorCode: "5000",
-  acknowledgementCode: "AE"
+  acknowledgementCode: hl7V3.AcknowledgementTypeCode.ERROR
 }
 
 const cancellationSuccess: ExampleSpineResponse = {
@@ -166,7 +166,7 @@ const cancellationSuccess: ExampleSpineResponse = {
     statusCode: 200
   },
   spineErrorCode: "0001",
-  acknowledgementCode: "AA"
+  acknowledgementCode: hl7V3.AcknowledgementTypeCode.ACKNOWLEDGED
 }
 
 const cancellationError: ExampleSpineResponse = {
@@ -178,7 +178,7 @@ const cancellationError: ExampleSpineResponse = {
     statusCode: 400
   },
   spineErrorCode: "0008",
-  acknowledgementCode: "AE"
+  acknowledgementCode: hl7V3.AcknowledgementTypeCode.ERROR
 }
 
 const cancellationDispensedError: ExampleSpineResponse = {
@@ -190,7 +190,7 @@ const cancellationDispensedError: ExampleSpineResponse = {
     statusCode: 400
   },
   spineErrorCode: "0004",
-  acknowledgementCode: "AE"
+  acknowledgementCode: hl7V3.AcknowledgementTypeCode.ERROR
 }
 
 export const spineResponses = {
