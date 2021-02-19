@@ -7,31 +7,12 @@ import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import { basePath, getStringParameterByName, pactOptions } from "../../resources/common"
 
-const preparePactGroups = [
-  {
-    name: "secondarycare-community-acute",
-    cases: TestResources.prepareSecondaryCareCommunityAcuteCases
-  },
-  {
-    name: "secondarycare-community-repeatdispensing",
-    cases: TestResources.prepareSecondaryCareCommunityRepeatDispensingCases
-  },
-  {
-    name: "secondarycare-homecare",
-    cases: TestResources.prepareSecondaryCareHomecareCases
-  },
-  {
-    name: "primarycare",
-    cases: TestResources.preparePrimaryCareCases
-  }
-]
-
-preparePactGroups.forEach(pactGroup => {
+TestResources.prepareCaseGroups.forEach(pactGroup => {
   const pactGroupName = pactGroup.name
   const pactGroupTestCases = pactGroup.cases
 
   jestpact.pactWith(
-    pactOptions("sandbox", "prepare", [pactGroupName]),
+    pactOptions("sandbox", "prepare", pactGroupName),
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     async (provider: any) => {
       const client = () => {

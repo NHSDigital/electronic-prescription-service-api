@@ -97,6 +97,7 @@ function run-smoke-tests() {
     $env:PACT_TAG="$env"
     $env:PACT_VERSION="$env:USERNAME".replace(' ','')
     $env:APIGEE_ACCESS_TOKEN="$token"
+    $env:APIGEE_ENVIRONMENT="$env"
     $env:PACT_PROVIDER_URL="https://$env.api.service.nhs.uk/$env:SERVICE_BASE_PATH"
     #$env:LOG_LEVEL="debug"
     Remove-Item Env:\LOG_LEVEL -ErrorAction SilentlyContinue

@@ -10,16 +10,6 @@ function getConvertCases(searchString: string) {
     .filter(e => e.description.includes(searchString))
     .map(spec => spec.toJestCase())
 }
-export const convertSecondaryCareCommunityAcuteCases = getConvertCases("secondary-care community acute")
-export const convertSecondaryCareCommunityRepeatDispensingCases = getConvertCases("secondary-care community repeat-dispensing")
-export const convertSecondaryCareHomecareCases = getConvertCases("secondary-care homecare")
-export const convertPrimaryCareCases = getConvertCases("primary-care")
-export const convertErrorCases = convertExamples.filter(e => !e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
-
-export const prepareSecondaryCareCommunityAcuteCases = getPrepareCases("secondary-care community acute")
-export const prepareSecondaryCareCommunityRepeatDispensingCases = getPrepareCases("secondary-care community repeat-dispensing")
-export const prepareSecondaryCareHomecareCases = getPrepareCases("secondary-care homecare")
-export const preparePrimaryCareCases = getPrepareCases("primary-care")
 
 function getPrepareCases(searchString: string) {
   return prepareExamples
@@ -35,6 +25,12 @@ function getProcessCases(searchString: string, operation: string) {
     .filter(e => e.requestFile.operation === operation)
     .map(spec => spec.toJestCase())
 }
+
+export const convertCaseGroups = pactGroups.map(pactGroup => new PactGroupCases(pactGroup, getConvertCases(pactGroup)))
+export const convertErrorCases = convertExamples.filter(e => !e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
+
+export const prepareCaseGroups = pactGroups.map(pactGroup => new PactGroupCases(pactGroup, getPrepareCases(pactGroup)))
+export const prepareErrorCases = convertExamples.filter(e => !e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
 
 export const processOrderCaseGroups = pactGroups.map(pactGroup => new PactGroupCases(pactGroup, getProcessCases(pactGroup, "send")))
 export const processOrderUpdateCaseGroups = cancelPactGroups.map(pactGroup => new PactGroupCases(pactGroup, getProcessCases(pactGroup, "cancel")))

@@ -1,6 +1,10 @@
 import { VerifierV3 } from "@pact-foundation/pact"
-import { pactGroups, cancelPactGroups } from "../resources/common"
-import { processOrderCaseGroups } from "../resources/test-resources"
+import { 
+  getPreparePactGroups,
+  getProcessSendPactGroups,
+  getProcessCancelPactGroups,
+  getConvertPactGroups
+} from "../resources/common"
 
 let endpoint: string
 let pactGroup: string
@@ -21,13 +25,12 @@ function sleep(milliseconds: number) {
 async function verify(): Promise<any> {
     sleep(sleepMs)
     sleepMs = (sleepMs + 5000) * 2
-    const isLocal = process.env.PACT_PROVIDER_URL === "http://localhost:9000"
     const providerVersion = process.env.PACT_TAG
       ? `${process.env.PACT_VERSION} (${process.env.PACT_TAG})`
       : process.env.PACT_VERSION
     const verifier =  new VerifierV3({
-      publishVerificationResult: !isLocal,
-      pactBrokerUrl: isLocal ? undefined : process.env.PACT_BROKER_URL,
+      publishVerificationResult: true,
+      pactBrokerUrl: process.env.PACT_BROKER_URL,
       pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
       pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
       consumerVersionTag: process.env.PACT_VERSION,
@@ -49,12 +52,7 @@ async function verify(): Promise<any> {
         req.headers["x-smoke-test"] = "1"
         req.headers["Authorization"] = `Bearer ${token}`
         return req
-      },
-      pactUrls: isLocal
-        ? [
-          `${process.cwd()}/pact/pacts/${process.env.PACT_CONSUMER}+${endpoint}+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${process.env.PACT_VERSION}.json`
-        ]
-        : []
+      }
     })
     return await verifier.verifyProvider()
 }
@@ -75,58 +73,42 @@ async function verifyWith2Retries() {
     .catch(() => process.exit(1))
 }
 
-// /* eslint-disable  @typescript-eslint/no-explicit-any */
-// async function verifyConvert(): Promise<any> {
-//   const pactGroups =
-//     PactGroups
-//       // this group is only valid for process
-//       .filter(g => g !== "accept-header")
-//       // cancel conversions are included in main convert group
-//       .filter(g => !g.includes("-cancel"))
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+async function verifyConvert(): Promise<any> {
+  await getConvertPactGroups().reduce(async (promise, group) => {
+    await promise
+    endpoint = "convert"
+    pactGroup = group
+    resetBackOffRetryTimer()
+    await verifyWith2Retries()
+  }, Promise.resolve())
+}
 
-//   await pactGroups.reduce(async (promise, group) => {
-//     await promise
-//     endpoint = "convert"
-//     pactGroup = group
-//     resetBackOffRetryTimer()
-//     await verifyWith2Retries()
-//   }, Promise.resolve())
-// }
-
-// /* eslint-disable  @typescript-eslint/no-explicit-any */
-// async function verifyPrepare(): Promise<any> {
-//   const pactGroups =
-//       isSandbox()
-//         ? PactGroups.filter(g => g !== "failures").filter(g => g !== "accept-header").filter(g => !g.includes("cancel"))
-//         : PactGroups.filter(g => g !== "accept-header").filter(g => !g.includes("cancel"))
-
-//     await pactGroups.reduce(async (promise, group) => {
-//       await promise
-//       endpoint = "prepare"
-//       pactGroup = group
-//       resetBackOffRetryTimer()
-//       await verifyOnce()
-//     }, Promise.resolve())
-// }
-
-// function isSandbox() {
-//   return process.env.PACT_PROVIDER_URL.includes("sandbox")
-// }
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+async function verifyPrepare(): Promise<any> {
+    await getPreparePactGroups().reduce(async (promise, group) => {
+      await promise
+      endpoint = "prepare"
+      pactGroup = group
+      resetBackOffRetryTimer()
+      await verifyOnce()
+    }, Promise.resolve())
+}
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyProcess(): Promise<any> {
-    await pactGroups.reduce(async (promise, group) => {
+    await getProcessSendPactGroups().reduce(async (promise, group) => {
       await promise
       endpoint = "process"
-      pactGroup = group.replace(/-/g, "").replace(/\s/g, "-")
+      pactGroup = group
       resetBackOffRetryTimer()
       await verifyOnce()
     }, Promise.resolve())
 
-    await cancelPactGroups.reduce(async (promise, group) => {
+    await getProcessCancelPactGroups().reduce(async (promise, group) => {
       await promise
       endpoint = "process"
-      pactGroup = group.replace(/-/g, "").replace(/\s/g, "-") + "-cancel"
+      pactGroup = group + "-cancel"
       resetBackOffRetryTimer()
       await verifyOnce()
     }, Promise.resolve())
@@ -143,10 +125,9 @@ async function verifyRelease(): Promise<any> {
 }
 
 (async () => {
-  verifyProcess()
-  // verifyConvert()
-  //   .then(verifyPrepare)
-  //   .then(verifyProcess)
-  //   .then(verifyRelease)
+  verifyConvert()
+    .then(verifyPrepare)
+    .then(verifyProcess)
+    .then(verifyRelease)
 })()
 

@@ -6,9 +6,7 @@ import {ExampleFile} from "../models/files/example-file"
 export const basePath = "/FHIR/R4"
 
 export type ApiMode = "live" | "sandbox"
-
 export type ApiEndpoint = "prepare" | "process" | "convert" | "release"
-
 export type ApiOperation = "send" | "cancel"
 
 // to use groups the group added must match a subfolder under
@@ -25,17 +23,17 @@ export const cancelPactGroups = [
   "secondary-care community acute"
 ] as const
 
-const liveProcessPactGroups = [
-  // "failures"
+export const failurePactGroups = [
+  "failures"
 ] as const
 
-export const allPactGroups = [...pactGroups, ...liveProcessPactGroups, ...cancelPactGroups]
-export const sandboxPactGroups = [...pactGroups]
-export const livePactGroups = [...pactGroups, ...liveProcessPactGroups]
+export const miscPactGroups = [
+  "accept_headers"
+] as const
 
-export type AllPactGroups = typeof pactGroups[number] | typeof liveProcessPactGroups[number] | typeof cancelPactGroups[number]
-export type SandboxPactGroup = typeof pactGroups[number]
-export type LivePactGroup = typeof pactGroups[number] | typeof liveProcessPactGroups[number]
+export const allPactGroups = [...pactGroups, ...cancelPactGroups, ...failurePactGroups, ...miscPactGroups]
+export const sandboxPactGroups = [...failurePactGroups, ...miscPactGroups]
+export type AllPactGroups = typeof pactGroups[number] | typeof cancelPactGroups[number] | typeof failurePactGroups[number] | typeof miscPactGroups[number]
 
 export class PactGroupCases {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
@@ -48,8 +46,9 @@ export class PactGroupCases {
   cases: any
 }
 
-export function pactOptions(mode: "sandbox", endpoint: ApiEndpoint, group?: SandboxPactGroup, operation?: ApiOperation): JestPactOptions
-export function pactOptions(mode: "live", endpoint: ApiEndpoint, group?: LivePactGroup, operation?: ApiOperation): JestPactOptions
+// used to add type-safety for adding a new pact
+export function pactOptions(mode: "sandbox", endpoint: ApiEndpoint, group?: AllPactGroups, operation?: ApiOperation): JestPactOptions
+export function pactOptions(mode: "live", endpoint: ApiEndpoint, group?: AllPactGroups, operation?: ApiOperation): JestPactOptions
 export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, group?: AllPactGroups, operation?: ApiOperation): JestPactOptions
 {
   const sandbox = mode === "sandbox"
@@ -63,6 +62,35 @@ export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, group?: AllPac
   }
 }
 
+// get pact groups for verification
+// convert pact group name from directory search string format to single string
+// matching the published pact's name
+const pactGroupNames = pactGroups.map(g => g.replace(/-/g, "").replace(/\s/g, "-"))
+const cancelPactGroupNames = cancelPactGroups.map(g => g.replace(/-/g, "").replace(/\s/g, "-"))
+
+const isSandbox = process.env.APIGEE_ENVIRONMENT.includes("sandbox")
+
+export function getConvertPactGroups() {
+  return [...pactGroupNames, ...failurePactGroups]
+}
+
+export function getPreparePactGroups() {
+  return isSandbox
+    ? pactGroupNames
+    : [...pactGroupNames, ...failurePactGroups]
+}
+
+export function getProcessSendPactGroups() {
+  return isSandbox
+    ? [...pactGroupNames, ...miscPactGroups]
+    : [...pactGroupNames, ...failurePactGroups, ...miscPactGroups]
+}
+
+export function getProcessCancelPactGroups() {
+  return cancelPactGroupNames
+}
+
+// helper functions
 function isStringParameter(parameter: fhir.Parameter): parameter is fhir.StringParameter {
   return (parameter as fhir.StringParameter).valueString !== undefined
 }
