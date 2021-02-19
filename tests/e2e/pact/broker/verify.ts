@@ -4,14 +4,11 @@ import {
   getProcessSendPactGroups,
   getProcessCancelPactGroups,
   getConvertPactGroups,
-  getReleasePactGroups
+  getReleasePactGroups,
+  ApiEndpoint
 } from "../resources/common"
 
-let endpoint: string
-let pactGroup: string
-
 let token: string
-
 let sleepMs = 0
 
 function sleep(milliseconds: number) {
@@ -23,7 +20,7 @@ function sleep(milliseconds: number) {
 }
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
-async function verify(): Promise<any> {
+async function verify(endpoint: string, pactGroupName: string): Promise<any> {
     sleep(sleepMs)
     sleepMs = (sleepMs + 5000) * 2
     const providerVersion = process.env.PACT_TAG
@@ -35,7 +32,7 @@ async function verify(): Promise<any> {
       pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
       pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
       consumerVersionTag: process.env.PACT_VERSION,
-      provider: `${process.env.PACT_PROVIDER}+${endpoint}${pactGroup ? "-" + pactGroup : ""}+${process.env.PACT_VERSION}`,
+      provider: `${process.env.PACT_PROVIDER}+${endpoint}${pactGroupName ? "-" + pactGroupName : ""}+${process.env.PACT_VERSION}`,
       providerVersion: providerVersion,
       providerBaseUrl: process.env.PACT_PROVIDER_URL,
       logLevel: "debug",
@@ -62,15 +59,15 @@ function resetBackOffRetryTimer() {
   sleepMs = 0
 }
 
-async function verifyOnce() {
-  await verify()
+async function verifyOnce(endpoint: ApiEndpoint, pactGroupName: string) {
+  await verify(endpoint, pactGroupName)
     .catch(() => process.exit(1))
 }
 
-async function verifyWith2Retries() {
-  await verify()
-    .catch(verify)
-    .catch(verify)
+async function verifyWith2Retries(endpoint: ApiEndpoint, pactGroupName: string) {
+  await verify(endpoint, pactGroupName)
+    .catch(() => verify(endpoint, pactGroupName))
+    .catch(() => verify(endpoint, pactGroupName))
     .catch(() => process.exit(1))
 }
 
@@ -78,10 +75,8 @@ async function verifyWith2Retries() {
 async function verifyConvert(): Promise<any> {
   await getConvertPactGroups().reduce(async (promise, group) => {
     await promise
-    endpoint = "convert"
-    pactGroup = group
     resetBackOffRetryTimer()
-    await verifyWith2Retries()
+    await verifyWith2Retries("convert", group)
   }, Promise.resolve())
 }
 
@@ -89,10 +84,8 @@ async function verifyConvert(): Promise<any> {
 async function verifyPrepare(): Promise<any> {
     await getPreparePactGroups().reduce(async (promise, group) => {
       await promise
-      endpoint = "prepare"
-      pactGroup = group
       resetBackOffRetryTimer()
-      await verifyOnce()
+      await verifyOnce("prepare", group)
     }, Promise.resolve())
 }
 
@@ -100,18 +93,14 @@ async function verifyPrepare(): Promise<any> {
 async function verifyProcess(): Promise<any> {
     await getProcessSendPactGroups().reduce(async (promise, group) => {
       await promise
-      endpoint = "process"
-      pactGroup = group
       resetBackOffRetryTimer()
-      await verifyOnce()
+      await verifyOnce("process", group)
     }, Promise.resolve())
 
     await getProcessCancelPactGroups().reduce(async (promise, group) => {
       await promise
-      endpoint = "process"
-      pactGroup = group + "-cancel"
       resetBackOffRetryTimer()
-      await verifyOnce()
+      await verifyOnce("process", `${group}-cancel`)
     }, Promise.resolve())
 }
 
@@ -119,10 +108,8 @@ async function verifyProcess(): Promise<any> {
 async function verifyRelease(): Promise<any> {
   await getReleasePactGroups().reduce(async (promise, group) => {
     await promise
-    endpoint = "release"
-    pactGroup = group
     resetBackOffRetryTimer()
-    await verifyWith2Retries()
+    await verifyWith2Retries("release", group)
   }, Promise.resolve())
 }
 

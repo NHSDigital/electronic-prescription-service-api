@@ -53,7 +53,7 @@ export class PactGroupCases {
 export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, group?: AllPactGroups, operation?: ApiOperation): JestPactOptions
 {
   const sandbox = mode === "sandbox"
-  const groupName = group?.replace(/-/g, "").replace(/\s/g, "-")
+  const groupName = group ? convertPactDescriptionToPactName(group) : ""
   const operationName = operation === "send" ? "" : operation
   return {
     spec: 3,
@@ -71,7 +71,11 @@ const cancelPactGroupNames = convertPactDescriptionsToPactNames(cancelPactGroups
 // convert pact group name from description search string format to single string
 // matching the published pact's name
 function convertPactDescriptionsToPactNames(descriptions: readonly string[]) {
- return descriptions.map(g => g.replace(/-/g, "").replace(/\s/g, "-"))
+ return descriptions.map(g => convertPactDescriptionToPactName(g))
+}
+
+function convertPactDescriptionToPactName(pactDescription: string): string {
+  return pactDescription.replace(/-/g, "").replace(/\s/g, "-")
 }
 
 const isSandbox = process.env.APIGEE_ENVIRONMENT.includes("sandbox")
