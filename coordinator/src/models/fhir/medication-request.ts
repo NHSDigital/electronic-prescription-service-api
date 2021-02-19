@@ -1,5 +1,4 @@
 import * as common from "./common"
-import {createCodeableConcept} from "../../services/translation/response/fhir-base-types"
 import * as practitionerRole from "./practitioner-role"
 import * as patient from "./patient"
 import * as extension from "./extension"
@@ -11,17 +10,17 @@ export enum CourseOfTherapyTypeCode {
 }
 
 export const CourseOfTherapyType = Object.freeze({
-  ACUTE: createCodeableConcept(
+  ACUTE: common.createCodeableConcept(
     "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
     CourseOfTherapyTypeCode.ACUTE,
     "Short course (acute) therapy"
   ),
-  CONTINUOUS: createCodeableConcept(
+  CONTINUOUS: common.createCodeableConcept(
     "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
     CourseOfTherapyTypeCode.CONTINUOUS,
     "Continuous long term therapy"
   ),
-  CONTINOUS_REPEAT_DISPENSING: createCodeableConcept(
+  CONTINOUS_REPEAT_DISPENSING: common.createCodeableConcept(
     "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
     CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING,
     "Continuous long term (repeat dispensing)"

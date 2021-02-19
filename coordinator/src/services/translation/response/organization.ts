@@ -1,5 +1,4 @@
 import {convertAddress, convertTelecom, generateResourceId} from "./common"
-import {createIdentifier, createReference} from "./fhir-base-types"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
 
@@ -22,8 +21,8 @@ export function createOrganization(hl7Organization: hl7V3.Organization): fhir.Or
   return organization
 }
 
-export function createLocations(hl7Organization: hl7V3.Organization): Array<fhir.Location> {
-  const addresses = convertAddress(hl7Organization.addr)
+export function createLocations(organization: hl7V3.Organization): Array<fhir.Location> {
+  const addresses = convertAddress(organization.addr)
   return addresses.map(
     address => ({
       resourceType: "Location",
@@ -34,21 +33,21 @@ export function createLocations(hl7Organization: hl7V3.Organization): Array<fhir
 }
 
 export function createHealthcareService(
-  hl7Organization: hl7V3.Organization,
+  organization: hl7V3.Organization,
   locations: Array<fhir.Location>
 ): fhir.HealthcareService {
   return {
     resourceType: "HealthcareService",
     id: generateResourceId(),
-    identifier: getOrganizationCodeIdentifier(hl7Organization.id._attributes.extension),
-    location: locations.map(location => createReference(location.id)),
-    name: hl7Organization.name._text,
-    telecom: convertTelecom(hl7Organization.telecom)
+    identifier: getOrganizationCodeIdentifier(organization.id._attributes.extension),
+    location: locations.map(location => fhir.createReference(location.id)),
+    name: organization.name._text,
+    telecom: convertTelecom(organization.telecom)
   }
 }
 
 function getOrganizationCodeIdentifier(organizationId: string) {
-  return [createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", organizationId)]
+  return [fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", organizationId)]
 }
 
 function getFixedOrganizationType() {

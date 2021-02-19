@@ -1,14 +1,13 @@
 import {convertName, generateResourceId} from "./common"
-import {createIdentifier} from "./fhir-base-types"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
 
-export function createPractitioner(hl7AgentPerson: hl7V3.AgentPerson): fhir.Practitioner {
+export function createPractitioner(agentPerson: hl7V3.AgentPerson): fhir.Practitioner {
   return {
     resourceType: "Practitioner",
     id: generateResourceId(),
-    identifier: getIdentifier(hl7AgentPerson.agentPerson.id._attributes.extension),
-    name: convertName(hl7AgentPerson.agentPerson.name)
+    identifier: getIdentifier(agentPerson.agentPerson.id._attributes.extension),
+    name: convertName(agentPerson.agentPerson.name)
   }
 }
 
@@ -17,7 +16,7 @@ function getIdentifier(personId: string) {
   if (formattedPersonId.match(/^G\d{7}$/)) {
     formattedPersonId = formattedPersonId.substring(1,7)
   }
-  return [createIdentifier(getSystemForCode(formattedPersonId), formattedPersonId)]
+  return [fhir.createIdentifier(getSystemForCode(formattedPersonId), formattedPersonId)]
 }
 
 function getSystemForCode(codeValue: string): string {
