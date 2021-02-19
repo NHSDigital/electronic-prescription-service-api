@@ -117,7 +117,7 @@ async function verifyProcess(): Promise<any> {
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyRelease(): Promise<any> {
-  await getReleasePactGroups().reduce(async (promise, group) => {
+  await getReleasePactGroups().reduce(async (promise) => {
     await promise
     endpoint = "release"
     pactGroup = ""

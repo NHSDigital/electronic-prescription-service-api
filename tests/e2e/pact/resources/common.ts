@@ -70,27 +70,27 @@ const cancelPactGroupNames = cancelPactGroups.map(g => g.replace(/-/g, "").repla
 
 const isSandbox = process.env.APIGEE_ENVIRONMENT.includes("sandbox")
 
-export function getConvertPactGroups() {
+export function getConvertPactGroups(): string[] {
   return [...pactGroupNames, ...failurePactGroups]
 }
 
-export function getPreparePactGroups() {
+export function getPreparePactGroups(): string[] {
   return isSandbox
     ? pactGroupNames
     : [...pactGroupNames, ...failurePactGroups]
 }
 
-export function getProcessSendPactGroups() {
+export function getProcessSendPactGroups(): string[] {
   return isSandbox
     ? [...pactGroupNames, ...miscPactGroups]
     : [...pactGroupNames, ...failurePactGroups, ...miscPactGroups]
 }
 
-export function getProcessCancelPactGroups() {
+export function getProcessCancelPactGroups(): string[] {
   return cancelPactGroupNames
 }
 
-export function getReleasePactGroups() {
+export function getReleasePactGroups(): string[] {
   return isSandbox
     ? ["release"]
     : [] // todo: verify release for live proxy once this has been added
