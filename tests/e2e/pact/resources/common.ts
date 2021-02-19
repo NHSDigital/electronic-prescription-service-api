@@ -1,7 +1,7 @@
-import * as fhir from "../models/fhir/fhir-resources"
 import {JestPactOptions} from "jest-pact"
 import path from "path"
 import {ExampleFile} from "../models/files/example-file"
+import * as fhir from "../models/fhir"
 
 export const basePath = "/FHIR/R4"
 

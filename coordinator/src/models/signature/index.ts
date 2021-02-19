@@ -1,14 +1,11 @@
-import * as core from "../hl7-v3/hl7-v3-datatypes-core"
-import {GlobalIdentifier} from "../hl7-v3/hl7-v3-datatypes-codes"
-import {AgentPerson} from "../hl7-v3/hl7-v3-people-places"
-import * as prescriptions from "../hl7-v3/hl7-v3-prescriptions"
+import * as hl7V3 from "../hl7-v3"
 
 export interface Fragments {
-  time: core.Timestamp
-  id: GlobalIdentifier
-  agentPerson: AgentPerson
-  recordTarget: prescriptions.RecordTarget
-  pertinentLineItem: Array<prescriptions.LineItem>
+  time: hl7V3.Timestamp
+  id: hl7V3.GlobalIdentifier
+  agentPerson: hl7V3.AgentPerson
+  recordTarget: hl7V3.RecordTarget
+  pertinentLineItem: Array<hl7V3.LineItem>
 }
 
 export interface Display {
