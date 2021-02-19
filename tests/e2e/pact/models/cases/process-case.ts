@@ -3,12 +3,11 @@ import {exampleFiles} from "../../services/example-files-fetcher"
 import fs from "fs"
 import * as XmlJs from "xml-js"
 import {ExampleFile} from "../files/example-file"
-import {Parameters} from "../../../../../coordinator/src/models/fhir/parameters"
-import {Bundle} from "../../../../../coordinator/src/models/fhir/bundle"
+import * as fhir from "../fhir"
 
 export class ProcessCase extends Case {
-  request: Bundle
-  prepareResponse : Parameters
+  request: fhir.Bundle
+  prepareResponse : fhir.Parameters
   convertResponse: XmlJs.ElementCompact | string
 
   constructor(requestFile: ExampleFile, responseFile: ExampleFile) {
@@ -32,7 +31,7 @@ export class ProcessCase extends Case {
     this.convertResponse = requestFile.statusText === "200-OK" ? XmlJs.xml2js(convertResponseStr, {compact: true}) : convertResponseStr
   }
 
-  toJestCase(): [string, Bundle, Parameters, string | XmlJs.ElementCompact, number] {
+  toJestCase(): [string, fhir.Bundle, fhir.Parameters, string | XmlJs.ElementCompact, number] {
     return [this.description, this.request, this.prepareResponse, this.convertResponse, this.statusCode]
   }
 }

@@ -3,11 +3,11 @@ import * as fs from "fs"
 import {Case} from "./case"
 import * as LosslessJson from "lossless-json"
 import {ExampleFile} from "../files/example-file"
-import {Bundle} from "../../../../../coordinator/src/models/fhir/bundle"
+import * as fhir from "../fhir"
 
 export class ConvertCase extends Case {
   description: string
-  request: Bundle
+  request: fhir.Bundle
   response: string
   responseMatcher: string
   statusText: string
@@ -64,7 +64,7 @@ export class ConvertCase extends Case {
         "<creationTime value=\\\"[0-9]*\\\"\\/>")
   }
 
-  toJestCase(): [string, Bundle, string, string, number] {
+  toJestCase(): [string, fhir.Bundle, string, string, number] {
     return [this.description, this.request, this.response, this.responseMatcher, this.statusCode]
   }
 }

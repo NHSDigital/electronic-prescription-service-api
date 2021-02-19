@@ -2,15 +2,14 @@ import * as LosslessJson from "lossless-json"
 import * as fs from "fs"
 import {ExampleFile} from "../files/example-file"
 import {createExampleDescription} from "../../resources/common"
-import {Parameters} from "../../../../../coordinator/src/models/fhir/parameters"
-import {Bundle} from "../../../../../coordinator/src/models/fhir/bundle"
+import * as fhir from "../fhir"
 
 export class Case {
   requestFile: ExampleFile
   responseFile?: ExampleFile
 
   description: string
-  request: Bundle | Parameters
+  request: fhir.Bundle | fhir.Parameters
   statusText: string
   statusCode: number
   isSuccess: boolean
