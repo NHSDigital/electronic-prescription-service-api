@@ -76,6 +76,17 @@ describe("parseAdditionalInstructions", () => {
     expect(thing.additionalInstructions).toEqual("")
   })
 
+  test("handles interleaved medication and patient info", () => {
+    const thing = parseAdditionalInstructions(
+      // eslint-disable-next-line max-len
+      "<patientInfo>Patient info 1</patientInfo><medication>Medication 1</medication><patientInfo>Patient info 2</patientInfo><medication>Medication 2</medication>"
+    )
+    expect(thing.medication).toEqual(["Medication 1", "Medication 2"])
+    expect(thing.patientInfo).toEqual(["Patient info 1", "Patient info 2"])
+    expect(thing.controlledDrugWords).toEqual("")
+    expect(thing.additionalInstructions).toEqual("")
+  })
+
   test("handles controlled drug words", () => {
     const thing = parseAdditionalInstructions(
       "CD: twenty eight"
