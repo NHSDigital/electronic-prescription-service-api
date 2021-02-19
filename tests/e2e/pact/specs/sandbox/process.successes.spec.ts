@@ -12,7 +12,7 @@ TestResources.processOrderCaseGroups.forEach(pactGroup => {
   const pactGroupTestCases = pactGroup.cases
 
   jestpact.pactWith(
-    pactOptions("sandbox", "process", pactGroupName),
+    pactOptions("sandbox", "process", pactGroupName, "send"),
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     async (provider: any) => {
       const client = () => {

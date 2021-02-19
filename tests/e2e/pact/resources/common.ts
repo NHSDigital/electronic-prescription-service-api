@@ -90,6 +90,12 @@ export function getProcessCancelPactGroups() {
   return cancelPactGroupNames
 }
 
+export function getReleasePactGroups() {
+  return isSandbox
+    ? ["release"]
+    : [] // todo: verify release for live proxy once this has been added
+}
+
 // helper functions
 function isStringParameter(parameter: fhir.Parameter): parameter is fhir.StringParameter {
   return (parameter as fhir.StringParameter).valueString !== undefined

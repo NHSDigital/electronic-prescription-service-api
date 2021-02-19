@@ -7,31 +7,12 @@ import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
 
-const pactConvertGroups = [
-  {
-    name: "secondarycare-community-acute",
-    cases: TestResources.convertSecondaryCareCommunityAcuteCases
-  },
-  {
-    name: "secondarycare-community-repeatdispensing",
-    cases: TestResources.convertSecondaryCareCommunityRepeatDispensingCases
-  },
-  {
-    name: "secondarycare-homecare",
-    cases: TestResources.convertSecondaryCareHomecareCases
-  },
-  {
-    name: "primarycare",
-    cases: TestResources.convertPrimaryCareCases
-  }
-]
-
-pactConvertGroups.forEach(pactGroup => {
+TestResources.convertCaseGroups.forEach(pactGroup => {
   const pactGroupName = pactGroup.name
   const pactGroupTestCases = pactGroup.cases
 
   jestpact.pactWith(
-    pactOptions("live", "convert", [pactGroupName]),
+    pactOptions("live", "convert", pactGroupName),
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     async (provider: any) => {
       const client = () => {

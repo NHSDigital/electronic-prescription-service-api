@@ -3,7 +3,8 @@ import {
   getPreparePactGroups,
   getProcessSendPactGroups,
   getProcessCancelPactGroups,
-  getConvertPactGroups
+  getConvertPactGroups,
+  getReleasePactGroups
 } from "../resources/common"
 
 let endpoint: string
@@ -116,12 +117,13 @@ async function verifyProcess(): Promise<any> {
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyRelease(): Promise<any> {
-  if (process.env.PACT_PROVIDER_URL.includes("sandbox")) {
+  await getReleasePactGroups().reduce(async (promise, group) => {
+    await promise
     endpoint = "release"
     pactGroup = ""
     resetBackOffRetryTimer()
     await verifyWith2Retries()
-  }
+  }, Promise.resolve())
 }
 
 (async () => {

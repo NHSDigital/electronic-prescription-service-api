@@ -10,38 +10,12 @@ import {regeneratePrescriptionIds} from "../../services/process-example-fetcher"
 
 regeneratePrescriptionIds()
 
-const orderPactGroups = [
-  {
-    name: "secondarycare-community-acute",
-    cases: TestResources.processSecondaryCareCommunityAcuteOrderCases,
-  },
-  {
-    name: "secondarycare-community-repeatdispensing",
-    cases: TestResources.processSecondaryCareCommunityRepeatDispensingOrderCases,
-  },
-  {
-    name: "secondarycare-homecare",
-    cases: TestResources.processSecondaryCareHomecareOrderCases,
-  },
-  {
-    name: "primarycare",
-    cases: TestResources.processPrimaryCareOrderCases
-  }
-]
-
-const orderUpdatePactGroups = [
-  {
-    name: "secondarycare-community-acute-cancel",
-    cases: TestResources.processSecondaryCareCommunityAcuteOrderUpdateCases
-  }
-]
-
-orderPactGroups.forEach(pactGroup => {
+TestResources.processOrderCaseGroups.forEach(pactGroup => {
   const pactGroupName = pactGroup.name
   const pactGroupTestCases = pactGroup.cases
 
   jestpact.pactWith(
-    pactOptions("live", "process", [pactGroupName]),
+    pactOptions("live", "process", pactGroupName, "send"),
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     async (provider: any) => {
       const client = () => {
@@ -105,12 +79,12 @@ orderPactGroups.forEach(pactGroup => {
   )
 })
 
-orderUpdatePactGroups.forEach(pactGroup => {
+TestResources.processOrderUpdateCaseGroups.forEach(pactGroup => {
   const pactGroupName = pactGroup.name
   const pactGroupTestCases = pactGroup.cases
 
   jestpact.pactWith(
-    pactOptions("live", "process", [pactGroupName]),
+    pactOptions("live", "process", pactGroupName, "cancel"),
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     async (provider: any) => {
       const client = () => {

@@ -7,31 +7,12 @@ import supertest from "supertest"
 import * as uuid from "uuid"
 import { basePath, getStringParameterByName, pactOptions } from "../../resources/common"
 
-const preparePactGroups = [
-  {
-    name: "secondarycare-community-acute",
-    cases: TestResources.prepareSecondaryCareCommunityAcuteCases
-  },
-  {
-    name: "secondarycare-community-repeatdispensing",
-    cases: TestResources.prepareSecondaryCareCommunityRepeatDispensingCases
-  },
-  {
-    name: "secondarycare-homecare",
-    cases: TestResources.prepareSecondaryCareHomecareCases
-  },
-  {
-    name: "primarycare",
-    cases: TestResources.preparePrimaryCareCases
-  }
-]
-
-preparePactGroups.forEach(pactGroup => {
+TestResources.prepareCaseGroups.forEach(pactGroup => {
   const pactGroupName = pactGroup.name
   const pactGroupTestCases = pactGroup.cases
 
   jestpact.pactWith(
-    pactOptions("live", "prepare", [pactGroupName]),
+    pactOptions("live", "prepare", pactGroupName),
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     async (provider: any) => {
       const client = () => {

@@ -6,7 +6,7 @@ import * as uuid from "uuid"
 import { basePath, pactOptions } from "../../resources/common"
 
 jestpact.pactWith(
-  pactOptions("live", "prepare", ["failures"]),
+  pactOptions("live", "prepare", "failures"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
