@@ -24,6 +24,20 @@ export class MedicationRequestInconsistentValueError<T> implements ValidationErr
   }
 }
 
+export class MedicationRequestDuplicateValueError<T> implements ValidationError {
+  message: string
+  operationOutcomeCode = "value" as const
+  severity = "error" as const
+  expression: Array<string>
+
+  constructor(uniqueFieldValues: Array<T>) {
+    this.message = `Expected all MedicationRequests to have a different value for identifier. Received ${
+      uniqueFieldValues.length
+    } unique values.`
+    this.expression = [`Bundle.entry.resource.ofType(MedicationRequest).identifier`]
+  }
+}
+
 export class MedicationRequestNumberError implements ValidationError {
   operationOutcomeCode = "value" as const
   severity = "error" as const

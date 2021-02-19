@@ -5,7 +5,7 @@ import {getMedicationRequests} from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues} from "./util"
 import {CourseOfTherapyTypeCode, getCourseOfTherapyTypeCode} from "../translation/prescription/course-of-therapy-type"
-import {getExtensionForUrlOrNull, isTruthy} from "../translation/common"
+import {getExtensionForUrlOrNull, getIdentifierValueForSystem, isTruthy} from "../translation/common"
 import {MedicationRequestIncorrectValueError} from "../../models/errors/validation-errors"
 
 // Validate Status
@@ -90,7 +90,8 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
   return [
     ...incorrectValueErrors,
     ...inconsistentValueErrors,
-    ...repeatDispensingErrors
+    ...repeatDispensingErrors,
+    verifyUniqueIdentifierForAllMedicationRequests(medicationRequests)
   ]
 }
 
@@ -154,6 +155,20 @@ function verifyIdenticalForAllMedicationRequests(
   const uniqueFieldValues = getUniqueValues(allFieldValues)
   if (uniqueFieldValues.length > 1) {
     return new errors.MedicationRequestInconsistentValueError(fhirPath, uniqueFieldValues)
+  }
+  return null
+}
+
+function verifyUniqueIdentifierForAllMedicationRequests(
+  medicationRequests: Array<fhir.MedicationRequest>
+) {
+  const allIdentifiers = medicationRequests.map(
+    request => getIdentifierValueForSystem(
+      request.identifier, "https://fhir.nhs.uk/Id/prescription-order-item-number", "MedicationRequest.Identifier")
+  )
+  const uniqueIdentifiers = getUniqueValues(allIdentifiers)
+  if (uniqueIdentifiers.length < medicationRequests.length) {
+    return new errors.MedicationRequestDuplicateValueError(uniqueIdentifiers)
   }
   return null
 }
