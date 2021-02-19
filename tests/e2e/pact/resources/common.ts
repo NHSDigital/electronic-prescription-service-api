@@ -23,6 +23,10 @@ export const cancelPactGroups = [
   "secondary-care community acute"
 ] as const
 
+export const releasePactGroups = [
+  ""
+]
+
 export const failurePactGroups = [
   "failures"
 ] as const
@@ -32,7 +36,6 @@ export const miscPactGroups = [
 ] as const
 
 export const allPactGroups = [...pactGroups, ...cancelPactGroups, ...failurePactGroups, ...miscPactGroups]
-export const sandboxPactGroups = [...failurePactGroups, ...miscPactGroups]
 export type AllPactGroups = typeof pactGroups[number] | typeof cancelPactGroups[number] | typeof failurePactGroups[number] | typeof miscPactGroups[number]
 
 export class PactGroupCases {
@@ -47,8 +50,6 @@ export class PactGroupCases {
 }
 
 // used to add type-safety for adding a new pact
-export function pactOptions(mode: "sandbox", endpoint: ApiEndpoint, group?: AllPactGroups, operation?: ApiOperation): JestPactOptions
-export function pactOptions(mode: "live", endpoint: ApiEndpoint, group?: AllPactGroups, operation?: ApiOperation): JestPactOptions
 export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, group?: AllPactGroups, operation?: ApiOperation): JestPactOptions
 {
   const sandbox = mode === "sandbox"
@@ -63,10 +64,15 @@ export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, group?: AllPac
 }
 
 // get pact groups for verification
-// convert pact group name from directory search string format to single string
+export const pactGroupNames = convertPactDescriptionsToPactNames(pactGroups)
+const releasePactGroupNames = convertPactDescriptionsToPactNames(releasePactGroups)
+const cancelPactGroupNames = convertPactDescriptionsToPactNames(cancelPactGroups)
+
+// convert pact group name from description search string format to single string
 // matching the published pact's name
-export const pactGroupNames = pactGroups.map(g => g.replace(/-/g, "").replace(/\s/g, "-"))
-const cancelPactGroupNames = cancelPactGroups.map(g => g.replace(/-/g, "").replace(/\s/g, "-"))
+function convertPactDescriptionsToPactNames(descriptions: readonly string[]) {
+ return descriptions.map(g => g.replace(/-/g, "").replace(/\s/g, "-"))
+}
 
 const isSandbox = process.env.APIGEE_ENVIRONMENT.includes("sandbox")
 
@@ -92,7 +98,7 @@ export function getProcessCancelPactGroups(): string[] {
 
 export function getReleasePactGroups(): string[] {
   return isSandbox
-    ? ["release"]
+    ? releasePactGroupNames
     : [] // todo: verify release for live proxy once this has been added
 }
 

@@ -117,10 +117,10 @@ async function verifyProcess(): Promise<any> {
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyRelease(): Promise<any> {
-  await getReleasePactGroups().reduce(async (promise) => {
+  await getReleasePactGroups().reduce(async (promise, group) => {
     await promise
     endpoint = "release"
-    pactGroup = ""
+    pactGroup = group
     resetBackOffRetryTimer()
     await verifyWith2Retries()
   }, Promise.resolve())
