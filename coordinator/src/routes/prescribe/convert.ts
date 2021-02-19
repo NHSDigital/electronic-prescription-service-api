@@ -1,7 +1,7 @@
 import * as translator from "../../services/translation/request"
 import Hapi from "@hapi/hapi"
-import {Bundle} from "../../models/fhir/fhir-resources"
 import {basePath, validatingHandler} from "../util"
+import * as fhir from "../../models/fhir"
 
 const CONTENT_TYPE_XML = "application/xml"
 const CONTENT_TYPE_PLAIN_TEXT = "text/plain"
@@ -14,7 +14,7 @@ export default [
     method: "POST",
     path: `${basePath}/$convert`,
     handler: validatingHandler(
-      (requestPayload: Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+      (requestPayload: fhir.Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const isSmokeTest = request.headers["x-smoke-test"]
         const contentType = isSmokeTest ? CONTENT_TYPE_PLAIN_TEXT : CONTENT_TYPE_XML
         request.logger.info("Building HL7V3 message")

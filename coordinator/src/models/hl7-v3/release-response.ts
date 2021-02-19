@@ -1,7 +1,6 @@
-import * as core from "./hl7-v3-datatypes-core"
-import * as codes from "./hl7-v3-datatypes-codes"
-import {NumericValue} from "./hl7-v3-datatypes-core"
-import {ParentPrescription} from "./hl7-v3-prescriptions"
+import * as core from "./core"
+import * as codes from "./codes"
+import * as parentPrescription from "./parent-prescription"
 
 export interface PrescriptionReleaseResponse {
   id: codes.GlobalIdentifier
@@ -16,12 +15,12 @@ export interface PrescriptionReleaseResponse {
 
 export interface PrescriptionReleaseResponseComponent {
   templateId: codes.TemplateIdentifier
-  ParentPrescription: ParentPrescription
+  ParentPrescription: parentPrescription.ParentPrescription
 }
 
 export interface PrescriptionReleaseResponsePertinentInformation {
   pertinentBatchInfo: {
-    value: NumericValue
+    value: core.NumericValue
   }
 }
 

@@ -7,28 +7,20 @@ import {
   createSnomedCodeableConcept,
   getStatus
 } from "../../../../../src/services/translation/response/release/release-medication-request"
-import * as prescriptions from "../../../../../src/models/hl7-v3/hl7-v3-prescriptions"
-import * as codes from "../../../../../src/models/hl7-v3/hl7-v3-datatypes-codes"
-import * as fhir from "../../../../../../tests/e2e/pact/models/fhir/fhir-resources"
-import * as core from "../../../../../src/models/hl7-v3/hl7-v3-datatypes-core"
-import {AgentOrganization, Organization} from "../../../../../src/models/hl7-v3/hl7-v3-people-places"
-import {
-  ControlledDrugExtension,
-  CourseOfTherapyType,
-  RepeatInformationExtension
-} from "../../../../../src/models/fhir/medication-request"
+import * as hl7V3 from "../../../../../src/models/hl7-v3"
+import * as fhir from "../../../../../src/models/fhir"
 
 describe("extension", () => {
   const exampleResponsiblePartyId = "responsiblePartyId"
-  const examplePrescriptionType = new prescriptions.PrescriptionType(new codes.PrescriptionTypeCode("0101"))
-  const examplePrescriptionEndorsement1 = new prescriptions.PrescriptionEndorsement(
-    new codes.PrescriptionEndorsementCode("CC")
+  const examplePrescriptionType = new hl7V3.PrescriptionType(new hl7V3.PrescriptionTypeCode("0101"))
+  const examplePrescriptionEndorsement1 = new hl7V3.PrescriptionEndorsement(
+    new hl7V3.PrescriptionEndorsementCode("CC")
   )
-  const examplePrescriptionEndorsement2 = new prescriptions.PrescriptionEndorsement(
-    new codes.PrescriptionEndorsementCode("FS")
+  const examplePrescriptionEndorsement2 = new hl7V3.PrescriptionEndorsement(
+    new hl7V3.PrescriptionEndorsementCode("FS")
   )
-  const exampleRepeatNumber = new core.Interval(new core.NumericValue("1"), new core.NumericValue("6"))
-  const exampleReviewDate = new prescriptions.ReviewDate(new core.Timestamp("20210301"))
+  const exampleRepeatNumber = new hl7V3.Interval(new hl7V3.NumericValue("1"), new hl7V3.NumericValue("6"))
+  const exampleReviewDate = new hl7V3.ReviewDate(new hl7V3.Timestamp("20210301"))
   const exampleControlledDrugWords = "twenty eight"
 
   test("contains responsible practitioner", () => {
@@ -159,7 +151,7 @@ describe("extension", () => {
       [],
       null
     )
-    const expected: RepeatInformationExtension = {
+    const expected: fhir.RepeatInformationExtension = {
       url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
       extension: [
         {
@@ -202,7 +194,7 @@ describe("extension", () => {
       [],
       exampleControlledDrugWords
     )
-    const expected: ControlledDrugExtension = {
+    const expected: fhir.ControlledDrugExtension = {
       url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug",
       extension: [{
         url: "quantityWords",
@@ -215,19 +207,19 @@ describe("extension", () => {
 
 describe("status", () => {
   test("is mapped correctly", () => {
-    const itemStatus = new prescriptions.ItemStatus("0001")
+    const itemStatus = new hl7V3.ItemStatus("0001")
     const result = getStatus(itemStatus)
     expect(result).toEqual("completed")
   })
 
   test("throws for unknown status code", () => {
-    const itemStatus = new prescriptions.ItemStatus("testing")
+    const itemStatus = new hl7V3.ItemStatus("testing")
     expect(() => getStatus(itemStatus)).toThrow(TypeError)
   })
 })
 
 describe("medication", () => {
-  const exampleMedicationCode = new codes.SnomedCode("322237000", "Paracetamol 500mg soluble tablets")
+  const exampleMedicationCode = new hl7V3.SnomedCode("322237000", "Paracetamol 500mg soluble tablets")
 
   test("is mapped correctly", () => {
     const result = createSnomedCodeableConcept(exampleMedicationCode)
@@ -242,9 +234,9 @@ describe("medication", () => {
 })
 
 describe("groupIdentifier", () => {
-  const examplePrescriptionIds: [codes.GlobalIdentifier, codes.ShortFormPrescriptionIdentifier] = [
-    new codes.GlobalIdentifier("B2FC79F0-2793-4736-9B2D-0976C21E73A5"),
-    new codes.ShortFormPrescriptionIdentifier("6F5652-Z8866F-11EBAE")
+  const examplePrescriptionIds: [hl7V3.GlobalIdentifier, hl7V3.ShortFormPrescriptionIdentifier] = [
+    new hl7V3.GlobalIdentifier("B2FC79F0-2793-4736-9B2D-0976C21E73A5"),
+    new hl7V3.ShortFormPrescriptionIdentifier("6F5652-Z8866F-11EBAE")
   ]
   test("is mapped correctly", () => {
     const result = createGroupIdentifierFromPrescriptionIds(examplePrescriptionIds)
@@ -265,40 +257,40 @@ describe("groupIdentifier", () => {
 })
 
 describe("courseOfTherapyType", () => {
-  const treatmentTypeRepeatDispensing = new prescriptions.PrescriptionTreatmentType(
-    codes.PrescriptionTreatmentTypeCode.CONTINUOUS_REPEAT_DISPENSING
+  const treatmentTypeRepeatDispensing = new hl7V3.PrescriptionTreatmentType(
+    hl7V3.PrescriptionTreatmentTypeCode.CONTINUOUS_REPEAT_DISPENSING
   )
-  const treatmentTypeRepeatPrescribing = new prescriptions.PrescriptionTreatmentType(
-    codes.PrescriptionTreatmentTypeCode.CONTINUOUS
+  const treatmentTypeRepeatPrescribing = new hl7V3.PrescriptionTreatmentType(
+    hl7V3.PrescriptionTreatmentTypeCode.CONTINUOUS
   )
-  const treatmentTypeAcute = new prescriptions.PrescriptionTreatmentType(
-    codes.PrescriptionTreatmentTypeCode.ACUTE
+  const treatmentTypeAcute = new hl7V3.PrescriptionTreatmentType(
+    hl7V3.PrescriptionTreatmentTypeCode.ACUTE
   )
-  const exampleRepeatNumber = new core.Interval(new core.NumericValue("1"), new core.NumericValue("6"))
+  const exampleRepeatNumber = new hl7V3.Interval(new hl7V3.NumericValue("1"), new hl7V3.NumericValue("6"))
 
   test("repeat dispensing prescription", () => {
     const result = createCourseOfTherapyType(treatmentTypeRepeatDispensing, exampleRepeatNumber)
-    expect(result).toEqual(CourseOfTherapyType.CONTINOUS_REPEAT_DISPENSING)
+    expect(result).toEqual(fhir.CourseOfTherapyType.CONTINOUS_REPEAT_DISPENSING)
   })
 
   test("repeat prescribing prescription", () => {
     const result = createCourseOfTherapyType(treatmentTypeRepeatPrescribing, exampleRepeatNumber)
-    expect(result).toEqual(CourseOfTherapyType.CONTINUOUS)
+    expect(result).toEqual(fhir.CourseOfTherapyType.CONTINUOUS)
   })
 
   test("acute / mixed prescription, repeat prescribing line item", () => {
     const result = createCourseOfTherapyType(treatmentTypeAcute, exampleRepeatNumber)
-    expect(result).toEqual(CourseOfTherapyType.CONTINUOUS)
+    expect(result).toEqual(fhir.CourseOfTherapyType.CONTINUOUS)
   })
 
   test("acute / mixed prescription, acute line item", () => {
     const result = createCourseOfTherapyType(treatmentTypeAcute, null)
-    expect(result).toEqual(CourseOfTherapyType.ACUTE)
+    expect(result).toEqual(fhir.CourseOfTherapyType.ACUTE)
   })
 })
 
 describe("dosage", () => {
-  const exampleDosageInstructions = new prescriptions.DosageInstructions("As required")
+  const exampleDosageInstructions = new hl7V3.DosageInstructions("As required")
   const exampleAdditionalInstructions = "Additional instructions"
 
   test("contains text", () => {
@@ -318,14 +310,14 @@ describe("dosage", () => {
 })
 
 describe("dispenseRequest", () => {
-  const exampleDispensingSitePreference = new prescriptions.DispensingSitePreference(
-    new codes.DispensingSitePreferenceCode("P1")
+  const exampleDispensingSitePreference = new hl7V3.DispensingSitePreference(
+    new hl7V3.DispensingSitePreferenceCode("P1")
   )
-  const exampleQuantity = new core.QuantityInAlternativeUnits("28", "28", new codes.SnomedCode("732936001", "Tablet"))
-  const exampleLineItemQuantity = new prescriptions.LineItemQuantity()
+  const exampleQuantity = new hl7V3.QuantityInAlternativeUnits("28", "28", new hl7V3.SnomedCode("732936001", "Tablet"))
+  const exampleLineItemQuantity = new hl7V3.LineItemQuantity()
   exampleLineItemQuantity.quantity = exampleQuantity
-  const exampleEffectiveTime = new core.Interval(new core.Timestamp("20210101"), new core.Timestamp("20210201"))
-  const exampleExpectedUseTime = new core.IntervalUnanchored("28", "d")
+  const exampleEffectiveTime = new hl7V3.Interval(new hl7V3.Timestamp("20210101"), new hl7V3.Timestamp("20210201"))
+  const exampleExpectedUseTime = new hl7V3.IntervalUnanchored("28", "d")
 
   test("contains dispensing site preference", () => {
     const result = createDispenseRequest(exampleDispensingSitePreference, exampleLineItemQuantity, null, null)
@@ -355,7 +347,7 @@ describe("dispenseRequest", () => {
   })
 
   test("handles validity period", () => {
-    const daysSupply = new prescriptions.DaysSupply()
+    const daysSupply = new hl7V3.DaysSupply()
     daysSupply.effectiveTime = exampleEffectiveTime
     const result = createDispenseRequest(exampleDispensingSitePreference, exampleLineItemQuantity, daysSupply, null)
     expect(result.expectedSupplyDuration).toBeFalsy()
@@ -366,8 +358,8 @@ describe("dispenseRequest", () => {
   })
 
   test("handles validity period start only", () => {
-    const daysSupply = new prescriptions.DaysSupply()
-    daysSupply.effectiveTime = {low: new core.Timestamp("20210101")}
+    const daysSupply = new hl7V3.DaysSupply()
+    daysSupply.effectiveTime = {low: new hl7V3.Timestamp("20210101")}
     const result = createDispenseRequest(exampleDispensingSitePreference, exampleLineItemQuantity, daysSupply, null)
     expect(result.expectedSupplyDuration).toBeFalsy()
     expect(result.validityPeriod).toEqual({
@@ -376,8 +368,8 @@ describe("dispenseRequest", () => {
   })
 
   test("handles validity period end only", () => {
-    const daysSupply = new prescriptions.DaysSupply()
-    daysSupply.effectiveTime = {high: new core.Timestamp("20210301")}
+    const daysSupply = new hl7V3.DaysSupply()
+    daysSupply.effectiveTime = {high: new hl7V3.Timestamp("20210301")}
     const result = createDispenseRequest(exampleDispensingSitePreference, exampleLineItemQuantity, daysSupply, null)
     expect(result.expectedSupplyDuration).toBeFalsy()
     expect(result.validityPeriod).toEqual({
@@ -386,7 +378,7 @@ describe("dispenseRequest", () => {
   })
 
   test("handles expected supply duration", () => {
-    const daysSupply = new prescriptions.DaysSupply()
+    const daysSupply = new hl7V3.DaysSupply()
     daysSupply.expectedUseTime = exampleExpectedUseTime
     const result = createDispenseRequest(exampleDispensingSitePreference, exampleLineItemQuantity, daysSupply, null)
     expect(result.expectedSupplyDuration).toEqual({
@@ -399,7 +391,7 @@ describe("dispenseRequest", () => {
   })
 
   test("handles expected supply duration and validity period", () => {
-    const daysSupply = new prescriptions.DaysSupply()
+    const daysSupply = new hl7V3.DaysSupply()
     daysSupply.effectiveTime = exampleEffectiveTime
     daysSupply.expectedUseTime = exampleExpectedUseTime
     const result = createDispenseRequest(exampleDispensingSitePreference, exampleLineItemQuantity, daysSupply, null)
@@ -421,9 +413,9 @@ describe("dispenseRequest", () => {
   })
 
   test("handles performer", () => {
-    const organization = new Organization()
-    organization.id = new codes.SdsOrganizationIdentifier("VNE51")
-    const performer = new prescriptions.Performer(new AgentOrganization(organization))
+    const organization = new hl7V3.Organization()
+    organization.id = new hl7V3.SdsOrganizationIdentifier("VNE51")
+    const performer = new hl7V3.Performer(new hl7V3.AgentOrganization(organization))
     const result = createDispenseRequest(exampleDispensingSitePreference, exampleLineItemQuantity, null, performer)
     expect(result.performer).toEqual({
       identifier: {

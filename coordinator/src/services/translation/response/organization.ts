@@ -1,9 +1,9 @@
-import * as fhir from "../../../models/fhir/fhir-resources"
-import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertAddress, convertTelecom, generateResourceId} from "./common"
 import {createIdentifier, createReference} from "./fhir-base-types"
+import * as hl7V3 from "../../../models/hl7-v3"
+import * as fhir from "../../../models/fhir"
 
-export function createOrganization(hl7Organization: hl7.Organization): fhir.Organization {
+export function createOrganization(hl7Organization: hl7V3.Organization): fhir.Organization {
   const organization: fhir.Organization = {
     resourceType: "Organization",
     id: generateResourceId(),
@@ -22,7 +22,7 @@ export function createOrganization(hl7Organization: hl7.Organization): fhir.Orga
   return organization
 }
 
-export function createLocations(hl7Organization: hl7.Organization): Array<fhir.Location> {
+export function createLocations(hl7Organization: hl7V3.Organization): Array<fhir.Location> {
   const addresses = convertAddress(hl7Organization.addr)
   return addresses.map(
     address => ({
@@ -34,7 +34,7 @@ export function createLocations(hl7Organization: hl7.Organization): Array<fhir.L
 }
 
 export function createHealthcareService(
-  hl7Organization: hl7.Organization,
+  hl7Organization: hl7V3.Organization,
   locations: Array<fhir.Location>
 ): fhir.HealthcareService {
   return {

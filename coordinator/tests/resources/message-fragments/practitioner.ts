@@ -1,4 +1,4 @@
-import * as fhir from "../../../src/models/fhir/fhir-resources"
+import * as fhir from "../../../src/models/fhir"
 
 const doctorPractitioner: fhir.Practitioner = {
   resourceType: "Practitioner",

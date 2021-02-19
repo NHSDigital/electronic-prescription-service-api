@@ -1,7 +1,6 @@
-import * as fhir from "../../../models/fhir/fhir-resources"
 import {getFullUrl} from "./common"
 import {createIdentifier} from "./fhir-base-types"
-import {MedicationRequestGroupIdentifier} from "../../../models/fhir/medication-request"
+import * as fhir from "../../../models/fhir"
 
 export function createResponsiblePractitionerExtension(
   practitionerRoleId: string
@@ -18,8 +17,8 @@ export function createItemNumberIdentifier(lineItemId: string): fhir.Identifier 
   return createIdentifier("https://fhir.nhs.uk/Id/prescription-order-item-number", lineItemId.toLowerCase())
 }
 
-export function createGroupIdentifier(shortFormId: string, longFormId?: string): MedicationRequestGroupIdentifier {
-  const groupIdentifier: MedicationRequestGroupIdentifier = createIdentifier(
+export function createGroupIdentifier(shortFormId: string, longFormId?: string): fhir.MedicationRequestGroupIdentifier {
+  const groupIdentifier: fhir.MedicationRequestGroupIdentifier = createIdentifier(
     "https://fhir.nhs.uk/Id/prescription-order-number",
     shortFormId
   )

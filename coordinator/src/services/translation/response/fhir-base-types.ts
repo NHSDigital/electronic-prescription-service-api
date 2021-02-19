@@ -1,5 +1,5 @@
-import * as fhir from "../../../models/fhir/fhir-resources"
 import {getFullUrl} from "./common"
+import * as fhir from "../../../models/fhir"
 
 export function createIdentifier(system: string, value: string): fhir.Identifier {
   return {

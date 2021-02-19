@@ -1,13 +1,13 @@
 /* eslint-disable-next-line */
 import * as fs from "fs"
-import * as fhir from "../fhir/fhir-resources"
 import {Case} from "./case"
 import * as LosslessJson from "lossless-json"
 import {ExampleFile} from "../files/example-file"
+import {Bundle} from "../../../../../coordinator/src/models/fhir/bundle"
 
 export class ConvertCase extends Case {
   description: string
-  request: fhir.Bundle
+  request: Bundle
   response: string
   responseMatcher: string
   statusText: string
@@ -64,7 +64,7 @@ export class ConvertCase extends Case {
         "<creationTime value=\\\"[0-9]*\\\"\\/>")
   }
 
-  toJestCase(): [string, fhir.Bundle, string, string, number] {
+  toJestCase(): [string, Bundle, string, string, number] {
     return [this.description, this.request, this.response, this.responseMatcher, this.statusCode]
   }
 }

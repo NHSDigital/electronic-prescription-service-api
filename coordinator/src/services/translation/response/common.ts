@@ -1,16 +1,15 @@
-import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
-import * as fhir from "../../../models/fhir/fhir-resources"
 import * as uuid from "uuid"
 import {toArray} from "../common"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
-import {AgentPerson, Patient} from "../../../models/hl7-v3/hl7-v3-people-places"
 import {createPractitioner} from "./practitioner"
 import {createHealthcareService, createLocations, createOrganization} from "./organization"
 import {createPractitionerRole} from "./practitioner-role"
 import {createPatient} from "./patient"
 import {createReference} from "./fhir-base-types"
+import * as hl7V3 from "../../../models/hl7-v3"
+import * as fhir from "../../../models/fhir"
 
-export function convertName(hl7Name: Array<core.Name> | core.Name): Array<fhir.HumanName> {
+export function convertName(hl7Name: Array<hl7V3.Name> | hl7V3.Name): Array<fhir.HumanName> {
   const nameArray = toArray(hl7Name)
   return nameArray.map(name => {
     if (name._text) {
@@ -35,24 +34,24 @@ export function convertName(hl7Name: Array<core.Name> | core.Name): Array<fhir.H
 
 function convertNameUse(hl7NameUse: string): string {
   switch (hl7NameUse) {
-    case core.NameUse.USUAL:
+    case hl7V3.NameUse.USUAL:
       return "usual"
-    case core.NameUse.ALIAS:
+    case hl7V3.NameUse.ALIAS:
       return "temp"
-    case core.NameUse.PREFERRED:
+    case hl7V3.NameUse.PREFERRED:
       return "nickname"
-    case core.NameUse.PREVIOUS_BIRTH:
-    case core.NameUse.PREVIOUS:
+    case hl7V3.NameUse.PREVIOUS_BIRTH:
+    case hl7V3.NameUse.PREVIOUS:
       return "old"
-    case core.NameUse.PREVIOUS_BACHELOR:
-    case core.NameUse.PREVIOUS_MAIDEN:
+    case hl7V3.NameUse.PREVIOUS_BACHELOR:
+    case hl7V3.NameUse.PREVIOUS_MAIDEN:
       return "maiden"
     default:
       throw new InvalidValueError(`Unhandled name use '${hl7NameUse}'.`)
   }
 }
 
-export function convertAddress(hl7Address: Array<core.Address> | core.Address): Array<fhir.Address> {
+export function convertAddress(hl7Address: Array<hl7V3.Address> | hl7V3.Address): Array<fhir.Address> {
   const addressArray = toArray(hl7Address)
   return addressArray.map(address => {
     if (address._text) {
@@ -68,26 +67,26 @@ export function convertAddress(hl7Address: Array<core.Address> | core.Address): 
   })
 }
 
-function convertAddressUse(fhirAddressUse: core.AddressUse): string {
-  switch (fhirAddressUse) {
-    case core.AddressUse.HOME:
-    case core.AddressUse.PRIMARY_HOME:
+function convertAddressUse(addressUse: hl7V3.AddressUse): string {
+  switch (addressUse) {
+    case hl7V3.AddressUse.HOME:
+    case hl7V3.AddressUse.PRIMARY_HOME:
       return "home"
-    case core.AddressUse.WORK:
-    case core.AddressUse.BUSINESS:
+    case hl7V3.AddressUse.WORK:
+    case hl7V3.AddressUse.BUSINESS:
       return "work"
-    case core.AddressUse.TEMPORARY:
+    case hl7V3.AddressUse.TEMPORARY:
       return "temp"
-    case core.AddressUse.POSTAL:
+    case hl7V3.AddressUse.POSTAL:
       return "billing"
     case undefined:
       return undefined
     default:
-      throw new InvalidValueError(`Unhandled address use '${fhirAddressUse}'.`)
+      throw new InvalidValueError(`Unhandled address use '${addressUse}'.`)
   }
 }
 
-export function convertTelecom(telecom: Array<core.Telecom> | core.Telecom): Array<fhir.ContactPoint> {
+export function convertTelecom(telecom: Array<hl7V3.Telecom> | hl7V3.Telecom): Array<fhir.ContactPoint> {
   const telecomArray = toArray(telecom)
   return telecomArray.map(value => ({
     system: "phone",
@@ -96,24 +95,24 @@ export function convertTelecom(telecom: Array<core.Telecom> | core.Telecom): Arr
   }))
 }
 
-function convertTelecomUse(fhirTelecomUse: string): string {
-  switch (fhirTelecomUse) {
-    case core.TelecomUse.PERMANENT_HOME:
-    case core.TelecomUse.HOME:
+function convertTelecomUse(telecomUse: string): string {
+  switch (telecomUse) {
+    case hl7V3.TelecomUse.PERMANENT_HOME:
+    case hl7V3.TelecomUse.HOME:
       return "home"
-    case core.TelecomUse.WORKPLACE:
+    case hl7V3.TelecomUse.WORKPLACE:
       return "work"
-    case core.TelecomUse.TEMPORARY:
+    case hl7V3.TelecomUse.TEMPORARY:
       return "temp"
-    case core.TelecomUse.MOBILE:
-    case core.TelecomUse.PAGER:
+    case hl7V3.TelecomUse.MOBILE:
+    case hl7V3.TelecomUse.PAGER:
       return "mobile"
       //TODO these are possible values, but we don'e know what to map them to
       // case core.TelecomUse.ANSWERING_MACHINE:
       // case core.TelecomUse.EMERGENCY_CONTACT:
       //   return "home+rank"
     default:
-      throw new InvalidValueError(`Unhandled telecom use '${fhirTelecomUse}'.`)
+      throw new InvalidValueError(`Unhandled telecom use '${telecomUse}'.`)
   }
 }
 
@@ -128,17 +127,17 @@ export function getFullUrl(uuid: string):string {
 export function convertResourceToBundleEntry(resource: fhir.Resource): fhir.BundleEntry {
   return {
     resource,
-    fullUrl: `urn:uuid:${resource.id}`
+    fullUrl: getFullUrl(resource.id)
   }
 }
 
-export function translateAndAddPatient(hl7Patient: Patient, resources: Array<fhir.Resource>): string {
+export function translateAndAddPatient(hl7Patient: hl7V3.Patient, resources: Array<fhir.Resource>): string {
   const fhirPatient = createPatient(hl7Patient)
   resources.push(fhirPatient)
   return fhirPatient.id
 }
 
-export function translateAndAddAgentPerson(hl7AgentPerson: AgentPerson, resources: Array<fhir.Resource>): string {
+export function translateAndAddAgentPerson(hl7AgentPerson: hl7V3.AgentPerson, resources: Array<fhir.Resource>): string {
   const fhirPractitioner = createPractitioner(hl7AgentPerson)
   const fhirLocations = createLocations(hl7AgentPerson.representedOrganization)
   const fhirHealthcareService = createHealthcareService(hl7AgentPerson.representedOrganization, fhirLocations)

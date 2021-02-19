@@ -1,7 +1,6 @@
 import {createMessageHeader} from "../../../../src/services/translation/response/message-header"
 import {getExtensionForUrl} from "../../../../src/services/translation/common"
-import * as fhir from "../../../../src/models/fhir/fhir-resources"
-import {EventCoding} from "../../../../src/models/fhir/message-header"
+import * as fhir from "../../../../src/models/fhir"
 
 const messageIdUrl = "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-MessageHeader-messageId"
 
@@ -13,7 +12,7 @@ describe("createMessageHeader", () => {
   const cancelRequestId = "testCancelId"
   const messageHeader = createMessageHeader(
     messageId,
-    EventCoding.PRESCRIPTION_ORDER_RESPONSE,
+    fhir.EventCoding.PRESCRIPTION_ORDER_RESPONSE,
     [patientReference, medicationRequestReference],
     representedOrganizationId,
     cancelRequestId

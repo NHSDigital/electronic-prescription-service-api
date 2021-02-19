@@ -3,13 +3,12 @@ import {
   createOuterBundle
 } from "../../../../../src/services/translation/response/release/release-response"
 import {readXml} from "../../../../../src/services/serialisation/xml"
-import {ParentPrescription} from "../../../../../src/models/hl7-v3/hl7-v3-prescriptions"
 import * as LosslessJson from "lossless-json"
 import * as fs from "fs"
 import * as path from "path"
-import {PrescriptionReleaseResponse} from "../../../../../src/models/hl7-v3/hl7-v3-release"
 import {getUniqueValues} from "../../../../../src/services/validation/util"
 import {toArray} from "../../../../../src/services/translation/common"
+import * as hl7V3 from "../../../../../src/models/hl7-v3"
 
 describe("outer bundle", () => {
   const result = createOuterBundle(getExamplePrescriptionReleaseResponse())
@@ -140,12 +139,12 @@ describe("bundle resources", () => {
   })
 })
 
-function getExamplePrescriptionReleaseResponse(): PrescriptionReleaseResponse {
+function getExamplePrescriptionReleaseResponse(): hl7V3.PrescriptionReleaseResponse {
   const exampleStr = fs.readFileSync(path.join(__dirname, "release_success.xml"), "utf8")
   const exampleObj = readXml(exampleStr)
   return exampleObj["hl7:PORX_IN070101UK31"]["hl7:ControlActEvent"]["hl7:subject"]["PrescriptionReleaseResponse"]
 }
 
-function getExampleParentPrescription(): ParentPrescription {
+function getExampleParentPrescription(): hl7V3.ParentPrescription {
   return toArray(getExamplePrescriptionReleaseResponse().component)[0].ParentPrescription
 }

@@ -1,11 +1,12 @@
 import * as jestPact from "jest-pact"
-import { basePath,pactOptions } from "../../resources/common"
+import {basePath, pactOptions} from "../../resources/common"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
-import * as fhir from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
-import { InteractionObject } from "@pact-foundation/pact"
+import {InteractionObject} from "@pact-foundation/pact"
 import * as uuid from "uuid"
+import {Parameters} from "../../../../../coordinator/src/models/fhir/parameters"
+import {Bundle} from "../../../../../coordinator/src/models/fhir/bundle"
 
 jestPact.pactWith(
   pactOptions("sandbox", "release"),
@@ -19,7 +20,7 @@ jestPact.pactWith(
     describe("sandbox dispense interactions", () => {
       test.each(TestResources.releaseCases)(
         "should be able to acquire prescription info on a prescription release",
-        async (description: string, request: fhir.Parameters, response: fhir.Bundle, statusCode: string) => {
+        async (description: string, request: Parameters, response: Bundle, statusCode: string) => {
           const apiPath = `${basePath}/Task/$release`
           const requestStr = LosslessJson.stringify(request)
           const requestId = uuid.v4()

@@ -2,16 +2,13 @@ import * as translator from "../../../../src/services/translation/request"
 import {convertFhirMessageToSignedInfoMessage} from "../../../../src/services/translation/request"
 import * as TestResources from "../../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
-import * as fhir from "../../../../src/models/fhir/fhir-resources"
 import {InvalidValueError} from "../../../../src/models/errors/processing-errors"
-import {
-  getStringParameterByName,
-  isTruthy
-} from "../../../../src/services/translation/common"
+import {getStringParameterByName, isTruthy} from "../../../../src/services/translation/common"
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {xmlTest} from "../../../resources/test-helpers"
 import {ElementCompact} from "xml-js"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../../../src/services/translation/common/dateTime"
+import * as fhir from "../../../../src/models/fhir"
 
 const actualMoment = jest.requireActual("moment")
 const mockTime = {value: "2020-12-18T12:34:34Z"}

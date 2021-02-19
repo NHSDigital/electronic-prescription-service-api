@@ -1,12 +1,13 @@
 import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import * as TestResources from "../../resources/test-resources"
-import {Bundle, Parameters} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import supertest from "supertest"
 import {createUnauthorisedInteraction} from "./auth"
 import * as uuid from "uuid"
 import {basePath, getStringParameterByName, pactOptions} from "../../resources/common"
+import {Parameters} from "../../../../../coordinator/src/models/fhir/parameters"
+import {Bundle} from "../../../../../coordinator/src/models/fhir/bundle"
 
 jestpact.pactWith(
   pactOptions("live", "prepare"),

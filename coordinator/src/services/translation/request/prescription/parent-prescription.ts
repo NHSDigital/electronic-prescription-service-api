@@ -1,35 +1,32 @@
-import * as fhir from "../../../../models/fhir/fhir-resources"
 import {convertPatient} from "../patient"
 import {convertBundleToPrescription} from "../prescription"
-import * as prescriptions from "../../../../models/hl7-v3/hl7-v3-prescriptions"
 import {getIdentifierValueForSystem, toArray} from "../../common"
-import * as codes from "../../../../models/hl7-v3/hl7-v3-datatypes-codes"
-import * as core from "../../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {getMedicationRequests, getPatient} from "../../common/getResourcesOfType"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
-import {MedicationRequest} from "../../../../models/fhir/medication-request"
+import * as hl7V3 from "../../../../models/hl7-v3"
+import * as fhir from "../../../../models/fhir"
 
 export function convertParentPrescription(
   fhirBundle: fhir.Bundle,
   convertPatientFn = convertPatient,
   convertBundleToPrescriptionFn = convertBundleToPrescription,
   convertCareRecordElementCategoriesFn = convertCareRecordElementCategories
-): prescriptions.ParentPrescription {
+): hl7V3.ParentPrescription {
   const messageId = getIdentifierValueForSystem(
     [fhirBundle.identifier],
     "https://tools.ietf.org/html/rfc4122",
     "Bundle.identifier"
   )
-  const hl7V3ParentPrescription = new prescriptions.ParentPrescription(
-    new codes.GlobalIdentifier(messageId)
+  const hl7V3ParentPrescription = new hl7V3.ParentPrescription(
+    new hl7V3.GlobalIdentifier(messageId)
   )
 
   const fhirPatient = getPatient(fhirBundle)
   const hl7V3Patient = convertPatientFn(fhirBundle, fhirPatient)
-  hl7V3ParentPrescription.recordTarget = new prescriptions.RecordTarget(hl7V3Patient)
+  hl7V3ParentPrescription.recordTarget = new hl7V3.RecordTarget(hl7V3Patient)
 
   const hl7V3Prescription = convertBundleToPrescriptionFn(fhirBundle)
-  hl7V3ParentPrescription.pertinentInformation1 = new prescriptions.ParentPrescriptionPertinentInformation1(
+  hl7V3ParentPrescription.pertinentInformation1 = new hl7V3.ParentPrescriptionPertinentInformation1(
     hl7V3Prescription
   )
 
@@ -47,14 +44,14 @@ export function convertParentPrescription(
   const lineItems = toArray(hl7V3ParentPrescription.pertinentInformation1.pertinentPrescription.pertinentInformation2)
     .map(pertinentInformation2 => pertinentInformation2.pertinentLineItem)
   const careRecordElementCategory = convertCareRecordElementCategoriesFn(lineItems)
-  hl7V3ParentPrescription.pertinentInformation2 = new prescriptions.ParentPrescriptionPertinentInformation2(
+  hl7V3ParentPrescription.pertinentInformation2 = new hl7V3.ParentPrescriptionPertinentInformation2(
     careRecordElementCategory
   )
 
   return hl7V3ParentPrescription
 }
 
-export function extractEffectiveTime(medicationRequest: MedicationRequest): core.Timestamp {
+export function extractEffectiveTime(medicationRequest: fhir.MedicationRequest): hl7V3.Timestamp {
   const validityPeriod = medicationRequest.dispenseRequest?.validityPeriod
   if (validityPeriod) {
     return convertIsoDateTimeStringToHl7V3DateTime(
@@ -69,10 +66,10 @@ export function extractEffectiveTime(medicationRequest: MedicationRequest): core
   }
 }
 
-function convertCareRecordElementCategories(lineItems: Array<prescriptions.LineItem>) {
-  const careRecordElementCategory = new prescriptions.CareRecordElementCategory()
+function convertCareRecordElementCategories(lineItems: Array<hl7V3.LineItem>) {
+  const careRecordElementCategory = new hl7V3.CareRecordElementCategory()
   careRecordElementCategory.component = lineItems
-    .map(act => new prescriptions.ActRef(act))
-    .map(actRef => new prescriptions.CareRecordElementCategoryComponent(actRef))
+    .map(act => new hl7V3.ActRef(act))
+    .map(actRef => new hl7V3.CareRecordElementCategoryComponent(actRef))
   return careRecordElementCategory
 }

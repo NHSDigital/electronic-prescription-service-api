@@ -3,7 +3,7 @@ import {
   createAndAddList,
   parseAdditionalInstructions
 } from "../../../../../src/services/translation/response/release/additional-instructions"
-import {CommunicationRequest, List, Resource} from "../../../../../../tests/e2e/pact/models/fhir/fhir-resources"
+import * as fhir from "../../../../../src/models/fhir"
 
 describe("parseAdditionalInstructions", () => {
   test("handles empty", () => {
@@ -150,7 +150,7 @@ describe("parseAdditionalInstructions", () => {
 
 describe("communication request", () => {
   const examplePatientId = "patientId"
-  let bundleResources: Array<Resource>
+  let bundleResources: Array<fhir.Resource>
   beforeEach(() => {
     bundleResources = []
   })
@@ -164,7 +164,7 @@ describe("communication request", () => {
   test("contains patient reference", () => {
     createAndAddCommunicationRequest(examplePatientId, [], [], bundleResources)
     const communicationRequest = bundleResources.find(resource => resource.resourceType === "CommunicationRequest")
-    expect(communicationRequest).toMatchObject<Partial<CommunicationRequest>>({
+    expect(communicationRequest).toMatchObject<Partial<fhir.CommunicationRequest>>({
       subject: {
         reference: "urn:uuid:patientId"
       }
@@ -176,7 +176,7 @@ describe("communication request", () => {
     const list = bundleResources.find(resource => resource.resourceType === "List")
     expect(list).toBeFalsy()
     const communicationRequest = bundleResources.find(resource => resource.resourceType === "CommunicationRequest")
-    expect(communicationRequest).toMatchObject<Partial<CommunicationRequest>>({
+    expect(communicationRequest).toMatchObject<Partial<fhir.CommunicationRequest>>({
       payload: [{
         contentString: "Patient info"
       }]
@@ -188,7 +188,7 @@ describe("communication request", () => {
     const list = bundleResources.find(resource => resource.resourceType === "List")
     expect(list).toBeFalsy()
     const communicationRequest = bundleResources.find(resource => resource.resourceType === "CommunicationRequest")
-    expect(communicationRequest).toMatchObject<Partial<CommunicationRequest>>({
+    expect(communicationRequest).toMatchObject<Partial<fhir.CommunicationRequest>>({
       payload: [
         {
           contentString: "Patient info 1"
@@ -203,7 +203,7 @@ describe("communication request", () => {
   test("handles single medication", () => {
     createAndAddCommunicationRequest(examplePatientId, ["Medication"], [], bundleResources)
     const list = bundleResources.find(resource => resource.resourceType === "List")
-    expect(list).toMatchObject<Partial<List>>({
+    expect(list).toMatchObject<Partial<fhir.List>>({
       entry: [{
         item: {
           display: "Medication"
@@ -211,7 +211,7 @@ describe("communication request", () => {
       }]
     })
     const communicationRequest = bundleResources.find(resource => resource.resourceType === "CommunicationRequest")
-    expect(communicationRequest).toMatchObject<Partial<CommunicationRequest>>({
+    expect(communicationRequest).toMatchObject<Partial<fhir.CommunicationRequest>>({
       payload: [{
         contentReference: {
           reference: `urn:uuid:${list.id}`
@@ -223,7 +223,7 @@ describe("communication request", () => {
   test("handles multiple medication", () => {
     createAndAddCommunicationRequest(examplePatientId, ["Medication 1", "Medication 2"], [], bundleResources)
     const list = bundleResources.find(resource => resource.resourceType === "List")
-    expect(list).toMatchObject<Partial<List>>({
+    expect(list).toMatchObject<Partial<fhir.List>>({
       entry: [
         {
           item: {
@@ -238,7 +238,7 @@ describe("communication request", () => {
       ]
     })
     const communicationRequest = bundleResources.find(resource => resource.resourceType === "CommunicationRequest")
-    expect(communicationRequest).toMatchObject<Partial<CommunicationRequest>>({
+    expect(communicationRequest).toMatchObject<Partial<fhir.CommunicationRequest>>({
       payload: [{
         contentReference: {
           reference: `urn:uuid:${list.id}`
@@ -249,7 +249,7 @@ describe("communication request", () => {
 })
 
 describe("list", () => {
-  let bundleResources: Array<Resource>
+  let bundleResources: Array<fhir.Resource>
   beforeEach(() => {
     bundleResources = []
   })
@@ -263,7 +263,7 @@ describe("list", () => {
   test("handles single entry", () => {
     createAndAddList(["Item"], bundleResources)
     const list = bundleResources.find(resource => resource.resourceType === "List")
-    expect(list).toMatchObject<Partial<List>>({
+    expect(list).toMatchObject<Partial<fhir.List>>({
       entry: [{
         item: {
           display: "Item"
@@ -275,7 +275,7 @@ describe("list", () => {
   test("handles multiple entries", () => {
     createAndAddList(["Item 1", "Item 2"], bundleResources)
     const list = bundleResources.find(resource => resource.resourceType === "List")
-    expect(list).toMatchObject<Partial<List>>({
+    expect(list).toMatchObject<Partial<fhir.List>>({
       entry: [
         {
           item: {

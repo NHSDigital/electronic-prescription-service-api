@@ -1,18 +1,14 @@
-import * as fhir from "../../../models/fhir/fhir-resources"
-import * as peoplePlaces from "../../../models/hl7-v3/hl7-v3-people-places"
 import {
   getCodeableConceptCodingForSystemOrNull,
   getIdentifierValueForSystem,
   onlyElement,
   resolveReference
 } from "../common"
-import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
-import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
 import {convertAddress, convertTelecom} from "./demographics"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {identifyMessageType} from "../../../routes/util"
-import {Resource} from "../../../models/fhir/fhir-resources"
-import {EventCodingCode} from "../../../models/fhir/message-header"
+import * as hl7V3 from "../../../models/hl7-v3"
+import * as fhir from "../../../models/fhir"
 
 const NHS_TRUST_CODE = "RO197"
 
@@ -20,10 +16,10 @@ export function convertOrganizationAndProviderLicense(
   fhirBundle: fhir.Bundle,
   fhirOrganization: fhir.Organization,
   fhirHealthcareService: fhir.HealthcareService
-): peoplePlaces.Organization {
+): hl7V3.Organization {
   const hl7V3Organization = convertRepresentedOrganization(fhirOrganization, fhirHealthcareService, fhirBundle)
 
-  if (identifyMessageType(fhirBundle) !== EventCodingCode.CANCELLATION) {
+  if (identifyMessageType(fhirBundle) !== fhir.EventCodingCode.CANCELLATION) {
     hl7V3Organization.healthCareProviderLicense = convertHealthCareProviderLicense(fhirOrganization, fhirBundle)
   }
 
@@ -57,7 +53,7 @@ function isNhsTrust(fhirOrganization: fhir.Organization) {
   return organizationTypeCoding?.code === NHS_TRUST_CODE
 }
 
-function isDirectReference<T extends Resource>(
+function isDirectReference<T extends fhir.Resource>(
   reference: fhir.Reference<T> | fhir.IdentifierReference<T>
 ): reference is fhir.Reference<T> {
   return !!(reference as fhir.Reference<T>).reference
@@ -82,13 +78,13 @@ function convertHealthCareProviderLicense(fhirOrganization: fhir.Organization, f
   }
   const costCentreParentOrganization = new CostCentreOrganization(fhirParentOrganization)
   const hl7V3ParentOrganization = convertCommonOrganizationDetails(costCentreParentOrganization)
-  return new peoplePlaces.HealthCareProviderLicense(hl7V3ParentOrganization)
+  return new hl7V3.HealthCareProviderLicense(hl7V3ParentOrganization)
 }
 
 function convertRepresentedOrganizationDetails(
   costCentre: CostCentre,
   fhirBundle: fhir.Bundle
-): peoplePlaces.Organization {
+): hl7V3.Organization {
   const result = convertCommonOrganizationDetails(costCentre)
 
   const telecomFhirPath = `${costCentre.resourceType}.telecom`
@@ -102,20 +98,20 @@ function convertRepresentedOrganizationDetails(
   return result
 }
 
-function convertCommonOrganizationDetails(costCentre: CostCentre): peoplePlaces.Organization {
-  const result = new peoplePlaces.Organization()
+function convertCommonOrganizationDetails(costCentre: CostCentre): hl7V3.Organization {
+  const result = new hl7V3.Organization()
 
   const organizationSdsId = getIdentifierValueForSystem(
     costCentre.identifier,
     "https://fhir.nhs.uk/Id/ods-organization-code",
     `${costCentre.resourceType}.identifier`
   )
-  result.id = new codes.SdsOrganizationIdentifier(organizationSdsId)
-  result.code = new codes.OrganizationTypeCode("999")
+  result.id = new hl7V3.SdsOrganizationIdentifier(organizationSdsId)
+  result.code = new hl7V3.OrganizationTypeCode("999")
   if (!costCentre.name) {
     throw new InvalidValueError("Name must be provided.", `${costCentre.resourceType}.address`)
   }
-  result.name = new core.Text(costCentre.name)
+  result.name = new hl7V3.Text(costCentre.name)
 
   return result
 }

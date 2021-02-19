@@ -1,8 +1,7 @@
 import * as demographics from "../../../../src/services/translation/request/demographics"
-import * as core from "../../../../src/models/hl7-v3/hl7-v3-datatypes-core"
-import * as codes from "../../../../src/models/hl7-v3/hl7-v3-datatypes-codes"
 import * as XmlJs from "xml-js"
 import {InvalidValueError} from "../../../../src/models/errors/processing-errors"
+import * as hl7V3 from "../../../../src/models/hl7-v3"
 
 describe("convertName fills correct fields only", () => {
   test("no keys should add no keys", () => {
@@ -48,16 +47,16 @@ describe("convertName fills correct fields only", () => {
   })
 
   const cases = [
-    ["usual", core.NameUse.USUAL],
-    ["official", core.NameUse.USUAL],
-    ["temp", core.NameUse.ALIAS],
-    ["anonymous", core.NameUse.ALIAS],
-    ["nickname", core.NameUse.PREFERRED],
-    ["old", core.NameUse.PREVIOUS],
-    ["maiden", core.NameUse.PREVIOUS_MAIDEN]
+    ["usual", hl7V3.NameUse.USUAL],
+    ["official", hl7V3.NameUse.USUAL],
+    ["temp", hl7V3.NameUse.ALIAS],
+    ["anonymous", hl7V3.NameUse.ALIAS],
+    ["nickname", hl7V3.NameUse.PREFERRED],
+    ["old", hl7V3.NameUse.PREVIOUS],
+    ["maiden", hl7V3.NameUse.PREVIOUS_MAIDEN]
   ]
 
-  test.each(cases)("use %p should return correct value", (argument: string, expected: core.NameUse) => {
+  test.each(cases)("use %p should return correct value", (argument: string, expected: hl7V3.NameUse) => {
     const fhirName = {use: argument}
     const result = demographics.convertName(fhirName, "fhirPath")
     expect(result._attributes).toEqual({use: expected})
@@ -77,12 +76,12 @@ describe("convertTelecom", () => {
 
   const testNumber = "01234567890"
 
-  const fullTranslationExpected = {use: core.TelecomUse.PERMANENT_HOME, value: `tel:${testNumber}`}
+  const fullTranslationExpected = {use: hl7V3.TelecomUse.PERMANENT_HOME, value: `tel:${testNumber}`}
   const cases = [
-    [{use: "home"}, {use: core.TelecomUse.PERMANENT_HOME}],
-    [{use: "work"}, {use: core.TelecomUse.WORKPLACE}],
-    [{use: "temp"}, {use: core.TelecomUse.TEMPORARY}],
-    [{use: "mobile"}, {use: core.TelecomUse.MOBILE}],
+    [{use: "home"}, {use: hl7V3.TelecomUse.PERMANENT_HOME}],
+    [{use: "work"}, {use: hl7V3.TelecomUse.WORKPLACE}],
+    [{use: "temp"}, {use: hl7V3.TelecomUse.TEMPORARY}],
+    [{use: "mobile"}, {use: hl7V3.TelecomUse.MOBILE}],
     [{use: "home", value: testNumber}, fullTranslationExpected],
     [{use: "home", value: `tel:${testNumber}`}, fullTranslationExpected],
     [{use: "home", value: "0 1 2 3       456 7890"}, fullTranslationExpected]
@@ -108,9 +107,9 @@ describe("convertAddress should return correct addresses", () => {
   })
 
   const cases = [
-    ["home", {use: core.AddressUse.HOME}],
-    ["work", {use: core.AddressUse.WORK}],
-    ["temp", {use: core.AddressUse.TEMPORARY}]
+    ["home", {use: hl7V3.AddressUse.HOME}],
+    ["work", {use: hl7V3.AddressUse.WORK}],
+    ["temp", {use: hl7V3.AddressUse.TEMPORARY}]
   ]
 
   test.each(cases)(`address use as %p should return correct value`,
@@ -122,14 +121,14 @@ describe("convertAddress should return correct addresses", () => {
 
 describe("convertGender should return correct gender", () => {
   const cases = [
-    ["male", codes.SexCode.MALE],
-    ["female", codes.SexCode.FEMALE],
-    ["other", codes.SexCode.INDETERMINATE],
-    ["unknown", codes.SexCode.UNKNOWN]
+    ["male", hl7V3.SexCode.MALE],
+    ["female", hl7V3.SexCode.FEMALE],
+    ["other", hl7V3.SexCode.INDETERMINATE],
+    ["unknown", hl7V3.SexCode.UNKNOWN]
   ]
 
   test.each(cases)("%p returns correct hl7 gender",
-    (actual:string, expected: codes.SexCode) => {
+    (actual: string, expected: hl7V3.SexCode) => {
       expect(demographics.convertGender(actual, "fhirPath")).toEqual(expected)
     })
 

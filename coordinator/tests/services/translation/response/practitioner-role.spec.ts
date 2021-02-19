@@ -1,8 +1,8 @@
 import {createPractitionerRole} from "../../../../src/services/translation/response/practitioner-role"
 import * as TestResources from "../../../resources/test-resources"
 import {getCancellationResponse} from "../common/test-helpers"
-import {AgentPerson} from "../../../../src/models/hl7-v3/hl7-v3-people-places"
-import {PractitionerRole} from "../../../../src/models/fhir/fhir-resources"
+import * as hl7V3 from "../../../../src/models/hl7-v3"
+import * as fhir from "../../../../src/models/fhir"
 
 describe("createPractitionerRole", () => {
   const cancellationErrorResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)
@@ -34,25 +34,28 @@ describe("createPractitionerRole", () => {
 
   test.each(cases)(
     "returned PractitionerRole contains an identifier block with correct sds role profile id",
-    (agentPerson: AgentPerson, practitionerRole:PractitionerRole) => {
+    (agentPerson: hl7V3.AgentPerson, practitionerRole: fhir.PractitionerRole) => {
       expect(practitionerRole.identifier[0].system).toBe("https://fhir.nhs.uk/Id/sds-role-profile-id")
       expect(practitionerRole.identifier[0].value).toBe(agentPerson.id._attributes.extension)
     })
 
-  test.each(cases)("has reference to Practitioner", (agentPerson: AgentPerson, practitionerRole: PractitionerRole) => {
-    expect(practitionerRole.practitioner.reference).toBe(`urn:uuid:${practitionerId}`)
-  })
+  test.each(cases)(
+    "has reference to Practitioner",
+    (agentPerson: hl7V3.AgentPerson, practitionerRole: fhir.PractitionerRole) => {
+      expect(practitionerRole.practitioner.reference).toBe(`urn:uuid:${practitionerId}`)
+    }
+  )
 
   test.each(cases)(
     "has reference to HealthcareService",
-    (agentPerson: AgentPerson, practitionerRole: PractitionerRole) => {
+    (agentPerson: hl7V3.AgentPerson, practitionerRole: fhir.PractitionerRole) => {
       expect(practitionerRole.healthcareService).toContainEqual({
         reference: `urn:uuid:${healthcareServiceId}`
       })
     }
   )
 
-  test.each(cases)("has correct code", (agentPerson: AgentPerson, practitionerRole:PractitionerRole) => {
+  test.each(cases)("has correct code", (agentPerson: hl7V3.AgentPerson, practitionerRole: fhir.PractitionerRole) => {
     expect(practitionerRole.code[0].coding[0].code).toBe(agentPerson.code._attributes.code)
     expect(practitionerRole.code[0].coding[0].system).toBe("https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName")
   })

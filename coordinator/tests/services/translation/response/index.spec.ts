@@ -1,7 +1,7 @@
 import * as TestResources from "../../../resources/test-resources"
 import {translateToFhir} from "../../../../src/services/translation/response"
 import {SpineDirectResponse} from "../../../../src/models/spine"
-import * as fhir from "../../../../src/models/fhir/fhir-resources"
+import * as fhir from "../../../../src/models/fhir"
 
 describe("translateToFhir", () => {
   const spineResponses = TestResources.spineResponses

@@ -1,5 +1,3 @@
-import {ParentPrescription} from "../../../../models/hl7-v3/hl7-v3-prescriptions"
-import * as fhir from "../../../../models/fhir/fhir-resources"
 import {isDeepStrictEqual} from "util"
 import {convertResourceToBundleEntry, translateAndAddAgentPerson, translateAndAddPatient} from "../common"
 import {toArray} from "../../common"
@@ -7,13 +5,13 @@ import {createMedicationRequest} from "./release-medication-request"
 import {createMessageHeader} from "../message-header"
 import {createAndAddCommunicationRequest, parseAdditionalInstructions} from "./additional-instructions"
 import * as uuid from "uuid"
-import {PrescriptionReleaseResponse} from "../../../../models/hl7-v3/hl7-v3-release"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
-import {EventCoding} from "../../../../models/fhir/message-header"
+import * as hl7V3 from "../../../../models/hl7-v3"
+import * as fhir from "../../../../models/fhir"
 
 const SUPPORTED_MESSAGE_TYPE = "PORX_MT122003UK32"
 
-export function createOuterBundle(releaseResponse: PrescriptionReleaseResponse): fhir.Bundle {
+export function createOuterBundle(releaseResponse: hl7V3.PrescriptionReleaseResponse): fhir.Bundle {
   const releaseRequestId = releaseResponse.inFulfillmentOf.priorDownloadRequestRef.id._attributes.root
   const parentPrescriptions = toArray(releaseResponse.component)
     .filter(component => component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE)
@@ -36,7 +34,7 @@ export function createOuterBundle(releaseResponse: PrescriptionReleaseResponse):
   }
 }
 
-export function createInnerBundle(parentPrescription: ParentPrescription, releaseRequestId: string): fhir.Bundle {
+export function createInnerBundle(parentPrescription: hl7V3.ParentPrescription, releaseRequestId: string): fhir.Bundle {
   return {
     resourceType: "Bundle",
     id: uuid.v4(),
@@ -53,7 +51,7 @@ export function createInnerBundle(parentPrescription: ParentPrescription, releas
 }
 
 export function createBundleResources(
-  parentPrescription: ParentPrescription,
+  parentPrescription: hl7V3.ParentPrescription,
   releaseRequestId: string
 ): Array<fhir.Resource> {
   const bundleResources: Array<fhir.Resource> = []
@@ -96,7 +94,7 @@ export function createBundleResources(
 
   const messageHeader = createMessageHeader(
     parentPrescription.id._attributes.root,
-    EventCoding.PRESCRIPTION_ORDER,
+    fhir.EventCoding.PRESCRIPTION_ORDER,
     focusIds,
     pertinentPrescription.performer?.AgentOrgSDS?.agentOrganizationSDS?.id?._attributes?.extension,
     releaseRequestId

@@ -5,17 +5,16 @@ import {
 import {clone} from "../../../resources/test-helpers"
 import * as TestResources from "../../../resources/test-resources"
 import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
-import * as fhir from "../../../../src/models/fhir/fhir-resources"
 import {getExtensionForUrlOrNull, toArray} from "../../../../src/services/translation/common"
 import {convertBundleToPrescription} from "../../../../src/services/translation/request/prescription"
 import {convertFhirMessageToSpineRequest} from "../../../../src/services/translation/request"
 import {TooManyValuesError} from "../../../../src/models/errors/processing-errors"
-import {Interval, NumericValue, Text} from "../../../../src/models/hl7-v3/hl7-v3-datatypes-core"
-import {ControlledDrugExtension, MedicationRequest} from "../../../../src/models/fhir/medication-request"
+import * as hl7V3 from "../../../../src/models/hl7-v3"
+import * as fhir from "../../../../src/models/fhir"
 
 describe("convertMedicationRequestToLineItem", () => {
   let bundle: fhir.Bundle
-  let firstFhirMedicationRequest: MedicationRequest
+  let firstFhirMedicationRequest: fhir.MedicationRequest
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
@@ -40,7 +39,7 @@ describe("convertMedicationRequestToLineItem", () => {
   })
 
   test("repeat number added to correct section of hl7 message", () => {
-    const repeatNumber = new Interval(new NumericValue("1"), new NumericValue("6"))
+    const repeatNumber = new hl7V3.Interval(new hl7V3.NumericValue("1"), new hl7V3.NumericValue("6"))
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, repeatNumber, [], [])
     const resultIdValue = result.repeatNumber
     expect(resultIdValue).toBe(repeatNumber)
@@ -103,7 +102,7 @@ describe("convertMedicationRequestToLineItem", () => {
 
 describe("additionalInstructions", () => {
   let bundle: fhir.Bundle
-  let firstFhirMedicationRequest: MedicationRequest
+  let firstFhirMedicationRequest: fhir.MedicationRequest
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
@@ -120,7 +119,7 @@ describe("additionalInstructions", () => {
       url: "quantityWords",
       valueString: "test1"
     }
-    const controlledDrugExtension: ControlledDrugExtension = {
+    const controlledDrugExtension: fhir.ControlledDrugExtension = {
       url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug",
       extension: [controlledDrugWordsExtension]
     }
@@ -144,7 +143,7 @@ describe("additionalInstructions", () => {
   })
 
   test("single medication shows up correctly", () => {
-    const medication = [new Text("test1")]
+    const medication = [new hl7V3.Text("test1")]
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, null, medication, [])
     expect(
       result.pertinentInformation1.pertinentAdditionalInstructions.value._text
@@ -154,7 +153,7 @@ describe("additionalInstructions", () => {
   })
 
   test("multiple medication show up correctly", () => {
-    const medication = [new Text("test1"), new Text("test2")]
+    const medication = [new hl7V3.Text("test1"), new hl7V3.Text("test2")]
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, null, medication, [])
     expect(
       result.pertinentInformation1.pertinentAdditionalInstructions.value._text
@@ -164,7 +163,7 @@ describe("additionalInstructions", () => {
   })
 
   test("single patientInfo shows up correctly", () => {
-    const patientInfo = [new Text("test1")]
+    const patientInfo = [new hl7V3.Text("test1")]
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, null, [], patientInfo)
     expect(
       result.pertinentInformation1.pertinentAdditionalInstructions.value._text
@@ -174,7 +173,7 @@ describe("additionalInstructions", () => {
   })
 
   test("multiple patientInfo show up correctly", () => {
-    const patientInfo = [new Text("test1"), new Text("test2")]
+    const patientInfo = [new hl7V3.Text("test1"), new hl7V3.Text("test2")]
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, null, [], patientInfo)
     expect(
       result.pertinentInformation1.pertinentAdditionalInstructions.value._text
@@ -184,7 +183,7 @@ describe("additionalInstructions", () => {
   })
 
   test("XML characters are escaped in patientInfo", () => {
-    const patientInfo = [new Text("Phone practice if BP < 90/60 mmHg")]
+    const patientInfo = [new hl7V3.Text("Phone practice if BP < 90/60 mmHg")]
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, null, [], patientInfo)
     expect(
       result.pertinentInformation1.pertinentAdditionalInstructions.value._text
@@ -198,14 +197,14 @@ describe("additionalInstructions", () => {
       url: "quantityWords",
       valueString: "test1"
     }
-    const controlledDrugExtension: ControlledDrugExtension = {
+    const controlledDrugExtension: fhir.ControlledDrugExtension = {
       url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug",
       extension: [controlledDrugWordsExtension]
     }
     firstFhirMedicationRequest.extension.push(controlledDrugExtension)
     firstFhirMedicationRequest.dosageInstruction[0].patientInstruction = "testPatientInstruction"
-    const medication = [new Text("testMedication")]
-    const patientInfo = [new Text("testPatientInfo")]
+    const medication = [new hl7V3.Text("testMedication")]
+    const patientInfo = [new hl7V3.Text("testPatientInfo")]
     const result = convertMedicationRequestToLineItem(firstFhirMedicationRequest, null, medication, patientInfo)
     expect(
       result.pertinentInformation1.pertinentAdditionalInstructions.value._text
@@ -218,7 +217,7 @@ describe("additionalInstructions", () => {
 
 describe("prescriptionEndorsements", () => {
   let bundle: fhir.Bundle
-  let firstFhirMedicationRequest: MedicationRequest
+  let firstFhirMedicationRequest: fhir.MedicationRequest
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
@@ -259,7 +258,7 @@ describe("prescriptionEndorsements", () => {
   test("are optional for translation", () => {
     const medicationRequests = getMedicationRequests(bundle)
 
-    const prescriptionEndorsementsFn = (medicationRequest: MedicationRequest): fhir.CodeableConceptExtension =>
+    const prescriptionEndorsementsFn = (medicationRequest: fhir.MedicationRequest): fhir.CodeableConceptExtension =>
       getExtensionForUrlOrNull(
         medicationRequest.extension,
         "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement",

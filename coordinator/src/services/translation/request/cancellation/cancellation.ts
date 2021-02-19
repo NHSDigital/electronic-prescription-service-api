@@ -1,18 +1,16 @@
-import * as fhir from "../../../../models/fhir/fhir-resources"
 import {convertPatient} from "../patient"
-import * as prescriptions from "../../../../models/hl7-v3/hl7-v3-prescriptions"
-import * as cancellations from "../../../../models/hl7-v3/hl7-v3-cancellation"
-import * as codes from "../../../../models/hl7-v3/hl7-v3-datatypes-codes"
-import {getPatient, getMedicationRequests} from "../../common/getResourcesOfType"
+import {getMedicationRequests, getPatient} from "../../common/getResourcesOfType"
 import {convertAuthor, convertResponsibleParty} from "../practitioner"
 import * as common from "../../common"
 import {getExtensionForUrl, getIdentifierValueForSystem} from "../../common"
 import {extractEffectiveTime} from "../prescription/parent-prescription"
+import * as hl7V3 from "../../../../models/hl7-v3"
+import * as fhir from "../../../../models/fhir"
 
 export function convertCancellation(
   fhirBundle: fhir.Bundle,
   convertPatientFn = convertPatient,
-): cancellations.CancellationPrescription {
+): hl7V3.CancellationRequest {
   const fhirFirstMedicationRequest = getMedicationRequests(fhirBundle)[0]
   const effectiveTime = extractEffectiveTime(fhirFirstMedicationRequest)
 
@@ -22,23 +20,23 @@ export function convertCancellation(
     "Bundle.identifier"
   )
 
-  const hl7V3CancellationPrescription = new cancellations.CancellationPrescription(
-    new codes.GlobalIdentifier(messageId), effectiveTime
+  const cancellationRequest = new hl7V3.CancellationRequest(
+    new hl7V3.GlobalIdentifier(messageId), effectiveTime
   )
 
   const fhirPatient = getPatient(fhirBundle)
   const hl7V3Patient = convertPatientFn(fhirBundle, fhirPatient)
-  hl7V3CancellationPrescription.recordTarget = new prescriptions.RecordTarget(hl7V3Patient)
+  cancellationRequest.recordTarget = new hl7V3.RecordTarget(hl7V3Patient)
 
   const hl7V3CancelRequester = convertResponsibleParty(fhirBundle, fhirFirstMedicationRequest)
-  hl7V3CancellationPrescription.author = new prescriptions.Author()
-  hl7V3CancellationPrescription.author.AgentPerson = hl7V3CancelRequester.AgentPerson
+  cancellationRequest.author = new hl7V3.Author()
+  cancellationRequest.author.AgentPerson = hl7V3CancelRequester.AgentPerson
 
   const hl7V3OriginalPrescriptionAuthor = convertAuthor(fhirBundle, fhirFirstMedicationRequest)
-  hl7V3CancellationPrescription.responsibleParty = new prescriptions.ResponsibleParty()
-  hl7V3CancellationPrescription.responsibleParty.AgentPerson = hl7V3OriginalPrescriptionAuthor.AgentPerson
+  cancellationRequest.responsibleParty = new hl7V3.ResponsibleParty()
+  cancellationRequest.responsibleParty.AgentPerson = hl7V3OriginalPrescriptionAuthor.AgentPerson
 
-  hl7V3CancellationPrescription.pertinentInformation2 = new cancellations.PertinentInformation2(
+  cancellationRequest.pertinentInformation2 = new hl7V3.CancellationRequestPertinentInformation2(
     fhirFirstMedicationRequest.groupIdentifier.value
   )
 
@@ -47,13 +45,13 @@ export function convertCancellation(
     "https://fhir.nhs.uk/Id/prescription-order-item-number",
     "MedicationRequest.identifier"
   )
-  hl7V3CancellationPrescription.pertinentInformation1 = new cancellations.PertinentInformation1(lineItemToCancel)
+  cancellationRequest.pertinentInformation1 = new hl7V3.CancellationRequestPertinentInformation1(lineItemToCancel)
 
   const statusReason = common.getCodingForSystem(
     fhirFirstMedicationRequest.statusReason.coding,
     "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-reason",
     "MedicationRequest.statusReason")
-  hl7V3CancellationPrescription.pertinentInformation = new cancellations.PertinentInformation(
+  cancellationRequest.pertinentInformation = new hl7V3.CancellationRequestPertinentInformation(
     statusReason.code,
     statusReason.display
   )
@@ -63,9 +61,9 @@ export function convertCancellation(
     "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
     "MedicationRequest.groupIdentifier.extension"
   ) as fhir.IdentifierExtension
-  hl7V3CancellationPrescription.pertinentInformation3 = new cancellations.PertinentInformation3(
+  cancellationRequest.pertinentInformation3 = new hl7V3.CancellationRequestPertinentInformation3(
     prescriptionToCancel.valueIdentifier.value
   )
 
-  return hl7V3CancellationPrescription
+  return cancellationRequest
 }

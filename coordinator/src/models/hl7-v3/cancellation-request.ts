@@ -1,18 +1,18 @@
-import * as core from "./hl7-v3-datatypes-core"
-import * as codes from "./hl7-v3-datatypes-codes"
+import * as core from "./core"
+import * as codes from "./codes"
 import {ElementCompact} from "xml-js"
-import * as prescription from "./hl7-v3-prescriptions"
+import * as parentPrescription from "./parent-prescription"
+import * as prescription from "./prescription"
 
-export class CancellationPrescriptionRoot {
-  CancellationRequest: CancellationPrescription
+export class CancellationRequestRoot {
+  CancellationRequest: CancellationRequest
 
-  constructor(cancellationPrescription: CancellationPrescription) {
+  constructor(cancellationPrescription: CancellationRequest) {
     this.CancellationRequest = cancellationPrescription
   }
-
 }
 
-export class CancellationPrescription implements ElementCompact {
+export class CancellationRequest implements ElementCompact {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "INFO",
     moodCode: "EVN"
@@ -21,13 +21,13 @@ export class CancellationPrescription implements ElementCompact {
   id: codes.GlobalIdentifier
   effectiveTime: core.Timestamp
   typeId: codes.TypeIdentifier
-  recordTarget: prescription.RecordTarget
+  recordTarget: parentPrescription.RecordTarget
   author: prescription.Author
   responsibleParty: prescription.ResponsibleParty
-  pertinentInformation1: PertinentInformation1
-  pertinentInformation2: PertinentInformation2
-  pertinentInformation: PertinentInformation
-  pertinentInformation3: PertinentInformation3
+  pertinentInformation1: CancellationRequestPertinentInformation1
+  pertinentInformation2: CancellationRequestPertinentInformation2
+  pertinentInformation: CancellationRequestPertinentInformation
+  pertinentInformation3: CancellationRequestPertinentInformation3
 
   constructor(id: codes.GlobalIdentifier, effectiveTime: core.Timestamp) {
     this.id = id
@@ -36,7 +36,7 @@ export class CancellationPrescription implements ElementCompact {
   }
 }
 
-export class PertinentInformation2 {
+export class CancellationRequestPertinentInformation2 {
   _attributes: {
     typeCode: string
     contextConductionInd: string
@@ -75,7 +75,7 @@ class PertinentPrescriptionID {
   }
 }
 
-export class PertinentInformation1{
+export class CancellationRequestPertinentInformation1 {
   _attributes: {
     typeCode: string
     inversionInd: string
@@ -111,7 +111,7 @@ class PertinentLineItemRef {
   }
 }
 
-export class PertinentInformation {
+export class CancellationRequestPertinentInformation {
   _attributes: {
     typeCode: string
     contextConductionInd: string
@@ -148,7 +148,7 @@ class PertinentCancellationReason {
   }
 }
 
-export class PertinentInformation3 {
+export class CancellationRequestPertinentInformation3 {
   _attributes: {
     typeCode: string
     contextConductionInd: string

@@ -1,7 +1,6 @@
-import * as fhir from "../../../models/fhir/fhir-resources"
 import {generateResourceId} from "./common"
 import {createIdentifier, createReference} from "./fhir-base-types"
-import {MessageHeader, MessageHeaderDestination, MessageHeaderResponse} from "../../../models/fhir/message-header"
+import * as fhir from "../../../models/fhir"
 
 export function createMessageHeader(
   messageId: string,
@@ -9,7 +8,7 @@ export function createMessageHeader(
   focusIds: Array<string>,
   destinationOrganizationId: string,
   requestMessageId: string
-): MessageHeader {
+): fhir.MessageHeader {
   return {
     resourceType: "MessageHeader",
     id: generateResourceId(),
@@ -51,7 +50,7 @@ function getExtensions(messageId: string): Array<fhir.IdentifierExtension> {
   }]
 }
 
-function getDestinations(representedOrganizationId: string): Array<MessageHeaderDestination> {
+function getDestinations(representedOrganizationId: string): Array<fhir.MessageHeaderDestination> {
   if (representedOrganizationId) {
     return [{
       endpoint: `urn:nhs-uk:addressing:ods:${representedOrganizationId}`,
@@ -64,7 +63,7 @@ function getDestinations(representedOrganizationId: string): Array<MessageHeader
   }
 }
 
-function getMessageHeaderResponse(requestMessageId: string): MessageHeaderResponse {
+function getMessageHeaderResponse(requestMessageId: string): fhir.MessageHeaderResponse {
   return {
     identifier: requestMessageId.toLowerCase(),
     code: "ok"

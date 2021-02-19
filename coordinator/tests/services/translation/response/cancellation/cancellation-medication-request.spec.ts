@@ -1,11 +1,10 @@
 import * as TestResources from "../../../../resources/test-resources"
 import {getExtensionForUrlOrNull} from "../../../../../src/services/translation/common"
-import * as fhir from "../../../../../src/models/fhir/fhir-resources"
 import {
   createMedicationRequest
 } from "../../../../../src/services/translation/response/cancellation/cancellation-medication-request"
 import {getCancellationResponse, hasCorrectISOFormat} from "../../common/test-helpers"
-import {CodeableConceptExtension} from "../../../../../src/models/fhir/fhir-resources"
+import * as fhir from "../../../../../src/models/fhir"
 
 describe("createMedicationRequest", () => {
   const cancellationResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)
@@ -27,7 +26,7 @@ describe("createMedicationRequest", () => {
       medicationRequest.extension,
       "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionTaskStatusReason",
       "MedicationRequest.extension"
-    ) as fhir.ExtensionExtension<CodeableConceptExtension>
+    ) as fhir.ExtensionExtension<fhir.CodeableConceptExtension>
     expect(extension).not.toBeUndefined()
     const medicationStatusHistoryExtension = getExtensionForUrlOrNull(
       extension.extension,

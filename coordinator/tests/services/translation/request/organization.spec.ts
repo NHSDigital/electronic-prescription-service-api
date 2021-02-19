@@ -1,16 +1,10 @@
-import {
-  Bundle,
-  HealthcareService,
-  Location, Organization,
-  Resource
-} from "../../../../src/models/fhir/fhir-resources"
 import {convertOrganizationAndProviderLicense} from "../../../../src/services/translation/request/organization"
 import * as uuid from "uuid"
 import {FhirMessageProcessingError} from "../../../../src/models/errors/processing-errors"
 import {getMessageHeader} from "../../../../src/services/translation/common/getResourcesOfType"
-import {MessageHeader, EventCodingCode} from "../../../../src/models/fhir/message-header"
+import * as fhir from "../../../../src/models/fhir"
 
-function bundleOf(resources: Array<Resource>): Bundle {
+function bundleOf(resources: Array<fhir.Resource>): fhir.Bundle {
   return {
     resourceType: "Bundle",
     id: uuid.v4(),
@@ -19,18 +13,18 @@ function bundleOf(resources: Array<Resource>): Bundle {
 }
 
 describe("convertOrganizationAndProviderLicense", () => {
-  let messageHeader: MessageHeader
-  let organization1: Organization
-  let organization2: Organization
-  let healthcareService: HealthcareService
-  let location: Location
-  let bundle: Bundle
+  let messageHeader: fhir.MessageHeader
+  let organization1: fhir.Organization
+  let organization2: fhir.Organization
+  let healthcareService: fhir.HealthcareService
+  let location: fhir.Location
+  let bundle: fhir.Bundle
 
   beforeEach(() => {
     messageHeader = {
       resourceType: "MessageHeader",
       eventCoding: {
-        code: EventCodingCode.PRESCRIPTION
+        code: fhir.EventCodingCode.PRESCRIPTION
       },
       sender: {
         identifier: {
@@ -124,9 +118,9 @@ describe("convertOrganizationAndProviderLicense", () => {
   })
 
   describe.each([
-    ["cancellations", EventCodingCode.CANCELLATION],
-    ["orders", EventCodingCode.PRESCRIPTION]
-  ])("representedOrganization mapping for %s", (desc: string, messageType: EventCodingCode) => {
+    ["cancellations", fhir.EventCodingCode.CANCELLATION],
+    ["orders", fhir.EventCodingCode.PRESCRIPTION]
+  ])("representedOrganization mapping for %s", (desc: string, messageType: fhir.EventCodingCode) => {
     describe("when organization is an NHS trust", () => {
       beforeEach(() => {
         getMessageHeader(bundle).eventCoding.code = messageType
@@ -273,7 +267,7 @@ describe("convertOrganizationAndProviderLicense", () => {
       ["of an unspecified type", undefined]
     ])("when organization is %s", (desc: string, code: string) => {
       beforeEach(() => {
-        getMessageHeader(bundle).eventCoding.code = EventCodingCode.CANCELLATION
+        getMessageHeader(bundle).eventCoding.code = fhir.EventCodingCode.CANCELLATION
         if (code) {
           organization1.type.forEach(type => type.coding.forEach(coding => coding.code = code))
         } else {
@@ -295,7 +289,7 @@ describe("convertOrganizationAndProviderLicense", () => {
       ["of an unspecified type", undefined]
     ])("when organization is %s", (desc: string, code: string) => {
       beforeEach(() => {
-        getMessageHeader(bundle).eventCoding.code = EventCodingCode.PRESCRIPTION
+        getMessageHeader(bundle).eventCoding.code = fhir.EventCodingCode.PRESCRIPTION
         if (code) {
           organization1.type.forEach(type => type.coding.forEach(coding => coding.code = code))
         } else {

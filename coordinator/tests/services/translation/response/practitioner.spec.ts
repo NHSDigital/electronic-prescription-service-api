@@ -2,8 +2,8 @@ import * as TestResources from "../../../resources/test-resources"
 import {getIdentifierValueForSystem} from "../../../../src/services/translation/common"
 import {createPractitioner} from "../../../../src/services/translation/response/practitioner"
 import {getCancellationResponse} from "../common/test-helpers"
-import {AgentPerson} from "../../../../src/models/hl7-v3/hl7-v3-people-places"
-import {Practitioner} from "../../../../src/models/fhir/fhir-resources"
+import * as hl7V3 from "../../../../src/models/hl7-v3"
+import * as fhir from "../../../../src/models/fhir"
 
 describe("createPractitioner", () => {
   const cancellationErrorResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)
@@ -28,7 +28,7 @@ describe("createPractitioner", () => {
 
   test.each(cases)(
     "%p has an identifier with correct SDS user id",
-    (name: string, hl7Practitioner: AgentPerson, fhirPractitioner: Practitioner) => {
+    (name: string, hl7Practitioner: hl7V3.AgentPerson, fhirPractitioner: fhir.Practitioner) => {
       const sdsIdentifier = getIdentifierValueForSystem(
         fhirPractitioner.identifier,
         "https://fhir.hl7.org.uk/Id/professional-code",

@@ -1,4 +1,4 @@
-import {OperationOutcome} from "../fhir/fhir-resources"
+import * as fhir from "../fhir"
 
 export class FhirMessageProcessingError extends Error {
   message: string
@@ -31,7 +31,7 @@ export class TooManyValuesError extends FhirMessageProcessingError {
   }
 }
 
-export function toOperationOutcome(response: FhirMessageProcessingError): OperationOutcome {
+export function toOperationOutcome(response: FhirMessageProcessingError): fhir.OperationOutcome {
   return {
     resourceType: "OperationOutcome",
     issue: [{

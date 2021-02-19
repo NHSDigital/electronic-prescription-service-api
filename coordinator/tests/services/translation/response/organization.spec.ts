@@ -6,8 +6,8 @@ import {
   createOrganization
 } from "../../../../src/services/translation/response/organization"
 import {getCancellationResponse} from "../common/test-helpers"
-import * as fhir from "../../../../src/models/fhir/fhir-resources"
-import * as hl7 from "../../../../src/models/hl7-v3/hl7-v3-people-places"
+import * as hl7V3 from "../../../../src/models/hl7-v3"
+import * as fhir from "../../../../src/models/fhir"
 
 const cancellationResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)
 const cancellationDispensedResponse = getCancellationResponse(TestResources.spineResponses.cancellationDispensedError)
@@ -23,7 +23,7 @@ describe.each([
   ["performerOrganization", performerOrganization, performerRepresentedOrganization]
 ])(
   "createOrganization",
-  (organizationName: string, fhirOrganization: fhir.Organization, hl7Organization: hl7.Organization) => {
+  (organizationName: string, fhirOrganization: fhir.Organization, hl7Organization: hl7V3.Organization) => {
     test("%p has an identifier block with the correct value", () => {
       expect(fhirOrganization.identifier).not.toBeUndefined()
       const identifierValue = getIdentifierValueForSystem(
@@ -74,7 +74,7 @@ describe.each([
     organizationName: string,
     fhirLocations: Array<fhir.Location>,
     fhirHealthcareService: fhir.HealthcareService,
-    hl7Organization: hl7.Organization
+    hl7Organization: hl7V3.Organization
   ) => {
     test("%p has an identifier block with the correct value", () => {
       expect(fhirHealthcareService.identifier).not.toBeUndefined()

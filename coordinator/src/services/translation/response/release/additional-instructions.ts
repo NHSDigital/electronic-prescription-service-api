@@ -1,6 +1,6 @@
-import * as fhir from "../../../../models/fhir/fhir-resources"
 import * as uuid from "uuid"
 import {createReference} from "../fhir-base-types"
+import * as fhir from "../../../../models/fhir"
 
 const MEDICATION_TAG_MATCHER = /^<medication>(.*?)<\/medication>/
 const PATIENT_INFO_TAG_MATCHER = /^<patientInfo>(.*?)<\/patientInfo>/

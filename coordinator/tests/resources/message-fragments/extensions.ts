@@ -1,4 +1,4 @@
-import * as fhir from "../../../src/models/fhir/fhir-resources"
+import * as fhir from "../../../src/models/fhir"
 
 const prescriptionTypeExtensionUrl = "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType"
 

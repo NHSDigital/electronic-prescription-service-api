@@ -5,8 +5,6 @@ import {
   getResourceForFullUrl
 } from "../../../../src/services/translation/common"
 import * as TestResources from "../../../resources/test-resources"
-import * as fhir from "../../../../src/models/fhir/fhir-resources"
-import {Identifier} from "../../../../src/models/fhir/fhir-resources"
 import {clone} from "../../../resources/test-helpers"
 import * as LosslessJson from "lossless-json"
 import {TooManyValuesError} from "../../../../src/models/errors/processing-errors"
@@ -14,6 +12,7 @@ import {
   convertIsoDateStringToHl7V3Date,
   convertIsoDateTimeStringToHl7V3DateTime
 } from "../../../../src/services/translation/common/dateTime"
+import * as fhir from "../../../../src/models/fhir"
 
 test("getResourceForFullUrl returns correct resources", () => {
   const result = getResourceForFullUrl(
@@ -30,7 +29,7 @@ test("getResourceForFullUrl throws TooManyValuesUserFacingError when finding mul
 })
 
 describe("getIdentifierValueForSystem", () => {
-  const identifierArray: Array<Identifier> = [
+  const identifierArray: Array<fhir.Identifier> = [
     {
       "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
       "value": "100112897984"
@@ -70,7 +69,7 @@ describe("getIdentifierValueForSystem", () => {
 })
 
 describe("getIdentifierValueOrNullForSystem", () => {
-  const identifierArray: Array<Identifier> = [
+  const identifierArray: Array<fhir.Identifier> = [
     {
       "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
       "value": "100112897984"

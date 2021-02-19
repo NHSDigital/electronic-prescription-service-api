@@ -1,27 +1,26 @@
-import * as fhir from "../../../models/fhir/fhir-resources"
-import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
-import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {isTruthy} from "../common"
+import * as hl7V3 from "../../../models/hl7-v3"
+import * as fhir from "../../../models/fhir"
 
-export function convertName(fhirHumanName: fhir.HumanName, fhirPath: string): core.Name {
-  const name = new core.Name()
+export function convertName(fhirHumanName: fhir.HumanName, fhirPath: string): hl7V3.Name {
+  const name = new hl7V3.Name()
   if (fhirHumanName.use) {
     name._attributes = {
       use: convertNameUse(fhirHumanName.use, fhirPath)
     }
   }
   if (fhirHumanName.prefix) {
-    name.prefix = fhirHumanName.prefix.map(name => new core.Text(name))
+    name.prefix = fhirHumanName.prefix.map(name => new hl7V3.Text(name))
   }
   if (fhirHumanName.given) {
-    name.given = fhirHumanName.given.map(name => new core.Text(name))
+    name.given = fhirHumanName.given.map(name => new hl7V3.Text(name))
   }
   if (fhirHumanName.family) {
-    name.family = new core.Text(fhirHumanName.family)
+    name.family = new hl7V3.Text(fhirHumanName.family)
   }
   if (fhirHumanName.suffix) {
-    name.suffix = fhirHumanName.suffix.map(name => new core.Text(name))
+    name.suffix = fhirHumanName.suffix.map(name => new hl7V3.Text(name))
   }
   return name
 }
@@ -30,53 +29,53 @@ function convertNameUse(fhirNameUse: string, fhirPath: string) {
   switch (fhirNameUse) {
     case "usual":
     case "official":
-      return core.NameUse.USUAL
+      return hl7V3.NameUse.USUAL
     case "temp":
     case "anonymous":
-      return core.NameUse.ALIAS
+      return hl7V3.NameUse.ALIAS
     case "nickname":
-      return core.NameUse.PREFERRED
+      return hl7V3.NameUse.PREFERRED
     case "old":
-      return core.NameUse.PREVIOUS
+      return hl7V3.NameUse.PREVIOUS
     case "maiden":
-      return core.NameUse.PREVIOUS_MAIDEN
+      return hl7V3.NameUse.PREVIOUS_MAIDEN
     default:
       throw new InvalidValueError(`Unhandled name use '${fhirNameUse}'.`, fhirPath + ".use")
   }
 }
 
-export function convertTelecom(fhirTelecom: fhir.ContactPoint, fhirPath: string): core.Telecom {
+export function convertTelecom(fhirTelecom: fhir.ContactPoint, fhirPath: string): hl7V3.Telecom {
   const hl7V3TelecomUse = convertTelecomUse(fhirTelecom.use, fhirPath)
   //TODO - do we need to add "tel:", "mailto:" to the value?
-  return new core.Telecom(hl7V3TelecomUse, fhirTelecom.value)
+  return new hl7V3.Telecom(hl7V3TelecomUse, fhirTelecom.value)
 }
 
 function convertTelecomUse(fhirTelecomUse: string, fhirPath: string) {
   switch (fhirTelecomUse) {
     case "home":
-      return core.TelecomUse.PERMANENT_HOME
+      return hl7V3.TelecomUse.PERMANENT_HOME
     case "work":
-      return core.TelecomUse.WORKPLACE
+      return hl7V3.TelecomUse.WORKPLACE
     case "temp":
-      return core.TelecomUse.TEMPORARY
+      return hl7V3.TelecomUse.TEMPORARY
     case "mobile":
-      return core.TelecomUse.MOBILE
+      return hl7V3.TelecomUse.MOBILE
     default:
       throw new InvalidValueError(`Unhandled telecom use '${fhirTelecomUse}'.`, fhirPath + ".use")
   }
 }
 
-export function convertAddress(fhirAddress: fhir.Address, fhirPath: string): core.Address {
+export function convertAddress(fhirAddress: fhir.Address, fhirPath: string): hl7V3.Address {
   const allAddressLines = [
     fhirAddress.line,
     fhirAddress.city,
     fhirAddress.district,
     fhirAddress.state
   ].flat().filter(isTruthy)
-  const hl7V3Address = new core.Address(convertAddressUse(fhirAddress.use, fhirPath))
-  hl7V3Address.streetAddressLine = allAddressLines.map(line => new core.Text(line))
+  const hl7V3Address = new hl7V3.Address(convertAddressUse(fhirAddress.use, fhirPath))
+  hl7V3Address.streetAddressLine = allAddressLines.map(line => new hl7V3.Text(line))
   if (fhirAddress.postalCode !== undefined){
-    hl7V3Address.postalCode = new core.Text(fhirAddress.postalCode)
+    hl7V3Address.postalCode = new hl7V3.Text(fhirAddress.postalCode)
   }
   return hl7V3Address
 }
@@ -84,13 +83,13 @@ export function convertAddress(fhirAddress: fhir.Address, fhirPath: string): cor
 function convertAddressUse(fhirAddressUse: string, fhirPath: string) {
   switch (fhirAddressUse) {
     case "home":
-      return core.AddressUse.HOME
+      return hl7V3.AddressUse.HOME
     case "work":
-      return core.AddressUse.WORK
+      return hl7V3.AddressUse.WORK
     case "temp":
-      return core.AddressUse.TEMPORARY
+      return hl7V3.AddressUse.TEMPORARY
     case "billing":
-      return core.AddressUse.POSTAL
+      return hl7V3.AddressUse.POSTAL
     case undefined:
       return undefined
     default:
@@ -98,16 +97,16 @@ function convertAddressUse(fhirAddressUse: string, fhirPath: string) {
   }
 }
 
-export function convertGender(fhirGender: string, fhirPath: string): codes.SexCode {
+export function convertGender(fhirGender: string, fhirPath: string): hl7V3.SexCode {
   switch (fhirGender) {
     case "male":
-      return codes.SexCode.MALE
+      return hl7V3.SexCode.MALE
     case "female":
-      return codes.SexCode.FEMALE
+      return hl7V3.SexCode.FEMALE
     case "other":
-      return codes.SexCode.INDETERMINATE
+      return hl7V3.SexCode.INDETERMINATE
     case "unknown":
-      return codes.SexCode.UNKNOWN
+      return hl7V3.SexCode.UNKNOWN
     default:
       throw new InvalidValueError(`Unhandled gender '${fhirGender}'.`, fhirPath)
   }

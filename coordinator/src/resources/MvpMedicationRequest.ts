@@ -1,10 +1,11 @@
-import {CodeableConcept, CodingExtension, Identifier, IdentifierExtension} from "../models/fhir/fhir-resources"
+import {CodeableConcept, Identifier} from "../models/fhir/common"
 import {
   MedicationRequest,
   MedicationRequestDispenseRequest,
   MedicationRequestGroupIdentifier,
   MedicationRequestStatus
 } from "../models/fhir/medication-request"
+import {CodingExtension, IdentifierExtension} from "../models/fhir/extension"
 
 const performerSiteTypeExtension: CodingExtension = {
   url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",

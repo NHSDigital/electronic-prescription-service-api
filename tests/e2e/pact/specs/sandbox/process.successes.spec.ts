@@ -2,10 +2,10 @@ import {InteractionObject} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
-import {Bundle} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
+import {Bundle} from "../../../../../coordinator/src/models/fhir/bundle"
 
 const orderPactGroups = [
   {

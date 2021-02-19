@@ -1,9 +1,9 @@
-import * as fhir from "../../../models/fhir/fhir-resources"
-import * as hl7 from "../../../models/hl7-v3/hl7-v3-people-places"
 import {convertName, generateResourceId} from "./common"
 import {createIdentifier} from "./fhir-base-types"
+import * as hl7V3 from "../../../models/hl7-v3"
+import * as fhir from "../../../models/fhir"
 
-export function createPractitioner(hl7AgentPerson: hl7.AgentPerson): fhir.Practitioner {
+export function createPractitioner(hl7AgentPerson: hl7V3.AgentPerson): fhir.Practitioner {
   return {
     resourceType: "Practitioner",
     id: generateResourceId(),

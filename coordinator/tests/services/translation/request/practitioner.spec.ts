@@ -1,5 +1,3 @@
-import * as fhir from "../../../../src/models/fhir/fhir-resources"
-import {Telecom, TelecomUse} from "../../../../src/models/hl7-v3/hl7-v3-datatypes-core"
 import * as practitioner from "../../../../src/services/translation/request/practitioner"
 import * as helpers from "../../../resources/test-helpers"
 import * as TestResources from "../../../resources/test-resources"
@@ -9,9 +7,10 @@ import {InvalidValueError} from "../../../../src/models/errors/processing-errors
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {onlyElement} from "../../../../src/services/translation/common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../../../src/services/translation/common/dateTime"
-import {MedicationRequest} from "../../../../src/models/fhir/medication-request"
-import requireActual = jest.requireActual;
-import {EventCodingCode} from "../../../../src/models/fhir/message-header"
+import * as hl7V3 from "../../../../src/models/hl7-v3"
+import * as fhir from "../../../../src/models/fhir"
+
+import requireActual = jest.requireActual
 
 const actualMoment = requireActual("moment")
 jest.mock("moment", () => ({
@@ -34,20 +33,20 @@ describe("getAgentPersonTelecom", () => {
       "use": "work"
     }
   ]
-  const roleTelecomExpected: Array<Telecom> = [
+  const roleTelecomExpected: Array<hl7V3.Telecom> = [
     {
       _attributes:
         {
-          "use": TelecomUse.WORKPLACE,
+          "use": hl7V3.TelecomUse.WORKPLACE,
           "value": "tel:01512631737"
         }
     }
   ]
-  const practitionerTelecomExpected: Array<Telecom> = [
+  const practitionerTelecomExpected: Array<hl7V3.Telecom> = [
     {
       _attributes:
         {
-          "use": TelecomUse.WORKPLACE,
+          "use": hl7V3.TelecomUse.WORKPLACE,
           "value": "tel:01"
         }
     }
@@ -130,7 +129,7 @@ describe("getAgentPersonPersonIdForResponsibleParty", () => {
 
 describe("convertAuthor", () => {
   let bundle: fhir.Bundle
-  let fhirFirstMedicationRequest: MedicationRequest
+  let fhirFirstMedicationRequest: fhir.MedicationRequest
 
   beforeEach(() => {
     bundle = helpers.clone(TestResources.examplePrescription1.fhirMessageSigned)
@@ -139,7 +138,7 @@ describe("convertAuthor", () => {
 
   describe("for a cancellation", () => {
     beforeEach(() => {
-      getMessageHeader(bundle).eventCoding.code = EventCodingCode.CANCELLATION
+      getMessageHeader(bundle).eventCoding.code = fhir.EventCodingCode.CANCELLATION
     })
 
     test("doesn't include a time or signatureText field", () => {
@@ -151,7 +150,7 @@ describe("convertAuthor", () => {
 
   describe("for an order", () => {
     beforeEach(() => {
-      getMessageHeader(bundle).eventCoding.code = EventCodingCode.PRESCRIPTION
+      getMessageHeader(bundle).eventCoding.code = fhir.EventCodingCode.PRESCRIPTION
     })
 
     test("includes the time and signatureText from the Provenance if present", () => {

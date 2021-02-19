@@ -1,5 +1,4 @@
 import * as validator from "../../../src/services/validation/bundle-validator"
-import * as fhir from "../../../src/models/fhir/fhir-resources"
 import * as TestResources from "../../resources/test-resources"
 import {clone} from "../../resources/test-helpers"
 import * as errors from "../../../src/models/errors/validation-errors"
@@ -10,14 +9,7 @@ import {
 } from "../../../src/models/errors/validation-errors"
 import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, isTruthy} from "../../../src/services/translation/common"
-import {
-  CourseOfTherapyTypeCode,
-  MedicationRequest,
-  MedicationRequestStatus,
-  Performer,
-  RepeatInformationExtension
-} from "../../../src/models/fhir/medication-request"
-import {MessageHeader} from "../../../src/models/fhir/message-header"
+import * as fhir from "../../../src/models/fhir"
 
 function validateValidationErrors (validationErrors: Array<errors.ValidationError>) {
   expect(validationErrors).toHaveLength(1)
@@ -33,7 +25,7 @@ describe("Bundle checks", () => {
   })
 
   test("rejects bundle with unusual bundle type", () => {
-    const messageHeader: MessageHeader = {
+    const messageHeader: fhir.MessageHeader = {
       resourceType: "MessageHeader",
       eventCoding: {
         system: undefined,
@@ -57,7 +49,7 @@ describe("Bundle checks", () => {
 
 describe("verifyCommonBundle", () => {
   let bundle: fhir.Bundle
-  let medicationRequests: Array<MedicationRequest>
+  let medicationRequests: Array<fhir.MedicationRequest>
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
@@ -88,7 +80,7 @@ describe("verifyCommonBundle", () => {
 
 describe("verifyPrescriptionBundle status check", () => {
   let bundle: fhir.Bundle
-  let medicationRequests: Array<MedicationRequest>
+  let medicationRequests: Array<fhir.MedicationRequest>
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
@@ -101,7 +93,7 @@ describe("verifyPrescriptionBundle status check", () => {
   })
 
   test("Should reject a message where one MedicationRequest has status cancelled", () => {
-    medicationRequests[0].status = MedicationRequestStatus.CANCELLED
+    medicationRequests[0].status = fhir.MedicationRequestStatus.CANCELLED
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0]).toBeInstanceOf(MedicationRequestIncorrectValueError)
@@ -109,7 +101,7 @@ describe("verifyPrescriptionBundle status check", () => {
   })
 
   test("Should reject a message where all MedicationRequests have status cancelled", () => {
-    medicationRequests.forEach(medicationRequest => medicationRequest.status = MedicationRequestStatus.CANCELLED)
+    medicationRequests.forEach(medicationRequest => medicationRequest.status = fhir.MedicationRequestStatus.CANCELLED)
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0]).toBeInstanceOf(MedicationRequestIncorrectValueError)
@@ -119,7 +111,7 @@ describe("verifyPrescriptionBundle status check", () => {
 
 describe("MedicationRequest consistency checks", () => {
   let bundle: fhir.Bundle
-  let medicationRequests: Array<MedicationRequest>
+  let medicationRequests: Array<fhir.MedicationRequest>
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
@@ -153,14 +145,14 @@ describe("MedicationRequest consistency checks", () => {
         value: "value"
       },
       extension: [performerExtension]
-    } as Performer
+    } as fhir.Performer
     const performerDiff = {
       identifier: {
         system: "system2",
         value: "value2"
       },
       extension: [performerExtension]
-    } as Performer
+    } as fhir.Performer
 
     medicationRequests.forEach(medicationRequest => medicationRequest.dispenseRequest.performer = performer)
     medicationRequests[3].dispenseRequest.performer = performerDiff
@@ -197,14 +189,14 @@ describe("MedicationRequest consistency checks", () => {
 
 describe("verifyRepeatDispensingPrescription", () => {
   let bundle: fhir.Bundle
-  let medicationRequests: Array<MedicationRequest>
-  let firstMedicationRequest: MedicationRequest
+  let medicationRequests: Array<fhir.MedicationRequest>
+  let firstMedicationRequest: fhir.MedicationRequest
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     medicationRequests = getMedicationRequests(bundle)
     medicationRequests.forEach(
-      req => req.courseOfTherapyType.coding[0].code = CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
+      req => req.courseOfTherapyType.coding[0].code = fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
     )
     firstMedicationRequest = medicationRequests[0]
   })
@@ -212,7 +204,7 @@ describe("verifyRepeatDispensingPrescription", () => {
   test("Acute prescription gets no additional errors added", () => {
     medicationRequests.forEach(
       req => {
-        req.courseOfTherapyType.coding[0].code = CourseOfTherapyTypeCode.ACUTE
+        req.courseOfTherapyType.coding[0].code = fhir.CourseOfTherapyTypeCode.ACUTE
         delete req.dispenseRequest.validityPeriod
         delete req.dispenseRequest.expectedSupplyDuration
       }
@@ -240,7 +232,7 @@ describe("verifyRepeatDispensingPrescription", () => {
       "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
       "bluh"
     )
-    firstMedicationRequest.extension.remove(extensionToRemove as RepeatInformationExtension)
+    firstMedicationRequest.extension.remove(extensionToRemove as fhir.RepeatInformationExtension)
     const returnedErrors = validator.verifyRepeatDispensingPrescription(medicationRequests)
     expect(returnedErrors.length).toBe(1)
   })
@@ -269,7 +261,7 @@ describe("verifyCancellationBundle", () => {
 
   test("returns an error when status is not cancelled", () => {
     const medicationRequest = getMedicationRequests(bundle)[0]
-    medicationRequest.status = MedicationRequestStatus.ACTIVE
+    medicationRequest.status = fhir.MedicationRequestStatus.ACTIVE
     const returnedErrors = validator.verifyCancellationBundle(bundle)
     expect(returnedErrors.length).toBe(1)
     expect(returnedErrors[0]).toBeInstanceOf(MedicationRequestIncorrectValueError)

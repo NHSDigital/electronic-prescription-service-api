@@ -1,7 +1,7 @@
-import * as fhir from "../models/fhir/fhir-resources"
 import {JestPactOptions} from "jest-pact"
 import path from "path"
 import {ExampleFile} from "../models/files/example-file"
+import {Parameter, Parameters, StringParameter} from "../../../../coordinator/src/models/fhir/parameters"
 
 export const basePath = "/FHIR/R4"
 
@@ -30,12 +30,12 @@ return {
   }
 }
 
-function isStringParameter(parameter: fhir.Parameter): parameter is fhir.StringParameter {
-  return (parameter as fhir.StringParameter).valueString !== undefined
+function isStringParameter(parameter: Parameter): parameter is StringParameter {
+  return (parameter as StringParameter).valueString !== undefined
 }
 
-export function getStringParameterByName(parameters: fhir.Parameters, name: string): fhir.StringParameter {
-  const stringParams = parameters.parameter.filter(param => isStringParameter(param)) as Array<fhir.StringParameter>
+export function getStringParameterByName(parameters: Parameters, name: string): StringParameter {
+  const stringParams = parameters.parameter.filter(param => isStringParameter(param)) as Array<StringParameter>
   const namedStringParams = stringParams.filter(param => param.name === name)
   if (namedStringParams.length === 1) return namedStringParams[0]
 }

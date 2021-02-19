@@ -1,5 +1,5 @@
 import {ElementCompact} from "xml-js"
-import {Text} from "./hl7-v3-datatypes-core"
+import * as core from "./core"
 
 class Code<T extends string> implements ElementCompact {
     _attributes: {
@@ -8,7 +8,7 @@ class Code<T extends string> implements ElementCompact {
         displayName?: string
     }
 
-    originalText?: Text
+    originalText?: core.Text
 
     constructor(system: T, code: string, desc?: string) {
       this._attributes = {

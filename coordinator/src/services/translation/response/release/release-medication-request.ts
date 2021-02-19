@@ -1,8 +1,3 @@
-import * as fhir from "../../../../models/fhir/fhir-resources"
-import * as codes from "../../../../models/hl7-v3/hl7-v3-datatypes-codes"
-import * as core from "../../../../models/hl7-v3/hl7-v3-datatypes-core"
-import * as organisations from "../../../../models/hl7-v3/hl7-v3-people-places"
-import * as prescriptions from "../../../../models/hl7-v3/hl7-v3-prescriptions"
 import * as uuid from "uuid"
 import {
   createGroupIdentifier,
@@ -13,15 +8,16 @@ import {createCodeableConcept, createReference} from "../fhir-base-types"
 import {toArray} from "../../common"
 import {parseAdditionalInstructions} from "./additional-instructions"
 import {convertHL7V3DateToIsoDateString} from "../../common/dateTime"
-import * as medicationRequest from "../../../../models/fhir/medication-request"
+import * as hl7V3 from "../../../../models/hl7-v3"
+import * as fhir from "../../../../models/fhir"
 
 export function createMedicationRequest(
-  prescription: prescriptions.Prescription,
-  lineItem: prescriptions.LineItem,
+  prescription: hl7V3.Prescription,
+  lineItem: hl7V3.LineItem,
   patientId: string,
   requesterId: string,
   responsiblePartyId: string
-): medicationRequest.MedicationRequest {
+): fhir.MedicationRequest {
   const text = lineItem.pertinentInformation1?.pertinentAdditionalInstructions?.value?._text ?? ""
   const additionalInstructions = parseAdditionalInstructions(text)
   return {
@@ -69,13 +65,13 @@ export function createMedicationRequest(
 
 export function createMedicationRequestExtensions(
   responsiblePartyId: string,
-  prescriptionType: prescriptions.PrescriptionType,
-  lineItemRepeatNumber: core.Interval<core.NumericValue>,
-  reviewDate: prescriptions.ReviewDate,
-  lineItemEndorsements: Array<prescriptions.PrescriptionEndorsement>,
+  prescriptionType: hl7V3.PrescriptionType,
+  lineItemRepeatNumber: hl7V3.Interval<hl7V3.NumericValue>,
+  reviewDate: hl7V3.ReviewDate,
+  lineItemEndorsements: Array<hl7V3.PrescriptionEndorsement>,
   controlledDrugWords: string
-): Array<medicationRequest.MedicationRequestPermittedExtensions> {
-  const extensions: Array<medicationRequest.MedicationRequestPermittedExtensions> = [
+): Array<fhir.MedicationRequestPermittedExtensions> {
+  const extensions: Array<fhir.MedicationRequestPermittedExtensions> = [
     createResponsiblePractitionerExtension(responsiblePartyId),
     createPrescriptionTypeExtension(prescriptionType),
     ...lineItemEndorsements.map(createEndorsementExtension)
@@ -93,9 +89,9 @@ export function createMedicationRequestExtensions(
 }
 
 function createRepeatInformationExtension(
-  reviewDate: prescriptions.ReviewDate,
-  lineItemRepeatNumber: core.Interval<core.NumericValue>
-): medicationRequest.RepeatInformationExtension {
+  reviewDate: hl7V3.ReviewDate,
+  lineItemRepeatNumber: hl7V3.Interval<hl7V3.NumericValue>
+): fhir.RepeatInformationExtension {
   return {
     url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
     extension: [
@@ -116,7 +112,7 @@ function createRepeatInformationExtension(
 }
 
 function createEndorsementExtension(
-  prescriptionEndorsement: prescriptions.PrescriptionEndorsement
+  prescriptionEndorsement: hl7V3.PrescriptionEndorsement
 ): fhir.CodeableConceptExtension {
   return {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-PrescriptionEndorsement",
@@ -131,7 +127,7 @@ function createEndorsementExtension(
 }
 
 function createPrescriptionTypeExtension(
-  pertinentPrescriptionType: prescriptions.PrescriptionType
+  pertinentPrescriptionType: hl7V3.PrescriptionType
 ): fhir.CodingExtension {
   return {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
@@ -143,7 +139,7 @@ function createPrescriptionTypeExtension(
   }
 }
 
-function createControlledDrugExtension(controlledDrugWords: string): medicationRequest.ControlledDrugExtension {
+function createControlledDrugExtension(controlledDrugWords: string): fhir.ControlledDrugExtension {
   return {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug",
     extension: [{
@@ -154,49 +150,49 @@ function createControlledDrugExtension(controlledDrugWords: string): medicationR
 }
 
 export function createCourseOfTherapyType(
-  prescriptionTreatmentType: prescriptions.PrescriptionTreatmentType,
-  lineItemRepeatNumber: core.Interval<core.NumericValue>
+  prescriptionTreatmentType: hl7V3.PrescriptionTreatmentType,
+  lineItemRepeatNumber: hl7V3.Interval<hl7V3.NumericValue>
 ): fhir.CodeableConcept {
   const isRepeatDispensing = prescriptionTreatmentType.value._attributes.code
-    === codes.PrescriptionTreatmentTypeCode.CONTINUOUS_REPEAT_DISPENSING._attributes.code
+    === hl7V3.PrescriptionTreatmentTypeCode.CONTINUOUS_REPEAT_DISPENSING._attributes.code
   if (isRepeatDispensing) {
-    return medicationRequest.CourseOfTherapyType.CONTINOUS_REPEAT_DISPENSING
+    return fhir.CourseOfTherapyType.CONTINOUS_REPEAT_DISPENSING
   } else if (lineItemRepeatNumber) {
-    return medicationRequest.CourseOfTherapyType.CONTINUOUS
+    return fhir.CourseOfTherapyType.CONTINUOUS
   } else {
-    return medicationRequest.CourseOfTherapyType.ACUTE
+    return fhir.CourseOfTherapyType.ACUTE
   }
 }
 
-export function getStatus(pertinentItemStatus: prescriptions.ItemStatus): medicationRequest.MedicationRequestStatus {
+export function getStatus(pertinentItemStatus: hl7V3.ItemStatus): fhir.MedicationRequestStatus {
   const itemStatusCode = pertinentItemStatus.value._attributes.code
   switch (itemStatusCode) {
-    case codes.ItemStatusCode.FULLY_DISPENSED._attributes.code:
-      return medicationRequest.MedicationRequestStatus.COMPLETED
-    case codes.ItemStatusCode.NOT_DISPENSED._attributes.code:
-    case codes.ItemStatusCode.EXPIRED._attributes.code:
-      return medicationRequest.MedicationRequestStatus.STOPPED
-    case codes.ItemStatusCode.DISPENSED_PARTIAL._attributes.code:
-    case codes.ItemStatusCode.NOT_DISPENSED_OWING._attributes.code:
-    case codes.ItemStatusCode.TO_BE_DISPENSED._attributes.code:
-    case codes.ItemStatusCode.WITH_DISPENSER._attributes.code:
-      return medicationRequest.MedicationRequestStatus.ACTIVE
-    case codes.ItemStatusCode.CANCELLED._attributes.code:
-      return medicationRequest.MedicationRequestStatus.CANCELLED
+    case hl7V3.ItemStatusCode.FULLY_DISPENSED._attributes.code:
+      return fhir.MedicationRequestStatus.COMPLETED
+    case hl7V3.ItemStatusCode.NOT_DISPENSED._attributes.code:
+    case hl7V3.ItemStatusCode.EXPIRED._attributes.code:
+      return fhir.MedicationRequestStatus.STOPPED
+    case hl7V3.ItemStatusCode.DISPENSED_PARTIAL._attributes.code:
+    case hl7V3.ItemStatusCode.NOT_DISPENSED_OWING._attributes.code:
+    case hl7V3.ItemStatusCode.TO_BE_DISPENSED._attributes.code:
+    case hl7V3.ItemStatusCode.WITH_DISPENSER._attributes.code:
+      return fhir.MedicationRequestStatus.ACTIVE
+    case hl7V3.ItemStatusCode.CANCELLED._attributes.code:
+      return fhir.MedicationRequestStatus.CANCELLED
     default:
       throw new TypeError(`Unhandled item status code ${itemStatusCode}`)
   }
 }
 
-export function createSnomedCodeableConcept(code: codes.SnomedCode): fhir.CodeableConcept {
+export function createSnomedCodeableConcept(code: hl7V3.SnomedCode): fhir.CodeableConcept {
   return createCodeableConcept("http://snomed.info/sct", code._attributes.code, code._attributes.displayName)
 }
 
 export function createDosage(
-  dosageInstructions: prescriptions.DosageInstructions,
+  dosageInstructions: hl7V3.DosageInstructions,
   additionalInstructions: string
-): medicationRequest.Dosage {
-  const dosage: medicationRequest.Dosage = {
+): fhir.Dosage {
+  const dosage: fhir.Dosage = {
     text: dosageInstructions.value._text
   }
   if (additionalInstructions) {
@@ -205,7 +201,7 @@ export function createDosage(
   return dosage
 }
 
-function createDispenseRequestQuantity(lineItemQuantity: prescriptions.LineItemQuantity): fhir.SimpleQuantity {
+function createDispenseRequestQuantity(lineItemQuantity: hl7V3.LineItemQuantity): fhir.SimpleQuantity {
   const lineItemQuantityTranslation = lineItemQuantity.quantity.translation
   return {
     value: lineItemQuantityTranslation._attributes.value,
@@ -215,7 +211,7 @@ function createDispenseRequestQuantity(lineItemQuantity: prescriptions.LineItemQ
   }
 }
 
-function createValidityPeriod(effectiveTime: core.Interval<core.Timestamp>): fhir.Period {
+function createValidityPeriod(effectiveTime: hl7V3.Interval<hl7V3.Timestamp>): fhir.Period {
   const validityPeriod: fhir.Period = {}
   if (effectiveTime.low) {
     validityPeriod.start = convertHL7V3DateToIsoDateString(effectiveTime.low)
@@ -226,7 +222,7 @@ function createValidityPeriod(effectiveTime: core.Interval<core.Timestamp>): fhi
   return validityPeriod
 }
 
-function createExpectedSupplyDuration(expectedUseTime: core.IntervalUnanchored): fhir.SimpleQuantity {
+function createExpectedSupplyDuration(expectedUseTime: hl7V3.IntervalUnanchored): fhir.SimpleQuantity {
   return {
     unit: "day",
     value: expectedUseTime.width._attributes.value,
@@ -236,12 +232,12 @@ function createExpectedSupplyDuration(expectedUseTime: core.IntervalUnanchored):
 }
 
 export function createDispenseRequest(
-  dispensingSitePreference: prescriptions.DispensingSitePreference,
-  lineItemQuantity: prescriptions.LineItemQuantity,
-  daysSupply: prescriptions.DaysSupply,
-  performer: prescriptions.Performer
-): medicationRequest.MedicationRequestDispenseRequest {
-  const dispenseRequest: medicationRequest.MedicationRequestDispenseRequest = {
+  dispensingSitePreference: hl7V3.DispensingSitePreference,
+  lineItemQuantity: hl7V3.LineItemQuantity,
+  daysSupply: hl7V3.DaysSupply,
+  performer: hl7V3.Performer
+): fhir.MedicationRequestDispenseRequest {
+  const dispenseRequest: fhir.MedicationRequestDispenseRequest = {
     extension: [
       createPerformerSiteTypeExtension(dispensingSitePreference)
     ],
@@ -260,7 +256,7 @@ export function createDispenseRequest(
 }
 
 function createPerformerSiteTypeExtension(
-  dispensingSitePreference: prescriptions.DispensingSitePreference
+  dispensingSitePreference: hl7V3.DispensingSitePreference
 ): fhir.CodingExtension {
   return {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-performerSiteType",
@@ -271,7 +267,7 @@ function createPerformerSiteTypeExtension(
   }
 }
 
-function createPerformer(performerOrganization: organisations.Organization): medicationRequest.Performer {
+function createPerformer(performerOrganization: hl7V3.Organization): fhir.Performer {
   return {
     identifier: {
       system: "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -281,8 +277,8 @@ function createPerformer(performerOrganization: organisations.Organization): med
 }
 
 export function createGroupIdentifierFromPrescriptionIds(
-  prescriptionIds: [codes.GlobalIdentifier, codes.ShortFormPrescriptionIdentifier]
-): medicationRequest.MedicationRequestGroupIdentifier {
+  prescriptionIds: [hl7V3.GlobalIdentifier, hl7V3.ShortFormPrescriptionIdentifier]
+): fhir.MedicationRequestGroupIdentifier {
   const shortFormId = prescriptionIds[1]._attributes.extension
   const longFormId = prescriptionIds[0]._attributes.root.toLowerCase()
   return createGroupIdentifier(shortFormId, longFormId)

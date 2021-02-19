@@ -1,15 +1,16 @@
-import * as fhir from "../fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import * as fs from "fs"
 import {ExampleFile} from "../files/example-file"
 import {createExampleDescription} from "../../resources/common"
+import {Parameters} from "../../../../../coordinator/src/models/fhir/parameters"
+import {Bundle} from "../../../../../coordinator/src/models/fhir/bundle"
 
 export class Case {
   requestFile: ExampleFile
   responseFile?: ExampleFile
 
   description: string
-  request: fhir.Bundle | fhir.Parameters
+  request: Bundle | Parameters
   statusText: string
   statusCode: number
   isSuccess: boolean

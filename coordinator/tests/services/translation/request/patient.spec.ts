@@ -1,14 +1,14 @@
 import {convertPatient} from "../../../../src/services/translation/request/patient"
-import {Bundle, Patient} from "../../../../src/models/fhir/fhir-resources"
 import {clone} from "../../../resources/test-helpers"
 import * as TestResources from "../../../resources/test-resources"
 import {getPatient} from "../../../../src/services/translation/common/getResourcesOfType"
 import {TooManyValuesError} from "../../../../src/models/errors/processing-errors"
 import {UNKNOWN_GP_ODS_CODE} from "../../../../src/services/translation/common"
+import * as fhir from "../../../../src/models/fhir"
 
 describe("convertPatient", () => {
-  let bundle: Bundle
-  let fhirPatient: Patient
+  let bundle: fhir.Bundle
+  let fhirPatient: fhir.Patient
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)

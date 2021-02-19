@@ -2,14 +2,14 @@ import {
   convertParentPrescription
 } from "../../../../../src/services/translation/request/prescription/parent-prescription"
 import * as TestResources from "../../../../resources/test-resources"
-import {Bundle} from "../../../../../src/models/fhir/fhir-resources"
-import {ParentPrescription} from "../../../../../src/models/hl7-v3/hl7-v3-prescriptions"
 import {clone} from "../../../../resources/test-helpers"
 import {getMedicationRequests, getProvenances} from "../../../../../src/services/translation/common/getResourcesOfType"
 import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {onlyElement} from "../../../../../src/services/translation/common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../../../../src/services/translation/common/dateTime"
+import * as hl7V3 from "../../../../../src/models/hl7-v3"
+import * as fhir from "../../../../../src/models/fhir"
 
 const actualMoment = requireActual("moment")
 jest.mock("moment", () => ({
@@ -21,10 +21,10 @@ describe("convertParentPrescription", () => {
   const cases = TestResources.specification.map(example => [
     example.description,
     example.fhirMessageSigned,
-    example.hl7V3Message.PORX_IN020101SM31.ControlActEvent.subject.ParentPrescription as ParentPrescription
+    example.hl7V3Message.PORX_IN020101SM31.ControlActEvent.subject.ParentPrescription as hl7V3.ParentPrescription
   ])
 
-  test.each(cases)("accepts %s", (desc: string, input: Bundle) => {
+  test.each(cases)("accepts %s", (desc: string, input: fhir.Bundle) => {
     expect(() => convertParentPrescription(input)).not.toThrow()
   })
 })

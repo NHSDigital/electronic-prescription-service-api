@@ -1,10 +1,10 @@
 import * as XmlJs from "xml-js"
-import * as prescriptions from "../../../models/hl7-v3/hl7-v3-prescriptions"
 import {namespacedCopyOf, writeXmlStringCanonicalized} from "../../serialisation/xml"
 import {Fragments} from "../../../models/signature"
 import {toArray} from "../common"
+import * as hl7V3 from "../../../models/hl7-v3"
 
-export function extractFragments(parentPrescription: prescriptions.ParentPrescription): Fragments {
+export function extractFragments(parentPrescription: hl7V3.ParentPrescription): Fragments {
   const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
 
   return {
@@ -16,13 +16,13 @@ export function extractFragments(parentPrescription: prescriptions.ParentPrescri
   }
 }
 
-function getLineItemFragment(prescriptionPertinentInformation2: prescriptions.PrescriptionPertinentInformation2) {
+function getLineItemFragment(prescriptionPertinentInformation2: hl7V3.PrescriptionPertinentInformation2) {
   const lineItem = prescriptionPertinentInformation2.pertinentLineItem
   const lineItemWithoutRepeatNumberLow = getLineItemWithoutRepeatNumberLow(lineItem)
   return namespacedCopyOf(lineItemWithoutRepeatNumberLow)
 }
 
-function getLineItemWithoutRepeatNumberLow(lineItem: prescriptions.LineItem) {
+function getLineItemWithoutRepeatNumberLow(lineItem: hl7V3.LineItem) {
   if (lineItem.repeatNumber) {
     return {
       ...lineItem,

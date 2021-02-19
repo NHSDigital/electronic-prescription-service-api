@@ -1,19 +1,10 @@
-import * as fhir from "../../../../models/fhir/fhir-resources"
-import {
-  CancellationResponse,
-  PertinentInformation1,
-  PertinentInformation2
-} from "../../../../models/hl7-v3/hl7-v3-spine-response"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
 import {InvalidValueError} from "../../../../models/errors/processing-errors"
 import {generateResourceId, getFullUrl} from "../common"
 import {createCodeableConcept, createIdentifier, createReference} from "../fhir-base-types"
 import {createGroupIdentifier} from "../medication-request"
-import {
-  MedicationRequestOutcome,
-  MedicationRequestStatus,
-  PrescriptionStatusHistoryExtension
-} from "../../../../models/fhir/medication-request"
+import * as hl7V3 from "../../../../models/hl7-v3"
+import * as fhir from "../../../../models/fhir"
 
 const MEDICINAL_PRODUCT_CODEABLE_CONCEPT = createCodeableConcept(
   "http://snomed.info/sct",
@@ -22,11 +13,11 @@ const MEDICINAL_PRODUCT_CODEABLE_CONCEPT = createCodeableConcept(
 )
 
 export function createMedicationRequest(
-  cancellationResponse: CancellationResponse,
+  cancellationResponse: hl7V3.CancellationResponse,
   cancelRequesterPractitionerRoleId: string,
   patientId: string,
   originalPrescriptionAuthorPractitionerRoleId: string
-): MedicationRequestOutcome {
+): fhir.MedicationRequestOutcome {
   const pertinentInformation3 = cancellationResponse.pertinentInformation3
   const cancellationCode = pertinentInformation3.pertinentResponse.value._attributes.code
   const cancellationDisplay = pertinentInformation3.pertinentResponse.value._attributes.displayName
@@ -58,7 +49,7 @@ export function createMedicationRequest(
 
 function createPrescriptionStatusHistoryExtension(
   fhirCode: string, fhirDisplay: string
-): PrescriptionStatusHistoryExtension {
+): fhir.PrescriptionStatusHistoryExtension {
   return {
     "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionTaskStatusReason",
     "extension": [
@@ -99,85 +90,87 @@ function getPrescriptionStatusInformation(code: string, display: string) {
       return {
         prescriptionStatusCode: "R-0001",
         prescriptionStatusDisplay: "Prescription/item was cancelled",
-        medicationRequestStatus: MedicationRequestStatus.CANCELLED
+        medicationRequestStatus: fhir.MedicationRequestStatus.CANCELLED
       }
     case "0002":
       return {
         prescriptionStatusCode: "R-0002",
         prescriptionStatusDisplay: "Prescription/item was not cancelled – With dispenser",
-        medicationRequestStatus: MedicationRequestStatus.ACTIVE
+        medicationRequestStatus: fhir.MedicationRequestStatus.ACTIVE
       }
     case "0003":
       return {
         prescriptionStatusCode: "R-0003",
         prescriptionStatusDisplay: "Prescription item was not cancelled – With dispenser active",
-        medicationRequestStatus: MedicationRequestStatus.ACTIVE
+        medicationRequestStatus: fhir.MedicationRequestStatus.ACTIVE
       }
     case "0004":
       return {
         prescriptionStatusCode: "R-0004",
         prescriptionStatusDisplay: "Prescription/item was not cancelled – Dispensed to Patient",
-        medicationRequestStatus: MedicationRequestStatus.COMPLETED
+        medicationRequestStatus: fhir.MedicationRequestStatus.COMPLETED
       }
     case "0005":
       return {
         prescriptionStatusCode: "R-0005",
         prescriptionStatusDisplay: "Prescription item had expired",
-        medicationRequestStatus: MedicationRequestStatus.STOPPED
+        medicationRequestStatus: fhir.MedicationRequestStatus.STOPPED
       }
     case "0006":
       return {
         prescriptionStatusCode: "R-0006",
         prescriptionStatusDisplay: "Prescription/item had already been cancelled",
-        medicationRequestStatus: MedicationRequestStatus.CANCELLED
+        medicationRequestStatus: fhir.MedicationRequestStatus.CANCELLED
       }
     case "0007":
       return {
         prescriptionStatusCode: "R-0007",
         prescriptionStatusDisplay: "Prescription/item cancellation requested by another prescriber",
-        medicationRequestStatus: MedicationRequestStatus.UNKNOWN
+        medicationRequestStatus: fhir.MedicationRequestStatus.UNKNOWN
       }
     case "0008":
       return {
         prescriptionStatusCode: "R-0008",
         prescriptionStatusDisplay: "Prescription/item not found",
-        medicationRequestStatus: MedicationRequestStatus.UNKNOWN
+        medicationRequestStatus: fhir.MedicationRequestStatus.UNKNOWN
       }
     case "0009":
       return {
         prescriptionStatusCode: "R-0009",
         prescriptionStatusDisplay: "Cancellation functionality disabled in Spine",
-        medicationRequestStatus: MedicationRequestStatus.ACTIVE
+        medicationRequestStatus: fhir.MedicationRequestStatus.ACTIVE
       }
     case "0010":
       return {
         prescriptionStatusCode: "R-0010",
         prescriptionStatusDisplay: "Prescription/item was not cancelled. Prescription has been not dispensed",
-        medicationRequestStatus: MedicationRequestStatus.STOPPED
+        medicationRequestStatus: fhir.MedicationRequestStatus.STOPPED
       }
     case "5000":
       return {
         prescriptionStatusCode: "R-5000",
         prescriptionStatusDisplay: `Unable to process message.${extraInformation}`,
-        medicationRequestStatus: MedicationRequestStatus.UNKNOWN
+        medicationRequestStatus: fhir.MedicationRequestStatus.UNKNOWN
       }
     case "5888":
       return {
         prescriptionStatusCode: "R-5888",
         prescriptionStatusDisplay: "Invalid message",
-        medicationRequestStatus: MedicationRequestStatus.UNKNOWN
+        medicationRequestStatus: fhir.MedicationRequestStatus.UNKNOWN
       }
     default:
       throw InvalidValueError
   }
 }
 
-function createItemNumberIdentifier(pertinentInformation1: PertinentInformation1) {
+function createItemNumberIdentifier(pertinentInformation1: hl7V3.CancellationResponsePertinentInformation1) {
   const id = pertinentInformation1.pertinentLineItemRef.id._attributes.root
   return [createIdentifier("https://fhir.nhs.uk/Id/prescription-order-item-number", id.toLowerCase())]
 }
 
-function createGroupIdentifierFromPertinentInformation2(pertinentInformation2: PertinentInformation2) {
+function createGroupIdentifierFromPertinentInformation2(
+  pertinentInformation2: hl7V3.CancellationResponsePertinentInformation2
+) {
   const shortFormId = pertinentInformation2.pertinentPrescriptionID.value._attributes.extension
   return createGroupIdentifier(shortFormId, null)
 }

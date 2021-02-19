@@ -1,4 +1,6 @@
-import * as fhir from "./fhir-resources"
+import * as common from "./common"
+import * as practitionerRole from "./practitioner-role"
+import * as extension from "./extension"
 
 export enum EventCodingCode {
   PRESCRIPTION = "prescription-order",
@@ -7,7 +9,7 @@ export enum EventCodingCode {
   DISPENSE = "prescription-dispense"
 }
 
-export const EventCoding: Record<string, fhir.Coding> = Object.freeze({
+export const EventCoding: Record<string, common.Coding> = Object.freeze({
   PRESCRIPTION_ORDER_RESPONSE: {
     system: "https://fhir.nhs.uk/CodeSystem/message-event",
     code: EventCodingCode.PRESCRIPTION_RESPONSE,
@@ -20,13 +22,13 @@ export const EventCoding: Record<string, fhir.Coding> = Object.freeze({
   }
 })
 
-export interface MessageHeader extends fhir.Resource {
+export interface MessageHeader extends common.Resource {
   resourceType: "MessageHeader"
-  eventCoding: fhir.Coding
-  sender: fhir.IdentifierReference<fhir.Organization>
+  eventCoding: common.Coding
+  sender: common.IdentifierReference<practitionerRole.Organization>
   source: MessageHeaderSource
-  focus: Array<fhir.Reference<fhir.Resource>>
-  extension?: Array<fhir.IdentifierExtension | fhir.CodingExtension>
+  focus: Array<common.Reference<common.Resource>>
+  extension?: Array<extension.IdentifierExtension | extension.CodingExtension>
   destination?: Array<MessageHeaderDestination>
   response?: MessageHeaderResponse
 }
@@ -38,7 +40,9 @@ interface MessageHeaderSource {
 
 export interface MessageHeaderDestination {
   endpoint: string
-  receiver: fhir.IdentifierReference<fhir.PractitionerRole | fhir.Organization | fhir.Practitioner>
+  receiver: common.IdentifierReference<practitionerRole.PractitionerRole
+    | practitionerRole.Organization
+    | practitionerRole.Practitioner>
 }
 
 export interface MessageHeaderResponse {

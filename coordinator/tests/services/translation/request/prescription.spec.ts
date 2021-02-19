@@ -1,10 +1,5 @@
 import {addEmptyCommunicationRequestToBundle, addEmptyListToBundle, clone} from "../../../resources/test-helpers"
 import * as TestResources from "../../../resources/test-resources"
-import * as fhir from "../../../../src/models/fhir/fhir-resources"
-import {
-  DateTimeExtension,
-  UnsignedIntExtension
-} from "../../../../src/models/fhir/fhir-resources"
 import {
   convertBundleToPrescription,
   convertCourseOfTherapyType,
@@ -13,7 +8,6 @@ import {
   extractReviewDate
 } from "../../../../src/services/translation/request/prescription"
 import * as translator from "../../../../src/services/translation/request"
-import {LineItemPertinentInformation1} from "../../../../src/models/hl7-v3/hl7-v3-prescriptions"
 import {
   getCommunicationRequests,
   getLists,
@@ -21,16 +15,8 @@ import {
 } from "../../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, toArray} from "../../../../src/services/translation/common"
 import {setCourseOfTherapyTypeCode} from "./course-of-therapy-type.spec"
-import {
-  ContentReferencePayload,
-  ContentStringPayload,
-  ListEntry
-} from "../../../../src/models/fhir/fhir-resources"
-import {
-  CourseOfTherapyTypeCode,
-  MedicationRequest,
-  RepeatInformationExtension
-} from "../../../../src/models/fhir/medication-request"
+import * as hl7V3 from "../../../../src/models/hl7-v3"
+import * as fhir from "../../../../src/models/fhir"
 
 describe("convertCourseOfTherapyType", () => {
   const cases = [
@@ -41,7 +27,7 @@ describe("convertCourseOfTherapyType", () => {
 
   test.each(cases)(
     "when first therapy type code is %p, convertCourseOfTherapyType returns prescription treatment type code %p",
-    (code: CourseOfTherapyTypeCode, expected: string) => {
+    (code: fhir.CourseOfTherapyTypeCode, expected: string) => {
       const bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
       const fhirMedicationRequests = getMedicationRequests(bundle)
       fhirMedicationRequests.map(medicationRequest => setCourseOfTherapyTypeCode(medicationRequest, code))
@@ -74,7 +60,7 @@ describe("PertinentInformation2", () => {
     return result
   }
 
-  function toListEntries(...display: Array<string>): Array<ListEntry> {
+  function toListEntries(...display: Array<string>): Array<fhir.ListEntry> {
     return display.map(display => ({item: {display}}))
   }
 
@@ -206,7 +192,7 @@ describe("PertinentInformation2", () => {
   })
 
   test("Missing contentString and contentReference is handled", () => {
-    fhirCommunicationRequests[0].payload.push({} as ContentStringPayload | ContentReferencePayload)
+    fhirCommunicationRequests[0].payload.push({} as fhir.ContentStringPayload | fhir.ContentReferencePayload)
 
     const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
 
@@ -269,7 +255,7 @@ describe("PertinentInformation2", () => {
 
     pertinentInformation1Array.forEach(checkValueDoesNotContainExpected)
 
-    function checkValueDoesNotContainExpected(pertinentInformation1: LineItemPertinentInformation1) {
+    function checkValueDoesNotContainExpected(pertinentInformation1: hl7V3.LineItemPertinentInformation1) {
       const actual = pertinentInformation1?.pertinentAdditionalInstructions?.value?._text
       if (actual)
         expect(actual).not.toContain(expected)
@@ -291,7 +277,7 @@ describe("PertinentInformation2", () => {
 
     pertinentInformation1Array.forEach(checkValueDoesNotContainExpected)
 
-    function checkValueDoesNotContainExpected(pertinentInformation1: LineItemPertinentInformation1) {
+    function checkValueDoesNotContainExpected(pertinentInformation1: hl7V3.LineItemPertinentInformation1) {
       const actual = pertinentInformation1?.pertinentAdditionalInstructions?.value?._text
       if (actual)
         expect(actual).not.toContain(expected)
@@ -309,7 +295,7 @@ describe("PertinentInformation2", () => {
 })
 
 describe("extractReviewDate returns the correct value", () => {
-  let medicationRequest: MedicationRequest
+  let medicationRequest: fhir.MedicationRequest
   beforeEach(() => {
     const prescription = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     medicationRequest = getMedicationRequests(prescription)[0]
@@ -334,45 +320,45 @@ describe("extractReviewDate returns the correct value", () => {
   })
 })
 
-function setReviewDate(medicationRequest: MedicationRequest, newReviewDate: string) {
+function setReviewDate(medicationRequest: fhir.MedicationRequest, newReviewDate: string) {
   const repeatInformationExtension = getExtensionForUrl(
     medicationRequest.extension,
     "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
     "MedicationRequest.extension"
-  ) as RepeatInformationExtension
+  ) as fhir.RepeatInformationExtension
   const reviewDateExtension = getExtensionForUrl(
     repeatInformationExtension.extension,
     "authorisationExpiryDate",
     "MedicationRequest.extension.extension"
-  ) as DateTimeExtension
+  ) as fhir.DateTimeExtension
   reviewDateExtension.valueDateTime = newReviewDate
 }
 
-function clearRepeatInformation(medicationRequest: MedicationRequest) {
+function clearRepeatInformation(medicationRequest: fhir.MedicationRequest) {
   const repeatInformationExtension = getExtensionForUrl(
     medicationRequest.extension,
     "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
     "MedicationRequest.extension"
-  ) as RepeatInformationExtension
+  ) as fhir.RepeatInformationExtension
   medicationRequest.extension.splice(medicationRequest.extension.indexOf(repeatInformationExtension), 1)
 }
 
-function clearRepeatInformationField(medicationRequest: MedicationRequest, url: string) {
+function clearRepeatInformationField(medicationRequest: fhir.MedicationRequest, url: string) {
   const repeatInformationExtension = getExtensionForUrl(
     medicationRequest.extension,
     "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
     "MedicationRequest.extension"
-  ) as RepeatInformationExtension
+  ) as fhir.RepeatInformationExtension
   const reviewDateExtension = getExtensionForUrl(
     repeatInformationExtension.extension,
     url,
     "MedicationRequest.extension.extension"
-  ) as DateTimeExtension | UnsignedIntExtension
+  ) as fhir.DateTimeExtension | fhir.UnsignedIntExtension
   repeatInformationExtension.extension.splice(repeatInformationExtension.extension.indexOf(reviewDateExtension), 1)
 }
 
 describe("createRepeatNumberForMedicationRequests", () => {
-  let medicationRequests: Array<MedicationRequest>
+  let medicationRequests: Array<fhir.MedicationRequest>
   beforeEach(() => {
     const prescription = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     medicationRequests = getMedicationRequests(prescription)
@@ -380,7 +366,7 @@ describe("createRepeatNumberForMedicationRequests", () => {
 
   test("does nothing for acute prescriptions", () => {
     medicationRequests.forEach(medicationRequest =>
-      setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.ACUTE)
+      setCourseOfTherapyTypeCode(medicationRequest, fhir.CourseOfTherapyTypeCode.ACUTE)
     )
 
     const repeatNumber = convertRepeatNumber(medicationRequests)
@@ -389,10 +375,10 @@ describe("createRepeatNumberForMedicationRequests", () => {
   })
 
   test("does nothing for mixed acute / repeat prescribing prescriptions", () => {
-    setCourseOfTherapyTypeCode(medicationRequests[0], CourseOfTherapyTypeCode.CONTINUOUS)
-    setCourseOfTherapyTypeCode(medicationRequests[1], CourseOfTherapyTypeCode.CONTINUOUS)
-    setCourseOfTherapyTypeCode(medicationRequests[2], CourseOfTherapyTypeCode.ACUTE)
-    setCourseOfTherapyTypeCode(medicationRequests[3], CourseOfTherapyTypeCode.ACUTE)
+    setCourseOfTherapyTypeCode(medicationRequests[0], fhir.CourseOfTherapyTypeCode.CONTINUOUS)
+    setCourseOfTherapyTypeCode(medicationRequests[1], fhir.CourseOfTherapyTypeCode.CONTINUOUS)
+    setCourseOfTherapyTypeCode(medicationRequests[2], fhir.CourseOfTherapyTypeCode.ACUTE)
+    setCourseOfTherapyTypeCode(medicationRequests[3], fhir.CourseOfTherapyTypeCode.ACUTE)
 
     const repeatNumber = convertRepeatNumber(medicationRequests)
 
@@ -401,7 +387,7 @@ describe("createRepeatNumberForMedicationRequests", () => {
 
   test("sets 1-1 for repeat prescribing prescriptions", () => {
     medicationRequests.forEach(medicationRequest =>
-      setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS)
+      setCourseOfTherapyTypeCode(medicationRequest, fhir.CourseOfTherapyTypeCode.CONTINUOUS)
     )
 
     const repeatNumber = convertRepeatNumber(medicationRequests)
@@ -412,7 +398,7 @@ describe("createRepeatNumberForMedicationRequests", () => {
 
   test("sets 1-X for repeat dispensing prescriptions with consistent repeat numbers X", () => {
     medicationRequests.forEach(medicationRequest =>
-      setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
+      setCourseOfTherapyTypeCode(medicationRequest, fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
     )
 
     const repeatNumber = convertRepeatNumber(medicationRequests)
@@ -423,7 +409,7 @@ describe("createRepeatNumberForMedicationRequests", () => {
 
   test("throws for repeat dispensing prescriptions where repeat number is missing", () => {
     medicationRequests.forEach(medicationRequest => {
-      setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
+      setCourseOfTherapyTypeCode(medicationRequest, fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
       clearRepeatInformationField(medicationRequest, "numberOfRepeatPrescriptionsAllowed")
     })
 
@@ -434,7 +420,7 @@ describe("createRepeatNumberForMedicationRequests", () => {
 
   test("throws for repeat dispensing prescriptions where repeat information is missing", () => {
     medicationRequests.forEach(medicationRequest => {
-      setCourseOfTherapyTypeCode(medicationRequest, CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
+      setCourseOfTherapyTypeCode(medicationRequest, fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
       clearRepeatInformation(medicationRequest)
     })
 

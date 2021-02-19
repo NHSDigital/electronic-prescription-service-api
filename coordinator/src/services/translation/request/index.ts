@@ -1,9 +1,7 @@
 import * as XmlJs from "xml-js"
-import * as codes from "../../../models/hl7-v3/hl7-v3-datatypes-codes"
-import * as core from "../../../models/hl7-v3/hl7-v3-datatypes-core"
-import * as prescriptions from "../../../models/hl7-v3/hl7-v3-prescriptions"
-import * as fhir from "../../../models/fhir/fhir-resources"
-import * as cancellations from "../../../models/hl7-v3/hl7-v3-cancellation"
+import * as codes from "../../../models/hl7-v3/codes"
+import * as prescriptions from "../../../models/hl7-v3/parent-prescription"
+import * as cancellations from "../../../models/hl7-v3/cancellation-request"
 import * as crypto from "crypto-js"
 import {createSendMessagePayload} from "./send-message-payload"
 import {writeXmlStringCanonicalized} from "../../serialisation/xml"
@@ -16,8 +14,11 @@ import {identifyMessageType} from "../../../routes/util"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
 import {EventCodingCode} from "../../../models/fhir/message-header"
+import {SendMessagePayload} from "../../../models/hl7-v3/messaging"
+import {Parameters} from "../../../models/fhir/parameters"
+import {Bundle} from "../../../models/fhir/bundle"
 
-export function convertFhirMessageToSpineRequest(fhirMessage: fhir.Bundle): SpineRequest {
+export function convertFhirMessageToSpineRequest(fhirMessage: Bundle): SpineRequest {
   const messageType = identifyMessageType(fhirMessage)
   return messageType === EventCodingCode.PRESCRIPTION
     ? requestBuilder.toSpineRequest(createParentPrescriptionSendMessagePayload(fhirMessage))
@@ -25,8 +26,8 @@ export function convertFhirMessageToSpineRequest(fhirMessage: fhir.Bundle): Spin
 }
 
 export function createParentPrescriptionSendMessagePayload(
-  fhirBundle: fhir.Bundle
-): core.SendMessagePayload<prescriptions.ParentPrescriptionRoot> {
+  fhirBundle: Bundle
+): SendMessagePayload<prescriptions.ParentPrescriptionRoot> {
   const parentPrescription = convertParentPrescription(fhirBundle)
   const parentPrescriptionRoot = new prescriptions.ParentPrescriptionRoot(parentPrescription)
   const interactionId = codes.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT
@@ -34,15 +35,15 @@ export function createParentPrescriptionSendMessagePayload(
 }
 
 export function createCancellationSendMessagePayload(
-  fhirBundle: fhir.Bundle
-): core.SendMessagePayload<cancellations.CancellationPrescriptionRoot> {
+  fhirBundle: Bundle
+): SendMessagePayload<cancellations.CancellationRequestRoot> {
   const cancellationRequest = convertCancellation(fhirBundle)
-  const cancellationRequestRoot = new cancellations.CancellationPrescriptionRoot(cancellationRequest)
+  const cancellationRequestRoot = new cancellations.CancellationRequestRoot(cancellationRequest)
   const interactionId = codes.Hl7InteractionIdentifier.CANCEL_REQUEST
   return createSendMessagePayload(interactionId, fhirBundle, cancellationRequestRoot)
 }
 
-export function convertFhirMessageToSignedInfoMessage(fhirMessage: fhir.Bundle): fhir.Parameters {
+export function convertFhirMessageToSignedInfoMessage(fhirMessage: Bundle): Parameters {
   const messageType = identifyMessageType(fhirMessage)
   if (messageType !== EventCodingCode.PRESCRIPTION) {
     throw new InvalidValueError(
@@ -82,12 +83,12 @@ export function createParametersDigest(fragmentsToBeHashed: string): string {
   return Buffer.from(writeXmlStringCanonicalized(signedInfo)).toString("base64")
 }
 
-function createParameters(base64Digest: string, isoTimestamp: string): fhir.Parameters {
+function createParameters(base64Digest: string, isoTimestamp: string): Parameters {
   const parameters = []
   parameters.push({name: "digest", valueString: base64Digest})
   parameters.push({name: "timestamp", valueString: isoTimestamp})
   parameters.push({name: "algorithm", valueString: "RS1"})
-  return new fhir.Parameters(parameters)
+  return new Parameters(parameters)
 }
 
 class AlgorithmIdentifier implements XmlJs.ElementCompact {

@@ -5,8 +5,8 @@ import path from "path"
 import * as uuid from "uuid"
 import {ElementCompact} from "xml-js"
 import {namespacedCopyOf, writeXmlStringPretty} from "../serialisation/xml"
-import {SendMessagePayload} from "../../models/hl7-v3/hl7-v3-datatypes-core"
 import {SpineRequest} from "../../models/spine"
+import * as hl7V3 from "../../models/hl7-v3"
 
 const ebxmlRequestTemplate = fs.readFileSync(
   path.join(__dirname, "../../resources/ebxml_request.mustache"),
@@ -49,18 +49,18 @@ export function addEbXmlWrapper(spineRequest: SpineRequest): string {
   return Mustache.render(ebxmlRequestTemplate, ebXmlRequest)
 }
 
-export function toSpineRequest<T>(sendMessagePayload: SendMessagePayload<T>): SpineRequest {
+export function toSpineRequest<T>(sendMessagePayload: hl7V3.SendMessagePayload<T>): SpineRequest {
   return {
     interactionId: extractInteractionId(sendMessagePayload),
     message: writeToString(sendMessagePayload)
   }
 }
 
-function extractInteractionId<T>(sendMessagePayload: SendMessagePayload<T>): string {
+function extractInteractionId<T>(sendMessagePayload: hl7V3.SendMessagePayload<T>): string {
   return sendMessagePayload.interactionId._attributes.extension
 }
 
-function writeToString<T>(sendMessagePayload: SendMessagePayload<T>): string {
+function writeToString<T>(sendMessagePayload: hl7V3.SendMessagePayload<T>): string {
   const root = {
     _declaration: new XmlDeclaration()
   } as ElementCompact

@@ -1,8 +1,9 @@
 import {ProcessCase} from "../models/cases/process-case"
 import {exampleFiles} from "./example-files-fetcher"
 import * as uuid from "uuid"
-import * as fhir from "../models/fhir/fhir-resources"
 import {MedicationRequest} from "../../../../coordinator/src/models/fhir/medication-request"
+import {Bundle} from "../../../../coordinator/src/models/fhir/bundle"
+import {Extension, IdentifierExtension} from "../../../../coordinator/src/models/fhir/extension"
 
 const processRequestFiles = exampleFiles.filter(exampleFile => exampleFile.isRequest && exampleFile.endpoint === "process")
 const prescriptionOrderFiles = processRequestFiles.filter(exampleFile => exampleFile.operation === "send")
@@ -56,7 +57,7 @@ export function regeneratePrescriptionIds(): void {
 }
 
 export function setPrescriptionIds(
-  bundle: fhir.Bundle,
+  bundle: Bundle,
   newBundleIdentifier: string,
   newShortFormId: string,
   newLongFormId: string
@@ -91,13 +92,13 @@ export function generateShortFormId(): string {
   return prescriptionID
 }
 
-function getLongFormIdExtension(extensions: Array<fhir.Extension>): fhir.IdentifierExtension {
+function getLongFormIdExtension(extensions: Array<Extension>): IdentifierExtension {
   return extensions.find(
     extension => extension.url === "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId"
-  ) as fhir.IdentifierExtension
+  ) as IdentifierExtension
 }
 
-function getMedicationRequests(bundle: fhir.Bundle): Array<MedicationRequest> {
+function getMedicationRequests(bundle: Bundle): Array<MedicationRequest> {
   return bundle.entry
     .filter(entry => entry.resource.resourceType === "MedicationRequest")
     .map(entry => entry.resource) as Array<MedicationRequest>

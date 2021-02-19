@@ -1,5 +1,8 @@
-import * as fhir from "./fhir-resources"
+import * as common from "./common"
 import {createCodeableConcept} from "../../services/translation/response/fhir-base-types"
+import * as practitionerRole from "./practitioner-role"
+import * as patient from "./patient"
+import * as extension from "./extension"
 
 export enum CourseOfTherapyTypeCode {
   ACUTE = "acute",
@@ -33,16 +36,16 @@ export enum MedicationRequestStatus {
   UNKNOWN = "unknown"
 }
 
-export interface BaseMedicationRequest extends fhir.Resource {
+export interface BaseMedicationRequest extends common.Resource {
   resourceType: "MedicationRequest"
-  extension: Array<fhir.Extension>
-  identifier: Array<fhir.Identifier>
+  extension: Array<extension.Extension>
+  identifier: Array<common.Identifier>
   status: MedicationRequestStatus
   intent: string
-  medicationCodeableConcept: fhir.CodeableConcept
-  subject: fhir.Reference<fhir.Patient>
+  medicationCodeableConcept: common.CodeableConcept
+  subject: common.Reference<patient.Patient>
   authoredOn: string
-  requester: fhir.Reference<fhir.PractitionerRole>
+  requester: common.Reference<practitionerRole.PractitionerRole>
   groupIdentifier: MedicationRequestGroupIdentifier
   dispenseRequest?: MedicationRequestDispenseRequest
   substitution?: {
@@ -51,46 +54,51 @@ export interface BaseMedicationRequest extends fhir.Resource {
 }
 
 export interface MedicationRequest extends BaseMedicationRequest {
-  category?: Array<fhir.CodeableConcept>
-  courseOfTherapyType: fhir.CodeableConcept
+  category?: Array<common.CodeableConcept>
+  courseOfTherapyType: common.CodeableConcept
   dosageInstruction: Array<Dosage>
   extension: Array<MedicationRequestPermittedExtensions>
-  statusReason?: fhir.CodeableConcept
+  statusReason?: common.CodeableConcept
   dispenseRequest: MedicationRequestDispenseRequest
 }
 
 export interface MedicationRequestOutcome extends BaseMedicationRequest {
-  extension: Array<fhir.ReferenceExtension<fhir.PractitionerRole> | PrescriptionStatusHistoryExtension>
+  extension: Array<extension.ReferenceExtension<practitionerRole.PractitionerRole> | PrescriptionStatusHistoryExtension>
 }
 
 //TODO - at what point do we just use Extension instead of a union type? What benefit is this providing?
-export type MedicationRequestPermittedExtensions = fhir.IdentifierExtension
-  | fhir.ReferenceExtension<fhir.PractitionerRole> | fhir.CodingExtension | fhir.CodeableConceptExtension
+export type MedicationRequestPermittedExtensions = extension.IdentifierExtension
+  | extension.ReferenceExtension<practitionerRole.PractitionerRole>
+  | extension.CodingExtension | extension.CodeableConceptExtension
   | RepeatInformationExtension | ControlledDrugExtension
 
-export type RepeatInformationExtension = fhir.ExtensionExtension<fhir.UnsignedIntExtension | fhir.DateTimeExtension>
-export type ControlledDrugExtension = fhir.ExtensionExtension<fhir.StringExtension | fhir.CodingExtension>
-export type PrescriptionStatusHistoryExtension = fhir.ExtensionExtension<fhir.CodingExtension>
+export type RepeatInformationExtension = extension.ExtensionExtension<extension.UnsignedIntExtension
+  | extension.DateTimeExtension>
+export type ControlledDrugExtension = extension.ExtensionExtension<extension.StringExtension
+  | extension.CodingExtension>
+export type PrescriptionStatusHistoryExtension = extension.ExtensionExtension<extension.CodingExtension>
 
-export interface MedicationRequestGroupIdentifier extends fhir.Identifier {
-  extension?: Array<fhir.IdentifierExtension>
+export interface MedicationRequestGroupIdentifier extends common.Identifier {
+  extension?: Array<extension.IdentifierExtension>
 }
 
 export interface Dosage {
   text: string
   patientInstruction?: string
-  additionalInstruction?: Array<fhir.CodeableConcept>
+  additionalInstruction?: Array<common.CodeableConcept>
 }
 
-export interface Performer extends fhir.IdentifierReference<fhir.Organization> {
-  extension?: Array<fhir.ReferenceExtension<fhir.PractitionerRole>>
+export interface Performer extends common.IdentifierReference<practitionerRole.Organization> {
+  extension?: Array<extension.ReferenceExtension<practitionerRole.PractitionerRole>>
 }
 
 export interface MedicationRequestDispenseRequest {
-  extension?: Array<fhir.CodingExtension | fhir.StringExtension | fhir.ReferenceExtension<fhir.PractitionerRole>>
-  identifier?: fhir.Identifier
-  quantity?: fhir.SimpleQuantity
-  expectedSupplyDuration?: fhir.SimpleQuantity
+  extension?: Array<extension.CodingExtension
+    | extension.StringExtension
+    | extension.ReferenceExtension<practitionerRole.PractitionerRole>>
+  identifier?: common.Identifier
+  quantity?: common.SimpleQuantity
+  expectedSupplyDuration?: common.SimpleQuantity
   performer?: Performer
-  validityPeriod?: fhir.Period
+  validityPeriod?: common.Period
 }
