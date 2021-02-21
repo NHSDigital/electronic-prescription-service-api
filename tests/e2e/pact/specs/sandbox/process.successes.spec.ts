@@ -3,8 +3,9 @@ import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
-import {basePath, pactOptions} from "../../resources/common"
 import * as TestResources from "../../resources/test-resources"
+import {basePath, pactOptions} from "../../resources/common"
+import * as fhir from "../../models/fhir"
 
 TestResources.processOrderCaseGroups.forEach(pactGroup => {
   const pactGroupName = pactGroup.name

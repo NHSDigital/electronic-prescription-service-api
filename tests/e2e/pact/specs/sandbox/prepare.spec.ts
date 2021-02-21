@@ -2,10 +2,10 @@ import { InteractionObject, Matchers } from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
-import { Bundle, Parameters } from "../../models/fhir"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import { basePath, getStringParameterByName, pactOptions } from "../../resources/common"
+import * as fhir from "../../models/fhir"
 
 TestResources.prepareCaseGroups.forEach(pactGroup => {
   const pactGroupName = pactGroup.name
@@ -21,7 +21,7 @@ TestResources.prepareCaseGroups.forEach(pactGroup => {
       }
 
       describe("prepare sandbox e2e tests", () => {
-        test.each(pactGroupTestCases)("should be able to prepare a %s message", async (desc: string, request: Bundle, response: Parameters) => {
+        test.each(pactGroupTestCases)("should be able to prepare a %s message", async (desc: string, request: fhir.Bundle, response: fhir.Parameters) => {
           const apiPath = `${basePath}/$prepare`
           const requestStr = LosslessJson.stringify(request)
           const requestId = uuid.v4()

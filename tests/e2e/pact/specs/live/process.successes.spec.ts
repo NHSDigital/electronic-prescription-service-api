@@ -24,16 +24,16 @@ TestResources.processOrderCaseGroups.forEach(pactGroup => {
       }
 
       describe("process-message e2e tests", () => {
-        test.each(pactGroupTestCases)("should be able to process %s", async (desc: string, message: Bundle) => {
+        test.each(pactGroupTestCases)("should be able to process %s", async (desc: string, message: fhir.Bundle) => {
           const apiPath = `${basePath}/$process-message`
           const bundleStr = LosslessJson.stringify(message)
-          const bundle = JSON.parse(bundleStr) as Bundle
+          const bundle = JSON.parse(bundleStr) as fhir.Bundle
 
           const requestId = uuid.v4()
           const correlationId = uuid.v4()
 
           const firstMedicationRequest = message.entry.map(e => e.resource)
-            .find(r => r.resourceType == "MedicationRequest") as MedicationRequest
+            .find(r => r.resourceType == "MedicationRequest") as fhir.MedicationRequest
           const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
           const interaction: InteractionObject = {
@@ -94,7 +94,7 @@ TestResources.processOrderUpdateCaseGroups.forEach(pactGroup => {
 
       describe("process-message e2e tests", () => {
         if (pactGroupTestCases.length) {
-          test.each(pactGroupTestCases)("should be able to process %s", async (desc: string, message: Bundle) => {
+          test.each(pactGroupTestCases)("should be able to process %s", async (desc: string, message: fhir.Bundle) => {
             const apiPath = `${basePath}/$process-message`
             const bundleStr = LosslessJson.stringify(message)
             const bundle = JSON.parse(bundleStr) as fhir.Bundle
