@@ -260,8 +260,8 @@ function createPerformerSiteTypeExtension(
   return {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-performerSiteType",
     valueCoding: {
-      code: "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
-      display: dispensingSitePreference.value._attributes.code
+      system: "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+      code: dispensingSitePreference.value._attributes.code
     }
   }
 }
