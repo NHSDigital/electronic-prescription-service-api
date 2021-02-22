@@ -62,7 +62,7 @@ describe("verifyCommonBundle", () => {
   })
 
   test("Should reject a message where one MedicationRequest has intent plan", () => {
-    medicationRequests[0].intent = "plan"
+    medicationRequests[0].intent = fhir.MedicationRequestIntent.PLAN
     const validationErrors = validator.verifyCommonBundle(bundle)
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0]).toBeInstanceOf(MedicationRequestIncorrectValueError)
@@ -70,7 +70,7 @@ describe("verifyCommonBundle", () => {
   })
 
   test("Should reject a message where all MedicationRequests have intent plan", () => {
-    medicationRequests.forEach(medicationRequest => medicationRequest.intent = "plan")
+    medicationRequests.forEach(medicationRequest => medicationRequest.intent = fhir.MedicationRequestIntent.PLAN)
     const validationErrors = validator.verifyCommonBundle(bundle)
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0]).toBeInstanceOf(MedicationRequestIncorrectValueError)

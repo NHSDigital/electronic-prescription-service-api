@@ -45,7 +45,7 @@ function createBundleEntries(cancellationResponse: hl7V3.CancellationResponse) {
   const cancelRequestId = cancellationResponse.pertinentInformation4.pertinentCancellationRequestRef.id._attributes.root
   const messageHeader = createMessageHeader(
     messageId,
-    fhir.EventCoding.PRESCRIPTION_ORDER_RESPONSE,
+    fhir.EVENT_CODING_PRESCRIPTION_ORDER_RESPONSE,
     [patientId, medicationRequest.id],
     representedOrganizationId,
     cancelRequestId

@@ -34,7 +34,7 @@ export function createMedicationRequest(
       createItemNumberIdentifier(lineItem.id._attributes.root)
     ],
     status: getStatus(lineItem.pertinentInformation4.pertinentItemStatus),
-    intent: "order",
+    intent: fhir.MedicationRequestIntent.ORDER,
     medicationCodeableConcept: createSnomedCodeableConcept(
       lineItem.product.manufacturedProduct.manufacturedRequestedMaterial.code
     ),
@@ -155,11 +155,11 @@ export function createCourseOfTherapyType(
   const isRepeatDispensing = prescriptionTreatmentType.value._attributes.code
     === hl7V3.PrescriptionTreatmentTypeCode.CONTINUOUS_REPEAT_DISPENSING._attributes.code
   if (isRepeatDispensing) {
-    return fhir.CourseOfTherapyType.CONTINOUS_REPEAT_DISPENSING
+    return fhir.COURSE_OF_THERAPY_TYPE_CONTINUOUS_REPEAT_DISPENSING
   } else if (lineItemRepeatNumber) {
-    return fhir.CourseOfTherapyType.CONTINUOUS
+    return fhir.COURSE_OF_THERAPY_TYPE_CONTINUOUS
   } else {
-    return fhir.CourseOfTherapyType.ACUTE
+    return fhir.COURSE_OF_THERAPY_TYPE_ACUTE
   }
 }
 

@@ -36,7 +36,7 @@ export function createMedicationRequest(
     ),
     identifier: createItemNumberIdentifier(cancellationResponse.pertinentInformation1),
     status: medicationRequestStatus,
-    intent: "order",
+    intent: fhir.MedicationRequestIntent.ORDER,
     medicationCodeableConcept: MEDICINAL_PRODUCT_CODEABLE_CONCEPT,
     subject: fhir.createReference(patientId),
     //TODO - effectiveTime should probably be the timestamp of the status, not authoredOn

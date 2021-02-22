@@ -9,23 +9,23 @@ export enum CourseOfTherapyTypeCode {
   CONTINUOUS_REPEAT_DISPENSING = "continuous-repeat-dispensing"
 }
 
-export const CourseOfTherapyType = Object.freeze({
-  ACUTE: common.createCodeableConcept(
-    "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
-    CourseOfTherapyTypeCode.ACUTE,
-    "Short course (acute) therapy"
-  ),
-  CONTINUOUS: common.createCodeableConcept(
-    "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
-    CourseOfTherapyTypeCode.CONTINUOUS,
-    "Continuous long term therapy"
-  ),
-  CONTINOUS_REPEAT_DISPENSING: common.createCodeableConcept(
-    "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
-    CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING,
-    "Continuous long term (repeat dispensing)"
-  )
-})
+export const COURSE_OF_THERAPY_TYPE_ACUTE = common.createCodeableConcept(
+  "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+  CourseOfTherapyTypeCode.ACUTE,
+  "Short course (acute) therapy"
+)
+
+export const COURSE_OF_THERAPY_TYPE_CONTINUOUS = common.createCodeableConcept(
+  "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+  CourseOfTherapyTypeCode.CONTINUOUS,
+  "Continuous long term therapy"
+)
+
+export const COURSE_OF_THERAPY_TYPE_CONTINUOUS_REPEAT_DISPENSING = common.createCodeableConcept(
+  "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
+  CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING,
+  "Continuous long term (repeat dispensing)"
+)
 
 export enum MedicationRequestStatus {
   ACTIVE = "active",
@@ -35,12 +35,17 @@ export enum MedicationRequestStatus {
   UNKNOWN = "unknown"
 }
 
+export enum MedicationRequestIntent {
+  ORDER = "order",
+  PLAN = "plan"
+}
+
 export interface BaseMedicationRequest extends common.Resource {
   resourceType: "MedicationRequest"
   extension: Array<extension.Extension>
   identifier: Array<common.Identifier>
   status: MedicationRequestStatus
-  intent: string
+  intent: MedicationRequestIntent
   medicationCodeableConcept: common.CodeableConcept
   subject: common.Reference<patient.Patient>
   authoredOn: string

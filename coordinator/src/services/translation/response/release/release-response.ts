@@ -94,7 +94,7 @@ export function createBundleResources(
 
   const messageHeader = createMessageHeader(
     parentPrescription.id._attributes.root,
-    fhir.EventCoding.PRESCRIPTION_ORDER,
+    fhir.EVENT_CODING_PRESCRIPTION_ORDER,
     focusIds,
     pertinentPrescription.performer?.AgentOrgSDS?.agentOrganizationSDS?.id?._attributes?.extension,
     releaseRequestId

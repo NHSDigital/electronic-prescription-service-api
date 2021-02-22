@@ -97,7 +97,7 @@ const createMedicationRequestForLineItem = (
       }
     ],
     status: fhir.MedicationRequestStatus.ACTIVE,
-    intent: "order",
+    intent: fhir.MedicationRequestIntent.ORDER,
     category: [
       {
         coding: [
