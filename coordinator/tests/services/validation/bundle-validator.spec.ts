@@ -205,9 +205,7 @@ describe("MedicationRequest consistency checks", () => {
     expect(
       validationErrors
     ).toContainEqual(
-      new errors.MedicationRequestDuplicateValueError(
-        [identifier]
-      )
+      new errors.MedicationRequestDuplicateValueError()
     )
   })
 })
