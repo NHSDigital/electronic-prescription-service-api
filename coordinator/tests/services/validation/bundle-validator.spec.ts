@@ -138,21 +138,24 @@ describe("MedicationRequest consistency checks", () => {
   })
 
   test("Should reject message where MedicationRequests have different dispenseRequest.performer", () => {
-    const performerExtension = {valueReference: {}, url: {}} as fhir.ReferenceExtension<fhir.PractitionerRole>
-    const performer = {
+    const performerExtension: fhir.ReferenceExtension<fhir.PractitionerRole> = {
+      valueReference: {reference: ""},
+      url: ""
+    }
+    const performer: fhir.Performer  = {
       identifier: {
         system: "system",
         value: "value"
       },
       extension: [performerExtension]
-    } as fhir.Performer
-    const performerDiff = {
+    }
+    const performerDiff: fhir.Performer = {
       identifier: {
         system: "system2",
         value: "value2"
       },
       extension: [performerExtension]
-    } as fhir.Performer
+    }
 
     medicationRequests.forEach(medicationRequest => medicationRequest.dispenseRequest.performer = performer)
     medicationRequests[3].dispenseRequest.performer = performerDiff
@@ -184,6 +187,26 @@ describe("MedicationRequest consistency checks", () => {
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
 
     validateValidationErrors(validationErrors)
+  })
+
+  test("Should reject message where 2 or more medication requests share an identifier", () => {
+    const identifier: Array<fhir.Identifier> = [
+      {
+        "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+        "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab5"
+      }
+    ]
+
+    medicationRequests.forEach(medicationRequest => medicationRequest.identifier = identifier)
+
+    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+
+    validateValidationErrors(validationErrors)
+    expect(
+      validationErrors
+    ).toContainEqual(
+      new errors.MedicationRequestDuplicateValueError()
+    )
   })
 })
 
