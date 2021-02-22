@@ -1,16 +1,15 @@
 import {isPollable, SpineDirectResponse, SpinePollableResponse} from "../models/spine"
 import Hapi from "@hapi/hapi"
-import * as fhir from "../models/fhir/fhir-resources"
-import {OperationOutcome, Resource} from "../models/fhir/fhir-resources"
 import * as requestValidator from "../services/validation/bundle-validator"
 import * as errors from "../models/errors/validation-errors"
 import {ResourceTypeError} from "../models/errors/validation-errors"
-import {translateToFhir} from "../services/translation/spine-response"
+import {translateToFhir} from "../services/translation/response"
 import * as LosslessJson from "lossless-json"
 import {getMessageHeader} from "../services/translation/common/getResourcesOfType"
 import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
+import * as fhir from "../models/fhir"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
@@ -48,21 +47,15 @@ export function handleResponse<T>(
   }
 }
 
-function isOperationOutcome(body: unknown): body is OperationOutcome {
+function isOperationOutcome(body: unknown): body is fhir.OperationOutcome {
   return typeof body === "object"
     && "resourceType" in body
-    && (body as Resource).resourceType === "OperationOutcome"
+    && (body as fhir.Resource).resourceType === "OperationOutcome"
 }
 
 type Handler<T> = (
   requestPayload: T, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
 ) => Hapi.ResponseObject | Promise<Hapi.ResponseObject>
-
-export enum MessageType {
-  PRESCRIPTION = "prescription-order",
-  CANCELLATION = "prescription-order-update",
-  DISPENSE = "prescription-dispense"
-}
 
 export function identifyMessageType(bundle: fhir.Bundle): string {
   return getMessageHeader(bundle).eventCoding?.code

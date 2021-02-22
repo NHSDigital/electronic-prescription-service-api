@@ -3,12 +3,12 @@ import * as moxios from "moxios"
 import axios from "axios"
 import fs from "fs"
 import {isDirect, isPollable, SpineDirectResponse, SpinePollableResponse, SpineRequest} from "../../src/models/spine"
-import {LiveRequestHandler} from "../../src/services/handlers/spine-handler"
+import {LiveSpineClient} from "../../src/services/communication/live-spine-client"
 import path from "path"
 import pino from "pino"
 
 describe("Spine communication", () => {
-  const requestHandler = new LiveRequestHandler(
+  const requestHandler = new LiveSpineClient(
     "localhost",
     "/Prescribe",
     (spineRequest: SpineRequest) => `<wrap>${spineRequest.message}</wrap>`

@@ -1,12 +1,12 @@
-import * as fhir from "../../models/fhir/fhir-resources"
 import * as errors from "../../models/errors/validation-errors"
-import {identifyMessageType, MessageType} from "../../routes/util"
+import {MedicationRequestIncorrectValueError} from "../../models/errors/validation-errors"
+import {identifyMessageType} from "../../routes/util"
 import {getMedicationRequests} from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues} from "./util"
-import {CourseOfTherapyTypeCode, getCourseOfTherapyTypeCode} from "../translation/prescription/course-of-therapy-type"
+import {getCourseOfTherapyTypeCode} from "../translation/request/course-of-therapy-type"
 import {getExtensionForUrlOrNull, getIdentifierValueForSystem, isTruthy} from "../translation/common"
-import {MedicationRequestIncorrectValueError} from "../../models/errors/validation-errors"
+import * as fhir from "../../models/fhir"
 
 // Validate Status
 export function getStatusCode(validation: Array<errors.ValidationError>): number {
@@ -23,15 +23,15 @@ export function verifyBundle(bundle: fhir.Bundle): Array<errors.ValidationError>
 
   let messageTypeSpecificErrors
   switch (messageType) {
-  case MessageType.PRESCRIPTION:
-    messageTypeSpecificErrors = verifyPrescriptionBundle(bundle)
-    break
-  case MessageType.CANCELLATION:
-    messageTypeSpecificErrors = verifyCancellationBundle(bundle)
-    break
-  case MessageType.DISPENSE:
-    messageTypeSpecificErrors = verifyDispenseBundle(bundle)
-    break
+    case fhir.EventCodingCode.PRESCRIPTION:
+      messageTypeSpecificErrors = verifyPrescriptionBundle(bundle)
+      break
+    case fhir.EventCodingCode.CANCELLATION:
+      messageTypeSpecificErrors = verifyCancellationBundle(bundle)
+      break
+    case fhir.EventCodingCode.DISPENSE:
+      messageTypeSpecificErrors = verifyDispenseBundle(bundle)
+      break
   }
 
   return [
@@ -40,10 +40,10 @@ export function verifyBundle(bundle: fhir.Bundle): Array<errors.ValidationError>
   ]
 }
 
-function verifyMessageType(messageType: string): messageType is MessageType {
-  return messageType === MessageType.PRESCRIPTION ||
-    messageType === MessageType.CANCELLATION ||
-    messageType === MessageType.DISPENSE
+function verifyMessageType(messageType: string): messageType is fhir.EventCodingCode {
+  return messageType === fhir.EventCodingCode.PRESCRIPTION ||
+    messageType === fhir.EventCodingCode.CANCELLATION ||
+    messageType === fhir.EventCodingCode.DISPENSE
 }
 
 export function verifyCommonBundle(bundle: fhir.Bundle): Array<errors.ValidationError> {
@@ -84,7 +84,7 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
     .filter(isTruthy)
 
   const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
-  const isRepeatDispensing = courseOfTherapyTypeCode === CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
+  const isRepeatDispensing = courseOfTherapyTypeCode === fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
   const repeatDispensingErrors = isRepeatDispensing ? verifyRepeatDispensingPrescription(medicationRequests) : []
 
   const errorArray = [

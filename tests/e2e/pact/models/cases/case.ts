@@ -1,8 +1,8 @@
-import * as fhir from "../fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import * as fs from "fs"
 import {ExampleFile} from "../files/example-file"
 import {createExampleDescription} from "../../resources/common"
+import * as fhir from "../fhir"
 
 export class Case {
   requestFile: ExampleFile

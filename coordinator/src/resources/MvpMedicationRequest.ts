@@ -1,10 +1,11 @@
+import {CodeableConcept, Identifier} from "../models/fhir/common"
 import {
-  CodeableConcept,
-  CodingExtension, Identifier,
-  IdentifierExtension,
   MedicationRequest,
-  MedicationRequestDispenseRequest, MedicationRequestGroupIdentifier
-} from "../models/fhir/fhir-resources"
+  MedicationRequestDispenseRequest,
+  MedicationRequestGroupIdentifier,
+  MedicationRequestStatus
+} from "../models/fhir/medication-request"
+import {CodingExtension, IdentifierExtension} from "../models/fhir/extension"
 
 const performerSiteTypeExtension: CodingExtension = {
   url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
@@ -58,7 +59,7 @@ const medicationRequestIdentifier: Identifier = {
 
 export const medicationRequest: MedicationRequest = {
   resourceType: "MedicationRequest",
-  status: "active",
+  status: MedicationRequestStatus.ACTIVE,
   intent: "order",
   authoredOn: "2020-01-01T12:00:00+00:00",
   courseOfTherapyType: medicationRequestCourseOfTherapyTypeContinuousRepeatDispensing,

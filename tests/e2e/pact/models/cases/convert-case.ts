@@ -1,9 +1,9 @@
 /* eslint-disable-next-line */
 import * as fs from "fs"
-import * as fhir from "../fhir/fhir-resources"
 import {Case} from "./case"
 import * as LosslessJson from "lossless-json"
 import {ExampleFile} from "../files/example-file"
+import * as fhir from "../fhir"
 
 export class ConvertCase extends Case {
   description: string
