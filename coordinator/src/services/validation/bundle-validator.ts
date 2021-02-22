@@ -166,7 +166,7 @@ function allMedicationRequestsHaveUniqueIdentifier(
 ) {
   const allIdentifiers = medicationRequests.map(
     request => getIdentifierValueForSystem(
-      request.identifier, "https://fhir.nhs.uk/Id/prescription-order-item-number", "MedicationRequest.Identifier")
+      request.identifier, "https://fhir.nhs.uk/Id/prescription-order-item-number", "MedicationRequest.identifier.value")
   )
   const uniqueIdentifiers = getUniqueValues(allIdentifiers)
   return uniqueIdentifiers.length === medicationRequests.length
