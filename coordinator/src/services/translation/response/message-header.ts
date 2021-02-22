@@ -1,5 +1,4 @@
 import {generateResourceId} from "./common"
-import {createIdentifier, createReference} from "./fhir-base-types"
 import * as fhir from "../../../models/fhir"
 
 export function createMessageHeader(
@@ -33,7 +32,7 @@ function getNhsdSender() {
 }
 
 function createFocus(focusIds: Array<string>) {
-  return focusIds.map(createReference)
+  return focusIds.map(fhir.createReference)
 }
 
 function getSource() {
@@ -46,7 +45,7 @@ function getSource() {
 function getExtensions(messageId: string): Array<fhir.IdentifierExtension> {
   return [{
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-MessageHeader-messageId",
-    valueIdentifier: createIdentifier("https://tools.ietf.org/html/rfc4122", messageId.toLowerCase())
+    valueIdentifier: fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", messageId.toLowerCase())
   }]
 }
 
@@ -55,7 +54,7 @@ function getDestinations(representedOrganizationId: string): Array<fhir.MessageH
     return [{
       endpoint: `urn:nhs-uk:addressing:ods:${representedOrganizationId}`,
       receiver: {
-        identifier: createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", representedOrganizationId)
+        identifier: fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", representedOrganizationId)
       }
     }]
   } else {

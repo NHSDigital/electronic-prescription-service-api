@@ -21,57 +21,57 @@ import * as fhir from "../../../models/fhir"
 
 export function convertAuthor(
   bundle: fhir.Bundle,
-  fhirFirstMedicationRequest: fhir.MedicationRequest
+  firstMedicationRequest: fhir.MedicationRequest
 ): hl7V3.Author {
-  const hl7V3Author = new hl7V3.Author()
+  const author = new hl7V3.Author()
   if (identifyMessageType(bundle) !== fhir.EventCodingCode.CANCELLATION) {
-    const requesterSignature = findRequesterSignature(bundle, fhirFirstMedicationRequest.requester)
-    setSignatureTimeAndText(hl7V3Author, requesterSignature)
+    const requesterSignature = findRequesterSignature(bundle, firstMedicationRequest.requester)
+    setSignatureTimeAndText(author, requesterSignature)
   }
-  const fhirAuthorPractitionerRole = resolveReference(bundle, fhirFirstMedicationRequest.requester)
-  hl7V3Author.AgentPerson = convertPractitionerRole(bundle, fhirAuthorPractitionerRole)
-  return hl7V3Author
+  const requesterPractitionerRole = resolveReference(bundle, firstMedicationRequest.requester)
+  author.AgentPerson = convertPractitionerRole(bundle, requesterPractitionerRole)
+  return author
 }
 
-function setSignatureTimeAndText(hl7V3Author: hl7V3.Author, requesterSignature?: fhir.Signature) {
+function setSignatureTimeAndText(author: hl7V3.Author, requesterSignature?: fhir.Signature) {
   if (requesterSignature) {
-    hl7V3Author.time = convertIsoDateTimeStringToHl7V3DateTime(requesterSignature.when, "Provenance.signature.when")
+    author.time = convertIsoDateTimeStringToHl7V3DateTime(requesterSignature.when, "Provenance.signature.when")
     try {
       const decodedSignatureData = Buffer.from(requesterSignature.data, "base64").toString("utf-8")
-      hl7V3Author.signatureText = XmlJs.xml2js(decodedSignatureData, {compact: true})
+      author.signatureText = XmlJs.xml2js(decodedSignatureData, {compact: true})
     } catch (e) {
       throw new InvalidValueError("Invalid signature format.", "Provenance.signature.data")
     }
   } else {
-    hl7V3Author.time = convertMomentToHl7V3DateTime(moment.utc())
-    hl7V3Author.signatureText = hl7V3.Null.NOT_APPLICABLE
+    author.time = convertMomentToHl7V3DateTime(moment.utc())
+    author.signatureText = hl7V3.Null.NOT_APPLICABLE
   }
 }
 
 export function convertResponsibleParty(
   bundle: fhir.Bundle,
-  fhirMedicationRequest: fhir.MedicationRequest,
+  medicationRequest: fhir.MedicationRequest,
   convertPractitionerRoleFn = convertPractitionerRole,
   convertAgentPersonPersonFn = convertAgentPersonPerson,
   getAgentPersonPersonIdFn = getAgentPersonPersonIdForResponsibleParty
 ): hl7V3.ResponsibleParty {
   const responsibleParty = new hl7V3.ResponsibleParty()
 
-  const fhirResponsiblePartyExtension = getExtensionForUrlOrNull(
-    fhirMedicationRequest.extension,
+  const responsiblePartyExtension = getExtensionForUrlOrNull(
+    medicationRequest.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
     "MedicationRequest.extension"
   ) as fhir.ReferenceExtension<fhir.PractitionerRole>
 
-  const fhirResponsibleParty = fhirResponsiblePartyExtension
-    ? fhirResponsiblePartyExtension.valueReference
-    : fhirMedicationRequest.requester
+  const responsiblePartyReference = responsiblePartyExtension
+    ? responsiblePartyExtension.valueReference
+    : medicationRequest.requester
 
-  const fhirResponsiblePartyPractitionerRole = resolveReference(bundle, fhirResponsibleParty)
+  const responsiblePartyPractitionerRole = resolveReference(bundle, responsiblePartyReference)
 
   responsibleParty.AgentPerson = convertPractitionerRoleFn(
     bundle,
-    fhirResponsiblePartyPractitionerRole,
+    responsiblePartyPractitionerRole,
     convertAgentPersonPersonFn,
     getAgentPersonPersonIdFn
   )
@@ -85,29 +85,29 @@ function convertPractitionerRole(
   convertAgentPersonPersonFn = convertAgentPersonPerson,
   getAgentPersonPersonIdFn = getAgentPersonPersonIdForAuthor
 ): hl7V3.AgentPerson {
-  const fhirPractitioner = resolveReference(bundle, practitionerRole.practitioner)
+  const practitioner = resolveReference(bundle, practitionerRole.practitioner)
 
-  const hl7V3AgentPerson = createAgentPerson(
+  const agentPerson = createAgentPerson(
     practitionerRole,
-    fhirPractitioner,
+    practitioner,
     convertAgentPersonPersonFn,
     getAgentPersonPersonIdFn
   )
 
-  const fhirOrganization = resolveReference(bundle, practitionerRole.organization)
+  const organization = resolveReference(bundle, practitionerRole.organization)
 
-  let fhirHealthcareService: fhir.HealthcareService
+  let healthcareService: fhir.HealthcareService
   if (practitionerRole.healthcareService) {
-    fhirHealthcareService = resolveReference(bundle, practitionerRole.healthcareService[0])
+    healthcareService = resolveReference(bundle, practitionerRole.healthcareService[0])
   }
 
-  hl7V3AgentPerson.representedOrganization = convertOrganizationAndProviderLicense(
+  agentPerson.representedOrganization = convertOrganizationAndProviderLicense(
     bundle,
-    fhirOrganization,
-    fhirHealthcareService
+    organization,
+    healthcareService
   )
 
-  return hl7V3AgentPerson
+  return agentPerson
 }
 
 function createAgentPerson(
@@ -116,41 +116,41 @@ function createAgentPerson(
   convertAgentPersonPersonFn = convertAgentPersonPerson,
   getAgentPersonPersonIdFn = getAgentPersonPersonIdForAuthor
 ): hl7V3.AgentPerson {
-  const hl7V3AgentPerson = new hl7V3.AgentPerson()
+  const agentPerson = new hl7V3.AgentPerson()
 
   const sdsRoleProfileIdentifier = getIdentifierValueForSystem(
     practitionerRole.identifier,
     "https://fhir.nhs.uk/Id/sds-role-profile-id",
     "PractitionerRole.identifier"
   )
-  hl7V3AgentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileIdentifier)
+  agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileIdentifier)
 
   const sdsJobRoleCode = getCodeableConceptCodingForSystem(
     practitionerRole.code,
     "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
     "PractitionerRole.code"
   )
-  hl7V3AgentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode.code)
+  agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode.code)
 
-  hl7V3AgentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom, practitioner.telecom)
+  agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom, practitioner.telecom)
 
-  hl7V3AgentPerson.agentPerson =
+  agentPerson.agentPerson =
     convertAgentPersonPersonFn(
       practitionerRole,
       practitioner,
       getAgentPersonPersonIdFn)
 
-  return hl7V3AgentPerson
+  return agentPerson
 }
 
 export function getAgentPersonTelecom(
-  fhirPractitionerRoleTelecom: Array<fhir.ContactPoint>,
-  fhirPractitionerTelecom: Array<fhir.ContactPoint>
+  practitionerRoleContactPoints: Array<fhir.ContactPoint>,
+  practitionerContactPoints: Array<fhir.ContactPoint>
 ): Array<hl7V3.Telecom> {
-  if (fhirPractitionerRoleTelecom !== undefined) {
-    return fhirPractitionerRoleTelecom.map(telecom => convertTelecom(telecom, "PractitionerRole.telecom"))
-  } else if (fhirPractitionerTelecom !== undefined) {
-    return fhirPractitionerTelecom.map(telecom => convertTelecom(telecom, "Practitioner.telecom"))
+  if (practitionerRoleContactPoints !== undefined) {
+    return practitionerRoleContactPoints.map(telecom => convertTelecom(telecom, "PractitionerRole.telecom"))
+  } else if (practitionerContactPoints !== undefined) {
+    return practitionerContactPoints.map(telecom => convertTelecom(telecom, "Practitioner.telecom"))
   }
 }
 
@@ -159,14 +159,14 @@ function convertAgentPersonPerson(
   practitioner: fhir.Practitioner,
   getAgentPersonPersonIdFn = getAgentPersonPersonIdForAuthor) {
   const id = getAgentPersonPersonIdFn(practitioner.identifier, practitionerRole.identifier)
-  const hl7V3AgentPersonPerson = new hl7V3.AgentPersonPerson(id)
+  const agentPersonPerson = new hl7V3.AgentPersonPerson(id)
   if (practitioner.name !== undefined) {
-    hl7V3AgentPersonPerson.name = convertName(
+    agentPersonPerson.name = convertName(
       onlyElement(practitioner.name, "Practitioner.name"),
       "Practitioner.name"
     )
   }
-  return hl7V3AgentPersonPerson
+  return agentPersonPerson
 }
 
 export function getAgentPersonPersonIdForAuthor(
@@ -268,8 +268,8 @@ function findRequesterSignature(
   bundle: fhir.Bundle,
   signatory: fhir.Reference<fhir.PractitionerRole>
 ) {
-  const fhirProvenances = getProvenances(bundle)
-  const requesterSignatures = fhirProvenances.flatMap(provenance => provenance.signature)
+  const provenances = getProvenances(bundle)
+  const requesterSignatures = provenances.flatMap(provenance => provenance.signature)
     .filter(signature => signature.who.reference === signatory.reference)
   return onlyElementOrNull(
     requesterSignatures,

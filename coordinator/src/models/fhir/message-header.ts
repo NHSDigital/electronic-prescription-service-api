@@ -9,18 +9,17 @@ export enum EventCodingCode {
   DISPENSE = "prescription-dispense"
 }
 
-export const EventCoding: Record<string, common.Coding> = Object.freeze({
-  PRESCRIPTION_ORDER_RESPONSE: {
-    system: "https://fhir.nhs.uk/CodeSystem/message-event",
-    code: EventCodingCode.PRESCRIPTION_RESPONSE,
-    display: "Prescription Order Response"
-  },
-  PRESCRIPTION_ORDER: {
-    system: "https://fhir.nhs.uk/CodeSystem/message-event",
-    code: EventCodingCode.PRESCRIPTION,
-    display: "Prescription Order"
-  }
-})
+export const EVENT_CODING_PRESCRIPTION_ORDER_RESPONSE = common.createCoding(
+  "https://fhir.nhs.uk/CodeSystem/message-event",
+  EventCodingCode.PRESCRIPTION_RESPONSE,
+  "Prescription Order Response"
+)
+
+export const EVENT_CODING_PRESCRIPTION_ORDER = common.createCoding(
+  "https://fhir.nhs.uk/CodeSystem/message-event",
+  EventCodingCode.PRESCRIPTION,
+  "Prescription Order"
+)
 
 export interface MessageHeader extends common.Resource {
   resourceType: "MessageHeader"

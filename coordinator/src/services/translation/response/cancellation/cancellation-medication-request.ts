@@ -1,12 +1,11 @@
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
 import {InvalidValueError} from "../../../../models/errors/processing-errors"
 import {generateResourceId, getFullUrl} from "../common"
-import {createCodeableConcept, createIdentifier, createReference} from "../fhir-base-types"
 import {createGroupIdentifier} from "../medication-request"
 import * as hl7V3 from "../../../../models/hl7-v3"
 import * as fhir from "../../../../models/fhir"
 
-const MEDICINAL_PRODUCT_CODEABLE_CONCEPT = createCodeableConcept(
+const MEDICINAL_PRODUCT_CODEABLE_CONCEPT = fhir.createCodeableConcept(
   "http://snomed.info/sct",
   "763158003",
   "Medicinal product"
@@ -37,12 +36,12 @@ export function createMedicationRequest(
     ),
     identifier: createItemNumberIdentifier(cancellationResponse.pertinentInformation1),
     status: medicationRequestStatus,
-    intent: "order",
+    intent: fhir.MedicationRequestIntent.ORDER,
     medicationCodeableConcept: MEDICINAL_PRODUCT_CODEABLE_CONCEPT,
-    subject: createReference(patientId),
+    subject: fhir.createReference(patientId),
     //TODO - effectiveTime should probably be the timestamp of the status, not authoredOn
     authoredOn: convertHL7V3DateTimeToIsoDateTimeString(cancellationResponse.effectiveTime),
-    requester: createReference(originalPrescriptionAuthorPractitionerRoleId),
+    requester: fhir.createReference(originalPrescriptionAuthorPractitionerRoleId),
     groupIdentifier: createGroupIdentifierFromPertinentInformation2(cancellationResponse.pertinentInformation2)
   }
 }
@@ -165,7 +164,7 @@ function getPrescriptionStatusInformation(code: string, display: string) {
 
 function createItemNumberIdentifier(pertinentInformation1: hl7V3.CancellationResponsePertinentInformation1) {
   const id = pertinentInformation1.pertinentLineItemRef.id._attributes.root
-  return [createIdentifier("https://fhir.nhs.uk/Id/prescription-order-item-number", id.toLowerCase())]
+  return [fhir.createIdentifier("https://fhir.nhs.uk/Id/prescription-order-item-number", id.toLowerCase())]
 }
 
 function createGroupIdentifierFromPertinentInformation2(

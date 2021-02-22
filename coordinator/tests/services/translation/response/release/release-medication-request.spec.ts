@@ -270,22 +270,22 @@ describe("courseOfTherapyType", () => {
 
   test("repeat dispensing prescription", () => {
     const result = createCourseOfTherapyType(treatmentTypeRepeatDispensing, exampleRepeatNumber)
-    expect(result).toEqual(fhir.CourseOfTherapyType.CONTINOUS_REPEAT_DISPENSING)
+    expect(result).toEqual(fhir.COURSE_OF_THERAPY_TYPE_CONTINUOUS_REPEAT_DISPENSING)
   })
 
   test("repeat prescribing prescription", () => {
     const result = createCourseOfTherapyType(treatmentTypeRepeatPrescribing, exampleRepeatNumber)
-    expect(result).toEqual(fhir.CourseOfTherapyType.CONTINUOUS)
+    expect(result).toEqual(fhir.COURSE_OF_THERAPY_TYPE_CONTINUOUS)
   })
 
   test("acute / mixed prescription, repeat prescribing line item", () => {
     const result = createCourseOfTherapyType(treatmentTypeAcute, exampleRepeatNumber)
-    expect(result).toEqual(fhir.CourseOfTherapyType.CONTINUOUS)
+    expect(result).toEqual(fhir.COURSE_OF_THERAPY_TYPE_CONTINUOUS)
   })
 
   test("acute / mixed prescription, acute line item", () => {
     const result = createCourseOfTherapyType(treatmentTypeAcute, null)
-    expect(result).toEqual(fhir.CourseOfTherapyType.ACUTE)
+    expect(result).toEqual(fhir.COURSE_OF_THERAPY_TYPE_ACUTE)
   })
 })
 

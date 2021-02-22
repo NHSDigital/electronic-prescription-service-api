@@ -50,8 +50,8 @@ export function verifyCommonBundle(bundle: fhir.Bundle): Array<errors.Validation
   const incorrectValueErrors = []
 
   const medicationRequests = getMedicationRequests(bundle)
-  if (medicationRequests.some(medicationRequest => medicationRequest.intent !== "order")) {
-    incorrectValueErrors.push(new MedicationRequestIncorrectValueError("intent", "order"))
+  if (medicationRequests.some(medicationRequest => medicationRequest.intent !== fhir.MedicationRequestIntent.ORDER)) {
+    incorrectValueErrors.push(new MedicationRequestIncorrectValueError("intent", fhir.MedicationRequestIntent.ORDER))
   }
 
   return incorrectValueErrors
