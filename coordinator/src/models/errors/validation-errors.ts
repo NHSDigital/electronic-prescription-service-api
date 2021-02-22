@@ -30,10 +30,8 @@ export class MedicationRequestDuplicateValueError<T> implements ValidationError 
   severity = "error" as const
   expression: Array<string>
 
-  constructor(uniqueFieldValues: Array<T>) {
-    this.message = `Expected all MedicationRequests to have a different value for identifier. Received ${
-      uniqueFieldValues.length
-    } unique values.`
+  constructor() {
+    this.message = `Expected all MedicationRequests to have a different value for identifier.`
     this.expression = [`Bundle.entry.resource.ofType(MedicationRequest).identifier`]
   }
 }

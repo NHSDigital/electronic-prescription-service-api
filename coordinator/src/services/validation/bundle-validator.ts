@@ -65,6 +65,11 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
     incorrectValueErrors.push(new MedicationRequestIncorrectValueError("status", "active"))
   }
 
+  const duplicateIdentifierErrors = []
+  if(!allMedicationRequestsHaveUniqueIdentifier(medicationRequests)){
+    duplicateIdentifierErrors.push(new errors.MedicationRequestDuplicateValueError())
+  }
+
   const fhirPaths = [
     "groupIdentifier",
     "category",
@@ -87,18 +92,12 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
   const isRepeatDispensing = courseOfTherapyTypeCode === fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
   const repeatDispensingErrors = isRepeatDispensing ? verifyRepeatDispensingPrescription(medicationRequests) : []
 
-  const errorArray = [
+  return [
     ...incorrectValueErrors,
     ...inconsistentValueErrors,
-    ...repeatDispensingErrors
+    ...repeatDispensingErrors,
+    ...duplicateIdentifierErrors
   ]
-
-  const duplicateIdentifierError = verifyUniqueIdentifierForAllMedicationRequests(medicationRequests)
-  if(duplicateIdentifierError){
-    errorArray.push(duplicateIdentifierError)
-  }
-
-  return errorArray
 }
 
 export function verifyRepeatDispensingPrescription(
@@ -165,7 +164,7 @@ function verifyIdenticalForAllMedicationRequests(
   return null
 }
 
-function verifyUniqueIdentifierForAllMedicationRequests(
+function allMedicationRequestsHaveUniqueIdentifier(
   medicationRequests: Array<fhir.MedicationRequest>
 ) {
   const allIdentifiers = medicationRequests.map(
@@ -173,8 +172,5 @@ function verifyUniqueIdentifierForAllMedicationRequests(
       request.identifier, "https://fhir.nhs.uk/Id/prescription-order-item-number", "MedicationRequest.Identifier")
   )
   const uniqueIdentifiers = getUniqueValues(allIdentifiers)
-  if (uniqueIdentifiers.length < medicationRequests.length) {
-    return new errors.MedicationRequestDuplicateValueError(uniqueIdentifiers)
-  }
-  return null
+  return uniqueIdentifiers.length === medicationRequests.length
 }
