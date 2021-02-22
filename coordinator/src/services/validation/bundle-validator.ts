@@ -60,16 +60,6 @@ export function verifyCommonBundle(bundle: fhir.Bundle): Array<errors.Validation
 export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.ValidationError> {
   const medicationRequests = getMedicationRequests(bundle)
 
-  const incorrectValueErrors = []
-  if (medicationRequests.some(medicationRequest => medicationRequest.status !== "active")) {
-    incorrectValueErrors.push(new MedicationRequestIncorrectValueError("status", "active"))
-  }
-
-  const duplicateIdentifierErrors = []
-  if(!allMedicationRequestsHaveUniqueIdentifier(medicationRequests)){
-    duplicateIdentifierErrors.push(new errors.MedicationRequestDuplicateValueError())
-  }
-
   const fhirPaths = [
     "groupIdentifier",
     "category",
@@ -92,11 +82,18 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
   const isRepeatDispensing = courseOfTherapyTypeCode === fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
   const repeatDispensingErrors = isRepeatDispensing ? verifyRepeatDispensingPrescription(medicationRequests) : []
 
+  const otherErrors = []
+  if (medicationRequests.some(medicationRequest => medicationRequest.status !== "active")) {
+    otherErrors.push(new MedicationRequestIncorrectValueError("status", "active"))
+  }
+  if(!allMedicationRequestsHaveUniqueIdentifier(medicationRequests)){
+    otherErrors.push(new errors.MedicationRequestDuplicateValueError())
+  }
+
   return [
-    ...incorrectValueErrors,
+    ...otherErrors,
     ...inconsistentValueErrors,
-    ...repeatDispensingErrors,
-    ...duplicateIdentifierErrors
+    ...repeatDispensingErrors
   ]
 }
 
