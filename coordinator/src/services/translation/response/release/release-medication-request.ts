@@ -4,7 +4,6 @@ import {
   createItemNumberIdentifier,
   createResponsiblePractitionerExtension
 } from "../medication-request"
-import {createCodeableConcept, createReference} from "../fhir-base-types"
 import {toArray} from "../../common"
 import {parseAdditionalInstructions} from "./additional-instructions"
 import {convertHL7V3DateToIsoDateString} from "../../common/dateTime"
@@ -35,13 +34,13 @@ export function createMedicationRequest(
       createItemNumberIdentifier(lineItem.id._attributes.root)
     ],
     status: getStatus(lineItem.pertinentInformation4.pertinentItemStatus),
-    intent: "order",
+    intent: fhir.MedicationRequestIntent.ORDER,
     medicationCodeableConcept: createSnomedCodeableConcept(
       lineItem.product.manufacturedProduct.manufacturedRequestedMaterial.code
     ),
-    subject: createReference(patientId),
+    subject: fhir.createReference(patientId),
     authoredOn: undefined, //TODO - how do we populate this?
-    requester: createReference(requesterId),
+    requester: fhir.createReference(requesterId),
     groupIdentifier: createGroupIdentifierFromPrescriptionIds(prescription.id),
     courseOfTherapyType: createCourseOfTherapyType(
       prescription.pertinentInformation5.pertinentPrescriptionTreatmentType,
@@ -156,11 +155,11 @@ export function createCourseOfTherapyType(
   const isRepeatDispensing = prescriptionTreatmentType.value._attributes.code
     === hl7V3.PrescriptionTreatmentTypeCode.CONTINUOUS_REPEAT_DISPENSING._attributes.code
   if (isRepeatDispensing) {
-    return fhir.CourseOfTherapyType.CONTINOUS_REPEAT_DISPENSING
+    return fhir.COURSE_OF_THERAPY_TYPE_CONTINUOUS_REPEAT_DISPENSING
   } else if (lineItemRepeatNumber) {
-    return fhir.CourseOfTherapyType.CONTINUOUS
+    return fhir.COURSE_OF_THERAPY_TYPE_CONTINUOUS
   } else {
-    return fhir.CourseOfTherapyType.ACUTE
+    return fhir.COURSE_OF_THERAPY_TYPE_ACUTE
   }
 }
 
@@ -185,7 +184,7 @@ export function getStatus(pertinentItemStatus: hl7V3.ItemStatus): fhir.Medicatio
 }
 
 export function createSnomedCodeableConcept(code: hl7V3.SnomedCode): fhir.CodeableConcept {
-  return createCodeableConcept("http://snomed.info/sct", code._attributes.code, code._attributes.displayName)
+  return fhir.createCodeableConcept("http://snomed.info/sct", code._attributes.code, code._attributes.displayName)
 }
 
 export function createDosage(

@@ -61,18 +61,18 @@ export function createBundleResources(
   focusIds.push(patientId)
 
   const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
-  const hl7AuthorAgentPerson = pertinentPrescription.author.AgentPerson
-  const authorId = translateAndAddAgentPerson(hl7AuthorAgentPerson, bundleResources)
+  const authorAgentPerson = pertinentPrescription.author.AgentPerson
+  const authorId = translateAndAddAgentPerson(authorAgentPerson, bundleResources)
 
-  const hl7ResponsiblePartyAgentPerson = pertinentPrescription.responsibleParty?.AgentPerson
+  const responsiblePartyAgentPerson = pertinentPrescription.responsibleParty?.AgentPerson
   let responsiblePartyId = authorId
-  if (hl7ResponsiblePartyAgentPerson && !isDeepStrictEqual(hl7ResponsiblePartyAgentPerson, hl7AuthorAgentPerson)) {
-    responsiblePartyId = translateAndAddAgentPerson(hl7ResponsiblePartyAgentPerson, bundleResources)
+  if (responsiblePartyAgentPerson && !isDeepStrictEqual(responsiblePartyAgentPerson, authorAgentPerson)) {
+    responsiblePartyId = translateAndAddAgentPerson(responsiblePartyAgentPerson, bundleResources)
   }
 
-  const hl7LineItems = toArray(pertinentPrescription.pertinentInformation2).map(pi2 => pi2.pertinentLineItem)
+  const lineItems = toArray(pertinentPrescription.pertinentInformation2).map(pi2 => pi2.pertinentLineItem)
 
-  const firstItemText = hl7LineItems[0].pertinentInformation1?.pertinentAdditionalInstructions?.value?._text ?? ""
+  const firstItemText = lineItems[0].pertinentInformation1?.pertinentAdditionalInstructions?.value?._text ?? ""
   const firstItemAdditionalInstructions = parseAdditionalInstructions(firstItemText)
   const medication = firstItemAdditionalInstructions.medication
   const patientInfo = firstItemAdditionalInstructions.patientInfo
@@ -80,7 +80,7 @@ export function createBundleResources(
     createAndAddCommunicationRequest(patientId, medication, patientInfo, bundleResources)
   }
 
-  hl7LineItems.forEach(hl7LineItem => {
+  lineItems.forEach(hl7LineItem => {
     const medicationRequest = createMedicationRequest(
       pertinentPrescription,
       hl7LineItem,
@@ -94,7 +94,7 @@ export function createBundleResources(
 
   const messageHeader = createMessageHeader(
     parentPrescription.id._attributes.root,
-    fhir.EventCoding.PRESCRIPTION_ORDER,
+    fhir.EVENT_CODING_PRESCRIPTION_ORDER,
     focusIds,
     pertinentPrescription.performer?.AgentOrgSDS?.agentOrganizationSDS?.id?._attributes?.extension,
     releaseRequestId

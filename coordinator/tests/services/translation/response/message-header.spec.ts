@@ -12,7 +12,7 @@ describe("createMessageHeader", () => {
   const cancelRequestId = "testCancelId"
   const messageHeader = createMessageHeader(
     messageId,
-    fhir.EventCoding.PRESCRIPTION_ORDER_RESPONSE,
+    fhir.EVENT_CODING_PRESCRIPTION_ORDER_RESPONSE,
     [patientReference, medicationRequestReference],
     representedOrganizationId,
     cancelRequestId

@@ -13,40 +13,40 @@ import * as fhir from "../../../models/fhir"
 const NHS_TRUST_CODE = "RO197"
 
 export function convertOrganizationAndProviderLicense(
-  fhirBundle: fhir.Bundle,
+  bundle: fhir.Bundle,
   fhirOrganization: fhir.Organization,
-  fhirHealthcareService: fhir.HealthcareService
+  healthcareService: fhir.HealthcareService
 ): hl7V3.Organization {
-  const hl7V3Organization = convertRepresentedOrganization(fhirOrganization, fhirHealthcareService, fhirBundle)
+  const hl7V3Organization = convertRepresentedOrganization(fhirOrganization, healthcareService, bundle)
 
-  if (identifyMessageType(fhirBundle) !== fhir.EventCodingCode.CANCELLATION) {
-    hl7V3Organization.healthCareProviderLicense = convertHealthCareProviderLicense(fhirOrganization, fhirBundle)
+  if (identifyMessageType(bundle) !== fhir.EventCodingCode.CANCELLATION) {
+    hl7V3Organization.healthCareProviderLicense = convertHealthCareProviderLicense(fhirOrganization, bundle)
   }
 
   return hl7V3Organization
 }
 
 function convertRepresentedOrganization(
-  fhirOrganization: fhir.Organization,
-  fhirHealthcareService: fhir.HealthcareService,
-  fhirBundle: fhir.Bundle
+  organization: fhir.Organization,
+  healthcareService: fhir.HealthcareService,
+  bundle: fhir.Bundle
 ) {
-  const shouldUseHealthcareService = isNhsTrust(fhirOrganization)
-  if (shouldUseHealthcareService && !fhirHealthcareService) {
+  const shouldUseHealthcareService = isNhsTrust(organization)
+  if (shouldUseHealthcareService && !healthcareService) {
     throw new InvalidValueError(
       `A HealthcareService must be provided if the Organization role is '${NHS_TRUST_CODE}'.`,
       "PractitionerRole.healthcareService"
     )
   }
   const representedOrganization = shouldUseHealthcareService
-    ? new CostCentreHealthcareService(fhirHealthcareService)
-    : new CostCentreOrganization(fhirOrganization)
-  return convertRepresentedOrganizationDetails(representedOrganization, fhirBundle)
+    ? new CostCentreHealthcareService(healthcareService)
+    : new CostCentreOrganization(organization)
+  return convertRepresentedOrganizationDetails(representedOrganization, bundle)
 }
 
-function isNhsTrust(fhirOrganization: fhir.Organization) {
+function isNhsTrust(organization: fhir.Organization) {
   const organizationTypeCoding = getCodeableConceptCodingForSystemOrNull(
-    fhirOrganization.type,
+    organization.type,
     "https://fhir.nhs.uk/CodeSystem/organisation-role",
     "Organization.type"
   )
@@ -59,12 +59,12 @@ function isDirectReference<T extends fhir.Resource>(
   return !!(reference as fhir.Reference<T>).reference
 }
 
-function convertHealthCareProviderLicense(fhirOrganization: fhir.Organization, fhirBundle: fhir.Bundle) {
-  let fhirParentOrganization = fhirOrganization
-  const partOf = fhirOrganization.partOf
+function convertHealthCareProviderLicense(organization: fhir.Organization, bundle: fhir.Bundle) {
+  let fhirParentOrganization = organization
+  const partOf = organization.partOf
   if (partOf) {
     if (isDirectReference(partOf)) {
-      fhirParentOrganization = resolveReference(fhirBundle, partOf)
+      fhirParentOrganization = resolveReference(bundle, partOf)
     } else {
       //TODO - Fix error FHIR paths for this case?
       fhirParentOrganization = {
@@ -81,10 +81,7 @@ function convertHealthCareProviderLicense(fhirOrganization: fhir.Organization, f
   return new hl7V3.HealthCareProviderLicense(hl7V3ParentOrganization)
 }
 
-function convertRepresentedOrganizationDetails(
-  costCentre: CostCentre,
-  fhirBundle: fhir.Bundle
-): hl7V3.Organization {
+function convertRepresentedOrganizationDetails(costCentre: CostCentre, bundle: fhir.Bundle): hl7V3.Organization {
   const result = convertCommonOrganizationDetails(costCentre)
 
   const telecomFhirPath = `${costCentre.resourceType}.telecom`
@@ -92,7 +89,7 @@ function convertRepresentedOrganizationDetails(
   result.telecom = convertTelecom(telecom, telecomFhirPath)
 
   const addressFhirPath = costCentre.getAddressFhirPath()
-  const address = costCentre.getAddress(fhirBundle)
+  const address = costCentre.getAddress(bundle)
   result.addr = convertAddress(address, addressFhirPath)
 
   return result

@@ -15,58 +15,58 @@ import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
 
 export function convertBundleToPrescription(bundle: fhir.Bundle): hl7V3.Prescription {
-  const fhirMedicationRequests = getMedicationRequests(bundle)
-  const fhirFirstMedicationRequest = fhirMedicationRequests[0]
+  const medicationRequests = getMedicationRequests(bundle)
+  const firstMedicationRequest = medicationRequests[0]
 
-  const fhirCommunicationRequests = getCommunicationRequests(bundle)
+  const communicationRequests = getCommunicationRequests(bundle)
 
   const prescription = new hl7V3.Prescription(
-    ...convertPrescriptionIds(fhirFirstMedicationRequest)
+    ...convertPrescriptionIds(firstMedicationRequest)
   )
 
-  const repeatNumber = convertRepeatNumber(fhirMedicationRequests)
+  const repeatNumber = convertRepeatNumber(medicationRequests)
   if (repeatNumber) {
     prescription.repeatNumber = repeatNumber
   }
 
-  const performer = fhirFirstMedicationRequest.dispenseRequest.performer
+  const performer = firstMedicationRequest.dispenseRequest.performer
   if (performer) {
     prescription.performer = convertPerformer(performer)
   }
 
-  prescription.author = convertAuthor(bundle, fhirFirstMedicationRequest)
-  prescription.responsibleParty = convertResponsibleParty(bundle, fhirFirstMedicationRequest)
+  prescription.author = convertAuthor(bundle, firstMedicationRequest)
+  prescription.responsibleParty = convertResponsibleParty(bundle, firstMedicationRequest)
 
-  if (getCourseOfTherapyTypeCode(fhirMedicationRequests)
+  if (getCourseOfTherapyTypeCode(medicationRequests)
     === fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING) {
-    const validityPeriod = fhirFirstMedicationRequest.dispenseRequest.validityPeriod
-    const expectedSupplyDuration = fhirFirstMedicationRequest.dispenseRequest.expectedSupplyDuration
+    const validityPeriod = firstMedicationRequest.dispenseRequest.validityPeriod
+    const expectedSupplyDuration = firstMedicationRequest.dispenseRequest.expectedSupplyDuration
     prescription.component1 = convertPrescriptionComponent1(validityPeriod, expectedSupplyDuration)
   }
 
-  const reviewDate = extractReviewDate(fhirFirstMedicationRequest)
+  const reviewDate = extractReviewDate(firstMedicationRequest)
   if (reviewDate) {
     prescription.pertinentInformation7 = convertPrescriptionPertinentInformation7(reviewDate)
   }
 
-  prescription.pertinentInformation5 = convertPrescriptionPertinentInformation5(fhirMedicationRequests)
-  prescription.pertinentInformation1 = convertPrescriptionPertinentInformation1(fhirFirstMedicationRequest)
+  prescription.pertinentInformation5 = convertPrescriptionPertinentInformation5(medicationRequests)
+  prescription.pertinentInformation1 = convertPrescriptionPertinentInformation1(firstMedicationRequest)
   prescription.pertinentInformation2 = convertPrescriptionPertinentInformation2(
     bundle,
-    fhirCommunicationRequests,
-    fhirMedicationRequests,
+    communicationRequests,
+    medicationRequests,
     repeatNumber
   )
   prescription.pertinentInformation8 = convertPrescriptionPertinentInformation8()
-  prescription.pertinentInformation4 = convertPrescriptionPertinentInformation4(fhirFirstMedicationRequest)
+  prescription.pertinentInformation4 = convertPrescriptionPertinentInformation4(firstMedicationRequest)
 
   return prescription
 }
 
 function convertPrescriptionIds(
-  fhirFirstMedicationRequest: fhir.MedicationRequest
+  firstMedicationRequest: fhir.MedicationRequest
 ): [hl7V3.GlobalIdentifier, hl7V3.ShortFormPrescriptionIdentifier] {
-  const groupIdentifier = fhirFirstMedicationRequest.groupIdentifier
+  const groupIdentifier = firstMedicationRequest.groupIdentifier
   const prescriptionIdExtension = getExtensionForUrl(
     groupIdentifier.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
@@ -109,16 +109,16 @@ export function convertPrescriptionComponent1(
 }
 
 function convertPrescriptionPertinentInformation5(
-  fhirMedicationRequests: Array<fhir.MedicationRequest>
+  medicationRequests: Array<fhir.MedicationRequest>
 ) {
-  const prescriptionTreatmentType = convertCourseOfTherapyType(fhirMedicationRequests)
+  const prescriptionTreatmentType = convertCourseOfTherapyType(medicationRequests)
   return new hl7V3.PrescriptionPertinentInformation5(prescriptionTreatmentType)
 }
 
 export function convertCourseOfTherapyType(
-  fhirMedicationRequests: Array<fhir.MedicationRequest>
+  medicationRequests: Array<fhir.MedicationRequest>
 ): hl7V3.PrescriptionTreatmentType {
-  const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(fhirMedicationRequests)
+  const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
   const prescriptionTreatmentTypeCode = convertCourseOfTherapyTypeCode(courseOfTherapyTypeCode)
   return new hl7V3.PrescriptionTreatmentType(prescriptionTreatmentTypeCode)
 }
@@ -139,16 +139,16 @@ function convertCourseOfTherapyTypeCode(courseOfTherapyTypeCode: string) {
   }
 }
 
-function convertPrescriptionPertinentInformation1(fhirFirstMedicationRequest: fhir.MedicationRequest) {
-  const dispensingSitePreference = convertDispensingSitePreference(fhirFirstMedicationRequest)
+function convertPrescriptionPertinentInformation1(firstMedicationRequest: fhir.MedicationRequest) {
+  const dispensingSitePreference = convertDispensingSitePreference(firstMedicationRequest)
   return new hl7V3.PrescriptionPertinentInformation1(dispensingSitePreference)
 }
 
 function convertDispensingSitePreference(
-  fhirFirstMedicationRequest: fhir.MedicationRequest
+  firstMedicationRequest: fhir.MedicationRequest
 ): hl7V3.DispensingSitePreference {
   const performerSiteType = getExtensionForUrl(
-    fhirFirstMedicationRequest.dispenseRequest.extension,
+    firstMedicationRequest.dispenseRequest.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
     "MedicationRequest.dispenseRequest.extension"
   ) as fhir.CodingExtension
@@ -157,9 +157,9 @@ function convertDispensingSitePreference(
 }
 
 function extractPatientInfoText(
-  fhirCommunicationRequests: Array<fhir.CommunicationRequest>
+  communicationRequests: Array<fhir.CommunicationRequest>
 ): Array<hl7V3.Text> {
-  return fhirCommunicationRequests
+  return communicationRequests
     .flatMap(communicationRequest => communicationRequest.payload)
     .filter(isTruthy)
     .filter(fhir.isContentStringPayload)
@@ -169,9 +169,9 @@ function extractPatientInfoText(
 
 function extractMedicationListText(
   bundle: fhir.Bundle,
-  fhirCommunicationRequests: Array<fhir.CommunicationRequest>
+  communicationRequests: Array<fhir.CommunicationRequest>
 ): Array<hl7V3.Text> {
-  return fhirCommunicationRequests
+  return communicationRequests
     .flatMap(communicationRequest => communicationRequest.payload)
     .filter(isTruthy)
     .filter(fhir.isContentReferencePayload)
@@ -184,22 +184,22 @@ function extractMedicationListText(
 
 function convertPrescriptionPertinentInformation2(
   bundle: fhir.Bundle,
-  fhirCommunicationRequests: Array<fhir.CommunicationRequest>,
-  fhirMedicationRequests: Array<fhir.MedicationRequest>,
+  communicationRequests: Array<fhir.CommunicationRequest>,
+  medicationRequests: Array<fhir.MedicationRequest>,
   repeatNumber: hl7V3.Interval<hl7V3.Timestamp>
 ) {
   const lineItems = []
 
   lineItems.push(convertMedicationRequestToLineItem(
-    fhirMedicationRequests[0],
+    medicationRequests[0],
     repeatNumber,
-    extractMedicationListText(bundle, fhirCommunicationRequests),
-    extractPatientInfoText(fhirCommunicationRequests)
+    extractMedicationListText(bundle, communicationRequests),
+    extractPatientInfoText(communicationRequests)
   ))
 
-  for (let i=1; i<fhirMedicationRequests.length; i++) {
+  for (let i=1; i<medicationRequests.length; i++) {
     lineItems.push(convertMedicationRequestToLineItem(
-      fhirMedicationRequests[i],
+      medicationRequests[i],
       repeatNumber,
       [],
       []
@@ -216,13 +216,13 @@ function convertPrescriptionPertinentInformation8() {
   return new hl7V3.PrescriptionPertinentInformation8(tokenIssued)
 }
 
-function convertPrescriptionPertinentInformation4(fhirFirstMedicationRequest: fhir.MedicationRequest) {
-  const fhirMedicationPrescriptionTypeExtension = getExtensionForUrl(
-    fhirFirstMedicationRequest.extension,
+function convertPrescriptionPertinentInformation4(firstMedicationRequest: fhir.MedicationRequest) {
+  const prescriptionTypeExtension = getExtensionForUrl(
+    firstMedicationRequest.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
     "MedicationRequest.extension"
   ) as fhir.CodingExtension
-  const prescriptionTypeValue = new hl7V3.PrescriptionTypeCode(fhirMedicationPrescriptionTypeExtension.valueCoding.code)
+  const prescriptionTypeValue = new hl7V3.PrescriptionTypeCode(prescriptionTypeExtension.valueCoding.code)
   const prescriptionType = new hl7V3.PrescriptionType(prescriptionTypeValue)
   return new hl7V3.PrescriptionPertinentInformation4(prescriptionType)
 }
@@ -230,8 +230,8 @@ function convertPrescriptionPertinentInformation4(fhirFirstMedicationRequest: fh
 function convertPerformer(performerReference: fhir.IdentifierReference<fhir.Organization>) {
   const organization = new hl7V3.Organization()
   organization.id = new hl7V3.SdsOrganizationIdentifier(performerReference.identifier.value)
-  const hl7V3AgentOrganization = new hl7V3.AgentOrganization(organization)
-  return new hl7V3.Performer(hl7V3AgentOrganization)
+  const agentOrganization = new hl7V3.AgentOrganization(organization)
+  return new hl7V3.Performer(agentOrganization)
 }
 
 export function convertRepeatNumber(

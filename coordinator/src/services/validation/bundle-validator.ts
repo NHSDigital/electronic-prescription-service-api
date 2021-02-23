@@ -5,7 +5,7 @@ import {getMedicationRequests} from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues} from "./util"
 import {getCourseOfTherapyTypeCode} from "../translation/request/course-of-therapy-type"
-import {getExtensionForUrlOrNull, isTruthy} from "../translation/common"
+import {getExtensionForUrlOrNull, getIdentifierValueForSystem, isTruthy} from "../translation/common"
 import * as fhir from "../../models/fhir"
 
 // Validate Status
@@ -50,8 +50,8 @@ export function verifyCommonBundle(bundle: fhir.Bundle): Array<errors.Validation
   const incorrectValueErrors = []
 
   const medicationRequests = getMedicationRequests(bundle)
-  if (medicationRequests.some(medicationRequest => medicationRequest.intent !== "order")) {
-    incorrectValueErrors.push(new MedicationRequestIncorrectValueError("intent", "order"))
+  if (medicationRequests.some(medicationRequest => medicationRequest.intent !== fhir.MedicationRequestIntent.ORDER)) {
+    incorrectValueErrors.push(new MedicationRequestIncorrectValueError("intent", fhir.MedicationRequestIntent.ORDER))
   }
 
   return incorrectValueErrors
@@ -60,10 +60,7 @@ export function verifyCommonBundle(bundle: fhir.Bundle): Array<errors.Validation
 export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.ValidationError> {
   const medicationRequests = getMedicationRequests(bundle)
 
-  const incorrectValueErrors = []
-  if (medicationRequests.some(medicationRequest => medicationRequest.status !== "active")) {
-    incorrectValueErrors.push(new MedicationRequestIncorrectValueError("status", "active"))
-  }
+  const allErrors: Array<errors.ValidationError> = []
 
   const fhirPaths = [
     "groupIdentifier",
@@ -82,16 +79,22 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
   const inconsistentValueErrors = fhirPaths
     .map((fhirPath) => verifyIdenticalForAllMedicationRequests(bundle, medicationRequests, fhirPath))
     .filter(isTruthy)
+  allErrors.push(...inconsistentValueErrors)
 
   const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
   const isRepeatDispensing = courseOfTherapyTypeCode === fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
   const repeatDispensingErrors = isRepeatDispensing ? verifyRepeatDispensingPrescription(medicationRequests) : []
+  allErrors.push(...repeatDispensingErrors)
 
-  return [
-    ...incorrectValueErrors,
-    ...inconsistentValueErrors,
-    ...repeatDispensingErrors
-  ]
+  if (medicationRequests.some(medicationRequest => medicationRequest.status !== "active")) {
+    allErrors.push(new MedicationRequestIncorrectValueError("status", "active"))
+  }
+
+  if(!allMedicationRequestsHaveUniqueIdentifier(medicationRequests)){
+    allErrors.push(new errors.MedicationRequestDuplicateValueError())
+  }
+
+  return allErrors
 }
 
 export function verifyRepeatDispensingPrescription(
@@ -156,4 +159,15 @@ function verifyIdenticalForAllMedicationRequests(
     return new errors.MedicationRequestInconsistentValueError(fhirPath, uniqueFieldValues)
   }
   return null
+}
+
+function allMedicationRequestsHaveUniqueIdentifier(
+  medicationRequests: Array<fhir.MedicationRequest>
+) {
+  const allIdentifiers = medicationRequests.map(
+    request => getIdentifierValueForSystem(
+      request.identifier, "https://fhir.nhs.uk/Id/prescription-order-item-number", "MedicationRequest.identifier.value")
+  )
+  const uniqueIdentifiers = getUniqueValues(allIdentifiers)
+  return uniqueIdentifiers.length === medicationRequests.length
 }

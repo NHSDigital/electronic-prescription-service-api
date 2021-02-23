@@ -1,21 +1,20 @@
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {convertAddress, convertName, generateResourceId} from "./common"
 import {UNKNOWN_GP_ODS_CODE} from "../common"
-import {createIdentifier} from "./fhir-base-types"
 import {convertHL7V3DateToIsoDateString} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
 
-export function createPatient(hl7Patient: hl7V3.Patient): fhir.Patient {
+export function createPatient(patient: hl7V3.Patient): fhir.Patient {
   return {
     resourceType: "Patient",
     id: generateResourceId(),
-    identifier: createNhsNumberIdentifier(hl7Patient.id._attributes.extension),
-    name: convertName(hl7Patient.patientPerson.name),
-    gender: convertGender(hl7Patient.patientPerson.administrativeGenderCode),
-    birthDate: convertHL7V3DateToIsoDateString(hl7Patient.patientPerson.birthTime),
-    address: convertAddress(hl7Patient.addr),
-    generalPractitioner: createGeneralPractitioner(hl7Patient)
+    identifier: createNhsNumberIdentifier(patient.id._attributes.extension),
+    name: convertName(patient.patientPerson.name),
+    gender: convertGender(patient.patientPerson.administrativeGenderCode),
+    birthDate: convertHL7V3DateToIsoDateString(patient.patientPerson.birthTime),
+    address: convertAddress(patient.addr),
+    generalPractitioner: createGeneralPractitioner(patient)
   }
 }
 
@@ -57,13 +56,13 @@ export function convertGender(hl7Gender: hl7V3.SexCode): string {
   }
 }
 
-function createGeneralPractitioner(hl7Patient: hl7V3.Patient): Array<fhir.IdentifierReference<fhir.Organization>> {
-  const hl7PatientCareProvision = hl7Patient.patientPerson.playedProviderPatient.subjectOf.patientCareProvision
-  const healthCareProviderId = hl7PatientCareProvision.responsibleParty.healthCareProvider.id
-  const hl7OdsCode = isNullFlavor(healthCareProviderId)
+function createGeneralPractitioner(patient: hl7V3.Patient): Array<fhir.IdentifierReference<fhir.Organization>> {
+  const patientCareProvision = patient.patientPerson.playedProviderPatient.subjectOf.patientCareProvision
+  const healthCareProviderId = patientCareProvision.responsibleParty.healthCareProvider.id
+  const odsCode = isNullFlavor(healthCareProviderId)
     ? UNKNOWN_GP_ODS_CODE
     : healthCareProviderId._attributes.extension
-  return [{identifier: createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", hl7OdsCode)}]
+  return [{identifier: fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", odsCode)}]
 }
 
 function isNullFlavor(value: unknown): value is hl7V3.Null {

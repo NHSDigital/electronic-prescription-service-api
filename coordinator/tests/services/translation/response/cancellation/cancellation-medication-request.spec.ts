@@ -59,7 +59,7 @@ describe("createMedicationRequest", () => {
 
   test("has 'order' in `intent` key", () => {
     const intent = medicationRequest.intent
-    expect(intent).toBe("order")
+    expect(intent).toBe(fhir.MedicationRequestIntent.ORDER)
   })
 
   test("has default medication in medicationCodeableConcept", () => {
