@@ -324,8 +324,8 @@ describe("dispenseRequest", () => {
     expect(result.extension).toContainEqual({
       url: "https://fhir.nhs.uk/StructureDefinition/Extension-performerSiteType",
       valueCoding: {
-        code: "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
-        display: "P1"
+        system: "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+        code: "P1"
       }
     })
   })
