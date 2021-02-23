@@ -123,15 +123,7 @@ TestResources.processOrderUpdateCaseGroups.forEach(pactGroup => {
                 headers: {
                   "Content-Type": "application/json"
                 },
-                body: {
-                  resourceType: "OperationOutcome",
-                  issue: [
-                    {
-                      code: "informational",
-                      severity: "information"
-                    }
-                  ]
-                },
+                //TODO - Verify response body for cancellations
                 status: 200
               }
             }
