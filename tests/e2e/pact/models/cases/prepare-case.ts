@@ -14,4 +14,8 @@ export class PrepareCase extends Case {
     const responseJson = LosslessJson.parse(responseString)
     this.response = responseJson
   }
+
+  toJestCase(): [string, fhir.Bundle | fhir.Parameters, fhir.Parameters, number] {
+    return [this.description, this.request, this.response, this.statusCode]
+  }
 }

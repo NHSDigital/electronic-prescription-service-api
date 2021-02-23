@@ -7,7 +7,7 @@ import {basePath, pactOptions} from "../../resources/common"
 import * as fhir from "../../models/fhir"
 
 jestpact.pactWith(
-  pactOptions("sandbox", "convert", ["failures"]),
+  pactOptions("sandbox", "convert", "failures"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {

@@ -1,45 +1,27 @@
-import {InteractionObject, Matchers} from "@pact-foundation/pact"
+import { InteractionObject, Matchers } from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import * as TestResources from "../../resources/test-resources"
+import { Bundle, Parameters } from "../../models/fhir"
 import * as LosslessJson from "lossless-json"
 import supertest from "supertest"
-import {createUnauthorisedInteraction} from "./auth"
 import * as uuid from "uuid"
-import {basePath, getStringParameterByName, pactOptions} from "../../resources/common"
-import * as fhir from "../../models/fhir"
+import { basePath, getStringParameterByName, pactOptions } from "../../resources/common"
 
-jestpact.pactWith(
-  pactOptions("live", "prepare"),
-  /* eslint-disable  @typescript-eslint/no-explicit-any */
-  async (provider: any) => {
-    const client = () => {
-      const url = `${provider.mockService.baseUrl}`
-      return supertest(url)
-    }
+TestResources.prepareCaseGroups.forEach(pactGroup => {
+  const pactGroupName = pactGroup.name
+  const pactGroupTestCases = pactGroup.cases
 
-    const authenticationTestDescription = "a request to prepare an unauthorised message"
+  jestpact.pactWith(
+    pactOptions("live", "prepare", pactGroupName),
+    /* eslint-disable  @typescript-eslint/no-explicit-any */
+    async (provider: any) => {
+      const client = () => {
+        const url = `${provider.mockService.baseUrl}`
+        return supertest(url)
+      }
 
-    describe("endpoint authentication e2e tests", () => {
-      test(authenticationTestDescription, async () => {
-        const apiPath = `${basePath}/$prepare`
-        const interaction: InteractionObject = createUnauthorisedInteraction(authenticationTestDescription, apiPath)
-        const requestId = uuid.v4()
-        const correlationId = uuid.v4()
-        await provider.addInteraction(interaction)
-        await client()
-          .post(apiPath)
-          .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
-          .set("X-Request-ID", requestId)
-          .set("X-Correlation-ID", correlationId)
-          .send({})
-          .expect(401)
-      })
-    })
-
-    describe("prepare e2e tests", () => {
-      test.each(TestResources.prepareCases)(
-        "should be able to prepare a %s message",
-        async (desc: string, request: fhir.Bundle, response: fhir.Parameters) => {
+      describe("prepare e2e tests", () => {
+        test.each(pactGroupTestCases)("should be able to prepare a %s message", async (desc: string, request: Bundle, response: Parameters) => {
           const apiPath = `${basePath}/$prepare`
           const requestStr = LosslessJson.stringify(request)
           const requestId = uuid.v4()
@@ -92,8 +74,8 @@ jestpact.pactWith(
             .set("X-Correlation-ID", correlationId)
             .send(requestStr)
             .expect(200)
-        }
-      )
-    })
-  }
-)
+        })
+      })
+    }
+  )
+})
