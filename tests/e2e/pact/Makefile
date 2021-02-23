@@ -14,6 +14,7 @@ endif
 
 create-pacts:
 	rm -rf pact
+	npm run clear-cache
 ifeq (sandbox, $(findstring sandbox,$(mode)))
 	npm run create-sandbox-pacts
 else

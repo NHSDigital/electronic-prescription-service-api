@@ -1,25 +1,27 @@
-import {InteractionObject, Matchers} from "@pact-foundation/pact"
+import { InteractionObject, Matchers } from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
-import {basePath, getStringParameterByName, pactOptions} from "../../resources/common"
+import { basePath, getStringParameterByName, pactOptions } from "../../resources/common"
 import * as fhir from "../../models/fhir"
 
-jestpact.pactWith(
-  pactOptions("sandbox", "prepare"),
-  /* eslint-disable  @typescript-eslint/no-explicit-any */
-  async (provider: any) => {
-    const client = () => {
-      const url = `${provider.mockService.baseUrl}`
-      return supertest(url)
-    }
+TestResources.prepareCaseGroups.forEach(pactGroup => {
+  const pactGroupName = pactGroup.name
+  const pactGroupTestCases = pactGroup.cases
 
-    describe("prepare sandbox e2e tests", () => {
-      test.each(TestResources.prepareCases)(
-        "should be able to prepare a %s message",
-        async (desc: string, request: fhir.Bundle, response: fhir.Parameters) => {
+  jestpact.pactWith(
+    pactOptions("sandbox", "prepare", pactGroupName),
+    /* eslint-disable  @typescript-eslint/no-explicit-any */
+    async (provider: any) => {
+      const client = () => {
+        const url = `${provider.mockService.baseUrl}`
+        return supertest(url)
+      }
+
+      describe("prepare sandbox e2e tests", () => {
+        test.each(pactGroupTestCases)("should be able to prepare a %s message", async (desc: string, request: fhir.Bundle, response: fhir.Parameters) => {
           const apiPath = `${basePath}/$prepare`
           const requestStr = LosslessJson.stringify(request)
           const requestId = uuid.v4()
@@ -72,8 +74,8 @@ jestpact.pactWith(
             .set("X-Correlation-ID", correlationId)
             .send(requestStr)
             .expect(200)
-        }
-      )
-    })
-  }
-)
+        })
+      })
+    }
+  )
+})

@@ -9,7 +9,7 @@ import {basePath, pactOptions} from "../../resources/common"
 import * as fhir from "../../models/fhir"
 
 jestpact.pactWith(
-  pactOptions("live", "convert", ["failures"]),
+  pactOptions("live", "convert", "failures"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
