@@ -302,7 +302,6 @@ paths:
 
         This returns a set of prescriptions based on the information passed to the endpoint: 
         * to acquire prescription information for an entire pharmacy, send owner information
-        * to acquire prescription information for a specific prescription, send the group identifier for that prescription
         
         This endpoint is only available in the sandbox environment.
       tags:
