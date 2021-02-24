@@ -455,9 +455,9 @@
         ],
         "name": [
           {
-            "family": "Bhatia",
+            "family": "BOIN",
             "given": [
-              "AA"
+              "C"
             ],
             "prefix": [
               "DR"
@@ -473,7 +473,7 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "C81010"
+            "value": "A83008"
           }
         ],
         "type": [
@@ -487,19 +487,20 @@
             ]
           }
         ],
-        "name": "The Moir Medical Centre",
+        "name": "HALLGARTH SURGERY",
         "address": [
           {
             "use": "work",
             "type": "both",
             "line": [
-              "The Moir Medical Centre",
-              "Regent Street, Long Eaton",
-              "Nottingham"
+              "HALLGARTH SURGERY",
+              "CHEAPSIDE",
+              "SHILDON",
+              "COUNTY DURHAM"
             ],
-            "city": "Nottingham",
-            "district": "Derbyshire",
-            "postalCode": "NG10 1QQ"
+            "city": "SHILDON",
+            "district": "COUNTY DURHAM",
+            "postalCode": "DL4 2HP"
           }
         ],
         "telecom": [
@@ -512,9 +513,9 @@
         "partOf": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "15M"
+            "value": "84H"
           },
-          "display": "NHS Derby and Derbyshire CCG"
+          "display": "NHS COUNTY DURHAM CCG"
         }
       }
     },
