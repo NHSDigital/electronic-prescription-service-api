@@ -23,12 +23,6 @@ function isBundle(body: unknown): body is fhir.Bundle {
 export function translateToFhir<T>(hl7Message: SpineDirectResponse<T>): TranslatedSpineResponse {
   const bodyString = hl7Message.body.toString()
 
-  if(isBundle(JSON.parse(JSON.stringify(hl7Message.body)))){
-    return {
-      statusCode: 200,
-      fhirResponse: JSON.parse(JSON.stringify(hl7Message.body))
-    }
-  }
   const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(bodyString)
   if (cancelResponse) {
     return getCancellationResponseAndErrorCodes(cancelResponse)
@@ -42,16 +36,21 @@ export function translateToFhir<T>(hl7Message: SpineDirectResponse<T>): Translat
     return getSyncResponseAndErrorCodes(syncMCCI)
   }
 
-  const codeableConcept = {coding: [{
-    code: "",
-    display: bodyString
-  }]}
-
-  return {
-    statusCode: 400,
-    fhirResponse: {
-      resourceType: "OperationOutcome",
-      issue: [createOperationOutcomeIssue(400, codeableConcept)]
+  try{
+    const messageObject = JSON.parse(JSON.stringify(hl7Message.body))
+    if(isBundle(messageObject)){
+      return {
+        statusCode: 200,
+        fhirResponse: messageObject
+      }
+    }
+  } catch {
+    return {
+      statusCode: 400,
+      fhirResponse: {
+        resourceType: "OperationOutcome",
+        issue: [createOperationOutcomeIssue(400)]
+      }
     }
   }
 }

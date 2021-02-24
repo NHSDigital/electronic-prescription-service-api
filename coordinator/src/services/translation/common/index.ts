@@ -178,9 +178,10 @@ export function getStringParameterByName(
   name: string,
   fhirPath = ""
 ): fhir.StringParameter {
-  return onlyElement(parameters
-    .filter(parameter => isStringParameter(parameter))
-    .filter(parameter => parameter.name === name), fhirPath, `name == '${name}'`) as fhir.StringParameter
+  return onlyElement(parameters.filter(isStringParameter).filter(parameter => parameter.name === name),
+    fhirPath,
+    `name == '${name}'`
+  ) as fhir.StringParameter
 }
 
 export function getIdentifierParameterByName(
@@ -188,7 +189,8 @@ export function getIdentifierParameterByName(
   name: string,
   fhirPath = ""
 ): fhir.IdentifierParameter {
-  return onlyElement(parameters
-    .filter(parameter => isIdentifierParameter(parameter))
-    .filter(parameter => parameter.name === name), fhirPath, `name == '${name}'`) as fhir.IdentifierParameter
+  return onlyElement(parameters.filter(isIdentifierParameter).filter(parameter => parameter.name === name),
+    fhirPath,
+    `name == '${name}'`
+  ) as fhir.IdentifierParameter
 }
