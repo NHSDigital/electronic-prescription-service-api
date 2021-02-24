@@ -507,32 +507,6 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:d0f003a0-8763-43d5-a264-ce52a38901c9",
-      "resource": {
-        "resourceType": "List",
-        "status": "current",
-        "mode": "snapshot",
-        "code": {
-          "text": "Repeat Medications"
-        },
-        "subject": {
-          "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
-        },
-        "entry": [
-          {
-            "item": {
-              "display": "Bendroflumethiazide 2.5mg tablets (3/6)"
-            }
-          },
-          {
-            "item": {
-              "display": "Salbutamol 100micrograms/dose inhaler CFC free (2/6)"
-            }
-          }
-        ]
-      }
-    },
-    {
       "fullUrl": "urn:uuid:28828c55-8fa7-42d7-916f-fcf076e0c10e",
       "resource": {
         "resourceType": "Provenance",
