@@ -1,8 +1,8 @@
 import * as XmlJs from "xml-js"
 import {writeXmlStringPretty} from "../../src/services/serialisation/xml"
 import * as LosslessJson from "lossless-json"
-import * as fhir from "../../src/models/fhir/fhir-resources"
 import * as uuid from "uuid"
+import * as fhir from "../../src/models/fhir"
 
 export function clone<T>(input: T): T {
   return LosslessJson.parse(LosslessJson.stringify(input))

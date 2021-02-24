@@ -1,4 +1,4 @@
-import * as fhir from "../../../models/fhir/fhir-resources"
+import * as fhir from "../../../models/fhir"
 import {LosslessNumber} from "lossless-json"
 import {InvalidValueError, TooFewValuesError, TooManyValuesError} from "../../../models/errors/processing-errors"
 
@@ -44,9 +44,9 @@ export function onlyElementOrNull<T>(iterable: Iterable<T>, fhirPath: string, ad
   return value
 }
 
-export function getResourceForFullUrl(fhirBundle: fhir.Bundle, resourceFullUrl: string): fhir.Resource {
+export function getResourceForFullUrl(bundle: fhir.Bundle, resourceFullUrl: string): fhir.Resource {
   return onlyElement(
-    fhirBundle.entry.filter(entry => entry.fullUrl === resourceFullUrl),
+    bundle.entry.filter(entry => entry.fullUrl === resourceFullUrl),
     "Bundle.entry",
     `fullUrl == '${resourceFullUrl}'`
   ).resource

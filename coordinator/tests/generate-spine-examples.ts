@@ -1,8 +1,9 @@
 import {specification} from "./resources/test-resources"
-import {generateResourceId, getFullUrl} from "../src/services/translation/cancellation/common"
+import {generateResourceId, getFullUrl} from "../src/services/translation/response/common"
 import {
   getMedicationRequests,
-  getMessageHeader, getPatient,
+  getMessageHeader,
+  getPatient,
   getProvenances
 } from "../src/services/translation/common/getResourcesOfType"
 import practitioners from "./resources/message-fragments/practitioner"
@@ -11,16 +12,13 @@ import prescriptionTypeExtensions from "./resources/message-fragments/extensions
 import medicationRequests from "./resources/message-fragments/medicationRequest"
 import * as fs from "fs"
 import * as path from "path"
-import * as fhir from "../src/models/fhir/fhir-resources"
-import {
-  getExtensionForUrl,
-  getExtensionForUrlOrNull
-} from "../src/services/translation/common"
+import {getExtensionForUrl, getExtensionForUrlOrNull} from "../src/services/translation/common"
 import * as LosslessJson from "lossless-json"
 import * as moment from "moment"
 import {clone} from "./resources/test-helpers"
-import {createReference} from "../src/services/translation/cancellation/fhir-base-types"
+import {createReference} from "../src/services/translation/response/fhir-base-types"
 import {convertMomentToISODateTime} from "../src/services/translation/common/dateTime"
+import * as fhir from "../src/models/fhir"
 
 function updateMessageHeaderAndProvenance(bundle: fhir.Bundle) {
   const patientReference = createReference(getPatient(bundle).id)
@@ -51,7 +49,7 @@ function generateCancelMessage(
 
   const cancelMessageMedicationRequest = getMedicationRequests(cancelMessage)
   cancelMessageMedicationRequest[0].statusReason = getStatusReason(statusCode)
-  cancelMessageMedicationRequest[0].status = "cancelled"
+  cancelMessageMedicationRequest[0].status = fhir.MedicationRequestStatus.CANCELLED
 
   return removeResourcesOfType(cancelMessage, "Provenance")
 }

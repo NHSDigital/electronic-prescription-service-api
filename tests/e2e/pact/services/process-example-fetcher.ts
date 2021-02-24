@@ -1,7 +1,7 @@
 import {ProcessCase} from "../models/cases/process-case"
 import {exampleFiles} from "./example-files-fetcher"
 import * as uuid from "uuid"
-import * as fhir from "../models/fhir/fhir-resources"
+import * as fhir from "../models/fhir"
 
 const processRequestFiles = exampleFiles.filter(exampleFile => exampleFile.isRequest && exampleFile.endpoint === "process")
 const prescriptionOrderFiles = processRequestFiles.filter(exampleFile => exampleFile.operation === "send")

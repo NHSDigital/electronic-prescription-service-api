@@ -1,47 +1,21 @@
-import { InteractionObject } from "@pact-foundation/pact"
+import {InteractionObject} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
-import {Bundle, MedicationRequest} from "../../models/fhir/fhir-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
 import {regeneratePrescriptionIds} from "../../services/process-example-fetcher"
+import * as fhir from "../../models/fhir"
 
 regeneratePrescriptionIds()
 
-const orderPactGroups = [
-  {
-    name: "secondarycare-community-acute",
-    cases: TestResources.processSecondaryCareCommunityAcuteOrderCases,
-  },
-  {
-    name: "secondarycare-community-repeatdispensing",
-    cases: TestResources.processSecondaryCareCommunityRepeatDispensingOrderCases,
-  },
-  {
-    name: "secondarycare-homecare",
-    cases: TestResources.processSecondaryCareHomecareOrderCases,
-  },
-  {
-    name: "primarycare",
-    cases: TestResources.processPrimaryCareOrderCases
-  }
-]
-
-const orderUpdatePactGroups = [
-  {
-    name: "secondarycare-community-acute-cancel",
-    cases: TestResources.processSecondaryCareCommunityAcuteOrderUpdateCases
-  }
-]
-
-orderPactGroups.forEach(pactGroup => {
+TestResources.processOrderCaseGroups.forEach(pactGroup => {
   const pactGroupName = pactGroup.name
   const pactGroupTestCases = pactGroup.cases
 
   jestpact.pactWith(
-    pactOptions("live", "process", [pactGroupName]),
+    pactOptions("live", "process", pactGroupName, "send"),
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     async (provider: any) => {
       const client = () => {
@@ -50,16 +24,16 @@ orderPactGroups.forEach(pactGroup => {
       }
 
       describe("process-message e2e tests", () => {
-        test.each(pactGroupTestCases)("should be able to process %s", async (desc: string, message: Bundle) => {
+        test.each(pactGroupTestCases)("should be able to process %s", async (desc: string, message: fhir.Bundle) => {
           const apiPath = `${basePath}/$process-message`
           const bundleStr = LosslessJson.stringify(message)
-          const bundle = JSON.parse(bundleStr) as Bundle
+          const bundle = JSON.parse(bundleStr) as fhir.Bundle
 
           const requestId = uuid.v4()
           const correlationId = uuid.v4()
 
           const firstMedicationRequest = message.entry.map(e => e.resource)
-            .find(r => r.resourceType == "MedicationRequest") as MedicationRequest
+            .find(r => r.resourceType == "MedicationRequest") as fhir.MedicationRequest
           const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
           const interaction: InteractionObject = {
@@ -105,12 +79,12 @@ orderPactGroups.forEach(pactGroup => {
   )
 })
 
-orderUpdatePactGroups.forEach(pactGroup => {
+TestResources.processOrderUpdateCaseGroups.forEach(pactGroup => {
   const pactGroupName = pactGroup.name
   const pactGroupTestCases = pactGroup.cases
 
   jestpact.pactWith(
-    pactOptions("live", "process", [pactGroupName]),
+    pactOptions("live", "process", pactGroupName, "cancel"),
     /* eslint-disable  @typescript-eslint/no-explicit-any */
     async (provider: any) => {
       const client = () => {
@@ -120,16 +94,16 @@ orderUpdatePactGroups.forEach(pactGroup => {
 
       describe("process-message e2e tests", () => {
         if (pactGroupTestCases.length) {
-          test.each(pactGroupTestCases)("should be able to process %s", async (desc: string, message: Bundle) => {
+          test.each(pactGroupTestCases)("should be able to process %s", async (desc: string, message: fhir.Bundle) => {
             const apiPath = `${basePath}/$process-message`
             const bundleStr = LosslessJson.stringify(message)
-            const bundle = JSON.parse(bundleStr) as Bundle
+            const bundle = JSON.parse(bundleStr) as fhir.Bundle
 
             const requestId = uuid.v4()
             const correlationId = uuid.v4()
 
             const firstMedicationRequest = message.entry.map(e => e.resource)
-              .find(r => r.resourceType == "MedicationRequest") as MedicationRequest
+              .find(r => r.resourceType == "MedicationRequest") as fhir.MedicationRequest
             const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
             const interaction: InteractionObject = {
@@ -161,9 +135,9 @@ orderUpdatePactGroups.forEach(pactGroup => {
               .set("X-Correlation-ID", correlationId)
               .send(bundleStr)
               .expect(200)
-          })
-        }
-      })
-    }
-  )
+          }
+        )
+      }
+    })
+  })
 })

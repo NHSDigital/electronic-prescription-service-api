@@ -1,5 +1,6 @@
-import * as core from "./hl7-v3-datatypes-core"
-import * as codes from "./hl7-v3-datatypes-codes"
+import * as core from "./core"
+import * as codes from "./codes"
+import * as message from "./messaging"
 
 export class NominatedPrescriptionReleaseRequest {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
@@ -8,7 +9,7 @@ export class NominatedPrescriptionReleaseRequest {
   }
   id: codes.GlobalIdentifier
   effectiveTime: core.Timestamp
-  author: core.SendMessagePayloadAuthorAgentPerson
+  author: message.SendMessagePayloadAuthorAgentPerson
 
   constructor(id: codes.GlobalIdentifier, effectiveTime: core.Timestamp) {
     this.id = id

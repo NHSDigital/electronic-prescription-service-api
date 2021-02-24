@@ -20,3 +20,5 @@ These examples are then loaded into smoke tests (e2e tests) run during continous
 Operation can be omitted for prepare examples as there is only one operation for this endpoint
 
 The smoke test description is built up from the directory and the filename so tests can be renamed by changing the folder structure
+
+Make sure if you're adding/changing directories that they are present in `pactGroups` in `tests/e2e/pact/resources/common.ts`

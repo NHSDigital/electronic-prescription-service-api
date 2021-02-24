@@ -1,60 +1,60 @@
-import * as fhir from "../../../models/fhir/fhir-resources"
+import * as fhir from "../../../models/fhir"
 import {onlyElement} from "./index"
 
-function getResourcesOfType<T extends fhir.Resource>(fhirBundle: fhir.Bundle, resourceType: string): Array<T> {
-  return fhirBundle.entry
+function getResourcesOfType<T extends fhir.Resource>(bundle: fhir.Bundle, resourceType: string): Array<T> {
+  return bundle.entry
     .map(entry => entry.resource)
     .filter(resource => resource.resourceType === resourceType) as Array<T>
 }
 
-export function getMessageHeader(fhirBundle: fhir.Bundle): fhir.MessageHeader {
+export function getMessageHeader(bundle: fhir.Bundle): fhir.MessageHeader {
   return onlyElement(
-    getResourcesOfType<fhir.MessageHeader>(fhirBundle, "MessageHeader"),
+    getResourcesOfType<fhir.MessageHeader>(bundle, "MessageHeader"),
     "Bundle.entry",
     "resource.resourceType == 'MessageHeader'"
   )
 }
 
-export function getMedicationRequests(fhirBundle: fhir.Bundle): Array<fhir.MedicationRequest> {
-  return getResourcesOfType<fhir.MedicationRequest>(fhirBundle, "MedicationRequest")
+export function getMedicationRequests(bundle: fhir.Bundle): Array<fhir.MedicationRequest> {
+  return getResourcesOfType<fhir.MedicationRequest>(bundle, "MedicationRequest")
 }
 
-export function getCommunicationRequests(fhirBundle: fhir.Bundle): Array<fhir.CommunicationRequest> {
-  return getResourcesOfType<fhir.CommunicationRequest>(fhirBundle, "CommunicationRequest")
+export function getCommunicationRequests(bundle: fhir.Bundle): Array<fhir.CommunicationRequest> {
+  return getResourcesOfType<fhir.CommunicationRequest>(bundle, "CommunicationRequest")
 }
 
-export function getLists(fhirBundle: fhir.Bundle): Array<fhir.List> {
-  return getResourcesOfType<fhir.List>(fhirBundle, "List")
+export function getLists(bundle: fhir.Bundle): Array<fhir.List> {
+  return getResourcesOfType<fhir.List>(bundle, "List")
 }
 
-export function getPatient(fhirBundle: fhir.Bundle): fhir.Patient {
+export function getPatient(bundle: fhir.Bundle): fhir.Patient {
   return onlyElement(
-    getResourcesOfType<fhir.Patient>(fhirBundle, "Patient"),
+    getResourcesOfType<fhir.Patient>(bundle, "Patient"),
     "Bundle.entry",
     "resource.resourceType == 'Patient'"
   )
 }
 
-export function getOrganizations(fhirBundle: fhir.Bundle): Array<fhir.Organization> {
-  return getResourcesOfType<fhir.Organization>(fhirBundle, "Organization")
+export function getOrganizations(bundle: fhir.Bundle): Array<fhir.Organization> {
+  return getResourcesOfType<fhir.Organization>(bundle, "Organization")
 }
 
-export function getPractitioners(fhirBundle: fhir.Bundle): Array<fhir.Practitioner> {
-  return getResourcesOfType<fhir.Practitioner>(fhirBundle, "Practitioner")
+export function getPractitioners(bundle: fhir.Bundle): Array<fhir.Practitioner> {
+  return getResourcesOfType<fhir.Practitioner>(bundle, "Practitioner")
 }
 
-export function getPractitionerRoles(fhirBundle: fhir.Bundle): Array<fhir.PractitionerRole> {
-  return getResourcesOfType<fhir.PractitionerRole>(fhirBundle, "PractitionerRole")
+export function getPractitionerRoles(bundle: fhir.Bundle): Array<fhir.PractitionerRole> {
+  return getResourcesOfType<fhir.PractitionerRole>(bundle, "PractitionerRole")
 }
 
-export function getProvenances(fhirBundle: fhir.Bundle): Array<fhir.Provenance> {
-  return getResourcesOfType<fhir.Provenance>(fhirBundle, "Provenance")
+export function getProvenances(bundle: fhir.Bundle): Array<fhir.Provenance> {
+  return getResourcesOfType<fhir.Provenance>(bundle, "Provenance")
 }
 
-export function getHealthcareServices(fhirBundle: fhir.Bundle): Array<fhir.HealthcareService> {
-  return getResourcesOfType<fhir.HealthcareService>(fhirBundle, "HealthcareService")
+export function getHealthcareServices(bundle: fhir.Bundle): Array<fhir.HealthcareService> {
+  return getResourcesOfType<fhir.HealthcareService>(bundle, "HealthcareService")
 }
 
-export function getLocations(fhirBundle: fhir.Bundle): Array<fhir.Location> {
-  return getResourcesOfType<fhir.Location>(fhirBundle, "Location")
+export function getLocations(bundle: fhir.Bundle): Array<fhir.Location> {
+  return getResourcesOfType<fhir.Location>(bundle, "Location")
 }

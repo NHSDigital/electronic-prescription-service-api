@@ -373,7 +373,6 @@ def test_get_organisation_code__gets_org_code_from_primary_care(primary_care_rep
 
 
 def test_get_signature_timestamp_from_prepare_response(success_prepare_response_json):
-    print(success_prepare_response_json)
     signature_time = "newValue"
     for parameter in success_prepare_response_json["parameter"]:
         if parameter["name"] == "timestamp":
