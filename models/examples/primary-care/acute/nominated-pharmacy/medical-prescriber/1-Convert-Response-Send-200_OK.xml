@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN020101SM31 xmlns="urn:hl7-org:v3">
-  <id root="96EEC611-DC23-4C16-8419-EE48D69F1CD4"/>
-  <creationTime value="20210224161423"/>
+  <id root="23957CE5-5103-4ECF-8ECD-E8D1B994D1DE"/>
+  <creationTime value="20210224183730"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN020101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -40,7 +40,7 @@
     </author1>
     <subject>
       <ParentPrescription classCode="INFO" moodCode="EVN">
-        <id root="96EEC611-DC23-4C16-8419-EE48D69F1CD4"/>
+        <id root="23957CE5-5103-4ECF-8ECD-E8D1B994D1DE"/>
         <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Prescription - FocusActOrEvent (record artifact)"/>
         <effectiveTime value="20210224000000"/>
         <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
@@ -48,19 +48,20 @@
           <Patient classCode="PAT">
             <id extension="9990548609" root="2.16.840.1.113883.2.1.4.1"/>
             <addr use="H">
-              <streetAddressLine>123 Dale Avenue</streetAddressLine>
-              <streetAddressLine>Long Eaton</streetAddressLine>
-              <streetAddressLine>Nottingham</streetAddressLine>
-              <postalCode>NG10 1NP</postalCode>
+              <streetAddressLine>1 Trevelyan Square</streetAddressLine>
+              <streetAddressLine>Boar Lane</streetAddressLine>
+              <streetAddressLine>Leeds</streetAddressLine>
+              <streetAddressLine>West Yorkshire</streetAddressLine>
+              <postalCode>LS1 6AE</postalCode>
             </addr>
             <patientPerson classCode="PSN" determinerCode="INSTANCE">
               <name use="L">
-                <prefix>MISS</prefix>
-                <given>RACHEL</given>
-                <family>KANFELD</family>
+                <prefix>MR</prefix>
+                <given>DONOTUSE</given>
+                <family>XXTESTPATIENT-TGNP</family>
               </name>
-              <administrativeGenderCode code="2" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.25"/>
-              <birthTime value="19980316"/>
+              <administrativeGenderCode code="1" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.25"/>
+              <birthTime value="19320106"/>
               <playedProviderPatient classCode="PAT">
                 <subjectOf typeCode="SBJ">
                   <patientCareProvision classCode="PCPR" moodCode="EVN">
@@ -79,8 +80,8 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentPrescription classCode="SBADM" moodCode="RQO">
-            <id root="937CE911-C2A0-45E5-A76C-1FED2310AD43"/>
-            <id extension="5B52AF-C81010-11EB9P" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+            <id root="06899226-8CD5-420E-B4A0-C642894475C0"/>
+            <id extension="5979B7-A83008-11EB86" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
             <effectiveTime nullFlavor="NA"/>
             <performer contextControlCode="OP" typeCode="PRF">
@@ -91,7 +92,7 @@
               </AgentOrgSDS>
             </performer>
             <author contextControlCode="OP" typeCode="AUT">
-              <time value="20210224161423"/>
+              <time value="20210224183730"/>
               <signatureText>
                 <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
                   <SignedInfo>
@@ -118,31 +119,32 @@
                 <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
                 <telecom use="WP" value="tel:01234567890"/>
                 <agentPerson classCode="PSN" determinerCode="INSTANCE">
-                  <id extension="4428981" root="1.2.826.0.1285.0.2.1.54"/>
+                  <id extension="6095103" root="1.2.826.0.1285.0.2.1.54"/>
                   <name>
                     <prefix>DR</prefix>
-                    <given>AA</given>
-                    <family>Bhatia</family>
+                    <given>C</given>
+                    <family>BOIN</family>
                   </name>
                 </agentPerson>
                 <representedOrganization classCode="ORG" determinerCode="INSTANCE">
-                  <id extension="C81010" root="1.2.826.0.1285.0.1.10"/>
+                  <id extension="A83008" root="1.2.826.0.1285.0.1.10"/>
                   <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
-                  <name>The Moir Medical Centre</name>
+                  <name>HALLGARTH SURGERY</name>
                   <telecom use="WP" value="tel:01159737320"/>
                   <addr use="WP">
-                    <streetAddressLine>The Moir Medical Centre</streetAddressLine>
-                    <streetAddressLine>Regent Street, Long Eaton</streetAddressLine>
-                    <streetAddressLine>Nottingham</streetAddressLine>
-                    <streetAddressLine>Nottingham</streetAddressLine>
-                    <streetAddressLine>Derbyshire</streetAddressLine>
-                    <postalCode>NG10 1QQ</postalCode>
+                    <streetAddressLine>HALLGARTH SURGERY</streetAddressLine>
+                    <streetAddressLine>CHEAPSIDE</streetAddressLine>
+                    <streetAddressLine>SHILDON</streetAddressLine>
+                    <streetAddressLine>COUNTY DURHAM</streetAddressLine>
+                    <streetAddressLine>SHILDON</streetAddressLine>
+                    <streetAddressLine>COUNTY DURHAM</streetAddressLine>
+                    <postalCode>DL4 2HP</postalCode>
                   </addr>
                   <healthCareProviderLicense classCode="PROV">
                     <Organization classCode="ORG" determinerCode="INSTANCE">
-                      <id extension="15M" root="1.2.826.0.1285.0.1.10"/>
+                      <id extension="84H" root="1.2.826.0.1285.0.1.10"/>
                       <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
-                      <name>NHS Derby and Derbyshire CCG</name>
+                      <name>NHS COUNTY DURHAM CCG</name>
                     </Organization>
                   </healthCareProviderLicense>
                 </representedOrganization>
@@ -154,31 +156,32 @@
                 <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
                 <telecom use="WP" value="tel:01234567890"/>
                 <agentPerson classCode="PSN" determinerCode="INSTANCE">
-                  <id extension="70201123456" root="1.2.826.0.1285.0.2.1.54"/>
+                  <id extension="977677" root="1.2.826.0.1285.0.2.1.54"/>
                   <name>
                     <prefix>DR</prefix>
-                    <given>AA</given>
-                    <family>Bhatia</family>
+                    <given>C</given>
+                    <family>BOIN</family>
                   </name>
                 </agentPerson>
                 <representedOrganization classCode="ORG" determinerCode="INSTANCE">
-                  <id extension="C81010" root="1.2.826.0.1285.0.1.10"/>
+                  <id extension="A83008" root="1.2.826.0.1285.0.1.10"/>
                   <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
-                  <name>The Moir Medical Centre</name>
+                  <name>HALLGARTH SURGERY</name>
                   <telecom use="WP" value="tel:01159737320"/>
                   <addr use="WP">
-                    <streetAddressLine>The Moir Medical Centre</streetAddressLine>
-                    <streetAddressLine>Regent Street, Long Eaton</streetAddressLine>
-                    <streetAddressLine>Nottingham</streetAddressLine>
-                    <streetAddressLine>Nottingham</streetAddressLine>
-                    <streetAddressLine>Derbyshire</streetAddressLine>
-                    <postalCode>NG10 1QQ</postalCode>
+                    <streetAddressLine>HALLGARTH SURGERY</streetAddressLine>
+                    <streetAddressLine>CHEAPSIDE</streetAddressLine>
+                    <streetAddressLine>SHILDON</streetAddressLine>
+                    <streetAddressLine>COUNTY DURHAM</streetAddressLine>
+                    <streetAddressLine>SHILDON</streetAddressLine>
+                    <streetAddressLine>COUNTY DURHAM</streetAddressLine>
+                    <postalCode>DL4 2HP</postalCode>
                   </addr>
                   <healthCareProviderLicense classCode="PROV">
                     <Organization classCode="ORG" determinerCode="INSTANCE">
-                      <id extension="15M" root="1.2.826.0.1285.0.1.10"/>
+                      <id extension="84H" root="1.2.826.0.1285.0.1.10"/>
                       <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
-                      <name>NHS Derby and Derbyshire CCG</name>
+                      <name>NHS COUNTY DURHAM CCG</name>
                     </Organization>
                   </healthCareProviderLicense>
                 </representedOrganization>
@@ -260,13 +263,6 @@
                     </quantity>
                   </lineItemQuantity>
                 </component>
-                <pertinentInformation3 contextConductionInd="true" typeCode="PERT">
-                  <seperatableInd value="false"/>
-                  <pertinentPrescriberEndorsement classCode="OBS" moodCode="EVN">
-                    <code code="PE" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value code="FS" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.32"/>
-                  </pertinentPrescriberEndorsement>
-                </pertinentInformation3>
                 <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
                   <seperatableInd value="false"/>
                   <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
@@ -312,4 +308,3 @@
     </subject>
   </ControlActEvent>
 </PORX_IN020101SM31>
-
