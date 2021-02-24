@@ -1,4 +1,4 @@
-import * as fhir from "../../../../src/models/fhir/fhir-resources"
+import * as fhir from "../../../../src/models/fhir"
 import {translateReleaseRequest} from "../../../../src/services/translation/dispention/release"
 
 describe("translateReleaseRequest", () => {
