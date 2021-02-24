@@ -195,6 +195,18 @@
               "code": "0101",
               "display": "Primary Care Prescriber - Medical Prescriber"
             }
+          },
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement",
+            "valueCodeableConcept": {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
+                  "code": "FS",
+                  "display": "Sexual Health"
+                }
+              ]
+            }
           }
         ],
         "identifier": [
