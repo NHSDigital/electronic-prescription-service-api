@@ -3,7 +3,7 @@
   "id": "0cb82cfa-76c8-4fb2-a08e-bf0e326e5487",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "de4ce618-978c-4a20-8da5-5fa6c0065c17"
+    "value": "ef927146-54ba-4781-ae17-cf9762acc34a"
   },
   "type": "message",
   "entry": [
@@ -95,7 +95,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2021-02-24T18:37:28+00:00",
+        "authoredOn": "2021-02-24T18:56:56+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -105,12 +105,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "da08008a-8629-47af-97b2-623a1f37e3c2"
+                "value": "75337ea8-55ab-40f1-8b58-ae504c65f2ae"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "591C7F-A83008-11EBAD"
+          "value": "118477-A83008-11EB92"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -219,7 +219,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2021-02-24T18:37:28+00:00",
+        "authoredOn": "2021-02-24T18:56:56+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -229,12 +229,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "da08008a-8629-47af-97b2-623a1f37e3c2"
+                "value": "75337ea8-55ab-40f1-8b58-ae504c65f2ae"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "591C7F-A83008-11EBAD"
+          "value": "118477-A83008-11EB92"
         },
         "courseOfTherapyType": {
           "coding": [

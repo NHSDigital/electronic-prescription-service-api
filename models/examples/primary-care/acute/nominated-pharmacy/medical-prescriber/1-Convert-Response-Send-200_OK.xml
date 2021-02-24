@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN020101SM31 xmlns="urn:hl7-org:v3">
-  <id root="23957CE5-5103-4ECF-8ECD-E8D1B994D1DE"/>
-  <creationTime value="20210224183730"/>
+  <id root="3985AB28-98EB-4681-8B78-3C889D19E764"/>
+  <creationTime value="20210224185658"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN020101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -40,7 +40,7 @@
     </author1>
     <subject>
       <ParentPrescription classCode="INFO" moodCode="EVN">
-        <id root="23957CE5-5103-4ECF-8ECD-E8D1B994D1DE"/>
+        <id root="3985AB28-98EB-4681-8B78-3C889D19E764"/>
         <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Prescription - FocusActOrEvent (record artifact)"/>
         <effectiveTime value="20210224000000"/>
         <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
@@ -80,8 +80,8 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentPrescription classCode="SBADM" moodCode="RQO">
-            <id root="06899226-8CD5-420E-B4A0-C642894475C0"/>
-            <id extension="5979B7-A83008-11EB86" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+            <id root="EAAAFF42-8832-4F12-B3DD-B62A56317A61"/>
+            <id extension="11CF9B-A83008-11EB83" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
             <effectiveTime nullFlavor="NA"/>
             <performer contextControlCode="OP" typeCode="PRF">
@@ -92,7 +92,7 @@
               </AgentOrgSDS>
             </performer>
             <author contextControlCode="OP" typeCode="AUT">
-              <time value="20210224183730"/>
+              <time value="20210224185658"/>
               <signatureText>
                 <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
                   <SignedInfo>
@@ -224,13 +224,6 @@
                     </quantity>
                   </lineItemQuantity>
                 </component>
-                <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
-                  <seperatableInd value="false"/>
-                  <pertinentAdditionalInstructions classCode="OBS" moodCode="EVN">
-                    <code code="AI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value>&lt;medication&gt;Bendroflumethiazide 2.5mg tablets (3/6)&lt;/medication&gt;&lt;medication&gt;Salbutamol 100micrograms/dose inhaler CFC free (2/6)&lt;/medication&gt;&lt;patientInfo&gt;Due to Coronavirus restrictions Church View Surgery is CLOSED until further notice&lt;/patientInfo&gt;</value>
-                  </pertinentAdditionalInstructions>
-                </pertinentInformation1>
                 <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
                   <seperatableInd value="false"/>
                   <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
