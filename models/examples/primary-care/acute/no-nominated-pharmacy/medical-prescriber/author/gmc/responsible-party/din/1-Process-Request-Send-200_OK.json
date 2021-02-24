@@ -402,12 +402,12 @@
         "resourceType": "Practitioner",
         "identifier": [
           {
-            "system": "https://fhir.nhs.uk/Id/sds-user-id",
-            "value": "555086689106"
+            "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+            "value": "4428981"
           },
           {
-            "system": "https://fhir.hl7.org.uk/Id/gmp-number",
-            "value": "G8133438"
+            "system": "https://fhir.hl7.org.uk/Id/din-number",
+            "value": "70201123456"
           }
         ],
         "name": [

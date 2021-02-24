@@ -3,7 +3,7 @@
   "id": "0cb82cfa-76c8-4fb2-a08e-bf0e326e5487",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "1d841872-750e-4291-8281-c715d4cfb997"
+    "value": "81c9280a-51b6-4980-ade8-3159fb9b95e6"
   },
   "type": "message",
   "entry": [
@@ -65,19 +65,6 @@
               "code": "0101",
               "display": "Primary Care Prescriber - Medical Prescriber"
             }
-          },
-          {
-            "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-            "extension": [
-              {
-                "url": "numberOfRepeatPrescriptionsAllowed",
-                "valueUnsignedInt": 6
-              },
-              {
-                "url": "authorisationExpiryDate",
-                "valueDateTime": "2020-12-07"
-              }
-            ]
           }
         ],
         "identifier": [
@@ -121,25 +108,25 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "db54c421-332a-49b2-bdce-9fc37aedaa6a"
+                "value": "09161fd3-9318-4f1f-a1c3-856d47bd535a"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "6EFDA2-C81010-11EB9H"
+          "value": "6E522E-C81010-11EB9F"
         },
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
-              "code": "continuous-repeat-dispensing",
-              "display": "Continuous long term (repeat dispensing)"
+              "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+              "code": "acute",
+              "display": "Short course (acute) therapy"
             }
           ]
         },
         "dosageInstruction": [
           {
-            "text": "100 tablets. One tablet to be taken four times a day",
+            "text": "One tablet to be taken four times a day",
             "timing": {
               "repeat": {
                 "frequency": 4,
@@ -164,7 +151,7 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
               "valueCoding": {
                 "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
-                "code": "P1"
+                "code": "0004"
               }
             }
           ],
@@ -177,12 +164,6 @@
             "unit": "day",
             "system": "http://unitsofmeasure.org",
             "code": "d"
-          },
-          "performer": {
-            "identifier": {
-              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "VNE51"
-            }
           },
           "quantity": {
             "value": 100,
@@ -208,19 +189,6 @@
               "code": "0101",
               "display": "Primary Care Prescriber - Medical Prescriber"
             }
-          },
-          {
-            "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-            "extension": [
-              {
-                "url": "numberOfRepeatPrescriptionsAllowed",
-                "valueUnsignedInt": 6
-              },
-              {
-                "url": "authorisationExpiryDate",
-                "valueDateTime": "2020-12-07"
-              }
-            ]
           }
         ],
         "identifier": [
@@ -264,25 +232,25 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "db54c421-332a-49b2-bdce-9fc37aedaa6a"
+                "value": "09161fd3-9318-4f1f-a1c3-856d47bd535a"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "6EFDA2-C81010-11EB9H"
+          "value": "6E522E-C81010-11EB9F"
         },
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
-              "code": "continuous-repeat-dispensing",
-              "display": "Continuous long term (repeat dispensing)"
+              "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+              "code": "acute",
+              "display": "Short course (acute) therapy"
             }
           ]
         },
         "dosageInstruction": [
           {
-            "text": "200 tablets. One dose to be taken five times a day",
+            "text": "One dose to be taken five times a day",
             "timing": {
               "repeat": {
                 "frequency": 5,
@@ -307,7 +275,7 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-performerSiteType",
               "valueCoding": {
                 "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
-                "code": "P1"
+                "code": "0004"
               }
             }
           ],
@@ -320,12 +288,6 @@
             "unit": "day",
             "system": "http://unitsofmeasure.org",
             "code": "d"
-          },
-          "performer": {
-            "identifier": {
-              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "VNE51"
-            }
           },
           "quantity": {
             "value": 200,
@@ -441,7 +403,7 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/sds-user-id",
-            "value": "44151870302"
+            "value": "555086689106"
           },
           {
             "system": "https://fhir.hl7.org.uk/Id/gmc-number",
