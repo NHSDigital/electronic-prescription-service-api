@@ -173,9 +173,9 @@
           },
           "quantity": {
             "value": 100,
-            "unit": "Tablet",
+            "unit": "tablet",
             "system": "http://snomed.info/sct",
-            "code": "732936001"
+            "code": "428673006"
           }
         },
         "substitution": {
@@ -220,8 +220,8 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "35936511000001108",
-              "display": "Salbutamol 100micrograms/dose inhaler"
+              "code": "39113611000001102",
+              "display": "Salbutamol 100micrograms/dose inhaler CFC free"
             }
           ]
         },
@@ -303,9 +303,9 @@
           },
           "quantity": {
             "value": 200,
-            "unit": "unit dose",
+            "unit": "dose",
             "system": "http://snomed.info/sct",
-            "code": "408102007"
+            "code": "3317411000001100"
           }
         },
         "substitution": {
@@ -523,12 +523,12 @@
         "entry": [
           {
             "item": {
-              "display": "Bendroflumethiazide 2.5 mg Tablets (3/6)"
+              "display": "Bendroflumethiazide 2.5mg tablets (3/6)"
             }
           },
           {
             "item": {
-              "display": "Salbutamol 100micrograms/dose inhaler CFC free 200 dose (2/6)"
+              "display": "Salbutamol 100micrograms/dose inhaler CFC free (2/6)"
             }
           }
         ]
