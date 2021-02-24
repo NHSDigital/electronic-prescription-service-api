@@ -482,27 +482,6 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:51793ac0-112f-46c7-a891-9af8cefb206e",
-      "resource": {
-        "resourceType": "CommunicationRequest",
-        "status": "unknown",
-        "subject": {
-          "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
-        },
-        "payload": [
-          {
-            "contentString": "Due to Coronavirus restrictions Church View Surgery is CLOSED until further notice"
-          },
-          {
-            "contentReference": {
-              "reference": "urn:uuid:d0f003a0-8763-43d5-a264-ce52a38901c9",
-              "display": "List of Repeat Medications for re-ordering"
-            }
-          }
-        ]
-      }
-    },
-    {
       "fullUrl": "urn:uuid:28828c55-8fa7-42d7-916f-fcf076e0c10e",
       "resource": {
         "resourceType": "Provenance",
