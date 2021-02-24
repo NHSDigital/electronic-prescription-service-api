@@ -44,14 +44,6 @@ jestPact.pactWith(
                 "X-Request-ID": requestId,
                 "X-Correlation-ID": correlationId
               },
-              body: {
-                "code": "invalid",
-                "severity": "error",
-                "details": [{
-                  "code": "",
-                  "display": "Release interaction"
-                }]
-              },
               status: 200
             }
           }

@@ -3,40 +3,6 @@ import {SpineRequest, SpineResponse} from "../../models/spine"
 import * as hl7V3 from "../../models/hl7-v3"
 import * as fhir from "../../models/fhir"
 
-const bundle1Id = "eff31db2-a914-44a9-b89d-1a33f6de727e"
-const genericBundle1: fhir.Bundle = {
-  resourceType: "Bundle",
-  type: "message",
-  id: bundle1Id,
-  identifier: {
-    value: bundle1Id
-  }
-}
-
-const bundle2Id = "f6f2fd4a-0f5a-4cee-82a0-e6d08d64c2b4"
-const genericBundle2: fhir.Bundle = {
-  resourceType: "Bundle",
-  type: "message",
-  id: bundle2Id,
-  identifier: {
-    value: bundle2Id
-  }
-}
-const messageId = "d5a20db9-6d76-4aeb-a190-9a85843b01bf"
-const sandboxReleaseResponse ={
-  resourceType: "Bundle",
-  type: "searchset",
-  total: 2,
-  id: messageId,
-  identifier: {
-    value: messageId
-  },
-  entry: [
-    {resource: genericBundle1, fullUrl: `urn:uuid:${bundle1Id}`},
-    {resource: genericBundle2, fullUrl: `urn:uuid:${bundle2Id}`}
-  ]
-}
-
 export class SandboxSpineClient implements SpineClient {
   async send(spineRequest: SpineRequest): Promise<SpineResponse<unknown>> {
     switch (spineRequest.interactionId) {
@@ -92,5 +58,39 @@ const notSupporedOperationOutcome: fhir.OperationOutcome = {
         ]
       }
     }
+  ]
+}
+
+const bundle1Id = "eff31db2-a914-44a9-b89d-1a33f6de727e"
+const genericBundle1: fhir.Bundle = {
+  resourceType: "Bundle",
+  type: "message",
+  id: bundle1Id,
+  identifier: {
+    value: bundle1Id
+  }
+}
+
+const bundle2Id = "f6f2fd4a-0f5a-4cee-82a0-e6d08d64c2b4"
+const genericBundle2: fhir.Bundle = {
+  resourceType: "Bundle",
+  type: "message",
+  id: bundle2Id,
+  identifier: {
+    value: bundle2Id
+  }
+}
+const messageId = "d5a20db9-6d76-4aeb-a190-9a85843b01bf"
+const sandboxReleaseResponse ={
+  resourceType: "Bundle",
+  type: "searchset",
+  total: 2,
+  id: messageId,
+  identifier: {
+    value: messageId
+  },
+  entry: [
+    {resource: genericBundle1, fullUrl: `urn:uuid:${bundle1Id}`},
+    {resource: genericBundle2, fullUrl: `urn:uuid:${bundle2Id}`}
   ]
 }

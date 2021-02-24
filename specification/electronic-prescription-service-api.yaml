@@ -314,7 +314,7 @@ paths:
             examples:
               group-identifier:
                 value:
-                  $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Release-Request-200_OK.json
+                  $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-SKIP-Release-Request-200_OK.json
               owner:
                 value:
                   $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/2-Release-Request-200_OK.json
