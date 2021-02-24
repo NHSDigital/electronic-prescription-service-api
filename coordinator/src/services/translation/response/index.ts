@@ -36,23 +36,17 @@ export function translateToFhir<T>(hl7Message: SpineDirectResponse<T>): Translat
     return getSyncResponseAndErrorCodes(syncMCCI)
   }
 
-  const defaultReturn: TranslatedSpineResponse = {
+  if(isBundle(hl7Message.body)){
+    return {
+      statusCode: 200,
+      fhirResponse: hl7Message.body
+    }
+  } else return {
     statusCode: 400,
     fhirResponse: {
       resourceType: "OperationOutcome",
       issue: [createOperationOutcomeIssue(400)]
     }
-  }
-  try{
-    const messageObject = JSON.parse(JSON.stringify(hl7Message.body))
-    if(isBundle(messageObject)){
-      return {
-        statusCode: 200,
-        fhirResponse: messageObject
-      }
-    } else return defaultReturn
-  } catch {
-    return defaultReturn
   }
 }
 
