@@ -1,7 +1,3 @@
-import {
-  NominatedPrescriptionReleaseRequest,
-  NominatedPrescriptionReleaseRequestWrapper
-} from "../../../models/hl7-v3/hl7-v3-dispense"
 import * as hl7v3 from "../../../models/hl7-v3"
 import * as uuid from "uuid"
 import * as fhir from "../../../models/fhir"
@@ -9,12 +5,12 @@ import {getIdentifierParameterByName} from "../common"
 
 export function translateReleaseRequest(
   fhirReleaseRequest: fhir.Parameters
-): NominatedPrescriptionReleaseRequestWrapper {
+): hl7v3.NominatedPrescriptionReleaseRequestWrapper {
   const hl7Id = new hl7v3.GlobalIdentifier(uuid.v4())
   const timestamp = new hl7v3.Timestamp("")
-  const hl7Release = new NominatedPrescriptionReleaseRequest(hl7Id, timestamp)
+  const hl7Release = new hl7v3.NominatedPrescriptionReleaseRequest(hl7Id, timestamp)
   hl7Release.author = getAuthor(fhirReleaseRequest)
-  return new NominatedPrescriptionReleaseRequestWrapper(hl7Release)
+  return new hl7v3.NominatedPrescriptionReleaseRequestWrapper(hl7Release)
 }
 
 function getAuthor(fhirReleaseRequest: fhir.Parameters): hl7v3.SendMessagePayloadAuthorAgentPerson {
