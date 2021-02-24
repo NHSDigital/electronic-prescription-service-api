@@ -15,23 +15,28 @@ interface TranslatedSpineResponse {
   statusCode: number
 }
 
+function isBundle(body: unknown): body is fhir.Bundle {
+  return typeof body === "object"
+    && "resourceType" in body
+    && (body as fhir.Resource).resourceType === "Bundle"
+}
 export function translateToFhir<T>(hl7Message: SpineDirectResponse<T>): TranslatedSpineResponse {
   const bodyString = hl7Message.body.toString()
+
+  if(isBundle(JSON.parse(JSON.stringify(hl7Message.body)))){
+    return {
+      statusCode: 200,
+      fhirResponse: JSON.parse(JSON.stringify(hl7Message.body))
+    }
+  }
   const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(bodyString)
   if (cancelResponse) {
-    const parsedMsg = readXml(cancelResponse[0]) as hl7V3.PORX50101
-    const actEvent = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
-    const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
-    return {
-      statusCode: translateAcknowledgementTypeCodeToStatusCode(getCancelResponseTypeCode(parsedMsg)),
-      fhirResponse: translateSpineCancelResponseIntoBundle(cancellationResponse)
-    }
+    return getCancellationResponseAndErrorCodes(cancelResponse)
   }
   const asyncMCCI = ASYNC_SPINE_RESPONSE_MCCI_REGEX.exec(bodyString)
   if (asyncMCCI) {
     return getAsyncResponseAndErrorCodes(asyncMCCI)
   }
-
   const syncMCCI = SYNC_SPINE_RESPONSE_MCCI_REGEX.exec(bodyString)
   if (syncMCCI) {
     return getSyncResponseAndErrorCodes(syncMCCI)
@@ -48,6 +53,16 @@ export function translateToFhir<T>(hl7Message: SpineDirectResponse<T>): Translat
       resourceType: "OperationOutcome",
       issue: [createOperationOutcomeIssue(400, codeableConcept)]
     }
+  }
+}
+
+function getCancellationResponseAndErrorCodes(cancelResponse: RegExpExecArray) {
+  const parsedMsg = readXml(cancelResponse[0]) as hl7V3.PORX50101
+  const actEvent = parsedMsg["hl7:PORX_IN050101UK31"]["hl7:ControlActEvent"]
+  const cancellationResponse = actEvent["hl7:subject"].CancellationResponse
+  return {
+    statusCode: translateAcknowledgementTypeCodeToStatusCode(getCancelResponseTypeCode(parsedMsg)),
+    fhirResponse: translateSpineCancelResponseIntoBundle(cancellationResponse)
   }
 }
 
