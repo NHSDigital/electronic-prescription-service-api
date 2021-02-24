@@ -3,7 +3,7 @@
   "id": "0cb82cfa-76c8-4fb2-a08e-bf0e326e5487",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "1d841872-750e-4291-8281-c715d4cfb997"
+    "value": "b4133da7-8729-416f-8ecc-883b5e523194"
   },
   "type": "message",
   "entry": [
@@ -111,7 +111,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2021-02-18T12:11:29+00:00",
+        "authoredOn": "2021-02-24T15:54:43+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -121,12 +121,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "db54c421-332a-49b2-bdce-9fc37aedaa6a"
+                "value": "ce13faf1-4dc8-4bf0-a02f-d381e4cfc937"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "6EFDA2-C81010-11EB9H"
+          "value": "9E1527-C81010-11EB8+"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -169,8 +169,8 @@
             }
           ],
           "validityPeriod": {
-            "start": "2021-02-18",
-            "end": "2021-03-18"
+            "start": "2021-02-24",
+            "end": "2021-03-24"
           },
           "expectedSupplyDuration": {
             "value": 40,
@@ -266,7 +266,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2021-02-18T12:11:29+00:00",
+        "authoredOn": "2021-02-24T15:54:43+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -276,12 +276,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "db54c421-332a-49b2-bdce-9fc37aedaa6a"
+                "value": "ce13faf1-4dc8-4bf0-a02f-d381e4cfc937"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "6EFDA2-C81010-11EB9H"
+          "value": "9E1527-C81010-11EB8+"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -324,8 +324,8 @@
             }
           ],
           "validityPeriod": {
-            "start": "2021-02-18",
-            "end": "2021-03-18"
+            "start": "2021-02-24",
+            "end": "2021-03-24"
           },
           "expectedSupplyDuration": {
             "value": 40,
