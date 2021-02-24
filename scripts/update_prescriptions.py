@@ -245,7 +245,7 @@ if __name__ == "__main__":
 # Tests
 test_examples_root_dir = f".{os.path.sep}models{os.path.sep}examples"
 secondary_care_example_dir = f"community{os.path.sep}repeat-dispensing{os.path.sep}nominated-pharmacy{os.path.sep}clinical-practitioner{os.path.sep}single-medication-request" # noqa E501
-primary_care_example_dir = f"repeat-dispensing{os.path.sep}nominated-pharmacy{os.path.sep}medical-prescriber" # noqa E501
+primary_care_example_dir = f"repeat-dispensing{os.path.sep}nominated-pharmacy{os.path.sep}medical-prescriber{os.path.sep}author{os.path.sep}gmc{os.path.sep}responsible-party{os.path.sep}medication-list{os.path.sep}din" # noqa E501
 
 
 def getRepeatDispensingProcessRequestExample(careSetting):
