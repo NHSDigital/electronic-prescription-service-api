@@ -1,8 +1,8 @@
 import {readXmlStripNamespace} from "../../serialisation/xml"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
-import {translateSpineCancelResponseIntoBundle} from "./cancellation/cancellation-response"
-import {createOuterBundle} from "./release/release-response"
+import * as cancelResponseTranslator from "./cancellation/cancellation-response"
+import * as releaseResponseTranslator from "./release/release-response"
 import {toArray} from "../common"
 
 export interface TranslatedSpineResponse {
@@ -25,7 +25,7 @@ export class SpineResponseHandler<T> {
     if (!sendMessagePayload) {
       return null
     }
-    const acknowledgementTypeCode = this.getAcknowledgementTypeCode(sendMessagePayload)
+    const acknowledgementTypeCode = this.extractAcknowledgementTypeCode(sendMessagePayload)
     if (acknowledgementTypeCode === hl7V3.AcknowledgementTypeCode.ACKNOWLEDGED) {
       return this.handleSuccessResponse(sendMessagePayload)
     } else if (acknowledgementTypeCode === hl7V3.AcknowledgementTypeCode.ERROR) {
@@ -34,7 +34,7 @@ export class SpineResponseHandler<T> {
       return this.handleRejectionResponse(sendMessagePayload)
     } else {
       console.error("Unhandled acknowledgement type code " + acknowledgementTypeCode)
-      return SpineResponseHandler.createErrorResponse()
+      return SpineResponseHandler.createServerErrorResponse()
     }
   }
 
@@ -47,14 +47,8 @@ export class SpineResponseHandler<T> {
     return parsedMessage[this.interactionId]
   }
 
-  private getAcknowledgementTypeCode(sendMessagePayload: hl7V3.SendMessagePayload<T>) {
+  private extractAcknowledgementTypeCode(sendMessagePayload: hl7V3.SendMessagePayload<T>) {
     return sendMessagePayload.acknowledgement._attributes.typeCode
-  }
-
-  private handleRejectionResponse(sendMessagePayload: hl7V3.SendMessagePayload<T>): TranslatedSpineResponse {
-    const operationOutcomeIssues = this.extractRejectionCodes(sendMessagePayload)
-      .map(SpineResponseHandler.toOperationOutcomeIssue)
-    return SpineResponseHandler.createErrorResponse(operationOutcomeIssues)
   }
 
   private extractRejectionCodes(sendMessagePayload: hl7V3.SendMessagePayload<T>) {
@@ -62,63 +56,39 @@ export class SpineResponseHandler<T> {
     return toArray(acknowledgementDetails).map(acknowledgementDetail => acknowledgementDetail.code)
   }
 
-  private handleErrorResponse(sendMessagePayload: hl7V3.SendMessagePayload<T>): TranslatedSpineResponse {
-    const specificResponse = this.handleErrorResponseImpl(sendMessagePayload)
-    if (specificResponse) {
-      return {
-        statusCode: 400,
-        fhirResponse: specificResponse
-      }
-    }
-    const operationOutcomeIssues = this.extractErrorCodes(sendMessagePayload)
-      .map(SpineResponseHandler.toOperationOutcomeIssue)
-    return SpineResponseHandler.createErrorResponse(operationOutcomeIssues)
-  }
-
   private extractErrorCodes(sendMessagePayload: hl7V3.SendMessagePayload<T>) {
     const reasons = sendMessagePayload.ControlActEvent.reason ?? []
     return toArray(reasons).map(reason => reason.justifyingDetectedIssueEvent.code)
   }
 
-  private handleSuccessResponse(sendMessagePayload: hl7V3.SendMessagePayload<T>): TranslatedSpineResponse {
-    const specificResponse = this.handleSuccessResponseImpl(sendMessagePayload)
-    if (specificResponse) {
-      return {
-        statusCode: 200,
-        fhirResponse: specificResponse
-      }
-    }
-    return SpineResponseHandler.createSuccessResponse()
-  }
-
-  private static createSuccessResponse(): TranslatedSpineResponse {
-    const issues: Array<fhir.OperationOutcomeIssue> = [{
-      code: "informational",
-      severity: "information"
-    }]
+  static createSuccessResponse(): TranslatedSpineResponse {
     return {
       statusCode: 200,
-      fhirResponse: SpineResponseHandler.createOperationOutcome(issues)
+      fhirResponse: fhir.createOperationOutcome([{
+        code: "informational",
+        severity: "information"
+      }])
     }
   }
 
-  static createErrorResponse(issues?: Array<fhir.OperationOutcomeIssue>): TranslatedSpineResponse {
-    if (!issues?.length) {
-      issues = [{
-        code: "invalid",
-        severity: "error"
-      }]
+  static createBadRequestResponse(issues: Array<fhir.OperationOutcomeIssue>): TranslatedSpineResponse {
+    if (!issues.length) {
+      console.error("Trying to return bad request response with no error details")
+      return SpineResponseHandler.createServerErrorResponse()
     }
     return {
       statusCode: 400,
-      fhirResponse: SpineResponseHandler.createOperationOutcome(issues)
+      fhirResponse: fhir.createOperationOutcome(issues)
     }
   }
 
-  private static createOperationOutcome(issues: Array<fhir.OperationOutcomeIssue>) {
+  static createServerErrorResponse(): TranslatedSpineResponse {
     return {
-      resourceType: "OperationOutcome",
-      issue: issues
+      statusCode: 500,
+      fhirResponse: fhir.createOperationOutcome([{
+        code: "invalid",
+        severity: "error"
+      }])
     }
   }
 
@@ -128,6 +98,7 @@ export class SpineResponseHandler<T> {
       severity: "error",
       details: {
         coding: [{
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
           code: code._attributes.code,
           display: code._attributes.displayName
         }]
@@ -135,38 +106,54 @@ export class SpineResponseHandler<T> {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected handleSuccessResponseImpl(sendMessagePayload: hl7V3.SendMessagePayload<T>): fhir.Resource {
-    return null
+  protected handleRejectionResponse(sendMessagePayload: hl7V3.SendMessagePayload<T>): TranslatedSpineResponse {
+    const operationOutcomeIssues = this.extractRejectionCodes(sendMessagePayload)
+      .map(SpineResponseHandler.toOperationOutcomeIssue)
+    return SpineResponseHandler.createBadRequestResponse(operationOutcomeIssues)
+  }
+
+  protected handleErrorResponse(sendMessagePayload: hl7V3.SendMessagePayload<T>): TranslatedSpineResponse {
+    const operationOutcomeIssues = this.extractErrorCodes(sendMessagePayload)
+      .map(SpineResponseHandler.toOperationOutcomeIssue)
+    return SpineResponseHandler.createBadRequestResponse(operationOutcomeIssues)
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected handleErrorResponseImpl(sendMessagePayload: hl7V3.SendMessagePayload<T>): fhir.Resource {
-    return null
+  protected handleSuccessResponse(sendMessagePayload: hl7V3.SendMessagePayload<T>): TranslatedSpineResponse {
+    return SpineResponseHandler.createSuccessResponse()
   }
 }
 
 export class CancelResponseHandler extends SpineResponseHandler<hl7V3.CancellationResponseRoot> {
-  protected handleSuccessResponseImpl(
+  protected handleSuccessResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.CancellationResponseRoot>
-  ): fhir.Resource {
+  ): TranslatedSpineResponse {
     const cancellationResponse = sendMessagePayload.ControlActEvent.subject.CancellationResponse
-    return translateSpineCancelResponseIntoBundle(cancellationResponse)
+    return {
+      statusCode: 200,
+      fhirResponse: cancelResponseTranslator.translateSpineCancelResponseIntoBundle(cancellationResponse)
+    }
   }
 
-  protected handleErrorResponseImpl(
+  protected handleErrorResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.CancellationResponseRoot>
-  ): fhir.Resource {
+  ): TranslatedSpineResponse {
     const cancellationResponse = sendMessagePayload.ControlActEvent.subject.CancellationResponse
-    return translateSpineCancelResponseIntoBundle(cancellationResponse)
+    return {
+      statusCode: 400,
+      fhirResponse: cancelResponseTranslator.translateSpineCancelResponseIntoBundle(cancellationResponse)
+    }
   }
 }
 
 export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.PrescriptionReleaseResponseRoot> {
-  protected handleSuccessResponseImpl(
+  protected handleSuccessResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseResponseRoot>
-  ): fhir.Resource {
+  ): TranslatedSpineResponse {
     const releaseResponse = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseResponse
-    return createOuterBundle(releaseResponse)
+    return {
+      statusCode: 200,
+      fhirResponse: releaseResponseTranslator.createOuterBundle(releaseResponse)
+    }
   }
 }

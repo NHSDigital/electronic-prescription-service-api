@@ -24,5 +24,6 @@ export function translateToFhir<T>(hl7Message: SpineDirectResponse<T>): Translat
       return translatedSpineResponse
     }
   }
-  return SpineResponseHandler.createErrorResponse()
+  console.error("Unhandled Spine response")
+  return SpineResponseHandler.createServerErrorResponse()
 }
