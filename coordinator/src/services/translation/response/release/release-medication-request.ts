@@ -33,7 +33,7 @@ export function createMedicationRequest(
     identifier: [
       createItemNumberIdentifier(lineItem.id._attributes.root)
     ],
-    status: getStatus(lineItem.pertinentInformation4?.pertinentItemStatus),
+    status: getStatus(lineItem.pertinentInformation4.pertinentItemStatus),
     intent: fhir.MedicationRequestIntent.ORDER,
     medicationCodeableConcept: createSnomedCodeableConcept(
       lineItem.product.manufacturedProduct.manufacturedRequestedMaterial.code
