@@ -46,7 +46,7 @@ describe("translateToFhir", () => {
     expect(statusCode).toBe(400)
   })
 
-  test("returns specific response on unexpected spine response", () => {
+  test("returns internal server error on unexpected spine response", () => {
     const bodyString = "this body doesnt pass the regex checks"
     const spineResponse: SpineDirectResponse<string> = {
       body: bodyString,
