@@ -1,4 +1,5 @@
 import {
+  CancelResponseHandler, ReleaseResponseHandler,
   SpineResponseHandler,
   TranslatedSpineResponse
 } from "../../../../src/services/translation/response/spine-response-handler"
@@ -9,6 +10,11 @@ import * as uuid from "uuid"
 import * as moment from "moment"
 import {convertMomentToHl7V3DateTime} from "../../../../src/services/translation/common/dateTime"
 import {writeXmlStringPretty} from "../../../../src/services/serialisation/xml"
+import {spineResponses} from "../../../resources/test-resources"
+import {getCancellationResponse} from "../../../services/translation/common/test-helpers"
+import {
+  getExamplePrescriptionReleaseResponse
+} from "../../../services/translation/response/release/release-response.spec"
 
 const logger = pino()
 
@@ -25,6 +31,11 @@ describe("default handler", () => {
     const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
     const actualSendMessagePayload = defaultHandler.extractSendMessagePayload(spineResponse)
     expect(expectedSendMessagePayload).toMatchObject(actualSendMessagePayload)
+  })
+
+  test("handleResponse returns null if spine response doesn't match regex", () => {
+    const result = defaultHandler.handleResponse("<MCCI_SOMETHING_ELSE></MCCI_SOMETHING_ELSE>", logger)
+    expect(result).toBeFalsy()
   })
 
   test("handleResponse returns 500 response if spine response has invalid acknowledgement type code", () => {
@@ -162,6 +173,115 @@ describe("default handler", () => {
           severity: "information"
         }]
       } as fhir.OperationOutcome
+    })
+  })
+})
+
+describe("cancel response handler", () => {
+  const cancelResponseHandler = new CancelResponseHandler("PORX_IN050101UK31")
+  const cancellationResponseRoot: hl7V3.CancellationResponseRoot = {
+    CancellationResponse: getCancellationResponse(spineResponses.cancellationSuccess)
+  }
+
+  test("handleResponse returns 400 response if spine response is a rejection", () => {
+    const expectedSendMessagePayload = createRejection(
+      "PORX_IN050101UK31",
+      createAcknowledgementDetail("RejectionCode", "Rejection Display Name")
+    )
+    const spineResponse = writeXmlStringPretty({PORX_IN050101UK31: expectedSendMessagePayload})
+    const result = cancelResponseHandler.handleResponse(spineResponse, logger)
+    expect(result).toMatchObject<TranslatedSpineResponse>({
+      statusCode: 400,
+      fhirResponse: {
+        resourceType: "OperationOutcome",
+        issue: [createErrorOperationOutcomeIssue("RejectionCode", "Rejection Display Name")]
+      } as fhir.OperationOutcome
+    })
+  })
+
+  test("handleResponse returns 400 response if spine response is an error", () => {
+    const expectedSendMessagePayload = createError(
+      "PORX_IN050101UK31",
+      cancellationResponseRoot,
+      createSendMessagePayloadReason("ErrorCode", "Error Display Name")
+    )
+    const spineResponse = writeXmlStringPretty({PORX_IN050101UK31: expectedSendMessagePayload})
+    const result = cancelResponseHandler.handleResponse(spineResponse, logger)
+    expect(result).toMatchObject<TranslatedSpineResponse>({
+      statusCode: 400,
+      fhirResponse: {
+        resourceType: "Bundle"
+      } as fhir.Bundle
+    })
+  })
+
+  test("handleResponse returns 200 response if spine response is a success", () => {
+    const expectedSendMessagePayload = createSuccess(
+      "PORX_IN050101UK31",
+      cancellationResponseRoot
+    )
+    const spineResponse = writeXmlStringPretty({PORX_IN050101UK31: expectedSendMessagePayload})
+    const result = cancelResponseHandler.handleResponse(spineResponse, logger)
+    expect(result).toMatchObject<TranslatedSpineResponse>({
+      statusCode: 200,
+      fhirResponse: {
+        resourceType: "Bundle"
+      } as fhir.Bundle
+    })
+  })
+})
+
+describe("release response handler", () => {
+  const releaseResponseHandler = new ReleaseResponseHandler("PORX_IN070101UK31")
+  const releaseResponseRoot: hl7V3.PrescriptionReleaseResponseRoot = {
+    PrescriptionReleaseResponse: getExamplePrescriptionReleaseResponse()
+  }
+
+  test("handleResponse returns 400 response if spine response is a rejection", () => {
+    const expectedSendMessagePayload = createRejection(
+      "PORX_IN070101UK31",
+      createAcknowledgementDetail("RejectionCode", "Rejection Display Name")
+    )
+    const spineResponse = writeXmlStringPretty({PORX_IN070101UK31: expectedSendMessagePayload})
+    const result = releaseResponseHandler.handleResponse(spineResponse, logger)
+    expect(result).toMatchObject<TranslatedSpineResponse>({
+      statusCode: 400,
+      fhirResponse: {
+        resourceType: "OperationOutcome",
+        issue: [createErrorOperationOutcomeIssue("RejectionCode", "Rejection Display Name")]
+      } as fhir.OperationOutcome
+    })
+  })
+
+  test("handleResponse returns 400 response if spine response is an error", () => {
+    const expectedSendMessagePayload = createError(
+      "PORX_IN070101UK31",
+      releaseResponseRoot,
+      createSendMessagePayloadReason("ErrorCode", "Error Display Name")
+    )
+    const spineResponse = writeXmlStringPretty({PORX_IN070101UK31: expectedSendMessagePayload})
+    const result = releaseResponseHandler.handleResponse(spineResponse, logger)
+    expect(result).toMatchObject<TranslatedSpineResponse>({
+      statusCode: 400,
+      fhirResponse: {
+        resourceType: "OperationOutcome",
+        issue: [createErrorOperationOutcomeIssue("ErrorCode", "Error Display Name")]
+      } as fhir.OperationOutcome
+    })
+  })
+
+  test("handleResponse returns 200 response if spine response is a success", () => {
+    const expectedSendMessagePayload = createSuccess(
+      "PORX_IN070101UK31",
+      releaseResponseRoot
+    )
+    const spineResponse = writeXmlStringPretty({PORX_IN070101UK31: expectedSendMessagePayload})
+    const result = releaseResponseHandler.handleResponse(spineResponse, logger)
+    expect(result).toMatchObject<TranslatedSpineResponse>({
+      statusCode: 200,
+      fhirResponse: {
+        resourceType: "Bundle"
+      } as fhir.Bundle
     })
   })
 })

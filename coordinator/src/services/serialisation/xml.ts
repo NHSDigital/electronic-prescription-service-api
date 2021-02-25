@@ -23,6 +23,11 @@ function writeXml(tag: XmlJs.ElementCompact, spaces: number, fullTagEmptyElement
 export function canonicaliseAttribute(attribute: string): string {
   attribute = attribute.replace(/[\t\f]+/g, " ")
   attribute = attribute.replace(/\r?\n/g, " ")
+  //The following are workarounds for a bug in XmlJs
+  attribute = attribute.replace(/&(?!quot;)/g, "&amp;")
+  attribute = attribute.replace(/</g, "&lt;")
+  attribute = attribute.replace(/>/g, "&gt;")
+  attribute = attribute.replace(/'/g, "&#39;")
   return attribute
 }
 
