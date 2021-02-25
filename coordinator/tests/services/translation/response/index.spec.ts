@@ -2,13 +2,15 @@ import * as TestResources from "../../../resources/test-resources"
 import {translateToFhir} from "../../../../src/services/translation/response"
 import {SpineDirectResponse} from "../../../../src/models/spine"
 import * as fhir from "../../../../src/models/fhir"
+import pino from "pino"
 
 describe("translateToFhir", () => {
   const spineResponses = TestResources.spineResponses
+  const logger = pino()
 
   it("converts spine prescription-order successes", () => {
     const spineResponse = spineResponses.success.response
-    const returnedValues = translateToFhir(spineResponse)
+    const returnedValues = translateToFhir(spineResponse, logger)
     const body = returnedValues.fhirResponse as fhir.OperationOutcome
     const statusCode = returnedValues.statusCode
     expect(body.issue).toHaveLength(1)
@@ -19,7 +21,7 @@ describe("translateToFhir", () => {
   })
 
   test.each(TestResources.spineResponses.singleErrors)("converts spine single errors", (syncResponse) => {
-    const returnedValues = translateToFhir(syncResponse.response)
+    const returnedValues = translateToFhir(syncResponse.response, logger)
     const body = returnedValues.fhirResponse as fhir.OperationOutcome
     const statusCode = returnedValues.statusCode
 
@@ -31,7 +33,7 @@ describe("translateToFhir", () => {
   })
 
   test.each(TestResources.spineResponses.multipleErrors)("converts multiple spine errors", (syncResponse) => {
-    const returnedValues = translateToFhir(syncResponse.response)
+    const returnedValues = translateToFhir(syncResponse.response, logger)
     const body = returnedValues.fhirResponse as fhir.OperationOutcome
     const statusCode = returnedValues.statusCode
 
@@ -51,18 +53,18 @@ describe("translateToFhir", () => {
       statusCode: 420
     }
 
-    const returnedValues = translateToFhir(spineResponse)
+    const returnedValues = translateToFhir(spineResponse, logger)
     const body = returnedValues.fhirResponse as fhir.OperationOutcome
     const statusCode = returnedValues.statusCode
 
     expect(body.issue).toHaveLength(1)
     expect(body.issue[0].diagnostics).toBeUndefined()
-    expect(statusCode).toBe(400)
+    expect(statusCode).toBe(500)
   })
 
   const cancellationResponses = [spineResponses.cancellationSuccess, spineResponses.cancellationError]
   test.each(cancellationResponses)("cancellation returns Bundle", (spineResponse) => {
-    const translatedResponse = translateToFhir(spineResponse.response)
+    const translatedResponse = translateToFhir(spineResponse.response, logger)
 
     expect(translatedResponse.fhirResponse.resourceType).toBe("Bundle")
     expect(translatedResponse.statusCode).toBe(spineResponse.response.statusCode)

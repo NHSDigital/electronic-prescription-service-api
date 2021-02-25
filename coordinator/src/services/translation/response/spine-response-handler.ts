@@ -4,6 +4,7 @@ import * as fhir from "../../../models/fhir"
 import * as cancelResponseTranslator from "./cancellation/cancellation-response"
 import * as releaseResponseTranslator from "./release/release-response"
 import {toArray} from "../common"
+import * as pino from "pino"
 
 export interface TranslatedSpineResponse {
   fhirResponse: fhir.Resource
@@ -20,20 +21,20 @@ export class SpineResponseHandler<T> {
     this.regex = new RegExp(pattern)
   }
 
-  handleResponse(spineResponse: string): TranslatedSpineResponse {
+  handleResponse(spineResponse: string, logger: pino.Logger): TranslatedSpineResponse {
     const sendMessagePayload = this.extractSendMessagePayload(spineResponse)
     if (!sendMessagePayload) {
       return null
     }
     const acknowledgementTypeCode = this.extractAcknowledgementTypeCode(sendMessagePayload)
     if (acknowledgementTypeCode === hl7V3.AcknowledgementTypeCode.ACKNOWLEDGED) {
-      return this.handleSuccessResponse(sendMessagePayload)
+      return this.handleSuccessResponse(sendMessagePayload, logger)
     } else if (acknowledgementTypeCode === hl7V3.AcknowledgementTypeCode.ERROR) {
-      return this.handleErrorResponse(sendMessagePayload)
+      return this.handleErrorResponse(sendMessagePayload, logger)
     } else if (acknowledgementTypeCode === hl7V3.AcknowledgementTypeCode.REJECTED) {
-      return this.handleRejectionResponse(sendMessagePayload)
+      return this.handleRejectionResponse(sendMessagePayload, logger)
     } else {
-      console.error("Unhandled acknowledgement type code " + acknowledgementTypeCode)
+      logger.error("Unhandled acknowledgement type code " + acknowledgementTypeCode)
       return SpineResponseHandler.createServerErrorResponse()
     }
   }
@@ -72,10 +73,6 @@ export class SpineResponseHandler<T> {
   }
 
   static createBadRequestResponse(issues: Array<fhir.OperationOutcomeIssue>): TranslatedSpineResponse {
-    if (!issues.length) {
-      console.error("Trying to return bad request response with no error details")
-      return SpineResponseHandler.createServerErrorResponse()
-    }
     return {
       statusCode: 400,
       fhirResponse: fhir.createOperationOutcome(issues)
@@ -92,6 +89,15 @@ export class SpineResponseHandler<T> {
     }
   }
 
+  private static handleErrorOrRejectionResponse(errorCodes: Array<hl7V3.Code<string>>, logger: pino.Logger) {
+    const issues = errorCodes.map(SpineResponseHandler.toOperationOutcomeIssue)
+    if (!issues.length) {
+      logger.error("Trying to return bad request response with no error details")
+      return SpineResponseHandler.createServerErrorResponse()
+    }
+    return SpineResponseHandler.createBadRequestResponse(issues)
+  }
+
   private static toOperationOutcomeIssue(code: hl7V3.Code<string>): fhir.OperationOutcomeIssue {
     return {
       code: "invalid",
@@ -106,22 +112,32 @@ export class SpineResponseHandler<T> {
     }
   }
 
-  protected handleRejectionResponse(sendMessagePayload: hl7V3.SendMessagePayload<T>): TranslatedSpineResponse {
-    const operationOutcomeIssues = this.extractRejectionCodes(sendMessagePayload)
-      .map(SpineResponseHandler.toOperationOutcomeIssue)
-    return SpineResponseHandler.createBadRequestResponse(operationOutcomeIssues)
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+
+  protected handleRejectionResponse(
+    sendMessagePayload: hl7V3.SendMessagePayload<T>,
+    logger: pino.Logger
+  ): TranslatedSpineResponse {
+    const errorCodes = this.extractRejectionCodes(sendMessagePayload)
+    return SpineResponseHandler.handleErrorOrRejectionResponse(errorCodes, logger)
   }
 
-  protected handleErrorResponse(sendMessagePayload: hl7V3.SendMessagePayload<T>): TranslatedSpineResponse {
-    const operationOutcomeIssues = this.extractErrorCodes(sendMessagePayload)
-      .map(SpineResponseHandler.toOperationOutcomeIssue)
-    return SpineResponseHandler.createBadRequestResponse(operationOutcomeIssues)
+  protected handleErrorResponse(
+    sendMessagePayload: hl7V3.SendMessagePayload<T>,
+    logger: pino.Logger
+  ): TranslatedSpineResponse {
+    const errorCodes = this.extractErrorCodes(sendMessagePayload)
+    return SpineResponseHandler.handleErrorOrRejectionResponse(errorCodes, logger)
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected handleSuccessResponse(sendMessagePayload: hl7V3.SendMessagePayload<T>): TranslatedSpineResponse {
+  protected handleSuccessResponse(
+    sendMessagePayload: hl7V3.SendMessagePayload<T>,
+    logger: pino.Logger
+  ): TranslatedSpineResponse {
     return SpineResponseHandler.createSuccessResponse()
   }
+
+  /* eslint-enable @typescript-eslint/no-unused-vars */
 }
 
 export class CancelResponseHandler extends SpineResponseHandler<hl7V3.CancellationResponseRoot> {
