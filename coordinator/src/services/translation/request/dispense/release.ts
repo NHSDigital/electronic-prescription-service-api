@@ -1,7 +1,7 @@
-import * as hl7v3 from "../../../models/hl7-v3"
+import * as hl7v3 from "../../../../models/hl7-v3"
 import * as uuid from "uuid"
-import * as fhir from "../../../models/fhir"
-import {getIdentifierParameterByName} from "../common"
+import * as fhir from "../../../../models/fhir"
+import {getIdentifierParameterByName} from "../../common"
 
 export function translateReleaseRequest(
   fhirReleaseRequest: fhir.Parameters
