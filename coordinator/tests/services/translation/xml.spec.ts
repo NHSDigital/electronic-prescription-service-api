@@ -68,3 +68,16 @@ test("writeXml escapes single quote in attributes", () => {
   expect(writeXmlStringPretty(tag)).toEqual("<tag attr=\"test&#39;test\"/>")
   expect(writeXmlStringCanonicalized(tag)).toEqual("<tag attr=\"test&#39;test\"></tag>")
 })
+
+//TODO - this bug can't be worked around without changing our XML library, but is very unlikely to have any impact
+test.skip("writeXml escapes the ampersand in the string &quot; in attributes", () => {
+  const tag = {
+    tag: {
+      _attributes: {
+        attr: "test&quot;test"
+      }
+    }
+  }
+  expect(writeXmlStringPretty(tag)).toEqual("<tag attr=\"test&amp;quot;test\"/>")
+  expect(writeXmlStringCanonicalized(tag)).toEqual("<tag attr=\"test&amp;quot;test\"></tag>")
+})
