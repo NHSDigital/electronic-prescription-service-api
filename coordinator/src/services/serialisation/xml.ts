@@ -53,3 +53,19 @@ export function readXml(text: string): XmlJs.ElementCompact {
     compact: true
   })
 }
+
+export function readXmlStripNamespace(text: string): XmlJs.ElementCompact {
+  return XmlJs.xml2js(text, {
+    compact: true,
+    elementNameFn: stripNamespace
+  })
+}
+
+function stripNamespace(elementName: string) {
+  const index = elementName.indexOf(":")
+  if (index === -1) {
+    return elementName
+  } else {
+    return elementName.substring(index + 1)
+  }
+}
