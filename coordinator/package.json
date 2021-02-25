@@ -28,7 +28,7 @@
     "lossless-json": "^1.0.4",
     "moment": "^2.26.0",
     "mustache": "^4.0.1",
-    "newman": "^5.1.0",
+    "newman": "^5.2.2",
     "pino": "^6.7.0",
     "uuid": "^8.2.0",
     "xml-js": "^1.6.11"
@@ -40,7 +40,7 @@
     "@types/hapi__hapi": "^19.0.3",
     "@types/jest": "^26.0.5",
     "@types/lossless-json": "^1.0.0",
-    "@types/moxios": "^0.4.9",
+    "@types/moxios": "^0.4.10",
     "@types/mustache": "^4.0.1",
     "@types/node": "^14.10.1",
     "@types/pino": "^6.3.4",
