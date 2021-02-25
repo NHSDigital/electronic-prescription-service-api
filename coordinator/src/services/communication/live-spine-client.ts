@@ -35,6 +35,7 @@ export class LiveSpineClient implements SpineClient {
   }
 
   async send(spineRequest: SpineRequest, logger: Logger): Promise<SpineResponse<unknown>> {
+    logger.info("Building EBXML wrapper for SpineRequest")
     const wrappedMessage = this.ebXMLBuilder(spineRequest, logger)
     const address = this.getSpineUrlForPrescription()
 

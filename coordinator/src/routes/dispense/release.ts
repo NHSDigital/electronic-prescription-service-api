@@ -32,7 +32,6 @@ export default [
       const spineRequest = translator.convertParametersToSpineRequest(payloadAsParameters)
       spineRequest.messageId = request.headers["nhsd-request-id"].toUpperCase()
 
-      request.logger.info("Awaiting response")
       const spineResponse = await spineClient.send(
         spineRequest,
         request.logger
