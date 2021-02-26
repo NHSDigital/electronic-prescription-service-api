@@ -6,10 +6,18 @@ import {
   TranslatedSpineResponse
 } from "./spine-response-handler"
 import * as pino from "pino"
+import * as cancelResponseTranslator from "./cancellation/cancellation-response"
+import * as releaseResponseTranslator from "./release/release-response"
 
 export const APPLICATION_ACKNOWLEDGEMENT_HANDLER = new SpineResponseHandler("MCCI_IN010000UK13")
-export const CANCEL_RESPONSE_HANDLER = new CancelResponseHandler("PORX_IN050101UK31")
-export const RELEASE_RESPONSE_HANDLER = new ReleaseResponseHandler("PORX_IN070101UK31")
+export const CANCEL_RESPONSE_HANDLER = new CancelResponseHandler(
+  "PORX_IN050101UK31",
+  cancelResponseTranslator.translateSpineCancelResponseIntoBundle
+)
+export const RELEASE_RESPONSE_HANDLER = new ReleaseResponseHandler(
+  "PORX_IN070101UK31",
+  releaseResponseTranslator.createOuterBundle
+)
 
 const spineResponseHandlers = [
   APPLICATION_ACKNOWLEDGEMENT_HANDLER,

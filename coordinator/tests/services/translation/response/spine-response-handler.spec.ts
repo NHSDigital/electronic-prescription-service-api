@@ -10,11 +10,6 @@ import * as uuid from "uuid"
 import * as moment from "moment"
 import {convertMomentToHl7V3DateTime} from "../../../../src/services/translation/common/dateTime"
 import {writeXmlStringPretty} from "../../../../src/services/serialisation/xml"
-import {spineResponses} from "../../../resources/test-resources"
-import {getCancellationResponse} from "../../../services/translation/common/test-helpers"
-import {
-  getExamplePrescriptionReleaseResponse
-} from "../../../services/translation/response/release/release-response.spec"
 
 const logger = pino()
 
@@ -237,9 +232,12 @@ describe("custom response handler", () => {
 })
 
 describe("cancel response handler", () => {
-  const cancelResponseHandler = new CancelResponseHandler("PORX_IN050101UK31")
-  const cancellationResponseRoot: hl7V3.CancellationResponseRoot = {
-    CancellationResponse: getCancellationResponse(spineResponses.cancellationSuccess)
+  const mockTranslator = jest.fn()
+  const cancelResponseHandler = new CancelResponseHandler("PORX_IN050101UK31", mockTranslator)
+  const mockCancellationResponse = {}
+  const mockCancellationResponseRoot = {CancellationResponse: mockCancellationResponse}
+  const mockTranslatorResponse = {
+    resourceType: "Bundle"
   }
 
   test("handleResponse returns 400 response if spine response is a rejection", () => {
@@ -261,39 +259,42 @@ describe("cancel response handler", () => {
   test("handleResponse returns 400 response if spine response is an error", () => {
     const expectedSendMessagePayload = createError(
       "PORX_IN050101UK31",
-      cancellationResponseRoot,
+      mockCancellationResponseRoot,
       createSendMessagePayloadReason("ErrorCode", "Error Display Name")
     )
     const spineResponse = writeXmlStringPretty({PORX_IN050101UK31: expectedSendMessagePayload})
+    mockTranslator.mockReturnValueOnce(mockTranslatorResponse)
     const result = cancelResponseHandler.handleResponse(spineResponse, logger)
-    expect(result).toMatchObject<TranslatedSpineResponse>({
+    expect(result).toEqual({
       statusCode: 400,
-      fhirResponse: {
-        resourceType: "Bundle"
-      } as fhir.Bundle
+      fhirResponse: mockTranslatorResponse
     })
+    expect(mockTranslator).toHaveBeenCalledWith(mockCancellationResponse)
   })
 
   test("handleResponse returns 200 response if spine response is a success", () => {
     const expectedSendMessagePayload = createSuccess(
       "PORX_IN050101UK31",
-      cancellationResponseRoot
+      mockCancellationResponseRoot
     )
     const spineResponse = writeXmlStringPretty({PORX_IN050101UK31: expectedSendMessagePayload})
+    mockTranslator.mockReturnValueOnce(mockTranslatorResponse)
     const result = cancelResponseHandler.handleResponse(spineResponse, logger)
-    expect(result).toMatchObject<TranslatedSpineResponse>({
+    expect(result).toEqual({
       statusCode: 200,
-      fhirResponse: {
-        resourceType: "Bundle"
-      } as fhir.Bundle
+      fhirResponse: mockTranslatorResponse
     })
+    expect(mockTranslator).toHaveBeenCalledWith(mockCancellationResponse)
   })
 })
 
 describe("release response handler", () => {
-  const releaseResponseHandler = new ReleaseResponseHandler("PORX_IN070101UK31")
-  const releaseResponseRoot: hl7V3.PrescriptionReleaseResponseRoot = {
-    PrescriptionReleaseResponse: getExamplePrescriptionReleaseResponse()
+  const mockTranslator = jest.fn()
+  const releaseResponseHandler = new ReleaseResponseHandler("PORX_IN070101UK31", mockTranslator)
+  const mockReleaseResponse = {}
+  const mockReleaseResponseRoot = {PrescriptionReleaseResponse: mockReleaseResponse}
+  const mockTranslatorResponse = {
+    resourceType: "Bundle"
   }
 
   test("handleResponse returns 400 response if spine response is a rejection", () => {
@@ -315,7 +316,7 @@ describe("release response handler", () => {
   test("handleResponse returns 400 response if spine response is an error", () => {
     const expectedSendMessagePayload = createError(
       "PORX_IN070101UK31",
-      releaseResponseRoot,
+      mockReleaseResponseRoot,
       createSendMessagePayloadReason("ErrorCode", "Error Display Name")
     )
     const spineResponse = writeXmlStringPretty({PORX_IN070101UK31: expectedSendMessagePayload})
@@ -332,16 +333,16 @@ describe("release response handler", () => {
   test("handleResponse returns 200 response if spine response is a success", () => {
     const expectedSendMessagePayload = createSuccess(
       "PORX_IN070101UK31",
-      releaseResponseRoot
+      mockReleaseResponseRoot
     )
     const spineResponse = writeXmlStringPretty({PORX_IN070101UK31: expectedSendMessagePayload})
+    mockTranslator.mockReturnValueOnce(mockTranslatorResponse)
     const result = releaseResponseHandler.handleResponse(spineResponse, logger)
-    expect(result).toMatchObject<TranslatedSpineResponse>({
+    expect(result).toEqual({
       statusCode: 200,
-      fhirResponse: {
-        resourceType: "Bundle"
-      } as fhir.Bundle
+      fhirResponse: mockTranslatorResponse
     })
+    expect(mockTranslator).toHaveBeenCalledWith(mockReleaseResponse)
   })
 })
 

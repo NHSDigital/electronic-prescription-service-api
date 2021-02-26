@@ -1,8 +1,6 @@
 import {readXmlStripNamespace} from "../../serialisation/xml"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
-import * as cancelResponseTranslator from "./cancellation/cancellation-response"
-import * as releaseResponseTranslator from "./release/release-response"
 import {toArray} from "../common"
 import * as pino from "pino"
 
@@ -141,13 +139,20 @@ export class SpineResponseHandler<T> {
 }
 
 export class CancelResponseHandler extends SpineResponseHandler<hl7V3.CancellationResponseRoot> {
+  translator: (cancelResponse: hl7V3.CancellationResponse) => fhir.Bundle
+
+  constructor(interactionId: string, translator: (cancelResponse: hl7V3.CancellationResponse) => fhir.Bundle) {
+    super(interactionId)
+    this.translator = translator
+  }
+
   protected handleSuccessResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.CancellationResponseRoot>
   ): TranslatedSpineResponse {
     const cancellationResponse = sendMessagePayload.ControlActEvent.subject.CancellationResponse
     return {
       statusCode: 200,
-      fhirResponse: cancelResponseTranslator.translateSpineCancelResponseIntoBundle(cancellationResponse)
+      fhirResponse: this.translator(cancellationResponse)
     }
   }
 
@@ -157,19 +162,26 @@ export class CancelResponseHandler extends SpineResponseHandler<hl7V3.Cancellati
     const cancellationResponse = sendMessagePayload.ControlActEvent.subject.CancellationResponse
     return {
       statusCode: 400,
-      fhirResponse: cancelResponseTranslator.translateSpineCancelResponseIntoBundle(cancellationResponse)
+      fhirResponse: this.translator(cancellationResponse)
     }
   }
 }
 
 export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.PrescriptionReleaseResponseRoot> {
+  translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse) => fhir.Bundle
+
+  constructor(interactionId: string, translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse) => fhir.Bundle) {
+    super(interactionId)
+    this.translator = translator
+  }
+
   protected handleSuccessResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseResponseRoot>
   ): TranslatedSpineResponse {
     const releaseResponse = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseResponse
     return {
       statusCode: 200,
-      fhirResponse: releaseResponseTranslator.createOuterBundle(releaseResponse)
+      fhirResponse: this.translator(releaseResponse)
     }
   }
 }
