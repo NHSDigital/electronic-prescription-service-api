@@ -4,9 +4,9 @@
     <Set>
         <Headers>
             <Header name="Access-Control-Allow-Origin">{request.header.origin}</Header>
-            <Header name="Access-Control-Allow-Headers">origin, x-requested-with, accept, content-type</Header>
+            <Header name="Access-Control-Allow-Headers">origin, x-requested-with, accept, content-type, authorization, x-correlation-id, x-request-id</Header>
             <Header name="Access-Control-Max-Age">3628800</Header>
-            <Header name="Access-Control-Allow-Methods">GET, PUT, POST, DELETE</Header>
+            <Header name="Access-Control-Allow-Methods">GET, POST</Header>
         </Headers>
     </Set>
     <IgnoreUnresolvedVariables>true</IgnoreUnresolvedVariables>
