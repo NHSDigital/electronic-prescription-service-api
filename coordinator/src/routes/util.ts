@@ -39,8 +39,12 @@ export function handleResponse<T>(
     return responseToolkit.response(spineResponse.body)
       .code(spineResponse.statusCode)
       .header("Content-Type", contentType)
+  } else if (isBundle(spineResponse.body)) {
+    return responseToolkit.response(spineResponse.body)
+      .code(spineResponse.statusCode)
+      .header("Content-Type", contentType)
   } else {
-    const translatedSpineResponse = translateToFhir(spineResponse)
+    const translatedSpineResponse = translateToFhir(spineResponse, request.logger)
     return responseToolkit.response(translatedSpineResponse.fhirResponse)
       .code(translatedSpineResponse.statusCode)
       .header("Content-Type", contentType)
@@ -51,6 +55,12 @@ function isOperationOutcome(body: unknown): body is fhir.OperationOutcome {
   return typeof body === "object"
     && "resourceType" in body
     && (body as fhir.Resource).resourceType === "OperationOutcome"
+}
+
+function isBundle(body: unknown): body is fhir.Bundle {
+  return typeof body === "object"
+    && "resourceType" in body
+    && (body as fhir.Resource).resourceType === "Bundle"
 }
 
 type Handler<T> = (

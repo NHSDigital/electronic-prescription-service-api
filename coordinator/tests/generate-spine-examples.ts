@@ -16,14 +16,13 @@ import {getExtensionForUrl, getExtensionForUrlOrNull} from "../src/services/tran
 import * as LosslessJson from "lossless-json"
 import * as moment from "moment"
 import {clone} from "./resources/test-helpers"
-import {createReference} from "../src/services/translation/response/fhir-base-types"
 import {convertMomentToISODateTime} from "../src/services/translation/common/dateTime"
 import * as fhir from "../src/models/fhir"
 
 function updateMessageHeaderAndProvenance(bundle: fhir.Bundle) {
-  const patientReference = createReference(getPatient(bundle).id)
+  const patientReference = fhir.createReference(getPatient(bundle).id)
   const medicationRequestReferences = getMedicationRequests(bundle)
-    .map(medicationRequest => createReference(medicationRequest.id))
+    .map(medicationRequest => fhir.createReference(medicationRequest.id))
 
   getMessageHeader(bundle).focus = [patientReference, ...medicationRequestReferences]
   getProvenances(bundle).forEach(provenance => provenance.target = medicationRequestReferences)

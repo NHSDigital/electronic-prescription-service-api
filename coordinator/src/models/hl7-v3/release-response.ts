@@ -2,6 +2,10 @@ import * as core from "./core"
 import * as codes from "./codes"
 import * as parentPrescription from "./parent-prescription"
 
+export interface PrescriptionReleaseResponseRoot {
+  PrescriptionReleaseResponse: PrescriptionReleaseResponse
+}
+
 export interface PrescriptionReleaseResponse {
   id: codes.GlobalIdentifier
   effectiveTime: core.Timestamp

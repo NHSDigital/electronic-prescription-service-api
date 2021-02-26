@@ -5,6 +5,13 @@ export interface OperationOutcome extends common.Resource {
   issue: Array<OperationOutcomeIssue>
 }
 
+export function createOperationOutcome(issues: Array<OperationOutcomeIssue>): OperationOutcome {
+  return {
+    resourceType: "OperationOutcome",
+    issue: issues
+  }
+}
+
 export interface OperationOutcomeIssue {
   severity: "information" | "warning" | "error" | "fatal"
   code: "informational" | "value" | "invalid"

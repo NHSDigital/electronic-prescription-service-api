@@ -2,7 +2,7 @@ import {
   createBundleResources, createInnerBundle,
   createOuterBundle
 } from "../../../../../src/services/translation/response/release/release-response"
-import {readXml} from "../../../../../src/services/serialisation/xml"
+import {readXmlStripNamespace} from "../../../../../src/services/serialisation/xml"
 import * as LosslessJson from "lossless-json"
 import * as fs from "fs"
 import * as path from "path"
@@ -139,10 +139,10 @@ describe("bundle resources", () => {
   })
 })
 
-function getExamplePrescriptionReleaseResponse(): hl7V3.PrescriptionReleaseResponse {
+export function getExamplePrescriptionReleaseResponse(): hl7V3.PrescriptionReleaseResponse {
   const exampleStr = fs.readFileSync(path.join(__dirname, "release_success.xml"), "utf8")
-  const exampleObj = readXml(exampleStr)
-  return exampleObj["hl7:PORX_IN070101UK31"]["hl7:ControlActEvent"]["hl7:subject"]["PrescriptionReleaseResponse"]
+  const exampleObj = readXmlStripNamespace(exampleStr)
+  return exampleObj.PORX_IN070101UK31.ControlActEvent.subject.PrescriptionReleaseResponse
 }
 
 function getExampleParentPrescription(): hl7V3.ParentPrescription {

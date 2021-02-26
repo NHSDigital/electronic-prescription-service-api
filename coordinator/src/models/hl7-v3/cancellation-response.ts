@@ -2,27 +2,8 @@ import * as agentPerson from "./agent-person"
 import * as codes from "./codes"
 import * as core from "./core"
 import * as patient from "./patient"
-import * as applicationAcknowledgement from "./application-acknowledgement"
 
-export interface PORX50101 {
-  "hl7:PORX_IN050101UK31": {
-    "hl7:ControlActEvent": {
-      "hl7:subject": hl7Subject
-    }
-    "hl7:acknowledgement": {
-      _attributes: {
-        typeCode: applicationAcknowledgement.AcknowledgementTypeCode
-      }
-    },
-    "hl7:id": {
-      _attributes: {
-        root: string
-      }
-    }
-  }
-}
-
-export interface hl7Subject {
+export interface CancellationResponseRoot {
   CancellationResponse: CancellationResponse
 }
 

@@ -2,7 +2,6 @@ import * as translator from "../../services/translation/request"
 import {spineClient} from "../../services/communication"
 import Hapi from "@hapi/hapi"
 import {basePath, createHash, handleResponse, validatingHandler} from "../util"
-import {createOperationOutcomeIssue} from "../../services/translation/response"
 import {getMessageHeader} from "../../services/translation/common/getResourcesOfType"
 import * as fhir from "../../models/fhir"
 
@@ -22,7 +21,10 @@ export default [
         if (isDispenseMessage(bundle)) {
           return responseToolkit.response({
             resourceType: "OperationOutcome",
-            issue: [createOperationOutcomeIssue(200)]
+            issue: [{
+              code: "informational",
+              severity: "information"
+            }]
           }).code(200)
         }
         request.logger.info("Building Spine request")

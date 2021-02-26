@@ -11,14 +11,11 @@ import {
   getPractitionerRoles,
   getPractitioners
 } from "../../../../../src/services/translation/common/getResourcesOfType"
-import {SPINE_CANCELLATION_ERROR_RESPONSE_REGEX} from "../../../../../src/services/translation/response"
-import {readXml} from "../../../../../src/services/serialisation/xml"
 import {getCancellationResponse, hasCorrectISOFormat} from "../../common/test-helpers"
-import * as hl7V3 from "../../../../../src/models/hl7-v3"
+import {CANCEL_RESPONSE_HANDLER} from "../../../../../src/services/translation/response"
 
 const actualError = TestResources.spineResponses.cancellationError
-const cancelResponse = SPINE_CANCELLATION_ERROR_RESPONSE_REGEX.exec(actualError.response.body)[0]
-const parsedCancelResponse = readXml(cancelResponse) as hl7V3.PORX50101
+const actualSendMessagePayload = CANCEL_RESPONSE_HANDLER.extractSendMessagePayload(actualError.response.body)
 const actualCancelResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)
 const fhirBundle = translateSpineCancelResponseIntoBundle(actualCancelResponse)
 
@@ -35,7 +32,7 @@ describe("bundle", () => {
     const bundleIdentifier = fhirBundle.identifier
     expect(bundleIdentifier.system).toBe("https://tools.ietf.org/html/rfc4122")
     expect(bundleIdentifier.value)
-      .toBe(parsedCancelResponse["hl7:PORX_IN050101UK31"]["hl7:id"]._attributes.root.toLowerCase())
+      .toBe(actualSendMessagePayload.id._attributes.root.toLowerCase())
   })
 
   test("bundle has correct timestamp format", () => {

@@ -1,7 +1,7 @@
 import {ElementCompact} from "xml-js"
 import * as core from "./core"
 
-class Code<T extends string> implements ElementCompact {
+export class Code<T extends string> implements ElementCompact {
     _attributes: {
         codeSystem: T
         code: string
@@ -115,6 +115,12 @@ export class ItemStatusCode extends Code<"2.16.840.1.113883.2.1.3.2.4.17.23"> {
   static EXPIRED = new ItemStatusCode("0006")
   static TO_BE_DISPENSED = new ItemStatusCode("0007")
   static WITH_DISPENSER = new ItemStatusCode("0008")
+}
+
+export class AcknowledgementExceptionCode extends Code<"2.16.840.1.113883.2.1.3.2.4.17.32"> {
+  constructor(code: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.17.32", code)
+  }
 }
 
 class CodeWithoutSystem extends Code<undefined> {
