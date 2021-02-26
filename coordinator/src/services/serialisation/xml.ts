@@ -54,14 +54,13 @@ export function sortAttributes(attributes: XmlJs.Attributes, currentElementName:
  * TODO - remove once the above issue is resolved
  */
 function escapeXmlChars(attribute: string | number): string | number {
-  if (typeof attribute === "number") {
-    return attribute
+  if (typeof attribute === "string") {
+    attribute = attribute.replace(/&/g, "&amp;")
+    attribute = attribute.replace(/</g, "&lt;")
+    attribute = attribute.replace(/>/g, "&gt;")
+    attribute = attribute.replace(/"/g, "&quot;")
+    attribute = attribute.replace(/'/g, "&#39;")
   }
-  attribute = attribute.replace(/&/g, "&amp;")
-  attribute = attribute.replace(/</g, "&lt;")
-  attribute = attribute.replace(/>/g, "&gt;")
-  attribute = attribute.replace(/"/g, "&quot;")
-  attribute = attribute.replace(/'/g, "&#39;")
   return attribute
 }
 

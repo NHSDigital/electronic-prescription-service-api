@@ -181,6 +181,61 @@ describe("default handler", () => {
   })
 })
 
+describe("custom response handler", () => {
+  const customResponse: TranslatedSpineResponse = {
+    statusCode: 418,
+    fhirResponse: {
+      resourceType: "Patient"
+    }
+  }
+
+  const rejectionOverride = jest.fn()
+  const errorOverride = jest.fn()
+  const successOverride = jest.fn()
+
+  const customHandlerClass = class extends SpineResponseHandler<undefined> {
+    protected handleRejectionResponse = rejectionOverride
+    protected handleErrorResponse = errorOverride
+    protected handleSuccessResponse = successOverride
+  }
+
+  const customHandler = new customHandlerClass("MCCI_IN010000UK13")
+
+  test("handleResponse calls rejection override if spine response is a rejection", () => {
+    const expectedSendMessagePayload = createRejection(
+      "MCCI_IN010000UK13",
+      createAcknowledgementDetail("RejectionCode", "Rejection Display Name")
+    )
+    const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
+    rejectionOverride.mockReturnValueOnce(customResponse)
+    const result = customHandler.handleResponse(spineResponse, logger)
+    expect(result).toBe(customResponse)
+    expect(rejectionOverride).toHaveBeenCalled()
+  })
+
+  test("handleResponse calls error override if spine response is an error", () => {
+    const expectedSendMessagePayload = createError(
+      "MCCI_IN010000UK13",
+      undefined,
+      createSendMessagePayloadReason("ErrorCode", "Error Display Name")
+    )
+    const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
+    errorOverride.mockReturnValueOnce(customResponse)
+    const result = customHandler.handleResponse(spineResponse, logger)
+    expect(result).toBe(customResponse)
+    expect(errorOverride).toHaveBeenCalled()
+  })
+
+  test("handleResponse calls success override if spine response is a success", () => {
+    const expectedSendMessagePayload = createSuccess("MCCI_IN010000UK13", undefined)
+    const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
+    successOverride.mockReturnValueOnce(customResponse)
+    const result = customHandler.handleResponse(spineResponse, logger)
+    expect(result).toBe(customResponse)
+    expect(successOverride).toHaveBeenCalled()
+  })
+})
+
 describe("cancel response handler", () => {
   const cancelResponseHandler = new CancelResponseHandler("PORX_IN050101UK31")
   const cancellationResponseRoot: hl7V3.CancellationResponseRoot = {
