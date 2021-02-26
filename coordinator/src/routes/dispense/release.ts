@@ -1,9 +1,8 @@
 import * as Hapi from "@hapi/hapi"
-import {basePath, externalFHIRValidation, getPayload, toFhirError, handleResponse} from "../util"
+import {basePath, externalFHIRValidation, getPayload, toFhirError} from "../util"
 import {ResourceTypeError} from "../../models/errors/validation-errors"
 import * as fhir from "../../models/fhir"
 import * as translator from "../../services/translation/request"
-import {spineClient} from "../../services/communication"
 
 export default [
   /*
@@ -32,12 +31,15 @@ export default [
       const spineRequest = translator.convertParametersToSpineRequest(payloadAsParameters)
       spineRequest.messageId = request.headers["nhsd-request-id"].toUpperCase()
 
-      const spineResponse = await spineClient.send(
-        spineRequest,
-        request.logger
-      )
-
-      return handleResponse(request, spineResponse, responseToolkit)
+      return responseToolkit.response(spineRequest.message)
+        .code(200)
+      //
+      // const spineResponse = await spineClient.send(
+      //   spineRequest,
+      //   request.logger
+      // )
+      //
+      // return handleResponse(request, spineResponse, responseToolkit)
     }
 
   } as Hapi.ServerRoute
