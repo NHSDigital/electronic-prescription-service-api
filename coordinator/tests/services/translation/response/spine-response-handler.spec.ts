@@ -22,7 +22,9 @@ describe("default handler", () => {
   const defaultHandler = new SpineResponseHandler("MCCI_IN010000UK13")
 
   test("extractSendMessagePayload returns null if spine response doesn't match regex", () => {
-    const result = defaultHandler.extractSendMessagePayload("<MCCI_SOMETHING_ELSE></MCCI_SOMETHING_ELSE>")
+    const expectedSendMessagePayload = createSuccess("MCCI_IN010000UK13", undefined)
+    const spineResponse = writeXmlStringPretty({MCCI_SOMETHING_ELSE: expectedSendMessagePayload})
+    const result = defaultHandler.extractSendMessagePayload(spineResponse)
     expect(result).toBeFalsy()
   })
 
@@ -34,7 +36,9 @@ describe("default handler", () => {
   })
 
   test("handleResponse returns null if spine response doesn't match regex", () => {
-    const result = defaultHandler.handleResponse("<MCCI_SOMETHING_ELSE></MCCI_SOMETHING_ELSE>", logger)
+    const expectedSendMessagePayload = createSuccess("MCCI_IN010000UK13", undefined)
+    const spineResponse = writeXmlStringPretty({MCCI_SOMETHING_ELSE: expectedSendMessagePayload})
+    const result = defaultHandler.handleResponse(spineResponse, logger)
     expect(result).toBeFalsy()
   })
 

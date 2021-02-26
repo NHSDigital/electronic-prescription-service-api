@@ -23,11 +23,6 @@ function writeXml(tag: XmlJs.ElementCompact, spaces: number, fullTagEmptyElement
 export function canonicaliseAttribute(attribute: string): string {
   attribute = attribute.replace(/[\t\f]+/g, " ")
   attribute = attribute.replace(/\r?\n/g, " ")
-  //The following are workarounds for a bug in XmlJs
-  attribute = attribute.replace(/&(?!quot;)/g, "&amp;")
-  attribute = attribute.replace(/</g, "&lt;")
-  attribute = attribute.replace(/>/g, "&gt;")
-  attribute = attribute.replace(/'/g, "&#39;")
   return attribute
 }
 
@@ -49,8 +44,25 @@ export function sortAttributes(attributes: XmlJs.Attributes, currentElementName:
   } as XmlJs.Attributes
   Object.getOwnPropertyNames(attributes)
     .sort()
-    .forEach(propertyName => newAttributes[propertyName] = attributes[propertyName])
+    .forEach(propertyName => newAttributes[propertyName] = escapeXmlChars(attributes[propertyName]))
   return newAttributes
+}
+
+/**
+ * This is a workaround for a bug in XmlJs
+ * https://github.com/nashwaan/xml-js/issues/69
+ * TODO - remove once the above issue is resolved
+ */
+function escapeXmlChars(attribute: string | number): string | number {
+  if (typeof attribute === "number") {
+    return attribute
+  }
+  attribute = attribute.replace(/&/g, "&amp;")
+  attribute = attribute.replace(/</g, "&lt;")
+  attribute = attribute.replace(/>/g, "&gt;")
+  attribute = attribute.replace(/"/g, "&quot;")
+  attribute = attribute.replace(/'/g, "&#39;")
+  return attribute
 }
 
 export function readXml(text: string): XmlJs.ElementCompact {
