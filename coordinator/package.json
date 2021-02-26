@@ -4,7 +4,7 @@
   "description": "Electronic Prescription Service API Coordinator",
   "main": "app.js",
   "scripts": {
-    "build": "tsc --alwaysStrict",
+    "build": "tsc --alwaysStrict --project tsconfig-build.json",
     "lint": "eslint . --ext .ts --max-warnings 0 --fix",
     "start": "node app.js --use_strict",
     "start-with-env": ". ../../scripts/set_env_vars.sh && node app.js --use_strict",

@@ -55,7 +55,7 @@ export function createMedicationRequest(
     dispenseRequest: createDispenseRequest(
       prescription.pertinentInformation1.pertinentDispensingSitePreference,
       lineItem.component.lineItemQuantity,
-      prescription.component1.daysSupply,
+      prescription.component1?.daysSupply,
       prescription.performer
     ),
     substitution: createSubstitution()

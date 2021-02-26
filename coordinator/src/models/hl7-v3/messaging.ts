@@ -1,6 +1,10 @@
 import * as codes from "./codes"
 import * as core from "./core"
 
+export interface WrapperRoot<T> {
+  [key: string]: SendMessagePayload<T>
+}
+
 export class SendMessagePayload<T> {
   id: codes.GlobalIdentifier
   creationTime: core.Timestamp
@@ -9,6 +13,7 @@ export class SendMessagePayload<T> {
   processingCode: codes.ProcessingId
   processingModeCode: codes.ProcessingMode
   acceptAckCode: codes.AcceptAckCode
+  acknowledgement?: Acknowledgement
   communicationFunctionRcv: CommunicationFunction
   communicationFunctionSnd: CommunicationFunction
   ControlActEvent: ControlActEvent<T>
@@ -22,6 +27,23 @@ export class SendMessagePayload<T> {
     this.processingModeCode = codes.ProcessingMode.ONLINE
     this.acceptAckCode = codes.AcceptAckCode.NEVER
   }
+}
+
+export class Acknowledgement {
+  _attributes: {
+    typeCode: AcknowledgementTypeCode
+  }
+  acknowledgementDetail?: AcknowledgementDetail | Array<AcknowledgementDetail>
+}
+
+export enum AcknowledgementTypeCode {
+  ACKNOWLEDGED = "AA",
+  REJECTED = "AR",
+  ERROR = "AE"
+}
+
+export class AcknowledgementDetail {
+  code: codes.AcknowledgementExceptionCode
 }
 
 export class CommunicationFunction {
@@ -53,6 +75,7 @@ export class ControlActEvent<T> {
 
   author: SendMessagePayloadAuthorPersonSds
   author1: SendMessagePayloadAuthorSystemSds
+  reason?: SendMessagePayloadReason | Array<SendMessagePayloadReason>
   subject: T
 }
 
@@ -149,4 +172,12 @@ export class AgentSystemSystemSds {
   constructor(id: codes.AccreditedSystemIdentifier) {
     this.id = id
   }
+}
+
+export class SendMessagePayloadReason {
+  justifyingDetectedIssueEvent: JustifyingDetectedIssueEvent
+}
+
+export class JustifyingDetectedIssueEvent {
+  code: codes.Code<string>
 }

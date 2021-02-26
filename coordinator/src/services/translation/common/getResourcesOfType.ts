@@ -1,7 +1,7 @@
 import * as fhir from "../../../models/fhir"
 import {onlyElement} from "./index"
 
-function getResourcesOfType<T extends fhir.Resource>(bundle: fhir.Bundle, resourceType: string): Array<T> {
+export function getResourcesOfType<T extends fhir.Resource>(bundle: fhir.Bundle, resourceType: string): Array<T> {
   return bundle.entry
     .map(entry => entry.resource)
     .filter(resource => resource.resourceType === resourceType) as Array<T>

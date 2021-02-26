@@ -1,5 +1,4 @@
 export * from "./agent-person"
-export * from "./application-acknowledgement"
 export * from "./cancellation-request"
 export * from "./cancellation-response"
 export * from "./codes"

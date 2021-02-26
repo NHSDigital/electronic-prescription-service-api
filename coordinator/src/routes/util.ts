@@ -40,7 +40,7 @@ export function handleResponse<T>(
       .code(spineResponse.statusCode)
       .header("Content-Type", contentType)
   } else {
-    const translatedSpineResponse = translateToFhir(spineResponse)
+    const translatedSpineResponse = translateToFhir(spineResponse, request.logger)
     return responseToolkit.response(translatedSpineResponse.fhirResponse)
       .code(translatedSpineResponse.statusCode)
       .header("Content-Type", contentType)

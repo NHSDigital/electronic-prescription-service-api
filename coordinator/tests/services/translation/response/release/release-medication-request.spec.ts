@@ -207,13 +207,13 @@ describe("extension", () => {
 
 describe("status", () => {
   test("is mapped correctly", () => {
-    const itemStatus = new hl7V3.ItemStatus("0001")
+    const itemStatus = new hl7V3.ItemStatus(hl7V3.ItemStatusCode.FULLY_DISPENSED)
     const result = getStatus(itemStatus)
     expect(result).toEqual("completed")
   })
 
   test("throws for unknown status code", () => {
-    const itemStatus = new hl7V3.ItemStatus("testing")
+    const itemStatus = new hl7V3.ItemStatus(new hl7V3.ItemStatusCode("testing"))
     expect(() => getStatus(itemStatus)).toThrow(TypeError)
   })
 })

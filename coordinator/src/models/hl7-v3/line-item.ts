@@ -219,8 +219,8 @@ export class AdditionalInstructions extends prescription.PrescriptionAnnotation 
 export class ItemStatus extends prescription.PrescriptionAnnotation {
   value: codes.ItemStatusCode
 
-  constructor(value: string) {
+  constructor(value: codes.ItemStatusCode) {
     super(new codes.PrescriptionAnnotationCode("IS"))
-    this.value = new codes.ItemStatusCode(value)
+    this.value = value
   }
 }
