@@ -19,9 +19,9 @@
         "sender": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "C81010"
+            "value": "A83008"
           },
-          "display": "The Moir Medical Centre"
+          "display": "HALLGARTH SURGERY"
         },
         "source": {
           "endpoint": "urn:nhs-uk:addressing:ods:C81010"
