@@ -24,7 +24,7 @@
           "display": "HALLGARTH SURGERY"
         },
         "source": {
-          "endpoint": "urn:nhs-uk:addressing:ods:C81010"
+          "endpoint": "urn:nhs-uk:addressing:ods:A83008"
         },
         "destination": [
           {
