@@ -1,7 +1,7 @@
 import {applyFhirPath} from "../../../src/services/validation/fhir-path"
 import * as TestResources from "../../resources/test-resources"
-import {Extension, Patient, PractitionerRole} from "../../../src/models/fhir/fhir-resources"
 import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
+import * as fhir from "../../../src/models/fhir"
 
 describe("applyFhirPath returns correct value", () => {
   const bundle = TestResources.examplePrescription1.fhirMessageSigned
@@ -12,7 +12,7 @@ describe("applyFhirPath returns correct value", () => {
       bundle,
       [bundle],
       "entry.resource.ofType(Patient)"
-    ) as Array<Patient>
+    ) as Array<fhir.Patient>
     expect(patients.length).toBe(1)
     expect(patients[0].resourceType).toBe("Patient")
   })
@@ -22,7 +22,7 @@ describe("applyFhirPath returns correct value", () => {
       bundle,
       medicationRequests,
       "requester.resolve()"
-    ) as Array<PractitionerRole>
+    ) as Array<fhir.PractitionerRole>
     expect(requesters.length).toBe(medicationRequests.length)
     requesters.map(requester => expect(requester.resourceType).toBe("PractitionerRole"))
   })
@@ -32,7 +32,7 @@ describe("applyFhirPath returns correct value", () => {
       bundle,
       medicationRequests,
       "dispenseRequest.extension(\"https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType\")"
-    ) as Array<Extension>
+    ) as Array<fhir.Extension>
     expect(extensions.length).toBe(medicationRequests.length)
     extensions.map(
       extension =>

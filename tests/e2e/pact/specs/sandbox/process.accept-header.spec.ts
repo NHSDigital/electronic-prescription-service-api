@@ -7,7 +7,7 @@ import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
-  pactOptions("sandbox", "process", ["accept-header"]),
+  pactOptions("sandbox", "process", "accept_headers"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {

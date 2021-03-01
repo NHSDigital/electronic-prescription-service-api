@@ -4,5 +4,5 @@ Run create-smoke-tests to create a live pact then generate-postman-collection to
 
 ```
 make mode=live create-smoke-tests
-make generate-postman-collection
+make env=int token=PxfZQbD3zIGGJK1AAVQWN7iIuh38 generate-postman-collection
 ```

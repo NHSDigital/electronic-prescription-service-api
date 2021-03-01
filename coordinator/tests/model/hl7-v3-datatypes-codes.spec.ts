@@ -1,4 +1,4 @@
-import * as codes from "../../src/models/hl7-v3/hl7-v3-datatypes-codes"
+import * as codes from "../../src/models/hl7-v3/codes"
 
 describe("GlobalIdentifier", () => {
   test("root not converted to uppercase when not passed a UUID", () => {

@@ -21,6 +21,8 @@ info:
     * evaluate prescription signing client implementations
     * release a prescription for dispensing (sandbox implementation)
     * send a dispense notification to EPS (sandbox implementation)
+    * return a prescription after downloading (spec only)
+    * withdraw a dispense notificaton (spec only)
 
     You cannot currently use this API to:
     * prepare a primary care prescription for signing
@@ -33,17 +35,10 @@ info:
     * claim for a dispensed prescription
     * track prescriptions or check a prescription's status
 
-    This API can only be accessed by healthcare professionals, authenticated with an NHS smartcard or equivalent.
-
-    ## Digital signatures
-    Electronic prescription messages are digitally signed to protect against tampering and to prevent repudiation. While the messages themselves are FHIR-based, for reasons of backwards compatibility, the signatures must be represented in HL7 V3 format. To make this easier, you can POST a prescription to the `/$prepare` endpoint to receive exactly the HL7 V3 fragments which need to be signed to conform to the specification.
-
-    To generate a signature for your prescription, you can use the Signing Service. To access the service, [contact us](https://digital.nhs.uk/developer/help-and-support).
-
-    ## Using this API
+    ## Using this API as a prescriber
     ### To create a prescription:
     1. POST a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) to the `/FHIR/R4/$prepare` endpoint to get the encoded prescription data that requires a signature
-    2. sign the encoded prescription data using the Signing Service to get the signed prescription data
+    2. sign the encoded prescription data using the [Signing Service](https://digital.nhs.uk/developer/api-catalogue/signing-service) or your existing local signing solution to get the signed prescription data
     3. generate an XML-DSig using the signed prescription data (see below)
     4. put the XML-DSig in a `Provenance` resource
     5. add the `Provenance` to the prescription-order message
@@ -63,18 +58,22 @@ info:
         return Buffer.from(xmlSignature, "utf-8").toString("base64")
       }
     ```
-
+    
     ### To cancel a prescription:
     1. POST a [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update) to the `/FHIR/R4/$process-message` endpoint
 
-    ### To dispense a prescription: 
+    ## Using this API as a dispenser
+    ### To download a prescription to be dispensed: 
     1. POST a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to the `/FHIR/R4/Task/$release` endpoint to mark the prescription as released
-    2. POST a [prescription-dispense-notification](https://simplifier.net/guide/DigitalMedicines/prescription-dispense) message to the `/FHIR/R4/$process-message` endpoint to inform SPINE of a partial/successful dispense
+   
+    ### To notify Spine that a prescription has been dispensed:
+    1. POST a [prescription-dispense-notification](https://simplifier.net/guide/DigitalMedicines/prescription-dispense) message to the `/FHIR/R4/$process-message` endpoint to inform SPINE of a partial/successful dispense
 
-    ## Legal Use
-    This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
-
-    You must do this before you can go live (see ‘Onboarding’ below).
+    ### To withdraw a prescription notification:
+    1. TBC
+    
+    ### To return a prescription to Spine:
+    1. TBC
 
     ## Related APIs
     The following APIs also give access to the Electronic Prescription Service:
@@ -82,14 +81,24 @@ info:
     - [Signing Service](https://digital.nhs.uk/developer/api-catalogue/signing-service) - use this to digitally sign a prescription
     - [Prescription Tracker API](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to obtain information about a patient’s prescriptions
 
+    The following APIs may be required when accessing the  Electronic Prescription Service:
+    - [Personal Demographics Service - FHIR API](https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir) - use this to obtain patient data
+    
+    ## Additional guidance
+    For further details on common HTTP status codes, see [5xx status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide)
+
     ## API status and roadmap
-    Prescribing flows for EPS FHIR API are in technical go-live. Dispensing flows for EPS FHIR API are in sandbox environment only.
-
-    The API is currently available for sandbox testing and integration testing, but not for production use.
-
     To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?tag=eps-fhir-api).
 
     If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
+    
+    ### Prescribing API
+    Prescribing flows for EPS FHIR API are now in a state of technical go-live awaiting our first of type integration.
+
+    The API is currently available for sandbox testing and integration testing, but not for production use.
+
+    ### Dispensing API
+    Download and the mark as dispensed dispensing flows for the EPS FHIR API are in the sandbox environment only, withdraw and return are currently only referenced in this spec.
 
     ## Technology
 
@@ -153,31 +162,16 @@ info:
     ## Onboarding
     You need to get your software approved by us before it can go live with this API. We call this onboarding. We are hoping to make the onboarding process as lightweight and as self-service as possible however it can sometimes be quite long, so it’s worth planning well ahead.
 
-    To onboard for this API, follow the onboarding process for APIs by following the Supplier Conformance Assessment List (SCAL) process.
-
-    When following the SCAL process for the EPS API, please note that:
-
-    **In step 1:** To confirm your use case for this API, you need to contact the EPS team at epssupport@nhs.net
-
-    **In step 6:** When implementing your clinical risk management process, you must review and integrate the EPS FHIR API hazard log into your own risk log. You’ll find it embedded within the EPS FHIR API tab in the SCAL.
-
-    **In step 8:** You need to review and complete the EPS FHIR API risk log to show that you have understood and mitigated the various risks. You might be asked to provide evidence to prove that controls have been put in place. You’ll find the risk log embedded within the EPS FHIR API tab in the SCAL. This is separate from the clinical safety hazard log mentioned above.
-
-    **In step 9:** You must conduct penetration testing of your system to CHECK standards.
-
-    **In step 10:** When you complete the Service Desk Registration Form, send it to api.management@nhs.net.
-
-    **In step 11:** Submit your completed SCAL to api.management@nhs.net.
-
-    **In step 14:** To request production access, contact us at api.management@nhs.net.
-
-    ## Additional guidance
-    For further details on common HTTP status codes, see [5xx status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide)
+    To begin the onboarding process please [contact us](https://digital.nhs.uk/developer/help-and-support) and request the 'EPS use case form'.
 
     ## Resources
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/DigitalMedicines) to assist with your integration.
     This is the FHIR specification for Digital Medicines starting with the assets required for an electronic prescription sent to the EPS.
+    
+    ## Legal Use
+    This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
 
+    You must do this before you can go live (see ‘Onboarding’ below).
 
     ## Errors
     ### API wide errors
@@ -212,11 +206,17 @@ paths:
         Use this endpoint to convert a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) in FHIR format into HL7 V3 signature fragments which can then be signed by the prescriber.
       tags:
         - prescribing
+      parameters:
+        - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RequestID'
+        - $ref: '#/components/parameters/CorrelationID'
       requestBody:
         required: true
         content:
           #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
           application/json:
+            schema:
+              type: object
             examples:
               example:
                 value:
@@ -228,6 +228,8 @@ paths:
           content:
             #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
             application/json:
+              schema:
+                type: object
               examples:
                 example:
                   value:
@@ -236,6 +238,8 @@ paths:
           description: Invalid request.
           content:
             application/fhir+json:
+              schema:
+                type: object
               examples:
                 example:
                   value:
@@ -255,11 +259,17 @@ paths:
       tags:
         - dispensing
         - prescribing
+      parameters:
+        - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RequestID'
+        - $ref: '#/components/parameters/CorrelationID'
       requestBody:
         required: true
         content:
           #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
           application/json:
+            schema:
+              type: object
             examples:
               prescribe-success:
                 value:
@@ -276,6 +286,8 @@ paths:
           description: Successfully submitted.
           content:
             application/fhir+json:
+              schema:
+                type: object
               examples:
                 example:
                   value:
@@ -290,6 +302,8 @@ paths:
             | 400         | BAD_REQUEST        | Spine Error - prescription not found.           | Bundle           |
           content:
             application/fhir+json:
+              schema:
+                type: object
               examples:
                 OperationOutcome:
                   value:
@@ -313,10 +327,16 @@ paths:
         This endpoint is only available in the sandbox environment.
       tags:
         - dispensing
+      parameters:
+        - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RequestID'
+        - $ref: '#/components/parameters/CorrelationID'
       requestBody:
         required: true
         content:
           application/json:
+            schema:
+              type: object
             examples:
               group-identifier:
                 value:
@@ -329,6 +349,8 @@ paths:
           description: Successfully released a prescription for dispensing
           content:
             application/fhir+json:
+              schema:
+                type: object
               examples:
                 example:
                   value:
@@ -342,7 +364,48 @@ paths:
             | 400         | BAD_REQUEST        | Invalid request bundle. |
           content:
             application/fhir+json:
+              schema:
+                type: object
               examples:
                 example:
                   value: 
                     $ref: components/examples/errors/release/validation-error.json
+components:
+  parameters:
+    BearerAuthorization:
+      in: header
+      name: Authorization
+      description: |
+        An [OAuth 2.0 bearer token](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis).
+        Required in all environments except sandbox.
+      required: false
+      schema:
+        type: string
+        format: '^Bearer\ [[:ascii:]]+$'
+        example: 'Bearer g1112R_ccQ1Ebbb4gtHBP1aaaNM'
+    RequestID:
+      in: header
+      name: X-Request-ID
+      required: true
+      description: |
+        A globally unique identifier (GUID) for the request, which we use to de-duplicate repeated requests and to trace the request if you contact our helpdesk.
+
+        Must be a universally unique identifier (UUID) (ideally version 4).
+        Mirrored back in a response header.
+        If you re-send a failed request, use the same value in this header.
+        Required in all environments except sandbox.
+      schema:
+        type: string
+        pattern: '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$'
+        example: 60E0B220-8136-4CA5-AE46-1D97EF59D068
+    CorrelationID:
+      in: header
+      name: X-Correlation-ID
+      required: false
+      description: |
+        An optional ID which you can use to track transactions across multiple systems. It can take any value, but we recommend avoiding `.` characters.
+
+        Mirrored back in a response header.
+      schema:
+        type: string
+        example: 11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA

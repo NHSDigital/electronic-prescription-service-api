@@ -1,7 +1,7 @@
-import * as fhir from "../../models/fhir/fhir-resources"
 import * as Hapi from "@hapi/hapi"
 import {basePath, externalFHIRValidation, getPayload, toFhirError} from "../util"
 import {ResourceTypeError} from "../../models/errors/validation-errors"
+import * as fhir from "../../models/fhir"
 
 const bundle1Id = "eff31db2-a914-44a9-b89d-1a33f6de727e"
 const genericBundle1: fhir.Bundle = {

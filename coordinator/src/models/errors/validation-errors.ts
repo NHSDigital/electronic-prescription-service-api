@@ -1,5 +1,5 @@
-import {MessageType} from "../../routes/util"
 import * as LosslessJson from "lossless-json"
+import * as fhir from "../fhir"
 
 export interface ValidationError {
   message: string
@@ -21,6 +21,18 @@ export class MedicationRequestInconsistentValueError<T> implements ValidationErr
       LosslessJson.stringify(uniqueFieldValues)
     }.`
     this.expression = [`Bundle.entry.resource.ofType(MedicationRequest).${fieldName}`]
+  }
+}
+
+export class MedicationRequestDuplicateValueError<T> implements ValidationError {
+  message: string
+  operationOutcomeCode = "value" as const
+  severity = "error" as const
+  expression: Array<string>
+
+  constructor() {
+    this.message = `Expected all MedicationRequests to have a different value for identifier.`
+    this.expression = [`Bundle.entry.resource.ofType(MedicationRequest).identifier`]
   }
 }
 
@@ -57,11 +69,11 @@ export class MedicationRequestIncorrectValueError implements ValidationError {
 
 export class MessageTypeError implements ValidationError {
   message = `MessageHeader.eventCoding.code must be one of '${
-    MessageType.PRESCRIPTION
+    fhir.EventCodingCode.PRESCRIPTION
   }', '${
-    MessageType.CANCELLATION
+    fhir.EventCodingCode.CANCELLATION
   }' or '${
-    MessageType.DISPENSE
+    fhir.EventCodingCode.DISPENSE
   }'.`
   operationOutcomeCode = "value" as const
   severity = "fatal" as const

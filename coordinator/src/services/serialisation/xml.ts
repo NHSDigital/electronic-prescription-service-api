@@ -44,12 +44,44 @@ export function sortAttributes(attributes: XmlJs.Attributes, currentElementName:
   } as XmlJs.Attributes
   Object.getOwnPropertyNames(attributes)
     .sort()
-    .forEach(propertyName => newAttributes[propertyName] = attributes[propertyName])
+    .forEach(propertyName => newAttributes[propertyName] = escapeXmlChars(attributes[propertyName]))
   return newAttributes
+}
+
+/**
+ * This is a workaround for a bug in XmlJs
+ * https://github.com/nashwaan/xml-js/issues/69
+ * TODO - remove once the above issue is resolved
+ */
+function escapeXmlChars(attribute: string | number): string | number {
+  if (typeof attribute === "string") {
+    attribute = attribute.replace(/&/g, "&amp;")
+    attribute = attribute.replace(/</g, "&lt;")
+    attribute = attribute.replace(/>/g, "&gt;")
+    attribute = attribute.replace(/"/g, "&quot;")
+    attribute = attribute.replace(/'/g, "&#39;")
+  }
+  return attribute
 }
 
 export function readXml(text: string): XmlJs.ElementCompact {
   return XmlJs.xml2js(text, {
     compact: true
   })
+}
+
+export function readXmlStripNamespace(text: string): XmlJs.ElementCompact {
+  return XmlJs.xml2js(text, {
+    compact: true,
+    elementNameFn: stripNamespace
+  })
+}
+
+function stripNamespace(elementName: string) {
+  const index = elementName.indexOf(":")
+  if (index === -1) {
+    return elementName
+  } else {
+    return elementName.substring(index + 1)
+  }
 }

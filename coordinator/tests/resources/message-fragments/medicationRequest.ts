@@ -1,5 +1,5 @@
-import * as fhir from "../../../src/models/fhir/fhir-resources"
-import {generateResourceId} from "../../../src/services/translation/cancellation/common"
+import {generateResourceId} from "../../../src/services/translation/response/common"
+import * as fhir from "../../../src/models/fhir"
 
 const nystatinMedication: fhir.Coding = {
   system: "http://snomed.info/sct",
@@ -96,8 +96,8 @@ const createMedicationRequestForLineItem = (
         value: resourceId
       }
     ],
-    status: "active",
-    intent: "order",
+    status: fhir.MedicationRequestStatus.ACTIVE,
+    intent: fhir.MedicationRequestIntent.ORDER,
     category: [
       {
         coding: [

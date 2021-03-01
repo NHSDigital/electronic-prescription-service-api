@@ -1,9 +1,9 @@
-import * as fhir from "../fhir/fhir-resources"
 import {Case} from "./case"
 import {exampleFiles} from "../../services/example-files-fetcher"
 import fs from "fs"
 import * as XmlJs from "xml-js"
 import {ExampleFile} from "../files/example-file"
+import * as fhir from "../fhir"
 
 export class ProcessCase extends Case {
   request: fhir.Bundle
