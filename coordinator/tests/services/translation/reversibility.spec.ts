@@ -4,15 +4,13 @@ import * as TestResources from "../../resources/test-resources"
 import {getResourcesOfType} from "../../../src/services/translation/common/getResourcesOfType"
 import * as fhir from "../../../src/models/fhir"
 import * as hl7V3 from "../../../src/models/hl7-v3"
-import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import {toArray} from "../../../src/services/translation/common"
 
 describe("translations are reversible", () => {
-  const bundle = TestResources.specification[0].fhirMessageSigned
-  const parentPrescription = convertParentPrescription(bundle)
+  const originalBundle = TestResources.specification[0].fhirMessageSigned
+  const parentPrescription = convertParentPrescription(originalBundle)
   ensureLineItemStatus(parentPrescription)
-  const originalBundle = JSON.parse(LosslessJson.stringify(bundle))
   const translatedBundle = createInnerBundle(parentPrescription, uuid.v4())
 
   test.skip.each([
