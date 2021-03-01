@@ -13,13 +13,13 @@ describe("translateReleaseRequest", () => {
 
   test("translated release contains agentPersonPerson and representedOrganization", () => {
     const author = translatedRelease.NominatedPrescriptionReleaseRequest.author
-    expect(author).not.toBeUndefined()
+    expect(author).toBeTruthy()
     const agentPerson = author.AgentPerson
-    expect(agentPerson).not.toBeUndefined()
+    expect(agentPerson).toBeTruthy()
     const agentPersonPerson = agentPerson.agentPerson
     const representedOrganization = agentPerson.representedOrganization
-    expect(agentPersonPerson).not.toBeUndefined()
-    expect(representedOrganization).not.toBeUndefined()
+    expect(agentPersonPerson).toBeTruthy()
+    expect(representedOrganization).toBeTruthy()
   })
 
   test("translates organizationId correctly", () => {
