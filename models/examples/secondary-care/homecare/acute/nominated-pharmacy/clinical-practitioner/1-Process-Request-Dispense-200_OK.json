@@ -1,0 +1,342 @@
+{
+  "resourceType": "Bundle",
+  "id": "prescription-dispense-notification",
+  "identifier": {
+    "system": "https://tools.ietf.org/html/rfc4122",
+    "value": "E9A71955-53BA-B15A-D4B6-BEA99D5017B3"
+  },
+  "type": "message",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:E9A71955-53BA-B15A-D4B6-BEA99D5017B3",
+      "resource": {
+        "resourceType": "MessageHeader",
+        "eventCoding": {
+          "system": "https://fhir.nhs.uk/CodeSystem/message-event",
+          "code": "dispense-notification",
+          "display": "Dispense Notification"
+        },
+        "destination": [
+          {
+            "endpoint": "https://sandbox.api.service.nhs.uk/electronic-prescriptions/$post-message",
+            "receiver": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "T1270"
+              },
+              "display": "PPA"
+            }
+          }
+        ],
+        "sender": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "AB123"
+          },
+          "display": "The Pharmacy System"
+        },
+        "source": {
+          "name": "The Pharmacy System",
+          "endpoint": "urn:nhs-uk:addressing:ods:AB123"
+        },
+        "reason": {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/message-reason-prescription",
+              "code": "notification",
+              "display": "Notification"
+            }
+          ]
+        },
+        "response": {
+          "identifier": "9FBC4386-924F-4025-B8B3-E75819446A45",
+          "code": "ok"
+        },
+        "focus": [
+          {
+            "reference": "urn:uuid:4509B70D-D8B8-EA03-1105-64557CB54A29"
+          },
+          {
+            "reference": "urn:uuid:06167339-9337-D030-0366-514A6A46DA17"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:4509B70D-D8B8-EA03-1105-64557CB54A29",
+      "resource": {
+        "resourceType": "MedicationDispense",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+              "code": "0003",
+              "display": "With Dispenser - Active"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+            "value": "4509B70D-D8B8-EA03-1105-64557CB54A29"
+          }
+        ],
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "323465006",
+              "display": "Flucloxacillin 500mg capsules"
+            }
+          ]
+        },
+        "subject": {
+          "type": "Patient",
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "2300992742"
+          }
+        },
+        "performer": [
+          {
+            "actor": {
+              "type": "Practitioner",
+              "identifier": {
+                "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+                "value": "7654321"
+              },
+              "display": "Mr Peter Potion"
+            }
+          },
+          {
+            "actor": {
+              "type": "Organization",
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "AB123"
+              },
+              "display": "The Simple Pharmacy"
+            }
+          }
+        ],
+        "authorizingPrescription": [
+          {
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
+                "extension": [
+                  {
+                    "url": "shortForm",
+                    "valueIdentifier": {
+                      "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+                      "value": "3C2366-B81001-0A409U"
+                    }
+                  },
+                  {
+                    "url": "UUID",
+                    "valueIdentifier": {
+                      "system": "https://fhir.nhs.uk/Id/prescription",
+                      "value": "66317E0C-CE13-59AD-9979-9B568E080160"
+                    }
+                  }
+                ]
+              }
+            ],
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+              "value": "E76622AE-E2DB-5683-2045-D1C229EDA3A2"
+            }
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "code": "0001",
+              "display": "Item fully dispensed"
+            }
+          ]
+        },
+        "quantity": {
+          "value": 28,
+          "unit": "capsule",
+          "system": "http://snomed.info/sct",
+          "code": "3316911000001105"
+        },
+        "daysSupply": {
+          "value": 7,
+          "unit": "Day",
+          "system": "http://unitsofmeasure.org",
+          "code": "d"
+        },
+        "whenPrepared": "2004-09-16T16:30:00+00:00",
+        "dosageInstruction": [
+          {
+            "text": "4 times a day for 7 days",
+            "timing": {
+              "repeat": {
+                "boundsDuration": {
+                  "value": 7,
+                  "unit": "d"
+                },
+                "frequency": 4,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 1,
+                  "unit": "capsule",
+                  "system": "http://snomed.info/sct",
+                  "code": "3316911000001105"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:06167339-9337-D030-0366-514A6A46DA17",
+      "resource": {
+        "resourceType": "MedicationDispense",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+              "code": "0003",
+              "display": "With Dispenser - Active"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+            "value": "06167339-9337-D030-0366-514A6A46DA17"
+          }
+        ],
+        "status": "in-progress",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "585011000001109",
+              "display": "Metronidazole 400mg tablets (Teva UK Ltd))"
+            }
+          ]
+        },
+        "subject": {
+          "type": "Patient",
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9453740519"
+          }
+        },
+        "performer": [
+          {
+            "actor": {
+              "type": "Practitioner",
+              "identifier": {
+                "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+                "value": "7654321"
+              },
+              "display": "Mr Peter Potion"
+            }
+          },
+          {
+            "actor": {
+              "type": "Organization",
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "AB123"
+              },
+              "display": "The Simple Pharmacy"
+            }
+          }
+        ],
+        "authorizingPrescription": [
+          {
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
+                "extension": [
+                  {
+                    "url": "shortForm",
+                    "valueIdentifier": {
+                      "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+                      "value": "3C2366-B81001-0A409U"
+                    }
+                  },
+                  {
+                    "url": "UUID",
+                    "valueIdentifier": {
+                      "system": "https://fhir.nhs.uk/Id/prescription",
+                      "value": "66317E0C-CE13-59AD-9979-9B568E080160"
+                    }
+                  }
+                ]
+              }
+            ],
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+              "value": "E76622AE-E2DB-5683-2045-D1C229EDA3A2"
+            }
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "code": "0003",
+              "display": "Item dispensed - partial"
+            }
+          ]
+        },
+        "quantity": {
+          "value": 21,
+          "unit": "tablet",
+          "system": "http://snomed.info/sct",
+          "code": "428673006"
+        },
+        "daysSupply": {
+          "value": 7,
+          "unit": "Day",
+          "system": "http://unitsofmeasure.org",
+          "code": "d"
+        },
+        "whenPrepared": "2004-09-16T16:30:00+00:00",
+        "dosageInstruction": [
+          {
+            "text": "3 times a day for 10 days",
+            "timing": {
+              "repeat": {
+                "boundsDuration": {
+                  "value": 10,
+                  "unit": "d"
+                },
+                "frequency": 3,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "doseAndRate": [
+              {
+                "doseQuantity": {
+                  "value": 1,
+                  "unit": "tablet",
+                  "system": "http://snomed.info/sct",
+                  "code": "428673006"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}

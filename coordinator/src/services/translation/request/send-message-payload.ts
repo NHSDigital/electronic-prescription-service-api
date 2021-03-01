@@ -4,6 +4,7 @@ import {getMedicationRequests} from "../common/getResourcesOfType"
 import {convertMomentToHl7V3DateTime} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
+import {identifyMessageType} from "../../../routes/util"
 
 export function createSendMessagePayload<T>(
   interactionId: hl7V3.Hl7InteractionIdentifier,
@@ -48,9 +49,17 @@ function createControlActEvent<T>(
 function convertRequesterToControlActAuthor(
   bundle: fhir.Bundle
 ) {
+
+  // todo: implement dispense verson
+  const messageType = identifyMessageType(bundle)
+  if (messageType === fhir.EventCodingCode.DISPENSE) {
+    return createControlActEventAuthor("", "", "")
+  }
+
   const firstMedicationRequest = getMedicationRequests(bundle)[0]
   const authorPractitionerRole = resolveReference(bundle, firstMedicationRequest.requester)
   const authorPractitioner = resolveReference(bundle, authorPractitionerRole.practitioner)
+
   const sdsUniqueIdentifier = getIdentifierValueForSystem(
     authorPractitioner.identifier,
     "https://fhir.nhs.uk/Id/sds-user-id",

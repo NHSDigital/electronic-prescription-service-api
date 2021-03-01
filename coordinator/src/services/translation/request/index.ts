@@ -12,12 +12,23 @@ import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
+import {convertDispenseNotification} from "./dispensation/dispense-notification"
 
 export function convertFhirMessageToSpineRequest(bundle: fhir.Bundle): SpineRequest {
   const messageType = identifyMessageType(bundle)
-  return messageType === fhir.EventCodingCode.PRESCRIPTION
-    ? requestBuilder.toSpineRequest(createParentPrescriptionSendMessagePayload(bundle))
-    : requestBuilder.toSpineRequest(createCancellationSendMessagePayload(bundle))
+  let createPayloadFunction: () => hl7V3.SendMessagePayload<unknown>
+  switch (messageType) {
+    case fhir.EventCodingCode.PRESCRIPTION:
+      createPayloadFunction = () => createParentPrescriptionSendMessagePayload(bundle)
+      break
+    case fhir.EventCodingCode.CANCELLATION:
+      createPayloadFunction = () => createCancellationSendMessagePayload(bundle)
+      break
+    case fhir.EventCodingCode.DISPENSE:
+      createPayloadFunction = () => createDispenseNotificationMessagePayload(bundle)
+      break
+  }
+  return requestBuilder.toSpineRequest(createPayloadFunction())
 }
 
 export function createParentPrescriptionSendMessagePayload(
@@ -27,6 +38,15 @@ export function createParentPrescriptionSendMessagePayload(
   const parentPrescriptionRoot = new hl7V3.ParentPrescriptionRoot(parentPrescription)
   const interactionId = hl7V3.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT
   return createSendMessagePayload(interactionId, bundle, parentPrescriptionRoot)
+}
+
+export function createDispenseNotificationMessagePayload(
+  bundle: fhir.Bundle
+): hl7V3.SendMessagePayload<hl7V3.DispenseNotification> {
+  const dispenseNotification = convertDispenseNotification(bundle)
+  const dispenseNotificationRoot = new hl7V3.DispenseNotificationRoot(dispenseNotification)
+  const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION
+  return createSendMessagePayload(interactionId, bundle, dispenseNotificationRoot)
 }
 
 export function createCancellationSendMessagePayload(
