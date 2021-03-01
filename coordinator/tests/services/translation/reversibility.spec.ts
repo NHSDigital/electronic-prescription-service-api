@@ -33,7 +33,7 @@ describe("translations are reversible", () => {
     const translated = getResourcesOfType(translatedBundle, resourceType)
     removeIds(...translated)
     expect(original.length).toBeGreaterThan(0)
-    expect(original).toEqual(translated)
+    expect(translated).toEqual(original)
   })
 })
 
