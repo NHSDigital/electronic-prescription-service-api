@@ -78,7 +78,7 @@ function convertPactDescriptionToPactName(pactDescription: string): string {
   return pactDescription.replace(/-/g, "").replace(/\s/g, "-")
 }
 
-const isSandbox = process.env.APIGEE_ENVIRONMENT.includes("sandbox")
+const isSandbox = process.env.APIGEE_ENVIRONMENT?.includes("sandbox")
 
 export function getConvertPactGroups(): string[] {
   return [...pactGroupNames, ...failurePactGroups]
