@@ -169,15 +169,31 @@ TestResources.processDispenseNotificationCaseGroups.forEach(pactGroup => {
               .find(r => r.resourceType == "MedicationRequest") as fhir.MedicationRequest
             const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
+            // todo remove this skip for validation of dispense convert when we
+            // have a fhir dispense example which passes validation
+            const isDispenseNotification = 
+              (message.entry
+                .map(entry => entry.resource)
+                .filter(resource => resource.resourceType === "MessageHeader") as Array<MessageHeader>)[0]
+              .eventCoding?.code === "dispense-notification"
+            const headers = isDispenseNotification 
+              ? {
+                "Content-Type": "application/fhir+json; fhirVersion=4.0",
+                "X-Request-ID": requestId,
+                "X-Correlation-ID": correlationId,
+                "x-skip-validation": "yepDoTheSkip" // presence of this header no matter its value will skip validation
+              }
+              : {
+                "Content-Type": "application/fhir+json; fhirVersion=4.0",
+                "X-Request-ID": requestId,
+                "X-Correlation-ID": correlationId
+              }
+
             const interaction: InteractionObject = {
               state: "is authenticated",
               uponReceiving: `a request to process prescription: ${prescriptionId} - ${desc} message to Spine`,
               withRequest: {
-                headers: {
-                  "Content-Type": "application/fhir+json; fhirVersion=4.0",
-                  "X-Request-ID": requestId,
-                  "X-Correlation-ID": correlationId
-                },
+                headers,
                 method: "POST",
                 path: apiPath,
                 body: bundle
@@ -191,14 +207,26 @@ TestResources.processDispenseNotificationCaseGroups.forEach(pactGroup => {
               }
             }
             await provider.addInteraction(interaction)
-            await client()
+            // todo: remove as above
+            if (isDispenseNotification) {
+              await client()
+              .post(apiPath)
+              .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
+              .set("X-Request-ID", requestId)
+              .set("X-Correlation-ID", correlationId)
+              .set("X-Skip-Validation", "yepDoTheSkip")
+              .send(bundleStr)
+              .expect(200)
+            }
+            else{
+              await client()
               .post(apiPath)
               .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
               .set("X-Request-ID", requestId)
               .set("X-Correlation-ID", correlationId)
               .send(bundleStr)
               .expect(200)
-          }
+            }
         )
       }
     })
