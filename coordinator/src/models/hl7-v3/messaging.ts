@@ -1,5 +1,6 @@
 import * as codes from "./codes"
 import * as core from "./core"
+import * as agent from "./agent-person"
 
 export interface WrapperRoot<T> {
   [key: string]: SendMessagePayload<T>
@@ -100,6 +101,15 @@ export class SendMessagePayloadAuthorSystemSds extends SendMessagePayloadAuthor 
   constructor(agentSystemSds: AgentSystemSds) {
     super()
     this.AgentSystemSDS = agentSystemSds
+  }
+}
+
+export class SendMessagePayloadAuthorAgentPerson extends SendMessagePayloadAuthor {
+  AgentPerson: agent.AgentPerson
+
+  constructor(agentPerson: agent.AgentPerson) {
+    super()
+    this.AgentPerson = agentPerson
   }
 }
 

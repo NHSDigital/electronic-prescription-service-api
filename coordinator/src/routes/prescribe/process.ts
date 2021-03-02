@@ -14,10 +14,9 @@ export default [
     handler: validatingHandler(
       async (bundle: fhir.Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         request.logger.info("Building Spine request")
-        const spineRequest = translator.convertFhirMessageToSpineRequest(bundle)
+        const spineRequest = translator.convertBundleToSpineRequest(bundle)
         spineRequest.messageId = request.headers["nhsd-request-id"].toUpperCase()
         request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(bundle))})
-        request.logger.info("Awaiting response")
         const spineResponse = await spineClient.send(
           spineRequest,
           request.logger

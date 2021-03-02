@@ -7,7 +7,7 @@ import * as TestResources from "../../../resources/test-resources"
 import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrlOrNull, toArray} from "../../../../src/services/translation/common"
 import {convertBundleToPrescription} from "../../../../src/services/translation/request/prescription"
-import {convertFhirMessageToSpineRequest} from "../../../../src/services/translation/request"
+import {convertBundleToSpineRequest} from "../../../../src/services/translation/request"
 import {TooManyValuesError} from "../../../../src/models/errors/processing-errors"
 import * as hl7V3 from "../../../../src/models/hl7-v3"
 import * as fhir from "../../../../src/models/fhir"
@@ -277,7 +277,7 @@ describe("prescriptionEndorsements", () => {
     expect(hl7v3PrescriptionEndorsements.length).toBeGreaterThan(0)
     hl7v3PrescriptionEndorsements.map(endorsement => expect(endorsement).toEqual(undefined))
 
-    const hl7v3PrescriptionXml = convertFhirMessageToSpineRequest(bundle).message
+    const hl7v3PrescriptionXml = convertBundleToSpineRequest(bundle).message
     expect(hl7v3PrescriptionXml).not.toContain("pertinentInformation3")
   })
 })

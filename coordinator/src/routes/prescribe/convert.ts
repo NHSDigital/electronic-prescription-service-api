@@ -18,7 +18,7 @@ export default [
         const isSmokeTest = request.headers["x-smoke-test"]
         const contentType = isSmokeTest ? CONTENT_TYPE_PLAIN_TEXT : CONTENT_TYPE_XML
         request.logger.info("Building HL7V3 message")
-        const response = translator.convertFhirMessageToSpineRequest(requestPayload).message
+        const response = translator.convertBundleToSpineRequest(requestPayload).message
         return responseToolkit.response(response).code(200).header("Content-Type", contentType)
       }
     )
