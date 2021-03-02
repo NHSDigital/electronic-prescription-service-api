@@ -348,12 +348,6 @@
             "postalCode": "KT10 0TQ"
           }
         ],
-        "managingOrganization": {
-          "identifier": {
-            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "V81999"
-          }
-        },
         "generalPractitioner": [
           {
             "identifier": {

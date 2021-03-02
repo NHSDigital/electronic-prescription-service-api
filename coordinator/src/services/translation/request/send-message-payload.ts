@@ -4,6 +4,8 @@ import {getMedicationRequests} from "../common/getResourcesOfType"
 import {convertMomentToHl7V3DateTime} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
+import * as uuid from "uuid"
+import { Hl7InteractionIdentifier } from "../../../models/hl7-v3"
 
 export function createSendMessagePayload<T>(
   interactionId: hl7V3.Hl7InteractionIdentifier,
@@ -16,6 +18,26 @@ export function createSendMessagePayload<T>(
     "Bundle.identifier"
   )
 
+  const sendMessagePayload = createInitialSendMessagePayload<T>(messageId, interactionId)
+  sendMessagePayload.ControlActEvent = createControlActEvent(bundle, subject)
+  return sendMessagePayload
+}
+
+export function createReleaseRequestSendMessagePayload<T>(
+  interactionId: hl7V3.Hl7InteractionIdentifier,
+  subject: T
+): hl7V3.SendMessagePayload<T> {
+  const messageId = uuid.v4()
+
+  const sendMessagePayload = createInitialSendMessagePayload<T>(messageId, interactionId)
+  sendMessagePayload.ControlActEvent = createReleaseControlActEvent(subject)
+  return sendMessagePayload
+}
+
+function createInitialSendMessagePayload<T>(
+  messageId: string,
+  interactionId: Hl7InteractionIdentifier
+): hl7V3.SendMessagePayload<T> {
   const sendMessagePayload = new hl7V3.SendMessagePayload<T>(
     new hl7V3.GlobalIdentifier(messageId),
     convertMomentToHl7V3DateTime(moment.utc()),
@@ -24,7 +46,7 @@ export function createSendMessagePayload<T>(
 
   sendMessagePayload.communicationFunctionRcv = createCommunicationFunction(process.env.TO_ASID)
   sendMessagePayload.communicationFunctionSnd = createCommunicationFunction(process.env.FROM_ASID)
-  sendMessagePayload.ControlActEvent = createControlActEvent(bundle, subject)
+
   return sendMessagePayload
 }
 
@@ -95,4 +117,26 @@ function createControlActEventAuthor1(asid: string) {
   const agentSystemSystemSds = new hl7V3.AgentSystemSystemSds(id)
   const agentSystemSds = new hl7V3.AgentSystemSds(agentSystemSystemSds)
   return new hl7V3.SendMessagePayloadAuthorSystemSds(agentSystemSds)
+}
+
+function createReleaseControlActEvent<T>(
+  subject: T
+) {
+  const controlActEvent = new hl7V3.ControlActEvent<T>()
+  controlActEvent.author = convertRequesterToReleaseControlActAuthor(subject)
+  controlActEvent.author1 = createControlActEventAuthor1(process.env.FROM_ASID)
+  controlActEvent.subject = subject
+  return controlActEvent
+}
+
+function convertRequesterToReleaseControlActAuthor<T>(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  hl7ReleaseRequest: T
+) {
+  const sdsUniqueIdentifier = "G9999999"
+
+  const sdsJobRoleCode = "R8000"
+
+  const sdsRoleProfileIdentifier = "100102238986"
+  return createControlActEventAuthor(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier)
 }

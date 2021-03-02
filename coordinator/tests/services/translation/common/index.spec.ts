@@ -1,8 +1,9 @@
 import {
+  getIdentifierParameterByName,
   getIdentifierValueForSystem,
   getIdentifierValueOrNullForSystem,
   getNumericValueAsString,
-  getResourceForFullUrl
+  getResourceForFullUrl, getStringParameterByName
 } from "../../../../src/services/translation/common"
 import * as TestResources from "../../../resources/test-resources"
 import {clone} from "../../../resources/test-helpers"
@@ -168,5 +169,50 @@ describe("getNumericValueAsString preserves numeric precision", () => {
       const input = JSON.parse("20.00")
       getNumericValueAsString(input)
     }).toThrow()
+  })
+})
+
+describe("getParameterByName", () => {
+  const exampleParameters: fhir.Parameters = {
+    resourceType: "Parameters",
+    parameter: [
+      {name: "test1", valueString: "value1"},
+      {name: "test2", valueString: "value2"},
+      {name: "test2", valueString: "value3"},
+      {name: "test3", valueIdentifier: {value:"value4"}},
+      {name: "test4", valueIdentifier: {value:"value5"}},
+      {name: "test4", valueIdentifier: {value:"value6"}}
+    ]}
+
+  test("getStringParameterByName returns correct values", () => {
+    const expected: fhir.StringParameter = {name: "test1", valueString: "value1"}
+    const actual = getStringParameterByName(exampleParameters.parameter, "test1")
+    expect(actual).toEqual(expected)
+  })
+
+  test("getStringParameterByName throws error when two parameters have the same name", () => {
+    expect(() => getStringParameterByName(exampleParameters.parameter, "test2"))
+      .toThrow("Too many values submitted. Expected 1 element where name == 'test2'.")
+  })
+
+  test("getStringParameterByName throws error when no parameters with name found", () => {
+    expect(() => getStringParameterByName(exampleParameters.parameter, "notReal"))
+      .toThrow("Too few values submitted. Expected 1 element where name == 'notReal'.")
+  })
+
+  test("getIdentifierParameterByName returns correct values", () => {
+    const expected: fhir.IdentifierParameter = {name: "test3", valueIdentifier: {value:"value4"}}
+    const actual = getIdentifierParameterByName(exampleParameters.parameter, "test3")
+    expect(actual).toEqual(expected)
+  })
+
+  test("getIdentifierParameterByName throws error when two parameters have the same name", () => {
+    expect(() => getIdentifierParameterByName(exampleParameters.parameter, "test4"))
+      .toThrow("Too many values submitted. Expected 1 element where name == 'test4'.")
+  })
+
+  test("getIdentifierParameterByName throws error when no parameters with name found", () => {
+    expect(() => getIdentifierParameterByName(exampleParameters.parameter, "notReal"))
+      .toThrow("Too few values submitted. Expected 1 element where name == 'notReal'.")
   })
 })
