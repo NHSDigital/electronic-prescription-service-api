@@ -44,16 +44,6 @@ export function onlyElementOrNull<T>(iterable: Iterable<T>, fhirPath: string, ad
   return value
 }
 
-function isStringParameter(parameter: fhir.Parameter): parameter is fhir.StringParameter {
-  return (parameter as fhir.StringParameter).valueString !== undefined
-}
-
-export function getStringParameterByName(parameters: fhir.Parameters, name: string): fhir.StringParameter {
-  return onlyElement(parameters.parameter
-    .filter(parameter => isStringParameter(parameter))
-    .filter(parameter => parameter.name === name), "", "") as fhir.StringParameter
-}
-
 export function getResourceForFullUrl(bundle: fhir.Bundle, resourceFullUrl: string): fhir.Resource {
   return onlyElement(
     bundle.entry.filter(entry => entry.fullUrl === resourceFullUrl),
@@ -173,4 +163,32 @@ export function getNumericValueAsString(numericValue: string | number | Lossless
   } else {
     return numericValue.toString()
   }
+}
+
+function isStringParameter(parameter: fhir.Parameter): parameter is fhir.StringParameter {
+  return (parameter as fhir.StringParameter).valueString !== undefined
+}
+
+function isIdentifierParameter(parameter: fhir.Parameter): parameter is fhir.IdentifierParameter {
+  return (parameter as fhir.IdentifierParameter).valueIdentifier !== undefined
+}
+
+export function getStringParameterByName(
+  parameters: Array<fhir.ParameterTypes>,
+  name: string
+): fhir.StringParameter {
+  return onlyElement(parameters.filter(isStringParameter).filter(parameter => parameter.name === name),
+    "Parameters.parameter",
+    `name == '${name}'`
+  ) as fhir.StringParameter
+}
+
+export function getIdentifierParameterByName(
+  parameters: Array<fhir.ParameterTypes>,
+  name: string
+): fhir.IdentifierParameter {
+  return onlyElement(parameters.filter(isIdentifierParameter).filter(parameter => parameter.name === name),
+    "Parameters.parameter",
+    `name == '${name}'`
+  ) as fhir.IdentifierParameter
 }

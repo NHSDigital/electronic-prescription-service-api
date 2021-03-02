@@ -9,6 +9,7 @@ import {parseAdditionalInstructions} from "./additional-instructions"
 import {convertHL7V3DateToIsoDateString} from "../../common/dateTime"
 import * as hl7V3 from "../../../../models/hl7-v3"
 import * as fhir from "../../../../models/fhir"
+import {LosslessNumber} from "lossless-json"
 
 export function createMedicationRequest(
   prescription: hl7V3.Prescription,
@@ -100,11 +101,11 @@ function createRepeatInformationExtension(
       },
       {
         url: "numberOfRepeatPrescriptionsIssued",
-        valueUnsignedInt: lineItemRepeatNumber.low._attributes.value
+        valueUnsignedInt: new LosslessNumber(lineItemRepeatNumber.low._attributes.value)
       },
       {
         url: "numberOfRepeatPrescriptionsAllowed",
-        valueUnsignedInt: lineItemRepeatNumber.high._attributes.value
+        valueUnsignedInt: new LosslessNumber(lineItemRepeatNumber.high._attributes.value)
       }
     ]
   }
@@ -203,7 +204,7 @@ export function createDosage(
 function createDispenseRequestQuantity(lineItemQuantity: hl7V3.LineItemQuantity): fhir.SimpleQuantity {
   const lineItemQuantityTranslation = lineItemQuantity.quantity.translation
   return {
-    value: lineItemQuantityTranslation._attributes.value,
+    value: new LosslessNumber(lineItemQuantityTranslation._attributes.value),
     unit: lineItemQuantityTranslation._attributes.displayName,
     system: "http://snomed.info/sct",
     code: lineItemQuantityTranslation._attributes.code
@@ -223,8 +224,8 @@ function createValidityPeriod(effectiveTime: hl7V3.Interval<hl7V3.Timestamp>): f
 
 function createExpectedSupplyDuration(expectedUseTime: hl7V3.IntervalUnanchored): fhir.SimpleQuantity {
   return {
-    unit: "day",
-    value: expectedUseTime.width._attributes.value,
+    unit: "days",
+    value: new LosslessNumber(expectedUseTime.width._attributes.value),
     system: "http://unitsofmeasure.org",
     code: "d"
   }
@@ -258,7 +259,7 @@ function createPerformerSiteTypeExtension(
   dispensingSitePreference: hl7V3.DispensingSitePreference
 ): fhir.CodingExtension {
   return {
-    url: "https://fhir.nhs.uk/StructureDefinition/Extension-performerSiteType",
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
     valueCoding: {
       system: "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
       code: dispensingSitePreference.value._attributes.code

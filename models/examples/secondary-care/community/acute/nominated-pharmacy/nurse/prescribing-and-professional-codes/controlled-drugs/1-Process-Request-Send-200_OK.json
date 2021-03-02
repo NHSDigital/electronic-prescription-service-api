@@ -348,12 +348,6 @@
             "postalCode": "KT20 5AR"
           }
         ],
-        "managingOrganization": {
-          "identifier": {
-            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "H81109"
-          }
-        },
         "generalPractitioner": [
           {
             "identifier": {
