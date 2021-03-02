@@ -480,12 +480,14 @@
       "resource": {
         "resourceType": "Patient",
         "id": "b96806f2-0e43-4046-30f3-bd444965afb3",
-        "managingOrganization": {
-          "identifier": {
-            "value": "C81007",
-            "system": "https://fhir.nhs.uk/Id/ods-organization-code"
+        "generalPractitioner": [
+          {
+            "identifier": {
+              "value": "C81007",
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code"
+            }
           }
-        },
+        ],
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
