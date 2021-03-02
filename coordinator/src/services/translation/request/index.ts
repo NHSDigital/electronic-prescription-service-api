@@ -42,7 +42,7 @@ export function createParentPrescriptionSendMessagePayload(
 
 export function createDispenseNotificationMessagePayload(
   bundle: fhir.Bundle
-): hl7V3.SendMessagePayload<hl7V3.DispenseNotification> {
+): hl7V3.SendMessagePayload<hl7V3.DispenseNotificationRoot> {
   const dispenseNotification = convertDispenseNotification(bundle)
   const dispenseNotificationRoot = new hl7V3.DispenseNotificationRoot(dispenseNotification)
   const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION
