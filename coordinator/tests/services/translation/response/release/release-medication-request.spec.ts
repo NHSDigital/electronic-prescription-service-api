@@ -9,6 +9,7 @@ import {
 } from "../../../../../src/services/translation/response/release/release-medication-request"
 import * as hl7V3 from "../../../../../src/models/hl7-v3"
 import * as fhir from "../../../../../src/models/fhir"
+import {LosslessNumber} from "lossless-json"
 
 describe("extension", () => {
   const exampleResponsiblePartyId = "responsiblePartyId"
@@ -160,11 +161,11 @@ describe("extension", () => {
         },
         {
           url: "numberOfRepeatPrescriptionsIssued",
-          valueUnsignedInt: "1"
+          valueUnsignedInt: new LosslessNumber(1)
         },
         {
           url: "numberOfRepeatPrescriptionsAllowed",
-          valueUnsignedInt: "6"
+          valueUnsignedInt: new LosslessNumber(6)
         }
       ]
     }
@@ -322,7 +323,7 @@ describe("dispenseRequest", () => {
   test("contains dispensing site preference", () => {
     const result = createDispenseRequest(exampleDispensingSitePreference, exampleLineItemQuantity, null, null)
     expect(result.extension).toContainEqual({
-      url: "https://fhir.nhs.uk/StructureDefinition/Extension-performerSiteType",
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
       valueCoding: {
         system: "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
         code: "P1"
@@ -336,7 +337,7 @@ describe("dispenseRequest", () => {
       code: "732936001",
       system: "http://snomed.info/sct",
       unit: "Tablet",
-      value: "28"
+      value: new LosslessNumber(28)
     })
   })
 
@@ -384,8 +385,8 @@ describe("dispenseRequest", () => {
     expect(result.expectedSupplyDuration).toEqual({
       code: "d",
       system: "http://unitsofmeasure.org",
-      unit: "day",
-      value: "28"
+      unit: "days",
+      value: new LosslessNumber(28)
     })
     expect(result.validityPeriod).toBeFalsy()
   })
@@ -398,8 +399,8 @@ describe("dispenseRequest", () => {
     expect(result.expectedSupplyDuration).toEqual({
       code: "d",
       system: "http://unitsofmeasure.org",
-      unit: "day",
-      value: "28"
+      unit: "days",
+      value: new LosslessNumber(28)
     })
     expect(result.validityPeriod).toEqual({
       start: "2021-01-01",

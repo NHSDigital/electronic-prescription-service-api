@@ -146,6 +146,7 @@ export function translateAndAddAgentPerson(agentPerson: hl7V3.AgentPerson, resou
   const healthCareProviderLicense = agentPerson.representedOrganization.healthCareProviderLicense
   if (healthCareProviderLicense) {
     const organization = createOrganization(healthCareProviderLicense.Organization)
+    healthcareService.providedBy = fhir.createReference(organization.id)
     practitionerRole.organization = fhir.createReference(organization.id)
     resources.push(organization)
   }
