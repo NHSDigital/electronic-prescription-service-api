@@ -25,6 +25,8 @@ APIGEE_ENVIRONMENTS:
 - display_name: Integration Testing
   make_spec_visible: true
   name: int
+  ratelimit: 20ps
+  quota: 1200
 ---
 meta:
   api:
@@ -47,7 +49,7 @@ apigee:
           - name: access
             value: public
           - name: ratelimit
-            value: 5ps
+            value: {{ env.ratelimit | default('5ps') }}
         description: {{ DESCRIPTION }}
         displayName: {{ TITLE }}
         environments: [ {{ ENV.name }} ]
@@ -60,7 +62,7 @@ apigee:
         scopes:
           - 'urn:nhsd:apim:app:level3:electronic-prescription-service-api'
           - 'urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api'
-        quota: '300'
+        quota: {{ env.quota | default('300') }}
         quotaInterval: '1'
         quotaTimeUnit: minute
     specs:
