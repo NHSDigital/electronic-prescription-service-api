@@ -1,6 +1,6 @@
 import * as common from "./common"
 
-type ParameterTypes = StringParameter | IdentifierParameter | CodeParameter
+export type ParameterTypes = StringParameter | IdentifierParameter | CodeParameter
 
 export class Parameters extends common.Resource {
   readonly resourceType = "Parameters"
@@ -20,7 +20,7 @@ export interface StringParameter extends Parameter {
   valueString: string
 }
 
-interface IdentifierParameter extends Parameter {
+export interface IdentifierParameter extends Parameter {
   valueIdentifier: common.Identifier
 }
 

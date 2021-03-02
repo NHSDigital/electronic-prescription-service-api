@@ -7,6 +7,7 @@ import {ElementCompact} from "xml-js"
 import {namespacedCopyOf, writeXmlStringPretty} from "../serialisation/xml"
 import {SpineRequest} from "../../models/spine"
 import * as hl7V3 from "../../models/hl7-v3"
+import {Logger} from "pino"
 
 const ebxmlRequestTemplate = fs.readFileSync(
   path.join(__dirname, "../../resources/ebxml_request.mustache"),
@@ -39,9 +40,10 @@ class EbXmlRequest {
   }
 }
 
-export function addEbXmlWrapper(spineRequest: SpineRequest): string {
+export function addEbXmlWrapper(spineRequest: SpineRequest, logger: Logger): string {
   const cpaId = cpaIdMap.get(spineRequest.interactionId)
   if (!cpaId) {
+    logger.error(`Could not find the specified CPA ID`)
     throw new Error(`Could not identify CPA ID for interaction ${spineRequest.interactionId}`)
   }
 
