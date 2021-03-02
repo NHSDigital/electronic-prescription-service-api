@@ -15,12 +15,16 @@ export function convertDispenseNotification(
     new hl7V3.GlobalIdentifier(messageId)
   )
 
+  // todo: map from fhir/sds
   const fhirPatient = {
     identifier: [{
       system: "https://fhir.nhs.uk/Id/nhs-number",
       value: "9453740519"
     }]
   }
+  const sdsIdentifier = "T1450"
+  const organisationName = "NHS BUSINESS SERVICES AUTHORITY"
+  // ***********************
 
   const hl7V3Patient = new hl7V3.Patient()
   const nhsNumber = getIdentifierValueForSystem(
@@ -30,6 +34,12 @@ export function convertDispenseNotification(
   )
   hl7V3Patient.id = new hl7V3.NhsNumber(nhsNumber)
   dispenseNotification.recordTarget = new hl7V3.RecordTarget(hl7V3Patient)
+
+  dispenseNotification.primaryInformationRecipient = new hl7V3.PrimaryInformationRecipient()
+  const organization = new hl7V3.Organization()
+  organization.id = new hl7V3.SdsOrganizationIdentifier(sdsIdentifier)
+  organization.name = new hl7V3.Text(organisationName)
+  dispenseNotification.primaryInformationRecipient.AgentOrg = new hl7V3.AgentOrganization(organization)
 
   return dispenseNotification
 }

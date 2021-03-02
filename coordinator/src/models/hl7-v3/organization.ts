@@ -39,7 +39,7 @@ export class HealthCareProviderLicense implements ElementCompact {
  * Identifies an organization fulfilling a specific role. Full details of the organization are available from SDS.
  * Details of the scoping organization are either not required or available from SDS.
  */
-export class AgentOrganization implements ElementCompact {
+export class AgentOrganizationSDS implements ElementCompact {
   _attributes: core.AttributeClassCode = {
     classCode: "AGNT"
   }
@@ -48,5 +48,18 @@ export class AgentOrganization implements ElementCompact {
 
   constructor(organization: Organization) {
     this.agentOrganizationSDS = organization
+  }
+}
+
+// todo: note like above
+export class AgentOrganization implements ElementCompact {
+  _attributes: core.AttributeClassCode = {
+    classCode: "AGNT"
+  }
+
+  agentOrganization: Organization
+
+  constructor(organization: Organization) {
+    this.agentOrganization = organization
   }
 }

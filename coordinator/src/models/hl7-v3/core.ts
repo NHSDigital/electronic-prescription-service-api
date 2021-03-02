@@ -4,11 +4,11 @@ import {LosslessNumber} from "lossless-json"
 import {getNumericValueAsString} from "../../services/translation/common"
 
 export interface AttributeTypeCode extends Attributes {
-  typeCode: "AUT" | "COMP" | "FLFS" | "LA" | "PART" | "PERT" | "PRD" | "PRF" | "RESP" | "RCT" | "SBJ"
+  typeCode: "AUT" | "COMP" | "FLFS" | "LA" | "PART" | "PERT" | "PRCP" |"PRD" | "PRF" | "RESP" | "RCT" | "SBJ"
 }
 
 export interface AttributeContextControlCode extends Attributes {
-  contextControlCode: "OP"
+  contextControlCode: "ON" | "OP"
 }
 
 export interface AttributeClassCode extends Attributes {
