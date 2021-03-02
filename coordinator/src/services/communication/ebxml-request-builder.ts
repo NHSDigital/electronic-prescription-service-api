@@ -51,7 +51,7 @@ export function addEbXmlWrapper(spineRequest: SpineRequest, logger: Logger): str
   return Mustache.render(ebxmlRequestTemplate, ebXmlRequest)
 }
 
-export function toSpineRequest<T>(sendMessagePayload: hl7V3.SendMessagePayload<T>, messageId?: string): SpineRequest {
+export function toSpineRequest<T>(sendMessagePayload: hl7V3.SendMessagePayload<T>, messageId: string): SpineRequest {
   return {
     interactionId: extractInteractionId(sendMessagePayload),
     message: writeToString(sendMessagePayload),
