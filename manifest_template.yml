@@ -1,0 +1,72 @@
+APIGEE_ENVIRONMENTS:
+- display_name: Internal Development
+  make_spec_visible: true
+  name: internal-dev
+- display_name: Internal Development Sandbox
+  make_spec_visible: true
+  name: internal-dev-sandbox
+- display_name: Internal QA
+  make_spec_visible: true
+  name: internal-qa
+- display_name: Internal QA Sandbox
+  make_spec_visible: true
+  name: internal-qa-sandbox
+- display_name: Reference
+  name: ref
+- display_name: Sandbox
+  name: sandbox
+- display_name: Integration Testing
+  make_spec_visible: true
+  name: int
+  ratelimit: 20ps
+  quota: 1200
+---
+meta:
+  api:
+    name: electronic-prescription-service-api
+    guid: 9c644a26-c926-4fae-9564-5a9c49ab332d
+    spec_guids: ['5ead5713-9d2b-46eb-8626-def5fd2a2350']
+  schema_version: 1
+apigee:
+  environments:
+
+{% for ENV in APIGEE_ENVIRONMENTS %}
+{% set TITLE = 'Electronic Prescription Service (' + ENV.display_name + ')' %}
+{% set DESCRIPTION = 'Electronic Prescription Service - ' + ENV.display_name | lower + ' environment' %}
+{% set NAME = 'electronic-prescription-service-api-' + ENV.name %}
+  - name: {{ ENV.name }}
+    products:
+      - name: {{ NAME }}
+        approvalType: {{ ENV.approval_type | default('auto') }}
+        attributes:
+          - name: access
+            value: public
+          - name: ratelimit
+            value: {{ env.ratelimit | default('5ps') }}
+        description: {{ DESCRIPTION }}
+        displayName: {{ TITLE }}
+        environments: [ {{ ENV.name }} ]
+        proxies:
+          - electronic-prescription-service-api-{{ ENV.name }}
+          - identity-service-{{ ENV.name }}
+{% if ENV.name == 'int' %}
+          - identity-service-int-no-smartcard
+{% endif %}
+        scopes:
+          - 'urn:nhsd:apim:app:level3:electronic-prescription-service-api'
+          - 'urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api'
+        quota: {{ env.quota | default('300') }}
+        quotaInterval: '1'
+        quotaTimeUnit: minute
+    specs:
+      - name: {{ NAME }}
+        path: electronic-prescription-service-api.json
+    api_catalog:
+      - edgeAPIProductName: {{ NAME }}
+        anonAllowed: true
+        description: {{ DESCRIPTION }}
+        requireCallbackUrl: {{ ENV.require_callback_url | default(true) }}
+        title: {{ TITLE }}
+        visibility: {{ ENV.make_spec_visible | default(false) }}
+        specId: {{ NAME }}
+{% endfor %}
