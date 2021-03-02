@@ -18,11 +18,11 @@ export class DispenseNotification implements ElementCompact {
     moodCode: "EVN"
   }
 
-  id: codes.GlobalIdentifier
-  code: codes.SnomedCode
+  id: codes.GlobalIdentifier //
+  code: codes.SnomedCode //
   effectiveTime: core.Timestamp
-  typeId: codes.TypeIdentifier
-  recordTarget: parentPrescription.RecordTarget
+  typeId: codes.TypeIdentifier //
+  recordTarget: parentPrescription.RecordTarget //
   // todo
   //primaryInformationRecipient:
   pertinentInformation1: parentPrescription.ParentPrescriptionPertinentInformation1
@@ -54,4 +54,14 @@ export class DispenseNotification implements ElementCompact {
   //additionalInstructions
   //supplyInstructions
   //suppliedMaterial
+
+  constructor(id: codes.GlobalIdentifier) {
+    this.id = id
+    this.code = new codes.SnomedCode(
+      "163541000000107",
+      "Dispensed Medication - FocusActOrEvent (administrative concept)"
+    )
+    this.effectiveTime = new core.Timestamp("PLACEHOLDER")
+    this.typeId = new codes.TypeIdentifier("PORX_MT024001UK31")
+  }
 }
