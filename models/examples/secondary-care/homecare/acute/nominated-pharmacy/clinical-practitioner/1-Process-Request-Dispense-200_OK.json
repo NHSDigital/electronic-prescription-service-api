@@ -6,17 +6,17 @@
     "value": "E9A71955-53BA-B15A-D4B6-BEA99D5017B3"
   },
   "type": "message",
-  "entry": [
+  "entry":  [
     {
       "fullUrl": "urn:uuid:E9A71955-53BA-B15A-D4B6-BEA99D5017B3",
       "resource": {
         "resourceType": "MessageHeader",
         "eventCoding": {
           "system": "https://fhir.nhs.uk/CodeSystem/message-event",
-          "code": "dispense-notification",
-          "display": "Dispense Notification"
+          "code": "prescription-dispense",
+          "display": "Prescription Dispense"
         },
-        "destination": [
+        "destination":  [
           {
             "endpoint": "https://sandbox.api.service.nhs.uk/electronic-prescriptions/$post-message",
             "receiver": {
@@ -40,7 +40,7 @@
           "endpoint": "urn:nhs-uk:addressing:ods:AB123"
         },
         "reason": {
-          "coding": [
+          "coding":  [
             {
               "system": "https://fhir.nhs.uk/CodeSystem/message-reason-prescription",
               "code": "notification",
@@ -52,7 +52,7 @@
           "identifier": "9FBC4386-924F-4025-B8B3-E75819446A45",
           "code": "ok"
         },
-        "focus": [
+        "focus":  [
           {
             "reference": "urn:uuid:4509B70D-D8B8-EA03-1105-64557CB54A29"
           },
@@ -66,7 +66,7 @@
       "fullUrl": "urn:uuid:4509B70D-D8B8-EA03-1105-64557CB54A29",
       "resource": {
         "resourceType": "MedicationDispense",
-        "extension": [
+        "extension":  [
           {
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
             "valueCoding": {
@@ -76,7 +76,7 @@
             }
           }
         ],
-        "identifier": [
+        "identifier":  [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
             "value": "4509B70D-D8B8-EA03-1105-64557CB54A29"
@@ -84,7 +84,7 @@
         ],
         "status": "completed",
         "medicationCodeableConcept": {
-          "coding": [
+          "coding":  [
             {
               "system": "http://snomed.info/sct",
               "code": "323465006",
@@ -99,34 +99,26 @@
             "value": "2300992742"
           }
         },
-        "performer": [
+        "performer":  [
           {
             "actor": {
-              "type": "Practitioner",
-              "identifier": {
-                "system": "https://fhir.hl7.org.uk/Id/gphc-number",
-                "value": "7654321"
-              },
+              "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
               "display": "Mr Peter Potion"
             }
           },
           {
             "actor": {
-              "type": "Organization",
-              "identifier": {
-                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "AB123"
-              },
+              "reference": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
               "display": "The Simple Pharmacy"
             }
           }
         ],
-        "authorizingPrescription": [
+        "authorizingPrescription":  [
           {
-            "extension": [
+            "extension":  [
               {
                 "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
-                "extension": [
+                "extension":  [
                   {
                     "url": "shortForm",
                     "valueIdentifier": {
@@ -151,7 +143,7 @@
           }
         ],
         "type": {
-          "coding": [
+          "coding":  [
             {
               "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
               "code": "0001",
@@ -172,7 +164,7 @@
           "code": "d"
         },
         "whenPrepared": "2004-09-16T16:30:00+00:00",
-        "dosageInstruction": [
+        "dosageInstruction":  [
           {
             "text": "4 times a day for 7 days",
             "timing": {
@@ -186,7 +178,7 @@
                 "periodUnit": "d"
               }
             },
-            "doseAndRate": [
+            "doseAndRate":  [
               {
                 "doseQuantity": {
                   "value": 1,
@@ -204,7 +196,7 @@
       "fullUrl": "urn:uuid:06167339-9337-D030-0366-514A6A46DA17",
       "resource": {
         "resourceType": "MedicationDispense",
-        "extension": [
+        "extension":  [
           {
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
             "valueCoding": {
@@ -214,7 +206,7 @@
             }
           }
         ],
-        "identifier": [
+        "identifier":  [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
             "value": "06167339-9337-D030-0366-514A6A46DA17"
@@ -222,7 +214,7 @@
         ],
         "status": "in-progress",
         "medicationCodeableConcept": {
-          "coding": [
+          "coding":  [
             {
               "system": "http://snomed.info/sct",
               "code": "585011000001109",
@@ -237,34 +229,26 @@
             "value": "9453740519"
           }
         },
-        "performer": [
+        "performer":  [
           {
             "actor": {
-              "type": "Practitioner",
-              "identifier": {
-                "system": "https://fhir.hl7.org.uk/Id/gphc-number",
-                "value": "7654321"
-              },
+              "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
               "display": "Mr Peter Potion"
             }
           },
           {
             "actor": {
-              "type": "Organization",
-              "identifier": {
-                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "AB123"
-              },
+              "reference": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
               "display": "The Simple Pharmacy"
             }
           }
         ],
-        "authorizingPrescription": [
+        "authorizingPrescription":  [
           {
-            "extension": [
+            "extension":  [
               {
                 "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
-                "extension": [
+                "extension":  [
                   {
                     "url": "shortForm",
                     "valueIdentifier": {
@@ -289,7 +273,7 @@
           }
         ],
         "type": {
-          "coding": [
+          "coding":  [
             {
               "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
               "code": "0003",
@@ -310,7 +294,7 @@
           "code": "d"
         },
         "whenPrepared": "2004-09-16T16:30:00+00:00",
-        "dosageInstruction": [
+        "dosageInstruction":  [
           {
             "text": "3 times a day for 10 days",
             "timing": {
@@ -324,7 +308,7 @@
                 "periodUnit": "d"
               }
             },
-            "doseAndRate": [
+            "doseAndRate":  [
               {
                 "doseQuantity": {
                   "value": 1,
@@ -334,6 +318,108 @@
                 }
               }
             ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "identifier":  [
+          {
+            "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+            "value": "210987654322"
+          }
+        ],
+        "practitioner": {
+          "reference": "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a",
+          "display": "Mr Peter Potion"
+        },
+        "organization": {
+          "reference": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
+          "display": "The Simple Pharmacy"
+        },
+        "code":  [
+          {
+            "coding":  [
+              {
+                "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                "code": "R1981",
+                "display": "Community Pharmacist"
+              }
+            ]
+          }
+        ],
+        "telecom":  [
+          {
+            "system": "phone",
+            "value": "01234567890",
+            "use": "work"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a",
+      "resource": {
+        "resourceType": "Practitioner",
+        "identifier":  [
+          {
+            "system": "https://fhir.nhs.uk/Id/sds-user-id",
+            "value": "156968544265"
+          }
+        ],
+        "name":  [
+          {
+            "family": "Potion",
+            "given":  [
+              "Peter"
+            ],
+            "prefix":  [
+              "Mr"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
+      "resource": {
+        "resourceType": "Organization",
+        "identifier":  [
+          {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "AB123"
+          }
+        ],
+        "type":  [
+          {
+            "coding":  [
+              {
+                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+                "code": "RO182",
+                "display": "PHARMACY"
+              }
+            ]
+          }
+        ],
+        "name": "The Simple Pharmacy",
+        "telecom":  [
+          {
+            "system": "phone",
+            "value": "01234567890",
+            "use": "work"
+          }
+        ],
+        "address":  [
+          {
+            "line":  [
+              "1",
+              "The Midway",
+              "Simple Town"
+            ],
+            "postalCode": "AA3 3AA"
           }
         ]
       }

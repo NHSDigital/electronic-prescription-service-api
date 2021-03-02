@@ -12,7 +12,7 @@ import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
-import {convertDispenseNotification} from "./dispensation/dispense-notification"
+import {convertDispenseNotification} from "./prescription/prescription-dispense"
 import {translateReleaseRequest} from "./dispensation/release"
 
 export function convertBundleToSpineRequest(bundle: fhir.Bundle): SpineRequest {

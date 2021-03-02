@@ -1,6 +1,6 @@
 import {
-  convertDispenseNotification
-} from "../../../../src/services/translation/request/dispensation/dispense-notification"
+  convertDispenseNotification as convertPrescriptionDispense
+} from "../../../../src/services/translation/request/prescription/prescription-dispense"
 import * as TestResources from "../../../resources/test-resources"
 import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"
@@ -14,7 +14,7 @@ jest.mock("moment", () => ({
     actualMoment.utc(input || "2020-12-18T12:34:34Z", format)
 }))
 
-describe("convertDispenseNotification", () => {
+describe("convertPrescriptionDispense", () => {
   const cases = toArray(TestResources.examplePrescription3)
     .map((example: TestResources.ExamplePrescription) => [
       example.description,
@@ -24,6 +24,6 @@ describe("convertDispenseNotification", () => {
     ])
 
   test.each(cases)("accepts %s", (desc: string, input: fhir.Bundle) => {
-    expect(() => convertDispenseNotification(input)).not.toThrow()
+    expect(() => convertPrescriptionDispense(input)).not.toThrow()
   })
 })

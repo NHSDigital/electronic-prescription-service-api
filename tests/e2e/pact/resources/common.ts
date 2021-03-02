@@ -7,7 +7,7 @@ export const basePath = "/FHIR/R4"
 
 export type ApiMode = "live" | "sandbox"
 export type ApiEndpoint = "prepare" | "process" | "convert" | "release"
-export type ApiOperation = "send" | "cancel"
+export type ApiOperation = "send" | "dispense" | "cancel"
 
 // to use groups the group added must match a subfolder under
 // models/examples with path separator replaced by space
@@ -17,6 +17,10 @@ export const pactGroups = [
   "secondary-care community repeat-dispensing",
   "secondary-care homecare",
   "primary-care"
+] as const
+
+export const dispensePactGroups = [
+  "secondary-care homecare"
 ] as const
 
 export const cancelPactGroups = [
@@ -36,7 +40,7 @@ export const miscPactGroups = [
 ] as const
 
 export const allPactGroups = [...pactGroups, ...cancelPactGroups, ...failurePactGroups, ...miscPactGroups]
-export type AllPactGroups = typeof pactGroups[number] | typeof cancelPactGroups[number] | typeof failurePactGroups[number] | typeof miscPactGroups[number]
+export type AllPactGroups = typeof pactGroups[number] | typeof dispensePactGroups[number] | typeof cancelPactGroups[number] | typeof failurePactGroups[number] | typeof miscPactGroups[number]
 
 export class PactGroupCases {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types

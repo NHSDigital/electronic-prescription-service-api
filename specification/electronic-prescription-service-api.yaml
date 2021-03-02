@@ -276,7 +276,7 @@ paths:
                   $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Process-Request-Send-200_OK.json
               dispense-success:
                 value:
-                  $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Dispense-Request-200_OK.json
+                  $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Process-Request-Dispense-200_OK.json
               patient-deceased:
                 value:
                   $ref: components/examples/example-b-spine-error-patient-deceased/SendRequest-FhirMessageSigned.json
