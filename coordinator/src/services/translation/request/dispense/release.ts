@@ -2,12 +2,14 @@ import * as hl7v3 from "../../../../models/hl7-v3"
 import * as uuid from "uuid"
 import * as fhir from "../../../../models/fhir"
 import {getIdentifierParameterByName} from "../../common"
+import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
+import moment from "moment"
 
 export function translateReleaseRequest(
   fhirReleaseRequest: fhir.Parameters
 ): hl7v3.NominatedPrescriptionReleaseRequestWrapper {
   const hl7Id = new hl7v3.GlobalIdentifier(uuid.v4())
-  const timestamp = new hl7v3.Timestamp("")
+  const timestamp = convertMomentToHl7V3DateTime(moment.utc())
   const hl7Release = new hl7v3.NominatedPrescriptionReleaseRequest(hl7Id, timestamp)
   hl7Release.author = getAuthor(fhirReleaseRequest)
   return new hl7v3.NominatedPrescriptionReleaseRequestWrapper(hl7Release)

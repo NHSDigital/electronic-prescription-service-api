@@ -175,22 +175,20 @@ function isIdentifierParameter(parameter: fhir.Parameter): parameter is fhir.Ide
 
 export function getStringParameterByName(
   parameters: Array<fhir.ParameterTypes>,
-  name: string,
-  fhirPath = ""
+  name: string
 ): fhir.StringParameter {
   return onlyElement(parameters.filter(isStringParameter).filter(parameter => parameter.name === name),
-    fhirPath,
+    "Parameters.parameter",
     `name == '${name}'`
   ) as fhir.StringParameter
 }
 
 export function getIdentifierParameterByName(
   parameters: Array<fhir.ParameterTypes>,
-  name: string,
-  fhirPath = ""
+  name: string
 ): fhir.IdentifierParameter {
   return onlyElement(parameters.filter(isIdentifierParameter).filter(parameter => parameter.name === name),
-    fhirPath,
+    "Parameters.parameter",
     `name == '${name}'`
   ) as fhir.IdentifierParameter
 }
