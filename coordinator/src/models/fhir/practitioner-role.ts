@@ -35,7 +35,7 @@ export interface HealthcareService extends common.Resource {
   name?: string
   telecom?: Array<demographics.ContactPoint>
   active?: string
-  providedBy?: { identifier: common.Identifier }
+  providedBy?: common.Reference<Organization> | common.IdentifierReference<Organization>
   location?: Array<common.Reference<Location>>
 }
 
