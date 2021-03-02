@@ -6,7 +6,7 @@ import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
 import {identifyMessageType} from "../../../routes/util"
 import * as uuid from "uuid"
-import { Hl7InteractionIdentifier } from "../../../models/hl7-v3"
+import {Hl7InteractionIdentifier} from "../../../models/hl7-v3"
 
 export function createSendMessagePayload<T>(
   interactionId: hl7V3.Hl7InteractionIdentifier,

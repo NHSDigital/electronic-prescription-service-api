@@ -53,5 +53,5 @@ export class DispenseNotification implements ElementCompact {
   //suppliedManufacturedProduct
   //additionalInstructions
   //supplyInstructions
-  //suppliedMaterial  
+  //suppliedMaterial
 }

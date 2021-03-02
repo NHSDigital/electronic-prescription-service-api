@@ -1,5 +1,5 @@
 import * as fhir from "../../../../../src/models/fhir"
-import {translateReleaseRequest} from "../../../../../src/services/translation/request/dispense/release"
+import {translateReleaseRequest} from "../../../../../src/services/translation/request/dispensation/release"
 
 describe("translateReleaseRequest", () => {
   const parameters = new fhir.Parameters([{
