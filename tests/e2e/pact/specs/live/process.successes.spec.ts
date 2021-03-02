@@ -7,6 +7,7 @@ import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
 import {regeneratePrescriptionIds} from "../../services/process-example-fetcher"
 import * as fhir from "../../models/fhir"
+import { MessageHeader } from "../../models/fhir"
 
 regeneratePrescriptionIds()
 
@@ -227,6 +228,7 @@ TestResources.processDispenseNotificationCaseGroups.forEach(pactGroup => {
               .send(bundleStr)
               .expect(200)
             }
+          }
         )
       }
     })
