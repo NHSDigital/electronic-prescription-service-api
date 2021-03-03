@@ -1,7 +1,6 @@
 import * as hl7V3 from "../../../../models/hl7-v3"
 import * as fhir from "../../../../models/fhir"
 import {getIdentifierValueForSystem} from "../../common"
-import * as uuid from "uuid"
 
 export function convertDispenseNotification(bundle: fhir.Bundle): hl7V3.DispenseNotification {
   const messageId = getIdentifierValueForSystem(
@@ -24,11 +23,11 @@ export function convertDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispense
   const sdsIdentifier = "T1450"
   const organisationName = "NHS BUSINESS SERVICES AUTHORITY"
   // The globally unique identifier for this Dispense Notification clinical event.
-  const prescriptionDispenseIdentifier = uuid.v4()
+  const prescriptionDispenseIdentifier = "D0CDE318-3260-428B-B8ED-E3C53B3C5089"
   // In this instance, this is the globally unique number (GUID) to identify either the
   // Patient Prescription Release Response or the Nominated Prescription Release Response
   // that authorised the Dispense event.
-  const releaseResponseIdentifier = uuid.v4()
+  const releaseResponseIdentifier = "450D738D-E5ED-48D6-A2A5-6EEEFA8BA689"
   // ***********************
 
   const hl7V3Patient = new hl7V3.Patient()
