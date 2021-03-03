@@ -3,6 +3,7 @@ import * as codes from "./codes"
 import {ElementCompact} from "xml-js"
 import * as parentPrescription from "./parent-prescription"
 import * as organisation from "./organization"
+import * as prescription from "./prescription"
 
 export class DispenseNotificationRoot {
   DispenseNotification: DispenseNotification
@@ -82,12 +83,12 @@ export class PertinentSupplyHeader implements ElementCompact {
 
   id: codes.Identifier<string>
   code: codes.SubstanceAdministrationSnCT
-  effectiveTime: core.Null
+  effectiveTime: core.Null = core.Null.NOT_APPLICABLE
+  author: prescription.Author
 
-  constructor(id: codes.Identifier<string>, code: codes.SubstanceAdministrationSnCT) {
+  constructor(id: codes.Identifier<string>) {
     this.id = id
-    this.code = code
-    this.effectiveTime = core.Null.NOT_APPLICABLE
+    this.code = new codes.SubstanceAdministrationSnCT("225426007")
   }
 }
 

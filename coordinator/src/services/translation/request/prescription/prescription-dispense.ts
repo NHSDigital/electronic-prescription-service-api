@@ -1,6 +1,7 @@
 import * as hl7V3 from "../../../../models/hl7-v3"
 import * as fhir from "../../../../models/fhir"
 import {getIdentifierValueForSystem} from "../../common"
+import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 
 export function convertDispenseNotification(bundle: fhir.Bundle): hl7V3.DispenseNotification {
   const messageId = getIdentifierValueForSystem(
@@ -28,6 +29,7 @@ export function convertDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispense
   // Patient Prescription Release Response or the Nominated Prescription Release Response
   // that authorised the Dispense event.
   const releaseResponseIdentifier = "450D738D-E5ED-48D6-A2A5-6EEEFA8BA689"
+  const authorTime = "2004-09-16T16:30:00+00:00" // (MedicationDispense.whenPrepared, many to 1 mapping?)
   // ***********************
 
   const hl7V3Patient = new hl7V3.Patient()
@@ -44,12 +46,12 @@ export function convertDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispense
   organization.id = new hl7V3.SdsOrganizationIdentifier(sdsIdentifier)
   organization.name = new hl7V3.Text(organisationName)
   dispenseNotification.primaryInformationRecipient.AgentOrg = new hl7V3.AgentOrganization(organization)
-  dispenseNotification.pertinentInformation1 = new hl7V3.DispenseNotificationPertinentInformation1(
-    new hl7V3.PertinentSupplyHeader(
-      new hl7V3.Identifier(prescriptionDispenseIdentifier),
-      new hl7V3.SubstanceAdministrationSnCT("225426007")
-    )
-  )
+  const author = new hl7V3.Author()
+  author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "MedicationDispense.whenPrepared")
+  author.signatureText = hl7V3.Null.NOT_APPLICABLE
+  const supplyHeader = new hl7V3.PertinentSupplyHeader(new hl7V3.Identifier(prescriptionDispenseIdentifier))
+  supplyHeader.author = author
+  dispenseNotification.pertinentInformation1 = new hl7V3.DispenseNotificationPertinentInformation1(supplyHeader)
   dispenseNotification.pertinentInformation2 = new hl7V3.DispenseNotificationPertinentInformation2(
     new hl7V3.CareRecordElementCategory()
   )
