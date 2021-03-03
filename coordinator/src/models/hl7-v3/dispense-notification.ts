@@ -25,10 +25,12 @@ export class DispenseNotification implements ElementCompact {
   typeId: codes.TypeIdentifier //
   recordTarget: parentPrescription.RecordTarget //\
   primaryInformationRecipient: PrimaryInformationRecipient //\
+  // V todo: check if we need supplyHeader V
   pertinentInformation1: DispenseNotificationPertinentInformation1
-  //pertinentInformation2: parentPrescription.ParentPrescriptionPertinentInformation2
-  //replacementOf:
-  //sequelTo:
+  // V todo: figure out where CareRecordElementCategoryComponent comes from V
+  pertinentInformation2: DispenseNotificationPertinentInformation2
+  //replacementOf: < optional, do we support this in fhir?
+  sequelTo: SequelTo //\
   //patient: patient.Patient
   //supplyHeader:
   //careRecordElementCategory: parentPrescription.CareRecordElementCategory
@@ -75,7 +77,7 @@ export class PrimaryInformationRecipient implements ElementCompact {
   AgentOrg: organisation.AgentOrganization
 }
 
-/**
+/*
  * An act relationship that associates the DispenseNotification focal act with
  * SupplyHeader - the primary act of the PSIS clinical message.
  */
@@ -92,4 +94,52 @@ export class DispenseNotificationPertinentInformation1 implements ElementCompact
   // constructor(pertinentSupplyHeader: PertinentSupplyHeader) {
   //   this.pertinentSupplyHeader = pertinentSupplyHeader
   // }
+}
+
+/*
+* An identifier of the Act Relationship that relates clinical statements directly to the focal act.
+*/
+export class DispenseNotificationPertinentInformation2 implements ElementCompact {
+  _attributes: core.AttributeTypeCode = {
+    typeCode: "PERT"
+  }
+
+  templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.pertinentInformation1")
+  pertinentCareRecordElementCategory : parentPrescription.CareRecordElementCategory
+
+  constructor(pertinentCareRecordElementCategory: parentPrescription.CareRecordElementCategory) {
+    this.pertinentCareRecordElementCategory = pertinentCareRecordElementCategory
+  }
+}
+
+/*
+* An act relationship indicating that Dispense Notification sequentially follows the Prescription Release Event.
+*/
+export class SequelTo implements ElementCompact {
+  _attributes: core.AttributeTypeCode = {
+    typeCode: "SEQL"
+  }
+
+  priorPrescriptionReleaseEventRef: PriorPrescriptionReleaseEventRef
+
+  constructor(priorPrescriptionReleaseEventRef: PriorPrescriptionReleaseEventRef) {
+    this.priorPrescriptionReleaseEventRef = priorPrescriptionReleaseEventRef
+  }
+}
+
+/*
+* Details about the Patient Prescription Release Response or the Nominated Prescription Release Response
+* that authorised the Dispense event.
+*/
+export class PriorPrescriptionReleaseEventRef implements ElementCompact {
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+    classCode: "INFO",
+    moodCode: "RQO"
+  }
+
+  id: codes.Identifier<string>
+
+  constructor(id: codes.Identifier<string>) {
+    this.id = id
+  }
 }

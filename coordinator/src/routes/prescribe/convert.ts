@@ -20,7 +20,7 @@ export default [
         request.logger.info("Building HL7V3 message")
         const response = translator.convertBundleToSpineRequest(
           bundle,
-          request.headers["nhsd-request-id"]?.toUpperCase()
+          request.headers["nhsd-request-id"].toUpperCase()
         ).message
         return responseToolkit.response(response).code(200).header("Content-Type", contentType)
       }

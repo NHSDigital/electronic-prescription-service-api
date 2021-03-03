@@ -145,7 +145,7 @@ export class AcceptAckCode extends CodeWithoutSystem {
     static NEVER = new AcceptAckCode("NE")
 }
 
-class Identifier<T extends string> implements ElementCompact {
+export class Identifier<T extends string> implements ElementCompact {
     _attributes: {
         root: T
         extension?: string

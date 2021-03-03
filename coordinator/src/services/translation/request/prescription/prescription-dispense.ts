@@ -1,10 +1,9 @@
 import * as hl7V3 from "../../../../models/hl7-v3"
 import * as fhir from "../../../../models/fhir"
 import {getIdentifierValueForSystem} from "../../common"
+import * as uuid from "uuid"
 
-export function convertDispenseNotification(
-  bundle: fhir.Bundle): hl7V3.DispenseNotification {
-
+export function convertDispenseNotification(bundle: fhir.Bundle): hl7V3.DispenseNotification {
   const messageId = getIdentifierValueForSystem(
     [bundle.identifier],
     "https://tools.ietf.org/html/rfc4122",
@@ -24,6 +23,10 @@ export function convertDispenseNotification(
   }
   const sdsIdentifier = "T1450"
   const organisationName = "NHS BUSINESS SERVICES AUTHORITY"
+  // In this instance, this is the globally unique number (GUID) to identify either the
+  // Patient Prescription Release Response or the Nominated Prescription Release Response
+  // that authorised the Dispense event.
+  const releaseResponseIdentifier = uuid.v4()
   // ***********************
 
   const hl7V3Patient = new hl7V3.Patient()
@@ -41,6 +44,14 @@ export function convertDispenseNotification(
   organization.name = new hl7V3.Text(organisationName)
   dispenseNotification.primaryInformationRecipient.AgentOrg = new hl7V3.AgentOrganization(organization)
   dispenseNotification.pertinentInformation1 = new hl7V3.DispenseNotificationPertinentInformation1()
+  dispenseNotification.pertinentInformation2 = new hl7V3.DispenseNotificationPertinentInformation2(
+    new hl7V3.CareRecordElementCategory()
+  )
+  dispenseNotification.sequelTo = new hl7V3.SequelTo(
+    new hl7V3.PriorPrescriptionReleaseEventRef(
+      new hl7V3.Identifier(releaseResponseIdentifier)
+    )
+  )
 
   return dispenseNotification
 }
