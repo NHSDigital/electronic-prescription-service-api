@@ -23,6 +23,8 @@ export function convertDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispense
   }
   const sdsIdentifier = "T1450"
   const organisationName = "NHS BUSINESS SERVICES AUTHORITY"
+  // The globally unique identifier for this Dispense Notification clinical event.
+  const prescriptionDispenseIdentifier = uuid.v4()
   // In this instance, this is the globally unique number (GUID) to identify either the
   // Patient Prescription Release Response or the Nominated Prescription Release Response
   // that authorised the Dispense event.
@@ -43,7 +45,12 @@ export function convertDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispense
   organization.id = new hl7V3.SdsOrganizationIdentifier(sdsIdentifier)
   organization.name = new hl7V3.Text(organisationName)
   dispenseNotification.primaryInformationRecipient.AgentOrg = new hl7V3.AgentOrganization(organization)
-  dispenseNotification.pertinentInformation1 = new hl7V3.DispenseNotificationPertinentInformation1()
+  dispenseNotification.pertinentInformation1 = new hl7V3.DispenseNotificationPertinentInformation1(
+    new hl7V3.PertinentSupplyHeader(
+      new hl7V3.Identifier(prescriptionDispenseIdentifier),
+      new hl7V3.SubstanceAdministrationSnCT("225426007")
+    )
+  )
   dispenseNotification.pertinentInformation2 = new hl7V3.DispenseNotificationPertinentInformation2(
     new hl7V3.CareRecordElementCategory()
   )

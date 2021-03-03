@@ -63,12 +63,32 @@ export class DispenseNotificationPertinentInformation1 implements ElementCompact
   }
 
   templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.pertinentInformation")
-  // todo: confirm if this has been deprecated
-  //pertinentSupplyHeader: PertinentSupplyHeader
+  pertinentSupplyHeader: PertinentSupplyHeader
 
-  // constructor(pertinentSupplyHeader: PertinentSupplyHeader) {
-  //   this.pertinentSupplyHeader = pertinentSupplyHeader
-  // }
+  constructor(pertinentSupplyHeader: PertinentSupplyHeader) {
+    this.pertinentSupplyHeader = pertinentSupplyHeader
+  }
+}
+
+/*
+* A container for the collection of clinical statements that constitute Dispense Notification information
+* to be available on PSIS.
+*/
+export class PertinentSupplyHeader implements ElementCompact {
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+    classCode: "SBADM",
+    moodCode: "EVN"
+  }
+
+  id: codes.Identifier<string>
+  code: codes.SubstanceAdministrationSnCT
+  effectiveTime: core.Null
+
+  constructor(id: codes.Identifier<string>, code: codes.SubstanceAdministrationSnCT) {
+    this.id = id
+    this.code = code
+    this.effectiveTime = core.Null.NOT_APPLICABLE
+  }
 }
 
 /*
