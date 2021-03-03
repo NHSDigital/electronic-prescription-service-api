@@ -31,31 +31,6 @@ export class DispenseNotification implements ElementCompact {
   pertinentInformation2: DispenseNotificationPertinentInformation2
   //replacementOf: < optional, do we support this in fhir?
   sequelTo: SequelTo //\
-  //patient: patient.Patient
-  //supplyHeader:
-  //careRecordElementCategory: parentPrescription.CareRecordElementCategory
-  //messageRef:
-  //prescriptionReleaseEventRef:
-  //suppliedLineItem:
-  //prescriptionStatus:
-  //prescriptionID
-  //originalPrescriptionRef
-  //supplyHeaderRef
-  //actRef
-  //requestedManufacturedProduct
-  //suppliedLineItemQuantity
-  //supplyRequest
-  //runningTotal
-  //nonDispensingReason
-  //itemStatus
-  //intendedMedicationAdministrationRef
-  //originalItemRef
-  //suppliedLineItemRef
-  //requestedMaterial
-  //suppliedManufacturedProduct
-  //additionalInstructions
-  //supplyInstructions
-  //suppliedMaterial
 
   constructor(id: codes.GlobalIdentifier) {
     this.id = id
