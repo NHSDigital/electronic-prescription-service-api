@@ -21,8 +21,12 @@ export function convertDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispense
       value: "9453740519"
     }]
   }
-  const sdsIdentifier = "T1450"
+  const sdsUniqueIdentifier = "156968544265"
+  const sdsJobRoleCode = "R1981"
+  const sdsRoleProfileIdentifier = "210987654322"
   const organisationName = "NHS BUSINESS SERVICES AUTHORITY"
+  const pracitionerTelecom = "01234567890"
+  const practitionerName = "Potion"
   // The globally unique identifier for this Dispense Notification clinical event.
   const prescriptionDispenseIdentifier = "D0CDE318-3260-428B-B8ED-E3C53B3C5089"
   // In this instance, this is the globally unique number (GUID) to identify either the
@@ -40,15 +44,24 @@ export function convertDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispense
   )
   hl7V3Patient.id = new hl7V3.NhsNumber(nhsNumber)
   dispenseNotification.recordTarget = new hl7V3.RecordTarget(hl7V3Patient)
-
   dispenseNotification.primaryInformationRecipient = new hl7V3.PrimaryInformationRecipient()
   const organization = new hl7V3.Organization()
-  organization.id = new hl7V3.SdsOrganizationIdentifier(sdsIdentifier)
+  organization.id = new hl7V3.SdsOrganizationIdentifier(sdsJobRoleCode)
   organization.name = new hl7V3.Text(organisationName)
   dispenseNotification.primaryInformationRecipient.AgentOrg = new hl7V3.AgentOrganization(organization)
+  const agentPerson = new hl7V3.AgentPerson()
+  agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileIdentifier)
+  agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode)
+  agentPerson.telecom = [new hl7V3.Telecom(hl7V3.TelecomUse.WORKPLACE, pracitionerTelecom)]
+  const agentPersonPerson = new hl7V3.AgentPersonPerson(new hl7V3.SdsUniqueIdentifier(sdsUniqueIdentifier))
+  const agentPersonPersonName = new hl7V3.Name()
+  agentPersonPersonName._text = practitionerName
+  agentPersonPerson.name = agentPersonPersonName
+  agentPerson.agentPerson = agentPersonPerson
   const author = new hl7V3.Author()
   author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "MedicationDispense.whenPrepared")
   author.signatureText = hl7V3.Null.NOT_APPLICABLE
+  author.AgentPerson = agentPerson
   const supplyHeader = new hl7V3.PertinentSupplyHeader(new hl7V3.Identifier(prescriptionDispenseIdentifier))
   supplyHeader.author = author
   dispenseNotification.pertinentInformation1 = new hl7V3.DispenseNotificationPertinentInformation1(supplyHeader)

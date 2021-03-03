@@ -26,7 +26,6 @@ export class DispenseNotification implements ElementCompact {
   typeId: codes.TypeIdentifier //
   recordTarget: parentPrescription.RecordTarget //\
   primaryInformationRecipient: PrimaryInformationRecipient //\
-  // V todo: check if we need supplyHeader V
   pertinentInformation1: DispenseNotificationPertinentInformation1
   // V todo: figure out where CareRecordElementCategoryComponent comes from V
   pertinentInformation2: DispenseNotificationPertinentInformation2
