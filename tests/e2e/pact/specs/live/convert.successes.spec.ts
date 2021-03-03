@@ -67,7 +67,7 @@ TestResources.convertCaseGroups.forEach(pactGroup => {
               .send(requestStr)
               .expect(200)
           }
-        )      
+        )
       })
     }
   )
