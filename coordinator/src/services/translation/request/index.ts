@@ -14,11 +14,11 @@ import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
 import {translateReleaseRequest} from "./dispense/release"
 
-export function convertBundleToSpineRequest(bundle: fhir.Bundle): SpineRequest {
+export function convertBundleToSpineRequest(bundle: fhir.Bundle, messageId: string): SpineRequest {
   const messageType = identifyMessageType(bundle)
   return messageType === fhir.EventCodingCode.PRESCRIPTION
-    ? requestBuilder.toSpineRequest(createParentPrescriptionSendMessagePayload(bundle))
-    : requestBuilder.toSpineRequest(createCancellationSendMessagePayload(bundle))
+    ? requestBuilder.toSpineRequest(createParentPrescriptionSendMessagePayload(bundle), messageId)
+    : requestBuilder.toSpineRequest(createCancellationSendMessagePayload(bundle), messageId)
 }
 
 export function createParentPrescriptionSendMessagePayload(
@@ -99,8 +99,11 @@ class AlgorithmIdentifier implements XmlJs.ElementCompact {
   }
 }
 
-export function convertParametersToSpineRequest(fhirMessage: fhir.Parameters): SpineRequest {
+export function convertParametersToSpineRequest(fhirMessage: fhir.Parameters, messageId: string): SpineRequest {
   const hl7ReleaseRequest = translateReleaseRequest(fhirMessage)
   const interactionId = hl7V3.Hl7InteractionIdentifier.NOMINATED_PRESCRIPTION_RELEASE_REQUEST
-  return  requestBuilder.toSpineRequest(createReleaseRequestSendMessagePayload(interactionId, hl7ReleaseRequest))
+  return  requestBuilder.toSpineRequest(
+    createReleaseRequestSendMessagePayload(interactionId, hl7ReleaseRequest),
+    messageId
+  )
 }

@@ -277,7 +277,7 @@ describe("prescriptionEndorsements", () => {
     expect(hl7v3PrescriptionEndorsements.length).toBeGreaterThan(0)
     hl7v3PrescriptionEndorsements.map(endorsement => expect(endorsement).toEqual(undefined))
 
-    const hl7v3PrescriptionXml = convertBundleToSpineRequest(bundle).message
+    const hl7v3PrescriptionXml = convertBundleToSpineRequest(bundle, "test").message
     expect(hl7v3PrescriptionXml).not.toContain("pertinentInformation3")
   })
 })
