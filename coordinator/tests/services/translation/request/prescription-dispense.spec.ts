@@ -20,7 +20,7 @@ describe("convertPrescriptionDispense", () => {
       example.description,
       example.fhirMessageSigned,
       // eslint-disable-next-line max-len
-      example.hl7V3MessageDispense.PORX_RM024001UK31.ControlActEvent.subject.DispenseNotification as hl7V3.DispenseNotification
+      example.hl7V3MessageDispense.PORX_IN080101SM31.ControlActEvent.subject.DispenseNotification as hl7V3.DispenseNotification
     ])
 
   test.each(cases)("accepts %s", (desc: string, input: fhir.Bundle) => {
