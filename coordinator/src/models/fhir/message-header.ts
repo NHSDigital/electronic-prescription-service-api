@@ -6,7 +6,7 @@ export enum EventCodingCode {
   PRESCRIPTION = "prescription-order",
   PRESCRIPTION_RESPONSE = "prescription-order-response",
   CANCELLATION = "prescription-order-update",
-  DISPENSE = "prescription-dispense"
+  DISPENSE = "dispense-notification"
 }
 
 export const EVENT_CODING_PRESCRIPTION_ORDER_RESPONSE = common.createCoding(

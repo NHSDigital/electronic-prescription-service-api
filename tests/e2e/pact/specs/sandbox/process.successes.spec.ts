@@ -154,10 +154,7 @@ TestResources.processDispenseNotificationCaseGroups.forEach(pactGroup => {
                 headers: {
                   "Content-Type": "application/fhir+json; fhirVersion=4.0",
                   "X-Request-ID": requestId,
-                  "X-Correlation-ID": correlationId,
-                  // presence of this header no matter its value will skip validation
-                  // todo: remove
-                  "x-skip-validation": "yepDoTheSkip"
+                  "X-Correlation-ID": correlationId
                 },
                 method: "POST",
                 path: apiPath,
@@ -177,7 +174,6 @@ TestResources.processDispenseNotificationCaseGroups.forEach(pactGroup => {
             .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
             .set("X-Request-ID", requestId)
             .set("X-Correlation-ID", correlationId)
-            .set("X-Skip-Validation", "yepDoTheSkip") // todo: remove
             .send(bundleStr)
             .expect(200)
           }

@@ -6,7 +6,6 @@ import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
 import * as fhir from "../../models/fhir"
-import { MessageHeader } from "../../models/fhir"
 
 TestResources.convertCaseGroups.forEach(pactGroup => {
   const pactGroupName = pactGroup.name
@@ -35,32 +34,16 @@ TestResources.convertCaseGroups.forEach(pactGroup => {
 
             const requestId = uuid.v4()
             const correlationId = uuid.v4()
-            
-            // todo remove this skip for validation of dispense convert when we
-            // have a fhir dispense example which passes validation
-            const isDispenseNotification = 
-              (request.entry
-                .map(entry => entry.resource)
-                .filter(resource => resource.resourceType === "MessageHeader") as Array<MessageHeader>)[0]
-              .eventCoding?.code === "prescription-dispense"
-            const headers = isDispenseNotification 
-              ? {
-                "Content-Type": "application/fhir+json; fhirVersion=4.0",
-                "X-Request-ID": requestId,
-                "X-Correlation-ID": correlationId,
-                "x-skip-validation": "yepDoTheSkip" // presence of this header no matter its value will skip validation
-              }
-              : {
-                "Content-Type": "application/fhir+json; fhirVersion=4.0",
-                "X-Request-ID": requestId,
-                "X-Correlation-ID": correlationId
-              }
 
             const interaction: InteractionObject = {
               state: "is not authenticated",
               uponReceiving: `a request to convert ${desc} message`,
               withRequest: {
-                headers,
+                headers: {
+                  "Content-Type": "application/fhir+json; fhirVersion=4.0",
+                  "X-Request-ID": requestId,
+                  "X-Correlation-ID": correlationId
+                },
                 method: "POST",
                 path: apiPath,
                 body: requestJson
@@ -76,29 +59,15 @@ TestResources.convertCaseGroups.forEach(pactGroup => {
               }
             }
             await provider.addInteraction(interaction)
-
-            // todo: remove as above
-            if (isDispenseNotification) {
-              await client()
-              .post(apiPath)
-              .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
-              .set("X-Request-ID", requestId)
-              .set("X-Correlation-ID", correlationId)
-              .set("X-Skip-Validation", "yepDoTheSkip")
-              .send(requestStr)
-              .expect(200)
-            }
-            else{
-              await client()
+            await client()
               .post(apiPath)
               .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
               .set("X-Request-ID", requestId)
               .set("X-Correlation-ID", correlationId)
               .send(requestStr)
               .expect(200)
-            }   
           }
-        )
+        )   
       })
     }
   )
