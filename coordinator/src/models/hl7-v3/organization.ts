@@ -51,7 +51,10 @@ export class AgentOrganizationSDS implements ElementCompact {
   }
 }
 
-// todo: note like above
+/**
+ * Identifies or provides detailed information about an organization fulfilling a specific role when it is not known
+ * whether the player and/or scoper details are available from SDS.
+ */
 export class AgentOrganization implements ElementCompact {
   _attributes: core.AttributeClassCode = {
     classCode: "AGNT"

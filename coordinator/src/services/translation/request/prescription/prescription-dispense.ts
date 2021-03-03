@@ -40,6 +40,7 @@ export function convertDispenseNotification(
   organization.id = new hl7V3.SdsOrganizationIdentifier(sdsIdentifier)
   organization.name = new hl7V3.Text(organisationName)
   dispenseNotification.primaryInformationRecipient.AgentOrg = new hl7V3.AgentOrganization(organization)
+  dispenseNotification.pertinentInformation1 = new hl7V3.DispenseNotificationPertinentInformation1()
 
   return dispenseNotification
 }

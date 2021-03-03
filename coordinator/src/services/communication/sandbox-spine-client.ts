@@ -21,8 +21,12 @@ export class SandboxSpineClient implements SpineClient {
       case hl7V3.Hl7InteractionIdentifier.NOMINATED_PRESCRIPTION_RELEASE_REQUEST._attributes.extension:
         return Promise.resolve({
           statusCode: 200,
-          // eslint-disable-next-line max-len
           body: sandboxReleaseResponse
+        })
+      case hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION._attributes.extension:
+        return Promise.resolve({
+          statusCode: 200,
+          body: ""
         })
       default:
         return Promise.resolve({

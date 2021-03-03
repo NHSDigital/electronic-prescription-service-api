@@ -25,7 +25,7 @@ export class DispenseNotification implements ElementCompact {
   typeId: codes.TypeIdentifier //
   recordTarget: parentPrescription.RecordTarget //\
   primaryInformationRecipient: PrimaryInformationRecipient //\
-  //pertinentInformation1: parentPrescription.ParentPrescriptionPertinentInformation1
+  pertinentInformation1: DispenseNotificationPertinentInformation1
   //pertinentInformation2: parentPrescription.ParentPrescriptionPertinentInformation2
   //replacementOf:
   //sequelTo:
@@ -73,4 +73,23 @@ export class PrimaryInformationRecipient implements ElementCompact {
   }
 
   AgentOrg: organisation.AgentOrganization
+}
+
+/**
+ * An act relationship that associates the DispenseNotification focal act with
+ * SupplyHeader - the primary act of the PSIS clinical message.
+ */
+export class DispenseNotificationPertinentInformation1 implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
+
+  templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.pertinentInformation")
+  // todo: confirm if this has been deprecated
+  //pertinentSupplyHeader: PertinentSupplyHeader
+
+  // constructor(pertinentSupplyHeader: PertinentSupplyHeader) {
+  //   this.pertinentSupplyHeader = pertinentSupplyHeader
+  // }
 }

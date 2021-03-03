@@ -70,6 +70,7 @@ export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, group?: AllPac
 // get pact groups for verification
 export const pactGroupNames = convertPactDescriptionsToPactNames(pactGroups)
 const releasePactGroupNames = convertPactDescriptionsToPactNames(releasePactGroups)
+const dispensePactGroupNames = convertPactDescriptionsToPactNames(dispensePactGroups)
 const cancelPactGroupNames = convertPactDescriptionsToPactNames(cancelPactGroups)
 
 // convert pact group name from description search string format to single string
@@ -98,6 +99,10 @@ export function getProcessSendPactGroups(): string[] {
   return isSandbox
     ? [...pactGroupNames, ...miscPactGroups]
     : [...pactGroupNames, ...failurePactGroups, ...miscPactGroups]
+}
+
+export function getProcessDispensePactGroups(): string[] {
+  return dispensePactGroupNames
 }
 
 export function getProcessCancelPactGroups(): string[] {

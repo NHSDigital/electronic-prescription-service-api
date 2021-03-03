@@ -5,7 +5,8 @@ import {
   getProcessCancelPactGroups,
   getConvertPactGroups,
   getReleasePactGroups,
-  ApiEndpoint
+  ApiEndpoint,
+  getProcessDispensePactGroups
 } from "../resources/common"
 
 let token: string
@@ -95,6 +96,12 @@ async function verifyProcess(): Promise<any> {
       await promise
       resetBackOffRetryTimer()
       await verifyOnce("process", group)
+    }, Promise.resolve())
+
+    await getProcessDispensePactGroups().reduce(async (promise, group) => {
+      await promise
+      resetBackOffRetryTimer()
+      await verifyOnce("process", `${group}-dispense`)
     }, Promise.resolve())
 
     await getProcessCancelPactGroups().reduce(async (promise, group) => {
