@@ -42,7 +42,7 @@ TestResources.convertCaseGroups.forEach(pactGroup => {
               (request.entry
                 .map(entry => entry.resource)
                 .filter(resource => resource.resourceType === "MessageHeader") as Array<MessageHeader>)[0]
-              .eventCoding?.code === "dispense-notification"
+              .eventCoding?.code === "prescription-dispense"
             const headers = isDispenseNotification 
               ? {
                 "Content-Type": "application/fhir+json; fhirVersion=4.0",
