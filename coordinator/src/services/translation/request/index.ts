@@ -17,19 +17,19 @@ import {translateReleaseRequest} from "./dispensation/release"
 
 export function convertBundleToSpineRequest(bundle: fhir.Bundle, messageId: string): SpineRequest {
   const messageType = identifyMessageType(bundle)
-  let createPayloadFunction: () => hl7V3.SendMessagePayload<unknown>
+  const payload = createPayload(messageType, bundle)
+  return requestBuilder.toSpineRequest(payload, messageId)
+}
+
+function createPayload(messageType: string, bundle: fhir.Bundle): hl7V3.SendMessagePayload<unknown> {
   switch (messageType) {
     case fhir.EventCodingCode.PRESCRIPTION:
-      createPayloadFunction = () => createParentPrescriptionSendMessagePayload(bundle)
-      break
+      return createParentPrescriptionSendMessagePayload(bundle)
     case fhir.EventCodingCode.CANCELLATION:
-      createPayloadFunction = () => createCancellationSendMessagePayload(bundle)
-      break
+      return createCancellationSendMessagePayload(bundle)
     case fhir.EventCodingCode.DISPENSE:
-      createPayloadFunction = () => createDispenseNotificationMessagePayload(bundle)
-      break
+      return createDispenseNotificationMessagePayload(bundle)
   }
-  return requestBuilder.toSpineRequest(createPayloadFunction(), messageId)
 }
 
 export function createParentPrescriptionSendMessagePayload(
