@@ -102,7 +102,9 @@ export function getProcessSendPactGroups(): string[] {
 }
 
 export function getProcessDispensePactGroups(): string[] {
-  return dispensePactGroupNames
+  return isSandbox
+    ? dispensePactGroupNames
+    : [] // todo: verify dispense for live proxy once this is available
 }
 
 export function getProcessCancelPactGroups(): string[] {
@@ -112,7 +114,7 @@ export function getProcessCancelPactGroups(): string[] {
 export function getReleasePactGroups(): string[] {
   return isSandbox
     ? releasePactGroupNames
-    : [] // todo: verify release for live proxy once this has been added
+    : [] // todo: verify release for live proxy once this is available
 }
 
 // helper functions
