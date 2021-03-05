@@ -29,7 +29,7 @@ export default [
       const payloadAsParameters = requestPayload as fhir.Parameters
 
       request.logger.info("Building Spine release request")
-      const spineRequest = translator.convertParametersToSpineRequest(
+      const spineRequest = await translator.convertParametersToSpineRequest(
         payloadAsParameters,
         request.headers["nhsd-request-id"].toUpperCase(),
         request.logger

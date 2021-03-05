@@ -100,12 +100,12 @@ class AlgorithmIdentifier implements XmlJs.ElementCompact {
   }
 }
 
-export function convertParametersToSpineRequest(
+export async function convertParametersToSpineRequest(
   fhirMessage: fhir.Parameters,
   messageId: string,
   logger: pino.Logger
-): SpineRequest {
-  const hl7ReleaseRequest = translateReleaseRequest(fhirMessage, logger)
+): Promise<SpineRequest> {
+  const hl7ReleaseRequest = await translateReleaseRequest(fhirMessage, logger)
   const interactionId = hl7V3.Hl7InteractionIdentifier.NOMINATED_PRESCRIPTION_RELEASE_REQUEST
   return  requestBuilder.toSpineRequest(
     createReleaseRequestSendMessagePayload(interactionId, hl7ReleaseRequest),
