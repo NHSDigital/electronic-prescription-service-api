@@ -3,7 +3,7 @@
   "id": "0cb82cfa-76c8-4fb2-a08e-bf0e326e5487",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "75444359-b0e5-4538-a5e2-8d4ad61860d2"
+    "value": "c5c241d0-cdbc-4523-9e89-5e498b602ba1"
   },
   "type": "message",
   "entry": [
@@ -32,7 +32,7 @@
             "receiver": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "VNE51"
+                "value": "FCG71"
               }
             }
           }
@@ -111,7 +111,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2021-02-24T18:56:56+00:00",
+        "authoredOn": "2021-03-05T12:01:08+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -121,12 +121,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "ed83b292-8bdb-49d6-943d-67f143ec8560"
+                "value": "b338bbc9-83fc-4956-9f50-d3aadd471097"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "120EFF-A83008-11EB9U"
+          "value": "7A0C19-A83008-11EBBD"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -139,7 +139,7 @@
         },
         "dosageInstruction": [
           {
-            "text": "100 tablets. One tablet to be taken four times a day",
+            "text": "One tablet to be taken four times a day",
             "timing": {
               "repeat": {
                 "frequency": 4,
@@ -169,11 +169,11 @@
             }
           ],
           "validityPeriod": {
-            "start": "2021-02-24",
-            "end": "2021-03-24"
+            "start": "2021-03-05",
+            "end": "2021-04-02"
           },
           "expectedSupplyDuration": {
-            "value": 40,
+            "value": 30,
             "unit": "day",
             "system": "http://unitsofmeasure.org",
             "code": "d"
@@ -181,7 +181,7 @@
           "performer": {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "VNE51"
+              "value": "FCG71"
             }
           },
           "quantity": {
@@ -254,7 +254,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2021-02-24T18:56:56+00:00",
+        "authoredOn": "2021-03-05T12:01:08+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -264,12 +264,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "ed83b292-8bdb-49d6-943d-67f143ec8560"
+                "value": "b338bbc9-83fc-4956-9f50-d3aadd471097"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "120EFF-A83008-11EB9U"
+          "value": "7A0C19-A83008-11EBBD"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -282,7 +282,7 @@
         },
         "dosageInstruction": [
           {
-            "text": "200 tablets. One dose to be taken five times a day",
+            "text": "One dose to be taken five times a day",
             "timing": {
               "repeat": {
                 "frequency": 5,
@@ -312,11 +312,11 @@
             }
           ],
           "validityPeriod": {
-            "start": "2021-02-24",
-            "end": "2021-03-24"
+            "start": "2021-03-05",
+            "end": "2021-04-02"
           },
           "expectedSupplyDuration": {
-            "value": 40,
+            "value": 30,
             "unit": "day",
             "system": "http://unitsofmeasure.org",
             "code": "d"
@@ -324,7 +324,7 @@
           "performer": {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "VNE51"
+              "value": "FCG71"
             }
           },
           "quantity": {
@@ -393,7 +393,7 @@
           {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "C81010"
+              "value": "A83008"
             }
           }
         ]
@@ -494,9 +494,7 @@
             "type": "both",
             "line": [
               "HALLGARTH SURGERY",
-              "CHEAPSIDE",
-              "SHILDON",
-              "COUNTY DURHAM"
+              "CHEAPSIDE"
             ],
             "city": "SHILDON",
             "district": "COUNTY DURHAM",
