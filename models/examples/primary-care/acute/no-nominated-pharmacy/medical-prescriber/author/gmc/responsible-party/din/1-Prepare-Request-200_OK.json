@@ -3,7 +3,7 @@
   "id": "0cb82cfa-76c8-4fb2-a08e-bf0e326e5487",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "4106258c-f4df-4050-a1f9-3f39b4550133"
+    "value": "a3109935-39ac-469b-b00d-8397658d9c50"
   },
   "type": "message",
   "entry": [
@@ -95,7 +95,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2021-02-24T18:56:56+00:00",
+        "authoredOn": "2021-03-05T12:01:08+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -105,12 +105,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "a430d035-16c4-48fb-9f83-b8e644c4d087"
+                "value": "85e60291-bc6b-494b-b417-05f45964b525"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "113FA6-A83008-11EB9R"
+          "value": "788368-A83008-11EB80"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -153,11 +153,11 @@
             }
           ],
           "validityPeriod": {
-            "start": "2021-02-24",
-            "end": "2021-03-24"
+            "start": "2021-03-05",
+            "end": "2021-04-02"
           },
           "expectedSupplyDuration": {
-            "value": 40,
+            "value": 30,
             "unit": "day",
             "system": "http://unitsofmeasure.org",
             "code": "d"
@@ -219,7 +219,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2021-02-24T18:56:56+00:00",
+        "authoredOn": "2021-03-05T12:01:08+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -229,12 +229,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "a430d035-16c4-48fb-9f83-b8e644c4d087"
+                "value": "85e60291-bc6b-494b-b417-05f45964b525"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "113FA6-A83008-11EB9R"
+          "value": "788368-A83008-11EB80"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -277,11 +277,11 @@
             }
           ],
           "validityPeriod": {
-            "start": "2021-02-24",
-            "end": "2021-03-24"
+            "start": "2021-03-05",
+            "end": "2021-04-02"
           },
           "expectedSupplyDuration": {
-            "value": 40,
+            "value": 30,
             "unit": "day",
             "system": "http://unitsofmeasure.org",
             "code": "d"
@@ -352,7 +352,7 @@
           {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "C81010"
+              "value": "A83008"
             }
           }
         ]
@@ -453,9 +453,7 @@
             "type": "both",
             "line": [
               "HALLGARTH SURGERY",
-              "CHEAPSIDE",
-              "SHILDON",
-              "COUNTY DURHAM"
+              "CHEAPSIDE"
             ],
             "city": "SHILDON",
             "district": "COUNTY DURHAM",
