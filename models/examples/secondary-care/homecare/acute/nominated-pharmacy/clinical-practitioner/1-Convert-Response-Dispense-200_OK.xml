@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN080101SM31 xmlns="urn:hl7-org:v3">
   <id root="BE807DAC-9DCF-45CF-91D6-70D9D58DCF34"/>
-  <creationTime value="20210305011908"/>
+  <creationTime value="20210305114009"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN080101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -42,7 +42,7 @@
       <DispenseNotification classCode="INFO" moodCode="EVN">
         <id root="BE807DAC-9DCF-45CF-91D6-70D9D58DCF34"/>
         <code code="163541000000107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensed Medication - FocusActOrEvent (administrative concept)"/>
-        <effectiveTime value="PLACEHOLDER"/>
+        <effectiveTime value="20200305105900"/>
         <typeId extension="PORX_MT024001UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <patient classCode="PAT">
@@ -77,7 +77,7 @@
                 <representedOrganization classCode="ORG" determinerCode="INSTANCE">
                   <id extension="FH878" root="1.2.826.0.1285.0.1.10"/>
                   <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
-                  <name>BOOTS THE CHEMISTS LTD</name>
+                  <name>NHS BUSINESS SERVICES AUTHORITY</name>
                   <telecom use="WP" value="tel:01208812760"/>
                   <addr use="WP">
                     <streetAddressLine>REGENCY ARCADE</streetAddressLine>
@@ -94,26 +94,26 @@
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentSuppliedLineItem classCode="SBADM" moodCode="PRMS">
                 <id root="4509B70D-D8B8-EA03-1105-64557CB54A29"/>
-                <code code="323465006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+                <code code="385049006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
                 <effectiveTime nullFlavor="NA"/>
                 <consumable contextControlCode="OP" typeCode="CSM">
                   <requestedManufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
-                      <code code="323465006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Flucloxacillin 500mg capsules"/>
+                      <code code="3316911000001105" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="capsule"/>
                     </manufacturedRequestedMaterial>
                   </requestedManufacturedProduct>
                 </consumable>
                 <component typeCode="COMP">
                   <seperatableInd value="false"/>
                   <suppliedLineItemQuantity classCode="SPLY" moodCode="EVN">
-                    <code code="323465006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Flucloxacillin 500mg capsules"/>
+                    <code code="3316911000001105" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="capsule"/>
                     <quantity unit="1" value="28">
-                      <translation code="323465006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Flucloxacillin 500mg capsules" value="capsule"/>
+                      <translation code="3316911000001105" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="capsule" value="28"/>
                     </quantity>
                     <product contextControlCode="OP" typeCode="PRD">
                       <suppliedManufacturedProduct classCode="MANU">
                         <manufacturedSuppliedMaterial classCode="MMAT" determinerCode="KIND">
-                          <code code="323465006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Flucloxacillin 500mg capsules"/>
+                          <code code="3316911000001105" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="capsule"/>
                         </manufacturedSuppliedMaterial>
                       </suppliedManufacturedProduct>
                     </product>
@@ -129,9 +129,9 @@
                 <component1 typeCode="COMP">
                   <seperatableInd value="false"/>
                   <supplyRequest classCode="SPLY" moodCode="RQO">
-                    <code code="323465006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Flucloxacillin 500mg capsules"/>
+                    <code code="3316911000001105" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="capsule"/>
                     <quantity unit="1" value="28">
-                      <translation code="323465006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Flucloxacillin 500mg capsules" value="capsule"/>
+                      <translation code="3316911000001105" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="capsule" value="28"/>
                     </quantity>
                   </supplyRequest>
                 </component1>

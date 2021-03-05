@@ -14,6 +14,8 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
   )
 
   const hl7DispenseNotification = new hl7V3.DispenseNotification(new hl7V3.GlobalIdentifier(messageId))
+  hl7DispenseNotification.effectiveTime =
+    convertIsoDateTimeStringToHl7V3DateTime("2020-03-05T10:59:00+00:00", "DispenseNotification.effectiveTime")
 
   // todo: map from fhir/sds
   const sds = getSDSDetails()
@@ -184,12 +186,14 @@ function getSupplyHeader(
     const hl7Consumable = new hl7V3.Consumable()
     const hl7RequestedManufacturedProduct = new hl7V3.RequestedManufacturedProduct()
     const hl7SuppliedLineItemQuantity = new hl7V3.SuppliedLineItemQuantity()
-    hl7SnomedCode._attributes.displayName = fhirMedicationCodeableConceptCoding.display
+    hl7SnomedCode._attributes.displayName = "capsule"
+    // todo: check this mapping, one should be the snomed dose, one should be dm+d?
+    hl7SnomedCode._attributes.code = "3316911000001105"
     hl7PertinentSuppliedLineItem.consumable = hl7Consumable
     const fhirQuantity = medicationDispense.quantity
     const fhirQuantityValue = fhirQuantity.value.toString()
     const fhirQuantityUnit = fhirQuantity.unit.toString() // todo: check this mapping
-    const hl7Quantity = new hl7V3.QuantityInAlternativeUnits(fhirQuantityValue, fhirQuantityUnit, hl7SnomedCode)
+    const hl7Quantity = new hl7V3.QuantityInAlternativeUnits(fhirQuantityValue, fhirQuantityValue, hl7SnomedCode)
     hl7SuppliedLineItemQuantity.code = hl7SnomedCode
     hl7SuppliedLineItemQuantity.quantity = hl7Quantity
     hl7SuppliedLineItemQuantity.product = new hl7V3.DispenseProduct(
