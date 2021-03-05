@@ -1,5 +1,5 @@
 import {
-  translateDispenseNotification as convertPrescriptionDispense
+  translateDispenseNotification
 } from "../../../../src/services/translation/request/prescription/prescription-dispense"
 import * as TestResources from "../../../resources/test-resources"
 import requireActual = jest.requireActual
@@ -18,12 +18,12 @@ describe("convertPrescriptionDispense", () => {
   const cases = toArray(TestResources.examplePrescription3)
     .map((example: TestResources.ExamplePrescription) => [
       example.description,
-      example.fhirMessageSigned,
+      example.fhirMessageDispense,
       // eslint-disable-next-line max-len
       example.hl7V3MessageDispense.PORX_IN080101SM31.ControlActEvent.subject.DispenseNotification as hl7V3.DispenseNotification
     ])
 
   test.each(cases)("accepts %s", (desc: string, input: fhir.Bundle) => {
-    expect(() => convertPrescriptionDispense(input)).not.toThrow()
+    expect(() => translateDispenseNotification(input)).not.toThrow()
   })
 })
