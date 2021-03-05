@@ -35,6 +35,9 @@ export default [
         request.logger
       )
 
+      //TODO - remove after testing
+      request.logger.info(`Sending the following request to Spine:\n${spineRequest.message}`)
+
       const spineResponse = await spineClient.send(
         spineRequest,
         request.logger
