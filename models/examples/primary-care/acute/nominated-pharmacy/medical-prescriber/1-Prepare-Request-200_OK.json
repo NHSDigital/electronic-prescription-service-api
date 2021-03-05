@@ -452,7 +452,7 @@
             "coding": [
               {
                 "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
-                "code": "RO76",
+                "code": "76",
                 "display": "GP PRACTICE"
               }
             ]

@@ -10,7 +10,7 @@ import {identifyMessageType} from "../../../routes/util"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
 
-const NHS_TRUST_CODE = "RO197"
+const NHS_TRUST_CODE = "197"
 
 export function convertOrganizationAndProviderLicense(
   bundle: fhir.Bundle,

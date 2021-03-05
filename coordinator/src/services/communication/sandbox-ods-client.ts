@@ -12,7 +12,7 @@ export class SandboxOdsClient implements OdsClient {
       type: [{
         coding: [{
           system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
-          code: "RO182"
+          code: "182"
         }]
       }],
       name: "HEALTHCARE AT HOME",
