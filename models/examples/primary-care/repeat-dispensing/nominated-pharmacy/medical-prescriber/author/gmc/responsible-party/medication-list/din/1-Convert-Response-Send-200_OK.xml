@@ -263,7 +263,7 @@
                   <seperatableInd value="false"/>
                   <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
                     <code code="DI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value>100 tablets. One tablet to be taken four times a day</value>
+                    <value>One tablet to be taken four times a day</value>
                   </pertinentDosageInstructions>
                 </pertinentInformation2>
               </pertinentLineItem>
@@ -299,7 +299,7 @@
                   <seperatableInd value="false"/>
                   <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
                     <code code="DI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value>200 tablets. One dose to be taken five times a day</value>
+                    <value>One dose to be taken five times a day</value>
                   </pertinentDosageInstructions>
                 </pertinentInformation2>
               </pertinentLineItem>

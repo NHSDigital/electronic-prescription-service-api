@@ -32,7 +32,7 @@
             "receiver": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "VNE51"
+                "value": "FCG71"
               }
             }
           }
@@ -165,7 +165,7 @@
           "performer": {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "VNE51"
+              "value": "FCG71"
             }
           },
           "quantity": {
@@ -295,7 +295,7 @@
           "performer": {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "VNE51"
+              "value": "FCG71"
             }
           },
           "quantity": {
@@ -364,7 +364,7 @@
           {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "C81010"
+              "value": "A83008"
             }
           }
         ]
@@ -465,9 +465,7 @@
             "type": "both",
             "line": [
               "HALLGARTH SURGERY",
-              "CHEAPSIDE",
-              "SHILDON",
-              "COUNTY DURHAM"
+              "CHEAPSIDE"
             ],
             "city": "SHILDON",
             "district": "COUNTY DURHAM",

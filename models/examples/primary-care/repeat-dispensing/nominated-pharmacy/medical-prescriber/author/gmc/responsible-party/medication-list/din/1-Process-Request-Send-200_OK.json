@@ -32,7 +32,7 @@
             "receiver": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "VNE51"
+                "value": "FCG71"
               }
             }
           }
@@ -139,7 +139,7 @@
         },
         "dosageInstruction": [
           {
-            "text": "100 tablets. One tablet to be taken four times a day",
+            "text": "One tablet to be taken four times a day",
             "timing": {
               "repeat": {
                 "frequency": 4,
@@ -181,7 +181,7 @@
           "performer": {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "VNE51"
+              "value": "FCG71"
             }
           },
           "quantity": {
@@ -282,7 +282,7 @@
         },
         "dosageInstruction": [
           {
-            "text": "200 tablets. One dose to be taken five times a day",
+            "text": "One dose to be taken five times a day",
             "timing": {
               "repeat": {
                 "frequency": 5,
@@ -324,7 +324,7 @@
           "performer": {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "VNE51"
+              "value": "FCG71"
             }
           },
           "quantity": {
@@ -393,7 +393,7 @@
           {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "C81010"
+              "value": "A83008"
             }
           }
         ]
@@ -494,9 +494,7 @@
             "type": "both",
             "line": [
               "HALLGARTH SURGERY",
-              "CHEAPSIDE",
-              "SHILDON",
-              "COUNTY DURHAM"
+              "CHEAPSIDE"
             ],
             "city": "SHILDON",
             "district": "COUNTY DURHAM",
