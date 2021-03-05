@@ -157,7 +157,7 @@
             "end": "2021-03-24"
           },
           "expectedSupplyDuration": {
-            "value": 40,
+            "value": 30,
             "unit": "day",
             "system": "http://unitsofmeasure.org",
             "code": "d"
@@ -281,7 +281,7 @@
             "end": "2021-03-24"
           },
           "expectedSupplyDuration": {
-            "value": 40,
+            "value": 30,
             "unit": "day",
             "system": "http://unitsofmeasure.org",
             "code": "d"
