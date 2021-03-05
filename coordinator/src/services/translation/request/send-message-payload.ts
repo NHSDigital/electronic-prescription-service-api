@@ -75,9 +75,9 @@ function convertRequesterToControlActAuthor(
   // todo: implement dispense verson
   const messageType = identifyMessageType(bundle)
   if (messageType === fhir.EventCodingCode.DISPENSE) {
-    const sdsUniqueIdentifier = "156968544265"
-    const sdsJobRoleCode = "R1981"
-    const sdsRoleProfileIdentifier = "210987654322"
+    const sdsUniqueIdentifier = "687227875014"
+    const sdsJobRoleCode = "R8003"
+    const sdsRoleProfileIdentifier = "781733617547"
     return createControlActEventAuthor(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier)
   }
 

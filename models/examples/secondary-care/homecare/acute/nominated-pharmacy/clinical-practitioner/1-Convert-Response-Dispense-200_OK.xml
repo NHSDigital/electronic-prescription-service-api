@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN080101SM31 xmlns="urn:hl7-org:v3">
-  <id root="E9A71955-53BA-B15A-D4B6-BEA99D5017B3"/>
-  <creationTime value="20210303224344"/>
+  <id root="BE807DAC-9DCF-45CF-91D6-70D9D58DCF34"/>
+  <creationTime value="20210305011908"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN080101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -20,13 +20,13 @@
   <ControlActEvent classCode="CACT" moodCode="EVN">
     <author typeCode="AUT">
       <AgentPersonSDS classCode="AGNT">
-        <id extension="210987654322" root="1.2.826.0.1285.0.2.0.67"/>
+        <id extension="781733617547" root="1.2.826.0.1285.0.2.0.67"/>
         <agentPersonSDS classCode="PSN" determinerCode="INSTANCE">
-          <id extension="156968544265" root="1.2.826.0.1285.0.2.0.65"/>
+          <id extension="687227875014" root="1.2.826.0.1285.0.2.0.65"/>
         </agentPersonSDS>
         <part typeCode="PART">
           <partSDSRole classCode="ROL">
-            <id extension="R1981" root="1.2.826.0.1285.0.2.1.104"/>
+            <id extension="R8003" root="1.2.826.0.1285.0.2.1.104"/>
           </partSDSRole>
         </part>
       </AgentPersonSDS>
@@ -40,19 +40,19 @@
     </author1>
     <subject>
       <DispenseNotification classCode="INFO" moodCode="EVN">
-        <id root="E9A71955-53BA-B15A-D4B6-BEA99D5017B3"/>
+        <id root="BE807DAC-9DCF-45CF-91D6-70D9D58DCF34"/>
         <code code="163541000000107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensed Medication - FocusActOrEvent (administrative concept)"/>
         <effectiveTime value="PLACEHOLDER"/>
         <typeId extension="PORX_MT024001UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
-          <Patient classCode="PAT">
-            <id extension="9453740519" root="2.16.840.1.113883.2.1.4.1"/>
-          </Patient>
+          <patient classCode="PAT">
+            <id extension="9401443157" root="2.16.840.1.113883.2.1.4.1"/>
+          </patient>
         </recordTarget>
         <primaryInformationRecipient contextControlCode="ON" typeCode="PRCP">
           <AgentOrg classCode="AGNT">
             <agentOrganization classCode="ORG" determinerCode="INSTANCE">
-              <id extension="R1981" root="1.2.826.0.1285.0.1.10"/>
+              <id extension="T1450" root="1.2.826.0.1285.0.1.10"/>
               <name>NHS BUSINESS SERVICES AUTHORITY</name>
             </agentOrganization>
           </AgentOrg>
@@ -60,28 +60,139 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentSupplyHeader classCode="SBADM" moodCode="EVN">
-            <effectiveTime nullFlavor="NA"/>
-            <id root="D0CDE318-3260-428B-B8ED-E3C53B3C5089"/>
+            <id root="BE807DAC-9DCF-45CF-91D6-70D9D58DCF34"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+            <effectiveTime nullFlavor="NA"/>
             <author contextControlCode="OP" typeCode="AUT">
-              <time value="20040916163000"/>
+              <time value="20090921092420"/>
               <signatureText nullFlavor="NA"/>
               <AgentPerson classCode="AGNT">
-                <id extension="210987654322" root="1.2.826.0.1285.0.2.0.67"/>
-                <code code="R1981" codeSystem="1.2.826.0.1285.0.2.1.104"/>
-                <telecom use="WP" value="tel:01234567890"/>
+                <id extension="100243444980" root="1.2.826.0.1285.0.2.0.67"/>
+                <code code="R1290" codeSystem="1.2.826.0.1285.0.2.1.104"/>
+                <telecom use="WP" value="tel:01208812760"/>
                 <agentPerson classCode="PSN" determinerCode="INSTANCE">
-                  <id extension="156968544265" root="1.2.826.0.1285.0.2.0.65"/>
-                  <name>Potion</name>
+                  <id extension="687227875014" root="1.2.826.0.1285.0.2.0.65"/>
+                  <name use="L">WELSH</name>
                 </agentPerson>
+                <representedOrganization classCode="ORG" determinerCode="INSTANCE">
+                  <id extension="FH878" root="1.2.826.0.1285.0.1.10"/>
+                  <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
+                  <name>BOOTS THE CHEMISTS LTD</name>
+                  <telecom use="WP" value="tel:01208812760"/>
+                  <addr use="WP">
+                    <streetAddressLine>REGENCY ARCADE</streetAddressLine>
+                    <streetAddressLine>23 MOLESWORTH STREET</streetAddressLine>
+                    <streetAddressLine>WADEBRIDGE</streetAddressLine>
+                    <streetAddressLine>CORNWALL</streetAddressLine>
+                    <postalCode>PL27 7DH</postalCode>
+                  </addr>
+                </representedOrganization>
               </AgentPerson>
             </author>
+            <pertinentInformation1 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT">
+              <seperatableInd value="false"/>
+              <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+              <pertinentSuppliedLineItem classCode="SBADM" moodCode="PRMS">
+                <id root="4509B70D-D8B8-EA03-1105-64557CB54A29"/>
+                <code code="323465006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+                <effectiveTime nullFlavor="NA"/>
+                <consumable contextControlCode="OP" typeCode="CSM">
+                  <requestedManufacturedProduct classCode="MANU">
+                    <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
+                      <code code="323465006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Flucloxacillin 500mg capsules"/>
+                    </manufacturedRequestedMaterial>
+                  </requestedManufacturedProduct>
+                </consumable>
+                <component typeCode="COMP">
+                  <seperatableInd value="false"/>
+                  <suppliedLineItemQuantity classCode="SPLY" moodCode="EVN">
+                    <code code="323465006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Flucloxacillin 500mg capsules"/>
+                    <quantity unit="1" value="28">
+                      <translation code="323465006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Flucloxacillin 500mg capsules" value="capsule"/>
+                    </quantity>
+                    <product contextControlCode="OP" typeCode="PRD">
+                      <suppliedManufacturedProduct classCode="MANU">
+                        <manufacturedSuppliedMaterial classCode="MMAT" determinerCode="KIND">
+                          <code code="323465006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Flucloxacillin 500mg capsules"/>
+                        </manufacturedSuppliedMaterial>
+                      </suppliedManufacturedProduct>
+                    </product>
+                    <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
+                      <seperatableInd value="false"/>
+                      <pertinentSupplyInstructions classCode="OBS" moodCode="EVN">
+                        <code code="SI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                        <value>As directed</value>
+                      </pertinentSupplyInstructions>
+                    </pertinentInformation1>
+                  </suppliedLineItemQuantity>
+                </component>
+                <component1 typeCode="COMP">
+                  <seperatableInd value="false"/>
+                  <supplyRequest classCode="SPLY" moodCode="RQO">
+                    <code code="323465006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Flucloxacillin 500mg capsules"/>
+                    <quantity unit="1" value="28">
+                      <translation code="323465006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Flucloxacillin 500mg capsules" value="capsule"/>
+                    </quantity>
+                  </supplyRequest>
+                </component1>
+                <pertinentInformation3 contextConductionInd="true" typeCode="PERT">
+                  <seperatableInd value="false"/>
+                  <pertinentItemStatus classCode="OBS" moodCode="EVN">
+                    <code code="IS" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                    <value code="0003" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.23"/>
+                  </pertinentItemStatus>
+                </pertinentInformation3>
+                <inFulfillmentOf inversionInd="false" negationInd="false" typeCode="FLFS">
+                  <seperatableInd value="true"/>
+                  <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+                  <priorOriginalItemRef classCode="SBADM" moodCode="RQO">
+                    <id root="450D738D-E5ED-48D6-A2A5-6EEEFA8BA689"/>
+                  </priorOriginalItemRef>
+                </inFulfillmentOf>
+              </pertinentSuppliedLineItem>
+            </pertinentInformation1>
+            <pertinentInformation3 contextConductionInd="true" typeCode="PERT">
+              <seperatableInd value="false"/>
+              <pertinentPrescriptionStatus classCode="OBS" moodCode="EVN">
+                <code code="PS" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                <value code="0003" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.35"/>
+              </pertinentPrescriptionStatus>
+            </pertinentInformation3>
+            <pertinentInformation4 contextConductionInd="true" typeCode="PERT">
+              <seperatableInd value="false"/>
+              <pertinentPrescriptionID classCode="OBS" moodCode="EVN">
+                <code code="PID" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                <value extension="3C2366-B81001-0A409U" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+              </pertinentPrescriptionID>
+            </pertinentInformation4>
+            <inFulfillmentOf inversionInd="false" negationInd="false" typeCode="FLFS">
+              <seperatableInd value="true"/>
+              <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+              <priorOriginalPrescriptionRef classCode="SBADM" moodCode="RQO">
+                <id root="450D738D-E5ED-48D6-A2A5-6EEEFA8BA689"/>
+              </priorOriginalPrescriptionRef>
+            </inFulfillmentOf>
           </pertinentSupplyHeader>
         </pertinentInformation1>
         <pertinentInformation2 typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentCareRecordElementCategory classCode="CATEGORY" moodCode="EVN">
             <code code="185361000000102" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Medication - care record element (record artifact)"/>
+            <component typeCode="COMP">
+              <actRef classCode="SBADM" moodCode="PRMS">
+                <id root="450D738D-E5ED-48D6-A2A5-6EEEFA8BA689"/>
+              </actRef>
+            </component>
+            <component typeCode="COMP">
+              <actRef classCode="SBADM" moodCode="PRMS">
+                <id root="450D738D-E5ED-48D6-A2A5-6EEEFA8BA689"/>
+              </actRef>
+            </component>
+            <component typeCode="COMP">
+              <actRef classCode="SBADM" moodCode="PRMS">
+                <id root="450D738D-E5ED-48D6-A2A5-6EEEFA8BA689"/>
+              </actRef>
+            </component>
           </pertinentCareRecordElementCategory>
         </pertinentInformation2>
         <sequelTo typeCode="SEQL">

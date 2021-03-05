@@ -12,7 +12,7 @@ import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
-import {convertDispenseNotification} from "./prescription/prescription-dispense"
+import {translateDispenseNotification} from "./prescription/prescription-dispense"
 import {translateReleaseRequest} from "./dispensation/release"
 
 export function convertBundleToSpineRequest(bundle: fhir.Bundle, messageId: string): SpineRequest {
@@ -44,7 +44,7 @@ export function createParentPrescriptionSendMessagePayload(
 export function createDispenseNotificationMessagePayload(
   bundle: fhir.Bundle
 ): hl7V3.SendMessagePayload<hl7V3.DispenseNotificationRoot> {
-  const dispenseNotification = convertDispenseNotification(bundle)
+  const dispenseNotification = translateDispenseNotification(bundle)
   const dispenseNotificationRoot = new hl7V3.DispenseNotificationRoot(dispenseNotification)
   const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION
   return createSendMessagePayload(interactionId, bundle, dispenseNotificationRoot)

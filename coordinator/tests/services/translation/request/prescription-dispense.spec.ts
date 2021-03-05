@@ -1,5 +1,5 @@
 import {
-  convertDispenseNotification as convertPrescriptionDispense
+  translateDispenseNotification as convertPrescriptionDispense
 } from "../../../../src/services/translation/request/prescription/prescription-dispense"
 import * as TestResources from "../../../resources/test-resources"
 import requireActual = jest.requireActual
