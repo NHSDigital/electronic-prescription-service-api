@@ -192,7 +192,7 @@ function getSupplyHeader(
     hl7PertinentSuppliedLineItem.consumable = hl7Consumable
     const fhirQuantity = medicationDispense.quantity
     const fhirQuantityValue = fhirQuantity.value.toString()
-    const fhirQuantityUnit = fhirQuantity.unit.toString() // todo: check this mapping
+    //const fhirQuantityUnit = fhirQuantity.unit.toString() // todo: check this mapping
     const hl7Quantity = new hl7V3.QuantityInAlternativeUnits(fhirQuantityValue, fhirQuantityValue, hl7SnomedCode)
     hl7SuppliedLineItemQuantity.code = hl7SnomedCode
     hl7SuppliedLineItemQuantity.quantity = hl7Quantity
