@@ -1,9 +1,9 @@
 import * as hl7V3 from "../../../../models/hl7-v3"
 import * as fhir from "../../../../models/fhir"
-import {getIdentifierValueForSystem} from "../../common"
+import {getIdentifierValueForSystem, onlyElement} from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import {MedicationDispense} from "../../../../models/fhir"
-import {getResourcesOfType} from "../../common/getResourcesOfType"
+import {getMessageHeader, getResourcesOfType} from "../../common/getResourcesOfType"
 import {SnomedCode} from "../../../../models/hl7-v3"
 
 export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.DispenseNotification {
@@ -12,6 +12,16 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
     "https://tools.ietf.org/html/rfc4122",
     "Bundle.identifier"
   )
+
+  const fhirHeader = getMessageHeader(bundle)
+  const fhirHeaderDestination = onlyElement(fhirHeader.destination, "MessageHeader.destination")
+  const hl7AgentOrganisationCode = fhirHeaderDestination.receiver.identifier.value
+  const hl7AgentOrganisationName = fhirHeaderDestination.receiver.display
+  const fhirHeaderSender = fhirHeader.sender
+  const hl7RepresentedOrganisationCode = fhirHeaderSender.identifier.value
+  const hl7RepresentedOrganisationName = fhirHeaderSender.display
+  const fhirHeaderResponse = fhirHeader.response
+  const hl7PriorPrescriptionReleaseEventRef = fhirHeaderResponse.identifier
 
   const hl7DispenseNotification = new hl7V3.DispenseNotification(new hl7V3.GlobalIdentifier(messageId))
   hl7DispenseNotification.effectiveTime =
@@ -35,8 +45,16 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
   const fhirMedicationDispenses = getResourcesOfType<MedicationDispense>(bundle, "MedicationDispense")
 
   const hl7Patient = getPatient(nhsNumber)
-  const hl7Organization = getOrganisation(sds.jobRoleCode, organisationName)
-  const hl7Author = getAuthor(sds, authorTime, organisationName, pracitionerTelecom, practitionerFamilyName)
+  const hl7Organization = getOrganisation(hl7AgentOrganisationCode, hl7AgentOrganisationName)
+  const hl7Author = getAuthor(
+    sds,
+    hl7RepresentedOrganisationCode,
+    hl7RepresentedOrganisationName,
+    authorTime,
+    organisationName,
+    pracitionerTelecom,
+    practitionerFamilyName
+  )
   const hl7SupplyHeader = getSupplyHeader(
     prescriptionDispenseIdentifier, hl7Author, fhirMedicationDispenses, releaseResponseIdentifier
   )
@@ -78,7 +96,7 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
   hl7DispenseNotification.pertinentInformation2 = pertinentInformation2
   hl7DispenseNotification.sequelTo = new hl7V3.SequelTo(
     new hl7V3.PriorPrescriptionReleaseEventRef(
-      new hl7V3.GlobalIdentifier(releaseResponseIdentifier)
+      new hl7V3.GlobalIdentifier(hl7PriorPrescriptionReleaseEventRef)
     )
   )
 
@@ -121,17 +139,34 @@ function getOrganisation(sdsJobRoleCode: string, organisationName?: string) {
 }
 
 function getAuthor(
-  sds: SDS, authorTime: string, organisationName: string, practitionerTelecom: string, practitionerName: string
+  sds: SDS,
+  hl7RepresentedOrganisationCode: string,
+  hl7RepresentedOrganisationName: string,
+  authorTime: string,
+  organisationName: string,
+  practitionerTelecom: string,
+  practitionerName: string
 ) {
   const author = new hl7V3.Author()
   author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "MedicationDispense.whenPrepared")
   author.signatureText = hl7V3.Null.NOT_APPLICABLE
-  author.AgentPerson = getAgentPerson(sds, organisationName, practitionerTelecom, practitionerName)
+  author.AgentPerson = getAgentPerson(
+    sds,
+    hl7RepresentedOrganisationCode,
+    hl7RepresentedOrganisationName,
+    organisationName,
+    practitionerTelecom,
+    practitionerName)
   return author
 }
 
 function getAgentPerson(
-  sds: SDS, organisationName: string, pracitionerTelecom: string, practitionerFamilyName: string
+  sds: SDS,
+  hl7RepresentedOrganisationCode: string,
+  hl7RepresentedOrganisationName: string,
+  organisationName: string,
+  pracitionerTelecom: string,
+  practitionerFamilyName: string
 ) {
   const agentPerson = new hl7V3.AgentPerson()
   agentPerson.id = new hl7V3.SdsRoleProfileIdentifier("100243444980") // todo: figure out difference here
@@ -143,7 +178,9 @@ function getAgentPerson(
   agentPersonPersonName._text = practitionerFamilyName
   agentPersonPerson.name = agentPersonPersonName
   agentPerson.agentPerson = agentPersonPerson
-  agentPerson.representedOrganization = getRepresentedOrganisation(sds.jobRoleCode, organisationName)
+  agentPerson.representedOrganization = getRepresentedOrganisation(
+    hl7RepresentedOrganisationCode,
+    hl7RepresentedOrganisationName)
   return agentPerson
 }
 
