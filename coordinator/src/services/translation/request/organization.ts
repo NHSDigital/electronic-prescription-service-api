@@ -26,11 +26,11 @@ export function convertOrganizationAndProviderLicense(
   return hl7V3Organization
 }
 
-function convertRepresentedOrganization(
+export function convertRepresentedOrganization(
   organization: fhir.Organization,
   healthcareService: fhir.HealthcareService,
   bundle: fhir.Bundle
-) {
+): hl7V3.Organization {
   const shouldUseHealthcareService = isNhsTrust(organization)
   if (shouldUseHealthcareService && !healthcareService) {
     throw new InvalidValueError(

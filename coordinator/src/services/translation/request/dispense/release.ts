@@ -4,18 +4,26 @@ import * as fhir from "../../../../models/fhir"
 import {getIdentifierParameterByName} from "../../common"
 import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import moment from "moment"
+import {odsClient} from "../../../communication/ods-client"
+import pino from "pino"
+import {convertRepresentedOrganization} from "../organization"
+import {InvalidValueError} from "../../../../models/errors/processing-errors"
 
-export function translateReleaseRequest(
-  fhirReleaseRequest: fhir.Parameters
-): hl7v3.NominatedPrescriptionReleaseRequestWrapper {
+export async function translateReleaseRequest(
+  fhirReleaseRequest: fhir.Parameters,
+  logger: pino.Logger
+): Promise<hl7v3.NominatedPrescriptionReleaseRequestWrapper> {
   const hl7Id = new hl7v3.GlobalIdentifier(uuid.v4())
   const timestamp = convertMomentToHl7V3DateTime(moment.utc())
   const hl7Release = new hl7v3.NominatedPrescriptionReleaseRequest(hl7Id, timestamp)
-  hl7Release.author = getAuthor(fhirReleaseRequest)
+  hl7Release.author = await getAuthor(fhirReleaseRequest, logger)
   return new hl7v3.NominatedPrescriptionReleaseRequestWrapper(hl7Release)
 }
 
-function getAuthor(fhirReleaseRequest: fhir.Parameters): hl7v3.SendMessagePayloadAuthorAgentPerson {
+async function getAuthor(
+  fhirReleaseRequest: fhir.Parameters,
+  logger: pino.Logger
+): Promise<hl7v3.SendMessagePayloadAuthorAgentPerson> {
   const hl7AgentPerson = new hl7v3.AgentPerson()
   hl7AgentPerson.id = new hl7v3.SdsRoleProfileIdentifier("100102238986")
   hl7AgentPerson.code = new hl7v3.SdsJobRoleCode("R8000")
@@ -23,7 +31,7 @@ function getAuthor(fhirReleaseRequest: fhir.Parameters): hl7v3.SendMessagePayloa
 
   hl7AgentPerson.agentPerson = getAgentPersonPerson()
 
-  hl7AgentPerson.representedOrganization = getRepresentedOrganization(fhirReleaseRequest)
+  hl7AgentPerson.representedOrganization = await getRepresentedOrganization(fhirReleaseRequest, logger)
 
   return new hl7v3.SendMessagePayloadAuthorAgentPerson(hl7AgentPerson)
 }
@@ -40,23 +48,51 @@ function getAgentPersonPerson(): hl7v3.AgentPersonPerson {
   return agentPerson
 }
 
-function getRepresentedOrganization(fhirReleaseRequest: fhir.Parameters): hl7v3.Organization {
-  const hl7Organization = new hl7v3.Organization()
-
+async function getRepresentedOrganization(
+  fhirReleaseRequest: fhir.Parameters,
+  logger: pino.Logger
+): Promise<hl7v3.Organization> {
   const organizationParameter = getIdentifierParameterByName(fhirReleaseRequest.parameter, "owner")
   const organizationCode = organizationParameter.valueIdentifier.value
-  hl7Organization.id = new hl7v3.SdsOrganizationIdentifier(organizationCode)
-  hl7Organization.code = new hl7v3.OrganizationTypeCode("999")
-  hl7Organization.name = new hl7v3.Text("SOMERSET BOWEL CANCER SCREENING CENTRE")
-  hl7Organization.telecom = new hl7v3.Telecom(hl7v3.TelecomUse.WORKPLACE, "01823333444")
+  const organization = await odsClient.lookupOrganization(organizationCode, logger)
+  if (!organization) {
+    throw new InvalidValueError(
+      `No organisation details found for code ${organizationCode}`,
+      "Parameters.parameter"
+    )
+  }
+  ensureRequiredFields(organization)
+  return convertRepresentedOrganization(organization, null, null)
+}
 
-  const address = new hl7v3.Address(hl7v3.AddressUse.WORK)
-  address.streetAddressLine = [
-    new hl7v3.Text("MUSGROVE PARK HOSPITAL"),
-    new hl7v3.Text("TAUNTON")
-  ]
-  address.postalCode = new hl7v3.Text("TA1 5DA")
-
-  hl7Organization.addr = address
-  return hl7Organization
+/**
+ * TODO - work out what to do about missing fields in ODS records
+ */
+function ensureRequiredFields(organization: fhir.Organization) {
+  if (!organization.name) {
+    organization.name = "UNKNOWN"
+  }
+  if (!organization.telecom?.length) {
+    organization.telecom = [{
+      use: "work",
+      system: "phone",
+      value: "UNKNOWN"
+    }]
+  }
+  organization.telecom.forEach(telecom => {
+    if (!telecom.use) {
+      telecom.use = "work"
+    }
+  })
+  if (!organization.address?.length) {
+    organization.address = [{
+      use: "work",
+      line: ["UNKNOWN"]
+    }]
+  }
+  organization.address.forEach(address => {
+    if (!address.use) {
+      address.use = "work"
+    }
+  })
 }

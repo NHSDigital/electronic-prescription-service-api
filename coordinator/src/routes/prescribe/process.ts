@@ -1,5 +1,5 @@
 import * as translator from "../../services/translation/request"
-import {spineClient} from "../../services/communication"
+import {spineClient} from "../../services/communication/spine-client"
 import Hapi from "@hapi/hapi"
 import {basePath, createHash, handleResponse, validatingHandler} from "../util"
 import {getMessageHeader} from "../../services/translation/common/getResourcesOfType"

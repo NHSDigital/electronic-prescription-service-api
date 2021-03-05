@@ -3,7 +3,7 @@ import {basePath, externalFHIRValidation, getPayload, toFhirError, handleRespons
 import {ResourceTypeError} from "../../models/errors/validation-errors"
 import * as fhir from "../../models/fhir"
 import * as translator from "../../services/translation/request"
-import {spineClient} from "../../services/communication"
+import {spineClient} from "../../services/communication/spine-client"
 
 export default [
   /*
@@ -31,7 +31,8 @@ export default [
       request.logger.info("Building Spine release request")
       const spineRequest = translator.convertParametersToSpineRequest(
         payloadAsParameters,
-        request.headers["nhsd-request-id"].toUpperCase()
+        request.headers["nhsd-request-id"].toUpperCase(),
+        request.logger
       )
 
       const spineResponse = await spineClient.send(

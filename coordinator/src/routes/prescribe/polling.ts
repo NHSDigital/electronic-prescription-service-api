@@ -1,6 +1,6 @@
 import {Request} from "@hapi/hapi"
 import Hapi from "@hapi/hapi"
-import {spineClient} from "../../services/communication"
+import {spineClient} from "../../services/communication/spine-client"
 import {handleResponse} from "../util"
 
 export default [{
