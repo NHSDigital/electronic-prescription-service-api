@@ -1,13 +1,14 @@
 import * as hl7v3 from "../../../../models/hl7-v3"
 import * as uuid from "uuid"
 import * as fhir from "../../../../models/fhir"
-import {getIdentifierParameterByName} from "../../common"
+import {getIdentifierParameterByName, getIdentifierValueForSystem} from "../../common"
 import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import moment from "moment"
 import {odsClient} from "../../../communication/ods-client"
 import pino from "pino"
-import {convertRepresentedOrganization} from "../organization"
 import {InvalidValueError} from "../../../../models/errors/processing-errors"
+import * as hl7V3 from "../../../../models/hl7-v3"
+import {convertAddress, convertTelecom} from "../demographics"
 
 export async function translateReleaseRequest(
   fhirReleaseRequest: fhir.Parameters,
@@ -24,10 +25,16 @@ async function getAuthor(
   fhirReleaseRequest: fhir.Parameters,
   logger: pino.Logger
 ): Promise<hl7v3.SendMessagePayloadAuthorAgentPerson> {
+  //TODO - replace all user details with values which are obviously placeholders
   const hl7AgentPerson = new hl7v3.AgentPerson()
   hl7AgentPerson.id = new hl7v3.SdsRoleProfileIdentifier("100102238986")
   hl7AgentPerson.code = new hl7v3.SdsJobRoleCode("R8000")
-  hl7AgentPerson.telecom = [new hl7v3.Telecom(hl7v3.TelecomUse.WORKPLACE, "01234567890")]
+  const telecom = new hl7v3.Telecom()
+  telecom._attributes = {
+    use: hl7v3.TelecomUse.WORKPLACE,
+    value: "tel:01234567890"
+  }
+  hl7AgentPerson.telecom = [telecom]
 
   hl7AgentPerson.agentPerson = getAgentPersonPerson()
 
@@ -37,6 +44,7 @@ async function getAuthor(
 }
 
 function getAgentPersonPerson(): hl7v3.AgentPersonPerson {
+  //TODO - replace all user details with values which are obviously placeholders
   const agentPerson = new hl7v3.AgentPersonPerson(new hl7v3.ProfessionalCode("G9999999"))
 
   const agentPersonPersonName = new hl7v3.Name()
@@ -61,38 +69,26 @@ async function getRepresentedOrganization(
       "Parameters.parameter"
     )
   }
-  ensureRequiredFields(organization)
-  return convertRepresentedOrganization(organization, null, null)
+  return convertOrganization(organization)
 }
 
-/**
- * TODO - work out what to do about missing fields in ODS records
- */
-function ensureRequiredFields(organization: fhir.Organization) {
-  if (!organization.name) {
-    organization.name = "UNKNOWN"
+function convertOrganization(organization: fhir.Organization): hl7v3.Organization {
+  const hl7V3Organization = new hl7V3.Organization()
+  const organizationSdsId = getIdentifierValueForSystem(
+    organization.identifier,
+    "https://fhir.nhs.uk/Id/ods-organization-code",
+    `Organization.identifier`
+  )
+  hl7V3Organization.id = new hl7V3.SdsOrganizationIdentifier(organizationSdsId)
+  hl7V3Organization.code = new hl7V3.OrganizationTypeCode("999")
+  if (organization.name) {
+    hl7V3Organization.name = new hl7v3.Text(organization.name)
   }
-  if (!organization.telecom?.length) {
-    organization.telecom = [{
-      use: "work",
-      system: "phone",
-      value: "UNKNOWN"
-    }]
+  if (organization.telecom?.length) {
+    hl7V3Organization.telecom = convertTelecom(organization.telecom[0], "Organization.telecom")
   }
-  organization.telecom.forEach(telecom => {
-    if (!telecom.use) {
-      telecom.use = "work"
-    }
-  })
-  if (!organization.address?.length) {
-    organization.address = [{
-      use: "work",
-      line: ["UNKNOWN"]
-    }]
+  if (organization.address?.length) {
+    hl7V3Organization.addr = convertAddress(organization.address[0], "Organization.address")
   }
-  organization.address.forEach(address => {
-    if (!address.use) {
-      address.use = "work"
-    }
-  })
+  return hl7V3Organization
 }

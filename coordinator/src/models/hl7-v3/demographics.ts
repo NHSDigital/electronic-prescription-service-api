@@ -17,12 +17,6 @@ export class Address implements ElementCompact {
   _text?: string
   streetAddressLine: Array<core.Text>
   postalCode: core.Text
-
-  constructor(use?: AddressUse) {
-    this._attributes = {
-      use: use
-    }
-  }
 }
 
 export enum NameUse {
@@ -61,20 +55,7 @@ export enum TelecomUse {
 
 export class Telecom implements ElementCompact {
   _attributes: {
-    use: TelecomUse
-    value: string
-  }
-
-  constructor(use: TelecomUse, value: string) {
-    if (value) {
-      value = value.replace(/\s/g, "")
-      if (!value.startsWith("tel:")) {
-        value = `tel:${value}`
-      }
-    }
-    this._attributes = {
-      use: use,
-      value: value
-    }
+    use?: TelecomUse
+    value?: string
   }
 }

@@ -20,7 +20,7 @@ export function convertToOrganization(odsOrganization: OdsOrganization): fhir.Or
     type: [{
       coding: [{
         system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
-        code: `RO${getOrganizationPrimaryRole(odsOrganization.extension)}`
+        code: getOrganizationPrimaryRole(odsOrganization.extension)
       }]
     }],
     name: odsOrganization.name,
