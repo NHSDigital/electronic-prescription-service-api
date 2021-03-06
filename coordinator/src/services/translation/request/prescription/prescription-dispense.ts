@@ -1,10 +1,10 @@
 import * as hl7V3 from "../../../../models/hl7-v3"
 import * as fhir from "../../../../models/fhir"
-import {getIdentifierValueForSystem, onlyElement} from "../../common"
-import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
-import {MedicationDispense} from "../../../../models/fhir"
+import {getExtensionForUrl, getIdentifierValueForSystem, onlyElement} from "../../common"
 import {getMessageHeader, getResourcesOfType} from "../../common/getResourcesOfType"
-import {SnomedCode} from "../../../../models/hl7-v3"
+import * as hl7v3 from "../../../../models/hl7-v3"
+import moment from "moment"
+import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
 
 export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.DispenseNotification {
   const messageId = getIdentifierValueForSystem(
@@ -13,38 +13,65 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
     "Bundle.identifier"
   )
 
-  const fhirHeader = getMessageHeader(bundle)
-  const fhirHeaderDestination = onlyElement(fhirHeader.destination, "MessageHeader.destination")
-  const hl7AgentOrganisationCode = fhirHeaderDestination.receiver.identifier.value
-  const hl7AgentOrganisationName = fhirHeaderDestination.receiver.display
-  const fhirHeaderSender = fhirHeader.sender
-  const hl7RepresentedOrganisationCode = fhirHeaderSender.identifier.value
-  const hl7RepresentedOrganisationName = fhirHeaderSender.display
-  const fhirHeaderResponse = fhirHeader.response
-  const hl7PriorPrescriptionReleaseEventRef = fhirHeaderResponse.identifier
+  // todo: IMPORTANT this may also be in a separate Patient resource.
+  // So the NHS number maybe in the MedicationDispense or Patient resource
+  const fhirFirstMedicationDispense = getResourcesOfType<fhir.MedicationDispense>(bundle, "MedicationDispense")[0]
+  const hl7PatientId = fhirFirstMedicationDispense.subject.identifier.value
+
+  const fhirAuthorizingPrescriptionExtensions =
+    fhirFirstMedicationDispense.authorizingPrescription.flatMap(e => e.extension)
+  const fhirGroupIdentifierExtension = getExtensionForUrl(
+    fhirAuthorizingPrescriptionExtensions,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
+    "MedicationDispense.authorizingPrescription") as fhir.ExtensionExtension<fhir.Extension>
+  const fhirAuthorizingPrescriptionShortFormIdExtension = getExtensionForUrl(
+    fhirGroupIdentifierExtension.extension,
+    "shortForm",
+    "MedicationDispense.authorizingPrescription.extension.valueIdentifier"
+  ) as fhir.IdentifierExtension
+  const hl7PertinentPrescriptionId =
+    fhirAuthorizingPrescriptionShortFormIdExtension
+      .valueIdentifier
+      .value
+  const fhirAuthorizingPrescriptionIdExtension = getExtensionForUrl(
+    fhirGroupIdentifierExtension.extension,
+    "UUID",
+    "MedicationDispense.authorizingPrescription.extension.valueIdentifier"
+  ) as fhir.IdentifierExtension
+  const hl7PriorOriginalPrescriptionRef =
+    fhirAuthorizingPrescriptionIdExtension
+      .valueIdentifier
+      .value
+  const hl7PriorOriginalItemRef = getIdentifierValueForSystem(
+    fhirFirstMedicationDispense.authorizingPrescription.map(e => e.identifier),
+    "https://fhir.nhs.uk/Id/prescription-order-item-number",
+    "MedicationDispense.authorizingPrescription.identifier"
+  )
+
+  const {
+    hl7AgentOrganisationCode,
+    hl7AgentOrganisationName,
+    hl7RepresentedOrganisationCode,
+    hl7RepresentedOrganisationName,
+    hl7PriorPrescriptionReleaseEventRef
+  } = extractHl7ValuesFromFhirMessageHeader(bundle)
 
   const hl7DispenseNotification = new hl7V3.DispenseNotification(new hl7V3.GlobalIdentifier(messageId))
-  hl7DispenseNotification.effectiveTime =
-    convertIsoDateTimeStringToHl7V3DateTime("2020-03-05T10:59:00+00:00", "DispenseNotification.effectiveTime")
+  hl7DispenseNotification.effectiveTime = convertMomentToHl7V3DateTime(moment.utc())
 
   // todo: map from fhir/sds
   const sds = getSDSDetails()
-  const nhsNumber = "9401443157"
   const organisationName = "NHS BUSINESS SERVICES AUTHORITY"
   const pracitionerTelecom = "01208812760"
   const practitionerFamilyName = "WELSH"
   // The globally unique identifier for this Dispense Notification clinical event.
   const prescriptionDispenseIdentifier = "BE807DAC-9DCF-45CF-91D6-70D9D58DCF34"
-  // In this instance, this is the globally unique number (GUID) to identify either the
-  // Patient Prescription Release Response or the Nominated Prescription Release Response
-  // that authorised the Dispense event.
-  const releaseResponseIdentifier = "450D738D-E5ED-48D6-A2A5-6EEEFA8BA689"
   const authorTime = "2009-09-21T09:24:20+00:00" // (MedicationDispense.whenPrepared, many to 1 mapping?)
   // ***********************
 
-  const fhirMedicationDispenses = getResourcesOfType<MedicationDispense>(bundle, "MedicationDispense")
+  const fhirMedicationDispenses = getResourcesOfType<fhir.MedicationDispense>(bundle, "MedicationDispense")
 
-  const hl7Patient = getPatient(nhsNumber)
+  const hl7Patient = getPatient(hl7PatientId)
   const hl7Organization = getOrganisation(hl7AgentOrganisationCode, hl7AgentOrganisationName)
   const hl7Author = getAuthor(
     sds,
@@ -56,7 +83,12 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
     practitionerFamilyName
   )
   const hl7SupplyHeader = getSupplyHeader(
-    prescriptionDispenseIdentifier, hl7Author, fhirMedicationDispenses, releaseResponseIdentifier
+    prescriptionDispenseIdentifier,
+    hl7Author,
+    fhirMedicationDispenses,
+    hl7PertinentPrescriptionId,
+    hl7PriorOriginalPrescriptionRef,
+    hl7PriorOriginalItemRef
   )
   hl7DispenseNotification.recordTarget = new hl7V3.DispenseRecordTarget(hl7Patient)
   hl7DispenseNotification.primaryInformationRecipient = new hl7V3.PrimaryInformationRecipient()
@@ -101,6 +133,27 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
   )
 
   return hl7DispenseNotification
+}
+
+function extractHl7ValuesFromFhirMessageHeader(bundle: fhir.Bundle) {
+  const fhirHeader = getMessageHeader(bundle)
+  const fhirHeaderDestination = onlyElement(fhirHeader.destination, "MessageHeader.destination")
+  const fhirHeaderSender = fhirHeader.sender
+  const fhirHeaderResponse = fhirHeader.response
+
+  const hl7AgentOrganisationCode = fhirHeaderDestination.receiver.identifier.value
+  const hl7AgentOrganisationName = fhirHeaderDestination.receiver.display
+  const hl7RepresentedOrganisationCode = fhirHeaderSender.identifier.value
+  const hl7RepresentedOrganisationName = fhirHeaderSender.display
+  const hl7PriorPrescriptionReleaseEventRef = fhirHeaderResponse.identifier
+
+  return {
+    hl7AgentOrganisationCode,
+    hl7AgentOrganisationName,
+    hl7RepresentedOrganisationCode,
+    hl7RepresentedOrganisationName,
+    hl7PriorPrescriptionReleaseEventRef
+  }
 }
 
 function getSDSDetails(): SDS {
@@ -178,9 +231,8 @@ function getAgentPerson(
   agentPersonPersonName._text = practitionerFamilyName
   agentPersonPerson.name = agentPersonPersonName
   agentPerson.agentPerson = agentPersonPerson
-  agentPerson.representedOrganization = getRepresentedOrganisation(
-    hl7RepresentedOrganisationCode,
-    hl7RepresentedOrganisationName)
+  agentPerson.representedOrganization =
+    getRepresentedOrganisation(hl7RepresentedOrganisationCode, hl7RepresentedOrganisationName)
   return agentPerson
 }
 
@@ -206,19 +258,38 @@ function getRepresentedOrganisation(sdsJobRoleCode: string, organisationName: st
 function getSupplyHeader(
   prescriptionDispenseIdentifier: string,
   hl7Author: hl7V3.Author,
-  medicationDispenses: Array<MedicationDispense>,
-  releaseResponseIdentifier: string
+  medicationDispenses: Array<fhir.MedicationDispense>,
+  hl7AuthorizingPrescriptionShortFormId: string,
+  hl7PriorOriginalPrescriptionRef: string,
+  hl7PriorOriginalItemRef: string
 ) {
   const supplyHeader = new hl7V3.PertinentSupplyHeader(new hl7V3.GlobalIdentifier(prescriptionDispenseIdentifier))
   supplyHeader.author = hl7Author
   supplyHeader.pertinentInformation1 = medicationDispenses.map(medicationDispense => {
-    const fhirMedicationDispenseIdentifier = medicationDispense.identifier[0].value
+    // map to what??
+    // const fhirMedicationDispensePrescriptionStatus = getExtensionForUrl(
+    //   medicationDispense.extension,
+    //   "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+    //   "MedicationDispense.extension"
+    // ) as fhir.CodingExtension
+    const fhirPrescriptionDispenseItemNumber = getIdentifierValueForSystem(
+      medicationDispense.identifier,
+      "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+      "MedicationDispense.identifiers"
+    )
     const fhirMedicationCodeableConceptCoding = medicationDispense.medicationCodeableConcept.coding[0]
-    const fhirSnomedCode = fhirMedicationCodeableConceptCoding.code
-    const hl7SnomedCode = new hl7V3.SnomedCode(fhirSnomedCode)
+    const hl7SnomedCode = new hl7V3.SnomedCode(
+      fhirMedicationCodeableConceptCoding.code,
+      fhirMedicationCodeableConceptCoding.display
+    )
+    const hl7ManufacturedSuppliedMaterialSnomedCode = new hl7V3.SnomedCode(
+      fhirMedicationCodeableConceptCoding.code,
+      fhirMedicationCodeableConceptCoding.display
+    )
+    hl7ManufacturedSuppliedMaterialSnomedCode._attributes.displayName = fhirMedicationCodeableConceptCoding.display
     const hl7PertinentSuppliedLineItem = new hl7V3.PertinentSuppliedLineItem(
-      new hl7V3.GlobalIdentifier(fhirMedicationDispenseIdentifier),
-      new SnomedCode(fhirMedicationCodeableConceptCoding.code),
+      new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber),
+      new hl7v3.SnomedCode(fhirMedicationCodeableConceptCoding.code),
     )
     const hl7Consumable = new hl7V3.Consumable()
     const hl7RequestedManufacturedProduct = new hl7V3.RequestedManufacturedProduct()
@@ -234,7 +305,9 @@ function getSupplyHeader(
     hl7SuppliedLineItemQuantity.code = hl7SnomedCode
     hl7SuppliedLineItemQuantity.quantity = hl7Quantity
     hl7SuppliedLineItemQuantity.product = new hl7V3.DispenseProduct(
-      new hl7V3.SuppliedManufacturedProduct(new hl7V3.ManufacturedRequestedMaterial(hl7SnomedCode))
+      new hl7V3.SuppliedManufacturedProduct(
+        new hl7V3.ManufacturedRequestedMaterial(hl7ManufacturedSuppliedMaterialSnomedCode)
+      )
     )
     hl7SuppliedLineItemQuantity.pertinentInformation1 = new hl7V3.DispenseLineItemPertinentInformation1(
       new hl7V3.PertinentSupplyInstructions(new hl7V3.Text("As directed")) // todo: actual mapping
@@ -252,8 +325,7 @@ function getSupplyHeader(
     )
     const hl7InFulfillmentOfLineItem = new hl7V3.InFulfillmentOfLineItem()
     hl7InFulfillmentOfLineItem.priorOriginalItemRef = new hl7V3.PriorOriginalRef(
-      // todo: should this be lineItem of MedicationRequest identifier?
-      new hl7V3.GlobalIdentifier(releaseResponseIdentifier)
+      new hl7V3.GlobalIdentifier(hl7PriorOriginalItemRef)
     )
     hl7PertinentSuppliedLineItem.inFulfillmentOf = hl7InFulfillmentOfLineItem
     hl7RequestedManufacturedProduct.manufacturedRequestedMaterial =
@@ -263,17 +335,18 @@ function getSupplyHeader(
       hl7PertinentSuppliedLineItem
     )
   })
+  // https://fhir.nhs.uk/StructureDefinition/Extension-DM-prescriptionStatus
   supplyHeader.pertinentInformation3 = new hl7V3.DispensePertinentInformation3(
     new hl7V3.PertinentPrescriptionStatus(
       hl7V3.PrescriptionStatusCode.WITH_DISPENSER_ACTIVE // todo: map
     )
   )
   supplyHeader.pertinentInformation4 = new hl7V3.DispensePertinentInformation4(
-    new hl7V3.PertinentPrescriptionId(new hl7V3.ShortFormPrescriptionIdentifier("3C2366-B81001-0A409U")) // todo: map
+    new hl7V3.PertinentPrescriptionId(new hl7V3.ShortFormPrescriptionIdentifier(hl7AuthorizingPrescriptionShortFormId))
   )
   supplyHeader.inFulfillmentOf = new hl7V3.InFulfillmentOf()
   supplyHeader.inFulfillmentOf.priorOriginalPrescriptionRef = new hl7V3.PriorOriginalRef(
-    new hl7V3.GlobalIdentifier(releaseResponseIdentifier)
+    new hl7V3.GlobalIdentifier(hl7PriorOriginalPrescriptionRef)
   )
   return supplyHeader
 }
