@@ -59,6 +59,8 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
   const hl7DispenseNotification = new hl7V3.DispenseNotification(new hl7V3.GlobalIdentifier(messageId))
   hl7DispenseNotification.effectiveTime = convertMomentToHl7V3DateTime(moment.utc())
 
+  const hl7AuthorTime = fhirFirstMedicationDispense.whenPrepared // todo: validate same value?
+
   // todo: map from fhir/sds
   const sds = getSDSDetails()
   const organisationName = "NHS BUSINESS SERVICES AUTHORITY"
@@ -66,7 +68,6 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
   const practitionerFamilyName = "WELSH"
   // The globally unique identifier for this Dispense Notification clinical event.
   const prescriptionDispenseIdentifier = "BE807DAC-9DCF-45CF-91D6-70D9D58DCF34"
-  const authorTime = "2009-09-21T09:24:20+00:00" // (MedicationDispense.whenPrepared, many to 1 mapping?)
   // ***********************
 
   const fhirMedicationDispenses = getResourcesOfType<fhir.MedicationDispense>(bundle, "MedicationDispense")
@@ -77,7 +78,7 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
     sds,
     hl7RepresentedOrganisationCode,
     hl7RepresentedOrganisationName,
-    authorTime,
+    hl7AuthorTime,
     organisationName,
     pracitionerTelecom,
     practitionerFamilyName
@@ -195,13 +196,13 @@ function getAuthor(
   sds: SDS,
   hl7RepresentedOrganisationCode: string,
   hl7RepresentedOrganisationName: string,
-  authorTime: string,
+  hl7AuthorTime: string,
   organisationName: string,
   practitionerTelecom: string,
   practitionerName: string
 ) {
   const author = new hl7V3.Author()
-  author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "MedicationDispense.whenPrepared")
+  author.time = convertIsoDateTimeStringToHl7V3DateTime(hl7AuthorTime, "MedicationDispense.whenPrepared")
   author.signatureText = hl7V3.Null.NOT_APPLICABLE
   author.AgentPerson = getAgentPerson(
     sds,
@@ -277,7 +278,15 @@ function getSupplyHeader(
       "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
       "MedicationDispense.identifiers"
     )
-    const fhirMedicationCodeableConceptCoding = medicationDispense.medicationCodeableConcept.coding[0]
+    const fhirMedicationCodeableConceptCoding = onlyElement(
+      medicationDispense.medicationCodeableConcept.coding,
+      "MedicationDispense.medicationCodeableConcept.coding"
+    )
+    const fhirDosageInstruction = onlyElement(
+      medicationDispense.dosageInstruction,
+      "MedicationDispense.dosageInstruction"
+    )
+
     const hl7SnomedCode = new hl7V3.SnomedCode(
       fhirMedicationCodeableConceptCoding.code,
       fhirMedicationCodeableConceptCoding.display
@@ -310,7 +319,9 @@ function getSupplyHeader(
       )
     )
     hl7SuppliedLineItemQuantity.pertinentInformation1 = new hl7V3.DispenseLineItemPertinentInformation1(
-      new hl7V3.PertinentSupplyInstructions(new hl7V3.Text("As directed")) // todo: actual mapping
+      new hl7V3.PertinentSupplyInstructions(
+        new hl7V3.Text(fhirDosageInstruction.text)
+      )
     )
     const hl7Component = new hl7V3.DispenseLineItemComponent(hl7SuppliedLineItemQuantity)
     const hl7Component1 = new hl7V3.DispenseLineItemComponent1(

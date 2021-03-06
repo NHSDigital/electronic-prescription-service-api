@@ -9,9 +9,15 @@ export interface MedicationDispense extends common.Resource {
     subject: common.IdentifierReference<patient.Patient>
     quantity: common.SimpleQuantity
     authorizingPrescription: Array<AuthorizingPrescription>
+    whenPrepared: string
+    dosageInstruction: DosageInstruction[]
 }
 
 export interface AuthorizingPrescription extends common.Resource {
     identifier: common.Identifier
     extension: Array<extension.Extension>
+}
+
+export interface DosageInstruction extends common.Resource {
+    text: string
 }
