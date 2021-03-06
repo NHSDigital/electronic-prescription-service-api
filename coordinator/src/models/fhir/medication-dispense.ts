@@ -10,7 +10,8 @@ export interface MedicationDispense extends common.Resource {
     quantity: common.SimpleQuantity
     authorizingPrescription: Array<AuthorizingPrescription>
     whenPrepared: string
-    dosageInstruction: DosageInstruction[]
+    dosageInstruction: Array<DosageInstruction>
+    performer: Array<DispensePerformer>
 }
 
 export interface AuthorizingPrescription extends common.Resource {
@@ -20,4 +21,14 @@ export interface AuthorizingPrescription extends common.Resource {
 
 export interface DosageInstruction extends common.Resource {
     text: string
+}
+
+export interface DispensePerformer extends common.Resource {
+    actor: Actor
+}
+
+export interface Actor extends common.Resource {
+    type: "Practitioner" | "Organization"
+    identifier: common.Identifier
+    display: string
 }

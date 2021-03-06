@@ -13,9 +13,10 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
     "Bundle.identifier"
   )
 
+  const fhirFirstMedicationDispense = getResourcesOfType<fhir.MedicationDispense>(bundle, "MedicationDispense")[0]
+
   // todo: IMPORTANT this may also be in a separate Patient resource.
   // So the NHS number maybe in the MedicationDispense or Patient resource
-  const fhirFirstMedicationDispense = getResourcesOfType<fhir.MedicationDispense>(bundle, "MedicationDispense")[0]
   const hl7PatientId = fhirFirstMedicationDispense.subject.identifier.value
 
   const fhirAuthorizingPrescriptionExtensions =
@@ -61,30 +62,21 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
 
   const hl7AuthorTime = fhirFirstMedicationDispense.whenPrepared // todo: validate same value?
 
-  // todo: map from fhir/sds
-  const sds = getSDSDetails()
-  const organisationName = "NHS BUSINESS SERVICES AUTHORITY"
-  const pracitionerTelecom = "01208812760"
-  const practitionerFamilyName = "WELSH"
-  // The globally unique identifier for this Dispense Notification clinical event.
-  const prescriptionDispenseIdentifier = "BE807DAC-9DCF-45CF-91D6-70D9D58DCF34"
-  // ***********************
+  const fhirPractitionerPerformer = fhirFirstMedicationDispense.performer.find(p => p.actor.type === "Practitioner")
+  const hl7AgentPersonPersonName = fhirPractitionerPerformer.actor.display
 
   const fhirMedicationDispenses = getResourcesOfType<fhir.MedicationDispense>(bundle, "MedicationDispense")
 
   const hl7Patient = getPatient(hl7PatientId)
   const hl7Organization = getOrganisation(hl7AgentOrganisationCode, hl7AgentOrganisationName)
   const hl7Author = getAuthor(
-    sds,
     hl7RepresentedOrganisationCode,
     hl7RepresentedOrganisationName,
     hl7AuthorTime,
-    organisationName,
-    pracitionerTelecom,
-    practitionerFamilyName
+    hl7AgentPersonPersonName
   )
   const hl7SupplyHeader = getSupplyHeader(
-    prescriptionDispenseIdentifier,
+    messageId,
     hl7Author,
     fhirMedicationDispenses,
     hl7PertinentPrescriptionId,
@@ -97,24 +89,6 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
   hl7DispenseNotification.pertinentInformation1 = new hl7V3.DispenseNotificationPertinentInformation1(hl7SupplyHeader)
   const careRecordElementCategory = new hl7V3.CareRecordElementCategory()
   careRecordElementCategory.component = [ // todo: map
-    new hl7V3.CareRecordElementCategoryComponent(
-      new hl7V3.ActRef({
-        _attributes: {
-          classCode: "SBADM",
-          moodCode: "PRMS"
-        },
-        id: new hl7V3.GlobalIdentifier("450D738D-E5ED-48D6-A2A5-6EEEFA8BA689")
-      })
-    ),
-    new hl7V3.CareRecordElementCategoryComponent(
-      new hl7V3.ActRef({
-        _attributes: {
-          classCode: "SBADM",
-          moodCode: "PRMS"
-        },
-        id: new hl7V3.GlobalIdentifier("450D738D-E5ED-48D6-A2A5-6EEEFA8BA689")
-      })
-    ),
     new hl7V3.CareRecordElementCategoryComponent(
       new hl7V3.ActRef({
         _attributes: {
@@ -157,79 +131,49 @@ function extractHl7ValuesFromFhirMessageHeader(bundle: fhir.Bundle) {
   }
 }
 
-function getSDSDetails(): SDS {
-  // todo: sync these to send-message-payload dispense version / work out diffs between orgs
-  const sdsUniqueIdentifier = "687227875014"
-  const sdsJobRoleCode = "R8003"
-  const sdsRoleProfileIdentifier = "781733617547"
-  return new SDS(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier)
-}
-
-class SDS {
-  uniqueIdentifier: string
-  jobRoleCode: string
-  roleProfileIdentifier: string
-
-  constructor(uniqueIdentifier: string, jobRoleCode: string, roleProfileIdentifier: string) {
-    this.uniqueIdentifier = uniqueIdentifier
-    this.jobRoleCode = jobRoleCode
-    this.roleProfileIdentifier = roleProfileIdentifier
-  }
-}
-
 function getPatient(nhsNumber: string) {
   const hl7Patient = new hl7V3.Patient()
   hl7Patient.id = new hl7V3.NhsNumber(nhsNumber)
   return hl7Patient
 }
 
-function getOrganisation(sdsJobRoleCode: string, organisationName?: string) {
+function getOrganisation(organisationCode: string, organisationName: string) {
   const organisation = new hl7V3.Organization()
-  organisation.id = new hl7V3.SdsOrganizationIdentifier("T1450")
-  if (organisationName) {
-    organisation.name = new hl7V3.Text(organisationName)
-  }
+  organisation.id = new hl7V3.SdsOrganizationIdentifier(organisationCode)
+  organisation.code = new hl7V3.OrganizationTypeCode("999")
+  organisation.name = new hl7V3.Text(organisationName)
   return organisation
 }
 
 function getAuthor(
-  sds: SDS,
   hl7RepresentedOrganisationCode: string,
   hl7RepresentedOrganisationName: string,
   hl7AuthorTime: string,
-  organisationName: string,
-  practitionerTelecom: string,
-  practitionerName: string
+  hl7AgentPersonPersonName: string
 ) {
   const author = new hl7V3.Author()
   author.time = convertIsoDateTimeStringToHl7V3DateTime(hl7AuthorTime, "MedicationDispense.whenPrepared")
   author.signatureText = hl7V3.Null.NOT_APPLICABLE
   author.AgentPerson = getAgentPerson(
-    sds,
     hl7RepresentedOrganisationCode,
     hl7RepresentedOrganisationName,
-    organisationName,
-    practitionerTelecom,
-    practitionerName)
+    hl7AgentPersonPersonName)
   return author
 }
 
 function getAgentPerson(
-  sds: SDS,
   hl7RepresentedOrganisationCode: string,
   hl7RepresentedOrganisationName: string,
-  organisationName: string,
-  pracitionerTelecom: string,
-  practitionerFamilyName: string
+  hl7AgentPersonPersonName: string
 ) {
   const agentPerson = new hl7V3.AgentPerson()
-  agentPerson.id = new hl7V3.SdsRoleProfileIdentifier("100243444980") // todo: figure out difference here
-  agentPerson.code = new hl7V3.SdsJobRoleCode("R1290") // todo: figure out difference here
-  agentPerson.telecom = [new hl7V3.Telecom(hl7V3.TelecomUse.WORKPLACE, pracitionerTelecom)]
-  const agentPersonPerson = new hl7V3.AgentPersonPerson(new hl7V3.SdsUniqueIdentifier(sds.uniqueIdentifier))
+  agentPerson.id = new hl7V3.SdsRoleProfileIdentifier("100243444980")
+  agentPerson.code = new hl7V3.SdsJobRoleCode("R1290")
+  agentPerson.telecom = [new hl7V3.Telecom(hl7V3.TelecomUse.WORKPLACE, "01208812760")]
+  const agentPersonPerson = new hl7V3.AgentPersonPerson(new hl7V3.SdsUniqueIdentifier("687227875014"))
   const agentPersonPersonName = new hl7V3.Name()
   agentPersonPersonName._attributes = {use: hl7V3.NameUse.USUAL}
-  agentPersonPersonName._text = practitionerFamilyName
+  agentPersonPersonName._text = hl7AgentPersonPersonName
   agentPersonPerson.name = agentPersonPersonName
   agentPerson.agentPerson = agentPersonPerson
   agentPerson.representedOrganization =
@@ -237,12 +181,11 @@ function getAgentPerson(
   return agentPerson
 }
 
-function getRepresentedOrganisation(sdsJobRoleCode: string, organisationName: string) {
-  const organisation = getOrganisation(sdsJobRoleCode, null)
-  // todo: figure out the differences between orgs (represented and not)
+function getRepresentedOrganisation(organisationCode: string, organisationName: string) {
+  const organisation = getOrganisation(organisationCode, organisationName)
   organisation.id = new hl7V3.SdsOrganizationIdentifier("FH878")
   organisation.code = new hl7V3.OrganizationTypeCode("999")
-  organisation.name = new hl7V3.Text(organisationName || "BOOTS THE CHEMISTS LTD")
+  organisation.name = new hl7V3.Text(organisationName)
   organisation.telecom = new hl7V3.Telecom(hl7V3.TelecomUse.WORKPLACE, "01208812760")
   const hl7Address = new hl7V3.Address(hl7V3.AddressUse.WORK)
   hl7Address.streetAddressLine = [
@@ -257,22 +200,16 @@ function getRepresentedOrganisation(sdsJobRoleCode: string, organisationName: st
 }
 
 function getSupplyHeader(
-  prescriptionDispenseIdentifier: string,
+  messageId: string,
   hl7Author: hl7V3.Author,
   medicationDispenses: Array<fhir.MedicationDispense>,
   hl7AuthorizingPrescriptionShortFormId: string,
   hl7PriorOriginalPrescriptionRef: string,
   hl7PriorOriginalItemRef: string
 ) {
-  const supplyHeader = new hl7V3.PertinentSupplyHeader(new hl7V3.GlobalIdentifier(prescriptionDispenseIdentifier))
+  const supplyHeader = new hl7V3.PertinentSupplyHeader(new hl7V3.GlobalIdentifier(messageId))
   supplyHeader.author = hl7Author
   supplyHeader.pertinentInformation1 = medicationDispenses.map(medicationDispense => {
-    // map to what??
-    // const fhirMedicationDispensePrescriptionStatus = getExtensionForUrl(
-    //   medicationDispense.extension,
-    //   "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
-    //   "MedicationDispense.extension"
-    // ) as fhir.CodingExtension
     const fhirPrescriptionDispenseItemNumber = getIdentifierValueForSystem(
       medicationDispense.identifier,
       "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
@@ -287,15 +224,20 @@ function getSupplyHeader(
       "MedicationDispense.dosageInstruction"
     )
 
-    const hl7SnomedCode = new hl7V3.SnomedCode(
-      fhirMedicationCodeableConceptCoding.code,
-      fhirMedicationCodeableConceptCoding.display
+    const hl7SuppliedLineItemQuantitySnomedCode = new hl7V3.SnomedCode(
+      medicationDispense.quantity.code,
+      medicationDispense.quantity.unit
+    )
+    const hl7UnitValue = medicationDispense.quantity.value.toString()
+    const hl7Quantity = new hl7V3.QuantityInAlternativeUnits(
+      hl7UnitValue,
+      hl7UnitValue,
+      hl7SuppliedLineItemQuantitySnomedCode
     )
     const hl7ManufacturedSuppliedMaterialSnomedCode = new hl7V3.SnomedCode(
       fhirMedicationCodeableConceptCoding.code,
       fhirMedicationCodeableConceptCoding.display
     )
-    hl7ManufacturedSuppliedMaterialSnomedCode._attributes.displayName = fhirMedicationCodeableConceptCoding.display
     const hl7PertinentSuppliedLineItem = new hl7V3.PertinentSuppliedLineItem(
       new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber),
       new hl7v3.SnomedCode(fhirMedicationCodeableConceptCoding.code),
@@ -303,15 +245,8 @@ function getSupplyHeader(
     const hl7Consumable = new hl7V3.Consumable()
     const hl7RequestedManufacturedProduct = new hl7V3.RequestedManufacturedProduct()
     const hl7SuppliedLineItemQuantity = new hl7V3.SuppliedLineItemQuantity()
-    hl7SnomedCode._attributes.displayName = "capsule"
-    // todo: check this mapping, one should be the snomed dose, one should be dm+d?
-    hl7SnomedCode._attributes.code = "3316911000001105"
     hl7PertinentSuppliedLineItem.consumable = hl7Consumable
-    const fhirQuantity = medicationDispense.quantity
-    const fhirQuantityValue = fhirQuantity.value.toString()
-    //const fhirQuantityUnit = fhirQuantity.unit.toString() // todo: check this mapping
-    const hl7Quantity = new hl7V3.QuantityInAlternativeUnits(fhirQuantityValue, fhirQuantityValue, hl7SnomedCode)
-    hl7SuppliedLineItemQuantity.code = hl7SnomedCode
+    hl7SuppliedLineItemQuantity.code = hl7SuppliedLineItemQuantitySnomedCode
     hl7SuppliedLineItemQuantity.quantity = hl7Quantity
     hl7SuppliedLineItemQuantity.product = new hl7V3.DispenseProduct(
       new hl7V3.SuppliedManufacturedProduct(
@@ -325,7 +260,7 @@ function getSupplyHeader(
     )
     const hl7Component = new hl7V3.DispenseLineItemComponent(hl7SuppliedLineItemQuantity)
     const hl7Component1 = new hl7V3.DispenseLineItemComponent1(
-      new hl7V3.SupplyRequest(hl7SnomedCode, hl7Quantity)
+      new hl7V3.SupplyRequest(hl7SuppliedLineItemQuantitySnomedCode, hl7Quantity)
     )
     hl7PertinentSuppliedLineItem.component = hl7Component
     hl7PertinentSuppliedLineItem.component1 = hl7Component1
@@ -340,7 +275,7 @@ function getSupplyHeader(
     )
     hl7PertinentSuppliedLineItem.inFulfillmentOf = hl7InFulfillmentOfLineItem
     hl7RequestedManufacturedProduct.manufacturedRequestedMaterial =
-      new hl7V3.ManufacturedRequestedMaterial(hl7SnomedCode)
+      new hl7V3.ManufacturedRequestedMaterial(hl7SuppliedLineItemQuantitySnomedCode)
     hl7Consumable.requestedManufacturedProduct = hl7RequestedManufacturedProduct
     return new hl7V3.DispenseNotificationPertinentInformation1LineItem(
       hl7PertinentSuppliedLineItem
