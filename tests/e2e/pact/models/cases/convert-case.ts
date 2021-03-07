@@ -63,8 +63,8 @@ export class ConvertCase extends Case {
         /<creationTime value=\\"[0-9]*\\"\\\/>/g,
         "<creationTime value=\\\"[0-9]*\\\"\\/>")
       .replace(
-        /<effectiveTime value=\\"[0-9]*\\"\\\/>/g,
-        "<effectiveTime value=\\\"[0-9]*\\\"\\/>")
+        /<effectiveTime value=\\"*\\"\\\/>/g,
+        "<effectiveTime value=\\\"*\\\"\\/>")
   }
 
   toJestCase(): [string, fhir.Bundle, string, string, number] {

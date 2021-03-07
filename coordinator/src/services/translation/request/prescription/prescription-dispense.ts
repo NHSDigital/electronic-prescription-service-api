@@ -1,6 +1,11 @@
 import * as hl7V3 from "../../../../models/hl7-v3"
 import * as fhir from "../../../../models/fhir"
-import {getExtensionForUrl, getIdentifierValueForSystem, onlyElement} from "../../common"
+import {
+  getExtensionForUrl,
+  getIdentifierValueForSystem,
+  getIdentifierValueOrNullForSystem,
+  onlyElement
+} from "../../common"
 import {getMessageHeader, getPatientOrNull, getResourcesOfType} from "../../common/getResourcesOfType"
 import * as hl7v3 from "../../../../models/hl7-v3"
 import moment from "moment"
@@ -21,7 +26,10 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
   // IMPORTANT this may also be in a separate Patient resource.
   // So the NHS number maybe in the MedicationDispense or Patient resource
   const hl7PatientId = fhirPatient
-    ? onlyElement(fhirPatient.identifier, "Patient.identifier.value").value
+    ? getIdentifierValueOrNullForSystem(
+      fhirPatient.identifier,
+      "https://fhir.nhs.uk/Id/nhs-number",
+      "Patient.identifier.value")
     : fhirFirstMedicationDispense.subject.identifier.value
 
   const fhirAuthorizingPrescriptionExtensions =
@@ -91,17 +99,28 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
   hl7DispenseNotification.primaryInformationRecipient.AgentOrg = new hl7V3.AgentOrganization(hl7Organization)
   hl7DispenseNotification.pertinentInformation1 = new hl7V3.DispenseNotificationPertinentInformation1(hl7SupplyHeader)
   const hl7CareRecordElementCategory = new hl7V3.CareRecordElementCategory()
-  hl7CareRecordElementCategory.component = [ // todo: map
+
+  const fhirIdentifiers = [messageId]
+  fhirMedicationDispenses.forEach(medicationDispense => {
+    const fhirPrescriptionDispenseItemNumber = getIdentifierValueForSystem(
+      medicationDispense.identifier,
+      "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+      "MedicationDispense.identifiers"
+    )
+    fhirIdentifiers.push(fhirPrescriptionDispenseItemNumber)
+  })
+
+  hl7CareRecordElementCategory.component = fhirIdentifiers.map(fhirIdentifier =>
     new hl7V3.CareRecordElementCategoryComponent(
       new hl7V3.ActRef({
         _attributes: {
           classCode: "SBADM",
           moodCode: "PRMS"
         },
-        id: new hl7V3.GlobalIdentifier("450D738D-E5ED-48D6-A2A5-6EEEFA8BA689")
+        id: new hl7V3.GlobalIdentifier(fhirIdentifier)
       })
     )
-  ]
+  )
   const hl7PertinentInformation2 = new hl7V3.DispensePertinentInformation2(hl7CareRecordElementCategory)
   hl7DispenseNotification.pertinentInformation2 = hl7PertinentInformation2
   hl7DispenseNotification.sequelTo = new hl7V3.SequelTo(
