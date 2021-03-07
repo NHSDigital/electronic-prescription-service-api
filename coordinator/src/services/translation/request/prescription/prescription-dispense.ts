@@ -1,7 +1,7 @@
 import * as hl7V3 from "../../../../models/hl7-v3"
 import * as fhir from "../../../../models/fhir"
 import {getExtensionForUrl, getIdentifierValueForSystem, onlyElement} from "../../common"
-import {getMessageHeader, getResourcesOfType} from "../../common/getResourcesOfType"
+import {getMessageHeader, getPatientOrNull, getResourcesOfType} from "../../common/getResourcesOfType"
 import * as hl7v3 from "../../../../models/hl7-v3"
 import moment from "moment"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
@@ -13,11 +13,16 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
     "Bundle.identifier"
   )
 
-  const fhirFirstMedicationDispense = getResourcesOfType<fhir.MedicationDispense>(bundle, "MedicationDispense")[0]
+  const fhirPatient = getPatientOrNull(bundle)
+  const fhirMedicationDispenses = getResourcesOfType<fhir.MedicationDispense>(bundle, "MedicationDispense")
+  const fhirFirstMedicationDispense = fhirMedicationDispenses[0]
 
-  // todo: IMPORTANT this may also be in a separate Patient resource.
+  // todo: check this mapping works, add example to prove
+  // IMPORTANT this may also be in a separate Patient resource.
   // So the NHS number maybe in the MedicationDispense or Patient resource
-  const hl7PatientId = fhirFirstMedicationDispense.subject.identifier.value
+  const hl7PatientId = fhirPatient
+    ? onlyElement(fhirPatient.identifier, "Patient.identifier.value").value
+    : fhirFirstMedicationDispense.subject.identifier.value
 
   const fhirAuthorizingPrescriptionExtensions =
     fhirFirstMedicationDispense.authorizingPrescription.flatMap(e => e.extension)
@@ -65,8 +70,6 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
   const fhirPractitionerPerformer = fhirFirstMedicationDispense.performer.find(p => p.actor.type === "Practitioner")
   const hl7AgentPersonPersonName = fhirPractitionerPerformer.actor.display
 
-  const fhirMedicationDispenses = getResourcesOfType<fhir.MedicationDispense>(bundle, "MedicationDispense")
-
   const hl7Patient = getPatient(hl7PatientId)
   const hl7Organization = getOrganisation(hl7AgentOrganisationCode, hl7AgentOrganisationName)
   const hl7Author = getAuthor(
@@ -87,8 +90,8 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
   hl7DispenseNotification.primaryInformationRecipient = new hl7V3.PrimaryInformationRecipient()
   hl7DispenseNotification.primaryInformationRecipient.AgentOrg = new hl7V3.AgentOrganization(hl7Organization)
   hl7DispenseNotification.pertinentInformation1 = new hl7V3.DispenseNotificationPertinentInformation1(hl7SupplyHeader)
-  const careRecordElementCategory = new hl7V3.CareRecordElementCategory()
-  careRecordElementCategory.component = [ // todo: map
+  const hl7CareRecordElementCategory = new hl7V3.CareRecordElementCategory()
+  hl7CareRecordElementCategory.component = [ // todo: map
     new hl7V3.CareRecordElementCategoryComponent(
       new hl7V3.ActRef({
         _attributes: {
@@ -99,8 +102,8 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
       })
     )
   ]
-  const pertinentInformation2 = new hl7V3.DispensePertinentInformation2(careRecordElementCategory)
-  hl7DispenseNotification.pertinentInformation2 = pertinentInformation2
+  const hl7PertinentInformation2 = new hl7V3.DispensePertinentInformation2(hl7CareRecordElementCategory)
+  hl7DispenseNotification.pertinentInformation2 = hl7PertinentInformation2
   hl7DispenseNotification.sequelTo = new hl7V3.SequelTo(
     new hl7V3.PriorPrescriptionReleaseEventRef(
       new hl7V3.GlobalIdentifier(hl7PriorPrescriptionReleaseEventRef)

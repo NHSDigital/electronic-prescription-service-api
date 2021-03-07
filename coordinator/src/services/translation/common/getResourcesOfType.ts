@@ -35,6 +35,14 @@ export function getPatient(bundle: fhir.Bundle): fhir.Patient {
   )
 }
 
+export function getPatientOrNull(bundle: fhir.Bundle): fhir.Patient {
+  const patients = getResourcesOfType<fhir.Patient>(bundle, "Patient")
+  if (patients.length === 1) {
+    return patients[0]
+  }
+  return null
+}
+
 export function getOrganizations(bundle: fhir.Bundle): Array<fhir.Organization> {
   return getResourcesOfType<fhir.Organization>(bundle, "Organization")
 }
