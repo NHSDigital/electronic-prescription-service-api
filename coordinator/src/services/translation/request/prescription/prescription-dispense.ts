@@ -1,7 +1,6 @@
 import * as hl7V3 from "../../../../models/hl7-v3"
 import * as fhir from "../../../../models/fhir"
 import {
-  getCodeableConceptCodingForSystem,
   getCodingForSystem,
   getExtensionForUrl,
   getIdentifierValueForSystem,
