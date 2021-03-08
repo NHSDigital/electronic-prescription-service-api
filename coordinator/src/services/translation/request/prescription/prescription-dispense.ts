@@ -1,6 +1,8 @@
 import * as hl7V3 from "../../../../models/hl7-v3"
 import * as fhir from "../../../../models/fhir"
 import {
+  getCodeableConceptCodingForSystem,
+  getCodingForSystem,
   getExtensionForUrl,
   getIdentifierValueForSystem,
   getIdentifierValueOrNullForSystem,
@@ -135,6 +137,51 @@ function getFhirGroupIdentifierExtension(
     "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
     "MedicationDispense.authorizingPrescription") as fhir.ExtensionExtension<fhir.Extension>
   return fhirGroupIdentifierExtension
+}
+
+function getPrescriptionStatus(fhirFirstMedicationDispense: fhir.MedicationDispense) {
+  return getExtensionForUrl(
+    fhirFirstMedicationDispense.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+    "MedicationDispense.extension") as fhir.CodingExtension
+}
+
+function getPrescriptionItemId(fhirMedicationDispense: fhir.MedicationDispense) {
+  return getIdentifierValueForSystem(
+    fhirMedicationDispense.authorizingPrescription.map(e => e.identifier),
+    "https://fhir.nhs.uk/Id/prescription-order-item-number",
+    "MedicationDispense.authorizingPrescription.identifier"
+  )
+}
+
+function getDosageInstruction(fhirMedicationDispense: fhir.MedicationDispense) {
+  return onlyElement(
+    fhirMedicationDispense.dosageInstruction,
+    "MedicationDispense.dosageInstruction"
+  )
+}
+
+function getMedicationCodeableConceptCoding(fhirMedicationDispense: fhir.MedicationDispense) {
+  return onlyElement(
+    fhirMedicationDispense.medicationCodeableConcept.coding,
+    "MedicationDispense.medicationCodeableConcept.coding"
+  )
+}
+
+function getPrescriptionItemNumber(fhirMedicationDispense: fhir.MedicationDispense): string {
+  return getIdentifierValueForSystem(
+    fhirMedicationDispense.identifier,
+    "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+    "MedicationDispense.identifiers"
+  )
+}
+
+function getPrescriptionLineItemStatus(fhirMedicationDispense: fhir.MedicationDispense) {
+  return getCodingForSystem(
+    fhirMedicationDispense.type.coding,
+    "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+    "MedicationDispense.type.coding"
+  )
 }
 
 function createPatient(nhsNumber: string): hl7V3.Patient {
@@ -272,16 +319,13 @@ function createSupplyHeader(
     )
     hl7PertinentSuppliedLineItem.component = hl7Component
     hl7PertinentSuppliedLineItem.component1 = hl7Component1
+    const fhirPrescriptionLineItemStatus = getPrescriptionLineItemStatus(fhirMedicationDispense)
+    const hl7ItemStatusCode = new hl7V3.ItemStatusCode(fhirPrescriptionLineItemStatus.code)
+    hl7ItemStatusCode._attributes.displayName = fhirPrescriptionLineItemStatus.display
     hl7PertinentSuppliedLineItem.pertinentInformation3 = new hl7V3.DispenseLineItemPertinentInformation3(
-      new hl7V3.PertinentItemStatus(
-        hl7V3.ItemStatusCode.DISPENSED_PARTIAL // todo: map
-      )
+      new hl7V3.PertinentItemStatus(hl7ItemStatusCode)
     )
-    const hl7PriorOriginalItemRef = getIdentifierValueForSystem(
-      fhirMedicationDispense.authorizingPrescription.map(e => e.identifier),
-      "https://fhir.nhs.uk/Id/prescription-order-item-number",
-      "MedicationDispense.authorizingPrescription.identifier"
-    )
+    const hl7PriorOriginalItemRef = getPrescriptionItemId(fhirMedicationDispense)
     const hl7InFulfillmentOfLineItem = new hl7V3.InFulfillmentOfLineItem()
     hl7InFulfillmentOfLineItem.priorOriginalItemRef = new hl7V3.PriorOriginalRef(
       new hl7V3.GlobalIdentifier(hl7PriorOriginalItemRef)
@@ -294,11 +338,11 @@ function createSupplyHeader(
       hl7PertinentSuppliedLineItem
     )
   })
-  // https://fhir.nhs.uk/StructureDefinition/Extension-DM-prescriptionStatus
+  const fhirPrescriptionStatus = getPrescriptionStatus(fhirFirstMedicationDispense)
+  const hl7PrescriptionStatusCode = new hl7V3.PrescriptionStatusCode(fhirPrescriptionStatus.valueCoding.code)
+  hl7PrescriptionStatusCode._attributes.displayName = fhirPrescriptionStatus.valueCoding.display
   supplyHeader.pertinentInformation3 = new hl7V3.DispensePertinentInformation3(
-    new hl7V3.PertinentPrescriptionStatus(
-      hl7V3.PrescriptionStatusCode.WITH_DISPENSER_ACTIVE // todo: map
-    )
+    new hl7V3.PertinentPrescriptionStatus(hl7PrescriptionStatusCode)
   )
 
   const fhirGroupIdentifierExtension = getFhirGroupIdentifierExtension(fhirFirstMedicationDispense)
@@ -314,26 +358,4 @@ function createSupplyHeader(
   return supplyHeader
 }
 
-
-function getDosageInstruction(fhirMedicationDispense: fhir.MedicationDispense) {
-  return onlyElement(
-    fhirMedicationDispense.dosageInstruction,
-    "MedicationDispense.dosageInstruction"
-  )
-}
-
-function getMedicationCodeableConceptCoding(fhirMedicationDispense: fhir.MedicationDispense) {
-  return onlyElement(
-    fhirMedicationDispense.medicationCodeableConcept.coding,
-    "MedicationDispense.medicationCodeableConcept.coding"
-  )
-}
-
-function getPrescriptionItemNumber(fhirMedicationDispense: fhir.MedicationDispense): string {
-  return getIdentifierValueForSystem(
-    fhirMedicationDispense.identifier,
-    "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
-    "MedicationDispense.identifiers"
-  )
-}
-// todo: 2 maps above, check onlyElement rules match IG, further validation rules, tests
+// todo: check onlyElement rules match IG, further validation rules, tests

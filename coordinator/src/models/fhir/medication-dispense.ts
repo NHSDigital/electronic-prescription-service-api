@@ -4,7 +4,7 @@ import * as patient from "./patient"
 
 export interface MedicationDispense extends common.Resource {
     identifier: Array<common.Identifier>
-    extension?: Array<extension.CodeableConceptExtension>
+    extension?: Array<extension.CodingExtension>
     medicationCodeableConcept: common.CodeableConcept
     subject: common.IdentifierReference<patient.Patient>
     quantity: common.SimpleQuantity
@@ -12,6 +12,7 @@ export interface MedicationDispense extends common.Resource {
     whenPrepared: string
     dosageInstruction: Array<DosageInstruction>
     performer: Array<DispensePerformer>
+    type: common.CodeableConcept
 }
 
 export interface AuthorizingPrescription extends common.Resource {
