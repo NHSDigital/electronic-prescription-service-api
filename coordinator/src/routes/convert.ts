@@ -53,7 +53,7 @@ type Handler<T> = (
   requestPayload: T, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
 ) => Hapi.ResponseObject | Promise<Hapi.ResponseObject>
 
-function parametersValidation(handler: Handler<fhir.Parameters>) {
+export function parametersValidation(handler: Handler<fhir.Parameters>) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     const fhirValidatorResponse = await externalFHIRValidation(request)
     if (fhirValidatorResponse.issue.length > 0) {
