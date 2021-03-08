@@ -1,6 +1,6 @@
 import * as translator from "../../services/translation/request"
 import Hapi from "@hapi/hapi"
-import {basePath, createHash, validatingHandler} from "../util"
+import {basePath, createHash, bundleValidation} from "../util"
 import * as fhir from "../../models/fhir"
 
 const CONTENT_TYPE_FHIR = "application/fhir+json; fhirVersion=4.0"
@@ -13,7 +13,7 @@ export default [
   {
     method: "POST",
     path: `${basePath}/$prepare`,
-    handler: validatingHandler(
+    handler: bundleValidation(
       (requestPayload: fhir.Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const isSmokeTest = request.headers["x-smoke-test"]
         const contentType = isSmokeTest ? CONTENT_TYPE_JSON : CONTENT_TYPE_FHIR

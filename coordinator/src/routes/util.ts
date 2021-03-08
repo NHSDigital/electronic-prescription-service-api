@@ -131,7 +131,7 @@ export async function externalFHIRValidation(
   }
 }
 
-export function validatingHandler(handler: Handler<fhir.Bundle>) {
+export function bundleValidation(handler: Handler<fhir.Bundle>) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     const fhirValidatorResponse = await externalFHIRValidation(request)
     if (fhirValidatorResponse.issue.length > 0) {
