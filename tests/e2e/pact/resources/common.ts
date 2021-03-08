@@ -69,7 +69,7 @@ export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, group?: AllPac
 
 // get pact groups for verification
 export const pactGroupNames = convertPactDescriptionsToPactNames(pactGroups)
-//const releasePactGroupNames = convertPactDescriptionsToPactNames(releasePactGroups) todo: add this back when fixed
+const releasePactGroupNames = convertPactDescriptionsToPactNames(releasePactGroups)
 const dispensePactGroupNames = convertPactDescriptionsToPactNames(dispensePactGroups)
 const cancelPactGroupNames = convertPactDescriptionsToPactNames(cancelPactGroups)
 
@@ -113,8 +113,7 @@ export function getProcessCancelPactGroups(): string[] {
 
 export function getReleasePactGroups(): string[] {
   return isSandbox
-    ? [] // releasePactGroupNames todo: verify sandbox releases when both
-    // request types are handled
+    ? releasePactGroupNames
     : [] // todo: verify release for live proxy once this is available
 }
 
