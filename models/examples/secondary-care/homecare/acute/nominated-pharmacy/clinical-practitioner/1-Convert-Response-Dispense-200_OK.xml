@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN080101SM31 xmlns="urn:hl7-org:v3">
-  <id root="BE807DAC-9DCF-45CF-91D6-70D9D58DCF34"/>
-  <creationTime value="20210307182931"/>
+  <id root="E1820409-F3F3-4894-97FD-1FDD0C94542E"/>
+  <creationTime value="20210308154353"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN080101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -40,9 +40,9 @@
     </author1>
     <subject>
       <DispenseNotification classCode="INFO" moodCode="EVN">
-        <id root="BE807DAC-9DCF-45CF-91D6-70D9D58DCF34"/>
+        <id root="E1820409-F3F3-4894-97FD-1FDD0C94542E"/>
         <code code="163541000000107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensed Medication - FocusActOrEvent (administrative concept)"/>
-        <effectiveTime value="20210307182931"/>
+        <effectiveTime value="20210308154353"/>
         <typeId extension="PORX_MT024001UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <patient classCode="PAT">
@@ -61,7 +61,7 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentSupplyHeader classCode="SBADM" moodCode="EVN">
-            <id root="BE807DAC-9DCF-45CF-91D6-70D9D58DCF34"/>
+            <id root="E1820409-F3F3-4894-97FD-1FDD0C94542E"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
             <effectiveTime nullFlavor="NA"/>
             <author contextControlCode="OP" typeCode="AUT">
@@ -140,7 +140,7 @@
                   <seperatableInd value="false"/>
                   <pertinentItemStatus classCode="OBS" moodCode="EVN">
                     <code code="IS" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value code="0003" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.23"/>
+                    <value code="0001" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.23" displayName="Item fully dispensed"/>
                   </pertinentItemStatus>
                 </pertinentInformation3>
                 <inFulfillmentOf inversionInd="false" negationInd="false" typeCode="FLFS">
@@ -156,7 +156,7 @@
               <seperatableInd value="false"/>
               <pertinentPrescriptionStatus classCode="OBS" moodCode="EVN">
                 <code code="PS" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                <value code="0003" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.35"/>
+                <value code="0003" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.35" displayName="With Dispenser - Active"/>
               </pertinentPrescriptionStatus>
             </pertinentInformation3>
             <pertinentInformation4 contextConductionInd="true" typeCode="PERT">
@@ -181,7 +181,7 @@
             <code code="185361000000102" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Medication - care record element (record artifact)"/>
             <component typeCode="COMP">
               <actRef classCode="SBADM" moodCode="PRMS">
-                <id root="BE807DAC-9DCF-45CF-91D6-70D9D58DCF34"/>
+                <id root="E1820409-F3F3-4894-97FD-1FDD0C94542E"/>
               </actRef>
             </component>
             <component typeCode="COMP">
