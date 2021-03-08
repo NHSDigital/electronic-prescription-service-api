@@ -26,7 +26,7 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
 
   const fhirPatient = getPatientOrNull(bundle)
   const hl7PatientId = getNhsNumber(fhirPatient, fhirFirstMedicationDispense)
-  const hl7Patient = createHl7Patient(hl7PatientId)
+  const hl7Patient = createPatient(hl7PatientId)
   hl7DispenseNotification.recordTarget = new hl7V3.DispenseRecordTarget(hl7Patient)
   hl7DispenseNotification.primaryInformationRecipient = new hl7V3.PrimaryInformationRecipient()
 
@@ -36,7 +36,7 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
 
   const hl7AgentOrganisationCode = fhirHeaderDestination.receiver.identifier.value
   const hl7AgentOrganisationName = fhirHeaderDestination.receiver.display
-  const hl7AgentOrganization = createHl7Organisation(hl7AgentOrganisationCode, hl7AgentOrganisationName)
+  const hl7AgentOrganization = createOrganisation(hl7AgentOrganisationCode, hl7AgentOrganisationName)
   hl7DispenseNotification.primaryInformationRecipient.AgentOrg = new hl7V3.AgentOrganization(hl7AgentOrganization)
 
   const fhirPractitionerPerformer = fhirFirstMedicationDispense.performer.find(p => p.actor.type === "Practitioner")
@@ -137,13 +137,13 @@ function getFhirGroupIdentifierExtension(
   return fhirGroupIdentifierExtension
 }
 
-function createHl7Patient(nhsNumber: string): hl7V3.Patient {
+function createPatient(nhsNumber: string): hl7V3.Patient {
   const hl7Patient = new hl7V3.Patient()
   hl7Patient.id = new hl7V3.NhsNumber(nhsNumber)
   return hl7Patient
 }
 
-function createHl7Organisation(organisationCode: string, organisationName: string): hl7V3.Organization {
+function createOrganisation(organisationCode: string, organisationName: string): hl7V3.Organization {
   const organisation = new hl7V3.Organization()
   organisation.id = new hl7V3.SdsOrganizationIdentifier(organisationCode)
   organisation.code = new hl7V3.OrganizationTypeCode("999")
@@ -151,7 +151,7 @@ function createHl7Organisation(organisationCode: string, organisationName: strin
   return organisation
 }
 
-function createHl7Author(
+function createAuthor(
   hl7RepresentedOrganisationCode: string,
   hl7RepresentedOrganisationName: string,
   hl7AuthorTime: string,
@@ -188,7 +188,7 @@ function createAgentPerson(
 }
 
 function createRepresentedOrganisation(organisationCode: string, organisationName: string): hl7V3.Organization {
-  const organisation = createHl7Organisation(organisationCode, organisationName)
+  const organisation = createOrganisation(organisationCode, organisationName)
   organisation.id = new hl7V3.SdsOrganizationIdentifier("FH878")
   organisation.code = new hl7V3.OrganizationTypeCode("999")
   organisation.name = new hl7V3.Text(organisationName)
@@ -219,7 +219,7 @@ function createSupplyHeader(
 
   const hl7AgentPersonPersonName = fhirPractitionerPerformer.actor.display
 
-  const hl7Author = createHl7Author(
+  const hl7Author = createAuthor(
     hl7RepresentedOrganisationCode,
     hl7RepresentedOrganisationName,
     hl7AuthorTime,
@@ -242,6 +242,7 @@ function createSupplyHeader(
       fhirMedicationDispense.dosageInstruction,
       "MedicationDispense.dosageInstruction"
     )
+
     const hl7SuppliedLineItemQuantitySnomedCode = new hl7V3.SnomedCode(
       fhirMedicationDispense.quantity.code,
       fhirMedicationDispense.quantity.unit
