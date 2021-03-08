@@ -29,7 +29,6 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
   const hl7PatientId = getNhsNumber(fhirPatient, fhirFirstMedicationDispense)
   const hl7Patient = createPatient(hl7PatientId)
   hl7DispenseNotification.recordTarget = new hl7V3.DispenseRecordTarget(hl7Patient)
-  hl7DispenseNotification.primaryInformationRecipient = new hl7V3.PrimaryInformationRecipient()
 
   const fhirHeader = getMessageHeader(bundle)
   const fhirHeaderSender = fhirHeader.sender
@@ -38,6 +37,7 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
   const hl7AgentOrganisationCode = fhirHeaderDestination.receiver.identifier.value
   const hl7AgentOrganisationName = fhirHeaderDestination.receiver.display
   const hl7AgentOrganization = createOrganisation(hl7AgentOrganisationCode, hl7AgentOrganisationName)
+  hl7DispenseNotification.primaryInformationRecipient = new hl7V3.PrimaryInformationRecipient()
   hl7DispenseNotification.primaryInformationRecipient.AgentOrg = new hl7V3.AgentOrganization(hl7AgentOrganization)
 
   const fhirPractitionerPerformer = fhirFirstMedicationDispense.performer.find(p => p.actor.type === "Practitioner")
@@ -253,16 +253,15 @@ function createRepresentedOrganisation(organisationCode: string, organisationNam
 
 function createSupplyHeader(
   messageId: string,
-  fhirOrganization: fhir.IdentifierReference<fhir.Organization>,
+  fhirHeaderSender: fhir.IdentifierReference<fhir.Organization>,
   fhirMedicationDispenses: Array<fhir.MedicationDispense>,
   fhirFirstMedicationDispense: fhir.MedicationDispense,
   fhirPractitionerPerformer: fhir.DispensePerformer
 ): hl7V3.PertinentSupplyHeader {
 
-  const hl7RepresentedOrganisationCode = fhirOrganization.identifier.value
-  const hl7RepresentedOrganisationName = fhirOrganization.display
+  const hl7RepresentedOrganisationCode = fhirHeaderSender.identifier.value
+  const hl7RepresentedOrganisationName = fhirHeaderSender.display
   const hl7AuthorTime = fhirFirstMedicationDispense.whenPrepared
-
   const hl7AgentPersonPersonName = fhirPractitionerPerformer.actor.display
 
   const hl7Author = createAuthor(

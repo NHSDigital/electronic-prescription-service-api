@@ -20,19 +20,15 @@ export class DispenseNotification implements ElementCompact {
     classCode: "INFO",
     moodCode: "EVN"
   }
-  // = done
-  //\ = to un-stub
-  id: codes.GlobalIdentifier //
-  code: codes.SnomedCode //
-  effectiveTime: core.Timestamp //\
-  typeId: codes.TypeIdentifier //
-  recordTarget: DispenseRecordTarget //\
-  primaryInformationRecipient: PrimaryInformationRecipient //\
+  id: codes.GlobalIdentifier
+  code: codes.SnomedCode
+  effectiveTime: core.Timestamp
+  typeId: codes.TypeIdentifier
+  recordTarget: DispenseRecordTarget
+  primaryInformationRecipient: PrimaryInformationRecipient
   pertinentInformation1: DispenseNotificationPertinentInformation1
-  // V todo: figure out where CareRecordElementCategoryComponent comes from V
   pertinentInformation2: DispensePertinentInformation2
-  //replacementOf: < optional, do we support this in fhir?
-  sequelTo: SequelTo //\
+  sequelTo: SequelTo
 
   constructor(id: codes.GlobalIdentifier) {
     this.id = id

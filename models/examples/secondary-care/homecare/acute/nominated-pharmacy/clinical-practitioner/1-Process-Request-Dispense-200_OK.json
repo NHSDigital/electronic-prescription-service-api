@@ -22,7 +22,7 @@
                         "receiver": {
                             "identifier": {
                                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                                "value": "T1270"
+                                "value": "T1450"
                             },
                             "display": "NHS BUSINESS SERVICES AUTHORITY"
                         }
@@ -33,10 +33,10 @@
                         "system": "https://fhir.nhs.uk/Id/ods-organization-code",
                         "value": "AB123"
                     },
-                    "display": "NHS BUSINESS SERVICES AUTHORITY"
+                    "display": "The Pharmacy System"
                 },
                 "source": {
-                    "name": "NHS BUSINESS SERVICES AUTHORITY",
+                    "name": "The Pharmacy System",
                     "endpoint": "urn:nhs-uk:addressing:ods:AB123"
                 },
                 "reason": {
