@@ -229,20 +229,6 @@ function createSupplyHeader(
   const supplyHeader = new hl7V3.PertinentSupplyHeader(new hl7V3.GlobalIdentifier(messageId))
   supplyHeader.author = hl7Author
   supplyHeader.pertinentInformation1 = fhirMedicationDispenses.map(fhirMedicationDispense => {
-    const fhirPrescriptionDispenseItemNumber = getIdentifierValueForSystem(
-      fhirMedicationDispense.identifier,
-      "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
-      "MedicationDispense.identifiers"
-    )
-    const fhirMedicationCodeableConceptCoding = onlyElement(
-      fhirMedicationDispense.medicationCodeableConcept.coding,
-      "MedicationDispense.medicationCodeableConcept.coding"
-    )
-    const fhirDosageInstruction = onlyElement(
-      fhirMedicationDispense.dosageInstruction,
-      "MedicationDispense.dosageInstruction"
-    )
-
     const hl7SuppliedLineItemQuantitySnomedCode = new hl7V3.SnomedCode(
       fhirMedicationDispense.quantity.code,
       fhirMedicationDispense.quantity.unit
@@ -253,10 +239,12 @@ function createSupplyHeader(
       hl7UnitValue,
       hl7SuppliedLineItemQuantitySnomedCode
     )
+    const fhirMedicationCodeableConceptCoding = getMedicationCodeableConceptCoding(fhirMedicationDispense)
     const hl7ManufacturedSuppliedMaterialSnomedCode = new hl7V3.SnomedCode(
       fhirMedicationCodeableConceptCoding.code,
       fhirMedicationCodeableConceptCoding.display
     )
+    const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
     const hl7PertinentSuppliedLineItem = new hl7V3.PertinentSuppliedLineItem(
       new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber),
       new hl7v3.SnomedCode(fhirMedicationCodeableConceptCoding.code),
@@ -272,6 +260,7 @@ function createSupplyHeader(
         new hl7V3.ManufacturedRequestedMaterial(hl7ManufacturedSuppliedMaterialSnomedCode)
       )
     )
+    const fhirDosageInstruction = getDosageInstruction(fhirMedicationDispense)
     hl7SuppliedLineItemQuantity.pertinentInformation1 = new hl7V3.DispenseLineItemPertinentInformation1(
       new hl7V3.PertinentSupplyInstructions(
         new hl7V3.Text(fhirDosageInstruction.text)
@@ -325,4 +314,26 @@ function createSupplyHeader(
   return supplyHeader
 }
 
+
+function getDosageInstruction(fhirMedicationDispense: fhir.MedicationDispense) {
+  return onlyElement(
+    fhirMedicationDispense.dosageInstruction,
+    "MedicationDispense.dosageInstruction"
+  )
+}
+
+function getMedicationCodeableConceptCoding(fhirMedicationDispense: fhir.MedicationDispense) {
+  return onlyElement(
+    fhirMedicationDispense.medicationCodeableConcept.coding,
+    "MedicationDispense.medicationCodeableConcept.coding"
+  )
+}
+
+function getPrescriptionItemNumber(fhirMedicationDispense: fhir.MedicationDispense): string {
+  return getIdentifierValueForSystem(
+    fhirMedicationDispense.identifier,
+    "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+    "MedicationDispense.identifiers"
+  )
+}
 // todo: 2 maps above, check onlyElement rules match IG, further validation rules, tests

@@ -52,7 +52,8 @@ jestPact.pactWith(
                 "X-Request-ID": requestId,
                 "X-Correlation-ID": correlationId
               },
-              status: isNominatedPharmacyRelease ? 200 : 400
+              body: isNominatedPharmacyRelease ? response : undefined,
+              status: isNominatedPharmacyRelease ? parseInt(statusCode) : 400
             }
           }
 
@@ -63,7 +64,7 @@ jestPact.pactWith(
             .set("X-Request-ID", requestId)
             .set("X-Correlation-ID", correlationId)
             .send(requestStr)
-            .expect(isNominatedPharmacyRelease ? 200 : 400)
+            .expect(isNominatedPharmacyRelease ? statusCode : 400)
         }
       )
     })
