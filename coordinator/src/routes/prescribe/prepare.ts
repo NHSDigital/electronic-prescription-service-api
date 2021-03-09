@@ -1,9 +1,10 @@
 import * as translator from "../../services/translation/request"
 import Hapi from "@hapi/hapi"
-import {basePath, createHash, getFhirValidatorErrors, getPayload} from "../util"
+import {BASE_PATH, CONTENT_TYPE_FHIR, createHash, getFhirValidatorErrors, getPayload} from "../util"
 import * as fhir from "../../models/fhir"
-import {CONTENT_TYPE_FHIR} from "../../app"
 import * as bundleValidator from "../../services/validation/bundle-validator"
+
+console.log("TESTING " + BASE_PATH)
 
 export default [
   /*
@@ -11,7 +12,7 @@ export default [
     */
   {
     method: "POST",
-    path: `${basePath}/$prepare`,
+    path: `${BASE_PATH}/$prepare`,
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const fhirValidatorResponse = await getFhirValidatorErrors(request)
       if (fhirValidatorResponse) {

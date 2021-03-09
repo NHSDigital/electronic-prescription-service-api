@@ -1,11 +1,17 @@
 import * as translator from "../../services/translation/request"
 import Hapi from "@hapi/hapi"
 import {
-  basePath, getFhirValidatorErrors, getPayload, isBundle, isParameters
+  BASE_PATH,
+  CONTENT_TYPE_FHIR,
+  CONTENT_TYPE_XML,
+  getFhirValidatorErrors,
+  getPayload,
+  isBundle,
+  isParameters
 } from "../util"
 import * as fhir from "../../models/fhir"
-import {CONTENT_TYPE_FHIR, CONTENT_TYPE_XML} from "../../app"
 import * as bundleValidator from "../../services/validation/bundle-validator"
+import * as parametersValidator from "../../services/validation/parameters-validator"
 
 export default [
   /*
@@ -13,7 +19,7 @@ export default [
   */
   {
     method: "POST",
-    path: `${basePath}/$convert`,
+    path: `${BASE_PATH}/$convert`,
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const fhirValidatorResponse = await getFhirValidatorErrors(request)
       if (fhirValidatorResponse) {
@@ -34,6 +40,11 @@ export default [
       }
 
       if (isParameters(payload)) {
+        const issues = parametersValidator.verifyParameters(payload)
+        if (issues.length) {
+          return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(CONTENT_TYPE_FHIR)
+        }
+
         request.logger.info("Building HL7V3 message from Parameters")
         const spineRequest = await translator.convertParametersToSpineRequest(payload, requestId, request.logger)
         return responseToolkit.response(spineRequest.message).code(200).type(CONTENT_TYPE_XML)

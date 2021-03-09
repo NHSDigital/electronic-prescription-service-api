@@ -1,7 +1,7 @@
 import * as LosslessJson from "lossless-json"
 import * as fhir from "../fhir"
 
-export function createMedicationRequestInconsistentValueError<T>(
+export function createMedicationRequestInconsistentValueIssue<T>(
   fieldName: string,
   uniqueFieldValues: Array<T>
 ): fhir.OperationOutcomeIssue {
@@ -17,14 +17,14 @@ export function createMedicationRequestInconsistentValueError<T>(
   }
 }
 
-export const medicationRequestDuplicateIdentifierError: fhir.OperationOutcomeIssue = {
+export const medicationRequestDuplicateIdentifierIssue: fhir.OperationOutcomeIssue = {
   severity: "error",
   code: "value",
   diagnostics: "Expected all MedicationRequests to have a different value for identifier.",
   expression: ["Bundle.entry.resource.ofType(MedicationRequest).identifier"]
 }
 
-export const medicationRequestNumberError: fhir.OperationOutcomeIssue = {
+export const medicationRequestNumberIssue: fhir.OperationOutcomeIssue = {
   severity: "error",
   code: "value",
   diagnostics: `The Bundle must contain exactly one MedicationRequest if MessageHeader.eventCoding.code is '${
@@ -33,7 +33,7 @@ export const medicationRequestNumberError: fhir.OperationOutcomeIssue = {
   expression: ["Bundle.entry.resource.ofType(MedicationRequest)"]
 }
 
-export function createMedicationRequestMissingValueError(fieldName: string): fhir.OperationOutcomeIssue {
+export function createMedicationRequestMissingValueIssue(fieldName: string): fhir.OperationOutcomeIssue {
   return {
     severity: "error",
     code: "value",
@@ -42,7 +42,7 @@ export function createMedicationRequestMissingValueError(fieldName: string): fhi
   }
 }
 
-export function createMedicationRequestIncorrectValueError(
+export function createMedicationRequestIncorrectValueIssue(
   fieldName: string,
   requiredFieldValue: string
 ): fhir.OperationOutcomeIssue {

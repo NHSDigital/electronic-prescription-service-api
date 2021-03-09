@@ -1,9 +1,8 @@
 import * as Hapi from "@hapi/hapi"
-import {basePath, getFhirValidatorErrors, getPayload, handleResponse} from "../util"
+import {BASE_PATH, CONTENT_TYPE_FHIR, getFhirValidatorErrors, getPayload, handleResponse} from "../util"
 import * as fhir from "../../models/fhir"
 import * as translator from "../../services/translation/request"
 import {spineClient} from "../../services/communication/spine-client"
-import {CONTENT_TYPE_FHIR} from "../../app"
 import * as parametersValidator from "../../services/validation/parameters-validator"
 
 export default [
@@ -12,7 +11,7 @@ export default [
   */
   {
     method: "POST",
-    path: `${basePath}/Task/$release`,
+    path: `${BASE_PATH}/Task/$release`,
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
       const fhirValidatorResponse = await getFhirValidatorErrors(request)
       if (fhirValidatorResponse) {

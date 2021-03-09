@@ -6,10 +6,10 @@ import {getCourseOfTherapyTypeCode} from "../translation/request/course-of-thera
 import {getExtensionForUrlOrNull, getIdentifierValueForSystem, isTruthy} from "../translation/common"
 import * as fhir from "../../models/fhir"
 import {
-  createMedicationRequestInconsistentValueError,
-  createMedicationRequestIncorrectValueError,
-  createMedicationRequestMissingValueError, createResourceTypeIssue,
-  medicationRequestDuplicateIdentifierError, medicationRequestNumberError,
+  createMedicationRequestInconsistentValueIssue,
+  createMedicationRequestIncorrectValueIssue,
+  createMedicationRequestMissingValueIssue, createResourceTypeIssue,
+  medicationRequestDuplicateIdentifierIssue, medicationRequestNumberIssue,
   messageTypeIssue
 } from "../../models/errors/validation-errors"
 
@@ -55,7 +55,7 @@ export function verifyCommonBundle(bundle: fhir.Bundle): Array<fhir.OperationOut
 
   const medicationRequests = getMedicationRequests(bundle)
   if (medicationRequests.some(medicationRequest => medicationRequest.intent !== fhir.MedicationRequestIntent.ORDER)) {
-    incorrectValueErrors.push(createMedicationRequestIncorrectValueError("intent", fhir.MedicationRequestIntent.ORDER))
+    incorrectValueErrors.push(createMedicationRequestIncorrectValueIssue("intent", fhir.MedicationRequestIntent.ORDER))
   }
 
   return incorrectValueErrors
@@ -91,11 +91,11 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
   allErrors.push(...repeatDispensingErrors)
 
   if (medicationRequests.some(medicationRequest => medicationRequest.status !== "active")) {
-    allErrors.push(createMedicationRequestIncorrectValueError("status", "active"))
+    allErrors.push(createMedicationRequestIncorrectValueIssue("status", "active"))
   }
 
   if (!allMedicationRequestsHaveUniqueIdentifier(medicationRequests)){
-    allErrors.push(medicationRequestDuplicateIdentifierError)
+    allErrors.push(medicationRequestDuplicateIdentifierIssue)
   }
 
   return allErrors
@@ -108,11 +108,11 @@ export function verifyRepeatDispensingPrescription(
 
   const firstMedicationRequest = medicationRequests[0]
   if (!firstMedicationRequest.dispenseRequest.validityPeriod) {
-    validationErrors.push(createMedicationRequestMissingValueError("dispenseRequest.validityPeriod"))
+    validationErrors.push(createMedicationRequestMissingValueIssue("dispenseRequest.validityPeriod"))
   }
 
   if (!firstMedicationRequest.dispenseRequest.expectedSupplyDuration) {
-    validationErrors.push(createMedicationRequestMissingValueError("dispenseRequest.expectedSupplyDuration"))
+    validationErrors.push(createMedicationRequestMissingValueIssue("dispenseRequest.expectedSupplyDuration"))
   }
 
   if (!getExtensionForUrlOrNull(
@@ -120,7 +120,7 @@ export function verifyRepeatDispensingPrescription(
     "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
     "MedicationRequest.extension"
   )) {
-    validationErrors.push(createMedicationRequestMissingValueError(
+    validationErrors.push(createMedicationRequestMissingValueIssue(
       'extension("https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation")'
     ))
   }
@@ -133,15 +133,15 @@ export function verifyCancellationBundle(bundle: fhir.Bundle): Array<fhir.Operat
 
   const medicationRequests = getMedicationRequests(bundle)
   if (medicationRequests.length != 1) {
-    validationErrors.push(medicationRequestNumberError)
+    validationErrors.push(medicationRequestNumberIssue)
   }
 
   if (medicationRequests.some(medicationRequest => medicationRequest.status !== "cancelled")) {
-    validationErrors.push(createMedicationRequestIncorrectValueError("status", "cancelled"))
+    validationErrors.push(createMedicationRequestIncorrectValueIssue("status", "cancelled"))
   }
 
   if (medicationRequests.some(medicationRequest => !medicationRequest.statusReason)) {
-    validationErrors.push(createMedicationRequestMissingValueError("statusReason"))
+    validationErrors.push(createMedicationRequestMissingValueIssue("statusReason"))
   }
 
   return validationErrors
@@ -160,7 +160,7 @@ function verifyIdenticalForAllMedicationRequests(
   const allFieldValues = applyFhirPath(bundle, medicationRequests, fhirPath)
   const uniqueFieldValues = getUniqueValues(allFieldValues)
   if (uniqueFieldValues.length > 1) {
-    return createMedicationRequestInconsistentValueError(fhirPath, uniqueFieldValues)
+    return createMedicationRequestInconsistentValueIssue(fhirPath, uniqueFieldValues)
   }
   return null
 }

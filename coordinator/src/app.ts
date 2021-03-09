@@ -3,11 +3,7 @@ import Hapi from "@hapi/hapi"
 import routes from "./routes"
 import {FhirMessageProcessingError, toOperationOutcome} from "./models/errors/processing-errors"
 import HapiPino from "hapi-pino"
-
-export const CONTENT_TYPE_XML = "application/xml"
-export const CONTENT_TYPE_PLAIN_TEXT = "text/plain"
-export const CONTENT_TYPE_FHIR = "application/fhir+json; fhirVersion=4.0"
-export const CONTENT_TYPE_JSON = "application/json"
+import {CONTENT_TYPE_FHIR, CONTENT_TYPE_JSON, CONTENT_TYPE_PLAIN_TEXT, CONTENT_TYPE_XML} from "./routes/util"
 
 const reformatUserErrorsToFhir = function (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) {
   const response = request.response

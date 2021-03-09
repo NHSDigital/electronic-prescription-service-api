@@ -1,10 +1,9 @@
 import * as translator from "../../services/translation/request"
 import {spineClient} from "../../services/communication/spine-client"
 import Hapi from "@hapi/hapi"
-import {basePath, createHash, getFhirValidatorErrors, getPayload, handleResponse} from "../util"
+import {BASE_PATH, CONTENT_TYPE_FHIR, createHash, getFhirValidatorErrors, getPayload, handleResponse} from "../util"
 import {getMessageHeader} from "../../services/translation/common/getResourcesOfType"
 import * as fhir from "../../models/fhir"
-import {CONTENT_TYPE_FHIR} from "../../app"
 import * as bundleValidator from "../../services/validation/bundle-validator"
 
 function isDispenseMessage(bundle: fhir.Bundle) {
@@ -17,7 +16,7 @@ export default [
     */
   {
     method: "POST",
-    path: `${basePath}/$process-message`,
+    path: `${BASE_PATH}/$process-message`,
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const fhirValidatorResponse = await getFhirValidatorErrors(request)
       if (fhirValidatorResponse) {

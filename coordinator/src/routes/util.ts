@@ -7,12 +7,15 @@ import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
 import * as fhir from "../models/fhir"
-import {CONTENT_TYPE_FHIR} from "../app"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
+export const CONTENT_TYPE_XML = "application/xml"
+export const CONTENT_TYPE_PLAIN_TEXT = "text/plain"
+export const CONTENT_TYPE_FHIR = "application/fhir+json; fhirVersion=4.0"
+export const CONTENT_TYPE_JSON = "application/json"
 export const VALIDATOR_HOST = "http://localhost:9001"
-export const basePath = "/FHIR/R4"
+export const BASE_PATH = "/FHIR/R4"
 
 export function createHash(thingsToHash: string): string {
   return crypto.SHA256(thingsToHash).toString()
