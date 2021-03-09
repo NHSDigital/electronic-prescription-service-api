@@ -5,6 +5,7 @@ import {
 } from "../util"
 import * as fhir from "../../models/fhir"
 import {CONTENT_TYPE_FHIR, CONTENT_TYPE_XML} from "../../app"
+import * as bundleValidator from "../../services/validation/bundle-validator"
 
 export default [
   /*
@@ -22,16 +23,23 @@ export default [
       const payload = getPayload(request) as fhir.Resource
       const requestId = request.headers["nhsd-request-id"].toUpperCase()
       if (isBundle(payload)) {
+        const issues = bundleValidator.verifyBundle(payload)
+        if (issues.length) {
+          return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(CONTENT_TYPE_FHIR)
+        }
+
         request.logger.info("Building HL7V3 message from Bundle")
         const spineRequest = translator.convertBundleToSpineRequest(payload, requestId)
         return responseToolkit.response(spineRequest.message).code(200).type(CONTENT_TYPE_XML)
-      } else if (isParameters(payload)) {
+      }
+
+      if (isParameters(payload)) {
         request.logger.info("Building HL7V3 message from Parameters")
         const spineRequest = await translator.convertParametersToSpineRequest(payload, requestId, request.logger)
         return responseToolkit.response(spineRequest.message).code(200).type(CONTENT_TYPE_XML)
-      } else {
-        return responseToolkit.response(unsupportedResponse).code(400).type(CONTENT_TYPE_FHIR)
       }
+
+      return responseToolkit.response(unsupportedResponse).code(400).type(CONTENT_TYPE_FHIR)
     }
   }
 ]

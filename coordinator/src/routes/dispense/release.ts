@@ -1,10 +1,10 @@
 import * as Hapi from "@hapi/hapi"
-import {basePath, getFhirValidatorErrors, getPayload, toFhirError, handleResponse} from "../util"
-import {ResourceTypeError} from "../../models/errors/validation-errors"
+import {basePath, getFhirValidatorErrors, getPayload, handleResponse} from "../util"
 import * as fhir from "../../models/fhir"
 import * as translator from "../../services/translation/request"
 import {spineClient} from "../../services/communication/spine-client"
 import {CONTENT_TYPE_FHIR} from "../../app"
+import * as parametersValidator from "../../services/validation/parameters-validator"
 
 export default [
   /*
@@ -19,32 +19,16 @@ export default [
         return responseToolkit.response(fhirValidatorResponse).code(400).type(CONTENT_TYPE_FHIR)
       }
 
-      const requestPayload = getPayload(request) as fhir.Resource
-
-      if (requestPayload.resourceType !== "Parameters") {
-        return responseToolkit
-          .response(toFhirError([new ResourceTypeError("Parameters")]))
-          .code(400)
-          .type(CONTENT_TYPE_FHIR)
+      const parameters = getPayload(request) as fhir.Parameters
+      const issues = parametersValidator.verifyParameters(parameters)
+      if (issues.length) {
+        return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(CONTENT_TYPE_FHIR)
       }
 
-      const payloadAsParameters = requestPayload as fhir.Parameters
-
       request.logger.info("Building Spine release request")
-      const spineRequest = await translator.convertParametersToSpineRequest(
-        payloadAsParameters,
-        request.headers["nhsd-request-id"].toUpperCase(),
-        request.logger
-      )
-
-      //TODO - remove after testing
-      request.logger.info(`Sending the following request to Spine:\n${spineRequest.message}`)
-
-      const spineResponse = await spineClient.send(
-        spineRequest,
-        request.logger
-      )
-
+      const requestId = request.headers["nhsd-request-id"].toUpperCase()
+      const spineRequest = await translator.convertParametersToSpineRequest(parameters, requestId, request.logger)
+      const spineResponse = await spineClient.send(spineRequest, request.logger)
       return handleResponse(request, spineResponse, responseToolkit)
     }
 

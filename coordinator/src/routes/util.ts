@@ -1,8 +1,5 @@
 import {isPollable, SpineDirectResponse, SpinePollableResponse} from "../models/spine"
 import Hapi from "@hapi/hapi"
-import * as requestValidator from "../services/validation/bundle-validator"
-import * as errors from "../models/errors/validation-errors"
-import {ResourceTypeError} from "../models/errors/validation-errors"
 import {translateToFhir} from "../services/translation/response"
 import * as LosslessJson from "lossless-json"
 import {getMessageHeader} from "../services/translation/common/getResourcesOfType"
@@ -59,10 +56,6 @@ function isFhirResourceOfType(body: unknown, resourceType: string) {
     && "resourceType" in body
     && (body as fhir.Resource).resourceType === resourceType
 }
-
-type Handler<T> = (
-  requestPayload: T, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
-) => Hapi.ResponseObject | Promise<Hapi.ResponseObject>
 
 export function identifyMessageType(bundle: fhir.Bundle): string {
   return getMessageHeader(bundle).eventCoding?.code
@@ -125,32 +118,6 @@ export async function getFhirValidatorErrors(
   return null
 }
 
-export function validatingHandler(handler: Handler<fhir.Bundle>) {
-  return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-    const fhirValidatorResponse = await getFhirValidatorErrors(request)
-    if (fhirValidatorResponse) {
-      return responseToolkit.response(fhirValidatorResponse).code(400)
-    }
-
-    const validFHIRPayload = getPayload(request) as fhir.Resource
-
-    if (validFHIRPayload.resourceType !== "Bundle") {
-      return responseToolkit
-        .response(toFhirError([new ResourceTypeError("Bundle")]))
-        .code(400)
-    }
-
-    const bundle = validFHIRPayload as fhir.Bundle
-    const validation = requestValidator.verifyBundle(bundle)
-    if (validation.length > 0) {
-      const response = toFhirError(validation)
-      const statusCode = requestValidator.getStatusCode(validation)
-      return responseToolkit.response(response).code(statusCode)
-    }
-    return handler(bundle, request, responseToolkit)
-  }
-}
-
 export function getPayload(request: Hapi.Request): unknown {
   request.logger.info("Parsing request payload")
   if (Buffer.isBuffer(request.payload)) {
@@ -159,23 +126,5 @@ export function getPayload(request: Hapi.Request): unknown {
     return LosslessJson.parse(request.payload)
   } else {
     return {}
-  }
-}
-
-export function toFhirError(validation: Array<errors.ValidationError>): fhir.OperationOutcome {
-  /* Reformat errors to FHIR spec
-    * v.operationOutcomeCode: from the [IssueType ValueSet](https://www.hl7.org/fhir/valueset-issue-type.html)
-    * v.apiErrorCode: Our own code defined for each particular error. Refer to OAS.
-  */
-  const mapValidationErrorToOperationOutcomeIssue = (ve: errors.ValidationError) => ({
-    severity: ve.severity,
-    code: ve.operationOutcomeCode,
-    diagnostics: ve.message,
-    expression: ve.expression
-  })
-
-  return {
-    resourceType: "OperationOutcome",
-    issue: validation.map(mapValidationErrorToOperationOutcomeIssue)
   }
 }

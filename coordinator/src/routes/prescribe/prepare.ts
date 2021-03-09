@@ -1,8 +1,9 @@
 import * as translator from "../../services/translation/request"
 import Hapi from "@hapi/hapi"
-import {basePath, createHash, validatingHandler} from "../util"
+import {basePath, createHash, getFhirValidatorErrors, getPayload} from "../util"
 import * as fhir from "../../models/fhir"
 import {CONTENT_TYPE_FHIR} from "../../app"
+import * as bundleValidator from "../../services/validation/bundle-validator"
 
 export default [
   /*
@@ -11,14 +12,23 @@ export default [
   {
     method: "POST",
     path: `${basePath}/$prepare`,
-    handler: validatingHandler(
-      (requestPayload: fhir.Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
-        request.logger.info("Encoding HL7V3 signature fragments")
-        const response = translator.convertFhirMessageToSignedInfoMessage(requestPayload)
-        request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(requestPayload))})
-        request.log("audit", {"PrepareEndpointResponse": response})
-        return responseToolkit.response(response).code(200).type(CONTENT_TYPE_FHIR)
+    handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      const fhirValidatorResponse = await getFhirValidatorErrors(request)
+      if (fhirValidatorResponse) {
+        return responseToolkit.response(fhirValidatorResponse).code(400).type(CONTENT_TYPE_FHIR)
       }
-    )
+
+      const bundle = getPayload(request) as fhir.Bundle
+      const issues = bundleValidator.verifyBundle(bundle)
+      if (issues.length) {
+        return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(CONTENT_TYPE_FHIR)
+      }
+
+      request.logger.info("Encoding HL7V3 signature fragments")
+      const response = translator.convertFhirMessageToSignedInfoMessage(bundle)
+      request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(bundle))})
+      request.log("audit", {"PrepareEndpointResponse": response})
+      return responseToolkit.response(response).code(200).type(CONTENT_TYPE_FHIR)
+    }
   } as Hapi.ServerRoute
 ]
