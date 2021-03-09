@@ -31,13 +31,13 @@
                 "sender": {
                     "identifier": {
                         "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                        "value": "R1290"
+                        "value": "FH878"
                     },
-                    "display": "The Pharmacy System"
+                    "display": "BOOTS THE CHEMISTS LTD"
                 },
                 "source": {
-                    "name": "The Pharmacy System",
-                    "endpoint": "urn:nhs-uk:addressing:ods:AB123"
+                    "name": "BOOTS THE CHEMISTS LTD",
+                    "endpoint": "urn:nhs-uk:addressing:ods:FH878"
                 },
                 "reason": {
                     "coding": [

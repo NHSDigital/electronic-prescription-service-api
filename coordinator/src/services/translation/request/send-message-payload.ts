@@ -75,7 +75,7 @@ function convertRequesterToControlActAuthor(
   // todo dispenseNotification: implement dispense verson
   const messageType = identifyMessageType(bundle)
   if (messageType === fhir.EventCodingCode.DISPENSE) {
-    // todo dispenseNotification: pick up values from fhir and lookup ods/sds
+    // todo dispenseNotification: pick up this info from MessageHeader.sender and lookup on ods/sds
     const sdsUniqueIdentifier = "687227875014"
     const sdsJobRoleCode = "R8003"
     const sdsRoleProfileIdentifier = "781733617547"
