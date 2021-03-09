@@ -192,7 +192,7 @@ function createPatient(nhsNumber: string): hl7V3.Patient {
 function createOrganisation(organisationCode: string, organisationName: string): hl7V3.Organization {
   const organisation = new hl7V3.Organization()
   organisation.id = new hl7V3.SdsOrganizationIdentifier(organisationCode)
-  organisation.code = new hl7V3.OrganizationTypeCode("999")
+  organisation.code = new hl7V3.OrganizationTypeCode("999") // todo: question if this should be hard-coded
   organisation.name = new hl7V3.Text(organisationName)
   return organisation
 }
@@ -219,10 +219,12 @@ function createAgentPerson(
   hl7AgentPersonPersonName: string
 ): hl7V3.AgentPerson {
   const agentPerson = new hl7V3.AgentPerson()
-  agentPerson.id = new hl7V3.SdsRoleProfileIdentifier("100243444980")
-  agentPerson.code = new hl7V3.SdsJobRoleCode("R1290")
-  agentPerson.telecom = [new hl7V3.Telecom(hl7V3.TelecomUse.WORKPLACE, "01208812760")]
-  const agentPersonPerson = new hl7V3.AgentPersonPerson(new hl7V3.SdsUniqueIdentifier("687227875014"))
+  agentPerson.id = new hl7V3.SdsRoleProfileIdentifier("100243444980") // todo: ods/sds lookup
+  agentPerson.code = new hl7V3.SdsJobRoleCode(hl7RepresentedOrganisationCode)
+  agentPerson.telecom = [new hl7V3.Telecom(hl7V3.TelecomUse.WORKPLACE, "01208812760")] // todo: ods/sds lookup
+  const agentPersonPerson = new hl7V3.AgentPersonPerson( // todo: ods/sds lookup
+    new hl7V3.SdsUniqueIdentifier("687227875014")
+  )
   const agentPersonPersonName = new hl7V3.Name()
   agentPersonPersonName._attributes = {use: hl7V3.NameUse.USUAL}
   agentPersonPersonName._text = hl7AgentPersonPersonName
@@ -235,18 +237,18 @@ function createAgentPerson(
 
 function createRepresentedOrganisation(organisationCode: string, organisationName: string): hl7V3.Organization {
   const organisation = createOrganisation(organisationCode, organisationName)
-  organisation.id = new hl7V3.SdsOrganizationIdentifier("FH878")
-  organisation.code = new hl7V3.OrganizationTypeCode("999")
+  organisation.id = new hl7V3.SdsOrganizationIdentifier(organisationCode)
+  organisation.code = new hl7V3.OrganizationTypeCode("999") // todo: question if this should be hard-coded
   organisation.name = new hl7V3.Text(organisationName)
-  organisation.telecom = new hl7V3.Telecom(hl7V3.TelecomUse.WORKPLACE, "01208812760")
-  const hl7Address = new hl7V3.Address(hl7V3.AddressUse.WORK)
-  hl7Address.streetAddressLine = [
+  organisation.telecom = new hl7V3.Telecom(hl7V3.TelecomUse.WORKPLACE, "01208812760") // todo: ods/sds lookup
+  const hl7Address = new hl7V3.Address(hl7V3.AddressUse.WORK) // todo: ods/sds lookup
+  hl7Address.streetAddressLine = [ // todo: ods/sds lookup
     new hl7V3.Text("REGENCY ARCADE"),
     new hl7V3.Text("23 MOLESWORTH STREET"),
     new hl7V3.Text("WADEBRIDGE"),
     new hl7V3.Text("CORNWALL")
   ]
-  hl7Address.postalCode = new hl7V3.Text("PL27 7DH")
+  hl7Address.postalCode = new hl7V3.Text("PL27 7DH") // todo: ods/sds lookup
   organisation.addr = hl7Address
   return organisation
 }
@@ -355,5 +357,3 @@ function createSupplyHeader(
   )
   return supplyHeader
 }
-
-// todo: check onlyElement rules match IG, further validation rules, tests

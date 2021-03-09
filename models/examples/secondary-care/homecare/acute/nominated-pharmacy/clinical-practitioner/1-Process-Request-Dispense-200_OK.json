@@ -31,7 +31,7 @@
                 "sender": {
                     "identifier": {
                         "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                        "value": "AB123"
+                        "value": "R1290"
                     },
                     "display": "The Pharmacy System"
                 },
