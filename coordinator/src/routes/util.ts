@@ -10,11 +10,9 @@ import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
 import * as fhir from "../models/fhir"
+import {CONTENT_TYPE_FHIR} from "../app"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
-
-const CONTENT_TYPE_FHIR = "application/fhir+json; fhirVersion=4.0"
-const CONTENT_TYPE_JSON = "application/json"
 
 export const VALIDATOR_HOST = "http://localhost:9001"
 export const basePath = "/FHIR/R4"
@@ -28,39 +26,38 @@ export function handleResponse<T>(
   spineResponse: SpineDirectResponse<T> | SpinePollableResponse,
   responseToolkit: Hapi.ResponseToolkit
 ): Hapi.ResponseObject {
-  const isSmokeTest = request.headers["x-smoke-test"]
-  const contentType = isSmokeTest ? CONTENT_TYPE_JSON : CONTENT_TYPE_FHIR
-
   if (isPollable(spineResponse)) {
     return responseToolkit.response()
       .code(spineResponse.statusCode)
       .header("Content-Location", spineResponse.pollingUrl)
-  } else if (isOperationOutcome(spineResponse.body)) {
+  } else if (isOperationOutcome(spineResponse.body) || isBundle(spineResponse.body)) {
     return responseToolkit.response(spineResponse.body)
       .code(spineResponse.statusCode)
-      .header("Content-Type", contentType)
-  } else if (isBundle(spineResponse.body)) {
-    return responseToolkit.response(spineResponse.body)
-      .code(spineResponse.statusCode)
-      .header("Content-Type", contentType)
+      .type(CONTENT_TYPE_FHIR)
   } else {
     const translatedSpineResponse = translateToFhir(spineResponse, request.logger)
     return responseToolkit.response(translatedSpineResponse.fhirResponse)
       .code(translatedSpineResponse.statusCode)
-      .header("Content-Type", contentType)
+      .type(CONTENT_TYPE_FHIR)
   }
 }
 
-function isOperationOutcome(body: unknown): body is fhir.OperationOutcome {
-  return typeof body === "object"
-    && "resourceType" in body
-    && (body as fhir.Resource).resourceType === "OperationOutcome"
+export function isOperationOutcome(body: unknown): body is fhir.OperationOutcome {
+  return isFhirResourceOfType(body, "OperationOutcome")
 }
 
-function isBundle(body: unknown): body is fhir.Bundle {
+export function isBundle(body: unknown): body is fhir.Bundle {
+  return isFhirResourceOfType(body, "Bundle")
+}
+
+export function isParameters(body: unknown): body is fhir.Parameters {
+  return isFhirResourceOfType(body, "Parameters")
+}
+
+function isFhirResourceOfType(body: unknown, resourceType: string) {
   return typeof body === "object"
     && "resourceType" in body
-    && (body as fhir.Resource).resourceType === "Bundle"
+    && (body as fhir.Resource).resourceType === resourceType
 }
 
 type Handler<T> = (
@@ -84,7 +81,7 @@ const getCircularReplacer = () => {
   }
 }
 
-export async function fhirValidation(
+export async function callFhirValidator(
   payload: HapiPayload,
   requestHeaders: Hapi.Util.Dictionary<string>
 ): Promise<fhir.OperationOutcome> {
@@ -111,30 +108,27 @@ export async function fhirValidation(
   return validatorResponseData
 }
 
-export async function externalFHIRValidation(
+export async function getFhirValidatorErrors(
   request: Hapi.Request
 ): Promise<fhir.OperationOutcome> {
   if (request.headers["x-skip-validation"]) {
     request.logger.info("Skipping call to FHIR validator")
   } else {
     request.logger.info("Making call to FHIR validator")
-    const validatorResponseData = await fhirValidation(request.payload, request.headers)
+    const validatorResponseData = await callFhirValidator(request.payload, request.headers)
     request.logger.info("Received response from FHIR validator")
     const error = validatorResponseData.issue.find(issue => issue.severity === "error" || issue.severity === "fatal")
     if (error) {
       return validatorResponseData
     }
   }
-  return {
-    resourceType: "OperationOutcome",
-    issue: []
-  }
+  return null
 }
 
 export function validatingHandler(handler: Handler<fhir.Bundle>) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-    const fhirValidatorResponse = await externalFHIRValidation(request)
-    if (fhirValidatorResponse.issue.length > 0) {
+    const fhirValidatorResponse = await getFhirValidatorErrors(request)
+    if (fhirValidatorResponse) {
       return responseToolkit.response(fhirValidatorResponse).code(400)
     }
 

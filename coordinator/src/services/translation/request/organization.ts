@@ -26,7 +26,7 @@ export function convertOrganizationAndProviderLicense(
   return hl7V3Organization
 }
 
-export function convertRepresentedOrganization(
+function convertRepresentedOrganization(
   organization: fhir.Organization,
   healthcareService: fhir.HealthcareService,
   bundle: fhir.Bundle

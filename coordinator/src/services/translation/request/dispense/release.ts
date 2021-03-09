@@ -14,15 +14,18 @@ export async function translateReleaseRequest(
   fhirReleaseRequest: fhir.Parameters,
   logger: pino.Logger
 ): Promise<hl7v3.NominatedPrescriptionReleaseRequestWrapper> {
+  const organizationParameter = getIdentifierParameterByName(fhirReleaseRequest.parameter, "owner")
+  const organizationCode = organizationParameter.valueIdentifier.value
+
   const hl7Id = new hl7v3.GlobalIdentifier(uuid.v4())
   const timestamp = convertMomentToHl7V3DateTime(moment.utc())
   const hl7Release = new hl7v3.NominatedPrescriptionReleaseRequest(hl7Id, timestamp)
-  hl7Release.author = await getAuthor(fhirReleaseRequest, logger)
+  hl7Release.author = await getAuthor(organizationCode, logger)
   return new hl7v3.NominatedPrescriptionReleaseRequestWrapper(hl7Release)
 }
 
 async function getAuthor(
-  fhirReleaseRequest: fhir.Parameters,
+  organizationCode: string,
   logger: pino.Logger
 ): Promise<hl7v3.SendMessagePayloadAuthorAgentPerson> {
   //TODO - replace all user details with values which are obviously placeholders
@@ -38,7 +41,7 @@ async function getAuthor(
 
   hl7AgentPerson.agentPerson = getAgentPersonPerson()
 
-  hl7AgentPerson.representedOrganization = await getRepresentedOrganization(fhirReleaseRequest, logger)
+  hl7AgentPerson.representedOrganization = await getRepresentedOrganization(organizationCode, logger)
 
   return new hl7v3.SendMessagePayloadAuthorAgentPerson(hl7AgentPerson)
 }
@@ -57,11 +60,9 @@ function getAgentPersonPerson(): hl7v3.AgentPersonPerson {
 }
 
 async function getRepresentedOrganization(
-  fhirReleaseRequest: fhir.Parameters,
+  organizationCode: string,
   logger: pino.Logger
 ): Promise<hl7v3.Organization> {
-  const organizationParameter = getIdentifierParameterByName(fhirReleaseRequest.parameter, "owner")
-  const organizationCode = organizationParameter.valueIdentifier.value
   const organization = await odsClient.lookupOrganization(organizationCode, logger)
   if (!organization) {
     throw new InvalidValueError(
