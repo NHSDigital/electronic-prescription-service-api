@@ -1,4 +1,5 @@
 import * as fhir from "../../../models/fhir"
+import { MedicationDispense } from "../../../models/fhir"
 import {onlyElement} from "./index"
 
 export function getResourcesOfType<T extends fhir.Resource>(bundle: fhir.Bundle, resourceType: string): Array<T> {
@@ -18,6 +19,10 @@ export function getMessageHeader(bundle: fhir.Bundle): fhir.MessageHeader {
 export function getMedicationRequests(bundle: fhir.Bundle): Array<fhir.MedicationRequest> {
   return getResourcesOfType<fhir.MedicationRequest>(bundle, "MedicationRequest")
 }
+
+export function getMedicationDispenses(bundle: fhir.Bundle): Array<fhir.MedicationDispense> {
+  return getResourcesOfType<fhir.MedicationDispense>(bundle, "MedicationDispense")
+}``
 
 export function getCommunicationRequests(bundle: fhir.Bundle): Array<fhir.CommunicationRequest> {
   return getResourcesOfType<fhir.CommunicationRequest>(bundle, "CommunicationRequest")

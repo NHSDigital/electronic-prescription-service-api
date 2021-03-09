@@ -116,9 +116,11 @@ export class PertinentSuppliedLineItem implements ElementCompact {
   id: codes.GlobalIdentifier
   code: codes.SnomedCode
   effectiveTime: core.Null
-  repeatNumber: undefined // todo
-  doseQuantity: undefined // todo? mim says do not use but will be available in future circa many years ago
-  rateQuantity: undefined // todo? mim says do not use but will be available in future circa many years ago
+  repeatNumber: undefined // todo dispenseNotification: handle repeats
+  // todo dispenseNotification:? mim says do not use but will be available in future circa many years ago
+  doseQuantity: undefined
+  // todo dispenseNotification: ? mim says do not use but will be available in future circa many years ago
+  rateQuantity: undefined
   consumable: Consumable
   component: DispenseLineItemComponent
   component1: DispenseLineItemComponent1
@@ -488,9 +490,9 @@ export class PertinentPrescriptionStatus implements ElementCompact {
   }
 
   code: codes.PrescriptionAnnotationCode
-  value: codes.PrescriptionStatusCode
+  value: codes.StatusCode
 
-  constructor(value: codes.PrescriptionStatusCode) {
+  constructor(value: codes.StatusCode) {
     this.code = new codes.PrescriptionAnnotationCode("PS")
     this.value = value
   }

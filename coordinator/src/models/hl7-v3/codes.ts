@@ -102,18 +102,18 @@ export class CancellationResponseReason extends Code<"2.16.840.1.113883.2.1.3.2.
   }
 }
 
-export class PrescriptionStatusCode extends Code<"2.16.840.1.113883.2.1.3.2.4.16.35"> {
+export class StatusCode extends Code<"2.16.840.1.113883.2.1.3.2.4.16.35"> {
   constructor(code: string) {
     super("2.16.840.1.113883.2.1.3.2.4.16.35", code)
   }
 
-  static TO_BE_DISPENSED = new PrescriptionStatusCode("0001")
-  static WITH_DISPENSER = new PrescriptionStatusCode("0002")
-  static WITH_DISPENSER_ACTIVE = new PrescriptionStatusCode("0003")
-  static EXPIRED = new PrescriptionStatusCode("0004")
-  static CANCELLED = new PrescriptionStatusCode("0005")
-  static DISPENSED = new PrescriptionStatusCode("0006")
-  static NOT_DISPENSED = new PrescriptionStatusCode("0007")
+  static TO_BE_DISPENSED = new StatusCode("0001")
+  static WITH_DISPENSER = new StatusCode("0002")
+  static WITH_DISPENSER_ACTIVE = new StatusCode("0003")
+  static EXPIRED = new StatusCode("0004")
+  static CANCELLED = new StatusCode("0005")
+  static DISPENSED = new StatusCode("0006")
+  static NOT_DISPENSED = new StatusCode("0007")
 }
 
 export class ItemStatusCode extends Code<"2.16.840.1.113883.2.1.3.2.4.17.23"> {

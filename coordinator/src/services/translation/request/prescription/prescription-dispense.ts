@@ -7,7 +7,11 @@ import {
   getIdentifierValueOrNullForSystem,
   onlyElement
 } from "../../common"
-import {getMessageHeader, getPatientOrNull, getResourcesOfType} from "../../common/getResourcesOfType"
+import {
+  getMedicationDispenses,
+  getMessageHeader,
+  getPatientOrNull
+} from "../../common/getResourcesOfType"
 import * as hl7v3 from "../../../../models/hl7-v3"
 import moment from "moment"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
@@ -19,7 +23,7 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
     "Bundle.identifier"
   )
 
-  const fhirMedicationDispenses = getResourcesOfType<fhir.MedicationDispense>(bundle, "MedicationDispense")
+  const fhirMedicationDispenses = getMedicationDispenses(bundle)
   const fhirFirstMedicationDispense = fhirMedicationDispenses[0]
 
   const hl7DispenseNotification = new hl7V3.DispenseNotification(new hl7V3.GlobalIdentifier(messageId))
@@ -138,14 +142,14 @@ function getFhirGroupIdentifierExtension(
   return fhirGroupIdentifierExtension
 }
 
-function getPrescriptionStatus(fhirFirstMedicationDispense: fhir.MedicationDispense) {
+function getPrescriptionStatus(fhirFirstMedicationDispense: fhir.MedicationDispense): fhir.CodingExtension {
   return getExtensionForUrl(
     fhirFirstMedicationDispense.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
     "MedicationDispense.extension") as fhir.CodingExtension
 }
 
-function getPrescriptionItemId(fhirMedicationDispense: fhir.MedicationDispense) {
+function getPrescriptionItemId(fhirMedicationDispense: fhir.MedicationDispense): string {
   return getIdentifierValueForSystem(
     fhirMedicationDispense.authorizingPrescription.map(e => e.identifier),
     "https://fhir.nhs.uk/Id/prescription-order-item-number",
@@ -153,14 +157,14 @@ function getPrescriptionItemId(fhirMedicationDispense: fhir.MedicationDispense) 
   )
 }
 
-function getDosageInstruction(fhirMedicationDispense: fhir.MedicationDispense) {
+function getDosageInstruction(fhirMedicationDispense: fhir.MedicationDispense): fhir.DosageInstruction {
   return onlyElement(
     fhirMedicationDispense.dosageInstruction,
     "MedicationDispense.dosageInstruction"
   )
 }
 
-function getMedicationCodeableConceptCoding(fhirMedicationDispense: fhir.MedicationDispense) {
+function getMedicationCodeableConceptCoding(fhirMedicationDispense: fhir.MedicationDispense): fhir.Coding {
   return onlyElement(
     fhirMedicationDispense.medicationCodeableConcept.coding,
     "MedicationDispense.medicationCodeableConcept.coding"
@@ -175,12 +179,26 @@ function getPrescriptionItemNumber(fhirMedicationDispense: fhir.MedicationDispen
   )
 }
 
-function getPrescriptionLineItemStatus(fhirMedicationDispense: fhir.MedicationDispense) {
+function getPrescriptionLineItemStatus(fhirMedicationDispense: fhir.MedicationDispense): fhir.Coding {
   return getCodingForSystem(
     fhirMedicationDispense.type.coding,
     "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
     "MedicationDispense.type.coding"
   )
+}
+
+export function getLineItemStatusCode(fhirPrescriptionLineItemStatus: fhir.Coding): hl7V3.ItemStatusCode {
+  const itemStatusCode = new hl7V3.ItemStatusCode(fhirPrescriptionLineItemStatus.code)
+  // todo dispenseNotification: do we want to map this optional field for readability but incur more maintenance
+  //itemStatusCode._attributes.displayName = fhirPrescriptionLineItemStatus.display
+  return itemStatusCode
+}
+
+function getStatusCode(fhirPrescriptionStatus: fhir.CodingExtension): hl7V3.StatusCode {
+  const statusCode = new hl7V3.StatusCode(fhirPrescriptionStatus.valueCoding.code)
+  // todo dispenseNotification: do we want to map this optional field for readability but incur more maintenance
+  //statusCode._attributes.displayName = fhirPrescriptionStatus.valueCoding.display
+  return statusCode
 }
 
 function createPatient(nhsNumber: string): hl7V3.Patient {
@@ -320,8 +338,7 @@ function createSupplyHeader(
     hl7PertinentSuppliedLineItem.component = hl7Component
     hl7PertinentSuppliedLineItem.component1 = hl7Component1
     const fhirPrescriptionLineItemStatus = getPrescriptionLineItemStatus(fhirMedicationDispense)
-    const hl7ItemStatusCode = new hl7V3.ItemStatusCode(fhirPrescriptionLineItemStatus.code)
-    hl7ItemStatusCode._attributes.displayName = fhirPrescriptionLineItemStatus.display
+    const hl7ItemStatusCode = getLineItemStatusCode(fhirPrescriptionLineItemStatus)
     hl7PertinentSuppliedLineItem.pertinentInformation3 = new hl7V3.DispenseLineItemPertinentInformation3(
       new hl7V3.PertinentItemStatus(hl7ItemStatusCode)
     )
@@ -339,8 +356,7 @@ function createSupplyHeader(
     )
   })
   const fhirPrescriptionStatus = getPrescriptionStatus(fhirFirstMedicationDispense)
-  const hl7PrescriptionStatusCode = new hl7V3.PrescriptionStatusCode(fhirPrescriptionStatus.valueCoding.code)
-  hl7PrescriptionStatusCode._attributes.displayName = fhirPrescriptionStatus.valueCoding.display
+  const hl7PrescriptionStatusCode = getStatusCode(fhirPrescriptionStatus)
   supplyHeader.pertinentInformation3 = new hl7V3.DispensePertinentInformation3(
     new hl7V3.PertinentPrescriptionStatus(hl7PrescriptionStatusCode)
   )
