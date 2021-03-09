@@ -8,10 +8,10 @@ import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"
 import * as hl7V3 from "../../../../src/models/hl7-v3"
 import * as fhir from "../../../../src/models/fhir"
-import {toArray} from "../../../../src/services/translation/common"
+import {onlyElement, toArray} from "../../../../src/services/translation/common"
 import {clone} from "../../../resources/test-helpers"
 import {
-  getMedicationDispenses
+  getMedicationDispenses, getMessageHeader
 } from "../../../../src/services/translation/common/getResourcesOfType"
 import {ElementCompact} from "xml-js"
 
@@ -93,6 +93,90 @@ describe("getPrescriptionStatus", () => {
       })
     }
   )
+})
+
+describe("fhir MessageHeader maps correct values in DispenseNotificiation", () => {
+  let dispenseNotification: fhir.Bundle
+  let messageHeader: fhir.MessageHeader
+  beforeEach(() => {
+    dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispense)
+    messageHeader = getMessageHeader(dispenseNotification)
+  })
+
+  test("destination.receiver.identifier maps to primaryInformationRecipient.AgentOrg.agentOrganization", () => {
+    const fhirMessageDestination = onlyElement(messageHeader.destination, "MessageHeader.destination")
+    fhirMessageDestination.receiver.identifier.value = "XX-TEST-VALUE"
+
+    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+
+    expect(
+      fhirMessageDestination
+        .receiver.identifier.value
+    ).toEqual(
+      hl7dispenseNotification
+        .primaryInformationRecipient.AgentOrg.agentOrganization.id._attributes.extension
+    )
+  })
+
+  test("destination.receiver.display maps to primaryInformationRecipient.AgentOrg.agentOrganization", () => {
+    const fhirMessageDestination = onlyElement(messageHeader.destination, "MessageHeader.destination")
+    fhirMessageDestination.receiver.display = "XX-TEST-VALUE"
+
+    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+    
+    expect(
+      fhirMessageDestination
+        .receiver.display
+    ).toEqual(
+      hl7dispenseNotification
+        .primaryInformationRecipient.AgentOrg.agentOrganization.name._text
+    )
+  })
+
+  test("sender.identifier.value maps to pertinentInformation1.pertinentSupplyHeader.author.AgentPerson", () => {
+    messageHeader.sender.identifier.value = "XX-TEST-VALUE"
+
+    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+    
+    expect(
+      messageHeader.sender.identifier.value
+    ).toEqual(
+      hl7dispenseNotification
+        .pertinentInformation1.pertinentSupplyHeader.author.AgentPerson.representedOrganization.id._attributes.extension
+    )
+    expect(
+      messageHeader.sender.identifier.value
+    ).toEqual(
+      hl7dispenseNotification
+        .pertinentInformation1.pertinentSupplyHeader.author.AgentPerson.code._attributes.code
+    )
+  })
+
+  test("sender.display maps to pertinentInformation1.pertinentSupplyHeader.author.AgentPerson", () => {
+    messageHeader.sender.display = "XX-TEST-VALUE"
+
+    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+    
+    expect(
+      messageHeader.sender.display
+    ).toEqual(
+      hl7dispenseNotification
+        .pertinentInformation1.pertinentSupplyHeader.author.AgentPerson.representedOrganization.name._text
+    )
+  })
+
+  test("response.identifier maps to sequelTo.priorPrescriptionReleaseEventRef.id", () => {
+    messageHeader.response.identifier = "XX-TEST-VALUE"
+
+    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+    
+    expect(
+      messageHeader.response.identifier
+    ).toEqual(
+      hl7dispenseNotification
+        .sequelTo.priorPrescriptionReleaseEventRef.id._attributes.root
+    )
+  })
 })
 
 function createStatusCode(code: string, display: string): hl7V3.StatusCode {
