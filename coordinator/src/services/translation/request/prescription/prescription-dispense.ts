@@ -142,7 +142,7 @@ function getFhirGroupIdentifierExtension(
   return fhirGroupIdentifierExtension
 }
 
-function getPrescriptionStatus(fhirFirstMedicationDispense: fhir.MedicationDispense): fhir.CodingExtension {
+export function getPrescriptionStatus(fhirFirstMedicationDispense: fhir.MedicationDispense): fhir.CodingExtension {
   return getExtensionForUrl(
     fhirFirstMedicationDispense.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
@@ -189,15 +189,13 @@ function getPrescriptionLineItemStatus(fhirMedicationDispense: fhir.MedicationDi
 
 export function getLineItemStatusCode(fhirPrescriptionLineItemStatus: fhir.Coding): hl7V3.ItemStatusCode {
   const itemStatusCode = new hl7V3.ItemStatusCode(fhirPrescriptionLineItemStatus.code)
-  // todo dispenseNotification: do we want to map this optional field for readability but incur more maintenance
-  //itemStatusCode._attributes.displayName = fhirPrescriptionLineItemStatus.display
+  itemStatusCode._attributes.displayName = fhirPrescriptionLineItemStatus.display
   return itemStatusCode
 }
 
-function getStatusCode(fhirPrescriptionStatus: fhir.CodingExtension): hl7V3.StatusCode {
+export function getStatusCode(fhirPrescriptionStatus: fhir.CodingExtension): hl7V3.StatusCode {
   const statusCode = new hl7V3.StatusCode(fhirPrescriptionStatus.valueCoding.code)
-  // todo dispenseNotification: do we want to map this optional field for readability but incur more maintenance
-  //statusCode._attributes.displayName = fhirPrescriptionStatus.valueCoding.display
+  statusCode._attributes.displayName = fhirPrescriptionStatus.valueCoding.display
   return statusCode
 }
 
