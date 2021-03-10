@@ -48,6 +48,10 @@ export class PrimaryInformationRecipient implements ElementCompact {
   }
 
   AgentOrg: organisation.AgentOrganization
+
+  constructor(organisation: organisation.AgentOrganization) {
+    this.AgentOrg = organisation
+  }
 }
 
 /*

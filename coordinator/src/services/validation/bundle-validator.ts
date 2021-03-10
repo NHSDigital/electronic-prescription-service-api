@@ -1,7 +1,7 @@
 import * as errors from "../../models/errors/validation-errors"
 import {MedicationRequestIncorrectValueError} from "../../models/errors/validation-errors"
 import {identifyMessageType} from "../../routes/util"
-import {getMedicationRequests} from "../translation/common/getResourcesOfType"
+import {getMedicationDispenses, getMedicationRequests} from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues} from "./util"
 import {getCourseOfTherapyTypeCode} from "../translation/request/course-of-therapy-type"
@@ -77,7 +77,7 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<errors.Vali
     'extension("https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation")'
   ]
   const inconsistentValueErrors = fhirPaths
-    .map((fhirPath) => verifyIdenticalForAllMedicationRequests(bundle, medicationRequests, fhirPath))
+    .map((fhirPath) => verifyIdenticalForAllResourcesOfType(bundle, medicationRequests, fhirPath))
     .filter(isTruthy)
   allErrors.push(...inconsistentValueErrors)
 
@@ -144,16 +144,28 @@ export function verifyCancellationBundle(bundle: fhir.Bundle): Array<errors.Vali
 }
 
 function verifyDispenseBundle(bundle: fhir.Bundle): Array<errors.ValidationError> {
-  bundle
-  return []
+  const medicationDispenses = getMedicationDispenses(bundle)
+
+  const allErrors: Array<errors.ValidationError> = []
+
+  const fhirPaths = [
+    'extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-prescriptionStatus")'
+  ]
+
+  const inconsistentValueErrors = fhirPaths
+    .map((fhirPath) => verifyIdenticalForAllResourcesOfType(bundle, medicationDispenses, fhirPath))
+    .filter(isTruthy)
+  allErrors.push(...inconsistentValueErrors)
+
+  return allErrors
 }
 
-function verifyIdenticalForAllMedicationRequests(
+function verifyIdenticalForAllResourcesOfType<T>(
   bundle: fhir.Bundle,
-  medicationRequests: Array<fhir.MedicationRequest>,
+  resourcesOfType: Array<T>,
   fhirPath: string
 ) {
-  const allFieldValues = applyFhirPath(bundle, medicationRequests, fhirPath)
+  const allFieldValues = applyFhirPath(bundle, resourcesOfType, fhirPath)
   const uniqueFieldValues = getUniqueValues(allFieldValues)
   if (uniqueFieldValues.length > 1) {
     return new errors.MedicationRequestInconsistentValueError(fhirPath, uniqueFieldValues)
