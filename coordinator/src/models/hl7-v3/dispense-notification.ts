@@ -189,8 +189,9 @@ export class InFulfillmentOf implements ElementCompact {
   templateId: codes.TemplateIdentifier
   priorOriginalPrescriptionRef: PriorOriginalRef
 
-  constructor() {
+  constructor(priorOriginalPrescriptionRef: PriorOriginalRef) {
     this.templateId = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.sourceOf1")
+    this.priorOriginalPrescriptionRef = priorOriginalPrescriptionRef
   }
 }
 

@@ -65,9 +65,9 @@
                 "resourceType": "MedicationDispense",
                 "extension": [
                     {
-                        "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+                        "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-prescriptionStatus",
                         "valueCoding": {
-                            "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+                            "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-prescription-status",
                             "code": "0003",
                             "display": "With Dispenser - Active"
                         }

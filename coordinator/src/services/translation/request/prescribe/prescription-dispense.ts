@@ -29,24 +29,27 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)
   const hl7CareRecordElementCategory = createCareRecordElementCategory(fhirIdentifiers)
   const hl7PriorPrescriptionReleaseEventRef = createPriorPrescriptionReleaseEventRef(fhirHeader)
-  const hl7SupplyHeader = createSupplyHeader(
+  const hl7PertientSupplyHeader = createPertinentSupplyHeader(
     messageId,
     fhirHeader.sender,
     fhirMedicationDispenses,
     fhirFirstMedicationDispense
   )
 
+  /* eslint-disable max-len */
   const hl7DispenseNotification = new hl7V3.DispenseNotification(new hl7V3.GlobalIdentifier(messageId))
   hl7DispenseNotification.effectiveTime = convertMomentToHl7V3DateTime(moment.utc())
   hl7DispenseNotification.recordTarget = new hl7V3.DispenseRecordTarget(hl7Patient)
   hl7DispenseNotification.primaryInformationRecipient = new hl7V3.PrimaryInformationRecipient(hl7AgentOrganization)
-  hl7DispenseNotification.pertinentInformation1 = new hl7V3.DispenseNotificationPertinentInformation1(hl7SupplyHeader)
+  hl7DispenseNotification.pertinentInformation1 = new hl7V3.DispenseNotificationPertinentInformation1(hl7PertientSupplyHeader)
   hl7DispenseNotification.pertinentInformation2 = new hl7V3.DispensePertinentInformation2(hl7CareRecordElementCategory)
   hl7DispenseNotification.sequelTo = new hl7V3.SequelTo(hl7PriorPrescriptionReleaseEventRef)
+  /* eslint-enable max-len */
+
   return hl7DispenseNotification
 }
 
-function createSupplyHeader(
+function createPertinentSupplyHeader(
   messageId: string,
   fhirHeaderSender: fhir.IdentifierReference<fhir.Organization>,
   fhirMedicationDispenses: Array<fhir.MedicationDispense>,
@@ -131,22 +134,15 @@ function createSupplyHeader(
       hl7PertinentSuppliedLineItem
     )
   })
-  const fhirPrescriptionStatus = getPrescriptionStatus(fhirFirstMedicationDispense)
-  const hl7PrescriptionStatusCode = getStatusCode(fhirPrescriptionStatus)
-  supplyHeader.pertinentInformation3 = new hl7V3.DispensePertinentInformation3(
-    new hl7V3.PertinentPrescriptionStatus(hl7PrescriptionStatusCode)
-  )
+  
+  const hl7PertinentPrescriptionStatus = createPertinentPrescriptionStatus(fhirFirstMedicationDispense)
+  const hl7PertinentPrescriptionIdentifier = createPertinentPrescriptionId(fhirFirstMedicationDispense)
+  const hl7PriorOriginalRef = createPriorOriginalRef(fhirFirstMedicationDispense)
 
-  const fhirGroupIdentifierExtension = getFhirGroupIdentifierExtension(fhirFirstMedicationDispense)
-  const hl7ShortFormPrescriptionIdentifier = getShortFormPrescriptionId(fhirGroupIdentifierExtension)
-  supplyHeader.pertinentInformation4 = new hl7V3.DispensePertinentInformation4(
-    new hl7V3.PertinentPrescriptionId(new hl7V3.ShortFormPrescriptionIdentifier(hl7ShortFormPrescriptionIdentifier))
-  )
-  const hl7PriorOriginalPrescriptionRef = getPrescriptionId(fhirGroupIdentifierExtension)
-  supplyHeader.inFulfillmentOf = new hl7V3.InFulfillmentOf()
-  supplyHeader.inFulfillmentOf.priorOriginalPrescriptionRef = new hl7V3.PriorOriginalRef(
-    new hl7V3.GlobalIdentifier(hl7PriorOriginalPrescriptionRef)
-  )
+  supplyHeader.pertinentInformation3 = new hl7V3.DispensePertinentInformation3(hl7PertinentPrescriptionStatus)
+  supplyHeader.pertinentInformation4 = new hl7V3.DispensePertinentInformation4(hl7PertinentPrescriptionIdentifier)
+  supplyHeader.inFulfillmentOf = new hl7V3.InFulfillmentOf(hl7PriorOriginalRef)
+
   return supplyHeader
 }
 
@@ -171,30 +167,6 @@ function getIdentifiers(
     fhirIdentifiers.push(fhirPrescriptionDispenseItemNumber)
   })
   return fhirIdentifiers
-}
-
-function getPrescriptionId(fhirGroupIdentifierExtension: fhir.ExtensionExtension<fhir.Extension>): string {
-  return (
-    getExtensionForUrl(
-      fhirGroupIdentifierExtension.extension,
-      "UUID",
-      "MedicationDispense.authorizingPrescription.extension.valueIdentifier"
-    ) as fhir.IdentifierExtension)
-    .valueIdentifier.value
-}
-
-function getShortFormPrescriptionId(
-  fhirGroupIdentifierExtension: fhir.ExtensionExtension<fhir.Extension>
-): string {
-  const fhirAuthorizingPrescriptionShortFormIdExtension = getExtensionForUrl(
-    fhirGroupIdentifierExtension.extension,
-    "shortForm",
-    "MedicationDispense.authorizingPrescription.extension.valueIdentifier"
-  ) as fhir.IdentifierExtension
-  const hl7PertinentPrescriptionId = fhirAuthorizingPrescriptionShortFormIdExtension
-    .valueIdentifier
-    .value
-  return hl7PertinentPrescriptionId
 }
 
 function getNhsNumber(
@@ -271,10 +243,41 @@ export function getLineItemStatusCode(fhirPrescriptionLineItemStatus: fhir.Codin
   return itemStatusCode
 }
 
-export function getStatusCode(fhirPrescriptionStatus: fhir.CodingExtension): hl7V3.StatusCode {
-  const statusCode = new hl7V3.StatusCode(fhirPrescriptionStatus.valueCoding.code)
-  statusCode._attributes.displayName = fhirPrescriptionStatus.valueCoding.display
-  return statusCode
+function createPertinentPrescriptionId(
+  fhirFirstMedicationDispense: fhir.MedicationDispense
+): hl7V3.PertinentPrescriptionId {
+  const fhirGroupIdentifierExtension = getFhirGroupIdentifierExtension(fhirFirstMedicationDispense)
+  const fhirAuthorizingPrescriptionShortFormIdExtension = getExtensionForUrl(
+    fhirGroupIdentifierExtension.extension,
+    "shortForm",
+    "MedicationDispense.authorizingPrescription.extension.valueIdentifier"
+  ) as fhir.IdentifierExtension
+  const hl7PertinentPrescriptionId = fhirAuthorizingPrescriptionShortFormIdExtension
+    .valueIdentifier
+    .value
+  return new hl7V3.PertinentPrescriptionId(new hl7V3.ShortFormPrescriptionIdentifier(hl7PertinentPrescriptionId))
+}
+
+function createPriorOriginalRef(firstMedicationDispense: fhir.MedicationDispense): hl7V3.PriorOriginalRef {
+  const fhirGroupIdentifierExtension = getFhirGroupIdentifierExtension(firstMedicationDispense)
+  const fhirAuthorizingPrescriptionShortFormIdExtension = getExtensionForUrl(
+    fhirGroupIdentifierExtension.extension,
+    "UUID",
+    "MedicationDispense.authorizingPrescription.extension.valueIdentifier"
+  ) as fhir.IdentifierExtension
+  const id = fhirAuthorizingPrescriptionShortFormIdExtension.valueIdentifier.value
+  return new hl7V3.PriorOriginalRef(
+    new hl7V3.GlobalIdentifier(id)
+  )
+}
+
+export function createPertinentPrescriptionStatus(
+  fhirFirstMedicationDispense: fhir.MedicationDispense
+): hl7V3.PertinentPrescriptionStatus {
+  const fhirPrescriptionStatus = getPrescriptionStatus(fhirFirstMedicationDispense)
+  const hl7StatusCode = new hl7V3.StatusCode(fhirPrescriptionStatus.valueCoding.code)
+  hl7StatusCode._attributes.displayName = fhirPrescriptionStatus.valueCoding.display
+  return new hl7V3.PertinentPrescriptionStatus(hl7StatusCode)
 }
 
 function createPatient(patient: fhir.Patient, firstMedicationDispense: fhir.MedicationDispense): hl7V3.Patient {
