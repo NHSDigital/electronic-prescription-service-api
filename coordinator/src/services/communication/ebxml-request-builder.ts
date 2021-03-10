@@ -44,7 +44,7 @@ export function addEbXmlWrapper(spineRequest: SpineRequest, logger: Logger): str
   const cpaId = cpaIdMap.get(spineRequest.interactionId)
   if (!cpaId) {
     logger.error(`Could not find the specified CPA ID`)
-    throw new Error(`Could not identify CPA ID for interaction ${spineRequest.interactionId}`)
+    throw new Error(notSupportedOperationOutcome)
   }
 
   const ebXmlRequest = new EbXmlRequest(spineRequest.interactionId, cpaId, spineRequest.message, spineRequest.messageId)
@@ -78,3 +78,23 @@ export class XmlDeclaration {
     encoding: "UTF-8"
   }
 }
+
+const notSupportedOperationOutcome = JSON.stringify({
+  resourceType: "OperationOutcome",
+  issue: [
+    {
+      code: "informational",
+      severity: "information",
+      details: {
+        coding: [
+          {
+            code: "INTERACTION_NOT_SUPPORTED",
+            display: "Interaction not supported",
+            system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+            version: "1"
+          }
+        ]
+      }
+    }
+  ]
+})
