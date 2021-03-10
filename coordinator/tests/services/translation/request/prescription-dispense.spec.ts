@@ -354,7 +354,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
 
   // eslint-disable-next-line max-len
   test("quantity maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.component.suppliedLineItemQuantity", () => {
-    medicationDispenses.forEach(medicationDispense => { 
+    medicationDispenses.forEach(medicationDispense => {
       medicationDispense.quantity.value = "XX-TEST-VALUE"
       medicationDispense.quantity.unit = "XX-TEST-VALUE-UNIT"
       medicationDispense.quantity.code = "XX-TEST-VALUE-CODE"
@@ -454,12 +454,12 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
 
   test("whenPrepared maps to pertinentInformation1.pertinentSupplyHeader.author.time", () => {
     medicationDispenses.forEach(medicationDispense => medicationDispense.whenPrepared = "2020-03-10")
-    
+
     const expected = "20200310000000"
 
     const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
 
-    medicationDispenses.map((medicationDispense) => {
+    medicationDispenses.map(() => {
       expect(
         expected
       ).toEqual(
@@ -476,7 +476,9 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
 
   // eslint-disable-next-line max-len
   test("dosage maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.component.suppliedLineItemQuantity.pertinentInformation1.pertinentSupplyInstructions", () => {
-    medicationDispenses.forEach(medicationDispense => medicationDispense.dosageInstruction.forEach(d => d.text = "XX-TEST-VALUE"))
+    medicationDispenses.forEach(medicationDispense =>
+      medicationDispense.dosageInstruction.forEach(d => d.text = "XX-TEST-VALUE")
+    )
 
     const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
 
