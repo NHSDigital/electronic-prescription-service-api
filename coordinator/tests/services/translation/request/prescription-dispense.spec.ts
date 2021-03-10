@@ -1,5 +1,6 @@
 import {
   getLineItemStatusCode,
+  getPrescriptionItemNumber,
   getPrescriptionStatus,
   translateDispenseNotification
 } from "../../../../src/services/translation/request/prescription/prescription-dispense"
@@ -8,7 +9,10 @@ import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"
 import * as hl7V3 from "../../../../src/models/hl7-v3"
 import * as fhir from "../../../../src/models/fhir"
-import {onlyElement, toArray} from "../../../../src/services/translation/common"
+import {
+  onlyElement,
+  toArray
+} from "../../../../src/services/translation/common"
 import {clone} from "../../../resources/test-helpers"
 import {
   getMedicationDispenses, getMessageHeader
@@ -123,7 +127,7 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
     fhirMessageDestination.receiver.display = "XX-TEST-VALUE"
 
     const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
-    
+
     expect(
       fhirMessageDestination
         .receiver.display
@@ -137,7 +141,7 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
     messageHeader.sender.identifier.value = "XX-TEST-VALUE"
 
     const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
-    
+
     expect(
       messageHeader.sender.identifier.value
     ).toEqual(
@@ -156,7 +160,7 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
     messageHeader.sender.display = "XX-TEST-VALUE"
 
     const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
-    
+
     expect(
       messageHeader.sender.display
     ).toEqual(
@@ -169,13 +173,42 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
     messageHeader.response.identifier = "XX-TEST-VALUE"
 
     const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
-    
+
     expect(
       messageHeader.response.identifier
     ).toEqual(
       hl7dispenseNotification
         .sequelTo.priorPrescriptionReleaseEventRef.id._attributes.root
     )
+  })
+})
+
+describe("fhir MedicationDispense maps correct values in DispenseNotificiation", () => {
+  let dispenseNotification: fhir.Bundle
+  let medicationDispenses: Array<fhir.MedicationDispense>
+  beforeEach(() => {
+    dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispense)
+    medicationDispenses = getMedicationDispenses(dispenseNotification)
+  })
+
+  // eslint-disable-next-line max-len
+  test("identifier.value maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.id", () => {
+    expect(medicationDispenses.length).toBeGreaterThan(0)
+    medicationDispenses.forEach(medicationDispense => setPrescriptionItemNumber(medicationDispense, "XX-TEST-VALUE"))
+
+    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+
+    medicationDispenses.map((medicationDispense, index) => {
+      expect(
+        getPrescriptionItemNumber(medicationDispense)
+      ).toEqual(
+        hl7dispenseNotification
+          .pertinentInformation1
+          .pertinentSupplyHeader
+          .pertinentInformation1[index]
+          .pertinentSuppliedLineItem.id._attributes.root
+      )
+    })
   })
 })
 
@@ -205,4 +238,16 @@ function setItemStatusCode(
   newItemStatusCoding: fhir.Coding
 ): void {
   medicationDispense.type.coding = [newItemStatusCoding]
+}
+
+function setPrescriptionItemNumber(
+  medicationDispense: fhir.MedicationDispense,
+  newPrescriptionItemNumber: string
+): void {
+  medicationDispense.identifier
+    .forEach(i => {
+      if (i.system === "https://fhir.nhs.uk/Id/prescription-dispense-item-number") {
+        i.value = newPrescriptionItemNumber
+      }
+    })
 }

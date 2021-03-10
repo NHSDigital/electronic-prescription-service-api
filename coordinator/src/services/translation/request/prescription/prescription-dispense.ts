@@ -171,11 +171,11 @@ function getMedicationCodeableConceptCoding(fhirMedicationDispense: fhir.Medicat
   )
 }
 
-function getPrescriptionItemNumber(fhirMedicationDispense: fhir.MedicationDispense): string {
+export function getPrescriptionItemNumber(fhirMedicationDispense: fhir.MedicationDispense): string {
   return getIdentifierValueForSystem(
     fhirMedicationDispense.identifier,
     "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
-    "MedicationDispense.identifiers"
+    "MedicationDispense.identifier"
   )
 }
 
