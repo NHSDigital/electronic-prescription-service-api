@@ -4,7 +4,7 @@ import {
   getPrescriptionItemNumber,
   getPrescriptionStatus,
   translateDispenseNotification
-} from "../../../../src/services/translation/request/prescription/prescription-dispense"
+} from "../../../../src/services/translation/request/prescribe/prescription-dispense"
 import * as TestResources from "../../../resources/test-resources"
 import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"

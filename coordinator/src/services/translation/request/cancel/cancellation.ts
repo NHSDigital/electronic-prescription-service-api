@@ -3,7 +3,7 @@ import {getMedicationRequests, getPatient} from "../../common/getResourcesOfType
 import {convertAuthor, convertResponsibleParty} from "../practitioner"
 import * as common from "../../common"
 import {getExtensionForUrl, getIdentifierValueForSystem} from "../../common"
-import {extractEffectiveTime} from "../prescription/parent-prescription"
+import {extractEffectiveTime} from "../prescribe/parent-prescription"
 import * as hl7V3 from "../../../../models/hl7-v3"
 import * as fhir from "../../../../models/fhir"
 
