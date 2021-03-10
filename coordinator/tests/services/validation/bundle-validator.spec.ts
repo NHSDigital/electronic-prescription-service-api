@@ -350,4 +350,36 @@ describe("verifyDispenseNotificationBundle", () => {
     expect(returnedErrors.length).toBe(1)
     expect(returnedErrors[0]).toBeInstanceOf(errors.MedicationDispenseInconsistentValueError)
   })
+
+  test("returns an error when MedicationDispenses have different performer values per type", () => {
+    const medicationDispenseEntry =
+      bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
+
+    const medicationDispense1 = medicationDispenseEntry.resource as fhir.MedicationDispense
+    medicationDispense1.performer = [
+      {
+        actor: {
+          type: "Practitioner",
+          identifier: "FIRST"
+        }
+      } as fhir.DispensePerformer
+    ]
+
+    const medicationDispenseEntry2 = clone(medicationDispenseEntry)
+    const medicationDispense2 = medicationDispenseEntry.resource as fhir.MedicationDispense
+    medicationDispense2.performer = [
+      {
+        actor: {
+          type: "Practitioner",
+          identifier: "SECOND"
+        }
+      } as fhir.DispensePerformer
+    ]
+
+    bundle.entry.push(medicationDispenseEntry2)
+
+    const returnedErrors = validator.verifyDispenseBundle(bundle)
+    expect(returnedErrors.length).toBe(1)
+    expect(returnedErrors[0]).toBeInstanceOf(errors.MedicationDispenseInconsistentValueError)
+  })
 })

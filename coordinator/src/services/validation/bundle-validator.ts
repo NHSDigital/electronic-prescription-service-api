@@ -3,7 +3,7 @@ import {MedicationRequestIncorrectValueError} from "../../models/errors/validati
 import {identifyMessageType} from "../../routes/util"
 import {getMedicationDispenses, getMedicationRequests} from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
-import {getUniqueValues} from "./util"
+import {getUniqueValues, groupBy} from "./util"
 import {getCourseOfTherapyTypeCode} from "../translation/request/course-of-therapy-type"
 import {getExtensionForUrlOrNull, getIdentifierValueForSystem, isTruthy} from "../translation/common"
 import * as fhir from "../../models/fhir"
@@ -157,6 +157,18 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<errors.Validati
     .map((fhirPath) => verifyIdenticalForAllMedicationDispenses(bundle, medicationDispenses, fhirPath))
     .filter(isTruthy)
   allErrors.push(...inconsistentValueErrors)
+
+  const performersByType = groupBy(medicationDispenses.flatMap(m => m.performer.map(p => p.actor)), actor => actor.type)
+  performersByType.forEach((key, index, values) => {
+    const uniqueFieldValues = getUniqueValues(values[index])
+    if (uniqueFieldValues.length > 1) {
+      allErrors.push(
+        new errors.MedicationDispenseInconsistentValueError(
+          `MedicationDispense.performer.(actor.type === ${key[index].type})`,
+          uniqueFieldValues)
+      )
+    }
+  })
 
   return allErrors
 }
