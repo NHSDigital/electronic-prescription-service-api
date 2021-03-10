@@ -25,11 +25,12 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
   const fhirFirstMedicationDispense = fhirMedicationDispenses[0]
   const fhirIdentifiers = getIdentifiers(messageId, fhirMedicationDispenses)
 
+  const hl7EffectiveTime = convertMomentToHl7V3DateTime(moment.utc())
   const hl7AgentOrganization = createAgentOrganisation(fhirHeader)
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)
   const hl7CareRecordElementCategory = createCareRecordElementCategory(fhirIdentifiers)
   const hl7PriorPrescriptionReleaseEventRef = createPriorPrescriptionReleaseEventRef(fhirHeader)
-  const hl7PertientSupplyHeader = createPertinentSupplyHeader(
+  const hl7PertinentInformation1 = createPertinentInformation1(
     messageId,
     fhirHeader.sender,
     fhirMedicationDispenses,
@@ -38,10 +39,10 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
 
   /* eslint-disable max-len */
   const hl7DispenseNotification = new hl7V3.DispenseNotification(new hl7V3.GlobalIdentifier(messageId))
-  hl7DispenseNotification.effectiveTime = convertMomentToHl7V3DateTime(moment.utc())
+  hl7DispenseNotification.effectiveTime = hl7EffectiveTime
   hl7DispenseNotification.recordTarget = new hl7V3.DispenseRecordTarget(hl7Patient)
   hl7DispenseNotification.primaryInformationRecipient = new hl7V3.PrimaryInformationRecipient(hl7AgentOrganization)
-  hl7DispenseNotification.pertinentInformation1 = new hl7V3.DispenseNotificationPertinentInformation1(hl7PertientSupplyHeader)
+  hl7DispenseNotification.pertinentInformation1 = hl7PertinentInformation1
   hl7DispenseNotification.pertinentInformation2 = new hl7V3.DispensePertinentInformation2(hl7CareRecordElementCategory)
   hl7DispenseNotification.sequelTo = new hl7V3.SequelTo(hl7PriorPrescriptionReleaseEventRef)
   /* eslint-enable max-len */
@@ -49,12 +50,12 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
   return hl7DispenseNotification
 }
 
-function createPertinentSupplyHeader(
+function createPertinentInformation1(
   messageId: string,
   fhirHeaderSender: fhir.IdentifierReference<fhir.Organization>,
   fhirMedicationDispenses: Array<fhir.MedicationDispense>,
   fhirFirstMedicationDispense: fhir.MedicationDispense
-): hl7V3.PertinentSupplyHeader {
+): hl7V3.DispenseNotificationPertinentInformation1 {
 
   const fhirPractitionerPerformer = fhirFirstMedicationDispense.performer.find(p => p.actor.type === "Practitioner")
 
@@ -62,88 +63,93 @@ function createPertinentSupplyHeader(
   const hl7RepresentedOrganisationName = fhirHeaderSender.display
   const hl7AuthorTime = fhirFirstMedicationDispense.whenPrepared
   const hl7AgentPersonPersonName = fhirPractitionerPerformer.actor.display
-
+  const hl7PertinentPrescriptionStatus = createPertinentPrescriptionStatus(fhirFirstMedicationDispense)
+  const hl7PertinentPrescriptionIdentifier = createPertinentPrescriptionId(fhirFirstMedicationDispense)
+  const hl7PriorOriginalRef = createPriorOriginalRef(fhirFirstMedicationDispense)
   const hl7Author = createAuthor(
     hl7RepresentedOrganisationCode,
     hl7RepresentedOrganisationName,
     hl7AuthorTime,
     hl7AgentPersonPersonName
   )
+  const hl7PertinentInformation1LineItems = fhirMedicationDispenses.map(
+    medicationDispense => createPertinentInformation1LineItem(medicationDispense)
+  )
 
+  /* eslint-disable max-len */
   const supplyHeader = new hl7V3.PertinentSupplyHeader(new hl7V3.GlobalIdentifier(messageId))
   supplyHeader.author = hl7Author
-  supplyHeader.pertinentInformation1 = fhirMedicationDispenses.map(fhirMedicationDispense => {
-    const hl7SuppliedLineItemQuantitySnomedCode = new hl7V3.SnomedCode(
-      fhirMedicationDispense.quantity.code,
-      fhirMedicationDispense.quantity.unit
-    )
-    const hl7UnitValue = fhirMedicationDispense.quantity.value.toString()
-    const hl7Quantity = new hl7V3.QuantityInAlternativeUnits(
-      hl7UnitValue,
-      hl7UnitValue,
-      hl7SuppliedLineItemQuantitySnomedCode
-    )
-    const fhirMedicationCodeableConceptCoding = getMedicationCodeableConceptCoding(fhirMedicationDispense)
-    const hl7ManufacturedSuppliedMaterialSnomedCode = new hl7V3.SnomedCode(
-      fhirMedicationCodeableConceptCoding.code,
-      fhirMedicationCodeableConceptCoding.display
-    )
-    const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
-    const hl7PertinentSuppliedLineItem = new hl7V3.PertinentSuppliedLineItem(
-      new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber),
-      new hl7v3.SnomedCode(fhirMedicationCodeableConceptCoding.code),
-    )
-    const hl7Consumable = new hl7V3.Consumable()
-    const hl7RequestedManufacturedProduct = new hl7V3.RequestedManufacturedProduct()
-    const hl7SuppliedLineItemQuantity = new hl7V3.SuppliedLineItemQuantity()
-    hl7PertinentSuppliedLineItem.consumable = hl7Consumable
-    hl7SuppliedLineItemQuantity.code = hl7SuppliedLineItemQuantitySnomedCode
-    hl7SuppliedLineItemQuantity.quantity = hl7Quantity
-    hl7SuppliedLineItemQuantity.product = new hl7V3.DispenseProduct(
-      new hl7V3.SuppliedManufacturedProduct(
-        new hl7V3.ManufacturedRequestedMaterial(hl7ManufacturedSuppliedMaterialSnomedCode)
-      )
-    )
-    const fhirDosageInstruction = getDosageInstruction(fhirMedicationDispense)
-    hl7SuppliedLineItemQuantity.pertinentInformation1 = new hl7V3.DispenseLineItemPertinentInformation1(
-      new hl7V3.PertinentSupplyInstructions(
-        new hl7V3.Text(fhirDosageInstruction.text)
-      )
-    )
-    const hl7Component = new hl7V3.DispenseLineItemComponent(hl7SuppliedLineItemQuantity)
-    const hl7Component1 = new hl7V3.DispenseLineItemComponent1(
-      new hl7V3.SupplyRequest(hl7SuppliedLineItemQuantitySnomedCode, hl7Quantity)
-    )
-    hl7PertinentSuppliedLineItem.component = hl7Component
-    hl7PertinentSuppliedLineItem.component1 = hl7Component1
-    const fhirPrescriptionLineItemStatus = getPrescriptionLineItemStatus(fhirMedicationDispense)
-    const hl7ItemStatusCode = getLineItemStatusCode(fhirPrescriptionLineItemStatus)
-    hl7PertinentSuppliedLineItem.pertinentInformation3 = new hl7V3.DispenseLineItemPertinentInformation3(
-      new hl7V3.PertinentItemStatus(hl7ItemStatusCode)
-    )
-    const hl7PriorOriginalItemRef = getPrescriptionItemId(fhirMedicationDispense)
-    const hl7InFulfillmentOfLineItem = new hl7V3.InFulfillmentOfLineItem()
-    hl7InFulfillmentOfLineItem.priorOriginalItemRef = new hl7V3.PriorOriginalRef(
-      new hl7V3.GlobalIdentifier(hl7PriorOriginalItemRef)
-    )
-    hl7PertinentSuppliedLineItem.inFulfillmentOf = hl7InFulfillmentOfLineItem
-    hl7RequestedManufacturedProduct.manufacturedRequestedMaterial =
-      new hl7V3.ManufacturedRequestedMaterial(hl7SuppliedLineItemQuantitySnomedCode)
-    hl7Consumable.requestedManufacturedProduct = hl7RequestedManufacturedProduct
-    return new hl7V3.DispenseNotificationPertinentInformation1LineItem(
-      hl7PertinentSuppliedLineItem
-    )
-  })
-
-  const hl7PertinentPrescriptionStatus = createPertinentPrescriptionStatus(fhirFirstMedicationDispense)
-  const hl7PertinentPrescriptionIdentifier = createPertinentPrescriptionId(fhirFirstMedicationDispense)
-  const hl7PriorOriginalRef = createPriorOriginalRef(fhirFirstMedicationDispense)
-
+  supplyHeader.pertinentInformation1 = hl7PertinentInformation1LineItems
   supplyHeader.pertinentInformation3 = new hl7V3.DispensePertinentInformation3(hl7PertinentPrescriptionStatus)
   supplyHeader.pertinentInformation4 = new hl7V3.DispensePertinentInformation4(hl7PertinentPrescriptionIdentifier)
   supplyHeader.inFulfillmentOf = new hl7V3.InFulfillmentOf(hl7PriorOriginalRef)
+  /* eslint-enable max-len */
 
-  return supplyHeader
+  return new hl7V3.DispenseNotificationPertinentInformation1(supplyHeader)
+}
+
+function createPertinentInformation1LineItem(fhirMedicationDispense: fhir.MedicationDispense) {
+  const hl7SuppliedLineItemQuantitySnomedCode = new hl7V3.SnomedCode(
+    fhirMedicationDispense.quantity.code,
+    fhirMedicationDispense.quantity.unit
+  )
+  const hl7UnitValue = fhirMedicationDispense.quantity.value.toString()
+  const hl7Quantity = new hl7V3.QuantityInAlternativeUnits(
+    hl7UnitValue,
+    hl7UnitValue,
+    hl7SuppliedLineItemQuantitySnomedCode
+  )
+  const fhirMedicationCodeableConceptCoding = getMedicationCodeableConceptCoding(fhirMedicationDispense)
+  const hl7ManufacturedSuppliedMaterialSnomedCode = new hl7V3.SnomedCode(
+    fhirMedicationCodeableConceptCoding.code,
+    fhirMedicationCodeableConceptCoding.display
+  )
+  const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
+  const hl7PertinentSuppliedLineItem = new hl7V3.PertinentSuppliedLineItem(
+    new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber),
+    new hl7v3.SnomedCode(fhirMedicationCodeableConceptCoding.code)
+  )
+  const hl7Consumable = new hl7V3.Consumable()
+  const hl7RequestedManufacturedProduct = new hl7V3.RequestedManufacturedProduct()
+  const hl7SuppliedLineItemQuantity = new hl7V3.SuppliedLineItemQuantity()
+  hl7PertinentSuppliedLineItem.consumable = hl7Consumable
+  hl7SuppliedLineItemQuantity.code = hl7SuppliedLineItemQuantitySnomedCode
+  hl7SuppliedLineItemQuantity.quantity = hl7Quantity
+  hl7SuppliedLineItemQuantity.product = new hl7V3.DispenseProduct(
+    new hl7V3.SuppliedManufacturedProduct(
+      new hl7V3.ManufacturedRequestedMaterial(hl7ManufacturedSuppliedMaterialSnomedCode)
+    )
+  )
+  const fhirDosageInstruction = getDosageInstruction(fhirMedicationDispense)
+  hl7SuppliedLineItemQuantity.pertinentInformation1 = new hl7V3.DispenseLineItemPertinentInformation1(
+    new hl7V3.PertinentSupplyInstructions(
+      new hl7V3.Text(fhirDosageInstruction.text)
+    )
+  )
+  const hl7Component = new hl7V3.DispenseLineItemComponent(hl7SuppliedLineItemQuantity)
+  const hl7Component1 = new hl7V3.DispenseLineItemComponent1(
+    new hl7V3.SupplyRequest(hl7SuppliedLineItemQuantitySnomedCode, hl7Quantity)
+  )
+  hl7PertinentSuppliedLineItem.component = hl7Component
+  hl7PertinentSuppliedLineItem.component1 = hl7Component1
+  const fhirPrescriptionLineItemStatus = getPrescriptionLineItemStatus(fhirMedicationDispense)
+  const hl7ItemStatusCode = getLineItemStatusCode(fhirPrescriptionLineItemStatus)
+  hl7PertinentSuppliedLineItem.pertinentInformation3 = new hl7V3.DispenseLineItemPertinentInformation3(
+    new hl7V3.PertinentItemStatus(hl7ItemStatusCode)
+  )
+  const hl7PriorOriginalItemRef = getPrescriptionItemId(fhirMedicationDispense)
+  const hl7InFulfillmentOfLineItem = new hl7V3.InFulfillmentOfLineItem()
+  hl7InFulfillmentOfLineItem.priorOriginalItemRef = new hl7V3.PriorOriginalRef(
+    new hl7V3.GlobalIdentifier(hl7PriorOriginalItemRef)
+  )
+  hl7PertinentSuppliedLineItem.inFulfillmentOf = hl7InFulfillmentOfLineItem
+  hl7RequestedManufacturedProduct.manufacturedRequestedMaterial =
+    new hl7V3.ManufacturedRequestedMaterial(hl7SuppliedLineItemQuantitySnomedCode)
+  hl7Consumable.requestedManufacturedProduct = hl7RequestedManufacturedProduct
+
+  return new hl7V3.DispenseNotificationPertinentInformation1LineItem(
+    hl7PertinentSuppliedLineItem
+  )
 }
 
 function getMessageId(bundle: fhir.Bundle) {
