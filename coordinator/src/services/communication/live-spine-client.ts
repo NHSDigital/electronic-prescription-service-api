@@ -4,6 +4,7 @@ import {Logger} from "pino"
 import {SpineClient} from "."
 import {SpineRequest, SpineResponse} from "../../models/spine"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
+import {FhirMessageProcessingError, toOperationOutcome} from "../../models/errors/processing-errors"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
@@ -40,10 +41,14 @@ export class LiveSpineClient implements SpineClient {
       logger.info("Building EBXML wrapper for SpineRequest")
       wrappedMessage = this.ebXMLBuilder(spineRequest, logger)
     } catch (error) {
-      return Promise.resolve({
-        body: JSON.parse(error),
-        statusCode: 400
-      })
+      if (error instanceof FhirMessageProcessingError) {
+        return Promise.resolve({
+          body: toOperationOutcome(error),
+          statusCode: 400
+        })
+      } else {
+        throw error
+      }
     }
     const address = this.getSpineUrlForPrescription()
 
@@ -104,8 +109,8 @@ export class LiveSpineClient implements SpineClient {
         logger.info("Successful request, returning SpinePollableResponse")
         logger.info(`Got polling URL ${result.headers["content-location"]}`)
         return {
-          statusCode: result.status,
-          pollingUrl: `${BASE_PATH}${result.headers["content-location"]}`
+          pollingUrl: `${BASE_PATH}${result.headers["content-location"]}`,
+          statusCode: result.status
         }
       default:
         logger.error(`Got the following response from spine:\n${result.data}`)

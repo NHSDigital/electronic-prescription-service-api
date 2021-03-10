@@ -8,6 +8,7 @@ import {namespacedCopyOf, writeXmlStringPretty} from "../serialisation/xml"
 import {SpineRequest} from "../../models/spine"
 import * as hl7V3 from "../../models/hl7-v3"
 import {Logger} from "pino"
+import {FhirMessageProcessingError} from "../../models/errors/processing-errors"
 
 const ebxmlRequestTemplate = fs.readFileSync(
   path.join(__dirname, "../../resources/ebxml_request.mustache"),
@@ -44,7 +45,7 @@ export function addEbXmlWrapper(spineRequest: SpineRequest, logger: Logger): str
   const cpaId = cpaIdMap.get(spineRequest.interactionId)
   if (!cpaId) {
     logger.error(`Could not find the specified CPA ID`)
-    throw new Error(notSupportedOperationOutcome)
+    throw new FhirMessageProcessingError("INTERACTION_NOT_SUPPORTED", "Interaction not supported")
   }
 
   const ebXmlRequest = new EbXmlRequest(spineRequest.interactionId, cpaId, spineRequest.message, spineRequest.messageId)
@@ -78,23 +79,3 @@ export class XmlDeclaration {
     encoding: "UTF-8"
   }
 }
-
-const notSupportedOperationOutcome = JSON.stringify({
-  resourceType: "OperationOutcome",
-  issue: [
-    {
-      code: "informational",
-      severity: "information",
-      details: {
-        coding: [
-          {
-            code: "INTERACTION_NOT_SUPPORTED",
-            display: "Interaction not supported",
-            system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
-            version: "1"
-          }
-        ]
-      }
-    }
-  ]
-})
