@@ -44,7 +44,7 @@ class EbXmlRequest {
 export function addEbXmlWrapper(spineRequest: SpineRequest, logger: Logger): string {
   const cpaId = cpaIdMap.get(spineRequest.interactionId)
   if (!cpaId) {
-    logger.error(`Could not find the specified CPA ID`)
+    logger.error(`Could not find CPA ID for interaction ${spineRequest.interactionId}`)
     throw new FhirMessageProcessingError("INTERACTION_NOT_SUPPORTED", "Interaction not supported")
   }
 
