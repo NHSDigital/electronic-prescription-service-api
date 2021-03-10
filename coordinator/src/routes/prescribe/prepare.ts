@@ -4,8 +4,6 @@ import {BASE_PATH, CONTENT_TYPE_FHIR, createHash, getFhirValidatorErrors, getPay
 import * as fhir from "../../models/fhir"
 import * as bundleValidator from "../../services/validation/bundle-validator"
 
-console.log("TESTING " + BASE_PATH)
-
 export default [
   /*
       Convert a FHIR prescription into the HL7 V3 signature fragments to be signed by the prescriber.

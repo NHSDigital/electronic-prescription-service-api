@@ -5,7 +5,7 @@ import {FhirMessageProcessingError, toOperationOutcome} from "./models/errors/pr
 import HapiPino from "hapi-pino"
 import {CONTENT_TYPE_FHIR, CONTENT_TYPE_JSON, CONTENT_TYPE_PLAIN_TEXT, CONTENT_TYPE_XML} from "./routes/util"
 
-const reformatUserErrorsToFhir = function (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) {
+function reformatUserErrorsToFhir(request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) {
   const response = request.response
   if (response instanceof FhirMessageProcessingError) {
     request.log("info", response)
@@ -16,7 +16,7 @@ const reformatUserErrorsToFhir = function (request: Hapi.Request, responseToolki
   return responseToolkit.continue
 }
 
-const switchContentTypeForSmokeTest = function (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) {
+function switchContentTypeForSmokeTest(request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) {
   const isSmokeTest = request.headers["x-smoke-test"]
   if (!isSmokeTest) {
     return responseToolkit.continue

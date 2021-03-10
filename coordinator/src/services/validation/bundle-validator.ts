@@ -5,22 +5,16 @@ import {getUniqueValues} from "./util"
 import {getCourseOfTherapyTypeCode} from "../translation/request/course-of-therapy-type"
 import {getExtensionForUrlOrNull, getIdentifierValueForSystem, isTruthy} from "../translation/common"
 import * as fhir from "../../models/fhir"
-import {
-  createMedicationRequestInconsistentValueIssue,
-  createMedicationRequestIncorrectValueIssue,
-  createMedicationRequestMissingValueIssue, createResourceTypeIssue,
-  medicationRequestDuplicateIdentifierIssue, medicationRequestNumberIssue,
-  messageTypeIssue
-} from "../../models/errors/validation-errors"
+import * as errors from "../../models/errors/validation-errors"
 
 export function verifyBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
-    return [createResourceTypeIssue("Bundle")]
+    return [errors.createResourceTypeIssue("Bundle")]
   }
 
   const messageType = identifyMessageType(bundle)
   if (!verifyMessageType(messageType)) {
-    return [messageTypeIssue]
+    return [errors.messageTypeIssue]
   }
 
   const commonErrors = verifyCommonBundle(bundle)
@@ -55,7 +49,9 @@ export function verifyCommonBundle(bundle: fhir.Bundle): Array<fhir.OperationOut
 
   const medicationRequests = getMedicationRequests(bundle)
   if (medicationRequests.some(medicationRequest => medicationRequest.intent !== fhir.MedicationRequestIntent.ORDER)) {
-    incorrectValueErrors.push(createMedicationRequestIncorrectValueIssue("intent", fhir.MedicationRequestIntent.ORDER))
+    incorrectValueErrors.push(
+      errors.createMedicationRequestIncorrectValueIssue("intent", fhir.MedicationRequestIntent.ORDER)
+    )
   }
 
   return incorrectValueErrors
@@ -91,11 +87,11 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
   allErrors.push(...repeatDispensingErrors)
 
   if (medicationRequests.some(medicationRequest => medicationRequest.status !== "active")) {
-    allErrors.push(createMedicationRequestIncorrectValueIssue("status", "active"))
+    allErrors.push(errors.createMedicationRequestIncorrectValueIssue("status", "active"))
   }
 
   if (!allMedicationRequestsHaveUniqueIdentifier(medicationRequests)){
-    allErrors.push(medicationRequestDuplicateIdentifierIssue)
+    allErrors.push(errors.medicationRequestDuplicateIdentifierIssue)
   }
 
   return allErrors
@@ -108,11 +104,11 @@ export function verifyRepeatDispensingPrescription(
 
   const firstMedicationRequest = medicationRequests[0]
   if (!firstMedicationRequest.dispenseRequest.validityPeriod) {
-    validationErrors.push(createMedicationRequestMissingValueIssue("dispenseRequest.validityPeriod"))
+    validationErrors.push(errors.createMedicationRequestMissingValueIssue("dispenseRequest.validityPeriod"))
   }
 
   if (!firstMedicationRequest.dispenseRequest.expectedSupplyDuration) {
-    validationErrors.push(createMedicationRequestMissingValueIssue("dispenseRequest.expectedSupplyDuration"))
+    validationErrors.push(errors.createMedicationRequestMissingValueIssue("dispenseRequest.expectedSupplyDuration"))
   }
 
   if (!getExtensionForUrlOrNull(
@@ -120,7 +116,7 @@ export function verifyRepeatDispensingPrescription(
     "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
     "MedicationRequest.extension"
   )) {
-    validationErrors.push(createMedicationRequestMissingValueIssue(
+    validationErrors.push(errors.createMedicationRequestMissingValueIssue(
       'extension("https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation")'
     ))
   }
@@ -133,15 +129,15 @@ export function verifyCancellationBundle(bundle: fhir.Bundle): Array<fhir.Operat
 
   const medicationRequests = getMedicationRequests(bundle)
   if (medicationRequests.length != 1) {
-    validationErrors.push(medicationRequestNumberIssue)
+    validationErrors.push(errors.medicationRequestNumberIssue)
   }
 
   if (medicationRequests.some(medicationRequest => medicationRequest.status !== "cancelled")) {
-    validationErrors.push(createMedicationRequestIncorrectValueIssue("status", "cancelled"))
+    validationErrors.push(errors.createMedicationRequestIncorrectValueIssue("status", "cancelled"))
   }
 
   if (medicationRequests.some(medicationRequest => !medicationRequest.statusReason)) {
-    validationErrors.push(createMedicationRequestMissingValueIssue("statusReason"))
+    validationErrors.push(errors.createMedicationRequestMissingValueIssue("statusReason"))
   }
 
   return validationErrors
@@ -160,7 +156,7 @@ function verifyIdenticalForAllMedicationRequests(
   const allFieldValues = applyFhirPath(bundle, medicationRequests, fhirPath)
   const uniqueFieldValues = getUniqueValues(allFieldValues)
   if (uniqueFieldValues.length > 1) {
-    return createMedicationRequestInconsistentValueIssue(fhirPath, uniqueFieldValues)
+    return errors.createMedicationRequestInconsistentValueIssue(fhirPath, uniqueFieldValues)
   }
   return null
 }
