@@ -15,20 +15,20 @@ export interface MedicationDispense extends common.Resource {
     type: common.CodeableConcept
 }
 
-export interface AuthorizingPrescription extends common.Resource {
+export interface AuthorizingPrescription {
     identifier: common.Identifier
     extension: Array<extension.Extension>
 }
 
-export interface DosageInstruction extends common.Resource {
+export interface DosageInstruction {
     text: string
 }
 
-export interface DispensePerformer extends common.Resource {
+export interface DispensePerformer {
     actor: Actor
 }
 
-export interface Actor extends common.Resource {
+export interface Actor {
     type: "Practitioner" | "Organization"
     identifier: common.Identifier
     display: string
