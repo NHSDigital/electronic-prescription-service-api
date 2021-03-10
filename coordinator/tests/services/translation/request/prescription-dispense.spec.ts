@@ -351,6 +351,153 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
       )
     })
   })
+
+  // eslint-disable-next-line max-len
+  test("quantity maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.component.suppliedLineItemQuantity", () => {
+    medicationDispenses.forEach(medicationDispense => { 
+      medicationDispense.quantity.value = "XX-TEST-VALUE"
+      medicationDispense.quantity.unit = "XX-TEST-VALUE-UNIT"
+      medicationDispense.quantity.code = "XX-TEST-VALUE-CODE"
+    })
+
+    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+
+    medicationDispenses.map((medicationDispense, index) => {
+      expect(
+        medicationDispense.quantity.value
+      ).toEqual(
+        hl7dispenseNotification
+          .pertinentInformation1
+          .pertinentSupplyHeader
+          .pertinentInformation1[index]
+          .pertinentSuppliedLineItem
+          .component
+          .suppliedLineItemQuantity
+          .quantity
+          ._attributes
+          .value
+      )
+      expect(
+        medicationDispense.quantity.value
+      ).toEqual(
+        hl7dispenseNotification
+          .pertinentInformation1
+          .pertinentSupplyHeader
+          .pertinentInformation1[index]
+          .pertinentSuppliedLineItem
+          .component
+          .suppliedLineItemQuantity
+          .quantity
+          .translation
+          ._attributes
+          .value
+      )
+      expect(
+        medicationDispense.quantity.unit
+      ).toEqual(
+        hl7dispenseNotification
+          .pertinentInformation1
+          .pertinentSupplyHeader
+          .pertinentInformation1[index]
+          .pertinentSuppliedLineItem
+          .component
+          .suppliedLineItemQuantity
+          .quantity
+          .translation
+          ._attributes
+          .displayName
+      )
+      expect(
+        medicationDispense.quantity.unit
+      ).toEqual(
+        hl7dispenseNotification
+          .pertinentInformation1
+          .pertinentSupplyHeader
+          .pertinentInformation1[index]
+          .pertinentSuppliedLineItem
+          .component
+          .suppliedLineItemQuantity
+          .code
+          ._attributes
+          .displayName
+      )
+      expect(
+        medicationDispense.quantity.code
+      ).toEqual(
+        hl7dispenseNotification
+          .pertinentInformation1
+          .pertinentSupplyHeader
+          .pertinentInformation1[index]
+          .pertinentSuppliedLineItem
+          .component
+          .suppliedLineItemQuantity
+          .code
+          ._attributes
+          .code
+      )
+      expect(
+        medicationDispense.quantity.code
+      ).toEqual(
+        hl7dispenseNotification
+          .pertinentInformation1
+          .pertinentSupplyHeader
+          .pertinentInformation1[index]
+          .pertinentSuppliedLineItem
+          .component
+          .suppliedLineItemQuantity
+          .quantity
+          .translation
+          ._attributes.code
+      )
+    })
+  })
+
+  test("whenPrepared maps to pertinentInformation1.pertinentSupplyHeader.author.time", () => {
+    medicationDispenses.forEach(medicationDispense => medicationDispense.whenPrepared = "2020-03-10")
+    
+    const expected = "20200310000000"
+
+    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+
+    medicationDispenses.map((medicationDispense) => {
+      expect(
+        expected
+      ).toEqual(
+        hl7dispenseNotification
+          .pertinentInformation1
+          .pertinentSupplyHeader
+          .author
+          .time
+          ._attributes
+          .value
+      )
+    })
+  })
+
+  // eslint-disable-next-line max-len
+  test("dosage maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.component.suppliedLineItemQuantity.pertinentInformation1.pertinentSupplyInstructions", () => {
+    medicationDispenses.forEach(medicationDispense => medicationDispense.dosageInstruction.forEach(d => d.text = "XX-TEST-VALUE"))
+
+    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+
+    medicationDispenses.map((medicationDispense, index) => {
+      expect(
+        medicationDispense.dosageInstruction[0].text
+      ).toEqual(
+        hl7dispenseNotification
+          .pertinentInformation1
+          .pertinentSupplyHeader
+          .pertinentInformation1[index]
+          .pertinentSuppliedLineItem
+          .component
+          .suppliedLineItemQuantity
+          .pertinentInformation1
+          .pertinentSupplyInstructions
+          .value
+          ._text
+      )
+    })
+  })
 })
 
 function createStatusCode(code: string, display: string): hl7V3.StatusCode {
