@@ -1,6 +1,8 @@
 import * as extension from "./extension"
 import * as common from "./common"
 import * as patient from "./patient"
+import * as medicationRequest from "./medication-request"
+import {Organization,Practitioner,PractitionerRole} from "./practitioner-role"
 
 export interface MedicationDispense extends common.Resource {
     identifier: Array<common.Identifier>
@@ -15,8 +17,7 @@ export interface MedicationDispense extends common.Resource {
     type: common.CodeableConcept
 }
 
-export interface AuthorizingPrescription {
-    identifier: common.Identifier
+export interface AuthorizingPrescription extends common.IdentifierReference<medicationRequest.MedicationRequest> {
     extension: Array<extension.Extension>
 }
 
@@ -28,8 +29,6 @@ export interface DispensePerformer {
     actor: Actor
 }
 
-export interface Actor {
+export interface Actor extends common.IdentifierReference<Practitioner|PractitionerRole|Organization> {
     type: "Practitioner" | "Organization"
-    identifier: common.Identifier
-    display: string
 }
