@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN020101SM31 xmlns="urn:hl7-org:v3">
-  <id root="F190329A-3854-4A31-9FF5-417969F2A40D"/>
-  <creationTime value="20210129154828"/>
+  <id root="19A0D459-B1CB-471B-87FD-8DF7A73FE6AC"/>
+  <creationTime value="20210310170548"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN020101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -40,9 +40,9 @@
     </author1>
     <subject>
       <ParentPrescription classCode="INFO" moodCode="EVN">
-        <id root="F190329A-3854-4A31-9FF5-417969F2A40D"/>
+        <id root="19A0D459-B1CB-471B-87FD-8DF7A73FE6AC"/>
         <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Prescription - FocusActOrEvent (record artifact)"/>
-        <effectiveTime value="20210129154828"/>
+        <effectiveTime value="20210310170548"/>
         <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <Patient classCode="PAT">
@@ -79,8 +79,8 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentPrescription classCode="SBADM" moodCode="RQO">
-            <id root="9FC9D2A5-5C1E-4776-9229-E5C3CF53AA42"/>
-            <id extension="6D9486-ZB0624-11EB8N" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+            <id root="42CD475D-29D5-4130-815B-C28DE74F9B08"/>
+            <id extension="DB88D5-A99968-11EBBP" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
             <effectiveTime nullFlavor="NA"/>
             <performer contextControlCode="OP" typeCode="PRF">
@@ -91,7 +91,7 @@
               </AgentOrgSDS>
             </performer>
             <author contextControlCode="OP" typeCode="AUT">
-              <time value="20210129154828"/>
+              <time value="20210310170548"/>
               <signatureText>
                 <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
                   <SignedInfo>
