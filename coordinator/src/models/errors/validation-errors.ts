@@ -24,6 +24,22 @@ export class MedicationRequestInconsistentValueError<T> implements ValidationErr
   }
 }
 
+export class MedicationDispenseInconsistentValueError<T> implements ValidationError {
+  message: string
+  operationOutcomeCode = "value" as const
+  severity = "error" as const
+  expression: Array<string>
+
+  constructor(fieldName: string, uniqueFieldValues: Array<T>) {
+    this.message = `Expected all MedicationDispenses to have the same value for ${
+      fieldName
+    }. Received ${
+      LosslessJson.stringify(uniqueFieldValues)
+    }.`
+    this.expression = [`Bundle.entry.resource.ofType(MedicationDispense).${fieldName}`]
+  }
+}
+
 export class MedicationRequestDuplicateValueError<T> implements ValidationError {
   message: string
   operationOutcomeCode = "value" as const
@@ -68,13 +84,7 @@ export class MedicationRequestIncorrectValueError implements ValidationError {
 }
 
 export class MessageTypeError implements ValidationError {
-  message = `MessageHeader.eventCoding.code must be one of '${
-    fhir.EventCodingCode.PRESCRIPTION
-  }', '${
-    fhir.EventCodingCode.CANCELLATION
-  }' or '${
-    fhir.EventCodingCode.DISPENSE
-  }'.`
+  message = `MessageHeader.eventCoding.code must be one of: ${fhir.ACCEPTED_MESSAGE_TYPES.join(", ")}.`
   operationOutcomeCode = "value" as const
   severity = "fatal" as const
   expression = ["Bundle.entry.resource.ofType(MessageHeader).eventCoding.code"]

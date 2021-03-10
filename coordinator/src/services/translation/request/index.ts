@@ -28,7 +28,7 @@ function createPayload(messageType: string, bundle: fhir.Bundle): hl7V3.SendMess
     case fhir.EventCodingCode.CANCELLATION:
       return createCancellationSendMessagePayload(bundle)
     case fhir.EventCodingCode.DISPENSE:
-      return createDispenseNotificationMessagePayload(bundle)
+      return createDispenseNotificationSendMessagePayload(bundle)
   }
 }
 
@@ -41,7 +41,7 @@ export function createParentPrescriptionSendMessagePayload(
   return createSendMessagePayload(interactionId, bundle, parentPrescriptionRoot)
 }
 
-export function createDispenseNotificationMessagePayload(
+export function createDispenseNotificationSendMessagePayload(
   bundle: fhir.Bundle
 ): hl7V3.SendMessagePayload<hl7V3.DispenseNotificationRoot> {
   const dispenseNotification = translateDispenseNotification(bundle)

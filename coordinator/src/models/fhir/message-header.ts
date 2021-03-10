@@ -9,6 +9,11 @@ export enum EventCodingCode {
   DISPENSE = "dispense-notification"
 }
 
+export const ACCEPTED_MESSAGE_TYPES = [
+  EventCodingCode.PRESCRIPTION,
+  EventCodingCode.CANCELLATION,
+  EventCodingCode.DISPENSE] as const
+
 export const EVENT_CODING_PRESCRIPTION_ORDER_RESPONSE = common.createCoding(
   "https://fhir.nhs.uk/CodeSystem/message-event",
   EventCodingCode.PRESCRIPTION_RESPONSE,

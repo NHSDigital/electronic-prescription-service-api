@@ -172,28 +172,7 @@
                 "whenPrepared": "2009-09-21T09:24:20+00:00",
                 "dosageInstruction": [
                     {
-                        "text": "4 times a day for 7 days",
-                        "timing": {
-                            "repeat": {
-                                "boundsDuration": {
-                                    "value": 7,
-                                    "unit": "d"
-                                },
-                                "frequency": 4,
-                                "period": 1,
-                                "periodUnit": "d"
-                            }
-                        },
-                        "doseAndRate": [
-                            {
-                                "doseQuantity": {
-                                    "value": 1,
-                                    "unit": "capsule",
-                                    "system": "http://snomed.info/sct",
-                                    "code": "3316911000001105"
-                                }
-                            }
-                        ]
+                        "text": "4 times a day for 7 days"
                     }
                 ]
             }

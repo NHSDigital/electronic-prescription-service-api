@@ -10,6 +10,7 @@ import {
 import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, isTruthy} from "../../../src/services/translation/common"
 import * as fhir from "../../../src/models/fhir"
+import {getPrescriptionStatus} from "../../../src/services/translation/request/prescribe/prescription-dispense"
 
 function validateValidationErrors (validationErrors: Array<errors.ValidationError>) {
   expect(validationErrors).toHaveLength(1)
@@ -298,5 +299,55 @@ describe("verifyCancellationBundle", () => {
     expect(returnedErrors.length).toBe(1)
     expect(returnedErrors[0]).toBeInstanceOf(MedicationRequestMissingValueError)
     expect(returnedErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).statusReason")
+  })
+})
+
+describe("verifyDispenseNotificationBundle", () => {
+  let bundle: fhir.Bundle
+
+  beforeEach(() => {
+    const dispenseExample = TestResources.specification.map(s => s.fhirMessageDispense).filter(isTruthy)[0]
+    bundle = clone(dispenseExample)
+  })
+
+  test("accepts a valid dispense request", () => {
+    const returnedErrors = validator.verifyDispenseBundle(bundle)
+    expect(returnedErrors.length).toBe(0)
+  })
+
+  test("returns an error when MedicationDispenses have different prescription statuses", () => {
+    const medicationDispenseEntry =
+      bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
+
+    const medicationDispense1 = medicationDispenseEntry.resource as fhir.MedicationDispense
+    const prescriptionStatus1 = getPrescriptionStatus(medicationDispense1)
+    prescriptionStatus1.valueCoding.code = "0001"
+
+    const medicationDispenseEntry2 = clone(medicationDispenseEntry)
+    const medicationDispense2 = medicationDispenseEntry.resource as fhir.MedicationDispense
+    const prescriptionStatus2 = getPrescriptionStatus(medicationDispense2)
+    prescriptionStatus2.valueCoding.code = "0003"
+    bundle.entry.push(medicationDispenseEntry2)
+
+    const returnedErrors = validator.verifyDispenseBundle(bundle)
+    expect(returnedErrors.length).toBe(1)
+    expect(returnedErrors[0]).toBeInstanceOf(errors.MedicationDispenseInconsistentValueError)
+  })
+
+  test("returns an error when MedicationDispenses have different whenPrepared timestamps", () => {
+    const medicationDispenseEntry =
+      bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
+
+    const medicationDispense1 = medicationDispenseEntry.resource as fhir.MedicationDispense
+    medicationDispense1.whenPrepared = "2009-09-21T09:24:20+00:00"
+
+    const medicationDispenseEntry2 = clone(medicationDispenseEntry)
+    const medicationDispense2 = medicationDispenseEntry.resource as fhir.MedicationDispense
+    medicationDispense2.whenPrepared = "1600-09-21T09:24:20+00:00"
+    bundle.entry.push(medicationDispenseEntry2)
+
+    const returnedErrors = validator.verifyDispenseBundle(bundle)
+    expect(returnedErrors.length).toBe(1)
+    expect(returnedErrors[0]).toBeInstanceOf(errors.MedicationDispenseInconsistentValueError)
   })
 })

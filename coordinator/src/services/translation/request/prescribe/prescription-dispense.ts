@@ -134,7 +134,7 @@ function createPertinentSupplyHeader(
       hl7PertinentSuppliedLineItem
     )
   })
-  
+
   const hl7PertinentPrescriptionStatus = createPertinentPrescriptionStatus(fhirFirstMedicationDispense)
   const hl7PertinentPrescriptionIdentifier = createPertinentPrescriptionId(fhirFirstMedicationDispense)
   const hl7PriorOriginalRef = createPriorOriginalRef(fhirFirstMedicationDispense)
