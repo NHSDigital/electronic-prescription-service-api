@@ -1,4 +1,5 @@
 import {
+  getFhirGroupIdentifierExtension,
   getLineItemStatusCode,
   getPrescriptionItemNumber,
   getPrescriptionStatus,
@@ -10,6 +11,7 @@ import {MomentFormatSpecification, MomentInput} from "moment"
 import * as hl7V3 from "../../../../src/models/hl7-v3"
 import * as fhir from "../../../../src/models/fhir"
 import {
+  getExtensionForUrl,
   onlyElement,
   toArray
 } from "../../../../src/services/translation/common"
@@ -189,11 +191,11 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
   beforeEach(() => {
     dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispense)
     medicationDispenses = getMedicationDispenses(dispenseNotification)
+    expect(medicationDispenses.length).toBeGreaterThan(0)
   })
 
   // eslint-disable-next-line max-len
   test("identifier.value maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.id", () => {
-    expect(medicationDispenses.length).toBeGreaterThan(0)
     medicationDispenses.forEach(medicationDispense => setPrescriptionItemNumber(medicationDispense, "XX-TEST-VALUE"))
 
     const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
@@ -207,6 +209,139 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .pertinentSupplyHeader
           .pertinentInformation1[index]
           .pertinentSuppliedLineItem.id._attributes.root
+      )
+    })
+  })
+
+    // eslint-disable-next-line max-len
+  test("medicationCodeableConcept.coding maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.component.suppliedLineItemQuantity.product.suppliedManufacturedProduct.manufacturedSuppliedMaterial.code", () => {
+    medicationDispenses.forEach(medicationDispense => setMedicationCodeableConcept(medicationDispense, "XX-TEST-VALUE", "XX-TEST-VALUE-DISPLAY"))
+
+    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+
+    medicationDispenses.map((_, index) => {
+      expect(
+        "XX-TEST-VALUE"
+      ).toEqual(
+        hl7dispenseNotification
+          .pertinentInformation1
+          .pertinentSupplyHeader
+          .pertinentInformation1[index]
+          .pertinentSuppliedLineItem
+          .component
+          .suppliedLineItemQuantity
+          .product
+          .suppliedManufacturedProduct
+          .manufacturedSuppliedMaterial
+          .code
+          ._attributes.code
+      )
+      expect(
+        "XX-TEST-VALUE-DISPLAY"
+      ).toEqual(
+        hl7dispenseNotification
+          .pertinentInformation1
+          .pertinentSupplyHeader
+          .pertinentInformation1[index]
+          .pertinentSuppliedLineItem
+          .component
+          .suppliedLineItemQuantity
+          .product
+          .suppliedManufacturedProduct
+          .manufacturedSuppliedMaterial
+          .code
+          ._attributes.displayName
+      )
+    })
+  })
+
+  test("subject.Patient.value maps to recordTarget.patient.id.extension", () => {
+    medicationDispenses.forEach(medicationDispense => setPatientId(medicationDispense, "XX-TEST-VALUE"))
+
+    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+
+    medicationDispenses.map((medicationDispense) => {
+      expect(
+        medicationDispense.subject.identifier.value
+      ).toEqual(
+        hl7dispenseNotification.recordTarget.patient.id._attributes.extension
+      )
+    })
+  })
+
+  // eslint-disable-next-line max-len
+  test("performer.actor.(type === 'Practitioner') maps to pertinentInformation1.pertinentSupplyHeader.author.AgentPerson.agentPerson", () => {
+    medicationDispenses.forEach(medicationDispense => setPractitionerName(medicationDispense, "XX-TEST-VALUE"))
+
+    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+
+    medicationDispenses.map((medicationDispense, index) => {
+      expect(
+        medicationDispense
+          .performer
+          .map(p => p.actor)
+          .find(a => a.type === "Practitioner")
+          .display
+      ).toEqual(
+        hl7dispenseNotification.pertinentInformation1.pertinentSupplyHeader.author.AgentPerson.agentPerson.name._text
+      )
+    })
+  })
+
+  test("authorizingPrescription maps to pertinentInformation1.pertinentSupplyHeader", () => {
+    medicationDispenses.forEach(medicationDispense => 
+      setAuthorizingPrescriptionValues(medicationDispense, "XX-TEST-VALUE-SHORTFORM", "XX-TEST-VALUE-UUID", "XX-TEST-VALUE-IDENTIFIER")
+    )
+
+    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+
+    medicationDispenses.map((medicationDispense, index) => {
+      expect(
+        getShortFormIdExtension(
+          getFhirGroupIdentifierExtension(medicationDispense)
+        ).valueIdentifier.value
+      ).toEqual(
+        hl7dispenseNotification
+          .pertinentInformation1
+          .pertinentSupplyHeader
+          .pertinentInformation4
+          .pertinentPrescriptionID
+          .value
+          ._attributes
+          .extension
+      )
+      expect(
+        getUuidExtension(
+          getFhirGroupIdentifierExtension(medicationDispense)
+        ).valueIdentifier.value
+      ).toEqual(
+        hl7dispenseNotification
+          .pertinentInformation1
+          .pertinentSupplyHeader
+          .inFulfillmentOf
+          .priorOriginalPrescriptionRef
+          .id
+          ._attributes
+          .root
+      )
+      expect(
+        medicationDispense.authorizingPrescription
+          .map(a => a.identifier)
+          .filter(identifier => 
+            identifier.system === "https://fhir.nhs.uk/Id/prescription-order-item-number"
+          )[0]
+          .value
+      ).toEqual(
+        hl7dispenseNotification
+          .pertinentInformation1
+          .pertinentSupplyHeader
+          .pertinentInformation1[index]
+          .pertinentSuppliedLineItem
+          .inFulfillmentOf
+          .priorOriginalItemRef
+          .id
+          ._attributes
+          .root
       )
     })
   })
@@ -250,4 +385,71 @@ function setPrescriptionItemNumber(
         i.value = newPrescriptionItemNumber
       }
     })
+}
+
+function setMedicationCodeableConcept(
+  medicationDispense: fhir.MedicationDispense,
+  newMedicationCode: string,
+  newMedicationDisplay: string
+): void {
+  medicationDispense.medicationCodeableConcept.coding.forEach(c => {
+    c.code = newMedicationCode
+    c.display = newMedicationDisplay
+  })
+}
+
+function setPatientId(
+  medicationDispense: fhir.MedicationDispense,
+  newPatientId: string
+): void {
+  medicationDispense.subject.identifier.value = newPatientId
+}
+
+function setPractitionerName(
+  medicationDispense: fhir.MedicationDispense,
+  newPatientId: string
+): void {
+  medicationDispense
+    .performer
+    .map(p => p.actor)
+    .find(a => a.type === "Practitioner")
+    .display = newPatientId
+}
+
+function  setAuthorizingPrescriptionValues(
+  medicationDispense: fhir.MedicationDispense,
+  newShortForm: string,
+  newUuid: string,
+  newIdentifier: string
+): void {
+  const groupIdExtension = getFhirGroupIdentifierExtension(medicationDispense)
+  const shortFormIdExtension = getShortFormIdExtension(groupIdExtension)
+  shortFormIdExtension.valueIdentifier.value = newShortForm
+  const uuidExtension = getUuidExtension(groupIdExtension)
+  uuidExtension.valueIdentifier.value = newUuid
+  medicationDispense.authorizingPrescription.map(a => a.identifier).forEach(i => {
+    if (i.system === "https://fhir.nhs.uk/Id/prescription-order-item-number") {
+      i.value = newIdentifier
+    }
+  })
+}
+
+function getShortFormIdExtension(
+  groupIdExtension: fhir.ExtensionExtension<fhir.Extension>
+): fhir.IdentifierExtension {
+  return getExtensionForUrl(
+    groupIdExtension.extension,
+    "shortForm",
+    "MedicationDispense.authorizingPrescription.extension.valueIdentifier"
+  ) as fhir.IdentifierExtension
+}
+
+function getUuidExtension(
+  groupIdExtension: fhir.ExtensionExtension<fhir.Extension>
+): fhir.IdentifierExtension {
+  return getExtensionForUrl(
+    groupIdExtension.extension,
+    "UUID",
+    "MedicationDispense.authorizingPrescription.extension.valueIdentifier"
+  ) as fhir.IdentifierExtension
 }

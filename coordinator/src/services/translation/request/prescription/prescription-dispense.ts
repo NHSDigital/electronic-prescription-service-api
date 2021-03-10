@@ -130,7 +130,7 @@ function getNhsNumber(
     : fhirFirstMedicationDispense.subject.identifier.value
 }
 
-function getFhirGroupIdentifierExtension(
+export function getFhirGroupIdentifierExtension(
   fhirFirstMedicationDispense: fhir.MedicationDispense
 ): fhir.ExtensionExtension<fhir.Extension> {
   const fhirAuthorizingPrescriptionExtensions =
