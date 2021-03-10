@@ -213,9 +213,11 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
     })
   })
 
-    // eslint-disable-next-line max-len
+  // eslint-disable-next-line max-len
   test("medicationCodeableConcept.coding maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.component.suppliedLineItemQuantity.product.suppliedManufacturedProduct.manufacturedSuppliedMaterial.code", () => {
-    medicationDispenses.forEach(medicationDispense => setMedicationCodeableConcept(medicationDispense, "XX-TEST-VALUE", "XX-TEST-VALUE-DISPLAY"))
+    medicationDispenses.forEach(medicationDispense =>
+      setMedicationCodeableConcept(medicationDispense, "XX-TEST-VALUE", "XX-TEST-VALUE-DISPLAY")
+    )
 
     const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
 
@@ -275,7 +277,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
 
     const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
 
-    medicationDispenses.map((medicationDispense, index) => {
+    medicationDispenses.map((medicationDispense) => {
       expect(
         medicationDispense
           .performer
@@ -289,8 +291,12 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
   })
 
   test("authorizingPrescription maps to pertinentInformation1.pertinentSupplyHeader", () => {
-    medicationDispenses.forEach(medicationDispense => 
-      setAuthorizingPrescriptionValues(medicationDispense, "XX-TEST-VALUE-SHORTFORM", "XX-TEST-VALUE-UUID", "XX-TEST-VALUE-IDENTIFIER")
+    medicationDispenses.forEach(medicationDispense =>
+      setAuthorizingPrescriptionValues(
+        medicationDispense,
+        "XX-TEST-VALUE-SHORTFORM",
+        "XX-TEST-VALUE-UUID",
+        "XX-TEST-VALUE-IDENTIFIER")
     )
 
     const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
@@ -327,7 +333,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
       expect(
         medicationDispense.authorizingPrescription
           .map(a => a.identifier)
-          .filter(identifier => 
+          .filter(identifier =>
             identifier.system === "https://fhir.nhs.uk/Id/prescription-order-item-number"
           )[0]
           .value
