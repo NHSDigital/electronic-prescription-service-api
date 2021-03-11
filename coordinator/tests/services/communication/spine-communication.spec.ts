@@ -6,8 +6,8 @@ import {isDirect, isPollable, SpineDirectResponse, SpinePollableResponse, SpineR
 import {LiveSpineClient} from "../../../src/services/communication/live-spine-client"
 import path from "path"
 import pino from "pino"
-import {FhirMessageProcessingError} from "../../src/models/errors/processing-errors"
-import {OperationOutcome} from "../../src/models/fhir"
+import {FhirMessageProcessingError} from "../../../src/models/errors/processing-errors"
+import {OperationOutcome} from "../../../src/models/fhir"
 
 describe("Spine communication", () => {
   const requestHandler = new LiveSpineClient(
