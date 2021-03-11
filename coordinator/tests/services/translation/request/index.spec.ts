@@ -68,7 +68,9 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
   test("produces result with no lower case UUIDs", async() => {
     const messageWithLowercaseUUIDs = getMessageWithLowercaseUUIDs()
 
-    const translatedMessage = (await translator.convertBundleToSpineRequest(messageWithLowercaseUUIDs, "test", logger)).message
+    const translatedMessage = (
+      await translator.convertBundleToSpineRequest(messageWithLowercaseUUIDs, "test", logger)
+    ).message
 
     const allNonUpperCaseUUIDS = getAllUUIDsNotUpperCase(translatedMessage)
     expect(allNonUpperCaseUUIDS.length).toBe(0)
