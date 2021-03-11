@@ -1,0 +1,11 @@
+<AssignMessage continueOnError="false" enabled="true" name="AssignMessage.SetAccessModeUserRestricted">
+  <Add>
+    <Headers>
+      <Header name="access-mode">user</Header>
+    </Headers>
+  </Add>
+  <AssignVariable>
+    <Name>access-mode</Name>
+    <Value>user-restricted</Value>
+  </AssignVariable>
+</AssignMessage>

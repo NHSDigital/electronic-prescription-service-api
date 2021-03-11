@@ -1,4 +1,23 @@
 <TargetEndpoint name="apim">
+  <PreFlow>
+    <Request>
+      <Step>
+        <Name>OauthV2.VerifyAccessToken</Name>
+      </Step>
+      <Step>
+        <Name>AssignMessage.SetAccessModeApplicationRestricted</Name>
+        <Condition>(scope Matches "urn:nhsd:apim:app:level3:*")</Condition>
+      </Step>
+      <Step>
+        <Name>AssignMessage.SetAccessModeUserRestricted</Name>
+        <Condition>(scope Matches "urn:nhsd:apim:user-nhs-id:aal3:*") and (accesstoken.id_token-acr StartsWith "AAL3")</Condition>
+      </Step>
+      <Step>
+        <Name>RaiseFault.403Forbidden</Name>
+        <Condition>!(scope Matches "*:electronic-prescription-service-api")</Condition>
+      </Step>
+    </Request>
+  </PreFlow>
   <Flows>
     <Flow name="Status">
       <Request>
@@ -14,13 +33,6 @@
     </Flow>
     <Flow name="Default">
       <Request>
-        <Step>
-          <Name>OauthV2.VerifyAccessToken</Name>
-        </Step>
-        <Step>
-          <Name>RaiseFault.403Forbidden</Name>
-          <Condition>!(accesstoken.id_token-acr StartsWith "AAL3")</Condition>
-        </Step>
         <Step>
           <!-- Header NHSD-Request-ID must be in the correct format (GUID) -->
           <Name>RaiseFault.400MissingHeader</Name>
