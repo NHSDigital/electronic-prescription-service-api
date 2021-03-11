@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN020101SM31 xmlns="urn:hl7-org:v3">
-  <id root="BD787948-242F-4999-9AC6-26FFCE663185"/>
-  <creationTime value="20210310170547"/>
+  <id root="F246BC13-CD56-465A-95E1-3C2598837D65"/>
+  <creationTime value="20210311113154"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN020101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -40,9 +40,9 @@
     </author1>
     <subject>
       <ParentPrescription classCode="INFO" moodCode="EVN">
-        <id root="BD787948-242F-4999-9AC6-26FFCE663185"/>
+        <id root="F246BC13-CD56-465A-95E1-3C2598837D65"/>
         <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Prescription - FocusActOrEvent (record artifact)"/>
-        <effectiveTime value="20210310000000"/>
+        <effectiveTime value="20210311000000"/>
         <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <Patient classCode="PAT">
@@ -79,8 +79,8 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentPrescription classCode="SBADM" moodCode="RQO">
-            <id root="D69E9227-FF17-4013-9A11-6EDDDF632B92"/>
-            <id extension="DA4A4E-A99968-11EBB4" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+            <id root="DC450696-FC77-474C-9EC5-8D33E07EC7AF"/>
+            <id extension="22B712-A99968-4D778H" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
             <effectiveTime nullFlavor="NA"/>
             <repeatNumber>
@@ -95,7 +95,7 @@
               </AgentOrgSDS>
             </performer>
             <author contextControlCode="OP" typeCode="AUT">
-              <time value="20210310170546"/>
+              <time value="20210311113153"/>
               <signatureText>
                 <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
                   <SignedInfo>
@@ -187,8 +187,8 @@
               <daysSupply classCode="SPLY" moodCode="RQO">
                 <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
                 <effectiveTime>
-                  <low value="20210310"/>
-                  <high value="20210407"/>
+                  <low value="20210311"/>
+                  <high value="20210408"/>
                 </effectiveTime>
                 <expectedUseTime>
                   <width unit="d" value="28"/>
