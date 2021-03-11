@@ -162,7 +162,7 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
   })
 
   test("sender.display maps to pertinentInformation1.pertinentSupplyHeader.author.AgentPerson", async() => {
-    messageHeader.sender.display = "BOOTS THE CHEMISTS LTD"
+    messageHeader.sender.display = "HEALTHCARE AT HOME"
 
     const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
 
