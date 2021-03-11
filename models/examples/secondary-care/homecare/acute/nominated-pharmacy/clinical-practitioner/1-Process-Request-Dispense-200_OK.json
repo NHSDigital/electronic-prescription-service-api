@@ -65,7 +65,7 @@
                 "resourceType": "MedicationDispense",
                 "extension": [
                     {
-                        "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-prescriptionStatus",
+                        "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
                         "valueCoding": {
                             "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-prescription-status",
                             "code": "0003",

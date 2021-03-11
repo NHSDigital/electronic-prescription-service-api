@@ -202,7 +202,7 @@ export function getFhirGroupIdentifierExtension(
 export function getPrescriptionStatus(fhirFirstMedicationDispense: fhir.MedicationDispense): fhir.CodingExtension {
   return getExtensionForUrl(
     fhirFirstMedicationDispense.extension,
-    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-prescriptionStatus",
+    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
     "MedicationDispense.extension") as fhir.CodingExtension
 }
 

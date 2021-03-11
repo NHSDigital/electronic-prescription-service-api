@@ -150,7 +150,7 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<errors.Validati
 
   const fhirPaths = [
     "whenPrepared",
-    'extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-prescriptionStatus")'
+    'extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus")'
   ]
 
   const inconsistentValueErrors = fhirPaths
