@@ -16,10 +16,8 @@ import {
 import * as hl7v3 from "../../../../models/hl7-v3"
 import moment from "moment"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
-import {convertAddress, convertTelecom} from "../demographics"
 import pino from "pino"
-import {odsClient} from "../../../communication/ods-client"
-import {InvalidValueError} from "../../../../models/errors/processing-errors"
+import {getRepresentedOrganization} from "../organization"
 
 export async function convertDispenseNotification(
   bundle: fhir.Bundle,
@@ -351,7 +349,7 @@ async function createAgentPerson(
   agentPersonPerson.name = agentPersonPersonName
   agentPerson.agentPerson = agentPersonPerson
   agentPerson.representedOrganization =
-    await createRepresentedOrganisation(organisationCode, logger)
+    await getRepresentedOrganization(organisationCode, logger)
   return agentPerson
 }
 
@@ -375,39 +373,4 @@ function createPriorPrescriptionReleaseEventRef(fhirHeader: fhir.MessageHeader) 
   return new hl7V3.PriorPrescriptionReleaseEventRef(
     new hl7V3.GlobalIdentifier(fhirHeader.response.identifier)
   )
-}
-
-function createOrganization(organization: fhir.Organization): hl7v3.Organization {
-  const hl7V3Organization = new hl7V3.Organization()
-  const organizationSdsId = getIdentifierValueForSystem(
-    organization.identifier,
-    "https://fhir.nhs.uk/Id/ods-organization-code",
-    `Organization.identifier`
-  )
-  hl7V3Organization.id = new hl7V3.SdsOrganizationIdentifier(organizationSdsId)
-  hl7V3Organization.code = new hl7V3.OrganizationTypeCode()
-  if (organization.name) {
-    hl7V3Organization.name = new hl7v3.Text(organization.name)
-  }
-  if (organization.telecom?.length) {
-    hl7V3Organization.telecom = convertTelecom(organization.telecom[0], "Organization.telecom")
-  }
-  if (organization.address?.length) {
-    hl7V3Organization.addr = convertAddress(organization.address[0], "Organization.address")
-  }
-  return hl7V3Organization
-}
-
-async function createRepresentedOrganisation(
-  organizationCode: string,
-  logger: pino.Logger
-): Promise<hl7v3.Organization> {
-  const organization = await odsClient.lookupOrganization(organizationCode, logger)
-  if (!organization) {
-    throw new InvalidValueError(
-      `No organisation details found for code ${organizationCode}`,
-      "Parameters.parameter"
-    )
-  }
-  return createOrganization(organization)
 }
