@@ -47,7 +47,7 @@ describe("convertOrganizationAndProviderLicense", () => {
       type: [{
         coding: [{
           system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
-          code: "RO197"
+          code: "197"
         }]
       }],
       name: "Organization 2",
@@ -72,7 +72,7 @@ describe("convertOrganizationAndProviderLicense", () => {
       type: [{
         coding: [{
           system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
-          code: "RO198"
+          code: "198"
         }]
       }],
       name: "Organization 1",
@@ -124,7 +124,7 @@ describe("convertOrganizationAndProviderLicense", () => {
     describe("when organization is an NHS trust", () => {
       beforeEach(() => {
         getMessageHeader(bundle).eventCoding.code = messageType
-        organization1.type.forEach(type => type.coding.forEach(coding => coding.code = "RO197"))
+        organization1.type.forEach(type => type.coding.forEach(coding => coding.code = "197"))
       })
 
       test("throws if HealthcareService not passed to method", () => {
@@ -200,7 +200,7 @@ describe("convertOrganizationAndProviderLicense", () => {
     })
 
     describe.each([
-      ["not an NHS trust", "RO198"],
+      ["not an NHS trust", "198"],
       ["of an unspecified type", undefined]
     ])("when organization is %s", (desc: string, code: string) => {
       beforeEach(() => {
@@ -262,8 +262,8 @@ describe("convertOrganizationAndProviderLicense", () => {
 
   describe("provider licence mapping for cancellations", () => {
     describe.each([
-      ["an NHS trust", "RO197"],
-      ["not an NHS trust", "RO198"],
+      ["an NHS trust", "197"],
+      ["not an NHS trust", "198"],
       ["of an unspecified type", undefined]
     ])("when organization is %s", (desc: string, code: string) => {
       beforeEach(() => {
@@ -284,8 +284,8 @@ describe("convertOrganizationAndProviderLicense", () => {
 
   describe("provider licence mapping for orders", () => {
     describe.each([
-      ["an NHS trust", "RO197"],
-      ["not an NHS trust", "RO198"],
+      ["an NHS trust", "197"],
+      ["not an NHS trust", "198"],
       ["of an unspecified type", undefined]
     ])("when organization is %s", (desc: string, code: string) => {
       beforeEach(() => {

@@ -45,9 +45,19 @@ function convertNameUse(fhirNameUse: string, fhirPath: string) {
 }
 
 export function convertTelecom(contactPoint: fhir.ContactPoint, fhirPath: string): hl7V3.Telecom {
-  const telecomUse = convertTelecomUse(contactPoint.use, fhirPath)
-  //TODO - do we need to add "tel:", "mailto:" to the value?
-  return new hl7V3.Telecom(telecomUse, contactPoint.value)
+  const telecom = new hl7V3.Telecom()
+  if (contactPoint.use) {
+    telecom._attributes = {
+      use: convertTelecomUse(contactPoint.use, fhirPath)
+    }
+  }
+  if (contactPoint.value) {
+    telecom._attributes = {
+      ...telecom._attributes,
+      value: convertTelecomValue(contactPoint.value)
+    }
+  }
+  return telecom
 }
 
 function convertTelecomUse(fhirTelecomUse: string, fhirPath: string) {
@@ -65,6 +75,15 @@ function convertTelecomUse(fhirTelecomUse: string, fhirPath: string) {
   }
 }
 
+function convertTelecomValue(value: string) {
+  value = value.replace(/\s/g, "")
+  //TODO - what if system is not "phone", e.g. should an email address be prefixed with "mailto:" instead?
+  if (!value.startsWith("tel:")) {
+    value = `tel:${value}`
+  }
+  return value
+}
+
 export function convertAddress(fhirAddress: fhir.Address, fhirPath: string): hl7V3.Address {
   const allAddressLines = [
     fhirAddress.line,
@@ -72,9 +91,16 @@ export function convertAddress(fhirAddress: fhir.Address, fhirPath: string): hl7
     fhirAddress.district,
     fhirAddress.state
   ].flat().filter(isTruthy)
-  const hl7V3Address = new hl7V3.Address(convertAddressUse(fhirAddress.use, fhirPath))
-  hl7V3Address.streetAddressLine = allAddressLines.map(line => new hl7V3.Text(line))
-  if (fhirAddress.postalCode !== undefined){
+  const hl7V3Address = new hl7V3.Address()
+  if (fhirAddress.use) {
+    hl7V3Address._attributes = {
+      use: convertAddressUse(fhirAddress.use, fhirPath)
+    }
+  }
+  if (allAddressLines.length) {
+    hl7V3Address.streetAddressLine = allAddressLines.map(line => new hl7V3.Text(line))
+  }
+  if (fhirAddress.postalCode){
     hl7V3Address.postalCode = new hl7V3.Text(fhirAddress.postalCode)
   }
   return hl7V3Address
@@ -90,8 +116,6 @@ function convertAddressUse(fhirAddressUse: string, fhirPath: string) {
       return hl7V3.AddressUse.TEMPORARY
     case "billing":
       return hl7V3.AddressUse.POSTAL
-    case undefined:
-      return undefined
     default:
       throw new InvalidValueError(`Unhandled address use '${fhirAddressUse}'.`, fhirPath + ".use")
   }
