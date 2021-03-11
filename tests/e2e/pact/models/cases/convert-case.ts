@@ -17,12 +17,14 @@ export class ConvertCase extends Case {
 
     const responseString = fs.readFileSync(responseFile.path, "utf-8")
     this.response = this.isSuccess ? responseString : JSON.parse(LosslessJson.stringify(responseString))
-    this.responseMatcher =  this.isSuccess ? this.buildResponseMatcher(this.response).trimEnd() : ""
+    this.responseMatcher =  this.isSuccess 
+      ? this.buildResponseMatcher(requestFile.operation, this.response).trimEnd()
+      : ""
   }
 
-  private buildResponseMatcher(responseXml: string): string {
+  private buildResponseMatcher(operation: string, responseXml: string): string {
     const regexPattern = this.escapeRegexSpecialCharacters(responseXml)
-    return this.replaceDynamicsWithRegexPatterns(regexPattern)
+    return this.replaceDynamicsWithRegexPatterns(operation, regexPattern)
   }
 
   /* Build up a response match regex pattern by taking the response xml and escaping:
@@ -57,14 +59,29 @@ export class ConvertCase extends Case {
   /*
   * Replace any dynamic fields in the response xml which change at runtime with regex pattern match
   */
-  private replaceDynamicsWithRegexPatterns(responseXml: string): string {
-    return responseXml
+  private replaceDynamicsWithRegexPatterns(operation: string, responseXml: string): string {
+    responseXml = responseXml
       .replace(
         /<creationTime value=\\"[0-9]*\\"\\\/>/g,
         "<creationTime value=\\\"[0-9]*\\\"\\/>")
-      .replace(
-        /<effectiveTime (value=\\"[0-9]*\\"\\\/>|nullFlavor=\\"NA\\"\\\/>|nullFlavor=\\"UNK\\"\\\/>)/g,
-        "<effectiveTime (value=\\\"[0-9]*\\\"\\/>|nullFlavor=\\\"NA\\\"\\/>|nullFlavor=\\\"UNK\\\"\\/>)")
+
+    if (operation === "dispense" || operation === "release")
+    {
+      responseXml = responseXml
+        .replace(
+          /<effectiveTime (value=\\"[0-9]*\\"\\\/>|nullFlavor=\\"NA\\"\\\/>|nullFlavor=\\"UNK\\"\\\/>)/g,
+          "<effectiveTime (value=\\\"[0-9]*\\\"\\/>|nullFlavor=\\\"NA\\\"\\/>|nullFlavor=\\\"UNK\\\"\\/>)")
+    }
+
+    if (operation === "release")
+    {
+      responseXml = responseXml
+        .replace(
+          /<id root=\\"[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\\"\\\/>/g,
+        "<id root=\\\"[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\\\"\\/>")
+    }
+    
+    return responseXml
   }
   toJestCase(): [string, fhir.Bundle, string, string, number] {
     return [this.description, this.request, this.response, this.responseMatcher, this.statusCode]
