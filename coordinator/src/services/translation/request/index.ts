@@ -13,6 +13,7 @@ import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
 import {translateReleaseRequest} from "./dispense/release"
+import pino from "pino"
 
 export function convertBundleToSpineRequest(bundle: fhir.Bundle, messageId: string): SpineRequest {
   const messageType = identifyMessageType(bundle)
@@ -99,8 +100,12 @@ class AlgorithmIdentifier implements XmlJs.ElementCompact {
   }
 }
 
-export function convertParametersToSpineRequest(fhirMessage: fhir.Parameters, messageId: string): SpineRequest {
-  const hl7ReleaseRequest = translateReleaseRequest(fhirMessage)
+export async function convertParametersToSpineRequest(
+  fhirMessage: fhir.Parameters,
+  messageId: string,
+  logger: pino.Logger
+): Promise<SpineRequest> {
+  const hl7ReleaseRequest = await translateReleaseRequest(fhirMessage, logger)
   const interactionId = hl7V3.Hl7InteractionIdentifier.NOMINATED_PRESCRIPTION_RELEASE_REQUEST
   return  requestBuilder.toSpineRequest(
     createReleaseRequestSendMessagePayload(interactionId, hl7ReleaseRequest),

@@ -1,5 +1,8 @@
 import * as fhir from "../../../../../src/models/fhir"
 import {translateReleaseRequest} from "../../../../../src/services/translation/request/dispense/release"
+import pino from "pino"
+
+const logger = pino()
 
 describe("translateReleaseRequest", () => {
   const parameters = new fhir.Parameters([{
@@ -9,10 +12,10 @@ describe("translateReleaseRequest", () => {
       "value": "VNE51"
     }
   }])
-  const translatedRelease = translateReleaseRequest(parameters)
+  const translatedRelease = translateReleaseRequest(parameters, logger)
 
-  test("translated release contains agentPersonPerson and representedOrganization", () => {
-    const author = translatedRelease.NominatedPrescriptionReleaseRequest.author
+  test("translated release contains agentPersonPerson and representedOrganization", async () => {
+    const author = (await translatedRelease).NominatedPrescriptionReleaseRequest.author
     expect(author).toBeTruthy()
     const agentPerson = author.AgentPerson
     expect(agentPerson).toBeTruthy()
@@ -22,8 +25,8 @@ describe("translateReleaseRequest", () => {
     expect(representedOrganization).toBeTruthy()
   })
 
-  test("translates organizationId correctly", () => {
-    const agentPerson = translatedRelease.NominatedPrescriptionReleaseRequest.author.AgentPerson
+  test("translates organizationId correctly", async () => {
+    const agentPerson = (await translatedRelease).NominatedPrescriptionReleaseRequest.author.AgentPerson
     const organizationId = agentPerson.representedOrganization.id._attributes.extension
     expect(organizationId).toBe("VNE51")
   })

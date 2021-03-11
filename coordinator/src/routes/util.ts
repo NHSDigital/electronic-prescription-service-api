@@ -1,8 +1,5 @@
 import {isPollable, SpineDirectResponse, SpinePollableResponse} from "../models/spine"
 import Hapi from "@hapi/hapi"
-import * as requestValidator from "../services/validation/bundle-validator"
-import * as errors from "../models/errors/validation-errors"
-import {ResourceTypeError} from "../models/errors/validation-errors"
 import {translateToFhir} from "../services/translation/response"
 import * as LosslessJson from "lossless-json"
 import {getMessageHeader} from "../services/translation/common/getResourcesOfType"
@@ -13,11 +10,12 @@ import * as fhir from "../models/fhir"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
-const CONTENT_TYPE_FHIR = "application/fhir+json; fhirVersion=4.0"
-const CONTENT_TYPE_JSON = "application/json"
-
+export const CONTENT_TYPE_XML = "application/xml"
+export const CONTENT_TYPE_PLAIN_TEXT = "text/plain"
+export const CONTENT_TYPE_FHIR = "application/fhir+json; fhirVersion=4.0"
+export const CONTENT_TYPE_JSON = "application/json"
 export const VALIDATOR_HOST = "http://localhost:9001"
-export const basePath = "/FHIR/R4"
+export const BASE_PATH = "/FHIR/R4"
 
 export function createHash(thingsToHash: string): string {
   return crypto.SHA256(thingsToHash).toString()
@@ -28,44 +26,39 @@ export function handleResponse<T>(
   spineResponse: SpineDirectResponse<T> | SpinePollableResponse,
   responseToolkit: Hapi.ResponseToolkit
 ): Hapi.ResponseObject {
-  const isSmokeTest = request.headers["x-smoke-test"]
-  const contentType = isSmokeTest ? CONTENT_TYPE_JSON : CONTENT_TYPE_FHIR
-
   if (isPollable(spineResponse)) {
     return responseToolkit.response()
       .code(spineResponse.statusCode)
       .header("Content-Location", spineResponse.pollingUrl)
-  } else if (isOperationOutcome(spineResponse.body)) {
+  } else if (isOperationOutcome(spineResponse.body) || isBundle(spineResponse.body)) {
     return responseToolkit.response(spineResponse.body)
       .code(spineResponse.statusCode)
-      .header("Content-Type", contentType)
-  } else if (isBundle(spineResponse.body)) {
-    return responseToolkit.response(spineResponse.body)
-      .code(spineResponse.statusCode)
-      .header("Content-Type", contentType)
+      .type(CONTENT_TYPE_FHIR)
   } else {
     const translatedSpineResponse = translateToFhir(spineResponse, request.logger)
     return responseToolkit.response(translatedSpineResponse.fhirResponse)
       .code(translatedSpineResponse.statusCode)
-      .header("Content-Type", contentType)
+      .type(CONTENT_TYPE_FHIR)
   }
 }
 
-function isOperationOutcome(body: unknown): body is fhir.OperationOutcome {
-  return typeof body === "object"
-    && "resourceType" in body
-    && (body as fhir.Resource).resourceType === "OperationOutcome"
+export function isOperationOutcome(body: unknown): body is fhir.OperationOutcome {
+  return isFhirResourceOfType(body, "OperationOutcome")
 }
 
-function isBundle(body: unknown): body is fhir.Bundle {
-  return typeof body === "object"
-    && "resourceType" in body
-    && (body as fhir.Resource).resourceType === "Bundle"
+export function isBundle(body: unknown): body is fhir.Bundle {
+  return isFhirResourceOfType(body, "Bundle")
 }
 
-type Handler<T> = (
-  requestPayload: T, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
-) => Hapi.ResponseObject | Promise<Hapi.ResponseObject>
+export function isParameters(body: unknown): body is fhir.Parameters {
+  return isFhirResourceOfType(body, "Parameters")
+}
+
+function isFhirResourceOfType(body: unknown, resourceType: string) {
+  return typeof body === "object"
+    && "resourceType" in body
+    && (body as fhir.Resource).resourceType === resourceType
+}
 
 export function identifyMessageType(bundle: fhir.Bundle): string {
   return getMessageHeader(bundle).eventCoding?.code
@@ -84,7 +77,7 @@ const getCircularReplacer = () => {
   }
 }
 
-export async function fhirValidation(
+export async function callFhirValidator(
   payload: HapiPayload,
   requestHeaders: Hapi.Util.Dictionary<string>
 ): Promise<fhir.OperationOutcome> {
@@ -111,50 +104,21 @@ export async function fhirValidation(
   return validatorResponseData
 }
 
-export async function externalFHIRValidation(
+export async function getFhirValidatorErrors(
   request: Hapi.Request
 ): Promise<fhir.OperationOutcome> {
   if (request.headers["x-skip-validation"]) {
     request.logger.info("Skipping call to FHIR validator")
   } else {
     request.logger.info("Making call to FHIR validator")
-    const validatorResponseData = await fhirValidation(request.payload, request.headers)
+    const validatorResponseData = await callFhirValidator(request.payload, request.headers)
     request.logger.info("Received response from FHIR validator")
     const error = validatorResponseData.issue.find(issue => issue.severity === "error" || issue.severity === "fatal")
     if (error) {
       return validatorResponseData
     }
   }
-  return {
-    resourceType: "OperationOutcome",
-    issue: []
-  }
-}
-
-export function validatingHandler(handler: Handler<fhir.Bundle>) {
-  return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-    const fhirValidatorResponse = await externalFHIRValidation(request)
-    if (fhirValidatorResponse.issue.length > 0) {
-      return responseToolkit.response(fhirValidatorResponse).code(400)
-    }
-
-    const validFHIRPayload = getPayload(request) as fhir.Resource
-
-    if (validFHIRPayload.resourceType !== "Bundle") {
-      return responseToolkit
-        .response(toFhirError([new ResourceTypeError("Bundle")]))
-        .code(400)
-    }
-
-    const bundle = validFHIRPayload as fhir.Bundle
-    const validation = requestValidator.verifyBundle(bundle)
-    if (validation.length > 0) {
-      const response = toFhirError(validation)
-      const statusCode = requestValidator.getStatusCode(validation)
-      return responseToolkit.response(response).code(statusCode)
-    }
-    return handler(bundle, request, responseToolkit)
-  }
+  return null
 }
 
 export function getPayload(request: Hapi.Request): unknown {
@@ -165,23 +129,5 @@ export function getPayload(request: Hapi.Request): unknown {
     return LosslessJson.parse(request.payload)
   } else {
     return {}
-  }
-}
-
-export function toFhirError(validation: Array<errors.ValidationError>): fhir.OperationOutcome {
-  /* Reformat errors to FHIR spec
-    * v.operationOutcomeCode: from the [IssueType ValueSet](https://www.hl7.org/fhir/valueset-issue-type.html)
-    * v.apiErrorCode: Our own code defined for each particular error. Refer to OAS.
-  */
-  const mapValidationErrorToOperationOutcomeIssue = (ve: errors.ValidationError) => ({
-    severity: ve.severity,
-    code: ve.operationOutcomeCode,
-    diagnostics: ve.message,
-    expression: ve.expression
-  })
-
-  return {
-    resourceType: "OperationOutcome",
-    issue: validation.map(mapValidationErrorToOperationOutcomeIssue)
   }
 }

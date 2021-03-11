@@ -1,10 +1,9 @@
 import * as demographics from "../../../../src/services/translation/request/demographics"
-import * as XmlJs from "xml-js"
 import {InvalidValueError} from "../../../../src/models/errors/processing-errors"
 import * as hl7V3 from "../../../../src/models/hl7-v3"
 
 describe("convertName fills correct fields only", () => {
-  test("no keys should add no keys", () => {
+  test("should handle empty", () => {
     const fhirName = {}
     const result = demographics.convertName(fhirName, "fhirPath")
     expect(Object.keys(result)).toHaveLength(0)
@@ -69,9 +68,10 @@ describe("convertName fills correct fields only", () => {
 })
 
 describe("convertTelecom", () => {
-  test("empty telecom should throw InvalidValueUserFacingError", () => {
+  test("should handle empty", () => {
     const fhirTelecom = {}
-    expect(() => demographics.convertTelecom(fhirTelecom, "fhirPath")).toThrow(InvalidValueError)
+    const result = demographics.convertTelecom(fhirTelecom, "fhirPath")
+    expect(Object.keys(result)).toHaveLength(0)
   })
 
   const testNumber = "01234567890"
@@ -94,16 +94,15 @@ describe("convertTelecom", () => {
 })
 
 describe("convertAddress should return correct addresses", () => {
-  test("Throw InvalidValueUserFacingError when no type and invalid use", () => {
-    const fhirAddress = {use: "example"}
-    expect(() => demographics.convertAddress(fhirAddress, "fhirPath")).toThrow(InvalidValueError)
+  test("should handle empty", () => {
+    const fhirAddress = {}
+    const result = demographics.convertAddress(fhirAddress, "fhirPath")
+    expect(Object.keys(result)).toHaveLength(0)
   })
 
-  test("Empty address type and use do not add any attributes to the address XML tag", () => {
-    const fhirAddress = {}
-    const options = {compact: true}
-    const result = demographics.convertAddress(fhirAddress, "fhirPath")
-    expect(XmlJs.js2xml({address: result}, options)).toBe("<address></address>")
+  test("Throw InvalidValueUserFacingError for invalid use", () => {
+    const fhirAddress = {use: "example"}
+    expect(() => demographics.convertAddress(fhirAddress, "fhirPath")).toThrow(InvalidValueError)
   })
 
   const cases = [

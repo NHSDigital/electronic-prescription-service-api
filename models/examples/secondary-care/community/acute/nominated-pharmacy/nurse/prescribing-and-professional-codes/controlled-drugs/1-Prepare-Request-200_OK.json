@@ -3,7 +3,7 @@
   "id": "2C251CED-DC17-47FF-BD2F-36F4B8C27DDA",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "117666b1-809f-41e3-b1d5-1f8374f4e85e"
+    "value": "b52aaa09-6bc9-42c1-bd50-041a34e66efd"
   },
   "type": "message",
   "entry": [
@@ -130,7 +130,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2021-03-11T13:27:48+00:00",
+        "authoredOn": "2021-03-11T11:31:51+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -140,12 +140,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "839a51ee-9271-4a72-8cd5-e0d68769d5b7"
+                "value": "e5d3266c-47ab-4915-9bb9-dd5d90a8da15"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "94B467-A99968-11EBB5"
+          "value": "5E2745-A99968-47F8BZ"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -235,7 +235,7 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-        "authoredOn": "2021-03-11T13:27:48+00:00",
+        "authoredOn": "2021-03-11T11:31:51+00:00",
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -245,12 +245,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "839a51ee-9271-4a72-8cd5-e0d68769d5b7"
+                "value": "e5d3266c-47ab-4915-9bb9-dd5d90a8da15"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "94B467-A99968-11EBB5"
+          "value": "5E2745-A99968-47F8BZ"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -446,7 +446,7 @@
             "coding": [
               {
                 "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
-                "code": "RO197",
+                "code": "197",
                 "display": "NHS TRUST"
               }
             ]

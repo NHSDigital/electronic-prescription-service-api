@@ -1,4 +1,4 @@
-import convertPrescriptionRoutes from "./prescribe/convert"
+import convertPrescriptionRoutes from "./debug/convert"
 import preparePrescriptionRoutes from "./prescribe/prepare"
 import processPrescriptionRoutes from "./prescribe/process"
 import statusRoutes from "./health/get-status"

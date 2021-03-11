@@ -1,9 +1,9 @@
 import axios, {AxiosError, AxiosResponse} from "axios"
 import https from "https"
 import {Logger} from "pino"
-import {SpineClient} from "."
 import {SpineRequest, SpineResponse} from "../../models/spine"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
+import {SpineClient} from "./spine-client"
 import {FhirMessageProcessingError, toOperationOutcome} from "../../models/errors/processing-errors"
 
 const SPINE_URL_SCHEME = "https"
