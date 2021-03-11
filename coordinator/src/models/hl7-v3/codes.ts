@@ -51,8 +51,8 @@ export class SdsJobRoleCode extends Code<"1.2.826.0.1285.0.2.1.104"> {
 }
 
 export class OrganizationTypeCode extends Code<"2.16.840.1.113883.2.1.3.2.4.17.94"> {
-  constructor(code: string) {
-    super("2.16.840.1.113883.2.1.3.2.4.17.94", code)
+  constructor() {
+    super("2.16.840.1.113883.2.1.3.2.4.17.94", "999")
   }
 }
 

@@ -1,6 +1,6 @@
 import {convertPatient} from "../patient"
 import {convertBundleToPrescription} from "../prescription"
-import {getIdentifierValueForSystem, toArray} from "../../common"
+import {getMessageId, toArray} from "../../common"
 import {getMedicationRequests, getPatient} from "../../common/getResourcesOfType"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import * as hl7V3 from "../../../../models/hl7-v3"
@@ -12,11 +12,8 @@ export function convertParentPrescription(
   convertBundleToPrescriptionFn = convertBundleToPrescription,
   convertCareRecordElementCategoriesFn = convertCareRecordElementCategories
 ): hl7V3.ParentPrescription {
-  const messageId = getIdentifierValueForSystem(
-    [bundle.identifier],
-    "https://tools.ietf.org/html/rfc4122",
-    "Bundle.identifier"
-  )
+  const messageId = getMessageId(bundle)
+
   const parentPrescription = new hl7V3.ParentPrescription(
     new hl7V3.GlobalIdentifier(messageId)
   )

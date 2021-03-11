@@ -1,5 +1,4 @@
 import * as fhir from "../../../models/fhir"
-import {MedicationDispense} from "../../../models/fhir"
 import {onlyElement} from "./index"
 
 export function getResourcesOfType<T extends fhir.Resource>(bundle: fhir.Bundle, resourceType: string): Array<T> {

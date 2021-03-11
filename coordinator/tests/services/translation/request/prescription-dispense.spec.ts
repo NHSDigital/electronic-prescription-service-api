@@ -3,7 +3,7 @@ import {
   createLineItemStatusCode,
   getPrescriptionItemNumber,
   getPrescriptionStatus,
-  translateDispenseNotification
+  convertDispenseNotification
 } from "../../../../src/services/translation/request/prescribe/prescription-dispense"
 import * as TestResources from "../../../resources/test-resources"
 import requireActual = jest.requireActual
@@ -37,7 +37,7 @@ describe("convertPrescriptionDispense", () => {
     ])
 
   test.each(cases)("accepts %s", (desc: string, input: fhir.Bundle) => {
-    expect(() => translateDispenseNotification(input)).not.toThrow()
+    expect(() => convertDispenseNotification(input)).not.toThrow()
   })
 })
 
@@ -113,7 +113,7 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
     const fhirMessageDestination = onlyElement(messageHeader.destination, "MessageHeader.destination")
     fhirMessageDestination.receiver.identifier.value = "XX-TEST-VALUE"
 
-    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
 
     expect(
       fhirMessageDestination
@@ -128,7 +128,7 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
     const fhirMessageDestination = onlyElement(messageHeader.destination, "MessageHeader.destination")
     fhirMessageDestination.receiver.display = "XX-TEST-VALUE"
 
-    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
 
     expect(
       fhirMessageDestination
@@ -142,7 +142,7 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
   test("sender.identifier.value maps to pertinentInformation1.pertinentSupplyHeader.author.AgentPerson", () => {
     messageHeader.sender.identifier.value = "XX-TEST-VALUE"
 
-    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
 
     expect(
       messageHeader.sender.identifier.value
@@ -161,7 +161,7 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
   test("sender.display maps to pertinentInformation1.pertinentSupplyHeader.author.AgentPerson", () => {
     messageHeader.sender.display = "XX-TEST-VALUE"
 
-    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
 
     expect(
       messageHeader.sender.display
@@ -174,7 +174,7 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
   test("response.identifier maps to sequelTo.priorPrescriptionReleaseEventRef.id", () => {
     messageHeader.response.identifier = "XX-TEST-VALUE"
 
-    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
 
     expect(
       messageHeader.response.identifier
@@ -198,7 +198,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
   test("identifier.value maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.id", () => {
     medicationDispenses.forEach(medicationDispense => setPrescriptionItemNumber(medicationDispense, "XX-TEST-VALUE"))
 
-    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(
@@ -219,7 +219,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
       setMedicationCodeableConcept(medicationDispense, "XX-TEST-VALUE", "XX-TEST-VALUE-DISPLAY")
     )
 
-    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
 
     medicationDispenses.map((_, index) => {
       expect(
@@ -260,7 +260,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
   test("subject.Patient.value maps to recordTarget.patient.id.extension", () => {
     medicationDispenses.forEach(medicationDispense => setPatientId(medicationDispense, "XX-TEST-VALUE"))
 
-    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
 
     medicationDispenses.map((medicationDispense) => {
       expect(
@@ -275,7 +275,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
   test("performer.actor.(type === 'Practitioner') maps to pertinentInformation1.pertinentSupplyHeader.author.AgentPerson.agentPerson", () => {
     medicationDispenses.forEach(medicationDispense => setPractitionerName(medicationDispense, "XX-TEST-VALUE"))
 
-    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
 
     medicationDispenses.map((medicationDispense) => {
       expect(
@@ -299,7 +299,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
         "XX-TEST-VALUE-IDENTIFIER")
     )
 
-    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(
@@ -360,7 +360,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
       medicationDispense.quantity.code = "XX-TEST-VALUE-CODE"
     })
 
-    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(
@@ -457,7 +457,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
 
     const expected = "20200310000000"
 
-    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
 
     medicationDispenses.map(() => {
       expect(
@@ -480,7 +480,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
       medicationDispense.dosageInstruction.forEach(d => d.text = "XX-TEST-VALUE")
     )
 
-    const hl7dispenseNotification = translateDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(

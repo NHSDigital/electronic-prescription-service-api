@@ -5,6 +5,7 @@ import {
   getExtensionForUrl,
   getIdentifierValueForSystem,
   getIdentifierValueOrNullForSystem,
+  getMessageId,
   onlyElement
 } from "../../common"
 import {
@@ -16,7 +17,7 @@ import * as hl7v3 from "../../../../models/hl7-v3"
 import moment from "moment"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
 
-export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.DispenseNotification {
+export function convertDispenseNotification(bundle: fhir.Bundle): hl7V3.DispenseNotification {
   const messageId = getMessageId(bundle)
 
   const fhirHeader = getMessageHeader(bundle)
@@ -37,7 +38,6 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
     fhirFirstMedicationDispense
   )
 
-  /* eslint-disable max-len */
   const hl7DispenseNotification = new hl7V3.DispenseNotification(new hl7V3.GlobalIdentifier(messageId))
   hl7DispenseNotification.effectiveTime = hl7EffectiveTime
   hl7DispenseNotification.recordTarget = new hl7V3.DispenseRecordTarget(hl7Patient)
@@ -45,7 +45,6 @@ export function translateDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispen
   hl7DispenseNotification.pertinentInformation1 = hl7PertinentInformation1
   hl7DispenseNotification.pertinentInformation2 = new hl7V3.DispensePertinentInformation2(hl7CareRecordElementCategory)
   hl7DispenseNotification.sequelTo = new hl7V3.SequelTo(hl7PriorPrescriptionReleaseEventRef)
-  /* eslint-enable max-len */
 
   return hl7DispenseNotification
 }
@@ -76,14 +75,12 @@ function createPertinentInformation1(
     medicationDispense => createPertinentInformation1LineItem(medicationDispense)
   )
 
-  /* eslint-disable max-len */
   const supplyHeader = new hl7V3.PertinentSupplyHeader(new hl7V3.GlobalIdentifier(messageId))
   supplyHeader.author = hl7Author
   supplyHeader.pertinentInformation1 = hl7PertinentInformation1LineItems
   supplyHeader.pertinentInformation3 = new hl7V3.DispensePertinentInformation3(hl7PertinentPrescriptionStatus)
   supplyHeader.pertinentInformation4 = new hl7V3.DispensePertinentInformation4(hl7PertinentPrescriptionIdentifier)
   supplyHeader.inFulfillmentOf = new hl7V3.InFulfillmentOf(hl7PriorOriginalRef)
-  /* eslint-enable max-len */
 
   return new hl7V3.DispenseNotificationPertinentInformation1(supplyHeader)
 }
@@ -111,21 +108,28 @@ function createPertinentInformation1LineItem(fhirMedicationDispense: fhir.Medica
     hl7Quantity,
     fhirMedicationCodeableConceptCoding,
     fhirDosageInstruction)
-  
-  /* eslint-disable max-len */
+
   const hl7PertinentSuppliedLineItem = new hl7V3.PertinentSuppliedLineItem(
     new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber),
     new hl7v3.SnomedCode(fhirMedicationCodeableConceptCoding.code)
-  ) 
+  )
   hl7PertinentSuppliedLineItem.consumable = new hl7V3.Consumable(
     new hl7V3.RequestedManufacturedProduct(
       new hl7V3.ManufacturedRequestedMaterial(
-        hl7SuppliedLineItemQuantitySnomedCode)))
+        hl7SuppliedLineItemQuantitySnomedCode
+      )
+    )
+  )
   hl7PertinentSuppliedLineItem.component = new hl7V3.DispenseLineItemComponent(hl7SuppliedLineItemQuantity)
-  hl7PertinentSuppliedLineItem.component1 = new hl7V3.DispenseLineItemComponent1(new hl7V3.SupplyRequest(hl7SuppliedLineItemQuantitySnomedCode, hl7Quantity))
-  hl7PertinentSuppliedLineItem.pertinentInformation3 = new hl7V3.DispenseLineItemPertinentInformation3(new hl7V3.PertinentItemStatus(hl7ItemStatusCode))
-  hl7PertinentSuppliedLineItem.inFulfillmentOf = new hl7V3.InFulfillmentOfLineItem(new hl7V3.PriorOriginalRef(new hl7V3.GlobalIdentifier(hl7PriorOriginalItemRef)))
-  /* eslint-enable max-len */
+  hl7PertinentSuppliedLineItem.component1 = new hl7V3.DispenseLineItemComponent1(
+    new hl7V3.SupplyRequest(hl7SuppliedLineItemQuantitySnomedCode, hl7Quantity)
+  )
+  hl7PertinentSuppliedLineItem.pertinentInformation3 = new hl7V3.DispenseLineItemPertinentInformation3(
+    new hl7V3.PertinentItemStatus(hl7ItemStatusCode)
+  )
+  hl7PertinentSuppliedLineItem.inFulfillmentOf = new hl7V3.InFulfillmentOfLineItem(
+    new hl7V3.PriorOriginalRef(new hl7V3.GlobalIdentifier(hl7PriorOriginalItemRef))
+  )
 
   return new hl7V3.DispenseNotificationPertinentInformation1LineItem(hl7PertinentSuppliedLineItem)
 }
@@ -155,14 +159,6 @@ function createSuppliedLineItemQuantity(
     )
   )
   return hl7SuppliedLineItemQuantity
-}
-
-function getMessageId(bundle: fhir.Bundle) {
-  return getIdentifierValueForSystem(
-    [bundle.identifier],
-    "https://tools.ietf.org/html/rfc4122",
-    "Bundle.identifier"
-  )
 }
 
 function getIdentifiers(messageId: string, fhirMedicationDispenses: Array<fhir.MedicationDispense>) {
@@ -296,14 +292,14 @@ function createAgentOrganisation(header: fhir.MessageHeader): hl7V3.AgentOrganiz
   const fhirHeaderDestination = onlyElement(header.destination, "MessageHeader.destination")
   const hl7OrganisationCode = fhirHeaderDestination.receiver.identifier.value
   const hl7OrganisationName = fhirHeaderDestination.receiver.display
-  const hl7Organization = createOrganisation(hl7OrganisationCode, hl7OrganisationName)
-  return new hl7V3.AgentOrganization(hl7Organization)
+  const hl7Organisation = createOrganisation(hl7OrganisationCode, hl7OrganisationName)
+  return new hl7V3.AgentOrganization(hl7Organisation)
 }
 
 function createOrganisation(organisationCode: string, organisationName: string): hl7V3.Organization {
   const organisation = new hl7V3.Organization()
   organisation.id = new hl7V3.SdsOrganizationIdentifier(organisationCode)
-  organisation.code = new hl7V3.OrganizationTypeCode("999") // todo: question if this should be hard-coded
+  organisation.code = new hl7V3.OrganizationTypeCode()
   organisation.name = new hl7V3.Text(organisationName)
   return organisation
 }
@@ -349,7 +345,7 @@ function createRepresentedOrganisation(organisationCode: string, organisationNam
   const organisation = createOrganisation(organisationCode, organisationName)
   organisation.id = new hl7V3.SdsOrganizationIdentifier(organisationCode)
   // todo dispenseNotification: ods/sds lookup
-  organisation.code = new hl7V3.OrganizationTypeCode("999")
+  organisation.code = new hl7V3.OrganizationTypeCode()
   organisation.name = new hl7V3.Text(organisationName)
   organisation.telecom = new hl7V3.Telecom(hl7V3.TelecomUse.WORKPLACE, "01208812760")
   const hl7Address = new hl7V3.Address(hl7V3.AddressUse.WORK)

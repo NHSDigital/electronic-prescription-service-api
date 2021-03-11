@@ -46,7 +46,7 @@ function getRepresentedOrganization(fhirReleaseRequest: fhir.Parameters): hl7v3.
   const organizationParameter = getIdentifierParameterByName(fhirReleaseRequest.parameter, "owner")
   const organizationCode = organizationParameter.valueIdentifier.value
   hl7Organization.id = new hl7v3.SdsOrganizationIdentifier(organizationCode)
-  hl7Organization.code = new hl7v3.OrganizationTypeCode("999")
+  hl7Organization.code = new hl7v3.OrganizationTypeCode()
   hl7Organization.name = new hl7v3.Text("SOMERSET BOWEL CANCER SCREENING CENTRE")
   hl7Organization.telecom = new hl7v3.Telecom(hl7v3.TelecomUse.WORKPLACE, "01823333444")
 
