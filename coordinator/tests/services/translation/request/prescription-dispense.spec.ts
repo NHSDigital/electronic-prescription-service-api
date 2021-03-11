@@ -1,6 +1,6 @@
 import {
   getFhirGroupIdentifierExtension,
-  getLineItemStatusCode,
+  createLineItemStatusCode,
   getPrescriptionItemNumber,
   getPrescriptionStatus,
   translateDispenseNotification
@@ -64,7 +64,7 @@ describe("getLineItemStatusCode", () => {
       fhirMedicationDispenses.map(medicationDispense => {
         setItemStatusCode(medicationDispense, code)
         medicationDispense.type.coding.forEach(coding => {
-          const itemStatusCode = getLineItemStatusCode(coding)._attributes
+          const itemStatusCode = createLineItemStatusCode(coding)._attributes
           expect(itemStatusCode).toEqual(expected)
         })
       })

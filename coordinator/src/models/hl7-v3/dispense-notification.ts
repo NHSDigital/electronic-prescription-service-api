@@ -212,8 +212,9 @@ export class InFulfillmentOfLineItem implements ElementCompact {
   templateId: codes.TemplateIdentifier
   priorOriginalItemRef: PriorOriginalRef
 
-  constructor() {
+  constructor(priorOriginalItemRef: PriorOriginalRef) {
     this.templateId = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.sourceOf1")
+    this.priorOriginalItemRef = priorOriginalItemRef
   }
 }
 
@@ -244,6 +245,10 @@ export class Consumable implements ElementCompact {
   }
 
   requestedManufacturedProduct: RequestedManufacturedProduct
+
+  constructor(requestedManufacturedProduct: RequestedManufacturedProduct) {
+    this.requestedManufacturedProduct = requestedManufacturedProduct
+  }
 }
 
 /*
@@ -255,6 +260,10 @@ export class RequestedManufacturedProduct implements ElementCompact {
     classCode: "MANU"
   }
   manufacturedRequestedMaterial: lineItem.ManufacturedRequestedMaterial
+
+  constructor(manufacturedRequestedMaterial: lineItem.ManufacturedRequestedMaterial) {
+    this.manufacturedRequestedMaterial = manufacturedRequestedMaterial
+  }
 }
 
 /*
