@@ -1,14 +1,9 @@
-import * as translator from "../../services/translation/request"
-import {spineClient} from "../../services/communication/spine-client"
+import * as translator from "../services/translation/request"
+import {spineClient} from "../services/communication/spine-client"
 import Hapi from "@hapi/hapi"
-import {BASE_PATH, CONTENT_TYPE_FHIR, createHash, getFhirValidatorErrors, getPayload, handleResponse} from "../util"
-import {getMessageHeader} from "../../services/translation/common/getResourcesOfType"
-import * as fhir from "../../models/fhir"
-import * as bundleValidator from "../../services/validation/bundle-validator"
-
-function isDispenseMessage(bundle: fhir.Bundle) {
-  return getMessageHeader(bundle).eventCoding.code === "prescription-dispense"
-}
+import {BASE_PATH, CONTENT_TYPE_FHIR, createHash, getFhirValidatorErrors, getPayload, handleResponse} from "./util"
+import * as fhir from "../models/fhir"
+import * as bundleValidator from "../services/validation/bundle-validator"
 
 export default [
   /*
@@ -29,19 +24,9 @@ export default [
         return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(CONTENT_TYPE_FHIR)
       }
 
-      if (isDispenseMessage(bundle)) {
-        return responseToolkit.response({
-          resourceType: "OperationOutcome",
-          issue: [{
-            code: "informational",
-            severity: "information"
-          }]
-        }).code(200).type(CONTENT_TYPE_FHIR)
-      }
-
       request.logger.info("Building Spine request")
       const requestId = request.headers["nhsd-request-id"].toUpperCase()
-      const spineRequest = translator.convertBundleToSpineRequest(bundle, requestId)
+      const spineRequest = await translator.convertBundleToSpineRequest(bundle, requestId, request.logger)
       request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(bundle))})
       const spineResponse = await spineClient.send(spineRequest, request.logger)
       return handleResponse(request, spineResponse, responseToolkit)

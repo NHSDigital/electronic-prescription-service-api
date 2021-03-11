@@ -31,13 +31,13 @@
         "sender": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "FH878"
+            "value": "FQ564"
           },
           "display": "BOOTS THE CHEMISTS LTD"
         },
         "source": {
           "name": "BOOTS THE CHEMISTS LTD",
-          "endpoint": "urn:nhs-uk:addressing:ods:FH878"
+          "endpoint": "urn:nhs-uk:addressing:ods:FQ564"
         },
         "reason": {
           "coding": [

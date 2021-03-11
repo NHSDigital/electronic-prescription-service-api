@@ -12,24 +12,28 @@ import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
-import {convertDispenseNotification} from "./prescribe/prescription-dispense"
+import {convertDispenseNotification} from "./dispense/dispense-notification"
 import {translateReleaseRequest} from "./dispense/release"
 import pino from "pino"
 
-export function convertBundleToSpineRequest(bundle: fhir.Bundle, messageId: string): SpineRequest {
+export async function convertBundleToSpineRequest(
+  bundle: fhir.Bundle, messageId: string, logger: pino.Logger
+): Promise<SpineRequest> {
   const messageType = identifyMessageType(bundle)
-  const payload = createPayload(messageType, bundle)
+  const payload = await createPayload(messageType, bundle, logger)
   return requestBuilder.toSpineRequest(payload, messageId)
 }
 
-function createPayload(messageType: string, bundle: fhir.Bundle): hl7V3.SendMessagePayload<unknown> {
+async function createPayload(
+  messageType: string, bundle: fhir.Bundle, logger: pino.Logger
+): Promise<hl7V3.SendMessagePayload<unknown>> {
   switch (messageType) {
     case fhir.EventCodingCode.PRESCRIPTION:
       return createParentPrescriptionSendMessagePayload(bundle)
     case fhir.EventCodingCode.CANCELLATION:
       return createCancellationSendMessagePayload(bundle)
     case fhir.EventCodingCode.DISPENSE:
-      return createDispenseNotificationSendMessagePayload(bundle)
+      return await createDispenseNotificationSendMessagePayload(bundle, logger)
   }
 }
 
@@ -42,10 +46,11 @@ export function createParentPrescriptionSendMessagePayload(
   return createSendMessagePayload(interactionId, bundle, parentPrescriptionRoot)
 }
 
-export function createDispenseNotificationSendMessagePayload(
-  bundle: fhir.Bundle
-): hl7V3.SendMessagePayload<hl7V3.DispenseNotificationRoot> {
-  const dispenseNotification = convertDispenseNotification(bundle)
+export async function createDispenseNotificationSendMessagePayload(
+  bundle: fhir.Bundle,
+  logger: pino.Logger
+): Promise<hl7V3.SendMessagePayload<hl7V3.DispenseNotificationRoot>> {
+  const dispenseNotification = await convertDispenseNotification(bundle, logger)
   const dispenseNotificationRoot = new hl7V3.DispenseNotificationRoot(dispenseNotification)
   const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION
   return createSendMessagePayload(interactionId, bundle, dispenseNotificationRoot)

@@ -16,8 +16,16 @@ import {
 import * as hl7v3 from "../../../../models/hl7-v3"
 import moment from "moment"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
+import {convertAddress, convertTelecom} from "../demographics"
+import pino from "pino"
+import {odsClient} from "../../../communication/ods-client"
+import {InvalidValueError} from "../../../../models/errors/processing-errors"
 
-export function convertDispenseNotification(bundle: fhir.Bundle): hl7V3.DispenseNotification {
+export async function convertDispenseNotification(
+  bundle: fhir.Bundle,
+  logger: pino.Logger
+): Promise<hl7V3.DispenseNotification> {
+
   const messageId = getMessageId(bundle)
 
   const fhirHeader = getMessageHeader(bundle)
@@ -31,11 +39,12 @@ export function convertDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispense
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)
   const hl7CareRecordElementCategory = createCareRecordElementCategory(fhirIdentifiers)
   const hl7PriorPrescriptionReleaseEventRef = createPriorPrescriptionReleaseEventRef(fhirHeader)
-  const hl7PertinentInformation1 = createPertinentInformation1(
+  const hl7PertinentInformation1 = await createPertinentInformation1(
     messageId,
     fhirHeader.sender,
     fhirMedicationDispenses,
-    fhirFirstMedicationDispense
+    fhirFirstMedicationDispense,
+    logger
   )
 
   const hl7DispenseNotification = new hl7V3.DispenseNotification(new hl7V3.GlobalIdentifier(messageId))
@@ -49,27 +58,27 @@ export function convertDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispense
   return hl7DispenseNotification
 }
 
-function createPertinentInformation1(
+async function createPertinentInformation1(
   messageId: string,
   fhirHeaderSender: fhir.IdentifierReference<fhir.Organization>,
   fhirMedicationDispenses: Array<fhir.MedicationDispense>,
-  fhirFirstMedicationDispense: fhir.MedicationDispense
-): hl7V3.DispenseNotificationPertinentInformation1 {
+  fhirFirstMedicationDispense: fhir.MedicationDispense,
+  logger: pino.Logger
+) {
 
   const fhirPractitionerPerformer = fhirFirstMedicationDispense.performer.find(p => p.actor.type === "Practitioner")
 
   const hl7RepresentedOrganisationCode = fhirHeaderSender.identifier.value
-  const hl7RepresentedOrganisationName = fhirHeaderSender.display
   const hl7AuthorTime = fhirFirstMedicationDispense.whenPrepared
   const hl7AgentPersonPersonName = fhirPractitionerPerformer.actor.display
   const hl7PertinentPrescriptionStatus = createPertinentPrescriptionStatus(fhirFirstMedicationDispense)
   const hl7PertinentPrescriptionIdentifier = createPertinentPrescriptionId(fhirFirstMedicationDispense)
   const hl7PriorOriginalRef = createPriorOriginalRef(fhirFirstMedicationDispense)
-  const hl7Author = createAuthor(
+  const hl7Author = await createAuthor(
     hl7RepresentedOrganisationCode,
-    hl7RepresentedOrganisationName,
     hl7AuthorTime,
-    hl7AgentPersonPersonName
+    hl7AgentPersonPersonName,
+    logger
   )
   const hl7PertinentInformation1LineItems = fhirMedicationDispenses.map(
     medicationDispense => createPertinentInformation1LineItem(medicationDispense)
@@ -304,27 +313,27 @@ function createOrganisation(organisationCode: string, organisationName: string):
   return organisation
 }
 
-function createAuthor(
+async function createAuthor(
   hl7RepresentedOrganisationCode: string,
-  hl7RepresentedOrganisationName: string,
   hl7AuthorTime: string,
-  hl7AgentPersonPersonName: string
-): hl7V3.Author {
+  hl7AgentPersonPersonName: string,
+  logger: pino.Logger
+): Promise<hl7V3.Author> {
   const author = new hl7V3.Author()
   author.time = convertIsoDateTimeStringToHl7V3DateTime(hl7AuthorTime, "MedicationDispense.whenPrepared")
   author.signatureText = hl7V3.Null.NOT_APPLICABLE
-  author.AgentPerson = createAgentPerson(
+  author.AgentPerson = await createAgentPerson(
     hl7RepresentedOrganisationCode,
-    hl7RepresentedOrganisationName,
-    hl7AgentPersonPersonName)
+    hl7AgentPersonPersonName,
+    logger)
   return author
 }
 
-function createAgentPerson(
+async function createAgentPerson(
   organisationCode: string,
-  organisationName: string,
-  agentPersonPersonNameValue: string
-): hl7V3.AgentPerson {
+  agentPersonPersonNameValue: string,
+  logger: pino.Logger
+) {
   const agentPerson = new hl7V3.AgentPerson()
   // todo dispenseNotification: ods/sds lookup
   agentPerson.id = new hl7V3.SdsRoleProfileIdentifier("100243444980")
@@ -342,34 +351,8 @@ function createAgentPerson(
   agentPersonPerson.name = agentPersonPersonName
   agentPerson.agentPerson = agentPersonPerson
   agentPerson.representedOrganization =
-    createRepresentedOrganisation(organisationCode, organisationName)
+    await createRepresentedOrganisation(organisationCode, logger)
   return agentPerson
-}
-
-function createRepresentedOrganisation(organisationCode: string, organisationName: string): hl7V3.Organization {
-  const organisation = createOrganisation(organisationCode, organisationName)
-  organisation.id = new hl7V3.SdsOrganizationIdentifier(organisationCode)
-  // todo dispenseNotification: ods/sds lookup
-  organisation.code = new hl7V3.OrganizationTypeCode()
-  organisation.name = new hl7V3.Text(organisationName)
-  organisation.telecom = new hl7V3.Telecom()
-  organisation.telecom._attributes = {
-    use: hl7v3.TelecomUse.WORKPLACE,
-    value: "tel:01208812760"
-  }
-  const hl7Address = new hl7V3.Address()
-  hl7Address._attributes = {
-    use: hl7V3.AddressUse.WORK
-  }
-  hl7Address.streetAddressLine = [
-    new hl7V3.Text("REGENCY ARCADE"),
-    new hl7V3.Text("23 MOLESWORTH STREET"),
-    new hl7V3.Text("WADEBRIDGE"),
-    new hl7V3.Text("CORNWALL")
-  ]
-  hl7Address.postalCode = new hl7V3.Text("PL27 7DH")
-  organisation.addr = hl7Address
-  return organisation
 }
 
 function createCareRecordElementCategory(fhirIdentifiers: Array<string>) {
@@ -392,4 +375,39 @@ function createPriorPrescriptionReleaseEventRef(fhirHeader: fhir.MessageHeader) 
   return new hl7V3.PriorPrescriptionReleaseEventRef(
     new hl7V3.GlobalIdentifier(fhirHeader.response.identifier)
   )
+}
+
+function createOrganization(organization: fhir.Organization): hl7v3.Organization {
+  const hl7V3Organization = new hl7V3.Organization()
+  const organizationSdsId = getIdentifierValueForSystem(
+    organization.identifier,
+    "https://fhir.nhs.uk/Id/ods-organization-code",
+    `Organization.identifier`
+  )
+  hl7V3Organization.id = new hl7V3.SdsOrganizationIdentifier(organizationSdsId)
+  hl7V3Organization.code = new hl7V3.OrganizationTypeCode()
+  if (organization.name) {
+    hl7V3Organization.name = new hl7v3.Text(organization.name)
+  }
+  if (organization.telecom?.length) {
+    hl7V3Organization.telecom = convertTelecom(organization.telecom[0], "Organization.telecom")
+  }
+  if (organization.address?.length) {
+    hl7V3Organization.addr = convertAddress(organization.address[0], "Organization.address")
+  }
+  return hl7V3Organization
+}
+
+async function createRepresentedOrganisation(
+  organizationCode: string,
+  logger: pino.Logger
+): Promise<hl7v3.Organization> {
+  const organization = await odsClient.lookupOrganization(organizationCode, logger)
+  if (!organization) {
+    throw new InvalidValueError(
+      `No organisation details found for code ${organizationCode}`,
+      "Parameters.parameter"
+    )
+  }
+  return createOrganization(organization)
 }

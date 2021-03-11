@@ -10,7 +10,7 @@ import {
   medicationRequestNumberIssue,
   messageTypeIssue
 } from "../../../src/models/errors/validation-errors"
-import {getPrescriptionStatus} from "../../../src/services/translation/request/prescribe/prescription-dispense"
+import {getPrescriptionStatus} from "../../../src/services/translation/request/dispense/dispense-notification"
 
 function validateValidationErrors (validationErrors: Array<fhir.OperationOutcomeIssue>) {
   expect(validationErrors).toHaveLength(1)
