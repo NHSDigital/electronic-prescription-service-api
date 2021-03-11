@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN080101SM31 xmlns="urn:hl7-org:v3">
   <id root="43AA2DA6-DF7E-4584-A10B-305891BDA8C9"/>
-  <creationTime value="20210311165401"/>
+  <creationTime value="20210311195606"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN080101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -42,7 +42,7 @@
       <DispenseNotification classCode="INFO" moodCode="EVN">
         <id root="43AA2DA6-DF7E-4584-A10B-305891BDA8C9"/>
         <code code="163541000000107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensed Medication - FocusActOrEvent (administrative concept)"/>
-        <effectiveTime value="20210311165401"/>
+        <effectiveTime value="20210311195606"/>
         <typeId extension="PORX_MT024001UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <patient classCode="PAT">
@@ -79,13 +79,13 @@
                   <id extension="FQ564" root="1.2.826.0.1285.0.1.10"/>
                   <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
                   <name>BOOTS THE CHEMISTS LTD</name>
-                  <telecom use="WP" value="tel:01208812760"/>
-                  <addr use="WP">
-                    <streetAddressLine>REGENCY ARCADE</streetAddressLine>
-                    <streetAddressLine>23 MOLESWORTH STREET</streetAddressLine>
-                    <streetAddressLine>WADEBRIDGE</streetAddressLine>
-                    <streetAddressLine>CORNWALL</streetAddressLine>
-                    <postalCode>PL27 7DH</postalCode>
+                  <telecom value="tel:01234210803"/>
+                  <addr>
+                    <streetAddressLine>UNIT D, I/CHANGE RETAIL PARK</streetAddressLine>
+                    <streetAddressLine>RACE MEADOWS WAY</streetAddressLine>
+                    <streetAddressLine>BEDFORD</streetAddressLine>
+                    <streetAddressLine>BEDFORDSHIRE</streetAddressLine>
+                    <postalCode>MK42 7AZ</postalCode>
                   </addr>
                 </representedOrganization>
               </AgentPerson>
