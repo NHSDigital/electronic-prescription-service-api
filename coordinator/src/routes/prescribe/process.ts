@@ -1,9 +1,14 @@
 import * as translator from "../../services/translation/request"
 import {spineClient} from "../../services/communication/spine-client"
 import Hapi from "@hapi/hapi"
-import {basePath, createHash, handleResponse, validatingHandler} from "../util"
+import {BASE_PATH, CONTENT_TYPE_FHIR, createHash, getFhirValidatorErrors, getPayload, handleResponse} from "../util"
+import {getMessageHeader} from "../../services/translation/common/getResourcesOfType"
 import * as fhir from "../../models/fhir"
 import * as bundleValidator from "../../services/validation/bundle-validator"
+
+function isDispenseMessage(bundle: fhir.Bundle) {
+  return getMessageHeader(bundle).eventCoding.code === "prescription-dispense"
+}
 
 export default [
   /*
@@ -11,14 +16,12 @@ export default [
     */
   {
     method: "POST",
-    path: `${basePath}/$process-message`,
-    handler: validatingHandler(
-      async (bundle: fhir.Bundle, request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
-        request.logger.info("Building Spine request")
-        const spineRequest = translator.convertBundleToSpineRequest(
-          bundle,
-          request.headers["nhsd-request-id"].toUpperCase()
-        )
+    path: `${BASE_PATH}/$process-message`,
+    handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      const fhirValidatorResponse = await getFhirValidatorErrors(request)
+      if (fhirValidatorResponse) {
+        return responseToolkit.response(fhirValidatorResponse).code(400).type(CONTENT_TYPE_FHIR)
+      }
 
       const bundle = getPayload(request) as fhir.Bundle
       const issues = bundleValidator.verifyBundle(bundle)

@@ -1,6 +1,13 @@
 import * as LosslessJson from "lossless-json"
 import * as fhir from "../fhir"
 
+export const messageTypeIssue: fhir.OperationOutcomeIssue = {
+  severity: "fatal",
+  code: "value",
+  diagnostics: `MessageHeader.eventCoding.code must be one of: ${fhir.ACCEPTED_MESSAGE_TYPES.join(", ")}.`,
+  expression: ["Bundle.entry.resource.ofType(MessageHeader).eventCoding.code"]
+}
+
 export function createMedicationRequestInconsistentValueIssue<T>(
   fieldName: string,
   uniqueFieldValues: Array<T>
@@ -17,23 +24,30 @@ export function createMedicationRequestInconsistentValueIssue<T>(
   }
 }
 
-export class MedicationDispenseInconsistentValueError<T> implements ValidationError {
-  message: string
-  operationOutcomeCode = "value" as const
-  severity = "error" as const
-  expression: Array<string>
+export const medicationRequestDuplicateIdentifierIssue: fhir.OperationOutcomeIssue = {
+  severity: "error",
+  code: "value",
+  diagnostics: "Expected all MedicationRequests to have a different value for identifier.",
+  expression: ["Bundle.entry.resource.ofType(MedicationRequest).identifier"]
+}
 
-  constructor(fieldName: string, uniqueFieldValues: Array<T>) {
-    this.message = `Expected all MedicationDispenses to have the same value for ${
+export function createMedicationDispenseInconsistentValueIssue<T>(
+  fieldName: string,
+  uniqueFieldValues: Array<T>
+): fhir.OperationOutcomeIssue {
+  return {
+    severity: "error",
+    code: "value",
+    diagnostics: `Expected all MedicationDispenses to have the same value for ${
       fieldName
     }. Received ${
       LosslessJson.stringify(uniqueFieldValues)
-    }.`
-    this.expression = [`Bundle.entry.resource.ofType(MedicationDispense).${fieldName}`]
+    }.`,
+    expression: [`Bundle.entry.resource.ofType(MedicationDispense).${fieldName}`]
   }
 }
 
-export class MedicationRequestDuplicateValueError<T> implements ValidationError {
+export class MedicationRequestDuplicateValueError<T> {
   message: string
   operationOutcomeCode = "value" as const
   severity = "error" as const
@@ -73,13 +87,6 @@ export function createMedicationRequestIncorrectValueIssue(
     diagnostics: `MedicationRequest.${fieldName} must be '${requiredFieldValue}'.`,
     expression: [`Bundle.entry.resource.ofType(MedicationRequest).${fieldName}`]
   }
-}
-
-export class MessageTypeError implements ValidationError {
-  message = `MessageHeader.eventCoding.code must be one of: ${fhir.ACCEPTED_MESSAGE_TYPES.join(", ")}.`
-  operationOutcomeCode = "value" as const
-  severity = "fatal" as const
-  expression = ["Bundle.entry.resource.ofType(MessageHeader).eventCoding.code"]
 }
 
 export function createResourceTypeIssue(expectedResourceType: string): fhir.OperationOutcomeIssue {

@@ -143,10 +143,10 @@ export function verifyCancellationBundle(bundle: fhir.Bundle): Array<fhir.Operat
   return validationErrors
 }
 
-export function verifyDispenseBundle(bundle: fhir.Bundle): Array<errors.ValidationError> {
+export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
   const medicationDispenses = getMedicationDispenses(bundle)
 
-  const allErrors: Array<errors.ValidationError> = []
+  const allErrors = []
 
   const fhirPaths = [
     "whenPrepared",
@@ -163,8 +163,8 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<errors.Validati
     const uniqueFieldValues = getUniqueValues(values[index])
     if (uniqueFieldValues.length > 1) {
       allErrors.push(
-        new errors.MedicationDispenseInconsistentValueError(
-          `MedicationDispense.performer.(actor.type === ${key[index].type})`,
+        errors.createMedicationDispenseInconsistentValueIssue(
+          `performer.(actor.type === ${key[index].type})`,
           uniqueFieldValues)
       )
     }
@@ -181,7 +181,7 @@ function verifyIdenticalForAllMedicationDispenses(
   const allFieldValues = applyFhirPath(bundle, medicationDispenses, fhirPath)
   const uniqueFieldValues = getUniqueValues(allFieldValues)
   if (uniqueFieldValues.length > 1) {
-    return new errors.MedicationDispenseInconsistentValueError(fhirPath, uniqueFieldValues)
+    return errors.createMedicationDispenseInconsistentValueIssue(fhirPath, uniqueFieldValues)
   }
   return null
 }

@@ -328,8 +328,13 @@ function createAgentPerson(
   const agentPerson = new hl7V3.AgentPerson()
   // todo dispenseNotification: ods/sds lookup
   agentPerson.id = new hl7V3.SdsRoleProfileIdentifier("100243444980")
+  const telecom = new hl7V3.Telecom()
+  telecom._attributes = {
+    use: hl7v3.TelecomUse.WORKPLACE,
+    value: "tel:01208812760"
+  }
   agentPerson.code = new hl7V3.SdsJobRoleCode(organisationCode)
-  agentPerson.telecom = [new hl7V3.Telecom(hl7V3.TelecomUse.WORKPLACE, "01208812760")]
+  agentPerson.telecom = [telecom]
   const agentPersonPerson = new hl7V3.AgentPersonPerson(new hl7V3.SdsUniqueIdentifier("687227875014"))
   const agentPersonPersonName = new hl7V3.Name()
   agentPersonPersonName._attributes = {use: hl7V3.NameUse.USUAL}
@@ -347,8 +352,15 @@ function createRepresentedOrganisation(organisationCode: string, organisationNam
   // todo dispenseNotification: ods/sds lookup
   organisation.code = new hl7V3.OrganizationTypeCode()
   organisation.name = new hl7V3.Text(organisationName)
-  organisation.telecom = new hl7V3.Telecom(hl7V3.TelecomUse.WORKPLACE, "01208812760")
-  const hl7Address = new hl7V3.Address(hl7V3.AddressUse.WORK)
+  organisation.telecom = new hl7V3.Telecom()
+  organisation.telecom._attributes = {
+    use: hl7v3.TelecomUse.WORKPLACE,
+    value: "tel:01208812760"
+  }
+  const hl7Address = new hl7V3.Address()
+  hl7Address._attributes = {
+    use: hl7V3.AddressUse.WORK
+  }
   hl7Address.streetAddressLine = [
     new hl7V3.Text("REGENCY ARCADE"),
     new hl7V3.Text("23 MOLESWORTH STREET"),

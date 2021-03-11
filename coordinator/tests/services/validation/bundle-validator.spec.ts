@@ -4,6 +4,12 @@ import {clone} from "../../resources/test-helpers"
 import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, isTruthy} from "../../../src/services/translation/common"
 import * as fhir from "../../../src/models/fhir"
+import {
+  createMedicationRequestInconsistentValueIssue,
+  medicationRequestDuplicateIdentifierIssue,
+  medicationRequestNumberIssue,
+  messageTypeIssue
+} from "../../../src/models/errors/validation-errors"
 import {getPrescriptionStatus} from "../../../src/services/translation/request/prescribe/prescription-dispense"
 
 function validateValidationErrors (validationErrors: Array<fhir.OperationOutcomeIssue>) {
@@ -319,7 +325,9 @@ describe("verifyDispenseNotificationBundle", () => {
 
     const returnedErrors = validator.verifyDispenseBundle(bundle)
     expect(returnedErrors.length).toBe(1)
-    expect(returnedErrors[0]).toBeInstanceOf(errors.MedicationDispenseInconsistentValueError)
+    expect(returnedErrors[0].expression)
+      // eslint-disable-next-line max-len
+      .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).extension(\"https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus\")")
   })
 
   test("returns an error when MedicationDispenses have different whenPrepared timestamps", () => {
@@ -336,7 +344,7 @@ describe("verifyDispenseNotificationBundle", () => {
 
     const returnedErrors = validator.verifyDispenseBundle(bundle)
     expect(returnedErrors.length).toBe(1)
-    expect(returnedErrors[0]).toBeInstanceOf(errors.MedicationDispenseInconsistentValueError)
+    expect(returnedErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).whenPrepared")
   })
 
   test("returns an error when MedicationDispenses have different performer values per type", () => {
@@ -368,6 +376,7 @@ describe("verifyDispenseNotificationBundle", () => {
 
     const returnedErrors = validator.verifyDispenseBundle(bundle)
     expect(returnedErrors.length).toBe(1)
-    expect(returnedErrors[0]).toBeInstanceOf(errors.MedicationDispenseInconsistentValueError)
+    expect(returnedErrors[0].expression)
+      .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).performer.(actor.type === Practitioner)")
   })
 })

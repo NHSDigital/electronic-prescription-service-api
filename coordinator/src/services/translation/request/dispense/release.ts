@@ -73,20 +73,23 @@ async function getRepresentedOrganization(
   return convertOrganization(organization)
 }
 
-  const organizationParameter = getIdentifierParameterByName(fhirReleaseRequest.parameter, "owner")
-  const organizationCode = organizationParameter.valueIdentifier.value
-  hl7Organization.id = new hl7v3.SdsOrganizationIdentifier(organizationCode)
-  hl7Organization.code = new hl7v3.OrganizationTypeCode()
-  hl7Organization.name = new hl7v3.Text("SOMERSET BOWEL CANCER SCREENING CENTRE")
-  hl7Organization.telecom = new hl7v3.Telecom(hl7v3.TelecomUse.WORKPLACE, "01823333444")
-
-  const address = new hl7v3.Address(hl7v3.AddressUse.WORK)
-  address.streetAddressLine = [
-    new hl7v3.Text("MUSGROVE PARK HOSPITAL"),
-    new hl7v3.Text("TAUNTON")
-  ]
-  address.postalCode = new hl7v3.Text("TA1 5DA")
-
-  hl7Organization.addr = address
-  return hl7Organization
+function convertOrganization(organization: fhir.Organization): hl7v3.Organization {
+  const hl7V3Organization = new hl7V3.Organization()
+  const organizationSdsId = getIdentifierValueForSystem(
+    organization.identifier,
+    "https://fhir.nhs.uk/Id/ods-organization-code",
+    `Organization.identifier`
+  )
+  hl7V3Organization.id = new hl7V3.SdsOrganizationIdentifier(organizationSdsId)
+  hl7V3Organization.code = new hl7V3.OrganizationTypeCode()
+  if (organization.name) {
+    hl7V3Organization.name = new hl7v3.Text(organization.name)
+  }
+  if (organization.telecom?.length) {
+    hl7V3Organization.telecom = convertTelecom(organization.telecom[0], "Organization.telecom")
+  }
+  if (organization.address?.length) {
+    hl7V3Organization.addr = convertAddress(organization.address[0], "Organization.address")
+  }
+  return hl7V3Organization
 }
