@@ -6,11 +6,13 @@ import {isDirect, isPollable, SpineDirectResponse, SpinePollableResponse, SpineR
 import {LiveSpineClient} from "../../../src/services/communication/live-spine-client"
 import path from "path"
 import pino from "pino"
+import {FhirMessageProcessingError} from "../../../src/models/errors/processing-errors"
+import {OperationOutcome} from "../../../src/models/fhir"
 
 describe("Spine communication", () => {
   const requestHandler = new LiveSpineClient(
     "localhost",
-    "/Prescribe",
+    "Prescribe",
     (spineRequest: SpineRequest) => `<wrap>${spineRequest.message}</wrap>`
   )
 
@@ -129,6 +131,39 @@ describe("Spine communication", () => {
 
     expect(isPollable(spineResponse)).toBe(false)
     expect((spineResponse as SpineDirectResponse<string>).statusCode).toBe(500)
+  })
+})
+
+describe("Live wrapper error handling", () => {
+  const fhirErrorID = "acceptedId"
+  const requestHandler = new LiveSpineClient(
+    "localhost",
+    "Prescribe",
+    (spineRequest: SpineRequest) => {
+      if(spineRequest.interactionId === fhirErrorID) {
+        throw new FhirMessageProcessingError("", "")
+      } else {
+        throw new Error()
+      }
+    }
+  )
+
+  const logger = pino()
+
+  test("converts FhirMessageProcessingError to operation outcome when thrown in ebxml wrapper", async () => {
+    const spineResponse = await requestHandler.send(
+      {message: "test", interactionId: fhirErrorID},
+      logger
+    )
+    expect((spineResponse as SpineDirectResponse<OperationOutcome>).body.resourceType).toBe("OperationOutcome")
+    expect((spineResponse as SpineDirectResponse<string>).statusCode).toBe(400)
+  })
+
+  test("other errors not converted", async () => {
+    await expect(() => requestHandler.send(
+      {message: "test", interactionId: "generic error id"},
+      logger
+    )).rejects.toThrow()
   })
 })
 

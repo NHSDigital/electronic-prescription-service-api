@@ -8,6 +8,7 @@ import {namespacedCopyOf, writeXmlStringPretty} from "../serialisation/xml"
 import {SpineRequest} from "../../models/spine"
 import * as hl7V3 from "../../models/hl7-v3"
 import {Logger} from "pino"
+import {FhirMessageProcessingError} from "../../models/errors/processing-errors"
 
 const ebxmlRequestTemplate = fs.readFileSync(
   path.join(__dirname, "../../resources/ebxml_request.mustache"),
@@ -43,8 +44,8 @@ class EbXmlRequest {
 export function addEbXmlWrapper(spineRequest: SpineRequest, logger: Logger): string {
   const cpaId = cpaIdMap.get(spineRequest.interactionId)
   if (!cpaId) {
-    logger.error(`Could not find the specified CPA ID`)
-    throw new Error(`Could not identify CPA ID for interaction ${spineRequest.interactionId}`)
+    logger.error(`Could not find CPA ID for interaction ${spineRequest.interactionId}`)
+    throw new FhirMessageProcessingError("INTERACTION_NOT_SUPPORTED", "Interaction not supported")
   }
 
   const ebXmlRequest = new EbXmlRequest(spineRequest.interactionId, cpaId, spineRequest.message, spineRequest.messageId)
