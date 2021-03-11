@@ -36,3 +36,7 @@ export interface DateTimeExtension extends Extension {
 export interface ExtensionExtension<T extends Extension> extends Extension {
   extension: Array<T>
 }
+
+export interface BooleanExtension extends Extension {
+  valueBoolean: boolean
+}

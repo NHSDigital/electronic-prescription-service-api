@@ -1,9 +1,9 @@
 import * as Hapi from "@hapi/hapi"
-import {basePath, externalFHIRValidation, getPayload, toFhirError, handleResponse} from "../util"
-import {ResourceTypeError} from "../../models/errors/validation-errors"
+import {BASE_PATH, CONTENT_TYPE_FHIR, getFhirValidatorErrors, getPayload, handleResponse} from "../util"
 import * as fhir from "../../models/fhir"
 import * as translator from "../../services/translation/request"
-import {spineClient} from "../../services/communication"
+import {spineClient} from "../../services/communication/spine-client"
+import * as parametersValidator from "../../services/validation/parameters-validator"
 
 export default [
   /*
@@ -11,34 +11,23 @@ export default [
   */
   {
     method: "POST",
-    path: `${basePath}/Task/$release`,
+    path: `${BASE_PATH}/Task/$release`,
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
-      const fhirValidatorResponse = await externalFHIRValidation(request)
-      if (fhirValidatorResponse.issue.length > 0) {
-        return responseToolkit.response(fhirValidatorResponse).code(400)
+      const fhirValidatorResponse = await getFhirValidatorErrors(request)
+      if (fhirValidatorResponse) {
+        return responseToolkit.response(fhirValidatorResponse).code(400).type(CONTENT_TYPE_FHIR)
       }
 
-      const requestPayload = getPayload(request) as fhir.Resource
-
-      if (requestPayload.resourceType !== "Parameters") {
-        return responseToolkit
-          .response(toFhirError([new ResourceTypeError("Parameters")]))
-          .code(400)
+      const parameters = getPayload(request) as fhir.Parameters
+      const issues = parametersValidator.verifyParameters(parameters)
+      if (issues.length) {
+        return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(CONTENT_TYPE_FHIR)
       }
-
-      const payloadAsParameters = requestPayload as fhir.Parameters
 
       request.logger.info("Building Spine release request")
-      const spineRequest = translator.convertParametersToSpineRequest(
-        payloadAsParameters,
-        request.headers["nhsd-request-id"].toUpperCase()
-      )
-
-      const spineResponse = await spineClient.send(
-        spineRequest,
-        request.logger
-      )
-
+      const requestId = request.headers["nhsd-request-id"].toUpperCase()
+      const spineRequest = await translator.convertParametersToSpineRequest(parameters, requestId, request.logger)
+      const spineResponse = await spineClient.send(spineRequest, request.logger)
       return handleResponse(request, spineResponse, responseToolkit)
     }
 

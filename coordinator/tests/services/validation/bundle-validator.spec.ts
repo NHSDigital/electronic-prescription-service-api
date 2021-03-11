@@ -1,21 +1,15 @@
 import * as validator from "../../../src/services/validation/bundle-validator"
 import * as TestResources from "../../resources/test-resources"
 import {clone} from "../../resources/test-helpers"
-import * as errors from "../../../src/models/errors/validation-errors"
-import {
-  MedicationRequestIncorrectValueError,
-  MedicationRequestMissingValueError,
-  MedicationRequestNumberError
-} from "../../../src/models/errors/validation-errors"
 import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, isTruthy} from "../../../src/services/translation/common"
 import * as fhir from "../../../src/models/fhir"
 import {getPrescriptionStatus} from "../../../src/services/translation/request/prescribe/prescription-dispense"
 
-function validateValidationErrors (validationErrors: Array<errors.ValidationError>) {
+function validateValidationErrors (validationErrors: Array<fhir.OperationOutcomeIssue>) {
   expect(validationErrors).toHaveLength(1)
   const validationError = validationErrors[0]
-  expect(validationError.operationOutcomeCode).toEqual("value")
+  expect(validationError.code).toEqual("value")
   expect(validationError.severity).toEqual("error")
 }
 
@@ -44,7 +38,7 @@ describe("Bundle checks", () => {
       ]
     }
     expect(validator.verifyBundle(bundle as fhir.Bundle))
-      .toContainEqual(new errors.MessageTypeError())
+      .toContainEqual(messageTypeIssue)
   })
 })
 
@@ -66,7 +60,6 @@ describe("verifyCommonBundle", () => {
     medicationRequests[0].intent = fhir.MedicationRequestIntent.PLAN
     const validationErrors = validator.verifyCommonBundle(bundle)
     expect(validationErrors).toHaveLength(1)
-    expect(validationErrors[0]).toBeInstanceOf(MedicationRequestIncorrectValueError)
     expect(validationErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).intent")
   })
 
@@ -74,7 +67,6 @@ describe("verifyCommonBundle", () => {
     medicationRequests.forEach(medicationRequest => medicationRequest.intent = fhir.MedicationRequestIntent.PLAN)
     const validationErrors = validator.verifyCommonBundle(bundle)
     expect(validationErrors).toHaveLength(1)
-    expect(validationErrors[0]).toBeInstanceOf(MedicationRequestIncorrectValueError)
     expect(validationErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).intent")
   })
 })
@@ -97,7 +89,6 @@ describe("verifyPrescriptionBundle status check", () => {
     medicationRequests[0].status = fhir.MedicationRequestStatus.CANCELLED
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
     expect(validationErrors).toHaveLength(1)
-    expect(validationErrors[0]).toBeInstanceOf(MedicationRequestIncorrectValueError)
     expect(validationErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).status")
   })
 
@@ -105,7 +96,6 @@ describe("verifyPrescriptionBundle status check", () => {
     medicationRequests.forEach(medicationRequest => medicationRequest.status = fhir.MedicationRequestStatus.CANCELLED)
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
     expect(validationErrors).toHaveLength(1)
-    expect(validationErrors[0]).toBeInstanceOf(MedicationRequestIncorrectValueError)
     expect(validationErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).status")
   })
 })
@@ -131,7 +121,7 @@ describe("MedicationRequest consistency checks", () => {
     expect(
       validationErrors
     ).toContainEqual(
-      new errors.MedicationRequestInconsistentValueError(
+      createMedicationRequestInconsistentValueIssue(
         "authoredOn",
         [differentAuthoredOn, defaultAuthoredOn]
       )
@@ -167,7 +157,7 @@ describe("MedicationRequest consistency checks", () => {
     expect(
       validationErrors
     ).toContainEqual(
-      new errors.MedicationRequestInconsistentValueError(
+      createMedicationRequestInconsistentValueIssue(
         "dispenseRequest.performer",
         [performer, performerDiff]
       )
@@ -206,7 +196,7 @@ describe("MedicationRequest consistency checks", () => {
     expect(
       validationErrors
     ).toContainEqual(
-      new errors.MedicationRequestDuplicateValueError()
+      medicationRequestDuplicateIdentifierIssue
     )
   })
 })
@@ -280,7 +270,7 @@ describe("verifyCancellationBundle", () => {
     bundle.entry.push(medicationRequestEntry)
     const returnedErrors = validator.verifyCancellationBundle(bundle)
     expect(returnedErrors.length).toBe(1)
-    expect(returnedErrors[0]).toBeInstanceOf(MedicationRequestNumberError)
+    expect(returnedErrors[0]).toEqual(medicationRequestNumberIssue)
   })
 
   test("returns an error when status is not cancelled", () => {
@@ -288,7 +278,6 @@ describe("verifyCancellationBundle", () => {
     medicationRequest.status = fhir.MedicationRequestStatus.ACTIVE
     const returnedErrors = validator.verifyCancellationBundle(bundle)
     expect(returnedErrors.length).toBe(1)
-    expect(returnedErrors[0]).toBeInstanceOf(MedicationRequestIncorrectValueError)
     expect(returnedErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).status")
   })
 
@@ -297,7 +286,6 @@ describe("verifyCancellationBundle", () => {
     delete medicationRequest.statusReason
     const returnedErrors = validator.verifyCancellationBundle(bundle)
     expect(returnedErrors.length).toBe(1)
-    expect(returnedErrors[0]).toBeInstanceOf(MedicationRequestMissingValueError)
     expect(returnedErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).statusReason")
   })
 })

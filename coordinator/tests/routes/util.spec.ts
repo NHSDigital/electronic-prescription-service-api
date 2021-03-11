@@ -1,4 +1,4 @@
-import {fhirValidation, identifyMessageType, VALIDATOR_HOST} from "../../src/routes/util"
+import {callFhirValidator, identifyMessageType, VALIDATOR_HOST} from "../../src/routes/util"
 import {clone} from "../resources/test-helpers"
 import * as TestResources from "../resources/test-resources"
 import {getMessageHeader} from "../../src/services/translation/common/getResourcesOfType"
@@ -20,7 +20,7 @@ test("API only forwards accept header to validator", async () => {
     "content-type": "application/my-content-type"
   }
 
-  await fhirValidation("data", exampleHeaders)
+  await callFhirValidator("data", exampleHeaders)
   const requestHeaders = moxios.requests.mostRecent().headers
 
   expect(requestHeaders["Accept"]).not.toBe("application/json+fhir")

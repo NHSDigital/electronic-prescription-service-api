@@ -2,8 +2,8 @@ import "jest"
 import * as moxios from "moxios"
 import axios from "axios"
 import fs from "fs"
-import {isDirect, isPollable, SpineDirectResponse, SpinePollableResponse, SpineRequest} from "../../src/models/spine"
-import {LiveSpineClient} from "../../src/services/communication/live-spine-client"
+import {isDirect, isPollable, SpineDirectResponse, SpinePollableResponse, SpineRequest} from "../../../src/models/spine"
+import {LiveSpineClient} from "../../../src/services/communication/live-spine-client"
 import path from "path"
 import pino from "pino"
 
@@ -153,5 +153,5 @@ describe("Spine responses", () => {
 })
 
 function readFileAsString(filename: string): string {
-  return fs.readFileSync(path.join(__dirname, `../resources/spine-responses/${filename}`), "utf-8")
+  return fs.readFileSync(path.join(__dirname, `../../resources/spine-responses/${filename}`), "utf-8")
 }

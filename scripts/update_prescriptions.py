@@ -25,7 +25,7 @@ def generate_short_form_id(organisationCode):
     Checkdigit is selected from the PRESCRIPTION_CHECKDIGIT_VALUES constant
     """
     _PRESCRIPTION_CHECKDIGIT_VALUES = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+'
-    hex_string = str(uuid.uuid1()).replace('-', '').upper()
+    hex_string = str(uuid.uuid4()).replace('-', '').upper()
     prescription_id = f'{hex_string[:6]}-{organisationCode}-{hex_string[12:17]}'
     prescription_id_digits = prescription_id.replace('-', '')
     prescription_id_digits_length = len(prescription_id_digits)

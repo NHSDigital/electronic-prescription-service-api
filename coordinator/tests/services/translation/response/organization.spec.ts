@@ -36,7 +36,7 @@ describe.each([
 
     test("%p has a type block with correct coding values", () => {
       expect(fhirOrganization.type).not.toBeUndefined()
-      expect(fhirOrganization.type[0].coding[0].code).toBe("RO197")
+      expect(fhirOrganization.type[0].coding[0].code).toBe("197")
       expect(fhirOrganization.type[0].coding[0].display).toBeTruthy()
     })
 
