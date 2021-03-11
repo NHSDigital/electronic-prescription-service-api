@@ -31,13 +31,13 @@
         "sender": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "FQ564"
+            "value": "FTX40"
           },
-          "display": "BOOTS THE CHEMISTS LTD"
+          "display": "HEALTHCARE AT HOME"
         },
         "source": {
-          "name": "BOOTS THE CHEMISTS LTD",
-          "endpoint": "urn:nhs-uk:addressing:ods:FQ564"
+          "name": "HEALTHCARE AT HOME",
+          "endpoint": "urn:nhs-uk:addressing:ods:FTX40"
         },
         "reason": {
           "coding": [
