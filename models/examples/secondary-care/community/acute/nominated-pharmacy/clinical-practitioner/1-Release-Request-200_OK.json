@@ -1,6 +1,6 @@
 {
   "resourceType": "Parameters",
-  "id": "patientParmacyReleaseRequest",
+  "id": "patientPharmacyReleaseRequest",
   "parameter":  [
     {
       "name": "group-identifier",
@@ -15,4 +15,6 @@
     }
   ]
 }
+
+
 

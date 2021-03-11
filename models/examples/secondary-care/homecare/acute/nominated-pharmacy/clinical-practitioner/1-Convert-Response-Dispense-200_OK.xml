@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN080101SM31 xmlns="urn:hl7-org:v3">
-  <id root="59418871-96DE-4088-AD4D-F14D271E229B"/>
-  <creationTime value="20210311160437"/>
+  <id root="43AA2DA6-DF7E-4584-A10B-305891BDA8C9"/>
+  <creationTime value="20210311165401"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN080101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -40,9 +40,9 @@
     </author1>
     <subject>
       <DispenseNotification classCode="INFO" moodCode="EVN">
-        <id root="59418871-96DE-4088-AD4D-F14D271E229B"/>
+        <id root="43AA2DA6-DF7E-4584-A10B-305891BDA8C9"/>
         <code code="163541000000107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensed Medication - FocusActOrEvent (administrative concept)"/>
-        <effectiveTime value="20210311160437"/>
+        <effectiveTime value="20210311165401"/>
         <typeId extension="PORX_MT024001UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <patient classCode="PAT">
@@ -61,7 +61,7 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentSupplyHeader classCode="SBADM" moodCode="EVN">
-            <id root="59418871-96DE-4088-AD4D-F14D271E229B"/>
+            <id root="43AA2DA6-DF7E-4584-A10B-305891BDA8C9"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
             <effectiveTime nullFlavor="NA"/>
             <author contextControlCode="OP" typeCode="AUT">
@@ -181,7 +181,7 @@
             <code code="185361000000102" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Medication - care record element (record artifact)"/>
             <component typeCode="COMP">
               <actRef classCode="SBADM" moodCode="PRMS">
-                <id root="59418871-96DE-4088-AD4D-F14D271E229B"/>
+                <id root="43AA2DA6-DF7E-4584-A10B-305891BDA8C9"/>
               </actRef>
             </component>
             <component typeCode="COMP">

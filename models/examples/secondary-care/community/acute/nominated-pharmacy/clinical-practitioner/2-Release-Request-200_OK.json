@@ -1,6 +1,6 @@
 {
   "resourceType": "Parameters",
-  "id": "nominatedParmacyReleaseRequest",
+  "id": "nominatedPharmacyReleaseRequest",
   "parameter":  [
     {
       "name": "owner",
@@ -15,4 +15,6 @@
     }
   ]
 }
+
+
 
