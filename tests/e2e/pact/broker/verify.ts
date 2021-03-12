@@ -1,12 +1,13 @@
 import { VerifierV3 } from "@pact-foundation/pact"
-import { 
+import {
   getPreparePactGroups,
   getProcessSendPactGroups,
   getProcessCancelPactGroups,
   getConvertPactGroups,
   getReleasePactGroups,
   ApiEndpoint,
-  getProcessDispensePactGroups
+  getProcessDispensePactGroups,
+  getTaskPactGroups
 } from "../resources/common"
 
 let token: string
@@ -92,9 +93,19 @@ async function verifyRelease(): Promise<any> {
   }, Promise.resolve())
 }
 
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+async function verifyTask(): Promise<any> {
+  await getTaskPactGroups().reduce(async (promise, group) => {
+    await promise
+    await verifyOnce("task", group)
+  }, Promise.resolve())
+}
+
 (async () => {
   verifyConvert()
     .then(verifyPrepare)
     .then(verifyProcess)
     .then(verifyRelease)
+    .then(verifyTask)
 })()
+
