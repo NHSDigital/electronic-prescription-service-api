@@ -74,3 +74,27 @@ export function createResourceTypeIssue(expectedResourceType: string): fhir.Oper
     diagnostics: `Incorrect FHIR resource type. Expected ${expectedResourceType}.`
   }
 }
+
+export function createTaskIncorrectValueIssue(
+  fieldName: string,
+  requiredFieldValue: string
+): fhir.OperationOutcomeIssue {
+  return {
+    severity: "error",
+    code: "value",
+    diagnostics: `Task.${fieldName} must be '${requiredFieldValue}'.`,
+    expression: [`Task.${fieldName}`]
+  }
+}
+
+export function createTaskCodingSystemIssue(
+  fieldName: string,
+  requiredSystem: string
+): fhir.OperationOutcomeIssue {
+  return {
+    severity: "error",
+    code: "value",
+    diagnostics: `Task.${fieldName} must have a system of '${requiredSystem}' and a value from that system.`,
+    expression: [`Task.${fieldName}`]
+  }
+}

@@ -233,10 +233,11 @@ export class Hl7InteractionIdentifier extends Identifier<"2.16.840.1.113883.2.1.
   constructor(extension: string) {
     super("2.16.840.1.113883.2.1.3.2.4.12", extension)
   }
-
     static PARENT_PRESCRIPTION_URGENT = new Hl7InteractionIdentifier("PORX_IN020101SM31")
     static CANCEL_REQUEST = new Hl7InteractionIdentifier("PORX_IN030101SM32")
     static NOMINATED_PRESCRIPTION_RELEASE_REQUEST = new Hl7InteractionIdentifier("PORX_IN060102UK30")
+    static DISPENSER_WITHDRAW = new Hl7InteractionIdentifier("PORX_IN510101UK31")
+    static DISPENSE_PROPOSAL_RETURN = new Hl7InteractionIdentifier("PORX_IN100101UK31")
 }
 
 export class AccreditedSystemIdentifier extends Identifier<"1.2.826.0.1285.0.2.0.107"> {

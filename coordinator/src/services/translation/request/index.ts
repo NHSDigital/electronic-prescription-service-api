@@ -112,3 +112,14 @@ export async function convertParametersToSpineRequest(
     messageId
   )
 }
+
+export async function convertTaskWithdrawToSpineRequest(
+  fhirMessage: fhir.Resource,
+  messageId: string
+): Promise<SpineRequest> {
+  const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSER_WITHDRAW
+  return  requestBuilder.toSpineRequest(
+    createReleaseRequestSendMessagePayload(interactionId, JSON.stringify(fhirMessage)),
+    messageId
+  )
+}
