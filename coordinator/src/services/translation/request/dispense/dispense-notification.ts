@@ -16,8 +16,7 @@ import {
 import * as hl7v3 from "../../../../models/hl7-v3"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import pino from "pino"
-import { createAgentPersonForUnattendedAccess } from "../agent-unattended"
-
+import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
 
 export async function convertDispenseNotification(
   bundle: fhir.Bundle,

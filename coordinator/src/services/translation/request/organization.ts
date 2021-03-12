@@ -9,8 +9,6 @@ import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {identifyMessageType} from "../../../routes/util"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
-import pino from "pino"
-import {odsClient} from "../../../services/communication/ods-client"
 
 const NHS_TRUST_CODE = "197"
 

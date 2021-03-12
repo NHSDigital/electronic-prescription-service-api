@@ -525,17 +525,6 @@ function setPatientId(
   medicationDispense.subject.identifier.value = newPatientId
 }
 
-function setPractitionerName(
-  medicationDispense: fhir.MedicationDispense,
-  newPatientId: string
-): void {
-  medicationDispense
-    .performer
-    .map(p => p.actor)
-    .find(a => a.type === "Practitioner")
-    .display = newPatientId
-}
-
 function  setAuthorizingPrescriptionValues(
   medicationDispense: fhir.MedicationDispense,
   newShortForm: string,
