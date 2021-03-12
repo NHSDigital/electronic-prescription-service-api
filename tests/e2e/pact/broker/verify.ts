@@ -65,19 +65,12 @@ async function verifyOnce(endpoint: ApiEndpoint, pactGroupName: string) {
     .catch(() => process.exit(1))
 }
 
-async function verifyWith2Retries(endpoint: ApiEndpoint, pactGroupName: string) {
-  await verify(endpoint, pactGroupName)
-    .catch(() => verify(endpoint, pactGroupName))
-    .catch(() => verify(endpoint, pactGroupName))
-    .catch(() => process.exit(1))
-}
-
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyConvert(): Promise<any> {
   await getConvertPactGroups().reduce(async (promise, group) => {
     await promise
     resetBackOffRetryTimer()
-    await verifyWith2Retries("convert", group)
+    await verifyOnce("convert", group)
   }, Promise.resolve())
 }
 
@@ -116,7 +109,7 @@ async function verifyRelease(): Promise<any> {
   await getReleasePactGroups().reduce(async (promise, group) => {
     await promise
     resetBackOffRetryTimer()
-    await verifyWith2Retries("release", group)
+    await verifyOnce("release", group)
   }, Promise.resolve())
 }
 
