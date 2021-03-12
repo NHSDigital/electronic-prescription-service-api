@@ -1,6 +1,6 @@
 import * as common from "./common"
-import {Bundle} from "./bundle"
-import {CodeableConcept} from "./common"
+import * as bundle from "./bundle"
+import * as practitionerRole from "./practitioner-role"
 
 export class Task extends common.Resource {
   readonly resourceType = "Task"
@@ -8,10 +8,11 @@ export class Task extends common.Resource {
   groupIdentifier: common.Identifier
   status: string
   intent: string
-  focus: common.Reference<Bundle>
+  focus: common.IdentifierReference<bundle.Bundle>
   for: common.Reference<common.Resource>
   authoredOn: string
-  owner: common.Reference<common.Resource>
-  reasonCode: CodeableConcept
-  code?: CodeableConcept
+  owner: common.IdentifierReference<practitionerRole.PractitionerRole | practitionerRole.Practitioner
+    | practitionerRole.Organization>
+  reasonCode: common.CodeableConcept
+  code?: common.CodeableConcept
 }
