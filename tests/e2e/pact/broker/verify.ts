@@ -98,4 +98,3 @@ async function verifyRelease(): Promise<any> {
     .then(verifyProcess)
     .then(verifyRelease)
 })()
-
