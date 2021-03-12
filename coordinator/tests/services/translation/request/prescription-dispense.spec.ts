@@ -20,6 +20,9 @@ import {
   getMedicationDispenses, getMessageHeader
 } from "../../../../src/services/translation/common/getResourcesOfType"
 import {ElementCompact} from "xml-js"
+import pino from "pino"
+
+const logger = pino()
 
 const actualMoment = requireActual("moment")
 jest.mock("moment", () => ({
@@ -37,7 +40,7 @@ describe("convertPrescriptionDispense", () => {
     ])
 
   test.each(cases)("accepts %s", (desc: string, input: fhir.Bundle) => {
-    expect(() => convertDispenseNotification(input)).not.toThrow()
+    expect(async() => (await convertDispenseNotification(input, logger))).not.toThrow()
   })
 })
 
@@ -109,11 +112,11 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
     messageHeader = getMessageHeader(dispenseNotification)
   })
 
-  test("destination.receiver.identifier maps to primaryInformationRecipient.AgentOrg.agentOrganization", () => {
+  test("destination.receiver.identifier maps to primaryInformationRecipient.AgentOrg.agentOrganization", async() => {
     const fhirMessageDestination = onlyElement(messageHeader.destination, "MessageHeader.destination")
     fhirMessageDestination.receiver.identifier.value = "XX-TEST-VALUE"
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
 
     expect(
       hl7dispenseNotification
@@ -124,11 +127,11 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
     )
   })
 
-  test("destination.receiver.display maps to primaryInformationRecipient.AgentOrg.agentOrganization", () => {
+  test("destination.receiver.display maps to primaryInformationRecipient.AgentOrg.agentOrganization", async() => {
     const fhirMessageDestination = onlyElement(messageHeader.destination, "MessageHeader.destination")
     fhirMessageDestination.receiver.display = "XX-TEST-VALUE"
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
 
     expect(
       hl7dispenseNotification
@@ -139,10 +142,10 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
     )
   })
 
-  test("sender.identifier.value maps to pertinentInformation1.pertinentSupplyHeader.author.AgentPerson", () => {
-    messageHeader.sender.identifier.value = "XX-TEST-VALUE"
+  test("sender.identifier.value maps to pertinentInformation1.pertinentSupplyHeader.author.AgentPerson", async() => {
+    messageHeader.sender.identifier.value = "FTX40"
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
 
     expect(
       hl7dispenseNotification
@@ -158,23 +161,10 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
     )
   })
 
-  test("sender.display maps to pertinentInformation1.pertinentSupplyHeader.author.AgentPerson", () => {
-    messageHeader.sender.display = "XX-TEST-VALUE"
-
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
-
-    expect(
-      hl7dispenseNotification
-        .pertinentInformation1.pertinentSupplyHeader.author.AgentPerson.representedOrganization.name._text
-    ).toEqual(
-      messageHeader.sender.display
-    )
-  })
-
-  test("response.identifier maps to sequelTo.priorPrescriptionReleaseEventRef.id", () => {
+  test("response.identifier maps to sequelTo.priorPrescriptionReleaseEventRef.id", async() => {
     messageHeader.response.identifier = "XX-TEST-VALUE"
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
 
     expect(
       hl7dispenseNotification
@@ -195,10 +185,10 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
   })
 
   // eslint-disable-next-line max-len
-  test("identifier.value maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.id", () => {
+  test("identifier.value maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.id", async() => {
     medicationDispenses.forEach(medicationDispense => setPrescriptionItemNumber(medicationDispense, "XX-TEST-VALUE"))
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(
@@ -214,12 +204,12 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
   })
 
   // eslint-disable-next-line max-len
-  test("medicationCodeableConcept.coding maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.component.suppliedLineItemQuantity.product.suppliedManufacturedProduct.manufacturedSuppliedMaterial.code", () => {
+  test("medicationCodeableConcept.coding maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.component.suppliedLineItemQuantity.product.suppliedManufacturedProduct.manufacturedSuppliedMaterial.code", async() => {
     medicationDispenses.forEach(medicationDispense =>
       setMedicationCodeableConcept(medicationDispense, "XX-TEST-VALUE", "XX-TEST-VALUE-DISPLAY")
     )
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
 
     medicationDispenses.map((_, index) => {
       expect(
@@ -257,10 +247,10 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
     })
   })
 
-  test("subject.Patient.value maps to recordTarget.patient.id.extension", () => {
+  test("subject.Patient.value maps to recordTarget.patient.id.extension", async() => {
     medicationDispenses.forEach(medicationDispense => setPatientId(medicationDispense, "XX-TEST-VALUE"))
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
 
     medicationDispenses.map((medicationDispense) => {
       expect(
@@ -272,10 +262,10 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
   })
 
   // eslint-disable-next-line max-len
-  test("performer.actor.(type === 'Practitioner') maps to pertinentInformation1.pertinentSupplyHeader.author.AgentPerson.agentPerson", () => {
+  test("performer.actor.(type === 'Practitioner') maps to pertinentInformation1.pertinentSupplyHeader.author.AgentPerson.agentPerson", async() => {
     medicationDispenses.forEach(medicationDispense => setPractitionerName(medicationDispense, "XX-TEST-VALUE"))
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
 
     medicationDispenses.map((medicationDispense) => {
       expect(
@@ -290,7 +280,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
     })
   })
 
-  test("authorizingPrescription maps to pertinentInformation1.pertinentSupplyHeader", () => {
+  test("authorizingPrescription maps to pertinentInformation1.pertinentSupplyHeader", async() => {
     medicationDispenses.forEach(medicationDispense =>
       setAuthorizingPrescriptionValues(
         medicationDispense,
@@ -299,7 +289,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
         "XX-TEST-VALUE-IDENTIFIER")
     )
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(
@@ -314,7 +304,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
       ).toEqual(
         getShortFormIdExtension(
           getFhirGroupIdentifierExtension(medicationDispense)
-        ).valueIdentifier.value 
+        ).valueIdentifier.value
       )
       expect(
         hl7dispenseNotification
@@ -353,14 +343,14 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
   })
 
   // eslint-disable-next-line max-len
-  test("quantity maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.component.suppliedLineItemQuantity", () => {
+  test("quantity maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.component.suppliedLineItemQuantity", async() => {
     medicationDispenses.forEach(medicationDispense => {
       medicationDispense.quantity.value = "XX-TEST-VALUE"
       medicationDispense.quantity.unit = "XX-TEST-VALUE-UNIT"
       medicationDispense.quantity.code = "XX-TEST-VALUE-CODE"
     })
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(
@@ -452,12 +442,12 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
     })
   })
 
-  test("whenPrepared maps to pertinentInformation1.pertinentSupplyHeader.author.time", () => {
+  test("whenPrepared maps to pertinentInformation1.pertinentSupplyHeader.author.time", async() => {
     medicationDispenses.forEach(medicationDispense => medicationDispense.whenPrepared = "2020-03-10")
 
     const expected = "20200310000000"
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
 
     medicationDispenses.map(() => {
       expect(
@@ -475,12 +465,12 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
   })
 
   // eslint-disable-next-line max-len
-  test("dosage maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.component.suppliedLineItemQuantity.pertinentInformation1.pertinentSupplyInstructions", () => {
+  test("dosage maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.component.suppliedLineItemQuantity.pertinentInformation1.pertinentSupplyInstructions", async() => {
     medicationDispenses.forEach(medicationDispense =>
       medicationDispense.dosageInstruction.forEach(d => d.text = "XX-TEST-VALUE")
     )
 
-    const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(
@@ -496,7 +486,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .value
           ._text
       ).toEqual(
-        medicationDispense.dosageInstruction[0].text 
+        medicationDispense.dosageInstruction[0].text
       )
     })
   })
