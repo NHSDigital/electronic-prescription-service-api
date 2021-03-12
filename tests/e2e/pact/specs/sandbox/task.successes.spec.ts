@@ -46,8 +46,12 @@ jestpact.pactWith(
               },
               body: {
                 "resourceType": "OperationOutcome",
-                "severity": "information",
-                "code": "informational"
+                "issue": [
+                  {
+                    "code": "informational",
+                    "severity": "information"
+                  }
+                ]
               },
               status: 200
             }
@@ -94,8 +98,12 @@ jestpact.pactWith(
               },
               body: {
                 "resourceType": "OperationOutcome",
-                "severity": "information",
-                "code": "informational"
+                "issue": [
+                  {
+                    "code": "informational",
+                    "severity": "information"
+                  }
+                ]
               },
               status: 200
             }
