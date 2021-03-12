@@ -31,6 +31,10 @@ export const releasePactGroups = [
   ""
 ]
 
+export const taskPactGroups = [
+  ""
+]
+
 export const failurePactGroups = [
   "failures"
 ] as const
@@ -72,6 +76,7 @@ export const pactGroupNames = convertPactDescriptionsToPactNames(pactGroups)
 const releasePactGroupNames = convertPactDescriptionsToPactNames(releasePactGroups)
 const dispensePactGroupNames = convertPactDescriptionsToPactNames(dispensePactGroups)
 const cancelPactGroupNames = convertPactDescriptionsToPactNames(cancelPactGroups)
+const taskPactGroupNames = convertPactDescriptionsToPactNames(taskPactGroups)
 
 // convert pact group name from description search string format to single string
 // matching the published pact's name
@@ -114,6 +119,12 @@ export function getProcessCancelPactGroups(): string[] {
 export function getReleasePactGroups(): string[] {
   return isSandbox
     ? releasePactGroupNames
+    : [] // todo: verify release for live proxy once this is available
+}
+
+export function getTaskPactGroups(): string[] {
+  return isSandbox
+    ? taskPactGroupNames
     : [] // todo: verify release for live proxy once this is available
 }
 
