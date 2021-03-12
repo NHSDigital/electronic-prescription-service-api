@@ -4,6 +4,7 @@ import {getMedicationRequests} from "../common/getResourcesOfType"
 import {convertMomentToHl7V3DateTime} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
+import {identifyMessageType} from "../../../routes/util"
 import * as uuid from "uuid"
 import {Hl7InteractionIdentifier} from "../../../models/hl7-v3"
 
@@ -70,9 +71,21 @@ function createControlActEvent<T>(
 function convertRequesterToControlActAuthor(
   bundle: fhir.Bundle
 ) {
+
+  // todo dispenseNotification: implement dispense verson
+  const messageType = identifyMessageType(bundle)
+  if (messageType === fhir.EventCodingCode.DISPENSE) {
+    // todo dispenseNotification: pick up this info from MessageHeader.sender and lookup on ods/sds
+    const sdsUniqueIdentifier = "687227875014"
+    const sdsJobRoleCode = "R8003"
+    const sdsRoleProfileIdentifier = "781733617547"
+    return createControlActEventAuthor(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier)
+  }
+
   const firstMedicationRequest = getMedicationRequests(bundle)[0]
   const authorPractitionerRole = resolveReference(bundle, firstMedicationRequest.requester)
   const authorPractitioner = resolveReference(bundle, authorPractitionerRole.practitioner)
+
   const sdsUniqueIdentifier = getIdentifierValueForSystem(
     authorPractitioner.identifier,
     "https://fhir.nhs.uk/Id/sds-user-id",

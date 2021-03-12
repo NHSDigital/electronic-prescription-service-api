@@ -21,6 +21,7 @@ export class AgentPerson implements ElementCompact {
 }
 
 export type PrescriptionAuthorId = codes.ProfessionalCode | codes.PrescribingCode
+export type PrescriptionDispenseAuthorId = codes.SdsUniqueIdentifier
 
 /**
  * Details of a person on SDS.
@@ -31,10 +32,10 @@ export class AgentPersonPerson implements ElementCompact {
       determinerCode: "INSTANCE"
     }
 
-    id: PrescriptionAuthorId
+    id: PrescriptionAuthorId | PrescriptionDispenseAuthorId
     name?: demographics.Name
 
-    constructor(id: PrescriptionAuthorId) {
+    constructor(id: PrescriptionAuthorId | PrescriptionDispenseAuthorId) {
       this.id = id
     }
 }

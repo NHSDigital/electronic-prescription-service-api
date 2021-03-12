@@ -230,7 +230,7 @@ function convertPrescriptionPertinentInformation4(firstMedicationRequest: fhir.M
 function convertPerformer(performerReference: fhir.IdentifierReference<fhir.Organization>) {
   const organization = new hl7V3.Organization()
   organization.id = new hl7V3.SdsOrganizationIdentifier(performerReference.identifier.value)
-  const agentOrganization = new hl7V3.AgentOrganization(organization)
+  const agentOrganization = new hl7V3.AgentOrganizationSDS(organization)
   return new hl7V3.Performer(agentOrganization)
 }
 

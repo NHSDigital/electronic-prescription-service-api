@@ -2,8 +2,8 @@ import * as XmlJs from "xml-js"
 import * as crypto from "crypto-js"
 import {createReleaseRequestSendMessagePayload, createSendMessagePayload} from "./send-message-payload"
 import {writeXmlStringCanonicalized} from "../../serialisation/xml"
-import {convertParentPrescription} from "./prescription/parent-prescription"
-import {convertCancellation} from "./cancellation/cancellation"
+import {convertParentPrescription} from "./prescribe/parent-prescription"
+import {convertCancellation} from "./cancel/cancellation"
 import {convertFragmentsToHashableFormat, extractFragments} from "./signature"
 import * as requestBuilder from "../../communication/ebxml-request-builder"
 import {SpineRequest} from "../../../models/spine"
@@ -12,14 +12,25 @@ import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
+import {convertDispenseNotification} from "./dispense/dispense-notification"
 import {translateReleaseRequest} from "./dispense/release"
 import pino from "pino"
 
 export function convertBundleToSpineRequest(bundle: fhir.Bundle, messageId: string): SpineRequest {
   const messageType = identifyMessageType(bundle)
-  return messageType === fhir.EventCodingCode.PRESCRIPTION
-    ? requestBuilder.toSpineRequest(createParentPrescriptionSendMessagePayload(bundle), messageId)
-    : requestBuilder.toSpineRequest(createCancellationSendMessagePayload(bundle), messageId)
+  const payload = createPayload(messageType, bundle)
+  return requestBuilder.toSpineRequest(payload, messageId)
+}
+
+function createPayload(messageType: string, bundle: fhir.Bundle): hl7V3.SendMessagePayload<unknown> {
+  switch (messageType) {
+    case fhir.EventCodingCode.PRESCRIPTION:
+      return createParentPrescriptionSendMessagePayload(bundle)
+    case fhir.EventCodingCode.CANCELLATION:
+      return createCancellationSendMessagePayload(bundle)
+    case fhir.EventCodingCode.DISPENSE:
+      return createDispenseNotificationSendMessagePayload(bundle)
+  }
 }
 
 export function createParentPrescriptionSendMessagePayload(
@@ -29,6 +40,15 @@ export function createParentPrescriptionSendMessagePayload(
   const parentPrescriptionRoot = new hl7V3.ParentPrescriptionRoot(parentPrescription)
   const interactionId = hl7V3.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT
   return createSendMessagePayload(interactionId, bundle, parentPrescriptionRoot)
+}
+
+export function createDispenseNotificationSendMessagePayload(
+  bundle: fhir.Bundle
+): hl7V3.SendMessagePayload<hl7V3.DispenseNotificationRoot> {
+  const dispenseNotification = convertDispenseNotification(bundle)
+  const dispenseNotificationRoot = new hl7V3.DispenseNotificationRoot(dispenseNotification)
+  const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION
+  return createSendMessagePayload(interactionId, bundle, dispenseNotificationRoot)
 }
 
 export function createCancellationSendMessagePayload(

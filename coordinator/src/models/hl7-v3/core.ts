@@ -4,16 +4,18 @@ import {LosslessNumber} from "lossless-json"
 import {getNumericValueAsString} from "../../services/translation/common"
 
 export interface AttributeTypeCode extends Attributes {
-  typeCode: "AUT" | "COMP" | "FLFS" | "LA" | "PART" | "PERT" | "PRD" | "PRF" | "RESP" | "RCT" | "SBJ"
+  typeCode: "AUT" | "COMP" | "CSM" | "FLFS" | "LA" | "PART" | "PERT"
+    | "PRCP" |"PRD" | "PRF" | "RESP" | "RCT" | "SBJ" | "SEQL"
 }
 
 export interface AttributeContextControlCode extends Attributes {
-  contextControlCode: "OP"
+  contextControlCode: "ON" | "OP"
 }
 
 export interface AttributeClassCode extends Attributes {
-  classCode: "AGNT" | "CACT" | "CATEGORY" | "DEV" | "INFO" | "MANU" | "MMAT" | "OBS" | "ORG" | "PAT" | "PCPR" | "PROV"
-    | "PSN" | "ROL" | "SBADM" | "SPLY"
+  classCode: "AGNT" | "CACT" | "CATEGORY" | "DEV" | "INFO" | "MANU" |
+    "MMAT" | "OBS" | "ORG" | "PAT" | "PCPR" | "PROV" | "PSN" | "ROL" |
+    "SBADM" | "SPLY"
 }
 
 export interface AttributeDeterminerCode extends Attributes {
@@ -21,7 +23,7 @@ export interface AttributeDeterminerCode extends Attributes {
 }
 
 export interface AttributeMoodCode extends Attributes {
-  moodCode: "EVN" | "RQO"
+  moodCode: "EVN" | "PRMS" | "RQO"
 }
 
 type BooleanString = "true" | "false"

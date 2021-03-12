@@ -7,7 +7,7 @@ export const basePath = "/FHIR/R4"
 
 export type ApiMode = "live" | "sandbox"
 export type ApiEndpoint = "prepare" | "process" | "convert" | "release"
-export type ApiOperation = "send" | "cancel"
+export type ApiOperation = "send" | "dispense" | "cancel"
 
 // to use groups the group added must match a subfolder under
 // models/examples with path separator replaced by space
@@ -17,6 +17,10 @@ export const pactGroups = [
   "secondary-care community repeat-dispensing",
   "secondary-care homecare",
   "primary-care"
+] as const
+
+export const dispensePactGroups = [
+  "secondary-care homecare"
 ] as const
 
 export const cancelPactGroups = [
@@ -36,7 +40,7 @@ export const miscPactGroups = [
 ] as const
 
 export const allPactGroups = [...pactGroups, ...cancelPactGroups, ...failurePactGroups, ...miscPactGroups]
-export type AllPactGroups = typeof pactGroups[number] | typeof cancelPactGroups[number] | typeof failurePactGroups[number] | typeof miscPactGroups[number]
+export type AllPactGroups = typeof pactGroups[number] | typeof dispensePactGroups[number] | typeof cancelPactGroups[number] | typeof failurePactGroups[number] | typeof miscPactGroups[number]
 
 export class PactGroupCases {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-module-boundary-types
@@ -66,6 +70,7 @@ export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, group?: AllPac
 // get pact groups for verification
 export const pactGroupNames = convertPactDescriptionsToPactNames(pactGroups)
 const releasePactGroupNames = convertPactDescriptionsToPactNames(releasePactGroups)
+const dispensePactGroupNames = convertPactDescriptionsToPactNames(dispensePactGroups)
 const cancelPactGroupNames = convertPactDescriptionsToPactNames(cancelPactGroups)
 
 // convert pact group name from description search string format to single string
@@ -78,7 +83,7 @@ function convertPactDescriptionToPactName(pactDescription: string): string {
   return pactDescription.replace(/-/g, "").replace(/\s/g, "-")
 }
 
-const isSandbox = process.env.APIGEE_ENVIRONMENT.includes("sandbox")
+const isSandbox = process.env.APIGEE_ENVIRONMENT?.includes("sandbox")
 
 export function getConvertPactGroups(): string[] {
   return [...pactGroupNames, ...failurePactGroups]
@@ -96,6 +101,12 @@ export function getProcessSendPactGroups(): string[] {
     : [...pactGroupNames, ...failurePactGroups, ...miscPactGroups]
 }
 
+export function getProcessDispensePactGroups(): string[] {
+  return isSandbox
+    ? dispensePactGroupNames
+    : [] // todo: verify dispense for live proxy once this is available
+}
+
 export function getProcessCancelPactGroups(): string[] {
   return cancelPactGroupNames
 }
@@ -103,7 +114,7 @@ export function getProcessCancelPactGroups(): string[] {
 export function getReleasePactGroups(): string[] {
   return isSandbox
     ? releasePactGroupNames
-    : [] // todo: verify release for live proxy once this has been added
+    : [] // todo: verify release for live proxy once this is available
 }
 
 // helper functions
