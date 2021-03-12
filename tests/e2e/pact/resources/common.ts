@@ -6,7 +6,7 @@ import * as fhir from "../models/fhir"
 export const basePath = "/FHIR/R4"
 
 export type ApiMode = "live" | "sandbox"
-export type ApiEndpoint = "prepare" | "process" | "convert" | "release"
+export type ApiEndpoint = "prepare" | "process" | "convert" | "release" | "task"
 export type ApiOperation = "send" | "cancel"
 
 // to use groups the group added must match a subfolder under
