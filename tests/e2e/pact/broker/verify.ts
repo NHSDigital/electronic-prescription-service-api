@@ -10,20 +10,9 @@ import {
 } from "../resources/common"
 
 let token: string
-let sleepMs = 0
-
-function sleep(milliseconds: number) {
-  const date = Date.now()
-  let currentDate = null
-  do {
-    currentDate = Date.now()
-  } while (currentDate - date < milliseconds)
-}
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verify(endpoint: string, pactGroupName: string): Promise<any> {
-    sleep(sleepMs)
-    sleepMs = (sleepMs + 5000) * 2
     const providerVersion = process.env.PACT_TAG
       ? `${process.env.PACT_VERSION} (${process.env.PACT_TAG})`
       : process.env.PACT_VERSION
@@ -56,10 +45,6 @@ async function verify(endpoint: string, pactGroupName: string): Promise<any> {
     return await verifier.verifyProvider()
 }
 
-function resetBackOffRetryTimer() {
-  sleepMs = 0
-}
-
 async function verifyOnce(endpoint: ApiEndpoint, pactGroupName: string) {
   await verify(endpoint, pactGroupName)
     .catch(() => process.exit(1))
@@ -69,7 +54,6 @@ async function verifyOnce(endpoint: ApiEndpoint, pactGroupName: string) {
 async function verifyConvert(): Promise<any> {
   await getConvertPactGroups().reduce(async (promise, group) => {
     await promise
-    resetBackOffRetryTimer()
     await verifyOnce("convert", group)
   }, Promise.resolve())
 }
@@ -78,7 +62,6 @@ async function verifyConvert(): Promise<any> {
 async function verifyPrepare(): Promise<any> {
     await getPreparePactGroups().reduce(async (promise, group) => {
       await promise
-      resetBackOffRetryTimer()
       await verifyOnce("prepare", group)
     }, Promise.resolve())
 }
@@ -87,19 +70,16 @@ async function verifyPrepare(): Promise<any> {
 async function verifyProcess(): Promise<any> {
     await getProcessSendPactGroups().reduce(async (promise, group) => {
       await promise
-      resetBackOffRetryTimer()
       await verifyOnce("process", group)
     }, Promise.resolve())
 
     await getProcessDispensePactGroups().reduce(async (promise, group) => {
       await promise
-      resetBackOffRetryTimer()
       await verifyOnce("process", `${group}-dispense`)
     }, Promise.resolve())
 
     await getProcessCancelPactGroups().reduce(async (promise, group) => {
       await promise
-      resetBackOffRetryTimer()
       await verifyOnce("process", `${group}-cancel`)
     }, Promise.resolve())
 }
@@ -108,7 +88,6 @@ async function verifyProcess(): Promise<any> {
 async function verifyRelease(): Promise<any> {
   await getReleasePactGroups().reduce(async (promise, group) => {
     await promise
-    resetBackOffRetryTimer()
     await verifyOnce("release", group)
   }, Promise.resolve())
 }
