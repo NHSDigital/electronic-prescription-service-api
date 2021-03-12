@@ -314,7 +314,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
       ).toEqual(
         getShortFormIdExtension(
           getFhirGroupIdentifierExtension(medicationDispense)
-        ).valueIdentifier.value 
+        ).valueIdentifier.value
       )
       expect(
         hl7dispenseNotification
@@ -496,7 +496,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .value
           ._text
       ).toEqual(
-        medicationDispense.dosageInstruction[0].text 
+        medicationDispense.dosageInstruction[0].text
       )
     })
   })

@@ -6,7 +6,7 @@ import * as fhir from "../models/fhir"
 export const basePath = "/FHIR/R4"
 
 export type ApiMode = "live" | "sandbox"
-export type ApiEndpoint = "prepare" | "process" | "convert" | "release"
+export type ApiEndpoint = "prepare" | "process" | "convert" | "release" | "task"
 export type ApiOperation = "send" | "dispense" | "cancel"
 
 // to use groups the group added must match a subfolder under
@@ -28,6 +28,10 @@ export const cancelPactGroups = [
 ] as const
 
 export const releasePactGroups = [
+  ""
+]
+
+export const taskPactGroups = [
   ""
 ]
 
@@ -72,6 +76,7 @@ export const pactGroupNames = convertPactDescriptionsToPactNames(pactGroups)
 const releasePactGroupNames = convertPactDescriptionsToPactNames(releasePactGroups)
 const dispensePactGroupNames = convertPactDescriptionsToPactNames(dispensePactGroups)
 const cancelPactGroupNames = convertPactDescriptionsToPactNames(cancelPactGroups)
+const taskPactGroupNames = convertPactDescriptionsToPactNames(taskPactGroups)
 
 // convert pact group name from description search string format to single string
 // matching the published pact's name
@@ -114,6 +119,12 @@ export function getProcessCancelPactGroups(): string[] {
 export function getReleasePactGroups(): string[] {
   return isSandbox
     ? releasePactGroupNames
+    : [] // todo: verify release for live proxy once this is available
+}
+
+export function getTaskPactGroups(): string[] {
+  return isSandbox
+    ? taskPactGroupNames
     : [] // todo: verify release for live proxy once this is available
 }
 

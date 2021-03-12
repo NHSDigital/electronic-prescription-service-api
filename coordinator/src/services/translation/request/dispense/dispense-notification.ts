@@ -163,7 +163,7 @@ function createSuppliedLineItemQuantity(
 }
 
 function getLineItemIdentifiers(fhirMedicationDispenses: Array<fhir.MedicationDispense>) {
-  return fhirMedicationDispenses.map(medicationDispense => 
+  return fhirMedicationDispenses.map(medicationDispense =>
     getIdentifierValueForSystem(
       medicationDispense.identifier,
       "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
