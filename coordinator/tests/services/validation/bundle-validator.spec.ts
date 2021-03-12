@@ -10,6 +10,7 @@ import {
   medicationRequestNumberIssue,
   messageTypeIssue
 } from "../../../src/models/errors/validation-errors"
+import {getPrescriptionStatus} from "../../../src/services/translation/request/dispense/dispense-notification"
 
 function validateValidationErrors (validationErrors: Array<fhir.OperationOutcomeIssue>) {
   expect(validationErrors).toHaveLength(1)
@@ -292,5 +293,90 @@ describe("verifyCancellationBundle", () => {
     const returnedErrors = validator.verifyCancellationBundle(bundle)
     expect(returnedErrors.length).toBe(1)
     expect(returnedErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).statusReason")
+  })
+})
+
+describe("verifyDispenseNotificationBundle", () => {
+  let bundle: fhir.Bundle
+
+  beforeEach(() => {
+    const dispenseExample = TestResources.specification.map(s => s.fhirMessageDispense).filter(isTruthy)[0]
+    bundle = clone(dispenseExample)
+  })
+
+  test("accepts a valid dispense request", () => {
+    const returnedErrors = validator.verifyDispenseBundle(bundle)
+    expect(returnedErrors.length).toBe(0)
+  })
+
+  test("returns an error when MedicationDispenses have different prescription statuses", () => {
+    const medicationDispenseEntry =
+      bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
+
+    const medicationDispense1 = medicationDispenseEntry.resource as fhir.MedicationDispense
+    const prescriptionStatus1 = getPrescriptionStatus(medicationDispense1)
+    prescriptionStatus1.valueCoding.code = "0001"
+
+    const medicationDispenseEntry2 = clone(medicationDispenseEntry)
+    const medicationDispense2 = medicationDispenseEntry.resource as fhir.MedicationDispense
+    const prescriptionStatus2 = getPrescriptionStatus(medicationDispense2)
+    prescriptionStatus2.valueCoding.code = "0003"
+    bundle.entry.push(medicationDispenseEntry2)
+
+    const returnedErrors = validator.verifyDispenseBundle(bundle)
+    expect(returnedErrors.length).toBe(1)
+    expect(returnedErrors[0].expression)
+      // eslint-disable-next-line max-len
+      .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).extension(\"https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus\")")
+  })
+
+  test("returns an error when MedicationDispenses have different whenPrepared timestamps", () => {
+    const medicationDispenseEntry =
+      bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
+
+    const medicationDispense1 = medicationDispenseEntry.resource as fhir.MedicationDispense
+    medicationDispense1.whenPrepared = "2009-09-21T09:24:20+00:00"
+
+    const medicationDispenseEntry2 = clone(medicationDispenseEntry)
+    const medicationDispense2 = medicationDispenseEntry.resource as fhir.MedicationDispense
+    medicationDispense2.whenPrepared = "1600-09-21T09:24:20+00:00"
+    bundle.entry.push(medicationDispenseEntry2)
+
+    const returnedErrors = validator.verifyDispenseBundle(bundle)
+    expect(returnedErrors.length).toBe(1)
+    expect(returnedErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).whenPrepared")
+  })
+
+  test("returns an error when MedicationDispenses have different performer values per type", () => {
+    const medicationDispenseEntry =
+      bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
+
+    const medicationDispense1 = medicationDispenseEntry.resource as fhir.MedicationDispense
+    medicationDispense1.performer = [
+      {
+        actor: {
+          type: "Practitioner",
+          identifier: "FIRST"
+        }
+      } as fhir.DispensePerformer
+    ]
+
+    const medicationDispenseEntry2 = clone(medicationDispenseEntry)
+    const medicationDispense2 = medicationDispenseEntry.resource as fhir.MedicationDispense
+    medicationDispense2.performer = [
+      {
+        actor: {
+          type: "Practitioner",
+          identifier: "SECOND"
+        }
+      } as fhir.DispensePerformer
+    ]
+
+    bundle.entry.push(medicationDispenseEntry2)
+
+    const returnedErrors = validator.verifyDispenseBundle(bundle)
+    expect(returnedErrors.length).toBe(1)
+    expect(returnedErrors[0].expression)
+      .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).performer")
   })
 })

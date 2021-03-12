@@ -4,6 +4,14 @@ import {InvalidValueError, TooFewValuesError, TooManyValuesError} from "../../..
 
 export const UNKNOWN_GP_ODS_CODE = "V81999"
 
+export function getMessageId(bundle: fhir.Bundle): string {
+  return getIdentifierValueForSystem(
+    [bundle.identifier],
+    "https://tools.ietf.org/html/rfc4122",
+    "Bundle.identifier"
+  )
+}
+
 export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, additionalContext?: string): T {
   if (!iterable) {
     throw new InvalidValueError("Required field missing.", fhirPath)

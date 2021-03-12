@@ -19,6 +19,10 @@ export function getMedicationRequests(bundle: fhir.Bundle): Array<fhir.Medicatio
   return getResourcesOfType<fhir.MedicationRequest>(bundle, "MedicationRequest")
 }
 
+export function getMedicationDispenses(bundle: fhir.Bundle): Array<fhir.MedicationDispense> {
+  return getResourcesOfType<fhir.MedicationDispense>(bundle, "MedicationDispense")
+}``
+
 export function getCommunicationRequests(bundle: fhir.Bundle): Array<fhir.CommunicationRequest> {
   return getResourcesOfType<fhir.CommunicationRequest>(bundle, "CommunicationRequest")
 }
@@ -33,6 +37,14 @@ export function getPatient(bundle: fhir.Bundle): fhir.Patient {
     "Bundle.entry",
     "resource.resourceType == 'Patient'"
   )
+}
+
+export function getPatientOrNull(bundle: fhir.Bundle): fhir.Patient {
+  const patients = getResourcesOfType<fhir.Patient>(bundle, "Patient")
+  if (patients.length === 1) {
+    return patients[0]
+  }
+  return null
 }
 
 export function getOrganizations(bundle: fhir.Bundle): Array<fhir.Organization> {

@@ -1,4 +1,4 @@
-import {convertParentPrescription} from "../../../../src/services/translation/request/prescription/parent-prescription"
+import {convertParentPrescription} from "../../../../src/services/translation/request/prescribe/parent-prescription"
 import {
   convertFragmentsToHashableFormat,
   extractFragments

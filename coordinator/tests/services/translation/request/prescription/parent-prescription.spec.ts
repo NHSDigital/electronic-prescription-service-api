@@ -1,6 +1,6 @@
 import {
   convertParentPrescription
-} from "../../../../../src/services/translation/request/prescription/parent-prescription"
+} from "../../../../../src/services/translation/request/prescribe/parent-prescription"
 import * as TestResources from "../../../../resources/test-resources"
 import {clone} from "../../../../resources/test-helpers"
 import {getMedicationRequests, getProvenances} from "../../../../../src/services/translation/common/getResourcesOfType"
