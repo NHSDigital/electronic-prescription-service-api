@@ -10,23 +10,23 @@ export class SandboxSpineClient implements SpineClient {
       case hl7V3.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT._attributes.extension:
         return Promise.resolve({
           statusCode: 200,
-          body: sandboxResponses.parent_prescription_urgent
+          body: sandboxResponses.PARENT_PRESCRIPTION_URGENT
         })
       case hl7V3.Hl7InteractionIdentifier.CANCEL_REQUEST._attributes.extension:
         return Promise.resolve({
           statusCode: 200,
-          body: sandboxResponses.cancel_request
+          body: sandboxResponses.CANCEL_REQUEST
         })
       case hl7V3.Hl7InteractionIdentifier.NOMINATED_PRESCRIPTION_RELEASE_REQUEST._attributes.extension:
         return Promise.resolve({
           statusCode: 200,
-          body: sandboxResponses.nominated_prescription_release_request
+          body: sandboxResponses.NOMINATED_PRESCRIPTION_RELEASE_REQUEST
         })
       case hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION._attributes.extension:
         return Promise.resolve({
           statusCode: 200,
           // todo: replace with actual spine dispense notification response when able to get one
-          body: sandboxResponses.nominated_prescription_release_request
+          body: sandboxResponses.NOMINATED_PRESCRIPTION_RELEASE_REQUEST
         })
       default:
         return Promise.resolve({

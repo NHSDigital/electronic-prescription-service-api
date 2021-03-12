@@ -14,7 +14,6 @@ import {
   getPatientOrNull
 } from "../../common/getResourcesOfType"
 import * as hl7v3 from "../../../../models/hl7-v3"
-import moment from "moment"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import pino from "pino"
 import {getRepresentedOrganization} from "../organization"
@@ -30,12 +29,11 @@ export async function convertDispenseNotification(
   const fhirPatient = getPatientOrNull(bundle)
   const fhirMedicationDispenses = getMedicationDispenses(bundle)
   const fhirFirstMedicationDispense = fhirMedicationDispenses[0]
-  const fhirIdentifiers = getIdentifiers(messageId, fhirMedicationDispenses)
+  const fhirLineItemIdentifiers = getLineItemIdentifiers(fhirMedicationDispenses)
 
-  const hl7EffectiveTime = convertMomentToHl7V3DateTime(moment.utc())
   const hl7AgentOrganization = createAgentOrganisation(fhirHeader)
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)
-  const hl7CareRecordElementCategory = createCareRecordElementCategory(fhirIdentifiers)
+  const hl7CareRecordElementCategory = createCareRecordElementCategory(fhirLineItemIdentifiers)
   const hl7PriorPrescriptionReleaseEventRef = createPriorPrescriptionReleaseEventRef(fhirHeader)
   const hl7PertinentInformation1 = await createPertinentInformation1(
     messageId,
@@ -46,7 +44,6 @@ export async function convertDispenseNotification(
   )
 
   const hl7DispenseNotification = new hl7V3.DispenseNotification(new hl7V3.GlobalIdentifier(messageId))
-  hl7DispenseNotification.effectiveTime = hl7EffectiveTime
   hl7DispenseNotification.recordTarget = new hl7V3.DispenseRecordTarget(hl7Patient)
   hl7DispenseNotification.primaryInformationRecipient = new hl7V3.PrimaryInformationRecipient(hl7AgentOrganization)
   hl7DispenseNotification.pertinentInformation1 = hl7PertinentInformation1
@@ -64,7 +61,11 @@ async function createPertinentInformation1(
   logger: pino.Logger
 ) {
 
-  const fhirPractitionerPerformer = fhirFirstMedicationDispense.performer.find(p => p.actor.type === "Practitioner")
+  const fhirPractitionerPerformer =
+    fhirFirstMedicationDispense.performer.find(
+      p => p.actor.type === "Practitioner"
+        || p.actor.type === "PractitionerRole"
+    )
 
   const hl7RepresentedOrganisationCode = fhirHeaderSender.identifier.value
   const hl7AuthorTime = fhirFirstMedicationDispense.whenPrepared
@@ -145,7 +146,7 @@ function createSuppliedLineItemQuantity(
   hl7SuppliedLineItemQuantitySnomedCode: hl7V3.SnomedCode,
   hl7Quantity: hl7V3.QuantityInAlternativeUnits,
   fhirMedicationCodeableConceptCoding: fhir.Coding,
-  fhirDosageInstruction: fhir.DosageInstruction
+  fhirDosageInstruction: fhir.Dosage
 ) {
   const hl7SuppliedLineItemQuantity = new hl7V3.SuppliedLineItemQuantity()
   hl7SuppliedLineItemQuantity.code = hl7SuppliedLineItemQuantitySnomedCode
@@ -168,17 +169,14 @@ function createSuppliedLineItemQuantity(
   return hl7SuppliedLineItemQuantity
 }
 
-function getIdentifiers(messageId: string, fhirMedicationDispenses: Array<fhir.MedicationDispense>) {
-  const fhirIdentifiers = [messageId]
-  fhirMedicationDispenses.forEach(medicationDispense => {
-    const fhirPrescriptionDispenseItemNumber = getIdentifierValueForSystem(
+function getLineItemIdentifiers(fhirMedicationDispenses: Array<fhir.MedicationDispense>) {
+  return fhirMedicationDispenses.map(medicationDispense => 
+    getIdentifierValueForSystem(
       medicationDispense.identifier,
       "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
-      "MedicationDispense.identifiers"
+      "MedicationDispense.identifier"
     )
-    fhirIdentifiers.push(fhirPrescriptionDispenseItemNumber)
-  })
-  return fhirIdentifiers
+  )
 }
 
 function getNhsNumber(fhirPatient: fhir.Patient, fhirFirstMedicationDispense: fhir.MedicationDispense) {

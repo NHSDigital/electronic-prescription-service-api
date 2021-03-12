@@ -6,6 +6,8 @@ import * as organisation from "./organization"
 import * as prescription from "./prescription"
 import * as lineItem from "./line-item"
 import * as patient from "./patient"
+import {convertMomentToHl7V3DateTime} from "../../services/translation/common/dateTime"
+import moment from "moment"
 
 export class DispenseNotificationRoot {
   DispenseNotification: DispenseNotification
@@ -36,7 +38,7 @@ export class DispenseNotification implements ElementCompact {
       "163541000000107",
       "Dispensed Medication - FocusActOrEvent (administrative concept)"
     )
-    this.effectiveTime = new core.Timestamp("PLACEHOLDER")
+    this.effectiveTime = convertMomentToHl7V3DateTime(moment.utc())
     this.typeId = new codes.TypeIdentifier("PORX_MT024001UK31")
   }
 }

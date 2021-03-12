@@ -69,8 +69,8 @@ export class ConvertCase extends Case {
     {
       responseXml = responseXml
         .replace(
-          /<effectiveTime (value=\\"[0-9]*\\"\\\/>|nullFlavor=\\"NA\\"\\\/>|nullFlavor=\\"UNK\\"\\\/>)/g,
-          "<effectiveTime (value=\\\"[0-9]*\\\"\\/>|nullFlavor=\\\"NA\\\"\\/>|nullFlavor=\\\"UNK\\\"\\/>)")
+          /<effectiveTime value=\\"[0-9]*\\"\\\/>/g,
+          "<effectiveTime value=\\\"[0-9]*\\\"\\/>")
     }
 
     if (operation === "release")

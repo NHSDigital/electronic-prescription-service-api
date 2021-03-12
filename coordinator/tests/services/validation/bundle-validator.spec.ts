@@ -377,6 +377,6 @@ describe("verifyDispenseNotificationBundle", () => {
     const returnedErrors = validator.verifyDispenseBundle(bundle)
     expect(returnedErrors.length).toBe(1)
     expect(returnedErrors[0].expression)
-      .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).performer.(actor.type === Practitioner)")
+      .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).performer")
   })
 })
