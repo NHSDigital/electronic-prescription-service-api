@@ -1,4 +1,4 @@
-import {convertParentPrescription} from "../../../src/services/translation/request/prescription/parent-prescription"
+import {convertParentPrescription} from "../../../src/services/translation/request/prescribe/parent-prescription"
 import {createInnerBundle} from "../../../src/services/translation/response/release/release-response"
 import * as TestResources from "../../resources/test-resources"
 import {getResourcesOfType} from "../../../src/services/translation/common/getResourcesOfType"

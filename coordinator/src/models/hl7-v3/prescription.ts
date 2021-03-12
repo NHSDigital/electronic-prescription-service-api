@@ -51,9 +51,9 @@ export class Performer implements ElementCompact {
     contextControlCode: "OP"
   }
 
-  AgentOrgSDS: organization.AgentOrganization
+  AgentOrgSDS: organization.AgentOrganizationSDS
 
-  constructor(agentOrganization: organization.AgentOrganization) {
+  constructor(agentOrganization: organization.AgentOrganizationSDS) {
     this.AgentOrgSDS = agentOrganization
   }
 }

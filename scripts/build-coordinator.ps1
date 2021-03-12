@@ -1,3 +1,4 @@
+./scripts/set_env_vars.ps1
 npm run --prefix=coordinator/ build
 cp coordinator/package.json coordinator/dist/
 mkdir -Force coordinator/dist/resources

@@ -2,8 +2,8 @@ import {processExamples} from "../services/process-example-fetcher"
 import {convertExamples} from "../services/convert-example-fetcher"
 import {prepareExamples} from "../services/prepare-example-fetcher"
 import {releaseExamples} from "../services/dispense-example-fetcher"
-import {pactGroups, cancelPactGroups, PactGroupCases} from "./common"
-import {taskExamples} from "../services/task-example-fetcher";
+import {pactGroups, cancelPactGroups, PactGroupCases, dispensePactGroups} from "./common"
+import {taskExamples} from "../services/task-example-fetcher"
 
 function getConvertCases(searchString: string) {
   return convertExamples
@@ -35,6 +35,7 @@ export const prepareErrorCases = convertExamples.filter(e => !e.isSuccess).map(s
 
 export const processOrderCaseGroups = pactGroups.map(pactGroup => new PactGroupCases(pactGroup, getProcessCases(pactGroup, "send")))
 export const processOrderUpdateCaseGroups = cancelPactGroups.map(pactGroup => new PactGroupCases(pactGroup, getProcessCases(pactGroup, "cancel")))
+export const processDispenseNotificationCaseGroups = dispensePactGroups.map(pactGroup => new PactGroupCases(pactGroup, getProcessCases(pactGroup, "dispense")))
 
 export const releaseCases = releaseExamples.filter(e => e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
 

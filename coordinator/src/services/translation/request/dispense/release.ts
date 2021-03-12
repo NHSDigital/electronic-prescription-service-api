@@ -81,7 +81,7 @@ function convertOrganization(organization: fhir.Organization): hl7v3.Organizatio
     `Organization.identifier`
   )
   hl7V3Organization.id = new hl7V3.SdsOrganizationIdentifier(organizationSdsId)
-  hl7V3Organization.code = new hl7V3.OrganizationTypeCode("999")
+  hl7V3Organization.code = new hl7V3.OrganizationTypeCode()
   if (organization.name) {
     hl7V3Organization.name = new hl7v3.Text(organization.name)
   }
