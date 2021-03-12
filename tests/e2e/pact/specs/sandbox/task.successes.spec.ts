@@ -75,7 +75,7 @@ jestpact.pactWith(
 
           const interaction: InteractionObject = {
             state: "is not authenticated",
-            uponReceiving: `a request to withdraw ${desc} message`,
+            uponReceiving: `a request to return ${desc} message`,
             withRequest: {
               headers: {
                 "Content-Type": "application/fhir+json; fhirVersion=4.0",
