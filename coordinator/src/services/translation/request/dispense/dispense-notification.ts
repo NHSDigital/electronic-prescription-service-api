@@ -23,7 +23,7 @@ export async function convertDispenseNotification(
   logger: pino.Logger
 ): Promise<hl7V3.DispenseNotification> {
 
-  const messageId = getMessageId(bundle)
+  const messageId = getMessageId(bundle.identifier)
 
   const fhirHeader = getMessageHeader(bundle)
   const fhirPatient = getPatientOrNull(bundle)
