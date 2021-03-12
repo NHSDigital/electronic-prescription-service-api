@@ -126,7 +126,7 @@ async function verifyTask(): Promise<any> {
   await getTaskPactGroups().reduce(async (promise, group) => {
     await promise
     resetBackOffRetryTimer()
-    await verifyWith2Retries("release", group)
+    await verifyWith2Retries("task", group)
   }, Promise.resolve())
 }
 
