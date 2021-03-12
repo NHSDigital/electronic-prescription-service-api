@@ -243,6 +243,12 @@ export class SdsUniqueIdentifier extends Identifier<"1.2.826.0.1285.0.2.0.65"> {
   }
 }
 
+export class UnattendedSdsUniqueIdentifier extends Identifier<"1.2.826.0.1285.0.2.0.65"> {
+  constructor() {
+    super("1.2.826.0.1285.0.2.0.65", "999999999999")
+  }
+}
+
 export class SdsRoleProfileIdentifier extends Identifier<"1.2.826.0.1285.0.2.0.67"> {
   constructor(extension: string) {
     super("1.2.826.0.1285.0.2.0.67", extension)

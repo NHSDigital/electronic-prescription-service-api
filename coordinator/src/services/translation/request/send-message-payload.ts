@@ -72,14 +72,9 @@ function convertRequesterToControlActAuthor(
   bundle: fhir.Bundle
 ) {
 
-  // todo dispenseNotification: implement dispense verson
   const messageType = identifyMessageType(bundle)
   if (messageType === fhir.EventCodingCode.DISPENSE) {
-    // todo dispenseNotification: pick up this info from MessageHeader.sender and lookup on ods/sds
-    const sdsUniqueIdentifier = "687227875014"
-    const sdsJobRoleCode = "R8003"
-    const sdsRoleProfileIdentifier = "781733617547"
-    return createControlActEventAuthor(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier)
+    return convertRequesterToUnattendedControlActAuthor("")
   }
 
   const firstMedicationRequest = getMedicationRequests(bundle)[0]
@@ -136,20 +131,19 @@ function createReleaseControlActEvent<T>(
   subject: T
 ) {
   const controlActEvent = new hl7V3.ControlActEvent<T>()
-  controlActEvent.author = convertRequesterToReleaseControlActAuthor(subject)
+  controlActEvent.author = convertRequesterToUnattendedControlActAuthor(subject)
   controlActEvent.author1 = createControlActEventAuthor1(process.env.FROM_ASID)
   controlActEvent.subject = subject
   return controlActEvent
 }
 
-function convertRequesterToReleaseControlActAuthor<T>(
+function convertRequesterToUnattendedControlActAuthor<T>(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   hl7ReleaseRequest: T
 ) {
-  const sdsUniqueIdentifier = "G9999999"
+  const sdsUniqueIdentifier = new hl7V3.UnattendedSdsUniqueIdentifier()._attributes.extension
+  const sdsJobRoleCode = new hl7V3.UnattendedSdsJobRoleCode()._attributes.code
+  const sdsRoleProfileIdentifier = new hl7V3.UnattendedSdsRoleProfileIdentifier()._attributes.extension
 
-  const sdsJobRoleCode = "R8000"
-
-  const sdsRoleProfileIdentifier = "100102238986"
   return createControlActEventAuthor(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier)
 }
