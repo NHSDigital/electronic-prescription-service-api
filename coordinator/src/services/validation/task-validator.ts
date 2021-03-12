@@ -10,7 +10,7 @@ export function verifyTask(task: fhir.Task): Array<fhir.OperationOutcomeIssue> {
   }
 
   if(task.intent != "order") {
-    validationErrors.push(errors.createTaskIncorrectValueIssue("intent", "order"))
+    validationErrors.push(errors.createTaskIncorrectValueIssue("intent", "'order'"))
   }
 
   if(task.status === "in-progress") {
@@ -18,7 +18,7 @@ export function verifyTask(task: fhir.Task): Array<fhir.OperationOutcomeIssue> {
       validationErrors.push({
         severity: "error",
         code: "value",
-        diagnostics: `Task.code is requred when task.status="in-progress" .`,
+        diagnostics: "Task.code is requred when task.status='in-progress'.",
         expression: [`Task.code`]
       } as fhir.OperationOutcomeIssue)
       validationErrors.push(...checkValidSystem(
@@ -32,7 +32,7 @@ export function verifyTask(task: fhir.Task): Array<fhir.OperationOutcomeIssue> {
       "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason"
     ))
   } else {
-    validationErrors.push(errors.createTaskIncorrectValueIssue("status", "in-progress or rejected"))
+    validationErrors.push(errors.createTaskIncorrectValueIssue("status", "'in-progress' or 'rejected'"))
   }
 
   return validationErrors
@@ -42,7 +42,7 @@ function checkValidSystem(task: fhir.Task, system: string): Array<fhir.Operation
   const validSystemCode = getCodingForSystemOrNull(
     task.reasonCode.coding,
     system,
-    `task.reasonCode`
+    `Task.reasonCode`
   )
   if(!validSystemCode){
     return [errors.createTaskCodingSystemIssue(

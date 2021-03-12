@@ -92,7 +92,7 @@ export function createTaskIncorrectValueIssue(
   return {
     severity: "error",
     code: "value",
-    diagnostics: `Task.${fieldName} must be '${requiredFieldValue}'.`,
+    diagnostics: `Task.${fieldName} must be ${requiredFieldValue}.`,
     expression: [`Task.${fieldName}`]
   }
 }
