@@ -11,7 +11,7 @@ export function convertCancellation(bundle: fhir.Bundle, convertPatientFn = conv
   const fhirFirstMedicationRequest = getMedicationRequests(bundle)[0]
   const effectiveTime = extractEffectiveTime(fhirFirstMedicationRequest)
 
-  const messageId = getMessageId(bundle.identifier)
+  const messageId = getMessageId([bundle.identifier])
 
   const cancellationRequest = new hl7V3.CancellationRequest(
     new hl7V3.GlobalIdentifier(messageId), effectiveTime

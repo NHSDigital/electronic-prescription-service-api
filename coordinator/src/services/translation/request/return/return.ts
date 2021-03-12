@@ -1,6 +1,6 @@
 import * as fhir from "../../../../models/fhir"
 import * as hl7V3 from "../../../../models/hl7-v3"
-import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem} from "../../common"
+import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem, getMessageId} from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import {createAuthorForUnattendedAccess} from "../agent-unattended"
 import * as pino from "pino"
@@ -9,11 +9,7 @@ export async function convertTaskToDispenseProposalReturn(
   task: fhir.Task,
   logger: pino.Logger
 ): Promise<hl7V3.DispenseProposalReturn> {
-  const idValue = getIdentifierValueForSystem(
-    task.identifier,
-    "https://tools.ietf.org/html/rfc4122",
-    "Task.identifier"
-  )
+  const idValue = getMessageId(task.identifier)
   const id = new hl7V3.GlobalIdentifier(idValue)
   const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(task.authoredOn, "Task.authoredOn")
   const dispenseProposalReturn = new hl7V3.DispenseProposalReturn(id, effectiveTime)

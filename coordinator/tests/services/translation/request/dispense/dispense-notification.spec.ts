@@ -4,23 +4,23 @@ import {
   getPrescriptionItemNumber,
   getPrescriptionStatus,
   convertDispenseNotification
-} from "../../../../src/services/translation/request/dispense/dispense-notification"
-import * as TestResources from "../../../resources/test-resources"
+} from "../../../../../src/services/translation/request/dispense/dispense-notification"
+import * as TestResources from "../../../../resources/test-resources"
 import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"
-import * as hl7V3 from "../../../../src/models/hl7-v3"
-import * as fhir from "../../../../src/models/fhir"
+import * as hl7V3 from "../../../../../src/models/hl7-v3"
+import * as fhir from "../../../../../src/models/fhir"
 import {
   getExtensionForUrl,
   onlyElement,
   toArray
-} from "../../../../src/services/translation/common"
-import {clone} from "../../../resources/test-helpers"
+} from "../../../../../src/services/translation/common"
+import {clone} from "../../../../resources/test-helpers"
 import {
   getMedicationDispenses, getMessageHeader
-} from "../../../../src/services/translation/common/getResourcesOfType"
+} from "../../../../../src/services/translation/common/getResourcesOfType"
 import {ElementCompact} from "xml-js"
-import pino from "pino"
+import pino = require("pino")
 
 const logger = pino()
 
@@ -39,8 +39,8 @@ describe("convertPrescriptionDispense", () => {
       example.hl7V3MessageDispense.PORX_IN080101SM31.ControlActEvent.subject.DispenseNotification as hl7V3.DispenseNotification
     ])
 
-  test.each(cases)("accepts %s", (desc: string, input: fhir.Bundle) => {
-    expect(async() => (await convertDispenseNotification(input, logger))).not.toThrow()
+  test.each(cases)("accepts %s", async(desc: string, input: fhir.Bundle) => {
+    expect(async() => await convertDispenseNotification(input, logger)).not.toThrow()
   })
 })
 
@@ -142,22 +142,16 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
     )
   })
 
-  test("sender.identifier.value maps to pertinentInformation1.pertinentSupplyHeader.author.AgentPerson", async() => {
-    messageHeader.sender.identifier.value = "FTX40"
+  test("sender.display maps to pertinentInformation1.pertinentSupplyHeader.author.AgentPerson", async() => {
+    messageHeader.sender.display = "HEALTHCARE AT HOME"
 
     const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
 
     expect(
       hl7dispenseNotification
-        .pertinentInformation1.pertinentSupplyHeader.author.AgentPerson.representedOrganization.id._attributes.extension
+        .pertinentInformation1.pertinentSupplyHeader.author.AgentPerson.representedOrganization.name._text
     ).toEqual(
-      messageHeader.sender.identifier.value
-    )
-    expect(
-      hl7dispenseNotification
-        .pertinentInformation1.pertinentSupplyHeader.author.AgentPerson.code._attributes.code
-    ).toEqual(
-      messageHeader.sender.identifier.value
+      messageHeader.sender.display
     )
   })
 
@@ -257,25 +251,6 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
         hl7dispenseNotification.recordTarget.patient.id._attributes.extension
       ).toEqual(
         medicationDispense.subject.identifier.value
-      )
-    })
-  })
-
-  // eslint-disable-next-line max-len
-  test("performer.actor.(type === 'Practitioner') maps to pertinentInformation1.pertinentSupplyHeader.author.AgentPerson.agentPerson", async() => {
-    medicationDispenses.forEach(medicationDispense => setPractitionerName(medicationDispense, "XX-TEST-VALUE"))
-
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
-
-    medicationDispenses.map((medicationDispense) => {
-      expect(
-        hl7dispenseNotification.pertinentInformation1.pertinentSupplyHeader.author.AgentPerson.agentPerson.name._text
-      ).toEqual(
-        medicationDispense
-          .performer
-          .map(p => p.actor)
-          .find(a => a.type === "Practitioner")
-          .display
       )
     })
   })

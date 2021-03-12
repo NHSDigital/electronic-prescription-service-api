@@ -12,7 +12,7 @@ export function convertParentPrescription(
   convertBundleToPrescriptionFn = convertBundleToPrescription,
   convertCareRecordElementCategoriesFn = convertCareRecordElementCategories
 ): hl7V3.ParentPrescription {
-  const messageId = getMessageId(bundle.identifier)
+  const messageId = getMessageId([bundle.identifier])
 
   const parentPrescription = new hl7V3.ParentPrescription(
     new hl7V3.GlobalIdentifier(messageId)

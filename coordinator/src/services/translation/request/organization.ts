@@ -164,38 +164,3 @@ class CostCentreHealthcareService extends CostCentre implements fhir.HealthcareS
     return "Location.address"
   }
 }
-
-export async function getRepresentedOrganization(
-  organizationCode: string,
-  logger: pino.Logger
-): Promise<hl7V3.Organization> {
-  const organization = await odsClient.lookupOrganization(organizationCode, logger)
-  if (!organization) {
-    throw new InvalidValueError(
-      `No organisation details found for code ${organizationCode}`,
-      "Parameters.parameter"
-    )
-  }
-  return convertOrganization(organization)
-}
-
-function convertOrganization(organization: fhir.Organization): hl7V3.Organization {
-  const hl7V3Organization = new hl7V3.Organization()
-  const organizationSdsId = getIdentifierValueForSystem(
-    organization.identifier,
-    "https://fhir.nhs.uk/Id/ods-organization-code",
-    `Organization.identifier`
-  )
-  hl7V3Organization.id = new hl7V3.SdsOrganizationIdentifier(organizationSdsId)
-  hl7V3Organization.code = new hl7V3.OrganizationTypeCode()
-  if (organization.name) {
-    hl7V3Organization.name = new hl7V3.Text(organization.name)
-  }
-  if (organization.telecom?.length) {
-    hl7V3Organization.telecom = convertTelecom(organization.telecom[0], "Organization.telecom")
-  }
-  if (organization.address?.length) {
-    hl7V3Organization.addr = convertAddress(organization.address[0], "Organization.address")
-  }
-  return hl7V3Organization
-}
