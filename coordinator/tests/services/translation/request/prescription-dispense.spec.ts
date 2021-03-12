@@ -4,7 +4,7 @@ import {
   getPrescriptionItemNumber,
   getPrescriptionStatus,
   convertDispenseNotification
-} from "../../../../src/services/translation/request/prescribe/prescription-dispense"
+} from "../../../../src/services/translation/request/dispense/dispense-notification"
 import * as TestResources from "../../../resources/test-resources"
 import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"
@@ -116,11 +116,11 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
 
     expect(
-      fhirMessageDestination
-        .receiver.identifier.value
-    ).toEqual(
       hl7dispenseNotification
         .primaryInformationRecipient.AgentOrg.agentOrganization.id._attributes.extension
+    ).toEqual(
+      fhirMessageDestination
+        .receiver.identifier.value
     )
   })
 
@@ -131,11 +131,11 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
 
     expect(
-      fhirMessageDestination
-        .receiver.display
-    ).toEqual(
       hl7dispenseNotification
         .primaryInformationRecipient.AgentOrg.agentOrganization.name._text
+    ).toEqual(
+      fhirMessageDestination
+        .receiver.display
     )
   })
 
@@ -145,16 +145,16 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
 
     expect(
-      messageHeader.sender.identifier.value
-    ).toEqual(
       hl7dispenseNotification
         .pertinentInformation1.pertinentSupplyHeader.author.AgentPerson.representedOrganization.id._attributes.extension
+    ).toEqual(
+      messageHeader.sender.identifier.value
     )
     expect(
-      messageHeader.sender.identifier.value
-    ).toEqual(
       hl7dispenseNotification
         .pertinentInformation1.pertinentSupplyHeader.author.AgentPerson.code._attributes.code
+    ).toEqual(
+      messageHeader.sender.identifier.value
     )
   })
 
@@ -164,10 +164,10 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
 
     expect(
-      messageHeader.sender.display
-    ).toEqual(
       hl7dispenseNotification
         .pertinentInformation1.pertinentSupplyHeader.author.AgentPerson.representedOrganization.name._text
+    ).toEqual(
+      messageHeader.sender.display
     )
   })
 
@@ -177,10 +177,10 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
     const hl7dispenseNotification = convertDispenseNotification(dispenseNotification)
 
     expect(
-      messageHeader.response.identifier
-    ).toEqual(
       hl7dispenseNotification
         .sequelTo.priorPrescriptionReleaseEventRef.id._attributes.root
+    ).toEqual(
+      messageHeader.response.identifier
     )
   })
 })
@@ -202,13 +202,13 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(
-        getPrescriptionItemNumber(medicationDispense)
-      ).toEqual(
         hl7dispenseNotification
           .pertinentInformation1
           .pertinentSupplyHeader
           .pertinentInformation1[index]
           .pertinentSuppliedLineItem.id._attributes.root
+      ).toEqual(
+        getPrescriptionItemNumber(medicationDispense)
       )
     })
   })
@@ -223,8 +223,6 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
 
     medicationDispenses.map((_, index) => {
       expect(
-        "XX-TEST-VALUE"
-      ).toEqual(
         hl7dispenseNotification
           .pertinentInformation1
           .pertinentSupplyHeader
@@ -237,10 +235,10 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .manufacturedSuppliedMaterial
           .code
           ._attributes.code
+      ).toEqual(
+        "XX-TEST-VALUE"
       )
       expect(
-        "XX-TEST-VALUE-DISPLAY"
-      ).toEqual(
         hl7dispenseNotification
           .pertinentInformation1
           .pertinentSupplyHeader
@@ -253,6 +251,8 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .manufacturedSuppliedMaterial
           .code
           ._attributes.displayName
+      ).toEqual(
+        "XX-TEST-VALUE-DISPLAY"
       )
     })
   })
@@ -264,9 +264,9 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
 
     medicationDispenses.map((medicationDispense) => {
       expect(
-        medicationDispense.subject.identifier.value
-      ).toEqual(
         hl7dispenseNotification.recordTarget.patient.id._attributes.extension
+      ).toEqual(
+        medicationDispense.subject.identifier.value
       )
     })
   })
@@ -279,13 +279,13 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
 
     medicationDispenses.map((medicationDispense) => {
       expect(
+        hl7dispenseNotification.pertinentInformation1.pertinentSupplyHeader.author.AgentPerson.agentPerson.name._text
+      ).toEqual(
         medicationDispense
           .performer
           .map(p => p.actor)
           .find(a => a.type === "Practitioner")
           .display
-      ).toEqual(
-        hl7dispenseNotification.pertinentInformation1.pertinentSupplyHeader.author.AgentPerson.agentPerson.name._text
       )
     })
   })
@@ -303,10 +303,6 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(
-        getShortFormIdExtension(
-          getFhirGroupIdentifierExtension(medicationDispense)
-        ).valueIdentifier.value
-      ).toEqual(
         hl7dispenseNotification
           .pertinentInformation1
           .pertinentSupplyHeader
@@ -315,12 +311,12 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .value
           ._attributes
           .extension
+      ).toEqual(
+        getShortFormIdExtension(
+          getFhirGroupIdentifierExtension(medicationDispense)
+        ).valueIdentifier.value 
       )
       expect(
-        getUuidExtension(
-          getFhirGroupIdentifierExtension(medicationDispense)
-        ).valueIdentifier.value
-      ).toEqual(
         hl7dispenseNotification
           .pertinentInformation1
           .pertinentSupplyHeader
@@ -329,15 +325,12 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .id
           ._attributes
           .root
+      ).toEqual(
+        getUuidExtension(
+          getFhirGroupIdentifierExtension(medicationDispense)
+        ).valueIdentifier.value
       )
       expect(
-        medicationDispense.authorizingPrescription
-          .map(a => a.identifier)
-          .filter(identifier =>
-            identifier.system === "https://fhir.nhs.uk/Id/prescription-order-item-number"
-          )[0]
-          .value
-      ).toEqual(
         hl7dispenseNotification
           .pertinentInformation1
           .pertinentSupplyHeader
@@ -348,6 +341,13 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .id
           ._attributes
           .root
+      ).toEqual(
+        medicationDispense.authorizingPrescription
+          .map(a => a.identifier)
+          .filter(identifier =>
+            identifier.system === "https://fhir.nhs.uk/Id/prescription-order-item-number"
+          )[0]
+          .value
       )
     })
   })
@@ -364,8 +364,6 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(
-        medicationDispense.quantity.value
-      ).toEqual(
         hl7dispenseNotification
           .pertinentInformation1
           .pertinentSupplyHeader
@@ -376,10 +374,10 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .quantity
           ._attributes
           .value
+      ).toEqual(
+        medicationDispense.quantity.value
       )
       expect(
-        medicationDispense.quantity.value
-      ).toEqual(
         hl7dispenseNotification
           .pertinentInformation1
           .pertinentSupplyHeader
@@ -391,10 +389,10 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .translation
           ._attributes
           .value
+      ).toEqual(
+        medicationDispense.quantity.value
       )
       expect(
-        medicationDispense.quantity.unit
-      ).toEqual(
         hl7dispenseNotification
           .pertinentInformation1
           .pertinentSupplyHeader
@@ -406,10 +404,10 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .translation
           ._attributes
           .displayName
+      ).toEqual(
+        medicationDispense.quantity.unit
       )
       expect(
-        medicationDispense.quantity.unit
-      ).toEqual(
         hl7dispenseNotification
           .pertinentInformation1
           .pertinentSupplyHeader
@@ -420,10 +418,10 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .code
           ._attributes
           .displayName
+      ).toEqual(
+        medicationDispense.quantity.unit
       )
       expect(
-        medicationDispense.quantity.code
-      ).toEqual(
         hl7dispenseNotification
           .pertinentInformation1
           .pertinentSupplyHeader
@@ -434,10 +432,10 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .code
           ._attributes
           .code
+      ).toEqual(
+        medicationDispense.quantity.code
       )
       expect(
-        medicationDispense.quantity.code
-      ).toEqual(
         hl7dispenseNotification
           .pertinentInformation1
           .pertinentSupplyHeader
@@ -448,6 +446,8 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .quantity
           .translation
           ._attributes.code
+      ).toEqual(
+        medicationDispense.quantity.code
       )
     })
   })
@@ -461,8 +461,6 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
 
     medicationDispenses.map(() => {
       expect(
-        expected
-      ).toEqual(
         hl7dispenseNotification
           .pertinentInformation1
           .pertinentSupplyHeader
@@ -470,6 +468,8 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .time
           ._attributes
           .value
+      ).toEqual(
+        expected
       )
     })
   })
@@ -484,8 +484,6 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(
-        medicationDispense.dosageInstruction[0].text
-      ).toEqual(
         hl7dispenseNotification
           .pertinentInformation1
           .pertinentSupplyHeader
@@ -497,6 +495,8 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .pertinentSupplyInstructions
           .value
           ._text
+      ).toEqual(
+        medicationDispense.dosageInstruction[0].text 
       )
     })
   })

@@ -164,7 +164,7 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
     if (uniqueFieldValues.length > 1) {
       allErrors.push(
         errors.createMedicationDispenseInconsistentValueIssue(
-          `performer.(actor.type === ${key[index].type})`,
+          "performer",
           uniqueFieldValues)
       )
     }

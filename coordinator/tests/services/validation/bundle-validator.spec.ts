@@ -10,7 +10,7 @@ import {
   medicationRequestNumberIssue,
   messageTypeIssue
 } from "../../../src/models/errors/validation-errors"
-import {getPrescriptionStatus} from "../../../src/services/translation/request/prescribe/prescription-dispense"
+import {getPrescriptionStatus} from "../../../src/services/translation/request/dispense/dispense-notification"
 
 function validateValidationErrors (validationErrors: Array<fhir.OperationOutcomeIssue>) {
   expect(validationErrors).toHaveLength(1)
@@ -377,6 +377,6 @@ describe("verifyDispenseNotificationBundle", () => {
     const returnedErrors = validator.verifyDispenseBundle(bundle)
     expect(returnedErrors.length).toBe(1)
     expect(returnedErrors[0].expression)
-      .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).performer.(actor.type === Practitioner)")
+      .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).performer")
   })
 })

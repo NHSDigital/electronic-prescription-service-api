@@ -12,23 +12,21 @@ export interface MedicationDispense extends common.Resource {
     quantity: common.SimpleQuantity
     authorizingPrescription: Array<AuthorizingPrescription>
     whenPrepared: string
-    dosageInstruction: Array<DosageInstruction>
+    dosageInstruction: Array<medicationRequest.Dosage>
     performer: Array<DispensePerformer>
     type: common.CodeableConcept
 }
 
 export interface AuthorizingPrescription extends common.IdentifierReference<medicationRequest.MedicationRequest> {
-    extension: Array<extension.Extension>
+    extension: Array<AuthorizingPrescriptionExtension>
 }
 
-export interface DosageInstruction {
-    text: string
-}
+export type AuthorizingPrescriptionExtension = extension.IdentifierExtension
 
 export interface DispensePerformer {
     actor: Actor
 }
 
 export interface Actor extends common.IdentifierReference<Practitioner|PractitionerRole|Organization> {
-    type: "Practitioner" | "Organization"
+    type: "Practitioner" |  "PractitionerRole" | "Organization"
 }
