@@ -7,11 +7,12 @@ import {
   getFhirValidatorErrors,
   getPayload,
   isBundle,
-  isParameters
+  isParameters, isTask
 } from "../util"
 import * as fhir from "../../models/fhir"
 import * as bundleValidator from "../../services/validation/bundle-validator"
 import * as parametersValidator from "../../services/validation/parameters-validator"
+import * as taskValidator from "../../services/validation/task-validator"
 
 export default [
   /*
@@ -47,6 +48,17 @@ export default [
 
         request.logger.info("Building HL7V3 message from Parameters")
         const spineRequest = await translator.convertParametersToSpineRequest(payload, requestId, request.logger)
+        return responseToolkit.response(spineRequest.message).code(200).type(CONTENT_TYPE_XML)
+      }
+
+      if (isTask(payload)) {
+        const issues = taskValidator.verifyTask(payload)
+        if (issues.length) {
+          return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(CONTENT_TYPE_FHIR)
+        }
+
+        request.logger.info("Building HL7V3 message from Task")
+        const spineRequest = await translator.convertTaskToSpineRequest(payload, requestId, request.logger)
         return responseToolkit.response(spineRequest.message).code(200).type(CONTENT_TYPE_XML)
       }
 

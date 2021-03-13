@@ -54,6 +54,10 @@ export function isParameters(body: unknown): body is fhir.Parameters {
   return isFhirResourceOfType(body, "Parameters")
 }
 
+export function isTask(body: unknown): body is fhir.Task {
+  return isFhirResourceOfType(body, "Task")
+}
+
 function isFhirResourceOfType(body: unknown, resourceType: string) {
   return typeof body === "object"
     && "resourceType" in body

@@ -1,6 +1,6 @@
 import * as XmlJs from "xml-js"
 import * as crypto from "crypto-js"
-import {createReleaseRequestSendMessagePayload, createSendMessagePayload} from "./send-message-payload"
+import {createSendMessagePayloadForUnattendedAccess, createSendMessagePayload} from "./send-message-payload"
 import {writeXmlStringCanonicalized} from "../../serialisation/xml"
 import {convertParentPrescription} from "./prescribe/parent-prescription"
 import {convertCancellation} from "./cancel/cancellation"
@@ -15,6 +15,7 @@ import * as fhir from "../../../models/fhir"
 import {convertDispenseNotification} from "./dispense/dispense-notification"
 import {translateReleaseRequest} from "./dispense/release"
 import pino from "pino"
+import {convertTaskToDispenseProposalReturn} from "./return/return"
 
 export function convertBundleToSpineRequest(bundle: fhir.Bundle, messageId: string): SpineRequest {
   const messageType = identifyMessageType(bundle)
@@ -128,18 +129,43 @@ export async function convertParametersToSpineRequest(
   const hl7ReleaseRequest = await translateReleaseRequest(fhirMessage, logger)
   const interactionId = hl7V3.Hl7InteractionIdentifier.NOMINATED_PRESCRIPTION_RELEASE_REQUEST
   return  requestBuilder.toSpineRequest(
-    createReleaseRequestSendMessagePayload(interactionId, hl7ReleaseRequest),
+    createSendMessagePayloadForUnattendedAccess(interactionId, hl7ReleaseRequest),
     messageId
   )
 }
 
-export async function convertTaskWithdrawToSpineRequest(
-  fhirMessage: fhir.Resource,
-  messageId: string
+export async function convertTaskToSpineRequest(
+  fhirMessage: fhir.Task,
+  messageId: string,
+  logger: pino.Logger
 ): Promise<SpineRequest> {
-  const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSER_WITHDRAW
-  return  requestBuilder.toSpineRequest(
-    createReleaseRequestSendMessagePayload(interactionId, JSON.stringify(fhirMessage)),
-    messageId
+  const payload = await createPayloadFromTask(fhirMessage, logger)
+  return  requestBuilder.toSpineRequest(payload, messageId)
+}
+
+async function createPayloadFromTask(fhirMessage: fhir.Task, logger: pino.Logger) {
+  switch (fhirMessage.status) {
+    case "in-progress":
+      return await createDispenseProposalReturnSendMessagePayload(fhirMessage, logger)
+    // case "rejected":
+    //   return await createDispenserWithdrawSendMessagePayload(fhirMessage, logger)
+  }
+}
+
+async function createDispenseProposalReturnSendMessagePayload(fhirMessage: fhir.Task, logger: pino.Logger) {
+  const dispenseProposalReturn = await convertTaskToDispenseProposalReturn(fhirMessage, logger)
+  const dispenseProposalReturnRoot = new hl7V3.DispenseProposalReturnRoot(dispenseProposalReturn)
+  return createSendMessagePayloadForUnattendedAccess(
+    hl7V3.Hl7InteractionIdentifier.DISPENSE_PROPOSAL_RETURN,
+    dispenseProposalReturnRoot
   )
 }
+
+// async function createDispenserWithdrawSendMessagePayload(fhirMessage: fhir.Task, logger: pino.Logger) {
+//   const dispenserWithdraw = await convertTaskToDispenserWithdraw(fhirMessage, logger)
+//   const dispenserWithdrawRoot = new hl7V3.DispenserWithdrawRoot(withdrawal)
+//   return createSendMessagePayloadForUnattendedAccess(
+//     hl7V3.Hl7InteractionIdentifier.DISPENSER_WITHDRAW,
+//     dispenserWithdrawRoot
+//   )
+// }
