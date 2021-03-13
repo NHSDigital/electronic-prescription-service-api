@@ -8,7 +8,7 @@ import {convertFragmentsToHashableFormat, extractFragments} from "./signature"
 import * as requestBuilder from "../../communication/ebxml-request-builder"
 import {SpineRequest} from "../../../models/spine"
 import {identifyMessageType} from "../../../routes/util"
-import {InvalidValueError} from "../../../models/errors/processing-errors"
+import {FhirMessageProcessingError, InvalidValueError} from "../../../models/errors/processing-errors"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
@@ -147,7 +147,8 @@ async function createPayloadFromTask(fhirMessage: fhir.Task, logger: pino.Logger
   switch (fhirMessage.status) {
     case fhir.TaskStatus.REJECTED:
       return await createDispenseProposalReturnSendMessagePayload(fhirMessage, logger)
-    // case fhir.TaskStatus.IN_PROGRESS:
+    case fhir.TaskStatus.IN_PROGRESS:
+      throw new FhirMessageProcessingError("NOT_IMPLEMENTED", "Interaction not implemented yet.")
     //   return await createDispenserWithdrawSendMessagePayload(fhirMessage, logger)
   }
 }
