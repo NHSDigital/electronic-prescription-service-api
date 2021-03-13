@@ -44,16 +44,18 @@ jestpact.pactWith(
                 "X-Request-ID": requestId,
                 "X-Correlation-ID": correlationId
               },
-              body: {
-                "resourceType": "OperationOutcome",
-                "issue": [
-                  {
-                    "code": "informational",
-                    "severity": "information"
-                  }
-                ]
-              },
-              status: 200
+              //TODO - revert once translations are implemented
+              // body: {
+              //   "resourceType": "OperationOutcome",
+              //   "issue": [
+              //     {
+              //       "code": "informational",
+              //       "severity": "information"
+              //     }
+              //   ]
+              // },
+              //status: 200
+              status: 400
             }
           }
           await provider.addInteraction(interaction)
