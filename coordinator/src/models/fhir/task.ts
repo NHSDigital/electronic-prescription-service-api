@@ -6,8 +6,8 @@ export class Task extends common.Resource {
   readonly resourceType = "Task"
   identifier: Array<common.Identifier>
   groupIdentifier: common.Identifier
-  status: string
-  intent: string
+  status: TaskStatus
+  intent: TaskIntent
   focus: common.IdentifierReference<bundle.Bundle>
   for: common.Reference<common.Resource>
   authoredOn: string
@@ -15,4 +15,13 @@ export class Task extends common.Resource {
     | practitionerRole.Organization>
   reasonCode: common.CodeableConcept
   code?: common.CodeableConcept
+}
+
+export enum TaskStatus {
+  IN_PROGRESS = "in-progress",
+  REJECTED = "rejected"
+}
+
+export enum TaskIntent {
+  ORDER = "order"
 }

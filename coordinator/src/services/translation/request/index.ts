@@ -145,9 +145,9 @@ export async function convertTaskToSpineRequest(
 
 async function createPayloadFromTask(fhirMessage: fhir.Task, logger: pino.Logger) {
   switch (fhirMessage.status) {
-    case "in-progress":
+    case fhir.TaskStatus.REJECTED:
       return await createDispenseProposalReturnSendMessagePayload(fhirMessage, logger)
-    // case "rejected":
+    // case fhir.TaskStatus.IN_PROGRESS:
     //   return await createDispenserWithdrawSendMessagePayload(fhirMessage, logger)
   }
 }
