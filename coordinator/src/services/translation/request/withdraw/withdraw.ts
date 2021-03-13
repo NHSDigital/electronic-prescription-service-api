@@ -46,6 +46,7 @@ function createPertinentInformation3(groupIdentifier: fhir.Identifier) {
 }
 
 function createPertinentInformation2(code: fhir.CodeableConcept) {
+  //TODO - handle codes from the system "http://hl7.org/fhir/CodeSystem/task-code" as well
   const typeCoding = getCodeableConceptCodingForSystem(
     [code],
     "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-withdraw-type",

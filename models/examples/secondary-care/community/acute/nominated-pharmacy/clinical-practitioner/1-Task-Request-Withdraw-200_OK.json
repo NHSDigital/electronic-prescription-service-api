@@ -16,6 +16,11 @@
   "code": {
     "coding":  [
       {
+        "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-withdraw-type",
+        "code": "LD",
+        "display": "Last Dispense"
+      },
+      {
         "system": "http://hl7.org/fhir/CodeSystem/task-code",
         "code": "abort",
         "display": "Mark the focal resource as no longer active"
@@ -38,8 +43,8 @@
   "authoredOn": "2020-12-21T17:03:20-00:00",
   "owner": {
     "identifier": {
-      "system": "https://fhir.hl7.org.uk/Id/gphc-number",
-      "value": "7654321"
+      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+      "value": "VNE51"
     }
   },
   "reasonCode": {
