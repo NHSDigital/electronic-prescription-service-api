@@ -44,18 +44,16 @@ jestpact.pactWith(
                 "X-Request-ID": requestId,
                 "X-Correlation-ID": correlationId
               },
-              //TODO - revert once translations are implemented
-              // body: {
-              //   "resourceType": "OperationOutcome",
-              //   "issue": [
-              //     {
-              //       "code": "informational",
-              //       "severity": "information"
-              //     }
-              //   ]
-              // },
-              // status: 200
-              status: 400
+              body: {
+                "resourceType": "OperationOutcome",
+                "issue": [
+                  {
+                    "code": "informational",
+                    "severity": "information"
+                  }
+                ]
+              },
+              status: 200
             }
           }
           await provider.addInteraction(interaction)
@@ -65,9 +63,7 @@ jestpact.pactWith(
             .set("X-Request-ID", requestId)
             .set("X-Correlation-ID", correlationId)
             .send(messageStr)
-            //TODO - revert once translations are implemented
-            // .expect(200)
-            .expect(400)
+            .expect(200)
         }
       )
     })

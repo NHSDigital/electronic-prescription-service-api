@@ -143,6 +143,18 @@ export class ReturnReasonCode extends Code<"2.16.840.1.113883.2.1.3.2.4.16.28"> 
   }
 }
 
+export class PrescriptionWithdrawType extends Code<"2.16.840.1.113883.2.1.3.2.4.17.109"> {
+  constructor(code: string, desc: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.17.109", code, desc)
+  }
+}
+
+export class PrescriptionWithdrawReason extends Code<"2.16.840.1.113883.2.1.3.2.4.17.110"> {
+  constructor(code: string, desc: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.17.110", code, desc)
+  }
+}
+
 class CodeWithoutSystem extends Code<undefined> {
   constructor(code: string) {
     super(undefined, code)

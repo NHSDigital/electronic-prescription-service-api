@@ -13,7 +13,7 @@ export interface AttributeContextControlCode extends Attributes {
 }
 
 export interface AttributeClassCode extends Attributes {
-  classCode: "AGNT" | "CACT" | "CATEGORY" | "DEV" | "INFO" | "MANU" |
+  classCode: "AGNT" | "ALRT" | "CACT" | "CATEGORY" | "DEV" | "INFO" | "MANU" |
     "MMAT" | "OBS" | "ORG" | "PAT" | "PCPR" | "PROV" | "PSN" | "ROL" |
     "SBADM" | "SPLY"
 }

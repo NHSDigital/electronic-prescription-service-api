@@ -104,6 +104,7 @@ export class SendMessagePayloadAuthorSystemSds extends SendMessagePayloadAuthor 
   }
 }
 
+//TODO - move Author classes out of messaging file. Rename existing Author class to PrescriptionAuthor.
 export class SendMessagePayloadAuthorAgentPerson extends SendMessagePayloadAuthor {
   AgentPerson: agent.AgentPerson
 

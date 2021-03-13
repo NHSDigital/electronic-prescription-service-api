@@ -1,5 +1,6 @@
 import * as common from "./common"
 import * as bundle from "./bundle"
+import * as patient from "./patient"
 import * as practitionerRole from "./practitioner-role"
 
 export class Task extends common.Resource {
@@ -9,7 +10,7 @@ export class Task extends common.Resource {
   status: TaskStatus
   intent: TaskIntent
   focus: common.IdentifierReference<bundle.Bundle>
-  for: common.Reference<common.Resource>
+  for: common.IdentifierReference<patient.Patient>
   authoredOn: string
   owner: common.IdentifierReference<practitionerRole.PractitionerRole | practitionerRole.Practitioner
     | practitionerRole.Organization>

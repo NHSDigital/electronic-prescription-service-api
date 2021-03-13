@@ -8,7 +8,7 @@ import {convertFragmentsToHashableFormat, extractFragments} from "./signature"
 import * as requestBuilder from "../../communication/ebxml-request-builder"
 import {SpineRequest} from "../../../models/spine"
 import {identifyMessageType} from "../../../routes/util"
-import {FhirMessageProcessingError, InvalidValueError} from "../../../models/errors/processing-errors"
+import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
@@ -16,6 +16,7 @@ import {convertDispenseNotification} from "./dispense/dispense-notification"
 import {translateReleaseRequest} from "./dispense/release"
 import pino from "pino"
 import {convertTaskToDispenseProposalReturn} from "./return/return"
+import {convertTaskToEtpWithdraw} from "./withdraw/withdraw"
 
 export function convertBundleToSpineRequest(bundle: fhir.Bundle, messageId: string): SpineRequest {
   const messageType = identifyMessageType(bundle)
@@ -143,13 +144,15 @@ export async function convertTaskToSpineRequest(
   return  requestBuilder.toSpineRequest(payload, messageId)
 }
 
-async function createPayloadFromTask(fhirMessage: fhir.Task, logger: pino.Logger) {
+async function createPayloadFromTask(
+  fhirMessage: fhir.Task,
+  logger: pino.Logger
+): Promise<hl7V3.SendMessagePayload<unknown>> {
   switch (fhirMessage.status) {
     case fhir.TaskStatus.REJECTED:
       return await createDispenseProposalReturnSendMessagePayload(fhirMessage, logger)
     case fhir.TaskStatus.IN_PROGRESS:
-      throw new FhirMessageProcessingError("NOT_IMPLEMENTED", "Interaction not implemented yet.")
-    //   return await createDispenserWithdrawSendMessagePayload(fhirMessage, logger)
+      return await createDispenserWithdrawSendMessagePayload(fhirMessage, logger)
   }
 }
 
@@ -162,11 +165,11 @@ async function createDispenseProposalReturnSendMessagePayload(fhirMessage: fhir.
   )
 }
 
-// async function createDispenserWithdrawSendMessagePayload(fhirMessage: fhir.Task, logger: pino.Logger) {
-//   const dispenserWithdraw = await convertTaskToDispenserWithdraw(fhirMessage, logger)
-//   const dispenserWithdrawRoot = new hl7V3.DispenserWithdrawRoot(withdrawal)
-//   return createSendMessagePayloadForUnattendedAccess(
-//     hl7V3.Hl7InteractionIdentifier.DISPENSER_WITHDRAW,
-//     dispenserWithdrawRoot
-//   )
-// }
+async function createDispenserWithdrawSendMessagePayload(fhirMessage: fhir.Task, logger: pino.Logger) {
+  const etpWithdraw = await convertTaskToEtpWithdraw(fhirMessage, logger)
+  const etpWithdrawRoot = new hl7V3.EtpWithdrawRoot(etpWithdraw)
+  return createSendMessagePayloadForUnattendedAccess(
+    hl7V3.Hl7InteractionIdentifier.DISPENSER_WITHDRAW,
+    etpWithdrawRoot
+  )
+}
