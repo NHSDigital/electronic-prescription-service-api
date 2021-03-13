@@ -16,11 +16,6 @@
   "code": {
     "coding":  [
       {
-        "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-withdraw-type",
-        "code": "LD",
-        "display": "Last Dispense"
-      },
-      {
         "system": "http://hl7.org/fhir/CodeSystem/task-code",
         "code": "abort",
         "display": "Mark the focal resource as no longer active"

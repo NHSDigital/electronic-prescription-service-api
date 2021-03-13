@@ -21,7 +21,7 @@ export async function convertTaskToEtpWithdraw(
   //TODO - find out whether we need to handle user instead of organization (and what we do about org details if so)
   etpWithdraw.author = await createAuthorFromTaskOwnerIdentifier(task.owner.identifier, logger)
   etpWithdraw.pertinentInformation3 = createPertinentInformation3(task.groupIdentifier)
-  etpWithdraw.pertinentInformation2 = createPertinentInformation2(task.code)
+  etpWithdraw.pertinentInformation2 = createPertinentInformation2()
   etpWithdraw.pertinentInformation5 = createPertinentInformation5(task.reasonCode)
   etpWithdraw.pertinentInformation4 = createPertinentInformation4(task.focus.identifier)
 
@@ -45,14 +45,8 @@ function createPertinentInformation3(groupIdentifier: fhir.Identifier) {
   return new hl7V3.EtpWithdrawPertinentInformation3(withdrawId)
 }
 
-function createPertinentInformation2(code: fhir.CodeableConcept) {
-  //TODO - handle codes from the system "http://hl7.org/fhir/CodeSystem/task-code" as well
-  const typeCoding = getCodeableConceptCodingForSystem(
-    [code],
-    "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-withdraw-type",
-    "Task.code"
-  )
-  const withdrawType = new hl7V3.WithdrawType(typeCoding.code, typeCoding.display)
+function createPertinentInformation2() {
+  const withdrawType = new hl7V3.WithdrawType("LD", "Last Dispense")
   return new hl7V3.EtpWithdrawPertinentInformation2(withdrawType)
 }
 
