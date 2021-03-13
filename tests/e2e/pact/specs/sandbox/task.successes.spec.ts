@@ -54,7 +54,7 @@ jestpact.pactWith(
               //     }
               //   ]
               // },
-              //status: 200
+              // status: 200
               status: 400
             }
           }
@@ -65,7 +65,9 @@ jestpact.pactWith(
             .set("X-Request-ID", requestId)
             .set("X-Correlation-ID", correlationId)
             .send(messageStr)
-            .expect(200)
+            //TODO - revert once translations are implemented
+            // .expect(200)
+            .expect(400)
         }
       )
     })
