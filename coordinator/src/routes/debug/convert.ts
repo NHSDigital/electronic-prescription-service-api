@@ -12,6 +12,8 @@ import {
 import * as fhir from "../../models/fhir"
 import * as bundleValidator from "../../services/validation/bundle-validator"
 import * as parametersValidator from "../../services/validation/parameters-validator"
+import {requestHasUnusualAuth} from "../../services/validation/auth-level"
+import {unauthorisedActionIssue} from "../../models/errors/validation-errors"
 
 export default [
   /*
@@ -24,6 +26,14 @@ export default [
       const fhirValidatorResponse = await getFhirValidatorErrors(request)
       if (fhirValidatorResponse) {
         return responseToolkit.response(fhirValidatorResponse).code(400).type(CONTENT_TYPE_FHIR)
+      }
+
+      if (!requestHasUnusualAuth(request)) {
+        return responseToolkit
+          .response(unauthorisedActionIssue)
+          .code(403)
+          .type(CONTENT_TYPE_FHIR)
+          .header("authorised?", "literally-no")
       }
 
       const payload = getPayload(request) as fhir.Resource
