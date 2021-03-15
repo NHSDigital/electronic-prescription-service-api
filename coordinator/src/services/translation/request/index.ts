@@ -17,6 +17,7 @@ import {translateReleaseRequest} from "./dispense/release"
 import pino from "pino"
 import {convertTaskToDispenseProposalReturn} from "./return/return"
 import {convertTaskToEtpWithdraw} from "./withdraw/withdraw"
+import {getMessageId} from "../common"
 
 export async function convertBundleToSpineRequest(
   bundle: fhir.Bundle, messageId: string, logger: pino.Logger
@@ -61,7 +62,8 @@ export async function createDispenseNotificationSendMessagePayload(
   const dispenseNotificationRoot = new hl7V3.DispenseNotificationRoot(dispenseNotification)
   return createSendMessagePayloadForUnattendedAccess(
     hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION,
-    dispenseNotificationRoot
+    dispenseNotificationRoot,
+    getMessageId([bundle.identifier], "Bundle.identifier")
   )
 }
 

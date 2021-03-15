@@ -26,9 +26,10 @@ export function createSendMessagePayload<T>(
 //TODO - check this whole file makes sense, especially author & id
 export function createSendMessagePayloadForUnattendedAccess<T>(
   interactionId: hl7V3.Hl7InteractionIdentifier,
-  subject: T
+  subject: T,
+  messageId?: string
 ): hl7V3.SendMessagePayload<T> {
-  const messageId = uuid.v4()
+  messageId = messageId ?? uuid.v4()
 
   const sendMessagePayload = createInitialSendMessagePayload<T>(messageId, interactionId)
   sendMessagePayload.ControlActEvent = createControlActEventForUnattendedAccess(subject)
