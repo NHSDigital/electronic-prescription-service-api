@@ -173,7 +173,7 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
   })
 
   if (medicationDispenses.some(medicationDispense => !getOrganisationPerformer(medicationDispense))) {
-    allErrors.push(errors.createMedicationDispenseMissingValueIssue("performer.actor"))
+    allErrors.push(errors.createMedicationDispenseMissingValueIssue("performer.actor.ofType(Organization)"))
   }
 
   return allErrors
