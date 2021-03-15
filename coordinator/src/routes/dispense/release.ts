@@ -25,7 +25,7 @@ export default [
           .response(unauthorisedActionIssue)
           .code(403)
           .type(CONTENT_TYPE_FHIR)
-          .header("authorised?", "literally-no")
+          .header("authorised", "literally-no")
       }
 
       const parameters = getPayload(request) as fhir.Parameters
