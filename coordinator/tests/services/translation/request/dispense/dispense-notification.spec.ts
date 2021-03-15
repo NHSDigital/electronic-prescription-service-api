@@ -12,7 +12,6 @@ import * as hl7V3 from "../../../../../src/models/hl7-v3"
 import * as fhir from "../../../../../src/models/fhir"
 import {
   getExtensionForUrl,
-  onlyElement,
   toArray
 } from "../../../../../src/services/translation/common"
 import {clone} from "../../../../resources/test-helpers"
@@ -112,36 +111,6 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
     messageHeader = getMessageHeader(dispenseNotification)
   })
 
-  test("destination.receiver.identifier maps to primaryInformationRecipient.AgentOrg.agentOrganization", async() => {
-    const fhirMessageDestination = onlyElement(messageHeader.destination, "MessageHeader.destination")
-    fhirMessageDestination.receiver.identifier.value = "XX-TEST-VALUE"
-
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
-
-    expect(
-      hl7dispenseNotification
-        .primaryInformationRecipient.AgentOrg.agentOrganization.id._attributes.extension
-    ).toEqual(
-      fhirMessageDestination
-        .receiver.identifier.value
-    )
-  })
-
-  test("destination.receiver.display maps to primaryInformationRecipient.AgentOrg.agentOrganization", async() => {
-    const fhirMessageDestination = onlyElement(messageHeader.destination, "MessageHeader.destination")
-    fhirMessageDestination.receiver.display = "XX-TEST-VALUE"
-
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
-
-    expect(
-      hl7dispenseNotification
-        .primaryInformationRecipient.AgentOrg.agentOrganization.name._text
-    ).toEqual(
-      fhirMessageDestination
-        .receiver.display
-    )
-  })
-
   test("sender.display maps to pertinentInformation1.pertinentSupplyHeader.author.AgentPerson", async() => {
     messageHeader.sender.display = "HEALTHCARE AT HOME"
 
@@ -176,6 +145,32 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
     dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispense)
     medicationDispenses = getMedicationDispenses(dispenseNotification)
     expect(medicationDispenses.length).toBeGreaterThan(0)
+  })
+
+  // eslint-disable-next-line max-len
+  test("performer.actor.(type === Organization) maps to primaryInformationRecipient.AgentOrg.agentOrganization", async() => {
+    medicationDispenses.forEach(medicationDispense =>
+      setOrganisation(medicationDispense, "XX-TEST-VALUE", "XX-TEST-VALUE-DISPLAY")
+    )
+
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
+
+    medicationDispenses.map((medicationDispense) => {
+      const fhirOrganisation = medicationDispense.performer.find(p => p.actor.type === "Organization")
+      expect(
+        hl7dispenseNotification
+          .primaryInformationRecipient.AgentOrg.agentOrganization.id._attributes.extension
+      ).toEqual(
+        fhirOrganisation.actor.identifier.value
+      )
+
+      expect(
+        hl7dispenseNotification
+          .primaryInformationRecipient.AgentOrg.agentOrganization.name._text
+      ).toEqual(
+        fhirOrganisation.actor.display
+      )
+    })
   })
 
   // eslint-disable-next-line max-len
@@ -516,6 +511,16 @@ function setMedicationCodeableConcept(
     c.code = newMedicationCode
     c.display = newMedicationDisplay
   })
+}
+
+function setOrganisation(
+  medicationDispense: fhir.MedicationDispense,
+  newOrganisationCode: string,
+  newOrganisationName: string
+): void {
+  const org = medicationDispense.performer.find(p => p.actor.type === "Organization")
+  org.actor.identifier.value = newOrganisationCode
+  org.actor.display = newOrganisationName
 }
 
 function setPatientId(

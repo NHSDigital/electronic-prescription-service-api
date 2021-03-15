@@ -6,6 +6,7 @@ import {getCourseOfTherapyTypeCode} from "../translation/request/course-of-thera
 import {getExtensionForUrlOrNull, getIdentifierValueForSystem, isTruthy} from "../translation/common"
 import * as fhir from "../../models/fhir"
 import * as errors from "../../models/errors/validation-errors"
+import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
 
 export function verifyBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
@@ -150,6 +151,7 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
 
   const fhirPaths = [
     "whenPrepared",
+    "subject.identifier.value",
     'extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus")'
   ]
 
@@ -169,6 +171,10 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
       )
     }
   })
+
+  if (medicationDispenses.some(medicationDispense => !getOrganisationPerformer(medicationDispense))) {
+    allErrors.push(errors.createMedicationDispenseMissingValueIssue("performer.actor"))
+  }
 
   return allErrors
 }

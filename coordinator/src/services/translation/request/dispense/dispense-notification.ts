@@ -31,13 +31,14 @@ export async function convertDispenseNotification(
   const fhirFirstMedicationDispense = fhirMedicationDispenses[0]
   const fhirLineItemIdentifiers = getLineItemIdentifiers(fhirMedicationDispenses)
 
-  const hl7AgentOrganization = createAgentOrganisation(fhirHeader)
+  const fhirOrganisationPerformer = getOrganisationPerformer(fhirFirstMedicationDispense)
+  const hl7AgentOrganisation = createAgentOrganisation(fhirOrganisationPerformer)
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)
   const hl7CareRecordElementCategory = createCareRecordElementCategory(fhirLineItemIdentifiers)
   const hl7PriorPrescriptionReleaseEventRef = createPriorPrescriptionReleaseEventRef(fhirHeader)
   const hl7PertinentInformation1 = await createPertinentInformation1(
     messageId,
-    fhirHeader.sender,
+    fhirOrganisationPerformer,
     fhirMedicationDispenses,
     fhirFirstMedicationDispense,
     logger
@@ -45,7 +46,7 @@ export async function convertDispenseNotification(
 
   const hl7DispenseNotification = new hl7V3.DispenseNotification(new hl7V3.GlobalIdentifier(messageId))
   hl7DispenseNotification.recordTarget = new hl7V3.DispenseRecordTarget(hl7Patient)
-  hl7DispenseNotification.primaryInformationRecipient = new hl7V3.PrimaryInformationRecipient(hl7AgentOrganization)
+  hl7DispenseNotification.primaryInformationRecipient = new hl7V3.PrimaryInformationRecipient(hl7AgentOrganisation)
   hl7DispenseNotification.pertinentInformation1 = hl7PertinentInformation1
   hl7DispenseNotification.pertinentInformation2 = new hl7V3.DispensePertinentInformation2(hl7CareRecordElementCategory)
   hl7DispenseNotification.sequelTo = new hl7V3.SequelTo(hl7PriorPrescriptionReleaseEventRef)
@@ -55,13 +56,13 @@ export async function convertDispenseNotification(
 
 async function createPertinentInformation1(
   messageId: string,
-  fhirHeaderSender: fhir.IdentifierReference<fhir.Organization>,
+  fhirOrganisation: fhir.DispensePerformer,
   fhirMedicationDispenses: Array<fhir.MedicationDispense>,
   fhirFirstMedicationDispense: fhir.MedicationDispense,
   logger: pino.Logger
 ) {
 
-  const hl7RepresentedOrganisationCode = fhirHeaderSender.identifier.value
+  const hl7RepresentedOrganisationCode = fhirOrganisation.actor.identifier.value
   const hl7AuthorTime = fhirFirstMedicationDispense.whenPrepared
   const hl7PertinentPrescriptionStatus = createPertinentPrescriptionStatus(fhirFirstMedicationDispense)
   const hl7PertinentPrescriptionIdentifier = createPertinentPrescriptionId(fhirFirstMedicationDispense)
@@ -159,6 +160,10 @@ function createSuppliedLineItemQuantity(
     )
   )
   return hl7SuppliedLineItemQuantity
+}
+
+export function getOrganisationPerformer(fhirFirstMedicationDispense: fhir.MedicationDispense): fhir.DispensePerformer {
+  return fhirFirstMedicationDispense.performer.find(p => p.actor.type === "Organization")
 }
 
 function getLineItemIdentifiers(fhirMedicationDispenses: Array<fhir.MedicationDispense>) {
@@ -285,11 +290,10 @@ function createPatient(patient: fhir.Patient, firstMedicationDispense: fhir.Medi
   return hl7Patient
 }
 
-function createAgentOrganisation(header: fhir.MessageHeader): hl7V3.AgentOrganization {
-  const fhirHeaderDestination = onlyElement(header.destination, "MessageHeader.destination")
-  const hl7OrganisationCode = fhirHeaderDestination.receiver.identifier.value
-  const hl7OrganisationName = fhirHeaderDestination.receiver.display
-  const hl7Organisation = createOrganisation(hl7OrganisationCode, hl7OrganisationName)
+function createAgentOrganisation(organisation: fhir.DispensePerformer): hl7V3.AgentOrganization {
+  const organisationCode = organisation.actor.identifier.value
+  const organisationName = organisation.actor.display
+  const hl7Organisation = createOrganisation(organisationCode, organisationName)
   return new hl7V3.AgentOrganization(hl7Organisation)
 }
 

@@ -10,7 +10,11 @@ import {
   medicationRequestNumberIssue,
   messageTypeIssue
 } from "../../../src/models/errors/validation-errors"
-import {getPrescriptionStatus} from "../../../src/services/translation/request/dispense/dispense-notification"
+import {
+  getOrganisationPerformer,
+  getPrescriptionStatus
+}
+  from "../../../src/services/translation/request/dispense/dispense-notification"
 
 function validateValidationErrors (validationErrors: Array<fhir.OperationOutcomeIssue>) {
   expect(validationErrors).toHaveLength(1)
@@ -358,6 +362,12 @@ describe("verifyDispenseNotificationBundle", () => {
           type: "Practitioner",
           identifier: "FIRST"
         }
+      } as fhir.DispensePerformer,
+      {
+        actor: {
+          type: "Organization",
+          identifier: "AB123"
+        }
       } as fhir.DispensePerformer
     ]
 
@@ -369,6 +379,12 @@ describe("verifyDispenseNotificationBundle", () => {
           type: "Practitioner",
           identifier: "SECOND"
         }
+      } as fhir.DispensePerformer,
+      {
+        actor: {
+          type: "Organization",
+          identifier: "AB123"
+        }
       } as fhir.DispensePerformer
     ]
 
@@ -378,5 +394,37 @@ describe("verifyDispenseNotificationBundle", () => {
     expect(returnedErrors.length).toBe(1)
     expect(returnedErrors[0].expression)
       .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).performer")
+  })
+
+  test("returns an error when MedicationDispenses have different nhs-numbers", () => {
+    const medicationDispenseEntry =
+      bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
+
+    const medicationDispense1 = medicationDispenseEntry.resource as fhir.MedicationDispense
+    medicationDispense1.subject.identifier.value = "123456789"
+
+    const medicationDispenseEntry2 = clone(medicationDispenseEntry)
+    const medicationDispense2 = medicationDispenseEntry.resource as fhir.MedicationDispense
+    medicationDispense2.subject.identifier.value = "987654321"
+    bundle.entry.push(medicationDispenseEntry2)
+
+    const returnedErrors = validator.verifyDispenseBundle(bundle)
+    expect(returnedErrors.length).toBe(1)
+    expect(returnedErrors[0].expression)
+      .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).subject.identifier.value")
+  })
+
+  test("returns an error when a MedicationDispense has no organisation", () => {
+    const medicationDispenseEntry =
+      bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
+
+    const medicationDispense = medicationDispenseEntry.resource as fhir.MedicationDispense
+    const organisationPerformer = getOrganisationPerformer(medicationDispense)
+    medicationDispense.performer.remove(organisationPerformer)
+
+    const returnedErrors = validator.verifyDispenseBundle(bundle)
+    expect(returnedErrors.length).toBe(1)
+    expect(returnedErrors[0].expression)
+      .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).performer.actor")
   })
 })
