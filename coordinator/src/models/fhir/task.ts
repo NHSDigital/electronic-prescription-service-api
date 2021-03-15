@@ -12,13 +12,10 @@ export class Task extends common.Resource {
   focus: common.IdentifierReference<bundle.Bundle>
   for: common.IdentifierReference<patient.Patient>
   authoredOn: string
-  owner: TaskOwner
+  owner: common.IdentifierReference<practitionerRole.PersonOrOrganization>
   reasonCode: common.CodeableConcept
   code?: common.CodeableConcept
 }
-
-export type TaskOwner = common.IdentifierReference<practitionerRole.PractitionerRole | practitionerRole.Practitioner
-  | practitionerRole.Organization>
 
 export enum TaskStatus {
   IN_PROGRESS = "in-progress",

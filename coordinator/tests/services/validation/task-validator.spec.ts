@@ -22,15 +22,17 @@ describe("verifyTask returns errors", () => {
   })
 
   test("rejects when intent not 'order'", () => {
-    invalidReturnTask.intent = "bluh"
+    invalidReturnTask.intent = "bluh" as fhir.TaskIntent
     const returnedErrors = verifyTask(invalidReturnTask)
-    expect(returnedErrors).toContainEqual(errors.createTaskIncorrectValueIssue("intent", "'order'"))
+    expect(returnedErrors).toContainEqual(errors.createTaskIncorrectValueIssue("intent", fhir.TaskIntent.ORDER))
   })
 
   test("rejects when status not 'in-progress' or 'rejected'", () => {
-    invalidReturnTask.status = "bluh"
+    invalidReturnTask.status = "bluh" as fhir.TaskStatus
     const returnedErrors = verifyTask(invalidReturnTask)
-    expect(returnedErrors).toContainEqual(errors.createTaskIncorrectValueIssue("status", "'in-progress' or 'rejected'"))
+    expect(returnedErrors).toContainEqual(
+      errors.createTaskIncorrectValueIssue("status", fhir.TaskStatus.IN_PROGRESS, fhir.TaskStatus.REJECTED)
+    )
   })
 
   test("rejects when status 'rejected' and reasonCode system invalid", () => {
@@ -48,10 +50,17 @@ describe("verifyTask returns errors", () => {
   })
 
   test("rejects when status 'in-progress' and code is not present", () => {
-    delete invalidReturnTask.code
-    const returnedErrors = verifyTask(invalidReturnTask)
+    delete invalidWithdrawTask.code
+    const returnedErrors = verifyTask(invalidWithdrawTask)
     expect(returnedErrors).toHaveLength(1)
-    expect(returnedErrors[0].diagnostics).toBe("Task.code is requred when task.status='in-progress'.")
+    expect(returnedErrors[0].diagnostics).toBe("Task.code is required when Task.status is 'in-progress'.")
+  })
+
+  test("rejects when status 'in-progress' and code is not 'abort'", () => {
+    invalidWithdrawTask.code.coding[0].code = "suspend"
+    const returnedErrors = verifyTask(invalidWithdrawTask)
+    expect(returnedErrors).toHaveLength(1)
+    expect(returnedErrors[0].diagnostics).toBe("Task.code.coding.code must be one of: 'abort'.")
   })
 
   test("no errors for a valid Task", () => {
