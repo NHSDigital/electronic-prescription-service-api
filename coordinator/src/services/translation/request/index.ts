@@ -59,8 +59,10 @@ export async function createDispenseNotificationSendMessagePayload(
 ): Promise<hl7V3.SendMessagePayload<hl7V3.DispenseNotificationRoot>> {
   const dispenseNotification = await convertDispenseNotification(bundle, logger)
   const dispenseNotificationRoot = new hl7V3.DispenseNotificationRoot(dispenseNotification)
-  const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION
-  return createSendMessagePayload(interactionId, bundle, dispenseNotificationRoot)
+  return createSendMessagePayloadForUnattendedAccess(
+    hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION,
+    dispenseNotificationRoot
+  )
 }
 
 export function createCancellationSendMessagePayload(

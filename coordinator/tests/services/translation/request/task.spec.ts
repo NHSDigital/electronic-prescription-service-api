@@ -18,7 +18,7 @@ test("message id is converted correctly", () => {
   const result = new hl7V3.GlobalIdentifier(getMessageId([{
     system: "https://tools.ietf.org/html/rfc4122",
     value: "78cac452-1780-4211-b4a9-4ccc4d02dcbd"
-  }]))
+  }], "Task.identifier"))
   expect(result._attributes.root).toEqual("78CAC452-1780-4211-B4A9-4CCC4D02DCBD")
 })
 

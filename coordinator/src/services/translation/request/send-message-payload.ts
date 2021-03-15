@@ -72,12 +72,6 @@ function createControlActEvent<T>(
 function convertRequesterToControlActAuthor(
   bundle: fhir.Bundle
 ) {
-
-  const messageType = identifyMessageType(bundle)
-  if (messageType === fhir.EventCodingCode.DISPENSE) {
-    return createControlActAuthorForUnattendedAccess()
-  }
-
   const firstMedicationRequest = getMedicationRequests(bundle)[0]
   const authorPractitionerRole = resolveReference(bundle, firstMedicationRequest.requester)
   const authorPractitioner = resolveReference(bundle, authorPractitionerRole.practitioner)

@@ -4,11 +4,11 @@ import {InvalidValueError, TooFewValuesError, TooManyValuesError} from "../../..
 
 export const UNKNOWN_GP_ODS_CODE = "V81999"
 
-export function getMessageId(identifier: Array<fhir.Identifier>): string {
+export function getMessageId(identifier: Array<fhir.Identifier>, fhirPath: string): string {
   return getIdentifierValueForSystem(
     identifier,
     "https://tools.ietf.org/html/rfc4122",
-    "Bundle.identifier"
+    fhirPath
   )
 }
 

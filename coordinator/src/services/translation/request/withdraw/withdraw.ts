@@ -13,7 +13,7 @@ export async function convertTaskToEtpWithdraw(
   task: fhir.Task,
   logger: pino.Logger
 ): Promise<hl7V3.EtpWithdraw> {
-  const id = getMessageId(task.identifier)
+  const id = getMessageId(task.identifier, "Task.identifier")
   const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(task.authoredOn, "Task.authoredOn")
   const etpWithdraw = new hl7V3.EtpWithdraw(new hl7V3.GlobalIdentifier(id), effectiveTime)
 
