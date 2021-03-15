@@ -15,17 +15,21 @@ export function verifyTask(task: fhir.Task): Array<fhir.OperationOutcomeIssue> {
     validationErrors.push(errors.createTaskIncorrectValueIssue("intent", TaskIntent.ORDER))
   }
 
-  if (task.status === TaskStatus.IN_PROGRESS) {
-    const withdrawSpecificErrors = validateWithdraw(task)
-    validationErrors.push(...withdrawSpecificErrors)
-  } else if (task.status === TaskStatus.REJECTED) {
-    const returnSpecificErrors = validateReturn(task)
-    validationErrors.push(...returnSpecificErrors)
-  } else {
-    validationErrors.push(errors.createTaskIncorrectValueIssue("status", TaskStatus.IN_PROGRESS, TaskStatus.REJECTED))
-  }
+  const statusSpecificErrors = performStatusSpecificValidation(task)
+  validationErrors.push(...statusSpecificErrors)
 
   return validationErrors
+}
+
+function performStatusSpecificValidation(task: fhir.Task): Array<fhir.OperationOutcomeIssue> {
+  switch (task.status) {
+    case fhir.TaskStatus.IN_PROGRESS:
+      return validateWithdraw(task)
+    case fhir.TaskStatus.REJECTED:
+      return validateReturn(task)
+    default:
+      return [errors.createTaskIncorrectValueIssue("status", TaskStatus.IN_PROGRESS, TaskStatus.REJECTED)]
+  }
 }
 
 function validateWithdraw(task: fhir.Task) {
