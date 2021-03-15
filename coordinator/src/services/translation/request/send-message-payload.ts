@@ -24,14 +24,15 @@ export function createSendMessagePayload<T>(
   return sendMessagePayload
 }
 
-export function createReleaseRequestSendMessagePayload<T>(
+//TODO - check this whole file makes sense, especially author & id
+export function createSendMessagePayloadForUnattendedAccess<T>(
   interactionId: hl7V3.Hl7InteractionIdentifier,
   subject: T
 ): hl7V3.SendMessagePayload<T> {
   const messageId = uuid.v4()
 
   const sendMessagePayload = createInitialSendMessagePayload<T>(messageId, interactionId)
-  sendMessagePayload.ControlActEvent = createReleaseControlActEvent(subject)
+  sendMessagePayload.ControlActEvent = createControlActEventForUnattendedAccess(subject)
   return sendMessagePayload
 }
 
@@ -132,24 +133,19 @@ function createControlActEventAuthor1(asid: string) {
   return new hl7V3.SendMessagePayloadAuthorSystemSds(agentSystemSds)
 }
 
-function createReleaseControlActEvent<T>(
+function createControlActEventForUnattendedAccess<T>(
   subject: T
 ) {
   const controlActEvent = new hl7V3.ControlActEvent<T>()
-  controlActEvent.author = convertRequesterToReleaseControlActAuthor(subject)
+  controlActEvent.author = createControlActAuthorForUnattendedAccess()
   controlActEvent.author1 = createControlActEventAuthor1(process.env.FROM_ASID)
   controlActEvent.subject = subject
   return controlActEvent
 }
 
-function convertRequesterToReleaseControlActAuthor<T>(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  hl7ReleaseRequest: T
-) {
+function createControlActAuthorForUnattendedAccess() {
   const sdsUniqueIdentifier = "G9999999"
-
-  const sdsJobRoleCode = "R8000"
-
-  const sdsRoleProfileIdentifier = "100102238986"
+  const sdsJobRoleCode = "R9999"
+  const sdsRoleProfileIdentifier = "999999999999"
   return createControlActEventAuthor(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier)
 }

@@ -1,6 +1,6 @@
 import * as XmlJs from "xml-js"
 import * as crypto from "crypto-js"
-import {createReleaseRequestSendMessagePayload, createSendMessagePayload} from "./send-message-payload"
+import {createSendMessagePayloadForUnattendedAccess, createSendMessagePayload} from "./send-message-payload"
 import {writeXmlStringCanonicalized} from "../../serialisation/xml"
 import {convertParentPrescription} from "./prescribe/parent-prescription"
 import {convertCancellation} from "./cancel/cancellation"
@@ -15,14 +15,22 @@ import * as fhir from "../../../models/fhir"
 import {convertDispenseNotification} from "./dispense/dispense-notification"
 import {translateReleaseRequest} from "./dispense/release"
 import pino from "pino"
+import {convertTaskToDispenseProposalReturn} from "./return/return"
+import {convertTaskToEtpWithdraw} from "./withdraw/withdraw"
 
 export function convertBundleToSpineRequest(bundle: fhir.Bundle, messageId: string): SpineRequest {
   const messageType = identifyMessageType(bundle)
-  const payload = createPayload(messageType, bundle)
+  const payload = createPayloadFromBundle(messageType, bundle)
   return requestBuilder.toSpineRequest(payload, messageId)
 }
 
-function createPayload(messageType: string, bundle: fhir.Bundle): hl7V3.SendMessagePayload<unknown> {
+type BundleTranslationResult = hl7V3.ParentPrescriptionRoot | hl7V3.CancellationRequestRoot
+  | hl7V3.DispenseNotificationRoot
+
+function createPayloadFromBundle(
+  messageType: string,
+  bundle: fhir.Bundle
+): hl7V3.SendMessagePayload<BundleTranslationResult> {
   switch (messageType) {
     case fhir.EventCodingCode.PRESCRIPTION:
       return createParentPrescriptionSendMessagePayload(bundle)
@@ -128,18 +136,48 @@ export async function convertParametersToSpineRequest(
   const hl7ReleaseRequest = await translateReleaseRequest(fhirMessage, logger)
   const interactionId = hl7V3.Hl7InteractionIdentifier.NOMINATED_PRESCRIPTION_RELEASE_REQUEST
   return  requestBuilder.toSpineRequest(
-    createReleaseRequestSendMessagePayload(interactionId, hl7ReleaseRequest),
+    createSendMessagePayloadForUnattendedAccess(interactionId, hl7ReleaseRequest),
     messageId
   )
 }
 
-export async function convertTaskWithdrawToSpineRequest(
-  fhirMessage: fhir.Resource,
-  messageId: string
+export async function convertTaskToSpineRequest(
+  fhirMessage: fhir.Task,
+  messageId: string,
+  logger: pino.Logger
 ): Promise<SpineRequest> {
-  const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSER_WITHDRAW
-  return  requestBuilder.toSpineRequest(
-    createReleaseRequestSendMessagePayload(interactionId, JSON.stringify(fhirMessage)),
-    messageId
+  const payload = await createPayloadFromTask(fhirMessage, logger)
+  return  requestBuilder.toSpineRequest(payload, messageId)
+}
+
+type TaskTranslationResult = hl7V3.DispenseProposalReturnRoot | hl7V3.EtpWithdrawRoot
+
+async function createPayloadFromTask(
+  fhirMessage: fhir.Task,
+  logger: pino.Logger
+): Promise<hl7V3.SendMessagePayload<TaskTranslationResult>> {
+  switch (fhirMessage.status) {
+    case fhir.TaskStatus.REJECTED:
+      return await createDispenseProposalReturnSendMessagePayload(fhirMessage, logger)
+    case fhir.TaskStatus.IN_PROGRESS:
+      return await createDispenserWithdrawSendMessagePayload(fhirMessage, logger)
+  }
+}
+
+async function createDispenseProposalReturnSendMessagePayload(fhirMessage: fhir.Task, logger: pino.Logger) {
+  const dispenseProposalReturn = await convertTaskToDispenseProposalReturn(fhirMessage, logger)
+  const dispenseProposalReturnRoot = new hl7V3.DispenseProposalReturnRoot(dispenseProposalReturn)
+  return createSendMessagePayloadForUnattendedAccess(
+    hl7V3.Hl7InteractionIdentifier.DISPENSE_PROPOSAL_RETURN,
+    dispenseProposalReturnRoot
+  )
+}
+
+async function createDispenserWithdrawSendMessagePayload(fhirMessage: fhir.Task, logger: pino.Logger) {
+  const etpWithdraw = await convertTaskToEtpWithdraw(fhirMessage, logger)
+  const etpWithdrawRoot = new hl7V3.EtpWithdrawRoot(etpWithdraw)
+  return createSendMessagePayloadForUnattendedAccess(
+    hl7V3.Hl7InteractionIdentifier.DISPENSER_WITHDRAW,
+    etpWithdrawRoot
   )
 }

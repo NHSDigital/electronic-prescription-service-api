@@ -2,7 +2,7 @@ import * as extension from "./extension"
 import * as common from "./common"
 import * as patient from "./patient"
 import * as medicationRequest from "./medication-request"
-import {Organization,Practitioner,PractitionerRole} from "./practitioner-role"
+import * as practitionerRole from "./practitioner-role"
 
 export interface MedicationDispense extends common.Resource {
     identifier: Array<common.Identifier>
@@ -27,6 +27,6 @@ export interface DispensePerformer {
     actor: Actor
 }
 
-export interface Actor extends common.IdentifierReference<Practitioner|PractitionerRole|Organization> {
+export interface Actor extends common.IdentifierReference<practitionerRole.PersonOrOrganization> {
     type: "Practitioner" |  "PractitionerRole" | "Organization"
 }
