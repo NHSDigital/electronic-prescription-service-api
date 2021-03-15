@@ -55,9 +55,7 @@ describe("verifyTask returns errors", () => {
   })
 
   test("no errors for a valid Task", () => {
-    const returnedErrors = verifyTask(validReturnTask)
-    expect(returnedErrors).toHaveLength(0)
-    const returnedWithdrawErrors = verifyTask(validWithdrawTask)
-    expect(returnedWithdrawErrors).toHaveLength(0)
+    expect(verifyTask(validReturnTask)).toHaveLength(0)
+    expect(verifyTask(validWithdrawTask)).toHaveLength(0)
   })
 })
