@@ -35,28 +35,28 @@ describe("verifyTask returns errors", () => {
     )
   })
 
-  test("rejects when status 'rejected' and reasonCode system invalid", () => {
+  test("rejects withdraw where reasonCode system is invalid", () => {
     const expectedSystem = invalidWithdrawTask.reasonCode.coding[0].system
     invalidWithdrawTask.reasonCode.coding[0].system = "bluh"
     const returnedErrors = verifyTask(invalidWithdrawTask)
     expect(returnedErrors).toContainEqual(errors.createTaskCodingSystemIssue("reasonCode", expectedSystem))
   })
 
-  test("rejects when status 'in-progress' and reasonCode system invalid", () => {
+  test("rejects return where reasonCode system is invalid", () => {
     const expectedSystem = invalidReturnTask.reasonCode.coding[0].system
     invalidReturnTask.reasonCode.coding[0].system = "bluh"
     const returnedErrors = verifyTask(invalidReturnTask)
     expect(returnedErrors).toContainEqual(errors.createTaskCodingSystemIssue("reasonCode", expectedSystem))
   })
 
-  test("rejects when status 'in-progress' and code is not present", () => {
+  test("rejects withdraw where code is not present", () => {
     delete invalidWithdrawTask.code
     const returnedErrors = verifyTask(invalidWithdrawTask)
     expect(returnedErrors).toHaveLength(1)
     expect(returnedErrors[0].diagnostics).toBe("Task.code is required when Task.status is 'in-progress'.")
   })
 
-  test("rejects when status 'in-progress' and code is not 'abort'", () => {
+  test("rejects withdraw where code is not 'abort'", () => {
     invalidWithdrawTask.code.coding[0].code = "suspend"
     const returnedErrors = verifyTask(invalidWithdrawTask)
     expect(returnedErrors).toHaveLength(1)
