@@ -18,15 +18,15 @@ export default [
         return responseToolkit.response(fhirValidatorResponse).code(400).type(CONTENT_TYPE_FHIR)
       }
 
-      const withdrawPayload = getPayload(request) as fhir.Task
-      const issues = taskValidator.verifyTask(withdrawPayload)
+      const taskPayload = getPayload(request) as fhir.Task
+      const issues = taskValidator.verifyTask(taskPayload)
       if (issues.length) {
         return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(CONTENT_TYPE_FHIR)
       }
 
-      request.logger.info("Building Spine release request")
+      request.logger.info("Building Spine return / withdraw request")
       const requestId = request.headers["nhsd-request-id"].toUpperCase()
-      const spineRequest = await translator.convertTaskWithdrawToSpineRequest(withdrawPayload, requestId)
+      const spineRequest = await translator.convertTaskToSpineRequest(taskPayload, requestId, request.logger)
       const spineResponse = await spineClient.send(spineRequest, request.logger)
       return handleResponse(request, spineResponse, responseToolkit)
     }

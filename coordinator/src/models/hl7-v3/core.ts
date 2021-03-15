@@ -5,7 +5,7 @@ import {getNumericValueAsString} from "../../services/translation/common"
 
 export interface AttributeTypeCode extends Attributes {
   typeCode: "AUT" | "COMP" | "CSM" | "FLFS" | "LA" | "PART" | "PERT"
-    | "PRCP" |"PRD" | "PRF" | "RESP" | "RCT" | "SBJ" | "SEQL"
+    | "PRCP" |"PRD" | "PRF" | "RESP" | "REV" | "RCT" | "SBJ" | "SEQL"
 }
 
 export interface AttributeContextControlCode extends Attributes {
@@ -13,7 +13,7 @@ export interface AttributeContextControlCode extends Attributes {
 }
 
 export interface AttributeClassCode extends Attributes {
-  classCode: "AGNT" | "CACT" | "CATEGORY" | "DEV" | "INFO" | "MANU" |
+  classCode: "AGNT" | "ALRT" | "CACT" | "CATEGORY" | "DEV" | "INFO" | "MANU" |
     "MMAT" | "OBS" | "ORG" | "PAT" | "PCPR" | "PROV" | "PSN" | "ROL" |
     "SBADM" | "SPLY"
 }
