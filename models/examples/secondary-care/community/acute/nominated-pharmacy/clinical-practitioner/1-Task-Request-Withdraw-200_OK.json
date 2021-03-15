@@ -1,23 +1,32 @@
 {
   "resourceType": "Task",
-  "id": "ee1b55f8-113c-4725-99a3-25fbad366dd6",
+  "id": "6a2624a2-321b-470e-91a6-8ae7a065e2f0",
   "identifier":  [
     {
       "system": "https://tools.ietf.org/html/rfc4122",
-      "value": "ADD2E9DD-DA0A-C266-A4E3-447C68239525"
+      "value": "5ac84c11-db8b-44da-8fcf-8980b3d13596"
     }
   ],
-  "status": "rejected",
+  "status": "in-progress",
   "intent": "order",
   "groupIdentifier": {
     "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-    "value": "83C40E-A23856-00123C"
+    "value": "3FF0DD-A99968-4F73BU"
+  },
+  "code": {
+    "coding":  [
+      {
+        "system": "http://hl7.org/fhir/CodeSystem/task-code",
+        "code": "abort",
+        "display": "Mark the focal resource as no longer active"
+      }
+    ]
   },
   "focus": {
     "type": "Bundle",
     "identifier": {
       "system": "https://tools.ietf.org/html/rfc4122",
-      "value": "2363E9DD-DA0A-45AA-A4E3-447C68231525"
+      "value": "334a3195-1f6c-497a-8efe-d272ca9c4e38"
     }
   },
   "for": {
@@ -26,19 +35,19 @@
       "value": "9446368138"
     }
   },
-  "authoredOn": "2016-03-10T22:39:32-04:00",
+  "authoredOn": "2020-12-21T17:03:20-00:00",
   "owner": {
     "identifier": {
       "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-      "value": "VNE51"
+      "value": "FH542"
     }
   },
   "reasonCode": {
     "coding":  [
       {
-        "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason",
-        "code": "0002",
-        "display": "Unable to dispense medication on prescriptions"
+        "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-withdraw-reason",
+        "code": "DA",
+        "display": "Dosage Amendments"
       }
     ]
   }

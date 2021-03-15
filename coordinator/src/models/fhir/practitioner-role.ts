@@ -1,6 +1,8 @@
 import * as common from "./common"
 import * as demographics from "./demographics"
 
+export type PersonOrOrganization = PractitionerRole | Practitioner | Organization
+
 export class PractitionerRole extends common.Resource {
   readonly resourceType = "PractitionerRole"
   identifier?: Array<common.Identifier>

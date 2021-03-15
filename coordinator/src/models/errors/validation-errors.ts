@@ -87,12 +87,12 @@ export function createResourceTypeIssue(expectedResourceType: string): fhir.Oper
 
 export function createTaskIncorrectValueIssue(
   fieldName: string,
-  requiredFieldValue: string
+  ...allowedFieldValues: Array<string>
 ): fhir.OperationOutcomeIssue {
   return {
     severity: "error",
     code: "value",
-    diagnostics: `Task.${fieldName} must be ${requiredFieldValue}.`,
+    diagnostics: `Task.${fieldName} must be one of: ${allowedFieldValues.map(v => "'" + v + "'").join(", ")}.`,
     expression: [`Task.${fieldName}`]
   }
 }
