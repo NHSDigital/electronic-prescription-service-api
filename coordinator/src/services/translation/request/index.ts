@@ -22,13 +22,18 @@ export async function convertBundleToSpineRequest(
   bundle: fhir.Bundle, messageId: string, logger: pino.Logger
 ): Promise<SpineRequest> {
   const messageType = identifyMessageType(bundle)
-  const payload = await createPayload(messageType, bundle, logger)
+  const payload = await createPayloadFromBundle(messageType, bundle, logger)
   return requestBuilder.toSpineRequest(payload, messageId)
 }
 
-async function createPayload(
-  messageType: string, bundle: fhir.Bundle, logger: pino.Logger
-): Promise<hl7V3.SendMessagePayload<unknown>> {
+type BundleTranslationResult = hl7V3.ParentPrescriptionRoot | hl7V3.CancellationRequestRoot
+  | hl7V3.DispenseNotificationRoot
+
+async function createPayloadFromBundle(
+  messageType: string,
+  bundle: fhir.Bundle,
+  logger: pino.Logger
+): Promise<hl7V3.SendMessagePayload<BundleTranslationResult>> {
   switch (messageType) {
     case fhir.EventCodingCode.PRESCRIPTION:
       return createParentPrescriptionSendMessagePayload(bundle)
@@ -149,10 +154,12 @@ export async function convertTaskToSpineRequest(
   return  requestBuilder.toSpineRequest(payload, messageId)
 }
 
+type TaskTranslationResult = hl7V3.DispenseProposalReturnRoot | hl7V3.EtpWithdrawRoot
+
 async function createPayloadFromTask(
   fhirMessage: fhir.Task,
   logger: pino.Logger
-): Promise<hl7V3.SendMessagePayload<unknown>> {
+): Promise<hl7V3.SendMessagePayload<TaskTranslationResult>> {
   switch (fhirMessage.status) {
     case fhir.TaskStatus.REJECTED:
       return await createDispenseProposalReturnSendMessagePayload(fhirMessage, logger)

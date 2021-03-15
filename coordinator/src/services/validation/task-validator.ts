@@ -33,6 +33,7 @@ function performStatusSpecificValidation(task: fhir.Task): Array<fhir.OperationO
 
 function validateWithdraw(task: fhir.Task) {
   const withdrawSpecificErrors = []
+
   if (!task.code) {
     withdrawSpecificErrors.push({
       severity: "error",
@@ -50,28 +51,26 @@ function validateWithdraw(task: fhir.Task) {
       withdrawSpecificErrors.push(createTaskIncorrectValueIssue("code.coding.code", "abort"))
     }
   }
+
   withdrawSpecificErrors.push(
     ...validateReasonCode(task, "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-withdraw-reason")
   )
+
   return withdrawSpecificErrors
 }
 
 function validateReturn(task: fhir.Task) {
   const returnSpecificErrors = []
+
   returnSpecificErrors.push(
     ...validateReasonCode(task, "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason")
   )
+
   return returnSpecificErrors
 }
 
 function validateReasonCode(task: fhir.Task, system: string): Array<fhir.OperationOutcomeIssue> {
-  const validSystemCode = getCodingForSystemOrNull(
-    task.reasonCode.coding,
-    system,
-    `Task.reasonCode`
-  )
-  if (!validSystemCode) {
-    return [errors.createTaskCodingSystemIssue("reasonCode", system)]
-  }
-  return []
+  return getCodingForSystemOrNull(task.reasonCode?.coding, system, "Task.reasonCode")
+    ? []
+    : [errors.createTaskCodingSystemIssue("reasonCode", system)]
 }

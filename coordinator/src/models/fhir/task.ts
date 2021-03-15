@@ -12,8 +12,7 @@ export class Task extends common.Resource {
   focus: common.IdentifierReference<bundle.Bundle>
   for: common.IdentifierReference<patient.Patient>
   authoredOn: string
-  owner: common.IdentifierReference<practitionerRole.PractitionerRole | practitionerRole.Practitioner
-    | practitionerRole.Organization>
+  owner: common.IdentifierReference<practitionerRole.PersonOrOrganization>
   reasonCode: common.CodeableConcept
   code?: common.CodeableConcept
 }
