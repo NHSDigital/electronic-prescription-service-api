@@ -1,5 +1,4 @@
 import * as fhir from "../../models/fhir"
-import {TaskIntent, TaskStatus} from "../../models/fhir"
 import * as errors from "../../models/errors/validation-errors"
 import {getCodeableConceptCodingForSystem, getCodingForSystemOrNull} from "../translation/common"
 import {createTaskIncorrectValueIssue} from "../../models/errors/validation-errors"
@@ -11,8 +10,8 @@ export function verifyTask(task: fhir.Task): Array<fhir.OperationOutcomeIssue> {
     validationErrors.push(errors.createResourceTypeIssue("Task"))
   }
 
-  if (task.intent != TaskIntent.ORDER) {
-    validationErrors.push(errors.createTaskIncorrectValueIssue("intent", TaskIntent.ORDER))
+  if (task.intent != fhir.TaskIntent.ORDER) {
+    validationErrors.push(errors.createTaskIncorrectValueIssue("intent", fhir.TaskIntent.ORDER))
   }
 
   const statusSpecificErrors = performStatusSpecificValidation(task)
@@ -28,7 +27,7 @@ function performStatusSpecificValidation(task: fhir.Task): Array<fhir.OperationO
     case fhir.TaskStatus.REJECTED:
       return validateReturn(task)
     default:
-      return [errors.createTaskIncorrectValueIssue("status", TaskStatus.IN_PROGRESS, TaskStatus.REJECTED)]
+      return [errors.createTaskIncorrectValueIssue("status", fhir.TaskStatus.IN_PROGRESS, fhir.TaskStatus.REJECTED)]
   }
 }
 
