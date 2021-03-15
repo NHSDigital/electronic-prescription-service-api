@@ -49,8 +49,15 @@ describe("verifyTask returns errors", () => {
 
   test("rejects when status 'in-progress' and code is not present", () => {
     delete invalidReturnTask.code
-    const returnedErrors = verifyTask(invalidReturnTask as fhir.Task)
+    const returnedErrors = verifyTask(invalidReturnTask)
     expect(returnedErrors).toHaveLength(1)
     expect(returnedErrors[0].diagnostics).toBe("Task.code is requred when task.status='in-progress'.")
+  })
+
+  test("no errors for a valid Task", () => {
+    const returnedErrors = verifyTask(validReturnTask)
+    expect(returnedErrors).toHaveLength(0)
+    const returnedWithdrawErrors = verifyTask(validWithdrawTask)
+    expect(returnedWithdrawErrors).toHaveLength(0)
   })
 })

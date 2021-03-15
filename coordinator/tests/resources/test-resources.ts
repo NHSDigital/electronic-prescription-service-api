@@ -107,13 +107,13 @@ export const specification = [
 
 const taskBasePath = "./secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/"
 const withdrawTaskPath = taskBasePath + "1-Task-Request-Withdraw-200_OK.json"
-export const exampleWithdrawTask: fhir.Task= JSON.parse(fs.readFileSync(
+export const exampleWithdrawTask = JSON.parse(fs.readFileSync(
   path.join(__dirname, withdrawTaskPath),
   "utf-8"
 )) as fhir.Task
 
 const returnTaskPath = taskBasePath + "1-Task-Request-Return-200_OK.json"
-export const exampleReturnTask: fhir.Task= JSON.parse(fs.readFileSync(
+export const exampleReturnTask = JSON.parse(fs.readFileSync(
   path.join(__dirname, returnTaskPath),
   "utf-8"
 )) as fhir.Task
