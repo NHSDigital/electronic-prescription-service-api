@@ -105,15 +105,16 @@ export const specification = [
   examplePrescription3
 ]
 
+const taskBasePath = "./secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/"
+const withdrawTaskPath = taskBasePath + "1-Task-Request-Withdraw-200_OK.json"
 export const exampleWithdrawTask: fhir.Task= JSON.parse(fs.readFileSync(
-  // eslint-disable-next-line max-len
-  path.join(__dirname, "./secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Task-Request-Withdraw-200_OK.json"),
+  path.join(__dirname, withdrawTaskPath),
   "utf-8"
 )) as fhir.Task
 
+const returnTaskPath = taskBasePath + "1-Task-Request-Return-200_OK.json"
 export const exampleReturnTask: fhir.Task= JSON.parse(fs.readFileSync(
-  // eslint-disable-next-line max-len
-  path.join(__dirname, "./secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Task-Request-Return-200_OK.json"),
+  path.join(__dirname, returnTaskPath),
   "utf-8"
 )) as fhir.Task
 
