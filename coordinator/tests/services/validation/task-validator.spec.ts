@@ -22,8 +22,8 @@ describe("verifyTask returns errors", () => {
   })
 
   test("rejects when intent not 'order'", () => {
-    (invalidReturnTask as fhir.Task).intent = "bluh"
-    const returnedErrors = verifyTask(invalidReturnTask as fhir.Task)
+    invalidReturnTask.intent = "bluh"
+    const returnedErrors = verifyTask(invalidReturnTask)
     expect(returnedErrors).toContainEqual(errors.createTaskIncorrectValueIssue("intent", "'order'"))
   })
 
