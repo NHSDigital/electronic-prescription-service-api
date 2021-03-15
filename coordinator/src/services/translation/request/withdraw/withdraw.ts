@@ -28,7 +28,7 @@ export async function convertTaskToEtpWithdraw(
   return etpWithdraw
 }
 
-function createRecordTarget(identifier: fhir.Identifier) {
+export function createRecordTarget(identifier: fhir.Identifier): hl7V3.DispenseRecordTarget {
   const nhsNumber = getIdentifierValueForSystem(
     [identifier],
     "https://fhir.nhs.uk/Id/nhs-number",
@@ -39,18 +39,18 @@ function createRecordTarget(identifier: fhir.Identifier) {
   return new hl7V3.DispenseRecordTarget(patient)
 }
 
-function createPertinentInformation3(groupIdentifier: fhir.Identifier) {
+export function createPertinentInformation3(groupIdentifier: fhir.Identifier): hl7V3.EtpWithdrawPertinentInformation3 {
   const prescriptionIdValue = getPrescriptionShortFormIdFromTaskGroupIdentifier(groupIdentifier)
   const withdrawId = new hl7V3.WithdrawId(prescriptionIdValue)
   return new hl7V3.EtpWithdrawPertinentInformation3(withdrawId)
 }
 
-function createPertinentInformation2() {
+export function createPertinentInformation2(): hl7V3.EtpWithdrawPertinentInformation2 {
   const withdrawType = new hl7V3.WithdrawType("LD", "Last Dispense")
   return new hl7V3.EtpWithdrawPertinentInformation2(withdrawType)
 }
 
-function createPertinentInformation5(reasonCode: fhir.CodeableConcept) {
+export function createPertinentInformation5(reasonCode: fhir.CodeableConcept): hl7V3.EtpWithdrawPertinentInformation5 {
   const reasonCoding = getCodeableConceptCodingForSystem(
     [reasonCode],
     "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-withdraw-reason",
@@ -60,7 +60,7 @@ function createPertinentInformation5(reasonCode: fhir.CodeableConcept) {
   return new hl7V3.EtpWithdrawPertinentInformation5(withdrawReason)
 }
 
-function createPertinentInformation4(identifier: fhir.Identifier) {
+export function createPertinentInformation4(identifier: fhir.Identifier): hl7V3.EtpWithdrawPertinentInformation4 {
   const dispenseNotificationRefValue = getMessageIdFromTaskFocusIdentifier(identifier)
   const dispenseNotificationRef = new hl7V3.DispenseNotificationRef(dispenseNotificationRefValue)
   return new hl7V3.EtpWithdrawPertinentInformation4(dispenseNotificationRef)

@@ -26,13 +26,17 @@ export async function convertTaskToDispenseProposalReturn(
   return dispenseProposalReturn
 }
 
-function createPertinentInformation1(groupIdentifier: fhir.Identifier) {
+export function createPertinentInformation1(
+  groupIdentifier: fhir.Identifier
+): hl7V3.DispenseProposalReturnPertinentInformation1 {
   const prescriptionIdValue = getPrescriptionShortFormIdFromTaskGroupIdentifier(groupIdentifier)
   const prescriptionId = new hl7V3.PrescriptionId(prescriptionIdValue)
   return new hl7V3.DispenseProposalReturnPertinentInformation1(prescriptionId)
 }
 
-function createPertinentInformation3(reasonCode: fhir.CodeableConcept) {
+export function createPertinentInformation3(
+  reasonCode: fhir.CodeableConcept
+): hl7V3.DispenseProposalReturnPertinentInformation3 {
   const reasonCoding = getCodeableConceptCodingForSystem(
     [reasonCode],
     "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason",
@@ -43,7 +47,7 @@ function createPertinentInformation3(reasonCode: fhir.CodeableConcept) {
   return new hl7V3.DispenseProposalReturnPertinentInformation3(returnReason)
 }
 
-function createReversalOf(identifier: fhir.Identifier) {
+export function createReversalOf(identifier: fhir.Identifier): hl7V3.DispenseProposalReturnReversalOf {
   const prescriptionReleaseResponseId = getMessageIdFromTaskFocusIdentifier(identifier)
   const prescriptionReleaseResponseRef = new hl7V3.PrescriptionReleaseResponseRef(prescriptionReleaseResponseId)
   return new hl7V3.DispenseProposalReturnReversalOf(prescriptionReleaseResponseRef)
