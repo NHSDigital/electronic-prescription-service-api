@@ -4,6 +4,8 @@ import * as fhir from "../../models/fhir"
 import * as translator from "../../services/translation/request"
 import {spineClient} from "../../services/communication/spine-client"
 import * as taskValidator from "../../services/validation/task-validator"
+import {requestHasAppAuth} from "../../services/validation/auth-level"
+import {unauthorisedActionIssue} from "../../models/errors/validation-errors"
 
 export default [
   /*
@@ -16,6 +18,13 @@ export default [
       const fhirValidatorResponse = await getFhirValidatorErrors(request)
       if (fhirValidatorResponse) {
         return responseToolkit.response(fhirValidatorResponse).code(400).type(CONTENT_TYPE_FHIR)
+      }
+
+      if (!requestHasAppAuth(request)) {
+        return responseToolkit
+          .response(unauthorisedActionIssue)
+          .code(403)
+          .type(CONTENT_TYPE_FHIR)
       }
 
       const withdrawPayload = getPayload(request) as fhir.Task

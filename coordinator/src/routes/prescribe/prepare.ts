@@ -3,6 +3,8 @@ import Hapi from "@hapi/hapi"
 import {BASE_PATH, CONTENT_TYPE_FHIR, createHash, getFhirValidatorErrors, getPayload} from "../util"
 import * as fhir from "../../models/fhir"
 import * as bundleValidator from "../../services/validation/bundle-validator"
+import {requestHasUserAuth} from "../../services/validation/auth-level"
+import {unauthorisedActionIssue} from "../../models/errors/validation-errors"
 
 export default [
   /*
@@ -15,6 +17,13 @@ export default [
       const fhirValidatorResponse = await getFhirValidatorErrors(request)
       if (fhirValidatorResponse) {
         return responseToolkit.response(fhirValidatorResponse).code(400).type(CONTENT_TYPE_FHIR)
+      }
+
+      if (!requestHasUserAuth(request)) {
+        return responseToolkit
+          .response(unauthorisedActionIssue)
+          .code(403)
+          .type(CONTENT_TYPE_FHIR)
       }
 
       const bundle = getPayload(request) as fhir.Bundle
