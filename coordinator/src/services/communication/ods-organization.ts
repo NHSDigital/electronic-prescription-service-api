@@ -1,31 +1,33 @@
 import * as fhir from "../../models/fhir"
 import {getExtensionForUrl, onlyElement} from "../translation/common"
 
-type OdsOrganizationRoleExtension = fhir.ExtensionExtension<fhir.CodingExtension | fhir.BooleanExtension
+export type OdsOrganizationRoleExtension = fhir.ExtensionExtension<fhir.CodingExtension | fhir.BooleanExtension
   | fhir.StringExtension>
 
 export interface OdsOrganization extends fhir.Resource {
   resourceType: "Organization"
   extension: Array<OdsOrganizationRoleExtension>
   identifier: fhir.Identifier
-  name: string
-  telecom: Array<fhir.ContactPoint>
-  address: fhir.Address
+  name?: string
+  telecom?: Array<fhir.ContactPoint>
+  address?: fhir.Address
 }
 
 export function convertToOrganization(odsOrganization: OdsOrganization): fhir.Organization {
+  const organizationPrimaryRole = getOrganizationPrimaryRole(odsOrganization.extension)
   return {
     resourceType: "Organization",
     identifier: [odsOrganization.identifier],
     type: [{
       coding: [{
         system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
-        code: getOrganizationPrimaryRole(odsOrganization.extension)
+        code: organizationPrimaryRole.code,
+        display: organizationPrimaryRole.display
       }]
     }],
     name: odsOrganization.name,
     telecom: odsOrganization.telecom,
-    address: [odsOrganization.address]
+    address: odsOrganization.address ? [odsOrganization.address] : undefined
   }
 }
 
@@ -42,7 +44,7 @@ function getOrganizationPrimaryRole(extensions: Array<OdsOrganizationRoleExtensi
     "Organization.extension(https://fhir.nhs.uk/STU3/StructureDefinition/Extension-ODSAPI-OrganizationRole-1)",
     "primary role and active"
   )
-  return getRoleExtensionValue(singleActivePrimaryOrganizationRoleExtension).code
+  return getRoleExtensionValue(singleActivePrimaryOrganizationRoleExtension)
 }
 
 function getPrimaryRoleExtensionValue(extension: OdsOrganizationRoleExtension) {
