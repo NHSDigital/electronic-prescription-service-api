@@ -1,11 +1,11 @@
 import * as hl7V3 from "../../../../models/hl7-v3"
 import * as fhir from "../../../../models/fhir"
 import * as pino from "pino"
-import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem} from "../../common"
+import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem, getMessageId} from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import {
   createAuthorFromTaskOwnerIdentifier,
-  createIdFromTaskIdentifier, getMessageIdFromTaskFocusIdentifier,
+  getMessageIdFromTaskFocusIdentifier,
   getPrescriptionShortFormIdFromTaskGroupIdentifier
 } from "../task"
 
@@ -13,9 +13,9 @@ export async function convertTaskToEtpWithdraw(
   task: fhir.Task,
   logger: pino.Logger
 ): Promise<hl7V3.EtpWithdraw> {
-  const id = createIdFromTaskIdentifier(task.identifier)
+  const id = getMessageId(task.identifier)
   const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(task.authoredOn, "Task.authoredOn")
-  const etpWithdraw = new hl7V3.EtpWithdraw(id, effectiveTime)
+  const etpWithdraw = new hl7V3.EtpWithdraw(new hl7V3.GlobalIdentifier(id), effectiveTime)
 
   etpWithdraw.recordTarget = createRecordTarget(task.for.identifier)
   //TODO - find out whether we need to handle user instead of organization (and what we do about org details if so)
