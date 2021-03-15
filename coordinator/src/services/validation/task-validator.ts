@@ -21,11 +21,11 @@ export function verifyTask(task: fhir.Task): Array<fhir.OperationOutcomeIssue> {
         diagnostics: "Task.code is requred when task.status='in-progress'.",
         expression: [`Task.code`]
       } as fhir.OperationOutcomeIssue)
-      validationErrors.push(...checkValidSystem(
-        task,
-        "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-withdraw-reason"
-      ))
     }
+    validationErrors.push(...checkValidSystem(
+      task,
+      "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-withdraw-reason"
+    ))
   } else if (task.status === "rejected") {
     validationErrors.push(...checkValidSystem(
       task,
@@ -39,16 +39,7 @@ export function verifyTask(task: fhir.Task): Array<fhir.OperationOutcomeIssue> {
 }
 
 function checkValidSystem(task: fhir.Task, system: string): Array<fhir.OperationOutcomeIssue>{
-  const validSystemCode = getCodingForSystemOrNull(
-    task.reasonCode.coding,
-    system,
-    `Task.reasonCode`
-  )
-  if(!validSystemCode){
-    return [errors.createTaskCodingSystemIssue(
-      "reasonCode",
-      system
-    )]
-  }
-  return []
+  return getCodingForSystemOrNull(task.reasonCode.coding, system, "Task.reasonCode")
+    ? []
+    : [errors.createTaskCodingSystemIssue("reasonCode", system)]
 }
