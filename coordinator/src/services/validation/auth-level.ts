@@ -8,7 +8,7 @@ export function userHasValidAuth(request: Hapi.Request, authLevel: "user" | "app
       return requestHasAppAuth(request)
     }
   }
-  return false
+  return true
 }
 
 function requiresAuth() {
