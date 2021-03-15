@@ -3,6 +3,14 @@ import * as codes from "./codes"
 import * as messaging from "./messaging"
 import * as prescription from "./prescription"
 
+export class DispenseProposalReturnRoot {
+  DispenseProposalReturn: DispenseProposalReturn
+
+  constructor(dispenseProposalReturn: DispenseProposalReturn) {
+    this.DispenseProposalReturn = dispenseProposalReturn
+  }
+}
+
 export class DispenseProposalReturn {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "INFO",

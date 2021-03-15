@@ -24,14 +24,15 @@ export function createSendMessagePayload<T>(
   return sendMessagePayload
 }
 
-export function createReleaseRequestSendMessagePayload<T>(
+//TODO - check this whole file makes sense, especially author & id
+export function createSendMessagePayloadForUnattendedAccess<T>(
   interactionId: hl7V3.Hl7InteractionIdentifier,
   subject: T
 ): hl7V3.SendMessagePayload<T> {
   const messageId = uuid.v4()
 
   const sendMessagePayload = createInitialSendMessagePayload<T>(messageId, interactionId)
-  sendMessagePayload.ControlActEvent = createReleaseControlActEvent(subject)
+  sendMessagePayload.ControlActEvent = createControlActEventForUnattendedAccess(subject)
   return sendMessagePayload
 }
 
@@ -127,7 +128,7 @@ function createControlActEventAuthor1(asid: string) {
   return new hl7V3.SendMessagePayloadAuthorSystemSds(agentSystemSds)
 }
 
-function createReleaseControlActEvent<T>(
+function createControlActEventForUnattendedAccess<T>(
   subject: T
 ) {
   const controlActEvent = new hl7V3.ControlActEvent<T>()

@@ -2,8 +2,12 @@ import * as fhir from "../../../../models/fhir"
 import * as hl7V3 from "../../../../models/hl7-v3"
 import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem, getMessageId} from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
-import {createAuthorForUnattendedAccess} from "../agent-unattended"
 import * as pino from "pino"
+import {
+  createAuthorFromTaskOwnerIdentifier,
+  getMessageIdFromTaskFocusIdentifier,
+  getPrescriptionShortFormIdFromTaskGroupIdentifier
+} from "../task"
 
 export async function convertTaskToDispenseProposalReturn(
   task: fhir.Task,
@@ -14,30 +18,33 @@ export async function convertTaskToDispenseProposalReturn(
   const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(task.authoredOn, "Task.authoredOn")
   const dispenseProposalReturn = new hl7V3.DispenseProposalReturn(id, effectiveTime)
 
-  //TODO - move Author classes out of messaging file. Rename Author to PrescriptionAuthor.
-  const odsOrganizationCode = task.owner.identifier.value
-  dispenseProposalReturn.author = await createAuthorForUnattendedAccess(odsOrganizationCode, logger)
+  dispenseProposalReturn.author = await createAuthorFromTaskOwnerIdentifier(task.owner.identifier, logger)
+  dispenseProposalReturn.pertinentInformation1 = createPertinentInformation1(task.groupIdentifier)
+  dispenseProposalReturn.pertinentInformation3 = createPertinentInformation3(task.reasonCode)
+  dispenseProposalReturn.reversalOf = createReversalOf(task.focus.identifier)
 
-  const prescriptionIdValue = getIdentifierValueForSystem(
-    [task.groupIdentifier],
-    "https://fhir.nhs.uk/Id/prescription-order-number",
-    "Task.groupIdentifier"
-  )
+  return dispenseProposalReturn
+}
+
+function createPertinentInformation1(groupIdentifier: fhir.Identifier) {
+  const prescriptionIdValue = getPrescriptionShortFormIdFromTaskGroupIdentifier(groupIdentifier)
   const prescriptionId = new hl7V3.PrescriptionId(prescriptionIdValue)
-  dispenseProposalReturn.pertinentInformation1 = new hl7V3.DispenseProposalReturnPertinentInformation1(prescriptionId)
+  return new hl7V3.DispenseProposalReturnPertinentInformation1(prescriptionId)
+}
 
+function createPertinentInformation3(reasonCode: fhir.CodeableConcept) {
   const reasonCoding = getCodeableConceptCodingForSystem(
-    [task.reasonCode],
+    [reasonCode],
     "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason",
     "Task.reasonCode"
   )
   const returnReasonCode = new hl7V3.ReturnReasonCode(reasonCoding.code, reasonCoding.display)
   const returnReason = new hl7V3.ReturnReason(returnReasonCode)
-  dispenseProposalReturn.pertinentInformation3 = new hl7V3.DispenseProposalReturnPertinentInformation3(returnReason)
+  return new hl7V3.DispenseProposalReturnPertinentInformation3(returnReason)
+}
 
-  const prescriptionReleaseResponseId = task.focus.identifier.value
+function createReversalOf(identifier: fhir.Identifier) {
+  const prescriptionReleaseResponseId = getMessageIdFromTaskFocusIdentifier(identifier)
   const prescriptionReleaseResponseRef = new hl7V3.PrescriptionReleaseResponseRef(prescriptionReleaseResponseId)
-  dispenseProposalReturn.reversalOf = new hl7V3.DispenseProposalReturnReversalOf(prescriptionReleaseResponseRef)
-
-  return dispenseProposalReturn
+  return new hl7V3.DispenseProposalReturnReversalOf(prescriptionReleaseResponseRef)
 }
