@@ -29,11 +29,11 @@ test("Successful response containing all expected fields is mapped correctly", a
 
   const result = await odsClient.lookupOrganization("FTX40", logger)
 
-  expect(result.resourceType).toEqual<string>("Organization")
-  expect(result.identifier).toContainEqual<fhir.Identifier>(exampleIdentifier)
-  expect(result.name).toEqual<string>(exampleName)
-  expect(result.address).toContainEqual<fhir.Address>(exampleAddress)
-  expect(result.telecom).toContainEqual<fhir.ContactPoint>(exampleTelecom)
+  expect(result.resourceType).toEqual("Organization")
+  expect(result.identifier).toContainEqual(exampleIdentifier)
+  expect(result.name).toEqual(exampleName)
+  expect(result.address).toContainEqual(exampleAddress)
+  expect(result.telecom).toContainEqual(exampleTelecom)
   expect(result.type).toContainEqual<fhir.CodeableConcept>({
     coding: [{
       system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
@@ -185,7 +185,7 @@ function createExampleOdsResponse(): OdsOrganization {
     resourceType: "Organization",
     id: exampleId,
     extension: [
-      createExampleOrganizationRoleExtension("182","PHARMACY",true,"Active")
+      createExampleOrganizationRoleExtension("182", "PHARMACY", true, "Active")
     ],
     identifier: exampleIdentifier,
     name: exampleName,
@@ -226,22 +226,25 @@ function createExampleOrganizationRoleExtension(
 }
 
 const exampleId = "FTX40"
+
 const exampleName = "HEALTHCARE AT HOME"
-const exampleIdentifier = {
+
+const exampleIdentifier: fhir.Identifier = {
   system: "https://fhir.nhs.uk/Id/ods-organization-code",
   value: exampleId
 }
-const exampleAddress = {
+
+const exampleAddress: fhir.Address = {
   line: [
     "FIFTH AVENUE",
     "CENTRUM ONE HUNDRED"
   ],
   city: "BURTON-ON-TRENT",
   district: "STAFFORDSHIRE",
-  postalCode: "DE14 2WS",
-  country: "ENGLAND"
+  postalCode: "DE14 2WS"
 }
-const exampleTelecom = {
+
+const exampleTelecom: fhir.ContactPoint = {
   system: "phone",
   value: "0870 6001540"
 }
