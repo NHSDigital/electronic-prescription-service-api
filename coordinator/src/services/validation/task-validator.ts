@@ -39,7 +39,7 @@ export function verifyTask(task: fhir.Task): Array<fhir.OperationOutcomeIssue> {
 }
 
 function checkValidSystem(task: fhir.Task, system: string): Array<fhir.OperationOutcomeIssue>{
-  return getCodingForSystemOrNull(task.reasonCode.coding, system, `Task.reasonCode`)
+  return getCodingForSystemOrNull(task.reasonCode.coding, system, "Task.reasonCode")
     ? []
     : [errors.createTaskCodingSystemIssue("reasonCode", system)]
 }

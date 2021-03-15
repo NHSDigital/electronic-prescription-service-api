@@ -47,7 +47,7 @@ describe("verifyTask returns errors", () => {
     expect(returnedErrors).toContainEqual(errors.createTaskCodingSystemIssue("reasonCode", expectedSystem))
   })
 
-  test("rejects when status 'in-progress' and code is not present invalid", () => {
+  test("rejects when status 'in-progress' and code is not present", () => {
     delete invalidReturnTask.code
     const returnedErrors = verifyTask(invalidReturnTask as fhir.Task)
     expect(returnedErrors).toHaveLength(1)
