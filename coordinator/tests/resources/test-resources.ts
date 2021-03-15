@@ -105,6 +105,18 @@ export const specification = [
   examplePrescription3
 ]
 
+export const exampleWithdrawTask: fhir.Task= JSON.parse(fs.readFileSync(
+  // eslint-disable-next-line max-len
+  path.join(__dirname, "./secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Task-Request-Withdraw-200_OK.json"),
+  "utf-8"
+)) as fhir.Task
+
+export const exampleReturnTask: fhir.Task= JSON.parse(fs.readFileSync(
+  // eslint-disable-next-line max-len
+  path.join(__dirname, "./secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Task-Request-Return-200_OK.json"),
+  "utf-8"
+)) as fhir.Task
+
 export interface ExampleSpineResponse {
   response: SpineDirectResponse<string>
   spineErrorCode: string | undefined
