@@ -5,7 +5,7 @@ import {BASE_PATH, CONTENT_TYPE_FHIR, createHash, getFhirValidatorErrors, getPay
 import {getMessageHeader} from "../../services/translation/common/getResourcesOfType"
 import * as fhir from "../../models/fhir"
 import * as bundleValidator from "../../services/validation/bundle-validator"
-import {requestHasUserAuth} from "../../services/validation/auth-level"
+import {userHasValidAuth} from "../../services/validation/auth-level"
 import {unauthorisedActionIssue} from "../../models/errors/validation-errors"
 
 function isDispenseMessage(bundle: fhir.Bundle) {
@@ -20,6 +20,13 @@ export default [
     method: "POST",
     path: `${BASE_PATH}/$process-message`,
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      if (!userHasValidAuth(request, "user")) {
+        return responseToolkit
+          .response(unauthorisedActionIssue)
+          .code(403)
+          .type(CONTENT_TYPE_FHIR)
+      }
+
       const fhirValidatorResponse = await getFhirValidatorErrors(request)
       if (fhirValidatorResponse) {
         return responseToolkit.response(fhirValidatorResponse).code(400).type(CONTENT_TYPE_FHIR)
@@ -39,13 +46,6 @@ export default [
             severity: "information"
           }]
         }).code(200).type(CONTENT_TYPE_FHIR)
-      }
-
-      if (!requestHasUserAuth(request)) {
-        return responseToolkit
-          .response(unauthorisedActionIssue)
-          .code(403)
-          .type(CONTENT_TYPE_FHIR)
       }
 
       request.logger.info("Building Spine request")
