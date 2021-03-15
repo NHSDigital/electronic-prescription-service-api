@@ -75,7 +75,7 @@ function convertRequesterToControlActAuthor(
 
   const messageType = identifyMessageType(bundle)
   if (messageType === fhir.EventCodingCode.DISPENSE) {
-    return convertRequesterToUnattendedControlActAuthor("")
+    return createControlActAuthorForUnattendedAccess()
   }
 
   const firstMedicationRequest = getMedicationRequests(bundle)[0]
@@ -132,19 +132,15 @@ function createControlActEventForUnattendedAccess<T>(
   subject: T
 ) {
   const controlActEvent = new hl7V3.ControlActEvent<T>()
-  controlActEvent.author = convertRequesterToUnattendedControlActAuthor(subject)
+  controlActEvent.author = createControlActAuthorForUnattendedAccess()
   controlActEvent.author1 = createControlActEventAuthor1(process.env.FROM_ASID)
   controlActEvent.subject = subject
   return controlActEvent
 }
 
-function convertRequesterToUnattendedControlActAuthor<T>(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  hl7ReleaseRequest: T
-) {
+function createControlActAuthorForUnattendedAccess() {
   const sdsUniqueIdentifier = new hl7V3.UnattendedSdsUniqueIdentifier()._attributes.extension
   const sdsJobRoleCode = new hl7V3.UnattendedSdsJobRoleCode()._attributes.code
   const sdsRoleProfileIdentifier = new hl7V3.UnattendedSdsRoleProfileIdentifier()._attributes.extension
-
   return createControlActEventAuthor(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier)
 }

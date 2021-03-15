@@ -31,6 +31,7 @@ export async function convertDispenseNotification(
   const fhirFirstMedicationDispense = fhirMedicationDispenses[0]
   const fhirLineItemIdentifiers = getLineItemIdentifiers(fhirMedicationDispenses)
 
+  //TODO - find out whether we need to handle user instead of organization (and what we do about org details if so)
   const fhirOrganisationPerformer = getOrganisationPerformer(fhirFirstMedicationDispense)
   const hl7AgentOrganisation = createAgentOrganisation(fhirOrganisationPerformer)
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)
