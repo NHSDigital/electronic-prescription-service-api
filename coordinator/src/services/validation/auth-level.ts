@@ -16,9 +16,9 @@ function requiresAuth() {
 }
 
 function requestHasAppAuth(headers: Hapi.Util.Dictionary<string>): boolean {
-  return headers["nhsd-identity-authentication-method"]?.includes("application")
+  return headers["nhsd-identity-authentication-level"]?.includes("application")
 }
 
 function requestHasUserAuth(headers: Hapi.Util.Dictionary<string>): boolean {
-  return headers["nhsd-identity-authentication-method"]?.includes("user")
+  return headers["nhsd-identity-authentication-level"]?.includes("user")
 }

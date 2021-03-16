@@ -1,7 +1,7 @@
 <AssignMessage continueOnError="false" enabled="true" name="AssignMessage.SetAccessModeApplicationRestricted">
   <Set>
     <Headers>
-      <Header name="NHSD-Identity-Authentication-Method">application</Header>
+      <Header name="NHSD-Identity-Authentication-Level">application</Header>
     </Headers>
   </Set>
   <AssignVariable>
