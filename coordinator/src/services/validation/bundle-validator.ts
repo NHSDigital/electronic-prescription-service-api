@@ -6,8 +6,14 @@ import {getCourseOfTherapyTypeCode} from "../translation/request/course-of-thera
 import {getExtensionForUrlOrNull, getIdentifierValueForSystem, isTruthy} from "../translation/common"
 import * as fhir from "../../models/fhir"
 import * as errors from "../../models/errors/validation-errors"
+import {userHasValidAuth} from "./auth-level"
+import {unauthorisedActionIssue} from "../../models/errors/validation-errors"
+import Hapi from "@hapi/hapi"
 
-export function verifyBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
+export function verifyBundle(
+  bundle: fhir.Bundle,
+  headers: Hapi.Util.Dictionary<string>
+): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
     return [errors.createResourceTypeIssue("Bundle")]
   }
@@ -20,11 +26,18 @@ export function verifyBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIs
   const commonErrors = verifyCommonBundle(bundle)
 
   let messageTypeSpecificErrors
+  const authErrors: Array<fhir.OperationOutcomeIssue> = []
   switch (messageType) {
     case fhir.EventCodingCode.PRESCRIPTION:
+      if (!userHasValidAuth(headers, "user")) {
+        authErrors.push(unauthorisedActionIssue)
+      }
       messageTypeSpecificErrors = verifyPrescriptionBundle(bundle)
       break
     case fhir.EventCodingCode.CANCELLATION:
+      if (!userHasValidAuth(headers, "user")) {
+        authErrors.push(unauthorisedActionIssue)
+      }
       messageTypeSpecificErrors = verifyCancellationBundle(bundle)
       break
     case fhir.EventCodingCode.DISPENSE:
@@ -34,7 +47,8 @@ export function verifyBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIs
 
   return [
     ...commonErrors,
-    ...messageTypeSpecificErrors
+    ...messageTypeSpecificErrors,
+    ...authErrors
   ]
 }
 

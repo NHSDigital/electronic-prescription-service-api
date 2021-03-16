@@ -25,7 +25,7 @@ export default [
       const payload = getPayload(request) as fhir.Resource
       const requestId = request.headers["nhsd-request-id"].toUpperCase()
       if (isBundle(payload)) {
-        const issues = bundleValidator.verifyBundle(payload)
+        const issues = bundleValidator.verifyBundle(payload, request.headers)
         if (issues.length) {
           return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(CONTENT_TYPE_FHIR)
         }

@@ -1,11 +1,11 @@
 import * as Hapi from "@hapi/hapi"
 
-export function userHasValidAuth(request: Hapi.Request, authLevel: "user" | "application"): boolean {
+export function userHasValidAuth(headers: Hapi.Util.Dictionary<string>, authLevel: "user" | "application"): boolean {
   if (requiresAuth()) {
     if (authLevel === "user") {
-      return requestHasUserAuth(request)
+      return requestHasUserAuth(headers)
     } else {
-      return requestHasAppAuth(request)
+      return requestHasAppAuth(headers)
     }
   }
   return true
@@ -15,10 +15,10 @@ function requiresAuth() {
   return process.env.SANDBOX !== "1"
 }
 
-function requestHasAppAuth(request: Hapi.Request): boolean {
-  return request.headers["nhsd-identity-authentication-method"].includes("application")
+function requestHasAppAuth(headers: Hapi.Util.Dictionary<string>): boolean {
+  return headers["nhsd-identity-authentication-method"]?.includes("application")
 }
 
-function requestHasUserAuth(request: Hapi.Request): boolean {
-  return request.headers["nhsd-identity-authentication-method"].includes("user")
+function requestHasUserAuth(headers: Hapi.Util.Dictionary<string>): boolean {
+  return headers["nhsd-identity-authentication-method"]?.includes("user")
 }
