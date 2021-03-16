@@ -46,7 +46,7 @@ export async function convertDispenseNotification(
   )
 
   const hl7DispenseNotification = new hl7V3.DispenseNotification(new hl7V3.GlobalIdentifier(messageId))
-  hl7DispenseNotification.recordTarget = new hl7V3.DispenseRecordTarget(hl7Patient)
+  hl7DispenseNotification.recordTarget = new hl7V3.RecordTargetReference(hl7Patient)
   hl7DispenseNotification.primaryInformationRecipient = new hl7V3.PrimaryInformationRecipient(hl7AgentOrganisation)
   hl7DispenseNotification.pertinentInformation1 = hl7PertinentInformation1
   hl7DispenseNotification.pertinentInformation2 = new hl7V3.DispensePertinentInformation2(hl7CareRecordElementCategory)
@@ -310,8 +310,8 @@ async function createAuthor(
   organisationCode: string,
   authorTime: string,
   logger: pino.Logger
-): Promise<hl7V3.Author> {
-  const author = new hl7V3.Author()
+): Promise<hl7V3.PrescriptionAuthor> {
+  const author = new hl7V3.PrescriptionAuthor()
   author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "MedicationDispense.whenPrepared")
   author.signatureText = hl7V3.Null.NOT_APPLICABLE
   author.AgentPerson = await createAgentPersonForUnattendedAccess(organisationCode, logger)

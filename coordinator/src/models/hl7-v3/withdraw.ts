@@ -1,8 +1,8 @@
 import * as core from "./core"
 import * as codes from "./codes"
-import * as messaging from "./messaging"
-import * as dispenseNotification from "./dispense-notification"
 import * as prescription from "./prescription"
+import * as agentPerson from "./agent-person"
+import * as patient from "./patient"
 
 export class EtpWithdrawRoot {
   ETPWithdraw: EtpWithdraw
@@ -20,9 +20,8 @@ export class EtpWithdraw {
 
   id: codes.GlobalIdentifier
   effectiveTime: core.Timestamp
-  //TODO - rename and move to a common file
-  recordTarget: dispenseNotification.DispenseRecordTarget
-  author: messaging.SendMessagePayloadAuthorAgentPerson
+  recordTarget: patient.RecordTargetReference
+  author: agentPerson.Author
   pertinentInformation3: EtpWithdrawPertinentInformation3
   pertinentInformation2: EtpWithdrawPertinentInformation2
   pertinentInformation5: EtpWithdrawPertinentInformation5

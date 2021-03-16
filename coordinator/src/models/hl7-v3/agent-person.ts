@@ -39,3 +39,23 @@ export class AgentPersonPerson implements ElementCompact {
       this.id = id
     }
 }
+
+/**
+ * A participation used to provide a link from an act to a role in this case used to convey that the role (participant)
+ * is the author for the act.
+ */
+export class Author implements ElementCompact {
+  _attributes: core.AttributeTypeCode = {
+    typeCode: "AUT"
+  }
+
+  AgentPerson: AgentPerson
+}
+
+export class ResponsibleParty implements ElementCompact {
+  _attributes: core.AttributeTypeCode = {
+    typeCode: "RESP"
+  }
+
+  AgentPerson: AgentPerson
+}

@@ -19,9 +19,9 @@ export class Prescription implements ElementCompact {
   effectiveTime: core.Null
   repeatNumber?: core.Interval<core.NumericValue>
   performer?: Performer
-  author: Author
+  author: PrescriptionAuthor
   //TODO - legalAuthenticator
-  responsibleParty: ResponsibleParty
+  responsibleParty: PrescriptionResponsibleParty
   component1?: Component1
   pertinentInformation7?: PrescriptionPertinentInformation7
   pertinentInformation5: PrescriptionPertinentInformation5
@@ -61,7 +61,7 @@ export class Performer implements ElementCompact {
 /**
  * A participation used to provide a link to the prescriber who authored the prescription.
  */
-export class Author implements ElementCompact {
+export class PrescriptionAuthor extends agentPerson.Author {
   _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
     typeCode: "AUT",
     contextControlCode: "OP"
@@ -75,13 +75,11 @@ export class Author implements ElementCompact {
 /**
  * A participation used to provide a link to the healthcare professional who has direct responsibility for the patient.
  */
-export class ResponsibleParty implements ElementCompact {
+export class PrescriptionResponsibleParty extends agentPerson.ResponsibleParty {
   _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
     typeCode: "RESP",
     contextControlCode: "OP"
   }
-
-  AgentPerson: agentPerson.AgentPerson
 }
 
 /**

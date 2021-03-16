@@ -4,15 +4,21 @@ import * as codes from "./codes"
 import * as demographics from "./demographics"
 
 /**
- * Provides information about a patient's demographics and healthcare provision in a way that conforms to the PDS
- * patient structure.
+ * A link to the patient who has received the medication treatment.
  */
-export class Patient implements ElementCompact {
+export class PatientReference implements ElementCompact {
   _attributes: core.AttributeClassCode = {
     classCode: "PAT"
   }
 
   id: codes.NhsNumber
+}
+
+/**
+ * Provides information about a patient's demographics and healthcare provision in a way that conforms to the PDS
+ * patient structure.
+ */
+export class Patient extends PatientReference {
   addr: Array<demographics.Address>
   telecom?: Array<demographics.Telecom>
   patientPerson: PatientPerson
@@ -100,4 +106,34 @@ export class HealthCareProvider implements ElementCompact {
   }
 
   id: codes.SdsOrganizationIdentifier | core.Null
+}
+
+/*
+* A link to the patient who has received the medication treatment.
+*/
+export class RecordTargetReference implements ElementCompact {
+  _attributes: core.AttributeTypeCode = {
+    typeCode: "RCT"
+  }
+
+  patient: PatientReference
+
+  constructor(patient: PatientReference) {
+    this.patient = patient
+  }
+}
+
+/**
+ * A link between the ParentPrescription and the patient who receives the medication treatment.
+ */
+export class RecordTarget implements ElementCompact {
+  _attributes: core.AttributeTypeCode = {
+    typeCode: "RCT"
+  }
+
+  Patient: Patient
+
+  constructor(patient: Patient) {
+    this.Patient = patient
+  }
 }

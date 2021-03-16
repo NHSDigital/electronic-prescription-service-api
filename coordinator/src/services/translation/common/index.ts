@@ -12,6 +12,14 @@ export function getMessageId(identifier: Array<fhir.Identifier>, fhirPath: strin
   )
 }
 
+export function getMessageIdFromBundle(bundle: fhir.Bundle): string {
+  return getMessageId([bundle.identifier], "Bundle.identifier")
+}
+
+export function getMessageIdFromTask(task: fhir.Task): string {
+  return getMessageId(task.identifier, "Task.identifier")
+}
+
 export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, additionalContext?: string): T {
   if (!iterable) {
     throw new InvalidValueError("Required field missing.", fhirPath)
