@@ -7,7 +7,7 @@ export interface OdsClient {
   lookupOrganization(odsCode: string, logger: pino.Logger): Promise<fhir.Organization>
 }
 
-function getOdsClient(liveMode: boolean): OdsClient {
+export function getOdsClient(liveMode: boolean): OdsClient {
   return liveMode
     ? new LiveOdsClient()
     : new SandboxOdsClient()
