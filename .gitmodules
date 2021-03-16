@@ -2,3 +2,6 @@
 	path = validator
 	url = https://github.com/NHSDigital/validation-service-fhir-r4.git
 	branch = master
+[submodule "reader"]
+	path = reader
+	url = https://git.heroku.com/nhsd-prescription-reader.git

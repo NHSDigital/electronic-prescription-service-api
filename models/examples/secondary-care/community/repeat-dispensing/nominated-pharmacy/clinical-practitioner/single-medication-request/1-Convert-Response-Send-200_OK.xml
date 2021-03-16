@@ -135,7 +135,7 @@
                   <name>SOMERSET BOWEL CANCER SCREENING CENTRE</name>
                   <telecom use="WP" value="tel:01823333444"/>
                   <addr use="WP">
-                    <streetAddressLine>MUSGROVE PARK HOSPITAL</streetAddressLine>
+                    <streetAddressLine>NOT MUSGROVE PARK HOSPITAL</streetAddressLine>
                     <streetAddressLine>TAUNTON</streetAddressLine>
                     <postalCode>TA1 5DA</postalCode>
                   </addr>
