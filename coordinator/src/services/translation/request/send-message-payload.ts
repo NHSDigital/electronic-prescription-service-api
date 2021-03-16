@@ -39,7 +39,9 @@ function createControlActEvent<T>(
   subject: T
 ) {
   const controlActEvent = new hl7V3.ControlActEvent<T>()
-  controlActEvent.author = author
+  if (author) {
+    controlActEvent.author = author
+  }
   controlActEvent.author1 = createControlActEventAuthor1(process.env.FROM_ASID)
   controlActEvent.subject = subject
   return controlActEvent
