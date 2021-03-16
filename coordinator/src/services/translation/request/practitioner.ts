@@ -22,8 +22,8 @@ import * as fhir from "../../../models/fhir"
 export function convertAuthor(
   bundle: fhir.Bundle,
   firstMedicationRequest: fhir.MedicationRequest
-): hl7V3.Author {
-  const author = new hl7V3.Author()
+): hl7V3.PrescriptionAuthor {
+  const author = new hl7V3.PrescriptionAuthor()
   if (identifyMessageType(bundle) !== fhir.EventCodingCode.CANCELLATION) {
     const requesterSignature = findRequesterSignature(bundle, firstMedicationRequest.requester)
     setSignatureTimeAndText(author, requesterSignature)
@@ -33,7 +33,7 @@ export function convertAuthor(
   return author
 }
 
-function setSignatureTimeAndText(author: hl7V3.Author, requesterSignature?: fhir.Signature) {
+function setSignatureTimeAndText(author: hl7V3.PrescriptionAuthor, requesterSignature?: fhir.Signature) {
   if (requesterSignature) {
     author.time = convertIsoDateTimeStringToHl7V3DateTime(requesterSignature.when, "Provenance.signature.when")
     try {
@@ -54,8 +54,8 @@ export function convertResponsibleParty(
   convertPractitionerRoleFn = convertPractitionerRole,
   convertAgentPersonPersonFn = convertAgentPersonPerson,
   getAgentPersonPersonIdFn = getAgentPersonPersonIdForResponsibleParty
-): hl7V3.ResponsibleParty {
-  const responsibleParty = new hl7V3.ResponsibleParty()
+): hl7V3.PrescriptionResponsibleParty {
+  const responsibleParty = new hl7V3.PrescriptionResponsibleParty()
 
   const responsiblePartyExtension = getExtensionForUrlOrNull(
     medicationRequest.extension,

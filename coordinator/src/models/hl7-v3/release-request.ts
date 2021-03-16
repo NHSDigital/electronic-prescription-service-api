@@ -1,6 +1,6 @@
 import * as core from "./core"
 import * as codes from "./codes"
-import * as message from "./messaging"
+import * as agentPerson from "./agent-person"
 
 export class NominatedPrescriptionReleaseRequest {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
@@ -9,7 +9,7 @@ export class NominatedPrescriptionReleaseRequest {
   }
   id: codes.GlobalIdentifier
   effectiveTime: core.Timestamp
-  author: message.SendMessagePayloadAuthorAgentPerson
+  author: agentPerson.Author
 
   constructor(id: codes.GlobalIdentifier, effectiveTime: core.Timestamp) {
     this.id = id

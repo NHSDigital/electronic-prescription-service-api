@@ -28,7 +28,7 @@ export async function convertTaskToEtpWithdraw(
   return etpWithdraw
 }
 
-export function createRecordTarget(identifier: fhir.Identifier): hl7V3.DispenseRecordTarget {
+export function createRecordTarget(identifier: fhir.Identifier): hl7V3.RecordTargetReference {
   const nhsNumber = getIdentifierValueForSystem(
     [identifier],
     "https://fhir.nhs.uk/Id/nhs-number",
@@ -36,7 +36,7 @@ export function createRecordTarget(identifier: fhir.Identifier): hl7V3.DispenseR
   )
   const patient = new hl7V3.Patient()
   patient.id = new hl7V3.NhsNumber(nhsNumber)
-  return new hl7V3.DispenseRecordTarget(patient)
+  return new hl7V3.RecordTargetReference(patient)
 }
 
 export function createPertinentInformation3(groupIdentifier: fhir.Identifier): hl7V3.EtpWithdrawPertinentInformation3 {

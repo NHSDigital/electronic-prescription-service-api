@@ -26,7 +26,7 @@ export class DispenseNotification implements ElementCompact {
   code: codes.SnomedCode
   effectiveTime: core.Timestamp
   typeId: codes.TypeIdentifier
-  recordTarget: DispenseRecordTarget
+  recordTarget: patient.RecordTargetReference
   primaryInformationRecipient: PrimaryInformationRecipient
   pertinentInformation1: DispenseNotificationPertinentInformation1
   pertinentInformation2: DispensePertinentInformation2
@@ -53,21 +53,6 @@ export class PrimaryInformationRecipient implements ElementCompact {
 
   constructor(organisation: organisation.AgentOrganization) {
     this.AgentOrg = organisation
-  }
-}
-
-/*
-* A link to the patient who has received the medication treatment.
-*/
-export class DispenseRecordTarget implements ElementCompact {
-  _attributes: core.AttributeTypeCode = {
-    typeCode: "RCT"
-  }
-
-  patient: patient.Patient
-
-  constructor(patient: patient.Patient) {
-    this.patient = patient
   }
 }
 
@@ -281,7 +266,7 @@ export class PertinentSupplyHeader implements ElementCompact {
   id: codes.GlobalIdentifier
   code: codes.SnomedCode
   effectiveTime: core.Null
-  author: prescription.Author
+  author: prescription.PrescriptionAuthor
   pertinentInformation1: Array<DispenseNotificationPertinentInformation1LineItem>
   pertinentInformation3: DispensePertinentInformation3
   pertinentInformation4: DispensePertinentInformation4
@@ -331,7 +316,7 @@ export class DispenseLineItemComponent1 implements ElementCompact {
 * Details of the quantity of medication requested.
 */
 export class SupplyRequest implements ElementCompact {
-  _attributes: core.AttributeClassCode & core.AttributeClassCode = {
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "SPLY",
     moodCode: "RQO"
   }

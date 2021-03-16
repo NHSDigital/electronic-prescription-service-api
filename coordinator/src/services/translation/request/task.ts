@@ -7,7 +7,7 @@ import {createAuthorForUnattendedAccess} from "./agent-unattended"
 export async function createAuthorFromTaskOwnerIdentifier(
   identifier: fhir.Identifier,
   logger: pino.Logger
-): Promise<hl7V3.SendMessagePayloadAuthorAgentPerson> {
+): Promise<hl7V3.Author> {
   const odsOrganizationCode = getIdentifierValueForSystem(
     [identifier],
     "https://fhir.nhs.uk/Id/ods-organization-code",

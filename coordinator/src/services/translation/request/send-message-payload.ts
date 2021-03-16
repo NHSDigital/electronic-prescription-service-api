@@ -1,44 +1,28 @@
 import moment from "moment"
-import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem, resolveReference} from "../common"
+import {
+  getCodeableConceptCodingForSystem,
+  getExtensionForUrlOrNull,
+  getIdentifierValueForSystem,
+  resolveReference
+} from "../common"
 import {getMedicationRequests} from "../common/getResourcesOfType"
 import {convertMomentToHl7V3DateTime} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
-import * as uuid from "uuid"
-import {Hl7InteractionIdentifier} from "../../../models/hl7-v3"
 
-export function createSendMessagePayload<T>(
+export function createSendMessagePayloadForUnattendedAccess<T>(
+  messageId: string,
   interactionId: hl7V3.Hl7InteractionIdentifier,
-  bundle: fhir.Bundle,
   subject: T
 ): hl7V3.SendMessagePayload<T> {
-  const messageId = getIdentifierValueForSystem(
-    [bundle.identifier],
-    "https://tools.ietf.org/html/rfc4122",
-    "Bundle.identifier"
-  )
-
-  const sendMessagePayload = createInitialSendMessagePayload<T>(messageId, interactionId)
-  sendMessagePayload.ControlActEvent = createControlActEvent(bundle, subject)
-  return sendMessagePayload
+  return createSendMessagePayload(messageId, interactionId, undefined, subject)
 }
 
-//TODO - check this whole file makes sense, especially author & id
-export function createSendMessagePayloadForUnattendedAccess<T>(
-  interactionId: hl7V3.Hl7InteractionIdentifier,
-  subject: T,
-  messageId?: string
-): hl7V3.SendMessagePayload<T> {
-  messageId = messageId ?? uuid.v4()
-
-  const sendMessagePayload = createInitialSendMessagePayload<T>(messageId, interactionId)
-  sendMessagePayload.ControlActEvent = createControlActEventForUnattendedAccess(subject)
-  return sendMessagePayload
-}
-
-function createInitialSendMessagePayload<T>(
+export function createSendMessagePayload<T>(
   messageId: string,
-  interactionId: Hl7InteractionIdentifier
+  interactionId: hl7V3.Hl7InteractionIdentifier,
+  author: hl7V3.SendMessagePayloadAuthorPersonSds,
+  subject: T
 ): hl7V3.SendMessagePayload<T> {
   const sendMessagePayload = new hl7V3.SendMessagePayload<T>(
     new hl7V3.GlobalIdentifier(messageId),
@@ -48,7 +32,7 @@ function createInitialSendMessagePayload<T>(
 
   sendMessagePayload.communicationFunctionRcv = createCommunicationFunction(process.env.TO_ASID)
   sendMessagePayload.communicationFunctionSnd = createCommunicationFunction(process.env.FROM_ASID)
-
+  sendMessagePayload.ControlActEvent = createControlActEvent(author, subject)
   return sendMessagePayload
 }
 
@@ -59,35 +43,60 @@ function createCommunicationFunction(asid: string) {
 }
 
 function createControlActEvent<T>(
-  bundle: fhir.Bundle,
+  author: hl7V3.SendMessagePayloadAuthorPersonSds,
   subject: T
 ) {
   const controlActEvent = new hl7V3.ControlActEvent<T>()
-  controlActEvent.author = convertRequesterToControlActAuthor(bundle)
+  if (author) {
+    controlActEvent.author = author
+  }
   controlActEvent.author1 = createControlActEventAuthor1(process.env.FROM_ASID)
   controlActEvent.subject = subject
   return controlActEvent
 }
 
-function convertRequesterToControlActAuthor(
+export function convertRequesterToControlActAuthor(
   bundle: fhir.Bundle
-) {
+): hl7V3.SendMessagePayloadAuthorPersonSds {
   const firstMedicationRequest = getMedicationRequests(bundle)[0]
   const authorPractitionerRole = resolveReference(bundle, firstMedicationRequest.requester)
   const authorPractitioner = resolveReference(bundle, authorPractitionerRole.practitioner)
+  return convertPractitionerToControlActAuthor(authorPractitioner, authorPractitionerRole)
+}
 
+export function convertResponsiblePractitionerToControlActAuthor(
+  bundle: fhir.Bundle
+): hl7V3.SendMessagePayloadAuthorPersonSds {
+  const firstMedicationRequest = getMedicationRequests(bundle)[0]
+  const responsiblePractitionerExtension = getExtensionForUrlOrNull(
+    firstMedicationRequest.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+    "MedicationRequest.extension"
+  ) as fhir.ReferenceExtension<fhir.PractitionerRole>
+  const responsiblePractitionerRoleReference = responsiblePractitionerExtension
+    ? responsiblePractitionerExtension.valueReference
+    : firstMedicationRequest.requester
+  const responsiblePractitionerRole = resolveReference(bundle, responsiblePractitionerRoleReference)
+  const responsiblePractitioner = resolveReference(bundle, responsiblePractitionerRole.practitioner)
+  return convertPractitionerToControlActAuthor(responsiblePractitioner, responsiblePractitionerRole)
+}
+
+function convertPractitionerToControlActAuthor(
+  practitioner: fhir.Practitioner,
+  practitionerRole: fhir.PractitionerRole
+) {
   const sdsUniqueIdentifier = getIdentifierValueForSystem(
-    authorPractitioner.identifier,
+    practitioner.identifier,
     "https://fhir.nhs.uk/Id/sds-user-id",
     "Practitioner.identifier"
   )
   const sdsJobRoleCode = getCodeableConceptCodingForSystem(
-    authorPractitionerRole.code,
+    practitionerRole.code,
     "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
     "PractitionerRole.code"
   ).code
   const sdsRoleProfileIdentifier = getIdentifierValueForSystem(
-    authorPractitionerRole.identifier,
+    practitionerRole.identifier,
     "https://fhir.nhs.uk/Id/sds-role-profile-id",
     "PractitionerRole.identifier"
   )
@@ -120,21 +129,4 @@ function createControlActEventAuthor1(asid: string) {
   const agentSystemSystemSds = new hl7V3.AgentSystemSystemSds(id)
   const agentSystemSds = new hl7V3.AgentSystemSds(agentSystemSystemSds)
   return new hl7V3.SendMessagePayloadAuthorSystemSds(agentSystemSds)
-}
-
-function createControlActEventForUnattendedAccess<T>(
-  subject: T
-) {
-  const controlActEvent = new hl7V3.ControlActEvent<T>()
-  controlActEvent.author = createControlActAuthorForUnattendedAccess()
-  controlActEvent.author1 = createControlActEventAuthor1(process.env.FROM_ASID)
-  controlActEvent.subject = subject
-  return controlActEvent
-}
-
-function createControlActAuthorForUnattendedAccess() {
-  const sdsUniqueIdentifier = new hl7V3.UnattendedSdsUniqueIdentifier()._attributes.extension
-  const sdsJobRoleCode = new hl7V3.UnattendedSdsJobRoleCode()._attributes.code
-  const sdsRoleProfileIdentifier = new hl7V3.UnattendedSdsRoleProfileIdentifier()._attributes.extension
-  return createControlActEventAuthor(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier)
 }
