@@ -37,18 +37,18 @@ describe("getCourseOfTherapyTypeCode", () => {
     expect(courseOfTherapyTypeCode).toEqual(fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
   })
 
-  test("returns acute for mixed acute / repeat prescribing prescription", () => {
-    setCourseOfTherapyTypeCode(medicationRequests[0], fhir.CourseOfTherapyTypeCode.CONTINUOUS)
-    setCourseOfTherapyTypeCode(medicationRequests[1], fhir.CourseOfTherapyTypeCode.CONTINUOUS)
+  test("returns acute for mixed acute / repeat dispensing prescription", () => {
+    setCourseOfTherapyTypeCode(medicationRequests[0], fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
+    setCourseOfTherapyTypeCode(medicationRequests[1], fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
     setCourseOfTherapyTypeCode(medicationRequests[2], fhir.CourseOfTherapyTypeCode.ACUTE)
     setCourseOfTherapyTypeCode(medicationRequests[3], fhir.CourseOfTherapyTypeCode.ACUTE)
     const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
     expect(courseOfTherapyTypeCode).toEqual(fhir.CourseOfTherapyTypeCode.ACUTE)
   })
 
-  test("throws for mixed acute / repeat dispensing prescription", () => {
-    setCourseOfTherapyTypeCode(medicationRequests[0], fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
-    setCourseOfTherapyTypeCode(medicationRequests[1], fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
+  test("throws for mixed acute / repeat prescribing prescription", () => {
+    setCourseOfTherapyTypeCode(medicationRequests[0], fhir.CourseOfTherapyTypeCode.CONTINUOUS)
+    setCourseOfTherapyTypeCode(medicationRequests[1], fhir.CourseOfTherapyTypeCode.CONTINUOUS)
     setCourseOfTherapyTypeCode(medicationRequests[2], fhir.CourseOfTherapyTypeCode.ACUTE)
     setCourseOfTherapyTypeCode(medicationRequests[3], fhir.CourseOfTherapyTypeCode.ACUTE)
     expect(() => {

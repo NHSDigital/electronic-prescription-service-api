@@ -377,9 +377,9 @@ describe("createRepeatNumberForMedicationRequests", () => {
     expect(repeatNumber).toBeNull()
   })
 
-  test("does nothing for mixed acute / repeat prescribing prescriptions", () => {
-    setCourseOfTherapyTypeCode(medicationRequests[0], fhir.CourseOfTherapyTypeCode.CONTINUOUS)
-    setCourseOfTherapyTypeCode(medicationRequests[1], fhir.CourseOfTherapyTypeCode.CONTINUOUS)
+  test("does nothing for mixed acute / repeat dispensing prescriptions", () => {
+    setCourseOfTherapyTypeCode(medicationRequests[0], fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
+    setCourseOfTherapyTypeCode(medicationRequests[1], fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
     setCourseOfTherapyTypeCode(medicationRequests[2], fhir.CourseOfTherapyTypeCode.ACUTE)
     setCourseOfTherapyTypeCode(medicationRequests[3], fhir.CourseOfTherapyTypeCode.ACUTE)
 
