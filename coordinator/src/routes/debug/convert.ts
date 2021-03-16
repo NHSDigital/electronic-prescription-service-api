@@ -31,7 +31,7 @@ export default [
         }
 
         request.logger.info("Building HL7V3 message from Bundle")
-        const spineRequest = translator.convertBundleToSpineRequest(payload, requestId)
+        const spineRequest = await translator.convertBundleToSpineRequest(payload, requestId, request.logger)
         return responseToolkit.response(spineRequest.message).code(200).type(CONTENT_TYPE_XML)
       }
 

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PORX_IN060102UK30 xmlns="urn:hl7-org:v3">
+  <id root="6F94E374-295E-4D80-8C19-EB527F4BE2E8"/>
+  <creationTime value="20210312200542"/>
+  <versionCode code="V3NPfIT4.2.00"/>
+  <interactionId extension="PORX_IN060102UK30" root="2.16.840.1.113883.2.1.3.2.4.12"/>
+  <processingCode code="P"/>
+  <processingModeCode code="T"/>
+  <acceptAckCode code="NE"/>
+  <communicationFunctionRcv>
+    <device classCode="DEV" determinerCode="INSTANCE">
+      <id extension="567456789789" root="1.2.826.0.1285.0.2.0.107"/>
+    </device>
+  </communicationFunctionRcv>
+  <communicationFunctionSnd>
+    <device classCode="DEV" determinerCode="INSTANCE">
+      <id extension="200000001285" root="1.2.826.0.1285.0.2.0.107"/>
+    </device>
+  </communicationFunctionSnd>
+  <ControlActEvent classCode="CACT" moodCode="EVN">
+    <author typeCode="AUT">
+      <AgentPersonSDS classCode="AGNT">
+        <id extension="999999999999" root="1.2.826.0.1285.0.2.0.67"/>
+        <agentPersonSDS classCode="PSN" determinerCode="INSTANCE">
+          <id extension="999999999999" root="1.2.826.0.1285.0.2.0.65"/>
+        </agentPersonSDS>
+        <part typeCode="PART">
+          <partSDSRole classCode="ROL">
+            <id extension="R9999" root="1.2.826.0.1285.0.2.1.104"/>
+          </partSDSRole>
+        </part>
+      </AgentPersonSDS>
+    </author>
+    <author1 typeCode="AUT">
+      <AgentSystemSDS classCode="AGNT">
+        <agentSystemSDS classCode="DEV" determinerCode="INSTANCE">
+          <id extension="200000001285" root="1.2.826.0.1285.0.2.0.107"/>
+        </agentSystemSDS>
+      </AgentSystemSDS>
+    </author1>
+    <subject>
+      <NominatedPrescriptionReleaseRequest classCode="INFO" moodCode="RQO">
+        <id root="BF653A7D-021D-4DC3-AE1F-272E8D88F5ED"/>
+        <effectiveTime value="20210312200542"/>
+        <author typeCode="AUT">
+          <AgentPerson classCode="AGNT">
+            <id extension="999999999999" root="1.2.826.0.1285.0.2.0.67"/>
+            <code code="R9999" codeSystem="1.2.826.0.1285.0.2.1.104"/>
+            <telecom use="WP" value="tel:01234567890"/>
+            <agentPerson classCode="PSN" determinerCode="INSTANCE">
+              <id extension="G9999999" root="1.2.826.0.1285.0.2.1.54"/>
+              <name>
+                <given>Unattended</given>
+                <family>Access</family>
+              </name>
+            </agentPerson>
+            <representedOrganization classCode="ORG" determinerCode="INSTANCE">
+              <id extension="FTX40" root="1.2.826.0.1285.0.1.10"/>
+              <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
+              <name>HEALTHCARE AT HOME</name>
+              <telecom value="tel:08706001540"/>
+              <addr>
+                <streetAddressLine>FIFTH AVENUE</streetAddressLine>
+                <streetAddressLine>CENTRUM ONE HUNDRED</streetAddressLine>
+                <streetAddressLine>BURTON-ON-TRENT</streetAddressLine>
+                <streetAddressLine>STAFFORDSHIRE</streetAddressLine>
+                <postalCode>DE14 2WS</postalCode>
+              </addr>
+            </representedOrganization>
+          </AgentPerson>
+        </author>
+      </NominatedPrescriptionReleaseRequest>
+    </subject>
+  </ControlActEvent>
+</PORX_IN060102UK30>

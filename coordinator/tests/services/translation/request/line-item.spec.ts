@@ -11,6 +11,9 @@ import {convertBundleToSpineRequest} from "../../../../src/services/translation/
 import {TooManyValuesError} from "../../../../src/models/errors/processing-errors"
 import * as hl7V3 from "../../../../src/models/hl7-v3"
 import * as fhir from "../../../../src/models/fhir"
+import pino from "pino"
+
+const logger = pino()
 
 describe("convertMedicationRequestToLineItem", () => {
   let bundle: fhir.Bundle
@@ -255,7 +258,7 @@ describe("prescriptionEndorsements", () => {
       .map(pi3 => expect(pi3.pertinentPrescriberEndorsement.value._attributes.code).toEqual("SLS"))
   })
 
-  test("are optional for translation", () => {
+  test("are optional for translation", async() => {
     const medicationRequests = getMedicationRequests(bundle)
 
     const prescriptionEndorsementsFn = (medicationRequest: fhir.MedicationRequest): fhir.CodeableConceptExtension =>
@@ -277,7 +280,7 @@ describe("prescriptionEndorsements", () => {
     expect(hl7v3PrescriptionEndorsements.length).toBeGreaterThan(0)
     hl7v3PrescriptionEndorsements.map(endorsement => expect(endorsement).toEqual(undefined))
 
-    const hl7v3PrescriptionXml = convertBundleToSpineRequest(bundle, "test").message
+    const hl7v3PrescriptionXml = (await convertBundleToSpineRequest(bundle, "test", logger)).message
     expect(hl7v3PrescriptionXml).not.toContain("pertinentInformation3")
   })
 })

@@ -4,15 +4,6 @@ import * as hl7V3 from "../../../models/hl7-v3"
 import * as pino from "pino"
 import {createAuthorForUnattendedAccess} from "./agent-unattended"
 
-export function createIdFromTaskIdentifier(identifier: Array<fhir.Identifier>): hl7V3.GlobalIdentifier {
-  const idValue = getIdentifierValueForSystem(
-    identifier,
-    "https://tools.ietf.org/html/rfc4122",
-    "Task.identifier"
-  )
-  return new hl7V3.GlobalIdentifier(idValue)
-}
-
 export async function createAuthorFromTaskOwnerIdentifier(
   identifier: fhir.Identifier,
   logger: pino.Logger
