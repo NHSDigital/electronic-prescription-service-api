@@ -29,7 +29,7 @@ export class ParentPrescription implements ElementCompact {
   code: codes.SnomedCode
   effectiveTime: core.Timestamp
   typeId: codes.TypeIdentifier
-  recordTarget: RecordTarget
+  recordTarget: patient.RecordTarget
   pertinentInformation1: ParentPrescriptionPertinentInformation1
   pertinentInformation2: ParentPrescriptionPertinentInformation2
 
@@ -38,21 +38,6 @@ export class ParentPrescription implements ElementCompact {
     this.code = new codes.SnomedCode("163501000000109", "Prescription - FocusActOrEvent (record artifact)")
     this.effectiveTime = new core.Timestamp("PLACEHOLDER")
     this.typeId = new codes.TypeIdentifier("PORX_MT132004UK31")
-  }
-}
-
-/**
- * A link between the ParentPrescription and the patient who receives the medication treatment.
- */
-export class RecordTarget implements ElementCompact {
-  _attributes: core.AttributeTypeCode = {
-    typeCode: "RCT"
-  }
-
-  Patient: patient.Patient
-
-  constructor(patient: patient.Patient) {
-    this.Patient = patient
   }
 }
 

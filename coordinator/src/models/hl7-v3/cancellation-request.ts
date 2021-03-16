@@ -1,8 +1,8 @@
+import * as agentPerson from "./agent-person"
 import * as core from "./core"
 import * as codes from "./codes"
 import {ElementCompact} from "xml-js"
-import * as parentPrescription from "./parent-prescription"
-import * as prescription from "./prescription"
+import * as patient from "./patient"
 
 export class CancellationRequestRoot {
   CancellationRequest: CancellationRequest
@@ -21,9 +21,9 @@ export class CancellationRequest implements ElementCompact {
   id: codes.GlobalIdentifier
   effectiveTime: core.Timestamp
   typeId: codes.TypeIdentifier
-  recordTarget: parentPrescription.RecordTarget
-  author: prescription.Author
-  responsibleParty: prescription.ResponsibleParty
+  recordTarget: patient.RecordTarget
+  author: agentPerson.Author
+  responsibleParty: agentPerson.ResponsibleParty
   pertinentInformation1: CancellationRequestPertinentInformation1
   pertinentInformation2: CancellationRequestPertinentInformation2
   pertinentInformation: CancellationRequestPertinentInformation

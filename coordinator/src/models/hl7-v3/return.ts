@@ -1,7 +1,7 @@
 import * as core from "./core"
 import * as codes from "./codes"
-import * as messaging from "./messaging"
 import * as prescription from "./prescription"
+import * as agentPerson from "./agent-person"
 
 export class DispenseProposalReturnRoot {
   DispenseProposalReturn: DispenseProposalReturn
@@ -19,7 +19,7 @@ export class DispenseProposalReturn {
 
   id: codes.GlobalIdentifier
   effectiveTime: core.Timestamp
-  author: messaging.SendMessagePayloadAuthorAgentPerson
+  author: agentPerson.Author
   pertinentInformation1: DispenseProposalReturnPertinentInformation1
   pertinentInformation3: DispenseProposalReturnPertinentInformation3
   reversalOf: DispenseProposalReturnReversalOf
