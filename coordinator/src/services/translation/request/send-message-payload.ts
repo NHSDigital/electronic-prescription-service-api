@@ -10,6 +10,14 @@ import {convertMomentToHl7V3DateTime} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
 
+export function createSendMessagePayloadForUnattendedAccess<T>(
+  messageId: string,
+  interactionId: hl7V3.Hl7InteractionIdentifier,
+  subject: T
+): hl7V3.SendMessagePayload<T> {
+  return createSendMessagePayload(messageId, interactionId, undefined, subject)
+}
+
 export function createSendMessagePayload<T>(
   messageId: string,
   interactionId: hl7V3.Hl7InteractionIdentifier,
