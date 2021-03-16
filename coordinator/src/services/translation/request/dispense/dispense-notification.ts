@@ -15,9 +15,15 @@ import {
 } from "../../common/getResourcesOfType"
 import * as hl7v3 from "../../../../models/hl7-v3"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
+import pino from "pino"
+import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
 
-export function convertDispenseNotification(bundle: fhir.Bundle): hl7V3.DispenseNotification {
-  const messageId = getMessageId(bundle)
+export async function convertDispenseNotification(
+  bundle: fhir.Bundle,
+  logger: pino.Logger
+): Promise<hl7V3.DispenseNotification> {
+
+  const messageId = getMessageId([bundle.identifier], "Bundle.identifier")
 
   const fhirHeader = getMessageHeader(bundle)
   const fhirPatient = getPatientOrNull(bundle)
@@ -25,20 +31,23 @@ export function convertDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispense
   const fhirFirstMedicationDispense = fhirMedicationDispenses[0]
   const fhirLineItemIdentifiers = getLineItemIdentifiers(fhirMedicationDispenses)
 
-  const hl7AgentOrganization = createAgentOrganisation(fhirHeader)
+  //TODO - find out whether we need to handle user instead of organization (and what we do about org details if so)
+  const fhirOrganisationPerformer = getOrganisationPerformer(fhirFirstMedicationDispense)
+  const hl7AgentOrganisation = createAgentOrganisation(fhirOrganisationPerformer)
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)
   const hl7CareRecordElementCategory = createCareRecordElementCategory(fhirLineItemIdentifiers)
   const hl7PriorPrescriptionReleaseEventRef = createPriorPrescriptionReleaseEventRef(fhirHeader)
-  const hl7PertinentInformation1 = createPertinentInformation1(
+  const hl7PertinentInformation1 = await createPertinentInformation1(
     messageId,
-    fhirHeader.sender,
+    fhirOrganisationPerformer,
     fhirMedicationDispenses,
-    fhirFirstMedicationDispense
+    fhirFirstMedicationDispense,
+    logger
   )
 
   const hl7DispenseNotification = new hl7V3.DispenseNotification(new hl7V3.GlobalIdentifier(messageId))
   hl7DispenseNotification.recordTarget = new hl7V3.DispenseRecordTarget(hl7Patient)
-  hl7DispenseNotification.primaryInformationRecipient = new hl7V3.PrimaryInformationRecipient(hl7AgentOrganization)
+  hl7DispenseNotification.primaryInformationRecipient = new hl7V3.PrimaryInformationRecipient(hl7AgentOrganisation)
   hl7DispenseNotification.pertinentInformation1 = hl7PertinentInformation1
   hl7DispenseNotification.pertinentInformation2 = new hl7V3.DispensePertinentInformation2(hl7CareRecordElementCategory)
   hl7DispenseNotification.sequelTo = new hl7V3.SequelTo(hl7PriorPrescriptionReleaseEventRef)
@@ -46,31 +55,23 @@ export function convertDispenseNotification(bundle: fhir.Bundle): hl7V3.Dispense
   return hl7DispenseNotification
 }
 
-function createPertinentInformation1(
+async function createPertinentInformation1(
   messageId: string,
-  fhirHeaderSender: fhir.IdentifierReference<fhir.Organization>,
+  fhirOrganisation: fhir.DispensePerformer,
   fhirMedicationDispenses: Array<fhir.MedicationDispense>,
-  fhirFirstMedicationDispense: fhir.MedicationDispense
-): hl7V3.DispenseNotificationPertinentInformation1 {
+  fhirFirstMedicationDispense: fhir.MedicationDispense,
+  logger: pino.Logger
+) {
 
-  const fhirPractitionerPerformer =
-    fhirFirstMedicationDispense.performer.find(
-      p => p.actor.type === "Practitioner"
-        || p.actor.type === "PractitionerRole"
-    )
-
-  const hl7RepresentedOrganisationCode = fhirHeaderSender.identifier.value
-  const hl7RepresentedOrganisationName = fhirHeaderSender.display
+  const hl7RepresentedOrganisationCode = fhirOrganisation.actor.identifier.value
   const hl7AuthorTime = fhirFirstMedicationDispense.whenPrepared
-  const hl7AgentPersonPersonName = fhirPractitionerPerformer.actor.display
   const hl7PertinentPrescriptionStatus = createPertinentPrescriptionStatus(fhirFirstMedicationDispense)
   const hl7PertinentPrescriptionIdentifier = createPertinentPrescriptionId(fhirFirstMedicationDispense)
   const hl7PriorOriginalRef = createPriorOriginalRef(fhirFirstMedicationDispense)
-  const hl7Author = createAuthor(
+  const hl7Author = await createAuthor(
     hl7RepresentedOrganisationCode,
-    hl7RepresentedOrganisationName,
     hl7AuthorTime,
-    hl7AgentPersonPersonName
+    logger
   )
   const hl7PertinentInformation1LineItems = fhirMedicationDispenses.map(
     medicationDispense => createPertinentInformation1LineItem(medicationDispense)
@@ -160,6 +161,10 @@ function createSuppliedLineItemQuantity(
     )
   )
   return hl7SuppliedLineItemQuantity
+}
+
+export function getOrganisationPerformer(fhirFirstMedicationDispense: fhir.MedicationDispense): fhir.DispensePerformer {
+  return fhirFirstMedicationDispense.performer.find(p => p.actor.type === "Organization")
 }
 
 function getLineItemIdentifiers(fhirMedicationDispenses: Array<fhir.MedicationDispense>) {
@@ -286,11 +291,10 @@ function createPatient(patient: fhir.Patient, firstMedicationDispense: fhir.Medi
   return hl7Patient
 }
 
-function createAgentOrganisation(header: fhir.MessageHeader): hl7V3.AgentOrganization {
-  const fhirHeaderDestination = onlyElement(header.destination, "MessageHeader.destination")
-  const hl7OrganisationCode = fhirHeaderDestination.receiver.identifier.value
-  const hl7OrganisationName = fhirHeaderDestination.receiver.display
-  const hl7Organisation = createOrganisation(hl7OrganisationCode, hl7OrganisationName)
+function createAgentOrganisation(organisation: fhir.DispensePerformer): hl7V3.AgentOrganization {
+  const organisationCode = organisation.actor.identifier.value
+  const organisationName = organisation.actor.display
+  const hl7Organisation = createOrganisation(organisationCode, organisationName)
   return new hl7V3.AgentOrganization(hl7Organisation)
 }
 
@@ -302,72 +306,16 @@ function createOrganisation(organisationCode: string, organisationName: string):
   return organisation
 }
 
-function createAuthor(
-  hl7RepresentedOrganisationCode: string,
-  hl7RepresentedOrganisationName: string,
-  hl7AuthorTime: string,
-  hl7AgentPersonPersonName: string
-): hl7V3.Author {
-  const author = new hl7V3.Author()
-  author.time = convertIsoDateTimeStringToHl7V3DateTime(hl7AuthorTime, "MedicationDispense.whenPrepared")
-  author.signatureText = hl7V3.Null.NOT_APPLICABLE
-  author.AgentPerson = createAgentPerson(
-    hl7RepresentedOrganisationCode,
-    hl7RepresentedOrganisationName,
-    hl7AgentPersonPersonName)
-  return author
-}
-
-function createAgentPerson(
+async function createAuthor(
   organisationCode: string,
-  organisationName: string,
-  agentPersonPersonNameValue: string
-): hl7V3.AgentPerson {
-  const agentPerson = new hl7V3.AgentPerson()
-  // todo dispenseNotification: ods/sds lookup
-  agentPerson.id = new hl7V3.SdsRoleProfileIdentifier("100243444980")
-  const telecom = new hl7V3.Telecom()
-  telecom._attributes = {
-    use: hl7v3.TelecomUse.WORKPLACE,
-    value: "tel:01208812760"
-  }
-  agentPerson.code = new hl7V3.SdsJobRoleCode(organisationCode)
-  agentPerson.telecom = [telecom]
-  const agentPersonPerson = new hl7V3.AgentPersonPerson(new hl7V3.SdsUniqueIdentifier("687227875014"))
-  const agentPersonPersonName = new hl7V3.Name()
-  agentPersonPersonName._attributes = {use: hl7V3.NameUse.USUAL}
-  agentPersonPersonName._text = agentPersonPersonNameValue
-  agentPersonPerson.name = agentPersonPersonName
-  agentPerson.agentPerson = agentPersonPerson
-  agentPerson.representedOrganization =
-    createRepresentedOrganisation(organisationCode, organisationName)
-  return agentPerson
-}
-
-function createRepresentedOrganisation(organisationCode: string, organisationName: string): hl7V3.Organization {
-  const organisation = createOrganisation(organisationCode, organisationName)
-  organisation.id = new hl7V3.SdsOrganizationIdentifier(organisationCode)
-  // todo dispenseNotification: ods/sds lookup
-  organisation.code = new hl7V3.OrganizationTypeCode()
-  organisation.name = new hl7V3.Text(organisationName)
-  organisation.telecom = new hl7V3.Telecom()
-  organisation.telecom._attributes = {
-    use: hl7v3.TelecomUse.WORKPLACE,
-    value: "tel:01208812760"
-  }
-  const hl7Address = new hl7V3.Address()
-  hl7Address._attributes = {
-    use: hl7V3.AddressUse.WORK
-  }
-  hl7Address.streetAddressLine = [
-    new hl7V3.Text("REGENCY ARCADE"),
-    new hl7V3.Text("23 MOLESWORTH STREET"),
-    new hl7V3.Text("WADEBRIDGE"),
-    new hl7V3.Text("CORNWALL")
-  ]
-  hl7Address.postalCode = new hl7V3.Text("PL27 7DH")
-  organisation.addr = hl7Address
-  return organisation
+  authorTime: string,
+  logger: pino.Logger
+): Promise<hl7V3.Author> {
+  const author = new hl7V3.Author()
+  author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "MedicationDispense.whenPrepared")
+  author.signatureText = hl7V3.Null.NOT_APPLICABLE
+  author.AgentPerson = await createAgentPersonForUnattendedAccess(organisationCode, logger)
+  return author
 }
 
 function createCareRecordElementCategory(fhirIdentifiers: Array<string>) {

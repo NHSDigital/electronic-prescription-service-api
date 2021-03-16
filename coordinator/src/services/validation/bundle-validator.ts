@@ -9,6 +9,7 @@ import * as errors from "../../models/errors/validation-errors"
 import {userHasValidAuth} from "./auth-level"
 import {unauthorisedActionIssue} from "../../models/errors/validation-errors"
 import Hapi from "@hapi/hapi"
+import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
 
 export function verifyBundle(
   bundle: fhir.Bundle,
@@ -164,6 +165,7 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
 
   const fhirPaths = [
     "whenPrepared",
+    "subject.identifier.value",
     'extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus")'
   ]
 
@@ -183,6 +185,10 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
       )
     }
   })
+
+  if (medicationDispenses.some(medicationDispense => !getOrganisationPerformer(medicationDispense))) {
+    allErrors.push(errors.createMedicationDispenseMissingValueIssue("performer.actor.ofType(Organization)"))
+  }
 
   return allErrors
 }

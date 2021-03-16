@@ -9,6 +9,9 @@ import {xmlTest} from "../../../resources/test-helpers"
 import {ElementCompact} from "xml-js"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../../../src/services/translation/common/dateTime"
 import * as fhir from "../../../../src/models/fhir"
+import pino from "pino"
+
+const logger = pino()
 
 const actualMoment = jest.requireActual("moment")
 const mockTime = {value: "2020-12-18T12:34:34Z"}
@@ -50,7 +53,7 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
   ])
 
   test.each(cases)("accepts %s", (desc: string, message: fhir.Bundle) => {
-    expect(() => translator.convertBundleToSpineRequest(message, "test")).not.toThrow()
+    expect(async() => await translator.convertBundleToSpineRequest(message, "test", logger)).not.toThrow()
   })
 
   test.each(cases)(
@@ -62,10 +65,12 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
     }
   )
 
-  test("produces result with no lower case UUIDs", () => {
+  test("produces result with no lower case UUIDs", async() => {
     const messageWithLowercaseUUIDs = getMessageWithLowercaseUUIDs()
 
-    const translatedMessage = translator.convertBundleToSpineRequest(messageWithLowercaseUUIDs, "test").message
+    const translatedMessage = (
+      await translator.convertBundleToSpineRequest(messageWithLowercaseUUIDs, "test", logger)
+    ).message
 
     const allNonUpperCaseUUIDS = getAllUUIDsNotUpperCase(translatedMessage)
     expect(allNonUpperCaseUUIDS.length).toBe(0)

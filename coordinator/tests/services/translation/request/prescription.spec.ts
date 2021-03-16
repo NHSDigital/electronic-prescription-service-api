@@ -17,6 +17,9 @@ import {getExtensionForUrl, toArray} from "../../../../src/services/translation/
 import {setCourseOfTherapyTypeCode} from "./course-of-therapy-type.spec"
 import * as hl7V3 from "../../../../src/models/hl7-v3"
 import * as fhir from "../../../../src/models/fhir"
+import pino from "pino"
+
+const logger = pino()
 
 describe("convertCourseOfTherapyType", () => {
   const cases = [
@@ -284,11 +287,11 @@ describe("PertinentInformation2", () => {
     }
   })
 
-  test("additionalInfo XML escaped after final conversion", () => {
+  test("additionalInfo XML escaped after final conversion", async() => {
     const contentString1 = "examplePatientInfo1"
     fhirCommunicationRequests[0].payload.push({contentString: contentString1})
 
-    const result = translator.convertBundleToSpineRequest(bundle, "test").message
+    const result = (await translator.convertBundleToSpineRequest(bundle, "test", logger)).message
     expect(result).toContain(`&lt;patientInfo&gt;${contentString1}&lt;/patientInfo&gt;`)
     expect(result).not.toContain(`<patientInfo>${contentString1}</patientInfo>`)
   })

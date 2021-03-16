@@ -50,6 +50,12 @@ export class SdsJobRoleCode extends Code<"1.2.826.0.1285.0.2.1.104"> {
   }
 }
 
+export class UnattendedSdsJobRoleCode extends Code<"1.2.826.0.1285.0.2.1.104"> {
+  constructor() {
+    super("1.2.826.0.1285.0.2.1.104", "R9999")
+  }
+}
+
 export class OrganizationTypeCode extends Code<"2.16.840.1.113883.2.1.3.2.4.17.94"> {
   constructor() {
     super("2.16.840.1.113883.2.1.3.2.4.17.94", "999")
@@ -237,15 +243,33 @@ export class ProfessionalCode extends AgentPersonIdCode {
   }
 }
 
+export class UnattendedProfessionalCode extends AgentPersonIdCode {
+  constructor() {
+    super("G9999999")
+  }
+}
+
 export class SdsUniqueIdentifier extends Identifier<"1.2.826.0.1285.0.2.0.65"> {
   constructor(extension: string) {
     super("1.2.826.0.1285.0.2.0.65", extension)
   }
 }
 
+export class UnattendedSdsUniqueIdentifier extends Identifier<"1.2.826.0.1285.0.2.0.65"> {
+  constructor() {
+    super("1.2.826.0.1285.0.2.0.65", "999999999999")
+  }
+}
+
 export class SdsRoleProfileIdentifier extends Identifier<"1.2.826.0.1285.0.2.0.67"> {
   constructor(extension: string) {
     super("1.2.826.0.1285.0.2.0.67", extension)
+  }
+}
+
+export class UnattendedSdsRoleProfileIdentifier extends Identifier<"1.2.826.0.1285.0.2.0.67"> {
+  constructor() {
+    super("1.2.826.0.1285.0.2.0.67", "999999999999")
   }
 }
 

@@ -17,27 +17,31 @@ import {translateReleaseRequest} from "./dispense/release"
 import pino from "pino"
 import {convertTaskToDispenseProposalReturn} from "./return/return"
 import {convertTaskToEtpWithdraw} from "./withdraw/withdraw"
+import {getMessageId} from "../common"
 
-export function convertBundleToSpineRequest(bundle: fhir.Bundle, messageId: string): SpineRequest {
+export async function convertBundleToSpineRequest(
+  bundle: fhir.Bundle, messageId: string, logger: pino.Logger
+): Promise<SpineRequest> {
   const messageType = identifyMessageType(bundle)
-  const payload = createPayloadFromBundle(messageType, bundle)
+  const payload = await createPayloadFromBundle(messageType, bundle, logger)
   return requestBuilder.toSpineRequest(payload, messageId)
 }
 
 type BundleTranslationResult = hl7V3.ParentPrescriptionRoot | hl7V3.CancellationRequestRoot
   | hl7V3.DispenseNotificationRoot
 
-function createPayloadFromBundle(
+async function createPayloadFromBundle(
   messageType: string,
-  bundle: fhir.Bundle
-): hl7V3.SendMessagePayload<BundleTranslationResult> {
+  bundle: fhir.Bundle,
+  logger: pino.Logger
+): Promise<hl7V3.SendMessagePayload<BundleTranslationResult>> {
   switch (messageType) {
     case fhir.EventCodingCode.PRESCRIPTION:
       return createParentPrescriptionSendMessagePayload(bundle)
     case fhir.EventCodingCode.CANCELLATION:
       return createCancellationSendMessagePayload(bundle)
     case fhir.EventCodingCode.DISPENSE:
-      return createDispenseNotificationSendMessagePayload(bundle)
+      return await createDispenseNotificationSendMessagePayload(bundle, logger)
   }
 }
 
@@ -50,13 +54,17 @@ export function createParentPrescriptionSendMessagePayload(
   return createSendMessagePayload(interactionId, bundle, parentPrescriptionRoot)
 }
 
-export function createDispenseNotificationSendMessagePayload(
-  bundle: fhir.Bundle
-): hl7V3.SendMessagePayload<hl7V3.DispenseNotificationRoot> {
-  const dispenseNotification = convertDispenseNotification(bundle)
+export async function createDispenseNotificationSendMessagePayload(
+  bundle: fhir.Bundle,
+  logger: pino.Logger
+): Promise<hl7V3.SendMessagePayload<hl7V3.DispenseNotificationRoot>> {
+  const dispenseNotification = await convertDispenseNotification(bundle, logger)
   const dispenseNotificationRoot = new hl7V3.DispenseNotificationRoot(dispenseNotification)
-  const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION
-  return createSendMessagePayload(interactionId, bundle, dispenseNotificationRoot)
+  return createSendMessagePayloadForUnattendedAccess(
+    hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION,
+    dispenseNotificationRoot,
+    getMessageId([bundle.identifier], "Bundle.identifier")
+  )
 }
 
 export function createCancellationSendMessagePayload(

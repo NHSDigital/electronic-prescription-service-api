@@ -4,7 +4,6 @@ import {getMedicationRequests} from "../common/getResourcesOfType"
 import {convertMomentToHl7V3DateTime} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
 import * as fhir from "../../../models/fhir"
-import {identifyMessageType} from "../../../routes/util"
 import * as uuid from "uuid"
 import {Hl7InteractionIdentifier} from "../../../models/hl7-v3"
 
@@ -27,9 +26,10 @@ export function createSendMessagePayload<T>(
 //TODO - check this whole file makes sense, especially author & id
 export function createSendMessagePayloadForUnattendedAccess<T>(
   interactionId: hl7V3.Hl7InteractionIdentifier,
-  subject: T
+  subject: T,
+  messageId?: string
 ): hl7V3.SendMessagePayload<T> {
-  const messageId = uuid.v4()
+  messageId = messageId ?? uuid.v4()
 
   const sendMessagePayload = createInitialSendMessagePayload<T>(messageId, interactionId)
   sendMessagePayload.ControlActEvent = createControlActEventForUnattendedAccess(subject)
@@ -72,17 +72,6 @@ function createControlActEvent<T>(
 function convertRequesterToControlActAuthor(
   bundle: fhir.Bundle
 ) {
-
-  // todo dispenseNotification: implement dispense verson
-  const messageType = identifyMessageType(bundle)
-  if (messageType === fhir.EventCodingCode.DISPENSE) {
-    // todo dispenseNotification: pick up this info from MessageHeader.sender and lookup on ods/sds
-    const sdsUniqueIdentifier = "687227875014"
-    const sdsJobRoleCode = "R8003"
-    const sdsRoleProfileIdentifier = "781733617547"
-    return createControlActEventAuthor(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier)
-  }
-
   const firstMedicationRequest = getMedicationRequests(bundle)[0]
   const authorPractitionerRole = resolveReference(bundle, firstMedicationRequest.requester)
   const authorPractitioner = resolveReference(bundle, authorPractitionerRole.practitioner)
@@ -144,8 +133,8 @@ function createControlActEventForUnattendedAccess<T>(
 }
 
 function createControlActAuthorForUnattendedAccess() {
-  const sdsUniqueIdentifier = "G9999999"
-  const sdsJobRoleCode = "R9999"
-  const sdsRoleProfileIdentifier = "999999999999"
+  const sdsUniqueIdentifier = new hl7V3.UnattendedSdsUniqueIdentifier()._attributes.extension
+  const sdsJobRoleCode = new hl7V3.UnattendedSdsJobRoleCode()._attributes.code
+  const sdsRoleProfileIdentifier = new hl7V3.UnattendedSdsRoleProfileIdentifier()._attributes.extension
   return createControlActEventAuthor(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier)
 }

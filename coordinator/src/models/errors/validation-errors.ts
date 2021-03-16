@@ -47,6 +47,15 @@ export function createMedicationDispenseInconsistentValueIssue<T>(
   }
 }
 
+export function createMedicationDispenseMissingValueIssue(fieldName: string): fhir.OperationOutcomeIssue {
+  return {
+    severity: "error",
+    code: "value",
+    diagnostics: `Expected MedicationDispense to have a value for ${fieldName}.`,
+    expression: [`Bundle.entry.resource.ofType(MedicationDispense).${fieldName}`]
+  }
+}
+
 export const medicationRequestNumberIssue: fhir.OperationOutcomeIssue = {
   severity: "error",
   code: "value",

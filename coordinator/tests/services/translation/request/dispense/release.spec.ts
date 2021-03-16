@@ -9,7 +9,7 @@ describe("translateReleaseRequest", () => {
     "name": "owner",
     "valueIdentifier": {
       "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-      "value": "VNE51"
+      "value": "FTX40"
     }
   }])
   const translatedRelease = translateReleaseRequest(parameters, logger)
@@ -28,6 +28,7 @@ describe("translateReleaseRequest", () => {
   test("translates organizationId correctly", async () => {
     const agentPerson = (await translatedRelease).NominatedPrescriptionReleaseRequest.author.AgentPerson
     const organizationId = agentPerson.representedOrganization.id._attributes.extension
-    expect(organizationId).toBe("VNE51")
+    expect(organizationId).toBe("FTX40")
   })
 })
+

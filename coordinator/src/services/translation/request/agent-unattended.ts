@@ -15,13 +15,13 @@ export async function createAuthorForUnattendedAccess(
   return new hl7v3.SendMessagePayloadAuthorAgentPerson(hl7AgentPerson)
 }
 
-async function createAgentPersonForUnattendedAccess(
+export async function createAgentPersonForUnattendedAccess(
   organizationCode: string,
   logger: pino.Logger
 ): Promise<hl7v3.AgentPerson> {
   const hl7AgentPerson = new hl7v3.AgentPerson()
-  hl7AgentPerson.id = new hl7v3.SdsRoleProfileIdentifier("999999999999")
-  hl7AgentPerson.code = new hl7v3.SdsJobRoleCode("R9999")
+  hl7AgentPerson.id = new hl7v3.UnattendedSdsRoleProfileIdentifier()
+  hl7AgentPerson.code = new hl7v3.UnattendedSdsJobRoleCode()
   const telecom = new hl7v3.Telecom()
   telecom._attributes = {
     use: hl7v3.TelecomUse.WORKPLACE,
@@ -34,7 +34,7 @@ async function createAgentPersonForUnattendedAccess(
 }
 
 function createAgentPersonPersonForUnattendedAccess(): hl7v3.AgentPersonPerson {
-  const agentPerson = new hl7v3.AgentPersonPerson(new hl7v3.ProfessionalCode("G9999999"))
+  const agentPerson = new hl7v3.AgentPersonPerson(new hl7v3.UnattendedProfessionalCode())
   const agentPersonPersonName = new hl7v3.Name()
   agentPersonPersonName.given = new hl7v3.Text("Unattended")
   agentPersonPersonName.family = new hl7v3.Text("Access")
