@@ -14,7 +14,7 @@ export function createOperationOutcome(issues: Array<OperationOutcomeIssue>): Op
 
 export interface OperationOutcomeIssue {
   severity: "information" | "warning" | "error" | "fatal"
-  code: "informational" | "value" | "invalid"
+  code: "informational" | "value" | "invalid" | "forbidden"
   details?: common.CodeableConcept
   diagnostics?: string
   expression?: Array<string>
