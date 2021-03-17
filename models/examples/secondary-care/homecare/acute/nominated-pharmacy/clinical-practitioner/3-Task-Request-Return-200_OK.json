@@ -1,0 +1,45 @@
+{
+  "resourceType": "Task",
+  "id": "ee1b55f8-113c-4725-99a3-25fbad366dd6",
+  "identifier":  [
+    {
+      "system": "https://tools.ietf.org/html/rfc4122",
+      "value": "add2e9dd-da0a-c266-a4e3-447c68239525"
+    }
+  ],
+  "status": "rejected",
+  "intent": "order",
+  "groupIdentifier": {
+    "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+    "value": "269CA9-A99968-4577BF"
+  },
+  "focus": {
+    "type": "Bundle",
+    "identifier": {
+      "system": "https://tools.ietf.org/html/rfc4122",
+      "value": "2363e9dd-da0a-45aa-a4e3-447c68231525"
+    }
+  },
+  "for": {
+    "identifier": {
+      "system": "https://fhir.nhs.uk/Id/nhs-number",
+      "value": "9990548609"
+    }
+  },
+  "authoredOn": "2016-03-10T22:39:32-04:00",
+  "owner": {
+    "identifier": {
+      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+      "value": "FTX40"
+    }
+  },
+  "reasonCode": {
+    "coding":  [
+      {
+        "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason",
+        "code": "0002",
+        "display": "Unable to dispense medication on prescriptions"
+      }
+    ]
+  }
+}

@@ -1,17 +1,17 @@
 {
   "resourceType": "Bundle",
-  "id": "F190329A-3854-4A31-9FF5-417969F2A40D",
+  "id": "0A1FD9EF-A3D5-4E95-84CD-552070A03087",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "d496429f-bf82-4716-8023-c4180642ac99"
+    "value": "34470bbf-07cb-4b49-bef9-f958114f821g"
   },
   "type": "message",
   "entry": [
     {
-      "fullUrl": "urn:uuid:F190329A-3854-4A31-9FF5-417969F2A40D",
+      "fullUrl": "urn:uuid:0A1FD9EF-A3D5-4E95-84CD-552070A03087",
       "resource": {
         "resourceType": "MessageHeader",
-        "id": "F190329A-3854-4A31-9FF5-417969F2A40D",
+        "id": "0A1FD9EF-A3D5-4E95-84CD-552070A03087",
         "eventCoding": {
           "system": "https://fhir.nhs.uk/CodeSystem/message-event",
           "code": "prescription-order",
@@ -23,7 +23,7 @@
             "value": "RBA"
           },
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
-          "display": "USERM|PHARMACIST"
+          "display": "BOOTH|PHIL"
         },
         "source": {
           "endpoint": "urn:nhs-uk:addressing:ods:RBA"
@@ -34,7 +34,7 @@
             "receiver": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "FH542"
+                "value": "FTX40"
               }
             }
           }
@@ -44,47 +44,30 @@
             "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
           },
           {
-            "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+            "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab7"
           }
         ]
       }
     },
     {
-      "fullUrl": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+      "fullUrl": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab7",
       "resource": {
         "resourceType": "MedicationRequest",
-        "id": "a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+        "id": "a54219b8-f741-4c47-b662-e4f8dfa49ab7",
         "extension": [
           {
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
-              "code": "1008",
-              "display": "Outpatient Community Prescriber - Pharmacist Independent Supplementary prescriber"
-            }
-          },
-          {
-            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement",
-            "valueCodeableConcept": {
-              "coding": [
-                {
-                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
-                  "code": "CC",
-                  "display": "Contraceptive"
-                },
-                {
-                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
-                  "code": "FS",
-                  "display": "Sexual Health"
-                }
-              ]
+              "code": "1001",
+              "display": "Outpatient Community Prescriber - Medical Prescriber"
             }
           }
         ],
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
           }
         ],
         "status": "active",
@@ -104,8 +87,8 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "332402005",
-              "display": "Co-cyprindiol 2000microgram/35microgram tablets"
+              "code": "15517911000001104",
+              "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
             }
           ]
         },
@@ -122,12 +105,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "8357c30f-4ec0-46a9-98cb-15b86dfae34c"
+                "value": "030611b2-9769-4696-88d9-9ddcf1132586"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "BC8CD1-A99968-4A55A5"
+          "value": "269CA9-A99968-4577BA"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -140,17 +123,46 @@
         },
         "dosageInstruction": [
           {
-            "text": "As directed",
-            "additionalInstruction": [
+            "text": "10 milligram, Inject, Subcutaneous route, once weekly",
+            "timing": {
+              "repeat": {
+                "frequency": 5,
+                "period": 1,
+                "periodUnit": "d",
+                "boundsDuration": {
+                  "value": 10,
+                  "unit": "day",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "d"
+                }
+              }
+            },
+            "method": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "422145002",
+                  "display": "Inject"
+                }
+              ]
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "34206005",
+                  "display": "Subcutaneous route"
+                }
+              ]
+            },
+            "doseAndRate": [
               {
-                "coding": [
-                  {
-                    "system": "http://snomed.info/sct",
-                    "code": "421769005",
-                    "display": "Follow directions"
-                  }
-                ],
-                "text": "Follow directions"
+                "doseQuantity": {
+                  "value": 10,
+                  "unit": "milligram",
+                  "system": "http://unitsofmeasure.org",
+                  "code": "mg"
+                }
               }
             ]
           }
@@ -166,15 +178,15 @@
             }
           ],
           "quantity": {
-            "value": 63,
-            "unit": "tablet",
+            "value": 1,
+            "unit": "pre-filled disposable injection",
             "system": "http://snomed.info/sct",
-            "code": "428673006"
+            "code": "3318611000001103"
           },
           "performer": {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "FH542"
+              "value": "FTX40"
             }
           }
         },
@@ -187,7 +199,6 @@
       "fullUrl": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2",
       "resource": {
         "resourceType": "Patient",
-        "id": "78d3c2eb-009e-4ec8-a358-b042954aa9b2",
         "identifier": [
           {
             "extension": [
@@ -205,32 +216,33 @@
               }
             ],
             "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "9449305552"
+            "value": "9990548609"
           }
         ],
         "name": [
           {
             "use": "usual",
-            "family": "DAVIS",
+            "family": "XXTESTPATIENT-TGNP",
             "given": [
-              "JANE"
+              "DONOTUSE"
             ],
             "prefix": [
-              "MRS"
+              "MR"
             ]
           }
         ],
-        "gender": "female",
-        "birthDate": "1999-11-25",
+        "gender": "male",
+        "birthDate": "1932-01-06",
         "address": [
           {
             "use": "home",
             "line": [
-              "53 Harrogate Road",
-              "Chapel Allerton",
-              "Leeds"
+              "1 Trevelyan Square",
+              "Boar Lane",
+              "Leeds",
+              "West Yorkshire"
             ],
-            "postalCode": "LS7 3PY"
+            "postalCode": "LS1 6AE"
           }
         ],
         "generalPractitioner": [
@@ -251,16 +263,16 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/sds-user-id",
-            "value": "555253517102"
+            "value": "555086689106"
           },
           {
-            "system": "https://fhir.hl7.org.uk/Id/gphc-number",
-            "value": "2083469"
+            "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+            "value": "6150129"
           }
         ],
         "name": [
           {
-            "family": "USERM",
+            "family": "FIFTYSEVEN",
             "given": [
               "RANDOM"
             ],
@@ -279,11 +291,11 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-            "value": "201715352555"
+            "value": "601986680555"
           },
           {
             "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
-            "value": "2083469"
+            "value": "683458"
           }
         ],
         "practitioner": {
@@ -297,8 +309,8 @@
             "coding": [
               {
                 "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-                "code": "R8003",
-                "display": "Healthcare Access Role"
+                "code": "R8000",
+                "display": "Clinical Practitioner Access Role "
               }
             ]
           }

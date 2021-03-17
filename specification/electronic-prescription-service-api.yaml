@@ -340,7 +340,7 @@ paths:
             examples:
               owner:
                 value:
-                  $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/2-Task-Request-Release-200_OK.json
+                  $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Task-Request-Release-200_OK.json
       responses:
         '200':
           description: Successfully released a prescription for dispensing

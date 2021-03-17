@@ -1,14 +1,14 @@
 {
   "resourceType": "Bundle",
-  "id": "F190329A-3854-4A31-9FF5-417969F2A40D",
+  "id": "aef77afb-7e3c-427a-8657-2c427f71a273",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "94e33e50-d625-4bf5-98b4-92dac770fc7e"
+    "value": "aef77afb-7e3c-427a-8657-2c427f71a273"
   },
   "type": "message",
   "entry": [
     {
-      "fullUrl": "urn:uuid:F190329A-3854-4A31-9FF5-417969F2A40D",
+      "fullUrl": "urn:uuid:aef77afb-7e3c-427a-8657-2c427f71a273",
       "resource": {
         "resourceType": "MessageHeader",
         "id": "F190329A-3854-4A31-9FF5-417969F2A40D",
@@ -194,7 +194,6 @@
       "fullUrl": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2",
       "resource": {
         "resourceType": "Patient",
-        "id": "78d3c2eb-009e-4ec8-a358-b042954aa9b2",
         "identifier": [
           {
             "extension": [
@@ -212,32 +211,33 @@
               }
             ],
             "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "9449310394"
+            "value": "9990548609"
           }
         ],
         "name": [
           {
-            "use": "official",
-            "family": "Lewington",
+            "use": "usual",
+            "family": "XXTESTPATIENT-TGNP",
             "given": [
-              "TRACE"
+              "DONOTUSE"
             ],
             "prefix": [
               "MR"
             ]
           }
         ],
-        "gender": "female",
-        "birthDate": "1999-11-25",
+        "gender": "male",
+        "birthDate": "1932-01-06",
         "address": [
           {
             "use": "home",
             "line": [
-              "1 NETHERNE LANE",
-              "COULSDON",
-              "Surrey"
+              "1 Trevelyan Square",
+              "Boar Lane",
+              "Leeds",
+              "West Yorkshire"
             ],
-            "postalCode": "CR5 1NR"
+            "postalCode": "LS1 6AE"
           }
         ],
         "generalPractitioner": [

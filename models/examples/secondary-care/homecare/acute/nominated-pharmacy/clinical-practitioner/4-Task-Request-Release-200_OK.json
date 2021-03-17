@@ -6,7 +6,7 @@
       "name": "group-identifier",
       "valueIdentifier": {
         "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-        "value": "82D996-C81010-11DB12"
+        "value": "269CA9-A99968-4577BF"
       }
     },
     {
@@ -15,6 +15,3 @@
     }
   ]
 }
-
-
-
