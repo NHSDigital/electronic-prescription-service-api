@@ -6,14 +6,10 @@ import {getCourseOfTherapyTypeCode} from "../translation/request/course-of-thera
 import {getExtensionForUrlOrNull, getIdentifierValueForSystem, isTruthy} from "../translation/common"
 import * as fhir from "../../models/fhir"
 import * as errors from "../../models/errors/validation-errors"
-import {userHasValidAuth} from "./auth-level"
-import {unauthorisedActionIssue} from "../../models/errors/validation-errors"
-import Hapi from "@hapi/hapi"
 import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
 
 export function verifyBundle(
   bundle: fhir.Bundle,
-  headers: Hapi.Util.Dictionary<string>
 ): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
     return [errors.createResourceTypeIssue("Bundle")]
@@ -30,15 +26,9 @@ export function verifyBundle(
   const authErrors: Array<fhir.OperationOutcomeIssue> = []
   switch (messageType) {
     case fhir.EventCodingCode.PRESCRIPTION:
-      if (!userHasValidAuth(headers, "user")) {
-        authErrors.push(unauthorisedActionIssue)
-      }
       messageTypeSpecificErrors = verifyPrescriptionBundle(bundle)
       break
     case fhir.EventCodingCode.CANCELLATION:
-      if (!userHasValidAuth(headers, "user")) {
-        authErrors.push(unauthorisedActionIssue)
-      }
       messageTypeSpecificErrors = verifyCancellationBundle(bundle)
       break
     case fhir.EventCodingCode.DISPENSE:

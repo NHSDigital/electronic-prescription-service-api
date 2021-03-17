@@ -8,8 +8,7 @@ import {
   createMedicationRequestInconsistentValueIssue,
   medicationRequestDuplicateIdentifierIssue,
   medicationRequestNumberIssue,
-  messageTypeIssue,
-  unauthorisedActionIssue
+  messageTypeIssue
 } from "../../../src/models/errors/validation-errors"
 import {
   getOrganisationPerformer,
@@ -27,16 +26,8 @@ function validateValidationErrors (validationErrors: Array<fhir.OperationOutcome
 describe("Bundle checks", () => {
   test("verifyBundle accepts bundle with required Resources", () => {
     expect(validator.verifyBundle(
-      TestResources.examplePrescription1.fhirMessageUnsigned,
-      {"nhsd-identity-authentication-method": "user"}
+      TestResources.examplePrescription1.fhirMessageUnsigned
     )).toEqual([])
-  })
-
-  test("auth on correct endpoints", () => {
-    const prescriptionMessage = TestResources.examplePrescription1.fhirMessageUnsigned
-    const cancelMessage = clone(TestResources.specification.map(s => s.fhirMessageCancel).filter(isTruthy)[0])
-    expect(validator.verifyBundle(prescriptionMessage, {})).toContainEqual(unauthorisedActionIssue)
-    expect(validator.verifyBundle(cancelMessage, {})).toContainEqual(unauthorisedActionIssue)
   })
 
   test("rejects bundle with unusual bundle type", () => {
@@ -57,7 +48,7 @@ describe("Bundle checks", () => {
         }
       ]
     }
-    expect(validator.verifyBundle(bundle as fhir.Bundle, {}))
+    expect(validator.verifyBundle(bundle as fhir.Bundle))
       .toContainEqual(messageTypeIssue)
   })
 })
