@@ -25,9 +25,7 @@ function validateValidationErrors (validationErrors: Array<fhir.OperationOutcome
 
 describe("Bundle checks", () => {
   test("verifyBundle accepts bundle with required Resources", () => {
-    expect(validator.verifyBundle(
-      TestResources.examplePrescription1.fhirMessageUnsigned
-    )).toEqual([])
+    expect(validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned)).toEqual([])
   })
 
   test("rejects bundle with unusual bundle type", () => {
