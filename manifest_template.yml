@@ -42,7 +42,7 @@ apigee:
           - name: access
             value: public
           - name: ratelimit
-            value: {{ env.ratelimit | default('5ps') }}
+            value: {{ ENV.ratelimit | default('5ps') }}
         description: {{ DESCRIPTION }}
         displayName: {{ TITLE }}
         environments: [ {{ ENV.name }} ]
@@ -55,7 +55,7 @@ apigee:
         scopes:
           - 'urn:nhsd:apim:app:level3:electronic-prescription-service-api'
           - 'urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api'
-        quota: {{ env.quota | default('300') }}
+        quota: {{ ENV.quota | default('300') }}
         quotaInterval: '1'
         quotaTimeUnit: minute
     specs:
