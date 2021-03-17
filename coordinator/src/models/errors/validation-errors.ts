@@ -117,3 +117,18 @@ export function createTaskCodingSystemIssue(
     expression: [`Task.${fieldName}`]
   }
 }
+
+export const unauthorisedActionIssue: fhir.OperationOutcomeIssue = {
+  severity: "error",
+  code: "forbidden",
+  details: {
+    coding: [
+      {
+        system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+        version: "1",
+        code: "ACCESS_DENIED",
+        display: "Required access level not met."
+      }
+    ]
+  }
+}
