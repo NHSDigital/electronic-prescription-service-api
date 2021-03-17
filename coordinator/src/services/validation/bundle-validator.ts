@@ -8,9 +8,7 @@ import * as fhir from "../../models/fhir"
 import * as errors from "../../models/errors/validation-errors"
 import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
 
-export function verifyBundle(
-  bundle: fhir.Bundle
-): Array<fhir.OperationOutcomeIssue> {
+export function verifyBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
     return [errors.createResourceTypeIssue("Bundle")]
   }
