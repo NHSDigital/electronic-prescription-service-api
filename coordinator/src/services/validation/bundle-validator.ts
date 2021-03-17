@@ -9,7 +9,7 @@ import * as errors from "../../models/errors/validation-errors"
 import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
 
 export function verifyBundle(
-  bundle: fhir.Bundle,
+  bundle: fhir.Bundle
 ): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
     return [errors.createResourceTypeIssue("Bundle")]
@@ -23,7 +23,6 @@ export function verifyBundle(
   const commonErrors = verifyCommonBundle(bundle)
 
   let messageTypeSpecificErrors
-  const authErrors: Array<fhir.OperationOutcomeIssue> = []
   switch (messageType) {
     case fhir.EventCodingCode.PRESCRIPTION:
       messageTypeSpecificErrors = verifyPrescriptionBundle(bundle)
@@ -38,8 +37,7 @@ export function verifyBundle(
 
   return [
     ...commonErrors,
-    ...messageTypeSpecificErrors,
-    ...authErrors
+    ...messageTypeSpecificErrors
   ]
 }
 
