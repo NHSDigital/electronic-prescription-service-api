@@ -11,14 +11,7 @@ const SPINE_ENDPOINT = process.env.SPINE_URL
 const SPINE_PATH = "Prescription"
 const BASE_PATH = process.env.BASE_PATH
 
-const httpsAgent = new https.Agent({
-  cert: process.env.CLIENT_CERT,
-  key: process.env.CLIENT_KEY,
-  ca: [
-    process.env.ROOT_CA_CERT,
-    process.env.SUB_CA_CERT
-  ]
-})
+const httpsAgent = new https.Agent()
 
 export class LiveSpineClient implements SpineClient {
   private readonly spineEndpoint: string
@@ -135,6 +128,7 @@ export class LiveSpineClient implements SpineClient {
 
   private getSpineUrlForPrescription() {
     if (this.spineEndpoint.includes("ref")) {
+      // don't need to do this anymore  ( urls are correct ) also search should be  /^msg\./ (not a global replace)
       return `${SPINE_URL_SCHEME}://${this.spineEndpoint.replace(/msg/g, "prescriptions")}/${this.spinePath}`
     }
 
@@ -143,6 +137,7 @@ export class LiveSpineClient implements SpineClient {
 
   private getSpineUrlForPolling(path: string) {
     if (this.spineEndpoint.includes("ref")) {
+      // don't need to do this anymore  ( urls are correct ) also search should be  /^msg\./ (not a global replace)
       return `${SPINE_URL_SCHEME}://${this.spineEndpoint.replace(/msg/g, "prescriptions")}/_poll/${path}`
     }
 
