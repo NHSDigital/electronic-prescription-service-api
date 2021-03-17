@@ -149,7 +149,7 @@ TestResources.processDispenseNotificationCaseGroups.forEach(pactGroup => {
 
             const interaction: InteractionObject = {
               state: "is authenticated",
-              uponReceiving: `a request to process prescription: ${desc} message to Spine`,
+              uponReceiving: `a request to process ${desc} message to Spine`,
               withRequest: {
                 headers: {
                   "Content-Type": "application/fhir+json; fhirVersion=4.0",

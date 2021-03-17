@@ -33,7 +33,7 @@ export function regeneratePrescriptionIds(): void {
     const newBundleIdentifier = uuid.v4()
 
     const originalShortFormId = firstGroupIdentifier.value
-    const newShortFormId = generateShortFormId()
+    const newShortFormId = generateShortFormId(originalShortFormId)
     replacements.set(originalShortFormId, newShortFormId)
 
     const originalLongFormId = getLongFormIdExtension(firstGroupIdentifier.extension).valueIdentifier.value
@@ -77,10 +77,10 @@ export function setPrescriptionIds(
  * The following methods contain a lot of duplicated code from the coordinator module.
  * TODO - Find a better way to share this code.
  */
-export function generateShortFormId(): string {
+export function generateShortFormId(originalShortFormId?: string): string {
   const _PRESC_CHECKDIGIT_VALUES = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+"
   const hexString = (uuid.v4()).replace(/-/g, "").toUpperCase()
-  let prescriptionID = hexString.substring(0, 6) + "-" + "A99968" + "-" + hexString.substring(12, 17)
+  let prescriptionID = `${hexString.substring(0, 6)}-${originalShortFormId?.substring(7,13) ?? "A12345"}-${hexString.substring(12, 17)}`
   const prscID = prescriptionID.replace(/-/g, "")
   const prscIDLength = prscID.length
   let runningTotal = 0
