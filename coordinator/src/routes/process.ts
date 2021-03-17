@@ -25,7 +25,7 @@ export default [
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const hopefullyBundle = getPayload(request) as fhir.Bundle
       if (identifyMessageType(hopefullyBundle) !== fhir.EventCodingCode.DISPENSE) {
-        if (userHasValidAuth(request, "user")) {
+        if (!userHasValidAuth(request, "user")) {
           return responseToolkit.response(unauthorisedActionIssue).code(403).type(CONTENT_TYPE_FHIR)
         }
       }

@@ -14,7 +14,7 @@ export default [
     method: "POST",
     path: `${BASE_PATH}/$prepare`,
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      if (userHasValidAuth(request, "user")) {
+      if (!userHasValidAuth(request, "user")) {
         return responseToolkit.response(unauthorisedActionIssue).code(403).type(CONTENT_TYPE_FHIR)
       }
 
