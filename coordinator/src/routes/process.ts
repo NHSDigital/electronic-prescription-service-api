@@ -23,8 +23,8 @@ export default [
     method: "POST",
     path: `${BASE_PATH}/$process-message`,
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const hopefullyBundle = getPayload(request) as fhir.Bundle
-      if (identifyMessageType(hopefullyBundle) !== fhir.EventCodingCode.DISPENSE) {
+      const bundle = getPayload(request) as fhir.Bundle
+      if (identifyMessageType(bundle) !== fhir.EventCodingCode.DISPENSE) {
         if (!userHasValidAuth(request, "user")) {
           return responseToolkit.response(unauthorisedActionIssue).code(403).type(CONTENT_TYPE_FHIR)
         }
@@ -35,7 +35,6 @@ export default [
         return responseToolkit.response(fhirValidatorResponse).code(400).type(CONTENT_TYPE_FHIR)
       }
 
-      const bundle = getPayload(request) as fhir.Bundle
       const issues = bundleValidator.verifyBundle(bundle)
       if (issues.length) {
         return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(CONTENT_TYPE_FHIR)
