@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN030101SM32 xmlns="urn:hl7-org:v3">
-  <id root="0A1FD9EF-A3D5-4E95-84CD-552070A03083"/>
-  <creationTime value="20210129154828"/>
+  <id root="34470BBF-07CB-4B49-BEF9-F958114F821F"/>
+  <creationTime value="20210316123433"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN030101SM32" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -40,8 +40,8 @@
     </author1>
     <subject>
       <CancellationRequest classCode="INFO" moodCode="EVN">
-        <id root="0A1FD9EF-A3D5-4E95-84CD-552070A03083"/>
-        <effectiveTime value="20210129154825"/>
+        <id root="34470BBF-07CB-4B49-BEF9-F958114F821F"/>
+        <effectiveTime value="20210316123427"/>
         <typeId extension="PORX_MT135001UK32" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <Patient classCode="PAT">
@@ -75,7 +75,7 @@
             </patientPerson>
           </Patient>
         </recordTarget>
-        <author contextControlCode="OP" typeCode="AUT">
+        <author typeCode="AUT">
           <AgentPerson classCode="AGNT">
             <id extension="601986680555" root="1.2.826.0.1285.0.2.0.67"/>
             <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
@@ -101,7 +101,7 @@
             </representedOrganization>
           </AgentPerson>
         </author>
-        <responsibleParty contextControlCode="OP" typeCode="RESP">
+        <responsibleParty typeCode="RESP">
           <AgentPerson classCode="AGNT">
             <id extension="601986680555" root="1.2.826.0.1285.0.2.0.67"/>
             <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
@@ -131,7 +131,7 @@
           <seperatableInd value="false"/>
           <pertinentPrescriptionID classCode="OBS" moodCode="EVN">
             <code code="PID" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-            <value extension="6D9486-ZB4624-11EB8A" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+            <value extension="269CA9-A99968-4577BF" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
           </pertinentPrescriptionID>
         </pertinentInformation2>
         <pertinentInformation1 inversionInd="false" negationInd="false" typeCode="PERT">
@@ -151,7 +151,7 @@
         <pertinentInformation3 contextConductionInd="false" typeCode="PERT">
           <seperatableInd value="true"/>
           <pertinentOriginalPrescriptionRef classCode="SBADM" moodCode="RQO">
-            <id root="5CD3546E-814C-4604-AF93-CEC4F1FC31BA"/>
+            <id root="030611B2-9769-4696-88D9-9DDCF1132584"/>
           </pertinentOriginalPrescriptionRef>
         </pertinentInformation3>
       </CancellationRequest>
