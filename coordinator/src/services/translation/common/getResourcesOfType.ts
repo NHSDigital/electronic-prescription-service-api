@@ -21,7 +21,7 @@ export function getMedicationRequests(bundle: fhir.Bundle): Array<fhir.Medicatio
 
 export function getMedicationDispenses(bundle: fhir.Bundle): Array<fhir.MedicationDispense> {
   return getResourcesOfType<fhir.MedicationDispense>(bundle, "MedicationDispense")
-}``
+}
 
 export function getCommunicationRequests(bundle: fhir.Bundle): Array<fhir.CommunicationRequest> {
   return getResourcesOfType<fhir.CommunicationRequest>(bundle, "CommunicationRequest")

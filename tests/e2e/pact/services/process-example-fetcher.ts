@@ -23,7 +23,7 @@ export const processExamples = [
   ...prescriptionDispenseExamples
 ]
 
-export function regeneratePrescriptionIds(): void {
+export function updatePrescriptions(): void {
   const replacements = new Map<string, string>()
 
   prescriptionOrderExamples.forEach(processCase => {
@@ -33,7 +33,7 @@ export function regeneratePrescriptionIds(): void {
     const newBundleIdentifier = uuid.v4()
 
     const originalShortFormId = firstGroupIdentifier.value
-    const newShortFormId = generateShortFormId()
+    const newShortFormId = generateShortFormId(originalShortFormId)
     replacements.set(originalShortFormId, newShortFormId)
 
     const originalLongFormId = getLongFormIdExtension(firstGroupIdentifier.extension).valueIdentifier.value
@@ -41,6 +41,7 @@ export function regeneratePrescriptionIds(): void {
     replacements.set(originalLongFormId, newLongFormId)
 
     setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
+    setTestPatientIfProd(bundle)  
   })
 
   prescriptionOrderUpdateExamples.forEach(processCase => {
@@ -56,7 +57,42 @@ export function regeneratePrescriptionIds(): void {
     const newLongFormId = replacements.get(originalLongFormId)
 
     setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
+    setTestPatientIfProd(bundle)
   })
+}
+
+function setTestPatientIfProd(bundle: fhir.Bundle) {
+  if (process.env.APIGEE_ENVIRONMENT === "prod") {
+    const patient = getPatient(bundle)
+    const nhsNumberIdentifier = getNhsNumberIdentifier(patient)
+    nhsNumberIdentifier.value = "9990548609"
+    patient.name = [
+      {
+        "use": "usual",
+        "family": "XXTESTPATIENT-TGNP",
+        "given": [
+          "DONOTUSE"
+        ],
+        "prefix": [
+          "MR"
+        ]
+      }
+    ]
+    patient.gender = "male"
+    patient.birthDate = "1932-01-06",
+    patient.address = [
+      {
+        "use": "home",
+        "line": [
+          "1 Trevelyan Square",
+          "Boar Lane",
+          "Leeds",
+          "West Yorkshire"
+        ],
+        "postalCode": "LS1 6AE"
+      }
+    ]
+  }
 }
 
 export function setPrescriptionIds(
@@ -77,10 +113,10 @@ export function setPrescriptionIds(
  * The following methods contain a lot of duplicated code from the coordinator module.
  * TODO - Find a better way to share this code.
  */
-export function generateShortFormId(): string {
+export function generateShortFormId(originalShortFormId?: string): string {
   const _PRESC_CHECKDIGIT_VALUES = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+"
   const hexString = (uuid.v4()).replace(/-/g, "").toUpperCase()
-  let prescriptionID = hexString.substring(0, 6) + "-" + "A99968" + "-" + hexString.substring(12, 17)
+  let prescriptionID = `${hexString.substring(0, 6)}-${originalShortFormId?.substring(7,13) ?? "A12345"}-${hexString.substring(12, 17)}`
   const prscID = prescriptionID.replace(/-/g, "")
   const prscIDLength = prscID.length
   let runningTotal = 0
@@ -105,4 +141,16 @@ function getMedicationRequests(bundle: fhir.Bundle): Array<fhir.MedicationReques
   return bundle.entry
     .filter(entry => entry.resource.resourceType === "MedicationRequest")
     .map(entry => entry.resource) as Array<fhir.MedicationRequest>
+}
+
+function getPatient(bundle: fhir.Bundle): fhir.Patient {
+  return bundle.entry
+    .filter(entry => entry.resource.resourceType === "Patient")
+    .map(entry => entry.resource)[0] as fhir.Patient
+}
+
+function getNhsNumberIdentifier(fhirPatient: fhir.Patient) {
+  return fhirPatient
+    .identifier
+    .filter(identifier => identifier.system === "https://fhir.nhs.uk/Id/nhs-number")[0]
 }
