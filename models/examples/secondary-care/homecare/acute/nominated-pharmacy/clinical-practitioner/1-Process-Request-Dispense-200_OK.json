@@ -76,7 +76,7 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
-            "value": "4509B70D-D8B8-EA03-1105-64557CB54A29"
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
           }
         ],
         "status": "completed",
@@ -84,8 +84,8 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "385049006",
-              "display": "Flucloxacillin 500mg capsules"
+              "code": "13892511000001100",
+              "display": "Amlodipine 5mg/5ml oral solution"
             }
           ]
         },
@@ -93,9 +93,9 @@
           "type": "Patient",
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "9990548609"
+            "value": "9449307113"
           },
-          "display": "MR DONOTUSE XXTESTPATIENT-TGNP"
+          "display": "MS LULA HAVEN BUCKLAND"
         },
         "performer": [
           {
@@ -129,14 +129,14 @@
                     "url": "shortForm",
                     "valueIdentifier": {
                       "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-                      "value": "3C2366-B81001-0A409U"
+                      "value": "681AC8-A99968-40469I"
                     }
                   },
                   {
                     "url": "UUID",
                     "valueIdentifier": {
                       "system": "https://fhir.nhs.uk/Id/prescription",
-                      "value": "66317E0C-CE13-59AD-9979-9B568E080160"
+                      "value": "f94174d0-dc46-4745-9dc6-149a56a20503"
                     }
                   }
                 ]
@@ -144,7 +144,7 @@
             ],
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-              "value": "E76622AE-E2DB-5683-2045-D1C229EDA3A2"
+              "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
             }
           }
         ],
@@ -159,20 +159,126 @@
         },
         "quantity": {
           "value": 28,
-          "unit": "capsule",
+          "unit": "tablet",
           "system": "http://snomed.info/sct",
-          "code": "3316911000001105"
-        },
-        "daysSupply": {
-          "value": 7,
-          "unit": "Day",
-          "system": "http://unitsofmeasure.org",
-          "code": "d"
+          "code": "428673006"
         },
         "whenPrepared": "2009-09-21T09:24:20+00:00",
         "dosageInstruction": [
           {
-            "text": "4 times a day for 7 days"
+            "text": "80mg at 8am and 40mg at 2pm for 5 days. Then 40mg tablet – oral-  daily at 8am"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:4509B70D-D8B8-EA03-1105-64557CB54A28",
+      "resource": {
+        "resourceType": "MedicationDispense",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+              "code": "0003",
+              "display": "With Dispenser - Active"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+          }
+        ],
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "317972000",
+              "display": "Furosemide 40mg tablets"
+            }
+          ]
+        },
+        "subject": {
+          "type": "Patient",
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449307113"
+          },
+          "display": "MS LULA HAVEN BUCKLAND"
+        },
+        "performer": [
+          {
+            "actor": {
+              "type": "Practitioner",
+              "identifier": {
+                "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+                "value": "7654321"
+              },
+              "display": "Mr Peter Potion"
+            }
+          },
+          {
+            "actor": {
+              "type": "Organization",
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "T1450"
+              },
+              "display": "NHS BUSINESS SERVICES AUTHORITY"
+            }
+          }
+        ],
+        "authorizingPrescription": [
+          {
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
+                "extension": [
+                  {
+                    "url": "shortForm",
+                    "valueIdentifier": {
+                      "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+                      "value": "681AC8-A99968-40469I"
+                    }
+                  },
+                  {
+                    "url": "UUID",
+                    "valueIdentifier": {
+                      "system": "https://fhir.nhs.uk/Id/prescription",
+                      "value": "f94174d0-dc46-4745-9dc6-149a56a20503"
+                    }
+                  }
+                ]
+              }
+            ],
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+              "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
+            }
+          }
+        ],
+        "type": {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "code": "0001",
+              "display": "Item fully dispensed"
+            }
+          ]
+        },
+        "quantity": {
+          "value": 28,
+          "unit": "tablet",
+          "system": "http://snomed.info/sct",
+          "code": "428673006"
+        },
+        "whenPrepared": "2009-09-21T09:24:20+00:00",
+        "dosageInstruction": [
+          {
+            "text": "80mg at 8am and 40mg at 2pm for 5 days. Then 40mg tablet – oral-  daily at 8am"
           }
         ]
       }

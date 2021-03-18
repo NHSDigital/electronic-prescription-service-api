@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN080101SM31 xmlns="urn:hl7-org:v3">
   <id root="90DB708F-3E82-4D2C-A7AA-FD965A8CFB03"/>
-  <creationTime value="20210317015917"/>
+  <creationTime value="20210318164708"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN080101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -29,11 +29,11 @@
       <DispenseNotification classCode="INFO" moodCode="EVN">
         <id root="90DB708F-3E82-4D2C-A7AA-FD965A8CFB03"/>
         <code code="163541000000107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensed Medication - FocusActOrEvent (administrative concept)"/>
-        <effectiveTime value="20210317015917"/>
+        <effectiveTime value="20210318164708"/>
         <typeId extension="PORX_MT024001UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <patient classCode="PAT">
-            <id extension="9990548609" root="2.16.840.1.113883.2.1.4.1"/>
+            <id extension="9449307113" root="2.16.840.1.113883.2.1.4.1"/>
           </patient>
         </recordTarget>
         <primaryInformationRecipient contextControlCode="ON" typeCode="PRCP">
@@ -84,27 +84,27 @@
               <seperatableInd value="false"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentSuppliedLineItem classCode="SBADM" moodCode="PRMS">
-                <id root="4509B70D-D8B8-EA03-1105-64557CB54A29"/>
-                <code code="385049006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
+                <code code="13892511000001100" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
                 <effectiveTime nullFlavor="NA"/>
                 <consumable contextControlCode="OP" typeCode="CSM">
                   <requestedManufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
-                      <code code="3316911000001105" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="capsule"/>
+                      <code code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet"/>
                     </manufacturedRequestedMaterial>
                   </requestedManufacturedProduct>
                 </consumable>
                 <component typeCode="COMP">
                   <seperatableInd value="false"/>
                   <suppliedLineItemQuantity classCode="SPLY" moodCode="EVN">
-                    <code code="3316911000001105" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="capsule"/>
+                    <code code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet"/>
                     <quantity unit="1" value="28">
-                      <translation code="3316911000001105" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="capsule" value="28"/>
+                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="28"/>
                     </quantity>
                     <product contextControlCode="OP" typeCode="PRD">
                       <suppliedManufacturedProduct classCode="MANU">
                         <manufacturedSuppliedMaterial classCode="MMAT" determinerCode="KIND">
-                          <code code="385049006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Flucloxacillin 500mg capsules"/>
+                          <code code="13892511000001100" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Amlodipine 5mg/5ml oral solution"/>
                         </manufacturedSuppliedMaterial>
                       </suppliedManufacturedProduct>
                     </product>
@@ -112,7 +112,7 @@
                       <seperatableInd value="false"/>
                       <pertinentSupplyInstructions classCode="OBS" moodCode="EVN">
                         <code code="SI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                        <value>4 times a day for 7 days</value>
+                        <value>80mg at 8am and 40mg at 2pm for 5 days. Then 40mg tablet – oral-  daily at 8am</value>
                       </pertinentSupplyInstructions>
                     </pertinentInformation1>
                   </suppliedLineItemQuantity>
@@ -120,9 +120,9 @@
                 <component1 typeCode="COMP">
                   <seperatableInd value="false"/>
                   <supplyRequest classCode="SPLY" moodCode="RQO">
-                    <code code="3316911000001105" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="capsule"/>
+                    <code code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet"/>
                     <quantity unit="1" value="28">
-                      <translation code="3316911000001105" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="capsule" value="28"/>
+                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="28"/>
                     </quantity>
                   </supplyRequest>
                 </component1>
@@ -137,7 +137,69 @@
                   <seperatableInd value="true"/>
                   <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
                   <priorOriginalItemRef classCode="SBADM" moodCode="RQO">
-                    <id root="E76622AE-E2DB-5683-2045-D1C229EDA3A2"/>
+                    <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB7"/>
+                  </priorOriginalItemRef>
+                </inFulfillmentOf>
+              </pertinentSuppliedLineItem>
+            </pertinentInformation1>
+            <pertinentInformation1 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT">
+              <seperatableInd value="false"/>
+              <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+              <pertinentSuppliedLineItem classCode="SBADM" moodCode="PRMS">
+                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
+                <code code="317972000" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+                <effectiveTime nullFlavor="NA"/>
+                <consumable contextControlCode="OP" typeCode="CSM">
+                  <requestedManufacturedProduct classCode="MANU">
+                    <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
+                      <code code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet"/>
+                    </manufacturedRequestedMaterial>
+                  </requestedManufacturedProduct>
+                </consumable>
+                <component typeCode="COMP">
+                  <seperatableInd value="false"/>
+                  <suppliedLineItemQuantity classCode="SPLY" moodCode="EVN">
+                    <code code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet"/>
+                    <quantity unit="1" value="28">
+                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="28"/>
+                    </quantity>
+                    <product contextControlCode="OP" typeCode="PRD">
+                      <suppliedManufacturedProduct classCode="MANU">
+                        <manufacturedSuppliedMaterial classCode="MMAT" determinerCode="KIND">
+                          <code code="317972000" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Furosemide 40mg tablets"/>
+                        </manufacturedSuppliedMaterial>
+                      </suppliedManufacturedProduct>
+                    </product>
+                    <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
+                      <seperatableInd value="false"/>
+                      <pertinentSupplyInstructions classCode="OBS" moodCode="EVN">
+                        <code code="SI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                        <value>80mg at 8am and 40mg at 2pm for 5 days. Then 40mg tablet – oral-  daily at 8am</value>
+                      </pertinentSupplyInstructions>
+                    </pertinentInformation1>
+                  </suppliedLineItemQuantity>
+                </component>
+                <component1 typeCode="COMP">
+                  <seperatableInd value="false"/>
+                  <supplyRequest classCode="SPLY" moodCode="RQO">
+                    <code code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet"/>
+                    <quantity unit="1" value="28">
+                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="28"/>
+                    </quantity>
+                  </supplyRequest>
+                </component1>
+                <pertinentInformation3 contextConductionInd="true" typeCode="PERT">
+                  <seperatableInd value="false"/>
+                  <pertinentItemStatus classCode="OBS" moodCode="EVN">
+                    <code code="IS" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                    <value code="0001" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.23" displayName="Item fully dispensed"/>
+                  </pertinentItemStatus>
+                </pertinentInformation3>
+                <inFulfillmentOf inversionInd="false" negationInd="false" typeCode="FLFS">
+                  <seperatableInd value="true"/>
+                  <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+                  <priorOriginalItemRef classCode="SBADM" moodCode="RQO">
+                    <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB7"/>
                   </priorOriginalItemRef>
                 </inFulfillmentOf>
               </pertinentSuppliedLineItem>
@@ -153,14 +215,14 @@
               <seperatableInd value="false"/>
               <pertinentPrescriptionID classCode="OBS" moodCode="EVN">
                 <code code="PID" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                <value extension="3C2366-B81001-0A409U" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+                <value extension="681AC8-A99968-40469I" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
               </pertinentPrescriptionID>
             </pertinentInformation4>
             <inFulfillmentOf inversionInd="false" negationInd="false" typeCode="FLFS">
               <seperatableInd value="true"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <priorOriginalPrescriptionRef classCode="SBADM" moodCode="RQO">
-                <id root="66317E0C-CE13-59AD-9979-9B568E080160"/>
+                <id root="F94174D0-DC46-4745-9DC6-149A56A20503"/>
               </priorOriginalPrescriptionRef>
             </inFulfillmentOf>
           </pertinentSupplyHeader>
@@ -171,7 +233,12 @@
             <code code="185361000000102" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Medication - care record element (record artifact)"/>
             <component typeCode="COMP">
               <actRef classCode="SBADM" moodCode="PRMS">
-                <id root="4509B70D-D8B8-EA03-1105-64557CB54A29"/>
+                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
+              </actRef>
+            </component>
+            <component typeCode="COMP">
+              <actRef classCode="SBADM" moodCode="PRMS">
+                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
               </actRef>
             </component>
           </pertinentCareRecordElementCategory>
