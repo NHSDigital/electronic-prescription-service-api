@@ -169,6 +169,8 @@ install-smoke-tests:
 # Example:
 # make mode=sandbox create-smoke-tests
 # make mode=live create-smoke-tests
+# make mode=sandbox update=false create-smoke-tests
+# make mode=live update=false create-smoke-tests
 create-smoke-tests:
 	source .envrc \
 	&& cd tests/e2e/pact \

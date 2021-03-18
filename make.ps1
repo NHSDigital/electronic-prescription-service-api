@@ -47,6 +47,8 @@ function install-smoke-tests() {
 # Example:
 # make mode=sandbox create-smoke-tests
 # make mode=live create-smoke-tests
+# make mode=sandbox update=false create-smoke-tests
+# make mode=live update=false create-smoke-tests
 function create-smoke-tests() {
     foreach ($arg in $args) {
         $split_args = $arg.Split("=")
@@ -59,6 +61,7 @@ function create-smoke-tests() {
     }
     . ./envrc.ps1
     $env:PACT_VERSION="$env:USERNAME".replace(' ','')
+    $env:UPDATE_PRESCRIPTIONS=$update
     #$env:LOG_LEVEL="debug"
     Remove-Item Env:\LOG_LEVEL -ErrorAction SilentlyContinue
     cd tests/e2e/pact
