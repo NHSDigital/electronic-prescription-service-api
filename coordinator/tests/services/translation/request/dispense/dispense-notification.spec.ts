@@ -434,6 +434,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
 
     const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
 
+    expect(mockAgentPersonFunction).toHaveBeenCalledWith("T1450", logger)
     expect(
       hl7dispenseNotification
         .pertinentInformation1
