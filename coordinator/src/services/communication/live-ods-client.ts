@@ -7,7 +7,7 @@ import {convertToOrganization, OdsOrganization} from "./ods-organization"
 export class LiveOdsClient implements OdsClient {
   async lookupOrganization(odsCode: string, logger: pino.Logger): Promise<fhir.Organization> {
     logger.info(`Performing ODS lookup for code ${odsCode}`)
-    const url = `https://${process.env.ODS_URL}/Organization/${odsCode}`
+    const url = `https://${process.env.ODS_URL}/STU3/Organization/${odsCode}`
     try {
       const result = await axios.get<OdsOrganization>(url)
       if (result.status != 200) {
