@@ -22,5 +22,6 @@ export class Address {
   city?: string
   district?: string
   state?: string
+  country?: string
   postalCode?: string
 }

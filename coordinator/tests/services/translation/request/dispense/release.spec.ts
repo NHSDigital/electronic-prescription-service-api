@@ -1,34 +1,32 @@
 import * as fhir from "../../../../../src/models/fhir"
 import {translateReleaseRequest} from "../../../../../src/services/translation/request/dispense/release"
 import pino from "pino"
+import * as hl7V3 from "../../../../../src/models/hl7-v3"
+import {createAuthorForUnattendedAccess} from "../../../../../src/services/translation/request/agent-unattended"
 
 const logger = pino()
 
+jest.mock("../../../../../src/services/translation/request/agent-unattended", () => ({
+  createAuthorForUnattendedAccess: jest.fn()
+}))
+
 describe("translateReleaseRequest", () => {
-  const parameters = new fhir.Parameters([{
-    "name": "owner",
-    "valueIdentifier": {
-      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-      "value": "FTX40"
-    }
-  }])
-  const translatedRelease = translateReleaseRequest(parameters, logger)
+  test("translated release contains author details from ODS", async () => {
+    const mockAuthorResponse = new hl7V3.Author()
+    mockAuthorResponse.AgentPerson = new hl7V3.AgentPerson()
+    const mockAuthorFunction = createAuthorForUnattendedAccess as jest.Mock
+    mockAuthorFunction.mockReturnValueOnce(Promise.resolve(mockAuthorResponse))
+    const parameters = new fhir.Parameters([{
+      "name": "owner",
+      "valueIdentifier": {
+        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+        "value": "FTX40"
+      }
+    }])
 
-  test("translated release contains agentPersonPerson and representedOrganization", async () => {
-    const author = (await translatedRelease).NominatedPrescriptionReleaseRequest.author
-    expect(author).toBeTruthy()
-    const agentPerson = author.AgentPerson
-    expect(agentPerson).toBeTruthy()
-    const agentPersonPerson = agentPerson.agentPerson
-    const representedOrganization = agentPerson.representedOrganization
-    expect(agentPersonPerson).toBeTruthy()
-    expect(representedOrganization).toBeTruthy()
-  })
+    const translatedRelease = await translateReleaseRequest(parameters, logger)
 
-  test("translates organizationId correctly", async () => {
-    const agentPerson = (await translatedRelease).NominatedPrescriptionReleaseRequest.author.AgentPerson
-    const organizationId = agentPerson.representedOrganization.id._attributes.extension
-    expect(organizationId).toBe("FTX40")
+    expect(mockAuthorFunction).toHaveBeenCalledWith("FTX40", logger)
+    expect(translatedRelease.NominatedPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
   })
 })
-

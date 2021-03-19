@@ -22,11 +22,9 @@ docker_service:
           value: "{{ SOURCE_COMMIT_ID }}"
     secrets:
         - name: SPINE_URL
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/{{ SPINE_ENV }}/host'
-        - name: CLIENT_KEY
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/certs/spine/{{ SPINE_ENV }}/key'
-        - name: CLIENT_CERT
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/certs/spine/{{ SPINE_ENV }}/crt'
+          valueFrom: '/{{ account }}/platform-common/egress/hosts/spine-prescriptions-{{ SPINE_ENV }}'
+        - name: ODS_URL
+          valueFrom: '/{{ account }}/platform-common/egress/hosts/directory-spineservices'
         - name: FROM_ASID
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/from-asid'
         - name: TO_ASID
@@ -37,10 +35,6 @@ docker_service:
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-party-key'
         - name: CPA_ID_MAP
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/cpa-id-map'
-        - name: ROOT_CA_CERT
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/certs/nhsd-root-ca/{{ account }}/crt'
-        - name: SUB_CA_CERT
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/certs/nhsd-sub-ca/{{ account }}/crt'
     health_check:
         matcher: "200"
         path: "/_status"

@@ -1,11 +1,6 @@
 #!/bin/bash
 set -eu
 
-# coordinator (live)
-export CLIENT_KEY=
-export CLIENT_CERT=
-export ROOT_CA_CERT=
-export SUB_CA_CERT=
 
 # coordinator (sandbox)
 export SANDBOX=1
