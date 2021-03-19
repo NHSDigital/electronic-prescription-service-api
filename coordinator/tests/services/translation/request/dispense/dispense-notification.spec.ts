@@ -430,7 +430,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
   test("pertinentInformation1.pertinentSupplyHeader.author populated using ODS details", async () => {
     const mockAgentPersonResponse = new hl7V3.AgentPerson()
     const mockAgentPersonFunction = createAgentPersonForUnattendedAccess as jest.Mock
-    mockAgentPersonFunction.mockReturnValueOnce(new Promise((resolve) => resolve(mockAgentPersonResponse)))
+    mockAgentPersonFunction.mockReturnValueOnce(Promise.resolve(mockAgentPersonResponse))
 
     const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
 

@@ -10,11 +10,11 @@ jest.mock("../../../../../src/services/translation/request/agent-unattended", ()
   createAuthorForUnattendedAccess: jest.fn()
 }))
 
-describe("translateReleaseRequest", () => {
+describe("translateReleaseRequest", async () => {
   const mockAuthorResponse = new hl7V3.Author()
   mockAuthorResponse.AgentPerson = new hl7V3.AgentPerson()
   const mockAuthorFunction = createAuthorForUnattendedAccess as jest.Mock
-  mockAuthorFunction.mockReturnValueOnce(new Promise((resolve) => resolve(mockAuthorResponse)))
+  mockAuthorFunction.mockReturnValueOnce(Promise.resolve(mockAuthorResponse))
   const parameters = new fhir.Parameters([{
     "name": "owner",
     "valueIdentifier": {
@@ -22,11 +22,10 @@ describe("translateReleaseRequest", () => {
       "value": "FTX40"
     }
   }])
-  const translatedRelease = translateReleaseRequest(parameters, logger)
+  const translatedRelease = await translateReleaseRequest(parameters, logger)
 
   test("translated release contains author details from ODS", async () => {
-    const author = (await translatedRelease).NominatedPrescriptionReleaseRequest.author
     expect(mockAuthorFunction).toHaveBeenCalledWith("FTX40", logger)
-    expect(author).toEqual(mockAuthorResponse)
+    expect(translatedRelease.NominatedPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
   })
 })
