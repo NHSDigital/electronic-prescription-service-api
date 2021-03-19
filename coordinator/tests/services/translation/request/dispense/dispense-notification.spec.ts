@@ -20,6 +20,9 @@ import {
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {ElementCompact} from "xml-js"
 import pino = require("pino")
+import {
+  createAgentPersonForUnattendedAccess
+} from "../../../../../src/services/translation/request/agent-unattended"
 
 const logger = pino()
 
@@ -27,6 +30,9 @@ const actualMoment = requireActual("moment")
 jest.mock("moment", () => ({
   utc: (input?: MomentInput, format?: MomentFormatSpecification) =>
     actualMoment.utc(input || "2020-12-18T12:34:34Z", format)
+}))
+jest.mock("../../../../../src/services/translation/request/agent-unattended", () => ({
+  createAgentPersonForUnattendedAccess: jest.fn()
 }))
 
 describe("convertPrescriptionDispense", () => {
@@ -109,19 +115,6 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
   beforeEach(() => {
     dispenseNotification = clone(TestResources.examplePrescription3.fhirMessageDispense)
     messageHeader = getMessageHeader(dispenseNotification)
-  })
-
-  test("sender.display maps to pertinentInformation1.pertinentSupplyHeader.author.AgentPerson", async() => {
-    messageHeader.sender.display = "HEALTHCARE AT HOME"
-
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
-
-    expect(
-      hl7dispenseNotification
-        .pertinentInformation1.pertinentSupplyHeader.author.AgentPerson.representedOrganization.name._text
-    ).toEqual(
-      messageHeader.sender.display
-    )
   })
 
   test("response.identifier maps to sequelTo.priorPrescriptionReleaseEventRef.id", async() => {
@@ -432,6 +425,24 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
         expected
       )
     })
+  })
+
+  test("pertinentInformation1.pertinentSupplyHeader.author populated using ODS details", async () => {
+    const mockAgentPersonResponse = new hl7V3.AgentPerson()
+    const mockAgentPersonFunction = createAgentPersonForUnattendedAccess as jest.Mock
+    mockAgentPersonFunction.mockReturnValueOnce(new Promise((resolve) => resolve(mockAgentPersonResponse)))
+
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
+
+    expect(
+      hl7dispenseNotification
+        .pertinentInformation1
+        .pertinentSupplyHeader
+        .author
+        .AgentPerson
+    ).toEqual(
+      mockAgentPersonResponse
+    )
   })
 
   // eslint-disable-next-line max-len
