@@ -1,35 +1,26 @@
 import {OdsClient} from "./ods-client"
 import * as fhir from "../../models/fhir"
+import {getIdentifierValueForSystem} from "../translation/common"
+import * as odsResponses from "../../models/sandbox/ods-responses"
+
+const ODS_ORGANIZATIONS = new Map(
+  [
+    odsResponses.ORGANIZATION_FH542_COMMUNITY_PHARMACY,
+    odsResponses.ORGANIZATION_FTX40_HOMECARE,
+    odsResponses.ORGANIZATION_T1450_NHS_BSA,
+    odsResponses.ORGANIZATION_VNE51_HOMECARE
+  ].map(org => [
+    getIdentifierValueForSystem(
+      org.identifier,
+      "https://fhir.nhs.uk/Id/ods-organization-code",
+      "Organization.identifier"
+    ),
+    org
+  ])
+)
 
 export class SandboxOdsClient implements OdsClient {
-  lookupOrganization(): Promise<fhir.Organization> {
-    return Promise.resolve({
-      resourceType: "Organization",
-      identifier: [{
-        system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "FTX40"
-      }],
-      type: [{
-        coding: [{
-          system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
-          code: "182"
-        }]
-      }],
-      name: "HEALTHCARE AT HOME",
-      telecom: [{
-        system: "phone",
-        value: "0870 6001540"
-      }],
-      address: [{
-        line: [
-          "FIFTH AVENUE",
-          "CENTRUM ONE HUNDRED"
-        ],
-        city: "BURTON-ON-TRENT",
-        district: "STAFFORDSHIRE",
-        postalCode: "DE14 2WS",
-        country: "ENGLAND"
-      }]
-    })
+  lookupOrganization(odsCode: string): Promise<fhir.Organization> {
+    return Promise.resolve(ODS_ORGANIZATIONS.get(odsCode) ?? null)
   }
 }
