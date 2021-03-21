@@ -2,7 +2,7 @@ import {InteractionObject} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as LosslessJson from "lossless-json"
-import * as fetcher from "@models/fetchers"
+import {fetcher} from "@models"
 import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
 
