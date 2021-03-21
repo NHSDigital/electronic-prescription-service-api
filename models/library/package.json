@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Electronic Prescription Service API Models",
   "scripts": {
-    "build": "tsc --build ./tsconfig.json",
+    "build": "tsc --build --clean ./tsconfig.json",
     "lint": "eslint . --ext .ts --max-warnings 0 --fix",
     "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL"
   },

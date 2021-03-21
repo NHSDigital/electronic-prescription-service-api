@@ -96,8 +96,8 @@ build-specification:
 build-coordinator:
 	npm run --prefix=coordinator/ build
 	cp coordinator/package.json coordinator/dist/
-	mkdir -p coordinator/dist/resources
-	cp coordinator/src/resources/ebxml_request.mustache coordinator/dist/resources/
+	mkdir -p coordinator/dist/coordinator/src/resources
+	cp coordinator/src/resources/ebxml_request.mustache coordinator/dist/coordinator/src/resources/
 
 build-validator:
 	make -C validator build

@@ -1,3 +1,9 @@
+// Typescript allows compliation using path aliases but does not support runtime
+// See: https://github.com/microsoft/TypeScript/issues/10866
+// this package allows adding aliases to package.json to accomplish the same thing
+// at runtime as paths in tsconfig.json allows at compile time
+require("module-alias/register")
+
 import {Boom} from "@hapi/boom"
 import Hapi from "@hapi/hapi"
 import routes from "./routes"

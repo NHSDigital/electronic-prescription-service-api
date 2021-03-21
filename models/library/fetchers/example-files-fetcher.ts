@@ -4,20 +4,25 @@ import {ExampleFile} from "../files/example-file"
 
 const walk = function(dir: string) {
   let results = Array<string>()
-  const list = fs.readdirSync(dir)
-  list.forEach(function(file) {
-      file = dir + '/' + file
-      const stat = fs.statSync(file)
-      if (stat && stat.isDirectory()) {
-          results = results.concat(walk(file))
-      } else {
-          const fileExt = path.parse(file).ext
-          if (fileExt.includes("json") || fileExt.includes("xml")) {
-              results.push(file)
-          }
-      }
-  })
-  return results
+  try {
+    const list = fs.readdirSync(dir)
+    list.forEach(function(file) {
+        file = dir + '/' + file
+        const stat = fs.statSync(file)
+        if (stat && stat.isDirectory()) {
+            results = results.concat(walk(file))
+        } else {
+            const fileExt = path.parse(file).ext
+            if (fileExt.includes("json") || fileExt.includes("xml")) {
+                results.push(file)
+            }
+        }
+    })
+    return results
+    }
+    catch {
+        return []
+    }
 }
 
 const primaryCareFilePaths: Array<string> = walk(path.join(__dirname, "../../examples/primary-care"))
