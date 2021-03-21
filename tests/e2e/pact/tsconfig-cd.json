@@ -19,7 +19,7 @@
   ],
   "references": [
     { 
-      "path": "../../../models/library"
+      "path": "./models/library"
     }
   ]
 }

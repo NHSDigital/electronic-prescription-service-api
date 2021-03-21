@@ -6,7 +6,7 @@ import * as LosslessJson from "lossless-json"
 import {createUnauthorisedInteraction} from "./auth"
 import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
-import {fhir} from "../../../../../models/library"
+import * as fhir from "@models/fhir"
 
 jestpact.pactWith(
   pactOptions("live", "convert", "failures"),
