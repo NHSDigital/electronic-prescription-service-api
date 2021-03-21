@@ -1,7 +1,7 @@
 import {SpineRequest, SpineResponse} from "../../models/spine"
 import * as hl7V3 from "../../models/hl7-v3"
 import {fhir} from "../../../../models/library"
-import * as sandboxResponses from "../../models/sandbox/responses"
+import * as spineResponses from "../../models/sandbox/spine-responses"
 import {SpineClient} from "./spine-client"
 
 export class SandboxSpineClient implements SpineClient {
@@ -10,32 +10,32 @@ export class SandboxSpineClient implements SpineClient {
       case hl7V3.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT._attributes.extension:
         return Promise.resolve({
           statusCode: 200,
-          body: sandboxResponses.APPLICATION_ACKNOWLEDGEMENT
+          body: spineResponses.APPLICATION_ACKNOWLEDGEMENT
         })
       case hl7V3.Hl7InteractionIdentifier.CANCEL_REQUEST._attributes.extension:
         return Promise.resolve({
           statusCode: 200,
-          body: sandboxResponses.CANCEL
+          body: spineResponses.CANCEL
         })
       case hl7V3.Hl7InteractionIdentifier.NOMINATED_PRESCRIPTION_RELEASE_REQUEST._attributes.extension:
         return Promise.resolve({
           statusCode: 200,
-          body: sandboxResponses.NOMINATED_PRESCRIPTION_RELEASE
+          body: spineResponses.NOMINATED_PRESCRIPTION_RELEASE
         })
       case hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION._attributes.extension:
         return Promise.resolve({
           statusCode: 200,
-          body: sandboxResponses.APPLICATION_ACKNOWLEDGEMENT
+          body: spineResponses.APPLICATION_ACKNOWLEDGEMENT
         })
       case hl7V3.Hl7InteractionIdentifier.DISPENSER_WITHDRAW._attributes.extension:
         return Promise.resolve({
           statusCode: 200,
-          body: sandboxResponses.DISPENSER_WITHDRAW
+          body: spineResponses.DISPENSER_WITHDRAW
         })
       case hl7V3.Hl7InteractionIdentifier.DISPENSE_PROPOSAL_RETURN._attributes.extension:
         return Promise.resolve({
           statusCode: 200,
-          body: sandboxResponses.DISPENSE_PROPOSAL_RETURN
+          body: spineResponses.DISPENSE_PROPOSAL_RETURN
         })
       default:
         return Promise.resolve({

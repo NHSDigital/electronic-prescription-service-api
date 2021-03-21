@@ -1,6 +1,6 @@
 import * as translator from "../../services/translation/request"
 import Hapi from "@hapi/hapi"
-import {BASE_PATH, CONTENT_TYPE_FHIR, createHash, getFhirValidatorErrors, getPayload} from "../util"
+import {BASE_PATH, CONTENT_TYPE_FHIR, createHash, externalValidator, getPayload, userAuthValidator} from "../util"
 import {fhir} from "../../../../models/library"
 import * as bundleValidator from "../../services/validation/bundle-validator"
 

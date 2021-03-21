@@ -7,6 +7,8 @@ import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
 import {fhir} from "../../../models/library"
+import {userHasValidAuth} from "../services/validation/auth-level"
+import {unauthorisedActionIssue} from "../models/errors/validation-errors"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 

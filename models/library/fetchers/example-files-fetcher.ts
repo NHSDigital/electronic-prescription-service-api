@@ -2,8 +2,8 @@ import fs from "fs"
 import path from "path"
 import {ExampleFile} from "../files/example-file"
 
-const walk = function(dir) {
-  let results = []
+const walk = function(dir: string) {
+  let results = Array<string>()
   const list = fs.readdirSync(dir)
   list.forEach(function(file) {
       file = dir + '/' + file
