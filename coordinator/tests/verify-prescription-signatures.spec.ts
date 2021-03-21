@@ -23,12 +23,15 @@ test.skip("verify signature for specific prescription", () => {
   expectSignatureIsValid(prescriptionRoot)
 })
 
-const cases = fetcher.convertExamples.filter(e => e.isSuccess).map(convertExample => [
-  convertExample.description,
-  readXml(convertExample.response)
-])
+const cases = fetcher.convertExamples
+  .filter(e => e.isSuccess)
+  .filter(e => e.description.includes("200-OK send"))
+  .map(convertExample => [
+    convertExample.description,
+    readXml(convertExample.response)
+  ])
 
-test.skip.each(cases)("verify prescription signature for %s", (desc: string, hl7V3Message: ElementCompact) => {
+test.each(cases)("verify prescription signature for %s", (desc: string, hl7V3Message: ElementCompact) => {
   // todo: investigate why digests do not match, running update-prescriptions script does not resolve
   // possibly related to update-prescriptions replacing hyphens with \u00e2 or â€“ or \u00e2\u20ac\u201c
   //expectDigestMatchesPrescription(hl7V3Message)
