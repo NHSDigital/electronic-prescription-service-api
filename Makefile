@@ -64,6 +64,7 @@ install-python:
 
 install-node:
 	cd specification && npm install
+	cd models/library && npm install
 	cd coordinator && npm install
 	cd tests/e2e/pact && make install
 
