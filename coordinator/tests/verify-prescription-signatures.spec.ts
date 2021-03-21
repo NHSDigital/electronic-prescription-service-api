@@ -5,13 +5,11 @@ import {readFileSync} from "fs"
 import * as path from "path"
 import {createParametersDigest} from "../src/services/translation/request"
 import {convertFragmentsToHashableFormat, extractFragments} from "../src/services/translation/request/signature"
-import {specification} from "./resources/test-resources"
 import * as hl7V3 from "../src/models/hl7-v3"
+import {fetcher} from "@models"
 
 //eslint-disable-next-line max-len
 const prescriptionPath = "../../models/examples/primary-care/acute/no-nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/spurious-code/1-Convert-Response-Send-200_OK.xml"
-
-//TODO - unskip tests once we can sign prescriptions without smartcards
 
 test.skip("verify digest for specific prescription", () => {
   const prescriptionStr = readFileSync(path.join(__dirname, prescriptionPath), "utf-8")
@@ -25,12 +23,12 @@ test.skip("verify signature for specific prescription", () => {
   expectSignatureIsValid(prescriptionRoot)
 })
 
-const cases = specification.map(examplePrescription => [
-  examplePrescription.description,
-  examplePrescription.hl7V3Message
+const cases = fetcher.convertExamples.filter(e => e.isSuccess).map(convertExample => [
+  convertExample.description,
+  readXml(convertExample.response)
 ])
 
-test.each(cases)("verify prescription signature for %s", (desc: string, hl7V3Message: ElementCompact) => {
+test.skip.each(cases)("verify prescription signature for %s", (desc: string, hl7V3Message: ElementCompact) => {
   // todo: investigate why digests do not match, running update-prescriptions script does not resolve
   // possibly related to update-prescriptions replacing hyphens with \u00e2 or â€“ or \u00e2\u20ac\u201c
   //expectDigestMatchesPrescription(hl7V3Message)

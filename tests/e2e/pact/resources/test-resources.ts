@@ -1,4 +1,4 @@
-import {fetcher} from "../../../../models/library"
+import {fetcher} from "@models"
 import {pactGroups, cancelPactGroups, PactGroupCases, dispensePactGroups} from "./common"
 
 function getConvertCases(searchString: string) {
