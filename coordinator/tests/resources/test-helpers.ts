@@ -2,7 +2,7 @@ import * as XmlJs from "xml-js"
 import {writeXmlStringPretty} from "../../src/services/serialisation/xml"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
-import * as fhir from "@models/fhir"
+import {fhir} from "@models"
 
 export function clone<T>(input: T): T {
   return LosslessJson.parse(LosslessJson.stringify(input))

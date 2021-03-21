@@ -1,6 +1,6 @@
 import * as hl7v3 from "../../../../models/hl7-v3"
 import * as uuid from "uuid"
-import * as fhir from "@models/fhir"
+import {fhir} from "@models"
 import {getIdentifierParameterByName} from "../../common"
 import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import moment from "moment"

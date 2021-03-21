@@ -9,7 +9,7 @@ import {
   handleResponse,
   userAuthValidator
 } from "./util"
-import * as fhir from "@models/fhir"
+import {fhir} from "@models"
 import * as bundleValidator from "../services/validation/bundle-validator"
 
 export default [

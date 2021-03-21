@@ -1,5 +1,5 @@
 import {JestPactOptions} from "jest-pact"
-import * as fhir from "@models/fhir"
+import {fhir} from "@models"
 
 export const basePath = "/FHIR/R4"
 

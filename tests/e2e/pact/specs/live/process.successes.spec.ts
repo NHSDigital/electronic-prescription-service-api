@@ -6,7 +6,7 @@ import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
 import * as fetcher from "@models/fetchers"
-import * as fhir from "@models/fhir"
+import {fhir} from "@models"
 
 if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
   fetcher.updatePrescriptions()

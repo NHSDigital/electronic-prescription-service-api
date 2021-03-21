@@ -1,5 +1,5 @@
 import * as hl7V3 from "../../../models/hl7-v3"
-import * as fhir from "@models/fhir"
+import {fhir} from "@models"
 import {getIdentifierValueForSystem} from "../common"
 import {convertAddress, convertTelecom} from "./demographics"
 import pino from "pino"

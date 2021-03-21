@@ -1,4 +1,4 @@
-import * as fhir from "@models/fhir"
+import {fhir} from "@models"
 
 export class FhirMessageProcessingError extends Error {
   message: string

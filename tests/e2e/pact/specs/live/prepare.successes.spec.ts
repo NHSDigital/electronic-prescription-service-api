@@ -1,7 +1,7 @@
 import { InteractionObject, Matchers } from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import * as TestResources from "../../resources/test-resources"
-import * as fhir from "@models/fhir"
+import {fhir} from "@models"
 import * as LosslessJson from "lossless-json"
 import supertest from "supertest"
 import * as uuid from "uuid"

@@ -6,7 +6,7 @@ import {getMessageHeader} from "../services/translation/common/getResourcesOfTyp
 import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
-import * as fhir from "@models/fhir"
+import {fhir} from "@models"
 import {userHasValidAuth} from "../services/validation/auth-level"
 import {unauthorisedActionIssue} from "../models/errors/validation-errors"
 

@@ -1,7 +1,7 @@
 import * as TestResources from "../../../resources/test-resources"
 import {translateToFhir} from "../../../../src/services/translation/response"
 import {SpineDirectResponse} from "../../../../src/models/spine"
-import * as fhir from "@models/fhir"
+import {fhir} from "@models"
 import pino from "pino"
 
 describe("translateToFhir", () => {

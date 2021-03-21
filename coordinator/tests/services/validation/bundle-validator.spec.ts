@@ -3,7 +3,7 @@ import * as TestResources from "../../resources/test-resources"
 import {clone} from "../../resources/test-helpers"
 import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, isTruthy} from "../../../src/services/translation/common"
-import * as fhir from "@models/fhir"
+import {fhir} from "@models"
 import {
   createMedicationRequestInconsistentValueIssue,
   medicationRequestDuplicateIdentifierIssue,

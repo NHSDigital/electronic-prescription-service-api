@@ -5,7 +5,7 @@ import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import * as TestResources from "../../resources/test-resources"
 import {basePath, pactOptions} from "../../resources/common"
-import * as fhir from "@models/fhir"
+import {fhir} from "@models"
 
 TestResources.processOrderCaseGroups.forEach(pactGroup => {
   const pactGroupName = pactGroup.name
