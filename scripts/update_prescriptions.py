@@ -66,6 +66,7 @@ def find_prepare_request_paths(examples_root_dir):
 def load_dispense_request(dispense_request_path):
     return load_json(dispense_request_path)
 
+
 def load_prepare_request(prepare_request_path):
     return load_json(prepare_request_path)
 
@@ -193,7 +194,6 @@ def derive_dispense_request_path(process_request_path):
     file = os.path.basename(process_request_path)
     filename_parts = file.split('-')
     number = filename_parts[0]
-    operation = filename_parts[3]
     status_code_and_ext = filename_parts[-1]
     return f'{example_dir}{os.path.sep}{number}-Process-Request-Dispense-{status_code_and_ext}'
 
@@ -248,7 +248,7 @@ def update_dispense_examples(
         # )
         save_dispense_request(dispense_request_path, dispense_request_json)
         print(f"Updated dispense example for {prepare_request_path}")
-    except BaseException as e:
+    except BaseException:
         return
 
 
