@@ -1,5 +1,4 @@
 import {LosslessNumber} from "lossless-json"
-import {getFullUrl} from "../../services/translation/response/common"
 
 export abstract class Resource {
   id?: string
@@ -73,4 +72,8 @@ export interface SimpleQuantity {
 export interface Period {
   start?: string
   end?: string
+}
+
+function getFullUrl(uuid: string):string {
+  return `urn:uuid:${uuid}`
 }

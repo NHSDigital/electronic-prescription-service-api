@@ -6,10 +6,16 @@
     "lib": [
       "es2019"
     ],
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "outDir": "./dist"
   },
   "include": [
     "specs/**/*",
     "."
+  ],
+  "references": [
+    { 
+        "path": "../../../models/library"
+    }
   ]
 }

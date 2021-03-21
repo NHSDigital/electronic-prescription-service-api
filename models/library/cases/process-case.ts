@@ -1,5 +1,5 @@
 import {Case} from "./case"
-import {exampleFiles} from "../../services/example-files-fetcher"
+import {exampleFiles} from "../fetchers/example-files-fetcher"
 import fs from "fs"
 import * as XmlJs from "xml-js"
 import {ExampleFile} from "../files/example-file"

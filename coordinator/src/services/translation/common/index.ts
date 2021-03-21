@@ -1,4 +1,4 @@
-import * as fhir from "../../../models/fhir"
+import {fhir} from "../../../../../models/library"
 import {LosslessNumber} from "lossless-json"
 import {InvalidValueError, TooFewValuesError, TooManyValuesError} from "../../../models/errors/processing-errors"
 

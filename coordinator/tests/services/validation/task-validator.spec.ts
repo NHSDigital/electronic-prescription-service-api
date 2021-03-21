@@ -1,4 +1,4 @@
-import * as fhir from "../../../src/models/fhir"
+import {fhir} from "../../../../models/library"
 import {clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
 import {verifyTask} from "../../../src/services/validation/task-validator"

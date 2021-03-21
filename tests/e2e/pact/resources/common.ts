@@ -1,7 +1,5 @@
 import {JestPactOptions} from "jest-pact"
-import path from "path"
-import {ExampleFile} from "../models/files/example-file"
-import * as fhir from "../models/fhir"
+import {fhir} from "../../../../models/library"
 
 export const basePath = "/FHIR/R4"
 
@@ -137,14 +135,4 @@ export function getStringParameterByName(parameters: fhir.Parameters, name: stri
   const stringParams = parameters.parameter.filter(param => isStringParameter(param)) as Array<fhir.StringParameter>
   const namedStringParams = stringParams.filter(param => param.name === name)
   if (namedStringParams.length === 1) return namedStringParams[0]
-}
-
-const examplesRootPath = "../resources/parent-prescription"
-export function createExampleDescription(exampleFile: ExampleFile): string {
-  return path.parse(path.relative(path.join(__dirname, examplesRootPath), exampleFile.path))
-    .dir
-    .replace(/\//g, " ")
-    .replace(/\\/g, " ")
-    + " "
-    + `${exampleFile.number} ${exampleFile.statusText} ${exampleFile.operation}`
 }

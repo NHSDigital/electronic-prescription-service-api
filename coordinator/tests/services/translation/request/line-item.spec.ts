@@ -10,7 +10,7 @@ import {convertBundleToPrescription} from "../../../../src/services/translation/
 import {convertBundleToSpineRequest} from "../../../../src/services/translation/request"
 import {TooManyValuesError} from "../../../../src/models/errors/processing-errors"
 import * as hl7V3 from "../../../../src/models/hl7-v3"
-import * as fhir from "../../../../src/models/fhir"
+import {fhir} from "../../../../../models/library"
 import pino from "pino"
 
 const logger = pino()

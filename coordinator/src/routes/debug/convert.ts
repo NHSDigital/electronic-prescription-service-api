@@ -4,7 +4,7 @@ import {
   BASE_PATH, CONTENT_TYPE_FHIR, CONTENT_TYPE_XML,
   getFhirValidatorErrors, getPayload, isBundle, isParameters, isTask
 } from "../util"
-import * as fhir from "../../models/fhir"
+import {fhir} from "../../../../models/library"
 import * as bundleValidator from "../../services/validation/bundle-validator"
 import * as parametersValidator from "../../services/validation/parameters-validator"
 import * as taskValidator from "../../services/validation/task-validator"

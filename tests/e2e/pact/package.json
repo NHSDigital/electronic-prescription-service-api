@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "E2E Pact tests for Electronic Prescription Service API",
   "scripts": {
+    "build": "tsc --build --clean",
     "test": "jest",
     "lint": "eslint . --ext .ts --max-warnings 0 --fix",
     "check-licenses": "node_modules/.bin/license-checker --failOn GPL --failOn LGPL",

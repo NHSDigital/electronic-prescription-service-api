@@ -13,7 +13,7 @@ import {
   convertIsoDateStringToHl7V3Date,
   convertIsoDateTimeStringToHl7V3DateTime
 } from "../../../../src/services/translation/common/dateTime"
-import * as fhir from "../../../../src/models/fhir"
+import {fhir} from "../../../../../models/library"
 
 test("getResourceForFullUrl returns correct resources", () => {
   const result = getResourceForFullUrl(

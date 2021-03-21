@@ -1,7 +1,7 @@
 import { InteractionObject, Matchers } from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import * as TestResources from "../../resources/test-resources"
-import { Bundle, Parameters } from "../../models/fhir"
+import {fhir} from "../../../../../models/library"
 import * as LosslessJson from "lossless-json"
 import supertest from "supertest"
 import * as uuid from "uuid"
@@ -21,7 +21,7 @@ TestResources.prepareCaseGroups.forEach(pactGroup => {
       }
 
       describe("prepare e2e tests", () => {
-        test.each(pactGroupTestCases)("should be able to prepare a %s message", async (desc: string, request: Bundle, response: Parameters) => {
+        test.each(pactGroupTestCases)("should be able to prepare a %s message", async (desc: string, request: fhir.Bundle, response: fhir.Parameters) => {
           const apiPath = `${basePath}/$prepare`
           const requestStr = LosslessJson.stringify(request)
           const requestId = uuid.v4()

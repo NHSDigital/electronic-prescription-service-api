@@ -1,7 +1,7 @@
 import * as translator from "../../services/translation/request"
 import Hapi from "@hapi/hapi"
 import {BASE_PATH, CONTENT_TYPE_FHIR, createHash, getFhirValidatorErrors, getPayload} from "../util"
-import * as fhir from "../../models/fhir"
+import {fhir} from "../../../../models/library"
 import * as bundleValidator from "../../services/validation/bundle-validator"
 import {userHasValidAuth} from "../../services/validation/auth-level"
 import {unauthorisedActionIssue} from "../../models/errors/validation-errors"

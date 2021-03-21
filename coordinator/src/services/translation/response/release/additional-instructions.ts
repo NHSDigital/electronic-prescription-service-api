@@ -1,5 +1,5 @@
 import * as uuid from "uuid"
-import * as fhir from "../../../../models/fhir"
+import {fhir} from "../../../../../../models/library"
 
 const MEDICATION_TAG_MATCHER = /^<medication>(.*?)<\/medication>/
 const PATIENT_INFO_TAG_MATCHER = /^<patientInfo>(.*?)<\/patientInfo>/

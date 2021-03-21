@@ -4,7 +4,7 @@ import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues, groupBy} from "./util"
 import {getCourseOfTherapyTypeCode} from "../translation/request/course-of-therapy-type"
 import {getExtensionForUrlOrNull, getIdentifierValueForSystem, isTruthy} from "../translation/common"
-import * as fhir from "../../models/fhir"
+import {fhir} from "../../../../models/library"
 import * as errors from "../../models/errors/validation-errors"
 import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
 

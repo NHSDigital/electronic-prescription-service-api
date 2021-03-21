@@ -63,6 +63,9 @@ def find_prepare_request_paths(examples_root_dir):
         yield filename
 
 
+def load_dispense_request(dispense_request_path):
+    return load_json(dispense_request_path)
+
 def load_prepare_request(prepare_request_path):
     return load_json(prepare_request_path)
 
@@ -74,6 +77,10 @@ def load_process_request(process_request_path):
 def load_json(path):
     with open(path) as f:
         return json.load(f)
+
+
+def save_dispense_request(dispense_request_path, dispense_request_json):
+    save_json(dispense_request_path, dispense_request_json)
 
 
 def save_prepare_request(prepare_request_path, prepare_request_json):
@@ -158,7 +165,7 @@ def derive_prepare_response_path(prepare_request_path):
     filename_parts = file.split('-')
     number = filename_parts[0]
     status_code_and_ext = filename_parts[-1]
-    return f'{example_dir}/{number}-Prepare-Response-{status_code_and_ext}'
+    return f'{example_dir}{os.path.sep}{number}-Prepare-Response-{status_code_and_ext}'
 
 
 def derive_process_request_path_pattern(prepare_request_path):
@@ -167,7 +174,7 @@ def derive_process_request_path_pattern(prepare_request_path):
     filename_parts = file.split('-')
     number = filename_parts[0]
     status_code_and_ext = filename_parts[-1]
-    return f'{example_dir}/{number}-Process-Request-*-{status_code_and_ext}'
+    return f'{example_dir}{os.path.sep}{number}-Process-Request-*-{status_code_and_ext}'
 
 
 def derive_convert_response_path(process_request_path):
@@ -178,7 +185,17 @@ def derive_convert_response_path(process_request_path):
     operation = filename_parts[3]
     status_code_and_ext = filename_parts[-1]
     status_code_and_xml_ext = status_code_and_ext.replace("json", "xml")
-    return f'{example_dir}/{number}-Convert-Response-{operation}-{status_code_and_xml_ext}'
+    return f'{example_dir}{os.path.sep}{number}-Convert-Response-{operation}{status_code_and_xml_ext}'
+
+
+def derive_dispense_request_path(process_request_path):
+    example_dir = os.path.dirname(process_request_path)
+    file = os.path.basename(process_request_path)
+    filename_parts = file.split('-')
+    number = filename_parts[0]
+    operation = filename_parts[3]
+    status_code_and_ext = filename_parts[-1]
+    return f'{example_dir}{os.path.sep}{number}-Process-Request-Dispense-{status_code_and_ext}'
 
 
 def update_prepare_examples(
@@ -192,6 +209,7 @@ def update_prepare_examples(
         prepare_response_json = get_prepare_response_from_a_sandbox_api(api_base_url, prepare_request_json)
         prepare_response_path = derive_prepare_response_path(prepare_request_path)
         save_prepare_response(prepare_response_path, prepare_response_json)
+        print(f"Updated prepare example for {prepare_request_path}")
         signature_time = get_signature_timestamp_from_prepare_response(prepare_response_json)
         return short_prescription_id, signature_time
     except BaseException as e:
@@ -213,9 +231,25 @@ def update_process_examples(
             convert_response_xml = get_convert_response_from_a_sandbox_api(api_base_url, process_request_json)
             convert_response_path = derive_convert_response_path(process_request_path)
             save_convert_response(convert_response_path, convert_response_xml)
+            print(f"Updated process and convert examples for {prepare_request_path}")
     except BaseException as e:
         print(f"Failed to process example {prepare_request_path}")
         raise e
+
+
+def update_dispense_examples(
+    prepare_request_path, bundle_id, prescription_id, short_prescription_id
+):
+    try:
+        dispense_request_path = derive_dispense_request_path(prepare_request_path)
+        dispense_request_json = load_dispense_request(dispense_request_path)
+        # update_prescription(
+        #     process_request_json, bundle_id, prescription_id, short_prescription_id, authored_on, signature_time
+        # )
+        save_dispense_request(dispense_request_path, dispense_request_json)
+        print(f"Updated dispense example for {prepare_request_path}")
+    except BaseException as e:
+        return
 
 
 def update_examples(api_base_url):
@@ -231,6 +265,9 @@ def update_examples(api_base_url):
         update_process_examples(
             api_base_url, prepare_request_path, bundle_id, prescription_id, short_prescription_id,
             authored_on, signature_time
+        )
+        update_dispense_examples(
+            prepare_request_path, bundle_id, prescription_id, short_prescription_id
         )
 
 

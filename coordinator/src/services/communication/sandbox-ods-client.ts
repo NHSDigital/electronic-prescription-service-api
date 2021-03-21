@@ -1,5 +1,5 @@
 import {OdsClient} from "./ods-client"
-import * as fhir from "../../models/fhir"
+import {fhir} from "../../../../models/library"
 
 export class SandboxOdsClient implements OdsClient {
   lookupOrganization(): Promise<fhir.Organization> {

@@ -1,7 +1,7 @@
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {isTruthy} from "../common"
 import * as hl7V3 from "../../../models/hl7-v3"
-import * as fhir from "../../../models/fhir"
+import {fhir} from "../../../../../models/library"
 
 export function convertName(humanName: fhir.HumanName, fhirPath: string): hl7V3.Name {
   const name = new hl7V3.Name()

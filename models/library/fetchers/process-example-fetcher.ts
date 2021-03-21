@@ -1,7 +1,7 @@
-import {ProcessCase} from "../models/cases/process-case"
+import {ProcessCase} from "../cases/process-case"
 import {exampleFiles} from "./example-files-fetcher"
 import * as uuid from "uuid"
-import * as fhir from "../models/fhir"
+import * as fhir from "../fhir"
 
 const processRequestFiles = exampleFiles.filter(exampleFile => exampleFile.isRequest && exampleFile.endpoint === "process")
 const prescriptionOrderFiles = processRequestFiles.filter(exampleFile => exampleFile.operation === "send")
@@ -41,7 +41,7 @@ export function updatePrescriptions(): void {
     replacements.set(originalLongFormId, newLongFormId)
 
     setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
-    setTestPatientIfProd(bundle)  
+    setTestPatientIfProd(bundle)
   })
 
   prescriptionOrderUpdateExamples.forEach(processCase => {

@@ -4,7 +4,7 @@ import {UNKNOWN_GP_ODS_CODE} from "../../../../src/services/translation/common"
 import {clone} from "../../../resources/test-helpers"
 import {getCancellationResponse} from "../common/test-helpers"
 import * as hl7V3 from "../../../../src/models/hl7-v3"
-import * as fhir from "../../../../src/models/fhir"
+import {fhir} from "../../../../../models/library"
 
 describe("createPatient", () => {
   const cancellationResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)

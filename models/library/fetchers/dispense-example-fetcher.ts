@@ -1,5 +1,5 @@
 import {exampleFiles} from "./example-files-fetcher"
-import {ReleaseCase} from "../models/cases/release-case"
+import {ReleaseCase} from "../cases/release-case"
 
 export const releaseExamples = exampleFiles
   .filter(exampleFile => exampleFile.isRequest && exampleFile.endpoint === "task" && exampleFile.operation === "release")

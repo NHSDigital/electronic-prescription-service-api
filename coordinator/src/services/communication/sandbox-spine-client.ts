@@ -1,6 +1,6 @@
 import {SpineRequest, SpineResponse} from "../../models/spine"
 import * as hl7V3 from "../../models/hl7-v3"
-import * as fhir from "../../models/fhir"
+import {fhir} from "../../../../models/library"
 import * as sandboxResponses from "../../models/sandbox/responses"
 import {SpineClient} from "./spine-client"
 

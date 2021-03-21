@@ -1,5 +1,5 @@
-import {PrepareCase} from "../models/cases/prepare-case"
-import {ExampleFile} from "../models/files/example-file"
+import {PrepareCase} from "../cases/prepare-case"
+import {ExampleFile} from "../files/example-file"
 import {exampleFiles} from "./example-files-fetcher"
 
 const prepareResponseFiles = exampleFiles.filter(exampleFile => exampleFile.isResponse && exampleFile.endpoint === "prepare")

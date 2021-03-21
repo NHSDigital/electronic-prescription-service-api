@@ -1,8 +1,8 @@
 import * as LosslessJson from "lossless-json"
 import * as fs from "fs"
 import {ExampleFile} from "../files/example-file"
-import {createExampleDescription} from "../../resources/common"
 import * as fhir from "../fhir"
+import path from "path"
 
 export class Case {
   requestFile: ExampleFile
@@ -28,4 +28,15 @@ export class Case {
     this.isSuccess = requestFile.statusText === "200-OK"
     this.statusCode = parseInt(requestFile.statusText.split("-")[0])
   }
+}
+
+const examplesRootPath = "../models/examples"
+
+function createExampleDescription(exampleFile: ExampleFile): string {
+  return path.parse(path.relative(path.join(__dirname, examplesRootPath), exampleFile.path))
+    .dir
+    .replace(/\//g, " ")
+    .replace(/\\/g, " ")
+    + " "
+    + `${exampleFile.number} ${exampleFile.statusText} ${exampleFile.operation}`
 }

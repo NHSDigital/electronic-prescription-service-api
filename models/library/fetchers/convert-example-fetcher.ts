@@ -1,6 +1,6 @@
-import {ConvertCase} from "../models/cases/convert-case"
+import {ConvertCase} from "../cases/convert-case"
 import {exampleFiles} from "./example-files-fetcher"
-import {ExampleFile} from "../models/files/example-file"
+import {ExampleFile} from "../files/example-file"
 
 const convertResponseFiles = exampleFiles.filter(exampleFile => exampleFile.isResponse && exampleFile.endpoint === "convert")
 

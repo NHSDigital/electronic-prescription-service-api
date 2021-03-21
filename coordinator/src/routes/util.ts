@@ -6,7 +6,7 @@ import {getMessageHeader} from "../services/translation/common/getResourcesOfTyp
 import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
-import * as fhir from "../models/fhir"
+import {fhir} from "../../../models/library"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
