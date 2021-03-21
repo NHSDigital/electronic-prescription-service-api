@@ -30,7 +30,7 @@ release:
 	mv dist/pact/tsconfig-cd.json dist/pact/tsconfig.json
 	rm -f dist/pact/jest.config.js
 	mv dist/pact/jest.config-cd.js dist/pact/jest.config.js
-	rsync -av --progress --copy-links models/library dist/pact/models --exclude node_modules
+	rsync -av --progress --copy-links models dist/pact --exclude node_modules
 	for env in internal-dev-sandbox internal-qa-sandbox sandbox; do \
 		cat ecs-proxies-deploy.yml | sed -e 's/{{ SPINE_ENV }}/veit07/g' | sed -e 's/{{ SANDBOX_MODE_ENABLED }}/1/g' > dist/ecs-deploy-$$env.yml; \
 	done
