@@ -3,7 +3,7 @@ import * as moxios from "moxios"
 import axios from "axios"
 import {LiveOdsClient} from "../../../src/services/communication/live-ods-client"
 import {OdsOrganization, OdsOrganizationRoleExtension} from "../../../src/services/communication/ods-organization"
-import * as fhir from "../../../src/models/fhir"
+import * as fhir from "@models/fhir"
 
 const odsClient = new LiveOdsClient()
 

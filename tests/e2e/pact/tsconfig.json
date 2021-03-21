@@ -11,7 +11,7 @@
     "baseUrl": ".",
     "paths": {
       "@models/*": ["../../../models/library/*"]
-    },
+    }
   },
   "include": [
     "specs/**/*",

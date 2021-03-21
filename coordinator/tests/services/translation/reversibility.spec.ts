@@ -2,7 +2,7 @@ import {convertParentPrescription} from "../../../src/services/translation/reque
 import {createInnerBundle} from "../../../src/services/translation/response/release/release-response"
 import * as TestResources from "../../resources/test-resources"
 import {getResourcesOfType} from "../../../src/services/translation/common/getResourcesOfType"
-import * as fhir from "../../../src/models/fhir"
+import * as fhir from "@models/fhir"
 import * as hl7V3 from "../../../src/models/hl7-v3"
 import * as uuid from "uuid"
 import {toArray} from "../../../src/services/translation/common"

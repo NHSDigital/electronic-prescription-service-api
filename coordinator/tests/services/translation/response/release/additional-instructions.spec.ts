@@ -3,7 +3,7 @@ import {
   createAndAddList,
   parseAdditionalInstructions
 } from "../../../../../src/services/translation/response/release/additional-instructions"
-import * as fhir from "../../../../../src/models/fhir"
+import * as fhir from "@models/fhir"
 
 describe("parseAdditionalInstructions", () => {
   test("handles empty", () => {

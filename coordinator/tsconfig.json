@@ -17,7 +17,8 @@
       "*": [
         "node_modules/*",
         "tests/*"
-      ]
+      ],
+      "@models/*": ["../models/library/*"]
     }
   },
   "include": [
