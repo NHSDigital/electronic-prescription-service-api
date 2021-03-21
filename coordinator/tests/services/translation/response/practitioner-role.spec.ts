@@ -2,7 +2,7 @@ import {createPractitionerRole} from "../../../../src/services/translation/respo
 import * as TestResources from "../../../resources/test-resources"
 import {getCancellationResponse} from "../common/test-helpers"
 import * as hl7V3 from "../../../../src/models/hl7-v3"
-import {fhir} from "../../../../../models/library"
+import * as fhir from "@models/fhir"
 
 describe("createPractitionerRole", () => {
   const cancellationErrorResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)

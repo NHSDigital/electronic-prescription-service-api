@@ -1,4 +1,4 @@
-import {fhir} from "../../../../models/library"
+import * as fhir from "@models/fhir"
 import * as errors from "../../models/errors/validation-errors"
 import {getCodeableConceptCodingForSystem, getCodingForSystemOrNull} from "../translation/common"
 import {createTaskIncorrectValueIssue} from "../../models/errors/validation-errors"

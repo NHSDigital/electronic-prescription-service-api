@@ -1,5 +1,5 @@
 import {InvalidValueError} from "../../../models/errors/processing-errors"
-import {fhir} from "../../../../../models/library"
+import * as fhir from "@models/fhir"
 
 export function getCourseOfTherapyTypeCode(medicationRequests: Array<fhir.MedicationRequest>): string {
   const codeList = medicationRequests

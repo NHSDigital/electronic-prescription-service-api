@@ -4,7 +4,7 @@ import * as TestResources from "../../../resources/test-resources"
 import {getPatient} from "../../../../src/services/translation/common/getResourcesOfType"
 import {TooManyValuesError} from "../../../../src/models/errors/processing-errors"
 import {UNKNOWN_GP_ODS_CODE} from "../../../../src/services/translation/common"
-import {fhir} from "../../../../../models/library"
+import * as fhir from "@models/fhir"
 
 describe("convertPatient", () => {
   let bundle: fhir.Bundle

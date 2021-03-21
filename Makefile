@@ -26,8 +26,8 @@ release:
 	cp -r specification/dist/. dist
 	rsync -av --progress --copy-links tests/e2e/pact dist --exclude node_modules
 	mkdir -p dist/pact/models
-	rm -f tests/e2e/pact/tsconfig.json
-	mv tests/e2e/pact/tsconfig-cd.json tests/e2e/pact/tsconfig.json
+	rm -f dist/pact/tsconfig.json
+	mv dist/pact/tsconfig-cd.json dist/pact/tsconfig.json
 	rsync -av --progress --copy-links models/library dist/pact/models --exclude node_modules
 	for env in internal-dev-sandbox internal-qa-sandbox sandbox; do \
 		cat ecs-proxies-deploy.yml | sed -e 's/{{ SPINE_ENV }}/veit07/g' | sed -e 's/{{ SANDBOX_MODE_ENABLED }}/1/g' > dist/ecs-deploy-$$env.yml; \

@@ -1,7 +1,7 @@
 import {odsClient} from "../../../../src/services/communication/ods-client"
 import {createAuthorForUnattendedAccess} from "../../../../src/services/translation/request/agent-unattended"
 import pino from "pino"
-import {fhir} from "../../../../../models/library"
+import * as fhir from "@models/fhir"
 import {FhirMessageProcessingError} from "../../../../src/models/errors/processing-errors"
 import {toArray} from "../../../../src/services/translation/common"
 

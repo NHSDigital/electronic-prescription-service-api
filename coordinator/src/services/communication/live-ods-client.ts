@@ -1,6 +1,6 @@
 import axios from "axios"
 import pino from "pino"
-import {fhir} from "../../../../models/library"
+import * as fhir from "@models/fhir"
 import {OdsClient} from "./ods-client"
 import {convertToOrganization, OdsOrganization} from "./ods-organization"
 

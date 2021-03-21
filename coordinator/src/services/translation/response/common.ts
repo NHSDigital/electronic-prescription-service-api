@@ -6,7 +6,7 @@ import {createHealthcareService, createLocations, createOrganization} from "./or
 import {createPractitionerRole} from "./practitioner-role"
 import {createPatient} from "./patient"
 import * as hl7V3 from "../../../models/hl7-v3"
-import {fhir} from "../../../../../models/library"
+import * as fhir from "@models/fhir"
 
 export function convertName(name: Array<hl7V3.Name> | hl7V3.Name): Array<fhir.HumanName> {
   const nameArray = toArray(name)

@@ -1,5 +1,5 @@
 import {resolveReference} from "../translation/common"
-import {fhir} from "../../../../models/library"
+import * as fhir from "@models/fhir"
 
 /**
  * Implementation of simple FHIR paths

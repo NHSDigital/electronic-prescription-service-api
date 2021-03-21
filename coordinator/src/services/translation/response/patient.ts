@@ -3,7 +3,7 @@ import {convertAddress, convertName, generateResourceId} from "./common"
 import {UNKNOWN_GP_ODS_CODE} from "../common"
 import {convertHL7V3DateToIsoDateString} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
-import {fhir} from "../../../../../models/library"
+import * as fhir from "@models/fhir"
 
 export function createPatient(patient: hl7V3.Patient): fhir.Patient {
   return {

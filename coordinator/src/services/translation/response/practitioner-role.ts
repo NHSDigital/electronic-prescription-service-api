@@ -1,7 +1,7 @@
 import {convertTelecom, generateResourceId} from "./common"
 import {toArray} from "../common"
 import * as hl7V3 from "../../../models/hl7-v3"
-import {fhir} from "../../../../../models/library"
+import * as fhir from "@models/fhir"
 
 export function createPractitionerRole(
   hl7AgentPerson: hl7V3.AgentPerson,

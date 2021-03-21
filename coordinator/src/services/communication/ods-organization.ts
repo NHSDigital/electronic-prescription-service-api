@@ -1,4 +1,4 @@
-import {fhir} from "../../../../models/library"
+import * as fhir from "@models/fhir"
 import {getExtensionForUrl, onlyElement} from "../translation/common"
 
 export type OdsOrganizationRoleExtension = fhir.ExtensionExtension<fhir.CodingExtension | fhir.BooleanExtension

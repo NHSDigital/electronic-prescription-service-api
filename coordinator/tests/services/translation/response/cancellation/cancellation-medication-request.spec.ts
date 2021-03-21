@@ -4,7 +4,7 @@ import {
   createMedicationRequest
 } from "../../../../../src/services/translation/response/cancellation/cancellation-medication-request"
 import {getCancellationResponse, hasCorrectISOFormat} from "../../common/test-helpers"
-import {fhir} from "../../../../../../models/library"
+import * as fhir from "@models/fhir"
 
 describe("createMedicationRequest", () => {
   const cancellationResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)

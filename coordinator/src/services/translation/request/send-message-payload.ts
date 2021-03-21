@@ -8,7 +8,7 @@ import {
 import {getMedicationRequests} from "../common/getResourcesOfType"
 import {convertMomentToHl7V3DateTime} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
-import {fhir} from "../../../../../models/library"
+import * as fhir from "@models/fhir"
 
 export function createSendMessagePayloadForUnattendedAccess<T>(
   messageId: string,

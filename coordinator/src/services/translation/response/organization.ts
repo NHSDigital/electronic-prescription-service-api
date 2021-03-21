@@ -1,6 +1,6 @@
 import {convertAddress, convertTelecom, generateResourceId} from "./common"
 import * as hl7V3 from "../../../models/hl7-v3"
-import {fhir} from "../../../../../models/library"
+import * as fhir from "@models/fhir"
 
 export function createOrganization(hl7Organization: hl7V3.Organization): fhir.Organization {
   const organization: fhir.Organization = {

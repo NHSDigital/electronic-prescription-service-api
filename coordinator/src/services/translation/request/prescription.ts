@@ -12,7 +12,7 @@ import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {convertIsoDateStringToHl7V3Date, convertIsoDateTimeStringToHl7V3Date} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
-import {fhir} from "../../../../../models/library"
+import * as fhir from "@models/fhir"
 
 export function convertBundleToPrescription(bundle: fhir.Bundle): hl7V3.Prescription {
   const medicationRequests = getMedicationRequests(bundle)

@@ -7,7 +7,7 @@ import {
 } from "../../../../src/services/translation/response/organization"
 import {getCancellationResponse} from "../common/test-helpers"
 import * as hl7V3 from "../../../../src/models/hl7-v3"
-import {fhir} from "../../../../../models/library"
+import * as fhir from "@models/fhir"
 
 const cancellationResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)
 const cancellationDispensedResponse = getCancellationResponse(TestResources.spineResponses.cancellationDispensedError)

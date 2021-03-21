@@ -4,7 +4,7 @@ import {
   getCourseOfTherapyTypeCode
 } from "../../../../src/services/translation/request/course-of-therapy-type"
 import {clone} from "../../../resources/test-helpers"
-import {fhir} from "../../../../../models/library"
+import * as fhir from "@models/fhir"
 
 describe("getCourseOfTherapyTypeCode", () => {
   let medicationRequests: Array<fhir.MedicationRequest>

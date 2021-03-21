@@ -1,5 +1,5 @@
 import {generateResourceId} from "./common"
-import {fhir} from "../../../../../models/library"
+import * as fhir from "@models/fhir"
 
 export function createMessageHeader(
   messageId: string,

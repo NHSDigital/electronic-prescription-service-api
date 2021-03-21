@@ -5,7 +5,7 @@ import * as TestResources from "../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
-import {fetcher} from "../../../../../models/library"
+import * as fetcher from "@models/fetchers"
 import * as fhir from "@models/fhir"
 
 if (process.env.UPDATE_PRESCRIPTIONS !== "false") {

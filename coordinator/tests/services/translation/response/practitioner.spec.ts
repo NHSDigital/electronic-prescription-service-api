@@ -3,7 +3,7 @@ import {getIdentifierValueForSystem} from "../../../../src/services/translation/
 import {createPractitioner} from "../../../../src/services/translation/response/practitioner"
 import {getCancellationResponse} from "../common/test-helpers"
 import * as hl7V3 from "../../../../src/models/hl7-v3"
-import {fhir} from "../../../../../models/library"
+import * as fhir from "@models/fhir"
 
 describe("createPractitioner", () => {
   const cancellationErrorResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)

@@ -2,7 +2,7 @@ import {convertAddress, convertGender, convertName, convertTelecom} from "./demo
 import {getIdentifierValueForSystem, onlyElement, UNKNOWN_GP_ODS_CODE} from "../common"
 import {convertIsoDateStringToHl7V3Date} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
-import {fhir} from "../../../../../models/library"
+import * as fhir from "@models/fhir"
 
 function convertPatientToProviderPatient(patient: fhir.Patient) {
   const generalPractitionerId = onlyElement(patient.generalPractitioner, "Patient.generalPractitioner")

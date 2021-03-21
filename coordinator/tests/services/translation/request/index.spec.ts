@@ -8,7 +8,7 @@ import {MomentFormatSpecification, MomentInput} from "moment"
 import {xmlTest} from "../../../resources/test-helpers"
 import {ElementCompact} from "xml-js"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../../../src/services/translation/common/dateTime"
-import {fhir} from "../../../../../models/library"
+import * as fhir from "@models/fhir"
 import pino from "pino"
 
 const logger = pino()

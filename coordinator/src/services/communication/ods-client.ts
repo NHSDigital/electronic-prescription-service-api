@@ -1,4 +1,4 @@
-import {fhir} from "../../../../models/library"
+import * as fhir from "@models/fhir"
 import pino from "pino"
 import {SandboxOdsClient} from "./sandbox-ods-client"
 import {LiveOdsClient} from "./live-ods-client"

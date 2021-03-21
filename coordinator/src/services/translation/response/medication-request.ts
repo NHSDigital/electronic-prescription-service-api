@@ -1,5 +1,5 @@
 import {getFullUrl} from "./common"
-import {fhir} from "../../../../../models/library"
+import * as fhir from "@models/fhir"
 
 export function createResponsiblePractitionerExtension(
   practitionerRoleId: string

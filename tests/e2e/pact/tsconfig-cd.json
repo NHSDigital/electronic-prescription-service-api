@@ -10,7 +10,7 @@
     "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
-      "@models/*": ["../../../models/library/*"]
+      "@models/*": ["./models/library/*"]
     },
   },
   "include": [
