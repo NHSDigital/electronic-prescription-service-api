@@ -2,34 +2,27 @@ import {OdsClient} from "./ods-client"
 import {fhir} from "../../../../models/library"
 
 export class SandboxOdsClient implements OdsClient {
-  lookupOrganization(): Promise<fhir.Organization> {
-    return Promise.resolve({
-      resourceType: "Organization",
-      identifier: [{
-        system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "FTX40"
-      }],
-      type: [{
-        coding: [{
-          system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
-          code: "182"
-        }]
-      }],
-      name: "HEALTHCARE AT HOME",
-      telecom: [{
-        system: "phone",
-        value: "0870 6001540"
-      }],
-      address: [{
-        line: [
-          "FIFTH AVENUE",
-          "CENTRUM ONE HUNDRED"
-        ],
-        city: "BURTON-ON-TRENT",
-        district: "STAFFORDSHIRE",
-        postalCode: "DE14 2WS",
-        country: "ENGLAND"
-      }]
-    })
+  static responses = [
+    odsResponses.ORGANIZATION_FH542_COMMUNITY_PHARMACY,
+    odsResponses.ORGANIZATION_FTX40_HOMECARE,
+    odsResponses.ORGANIZATION_T1450_NHS_BSA,
+    odsResponses.ORGANIZATION_VNE51_HOMECARE
+  ]
+
+  static responseMap = new Map(SandboxOdsClient.responses.map(SandboxOdsClient.toMapEntry))
+
+  private static toMapEntry(organization: fhir.Organization): [string, fhir.Organization] {
+    return [
+      getIdentifierValueForSystem(
+        organization.identifier,
+        "https://fhir.nhs.uk/Id/ods-organization-code",
+        "Organization.identifier"
+      ),
+      organization
+    ]
+  }
+
+  lookupOrganization(odsCode: string): Promise<fhir.Organization> {
+    return Promise.resolve(SandboxOdsClient.responseMap.get(odsCode) ?? null)
   }
 }

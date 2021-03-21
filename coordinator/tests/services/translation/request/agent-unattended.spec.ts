@@ -15,7 +15,7 @@ jest.mock("../../../../src/services/communication/ods-client", () => ({
 
 test("user details contain placeholder data", async () => {
   const mockLookupFunction = odsClient.lookupOrganization as jest.Mock
-  mockLookupFunction.mockReturnValueOnce(new Promise((resolve) => resolve(mockOrganizationResponse)))
+  mockLookupFunction.mockReturnValueOnce(Promise.resolve(mockOrganizationResponse))
 
   const result = await createAuthorForUnattendedAccess("FTX40", logger)
 
@@ -32,7 +32,7 @@ test("user details contain placeholder data", async () => {
 
 test("organization details are populated from ODS response", async () => {
   const mockLookupFunction = odsClient.lookupOrganization as jest.Mock
-  mockLookupFunction.mockReturnValueOnce(new Promise((resolve) => resolve(mockOrganizationResponse)))
+  mockLookupFunction.mockReturnValueOnce(Promise.resolve(mockOrganizationResponse))
 
   const result = await createAuthorForUnattendedAccess("FTX40", logger)
 
@@ -47,7 +47,7 @@ test("organization details are populated from ODS response", async () => {
 
 test("throws if organization not found in ODS", async () => {
   const mockLookupFunction = odsClient.lookupOrganization as jest.Mock
-  mockLookupFunction.mockReturnValueOnce(new Promise((resolve) => resolve(null)))
+  mockLookupFunction.mockReturnValueOnce(Promise.resolve(null))
 
   await expect(() =>
     createAuthorForUnattendedAccess("FTX40", logger)

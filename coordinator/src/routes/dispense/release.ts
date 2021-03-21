@@ -12,24 +12,20 @@ export default [
   {
     method: "POST",
     path: `${BASE_PATH}/Task/$release`,
-    handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
-      const fhirValidatorResponse = await getFhirValidatorErrors(request)
-      if (fhirValidatorResponse) {
-        return responseToolkit.response(fhirValidatorResponse).code(400).type(CONTENT_TYPE_FHIR)
+    handler: externalValidator(
+      async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+        const parameters = getPayload(request) as fhir.Parameters
+        const issues = parametersValidator.verifyParameters(parameters)
+        if (issues.length) {
+          return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(CONTENT_TYPE_FHIR)
+        }
+
+        request.logger.info("Building Spine release request")
+        const requestId = request.headers["nhsd-request-id"].toUpperCase()
+        const spineRequest = await translator.convertParametersToSpineRequest(parameters, requestId, request.logger)
+        const spineResponse = await spineClient.send(spineRequest, request.logger)
+        return handleResponse(request, spineResponse, responseToolkit)
       }
-
-      const parameters = getPayload(request) as fhir.Parameters
-      const issues = parametersValidator.verifyParameters(parameters)
-      if (issues.length) {
-        return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(CONTENT_TYPE_FHIR)
-      }
-
-      request.logger.info("Building Spine release request")
-      const requestId = request.headers["nhsd-request-id"].toUpperCase()
-      const spineRequest = await translator.convertParametersToSpineRequest(parameters, requestId, request.logger)
-      const spineResponse = await spineClient.send(spineRequest, request.logger)
-      return handleResponse(request, spineResponse, responseToolkit)
-    }
-
+    )
   } as Hapi.ServerRoute
 ]

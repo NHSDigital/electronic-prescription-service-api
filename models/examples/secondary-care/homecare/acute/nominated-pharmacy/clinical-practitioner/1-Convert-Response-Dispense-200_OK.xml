@@ -66,16 +66,17 @@
                   </name>
                 </agentPerson>
                 <representedOrganization classCode="ORG" determinerCode="INSTANCE">
-                  <id extension="FTX40" root="1.2.826.0.1285.0.1.10"/>
+                  <id extension="T1450" root="1.2.826.0.1285.0.1.10"/>
                   <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
-                  <name>HEALTHCARE AT HOME</name>
-                  <telecom value="tel:08706001540"/>
+                  <name>NHS BUSINESS SERVICES AUTHORITY</name>
+                  <telecom value="tel:01253774514"/>
                   <addr>
-                    <streetAddressLine>FIFTH AVENUE</streetAddressLine>
-                    <streetAddressLine>CENTRUM ONE HUNDRED</streetAddressLine>
-                    <streetAddressLine>BURTON-ON-TRENT</streetAddressLine>
-                    <streetAddressLine>STAFFORDSHIRE</streetAddressLine>
-                    <postalCode>DE14 2WS</postalCode>
+                    <streetAddressLine>STELLA HOUSE</streetAddressLine>
+                    <streetAddressLine>GOLDCREST WAY</streetAddressLine>
+                    <streetAddressLine>NEWBURN RIVERSIDE PARK</streetAddressLine>
+                    <streetAddressLine>NEWCASTLE UPON TYNE</streetAddressLine>
+                    <streetAddressLine>TYNE AND WEAR</streetAddressLine>
+                    <postalCode>NE15 8NY</postalCode>
                   </addr>
                 </representedOrganization>
               </AgentPerson>

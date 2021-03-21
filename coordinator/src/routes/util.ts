@@ -125,6 +125,32 @@ export async function getFhirValidatorErrors(
   return null
 }
 
+type Handler = (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => Promise<Hapi.ResponseObject>
+
+export function externalValidator(handler: Handler) {
+  return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+    const fhirValidatorResponse = await getFhirValidatorErrors(request)
+    if (fhirValidatorResponse) {
+      return responseToolkit.response(fhirValidatorResponse).code(400).type(CONTENT_TYPE_FHIR)
+    }
+
+    return handler(request, responseToolkit)
+  }
+}
+
+export function userAuthValidator(handler: Handler) {
+  return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+    const bundle = getPayload(request) as fhir.Bundle
+    if (identifyMessageType(bundle) !== fhir.EventCodingCode.DISPENSE) {
+      if (!userHasValidAuth(request, "user")) {
+        return responseToolkit.response(unauthorisedActionIssue).code(403).type(CONTENT_TYPE_FHIR)
+      }
+    }
+
+    return handler(request, responseToolkit)
+  }
+}
+
 export function getPayload(request: Hapi.Request): unknown {
   request.logger.info("Parsing request payload")
   if (Buffer.isBuffer(request.payload)) {

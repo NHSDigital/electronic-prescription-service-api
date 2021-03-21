@@ -17,7 +17,7 @@ test("author organization is looked up in ODS", async () => {
   const mockAuthorResponse = new hl7V3.Author()
   mockAuthorResponse.AgentPerson = new hl7V3.AgentPerson()
   const mockAuthorFunction = createAuthorForUnattendedAccess as jest.Mock
-  mockAuthorFunction.mockReturnValueOnce(new Promise((resolve) => resolve(mockAuthorResponse)))
+  mockAuthorFunction.mockReturnValueOnce(Promise.resolve(mockAuthorResponse))
   const result = await createAuthorFromTaskOwnerIdentifier(
     {
       system: "https://fhir.nhs.uk/Id/ods-organization-code",

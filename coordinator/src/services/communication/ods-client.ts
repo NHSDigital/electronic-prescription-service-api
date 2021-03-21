@@ -13,5 +13,4 @@ function getOdsClient(liveMode: boolean): OdsClient {
     : new SandboxOdsClient()
 }
 
-// todo: resolve egress issue
-export const odsClient = getOdsClient(false/*process.env.SANDBOX !== "1"*/)
+export const odsClient = getOdsClient(process.env.SANDBOX !== "1")

@@ -1,24 +1,13 @@
 import axios, {AxiosError, AxiosResponse} from "axios"
-import https from "https"
 import {Logger} from "pino"
 import {SpineRequest, SpineResponse} from "../../models/spine"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
-import {FhirMessageProcessingError, toOperationOutcome} from "../../models/errors/processing-errors"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
 const SPINE_PATH = "Prescription"
 const BASE_PATH = process.env.BASE_PATH
-
-const httpsAgent = new https.Agent({
-  cert: process.env.CLIENT_CERT,
-  key: process.env.CLIENT_KEY,
-  ca: [
-    process.env.ROOT_CA_CERT,
-    process.env.SUB_CA_CERT
-  ]
-})
 
 export class LiveSpineClient implements SpineClient {
   private readonly spineEndpoint: string
@@ -36,20 +25,8 @@ export class LiveSpineClient implements SpineClient {
   }
 
   async send(spineRequest: SpineRequest, logger: Logger): Promise<SpineResponse<unknown>> {
-    let wrappedMessage
-    try {
-      logger.info("Building EBXML wrapper for SpineRequest")
-      wrappedMessage = this.ebXMLBuilder(spineRequest, logger)
-    } catch (error) {
-      if (error instanceof FhirMessageProcessingError) {
-        return Promise.resolve({
-          body: toOperationOutcome(error),
-          statusCode: 400
-        })
-      } else {
-        throw error
-      }
-    }
+    logger.info("Building EBXML wrapper for SpineRequest")
+    const wrappedMessage = this.ebXMLBuilder(spineRequest, logger)
     const address = this.getSpineUrlForPrescription()
 
     logger.info(`Attempting to send message to ${address}`)
@@ -59,7 +36,6 @@ export class LiveSpineClient implements SpineClient {
         address,
         wrappedMessage,
         {
-          httpsAgent,
           headers: {
             "Content-Type": "multipart/related;" +
               " boundary=\"--=_MIME-Boundary\";" +
@@ -86,8 +62,9 @@ export class LiveSpineClient implements SpineClient {
       const result = await axios.get<string>(
         address,
         {
-          httpsAgent,
-          headers: {"nhsd-asid": process.env.FROM_ASID}
+          headers: {
+            "nhsd-asid": process.env.FROM_ASID
+          }
         }
       )
       return LiveSpineClient.handlePollableOrImmediateResponse(result, logger)
@@ -134,18 +111,10 @@ export class LiveSpineClient implements SpineClient {
   }
 
   private getSpineUrlForPrescription() {
-    if (this.spineEndpoint.includes("ref")) {
-      return `${SPINE_URL_SCHEME}://${this.spineEndpoint.replace(/msg/g, "prescriptions")}/${this.spinePath}`
-    }
-
     return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/${this.spinePath}`
   }
 
   private getSpineUrlForPolling(path: string) {
-    if (this.spineEndpoint.includes("ref")) {
-      return `${SPINE_URL_SCHEME}://${this.spineEndpoint.replace(/msg/g, "prescriptions")}/_poll/${path}`
-    }
-
     return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/_poll/${path}`
   }
 }
