@@ -1,5 +1,5 @@
 import * as uuid from "uuid"
-import {fhir, fetcher, processCase} from "@models"
+import {fhir, fetcher} from "@models"
 import {
   getResourcesOfType
 } from "@coordinator"
