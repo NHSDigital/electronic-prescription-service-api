@@ -9,7 +9,8 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
-      "@models": ["./models/library"]
+      "@models": ["./models/library"],
+      "@coordinator": ["./coordinator"]
     }
   },
   "include": [
@@ -19,6 +20,9 @@
   "references": [
     { 
       "path": "./models/library"
+    },
+    { 
+      "path": "./coordinator"
     }
   ]
 }

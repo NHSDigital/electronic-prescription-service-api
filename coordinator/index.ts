@@ -1,0 +1,1 @@
+export * as getResourcesOfType from "./src/services/translation/common/getResourcesOfType"

@@ -5,6 +5,7 @@ import * as LosslessJson from "lossless-json"
 import {fetcher} from "@models"
 import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
+import {setPrescriptionIds, generateShortFormId} from "../../services/update-prescriptions"
 
 jestpact.pactWith(
   pactOptions("live", "process", "accept_headers"),
@@ -21,7 +22,7 @@ jestpact.pactWith(
         const testCase = fetcher.processExamples[0]
         const apiPath = `${basePath}/$process-message`
         const requestCopy = LosslessJson.parse(LosslessJson.stringify(testCase.request))
-        fetcher.setPrescriptionIds(requestCopy, uuid.v4(), fetcher.generateShortFormId(), uuid.v4())
+        setPrescriptionIds(requestCopy, uuid.v4(), generateShortFormId(), uuid.v4())
         const messageStr = LosslessJson.stringify(requestCopy)
         const requestId = uuid.v4()
         const correlationId = uuid.v4()

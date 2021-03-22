@@ -5,11 +5,11 @@ import * as TestResources from "../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
-import {fetcher} from "@models"
 import {fhir} from "@models"
+import {updatePrescriptions} from "../../services/update-prescriptions"
 
 if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
-  fetcher.updatePrescriptions()
+  updatePrescriptions()
 }
 
 TestResources.processOrderCaseGroups.forEach(pactGroup => {
