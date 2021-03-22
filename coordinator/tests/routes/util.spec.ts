@@ -5,7 +5,7 @@ import {getMessageHeader} from "../../src/services/translation/common/getResourc
 import axios from "axios"
 import * as moxios from "moxios"
 import {fhir} from "@models"
-import { identifyMessageType } from "../../src/services/translation/common"
+import {identifyMessageType} from "../../src/services/translation/common"
 
 test("API only forwards accept header to validator", async () => {
   moxios.install(axios)
