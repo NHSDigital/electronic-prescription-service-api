@@ -39,6 +39,7 @@ release:
 clean:
 	rm -rf dist
 	rm -rf models/build
+	rm -rf models/library/dist
 	rm -rf specification/dist
 	rm -rf specification/build
 	rm -rf coordinator/dist

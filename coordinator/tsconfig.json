@@ -18,7 +18,7 @@
         "node_modules/*",
         "tests/*"
       ],
-      "@models": ["../models/library"]
+      "@models": ["../models/library", "./models/library"]
     }
   },
   "include": [
@@ -27,7 +27,7 @@
   ],
   "references": [
     { 
-        "path": "../models/library"
+      "path": "../models/library"
     }
   ]
 }

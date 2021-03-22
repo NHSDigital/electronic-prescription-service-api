@@ -2,12 +2,7 @@
 // See: https://github.com/microsoft/TypeScript/issues/10866
 // this package allows adding aliases at runtime to accomplish the same thing
 // that paths in tsconfig.json allows at compile time
-import path from "path"
-import { addAlias } from "module-alias"
-const isRunningInDocker = process.env.NODE_ENV === "production"
-const modelsPath = isRunningInDocker ? "models/library" : "../../models/library"
-addAlias("@models", path.join(__dirname, modelsPath))
-// ******************************************************************************
+require("module-alias/register")
 
 import {Boom} from "@hapi/boom"
 import Hapi from "@hapi/hapi"
