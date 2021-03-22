@@ -7,7 +7,6 @@
       "es2019"
     ],
     "moduleResolution": "node",
-    "outDir": "./dist",
     "baseUrl": ".",
     "paths": {
       "@models": ["../../../models/library"]
