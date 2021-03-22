@@ -424,7 +424,7 @@ paths:
               examples:
                 example:
                   value:
-                  $ref: components/examples/errors/release/validation-error.json
+                    $ref: components/examples/errors/release/validation-error.json
 components:
   parameters:
     BearerAuthorization:
