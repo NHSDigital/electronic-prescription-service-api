@@ -48,7 +48,6 @@ extends:
         name: eps_int_cert
         inputs:
           secureFile: 'eps_int_test.pfx'
-        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - bash: |
           ls $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)
         displayName: 'Debug int cert'
