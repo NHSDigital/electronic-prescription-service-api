@@ -1,5 +1,5 @@
 import * as uuid from "uuid"
-import {fhir, fetcher} from "@models"
+import {fhir, fetcher/*,processCase*/} from "@models"
 import {
   getResourcesOfType
 } from "@coordinator"
@@ -23,7 +23,7 @@ export function updatePrescriptions(): void {
 
     setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
     setTestPatientIfProd(bundle)
-    signPrescription(processCase)
+    //signPrescription(processCase)
   })
 
   fetcher.prescriptionOrderUpdateExamples.forEach(processCase => {
@@ -113,12 +113,12 @@ function setTestPatientIfProd(bundle: fhir.Bundle) {
   }
 }
 
-function signPrescription(processCase: processCase.ProcessCase) {
-  //const prepareResponse = processCase.prepareResponse
-  const bundle = processCase.request
-  const provenance = getResourcesOfType.getProvenances(bundle)[0]
-  provenance.signature[0].data += "" 
-}
+// function signPrescription(processCase: processCase.ProcessCase) {
+//   //const prepareResponse = processCase.prepareResponse
+//   const bundle = processCase.request
+//   const provenance = getResourcesOfType.getProvenances(bundle)[0]
+//   provenance.signature[0].data += "" 
+// }
 
 function getLongFormIdExtension(extensions: Array<fhir.Extension>): fhir.IdentifierExtension {
   return extensions.find(
