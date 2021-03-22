@@ -12,7 +12,6 @@ import {convertCancellation} from "./cancel/cancellation"
 import {convertFragmentsToHashableFormat, extractFragments} from "./signature"
 import * as requestBuilder from "../../communication/ebxml-request-builder"
 import {SpineRequest} from "../../../models/spine"
-import {identifyMessageType} from "../../../routes/util"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
@@ -22,7 +21,7 @@ import {translateReleaseRequest} from "./dispense/release"
 import pino from "pino"
 import {convertTaskToDispenseProposalReturn} from "./return/return"
 import {convertTaskToEtpWithdraw} from "./withdraw/withdraw"
-import {getMessageIdFromBundle, getMessageIdFromTask} from "../common"
+import {getMessageIdFromBundle, getMessageIdFromTask, identifyMessageType} from "../common"
 
 export async function convertBundleToSpineRequest(
   bundle: fhir.Bundle, messageId: string, logger: pino.Logger

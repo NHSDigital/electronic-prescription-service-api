@@ -10,6 +10,7 @@ const coordinatorPath = isRunningInPipeline ? "./coordinator" : "../../../coordi
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
+  setupFiles: ["./jest/setEnvVars.js"],
   moduleNameMapper: {
     "@models": `<rootDir>${modelsPath}`,
     "@coordinator": `<rootDir>${coordinatorPath}`

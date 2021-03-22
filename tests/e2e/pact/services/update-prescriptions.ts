@@ -1,15 +1,17 @@
 import * as uuid from "uuid"
-import {fhir, fetcher/*,processCase*/} from "@models"
+import {fhir, fetcher, ProcessCase} from "@models"
 import {
-  getResourcesOfType
+  getResourcesOfType,
+  convertFhirMessageToSignedInfoMessage
 } from "@coordinator"
 
 export function updatePrescriptions(): void {
   const replacements = new Map<string, string>()
 
   fetcher.prescriptionOrderExamples.forEach(processCase => {
-    const bundle = processCase.request
-    const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(bundle)[0].groupIdentifier
+    const prepareBundle = processCase.prepareRequest
+    const processBundle = processCase.request
+    const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(prepareBundle)[0].groupIdentifier
 
     const newBundleIdentifier = uuid.v4()
 
@@ -21,9 +23,11 @@ export function updatePrescriptions(): void {
     const newLongFormId = uuid.v4()
     replacements.set(originalLongFormId, newLongFormId)
 
-    setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
-    setTestPatientIfProd(bundle)
-    //signPrescription(processCase)
+    setPrescriptionIds(prepareBundle, newBundleIdentifier, newShortFormId, newLongFormId)
+    setPrescriptionIds(processBundle, newBundleIdentifier, newShortFormId, newLongFormId)
+    setTestPatientIfProd(prepareBundle)
+    setTestPatientIfProd(processBundle)
+    signPrescription(processCase)
   })
 
   fetcher.prescriptionOrderUpdateExamples.forEach(processCase => {
@@ -113,12 +117,30 @@ function setTestPatientIfProd(bundle: fhir.Bundle) {
   }
 }
 
-// function signPrescription(processCase: processCase.ProcessCase) {
-//   //const prepareResponse = processCase.prepareResponse
-//   const bundle = processCase.request
-//   const provenance = getResourcesOfType.getProvenances(bundle)[0]
-//   provenance.signature[0].data += "" 
-// }
+function signPrescription(processCase: ProcessCase) {
+  const prepareRequest = processCase.prepareRequest
+  const prepareResponse = convertFhirMessageToSignedInfoMessage(prepareRequest)
+  const digestParameter = prepareResponse.parameter.filter(p => p.name === "digest")[0] as fhir.StringParameter
+  const timestampParameter = prepareResponse.parameter.filter(p => p.name === "timestamp")[0] as fhir.StringParameter
+  const digest = Buffer.from(digestParameter.valueString, "base64").toString("utf-8")
+  const signature = "" // todo: sign
+  const certificate = "" // todo: add cert
+  const xmlDSig = `
+<Signature xmlns=""http://www.w3.org/2000/09/xmldsig#"">
+  ${digest}
+  <SignatureValue>${signature}</SignatureValue>
+  <KeyInfo>
+      <X509Data>
+          <X509Certificate>${certificate}</X509Certificate>
+      </X509Data>
+  </KeyInfo>
+</Signature>
+`
+  const bundle = processCase.request
+  const provenance = getResourcesOfType.getProvenances(bundle)[0]
+  provenance.signature[0].when = timestampParameter.valueString
+  provenance.signature[0].data = Buffer.from(xmlDSig, "utf-8").toString("base64")
+}
 
 function getLongFormIdExtension(extensions: Array<fhir.Extension>): fhir.IdentifierExtension {
   return extensions.find(

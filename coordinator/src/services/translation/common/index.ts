@@ -1,6 +1,7 @@
 import {fhir} from "@models"
 import {LosslessNumber} from "lossless-json"
 import {InvalidValueError, TooFewValuesError, TooManyValuesError} from "../../../models/errors/processing-errors"
+import { getMessageHeader } from "./getResourcesOfType"
 
 export const UNKNOWN_GP_ODS_CODE = "V81999"
 
@@ -10,6 +11,10 @@ export function getMessageId(identifier: Array<fhir.Identifier>, fhirPath: strin
     "https://tools.ietf.org/html/rfc4122",
     fhirPath
   )
+}
+
+export function identifyMessageType(bundle: fhir.Bundle): string {
+  return getMessageHeader(bundle).eventCoding?.code
 }
 
 export function getMessageIdFromBundle(bundle: fhir.Bundle): string {

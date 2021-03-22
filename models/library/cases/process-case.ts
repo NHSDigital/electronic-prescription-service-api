@@ -1,37 +1,27 @@
 import {Case} from "./case"
 import {exampleFiles} from "../fetchers/example-files-fetcher"
 import fs from "fs"
-import * as XmlJs from "xml-js"
 import {ExampleFile} from "../files/example-file"
 import * as fhir from "../fhir"
+import * as LosslessJson from "lossless-json"
 
 export class ProcessCase extends Case {
   request: fhir.Bundle
-  prepareResponse : fhir.Parameters
-  convertResponse: XmlJs.ElementCompact | string
+  prepareRequest: fhir.Bundle
 
   constructor(requestFile: ExampleFile, responseFile: ExampleFile) {
     super(requestFile, responseFile)
 
-    const prepareResponse = exampleFiles.find(exampleFile =>
+    const prepareRequest = exampleFiles.find(exampleFile =>
       exampleFile.dir === requestFile.dir
       && exampleFile.number === requestFile.number
       && exampleFile.endpoint === "prepare"
-      && exampleFile.isResponse)
+      && exampleFile.isRequest)
 
-    this.prepareResponse = JSON.parse(fs.readFileSync(prepareResponse.path, "utf-8"))
-
-    const convertResponse = exampleFiles.find(exampleFile =>
-      exampleFile.dir === requestFile.dir
-      && exampleFile.number === requestFile.number
-      && exampleFile.endpoint === "convert"
-      && exampleFile.isResponse)
-
-    const convertResponseStr = fs.readFileSync(convertResponse.path, "utf-8")
-    this.convertResponse = requestFile.statusText === "200-OK" ? XmlJs.xml2js(convertResponseStr, {compact: true}) : convertResponseStr
+    this.prepareRequest = LosslessJson.parse(fs.readFileSync(prepareRequest.path, "utf-8"))
   }
 
-  toJestCase(): [string, fhir.Bundle, fhir.Parameters, string | XmlJs.ElementCompact, number] {
-    return [this.description, this.request, this.prepareResponse, this.convertResponse, this.statusCode]
+  toJestCase(): [string, fhir.Bundle] {
+    return [this.description, this.request]
   }
 }
