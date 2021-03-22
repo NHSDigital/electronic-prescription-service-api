@@ -322,7 +322,7 @@ paths:
         ## Overview
         This endpoint can be used to return a downloaded prescription to Spine, so that another dispensing system can download it. 
         
-        It can also be used to withdraw a dispensed prescription to Spine, for example in the case that a prescription was marked as dispensed erroneously.
+        It can also be used to withdraw a dispense-notification message, for example in the case that a prescription was marked as dispensed erroneously.
 
         For information on how to create these messages, see [DigitalMedicines-Task](https://simplifier.net/guide/DigitalMedicines/Task).
 
