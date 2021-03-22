@@ -123,6 +123,7 @@ function signPrescription(processCase: ProcessCase) {
   const digestParameter = prepareResponse.parameter.filter(p => p.name === "digest")[0] as fhir.StringParameter
   const timestampParameter = prepareResponse.parameter.filter(p => p.name === "timestamp")[0] as fhir.StringParameter
   const digest = Buffer.from(digestParameter.valueString, "base64").toString("utf-8")
+    .replace(`<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">`, "")
   const signature = "" // todo: sign
   const certificate = "" // todo: add cert
   const xmlDSig = `

@@ -43,6 +43,20 @@ extends:
           dockerVersion: 17.09.0-ce
           releaseType: stable
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+      - task: DownloadSecureFile@1
+        displayName: 'Download int cert'
+        name: eps_int_cert
+        inputs:
+          secureFile: 'eps_int_test.pfx'
+        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+      - bash: |
+          cp $(eps_int_cert.secureFilePath) $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact/eps_int_test.pfx
+        displayName: 'Copy int cert'
+        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+      - bash: |
+          ls $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact
+        displayName: 'Debug int cert'
+        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - bash: |
           #!/bin/bash
 
