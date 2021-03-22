@@ -73,7 +73,7 @@ info:
     ### To return a prescription to Spine:
     1. POST a [Task-dispense-proposal-return](https://simplifier.net/guide/DigitalMedicines/Task) message to the `/FHIR/R4/Task` endpoint
 
-    ### To withdraw a prescription notification:
+    ### To withdraw a dispense notification:
     1. POST a [Task-dispense-notification-amend](https://simplifier.net/guide/DigitalMedicines/Task) message to the `/FHIR/R4/Task` endpoint
 
     ## Related APIs
@@ -121,7 +121,7 @@ info:
     The prescribing endpoints are [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis),
     meaning an end user must be present and authenticated to use them.
 
-    For prescribing journies, the end user must be:
+    For prescribing journeys, the end user must be:
     - a healthcare professional
     - strongly authenticated, using either an NHS smartcard or a modern alternative
 
@@ -306,7 +306,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                type: object
+                $ref: '#/components/responses/200OperationOutcome'
               examples:
                 OperationOutcome:
                   value:
@@ -321,7 +321,8 @@ paths:
       description: |
         ## Overview
         This endpoint can be used to return a downloaded prescription to Spine, so that another dispensing system can download it. 
-        It can also be used to withdraw a dispensed prescription to Spine to notify Spine that something has gone wrong with a prescription that has been dispensed. 
+        
+        It can also be used to withdraw a dispensed prescription to Spine, for example in the case that a prescription was marked as dispensed erroneously.
 
         For information on how to create these messages, see [DigitalMedicines-Task](https://simplifier.net/guide/DigitalMedicines/Task).
 
@@ -336,8 +337,6 @@ paths:
         required: true
         content:
           application/json:
-            schema:
-              type: object
             examples:
               return:
                 value:
@@ -351,11 +350,11 @@ paths:
           content:
             application/fhir+json:
               schema:
-                type: object
+                $ref: '#/components/responses/200OperationOutcome'
               examples:
-                example:
+                OperationOutcome:
                   value:
-                    $ref: '#/components/responses/200OperationOutcome'
+                    $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -365,8 +364,6 @@ paths:
             | 400         | BAD_REQUEST        | Invalid request bundle. |
           content:
             application/fhir+json:
-              schema:
-                type: object
               examples:
                 example:
                   value:
@@ -377,10 +374,10 @@ paths:
       summary: Send a prescription release request to EPS
       description: |
         ## Overview
-        Use this endpoint to send a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to EPS.
+        The release endpoint is used to download prescriptions from Spine prior to being dispensed to a patient. 
+        To do this, send a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to this endpoint.
 
-        This returns a set of prescriptions based on the information passed to the endpoint: 
-        * to acquire prescription information for an entire pharmacy, send owner information
+        The endpoint will return a set of (up to 25) prescriptions associated with the pharmacy that sends the request.
 
         This endpoint is only available in the sandbox environment.
       tags:
