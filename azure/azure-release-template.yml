@@ -50,12 +50,12 @@ extends:
           secureFile: 'eps_int_test.pfx'
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - bash: |
-          cp $(eps_int_cert.secureFilePath) $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact/eps_int_test.pfx
-        displayName: 'Copy int cert'
+          ls $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)
+        displayName: 'Debug int cert'
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - bash: |
-          ls $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact
-        displayName: 'Debug int cert'
+          cp $(eps_int_cert.secureFilePath) $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact/eps_int_test.pfx
+        displayName: 'Copy int cert'
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - bash: |
           #!/bin/bash
