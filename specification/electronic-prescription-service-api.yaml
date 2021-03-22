@@ -376,7 +376,7 @@ paths:
       summary: Send a prescription release request to EPS
       description: |
         ## Overview
-        Use this endpoint to send a prescription release request to EPS.
+        Use this endpoint to send a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to EPS.
 
         This returns a set of prescriptions based on the information passed to the endpoint: 
         * to acquire prescription information for an entire pharmacy, send owner information
