@@ -59,6 +59,6 @@
     "typescript": "^3.9.5"
   },
   "_moduleAliases": {
-    "@models": "dist/models/library"
+    "@models": "models/library"
   }
 }
