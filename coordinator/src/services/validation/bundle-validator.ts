@@ -1,4 +1,7 @@
-import {getMedicationDispenses, getMedicationRequests} from "../translation/common/getResourcesOfType"
+import {
+  getMedicationDispenses,
+  getMedicationRequests
+} from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues, groupBy} from "./util"
 import {getCourseOfTherapyTypeCode} from "../translation/request/course-of-therapy-type"

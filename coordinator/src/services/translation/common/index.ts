@@ -1,7 +1,7 @@
 import {fhir} from "@models"
 import {LosslessNumber} from "lossless-json"
 import {InvalidValueError, TooFewValuesError, TooManyValuesError} from "../../../models/errors/processing-errors"
-import { getMessageHeader } from "./getResourcesOfType"
+import {getMessageHeader} from "./getResourcesOfType"
 
 export const UNKNOWN_GP_ODS_CODE = "V81999"
 
