@@ -1,10 +1,11 @@
-import {callFhirValidator, identifyMessageType, VALIDATOR_HOST} from "../../src/routes/util"
+import {callFhirValidator, VALIDATOR_HOST} from "../../src/routes/util"
 import {clone} from "../resources/test-helpers"
 import * as TestResources from "../resources/test-resources"
 import {getMessageHeader} from "../../src/services/translation/common/getResourcesOfType"
 import axios from "axios"
 import * as moxios from "moxios"
 import {fhir} from "@models"
+import { identifyMessageType } from "../../src/services/translation/common"
 
 test("API only forwards accept header to validator", async () => {
   moxios.install(axios)
