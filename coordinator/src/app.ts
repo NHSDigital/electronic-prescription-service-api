@@ -2,7 +2,11 @@
 // See: https://github.com/microsoft/TypeScript/issues/10866
 // this package allows adding aliases at runtime to accomplish the same thing
 // that paths in tsconfig.json allows at compile time
-require("module-alias/register")
+// aliases are added to package.json and the below ensures it is always relative
+// to this entrypoint
+import {default as moduleAlias} from "module-alias"
+moduleAlias(__dirname + "/../../package.json")
+// *****************************************************************************
 
 import {Boom} from "@hapi/boom"
 import Hapi from "@hapi/hapi"

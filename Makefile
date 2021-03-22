@@ -4,17 +4,18 @@ SHELL=/bin/bash -euo pipefail -O globstar
 
 all:
 	make clean > build.log
+	make check-licenses >> build.log
 	make build >> build.log
 	make test >> build.log
 	make release >> build.log
 
-.PHONY: install build test publish release clean
+.PHONY: all
 
 install: install-validator install-node install-python install-hooks
 
 build: build-specification build-coordinator build-validator build-proxies
 
-test: validate-models check-licenses test-coordinator
+test: validate-models test-coordinator
 	cd tests/e2e/pact && make test
 	poetry run pytest ./scripts/update_prescriptions.py
 
