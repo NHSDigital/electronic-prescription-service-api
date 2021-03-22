@@ -1,10 +1,21 @@
 {
-  "extends": "./tsconfig.json",
   "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es6",
+    "lib": [
+      "es2019"
+    ],
+    "moduleResolution": "node",
+    "baseUrl": ".",
     "paths": {
       "@models": ["./models/library"]
-    },
+    }
   },
+  "include": [
+    "specs/**/*",
+    "."
+  ],
   "references": [
     { 
       "path": "./models/library"
