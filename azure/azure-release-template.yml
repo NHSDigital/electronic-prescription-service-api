@@ -117,31 +117,31 @@ extends:
           chmod +x ./broker/publish.ts
           make publish-pacts > /dev/null
 
-          # # Poll deploying API until our deployed version matches the release version
-          # url="https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH/_status"
-          # interval_in_seconds=5
-          # releaseCommit="$(Build.SourceVersion)"
-          # printf "\nPolling %s every %s seconds, until commit is: %s\n" "$url" "$interval_in_seconds" "$releaseCommit"
-          # attempts=0
-          # success=0
-          # until [ $attempts -eq 60 ]
-          # do
-          # responseData=$(curl -H "apiKey: $(status-endpoint-api-key)" "$url" -s)
-          # deployedCommit=$(echo "$responseData" | jq -r ".commitId")
-          # validatorUp=$(echo "$responseData" | jq -r ".validator")
-          # if [ "$deployedCommit" == "$releaseCommit" ] && [ "$validatorUp" == true ]; then
-          #     success=1
-          #     break;
-          # fi;
-          # ((attempts=attempts+1))
-          # sleep $interval_in_seconds;
-          # done
+          # Poll deploying API until our deployed version matches the release version
+          url="https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH/_status"
+          interval_in_seconds=5
+          releaseCommit="$(Build.SourceVersion)"
+          printf "\nPolling %s every %s seconds, until commit is: %s\n" "$url" "$interval_in_seconds" "$releaseCommit"
+          attempts=0
+          success=0
+          until [ $attempts -eq 60 ]
+          do
+          responseData=$(curl -H "apiKey: $(status-endpoint-api-key)" "$url" -s)
+          deployedCommit=$(echo "$responseData" | jq -r ".commitId")
+          validatorUp=$(echo "$responseData" | jq -r ".validator")
+          if [ "$deployedCommit" == "$releaseCommit" ] && [ "$validatorUp" == true ]; then
+              success=1
+              break;
+          fi;
+          ((attempts=attempts+1))
+          sleep $interval_in_seconds;
+          done
 
-          # if [ $success == 0 ]
-          # then
-          #     echo "Smoke tests failed, API was not ready in time"
-          #     exit 255
-          # fi
+          if [ $success == 0 ]
+          then
+              echo "Smoke tests failed, API was not ready in time"
+              exit 255
+          fi
 
           # Verify
           chmod +x ./broker/verify.ts

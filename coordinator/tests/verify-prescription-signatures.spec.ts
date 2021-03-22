@@ -40,7 +40,6 @@ test.each(cases)("verify prescription signature for %s", (desc: string, hl7V3Mes
 
 function expectSignatureIsValid(prescriptionRoot: ElementCompact) {
   const signatureValid = verifyPrescriptionSignatureValid(prescriptionRoot)
-  console.log(`Signature valid: ${signatureValid}`)
   expect(signatureValid).toBeTruthy()
 }
 
@@ -49,7 +48,6 @@ function expectDigestMatchesPrescription(prescriptionRoot: ElementCompact) {
   const digestFromSignature = extractDigestFromSignatureRoot(signatureRoot)
   const digestFromPrescription = calculateDigestFromPrescriptionRoot(prescriptionRoot)
   const digestMatches = digestFromPrescription === digestFromSignature
-  console.log(`Signature matches prescription: ${digestMatches}`)
   expect(digestMatches).toBeTruthy()
 }
 
