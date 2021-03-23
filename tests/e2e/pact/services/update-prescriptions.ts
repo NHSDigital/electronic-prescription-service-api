@@ -27,7 +27,7 @@ export async function updatePrescriptions(): Promise<void> {
     console.warn("No private key / x509 certifcate found, signing has been skipped")
   }
   
-  fetcher.prescriptionOrderExamples.forEach(async(processCase) => {
+  fetcher.prescriptionOrderExamples.filter(e => e.isSuccess).forEach(async(processCase) => {
     const prepareBundle = processCase.prepareRequest
     const processBundle = processCase.request
     const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(prepareBundle)[0].groupIdentifier
@@ -47,18 +47,16 @@ export async function updatePrescriptions(): Promise<void> {
     setTestPatientIfProd(prepareBundle)
     setTestPatientIfProd(processBundle)
     signPrescriptionFn(processCase)
-    if (processCase.isSuccess) {
-      if (processCase.prepareRequestFile) {
-        saveFhirExample(processCase.prepareRequestFile.path, prepareBundle)
-      }
-      saveFhirExample(processCase.requestFile.path, processBundle)
-      if (processCase.convertResponseFile) {
-        saveHl7Example(processCase.convertResponseFile.path, (await convertBundleToSpineRequest(processBundle, "", pino())).message)
-      }
+    if (processCase.prepareRequestFile) {
+      saveFhirExample(processCase.prepareRequestFile.path, prepareBundle)
+    }
+    saveFhirExample(processCase.requestFile.path, processBundle)
+    if (processCase.convertResponseFile) {
+      saveHl7Example(processCase.convertResponseFile.path, (await convertBundleToSpineRequest(processBundle, "", pino())).message)
     }
   })
 
-  fetcher.prescriptionOrderUpdateExamples.forEach(async (processCase) => {
+  fetcher.prescriptionOrderUpdateExamples.filter(e => e.isSuccess).forEach(async (processCase) => {
     const bundle = processCase.request
     const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(bundle)[0].groupIdentifier
 
@@ -72,11 +70,9 @@ export async function updatePrescriptions(): Promise<void> {
 
     setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
     setTestPatientIfProd(bundle)
-    if (processCase.isSuccess) {
-      saveFhirExample(processCase.requestFile.path, bundle)
-      if (processCase.convertResponseFile) {
-        saveHl7Example(processCase.convertResponseFile.path, (await convertBundleToSpineRequest(bundle, "", pino())).message)
-      }
+    saveFhirExample(processCase.requestFile.path, bundle)
+    if (processCase.convertResponseFile) {
+      saveHl7Example(processCase.convertResponseFile.path, (await convertBundleToSpineRequest(bundle, "", pino())).message)
     }
   })
 }
