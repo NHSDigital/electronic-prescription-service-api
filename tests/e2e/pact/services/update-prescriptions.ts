@@ -44,6 +44,7 @@ export function updatePrescriptions(): void {
     setTestPatientIfProd(prepareBundle)
     setTestPatientIfProd(processBundle)
     signPrescriptionFn(processCase)
+    saveFhirExample(processCase.requestFile.path, processBundle)
   })
 
   fetcher.prescriptionOrderUpdateExamples.forEach(processCase => {
@@ -60,6 +61,7 @@ export function updatePrescriptions(): void {
 
     setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
     setTestPatientIfProd(bundle)
+    saveFhirExample(processCase.requestFile.path, bundle)
   })
 }
 
@@ -136,6 +138,7 @@ function setTestPatientIfProd(bundle: fhir.Bundle) {
 function signPrescription(processCase: ProcessCase) {
   const prepareRequest = processCase.prepareRequest
   const prepareResponse = convertFhirMessageToSignedInfoMessage(prepareRequest)
+  saveFhirExample(processCase.prepareResponseFile.path, prepareResponse)
   const digestParameter = prepareResponse.parameter.filter(p => p.name === "digest")[0] as fhir.StringParameter
   const timestampParameter = prepareResponse.parameter.filter(p => p.name === "timestamp")[0] as fhir.StringParameter
   const digest = Buffer.from(digestParameter.valueString, "base64").toString("utf-8")
@@ -187,4 +190,8 @@ function getNhsNumberIdentifier(fhirPatient: fhir.Patient) {
   return fhirPatient
     .identifier
     .filter(identifier => identifier.system === "https://fhir.nhs.uk/Id/nhs-number")[0]
+}
+
+function saveFhirExample(path: string, json: fhir.Bundle | fhir.Parameters) {
+  fs.writeFileSync(path, JSON.stringify(json))
 }

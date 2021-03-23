@@ -9,7 +9,7 @@ all:
 	make test >> build.log
 	make release >> build.log
 
-.PHONY: all
+.PHONY: install build test publish release clean
 
 install: install-validator install-node install-python install-hooks
 

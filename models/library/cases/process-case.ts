@@ -7,18 +7,25 @@ import * as LosslessJson from "lossless-json"
 
 export class ProcessCase extends Case {
   request: fhir.Bundle
+  prepareResponseFile: ExampleFile
   prepareRequest: fhir.Bundle
 
   constructor(requestFile: ExampleFile, responseFile: ExampleFile) {
     super(requestFile, responseFile)
 
-    const prepareRequest = exampleFiles.find(exampleFile =>
+    const prepareRequestFile = exampleFiles.find(exampleFile =>
       exampleFile.dir === requestFile.dir
       && exampleFile.number === requestFile.number
       && exampleFile.endpoint === "prepare"
       && exampleFile.isRequest)
+    this.prepareRequest = LosslessJson.parse(fs.readFileSync(prepareRequestFile.path, "utf-8"))
 
-    this.prepareRequest = LosslessJson.parse(fs.readFileSync(prepareRequest.path, "utf-8"))
+    const prepareResponseFile = exampleFiles.find(exampleFile =>
+      exampleFile.dir === requestFile.dir
+      && exampleFile.number === requestFile.number
+      && exampleFile.endpoint === "prepare"
+      && exampleFile.isResponse)
+    this.prepareResponseFile = prepareResponseFile
   }
 
   toJestCase(): [string, fhir.Bundle] {
