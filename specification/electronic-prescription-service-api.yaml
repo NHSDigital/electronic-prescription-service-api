@@ -340,10 +340,10 @@ paths:
             examples:
               return:
                 value:
-                  $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Task-Request-Return-200_OK.json
+                  $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/2-Task-Request-Return-200_OK.json
               withdraw:
                 value:
-                  $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Task-Request-Withdraw-200_OK.json
+                  $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/3-Task-Request-Withdraw-200_OK.json
       responses:
         '200':
           description: Action completed successfully
