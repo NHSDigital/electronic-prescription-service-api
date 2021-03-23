@@ -54,17 +54,6 @@ extends:
         inputs:
           secureFile: 'eps_int_test_private.key'
       - bash: |
-          SIGNING_X509_CERTIFICATE_KEY_PATH=$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact/eps_int_test.pfx
-          cp $(eps_int_cert.secureFilePath) $SIGNING_X509_CERTIFICATE_KEY_PATH
-          echo "##vso[task.setvariable variable=SIGNING_X509_CERTIFICATE_KEY_PATH]$SIGNING_X509_CERTIFICATE_KEY_PATH"
-        displayName: 'Set int signing cert path'
-      - bash: |
-          SIGNING_PRIVATE_KEY_PATH=$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact/eps_int_test_private.key
-          cp $(eps_int_private_key.secureFilePath) $SIGNING_PRIVATE_KEY_PATH
-          echo "##vso[task.setvariable variable=SIGNING_PRIVATE_KEY_PATH]$SIGNING_PRIVATE_KEY_PATH"
-        displayName: 'Set int signing key path'
-        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-      - bash: |
           #!/bin/bash
 
           set -euo pipefail
@@ -110,8 +99,8 @@ extends:
 
               if [ "$APIGEE_ENVIRONMENT" == "int" ]
               then
-                  export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
-                  export SIGNING_X509_CERTIFICATE_KEY_PATH=$(SIGNING_X509_CERTIFICATE_KEY_PATH)
+                  export SIGNING_PRIVATE_KEY_PATH=$(eps_int_private_key.secureFilePath)
+                  export SIGNING_X509_CERTIFICATE_KEY_PATH=$(eps_int_cert.secureFilePath)
                   export IDP_URL="https://nhsd-apim-testing-$APIGEE_ENVIRONMENT-ns.herokuapp.com"
                   docker pull artronics/nhsd-login-docker:latest > /dev/null
                   APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest "$IDP_URL")

@@ -172,9 +172,7 @@ function signPrescription(processCase: ProcessCase) {
       throw new Error("Signature failed verification")
     }
   }
-  catch(e) {
-    console.error(`Failed to verify signature for certificate: ${certificate}`)
-    console.error(`Failed to verify signature error: ${e}`)
+  catch {
     throw new Error("Signature failed verification")
   }
 }
