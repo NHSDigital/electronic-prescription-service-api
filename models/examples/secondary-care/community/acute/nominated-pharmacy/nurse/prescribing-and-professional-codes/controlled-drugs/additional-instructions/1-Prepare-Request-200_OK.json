@@ -3,7 +3,7 @@
   "id": "aef77afb-7e3c-427a-8657-2c427f71a271",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "cd7ff830-ea75-4e62-8bd5-7b9c2dd93f84"
+    "value": "b2a292f2-ae8c-456f-a568-3a5be500cb7e"
   },
   "type": "message",
   "entry": [
@@ -146,12 +146,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "5f443f7e-b231-4772-9374-9ee01786781a"
+                "value": "c8577c8c-e325-471d-aa64-ff47c35a0cf2"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "A497AE-A99968-489595"
+          "value": "E6E465-A99968-462C9M"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -292,12 +292,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "5f443f7e-b231-4772-9374-9ee01786781a"
+                "value": "c8577c8c-e325-471d-aa64-ff47c35a0cf2"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "A497AE-A99968-489595"
+          "value": "E6E465-A99968-462C9M"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -397,12 +397,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "5f443f7e-b231-4772-9374-9ee01786781a"
+                "value": "c8577c8c-e325-471d-aa64-ff47c35a0cf2"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "A497AE-A99968-489595"
+          "value": "E6E465-A99968-462C9M"
         },
         "courseOfTherapyType": {
           "coding": [
