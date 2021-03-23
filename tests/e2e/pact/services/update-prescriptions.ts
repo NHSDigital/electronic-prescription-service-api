@@ -164,11 +164,18 @@ function signPrescription(processCase: ProcessCase) {
   provenance.signature[0].when = timestampParameter.valueString
   provenance.signature[0].data = Buffer.from(xmlDSig, "utf-8").toString("base64")
 
-  const signatureVerifier = crypto.createVerify("RSA-SHA1")
-  signatureVerifier.update(digest)
-  const verified = signatureVerifier.verify(certificate, signature, "base64")
-  if (!verified) {
-    throw new Error("Unable to verify signature")
+  try {
+    const signatureVerifier = crypto.createVerify("RSA-SHA1")
+    signatureVerifier.update(digest)
+    const verified = signatureVerifier.verify(certificate, signature, "base64")
+    if (!verified) {
+      throw new Error("Signature failed verification")
+    }
+  }
+  catch(e) {
+    console.error(`Failed to verify signature for certificate: ${certificate}`)
+    console.error(`Failed to verify signature error: ${e}`)
+    throw new Error("Signature failed verification")
   }
 }
 
