@@ -8,7 +8,7 @@ import * as crypto from "crypto"
 import fs from "fs"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
-const x509CertificatePath = process.env.SIGNING_X509_CERTIFICATE_KEY_PATH
+const x509CertificatePath = process.env.SIGNING_CERT_PATH
 
 export function updatePrescriptions(): void {
   const replacements = new Map<string, string>()
