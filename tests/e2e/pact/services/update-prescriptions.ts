@@ -1,17 +1,20 @@
+import * as XmlJs from "xml-js"
 import * as uuid from "uuid"
 import {fhir, fetcher, ProcessCase} from "@models"
 import {
   getResourcesOfType,
-  convertFhirMessageToSignedInfoMessage
+  convertFhirMessageToSignedInfoMessage,
+  convertBundleToSpineRequest
 } from "@coordinator"
 import * as crypto from "crypto"
 import fs from "fs"
 import * as LosslessJson from "lossless-json"
+import pino from "pino"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
 
-export function updatePrescriptions(): void {
+export async function updatePrescriptions(): Promise<void> {
   const replacements = new Map<string, string>()
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -25,7 +28,7 @@ export function updatePrescriptions(): void {
     console.warn("No private key / x509 certifcate found, signing has been skipped")
   }
   
-  fetcher.prescriptionOrderExamples.forEach(processCase => {
+  fetcher.prescriptionOrderExamples.forEach(async(processCase) => {
     const prepareBundle = processCase.prepareRequest
     const processBundle = processCase.request
     const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(prepareBundle)[0].groupIdentifier
@@ -47,9 +50,10 @@ export function updatePrescriptions(): void {
     signPrescriptionFn(processCase)
     saveFhirExample(processCase.prepareRequestFile.path, prepareBundle)
     saveFhirExample(processCase.requestFile.path, processBundle)
+    saveHl7Example(processCase.convertResponseFile.path, (await convertBundleToSpineRequest(processBundle, "", pino())).message)
   })
 
-  fetcher.prescriptionOrderUpdateExamples.forEach(processCase => {
+  fetcher.prescriptionOrderUpdateExamples.forEach(async (processCase) => {
     const bundle = processCase.request
     const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(bundle)[0].groupIdentifier
 
@@ -64,6 +68,7 @@ export function updatePrescriptions(): void {
     setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
     setTestPatientIfProd(bundle)
     saveFhirExample(processCase.requestFile.path, bundle)
+    saveHl7Example(processCase.convertResponseFile.path, (await convertBundleToSpineRequest(bundle, "", pino())).message)
   })
 }
 
@@ -192,6 +197,10 @@ function getNhsNumberIdentifier(fhirPatient: fhir.Patient) {
   return fhirPatient
     .identifier
     .filter(identifier => identifier.system === "https://fhir.nhs.uk/Id/nhs-number")[0]
+}
+
+function saveHl7Example(path: string, xml: string) {
+  fs.writeFileSync(path, xml)
 }
 
 function saveFhirExample(path: string, json: fhir.Bundle | fhir.Parameters) {

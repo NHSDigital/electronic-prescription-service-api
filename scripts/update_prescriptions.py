@@ -244,6 +244,7 @@ def update_dispense_examples(
         dispense_request_path = derive_dispense_request_path(prepare_request_path)
         dispense_request_json = load_dispense_request(dispense_request_path)
         # todo: update dispense/withdraw/return
+        # or deprecate this script entirely, and use update-prescriptions.ts (benefits from using coordinator code)
         # update_prescription(
         #     process_request_json, bundle_id, prescription_id, short_prescription_id, authored_on, signature_time
         # )

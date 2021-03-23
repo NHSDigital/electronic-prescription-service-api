@@ -8,9 +8,11 @@ import {basePath, pactOptions} from "../../resources/common"
 import {fhir} from "@models"
 import {updatePrescriptions} from "../../services/update-prescriptions"
 
-if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
-  updatePrescriptions()
-}
+(async () => {
+  if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
+    await updatePrescriptions()
+  }
+})()
 
 TestResources.processOrderCaseGroups.forEach(pactGroup => {
   const pactGroupName = pactGroup.name

@@ -10,6 +10,7 @@ export class ProcessCase extends Case {
   prepareRequest: fhir.Bundle
   prepareRequestFile: ExampleFile
   prepareResponseFile: ExampleFile
+  convertResponseFile: ExampleFile
 
   constructor(requestFile: ExampleFile, responseFile: ExampleFile) {
     super(requestFile, responseFile)
@@ -28,6 +29,14 @@ export class ProcessCase extends Case {
       && exampleFile.endpoint === "prepare"
       && exampleFile.isResponse)
     this.prepareResponseFile = prepareResponseFile
+
+    const convertResponseFile = exampleFiles.find(exampleFile =>
+      exampleFile.dir === requestFile.dir
+      && exampleFile.number === requestFile.number
+      && exampleFile.endpoint === "convert"
+      && exampleFile.operation == requestFile.operation
+      && exampleFile.isResponse)
+    this.convertResponseFile = convertResponseFile
   }
 
   toJestCase(): [string, fhir.Bundle] {
