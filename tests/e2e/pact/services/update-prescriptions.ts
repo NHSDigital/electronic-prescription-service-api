@@ -13,7 +13,8 @@ const x509CertificatePath = process.env.SIGNING_X509_CERTIFICATE_KEY_PATH
 export function updatePrescriptions(): void {
   const replacements = new Map<string, string>()
 
-  let signPrescriptionFn = (processCase: ProcessCase): void => {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  let signPrescriptionFn = (processCase: ProcessCase): void => {return}
 
   if (fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath))
   {
