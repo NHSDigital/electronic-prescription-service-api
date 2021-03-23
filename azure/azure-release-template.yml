@@ -47,7 +47,7 @@ extends:
         displayName: 'Download int signing cert'
         name: eps_int_cert
         inputs:
-          secureFile: 'eps_int_test.pfx'
+          secureFile: 'eps_int_test_certificate.crt'
       - task: DownloadSecureFile@1
         displayName: 'Download int signing key'
         name: eps_int_private_key
@@ -98,7 +98,7 @@ extends:
               export PACT_PROVIDER=nhsd-apim-eps
 
               export SIGNING_PRIVATE_KEY_PATH=$(eps_int_private_key.secureFilePath)
-              export SIGNING_X509_CERTIFICATE_KEY_PATH=$(eps_int_cert.secureFilePath)
+              export SIGNING_CERT_PATH=$(eps_int_cert.secureFilePath)
 
               if [ "$APIGEE_ENVIRONMENT" == "int" ]
               then
