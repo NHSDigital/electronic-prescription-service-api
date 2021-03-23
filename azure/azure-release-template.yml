@@ -97,10 +97,11 @@ extends:
           else
               export PACT_PROVIDER=nhsd-apim-eps
 
+              export SIGNING_PRIVATE_KEY_PATH=$(eps_int_private_key.secureFilePath)
+              export SIGNING_X509_CERTIFICATE_KEY_PATH=$(eps_int_cert.secureFilePath)
+
               if [ "$APIGEE_ENVIRONMENT" == "int" ]
               then
-                  export SIGNING_PRIVATE_KEY_PATH=$(eps_int_private_key.secureFilePath)
-                  export SIGNING_X509_CERTIFICATE_KEY_PATH=$(eps_int_cert.secureFilePath)
                   export IDP_URL="https://nhsd-apim-testing-$APIGEE_ENVIRONMENT-ns.herokuapp.com"
                   docker pull artronics/nhsd-login-docker:latest > /dev/null
                   APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest "$IDP_URL")
