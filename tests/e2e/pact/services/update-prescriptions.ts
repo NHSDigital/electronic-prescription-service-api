@@ -1,4 +1,3 @@
-import * as XmlJs from "xml-js"
 import * as uuid from "uuid"
 import {fhir, fetcher, ProcessCase} from "@models"
 import {
