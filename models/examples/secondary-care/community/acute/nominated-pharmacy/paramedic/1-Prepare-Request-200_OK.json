@@ -3,7 +3,7 @@
   "id": "0A1FD9EF-A3D5-4E95-84CD-552070A03089",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "85ddf7d9-e760-41cb-b107-4cab09fa192e"
+    "value": "deb91af6-9efc-49ee-9934-fb6680295ded"
   },
   "type": "message",
   "entry": [
@@ -105,12 +105,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "7170fabc-7940-4fdc-b9ad-962192e095f9"
+                "value": "4c3ef0be-668f-4147-902f-869190df03b6"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "B6CC0E-A99968-48CBAZ"
+          "value": "D4B488-A99968-4747A5"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -221,12 +221,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "7170fabc-7940-4fdc-b9ad-962192e095f9"
+                "value": "4c3ef0be-668f-4147-902f-869190df03b6"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "B6CC0E-A99968-48CBAZ"
+          "value": "D4B488-A99968-4747A5"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -337,12 +337,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "7170fabc-7940-4fdc-b9ad-962192e095f9"
+                "value": "4c3ef0be-668f-4147-902f-869190df03b6"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "B6CC0E-A99968-48CBAZ"
+          "value": "D4B488-A99968-4747A5"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -453,12 +453,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "7170fabc-7940-4fdc-b9ad-962192e095f9"
+                "value": "4c3ef0be-668f-4147-902f-869190df03b6"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "B6CC0E-A99968-48CBAZ"
+          "value": "D4B488-A99968-4747A5"
         },
         "courseOfTherapyType": {
           "coding": [

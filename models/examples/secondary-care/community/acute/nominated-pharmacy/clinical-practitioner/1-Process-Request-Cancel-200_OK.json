@@ -3,7 +3,7 @@
   "id": "0A1FD9EF-A3D5-4E95-84CD-552070A03083",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "34470bbf-07cb-4b49-bef9-f958114f821f"
+    "value": "957c8283-d224-4940-a470-54564afbf16b"
   },
   "type": "message",
   "entry": [
@@ -114,12 +114,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "030611b2-9769-4696-88d9-9ddcf1132584"
+                "value": "897098b1-a929-491b-9bed-a7660c49af9a"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "269CA9-A99968-4577BF"
+          "value": "DCC735-A99968-455A9O"
         },
         "courseOfTherapyType": {
           "coding": [
