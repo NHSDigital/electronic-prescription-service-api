@@ -149,6 +149,7 @@ function setTestPatientIfProd(bundle: fhir.Bundle) {
 
 function signPrescription(processCase: ProcessCase) {
   const prepareRequest = processCase.prepareRequest
+  // todo: handle error cases - this bypasses validation by calling translation directly
   const prepareResponse = convertFhirMessageToSignedInfoMessage(prepareRequest)
   saveFhirExample(processCase.prepareResponseFile.path, prepareResponse)
   const digestParameter = prepareResponse.parameter.filter(p => p.name === "digest")[0] as fhir.StringParameter
