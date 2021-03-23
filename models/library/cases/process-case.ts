@@ -19,6 +19,7 @@ export class ProcessCase extends Case {
       exampleFile.dir === requestFile.dir
       && exampleFile.number === requestFile.number
       && exampleFile.endpoint === "prepare"
+      && exampleFile.statusText === requestFile.statusText
       && exampleFile.isRequest)
     this.prepareRequestFile = prepareRequestFile
     if (prepareRequestFile) {
@@ -29,6 +30,7 @@ export class ProcessCase extends Case {
       exampleFile.dir === requestFile.dir
       && exampleFile.number === requestFile.number
       && exampleFile.endpoint === "prepare"
+      && exampleFile.statusText === requestFile.statusText
       && exampleFile.isResponse)
       
     this.prepareResponseFile = prepareResponseFile
@@ -39,7 +41,7 @@ export class ProcessCase extends Case {
       && exampleFile.endpoint === "convert"
       && exampleFile.operation == requestFile.operation
       && exampleFile.isResponse
-      && exampleFile.statusText === "200-OK")
+      && exampleFile.statusText === requestFile.statusText)
     this.convertResponseFile = convertResponseFile
   }
 
