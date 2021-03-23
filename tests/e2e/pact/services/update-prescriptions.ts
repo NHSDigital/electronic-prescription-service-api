@@ -27,7 +27,7 @@ export async function updatePrescriptions(): Promise<void> {
     console.warn("No private key / x509 certifcate found, signing has been skipped")
   }
   
-  fetcher.prescriptionOrderExamples.forEach(async(processCase) => {
+  fetcher.prescriptionOrderExamples.filter(e => e.isSuccess).forEach(async(processCase) => {
     const prepareBundle = processCase.prepareRequest
     const processBundle = processCase.request
     const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(prepareBundle)[0].groupIdentifier
@@ -56,7 +56,7 @@ export async function updatePrescriptions(): Promise<void> {
     }
   })
 
-  fetcher.prescriptionOrderUpdateExamples.forEach(async (processCase) => {
+  fetcher.prescriptionOrderUpdateExamples.filter(e => e.isSuccess).forEach(async (processCase) => {
     const bundle = processCase.request
     const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(bundle)[0].groupIdentifier
 
