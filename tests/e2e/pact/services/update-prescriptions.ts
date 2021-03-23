@@ -47,9 +47,13 @@ export async function updatePrescriptions(): Promise<void> {
     setTestPatientIfProd(prepareBundle)
     setTestPatientIfProd(processBundle)
     signPrescriptionFn(processCase)
-    saveFhirExample(processCase.prepareRequestFile.path, prepareBundle)
+    if (processCase.prepareRequestFile) {
+      saveFhirExample(processCase.prepareRequestFile.path, prepareBundle)
+    }
     saveFhirExample(processCase.requestFile.path, processBundle)
-    saveHl7Example(processCase.convertResponseFile.path, (await convertBundleToSpineRequest(processBundle, "", pino())).message)
+    if (processCase.convertResponseFile) {
+      saveHl7Example(processCase.convertResponseFile.path, (await convertBundleToSpineRequest(processBundle, "", pino())).message)
+    }
   })
 
   fetcher.prescriptionOrderUpdateExamples.forEach(async (processCase) => {
@@ -67,7 +71,9 @@ export async function updatePrescriptions(): Promise<void> {
     setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
     setTestPatientIfProd(bundle)
     saveFhirExample(processCase.requestFile.path, bundle)
-    saveHl7Example(processCase.convertResponseFile.path, (await convertBundleToSpineRequest(bundle, "", pino())).message)
+    if (processCase.convertResponseFile) {
+      saveHl7Example(processCase.convertResponseFile.path, (await convertBundleToSpineRequest(bundle, "", pino())).message)
+    }
   })
 }
 

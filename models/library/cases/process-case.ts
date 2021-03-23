@@ -7,10 +7,10 @@ import * as LosslessJson from "lossless-json"
 
 export class ProcessCase extends Case {
   request: fhir.Bundle
-  prepareRequest: fhir.Bundle
-  prepareRequestFile: ExampleFile
-  prepareResponseFile: ExampleFile
-  convertResponseFile: ExampleFile
+  prepareRequest?: fhir.Bundle
+  prepareRequestFile?: ExampleFile
+  prepareResponseFile?: ExampleFile
+  convertResponseFile?: ExampleFile
 
   constructor(requestFile: ExampleFile, responseFile: ExampleFile) {
     super(requestFile, responseFile)
@@ -21,13 +21,16 @@ export class ProcessCase extends Case {
       && exampleFile.endpoint === "prepare"
       && exampleFile.isRequest)
     this.prepareRequestFile = prepareRequestFile
-    this.prepareRequest = LosslessJson.parse(fs.readFileSync(prepareRequestFile.path, "utf-8"))
+    if (prepareRequestFile) {
+      this.prepareRequest = LosslessJson.parse(fs.readFileSync(prepareRequestFile.path, "utf-8"))
+    }
 
     const prepareResponseFile = exampleFiles.find(exampleFile =>
       exampleFile.dir === requestFile.dir
       && exampleFile.number === requestFile.number
       && exampleFile.endpoint === "prepare"
       && exampleFile.isResponse)
+      
     this.prepareResponseFile = prepareResponseFile
 
     const convertResponseFile = exampleFiles.find(exampleFile =>
