@@ -155,9 +155,7 @@ function signPrescription(processCase: ProcessCase) {
     padding: crypto.constants.RSA_PKCS1_PADDING
   }).toString("base64")
   const certificate = fs.readFileSync(x509CertificatePath, "utf-8")
-  const certificateValue = certificate
-    .replace("-----BEGIN CERTIFICATE-----\n", "")
-    .replace("\n-----END CERTIFICATE-----", "")
+  const certificateValue = certificate.split("\n")[1].trimEnd()
   const xmlDSig = `
 <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
   ${digestWithoutNamespace}
