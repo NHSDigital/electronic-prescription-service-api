@@ -6,6 +6,7 @@ import {
 } from "@coordinator"
 import * as crypto from "crypto"
 import fs from "fs"
+import * as LosslessJson from "lossless-json"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
@@ -193,5 +194,5 @@ function getNhsNumberIdentifier(fhirPatient: fhir.Patient) {
 }
 
 function saveFhirExample(path: string, json: fhir.Bundle | fhir.Parameters) {
-  fs.writeFileSync(path, JSON.stringify(json))
+  fs.writeFileSync(path, LosslessJson.stringify(json), "utf-8")
 }
