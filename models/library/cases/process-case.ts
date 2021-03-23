@@ -35,7 +35,8 @@ export class ProcessCase extends Case {
       && exampleFile.number === requestFile.number
       && exampleFile.endpoint === "convert"
       && exampleFile.operation == requestFile.operation
-      && exampleFile.isResponse)
+      && exampleFile.isResponse
+      && exampleFile.statusText === "200-OK")
     this.convertResponseFile = convertResponseFile
   }
 
