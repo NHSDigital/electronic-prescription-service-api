@@ -45,6 +45,7 @@ export function updatePrescriptions(): void {
     setTestPatientIfProd(prepareBundle)
     setTestPatientIfProd(processBundle)
     signPrescriptionFn(processCase)
+    saveFhirExample(processCase.prepareRequestFile.path, prepareBundle)
     saveFhirExample(processCase.requestFile.path, processBundle)
   })
 
