@@ -62,6 +62,8 @@ function create-smoke-tests() {
     . ./envrc.ps1
     $env:PACT_VERSION="$env:USERNAME".replace(' ','')
     $env:UPDATE_PRESCRIPTIONS=$update
+    $env:SIGNING_PRIVATE_KEY_PATH="../../../sign/eps_int_test_private.key"
+    $env:SIGNING_X509_CERTIFICATE_KEY_PATH="../../../sign/eps_int_test_certificate.crt"
     #$env:LOG_LEVEL="debug"
     Remove-Item Env:\LOG_LEVEL -ErrorAction SilentlyContinue
     cd tests/e2e/pact

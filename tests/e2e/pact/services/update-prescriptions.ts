@@ -4,10 +4,25 @@ import {
   getResourcesOfType,
   convertFhirMessageToSignedInfoMessage
 } from "@coordinator"
+import * as crypto from "crypto"
+import fs from "fs"
+
+const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
+const x509CertificatePath = process.env.SIGNING_X509_CERTIFICATE_KEY_PATH
 
 export function updatePrescriptions(): void {
   const replacements = new Map<string, string>()
 
+  let signPrescriptionFn = (processCase: ProcessCase): void => {}
+
+  if (fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath))
+  {
+    signPrescriptionFn = signPrescription
+  }
+  else {
+    console.warn("No private key / x509 certifcate found, signing has been skipped")
+  }
+  
   fetcher.prescriptionOrderExamples.forEach(processCase => {
     const prepareBundle = processCase.prepareRequest
     const processBundle = processCase.request
@@ -27,7 +42,7 @@ export function updatePrescriptions(): void {
     setPrescriptionIds(processBundle, newBundleIdentifier, newShortFormId, newLongFormId)
     setTestPatientIfProd(prepareBundle)
     setTestPatientIfProd(processBundle)
-    signPrescription(processCase)
+    signPrescriptionFn(processCase)
   })
 
   fetcher.prescriptionOrderUpdateExamples.forEach(processCase => {
@@ -123,16 +138,22 @@ function signPrescription(processCase: ProcessCase) {
   const digestParameter = prepareResponse.parameter.filter(p => p.name === "digest")[0] as fhir.StringParameter
   const timestampParameter = prepareResponse.parameter.filter(p => p.name === "timestamp")[0] as fhir.StringParameter
   const digest = Buffer.from(digestParameter.valueString, "base64").toString("utf-8")
-    .replace(`<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">`, "")
-  const signature = "" // todo: sign
-  const certificate = "" // todo: add cert
+  const digestWithoutNamespace = digest.replace(`<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">`, `<SignedInfo>`)
+  const signature = crypto.sign("sha1", Buffer.from(digest, "utf-8"), {
+    key: fs.readFileSync(privateKeyPath, "utf-8"),
+    padding: crypto.constants.RSA_PKCS1_PADDING
+  }).toString("base64")
+  const certificate = fs.readFileSync(x509CertificatePath, "utf-8")
+  const certificateValue = certificate
+    .replace("-----BEGIN CERTIFICATE-----\n", "")
+    .replace("\n-----END CERTIFICATE-----", "")
   const xmlDSig = `
-<Signature xmlns=""http://www.w3.org/2000/09/xmldsig#"">
-  ${digest}
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+  ${digestWithoutNamespace}
   <SignatureValue>${signature}</SignatureValue>
   <KeyInfo>
       <X509Data>
-          <X509Certificate>${certificate}</X509Certificate>
+          <X509Certificate>${certificateValue}</X509Certificate>
       </X509Data>
   </KeyInfo>
 </Signature>
@@ -141,6 +162,13 @@ function signPrescription(processCase: ProcessCase) {
   const provenance = getResourcesOfType.getProvenances(bundle)[0]
   provenance.signature[0].when = timestampParameter.valueString
   provenance.signature[0].data = Buffer.from(xmlDSig, "utf-8").toString("base64")
+
+  const signatureVerifier = crypto.createVerify("RSA-SHA1")
+  signatureVerifier.update(digest)
+  const verified = signatureVerifier.verify(certificate, signature, "base64")
+  if (!verified) {
+    throw new Error("Unable to verify signature")
+  }
 }
 
 function getLongFormIdExtension(extensions: Array<fhir.Extension>): fhir.IdentifierExtension {

@@ -44,17 +44,25 @@ extends:
           releaseType: stable
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - task: DownloadSecureFile@1
-        displayName: 'Download int cert'
+        displayName: 'Download int signing cert'
         name: eps_int_cert
         inputs:
           secureFile: 'eps_int_test.pfx'
+      - task: DownloadSecureFile@1
+        displayName: 'Download int signing key'
+        name: eps_int_private_key
+        inputs:
+          secureFile: 'eps_int_test_private.key'
       - bash: |
-          ls $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)
-        displayName: 'Debug int cert'
-        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+          SIGNING_X509_CERTIFICATE_KEY_PATH=$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact/eps_int_test.pfx
+          cp $(eps_int_cert.secureFilePath) $SIGNING_X509_CERTIFICATE_KEY_PATH
+          echo "##vso[task.setvariable variable=SIGNING_X509_CERTIFICATE_KEY_PATH]$SIGNING_X509_CERTIFICATE_KEY_PATH"
+        displayName: 'Set int signing cert path'
       - bash: |
-          cp $(eps_int_cert.secureFilePath) $(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact/eps_int_test.pfx
-        displayName: 'Copy int cert'
+          SIGNING_PRIVATE_KEY_PATH=$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact/eps_int_test_private.key
+          cp $(eps_int_private_key.secureFilePath) $SIGNING_PRIVATE_KEY_PATH
+          echo "##vso[task.setvariable variable=SIGNING_PRIVATE_KEY_PATH]$SIGNING_PRIVATE_KEY_PATH"
+        displayName: 'Set int signing key path'
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - bash: |
           #!/bin/bash
@@ -99,28 +107,31 @@ extends:
               export PACT_PROVIDER=nhsd-apim-eps-sandbox
           else
               export PACT_PROVIDER=nhsd-apim-eps
-          if [ "$APIGEE_ENVIRONMENT" == "int" ]
-          then
-              export IDP_URL="https://nhsd-apim-testing-$APIGEE_ENVIRONMENT-ns.herokuapp.com"
-              docker pull artronics/nhsd-login-docker:latest > /dev/null
-              APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest "$IDP_URL")
-              export APIGEE_ACCESS_TOKEN
-          elif [ "$APIGEE_ENVIRONMENT" == "ref" ]
-          then
-              IDP_URL="$(REF_IDP_URL)"
-              export IDP_URL
-              AUTH_BEARER_TOKEN="$(REF_AUTH_BEARER_TOKEN)"
-              export AUTH_BEARER_TOKEN
-              docker pull booshi/nhsd-login-docker:latest > /dev/null
-              APIGEE_ACCESS_TOKEN=$(docker run --rm -e AUTH_BEARER_TOKEN="$AUTH_BEARER_TOKEN" booshi/nhsd-login-docker:latest "$IDP_URL")
-              export APIGEE_ACCESS_TOKEN
-          else
-              IDP_URL="https://nhsd-apim-testing-$APIGEE_ENVIRONMENT.herokuapp.com"
-              export IDP_URL
-              docker pull artronics/nhsd-login-docker:latest > /dev/null
-              APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest "$IDP_URL")
-              export APIGEE_ACCESS_TOKEN
-          fi
+
+              if [ "$APIGEE_ENVIRONMENT" == "int" ]
+              then
+                  export SIGNING_PRIVATE_KEY_PATH=$(SIGNING_PRIVATE_KEY_PATH)
+                  export SIGNING_X509_CERTIFICATE_KEY_PATH=$(SIGNING_X509_CERTIFICATE_KEY_PATH)
+                  export IDP_URL="https://nhsd-apim-testing-$APIGEE_ENVIRONMENT-ns.herokuapp.com"
+                  docker pull artronics/nhsd-login-docker:latest > /dev/null
+                  APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest "$IDP_URL")
+                  export APIGEE_ACCESS_TOKEN
+              elif [ "$APIGEE_ENVIRONMENT" == "ref" ]
+              then
+                  IDP_URL="$(REF_IDP_URL)"
+                  export IDP_URL
+                  AUTH_BEARER_TOKEN="$(REF_AUTH_BEARER_TOKEN)"
+                  export AUTH_BEARER_TOKEN
+                  docker pull booshi/nhsd-login-docker:latest > /dev/null
+                  APIGEE_ACCESS_TOKEN=$(docker run --rm -e AUTH_BEARER_TOKEN="$AUTH_BEARER_TOKEN" booshi/nhsd-login-docker:latest "$IDP_URL")
+                  export APIGEE_ACCESS_TOKEN
+              else
+                  IDP_URL="https://nhsd-apim-testing-$APIGEE_ENVIRONMENT.herokuapp.com"
+                  export IDP_URL
+                  docker pull artronics/nhsd-login-docker:latest > /dev/null
+                  APIGEE_ACCESS_TOKEN=$(docker run --rm artronics/nhsd-login-docker:latest "$IDP_URL")
+                  export APIGEE_ACCESS_TOKEN
+              fi
           fi
 
           # Publish
