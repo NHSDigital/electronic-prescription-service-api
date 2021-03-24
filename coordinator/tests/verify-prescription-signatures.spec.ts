@@ -1,9 +1,5 @@
 import {ElementCompact} from "xml-js"
-import {
-  readXml,
-  writeXmlStringCanonicalized
-}
-from "../src/services/serialisation/xml"
+import {readXml, writeXmlStringCanonicalized} from "../src/services/serialisation/xml"
 import * as crypto from "crypto"
 import {readFileSync} from "fs"
 import * as path from "path"
