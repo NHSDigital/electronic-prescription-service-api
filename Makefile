@@ -82,9 +82,9 @@ build-specification:
 	cd specification \
 	&& mkdir -p build/components/examples \
 	&& mkdir -p build/components/schemas \
-	&& cp ../models/examples/signature.json build/components/examples/. \
-	&& cp -r ../models/examples/errors/. build/components/examples/. \
-	&& cp -r ../models/examples/. build/components/examples/. \
+	&& cp ../examples/signature.json build/components/examples/. \
+	&& cp -r ../examples/errors/. build/components/examples/. \
+	&& cp -r ../examples/. build/components/examples/. \
 	&& cp electronic-prescription-service-api.yaml build/electronic-prescription-service-api.yaml \
 	&& npm run resolve \
 	&& poetry run python ../scripts/yaml2json.py build/electronic-prescription-service-api.resolved.yaml build/ \
