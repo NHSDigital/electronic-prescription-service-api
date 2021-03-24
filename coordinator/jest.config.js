@@ -8,6 +8,6 @@ module.exports = {
   coveragePathIgnorePatterns: ["/node_modules/", "/tests/"],
   setupFiles: ["./jest/setEnvVars.js"],
   moduleNameMapper: {
-    "@models": "<rootDir>../models/library"
+    "@models": "<rootDir>../models"
   }
 }

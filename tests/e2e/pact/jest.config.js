@@ -1,10 +1,10 @@
 const fs = require("fs")
 const path = require("path")
 
-const pipelineModelsPath = "./models/library"
+const pipelineModelsPath = "./models"
 const isRunningInPipeline = fs.existsSync(path.join(__dirname, pipelineModelsPath))
 
-const modelsPath = isRunningInPipeline ? pipelineModelsPath : "../../../models/library"
+const modelsPath = isRunningInPipeline ? pipelineModelsPath : "../../../models"
 const coordinatorPath = isRunningInPipeline ? "./coordinator" : "../../../coordinator" 
 
 module.exports = {

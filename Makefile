@@ -27,7 +27,7 @@ release:
 	cp -r specification/dist/. dist
 	rsync -av --progress --copy-links tests/e2e/pact dist --exclude pact/node_modules --exclude pact/pact
 	rm -f dist/pact/tsconfig.json && mv dist/pact/tsconfig-deploy.json dist/pact/tsconfig.json
-	rsync -av --progress --copy-links models dist/pact --exclude models/library/node_modules --exclude models/build
+	rsync -av --progress --copy-links models dist/pact --exclude models/node_modules --exclude models/build
 	rsync -av --progress --copy-links coordinator dist/pact --exclude coordinator/node_modules
 	for env in internal-dev-sandbox internal-qa-sandbox sandbox; do \
 		cat ecs-proxies-deploy.yml | sed -e 's/{{ SPINE_ENV }}/veit07/g' | sed -e 's/{{ SANDBOX_MODE_ENABLED }}/1/g' > dist/ecs-deploy-$$env.yml; \
@@ -40,8 +40,8 @@ release:
 
 clean:
 	rm -rf dist
-	rm -rf models/build
-	rm -rf models/library/dist
+	rm -rf examples/build
+	rm -rf models/dist
 	rm -rf specification/dist
 	rm -rf specification/build
 	rm -rf coordinator/dist
@@ -69,7 +69,7 @@ install-python:
 
 install-node:
 	cd specification && npm install
-	cd models/library && npm install
+	cd models && npm install
 	cd coordinator && npm install
 	cd tests/e2e/pact && make install
 
@@ -116,10 +116,10 @@ test-coordinator:
 ## Quality Checks
 
 validate-models:
-	mkdir -p models/build
-	test -f models/build/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > models/build/org.hl7.fhir.validator.jar
+	mkdir -p examples/build
+	test -f examples/build/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > examples/build/org.hl7.fhir.validator.jar
 	for dir in "errors/**" "secondary-care/**"; do \
-		java -jar models/build/org.hl7.fhir.validator.jar models/examples/$$dir/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt; \
+		java -jar examples/build/org.hl7.fhir.validator.jar examples/$$dir/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt; \
 	done
 
 lint: build

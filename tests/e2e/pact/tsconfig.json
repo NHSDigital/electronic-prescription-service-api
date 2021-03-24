@@ -9,7 +9,7 @@
     "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
-      "@models": ["../../../models/library"],
+      "@models": ["../../../models"],
       "@coordinator": ["../../../coordinator"]
     }
   },
@@ -19,7 +19,7 @@
   ],
   "references": [
     { 
-      "path": "../../../models/library"
+      "path": "../../../models"
     },
     { 
       "path": "../../../coordinator"
