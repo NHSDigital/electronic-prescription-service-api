@@ -68,10 +68,10 @@ extends:
           export APIGEE_ENVIRONMENT
 
           if [[ $SERVICE_ARTIFACT_NAME == v* ]]; then
-              PACT_VERSION=$(echo "$SERVICE_ARTIFACT_NAME" | grep -o "v[0-9]\+\.[0-9]\+\.[0-9]\+-[[:alpha:]]\+" | tail -1)
+              PACT_VERSION=$(echo "$SERVICE_ARTIFACT_NAME" | grep -o "v[0-9]\+\.[0-9]\+\.[0-9]\+-[[:alpha:]]\+" | tail -1)+$APIGEE_ENVIRONMENT
               export PACT_VERSION
           else
-              export PACT_VERSION="$SERVICE_BASE_PATH+$APIGEE_ENVIRONMENT"
+              export PACT_VERSION="$SERVICE_BASE_PATH"
           fi 
 
           PACT_BROKER_URL=$(PACT_BROKER_URL)
