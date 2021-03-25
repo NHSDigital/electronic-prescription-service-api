@@ -6,7 +6,8 @@ This is a RESTful HL7® FHIR® API specification for the *Electronic Prescriptio
 
 * `azure/` Defines CI/CD pipeline.
 * `coordinator/` Deals with message translation and distribution to other services. Backend for the production EPS FHIR API.
-* `models/` A common, single source of truth directory for requests, responses and schemas used by the various components of this solution.
+* `models/` A common project for sharing models and loading example requests and responses for testing
+* `examples/` Contains example requests and responses used to test various components of this solution.
 * `proxies/` Apigee API Proxies
 * `scripts/` Utilities helpful to developers of this specification.
 * `specification/` This [Open API Specification](https://swagger.io/docs/specification/about/) describes the endpoints, methods and messages exchanged by the API. Use it to generate interactive documentation; the contract between the API and its consumers.
