@@ -8,7 +8,7 @@ export type ApiEndpoint = "prepare" | "process" | "convert" | "release" | "task"
 export type ApiOperation = "send" | "dispense" | "cancel"
 
 // to use groups the group added must match a subfolder under
-// models/examples with path separator replaced by space
+// examples with path separator replaced by space
 // or set pactGroups = [""] to run all together
 export const pactGroups = [
   "secondary-care community acute",

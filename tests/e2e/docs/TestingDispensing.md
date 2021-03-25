@@ -38,7 +38,7 @@ make sign-prescriptions
 #### Send Prescriptions to int
 ---
 
-Grab an example which has been signed above (under `models/examples/`)
+Grab an example which has been signed above (under `examples/`)
 
 ##### Internal Checks
 

@@ -9,7 +9,7 @@ import * as hl7V3 from "../src/models/hl7-v3"
 import {fetcher} from "@models"
 
 //eslint-disable-next-line max-len
-const prescriptionPath = "../../models/examples/primary-care/acute/no-nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/spurious-code/1-Convert-Response-Send-200_OK.xml"
+const prescriptionPath = "../../examples/primary-care/acute/no-nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/spurious-code/1-Convert-Response-Send-200_OK.xml"
 
 test.skip("verify digest for specific prescription", () => {
   const prescriptionStr = readFileSync(path.join(__dirname, prescriptionPath), "utf-8")
