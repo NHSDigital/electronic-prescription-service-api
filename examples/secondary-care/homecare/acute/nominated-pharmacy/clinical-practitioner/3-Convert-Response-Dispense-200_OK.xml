@@ -178,7 +178,7 @@
         </pertinentInformation2>
         <sequelTo typeCode="SEQL">
           <priorPrescriptionReleaseEventRef classCode="INFO" moodCode="RQO">
-            <id root="123A456B-C7DE-78F9-G1A2-3BCDEF4GA567"/>
+            <id root="999F9999-9999-9999-9FF9-F9FFF9999999"/>
           </priorPrescriptionReleaseEventRef>
         </sequelTo>
       </DispenseNotification>
