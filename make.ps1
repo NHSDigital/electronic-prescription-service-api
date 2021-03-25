@@ -20,7 +20,7 @@ function update-prescriptions() {
         }
     }
     ./scripts/update-prescriptions.ps1
-    '.\models\examples' | Get-ChildItem -Recurse -File -Include *.json, *.xml | ForEach-Object {
+    '.\examples' | Get-ChildItem -Recurse -File -Include *.json, *.xml | ForEach-Object {
         if ($_.FullName) {
             (Get-Content $_.FullName -Raw).Replace("`r`n","`n") | Set-Content $_.FullName -Force 
         }
@@ -47,6 +47,8 @@ function install-smoke-tests() {
 # Example:
 # make mode=sandbox create-smoke-tests
 # make mode=live create-smoke-tests
+# make mode=sandbox update=false create-smoke-tests
+# make mode=live update=false create-smoke-tests
 function create-smoke-tests() {
     foreach ($arg in $args) {
         $split_args = $arg.Split("=")
@@ -59,6 +61,9 @@ function create-smoke-tests() {
     }
     . ./envrc.ps1
     $env:PACT_VERSION="$env:USERNAME".replace(' ','')
+    $env:UPDATE_PRESCRIPTIONS=$update
+    $env:SIGNING_PRIVATE_KEY_PATH="../../../sign/eps_int_test_private.key"
+    $env:SIGNING_CERT_PATH="../../../sign/eps_int_test_certificate.crt"
     #$env:LOG_LEVEL="debug"
     Remove-Item Env:\LOG_LEVEL -ErrorAction SilentlyContinue
     cd tests/e2e/pact

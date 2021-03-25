@@ -1,9 +1,6 @@
 import * as Hapi from "@hapi/hapi"
-import {
-  BASE_PATH, CONTENT_TYPE_FHIR,
-  externalValidator, getPayload, handleResponse
-} from "../util"
-import * as fhir from "../../models/fhir"
+import {BASE_PATH, CONTENT_TYPE_FHIR, externalValidator, getPayload, handleResponse} from "../util"
+import {fhir} from "@models"
 import * as translator from "../../services/translation/request"
 import {spineClient} from "../../services/communication/spine-client"
 import * as taskValidator from "../../services/validation/task-validator"

@@ -3,7 +3,7 @@ import * as TestResources from "../../resources/test-resources"
 import {clone} from "../../resources/test-helpers"
 import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, isTruthy} from "../../../src/services/translation/common"
-import * as fhir from "../../../src/models/fhir"
+import {fhir} from "@models"
 import {
   createMedicationRequestInconsistentValueIssue,
   medicationRequestDuplicateIdentifierIssue,
@@ -354,12 +354,12 @@ describe("verifyDispenseNotificationBundle", () => {
     const medicationDispenseEntry =
       bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
 
-    const medicationDispense1 = medicationDispenseEntry.resource as fhir.MedicationDispense
-    medicationDispense1.performer = [
+    const medicationDispense = medicationDispenseEntry.resource as fhir.MedicationDispense
+    medicationDispense.performer = [
       {
         actor: {
           type: "Practitioner",
-          identifier: "FIRST"
+          identifier: "DIFFERENT_FROM_EXISTING"
         }
       } as fhir.DispensePerformer,
       {
@@ -370,27 +370,9 @@ describe("verifyDispenseNotificationBundle", () => {
       } as fhir.DispensePerformer
     ]
 
-    const medicationDispenseEntry2 = clone(medicationDispenseEntry)
-    const medicationDispense2 = medicationDispenseEntry.resource as fhir.MedicationDispense
-    medicationDispense2.performer = [
-      {
-        actor: {
-          type: "Practitioner",
-          identifier: "SECOND"
-        }
-      } as fhir.DispensePerformer,
-      {
-        actor: {
-          type: "Organization",
-          identifier: "AB123"
-        }
-      } as fhir.DispensePerformer
-    ]
-
-    bundle.entry.push(medicationDispenseEntry2)
+    bundle.entry.push(clone(medicationDispenseEntry))
 
     const returnedErrors = validator.verifyDispenseBundle(bundle)
-    expect(returnedErrors.length).toBe(1)
     expect(returnedErrors[0].expression)
       .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).performer")
   })

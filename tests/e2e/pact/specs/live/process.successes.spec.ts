@@ -5,10 +5,14 @@ import * as TestResources from "../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
-import {regeneratePrescriptionIds} from "../../services/process-example-fetcher"
-import * as fhir from "../../models/fhir"
+import {fhir} from "@models"
+import {updatePrescriptions} from "../../services/update-prescriptions"
 
-regeneratePrescriptionIds()
+(async () => {
+  if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
+    await updatePrescriptions()
+  }
+})()
 
 TestResources.processOrderCaseGroups.forEach(pactGroup => {
   const pactGroupName = pactGroup.name

@@ -3,7 +3,7 @@ import {InvalidValueError} from "../../../../models/errors/processing-errors"
 import {generateResourceId, getFullUrl} from "../common"
 import {createGroupIdentifier} from "../medication-request"
 import * as hl7V3 from "../../../../models/hl7-v3"
-import * as fhir from "../../../../models/fhir"
+import {fhir} from "@models"
 
 const MEDICINAL_PRODUCT_CODEABLE_CONCEPT = fhir.createCodeableConcept(
   "http://snomed.info/sct",

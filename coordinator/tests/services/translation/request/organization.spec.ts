@@ -2,7 +2,7 @@ import {convertOrganizationAndProviderLicense} from "../../../../src/services/tr
 import * as uuid from "uuid"
 import {FhirMessageProcessingError} from "../../../../src/models/errors/processing-errors"
 import {getMessageHeader} from "../../../../src/services/translation/common/getResourcesOfType"
-import * as fhir from "../../../../src/models/fhir"
+import {fhir} from "@models"
 
 function bundleOf(resources: Array<fhir.Resource>): fhir.Bundle {
   return {

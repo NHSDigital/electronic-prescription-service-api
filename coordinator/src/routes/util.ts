@@ -2,13 +2,13 @@ import {isPollable, SpineDirectResponse, SpinePollableResponse} from "../models/
 import Hapi from "@hapi/hapi"
 import {translateToFhir} from "../services/translation/response"
 import * as LosslessJson from "lossless-json"
-import {getMessageHeader} from "../services/translation/common/getResourcesOfType"
 import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
-import * as fhir from "../models/fhir"
+import {fhir} from "@models"
 import {userHasValidAuth} from "../services/validation/auth-level"
 import {unauthorisedActionIssue} from "../models/errors/validation-errors"
+import {identifyMessageType} from "../services/translation/common"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
@@ -64,10 +64,6 @@ function isFhirResourceOfType(body: unknown, resourceType: string) {
   return typeof body === "object"
     && "resourceType" in body
     && (body as fhir.Resource).resourceType === resourceType
-}
-
-export function identifyMessageType(bundle: fhir.Bundle): string {
-  return getMessageHeader(bundle).eventCoding?.code
 }
 
 const getCircularReplacer = () => {

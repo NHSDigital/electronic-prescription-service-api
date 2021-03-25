@@ -4,6 +4,7 @@ import {
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
   getIdentifierValueOrNullForSystem,
+  identifyMessageType,
   onlyElement,
   onlyElementOrNull,
   resolveReference
@@ -13,11 +14,10 @@ import {convertOrganizationAndProviderLicense} from "./organization"
 import {getProvenances} from "../common/getResourcesOfType"
 import * as errors from "../../../models/errors/processing-errors"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
-import {identifyMessageType} from "../../../routes/util"
 import moment from "moment"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../common/dateTime"
 import * as hl7V3 from "../../../models/hl7-v3"
-import * as fhir from "../../../models/fhir"
+import {fhir} from "@models"
 
 export function convertAuthor(
   bundle: fhir.Bundle,

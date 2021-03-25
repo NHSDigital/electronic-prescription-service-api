@@ -1,14 +1,14 @@
 import {
   getCodeableConceptCodingForSystemOrNull,
   getIdentifierValueForSystem,
+  identifyMessageType,
   onlyElement,
   resolveReference
 } from "../common"
 import {convertAddress, convertTelecom} from "./demographics"
 import {InvalidValueError} from "../../../models/errors/processing-errors"
-import {identifyMessageType} from "../../../routes/util"
 import * as hl7V3 from "../../../models/hl7-v3"
-import * as fhir from "../../../models/fhir"
+import {fhir} from "@models"
 
 const NHS_TRUST_CODE = "197"
 

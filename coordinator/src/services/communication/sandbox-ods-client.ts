@@ -1,5 +1,5 @@
 import {OdsClient} from "./ods-client"
-import * as fhir from "../../models/fhir"
+import {fhir} from "@models"
 import {getIdentifierValueForSystem} from "../translation/common"
 import * as odsResponses from "../../models/sandbox/ods-responses"
 

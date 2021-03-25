@@ -1,4 +1,4 @@
-import * as fhir from "../../../../../src/models/fhir"
+import {fhir} from "@models"
 import {translateReleaseRequest} from "../../../../../src/services/translation/request/dispense/release"
 import pino from "pino"
 import * as hl7V3 from "../../../../../src/models/hl7-v3"

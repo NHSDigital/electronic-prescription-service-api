@@ -2,12 +2,12 @@
   "name": "electronic-prescription-service-api-coordinator",
   "version": "0.0.1",
   "description": "Electronic Prescription Service API Coordinator",
-  "main": "app.js",
+  "main": "coordinator/src/app.js",
   "scripts": {
-    "build": "tsc --alwaysStrict --project tsconfig-build.json",
+    "build": "tsc --build --clean && tsc --alwaysStrict --project tsconfig-build.json",
     "lint": "eslint . --ext .ts --max-warnings 0 --fix",
-    "start": "node app.js --use_strict",
-    "start-with-env": ". ../../scripts/set_env_vars.sh && node app.js --use_strict",
+    "start": "node coordinator/src/app.js --use_strict",
+    "start-with-env": ". ../../scripts/set_env_vars.sh && node coordinator/src/app.js --use_strict",
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts",
     "test": "jest",
     "integration-test": "node_modules/.bin/newman run ../tests/e2e/postman/electronic-prescription-coordinator-postman-tests.json -e $API_TEST_ENV_FILE_PATH --reporters html,cli,htmlextra,junit --reporter-htmlextra-logs --reporter-htmlextra-darkTheme",
@@ -26,6 +26,7 @@
     "license-checker": "^25.0.1",
     "lodash": "^4.17.19",
     "lossless-json": "^1.0.4",
+    "module-alias": "^2.2.2",
     "moment": "^2.26.0",
     "mustache": "^4.0.1",
     "newman": "^5.2.2",
@@ -36,10 +37,11 @@
   "devDependencies": {
     "@apidevtools/json-schema-ref-parser": "^9.0.1",
     "@types/crypto-js": "^3.1.47",
-    "@types/hapi__hapi": "^19.0.3",
     "@types/hapi-pino": "^8.0.1",
+    "@types/hapi__hapi": "^19.0.3",
     "@types/jest": "^26.0.5",
     "@types/lossless-json": "^1.0.0",
+    "@types/module-alias": "^2.0.0",
     "@types/moxios": "^0.4.10",
     "@types/mustache": "^4.0.1",
     "@types/node": "^14.10.1",
@@ -55,5 +57,8 @@
     "ts-jest": "^26.1.0",
     "ts-node-dev": "^1.0.0-pre.44",
     "typescript": "^3.9.5"
+  },
+  "_moduleAliases": {
+    "@models": "models"
   }
 }

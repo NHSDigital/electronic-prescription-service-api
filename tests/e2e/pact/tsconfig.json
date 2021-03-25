@@ -6,10 +6,23 @@
     "lib": [
       "es2019"
     ],
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "@models": ["../../../models"],
+      "@coordinator": ["../../../coordinator"]
+    }
   },
   "include": [
     "specs/**/*",
     "."
+  ],
+  "references": [
+    { 
+      "path": "../../../models"
+    },
+    { 
+      "path": "../../../coordinator"
+    }
   ]
 }

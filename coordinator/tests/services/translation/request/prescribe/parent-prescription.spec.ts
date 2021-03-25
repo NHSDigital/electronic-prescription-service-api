@@ -9,7 +9,7 @@ import {MomentFormatSpecification, MomentInput} from "moment"
 import {onlyElement} from "../../../../../src/services/translation/common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../../../../src/services/translation/common/dateTime"
 import * as hl7V3 from "../../../../../src/models/hl7-v3"
-import * as fhir from "../../../../../src/models/fhir"
+import {fhir} from "@models"
 
 const actualMoment = requireActual("moment")
 jest.mock("moment", () => ({

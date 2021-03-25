@@ -1,10 +1,17 @@
-import {identifyMessageType} from "../../routes/util"
-import {getMedicationDispenses, getMedicationRequests} from "../translation/common/getResourcesOfType"
+import {
+  getMedicationDispenses,
+  getMedicationRequests
+} from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues, groupBy} from "./util"
 import {getCourseOfTherapyTypeCode} from "../translation/request/course-of-therapy-type"
-import {getExtensionForUrlOrNull, getIdentifierValueForSystem, isTruthy} from "../translation/common"
-import * as fhir from "../../models/fhir"
+import {
+  getExtensionForUrlOrNull,
+  getIdentifierValueForSystem,
+  identifyMessageType,
+  isTruthy
+} from "../translation/common"
+import {fhir} from "@models"
 import * as errors from "../../models/errors/validation-errors"
 import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
 

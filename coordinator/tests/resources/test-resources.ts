@@ -5,7 +5,7 @@ import * as path from "path"
 import * as LosslessJson from "lossless-json"
 import {SpineDirectResponse} from "../../src/models/spine"
 import * as hl7V3 from "../../src/models/hl7-v3"
-import * as fhir from "../../src/models/fhir"
+import {fhir} from "@models"
 
 export class ExamplePrescription {
   description: string
@@ -105,14 +105,14 @@ export const specification = [
   examplePrescription3
 ]
 
-const taskBasePath = "./secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/"
-const withdrawTaskPath = taskBasePath + "1-Task-Request-Withdraw-200_OK.json"
+const taskBasePath = "./secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/"
+const withdrawTaskPath = taskBasePath + "3-Task-Request-Withdraw-200_OK.json"
 export const exampleWithdrawTask = JSON.parse(fs.readFileSync(
   path.join(__dirname, withdrawTaskPath),
   "utf-8"
 )) as fhir.Task
 
-const returnTaskPath = taskBasePath + "1-Task-Request-Return-200_OK.json"
+const returnTaskPath = taskBasePath + "2-Task-Request-Return-200_OK.json"
 export const exampleReturnTask = JSON.parse(fs.readFileSync(
   path.join(__dirname, returnTaskPath),
   "utf-8"

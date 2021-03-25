@@ -4,7 +4,7 @@ import {
   TranslatedSpineResponse
 } from "../../../../src/services/translation/response/spine-response-handler"
 import pino from "pino"
-import * as fhir from "../../../../src/models/fhir"
+import {fhir} from "@models"
 import * as hl7V3 from "../../../../src/models/hl7-v3"
 import * as uuid from "uuid"
 import * as moment from "moment"
