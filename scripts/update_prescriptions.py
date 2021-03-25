@@ -268,9 +268,10 @@ def update_examples(api_base_url):
             api_base_url, prepare_request_path, bundle_id, prescription_id, short_prescription_id,
             authored_on, signature_time
         )
-        update_dispense_examples(
-            prepare_request_path, bundle_id, prescription_id, short_prescription_id
-        )
+        # todo
+        # update_dispense_examples(
+        #     prepare_request_path, bundle_id, prescription_id, short_prescription_id
+        # )
 
 
 def main(arguments):
