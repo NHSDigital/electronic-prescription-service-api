@@ -186,7 +186,7 @@ def derive_convert_response_path(process_request_path):
     operation = filename_parts[3]
     status_code_and_ext = filename_parts[-1]
     status_code_and_xml_ext = status_code_and_ext.replace("json", "xml")
-    return f'{example_dir}{os.path.sep}{number}-Convert-Response-{operation}{status_code_and_xml_ext}'
+    return f'{example_dir}{os.path.sep}{number}-Convert-Response-{operation}-{status_code_and_xml_ext}'
 
 
 def derive_dispense_request_path(process_request_path):

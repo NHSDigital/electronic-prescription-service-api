@@ -20,7 +20,7 @@ function update-prescriptions() {
         }
     }
     ./scripts/update-prescriptions.ps1
-    '.\models\examples' | Get-ChildItem -Recurse -File -Include *.json, *.xml | ForEach-Object {
+    '.\examples' | Get-ChildItem -Recurse -File -Include *.json, *.xml | ForEach-Object {
         if ($_.FullName) {
             (Get-Content $_.FullName -Raw).Replace("`r`n","`n") | Set-Content $_.FullName -Force 
         }
