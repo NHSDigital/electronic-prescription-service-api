@@ -25,7 +25,7 @@ test.skip("verify signature for specific prescription", () => {
 
 const cases = fetcher.convertExamples
   .filter(e => e.isSuccess)
-  .filter(e => e.description.includes("200-OK send"))
+  .filter(e => e.requestFile.operation === "send")
   .map(convertExample => [
     convertExample.description,
     readXml(convertExample.response)

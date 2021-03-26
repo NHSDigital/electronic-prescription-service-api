@@ -1,25 +1,19 @@
 import * as hl7V3 from "../../../../models/hl7-v3"
 import {fhir} from "@models"
-import * as pino from "pino"
 import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem, getMessageId} from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import {
-  createAuthorFromTaskOwnerIdentifier,
   getMessageIdFromTaskFocusIdentifier,
   getPrescriptionShortFormIdFromTaskGroupIdentifier
 } from "../task"
 
-export async function convertTaskToEtpWithdraw(
-  task: fhir.Task,
-  logger: pino.Logger
-): Promise<hl7V3.EtpWithdraw> {
+export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
   const id = getMessageId(task.identifier, "Task.identifier")
   const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(task.authoredOn, "Task.authoredOn")
   const etpWithdraw = new hl7V3.EtpWithdraw(new hl7V3.GlobalIdentifier(id), effectiveTime)
 
   etpWithdraw.recordTarget = createRecordTarget(task.for.identifier)
-  //TODO - find out whether we need to handle user instead of organization (and what we do about org details if so)
-  etpWithdraw.author = await createAuthorFromTaskOwnerIdentifier(task.owner.identifier, logger)
+  etpWithdraw.author = createAuthor()
   etpWithdraw.pertinentInformation3 = createPertinentInformation3(task.groupIdentifier)
   etpWithdraw.pertinentInformation2 = createPertinentInformation2()
   etpWithdraw.pertinentInformation5 = createPertinentInformation5(task.reasonCode)
@@ -37,6 +31,13 @@ export function createRecordTarget(identifier: fhir.Identifier): hl7V3.RecordTar
   const patient = new hl7V3.Patient()
   patient.id = new hl7V3.NhsNumber(nhsNumber)
   return new hl7V3.RecordTargetReference(patient)
+}
+
+export function createAuthor(): hl7V3.AuthorPersonSds {
+  const agentPersonSds = new hl7V3.AgentPersonSds()
+  agentPersonSds.id = new hl7V3.UnattendedSdsRoleProfileIdentifier()
+  agentPersonSds.agentPersonSDS = new hl7V3.AgentPersonPersonSds(new hl7V3.UnattendedSdsUniqueIdentifier())
+  return new hl7V3.AuthorPersonSds(agentPersonSds)
 }
 
 export function createPertinentInformation3(groupIdentifier: fhir.Identifier): hl7V3.EtpWithdrawPertinentInformation3 {

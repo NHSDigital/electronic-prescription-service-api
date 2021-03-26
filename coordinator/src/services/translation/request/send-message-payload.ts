@@ -21,7 +21,7 @@ export function createSendMessagePayloadForUnattendedAccess<T>(
 export function createSendMessagePayload<T>(
   messageId: string,
   interactionId: hl7V3.Hl7InteractionIdentifier,
-  author: hl7V3.SendMessagePayloadAuthorPersonSds,
+  author: hl7V3.AuthorPersonSds,
   subject: T
 ): hl7V3.SendMessagePayload<T> {
   const sendMessagePayload = new hl7V3.SendMessagePayload<T>(
@@ -43,7 +43,7 @@ function createCommunicationFunction(asid: string) {
 }
 
 function createControlActEvent<T>(
-  author: hl7V3.SendMessagePayloadAuthorPersonSds,
+  author: hl7V3.AuthorPersonSds,
   subject: T
 ) {
   const controlActEvent = new hl7V3.ControlActEvent<T>()
@@ -57,7 +57,7 @@ function createControlActEvent<T>(
 
 export function convertRequesterToControlActAuthor(
   bundle: fhir.Bundle
-): hl7V3.SendMessagePayloadAuthorPersonSds {
+): hl7V3.AuthorPersonSds {
   const firstMedicationRequest = getMedicationRequests(bundle)[0]
   const authorPractitionerRole = resolveReference(bundle, firstMedicationRequest.requester)
   const authorPractitioner = resolveReference(bundle, authorPractitionerRole.practitioner)
@@ -66,7 +66,7 @@ export function convertRequesterToControlActAuthor(
 
 export function convertResponsiblePractitionerToControlActAuthor(
   bundle: fhir.Bundle
-): hl7V3.SendMessagePayloadAuthorPersonSds {
+): hl7V3.AuthorPersonSds {
   const firstMedicationRequest = getMedicationRequests(bundle)[0]
   const responsiblePractitionerExtension = getExtensionForUrlOrNull(
     firstMedicationRequest.extension,
@@ -121,12 +121,12 @@ function createControlActEventAuthor(
   authorAgentPerson.agentPersonSDS = authorAgentPersonPerson
   authorAgentPerson.part = agentPersonPart
 
-  return new hl7V3.SendMessagePayloadAuthorPersonSds(authorAgentPerson)
+  return new hl7V3.AuthorPersonSds(authorAgentPerson)
 }
 
 function createControlActEventAuthor1(asid: string) {
   const id = new hl7V3.AccreditedSystemIdentifier(asid)
   const agentSystemSystemSds = new hl7V3.AgentSystemSystemSds(id)
   const agentSystemSds = new hl7V3.AgentSystemSds(agentSystemSystemSds)
-  return new hl7V3.SendMessagePayloadAuthorSystemSds(agentSystemSds)
+  return new hl7V3.AuthorSystemSds(agentSystemSds)
 }
