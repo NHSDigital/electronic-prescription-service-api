@@ -1,4 +1,5 @@
 import {
+  createAuthor,
   createPertinentInformation2,
   createPertinentInformation3, createPertinentInformation4, createPertinentInformation5,
   createRecordTarget
@@ -10,6 +11,12 @@ test("NHS number is mapped correctly", () => {
     value: "9446368138"
   })
   expect(result.patient.id._attributes.extension).toEqual("9446368138")
+})
+
+test("author is populated with hard coded value", () => {
+  const result = createAuthor()
+  expect(result.AgentPersonSDS.id._attributes.extension).toEqual("999999999999")
+  expect(result.AgentPersonSDS.agentPersonSDS.id._attributes.extension).toEqual("999999999999")
 })
 
 test("short form prescription ID is mapped correctly", () => {
