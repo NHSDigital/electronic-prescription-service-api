@@ -5,7 +5,7 @@ import * as path from "path"
 import * as LosslessJson from "lossless-json"
 import {SpineDirectResponse} from "../../src/models/spine"
 import * as hl7V3 from "../../src/models/hl7-v3"
-import {fhir} from "@models"
+import {fhir, fetcher} from "@models"
 
 export class ExamplePrescription {
   description: string
@@ -21,21 +21,23 @@ export class ExamplePrescription {
   hl7V3SignatureFragments?: ElementCompact
   hl7V3FragmentsCanonicalized?: string
 
-  constructor(description: string, location: string) {
+  constructor(description: string, search: string) {
+    const location = getLocation(search)
+
     const fhirMessageUnsignedStr = fs.readFileSync(
-      path.join(__dirname, location, "1-Prepare-Request-200_OK.json"),
+      path.join(location, "1-Prepare-Request-200_OK.json"),
       "utf-8"
     )
     const fhirMessageSignedStr = fs.readFileSync(
-      path.join(__dirname, location, "1-Process-Request-Send-200_OK.json"),
+      path.join(location, "1-Process-Request-Send-200_OK.json"),
       "utf-8"
     )
     const fhirMessageDigestStr = fs.readFileSync(
-      path.join(__dirname, location, "1-Prepare-Response-200_OK.json"),
+      path.join(location, "1-Prepare-Response-200_OK.json"),
       "utf-8"
     )
     const hl7V3MessageStr = fs.readFileSync(
-      path.join(__dirname, location, "1-Convert-Response-Send-200_OK.xml"),
+      path.join(location, "1-Convert-Response-Send-200_OK.xml"),
       "utf-8"
     )
 
@@ -45,25 +47,25 @@ export class ExamplePrescription {
     this.fhirMessageDigest = LosslessJson.parse(fhirMessageDigestStr)
     this.hl7V3Message = XmlJs.xml2js(hl7V3MessageStr, {compact: true})
 
-    const fhirMessageCancelPath = path.join(__dirname, location, "1-Process-Request-Cancel-200_OK.json")
+    const fhirMessageCancelPath = path.join(location, "1-Process-Request-Cancel-200_OK.json")
     if (fs.existsSync(fhirMessageCancelPath)) {
       const fhirMessageCancelStr = fs.readFileSync(fhirMessageCancelPath, "utf-8")
       this.fhirMessageCancel = LosslessJson.parse(fhirMessageCancelStr)
     }
 
-    const hl7V3MessageCancelPath = path.join(__dirname, location, "1-Convert-Response-Cancel-200_OK.xml")
+    const hl7V3MessageCancelPath = path.join(location, "1-Convert-Response-Cancel-200_OK.xml")
     if (fs.existsSync(hl7V3MessageCancelPath)) {
       const hl7V3MessageCancelStr = fs.readFileSync(hl7V3MessageCancelPath, "utf-8")
       this.hl7V3MessageCancel = XmlJs.xml2js(hl7V3MessageCancelStr, {compact: true})
     }
 
-    const fhirMessageDispensePath = path.join(__dirname, location, "1-Process-Request-Dispense-200_OK.json")
+    const fhirMessageDispensePath = path.join(location, "1-Process-Request-Dispense-200_OK.json")
     if (fs.existsSync(fhirMessageDispensePath)) {
       const fhirMessageDispenseStr = fs.readFileSync(fhirMessageDispensePath, "utf-8")
       this.fhirMessageDispense = LosslessJson.parse(fhirMessageDispenseStr)
     }
 
-    const hl7V3MessageDispensePath = path.join(__dirname, location, "1-Convert-Response-Dispense-200_OK.xml")
+    const hl7V3MessageDispensePath = path.join(location, "1-Convert-Response-Dispense-200_OK.xml")
     if (fs.existsSync(hl7V3MessageDispensePath)) {
       const hl7V3MessageDispenseStr = fs.readFileSync(hl7V3MessageDispensePath, "utf-8")
       this.hl7V3MessageDispense = XmlJs.xml2js(hl7V3MessageDispenseStr, {compact: true})
@@ -105,16 +107,16 @@ export const specification = [
   examplePrescription3
 ]
 
-const taskBasePath = "./secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/"
-const withdrawTaskPath = taskBasePath + "3-Task-Request-Withdraw-200_OK.json"
+const taskBasePath = getLocation("secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner")
+const withdrawTaskPath = `${taskBasePath}/3-Task-Request-Withdraw-200_OK.json`
 export const exampleWithdrawTask = JSON.parse(fs.readFileSync(
-  path.join(__dirname, withdrawTaskPath),
+  withdrawTaskPath,
   "utf-8"
 )) as fhir.Task
 
-const returnTaskPath = taskBasePath + "2-Task-Request-Return-200_OK.json"
+const returnTaskPath = `${taskBasePath}/2-Task-Request-Return-200_OK.json`
 export const exampleReturnTask = JSON.parse(fs.readFileSync(
-  path.join(__dirname, returnTaskPath),
+  returnTaskPath,
   "utf-8"
 )) as fhir.Task
 
@@ -227,4 +229,12 @@ export const spineResponses = {
   cancellationSuccess,
   cancellationError,
   cancellationDispensedError
+}
+
+function getLocation(search: string) {
+  return fetcher
+    .exampleFiles
+    .filter(e => e.dir.includes(search))
+    .find(e => e.number === "1")
+    .dir
 }
