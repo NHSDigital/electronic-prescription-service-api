@@ -67,7 +67,7 @@ def update_prescription(bundle_json, bundle_id, prescription_id, short_prescript
                 resource["authoredOn"] = authored_on
                 if "validityPeriod" in resource["dispenseRequest"]:
                     resource["dispenseRequest"]["validityPeriod"]["start"] = date.today().isoformat()
-                    resource["dispenseRequest"]["validityPeriod"]["end"] = (date.today() + timedelta(weeks=4)).isoformat()
+                    resource["dispenseRequest"]["validityPeriod"]["end"] = (date.today() + timedelta(weeks=4)).isoformat() # noqa E501
 
 
 def find_prepare_request_paths(examples_root_dir):
@@ -237,7 +237,8 @@ def update_process_examples(
         for process_request_path in glob.iglob(process_request_path_pattern):
             process_request_json = load_process_request(process_request_path)
             update_prescription(
-                process_request_json, str(uuid.uuid4()), prescription_id, short_prescription_id, authored_on, signature_time
+                process_request_json, str(uuid.uuid4()), prescription_id, short_prescription_id,
+                authored_on, signature_time
             )
             save_process_request(process_request_path, process_request_json)
             convert_response_xml = get_convert_response_from_a_sandbox_api(api_base_url, process_request_json)
@@ -257,7 +258,7 @@ def update_dispense_examples(
         dispense_request_json = load_dispense_request(dispense_request_path)
         # todo: update withdraw/return
         update_prescription(
-            process_request_json, bundle_id, prescription_id, short_prescription_id, authored_on, signature_time
+            dispense_request_json, bundle_id, prescription_id, short_prescription_id, None, None
         )
         save_dispense_request(dispense_request_path, dispense_request_json)
         print(f"Updated dispense example for {prepare_request_path}")
