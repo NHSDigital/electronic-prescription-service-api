@@ -21,7 +21,7 @@ export class EtpWithdraw {
   id: codes.GlobalIdentifier
   effectiveTime: core.Timestamp
   recordTarget: patient.RecordTargetReference
-  author: agentPerson.Author
+  author: agentPerson.AuthorPersonSds
   pertinentInformation3: EtpWithdrawPertinentInformation3
   pertinentInformation2: EtpWithdrawPertinentInformation2
   pertinentInformation5: EtpWithdrawPertinentInformation5
