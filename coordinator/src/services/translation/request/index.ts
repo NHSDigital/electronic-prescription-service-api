@@ -184,7 +184,7 @@ async function createPayloadFromTask(
     case fhir.TaskStatus.REJECTED:
       return await createDispenseProposalReturnSendMessagePayload(task, logger)
     case fhir.TaskStatus.IN_PROGRESS:
-      return await createDispenserWithdrawSendMessagePayload(task, logger)
+      return createDispenserWithdrawSendMessagePayload(task)
   }
 }
 
@@ -198,8 +198,8 @@ async function createDispenseProposalReturnSendMessagePayload(task: fhir.Task, l
   )
 }
 
-async function createDispenserWithdrawSendMessagePayload(task: fhir.Task, logger: pino.Logger) {
-  const etpWithdraw = await convertTaskToEtpWithdraw(task, logger)
+function createDispenserWithdrawSendMessagePayload(task: fhir.Task) {
+  const etpWithdraw = convertTaskToEtpWithdraw(task)
   const etpWithdrawRoot = new hl7V3.EtpWithdrawRoot(etpWithdraw)
   return createSendMessagePayloadForUnattendedAccess(
     getMessageIdFromTask(task),

@@ -1,5 +1,6 @@
 import * as codes from "./codes"
 import * as core from "./core"
+import * as agentPerson from "./agent-person"
 
 export interface WrapperRoot<T> {
   [key: string]: SendMessagePayload<T>
@@ -73,105 +74,10 @@ export class ControlActEvent<T> {
     moodCode: "EVN"
   }
 
-  author: SendMessagePayloadAuthorPersonSds
-  author1: SendMessagePayloadAuthorSystemSds
+  author: agentPerson.AuthorPersonSds
+  author1: agentPerson.AuthorSystemSds
   reason?: SendMessagePayloadReason | Array<SendMessagePayloadReason>
   subject: T
-}
-
-abstract class SendMessagePayloadAuthor {
-  _attributes: core.AttributeTypeCode = {
-    typeCode: "AUT"
-  }
-}
-
-export class SendMessagePayloadAuthorPersonSds extends SendMessagePayloadAuthor {
-  AgentPersonSDS: AgentPersonSds
-
-  constructor(agentPersonSds: AgentPersonSds) {
-    super()
-    this.AgentPersonSDS = agentPersonSds
-  }
-}
-
-export class SendMessagePayloadAuthorSystemSds extends SendMessagePayloadAuthor {
-  AgentSystemSDS: AgentSystemSds
-
-  constructor(agentSystemSds: AgentSystemSds) {
-    super()
-    this.AgentSystemSDS = agentSystemSds
-  }
-}
-
-abstract class SendMessagePayloadAgent {
-  _attributes: core.AttributeClassCode = {
-    classCode: "AGNT"
-  }
-}
-
-export class AgentPersonSds extends SendMessagePayloadAgent {
-  id: codes.SdsRoleProfileIdentifier
-  agentPersonSDS: AgentPersonPersonSds
-  part: AgentPersonPart
-}
-
-export class AgentPersonPersonSds {
-  _attributes: core.AttributeClassCode & core.AttributeDeterminerCode = {
-    classCode: "PSN",
-    determinerCode: "INSTANCE"
-  }
-
-  id: codes.SdsUniqueIdentifier
-
-  constructor(id: codes.SdsUniqueIdentifier) {
-    this.id = id
-  }
-}
-
-export class AgentPersonPart {
-  _attributes: core.AttributeTypeCode = {
-    typeCode: "PART"
-  }
-
-  partSDSRole: SdsRole
-
-  constructor(sdsRole: SdsRole) {
-    this.partSDSRole = sdsRole
-  }
-}
-
-export class SdsRole {
-  _attributes: core.AttributeClassCode = {
-    classCode: "ROL"
-  }
-
-  id: codes.SdsJobRoleIdentifier
-
-  constructor(id: codes.SdsJobRoleIdentifier) {
-    this.id = id
-  }
-}
-
-export class AgentSystemSds extends SendMessagePayloadAgent {
-  agentSystemSDS: AgentSystemSystemSds
-
-  constructor(systemSds: AgentSystemSystemSds) {
-    super()
-    this.agentSystemSDS = systemSds
-  }
-}
-
-export class AgentSystemSystemSds {
-  _attributes: core.AttributeClassCode & core.AttributeDeterminerCode = {
-    classCode: "DEV",
-    determinerCode: "INSTANCE"
-  }
-
-  id: codes.AccreditedSystemIdentifier
-
-  constructor(id: codes.AccreditedSystemIdentifier) {
-    this.id = id
-  }
 }
 
 export class SendMessagePayloadReason {
