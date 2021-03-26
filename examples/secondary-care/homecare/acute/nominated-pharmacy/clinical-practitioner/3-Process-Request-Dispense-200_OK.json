@@ -3,7 +3,7 @@
   "id": "prescription-dispense-notification",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "90db708f-3e82-4d2c-a7aa-fd965a8cfb05"
+    "value": "a93048bd-8e3d-4da4-b26b-0a243d5f611f"
   },
   "type": "message",
   "entry": [
