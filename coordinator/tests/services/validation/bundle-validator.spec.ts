@@ -352,7 +352,7 @@ describe("verifyDispenseNotificationBundle", () => {
 
   test("returns an error when MedicationDispenses have different performer values per type", () => {
     const medicationDispenseEntry =
-      bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
+      clone(bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0])
 
     const medicationDispense = medicationDispenseEntry.resource as fhir.MedicationDispense
     medicationDispense.performer = [
@@ -362,17 +362,13 @@ describe("verifyDispenseNotificationBundle", () => {
           identifier: "DIFFERENT_FROM_EXISTING"
         }
       } as fhir.DispensePerformer,
-      {
-        actor: {
-          type: "Organization",
-          identifier: "AB123"
-        }
-      } as fhir.DispensePerformer
+      medicationDispense.performer.find(p => p.actor.type === "Organization")
     ]
 
-    bundle.entry.push(clone(medicationDispenseEntry))
+    bundle.entry.push(medicationDispenseEntry)
 
     const returnedErrors = validator.verifyDispenseBundle(bundle)
+    expect(returnedErrors.length).toBe(1)
     expect(returnedErrors[0].expression)
       .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).performer")
   })
