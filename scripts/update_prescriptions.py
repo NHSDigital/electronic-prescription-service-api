@@ -49,9 +49,18 @@ def update_prescription(bundle_json, bundle_id, prescription_id, short_prescript
             messageType = resource["eventCoding"]["code"]
             break
 
-    # todo: dispense
     if (messageType == "dispense-notification"):
-        print("Found dispense notification")
+        for entry in bundle_json['entry']:
+            resource = entry["resource"]
+            if resource["resourceType"] == "MedicationDispense":
+                for authorizingPrescription in resource["authorizingPrescription"]:
+                    for extension in authorizingPrescription["extension"]:
+                        if extension["url"] == "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier":
+                            for extensionExtension in extension["extension"]:
+                                if extensionExtension["url"] == "shortForm":
+                                    extensionExtension["valueIdentifier"]["value"] = short_prescription_id
+                                if extensionExtension["url"] == "UUID":
+                                    extensionExtension["valueIdentifier"]["value"] = prescription_id
 
     if (messageType == "prescription-order" or messageType == "prescription-order-update"):
         for entry in bundle_json['entry']:
