@@ -21,13 +21,14 @@ describe("createMedicationRequest", () => {
     expect(medicationRequest.extension).not.toBeUndefined()
   })
 
-  test("contains status-history extension with correct code and display", () => {
+  test("contains correct status extensions", () => {
     const extension = getExtensionForUrlOrNull(
       medicationRequest.extension,
       "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionTaskStatusReason",
       "MedicationRequest.extension"
-    ) as fhir.ExtensionExtension<fhir.CodeableConceptExtension>
+    ) as fhir.ExtensionExtension<fhir.CodeableConceptExtension | fhir.DateTimeExtension>
     expect(extension).not.toBeUndefined()
+
     const medicationStatusHistoryExtension = getExtensionForUrlOrNull(
       extension.extension,
       "status",
@@ -37,6 +38,14 @@ describe("createMedicationRequest", () => {
     expect(valueCoding.system).toBe("https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history")
     expect(valueCoding.code).toBe("R-0008")
     expect(valueCoding.display).toBe("Prescription/item not found")
+
+    const medicationStatusDateExtension = getExtensionForUrlOrNull(
+      extension.extension,
+      "statusDate",
+      "") as fhir.DateTimeExtension
+    expect(medicationStatusDateExtension).not.toBeUndefined()
+    const valueDateTime = medicationStatusDateExtension.valueDateTime
+    expect(hasCorrectISOFormat(valueDateTime)).toBe(true)
   })
 
   test("contains ResponsiblePractitioner extension with correct reference", () => {
@@ -83,7 +92,7 @@ describe("createMedicationRequest", () => {
   })
 
   test("authoredOn", () => {
-    expect(hasCorrectISOFormat(medicationRequest.authoredOn)).toBe(true)
+    expect(medicationRequest.authoredOn).toBeUndefined()
   })
 
   test("requester", () => {
