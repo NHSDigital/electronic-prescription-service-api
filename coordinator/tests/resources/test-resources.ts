@@ -3,9 +3,8 @@ import {ElementCompact} from "xml-js"
 import * as fs from "fs"
 import * as path from "path"
 import * as LosslessJson from "lossless-json"
-import {SpineDirectResponse} from "../../src/models/spine"
-import * as hl7V3 from "../../src/models/hl7-v3"
-import {fhir, fetcher} from "@models"
+import {} from "@models"
+import {hl7V3, fhir, spine, fetcher} from "@models"
 
 export class ExamplePrescription {
   description: string
@@ -121,7 +120,7 @@ export const exampleReturnTask = JSON.parse(fs.readFileSync(
 )) as fhir.Task
 
 export interface ExampleSpineResponse {
-  response: SpineDirectResponse<string>
+  response: spine.SpineDirectResponse<string>
   spineErrorCode: string | undefined
   acknowledgementCode: hl7V3.AcknowledgementTypeCode
 }

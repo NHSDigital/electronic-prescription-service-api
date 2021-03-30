@@ -1,9 +1,7 @@
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
-import {InvalidValueError} from "../../../../models/errors/processing-errors"
+import {hl7V3, fhir, processingErrors as errors} from "@models"
 import {generateResourceId, getFullUrl} from "../common"
 import {createGroupIdentifier} from "../medication-request"
-import * as hl7V3 from "../../../../models/hl7-v3"
-import {fhir} from "@models"
 
 const MEDICINAL_PRODUCT_CODEABLE_CONCEPT = fhir.createCodeableConcept(
   "http://snomed.info/sct",
@@ -158,7 +156,7 @@ function getPrescriptionStatusInformation(code: string, display: string) {
         medicationRequestStatus: fhir.MedicationRequestStatus.UNKNOWN
       }
     default:
-      throw InvalidValueError
+      throw errors.InvalidValueError
   }
 }
 

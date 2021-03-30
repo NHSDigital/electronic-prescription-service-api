@@ -12,12 +12,9 @@ import {
 import * as XmlJs from "xml-js"
 import {convertOrganizationAndProviderLicense} from "./organization"
 import {getProvenances} from "../common/getResourcesOfType"
-import * as errors from "../../../models/errors/processing-errors"
-import {InvalidValueError} from "../../../models/errors/processing-errors"
+import {hl7V3, fhir, processingErrors as errors} from "@models"
 import moment from "moment"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../common/dateTime"
-import * as hl7V3 from "../../../models/hl7-v3"
-import {fhir} from "@models"
 
 export function convertAuthor(
   bundle: fhir.Bundle,
@@ -40,7 +37,7 @@ function setSignatureTimeAndText(author: hl7V3.PrescriptionAuthor, requesterSign
       const decodedSignatureData = Buffer.from(requesterSignature.data, "base64").toString("utf-8")
       author.signatureText = XmlJs.xml2js(decodedSignatureData, {compact: true})
     } catch (e) {
-      throw new InvalidValueError("Invalid signature format.", "Provenance.signature.data")
+      throw new errors.InvalidValueError("Invalid signature format.", "Provenance.signature.data")
     }
   } else {
     author.time = convertMomentToHl7V3DateTime(moment.utc())

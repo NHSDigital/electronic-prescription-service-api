@@ -2,13 +2,12 @@ import * as translator from "../../../../src/services/translation/request"
 import {convertFhirMessageToSignedInfoMessage} from "../../../../src/services/translation/request"
 import * as TestResources from "../../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
-import {InvalidValueError} from "../../../../src/models/errors/processing-errors"
 import {getStringParameterByName, isTruthy} from "../../../../src/services/translation/common"
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {xmlTest} from "../../../resources/test-helpers"
 import {ElementCompact} from "xml-js"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../../../src/services/translation/common/dateTime"
-import {fhir} from "@models"
+import {fhir, processingErrors as errors} from "@models"
 import pino from "pino"
 
 const logger = pino()
@@ -32,7 +31,7 @@ describe("convertFhirMessageToSignedInfoMessage", () => {
 
   test("rejects a cancellation message", () => {
     const cancellationMessage = TestResources.specification.map(s => s.fhirMessageCancel).filter(isTruthy)[0]
-    expect(() => convertFhirMessageToSignedInfoMessage(cancellationMessage)).toThrow(InvalidValueError)
+    expect(() => convertFhirMessageToSignedInfoMessage(cancellationMessage)).toThrow(errors.InvalidValueError)
   })
 
   test.each(cases)(

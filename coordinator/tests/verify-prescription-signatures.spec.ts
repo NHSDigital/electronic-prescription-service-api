@@ -5,8 +5,7 @@ import {readFileSync} from "fs"
 import * as path from "path"
 import {createParametersDigest} from "../src/services/translation/request"
 import {convertFragmentsToHashableFormat, extractFragments} from "../src/services/translation/request/signature"
-import * as hl7V3 from "../src/models/hl7-v3"
-import {fetcher} from "@models"
+import {hl7V3, fetcher} from "@models"
 
 //eslint-disable-next-line max-len
 const prescriptionPath = "../../examples/primary-care/acute/no-nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/spurious-code/1-Convert-Response-Send-200_OK.xml"

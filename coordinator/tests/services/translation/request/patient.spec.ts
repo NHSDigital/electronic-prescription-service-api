@@ -2,9 +2,8 @@ import {convertPatient} from "../../../../src/services/translation/request/patie
 import {clone} from "../../../resources/test-helpers"
 import * as TestResources from "../../../resources/test-resources"
 import {getPatient} from "../../../../src/services/translation/common/getResourcesOfType"
-import {TooManyValuesError} from "../../../../src/models/errors/processing-errors"
+import {fhir, processingErrors as errors} from "@models"
 import {UNKNOWN_GP_ODS_CODE} from "../../../../src/services/translation/common"
-import {fhir} from "@models"
 
 describe("convertPatient", () => {
   let bundle: fhir.Bundle
@@ -17,7 +16,7 @@ describe("convertPatient", () => {
 
   test("Throws TooManyValuesUserFacingError when passed multiple copies of identifier", () => {
     fhirPatient.identifier.push(fhirPatient.identifier[0])
-    expect(() => convertPatient(bundle, fhirPatient)).toThrow(TooManyValuesError)
+    expect(() => convertPatient(bundle, fhirPatient)).toThrow(errors.TooManyValuesError)
   })
 
   test("ID gets put in correct field", () => {

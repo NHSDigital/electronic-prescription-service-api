@@ -1,5 +1,4 @@
-import * as hl7V3 from "../../../../models/hl7-v3"
-import {fhir} from "@models"
+import {hl7V3, fhir} from "@models"
 import {
   getCodingForSystem,
   getExtensionForUrl,
@@ -13,10 +12,10 @@ import {
   getMessageHeader,
   getPatientOrNull
 } from "../../common/getResourcesOfType"
-import * as hl7v3 from "../../../../models/hl7-v3"
-import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
+import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import pino from "pino"
 import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
+import moment from "moment"
 
 export async function convertDispenseNotification(
   bundle: fhir.Bundle,
@@ -46,6 +45,7 @@ export async function convertDispenseNotification(
   )
 
   const hl7DispenseNotification = new hl7V3.DispenseNotification(new hl7V3.GlobalIdentifier(messageId))
+  hl7DispenseNotification.effectiveTime = convertMomentToHl7V3DateTime(moment.utc())
   hl7DispenseNotification.recordTarget = new hl7V3.RecordTargetReference(hl7Patient)
   hl7DispenseNotification.primaryInformationRecipient = new hl7V3.PrimaryInformationRecipient(hl7AgentOrganisation)
   hl7DispenseNotification.pertinentInformation1 = hl7PertinentInformation1
@@ -113,7 +113,7 @@ function createPertinentInformation1LineItem(fhirMedicationDispense: fhir.Medica
 
   const hl7PertinentSuppliedLineItem = new hl7V3.PertinentSuppliedLineItem(
     new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber),
-    new hl7v3.SnomedCode(fhirMedicationCodeableConceptCoding.code)
+    new hl7V3.SnomedCode(fhirMedicationCodeableConceptCoding.code)
   )
   hl7PertinentSuppliedLineItem.consumable = new hl7V3.Consumable(
     new hl7V3.RequestedManufacturedProduct(

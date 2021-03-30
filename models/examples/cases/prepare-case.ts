@@ -1,8 +1,8 @@
 import * as LosslessJson from "lossless-json"
 import * as fs from "fs"
 import {Case} from "./case"
-import {ExampleFile} from "../files/example-file"
-import * as fhir from "../fhir"
+import {ExampleFile} from "../example-file"
+import * as fhir from "../../fhir"
 
 export class PrepareCase extends Case {
   response: fhir.Parameters

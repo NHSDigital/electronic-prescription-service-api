@@ -1,5 +1,5 @@
 import * as LosslessJson from "lossless-json"
-import {fhir} from "@models"
+import * as fhir from "../fhir"
 
 export const messageTypeIssue: fhir.OperationOutcomeIssue = {
   severity: "fatal",

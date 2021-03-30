@@ -8,9 +8,7 @@ import {getMedicationRequests} from "../../../../src/services/translation/common
 import {getExtensionForUrlOrNull, toArray} from "../../../../src/services/translation/common"
 import {convertBundleToPrescription} from "../../../../src/services/translation/request/prescription"
 import {convertBundleToSpineRequest} from "../../../../src/services/translation/request"
-import {TooManyValuesError} from "../../../../src/models/errors/processing-errors"
-import * as hl7V3 from "../../../../src/models/hl7-v3"
-import {fhir} from "@models"
+import {fhir, hl7V3, processingErrors as errors} from "@models"
 import pino from "pino"
 
 const logger = pino()
@@ -28,7 +26,7 @@ describe("convertMedicationRequestToLineItem", () => {
     firstFhirMedicationRequest.identifier.push(firstFhirMedicationRequest.identifier[0])
     expect(() =>
       convertMedicationRequestToLineItem(firstFhirMedicationRequest, null, [], [])
-    ).toThrow(TooManyValuesError)
+    ).toThrow(errors.TooManyValuesError)
   })
 
   test("ID added to correct section of hl7 message", () => {

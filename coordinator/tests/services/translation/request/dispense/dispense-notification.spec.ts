@@ -8,8 +8,7 @@ import {
 import * as TestResources from "../../../../resources/test-resources"
 import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"
-import * as hl7V3 from "../../../../../src/models/hl7-v3"
-import {fhir} from "@models"
+import {hl7V3, fhir} from "@models"
 import {
   getExtensionForUrl,
   toArray

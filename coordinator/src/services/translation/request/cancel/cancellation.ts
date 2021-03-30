@@ -4,8 +4,7 @@ import {convertAuthor, convertResponsibleParty} from "../practitioner"
 import * as common from "../../common"
 import {getExtensionForUrl, getIdentifierValueForSystem, getMessageId} from "../../common"
 import {extractEffectiveTime} from "../prescribe/parent-prescription"
-import * as hl7V3 from "../../../../models/hl7-v3"
-import {fhir} from "@models"
+import {fhir, hl7V3} from "@models"
 
 export function convertCancellation(bundle: fhir.Bundle, convertPatientFn = convertPatient): hl7V3.CancellationRequest {
   const fhirFirstMedicationRequest = getMedicationRequests(bundle)[0]

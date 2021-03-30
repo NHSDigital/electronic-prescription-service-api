@@ -11,11 +11,8 @@ import {convertParentPrescription} from "./prescribe/parent-prescription"
 import {convertCancellation} from "./cancel/cancellation"
 import {convertFragmentsToHashableFormat, extractFragments} from "./signature"
 import * as requestBuilder from "../../communication/ebxml-request-builder"
-import {SpineRequest} from "../../../models/spine"
-import {InvalidValueError} from "../../../models/errors/processing-errors"
+import {spine, hl7V3, fhir, processingErrors as errors} from "@models"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
-import * as hl7V3 from "../../../models/hl7-v3"
-import {fhir} from "@models"
 import {convertDispenseNotification} from "./dispense/dispense-notification"
 import {translateReleaseRequest} from "./dispense/release"
 import pino from "pino"
@@ -25,7 +22,7 @@ import {getMessageIdFromBundle, getMessageIdFromTask, identifyMessageType} from 
 
 export async function convertBundleToSpineRequest(
   bundle: fhir.Bundle, messageId: string, logger: pino.Logger
-): Promise<SpineRequest> {
+): Promise<spine.SpineRequest> {
   const messageType = identifyMessageType(bundle)
   const payload = await createPayloadFromBundle(messageType, bundle, logger)
   return requestBuilder.toSpineRequest(payload, messageId)
@@ -93,7 +90,7 @@ export function createCancellationSendMessagePayload(
 export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle): fhir.Parameters {
   const messageType = identifyMessageType(bundle)
   if (messageType !== fhir.EventCodingCode.PRESCRIPTION) {
-    throw new InvalidValueError(
+    throw new errors.InvalidValueError(
       "MessageHeader.eventCoding.code must be 'prescription-order'.",
       "MessageHeader.eventCoding.code"
     )
@@ -154,7 +151,7 @@ export async function convertParametersToSpineRequest(
   parameters: fhir.Parameters,
   messageId: string,
   logger: pino.Logger
-): Promise<SpineRequest> {
+): Promise<spine.SpineRequest> {
   const hl7ReleaseRequest = await translateReleaseRequest(parameters, logger)
   const interactionId = hl7V3.Hl7InteractionIdentifier.NOMINATED_PRESCRIPTION_RELEASE_REQUEST
   const sendMessagePayload = createSendMessagePayloadForUnattendedAccess(
@@ -169,7 +166,7 @@ export async function convertTaskToSpineRequest(
   task: fhir.Task,
   messageId: string,
   logger: pino.Logger
-): Promise<SpineRequest> {
+): Promise<spine.SpineRequest> {
   const payload = await createPayloadFromTask(task, logger)
   return requestBuilder.toSpineRequest(payload, messageId)
 }

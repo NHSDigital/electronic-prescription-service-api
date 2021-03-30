@@ -1,7 +1,5 @@
-import {InvalidValueError} from "../../../models/errors/processing-errors"
+import {hl7V3, fhir, processingErrors as errors} from "@models"
 import {isTruthy} from "../common"
-import * as hl7V3 from "../../../models/hl7-v3"
-import {fhir} from "@models"
 
 export function convertName(humanName: fhir.HumanName, fhirPath: string): hl7V3.Name {
   const name = new hl7V3.Name()
@@ -40,7 +38,7 @@ function convertNameUse(fhirNameUse: string, fhirPath: string) {
     case "maiden":
       return hl7V3.NameUse.PREVIOUS_MAIDEN
     default:
-      throw new InvalidValueError(`Unhandled name use '${fhirNameUse}'.`, fhirPath + ".use")
+      throw new errors.InvalidValueError(`Unhandled name use '${fhirNameUse}'.`, fhirPath + ".use")
   }
 }
 
@@ -71,7 +69,7 @@ function convertTelecomUse(fhirTelecomUse: string, fhirPath: string) {
     case "mobile":
       return hl7V3.TelecomUse.MOBILE
     default:
-      throw new InvalidValueError(`Unhandled telecom use '${fhirTelecomUse}'.`, fhirPath + ".use")
+      throw new errors.InvalidValueError(`Unhandled telecom use '${fhirTelecomUse}'.`, fhirPath + ".use")
   }
 }
 
@@ -117,7 +115,7 @@ function convertAddressUse(fhirAddressUse: string, fhirPath: string) {
     case "billing":
       return hl7V3.AddressUse.POSTAL
     default:
-      throw new InvalidValueError(`Unhandled address use '${fhirAddressUse}'.`, fhirPath + ".use")
+      throw new errors.InvalidValueError(`Unhandled address use '${fhirAddressUse}'.`, fhirPath + ".use")
   }
 }
 
@@ -132,6 +130,6 @@ export function convertGender(fhirGender: string, fhirPath: string): hl7V3.SexCo
     case "unknown":
       return hl7V3.SexCode.UNKNOWN
     default:
-      throw new InvalidValueError(`Unhandled gender '${fhirGender}'.`, fhirPath)
+      throw new errors.InvalidValueError(`Unhandled gender '${fhirGender}'.`, fhirPath)
   }
 }

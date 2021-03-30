@@ -1,4 +1,4 @@
-import {fhir} from "@models"
+import * as fhir from "../fhir"
 
 export const ORGANIZATION_FH542_COMMUNITY_PHARMACY: fhir.Organization = {
   resourceType: "Organization",

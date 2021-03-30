@@ -6,11 +6,9 @@ import {
 import * as TestResources from "../../../resources/test-resources"
 import * as XmlJs from "xml-js"
 import {xmlTest} from "../../../resources/test-helpers"
-import {Fragments} from "../../../../src/models/signature"
+import {hl7V3, fhir, signature} from "@models"
 import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"
-import * as hl7V3 from "../../../../src/models/hl7-v3"
-import {fhir} from "@models"
 import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl} from "../../../../src/services/translation/common"
 
@@ -21,7 +19,7 @@ jest.mock("moment", () => ({
 }))
 
 let hl7V3ParentPrescription: hl7V3.ParentPrescription
-let hl7V3ExtractedFragments: Fragments
+let hl7V3ExtractedFragments: signature.Fragments
 let fragments: XmlJs.ElementCompact
 let prescriptionId: string
 

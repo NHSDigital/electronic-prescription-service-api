@@ -1,6 +1,6 @@
 import fs from "fs"
 import path from "path"
-import {ExampleFile} from "../files/example-file"
+import {ExampleFile} from "../example-file"
 
 const walk = function(dir: string) {
   let results = Array<string>()
@@ -25,7 +25,8 @@ const walk = function(dir: string) {
     }
 }
 
-const primaryCareFilePaths: Array<string> = walk(path.join(__dirname, "../../examples/primary-care"))
-const secondaryCareFilePaths: Array<string> = walk(path.join(__dirname, "../../examples/secondary-care"))
+const examplesRootPath = "../../../examples"
+const primaryCareFilePaths: Array<string> = walk(path.join(__dirname, examplesRootPath, "primary-care"))
+const secondaryCareFilePaths: Array<string> = walk(path.join(__dirname, examplesRootPath, "secondary-care"))
 const allExampleFilePaths = [...primaryCareFilePaths, ...secondaryCareFilePaths]
 export const exampleFiles: ExampleFile[] = allExampleFilePaths.map(examplePath => new ExampleFile(examplePath))

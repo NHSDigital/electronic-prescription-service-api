@@ -1,6 +1,5 @@
 import {convertName, generateResourceId} from "./common"
-import * as hl7V3 from "../../../models/hl7-v3"
-import {fhir} from "@models"
+import {fhir, hl7V3} from "@models"
 
 export function createPractitioner(agentPerson: hl7V3.AgentPerson): fhir.Practitioner {
   return {

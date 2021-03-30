@@ -3,7 +3,7 @@ import {
   getMessageIdFromTaskFocusIdentifier,
   getPrescriptionShortFormIdFromTaskGroupIdentifier
 } from "../../../../src/services/translation/request/task"
-import * as hl7V3 from "../../../../src/models/hl7-v3"
+import {hl7V3} from "@models"
 import pino from "pino"
 import {createAuthorForUnattendedAccess} from "../../../../src/services/translation/request/agent-unattended"
 

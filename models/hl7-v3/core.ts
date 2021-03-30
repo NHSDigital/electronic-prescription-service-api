@@ -1,7 +1,6 @@
 import * as codes from "./codes"
 import {Attributes, ElementCompact} from "xml-js"
 import {LosslessNumber} from "lossless-json"
-import {getNumericValueAsString} from "../../services/translation/common"
 
 export interface AttributeTypeCode extends Attributes {
   typeCode: "AUT" | "COMP" | "CSM" | "FLFS" | "LA" | "PART" | "PERT"
@@ -170,5 +169,18 @@ export class IntervalUnanchored {
         unit
       }
     }
+  }
+}
+
+function getNumericValueAsString(numericValue: string | number | LosslessNumber): string {
+  if (typeof numericValue === "number") {
+    throw new TypeError(
+      "Got a number but expected a LosslessNumber." +
+      " Use LosslessJson.parse() instead of JSON.parse() or precision may be lost."
+    )
+  } else if (typeof numericValue === "string") {
+    return numericValue
+  } else {
+    return numericValue.toString()
   }
 }

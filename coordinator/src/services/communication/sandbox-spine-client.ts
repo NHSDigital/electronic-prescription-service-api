@@ -1,11 +1,8 @@
-import {SpineRequest, SpineResponse} from "../../models/spine"
-import * as hl7V3 from "../../models/hl7-v3"
-import {fhir} from "@models"
-import * as spineResponses from "../../models/sandbox/spine-responses"
+import {spine, fhir, hl7V3, spineResponses} from "@models"
 import {SpineClient} from "./spine-client"
 
 export class SandboxSpineClient implements SpineClient {
-  async send(spineRequest: SpineRequest): Promise<SpineResponse<unknown>> {
+  async send(spineRequest: spine.SpineRequest): Promise<spine.SpineResponse<unknown>> {
     switch (spineRequest.interactionId) {
       case hl7V3.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT._attributes.extension:
         return Promise.resolve({
@@ -46,7 +43,7 @@ export class SandboxSpineClient implements SpineClient {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async poll(path: string): Promise<SpineResponse<fhir.OperationOutcome>> {
+  async poll(path: string): Promise<spine.SpineResponse<fhir.OperationOutcome>> {
     return Promise.resolve({
       statusCode: 400,
       body: notSupportedOperationOutcome

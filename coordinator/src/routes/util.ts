@@ -1,13 +1,11 @@
-import {isPollable, SpineDirectResponse, SpinePollableResponse} from "../models/spine"
+import {fhir, spine, validationErrors as errors} from "@models"
 import Hapi from "@hapi/hapi"
 import {translateToFhir} from "../services/translation/response"
 import * as LosslessJson from "lossless-json"
 import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
-import {fhir} from "@models"
 import {userHasValidAuth} from "../services/validation/auth-level"
-import {unauthorisedActionIssue} from "../models/errors/validation-errors"
 import {identifyMessageType} from "../services/translation/common"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
@@ -25,10 +23,10 @@ export function createHash(thingsToHash: string): string {
 
 export function handleResponse<T>(
   request: Hapi.Request,
-  spineResponse: SpineDirectResponse<T> | SpinePollableResponse,
+  spineResponse: spine.SpineDirectResponse<T> | spine.SpinePollableResponse,
   responseToolkit: Hapi.ResponseToolkit
 ): Hapi.ResponseObject {
-  if (isPollable(spineResponse)) {
+  if (spine.isPollable(spineResponse)) {
     return responseToolkit.response()
       .code(spineResponse.statusCode)
       .header("Content-Location", spineResponse.pollingUrl)
@@ -141,7 +139,7 @@ export function userAuthValidator(handler: Handler) {
     const bundle = getPayload(request) as fhir.Bundle
     if (identifyMessageType(bundle) !== fhir.EventCodingCode.DISPENSE) {
       if (!userHasValidAuth(request, "user")) {
-        return responseToolkit.response(unauthorisedActionIssue).code(403).type(CONTENT_TYPE_FHIR)
+        return responseToolkit.response(errors.unauthorisedActionIssue).code(403).type(CONTENT_TYPE_FHIR)
       }
     }
 
