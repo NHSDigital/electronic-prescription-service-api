@@ -259,22 +259,6 @@ def update_process_examples(
         raise e
 
 
-def update_dispense_examples(
-    prepare_request_path, bundle_id, prescription_id, short_prescription_id
-):
-    try:
-        dispense_request_path = derive_dispense_request_path(prepare_request_path)
-        dispense_request_json = load_dispense_request(dispense_request_path)
-        # todo: update withdraw/return
-        update_prescription(
-            dispense_request_json, bundle_id, prescription_id, short_prescription_id, None, None
-        )
-        save_dispense_request(dispense_request_path, dispense_request_json)
-        print(f"Updated dispense example for {prepare_request_path}")
-    except BaseException:
-        return
-
-
 def update_examples(api_base_url):
     authored_on = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S+00:00')
     for prepare_request_path in find_prepare_request_paths(examples_root_dir):
@@ -288,9 +272,6 @@ def update_examples(api_base_url):
         update_process_examples(
             api_base_url, prepare_request_path, prescription_id, short_prescription_id,
             authored_on, signature_time
-        )
-        update_dispense_examples(
-            prepare_request_path, bundle_id, prescription_id, short_prescription_id
         )
 
 
