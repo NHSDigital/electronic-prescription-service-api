@@ -1,12 +1,10 @@
 import * as uuid from "uuid"
 import {toArray} from "../common"
-import {InvalidValueError} from "../../../models/errors/processing-errors"
+import {hl7V3, fhir, processingErrors as errors} from "@models"
 import {createPractitioner} from "./practitioner"
 import {createHealthcareService, createLocations, createOrganization} from "./organization"
 import {createPractitionerRole} from "./practitioner-role"
 import {createPatient} from "./patient"
-import * as hl7V3 from "../../../models/hl7-v3"
-import {fhir} from "@models"
 
 export function convertName(name: Array<hl7V3.Name> | hl7V3.Name): Array<fhir.HumanName> {
   const nameArray = toArray(name)
@@ -46,7 +44,7 @@ function convertNameUse(hl7NameUse: string): string {
     case hl7V3.NameUse.PREVIOUS_MAIDEN:
       return "maiden"
     default:
-      throw new InvalidValueError(`Unhandled name use '${hl7NameUse}'.`)
+      throw new errors.InvalidValueError(`Unhandled name use '${hl7NameUse}'.`)
   }
 }
 
@@ -81,7 +79,7 @@ function convertAddressUse(addressUse: hl7V3.AddressUse): string {
     case undefined:
       return undefined
     default:
-      throw new InvalidValueError(`Unhandled address use '${addressUse}'.`)
+      throw new errors.InvalidValueError(`Unhandled address use '${addressUse}'.`)
   }
 }
 
@@ -111,7 +109,7 @@ function convertTelecomUse(telecomUse: string): string {
       // case core.TelecomUse.EMERGENCY_CONTACT:
       //   return "home+rank"
     default:
-      throw new InvalidValueError(`Unhandled telecom use '${telecomUse}'.`)
+      throw new errors.InvalidValueError(`Unhandled telecom use '${telecomUse}'.`)
   }
 }
 

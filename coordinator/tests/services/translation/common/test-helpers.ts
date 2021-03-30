@@ -1,5 +1,5 @@
 import {ExampleSpineResponse} from "../../../resources/test-resources"
-import * as hl7V3 from "../../../../src/models/hl7-v3"
+import {hl7V3} from "@models"
 import {CANCEL_RESPONSE_HANDLER} from "../../../../src/services/translation/response"
 
 export function hasCorrectISOFormat(timestamp: string): boolean {

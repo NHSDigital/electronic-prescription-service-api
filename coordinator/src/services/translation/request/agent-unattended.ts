@@ -1,10 +1,8 @@
-import * as hl7V3 from "../../../models/hl7-v3"
-import {fhir} from "@models"
+import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {getIdentifierValueForSystem} from "../common"
 import {convertAddress, convertTelecom} from "./demographics"
 import pino from "pino"
 import {odsClient} from "../../communication/ods-client"
-import {InvalidValueError} from "../../../models/errors/processing-errors"
 
 export async function createAuthorForUnattendedAccess(
   organizationCode: string,
@@ -49,7 +47,7 @@ async function createRepresentedOrganization(
 ): Promise<hl7V3.Organization> {
   const organization = await odsClient.lookupOrganization(organizationCode, logger)
   if (!organization) {
-    throw new InvalidValueError(
+    throw new errors.InvalidValueError(
       `No organisation details found for code ${organizationCode}`,
       "Parameters.parameter"
     )

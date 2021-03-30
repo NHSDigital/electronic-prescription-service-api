@@ -11,8 +11,7 @@ import {
   identifyMessageType,
   isTruthy
 } from "../translation/common"
-import {fhir} from "@models"
-import * as errors from "../../models/errors/validation-errors"
+import {fhir, validationErrors as errors} from "@models"
 import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
 
 export function verifyBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {

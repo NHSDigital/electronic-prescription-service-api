@@ -1,6 +1,5 @@
-import {fhir} from "@models"
+import {fhir, processingErrors as errors} from "@models"
 import {LosslessNumber} from "lossless-json"
-import {InvalidValueError, TooFewValuesError, TooManyValuesError} from "../../../models/errors/processing-errors"
 import {getMessageHeader} from "./getResourcesOfType"
 
 export const UNKNOWN_GP_ODS_CODE = "V81999"
@@ -27,12 +26,12 @@ export function getMessageIdFromTask(task: fhir.Task): string {
 
 export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, additionalContext?: string): T {
   if (!iterable) {
-    throw new InvalidValueError("Required field missing.", fhirPath)
+    throw new errors.InvalidValueError("Required field missing.", fhirPath)
   }
   const iterator = iterable[Symbol.iterator]()
   const first = iterator.next()
   if (first.done) {
-    throw new TooFewValuesError(`Too few values submitted. Expected 1 element${
+    throw new errors.TooFewValuesError(`Too few values submitted. Expected 1 element${
       additionalContext ? " where " : ""
     }${
       additionalContext ? additionalContext : ""
@@ -40,7 +39,7 @@ export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, addition
   }
   const value = first.value
   if (!iterator.next().done) {
-    throw new TooManyValuesError(`Too many values submitted. Expected 1 element${
+    throw new errors.TooManyValuesError(`Too many values submitted. Expected 1 element${
       additionalContext ? " where " : ""
     }${
       additionalContext ? additionalContext : ""
@@ -56,7 +55,7 @@ export function onlyElementOrNull<T>(iterable: Iterable<T>, fhirPath: string, ad
   const iterator = iterable[Symbol.iterator]()
   const value = iterator.next().value
   if (!iterator.next().done) {
-    throw new TooManyValuesError(`Too many values submitted. Expected at most 1 element${
+    throw new errors.TooManyValuesError(`Too many values submitted. Expected at most 1 element${
       additionalContext ? " where " : ""
     }${
       additionalContext ? additionalContext : ""
@@ -83,7 +82,7 @@ export function getIdentifierValueForSystem(
   fhirPath: string
 ): string {
   if (!identifiers) {
-    throw new InvalidValueError("Required field missing.", fhirPath)
+    throw new errors.InvalidValueError("Required field missing.", fhirPath)
   }
   return onlyElement(
     identifiers.filter(identifier => identifier.system === system),
@@ -149,7 +148,7 @@ export function getCodeableConceptCodingForSystem(
   fhirPath: string
 ): fhir.Coding {
   if (!codeableConcepts) {
-    throw new InvalidValueError("Required field missing.", fhirPath)
+    throw new errors.InvalidValueError("Required field missing.", fhirPath)
   }
   const coding = codeableConcepts.flatMap(codeableConcept => codeableConcept.coding)
   return getCodingForSystem(coding, system, fhirPath + ".coding")

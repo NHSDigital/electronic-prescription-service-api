@@ -1,5 +1,4 @@
-import {InvalidValueError} from "../../../models/errors/processing-errors"
-import {fhir} from "@models"
+import {fhir, processingErrors as errors} from "@models"
 
 export function getCourseOfTherapyTypeCode(medicationRequests: Array<fhir.MedicationRequest>): string {
   const codeList = medicationRequests
@@ -11,7 +10,7 @@ export function getCourseOfTherapyTypeCode(medicationRequests: Array<fhir.Medica
   } else if (isMixedAcuteAndContinuousCourseOfTherapyType(codeSet)) {
     return fhir.CourseOfTherapyTypeCode.ACUTE
   } else {
-    throw new InvalidValueError(
+    throw new errors.InvalidValueError(
       `Course of therapy type must either match for all MedicationRequests or be a mixture of '${
         fhir.CourseOfTherapyTypeCode.ACUTE
       }' and '${

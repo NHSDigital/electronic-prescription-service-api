@@ -1,7 +1,7 @@
 import * as LosslessJson from "lossless-json"
 import * as fs from "fs"
-import {ExampleFile} from "../files/example-file"
-import * as fhir from "../fhir"
+import {ExampleFile} from "../example-file"
+import * as fhir from "../../fhir"
 import path from "path"
 
 export class Case {
@@ -30,8 +30,7 @@ export class Case {
   }
 }
 
-const examplesRootPath = "../../examples"
-
+const examplesRootPath = "../../../examples"
 function createExampleDescription(exampleFile: ExampleFile): string {
   return path.parse(path.relative(path.join(__dirname, examplesRootPath), exampleFile.path))
     .dir

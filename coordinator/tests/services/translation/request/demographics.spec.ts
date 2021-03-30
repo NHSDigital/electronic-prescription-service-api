@@ -1,6 +1,5 @@
 import * as demographics from "../../../../src/services/translation/request/demographics"
-import {InvalidValueError} from "../../../../src/models/errors/processing-errors"
-import * as hl7V3 from "../../../../src/models/hl7-v3"
+import {hl7V3, processingErrors as errors} from "@models"
 
 describe("convertName fills correct fields only", () => {
   test("should handle empty", () => {
@@ -63,7 +62,7 @@ describe("convertName fills correct fields only", () => {
 
   test("Other should throw InvalidValueUserFacingError", () => {
     const fhirName = {"use": "nope"}
-    expect(() => demographics.convertName(fhirName, "fhirPath")).toThrow(InvalidValueError)
+    expect(() => demographics.convertName(fhirName, "fhirPath")).toThrow(errors.InvalidValueError)
   })
 })
 
@@ -102,7 +101,7 @@ describe("convertAddress should return correct addresses", () => {
 
   test("Throw InvalidValueUserFacingError for invalid use", () => {
     const fhirAddress = {use: "example"}
-    expect(() => demographics.convertAddress(fhirAddress, "fhirPath")).toThrow(InvalidValueError)
+    expect(() => demographics.convertAddress(fhirAddress, "fhirPath")).toThrow(errors.InvalidValueError)
   })
 
   const cases = [
@@ -132,6 +131,6 @@ describe("convertGender should return correct gender", () => {
     })
 
   test("invalid fhirGender throws InvalidValueUserFacingError", () => {
-    expect(() => demographics.convertGender("example", "fhirPath")).toThrow(InvalidValueError)
+    expect(() => demographics.convertGender("example", "fhirPath")).toThrow(errors.InvalidValueError)
   })
 })

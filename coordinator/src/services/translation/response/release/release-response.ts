@@ -6,8 +6,7 @@ import {createMessageHeader} from "../message-header"
 import {createAndAddCommunicationRequest, parseAdditionalInstructions} from "./additional-instructions"
 import * as uuid from "uuid"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
-import * as hl7V3 from "../../../../models/hl7-v3"
-import {fhir} from "@models"
+import {fhir, hl7V3} from "@models"
 
 const SUPPORTED_MESSAGE_TYPE = "PORX_MT122003UK32"
 

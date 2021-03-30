@@ -1,6 +1,5 @@
-import {fhir} from "@models"
+import {fhir, hl7V3} from "@models"
 import {getIdentifierValueForSystem} from "../common"
-import * as hl7V3 from "../../../models/hl7-v3"
 import * as pino from "pino"
 import {createAuthorForUnattendedAccess} from "./agent-unattended"
 

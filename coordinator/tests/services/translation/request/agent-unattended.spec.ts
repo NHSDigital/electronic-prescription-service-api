@@ -1,8 +1,7 @@
 import {odsClient} from "../../../../src/services/communication/ods-client"
 import {createAuthorForUnattendedAccess} from "../../../../src/services/translation/request/agent-unattended"
 import pino from "pino"
-import {fhir} from "@models"
-import {FhirMessageProcessingError} from "../../../../src/models/errors/processing-errors"
+import {fhir, processingErrors as errors} from "@models"
 import {toArray} from "../../../../src/services/translation/common"
 
 const logger = pino()
@@ -51,7 +50,7 @@ test("throws if organization not found in ODS", async () => {
 
   await expect(() =>
     createAuthorForUnattendedAccess("FTX40", logger)
-  ).rejects.toThrow(FhirMessageProcessingError)
+  ).rejects.toThrow(errors.FhirMessageProcessingError)
 })
 
 const mockOrganizationResponse: fhir.Organization = {

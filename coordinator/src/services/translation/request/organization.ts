@@ -6,9 +6,7 @@ import {
   resolveReference
 } from "../common"
 import {convertAddress, convertTelecom} from "./demographics"
-import {InvalidValueError} from "../../../models/errors/processing-errors"
-import * as hl7V3 from "../../../models/hl7-v3"
-import {fhir} from "@models"
+import {hl7V3, fhir, processingErrors as errors} from "@models"
 
 const NHS_TRUST_CODE = "197"
 
@@ -33,7 +31,7 @@ function convertRepresentedOrganization(
 ): hl7V3.Organization {
   const shouldUseHealthcareService = isNhsTrust(organization)
   if (shouldUseHealthcareService && !healthcareService) {
-    throw new InvalidValueError(
+    throw new errors.InvalidValueError(
       `A HealthcareService must be provided if the Organization role is '${NHS_TRUST_CODE}'.`,
       "PractitionerRole.healthcareService"
     )
@@ -106,7 +104,7 @@ function convertCommonOrganizationDetails(costCentre: CostCentre): hl7V3.Organiz
   result.id = new hl7V3.SdsOrganizationIdentifier(organizationSdsId)
   result.code = new hl7V3.OrganizationTypeCode()
   if (!costCentre.name) {
-    throw new InvalidValueError("Name must be provided.", `${costCentre.resourceType}.address`)
+    throw new errors.InvalidValueError("Name must be provided.", `${costCentre.resourceType}.address`)
   }
   result.name = new hl7V3.Text(costCentre.name)
 
@@ -154,7 +152,7 @@ class CostCentreHealthcareService extends CostCentre implements fhir.HealthcareS
     const locationReference = onlyElement(this.location, "HealthcareService.location")
     const location = resolveReference(fhirBundle, locationReference)
     if (!location.address) {
-      throw new InvalidValueError("Address must be provided.", "Location.address")
+      throw new errors.InvalidValueError("Address must be provided.", "Location.address")
     }
     return location.address
   }

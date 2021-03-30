@@ -1,7 +1,6 @@
 import * as TestResources from "../../../resources/test-resources"
 import {translateToFhir} from "../../../../src/services/translation/response"
-import {SpineDirectResponse} from "../../../../src/models/spine"
-import {fhir} from "@models"
+import {fhir, spine} from "@models"
 import pino from "pino"
 
 describe("translateToFhir", () => {
@@ -48,7 +47,7 @@ describe("translateToFhir", () => {
 
   test("returns internal server error on unexpected spine response", () => {
     const bodyString = "this body doesnt pass the regex checks"
-    const spineResponse: SpineDirectResponse<string> = {
+    const spineResponse: spine.SpineDirectResponse<string> = {
       body: bodyString,
       statusCode: 420
     }

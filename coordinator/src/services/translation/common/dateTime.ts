@@ -1,7 +1,6 @@
 // eslint-disable-next-line max-len
 import moment from "moment"
-import {InvalidValueError} from "../../../models/errors/processing-errors"
-import * as hl7V3 from "../../../models/hl7-v3"
+import {hl7V3, processingErrors as errors} from "@models"
 
 // eslint-disable-next-line max-len
 const FHIR_DATE_REGEX = /^([0-9]([0-9]([0-9][1-9]|[1-9]0)|[1-9]00)|[1-9]000)(-(0[1-9]|1[0-2])(-(0[1-9]|[1-2][0-9]|3[0-1]))?)?$/
@@ -57,7 +56,7 @@ function convertHL7V3DateTimeToMoment(hl7Date: hl7V3.Timestamp) {
 
 function convertIsoDateTimeStringToMoment(isoDateTimeStr: string, fhirPath: string): moment.Moment {
   if (!FHIR_DATE_TIME_REGEX.test(isoDateTimeStr)) {
-    throw new InvalidValueError(`Incorrect format for date time string '${isoDateTimeStr}'.`, fhirPath)
+    throw new errors.InvalidValueError(`Incorrect format for date time string '${isoDateTimeStr}'.`, fhirPath)
   }
   return moment.utc(isoDateTimeStr, moment.ISO_8601, true)
 }
@@ -68,7 +67,7 @@ export function convertMomentToISODateTime(moment: moment.Moment): string {
 
 function convertIsoDateStringToMoment(isoDateStr: string, fhirPath: string): moment.Moment {
   if (!FHIR_DATE_REGEX.test(isoDateStr)) {
-    throw new InvalidValueError(`Incorrect format for date string '${isoDateStr}'.`, fhirPath)
+    throw new errors.InvalidValueError(`Incorrect format for date string '${isoDateStr}'.`, fhirPath)
   }
   return moment.utc(isoDateStr, moment.ISO_8601, true)
 }
