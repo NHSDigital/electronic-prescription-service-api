@@ -26,7 +26,7 @@ describe("createMedicationRequest", () => {
       medicationRequest.extension,
       "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionTaskStatusReason",
       "MedicationRequest.extension"
-    ) as fhir.ExtensionExtension<fhir.CodeableConceptExtension | fhir.DateTimeExtension>
+    ) as fhir.PrescriptionStatusHistoryExtension
     expect(extension).not.toBeUndefined()
 
     const medicationStatusHistoryExtension = getExtensionForUrlOrNull(
