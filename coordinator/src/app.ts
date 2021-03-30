@@ -11,15 +11,15 @@ moduleAlias(__dirname + "/../../package.json")
 import {Boom} from "@hapi/boom"
 import Hapi from "@hapi/hapi"
 import routes from "./routes"
-import {FhirMessageProcessingError, toOperationOutcome} from "./models/errors/processing-errors"
+import {processingErrors as errors} from "@models"
 import HapiPino from "hapi-pino"
 import {CONTENT_TYPE_FHIR, CONTENT_TYPE_JSON, CONTENT_TYPE_PLAIN_TEXT, CONTENT_TYPE_XML} from "./routes/util"
 
 function reformatUserErrorsToFhir(request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) {
   const response = request.response
-  if (response instanceof FhirMessageProcessingError) {
+  if (response instanceof errors.FhirMessageProcessingError) {
     request.log("info", response)
-    return responseToolkit.response(toOperationOutcome(response)).code(400).type(CONTENT_TYPE_FHIR)
+    return responseToolkit.response(errors.toOperationOutcome(response)).code(400).type(CONTENT_TYPE_FHIR)
   } else if (response instanceof Boom) {
     request.log("error", response)
   }

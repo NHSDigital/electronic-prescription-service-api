@@ -3,8 +3,7 @@ import {convertBundleToPrescription} from "../prescription"
 import {getMessageId, toArray} from "../../common"
 import {getMedicationRequests, getPatient} from "../../common/getResourcesOfType"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
-import * as hl7V3 from "../../../../models/hl7-v3"
-import {fhir} from "@models"
+import {fhir, hl7V3} from "@models"
 
 export function convertParentPrescription(
   bundle: fhir.Bundle,

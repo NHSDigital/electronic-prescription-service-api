@@ -2,8 +2,8 @@
 import * as fs from "fs"
 import {Case} from "./case"
 import * as LosslessJson from "lossless-json"
-import {ExampleFile} from "../files/example-file"
-import * as fhir from "../fhir"
+import {ExampleFile} from "../example-file"
+import * as fhir from "../../fhir"
 
 export class ConvertCase extends Case {
   description: string
@@ -17,7 +17,7 @@ export class ConvertCase extends Case {
 
     const responseString = fs.readFileSync(responseFile.path, "utf-8")
     this.response = this.isSuccess ? responseString : JSON.parse(LosslessJson.stringify(responseString))
-    this.responseMatcher =  this.isSuccess 
+    this.responseMatcher =  this.isSuccess
       ? this.buildResponseMatcher(requestFile.operation, this.response).trimEnd()
       : ""
   }
@@ -80,7 +80,6 @@ export class ConvertCase extends Case {
           /<id root=\\"[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\\"\\\/>/g,
         "<id root=\\\"[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\\\"\\/>")
     }
-    
     return responseXml
   }
   toJestCase(): [string, fhir.Bundle, string, string, number] {

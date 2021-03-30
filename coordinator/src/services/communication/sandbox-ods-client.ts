@@ -1,7 +1,6 @@
 import {OdsClient} from "./ods-client"
-import {fhir} from "@models"
+import {fhir, odsResponses} from "@models"
 import {getIdentifierValueForSystem} from "../translation/common"
-import * as odsResponses from "../../models/sandbox/ods-responses"
 
 export class SandboxOdsClient implements OdsClient {
   static responses = [

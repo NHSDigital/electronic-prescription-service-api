@@ -1,6 +1,6 @@
 import axios, {AxiosError, AxiosResponse} from "axios"
 import {Logger} from "pino"
-import {SpineRequest, SpineResponse} from "../../models/spine"
+import {spine} from "@models"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
 
@@ -12,19 +12,19 @@ const BASE_PATH = process.env.BASE_PATH
 export class LiveSpineClient implements SpineClient {
   private readonly spineEndpoint: string
   private readonly spinePath: string
-  private readonly ebXMLBuilder: (spineRequest: SpineRequest, logger: Logger) => string
+  private readonly ebXMLBuilder: (spineRequest: spine.SpineRequest, logger: Logger) => string
 
   constructor(
     spineEndpoint: string = null,
     spinePath: string = null,
-    ebXMLBuilder: (spineRequest: SpineRequest, logger: Logger) => string = null
+    ebXMLBuilder: (spineRequest: spine.SpineRequest, logger: Logger) => string = null
   ) {
     this.spineEndpoint = spineEndpoint || SPINE_ENDPOINT
     this.spinePath = spinePath || SPINE_PATH
     this.ebXMLBuilder = ebXMLBuilder || addEbXmlWrapper
   }
 
-  async send(spineRequest: SpineRequest, logger: Logger): Promise<SpineResponse<unknown>> {
+  async send(spineRequest: spine.SpineRequest, logger: Logger): Promise<spine.SpineResponse<unknown>> {
     logger.info("Building EBXML wrapper for SpineRequest")
     const wrappedMessage = this.ebXMLBuilder(spineRequest, logger)
     const address = this.getSpineUrlForPrescription()
@@ -53,7 +53,7 @@ export class LiveSpineClient implements SpineClient {
     }
   }
 
-  async poll(path: string, logger: Logger): Promise<SpineResponse<unknown>> {
+  async poll(path: string, logger: Logger): Promise<spine.SpineResponse<unknown>> {
     const address = this.getSpineUrlForPolling(path)
 
     logger.info(`Attempting to send polling message to ${address}`)
@@ -95,7 +95,7 @@ export class LiveSpineClient implements SpineClient {
     }
   }
 
-  private static handleError(error: Error): SpineResponse<unknown> {
+  private static handleError(error: Error): spine.SpineResponse<unknown> {
     const axiosError = error as AxiosError
     if (axiosError.response) {
       return {

@@ -1,8 +1,7 @@
-import {fhir} from "@models"
+import {fhir, validationErrors as errors} from "@models"
 import {clone} from "../../resources/test-helpers"
 import * as TestResources from "../../resources/test-resources"
 import {verifyTask} from "../../../src/services/validation/task-validator"
-import * as errors from "../../../src/models/errors/validation-errors"
 
 describe("verifyTask returns errors", () => {
   const validReturnTask = TestResources.exampleReturnTask

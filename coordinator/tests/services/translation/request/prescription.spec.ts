@@ -15,8 +15,7 @@ import {
 } from "../../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, toArray} from "../../../../src/services/translation/common"
 import {setCourseOfTherapyTypeCode} from "./course-of-therapy-type.spec"
-import * as hl7V3 from "../../../../src/models/hl7-v3"
-import {fhir} from "@models"
+import {hl7V3, fhir} from "@models"
 import pino from "pino"
 
 const logger = pino()

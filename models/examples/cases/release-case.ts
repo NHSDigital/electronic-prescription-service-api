@@ -1,6 +1,6 @@
 import {Case} from "./case"
-import {ExampleFile} from "../files/example-file"
-import * as fhir from "../fhir"
+import {ExampleFile} from "../example-file"
+import * as fhir from "../../fhir"
 
 export class ReleaseCase extends Case {
   description: string

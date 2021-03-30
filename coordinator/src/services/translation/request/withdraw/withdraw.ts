@@ -1,5 +1,4 @@
-import * as hl7V3 from "../../../../models/hl7-v3"
-import {fhir} from "@models"
+import {fhir, hl7V3} from "@models"
 import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem, getMessageId} from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import {

@@ -1,8 +1,8 @@
 import {Case} from "./case"
 import {exampleFiles} from "../fetchers/example-files-fetcher"
 import fs from "fs"
-import {ExampleFile} from "../files/example-file"
-import * as fhir from "../fhir"
+import {ExampleFile} from "../example-file"
+import * as fhir from "../../fhir"
 import * as LosslessJson from "lossless-json"
 
 export class ProcessCase extends Case {
@@ -32,7 +32,7 @@ export class ProcessCase extends Case {
       && exampleFile.endpoint === "prepare"
       && exampleFile.statusText === requestFile.statusText
       && exampleFile.isResponse)
-      
+
     this.prepareResponseFile = prepareResponseFile
 
     const convertResponseFile = exampleFiles.find(exampleFile =>

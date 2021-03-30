@@ -1,7 +1,5 @@
-import {fhir} from "@models"
-import * as errors from "../../models/errors/validation-errors"
+import {fhir, validationErrors as errors} from "@models"
 import {getCodeableConceptCodingForSystem, getCodingForSystemOrNull} from "../translation/common"
-import {createTaskIncorrectValueIssue} from "../../models/errors/validation-errors"
 
 export function verifyTask(task: fhir.Task): Array<fhir.OperationOutcomeIssue> {
   const validationErrors = []
@@ -48,7 +46,7 @@ function validateWithdraw(task: fhir.Task) {
       "Task.code"
     )
     if (typeCoding.code !== "abort") {
-      withdrawSpecificErrors.push(createTaskIncorrectValueIssue("code.coding.code", "abort"))
+      withdrawSpecificErrors.push(errors.createTaskIncorrectValueIssue("code.coding.code", "abort"))
     }
   }
 

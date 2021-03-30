@@ -3,13 +3,7 @@ import * as TestResources from "../../resources/test-resources"
 import {clone} from "../../resources/test-helpers"
 import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, isTruthy} from "../../../src/services/translation/common"
-import {fhir} from "@models"
-import {
-  createMedicationRequestInconsistentValueIssue,
-  medicationRequestDuplicateIdentifierIssue,
-  medicationRequestNumberIssue,
-  messageTypeIssue
-} from "../../../src/models/errors/validation-errors"
+import {fhir, validationErrors as errors} from "@models"
 import {
   getOrganisationPerformer,
   getPrescriptionStatus
@@ -47,7 +41,7 @@ describe("Bundle checks", () => {
       ]
     }
     expect(validator.verifyBundle(bundle as fhir.Bundle))
-      .toContainEqual(messageTypeIssue)
+      .toContainEqual(errors.messageTypeIssue)
   })
 })
 
@@ -130,7 +124,7 @@ describe("MedicationRequest consistency checks", () => {
     expect(
       validationErrors
     ).toContainEqual(
-      createMedicationRequestInconsistentValueIssue(
+      errors.createMedicationRequestInconsistentValueIssue(
         "authoredOn",
         [differentAuthoredOn, defaultAuthoredOn]
       )
@@ -166,7 +160,7 @@ describe("MedicationRequest consistency checks", () => {
     expect(
       validationErrors
     ).toContainEqual(
-      createMedicationRequestInconsistentValueIssue(
+      errors.createMedicationRequestInconsistentValueIssue(
         "dispenseRequest.performer",
         [performer, performerDiff]
       )
@@ -205,7 +199,7 @@ describe("MedicationRequest consistency checks", () => {
     expect(
       validationErrors
     ).toContainEqual(
-      medicationRequestDuplicateIdentifierIssue
+      errors.medicationRequestDuplicateIdentifierIssue
     )
   })
 })
@@ -279,7 +273,7 @@ describe("verifyCancellationBundle", () => {
     bundle.entry.push(medicationRequestEntry)
     const returnedErrors = validator.verifyCancellationBundle(bundle)
     expect(returnedErrors.length).toBe(1)
-    expect(returnedErrors[0]).toEqual(medicationRequestNumberIssue)
+    expect(returnedErrors[0]).toEqual(errors.medicationRequestNumberIssue)
   })
 
   test("returns an error when status is not cancelled", () => {

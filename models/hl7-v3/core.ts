@@ -1,7 +1,5 @@
 import * as codes from "./codes"
 import {Attributes, ElementCompact} from "xml-js"
-import {LosslessNumber} from "lossless-json"
-import {getNumericValueAsString} from "../../services/translation/common"
 
 export interface AttributeTypeCode extends Attributes {
   typeCode: "AUT" | "COMP" | "CSM" | "FLFS" | "LA" | "PART" | "PERT"
@@ -138,9 +136,9 @@ export class NumericValue implements ElementCompact {
     value: string
   }
 
-  constructor(value: string | LosslessNumber) {
+  constructor(value: string) {
     this._attributes = {
-      value: getNumericValueAsString(value)
+      value
     }
   }
 }

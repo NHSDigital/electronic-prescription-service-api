@@ -1,4 +1,4 @@
-import {SpineDirectResponse} from "../../../models/spine"
+import {spine} from "@models"
 import {
   CancelResponseHandler,
   ReleaseResponseHandler,
@@ -25,7 +25,9 @@ const spineResponseHandlers = [
   RELEASE_RESPONSE_HANDLER
 ]
 
-export function translateToFhir<T>(hl7Message: SpineDirectResponse<T>, logger: pino.Logger): TranslatedSpineResponse {
+export function translateToFhir<T>(
+  hl7Message: spine.SpineDirectResponse<T>,
+  logger: pino.Logger): TranslatedSpineResponse {
   const bodyString = hl7Message.body.toString()
   for (const handler of spineResponseHandlers) {
     const translatedSpineResponse = handler.handleResponse(bodyString, logger)
