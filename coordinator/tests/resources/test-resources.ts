@@ -3,7 +3,6 @@ import {ElementCompact} from "xml-js"
 import * as fs from "fs"
 import * as path from "path"
 import * as LosslessJson from "lossless-json"
-import {} from "@models"
 import {hl7V3, fhir, spine, fetcher} from "@models"
 
 export class ExamplePrescription {

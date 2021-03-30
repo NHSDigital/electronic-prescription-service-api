@@ -1,6 +1,5 @@
 import * as codes from "./codes"
 import {Attributes, ElementCompact} from "xml-js"
-import {LosslessNumber} from "lossless-json"
 
 export interface AttributeTypeCode extends Attributes {
   typeCode: "AUT" | "COMP" | "CSM" | "FLFS" | "LA" | "PART" | "PERT"
@@ -137,9 +136,9 @@ export class NumericValue implements ElementCompact {
     value: string
   }
 
-  constructor(value: string | LosslessNumber) {
+  constructor(value: string) {
     this._attributes = {
-      value: getNumericValueAsString(value)
+      value
     }
   }
 }
@@ -169,18 +168,5 @@ export class IntervalUnanchored {
         unit
       }
     }
-  }
-}
-
-function getNumericValueAsString(numericValue: string | number | LosslessNumber): string {
-  if (typeof numericValue === "number") {
-    throw new TypeError(
-      "Got a number but expected a LosslessNumber." +
-      " Use LosslessJson.parse() instead of JSON.parse() or precision may be lost."
-    )
-  } else if (typeof numericValue === "string") {
-    return numericValue
-  } else {
-    return numericValue.toString()
   }
 }
