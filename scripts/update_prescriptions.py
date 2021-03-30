@@ -61,6 +61,7 @@ def update_prescription(bundle_json, bundle_id, prescription_id, short_prescript
                                     extensionExtension["valueIdentifier"]["value"] = short_prescription_id
                                 if extensionExtension["url"] == "UUID":
                                     extensionExtension["valueIdentifier"]["value"] = prescription_id
+                resource["whenPrepared"] = authored_on
 
     if (messageType == "prescription-order" or messageType == "prescription-order-update"):
         for entry in bundle_json['entry']:
