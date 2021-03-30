@@ -65,22 +65,22 @@ export class ConvertCase extends Case {
         /<creationTime value=\\"[0-9]*\\"\\\/>/g,
         "<creationTime value=\\\"[0-9]*\\\"\\/>")
 
-        if (operation === "dispense" || operation === "release")
-        {
-          responseXml = responseXml
-            .replace(
-              /<effectiveTime value=\\"[0-9]*\\"\\\/>/g,
-              "<effectiveTime value=\\\"[0-9]*\\\"\\/>")
-        }
+    if (operation === "dispense" || operation === "release")
+    {
+      responseXml = responseXml
+        .replace(
+          /<effectiveTime value=\\"[0-9]*\\"\\\/>/g,
+          "<effectiveTime value=\\\"[0-9]*\\\"\\/>")
+    }
 
-        if (operation === "release")
-        {
-          responseXml = responseXml
-            .replace(
-              /<id root=\\"[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\\"\\\/>/g,
-            "<id root=\\\"[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\\\"\\/>")
-        }
-        return responseXml
+    if (operation === "release")
+    {
+      responseXml = responseXml
+        .replace(
+          /<id root=\\"[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\\"\\\/>/g,
+        "<id root=\\\"[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\\\"\\/>")
+    }
+    return responseXml
   }
   toJestCase(): [string, fhir.Bundle, string, string, number] {
     return [this.description, this.request, this.response, this.responseMatcher, this.statusCode]
