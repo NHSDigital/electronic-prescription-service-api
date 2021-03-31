@@ -198,3 +198,6 @@ generate-postman-collection:
 	mkdir -p tests/e2e/postman/collections
 	cd tests/e2e/pact \
 	&& npm run generate-postman-collection
+
+identify-external-release-changes:
+	poetry run python ./scripts/identify_external_release_changes.py
