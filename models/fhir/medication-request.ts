@@ -80,7 +80,8 @@ export type RepeatInformationExtension = extension.ExtensionExtension<extension.
   | extension.DateTimeExtension>
 export type ControlledDrugExtension = extension.ExtensionExtension<extension.StringExtension
   | extension.CodingExtension>
-export type PrescriptionStatusHistoryExtension = extension.ExtensionExtension<extension.CodingExtension>
+export type PrescriptionStatusHistoryExtension = extension.ExtensionExtension<extension.CodingExtension
+  | extension.DateTimeExtension>
 
 export interface MedicationRequestGroupIdentifier extends common.Identifier {
   extension?: Array<extension.IdentifierExtension>
