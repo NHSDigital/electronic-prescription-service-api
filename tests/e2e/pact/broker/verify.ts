@@ -1,4 +1,4 @@
-import { VerifierV3 } from "@pact-foundation/pact"
+import {VerifierV3, VerifierV3Options} from "@pact-foundation/pact"
 import {
   getPreparePactGroups,
   getProcessSendPactGroups,
@@ -9,30 +9,17 @@ import {
   getProcessDispensePactGroups,
   getTaskPactGroups
 } from "../resources/common"
+import path from "path"
 
 let token: string
-let sleepMs = 0
-
-function sleep(milliseconds: number) {
-  const date = Date.now()
-  let currentDate = null
-  do {
-    currentDate = Date.now()
-  } while (currentDate - date < milliseconds)
-}
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verify(endpoint: string, pactGroupName: string): Promise<any> {
-    sleep(sleepMs)
-    sleepMs = (sleepMs + 5000) * 2
+    const useBroker = process.env.PACT_USE_BROKER !== "false"
     const providerVersion = process.env.PACT_TAG
       ? `${process.env.PACT_VERSION} (${process.env.PACT_TAG})`
       : process.env.PACT_VERSION
-    const verifier =  new VerifierV3({
-      publishVerificationResult: true,
-      pactBrokerUrl: process.env.PACT_BROKER_URL,
-      pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
-      pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
+    let verifierOptions: VerifierV3Options = {
       consumerVersionTag: process.env.PACT_VERSION,
       provider: `${process.env.PACT_PROVIDER}+${endpoint}${pactGroupName ? "-" + pactGroupName : ""}+${process.env.PACT_VERSION}`,
       providerVersion: providerVersion,
@@ -53,12 +40,34 @@ async function verify(endpoint: string, pactGroupName: string): Promise<any> {
         req.headers["Authorization"] = `Bearer ${token}`
         return req
       }
-    })
-    return await verifier.verifyProvider()
-}
+    }
 
-function resetBackOffRetryTimer() {
-  sleepMs = 0
+    if (useBroker) {
+      verifierOptions = {
+        ...verifierOptions,
+        publishVerificationResult: true,
+        // use the below if you want to try a new broker without
+        // impacting other deploys until merged in
+        // then switch over variables in ADO
+        // pactBrokerUrl: process.env.PACT_BROKER_NEXT_URL,
+        // pactBrokerToken: process.env.PACT_BROKER_NEXT_TOKEN,
+        pactBrokerUrl: process.env.PACT_BROKER_URL,
+        pactBrokerUsername: process.env.PACT_BROKER_BASIC_AUTH_USERNAME,
+        pactBrokerPassword: process.env.PACT_BROKER_BASIC_AUTH_PASSWORD,
+      }
+    }
+    else {
+      verifierOptions = {
+        ...verifierOptions,
+        pactUrls: [
+          // eslint-disable-next-line max-len
+          `${path.join(__dirname, "../pact/pacts")}/nhsd-apim-eps-test-client+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${endpoint}${pactGroupName ? "-" + pactGroupName : ""}+${process.env.PACT_VERSION}.json`
+        ]
+      }
+    }
+
+    const verifier =  new VerifierV3(verifierOptions)
+    return await verifier.verifyProvider()
 }
 
 async function verifyOnce(endpoint: ApiEndpoint, pactGroupName: string) {
@@ -66,19 +75,11 @@ async function verifyOnce(endpoint: ApiEndpoint, pactGroupName: string) {
     .catch(() => process.exit(1))
 }
 
-async function verifyWith2Retries(endpoint: ApiEndpoint, pactGroupName: string) {
-  await verify(endpoint, pactGroupName)
-    .catch(() => verify(endpoint, pactGroupName))
-    .catch(() => verify(endpoint, pactGroupName))
-    .catch(() => process.exit(1))
-}
-
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyConvert(): Promise<any> {
   await getConvertPactGroups().reduce(async (promise, group) => {
     await promise
-    resetBackOffRetryTimer()
-    await verifyWith2Retries("convert", group)
+    await verifyOnce("convert", group)
   }, Promise.resolve())
 }
 
@@ -86,7 +87,6 @@ async function verifyConvert(): Promise<any> {
 async function verifyPrepare(): Promise<any> {
     await getPreparePactGroups().reduce(async (promise, group) => {
       await promise
-      resetBackOffRetryTimer()
       await verifyOnce("prepare", group)
     }, Promise.resolve())
 }
@@ -95,19 +95,16 @@ async function verifyPrepare(): Promise<any> {
 async function verifyProcess(): Promise<any> {
     await getProcessSendPactGroups().reduce(async (promise, group) => {
       await promise
-      resetBackOffRetryTimer()
       await verifyOnce("process", group)
     }, Promise.resolve())
 
     await getProcessDispensePactGroups().reduce(async (promise, group) => {
       await promise
-      resetBackOffRetryTimer()
       await verifyOnce("process", `${group}-dispense`)
     }, Promise.resolve())
 
     await getProcessCancelPactGroups().reduce(async (promise, group) => {
       await promise
-      resetBackOffRetryTimer()
       await verifyOnce("process", `${group}-cancel`)
     }, Promise.resolve())
 }
@@ -116,8 +113,7 @@ async function verifyProcess(): Promise<any> {
 async function verifyRelease(): Promise<any> {
   await getReleasePactGroups().reduce(async (promise, group) => {
     await promise
-    resetBackOffRetryTimer()
-    await verifyWith2Retries("release", group)
+    await verifyOnce("release", group)
   }, Promise.resolve())
 }
 
@@ -125,8 +121,7 @@ async function verifyRelease(): Promise<any> {
 async function verifyTask(): Promise<any> {
   await getTaskPactGroups().reduce(async (promise, group) => {
     await promise
-    resetBackOffRetryTimer()
-    await verifyWith2Retries("task", group)
+    await verifyOnce("task", group)
   }, Promise.resolve())
 }
 

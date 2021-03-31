@@ -2,9 +2,10 @@ import {InteractionObject} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as LosslessJson from "lossless-json"
-import {generateShortFormId, processExamples, setPrescriptionIds} from "../../services/process-example-fetcher"
+import {fetcher} from "@models"
 import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
+import {setPrescriptionIds, generateShortFormId} from "../../services/update-prescriptions"
 
 jestpact.pactWith(
   pactOptions("live", "process", "accept_headers"),
@@ -18,7 +19,7 @@ jestpact.pactWith(
     describe("process-message sandbox e2e tests", () => {
 
       test("Should be able to process a FHIR JSON Accept header", async () => {
-        const testCase = processExamples[0]
+        const testCase = fetcher.processExamples[0]
         const apiPath = `${basePath}/$process-message`
         const requestCopy = LosslessJson.parse(LosslessJson.stringify(testCase.request))
         setPrescriptionIds(requestCopy, uuid.v4(), generateShortFormId(), uuid.v4())

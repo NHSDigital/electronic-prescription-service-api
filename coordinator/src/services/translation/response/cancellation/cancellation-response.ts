@@ -3,8 +3,7 @@ import {createMessageHeader} from "../message-header"
 import {isDeepStrictEqual} from "util"
 import {convertResourceToBundleEntry, translateAndAddAgentPerson, translateAndAddPatient} from "../common"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
-import * as hl7V3 from "../../../../models/hl7-v3"
-import * as fhir from "../../../../models/fhir"
+import {fhir, hl7V3} from "@models"
 
 export function translateSpineCancelResponseIntoBundle(cancellationResponse: hl7V3.CancellationResponse): fhir.Bundle {
   return {

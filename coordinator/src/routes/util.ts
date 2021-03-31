@@ -1,12 +1,12 @@
-import {isPollable, SpineDirectResponse, SpinePollableResponse} from "../models/spine"
+import {fhir, spine, validationErrors as errors} from "@models"
 import Hapi from "@hapi/hapi"
 import {translateToFhir} from "../services/translation/response"
 import * as LosslessJson from "lossless-json"
-import {getMessageHeader} from "../services/translation/common/getResourcesOfType"
 import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
-import * as fhir from "../models/fhir"
+import {userHasValidAuth} from "../services/validation/auth-level"
+import {identifyMessageType} from "../services/translation/common"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
@@ -23,10 +23,10 @@ export function createHash(thingsToHash: string): string {
 
 export function handleResponse<T>(
   request: Hapi.Request,
-  spineResponse: SpineDirectResponse<T> | SpinePollableResponse,
+  spineResponse: spine.SpineDirectResponse<T> | spine.SpinePollableResponse,
   responseToolkit: Hapi.ResponseToolkit
 ): Hapi.ResponseObject {
-  if (isPollable(spineResponse)) {
+  if (spine.isPollable(spineResponse)) {
     return responseToolkit.response()
       .code(spineResponse.statusCode)
       .header("Content-Location", spineResponse.pollingUrl)
@@ -54,14 +54,14 @@ export function isParameters(body: unknown): body is fhir.Parameters {
   return isFhirResourceOfType(body, "Parameters")
 }
 
+export function isTask(body: unknown): body is fhir.Task {
+  return isFhirResourceOfType(body, "Task")
+}
+
 function isFhirResourceOfType(body: unknown, resourceType: string) {
   return typeof body === "object"
     && "resourceType" in body
     && (body as fhir.Resource).resourceType === resourceType
-}
-
-export function identifyMessageType(bundle: fhir.Bundle): string {
-  return getMessageHeader(bundle).eventCoding?.code
 }
 
 const getCircularReplacer = () => {
@@ -119,6 +119,32 @@ export async function getFhirValidatorErrors(
     }
   }
   return null
+}
+
+type Handler = (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => Promise<Hapi.ResponseObject>
+
+export function externalValidator(handler: Handler) {
+  return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+    const fhirValidatorResponse = await getFhirValidatorErrors(request)
+    if (fhirValidatorResponse) {
+      return responseToolkit.response(fhirValidatorResponse).code(400).type(CONTENT_TYPE_FHIR)
+    }
+
+    return handler(request, responseToolkit)
+  }
+}
+
+export function userAuthValidator(handler: Handler) {
+  return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+    const bundle = getPayload(request) as fhir.Bundle
+    if (identifyMessageType(bundle) !== fhir.EventCodingCode.DISPENSE) {
+      if (!userHasValidAuth(request, "user")) {
+        return responseToolkit.response(errors.unauthorisedActionIssue).code(403).type(CONTENT_TYPE_FHIR)
+      }
+    }
+
+    return handler(request, responseToolkit)
+  }
 }
 
 export function getPayload(request: Hapi.Request): unknown {

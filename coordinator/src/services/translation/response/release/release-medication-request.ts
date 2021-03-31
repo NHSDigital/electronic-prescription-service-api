@@ -7,8 +7,7 @@ import {
 import {toArray} from "../../common"
 import {parseAdditionalInstructions} from "./additional-instructions"
 import {convertHL7V3DateToIsoDateString} from "../../common/dateTime"
-import * as hl7V3 from "../../../../models/hl7-v3"
-import * as fhir from "../../../../models/fhir"
+import {hl7V3, fhir} from "@models"
 import {LosslessNumber} from "lossless-json"
 
 export function createMedicationRequest(

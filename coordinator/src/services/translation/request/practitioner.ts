@@ -4,6 +4,7 @@ import {
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
   getIdentifierValueOrNullForSystem,
+  identifyMessageType,
   onlyElement,
   onlyElementOrNull,
   resolveReference
@@ -11,19 +12,15 @@ import {
 import * as XmlJs from "xml-js"
 import {convertOrganizationAndProviderLicense} from "./organization"
 import {getProvenances} from "../common/getResourcesOfType"
-import * as errors from "../../../models/errors/processing-errors"
-import {InvalidValueError} from "../../../models/errors/processing-errors"
-import {identifyMessageType} from "../../../routes/util"
+import {hl7V3, fhir, processingErrors as errors} from "@models"
 import moment from "moment"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../common/dateTime"
-import * as hl7V3 from "../../../models/hl7-v3"
-import * as fhir from "../../../models/fhir"
 
 export function convertAuthor(
   bundle: fhir.Bundle,
   firstMedicationRequest: fhir.MedicationRequest
-): hl7V3.Author {
-  const author = new hl7V3.Author()
+): hl7V3.PrescriptionAuthor {
+  const author = new hl7V3.PrescriptionAuthor()
   if (identifyMessageType(bundle) !== fhir.EventCodingCode.CANCELLATION) {
     const requesterSignature = findRequesterSignature(bundle, firstMedicationRequest.requester)
     setSignatureTimeAndText(author, requesterSignature)
@@ -33,14 +30,14 @@ export function convertAuthor(
   return author
 }
 
-function setSignatureTimeAndText(author: hl7V3.Author, requesterSignature?: fhir.Signature) {
+function setSignatureTimeAndText(author: hl7V3.PrescriptionAuthor, requesterSignature?: fhir.Signature) {
   if (requesterSignature) {
     author.time = convertIsoDateTimeStringToHl7V3DateTime(requesterSignature.when, "Provenance.signature.when")
     try {
       const decodedSignatureData = Buffer.from(requesterSignature.data, "base64").toString("utf-8")
       author.signatureText = XmlJs.xml2js(decodedSignatureData, {compact: true})
     } catch (e) {
-      throw new InvalidValueError("Invalid signature format.", "Provenance.signature.data")
+      throw new errors.InvalidValueError("Invalid signature format.", "Provenance.signature.data")
     }
   } else {
     author.time = convertMomentToHl7V3DateTime(moment.utc())
@@ -54,8 +51,8 @@ export function convertResponsibleParty(
   convertPractitionerRoleFn = convertPractitionerRole,
   convertAgentPersonPersonFn = convertAgentPersonPerson,
   getAgentPersonPersonIdFn = getAgentPersonPersonIdForResponsibleParty
-): hl7V3.ResponsibleParty {
-  const responsibleParty = new hl7V3.ResponsibleParty()
+): hl7V3.PrescriptionResponsibleParty {
+  const responsibleParty = new hl7V3.PrescriptionResponsibleParty()
 
   const responsiblePartyExtension = getExtensionForUrlOrNull(
     medicationRequest.extension,

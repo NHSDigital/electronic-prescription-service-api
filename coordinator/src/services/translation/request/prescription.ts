@@ -9,10 +9,8 @@ import {convertAuthor, convertResponsibleParty} from "./practitioner"
 import {convertMedicationRequestToLineItem} from "./line-item"
 import {getCommunicationRequests, getMedicationRequests} from "../common/getResourcesOfType"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
-import {InvalidValueError} from "../../../models/errors/processing-errors"
+import {hl7V3, fhir, processingErrors as errors} from "@models"
 import {convertIsoDateStringToHl7V3Date, convertIsoDateTimeStringToHl7V3Date} from "../common/dateTime"
-import * as hl7V3 from "../../../models/hl7-v3"
-import * as fhir from "../../../models/fhir"
 
 export function convertBundleToPrescription(bundle: fhir.Bundle): hl7V3.Prescription {
   const medicationRequests = getMedicationRequests(bundle)
@@ -97,7 +95,7 @@ export function convertPrescriptionComponent1(
   daysSupply.effectiveTime = new hl7V3.Interval<hl7V3.Timestamp>(low, high)
 
   if (expectedSupplyDuration.code !== "d") {
-    throw new InvalidValueError(
+    throw new errors.InvalidValueError(
       "Expected supply duration must be specified in days.",
       "MedicationRequest.dispenseRequest.expectedSupplyDuration.code"
     )
@@ -132,7 +130,7 @@ function convertCourseOfTherapyTypeCode(courseOfTherapyTypeCode: string) {
     case fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING:
       return hl7V3.PrescriptionTreatmentTypeCode.CONTINUOUS_REPEAT_DISPENSING
     default:
-      throw new InvalidValueError(
+      throw new errors.InvalidValueError(
         `Unhandled course of therapy type code '${courseOfTherapyTypeCode}'.`,
         "MedicationRequest.courseOfTherapyType.coding.code"
       )

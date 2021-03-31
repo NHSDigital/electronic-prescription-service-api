@@ -1,11 +1,18 @@
-import {identifyMessageType} from "../../routes/util"
-import {getMedicationDispenses, getMedicationRequests} from "../translation/common/getResourcesOfType"
+import {
+  getMedicationDispenses,
+  getMedicationRequests
+} from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues, groupBy} from "./util"
 import {getCourseOfTherapyTypeCode} from "../translation/request/course-of-therapy-type"
-import {getExtensionForUrlOrNull, getIdentifierValueForSystem, isTruthy} from "../translation/common"
-import * as fhir from "../../models/fhir"
-import * as errors from "../../models/errors/validation-errors"
+import {
+  getExtensionForUrlOrNull,
+  getIdentifierValueForSystem,
+  identifyMessageType,
+  isTruthy
+} from "../translation/common"
+import {fhir, validationErrors as errors} from "@models"
+import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
 
 export function verifyBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
@@ -150,6 +157,7 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
 
   const fhirPaths = [
     "whenPrepared",
+    "subject.identifier.value",
     'extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus")'
   ]
 
@@ -169,6 +177,10 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
       )
     }
   })
+
+  if (medicationDispenses.some(medicationDispense => !getOrganisationPerformer(medicationDispense))) {
+    allErrors.push(errors.createMedicationDispenseMissingValueIssue("performer.actor.ofType(Organization)"))
+  }
 
   return allErrors
 }

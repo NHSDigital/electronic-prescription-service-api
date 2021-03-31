@@ -3,14 +3,12 @@ import * as TestResources from "../../resources/test-resources"
 import {clone} from "../../resources/test-helpers"
 import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, isTruthy} from "../../../src/services/translation/common"
-import * as fhir from "../../../src/models/fhir"
+import {fhir, validationErrors as errors} from "@models"
 import {
-  createMedicationRequestInconsistentValueIssue,
-  medicationRequestDuplicateIdentifierIssue,
-  medicationRequestNumberIssue,
-  messageTypeIssue
-} from "../../../src/models/errors/validation-errors"
-import {getPrescriptionStatus} from "../../../src/services/translation/request/dispense/dispense-notification"
+  getOrganisationPerformer,
+  getPrescriptionStatus
+}
+  from "../../../src/services/translation/request/dispense/dispense-notification"
 
 function validateValidationErrors (validationErrors: Array<fhir.OperationOutcomeIssue>) {
   expect(validationErrors).toHaveLength(1)
@@ -21,8 +19,7 @@ function validateValidationErrors (validationErrors: Array<fhir.OperationOutcome
 
 describe("Bundle checks", () => {
   test("verifyBundle accepts bundle with required Resources", () => {
-    expect(validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned))
-      .toEqual([])
+    expect(validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned)).toEqual([])
   })
 
   test("rejects bundle with unusual bundle type", () => {
@@ -44,7 +41,7 @@ describe("Bundle checks", () => {
       ]
     }
     expect(validator.verifyBundle(bundle as fhir.Bundle))
-      .toContainEqual(messageTypeIssue)
+      .toContainEqual(errors.messageTypeIssue)
   })
 })
 
@@ -127,7 +124,7 @@ describe("MedicationRequest consistency checks", () => {
     expect(
       validationErrors
     ).toContainEqual(
-      createMedicationRequestInconsistentValueIssue(
+      errors.createMedicationRequestInconsistentValueIssue(
         "authoredOn",
         [differentAuthoredOn, defaultAuthoredOn]
       )
@@ -163,7 +160,7 @@ describe("MedicationRequest consistency checks", () => {
     expect(
       validationErrors
     ).toContainEqual(
-      createMedicationRequestInconsistentValueIssue(
+      errors.createMedicationRequestInconsistentValueIssue(
         "dispenseRequest.performer",
         [performer, performerDiff]
       )
@@ -202,7 +199,7 @@ describe("MedicationRequest consistency checks", () => {
     expect(
       validationErrors
     ).toContainEqual(
-      medicationRequestDuplicateIdentifierIssue
+      errors.medicationRequestDuplicateIdentifierIssue
     )
   })
 })
@@ -276,7 +273,7 @@ describe("verifyCancellationBundle", () => {
     bundle.entry.push(medicationRequestEntry)
     const returnedErrors = validator.verifyCancellationBundle(bundle)
     expect(returnedErrors.length).toBe(1)
-    expect(returnedErrors[0]).toEqual(medicationRequestNumberIssue)
+    expect(returnedErrors[0]).toEqual(errors.medicationRequestNumberIssue)
   })
 
   test("returns an error when status is not cancelled", () => {
@@ -349,34 +346,56 @@ describe("verifyDispenseNotificationBundle", () => {
 
   test("returns an error when MedicationDispenses have different performer values per type", () => {
     const medicationDispenseEntry =
-      bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
+      clone(bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0])
 
-    const medicationDispense1 = medicationDispenseEntry.resource as fhir.MedicationDispense
-    medicationDispense1.performer = [
+    const medicationDispense = medicationDispenseEntry.resource as fhir.MedicationDispense
+    medicationDispense.performer = [
       {
         actor: {
           type: "Practitioner",
-          identifier: "FIRST"
+          identifier: "DIFFERENT_FROM_EXISTING"
         }
-      } as fhir.DispensePerformer
+      } as fhir.DispensePerformer,
+      medicationDispense.performer.find(p => p.actor.type === "Organization")
     ]
 
-    const medicationDispenseEntry2 = clone(medicationDispenseEntry)
-    const medicationDispense2 = medicationDispenseEntry.resource as fhir.MedicationDispense
-    medicationDispense2.performer = [
-      {
-        actor: {
-          type: "Practitioner",
-          identifier: "SECOND"
-        }
-      } as fhir.DispensePerformer
-    ]
-
-    bundle.entry.push(medicationDispenseEntry2)
+    bundle.entry.push(medicationDispenseEntry)
 
     const returnedErrors = validator.verifyDispenseBundle(bundle)
     expect(returnedErrors.length).toBe(1)
     expect(returnedErrors[0].expression)
       .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).performer")
+  })
+
+  test("returns an error when MedicationDispenses have different nhs-numbers", () => {
+    const medicationDispenseEntry =
+      bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
+
+    const medicationDispense1 = medicationDispenseEntry.resource as fhir.MedicationDispense
+    medicationDispense1.subject.identifier.value = "123456789"
+
+    const medicationDispenseEntry2 = clone(medicationDispenseEntry)
+    const medicationDispense2 = medicationDispenseEntry.resource as fhir.MedicationDispense
+    medicationDispense2.subject.identifier.value = "987654321"
+    bundle.entry.push(medicationDispenseEntry2)
+
+    const returnedErrors = validator.verifyDispenseBundle(bundle)
+    expect(returnedErrors.length).toBe(1)
+    expect(returnedErrors[0].expression)
+      .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).subject.identifier.value")
+  })
+
+  test("returns an error when a MedicationDispense has no organisation", () => {
+    const medicationDispenseEntry =
+      bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
+
+    const medicationDispense = medicationDispenseEntry.resource as fhir.MedicationDispense
+    const organisationPerformer = getOrganisationPerformer(medicationDispense)
+    medicationDispense.performer.remove(organisationPerformer)
+
+    const returnedErrors = validator.verifyDispenseBundle(bundle)
+    expect(returnedErrors.length).toBe(1)
+    expect(returnedErrors[0].expression)
+      .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).performer.actor.ofType(Organization)")
   })
 })

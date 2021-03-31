@@ -8,12 +8,11 @@ import {
 import * as TestResources from "../../../resources/test-resources"
 import {clone} from "../../../resources/test-helpers"
 import * as LosslessJson from "lossless-json"
-import {TooManyValuesError} from "../../../../src/models/errors/processing-errors"
+import {fhir, processingErrors as errors} from "@models"
 import {
   convertIsoDateStringToHl7V3Date,
   convertIsoDateTimeStringToHl7V3DateTime
 } from "../../../../src/services/translation/common/dateTime"
-import * as fhir from "../../../../src/models/fhir"
 
 test("getResourceForFullUrl returns correct resources", () => {
   const result = getResourceForFullUrl(
@@ -26,7 +25,7 @@ test("getResourceForFullUrl returns correct resources", () => {
 test("getResourceForFullUrl throws TooManyValuesUserFacingError when finding multiple resources", () => {
   const bundle2 = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
   bundle2.entry[1].fullUrl = bundle2.entry[0].fullUrl
-  expect(() => getResourceForFullUrl(bundle2, bundle2.entry[0].fullUrl)).toThrow(TooManyValuesError)
+  expect(() => getResourceForFullUrl(bundle2, bundle2.entry[0].fullUrl)).toThrow(errors.TooManyValuesError)
 })
 
 describe("getIdentifierValueForSystem", () => {

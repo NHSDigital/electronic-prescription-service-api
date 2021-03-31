@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# coding: utf-8
 
 """
 update_prescriptions.py
@@ -15,7 +16,7 @@ import uuid
 from datetime import date, datetime, timedelta
 from docopt import docopt
 
-examples_root_dir = f"..{os.path.sep}models{os.path.sep}examples{os.path.sep}"
+examples_root_dir = f"..{os.path.sep}examples{os.path.sep}"
 api_prefix_url = "FHIR/R4"
 
 
@@ -44,23 +45,48 @@ def update_prescription(bundle_json, bundle_id, prescription_id, short_prescript
     bundle_json["identifier"]["value"] = bundle_id
     for entry in bundle_json['entry']:
         resource = entry["resource"]
-        if resource["resourceType"] == "Provenance":
-            for signature in resource["signature"]:
-                signature["when"] = signature_time
-        if resource["resourceType"] == "MedicationRequest":
-            resource["groupIdentifier"]["value"] = short_prescription_id
-            for extension in resource["groupIdentifier"]["extension"]:
-                if extension["url"] == "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId":
-                    extension["valueIdentifier"]["value"] = prescription_id
-            resource["authoredOn"] = authored_on
-            if "validityPeriod" in resource["dispenseRequest"]:
-                resource["dispenseRequest"]["validityPeriod"]["start"] = date.today().isoformat()
-                resource["dispenseRequest"]["validityPeriod"]["end"] = (date.today() + timedelta(weeks=4)).isoformat()
+        if resource["resourceType"] == "MessageHeader":
+            messageType = resource["eventCoding"]["code"]
+            break
+
+    if (messageType == "dispense-notification"):
+        for entry in bundle_json['entry']:
+            resource = entry["resource"]
+            if resource["resourceType"] == "MedicationDispense":
+                for authorizingPrescription in resource["authorizingPrescription"]:
+                    for extension in authorizingPrescription["extension"]:
+                        if extension["url"] == "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier":
+                            for extensionExtension in extension["extension"]:
+                                if extensionExtension["url"] == "shortForm":
+                                    extensionExtension["valueIdentifier"]["value"] = short_prescription_id
+                                if extensionExtension["url"] == "UUID":
+                                    extensionExtension["valueIdentifier"]["value"] = prescription_id
+                resource["whenPrepared"] = authored_on
+
+    if (messageType == "prescription-order" or messageType == "prescription-order-update"):
+        for entry in bundle_json['entry']:
+            resource = entry["resource"]
+            if resource["resourceType"] == "Provenance":
+                for signature in resource["signature"]:
+                    signature["when"] = signature_time
+            if resource["resourceType"] == "MedicationRequest":
+                resource["groupIdentifier"]["value"] = short_prescription_id
+                for extension in resource["groupIdentifier"]["extension"]:
+                    if extension["url"] == "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId":
+                        extension["valueIdentifier"]["value"] = prescription_id
+                resource["authoredOn"] = authored_on
+                if "validityPeriod" in resource["dispenseRequest"]:
+                    resource["dispenseRequest"]["validityPeriod"]["start"] = date.today().isoformat()
+                    resource["dispenseRequest"]["validityPeriod"]["end"] = (date.today() + timedelta(weeks=4)).isoformat() # noqa E501
 
 
 def find_prepare_request_paths(examples_root_dir):
     for filename in glob.iglob(f'{examples_root_dir}**/*Prepare-Request*200_OK*.json', recursive=True):
         yield filename
+
+
+def load_dispense_request(dispense_request_path):
+    return load_json(dispense_request_path)
 
 
 def load_prepare_request(prepare_request_path):
@@ -74,6 +100,10 @@ def load_process_request(process_request_path):
 def load_json(path):
     with open(path) as f:
         return json.load(f)
+
+
+def save_dispense_request(dispense_request_path, dispense_request_json):
+    save_json(dispense_request_path, dispense_request_json)
 
 
 def save_prepare_request(prepare_request_path, prepare_request_json):
@@ -93,12 +123,12 @@ def save_convert_response(convert_response_path, convert_response_xml):
 
 
 def save_json(path, body):
-    with open(path, 'w') as f:
-        json.dump(body, f, indent=2)
+    with open(path, 'w', newline='\n') as f:
+        json.dump(body, f, ensure_ascii=False, indent=2)
 
 
 def save_xml(path, body):
-    with open(path, 'w') as f:
+    with open(path, 'w', newline='\n') as f:
         f.write(body)
 
 
@@ -158,7 +188,7 @@ def derive_prepare_response_path(prepare_request_path):
     filename_parts = file.split('-')
     number = filename_parts[0]
     status_code_and_ext = filename_parts[-1]
-    return f'{example_dir}/{number}-Prepare-Response-{status_code_and_ext}'
+    return f'{example_dir}{os.path.sep}{number}-Prepare-Response-{status_code_and_ext}'
 
 
 def derive_process_request_path_pattern(prepare_request_path):
@@ -167,7 +197,7 @@ def derive_process_request_path_pattern(prepare_request_path):
     filename_parts = file.split('-')
     number = filename_parts[0]
     status_code_and_ext = filename_parts[-1]
-    return f'{example_dir}/{number}-Process-Request-*-{status_code_and_ext}'
+    return f'{example_dir}{os.path.sep}{number}-Process-Request-*-{status_code_and_ext}'
 
 
 def derive_convert_response_path(process_request_path):
@@ -178,7 +208,16 @@ def derive_convert_response_path(process_request_path):
     operation = filename_parts[3]
     status_code_and_ext = filename_parts[-1]
     status_code_and_xml_ext = status_code_and_ext.replace("json", "xml")
-    return f'{example_dir}/{number}-Convert-Response-{operation}-{status_code_and_xml_ext}'
+    return f'{example_dir}{os.path.sep}{number}-Convert-Response-{operation}-{status_code_and_xml_ext}'
+
+
+def derive_dispense_request_path(process_request_path):
+    example_dir = os.path.dirname(process_request_path)
+    file = os.path.basename(process_request_path)
+    filename_parts = file.split('-')
+    number = filename_parts[0]
+    status_code_and_ext = filename_parts[-1]
+    return f'{example_dir}{os.path.sep}{number}-Process-Request-Dispense-{status_code_and_ext}'
 
 
 def update_prepare_examples(
@@ -192,6 +231,7 @@ def update_prepare_examples(
         prepare_response_json = get_prepare_response_from_a_sandbox_api(api_base_url, prepare_request_json)
         prepare_response_path = derive_prepare_response_path(prepare_request_path)
         save_prepare_response(prepare_response_path, prepare_response_json)
+        print(f"Updated prepare example for {prepare_request_path}")
         signature_time = get_signature_timestamp_from_prepare_response(prepare_response_json)
         return short_prescription_id, signature_time
     except BaseException as e:
@@ -200,19 +240,21 @@ def update_prepare_examples(
 
 
 def update_process_examples(
-    api_base_url, prepare_request_path, bundle_id, prescription_id, short_prescription_id, authored_on, signature_time
+    api_base_url, prepare_request_path, prescription_id, short_prescription_id, authored_on, signature_time
 ):
     try:
         process_request_path_pattern = derive_process_request_path_pattern(prepare_request_path)
         for process_request_path in glob.iglob(process_request_path_pattern):
             process_request_json = load_process_request(process_request_path)
             update_prescription(
-                process_request_json, bundle_id, prescription_id, short_prescription_id, authored_on, signature_time
+                process_request_json, str(uuid.uuid4()), prescription_id, short_prescription_id,
+                authored_on, signature_time
             )
             save_process_request(process_request_path, process_request_json)
             convert_response_xml = get_convert_response_from_a_sandbox_api(api_base_url, process_request_json)
             convert_response_path = derive_convert_response_path(process_request_path)
             save_convert_response(convert_response_path, convert_response_xml)
+            print(f"Updated process and convert examples for {prepare_request_path}")
     except BaseException as e:
         print(f"Failed to process example {prepare_request_path}")
         raise e
@@ -229,7 +271,7 @@ def update_examples(api_base_url):
             authored_on
         )
         update_process_examples(
-            api_base_url, prepare_request_path, bundle_id, prescription_id, short_prescription_id,
+            api_base_url, prepare_request_path, prescription_id, short_prescription_id,
             authored_on, signature_time
         )
 
@@ -243,7 +285,7 @@ if __name__ == "__main__":
 
 
 # Tests
-test_examples_root_dir = f".{os.path.sep}models{os.path.sep}examples"
+test_examples_root_dir = f".{os.path.sep}examples"
 secondary_care_example_dir = f"community{os.path.sep}repeat-dispensing{os.path.sep}nominated-pharmacy{os.path.sep}clinical-practitioner{os.path.sep}single-medication-request" # noqa E501
 primary_care_example_dir = f"repeat-dispensing{os.path.sep}nominated-pharmacy{os.path.sep}medical-prescriber{os.path.sep}author{os.path.sep}gmc{os.path.sep}responsible-party{os.path.sep}medication-list{os.path.sep}din" # noqa E501
 

@@ -2,13 +2,15 @@ import * as translator from "../../../../src/services/translation/request"
 import {convertFhirMessageToSignedInfoMessage} from "../../../../src/services/translation/request"
 import * as TestResources from "../../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
-import {InvalidValueError} from "../../../../src/models/errors/processing-errors"
 import {getStringParameterByName, isTruthy} from "../../../../src/services/translation/common"
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {xmlTest} from "../../../resources/test-helpers"
 import {ElementCompact} from "xml-js"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../../../src/services/translation/common/dateTime"
-import * as fhir from "../../../../src/models/fhir"
+import {fhir, processingErrors as errors} from "@models"
+import pino from "pino"
+
+const logger = pino()
 
 const actualMoment = jest.requireActual("moment")
 const mockTime = {value: "2020-12-18T12:34:34Z"}
@@ -29,7 +31,7 @@ describe("convertFhirMessageToSignedInfoMessage", () => {
 
   test("rejects a cancellation message", () => {
     const cancellationMessage = TestResources.specification.map(s => s.fhirMessageCancel).filter(isTruthy)[0]
-    expect(() => convertFhirMessageToSignedInfoMessage(cancellationMessage)).toThrow(InvalidValueError)
+    expect(() => convertFhirMessageToSignedInfoMessage(cancellationMessage)).toThrow(errors.InvalidValueError)
   })
 
   test.each(cases)(
@@ -50,7 +52,7 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
   ])
 
   test.each(cases)("accepts %s", (desc: string, message: fhir.Bundle) => {
-    expect(() => translator.convertBundleToSpineRequest(message, "test")).not.toThrow()
+    expect(async() => await translator.convertBundleToSpineRequest(message, "test", logger)).not.toThrow()
   })
 
   test.each(cases)(
@@ -62,10 +64,12 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
     }
   )
 
-  test("produces result with no lower case UUIDs", () => {
+  test("produces result with no lower case UUIDs", async() => {
     const messageWithLowercaseUUIDs = getMessageWithLowercaseUUIDs()
 
-    const translatedMessage = translator.convertBundleToSpineRequest(messageWithLowercaseUUIDs, "test").message
+    const translatedMessage = (
+      await translator.convertBundleToSpineRequest(messageWithLowercaseUUIDs, "test", logger)
+    ).message
 
     const allNonUpperCaseUUIDS = getAllUUIDsNotUpperCase(translatedMessage)
     expect(allNonUpperCaseUUIDS.length).toBe(0)

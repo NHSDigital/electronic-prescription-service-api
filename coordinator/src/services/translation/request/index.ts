@@ -1,35 +1,48 @@
 import * as XmlJs from "xml-js"
 import * as crypto from "crypto-js"
-import {createReleaseRequestSendMessagePayload, createSendMessagePayload} from "./send-message-payload"
+import * as uuid from "uuid"
+import {
+  convertRequesterToControlActAuthor,
+  convertResponsiblePractitionerToControlActAuthor,
+  createSendMessagePayload, createSendMessagePayloadForUnattendedAccess
+} from "./send-message-payload"
 import {writeXmlStringCanonicalized} from "../../serialisation/xml"
 import {convertParentPrescription} from "./prescribe/parent-prescription"
 import {convertCancellation} from "./cancel/cancellation"
 import {convertFragmentsToHashableFormat, extractFragments} from "./signature"
 import * as requestBuilder from "../../communication/ebxml-request-builder"
-import {SpineRequest} from "../../../models/spine"
-import {identifyMessageType} from "../../../routes/util"
-import {InvalidValueError} from "../../../models/errors/processing-errors"
+import {spine, hl7V3, fhir, processingErrors as errors} from "@models"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
-import * as hl7V3 from "../../../models/hl7-v3"
-import * as fhir from "../../../models/fhir"
 import {convertDispenseNotification} from "./dispense/dispense-notification"
 import {translateReleaseRequest} from "./dispense/release"
 import pino from "pino"
+import {convertTaskToDispenseProposalReturn} from "./return/return"
+import {convertTaskToEtpWithdraw} from "./withdraw/withdraw"
+import {getMessageIdFromBundle, getMessageIdFromTask, identifyMessageType} from "../common"
 
-export function convertBundleToSpineRequest(bundle: fhir.Bundle, messageId: string): SpineRequest {
+export async function convertBundleToSpineRequest(
+  bundle: fhir.Bundle, messageId: string, logger: pino.Logger
+): Promise<spine.SpineRequest> {
   const messageType = identifyMessageType(bundle)
-  const payload = createPayload(messageType, bundle)
+  const payload = await createPayloadFromBundle(messageType, bundle, logger)
   return requestBuilder.toSpineRequest(payload, messageId)
 }
 
-function createPayload(messageType: string, bundle: fhir.Bundle): hl7V3.SendMessagePayload<unknown> {
+type BundleTranslationResult = hl7V3.ParentPrescriptionRoot | hl7V3.CancellationRequestRoot
+  | hl7V3.DispenseNotificationRoot
+
+async function createPayloadFromBundle(
+  messageType: string,
+  bundle: fhir.Bundle,
+  logger: pino.Logger
+): Promise<hl7V3.SendMessagePayload<BundleTranslationResult>> {
   switch (messageType) {
     case fhir.EventCodingCode.PRESCRIPTION:
       return createParentPrescriptionSendMessagePayload(bundle)
     case fhir.EventCodingCode.CANCELLATION:
       return createCancellationSendMessagePayload(bundle)
     case fhir.EventCodingCode.DISPENSE:
-      return createDispenseNotificationSendMessagePayload(bundle)
+      return await createDispenseNotificationSendMessagePayload(bundle, logger)
   }
 }
 
@@ -39,16 +52,25 @@ export function createParentPrescriptionSendMessagePayload(
   const parentPrescription = convertParentPrescription(bundle)
   const parentPrescriptionRoot = new hl7V3.ParentPrescriptionRoot(parentPrescription)
   const interactionId = hl7V3.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT
-  return createSendMessagePayload(interactionId, bundle, parentPrescriptionRoot)
+  return createSendMessagePayload(
+    getMessageIdFromBundle(bundle),
+    interactionId,
+    convertRequesterToControlActAuthor(bundle),
+    parentPrescriptionRoot
+  )
 }
 
-export function createDispenseNotificationSendMessagePayload(
-  bundle: fhir.Bundle
-): hl7V3.SendMessagePayload<hl7V3.DispenseNotificationRoot> {
-  const dispenseNotification = convertDispenseNotification(bundle)
+export async function createDispenseNotificationSendMessagePayload(
+  bundle: fhir.Bundle,
+  logger: pino.Logger
+): Promise<hl7V3.SendMessagePayload<hl7V3.DispenseNotificationRoot>> {
+  const dispenseNotification = await convertDispenseNotification(bundle, logger)
   const dispenseNotificationRoot = new hl7V3.DispenseNotificationRoot(dispenseNotification)
-  const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION
-  return createSendMessagePayload(interactionId, bundle, dispenseNotificationRoot)
+  return createSendMessagePayloadForUnattendedAccess(
+    getMessageIdFromBundle(bundle),
+    hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION,
+    dispenseNotificationRoot
+  )
 }
 
 export function createCancellationSendMessagePayload(
@@ -57,13 +79,18 @@ export function createCancellationSendMessagePayload(
   const cancellationRequest = convertCancellation(bundle)
   const cancellationRequestRoot = new hl7V3.CancellationRequestRoot(cancellationRequest)
   const interactionId = hl7V3.Hl7InteractionIdentifier.CANCEL_REQUEST
-  return createSendMessagePayload(interactionId, bundle, cancellationRequestRoot)
+  return createSendMessagePayload(
+    getMessageIdFromBundle(bundle),
+    interactionId,
+    convertResponsiblePractitionerToControlActAuthor(bundle),
+    cancellationRequestRoot
+  )
 }
 
 export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle): fhir.Parameters {
   const messageType = identifyMessageType(bundle)
   if (messageType !== fhir.EventCodingCode.PRESCRIPTION) {
-    throw new InvalidValueError(
+    throw new errors.InvalidValueError(
       "MessageHeader.eventCoding.code must be 'prescription-order'.",
       "MessageHeader.eventCoding.code"
     )
@@ -121,25 +148,59 @@ class AlgorithmIdentifier implements XmlJs.ElementCompact {
 }
 
 export async function convertParametersToSpineRequest(
-  fhirMessage: fhir.Parameters,
+  parameters: fhir.Parameters,
   messageId: string,
   logger: pino.Logger
-): Promise<SpineRequest> {
-  const hl7ReleaseRequest = await translateReleaseRequest(fhirMessage, logger)
+): Promise<spine.SpineRequest> {
+  const hl7ReleaseRequest = await translateReleaseRequest(parameters, logger)
   const interactionId = hl7V3.Hl7InteractionIdentifier.NOMINATED_PRESCRIPTION_RELEASE_REQUEST
-  return  requestBuilder.toSpineRequest(
-    createReleaseRequestSendMessagePayload(interactionId, hl7ReleaseRequest),
-    messageId
+  const sendMessagePayload = createSendMessagePayloadForUnattendedAccess(
+    uuid.v4(),
+    interactionId,
+    hl7ReleaseRequest
+  )
+  return requestBuilder.toSpineRequest(sendMessagePayload, messageId)
+}
+
+export async function convertTaskToSpineRequest(
+  task: fhir.Task,
+  messageId: string,
+  logger: pino.Logger
+): Promise<spine.SpineRequest> {
+  const payload = await createPayloadFromTask(task, logger)
+  return requestBuilder.toSpineRequest(payload, messageId)
+}
+
+type TaskTranslationResult = hl7V3.DispenseProposalReturnRoot | hl7V3.EtpWithdrawRoot
+
+async function createPayloadFromTask(
+  task: fhir.Task,
+  logger: pino.Logger
+): Promise<hl7V3.SendMessagePayload<TaskTranslationResult>> {
+  switch (task.status) {
+    case fhir.TaskStatus.REJECTED:
+      return await createDispenseProposalReturnSendMessagePayload(task, logger)
+    case fhir.TaskStatus.IN_PROGRESS:
+      return createDispenserWithdrawSendMessagePayload(task)
+  }
+}
+
+async function createDispenseProposalReturnSendMessagePayload(task: fhir.Task, logger: pino.Logger) {
+  const dispenseProposalReturn = await convertTaskToDispenseProposalReturn(task, logger)
+  const dispenseProposalReturnRoot = new hl7V3.DispenseProposalReturnRoot(dispenseProposalReturn)
+  return createSendMessagePayloadForUnattendedAccess(
+    getMessageIdFromTask(task),
+    hl7V3.Hl7InteractionIdentifier.DISPENSE_PROPOSAL_RETURN,
+    dispenseProposalReturnRoot
   )
 }
 
-export async function convertTaskWithdrawToSpineRequest(
-  fhirMessage: fhir.Resource,
-  messageId: string
-): Promise<SpineRequest> {
-  const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSER_WITHDRAW
-  return  requestBuilder.toSpineRequest(
-    createReleaseRequestSendMessagePayload(interactionId, JSON.stringify(fhirMessage)),
-    messageId
+function createDispenserWithdrawSendMessagePayload(task: fhir.Task) {
+  const etpWithdraw = convertTaskToEtpWithdraw(task)
+  const etpWithdrawRoot = new hl7V3.EtpWithdrawRoot(etpWithdraw)
+  return createSendMessagePayloadForUnattendedAccess(
+    getMessageIdFromTask(task),
+    hl7V3.Hl7InteractionIdentifier.DISPENSER_WITHDRAW,
+    etpWithdrawRoot
   )
 }

@@ -1,10 +1,9 @@
 import * as XmlJs from "xml-js"
 import {namespacedCopyOf, writeXmlStringCanonicalized} from "../../serialisation/xml"
-import {Fragments} from "../../../models/signature"
+import {hl7V3, signature} from "@models"
 import {toArray} from "../common"
-import * as hl7V3 from "../../../models/hl7-v3"
 
-export function extractFragments(parentPrescription: hl7V3.ParentPrescription): Fragments {
+export function extractFragments(parentPrescription: hl7V3.ParentPrescription): signature.Fragments {
   const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
 
   return {
@@ -35,7 +34,7 @@ function getLineItemWithoutRepeatNumberLow(lineItem: hl7V3.LineItem) {
   }
 }
 
-export function convertFragmentsToHashableFormat(fragments: Fragments) : string {
+export function convertFragmentsToHashableFormat(fragments: signature.Fragments) : string {
   const fragmentsToBeHashed = []
 
   fragmentsToBeHashed.push({

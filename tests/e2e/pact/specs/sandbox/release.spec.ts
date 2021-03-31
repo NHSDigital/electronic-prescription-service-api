@@ -5,7 +5,7 @@ import * as TestResources from "../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
 import {InteractionObject} from "@pact-foundation/pact"
 import * as uuid from "uuid"
-import * as fhir from "../../models/fhir"
+import {fhir} from "@models"
 
 jestPact.pactWith(
   pactOptions("sandbox", "release"),

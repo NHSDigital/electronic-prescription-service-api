@@ -1,9 +1,7 @@
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
-import {InvalidValueError} from "../../../../models/errors/processing-errors"
+import {hl7V3, fhir, processingErrors as errors} from "@models"
 import {generateResourceId, getFullUrl} from "../common"
 import {createGroupIdentifier} from "../medication-request"
-import * as hl7V3 from "../../../../models/hl7-v3"
-import * as fhir from "../../../../models/fhir"
 
 const MEDICINAL_PRODUCT_CODEABLE_CONCEPT = fhir.createCodeableConcept(
   "http://snomed.info/sct",
@@ -25,6 +23,7 @@ export function createMedicationRequest(
     prescriptionStatusDisplay,
     medicationRequestStatus
   } = getPrescriptionStatusInformation(cancellationCode, cancellationDisplay)
+  const effectiveTime = convertHL7V3DateTimeToIsoDateTimeString(cancellationResponse.effectiveTime)
 
   return {
     resourceType: "MedicationRequest",
@@ -33,32 +32,36 @@ export function createMedicationRequest(
       prescriptionStatusCode,
       prescriptionStatusDisplay,
       cancelRequesterPractitionerRoleId,
+      effectiveTime
     ),
     identifier: createItemNumberIdentifier(cancellationResponse.pertinentInformation1),
     status: medicationRequestStatus,
     intent: fhir.MedicationRequestIntent.ORDER,
     medicationCodeableConcept: MEDICINAL_PRODUCT_CODEABLE_CONCEPT,
     subject: fhir.createReference(patientId),
-    //TODO - effectiveTime should probably be the timestamp of the status, not authoredOn
-    authoredOn: convertHL7V3DateTimeToIsoDateTimeString(cancellationResponse.effectiveTime),
+    authoredOn: undefined, //the v3 message doesnt have enough information for authoredOn
     requester: fhir.createReference(originalPrescriptionAuthorPractitionerRoleId),
     groupIdentifier: createGroupIdentifierFromPertinentInformation2(cancellationResponse.pertinentInformation2)
   }
 }
 
 function createPrescriptionStatusHistoryExtension(
-  fhirCode: string, fhirDisplay: string
+  fhirCode: string, fhirDisplay: string, effectiveTime: string
 ): fhir.PrescriptionStatusHistoryExtension {
   return {
-    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionTaskStatusReason",
-    "extension": [
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionTaskStatusReason",
+    extension: [
       {
-        "url": "status",
-        "valueCoding": {
-          "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history",
-          "code": fhirCode,
-          "display": fhirDisplay
+        url: "status",
+        valueCoding: {
+          system: "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history",
+          code: fhirCode,
+          display: fhirDisplay
         }
+      },
+      {
+        url: "statusDate",
+        valueDateTime: effectiveTime
       }
     ]
   }
@@ -68,16 +71,21 @@ function createResponsiblePractitionerExtension(
   practitionerRoleId: string
 ): fhir.ReferenceExtension<fhir.PractitionerRole> {
   return {
-    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
-    "valueReference": {
-      "reference": getFullUrl(practitionerRoleId)
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+    valueReference: {
+      reference: getFullUrl(practitionerRoleId)
     }
   }
 }
 
-function createMedicationRequestExtensions(fhirCode: string, fhirDisplay: string, practitionerRoleId: string) {
+function createMedicationRequestExtensions(
+  fhirCode: string,
+  fhirDisplay: string,
+  practitionerRoleId: string,
+  effectiveTime: string
+) {
   return [
-    createPrescriptionStatusHistoryExtension(fhirCode, fhirDisplay),
+    createPrescriptionStatusHistoryExtension(fhirCode, fhirDisplay, effectiveTime),
     createResponsiblePractitionerExtension(practitionerRoleId)
   ]
 }
@@ -158,7 +166,7 @@ function getPrescriptionStatusInformation(code: string, display: string) {
         medicationRequestStatus: fhir.MedicationRequestStatus.UNKNOWN
       }
     default:
-      throw InvalidValueError
+      throw errors.InvalidValueError
   }
 }
 

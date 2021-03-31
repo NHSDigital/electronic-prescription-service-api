@@ -1,6 +1,5 @@
 import {readXmlStripNamespace} from "../../serialisation/xml"
-import * as hl7V3 from "../../../models/hl7-v3"
-import * as fhir from "../../../models/fhir"
+import {fhir, hl7V3} from "@models"
 import {toArray} from "../common"
 import * as pino from "pino"
 

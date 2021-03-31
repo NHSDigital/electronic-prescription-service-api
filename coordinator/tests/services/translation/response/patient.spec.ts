@@ -3,8 +3,7 @@ import {createPatient} from "../../../../src/services/translation/response/patie
 import {UNKNOWN_GP_ODS_CODE} from "../../../../src/services/translation/common"
 import {clone} from "../../../resources/test-helpers"
 import {getCancellationResponse} from "../common/test-helpers"
-import * as hl7V3 from "../../../../src/models/hl7-v3"
-import * as fhir from "../../../../src/models/fhir"
+import {hl7V3, fhir} from "@models"
 
 describe("createPatient", () => {
   const cancellationResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)

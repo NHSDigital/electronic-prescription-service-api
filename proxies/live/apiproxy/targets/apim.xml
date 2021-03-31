@@ -1,4 +1,5 @@
 <TargetEndpoint name="apim">
+  <PreFlow/>
   <Flows>
     <Flow name="Status">
       <Request>
@@ -18,8 +19,11 @@
           <Name>OauthV2.VerifyAccessToken</Name>
         </Step>
         <Step>
-          <Name>RaiseFault.403Forbidden</Name>
-          <Condition>!(accesstoken.id_token-acr StartsWith "AAL3")</Condition>
+          <Name>AssignMessage.SetAccessModeApplicationRestricted</Name>
+        </Step>
+        <Step>
+          <Name>AssignMessage.AddAccessModeUserRestricted</Name>
+          <Condition>(scope JavaRegex ".*(urn:nhsd:apim:user-nhs-id).*") and (accesstoken.id_token-acr StartsWith "AAL3")</Condition>
         </Step>
         <Step>
           <!-- Header NHSD-Request-ID must be in the correct format (GUID) -->

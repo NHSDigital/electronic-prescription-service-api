@@ -1,2 +1,8 @@
 .dockerignore
 app.yaml
+node_modules
+jest/
+tests/
+eslintrc
+Dockerfile
+README.md

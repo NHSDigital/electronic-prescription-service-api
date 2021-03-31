@@ -1,7 +1,5 @@
 import {JestPactOptions} from "jest-pact"
-import path from "path"
-import {ExampleFile} from "../models/files/example-file"
-import * as fhir from "../models/fhir"
+import {fhir} from "@models"
 
 export const basePath = "/FHIR/R4"
 
@@ -10,7 +8,7 @@ export type ApiEndpoint = "prepare" | "process" | "convert" | "release" | "task"
 export type ApiOperation = "send" | "dispense" | "cancel"
 
 // to use groups the group added must match a subfolder under
-// models/examples with path separator replaced by space
+// examples with path separator replaced by space
 // or set pactGroups = [""] to run all together
 export const pactGroups = [
   "secondary-care community acute",
@@ -137,14 +135,4 @@ export function getStringParameterByName(parameters: fhir.Parameters, name: stri
   const stringParams = parameters.parameter.filter(param => isStringParameter(param)) as Array<fhir.StringParameter>
   const namedStringParams = stringParams.filter(param => param.name === name)
   if (namedStringParams.length === 1) return namedStringParams[0]
-}
-
-const examplesRootPath = "../resources/parent-prescription"
-export function createExampleDescription(exampleFile: ExampleFile): string {
-  return path.parse(path.relative(path.join(__dirname, examplesRootPath), exampleFile.path))
-    .dir
-    .replace(/\//g, " ")
-    .replace(/\\/g, " ")
-    + " "
-    + `${exampleFile.number} ${exampleFile.statusText} ${exampleFile.operation}`
 }

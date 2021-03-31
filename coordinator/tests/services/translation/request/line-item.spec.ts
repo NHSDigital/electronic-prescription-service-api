@@ -8,9 +8,10 @@ import {getMedicationRequests} from "../../../../src/services/translation/common
 import {getExtensionForUrlOrNull, toArray} from "../../../../src/services/translation/common"
 import {convertBundleToPrescription} from "../../../../src/services/translation/request/prescription"
 import {convertBundleToSpineRequest} from "../../../../src/services/translation/request"
-import {TooManyValuesError} from "../../../../src/models/errors/processing-errors"
-import * as hl7V3 from "../../../../src/models/hl7-v3"
-import * as fhir from "../../../../src/models/fhir"
+import {fhir, hl7V3, processingErrors as errors} from "@models"
+import pino from "pino"
+
+const logger = pino()
 
 describe("convertMedicationRequestToLineItem", () => {
   let bundle: fhir.Bundle
@@ -25,7 +26,7 @@ describe("convertMedicationRequestToLineItem", () => {
     firstFhirMedicationRequest.identifier.push(firstFhirMedicationRequest.identifier[0])
     expect(() =>
       convertMedicationRequestToLineItem(firstFhirMedicationRequest, null, [], [])
-    ).toThrow(TooManyValuesError)
+    ).toThrow(errors.TooManyValuesError)
   })
 
   test("ID added to correct section of hl7 message", () => {
@@ -255,7 +256,7 @@ describe("prescriptionEndorsements", () => {
       .map(pi3 => expect(pi3.pertinentPrescriberEndorsement.value._attributes.code).toEqual("SLS"))
   })
 
-  test("are optional for translation", () => {
+  test("are optional for translation", async() => {
     const medicationRequests = getMedicationRequests(bundle)
 
     const prescriptionEndorsementsFn = (medicationRequest: fhir.MedicationRequest): fhir.CodeableConceptExtension =>
@@ -277,7 +278,7 @@ describe("prescriptionEndorsements", () => {
     expect(hl7v3PrescriptionEndorsements.length).toBeGreaterThan(0)
     hl7v3PrescriptionEndorsements.map(endorsement => expect(endorsement).toEqual(undefined))
 
-    const hl7v3PrescriptionXml = convertBundleToSpineRequest(bundle, "test").message
+    const hl7v3PrescriptionXml = (await convertBundleToSpineRequest(bundle, "test", logger)).message
     expect(hl7v3PrescriptionXml).not.toContain("pertinentInformation3")
   })
 })

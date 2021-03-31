@@ -7,8 +7,7 @@ import {
   createSnomedCodeableConcept,
   getStatus
 } from "../../../../../src/services/translation/response/release/release-medication-request"
-import * as hl7V3 from "../../../../../src/models/hl7-v3"
-import * as fhir from "../../../../../src/models/fhir"
+import {hl7V3, fhir} from "@models"
 import {LosslessNumber} from "lossless-json"
 
 describe("extension", () => {

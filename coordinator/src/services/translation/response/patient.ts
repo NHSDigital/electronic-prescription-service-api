@@ -1,9 +1,7 @@
-import {InvalidValueError} from "../../../models/errors/processing-errors"
+import {hl7V3, fhir, processingErrors as errors} from "@models"
 import {convertAddress, convertName, generateResourceId} from "./common"
 import {UNKNOWN_GP_ODS_CODE} from "../common"
 import {convertHL7V3DateToIsoDateString} from "../common/dateTime"
-import * as hl7V3 from "../../../models/hl7-v3"
-import * as fhir from "../../../models/fhir"
 
 export function createPatient(patient: hl7V3.Patient): fhir.Patient {
   return {
@@ -52,7 +50,7 @@ export function convertGender(hl7Gender: hl7V3.SexCode): string {
     case hl7V3.SexCode.UNKNOWN._attributes.code:
       return "unknown"
     default:
-      throw new InvalidValueError(`Unhandled gender '${hl7Gender}'.`)
+      throw new errors.InvalidValueError(`Unhandled gender '${hl7Gender}'.`)
   }
 }
 

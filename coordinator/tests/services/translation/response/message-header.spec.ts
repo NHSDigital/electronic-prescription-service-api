@@ -1,6 +1,6 @@
 import {createMessageHeader} from "../../../../src/services/translation/response/message-header"
 import {getExtensionForUrl} from "../../../../src/services/translation/common"
-import * as fhir from "../../../../src/models/fhir"
+import {fhir} from "@models"
 
 const messageIdUrl = "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-MessageHeader-messageId"
 

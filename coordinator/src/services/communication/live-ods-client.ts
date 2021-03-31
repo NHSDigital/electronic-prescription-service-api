@@ -1,16 +1,13 @@
 import axios from "axios"
 import pino from "pino"
-import * as fhir from "../../models/fhir"
+import {fhir} from "@models"
 import {OdsClient} from "./ods-client"
 import {convertToOrganization, OdsOrganization} from "./ods-organization"
-
-//TODO - pass in as an env var
-const ODS_API_URL = "https://directory.spineservices.nhs.uk/STU3"
 
 export class LiveOdsClient implements OdsClient {
   async lookupOrganization(odsCode: string, logger: pino.Logger): Promise<fhir.Organization> {
     logger.info(`Performing ODS lookup for code ${odsCode}`)
-    const url = `${ODS_API_URL}/Organization/${odsCode}`
+    const url = `https://${process.env.ODS_URL}/STU3/Organization/${odsCode}`
     try {
       const result = await axios.get<OdsOrganization>(url)
       if (result.status != 200) {

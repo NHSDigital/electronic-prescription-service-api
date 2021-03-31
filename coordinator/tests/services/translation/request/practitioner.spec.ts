@@ -3,12 +3,10 @@ import * as helpers from "../../../resources/test-helpers"
 import * as TestResources from "../../../resources/test-resources"
 import * as common from "../../../../src/services/translation/common/getResourcesOfType"
 import {getMessageHeader, getProvenances} from "../../../../src/services/translation/common/getResourcesOfType"
-import {InvalidValueError} from "../../../../src/models/errors/processing-errors"
+import {hl7V3, fhir, processingErrors as errors} from "@models"
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {onlyElement} from "../../../../src/services/translation/common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../../../src/services/translation/common/dateTime"
-import * as hl7V3 from "../../../../src/models/hl7-v3"
-import * as fhir from "../../../../src/models/fhir"
 
 import requireActual = jest.requireActual
 
@@ -180,7 +178,7 @@ describe("convertAuthor", () => {
       getProvenances(bundle).flatMap(p => p.signature).forEach(s => s.data = "this is not a valid signature")
       expect(() => {
         practitioner.convertAuthor(bundle, fhirFirstMedicationRequest)
-      }).toThrow(InvalidValueError)
+      }).toThrow(errors.InvalidValueError)
     })
   })
 })

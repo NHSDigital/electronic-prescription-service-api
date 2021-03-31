@@ -20,10 +20,10 @@ info:
     * create a secondary care (outpatient) prescription
     * cancel a secondary care (outpatient) prescription
     * evaluate prescription signing client implementations
-    * release a prescription for dispensing (sandbox implementation)
-    * send a dispense notification to EPS (sandbox implementation)
-    * return a prescription after downloading (spec only)
-    * withdraw a dispense notificaton (spec only)
+    * release a prescription for dispensing (sandbox implementation only)
+    * send a dispense notification to EPS (sandbox implementation only)
+    * return a prescription after downloading (sandbox implementation only)
+    * withdraw a dispense notificaton (sandbox implementation only)
 
     You cannot currently use this API to:
     * prepare a primary care prescription for signing
@@ -59,22 +59,22 @@ info:
         return Buffer.from(xmlSignature, "utf-8").toString("base64")
       }
     ```
-    
+
     ### To cancel a prescription:
     1. POST a [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update) to the `/FHIR/R4/$process-message` endpoint
 
     ## Using this API as a dispenser
     ### To download a prescription to be dispensed: 
     1. POST a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to the `/FHIR/R4/Task/$release` endpoint to mark the prescription as released
-   
+
     ### To notify Spine that a prescription has been dispensed:
     1. POST a [prescription-dispense-notification](https://simplifier.net/guide/DigitalMedicines/prescription-dispense) message to the `/FHIR/R4/$process-message` endpoint to inform SPINE of a partial/successful dispense
 
-    ### To withdraw a prescription notification:
-    1. TBC
-    
     ### To return a prescription to Spine:
-    1. TBC
+    1. POST a [Task-dispense-proposal-return](https://simplifier.net/guide/DigitalMedicines/Task) message to the `/FHIR/R4/Task` endpoint
+
+    ### To withdraw a dispense notification:
+    1. POST a [Task-dispense-notification-amend](https://simplifier.net/guide/DigitalMedicines/Task) message to the `/FHIR/R4/Task` endpoint
 
     ## Related APIs
     The following APIs also give access to the Electronic Prescription Service:
@@ -84,7 +84,7 @@ info:
 
     The following APIs may be required when accessing the  Electronic Prescription Service:
     - [Personal Demographics Service - FHIR API](https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir) - use this to obtain patient data
-    
+
     ## Additional guidance
     For further details on common HTTP status codes, see [5xx status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide)
 
@@ -92,7 +92,7 @@ info:
     To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?tag=eps-fhir-api).
 
     If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
-    
+
     ### Prescribing API
     Prescribing flows for EPS FHIR API are now in a state of technical go-live awaiting our first of type integration.
 
@@ -102,7 +102,6 @@ info:
     Download and the mark as dispensed dispensing flows for the EPS FHIR API are in the sandbox environment only, withdraw and return are currently only referenced in this spec.
 
     ## Technology
-
     This API conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir) global standard for health care data exchange.
     Specifically, it is aligned with [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), which is built on FHIR Release 4.
 
@@ -112,17 +111,17 @@ info:
     - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
 
     ## Network access
-    This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network). To use this API with NHS smartcards (see below) you do need an HSCN connection, although internet-facing alternatives are available.
-    
-    All requests to this API require a unique GUUID incluuded in a `X-Request-ID` header.
+    This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).
+    To use this API with NHS smartcards (see below) you do need an HSCN connection, although internet-facing alternatives are available.
 
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
 
     ## Authorisation
-    This API is [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis),
-    meaning an end user must be present and authenticated to use it.
+    ### Prescribing endpoints
+    The prescribing endpoints are [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis),
+    meaning an end user must be present and authenticated to use them.
 
-    The end user must be:
+    For prescribing journeys, the end user must be:
     - a healthcare professional
     - strongly authenticated, using either an NHS smartcard or a modern alternative
 
@@ -131,10 +130,12 @@ info:
     * user-restricted RESTful API - using NHS Identity - combined authentication and authorisation
     * user-restricted RESTful API - using NHS Identity - separate authentication and authorisation
 
-    For more details, see [user-restricted APIs](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis).
+    ### Dispensing endpoints
+    The dispensing endpoints are [application-resctricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication), 
+    meaning they only authenticate the calling application, not the end user. 
+    An application is authenticated by sending a signed JSON web token (JWT) to our OAuth 2.0 authorisation server.
 
     ## Environment and Testing
-
     | Purpose           | URL                                                                 |
     | -------------     | --------------------------------------------------------------------|
     | Sandbox           | `https://sandbox.api.service.nhs.uk/electronic-prescriptions`       |
@@ -161,14 +162,15 @@ info:
     For more details see [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).   
 
     ## Onboarding
-    You need to get your software approved by us before it can go live with this API. We call this onboarding. We are hoping to make the onboarding process as lightweight and as self-service as possible however it can sometimes be quite long, so it’s worth planning well ahead.
+    You need to get your software approved by us before it can go live with this API. We call this onboarding.
+    We are hoping to make the onboarding process as lightweight and as self-service as possible however it can sometimes be quite long, so it’s worth planning well ahead.
 
     To begin the onboarding process please [contact us](https://digital.nhs.uk/developer/help-and-support) and request the 'EPS use case form'.
 
     ## Resources
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/DigitalMedicines) to assist with your integration.
     This is the FHIR specification for Digital Medicines starting with the assets required for an electronic prescription sent to the EPS.
-    
+
     ## Legal Use
     This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
 
@@ -176,13 +178,13 @@ info:
 
     ## Errors
     ### API wide errors
-    | HTTP Status   | Error Code             | Description                                    |
-    | --------------| ---------------------- | ---------------------------------------------- |
+    | HTTP Status   | Error Code             | Description                                                                      |
+    | --------------| ---------------------- | -------------------------------------------------------------------------------- |
     | 400           | MISSING_FIELD          | A required field is missing within the request, see `display` field in response. |
-    | 400           | INVALID_VALUE          | Invalid value in message.                       |
-    | 400           | INCORRECT_RESOURCETYPE | FHIR resource has incorrect resourceType.       |
-    | 404           | NOT_FOUND              | Route not found.                                |
-    
+    | 400           | INVALID_VALUE          | Invalid value in message.                                                        |
+    | 400           | INCORRECT_RESOURCETYPE | FHIR resource has incorrect resourceType.                                        |
+    | 404           | NOT_FOUND              | Route not found.                                                                 |
+
     ### Platform wide errors
     | HTTP Status   | Error Code      | Description                                             |
     | ------------- | --------------- | ------------------------------------------------------- |
@@ -296,15 +298,15 @@ paths:
         '4XX':
           description: |
             An error occurred as follows:
-            
-            | HTTP status | Error code         | Description                                    | FHIR type        |
-            | ----------- | ------------------ | ---------------------------------------------- | -----------------|
+
+            | HTTP status | Error code         | Description                                     | FHIR type        |
+            | ----------- | ------------------ | ----------------------------------------------- | ---------------- |
             | 400         | BAD_REQUEST        | Spine Error - duplicate prescription ID exists. | OperationOutcome |
             | 400         | BAD_REQUEST        | Spine Error - prescription not found.           | Bundle           |
           content:
             application/fhir+json:
               schema:
-                type: object
+                $ref: '#/components/responses/200OperationOutcome'
               examples:
                 OperationOutcome:
                   value:
@@ -312,18 +314,71 @@ paths:
                 Bundle:
                   value:
                     $ref: components/examples/errors/prescription-order-update/bundle-error.json
+  /FHIR/R4/Task:
+    post:
+      operationId: return / withdraw
+      summary: Send either a Task-dispense-notification-amend or Task-dispense-proposal-return to EPS
+      description: |
+        ## Overview
+        This endpoint can be used to return a downloaded prescription to Spine, so that another dispensing system can download it. 
+        
+        It can also be used to withdraw a dispense-notification message, for example in the case that a prescription was marked as dispensed erroneously.
 
+        For information on how to create these messages, see [DigitalMedicines-Task](https://simplifier.net/guide/DigitalMedicines/Task).
+
+        This endpoint is only available in the sandbox environment.
+      tags:
+        - dispensing
+      parameters:
+        - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RequestID'
+        - $ref: '#/components/parameters/CorrelationID'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            examples:
+              return:
+                value:
+                  $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/2-Task-Request-Return-200_OK.json
+              withdraw:
+                value:
+                  $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/3-Task-Request-Withdraw-200_OK.json
+      responses:
+        '200':
+          description: Action completed successfully
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/responses/200OperationOutcome'
+              examples:
+                OperationOutcome:
+                  value:
+                    $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
+        '4XX':
+          description: |
+            An error occurred as follows:
+
+            | HTTP status | Error code         | Description             |
+            | ----------- | -------------------| ----------------------- |
+            | 400         | BAD_REQUEST        | Invalid request bundle. |
+          content:
+            application/fhir+json:
+              examples:
+                example:
+                  value:
+                    $ref: components/examples/errors/release/validation-error.json
   /FHIR/R4/Task/$release:
     post:
       operationId: release
       summary: Send a prescription release request to EPS
       description: |
         ## Overview
-        Use this endpoint to send a prescription release request to EPS.
+        The release endpoint is used to download prescriptions from Spine prior to being dispensed to a patient. 
+        To do this, send a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to this endpoint.
 
-        This returns a set of prescriptions based on the information passed to the endpoint: 
-        * to acquire prescription information for an entire pharmacy, send owner information
-        
+        The endpoint will return a set of (up to 25) prescriptions associated with the pharmacy that sends the request.
+
         This endpoint is only available in the sandbox environment.
       tags:
         - dispensing
@@ -340,7 +395,7 @@ paths:
             examples:
               owner:
                 value:
-                  $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/2-Release-Request-200_OK.json
+                  $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Task-Request-Release-200_OK.json
       responses:
         '200':
           description: Successfully released a prescription for dispensing
@@ -355,7 +410,7 @@ paths:
         '4XX':
           description: |
             An error occurred as follows:
-            
+
             | HTTP status | Error code         | Description             |
             | ----------- | -------------------| ----------------------- |
             | 400         | BAD_REQUEST        | Invalid request bundle. |
@@ -365,7 +420,7 @@ paths:
                 type: object
               examples:
                 example:
-                  value: 
+                  value:
                     $ref: components/examples/errors/release/validation-error.json
 components:
   parameters:
@@ -406,3 +461,42 @@ components:
       schema:
         type: string
         example: 11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA
+  responses:
+    200OperationOutcome:
+      description: A successful response.
+      content:
+        application/fhir+json:
+          schema:
+            type: object
+            description: |
+              Outcome of an operation that does not result in a resource or bundle being returned (such as error, async/batch submission).
+            properties:
+              resourceType:
+                type: string
+                description: FHIR Resource Type.
+                enum:
+                  - "OperationOutcome"
+                example: "OperationOutcome"
+              issue:
+                type: array
+                description: List of issues that have occurred.
+                minItems: 1
+                items:
+                  type: object
+                  required:
+                    - severity
+                    - code
+                  properties:
+                    severity:
+                      type: string
+                      enum: [ "information" ]
+                      description: Severity of the error.
+                      example: "information"
+                    code:
+                      type: string
+                      enum: [ "informational" ]
+                      description: FHIR error code.
+                      example: "informational"
+                    diagnostics:
+                      type: string
+                      example: "Message Sent"

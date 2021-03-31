@@ -8,7 +8,7 @@ import * as fs from "fs"
 import * as path from "path"
 import {getUniqueValues} from "../../../../../src/services/validation/util"
 import {toArray} from "../../../../../src/services/translation/common"
-import * as hl7V3 from "../../../../../src/models/hl7-v3"
+import {hl7V3} from "@models"
 
 describe("outer bundle", () => {
   const result = createOuterBundle(getExamplePrescriptionReleaseResponse())

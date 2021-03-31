@@ -38,7 +38,7 @@ make sign-prescriptions
 #### Send Prescriptions to int
 ---
 
-Grab an example which has been signed above (under `models/examples/`)
+Grab an example which has been signed above (under `examples/`)
 
 ##### Internal Checks
 
@@ -47,7 +47,20 @@ Grab an example which has been signed above (under `models/examples/`)
     * Or check prescription can be verified using https://github.com/DamianJMurphy/PrescriptionSignatureVerifier
   * Check TKW validation passes for the HL7v3 representation
 
+##### Manual
+
 Send the example to int
+
+OR
+
+##### Automated
+
+Ensure update flag is set to false when running `create-smoke-tests` to ensure the examples aren't modified after you have run `sign-prescriptions`. See below example
+
+```
+make mode=live update=false create-smoke-tests
+make env=int token=iy8f2ZV8zsIqQilurliBlRIK3a01 run-smoke-tests
+```
 
 #### Verify with dispenser
 ---

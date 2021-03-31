@@ -1,43 +1,27 @@
 import moment from "moment"
-import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem, resolveReference} from "../common"
+import {
+  getCodeableConceptCodingForSystem,
+  getExtensionForUrlOrNull,
+  getIdentifierValueForSystem,
+  resolveReference
+} from "../common"
 import {getMedicationRequests} from "../common/getResourcesOfType"
 import {convertMomentToHl7V3DateTime} from "../common/dateTime"
-import * as hl7V3 from "../../../models/hl7-v3"
-import * as fhir from "../../../models/fhir"
-import {identifyMessageType} from "../../../routes/util"
-import * as uuid from "uuid"
-import {Hl7InteractionIdentifier} from "../../../models/hl7-v3"
+import {hl7V3, fhir} from "@models"
+
+export function createSendMessagePayloadForUnattendedAccess<T>(
+  messageId: string,
+  interactionId: hl7V3.Hl7InteractionIdentifier,
+  subject: T
+): hl7V3.SendMessagePayload<T> {
+  return createSendMessagePayload(messageId, interactionId, undefined, subject)
+}
 
 export function createSendMessagePayload<T>(
-  interactionId: hl7V3.Hl7InteractionIdentifier,
-  bundle: fhir.Bundle,
-  subject: T
-): hl7V3.SendMessagePayload<T> {
-  const messageId = getIdentifierValueForSystem(
-    [bundle.identifier],
-    "https://tools.ietf.org/html/rfc4122",
-    "Bundle.identifier"
-  )
-
-  const sendMessagePayload = createInitialSendMessagePayload<T>(messageId, interactionId)
-  sendMessagePayload.ControlActEvent = createControlActEvent(bundle, subject)
-  return sendMessagePayload
-}
-
-export function createReleaseRequestSendMessagePayload<T>(
-  interactionId: hl7V3.Hl7InteractionIdentifier,
-  subject: T
-): hl7V3.SendMessagePayload<T> {
-  const messageId = uuid.v4()
-
-  const sendMessagePayload = createInitialSendMessagePayload<T>(messageId, interactionId)
-  sendMessagePayload.ControlActEvent = createReleaseControlActEvent(subject)
-  return sendMessagePayload
-}
-
-function createInitialSendMessagePayload<T>(
   messageId: string,
-  interactionId: Hl7InteractionIdentifier
+  interactionId: hl7V3.Hl7InteractionIdentifier,
+  author: hl7V3.AuthorPersonSds,
+  subject: T
 ): hl7V3.SendMessagePayload<T> {
   const sendMessagePayload = new hl7V3.SendMessagePayload<T>(
     new hl7V3.GlobalIdentifier(messageId),
@@ -47,7 +31,7 @@ function createInitialSendMessagePayload<T>(
 
   sendMessagePayload.communicationFunctionRcv = createCommunicationFunction(process.env.TO_ASID)
   sendMessagePayload.communicationFunctionSnd = createCommunicationFunction(process.env.FROM_ASID)
-
+  sendMessagePayload.ControlActEvent = createControlActEvent(author, subject)
   return sendMessagePayload
 }
 
@@ -58,46 +42,60 @@ function createCommunicationFunction(asid: string) {
 }
 
 function createControlActEvent<T>(
-  bundle: fhir.Bundle,
+  author: hl7V3.AuthorPersonSds,
   subject: T
 ) {
   const controlActEvent = new hl7V3.ControlActEvent<T>()
-  controlActEvent.author = convertRequesterToControlActAuthor(bundle)
+  if (author) {
+    controlActEvent.author = author
+  }
   controlActEvent.author1 = createControlActEventAuthor1(process.env.FROM_ASID)
   controlActEvent.subject = subject
   return controlActEvent
 }
 
-function convertRequesterToControlActAuthor(
+export function convertRequesterToControlActAuthor(
   bundle: fhir.Bundle
-) {
-
-  // todo dispenseNotification: implement dispense verson
-  const messageType = identifyMessageType(bundle)
-  if (messageType === fhir.EventCodingCode.DISPENSE) {
-    // todo dispenseNotification: pick up this info from MessageHeader.sender and lookup on ods/sds
-    const sdsUniqueIdentifier = "687227875014"
-    const sdsJobRoleCode = "R8003"
-    const sdsRoleProfileIdentifier = "781733617547"
-    return createControlActEventAuthor(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier)
-  }
-
+): hl7V3.AuthorPersonSds {
   const firstMedicationRequest = getMedicationRequests(bundle)[0]
   const authorPractitionerRole = resolveReference(bundle, firstMedicationRequest.requester)
   const authorPractitioner = resolveReference(bundle, authorPractitionerRole.practitioner)
+  return convertPractitionerToControlActAuthor(authorPractitioner, authorPractitionerRole)
+}
 
+export function convertResponsiblePractitionerToControlActAuthor(
+  bundle: fhir.Bundle
+): hl7V3.AuthorPersonSds {
+  const firstMedicationRequest = getMedicationRequests(bundle)[0]
+  const responsiblePractitionerExtension = getExtensionForUrlOrNull(
+    firstMedicationRequest.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+    "MedicationRequest.extension"
+  ) as fhir.ReferenceExtension<fhir.PractitionerRole>
+  const responsiblePractitionerRoleReference = responsiblePractitionerExtension
+    ? responsiblePractitionerExtension.valueReference
+    : firstMedicationRequest.requester
+  const responsiblePractitionerRole = resolveReference(bundle, responsiblePractitionerRoleReference)
+  const responsiblePractitioner = resolveReference(bundle, responsiblePractitionerRole.practitioner)
+  return convertPractitionerToControlActAuthor(responsiblePractitioner, responsiblePractitionerRole)
+}
+
+function convertPractitionerToControlActAuthor(
+  practitioner: fhir.Practitioner,
+  practitionerRole: fhir.PractitionerRole
+) {
   const sdsUniqueIdentifier = getIdentifierValueForSystem(
-    authorPractitioner.identifier,
+    practitioner.identifier,
     "https://fhir.nhs.uk/Id/sds-user-id",
     "Practitioner.identifier"
   )
   const sdsJobRoleCode = getCodeableConceptCodingForSystem(
-    authorPractitionerRole.code,
+    practitionerRole.code,
     "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
     "PractitionerRole.code"
   ).code
   const sdsRoleProfileIdentifier = getIdentifierValueForSystem(
-    authorPractitionerRole.identifier,
+    practitionerRole.identifier,
     "https://fhir.nhs.uk/Id/sds-role-profile-id",
     "PractitionerRole.identifier"
   )
@@ -122,34 +120,12 @@ function createControlActEventAuthor(
   authorAgentPerson.agentPersonSDS = authorAgentPersonPerson
   authorAgentPerson.part = agentPersonPart
 
-  return new hl7V3.SendMessagePayloadAuthorPersonSds(authorAgentPerson)
+  return new hl7V3.AuthorPersonSds(authorAgentPerson)
 }
 
 function createControlActEventAuthor1(asid: string) {
   const id = new hl7V3.AccreditedSystemIdentifier(asid)
   const agentSystemSystemSds = new hl7V3.AgentSystemSystemSds(id)
   const agentSystemSds = new hl7V3.AgentSystemSds(agentSystemSystemSds)
-  return new hl7V3.SendMessagePayloadAuthorSystemSds(agentSystemSds)
-}
-
-function createReleaseControlActEvent<T>(
-  subject: T
-) {
-  const controlActEvent = new hl7V3.ControlActEvent<T>()
-  controlActEvent.author = convertRequesterToReleaseControlActAuthor(subject)
-  controlActEvent.author1 = createControlActEventAuthor1(process.env.FROM_ASID)
-  controlActEvent.subject = subject
-  return controlActEvent
-}
-
-function convertRequesterToReleaseControlActAuthor<T>(
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  hl7ReleaseRequest: T
-) {
-  const sdsUniqueIdentifier = "G9999999"
-
-  const sdsJobRoleCode = "R8000"
-
-  const sdsRoleProfileIdentifier = "100102238986"
-  return createControlActEventAuthor(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier)
+  return new hl7V3.AuthorSystemSds(agentSystemSds)
 }
