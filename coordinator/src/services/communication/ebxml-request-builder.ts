@@ -8,12 +8,6 @@ import {namespacedCopyOf, writeXmlStringPretty} from "../serialisation/xml"
 import {spine, hl7V3, processingErrors as errors} from "@models"
 import {Logger} from "pino"
 
-const ebxmlRequestTemplate = fs.readFileSync(
-  path.join(__dirname, "../../resources/ebxml_request.mustache"),
-  "utf-8"
-).replace(/\n/g, "\r\n")
-const cpaIdMap = new Map<string, string>(JSON.parse(process.env.CPA_ID_MAP))
-
 class EbXmlRequest {
   timestamp = moment.utc().format()
   conversation_id = uuid.v4().toUpperCase()
@@ -40,12 +34,17 @@ class EbXmlRequest {
 }
 
 export function addEbXmlWrapper(spineRequest: spine.SpineRequest, logger: Logger): string {
+  const cpaIdMap = new Map<string, string>(JSON.parse(process.env.CPA_ID_MAP))
   const cpaId = cpaIdMap.get(spineRequest.interactionId)
   if (!cpaId) {
     logger.error(`Could not find CPA ID for interaction ${spineRequest.interactionId}`)
     throw new errors.FhirMessageProcessingError("INTERACTION_NOT_SUPPORTED", "Interaction not supported")
   }
 
+  const ebxmlRequestTemplate = fs.readFileSync(
+    path.join(__dirname, "../../resources/ebxml_request.mustache"),
+    "utf-8"
+  ).replace(/\n/g, "\r\n")
   const ebXmlRequest = new EbXmlRequest(spineRequest.interactionId, cpaId, spineRequest.message, spineRequest.messageId)
   return Mustache.render(ebxmlRequestTemplate, ebXmlRequest)
 }
