@@ -17,12 +17,11 @@
       "*": [
         "node_modules/*"
       ],
-      "@models": ["../models", "./models"]
+      "@models": ["../models"]
     }
   },
   "include": [
-    "src/**/*",
-    "tests/**/*"
+    "src/**/*"
   ],
   "references": [
     {
