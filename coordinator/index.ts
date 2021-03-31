@@ -2,4 +2,4 @@ export * as getResourcesOfType from "./src/services/translation/common/getResour
 export {convertFhirMessageToSignedInfoMessage} from "./src/services/translation/request"
 export {convertBundleToSpineRequest} from "./src/services/translation/request"
 export {getCourseOfTherapyTypeCode} from "./src/services/translation/request/course-of-therapy-type"
-export {getNumericValueAsString} from "./src/services/translation/common"
+export {getNumericValueAsString, getExtensionForUrl} from "./src/services/translation/common"
