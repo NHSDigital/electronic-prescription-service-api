@@ -22,7 +22,7 @@
       "path": "./models"
     },
     {
-      "path": "./coordinator/tsconfig-build.json"
+      "path": "./coordinator"
     }
   ]
 }
