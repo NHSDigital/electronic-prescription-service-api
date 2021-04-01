@@ -1,7 +1,5 @@
 export * as getResourcesOfType from "./src/services/translation/common/getResourcesOfType"
 export {convertFhirMessageToSignedInfoMessage} from "./src/services/translation/request"
 export {convertBundleToSpineRequest} from "./src/services/translation/request"
-export {getCourseOfTherapyTypeCode} from "./src/services/translation/request/course-of-therapy-type"
-export {getNumericValueAsString, getExtensionForUrl} from "./src/services/translation/common"
 export {convertParentPrescription} from "./src/services/translation/request/prescribe/parent-prescription"
 export {convertName} from "./src/services/translation/response/common"
