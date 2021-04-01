@@ -202,5 +202,70 @@ TestResources.processDispenseNotificationCaseGroups.forEach(pactGroup => {
         )
       }
     })
-  })
+    })
+})
+
+TestResources.processOrderCaseGroups.forEach(pactGroup => {
+  const pactGroupName = pactGroup.name
+  const pactGroupTestCases = pactGroup.cases
+
+  jestpact.pactWith(
+    pactOptions("live", "process", pactGroupName, "send"),
+    /* eslint-disable  @typescript-eslint/no-explicit-any */
+    async (provider: any) => {
+      const client = () => {
+        const url = `${provider.mockService.baseUrl}`
+        return supertest(url)
+      }
+
+      describe("process-message xml tests", () => {
+        test("should return xml on present header", async () => {
+          const desc = pactGroupTestCases[0][0]
+          const message = pactGroupTestCases[0][1]
+
+          const apiPath = `${basePath}/$process-message`
+          const bundleStr = LosslessJson.stringify(message)
+          const bundle = JSON.parse(bundleStr) as fhir.Bundle
+
+          const requestId = uuid.v4()
+          const correlationId = uuid.v4()
+
+          const firstMedicationRequest = message.entry.map(e => e.resource)
+            .find(r => r.resourceType == "MedicationRequest") as fhir.MedicationRequest
+          const prescriptionId = firstMedicationRequest.groupIdentifier.value
+
+          const interaction: InteractionObject = {
+            state: "is authenticated",
+            uponReceiving: `a request to process prescription: ${prescriptionId} - ${desc} message to Spine`,
+            withRequest: {
+              headers: {
+                "Content-Type": "application/fhir+json; fhirVersion=4.0",
+                "X-Request-ID": requestId,
+                "X-Correlation-ID": correlationId,
+                "X-Untranslated-Response": "true"
+              },
+              method: "POST",
+              path: apiPath,
+              body: bundle
+            },
+            willRespondWith: {
+              headers: {
+                "Content-Type": "application/xml"
+              },
+              status: 200
+            }
+          }
+          await provider.addInteraction(interaction)
+          await client()
+            .post(apiPath)
+            .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
+            .set("X-Request-ID", requestId)
+            .set("X-Correlation-ID", correlationId)
+            .set("X-Untranslated-Response", "true")
+            .send(bundleStr)
+            .expect(200)
+        })
+      })
+    }
+  )
 })
