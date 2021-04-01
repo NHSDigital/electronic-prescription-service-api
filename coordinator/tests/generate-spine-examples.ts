@@ -17,7 +17,7 @@ import * as LosslessJson from "lossless-json"
 import * as moment from "moment"
 import {clone} from "./resources/test-helpers"
 import {convertMomentToISODateTime} from "../src/services/translation/common/dateTime"
-import * as fhir from "../src/models/fhir"
+import {fhir} from "@models"
 
 function updateMessageHeaderAndProvenance(bundle: fhir.Bundle) {
   const patientReference = fhir.createReference(getPatient(bundle).id)
