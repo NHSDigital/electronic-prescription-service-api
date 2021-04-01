@@ -3,4 +3,4 @@ export {convertFhirMessageToSignedInfoMessage} from "./src/services/translation/
 export {convertBundleToSpineRequest} from "./src/services/translation/request"
 export {getCourseOfTherapyTypeCode} from "./src/services/translation/request/course-of-therapy-type"
 export {getNumericValueAsString, getExtensionForUrl} from "./src/services/translation/common"
-export {getAgentPersonPersonIdForResponsibleParty} from "./src/services/translation/request/practitioner"
+export {convertParentPrescription} from "./src/services/translation/request/prescribe/parent-prescription"
