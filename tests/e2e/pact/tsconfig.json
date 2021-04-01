@@ -18,10 +18,10 @@
     "."
   ],
   "references": [
-    { 
+    {
       "path": "../../../models"
     },
-    { 
+    {
       "path": "../../../coordinator"
     }
   ]
