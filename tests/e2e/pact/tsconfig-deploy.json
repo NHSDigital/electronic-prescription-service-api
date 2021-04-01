@@ -18,11 +18,11 @@
     "."
   ],
   "references": [
-    { 
+    {
       "path": "./models"
     },
-    { 
-      "path": "./coordinator"
+    {
+      "path": "./coordinator/tsconfig-build.json"
     }
   ]
 }
