@@ -15,16 +15,18 @@
     "baseUrl": ".",
     "paths": {
       "*": [
-        "node_modules/*"
+        "node_modules/*",
+        "tests/*"
       ],
       "@models": ["../models", "./models"]
     }
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "tests/**/*"
   ],
   "references": [
-    {
+    { 
       "path": "../models"
     }
   ]
