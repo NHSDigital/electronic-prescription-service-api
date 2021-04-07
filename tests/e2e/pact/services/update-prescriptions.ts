@@ -19,7 +19,8 @@ export async function updatePrescriptions(): Promise<void> {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   let signPrescriptionFn = (processCase: ProcessCase): void => {return}
 
-  if (fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath))
+  // eslint-disable-next-line no-constant-condition
+  if (false/*|| fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath*/)
   {
     signPrescriptionFn = signPrescription
   }
