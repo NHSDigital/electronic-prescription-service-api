@@ -4,26 +4,25 @@ import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
-import { basePath, getStringParameterByName, pactOptions } from "../../resources/common"
+import { basePath, pactOptions } from "../../resources/common"
 import {fhir} from "@models"
 
-TestResources.prepareCaseGroups.forEach(pactGroup => {
-  const pactGroupName = pactGroup.name
-  const pactGroupTestCases = pactGroup.cases
+jestpact.pactWith(
+  pactOptions("sandbox", "prepare"),
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
+  async (provider: any) => {
+    const client = () => {
+      const url = `${provider.mockService.baseUrl}`
+      return supertest(url)
+    }
 
-  jestpact.pactWith(
-    pactOptions("sandbox", "prepare", pactGroupName),
-    /* eslint-disable  @typescript-eslint/no-explicit-any */
-    async (provider: any) => {
-      const client = () => {
-        const url = `${provider.mockService.baseUrl}`
-        return supertest(url)
-      }
-
-      describe("prepare sandbox e2e tests", () => {
-        test.each(pactGroupTestCases)("should be able to prepare a %s message", async (desc: string, request: fhir.Bundle, response: fhir.Parameters) => {
+    describe("prepare sandbox e2e tests", () => {
+      test.each(TestResources.prepareErrorCases)(
+        "should fail to prepare a %s message",
+        async (desc: string, request: fhir.Bundle, response: fhir.Parameters) => {
           const apiPath = `${basePath}/$prepare`
           const requestStr = LosslessJson.stringify(request)
+          const responseStr = LosslessJson.stringify(response)
           const requestId = uuid.v4()
           const correlationId = uuid.v4()
 
@@ -46,24 +45,8 @@ TestResources.prepareCaseGroups.forEach(pactGroup => {
                 "X-Request-ID": requestId,
                 "X-Correlation-ID": correlationId
               },
-              body: {
-                resourceType: "Parameters",
-                parameter: [
-                  {
-                    name: "digest",
-                    valueString: Matchers.like(getStringParameterByName(response, "digest").valueString)
-                  },
-                  {
-                    name: "timestamp",
-                    valueString: Matchers.like(getStringParameterByName(response, "timestamp").valueString)
-                  },
-                  {
-                    name: "algorithm",
-                    valueString: "RS1"
-                  }
-                ]
-              },
-              status: 200
+              body: JSON.parse(responseStr),
+              status: 400
             }
           }
           await provider.addInteraction(interaction)
@@ -73,9 +56,8 @@ TestResources.prepareCaseGroups.forEach(pactGroup => {
             .set("X-Request-ID", requestId)
             .set("X-Correlation-ID", correlationId)
             .send(requestStr)
-            .expect(200)
-        })
+            .expect(400)
       })
-    }
-  )
-})
+    })
+  }
+)

@@ -1,37 +1,22 @@
 import {fetcher} from "@models"
-import {pactGroups, cancelPactGroups, PactGroupCases, dispensePactGroups} from "./common"
+import { ApiOperation } from "./common"
 
-function getConvertCases(searchString: string) {
-  return fetcher.convertExamples
-    .filter(e => e.isSuccess)
-    .filter(e => e.description.includes(searchString))
-    .map(spec => spec.toJestCase())
-}
-
-function getPrepareCases(searchString: string) {
-  return fetcher.prepareExamples
-    .filter(e => e.isSuccess)
-    .filter(e => e.description.includes(searchString))
-    .map(spec => spec.toJestCase())
-}
-
-function getProcessCases(searchString: string, operation: string) {
+function getProcessCases(operation: ApiOperation) {
   return fetcher.processExamples
     .filter(e => e.isSuccess)
-    .filter(e => e.description.includes(searchString))
     .filter(e => e.requestFile.operation === operation)
     .map(spec => spec.toJestCase())
 }
 
-export const convertCaseGroups = pactGroups.map(pactGroup => new PactGroupCases(pactGroup, getConvertCases(pactGroup)))
+export const convertCaseGroups = fetcher.convertExamples.filter(e => e.isSuccess).map(spec => spec.toJestCase())
 export const convertErrorCases = fetcher.convertExamples.filter(e => !e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
 
-export const prepareCaseGroups = pactGroups.map(pactGroup => new PactGroupCases(pactGroup, getPrepareCases(pactGroup)))
-export const prepareErrorCases = fetcher.convertExamples.filter(e => !e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
+export const prepareCaseGroups = fetcher.prepareExamples.filter(e => e.isSuccess).map(spec => spec.toJestCase())
+export const prepareErrorCases = fetcher.prepareExamples.filter(e => !e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
 
-export const processOrderCaseGroups = pactGroups.map(pactGroup => new PactGroupCases(pactGroup, getProcessCases(pactGroup, "send")))
-export const processOrderUpdateCaseGroups = cancelPactGroups.map(pactGroup => new PactGroupCases(pactGroup, getProcessCases(pactGroup, "cancel")))
-export const processDispenseNotificationCaseGroups = dispensePactGroups.map(pactGroup => new PactGroupCases(pactGroup, getProcessCases(pactGroup, "dispense")))
+export const processOrderCaseGroups = getProcessCases("send")
+export const processOrderUpdateCaseGroups = getProcessCases("cancel")
+export const processDispenseNotificationCaseGroups = getProcessCases("dispense")
 
 export const releaseCases = fetcher.releaseExamples.filter(e => e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
 

@@ -1,12 +1,12 @@
-import { InteractionObject } from "@pact-foundation/pact"
+import {InteractionObject} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import {basePath, pactOptions} from "../../resources/common"
 import * as uuid from "uuid"
-import { createUnauthorisedInteraction } from "./auth"
+import {createUnauthorisedInteraction} from "./auth"
 
 jestpact.pactWith(
-  pactOptions("live", "process", "failures"),
+  pactOptions("live", "process"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {

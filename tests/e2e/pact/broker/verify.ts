@@ -1,27 +1,18 @@
 import {VerifierV3, VerifierV3Options} from "@pact-foundation/pact"
-import {
-  getPreparePactGroups,
-  getProcessSendPactGroups,
-  getProcessCancelPactGroups,
-  getConvertPactGroups,
-  getReleasePactGroups,
-  ApiEndpoint,
-  getProcessDispensePactGroups,
-  getTaskPactGroups
-} from "../resources/common"
+import {ApiEndpoint, ApiOperation, processMessageOperations, taskOperations} from "../resources/common"
 import path from "path"
 
 let token: string
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
-async function verify(endpoint: string, pactGroupName: string): Promise<any> {
+async function verify(endpoint: string, operation?: string): Promise<any> {
     const useBroker = process.env.PACT_USE_BROKER !== "false"
     const providerVersion = process.env.PACT_TAG
       ? `${process.env.PACT_VERSION} (${process.env.PACT_TAG})`
       : process.env.PACT_VERSION
     let verifierOptions: VerifierV3Options = {
-      consumerVersionTag: process.env.PACT_VERSION,
-      provider: `${process.env.PACT_PROVIDER}+${endpoint}${pactGroupName ? "-" + pactGroupName : ""}+${process.env.PACT_VERSION}`,
+      consumerVersionTags: process.env.PACT_VERSION,
+      provider: `${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
       providerVersion: providerVersion,
       providerBaseUrl: process.env.PACT_PROVIDER_URL,
       logLevel: "debug",
@@ -61,7 +52,7 @@ async function verify(endpoint: string, pactGroupName: string): Promise<any> {
         ...verifierOptions,
         pactUrls: [
           // eslint-disable-next-line max-len
-          `${path.join(__dirname, "../pact/pacts")}/nhsd-apim-eps-test-client+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${endpoint}${pactGroupName ? "-" + pactGroupName : ""}+${process.env.PACT_VERSION}.json`
+          `${path.join(__dirname, "../pact/pacts")}/nhsd-apim-eps-test-client+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}.json`
         ]
       }
     }
@@ -70,66 +61,40 @@ async function verify(endpoint: string, pactGroupName: string): Promise<any> {
     return await verifier.verifyProvider()
 }
 
-async function verifyOnce(endpoint: ApiEndpoint, pactGroupName: string) {
-  await verify(endpoint, pactGroupName)
+async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
+  await verify(endpoint, operation)
     .catch(() => process.exit(1))
 }
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyConvert(): Promise<any> {
-  await getConvertPactGroups().reduce(async (promise, group) => {
-    await promise
-    await verifyOnce("convert", group)
-  }, Promise.resolve())
+    await verifyOnce("convert")
 }
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyPrepare(): Promise<any> {
-    await getPreparePactGroups().reduce(async (promise, group) => {
-      await promise
-      await verifyOnce("prepare", group)
-    }, Promise.resolve())
+  await verifyOnce("prepare")
 }
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyProcess(): Promise<any> {
-    await getProcessSendPactGroups().reduce(async (promise, group) => {
+    await processMessageOperations.reduce(async (promise, operation) => {
       await promise
-      await verifyOnce("process", group)
+      await verifyOnce("process", operation)
     }, Promise.resolve())
-
-    await getProcessDispensePactGroups().reduce(async (promise, group) => {
-      await promise
-      await verifyOnce("process", `${group}-dispense`)
-    }, Promise.resolve())
-
-    await getProcessCancelPactGroups().reduce(async (promise, group) => {
-      await promise
-      await verifyOnce("process", `${group}-cancel`)
-    }, Promise.resolve())
-}
-
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-async function verifyRelease(): Promise<any> {
-  await getReleasePactGroups().reduce(async (promise, group) => {
-    await promise
-    await verifyOnce("release", group)
-  }, Promise.resolve())
 }
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 async function verifyTask(): Promise<any> {
-  await getTaskPactGroups().reduce(async (promise, group) => {
+  await taskOperations.reduce(async (promise, operation) => {
     await promise
-    await verifyOnce("task", group)
+    await verifyOnce("task", operation)
   }, Promise.resolve())
 }
 
 (async () => {
-  verifyConvert()
+  await verifyConvert()
     .then(verifyPrepare)
     .then(verifyProcess)
-    .then(verifyRelease)
     .then(verifyTask)
 })()
-
