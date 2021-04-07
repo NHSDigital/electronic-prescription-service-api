@@ -7,15 +7,6 @@ export type ApiMode = "live" | "sandbox"
 export type ApiEndpoint = "prepare" | "process" | "convert" | "task"
 export type ApiOperation = "send" | "cancel" | "dispense" | "release" | "return" | "withdraw"
 
-// todo, remove live/sandbox split once dispense interactions are handled in live proxies
-const liveProcessMessageOperations: Array<ApiOperation> = ["send", "cancel"]
-const liveTaskOperations: Array<ApiOperation> = []
-const sandboxProcessMessageOperations: Array<ApiOperation> = ["send", "cancel", "dispense"]
-const sandboxTaskOperations: Array<ApiOperation> = ["release", "return", "withdraw"]
-const isSandbox = process.env.APIGEE_ENVIRONMENT?.includes("sandbox")
-export const processMessageOperations = isSandbox ? sandboxProcessMessageOperations : liveProcessMessageOperations
-export const taskOperations = isSandbox ? sandboxTaskOperations : liveTaskOperations
-
 // used to add type-safety for adding a new pact
 export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, operation?: ApiOperation): JestPactOptions
 {

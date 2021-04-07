@@ -1,5 +1,5 @@
 import {VerifierV3, VerifierV3Options} from "@pact-foundation/pact"
-import {ApiEndpoint, ApiOperation, processMessageOperations, taskOperations} from "../resources/common"
+import {ApiEndpoint, ApiOperation} from "../resources/common"
 import path from "path"
 
 let token: string
@@ -19,11 +19,9 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
       stateHandlers: {
         "is authenticated": () => {
           token = `${process.env.APIGEE_ACCESS_TOKEN}`
-          Promise.resolve(`Valid bearer token generated`)
         },
         "is not authenticated": () => {
           token = ""
-          Promise.resolve(`Invalid bearer token generated`)
         }
       },
       requestFilter: (req) => {
@@ -61,40 +59,44 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
     return await verifier.verifyProvider()
 }
 
+// todo, remove live/sandbox split once dispense interactions are handled in live proxies
+const liveProcessMessageOperations: Array<ApiOperation> = ["send", "cancel"]
+const liveTaskOperations: Array<ApiOperation> = []
+const sandboxProcessMessageOperations: Array<ApiOperation> = ["send", "cancel", "dispense"]
+const sandboxTaskOperations: Array<ApiOperation> = ["release", "return", "withdraw"]
+const isSandbox = process.env.APIGEE_ENVIRONMENT?.includes("sandbox")
+const processMessageOperations = isSandbox ? sandboxProcessMessageOperations : liveProcessMessageOperations
+const taskOperations = isSandbox ? sandboxTaskOperations : liveTaskOperations
+
 async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
-  await verify(endpoint, operation)
-    .catch(() => process.exit(1))
+  // todo: remove below if statement once dispense interactions are handled in live proxies
+  const shouldVerifyOperation =
+    !(endpoint == "process" || endpoint === "task")
+    || (endpoint === "process" && processMessageOperations.includes(operation))
+      || (endpoint === "task" && taskOperations.includes(operation))
+
+  if (shouldVerifyOperation) {
+    await verify(endpoint, operation)
+      .catch(() => process.exit(1))
+  }
 }
 
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-async function verifyConvert(): Promise<any> {
-    await verifyOnce("convert")
-}
-
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-async function verifyPrepare(): Promise<any> {
-  await verifyOnce("prepare")
-}
-
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-async function verifyProcess(): Promise<any> {
-    await processMessageOperations.reduce(async (promise, operation) => {
-      await promise
-      await verifyOnce("process", operation)
-    }, Promise.resolve())
-}
-
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-async function verifyTask(): Promise<any> {
-  await taskOperations.reduce(async (promise, operation) => {
-    await promise
-    await verifyOnce("task", operation)
-  }, Promise.resolve())
-}
+async function verifyConvert(): Promise<void> { await verifyOnce("convert") }
+async function verifyPrepare(): Promise<void> { await verifyOnce("prepare") }
+async function verifySend(): Promise<void> { await verifyOnce("process", "send") }
+async function verifyCancel(): Promise<void> { await verifyOnce("process", "cancel") }
+async function verifyRelease(): Promise<void> { await verifyOnce("task", "release") }
+async function verifyDispense(): Promise<void> { await verifyOnce("process", "dispense") }
+async function verifyReturn(): Promise<void> { await verifyOnce("task", "return") }
+async function verifyWithdraw(): Promise<void> { await verifyOnce("task", "withdraw") }
 
 (async () => {
   await verifyConvert()
     .then(verifyPrepare)
-    .then(verifyProcess)
-    .then(verifyTask)
+    .then(verifySend)
+    .then(verifyCancel)
+    .then(verifyRelease)
+    .then(verifyDispense)
+    .then(verifyReturn)
+    .then(verifyWithdraw)
 })()

@@ -23,8 +23,8 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    describe("process-message e2e tests", () => {
-      test.each(TestResources.processOrderCaseGroups)("should be able to process %s", async (desc: string, message: fhir.Bundle) => {
+    describe("process-message send e2e tests", () => {
+      test.each(TestResources.processOrderCaseGroups)("should be able to send %s", async (desc: string, message: fhir.Bundle) => {
         const apiPath = `${basePath}/$process-message`
         const bundleStr = LosslessJson.stringify(message)
         const bundle = JSON.parse(bundleStr) as fhir.Bundle
@@ -87,8 +87,8 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    describe("process-message e2e tests", () => {
-        test.each(TestResources.processOrderUpdateCaseGroups)("should be able to process %s", async (desc: string, message: fhir.Bundle) => {
+    describe("process-message cancel e2e tests", () => {
+        test.each(TestResources.processOrderUpdateCaseGroups)("should be able to cancel %s", async (desc: string, message: fhir.Bundle) => {
           const apiPath = `${basePath}/$process-message`
           const bundleStr = LosslessJson.stringify(message)
           const bundle = JSON.parse(bundleStr) as fhir.Bundle
@@ -102,7 +102,7 @@ jestpact.pactWith(
 
           const interaction: InteractionObject = {
             state: "is authenticated",
-            uponReceiving: `a request to process prescription: ${prescriptionId} - ${desc} message to Spine`,
+            uponReceiving: `a request to cancel prescription: ${prescriptionId} - ${desc} message to Spine`,
             withRequest: {
               headers: {
                 "Content-Type": "application/fhir+json; fhirVersion=4.0",
@@ -143,9 +143,9 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    describe("process-message e2e tests", () => {
+    describe("process-message dispense e2e tests", () => {
         test.each(TestResources.processDispenseNotificationCaseGroups)(
-          "should be able to process %s",
+          "should be able to dispense %s",
           async (desc: string, message: fhir.Bundle) => {
             const apiPath = `${basePath}/$process-message`
             const bundleStr = LosslessJson.stringify(message)
@@ -156,7 +156,7 @@ jestpact.pactWith(
 
             const interaction: InteractionObject = {
               state: "is authenticated",
-              uponReceiving: `a request to process prescription: ${desc} message to Spine`,
+              uponReceiving: `a request to dispense prescription: ${desc} message to Spine`,
               withRequest: {
                 headers: {
                   "Content-Type": "application/fhir+json; fhirVersion=4.0",
@@ -189,7 +189,7 @@ jestpact.pactWith(
 })
 
 jestpact.pactWith(
-  pactOptions("live", "process"),
+  pactOptions("live", "process", "send"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {

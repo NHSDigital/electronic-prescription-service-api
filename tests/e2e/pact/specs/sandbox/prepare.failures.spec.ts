@@ -1,10 +1,10 @@
-import { InteractionObject, Matchers } from "@pact-foundation/pact"
+import {InteractionObject} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
 import * as TestResources from "../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
-import { basePath, pactOptions } from "../../resources/common"
+import {basePath, pactOptions} from "../../resources/common"
 import {fhir} from "@models"
 
 jestpact.pactWith(
@@ -19,7 +19,7 @@ jestpact.pactWith(
     describe("prepare sandbox e2e tests", () => {
       test.each(TestResources.prepareErrorCases)(
         "should fail to prepare a %s message",
-        async (desc: string, request: fhir.Bundle, response: fhir.Parameters) => {
+        async (desc: string, request: fhir.Bundle, response: fhir.Parameters, statusCode: number) => {
           const apiPath = `${basePath}/$prepare`
           const requestStr = LosslessJson.stringify(request)
           const responseStr = LosslessJson.stringify(response)
@@ -46,7 +46,7 @@ jestpact.pactWith(
                 "X-Correlation-ID": correlationId
               },
               body: JSON.parse(responseStr),
-              status: 400
+              status: statusCode
             }
           }
           await provider.addInteraction(interaction)
@@ -56,7 +56,7 @@ jestpact.pactWith(
             .set("X-Request-ID", requestId)
             .set("X-Correlation-ID", correlationId)
             .send(requestStr)
-            .expect(400)
+            .expect(statusCode)
       })
     })
   }

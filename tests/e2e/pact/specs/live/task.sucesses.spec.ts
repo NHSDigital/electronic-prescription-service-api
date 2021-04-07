@@ -8,7 +8,7 @@ import {basePath, pactOptions} from "../../resources/common"
 import {fhir} from "@models"
 
 jestpact.pactWith(
-  pactOptions("sandbox", "task", "release"),
+  pactOptions("live", "task", "release"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
@@ -16,7 +16,7 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    describe("sandbox dispense interactions", () => {
+    describe("dispense interactions", () => {
       test.each(TestResources.taskReleaseCases)(
         "should be able to acquire prescription info on a prescription release",
         async (description: string, request: fhir.Parameters, response: fhir.Bundle, statusCode: string) => {
@@ -72,7 +72,7 @@ jestpact.pactWith(
 )
 
 jestpact.pactWith(
-  pactOptions("sandbox", "task", "return"),
+  pactOptions("live", "task", "return"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
@@ -80,7 +80,7 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    describe("Task return sandbox e2e tests", () => {
+    describe("Task return e2e tests", () => {
       test.each(TestResources.taskReturnCases)(
         "should be able to process %s",
         async (desc: string, message: fhir.Bundle) => {
@@ -135,7 +135,7 @@ jestpact.pactWith(
 )
 
 jestpact.pactWith(
-  pactOptions("sandbox", "task", "withdraw"),
+  pactOptions("live", "task", "withdraw"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
@@ -143,7 +143,7 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    describe("Task withdraw sandbox e2e tests", () => {
+    describe("Task withdraw e2e tests", () => {
       test.each(TestResources.taskWithdrawCases)(
         "should be able to withdraw %s",
         async (desc: string, message: fhir.Bundle) => {

@@ -16,9 +16,9 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    describe("process-message sandbox e2e tests", () => {
+    describe("process-message send sandbox e2e tests", () => {
       test.each(TestResources.processOrderCaseGroups)(
-        "should be able to process %s",
+        "should be able to send %s",
         async (desc: string, message: fhir.Bundle) => {
           const apiPath = `${basePath}/$process-message`
           const messageStr = LosslessJson.stringify(message)
@@ -69,9 +69,9 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    describe("process-message sandbox e2e tests", () => {
+    describe("process-message cancel sandbox e2e tests", () => {
       test.each(TestResources.processOrderUpdateCaseGroups)(
-        "should be able to process %s",
+        "should be able to cancel %s",
         async (desc: string, message: fhir.Bundle) => {
           const apiPath = `${basePath}/$process-message`
           const messageStr = LosslessJson.stringify(message)
@@ -79,7 +79,7 @@ jestpact.pactWith(
           const correlationId = uuid.v4()
           const interaction: InteractionObject = {
             state: "is not authenticated",
-            uponReceiving: `a request to process ${desc} message to Spine`,
+            uponReceiving: `a request to send ${desc} message to Spine`,
             withRequest: {
               headers: {
                 "Content-Type": "application/fhir+json; fhirVersion=4.0",
@@ -123,9 +123,9 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    describe("process-message e2e tests", () => {
+    describe("process-message dispense sandbox e2e tests", () => {
         test.each(TestResources.processDispenseNotificationCaseGroups)(
-          "should be able to process %s",
+          "should be able to dispense %s",
           async (desc: string, message: fhir.Bundle) => {
             const apiPath = `${basePath}/$process-message`
             const bundleStr = LosslessJson.stringify(message)
@@ -177,7 +177,7 @@ jestpact.pactWith(
       return supertest(url)
     }
 
-    describe("process-message sandbox e2e tests", () => {
+    describe("process-message accept-header sandbox e2e tests", () => {
 
       test("Should be able to process a FHIR JSON Accept header", async () => {
         const testCase = fetcher.processExamples[0]

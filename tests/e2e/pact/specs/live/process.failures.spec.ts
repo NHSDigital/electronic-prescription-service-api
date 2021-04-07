@@ -6,7 +6,7 @@ import * as uuid from "uuid"
 import {createUnauthorisedInteraction} from "./auth"
 
 jestpact.pactWith(
-  pactOptions("live", "process"),
+  pactOptions("live", "process", "send"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
