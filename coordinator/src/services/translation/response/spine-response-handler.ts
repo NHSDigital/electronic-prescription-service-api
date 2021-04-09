@@ -63,7 +63,7 @@ export class SpineResponseHandler<T> {
     return {
       statusCode: 200,
       fhirResponse: fhir.createOperationOutcome([{
-        code: "informational",
+        code: fhir.IssueCodes.INFORMATIONAL,
         severity: "information"
       }])
     }
@@ -80,7 +80,7 @@ export class SpineResponseHandler<T> {
     return {
       statusCode: 500,
       fhirResponse: fhir.createOperationOutcome([{
-        code: "invalid",
+        code: fhir.IssueCodes.INVALID,
         severity: "error"
       }])
     }
@@ -96,16 +96,106 @@ export class SpineResponseHandler<T> {
   }
 
   private static toOperationOutcomeIssue(code: hl7V3.Code<string>): fhir.OperationOutcomeIssue {
+    const epsCodeInformation = SpineResponseHandler.toEpsErrorCode(code)
     return {
-      code: "invalid",
+      code: epsCodeInformation.code,
       severity: "error",
       details: {
         coding: [{
           system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-          code: code._attributes.code,
-          display: code._attributes.displayName
+          code: epsCodeInformation.issueCode,
+          display: epsCodeInformation.display
         }]
       }
+    }
+  }
+
+  private static toEpsErrorCode(code: hl7V3.Code<string>): EpsErrorCodeInformation{
+    switch(code._attributes.code){
+      case "0001":
+        return new EpsErrorCodeInformation(
+          fhir.IssueCodes.BUSINESS_RULE,
+          "Patient is recorded as dead",
+          "PATIENT_DECEASED"
+        )
+      case "0002":
+        return new EpsErrorCodeInformation(
+          fhir.IssueCodes.DUPLICATE,
+          "Duplicate prescription ID exists",
+          "DUPLICATE_PRESCRIPTION_ID"
+        )
+      case "0003":
+        return new EpsErrorCodeInformation(
+          fhir.IssueCodes.BUSINESS_RULE,
+          "Digital signature not found",
+          "MISSING_DIGITAL_SIGNATURE"
+        )
+      case "0009":
+        return new EpsErrorCodeInformation(
+          fhir.IssueCodes.STRUCTURE,
+          "Invalid Message",
+          "INVALID_MESSAGE"
+        )
+      case "0010":
+        return new EpsErrorCodeInformation(
+          fhir.IssueCodes.BUSINESS_RULE,
+          "Number of items on a prescription should be between 1 and 4",
+          "INVALID_NUMBER_MEDICATIONREQUESTS"
+        )
+      case "0018":
+        return new EpsErrorCodeInformation(
+          fhir.IssueCodes.BUSINESS_RULE,
+          "Mismatch in authorised repeat counts",
+          "MISMATCH_AUTHORISED_REPEAT_COUNT"
+        )
+      case "0019":
+        return new EpsErrorCodeInformation(
+          fhir.IssueCodes.BUSINESS_RULE,
+          "Repeat count should be between 1 and 99",
+          "INVALID_REPEAT_COUNT"
+        )
+      case "5008":
+        return new EpsErrorCodeInformation(
+          fhir.IssueCodes.DUPLICATE,
+          "Duplicate item ID exists",
+          "DUPLICATE_MEDICATIONREQUEST_ID"
+        )
+      case "5009":
+        return new EpsErrorCodeInformation(
+          fhir.IssueCodes.VALUE,
+          "Error in check digit",
+          "INVALID_CHECK_DIGIT"
+        )
+      case "9006":
+        return new EpsErrorCodeInformation(
+          fhir.IssueCodes.VALUE,
+          "Format of date passed is invalid",
+          "INVALID_DATE_FORMAT"
+        )
+      case "0007":
+        return new EpsErrorCodeInformation(
+          fhir.IssueCodes.CODE_INVALID,
+          "The resource ID was not valid. For example a NHS Number is presented which is not a valid NHS Number.",
+          "INVALID_RESOURCE_ID"
+        )
+      case "0008":
+        return new EpsErrorCodeInformation(
+          fhir.IssueCodes.VALUE,
+          code._attributes.displayName,
+          "MISSING_VALUE"
+        )
+      case "0099":
+        return new EpsErrorCodeInformation(
+          fhir.IssueCodes.CONFLICT,
+          "Resource version mismatch",
+          "RESOURCE_VERSION_MISMATCH"
+        )
+      default:
+        return new EpsErrorCodeInformation(
+          fhir.IssueCodes.INVALID,
+          code._attributes.displayName,
+          "ERROR"
+        )
     }
   }
 
@@ -182,5 +272,21 @@ export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.Prescript
       statusCode: 200,
       fhirResponse: this.translator(releaseResponse)
     }
+  }
+}
+
+class EpsErrorCodeInformation {
+  code: fhir.IssueCodes
+  display: string
+  issueCode: string
+
+  constructor(
+    code: fhir.IssueCodes,
+    display: string,
+    otherCode: string
+  ) {
+    this.code = code
+    this.display = display
+    this.issueCode = otherCode
   }
 }

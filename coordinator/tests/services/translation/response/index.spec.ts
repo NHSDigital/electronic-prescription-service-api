@@ -26,7 +26,7 @@ describe("translateToFhir", () => {
 
     expect(body.issue).toHaveLength(1)
     expect(body.issue[0].details.coding).toHaveLength(1)
-    expect(body.issue[0].details.coding[0].code).toBe(syncResponse.spineErrorCode.toString())
+    expect(body.issue[0].details.coding[0].code).toBe(syncResponse.epsErrorCode.toString())
     expect(body.issue[0].details.coding[0].display).toBeTruthy()
     expect(statusCode).toBe(400)
   })
@@ -39,7 +39,7 @@ describe("translateToFhir", () => {
     expect(body.issue.length).toBeGreaterThan(1)
     body.issue.forEach(operationOutcomeIssue => {
       expect(operationOutcomeIssue.details.coding).toHaveLength(1)
-      expect(operationOutcomeIssue.details.coding[0].code).toBe(syncResponse.spineErrorCode.toString())
+      expect(operationOutcomeIssue.details.coding[0].code).toBe(syncResponse.epsErrorCode.toString())
       expect(operationOutcomeIssue.details.coding[0].display).toBeTruthy()
     })
     expect(statusCode).toBe(400)

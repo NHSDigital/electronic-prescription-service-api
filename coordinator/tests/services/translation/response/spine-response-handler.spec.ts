@@ -79,7 +79,7 @@ describe("default handler", () => {
       statusCode: 400,
       fhirResponse: {
         resourceType: "OperationOutcome",
-        issue: [createErrorOperationOutcomeIssue("RejectionCode", "Rejection Display Name")]
+        issue: [createErrorOperationOutcomeIssue("ERROR", "Rejection Display Name")]
       } as fhir.OperationOutcome
     })
   })
@@ -97,8 +97,8 @@ describe("default handler", () => {
       fhirResponse: {
         resourceType: "OperationOutcome",
         issue: [
-          createErrorOperationOutcomeIssue("RejectionCode1", "Rejection Display Name 1"),
-          createErrorOperationOutcomeIssue("RejectionCode2", "Rejection Display Name 2")
+          createErrorOperationOutcomeIssue("ERROR", "Rejection Display Name 1"),
+          createErrorOperationOutcomeIssue("ERROR", "Rejection Display Name 2")
         ]
       } as fhir.OperationOutcome
     })
@@ -132,7 +132,7 @@ describe("default handler", () => {
       statusCode: 400,
       fhirResponse: {
         resourceType: "OperationOutcome",
-        issue: [createErrorOperationOutcomeIssue("ErrorCode", "Error Display Name")]
+        issue: [createErrorOperationOutcomeIssue("ERROR", "Error Display Name")]
       } as fhir.OperationOutcome
     })
   })
@@ -151,8 +151,8 @@ describe("default handler", () => {
       fhirResponse: {
         resourceType: "OperationOutcome",
         issue: [
-          createErrorOperationOutcomeIssue("ErrorCode1", "Error Display Name 1"),
-          createErrorOperationOutcomeIssue("ErrorCode2", "Error Display Name 2")
+          createErrorOperationOutcomeIssue("ERROR", "Error Display Name 1"),
+          createErrorOperationOutcomeIssue("ERROR", "Error Display Name 2")
         ]
       } as fhir.OperationOutcome
     })
@@ -250,7 +250,7 @@ describe("cancel response handler", () => {
       statusCode: 400,
       fhirResponse: {
         resourceType: "OperationOutcome",
-        issue: [createErrorOperationOutcomeIssue("RejectionCode", "Rejection Display Name")]
+        issue: [createErrorOperationOutcomeIssue("ERROR", "Rejection Display Name")]
       } as fhir.OperationOutcome
     })
   })
@@ -307,7 +307,7 @@ describe("release response handler", () => {
       statusCode: 400,
       fhirResponse: {
         resourceType: "OperationOutcome",
-        issue: [createErrorOperationOutcomeIssue("RejectionCode", "Rejection Display Name")]
+        issue: [createErrorOperationOutcomeIssue("ERROR", "Rejection Display Name")]
       } as fhir.OperationOutcome
     })
   })
@@ -324,7 +324,7 @@ describe("release response handler", () => {
       statusCode: 400,
       fhirResponse: {
         resourceType: "OperationOutcome",
-        issue: [createErrorOperationOutcomeIssue("ErrorCode", "Error Display Name")]
+        issue: [createErrorOperationOutcomeIssue("ERROR", "Error Display Name")]
       } as fhir.OperationOutcome
     })
   })
@@ -429,7 +429,7 @@ function createSendMessagePayloadReason(code: string, display: string): hl7V3.Se
 
 function createErrorOperationOutcomeIssue(code: string, display: string): fhir.OperationOutcomeIssue {
   return {
-    code: "invalid",
+    code: fhir.IssueCodes.INVALID,
     severity: "error",
     details: {
       coding: [{

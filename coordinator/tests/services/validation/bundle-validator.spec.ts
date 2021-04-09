@@ -13,7 +13,7 @@ import {
 function validateValidationErrors (validationErrors: Array<fhir.OperationOutcomeIssue>) {
   expect(validationErrors).toHaveLength(1)
   const validationError = validationErrors[0]
-  expect(validationError.code).toEqual("value")
+  expect(validationError.code).toEqual(fhir.IssueCodes.VALUE)
   expect(validationError.severity).toEqual("error")
 }
 
