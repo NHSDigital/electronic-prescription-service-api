@@ -15,11 +15,11 @@ function getTaskCases(operation: ApiOperation) {
     .map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
 }
 
-export const convertCaseGroups = fetcher.convertExamples.filter(e => e.isSuccess).map(spec => spec.toJestCase())
-export const convertErrorCases = fetcher.convertExamples.filter(e => !e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
+export const convertCaseGroups = fetcher.convertExamples.filter(e => e.isSuccess).map(spec => spec.toSuccessJestCase())
+export const convertErrorCases = fetcher.convertExamples.filter(e => !e.isSuccess).map(spec => spec.toErrorJestCase())
 
 export const prepareCaseGroups = fetcher.prepareExamples.filter(e => e.isSuccess).map(spec => spec.toJestCase())
-export const prepareErrorCases = fetcher.prepareExamples.filter(e => !e.isSuccess).map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
+export const prepareErrorCases = fetcher.prepareExamples.filter(e => !e.isSuccess).map(spec => spec.toJestCase())
 
 export const processOrderCaseGroups = getProcessCases("send")
 export const processOrderUpdateCaseGroups = getProcessCases("cancel")
