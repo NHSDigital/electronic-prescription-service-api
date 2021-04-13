@@ -6,13 +6,13 @@ import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
 import {fetcher, fhir} from "@models"
-import {generateShortFormId, setPrescriptionIds/*, updatePrescriptions*/} from "../../services/update-prescriptions"
+import {generateShortFormId, setPrescriptionIds, updatePrescriptions} from "../../services/update-prescriptions"
 
-// (async () => {
-//   if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
-//     await updatePrescriptions()
-//   }
-// })()
+(async () => {
+  if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
+    await updatePrescriptions()
+  }
+})()
 
 jestpact.pactWith(
   pactOptions("live", "process", "send"),

@@ -2,13 +2,10 @@ import * as uuid from "uuid"
 import {fhir, fetcher, ProcessCase} from "@models"
 import {
   getResourcesOfType,
-  convertFhirMessageToSignedInfoMessage,
-  // convertBundleToSpineRequest
+  convertFhirMessageToSignedInfoMessage
 } from "@coordinator"
 import * as crypto from "crypto"
 import fs from "fs"
-// import * as LosslessJson from "lossless-json"
-// import pino from "pino"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
@@ -20,7 +17,7 @@ export async function updatePrescriptions(): Promise<void> {
   let signPrescriptionFn = (processCase: ProcessCase): void => {return}
 
   // eslint-disable-next-line no-constant-condition
-  if (false/*|| fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath*/)
+  if (fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath))
   {
     signPrescriptionFn = signPrescription
   }
