@@ -77,10 +77,6 @@ export function setPrescriptionIds(
   })
 }
 
-/**
- * The following methods contain a lot of duplicated code from the coordinator module.
- * TODO - Find a better way to share this code.
- */
 export function generateShortFormId(originalShortFormId?: string): string {
   const _PRESC_CHECKDIGIT_VALUES = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+"
   const hexString = (uuid.v4()).replace(/-/g, "").toUpperCase()
