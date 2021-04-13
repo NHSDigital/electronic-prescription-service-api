@@ -12,7 +12,7 @@ function getTaskCases(operation: ApiOperation) {
   return fetcher.taskExamples
     .filter(e => e.isSuccess)
     .filter(e => e.requestFile.operation === operation)
-    .map(spec => [spec.description, spec.request, spec.response, spec.statusCode])
+    .map(spec => spec.toJestCase())
 }
 
 export const convertCaseGroups = fetcher.convertExamples.filter(e => e.isSuccess).map(spec => spec.toSuccessJestCase())
