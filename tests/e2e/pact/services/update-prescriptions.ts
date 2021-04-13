@@ -1,11 +1,12 @@
 import * as uuid from "uuid"
-import {fhir, fetcher, ProcessCase} from "@models"
+import {fhir, fetcher} from "@models"
 import {
   getResourcesOfType,
   convertFhirMessageToSignedInfoMessage
 } from "@coordinator"
 import * as crypto from "crypto"
 import fs from "fs"
+import * as LosslessJson from "lossless-json"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
@@ -14,7 +15,7 @@ export async function updatePrescriptions(): Promise<void> {
   const replacements = new Map<string, string>()
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let signPrescriptionFn = (processCase: ProcessCase): void => {return}
+  let signPrescriptionFn = (prepareRequest: fhir.Bundle, processRequest: fhir.Bundle): void => {return}
 
   // eslint-disable-next-line no-constant-condition
   if (fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath))
@@ -26,9 +27,9 @@ export async function updatePrescriptions(): Promise<void> {
   }
 
   fetcher.prescriptionOrderExamples.filter(e => e.isSuccess).forEach(async(processCase) => {
-    const prepareBundle = processCase.prepareRequest
-    const processBundle = processCase.request
-    const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(prepareBundle)[0].groupIdentifier
+    const prepareBundle = clone(processCase.prepareRequest)
+    const processBundle = clone(processCase.request)
+    const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(processBundle)[0].groupIdentifier
 
     const newBundleIdentifier = uuid.v4()
 
@@ -42,11 +43,11 @@ export async function updatePrescriptions(): Promise<void> {
 
     setPrescriptionIds(processBundle, newBundleIdentifier, newShortFormId, newLongFormId)
     setTestPatientIfProd(processBundle)
-    signPrescriptionFn(processCase)
+    signPrescriptionFn(prepareBundle, processBundle)
   })
 
   fetcher.prescriptionOrderUpdateExamples.filter(e => e.isSuccess).forEach(async (processCase) => {
-    const bundle = processCase.request
+    const bundle = clone(processCase.request)
     const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(bundle)[0].groupIdentifier
 
     const newBundleIdentifier = uuid.v4()
@@ -132,8 +133,7 @@ function setTestPatientIfProd(bundle: fhir.Bundle) {
   }
 }
 
-function signPrescription(processCase: ProcessCase) {
-  const prepareRequest = processCase.prepareRequest
+function signPrescription(prepareRequest: fhir.Bundle, processRequest: fhir.Bundle) {
   const prepareResponse = convertFhirMessageToSignedInfoMessage(prepareRequest)
   const digestParameter = prepareResponse.parameter.filter(p => p.name === "digest")[0] as fhir.StringParameter
   const timestampParameter = prepareResponse.parameter.filter(p => p.name === "timestamp")[0] as fhir.StringParameter
@@ -156,8 +156,7 @@ function signPrescription(processCase: ProcessCase) {
   </KeyInfo>
 </Signature>
 `
-  const bundle = processCase.request
-  const provenance = getResourcesOfType.getProvenances(bundle)[0]
+  const provenance = getResourcesOfType.getProvenances(processRequest)[0]
   provenance.signature[0].when = timestampParameter.valueString
   provenance.signature[0].data = Buffer.from(xmlDSig, "utf-8").toString("base64")
 
@@ -184,4 +183,8 @@ function getNhsNumberIdentifier(fhirPatient: fhir.Patient) {
   return fhirPatient
     .identifier
     .filter(identifier => identifier.system === "https://fhir.nhs.uk/Id/nhs-number")[0]
+}
+
+function clone<T>(input: T): T {
+  return LosslessJson.parse(LosslessJson.stringify(input))
 }
