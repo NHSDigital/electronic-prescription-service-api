@@ -12,7 +12,7 @@ export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, operation?: Ap
 {
   const sandbox = mode === "sandbox"
   return {
-    spec: 3,
+    spec: 2,
     consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
     provider: `nhsd-apim-eps${sandbox ? "-sandbox" : ""}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
     pactfileWriteMode: "merge"
