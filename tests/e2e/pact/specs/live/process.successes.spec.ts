@@ -8,12 +8,6 @@ import {basePath, pactOptions} from "../../resources/common"
 import {fetcher, fhir} from "@models"
 import {generateShortFormId, setPrescriptionIds, updatePrescriptions} from "../../services/update-prescriptions"
 
-(async () => {
-  if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
-    await updatePrescriptions()
-  }
-})()
-
 jestpact.pactWith(
   pactOptions("live", "process", "send"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -22,6 +16,12 @@ jestpact.pactWith(
       const url = `${provider.mockService.baseUrl}`
       return supertest(url)
     }
+
+    beforeAll(async() => {
+      if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
+        await updatePrescriptions()
+      }
+    })
 
     describe("process-message send e2e tests", () => {
       test.each(TestResources.processOrderCaseGroups)("should be able to send %s", async (desc: string, message: fhir.Bundle) => {
