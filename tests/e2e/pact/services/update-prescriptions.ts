@@ -6,7 +6,6 @@ import {
 } from "@coordinator"
 import * as crypto from "crypto"
 import fs from "fs"
-import * as LosslessJson from "lossless-json"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
@@ -27,9 +26,9 @@ export async function updatePrescriptions(): Promise<void> {
   }
 
   fetcher.prescriptionOrderExamples.filter(e => e.isSuccess).forEach(async(processCase) => {
-    //const prepareBundle = clone(processCase.prepareRequest)
-    const processBundle = clone(processCase.request)
-    const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(processBundle)[0].groupIdentifier
+    const prepareBundle = processCase.prepareRequest
+    const processBundle = processCase.request
+    const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(prepareBundle)[0].groupIdentifier
 
     const newBundleIdentifier = uuid.v4()
 
@@ -47,7 +46,7 @@ export async function updatePrescriptions(): Promise<void> {
   })
 
   fetcher.prescriptionOrderUpdateExamples.filter(e => e.isSuccess).forEach(async (processCase) => {
-    const bundle = clone(processCase.request)
+    const bundle = processCase.request
     const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(bundle)[0].groupIdentifier
 
     const newBundleIdentifier = uuid.v4()
@@ -134,7 +133,7 @@ function setTestPatientIfProd(bundle: fhir.Bundle) {
 }
 
 function signPrescription(processCase: ProcessCase) {
-  const prepareRequest = clone(processCase.prepareRequest)
+  const prepareRequest = processCase.prepareRequest
   const prepareResponse = convertFhirMessageToSignedInfoMessage(prepareRequest)
   const digestParameter = prepareResponse.parameter.filter(p => p.name === "digest")[0] as fhir.StringParameter
   const timestampParameter = prepareResponse.parameter.filter(p => p.name === "timestamp")[0] as fhir.StringParameter
@@ -157,7 +156,7 @@ function signPrescription(processCase: ProcessCase) {
   </KeyInfo>
 </Signature>
 `
-  const bundle = clone(processCase.request)
+  const bundle = processCase.request
   const provenance = getResourcesOfType.getProvenances(bundle)[0]
   provenance.signature[0].when = timestampParameter.valueString
   provenance.signature[0].data = Buffer.from(xmlDSig, "utf-8").toString("base64")
@@ -185,8 +184,4 @@ function getNhsNumberIdentifier(fhirPatient: fhir.Patient) {
   return fhirPatient
     .identifier
     .filter(identifier => identifier.system === "https://fhir.nhs.uk/Id/nhs-number")[0]
-}
-
-function clone<T>(input: T): T {
-  return LosslessJson.parse(LosslessJson.stringify(input))
 }
