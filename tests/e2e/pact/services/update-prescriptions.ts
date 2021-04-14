@@ -1,20 +1,25 @@
 import * as uuid from "uuid"
-import {fhir, fetcher, ProcessCase} from "@models"
+import {fhir, fetcher} from "@models"
 import {
   getResourcesOfType,
-  convertFhirMessageToSignedInfoMessage
+  convertFhirMessageToSignedInfoMessage,
+  isRepeatDispensing,
+  convertMomentToISODate
 } from "@coordinator"
 import * as crypto from "crypto"
 import fs from "fs"
+import moment from "moment"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
+
+const isProd = process.env.APIGEE_ENVIRONMENT === "prod"
 
 export async function updatePrescriptions(): Promise<void> {
   const replacements = new Map<string, string>()
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let signPrescriptionFn = (processCase: ProcessCase): void => {return}
+  let signPrescriptionFn = (prepareRequest: fhir.Bundle, processRequest: fhir.Bundle): void => {return}
 
   // eslint-disable-next-line no-constant-condition
   if (fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath))
@@ -28,7 +33,7 @@ export async function updatePrescriptions(): Promise<void> {
   fetcher.prescriptionOrderExamples.filter(e => e.isSuccess).forEach(async(processCase) => {
     const prepareBundle = processCase.prepareRequest
     const processBundle = processCase.request
-    const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(prepareBundle)[0].groupIdentifier
+    const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(processBundle)[0].groupIdentifier
 
     const newBundleIdentifier = uuid.v4()
 
@@ -41,8 +46,18 @@ export async function updatePrescriptions(): Promise<void> {
     replacements.set(originalLongFormId, newLongFormId)
 
     setPrescriptionIds(processBundle, newBundleIdentifier, newShortFormId, newLongFormId)
-    setTestPatientIfProd(processBundle)
-    signPrescriptionFn(processCase)
+
+    if (isProd) {
+      setProdPatient(processBundle)
+      setProdAdditonalInstructions(processBundle)
+    }
+
+    const medicationRequests = getResourcesOfType.getMedicationRequests(processBundle)
+    if (isRepeatDispensing(medicationRequests)) {
+      setValidityPeriod(medicationRequests)
+    }
+
+    signPrescriptionFn(prepareBundle, processBundle)
   })
 
   fetcher.prescriptionOrderUpdateExamples.filter(e => e.isSuccess).forEach(async (processCase) => {
@@ -58,7 +73,10 @@ export async function updatePrescriptions(): Promise<void> {
     const newLongFormId = replacements.get(originalLongFormId)
 
     setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
-    setTestPatientIfProd(bundle)
+
+    if (isProd) {
+      setProdPatient(bundle)
+    }
   })
 }
 
@@ -76,10 +94,6 @@ export function setPrescriptionIds(
   })
 }
 
-/**
- * The following methods contain a lot of duplicated code from the coordinator module.
- * TODO - Find a better way to share this code.
- */
 export function generateShortFormId(originalShortFormId?: string): string {
   const _PRESC_CHECKDIGIT_VALUES = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+"
   const hexString = (uuid.v4()).replace(/-/g, "").toUpperCase()
@@ -98,45 +112,57 @@ export function generateShortFormId(originalShortFormId?: string): string {
   return prescriptionID
 }
 
-function setTestPatientIfProd(bundle: fhir.Bundle) {
-  if (process.env.APIGEE_ENVIRONMENT === "prod") {
-    const patient = getResourcesOfType.getPatient(bundle)
-    const nhsNumberIdentifier = getNhsNumberIdentifier(patient)
-    nhsNumberIdentifier.value = "9990548609"
-    patient.name = [
-      {
-        "use": "usual",
-        "family": "XXTESTPATIENT-TGNP",
-        "given": [
-          "DONOTUSE"
-        ],
-        "prefix": [
-          "MR"
-        ]
-      }
-    ]
-    patient.gender = "male"
-    patient.birthDate = "1932-01-06",
-    patient.address = [
-      {
-        "use": "home",
-        "line": [
-          "1 Trevelyan Square",
-          "Boar Lane",
-          "Leeds",
-          "West Yorkshire"
-        ],
-        "postalCode": "LS1 6AE"
-      }
-    ]
-  }
+function setValidityPeriod(medicationRequests: Array<fhir.MedicationRequest>) {
+  const start = convertMomentToISODate(moment.utc())
+  const end = convertMomentToISODate(moment.utc().add(1, "month"))
+  medicationRequests.forEach(medicationRequest => {
+    const validityPeriod = medicationRequest.dispenseRequest.validityPeriod
+    validityPeriod.start = start
+    validityPeriod.end = end
+  })
 }
 
-function signPrescription(processCase: ProcessCase) {
-  const prepareRequest = processCase.prepareRequest
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function setProdAdditonalInstructions(bundle: fhir.Bundle) {
+  // todo: add "TEST PRESCRIPTION DO NOT DISPENSE or similar"
+}
+
+function setProdPatient(bundle: fhir.Bundle) {
+  const patient = getResourcesOfType.getPatient(bundle)
+  const nhsNumberIdentifier = getNhsNumberIdentifier(patient)
+  nhsNumberIdentifier.value = "9990548609"
+  patient.name = [
+    {
+      "use": "usual",
+      "family": "XXTESTPATIENT-TGNP",
+      "given": [
+        "DONOTUSE"
+      ],
+      "prefix": [
+        "MR"
+      ]
+    }
+  ]
+  patient.gender = "male"
+  patient.birthDate = "1932-01-06",
+  patient.address = [
+    {
+      "use": "home",
+      "line": [
+        "1 Trevelyan Square",
+        "Boar Lane",
+        "Leeds",
+        "West Yorkshire"
+      ],
+      "postalCode": "LS1 6AE"
+    }
+  ]
+}
+
+function signPrescription(prepareRequest: fhir.Bundle, processRequest: fhir.Bundle) {
   const prepareResponse = convertFhirMessageToSignedInfoMessage(prepareRequest)
-  const digestParameter = prepareResponse.parameter.filter(p => p.name === "digest")[0] as fhir.StringParameter
-  const timestampParameter = prepareResponse.parameter.filter(p => p.name === "timestamp")[0] as fhir.StringParameter
+  const digestParameter = prepareResponse.parameter.find(p => p.name === "digest") as fhir.StringParameter
+  const timestampParameter = prepareResponse.parameter.find(p => p.name === "timestamp") as fhir.StringParameter
   const digest = Buffer.from(digestParameter.valueString, "base64").toString("utf-8")
   const digestWithoutNamespace = digest.replace(`<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">`, `<SignedInfo>`)
   const signature = crypto.sign("sha1", Buffer.from(digest, "utf-8"), {
@@ -156,8 +182,7 @@ function signPrescription(processCase: ProcessCase) {
   </KeyInfo>
 </Signature>
 `
-  const bundle = processCase.request
-  const provenance = getResourcesOfType.getProvenances(bundle)[0]
+  const provenance = getResourcesOfType.getProvenances(processRequest)[0]
   provenance.signature[0].when = timestampParameter.valueString
   provenance.signature[0].data = Buffer.from(xmlDSig, "utf-8").toString("base64")
 

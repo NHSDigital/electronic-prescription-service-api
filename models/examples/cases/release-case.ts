@@ -10,4 +10,8 @@ export class ReleaseCase extends Case {
   constructor(requestFile: ExampleFile, responseFile: ExampleFile) {
     super(requestFile, responseFile)
   }
+
+  toJestCase() {
+    return [this.description, this.request, this.response, this.statusCode]
+  }
 }
