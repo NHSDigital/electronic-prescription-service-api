@@ -124,7 +124,7 @@ export function getCodingForSystemOrNull(codings: Array<fhir.Coding>, system: st
 
 export function getExtensionForUrl(extensions: Array<fhir.Extension>, url: string, fhirPath: string): fhir.Extension {
   return onlyElement(
-    extensions.filter(extension => extension.url === url),
+    extensions?.filter(extension => extension.url === url),
     fhirPath,
     `url == '${url}'`
   )
