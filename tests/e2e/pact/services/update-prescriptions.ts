@@ -121,7 +121,6 @@ function setRepeatDispensingValidityPeriod(medicationRequests: Array<fhir.Medica
 }
 
 function setProdAdditonalInstructions(bundle: fhir.Bundle) {
-  const communicationRequests = getResourcesOfType.getCommunicationRequests(bundle)
   // todo: add "TEST PRESCRIPTION DO NOT DISPENSE or similar"
 }
 
