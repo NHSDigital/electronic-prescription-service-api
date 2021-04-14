@@ -198,7 +198,6 @@ jestpact.pactWith(
     }
 
     describe("process-message sandbox e2e tests", () => {
-
       test("Should be able to process a FHIR JSON Accept header", async () => {
         const testCase = fetcher.processExamples[0]
         const apiPath = `${basePath}/$process-message`
@@ -210,7 +209,7 @@ jestpact.pactWith(
 
         const interaction: InteractionObject = {
           state: "is authenticated",
-          uponReceiving: `a request to process a message with a FHIR JSON Accept header`,
+          uponReceiving: "a request to process a message with a FHIR JSON Accept header",
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",
