@@ -35,7 +35,7 @@ jestpact.pactWith(
             },
             method: "POST",
             path: apiPath,
-            body: LosslessJson.parse(messageStr)
+            body: JSON.parse(messageStr)
           },
           willRespondWith: {
             headers: {
