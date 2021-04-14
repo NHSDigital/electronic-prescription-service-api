@@ -5,141 +5,128 @@ import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import * as TestResources from "../../resources/test-resources"
 import {basePath, pactOptions} from "../../resources/common"
-import {fhir} from "@models"
+import {fetcher, fhir} from "@models"
 
-TestResources.processOrderCaseGroups.forEach(pactGroup => {
-  const pactGroupName = pactGroup.name
-  const pactGroupTestCases = pactGroup.cases
-
-  jestpact.pactWith(
-    pactOptions("sandbox", "process", pactGroupName, "send"),
-    /* eslint-disable  @typescript-eslint/no-explicit-any */
-    async (provider: any) => {
-      const client = () => {
-        const url = `${provider.mockService.baseUrl}`
-        return supertest(url)
-      }
-
-      describe("process-message sandbox e2e tests", () => {
-        test.each(pactGroupTestCases)(
-          "should be able to process %s",
-          async (desc: string, message: fhir.Bundle) => {
-            const apiPath = `${basePath}/$process-message`
-            const messageStr = LosslessJson.stringify(message)
-            const requestId = uuid.v4()
-            const correlationId = uuid.v4()
-            const interaction: InteractionObject = {
-              state: "is not authenticated",
-              uponReceiving: `a request to process ${desc} message to Spine`,
-              withRequest: {
-                headers: {
-                  "Content-Type": "application/fhir+json; fhirVersion=4.0",
-                  "X-Request-ID": requestId,
-                  "X-Correlation-ID": correlationId
-                },
-                method: "POST",
-                path: apiPath,
-                body: JSON.parse(messageStr)
-              },
-              willRespondWith: {
-                headers: {
-                  "Content-Type": "application/json",
-                  "X-Request-ID": requestId,
-                  "X-Correlation-ID": correlationId
-                },
-                status: 200
-              }
-            }
-            await provider.addInteraction(interaction)
-            await client()
-              .post(apiPath)
-              .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
-              .set("X-Request-ID", requestId)
-              .set("X-Correlation-ID", correlationId)
-              .send(messageStr)
-              .expect(200)
-          }
-        )
-      })
+jestpact.pactWith(
+  pactOptions("sandbox", "process", "send"),
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
+  async (provider: any) => {
+    const client = () => {
+      const url = `${provider.mockService.baseUrl}`
+      return supertest(url)
     }
-  )
-})
 
-TestResources.processOrderUpdateCaseGroups.forEach(pactGroup => {
-  const pactGroupName = pactGroup.name
-  const pactGroupTestCases = pactGroup.cases
-
-  jestpact.pactWith(
-    pactOptions("sandbox", "process", pactGroupName, "cancel"),
-    /* eslint-disable  @typescript-eslint/no-explicit-any */
-    async (provider: any) => {
-      const client = () => {
-        const url = `${provider.mockService.baseUrl}`
-        return supertest(url)
-      }
-
-      describe("process-message sandbox e2e tests", () => {
-        test.each(pactGroupTestCases)(
-          "should be able to process %s",
-          async (desc: string, message: fhir.Bundle) => {
-            const apiPath = `${basePath}/$process-message`
-            const messageStr = LosslessJson.stringify(message)
-            const requestId = uuid.v4()
-            const correlationId = uuid.v4()
-            const interaction: InteractionObject = {
-              state: "is not authenticated",
-              uponReceiving: `a request to process ${desc} message to Spine`,
-              withRequest: {
-                headers: {
-                  "Content-Type": "application/fhir+json; fhirVersion=4.0",
-                  "X-Request-ID": requestId,
-                  "X-Correlation-ID": correlationId
-                },
-                method: "POST",
-                path: apiPath,
-                body: JSON.parse(messageStr)
+    describe("process-message send sandbox e2e tests", () => {
+      test.each(TestResources.processOrderCaseGroups)(
+        "should be able to send %s",
+        async (desc: string, message: fhir.Bundle) => {
+          const apiPath = `${basePath}/$process-message`
+          const messageStr = LosslessJson.stringify(message)
+          const requestId = uuid.v4()
+          const correlationId = uuid.v4()
+          const interaction: InteractionObject = {
+            state: "is not authenticated",
+            uponReceiving: `a request to process ${desc} message to Spine`,
+            withRequest: {
+              headers: {
+                "Content-Type": "application/fhir+json; fhirVersion=4.0",
+                "X-Request-ID": requestId,
+                "X-Correlation-ID": correlationId
               },
-              willRespondWith: {
-                headers: {
-                  "Content-Type": "application/json",
-                  "X-Request-ID": requestId,
-                  "X-Correlation-ID": correlationId
-                },
-                //TODO - Verify response body for cancellations
-                status: 200
-              }
+              method: "POST",
+              path: apiPath,
+              body: JSON.parse(messageStr)
+            },
+            willRespondWith: {
+              headers: {
+                "Content-Type": "application/json",
+                "X-Request-ID": requestId,
+                "X-Correlation-ID": correlationId
+              },
+              status: 200
             }
-            await provider.addInteraction(interaction)
-            await client()
-              .post(apiPath)
-              .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
-              .set("X-Request-ID", requestId)
-              .set("X-Correlation-ID", correlationId)
-              .send(messageStr)
-              .expect(200)
           }
-        )
-      })
+          await provider.addInteraction(interaction)
+          await client()
+            .post(apiPath)
+            .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
+            .set("X-Request-ID", requestId)
+            .set("X-Correlation-ID", correlationId)
+            .send(messageStr)
+            .expect(200)
+        }
+      )
+    })
+  }
+)
+
+jestpact.pactWith(
+  pactOptions("sandbox", "process", "cancel"),
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
+  async (provider: any) => {
+    const client = () => {
+      const url = `${provider.mockService.baseUrl}`
+      return supertest(url)
     }
-  )
-})
 
-TestResources.processDispenseNotificationCaseGroups.forEach(pactGroup => {
-  const pactGroupName = pactGroup.name
-  const pactGroupTestCases = pactGroup.cases
+    describe("process-message cancel sandbox e2e tests", () => {
+      test.each(TestResources.processOrderUpdateCaseGroups)(
+        "should be able to cancel %s",
+        async (desc: string, message: fhir.Bundle) => {
+          const apiPath = `${basePath}/$process-message`
+          const messageStr = LosslessJson.stringify(message)
+          const requestId = uuid.v4()
+          const correlationId = uuid.v4()
+          const interaction: InteractionObject = {
+            state: "is not authenticated",
+            uponReceiving: `a request to send ${desc} message to Spine`,
+            withRequest: {
+              headers: {
+                "Content-Type": "application/fhir+json; fhirVersion=4.0",
+                "X-Request-ID": requestId,
+                "X-Correlation-ID": correlationId
+              },
+              method: "POST",
+              path: apiPath,
+              body: JSON.parse(messageStr)
+            },
+            willRespondWith: {
+              headers: {
+                "Content-Type": "application/json",
+                "X-Request-ID": requestId,
+                "X-Correlation-ID": correlationId
+              },
+              //TODO - Verify response body for cancellations
+              status: 200
+            }
+          }
+          await provider.addInteraction(interaction)
+          await client()
+            .post(apiPath)
+            .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
+            .set("X-Request-ID", requestId)
+            .set("X-Correlation-ID", correlationId)
+            .send(messageStr)
+            .expect(200)
+        }
+      )
+    })
+  }
+)
 
-  jestpact.pactWith(
-    pactOptions("sandbox", "process", pactGroupName, "dispense"),
-    /* eslint-disable  @typescript-eslint/no-explicit-any */
-    async (provider: any) => {
-      const client = () => {
-        const url = `${provider.mockService.baseUrl}`
-        return supertest(url)
-      }
+jestpact.pactWith(
+  pactOptions("sandbox", "process", "dispense"),
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
+  async (provider: any) => {
+    const client = () => {
+      const url = `${provider.mockService.baseUrl}`
+      return supertest(url)
+    }
 
-      describe("process-message e2e tests", () => {
-        if (pactGroupTestCases.length) {
-          test.each(pactGroupTestCases)("should be able to process %s", async (desc: string, message: fhir.Bundle) => {
+    describe("process-message dispense sandbox e2e tests", () => {
+        test.each(TestResources.processDispenseNotificationCaseGroups)(
+          "should be able to dispense %s",
+          async (desc: string, message: fhir.Bundle) => {
             const apiPath = `${basePath}/$process-message`
             const bundleStr = LosslessJson.stringify(message)
             const bundle = JSON.parse(bundleStr) as fhir.Bundle
@@ -178,7 +165,61 @@ TestResources.processDispenseNotificationCaseGroups.forEach(pactGroup => {
             .expect(200)
           }
         )
-      }
     })
-  })
 })
+
+jestpact.pactWith(
+  pactOptions("sandbox", "process", "send"),
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
+  async (provider: any) => {
+    const client = () => {
+      const url = `${provider.mockService.baseUrl}`
+      return supertest(url)
+    }
+
+    describe("process-message accept-header sandbox e2e tests", () => {
+
+      test("Should be able to process a FHIR JSON Accept header", async () => {
+        const testCase = fetcher.processExamples[0]
+
+        const apiPath = `${basePath}/$process-message`
+        const messageStr = LosslessJson.stringify(testCase.request)
+        const requestId = uuid.v4()
+        const correlationId = uuid.v4()
+
+        const interaction: InteractionObject = {
+          state: "is not authenticated",
+          uponReceiving: `a request to process a message with a FHIR JSON Accept header`,
+          withRequest: {
+            headers: {
+              "Content-Type": "application/fhir+json; fhirVersion=4.0",
+              "Accept": "application/fhir+json",
+              "X-Request-ID": requestId,
+              "X-Correlation-ID": correlationId
+            },
+            method: "POST",
+            path: apiPath,
+            body: JSON.parse(messageStr)
+          },
+          willRespondWith: {
+            status: 200,
+            headers: {
+              "Content-Type": "application/json",
+              "X-Request-ID": requestId,
+              "X-Correlation-ID": correlationId
+            }
+          }
+        }
+        await provider.addInteraction(interaction)
+        await client()
+          .post(apiPath)
+          .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
+          .set("Accept", "application/fhir+json")
+          .set("X-Request-ID", requestId)
+          .set("X-Correlation-ID", correlationId)
+          .send(messageStr)
+          .expect(200)
+      })
+    })
+  }
+)

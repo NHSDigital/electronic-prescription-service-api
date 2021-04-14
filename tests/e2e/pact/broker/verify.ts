@@ -1,38 +1,27 @@
 import {VerifierV3, VerifierV3Options} from "@pact-foundation/pact"
-import {
-  getPreparePactGroups,
-  getProcessSendPactGroups,
-  getProcessCancelPactGroups,
-  getConvertPactGroups,
-  getReleasePactGroups,
-  ApiEndpoint,
-  getProcessDispensePactGroups,
-  getTaskPactGroups
-} from "../resources/common"
+import {ApiEndpoint, ApiOperation} from "../resources/common"
 import path from "path"
 
 let token: string
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
-async function verify(endpoint: string, pactGroupName: string): Promise<any> {
+async function verify(endpoint: string, operation?: string): Promise<any> {
     const useBroker = process.env.PACT_USE_BROKER !== "false"
     const providerVersion = process.env.PACT_TAG
       ? `${process.env.PACT_VERSION} (${process.env.PACT_TAG})`
       : process.env.PACT_VERSION
     let verifierOptions: VerifierV3Options = {
-      consumerVersionTag: process.env.PACT_VERSION,
-      provider: `${process.env.PACT_PROVIDER}+${endpoint}${pactGroupName ? "-" + pactGroupName : ""}+${process.env.PACT_VERSION}`,
+      consumerVersionTags: process.env.PACT_VERSION,
+      provider: `${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
       providerVersion: providerVersion,
       providerBaseUrl: process.env.PACT_PROVIDER_URL,
       logLevel: "debug",
       stateHandlers: {
         "is authenticated": () => {
           token = `${process.env.APIGEE_ACCESS_TOKEN}`
-          Promise.resolve(`Valid bearer token generated`)
         },
         "is not authenticated": () => {
           token = ""
-          Promise.resolve(`Invalid bearer token generated`)
         }
       },
       requestFilter: (req) => {
@@ -61,7 +50,7 @@ async function verify(endpoint: string, pactGroupName: string): Promise<any> {
         ...verifierOptions,
         pactUrls: [
           // eslint-disable-next-line max-len
-          `${path.join(__dirname, "../pact/pacts")}/nhsd-apim-eps-test-client+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${endpoint}${pactGroupName ? "-" + pactGroupName : ""}+${process.env.PACT_VERSION}.json`
+          `${path.join(__dirname, "../pact/pacts")}/nhsd-apim-eps-test-client+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}.json`
         ]
       }
     }
@@ -70,66 +59,44 @@ async function verify(endpoint: string, pactGroupName: string): Promise<any> {
     return await verifier.verifyProvider()
 }
 
-async function verifyOnce(endpoint: ApiEndpoint, pactGroupName: string) {
-  await verify(endpoint, pactGroupName)
-    .catch(() => process.exit(1))
+// todo, remove live/sandbox split once dispense interactions are handled in live proxies
+const liveProcessMessageOperations: Array<ApiOperation> = ["send", "cancel"]
+const liveTaskOperations: Array<ApiOperation> = []
+const sandboxProcessMessageOperations: Array<ApiOperation> = ["send", "cancel", "dispense"]
+const sandboxTaskOperations: Array<ApiOperation> = ["release", "return", "withdraw"]
+const isSandbox = process.env.APIGEE_ENVIRONMENT?.includes("sandbox")
+const processMessageOperations = isSandbox ? sandboxProcessMessageOperations : liveProcessMessageOperations
+const taskOperations = isSandbox ? sandboxTaskOperations : liveTaskOperations
+
+async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
+  // todo: remove below if statement once dispense interactions are handled in live proxies
+  const shouldVerifyOperation =
+    !(endpoint === "process" || endpoint === "task")
+    || (endpoint === "process" && processMessageOperations.includes(operation))
+      || (endpoint === "task" && taskOperations.includes(operation))
+
+  if (shouldVerifyOperation) {
+    await verify(endpoint, operation)
+      .catch(() => process.exit(1))
+  }
 }
 
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-async function verifyConvert(): Promise<any> {
-  await getConvertPactGroups().reduce(async (promise, group) => {
-    await promise
-    await verifyOnce("convert", group)
-  }, Promise.resolve())
-}
-
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-async function verifyPrepare(): Promise<any> {
-    await getPreparePactGroups().reduce(async (promise, group) => {
-      await promise
-      await verifyOnce("prepare", group)
-    }, Promise.resolve())
-}
-
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-async function verifyProcess(): Promise<any> {
-    await getProcessSendPactGroups().reduce(async (promise, group) => {
-      await promise
-      await verifyOnce("process", group)
-    }, Promise.resolve())
-
-    await getProcessDispensePactGroups().reduce(async (promise, group) => {
-      await promise
-      await verifyOnce("process", `${group}-dispense`)
-    }, Promise.resolve())
-
-    await getProcessCancelPactGroups().reduce(async (promise, group) => {
-      await promise
-      await verifyOnce("process", `${group}-cancel`)
-    }, Promise.resolve())
-}
-
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-async function verifyRelease(): Promise<any> {
-  await getReleasePactGroups().reduce(async (promise, group) => {
-    await promise
-    await verifyOnce("release", group)
-  }, Promise.resolve())
-}
-
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-async function verifyTask(): Promise<any> {
-  await getTaskPactGroups().reduce(async (promise, group) => {
-    await promise
-    await verifyOnce("task", group)
-  }, Promise.resolve())
-}
+async function verifyConvert(): Promise<void> { await verifyOnce("convert") }
+async function verifyPrepare(): Promise<void> { await verifyOnce("prepare") }
+async function verifySend(): Promise<void> { await verifyOnce("process", "send") }
+async function verifyCancel(): Promise<void> { await verifyOnce("process", "cancel") }
+async function verifyRelease(): Promise<void> { await verifyOnce("task", "release") }
+async function verifyDispense(): Promise<void> { await verifyOnce("process", "dispense") }
+async function verifyReturn(): Promise<void> { await verifyOnce("task", "return") }
+async function verifyWithdraw(): Promise<void> { await verifyOnce("task", "withdraw") }
 
 (async () => {
-  verifyConvert()
+  await verifyConvert()
     .then(verifyPrepare)
-    .then(verifyProcess)
+    .then(verifySend)
+    .then(verifyCancel)
     .then(verifyRelease)
-    .then(verifyTask)
+    .then(verifyDispense)
+    .then(verifyReturn)
+    .then(verifyWithdraw)
 })()
-

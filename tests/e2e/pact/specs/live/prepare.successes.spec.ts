@@ -7,21 +7,19 @@ import supertest from "supertest"
 import * as uuid from "uuid"
 import { basePath, getStringParameterByName, pactOptions } from "../../resources/common"
 
-TestResources.prepareCaseGroups.forEach(pactGroup => {
-  const pactGroupName = pactGroup.name
-  const pactGroupTestCases = pactGroup.cases
+jestpact.pactWith(
+  pactOptions("live", "prepare"),
+  /* eslint-disable  @typescript-eslint/no-explicit-any */
+  async (provider: any) => {
+    const client = () => {
+      const url = `${provider.mockService.baseUrl}`
+      return supertest(url)
+    }
 
-  jestpact.pactWith(
-    pactOptions("live", "prepare", pactGroupName),
-    /* eslint-disable  @typescript-eslint/no-explicit-any */
-    async (provider: any) => {
-      const client = () => {
-        const url = `${provider.mockService.baseUrl}`
-        return supertest(url)
-      }
-
-      describe("prepare e2e tests", () => {
-        test.each(pactGroupTestCases)("should be able to prepare a %s message", async (desc: string, request: fhir.Bundle, response: fhir.Parameters) => {
+    describe("prepare e2e tests", () => {
+      test.each(TestResources.prepareCaseGroups)(
+        "should be able to prepare a %s message",
+        async (desc: string, request: fhir.Bundle, response: fhir.Parameters) => {
           const apiPath = `${basePath}/$prepare`
           const requestStr = LosslessJson.stringify(request)
           const requestId = uuid.v4()
@@ -74,8 +72,7 @@ TestResources.prepareCaseGroups.forEach(pactGroup => {
             .set("X-Correlation-ID", correlationId)
             .send(requestStr)
             .expect(200)
-        })
       })
-    }
-  )
-})
+    })
+  }
+)

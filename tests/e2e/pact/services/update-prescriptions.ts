@@ -1,14 +1,11 @@
 import * as uuid from "uuid"
-import {fhir, fetcher, ProcessCase} from "@models"
+import {fhir, fetcher} from "@models"
 import {
   getResourcesOfType,
-  convertFhirMessageToSignedInfoMessage,
-  // convertBundleToSpineRequest
+  convertFhirMessageToSignedInfoMessage
 } from "@coordinator"
 import * as crypto from "crypto"
 import fs from "fs"
-// import * as LosslessJson from "lossless-json"
-// import pino from "pino"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
@@ -17,8 +14,9 @@ export async function updatePrescriptions(): Promise<void> {
   const replacements = new Map<string, string>()
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let signPrescriptionFn = (processCase: ProcessCase): void => {return}
+  let signPrescriptionFn = (prepareRequest: fhir.Bundle, processRequest: fhir.Bundle): void => {return}
 
+  // eslint-disable-next-line no-constant-condition
   if (fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath))
   {
     signPrescriptionFn = signPrescription
@@ -26,11 +24,11 @@ export async function updatePrescriptions(): Promise<void> {
   else {
     console.warn("No private key / x509 certifcate found, signing has been skipped")
   }
-  
+
   fetcher.prescriptionOrderExamples.filter(e => e.isSuccess).forEach(async(processCase) => {
     const prepareBundle = processCase.prepareRequest
     const processBundle = processCase.request
-    const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(prepareBundle)[0].groupIdentifier
+    const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(processBundle)[0].groupIdentifier
 
     const newBundleIdentifier = uuid.v4()
 
@@ -42,20 +40,9 @@ export async function updatePrescriptions(): Promise<void> {
     const newLongFormId = uuid.v4()
     replacements.set(originalLongFormId, newLongFormId)
 
-    // todo: have a version of this script to update prescriptions in repo?
-    // or use python script? update_prescriptions.py?
-    //setPrescriptionIds(prepareBundle, newBundleIdentifier, newShortFormId, newLongFormId)
     setPrescriptionIds(processBundle, newBundleIdentifier, newShortFormId, newLongFormId)
-    //setTestPatientIfProd(prepareBundle)
     setTestPatientIfProd(processBundle)
-    signPrescriptionFn(processCase)
-    // if (processCase.prepareRequestFile) {
-    //   saveFhirExample(processCase.prepareRequestFile.path, prepareBundle)
-    // }
-    // saveFhirExample(processCase.requestFile.path, processBundle)
-    // if (processCase.convertResponseFile) {
-    //   saveHl7Example(processCase.convertResponseFile.path, (await convertBundleToSpineRequest(processBundle, "", pino())).message)
-    // }
+    signPrescriptionFn(prepareBundle, processBundle)
   })
 
   fetcher.prescriptionOrderUpdateExamples.filter(e => e.isSuccess).forEach(async (processCase) => {
@@ -72,10 +59,6 @@ export async function updatePrescriptions(): Promise<void> {
 
     setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
     setTestPatientIfProd(bundle)
-    // saveFhirExample(processCase.requestFile.path, bundle)
-    // if (processCase.convertResponseFile) {
-    //   saveHl7Example(processCase.convertResponseFile.path, (await convertBundleToSpineRequest(bundle, "", pino())).message)
-    // }
   })
 }
 
@@ -93,10 +76,6 @@ export function setPrescriptionIds(
   })
 }
 
-/**
- * The following methods contain a lot of duplicated code from the coordinator module.
- * TODO - Find a better way to share this code.
- */
 export function generateShortFormId(originalShortFormId?: string): string {
   const _PRESC_CHECKDIGIT_VALUES = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+"
   const hexString = (uuid.v4()).replace(/-/g, "").toUpperCase()
@@ -149,13 +128,8 @@ function setTestPatientIfProd(bundle: fhir.Bundle) {
   }
 }
 
-function signPrescription(processCase: ProcessCase) {
-  const prepareRequest = processCase.prepareRequest
-  // todo: handle error cases - this bypasses validation by calling translation directly
+function signPrescription(prepareRequest: fhir.Bundle, processRequest: fhir.Bundle) {
   const prepareResponse = convertFhirMessageToSignedInfoMessage(prepareRequest)
-  // todo: have a version of this script to update prescriptions in repo?
-  // or use python script? update_prescriptions.py?
-  //saveFhirExample(processCase.prepareResponseFile.path, prepareResponse)
   const digestParameter = prepareResponse.parameter.filter(p => p.name === "digest")[0] as fhir.StringParameter
   const timestampParameter = prepareResponse.parameter.filter(p => p.name === "timestamp")[0] as fhir.StringParameter
   const digest = Buffer.from(digestParameter.valueString, "base64").toString("utf-8")
@@ -177,8 +151,7 @@ function signPrescription(processCase: ProcessCase) {
   </KeyInfo>
 </Signature>
 `
-  const bundle = processCase.request
-  const provenance = getResourcesOfType.getProvenances(bundle)[0]
+  const provenance = getResourcesOfType.getProvenances(processRequest)[0]
   provenance.signature[0].when = timestampParameter.valueString
   provenance.signature[0].data = Buffer.from(xmlDSig, "utf-8").toString("base64")
 
@@ -206,11 +179,3 @@ function getNhsNumberIdentifier(fhirPatient: fhir.Patient) {
     .identifier
     .filter(identifier => identifier.system === "https://fhir.nhs.uk/Id/nhs-number")[0]
 }
-
-// function saveHl7Example(path: string, xml: string) {
-//   fs.writeFileSync(path, xml)
-// }
-
-// function saveFhirExample(path: string, json: fhir.Bundle | fhir.Parameters) {
-//   fs.writeFileSync(path, LosslessJson.stringify(json, null, 2), "utf-8")
-// }

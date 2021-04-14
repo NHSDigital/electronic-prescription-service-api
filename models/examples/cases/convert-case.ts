@@ -82,7 +82,10 @@ export class ConvertCase extends Case {
     }
     return responseXml
   }
-  toJestCase(): [string, fhir.Bundle, string, string, number] {
+  toSuccessJestCase(): [string, fhir.Bundle, string, string, number] {
     return [this.description, this.request, this.response, this.responseMatcher, this.statusCode]
+  }
+  toErrorJestCase(): [string, fhir.Bundle, string, number] {
+    return [this.description, this.request, this.response, this.statusCode]
   }
 }
