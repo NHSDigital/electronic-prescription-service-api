@@ -113,10 +113,12 @@ export function generateShortFormId(originalShortFormId?: string): string {
 }
 
 function setValidityPeriod(medicationRequests: Array<fhir.MedicationRequest>) {
+  const start = convertMomentToISODate(moment.utc())
+  const end = convertMomentToISODate(moment.utc().add(1, "month"))
   medicationRequests.forEach(medicationRequest => {
     const validityPeriod = medicationRequest.dispenseRequest.validityPeriod
-    validityPeriod.start = convertMomentToISODate(moment.utc())
-    validityPeriod.end = convertMomentToISODate(moment.utc().add(1, "month"))
+    validityPeriod.start = start
+    validityPeriod.end = end
   })
 }
 
