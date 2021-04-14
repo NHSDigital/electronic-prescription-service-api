@@ -206,7 +206,7 @@ function createDispenserWithdrawSendMessagePayload(task: fhir.Task) {
   )
 }
 
-export function isRepeatDispensing(medicationRequests: Array<fhir.MedicationRequest>) {
+export function isRepeatDispensing(medicationRequests: Array<fhir.MedicationRequest>): boolean {
   const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
   return courseOfTherapyTypeCode === fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
 }

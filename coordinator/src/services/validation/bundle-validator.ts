@@ -90,8 +90,8 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
 
   const repeatDispensingErrors =
     isRepeatDispensing(medicationRequests)
-    ? verifyRepeatDispensingPrescription(medicationRequests)
-    : []
+      ? verifyRepeatDispensingPrescription(medicationRequests)
+      : []
   allErrors.push(...repeatDispensingErrors)
 
   if (medicationRequests.some(medicationRequest => medicationRequest.status !== "active")) {
