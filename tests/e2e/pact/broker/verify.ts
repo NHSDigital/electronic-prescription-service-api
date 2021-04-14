@@ -82,6 +82,7 @@ async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
 }
 
 async function verifyConvert(): Promise<void> { await verifyOnce("convert") }
+async function verifyValidate(): Promise<void> { await verifyOnce("validate") }
 async function verifyPrepare(): Promise<void> { await verifyOnce("prepare") }
 async function verifySend(): Promise<void> { await verifyOnce("process", "send") }
 async function verifyCancel(): Promise<void> { await verifyOnce("process", "cancel") }
@@ -92,6 +93,7 @@ async function verifyWithdraw(): Promise<void> { await verifyOnce("task", "withd
 
 (async () => {
   await verifyConvert()
+    .then(verifyValidate)
     .then(verifyPrepare)
     .then(verifySend)
     .then(verifyCancel)
