@@ -19,6 +19,7 @@ import pino from "pino"
 import {convertTaskToDispenseProposalReturn} from "./return/return"
 import {convertTaskToEtpWithdraw} from "./withdraw/withdraw"
 import {getMessageIdFromBundle, getMessageIdFromTask, identifyMessageType} from "../common"
+import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 
 export async function convertBundleToSpineRequest(
   bundle: fhir.Bundle, messageId: string, logger: pino.Logger
@@ -203,4 +204,9 @@ function createDispenserWithdrawSendMessagePayload(task: fhir.Task) {
     hl7V3.Hl7InteractionIdentifier.DISPENSER_WITHDRAW,
     etpWithdrawRoot
   )
+}
+
+export function isRepeatDispensing(medicationRequests: Array<fhir.MedicationRequest>) {
+  const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
+  return courseOfTherapyTypeCode === fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
 }

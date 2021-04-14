@@ -4,7 +4,6 @@ import {
 } from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues, groupBy} from "./util"
-import {getCourseOfTherapyTypeCode} from "../translation/request/course-of-therapy-type"
 import {
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
@@ -13,6 +12,7 @@ import {
 } from "../translation/common"
 import {fhir, validationErrors as errors} from "@models"
 import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
+import {isRepeatDispensing} from "../translation/request"
 
 export function verifyBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
@@ -88,9 +88,10 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
     .filter(isTruthy)
   allErrors.push(...inconsistentValueErrors)
 
-  const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
-  const isRepeatDispensing = courseOfTherapyTypeCode === fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
-  const repeatDispensingErrors = isRepeatDispensing ? verifyRepeatDispensingPrescription(medicationRequests) : []
+  const repeatDispensingErrors =
+    isRepeatDispensing(medicationRequests)
+    ? verifyRepeatDispensingPrescription(medicationRequests)
+    : []
   allErrors.push(...repeatDispensingErrors)
 
   if (medicationRequests.some(medicationRequest => medicationRequest.status !== "active")) {

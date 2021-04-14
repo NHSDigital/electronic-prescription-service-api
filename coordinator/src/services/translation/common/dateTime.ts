@@ -72,6 +72,6 @@ function convertIsoDateStringToMoment(isoDateStr: string, fhirPath: string): mom
   return moment.utc(isoDateStr, moment.ISO_8601, true)
 }
 
-function convertMomentToISODate(moment: moment.Moment): string {
+export function convertMomentToISODate(moment: moment.Moment): string {
   return moment.format(ISO_DATE_FORMAT)
 }

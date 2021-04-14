@@ -2,13 +2,18 @@ import * as uuid from "uuid"
 import {fhir, fetcher} from "@models"
 import {
   getResourcesOfType,
-  convertFhirMessageToSignedInfoMessage
+  convertFhirMessageToSignedInfoMessage,
+  isRepeatDispensing,
+  convertMomentToISODate
 } from "@coordinator"
 import * as crypto from "crypto"
 import fs from "fs"
+import moment from "moment"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
+
+const isProd = process.env.APIGEE_ENVIRONMENT === "prod"
 
 export async function updatePrescriptions(): Promise<void> {
   const replacements = new Map<string, string>()
@@ -41,7 +46,17 @@ export async function updatePrescriptions(): Promise<void> {
     replacements.set(originalLongFormId, newLongFormId)
 
     setPrescriptionIds(processBundle, newBundleIdentifier, newShortFormId, newLongFormId)
-    setTestPatientIfProd(processBundle)
+
+    if (isProd) {
+      setProdPatient(processBundle)
+      setProdAdditonalInstructions(processBundle)
+    }
+
+    const medicationRequests = getResourcesOfType.getMedicationRequests(processBundle)
+    if (isRepeatDispensing(medicationRequests)) {
+      setRepeatDispensingValidityPeriod(medicationRequests)
+    }
+
     signPrescriptionFn(prepareBundle, processBundle)
   })
 
@@ -58,7 +73,10 @@ export async function updatePrescriptions(): Promise<void> {
     const newLongFormId = replacements.get(originalLongFormId)
 
     setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
-    setTestPatientIfProd(bundle)
+
+    if (isProd) {
+      setProdPatient(bundle)
+    }
   })
 }
 
@@ -94,44 +112,55 @@ export function generateShortFormId(originalShortFormId?: string): string {
   return prescriptionID
 }
 
-function setTestPatientIfProd(bundle: fhir.Bundle) {
-  if (process.env.APIGEE_ENVIRONMENT === "prod") {
-    const patient = getResourcesOfType.getPatient(bundle)
-    const nhsNumberIdentifier = getNhsNumberIdentifier(patient)
-    nhsNumberIdentifier.value = "9990548609"
-    patient.name = [
-      {
-        "use": "usual",
-        "family": "XXTESTPATIENT-TGNP",
-        "given": [
-          "DONOTUSE"
-        ],
-        "prefix": [
-          "MR"
-        ]
-      }
-    ]
-    patient.gender = "male"
-    patient.birthDate = "1932-01-06",
-    patient.address = [
-      {
-        "use": "home",
-        "line": [
-          "1 Trevelyan Square",
-          "Boar Lane",
-          "Leeds",
-          "West Yorkshire"
-        ],
-        "postalCode": "LS1 6AE"
-      }
-    ]
-  }
+function setRepeatDispensingValidityPeriod(medicationRequests: Array<fhir.MedicationRequest>) {
+  medicationRequests.forEach(medicationRequest => {
+    const validityPeriod = medicationRequest.dispenseRequest.validityPeriod
+    validityPeriod.start = convertMomentToISODate(moment.utc())
+    validityPeriod.end = convertMomentToISODate(moment.utc().add(1, "month"))
+  })
+}
+
+function setProdAdditonalInstructions(bundle: fhir.Bundle) {
+  const communicationRequests = getResourcesOfType.getCommunicationRequests(bundle)
+  // todo: add "TEST PRESCRIPTION DO NOT DISPENSE or similar"
+}
+
+function setProdPatient(bundle: fhir.Bundle) {
+  const patient = getResourcesOfType.getPatient(bundle)
+  const nhsNumberIdentifier = getNhsNumberIdentifier(patient)
+  nhsNumberIdentifier.value = "9990548609"
+  patient.name = [
+    {
+      "use": "usual",
+      "family": "XXTESTPATIENT-TGNP",
+      "given": [
+        "DONOTUSE"
+      ],
+      "prefix": [
+        "MR"
+      ]
+    }
+  ]
+  patient.gender = "male"
+  patient.birthDate = "1932-01-06",
+  patient.address = [
+    {
+      "use": "home",
+      "line": [
+        "1 Trevelyan Square",
+        "Boar Lane",
+        "Leeds",
+        "West Yorkshire"
+      ],
+      "postalCode": "LS1 6AE"
+    }
+  ]
 }
 
 function signPrescription(prepareRequest: fhir.Bundle, processRequest: fhir.Bundle) {
   const prepareResponse = convertFhirMessageToSignedInfoMessage(prepareRequest)
-  const digestParameter = prepareResponse.parameter.filter(p => p.name === "digest")[0] as fhir.StringParameter
-  const timestampParameter = prepareResponse.parameter.filter(p => p.name === "timestamp")[0] as fhir.StringParameter
+  const digestParameter = prepareResponse.parameter.find(p => p.name === "digest") as fhir.StringParameter
+  const timestampParameter = prepareResponse.parameter.find(p => p.name === "timestamp") as fhir.StringParameter
   const digest = Buffer.from(digestParameter.valueString, "base64").toString("utf-8")
   const digestWithoutNamespace = digest.replace(`<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">`, `<SignedInfo>`)
   const signature = crypto.sign("sha1", Buffer.from(digest, "utf-8"), {
