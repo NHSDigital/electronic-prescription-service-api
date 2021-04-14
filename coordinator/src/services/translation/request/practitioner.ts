@@ -221,11 +221,20 @@ export function getAgentPersonPersonIdForAuthor(
     professionalCode.push(new hl7V3.ProfessionalCode(hcpcCode))
   }
 
+  const unknownCode = getIdentifierValueOrNullForSystem(
+    fhirPractitionerIdentifier,
+    "https://fhir.hl7.org.uk/Id/professional-code",
+    "Practitioner.identifier"
+  )
+  if (unknownCode) {
+    professionalCode.push(new hl7V3.ProfessionalCode(unknownCode))
+  }
+
   if (professionalCode.length === 1) {
     return professionalCode[0]
   }
 
-  const error = "Expected exactly one professional code. One of GMC|GMP|NMC|GPhC|HCPC"
+  const error = "Expected exactly one professional code. One of GMC|GMP|NMC|GPhC|HCPC|unknown"
   const errorAdditionalContext = professionalCode.map(code => code._attributes.extension).join(", ")
   const errorMessage = `${error}. ${errorAdditionalContext.length > 0 ? "But got: " + errorAdditionalContext : ""}`
   const errorPath = "Practitioner.identifier"
