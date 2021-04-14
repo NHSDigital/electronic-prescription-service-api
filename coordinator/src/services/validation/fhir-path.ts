@@ -1,4 +1,4 @@
-import {getExtensionForUrl, resolveReference} from "../translation/common"
+import {getExtensionForUrlOrNull, resolveReference} from "../translation/common"
 import {fhir} from "@models"
 
 /**
@@ -39,7 +39,7 @@ function applyFhirPathElement(bundle: fhir.Bundle, input: Array<unknown>, pathEl
   const extensionMatch = EXTENSION_MATCHER.exec(pathElement)
   if (extensionMatch) {
     return records.flatMap(i =>
-      getExtensionForUrl(
+      getExtensionForUrlOrNull(
         i.extension as Array<fhir.Extension> || [],
         extensionMatch[1],
         pathElement))
