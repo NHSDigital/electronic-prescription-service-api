@@ -40,7 +40,7 @@ function applyFhirPathElement(bundle: fhir.Bundle, input: Array<unknown>, pathEl
   if (extensionMatch) {
     return records.flatMap(i =>
       getExtensionForUrlOrNull(
-        i.extension as Array<fhir.Extension> || [],
+        i.extension as Array<fhir.Extension>,
         extensionMatch[1],
         pathElement))
   }

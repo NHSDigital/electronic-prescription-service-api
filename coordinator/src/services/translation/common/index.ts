@@ -136,7 +136,7 @@ export function getExtensionForUrlOrNull(
   fhirPath: string
 ): fhir.Extension {
   return onlyElementOrNull(
-    extensions.filter(extension => extension.url === url),
+    extensions?.filter(extension => extension.url === url),
     fhirPath,
     `url == '${url}'`
   )
