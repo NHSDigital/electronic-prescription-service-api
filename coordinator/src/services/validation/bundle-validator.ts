@@ -199,7 +199,7 @@ function verifyIdenticalForAllMedicationDispenses(
   return null
 }
 
-function verifyIdenticalForAllMedicationRequests(
+export function verifyIdenticalForAllMedicationRequests(
   bundle: fhir.Bundle,
   medicationRequests: Array<fhir.MedicationRequest>,
   fhirPath: string
