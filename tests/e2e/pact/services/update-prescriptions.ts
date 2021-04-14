@@ -54,7 +54,7 @@ export async function updatePrescriptions(): Promise<void> {
 
     const medicationRequests = getResourcesOfType.getMedicationRequests(processBundle)
     if (isRepeatDispensing(medicationRequests)) {
-      setRepeatDispensingValidityPeriod(medicationRequests)
+      setValidityPeriod(medicationRequests)
     }
 
     signPrescriptionFn(prepareBundle, processBundle)
@@ -112,7 +112,7 @@ export function generateShortFormId(originalShortFormId?: string): string {
   return prescriptionID
 }
 
-function setRepeatDispensingValidityPeriod(medicationRequests: Array<fhir.MedicationRequest>) {
+function setValidityPeriod(medicationRequests: Array<fhir.MedicationRequest>) {
   medicationRequests.forEach(medicationRequest => {
     const validityPeriod = medicationRequest.dispenseRequest.validityPeriod
     validityPeriod.start = convertMomentToISODate(moment.utc())
