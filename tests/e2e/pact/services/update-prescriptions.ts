@@ -120,6 +120,7 @@ function setRepeatDispensingValidityPeriod(medicationRequests: Array<fhir.Medica
   })
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function setProdAdditonalInstructions(bundle: fhir.Bundle) {
   // todo: add "TEST PRESCRIPTION DO NOT DISPENSE or similar"
 }
