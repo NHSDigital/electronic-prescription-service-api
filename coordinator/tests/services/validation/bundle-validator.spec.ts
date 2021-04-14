@@ -113,7 +113,7 @@ describe("MedicationRequest consistency checks", () => {
   })
 
   test("Should cater for optional/missing extensions for MedicationRequests in consistency check", () => {
-    medicationRequests.forEach(medicationRequest => medicationRequest.dispenseRequest.extension = undefined)
+    medicationRequests.forEach(medicationRequest => medicationRequest.dispenseRequest.extension = [])
 
     const returnedError = validator.verifyIdenticalForAllMedicationRequests(
       bundle,
