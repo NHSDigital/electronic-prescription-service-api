@@ -40,7 +40,8 @@ jobs:
 
       - name: Create release (master only)
         id: create-release
-        if: github.ref == 'refs/heads/master'
+        # todo: revert this change to ensure releases only happen from master
+        #if: github.ref == 'refs/heads/master'
         uses: actions/create-release@v1
         continue-on-error: true
         env:
