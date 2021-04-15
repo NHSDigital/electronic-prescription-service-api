@@ -21,21 +21,22 @@ docker_service:
         - name: COMMIT_ID
           value: "{{ SOURCE_COMMIT_ID }}"
     secrets:
-        # todo: rename and check all renamed secrets exist for prod
         - name: SPINE_URL
           valueFrom: '/{{ account }}/platform-common/egress/hosts/spine-prescriptions-{{ SPINE_ENV }}'
         - name: ODS_URL
           valueFrom: '/{{ account }}/platform-common/egress/hosts/directory-spineservices'
+        # todo: use live secrets for prod
+        # todo: switch all these back from 'ptl' to '{{ account }}' once tested
         - name: FROM_ASID
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/from-asid'
+          valueFrom: '/ptl/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/from-asid'
         - name: TO_ASID
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-asid'
+          valueFrom: '/ptl/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-asid'
         - name: FROM_PARTY_KEY
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/from-party-key'
+          valueFrom: '/ptl/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/from-party-key'
         - name: TO_PARTY_KEY
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-party-key'
+          valueFrom: '/ptl/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-party-key'
         - name: CPA_ID_MAP
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/cpa-id-map'
+          valueFrom: '/ptl/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/cpa-id-map'
     health_check:
         matcher: "200"
         path: "/_status"
