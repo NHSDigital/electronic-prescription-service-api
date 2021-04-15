@@ -93,7 +93,6 @@ extends:
           PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
           export PACT_BROKER_NEXT_TOKEN
 
-
           export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH
 
           if [[ "$APIGEE_ENVIRONMENT" == *"sandbox"* ]]; then
