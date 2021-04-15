@@ -31,9 +31,11 @@ extends:
     apigee_deployments: ${{ parameters.apigee_deployments }}
     post_deploy:
       - bash: |
-          if ["$(APIGEE_ENVIRONMENT)" == "internal-dev-sandbox"]; then
+          if ["$(APIGEE_ENVIRONMENT)" == "internal-dev-sandbox"]
+          then
             echo "##vso[task.setvariable variable=run_smoke_tests]false"
-          elif [[ -d "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact"]]; then
+          elif [[ -d "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact"]]
+          then
             echo "##vso[task.setvariable variable=run_smoke_tests]true"
           else
             echo "##vso[task.setvariable variable=run_smoke_tests]false"
