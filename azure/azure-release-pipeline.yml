@@ -13,6 +13,10 @@ resources:
   pipelines:
     - pipeline: build_pipeline
       source: "Electronic-Prescription-Service-Build"
+      trigger:
+        branches:
+          include:
+            - refs/tags/v*
 
 pool:
   name: 'AWS-ECS'
