@@ -11,12 +11,8 @@ resources:
       ref: refs/heads/edge
       endpoint: NHSDigital
   pipelines:
-  - pipeline: build_pipeline
-    source: "Electronic-Prescription-Service-Build"
-    trigger:
-      branches:
-        include:
-          - refs/tags/v*
+    - pipeline: build_pipeline
+      source: "Electronic-Prescription-Service-Build"
 
 pool:
   name: 'AWS-ECS'
@@ -24,6 +20,7 @@ pool:
 variables:
   - template: project.yml
   - group: pact
+  - group: eps-ref-smoke-tests
 
 extends:
   template: azure-release-template.yml
@@ -55,3 +52,25 @@ extends:
         depends_on:
           - internal_dev
           - internal_dev_sandbox
+      - environment: sandbox
+        proxy_path: sandbox
+        depends_on:
+          - manual_approval
+      - environment: int
+        make_spec_visible: true
+        proxy_path: live
+        depends_on:
+          - manual_approval
+      - environment: ref
+        proxy_path: live
+        depends_on:
+          - int
+          - sandbox
+          - manual_approval
+      - environment: prod
+        # todo: make_spec_visible: true when ready for live
+        make_spec_visible: false
+        proxy_path: live
+        # manual_approval is added by default
+        depends_on:
+          - ref
