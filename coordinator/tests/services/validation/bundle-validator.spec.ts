@@ -112,6 +112,17 @@ describe("MedicationRequest consistency checks", () => {
     medicationRequests = getMedicationRequests(bundle)
   })
 
+  test("Should cater for optional/missing extensions for MedicationRequests in consistency check", () => {
+    medicationRequests.forEach(medicationRequest => medicationRequest.dispenseRequest.extension = [])
+
+    const returnedError = validator.verifyIdenticalForAllMedicationRequests(
+      bundle,
+      medicationRequests,
+      'dispenseRequest.extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType")')
+
+    expect(returnedError).toBe(null)
+  })
+
   test("Should reject message where MedicationRequests have different authoredOn", () => {
     const defaultAuthoredOn = "2020-01-02T00:00:00.000Z"
     medicationRequests.forEach(medicationRequest => medicationRequest.authoredOn = defaultAuthoredOn)

@@ -22,11 +22,25 @@ describe("convertMedicationRequestToLineItem", () => {
     firstFhirMedicationRequest = getMedicationRequests(bundle)[0]
   })
 
-  test("Throws TooManyValuesUserFacingError when passed multiple order item numbers", () => {
+  test("Throws TooManyValuesError when passed multiple order item numbers", () => {
     firstFhirMedicationRequest.identifier.push(firstFhirMedicationRequest.identifier[0])
     expect(() =>
       convertMedicationRequestToLineItem(firstFhirMedicationRequest, null, [], [])
     ).toThrow(errors.TooManyValuesError)
+  })
+
+  test("Throws TooFewValuesError when passed no dispenseRequest performer-site-type extension", () => {
+    firstFhirMedicationRequest.dispenseRequest.extension = []
+    expect(() =>
+      convertBundleToPrescription(bundle)
+    ).toThrow(errors.TooFewValuesError)
+  })
+
+  test("Throws InvalidValueError when passed no dispenseRequest extensions", () => {
+    firstFhirMedicationRequest.dispenseRequest.extension = undefined
+    expect(() =>
+      convertBundleToPrescription(bundle)
+    ).toThrow(errors.InvalidValueError)
   })
 
   test("ID added to correct section of hl7 message", () => {
