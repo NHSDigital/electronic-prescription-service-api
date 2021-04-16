@@ -20,6 +20,12 @@ APIGEE_ENVIRONMENTS:
   name: int
   ratelimit: 20ps
   quota: 1200
+- display_name: Production
+  name: prod
+  approval_type: manual
+  ratelimit: '15000pm'        # todo: confirm with Spine/EPS team what these should be
+  quota: '7800'               # these values match PDS
+  portal_visibility: false    # todo: remove this once ready for live
 ---
 meta:
   api:
