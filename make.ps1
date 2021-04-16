@@ -94,9 +94,9 @@ function run-smoke-tests() {
     }
     . ./envrc.ps1
     if ($env -match "sandbox") {
-        $provider_suffix="-sandbox"
+        $pacticipant_suffix="-sandbox"
     }
-    $env:PACT_PROVIDER="nhsd-apim-eps$provider_suffix"
+    $env:PACT_PROVIDER="nhsd-apim-eps$pacticipant_suffix"
     $env:SERVICE_BASE_PATH="electronic-prescriptions$pr_prefix$pr"
     $env:PACT_TAG="$env"
     $env:PACT_VERSION="$env:USERNAME".replace(' ','')
@@ -111,7 +111,7 @@ function run-smoke-tests() {
         Out-String -Stream | `
         Select-String -Pattern "is not authenticated" -NotMatch | `
         Select-String -Pattern "is authenticated" -NotMatch | `
-        % { $_.toString() -replace 'Verifying a pact between [^\+]*\+[^\+]*\+([^\+]*).*$', "`$0 -> $env:PACT_BROKER_URL/matrix/provider/nhsd-apim-eps$provider_suffix%2B`$1%2B$env:PACT_VERSION/consumer/nhsd-apim-eps-test-client%2B$env:PACT_VERSION" }
+        % { $_.toString() -replace 'Verifying a pact between [^\+]*\+[^\+]*\+([^\+]*).*$', "`$0 -> $env:PACT_BROKER_URL/matrix/provider/nhsd-apim-eps$pacticipant_suffix%2B`$1%2B$env:PACT_VERSION/consumer/nhsd-apim-eps-test-client$pacticipant_suffix%2B$env:PACT_VERSION" }
     cd ../../..
 }
 

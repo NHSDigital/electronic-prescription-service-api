@@ -37,3 +37,4 @@ function copy-parameter {
 
 copy-parameter "/ptl/platform-common/veit07.devspineservices.nhs.uk/cpa-id-map" "/ptl/api-deployment/eps-coordinator/veit07.devspineservices.nhs.uk/cpa-id-map"
 copy-parameter "/ptl/platform-common/veit07.devspineservices.nhs.uk/party-key" "/ptl/api-deployment/eps-coordinator/veit07.devspineservices.nhs.uk/to-party-key"
+# todo: prod copy
