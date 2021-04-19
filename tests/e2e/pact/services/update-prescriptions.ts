@@ -257,7 +257,6 @@ function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
 }
 
 function calculateDigestFromPrescriptionRoot(prescriptionRoot: hl7V3.ParentPrescription) {
-  // eslint-disable-next-line max-len
   const parentPrescription = prescriptionRoot
   const fragments = extractFragments(parentPrescription)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
