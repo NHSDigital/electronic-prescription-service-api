@@ -29,7 +29,6 @@ export async function updatePrescriptions(): Promise<void> {
     prepareRequest: fhir.Bundle, processRequest: fhir.Bundle, originalShortFormId: string
   ): void => {return}
 
-  // eslint-disable-next-line no-constant-condition
   if (fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath))
   {
     signPrescriptionFn = signPrescription
