@@ -1,7 +1,7 @@
 import {
   getIdentifierParameterByName,
   getIdentifierValueForSystem,
-  getIdentifierValueOrNullForSystem,
+  getIdentifierValueOrNullForSystem, getMedicationCodeableConcept,
   getNumericValueAsString,
   getResourceForFullUrl, getStringParameterByName
 } from "../../../../src/services/translation/common"
@@ -13,6 +13,8 @@ import {
   convertIsoDateStringToHl7V3Date,
   convertIsoDateTimeStringToHl7V3DateTime
 } from "../../../../src/services/translation/common/dateTime"
+import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
+import {convertResourceToBundleEntry} from "../../../../src/services/translation/response/common"
 
 test("getResourceForFullUrl returns correct resources", () => {
   const result = getResourceForFullUrl(
@@ -213,5 +215,40 @@ describe("getParameterByName", () => {
   test("getIdentifierParameterByName throws error when no parameters with name found", () => {
     expect(() => getIdentifierParameterByName(exampleParameters.parameter, "notReal"))
       .toThrow("Too few values submitted. Expected 1 element where name == 'notReal'.")
+  })
+})
+
+describe("getMedicationCodeableConcept", () => {
+  let bundle: fhir.Bundle
+  let medicationRequest: fhir.MedicationRequest
+
+  beforeEach(() => {
+    bundle =  clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    medicationRequest = getMedicationRequests(bundle)[0]
+  })
+
+  test("medicationCodeableConcept", () => {
+    const codeableConcept = getMedicationCodeableConcept(bundle, medicationRequest)
+    expect(codeableConcept).toEqual(medicationRequest.medicationCodeableConcept)
+  })
+
+  test("medicationReference", () => {
+    const medicationResource: fhir.Medication = {
+      resourceType: "Medication",
+      id: "test",
+      code: medicationRequest.medicationCodeableConcept
+    }
+
+    const bundleEntry = convertResourceToBundleEntry(medicationResource)
+    bundle.entry.push(bundleEntry)
+
+    delete medicationRequest.medicationCodeableConcept
+
+    medicationRequest.medicationReference = {
+      reference: "urn:uuid:test"
+    }
+
+    const codeableConcept = getMedicationCodeableConcept(bundle, medicationRequest)
+    expect(codeableConcept).toEqual(medicationResource.code)
   })
 })

@@ -1,17 +1,14 @@
-import {hl7V3, fhir} from "@models"
+import {fhir, hl7V3} from "@models"
 import {
   getCodingForSystem,
   getExtensionForUrl,
   getIdentifierValueForSystem,
   getIdentifierValueOrNullForSystem,
   getMessageId,
+  getMedicationCodeableConcept,
   onlyElement
 } from "../../common"
-import {
-  getMedicationDispenses,
-  getMessageHeader,
-  getPatientOrNull
-} from "../../common/getResourcesOfType"
+import {getMedicationDispenses, getMessageHeader, getPatientOrNull} from "../../common/getResourcesOfType"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import pino from "pino"
 import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
@@ -37,6 +34,7 @@ export async function convertDispenseNotification(
   const hl7CareRecordElementCategory = createCareRecordElementCategory(fhirLineItemIdentifiers)
   const hl7PriorPrescriptionReleaseEventRef = createPriorPrescriptionReleaseEventRef(fhirHeader)
   const hl7PertinentInformation1 = await createPertinentInformation1(
+    bundle,
     messageId,
     fhirOrganisationPerformer,
     fhirMedicationDispenses,
@@ -56,6 +54,7 @@ export async function convertDispenseNotification(
 }
 
 async function createPertinentInformation1(
+  bundle: fhir.Bundle,
   messageId: string,
   fhirOrganisation: fhir.DispensePerformer,
   fhirMedicationDispenses: Array<fhir.MedicationDispense>,
@@ -74,7 +73,15 @@ async function createPertinentInformation1(
     logger
   )
   const hl7PertinentInformation1LineItems = fhirMedicationDispenses.map(
-    medicationDispense => createPertinentInformation1LineItem(medicationDispense)
+    medicationDispense => {
+      return createPertinentInformation1LineItem(
+        medicationDispense,
+        onlyElement(
+          getMedicationCodeableConcept(bundle, medicationDispense).coding,
+          "MedicationDispense.medicationCodeableConcept.coding"
+        )
+      )
+    }
   )
 
   const supplyHeader = new hl7V3.PertinentSupplyHeader(new hl7V3.GlobalIdentifier(messageId))
@@ -87,8 +94,10 @@ async function createPertinentInformation1(
   return new hl7V3.DispenseNotificationPertinentInformation1(supplyHeader)
 }
 
-function createPertinentInformation1LineItem(fhirMedicationDispense: fhir.MedicationDispense) {
-  const fhirMedicationCodeableConceptCoding = getMedicationCodeableConceptCoding(fhirMedicationDispense)
+function createPertinentInformation1LineItem(
+  fhirMedicationDispense: fhir.MedicationDispense,
+  fhirMedicationCodeableConceptCoding: fhir.Coding
+) {
   const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
   const fhirPrescriptionLineItemStatus = getPrescriptionLineItemStatus(fhirMedicationDispense)
   const fhirDosageInstruction = getDosageInstruction(fhirMedicationDispense)
@@ -109,7 +118,8 @@ function createPertinentInformation1LineItem(fhirMedicationDispense: fhir.Medica
     hl7SuppliedLineItemQuantitySnomedCode,
     hl7Quantity,
     fhirMedicationCodeableConceptCoding,
-    fhirDosageInstruction)
+    fhirDosageInstruction
+  )
 
   const hl7PertinentSuppliedLineItem = new hl7V3.PertinentSuppliedLineItem(
     new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber),
@@ -217,13 +227,6 @@ function getDosageInstruction(fhirMedicationDispense: fhir.MedicationDispense) {
   return onlyElement(
     fhirMedicationDispense.dosageInstruction,
     "MedicationDispense.dosageInstruction"
-  )
-}
-
-function getMedicationCodeableConceptCoding(fhirMedicationDispense: fhir.MedicationDispense) {
-  return onlyElement(
-    fhirMedicationDispense.medicationCodeableConcept.coding,
-    "MedicationDispense.medicationCodeableConcept.coding"
   )
 }
 

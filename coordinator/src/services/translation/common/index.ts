@@ -212,3 +212,10 @@ export function getIdentifierParameterByName(
     `name == '${name}'`
   ) as fhir.IdentifierParameter
 }
+
+export function getMedicationCodeableConcept(
+  bundle: fhir.Bundle, medication: fhir.MedicationDispense | fhir.MedicationRequest
+): fhir.CodeableConcept {
+  return medication.medicationCodeableConcept
+    ?? (getResourceForFullUrl(bundle, medication.medicationReference.reference) as fhir.Medication).code
+}

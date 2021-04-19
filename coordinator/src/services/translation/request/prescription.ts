@@ -2,6 +2,7 @@ import {
   getExtensionForUrl,
   getExtensionForUrlOrNull,
   getNumericValueAsString,
+  getMedicationCodeableConcept,
   isTruthy,
   resolveReference
 } from "../common"
@@ -9,7 +10,7 @@ import {convertAuthor, convertResponsibleParty} from "./practitioner"
 import {convertMedicationRequestToLineItem} from "./line-item"
 import {getCommunicationRequests, getMedicationRequests} from "../common/getResourcesOfType"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
-import {hl7V3, fhir, processingErrors as errors} from "@models"
+import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {convertIsoDateStringToHl7V3Date, convertIsoDateTimeStringToHl7V3Date} from "../common/dateTime"
 
 export function convertBundleToPrescription(bundle: fhir.Bundle): hl7V3.Prescription {
@@ -192,7 +193,8 @@ function convertPrescriptionPertinentInformation2(
     medicationRequests[0],
     repeatNumber,
     extractMedicationListText(bundle, communicationRequests),
-    extractPatientInfoText(communicationRequests)
+    extractPatientInfoText(communicationRequests),
+    getMedicationCodeableConcept(bundle, medicationRequests[0])
   ))
 
   for (let i=1; i<medicationRequests.length; i++) {
@@ -200,7 +202,8 @@ function convertPrescriptionPertinentInformation2(
       medicationRequests[i],
       repeatNumber,
       [],
-      []
+      [],
+      getMedicationCodeableConcept(bundle, medicationRequests[i])
     ))
   }
 

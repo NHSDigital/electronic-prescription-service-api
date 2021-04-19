@@ -101,7 +101,8 @@ export function convertMedicationRequestToLineItem(
   medicationRequest: fhir.MedicationRequest,
   repeatNumber: hl7V3.Interval<hl7V3.Timestamp>,
   medicationListText: Array<hl7V3.Text>,
-  patientInfoText: Array<hl7V3.Text>
+  patientInfoText: Array<hl7V3.Text>,
+  codeableConcept: fhir.CodeableConcept
 ): hl7V3.LineItem {
   const lineItemId = getIdentifierValueForSystem(
     medicationRequest.identifier,
@@ -116,7 +117,7 @@ export function convertMedicationRequestToLineItem(
     lineItem.repeatNumber = repeatNumber
   }
 
-  lineItem.product = convertProduct(medicationRequest.medicationCodeableConcept)
+  lineItem.product = convertProduct(codeableConcept)
   lineItem.component = convertLineItemComponent(medicationRequest.dispenseRequest.quantity)
   convertPrescriptionEndorsements(medicationRequest, lineItem)
 
