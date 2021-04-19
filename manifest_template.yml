@@ -24,7 +24,7 @@ APIGEE_ENVIRONMENTS:
   name: prod
   approval_type: manual
   ratelimit: 20ps             # todo: confirm with Spine team what these should be
-  quota: 1200.                # when ready for live
+  quota: 1200                 # when ready for live
   portal_visibility: false    # todo: remove this once ready for live
 ---
 meta:
