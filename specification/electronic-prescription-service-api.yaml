@@ -13,42 +13,43 @@ info:
   description: |
     ## Overview
     <style>.codeinline.example {word-wrap: anywhere;}</style>
-    Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service) - the national service used to send electronic prescription messages between prescribers and dispensers.
-
+    Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service) - the national service used to send electronic prescription messages between prescribers and community dispensers.
+    
+    ## As a prescriber
     You can:
-    * prepare a secondary care (outpatient) prescription for signing
     * create a secondary care (outpatient) prescription
     * cancel a secondary care (outpatient) prescription
-    * evaluate prescription signing client implementations
-    * release a prescription for dispensing (sandbox implementation only)
-    * send a dispense notification to EPS (sandbox implementation only)
-    * return a prescription after downloading (sandbox implementation only)
-    * withdraw a dispense notificaton (sandbox implementation only)
 
     You cannot currently use this API to:
-    * prepare a primary care prescription for signing
     * create a primary care prescription
-    * prepare a secondary care (other than outpatient) prescription for signing
     * create a secondary care (other than outpatient) prescription
-    * prepare a tertiary care prescription for signing
     * create a tertiary care prescription
-    * check the status of a prescription
+    * track prescriptions or check a prescription's status
+    
+    ## As a dispenser
+    You can:
+    * download a prescription (sandbox implementation only)
+    * return a prescription (sandbox implementation only)
+    * submit a dispense notification to EPS (sandbox implementation only)
+    * withdraw a dispense notification (sandbox implementation only)
+
+    You cannot currently use this API to:
     * claim for a dispensed prescription
     * track prescriptions or check a prescription's status
-
+    
     ## Using this API as a prescriber
     ### To create a prescription:
-    1. POST a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) to the `/FHIR/R4/$prepare` endpoint to get the encoded prescription data that requires a signature
-    2. sign the encoded prescription data using the [Signing Service](https://digital.nhs.uk/developer/api-catalogue/signing-service) or your existing local signing solution to get the signed prescription data
-    3. generate an XML-DSig using the signed prescription data (see below)
-    4. put the XML-DSig in a `Provenance` resource
-    5. add the `Provenance` to the prescription-order message
-    6. POST the signed prescription-order message to the `/FHIR/R4/$process-message` endpoint
+    1. POST a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) to the `/FHIR/R4/$prepare` endpoint to get the encoded prescription data that requires a signature.
+    2. Sign the encoded prescription data using the [Signing Service](https://digital.nhs.uk/developer/api-catalogue/signing-service) or your existing local signing solution to get the prescription data signed.
+    3. Generate an XML-DSig using the signed prescription data (see below).
+    4. Put the XML-DSig in a `Provenance` resource.
+    5. Add the `Provenance` to the prescription-order message.
+    6. POST the signed prescription-order message to the `/FHIR/R4/$process-message` endpoint.
 
     To generate an XML-DSig: 
-    1. get the encoded prescription data from the `/FHIR/R4/$prepare` endpoint of the EPS API
-    2. get the signature and certificate from the `/SignatureResponse` endpoint of the Signing Service
-    3. assemble an XML-DSig (javascript example seen below)
+    1. Get the encoded prescription data from the `/FHIR/R4/$prepare` endpoint of the EPS API.
+    2. Get the signature and certificate from the `/SignatureResponse` endpoint of the [Signing Service](https://digital.nhs.uk/developer/api-catalogue/signing-service).
+    3. Assemble an XML-DSig (see the javascript example code below).
 
     Example code to generate an XML-DSig: 
     ```javascript
@@ -61,20 +62,20 @@ info:
     ```
 
     ### To cancel a prescription:
-    1. POST a [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update) to the `/FHIR/R4/$process-message` endpoint
+    1. POST a [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update) to the `/FHIR/R4/$process-message` endpoint.
 
     ## Using this API as a dispenser
     ### To download a prescription to be dispensed: 
-    1. POST a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to the `/FHIR/R4/Task/$release` endpoint to mark the prescription as released
+    1. POST a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to the `/FHIR/R4/Task/$release` endpoint.
 
-    ### To notify Spine that a prescription has been dispensed:
-    1. POST a [prescription-dispense-notification](https://simplifier.net/guide/DigitalMedicines/prescription-dispense) message to the `/FHIR/R4/$process-message` endpoint to inform SPINE of a partial/successful dispense
+    ### To submit a dispense notification to EPS:
+    1. POST a [prescription-dispense-notification](https://simplifier.net/guide/DigitalMedicines/prescription-dispense) message to the `/FHIR/R4/$process-message` endpoint to inform EPS of a partial/successful dispense.
 
-    ### To return a prescription to Spine:
-    1. POST a [Task-dispense-proposal-return](https://simplifier.net/guide/DigitalMedicines/Task) message to the `/FHIR/R4/Task` endpoint
+    ### To return a prescription:
+    1. POST a [Task-dispense-proposal-return](https://simplifier.net/guide/DigitalMedicines/Task) message to the `/FHIR/R4/Task` endpoint.
 
     ### To withdraw a dispense notification:
-    1. POST a [Task-dispense-notification-amend](https://simplifier.net/guide/DigitalMedicines/Task) message to the `/FHIR/R4/Task` endpoint
+    1. POST a [Task-dispense-notification-amend](https://simplifier.net/guide/DigitalMedicines/Task) message to the `/FHIR/R4/Task` endpoint.
 
     ## Related APIs
     The following APIs also give access to the Electronic Prescription Service:
@@ -346,7 +347,7 @@ paths:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/3-Task-Request-Withdraw-200_OK.json
       responses:
         '200':
-          description: Action completed successfully
+          description: Action completed successfully.
           content:
             application/fhir+json:
               schema:
@@ -371,7 +372,7 @@ paths:
   /FHIR/R4/Task/$release:
     post:
       operationId: release
-      summary: Send a prescription release request to EPS
+      summary: Download prescription
       description: |
         ## Overview
         The release endpoint is used to download prescriptions from Spine prior to being dispensed to a patient. 
@@ -398,7 +399,7 @@ paths:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Task-Request-Release-200_OK.json
       responses:
         '200':
-          description: Successfully released a prescription for dispensing
+          description: Successfully downloaded a prescription for dispensing.
           content:
             application/fhir+json:
               schema:
