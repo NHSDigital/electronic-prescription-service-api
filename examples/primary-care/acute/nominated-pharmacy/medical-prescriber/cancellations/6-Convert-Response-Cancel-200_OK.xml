@@ -149,7 +149,7 @@
           <seperatableInd value="false"/>
           <pertinentCancellationReason classCode="OBS" moodCode="EVN">
             <code code="CR" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-            <text>At the Pharmacist’s request</text>
+            <text>At the Pharmacist's request</text>
             <value code="0006" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.27"/>
           </pertinentCancellationReason>
         </pertinentInformation>
