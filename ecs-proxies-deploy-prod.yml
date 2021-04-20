@@ -35,8 +35,6 @@ docker_service:
           valueFrom: '/ptl/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/from-party-key'
         - name: TO_PARTY_KEY
           valueFrom: '/ptl/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-party-key'
-        - name: CPA_ID_MAP
-          valueFrom: '/ptl/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/cpa-id-map'
     health_check:
         matcher: "200"
         path: "/_status"

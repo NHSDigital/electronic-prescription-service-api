@@ -12,12 +12,12 @@ const BASE_PATH = process.env.BASE_PATH
 export class LiveSpineClient implements SpineClient {
   private readonly spineEndpoint: string
   private readonly spinePath: string
-  private readonly ebXMLBuilder: (spineRequest: spine.SpineRequest, logger: Logger) => string
+  private readonly ebXMLBuilder: (spineRequest: spine.SpineRequest) => string
 
   constructor(
     spineEndpoint: string = null,
     spinePath: string = null,
-    ebXMLBuilder: (spineRequest: spine.SpineRequest, logger: Logger) => string = null
+    ebXMLBuilder: (spineRequest: spine.SpineRequest) => string = null
   ) {
     this.spineEndpoint = spineEndpoint || SPINE_ENDPOINT
     this.spinePath = spinePath || SPINE_PATH
@@ -26,7 +26,7 @@ export class LiveSpineClient implements SpineClient {
 
   async send(spineRequest: spine.SpineRequest, logger: Logger): Promise<spine.SpineResponse<unknown>> {
     logger.info("Building EBXML wrapper for SpineRequest")
-    const wrappedMessage = this.ebXMLBuilder(spineRequest, logger)
+    const wrappedMessage = this.ebXMLBuilder(spineRequest)
     const address = this.getSpineUrlForPrescription()
 
     logger.info(`Attempting to send message to ${address}`)
