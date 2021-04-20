@@ -127,7 +127,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "BC8CD1-A99968-4A55A5"
+          "value": "BC8CD1-A99968-4C55A2"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -167,9 +167,9 @@
           ],
           "quantity": {
             "value": 63,
-            "unit": "Tablet",
+            "unit": "tablet",
             "system": "http://snomed.info/sct",
-            "code": "385055001"
+            "code": "428673006"
           },
           "performer": {
             "identifier": {

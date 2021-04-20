@@ -130,7 +130,7 @@
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "BC8CD1-A99968-4A55A5"
+          "value": "BC8CD1-A99968-4C55A2"
         },
         "courseOfTherapyType": {
           "coding": [
