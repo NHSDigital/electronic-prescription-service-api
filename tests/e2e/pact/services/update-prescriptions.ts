@@ -38,7 +38,7 @@ export async function updatePrescriptions(): Promise<void> {
   }
 
   fetcher.prescriptionOrderExamples.filter(e => e.isSuccess).forEach(async(processCase) => {
-    const prepareBundle = processCase.prepareRequest
+    const prepareBundle = processCase.prepareRequest ?? processCase.request
     const processBundle = processCase.request
     const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(processBundle)[0].groupIdentifier
 
@@ -177,6 +177,11 @@ function signPrescription(
   processRequest: fhir.Bundle,
   originalShortFormId: string
 ) {
+  prepareRequest = removeResourcesOfType(prepareRequest, "Provenance")
+  const provenancesCheck = prepareRequest.entry.filter(e => e.resource.resourceType === "Provenance")
+  if (provenancesCheck.length > 0) {
+    throw new Error("Could not remove provenance, this must be removed to get a fresh timestamp")
+  }
   const prepareResponse = convertFhirMessageToSignedInfoMessage(prepareRequest)
   const digestParameter = prepareResponse.parameter.find(p => p.name === "digest") as fhir.StringParameter
   const timestampParameter = prepareResponse.parameter.find(p => p.name === "timestamp") as fhir.StringParameter
@@ -261,4 +266,12 @@ function calculateDigestFromPrescriptionRoot(prescriptionRoot: hl7V3.ParentPresc
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
   const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed)
   return Buffer.from(digestFromPrescriptionBase64, "base64").toString("utf-8")
+}
+
+function removeResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): fhir.Bundle {
+  const entriesToRetain = fhirBundle.entry.filter(entry => entry.resource.resourceType !== resourceType)
+  return {
+    ...fhirBundle,
+    entry: entriesToRetain
+  }
 }
