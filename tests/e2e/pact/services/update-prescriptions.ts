@@ -1,14 +1,20 @@
 import * as uuid from "uuid"
-import {fhir, fetcher} from "@models"
+import {fhir, fetcher, hl7V3} from "@models"
 import {
   getResourcesOfType,
   convertFhirMessageToSignedInfoMessage,
   isRepeatDispensing,
-  convertMomentToISODate
+  convertMomentToISODate,
+  extractFragments,
+  convertFragmentsToHashableFormat,
+  createParametersDigest,
+  writeXmlStringCanonicalized,
+  convertParentPrescription
 } from "@coordinator"
 import * as crypto from "crypto"
 import fs from "fs"
 import moment from "moment"
+import {ElementCompact} from "xml-js"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
@@ -18,10 +24,11 @@ const isProd = process.env.APIGEE_ENVIRONMENT === "prod"
 export async function updatePrescriptions(): Promise<void> {
   const replacements = new Map<string, string>()
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  let signPrescriptionFn = (prepareRequest: fhir.Bundle, processRequest: fhir.Bundle): void => {return}
+  let signPrescriptionFn = (
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    prepareRequest: fhir.Bundle, processRequest: fhir.Bundle, originalShortFormId: string
+  ): void => {return}
 
-  // eslint-disable-next-line no-constant-condition
   if (fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath))
   {
     signPrescriptionFn = signPrescription
@@ -31,7 +38,7 @@ export async function updatePrescriptions(): Promise<void> {
   }
 
   fetcher.prescriptionOrderExamples.filter(e => e.isSuccess).forEach(async(processCase) => {
-    const prepareBundle = processCase.prepareRequest
+    const prepareBundle = processCase.prepareRequest ?? processCase.request
     const processBundle = processCase.request
     const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(processBundle)[0].groupIdentifier
 
@@ -45,19 +52,25 @@ export async function updatePrescriptions(): Promise<void> {
     const newLongFormId = uuid.v4()
     replacements.set(originalLongFormId, newLongFormId)
 
+    setPrescriptionIds(prepareBundle, newBundleIdentifier, newShortFormId, newLongFormId)
     setPrescriptionIds(processBundle, newBundleIdentifier, newShortFormId, newLongFormId)
 
     if (isProd) {
+      setProdPatient(prepareBundle)
       setProdPatient(processBundle)
+      setProdAdditonalInstructions(prepareBundle)
       setProdAdditonalInstructions(processBundle)
     }
 
-    const medicationRequests = getResourcesOfType.getMedicationRequests(processBundle)
+    const medicationRequests = [
+      ...getResourcesOfType.getMedicationRequests(prepareBundle),
+      ...getResourcesOfType.getMedicationRequests(processBundle)
+    ]
     if (isRepeatDispensing(medicationRequests)) {
       setValidityPeriod(medicationRequests)
     }
 
-    signPrescriptionFn(prepareBundle, processBundle)
+    signPrescriptionFn(prepareBundle, processBundle, originalShortFormId)
   })
 
   fetcher.prescriptionOrderUpdateExamples.filter(e => e.isSuccess).forEach(async (processCase) => {
@@ -159,7 +172,16 @@ function setProdPatient(bundle: fhir.Bundle) {
   ]
 }
 
-function signPrescription(prepareRequest: fhir.Bundle, processRequest: fhir.Bundle) {
+function signPrescription(
+  prepareRequest: fhir.Bundle,
+  processRequest: fhir.Bundle,
+  originalShortFormId: string
+) {
+  prepareRequest = removeResourcesOfType(prepareRequest, "Provenance")
+  const provenancesCheck = prepareRequest.entry.filter(e => e.resource.resourceType === "Provenance")
+  if (provenancesCheck.length > 0) {
+    throw new Error("Could not remove provenance, this must be removed to get a fresh timestamp")
+  }
   const prepareResponse = convertFhirMessageToSignedInfoMessage(prepareRequest)
   const digestParameter = prepareResponse.parameter.find(p => p.name === "digest") as fhir.StringParameter
   const timestampParameter = prepareResponse.parameter.find(p => p.name === "timestamp") as fhir.StringParameter
@@ -197,6 +219,8 @@ function signPrescription(prepareRequest: fhir.Bundle, processRequest: fhir.Bund
   catch {
     throw new Error("Signature failed verification")
   }
+
+  checkDigestMatchesPrescription(processRequest, originalShortFormId)
 }
 
 function getLongFormIdExtension(extensions: Array<fhir.Extension>): fhir.IdentifierExtension {
@@ -209,4 +233,45 @@ function getNhsNumberIdentifier(fhirPatient: fhir.Patient) {
   return fhirPatient
     .identifier
     .filter(identifier => identifier.system === "https://fhir.nhs.uk/Id/nhs-number")[0]
+}
+
+function checkDigestMatchesPrescription(processBundle: fhir.Bundle, originalShortFormId: string) {
+  const prescriptionRoot  = convertParentPrescription(processBundle)
+  const signatureRoot = extractSignatureRootFromPrescriptionRoot(prescriptionRoot)
+  const digestFromSignature = extractDigestFromSignatureRoot(signatureRoot)
+  const digestFromPrescription = calculateDigestFromPrescriptionRoot(prescriptionRoot)
+  const digestMatches = digestFromPrescription === digestFromSignature
+  if (!digestMatches) {
+    throw new Error(`Digest did not match for example with prescription id: ${originalShortFormId}`)
+  }
+}
+
+function extractSignatureRootFromPrescriptionRoot(prescriptionRoot: hl7V3.ParentPrescription): ElementCompact {
+  const prescription = prescriptionRoot.pertinentInformation1.pertinentPrescription
+  return prescription.author.signatureText
+}
+
+function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
+  const signature = signatureRoot.Signature
+  const signedInfo = signature.SignedInfo
+  signedInfo._attributes = {
+    xmlns: signature._attributes.xmlns
+  }
+  return writeXmlStringCanonicalized({SignedInfo: signedInfo})
+}
+
+function calculateDigestFromPrescriptionRoot(prescriptionRoot: hl7V3.ParentPrescription) {
+  const parentPrescription = prescriptionRoot
+  const fragments = extractFragments(parentPrescription)
+  const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
+  const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed)
+  return Buffer.from(digestFromPrescriptionBase64, "base64").toString("utf-8")
+}
+
+function removeResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): fhir.Bundle {
+  const entriesToRetain = fhirBundle.entry.filter(entry => entry.resource.resourceType !== resourceType)
+  return {
+    ...fhirBundle,
+    entry: entriesToRetain
+  }
 }
