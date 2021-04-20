@@ -38,7 +38,7 @@ export async function updatePrescriptions(): Promise<void> {
   }
 
   fetcher.prescriptionOrderExamples.filter(e => e.isSuccess).forEach(async(processCase) => {
-    const prepareBundle = processCase.prepareRequest
+    const prepareBundle = processCase.prepareRequest || processCase.request
     const processBundle = processCase.request
     const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(processBundle)[0].groupIdentifier
 
