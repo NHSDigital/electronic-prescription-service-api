@@ -10,6 +10,7 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
     const providerVersion = process.env.PACT_TAG
       ? `${process.env.PACT_VERSION} (${process.env.PACT_TAG})`
       : process.env.PACT_VERSION
+    const pacticipant_suffix = isSandbox ? "-sandbox" : ""
     let verifierOptions: VerifierV3Options = {
       consumerVersionTags: process.env.PACT_VERSION,
       provider: `${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
@@ -50,7 +51,7 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
         ...verifierOptions,
         pactUrls: [
           // eslint-disable-next-line max-len
-          `${path.join(__dirname, "../pact/pacts")}/nhsd-apim-eps-test-client+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}.json`
+          `${path.join(__dirname, "../pact/pacts")}/nhsd-apim-eps-test-client${pacticipant_suffix}+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}.json`
         ]
       }
     }
