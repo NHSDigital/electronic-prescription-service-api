@@ -1,6 +1,6 @@
 {
   "resourceType": "Bundle",
-  "id": "0A1FD9EF-A3D5-4E95-84CD-552070A03086",
+  "id": "2C251CED-DC17-47FF-BD2F-36F4B8C27DDA",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
     "value": "4a088614-0037-43b2-b480-8b6e6a7663aa"
@@ -8,10 +8,10 @@
   "type": "message",
   "entry": [
     {
-      "fullUrl": "urn:uuid:0A1FD9EF-A3D5-4E95-84CD-552070A03086",
+      "fullUrl": "urn:uuid:2C251CED-DC17-47FF-BD2F-36F4B8C27DDA",
       "resource": {
         "resourceType": "MessageHeader",
-        "id": "0A1FD9EF-A3D5-4E95-84CD-552070A03086",
+        "id": "A8F71A7D-B426-4B55-80A5-05436DE80486",
         "eventCoding": {
           "system": "https://fhir.nhs.uk/CodeSystem/message-event",
           "code": "prescription-order",
@@ -23,14 +23,14 @@
             "value": "RBA"
           },
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
-          "display": "BOOTH|PHIL"
+          "display": "SEVEN|FIFTY"
         },
         "source": {
           "endpoint": "urn:nhs-uk:addressing:ods:RBA"
         },
         "destination": [
           {
-            "endpoint": "urn:nhs-uk:addressing:ods:FH542",
+            "endpoint": "https://int.api.service.nhs.uk/electronic-prescriptions/$process-message",
             "receiver": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -41,19 +41,37 @@
         ],
         "focus": [
           {
+            "reference": "urn:uuid:00d3dd04-d162-49ce-a808-6f220906f1c8"
+          },
+          {
+            "reference": "urn:uuid:1de954ac-a1ea-49ab-bd4e-88e99f191186"
+          },
+          {
             "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
           },
           {
-            "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+            "reference": "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a"
+          },
+          {
+            "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+          },
+          {
+            "reference": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
+          },
+          {
+            "reference": "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e"
+          },
+          {
+            "reference": "urn:uuid:8a5d7d67-64fb-44ec-9802-2dc214bb3dcb"
           }
         ]
       }
     },
     {
-      "fullUrl": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+      "fullUrl": "urn:uuid:00d3dd04-d162-49ce-a808-6f220906f1c8",
       "resource": {
         "resourceType": "MedicationRequest",
-        "id": "a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+        "id": "00d3dd04-d162-49ce-a808-6f220906f1c8",
         "extension": [
           {
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
@@ -62,12 +80,29 @@
               "code": "1001",
               "display": "Outpatient Community Prescriber - Medical Prescriber"
             }
+          },
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug",
+            "extension": [
+              {
+                "url": "quantityWords",
+                "valueString": "twenty eight"
+              },
+              {
+                "url": "schedule",
+                "valueCoding": {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-controlled-drug",
+                  "code": "CD2",
+                  "display": "Schedule 2"
+                }
+              }
+            ]
           }
         ],
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+            "value": "00d3dd04-d162-49ce-a808-6f220906f1c8"
           }
         ],
         "status": "active",
@@ -87,8 +122,8 @@
           "coding": [
             {
               "system": "http://snomed.info/sct",
-              "code": "15517911000001104",
-              "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
+              "code": "36126511000001106",
+              "display": "Morphine 10mg modified-release tablets"
             }
           ]
         },
@@ -123,48 +158,7 @@
         },
         "dosageInstruction": [
           {
-            "text": "10 milligram, Inject, Subcutaneous route, once weekly",
-            "timing": {
-              "repeat": {
-                "frequency": 5,
-                "period": 1,
-                "periodUnit": "d",
-                "boundsDuration": {
-                  "value": 10,
-                  "unit": "day",
-                  "system": "http://unitsofmeasure.org",
-                  "code": "d"
-                }
-              }
-            },
-            "method": {
-              "coding": [
-                {
-                  "system": "http://snomed.info/sct",
-                  "code": "422145002",
-                  "display": "Inject"
-                }
-              ]
-            },
-            "route": {
-              "coding": [
-                {
-                  "system": "http://snomed.info/sct",
-                  "code": "34206005",
-                  "display": "Subcutaneous route"
-                }
-              ]
-            },
-            "doseAndRate": [
-              {
-                "doseQuantity": {
-                  "value": 10,
-                  "unit": "milligram",
-                  "system": "http://unitsofmeasure.org",
-                  "code": "mg"
-                }
-              }
-            ]
+            "text": "1 tablet, daily"
           }
         ],
         "dispenseRequest": {
@@ -178,10 +172,116 @@
             }
           ],
           "quantity": {
-            "value": 1,
-            "unit": "pre-filled disposable injection",
+            "value": 28,
+            "unit": "tablet",
             "system": "http://snomed.info/sct",
-            "code": "3318611000001103"
+            "code": "428673006"
+          },
+          "performer": {
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+              "value": "FH542"
+            }
+          }
+        },
+        "substitution": {
+          "allowedBoolean": false
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:1de954ac-a1ea-49ab-bd4e-88e99f191186",
+      "resource": {
+        "resourceType": "MedicationRequest",
+        "id": "1de954ac-a1ea-49ab-bd4e-88e99f191186",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/CodeSystem/prescription-type",
+              "code": "1001",
+              "display": "Outpatient Community Prescriber - Medical Prescriber"
+            }
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+            "value": "1de954ac-a1ea-49ab-bd4e-88e99f191186"
+          }
+        ],
+        "status": "active",
+        "intent": "order",
+        "category": [
+          {
+            "coding": [
+              {
+                "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
+                "code": "outpatient",
+                "display": "Outpatient"
+              }
+            ]
+          }
+        ],
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "321196004",
+              "display": "Diazepam 2mg tablets"
+            }
+          ]
+        },
+        "subject": {
+          "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
+        },
+        "authoredOn": "2021-03-16T12:34:27+00:00",
+        "requester": {
+          "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+        },
+        "groupIdentifier": {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
+              "valueIdentifier": {
+                "system": "https://fhir.nhs.uk/Id/prescription",
+                "value": "e15d08b5-bc7d-4a83-8d01-3d2b27d4c914"
+              }
+            }
+          ],
+          "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+          "value": "3773F6-A99968-482ABS"
+        },
+        "courseOfTherapyType": {
+          "coding": [
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+              "code": "acute",
+              "display": "Short course (acute) therapy"
+            }
+          ]
+        },
+        "dosageInstruction": [
+          {
+            "text": "1 tablet, at NIGHT",
+            "patientInstruction": "Dosage has been decreased on advice from the hospital."
+          }
+        ],
+        "dispenseRequest": {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
+              "valueCoding": {
+                "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+                "code": "P1"
+              }
+            }
+          ],
+          "quantity": {
+            "value": 28,
+            "unit": "tablet",
+            "system": "http://snomed.info/sct",
+            "code": "428673006"
           },
           "performer": {
             "identifier": {
@@ -217,32 +317,32 @@
               }
             ],
             "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "9449305552"
+            "value": "9449303703"
           }
         ],
         "name": [
           {
             "use": "usual",
-            "family": "DAVIS",
+            "family": "AKRASI",
             "given": [
-              "JANE"
+              "ROYDON"
             ],
             "prefix": [
-              "MRS"
+              "MR"
             ]
           }
         ],
-        "gender": "female",
-        "birthDate": "1999-11-25",
+        "gender": "male",
+        "birthDate": "1959-08-20",
         "address": [
           {
             "use": "home",
             "line": [
-              "53 Harrogate Road",
-              "Chapel Allerton",
-              "Leeds"
+              "35 STEVENS LANE",
+              "CLAYGATE",
+              "SURREY"
             ],
-            "postalCode": "LS7 3PY"
+            "postalCode": "KT10 0TQ"
           }
         ],
         "generalPractitioner": [
@@ -272,9 +372,9 @@
         ],
         "name": [
           {
-            "family": "FIFTYSEVEN",
+            "family": "Fiftyseven",
             "given": [
-              "RANDOM"
+              "Random"
             ],
             "prefix": [
               "MR"
@@ -310,7 +410,7 @@
               {
                 "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
                 "code": "R8000",
-                "display": "Clinical Practitioner Access Role "
+                "display": "Clinical Practitioner Access Role"
               }
             ]
           }
