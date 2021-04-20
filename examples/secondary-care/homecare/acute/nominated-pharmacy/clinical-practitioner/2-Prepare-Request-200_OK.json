@@ -1,17 +1,17 @@
 {
   "resourceType": "Bundle",
-  "id": "0A1FD9EF-A3D5-4E95-84CD-552070A03087",
+  "id": "0A1FD9EF-A3D5-4E95-84CD-352070A03086",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "34470bbf-07cb-4b49-bef9-f958114f821g"
+    "value": "34470bbf-07cb-4b49-bef9-f958114f821f"
   },
   "type": "message",
   "entry": [
     {
-      "fullUrl": "urn:uuid:0A1FD9EF-A3D5-4E95-84CD-552070A03087",
+      "fullUrl": "urn:uuid:0A1FD9EF-A3D5-4E95-84CD-552070A03086",
       "resource": {
         "resourceType": "MessageHeader",
-        "id": "0A1FD9EF-A3D5-4E95-84CD-552070A03087",
+        "id": "0A1FD9EF-A3D5-4E95-84CD-552070A03086",
         "eventCoding": {
           "system": "https://fhir.nhs.uk/CodeSystem/message-event",
           "code": "prescription-order",
@@ -44,16 +44,16 @@
             "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
           },
           {
-            "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab7"
+            "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
           }
         ]
       }
     },
     {
-      "fullUrl": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab7",
+      "fullUrl": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6",
       "resource": {
         "resourceType": "MedicationRequest",
-        "id": "a54219b8-f741-4c47-b662-e4f8dfa49ab7",
+        "id": "a54219b8-f741-4c47-b662-e4f8dfa49ab6",
         "extension": [
           {
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
@@ -67,7 +67,7 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
           }
         ],
         "status": "active",
