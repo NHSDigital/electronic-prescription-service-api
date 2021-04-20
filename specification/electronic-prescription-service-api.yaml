@@ -37,8 +37,6 @@ info:
     * claim for a dispensed prescription
     * track prescriptions or check a prescription's status
     
-    To check the status of a prescription, see [related APi section](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir#api-description__related-apis).
-    
     ## Using this API as a prescriber
     ### To create a prescription:
     1. POST a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) to the `/FHIR/R4/$prepare` endpoint to get the encoded prescription data that requires a signature.
