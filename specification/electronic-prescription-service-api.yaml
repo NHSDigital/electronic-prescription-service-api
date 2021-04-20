@@ -372,7 +372,7 @@ paths:
   /FHIR/R4/Task/$release:
     post:
       operationId: release
-      summary: Send a download prescription request to EPS
+      summary: Download prescription
       description: |
         ## Overview
         The release endpoint is used to download prescriptions from Spine prior to being dispensed to a patient. 
