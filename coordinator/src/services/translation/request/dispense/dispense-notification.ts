@@ -5,7 +5,7 @@ import {
   getIdentifierValueForSystem,
   getIdentifierValueOrNullForSystem,
   getMessageId,
-  getMedicationCodeableConceptCoding,
+  getMedicationCoding,
   onlyElement
 } from "../../common"
 import {getMedicationDispenses, getMessageHeader, getPatientOrNull} from "../../common/getResourcesOfType"
@@ -76,7 +76,7 @@ async function createPertinentInformation1(
     medicationDispense => {
       return createPertinentInformation1LineItem(
         medicationDispense,
-        getMedicationCodeableConceptCoding(bundle, medicationDispense)
+        getMedicationCoding(bundle, medicationDispense)
       )
     }
   )

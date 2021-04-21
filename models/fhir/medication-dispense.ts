@@ -9,7 +9,7 @@ export interface MedicationDispense extends common.Resource {
   resourceType: "MedicationDispense"
   identifier: Array<common.Identifier>
   extension?: Array<extension.CodingExtension>
-  medicationCodeableConcept: common.CodeableConcept
+  medicationCodeableConcept?: common.CodeableConcept
   medicationReference?: common.Reference<medication.Medication>
   subject: common.IdentifierReference<patient.Patient>
   quantity: common.SimpleQuantity

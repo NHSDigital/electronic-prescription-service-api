@@ -1,7 +1,7 @@
 import {
   getIdentifierParameterByName,
   getIdentifierValueForSystem,
-  getIdentifierValueOrNullForSystem, getMedicationCodeableConceptCoding,
+  getIdentifierValueOrNullForSystem, getMedicationCoding,
   getNumericValueAsString,
   getResourceForFullUrl, getStringParameterByName
 } from "../../../../src/services/translation/common"
@@ -228,7 +228,7 @@ describe("getMedicationCodeableConceptCoding", () => {
   })
 
   test("medicationCodeableConcept", () => {
-    const codeableConcept = getMedicationCodeableConceptCoding(bundle, medicationRequest)
+    const codeableConcept = getMedicationCoding(bundle, medicationRequest)
     expect(codeableConcept).toEqual(medicationRequest.medicationCodeableConcept.coding[0])
   })
 
@@ -248,7 +248,7 @@ describe("getMedicationCodeableConceptCoding", () => {
       reference: "urn:uuid:test"
     }
 
-    const codeableConcept = getMedicationCodeableConceptCoding(bundle, medicationRequest)
+    const codeableConcept = getMedicationCoding(bundle, medicationRequest)
     expect(codeableConcept).toEqual(medicationResource.code.coding[0])
   })
 })
