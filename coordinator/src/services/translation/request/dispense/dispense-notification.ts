@@ -5,7 +5,7 @@ import {
   getIdentifierValueForSystem,
   getIdentifierValueOrNullForSystem,
   getMessageId,
-  getMedicationCodeableConcept,
+  getMedicationCodeableConceptCoding,
   onlyElement
 } from "../../common"
 import {getMedicationDispenses, getMessageHeader, getPatientOrNull} from "../../common/getResourcesOfType"
@@ -76,10 +76,7 @@ async function createPertinentInformation1(
     medicationDispense => {
       return createPertinentInformation1LineItem(
         medicationDispense,
-        onlyElement(
-          getMedicationCodeableConcept(bundle, medicationDispense).coding,
-          "MedicationDispense.medicationCodeableConcept.coding"
-        )
+        getMedicationCodeableConceptCoding(bundle, medicationDispense)
       )
     }
   )
@@ -96,7 +93,7 @@ async function createPertinentInformation1(
 
 function createPertinentInformation1LineItem(
   fhirMedicationDispense: fhir.MedicationDispense,
-  fhirMedicationCodeableConceptCoding: fhir.Coding
+  medicationCoding: fhir.Coding
 ) {
   const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
   const fhirPrescriptionLineItemStatus = getPrescriptionLineItemStatus(fhirMedicationDispense)
@@ -117,13 +114,13 @@ function createPertinentInformation1LineItem(
   const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(
     hl7SuppliedLineItemQuantitySnomedCode,
     hl7Quantity,
-    fhirMedicationCodeableConceptCoding,
+    medicationCoding,
     fhirDosageInstruction
   )
 
   const hl7PertinentSuppliedLineItem = new hl7V3.PertinentSuppliedLineItem(
     new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber),
-    new hl7V3.SnomedCode(fhirMedicationCodeableConceptCoding.code)
+    new hl7V3.SnomedCode(medicationCoding.code)
   )
   hl7PertinentSuppliedLineItem.consumable = new hl7V3.Consumable(
     new hl7V3.RequestedManufacturedProduct(

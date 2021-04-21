@@ -213,9 +213,27 @@ export function getIdentifierParameterByName(
   ) as fhir.IdentifierParameter
 }
 
-export function getMedicationCodeableConcept(
+export function getMedicationCodeableConceptCoding(
   bundle: fhir.Bundle, medication: fhir.MedicationDispense | fhir.MedicationRequest
-): fhir.CodeableConcept {
-  return medication.medicationCodeableConcept
-    ?? (getResourceForFullUrl(bundle, medication.medicationReference.reference) as fhir.Medication).code
+): fhir.Coding {
+  const medicationSystem = "http://snomed.info/sct"
+
+  const medicationRequestCodeableConcept = medication.medicationCodeableConcept
+  if (medicationRequestCodeableConcept) {
+    return getCodingForSystem(
+      medicationRequestCodeableConcept.coding,
+      medicationSystem,
+      "MedicationRequest.medicationCodeableConcept.coding"
+    )
+  } else {
+    const medicationResource = getResourceForFullUrl(
+      bundle,
+      medication.medicationReference.reference
+    ) as fhir.Medication
+    return getCodingForSystem(
+      medicationResource.code.coding,
+      medicationSystem,
+      "Medication.code.coding"
+    )
+  }
 }

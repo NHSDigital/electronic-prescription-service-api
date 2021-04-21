@@ -2,7 +2,7 @@ import {
   getExtensionForUrl,
   getExtensionForUrlOrNull,
   getNumericValueAsString,
-  getMedicationCodeableConcept,
+  getMedicationCodeableConceptCoding,
   isTruthy,
   resolveReference
 } from "../common"
@@ -194,7 +194,7 @@ function convertPrescriptionPertinentInformation2(
     repeatNumber,
     extractMedicationListText(bundle, communicationRequests),
     extractPatientInfoText(communicationRequests),
-    getMedicationCodeableConcept(bundle, medicationRequests[0])
+    getMedicationCodeableConceptCoding(bundle, medicationRequests[0])
   ))
 
   for (let i=1; i<medicationRequests.length; i++) {
@@ -203,7 +203,7 @@ function convertPrescriptionPertinentInformation2(
       repeatNumber,
       [],
       [],
-      getMedicationCodeableConcept(bundle, medicationRequests[i])
+      getMedicationCodeableConceptCoding(bundle, medicationRequests[i])
     ))
   }
 

@@ -1,5 +1,4 @@
 import {
-  getCodingForSystem,
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
   getNumericValueAsString,
@@ -9,12 +8,7 @@ import {
 import {ElementCompact, js2xml} from "xml-js"
 import {fhir, hl7V3} from "@models"
 
-function convertProduct(medicationCodeableConcept: fhir.CodeableConcept) {
-  const fhirMedicationCode = getCodingForSystem(
-    medicationCodeableConcept.coding,
-    "http://snomed.info/sct",
-    "MedicationRequest.medicationCodeableConcept.coding"
-  )
+function convertProduct(fhirMedicationCode: fhir.Coding) {
   const hl7V3MedicationCode = new hl7V3.SnomedCode(fhirMedicationCode.code, fhirMedicationCode.display)
   const manufacturedRequestedMaterial = new hl7V3.ManufacturedRequestedMaterial(hl7V3MedicationCode)
   const manufacturedProduct = new hl7V3.ManufacturedProduct(manufacturedRequestedMaterial)
@@ -102,7 +96,7 @@ export function convertMedicationRequestToLineItem(
   repeatNumber: hl7V3.Interval<hl7V3.Timestamp>,
   medicationListText: Array<hl7V3.Text>,
   patientInfoText: Array<hl7V3.Text>,
-  codeableConcept: fhir.CodeableConcept
+  medicationCoding: fhir.Coding
 ): hl7V3.LineItem {
   const lineItemId = getIdentifierValueForSystem(
     medicationRequest.identifier,
@@ -117,7 +111,7 @@ export function convertMedicationRequestToLineItem(
     lineItem.repeatNumber = repeatNumber
   }
 
-  lineItem.product = convertProduct(codeableConcept)
+  lineItem.product = convertProduct(medicationCoding)
   lineItem.component = convertLineItemComponent(medicationRequest.dispenseRequest.quantity)
   convertPrescriptionEndorsements(medicationRequest, lineItem)
 
