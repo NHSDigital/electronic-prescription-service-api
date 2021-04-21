@@ -34,7 +34,7 @@ jestpact.pactWith(
           }
 
           const interaction: InteractionObject = {
-            state: "is not authenticated",
+            state: "is authenticated",
             uponReceiving: `a request to release a ${description} message`,
             withRequest: {
               headers: {
@@ -90,7 +90,7 @@ jestpact.pactWith(
           const correlationId = uuid.v4()
 
           const interaction: InteractionObject = {
-            state: "is not authenticated",
+            state: "is authenticated",
             uponReceiving: `a request to return ${desc} message`,
             withRequest: {
               headers: {
@@ -153,7 +153,7 @@ jestpact.pactWith(
           const correlationId = uuid.v4()
 
           const interaction: InteractionObject = {
-            state: "is not authenticated",
+            state: "is authenticated",
             uponReceiving: `a request to withdraw ${desc} message`,
             withRequest: {
               headers: {
