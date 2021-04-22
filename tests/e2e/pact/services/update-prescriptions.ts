@@ -12,6 +12,7 @@ import {
   convertParentPrescription
 } from "@coordinator"
 import * as crypto from "crypto"
+import path from "path"
 import fs from "fs"
 import moment from "moment"
 import {ElementCompact} from "xml-js"
@@ -37,6 +38,9 @@ export async function updatePrescriptions(): Promise<void> {
     console.warn("No private key / x509 certifcate found, signing has been skipped")
   }
 
+  const sentPrescriptions = []
+  const cancelledPrescriptions = []
+
   fetcher.prescriptionOrderExamples.filter(e => e.isSuccess).forEach(async(processCase) => {
     const prepareBundle = processCase.prepareRequest ?? processCase.request
     const processBundle = processCase.request
@@ -47,6 +51,8 @@ export async function updatePrescriptions(): Promise<void> {
     const originalShortFormId = firstGroupIdentifier.value
     const newShortFormId = generateShortFormId(originalShortFormId)
     replacements.set(originalShortFormId, newShortFormId)
+
+    sentPrescriptions.push(`${newShortFormId} - ${processCase.description}`)
 
     const originalLongFormId = getLongFormIdExtension(firstGroupIdentifier.extension).valueIdentifier.value
     const newLongFormId = uuid.v4()
@@ -82,6 +88,8 @@ export async function updatePrescriptions(): Promise<void> {
     const originalShortFormId = firstGroupIdentifier.value
     const newShortFormId = replacements.get(originalShortFormId)
 
+    cancelledPrescriptions.push(`${newShortFormId} - ${processCase.description}`)
+
     const originalLongFormId = getLongFormIdExtension(firstGroupIdentifier.extension).valueIdentifier.value
     const newLongFormId = replacements.get(originalLongFormId)
 
@@ -91,6 +99,22 @@ export async function updatePrescriptions(): Promise<void> {
       setProdPatient(bundle)
     }
   })
+
+  const toBeDispensedPrescriptions = sentPrescriptions.filter(p => {
+    const shortFormId = p.substring(0, 20)
+    return cancelledPrescriptions.map(c => c.substring(0, 20)).indexOf(shortFormId) < 0
+  })
+
+  var file = fs.createWriteStream('prescriptions-tested.txt');
+  file.on('error', function(err) { console.log(err) });
+  file.write("# Prescriptions to be Dispensed")
+  file.write("\r\n")
+  toBeDispensedPrescriptions.forEach(value => file.write(`${value}\r\n`));
+  file.write("\r\n")
+  file.write("# Prescriptions which have been cancelled")
+  file.write("\r\n")
+  cancelledPrescriptions.forEach(value => file.write(`${value}\r\n`));
+  file.end();
 }
 
 export function setPrescriptionIds(
