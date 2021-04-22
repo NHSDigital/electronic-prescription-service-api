@@ -19,7 +19,8 @@ import {ElementCompact} from "xml-js"
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
 
-const isProd = process.env.APIGEE_ENVIRONMENT === "prod"
+const environment = process.env.APIGEE_ENVIRONMENT
+const isProd = environment === "prod"
 
 export async function updatePrescriptions(): Promise<void> {
   const replacements = new Map<string, string>()
@@ -104,16 +105,17 @@ export async function updatePrescriptions(): Promise<void> {
     return cancelledPrescriptions.map(c => c.substring(0, 20)).indexOf(shortFormId) < 0
   })
 
-  const file = fs.createWriteStream('prescriptions-tested.txt')
-  file.on('error', function(err) { console.log(err) })
-  file.write("# Prescriptions to be Dispensed")
-  file.write("\r\n")
-  toBeDispensedPrescriptions.forEach(value => file.write(`${value}\r\n`))
-  file.write("\r\n")
-  file.write("# Prescriptions which have been cancelled")
-  file.write("\r\n")
-  cancelledPrescriptions.forEach(value => file.write(`${value}\r\n`))
-  file.end()
+  const prescriptionsTestedFileSuffix = environment ?? "tested"
+  const prescriptionsTestedFile = fs.createWriteStream(`prescriptions-${prescriptionsTestedFileSuffix}.txt`)
+  prescriptionsTestedFile.on('error', function(err) { console.log(err) })
+  prescriptionsTestedFile.write("# Prescriptions to be Dispensed")
+  prescriptionsTestedFile.write("\r\n")
+  toBeDispensedPrescriptions.forEach(value => prescriptionsTestedFile.write(`${value}\r\n`))
+  prescriptionsTestedFile.write("\r\n")
+  prescriptionsTestedFile.write("# Prescriptions which have been cancelled")
+  prescriptionsTestedFile.write("\r\n")
+  cancelledPrescriptions.forEach(value => prescriptionsTestedFile.write(`${value}\r\n`))
+  prescriptionsTestedFile.end()
 }
 
 export function setPrescriptionIds(
