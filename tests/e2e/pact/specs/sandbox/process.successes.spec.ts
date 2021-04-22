@@ -6,6 +6,7 @@ import * as uuid from "uuid"
 import * as TestResources from "../../resources/test-resources"
 import {basePath, pactOptions} from "../../resources/common"
 import {fetcher, fhir} from "@models"
+import {updatePrescriptions} from "../../services/update-prescriptions"
 
 jestpact.pactWith(
   pactOptions("sandbox", "process", "send"),
@@ -15,6 +16,12 @@ jestpact.pactWith(
       const url = `${provider.mockService.baseUrl}`
       return supertest(url)
     }
+
+    beforeAll(async() => {
+      if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
+        await updatePrescriptions()
+      }
+    })
 
     describe("process-message send sandbox e2e tests", () => {
       test.each(TestResources.processOrderCaseGroups)(
