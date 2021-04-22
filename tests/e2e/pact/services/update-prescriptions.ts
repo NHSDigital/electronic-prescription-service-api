@@ -107,7 +107,6 @@ export async function updatePrescriptions(): Promise<void> {
 
   const prescriptionsTestedFileSuffix = environment ?? "tested"
   const prescriptionsTestedFile = fs.createWriteStream(`prescriptions-${prescriptionsTestedFileSuffix}.txt`)
-  prescriptionsTestedFile.on('error', function(err) { console.log(err) })
   prescriptionsTestedFile.write("# Prescriptions to be Dispensed")
   prescriptionsTestedFile.write("\r\n")
   toBeDispensedPrescriptions.forEach(value => prescriptionsTestedFile.write(`${value}\r\n`))
