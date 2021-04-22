@@ -173,8 +173,8 @@ extends:
           fi
         displayName: Run smoke tests
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-    - task: PublishBuildArtifacts@1
-      inputs:
-        pathToPublish: '$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact/prescriptions-tested.txt'
-        artifactName: 'drop'
-        publishLocation: 'Container'
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathToPublish: '$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact/prescriptions-tested.txt'
+          artifactName: 'drop'
+          publishLocation: 'Container'
