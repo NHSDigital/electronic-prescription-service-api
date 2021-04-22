@@ -12,7 +12,6 @@ import {
   convertParentPrescription
 } from "@coordinator"
 import * as crypto from "crypto"
-import path from "path"
 import fs from "fs"
 import moment from "moment"
 import {ElementCompact} from "xml-js"
@@ -105,16 +104,16 @@ export async function updatePrescriptions(): Promise<void> {
     return cancelledPrescriptions.map(c => c.substring(0, 20)).indexOf(shortFormId) < 0
   })
 
-  var file = fs.createWriteStream('prescriptions-tested.txt');
-  file.on('error', function(err) { console.log(err) });
+  const file = fs.createWriteStream('prescriptions-tested.txt')
+  file.on('error', function(err) { console.log(err) })
   file.write("# Prescriptions to be Dispensed")
   file.write("\r\n")
-  toBeDispensedPrescriptions.forEach(value => file.write(`${value}\r\n`));
+  toBeDispensedPrescriptions.forEach(value => file.write(`${value}\r\n`))
   file.write("\r\n")
   file.write("# Prescriptions which have been cancelled")
   file.write("\r\n")
-  cancelledPrescriptions.forEach(value => file.write(`${value}\r\n`));
-  file.end();
+  cancelledPrescriptions.forEach(value => file.write(`${value}\r\n`))
+  file.end()
 }
 
 export function setPrescriptionIds(
