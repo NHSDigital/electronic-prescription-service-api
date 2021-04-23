@@ -19,8 +19,7 @@ import {ElementCompact} from "xml-js"
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
 
-const environment = process.env.APIGEE_ENVIRONMENT
-const isProd = environment === "prod"
+const isProd = process.env.APIGEE_ENVIRONMENT === "prod"
 
 export async function updatePrescriptions(): Promise<void> {
   const replacements = new Map<string, string>()
@@ -38,9 +37,6 @@ export async function updatePrescriptions(): Promise<void> {
     console.warn("No private key / x509 certifcate found, signing has been skipped")
   }
 
-  const sentPrescriptions = []
-  const cancelledPrescriptions = []
-
   fetcher.prescriptionOrderExamples.filter(e => e.isSuccess).forEach(async(processCase) => {
     const prepareBundle = processCase.prepareRequest ?? processCase.request
     const processBundle = processCase.request
@@ -51,8 +47,6 @@ export async function updatePrescriptions(): Promise<void> {
     const originalShortFormId = firstGroupIdentifier.value
     const newShortFormId = generateShortFormId(originalShortFormId)
     replacements.set(originalShortFormId, newShortFormId)
-
-    sentPrescriptions.push(`${newShortFormId} - ${processCase.description}`)
 
     const originalLongFormId = getLongFormIdExtension(firstGroupIdentifier.extension).valueIdentifier.value
     const newLongFormId = uuid.v4()
@@ -88,8 +82,6 @@ export async function updatePrescriptions(): Promise<void> {
     const originalShortFormId = firstGroupIdentifier.value
     const newShortFormId = replacements.get(originalShortFormId)
 
-    cancelledPrescriptions.push(`${newShortFormId} - ${processCase.description}`)
-
     const originalLongFormId = getLongFormIdExtension(firstGroupIdentifier.extension).valueIdentifier.value
     const newLongFormId = replacements.get(originalLongFormId)
 
@@ -99,22 +91,6 @@ export async function updatePrescriptions(): Promise<void> {
       setProdPatient(bundle)
     }
   })
-
-  const toBeDispensedPrescriptions = sentPrescriptions.filter(p => {
-    const shortFormId = p.substring(0, 20)
-    return cancelledPrescriptions.map(c => c.substring(0, 20)).indexOf(shortFormId) < 0
-  })
-
-  const prescriptionsTestedFileSuffix = environment ?? "tested"
-  const prescriptionsTestedFile = fs.createWriteStream(`prescriptions-${prescriptionsTestedFileSuffix}.txt`)
-  prescriptionsTestedFile.write("# Prescriptions to be Dispensed")
-  prescriptionsTestedFile.write("\r\n")
-  toBeDispensedPrescriptions.forEach(value => prescriptionsTestedFile.write(`${value}\r\n`))
-  prescriptionsTestedFile.write("\r\n")
-  prescriptionsTestedFile.write("# Prescriptions which have been cancelled")
-  prescriptionsTestedFile.write("\r\n")
-  cancelledPrescriptions.forEach(value => prescriptionsTestedFile.write(`${value}\r\n`))
-  prescriptionsTestedFile.end()
 }
 
 export function setPrescriptionIds(
