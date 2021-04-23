@@ -6,8 +6,7 @@
 **/coverage/
 **/node_modules/
 tests/e2e/pact/pact/
-tests/e2e/postman/electronic-prescription-coordinator-postman-tests.json
-tests/e2e/postman/collections/
+tests/e2e/postman/
 .#*
 __pycache__/
 .envrc
@@ -16,3 +15,4 @@ envrc.ps1
 .vscode
 sign/
 *.key
+prescriptions-tested.txt

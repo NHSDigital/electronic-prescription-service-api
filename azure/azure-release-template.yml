@@ -173,13 +173,8 @@ extends:
           fi
         displayName: Run smoke tests
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-      - bash: |
-          if [ -f "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact/prescriptions-$(APIGEE_ENVIRONMENT).txt" ]; then
-            echo "##vso[task.setVariable variable=TEST_RESULTS_FILE_EXISTS]true"
-          fi
       - task: PublishBuildArtifacts@1
         inputs:
           pathToPublish: '$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact/prescriptions-$(APIGEE_ENVIRONMENT).txt'
           artifactName: 'smoke-tests'
           publishLocation: 'Container'
-        condition: eq(variables.TEST_RESULTS_FILE_EXISTS, 'true')
