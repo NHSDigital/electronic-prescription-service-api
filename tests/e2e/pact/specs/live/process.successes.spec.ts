@@ -7,6 +7,7 @@ import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
 import {fetcher, fhir} from "@models"
 import {generateShortFormId, setPrescriptionIds, updatePrescriptions} from "../../services/update-prescriptions"
+import {generateTestOutputFile} from "../../services/genereate-test-output-file"
 
 jestpact.pactWith(
   pactOptions("live", "process", "send"),
@@ -21,6 +22,7 @@ jestpact.pactWith(
       if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
         await updatePrescriptions()
       }
+      generateTestOutputFile()
     })
 
     describe("process-message send e2e tests", () => {
@@ -198,7 +200,6 @@ jestpact.pactWith(
     }
 
     describe("process-message sandbox e2e tests", () => {
-
       test("Should be able to process a FHIR JSON Accept header", async () => {
         const testCase = fetcher.processExamples[0]
         const apiPath = `${basePath}/$process-message`
@@ -210,7 +211,7 @@ jestpact.pactWith(
 
         const interaction: InteractionObject = {
           state: "is authenticated",
-          uponReceiving: `a request to process a message with a FHIR JSON Accept header`,
+          uponReceiving: "a request to process a message with a FHIR JSON Accept header",
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",

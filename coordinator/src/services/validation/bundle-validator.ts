@@ -199,11 +199,11 @@ function verifyIdenticalForAllMedicationDispenses(
   return null
 }
 
-function verifyIdenticalForAllMedicationRequests(
+export function verifyIdenticalForAllMedicationRequests(
   bundle: fhir.Bundle,
   medicationRequests: Array<fhir.MedicationRequest>,
   fhirPath: string
-) {
+): fhir.OperationOutcomeIssue {
   const allFieldValues = applyFhirPath(bundle, medicationRequests, fhirPath)
   const uniqueFieldValues = getUniqueValues(allFieldValues)
   if (uniqueFieldValues.length > 1) {

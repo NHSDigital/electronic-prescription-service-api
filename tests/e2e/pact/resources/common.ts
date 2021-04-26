@@ -4,17 +4,18 @@ import {fhir} from "@models"
 export const basePath = "/FHIR/R4"
 
 export type ApiMode = "live" | "sandbox"
-export type ApiEndpoint = "prepare" | "process" | "convert" | "task"
+export type ApiEndpoint = "prepare" | "process" | "convert" | "task" | "validate"
 export type ApiOperation = "send" | "cancel" | "dispense" | "release" | "return" | "withdraw"
 
 // used to add type-safety for adding a new pact
 export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, operation?: ApiOperation): JestPactOptions
 {
   const sandbox = mode === "sandbox"
+  const pacticipant_suffix = sandbox ? "-sandbox" : ""
   return {
     spec: 2,
-    consumer: `nhsd-apim-eps-test-client+${process.env.PACT_VERSION}`,
-    provider: `nhsd-apim-eps${sandbox ? "-sandbox" : ""}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
+    consumer: `nhsd-apim-eps-test-client${pacticipant_suffix}+${process.env.PACT_VERSION}`,
+    provider: `nhsd-apim-eps${pacticipant_suffix}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
     pactfileWriteMode: "merge"
   }
 }
