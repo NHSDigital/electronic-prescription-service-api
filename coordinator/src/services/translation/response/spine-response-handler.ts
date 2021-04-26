@@ -86,7 +86,10 @@ export class SpineResponseHandler<T> {
     }
   }
 
-  private static handleErrorOrRejectionResponse(errorCodes: Array<hl7V3.Code<string>>, logger: pino.Logger) {
+  private static handleErrorOrRejectionResponse(
+    errorCodes: Array<hl7V3.Code<string>>,
+    logger: pino.Logger
+  ) {
     const issues = errorCodes.map(SpineResponseHandler.toOperationOutcomeIssue)
     if (!issues.length) {
       logger.error("Trying to return bad request response with no error details")
@@ -96,7 +99,8 @@ export class SpineResponseHandler<T> {
   }
 
   private static toOperationOutcomeIssue(code: hl7V3.Code<string>): fhir.OperationOutcomeIssue {
-    const epsCodeInformation = SpineResponseHandler.toEpsErrorCode(code)
+    //change to switch based on oid
+    const epsCodeInformation = SpineResponseHandler.getErrorCodeInformation(code)
     return {
       code: epsCodeInformation.code,
       severity: "error",
@@ -110,7 +114,26 @@ export class SpineResponseHandler<T> {
     }
   }
 
-  private static toEpsErrorCode(code: hl7V3.Code<string>): EpsErrorCodeInformation{
+  private static getErrorCodeInformation(code: hl7V3.Code<string>){
+    switch(code._attributes.codeSystem){
+      case hl7V3.ApplicationErrorMessageTypeCodes.PRESCRIBE:
+        return SpineResponseHandler.toEpsPrescribeErrorCode(code)
+      case hl7V3.ApplicationErrorMessageTypeCodes.DISPENSE:
+        return SpineResponseHandler.toUnhandledMessageTypeErrorCode(code)
+      default:
+        return SpineResponseHandler.toUnhandledMessageTypeErrorCode(code)
+    }
+  }
+
+  private static toUnhandledMessageTypeErrorCode(code: hl7V3.Code<string>): EpsErrorCodeInformation{
+    return {
+      code: fhir.IssueCodes.INVALID,
+      issueCode: code._attributes.code,
+      display: code._attributes.displayName
+    }
+  }
+
+  private static toEpsPrescribeErrorCode(code: hl7V3.Code<string>): EpsErrorCodeInformation{
     switch(code._attributes.code){
       case "0001":
         return new EpsErrorCodeInformation(

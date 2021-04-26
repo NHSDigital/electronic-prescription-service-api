@@ -121,7 +121,7 @@ export const exampleReturnTask = JSON.parse(fs.readFileSync(
 export interface ExampleSpineResponse {
   response: spine.SpineDirectResponse<string>
   spineErrorCode: string | undefined
-  epsErrorCode: string | undefined
+  epsPrescribeErrorCode: string | undefined
   acknowledgementCode: hl7V3.AcknowledgementTypeCode
 }
 
@@ -134,7 +134,7 @@ const asyncSuccess: ExampleSpineResponse = {
     statusCode: 200
   },
   spineErrorCode: undefined,
-  epsErrorCode: undefined,
+  epsPrescribeErrorCode: undefined,
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.ACKNOWLEDGED
 }
 
@@ -147,7 +147,7 @@ const syncError: ExampleSpineResponse = {
     statusCode: 400
   },
   spineErrorCode: "202",
-  epsErrorCode: "ERROR",
+  epsPrescribeErrorCode: "ERROR",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.REJECTED
 }
 
@@ -160,7 +160,7 @@ const asyncError: ExampleSpineResponse = {
     statusCode: 400
   },
   spineErrorCode: "5000",
-  epsErrorCode: "ERROR",
+  epsPrescribeErrorCode: "ERROR",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.ERROR
 }
 
@@ -173,7 +173,7 @@ const syncMultipleError: ExampleSpineResponse = {
     statusCode: 400
   },
   spineErrorCode: "202",
-  epsErrorCode: "ERROR",
+  epsPrescribeErrorCode: "ERROR",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.REJECTED
 }
 
@@ -186,7 +186,7 @@ const asyncMultipleError: ExampleSpineResponse = {
     statusCode: 400
   },
   spineErrorCode: "5000",
-  epsErrorCode: "ERROR",
+  epsPrescribeErrorCode: "ERROR",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.ERROR
 }
 
@@ -199,7 +199,7 @@ const cancellationSuccess: ExampleSpineResponse = {
     statusCode: 200
   },
   spineErrorCode: "0001",
-  epsErrorCode: "PATIENT_DECEASED",
+  epsPrescribeErrorCode: "PATIENT_DECEASED",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.ACKNOWLEDGED
 }
 
@@ -212,7 +212,7 @@ const cancellationError: ExampleSpineResponse = {
     statusCode: 400
   },
   spineErrorCode: "0008",
-  epsErrorCode: "MISSING_VALUE",
+  epsPrescribeErrorCode: "MISSING_VALUE",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.ERROR
 }
 
@@ -225,7 +225,7 @@ const cancellationDispensedError: ExampleSpineResponse = {
     statusCode: 400
   },
   spineErrorCode: "0004",
-  epsErrorCode: "ERROR",
+  epsPrescribeErrorCode: "ERROR",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.ERROR
 }
 
