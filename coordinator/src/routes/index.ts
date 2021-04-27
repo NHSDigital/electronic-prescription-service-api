@@ -17,12 +17,16 @@ const mainRoutes = [
   ...preparePrescriptionRoutes,
   ...processPrescriptionRoutes,
   ...releaseRoutes,
-  ...statusRoutes,
   ...pollingRoutes,
   ...taskRoutes
 ]
 
+const healthCheckRoutes = [
+  ...statusRoutes
+]
+
 const routes = [
+  ...healthCheckRoutes,
   ...mainRoutes
 ]
 
