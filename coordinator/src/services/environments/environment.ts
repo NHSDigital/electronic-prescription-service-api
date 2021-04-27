@@ -1,4 +1,4 @@
-const ENVIRONMENT = process.env.ENVIRONMENT
+const environment = process.env.ENVIRONMENT
 
-export const isProd = ENVIRONMENT === "prod"
-export const isLocal = ENVIRONMENT === "local"
+export const isProd = environment === "prod"
+export const isLocal = environment === "local"
