@@ -21,12 +21,12 @@ const mainRoutes = [
   ...taskRoutes
 ]
 
-const healthCheckRoutes = [
+const healthcheckRoutes = [
   ...statusRoutes
 ]
 
 const routes = [
-  ...healthCheckRoutes,
+  ...healthcheckRoutes,
   ...mainRoutes
 ]
 
