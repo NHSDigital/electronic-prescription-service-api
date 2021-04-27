@@ -14,6 +14,7 @@ import routes from "./routes"
 import {processingErrors as errors} from "@models"
 import HapiPino from "hapi-pino"
 import {CONTENT_TYPE_FHIR, CONTENT_TYPE_JSON, CONTENT_TYPE_PLAIN_TEXT, CONTENT_TYPE_XML} from "./routes/util"
+import {isLocal} from "./services/environments/environment"
 
 function reformatUserErrorsToFhir(request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) {
   const response = request.response
@@ -67,7 +68,7 @@ const init = async () => {
     plugin: HapiPino,
     options: {
       // For non-local environments, dont pretty print to avoid spamming logs
-      prettyPrint: process.env.ENVIRONMENT_NAME === "local",
+      prettyPrint: isLocal,
       // Redact Authorization headers, see https://getpino.io/#/docs/redaction
       redact: ["req.headers.authorization"]
     }

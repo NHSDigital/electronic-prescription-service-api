@@ -6,10 +6,14 @@ import statusRoutes from "./health/get-status"
 import pollingRoutes from "./prescribe/polling"
 import releaseRoutes from "./dispense/release"
 import taskRoutes from "./dispense/task"
+import {isProd} from "../services/environments/environment"
 
-export default [
+const debugRoutes = [
   ...convertPrescriptionRoutes,
-  ...validatorRoutes,
+  ...validatorRoutes
+]
+
+const mainRoutes = [
   ...preparePrescriptionRoutes,
   ...processPrescriptionRoutes,
   ...releaseRoutes,
@@ -17,3 +21,13 @@ export default [
   ...pollingRoutes,
   ...taskRoutes
 ]
+
+const routes = [
+  ...mainRoutes
+]
+
+if (!isProd) {
+  routes.push(...debugRoutes)
+}
+
+export default routes
