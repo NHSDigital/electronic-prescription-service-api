@@ -19,18 +19,9 @@ describe("translateToFhir", () => {
     expect(statusCode).toBe(200)
   })
 
-  test.each(TestResources.spineResponses.singleErrors)("converts spine prescribing single errors", (spineResponse) => {
-    checkBodyIssueAndStatusCodeSingleErrors(spineResponse, spineResponse.epsPrescribeErrorCode)
-  })
-
   test.each(TestResources.spineResponses.singleErrors)("converts spine unhandled message type single errors",
     (spineResponse) => {
       checkBodyIssueAndStatusCodeSingleErrors(spineResponse,  spineResponse.spineErrorCode)
-    })
-
-  test.each(TestResources.spineResponses.multipleErrors)("converts multiple Prescribe spine errors",
-    (spineResponse) => {
-      checkBodyIssueAndStatusCodeMultipleErrors(spineResponse, spineResponse.epsPrescribeErrorCode)
     })
 
   test.each(TestResources.spineResponses.multipleErrors)("converts multiple unhandled message type spine errors",

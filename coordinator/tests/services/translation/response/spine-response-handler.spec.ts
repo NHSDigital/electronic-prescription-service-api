@@ -79,7 +79,7 @@ describe("default handler", () => {
       statusCode: 400,
       fhirResponse: {
         resourceType: "OperationOutcome",
-        issue: [createErrorOperationOutcomeIssue("ERROR", "Rejection Display Name")]
+        issue: [createErrorOperationOutcomeIssue("RejectionCode", "Rejection Display Name")]
       } as fhir.OperationOutcome
     })
   })
@@ -97,8 +97,8 @@ describe("default handler", () => {
       fhirResponse: {
         resourceType: "OperationOutcome",
         issue: [
-          createErrorOperationOutcomeIssue("ERROR", "Rejection Display Name 1"),
-          createErrorOperationOutcomeIssue("ERROR", "Rejection Display Name 2")
+          createErrorOperationOutcomeIssue("RejectionCode1", "Rejection Display Name 1"),
+          createErrorOperationOutcomeIssue("RejectionCode2", "Rejection Display Name 2")
         ]
       } as fhir.OperationOutcome
     })
@@ -120,43 +120,51 @@ describe("default handler", () => {
     })
   })
 
-  test("handleResponse returns 400 response if spine response is an error (single reason)", () => {
-    const expectedSendMessagePayload = createError(
-      "MCCI_IN010000UK13",
-      undefined,
-      createSendMessagePayloadReason("ErrorCode", "Error Display Name")
-    )
-    const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
-    const result = defaultHandler.handleResponse(spineResponse, logger)
-    expect(result).toMatchObject<TranslatedSpineResponse>({
-      statusCode: 400,
-      fhirResponse: {
-        resourceType: "OperationOutcome",
-        issue: [createErrorOperationOutcomeIssue("ERROR", "Error Display Name")]
-      } as fhir.OperationOutcome
-    })
-  })
+  const testCases = [
+    ["prescribe", hl7V3.ApplicationErrorMessageTypeCodes.PRESCRIBE, "RejectionCode", "ERROR"],
+    ["dispense", hl7V3.ApplicationErrorMessageTypeCodes.DISPENSE, "RejectionCode", "RejectionCode"],
+    ["spine", hl7V3.ApplicationErrorMessageTypeCodes.SPINE, "RejectionCode", "RejectionCode"]
+  ]
 
-  test("handleResponse returns 400 response if spine response is an error (multiple reasons)", () => {
-    const expectedSendMessagePayload = createError(
-      "MCCI_IN010000UK13",
-      undefined,
-      createSendMessagePayloadReason("ErrorCode1", "Error Display Name 1"),
-      createSendMessagePayloadReason("ErrorCode2", "Error Display Name 2")
-    )
-    const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
-    const result = defaultHandler.handleResponse(spineResponse, logger)
-    expect(result).toMatchObject<TranslatedSpineResponse>({
-      statusCode: 400,
-      fhirResponse: {
-        resourceType: "OperationOutcome",
-        issue: [
-          createErrorOperationOutcomeIssue("ERROR", "Error Display Name 1"),
-          createErrorOperationOutcomeIssue("ERROR", "Error Display Name 2")
-        ]
-      } as fhir.OperationOutcome
+  test.each(testCases)("handleResponse returns 400 response if spine response is a %p error (single reason)",
+    (_, codeSystem: string, spineErrorCode: string, translatedErrorCode: string) => {
+      const expectedSendMessagePayload = createError(
+        "MCCI_IN010000UK13",
+        undefined,
+        createSendMessagePayloadReason(spineErrorCode, "Error Display Name", codeSystem)
+      )
+      const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
+      const result = defaultHandler.handleResponse(spineResponse, logger)
+      expect(result).toMatchObject<TranslatedSpineResponse>({
+        statusCode: 400,
+        fhirResponse: {
+          resourceType: "OperationOutcome",
+          issue: [createErrorOperationOutcomeIssue(translatedErrorCode, "Error Display Name")]
+        } as fhir.OperationOutcome
+      })
     })
-  })
+
+  test.each(testCases)("handleResponse returns 400 response if spine response is a %p error (multiple reasons)",
+    (_, codeSystem: string, spineErrorCode: string, translatedErrorCode: string) => {
+      const expectedSendMessagePayload = createError(
+        "MCCI_IN010000UK13",
+        undefined,
+        createSendMessagePayloadReason(spineErrorCode, "Error Display Name 1", codeSystem),
+        createSendMessagePayloadReason(spineErrorCode, "Error Display Name 2", codeSystem)
+      )
+      const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
+      const result = defaultHandler.handleResponse(spineResponse, logger)
+      expect(result).toMatchObject<TranslatedSpineResponse>({
+        statusCode: 400,
+        fhirResponse: {
+          resourceType: "OperationOutcome",
+          issue: [
+            createErrorOperationOutcomeIssue(translatedErrorCode, "Error Display Name 1"),
+            createErrorOperationOutcomeIssue(translatedErrorCode, "Error Display Name 2")
+          ]
+        } as fhir.OperationOutcome
+      })
+    })
 
   test("handleResponse returns 200 response if spine response is a success", () => {
     const expectedSendMessagePayload = createSuccess("MCCI_IN010000UK13", undefined)
@@ -211,7 +219,7 @@ describe("custom response handler", () => {
     const expectedSendMessagePayload = createError(
       "MCCI_IN010000UK13",
       undefined,
-      createSendMessagePayloadReason("ErrorCode", "Error Display Name")
+      createSendMessagePayloadReason("ErrorCode", "Error Display Name", "ErrorCodeSystem")
     )
     const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
     errorOverride.mockReturnValueOnce(customResponse)
@@ -259,7 +267,7 @@ describe("cancel response handler", () => {
     const expectedSendMessagePayload = createError(
       "PORX_IN050101UK31",
       mockCancellationResponseRoot,
-      createSendMessagePayloadReason("ErrorCode", "Error Display Name")
+      createSendMessagePayloadReason("ErrorCode", "Error Display Name", "ErrorCodeSystem")
     )
     const spineResponse = writeXmlStringPretty({PORX_IN050101UK31: expectedSendMessagePayload})
     mockTranslator.mockReturnValueOnce(mockTranslatorResponse)
@@ -316,7 +324,7 @@ describe("release response handler", () => {
     const expectedSendMessagePayload = createError(
       "PORX_IN070101UK31",
       mockReleaseResponseRoot,
-      createSendMessagePayloadReason("ErrorCode", "Error Display Name")
+      createSendMessagePayloadReason("ErrorCode", "Error Display Name", "ErrorCodeSystem")
     )
     const spineResponse = writeXmlStringPretty({PORX_IN070101UK31: expectedSendMessagePayload})
     const result = releaseResponseHandler.handleResponse(spineResponse, logger)
@@ -413,12 +421,16 @@ function createAcknowledgementDetail(code: string, display: string): hl7V3.Ackno
   }
 }
 
-function createSendMessagePayloadReason(code: string, display: string): hl7V3.SendMessagePayloadReason {
+function createSendMessagePayloadReason(
+  code: string,
+  display: string,
+  codeSystem: string
+): hl7V3.SendMessagePayloadReason {
   return {
     justifyingDetectedIssueEvent: {
       code: {
         _attributes: {
-          codeSystem: "ErrorCodeSystem",
+          codeSystem: codeSystem,
           code: code,
           displayName: display
         }
