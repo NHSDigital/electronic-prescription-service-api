@@ -30,7 +30,7 @@ extends:
     short_service_name: ${{ variables.short_service_name }}
     test_steps:
       - bash: |
-          node --version
+          npm --version
         displayName: Debug Step
       - bash: "make test"
         displayName: Run Quality Checks
