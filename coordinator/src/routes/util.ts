@@ -36,7 +36,8 @@ export function handleResponse<T>(
       .type(CONTENT_TYPE_FHIR)
   } else {
     const translatedSpineResponse = translateToFhir(spineResponse, request.logger)
-    return responseToolkit.response(translatedSpineResponse.fhirResponse)
+    const serializedResponse = LosslessJson.stringify(translatedSpineResponse.fhirResponse)
+    return responseToolkit.response(serializedResponse)
       .code(translatedSpineResponse.statusCode)
       .type(CONTENT_TYPE_FHIR)
   }
