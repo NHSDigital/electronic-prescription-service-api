@@ -137,70 +137,70 @@ export class SpineResponseHandler<T> {
           code: fhir.IssueCodes.BUSINESS_RULE,
           display: "Patient is recorded as dead",
           issueCode: "PATIENT_DECEASED",
-          system: "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
         }
       case "0002":
         return {
           code: fhir.IssueCodes.DUPLICATE,
           display: "Duplicate prescription ID exists",
           issueCode: "DUPLICATE_PRESCRIPTION_ID",
-          system: "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
         }
       case "0003":
         return {
           code: fhir.IssueCodes.BUSINESS_RULE,
           display: "Digital signature not found",
           issueCode: "MISSING_DIGITAL_SIGNATURE",
-          system: "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
         }
       case "0009":
         return {
           code: fhir.IssueCodes.STRUCTURE,
           display: "Invalid Message",
           issueCode: "INVALID_MESSAGE",
-          system: "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
         }
       case "0010":
         return {
           code: fhir.IssueCodes.BUSINESS_RULE,
           display: "Number of items on a prescription should be between 1 and 4",
           issueCode: "INVALID_NUMBER_MEDICATIONREQUESTS",
-          system: "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
         }
       case "0018":
         return {
           code: fhir.IssueCodes.BUSINESS_RULE,
           display: "Mismatch in authorised repeat counts",
           issueCode: "MISMATCH_AUTHORISED_REPEAT_COUNT",
-          system: "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
         }
       case "0019":
         return {
           code: fhir.IssueCodes.BUSINESS_RULE,
           display: "Repeat count should be between 1 and 99",
           issueCode: "INVALID_REPEAT_COUNT",
-          system: "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
         }
       case "5008":
         return {
           code: fhir.IssueCodes.DUPLICATE,
           display: "Duplicate item ID exists",
           issueCode: "DUPLICATE_MEDICATIONREQUEST_ID",
-          system: "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
         }
       case "5009":
         return {
           code: fhir.IssueCodes.VALUE,
           display: "Error in check digit",
           issueCode: "INVALID_CHECK_DIGIT",
-          system: "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
         }
       case "9006":
         return {
           code: fhir.IssueCodes.VALUE,
           display: "Format of date passed is invalid",
           issueCode: "INVALID_DATE_FORMAT",
-          system: "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
         }
       case "0007":
         return {

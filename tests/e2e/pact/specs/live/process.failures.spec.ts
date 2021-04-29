@@ -37,7 +37,7 @@ jestpact.pactWith(
     })
 
     describe("ensure errors are translated", () => {
-      test("EPS Prescribe error", async () => {
+      test("EPS Prescribe error 0003", async () => {
         const apiPath = `${basePath}/$process-message`
         const message = TestResources.prepareCaseBundles[0][1] as fhir.Bundle
         const bundleStr = LosslessJson.stringify(message)
