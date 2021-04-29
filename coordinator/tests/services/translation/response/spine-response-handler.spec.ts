@@ -38,10 +38,10 @@ describe("default handler", () => {
   })
 
   function checkResponseObjectAndStatusCode(
-    expectedSendMessagePayload:hl7V3.SendMessagePayload<unknown>,
+    expectedSendMessagePayload: hl7V3.SendMessagePayload<unknown>,
     expectedIssueArray: Array<fhir.OperationOutcomeIssue>,
     statusCode: number
-  ){
+  ) {
     const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
     const result = defaultHandler.handleResponse(spineResponse, logger)
     expect(result).toMatchObject<TranslatedSpineResponse>({

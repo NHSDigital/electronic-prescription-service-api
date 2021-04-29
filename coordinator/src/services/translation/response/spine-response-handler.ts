@@ -121,7 +121,7 @@ export class SpineResponseHandler<T> {
     }
   }
 
-  private static toUnhandledMessageTypeErrorCode(code: hl7V3.Code<string>): EpsErrorCodeInformation{
+  private static toUnhandledMessageTypeErrorCode(code: hl7V3.Code<string>): EpsErrorCodeInformation {
     return {
       code: fhir.IssueCodes.INVALID,
       issueCode: code._attributes.code,
@@ -130,106 +130,107 @@ export class SpineResponseHandler<T> {
     }
   }
 
-  private static toEpsPrescribeErrorCode(code: hl7V3.Code<string>): EpsErrorCodeInformation{
+  private static toEpsPrescribeErrorCode(code: hl7V3.Code<string>): EpsErrorCodeInformation {
     switch(code._attributes.code){
       case "0001":
-        return new EpsErrorCodeInformation(
-          fhir.IssueCodes.BUSINESS_RULE,
-          "Patient is recorded as dead",
-          "PATIENT_DECEASED",
-          "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
-        )
+        return {
+          code: fhir.IssueCodes.BUSINESS_RULE,
+          display: "Patient is recorded as dead",
+          issueCode: "PATIENT_DECEASED",
+          system: "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
+        }
       case "0002":
-        return new EpsErrorCodeInformation(
-          fhir.IssueCodes.DUPLICATE,
-          "Duplicate prescription ID exists",
-          "DUPLICATE_PRESCRIPTION_ID",
-          "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
-        )
+        return {
+          code: fhir.IssueCodes.DUPLICATE,
+          display: "Duplicate prescription ID exists",
+          issueCode: "DUPLICATE_PRESCRIPTION_ID",
+          system: "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
+        }
       case "0003":
-        return new EpsErrorCodeInformation(
-          fhir.IssueCodes.BUSINESS_RULE,
-          "Digital signature not found",
-          "MISSING_DIGITAL_SIGNATURE",
-          "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
-        )
+        return {
+          code: fhir.IssueCodes.BUSINESS_RULE,
+          display: "Digital signature not found",
+          issueCode: "MISSING_DIGITAL_SIGNATURE",
+          system: "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
+        }
       case "0009":
-        return new EpsErrorCodeInformation(
-          fhir.IssueCodes.STRUCTURE,
-          "Invalid Message",
-          "INVALID_MESSAGE",
-          "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
-        )
+        return {
+          code: fhir.IssueCodes.STRUCTURE,
+          display: "Invalid Message",
+          issueCode: "INVALID_MESSAGE",
+          system: "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
+        }
       case "0010":
-        return new EpsErrorCodeInformation(
-          fhir.IssueCodes.BUSINESS_RULE,
-          "Number of items on a prescription should be between 1 and 4",
-          "INVALID_NUMBER_MEDICATIONREQUESTS",
-          "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
-        )
+        return {
+          code: fhir.IssueCodes.BUSINESS_RULE,
+          display: "Number of items on a prescription should be between 1 and 4",
+          issueCode: "INVALID_NUMBER_MEDICATIONREQUESTS",
+          system: "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
+        }
       case "0018":
-        return new EpsErrorCodeInformation(
-          fhir.IssueCodes.BUSINESS_RULE,
-          "Mismatch in authorised repeat counts",
-          "MISMATCH_AUTHORISED_REPEAT_COUNT",
-          "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
-        )
+        return {
+          code: fhir.IssueCodes.BUSINESS_RULE,
+          display: "Mismatch in authorised repeat counts",
+          issueCode: "MISMATCH_AUTHORISED_REPEAT_COUNT",
+          system: "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
+        }
       case "0019":
-        return new EpsErrorCodeInformation(
-          fhir.IssueCodes.BUSINESS_RULE,
-          "Repeat count should be between 1 and 99",
-          "INVALID_REPEAT_COUNT",
-          "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
-        )
+        return {
+          code: fhir.IssueCodes.BUSINESS_RULE,
+          display: "Repeat count should be between 1 and 99",
+          issueCode: "INVALID_REPEAT_COUNT",
+          system: "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
+        }
       case "5008":
-        return new EpsErrorCodeInformation(
-          fhir.IssueCodes.DUPLICATE,
-          "Duplicate item ID exists",
-          "DUPLICATE_MEDICATIONREQUEST_ID",
-          "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
-        )
+        return {
+          code: fhir.IssueCodes.DUPLICATE,
+          display: "Duplicate item ID exists",
+          issueCode: "DUPLICATE_MEDICATIONREQUEST_ID",
+          system: "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
+        }
       case "5009":
-        return new EpsErrorCodeInformation(
-          fhir.IssueCodes.VALUE,
-          "Error in check digit",
-          "INVALID_CHECK_DIGIT",
-          "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
-        )
+        return {
+          code: fhir.IssueCodes.VALUE,
+          display: "Error in check digit",
+          issueCode: "INVALID_CHECK_DIGIT",
+          system: "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
+        }
       case "9006":
-        return new EpsErrorCodeInformation(
-          fhir.IssueCodes.VALUE,
-          "Format of date passed is invalid",
-          "INVALID_DATE_FORMAT",
-          "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
-        )
+        return {
+          code: fhir.IssueCodes.VALUE,
+          display: "Format of date passed is invalid",
+          issueCode: "INVALID_DATE_FORMAT",
+          system: "https://fhir.nhs.uk/R4/CodeSystem/EPS-IssueCode"
+        }
       case "0007":
-        return new EpsErrorCodeInformation(
-          fhir.IssueCodes.CODE_INVALID,
-          "The resource ID was not valid. For example a NHS Number is presented which is not a valid NHS Number.",
-          "INVALID_RESOURCE_ID",
-          "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
-        )
+        return {
+          code: fhir.IssueCodes.CODE_INVALID,
+          display: "The resource ID was not valid." +
+            " For example a NHS Number is presented which is not a valid NHS Number.",
+          issueCode: "INVALID_RESOURCE_ID",
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
+        }
       case "0008":
-        return new EpsErrorCodeInformation(
-          fhir.IssueCodes.VALUE,
-          code._attributes.displayName,
-          "MISSING_VALUE",
-          "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
-        )
+        return {
+          code: fhir.IssueCodes.VALUE,
+          display: code._attributes.displayName,
+          issueCode: "MISSING_VALUE",
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
+        }
       case "0099":
-        return new EpsErrorCodeInformation(
-          fhir.IssueCodes.CONFLICT,
-          "Resource version mismatch",
-          "RESOURCE_VERSION_MISMATCH",
-          "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
-        )
+        return {
+          code: fhir.IssueCodes.CONFLICT,
+          display: "Resource version mismatch",
+          issueCode: "RESOURCE_VERSION_MISMATCH",
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
+        }
       default:
-        return new EpsErrorCodeInformation(
-          fhir.IssueCodes.INVALID,
-          code._attributes.displayName,
-          "ERROR",
-          "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
-        )
+        return {
+          code: fhir.IssueCodes.INVALID,
+          display: code._attributes.displayName,
+          issueCode: "ERROR",
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
+        }
     }
   }
 
@@ -306,21 +307,9 @@ export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.Prescript
   }
 }
 
-class EpsErrorCodeInformation {
+interface EpsErrorCodeInformation {
   code: fhir.IssueCodes
   display: string
   issueCode: string
   system: string
-
-  constructor(
-    code: fhir.IssueCodes,
-    display: string,
-    otherCode: string,
-    system: string
-  ) {
-    this.code = code
-    this.display = display
-    this.issueCode = otherCode
-    this.system = system
-  }
 }
