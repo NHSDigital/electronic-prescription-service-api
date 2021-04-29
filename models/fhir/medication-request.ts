@@ -1,6 +1,7 @@
 import * as common from "./common"
 import * as practitionerRole from "./practitioner-role"
 import * as patient from "./patient"
+import * as medication from "./medication"
 import * as extension from "./extension"
 
 export enum CourseOfTherapyTypeCode {
@@ -46,7 +47,8 @@ export interface BaseMedicationRequest extends common.Resource {
   identifier: Array<common.Identifier>
   status: MedicationRequestStatus
   intent: MedicationRequestIntent
-  medicationCodeableConcept: common.CodeableConcept
+  medicationCodeableConcept?: common.CodeableConcept
+  medicationReference?: common.Reference<medication.Medication>
   subject: common.Reference<patient.Patient>
   authoredOn: string
   requester: common.Reference<practitionerRole.PractitionerRole>
