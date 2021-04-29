@@ -37,7 +37,7 @@ jestpact.pactWith(
     })
 
     describe("ensure errors are translated", () => {
-      test("EPS Prescribe error", async () => {
+      test("EPS Prescribe error 0003", async () => {
         const apiPath = `${basePath}/$process-message`
         const message = TestResources.prepareCaseBundles[0][1] as fhir.Bundle
         const bundleStr = LosslessJson.stringify(message)
@@ -75,9 +75,68 @@ jestpact.pactWith(
                   severity: "error",
                   details: {
                     coding: [{
-                      system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+                      system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
                       code: "MISSING_DIGITAL_SIGNATURE",
                       display: "Digital signature not found"
+                    }]
+                  }
+                }
+              ]
+            },
+            status: 400
+          }
+        }
+        await provider.addInteraction(interaction)
+        await client()
+          .post(apiPath)
+          .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
+          .set("X-Request-ID", requestId)
+          .set("X-Correlation-ID", correlationId)
+          .send(bundleStr)
+          .expect(400)
+      })
+
+      test("EPS Prescribe error 5009", async () => {
+        const apiPath = `${basePath}/$process-message`
+        const message = TestResources.processErrorCases[0][1] as fhir.Bundle
+        const bundleStr = LosslessJson.stringify(message)
+        const bundle = JSON.parse(bundleStr) as fhir.Bundle
+
+        const requestId = uuid.v4()
+        const correlationId = uuid.v4()
+
+        const firstMedicationRequest = message.entry.map(e => e.resource)
+          .find(r => r.resourceType == "MedicationRequest") as fhir.MedicationRequest
+        const prescriptionId = firstMedicationRequest.groupIdentifier.value
+
+        const interaction: InteractionObject = {
+          state: "is authenticated",
+          uponReceiving: `a request to process prescription: ${prescriptionId} - Invalid check digit`,
+          withRequest: {
+            headers: {
+              "Content-Type": "application/fhir+json; fhirVersion=4.0",
+              "X-Request-ID": requestId,
+              "X-Correlation-ID": correlationId
+            },
+            method: "POST",
+            path: apiPath,
+            body: bundle
+          },
+          willRespondWith: {
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: {
+              resourceType: "OperationOutcome",
+              issue: [
+                {
+                  code: "value",
+                  severity: "error",
+                  details: {
+                    coding: [{
+                      system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+                      code: "INVALID_CHECK_DIGIT",
+                      display: "Error in check digit"
                     }]
                   }
                 }
