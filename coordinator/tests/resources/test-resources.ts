@@ -120,8 +120,8 @@ export const exampleReturnTask = JSON.parse(fs.readFileSync(
 
 export interface ExampleSpineResponse {
   response: spine.SpineDirectResponse<string>
-  spineErrorCode: string | undefined
-  epsPrescribeErrorCode: string | undefined
+  hl7ErrorCode: string | undefined
+  fhirPrescribeErrorCode: string | undefined
   acknowledgementCode: hl7V3.AcknowledgementTypeCode
 }
 
@@ -133,8 +133,8 @@ const asyncSuccess: ExampleSpineResponse = {
     ),
     statusCode: 200
   },
-  spineErrorCode: undefined,
-  epsPrescribeErrorCode: undefined,
+  hl7ErrorCode: undefined,
+  fhirPrescribeErrorCode: undefined,
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.ACKNOWLEDGED
 }
 
@@ -146,8 +146,8 @@ const syncError: ExampleSpineResponse = {
     ),
     statusCode: 400
   },
-  spineErrorCode: "202",
-  epsPrescribeErrorCode: "ERROR",
+  hl7ErrorCode: "202",
+  fhirPrescribeErrorCode: "ERROR",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.REJECTED
 }
 
@@ -159,8 +159,8 @@ const asyncError: ExampleSpineResponse = {
     ),
     statusCode: 400
   },
-  spineErrorCode: "5000",
-  epsPrescribeErrorCode: "ERROR",
+  hl7ErrorCode: "5000",
+  fhirPrescribeErrorCode: "ERROR",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.ERROR
 }
 
@@ -172,8 +172,8 @@ const syncMultipleError: ExampleSpineResponse = {
     ),
     statusCode: 400
   },
-  spineErrorCode: "202",
-  epsPrescribeErrorCode: "ERROR",
+  hl7ErrorCode: "202",
+  fhirPrescribeErrorCode: "ERROR",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.REJECTED
 }
 
@@ -185,8 +185,8 @@ const asyncMultipleError: ExampleSpineResponse = {
     ),
     statusCode: 400
   },
-  spineErrorCode: "5000",
-  epsPrescribeErrorCode: "ERROR",
+  hl7ErrorCode: "5000",
+  fhirPrescribeErrorCode: "ERROR",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.ERROR
 }
 
@@ -198,8 +198,8 @@ const cancellationSuccess: ExampleSpineResponse = {
     ),
     statusCode: 200
   },
-  spineErrorCode: "0001",
-  epsPrescribeErrorCode: "PATIENT_DECEASED",
+  hl7ErrorCode: "0001",
+  fhirPrescribeErrorCode: "PATIENT_DECEASED",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.ACKNOWLEDGED
 }
 
@@ -211,8 +211,8 @@ const cancellationError: ExampleSpineResponse = {
     ),
     statusCode: 400
   },
-  spineErrorCode: "0008",
-  epsPrescribeErrorCode: "MISSING_VALUE",
+  hl7ErrorCode: "0008",
+  fhirPrescribeErrorCode: "MISSING_VALUE",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.ERROR
 }
 
@@ -224,8 +224,8 @@ const cancellationDispensedError: ExampleSpineResponse = {
     ),
     statusCode: 400
   },
-  spineErrorCode: "0004",
-  epsPrescribeErrorCode: "ERROR",
+  hl7ErrorCode: "0004",
+  fhirPrescribeErrorCode: "ERROR",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.ERROR
 }
 
