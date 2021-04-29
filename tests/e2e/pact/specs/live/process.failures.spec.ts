@@ -39,14 +39,16 @@ jestpact.pactWith(
     describe("ensure errors are translated", () => {
       test("EPS Prescribe error 0003", async () => {
         const apiPath = `${basePath}/$process-message`
-        const message = TestResources.prepareCaseBundles[0][1] as fhir.Bundle
-        const bundleStr = LosslessJson.stringify(message)
+        const message = TestResources.prepareCaseBundles[0][1]
+        const messageClone = LosslessJson.parse(LosslessJson.stringify(message)) as fhir.Bundle
+        messageClone.identifier.value = uuid.v4().toUpperCase()
+        const bundleStr = LosslessJson.stringify(messageClone)
         const bundle = JSON.parse(bundleStr) as fhir.Bundle
 
         const requestId = uuid.v4()
         const correlationId = uuid.v4()
 
-        const firstMedicationRequest = message.entry.map(e => e.resource)
+        const firstMedicationRequest = messageClone.entry.map(e => e.resource)
           .find(r => r.resourceType == "MedicationRequest") as fhir.MedicationRequest
         const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
