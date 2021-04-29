@@ -398,14 +398,15 @@ function createSendMessagePayloadReason(
 function createErrorOperationOutcomeIssue(
   code: fhir.IssueCodes,
   otherCode: string,
-  display: string
+  display: string,
+  system = "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
 ): fhir.OperationOutcomeIssue {
   return {
     code: code,
     severity: "error",
     details: {
       coding: [{
-        system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+        system: system,
         code: otherCode,
         display: display
       }]
