@@ -1,5 +1,6 @@
 import {
-  CancelResponseHandler, ReleaseResponseHandler,
+  CancelResponseHandler,
+  ReleaseResponseHandler,
   SpineResponseHandler,
   TranslatedSpineResponse
 } from "../../../../src/services/translation/response/spine-response-handler"
@@ -36,36 +37,32 @@ describe("default handler", () => {
     expect(result).toBeFalsy()
   })
 
-  test("handleResponse returns 500 response if spine response has invalid acknowledgement type code", () => {
-    const expectedSendMessagePayload = createUnhandled("MCCI_IN010000UK13")
+  function checkResponseObjectAndStatusCode(
+    expectedSendMessagePayload:hl7V3.SendMessagePayload<unknown>,
+    expectedIssueArray: Array<fhir.OperationOutcomeIssue>,
+    statusCode: number
+  ){
     const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
     const result = defaultHandler.handleResponse(spineResponse, logger)
     expect(result).toMatchObject<TranslatedSpineResponse>({
-      statusCode: 500,
+      statusCode: statusCode,
       fhirResponse: {
         resourceType: "OperationOutcome",
-        issue: [{
-          code: "invalid",
-          severity: "error"
-        }]
+        issue: expectedIssueArray
       } as fhir.OperationOutcome
     })
+  }
+
+  test("handleResponse returns 500 response if spine response has invalid acknowledgement type code", () => {
+    const expectedSendMessagePayload = createUnhandled("MCCI_IN010000UK13")
+    const expectedIssueArray: Array<fhir.OperationOutcomeIssue> = [{code: fhir.IssueCodes.INVALID, severity: "error"}]
+    checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 500)
   })
 
   test("handleResponse returns 500 response if spine response is a rejection and detail is missing", () => {
     const expectedSendMessagePayload = createRejection("MCCI_IN010000UK13")
-    const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
-    const result = defaultHandler.handleResponse(spineResponse, logger)
-    expect(result).toMatchObject<TranslatedSpineResponse>({
-      statusCode: 500,
-      fhirResponse: {
-        resourceType: "OperationOutcome",
-        issue: [{
-          code: "invalid",
-          severity: "error"
-        }]
-      } as fhir.OperationOutcome
-    })
+    const expectedIssueArray: Array<fhir.OperationOutcomeIssue> = [{code: fhir.IssueCodes.INVALID, severity: "error"}]
+    checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 500)
   })
 
   test("handleResponse returns 400 response if spine response is a rejection (single detail)", () => {
@@ -73,15 +70,10 @@ describe("default handler", () => {
       "MCCI_IN010000UK13",
       createAcknowledgementDetail("RejectionCode", "Rejection Display Name")
     )
-    const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
-    const result = defaultHandler.handleResponse(spineResponse, logger)
-    expect(result).toMatchObject<TranslatedSpineResponse>({
-      statusCode: 400,
-      fhirResponse: {
-        resourceType: "OperationOutcome",
-        issue: [createErrorOperationOutcomeIssue("RejectionCode", "Rejection Display Name")]
-      } as fhir.OperationOutcome
-    })
+    const expectedIssueArray = [
+      createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, "RejectionCode", "Rejection Display Name")
+    ]
+    checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 400)
   })
 
   test("handleResponse returns 400 response if spine response is a rejection (multiple details)", () => {
@@ -90,34 +82,17 @@ describe("default handler", () => {
       createAcknowledgementDetail("RejectionCode1", "Rejection Display Name 1"),
       createAcknowledgementDetail("RejectionCode2", "Rejection Display Name 2")
     )
-    const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
-    const result = defaultHandler.handleResponse(spineResponse, logger)
-    expect(result).toMatchObject<TranslatedSpineResponse>({
-      statusCode: 400,
-      fhirResponse: {
-        resourceType: "OperationOutcome",
-        issue: [
-          createErrorOperationOutcomeIssue("RejectionCode1", "Rejection Display Name 1"),
-          createErrorOperationOutcomeIssue("RejectionCode2", "Rejection Display Name 2")
-        ]
-      } as fhir.OperationOutcome
-    })
+    const expectedIssueArray = [
+      createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, "RejectionCode1", "Rejection Display Name 1"),
+      createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, "RejectionCode2", "Rejection Display Name 2")
+    ]
+    checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 400)
   })
 
   test("handleResponse returns 500 response if spine response is an error and reason is missing", () => {
     const expectedSendMessagePayload = createError("MCCI_IN010000UK13", undefined)
-    const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
-    const result = defaultHandler.handleResponse(spineResponse, logger)
-    expect(result).toMatchObject<TranslatedSpineResponse>({
-      statusCode: 500,
-      fhirResponse: {
-        resourceType: "OperationOutcome",
-        issue: [{
-          code: "invalid",
-          severity: "error"
-        }]
-      } as fhir.OperationOutcome
-    })
+    const expectedIssueArray: Array<fhir.OperationOutcomeIssue> = [{code: fhir.IssueCodes.INVALID, severity: "error"}]
+    checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 500)
   })
 
   const testCases = [
@@ -133,15 +108,10 @@ describe("default handler", () => {
         undefined,
         createSendMessagePayloadReason(spineErrorCode, "Error Display Name", codeSystem)
       )
-      const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
-      const result = defaultHandler.handleResponse(spineResponse, logger)
-      expect(result).toMatchObject<TranslatedSpineResponse>({
-        statusCode: 400,
-        fhirResponse: {
-          resourceType: "OperationOutcome",
-          issue: [createErrorOperationOutcomeIssue(translatedErrorCode, "Error Display Name")]
-        } as fhir.OperationOutcome
-      })
+      const expectedIssueArray = [
+        createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, translatedErrorCode, "Error Display Name")
+      ]
+      checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 400)
     })
 
   test.each(testCases)("handleResponse returns 400 response if spine response is a %p error (multiple reasons)",
@@ -152,34 +122,20 @@ describe("default handler", () => {
         createSendMessagePayloadReason(spineErrorCode, "Error Display Name 1", codeSystem),
         createSendMessagePayloadReason(spineErrorCode, "Error Display Name 2", codeSystem)
       )
-      const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
-      const result = defaultHandler.handleResponse(spineResponse, logger)
-      expect(result).toMatchObject<TranslatedSpineResponse>({
-        statusCode: 400,
-        fhirResponse: {
-          resourceType: "OperationOutcome",
-          issue: [
-            createErrorOperationOutcomeIssue(translatedErrorCode, "Error Display Name 1"),
-            createErrorOperationOutcomeIssue(translatedErrorCode, "Error Display Name 2")
-          ]
-        } as fhir.OperationOutcome
-      })
+      const expectedIssueArray = [
+        createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, translatedErrorCode, "Error Display Name 1"),
+        createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, translatedErrorCode, "Error Display Name 2")
+      ]
+      checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 400)
     })
 
   test("handleResponse returns 200 response if spine response is a success", () => {
     const expectedSendMessagePayload = createSuccess("MCCI_IN010000UK13", undefined)
-    const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
-    const result = defaultHandler.handleResponse(spineResponse, logger)
-    expect(result).toMatchObject<TranslatedSpineResponse>({
-      statusCode: 200,
-      fhirResponse: {
-        resourceType: "OperationOutcome",
-        issue: [{
-          code: "informational",
-          severity: "information"
-        }]
-      } as fhir.OperationOutcome
-    })
+    const expectedIssueArray: Array<fhir.OperationOutcomeIssue> = [{
+      code: fhir.IssueCodes.INFORMATIONAL,
+      severity: "information"
+    }]
+    checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 200)
   })
 })
 
@@ -258,7 +214,7 @@ describe("cancel response handler", () => {
       statusCode: 400,
       fhirResponse: {
         resourceType: "OperationOutcome",
-        issue: [createErrorOperationOutcomeIssue("RejectionCode", "Rejection Display Name")]
+        issue: [createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, "RejectionCode", "Rejection Display Name")]
       } as fhir.OperationOutcome
     })
   })
@@ -315,7 +271,7 @@ describe("release response handler", () => {
       statusCode: 400,
       fhirResponse: {
         resourceType: "OperationOutcome",
-        issue: [createErrorOperationOutcomeIssue("RejectionCode", "Rejection Display Name")]
+        issue: [createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, "RejectionCode", "Rejection Display Name")]
       } as fhir.OperationOutcome
     })
   })
@@ -332,7 +288,7 @@ describe("release response handler", () => {
       statusCode: 400,
       fhirResponse: {
         resourceType: "OperationOutcome",
-        issue: [createErrorOperationOutcomeIssue("ErrorCode", "Error Display Name")]
+        issue: [createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, "ErrorCode", "Error Display Name")]
       } as fhir.OperationOutcome
     })
   })
@@ -439,14 +395,18 @@ function createSendMessagePayloadReason(
   }
 }
 
-function createErrorOperationOutcomeIssue(code: string, display: string): fhir.OperationOutcomeIssue {
+function createErrorOperationOutcomeIssue(
+  code: fhir.IssueCodes,
+  otherCode: string,
+  display: string
+): fhir.OperationOutcomeIssue {
   return {
-    code: fhir.IssueCodes.INVALID,
+    code: code,
     severity: "error",
     details: {
       coding: [{
         system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-        code: code,
+        code: otherCode,
         display: display
       }]
     }
