@@ -61,6 +61,14 @@ export function verifyCommonBundle(bundle: fhir.Bundle): Array<fhir.OperationOut
     )
   }
 
+  if (medicationRequests.some(
+    medicationRequest => medicationRequest.medicationCodeableConcept && medicationRequest.medicationReference
+  )) {
+    incorrectValueErrors.push(
+      errors.createMedicationFieldIssue("Request")
+    )
+  }
+
   return incorrectValueErrors
 }
 
@@ -181,6 +189,14 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
 
   if (medicationDispenses.some(medicationDispense => !getOrganisationPerformer(medicationDispense))) {
     allErrors.push(errors.createMedicationDispenseMissingValueIssue("performer.actor.ofType(Organization)"))
+  }
+
+  if (medicationDispenses.some(
+    medicationRequest => medicationRequest.medicationCodeableConcept && medicationRequest.medicationReference
+  )) {
+    allErrors.push(
+      errors.createMedicationFieldIssue("Dispense")
+    )
   }
 
   return allErrors

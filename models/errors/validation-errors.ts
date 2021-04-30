@@ -118,6 +118,14 @@ export function createTaskCodingSystemIssue(
   }
 }
 
+export function createMedicationFieldIssue(resource: "Request" | "Dispense"): fhir.OperationOutcomeIssue {
+  return {
+    severity: "error",
+    code: fhir.IssueCodes.STRUCTURE,
+    diagnostics: `Medication${resource} cannot contain both medicationReference and medicationCodeableConcept fields.`,
+  }
+}
+
 export const unauthorisedActionIssue: fhir.OperationOutcomeIssue = {
   severity: "error",
   code: fhir.IssueCodes.FORBIDDEN,
