@@ -49,6 +49,11 @@ $ curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.37.2/install.sh |
 $ nvm install v14.15.4
 ```
 
+Clone validator sub-repo:
+```
+$ git submodule update --init --recursive
+```
+
 Install packages:
 
 ```
