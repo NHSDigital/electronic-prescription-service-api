@@ -55,7 +55,7 @@ const notSupportedOperationOutcome: fhir.OperationOutcome = {
   resourceType: "OperationOutcome",
   issue: [
     {
-      code: "informational",
+      code: fhir.IssueCodes.INFORMATIONAL,
       severity: "information",
       details: {
         coding: [

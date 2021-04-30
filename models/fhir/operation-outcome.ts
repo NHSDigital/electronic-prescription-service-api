@@ -12,9 +12,21 @@ export function createOperationOutcome(issues: Array<OperationOutcomeIssue>): Op
   }
 }
 
+export enum IssueCodes {
+  INFORMATIONAL = "informational",
+  VALUE = "value",
+  INVALID = "invalid",
+  FORBIDDEN = "forbidden",
+  BUSINESS_RULE = "business-rule",
+  DUPLICATE = "duplicate",
+  STRUCTURE = "structure",
+  CODE_INVALID = "code-invalid",
+  CONFLICT = "conflict"
+}
+
 export interface OperationOutcomeIssue {
   severity: "information" | "warning" | "error" | "fatal"
-  code: "informational" | "value" | "invalid" | "forbidden"
+  code: IssueCodes
   details?: common.CodeableConcept
   diagnostics?: string
   expression?: Array<string>

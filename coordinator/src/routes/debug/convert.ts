@@ -63,7 +63,7 @@ const unsupportedResponse: fhir.OperationOutcome = {
   resourceType: "OperationOutcome",
   issue: [{
     severity: "fatal",
-    code: "invalid",
+    code: fhir.IssueCodes.INVALID,
     diagnostics: "Message not supported by $convert endpoint"
   }]
 }
