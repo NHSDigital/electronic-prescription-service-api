@@ -77,7 +77,7 @@ jestpact.pactWith(
                   severity: "error",
                   details: {
                     coding: [{
-                      system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+                      system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
                       code: "MISSING_DIGITAL_SIGNATURE",
                       display: "Digital signature not found"
                     }]
