@@ -51,6 +51,14 @@ function verifyMessageType(messageType: string): messageType is fhir.EventCoding
     messageType === fhir.EventCodingCode.DISPENSE
 }
 
+function resourceHasBothCodeableConceptAndReference(
+  resources: Array<fhir.MedicationRequest | fhir.MedicationDispense>
+) {
+  return resources.some(
+    resource => resource.medicationCodeableConcept && resource.medicationReference
+  )
+}
+
 export function verifyCommonBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
   const incorrectValueErrors = []
 
@@ -61,9 +69,7 @@ export function verifyCommonBundle(bundle: fhir.Bundle): Array<fhir.OperationOut
     )
   }
 
-  if (medicationRequests.some(
-    medicationRequest => medicationRequest.medicationCodeableConcept && medicationRequest.medicationReference
-  )) {
+  if (resourceHasBothCodeableConceptAndReference(medicationRequests)) {
     incorrectValueErrors.push(
       errors.createMedicationFieldIssue("Request")
     )
@@ -191,9 +197,7 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
     allErrors.push(errors.createMedicationDispenseMissingValueIssue("performer.actor.ofType(Organization)"))
   }
 
-  if (medicationDispenses.some(
-    medicationRequest => medicationRequest.medicationCodeableConcept && medicationRequest.medicationReference
-  )) {
+  if (resourceHasBothCodeableConceptAndReference(medicationDispenses)) {
     allErrors.push(
       errors.createMedicationFieldIssue("Dispense")
     )
