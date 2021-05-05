@@ -8,6 +8,7 @@ import * as LosslessJson from "lossless-json"
 import {fhir} from "@models"
 import * as TestResources from "../../resources/test-resources"
 
+const apiPath = `${basePath}/$process-message`
 jestpact.pactWith(
   pactOptions("live", "process", "send"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
@@ -38,7 +39,6 @@ jestpact.pactWith(
 
     describe("ensure errors are translated", () => {
       test("EPS Prescribe error 0003", async () => {
-        const apiPath = `${basePath}/$process-message`
         const message = TestResources.prepareCaseBundles[0][1] as fhir.Bundle
         const bundleStr = LosslessJson.stringify(message)
         const bundle = JSON.parse(bundleStr) as fhir.Bundle
@@ -96,16 +96,15 @@ jestpact.pactWith(
           .expect(400)
       })
 
-      test("EPS Prescribe error 5009", async () => {
-        const apiPath = `${basePath}/$process-message`
-        const message = TestResources.processErrorCases[0][1] as fhir.Bundle
-        const bundleStr = LosslessJson.stringify(message)
-        const bundle = JSON.parse(bundleStr) as fhir.Bundle
+      test.each(TestResources.processErrorCases)("returns correct status code and body for %p", async (
+        _: string, request: fhir.Bundle, response: fhir.OperationOutcome, statusCode: number
+      ) => {
+        const bundleStr = LosslessJson.stringify(request)
 
         const requestId = uuid.v4()
         const correlationId = uuid.v4()
 
-        const firstMedicationRequest = message.entry.map(e => e.resource)
+        const firstMedicationRequest = request.entry.map(e => e.resource)
           .find(r => r.resourceType == "MedicationRequest") as fhir.MedicationRequest
         const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
@@ -120,29 +119,14 @@ jestpact.pactWith(
             },
             method: "POST",
             path: apiPath,
-            body: bundle
+            body: JSON.parse(bundleStr)
           },
           willRespondWith: {
             headers: {
               "Content-Type": "application/json"
             },
-            body: {
-              resourceType: "OperationOutcome",
-              issue: [
-                {
-                  code: "value",
-                  severity: "error",
-                  details: {
-                    coding: [{
-                      system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-                      code: "INVALID_CHECK_DIGIT",
-                      display: "Error in check digit"
-                    }]
-                  }
-                }
-              ]
-            },
-            status: 400
+            body: response,
+            status: statusCode
           }
         }
         await provider.addInteraction(interaction)

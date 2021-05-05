@@ -1,5 +1,5 @@
 import {Case} from "./case"
-import {exampleFiles} from "../fetchers/example-files-fetcher"
+import {exampleFiles} from "../fetchers"
 import fs from "fs"
 import {ExampleFile} from "../example-file"
 import * as fhir from "../../fhir"
@@ -7,13 +7,18 @@ import * as LosslessJson from "lossless-json"
 
 export class ProcessCase extends Case {
   request: fhir.Bundle
+  response?: fhir.OperationOutcome
   prepareRequest?: fhir.Bundle
   prepareRequestFile?: ExampleFile
   prepareResponseFile?: ExampleFile
   convertResponseFile?: ExampleFile
 
-  constructor(requestFile: ExampleFile, responseFile: ExampleFile) {
+  constructor(requestFile: ExampleFile, responseFile?: ExampleFile) {
     super(requestFile, responseFile)
+
+    if (responseFile) {
+      this.response = LosslessJson.parse(fs.readFileSync(responseFile.path, "utf-8"))
+    }
 
     const prepareRequestFile = exampleFiles.find(exampleFile =>
       exampleFile.dir === requestFile.dir
@@ -47,5 +52,8 @@ export class ProcessCase extends Case {
 
   toJestCase(): [string, fhir.Bundle] {
     return [this.description, this.request]
+  }
+  toErrorJestCase(): [string, fhir.Bundle, fhir.OperationOutcome, number] {
+    return [this.description, this.request, this.response, this.statusCode]
   }
 }
