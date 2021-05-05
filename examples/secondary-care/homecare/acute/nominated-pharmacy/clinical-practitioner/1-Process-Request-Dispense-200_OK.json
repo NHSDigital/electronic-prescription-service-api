@@ -31,13 +31,13 @@
         "sender": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "FTX40"
+            "value": "VNCEL"
           },
-          "display": "HEALTHCARE AT HOME"
+          "display": "YORKSHIRE HOMECARE LIMITED"
         },
         "source": {
-          "name": "HEALTHCARE AT HOME",
-          "endpoint": "urn:nhs-uk:addressing:ods:FTX40"
+          "name": "YORKSHIRE HOMECARE LIMITED",
+          "endpoint": "urn:nhs-uk:addressing:ods:VNCEL"
         },
         "reason": {
           "coding": [

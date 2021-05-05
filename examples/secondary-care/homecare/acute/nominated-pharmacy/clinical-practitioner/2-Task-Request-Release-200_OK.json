@@ -6,7 +6,7 @@
       "name": "owner",
       "valueIdentifier": {
         "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "FTX40"
+        "value": "VNCEL"
       }
     },
     {
