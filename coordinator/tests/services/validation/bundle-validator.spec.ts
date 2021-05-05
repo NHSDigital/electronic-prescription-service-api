@@ -13,7 +13,7 @@ import {
 function validateValidationErrors (validationErrors: Array<fhir.OperationOutcomeIssue>) {
   expect(validationErrors).toHaveLength(1)
   const validationError = validationErrors[0]
-  expect(validationError.code).toEqual("value")
+  expect(validationError.code).toEqual(fhir.IssueCodes.VALUE)
   expect(validationError.severity).toEqual("error")
 }
 
@@ -71,6 +71,19 @@ describe("verifyCommonBundle", () => {
     const validationErrors = validator.verifyCommonBundle(bundle)
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).intent")
+  })
+
+  test("Should reject a message where a MedicationRequest has both codeableConcept and reference", () => {
+    const testCodeableConcept: fhir.CodeableConcept = {
+      coding: []
+    }
+    const testReference: fhir.Reference<fhir.Medication> = {
+      reference: "urn:uuid:test"
+    }
+    medicationRequests[0].medicationCodeableConcept = testCodeableConcept
+    medicationRequests[0].medicationReference = testReference
+    const validationErrors = validator.verifyCommonBundle(bundle)
+    expect(validationErrors).toHaveLength(1)
   })
 })
 
@@ -408,5 +421,22 @@ describe("verifyDispenseNotificationBundle", () => {
     expect(returnedErrors.length).toBe(1)
     expect(returnedErrors[0].expression)
       .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).performer.actor.ofType(Organization)")
+  })
+
+  test("returns an error when a MedicationDispense has both codeableConcept and reference", () => {
+    const medicationDispenseEntry =
+      bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
+
+    const medicationDispense = medicationDispenseEntry.resource as fhir.MedicationDispense
+    const testCodeableConcept: fhir.CodeableConcept = {
+      coding: []
+    }
+    const testReference: fhir.Reference<fhir.Medication> = {
+      reference: "urn:uuid:test"
+    }
+    medicationDispense.medicationCodeableConcept = testCodeableConcept
+    medicationDispense.medicationReference = testReference
+    const returnedErrors = validator.verifyDispenseBundle(bundle)
+    expect(returnedErrors.length).toBe(1)
   })
 })

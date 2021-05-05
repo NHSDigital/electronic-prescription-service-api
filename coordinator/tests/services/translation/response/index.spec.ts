@@ -19,31 +19,35 @@ describe("translateToFhir", () => {
     expect(statusCode).toBe(200)
   })
 
-  test.each(TestResources.spineResponses.singleErrors)("converts spine single errors", (syncResponse) => {
-    const returnedValues = translateToFhir(syncResponse.response, logger)
-    const body = returnedValues.fhirResponse as fhir.OperationOutcome
-    const statusCode = returnedValues.statusCode
+  test.each(TestResources.spineResponses.singleErrors)("converts spine unhandled message type single errors",
+    (spineResponse) => {
+      const returnedValues = translateToFhir(spineResponse.response, logger)
+      const body = returnedValues.fhirResponse as fhir.OperationOutcome
+      const statusCode = returnedValues.statusCode
 
-    expect(body.issue).toHaveLength(1)
-    expect(body.issue[0].details.coding).toHaveLength(1)
-    expect(body.issue[0].details.coding[0].code).toBe(syncResponse.spineErrorCode.toString())
-    expect(body.issue[0].details.coding[0].display).toBeTruthy()
-    expect(statusCode).toBe(400)
-  })
-
-  test.each(TestResources.spineResponses.multipleErrors)("converts multiple spine errors", (syncResponse) => {
-    const returnedValues = translateToFhir(syncResponse.response, logger)
-    const body = returnedValues.fhirResponse as fhir.OperationOutcome
-    const statusCode = returnedValues.statusCode
-
-    expect(body.issue.length).toBeGreaterThan(1)
-    body.issue.forEach(operationOutcomeIssue => {
-      expect(operationOutcomeIssue.details.coding).toHaveLength(1)
-      expect(operationOutcomeIssue.details.coding[0].code).toBe(syncResponse.spineErrorCode.toString())
-      expect(operationOutcomeIssue.details.coding[0].display).toBeTruthy()
+      expect(statusCode).toBe(400)
+      expect(body.issue).toHaveLength(1)
+      body.issue.forEach(operationOutcomeIssue => {
+        expect(operationOutcomeIssue.details.coding).toHaveLength(1)
+        expect(operationOutcomeIssue.details.coding[0].code).toBe(spineResponse.hl7ErrorCode)
+        expect(operationOutcomeIssue.details.coding[0].display).toBeTruthy()
+      })
     })
-    expect(statusCode).toBe(400)
-  })
+
+  test.each(TestResources.spineResponses.multipleErrors)("converts multiple unhandled message type spine errors",
+    (spineResponse) => {
+      const returnedValues = translateToFhir(spineResponse.response, logger)
+      const body = returnedValues.fhirResponse as fhir.OperationOutcome
+      const statusCode = returnedValues.statusCode
+
+      expect(statusCode).toBe(400)
+      expect(body.issue.length).toBeGreaterThan(1)
+      body.issue.forEach(operationOutcomeIssue => {
+        expect(operationOutcomeIssue.details.coding).toHaveLength(1)
+        expect(operationOutcomeIssue.details.coding[0].code).toBe(spineResponse.hl7ErrorCode)
+        expect(operationOutcomeIssue.details.coding[0].display).toBeTruthy()
+      })
+    })
 
   test("returns internal server error on unexpected spine response", () => {
     const bodyString = "this body doesnt pass the regex checks"

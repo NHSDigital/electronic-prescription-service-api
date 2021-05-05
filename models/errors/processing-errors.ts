@@ -36,7 +36,7 @@ export function toOperationOutcome(response: FhirMessageProcessingError): fhir.O
     resourceType: "OperationOutcome",
     issue: [{
       severity: "fatal",
-      code: "invalid",
+      code: fhir.IssueCodes.INVALID,
       details: {
         coding: [{
           system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
