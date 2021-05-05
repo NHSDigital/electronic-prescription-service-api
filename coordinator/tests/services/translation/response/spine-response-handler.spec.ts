@@ -20,7 +20,7 @@ describe("default handler", () => {
     const expectedSendMessagePayload = createSuccess("MCCI_IN010000UK13", undefined)
     const spineResponse = writeXmlStringPretty({MCCI_SOMETHING_ELSE: expectedSendMessagePayload})
     const result = defaultHandler.extractSendMessagePayload(spineResponse)
-    expect(result).toBeFalsy()
+    expect(result).toBeNull()
   })
 
   test("extractSendMessagePayload returns payload if spine response matches regex", () => {
@@ -34,7 +34,7 @@ describe("default handler", () => {
     const expectedSendMessagePayload = createSuccess("MCCI_IN010000UK13", undefined)
     const spineResponse = writeXmlStringPretty({MCCI_SOMETHING_ELSE: expectedSendMessagePayload})
     const result = defaultHandler.handleResponse(spineResponse, logger)
-    expect(result).toBeFalsy()
+    expect(result).toBeNull()
   })
 
   function checkResponseObjectAndStatusCode(
@@ -97,9 +97,33 @@ describe("default handler", () => {
 
   const testCases = [
     ["prescribe", hl7V3.ApplicationErrorMessageTypeCodes.PRESCRIBE, "RejectionCode", "ERROR"],
-    ["dispense", hl7V3.ApplicationErrorMessageTypeCodes.DISPENSE, "RejectionCode", "RejectionCode"],
+    ["dispense", hl7V3.ApplicationErrorMessageTypeCodes.DISPENSE, "RejectionCode", "ERROR"],
     ["spine", hl7V3.ApplicationErrorMessageTypeCodes.SPINE, "RejectionCode", "RejectionCode"]
   ]
+
+  const errorCases = [
+    ["prescribe", hl7V3.ApplicationErrorMessageTypeCodes.PRESCRIBE, "PATIENT_DECEASED", "Patient is recorded as dead"],
+    ["dispense", hl7V3.ApplicationErrorMessageTypeCodes.DISPENSE, "PRESCRIPTION_CANCELLED",
+      "Prescription has been cancelled"]
+  ]
+
+  test.each(errorCases)("handleResponse correctly translates '0001' %p error codes",
+    (_, codeSystem: string, translatedErrorCode: string, translatedErrorMessage: string) => {
+      const expectedSendMessagePayload = createError(
+        "MCCI_IN010000UK13",
+        undefined,
+        createSendMessagePayloadReason(
+          "0001", "Anything goes here", codeSystem
+        )
+      )
+      const expectedIssueArray = [
+        createErrorOperationOutcomeIssue(fhir.IssueCodes.BUSINESS_RULE,
+          translatedErrorCode,
+          translatedErrorMessage,
+          "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode")
+      ]
+      checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 400)
+    })
 
   test.each(testCases)("handleResponse returns 400 response if spine response is a %p error (single reason)",
     (_, codeSystem: string, spineErrorCode: string, translatedErrorCode: string) => {
