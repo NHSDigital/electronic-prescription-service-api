@@ -36,5 +36,7 @@ export function translateToFhir<T>(
     }
   }
   logger.error("Unhandled Spine response")
+  //TODO - remove logging to prevent leaking pii to logs
+  logger.error(JSON.stringify(hl7Message.body))
   return SpineResponseHandler.createServerErrorResponse()
 }
