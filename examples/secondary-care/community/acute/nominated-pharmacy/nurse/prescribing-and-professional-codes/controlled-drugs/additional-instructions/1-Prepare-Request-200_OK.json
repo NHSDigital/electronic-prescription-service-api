@@ -690,6 +690,23 @@
           {
             "contentString": "Your medication review is due. Please make an appointment to see your GP."
           }
+        ],
+        "requester": {
+          "type": "Organization",
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA"
+          },
+          "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
+        },
+        "recipient":  [
+          {
+            "type": "Patient",
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/nhs-number",
+              "value": "9453740519"
+            }
+          }
         ]
       }
     }

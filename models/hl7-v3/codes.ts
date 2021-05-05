@@ -19,6 +19,12 @@ export class Code<T extends string> implements ElementCompact {
     }
 }
 
+export enum ApplicationErrorMessageTypeCodes {
+  SPINE = "2.16.840.1.113883.2.1.3.2.4.17.32",
+  PRESCRIBE = "2.16.840.1.113883.2.1.3.2.4.17.22",
+  DISPENSE = "2.16.840.1.113883.2.1.3.2.4.16.34"
+}
+
 export class SexCode extends Code<"2.16.840.1.113883.2.1.3.2.4.16.25"> {
   constructor(code: string) {
     super("2.16.840.1.113883.2.1.3.2.4.16.25", code)

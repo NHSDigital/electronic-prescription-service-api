@@ -63,7 +63,7 @@ export class SpineResponseHandler<T> {
     return {
       statusCode: 200,
       fhirResponse: fhir.createOperationOutcome([{
-        code: "informational",
+        code: fhir.IssueCodes.INFORMATIONAL,
         severity: "information"
       }])
     }
@@ -80,7 +80,7 @@ export class SpineResponseHandler<T> {
     return {
       statusCode: 500,
       fhirResponse: fhir.createOperationOutcome([{
-        code: "invalid",
+        code: fhir.IssueCodes.INVALID,
         severity: "error"
       }])
     }
@@ -96,20 +96,143 @@ export class SpineResponseHandler<T> {
   }
 
   private static toOperationOutcomeIssue(code: hl7V3.Code<string>): fhir.OperationOutcomeIssue {
+    const epsCodeInformation = SpineResponseHandler.getErrorCodeInformation(code)
     return {
-      code: "invalid",
+      code: epsCodeInformation.code,
       severity: "error",
       details: {
         coding: [{
-          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-          code: code._attributes.code,
-          display: code._attributes.displayName
+          system: epsCodeInformation.system,
+          code: epsCodeInformation.issueCode,
+          display: epsCodeInformation.display
         }]
       }
     }
   }
 
-  /* eslint-disable @typescript-eslint/no-unused-vars */
+  private static getErrorCodeInformation(code: hl7V3.Code<string>){
+    switch(code._attributes.codeSystem){
+      case hl7V3.ApplicationErrorMessageTypeCodes.PRESCRIBE:
+        return SpineResponseHandler.toEpsPrescribeErrorCode(code)
+      case hl7V3.ApplicationErrorMessageTypeCodes.DISPENSE:
+        return SpineResponseHandler.toUnhandledMessageTypeErrorCode(code)
+      default:
+        return SpineResponseHandler.toUnhandledMessageTypeErrorCode(code)
+    }
+  }
+
+  private static toUnhandledMessageTypeErrorCode(code: hl7V3.Code<string>): EpsErrorCodeInformation {
+    return {
+      code: fhir.IssueCodes.INVALID,
+      issueCode: code._attributes.code,
+      display: code._attributes.displayName,
+      system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
+    }
+  }
+
+  private static toEpsPrescribeErrorCode(code: hl7V3.Code<string>): EpsErrorCodeInformation {
+    switch(code._attributes.code){
+      case "0001":
+        return {
+          code: fhir.IssueCodes.BUSINESS_RULE,
+          display: "Patient is recorded as dead",
+          issueCode: "PATIENT_DECEASED",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "0002":
+        return {
+          code: fhir.IssueCodes.DUPLICATE,
+          display: "Duplicate prescription ID exists",
+          issueCode: "DUPLICATE_PRESCRIPTION_ID",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "0003":
+        return {
+          code: fhir.IssueCodes.BUSINESS_RULE,
+          display: "Digital signature not found",
+          issueCode: "MISSING_DIGITAL_SIGNATURE",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "0009":
+        return {
+          code: fhir.IssueCodes.STRUCTURE,
+          display: "Invalid Message",
+          issueCode: "INVALID_MESSAGE",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "0010":
+        return {
+          code: fhir.IssueCodes.BUSINESS_RULE,
+          display: "Number of items on a prescription should be between 1 and 4",
+          issueCode: "INVALID_NUMBER_MEDICATIONREQUESTS",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "0018":
+        return {
+          code: fhir.IssueCodes.BUSINESS_RULE,
+          display: "Mismatch in authorised repeat counts",
+          issueCode: "MISMATCH_AUTHORISED_REPEAT_COUNT",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "0019":
+        return {
+          code: fhir.IssueCodes.BUSINESS_RULE,
+          display: "Repeat count should be between 1 and 99",
+          issueCode: "INVALID_REPEAT_COUNT",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "5008":
+        return {
+          code: fhir.IssueCodes.DUPLICATE,
+          display: "Duplicate item ID exists",
+          issueCode: "DUPLICATE_MEDICATIONREQUEST_ID",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "5009":
+        return {
+          code: fhir.IssueCodes.VALUE,
+          display: "Error in check digit",
+          issueCode: "INVALID_CHECK_DIGIT",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "9006":
+        return {
+          code: fhir.IssueCodes.VALUE,
+          display: "Format of date passed is invalid",
+          issueCode: "INVALID_DATE_FORMAT",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "0007":
+        return {
+          code: fhir.IssueCodes.CODE_INVALID,
+          display: "The resource ID was not valid." +
+            " For example a NHS Number is presented which is not a valid NHS Number.",
+          issueCode: "INVALID_RESOURCE_ID",
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
+        }
+      case "0008":
+        return {
+          code: fhir.IssueCodes.VALUE,
+          display: code._attributes.displayName,
+          issueCode: "MISSING_VALUE",
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
+        }
+      case "0099":
+        return {
+          code: fhir.IssueCodes.CONFLICT,
+          display: "Resource version mismatch",
+          issueCode: "RESOURCE_VERSION_MISMATCH",
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
+        }
+      default:
+        return {
+          code: fhir.IssueCodes.INVALID,
+          display: code._attributes.displayName,
+          issueCode: "ERROR",
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
+        }
+    }
+  }
 
   protected handleRejectionResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<T>,
@@ -127,14 +250,13 @@ export class SpineResponseHandler<T> {
     return SpineResponseHandler.handleErrorOrRejectionResponse(errorCodes, logger)
   }
 
+  /* eslint-disable @typescript-eslint/no-unused-vars */
   protected handleSuccessResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<T>,
     logger: pino.Logger
   ): TranslatedSpineResponse {
     return SpineResponseHandler.createSuccessResponse()
   }
-
-  /* eslint-enable @typescript-eslint/no-unused-vars */
 }
 
 export class CancelResponseHandler extends SpineResponseHandler<hl7V3.CancellationResponseRoot> {
@@ -183,4 +305,11 @@ export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.Prescript
       fhirResponse: this.translator(releaseResponse)
     }
   }
+}
+
+interface EpsErrorCodeInformation {
+  code: fhir.IssueCodes
+  display: string
+  issueCode: string
+  system: string
 }

@@ -16,7 +16,7 @@ export default [
         resourceType: "OperationOutcome",
         issue: [{
           severity: "information",
-          code: "informational"
+          code: fhir.IssueCodes.INFORMATIONAL
         }]
       }
       return responseToolkit.response(successfulResponse).code(200).type(CONTENT_TYPE_FHIR)
