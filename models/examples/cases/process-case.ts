@@ -52,10 +52,7 @@ export class ProcessCase extends Case {
   }
 
   // [description, request, response, statusCode]
-  toErrorJestCase(): [string, fhir.Bundle, fhir.OperationOutcome, number] {
-    return [
-      `${this.description} with fault ${this.statusText}`,
-      this.request, this.response, this.statusCode
-    ]
+  toErrorJestCase(): [string, fhir.Bundle, fhir.OperationOutcome, number, string] {
+    return [this.description, this.request, this.response, this.statusCode, this.statusText]
   }
 }

@@ -22,7 +22,7 @@ jestpact.pactWith(
     })
 
     describe("process-message send sandbox e2e tests", () => {
-      test.each(TestResources.processOrderCaseGroups)(
+      test.each(TestResources.processOrderCase)(
         "should be able to send %s",
         async (desc: string, message: fhir.Bundle) => {
           const apiPath = `${basePath}/$process-message`
@@ -75,7 +75,7 @@ jestpact.pactWith(
     }
 
     describe("process-message cancel sandbox e2e tests", () => {
-      test.each(TestResources.processOrderUpdateCaseGroups)(
+      test.each(TestResources.processOrderUpdateCase)(
         "should be able to cancel %s",
         async (desc: string, message: fhir.Bundle) => {
           const apiPath = `${basePath}/$process-message`
@@ -129,7 +129,7 @@ jestpact.pactWith(
     }
 
     describe("process-message dispense sandbox e2e tests", () => {
-        test.each(TestResources.processDispenseNotificationCaseGroups)(
+        test.each(TestResources.processDispenseNotificationCase)(
           "should be able to dispense %s",
           async (desc: string, message: fhir.Bundle) => {
             const apiPath = `${basePath}/$process-message`

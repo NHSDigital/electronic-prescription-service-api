@@ -1,5 +1,5 @@
 import * as uuid from "uuid"
-import {fhir, fetcher, hl7V3} from "@models"
+import {fhir, hl7V3, ProcessCase} from "@models"
 import {
   getResourcesOfType,
   convertFhirMessageToSignedInfoMessage,
@@ -21,7 +21,7 @@ const x509CertificatePath = process.env.SIGNING_CERT_PATH
 
 const isProd = process.env.APIGEE_ENVIRONMENT === "prod"
 
-export async function updatePrescriptions(): Promise<void> {
+export async function updatePrescriptions(orderCases: Array<ProcessCase>, orderUpdateCases: Array<ProcessCase>): Promise<void> {
   const replacements = new Map<string, string>()
 
   let signPrescriptionFn = (
@@ -37,7 +37,7 @@ export async function updatePrescriptions(): Promise<void> {
     console.warn("No private key / x509 certifcate found, signing has been skipped")
   }
 
-  fetcher.prescriptionOrderExamples.filter(e => e.isSuccess).forEach(async(processCase) => {
+  orderCases.forEach(processCase => {
     const prepareBundle = processCase.prepareRequest ?? processCase.request
     const processBundle = processCase.request
     const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(processBundle)[0].groupIdentifier
@@ -73,7 +73,7 @@ export async function updatePrescriptions(): Promise<void> {
     signPrescriptionFn(prepareBundle, processBundle, originalShortFormId)
   })
 
-  fetcher.prescriptionOrderUpdateExamples.filter(e => e.isSuccess).forEach(async (processCase) => {
+  orderUpdateCases.forEach(processCase => {
     const bundle = processCase.request
     const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(bundle)[0].groupIdentifier
 

@@ -25,9 +25,9 @@ export const prepareCaseBundles = prepareCaseGroups.filter(e => e[1].resourceTyp
 
 export const processErrorCases = fetcher.processExamples.filter(e => !e.isSuccess).map(spec => spec.toErrorJestCase())
 
-export const processOrderCaseGroups = getProcessCases("send")
-export const processOrderUpdateCaseGroups = getProcessCases("cancel")
-export const processDispenseNotificationCaseGroups = getProcessCases("dispense")
+export const processOrderCase = getProcessCases("send")
+export const processOrderUpdateCase = getProcessCases("cancel")
+export const processDispenseNotificationCase = getProcessCases("dispense")
 
 export const taskReleaseCases = getTaskCases("release")
 export const taskReturnCases = getTaskCases("return")

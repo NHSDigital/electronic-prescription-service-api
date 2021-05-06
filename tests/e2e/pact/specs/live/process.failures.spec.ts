@@ -5,8 +5,10 @@ import {basePath, pactOptions} from "../../resources/common"
 import * as uuid from "uuid"
 import {createUnauthorisedInteraction} from "./auth"
 import * as LosslessJson from "lossless-json"
-import {fhir} from "@models"
+import {fetcher, fhir} from "@models"
 import * as TestResources from "../../resources/test-resources"
+import {updatePrescriptions} from "../../services/update-prescriptions"
+import {generateTestOutputFile} from "../../services/genereate-test-output-file"
 
 const apiPath = `${basePath}/$process-message`
 jestpact.pactWith(
@@ -19,6 +21,16 @@ jestpact.pactWith(
     }
 
     const authenticationTestDescription = "a request to process an unauthorised message"
+
+    beforeAll(async() => {
+      if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
+        await updatePrescriptions(
+          fetcher.prescriptionOrderExamples.filter(e => !e.isSuccess),
+        []
+        )
+      }
+      generateTestOutputFile()
+    })
 
     describe("endpoint authentication e2e tests", () => {
       test(authenticationTestDescription, async () => {
@@ -99,7 +111,7 @@ jestpact.pactWith(
       })
 
       test.each(TestResources.processErrorCases)("returns correct status code and body for %p", async (
-        _: string, request: fhir.Bundle, response: fhir.OperationOutcome, statusCode: number
+        _: string, request: fhir.Bundle, response: fhir.OperationOutcome, statusCode: number, statusText: string
       ) => {
         const bundleStr = LosslessJson.stringify(request)
 
@@ -112,7 +124,7 @@ jestpact.pactWith(
 
         const interaction: InteractionObject = {
           state: "is authenticated",
-          uponReceiving: `a failed request to process prescription: ${prescriptionId}`,
+          uponReceiving: `a failed request (${statusText}) to process prescription: ${prescriptionId}`,
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",
