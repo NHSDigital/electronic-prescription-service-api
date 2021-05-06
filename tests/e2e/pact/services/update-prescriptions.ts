@@ -49,7 +49,7 @@ export async function updatePrescriptions(
     let newShortFormId = originalShortFormId
     const newBundleIdentifier = uuid.v4()
     if (replaceShortFormId) {
-      const newShortFormId = generateShortFormId(originalShortFormId)
+      newShortFormId = generateShortFormId(originalShortFormId)
       replacements.set(originalShortFormId, newShortFormId)
     }
 
