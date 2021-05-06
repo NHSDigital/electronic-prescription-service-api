@@ -21,10 +21,7 @@ const x509CertificatePath = process.env.SIGNING_CERT_PATH
 
 const isProd = process.env.APIGEE_ENVIRONMENT === "prod"
 
-export async function updatePrescriptions(
-  orderCases: Array<ProcessCase>,
-  orderUpdateCases: Array<ProcessCase>,
-  replaceShortFormId: Boolean = true): Promise<void> {
+export async function updatePrescriptions(orderCases: Array<ProcessCase>, orderUpdateCases: Array<ProcessCase>): Promise<void> {
   const replacements = new Map<string, string>()
 
   let signPrescriptionFn = (
@@ -45,13 +42,11 @@ export async function updatePrescriptions(
     const processBundle = processCase.request
     const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(processBundle)[0].groupIdentifier
 
-    const originalShortFormId = firstGroupIdentifier.value
-    let newShortFormId = originalShortFormId
     const newBundleIdentifier = uuid.v4()
-    if (replaceShortFormId) {
-      const newShortFormId = generateShortFormId(originalShortFormId)
-      replacements.set(originalShortFormId, newShortFormId)
-    }
+
+    const originalShortFormId = firstGroupIdentifier.value
+    const newShortFormId = generateShortFormId(originalShortFormId)
+    replacements.set(originalShortFormId, newShortFormId)
 
     const originalLongFormId = getLongFormIdExtension(firstGroupIdentifier.extension).valueIdentifier.value
     const newLongFormId = uuid.v4()

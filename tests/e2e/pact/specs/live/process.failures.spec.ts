@@ -26,8 +26,8 @@ jestpact.pactWith(
       if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
         await updatePrescriptions(
           fetcher.prescriptionOrderExamples.filter(e => !e.isSuccess),
-        [],
-        false)
+        []
+        )
       }
       generateTestOutputFile()
     })
