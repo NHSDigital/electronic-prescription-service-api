@@ -54,7 +54,7 @@ export class SpineResponseHandler<T> {
     return toArray(acknowledgementDetails).map(acknowledgementDetail => acknowledgementDetail.code)
   }
 
-  private extractErrorCodes(sendMessagePayload: hl7V3.SendMessagePayload<T>) {
+  protected extractErrorCodes(sendMessagePayload: hl7V3.SendMessagePayload<T>) {
     const reasons = sendMessagePayload.ControlActEvent.reason ?? []
     return toArray(reasons).map(reason => reason.justifyingDetectedIssueEvent.code)
   }
@@ -374,6 +374,17 @@ export class CancelResponseHandler extends SpineResponseHandler<hl7V3.Cancellati
       statusCode: 400,
       fhirResponse: this.translator(cancellationResponse)
     }
+  }
+}
+
+export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.PrescriptionReleaseRejectRoot> {
+  protected extractErrorCodes(
+    sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseRejectRoot>
+  ): Array<hl7V3.Code<string>>{
+    return [
+      sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseReject
+        .pertinentInformation.pertinentRejectionReason.value
+    ]
   }
 }
 
