@@ -71,10 +71,17 @@ const taskOperations = isSandbox ? sandboxTaskOperations : liveTaskOperations
 
 async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
   // todo: remove below if statement once dispense interactions are handled in live proxies
-  const shouldVerifyOperation =
+  let shouldVerifyOperation =
     !(endpoint === "process" || endpoint === "task")
     || (endpoint === "process" && processMessageOperations.includes(operation))
       || (endpoint === "task" && taskOperations.includes(operation))
+
+  // debug endpoints not available in prod
+  if (process.env.APIGEE_ENVIRONMENT === "prod"
+    && (endpoint === "validate" || endpoint === "convert"))
+  {
+    shouldVerifyOperation = false
+  }
 
   if (shouldVerifyOperation) {
     await verify(endpoint, operation)
