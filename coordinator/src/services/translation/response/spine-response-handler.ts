@@ -54,7 +54,7 @@ export class SpineResponseHandler<T> {
     return toArray(acknowledgementDetails).map(acknowledgementDetail => acknowledgementDetail.code)
   }
 
-  protected extractErrorCodes(sendMessagePayload: hl7V3.SendMessagePayload<T>) {
+  protected extractErrorCodes(sendMessagePayload: hl7V3.SendMessagePayload<T>): Array<hl7V3.Code<string>> {
     const reasons = sendMessagePayload.ControlActEvent.reason ?? []
     return toArray(reasons).map(reason => reason.justifyingDetectedIssueEvent.code)
   }

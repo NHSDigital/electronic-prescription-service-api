@@ -1,4 +1,4 @@
-SHELL=/bin/bash -euo pipefail -O globstar
+SHELL=/usr/local/bin/bash -euo pipefail -O globstar
 
 ## Common
 
