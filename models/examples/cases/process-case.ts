@@ -31,29 +31,31 @@ export class ProcessCase extends Case {
       this.prepareRequest = LosslessJson.parse(fs.readFileSync(prepareRequestFile.path, "utf-8"))
     }
 
-    const prepareResponseFile = exampleFiles.find(exampleFile =>
+    this.prepareResponseFile = exampleFiles.find(exampleFile =>
       exampleFile.dir === requestFile.dir
       && exampleFile.number === requestFile.number
       && exampleFile.endpoint === "prepare"
       && exampleFile.statusText === requestFile.statusText
       && exampleFile.isResponse)
 
-    this.prepareResponseFile = prepareResponseFile
-
-    const convertResponseFile = exampleFiles.find(exampleFile =>
+    this.convertResponseFile = exampleFiles.find(exampleFile =>
       exampleFile.dir === requestFile.dir
       && exampleFile.number === requestFile.number
       && exampleFile.endpoint === "convert"
       && exampleFile.operation == requestFile.operation
       && exampleFile.isResponse
       && exampleFile.statusText === requestFile.statusText)
-    this.convertResponseFile = convertResponseFile
   }
 
   toJestCase(): [string, fhir.Bundle] {
     return [this.description, this.request]
   }
+
+  // [description, request, response, statusCode]
   toErrorJestCase(): [string, fhir.Bundle, fhir.OperationOutcome, number] {
-    return [this.description, this.request, this.response, this.statusCode]
+    return [
+      `${this.description} with fault ${this.statusText}`,
+      this.request, this.response, this.statusCode
+    ]
   }
 }
