@@ -30,7 +30,7 @@
   "owner": {
     "identifier": {
       "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-      "value": "VNCEL"
+      "value": "VNFKT"
     }
   },
   "reasonCode": {

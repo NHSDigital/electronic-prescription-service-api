@@ -3,7 +3,7 @@
   "id": "prescription-dispense-notification",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "02a667cf-6a06-4111-84ea-241ef134d411"
+    "value": "a22ad970-417c-4b0d-9c18-19a54761b478"
   },
   "type": "message",
   "entry": [
@@ -129,14 +129,14 @@
                     "url": "shortForm",
                     "valueIdentifier": {
                       "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-                      "value": "25F421-A99968-4ED1AT"
+                      "value": "A0548B-A99968-451485"
                     }
                   },
                   {
                     "url": "UUID",
                     "valueIdentifier": {
                       "system": "https://fhir.nhs.uk/Id/prescription",
-                      "value": "64db1c31-e0e3-4985-9b90-91b763cc7eb5"
+                      "value": "a5b9dc81-ccf4-4dab-b887-3d88e557febb"
                     }
                   }
                 ]
@@ -163,7 +163,7 @@
           "system": "http://snomed.info/sct",
           "code": "428673006"
         },
-        "whenPrepared": "2021-05-07T14:00:57+00:00",
+        "whenPrepared": "2021-05-07T14:47:29+00:00",
         "dosageInstruction": [
           {
             "text": "80mg at 8am and 40mg at 2pm for 5 days. Then 40mg tablet - oral-  daily at 8am"
@@ -241,14 +241,14 @@
                     "url": "shortForm",
                     "valueIdentifier": {
                       "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-                      "value": "25F421-A99968-4ED1AT"
+                      "value": "A0548B-A99968-451485"
                     }
                   },
                   {
                     "url": "UUID",
                     "valueIdentifier": {
                       "system": "https://fhir.nhs.uk/Id/prescription",
-                      "value": "64db1c31-e0e3-4985-9b90-91b763cc7eb5"
+                      "value": "a5b9dc81-ccf4-4dab-b887-3d88e557febb"
                     }
                   }
                 ]
@@ -275,7 +275,7 @@
           "system": "http://snomed.info/sct",
           "code": "428673006"
         },
-        "whenPrepared": "2021-05-07T14:00:57+00:00",
+        "whenPrepared": "2021-05-07T14:47:29+00:00",
         "dosageInstruction": [
           {
             "text": "80mg at 8am and 40mg at 2pm for 5 days. Then 40mg tablet - oral-  daily at 8am"

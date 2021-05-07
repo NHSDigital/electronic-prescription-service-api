@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN020101SM31 xmlns="urn:hl7-org:v3">
-  <id root="EED688BB-403E-4E9F-BBE2-90074D847262"/>
-  <creationTime value="20210507140101"/>
+  <id root="221F6B28-CB58-410B-99BB-9375760EE70A"/>
+  <creationTime value="20210507144734"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN020101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -40,7 +40,7 @@
     </author1>
     <subject>
       <ParentPrescription classCode="INFO" moodCode="EVN">
-        <id root="EED688BB-403E-4E9F-BBE2-90074D847262"/>
+        <id root="221F6B28-CB58-410B-99BB-9375760EE70A"/>
         <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Prescription - FocusActOrEvent (record artifact)"/>
         <effectiveTime value="20210507000000"/>
         <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
@@ -79,8 +79,8 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentPrescription classCode="SBADM" moodCode="RQO">
-            <id root="7C16C87A-A0FF-4301-8A07-16458A1EE922"/>
-            <id extension="343333-A99968-48399Z" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+            <id root="5F3B444B-9378-4597-AB49-194EBFD05439"/>
+            <id extension="540F91-A99968-4B9EBV" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
             <effectiveTime nullFlavor="NA"/>
             <repeatNumber>
@@ -95,7 +95,7 @@
               </AgentOrgSDS>
             </performer>
             <author contextControlCode="OP" typeCode="AUT">
-              <time value="20210507140101"/>
+              <time value="20210507144733"/>
               <signatureText>
                 <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
                   <SignedInfo>
