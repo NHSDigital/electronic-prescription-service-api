@@ -6,6 +6,9 @@ export class SandboxOdsClient implements OdsClient {
   static responses = [
     odsResponses.ORGANIZATION_FH542_COMMUNITY_PHARMACY,
     odsResponses.ORGANIZATION_FTX40_HOMECARE,
+    odsResponses.ORGANIZATION_VN6XW_HOMECARE,
+    odsResponses.ORGANIZATION_VNCEL_HOMECARE,
+    odsResponses.ORGANIZATION_VNFKT_HOMECARE,
     odsResponses.ORGANIZATION_T1450_NHS_BSA,
     odsResponses.ORGANIZATION_VNE51_HOMECARE
   ]
