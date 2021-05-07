@@ -1,6 +1,7 @@
 import {spine} from "@models"
 import {
-  CancelResponseHandler, ReleaseRejectionHandler,
+  CancelResponseHandler,
+  ReleaseRejectionHandler,
   ReleaseResponseHandler,
   SpineResponseHandler,
   TranslatedSpineResponse
