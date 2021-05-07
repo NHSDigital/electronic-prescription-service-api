@@ -381,10 +381,9 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
   protected extractErrorCodes(
     sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseRejectRoot>
   ): Array<hl7V3.Code<string>>{
-    return [
-      sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseReject
-        .pertinentInformation.pertinentRejectionReason.value
-    ]
+    const errorCode = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseReject
+      .pertinentInformation?.pertinentRejectionReason?.value
+    return errorCode ? [errorCode] : []
   }
 }
 
