@@ -1,4 +1,4 @@
-SHELL=/bin/bash -euo pipefail -O globstar
+SHELL=/bin/bash -euo pipefail
 
 ## Common
 
@@ -118,9 +118,9 @@ test-coordinator:
 validate-models:
 	mkdir -p examples/build
 	test -f examples/build/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > examples/build/org.hl7.fhir.validator.jar
-	for dir in "errors/**" "secondary-care/**"; do \
-		java -jar examples/build/org.hl7.fhir.validator.jar examples/$$dir/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt; \
-	done
+	java -jar examples/build/org.hl7.fhir.validator.jar $$(find examples/secondary-care/ -name "*.json") -version 4.0.1 -tx n/a | tee /tmp/validation.txt;
+	java -jar examples/build/org.hl7.fhir.validator.jar $$(find examples/errors/ -name "*.json") -version 4.0.1 -tx n/a | tee /tmp/validation.txt;
+	java -jar examples/build/org.hl7.fhir.validator.jar $$(find examples/primary-care/ -name "*.json") -version 4.0.1 -tx n/a | tee /tmp/validation.txt;
 
 lint: build
 	cd specification && npm run lint
