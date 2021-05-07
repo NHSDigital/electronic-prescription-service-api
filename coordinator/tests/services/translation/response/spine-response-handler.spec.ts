@@ -95,19 +95,47 @@ describe("default handler", () => {
     checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 500)
   })
 
-  const testCases = [
+  const defaultErrorCases = [
     ["prescribe", hl7V3.ApplicationErrorMessageTypeCodes.PRESCRIBE, "RejectionCode", "ERROR"],
     ["dispense", hl7V3.ApplicationErrorMessageTypeCodes.DISPENSE, "RejectionCode", "ERROR"],
     ["spine", hl7V3.ApplicationErrorMessageTypeCodes.SPINE, "RejectionCode", "RejectionCode"]
   ]
 
-  const errorCases = [
+  test.each(defaultErrorCases)("handleResponse returns 400 response if spine response is a %p error (single reason)",
+    (_, codeSystem: string, spineErrorCode: string, translatedErrorCode: string) => {
+      const expectedSendMessagePayload = createError(
+        "MCCI_IN010000UK13",
+        undefined,
+        createSendMessagePayloadReason(spineErrorCode, "Error Display Name", codeSystem)
+      )
+      const expectedIssueArray = [
+        createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, translatedErrorCode, "Error Display Name")
+      ]
+      checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 400)
+    })
+
+  test.each(defaultErrorCases)("handleResponse returns 400 response if spine response is a %p error (multiple reasons)",
+    (_, codeSystem: string, spineErrorCode: string, translatedErrorCode: string) => {
+      const expectedSendMessagePayload = createError(
+        "MCCI_IN010000UK13",
+        undefined,
+        createSendMessagePayloadReason(spineErrorCode, "Error Display Name 1", codeSystem),
+        createSendMessagePayloadReason(spineErrorCode, "Error Display Name 2", codeSystem)
+      )
+      const expectedIssueArray = [
+        createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, translatedErrorCode, "Error Display Name 1"),
+        createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, translatedErrorCode, "Error Display Name 2")
+      ]
+      checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 400)
+    })
+
+  const specificErrorCases = [
     ["prescribe", hl7V3.ApplicationErrorMessageTypeCodes.PRESCRIBE, "PATIENT_DECEASED", "Patient is recorded as dead"],
     ["dispense", hl7V3.ApplicationErrorMessageTypeCodes.DISPENSE, "PRESCRIPTION_CANCELLED",
       "Prescription has been cancelled"]
   ]
 
-  test.each(errorCases)("handleResponse correctly translates '0001' %p error codes",
+  test.each(specificErrorCases)("handleResponse correctly translates '0001' %p error codes",
     (_, codeSystem: string, translatedErrorCode: string, translatedErrorMessage: string) => {
       const expectedSendMessagePayload = createError(
         "MCCI_IN010000UK13",
@@ -121,34 +149,6 @@ describe("default handler", () => {
           translatedErrorCode,
           translatedErrorMessage,
           "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode")
-      ]
-      checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 400)
-    })
-
-  test.each(testCases)("handleResponse returns 400 response if spine response is a %p error (single reason)",
-    (_, codeSystem: string, spineErrorCode: string, translatedErrorCode: string) => {
-      const expectedSendMessagePayload = createError(
-        "MCCI_IN010000UK13",
-        undefined,
-        createSendMessagePayloadReason(spineErrorCode, "Error Display Name", codeSystem)
-      )
-      const expectedIssueArray = [
-        createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, translatedErrorCode, "Error Display Name")
-      ]
-      checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 400)
-    })
-
-  test.each(testCases)("handleResponse returns 400 response if spine response is a %p error (multiple reasons)",
-    (_, codeSystem: string, spineErrorCode: string, translatedErrorCode: string) => {
-      const expectedSendMessagePayload = createError(
-        "MCCI_IN010000UK13",
-        undefined,
-        createSendMessagePayloadReason(spineErrorCode, "Error Display Name 1", codeSystem),
-        createSendMessagePayloadReason(spineErrorCode, "Error Display Name 2", codeSystem)
-      )
-      const expectedIssueArray = [
-        createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, translatedErrorCode, "Error Display Name 1"),
-        createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, translatedErrorCode, "Error Display Name 2")
       ]
       checkResponseObjectAndStatusCode(expectedSendMessagePayload, expectedIssueArray, 400)
     })
