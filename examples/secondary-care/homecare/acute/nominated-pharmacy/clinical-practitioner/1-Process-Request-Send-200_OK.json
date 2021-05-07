@@ -263,7 +263,7 @@
         },
         "dosageInstruction": [
           {
-            "text": "80mg at 8am and 40mg at 2pm for 5 days. Then 40mg tablet – oral-  daily at 8am",
+            "text": "80mg at 8am and 40mg at 2pm for 5 days. Then 40mg tablet - oral-  daily at 8am",
             "timing": {
               "repeat": {
                 "frequency": 5,

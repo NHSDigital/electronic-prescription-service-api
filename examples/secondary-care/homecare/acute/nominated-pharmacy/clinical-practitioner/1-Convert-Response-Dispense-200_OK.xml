@@ -113,7 +113,7 @@
                       <seperatableInd value="false"/>
                       <pertinentSupplyInstructions classCode="OBS" moodCode="EVN">
                         <code code="SI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                        <value>80mg at 8am and 40mg at 2pm for 5 days. Then 40mg tablet – oral-  daily at 8am</value>
+                        <value>80mg at 8am and 40mg at 2pm for 5 days. Then 40mg tablet - oral-  daily at 8am</value>
                       </pertinentSupplyInstructions>
                     </pertinentInformation1>
                   </suppliedLineItemQuantity>
@@ -175,7 +175,7 @@
                       <seperatableInd value="false"/>
                       <pertinentSupplyInstructions classCode="OBS" moodCode="EVN">
                         <code code="SI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                        <value>80mg at 8am and 40mg at 2pm for 5 days. Then 40mg tablet – oral-  daily at 8am</value>
+                        <value>80mg at 8am and 40mg at 2pm for 5 days. Then 40mg tablet - oral-  daily at 8am</value>
                       </pertinentSupplyInstructions>
                     </pertinentInformation1>
                   </suppliedLineItemQuantity>
