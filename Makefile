@@ -68,9 +68,9 @@ install-python:
 	poetry install
 
 install-node:
-	cd specification && npm install
-	cd models && npm install
-	cd coordinator && npm install
+	cd specification && npm ci
+	cd models && npm ci
+	cd coordinator && npm ci
 	cd tests/e2e/pact && make install
 
 install-hooks:

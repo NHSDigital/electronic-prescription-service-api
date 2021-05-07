@@ -6,7 +6,7 @@ WORKDIR /app
 
 COPY package*.json ./
 RUN npm config set update-notifier false
-RUN npm install --only=production
+RUN npm ci --only=production
 COPY dist/ ./
 RUN chmod -R a+x /app
 
