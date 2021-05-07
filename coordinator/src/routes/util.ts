@@ -35,11 +35,18 @@ export function handleResponse<T>(
       .code(spineResponse.statusCode)
       .type(CONTENT_TYPE_FHIR)
   } else {
-    const translatedSpineResponse = translateToFhir(spineResponse, request.logger)
-    const serializedResponse = LosslessJson.stringify(translatedSpineResponse.fhirResponse)
-    return responseToolkit.response(serializedResponse)
-      .code(translatedSpineResponse.statusCode)
-      .type(CONTENT_TYPE_FHIR)
+    if (request.headers["x-untranslated-response"]) {
+      return responseToolkit
+        .response(spineResponse.body.toString())
+        .code(200)
+        .type(CONTENT_TYPE_XML)
+    } else {
+      const translatedSpineResponse = translateToFhir(spineResponse, request.logger)
+      const serializedResponse = LosslessJson.stringify(translatedSpineResponse.fhirResponse)
+      return responseToolkit.response(serializedResponse)
+        .code(translatedSpineResponse.statusCode)
+        .type(CONTENT_TYPE_FHIR)
+    }
   }
 }
 
