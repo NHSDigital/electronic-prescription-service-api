@@ -131,7 +131,7 @@ extends:
 
           # Publish
           cd "$SERVICE_NAME/$SERVICE_ARTIFACT_NAME/pact"
-          rm -rf node_modules && npm install > /dev/null
+          rm -rf node_modules && npm ci > /dev/null
           make create-pacts > /dev/null
           chmod +x ./broker/publish.ts
           make publish-pacts > /dev/null
