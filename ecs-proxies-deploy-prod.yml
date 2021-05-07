@@ -20,6 +20,8 @@ docker_service:
           value: "https://{{ APIGEE_HOSTNAME }}/{{ SERVICE_BASE_PATH }}"
         - name: COMMIT_ID
           value: "{{ SOURCE_COMMIT_ID }}"
+        - name: ENVIRONMENT
+          value: "{{ APIGEE_ENVIRONMENT }}"
     secrets:
         - name: SPINE_URL
           valueFrom: '/{{ account }}/platform-common/egress/hosts/spine-prescriptions-prod'
