@@ -21,7 +21,10 @@ export enum IssueCodes {
   DUPLICATE = "duplicate",
   STRUCTURE = "structure",
   CODE_INVALID = "code-invalid",
-  CONFLICT = "conflict"
+  CONFLICT = "conflict",
+  NOT_FOUND = "not-found",
+  EXCEPTION = "exception",
+  PROCESSING = "processing"
 }
 
 export interface OperationOutcomeIssue {
