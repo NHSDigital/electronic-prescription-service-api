@@ -35,7 +35,7 @@ function validateWithdraw(task: fhir.Task) {
   if (!task.code) {
     withdrawSpecificErrors.push({
       severity: "error",
-      code: "value",
+      code: fhir.IssueCodes.VALUE,
       diagnostics: "Task.code is required when Task.status is 'in-progress'.",
       expression: [`Task.code`]
     } as fhir.OperationOutcomeIssue)

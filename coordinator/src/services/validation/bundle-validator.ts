@@ -4,7 +4,6 @@ import {
 } from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues, groupBy} from "./util"
-import {getCourseOfTherapyTypeCode} from "../translation/request/course-of-therapy-type"
 import {
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
@@ -13,6 +12,7 @@ import {
 } from "../translation/common"
 import {fhir, validationErrors as errors} from "@models"
 import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
+import {isRepeatDispensing} from "../translation/request"
 
 export function verifyBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
@@ -51,6 +51,14 @@ function verifyMessageType(messageType: string): messageType is fhir.EventCoding
     messageType === fhir.EventCodingCode.DISPENSE
 }
 
+function resourceHasBothCodeableConceptAndReference(
+  resources: Array<fhir.MedicationRequest | fhir.MedicationDispense>
+) {
+  return resources.some(
+    resource => resource.medicationCodeableConcept && resource.medicationReference
+  )
+}
+
 export function verifyCommonBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
   const incorrectValueErrors = []
 
@@ -58,6 +66,12 @@ export function verifyCommonBundle(bundle: fhir.Bundle): Array<fhir.OperationOut
   if (medicationRequests.some(medicationRequest => medicationRequest.intent !== fhir.MedicationRequestIntent.ORDER)) {
     incorrectValueErrors.push(
       errors.createMedicationRequestIncorrectValueIssue("intent", fhir.MedicationRequestIntent.ORDER)
+    )
+  }
+
+  if (resourceHasBothCodeableConceptAndReference(medicationRequests)) {
+    incorrectValueErrors.push(
+      errors.createMedicationFieldIssue("Request")
     )
   }
 
@@ -88,9 +102,10 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
     .filter(isTruthy)
   allErrors.push(...inconsistentValueErrors)
 
-  const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
-  const isRepeatDispensing = courseOfTherapyTypeCode === fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
-  const repeatDispensingErrors = isRepeatDispensing ? verifyRepeatDispensingPrescription(medicationRequests) : []
+  const repeatDispensingErrors =
+    isRepeatDispensing(medicationRequests)
+      ? verifyRepeatDispensingPrescription(medicationRequests)
+      : []
   allErrors.push(...repeatDispensingErrors)
 
   if (medicationRequests.some(medicationRequest => medicationRequest.status !== "active")) {
@@ -182,6 +197,12 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
     allErrors.push(errors.createMedicationDispenseMissingValueIssue("performer.actor.ofType(Organization)"))
   }
 
+  if (resourceHasBothCodeableConceptAndReference(medicationDispenses)) {
+    allErrors.push(
+      errors.createMedicationFieldIssue("Dispense")
+    )
+  }
+
   return allErrors
 }
 
@@ -198,11 +219,11 @@ function verifyIdenticalForAllMedicationDispenses(
   return null
 }
 
-function verifyIdenticalForAllMedicationRequests(
+export function verifyIdenticalForAllMedicationRequests(
   bundle: fhir.Bundle,
   medicationRequests: Array<fhir.MedicationRequest>,
   fhirPath: string
-) {
+): fhir.OperationOutcomeIssue {
   const allFieldValues = applyFhirPath(bundle, medicationRequests, fhirPath)
   const uniqueFieldValues = getUniqueValues(allFieldValues)
   if (uniqueFieldValues.length > 1) {

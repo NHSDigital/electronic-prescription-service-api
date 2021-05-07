@@ -31,7 +31,11 @@ extends:
     apigee_deployments: ${{ parameters.apigee_deployments }}
     post_deploy:
       - bash: |
-          if [[ -d "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact" ]]; then
+          if [ "$(APIGEE_ENVIRONMENT)" == "prod" ]
+          then
+            echo "##vso[task.setvariable variable=run_smoke_tests]false"
+          elif [[ -d "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact" ]]
+          then
             echo "##vso[task.setvariable variable=run_smoke_tests]true"
           else
             echo "##vso[task.setvariable variable=run_smoke_tests]false"
@@ -72,7 +76,7 @@ extends:
               export PACT_VERSION
           else
               export PACT_VERSION="$SERVICE_BASE_PATH"
-          fi 
+          fi
 
           PACT_BROKER_URL=$(PACT_BROKER_URL)
           export PACT_BROKER_URL
@@ -89,12 +93,13 @@ extends:
           PACT_BROKER_NEXT_TOKEN=$(PACT_BROKER_NEXT_TOKEN)
           export PACT_BROKER_NEXT_TOKEN
 
-          export PACT_CONSUMER=nhsd-apim-eps-test-client
           export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH
 
           if [[ "$APIGEE_ENVIRONMENT" == *"sandbox"* ]]; then
+              export PACT_CONSUMER=nhsd-apim-eps-test-client-sandbox
               export PACT_PROVIDER=nhsd-apim-eps-sandbox
           else
+              export PACT_CONSUMER=nhsd-apim-eps-test-client
               export PACT_PROVIDER=nhsd-apim-eps
 
               export SIGNING_PRIVATE_KEY_PATH=$(eps_int_private_key.secureFilePath)
@@ -160,5 +165,16 @@ extends:
           # Verify
           chmod +x ./broker/verify.ts
           make verify-pacts
+
+          # Cleanup for PRs
+          if [[ $SERVICE_ARTIFACT_NAME != v* ]]
+          then
+            curl -X DELETE -u $PACT_BROKER_BASIC_AUTH_USERNAME:$PACT_BROKER_BASIC_AUTH_PASSWORD $PACT_BROKER_URL/pacticipants/$PACT_CONSUMER+$SERVICE_BASE_PATH > /dev/null
+          fi
         displayName: Run smoke tests
         condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathToPublish: '$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/pact/prescriptions-$(APIGEE_ENVIRONMENT).txt'
+          artifactName: 'smoke-tests'
+          publishLocation: 'Container'

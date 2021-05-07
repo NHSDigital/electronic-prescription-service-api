@@ -2,6 +2,7 @@ import * as TestResources from "../../../resources/test-resources"
 import {translateToFhir} from "../../../../src/services/translation/response"
 import {fhir, spine} from "@models"
 import pino from "pino"
+import {SpineResponseHandler} from "../../../../src/services/translation/response/spine-response-handler"
 
 describe("translateToFhir", () => {
   const spineResponses = TestResources.spineResponses
@@ -19,31 +20,20 @@ describe("translateToFhir", () => {
     expect(statusCode).toBe(200)
   })
 
-  test.each(TestResources.spineResponses.singleErrors)("converts spine single errors", (syncResponse) => {
-    const returnedValues = translateToFhir(syncResponse.response, logger)
-    const body = returnedValues.fhirResponse as fhir.OperationOutcome
-    const statusCode = returnedValues.statusCode
+  const testCases = [
+    ...TestResources.spineResponses.singleErrors,
+    ...TestResources.spineResponses.multipleErrors
+  ]
 
-    expect(body.issue).toHaveLength(1)
-    expect(body.issue[0].details.coding).toHaveLength(1)
-    expect(body.issue[0].details.coding[0].code).toBe(syncResponse.spineErrorCode.toString())
-    expect(body.issue[0].details.coding[0].display).toBeTruthy()
-    expect(statusCode).toBe(400)
-  })
+  test.each(testCases)("returns a valid response for errors (single or multiple) from spine",
+    (spineResponse) => {
+      const returnedValues = translateToFhir(spineResponse.response, logger)
+      const body = returnedValues.fhirResponse as fhir.OperationOutcome
+      const statusCode = returnedValues.statusCode
 
-  test.each(TestResources.spineResponses.multipleErrors)("converts multiple spine errors", (syncResponse) => {
-    const returnedValues = translateToFhir(syncResponse.response, logger)
-    const body = returnedValues.fhirResponse as fhir.OperationOutcome
-    const statusCode = returnedValues.statusCode
-
-    expect(body.issue.length).toBeGreaterThan(1)
-    body.issue.forEach(operationOutcomeIssue => {
-      expect(operationOutcomeIssue.details.coding).toHaveLength(1)
-      expect(operationOutcomeIssue.details.coding[0].code).toBe(syncResponse.spineErrorCode.toString())
-      expect(operationOutcomeIssue.details.coding[0].display).toBeTruthy()
+      expect(body).not.toEqual(SpineResponseHandler.createServerErrorResponse().fhirResponse)
+      expect(statusCode).toBe(400)
     })
-    expect(statusCode).toBe(400)
-  })
 
   test("returns internal server error on unexpected spine response", () => {
     const bodyString = "this body doesnt pass the regex checks"
@@ -54,11 +44,9 @@ describe("translateToFhir", () => {
 
     const returnedValues = translateToFhir(spineResponse, logger)
     const body = returnedValues.fhirResponse as fhir.OperationOutcome
-    const statusCode = returnedValues.statusCode
 
-    expect(body.issue).toHaveLength(1)
-    expect(body.issue[0].diagnostics).toBeUndefined()
-    expect(statusCode).toBe(500)
+    expect(body).toEqual(SpineResponseHandler.createServerErrorResponse().fhirResponse)
+    expect(returnedValues.statusCode).toBe(500)
   })
 
   const cancellationResponses = [spineResponses.cancellationSuccess, spineResponses.cancellationError]

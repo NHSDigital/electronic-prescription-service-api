@@ -292,7 +292,7 @@
         "dispenseRequest": {
           "extension": [
             {
-              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-performerSiteType",
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
               "valueCoding": {
                 "system": "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
                 "code": "P1"
@@ -517,6 +517,23 @@
             "contentReference": {
               "reference": "urn:uuid:d0f003a0-8763-43d5-a264-ce52a38901c9",
               "display": "List of Repeat Medications for re-ordering"
+            }
+          }
+        ],
+        "requester": {
+          "type": "Organization",
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA"
+          },
+          "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
+        },
+        "recipient":  [
+          {
+            "type": "Patient",
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/nhs-number",
+              "value": "9453740519"
             }
           }
         ]

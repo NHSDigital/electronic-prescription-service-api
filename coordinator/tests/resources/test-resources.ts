@@ -120,7 +120,8 @@ export const exampleReturnTask = JSON.parse(fs.readFileSync(
 
 export interface ExampleSpineResponse {
   response: spine.SpineDirectResponse<string>
-  spineErrorCode: string | undefined
+  hl7ErrorCode: string | undefined
+  fhirErrorCode: string | undefined
   acknowledgementCode: hl7V3.AcknowledgementTypeCode
 }
 
@@ -132,7 +133,8 @@ const asyncSuccess: ExampleSpineResponse = {
     ),
     statusCode: 200
   },
-  spineErrorCode: undefined,
+  hl7ErrorCode: undefined,
+  fhirErrorCode: undefined,
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.ACKNOWLEDGED
 }
 
@@ -144,7 +146,8 @@ const syncError: ExampleSpineResponse = {
     ),
     statusCode: 400
   },
-  spineErrorCode: "202",
+  hl7ErrorCode: "202",
+  fhirErrorCode: "ERROR",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.REJECTED
 }
 
@@ -156,7 +159,8 @@ const asyncError: ExampleSpineResponse = {
     ),
     statusCode: 400
   },
-  spineErrorCode: "5000",
+  hl7ErrorCode: "5000",
+  fhirErrorCode: "FAILURE_TO_PROCESS_MESSAGE",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.ERROR
 }
 
@@ -168,7 +172,8 @@ const syncMultipleError: ExampleSpineResponse = {
     ),
     statusCode: 400
   },
-  spineErrorCode: "202",
+  hl7ErrorCode: "202",
+  fhirErrorCode: "ERROR",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.REJECTED
 }
 
@@ -180,7 +185,8 @@ const asyncMultipleError: ExampleSpineResponse = {
     ),
     statusCode: 400
   },
-  spineErrorCode: "5000",
+  hl7ErrorCode: "5000",
+  fhirErrorCode: "ERROR",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.ERROR
 }
 
@@ -192,7 +198,8 @@ const cancellationSuccess: ExampleSpineResponse = {
     ),
     statusCode: 200
   },
-  spineErrorCode: "0001",
+  hl7ErrorCode: "0001",
+  fhirErrorCode: "PATIENT_DECEASED",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.ACKNOWLEDGED
 }
 
@@ -204,7 +211,8 @@ const cancellationError: ExampleSpineResponse = {
     ),
     statusCode: 400
   },
-  spineErrorCode: "0008",
+  hl7ErrorCode: "0008",
+  fhirErrorCode: "MISSING_VALUE",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.ERROR
 }
 
@@ -216,7 +224,8 @@ const cancellationDispensedError: ExampleSpineResponse = {
     ),
     statusCode: 400
   },
-  spineErrorCode: "0004",
+  hl7ErrorCode: "0004",
+  fhirErrorCode: "ERROR",
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.ERROR
 }
 

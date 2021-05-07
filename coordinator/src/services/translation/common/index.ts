@@ -124,7 +124,7 @@ export function getCodingForSystemOrNull(codings: Array<fhir.Coding>, system: st
 
 export function getExtensionForUrl(extensions: Array<fhir.Extension>, url: string, fhirPath: string): fhir.Extension {
   return onlyElement(
-    extensions.filter(extension => extension.url === url),
+    extensions?.filter(extension => extension.url === url),
     fhirPath,
     `url == '${url}'`
   )
@@ -136,7 +136,7 @@ export function getExtensionForUrlOrNull(
   fhirPath: string
 ): fhir.Extension {
   return onlyElementOrNull(
-    extensions.filter(extension => extension.url === url),
+    extensions?.filter(extension => extension.url === url),
     fhirPath,
     `url == '${url}'`
   )
@@ -211,4 +211,29 @@ export function getIdentifierParameterByName(
     "Parameters.parameter",
     `name == '${name}'`
   ) as fhir.IdentifierParameter
+}
+
+export function getMedicationCoding(
+  bundle: fhir.Bundle, resourceThatHasMedication: fhir.MedicationDispense | fhir.MedicationRequest
+): fhir.Coding {
+  const medicationSystem = "http://snomed.info/sct"
+
+  const medicationRequestCodeableConcept = resourceThatHasMedication.medicationCodeableConcept
+  if (medicationRequestCodeableConcept) {
+    return getCodingForSystem(
+      medicationRequestCodeableConcept.coding,
+      medicationSystem,
+      "MedicationRequest.medicationCodeableConcept.coding"
+    )
+  } else {
+    const medicationResource = getResourceForFullUrl(
+      bundle,
+      resourceThatHasMedication.medicationReference.reference
+    ) as fhir.Medication
+    return getCodingForSystem(
+      medicationResource.code.coding,
+      medicationSystem,
+      "Medication.code.coding"
+    )
+  }
 }

@@ -20,6 +20,8 @@ docker_service:
           value: "https://{{ APIGEE_HOSTNAME }}/{{ SERVICE_BASE_PATH }}"
         - name: COMMIT_ID
           value: "{{ SOURCE_COMMIT_ID }}"
+        - name: ENVIRONMENT
+          value: "{{ APIGEE_ENVIRONMENT }}"
     secrets:
         - name: SPINE_URL
           valueFrom: '/{{ account }}/platform-common/egress/hosts/spine-prescriptions-{{ SPINE_ENV }}'
@@ -33,8 +35,6 @@ docker_service:
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/from-party-key'
         - name: TO_PARTY_KEY
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-party-key'
-        - name: CPA_ID_MAP
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/cpa-id-map'
     health_check:
         matcher: "200"
         path: "/_status"

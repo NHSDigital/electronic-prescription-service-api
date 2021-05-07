@@ -19,6 +19,18 @@ export class Code<T extends string> implements ElementCompact {
     }
 }
 
+export enum ApplicationErrorMessageTypeCodes {
+  SPINE = "2.16.840.1.113883.2.1.3.2.4.17.32",
+  PRESCRIBE = "2.16.840.1.113883.2.1.3.2.4.17.22",
+  DISPENSE = "2.16.840.1.113883.2.1.3.2.4.16.34"
+}
+
+export class PrescriptionReleaseRejectionReason extends Code<"2.16.840.1.113883.2.1.3.2.4.16.34"> {
+  constructor(code: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.16.34", code)
+  }
+}
+
 export class SexCode extends Code<"2.16.840.1.113883.2.1.3.2.4.16.25"> {
   constructor(code: string) {
     super("2.16.840.1.113883.2.1.3.2.4.16.25", code)
@@ -292,9 +304,9 @@ export class Hl7InteractionIdentifier extends Identifier<"2.16.840.1.113883.2.1.
     static PARENT_PRESCRIPTION_URGENT = new Hl7InteractionIdentifier("PORX_IN020101SM31")
     static CANCEL_REQUEST = new Hl7InteractionIdentifier("PORX_IN030101SM32")
     static DISPENSE_NOTIFICATION = new Hl7InteractionIdentifier("PORX_IN080101SM31")
-    static NOMINATED_PRESCRIPTION_RELEASE_REQUEST = new Hl7InteractionIdentifier("PORX_IN060102UK30")
-    static DISPENSER_WITHDRAW = new Hl7InteractionIdentifier("PORX_IN510101UK31")
-    static DISPENSE_PROPOSAL_RETURN = new Hl7InteractionIdentifier("PORX_IN100101UK31")
+    static NOMINATED_PRESCRIPTION_RELEASE_REQUEST = new Hl7InteractionIdentifier("PORX_IN060102SM30")
+    static DISPENSER_WITHDRAW = new Hl7InteractionIdentifier("PORX_IN510101SM31")
+    static DISPENSE_PROPOSAL_RETURN = new Hl7InteractionIdentifier("PORX_IN100101SM31")
 }
 
 export class AccreditedSystemIdentifier extends Identifier<"1.2.826.0.1285.0.2.0.107"> {

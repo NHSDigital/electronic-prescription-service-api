@@ -3,7 +3,7 @@ import * as fhir from "../fhir"
 
 export const messageTypeIssue: fhir.OperationOutcomeIssue = {
   severity: "fatal",
-  code: "value",
+  code: fhir.IssueCodes.VALUE,
   diagnostics: `MessageHeader.eventCoding.code must be one of: ${fhir.ACCEPTED_MESSAGE_TYPES.join(", ")}.`,
   expression: ["Bundle.entry.resource.ofType(MessageHeader).eventCoding.code"]
 }
@@ -14,7 +14,7 @@ export function createMedicationRequestInconsistentValueIssue<T>(
 ): fhir.OperationOutcomeIssue {
   return {
     severity: "error",
-    code: "value",
+    code: fhir.IssueCodes.VALUE,
     diagnostics: `Expected all MedicationRequests to have the same value for ${
       fieldName
     }. Received ${
@@ -26,7 +26,7 @@ export function createMedicationRequestInconsistentValueIssue<T>(
 
 export const medicationRequestDuplicateIdentifierIssue: fhir.OperationOutcomeIssue = {
   severity: "error",
-  code: "value",
+  code: fhir.IssueCodes.VALUE,
   diagnostics: "Expected all MedicationRequests to have a different value for identifier.",
   expression: ["Bundle.entry.resource.ofType(MedicationRequest).identifier"]
 }
@@ -37,7 +37,7 @@ export function createMedicationDispenseInconsistentValueIssue<T>(
 ): fhir.OperationOutcomeIssue {
   return {
     severity: "error",
-    code: "value",
+    code: fhir.IssueCodes.VALUE,
     diagnostics: `Expected all MedicationDispenses to have the same value for ${
       fieldName
     }. Received ${
@@ -50,7 +50,7 @@ export function createMedicationDispenseInconsistentValueIssue<T>(
 export function createMedicationDispenseMissingValueIssue(fieldName: string): fhir.OperationOutcomeIssue {
   return {
     severity: "error",
-    code: "value",
+    code: fhir.IssueCodes.VALUE,
     diagnostics: `Expected MedicationDispense to have a value for ${fieldName}.`,
     expression: [`Bundle.entry.resource.ofType(MedicationDispense).${fieldName}`]
   }
@@ -58,7 +58,7 @@ export function createMedicationDispenseMissingValueIssue(fieldName: string): fh
 
 export const medicationRequestNumberIssue: fhir.OperationOutcomeIssue = {
   severity: "error",
-  code: "value",
+  code: fhir.IssueCodes.VALUE,
   diagnostics: `The Bundle must contain exactly one MedicationRequest if MessageHeader.eventCoding.code is '${
     fhir.EventCodingCode.CANCELLATION
   }'.`,
@@ -68,7 +68,7 @@ export const medicationRequestNumberIssue: fhir.OperationOutcomeIssue = {
 export function createMedicationRequestMissingValueIssue(fieldName: string): fhir.OperationOutcomeIssue {
   return {
     severity: "error",
-    code: "value",
+    code: fhir.IssueCodes.VALUE,
     diagnostics: `Expected MedicationRequest to have a value for ${fieldName}.`,
     expression: [`Bundle.entry.resource.ofType(MedicationRequest).${fieldName}`]
   }
@@ -80,7 +80,7 @@ export function createMedicationRequestIncorrectValueIssue(
 ): fhir.OperationOutcomeIssue {
   return {
     severity: "error",
-    code: "value",
+    code: fhir.IssueCodes.VALUE,
     diagnostics: `MedicationRequest.${fieldName} must be '${requiredFieldValue}'.`,
     expression: [`Bundle.entry.resource.ofType(MedicationRequest).${fieldName}`]
   }
@@ -89,7 +89,7 @@ export function createMedicationRequestIncorrectValueIssue(
 export function createResourceTypeIssue(expectedResourceType: string): fhir.OperationOutcomeIssue {
   return {
     severity: "fatal",
-    code: "value",
+    code: fhir.IssueCodes.VALUE,
     diagnostics: `Incorrect FHIR resource type. Expected ${expectedResourceType}.`
   }
 }
@@ -100,7 +100,7 @@ export function createTaskIncorrectValueIssue(
 ): fhir.OperationOutcomeIssue {
   return {
     severity: "error",
-    code: "value",
+    code: fhir.IssueCodes.VALUE,
     diagnostics: `Task.${fieldName} must be one of: ${allowedFieldValues.map(v => "'" + v + "'").join(", ")}.`,
     expression: [`Task.${fieldName}`]
   }
@@ -112,15 +112,23 @@ export function createTaskCodingSystemIssue(
 ): fhir.OperationOutcomeIssue {
   return {
     severity: "error",
-    code: "value",
+    code: fhir.IssueCodes.VALUE,
     diagnostics: `Task.${fieldName} must have a system of '${requiredSystem}' and a value from that system.`,
     expression: [`Task.${fieldName}`]
   }
 }
 
+export function createMedicationFieldIssue(resource: "Request" | "Dispense"): fhir.OperationOutcomeIssue {
+  return {
+    severity: "error",
+    code: fhir.IssueCodes.STRUCTURE,
+    diagnostics: `Medication${resource} cannot contain both medicationReference and medicationCodeableConcept fields.`,
+  }
+}
+
 export const unauthorisedActionIssue: fhir.OperationOutcomeIssue = {
   severity: "error",
-  code: "forbidden",
+  code: fhir.IssueCodes.FORBIDDEN,
   details: {
     coding: [
       {
