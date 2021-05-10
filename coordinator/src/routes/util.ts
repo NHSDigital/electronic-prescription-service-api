@@ -7,6 +7,7 @@ import stream from "stream"
 import * as crypto from "crypto-js"
 import {userHasValidAuth} from "../services/validation/auth-level"
 import {identifyMessageType} from "../services/translation/common"
+import {RequestHeaders} from "../services/headers"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
@@ -35,7 +36,7 @@ export function handleResponse<T>(
       .code(spineResponse.statusCode)
       .type(CONTENT_TYPE_FHIR)
   } else {
-    if (request.headers["x-untranslated-response"]) {
+    if (request.headers[RequestHeaders.RAW_RESPONSE]) {
       return responseToolkit
         .response(spineResponse.body.toString())
         .code(200)
@@ -115,7 +116,7 @@ export async function callFhirValidator(
 export async function getFhirValidatorErrors(
   request: Hapi.Request
 ): Promise<fhir.OperationOutcome> {
-  if (request.headers["x-skip-validation"]) {
+  if (request.headers[RequestHeaders.SKIP_VALIDATION]) {
     request.logger.info("Skipping call to FHIR validator")
   } else {
     request.logger.info("Making call to FHIR validator")
