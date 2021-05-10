@@ -72,7 +72,7 @@ const init = async () => {
     plugin: HapiPino,
     options: {
       // For non-local environments, dont pretty print to avoid spamming logs
-      prettyPrint: isLocal,
+      prettyPrint: isLocal(),
       // Redact Authorization headers, see https://getpino.io/#/docs/redaction
       redact: ["req.headers.authorization"]
     }

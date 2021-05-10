@@ -30,7 +30,7 @@ const routes = [
   ...mainRoutes
 ]
 
-if (!isProd) {
+if (!isProd()) {
   routes.push(...debugRoutes)
 }
 

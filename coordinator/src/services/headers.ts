@@ -9,16 +9,19 @@ export enum RequestHeaders {
   SMOKE_TEST = "x-smoke-test"
 }
 
-const invalidProdHeaders: Array<RequestHeaders> = [RequestHeaders.RAW_RESPONSE, RequestHeaders.SKIP_VALIDATION]
+export const invalidProdHeaders: Array<RequestHeaders> = [RequestHeaders.RAW_RESPONSE, RequestHeaders.SKIP_VALIDATION]
 
 export const rejectInvalidProdHeaders: Hapi.Lifecycle.Method = (
   request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
 ) => {
-  if (isProd) {
+  if (isProd()) {
     const presentInvalidHeaders = invalidProdHeaders.filter(invalidHeader => request.headers[invalidHeader])
     if (presentInvalidHeaders) {
-      return responseToolkit.response().code(403)
+      return responseToolkit
+        .response("Header invalid in production")
+        .code(403)
+        .takeover()
     }
   }
-  return request
+  return responseToolkit.continue
 }
