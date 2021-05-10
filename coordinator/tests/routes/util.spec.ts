@@ -92,7 +92,7 @@ describe("handleResponse", () => {
   test("pollable response", async () => {
     const spineResponse: spine.SpinePollableResponse = {
       pollingUrl: "testUrl",
-      statusCode: 200
+      statusCode: 202
     }
 
     server.route([createRoute(spineResponse)])
