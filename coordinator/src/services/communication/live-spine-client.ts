@@ -67,32 +67,35 @@ export class LiveSpineClient implements SpineClient {
           }
         }
       )
-      return LiveSpineClient.handlePollableOrImmediateResponse(result, logger)
+      return LiveSpineClient.handlePollableOrImmediateResponse(result, logger, `/_poll/${path}`)
     } catch (error) {
       logger.error(`Failed polling request for polling path ${path}. Error: ${error}`)
       return LiveSpineClient.handleError(error)
     }
   }
 
-  private static handlePollableOrImmediateResponse(result: AxiosResponse, logger: Logger) {
-    switch (result.status) {
-      case (200):
-        logger.info("Successful request, returning SpineDirectResponse")
-        return {
-          body: result.data,
-          statusCode: result.status
-        }
-      case (202):
-        logger.info("Successful request, returning SpinePollableResponse")
-        logger.info(`Got polling URL ${result.headers["content-location"]}`)
-        return {
-          pollingUrl: `${BASE_PATH}${result.headers["content-location"]}`,
-          statusCode: result.status
-        }
-      default:
-        logger.error(`Got the following response from spine:\n${result.data}`)
-        throw Error(`Unsupported status, expected 200 or 202, got ${result.status}`)
+  private static handlePollableOrImmediateResponse(result: AxiosResponse, logger: Logger, previousPollingUrl?: string) {
+    if (result.status === 200) {
+      logger.info("Successful request, returning SpineDirectResponse")
+      return {
+        body: result.data,
+        statusCode: result.status
+      }
     }
+
+    if (result.status === 202) {
+      logger.info("Successful request, returning SpinePollableResponse")
+      const contentLocation = result.headers["content-location"]
+      const relativePollingUrl = contentLocation ? contentLocation : previousPollingUrl
+      logger.info(`Got content location ${contentLocation}. Using polling URL ${relativePollingUrl}`)
+      return {
+        pollingUrl: `${BASE_PATH}${relativePollingUrl}`,
+        statusCode: result.status
+      }
+    }
+
+    logger.error(`Got the following response from spine:\n${result.data}`)
+    throw Error(`Unsupported status, expected 200 or 202, got ${result.status}`)
   }
 
   private static handleError(error: Error): spine.SpineResponse<unknown> {

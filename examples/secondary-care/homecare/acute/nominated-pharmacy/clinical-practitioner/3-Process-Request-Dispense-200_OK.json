@@ -3,7 +3,7 @@
   "id": "prescription-dispense-notification",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "90db708f-3e82-4d2c-a7aa-fd965a8cfb05"
+    "value": "602159ee-1678-41ec-a100-7b3dd04c1d84"
   },
   "type": "message",
   "entry": [
@@ -22,22 +22,22 @@
             "receiver": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "FTX40"
+                "value": "VN6XW"
               },
-              "display": "HEALTHCARE AT HOME"
+              "display": "GRACE HOMECARE LTD"
             }
           }
         ],
         "sender": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "FTX40"
+            "value": "VN6XW"
           },
-          "display": "HEALTHCARE AT HOME"
+          "display": "GRACE HOMECARE LTD"
         },
         "source": {
-          "name": "HEALTHCARE AT HOME",
-          "endpoint": "urn:nhs-uk:addressing:ods:FTX40"
+          "name": "GRACE HOMECARE LTD",
+          "endpoint": "urn:nhs-uk:addressing:ods:VN6XW"
         },
         "reason": {
           "coding": [
@@ -129,14 +129,14 @@
                     "url": "shortForm",
                     "valueIdentifier": {
                       "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-                      "value": "269CA9-A99968-4577AB"
+                      "value": "C2782B-A99968-4E4E9Z"
                     }
                   },
                   {
                     "url": "UUID",
                     "valueIdentifier": {
                       "system": "https://fhir.nhs.uk/Id/prescription",
-                      "value": "030611b2-9769-4696-88d9-9ddcf1132584"
+                      "value": "2cbe1f0b-a05f-4697-9948-031f9bf9dd97"
                     }
                   }
                 ]
@@ -169,7 +169,7 @@
           "system": "http://unitsofmeasure.org",
           "code": "d"
         },
-        "whenPrepared": "2009-09-21T09:24:20+00:00",
+        "whenPrepared": "2021-05-07T14:47:29+00:00",
         "dosageInstruction": [
           {
             "text": "10 milligram, Inject, Subcutaneous route, once weekly"
