@@ -54,7 +54,14 @@
   </RouteRule>
   <RouteRule name="sync-wrap">
     <Condition>
-      request.verb = "POST" AND (proxy.pathsuffix MatchesPath "/FHIR/R4/$process-message") AND request.header.prefer != "respond-async" AND request.header.x-sync-wrapped != "true"
+      request.verb = "POST"
+      AND request.header.prefer != "respond-async"
+      AND request.header.x-sync-wrapped != "true"
+      AND (
+        proxy.pathsuffix MatchesPath "/FHIR/R4/$process-message"
+        OR proxy.pathsuffix MatchesPath "/FHIR/R4/Task/$release"
+        OR proxy.pathsuffix MatchesPath "/FHIR/R4/Task"
+      )
     </Condition>
     <TargetEndpoint>sync-wrap</TargetEndpoint>
   </RouteRule>

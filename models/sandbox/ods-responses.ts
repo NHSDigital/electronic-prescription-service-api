@@ -60,6 +60,80 @@ export const ORGANIZATION_FTX40_HOMECARE: fhir.Organization = {
   }]
 }
 
+export const ORGANIZATION_VNCEL_HOMECARE: fhir.Organization = {
+  resourceType: "Organization",
+  identifier: [{
+    system: "https://fhir.nhs.uk/Id/ods-organization-code",
+    value: "VNCEL"
+  }],
+  type: [{
+    coding: [{
+      system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+      code: "101"
+    }]
+  }],
+  name: "YORKSHIRE HOMECARE LIMITED",
+  address: [{
+    line: [
+      "57 PEPPER ROAD"
+    ],
+    city: "LEEDS",
+    district: "WEST YORKSHIRE",
+    postalCode: "LS10 2RU",
+    country: "ENGLAND"
+  }]
+}
+
+export const ORGANIZATION_VNFKT_HOMECARE: fhir.Organization = {
+  resourceType: "Organization",
+  identifier: [{
+    system: "https://fhir.nhs.uk/Id/ods-organization-code",
+    value: "VNFKT"
+  }],
+  type: [{
+    coding: [{
+      system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+      code: "101"
+    }]
+  }],
+  name: "FIVE STAR HOMECARE LEEDS LTD",
+  address: [{
+    line: [
+      "UNIT 16C DEANFIELD MILLS",
+      "ASQUITH AVENUE",
+      "MORLEY"
+    ],
+    city: "LEEDS",
+    postalCode: "LS27 9QS",
+    country: "ENGLAND"
+  }]
+}
+
+export const ORGANIZATION_VN6XW_HOMECARE: fhir.Organization = {
+  resourceType: "Organization",
+  identifier: [{
+    system: "https://fhir.nhs.uk/Id/ods-organization-code",
+    value: "VN6XW"
+  }],
+  type: [{
+    coding: [{
+      system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+      code: "101"
+    }]
+  }],
+  name: "GRACE HOMECARE LTD",
+  address: [{
+    line: [
+      "SUITE 20, ENTERPRISE HOUSE, MCCARTH",
+      "EDUCATION ROAD"
+    ],
+    city: "LEEDS",
+    district: "WEST YORKSHIRE",
+    postalCode: "LS7 2AL",
+    country: "ENGLAND"
+  }]
+}
+
 export const ORGANIZATION_T1450_NHS_BSA: fhir.Organization = {
   resourceType: "Organization",
   identifier: [{
