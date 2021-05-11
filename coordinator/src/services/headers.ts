@@ -1,6 +1,7 @@
 import Hapi from "@hapi/hapi"
 import {isProd} from "./environment"
 import {fhir, validationErrors as errors} from "@models"
+import {CONTENT_TYPE_FHIR} from "../routes/util"
 
 export enum RequestHeaders {
   REQUEST_ID = "nhsd-request-id",
@@ -23,12 +24,13 @@ export const rejectInvalidProdHeaders: Hapi.Lifecycle.Method = (
       console.error(`Request with id: ${
         request.headers[RequestHeaders.REQUEST_ID]
       } had invalid header(s): ${
-        listOfInvalidHeaders.length
+        listOfInvalidHeaders
       }`)
       const issue = errors.invalidHeaderOperationOutcome(listOfInvalidHeaders)
       return responseToolkit
         .response(fhir.createOperationOutcome([issue]))
         .code(403)
+        .type(CONTENT_TYPE_FHIR)
         .takeover()
     }
   }

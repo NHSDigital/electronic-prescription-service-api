@@ -155,7 +155,7 @@ export const invalidHeaderOperationOutcome = (headers: Array<string>): fhir.Oper
     coding: [{
       system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
       code: "MISSING_OR_INVALID_HEADER",
-      display: "There is a required header missing or invalid"
+      display: "There is a header missing or invalid"
     }]
   },
   diagnostics: `Invalid headers: ${headers}.`
