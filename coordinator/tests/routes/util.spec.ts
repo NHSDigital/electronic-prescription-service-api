@@ -13,6 +13,7 @@ import * as moxios from "moxios"
 import {fhir, spine} from "@models"
 import {identifyMessageType} from "../../src/services/translation/common"
 import * as Hapi from "@hapi/hapi"
+import * as HapiShot from "@hapi/shot"
 
 jest.mock("../../src/services/translation/response", () => ({
   translateToFhir: () => ({statusCode: 200, fhirResponse: {value: "some FHIR response"}})
@@ -68,7 +69,7 @@ function createRoute<T>(spineResponse: spine.SpineDirectResponse<T> | spine.Spin
 
 function createRouteOptions<T>(
   spineResponse: spine.SpineDirectResponse<T> | spine.SpinePollableResponse,
-  headers?: { [key: string]: string }
+  headers?: HapiShot.Headers
 ) {
   return {
     method: "POST",
@@ -164,7 +165,7 @@ describe("handleResponse", () => {
 
     const response = await server.inject(createRouteOptions(spineResponse))
 
-    expect(response.payload).toEqual("{\"value\":\"some FHIR response\"}")
+    expect(JSON.parse(response.payload)).toEqual({value: "some FHIR response"})
     expect(response.headers["content-type"]).toEqual(CONTENT_TYPE_FHIR)
   })
 })

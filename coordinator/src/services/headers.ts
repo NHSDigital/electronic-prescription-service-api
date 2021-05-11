@@ -1,5 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {isProd} from "./environment"
+import {fhir, validationErrors as errors} from "@models"
 
 export enum RequestHeaders {
   REQUEST_ID = "nhsd-request-id",
@@ -15,10 +16,18 @@ export const rejectInvalidProdHeaders: Hapi.Lifecycle.Method = (
   request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
 ) => {
   if (isProd()) {
-    const presentInvalidHeaders = invalidProdHeaders.filter(invalidHeader => request.headers[invalidHeader])
-    if (presentInvalidHeaders) {
+    const listOfInvalidHeaders = Object.keys(request.headers).filter(
+      requestHeader => invalidProdHeaders.includes(requestHeader as RequestHeaders)
+    )
+    if (listOfInvalidHeaders.length) {
+      console.error(`Request with id: ${
+        request.headers[RequestHeaders.REQUEST_ID]
+      } had invalid header(s): ${
+        listOfInvalidHeaders.length
+      }`)
+      const issue = errors.invalidHeaderOperationOutcome(listOfInvalidHeaders)
       return responseToolkit
-        .response("Header invalid in production")
+        .response(fhir.createOperationOutcome([issue]))
         .code(403)
         .takeover()
     }

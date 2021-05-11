@@ -122,6 +122,13 @@ export function createMedicationFieldIssue(resource: "Request" | "Dispense"): fh
   return {
     severity: "error",
     code: fhir.IssueCodes.STRUCTURE,
+    details: {
+      coding: [{
+        system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+        code: "CONFLICTING_VALUES",
+        display: "Conflicting values have been specified in different fields"
+      }]
+    },
     diagnostics: `Medication${resource} cannot contain both medicationReference and medicationCodeableConcept fields.`,
   }
 }
@@ -135,8 +142,21 @@ export const unauthorisedActionIssue: fhir.OperationOutcomeIssue = {
         system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
         version: "1",
         code: "ACCESS_DENIED",
-        display: "Required access level not met."
+        display: "Access has been denied to process this request"
       }
     ]
   }
 }
+
+export const invalidHeaderOperationOutcome = (headers: Array<string>): fhir.OperationOutcomeIssue => ({
+  severity: "error",
+  code: fhir.IssueCodes.INVALID,
+  details: {
+    coding: [{
+      system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+      code: "MISSING_OR_INVALID_HEADER",
+      display: "There is a required header missing or invalid"
+    }]
+  },
+  diagnostics: `Invalid headers: ${headers}.`
+})
