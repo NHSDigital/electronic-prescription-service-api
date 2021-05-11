@@ -147,7 +147,7 @@ describe("handleResponse", () => {
     server.route([createRoute(spineResponse)])
 
     const response = await server.inject(
-      createRouteOptions(spineResponse, {"X-Untranslated-Response": "true"})
+      createRouteOptions(spineResponse, {"X-Raw-Response": "true"})
     )
 
     expect(response.payload).toEqual("some xml response")
