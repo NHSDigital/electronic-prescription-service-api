@@ -1,4 +1,4 @@
-SHELL=/bin/bash -euo pipefail -O globstar
+SHELL=/bin/bash -euo pipefail
 
 ## Common
 
@@ -37,6 +37,7 @@ release:
 	done
 	cat ecs-proxies-deploy.yml | sed -e 's/{{ SPINE_ENV }}/int/g' -e 's/{{ SANDBOX_MODE_ENABLED }}/0/g' > dist/ecs-deploy-int.yml
 	cat ecs-proxies-deploy.yml | sed -e 's/{{ SPINE_ENV }}/ref/g' -e 's/{{ SANDBOX_MODE_ENABLED }}/0/g' > dist/ecs-deploy-ref.yml
+	cp ecs-proxies-deploy-prod.yml dist/ecs-deploy-prod.yml
 
 clean:
 	rm -rf dist
@@ -68,9 +69,9 @@ install-python:
 	poetry install
 
 install-node:
-	cd specification && npm install
-	cd models && npm install
-	cd coordinator && npm install
+	cd specification && npm ci
+	cd models && npm ci
+	cd coordinator && npm ci
 	cd tests/e2e/pact && make install
 
 install-hooks:
@@ -118,9 +119,9 @@ test-coordinator:
 validate-models:
 	mkdir -p examples/build
 	test -f examples/build/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > examples/build/org.hl7.fhir.validator.jar
-	for dir in "errors/**" "secondary-care/**"; do \
-		java -jar examples/build/org.hl7.fhir.validator.jar examples/$$dir/*.json -version 4.0.1 -tx n/a | tee /tmp/validation.txt; \
-	done
+	java -jar examples/build/org.hl7.fhir.validator.jar $$(find examples/secondary-care/ -name "*.json") -version 4.0.1 -tx n/a | tee /tmp/validation.txt;
+	java -jar examples/build/org.hl7.fhir.validator.jar $$(find examples/errors/ -name "*.json") -version 4.0.1 -tx n/a | tee /tmp/validation.txt;
+	java -jar examples/build/org.hl7.fhir.validator.jar $$(find examples/primary-care/ -name "*.json") -version 4.0.1 -tx n/a | tee /tmp/validation.txt;
 
 lint: build
 	cd specification && npm run lint

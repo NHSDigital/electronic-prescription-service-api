@@ -1,6 +1,7 @@
 import {spine} from "@models"
 import {
   CancelResponseHandler,
+  ReleaseRejectionHandler,
   ReleaseResponseHandler,
   SpineResponseHandler,
   TranslatedSpineResponse
@@ -14,6 +15,7 @@ export const CANCEL_RESPONSE_HANDLER = new CancelResponseHandler(
   "PORX_IN050101UK31",
   cancelResponseTranslator.translateSpineCancelResponseIntoBundle
 )
+export const RELEASE_REJECTION_HANDLER = new ReleaseRejectionHandler("PORX_IN110101UK30")
 export const RELEASE_RESPONSE_HANDLER = new ReleaseResponseHandler(
   "PORX_IN070101UK31",
   releaseResponseTranslator.createOuterBundle
@@ -22,6 +24,7 @@ export const RELEASE_RESPONSE_HANDLER = new ReleaseResponseHandler(
 const spineResponseHandlers = [
   APPLICATION_ACKNOWLEDGEMENT_HANDLER,
   CANCEL_RESPONSE_HANDLER,
+  RELEASE_REJECTION_HANDLER,
   RELEASE_RESPONSE_HANDLER
 ]
 

@@ -25,6 +25,12 @@ export enum ApplicationErrorMessageTypeCodes {
   DISPENSE = "2.16.840.1.113883.2.1.3.2.4.16.34"
 }
 
+export class PrescriptionReleaseRejectionReason extends Code<"2.16.840.1.113883.2.1.3.2.4.16.34"> {
+  constructor(code: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.16.34", code)
+  }
+}
+
 export class SexCode extends Code<"2.16.840.1.113883.2.1.3.2.4.16.25"> {
   constructor(code: string) {
     super("2.16.840.1.113883.2.1.3.2.4.16.25", code)

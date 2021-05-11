@@ -54,7 +54,7 @@ export class SpineResponseHandler<T> {
     return toArray(acknowledgementDetails).map(acknowledgementDetail => acknowledgementDetail.code)
   }
 
-  private extractErrorCodes(sendMessagePayload: hl7V3.SendMessagePayload<T>) {
+  protected extractErrorCodes(sendMessagePayload: hl7V3.SendMessagePayload<T>): Array<hl7V3.Code<string>> {
     const reasons = sendMessagePayload.ControlActEvent.reason ?? []
     return toArray(reasons).map(reason => reason.justifyingDetectedIssueEvent.code)
   }
@@ -115,7 +115,7 @@ export class SpineResponseHandler<T> {
       case hl7V3.ApplicationErrorMessageTypeCodes.PRESCRIBE:
         return SpineResponseHandler.toEpsPrescribeErrorCode(code)
       case hl7V3.ApplicationErrorMessageTypeCodes.DISPENSE:
-        return SpineResponseHandler.toUnhandledMessageTypeErrorCode(code)
+        return SpineResponseHandler.toEpsDispenseErrorCode(code)
       default:
         return SpineResponseHandler.toUnhandledMessageTypeErrorCode(code)
     }
@@ -234,6 +234,95 @@ export class SpineResponseHandler<T> {
     }
   }
 
+  private static toEpsDispenseErrorCode(code: hl7V3.Code<string>): EpsErrorCodeInformation {
+    switch(code._attributes.code){
+      case "0001":
+        return {
+          code: fhir.IssueCodes.BUSINESS_RULE,
+          display: "Prescription has been cancelled",
+          issueCode: "PRESCRIPTION_CANCELLED",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "0002":
+        return {
+          code: fhir.IssueCodes.BUSINESS_RULE,
+          display: "Prescription has expired",
+          issueCode: "PRESCRIPTION_EXPIRED",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "0003":
+        return {
+          code: fhir.IssueCodes.NOT_FOUND,
+          display: "Resource not found",
+          issueCode: "RESOURCE_NOT_FOUND",
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
+        }
+      case "0004":
+        return {
+          code: fhir.IssueCodes.BUSINESS_RULE,
+          display: "Prescription is with another dispenser",
+          issueCode: "PRESCRIPTION_WITH_ANOTHER_DISPENSER",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "0005":
+        return {
+          code: fhir.IssueCodes.BUSINESS_RULE,
+          display: "Prescription has been dispensed",
+          issueCode: "PRESCRIPTION_DISPENSED",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "0006":
+        return {
+          code: fhir.IssueCodes.INFORMATIONAL,
+          display: "No more prescriptions available",
+          issueCode: "NO_MORE_PRESCRIPTIONS",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "0007":
+        return {
+          code: fhir.IssueCodes.EXCEPTION,
+          display: "functionality disabled in spine",
+          issueCode: "SERVICE_DISABLED",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "0099":
+        return {
+          code: fhir.IssueCodes.CONFLICT,
+          display: "Resource version mismatch",
+          issueCode: "RESOURCE_VERSION_MISMATCH",
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
+        }
+      case "5000":
+        return {
+          code: fhir.IssueCodes.PROCESSING,
+          display: "Failure to process message",
+          issueCode: "FAILURE_TO_PROCESS_MESSAGE",
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
+        }
+      case "5888":
+        return {
+          code: fhir.IssueCodes.INVALID,
+          display: "Invalid message",
+          issueCode: "INVALID_MESSAGE",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "9006":
+        return {
+          code: fhir.IssueCodes.VALUE,
+          display: "Format of date passed is invalid",
+          issueCode: "INVALID_DATE_FORMAT",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      default:
+        return {
+          code: fhir.IssueCodes.INVALID,
+          display: code._attributes.displayName,
+          issueCode: "ERROR",
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
+        }
+    }
+  }
+
   protected handleRejectionResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<T>,
     logger: pino.Logger
@@ -285,6 +374,16 @@ export class CancelResponseHandler extends SpineResponseHandler<hl7V3.Cancellati
       statusCode: 400,
       fhirResponse: this.translator(cancellationResponse)
     }
+  }
+}
+
+export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.PrescriptionReleaseRejectRoot> {
+  protected extractErrorCodes(
+    sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseRejectRoot>
+  ): Array<hl7V3.Code<string>>{
+    const errorCode = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseReject
+      .pertinentInformation?.pertinentRejectionReason?.value
+    return errorCode ? [errorCode] : []
   }
 }
 
