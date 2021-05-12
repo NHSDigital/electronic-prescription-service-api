@@ -32,14 +32,23 @@ Redeploy the API Proxy. See the main [README.md](../README.md).
 ## Endpoints
 Prescribe/dispense endpoints relate to functionality of the API, health routes relate to current API status.
 
-Private Beta:
+(Technical) Live:
 - [ ] POST `/$convert` Translate a FHIR message into an HL7 V3  message
 - [ ] POST `/$poll/{poll_path}` Send a poll request to SPINE
 - [ ] POST `/$prepare` Generate HL7 V3 signature fragments to be signed by the prescriber from a FHIR prescription
-- [ ] POST `/$process_message` Translate a FHIR message into an HL7 V3 message, send to SPINE and translate response back to FHIR
+- [ ] POST `/$process_message` (PRESCRIBING)
+  Translate a FHIR prescription-order or prescription-order-update message into an HL7 V3 message, send to SPINE and translate response back to FHIR
 
 Technical Alpha:
-- [ ] POST `/Task/$release` Download a prescription for dispensing
+- [ ] POST `/Task/$release` Translate a FHIR 'release' message to V3, send to SPINE and translate response back to FHIR
+- [ ] POST `/$process_message` (DISPENSING)
+- [ ] POST `/Task` Translate a FHIR 'return or 'withdraw' message to V3, send to SPINE and translate response back to FHIR
+
+### Headers
+Certain headers change functionality of requests to the API:
+- `x-request-id` a GUID - required for requests to the API
+- `x-skip-validation` a boolean - skips a request from contacting the FHIR validator
+- `x-untranslated-response` a boolean - stops translation of a message from SPINE
 
 ### Example generation
 Valid FHIR messages can be generated using `npm run create-examples` that can be used to test various parts of the system.

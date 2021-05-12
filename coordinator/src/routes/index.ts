@@ -6,7 +6,7 @@ import statusRoutes from "./health/get-status"
 import pollingRoutes from "./prescribe/polling"
 import releaseRoutes from "./dispense/release"
 import taskRoutes from "./dispense/task"
-import {isProd} from "../services/environments/environment"
+import {isProd} from "../services/environment"
 
 const debugRoutes = [
   ...convertPrescriptionRoutes,
@@ -30,7 +30,7 @@ const routes = [
   ...mainRoutes
 ]
 
-if (!isProd) {
+if (!isProd()) {
   routes.push(...debugRoutes)
 }
 
