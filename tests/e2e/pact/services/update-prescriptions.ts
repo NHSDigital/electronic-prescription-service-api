@@ -45,7 +45,11 @@ export async function updatePrescriptions(orderCases: Array<ProcessCase>, orderU
     const newBundleIdentifier = uuid.v4()
 
     const originalShortFormId = firstGroupIdentifier.value
-    const newShortFormId = generateShortFormId(originalShortFormId)
+    let newShortFormId = originalShortFormId
+    // some prescriptions have static shortFormIds
+    if (processCase.statusText !== "400-INVALID-CHECKSUM") {
+      newShortFormId = generateShortFormId(originalShortFormId)
+    }
     replacements.set(originalShortFormId, newShortFormId)
 
     const originalLongFormId = getLongFormIdExtension(firstGroupIdentifier.extension).valueIdentifier.value
