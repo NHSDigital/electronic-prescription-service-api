@@ -25,7 +25,7 @@ export class ExampleFile {
     this.operation = filenameSplit[3].toLowerCase()
     this.statusText = filenameSplit[4] || filenameSplit[3]
 
-    if (this.operation === this.statusText) {
+    if (this.operation === this.statusText.toLowerCase()) {
       this.operation = undefined
     }
 
