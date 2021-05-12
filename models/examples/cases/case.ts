@@ -37,5 +37,5 @@ function createExampleDescription(exampleFile: ExampleFile): string {
     .replace(/\//g, " ")
     .replace(/\\/g, " ")
     + " "
-    + `${exampleFile.number} ${exampleFile.statusText} ${exampleFile.operation}`
+    + `${exampleFile.number} ${exampleFile.statusText}${exampleFile.operation ? " " + exampleFile.operation : ""}`
 }
