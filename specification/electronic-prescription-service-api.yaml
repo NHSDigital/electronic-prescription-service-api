@@ -127,9 +127,9 @@ info:
     - strongly authenticated, using either an NHS smartcard or a modern alternative
 
     The API uses Open ID Connect to authenticate the end user and OAuth 2.0 to authorise the calling system.
-    It supports the following security patterns:
-    * user-restricted RESTful API - using NHS Identity - combined authentication and authorisation
-    * user-restricted RESTful API - using NHS Identity - separate authentication and authorisation
+    It supports the following security patterns using NHS Care Identity Service 2 (NHS CIS2) for authentication and authorisation:
+    * [user-restricted RESTful API - using NHS CIS2 - combined authentication and authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-combined-authentication-and-authorisation)
+    * [user-restricted RESTful API - using NHS CIS2 - separate authentication and authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-separate-authentication-and-authorisation)
 
     ### Dispensing endpoints
     The dispensing endpoints are [application-resctricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication), 
