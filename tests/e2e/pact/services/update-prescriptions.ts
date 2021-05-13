@@ -26,7 +26,7 @@ export async function updatePrescriptions(orderCases: Array<ProcessCase>, orderU
 
   let signPrescriptionFn = (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    prepareRequest: fhir.Bundle, processRequest: fhir.Bundle, originalShortFormId: string
+    processCase: ProcessCase, prepareRequest: fhir.Bundle, processRequest: fhir.Bundle, originalShortFormId: string
   ): void => {return}
 
   if (fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath))
@@ -70,11 +70,11 @@ export async function updatePrescriptions(orderCases: Array<ProcessCase>, orderU
       ...getResourcesOfType.getMedicationRequests(prepareBundle),
       ...getResourcesOfType.getMedicationRequests(processBundle)
     ]
-    if (isRepeatDispensing(medicationRequests)) {
+    if (processCase.isSuccess && isRepeatDispensing(medicationRequests)) {
       setValidityPeriod(medicationRequests)
     }
 
-    signPrescriptionFn(prepareBundle, processBundle, originalShortFormId)
+    signPrescriptionFn(processCase, prepareBundle, processBundle, originalShortFormId)
   })
 
   orderUpdateCases.forEach(processCase => {
@@ -177,10 +177,15 @@ function setProdPatient(bundle: fhir.Bundle) {
 }
 
 function signPrescription(
+  processCase: ProcessCase,
   prepareRequest: fhir.Bundle,
   processRequest: fhir.Bundle,
   originalShortFormId: string
 ) {
+  if (!processCase.isSuccess) {
+    return
+  }
+
   prepareRequest = removeResourcesOfType(prepareRequest, "Provenance")
   const provenancesCheck = prepareRequest.entry.filter(e => e.resource.resourceType === "Provenance")
   if (provenancesCheck.length > 0) {
