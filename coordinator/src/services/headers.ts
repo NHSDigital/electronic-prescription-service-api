@@ -11,9 +11,7 @@ export enum RequestHeaders {
   SMOKE_TEST = "x-smoke-test"
 }
 
-export const invalidProdHeaders: Array<RequestHeaders> = [
-  RequestHeaders.RAW_RESPONSE, RequestHeaders.SKIP_VALIDATION, RequestHeaders.SMOKE_TEST
-]
+export const invalidProdHeaders: Array<RequestHeaders> = [RequestHeaders.RAW_RESPONSE, RequestHeaders.SKIP_VALIDATION]
 
 export const rejectInvalidProdHeaders: Hapi.Lifecycle.Method = (
   request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
