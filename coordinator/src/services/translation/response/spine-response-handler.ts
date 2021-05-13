@@ -295,7 +295,7 @@ export class SpineResponseHandler<T> {
       case "5000":
         return {
           code: fhir.IssueCodes.PROCESSING,
-          display: "Failure to process message",
+          display: code._attributes.displayName,
           issueCode: "FAILURE_TO_PROCESS_MESSAGE",
           system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
         }

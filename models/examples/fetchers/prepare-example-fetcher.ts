@@ -5,11 +5,13 @@ import {exampleFiles} from "./example-files-fetcher"
 const prepareResponseFiles = exampleFiles.filter(exampleFile => exampleFile.isResponse && exampleFile.endpoint === "prepare")
 
 const prepareRequestFiles = exampleFiles.filter(exampleFile =>
-	exampleFile.isRequest && exampleFile.endpoint == "prepare"
-	&& prepareResponseFiles.some(prepareResponseFile =>
-			prepareResponseFile.dir === exampleFile.dir
-			&& prepareResponseFile.endpoint === exampleFile.endpoint
-			&& prepareResponseFile.number === exampleFile.number))
+  exampleFile.isRequest && exampleFile.endpoint == "prepare"
+  && prepareResponseFiles.some(
+  prepareResponseFile =>
+    prepareResponseFile.dir === exampleFile.dir
+    && prepareResponseFile.endpoint === exampleFile.endpoint
+    && prepareResponseFile.number === exampleFile.number)
+)
 
 const conventionBasedPrepareExamples: PrepareCase[] = prepareResponseFiles.map(prepareResponseFile =>
   new PrepareCase(getRequest(prepareResponseFile), prepareResponseFile)
