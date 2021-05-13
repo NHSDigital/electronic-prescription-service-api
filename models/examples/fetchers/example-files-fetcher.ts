@@ -28,5 +28,6 @@ const walk = function(dir: string) {
 const examplesRootPath = "../../../examples"
 const primaryCareFilePaths: Array<string> = walk(path.join(__dirname, examplesRootPath, "primary-care"))
 const secondaryCareFilePaths: Array<string> = walk(path.join(__dirname, examplesRootPath, "secondary-care"))
-const allExampleFilePaths = [...primaryCareFilePaths, ...secondaryCareFilePaths]
+const errorFilePaths: Array<string> = walk(path.join(__dirname, examplesRootPath, "errors"))
+const allExampleFilePaths = [...primaryCareFilePaths, ...secondaryCareFilePaths, ...errorFilePaths]
 export const exampleFiles: ExampleFile[] = allExampleFilePaths.map(examplePath => new ExampleFile(examplePath))

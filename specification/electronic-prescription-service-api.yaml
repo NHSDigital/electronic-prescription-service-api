@@ -314,7 +314,7 @@ paths:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
                 Bundle:
                   value:
-                    $ref: components/examples/errors/prescription-order-update/bundle-error.json
+                    $ref: components/examples/prescription-order-update/bundle-error.json
   /FHIR/R4/Task:
     post:
       operationId: return / withdraw
@@ -368,7 +368,7 @@ paths:
               examples:
                 example:
                   value:
-                    $ref: components/examples/errors/release/validation-error.json
+                    $ref: components/examples/release/validation-error.json
   /FHIR/R4/Task/$release:
     post:
       operationId: release
@@ -422,7 +422,7 @@ paths:
               examples:
                 example:
                   value:
-                    $ref: components/examples/errors/release/validation-error.json
+                    $ref: components/examples/release/validation-error.json
 components:
   parameters:
     BearerAuthorization:

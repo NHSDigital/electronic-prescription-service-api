@@ -15,9 +15,7 @@ export class ExampleFile {
     const pathObj = path.parse(filePath)
     const filename = pathObj.name
     const filenameSplit = filename.split("-").map(split => split.replace(/_/g, "-"))
-    const directory = pathObj.dir
-
-    this.dir = directory
+    this.dir = pathObj.dir
     this.path = filePath
 
     this.number = filenameSplit[0]

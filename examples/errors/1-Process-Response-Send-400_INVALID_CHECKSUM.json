@@ -1,0 +1,16 @@
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+    {
+      "code": "processing",
+      "severity": "error",
+      "details": {
+        "coding": [{
+          "system": "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+          "code": "FAILURE_TO_PROCESS_MESSAGE",
+          "display": "Unable to process message. Information missing or invalid - prescriptionID has invalid checksum"
+        }]
+      }
+    }
+  ]
+}

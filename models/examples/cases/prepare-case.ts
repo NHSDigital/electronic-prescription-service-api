@@ -11,8 +11,7 @@ export class PrepareCase extends Case {
   constructor(requestFile: ExampleFile, responseFile: ExampleFile) {
     super(requestFile, responseFile)
     const responseString = fs.readFileSync(responseFile.path, "utf-8")
-    const responseJson = LosslessJson.parse(responseString)
-    this.response = responseJson
+    this.response = LosslessJson.parse(responseString)
   }
 
   toJestCase(): [string, fhir.Bundle | fhir.Parameters, fhir.Parameters, number] {
