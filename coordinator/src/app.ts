@@ -14,7 +14,8 @@ import routes from "./routes"
 import {processingErrors as errors} from "@models"
 import HapiPino from "hapi-pino"
 import {CONTENT_TYPE_FHIR, CONTENT_TYPE_JSON, CONTENT_TYPE_PLAIN_TEXT, CONTENT_TYPE_XML} from "./routes/util"
-import {isLocal} from "./services/environments/environment"
+import {isLocal} from "./services/environment"
+import {RequestHeaders, rejectInvalidProdHeaders} from "./services/headers"
 
 function reformatUserErrorsToFhir(request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) {
   const response = request.response
@@ -28,7 +29,7 @@ function reformatUserErrorsToFhir(request: Hapi.Request, responseToolkit: Hapi.R
 }
 
 function switchContentTypeForSmokeTest(request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) {
-  const isSmokeTest = request.headers["x-smoke-test"]
+  const isSmokeTest = request.headers[RequestHeaders.SMOKE_TEST]
   if (!isSmokeTest) {
     return responseToolkit.continue
   }
@@ -59,8 +60,11 @@ const init = async () => {
       }
     }
   })
-  server.ext("onPreResponse", reformatUserErrorsToFhir)
-  server.ext("onPreResponse", switchContentTypeForSmokeTest)
+  server.ext([
+    {type: "onRequest", method: rejectInvalidProdHeaders},
+    {type: "onPreResponse", method: reformatUserErrorsToFhir},
+    {type: "onPreResponse", method: switchContentTypeForSmokeTest}
+  ])
 
   server.route(routes)
 
@@ -68,7 +72,7 @@ const init = async () => {
     plugin: HapiPino,
     options: {
       // For non-local environments, dont pretty print to avoid spamming logs
-      prettyPrint: isLocal,
+      prettyPrint: isLocal(),
       // Redact Authorization headers, see https://getpino.io/#/docs/redaction
       redact: ["req.headers.authorization"]
     }

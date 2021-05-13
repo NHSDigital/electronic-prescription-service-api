@@ -8,6 +8,7 @@ import {fhir} from "@models"
 import * as bundleValidator from "../../services/validation/bundle-validator"
 import * as parametersValidator from "../../services/validation/parameters-validator"
 import * as taskValidator from "../../services/validation/task-validator"
+import {RequestHeaders} from "../../services/headers"
 
 export default [
   /*
@@ -19,7 +20,7 @@ export default [
     handler: externalValidator(
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const payload = getPayload(request) as fhir.Resource
-        const requestId = request.headers["nhsd-request-id"].toUpperCase()
+        const requestId = request.headers[RequestHeaders.REQUEST_ID].toUpperCase()
         if (isBundle(payload)) {
           const issues = bundleValidator.verifyBundle(payload)
           if (issues.length) {
