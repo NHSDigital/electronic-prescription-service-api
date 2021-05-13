@@ -22,21 +22,19 @@ docker_service:
           value: "{{ SOURCE_COMMIT_ID }}"
         - name: ENVIRONMENT
           value: "{{ APIGEE_ENVIRONMENT }}"
+        - name: FROM_ASID
+          value: 'FROM_ASID_PLACEHOLDER'
+        - name: TO_ASID
+          value: 'TO_ASID_PLACEHOLDER'
+        - name: FROM_PARTY_KEY
+          value: 'FROM_PARTY_KEY_PLACEHOLDER'
+        - name: TO_PARTY_KEY
+          value: 'TO_PARTY_KEY_PLACEHOLDER'
     secrets:
         - name: SPINE_URL
           valueFrom: '/{{ account }}/platform-common/egress/hosts/spine-prescriptions-prod'
         - name: ODS_URL
           valueFrom: '/{{ account }}/platform-common/egress/hosts/directory-spineservices'
-        # todo: use live secrets for prod
-        # todo: switch all these back from 'ptl' to '{{ account }}' once tested
-        - name: FROM_ASID
-          valueFrom: '/ptl/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/from-asid'
-        - name: TO_ASID
-          valueFrom: '/ptl/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-asid'
-        - name: FROM_PARTY_KEY
-          valueFrom: '/ptl/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/from-party-key'
-        - name: TO_PARTY_KEY
-          valueFrom: '/ptl/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-party-key'
     health_check:
         matcher: "200"
         path: "/_status"

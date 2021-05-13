@@ -21,7 +21,7 @@ describe("rejectInvalidProdHeaders extension", () => {
   server.ext("onRequest", Headers.rejectInvalidProdHeaders)
 
   test.each(Headers.invalidProdHeaders)(
-    "blocks invalid headers in prod", async (invalidHeader: Headers.RequestHeaders) => {
+    "blocks %p header in prod", async (invalidHeader: Headers.RequestHeaders) => {
       newIsProd.mockImplementation(() => true)
       const newHeaders: HapiShot.Headers = {}
       newHeaders[invalidHeader] = "true"
@@ -34,7 +34,7 @@ describe("rejectInvalidProdHeaders extension", () => {
       expect(response.statusCode).toBe(403)
     })
 
-  test("allows request with correct headers in prod", async () => {
+  test("allows request no invalid headers in prod", async () => {
     newIsProd.mockImplementation(() => true)
     const response = await server.inject({
       method: "GET",
@@ -45,7 +45,7 @@ describe("rejectInvalidProdHeaders extension", () => {
   })
 
   test.each(Headers.invalidProdHeaders)(
-    "doesn't block headers in non-prod", async (invalidHeader: Headers.RequestHeaders) => {
+    "doesn't block %p header in non-prod", async (invalidHeader: Headers.RequestHeaders) => {
       newIsProd.mockImplementation(() => false)
       const response = await server.inject({
         method: "GET",
