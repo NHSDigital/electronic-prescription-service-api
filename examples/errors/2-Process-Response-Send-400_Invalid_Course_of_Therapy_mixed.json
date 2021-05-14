@@ -1,0 +1,21 @@
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+      {
+          "severity": "fatal",
+          "code": "invalid",
+          "details": {
+              "coding": [
+                  {
+                      "system": "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+                      "code": "INVALID_VALUE",
+                      "display": "Course of therapy type must either match for all MedicationRequests or be a mixture of 'acute' and 'continuous'."
+                  }
+              ]
+          },
+          "expression": [
+              "MedicationRequest.courseOfTherapyType.coding"
+          ]
+      }
+  ]
+}

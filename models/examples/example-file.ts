@@ -5,7 +5,7 @@ export class ExampleFile {
   path: string
   number: string
   endpoint: string
-  operation: string
+  operation?: string
   statusText: string
   description: string
   isRequest: boolean
@@ -22,6 +22,10 @@ export class ExampleFile {
     this.endpoint = filenameSplit[1].toLowerCase()
     this.operation = filenameSplit[3].toLowerCase()
     this.statusText = filenameSplit[4] || filenameSplit[3]
+
+    if (this.operation === this.statusText.toLowerCase()) {
+      this.operation = undefined
+    }
 
     this.isRequest = filenameSplit[2] === "Request"
     this.isResponse = filenameSplit[2] === "Response"
