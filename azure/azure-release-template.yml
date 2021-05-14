@@ -131,10 +131,10 @@ extends:
 
           # Publish
           cd "$SERVICE_NAME/$SERVICE_ARTIFACT_NAME/pact"
-          rm -rf node_modules && npm ci > /dev/null
-          make create-pacts > /dev/null
+          rm -rf node_modules && npm ci
+          make create-pacts
           chmod +x ./broker/publish.ts
-          make publish-pacts > /dev/null
+          make publish-pacts
 
           # Poll deploying API until our deployed version matches the release version
           url="https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH/_status"
