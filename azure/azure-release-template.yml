@@ -138,7 +138,7 @@ extends:
 
           # Poll deploying API until our deployed version matches the release version
           if [ "$APIGEE_ENVIRONMENT" != "prod" ]; then
-              envPrefix = "$APIGEE_ENVIRONMENT."
+              envPrefix="$APIGEE_ENVIRONMENT."
           fi;
           url="https://${envPrefix}api.service.nhs.uk/$SERVICE_BASE_PATH/_status"
           interval_in_seconds=5
