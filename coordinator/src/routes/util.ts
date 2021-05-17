@@ -11,11 +11,11 @@ import {RequestHeaders} from "../services/headers"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
-export const contentTypes = {
-  xml: "application/xml",
-  plainText: "text/plain",
-  fhir: "application/fhir+json; fhirVersion=4.0",
-  json: "application/json"
+export enum contentTypes {
+  xml = "application/xml",
+  plainText = "text/plain",
+  fhir = "application/fhir+json; fhirVersion=4.0",
+  json = "application/json"
 }
 export const VALIDATOR_HOST = "http://localhost:9001"
 export const BASE_PATH = "/FHIR/R4"
