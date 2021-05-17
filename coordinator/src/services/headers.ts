@@ -1,7 +1,7 @@
 import Hapi from "@hapi/hapi"
 import {isProd} from "./environment"
 import {fhir, validationErrors as errors} from "@models"
-import {CONTENT_TYPE_FHIR} from "../routes/util"
+import {contentTypes} from "../routes/util"
 
 export enum RequestHeaders {
   REQUEST_ID = "nhsd-request-id",
@@ -30,7 +30,7 @@ export const rejectInvalidProdHeaders: Hapi.Lifecycle.Method = (
       return responseToolkit
         .response(fhir.createOperationOutcome([issue]))
         .code(403)
-        .type(CONTENT_TYPE_FHIR)
+        .type(contentTypes.fhir)
         .takeover()
     }
   }

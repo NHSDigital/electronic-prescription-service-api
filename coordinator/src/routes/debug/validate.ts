@@ -1,7 +1,7 @@
 import Hapi from "@hapi/hapi"
 import {fhir} from "@models"
 import {
-  BASE_PATH, CONTENT_TYPE_FHIR, externalValidator
+  BASE_PATH, contentTypes, externalValidator
 } from "../util"
 
 export default [
@@ -19,7 +19,7 @@ export default [
           code: fhir.IssueCodes.INFORMATIONAL
         }]
       }
-      return responseToolkit.response(successfulResponse).code(200).type(CONTENT_TYPE_FHIR)
+      return responseToolkit.response(successfulResponse).code(200).type(contentTypes.fhir)
     })
   } as Hapi.ServerRoute
 ]

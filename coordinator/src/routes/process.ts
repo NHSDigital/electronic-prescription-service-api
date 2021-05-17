@@ -3,7 +3,7 @@ import {spineClient} from "../services/communication/spine-client"
 import Hapi from "@hapi/hapi"
 import {
   BASE_PATH,
-  CONTENT_TYPE_FHIR,
+  contentTypes,
   createHash, externalValidator,
   getPayload,
   handleResponse,
@@ -25,7 +25,7 @@ export default [
         const bundle = getPayload(request) as fhir.Bundle
         const issues = bundleValidator.verifyBundle(bundle)
         if (issues.length) {
-          return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(CONTENT_TYPE_FHIR)
+          return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(contentTypes.fhir)
         }
 
         request.logger.info("Building Spine request")

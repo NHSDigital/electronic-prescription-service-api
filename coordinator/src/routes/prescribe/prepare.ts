@@ -1,6 +1,6 @@
 import * as translator from "../../services/translation/request"
 import Hapi from "@hapi/hapi"
-import {BASE_PATH, CONTENT_TYPE_FHIR, createHash, externalValidator, getPayload, userAuthValidator} from "../util"
+import {BASE_PATH, contentTypes, createHash, externalValidator, getPayload, userAuthValidator} from "../util"
 import {fhir} from "@models"
 import * as bundleValidator from "../../services/validation/bundle-validator"
 
@@ -16,14 +16,14 @@ export default [
         const bundle = getPayload(request) as fhir.Bundle
         const issues = bundleValidator.verifyBundle(bundle)
         if (issues.length) {
-          return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(CONTENT_TYPE_FHIR)
+          return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(contentTypes.fhir)
         }
 
         request.logger.info("Encoding HL7V3 signature fragments")
         const response = translator.convertFhirMessageToSignedInfoMessage(bundle)
         request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(bundle))})
         request.log("audit", {"PrepareEndpointResponse": response})
-        return responseToolkit.response(response).code(200).type(CONTENT_TYPE_FHIR)
+        return responseToolkit.response(response).code(200).type(contentTypes.fhir)
       }
     ))
   } as Hapi.ServerRoute
