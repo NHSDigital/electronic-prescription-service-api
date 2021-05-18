@@ -33,7 +33,6 @@ Redeploy the API Proxy. See the main [README.md](../README.md).
 Prescribe/dispense endpoints relate to functionality of the API, health routes relate to current API status.
 
 (Technical) Live:
-- [ ] POST `/$convert` Translate a FHIR message into an HL7 V3  message
 - [ ] POST `/$poll/{poll_path}` Send a poll request to SPINE
 - [ ] POST `/$prepare` Generate HL7 V3 signature fragments to be signed by the prescriber from a FHIR prescription
 - [ ] POST `/$process_message` (PRESCRIBING)
@@ -43,6 +42,10 @@ Technical Alpha:
 - [ ] POST `/Task/$release` Translate a FHIR 'release' message to V3, send to SPINE and translate response back to FHIR
 - [ ] POST `/$process_message` (DISPENSING)
 - [ ] POST `/Task` Translate a FHIR 'return or 'withdraw' message to V3, send to SPINE and translate response back to FHIR
+
+Debug:
+- [ ] POST `/$convert` Translate a FHIR message into an HL7 V3  message
+- [ ] POST `/$validate` Send a FHIR resource to the Hapi FHIR validator
 
 ### Headers
 Certain headers change functionality of requests to the API:
