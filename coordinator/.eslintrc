@@ -64,6 +64,9 @@
         "max-len": [
             "error",
             120
-        ]
+        ],
+        "dot-location": ["error", "property"],
+        "eqeqeq": "error",
+        "no-multi-spaces": "error"
     }
 }

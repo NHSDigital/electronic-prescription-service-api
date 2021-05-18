@@ -223,7 +223,7 @@ describe("getMedicationCodeableConceptCoding", () => {
   let medicationRequest: fhir.MedicationRequest
 
   beforeEach(() => {
-    bundle =  clone(TestResources.examplePrescription1.fhirMessageUnsigned)
+    bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     medicationRequest = getMedicationRequests(bundle)[0]
   })
 

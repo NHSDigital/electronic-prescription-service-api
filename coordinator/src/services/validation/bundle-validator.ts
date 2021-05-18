@@ -150,7 +150,7 @@ export function verifyCancellationBundle(bundle: fhir.Bundle): Array<fhir.Operat
   const validationErrors = []
 
   const medicationRequests = getMedicationRequests(bundle)
-  if (medicationRequests.length != 1) {
+  if (medicationRequests.length !== 1) {
     validationErrors.push(errors.medicationRequestNumberIssue)
   }
 

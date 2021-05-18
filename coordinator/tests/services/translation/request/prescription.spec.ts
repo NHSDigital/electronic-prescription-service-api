@@ -238,7 +238,7 @@ describe("PertinentInformation2", () => {
 
   function ensureAtLeast2MedicationRequests(bundle: fhir.Bundle) {
     const fhirMedicationRequests = getMedicationRequests(bundle)
-    if (fhirMedicationRequests.length == 1)
+    if (fhirMedicationRequests.length === 1)
       bundle.entry.push({resource: fhirMedicationRequests[0]})
   }
 

@@ -541,7 +541,7 @@ function setPatientId(
   medicationDispense.subject.identifier.value = newPatientId
 }
 
-function  setAuthorizingPrescriptionValues(
+function setAuthorizingPrescriptionValues(
   medicationDispense: fhir.MedicationDispense,
   newShortForm: string,
   newUuid: string,
