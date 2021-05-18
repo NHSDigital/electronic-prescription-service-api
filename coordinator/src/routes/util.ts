@@ -11,10 +11,12 @@ import {RequestHeaders} from "../services/headers"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
-export const CONTENT_TYPE_XML = "application/xml"
-export const CONTENT_TYPE_PLAIN_TEXT = "text/plain"
-export const CONTENT_TYPE_FHIR = "application/fhir+json; fhirVersion=4.0"
-export const CONTENT_TYPE_JSON = "application/json"
+export enum ContentTypes {
+  XML = "application/xml",
+  PLAIN_TEXT = "text/plain",
+  FHIR = "application/fhir+json; fhirVersion=4.0",
+  JSON = "application/json"
+}
 export const VALIDATOR_HOST = "http://localhost:9001"
 export const BASE_PATH = "/FHIR/R4"
 
@@ -34,19 +36,19 @@ export function handleResponse<T>(
   } else if (isOperationOutcome(spineResponse.body) || isBundle(spineResponse.body)) {
     return responseToolkit.response(spineResponse.body)
       .code(spineResponse.statusCode)
-      .type(CONTENT_TYPE_FHIR)
+      .type(ContentTypes.FHIR)
   } else {
     if (request.headers[RequestHeaders.RAW_RESPONSE]) {
       return responseToolkit
         .response(spineResponse.body.toString())
         .code(200)
-        .type(CONTENT_TYPE_XML)
+        .type(ContentTypes.XML)
     } else {
       const translatedSpineResponse = translateToFhir(spineResponse, request.logger)
       const serializedResponse = LosslessJson.stringify(translatedSpineResponse.fhirResponse)
       return responseToolkit.response(serializedResponse)
         .code(translatedSpineResponse.statusCode)
-        .type(CONTENT_TYPE_FHIR)
+        .type(ContentTypes.FHIR)
     }
   }
 }
@@ -136,7 +138,7 @@ export function externalValidator(handler: Handler) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     const fhirValidatorResponse = await getFhirValidatorErrors(request)
     if (fhirValidatorResponse) {
-      return responseToolkit.response(fhirValidatorResponse).code(400).type(CONTENT_TYPE_FHIR)
+      return responseToolkit.response(fhirValidatorResponse).code(400).type(ContentTypes.FHIR)
     }
 
     return handler(request, responseToolkit)
@@ -148,7 +150,7 @@ export function userAuthValidator(handler: Handler) {
     const bundle = getPayload(request) as fhir.Bundle
     if (identifyMessageType(bundle) !== fhir.EventCodingCode.DISPENSE) {
       if (!userHasValidAuth(request, "user")) {
-        return responseToolkit.response(errors.unauthorisedActionIssue).code(403).type(CONTENT_TYPE_FHIR)
+        return responseToolkit.response(errors.unauthorisedActionIssue).code(403).type(ContentTypes.FHIR)
       }
     }
 

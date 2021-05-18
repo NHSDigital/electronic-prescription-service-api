@@ -1,7 +1,6 @@
 import {
   callFhirValidator,
-  CONTENT_TYPE_FHIR,
-  CONTENT_TYPE_XML,
+  ContentTypes,
   handleResponse,
   VALIDATOR_HOST
 } from "../../src/routes/util"
@@ -118,7 +117,7 @@ describe("handleResponse", () => {
     const response = await server.inject(createRouteOptions(spineResponse))
 
     expect(JSON.parse(response.payload)).toEqual(operationOutcome)
-    expect(response.headers["content-type"]).toEqual(CONTENT_TYPE_FHIR)
+    expect(response.headers["content-type"]).toEqual(ContentTypes.FHIR)
   })
 
   test("bundle response", async () => {
@@ -136,7 +135,7 @@ describe("handleResponse", () => {
     const response = await server.inject(createRouteOptions(spineResponse))
 
     expect(JSON.parse(response.payload)).toEqual(bundle)
-    expect(response.headers["content-type"]).toEqual(CONTENT_TYPE_FHIR)
+    expect(response.headers["content-type"]).toEqual(ContentTypes.FHIR)
   })
 
   test("xml response", async () => {
@@ -152,7 +151,7 @@ describe("handleResponse", () => {
     )
 
     expect(response.payload).toEqual("some xml response")
-    expect(response.headers["content-type"]).toEqual(CONTENT_TYPE_XML)
+    expect(response.headers["content-type"]).toEqual(ContentTypes.XML)
   })
 
   test("fhir response", async () => {
@@ -166,6 +165,6 @@ describe("handleResponse", () => {
     const response = await server.inject(createRouteOptions(spineResponse))
 
     expect(JSON.parse(response.payload)).toEqual({value: "some FHIR response"})
-    expect(response.headers["content-type"]).toEqual(CONTENT_TYPE_FHIR)
+    expect(response.headers["content-type"]).toEqual(ContentTypes.FHIR)
   })
 })
