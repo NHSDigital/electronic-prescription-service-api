@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {processingErrors as errors} from "@models"
-import {contentTypes} from "./routes/util"
+import {ContentTypes} from "./routes/util"
 import {Boom} from "@hapi/boom"
 import {RequestHeaders} from "./services/headers"
 
@@ -10,7 +10,7 @@ export function reformatUserErrorsToFhir(
   const response = request.response
   if (response instanceof errors.FhirMessageProcessingError) {
     request.log("info", response)
-    return responseToolkit.response(errors.toOperationOutcome(response)).code(400).type(contentTypes.fhir)
+    return responseToolkit.response(errors.toOperationOutcome(response)).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof Boom) {
     request.log("error", response)
   }
@@ -31,10 +31,10 @@ export function switchContentTypeForSmokeTest(
   }
 
   const contentType = response.headers["content-type"]
-  if (contentType === contentTypes.fhir) {
-    response.type(contentTypes.json)
-  } else if (contentType === contentTypes.xml) {
-    response.type(contentTypes.plainText)
+  if (contentType === ContentTypes.FHIR) {
+    response.type(ContentTypes.JSON)
+  } else if (contentType === ContentTypes.XML) {
+    response.type(ContentTypes.PLAIN_TEXT)
   }
 
   return responseToolkit.continue

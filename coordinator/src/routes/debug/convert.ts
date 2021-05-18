@@ -1,7 +1,7 @@
 import * as translator from "../../services/translation/request"
 import Hapi from "@hapi/hapi"
 import {
-  BASE_PATH, contentTypes, externalValidator,
+  BASE_PATH, ContentTypes, externalValidator,
   getPayload, isBundle, isParameters, isTask
 } from "../util"
 import {fhir} from "@models"
@@ -24,37 +24,37 @@ export default [
         if (isBundle(payload)) {
           const issues = bundleValidator.verifyBundle(payload)
           if (issues.length) {
-            return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(contentTypes.fhir)
+            return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(ContentTypes.FHIR)
           }
 
           request.logger.info("Building HL7V3 message from Bundle")
           const spineRequest = await translator.convertBundleToSpineRequest(payload, requestId, request.logger)
-          return responseToolkit.response(spineRequest.message).code(200).type(contentTypes.xml)
+          return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)
         }
 
         if (isParameters(payload)) {
           const issues = parametersValidator.verifyParameters(payload)
           if (issues.length) {
-            return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(contentTypes.fhir)
+            return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(ContentTypes.FHIR)
           }
 
           request.logger.info("Building HL7V3 message from Parameters")
           const spineRequest = await translator.convertParametersToSpineRequest(payload, requestId, request.logger)
-          return responseToolkit.response(spineRequest.message).code(200).type(contentTypes.xml)
+          return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)
         }
 
         if (isTask(payload)) {
           const issues = taskValidator.verifyTask(payload)
           if (issues.length) {
-            return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(contentTypes.fhir)
+            return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(ContentTypes.FHIR)
           }
 
           request.logger.info("Building HL7V3 message from Task")
           const spineRequest = await translator.convertTaskToSpineRequest(payload, requestId, request.logger)
-          return responseToolkit.response(spineRequest.message).code(200).type(contentTypes.xml)
+          return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)
         }
 
-        return responseToolkit.response(unsupportedResponse).code(400).type(contentTypes.fhir)
+        return responseToolkit.response(unsupportedResponse).code(400).type(ContentTypes.FHIR)
       }
     )
   } as Hapi.ServerRoute

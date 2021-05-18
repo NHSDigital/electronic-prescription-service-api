@@ -3,7 +3,7 @@ import * as HapiShot from "@hapi/shot"
 import * as Headers from "../src/services/headers"
 import {isProd} from "../src/services/environment"
 import {InvalidValueError} from "../../models/errors/processing-errors"
-import {contentTypes} from "../src/routes/util"
+import {ContentTypes} from "../src/routes/util"
 import {reformatUserErrorsToFhir, switchContentTypeForSmokeTest} from "../src/server-extensions"
 import {RequestHeaders} from "../src/services/headers"
 
@@ -93,7 +93,7 @@ describe("reformatUserErrorsToFhir extension", () => {
     const response = await server.inject({url: "/processing-error"})
     expect(response.payload).toContain("OperationOutcome")
     expect(response.statusCode).toBe(400)
-    expect(response.headers["content-type"]).toBe(contentTypes.fhir)
+    expect(response.headers["content-type"]).toBe(ContentTypes.FHIR)
   })
 
   test("doesn't change non-errors", async () => {
@@ -115,14 +115,14 @@ describe("switchContentTypeForSmokeTest extension", () => {
     method: "GET",
     path: "/fhir",
     handler: (_, responseToolkit) => {
-      return responseToolkit.response("success").type(contentTypes.fhir)
+      return responseToolkit.response("success").type(ContentTypes.FHIR)
     }
   }
   const xmlRoute: Hapi.ServerRoute = {
     method: "GET",
     path: "/xml",
     handler: (_, responseToolkit) => {
-      return responseToolkit.response("success").type(contentTypes.xml)
+      return responseToolkit.response("success").type(ContentTypes.XML)
     }
   }
   server.route([fhirRoute, xmlRoute])
@@ -132,20 +132,20 @@ describe("switchContentTypeForSmokeTest extension", () => {
     const requestHeaders: Hapi.Util.Dictionary<string> = {}
     requestHeaders[RequestHeaders.SMOKE_TEST] = "true"
     const response = await server.inject({url: "/fhir", headers: requestHeaders})
-    expect(response.headers["content-type"]).toContain(contentTypes.json)
+    expect(response.headers["content-type"]).toContain(ContentTypes.JSON)
   })
 
   test("updates xml responses", async () => {
     const requestHeaders: Hapi.Util.Dictionary<string> = {}
     requestHeaders[RequestHeaders.SMOKE_TEST] = "true"
     const response = await server.inject({url: "/xml", headers: requestHeaders})
-    expect(response.headers["content-type"]).toContain(contentTypes.plainText)
+    expect(response.headers["content-type"]).toContain(ContentTypes.PLAIN_TEXT)
   })
 
   test("ignores requests without appropriate header", async () => {
     const fhirResponse = await server.inject({url: "/fhir"})
     const xmlResponse = await server.inject({url: "/xml"})
-    expect(fhirResponse.headers["content-type"]).toContain(contentTypes.fhir)
-    expect(xmlResponse.headers["content-type"]).toContain(contentTypes.xml)
+    expect(fhirResponse.headers["content-type"]).toContain(ContentTypes.FHIR)
+    expect(xmlResponse.headers["content-type"]).toContain(ContentTypes.XML)
   })
 })
