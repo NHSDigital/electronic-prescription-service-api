@@ -1,4 +1,4 @@
-import {VerifierV3, VerifierV3Options} from "@pact-foundation/pact"
+import {Verifier, VerifierOptions} from "@pact-foundation/pact"
 import {ApiEndpoint, ApiOperation} from "../resources/common"
 import path from "path"
 
@@ -11,7 +11,7 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
       ? `${process.env.PACT_VERSION} (${process.env.PACT_TAG})`
       : process.env.PACT_VERSION
     const pacticipant_suffix = isSandbox ? "-sandbox" : ""
-    let verifierOptions: VerifierV3Options = {
+    let verifierOptions: VerifierOptions = {
       consumerVersionTags: process.env.PACT_VERSION,
       provider: `${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
       providerVersion: providerVersion,
@@ -20,9 +20,11 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
       stateHandlers: {
         "is authenticated": () => {
           token = `${process.env.APIGEE_ACCESS_TOKEN}`
+          return Promise.resolve()
         },
         "is not authenticated": () => {
           token = ""
+          return Promise.resolve()
         }
       },
       requestFilter: (req) => {
@@ -56,7 +58,7 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
       }
     }
 
-    const verifier =  new VerifierV3(verifierOptions)
+    const verifier =  new Verifier(verifierOptions)
     return await verifier.verifyProvider()
 }
 
