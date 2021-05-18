@@ -1,5 +1,5 @@
 import * as Hapi from "@hapi/hapi"
-import {BASE_PATH, CONTENT_TYPE_FHIR, externalValidator, getPayload, handleResponse} from "../util"
+import {BASE_PATH, ContentTypes, externalValidator, getPayload, handleResponse} from "../util"
 import {fhir} from "@models"
 import * as translator from "../../services/translation/request"
 import {spineClient} from "../../services/communication/spine-client"
@@ -18,7 +18,7 @@ export default [
         const taskPayload = getPayload(request) as fhir.Task
         const issues = taskValidator.verifyTask(taskPayload)
         if (issues.length) {
-          return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(CONTENT_TYPE_FHIR)
+          return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(ContentTypes.FHIR)
         }
 
         request.logger.info("Building Spine return / withdraw request")
