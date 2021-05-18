@@ -108,7 +108,7 @@ export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle): fhir
 export function createParametersDigest(fragmentsToBeHashed: string): string {
   const digestValue = crypto.SHA1(fragmentsToBeHashed).toString(crypto.enc.Base64)
 
-  const signedInfo = {
+  const signedInfo: XmlJs.ElementCompact = {
     SignedInfo: {
       _attributes: {
         xmlns: "http://www.w3.org/2000/09/xmldsig#"
@@ -123,7 +123,7 @@ export function createParametersDigest(fragmentsToBeHashed: string): string {
         DigestValue: digestValue
       }
     }
-  } as XmlJs.ElementCompact
+  }
 
   return Buffer.from(writeXmlStringCanonicalized(signedInfo)).toString("base64")
 }

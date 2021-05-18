@@ -194,7 +194,7 @@ describe("PertinentInformation2", () => {
   })
 
   test("Missing contentString and contentReference is handled", () => {
-    fhirCommunicationRequests[0].payload.push({} as fhir.ContentStringPayload | fhir.ContentReferencePayload)
+    fhirCommunicationRequests[0].payload.push({contentString: undefined})
 
     const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
 
@@ -215,7 +215,7 @@ describe("PertinentInformation2", () => {
   })
 
   test("Missing item is handled", () => {
-    fhirLists[0].entry = [{} as fhir.ListEntry]
+    fhirLists[0].entry = [{item: undefined}]
     fhirCommunicationRequests[0].payload.push({contentReference: {reference: `urn:uuid:${fhirLists[0].id}`}})
 
     const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)
@@ -226,7 +226,7 @@ describe("PertinentInformation2", () => {
   })
 
   test("Missing display is handled", () => {
-    fhirLists[0].entry = [{item: {}} as fhir.ListEntry]
+    fhirLists[0].entry = [{item: {display: undefined}}]
     fhirCommunicationRequests[0].payload.push({contentReference: {reference: `urn:uuid:${fhirLists[0].id}`}})
 
     const pertinentInformation2Array = toArray(convertBundleToPrescription(bundle).pertinentInformation2)

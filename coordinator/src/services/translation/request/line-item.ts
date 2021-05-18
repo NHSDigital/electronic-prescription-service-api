@@ -81,7 +81,7 @@ function convertAdditionalInstructions(
     "MedicationRequest.dosageInstruction"
   ).patientInstruction
 
-  const additionalInstructionsValueObj = {} as ElementCompact
+  const additionalInstructionsValueObj: ElementCompact = {}
   if (medicationListText?.length) {
     additionalInstructionsValueObj.medication = medicationListText
   }

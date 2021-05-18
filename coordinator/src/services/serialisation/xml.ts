@@ -27,7 +27,7 @@ export function canonicaliseAttribute(attribute: string): string {
 }
 
 export function namespacedCopyOf<T extends XmlJs.ElementCompact>(tag: T): T {
-  const newTag = {...tag} as T
+  const newTag: T = {...tag}
   newTag._attributes = {
     xmlns: "urn:hl7-org:v3",
     ...newTag._attributes
@@ -39,9 +39,9 @@ export function sortAttributes(attributes: XmlJs.Attributes, currentElementName:
   if (currentElementName === "xml") {
     return attributes
   }
-  const newAttributes = {
+  const newAttributes: XmlJs.Attributes = {
     xmlns: attributes.xmlns
-  } as XmlJs.Attributes
+  }
   Object.getOwnPropertyNames(attributes)
     .sort()
     .forEach(propertyName => newAttributes[propertyName] = escapeXmlChars(attributes[propertyName]))

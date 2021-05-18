@@ -55,9 +55,9 @@ function extractInteractionId<T>(sendMessagePayload: hl7V3.SendMessagePayload<T>
 }
 
 function writeToString<T>(sendMessagePayload: hl7V3.SendMessagePayload<T>): string {
-  const root = {
+  const root: ElementCompact = {
     _declaration: new XmlDeclaration()
-  } as ElementCompact
+  }
   const interactionId = extractInteractionId(sendMessagePayload)
   root[interactionId] = namespacedCopyOf(sendMessagePayload)
   return writeXmlStringPretty(root)

@@ -56,14 +56,14 @@ describe("identifyMessageType", () => {
   })
 })
 
-function createRoute<T>(spineResponse: spine.SpineDirectResponse<T> | spine.SpinePollableResponse) {
+function createRoute<T>(spineResponse: spine.SpineDirectResponse<T> | spine.SpinePollableResponse): Hapi.ServerRoute {
   return {
     method: "POST",
     path: "/test",
     handler: async (request, responseToolkit) => {
       return handleResponse(request, spineResponse, responseToolkit)
     }
-  } as Hapi.ServerRoute
+  }
 }
 
 function createRouteOptions<T>(

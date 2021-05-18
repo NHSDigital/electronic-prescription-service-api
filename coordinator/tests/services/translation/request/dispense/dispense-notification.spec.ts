@@ -51,14 +51,14 @@ describe("convertPrescriptionDispense", () => {
 describe("getLineItemStatusCode", () => {
   const cases = [
     /* eslint-disable max-len */
-    [{code: "0001", display: "Item fully dispensed"} as fhir.Coding, createItemStatusCode("0001", "Item fully dispensed")._attributes],
-    [{code: "0002", display: "Item not dispensed"} as fhir.Coding, createItemStatusCode("0002", "Item not dispensed")._attributes],
+    [{code: "0001", display: "Item fully dispensed"}, createItemStatusCode("0001", "Item fully dispensed")._attributes],
+    [{code: "0002", display: "Item not dispensed"}, createItemStatusCode("0002", "Item not dispensed")._attributes],
     [{code: "0003", display: "Item dispensed - partial"}, createItemStatusCode("0003", "Item dispensed - partial")._attributes],
-    [{code: "0004", display: "Item not dispensed owing"} as fhir.Coding, createItemStatusCode("0004", "Item not dispensed owing")._attributes],
-    [{code: "0005", display: "Item cancelled"} as fhir.Coding, createItemStatusCode("0005", "Item cancelled")._attributes],
-    [{code: "0006", display: "Expired"} as fhir.Coding, createItemStatusCode("0006", "Expired")._attributes],
-    [{code: "0007", display: "Item to be dispensed"} as fhir.Coding, createItemStatusCode("0007", "Item to be dispensed")._attributes],
-    [{code: "0008", display: "Item with dispenser"} as fhir.Coding, createItemStatusCode("0008", "Item with dispenser")._attributes]
+    [{code: "0004", display: "Item not dispensed owing"}, createItemStatusCode("0004", "Item not dispensed owing")._attributes],
+    [{code: "0005", display: "Item cancelled"}, createItemStatusCode("0005", "Item cancelled")._attributes],
+    [{code: "0006", display: "Expired"}, createItemStatusCode("0006", "Expired")._attributes],
+    [{code: "0007", display: "Item to be dispensed"}, createItemStatusCode("0007", "Item to be dispensed")._attributes],
+    [{code: "0008", display: "Item with dispenser"}, createItemStatusCode("0008", "Item with dispenser")._attributes]
     /* eslint-enable max-len */
   ]
 
@@ -82,13 +82,13 @@ describe("getLineItemStatusCode", () => {
 describe("getPrescriptionStatus", () => {
   const cases = [
     /* eslint-disable max-len */
-    [{code: "0001", display: "To be Dispensed"} as fhir.Coding, createStatusCode("0001", "To be Dispensed")._attributes],
-    [{code: "0002", display: "With Dispenser"} as fhir.Coding, createStatusCode("0002", "With Dispenser")._attributes],
+    [{code: "0001", display: "To be Dispensed"}, createStatusCode("0001", "To be Dispensed")._attributes],
+    [{code: "0002", display: "With Dispenser"}, createStatusCode("0002", "With Dispenser")._attributes],
     [{code: "0003", display: "With Dispenser - Active"}, createStatusCode("0003", "With Dispenser - Active")._attributes],
-    [{code: "0004", display: "Expired"} as fhir.Coding, createStatusCode("0004", "Expired")._attributes],
-    [{code: "0005", display: "Cancelled"} as fhir.Coding, createStatusCode("0005", "Cancelled")._attributes],
-    [{code: "0006", display: "Dispensed"} as fhir.Coding, createStatusCode("0006", "Dispensed")._attributes],
-    [{code: "0007", display: "Not Dispensed"} as fhir.Coding, createStatusCode("0007", "Not Dispensed")._attributes]
+    [{code: "0004", display: "Expired"}, createStatusCode("0004", "Expired")._attributes],
+    [{code: "0005", display: "Cancelled"}, createStatusCode("0005", "Cancelled")._attributes],
+    [{code: "0006", display: "Dispensed"}, createStatusCode("0006", "Dispensed")._attributes],
+    [{code: "0007", display: "Not Dispensed"}, createStatusCode("0007", "Not Dispensed")._attributes]
     /* eslint-enable max-len */
   ]
 
