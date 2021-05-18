@@ -160,7 +160,7 @@ describe("MedicationRequest consistency checks", () => {
       valueReference: {reference: ""},
       url: ""
     }
-    const performer: fhir.Performer  = {
+    const performer: fhir.Performer = {
       identifier: {
         system: "system",
         value: "value"

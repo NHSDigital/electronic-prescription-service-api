@@ -7,7 +7,7 @@ import {hl7V3, fhir} from "@models"
 
 describe("createPatient", () => {
   const cancellationResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)
-  let hl7Patient:  hl7V3.Patient
+  let hl7Patient: hl7V3.Patient
   let fhirPatient: fhir.Patient
 
   beforeEach(() => {

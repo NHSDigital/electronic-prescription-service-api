@@ -10,7 +10,7 @@ export class LiveOdsClient implements OdsClient {
     const url = `https://${process.env.ODS_URL}/STU3/Organization/${odsCode}`
     try {
       const result = await axios.get<OdsOrganization>(url)
-      if (result.status != 200) {
+      if (result.status !== 200) {
         logger.error(`Failed ODS lookup for path ${url}. StatusCode: ${result.status}`)
         return null
       }

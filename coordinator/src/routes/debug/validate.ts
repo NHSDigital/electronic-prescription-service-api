@@ -11,7 +11,7 @@ export default [
   {
     method: "POST",
     path: `${BASE_PATH}/$validate`,
-    handler: externalValidator(async  (request, responseToolkit) => {
+    handler: externalValidator(async (request, responseToolkit) => {
       const successfulResponse: fhir.OperationOutcome = {
         resourceType: "OperationOutcome",
         issue: [{

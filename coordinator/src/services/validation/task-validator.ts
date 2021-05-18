@@ -8,7 +8,7 @@ export function verifyTask(task: fhir.Task): Array<fhir.OperationOutcomeIssue> {
     validationErrors.push(errors.createResourceTypeIssue("Task"))
   }
 
-  if (task.intent != fhir.TaskIntent.ORDER) {
+  if (task.intent !== fhir.TaskIntent.ORDER) {
     validationErrors.push(errors.createTaskIncorrectValueIssue("intent", fhir.TaskIntent.ORDER))
   }
 

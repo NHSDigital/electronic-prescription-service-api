@@ -60,7 +60,7 @@ function createRoute<T>(spineResponse: spine.SpineDirectResponse<T> | spine.Spin
   return {
     method: "POST",
     path: "/test",
-    handler: async  (request, responseToolkit) => {
+    handler: async (request, responseToolkit) => {
       return handleResponse(request, spineResponse, responseToolkit)
     }
   } as Hapi.ServerRoute
