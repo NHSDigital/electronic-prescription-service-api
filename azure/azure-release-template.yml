@@ -137,7 +137,10 @@ extends:
           make publish-pacts > /dev/null
 
           # Poll deploying API until our deployed version matches the release version
-          url="https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH/_status"
+          if [ "$APIGEE_ENVIRONMENT" != "prod" ]; then
+              envPrefix="$APIGEE_ENVIRONMENT."
+          fi;
+          url="https://${envPrefix}api.service.nhs.uk/$SERVICE_BASE_PATH/_status"
           interval_in_seconds=5
           releaseCommit="$(Build.SourceVersion)"
           printf "\nPolling %s every %s seconds, until commit is: %s\n" "$url" "$interval_in_seconds" "$releaseCommit"
