@@ -1,4 +1,3 @@
-import * as XmlJs from "xml-js"
 import {namespacedCopyOf, writeXmlStringCanonicalized} from "../../serialisation/xml"
 import {hl7V3, signature} from "@models"
 import {toArray} from "../common"
@@ -60,5 +59,5 @@ export function convertFragmentsToHashableFormat(fragments: signature.Fragments)
     FragmentsToBeHashed: {
       Fragment: fragmentsToBeHashed
     }
-  } as XmlJs.ElementCompact)
+  })
 }

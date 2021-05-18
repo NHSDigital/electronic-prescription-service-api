@@ -12,10 +12,10 @@ export function convertName(name: Array<hl7V3.Name> | hl7V3.Name): Array<fhir.Hu
     if (name._text) {
       return {text: name._text}
     }
-    let convertedName = {
+    let convertedName: fhir.HumanName = {
       given: toArray(name.given).map(given => given._text),
       prefix: toArray(name.prefix).map(prefix => prefix._text)
-    } as fhir.HumanName
+    }
 
     convertedName = name._attributes?.use
       ? {...convertedName, use: convertNameUse(name._attributes.use)}

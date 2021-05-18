@@ -57,7 +57,7 @@ export default [
         return responseToolkit.response(unsupportedResponse).code(400).type(ContentTypes.FHIR)
       }
     )
-  } as Hapi.ServerRoute
+  }
 ]
 
 const unsupportedResponse: fhir.OperationOutcome = {

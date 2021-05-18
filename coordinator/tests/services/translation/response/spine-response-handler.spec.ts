@@ -44,12 +44,12 @@ describe("default handler", () => {
   ) {
     const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
     const result = defaultHandler.handleResponse(spineResponse, logger)
-    expect(result).toMatchObject<TranslatedSpineResponse>({
+    expect(result).toMatchObject({
       statusCode: statusCode,
       fhirResponse: {
         resourceType: "OperationOutcome",
         issue: expectedIssueArray
-      } as fhir.OperationOutcome
+      }
     })
   }
 
@@ -234,12 +234,12 @@ describe("cancel response handler", () => {
     )
     const spineResponse = writeXmlStringPretty({PORX_IN050101UK31: expectedSendMessagePayload})
     const result = cancelResponseHandler.handleResponse(spineResponse, logger)
-    expect(result).toMatchObject<TranslatedSpineResponse>({
+    expect(result).toMatchObject({
       statusCode: 400,
       fhirResponse: {
         resourceType: "OperationOutcome",
         issue: [createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, "RejectionCode", "Rejection Display Name")]
-      } as fhir.OperationOutcome
+      }
     })
   })
 
@@ -291,12 +291,12 @@ describe("release response handler", () => {
     )
     const spineResponse = writeXmlStringPretty({PORX_IN070101UK31: expectedSendMessagePayload})
     const result = releaseResponseHandler.handleResponse(spineResponse, logger)
-    expect(result).toMatchObject<TranslatedSpineResponse>({
+    expect(result).toMatchObject({
       statusCode: 400,
       fhirResponse: {
         resourceType: "OperationOutcome",
         issue: [createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, "RejectionCode", "Rejection Display Name")]
-      } as fhir.OperationOutcome
+      }
     })
   })
 
@@ -308,12 +308,12 @@ describe("release response handler", () => {
     )
     const spineResponse = writeXmlStringPretty({PORX_IN070101UK31: expectedSendMessagePayload})
     const result = releaseResponseHandler.handleResponse(spineResponse, logger)
-    expect(result).toMatchObject<TranslatedSpineResponse>({
+    expect(result).toMatchObject({
       statusCode: 400,
       fhirResponse: {
         resourceType: "OperationOutcome",
         issue: [createErrorOperationOutcomeIssue(fhir.IssueCodes.INVALID, "ErrorCode", "Error Display Name")]
-      } as fhir.OperationOutcome
+      }
     })
   })
 

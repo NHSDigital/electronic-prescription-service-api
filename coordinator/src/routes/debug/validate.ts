@@ -1,4 +1,3 @@
-import Hapi from "@hapi/hapi"
 import {fhir} from "@models"
 import {
   BASE_PATH, ContentTypes, externalValidator
@@ -21,5 +20,5 @@ export default [
       }
       return responseToolkit.response(successfulResponse).code(200).type(ContentTypes.FHIR)
     })
-  } as Hapi.ServerRoute
+  }
 ]

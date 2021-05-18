@@ -30,7 +30,7 @@ function performStatusSpecificValidation(task: fhir.Task): Array<fhir.OperationO
 }
 
 function validateWithdraw(task: fhir.Task) {
-  const withdrawSpecificErrors = []
+  const withdrawSpecificErrors: Array<fhir.OperationOutcomeIssue> = []
 
   if (!task.code) {
     withdrawSpecificErrors.push({
@@ -38,7 +38,7 @@ function validateWithdraw(task: fhir.Task) {
       code: fhir.IssueCodes.VALUE,
       diagnostics: "Task.code is required when Task.status is 'in-progress'.",
       expression: [`Task.code`]
-    } as fhir.OperationOutcomeIssue)
+    })
   } else {
     const typeCoding = getCodeableConceptCodingForSystem(
       [task.code],

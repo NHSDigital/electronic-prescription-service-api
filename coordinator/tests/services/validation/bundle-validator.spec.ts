@@ -377,9 +377,9 @@ describe("verifyDispenseNotificationBundle", () => {
       {
         actor: {
           type: "Practitioner",
-          identifier: "DIFFERENT_FROM_EXISTING"
+          identifier: {value: "DIFFERENT_FROM_EXISTING"}
         }
-      } as fhir.DispensePerformer,
+      },
       medicationDispense.performer.find(p => p.actor.type === "Organization")
     ]
 

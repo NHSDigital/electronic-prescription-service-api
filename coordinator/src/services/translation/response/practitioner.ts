@@ -13,7 +13,7 @@ export function createPractitioner(agentPerson: hl7V3.AgentPerson): fhir.Practit
 function getIdentifier(personId: string) {
   let formattedPersonId = personId.toUpperCase()
   if (formattedPersonId.match(/^G\d{7}$/)) {
-    formattedPersonId = formattedPersonId.substring(1,7)
+    formattedPersonId = formattedPersonId.substring(1, 7)
   }
   return [fhir.createIdentifier(getSystemForCode(formattedPersonId), formattedPersonId)]
 }
