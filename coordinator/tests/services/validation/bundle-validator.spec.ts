@@ -160,7 +160,7 @@ describe("MedicationRequest consistency checks", () => {
       valueReference: {reference: ""},
       url: ""
     }
-    const performer: fhir.Performer  = {
+    const performer: fhir.Performer = {
       identifier: {
         system: "system",
         value: "value"
@@ -377,9 +377,9 @@ describe("verifyDispenseNotificationBundle", () => {
       {
         actor: {
           type: "Practitioner",
-          identifier: "DIFFERENT_FROM_EXISTING"
+          identifier: {value: "DIFFERENT_FROM_EXISTING"}
         }
-      } as fhir.DispensePerformer,
+      },
       medicationDispense.performer.find(p => p.actor.type === "Organization")
     ]
 

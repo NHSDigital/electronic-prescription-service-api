@@ -1,4 +1,3 @@
-import Hapi from "@hapi/hapi"
 import {fhir} from "@models"
 import {
   BASE_PATH, ContentTypes, externalValidator
@@ -11,7 +10,7 @@ export default [
   {
     method: "POST",
     path: `${BASE_PATH}/$validate`,
-    handler: externalValidator(async  (request, responseToolkit) => {
+    handler: externalValidator(async (request, responseToolkit) => {
       const successfulResponse: fhir.OperationOutcome = {
         resourceType: "OperationOutcome",
         issue: [{
@@ -21,5 +20,5 @@ export default [
       }
       return responseToolkit.response(successfulResponse).code(200).type(ContentTypes.FHIR)
     })
-  } as Hapi.ServerRoute
+  }
 ]

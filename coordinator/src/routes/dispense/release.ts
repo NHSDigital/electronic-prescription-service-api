@@ -28,5 +28,5 @@ export default [
         return handleResponse(request, spineResponse, responseToolkit)
       }
     )
-  } as Hapi.ServerRoute
+  }
 ]
