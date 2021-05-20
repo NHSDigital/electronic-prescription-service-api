@@ -129,7 +129,7 @@ export function createMedicationFieldIssue(resource: "Request" | "Dispense"): fh
         display: "Conflicting values have been specified in different fields"
       }]
     },
-    diagnostics: `Medication${resource} cannot contain both medicationReference and medicationCodeableConcept fields.`,
+    diagnostics: `Medication${resource} cannot contain both medicationReference and medicationCodeableConcept fields.`
   }
 }
 

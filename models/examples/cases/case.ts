@@ -21,7 +21,8 @@ export class Case {
     this.requestFile = requestFile
     this.responseFile = responseFile
 
-    //TODO - Reduce the amount of data we duplicate from the file. Use functions instead of fields. Delegate to the file object instead
+    //TODO - Reduce the amount of data we duplicate from the file.
+    //Use functions instead of fields. Delegate to the file object instead
     this.description = createExampleDescription(requestFile)
     this.request = requestJson
     this.statusText = requestFile.statusText

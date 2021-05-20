@@ -11,7 +11,7 @@ export class ReleaseCase extends Case {
     super(requestFile, responseFile)
   }
 
-  toJestCase() {
+  toJestCase(): [string, fhir.Parameters, fhir.Bundle, number] {
     return [this.description, this.request, this.response, this.statusCode]
   }
 }

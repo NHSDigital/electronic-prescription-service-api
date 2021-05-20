@@ -3,9 +3,10 @@ import {exampleFiles} from "./example-files-fetcher"
 import {ExampleFile} from "../example-file"
 
 const convertRequestFiles = exampleFiles.filter(exampleFile => exampleFile.isRequest)
-const convertResponseFiles = exampleFiles.filter(exampleFile => exampleFile.isResponse && exampleFile.endpoint === "convert")
+const convertResponseFiles = exampleFiles
+  .filter(exampleFile => exampleFile.isResponse && exampleFile.endpoint === "convert")
 
-const conventionBasedConvertExamples: ConvertCase[] = convertResponseFiles.map(convertResponseFile =>
+const conventionBasedConvertExamples: Array<ConvertCase> = convertResponseFiles.map(convertResponseFile =>
   new ConvertCase(getRequestFile(convertResponseFile), convertResponseFile)
 )
 

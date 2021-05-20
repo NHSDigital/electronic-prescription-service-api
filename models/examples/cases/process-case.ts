@@ -42,7 +42,7 @@ export class ProcessCase extends Case {
       exampleFile.dir === requestFile.dir
       && exampleFile.number === requestFile.number
       && exampleFile.endpoint === "convert"
-      && exampleFile.operation == requestFile.operation
+      && exampleFile.operation === requestFile.operation
       && exampleFile.isResponse
       && exampleFile.statusText === requestFile.statusText)
   }
