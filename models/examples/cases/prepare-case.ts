@@ -5,6 +5,7 @@ import {ExampleFile} from "../example-file"
 import * as fhir from "../../fhir"
 
 export class PrepareCase extends Case {
+  request: fhir.Bundle
   response: fhir.Parameters
   statusText: string
 
@@ -14,7 +15,7 @@ export class PrepareCase extends Case {
     this.response = LosslessJson.parse(responseString)
   }
 
-  toJestCase(): [string, fhir.Bundle | fhir.Parameters, fhir.Parameters, number] {
+  toJestCase(): [string, fhir.Bundle, fhir.Parameters, number] {
     return [this.description, this.request, this.response, this.statusCode]
   }
 }

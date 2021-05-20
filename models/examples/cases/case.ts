@@ -9,7 +9,7 @@ export class Case {
   responseFile?: ExampleFile
 
   description: string
-  request: fhir.Bundle | fhir.Parameters
+  request: fhir.Bundle | fhir.Parameters | fhir.Task
   statusText: string
   statusCode: number
   isSuccess: boolean
