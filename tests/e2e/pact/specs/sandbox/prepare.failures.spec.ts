@@ -57,7 +57,7 @@ jestpact.pactWith(
             .set("X-Correlation-ID", correlationId)
             .send(requestStr)
             .expect(statusCode)
-      })
+        })
     })
   }
 )

@@ -46,7 +46,7 @@ jestpact.pactWith(
               issue: [
                 {
                   code: "informational",
-                  severity: "information",
+                  severity: "information"
                 }
               ]
             },

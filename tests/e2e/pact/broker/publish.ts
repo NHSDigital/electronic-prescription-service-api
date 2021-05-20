@@ -1,5 +1,5 @@
 import path from "path"
-import { Publisher } from "@pact-foundation/pact"
+import {Publisher} from "@pact-foundation/pact"
 
 async function publish(): Promise<Array<string>> {
   const useBroker = process.env.PACT_USE_BROKER !== "false"
@@ -19,7 +19,7 @@ async function publish(): Promise<Array<string>> {
         path.join(__dirname, "../pact/pacts")
       ]
     })
-    .publishPacts()
+      .publishPacts()
   }
   return Promise.resolve([])
 }
