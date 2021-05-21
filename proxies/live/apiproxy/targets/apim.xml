@@ -77,7 +77,7 @@
     <FaultRule name="user_role_shared_flow_error">
       <Condition>(sharedFlow.userRoleError is "true")</Condition>
       <Step>
-        <Name>AssignMessage.Errors.CatchAllMessage</Name>
+        <Name>AssignMessage.Errors.UserRole</Name>
       </Step>
     </FaultRule>
     <FaultRule name="access_token_expired">

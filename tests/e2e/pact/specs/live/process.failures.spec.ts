@@ -7,7 +7,7 @@ import {createUnauthorisedInteraction} from "./auth"
 import * as LosslessJson from "lossless-json"
 import {fetcher, fhir} from "@models"
 import * as TestResources from "../../resources/test-resources"
-import { generateShortFormId, setPrescriptionIds, updatePrescriptions } from '../../services/update-prescriptions';
+import { generateShortFormId, setPrescriptionIds, updatePrescriptions } from '../../services/update-prescriptions'
 import {generateTestOutputFile} from "../../services/genereate-test-output-file"
 
 const apiPath = `${basePath}/$process-message`
@@ -121,7 +121,7 @@ jestpact.pactWith(
 
         const interaction: InteractionObject = {
           state: "is authenticated",
-          uponReceiving: "a request to process a message with a FHIR JSON Accept header",
+          uponReceiving: "a request to process a message with an invalid NHSD-Session-URID header",
           withRequest: {
             headers: {
               "Content-Type": "application/fhir+json; fhirVersion=4.0",
@@ -135,14 +135,14 @@ jestpact.pactWith(
           },
           willRespondWith: {
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/fhir+json"
             },
             body: {
               resourceType: "OperationOutcome",
               issue: [
                 {
                   code: "400",
-                  severity: "foo",
+                  severity: "error",
                   details: {
                     coding: [
                       {
