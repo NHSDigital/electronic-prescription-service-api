@@ -7,18 +7,18 @@
                 "issue": [
                     {
                         "severity": "error",
-                        "code": "{pds.error.code}",
+                        "code": "{validation.statusCode}",
                         "details": {
                             "coding": [
                                 {
                                     "system": "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
                                     "version": "1",
-                                    "code": "{pds.error.coding.code}",
-                                    "display": "{pds.error.coding.display}"
+                                    "code": "INVALID_VALUE",
+                                    "display": "Provided value is invalid"
                                 }
                             ]
                         },
-                        "diagnostics": "{pds.error.diagnostics}"
+                        "diagnostics": "{validation.errorDescription}"
                     }
                 ]
             }
