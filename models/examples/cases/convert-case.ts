@@ -17,7 +17,7 @@ export class ConvertCase extends Case {
 
     const responseString = fs.readFileSync(responseFile.path, "utf-8")
     this.response = this.isSuccess ? responseString : JSON.parse(LosslessJson.stringify(responseString))
-    this.responseMatcher =  this.isSuccess
+    this.responseMatcher = this.isSuccess
       ? this.buildResponseMatcher(requestFile.operation, this.response).trimEnd()
       : ""
   }
@@ -37,23 +37,23 @@ export class ConvertCase extends Case {
     */
   private escapeRegexSpecialCharacters(responseXml: string): string {
     return responseXml
-      .replace(/\\/g, "\\")     // prepend backslash with backslash
-      .replace(/\./g, "\\.")    // prepend fullstop with backslash
-      .replace(/\|/g, "\\|")    // prepend pipe with backslash
-      .replace(/\(/g, "\\(")    // prepend opening bracket with backslash
-      .replace(/\)/g, "\\)")    // prepend closing bracket with backslash
-      .replace(/\[/g, "\\[")    // prepend opening square bracket with backslash
-      .replace(/]/g, "\\]")    // prepend closing square bracket with backslash
-      .replace(/{/g, "\\{")    // prepend opening braces with backslash
-      .replace(/}/g, "\\}")    // prepend closing braces with backslash
-      .replace(/\+/g, "\\+")    // prepend plus with backslash
-      .replace(/\^/g, "\\^")    // prepend ^ with backslash
-      .replace(/\$/g, "\\$")    // prepend dollarsign with backslash
-      .replace(/\*/g, "\\*")    // prepend star with backslash
-      .replace(/\?/g, "\\?")    // prepend question mark with backslash
-      .replace(/"/g, "\\\"")   // prepend quotes with backslash
-      .replace(/\//g, "\\/")    // prepend forward slash with backslash
-      .replace(/\n/g, "\n")     // replace newlines
+      .replace(/\\/g, "\\") // prepend backslash with backslash
+      .replace(/\./g, "\\.") // prepend fullstop with backslash
+      .replace(/\|/g, "\\|") // prepend pipe with backslash
+      .replace(/\(/g, "\\(") // prepend opening bracket with backslash
+      .replace(/\)/g, "\\)") // prepend closing bracket with backslash
+      .replace(/\[/g, "\\[") // prepend opening square bracket with backslash
+      .replace(/]/g, "\\]") // prepend closing square bracket with backslash
+      .replace(/{/g, "\\{") // prepend opening braces with backslash
+      .replace(/}/g, "\\}") // prepend closing braces with backslash
+      .replace(/\+/g, "\\+") // prepend plus with backslash
+      .replace(/\^/g, "\\^") // prepend ^ with backslash
+      .replace(/\$/g, "\\$") // prepend dollarsign with backslash
+      .replace(/\*/g, "\\*") // prepend star with backslash
+      .replace(/\?/g, "\\?") // prepend question mark with backslash
+      .replace(/"/g, "\\\"") // prepend quotes with backslash
+      .replace(/\//g, "\\/") // prepend forward slash with backslash
+      .replace(/\n/g, "\n") // replace newlines
   }
 
   /*
@@ -65,20 +65,18 @@ export class ConvertCase extends Case {
         /<creationTime value=\\"[0-9]*\\"\\\/>/g,
         "<creationTime value=\\\"[0-9]*\\\"\\/>")
 
-    if (operation === "dispense" || operation === "release")
-    {
+    if (operation === "dispense" || operation === "release") {
       responseXml = responseXml
         .replace(
           /<effectiveTime value=\\"[0-9]*\\"\\\/>/g,
           "<effectiveTime value=\\\"[0-9]*\\\"\\/>")
     }
 
-    if (operation === "release")
-    {
+    if (operation === "release") {
       responseXml = responseXml
         .replace(
           /<id root=\\"[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\\"\\\/>/g,
-        "<id root=\\\"[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\\\"\\/>")
+          "<id root=\\\"[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\\\"\\/>")
     }
     return responseXml
   }

@@ -88,7 +88,7 @@ export class DispenseNotificationPertinentInformation1LineItem implements Elemen
   pertinentSuppliedLineItem: PertinentSuppliedLineItem
 
   constructor(pertinentSuppliedLineItem : PertinentSuppliedLineItem ) {
-    this.pertinentSuppliedLineItem  = pertinentSuppliedLineItem
+    this.pertinentSuppliedLineItem = pertinentSuppliedLineItem
   }
 }
 
@@ -365,7 +365,7 @@ export class DispenseLineItemPertinentInformation1 implements ElementCompact {
 * Normally, these should be the same as the prescriber instructions except when the supplied medication
 * varies from the prescribed medication requiring more drug specification information.
 */
-export class PertinentSupplyInstructions  implements ElementCompact {
+export class PertinentSupplyInstructions implements ElementCompact {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "OBS",
     moodCode: "EVN"
@@ -457,7 +457,7 @@ export class DispensePertinentInformation4 implements ElementCompact {
   pertinentPrescriptionID: PertinentPrescriptionId
 
   constructor(pertinentPrescriptionID: PertinentPrescriptionId) {
-    this.pertinentPrescriptionID  = pertinentPrescriptionID
+    this.pertinentPrescriptionID = pertinentPrescriptionID
   }
 }
 

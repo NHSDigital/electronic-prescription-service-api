@@ -25,7 +25,7 @@
         "func-call-spacing": "error",
         "func-style": ["error", "declaration", {"allowArrowFunctions": true}],
         "indent": ["error", 2, {"SwitchCase": 1}],
-        "max-len": ["error", 140],
+        "max-len": ["error", 120],
         "no-multi-spaces": "error",
         "no-multiple-empty-lines": ["error", {"max": 1}],
         "no-trailing-spaces": "error",
