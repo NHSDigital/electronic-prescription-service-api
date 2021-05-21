@@ -1,4 +1,4 @@
-import { InteractionObject } from "@pact-foundation/pact"
+import {InteractionObject} from "@pact-foundation/pact"
 
 export const createUnauthorisedInteraction = (desc: string, path: string): InteractionObject => {
   return {

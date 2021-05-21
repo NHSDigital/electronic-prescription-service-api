@@ -8,8 +8,7 @@ export type ApiEndpoint = "prepare" | "process" | "convert" | "task" | "validate
 export type ApiOperation = "send" | "cancel" | "dispense" | "release" | "return" | "withdraw"
 
 // used to add type-safety for adding a new pact
-export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, operation?: ApiOperation): JestPactOptions
-{
+export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, operation?: ApiOperation): JestPactOptions {
   const sandbox = mode === "sandbox"
   const pacticipant_suffix = sandbox ? "-sandbox" : ""
   return {
