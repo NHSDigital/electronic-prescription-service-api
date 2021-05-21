@@ -69,7 +69,7 @@ info:
     1. POST a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to the `/FHIR/R4/Task/$release` endpoint.
 
     ### To submit a dispense notification to EPS:
-    1. POST a [prescription-dispense-notification](https://simplifier.net/guide/DigitalMedicines/prescription-dispense) message to the `/FHIR/R4/$process-message` endpoint to inform EPS of a partial/successful dispense.
+    1. POST a [prescription-dispense-notification](https://simplifier.net/guide/DigitalMedicines/dispense-notification) message to the `/FHIR/R4/$process-message` endpoint to inform EPS of a partial/successful dispense.
 
     ### To return a prescription:
     1. POST a [Task-dispense-proposal-return](https://simplifier.net/guide/DigitalMedicines/Task) message to the `/FHIR/R4/Task` endpoint.
