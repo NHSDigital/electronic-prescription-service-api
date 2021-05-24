@@ -20,13 +20,12 @@ import {convertTaskToDispenseProposalReturn} from "./return/return"
 import {convertTaskToEtpWithdraw} from "./withdraw/withdraw"
 import {getMessageIdFromBundle, getMessageIdFromTask, identifyMessageType} from "../common"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
-import {Util} from "@hapi/hapi"
-import Dictionary = Util.Dictionary
 import {getAsidHeader, getRequestIdHeader} from "../../headers"
+import Hapi from "@hapi/hapi"
 
 export async function convertBundleToSpineRequest(
   bundle: fhir.Bundle,
-  headers: Dictionary<string>,
+  headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): Promise<spine.SpineRequest> {
   const messageType = identifyMessageType(bundle)
@@ -162,7 +161,7 @@ class AlgorithmIdentifier implements XmlJs.ElementCompact {
 
 export async function convertParametersToSpineRequest(
   parameters: fhir.Parameters,
-  headers: Dictionary<string>,
+  headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): Promise<spine.SpineRequest> {
   const hl7ReleaseRequest = await translateReleaseRequest(parameters, logger)
@@ -178,7 +177,7 @@ export async function convertParametersToSpineRequest(
 
 export async function convertTaskToSpineRequest(
   task: fhir.Task,
-  headers: Dictionary<string>,
+  headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): Promise<spine.SpineRequest> {
   const payload = await createPayloadFromTask(task, getAsidHeader(headers), logger)

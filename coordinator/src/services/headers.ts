@@ -1,4 +1,4 @@
-import Hapi, {Util} from "@hapi/hapi"
+import Hapi from "@hapi/hapi"
 import {isProd} from "./environment"
 import {fhir, validationErrors as errors} from "@models"
 import {ContentTypes} from "../routes/util"
@@ -12,11 +12,11 @@ export enum RequestHeaders {
   SMOKE_TEST = "x-smoke-test"
 }
 
-export function getRequestIdHeader(headers: Util.Dictionary<string>): string {
+export function getRequestIdHeader(headers: Hapi.Util.Dictionary<string>): string {
   return headers[RequestHeaders.REQUEST_ID].toUpperCase()
 }
 
-export function getAsidHeader(headers: Util.Dictionary<string>): string {
+export function getAsidHeader(headers: Hapi.Util.Dictionary<string>): string {
   return headers[RequestHeaders.ASID]
 }
 
