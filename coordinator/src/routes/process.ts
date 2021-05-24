@@ -7,7 +7,6 @@ import {
 } from "./util"
 import {fhir} from "@models"
 import * as bundleValidator from "../services/validation/bundle-validator"
-import {RequestHeaders} from "../services/headers"
 
 export default [
   /*
@@ -25,8 +24,7 @@ export default [
         }
 
         request.logger.info("Building Spine request")
-        const requestId = request.headers[RequestHeaders.REQUEST_ID].toUpperCase()
-        const spineRequest = await translator.convertBundleToSpineRequest(bundle, requestId, request.logger)
+        const spineRequest = await translator.convertBundleToSpineRequest(bundle, request.headers, request.logger)
         request.log("audit", {"incomingMessageHash": createHash(JSON.stringify(bundle))})
         const spineResponse = await spineClient.send(spineRequest, request.logger)
         return handleResponse(request, spineResponse, responseToolkit)
