@@ -27,13 +27,13 @@ export async function updatePrescriptions(orderCases: Array<ProcessCase>, orderU
   let signPrescriptionFn = (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     processCase: ProcessCase, prepareRequest: fhir.Bundle, processRequest: fhir.Bundle, originalShortFormId: string
-  ): void => {return}
-
-  if (fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath))
-  {
-    signPrescriptionFn = signPrescription
+  ): void => {
+    return
   }
-  else {
+
+  if (fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath)) {
+    signPrescriptionFn = signPrescription
+  } else {
     console.warn("No private key / x509 certifcate found, signing has been skipped")
   }
 
@@ -114,7 +114,7 @@ export function setPrescriptionIds(
 export function generateShortFormId(originalShortFormId?: string): string {
   const _PRESC_CHECKDIGIT_VALUES = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+"
   const hexString = (uuid.v4()).replace(/-/g, "").toUpperCase()
-  let prescriptionID = `${hexString.substring(0, 6)}-${originalShortFormId?.substring(7,13) ?? "A12345"}-${hexString.substring(12, 17)}`
+  let prescriptionID = `${hexString.substring(0, 6)}-${originalShortFormId?.substring(7, 13) ?? "A12345"}-${hexString.substring(12, 17)}`
   const prscID = prescriptionID.replace(/-/g, "")
   const prscIDLength = prscID.length
   let runningTotal = 0
@@ -224,8 +224,7 @@ function signPrescription(
     if (!verified) {
       throw new Error("Signature failed verification")
     }
-  }
-  catch {
+  } catch {
     throw new Error("Signature failed verification")
   }
 
@@ -245,7 +244,7 @@ function getNhsNumberIdentifier(fhirPatient: fhir.Patient) {
 }
 
 function checkDigestMatchesPrescription(processBundle: fhir.Bundle, originalShortFormId: string) {
-  const prescriptionRoot  = convertParentPrescription(processBundle)
+  const prescriptionRoot = convertParentPrescription(processBundle)
   const signatureRoot = extractSignatureRootFromPrescriptionRoot(prescriptionRoot)
   const digestFromSignature = extractDigestFromSignatureRoot(signatureRoot)
   const digestFromPrescription = calculateDigestFromPrescriptionRoot(prescriptionRoot)

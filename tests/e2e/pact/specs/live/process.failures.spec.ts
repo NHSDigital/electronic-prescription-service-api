@@ -26,7 +26,7 @@ jestpact.pactWith(
       if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
         await updatePrescriptions(
           fetcher.prescriptionOrderExamples.filter(e => !e.isSuccess),
-        []
+          []
         )
       }
       generateTestOutputFile()
@@ -61,7 +61,7 @@ jestpact.pactWith(
         const correlationId = uuid.v4()
 
         const firstMedicationRequest = messageClone.entry.map(e => e.resource)
-          .find(r => r.resourceType == "MedicationRequest") as fhir.MedicationRequest
+          .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
         const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
         const interaction: InteractionObject = {
@@ -181,7 +181,7 @@ jestpact.pactWith(
         const correlationId = uuid.v4()
 
         const firstMedicationRequest = request.entry.map(e => e.resource)
-          .find(r => r.resourceType == "MedicationRequest") as fhir.MedicationRequest
+          .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
         const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
         const interaction: InteractionObject = {

@@ -1,11 +1,11 @@
-import { InteractionObject, Matchers } from "@pact-foundation/pact"
+import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import * as TestResources from "../../resources/test-resources"
 import {fhir} from "@models"
 import * as LosslessJson from "lossless-json"
 import supertest from "supertest"
 import * as uuid from "uuid"
-import { basePath, getStringParameterByName, pactOptions } from "../../resources/common"
+import {basePath, getStringParameterByName, pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
   pactOptions("live", "prepare"),
@@ -72,7 +72,7 @@ jestpact.pactWith(
             .set("X-Correlation-ID", correlationId)
             .send(requestStr)
             .expect(200)
-      })
+        })
     })
   }
 )

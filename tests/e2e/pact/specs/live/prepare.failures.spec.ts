@@ -1,9 +1,9 @@
-import { InteractionObject } from "@pact-foundation/pact"
+import {InteractionObject} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
 import supertest from "supertest"
-import { createUnauthorisedInteraction } from "./auth"
+import {createUnauthorisedInteraction} from "./auth"
 import * as uuid from "uuid"
-import { basePath, pactOptions } from "../../resources/common"
+import {basePath, pactOptions} from "../../resources/common"
 
 jestpact.pactWith(
   pactOptions("live", "prepare"),

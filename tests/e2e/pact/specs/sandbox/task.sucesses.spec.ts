@@ -19,7 +19,7 @@ jestpact.pactWith(
     describe("sandbox dispense interactions", () => {
       test.each(TestResources.taskReleaseCases)(
         "should be able to acquire prescription info on a prescription release",
-        async (description: string, request: fhir.Parameters, response: fhir.Bundle, statusCode: string) => {
+        async (description: string, request: fhir.Parameters, response: fhir.Bundle, statusCode: number) => {
           const apiPath = `${basePath}/Task/$release`
           const requestStr = LosslessJson.stringify(request)
           const requestId = uuid.v4()
@@ -53,7 +53,7 @@ jestpact.pactWith(
                 "X-Correlation-ID": correlationId
               },
               body: isNominatedPharmacyRelease ? response : undefined,
-              status: isNominatedPharmacyRelease ? parseInt(statusCode) : 400
+              status: isNominatedPharmacyRelease ? statusCode : 400
             }
           }
 
@@ -83,7 +83,7 @@ jestpact.pactWith(
     describe("Task return sandbox e2e tests", () => {
       test.each(TestResources.taskReturnCases)(
         "should be able to process %s",
-        async (desc: string, message: fhir.Bundle) => {
+        async (desc: string, message: fhir.Task) => {
           const apiPath = `${basePath}/Task`
           const messageStr = LosslessJson.stringify(message)
           const requestId = uuid.v4()
@@ -146,7 +146,7 @@ jestpact.pactWith(
     describe("Task withdraw sandbox e2e tests", () => {
       test.each(TestResources.taskWithdrawCases)(
         "should be able to withdraw %s",
-        async (desc: string, message: fhir.Bundle) => {
+        async (desc: string, message: fhir.Task) => {
           const apiPath = `${basePath}/Task`
           const messageStr = LosslessJson.stringify(message)
           const requestId = uuid.v4()
