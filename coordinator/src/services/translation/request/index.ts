@@ -20,8 +20,8 @@ import {convertTaskToDispenseProposalReturn} from "./return/return"
 import {convertTaskToEtpWithdraw} from "./withdraw/withdraw"
 import {getMessageIdFromBundle, getMessageIdFromTask, identifyMessageType} from "../common"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
-import {getAsidHeader, getRequestIdHeader} from "../../headers"
 import Hapi from "@hapi/hapi"
+import {getAsidHeader, getRequestIdHeader} from "../../headers"
 
 export async function convertBundleToSpineRequest(
   bundle: fhir.Bundle,
