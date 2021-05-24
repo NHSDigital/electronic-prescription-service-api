@@ -1,6 +1,9 @@
 import * as translator from "../../services/translation/request"
 import Hapi from "@hapi/hapi"
-import {BASE_PATH, ContentTypes, createHash, externalValidator, getPayload, userAuthValidator} from "../util"
+import {
+  BASE_PATH, ContentTypes, createHash,
+  externalValidator, getPayload
+} from "../util"
 import {fhir} from "@models"
 import * as bundleValidator from "../../services/validation/bundle-validator"
 
@@ -11,7 +14,7 @@ export default [
   {
     method: "POST",
     path: `${BASE_PATH}/$prepare`,
-    handler: userAuthValidator(externalValidator(
+    handler: externalValidator(
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const bundle = getPayload(request) as fhir.Bundle
         const issues = bundleValidator.verifyBundle(bundle)
@@ -25,6 +28,6 @@ export default [
         request.log("audit", {"PrepareEndpointResponse": response})
         return responseToolkit.response(response).code(200).type(ContentTypes.FHIR)
       }
-    ))
+    )
   }
 ]

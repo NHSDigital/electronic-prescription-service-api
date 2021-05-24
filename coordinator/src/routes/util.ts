@@ -1,12 +1,10 @@
-import {fhir, spine, validationErrors as errors} from "@models"
+import {fhir, spine} from "@models"
 import Hapi from "@hapi/hapi"
 import {translateToFhir} from "../services/translation/response"
 import * as LosslessJson from "lossless-json"
 import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
-import {userHasValidAuth} from "../services/validation/auth-level"
-import {identifyMessageType} from "../services/translation/common"
 import {RequestHeaders} from "../services/headers"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
@@ -132,26 +130,11 @@ export async function getFhirValidatorErrors(
   return null
 }
 
-type Handler = (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => Promise<Hapi.ResponseObject>
-
-export function externalValidator(handler: Handler) {
-  return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+export function externalValidator(handler: Hapi.Lifecycle.Method) {
+  return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.Lifecycle.ReturnValue> => {
     const fhirValidatorResponse = await getFhirValidatorErrors(request)
     if (fhirValidatorResponse) {
       return responseToolkit.response(fhirValidatorResponse).code(400).type(ContentTypes.FHIR)
-    }
-
-    return handler(request, responseToolkit)
-  }
-}
-
-export function userAuthValidator(handler: Handler) {
-  return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-    const bundle = getPayload(request) as fhir.Bundle
-    if (identifyMessageType(bundle) !== fhir.EventCodingCode.DISPENSE) {
-      if (!userHasValidAuth(request, "user")) {
-        return responseToolkit.response(errors.unauthorisedActionIssue).code(403).type(ContentTypes.FHIR)
-      }
     }
 
     return handler(request, responseToolkit)
