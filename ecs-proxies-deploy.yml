@@ -27,8 +27,6 @@ docker_service:
           valueFrom: '/{{ account }}/platform-common/egress/hosts/spine-prescriptions-{{ SPINE_ENV }}'
         - name: ODS_URL
           valueFrom: '/{{ account }}/platform-common/egress/hosts/directory-spineservices'
-        - name: FROM_ASID
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/from-asid'
         - name: TO_ASID
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-asid'
         - name: FROM_PARTY_KEY

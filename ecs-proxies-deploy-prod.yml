@@ -22,8 +22,6 @@ docker_service:
           value: "{{ SOURCE_COMMIT_ID }}"
         - name: ENVIRONMENT
           value: "{{ APIGEE_ENVIRONMENT }}"
-        - name: FROM_ASID
-          value: 'FROM_ASID_PLACEHOLDER'
         - name: TO_ASID
           value: 'TO_ASID_PLACEHOLDER'
         - name: FROM_PARTY_KEY

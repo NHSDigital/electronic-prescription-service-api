@@ -53,7 +53,7 @@ export class LiveSpineClient implements SpineClient {
     }
   }
 
-  async poll(path: string, logger: Logger): Promise<spine.SpineResponse<unknown>> {
+  async poll(path: string, fromAsid: string, logger: Logger): Promise<spine.SpineResponse<unknown>> {
     const address = this.getSpineUrlForPolling(path)
 
     logger.info(`Attempting to send polling message to ${address}`)
@@ -63,7 +63,7 @@ export class LiveSpineClient implements SpineClient {
         address,
         {
           headers: {
-            "nhsd-asid": process.env.FROM_ASID
+            "nhsd-asid": fromAsid
           }
         }
       )
