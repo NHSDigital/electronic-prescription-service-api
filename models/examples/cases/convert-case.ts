@@ -66,7 +66,7 @@ export class ConvertCase extends Case {
     )
 
     responseXml = responseXml.replace(
-      /<id extension=\\"[0-9]*\\" root=\\"1\.2\.826\.0\.1285\.0\.2\.0\.107\\"\\\/>/g,
+      /<id extension=\\"[0-9]*\\" root=\\"1\\.2\\.826\\.0\\.1285\\.0\\.2\\.0\\.107\\"\\\/>/g,
       "<id extension=\\\"[0-9]*\\\" root=\\\"1\\.2\\.826\\.0\\.1285\\.0\\.2\\.0\\.107\\\"\\/>"
     )
 
