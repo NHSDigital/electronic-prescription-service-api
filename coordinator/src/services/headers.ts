@@ -21,11 +21,12 @@ export const rejectInvalidProdHeaders: Hapi.Lifecycle.Method = (
       requestHeader => invalidProdHeaders.includes(requestHeader as RequestHeaders)
     )
     if (listOfInvalidHeaders.length) {
-      console.error(`Request with id: ${
+      const errorMessage = `Request with id: ${
         request.headers[RequestHeaders.REQUEST_ID]
       } had invalid header(s): ${
         listOfInvalidHeaders
-      }`)
+      }`
+      request.logger.error(errorMessage)
       const issue = errors.invalidHeaderOperationOutcome(listOfInvalidHeaders)
       return responseToolkit
         .response(fhir.createOperationOutcome([issue]))
