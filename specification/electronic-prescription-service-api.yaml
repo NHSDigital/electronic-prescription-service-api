@@ -219,6 +219,8 @@ paths:
         content:
           #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
           application/json:
+            schema:
+              type: object
             examples:
               example:
                 value:
