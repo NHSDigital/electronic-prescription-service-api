@@ -219,13 +219,10 @@ paths:
         content:
           #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
           application/json:
-            schema:
-              type: object
             examples:
               example:
                 value:
                   $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Prepare-Request-200_OK.json
-        description: ''
       responses:
         '200':
           description: Successful conversion.
@@ -233,7 +230,7 @@ paths:
             #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/parameters-response'
               examples:
                 example:
                   value:
@@ -243,7 +240,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                type: object
+                $ref: '#/components/schemas/operation-outcome'
               examples:
                 example:
                   value:
@@ -501,3 +498,8 @@ components:
                     diagnostics:
                       type: string
                       example: "Message Sent"
+  schemas: 
+    parameters-response:
+      $ref: "components/schemas/ParametersResponse.yaml"
+    operation-outcome:
+      $ref: "components/schemas/OperationOutcome.yaml"
