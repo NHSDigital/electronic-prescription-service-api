@@ -15,7 +15,7 @@ function getTaskCases(operation: ApiOperation) {
     .map(spec => spec.toJestCase())
 }
 
-export const convertCaseGroups = fetcher.convertExamples.filter(e => e.isSuccess).map(spec => spec.toSuccessJestCase())
+export const convertCaseGroups = fetcher.convertExamples.filter(e => e.isSuccess).map(spec => spec.toSuccessJestCase()).slice(0, 10)
 export const convertErrorCases = fetcher.convertExamples.filter(e => !e.isSuccess).map(spec => spec.toErrorJestCase())
 
 export const prepareCaseGroups = fetcher.prepareExamples.filter(e => e.isSuccess).map(spec => spec.toJestCase())
