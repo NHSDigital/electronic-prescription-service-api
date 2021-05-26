@@ -4,5 +4,10 @@ export function verifyParameters(parameters: fhir.Parameters): Array<fhir.Operat
   if (parameters.resourceType !== "Parameters") {
     return [errors.createResourceTypeIssue("Parameters")]
   }
+
+  if (process.env.DISPENSE_ENABLED !== "true") {
+    return [errors.functionalityDisabled]
+  }
+
   return []
 }

@@ -13,6 +13,7 @@ import {
 import {fhir, validationErrors as errors} from "@models"
 import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
 import {isRepeatDispensing} from "../translation/request"
+import {ContentTypes} from "../../routes/util";
 
 export function verifyBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
@@ -22,6 +23,15 @@ export function verifyBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIs
   const messageType = identifyMessageType(bundle)
   if (!verifyMessageType(messageType)) {
     return [errors.messageTypeIssue]
+  }
+
+  if (process.env.PRESCRIBE_ENABLED !== "true" &&
+      (messageType === fhir.EventCodingCode.PRESCRIPTION || messageType === fhir.EventCodingCode.CANCELLATION)) {
+    return [errors.functionalityDisabled]
+  }
+
+  if (process.env.DISPENSE_ENABLED !== "true" && messageType === fhir.EventCodingCode.DISPENSE) {
+    return [errors.functionalityDisabled]
   }
 
   const commonErrors = verifyCommonBundle(bundle)

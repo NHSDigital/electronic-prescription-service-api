@@ -18,9 +18,29 @@ function validateValidationErrors (validationErrors: Array<fhir.OperationOutcome
 }
 
 describe("Bundle checks", () => {
+
+  afterEach(() => {
+    process.env.PRESCRIBE_ENABLED = "true"
+    process.env.DISPENSE_ENABLED = "true"
+  })
+
   test("verifyBundle accepts bundle with required Resources", () => {
     expect(validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned)).toEqual([])
   })
+
+  test("verifyBundle rejects a prescribe message when the env feature toggle 'PRESCRIBE_ENABLE' is false",
+    () => {
+      process.env.PRESCRIBE_ENABLED = "false"
+      expect(validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned))
+        .toEqual([errors.functionalityDisabled])
+    })
+
+  test("verifyBundle rejects a dispense message when the env feature toggle 'DISPENSE_ENABLE' is false",
+    () => {
+      process.env.DISPENSE_ENABLED = "false"
+      expect(validator.verifyBundle(TestResources.examplePrescription3.fhirMessageDispense))
+        .toEqual([errors.functionalityDisabled])
+    })
 
   test("rejects bundle with unusual bundle type", () => {
     const messageHeader: fhir.MessageHeader = {

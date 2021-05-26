@@ -8,6 +8,10 @@ export function verifyTask(task: fhir.Task): Array<fhir.OperationOutcomeIssue> {
     validationErrors.push(errors.createResourceTypeIssue("Task"))
   }
 
+  if (process.env.DISPENSE_ENABLED !== "true") {
+    return [errors.functionalityDisabled]
+  }
+
   if (task.intent !== fhir.TaskIntent.ORDER) {
     validationErrors.push(errors.createTaskIncorrectValueIssue("intent", fhir.TaskIntent.ORDER))
   }

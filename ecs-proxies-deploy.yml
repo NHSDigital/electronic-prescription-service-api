@@ -22,6 +22,10 @@ docker_service:
           value: "{{ SOURCE_COMMIT_ID }}"
         - name: ENVIRONMENT
           value: "{{ APIGEE_ENVIRONMENT }}"
+        - name: DISPENSE_ENABLED
+          value: "true"
+        - name: PRESCRIBE_ENABLED
+          value: "true"
     secrets:
         - name: SPINE_URL
           valueFrom: '/{{ account }}/platform-common/egress/hosts/spine-prescriptions-{{ SPINE_ENV }}'
