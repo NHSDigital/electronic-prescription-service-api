@@ -15,7 +15,12 @@ function getTaskCases(operation: ApiOperation) {
     .map(spec => spec.toJestCase())
 }
 
+// take the first 10 convert success examples as pact struggles with large regex matching
+// todo: we should look to move away from this, investigation into whether TKW validation will handle testing
+// conversions for us from process message tests
 export const convertCaseGroups = fetcher.convertExamples.filter(e => e.isSuccess).map(spec => spec.toSuccessJestCase()).slice(0, 10)
+// *********************************************
+
 export const convertErrorCases = fetcher.convertExamples.filter(e => !e.isSuccess).map(spec => spec.toErrorJestCase())
 
 export const prepareCaseGroups = fetcher.prepareExamples.filter(e => e.isSuccess).map(spec => spec.toJestCase())
