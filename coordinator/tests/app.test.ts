@@ -6,6 +6,7 @@ import {InvalidValueError} from "../../models/errors/processing-errors"
 import {ContentTypes} from "../src/routes/util"
 import {reformatUserErrorsToFhir, switchContentTypeForSmokeTest} from "../src/server-extensions"
 import {RequestHeaders} from "../src/services/headers"
+import HapiPino from "hapi-pino"
 
 jest.mock("../src/services/environment", () => ({
   isProd: jest.fn()
@@ -13,7 +14,7 @@ jest.mock("../src/services/environment", () => ({
 
 const newIsProd = isProd as jest.MockedFunction<typeof isProd>
 
-describe("rejectInvalidProdHeaders extension", () => {
+describe("rejectInvalidProdHeaders extension", async () => {
   const server = Hapi.server()
   server.route({
     method: "GET",
@@ -22,6 +23,14 @@ describe("rejectInvalidProdHeaders extension", () => {
       return responseToolkit.response("success")
     }
   })
+
+  await server.register({
+    plugin: HapiPino,
+    options: {
+      prettyPrint: false
+    }
+  })
+
   server.ext("onRequest", Headers.rejectInvalidProdHeaders)
 
   test.each(Headers.invalidProdHeaders)(
