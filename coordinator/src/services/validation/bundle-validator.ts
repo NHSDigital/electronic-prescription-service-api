@@ -13,7 +13,6 @@ import {
 import {fhir, validationErrors as errors} from "@models"
 import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
 import {isRepeatDispensing} from "../translation/request"
-import {ContentTypes} from "../../routes/util";
 
 export function verifyBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {

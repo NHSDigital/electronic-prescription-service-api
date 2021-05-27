@@ -14,6 +14,16 @@ describe("verifyTask returns errors", () => {
     invalidWithdrawTask = clone(validWithdrawTask)
   })
 
+  afterEach(() => {
+    process.env.DISPENSE_ENABLED = "true"
+  })
+
+  test("verifyTask rejects a message when dispensing is disabled",
+    () => {
+      process.env.DISPENSE_ENABLED = "false"
+      expect(verifyTask(validReturnTask)).toEqual([errors.functionalityDisabled])
+    })
+
   test("rejects when resourceType not 'Task'", () => {
     const invalidTask = {...validReturnTask, resourceType: "bluh"}
     const returnedErrors = verifyTask(invalidTask as fhir.Task)

@@ -28,18 +28,32 @@ describe("Bundle checks", () => {
     expect(validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned)).toEqual([])
   })
 
-  test("verifyBundle rejects a prescribe message when the env feature toggle 'PRESCRIBE_ENABLE' is false",
+  test("verifyBundle rejects a prescribe message when prescribe is disabled",
     () => {
       process.env.PRESCRIBE_ENABLED = "false"
       expect(validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned))
         .toEqual([errors.functionalityDisabled])
     })
 
-  test("verifyBundle rejects a dispense message when the env feature toggle 'DISPENSE_ENABLE' is false",
+  test("verifyBundle rejects a dispense message when dispensing is disabled",
     () => {
       process.env.DISPENSE_ENABLED = "false"
       expect(validator.verifyBundle(TestResources.examplePrescription3.fhirMessageDispense))
         .toEqual([errors.functionalityDisabled])
+    })
+
+  test("verifyBundle accepts a dispense message when prescribe is disabled",
+    () => {
+      process.env.PRESCRIBE_ENABLED = "false"
+      expect(validator.verifyBundle(TestResources.examplePrescription3.fhirMessageDispense))
+        .toEqual([])
+    })
+
+  test("verifyBundle accepts a dispense message when dispense is disabled",
+    () => {
+      process.env.DISPENSE_ENABLED = "false"
+      expect(validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned))
+        .toEqual([])
     })
 
   test("rejects bundle with unusual bundle type", () => {

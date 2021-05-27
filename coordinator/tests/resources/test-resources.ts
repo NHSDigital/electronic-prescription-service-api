@@ -118,6 +118,12 @@ export const exampleReturnTask = JSON.parse(fs.readFileSync(
   "utf-8"
 )) as fhir.Task
 
+const releaseParametersPath = `${taskBasePath}/2-Task-Request-Release-200_OK.json`
+export const exampleParameters = JSON.parse(fs.readFileSync(
+  releaseParametersPath,
+  "utf-8"
+)) as fhir.Parameters
+
 export interface ExampleSpineResponse {
   response: spine.SpineDirectResponse<string>
   hl7ErrorCode: string | undefined
