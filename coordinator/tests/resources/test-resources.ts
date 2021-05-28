@@ -5,6 +5,13 @@ import * as path from "path"
 import * as LosslessJson from "lossless-json"
 import {hl7V3, fhir, spine, fetcher} from "@models"
 
+export const convertSuccessExamples = fetcher.convertExamples.filter(
+  e => e.isSuccess).map(spec => spec.toSuccessJestCase()
+)
+export const convertFailureExamples = fetcher.convertExamples.filter(
+  e => !e.isSuccess).map(spec => spec.toErrorJestCase()
+)
+
 export class ExamplePrescription {
   description: string
   fhirMessageUnsigned: fhir.Bundle
