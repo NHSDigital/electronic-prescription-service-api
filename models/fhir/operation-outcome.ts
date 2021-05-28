@@ -24,7 +24,8 @@ export enum IssueCodes {
   CONFLICT = "conflict",
   NOT_FOUND = "not-found",
   EXCEPTION = "exception",
-  PROCESSING = "processing"
+  PROCESSING = "processing",
+  NOT_SUPPORTED = "not-supported"
 }
 
 export interface OperationOutcomeIssue {
