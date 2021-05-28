@@ -18,22 +18,27 @@
           "display": "Prescription Order"
         },
         "sender": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA"
+          },
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
-          "display": "BOOTH|PHIL"
+          "display": "RANDOM|FIFTYSEVEN"
         },
         "source": {
-          "extension": [
-            {
-              "url": "https://fhir.nhs.uk/R4/StructureDefinition/Extension-spineEndpoint",
-              "valueIdentifier": {
-                "system": "https://fhir.nhs.uk/Id/spine-ASID",
-                "value": "12456789012"
+          "endpoint": "urn:nhs-uk:addressing:ods:RBA"
+        },
+        "destination": [
+          {
+            "endpoint": "urn:nhs-uk:addressing:ods:FH542",
+            "receiver": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "FH542"
               }
             }
-          ],
-          "name": "DJM",
-          "endpoint": "https://mait.digital.nhs.uk/"
-        },
+          }
+        ],
         "focus": [
           {
             "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
@@ -194,8 +199,8 @@
             ]
           }
         ],
-        "gender": "female",
-        "birthDate": "1999-11-25",
+        "gender": "male",
+        "birthDate": "1908-04-03",
         "address": [
           {
             "use": "home",
@@ -228,13 +233,13 @@
             "value": "555086689106"
           },
           {
-            "system": "https://fhir.hl7.org.uk/Id/gphc-number",
-            "value": "2083469"
+            "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+            "value": "6150129"
           }
         ],
         "name": [
           {
-            "family": "UserM",
+            "family": "FIFTYSEVEN",
             "given": [
               "RANDOM"
             ],
@@ -257,7 +262,7 @@
           },
           {
             "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
-            "value": "2083469"
+            "value": "683458"
           }
         ],
         "practitioner": {
@@ -271,8 +276,8 @@
             "coding": [
               {
                 "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-                "code": "R8003",
-                "display": "Health Professional Access Role"
+                "code": "R8000",
+                "display": "Clinical Practitioner Access Role"
               }
             ]
           }
