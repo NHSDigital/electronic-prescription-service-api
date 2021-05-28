@@ -8,10 +8,10 @@ export const messageTypeIssue: fhir.OperationOutcomeIssue = {
   expression: ["Bundle.entry.resource.ofType(MessageHeader).eventCoding.code"]
 }
 
-export const functionalityDisabled: fhir.OperationOutcomeIssue = {
+export const featureBlockedIssue: fhir.OperationOutcomeIssue = {
   severity: "fatal",
   code: fhir.IssueCodes.NOT_SUPPORTED,
-  diagnostics: `The feature for this message type is disabled`
+  diagnostics: "The feature for this message type is disabled"
 }
 
 export function createMedicationRequestInconsistentValueIssue<T>(

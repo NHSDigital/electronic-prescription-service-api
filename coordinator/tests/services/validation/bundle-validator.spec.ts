@@ -32,14 +32,14 @@ describe("Bundle checks", () => {
     () => {
       process.env.PRESCRIBE_ENABLED = "false"
       expect(validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned))
-        .toEqual([errors.functionalityDisabled])
+        .toEqual([errors.featureBlockedIssue])
     })
 
   test("verifyBundle rejects a dispense message when dispensing is disabled",
     () => {
       process.env.DISPENSE_ENABLED = "false"
       expect(validator.verifyBundle(TestResources.examplePrescription3.fhirMessageDispense))
-        .toEqual([errors.functionalityDisabled])
+        .toEqual([errors.featureBlockedIssue])
     })
 
   test("verifyBundle accepts a dispense message when prescribe is disabled",

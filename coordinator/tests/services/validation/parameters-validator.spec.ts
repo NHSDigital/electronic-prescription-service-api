@@ -9,15 +9,15 @@ describe("verifyParameters returns errors", () => {
     process.env.DISPENSE_ENABLED = "true"
   })
 
-  test("verifyParameters rejects a message when dispensing is disabled",
-    () => {
-      process.env.DISPENSE_ENABLED = "false"
-      expect(verifyParameters(validParameters)).toEqual([errors.functionalityDisabled])
-    })
-
   test('rejects when resourceType not "Parameters"', () => {
     const invalidParameters = {...validParameters, resourceType: "bluh"}
     const returnedErrors = verifyParameters(invalidParameters as fhir.Parameters)
     expect(returnedErrors).toEqual([errors.createResourceTypeIssue("Parameters")])
   })
+
+  test("verifyParameters rejects a message when dispensing is disabled",
+    () => {
+      process.env.DISPENSE_ENABLED = "false"
+      expect(verifyParameters(validParameters)).toEqual([errors.featureBlockedIssue])
+    })
 })
