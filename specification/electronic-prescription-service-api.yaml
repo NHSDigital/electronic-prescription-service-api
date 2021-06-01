@@ -220,7 +220,7 @@ paths:
           #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/no-schema'
             examples:
               example:
                 value:
@@ -272,7 +272,7 @@ paths:
           #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/no-schema'
             examples:
               prescribe-success:
                 value:
@@ -402,7 +402,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                type: object
+                $ref: '#/components/schemas/no-schema'
               examples:
                 example:
                   value:
@@ -505,3 +505,8 @@ components:
       $ref: "components/schemas/ParametersResponse.yaml"
     operation-outcome:
       $ref: "components/schemas/OperationOutcome.yaml"
+    no-schema:
+      type: array
+      items: 
+        type: string
+      example: []
