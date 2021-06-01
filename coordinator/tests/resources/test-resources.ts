@@ -5,6 +5,13 @@ import * as path from "path"
 import * as LosslessJson from "lossless-json"
 import {hl7V3, fhir, spine, fetcher} from "@models"
 
+export const convertSuccessExamples = fetcher.convertExamples.filter(
+  e => e.isSuccess).map(spec => spec.toSuccessJestCase()
+)
+export const convertFailureExamples = fetcher.convertExamples.filter(
+  e => !e.isSuccess).map(spec => spec.toErrorJestCase()
+)
+
 export class ExamplePrescription {
   description: string
   fhirMessageUnsigned: fhir.Bundle
@@ -117,6 +124,12 @@ export const exampleReturnTask = JSON.parse(fs.readFileSync(
   returnTaskPath,
   "utf-8"
 )) as fhir.Task
+
+const releaseParametersPath = `${taskBasePath}/2-Task-Request-Release-200_OK.json`
+export const exampleParameters = JSON.parse(fs.readFileSync(
+  releaseParametersPath,
+  "utf-8"
+)) as fhir.Parameters
 
 export interface ExampleSpineResponse {
   response: spine.SpineDirectResponse<string>
