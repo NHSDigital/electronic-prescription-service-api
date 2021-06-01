@@ -37,19 +37,10 @@ export class DispenseProposalReturnPertinentInformation1 {
   }
 
   seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-  pertinentPrescriptionID: PrescriptionId
+  pertinentPrescriptionID: prescription.PrescriptionId
 
-  constructor(prescriptionId: PrescriptionId) {
+  constructor(prescriptionId: prescription.PrescriptionId) {
     this.pertinentPrescriptionID = prescriptionId
-  }
-}
-
-export class PrescriptionId extends prescription.PrescriptionAnnotation {
-  value: codes.ShortFormPrescriptionIdentifier
-
-  constructor(value: string) {
-    super(new codes.PrescriptionAnnotationCode("PID"))
-    this.value = new codes.ShortFormPrescriptionIdentifier(value)
   }
 }
 
