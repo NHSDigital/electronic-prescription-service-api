@@ -7,7 +7,7 @@ import {createUnauthorisedInteraction} from "./auth"
 import * as LosslessJson from "lossless-json"
 import {fetcher, fhir} from "@models"
 import * as TestResources from "../../resources/test-resources"
-import {generateShortFormId, setPrescriptionIds, updatePrescriptions} from "../../services/update-prescriptions"
+import {updatePrescriptions} from "../../services/update-prescriptions"
 import {generateTestOutputFile} from "../../services/genereate-test-output-file"
 
 const apiPath = `${basePath}/$process-message`
