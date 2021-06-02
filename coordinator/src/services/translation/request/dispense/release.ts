@@ -15,7 +15,7 @@ export async function translateReleaseRequest(
   const prescriptionIdParameter = getIdentifierParameterOrNullByName(fhirReleaseRequest.parameter, "group-identifier")
   if (prescriptionIdParameter) {
     const prescriptionId = prescriptionIdParameter.valueIdentifier.value
-    return createPatientReleaseRequest(organizationCode, prescriptionId, logger)
+    return await createPatientReleaseRequest(organizationCode, prescriptionId, logger)
   } else {
     return await createNominatedReleaseRequest(organizationCode, logger)
   }

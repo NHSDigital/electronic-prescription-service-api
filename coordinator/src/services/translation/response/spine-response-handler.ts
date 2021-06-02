@@ -31,6 +31,8 @@ export class SpineResponseHandler<T> {
     } else if (acknowledgementTypeCode === hl7V3.AcknowledgementTypeCode.REJECTED) {
       return this.handleRejectionResponse(sendMessagePayload, logger)
     } else {
+      //TODO - remove temporary logging
+      logger.error(spineResponse)
       logger.error("Unhandled acknowledgement type code " + acknowledgementTypeCode)
       return SpineResponseHandler.createServerErrorResponse()
     }
