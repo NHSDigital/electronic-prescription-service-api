@@ -2,6 +2,8 @@ import {readXmlStripNamespace} from "../../serialisation/xml"
 import {fhir, hl7V3} from "@models"
 import {toArray} from "../common"
 import * as pino from "pino"
+import * as cancelResponseTranslator from "./cancellation/cancellation-response"
+import * as releaseResponseTranslator from "./release/release-response"
 
 export interface TranslatedSpineResponse {
   fhirResponse: fhir.Resource
@@ -353,7 +355,11 @@ export class SpineResponseHandler<T> {
 export class CancelResponseHandler extends SpineResponseHandler<hl7V3.CancellationResponseRoot> {
   translator: (cancelResponse: hl7V3.CancellationResponse) => fhir.Bundle
 
-  constructor(interactionId: string, translator: (cancelResponse: hl7V3.CancellationResponse) => fhir.Bundle) {
+  constructor(
+    interactionId: string,
+    translator: (cancelResponse: hl7V3.CancellationResponse) => fhir.Bundle
+    = cancelResponseTranslator.translateSpineCancelResponseIntoBundle
+  ) {
     super(interactionId)
     this.translator = translator
   }
@@ -392,7 +398,11 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
 export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.PrescriptionReleaseResponseRoot> {
   translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse) => fhir.Bundle
 
-  constructor(interactionId: string, translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse) => fhir.Bundle) {
+  constructor(
+    interactionId: string,
+    translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse) => fhir.Bundle
+    = releaseResponseTranslator.createOuterBundle
+  ) {
     super(interactionId)
     this.translator = translator
   }
