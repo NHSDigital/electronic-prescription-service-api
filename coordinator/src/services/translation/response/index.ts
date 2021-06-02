@@ -33,7 +33,5 @@ export function translateToFhir<T>(
     }
   }
   logger.error("Unhandled Spine response")
-  //TODO - remove logging
-  logger.error(bodyString)
   return SpineResponseHandler.createServerErrorResponse()
 }
