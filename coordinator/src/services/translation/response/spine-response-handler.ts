@@ -24,17 +24,17 @@ export class SpineResponseHandler<T> {
       return null
     }
     const acknowledgementTypeCode = this.extractAcknowledgementTypeCode(sendMessagePayload)
-    if (acknowledgementTypeCode === hl7V3.AcknowledgementTypeCode.ACKNOWLEDGED) {
-      return this.handleSuccessResponse(sendMessagePayload, logger)
-    } else if (acknowledgementTypeCode === hl7V3.AcknowledgementTypeCode.ERROR) {
-      return this.handleErrorResponse(sendMessagePayload, logger)
-    } else if (acknowledgementTypeCode === hl7V3.AcknowledgementTypeCode.REJECTED) {
-      return this.handleRejectionResponse(sendMessagePayload, logger)
-    } else {
-      //TODO - remove temporary logging
-      logger.error(spineResponse)
-      logger.error("Unhandled acknowledgement type code " + acknowledgementTypeCode)
-      return SpineResponseHandler.createServerErrorResponse()
+    switch (acknowledgementTypeCode) {
+      case hl7V3.AcknowledgementTypeCode.ACKNOWLEDGED:
+        return this.handleSuccessResponse(sendMessagePayload, logger)
+      case hl7V3.AcknowledgementTypeCode.ERROR:
+      case hl7V3.AcknowledgementTypeCode.ERROR_ALTERNATIVE:
+        return this.handleErrorResponse(sendMessagePayload, logger)
+      case hl7V3.AcknowledgementTypeCode.REJECTED:
+        return this.handleRejectionResponse(sendMessagePayload, logger)
+      default:
+        logger.error("Unhandled acknowledgement type code " + acknowledgementTypeCode)
+        return SpineResponseHandler.createServerErrorResponse()
     }
   }
 
