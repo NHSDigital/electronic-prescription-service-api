@@ -189,7 +189,7 @@ function isStringParameter(parameter: fhir.Parameter): parameter is fhir.StringP
   return (parameter as fhir.StringParameter).valueString !== undefined
 }
 
-function isIdentifierParameter(parameter: fhir.Parameter): parameter is fhir.IdentifierParameter {
+export function isIdentifierParameter(parameter: fhir.Parameter): parameter is fhir.IdentifierParameter {
   return (parameter as fhir.IdentifierParameter).valueIdentifier !== undefined
 }
 
@@ -208,6 +208,16 @@ export function getIdentifierParameterByName(
   name: string
 ): fhir.IdentifierParameter {
   return onlyElement(parameters.filter(isIdentifierParameter).filter(parameter => parameter.name === name),
+    "Parameters.parameter",
+    `name == '${name}'`
+  ) as fhir.IdentifierParameter
+}
+
+export function getIdentifierParameterOrNullByName(
+  parameters: Array<fhir.ParameterTypes>,
+  name: string
+): fhir.IdentifierParameter {
+  return onlyElementOrNull(parameters.filter(isIdentifierParameter).filter(parameter => parameter.name === name),
     "Parameters.parameter",
     `name == '${name}'`
   ) as fhir.IdentifierParameter

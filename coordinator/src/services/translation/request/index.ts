@@ -154,7 +154,9 @@ export async function convertParametersToSpineRequest(
   logger: pino.Logger
 ): Promise<spine.SpineRequest> {
   const hl7ReleaseRequest = await translateReleaseRequest(parameters, logger)
-  const interactionId = hl7V3.Hl7InteractionIdentifier.NOMINATED_PRESCRIPTION_RELEASE_REQUEST
+  const interactionId = hl7ReleaseRequest instanceof hl7V3.NominatedPrescriptionReleaseRequestWrapper
+    ? hl7V3.Hl7InteractionIdentifier.NOMINATED_PRESCRIPTION_RELEASE_REQUEST
+    : hl7V3.Hl7InteractionIdentifier.PATIENT_PRESCRIPTION_RELEASE_REQUEST
   const sendMessagePayload = createSendMessagePayloadForUnattendedAccess(
     uuid.v4(),
     interactionId,
