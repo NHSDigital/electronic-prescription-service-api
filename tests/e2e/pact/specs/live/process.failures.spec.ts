@@ -7,7 +7,7 @@ import {createUnauthorisedInteraction} from "./auth"
 import * as LosslessJson from "lossless-json"
 import {fetcher, fhir} from "@models"
 import * as TestResources from "../../resources/test-resources"
-import {updatePrescriptions} from "../../services/update-prescriptions"
+import {generateShortFormId, setPrescriptionIds, updatePrescriptions} from "../../services/update-prescriptions"
 import {generateTestOutputFile} from "../../services/genereate-test-output-file"
 
 const apiPath = `${basePath}/$process-message`
@@ -107,6 +107,68 @@ jestpact.pactWith(
           .set("X-Request-ID", requestId)
           .set("X-Correlation-ID", correlationId)
           .send(bundleStr)
+          .expect(400)
+      })
+
+      test("Validate NHSD-Session-URID", async () => {
+        const testCase = fetcher.processExamples[0]
+        const apiPath = `${basePath}/$process-message`
+        const requestCopy = LosslessJson.parse(LosslessJson.stringify(testCase.request))
+        setPrescriptionIds(requestCopy, uuid.v4(), generateShortFormId(), uuid.v4())
+        const messageStr = LosslessJson.stringify(requestCopy)
+        const requestId = uuid.v4()
+        const correlationId = uuid.v4()
+
+        const interaction: InteractionObject = {
+          state: "is authenticated",
+          uponReceiving: "a request to process a message with an invalid NHSD-Session-URID header",
+          withRequest: {
+            headers: {
+              "Content-Type": "application/fhir+json; fhirVersion=4.0",
+              "X-Request-ID": requestId,
+              "X-Correlation-ID": correlationId,
+              "NHSD-Session-URID": "invalid"
+            },
+            method: "POST",
+            path: apiPath,
+            body: JSON.parse(messageStr)
+          },
+          willRespondWith: {
+            headers: {
+              "Content-Type": "application/fhir+json"
+            },
+            body: {
+              resourceType: "OperationOutcome",
+              issue: [
+                {
+                  code: "400",
+                  severity: "error",
+                  details: {
+                    coding: [
+                      {
+                        system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+                        version: "1",
+                        code: "INVALID_VALUE",
+                        display: "Provided value is invalid"
+                      }
+                    ]
+                  },
+                  diagnostics: "nhsd-session-urid is invalid"
+                }
+              ]
+            },
+            status: 400
+          }
+        }
+        await provider.addInteraction(interaction)
+        await client()
+          .post(apiPath)
+          .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
+          .set("Accept", "application/fhir+json")
+          .set("X-Request-ID", requestId)
+          .set("X-Correlation-ID", correlationId)
+          .set("NHSD-Session-URID", "invalid")
+          .send(messageStr)
           .expect(400)
       })
 

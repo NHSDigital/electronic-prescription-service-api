@@ -4,7 +4,7 @@ import {fhir} from "@models"
 export const basePath = "/FHIR/R4"
 
 export type ApiMode = "live" | "sandbox"
-export type ApiEndpoint = "prepare" | "process" | "convert" | "task" | "validate"
+export type ApiEndpoint = "prepare" | "process" | "task" | "validate"
 export type ApiOperation = "send" | "cancel" | "dispense" | "release" | "return" | "withdraw"
 
 // used to add type-safety for adding a new pact

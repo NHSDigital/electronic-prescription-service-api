@@ -14,11 +14,21 @@ describe("verifyTask returns errors", () => {
     invalidWithdrawTask = clone(validWithdrawTask)
   })
 
+  afterEach(() => {
+    process.env.DISPENSE_ENABLED = "true"
+  })
+
   test("rejects when resourceType not 'Task'", () => {
     const invalidTask = {...validReturnTask, resourceType: "bluh"}
     const returnedErrors = verifyTask(invalidTask as fhir.Task)
     expect(returnedErrors).toContainEqual(errors.createResourceTypeIssue("Task"))
   })
+
+  test("verifyTask rejects a message when dispensing is disabled",
+    () => {
+      process.env.DISPENSE_ENABLED = "false"
+      expect(verifyTask(validReturnTask)).toEqual([errors.featureBlockedIssue])
+    })
 
   test("rejects when intent not 'order'", () => {
     invalidReturnTask.intent = "bluh" as fhir.TaskIntent

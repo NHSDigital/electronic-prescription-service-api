@@ -259,7 +259,7 @@ function createPertinentPrescriptionId(fhirFirstMedicationDispense: fhir.Medicat
   const hl7PertinentPrescriptionId = fhirAuthorizingPrescriptionShortFormIdExtension
     .valueIdentifier
     .value
-  return new hl7V3.PertinentPrescriptionId(new hl7V3.ShortFormPrescriptionIdentifier(hl7PertinentPrescriptionId))
+  return new hl7V3.PrescriptionId(hl7PertinentPrescriptionId)
 }
 
 function createPriorOriginalRef(firstMedicationDispense: fhir.MedicationDispense) {

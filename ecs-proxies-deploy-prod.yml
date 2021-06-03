@@ -28,6 +28,10 @@ docker_service:
           value: 'FROM_PARTY_KEY_PLACEHOLDER'
         - name: TO_PARTY_KEY
           value: 'TO_PARTY_KEY_PLACEHOLDER'
+        - name: DISPENSE_ENABLED
+          value: "false"
+        - name: PRESCRIBE_ENABLED
+          value: "true"
     secrets:
         - name: SPINE_URL
           valueFrom: '/{{ account }}/platform-common/egress/hosts/spine-prescriptions-prod'

@@ -77,7 +77,7 @@ async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
 
   // debug endpoints not available in prod
   if (process.env.APIGEE_ENVIRONMENT === "prod"
-    && (endpoint === "validate" || endpoint === "convert")) {
+    && (endpoint === "validate")) {
     shouldVerifyOperation = false
   }
 
@@ -87,9 +87,6 @@ async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
   }
 }
 
-async function verifyConvert(): Promise<void> {
-  await verifyOnce("convert")
-}
 async function verifyValidate(): Promise<void> {
   await verifyOnce("validate")
 }
@@ -116,8 +113,7 @@ async function verifyWithdraw(): Promise<void> {
 }
 
 (async () => {
-  await verifyConvert()
-    .then(verifyValidate)
+  await verifyValidate()
     .then(verifyPrepare)
     .then(verifySend)
     .then(verifyCancel)

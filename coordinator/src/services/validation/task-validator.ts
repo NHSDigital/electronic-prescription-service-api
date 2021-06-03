@@ -1,11 +1,16 @@
 import {fhir, validationErrors as errors} from "@models"
 import {getCodeableConceptCodingForSystem, getCodingForSystemOrNull} from "../translation/common"
+import {featureBlockedDispenseMessage} from "./feature-flags"
 
 export function verifyTask(task: fhir.Task): Array<fhir.OperationOutcomeIssue> {
   const validationErrors = []
 
   if (task.resourceType !== "Task") {
     validationErrors.push(errors.createResourceTypeIssue("Task"))
+  }
+
+  if (featureBlockedDispenseMessage()) {
+    return [errors.featureBlockedIssue]
   }
 
   if (task.intent !== fhir.TaskIntent.ORDER) {

@@ -18,9 +18,43 @@ function validateValidationErrors (validationErrors: Array<fhir.OperationOutcome
 }
 
 describe("Bundle checks", () => {
+
+  afterEach(() => {
+    process.env.PRESCRIBE_ENABLED = "true"
+    process.env.DISPENSE_ENABLED = "true"
+  })
+
   test("verifyBundle accepts bundle with required Resources", () => {
     expect(validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned)).toEqual([])
   })
+
+  test("verifyBundle rejects a prescribe message when prescribe is disabled",
+    () => {
+      process.env.PRESCRIBE_ENABLED = "false"
+      expect(validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned))
+        .toEqual([errors.featureBlockedIssue])
+    })
+
+  test("verifyBundle rejects a dispense message when dispensing is disabled",
+    () => {
+      process.env.DISPENSE_ENABLED = "false"
+      expect(validator.verifyBundle(TestResources.examplePrescription3.fhirMessageDispense))
+        .toEqual([errors.featureBlockedIssue])
+    })
+
+  test("verifyBundle accepts a dispense message when prescribe is disabled",
+    () => {
+      process.env.PRESCRIBE_ENABLED = "false"
+      expect(validator.verifyBundle(TestResources.examplePrescription3.fhirMessageDispense))
+        .toEqual([])
+    })
+
+  test("verifyBundle accepts a dispense message when dispense is disabled",
+    () => {
+      process.env.DISPENSE_ENABLED = "false"
+      expect(validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned))
+        .toEqual([])
+    })
 
   test("rejects bundle with unusual bundle type", () => {
     const messageHeader: fhir.MessageHeader = {
