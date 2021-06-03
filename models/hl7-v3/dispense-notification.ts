@@ -452,30 +452,11 @@ export class DispensePertinentInformation4 implements ElementCompact {
     typeCode: "PERT",
     contextConductionInd: "true"
   }
-
   seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-  pertinentPrescriptionID: PertinentPrescriptionId
+  pertinentPrescriptionID: prescription.PrescriptionId
 
-  constructor(pertinentPrescriptionID: PertinentPrescriptionId) {
+  constructor(pertinentPrescriptionID: prescription.PrescriptionId) {
     this.pertinentPrescriptionID = pertinentPrescriptionID
-  }
-}
-
-/*
-* A reference to the original prescription clinical event.
-*/
-export class PertinentPrescriptionId implements ElementCompact {
-  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-    classCode: "OBS",
-    moodCode: "EVN"
-  }
-
-  code: codes.PrescriptionAnnotationCode
-  value: codes.ShortFormPrescriptionIdentifier
-
-  constructor(value: codes.ShortFormPrescriptionIdentifier) {
-    this.code = new codes.PrescriptionAnnotationCode("PID")
-    this.value = value
   }
 }
 

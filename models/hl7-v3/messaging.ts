@@ -40,7 +40,9 @@ export class Acknowledgement {
 export enum AcknowledgementTypeCode {
   ACKNOWLEDGED = "AA",
   REJECTED = "AR",
-  ERROR = "AE"
+  ERROR = "AE",
+  //This isn't valid according to the MiM, but can be returned by Spine.
+  ERROR_ALTERNATIVE = "ER"
 }
 
 export class AcknowledgementDetail {

@@ -305,6 +305,7 @@ export class Hl7InteractionIdentifier extends Identifier<"2.16.840.1.113883.2.1.
     static CANCEL_REQUEST = new Hl7InteractionIdentifier("PORX_IN030101SM32")
     static DISPENSE_NOTIFICATION = new Hl7InteractionIdentifier("PORX_IN080101SM31")
     static NOMINATED_PRESCRIPTION_RELEASE_REQUEST = new Hl7InteractionIdentifier("PORX_IN060102SM30")
+    static PATIENT_PRESCRIPTION_RELEASE_REQUEST = new Hl7InteractionIdentifier("PORX_IN132004SM30")
     static DISPENSER_WITHDRAW = new Hl7InteractionIdentifier("PORX_IN510101SM31")
     static DISPENSE_PROPOSAL_RETURN = new Hl7InteractionIdentifier("PORX_IN100101SM31")
 }

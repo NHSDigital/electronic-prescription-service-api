@@ -3,6 +3,7 @@ import * as core from "./core"
 import * as codes from "./codes"
 import {ElementCompact} from "xml-js"
 import * as patient from "./patient"
+import * as prescription from "./prescription"
 
 export class CancellationRequestRoot {
   CancellationRequest: CancellationRequest
@@ -37,41 +38,15 @@ export class CancellationRequest implements ElementCompact {
 }
 
 export class CancellationRequestPertinentInformation2 {
-  _attributes: {
-    typeCode: string
-    contextConductionInd: string
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
   }
-
   seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-
-  pertinentPrescriptionID: PertinentPrescriptionID
+  pertinentPrescriptionID: prescription.PrescriptionId
 
   constructor(shortFormPrescriptionID: string){
-    this._attributes= {
-      typeCode: "PERT",
-      contextConductionInd: "true"
-    }
-    this.pertinentPrescriptionID = new PertinentPrescriptionID(shortFormPrescriptionID)
-  }
-}
-
-class PertinentPrescriptionID {
-  _attributes: {
-    classCode: string
-    moodCode: string
-  }
-
-  code: codes.PrescriptionAnnotationCode
-
-  value: codes.ShortFormPrescriptionIdentifier
-
-  constructor(shortFormID: string){
-    this._attributes = {
-      classCode: "OBS",
-      moodCode: "EVN"
-    }
-    this.code = new codes.PrescriptionAnnotationCode("PID")
-    this.value = new codes.ShortFormPrescriptionIdentifier(shortFormID)
+    this.pertinentPrescriptionID = new prescription.PrescriptionId(shortFormPrescriptionID)
   }
 }
 

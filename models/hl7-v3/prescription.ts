@@ -295,3 +295,15 @@ export class ReviewDate extends PrescriptionAnnotation {
     this.value = value
   }
 }
+
+/**
+ * A reference to the requested prescription.
+ */
+export class PrescriptionId extends PrescriptionAnnotation {
+  value: codes.ShortFormPrescriptionIdentifier
+
+  constructor(value: string) {
+    super(new codes.PrescriptionAnnotationCode("PID"))
+    this.value = new codes.ShortFormPrescriptionIdentifier(value)
+  }
+}
