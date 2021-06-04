@@ -4,7 +4,7 @@ import {
   convertBundleToPrescription,
   convertCourseOfTherapyType,
   convertPrescriptionComponent1,
-  convertRepeatNumber,
+  convertRepeatNumber, extractRepeatNumberHighValue,
   extractReviewDate
 } from "../../../../src/services/translation/request/prescription"
 import * as translator from "../../../../src/services/translation/request"
@@ -17,6 +17,8 @@ import {getExtensionForUrl, toArray} from "../../../../src/services/translation/
 import {setCourseOfTherapyTypeCode} from "./course-of-therapy-type.spec"
 import {hl7V3, fhir} from "@models"
 import pino from "pino"
+import {LosslessNumber} from "lossless-json"
+import {InvalidValueError} from "../../../../../models/errors/processing-errors"
 
 const logger = pino()
 
@@ -429,6 +431,91 @@ describe("createRepeatNumberForMedicationRequests", () => {
     expect(() => {
       convertRepeatNumber(medicationRequests)
     }).toThrow()
+  })
+})
+
+describe("extractRepeatNumberHighValue", () => {
+  test("extracts from dispenseRequest", () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const testMedicationRequest: fhir.MedicationRequest = {
+      extension: [{
+        url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+        extension: []
+      }],
+      dispenseRequest: {
+        numberOfRepeatsAllowed: new LosslessNumber("5")
+      }
+    }
+    const repeatNumberHighValue = extractRepeatNumberHighValue(testMedicationRequest)
+    expect(repeatNumberHighValue).toEqual("6")
+  })
+
+  test("extracts from extension", () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const testMedicationRequest: fhir.MedicationRequest = {
+      extension: [{
+        url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+        extension: [{
+          url: "numberOfRepeatPrescriptionsAllowed",
+          valueUnsignedInt: new LosslessNumber("6")
+        }]
+      }],
+      dispenseRequest: {}
+    }
+    const repeatNumberHighValue = extractRepeatNumberHighValue(testMedicationRequest)
+    expect(repeatNumberHighValue).toEqual("6")
+  })
+
+  test("throws if not present in either location", () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const testMedicationRequest: fhir.MedicationRequest = {
+      extension: [{
+        url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+        extension: []
+      }],
+      dispenseRequest: {}
+    }
+    expect(() =>extractRepeatNumberHighValue(testMedicationRequest)).toThrow(InvalidValueError)
+  })
+
+  test("throws if present in both locations with inconsistent values", () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const testMedicationRequest: fhir.MedicationRequest = {
+      extension: [{
+        url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+        extension: [{
+          url: "numberOfRepeatPrescriptionsAllowed",
+          valueUnsignedInt: new LosslessNumber("6")
+        }]
+      }],
+      dispenseRequest: {
+        numberOfRepeatsAllowed: new LosslessNumber("6")
+      }
+    }
+    expect(() =>extractRepeatNumberHighValue(testMedicationRequest)).toThrow(InvalidValueError)
+  })
+
+  test("extracts value if present in both locations with consistent values", () => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const testMedicationRequest: fhir.MedicationRequest = {
+      extension: [{
+        url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+        extension: [{
+          url: "numberOfRepeatPrescriptionsAllowed",
+          valueUnsignedInt: new LosslessNumber("6")
+        }]
+      }],
+      dispenseRequest: {
+        numberOfRepeatsAllowed: new LosslessNumber("5")
+      }
+    }
+    const repeatNumberHighValue = extractRepeatNumberHighValue(testMedicationRequest)
+    expect(repeatNumberHighValue).toEqual("6")
   })
 })
 
