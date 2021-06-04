@@ -77,6 +77,11 @@ info:
     ### To withdraw a dispense notification:
     1. POST a [Task-dispense-notification-amend](https://simplifier.net/guide/DigitalMedicines/Task) message to the `/FHIR/R4/Task` endpoint.
 
+    ## Who can use this API
+    This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
+
+    You must do this before you can go live (see ‘Onboarding’ below).
+    
     ## Related APIs
     The following APIs also give access to the Electronic Prescription Service:
     - [Electronic Prescription Service (HL7 V3) API](https://data.developer.nhs.uk/dms/mim/4.2.00/Index.htm) - use this if you want to use functions that are not yet available on the FHIR API
@@ -171,11 +176,6 @@ info:
     ## Resources
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/DigitalMedicines) to assist with your integration.
     This is the FHIR specification for Digital Medicines starting with the assets required for an electronic prescription sent to the EPS.
-
-    ## Legal Use
-    This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
-
-    You must do this before you can go live (see ‘Onboarding’ below).
 
     ## Errors
     ### API wide errors
