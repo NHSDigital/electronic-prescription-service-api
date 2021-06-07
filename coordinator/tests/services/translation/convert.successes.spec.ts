@@ -18,18 +18,23 @@ describe("conversion tests", () => {
       const isMatch = regex.test(response)
       expect(isMatch).toBe(true)
 
+      const headers = {
+        "nhsd-request-id": "test",
+        "nhsd-asid": "200000001285"
+      }
+
       // copy of convert route logic, todo: either test injecting request into endpoint
       // or refactor these checks into a testable method and remove duplication
       if (isBundle(request)) {
-        const result = await convertBundleToSpineRequest(request, "", logger)
+        const result = await convertBundleToSpineRequest(request, headers, logger)
         const convertMatchesExpectation = regex.test(result.message)
         expect(convertMatchesExpectation).toBe(true)
       } else if (isParameters(request)) {
-        const result = await convertParametersToSpineRequest(request, "", logger)
+        const result = await convertParametersToSpineRequest(request, headers, logger)
         const convertMatchesExpectation = regex.test(result.message)
         expect(convertMatchesExpectation).toBe(true)
       } else if (isTask(request)) {
-        const result = await convertTaskToSpineRequest(request, "", logger)
+        const result = await convertTaskToSpineRequest(request, headers, logger)
         const convertMatchesExpectation = regex.test(result.message)
         expect(convertMatchesExpectation).toBe(true)
       }
