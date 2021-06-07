@@ -4,3 +4,5 @@ process.env.CPA_ID_MAP = '[["PORX_IN020101SM31","S20001A000100"],["PORX_IN020102
 process.env.BASE_PATH = "example.com/eps"
 process.env.PRESCRIBE_ENABLED = "true"
 process.env.DISPENSE_ENABLED = "true"
+
+jest.setTimeout(30000)
