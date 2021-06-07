@@ -181,7 +181,7 @@ export function getNumericValueAsString(numericValue: string | number | Lossless
   } else if (typeof numericValue === "string") {
     return numericValue
   } else {
-    return numericValue.toString()
+    return numericValue.value
   }
 }
 

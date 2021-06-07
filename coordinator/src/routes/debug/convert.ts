@@ -1,14 +1,4 @@
-import * as translator from "../../services/translation/request"
-import Hapi from "@hapi/hapi"
-import {
-  BASE_PATH, ContentTypes, externalValidator,
-  getPayload, isBundle, isParameters, isTask
-} from "../util"
-import {fhir} from "@models"
-import * as bundleValidator from "../../services/validation/bundle-validator"
-import * as parametersValidator from "../../services/validation/parameters-validator"
-import * as taskValidator from "../../services/validation/task-validator"
-import {RequestHeaders} from "../../services/headers"
+import {BASE_PATH, externalValidator, validator} from "../util"
 
 export default [
   /*
@@ -17,54 +7,6 @@ export default [
   {
     method: "POST",
     path: `${BASE_PATH}/$convert`,
-    handler: externalValidator(
-      async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
-        const payload = getPayload(request) as fhir.Resource
-        const requestId = request.headers[RequestHeaders.REQUEST_ID].toUpperCase()
-        if (isBundle(payload)) {
-          const issues = bundleValidator.verifyBundle(payload)
-          if (issues.length) {
-            return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(ContentTypes.FHIR)
-          }
-
-          request.logger.info("Building HL7V3 message from Bundle")
-          const spineRequest = await translator.convertBundleToSpineRequest(payload, requestId, request.logger)
-          return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)
-        }
-
-        if (isParameters(payload)) {
-          const issues = parametersValidator.verifyParameters(payload)
-          if (issues.length) {
-            return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(ContentTypes.FHIR)
-          }
-
-          request.logger.info("Building HL7V3 message from Parameters")
-          const spineRequest = await translator.convertParametersToSpineRequest(payload, requestId, request.logger)
-          return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)
-        }
-
-        if (isTask(payload)) {
-          const issues = taskValidator.verifyTask(payload)
-          if (issues.length) {
-            return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(ContentTypes.FHIR)
-          }
-
-          request.logger.info("Building HL7V3 message from Task")
-          const spineRequest = await translator.convertTaskToSpineRequest(payload, requestId, request.logger)
-          return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)
-        }
-
-        return responseToolkit.response(unsupportedResponse).code(400).type(ContentTypes.FHIR)
-      }
-    )
+    handler: externalValidator(validator())
   }
 ]
-
-const unsupportedResponse: fhir.OperationOutcome = {
-  resourceType: "OperationOutcome",
-  issue: [{
-    severity: "fatal",
-    code: fhir.IssueCodes.INVALID,
-    diagnostics: "Message not supported by $convert endpoint"
-  }]
-}

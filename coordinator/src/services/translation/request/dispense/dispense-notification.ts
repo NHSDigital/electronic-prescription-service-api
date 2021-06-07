@@ -6,7 +6,8 @@ import {
   getIdentifierValueOrNullForSystem,
   getMessageId,
   getMedicationCoding,
-  onlyElement
+  onlyElement,
+  getNumericValueAsString
 } from "../../common"
 import {getMedicationDispenses, getMessageHeader, getPatientOrNull} from "../../common/getResourcesOfType"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
@@ -103,7 +104,7 @@ function createPertinentInformation1LineItem(
     fhirMedicationDispense.quantity.code,
     fhirMedicationDispense.quantity.unit
   )
-  const hl7UnitValue = fhirMedicationDispense.quantity.value.toString()
+  const hl7UnitValue = getNumericValueAsString(fhirMedicationDispense.quantity.value)
   const hl7Quantity = new hl7V3.QuantityInAlternativeUnits(
     hl7UnitValue,
     hl7UnitValue,
