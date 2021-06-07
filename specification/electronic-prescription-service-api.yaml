@@ -126,7 +126,8 @@ info:
     All endpoints are [application-resctricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication), 
     meaning they only authenticate the calling application, not the end user. 
     An application is authenticated by sending a signed JSON web token (JWT) to our OAuth 2.0 authorisation server.
-    The API accepts tokens with a higher level of access (for example [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis)).
+    The API also accepts tokens with a higher level of access 
+    (for example [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis)).
 
     ## Environment and Testing
     | Purpose           | URL                                                                 |
