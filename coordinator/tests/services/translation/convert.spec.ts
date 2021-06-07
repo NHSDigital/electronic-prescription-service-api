@@ -80,7 +80,8 @@ describe("conversion happy path tests", () => {
       const convertMatchesExpectation = regex.test(actual.payload)
       expect(convertMatchesExpectation).toBe(true)
 
-    }
+    },
+    120000
   )
 })
 
