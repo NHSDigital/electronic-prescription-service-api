@@ -31,10 +31,6 @@
           <Condition>(not original-request-details.header.X-Request-ID ~~ "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")</Condition>
         </Step>
         <Step>
-          <Name>FlowCallout.UserRoleService</Name>
-          <Condition>(access-mode Equals "user-restricted")</Condition>
-        </Step>
-        <Step>
           <Name>Quota</Name>
         </Step>
         <Step>
@@ -81,12 +77,6 @@
     {{ HOSTED_TARGET_CONNECTION }}
   </HTTPTargetConnection>
   <FaultRules>
-    <FaultRule name="user_role_shared_flow_error">
-      <Condition>(sharedFlow.userRoleError is "true")</Condition>
-      <Step>
-        <Name>AssignMessage.Errors.UserRole</Name>
-      </Step>
-    </FaultRule>
     <FaultRule name="access_token_expired">
       <Step>
         <Name>ExtractVariables.OAuthErrorFaultString</Name>
