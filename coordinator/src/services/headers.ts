@@ -9,10 +9,10 @@ export enum RequestHeaders {
   SMOKE_TEST = "x-smoke-test"
 }
 
-export function getRequestIdHeader(headers: Hapi.Util.Dictionary<string>): string {
+export function getRequestId(headers: Hapi.Util.Dictionary<string>): string {
   return headers[RequestHeaders.REQUEST_ID].toUpperCase()
 }
 
-export function getAsidHeader(headers: Hapi.Util.Dictionary<string>): string {
+export function getAsid(headers: Hapi.Util.Dictionary<string>): string {
   return headers[RequestHeaders.ASID]
 }

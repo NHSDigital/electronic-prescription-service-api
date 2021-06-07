@@ -21,7 +21,7 @@ import {convertTaskToEtpWithdraw} from "./withdraw/withdraw"
 import {getMessageIdFromBundle, getMessageIdFromTask, identifyMessageType} from "../common"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 import Hapi from "@hapi/hapi"
-import {getAsidHeader, getRequestIdHeader} from "../../headers"
+import {getAsid, getRequestId} from "../../headers"
 
 export async function convertBundleToSpineRequest(
   bundle: fhir.Bundle,
@@ -29,8 +29,8 @@ export async function convertBundleToSpineRequest(
   logger: pino.Logger
 ): Promise<spine.SpineRequest> {
   const messageType = identifyMessageType(bundle)
-  const payload = await createPayloadFromBundle(messageType, bundle, getAsidHeader(headers), logger)
-  return requestBuilder.toSpineRequest(payload, getRequestIdHeader(headers))
+  const payload = await createPayloadFromBundle(messageType, bundle, getAsid(headers), logger)
+  return requestBuilder.toSpineRequest(payload, getRequestId(headers))
 }
 
 type BundleTranslationResult = hl7V3.ParentPrescriptionRoot | hl7V3.CancellationRequestRoot
@@ -171,10 +171,10 @@ export async function convertParametersToSpineRequest(
   const sendMessagePayload = createSendMessagePayloadForUnattendedAccess(
     uuid.v4(),
     interactionId,
-    getAsidHeader(headers),
+    getAsid(headers),
     hl7ReleaseRequest
   )
-  return requestBuilder.toSpineRequest(sendMessagePayload, getRequestIdHeader(headers))
+  return requestBuilder.toSpineRequest(sendMessagePayload, getRequestId(headers))
 }
 
 export async function convertTaskToSpineRequest(
@@ -182,8 +182,8 @@ export async function convertTaskToSpineRequest(
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): Promise<spine.SpineRequest> {
-  const payload = await createPayloadFromTask(task, getAsidHeader(headers), logger)
-  return requestBuilder.toSpineRequest(payload, getRequestIdHeader(headers))
+  const payload = await createPayloadFromTask(task, getAsid(headers), logger)
+  return requestBuilder.toSpineRequest(payload, getRequestId(headers))
 }
 
 type TaskTranslationResult = hl7V3.DispenseProposalReturnRoot | hl7V3.EtpWithdrawRoot
