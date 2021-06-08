@@ -122,12 +122,19 @@ info:
 
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
 
-    ## Authorisation
-    All endpoints are [application-resctricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication), 
-    meaning they only authenticate the calling application, not the end user. 
-    An application is authenticated by sending a signed JSON web token (JWT) to our OAuth 2.0 authorisation server.
-    The API also accepts tokens with a higher level of access 
-    (for example [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis)).
+    ## Security and authorisation
+    ### Application-restricted access
+    This access mode is [application-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#application-restricted-apis), 
+    meaning we authenticate the calling application but not the end user.
+
+    You can use this access mode as follows:
+    - unattended (end user not present), for example as part of a back end process to send prsecriptions to the API
+    - attended (end user present) - in which case, you must ensure the end user is authenticated and suitably authorised locally by the calling application 
+
+    For further details on attended access, see [user-restricted access](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis). 
+
+    To use this access mode, use the following security pattern:
+    - [Application-restricted RESTful API - signed JWT authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication)
 
     ## Environment and Testing
     | Purpose           | URL                                                                 |
