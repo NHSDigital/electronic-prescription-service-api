@@ -119,24 +119,19 @@ info:
 
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
 
-    ## Authorisation
-    ### Prescribing endpoints
-    The prescribing endpoints are [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis),
-    meaning an end user must be present and authenticated to use them.
+    ## Security and authorisation
+    ### Application-restricted access
+    This access mode is [application-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#application-restricted-apis), 
+    meaning we authenticate the calling application but not the end user.
 
-    For prescribing journeys, the end user must be:
-    - a healthcare professional
-    - strongly authenticated, using either an NHS smartcard or a modern alternative
+    You can use this access mode as follows:
+    - unattended (end user not present), for example as part of a back end process to send prsecriptions to the API
+    - attended (end user present) - in which case, you must ensure the end user is authenticated and suitably authorised locally by the calling application 
 
-    The API uses Open ID Connect to authenticate the end user and OAuth 2.0 to authorise the calling system.
-    It supports the following security patterns using NHS Care Identity Service 2 (NHS CIS2) for authentication and authorisation:
-    * [user-restricted RESTful API - using NHS CIS2 - combined authentication and authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-combined-authentication-and-authorisation)
-    * [user-restricted RESTful API - using NHS CIS2 - separate authentication and authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-separate-authentication-and-authorisation)
+    For further details on attended access, see [user-restricted access](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis). 
 
-    ### Dispensing endpoints
-    The dispensing endpoints are [application-resctricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication), 
-    meaning they only authenticate the calling application, not the end user. 
-    An application is authenticated by sending a signed JSON web token (JWT) to our OAuth 2.0 authorisation server.
+    To use this access mode, use the following security pattern:
+    - [Application-restricted RESTful API - signed JWT authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication)
 
     ## Environment and Testing
     | Purpose           | URL                                                                 |
