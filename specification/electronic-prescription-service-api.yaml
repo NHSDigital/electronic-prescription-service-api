@@ -15,7 +15,7 @@ info:
     <style>.codeinline.example {word-wrap: anywhere;}</style>
     Use this API to access the [Electronic Prescription Service (EPS)](https://digital.nhs.uk/services/electronic-prescription-service) - the national service used to send electronic prescription messages between prescribers and community dispensers.
     
-    ## As a prescriber
+    ### As a prescriber
     You can:
     * create a secondary care (outpatient) prescription
     * cancel a secondary care (outpatient) prescription
@@ -26,7 +26,7 @@ info:
     * create a tertiary care prescription
     * track prescriptions or check a prescription's status
     
-    ## As a dispenser
+    ### As a dispenser
     You can:
     * download a prescription (sandbox implementation only)
     * return a prescription (sandbox implementation only)
@@ -37,8 +37,8 @@ info:
     * claim for a dispensed prescription
     * track prescriptions or check a prescription's status
     
-    ## Using this API as a prescriber
-    ### To create a prescription:
+    ### Using this API as a prescriber
+    #### To create a prescription:
     1. POST a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) to the `/FHIR/R4/$prepare` endpoint to get the encoded prescription data that requires a signature.
     2. Sign the encoded prescription data using the [Signing Service](https://digital.nhs.uk/developer/api-catalogue/signing-service) or your existing local signing solution to get the prescription data signed.
     3. Generate an XML-DSig using the signed prescription data (see below).
@@ -61,20 +61,20 @@ info:
       }
     ```
 
-    ### To cancel a prescription:
+    #### To cancel a prescription:
     1. POST a [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update) to the `/FHIR/R4/$process-message` endpoint.
 
-    ## Using this API as a dispenser
-    ### To download a prescription to be dispensed: 
+    ### Using this API as a dispenser
+    #### To download a prescription to be dispensed: 
     1. POST a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to the `/FHIR/R4/Task/$release` endpoint.
 
-    ### To submit a dispense notification to EPS:
+    #### To submit a dispense notification to EPS:
     1. POST a [prescription-dispense-notification](https://simplifier.net/guide/DigitalMedicines/dispense-notification) message to the `/FHIR/R4/$process-message` endpoint to inform EPS of a partial/successful dispense.
 
-    ### To return a prescription:
+    #### To return a prescription:
     1. POST a [Task-dispense-proposal-return](https://simplifier.net/guide/DigitalMedicines/Task) message to the `/FHIR/R4/Task` endpoint.
 
-    ### To withdraw a dispense notification:
+    #### To withdraw a dispense notification:
     1. POST a [Task-dispense-notification-amend](https://simplifier.net/guide/DigitalMedicines/Task) message to the `/FHIR/R4/Task` endpoint.
 
     ## Who can use this API
@@ -84,15 +84,12 @@ info:
     
     ## Related APIs
     The following APIs also give access to the Electronic Prescription Service:
-    - [Electronic Prescription Service (HL7 V3) API](https://data.developer.nhs.uk/dms/mim/4.2.00/Index.htm) - use this if you want to use functions that are not yet available on the FHIR API
+    - [Electronic Prescription Service - HL7 V3 API](https://data.developer.nhs.uk/dms/mim/4.2.00/Index.htm) - use this if you want to use functions that are not yet available on the FHIR API
     - [Signing Service](https://digital.nhs.uk/developer/api-catalogue/signing-service) - use this to digitally sign a prescription
     - [Prescription Tracker API](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to obtain information about a patient’s prescriptions
 
     The following APIs may be required when accessing the  Electronic Prescription Service:
     - [Personal Demographics Service - FHIR API](https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir) - use this to obtain patient data
-
-    ## Additional guidance
-    For further details on common HTTP status codes, see [5xx status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide)
 
     ## API status and roadmap
     To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?tag=eps-fhir-api).
@@ -187,6 +184,9 @@ info:
     | 401           | ACCESS_DENIED   | User does not have permission for a particular request. |
     | 403           | FORBIDDEN       | Insufficient authorization.                             |
     | 404           | NOT_FOUND       | Resource not found.                                     |
+    
+    For further details on common HTTP status codes, see [5xx status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide)
+    
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
     description: 'Sandbox'
