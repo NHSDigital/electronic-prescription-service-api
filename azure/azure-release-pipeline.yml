@@ -37,6 +37,8 @@ extends:
     service_base_path_pr: none
     spec_file: ${{ variables.spec_file }}
     enable_monitoring: true
+    jinja_templates:
+        REQUIRE_ASID: false
     apigee_deployments:
       - environment: internal-dev-sandbox
         proxy_path: sandbox
@@ -78,3 +80,5 @@ extends:
         # manual_approval is added by default
         depends_on:
           - ref
+        jinja_templates:
+            REQUIRE_ASID: true

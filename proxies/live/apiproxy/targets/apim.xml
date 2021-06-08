@@ -42,11 +42,25 @@
         <Step>
           <Name>AssignMessage.AddIssuerHeader</Name>
         </Step>
+        <!-- If we require an ASID, fail if app.asid is null -->
+        {% if REQUIRE_ASID == 'True' %}
         <Step>
           <Name>RaiseFault.400BadRequest</Name>
           <Condition>(app.asid is null)</Condition>
         </Step>
+        {% endif %}
+        <!-- Populate the ASID var from the app -->
         <Step>
+          <Name>AssignMessage.PopulateAsidFromApp</Name>
+          <Condition>(app.asid isNot null)</Condition>
+        </Step>
+        <Step>
+          <!-- Populate the ASID var with the default ASID -->
+          <Name>KeyValueMapOperations.GetDefaultAsid</Name>
+          <Condition>(app.asid is null)</Condition>
+        </Step>
+        <Step>
+          <!-- Add the ASID var as a header -->
           <Name>AssignMessage.AddAsidHeader</Name>
         </Step>
         <Step>

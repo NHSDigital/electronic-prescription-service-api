@@ -2,9 +2,9 @@
 <AssignMessage async="false" continueOnError="false" enabled="true" name="AssignMessage.AddAsidHeader">
     <Add>
         <Headers>
-            <Header name="NHSD-ASID">{private.apigee.NHSD-ASID}</Header>
+            <Header name="NHSD-ASID">1234567890</Header>
         </Headers>
     </Add>
-    <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
+    <IgnoreUnresolvedVariables>true</IgnoreUnresolvedVariables>
     <AssignTo createNew="false" transport="http" type="request"/>
 </AssignMessage>
