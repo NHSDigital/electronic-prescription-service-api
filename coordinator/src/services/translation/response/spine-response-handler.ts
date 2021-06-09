@@ -427,7 +427,7 @@ export class CancelResponseHandler extends SpineResponseHandler<hl7V3.Cancellati
   constructor(
     interactionId: string,
     translator: (cancelResponse: hl7V3.CancellationResponse) => fhir.Bundle
-      = cancelResponseTranslator.translateSpineCancelResponseIntoBundle
+    = cancelResponseTranslator.translateSpineCancelResponseIntoBundle
   ) {
     super(interactionId)
     this.translator = translator
@@ -470,7 +470,7 @@ export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.Prescript
   constructor(
     interactionId: string,
     translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse) => fhir.Bundle
-      = releaseResponseTranslator.createOuterBundle
+    = releaseResponseTranslator.createOuterBundle
   ) {
     super(interactionId)
     this.translator = translator
