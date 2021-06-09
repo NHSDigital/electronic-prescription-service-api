@@ -435,10 +435,8 @@ describe("createRepeatNumberForMedicationRequests", () => {
 })
 
 describe("extractRepeatNumberHighValue", () => {
-  test("extracts from dispenseRequest", () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const testMedicationRequest: fhir.MedicationRequest = {
+  test("extracts from dispenseRequest if extension not present", () => {
+    const testMedicationRequest: Partial<fhir.MedicationRequest> = {
       extension: [{
         url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
         extension: []
@@ -447,14 +445,12 @@ describe("extractRepeatNumberHighValue", () => {
         numberOfRepeatsAllowed: new LosslessNumber("5")
       }
     }
-    const repeatNumberHighValue = extractRepeatNumberHighValue(testMedicationRequest)
+    const repeatNumberHighValue = extractRepeatNumberHighValue(testMedicationRequest as fhir.MedicationRequest)
     expect(repeatNumberHighValue).toEqual("6")
   })
 
-  test("extracts from extension", () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const testMedicationRequest: fhir.MedicationRequest = {
+  test("extracts from extension if not present in dispenseRequest", () => {
+    const testMedicationRequest: Partial<fhir.MedicationRequest> = {
       extension: [{
         url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
         extension: [{
@@ -464,27 +460,24 @@ describe("extractRepeatNumberHighValue", () => {
       }],
       dispenseRequest: {}
     }
-    const repeatNumberHighValue = extractRepeatNumberHighValue(testMedicationRequest)
+    const repeatNumberHighValue = extractRepeatNumberHighValue(testMedicationRequest as fhir.MedicationRequest)
     expect(repeatNumberHighValue).toEqual("6")
   })
 
   test("throws if not present in either location", () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const testMedicationRequest: fhir.MedicationRequest = {
+    const testMedicationRequest: Partial<fhir.MedicationRequest> = {
       extension: [{
         url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
         extension: []
       }],
       dispenseRequest: {}
     }
-    expect(() =>extractRepeatNumberHighValue(testMedicationRequest)).toThrow(InvalidValueError)
+    expect(() => extractRepeatNumberHighValue(testMedicationRequest as fhir.MedicationRequest))
+      .toThrow(InvalidValueError)
   })
 
   test("throws if present in both locations with inconsistent values", () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const testMedicationRequest: fhir.MedicationRequest = {
+    const testMedicationRequest: Partial<fhir.MedicationRequest> = {
       extension: [{
         url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
         extension: [{
@@ -496,13 +489,12 @@ describe("extractRepeatNumberHighValue", () => {
         numberOfRepeatsAllowed: new LosslessNumber("6")
       }
     }
-    expect(() =>extractRepeatNumberHighValue(testMedicationRequest)).toThrow(InvalidValueError)
+    expect(() => extractRepeatNumberHighValue(testMedicationRequest as fhir.MedicationRequest))
+      .toThrow(InvalidValueError)
   })
 
   test("extracts value if present in both locations with consistent values", () => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    const testMedicationRequest: fhir.MedicationRequest = {
+    const testMedicationRequest: Partial<fhir.MedicationRequest> = {
       extension: [{
         url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
         extension: [{
@@ -514,7 +506,7 @@ describe("extractRepeatNumberHighValue", () => {
         numberOfRepeatsAllowed: new LosslessNumber("5")
       }
     }
-    const repeatNumberHighValue = extractRepeatNumberHighValue(testMedicationRequest)
+    const repeatNumberHighValue = extractRepeatNumberHighValue(testMedicationRequest as fhir.MedicationRequest)
     expect(repeatNumberHighValue).toEqual("6")
   })
 })
