@@ -91,7 +91,6 @@ function createMedicationRequestExtensions(
 }
 
 function getPrescriptionStatusInformation(code: string, display: string) {
-  const extraInformation = display.split("-")[1]
   switch (code) {
     case "0001":
       return {
@@ -156,7 +155,7 @@ function getPrescriptionStatusInformation(code: string, display: string) {
     case "5000":
       return {
         prescriptionStatusCode: "R-5000",
-        prescriptionStatusDisplay: `Unable to process message.${extraInformation}`,
+        prescriptionStatusDisplay: display,
         medicationRequestStatus: fhir.MedicationRequestStatus.UNKNOWN
       }
     case "5888":
