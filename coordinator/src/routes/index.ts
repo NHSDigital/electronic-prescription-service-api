@@ -6,6 +6,8 @@ import statusRoutes from "./health/get-status"
 import pollingRoutes from "./prescribe/polling"
 import releaseRoutes from "./dispense/release"
 import taskRoutes from "./dispense/task"
+import trackerPrescriptionByIdRoutes from "./tracker/get-prescription"
+import trackerPrescriptionsByOdsRoutes from "./tracker/get-prescriptions-by-ods-code"
 import {isProd} from "../services/environment"
 
 const debugRoutes = [
@@ -18,7 +20,10 @@ const mainRoutes = [
   ...processPrescriptionRoutes,
   ...releaseRoutes,
   ...pollingRoutes,
-  ...taskRoutes
+  ...taskRoutes,
+  ...trackerPrescriptionByIdRoutes,
+  ...trackerPrescriptionsByOdsRoutes
+
 ]
 
 const healthcheckRoutes = [
