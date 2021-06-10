@@ -15,7 +15,7 @@ export default [
     path: `${BASE_PATH}/Tracker/prescription/{shortFormId}`,
     handler:
       (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Hapi.ResponseObject => {
-        if (request.headers[RequestHeaders.AUTH_LEVEL].includes("user")) {
+        if (!request.headers[RequestHeaders.AUTH_LEVEL].includes("user")) {
           return responseToolkit
             .response(unauthorisedActionIssue)
             .code(400)
