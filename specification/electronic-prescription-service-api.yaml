@@ -267,7 +267,7 @@ paths:
           #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/Bundle'
             examples:
               prescribe-success:
                 value:
@@ -285,7 +285,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                type: object
+                type: '#/components/responses/200OperationOutcome'
               examples:
                 example:
                   value:
@@ -495,7 +495,9 @@ components:
                     diagnostics:
                       type: string
                       example: "Message Sent"
-  schemas: 
+  schemas:
+    Bundle:
+      $ref: "components/schemas/Bundle.yaml"
     parameters-response:
       $ref: "components/schemas/ParametersResponse.yaml"
     operation-outcome:

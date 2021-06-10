@@ -1,0 +1,24 @@
+type: object
+description: The amount that is to be dispensed for one fill.
+required:
+  - value
+  - unit
+  - system
+  - code
+properties:
+  value:
+    type: number
+    description: The value of the measured amount. The value includes an implicit precision in the presentation of the value.
+    example: 56
+  unit:
+    type: string
+    description: A human-readable form of the unit.
+    example: "tablet"
+  system:
+    type: string
+    description: The identification of the system that provides the coded form of the unit.
+    example: "http://snomed.info/sct"
+  code:
+    type: string
+    description: A computer-processable form of the unit in some unit representation system.
+    example: "3319411000001109"

@@ -1,0 +1,45 @@
+type: object
+description: A formally or informally recognized grouping of people or organizations formed for the purpose of achieving some form of collective action. This includes companies, institutions, corporations, departments, community groups, healthcare practice groups, payer/insurer, and so on.
+required:
+  - resourceType
+  - id
+  - identifier
+properties:
+  resourceType:
+    type: string
+    description: FHIR Resource type
+    enum:
+      - "Organization"
+    example: "Organization"
+  id:
+    type: string
+    description: Logical id of this artifact.
+    example: "C6750CAA-3CA9-4F29-A282-6EE1AA5D7D4C"
+  identifier:
+    type: array
+    description: Identifier for the organization that is used to identify the organization across multiple disparate systems.
+    items:
+      $ref: "Identifier-OdsOrganizationCode.yaml"
+  type:
+    type: array
+    description: The kind(s) of organization that this is.
+    items:
+      anyOf:
+        - $ref: "CodeableConcept-OrganizationType.yaml"
+        - $ref: "CodeableConcept-OrganizationRole.yaml"
+  name:
+    type: string
+    description: A name associated with the organization.
+    example: "Signing_Surg_1"
+  telecom:
+    type: array
+    description: A contact detail for the organization.
+    items:
+      $ref: "ContactPoint.yaml"
+  address:
+    type: array
+    description: An address for the organization.
+    items:
+      $ref: "Address.yaml"
+  partOf:
+    $ref: "Reference.yaml"

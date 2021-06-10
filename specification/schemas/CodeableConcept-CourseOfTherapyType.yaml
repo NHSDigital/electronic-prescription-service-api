@@ -1,0 +1,20 @@
+type: object
+description: An order or request for both supply of the medication and the instructions for administration of the medication to a patient. The resource is called "MedicationRequest" rather than "MedicationPrescription" or "MedicationOrder". This is to generalize the use across inpatient and outpatient settings (including care plans), and to harmonize with workflow patterns.
+required:
+  - coding
+properties:
+  coding:
+    type: array
+    description: A reference to a code defined by a terminology system.
+    items:
+      $ref: "Coding-CourseOfTherapyType.yaml"
+    example:
+      - system: "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType"
+        code: "acute"
+        display: "Acute"
+      - system: "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType"
+        code: "repeat"
+        display: "Repeat"
+      - system: "https://fhir.nhs.uk/R4/CodeSystem/UKCore-PrescriptionType"
+        code: "repeat-dispensing"
+        display: "Repeat Dispensing"

@@ -1,0 +1,28 @@
+type: object
+description: A human's name with the ability to identify parts and usage.
+properties:
+  use:
+    type: string
+    description: Identifies the purpose for this name.
+    enum:
+      - "usual"
+      - "temp"
+      - "nickname"
+      - "maiden"
+    example: "usual"
+  family:
+    type: string
+    description: The part of a name that links to the genealogy. In some cultures (for example, Eritrea) the family name of a son is the first name of his father.
+    example: "Anderson"
+  given:
+    type: array
+    description: Given name.
+    items:
+      type: string
+      example: "Michael"
+  prefix:
+    type: array
+    description: Part of the name that appears at the start of the name. For example, a status title awarded due to academic, legal, employment or nobility.
+    items:
+      type: string
+      example: "Mr"

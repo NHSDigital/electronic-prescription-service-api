@@ -1,0 +1,39 @@
+type: object
+description: The short form UID of the prescription.
+required:
+  - system
+  - value
+properties:
+  extension:
+    type: array
+    items:
+      type: object
+      properties:
+        url:
+          type: string
+          enum:
+            - "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId"
+          example: "https://fhir.nhs.uk/R4/StructureDefinition/Extension-PrescriptionId"
+        valueIdentifier:
+          type: object
+          properties:
+            system:
+              type: string
+              description: Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
+              enum:
+                - "https://fhir.nhs.uk/Id/prescription"
+              example: "https://fhir.nhs.uk/Id/prescription"
+            value:
+              type: string
+              description: The portion of the identifier typically relevant to the user and which is unique within the context of the system.
+              example: "EDD2E9DD-DA0A-C266-A4E3-447C68239524"
+  system:
+    type: string
+    description: Establishes the namespace for the value - that is, a URL that describes a set values that are unique.
+    enum:
+      - "https://fhir.nhs.uk/Id/prescription-order-number"
+    example: "https://fhir.nhs.uk/Id/prescription-order-number"
+  value:
+    type: string
+    description: The portion of the identifier typically relevant to the user and which is unique within the context of the system.
+    example: "2BE1EA-L36920-0353AW"

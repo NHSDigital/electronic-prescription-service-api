@@ -1,0 +1,8 @@
+type: object
+description: Unique code or number identifying the location to its users
+required:
+  - value
+properties:
+  value:
+    type: string
+    example: "10008800708"

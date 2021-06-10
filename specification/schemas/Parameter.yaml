@@ -1,0 +1,14 @@
+type: object
+description: Parameters
+required:
+  - name
+  - valueString
+properties:
+  name:
+    type: string
+    description: Name of a parameter
+    example: "message-digest"
+  valueString:
+    type: string
+    description: A value for the parameter
+    example: "<xml>...</xml>"

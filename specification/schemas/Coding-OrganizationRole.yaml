@@ -1,0 +1,20 @@
+type: object
+description: Types of organization.
+required:
+  - system
+  - code
+properties:
+  system:
+    type: string
+    description: The identification of the code system that defines the meaning of the symbol in the code.
+    enum: 
+      - "https://fhir.nhs.uk/CodeSystem/organisation-role"
+    example: "https://fhir.nhs.uk/CodeSystem/organisation-role"
+  code:
+    type: string
+    description: A symbol in syntax defined by the system. The symbol may be a predefined code or an expression in a syntax defined by the coding system (such as post-coordination).
+    example: "RO197"
+  display:
+    type: string
+    description: A representation of the meaning of the code in the system, following the rules of the system.
+    example: "NHS TRUST"

@@ -1,0 +1,8 @@
+type: object
+required:
+  - text
+properties:
+  text:
+    type: string
+    description: Free text dosage instructions - for example, SIG.
+    example: "2 tablets after breakfast"
