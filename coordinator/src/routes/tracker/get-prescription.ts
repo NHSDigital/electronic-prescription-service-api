@@ -12,8 +12,11 @@ export default [
     method: "GET",
     path: `${BASE_PATH}/Tracker/prescription/{shortFormId}`,
     handler:
-      async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
-        return responseToolkit.response(`Got a request for Prescription: ${request.params.shortFormId}`).code(200).type(ContentTypes.PLAIN_TEXT)
+      (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Hapi.ResponseObject => {
+        return responseToolkit
+          .response(`Got a request for Prescription: ${request.params.shortFormId}`)
+          .code(200)
+          .type(ContentTypes.PLAIN_TEXT)
       }
   }
 ]
