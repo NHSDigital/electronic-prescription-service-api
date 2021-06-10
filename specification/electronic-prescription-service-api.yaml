@@ -267,7 +267,10 @@ paths:
           #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
           application/json:
             schema:
-              $ref: '#/components/schemas/Bundle'
+              oneOf:
+                - $ref: '#/components/schemas/prescriptionOrderBundle'
+                - $ref: '#/components/schemas/prescriptionOrderUpdateBundle'
+                - $ref: '#/components/schemas/dispenseNotificationBundle'
             examples:
               prescribe-success:
                 value:
@@ -496,8 +499,12 @@ components:
                       type: string
                       example: "Message Sent"
   schemas:
-    Bundle:
-      $ref: "components/schemas/Bundle.yaml"
+    prescriptionOrderBundle:
+      $ref: "components/schemas/PrescriptionOrderBundle.yaml"
+    prescriptionOrderUpdateBundle:
+      $ref: "components/schemas/PrescriptionOrderUpdateBundle.yaml"
+    dispenseNotificationBundle:
+      $ref: "components/schemas/DispenseNotificationBundle.yaml"
     parameters-response:
       $ref: "components/schemas/ParametersResponse.yaml"
     operation-outcome:

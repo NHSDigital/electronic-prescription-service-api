@@ -1,0 +1,51 @@
+type: object
+description: A container for a collection of resources.
+required:
+  - resourceType
+  - id
+  - identifier
+  - type
+  - entry
+properties:
+  resourceType:
+    type: string
+    description: FHIR Resource type.
+    enum:
+      - "Bundle"
+    example: "Bundle"
+  id:
+    type: string
+    description: Logical id of this artifact.
+    example: "7EB02341-5F62-4A76-2CD3-34F523452356"
+  identifier:
+    $ref: "Identifier-UUID.yaml"
+  type:
+    type: string
+    description: Indicates the purpose of a bundle - how it is intended to be used.
+    enum:
+      - "message"
+    example: "message"
+  entry:
+    type: array
+    description: An entry in a bundle resource - will either contain a resource or information about a resource (transactions and history only).
+    items:
+      type: object
+      required:
+        - fullUrl
+        - resource
+      properties:
+        fullUrl:
+          type: string
+          description: The Absolute URL for the resource.
+          example: "urn:uuid:CF464979-41A7-4231-B70F-AAE377A973C9"
+        resource:
+          anyOf:
+            - $ref: "MessageHeader.yaml"
+            - $ref: "MedicationRequest.yaml"
+            - $ref: "Patient.yaml"
+            - $ref: "PractitionerRole.yaml"
+            - $ref: "Practitioner.yaml"
+            - $ref: "Organization.yaml"
+            - $ref: "Provenance.yaml"
+            - $ref: "HealthcareService.yaml"
+            - $ref: "LocationResource.yaml"
