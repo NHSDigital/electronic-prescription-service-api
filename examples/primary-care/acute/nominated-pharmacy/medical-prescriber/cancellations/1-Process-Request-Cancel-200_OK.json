@@ -267,8 +267,8 @@
             "coding": [
               {
                 "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-                "code": "R8000",
-                "display": "Clinical Practitioner Access Role"
+                "code": "R8006",
+                "display": "Medical Secetary Access Role"
               }
             ]
           }
@@ -289,25 +289,21 @@
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/sds-user-id",
-            "value": "555086689106"
+            "value": "555086718101"
           },
           {
-            "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-            "value": "6095103"
-          },
-          {
-            "system": "https://fhir.hl7.org.uk/Id/din-number",
-            "value": "977677"
+            "system": "https://fhir.hl7.org.uk/Id/professional-code",
+            "value": "unknown"
           }
         ],
         "name": [
           {
-            "family": "BOIN",
+            "family": "Secetary",
             "given": [
-              "C"
+              "Medical"
             ],
             "prefix": [
-              "DR"
+              "MS"
             ]
           }
         ]

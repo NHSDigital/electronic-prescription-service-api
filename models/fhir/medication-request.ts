@@ -3,6 +3,7 @@ import * as practitionerRole from "./practitioner-role"
 import * as patient from "./patient"
 import * as medication from "./medication"
 import * as extension from "./extension"
+import {LosslessNumber} from "lossless-json"
 
 export enum CourseOfTherapyTypeCode {
   ACUTE = "acute",
@@ -108,4 +109,5 @@ export interface MedicationRequestDispenseRequest {
   expectedSupplyDuration?: common.SimpleQuantity
   performer?: Performer
   validityPeriod?: common.Period
+  numberOfRepeatsAllowed?: string | LosslessNumber
 }

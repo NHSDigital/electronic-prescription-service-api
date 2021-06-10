@@ -1,8 +1,8 @@
 import {
   getExtensionForUrl,
   getExtensionForUrlOrNull,
-  getNumericValueAsString,
   getMedicationCoding,
+  getNumericValueAsString,
   isTruthy,
   resolveReference
 } from "../common"
@@ -197,7 +197,7 @@ function convertPrescriptionPertinentInformation2(
     getMedicationCoding(bundle, medicationRequests[0])
   ))
 
-  for (let i=1; i<medicationRequests.length; i++) {
+  for (let i = 1; i < medicationRequests.length; i++) {
     lineItems.push(convertMedicationRequestToLineItem(
       medicationRequests[i],
       repeatNumber,
@@ -255,17 +255,63 @@ export function convertRepeatNumber(
 }
 
 export function extractRepeatNumberHighValue(medicationRequest: fhir.MedicationRequest): string {
+  const repeatNumberHighValueFromDispenseRequest = extractRepeatNumberHighValueFromDispenseRequest(medicationRequest)
+  const repeatNumberHighValueFromExtension = extractRepeatNumberHighValueFromExtension(medicationRequest)
+  if (!repeatNumberHighValueFromDispenseRequest && !repeatNumberHighValueFromExtension) {
+    throw new errors.InvalidValueError(
+      "Number of repeats allowed is required.",
+      "MedicationRequest.dispenseRequest.numberOfRepeatsAllowed"
+    )
+  }
+
+  if (!repeatNumberHighValueFromExtension && repeatNumberHighValueFromDispenseRequest) {
+    return repeatNumberHighValueFromDispenseRequest
+  }
+
+  if (!repeatNumberHighValueFromDispenseRequest && repeatNumberHighValueFromExtension) {
+    return repeatNumberHighValueFromExtension
+  }
+
+  if (repeatNumberHighValueFromDispenseRequest !== repeatNumberHighValueFromExtension) {
+    throw new errors.InvalidValueError(
+      "Values for MedicationRequest.dispenseRequest.numberOfRepeatsAllowed and MedicationRequest.extension(" +
+      "\"https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation\"" +
+      ").extension(\"numberOfRepeatPrescriptionsAllowed\").valueUnsignedInt are inconsistent. Remove the extension " +
+      "or ensure that the value in the extension is one greater than the value in the dispenseRequest.",
+      "MedicationRequest.dispenseRequest.numberOfRepeatsAllowed"
+    )
+  }
+
+  return repeatNumberHighValueFromDispenseRequest
+}
+
+function extractRepeatNumberHighValueFromDispenseRequest(medicationRequest: fhir.MedicationRequest) {
+  const numberOfRepeatsAllowed = medicationRequest.dispenseRequest.numberOfRepeatsAllowed
+  if (!numberOfRepeatsAllowed) {
+    return undefined
+  }
+
+  const numberOfRepeatsAllowedNumber = typeof numberOfRepeatsAllowed === "string"
+    ? parseInt(numberOfRepeatsAllowed)
+    : numberOfRepeatsAllowed.valueOf()
+  return (numberOfRepeatsAllowedNumber + 1).toString()
+}
+
+function extractRepeatNumberHighValueFromExtension(medicationRequest: fhir.MedicationRequest) {
   const repeatInformationExtension = getExtensionForUrl(
     medicationRequest.extension,
     "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
     "MedicationRequest.extension"
   ) as fhir.RepeatInformationExtension
 
-  const repeatNumberExtension = getExtensionForUrl(
+  const repeatNumberExtension = getExtensionForUrlOrNull(
     repeatInformationExtension.extension,
     "numberOfRepeatPrescriptionsAllowed",
     "MedicationRequest.extension.extension"
   ) as fhir.UnsignedIntExtension
+  if (!repeatNumberExtension) {
+    return undefined
+  }
 
   const repeatNumberExtensionValue = repeatNumberExtension.valueUnsignedInt
   return getNumericValueAsString(repeatNumberExtensionValue)
