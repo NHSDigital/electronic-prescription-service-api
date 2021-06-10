@@ -285,7 +285,7 @@ paths:
           content:
             application/fhir+json:
               schema:
-                type: '#/components/responses/200OperationOutcome'
+                $ref: '#/components/responses/200OperationOutcome'
               examples:
                 example:
                   value:
