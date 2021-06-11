@@ -97,6 +97,7 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
     "dispenseRequest.performer",
     "dispenseRequest.validityPeriod",
     "dispenseRequest.expectedSupplyDuration",
+    "dispenseRequest.numberOfRepeatsAllowed",
     'dispenseRequest.extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType")',
     'extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType")',
     'extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner")',
