@@ -8,7 +8,7 @@ import {
 import {getCancellationResponse} from "../common/test-helpers"
 import {hl7V3, fhir} from "@models"
 
-const cancellationResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)
+const cancellationResponse = getCancellationResponse(TestResources.spineResponses.cancellationNotFoundError)
 const cancellationDispensedResponse = getCancellationResponse(TestResources.spineResponses.cancellationDispensedError)
 
 const authorRepresentedOrganization = cancellationResponse.author.AgentPerson.representedOrganization
