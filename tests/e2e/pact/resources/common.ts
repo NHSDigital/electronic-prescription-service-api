@@ -5,7 +5,7 @@ export const basePath = "/FHIR/R4"
 
 export type ApiMode = "live" | "sandbox"
 export type ApiEndpoint = "prepare" | "process" | "task" | "validate"
-export type ApiOperation = "send" | "cancel" | "dispense" | "release" | "return" | "withdraw"
+export type ApiOperation = "send" | "cancel" | "dispense" | "release" | "return" | "withdraw" | "claim"
 
 // used to add type-safety for adding a new pact
 export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, operation?: ApiOperation): JestPactOptions {
