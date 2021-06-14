@@ -10,13 +10,6 @@ import {isBundle, isParameters, isTask} from "../../../src/routes/util"
 const logger = pino()
 
 describe("conversion tests", () => {
-  beforeAll(() =>
-    process.env.SANDBOX = "1"
-  )
-  afterAll(() => {
-    delete process.env.SANDBOX
-  })
-
   test.each(TestResources.convertSuccessExamples)(
     "should be able to convert %s message to HL7V3",
     async (_: string, request: unknown, response: string, responseMatcher: string) => {
