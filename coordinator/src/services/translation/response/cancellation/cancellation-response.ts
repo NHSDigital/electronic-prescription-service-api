@@ -1,4 +1,8 @@
-import {createMedicationRequest} from "./cancellation-medication-request"
+import {
+  createMedicationRequest,
+  extractStatusCode,
+  PrescriptionStatusInformation
+} from "./cancellation-medication-request"
 import {createMessageHeader} from "../message-header"
 import {isDeepStrictEqual} from "util"
 import {convertResourceToBundleEntry, translateAndAddAgentPerson, translateAndAddPatient} from "../common"
@@ -12,6 +16,34 @@ export function translateSpineCancelResponseIntoBundle(cancellationResponse: hl7
     identifier: createBundleIdentifier(cancellationResponse),
     timestamp: convertHL7V3DateTimeToIsoDateTimeString(cancellationResponse.effectiveTime),
     entry: createBundleEntries(cancellationResponse)
+  }
+}
+
+export function translateSpineCancelResponseIntoOperationOutcome(
+  prescriptionStatusInformation: PrescriptionStatusInformation): fhir.OperationOutcome {
+  return {
+    resourceType: "OperationOutcome",
+    issue: [{
+      severity: "error",
+      code: prescriptionStatusInformation.issueCode,
+      details: {
+        coding: [{
+          system: "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history",
+          code: prescriptionStatusInformation.prescriptionStatusCode,
+          display: prescriptionStatusInformation.prescriptionStatusDisplay
+        }]
+      }
+    }]
+  }
+}
+
+export function translateSpineCancelResponse (cancellationResponse: hl7V3.CancellationResponse):
+  fhir.Bundle | fhir.OperationOutcome {
+  const prescriptionStatusInformation = extractStatusCode(cancellationResponse)
+  if (prescriptionStatusInformation.issueCode) {
+    return translateSpineCancelResponseIntoOperationOutcome(prescriptionStatusInformation)
+  } else {
+    return translateSpineCancelResponseIntoBundle(cancellationResponse)
   }
 }
 

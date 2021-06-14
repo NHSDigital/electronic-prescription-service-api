@@ -6,7 +6,7 @@ import {getCancellationResponse} from "../common/test-helpers"
 import {hl7V3, fhir} from "@models"
 
 describe("createPatient", () => {
-  const cancellationResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)
+  const cancellationResponse = getCancellationResponse(TestResources.spineResponses.cancellationNotFoundError)
   let hl7Patient: hl7V3.Patient
   let fhirPatient: fhir.Patient
 
