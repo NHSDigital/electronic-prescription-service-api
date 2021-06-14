@@ -54,9 +54,7 @@ export function verifyBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIs
 }
 
 function verifyMessageType(messageType: string): messageType is fhir.EventCodingCode {
-  return messageType === fhir.EventCodingCode.PRESCRIPTION ||
-    messageType === fhir.EventCodingCode.CANCELLATION ||
-    messageType === fhir.EventCodingCode.DISPENSE
+  return fhir.ACCEPTED_MESSAGE_TYPES.map(type => type.toString()).includes(messageType)
 }
 
 function resourceHasBothCodeableConceptAndReference(
