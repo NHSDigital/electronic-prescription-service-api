@@ -3,7 +3,7 @@
   "id": "prescription-dispense-notification",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "602159ee-1678-41ec-a100-7b3dd04c1d84"
+    "value": "3db3cff8-b1be-45ae-bf23-6221b403b715"
   },
   "type": "message",
   "entry": [
@@ -129,14 +129,14 @@
                     "url": "shortForm",
                     "valueIdentifier": {
                       "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-                      "value": "C2782B-A99968-4E4E9Z"
+                      "value": "F5A606-A99968-453491"
                     }
                   },
                   {
                     "url": "UUID",
                     "valueIdentifier": {
                       "system": "https://fhir.nhs.uk/Id/prescription",
-                      "value": "2cbe1f0b-a05f-4697-9948-031f9bf9dd97"
+                      "value": "131c7894-0f2c-499a-9ba6-890f79d89725"
                     }
                   }
                 ]
@@ -169,7 +169,7 @@
           "system": "http://unitsofmeasure.org",
           "code": "d"
         },
-        "whenPrepared": "2021-05-07T14:47:29+00:00",
+        "whenPrepared": "2021-06-14T17:10:49+00:00",
         "dosageInstruction": [
           {
             "text": "10 milligram, Inject, Subcutaneous route, once weekly"
