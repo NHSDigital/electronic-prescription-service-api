@@ -20,7 +20,7 @@ import {convertTaskToDispenseProposalReturn} from "./return/return"
 import {convertTaskToEtpWithdraw} from "./withdraw/withdraw"
 import {getMessageIdFromBundle, getMessageIdFromTask, identifyMessageType} from "../common"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
-import { convertDispenseClaimInformation } from "./dispense/dispense-claim-information"
+import {convertDispenseClaimInformation} from "./dispense/dispense-claim-information"
 
 export async function convertBundleToSpineRequest(
   bundle: fhir.Bundle, messageId: string, logger: pino.Logger
@@ -45,8 +45,8 @@ async function createPayloadFromBundle(
       return createCancellationSendMessagePayload(bundle)
     case fhir.EventCodingCode.DISPENSE:
       return await createDispenseNotificationSendMessagePayload(bundle, logger)
-      case fhir.EventCodingCode.CLAIM:
-        return await createDispenseClaimInformationSendMessagePayload(bundle, logger)
+    case fhir.EventCodingCode.CLAIM:
+      return await createDispenseClaimInformationSendMessagePayload(bundle, logger)
   }
 }
 

@@ -215,6 +215,7 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
   return allErrors
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function verifyClaimBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
   // todo dispense-claim-information: validate
   return []
