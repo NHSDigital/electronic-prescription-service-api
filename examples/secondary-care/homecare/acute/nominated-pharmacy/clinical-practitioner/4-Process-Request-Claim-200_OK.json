@@ -3,7 +3,7 @@
   "id": "prescription-dispense-claim",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "ce6cea39-12d2-4e89-b9f7-00d10540c0b5"
+    "value": "1c06bc1b-aa0e-4b88-b3f9-371de42539b0"
   },
   "type": "message",
   "entry": [
@@ -31,13 +31,13 @@
         "sender": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "VNE51"
+            "value": "FL584"
           },
-          "display": "The Simple Pharmacy"
+          "display": "YOUR LOCAL BOOTS PHARMACY"
         },
         "source": {
-          "name": "The Simple Pharmacy",
-          "endpoint": "urn:nhs-uk:addressing:ods:VNE51"
+          "name": "YOUR LOCAL BOOTS PHARMACY",
+          "endpoint": "urn:nhs-uk:addressing:ods:FL584"
         },
         "response": {
           "identifier": "9FBC4386-924F-4025-B8B3-E75819446A45",
@@ -133,9 +133,9 @@
           "party": {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "VNE51"
+              "value": "FL584"
             },
-            "display": "The Simple Pharmacy"
+            "display": "YOUR LOCAL BOOTS PHARMACY"
           }
         },
         "insurance": [
@@ -377,9 +377,9 @@
           "party": {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "VNE51"
+              "value": "FL584"
             },
-            "display": "The Simple Pharmacy"
+            "display": "YOUR LOCAL BOOTS PHARMACY"
           }
         },
         "insurance": [
@@ -490,9 +490,9 @@
         "organization": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "VNE51"
+            "value": "FL584"
           },
-          "display": "The Simple Pharmacy"
+          "display": "YOUR LOCAL BOOTS PHARMACY"
         },
         "code": [
           {

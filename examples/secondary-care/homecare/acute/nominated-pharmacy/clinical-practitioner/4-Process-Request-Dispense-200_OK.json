@@ -3,7 +3,7 @@
   "id": "prescription-dispense-notification",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "3db3cff8-b1be-45ae-bf23-6221b403b715"
+    "value": "68dde21a-9e59-4581-affb-30f9e2c25f2d"
   },
   "type": "message",
   "entry": [
@@ -22,7 +22,7 @@
             "receiver": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "VN6XW"
+                "value": "FL584"
               },
               "display": "GRACE HOMECARE LTD"
             }
@@ -31,13 +31,13 @@
         "sender": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "VN6XW"
+            "value": "FL584"
           },
           "display": "GRACE HOMECARE LTD"
         },
         "source": {
           "name": "GRACE HOMECARE LTD",
-          "endpoint": "urn:nhs-uk:addressing:ods:VN6XW"
+          "endpoint": "urn:nhs-uk:addressing:ods:FL584"
         },
         "reason": {
           "coding": [
@@ -113,9 +113,9 @@
               "type": "Organization",
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "FH542"
+                "value": "FL584"
               },
-              "display": "COHENS CHEMIST"
+              "display": "YOUR LOCAL BOOTS PHARMACY"
             }
           }
         ],
@@ -129,14 +129,14 @@
                     "url": "shortForm",
                     "valueIdentifier": {
                       "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-                      "value": "F5A606-A99968-453491"
+                      "value": "EFE6BF-A99968-4EA1AP"
                     }
                   },
                   {
                     "url": "UUID",
                     "valueIdentifier": {
                       "system": "https://fhir.nhs.uk/Id/prescription",
-                      "value": "131c7894-0f2c-499a-9ba6-890f79d89725"
+                      "value": "99041706-e2fa-470e-bd5f-b803f23f287d"
                     }
                   }
                 ]
@@ -169,7 +169,7 @@
           "system": "http://unitsofmeasure.org",
           "code": "d"
         },
-        "whenPrepared": "2021-06-14T17:10:49+00:00",
+        "whenPrepared": "2021-06-14T18:00:08+00:00",
         "dosageInstruction": [
           {
             "text": "10 milligram, Inject, Subcutaneous route, once weekly"
