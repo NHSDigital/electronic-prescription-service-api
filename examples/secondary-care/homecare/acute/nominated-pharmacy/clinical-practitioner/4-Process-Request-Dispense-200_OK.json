@@ -24,7 +24,7 @@
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
                 "value": "FL584"
               },
-              "display": "GRACE HOMECARE LTD"
+              "display": "YOUR LOCAL BOOTS PHARMAC"
             }
           }
         ],
@@ -33,10 +33,10 @@
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
             "value": "FL584"
           },
-          "display": "GRACE HOMECARE LTD"
+          "display": "YOUR LOCAL BOOTS PHARMAC"
         },
         "source": {
-          "name": "GRACE HOMECARE LTD",
+          "name": "YOUR LOCAL BOOTS PHARMAC",
           "endpoint": "urn:nhs-uk:addressing:ods:FL584"
         },
         "reason": {
