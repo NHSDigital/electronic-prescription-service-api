@@ -1,4 +1,4 @@
 [submodule "validator"]
 	path = validator
 	url = https://github.com/NHSDigital/validation-service-fhir-r4.git
-	branch = AEA-1402_update_IG_packages
+	branch = master
