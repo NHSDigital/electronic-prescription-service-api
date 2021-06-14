@@ -422,12 +422,12 @@ export class SpineResponseHandler<T> {
 }
 
 export class CancelResponseHandler extends SpineResponseHandler<hl7V3.CancellationResponseRoot> {
-  translator: (cancelResponse: hl7V3.CancellationResponse) => fhir.Bundle
+  translator: (cancelResponse: hl7V3.CancellationResponse) => fhir.Bundle | fhir.OperationOutcome
 
   constructor(
     interactionId: string,
-    translator: (cancelResponse: hl7V3.CancellationResponse) => fhir.Bundle
-    = cancelResponseTranslator.translateSpineCancelResponseIntoBundle
+    translator: (cancelResponse: hl7V3.CancellationResponse) => fhir.Bundle | fhir.OperationOutcome
+    = cancelResponseTranslator.translateSpineCancelResponse
   ) {
     super(interactionId)
     this.translator = translator

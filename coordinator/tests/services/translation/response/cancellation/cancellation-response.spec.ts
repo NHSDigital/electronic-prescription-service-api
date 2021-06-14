@@ -1,6 +1,7 @@
 import * as TestResources from "../../../../resources/test-resources"
 import {
-  translateSpineCancelResponseIntoBundle
+  translateSpineCancelResponseIntoBundle,
+  translateSpineCancelResponseIntoOperationOutcome
 } from "../../../../../src/services/translation/response/cancellation/cancellation-response"
 import {
   getHealthcareServices,
@@ -13,11 +14,15 @@ import {
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {getCancellationResponse, hasCorrectISOFormat} from "../../common/test-helpers"
 import {CANCEL_RESPONSE_HANDLER} from "../../../../../src/services/translation/response"
+import {extractStatusCode}
+  from "../../../../../src/services/translation/response/cancellation/cancellation-medication-request"
+import {fhir} from "@models"
 
-const actualError = TestResources.spineResponses.cancellationError
+const actualError = TestResources.spineResponses.cancellationNotFoundError
 const actualSendMessagePayload = CANCEL_RESPONSE_HANDLER.extractSendMessagePayload(actualError.response.body)
-const actualCancelResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)
+const actualCancelResponse = getCancellationResponse(TestResources.spineResponses.cancellationNotFoundError)
 const fhirBundle = translateSpineCancelResponseIntoBundle(actualCancelResponse)
+const fhirOperationOutcome = translateSpineCancelResponseIntoOperationOutcome(extractStatusCode(actualCancelResponse))
 
 describe("bundle", () => {
   test("response is a bundle", () => {
@@ -121,5 +126,26 @@ describe("bundle entries", () => {
     expect(getPractitionerRoles(translatedDispenseBundle)).toHaveLength(1)
     expect(getHealthcareServices(translatedDispenseBundle)).toHaveLength(1)
     expect(getLocations(translatedDispenseBundle)).toHaveLength(1)
+  })
+})
+
+describe("operationOutcome", () => {
+  test("response is a operationOutcome", () => {
+    expect(fhirOperationOutcome.resourceType).toBe("OperationOutcome")
+  })
+
+  test("response is a operationOutcome", () => {
+    expect(fhirOperationOutcome.issue).toHaveLength(1)
+    expect(fhirOperationOutcome.issue[0]).toMatchObject({
+      severity: "error",
+      code: fhir.IssueCodes.NOT_FOUND,
+      details: {
+        coding: [{
+          system: "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history",
+          code: "R-0008",
+          display: "Prescription/item not found"
+        }]
+      }
+    })
   })
 })
