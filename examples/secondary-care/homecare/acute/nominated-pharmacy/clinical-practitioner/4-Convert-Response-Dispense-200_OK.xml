@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN080101SM31 xmlns="urn:hl7-org:v3">
-  <id root="68DDE21A-9E59-4581-AFFB-30F9E2C25F2D"/>
-  <creationTime value="20210614180657"/>
+  <id root="A6AF5492-D71E-4773-9BB5-2F13AB85F6B3"/>
+  <creationTime value="20210614182712"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN080101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -27,9 +27,9 @@
     </author1>
     <subject>
       <DispenseNotification classCode="INFO" moodCode="EVN">
-        <id root="68DDE21A-9E59-4581-AFFB-30F9E2C25F2D"/>
+        <id root="A6AF5492-D71E-4773-9BB5-2F13AB85F6B3"/>
         <code code="163541000000107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensed Medication - FocusActOrEvent (administrative concept)"/>
-        <effectiveTime value="20210614180657"/>
+        <effectiveTime value="20210614182712"/>
         <typeId extension="PORX_MT024001UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <patient classCode="PAT">
@@ -41,18 +41,18 @@
             <agentOrganization classCode="ORG" determinerCode="INSTANCE">
               <id extension="FL584" root="1.2.826.0.1285.0.1.10"/>
               <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
-              <name>YOUR LOCAL BOOTS PHARMACY</name>
+              <name>YOUR LOCAL BOOTS PHARMACYY</name>
             </agentOrganization>
           </AgentOrg>
         </primaryInformationRecipient>
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentSupplyHeader classCode="SBADM" moodCode="EVN">
-            <id root="68DDE21A-9E59-4581-AFFB-30F9E2C25F2D"/>
+            <id root="A6AF5492-D71E-4773-9BB5-2F13AB85F6B3"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
             <effectiveTime nullFlavor="NA"/>
             <author contextControlCode="OP" typeCode="AUT">
-              <time value="20210614180008"/>
+              <time value="20210614182600"/>
               <signatureText nullFlavor="NA"/>
               <AgentPerson classCode="AGNT">
                 <id extension="999999999999" root="1.2.826.0.1285.0.2.0.67"/>
@@ -152,14 +152,14 @@
               <seperatableInd value="false"/>
               <pertinentPrescriptionID classCode="OBS" moodCode="EVN">
                 <code code="PID" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                <value extension="EFE6BF-A99968-4EA1AP" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+                <value extension="0EB38D-A99968-424EAR" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
               </pertinentPrescriptionID>
             </pertinentInformation4>
             <inFulfillmentOf inversionInd="false" negationInd="false" typeCode="FLFS">
               <seperatableInd value="true"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <priorOriginalPrescriptionRef classCode="SBADM" moodCode="RQO">
-                <id root="99041706-E2FA-470E-BD5F-B803F23F287D"/>
+                <id root="57A5AA32-7148-47C1-8EFC-65AC5F625E61"/>
               </priorOriginalPrescriptionRef>
             </inFulfillmentOf>
           </pertinentSupplyHeader>

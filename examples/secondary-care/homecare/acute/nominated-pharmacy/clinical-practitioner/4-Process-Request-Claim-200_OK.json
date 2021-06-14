@@ -3,7 +3,7 @@
   "id": "prescription-dispense-claim",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "1c06bc1b-aa0e-4b88-b3f9-371de42539b0"
+    "value": "a2c05ec6-4292-4568-8200-bfac8439da04"
   },
   "type": "message",
   "entry": [

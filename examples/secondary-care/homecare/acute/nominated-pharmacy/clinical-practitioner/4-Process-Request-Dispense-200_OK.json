@@ -3,7 +3,7 @@
   "id": "prescription-dispense-notification",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "68dde21a-9e59-4581-affb-30f9e2c25f2d"
+    "value": "a6af5492-d71e-4773-9bb5-2f13ab85f6b3"
   },
   "type": "message",
   "entry": [
@@ -24,7 +24,7 @@
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
                 "value": "FL584"
               },
-              "display": "YOUR LOCAL BOOTS PHARMAC"
+              "display": "YOUR LOCAL BOOTS PHARMACY"
             }
           }
         ],
@@ -33,10 +33,10 @@
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
             "value": "FL584"
           },
-          "display": "YOUR LOCAL BOOTS PHARMAC"
+          "display": "YOUR LOCAL BOOTS PHARMACY"
         },
         "source": {
-          "name": "YOUR LOCAL BOOTS PHARMAC",
+          "name": "YOUR LOCAL BOOTS PHARMACY",
           "endpoint": "urn:nhs-uk:addressing:ods:FL584"
         },
         "reason": {
@@ -115,7 +115,7 @@
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
                 "value": "FL584"
               },
-              "display": "YOUR LOCAL BOOTS PHARMACY"
+              "display": "YOUR LOCAL BOOTS PHARMACYY"
             }
           }
         ],
@@ -129,14 +129,14 @@
                     "url": "shortForm",
                     "valueIdentifier": {
                       "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-                      "value": "EFE6BF-A99968-4EA1AP"
+                      "value": "0EB38D-A99968-424EAR"
                     }
                   },
                   {
                     "url": "UUID",
                     "valueIdentifier": {
                       "system": "https://fhir.nhs.uk/Id/prescription",
-                      "value": "99041706-e2fa-470e-bd5f-b803f23f287d"
+                      "value": "57a5aa32-7148-47c1-8efc-65ac5f625e61"
                     }
                   }
                 ]
@@ -169,7 +169,7 @@
           "system": "http://unitsofmeasure.org",
           "code": "d"
         },
-        "whenPrepared": "2021-06-14T18:00:08+00:00",
+        "whenPrepared": "2021-06-14T18:26:00+00:00",
         "dosageInstruction": [
           {
             "text": "10 milligram, Inject, Subcutaneous route, once weekly"

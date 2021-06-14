@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN020101SM31 xmlns="urn:hl7-org:v3">
-  <id root="B97DA0D3-0057-416A-9F23-F98AD4E33964"/>
-  <creationTime value="20210614180054"/>
+  <id root="085099CD-9C1B-43C3-B61C-EFC0EC7332AA"/>
+  <creationTime value="20210614182636"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN020101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -40,9 +40,9 @@
     </author1>
     <subject>
       <ParentPrescription classCode="INFO" moodCode="EVN">
-        <id root="B97DA0D3-0057-416A-9F23-F98AD4E33964"/>
+        <id root="085099CD-9C1B-43C3-B61C-EFC0EC7332AA"/>
         <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Prescription - FocusActOrEvent (record artifact)"/>
-        <effectiveTime value="20210614180053"/>
+        <effectiveTime value="20210614182636"/>
         <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <Patient classCode="PAT">
@@ -80,8 +80,8 @@
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentPrescription classCode="SBADM" moodCode="RQO">
-            <id root="99041706-E2FA-470E-BD5F-B803F23F287D"/>
-            <id extension="EFE6BF-A99968-4EA1AP" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+            <id root="57A5AA32-7148-47C1-8EFC-65AC5F625E61"/>
+            <id extension="0EB38D-A99968-424EAR" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
             <effectiveTime nullFlavor="NA"/>
             <performer contextControlCode="OP" typeCode="PRF">
@@ -92,7 +92,7 @@
               </AgentOrgSDS>
             </performer>
             <author contextControlCode="OP" typeCode="AUT">
-              <time value="20210614180053"/>
+              <time value="20210614182636"/>
               <signatureText>
                 <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
                   <SignedInfo>
@@ -103,10 +103,10 @@
                         <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
                       </Transforms>
                       <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
-                      <DigestValue>gM5Q9F76GxtPqS+uLv79oaM7Lp4=</DigestValue>
+                      <DigestValue>/mIy5NifOP9vARNE76FHZVEglBw=</DigestValue>
                     </Reference>
                   </SignedInfo>
-                  <SignatureValue>h48C042oJts+I7lu7RsHpqAwMjpI6LNkCCjYghsQKFu5SpsAiXfeV2JlNRu2HGYGOE3Ipa/clT8WkFcg9D5zMzDhHebLzaCw0LpPFWhCU0Fagw76Zf2+jrDx5PEkyoun7xCDFvngoOr1JrrzWoG7AQ0E6CIi8c/LdCXq7v4nBfU=</SignatureValue>
+                  <SignatureValue>Q5dShyshOqX4ncIhqFkAFhdffQQnclYB19Ro6qowe6ZSQIoXUqDoFbffrOZXlOcAfkMX+jpbfe56rPQ9JmyfXdJWgBjSQ3Y8chBqfSt15FaTpj3nieSwpMv7alg7kZGylEwwYVBr/egHm69JgfgD57eXIAemd4S39lHNVoSFIjQ=</SignatureValue>
                   <KeyInfo>
                     <X509Data>
                       <X509Certificate>MIIDuDCCAqCgAwIBAgIEXcmtHzANBgkqhkiG9w0BAQsFADA2MQwwCgYDVQQKEwNuaHMxCzAJBgNVBAsTAkNBMRkwFwYDVQQDExBOSFMgSU5UIExldmVsIDFEMB4XDTIwMTAyMjEwMjE1NVoXDTIyMTAyMjEwNTE1NVowQzEMMAoGA1UEChMDbmhzMQ8wDQYDVQQLEwZQZW9wbGUxIjAgBgNVBAMMGTU1NTI1MzUyMTEwOF9SQU5ET01fVVNFUlEwgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBAKt4szNw7OAH7AQRrDe/xBImsMmMiS9EsrT3a3p/Lh3brdzI9aajTUZ2b/cvbOa7PeYd7u+K4a2Zd0Xk+0GFmYGzSVX6iYjblwr0vai31zV7G+lGvHxH6pSoLCwICaZAFwabeD5Oz94+yA3aWNWtGV0Dfh9qwH3ZFCIMRsverN1pAgMBAAGjggFDMIIBPzAOBgNVHQ8BAf8EBAMCBkAwZQYDVR0gAQH/BFswWTBXBgsqhjoAiXtmAAMCADBIMEYGCCsGAQUFBwIBFjpodHRwczovL3BraS5uaHMudWsvY2VydGlmaWNhdGVfcG9saWNpZXMvY29udGVudF9jb21taXRtZW50MDMGA1UdHwQsMCowKKAmoCSGImh0dHA6Ly9jcmwubmhzLnVrL2ludC8xZC9jcmxjMy5jcmwwKwYDVR0QBCQwIoAPMjAyMDEwMjIxMDIxNTVagQ8yMDIyMDMxNzEwNTE1NVowHwYDVR0jBBgwFoAUoJYfgYTNPd6EUKL6QLIzHxY5PFIwHQYDVR0OBBYEFLtyvYSyaqg60AEUZgxk0wrjRJc+MAkGA1UdEwQCMAAwGQYJKoZIhvZ9B0EABAwwChsEVjguMwMCBLAwDQYJKoZIhvcNAQELBQADggEBABczy8B8juPpIfaTNFcxrC22aCX/xYZmhrL/NvIBAaX1G5hjiwmkGKE2hRTIr67PxZxmXsJxigRBMHPlI+lY/+okzH0Gi7b5bqlw7pxGIgJO000w8pFsvo9w42IYhHodsvnDVSxhMT0J46Qhk9soE0LjoEULKQPPlYGke/Gl3m17ItFYwObQH0fMEwmiqByeIfz7gSccOzL5cIp6PcZTOjo2IqQpgEmhjOcRInEqANitSdjoiJAJzpaaZjYTRdHUX7i7ajEiH4m91nFW+4AqkNttlb4WcGKsSmWgfKKheF4IoZKME80xerSgMy8vtjLOBJCGXz0wLGmQuRmxMTq88q4=</X509Certificate>
