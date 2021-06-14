@@ -42,6 +42,9 @@ export function verifyBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIs
     case fhir.EventCodingCode.DISPENSE:
       messageTypeSpecificErrors = verifyDispenseBundle(bundle)
       break
+    case fhir.EventCodingCode.CLAIM:
+      messageTypeSpecificErrors = verifyClaimBundle(bundle)
+      break
   }
 
   return [
@@ -210,6 +213,11 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
   }
 
   return allErrors
+}
+
+export function verifyClaimBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
+  // todo dispense-claim-information: validate
+  return []
 }
 
 function verifyIdenticalForAllMedicationDispenses(

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PORX_IN060102SM30 xmlns="urn:hl7-org:v3">
+  <id root="C529B1A6-C833-47C2-9789-92897DA75871"/>
+  <creationTime value="20210507144946"/>
+  <versionCode code="V3NPfIT4.2.00"/>
+  <interactionId extension="PORX_IN060102SM30" root="2.16.840.1.113883.2.1.3.2.4.12"/>
+  <processingCode code="P"/>
+  <processingModeCode code="T"/>
+  <acceptAckCode code="NE"/>
+  <communicationFunctionRcv>
+    <device classCode="DEV" determinerCode="INSTANCE">
+      <id extension="567456789789" root="1.2.826.0.1285.0.2.0.107"/>
+    </device>
+  </communicationFunctionRcv>
+  <communicationFunctionSnd>
+    <device classCode="DEV" determinerCode="INSTANCE">
+      <id extension="200000001285" root="1.2.826.0.1285.0.2.0.107"/>
+    </device>
+  </communicationFunctionSnd>
+  <ControlActEvent classCode="CACT" moodCode="EVN">
+    <author1 typeCode="AUT">
+      <AgentSystemSDS classCode="AGNT">
+        <agentSystemSDS classCode="DEV" determinerCode="INSTANCE">
+          <id extension="200000001285" root="1.2.826.0.1285.0.2.0.107"/>
+        </agentSystemSDS>
+      </AgentSystemSDS>
+    </author1>
+    <subject>
+      <NominatedPrescriptionReleaseRequest classCode="INFO" moodCode="RQO">
+        <id root="539F3DAE-E8D4-4B30-8955-3AC00269098B"/>
+        <effectiveTime value="20210507144946"/>
+        <author typeCode="AUT">
+          <AgentPerson classCode="AGNT">
+            <id extension="999999999999" root="1.2.826.0.1285.0.2.0.67"/>
+            <code code="R9999" codeSystem="1.2.826.0.1285.0.2.1.104"/>
+            <telecom use="WP" value="tel:01234567890"/>
+            <agentPerson classCode="PSN" determinerCode="INSTANCE">
+              <id extension="G9999999" root="1.2.826.0.1285.0.2.1.54"/>
+              <name>
+                <given>Unattended</given>
+                <family>Access</family>
+              </name>
+            </agentPerson>
+            <representedOrganization classCode="ORG" determinerCode="INSTANCE">
+              <id extension="VN6XW" root="1.2.826.0.1285.0.1.10"/>
+              <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
+              <name>GRACE HOMECARE LTD</name>
+              <addr>
+                <streetAddressLine>SUITE 20, ENTERPRISE HOUSE, MCCARTH</streetAddressLine>
+                <streetAddressLine>EDUCATION ROAD</streetAddressLine>
+                <streetAddressLine>LEEDS</streetAddressLine>
+                <streetAddressLine>WEST YORKSHIRE</streetAddressLine>
+                <postalCode>LS7 2AL</postalCode>
+              </addr>
+            </representedOrganization>
+          </AgentPerson>
+        </author>
+      </NominatedPrescriptionReleaseRequest>
+    </subject>
+  </ControlActEvent>
+</PORX_IN060102SM30>
