@@ -111,6 +111,9 @@ async function verifyReturn(): Promise<void> {
 async function verifyWithdraw(): Promise<void> {
   await verifyOnce("task", "withdraw")
 }
+async function verifyClaim(): Promise<void> {
+  await verifyOnce("process", "claim")
+}
 
 (async () => {
   await verifyValidate()
@@ -118,7 +121,8 @@ async function verifyWithdraw(): Promise<void> {
     .then(verifySend)
     .then(verifyCancel)
     .then(verifyRelease)
-    .then(verifyDispense)
     .then(verifyReturn)
+    .then(verifyDispense)
     .then(verifyWithdraw)
+    .then(verifyClaim)
 })()
