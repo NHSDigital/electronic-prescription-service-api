@@ -480,12 +480,22 @@
       "fullUrl": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
       "resource": {
         "resourceType": "PractitionerRole",
-        "practitioner": {
-          "identifier": {
+        "identifier": [
+          {
             "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
             "value": "601986680555"
           },
-          "display": "Mr Peter Potion"
+          {
+            "system": "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
+            "value": "683458"
+          }
+        ],
+        "practitioner": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/sds-user-id",
+            "value": "555086689106"
+          },
+          "display": "MR RANDOM FIFTYSEVEN"
         },
         "organization": {
           "identifier": {
