@@ -28,7 +28,7 @@ info:
 
     ### As a dispenser
     You can:
-    * download a prescription (sandbox implementation only)
+    * download a prescription (int/sandbox implementations only)
     * return a prescription (sandbox implementation only)
     * submit a dispense notification to EPS (sandbox implementation only)
     * withdraw a dispense notification (sandbox implementation only)
