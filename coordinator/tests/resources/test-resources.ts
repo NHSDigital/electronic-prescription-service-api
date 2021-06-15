@@ -216,7 +216,7 @@ const cancellationSuccess: ExampleSpineResponse = {
   acknowledgementCode: hl7V3.AcknowledgementTypeCode.ACKNOWLEDGED
 }
 
-const cancellationError: ExampleSpineResponse = {
+const cancellationNotFoundError: ExampleSpineResponse = {
   response: {
     body: fs.readFileSync(
       path.join(__dirname, "./spine-responses/cancel_error.xml"),
@@ -247,7 +247,7 @@ export const spineResponses = {
   singleErrors: [syncError, asyncError],
   multipleErrors: [syncMultipleError, asyncMultipleError],
   cancellationSuccess,
-  cancellationError,
+  cancellationNotFoundError,
   cancellationDispensedError
 }
 

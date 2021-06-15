@@ -9,20 +9,21 @@ const MEDICINAL_PRODUCT_CODEABLE_CONCEPT = fhir.createCodeableConcept(
   "Medicinal product"
 )
 
+export function extractStatusCode(cancellationResponse: hl7V3.CancellationResponse): PrescriptionStatusInformation {
+  const pertinentInformation3 = cancellationResponse.pertinentInformation3
+  const cancellationCode = pertinentInformation3.pertinentResponse.value._attributes.code
+  const cancellationDisplay = pertinentInformation3.pertinentResponse.value._attributes.displayName
+  return getPrescriptionStatusInformation(cancellationCode, cancellationDisplay)
+}
+
 export function createMedicationRequest(
   cancellationResponse: hl7V3.CancellationResponse,
   cancelRequesterPractitionerRoleId: string,
   patientId: string,
   originalPrescriptionAuthorPractitionerRoleId: string
 ): fhir.MedicationRequestOutcome {
-  const pertinentInformation3 = cancellationResponse.pertinentInformation3
-  const cancellationCode = pertinentInformation3.pertinentResponse.value._attributes.code
-  const cancellationDisplay = pertinentInformation3.pertinentResponse.value._attributes.displayName
-  const {
-    prescriptionStatusCode,
-    prescriptionStatusDisplay,
-    medicationRequestStatus
-  } = getPrescriptionStatusInformation(cancellationCode, cancellationDisplay)
+  const {prescriptionStatusCode, prescriptionStatusDisplay, medicationRequestStatus} =
+    extractStatusCode(cancellationResponse)
   const effectiveTime = convertHL7V3DateTimeToIsoDateTimeString(cancellationResponse.effectiveTime)
 
   return {
@@ -90,6 +91,13 @@ function createMedicationRequestExtensions(
   ]
 }
 
+export interface PrescriptionStatusInformation {
+  prescriptionStatusCode: string
+  prescriptionStatusDisplay: string
+  issueCode?: fhir.IssueCodes
+  medicationRequestStatus?: fhir.MedicationRequestStatus
+}
+
 function getPrescriptionStatusInformation(code: string, display: string) {
   switch (code) {
     case "0001":
@@ -138,13 +146,13 @@ function getPrescriptionStatusInformation(code: string, display: string) {
       return {
         prescriptionStatusCode: "R-0008",
         prescriptionStatusDisplay: "Prescription/item not found",
-        medicationRequestStatus: fhir.MedicationRequestStatus.UNKNOWN
+        issueCode: fhir.IssueCodes.NOT_FOUND
       }
     case "0009":
       return {
         prescriptionStatusCode: "R-0009",
         prescriptionStatusDisplay: "Cancellation functionality disabled in Spine",
-        medicationRequestStatus: fhir.MedicationRequestStatus.ACTIVE
+        issueCode: fhir.IssueCodes.NOT_SUPPORTED
       }
     case "0010":
       return {
@@ -156,13 +164,13 @@ function getPrescriptionStatusInformation(code: string, display: string) {
       return {
         prescriptionStatusCode: "R-5000",
         prescriptionStatusDisplay: display,
-        medicationRequestStatus: fhir.MedicationRequestStatus.UNKNOWN
+        issueCode: fhir.IssueCodes.PROCESSING
       }
     case "5888":
       return {
         prescriptionStatusCode: "R-5888",
         prescriptionStatusDisplay: "Invalid message",
-        medicationRequestStatus: fhir.MedicationRequestStatus.UNKNOWN
+        issueCode: fhir.IssueCodes.INVALID
       }
     default:
       throw errors.InvalidValueError
