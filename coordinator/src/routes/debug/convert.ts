@@ -8,7 +8,6 @@ import {fhir} from "@models"
 import * as bundleValidator from "../../services/validation/bundle-validator"
 import * as parametersValidator from "../../services/validation/parameters-validator"
 import * as taskValidator from "../../services/validation/task-validator"
-import {RequestHeaders} from "../../services/headers"
 
 export default [
   /*
@@ -20,7 +19,6 @@ export default [
     handler: externalValidator(
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const payload = getPayload(request) as fhir.Resource
-        const requestId = request.headers[RequestHeaders.REQUEST_ID].toUpperCase()
         if (isBundle(payload)) {
           const issues = bundleValidator.verifyBundle(payload)
           if (issues.length) {
@@ -28,7 +26,7 @@ export default [
           }
 
           request.logger.info("Building HL7V3 message from Bundle")
-          const spineRequest = await translator.convertBundleToSpineRequest(payload, requestId, request.logger)
+          const spineRequest = await translator.convertBundleToSpineRequest(payload, request.headers, request.logger)
           return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)
         }
 
@@ -39,7 +37,11 @@ export default [
           }
 
           request.logger.info("Building HL7V3 message from Parameters")
-          const spineRequest = await translator.convertParametersToSpineRequest(payload, requestId, request.logger)
+          const spineRequest = await translator.convertParametersToSpineRequest(
+            payload,
+            request.headers,
+            request.logger
+          )
           return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)
         }
 
@@ -50,7 +52,7 @@ export default [
           }
 
           request.logger.info("Building HL7V3 message from Task")
-          const spineRequest = await translator.convertTaskToSpineRequest(payload, requestId, request.logger)
+          const spineRequest = await translator.convertTaskToSpineRequest(payload, request.headers, request.logger)
           return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)
         }
 

@@ -4,7 +4,6 @@ import {fhir} from "@models"
 import * as translator from "../../services/translation/request"
 import {spineClient} from "../../services/communication/spine-client"
 import * as parametersValidator from "../../services/validation/parameters-validator"
-import {RequestHeaders} from "../../services/headers"
 
 export default [
   /*
@@ -22,8 +21,11 @@ export default [
         }
 
         request.logger.info("Building Spine release request")
-        const requestId = request.headers[RequestHeaders.REQUEST_ID].toUpperCase()
-        const spineRequest = await translator.convertParametersToSpineRequest(parameters, requestId, request.logger)
+        const spineRequest = await translator.convertParametersToSpineRequest(
+          parameters,
+          request.headers,
+          request.logger
+        )
         const spineResponse = await spineClient.send(spineRequest, request.logger)
         return handleResponse(request, spineResponse, responseToolkit)
       }

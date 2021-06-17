@@ -334,7 +334,12 @@ describe("prescriptionEndorsements", () => {
     expect(hl7v3PrescriptionEndorsements.length).toBeGreaterThan(0)
     hl7v3PrescriptionEndorsements.map(endorsement => expect(endorsement).toEqual(undefined))
 
-    const hl7v3PrescriptionXml = (await convertBundleToSpineRequest(bundle, "test", logger)).message
+    const headers = {
+      "nhsd-request-id": "test",
+      "nhsd-asid": "200000001285"
+    }
+
+    const hl7v3PrescriptionXml = (await convertBundleToSpineRequest(bundle, headers, logger)).message
     expect(hl7v3PrescriptionXml).not.toContain("pertinentInformation3")
   })
 })

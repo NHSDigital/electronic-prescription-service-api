@@ -74,7 +74,7 @@ describe("Spine communication", () => {
       })
     })
 
-    const spineResponse = await requestHandler.poll("test", logger)
+    const spineResponse = await requestHandler.poll("test", "200000001285", logger)
 
     expect(spineResponse.statusCode).toBe(202)
     expect(spine.isPollable(spineResponse)).toBe(true)
@@ -112,7 +112,7 @@ describe("Spine communication", () => {
       })
     })
 
-    const spineResponse = await requestHandler.poll("test", logger)
+    const spineResponse = await requestHandler.poll("test", "200000001285", logger)
 
     expect(spineResponse.statusCode).toBe(200)
     expect(spine.isPollable(spineResponse)).toBe(false)
