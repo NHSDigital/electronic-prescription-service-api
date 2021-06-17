@@ -10,7 +10,8 @@ export class SandboxOdsClient implements OdsClient {
     odsResponses.ORGANIZATION_VNCEL_HOMECARE,
     odsResponses.ORGANIZATION_VNFKT_HOMECARE,
     odsResponses.ORGANIZATION_T1450_NHS_BSA,
-    odsResponses.ORGANIZATION_VNE51_HOMECARE
+    odsResponses.ORGANIZATION_VNE51_HOMECARE,
+    odsResponses.ORGANIZATION_FL584_HOMECARE
   ]
 
   static responseMap = new Map(SandboxOdsClient.responses.map(SandboxOdsClient.toMapEntry))

@@ -49,11 +49,19 @@ describe("translateToFhir", () => {
     expect(returnedValues.statusCode).toBe(500)
   })
 
-  const cancellationResponses = [spineResponses.cancellationSuccess, spineResponses.cancellationError]
-  test.each(cancellationResponses)("cancellation returns Bundle", (spineResponse) => {
-    const translatedResponse = translateToFhir(spineResponse.response, logger)
+  test.each([spineResponses.cancellationSuccess, spineResponses.cancellationDispensedError])(
+    "cancellation returns Bundle when no issueCode", (spineResponse) => {
+      const translatedResponse = translateToFhir(spineResponse.response, logger)
 
-    expect(translatedResponse.fhirResponse.resourceType).toBe("Bundle")
-    expect(translatedResponse.statusCode).toBe(spineResponse.response.statusCode)
-  })
+      expect(translatedResponse.fhirResponse.resourceType).toBe("Bundle")
+      expect(translatedResponse.statusCode).toBe(spineResponse.response.statusCode)
+    })
+
+  test.each([spineResponses.cancellationNotFoundError])(
+    "cancellation returns operationOutcome when issueCode present", (spineResponse) => {
+      const translatedResponse = translateToFhir(spineResponse.response, logger)
+
+      expect(translatedResponse.fhirResponse.resourceType).toBe("OperationOutcome")
+      expect(translatedResponse.statusCode).toBe(spineResponse.response.statusCode)
+    })
 })

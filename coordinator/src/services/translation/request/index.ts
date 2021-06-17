@@ -22,6 +22,7 @@ import {getMessageIdFromBundle, getMessageIdFromTask, identifyMessageType} from 
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 import Hapi from "@hapi/hapi"
 import {getAsid, getRequestId} from "../../headers"
+import {convertDispenseClaimInformation} from "./dispense/dispense-claim-information"
 
 export async function convertBundleToSpineRequest(
   bundle: fhir.Bundle,
@@ -34,7 +35,7 @@ export async function convertBundleToSpineRequest(
 }
 
 type BundleTranslationResult = hl7V3.ParentPrescriptionRoot | hl7V3.CancellationRequestRoot
-  | hl7V3.DispenseNotificationRoot
+  | hl7V3.DispenseNotificationRoot | hl7V3.DispenseClaimInformationRoot
 
 async function createPayloadFromBundle(
   messageType: string,
@@ -49,6 +50,8 @@ async function createPayloadFromBundle(
       return createCancellationSendMessagePayload(bundle, fromAsid)
     case fhir.EventCodingCode.DISPENSE:
       return await createDispenseNotificationSendMessagePayload(bundle, fromAsid, logger)
+    case fhir.EventCodingCode.CLAIM:
+      return await createDispenseClaimInformationSendMessagePayload(bundle, fromAsid, logger)
   }
 }
 
@@ -80,6 +83,21 @@ export async function createDispenseNotificationSendMessagePayload(
     hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION,
     fromAsid,
     dispenseNotificationRoot
+  )
+}
+
+export async function createDispenseClaimInformationSendMessagePayload(
+  bundle: fhir.Bundle,
+  fromAsid: string,
+  logger: pino.Logger
+): Promise<hl7V3.SendMessagePayload<hl7V3.DispenseClaimInformationRoot>> {
+  const dispenseClaimInformation = await convertDispenseClaimInformation(bundle, logger)
+  const dispenseClaimInformationRoot = new hl7V3.DispenseClaimInformationRoot(dispenseClaimInformation)
+  return createSendMessagePayloadForUnattendedAccess(
+    getMessageIdFromBundle(bundle),
+    hl7V3.Hl7InteractionIdentifier.DISPENSE_CLAIM_INFORMATION,
+    fromAsid,
+    dispenseClaimInformationRoot
   )
 }
 

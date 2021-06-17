@@ -114,8 +114,8 @@ export class SpineResponseHandler<T> {
     }
   }
 
-  private static getErrorCodeInformation(code: hl7V3.Code<string>){
-    switch(code._attributes.codeSystem){
+  private static getErrorCodeInformation(code: hl7V3.Code<string>) {
+    switch (code._attributes.codeSystem) {
       case hl7V3.ApplicationErrorMessageTypeCodes.PRESCRIBE:
         return SpineResponseHandler.toEpsPrescribeErrorCode(code)
       case hl7V3.ApplicationErrorMessageTypeCodes.DISPENSE:
@@ -135,7 +135,8 @@ export class SpineResponseHandler<T> {
   }
 
   private static toEpsPrescribeErrorCode(code: hl7V3.Code<string>): EpsErrorCodeInformation {
-    switch(code._attributes.code){
+    switch (code._attributes.code) {
+      //TODO - remove?
       case "0001":
         return {
           code: fhir.IssueCodes.BUSINESS_RULE,
@@ -157,18 +158,72 @@ export class SpineResponseHandler<T> {
           issueCode: "MISSING_DIGITAL_SIGNATURE",
           system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
         }
+      case "0005":
+        return {
+          code: fhir.IssueCodes.NOT_FOUND,
+          display: "Prescription can not be found. Contact prescriber",
+          issueCode: "PRESCRIPTION_NOT_FOUND",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      //TODO - remove?
+      case "0007":
+        return {
+          code: fhir.IssueCodes.CODE_INVALID,
+          display: "The resource ID was not valid." +
+            " For example a NHS Number is presented which is not a valid NHS Number.",
+          issueCode: "INVALID_RESOURCE_ID",
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
+        }
+      //TODO - remove?
+      case "0008":
+        return {
+          code: fhir.IssueCodes.VALUE,
+          display: code._attributes.displayName,
+          issueCode: "MISSING_VALUE",
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
+        }
       case "0009":
+      case "7002":
         return {
           code: fhir.IssueCodes.STRUCTURE,
           display: "Invalid Message",
           issueCode: "INVALID_MESSAGE",
           system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
         }
+      //TODO - remove?
       case "0010":
         return {
           code: fhir.IssueCodes.BUSINESS_RULE,
           display: "Number of items on a prescription should be between 1 and 4",
           issueCode: "INVALID_NUMBER_MEDICATIONREQUESTS",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "0012":
+        return {
+          code: fhir.IssueCodes.BUSINESS_RULE,
+          display: "Invalid State Transition for Prescription",
+          issueCode: "PRESCRIPTION_INVALID_STATE_TRANSITION",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "0013":
+        return {
+          code: fhir.IssueCodes.BUSINESS_RULE,
+          display: "Invalid State Transition for Prescription Item",
+          issueCode: "MEDICATIONREQUEST_INVALID_STATE_TRANSITION",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "0014":
+        return {
+          code: fhir.IssueCodes.NOT_FOUND,
+          display: "Prescription Item Not found",
+          issueCode: "MEDICATIONREQUEST_NOT_FOUND",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      case "0015":
+        return {
+          code: fhir.IssueCodes.BUSINESS_RULE,
+          display: "Invalid Claim. Prescription is not Dispensed",
+          issueCode: "CLAIM_INVALID_NOT_DISPENSED",
           system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
         }
       case "0018":
@@ -178,6 +233,7 @@ export class SpineResponseHandler<T> {
           issueCode: "MISMATCH_AUTHORISED_REPEAT_COUNT",
           system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
         }
+      //TODO - remove?
       case "0019":
         return {
           code: fhir.IssueCodes.BUSINESS_RULE,
@@ -185,6 +241,29 @@ export class SpineResponseHandler<T> {
           issueCode: "INVALID_REPEAT_COUNT",
           system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
         }
+      case "0021":
+        return {
+          code: fhir.IssueCodes.BUSINESS_RULE,
+          display: "Dispense Amendment/Cancellation Request does not pertain to Last Dispense",
+          issueCode: "DISPENSE_AMEND_IDENTIFIER_MISMATCH",
+          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
+        }
+      //TODO - remove?
+      case "0099":
+        return {
+          code: fhir.IssueCodes.CONFLICT,
+          display: "Resource version mismatch",
+          issueCode: "RESOURCE_VERSION_MISMATCH",
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
+        }
+      case "0100":
+        return {
+          code: fhir.IssueCodes.BUSINESS_RULE,
+          display: "Claim amendment is not permitted outside of the claim period",
+          issueCode: "CLAIM_AMEND_PERIOD_ISSUE",
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
+        }
+      //TODO - remove?
       case "5008":
         return {
           code: fhir.IssueCodes.DUPLICATE,
@@ -192,6 +271,7 @@ export class SpineResponseHandler<T> {
           issueCode: "DUPLICATE_MEDICATIONREQUEST_ID",
           system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
         }
+      //TODO - remove?
       case "5009":
         return {
           code: fhir.IssueCodes.VALUE,
@@ -199,6 +279,7 @@ export class SpineResponseHandler<T> {
           issueCode: "INVALID_CHECK_DIGIT",
           system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
         }
+      //TODO - remove?
       case "9006":
         return {
           code: fhir.IssueCodes.VALUE,
@@ -206,26 +287,11 @@ export class SpineResponseHandler<T> {
           issueCode: "INVALID_DATE_FORMAT",
           system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
         }
-      case "0007":
+      case "9999":
         return {
-          code: fhir.IssueCodes.CODE_INVALID,
-          display: "The resource ID was not valid." +
-            " For example a NHS Number is presented which is not a valid NHS Number.",
-          issueCode: "INVALID_RESOURCE_ID",
-          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
-        }
-      case "0008":
-        return {
-          code: fhir.IssueCodes.VALUE,
+          code: fhir.IssueCodes.PROCESSING,
           display: code._attributes.displayName,
-          issueCode: "MISSING_VALUE",
-          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
-        }
-      case "0099":
-        return {
-          code: fhir.IssueCodes.CONFLICT,
-          display: "Resource version mismatch",
-          issueCode: "RESOURCE_VERSION_MISMATCH",
+          issueCode: "FAILURE_TO_PROCESS_MESSAGE",
           system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
         }
       default:
@@ -239,7 +305,7 @@ export class SpineResponseHandler<T> {
   }
 
   private static toEpsDispenseErrorCode(code: hl7V3.Code<string>): EpsErrorCodeInformation {
-    switch(code._attributes.code){
+    switch (code._attributes.code) {
       case "0001":
         return {
           code: fhir.IssueCodes.BUSINESS_RULE,
@@ -285,10 +351,11 @@ export class SpineResponseHandler<T> {
       case "0007":
         return {
           code: fhir.IssueCodes.EXCEPTION,
-          display: "functionality disabled in spine",
+          display: "Functionality disabled in spine",
           issueCode: "SERVICE_DISABLED",
           system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
         }
+      //TODO - remove?
       case "0099":
         return {
           code: fhir.IssueCodes.CONFLICT,
@@ -303,6 +370,7 @@ export class SpineResponseHandler<T> {
           issueCode: "FAILURE_TO_PROCESS_MESSAGE",
           system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
         }
+      //TODO - remove?
       case "5888":
         return {
           code: fhir.IssueCodes.INVALID,
@@ -310,6 +378,7 @@ export class SpineResponseHandler<T> {
           issueCode: "INVALID_MESSAGE",
           system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
         }
+      //TODO - remove?
       case "9006":
         return {
           code: fhir.IssueCodes.VALUE,
@@ -353,12 +422,12 @@ export class SpineResponseHandler<T> {
 }
 
 export class CancelResponseHandler extends SpineResponseHandler<hl7V3.CancellationResponseRoot> {
-  translator: (cancelResponse: hl7V3.CancellationResponse) => fhir.Bundle
+  translator: (cancelResponse: hl7V3.CancellationResponse) => fhir.Bundle | fhir.OperationOutcome
 
   constructor(
     interactionId: string,
-    translator: (cancelResponse: hl7V3.CancellationResponse) => fhir.Bundle
-    = cancelResponseTranslator.translateSpineCancelResponseIntoBundle
+    translator: (cancelResponse: hl7V3.CancellationResponse) => fhir.Bundle | fhir.OperationOutcome
+    = cancelResponseTranslator.translateSpineCancelResponse
   ) {
     super(interactionId)
     this.translator = translator
@@ -388,7 +457,7 @@ export class CancelResponseHandler extends SpineResponseHandler<hl7V3.Cancellati
 export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.PrescriptionReleaseRejectRoot> {
   protected extractErrorCodes(
     sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseRejectRoot>
-  ): Array<hl7V3.Code<string>>{
+  ): Array<hl7V3.Code<string>> {
     const errorCode = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseReject
       .pertinentInformation?.pertinentRejectionReason?.value
     return errorCode ? [errorCode] : []

@@ -24,6 +24,11 @@ export class SandboxSpineClient implements SpineClient {
           statusCode: 200,
           body: spineResponses.APPLICATION_ACKNOWLEDGEMENT
         })
+      case hl7V3.Hl7InteractionIdentifier.DISPENSE_CLAIM_INFORMATION._attributes.extension:
+        return Promise.resolve({
+          statusCode: 200,
+          body: spineResponses.APPLICATION_ACKNOWLEDGEMENT
+        })
       case hl7V3.Hl7InteractionIdentifier.DISPENSER_WITHDRAW._attributes.extension:
         return Promise.resolve({
           statusCode: 200,

@@ -7,7 +7,7 @@ import {getCancellationResponse, hasCorrectISOFormat} from "../../common/test-he
 import {fhir} from "@models"
 
 describe("createMedicationRequest", () => {
-  const cancellationResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)
+  const cancellationResponse = getCancellationResponse(TestResources.spineResponses.cancellationNotFoundError)
   const responsiblePartyPractitionerRoleId = "test"
   const patientId = "testPatientId"
   const authorPrescriptionRoleId = "testAuthorRoleId"

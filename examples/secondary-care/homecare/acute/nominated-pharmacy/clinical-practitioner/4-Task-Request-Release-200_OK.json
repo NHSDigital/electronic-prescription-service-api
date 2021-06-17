@@ -1,0 +1,17 @@
+{
+  "resourceType": "Parameters",
+  "id": "nominatedPharmacyReleaseRequest",
+  "parameter":  [
+    {
+      "name": "owner",
+      "valueIdentifier": {
+        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+        "value": "FL584"
+      }
+    },
+    {
+      "name": "status",
+      "valueCode": "accepted"
+    }
+  ]
+}

@@ -5,7 +5,7 @@ import {getCancellationResponse} from "../common/test-helpers"
 import {hl7V3, fhir} from "@models"
 
 describe("createPractitioner", () => {
-  const cancellationErrorResponse = getCancellationResponse(TestResources.spineResponses.cancellationError)
+  const cancellationErrorResponse = getCancellationResponse(TestResources.spineResponses.cancellationNotFoundError)
   const cancellationErrorDispensedResponse = getCancellationResponse(
     TestResources.spineResponses.cancellationDispensedError
   )
