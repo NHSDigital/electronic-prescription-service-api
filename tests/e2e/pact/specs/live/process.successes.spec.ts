@@ -29,7 +29,7 @@ jestpact.pactWith(
     })
 
     describe("process-message send e2e tests", () => {
-      test.each(TestResources.processOrderCase)("should be able to send %s", async (desc: string, message: fhir.Bundle) => {
+      test.each(TestResources.processOrderCases)("should be able to send %s", async (desc: string, message: fhir.Bundle) => {
         const apiPath = `${basePath}/$process-message`
         const bundleStr = LosslessJson.stringify(message)
         const bundle = JSON.parse(bundleStr) as fhir.Bundle
@@ -93,7 +93,7 @@ jestpact.pactWith(
     }
 
     describe("process-message cancel e2e tests", () => {
-      test.each(TestResources.processOrderUpdateCase)("should be able to cancel %s", async (desc: string, message: fhir.Bundle) => {
+      test.each(TestResources.processOrderUpdateCases)("should be able to cancel %s", async (desc: string, message: fhir.Bundle) => {
         const apiPath = `${basePath}/$process-message`
         const bundleStr = LosslessJson.stringify(message)
         const bundle = JSON.parse(bundleStr) as fhir.Bundle
@@ -149,7 +149,7 @@ jestpact.pactWith(
     }
 
     describe("process-message dispense e2e tests", () => {
-      test.each(TestResources.processDispenseNotificationCase)(
+      test.each(TestResources.processDispenseNotificationCases)(
         "should be able to dispense %s",
         async (desc: string, message: fhir.Bundle) => {
           const apiPath = `${basePath}/$process-message`

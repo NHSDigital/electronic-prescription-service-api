@@ -6,13 +6,15 @@ export enum EventCodingCode {
   PRESCRIPTION = "prescription-order",
   PRESCRIPTION_RESPONSE = "prescription-order-response",
   CANCELLATION = "prescription-order-update",
-  DISPENSE = "dispense-notification"
+  DISPENSE = "dispense-notification",
+  CLAIM = "dispense-claim"
 }
 
 export const ACCEPTED_MESSAGE_TYPES = [
   EventCodingCode.PRESCRIPTION,
   EventCodingCode.CANCELLATION,
-  EventCodingCode.DISPENSE] as const
+  EventCodingCode.DISPENSE,
+  EventCodingCode.CLAIM] as const
 
 export const EVENT_CODING_PRESCRIPTION_ORDER_RESPONSE = common.createCoding(
   "https://fhir.nhs.uk/CodeSystem/message-event",

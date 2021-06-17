@@ -194,3 +194,28 @@ export const ORGANIZATION_VNE51_HOMECARE: fhir.Organization = {
     country: "ENGLAND"
   }]
 }
+
+export const ORGANIZATION_FL584_HOMECARE: fhir.Organization = {
+  resourceType: "Organization",
+  identifier: [{
+    system: "https://fhir.nhs.uk/Id/ods-organization-code",
+    value: "FL584"
+  }],
+  type: [{
+    coding: [{
+      system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+      code: "182"
+    }]
+  }],
+  name: "YOUR LOCAL BOOTS PHARMACY",
+  address: [{
+    line: [
+      "67 NEW ROAD",
+      "ARMITAGE"
+    ],
+    city: "RUGELEY",
+    district: "STAFFORDSHIRE",
+    postalCode: "WS15 4AA",
+    country: "ENGLAND"
+  }]
+}

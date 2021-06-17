@@ -22,7 +22,7 @@ jestpact.pactWith(
     })
 
     describe("process-message send sandbox e2e tests", () => {
-      test.each(TestResources.processOrderCase)(
+      test.each(TestResources.processOrderCases)(
         "should be able to send %s",
         async (desc: string, message: fhir.Bundle) => {
           const apiPath = `${basePath}/$process-message`
@@ -75,7 +75,7 @@ jestpact.pactWith(
     }
 
     describe("process-message cancel sandbox e2e tests", () => {
-      test.each(TestResources.processOrderUpdateCase)(
+      test.each(TestResources.processOrderUpdateCases)(
         "should be able to cancel %s",
         async (desc: string, message: fhir.Bundle) => {
           const apiPath = `${basePath}/$process-message`
@@ -129,7 +129,7 @@ jestpact.pactWith(
     }
 
     describe("process-message dispense sandbox e2e tests", () => {
-      test.each(TestResources.processDispenseNotificationCase)(
+      test.each(TestResources.processDispenseNotificationCases)(
         "should be able to dispense %s",
         async (desc: string, message: fhir.Bundle) => {
           const apiPath = `${basePath}/$process-message`
@@ -172,6 +172,60 @@ jestpact.pactWith(
       )
     })
   })
+
+  jestpact.pactWith(
+    pactOptions("sandbox", "process", "claim"),
+    /* eslint-disable  @typescript-eslint/no-explicit-any */
+    async (provider: any) => {
+      const client = () => {
+        const url = `${provider.mockService.baseUrl}`
+        return supertest(url)
+      }
+
+      describe("process-message claim sandbox e2e tests", () => {
+        test.each(TestResources.processClaimInformationCases)(
+          "should be able to claim %s",
+          async (desc: string, message: fhir.Bundle) => {
+            const apiPath = `${basePath}/$process-message`
+            const bundleStr = LosslessJson.stringify(message)
+            const bundle = JSON.parse(bundleStr) as fhir.Bundle
+
+            const requestId = uuid.v4()
+            const correlationId = uuid.v4()
+
+            const interaction: InteractionObject = {
+              state: "is authenticated",
+              uponReceiving: `a request to process ${desc} message to Spine`,
+              withRequest: {
+                headers: {
+                  "Content-Type": "application/fhir+json; fhirVersion=4.0",
+                  "X-Request-ID": requestId,
+                  "X-Correlation-ID": correlationId
+                },
+                method: "POST",
+                path: apiPath,
+                body: bundle
+              },
+              willRespondWith: {
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                //TODO - Verify response body for claims
+                status: 200
+              }
+            }
+            await provider.addInteraction(interaction)
+            await client()
+              .post(apiPath)
+              .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
+              .set("X-Request-ID", requestId)
+              .set("X-Correlation-ID", correlationId)
+              .send(bundleStr)
+              .expect(200)
+          }
+        )
+      })
+    })
 
 jestpact.pactWith(
   pactOptions("sandbox", "process", "send"),

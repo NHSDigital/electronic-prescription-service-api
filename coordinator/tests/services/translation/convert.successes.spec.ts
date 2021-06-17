@@ -8,7 +8,6 @@ import {
 import {isBundle, isParameters, isTask} from "../../../src/routes/util"
 
 const logger = pino()
-process.env.ODS_URL = "directory.spineservices.nhs.uk"
 
 describe("conversion tests", () => {
   test.each(TestResources.convertSuccessExamples)(
