@@ -270,7 +270,7 @@ paths:
         required: true
         content:
           #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
-          application/json:
+          'application/fhir+json':
             schema:
               oneOf:
                 - $ref: '#/components/schemas/prescriptionOrderBundle'
