@@ -500,11 +500,11 @@ components:
                       example: "Message Sent"
   schemas:
     prescriptionOrderBundle:
-      $ref: "components/schemas/PrescriptionOrderBundle.yaml"
+      $ref: "components/schemas/PrescriptionOrder/Bundle.yaml"
     prescriptionOrderUpdateBundle:
-      $ref: "components/schemas/PrescriptionOrderUpdateBundle.yaml"
+      $ref: "components/schemas/PrescriptionOrderUpdate/Bundle.yaml"
     dispenseNotificationBundle:
-      $ref: "components/schemas/DispenseNotificationBundle.yaml"
+      $ref: "components/schemas/DispenseNotification/Bundle.yaml"
     parameters-response:
       $ref: "components/schemas/ParametersResponse.yaml"
     operation-outcome:
