@@ -4,7 +4,6 @@ set -eu
 
 # coordinator (sandbox)
 export SANDBOX=1
-export FROM_ASID=200000001285
 export TO_ASID=567456789789
 export TO_PARTY_KEY="YES-0000806"
 export FROM_PARTY_KEY="T141D-822234"

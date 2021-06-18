@@ -51,15 +51,20 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
     example.hl7V3Message
   ])
 
+  const headers = {
+    "nhsd-request-id": "test",
+    "nhsd-asid": "200000001285"
+  }
+
   test.each(cases)("accepts %s", (desc: string, message: fhir.Bundle) => {
-    expect(async() => await translator.convertBundleToSpineRequest(message, "test", logger)).not.toThrow()
+    expect(async() => await translator.convertBundleToSpineRequest(message, headers, logger)).not.toThrow()
   })
 
   test.each(cases)(
     "produces expected result for %s",
     (desc: string, message: fhir.Bundle, expectedOutput: ElementCompact) => {
       mockTime.value = convertHL7V3DateTimeToIsoDateTimeString(expectedOutput.PORX_IN020101SM31.creationTime)
-      const actualMessage = translator.createParentPrescriptionSendMessagePayload(message)
+      const actualMessage = translator.createParentPrescriptionSendMessagePayload(message, "200000001285")
       xmlTest(actualMessage, expectedOutput.PORX_IN020101SM31)()
     }
   )
@@ -68,7 +73,7 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
     const messageWithLowercaseUUIDs = getMessageWithLowercaseUUIDs()
 
     const translatedMessage = (
-      await translator.convertBundleToSpineRequest(messageWithLowercaseUUIDs, "test", logger)
+      await translator.convertBundleToSpineRequest(messageWithLowercaseUUIDs, headers, logger)
     ).message
 
     const allNonUpperCaseUUIDS = getAllUUIDsNotUpperCase(translatedMessage)

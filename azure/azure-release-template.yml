@@ -17,6 +17,8 @@ parameters:
     type: object
   - name: enable_monitoring
     type: boolean
+  - name: jinja_templates
+    type: object
 
 extends:
   template: azure/common/apigee-deployment.yml@common
@@ -29,6 +31,7 @@ extends:
     spec_file: ${{ parameters.spec_file }}
     enable_monitoring: ${{ parameters.enable_monitoring }}
     apigee_deployments: ${{ parameters.apigee_deployments }}
+    jinja_templates: ${{ parameters.jinja_templates }}
     post_deploy:
       - bash: |
           if [ "$(APIGEE_ENVIRONMENT)" == "prod" ]

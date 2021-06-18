@@ -42,6 +42,27 @@
         <Step>
           <Name>AssignMessage.AddIssuerHeader</Name>
         </Step>
+        <!-- If we require an ASID, fail if app.asid is null -->
+        {% if REQUIRE_ASID == 'True' %}
+        <Step>
+          <Name>RaiseFault.400BadRequest</Name>
+          <Condition>(app.asid is null)</Condition>
+        </Step>
+        {% endif %}
+        <!-- Populate the ASID var from the app -->
+        <Step>
+          <Name>AssignMessage.PopulateAsidFromApp</Name>
+          <Condition>(app.asid isNot null)</Condition>
+        </Step>
+        <Step>
+          <!-- Populate the ASID var with the default ASID -->
+          <Name>KeyValueMapOperations.GetDefaultAsid</Name>
+          <Condition>(app.asid is null)</Condition>
+        </Step>
+        <Step>
+          <!-- Add the ASID var as a header -->
+          <Name>AssignMessage.AddAsidHeader</Name>
+        </Step>
         <Step>
           <!--This should always be the last Step - as it is just before the message is sent - so the initial request stays intact for as long as possible.
                       The Swapping of the Request Headers converts X-Request-ID and X-Correlation-ID to NHSD-Request-ID and NHSD-Correlation-ID before sending to backend. -->
