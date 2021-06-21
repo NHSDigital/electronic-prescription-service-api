@@ -21,7 +21,7 @@ import {convertTaskToEtpWithdraw} from "./withdraw/withdraw"
 import {getMessageIdFromBundle, getMessageIdFromTask, identifyMessageType} from "../common"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 import Hapi from "@hapi/hapi"
-import {getAsid, getRequestId} from "../../headers"
+import {getAsid, getPartyKey, getRequestId} from "../../headers"
 import {convertDispenseClaimInformation} from "./dispense/dispense-claim-information"
 
 export async function convertBundleToSpineRequest(
@@ -31,7 +31,7 @@ export async function convertBundleToSpineRequest(
 ): Promise<spine.SpineRequest> {
   const messageType = identifyMessageType(bundle)
   const payload = await createPayloadFromBundle(messageType, bundle, getAsid(headers), logger)
-  return requestBuilder.toSpineRequest(payload, getRequestId(headers))
+  return requestBuilder.toSpineRequest(payload, getRequestId(headers), getPartyKey(headers))
 }
 
 type BundleTranslationResult = hl7V3.ParentPrescriptionRoot | hl7V3.CancellationRequestRoot
@@ -192,7 +192,7 @@ export async function convertParametersToSpineRequest(
     getAsid(headers),
     hl7ReleaseRequest
   )
-  return requestBuilder.toSpineRequest(sendMessagePayload, getRequestId(headers))
+  return requestBuilder.toSpineRequest(sendMessagePayload, getRequestId(headers), getPartyKey(headers))
 }
 
 export async function convertTaskToSpineRequest(
@@ -201,7 +201,7 @@ export async function convertTaskToSpineRequest(
   logger: pino.Logger
 ): Promise<spine.SpineRequest> {
   const payload = await createPayloadFromTask(task, getAsid(headers), logger)
-  return requestBuilder.toSpineRequest(payload, getRequestId(headers))
+  return requestBuilder.toSpineRequest(payload, getRequestId(headers), getPartyKey(headers))
 }
 
 type TaskTranslationResult = hl7V3.DispenseProposalReturnRoot | hl7V3.EtpWithdrawRoot
