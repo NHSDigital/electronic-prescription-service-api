@@ -1,0 +1,10 @@
+<AssignMessage name="AssignMessage.PopulateAsidAndPartyKeyFromApp" enabled="true">
+  <AssignVariable>
+    <Name>private.apigee.NHSD-ASID</Name>
+    <Ref>app.asid</Ref>
+  </AssignVariable>
+  <AssignVariable>
+    <Name>private.apigee.NHSD-Party-Key</Name>
+    <Ref>app.party-key</Ref>
+  </AssignVariable>
+</AssignMessage>
