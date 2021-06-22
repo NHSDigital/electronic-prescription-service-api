@@ -62,11 +62,30 @@ export interface IdentifierReference<T extends Resource> {
   display?: string
 }
 
-export interface SimpleQuantity {
-  value: string | LosslessNumber
-  unit: string
+export interface Quantity {
+  value?: string | LosslessNumber
+  comparator?: string
+  unit?: string
   system?: string
-  code: string
+  code?: string
+}
+
+export interface SimpleQuantity extends Quantity {
+  comparator?: never
+}
+
+export interface Duration extends Quantity {
+  system?: "http://unitsofmeasure.org"
+}
+
+export interface Range {
+  low?: SimpleQuantity
+  high?: SimpleQuantity
+}
+
+export interface Ratio {
+  numerator?: Quantity
+  denominator?: Quantity
 }
 
 export interface Period {

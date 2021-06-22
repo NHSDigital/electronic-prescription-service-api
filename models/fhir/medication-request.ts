@@ -90,10 +90,90 @@ export interface MedicationRequestGroupIdentifier extends common.Identifier {
   extension?: Array<extension.IdentifierExtension>
 }
 
-export interface Dosage {
-  text: string
-  patientInstruction?: string
+export type Dosage = {
+  sequence?: string | LosslessNumber
+  text?: string
   additionalInstruction?: Array<common.CodeableConcept>
+  patientInstruction?: string
+  timing?: Timing
+  site?: common.CodeableConcept
+  route?: common.CodeableConcept
+  method?: common.CodeableConcept
+  doseAndRate?: DoseAndRate
+  maxDosePerPeriod?: common.Ratio
+  maxDosePerAdministration?: common.SimpleQuantity
+  maxDosePerLifetime?: common.SimpleQuantity
+} & AsNeeded
+
+export type AsNeeded = {
+  asNeededBoolean?: boolean
+  asNeededCodeableConcept?: never
+} | {
+  asNeededBoolean?: never
+  asNeededCodeableConcept?: common.CodeableConcept
+}
+
+export type Dose = {
+  doseRange?: common.Range
+  doseQuantity?: never
+} | {
+  doseRange?: never
+  doseQuantity?: common.SimpleQuantity
+}
+
+export type Rate = {
+  rateRatio?: common.Ratio
+  rateRange?: never
+  rateQuantity?: never
+} | {
+  rateRatio?: never
+  rateRange?: common.Range
+  rateQuantity?: never
+} | {
+  rateRatio?: never
+  rateRange?: never
+  rateQuantity?: common.SimpleQuantity
+}
+
+export type DoseAndRate = {
+  type?: common.CodeableConcept
+} & Dose & Rate
+
+export interface Timing {
+  event?: string
+  repeat?: Repeat
+  code?: common.CodeableConcept
+}
+
+export type Repeat = {
+  count?: string | LosslessNumber
+  countMax?: string | LosslessNumber
+  duration?: string | LosslessNumber
+  durationMax?: string | LosslessNumber
+  durationUnit?: string
+  frequency?: string | LosslessNumber
+  frequencyMax?: string | LosslessNumber
+  period?: string | LosslessNumber
+  periodMax?: string | LosslessNumber
+  periodUnit?: string
+  dayOfWeek?: string
+  timeOfDay?: string
+  when?: string
+  offset?: string | LosslessNumber
+} & Bounds
+
+export type Bounds = {
+  boundsDuration?: common.Duration
+  boundsRange?: never
+  boundsPeriod?: never
+} | {
+  boundsDuration?: never
+  boundsRange?: common.Range
+  boundsPeriod?: never
+} | {
+  boundsDuration?: never
+  boundsRange?: never
+  boundsPeriod?: common.Period
 }
 
 export interface Performer extends common.IdentifierReference<practitionerRole.Organization> {
