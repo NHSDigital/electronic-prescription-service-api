@@ -109,7 +109,7 @@ describe("dose", () => {
   })
 
   describe("doseRange", () => {
-    test("doseRange is added correctly", () => {
+    test("doseRange is added correctly (low and high units equal)", () => {
       const result = stringifyDosage({
         doseAndRate: {
           doseRange: {
@@ -125,6 +125,24 @@ describe("dose", () => {
         }
       })
       expect(result).toEqual("10 to 20 milligram")
+    })
+
+    test("doseRange is added correctly (low and high units not equal)", () => {
+      const result = stringifyDosage({
+        doseAndRate: {
+          doseRange: {
+            low: {
+              "value": new LosslessNumber(500),
+              "unit": "milligram"
+            },
+            high: {
+              "value": new LosslessNumber(1),
+              "unit": "gram"
+            }
+          }
+        }
+      })
+      expect(result).toEqual("500 milligram to 1 gram")
     })
 
     test("missing low value results in an error", () => {
@@ -281,7 +299,7 @@ describe("rate", () => {
   })
 
   describe("rateRange", () => {
-    test("rateRange is added correctly", () => {
+    test("rateRange is added correctly (low and high units equal)", () => {
       const result = stringifyDosage({
         doseAndRate: {
           rateRange: {
@@ -297,6 +315,24 @@ describe("rate", () => {
         }
       })
       expect(result).toEqual("at a rate of 1 to 2 liter per minute")
+    })
+
+    test("rateRange is added correctly (low and high units not equal)", () => {
+      const result = stringifyDosage({
+        doseAndRate: {
+          rateRange: {
+            low: {
+              value: new LosslessNumber(500),
+              unit: "milliliter per minute"
+            },
+            high: {
+              value: new LosslessNumber(1),
+              unit: "liter per minute"
+            }
+          }
+        }
+      })
+      expect(result).toEqual("at a rate of 500 milliliter per minute to 1 liter per minute")
     })
 
     test("missing low value results in an error", () => {
@@ -712,7 +748,20 @@ describe("frequency and period", () => {
       expect(() => stringifyDosage({
         timing: {
           repeat: {
+            frequency: new LosslessNumber(3),
             period: new LosslessNumber(2)
+          }
+        }
+      })).toThrow(Error)
+    })
+
+    test("periodMax with no period results in an error", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            frequency: new LosslessNumber(3),
+            periodMax: new LosslessNumber(2),
+            periodUnit: fhir.UnitOfTime.HOUR
           }
         }
       })).toThrow(Error)

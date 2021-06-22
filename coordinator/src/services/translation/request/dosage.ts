@@ -37,14 +37,20 @@ function stringifyDose(dosageInstruction: fhir.Dosage) {
       stringifyQuantityValue(doseQuantity), " ", stringifyQuantityUnit(doseQuantity)
     ]
   } else if (doseRange) {
-    //TODO - enforce the same low and high unit?
-    return [
-      stringifyQuantityValue(doseRange.low),
-      " to ",
-      stringifyQuantityValue(doseRange.high),
-      " ",
-      stringifyQuantityUnit(doseRange.high)
+    const lowUnit = stringifyQuantityUnit(doseRange.low)
+    const highUnit = stringifyQuantityUnit(doseRange.high)
+    const elements = [
+      stringifyQuantityValue(doseRange.low)
     ]
+    if (lowUnit !== highUnit) {
+      elements.push(
+        " ", lowUnit
+      )
+    }
+    elements.push(
+      " to ", stringifyQuantityValue(doseRange.high), " ", highUnit
+    )
+    return elements
   } else {
     return []
   }
@@ -58,8 +64,7 @@ function stringifyRate(dosageInstruction: fhir.Dosage) {
   if (rateRatio) {
     const numerator = rateRatio.numerator
     const denominator = rateRatio.denominator
-    //TODO - compare number instead of string? what about 1.00?
-    if (stringifyQuantityValue(denominator) === "1") {
+    if (isOne(denominator?.value)) {
       return [
         "at a rate of ",
         stringifyQuantityValue(numerator),
@@ -81,17 +86,22 @@ function stringifyRate(dosageInstruction: fhir.Dosage) {
       ]
     }
   } else if (rateRange) {
-    //TODO - enforce that low and high units are the same?
-    const low = rateRange.low
-    const high = rateRange.high
-    return [
-      "at a rate of ",
-      stringifyQuantityValue(low),
-      " to ",
-      stringifyQuantityValue(high),
-      " ",
-      stringifyQuantityUnit(high)
+    const lowRateQuantity = rateRange.low
+    const highRateQuantity = rateRange.high
+    const lowUnit = stringifyQuantityUnit(lowRateQuantity)
+    const highUnit = stringifyQuantityUnit(highRateQuantity)
+    const elements = [
+      "at a rate of ", stringifyQuantityValue(lowRateQuantity)
     ]
+    if (lowUnit !== highUnit) {
+      elements.push(
+        " ", lowUnit
+      )
+    }
+    elements.push(
+      " to ", stringifyQuantityValue(highRateQuantity), " ", highUnit
+    )
+    return elements
   } else if (rateQuantity) {
     return [
       "at a rate of ", stringifyQuantityValue(rateQuantity), " ", stringifyQuantityUnit(rateQuantity)
@@ -134,7 +144,7 @@ function stringifyFrequencyAndPeriod(dosage: fhir.Dosage) {
   if (!frequency && !frequencyMax) {
     if (!period && !periodMax) {
       return []
-    } else if (stringifyNumericValue(period) === "1" && !periodMax) {
+    } else if (isOne(period) && !periodMax) {
       return [
         stringifyReciprocalUnitOfTime(periodUnit)
       ]
@@ -144,12 +154,12 @@ function stringifyFrequencyAndPeriod(dosage: fhir.Dosage) {
     }
   }
 
-  if (stringifyNumericValue(frequency) === "1" && !frequencyMax) {
-    if (!period) {
+  if (isOne(frequency) && !frequencyMax) {
+    if (!period && !periodMax) {
       return [
         "once"
       ]
-    } else if (stringifyNumericValue(period) === "1" && !periodMax) {
+    } else if (isOne(period) && !periodMax) {
       return [
         "once ", ...stringifyStandardPeriod(dosage)
       ]
@@ -158,8 +168,8 @@ function stringifyFrequencyAndPeriod(dosage: fhir.Dosage) {
     }
   }
 
-  if (stringifyNumericValue(frequency) === "2" && !frequencyMax) {
-    if (!period) {
+  if (isTwo(frequency) && !frequencyMax) {
+    if (!period && !periodMax) {
       return [
         "twice"
       ]
@@ -171,7 +181,7 @@ function stringifyFrequencyAndPeriod(dosage: fhir.Dosage) {
   }
 
   const elements = stringifyStandardFrequency(dosage)
-  if (period) {
+  if (period || periodMax) {
     elements.push(
       " ", ...stringifyStandardPeriod(dosage)
     )
@@ -212,7 +222,7 @@ function stringifyStandardPeriod(dosage: fhir.Dosage) {
       " ",
       stringifyPluralUnitOfTime(periodUnit, periodMax)
     ]
-  } else if (stringifyNumericValue(period) === "1") {
+  } else if (isOne(period)) {
     return [
       getIndefiniteArticleForUnitOfTime(periodUnit), " ", stringifyUnitOfTime(periodUnit)
     ]
@@ -310,12 +320,21 @@ function stringifyQuantityUnit(quantity: fhir.Quantity) {
  */
 function pluraliseUnit(unit: string, value: string | LosslessNumber) {
   if (unit) {
-    //TODO - compare number instead of string? what about 1.00?
-    if (stringifyNumericValue(value) === "1") {
+    if (!value || isOne(value)) {
       return unit
     } else {
       return `${unit}s`
     }
   }
   return null
+}
+
+function isOne(numericValue: string | LosslessNumber) {
+  //TODO - compare number instead of string? what about 1.00?
+  return stringifyNumericValue(numericValue) === "1"
+}
+
+function isTwo(numericValue: string | LosslessNumber) {
+  //TODO - compare number instead of string? what about 2.00?
+  return stringifyNumericValue(numericValue) === "2"
 }
