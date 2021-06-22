@@ -1,5 +1,5 @@
 type: object
-description: A container for a collection of resources.
+description: A dispense-notification message. Send this message if you want to dispense a prescription to a patient.
 required:
   - resourceType
   - id

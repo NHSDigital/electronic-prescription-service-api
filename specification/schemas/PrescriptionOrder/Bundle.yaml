@@ -1,5 +1,5 @@
 type: object
-description: A container for a collection of resources.
+description: A prescription-order message. Send this message if you want to create a prescription.
 required:
   - resourceType
   - id

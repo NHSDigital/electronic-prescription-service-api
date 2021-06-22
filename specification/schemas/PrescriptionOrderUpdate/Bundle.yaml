@@ -1,5 +1,5 @@
 type: object
-description: A container for a collection of resources.
+description: A prescription-order-update message. Send this message if you want to cancel a prescription.
 required:
   - resourceType
   - id
