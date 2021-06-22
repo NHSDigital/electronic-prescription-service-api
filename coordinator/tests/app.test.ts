@@ -1,11 +1,16 @@
 import Hapi from "@hapi/hapi"
 import * as HapiShot from "@hapi/shot"
 import * as Headers from "../src/services/headers"
+import {RequestHeaders} from "../src/services/headers"
 import {isProd} from "../src/services/environment"
 import {InvalidValueError} from "../../models/errors/processing-errors"
 import {ContentTypes} from "../src/routes/util"
-import {reformatUserErrorsToFhir, switchContentTypeForSmokeTest} from "../src/server-extensions"
-import {RequestHeaders} from "../src/services/headers"
+import {
+  invalidProdHeaders,
+  reformatUserErrorsToFhir,
+  rejectInvalidProdHeaders,
+  switchContentTypeForSmokeTest
+} from "../src/server-extensions"
 import HapiPino from "hapi-pino"
 
 jest.mock("../src/services/environment", () => ({
@@ -31,9 +36,9 @@ describe("rejectInvalidProdHeaders extension", async () => {
     }
   })
 
-  server.ext("onRequest", Headers.rejectInvalidProdHeaders)
+  server.ext("onRequest", rejectInvalidProdHeaders)
 
-  test.each(Headers.invalidProdHeaders)(
+  test.each(invalidProdHeaders)(
     "blocks %p header in prod", async (invalidHeader: Headers.RequestHeaders) => {
       newIsProd.mockImplementation(() => true)
       const newHeaders: HapiShot.Headers = {}
@@ -57,7 +62,7 @@ describe("rejectInvalidProdHeaders extension", async () => {
     expect(response.statusCode).toBe(200)
   })
 
-  test.each(Headers.invalidProdHeaders)(
+  test.each(invalidProdHeaders)(
     "doesn't block %p header in non-prod", async (invalidHeader: Headers.RequestHeaders) => {
       newIsProd.mockImplementation(() => false)
       const response = await server.inject({

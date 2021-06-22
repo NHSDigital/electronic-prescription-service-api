@@ -48,7 +48,7 @@ export class SandboxSpineClient implements SpineClient {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async poll(path: string): Promise<spine.SpineResponse<fhir.OperationOutcome>> {
+  async poll(path: string, fromAsid: string): Promise<spine.SpineResponse<fhir.OperationOutcome>> {
     return Promise.resolve({
       statusCode: 400,
       body: notSupportedOperationOutcome

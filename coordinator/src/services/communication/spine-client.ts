@@ -5,7 +5,7 @@ import {Logger} from "pino"
 
 export interface SpineClient {
   send(spineRequest: spine.SpineRequest, logger: Logger): Promise<spine.SpineResponse<unknown>>
-  poll(path: string, logger: Logger): Promise<spine.SpineResponse<unknown>>
+  poll(path: string, fromAsid: string, logger: Logger): Promise<spine.SpineResponse<unknown>>
 }
 
 function getSpineClient(liveMode: boolean): SpineClient {

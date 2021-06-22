@@ -292,7 +292,12 @@ describe("PertinentInformation2", () => {
     const contentString1 = "examplePatientInfo1"
     fhirCommunicationRequests[0].payload.push({contentString: contentString1})
 
-    const result = (await translator.convertBundleToSpineRequest(bundle, "test", logger)).message
+    const headers = {
+      "nhsd-request-id": "test",
+      "nhsd-asid": "200000001285"
+    }
+
+    const result = (await translator.convertBundleToSpineRequest(bundle, headers, logger)).message
     expect(result).toContain(`&lt;patientInfo&gt;${contentString1}&lt;/patientInfo&gt;`)
     expect(result).not.toContain(`<patientInfo>${contentString1}</patientInfo>`)
   })

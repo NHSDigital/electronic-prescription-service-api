@@ -60,29 +60,37 @@ export class ConvertCase extends Case {
   * Replace any dynamic fields in the response xml which change at runtime with regex pattern match
   */
   private replaceDynamicsWithRegexPatterns(operation: string, responseXml: string): string {
-    responseXml = responseXml
-      .replace(
-        /<creationTime value=\\"[0-9]*\\"\\\/>/g,
-        "<creationTime value=\\\"[0-9]*\\\"\\/>")
+    responseXml = responseXml.replace(
+      /<creationTime value=\\"[0-9]*\\"\\\/>/g,
+      "<creationTime value=\\\"[0-9]*\\\"\\/>"
+    )
+
+    responseXml = responseXml.replace(
+      /<id extension=\\"[0-9]*\\" root=\\"1\\.2\\.826\\.0\\.1285\\.0\\.2\\.0\\.107\\"\\\/>/g,
+      "<id extension=\\\"[0-9]*\\\" root=\\\"1\\.2\\.826\\.0\\.1285\\.0\\.2\\.0\\.107\\\"\\/>"
+    )
 
     if (operation === "dispense" || operation === "release") {
-      responseXml = responseXml
-        .replace(
-          /<effectiveTime value=\\"[0-9]*\\"\\\/>/g,
-          "<effectiveTime value=\\\"[0-9]*\\\"\\/>")
+      responseXml = responseXml.replace(
+        /<effectiveTime value=\\"[0-9]*\\"\\\/>/g,
+        "<effectiveTime value=\\\"[0-9]*\\\"\\/>"
+      )
     }
 
     if (operation === "release") {
-      responseXml = responseXml
-        .replace(
-          /<id root=\\"[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\\"\\\/>/g,
-          "<id root=\\\"[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\\\"\\/>")
+      responseXml = responseXml.replace(
+        /<id root=\\"[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\\"\\\/>/g,
+        "<id root=\\\"[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}\\\"\\/>"
+      )
     }
+
     return responseXml
   }
+
   toSuccessJestCase(): [string, fhir.Bundle, string, string, number] {
     return [this.description, this.request, this.response, this.responseMatcher, this.statusCode]
   }
+
   toErrorJestCase(): [string, fhir.Bundle, string, number] {
     return [this.description, this.request, this.response, this.statusCode]
   }
