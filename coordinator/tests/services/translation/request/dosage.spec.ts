@@ -1,5 +1,6 @@
 import {stringifyDosage} from "../../../../src/services/translation/request/dosage"
 import {LosslessNumber} from "lossless-json"
+import {fhir} from "@models"
 
 describe("overall", () => {
   test("all fields are optional", () => {
@@ -34,7 +35,7 @@ describe("overall", () => {
         repeat: {
           duration: new LosslessNumber(2),
           durationMax: new LosslessNumber(12),
-          durationUnit: "hour"
+          durationUnit: fhir.UnitOfTime.HOUR
         }
       }
     })
@@ -385,7 +386,7 @@ describe("duration", () => {
       timing: {
         repeat: {
           duration: new LosslessNumber(1),
-          durationUnit: "hour"
+          durationUnit: fhir.UnitOfTime.HOUR
         }
       }
     })
@@ -397,7 +398,7 @@ describe("duration", () => {
       timing: {
         repeat: {
           duration: new LosslessNumber(2),
-          durationUnit: "hour"
+          durationUnit: fhir.UnitOfTime.HOUR
         }
       }
     })
@@ -410,7 +411,7 @@ describe("duration", () => {
         repeat: {
           duration: new LosslessNumber(1),
           durationMax: new LosslessNumber(1),
-          durationUnit: "hour"
+          durationUnit: fhir.UnitOfTime.HOUR
         }
       }
     })
@@ -423,7 +424,7 @@ describe("duration", () => {
         repeat: {
           duration: new LosslessNumber(1),
           durationMax: new LosslessNumber(2),
-          durationUnit: "hour"
+          durationUnit: fhir.UnitOfTime.HOUR
         }
       }
     })

@@ -135,67 +135,55 @@ function stringifyFrequencyAndPeriod(dosage: fhir.Dosage) {
     if (!period) {
       return []
     } else if (stringifyNumericValue(period) === "1") {
-      return [
-        stringifyReciprocalUnitOfTime(periodUnit)
-      ]
+      return [stringifyReciprocalUnitOfTime(periodUnit)]
     } else {
       throw new Error("Period specified without a frequency and period is not 1.")
     }
   }
 
-  if (stringifyNumericValue(frequency) === "1") {
+  if (stringifyNumericValue(frequency) === "1" && !frequencyMax) {
     if (!period) {
-      return [
-        "once"
-      ]
+      return ["once"]
     } else if (stringifyNumericValue(period) === "1" && !periodMax) {
-      return [
-        "once ",
-        getIndefiniteArticleForUnitOfTime(periodUnit),
-        " ",
-        stringifyUnitOfTime(periodUnit)
-      ]
+      return ["once ", ...stringifyStandardPeriod(dosage)]
     } else {
       return stringifyStandardPeriod(dosage)
     }
   }
 
-  if (stringifyNumericValue(frequency) === "2") {
+  if (stringifyNumericValue(frequency) === "2" && !frequencyMax) {
     if (!period) {
-      return [
-        "twice"
-      ]
-    } else if (stringifyNumericValue(period) === "1" && !periodMax) {
-      return [
-        "twice ",
-        getIndefiniteArticleForUnitOfTime(periodUnit),
-        " ",
-        stringifyUnitOfTime(periodUnit)
-      ]
+      return ["twice"]
     } else {
-      return [
-        "twice ",
-        ...stringifyStandardPeriod(dosage)
-      ]
+      return ["twice ", ...stringifyStandardPeriod(dosage)]
     }
   }
 
-  const elements = []
-
-  if (frequency && frequencyMax) {
-    elements.push(stringifyNumericValue(frequency), " to ", stringifyNumericValue(frequencyMax), " times")
-  } else if (frequency) {
-    elements.push(stringifyNumericValue(frequency), " times")
-  } else {
-    elements.push("up to ", stringifyNumericValue(frequencyMax), " times")
-  }
-
+  const elements = stringifyStandardFrequency(dosage)
   if (period) {
     elements.push(" ")
     elements.push(...stringifyStandardPeriod(dosage))
   }
-
   return elements
+}
+
+function stringifyStandardFrequency(dosage: fhir.Dosage) {
+  const repeat = dosage.timing?.repeat
+  const frequency = repeat?.frequency
+  const frequencyMax = repeat?.frequencyMax
+  if (frequency && frequencyMax) {
+    return [
+      stringifyNumericValue(frequency), " to ", stringifyNumericValue(frequencyMax), " times"
+    ]
+  } else if (frequency) {
+    return [
+      stringifyNumericValue(frequency), " times"
+    ]
+  } else {
+    return [
+      "up to ", stringifyNumericValue(frequencyMax), " times"
+    ]
+  }
 }
 
 function stringifyStandardPeriod(dosage: fhir.Dosage) {
@@ -205,19 +193,20 @@ function stringifyStandardPeriod(dosage: fhir.Dosage) {
   const periodUnit = repeat?.periodUnit
   if (periodMax) {
     return [
-      " every ",
+      "every ",
       stringifyNumericValue(period),
       " to ",
       stringifyNumericValue(periodMax),
       " ",
       stringifyPluralUnitOfTime(periodUnit, periodMax)
     ]
+  } else if (stringifyNumericValue(period) === "1") {
+    return [
+      getIndefiniteArticleForUnitOfTime(periodUnit), " ", stringifyUnitOfTime(periodUnit)
+    ]
   } else {
     return [
-      " every ",
-      stringifyNumericValue(period),
-      " ",
-      stringifyPluralUnitOfTime(periodUnit, period)
+      "every ", stringifyNumericValue(period), " ", stringifyPluralUnitOfTime(periodUnit, period)
     ]
   }
 }
