@@ -4,8 +4,6 @@ import * as patient from "./patient"
 import * as medication from "./medication"
 import * as extension from "./extension"
 import {LosslessNumber} from "lossless-json"
-import {PerformanceNodeTiming} from "perf_hooks"
-import {CodeableConcept} from "./common"
 
 export enum CourseOfTherapyTypeCode {
   ACUTE = "acute",
