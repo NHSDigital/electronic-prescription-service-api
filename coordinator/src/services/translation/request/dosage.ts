@@ -131,21 +131,28 @@ function stringifyFrequencyAndPeriod(dosage: fhir.Dosage) {
   const periodMax = repeat?.periodMax
   const periodUnit = repeat?.periodUnit
 
-  if (!frequency) {
-    if (!period) {
+  if (!frequency && !frequencyMax) {
+    if (!period && !periodMax) {
       return []
-    } else if (stringifyNumericValue(period) === "1") {
-      return [stringifyReciprocalUnitOfTime(periodUnit)]
+    } else if (stringifyNumericValue(period) === "1" && !periodMax) {
+      return [
+        stringifyReciprocalUnitOfTime(periodUnit)
+      ]
     } else {
-      throw new Error("Period specified without a frequency and period is not 1.")
+      //TODO - why is this fine when period is 1 but not otherwise?
+      throw new Error("Period or periodMax specified without a frequency and period is not 1.")
     }
   }
 
   if (stringifyNumericValue(frequency) === "1" && !frequencyMax) {
     if (!period) {
-      return ["once"]
+      return [
+        "once"
+      ]
     } else if (stringifyNumericValue(period) === "1" && !periodMax) {
-      return ["once ", ...stringifyStandardPeriod(dosage)]
+      return [
+        "once ", ...stringifyStandardPeriod(dosage)
+      ]
     } else {
       return stringifyStandardPeriod(dosage)
     }
@@ -153,16 +160,21 @@ function stringifyFrequencyAndPeriod(dosage: fhir.Dosage) {
 
   if (stringifyNumericValue(frequency) === "2" && !frequencyMax) {
     if (!period) {
-      return ["twice"]
+      return [
+        "twice"
+      ]
     } else {
-      return ["twice ", ...stringifyStandardPeriod(dosage)]
+      return [
+        "twice ", ...stringifyStandardPeriod(dosage)
+      ]
     }
   }
 
   const elements = stringifyStandardFrequency(dosage)
   if (period) {
-    elements.push(" ")
-    elements.push(...stringifyStandardPeriod(dosage))
+    elements.push(
+      " ", ...stringifyStandardPeriod(dosage)
+    )
   }
   return elements
 }

@@ -35,12 +35,15 @@ describe("overall", () => {
         repeat: {
           duration: new LosslessNumber(2),
           durationMax: new LosslessNumber(12),
-          durationUnit: fhir.UnitOfTime.HOUR
+          durationUnit: fhir.UnitOfTime.HOUR,
+          frequency: new LosslessNumber(2),
+          period: new LosslessNumber(1),
+          periodUnit: fhir.UnitOfTime.DAY
         }
       }
     })
     // eslint-disable-next-line max-len
-    expect(result).toEqual("Apply 100 milligram at a rate of 10 milligram per kilogram and hour over 2 hours (maximum 12 hours).")
+    expect(result).toEqual("Apply 100 milligram at a rate of 10 milligram per kilogram and hour over 2 hours (maximum 12 hours). twice a day")
   })
 })
 
@@ -439,5 +442,280 @@ describe("duration", () => {
         }
       }
     })).toThrow(Error)
+  })
+})
+
+describe("frequency and period", () => {
+  describe("no frequency", () => {
+    test("follows general case if frequencyMax is present", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            frequencyMax: new LosslessNumber(2),
+            period: new LosslessNumber(1),
+            periodUnit: fhir.UnitOfTime.DAY
+          }
+        }
+      })
+      expect(result).toEqual("up to 2 times a day")
+    })
+
+    test("period is added correctly (period = 1)", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            period: new LosslessNumber(1),
+            periodUnit: fhir.UnitOfTime.DAY
+          }
+        }
+      })
+      expect(result).toEqual("daily")
+    })
+
+    test("results in an error if periodMax is present (period = 1)", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            period: new LosslessNumber(1),
+            periodMax: new LosslessNumber(2),
+            periodUnit: fhir.UnitOfTime.DAY
+          }
+        }
+      })).toThrow(Error)
+    })
+
+    test("missing periodUnit results in an error (period = 1)", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            period: new LosslessNumber(1)
+          }
+        }
+      })).toThrow(Error)
+    })
+
+    test("invalid periodUnit results in an error (period = 1)", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            period: new LosslessNumber(1),
+            periodUnit: "ms" as fhir.UnitOfTime
+          }
+        }
+      })).toThrow(Error)
+    })
+
+    test("results in an error (period != 1)", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            period: new LosslessNumber(2),
+            periodUnit: fhir.UnitOfTime.DAY
+          }
+        }
+      })).toThrow(Error)
+    })
+  })
+
+  describe("frequency = 1", () => {
+    test("follows general case if frequencyMax is present", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            frequency: new LosslessNumber(1),
+            frequencyMax: new LosslessNumber(2)
+          }
+        }
+      })
+      expect(result).toEqual("1 to 2 times")
+    })
+
+    test("frequency is added correctly (period not present)", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            frequency: new LosslessNumber(1)
+          }
+        }
+      })
+      expect(result).toEqual("once")
+    })
+
+    test("frequency and period are added correctly (period = 1, periodUnit = h)", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            frequency: new LosslessNumber(1),
+            period: new LosslessNumber(1),
+            periodUnit: fhir.UnitOfTime.HOUR
+          }
+        }
+      })
+      expect(result).toEqual("once an hour")
+    })
+
+    test("frequency and period are added correctly (period = 1, periodUnit = d)", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            frequency: new LosslessNumber(1),
+            period: new LosslessNumber(1),
+            periodUnit: fhir.UnitOfTime.DAY
+          }
+        }
+      })
+      expect(result).toEqual("once a day")
+    })
+
+    test("frequency and period are added correctly if periodMax is present (period = 1)", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            frequency: new LosslessNumber(1),
+            period: new LosslessNumber(1),
+            periodMax: new LosslessNumber(2),
+            periodUnit: fhir.UnitOfTime.HOUR
+          }
+        }
+      })
+      expect(result).toEqual("every 1 to 2 hours")
+    })
+
+    test("frequency and period are added correctly (period > 1)", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            frequency: new LosslessNumber(1),
+            period: new LosslessNumber(8),
+            periodUnit: fhir.UnitOfTime.HOUR
+          }
+        }
+      })
+      expect(result).toEqual("every 8 hours")
+    })
+  })
+
+  describe("frequency = 2", () => {
+    test("follows general case if frequencyMax is present", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            frequency: new LosslessNumber(2),
+            frequencyMax: new LosslessNumber(3)
+          }
+        }
+      })
+      expect(result).toEqual("2 to 3 times")
+    })
+
+    test("frequency is added correctly (period not present)", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            frequency: new LosslessNumber(2)
+          }
+        }
+      })
+      expect(result).toEqual("twice")
+    })
+
+    test("frequency and period are added correctly (period present)", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            frequency: new LosslessNumber(2),
+            period: new LosslessNumber(8),
+            periodUnit: fhir.UnitOfTime.HOUR
+          }
+        }
+      })
+      expect(result).toEqual("twice every 8 hours")
+    })
+  })
+
+  describe("general case", () => {
+    test("frequency is added correctly when frequency and frequencyMax are present", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            frequency: new LosslessNumber(4),
+            frequencyMax: new LosslessNumber(8)
+          }
+        }
+      })
+      expect(result).toEqual("4 to 8 times")
+    })
+
+    test("frequency is added correctly when frequency is present", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            frequency: new LosslessNumber(4)
+          }
+        }
+      })
+      expect(result).toEqual("4 times")
+    })
+
+    test("frequency is added correctly when frequencyMax is present", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            frequencyMax: new LosslessNumber(8)
+          }
+        }
+      })
+      expect(result).toEqual("up to 8 times")
+    })
+
+    test("period is added correctly when periodMax is present", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            frequency: new LosslessNumber(3),
+            period: new LosslessNumber(4),
+            periodMax: new LosslessNumber(8),
+            periodUnit: fhir.UnitOfTime.HOUR
+          }
+        }
+      })
+      expect(result).toEqual("3 times every 4 to 8 hours")
+    })
+
+    test("period is added correctly when periodMax is not present (period = 1)", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            frequency: new LosslessNumber(3),
+            period: new LosslessNumber(1),
+            periodUnit: fhir.UnitOfTime.HOUR
+          }
+        }
+      })
+      expect(result).toEqual("3 times an hour")
+    })
+
+    test("period is added correctly when periodMax is not present (period > 1)", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            frequency: new LosslessNumber(3),
+            period: new LosslessNumber(4),
+            periodUnit: fhir.UnitOfTime.HOUR
+          }
+        }
+      })
+      expect(result).toEqual("3 times every 4 hours")
+    })
+
+    test("missing periodUnit results in an error", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            period: new LosslessNumber(2)
+          }
+        }
+      })).toThrow(Error)
+    })
   })
 })
