@@ -49,18 +49,18 @@
           <Condition>(app.asid is null || app.party-key is null)</Condition>
         </Step>
         {% endif %}
-        <!-- Populate the ASID var from the app -->
         <Step>
+          <!-- Populate the ASID and party-key var from the app -->
           <Name>AssignMessage.PopulateAsidAndPartyKeyFromApp</Name>
           <Condition>(app.asid isNot null AND app.party-key isNot null)</Condition>
         </Step>
         <Step>
-          <!-- Populate the ASID var with the default ASID -->
+          <!-- Populate the ASID and party-key var with the default ASID -->
           <Name>KeyValueMapOperations.GetDefaultAsidAndPartyKey</Name>
           <Condition>(app.asid is null || app.party-key is null)</Condition>
         </Step>
         <Step>
-          <!-- Add the ASID var as a header -->
+          <!-- Add the ASID and party-key var as a header -->
           <Name>AssignMessage.AddAsidAndPartyKeyHeader</Name>
         </Step>
         <Step>
