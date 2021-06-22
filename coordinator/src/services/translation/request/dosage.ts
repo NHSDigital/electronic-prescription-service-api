@@ -7,7 +7,8 @@ export function stringifyDosage(dosageInstruction: fhir.Dosage): string {
     stringifyMethod(dosageInstruction),
     stringifyDose(dosageInstruction),
     stringifyRate(dosageInstruction),
-    stringifyDuration(dosageInstruction)
+    stringifyDuration(dosageInstruction),
+    stringifyFrequencyAndPeriod(dosageInstruction)
   ]
   if (dosageParts.some(part => part?.some(element => !element))) {
     console.error(dosageParts)
@@ -107,17 +108,117 @@ function stringifyDuration(dosage: fhir.Dosage) {
   const durationUnit = repeat?.durationUnit
   if (duration) {
     const elements = [
-      "over ", stringifyNumericValue(duration), " ", pluraliseUnit(durationUnit, duration)
+      "over ", stringifyNumericValue(duration), " ", stringifyPluralUnitOfTime(durationUnit, duration)
     ]
     if (durationMax) {
       elements.push(
-        " (maximum ", stringifyNumericValue(durationMax), " ", pluraliseUnit(durationUnit, durationMax), ")"
+        " (maximum ", stringifyNumericValue(durationMax), " ", stringifyPluralUnitOfTime(durationUnit, durationMax), ")"
       )
     }
     elements.push(".")
     return elements
   } else {
     return []
+  }
+}
+
+function stringifyFrequencyAndPeriod(dosage: fhir.Dosage) {
+  const repeat = dosage.timing?.repeat
+  const frequency = repeat?.frequency
+  const frequencyMax = repeat?.frequencyMax
+
+  const period = repeat?.period
+  const periodMax = repeat?.periodMax
+  const periodUnit = repeat?.periodUnit
+
+  if (!frequency) {
+    if (!period) {
+      return []
+    } else if (stringifyNumericValue(period) === "1") {
+      return [
+        stringifyReciprocalUnitOfTime(periodUnit)
+      ]
+    } else {
+      throw new Error("Period specified without a frequency and period is not 1.")
+    }
+  }
+
+  if (stringifyNumericValue(frequency) === "1") {
+    if (!period) {
+      return [
+        "once"
+      ]
+    } else if (stringifyNumericValue(period) === "1" && !periodMax) {
+      return [
+        "once ",
+        getIndefiniteArticleForUnitOfTime(periodUnit),
+        " ",
+        stringifyUnitOfTime(periodUnit)
+      ]
+    } else {
+      return stringifyStandardPeriod(dosage)
+    }
+  }
+
+  if (stringifyNumericValue(frequency) === "2") {
+    if (!period) {
+      return [
+        "twice"
+      ]
+    } else if (stringifyNumericValue(period) === "1" && !periodMax) {
+      return [
+        "twice ",
+        getIndefiniteArticleForUnitOfTime(periodUnit),
+        " ",
+        stringifyUnitOfTime(periodUnit)
+      ]
+    } else {
+      return [
+        "twice ",
+        ...stringifyStandardPeriod(dosage)
+      ]
+    }
+  }
+
+  const elements = []
+
+  if (frequency && frequencyMax) {
+    elements.push(stringifyNumericValue(frequency), " to ", stringifyNumericValue(frequencyMax), " times")
+  } else if (frequency) {
+    elements.push(stringifyNumericValue(frequency), " times")
+  } else {
+    elements.push("up to ", stringifyNumericValue(frequencyMax), " times")
+  }
+
+  if (period) {
+    elements.push(" ")
+    elements.push(...stringifyStandardPeriod(dosage))
+  }
+
+  return elements
+}
+
+function stringifyStandardPeriod(dosage: fhir.Dosage) {
+  const repeat = dosage.timing?.repeat
+  const period = repeat?.period
+  const periodMax = repeat?.periodMax
+  const periodUnit = repeat?.periodUnit
+  if (periodMax) {
+    return [
+      " every ",
+      stringifyNumericValue(period),
+      " to ",
+      stringifyNumericValue(periodMax),
+      " ",
+      stringifyPluralUnitOfTime(periodUnit, periodMax)
+    ]
+  } else {
+    return [
+      " every ",
+      stringifyNumericValue(period),
+      " ",
+      stringifyPluralUnitOfTime(periodUnit, period)
+    ]
   }
 }
 
@@ -136,6 +237,61 @@ function stringifyNumericValue(value: string | LosslessNumber) {
 function stringifyPluralQuantityUnit(quantity: fhir.Quantity) {
   const unit = stringifyQuantityUnit(quantity)
   return pluraliseUnit(unit, quantity?.value)
+}
+
+function stringifyPluralUnitOfTime(unitOfTime: fhir.UnitOfTime, value: string | LosslessNumber) {
+  const unit = stringifyUnitOfTime(unitOfTime)
+  return pluraliseUnit(unit, value)
+}
+
+function stringifyUnitOfTime(unitOfTime: fhir.UnitOfTime) {
+  switch (unitOfTime) {
+    case fhir.UnitOfTime.SECOND:
+      return "second"
+    case fhir.UnitOfTime.MINUTE:
+      return "minute"
+    case fhir.UnitOfTime.HOUR:
+      return "hour"
+    case fhir.UnitOfTime.DAY:
+      return "day"
+    case fhir.UnitOfTime.WEEK:
+      return "week"
+    case fhir.UnitOfTime.MONTH:
+      return "month"
+    case fhir.UnitOfTime.YEAR:
+      return "year"
+    default:
+      throw new Error("Unhandled unit of time " + unitOfTime)
+  }
+}
+
+function stringifyReciprocalUnitOfTime(periodUnit: fhir.UnitOfTime) {
+  switch (periodUnit) {
+    case fhir.UnitOfTime.SECOND:
+      return "every second"
+    case fhir.UnitOfTime.MINUTE:
+      return "every minute"
+    case fhir.UnitOfTime.HOUR:
+      return "hourly"
+    case fhir.UnitOfTime.DAY:
+      return "daily"
+    case fhir.UnitOfTime.WEEK:
+      return "weekly"
+    case fhir.UnitOfTime.MONTH:
+      return "monthly"
+    case fhir.UnitOfTime.YEAR:
+      return "annually"
+    default:
+      throw new Error("Unhandled unit of time " + periodUnit)
+  }
+}
+
+function getIndefiniteArticleForUnitOfTime(unitOfTime: fhir.UnitOfTime) {
+  if (unitOfTime === fhir.UnitOfTime.HOUR) {
+    return "an"
+  } else {
+    return "a"
+  }
 }
 
 function stringifyQuantityUnit(quantity: fhir.Quantity) {
