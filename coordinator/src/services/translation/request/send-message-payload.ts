@@ -12,16 +12,18 @@ import {hl7V3, fhir} from "@models"
 export function createSendMessagePayloadForUnattendedAccess<T>(
   messageId: string,
   interactionId: hl7V3.Hl7InteractionIdentifier,
+  fromAsid: string,
   subject: T
 ): hl7V3.SendMessagePayload<T> {
-  return createSendMessagePayload(messageId, interactionId, undefined, subject)
+  return createSendMessagePayload(messageId, interactionId, fromAsid, subject)
 }
 
 export function createSendMessagePayload<T>(
   messageId: string,
   interactionId: hl7V3.Hl7InteractionIdentifier,
-  author: hl7V3.AuthorPersonSds,
-  subject: T
+  fromAsid: string,
+  subject: T,
+  author?: hl7V3.AuthorPersonSds
 ): hl7V3.SendMessagePayload<T> {
   const sendMessagePayload = new hl7V3.SendMessagePayload<T>(
     new hl7V3.GlobalIdentifier(messageId),
@@ -30,8 +32,8 @@ export function createSendMessagePayload<T>(
   )
 
   sendMessagePayload.communicationFunctionRcv = createCommunicationFunction(process.env.TO_ASID)
-  sendMessagePayload.communicationFunctionSnd = createCommunicationFunction(process.env.FROM_ASID)
-  sendMessagePayload.ControlActEvent = createControlActEvent(author, subject)
+  sendMessagePayload.communicationFunctionSnd = createCommunicationFunction(fromAsid)
+  sendMessagePayload.ControlActEvent = createControlActEvent(fromAsid, subject, author)
   return sendMessagePayload
 }
 
@@ -42,14 +44,15 @@ function createCommunicationFunction(asid: string) {
 }
 
 function createControlActEvent<T>(
-  author: hl7V3.AuthorPersonSds,
-  subject: T
+  fromAsid: string,
+  subject: T,
+  author?: hl7V3.AuthorPersonSds
 ) {
   const controlActEvent = new hl7V3.ControlActEvent<T>()
   if (author) {
     controlActEvent.author = author
   }
-  controlActEvent.author1 = createControlActEventAuthor1(process.env.FROM_ASID)
+  controlActEvent.author1 = createControlActEventAuthor1(fromAsid)
   controlActEvent.subject = subject
   return controlActEvent
 }

@@ -1,39 +1,18 @@
 import Hapi from "@hapi/hapi"
-import {isProd} from "./environment"
-import {fhir, validationErrors as errors} from "@models"
-import {ContentTypes} from "../routes/util"
 
 export enum RequestHeaders {
   REQUEST_ID = "nhsd-request-id",
   AUTH_LEVEL = "nhsd-identity-authentication-level",
+  ASID = "nhsd-asid",
   RAW_RESPONSE = "x-raw-response",
   SKIP_VALIDATION = "x-skip-validation",
   SMOKE_TEST = "x-smoke-test"
 }
 
-export const invalidProdHeaders: Array<RequestHeaders> = [RequestHeaders.RAW_RESPONSE, RequestHeaders.SKIP_VALIDATION]
+export function getRequestId(headers: Hapi.Util.Dictionary<string>): string {
+  return headers[RequestHeaders.REQUEST_ID].toUpperCase()
+}
 
-export const rejectInvalidProdHeaders: Hapi.Lifecycle.Method = (
-  request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
-) => {
-  if (isProd()) {
-    const listOfInvalidHeaders = Object.keys(request.headers).filter(
-      requestHeader => invalidProdHeaders.includes(requestHeader as RequestHeaders)
-    )
-    if (listOfInvalidHeaders.length) {
-      const errorMessage = `Request with id: ${
-        request.headers[RequestHeaders.REQUEST_ID]
-      } had invalid header(s): ${
-        listOfInvalidHeaders
-      }`
-      request.logger.error(errorMessage)
-      const issue = errors.invalidHeaderOperationOutcome(listOfInvalidHeaders)
-      return responseToolkit
-        .response(fhir.createOperationOutcome([issue]))
-        .code(403)
-        .type(ContentTypes.FHIR)
-        .takeover()
-    }
-  }
-  return responseToolkit.continue
+export function getAsid(headers: Hapi.Util.Dictionary<string>): string {
+  return headers[RequestHeaders.ASID]
 }

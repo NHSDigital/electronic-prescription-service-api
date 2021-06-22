@@ -12,8 +12,7 @@ import Hapi from "@hapi/hapi"
 import routes from "./routes"
 import HapiPino from "hapi-pino"
 import {isLocal} from "./services/environment"
-import {rejectInvalidProdHeaders} from "./services/headers"
-import {reformatUserErrorsToFhir, switchContentTypeForSmokeTest} from "./server-extensions"
+import {reformatUserErrorsToFhir, rejectInvalidProdHeaders, switchContentTypeForSmokeTest} from "./server-extensions"
 
 const init = async () => {
   const server = Hapi.server({
