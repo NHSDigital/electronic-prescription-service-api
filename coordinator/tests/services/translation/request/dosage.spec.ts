@@ -42,12 +42,32 @@ describe("overall", () => {
           offset: new LosslessNumber(60),
           when: [
             fhir.EventTiming.BEFORE_LUNCH
+          ],
+          dayOfWeek: [
+            fhir.DayOfWeek.MONDAY
+          ],
+          timeOfDay: [
+            "12:00:00"
           ]
         }
+      },
+      route: {
+        coding: [{
+          system: "http://snomed.info/sct",
+          code: "34206005",
+          display: "subcutaneous route"
+        }]
+      },
+      site: {
+        coding: [{
+          system: "http://snomed.info/sct",
+          code: "368209003",
+          display: "Right arm"
+        }]
       }
     })
     // eslint-disable-next-line max-len
-    expect(result).toEqual("Apply 100 milligram at a rate of 10 milligram per kilogram and hour over 2 hours (maximum 12 hours). twice a day 1 hour before lunch")
+    expect(result).toEqual("Apply 100 milligram at a rate of 10 milligram per kilogram and hour over 2 hours (maximum 12 hours). twice a day 1 hour before lunch on Monday at 12:00 subcutaneous route Right arm")
   })
 })
 
@@ -863,6 +883,169 @@ describe("offset and when", () => {
         repeat: {
           offset: new LosslessNumber(60)
         }
+      }
+    })).toThrow(Error)
+  })
+})
+
+describe("dayOfWeek", () => {
+  test("single entry is added correctly", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          dayOfWeek: [
+            fhir.DayOfWeek.MONDAY
+          ]
+        }
+      }
+    })
+    expect(result).toEqual("on Monday")
+  })
+
+  test("multiple entries are added correctly", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          dayOfWeek: [
+            fhir.DayOfWeek.MONDAY,
+            fhir.DayOfWeek.WEDNESDAY,
+            fhir.DayOfWeek.FRIDAY
+          ]
+        }
+      }
+    })
+    expect(result).toEqual("on Monday, Wednesday and Friday")
+  })
+
+  test("invalid day of week results in an error", () => {
+    expect(() => stringifyDosage({
+      timing: {
+        repeat: {
+          dayOfWeek: [
+            "bob" as fhir.DayOfWeek
+          ]
+        }
+      }
+    })).toThrow(Error)
+  })
+})
+
+describe("timeOfDay", () => {
+  test("single entry is added correctly", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          timeOfDay: [
+            "12:00:00"
+          ]
+        }
+      }
+    })
+    expect(result).toEqual("at 12:00")
+  })
+
+  test("multiple entries are added correctly", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          timeOfDay: [
+            "08:00:00",
+            "12:00:00",
+            "16:00:00",
+            "20:00:00"
+          ]
+        }
+      }
+    })
+    expect(result).toEqual("at 08:00, 12:00, 16:00 and 20:00")
+  })
+
+  test("time format includes seconds when required", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          timeOfDay: [
+            "12:00:30"
+          ]
+        }
+      }
+    })
+    expect(result).toEqual("at 12:00:30")
+  })
+
+  test("milliseconds are ignored", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          timeOfDay: [
+            "12:00:00.500"
+          ]
+        }
+      }
+    })
+    expect(result).toEqual("at 12:00")
+  })
+
+  test("invalid time results in an error", () => {
+    expect(() => stringifyDosage({
+      timing: {
+        repeat: {
+          timeOfDay: [
+            "12:99"
+          ]
+        }
+      }
+    })).toThrow(Error)
+  })
+})
+
+describe("route", () => {
+  test("route is added correctly", () => {
+    const result = stringifyDosage({
+      route: {
+        coding: [{
+          system: "http://snomed.info/sct",
+          code: "26643006",
+          display: "oral"
+        }]
+      }
+    })
+    expect(result).toEqual("oral")
+  })
+
+  test("missing display results in an error", () => {
+    expect(() => stringifyDosage({
+      route: {
+        coding: [{
+          system: "http://snomed.info/sct",
+          code: "26643006"
+        }]
+      }
+    })).toThrow(Error)
+  })
+})
+
+describe("site", () => {
+  test("site is added correctly", () => {
+    const result = stringifyDosage({
+      site: {
+        coding: [{
+          system: "http://snomed.info/sct",
+          code: "8966001",
+          display: "Left eye"
+        }]
+      }
+    })
+    expect(result).toEqual("Left eye")
+  })
+
+  test("missing display results in an error", () => {
+    expect(() => stringifyDosage({
+      site: {
+        coding: [{
+          system: "http://snomed.info/sct",
+          code: "8966001"
+        }]
       }
     })).toThrow(Error)
   })

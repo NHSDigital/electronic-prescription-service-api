@@ -1,6 +1,7 @@
 import {fhir} from "@models"
 import {getNumericValueAsString, isTruthy} from "../common"
 import {LosslessNumber} from "lossless-json"
+import moment from "moment"
 
 export function stringifyDosage(dosageInstruction: fhir.Dosage): string {
   const dosageParts = [
@@ -9,7 +10,11 @@ export function stringifyDosage(dosageInstruction: fhir.Dosage): string {
     stringifyRate(dosageInstruction),
     stringifyDuration(dosageInstruction),
     stringifyFrequencyAndPeriod(dosageInstruction),
-    stringifyOffsetAndWhen(dosageInstruction)
+    stringifyOffsetAndWhen(dosageInstruction),
+    stringifyDayOfWeek(dosageInstruction),
+    stringifyTimeOfDay(dosageInstruction),
+    stringifyRoute(dosageInstruction),
+    stringifySite(dosageInstruction)
   ]
   if (dosageParts.some(part => part?.some(element => !element))) {
     console.error(dosageParts)
@@ -253,14 +258,8 @@ function stringifyOffsetAndWhen(dosage: fhir.Dosage) {
     )
   }
 
-  when.forEach((whenElement, index) => {
-    elements.push(stringifyEventTiming(whenElement))
-    if (index < when.length - 2) {
-      elements.push(", ")
-    } else if (index < when.length - 1) {
-      elements.push(" and ")
-    }
-  })
+  const whenDisplays = when.map(whenElement => stringifyEventTiming(whenElement))
+  elements.push(...getListWithSeparators(whenDisplays))
 
   return elements
 }
@@ -277,6 +276,54 @@ function getOffsetValueAndUnit(offsetMinutes: number) {
 
   const offsetDays = offsetHours / 24
   return [offsetDays.toString(), "day"]
+}
+
+function stringifyDayOfWeek(dosage: fhir.Dosage) {
+  const repeat = dosage?.timing?.repeat
+  const dayOfWeek = repeat?.dayOfWeek
+  if (!dayOfWeek?.length) {
+    return []
+  }
+
+  const elements = [
+    "on "
+  ]
+
+  const dayOfWeekDisplays = dayOfWeek.map(dayOfWeekElement => getDayOfWeekDisplay(dayOfWeekElement))
+  elements.push(...getListWithSeparators(dayOfWeekDisplays))
+
+  return elements
+}
+
+function stringifyTimeOfDay(dosage: fhir.Dosage) {
+  const repeat = dosage?.timing?.repeat
+  const timeOfDay = repeat?.timeOfDay
+  if (!timeOfDay?.length) {
+    return []
+  }
+
+  const elements = [
+    "at "
+  ]
+
+  const formattedTimeOfDays = timeOfDay.map(timeOfDayElement => formatTimeOfDay(timeOfDayElement))
+  elements.push(...getListWithSeparators(formattedTimeOfDays))
+
+  return elements
+}
+
+function stringifyRoute(dosage: fhir.Dosage) {
+  if (!dosage.route) {
+    return []
+  }
+  return dosage.route.coding?.map(coding => coding.display)
+}
+
+function stringifySite(dosage: fhir.Dosage) {
+  if (!dosage.site) {
+    return []
+  }
+  return dosage.site.coding?.map(coding => coding.display)
 }
 
 function stringifyQuantityValue(quantity: fhir.Quantity) {
@@ -402,6 +449,40 @@ function stringifyEventTiming(eventTiming: fhir.EventTiming) {
   }
 }
 
+function getDayOfWeekDisplay(dayOfWeek: fhir.DayOfWeek) {
+  switch (dayOfWeek) {
+    case fhir.DayOfWeek.MONDAY:
+      return "Monday"
+    case fhir.DayOfWeek.TUESDAY:
+      return "Tuesday"
+    case fhir.DayOfWeek.WEDNESDAY:
+      return "Wednesday"
+    case fhir.DayOfWeek.THURSDAY:
+      return "Thursday"
+    case fhir.DayOfWeek.FRIDAY:
+      return "Friday"
+    case fhir.DayOfWeek.SATURDAY:
+      return "Saturday"
+    case fhir.DayOfWeek.SUNDAY:
+      return "Sunday"
+    default:
+      throw new Error("Unhandled DayOfWeek " + dayOfWeek)
+  }
+}
+
+function formatTimeOfDay(time: string) {
+  const timeMoment = moment.utc(time, ["HH:mm:ss.SSSSSSSSS", "HH:mm:ss"], true)
+  if (!timeMoment.isValid()) {
+    throw new Error("Invalid time of day " + time)
+  }
+
+  if (timeMoment.get("seconds") === 0) {
+    return timeMoment.format("HH:mm")
+  }
+
+  return timeMoment.format("HH:mm:ss")
+}
+
 function getIndefiniteArticleForUnitOfTime(unitOfTime: fhir.UnitOfTime) {
   if (unitOfTime === fhir.UnitOfTime.HOUR) {
     return "an"
@@ -442,4 +523,19 @@ function isOne(numericValue: string | LosslessNumber) {
 function isTwo(numericValue: string | LosslessNumber) {
   //TODO - compare number instead of string? what about 2.00?
   return stringifyNumericValue(numericValue) === "2"
+}
+
+function getListWithSeparators(list: Array<string>) {
+  const elements: Array<string> = []
+
+  list.forEach((listElement, index) => {
+    elements.push(listElement)
+    if (index < list.length - 2) {
+      elements.push(", ")
+    } else if (index < list.length - 1) {
+      elements.push(" and ")
+    }
+  })
+
+  return elements
 }
