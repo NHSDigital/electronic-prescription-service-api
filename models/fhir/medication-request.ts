@@ -158,7 +158,7 @@ export type Repeat = {
   periodUnit?: UnitOfTime
   dayOfWeek?: string
   timeOfDay?: string
-  when?: EventTiming
+  when?: Array<EventTiming>
   offset?: string | LosslessNumber
 } & Bounds
 

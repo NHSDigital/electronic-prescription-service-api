@@ -253,7 +253,14 @@ function stringifyOffsetAndWhen(dosage: fhir.Dosage) {
     )
   }
 
-  elements.push(stringifyEventTiming(when))
+  when.forEach((whenElement, index) => {
+    elements.push(stringifyEventTiming(whenElement))
+    if (index < when.length - 2) {
+      elements.push(", ")
+    } else if (index < when.length - 1) {
+      elements.push(" and ")
+    }
+  })
 
   return elements
 }

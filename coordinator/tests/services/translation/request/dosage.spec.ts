@@ -40,7 +40,9 @@ describe("overall", () => {
           period: new LosslessNumber(1),
           periodUnit: fhir.UnitOfTime.DAY,
           offset: new LosslessNumber(60),
-          when: fhir.EventTiming.BEFORE_LUNCH
+          when: [
+            fhir.EventTiming.BEFORE_LUNCH
+          ]
         }
       }
     })
@@ -777,7 +779,9 @@ describe("offset and when", () => {
       timing: {
         repeat: {
           offset: new LosslessNumber(90),
-          when: fhir.EventTiming.BEFORE_MEAL
+          when: [
+            fhir.EventTiming.BEFORE_MEAL
+          ]
         }
       }
     })
@@ -789,7 +793,9 @@ describe("offset and when", () => {
       timing: {
         repeat: {
           offset: new LosslessNumber(60),
-          when: fhir.EventTiming.AFTER_BREAKFAST
+          when: [
+            fhir.EventTiming.AFTER_BREAKFAST
+          ]
         }
       }
     })
@@ -801,7 +807,9 @@ describe("offset and when", () => {
       timing: {
         repeat: {
           offset: new LosslessNumber(2880),
-          when: fhir.EventTiming.BEFORE_LUNCH
+          when: [
+            fhir.EventTiming.BEFORE_LUNCH
+          ]
         }
       }
     })
@@ -812,11 +820,28 @@ describe("offset and when", () => {
     const result = stringifyDosage({
       timing: {
         repeat: {
-          when: fhir.EventTiming.AFTER_SLEEP
+          when: [
+            fhir.EventTiming.AFTER_SLEEP
+          ]
         }
       }
     })
     expect(result).toEqual("once asleep")
+  })
+
+  test("multiple whens are added correctly", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          when: [
+            fhir.EventTiming.AT_BREAKFAST,
+            fhir.EventTiming.AT_LUNCH,
+            fhir.EventTiming.AT_DINNER
+          ]
+        }
+      }
+    })
+    expect(result).toEqual("at breakfast, at lunch and at dinner")
   })
 
   test("invalid when results in an error", () => {
@@ -824,7 +849,9 @@ describe("offset and when", () => {
       timing: {
         repeat: {
           offset: new LosslessNumber(60),
-          when: "bob" as fhir.EventTiming
+          when: [
+            "bob" as fhir.EventTiming
+          ]
         }
       }
     })).toThrow(Error)
