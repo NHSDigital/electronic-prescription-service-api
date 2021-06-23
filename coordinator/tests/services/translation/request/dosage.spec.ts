@@ -776,12 +776,12 @@ describe("offset and when", () => {
     const result = stringifyDosage({
       timing: {
         repeat: {
-          offset: new LosslessNumber(30),
+          offset: new LosslessNumber(90),
           when: fhir.EventTiming.BEFORE_MEAL
         }
       }
     })
-    expect(result).toEqual("30 minutes before a meal")
+    expect(result).toEqual("90 minutes before a meal")
   })
 
   test("offset and when are added correctly (offset in hours)", () => {
