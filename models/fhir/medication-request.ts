@@ -150,12 +150,12 @@ export type Repeat = {
   countMax?: string | LosslessNumber
   duration?: string | LosslessNumber
   durationMax?: string | LosslessNumber
-  durationUnit?: string
+  durationUnit?: UnitOfTime
   frequency?: string | LosslessNumber
   frequencyMax?: string | LosslessNumber
   period?: string | LosslessNumber
   periodMax?: string | LosslessNumber
-  periodUnit?: string
+  periodUnit?: UnitOfTime
   dayOfWeek?: string
   timeOfDay?: string
   when?: string
@@ -174,6 +174,16 @@ export type Bounds = {
   boundsDuration?: never
   boundsRange?: never
   boundsPeriod?: common.Period
+}
+
+export enum UnitOfTime {
+  SECOND = "s",
+  MINUTE = "min",
+  HOUR = "h",
+  DAY = "d",
+  WEEK = "wk",
+  MONTH = "mo",
+  YEAR = "a"
 }
 
 export interface Performer extends common.IdentifierReference<practitionerRole.Organization> {
