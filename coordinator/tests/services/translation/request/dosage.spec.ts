@@ -64,10 +64,11 @@ describe("overall", () => {
           code: "368209003",
           display: "Right arm"
         }]
-      }
+      },
+      asNeededBoolean: true
     })
     // eslint-disable-next-line max-len
-    expect(result).toEqual("Apply 100 milligram at a rate of 10 milligram per kilogram and hour over 2 hours (maximum 12 hours). twice a day 1 hour before lunch on Monday at 12:00 subcutaneous route Right arm")
+    expect(result).toEqual("Apply 100 milligram at a rate of 10 milligram per kilogram and hour over 2 hours (maximum 12 hours). twice a day 1 hour before lunch on Monday at 12:00 subcutaneous route Right arm as required")
   })
 })
 
@@ -1048,5 +1049,82 @@ describe("site", () => {
         }]
       }
     })).toThrow(Error)
+  })
+})
+
+describe("asNeeded", () => {
+  describe("asNeededBoolean", () => {
+    test("asNeededBoolean is added correctly when set to true", () => {
+      const result = stringifyDosage({
+        asNeededBoolean: true
+      })
+      expect(result).toEqual("as required")
+    })
+
+    test("asNeededBoolean has no effect when set to false", () => {
+      const result = stringifyDosage({
+        asNeededBoolean: false
+      })
+      expect(result).toEqual("")
+    })
+  })
+
+  describe("asNeededCodeableConcept", () => {
+    test("single entry is added correctly", () => {
+      const result = stringifyDosage({
+        asNeededCodeableConcept: {
+          coding: [{
+            system: "http://snomed.info/sct",
+            code: "422587007",
+            display: "nausea"
+          }]
+        }
+      })
+      expect(result).toEqual("as required for nausea")
+    })
+
+    test("multiple entries are added correctly", () => {
+      const result = stringifyDosage({
+        asNeededCodeableConcept: {
+          coding: [
+            {
+              system: "http://snomed.info/sct",
+              code: "422587007",
+              display: "Nausea"
+            },
+            {
+              system: "http://snomed.info/sct",
+              code: "4473006",
+              display: "Migraine with aura"
+            },
+            {
+              system: "http://snomed.info/sct",
+              code: "3199001",
+              display: "Sprain of shoulder joint"
+            }
+          ]
+        }
+      })
+      expect(result).toEqual("as required for Nausea, Migraine with aura and Sprain of shoulder joint")
+    })
+
+    test("missing coding results in an error", () => {
+      expect(() => stringifyDosage({
+        asNeededCodeableConcept: {
+          coding: []
+        }
+      })).toThrow(Error)
+    })
+
+    test("missing display results in an error", () => {
+      expect(() => stringifyDosage({
+        asNeededCodeableConcept: {
+          coding: [{
+            system: "http://snomed.info/sct",
+            code: "3199001"
+          }]
+        }
+      })).toThrow(Error)
+    })
   })
 })
