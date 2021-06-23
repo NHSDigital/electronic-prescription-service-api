@@ -38,12 +38,16 @@ describe("overall", () => {
           durationUnit: fhir.UnitOfTime.HOUR,
           frequency: new LosslessNumber(2),
           period: new LosslessNumber(1),
-          periodUnit: fhir.UnitOfTime.DAY
+          periodUnit: fhir.UnitOfTime.DAY,
+          offset: new LosslessNumber(60),
+          when: [
+            fhir.EventTiming.BEFORE_LUNCH
+          ]
         }
       }
     })
     // eslint-disable-next-line max-len
-    expect(result).toEqual("Apply 100 milligram at a rate of 10 milligram per kilogram and hour over 2 hours (maximum 12 hours). twice a day")
+    expect(result).toEqual("Apply 100 milligram at a rate of 10 milligram per kilogram and hour over 2 hours (maximum 12 hours). twice a day 1 hour before lunch")
   })
 })
 
@@ -766,5 +770,100 @@ describe("frequency and period", () => {
         }
       })).toThrow(Error)
     })
+  })
+})
+
+describe("offset and when", () => {
+  test("offset and when are added correctly (offset in minutes)", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          offset: new LosslessNumber(90),
+          when: [
+            fhir.EventTiming.BEFORE_MEAL
+          ]
+        }
+      }
+    })
+    expect(result).toEqual("90 minutes before a meal")
+  })
+
+  test("offset and when are added correctly (offset in hours)", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          offset: new LosslessNumber(60),
+          when: [
+            fhir.EventTiming.AFTER_BREAKFAST
+          ]
+        }
+      }
+    })
+    expect(result).toEqual("1 hour after breakfast")
+  })
+
+  test("offset and when are added correctly (offset in days!?)", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          offset: new LosslessNumber(2880),
+          when: [
+            fhir.EventTiming.BEFORE_LUNCH
+          ]
+        }
+      }
+    })
+    expect(result).toEqual("2 days before lunch")
+  })
+
+  test("when is added correctly (no offset)", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          when: [
+            fhir.EventTiming.AFTER_SLEEP
+          ]
+        }
+      }
+    })
+    expect(result).toEqual("once asleep")
+  })
+
+  test("multiple whens are added correctly", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          when: [
+            fhir.EventTiming.AT_BREAKFAST,
+            fhir.EventTiming.AT_LUNCH,
+            fhir.EventTiming.AT_DINNER
+          ]
+        }
+      }
+    })
+    expect(result).toEqual("at breakfast, at lunch and at dinner")
+  })
+
+  test("invalid when results in an error", () => {
+    expect(() => stringifyDosage({
+      timing: {
+        repeat: {
+          offset: new LosslessNumber(60),
+          when: [
+            "bob" as fhir.EventTiming
+          ]
+        }
+      }
+    })).toThrow(Error)
+  })
+
+  test("missing when results in an error", () => {
+    expect(() => stringifyDosage({
+      timing: {
+        repeat: {
+          offset: new LosslessNumber(60)
+        }
+      }
+    })).toThrow(Error)
   })
 })
