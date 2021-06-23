@@ -158,7 +158,7 @@ export type Repeat = {
   periodUnit?: UnitOfTime
   dayOfWeek?: string
   timeOfDay?: string
-  when?: string
+  when?: EventTiming
   offset?: string | LosslessNumber
 } & Bounds
 
@@ -184,6 +184,35 @@ export enum UnitOfTime {
   WEEK = "wk",
   MONTH = "mo",
   YEAR = "a"
+}
+
+export enum EventTiming {
+  MORNING = "MORN",
+  EARLY_MORNING = "MORN.early",
+  LATE_MORNING = "MORN.late",
+  NOON = "NOON",
+  AFTERNOON = "AFT",
+  EARLY_AFTERNOON = "AFT.early",
+  LATE_AFTERNOON = "AFT.late",
+  EVENING = "EVE",
+  EARLY_EVENING = "EVE.early",
+  LATE_EVENING = "EVE.late",
+  NIGHT = "NIGHT",
+  AFTER_SLEEP = "PHS",
+  BEFORE_SLEEP = "HS",
+  UPON_WAKING = "WAKE",
+  AT_MEAL = "C",
+  AT_BREAKFAST = "CM",
+  AT_LUNCH = "CD",
+  AT_DINNER = "CV",
+  BEFORE_MEAL = "AC",
+  BEFORE_BREAKFAST = "ACM",
+  BEFORE_LUNCH = "ACD",
+  BEFORE_DINNER = "ACV",
+  AFTER_MEAL = "PC",
+  AFTER_BREAKFAST = "PCM",
+  AFTER_LUNCH = "PCD",
+  AFTER_DINNER = "PCV"
 }
 
 export interface Performer extends common.IdentifierReference<practitionerRole.Organization> {
