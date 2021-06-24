@@ -32,6 +32,9 @@ describe("overall", () => {
         }
       },
       timing: {
+        event: [
+          "2021-06-24"
+        ],
         repeat: {
           duration: new LosslessNumber(2),
           durationMax: new LosslessNumber(12),
@@ -42,12 +45,64 @@ describe("overall", () => {
           offset: new LosslessNumber(60),
           when: [
             fhir.EventTiming.BEFORE_LUNCH
-          ]
+          ],
+          dayOfWeek: [
+            fhir.DayOfWeek.MONDAY
+          ],
+          timeOfDay: [
+            "12:00:00"
+          ],
+          boundsDuration: {
+            value: new LosslessNumber("3"),
+            unit: "day"
+          },
+          count: new LosslessNumber(2)
         }
-      }
+      },
+      route: {
+        coding: [{
+          system: "http://snomed.info/sct",
+          code: "34206005",
+          display: "subcutaneous route"
+        }]
+      },
+      site: {
+        coding: [{
+          system: "http://snomed.info/sct",
+          code: "368209003",
+          display: "Right arm"
+        }]
+      },
+      asNeededBoolean: true,
+      maxDosePerPeriod: {
+        numerator: {
+          value: new LosslessNumber(200),
+          unit: "milligram"
+        },
+        denominator: {
+          value: new LosslessNumber(24),
+          unit: "hour"
+        }
+      },
+      maxDosePerAdministration: {
+        value: new LosslessNumber(20),
+        unit: "milligram"
+      },
+      maxDosePerLifetime: {
+        value: new LosslessNumber(2000),
+        unit: "milligram"
+      },
+      additionalInstruction: [{
+        coding: [{
+          system: "http://snomed.info/sct",
+          code: "417980006",
+          display: "Contains aspirin"
+        }]
+      }],
+      patientInstruction: "when migraine recurs"
     })
     // eslint-disable-next-line max-len
-    expect(result).toEqual("Apply 100 milligram at a rate of 10 milligram per kilogram and hour over 2 hours (maximum 12 hours). twice a day 1 hour before lunch")
+    expect(result).toEqual("Apply 100 milligram at a rate of 10 milligram per kilogram and hour over 2 hours (maximum 12 hours) twice a day 1 hour before lunch on Monday at 12:00 subcutaneous route Right arm as required for 3 days take twice on 24/06/2021 up to a maximum of 200 milligram in 24 hours up to a maximum of 20 milligram per dose up to a maximum of 2000 milligram for the lifetime of the patient Contains aspirin when migraine recurs")
   })
 })
 
@@ -433,7 +488,7 @@ describe("duration", () => {
         }
       }
     })
-    expect(result).toEqual("over 1 hour.")
+    expect(result).toEqual("over 1 hour")
   })
 
   test("duration is added correctly when durationMax is not present (duration > 1)", () => {
@@ -445,7 +500,7 @@ describe("duration", () => {
         }
       }
     })
-    expect(result).toEqual("over 2 hours.")
+    expect(result).toEqual("over 2 hours")
   })
 
   test("duration is added correctly when durationMax is present (durationMax = 1)", () => {
@@ -458,7 +513,7 @@ describe("duration", () => {
         }
       }
     })
-    expect(result).toEqual("over 1 hour (maximum 1 hour).")
+    expect(result).toEqual("over 1 hour (maximum 1 hour)")
   })
 
   test("duration is added correctly when durationMax is present (durationMax > 1)", () => {
@@ -471,7 +526,7 @@ describe("duration", () => {
         }
       }
     })
-    expect(result).toEqual("over 1 hour (maximum 2 hours).")
+    expect(result).toEqual("over 1 hour (maximum 2 hours)")
   })
 
   test("missing durationUnit results in an error", () => {
@@ -865,5 +920,791 @@ describe("offset and when", () => {
         }
       }
     })).toThrow(Error)
+  })
+})
+
+describe("dayOfWeek", () => {
+  test("single entry is added correctly", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          dayOfWeek: [
+            fhir.DayOfWeek.MONDAY
+          ]
+        }
+      }
+    })
+    expect(result).toEqual("on Monday")
+  })
+
+  test("multiple entries are added correctly", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          dayOfWeek: [
+            fhir.DayOfWeek.MONDAY,
+            fhir.DayOfWeek.WEDNESDAY,
+            fhir.DayOfWeek.FRIDAY
+          ]
+        }
+      }
+    })
+    expect(result).toEqual("on Monday, Wednesday and Friday")
+  })
+
+  test("invalid day of week results in an error", () => {
+    expect(() => stringifyDosage({
+      timing: {
+        repeat: {
+          dayOfWeek: [
+            "bob" as fhir.DayOfWeek
+          ]
+        }
+      }
+    })).toThrow(Error)
+  })
+})
+
+describe("timeOfDay", () => {
+  test("single entry is added correctly", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          timeOfDay: [
+            "12:00:00"
+          ]
+        }
+      }
+    })
+    expect(result).toEqual("at 12:00")
+  })
+
+  test("multiple entries are added correctly", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          timeOfDay: [
+            "08:00:00",
+            "12:00:00",
+            "16:00:00",
+            "20:00:00"
+          ]
+        }
+      }
+    })
+    expect(result).toEqual("at 08:00, 12:00, 16:00 and 20:00")
+  })
+
+  test("time format includes seconds when required", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          timeOfDay: [
+            "12:00:30"
+          ]
+        }
+      }
+    })
+    expect(result).toEqual("at 12:00:30")
+  })
+
+  test("milliseconds are ignored", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          timeOfDay: [
+            "12:00:00.500"
+          ]
+        }
+      }
+    })
+    expect(result).toEqual("at 12:00")
+  })
+
+  test("invalid time results in an error", () => {
+    expect(() => stringifyDosage({
+      timing: {
+        repeat: {
+          timeOfDay: [
+            "12:99"
+          ]
+        }
+      }
+    })).toThrow(Error)
+  })
+})
+
+describe("route", () => {
+  test("route is added correctly", () => {
+    const result = stringifyDosage({
+      route: {
+        coding: [{
+          system: "http://snomed.info/sct",
+          code: "26643006",
+          display: "oral"
+        }]
+      }
+    })
+    expect(result).toEqual("oral")
+  })
+
+  test("missing display results in an error", () => {
+    expect(() => stringifyDosage({
+      route: {
+        coding: [{
+          system: "http://snomed.info/sct",
+          code: "26643006"
+        }]
+      }
+    })).toThrow(Error)
+  })
+})
+
+describe("site", () => {
+  test("site is added correctly", () => {
+    const result = stringifyDosage({
+      site: {
+        coding: [{
+          system: "http://snomed.info/sct",
+          code: "8966001",
+          display: "Left eye"
+        }]
+      }
+    })
+    expect(result).toEqual("Left eye")
+  })
+
+  test("missing display results in an error", () => {
+    expect(() => stringifyDosage({
+      site: {
+        coding: [{
+          system: "http://snomed.info/sct",
+          code: "8966001"
+        }]
+      }
+    })).toThrow(Error)
+  })
+})
+
+describe("asNeeded", () => {
+  describe("asNeededBoolean", () => {
+    test("asNeededBoolean is added correctly when set to true", () => {
+      const result = stringifyDosage({
+        asNeededBoolean: true
+      })
+      expect(result).toEqual("as required")
+    })
+
+    test("asNeededBoolean has no effect when set to false", () => {
+      const result = stringifyDosage({
+        asNeededBoolean: false
+      })
+      expect(result).toEqual("")
+    })
+  })
+
+  describe("asNeededCodeableConcept", () => {
+    test("single entry is added correctly", () => {
+      const result = stringifyDosage({
+        asNeededCodeableConcept: {
+          coding: [{
+            system: "http://snomed.info/sct",
+            code: "422587007",
+            display: "nausea"
+          }]
+        }
+      })
+      expect(result).toEqual("as required for nausea")
+    })
+
+    test("multiple entries are added correctly", () => {
+      const result = stringifyDosage({
+        asNeededCodeableConcept: {
+          coding: [
+            {
+              system: "http://snomed.info/sct",
+              code: "422587007",
+              display: "Nausea"
+            },
+            {
+              system: "http://snomed.info/sct",
+              code: "4473006",
+              display: "Migraine with aura"
+            },
+            {
+              system: "http://snomed.info/sct",
+              code: "3199001",
+              display: "Sprain of shoulder joint"
+            }
+          ]
+        }
+      })
+      expect(result).toEqual("as required for Nausea, Migraine with aura and Sprain of shoulder joint")
+    })
+
+    test("missing coding results in an error", () => {
+      expect(() => stringifyDosage({
+        asNeededCodeableConcept: {
+          coding: []
+        }
+      })).toThrow(Error)
+    })
+
+    test("missing display results in an error", () => {
+      expect(() => stringifyDosage({
+        asNeededCodeableConcept: {
+          coding: [{
+            system: "http://snomed.info/sct",
+            code: "3199001"
+          }]
+        }
+      })).toThrow(Error)
+    })
+  })
+})
+
+describe("bounds", () => {
+  describe("boundsDuration", () => {
+    test("boundsDuration is added correctly", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            boundsDuration: {
+              value: new LosslessNumber(3),
+              unit: "day"
+            }
+          }
+        }
+      })
+      expect(result).toEqual("for 3 days")
+    })
+
+    test("missing value results in an error", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            boundsDuration: {
+              unit: "day"
+            }
+          }
+        }
+      })).toThrow(Error)
+    })
+
+    test("missing unit results in an error", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            boundsDuration: {
+              value: new LosslessNumber(3)
+            }
+          }
+        }
+      })).toThrow(Error)
+    })
+  })
+
+  describe("boundsRange", () => {
+    test("boundsRange is added correctly (low and high units equal)", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            boundsRange: {
+              low: {
+                value: new LosslessNumber(3),
+                unit: "day"
+              },
+              high: {
+                value: new LosslessNumber(5),
+                unit: "day"
+              }
+            }
+          }
+        }
+      })
+      expect(result).toEqual("for 3 to 5 days")
+    })
+
+    test("boundsRange is added correctly (low and high units not equal)", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            boundsRange: {
+              low: {
+                value: new LosslessNumber(10),
+                unit: "minute"
+              },
+              high: {
+                value: new LosslessNumber(1),
+                unit: "hour"
+              }
+            }
+          }
+        }
+      })
+      expect(result).toEqual("for 10 minutes to 1 hour")
+    })
+
+    test("missing low value results in an error", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            boundsRange: {
+              low: {
+                unit: "minute"
+              },
+              high: {
+                value: new LosslessNumber(1),
+                unit: "hour"
+              }
+            }
+          }
+        }
+      })).toThrow(Error)
+    })
+
+    test("missing low unit results in an error", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            boundsRange: {
+              low: {
+                value: new LosslessNumber(10)
+              },
+              high: {
+                value: new LosslessNumber(1),
+                unit: "hour"
+              }
+            }
+          }
+        }
+      })).toThrow(Error)
+    })
+
+    test("missing high value results in an error", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            boundsRange: {
+              low: {
+                value: new LosslessNumber(10),
+                unit: "minute"
+              },
+              high: {
+                unit: "hour"
+              }
+            }
+          }
+        }
+      })).toThrow(Error)
+    })
+
+    test("missing high unit results in an error", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            boundsRange: {
+              low: {
+                value: new LosslessNumber(10),
+                unit: "minute"
+              },
+              high: {
+                value: new LosslessNumber(1)
+              }
+            }
+          }
+        }
+      })).toThrow(Error)
+    })
+  })
+
+  describe("boundsPeriod", () => {
+    test("boundsPeriod is added correctly (start only)", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            boundsPeriod: {
+              start: "2021-06-24"
+            }
+          }
+        }
+      })
+      expect(result).toEqual("from 24/06/2021")
+    })
+
+    test("boundsPeriod is added correctly (start and end)", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            boundsPeriod: {
+              start: "2021-06-24",
+              end: "2021-07-24"
+            }
+          }
+        }
+      })
+      expect(result).toEqual("from 24/06/2021 to 24/07/2021")
+    })
+
+    test("boundsPeriod is added correctly (end only)", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            boundsPeriod: {
+              end: "2021-07-24"
+            }
+          }
+        }
+      })
+      expect(result).toEqual("until 24/07/2021")
+    })
+
+    test("time component is ignored", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            boundsPeriod: {
+              start: "2021-06-24T10:45:00.000Z"
+            }
+          }
+        }
+      })
+      expect(result).toEqual("from 24/06/2021")
+    })
+
+    test("invalid date results in an error", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            boundsPeriod: {
+              start: "2021-06-35T10:45:00.000Z"
+            }
+          }
+        }
+      })).toThrow(Error)
+    })
+  })
+})
+
+describe("count", () => {
+  test("count is added correctly (count = 1)", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          count: new LosslessNumber(1)
+        }
+      }
+    })
+    expect(result).toEqual("take once")
+  })
+
+  test("count is added correctly (count = 2)", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          count: new LosslessNumber(2)
+        }
+      }
+    })
+    expect(result).toEqual("take twice")
+  })
+
+  test("count is added correctly (count > 2)", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          count: new LosslessNumber(3)
+        }
+      }
+    })
+    expect(result).toEqual("take 3 times")
+  })
+
+  test("count and countMax are added correctly (count = 1)", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          count: new LosslessNumber(1),
+          countMax: new LosslessNumber(2)
+        }
+      }
+    })
+    expect(result).toEqual("take 1 to 2 times")
+  })
+
+  test("count and countMax are added correctly (count = 2)", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          count: new LosslessNumber(2),
+          countMax: new LosslessNumber(4)
+        }
+      }
+    })
+    expect(result).toEqual("take 2 to 4 times")
+  })
+
+  test("count and countMax are added correctly (count > 2)", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          count: new LosslessNumber(3),
+          countMax: new LosslessNumber(5)
+        }
+      }
+    })
+    expect(result).toEqual("take 3 to 5 times")
+  })
+
+  test("missing count results in an error", () => {
+    expect(() => stringifyDosage({
+      timing: {
+        repeat: {
+          countMax: new LosslessNumber(5)
+        }
+      }
+    })).toThrow(Error)
+  })
+})
+
+describe("event", () => {
+  test("single event is added correctly", () => {
+    const result = stringifyDosage({
+      timing: {
+        event: [
+          "2021-06-24"
+        ]
+      }
+    })
+    expect(result).toEqual("on 24/06/2021")
+  })
+
+  test("multiple events are added correctly", () => {
+    const result = stringifyDosage({
+      timing: {
+        event: [
+          "2021-06-24",
+          "2021-07-01",
+          "2021-07-08"
+        ]
+      }
+    })
+    expect(result).toEqual("on 24/06/2021, 01/07/2021 and 08/07/2021")
+  })
+
+  test("time component is ignored", () => {
+    const result = stringifyDosage({
+      timing: {
+        event: [
+          "2021-06-24T11:45:00.000Z"
+        ]
+      }
+    })
+    expect(result).toEqual("on 24/06/2021")
+  })
+
+  test("invalid date results in an error", () => {
+    expect(() => stringifyDosage({
+      timing: {
+        event: [
+          "2021-06-35T11:45:00.000Z"
+        ]
+      }
+    })).toThrow(Error)
+  })
+})
+
+describe("maxDosePerPeriod", () => {
+  test("maxDosePerPeriod is added correctly", () => {
+    const result = stringifyDosage({
+      maxDosePerPeriod: {
+        numerator: {
+          value: new LosslessNumber(20),
+          unit: "milligram"
+        },
+        denominator: {
+          value: new LosslessNumber(24),
+          unit: "hour"
+        }
+      }
+    })
+    expect(result).toEqual("up to a maximum of 20 milligram in 24 hours")
+  })
+
+  test("missing numerator value results in an error", () => {
+    expect(() => stringifyDosage({
+      maxDosePerPeriod: {
+        numerator: {
+          unit: "milligram"
+        },
+        denominator: {
+          value: new LosslessNumber(24),
+          unit: "hour"
+        }
+      }
+    })).toThrow(Error)
+  })
+
+  test("missing numerator unit results in an error", () => {
+    expect(() => stringifyDosage({
+      maxDosePerPeriod: {
+        numerator: {
+          value: new LosslessNumber(20)
+        },
+        denominator: {
+          value: new LosslessNumber(24),
+          unit: "hour"
+        }
+      }
+    })).toThrow(Error)
+  })
+
+  test("missing denominator value results in an error", () => {
+    expect(() => stringifyDosage({
+      maxDosePerPeriod: {
+        numerator: {
+          value: new LosslessNumber(20),
+          unit: "milligram"
+        },
+        denominator: {
+          unit: "hour"
+        }
+      }
+    })).toThrow(Error)
+  })
+
+  test("missing denominator unit results in an error", () => {
+    expect(() => stringifyDosage({
+      maxDosePerPeriod: {
+        numerator: {
+          value: new LosslessNumber(20),
+          unit: "milligram"
+        },
+        denominator: {
+          value: new LosslessNumber(24)
+        }
+      }
+    })).toThrow(Error)
+  })
+})
+
+describe("maxDosePerAdministration", () => {
+  test("maxDosePerAdministration is added correctly", () => {
+    const result = stringifyDosage({
+      maxDosePerAdministration: {
+        value: new LosslessNumber(20),
+        unit: "milligram"
+      }
+    })
+    expect(result).toEqual("up to a maximum of 20 milligram per dose")
+  })
+
+  test("missing value results in an error", () => {
+    expect(() => stringifyDosage({
+      maxDosePerAdministration: {
+        unit: "milligram"
+      }
+    })).toThrow(Error)
+  })
+
+  test("missing unit results in an error", () => {
+    expect(() => stringifyDosage({
+      maxDosePerAdministration: {
+        value: new LosslessNumber(20)
+      }
+    })).toThrow(Error)
+  })
+})
+
+describe("maxDosePerLifetime", () => {
+  test("maxDosePerLifetime is added correctly", () => {
+    const result = stringifyDosage({
+      maxDosePerLifetime: {
+        value: new LosslessNumber(20),
+        unit: "milligram"
+      }
+    })
+    expect(result).toEqual("up to a maximum of 20 milligram for the lifetime of the patient")
+  })
+
+  test("missing value results in an error", () => {
+    expect(() => stringifyDosage({
+      maxDosePerLifetime: {
+        unit: "milligram"
+      }
+    })).toThrow(Error)
+  })
+
+  test("missing unit results in an error", () => {
+    expect(() => stringifyDosage({
+      maxDosePerLifetime: {
+        value: new LosslessNumber(20)
+      }
+    })).toThrow(Error)
+  })
+})
+
+describe("additionalInstruction", () => {
+  test("single value is added correctly", () => {
+    const result = stringifyDosage({
+      additionalInstruction: [{
+        coding: [{
+          system: "http://snomed.info/sct",
+          code: "418281004",
+          display: "Do not take anything containing aspirin while taking this medicine"
+        }]
+      }]
+    })
+    expect(result).toEqual("Do not take anything containing aspirin while taking this medicine")
+  })
+
+  test("multiple values are added correctly", () => {
+    const result = stringifyDosage({
+      additionalInstruction: [
+        {
+          coding: [{
+            system: "http://snomed.info/sct",
+            code: "418639000",
+            display: "Warning. May cause drowsiness"
+          }]
+        },
+        {
+          coding: [{
+            system: "http://snomed.info/sct",
+            code: "417980006",
+            display: "Contains aspirin"
+          }]
+        },
+        {
+          coding: [{
+            system: "http://snomed.info/sct",
+            code: "419444006",
+            display: "Do not stop taking this medicine except on your doctor's advice"
+          }]
+        }
+      ]
+    })
+    // eslint-disable-next-line max-len
+    expect(result).toEqual("Warning. May cause drowsiness, Contains aspirin and Do not stop taking this medicine except on your doctor's advice")
+  })
+
+  test("missing display results in an error", () => {
+    expect(() => stringifyDosage({
+      additionalInstruction: [{
+        coding: [{
+          system: "http://snomed.info/sct",
+          code: "418281004"
+        }]
+      }]
+    })).toThrow(Error)
+  })
+})
+
+describe("patientInstruction", () => {
+  test("patientInstruction is added correctly", () => {
+    const result = stringifyDosage({
+      patientInstruction: "Additional doses only to be taken after migraine recurrence"
+    })
+    expect(result).toEqual("Additional doses only to be taken after migraine recurrence")
   })
 })
