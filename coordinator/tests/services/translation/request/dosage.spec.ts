@@ -102,7 +102,7 @@ describe("overall", () => {
       patientInstruction: "when migraine recurs"
     })
     // eslint-disable-next-line max-len
-    expect(result).toEqual("Apply 100 milligram at a rate of 10 milligram per kilogram and hour over 2 hours (maximum 12 hours) twice a day 1 hour before lunch on Monday at 12:00 subcutaneous route Right arm as required for 3 days take twice on 24/06/2021 up to a maximum of 200 milligram in 24 hours up to a maximum of 20 milligram per dose up to a maximum of 2000 milligram for the lifetime of the patient Contains aspirin when migraine recurs")
+    expect(result).toEqual("Apply - 100 milligram - at a rate of 10 milligram per kilogram and hour - over 2 hours (maximum 12 hours) - twice a day - 1 hour before lunch - on Monday at 12:00 - subcutaneous route - Right arm - as required - for 3 days - take twice - on 24/06/2021 - up to a maximum of 200 milligram in 24 hours - up to a maximum of 20 milligram per dose - up to a maximum of 2000 milligram for the lifetime of the patient - Contains aspirin - when migraine recurs")
   })
 })
 
@@ -534,6 +534,17 @@ describe("duration", () => {
       timing: {
         repeat: {
           duration: new LosslessNumber(1)
+        }
+      }
+    })).toThrow(Error)
+  })
+
+  test("durationMax without a duration results in an error", () => {
+    expect(() => stringifyDosage({
+      timing: {
+        repeat: {
+          durationMax: new LosslessNumber(1),
+          durationUnit: fhir.UnitOfTime.HOUR
         }
       }
     })).toThrow(Error)
@@ -1243,6 +1254,26 @@ describe("bounds", () => {
         }
       })
       expect(result).toEqual("for 10 minutes to 1 hour")
+    })
+
+    test("units outside of the allowed list aren't pluralised", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            boundsRange: {
+              low: {
+                value: new LosslessNumber(30),
+                unit: "s"
+              },
+              high: {
+                value: new LosslessNumber(5),
+                unit: "days"
+              }
+            }
+          }
+        }
+      })
+      expect(result).toEqual("for 30 s to 5 days")
     })
 
     test("missing low value results in an error", () => {
