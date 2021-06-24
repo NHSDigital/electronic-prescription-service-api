@@ -37,7 +37,7 @@ describe("Spine communication", () => {
     })
 
     const spineResponse = await requestHandler.send(
-      {message: "test", interactionId: "test2"},
+      {message: "test", interactionId: "test2", fromPartyKey: "test3"},
       logger
     )
 
@@ -54,7 +54,7 @@ describe("Spine communication", () => {
     })
 
     const spineResponse = await requestHandler.send(
-      {message: "test", interactionId: "test2"},
+      {message: "test", interactionId: "test2", fromPartyKey: "test3"},
       logger
     )
 
@@ -93,7 +93,7 @@ describe("Spine communication", () => {
     })
 
     const spineResponse = await requestHandler.send(
-      {message: "test", interactionId: "test2"},
+      {message: "test", interactionId: "test2", fromPartyKey: "test3"},
       logger
     )
 
@@ -125,7 +125,7 @@ describe("Spine communication", () => {
     })
 
     const spineResponse = await requestHandler.send(
-      {message: "test", interactionId: "test2"},
+      {message: "test", interactionId: "test2", fromPartyKey: "test3"},
       logger
     )
 
