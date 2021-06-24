@@ -140,7 +140,6 @@ function stringifyDuration(dosage: fhir.Dosage) {
         " (maximum ", stringifyNumericValue(durationMax), " ", stringifyPluralUnitOfTime(durationUnit, durationMax), ")"
       )
     }
-    elements.push(".")
     return elements
   } else {
     return []

@@ -102,7 +102,7 @@ describe("overall", () => {
       patientInstruction: "when migraine recurs"
     })
     // eslint-disable-next-line max-len
-    expect(result).toEqual("Apply 100 milligram at a rate of 10 milligram per kilogram and hour over 2 hours (maximum 12 hours). twice a day 1 hour before lunch on Monday at 12:00 subcutaneous route Right arm as required for 3 days take twice on 24/06/2021 up to a maximum of 200 milligram in 24 hours up to a maximum of 20 milligram per dose up to a maximum of 2000 milligram for the lifetime of the patient Contains aspirin when migraine recurs")
+    expect(result).toEqual("Apply 100 milligram at a rate of 10 milligram per kilogram and hour over 2 hours (maximum 12 hours) twice a day 1 hour before lunch on Monday at 12:00 subcutaneous route Right arm as required for 3 days take twice on 24/06/2021 up to a maximum of 200 milligram in 24 hours up to a maximum of 20 milligram per dose up to a maximum of 2000 milligram for the lifetime of the patient Contains aspirin when migraine recurs")
   })
 })
 
@@ -488,7 +488,7 @@ describe("duration", () => {
         }
       }
     })
-    expect(result).toEqual("over 1 hour.")
+    expect(result).toEqual("over 1 hour")
   })
 
   test("duration is added correctly when durationMax is not present (duration > 1)", () => {
@@ -500,7 +500,7 @@ describe("duration", () => {
         }
       }
     })
-    expect(result).toEqual("over 2 hours.")
+    expect(result).toEqual("over 2 hours")
   })
 
   test("duration is added correctly when durationMax is present (durationMax = 1)", () => {
@@ -513,7 +513,7 @@ describe("duration", () => {
         }
       }
     })
-    expect(result).toEqual("over 1 hour (maximum 1 hour).")
+    expect(result).toEqual("over 1 hour (maximum 1 hour)")
   })
 
   test("duration is added correctly when durationMax is present (durationMax > 1)", () => {
@@ -526,7 +526,7 @@ describe("duration", () => {
         }
       }
     })
-    expect(result).toEqual("over 1 hour (maximum 2 hours).")
+    expect(result).toEqual("over 1 hour (maximum 2 hours)")
   })
 
   test("missing durationUnit results in an error", () => {
