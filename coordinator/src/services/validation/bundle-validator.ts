@@ -3,7 +3,7 @@ import {
   getMedicationRequests
 } from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
-import {getUniqueValues, groupBy} from "./util"
+import {getUniqueValues, getGroups} from "./util"
 import {
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
@@ -188,7 +188,8 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
     .filter(isTruthy)
   allErrors.push(...inconsistentValueErrors)
 
-  const performersByType = groupBy(medicationDispenses.flatMap(m => m.performer.map(p => p.actor)), actor => actor.type)
+  const actors = medicationDispenses.flatMap(m => m.performer.map(p => p.actor))
+  const performersByType = getGroups(actors, actor => actor.type)
   performersByType.forEach((key, index, values) => {
     const uniqueFieldValues = getUniqueValues(values[index])
     if (uniqueFieldValues.length > 1) {

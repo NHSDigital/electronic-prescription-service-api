@@ -13,16 +13,30 @@ export function getUniqueValues<T>(allValues: Array<T>): Array<T> {
   )
 }
 
-export function groupBy<T, K>(list: Array<T>, getKey: (item: T) => K): Array<Array<T>> {
-  const map = new Map<K, Array<T>>()
-  list.forEach((item) => {
-    const key = getKey(item)
-    const collection = map.get(key)
-    if (!collection) {
-      map.set(key, [item])
+export function toMap<I, K, V>(
+  iterable: Iterable<I>,
+  keyExtractor: (item: I) => K,
+  valueExtractor: (item: I) => V
+): Map<K, Array<V>> {
+  const map = new Map()
+  for (const item of iterable) {
+    const key = keyExtractor(item)
+    const value = valueExtractor(item)
+    const existingValues = map.get(key)
+    if (existingValues) {
+      existingValues.push(value)
     } else {
-      collection.push(item)
+      map.set(key, [value])
     }
-  })
+  }
+  return map
+}
+
+export function groupBy<I, K>(iterable: Iterable<I>, keyExtractor: (item: I) => K): Map<K, Array<I>> {
+  return toMap(iterable, keyExtractor, x => x)
+}
+
+export function getGroups<I, K>(list: Array<I>, keyExtractor: (item: I) => K): Array<Array<I>> {
+  const map = groupBy(list, keyExtractor)
   return Array.from(map.values())
 }
