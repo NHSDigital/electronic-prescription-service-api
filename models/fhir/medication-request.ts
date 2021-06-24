@@ -150,15 +150,15 @@ export type Repeat = {
   countMax?: string | LosslessNumber
   duration?: string | LosslessNumber
   durationMax?: string | LosslessNumber
-  durationUnit?: string
+  durationUnit?: UnitOfTime
   frequency?: string | LosslessNumber
   frequencyMax?: string | LosslessNumber
   period?: string | LosslessNumber
   periodMax?: string | LosslessNumber
-  periodUnit?: string
+  periodUnit?: UnitOfTime
   dayOfWeek?: string
   timeOfDay?: string
-  when?: string
+  when?: Array<EventTiming>
   offset?: string | LosslessNumber
 } & Bounds
 
@@ -174,6 +174,45 @@ export type Bounds = {
   boundsDuration?: never
   boundsRange?: never
   boundsPeriod?: common.Period
+}
+
+export enum UnitOfTime {
+  SECOND = "s",
+  MINUTE = "min",
+  HOUR = "h",
+  DAY = "d",
+  WEEK = "wk",
+  MONTH = "mo",
+  YEAR = "a"
+}
+
+export enum EventTiming {
+  MORNING = "MORN",
+  EARLY_MORNING = "MORN.early",
+  LATE_MORNING = "MORN.late",
+  NOON = "NOON",
+  AFTERNOON = "AFT",
+  EARLY_AFTERNOON = "AFT.early",
+  LATE_AFTERNOON = "AFT.late",
+  EVENING = "EVE",
+  EARLY_EVENING = "EVE.early",
+  LATE_EVENING = "EVE.late",
+  NIGHT = "NIGHT",
+  AFTER_SLEEP = "PHS",
+  BEFORE_SLEEP = "HS",
+  UPON_WAKING = "WAKE",
+  AT_MEAL = "C",
+  AT_BREAKFAST = "CM",
+  AT_LUNCH = "CD",
+  AT_DINNER = "CV",
+  BEFORE_MEAL = "AC",
+  BEFORE_BREAKFAST = "ACM",
+  BEFORE_LUNCH = "ACD",
+  BEFORE_DINNER = "ACV",
+  AFTER_MEAL = "PC",
+  AFTER_BREAKFAST = "PCM",
+  AFTER_LUNCH = "PCD",
+  AFTER_DINNER = "PCV"
 }
 
 export interface Performer extends common.IdentifierReference<practitionerRole.Organization> {
