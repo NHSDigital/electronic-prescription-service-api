@@ -30,7 +30,15 @@ export function stringifyDosage(dosageInstruction: fhir.Dosage): string {
     console.error(dosageParts)
     throw new Error("Null or undefined dosage element - required field not populated.")
   }
-  return dosageParts.map(part => part?.join("")).filter(isTruthy).join(" - ")
+  const stringifiedParts = dosageParts.map(part => part?.join(""))
+  const [stringifiedMethod, stringifiedOtherParts] = getHeadAndTail(stringifiedParts)
+  const joinedStringifiedOtherParts = stringifiedOtherParts.filter(isTruthy).join(" - ")
+  return [stringifiedMethod, joinedStringifiedOtherParts].filter(isTruthy).join(" ")
+}
+
+function getHeadAndTail<T>(array: Array<T>): [T, Array<T>] {
+  const arrayShallowCopy = [...array]
+  return [arrayShallowCopy.shift(), arrayShallowCopy]
 }
 
 function stringifyMethod(dosageInstruction: fhir.Dosage) {
