@@ -52,7 +52,8 @@ describe("overall", () => {
           boundsDuration: {
             value: new LosslessNumber("3"),
             unit: "day"
-          }
+          },
+          count: new LosslessNumber(2)
         }
       },
       route: {
@@ -72,7 +73,7 @@ describe("overall", () => {
       asNeededBoolean: true
     })
     // eslint-disable-next-line max-len
-    expect(result).toEqual("Apply 100 milligram at a rate of 10 milligram per kilogram and hour over 2 hours (maximum 12 hours). twice a day 1 hour before lunch on Monday at 12:00 subcutaneous route Right arm as required for 3 days")
+    expect(result).toEqual("Apply 100 milligram at a rate of 10 milligram per kilogram and hour over 2 hours (maximum 12 hours). twice a day 1 hour before lunch on Monday at 12:00 subcutaneous route Right arm as required for 3 days take twice")
   })
 })
 
@@ -1353,5 +1354,86 @@ describe("bounds", () => {
         }
       })).toThrow(Error)
     })
+  })
+})
+
+describe("count", () => {
+  test("count is added correctly (count = 1)", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          count: new LosslessNumber(1)
+        }
+      }
+    })
+    expect(result).toEqual("take once")
+  })
+
+  test("count is added correctly (count = 2)", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          count: new LosslessNumber(2)
+        }
+      }
+    })
+    expect(result).toEqual("take twice")
+  })
+
+  test("count is added correctly (count > 2)", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          count: new LosslessNumber(3)
+        }
+      }
+    })
+    expect(result).toEqual("take 3 times")
+  })
+
+  test("count and countMax are added correctly (count = 1)", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          count: new LosslessNumber(1),
+          countMax: new LosslessNumber(2)
+        }
+      }
+    })
+    expect(result).toEqual("take 1 to 2 times")
+  })
+
+  test("count and countMax are added correctly (count = 2)", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          count: new LosslessNumber(2),
+          countMax: new LosslessNumber(4)
+        }
+      }
+    })
+    expect(result).toEqual("take 2 to 4 times")
+  })
+
+  test("count and countMax are added correctly (count > 2)", () => {
+    const result = stringifyDosage({
+      timing: {
+        repeat: {
+          count: new LosslessNumber(3),
+          countMax: new LosslessNumber(5)
+        }
+      }
+    })
+    expect(result).toEqual("take 3 to 5 times")
+  })
+
+  test("missing count results in an error", () => {
+    expect(() => stringifyDosage({
+      timing: {
+        repeat: {
+          countMax: new LosslessNumber(5)
+        }
+      }
+    })).toThrow(Error)
   })
 })

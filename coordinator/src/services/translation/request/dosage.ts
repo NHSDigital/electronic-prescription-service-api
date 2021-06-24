@@ -16,7 +16,8 @@ export function stringifyDosage(dosageInstruction: fhir.Dosage): string {
     stringifyRoute(dosageInstruction),
     stringifySite(dosageInstruction),
     stringifyAsNeeded(dosageInstruction),
-    stringifyBounds(dosageInstruction)
+    stringifyBounds(dosageInstruction),
+    stringifyCount(dosageInstruction)
   ]
   if (dosageParts.some(part => part?.some(element => !element))) {
     console.error(dosageParts)
@@ -385,6 +386,46 @@ function stringifyBounds(dosage: fhir.Dosage) {
   } else {
     return []
   }
+}
+
+/**
+ * TODO - implemented as per the guide but this doesn't combine very well with other elements
+ */
+function stringifyCount(dosage: fhir.Dosage) {
+  const repeat = dosage.timing?.repeat
+  const count = repeat?.count
+  const countMax = repeat?.countMax
+  if (!count && !countMax) {
+    return []
+  }
+
+  if (isOne(count) && !countMax) {
+    return [
+      "take once"
+    ]
+  }
+
+  if (isTwo(count) && !countMax) {
+    return [
+      "take twice"
+    ]
+  }
+
+  const elements = [
+    "take ", stringifyNumericValue(count)
+  ]
+
+  if (countMax) {
+    elements.push(
+      " to ", stringifyNumericValue(countMax)
+    )
+  }
+
+  elements.push(
+    " times"
+  )
+
+  return elements
 }
 
 function stringifyQuantityValue(quantity: fhir.Quantity) {
