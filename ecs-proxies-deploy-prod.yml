@@ -24,8 +24,6 @@ docker_service:
           value: "{{ APIGEE_ENVIRONMENT }}"
         - name: TO_ASID
           value: 'TO_ASID_PLACEHOLDER'
-        - name: FROM_PARTY_KEY
-          value: 'FROM_PARTY_KEY_PLACEHOLDER'
         - name: TO_PARTY_KEY
           value: 'TO_PARTY_KEY_PLACEHOLDER'
         - name: DISPENSE_ENABLED
