@@ -15,7 +15,8 @@ export function stringifyDosage(dosageInstruction: fhir.Dosage): string {
     stringifyTimeOfDay(dosageInstruction),
     stringifyRoute(dosageInstruction),
     stringifySite(dosageInstruction),
-    stringifyAsNeeded(dosageInstruction)
+    stringifyAsNeeded(dosageInstruction),
+    stringifyBounds(dosageInstruction)
   ]
   if (dosageParts.some(part => part?.some(element => !element))) {
     console.error(dosageParts)
@@ -307,7 +308,7 @@ function stringifyTimeOfDay(dosage: fhir.Dosage) {
     "at "
   ]
 
-  const formattedTimeOfDays = timeOfDay.map(timeOfDayElement => formatTimeOfDay(timeOfDayElement))
+  const formattedTimeOfDays = timeOfDay.map(timeOfDayElement => formatTime(timeOfDayElement))
   elements.push(...getListWithSeparators(formattedTimeOfDays))
 
   return elements
@@ -336,6 +337,51 @@ function stringifyAsNeeded(dosage: fhir.Dosage) {
     return ["as required for ", ...getListWithSeparators(asNeededDisplays)]
   } else if (dosage.asNeededBoolean) {
     return ["as required"]
+  } else {
+    return []
+  }
+}
+
+function stringifyBounds(dosage: fhir.Dosage) {
+  const repeat = dosage.timing?.repeat
+  const boundsDuration = repeat?.boundsDuration
+  const boundsRange = repeat?.boundsRange
+  const boundsPeriod = repeat?.boundsPeriod
+  if (boundsDuration) {
+    return [
+      "for ", stringifyQuantityValue(boundsDuration), " ", stringifyPluralQuantityUnit(boundsDuration)
+    ]
+  } else if (boundsRange) {
+    //TODO - pluralising units as per the guide, but there's no constraint on the code system - what if the unit is "d"?
+    const lowUnit = stringifyPluralQuantityUnit(boundsRange.low)
+    const highUnit = stringifyPluralQuantityUnit(boundsRange.high)
+    const elements = [
+      "for ", stringifyQuantityValue(boundsRange.low)
+    ]
+    if (lowUnit !== highUnit) {
+      elements.push(
+        " ", lowUnit
+      )
+    }
+    elements.push(
+      " to ", stringifyQuantityValue(boundsRange.high), " ", highUnit
+    )
+    return elements
+  } else if (boundsPeriod) {
+    //TODO - boundsPeriod is not in the guide, but is allowed by FHIR - check we're representing it correctly
+    if (boundsPeriod.start && boundsPeriod.end) {
+      return [
+        "from ", formatDate(boundsPeriod.start), " to ", formatDate(boundsPeriod.end)
+      ]
+    } else if (boundsPeriod.start) {
+      return [
+        "from ", formatDate(boundsPeriod.start)
+      ]
+    } else {
+      return [
+        "until ", formatDate(boundsPeriod.end)
+      ]
+    }
   } else {
     return []
   }
@@ -485,7 +531,7 @@ function getDayOfWeekDisplay(dayOfWeek: fhir.DayOfWeek) {
   }
 }
 
-function formatTimeOfDay(time: string) {
+function formatTime(time: string) {
   const timeMoment = moment.utc(time, ["HH:mm:ss.SSSSSSSSS", "HH:mm:ss"], true)
   if (!timeMoment.isValid()) {
     throw new Error("Invalid time of day " + time)
@@ -496,6 +542,14 @@ function formatTimeOfDay(time: string) {
   }
 
   return timeMoment.format("HH:mm:ss")
+}
+
+function formatDate(dateTime: string) {
+  const dateTimeMoment = moment.utc(dateTime, moment.ISO_8601, true)
+  if (!dateTimeMoment.isValid()) {
+    throw new Error("Invalid dateTime " + dateTime)
+  }
+  return dateTimeMoment.format("DD/MM/YYYY")
 }
 
 function getIndefiniteArticleForUnitOfTime(unitOfTime: fhir.UnitOfTime) {

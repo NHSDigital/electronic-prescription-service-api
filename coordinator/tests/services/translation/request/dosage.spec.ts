@@ -48,7 +48,11 @@ describe("overall", () => {
           ],
           timeOfDay: [
             "12:00:00"
-          ]
+          ],
+          boundsDuration: {
+            value: new LosslessNumber("3"),
+            unit: "day"
+          }
         }
       },
       route: {
@@ -68,7 +72,7 @@ describe("overall", () => {
       asNeededBoolean: true
     })
     // eslint-disable-next-line max-len
-    expect(result).toEqual("Apply 100 milligram at a rate of 10 milligram per kilogram and hour over 2 hours (maximum 12 hours). twice a day 1 hour before lunch on Monday at 12:00 subcutaneous route Right arm as required")
+    expect(result).toEqual("Apply 100 milligram at a rate of 10 milligram per kilogram and hour over 2 hours (maximum 12 hours). twice a day 1 hour before lunch on Monday at 12:00 subcutaneous route Right arm as required for 3 days")
   })
 })
 
@@ -1123,6 +1127,229 @@ describe("asNeeded", () => {
             system: "http://snomed.info/sct",
             code: "3199001"
           }]
+        }
+      })).toThrow(Error)
+    })
+  })
+})
+
+describe("bounds", () => {
+  describe("boundsDuration", () => {
+    test("boundsDuration is added correctly", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            boundsDuration: {
+              value: new LosslessNumber(3),
+              unit: "day"
+            }
+          }
+        }
+      })
+      expect(result).toEqual("for 3 days")
+    })
+
+    test("missing value results in an error", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            boundsDuration: {
+              unit: "day"
+            }
+          }
+        }
+      })).toThrow(Error)
+    })
+
+    test("missing unit results in an error", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            boundsDuration: {
+              value: new LosslessNumber(3)
+            }
+          }
+        }
+      })).toThrow(Error)
+    })
+  })
+
+  describe("boundsRange", () => {
+    test("boundsRange is added correctly (low and high units equal)", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            boundsRange: {
+              low: {
+                value: new LosslessNumber(3),
+                unit: "day"
+              },
+              high: {
+                value: new LosslessNumber(5),
+                unit: "day"
+              }
+            }
+          }
+        }
+      })
+      expect(result).toEqual("for 3 to 5 days")
+    })
+
+    test("boundsRange is added correctly (low and high units not equal)", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            boundsRange: {
+              low: {
+                value: new LosslessNumber(10),
+                unit: "minute"
+              },
+              high: {
+                value: new LosslessNumber(1),
+                unit: "hour"
+              }
+            }
+          }
+        }
+      })
+      expect(result).toEqual("for 10 minutes to 1 hour")
+    })
+
+    test("missing low value results in an error", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            boundsRange: {
+              low: {
+                unit: "minute"
+              },
+              high: {
+                value: new LosslessNumber(1),
+                unit: "hour"
+              }
+            }
+          }
+        }
+      })).toThrow(Error)
+    })
+
+    test("missing low unit results in an error", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            boundsRange: {
+              low: {
+                value: new LosslessNumber(10)
+              },
+              high: {
+                value: new LosslessNumber(1),
+                unit: "hour"
+              }
+            }
+          }
+        }
+      })).toThrow(Error)
+    })
+
+    test("missing high value results in an error", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            boundsRange: {
+              low: {
+                value: new LosslessNumber(10),
+                unit: "minute"
+              },
+              high: {
+                unit: "hour"
+              }
+            }
+          }
+        }
+      })).toThrow(Error)
+    })
+
+    test("missing high unit results in an error", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            boundsRange: {
+              low: {
+                value: new LosslessNumber(10),
+                unit: "minute"
+              },
+              high: {
+                value: new LosslessNumber(1)
+              }
+            }
+          }
+        }
+      })).toThrow(Error)
+    })
+  })
+
+  describe("boundsPeriod", () => {
+    test("boundsPeriod is added correctly (start only)", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            boundsPeriod: {
+              start: "2021-06-24"
+            }
+          }
+        }
+      })
+      expect(result).toEqual("from 24/06/2021")
+    })
+
+    test("boundsPeriod is added correctly (start and end)", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            boundsPeriod: {
+              start: "2021-06-24",
+              end: "2021-07-24"
+            }
+          }
+        }
+      })
+      expect(result).toEqual("from 24/06/2021 to 24/07/2021")
+    })
+
+    test("boundsPeriod is added correctly (end only)", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            boundsPeriod: {
+              end: "2021-07-24"
+            }
+          }
+        }
+      })
+      expect(result).toEqual("until 24/07/2021")
+    })
+
+    test("time component is ignored", () => {
+      const result = stringifyDosage({
+        timing: {
+          repeat: {
+            boundsPeriod: {
+              start: "2021-06-24T10:45:00.000Z"
+            }
+          }
+        }
+      })
+      expect(result).toEqual("from 24/06/2021")
+    })
+
+    test("invalid date results in an error", () => {
+      expect(() => stringifyDosage({
+        timing: {
+          repeat: {
+            boundsPeriod: {
+              start: "2021-06-35T10:45:00.000Z"
+            }
+          }
         }
       })).toThrow(Error)
     })
