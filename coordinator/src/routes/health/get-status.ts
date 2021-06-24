@@ -11,22 +11,21 @@ export interface StatusCheckResponse {
 }
 
 async function getValidatorHealth(): Promise<StatusCheckResponse> {
-  try {
-    const validatorResponse = await axios.get<string>(`${VALIDATOR_HOST}/_status`, {timeout: 20000})
-
-    return {
-      status: validatorResponse.status === 200 ? "pass" : "error",
-      timeout: "false",
-      responseCode: validatorResponse.status,
-      outcome: validatorResponse.data
-    }
-  } catch (error) {
-    return {
+  return await axios
+    .get<string>(`${VALIDATOR_HOST}/_status`, {timeout: 20000})
+    .then((response): StatusCheckResponse => {
+      return {
+        status: response.status === 200 ? "pass" : "error",
+        timeout: "false",
+        responseCode: response.status,
+        outcome: response.data
+      }
+    })
+    .catch(error => ({
       status: "error",
       timeout: error.code === "ECONNABORTED" ? "true" : "false",
       responseCode: 500
-    }
-  }
+    }))
 }
 
 export default [
