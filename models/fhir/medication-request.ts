@@ -140,7 +140,7 @@ export type DoseAndRate = {
 } & Dose & Rate
 
 export interface Timing {
-  event?: string
+  event?: Array<string>
   repeat?: Repeat
   code?: common.CodeableConcept
 }
@@ -156,8 +156,8 @@ export type Repeat = {
   period?: string | LosslessNumber
   periodMax?: string | LosslessNumber
   periodUnit?: UnitOfTime
-  dayOfWeek?: string
-  timeOfDay?: string
+  dayOfWeek?: Array<DayOfWeek>
+  timeOfDay?: Array<string>
   when?: Array<EventTiming>
   offset?: string | LosslessNumber
 } & Bounds
@@ -213,6 +213,16 @@ export enum EventTiming {
   AFTER_BREAKFAST = "PCM",
   AFTER_LUNCH = "PCD",
   AFTER_DINNER = "PCV"
+}
+
+export enum DayOfWeek {
+  MONDAY = "mon",
+  TUESDAY = "tue",
+  WEDNESDAY = "wed",
+  THURSDAY = "thu",
+  FRIDAY = "fri",
+  SATURDAY = "sat",
+  SUNDAY = "sun"
 }
 
 export interface Performer extends common.IdentifierReference<practitionerRole.Organization> {
