@@ -17,7 +17,13 @@ export function stringifyDosage(dosageInstruction: fhir.Dosage): string {
     stringifySite(dosageInstruction),
     stringifyAsNeeded(dosageInstruction),
     stringifyBounds(dosageInstruction),
-    stringifyCount(dosageInstruction)
+    stringifyCount(dosageInstruction),
+    stringifyEvent(dosageInstruction),
+    stringifyMaxDosePerPeriod(dosageInstruction),
+    stringifyMaxDosePerAdministration(dosageInstruction),
+    stringifyMaxDosePerLifetime(dosageInstruction),
+    stringifyAdditionalInstruction(dosageInstruction),
+    stringifyPatientInstruction(dosageInstruction)
   ]
   if (dosageParts.some(part => part?.some(element => !element))) {
     console.error(dosageParts)
@@ -261,8 +267,8 @@ function stringifyOffsetAndWhen(dosage: fhir.Dosage) {
     )
   }
 
-  const whenDisplays = when.map(whenElement => stringifyEventTiming(whenElement))
-  elements.push(...getListWithSeparators(whenDisplays))
+  const formattedEventTimings = when.map(stringifyEventTiming)
+  elements.push(...getListWithSeparators(formattedEventTimings))
 
   return elements
 }
@@ -292,8 +298,8 @@ function stringifyDayOfWeek(dosage: fhir.Dosage) {
     "on "
   ]
 
-  const dayOfWeekDisplays = dayOfWeek.map(dayOfWeekElement => getDayOfWeekDisplay(dayOfWeekElement))
-  elements.push(...getListWithSeparators(dayOfWeekDisplays))
+  const formattedDaysOfWeek = dayOfWeek.map(getDayOfWeekDisplay)
+  elements.push(...getListWithSeparators(formattedDaysOfWeek))
 
   return elements
 }
@@ -309,8 +315,8 @@ function stringifyTimeOfDay(dosage: fhir.Dosage) {
     "at "
   ]
 
-  const formattedTimeOfDays = timeOfDay.map(timeOfDayElement => formatTime(timeOfDayElement))
-  elements.push(...getListWithSeparators(formattedTimeOfDays))
+  const formattedTimesOfDay = timeOfDay.map(formatTime)
+  elements.push(...getListWithSeparators(formattedTimesOfDay))
 
   return elements
 }
@@ -319,14 +325,14 @@ function stringifyRoute(dosage: fhir.Dosage) {
   if (!dosage.route) {
     return []
   }
-  return dosage.route.coding?.map(coding => coding.display)
+  return dosage.route.coding?.map(coding => coding?.display)
 }
 
 function stringifySite(dosage: fhir.Dosage) {
   if (!dosage.site) {
     return []
   }
-  return dosage.site.coding?.map(coding => coding.display)
+  return dosage.site.coding?.map(coding => coding?.display)
 }
 
 function stringifyAsNeeded(dosage: fhir.Dosage) {
@@ -334,7 +340,7 @@ function stringifyAsNeeded(dosage: fhir.Dosage) {
     if (!dosage.asNeededCodeableConcept.coding?.length) {
       throw new Error("No entries in asNeededCodeableConcept.")
     }
-    const asNeededDisplays = dosage.asNeededCodeableConcept.coding?.map(coding => coding.display)
+    const asNeededDisplays = dosage.asNeededCodeableConcept.coding?.map(coding => coding?.display)
     return ["as required for ", ...getListWithSeparators(asNeededDisplays)]
   } else if (dosage.asNeededBoolean) {
     return ["as required"]
@@ -414,18 +420,97 @@ function stringifyCount(dosage: fhir.Dosage) {
   const elements = [
     "take ", stringifyNumericValue(count)
   ]
-
   if (countMax) {
     elements.push(
       " to ", stringifyNumericValue(countMax)
     )
   }
-
   elements.push(
     " times"
   )
-
   return elements
+}
+
+function stringifyEvent(dosage: fhir.Dosage) {
+  const event = dosage.timing?.event
+  if (!event?.length) {
+    return []
+  }
+
+  const formattedEvents = event.map(formatDate)
+  return [
+    "on ", ...getListWithSeparators(formattedEvents)
+  ]
+}
+
+function stringifyMaxDosePerPeriod(dosage: fhir.Dosage) {
+  if (!dosage.maxDosePerPeriod) {
+    return []
+  }
+
+  const numerator = dosage.maxDosePerPeriod.numerator
+  const denominator = dosage.maxDosePerPeriod.denominator
+  return [
+    "up to a maximum of ",
+    stringifyQuantityValue(numerator),
+    " ",
+    stringifyQuantityUnit(numerator),
+    " in ",
+    stringifyQuantityValue(denominator),
+    " ",
+    stringifyPluralQuantityUnit(denominator)
+  ]
+}
+
+function stringifyMaxDosePerAdministration(dosage: fhir.Dosage) {
+  if (!dosage.maxDosePerAdministration) {
+    return []
+  }
+
+  return [
+    "up to a maximum of ",
+    stringifyQuantityValue(dosage.maxDosePerAdministration),
+    " ",
+    stringifyQuantityUnit(dosage.maxDosePerAdministration),
+    " per dose"
+  ]
+}
+
+function stringifyMaxDosePerLifetime(dosage: fhir.Dosage) {
+  if (!dosage.maxDosePerLifetime) {
+    return []
+  }
+
+  return [
+    "up to a maximum of ",
+    stringifyQuantityValue(dosage.maxDosePerLifetime),
+    " ",
+    stringifyQuantityUnit(dosage.maxDosePerLifetime),
+    " for the lifetime of the patient"
+  ]
+}
+
+/**
+ * TODO - Implemented as per the guide but chaining multiple instructions in this way could change their meaning
+ */
+function stringifyAdditionalInstruction(dosage: fhir.Dosage) {
+  if (!dosage.additionalInstruction?.length) {
+    return []
+  }
+
+  const additionalInstructionDisplays = dosage.additionalInstruction
+    .flatMap(codeableConcept => codeableConcept?.coding)
+    .map(coding => coding?.display)
+
+  return getListWithSeparators(additionalInstructionDisplays)
+}
+
+function stringifyPatientInstruction(dosage: fhir.Dosage) {
+  if (!dosage.patientInstruction) {
+    return []
+  }
+
+  return [dosage.patientInstruction]
 }
 
 function stringifyQuantityValue(quantity: fhir.Quantity) {

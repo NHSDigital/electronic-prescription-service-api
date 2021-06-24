@@ -32,6 +32,9 @@ describe("overall", () => {
         }
       },
       timing: {
+        event: [
+          "2021-06-24"
+        ],
         repeat: {
           duration: new LosslessNumber(2),
           durationMax: new LosslessNumber(12),
@@ -70,10 +73,36 @@ describe("overall", () => {
           display: "Right arm"
         }]
       },
-      asNeededBoolean: true
+      asNeededBoolean: true,
+      maxDosePerPeriod: {
+        numerator: {
+          value: new LosslessNumber(200),
+          unit: "milligram"
+        },
+        denominator: {
+          value: new LosslessNumber(24),
+          unit: "hour"
+        }
+      },
+      maxDosePerAdministration: {
+        value: new LosslessNumber(20),
+        unit: "milligram"
+      },
+      maxDosePerLifetime: {
+        value: new LosslessNumber(2000),
+        unit: "milligram"
+      },
+      additionalInstruction: [{
+        coding: [{
+          system: "http://snomed.info/sct",
+          code: "417980006",
+          display: "Contains aspirin"
+        }]
+      }],
+      patientInstruction: "when migraine recurs"
     })
     // eslint-disable-next-line max-len
-    expect(result).toEqual("Apply 100 milligram at a rate of 10 milligram per kilogram and hour over 2 hours (maximum 12 hours). twice a day 1 hour before lunch on Monday at 12:00 subcutaneous route Right arm as required for 3 days take twice")
+    expect(result).toEqual("Apply 100 milligram at a rate of 10 milligram per kilogram and hour over 2 hours (maximum 12 hours). twice a day 1 hour before lunch on Monday at 12:00 subcutaneous route Right arm as required for 3 days take twice on 24/06/2021 up to a maximum of 200 milligram in 24 hours up to a maximum of 20 milligram per dose up to a maximum of 2000 milligram for the lifetime of the patient Contains aspirin when migraine recurs")
   })
 })
 
@@ -1435,5 +1464,247 @@ describe("count", () => {
         }
       }
     })).toThrow(Error)
+  })
+})
+
+describe("event", () => {
+  test("single event is added correctly", () => {
+    const result = stringifyDosage({
+      timing: {
+        event: [
+          "2021-06-24"
+        ]
+      }
+    })
+    expect(result).toEqual("on 24/06/2021")
+  })
+
+  test("multiple events are added correctly", () => {
+    const result = stringifyDosage({
+      timing: {
+        event: [
+          "2021-06-24",
+          "2021-07-01",
+          "2021-07-08"
+        ]
+      }
+    })
+    expect(result).toEqual("on 24/06/2021, 01/07/2021 and 08/07/2021")
+  })
+
+  test("time component is ignored", () => {
+    const result = stringifyDosage({
+      timing: {
+        event: [
+          "2021-06-24T11:45:00.000Z"
+        ]
+      }
+    })
+    expect(result).toEqual("on 24/06/2021")
+  })
+
+  test("invalid date results in an error", () => {
+    expect(() => stringifyDosage({
+      timing: {
+        event: [
+          "2021-06-35T11:45:00.000Z"
+        ]
+      }
+    })).toThrow(Error)
+  })
+})
+
+describe("maxDosePerPeriod", () => {
+  test("maxDosePerPeriod is added correctly", () => {
+    const result = stringifyDosage({
+      maxDosePerPeriod: {
+        numerator: {
+          value: new LosslessNumber(20),
+          unit: "milligram"
+        },
+        denominator: {
+          value: new LosslessNumber(24),
+          unit: "hour"
+        }
+      }
+    })
+    expect(result).toEqual("up to a maximum of 20 milligram in 24 hours")
+  })
+
+  test("missing numerator value results in an error", () => {
+    expect(() => stringifyDosage({
+      maxDosePerPeriod: {
+        numerator: {
+          unit: "milligram"
+        },
+        denominator: {
+          value: new LosslessNumber(24),
+          unit: "hour"
+        }
+      }
+    })).toThrow(Error)
+  })
+
+  test("missing numerator unit results in an error", () => {
+    expect(() => stringifyDosage({
+      maxDosePerPeriod: {
+        numerator: {
+          value: new LosslessNumber(20)
+        },
+        denominator: {
+          value: new LosslessNumber(24),
+          unit: "hour"
+        }
+      }
+    })).toThrow(Error)
+  })
+
+  test("missing denominator value results in an error", () => {
+    expect(() => stringifyDosage({
+      maxDosePerPeriod: {
+        numerator: {
+          value: new LosslessNumber(20),
+          unit: "milligram"
+        },
+        denominator: {
+          unit: "hour"
+        }
+      }
+    })).toThrow(Error)
+  })
+
+  test("missing denominator unit results in an error", () => {
+    expect(() => stringifyDosage({
+      maxDosePerPeriod: {
+        numerator: {
+          value: new LosslessNumber(20),
+          unit: "milligram"
+        },
+        denominator: {
+          value: new LosslessNumber(24)
+        }
+      }
+    })).toThrow(Error)
+  })
+})
+
+describe("maxDosePerAdministration", () => {
+  test("maxDosePerAdministration is added correctly", () => {
+    const result = stringifyDosage({
+      maxDosePerAdministration: {
+        value: new LosslessNumber(20),
+        unit: "milligram"
+      }
+    })
+    expect(result).toEqual("up to a maximum of 20 milligram per dose")
+  })
+
+  test("missing value results in an error", () => {
+    expect(() => stringifyDosage({
+      maxDosePerAdministration: {
+        unit: "milligram"
+      }
+    })).toThrow(Error)
+  })
+
+  test("missing unit results in an error", () => {
+    expect(() => stringifyDosage({
+      maxDosePerAdministration: {
+        value: new LosslessNumber(20)
+      }
+    })).toThrow(Error)
+  })
+})
+
+describe("maxDosePerLifetime", () => {
+  test("maxDosePerLifetime is added correctly", () => {
+    const result = stringifyDosage({
+      maxDosePerLifetime: {
+        value: new LosslessNumber(20),
+        unit: "milligram"
+      }
+    })
+    expect(result).toEqual("up to a maximum of 20 milligram for the lifetime of the patient")
+  })
+
+  test("missing value results in an error", () => {
+    expect(() => stringifyDosage({
+      maxDosePerLifetime: {
+        unit: "milligram"
+      }
+    })).toThrow(Error)
+  })
+
+  test("missing unit results in an error", () => {
+    expect(() => stringifyDosage({
+      maxDosePerLifetime: {
+        value: new LosslessNumber(20)
+      }
+    })).toThrow(Error)
+  })
+})
+
+describe("additionalInstruction", () => {
+  test("single value is added correctly", () => {
+    const result = stringifyDosage({
+      additionalInstruction: [{
+        coding: [{
+          system: "http://snomed.info/sct",
+          code: "418281004",
+          display: "Do not take anything containing aspirin while taking this medicine"
+        }]
+      }]
+    })
+    expect(result).toEqual("Do not take anything containing aspirin while taking this medicine")
+  })
+
+  test("multiple values are added correctly", () => {
+    const result = stringifyDosage({
+      additionalInstruction: [
+        {
+          coding: [{
+            system: "http://snomed.info/sct",
+            code: "418639000",
+            display: "Warning. May cause drowsiness"
+          }]
+        },
+        {
+          coding: [{
+            system: "http://snomed.info/sct",
+            code: "417980006",
+            display: "Contains aspirin"
+          }]
+        },
+        {
+          coding: [{
+            system: "http://snomed.info/sct",
+            code: "419444006",
+            display: "Do not stop taking this medicine except on your doctor's advice"
+          }]
+        }
+      ]
+    })
+    // eslint-disable-next-line max-len
+    expect(result).toEqual("Warning. May cause drowsiness, Contains aspirin and Do not stop taking this medicine except on your doctor's advice")
+  })
+
+  test("missing display results in an error", () => {
+    expect(() => stringifyDosage({
+      additionalInstruction: [{
+        coding: [{
+          system: "http://snomed.info/sct",
+          code: "418281004"
+        }]
+      }]
+    })).toThrow(Error)
+  })
+})
+
+describe("patientInstruction", () => {
+  test("patientInstruction is added correctly", () => {
+    const result = stringifyDosage({
+      patientInstruction: "Additional doses only to be taken after migraine recurrence"
+    })
+    expect(result).toEqual("Additional doses only to be taken after migraine recurrence")
   })
 })

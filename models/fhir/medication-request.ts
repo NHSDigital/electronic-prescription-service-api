@@ -140,7 +140,7 @@ export type DoseAndRate = {
 } & Dose & Rate
 
 export interface Timing {
-  event?: string
+  event?: Array<string>
   repeat?: Repeat
   code?: common.CodeableConcept
 }
