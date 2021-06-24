@@ -3,6 +3,7 @@ import {Logger} from "pino"
 import {spine} from "@models"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
+import {serviceHealthCheck, StatusCheckResponse} from "../../routes/health/get-status"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
@@ -119,5 +120,9 @@ export class LiveSpineClient implements SpineClient {
 
   private getSpineUrlForPolling(path: string) {
     return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/_poll/${path}`
+  }
+
+  async getStatus(): Promise<StatusCheckResponse> {
+    return serviceHealthCheck(`${SPINE_URL_SCHEME}://${this.spineEndpoint}/healthcheck`)
   }
 }

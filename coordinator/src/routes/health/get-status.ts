@@ -1,6 +1,7 @@
 import Hapi from "@hapi/hapi"
 import axios from "axios"
 import {VALIDATOR_HOST} from "../util"
+import {spineClient} from "../../services/communication/spine-client"
 
 export interface StatusCheckResponse {
   status: "pass" | "warn" | "error"
@@ -10,17 +11,16 @@ export interface StatusCheckResponse {
   links?: string
 }
 
-async function getValidatorHealth(): Promise<StatusCheckResponse> {
+export async function serviceHealthCheck(url: string): Promise<StatusCheckResponse> {
   return await axios
-    .get<string>(`${VALIDATOR_HOST}/_status`, {timeout: 20000})
-    .then((response): StatusCheckResponse => {
-      return {
-        status: response.status === 200 ? "pass" : "error",
-        timeout: "false",
-        responseCode: response.status,
-        outcome: response.data
-      }
-    })
+    .get<string>(url, {timeout: 2})
+    .then((response): StatusCheckResponse => ({
+      status: response.status === 200 ? "pass" : "error",
+      timeout: "false",
+      responseCode: response.status,
+      outcome: response.data,
+      links: url
+    }))
     .catch(error => ({
       status: "error",
       timeout: error.code === "ECONNABORTED" ? "true" : "false",
@@ -34,7 +34,8 @@ export default [
     path: "/_status",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const checks: { [name: string]: Array<StatusCheckResponse> } = {
-        "validator:status": [await getValidatorHealth()]
+        "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`)],
+        "spine:status": [await spineClient.getStatus()]
       }
 
       let responseStatus = "pass"

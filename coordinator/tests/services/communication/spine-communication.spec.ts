@@ -132,6 +132,20 @@ describe("Spine communication", () => {
     expect(spine.isPollable(spineResponse)).toBe(false)
     expect((spineResponse as spine.SpineDirectResponse<string>).statusCode).toBe(500)
   })
+
+  test("Status response", async () => {
+    moxios.wait(() => {
+      const request = moxios.requests.mostRecent()
+      request.respondWith({
+        status: 200
+      })
+    })
+
+    const statusResponse = await requestHandler.getStatus()
+
+    expect(statusResponse.status).toBe("pass")
+    expect(statusResponse.responseCode).toBe(200)
+  })
 })
 
 describe("Spine responses", () => {
