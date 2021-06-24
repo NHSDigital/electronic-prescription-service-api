@@ -162,7 +162,7 @@ extends:
           responseData=$(curl -H "apiKey: $(status-endpoint-api-key)" "$url" -s)
           deployedCommit=$(echo "$responseData" | jq -r ".commitId")
           dependenciesUp=$(echo "$responseData" | jq -r ".status")
-          if [ "$deployedCommit" == "$releaseCommit" ] && [ "dependenciesUp" == "pass" ]; then
+          if [ "$deployedCommit" == "$releaseCommit" ] && [ "$dependenciesUp" == "pass" ]; then
               success=1
               break;
           fi;
