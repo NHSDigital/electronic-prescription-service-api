@@ -4,7 +4,7 @@ import {VALIDATOR_HOST} from "../util"
 
 export interface StatusCheckResponse {
   status: "pass" | "warn" | "error"
-  timeout: "false"
+  timeout: "true" | "false"
   responseCode: number
   outcome?: string
   links?: string
@@ -20,10 +20,10 @@ async function getValidatorHealth(): Promise<StatusCheckResponse> {
       responseCode: validatorResponse.status,
       outcome: validatorResponse.data
     }
-  } catch {
+  } catch (error) {
     return {
       status: "error",
-      timeout: "false",
+      timeout: error.code === "ECONNABORTED" ? "true" : "false",
       responseCode: 500
     }
   }
