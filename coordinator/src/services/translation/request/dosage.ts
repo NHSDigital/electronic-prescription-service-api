@@ -3,6 +3,8 @@ import {getNumericValueAsString, isTruthy} from "../common"
 import {LosslessNumber} from "lossless-json"
 import moment from "moment"
 
+const SINGULAR_TIME_UNITS: Set<string> = new Set(Object.values(fhir.UnitOfTime).map(getUnitOfTimeDisplay))
+
 export function stringifyDosage(dosageInstruction: fhir.Dosage): string {
   const dosageParts = [
     stringifyMethod(dosageInstruction),
@@ -11,8 +13,7 @@ export function stringifyDosage(dosageInstruction: fhir.Dosage): string {
     stringifyDuration(dosageInstruction),
     stringifyFrequencyAndPeriod(dosageInstruction),
     stringifyOffsetAndWhen(dosageInstruction),
-    stringifyDayOfWeek(dosageInstruction),
-    stringifyTimeOfDay(dosageInstruction),
+    stringifyDayOfWeekAndTimeOfDay(dosageInstruction),
     stringifyRoute(dosageInstruction),
     stringifySite(dosageInstruction),
     stringifyAsNeeded(dosageInstruction),
@@ -29,7 +30,15 @@ export function stringifyDosage(dosageInstruction: fhir.Dosage): string {
     console.error(dosageParts)
     throw new Error("Null or undefined dosage element - required field not populated.")
   }
-  return dosageParts.map(part => part?.join("")).filter(isTruthy).join(" ")
+  const stringifiedParts = dosageParts.map(part => part?.join(""))
+  const [stringifiedMethod, stringifiedOtherParts] = getHeadAndTail(stringifiedParts)
+  const joinedStringifiedOtherParts = stringifiedOtherParts.filter(isTruthy).join(" - ")
+  return [stringifiedMethod, joinedStringifiedOtherParts].filter(isTruthy).join(" ")
+}
+
+function getHeadAndTail<T>(array: Array<T>): [T, Array<T>] {
+  const arrayShallowCopy = [...array]
+  return [arrayShallowCopy.shift(), arrayShallowCopy]
 }
 
 function stringifyMethod(dosageInstruction: fhir.Dosage) {
@@ -48,24 +57,9 @@ function stringifyDose(dosageInstruction: fhir.Dosage) {
   const doseQuantity = doseAndRate?.doseQuantity
   const doseRange = doseAndRate?.doseRange
   if (doseQuantity) {
-    return [
-      stringifyQuantityValue(doseQuantity), " ", stringifyQuantityUnit(doseQuantity)
-    ]
+    return [stringifyQuantityValue(doseQuantity), " ", stringifyQuantityUnit(doseQuantity)]
   } else if (doseRange) {
-    const lowUnit = stringifyQuantityUnit(doseRange.low)
-    const highUnit = stringifyQuantityUnit(doseRange.high)
-    const elements = [
-      stringifyQuantityValue(doseRange.low)
-    ]
-    if (lowUnit !== highUnit) {
-      elements.push(
-        " ", lowUnit
-      )
-    }
-    elements.push(
-      " to ", stringifyQuantityValue(doseRange.high), " ", highUnit
-    )
-    return elements
+    return stringifyRange(doseRange)
   } else {
     return []
   }
@@ -97,30 +91,13 @@ function stringifyRate(dosageInstruction: fhir.Dosage) {
         " every ",
         stringifyQuantityValue(denominator),
         " ",
-        stringifyPluralQuantityUnit(denominator)
+        stringifyQuantityUnit(denominator, true)
       ]
     }
   } else if (rateRange) {
-    const lowRateQuantity = rateRange.low
-    const highRateQuantity = rateRange.high
-    const lowUnit = stringifyQuantityUnit(lowRateQuantity)
-    const highUnit = stringifyQuantityUnit(highRateQuantity)
-    const elements = [
-      "at a rate of ", stringifyQuantityValue(lowRateQuantity)
-    ]
-    if (lowUnit !== highUnit) {
-      elements.push(
-        " ", lowUnit
-      )
-    }
-    elements.push(
-      " to ", stringifyQuantityValue(highRateQuantity), " ", highUnit
-    )
-    return elements
+    return ["at a rate of ", ...stringifyRange(rateRange)]
   } else if (rateQuantity) {
-    return [
-      "at a rate of ", stringifyQuantityValue(rateQuantity), " ", stringifyQuantityUnit(rateQuantity)
-    ]
+    return ["at a rate of ", stringifyQuantityValue(rateQuantity), " ", stringifyQuantityUnit(rateQuantity)]
   } else {
     return []
   }
@@ -131,13 +108,15 @@ function stringifyDuration(dosage: fhir.Dosage) {
   const duration = repeat?.duration
   const durationMax = repeat?.durationMax
   const durationUnit = repeat?.durationUnit
-  if (duration) {
-    const elements = [
-      "over ", stringifyNumericValue(duration), " ", stringifyPluralUnitOfTime(durationUnit, duration)
-    ]
+  if (duration || durationMax) {
+    const elements = ["over ", stringifyNumericValue(duration), " ", stringifyUnitOfTime(durationUnit, duration)]
     if (durationMax) {
       elements.push(
-        " (maximum ", stringifyNumericValue(durationMax), " ", stringifyPluralUnitOfTime(durationUnit, durationMax), ")"
+        " (maximum ",
+        stringifyNumericValue(durationMax),
+        " ",
+        stringifyUnitOfTime(durationUnit, durationMax),
+        ")"
       )
     }
     return elements
@@ -159,9 +138,7 @@ function stringifyFrequencyAndPeriod(dosage: fhir.Dosage) {
     if (!period && !periodMax) {
       return []
     } else if (isOne(period) && !periodMax) {
-      return [
-        stringifyReciprocalUnitOfTime(periodUnit)
-      ]
+      return [getReciprocalUnitOfTimeDisplay(periodUnit)]
     } else {
       //TODO - why is this fine when period is 1 but not otherwise?
       throw new Error("Period or periodMax specified without a frequency and period is not 1.")
@@ -170,13 +147,9 @@ function stringifyFrequencyAndPeriod(dosage: fhir.Dosage) {
 
   if (isOne(frequency) && !frequencyMax) {
     if (!period && !periodMax) {
-      return [
-        "once"
-      ]
+      return ["once"]
     } else if (isOne(period) && !periodMax) {
-      return [
-        "once ", ...stringifyStandardPeriod(dosage)
-      ]
+      return ["once ", ...stringifyStandardPeriod(dosage)]
     } else {
       return stringifyStandardPeriod(dosage)
     }
@@ -184,21 +157,15 @@ function stringifyFrequencyAndPeriod(dosage: fhir.Dosage) {
 
   if (isTwo(frequency) && !frequencyMax) {
     if (!period && !periodMax) {
-      return [
-        "twice"
-      ]
+      return ["twice"]
     } else {
-      return [
-        "twice ", ...stringifyStandardPeriod(dosage)
-      ]
+      return ["twice ", ...stringifyStandardPeriod(dosage)]
     }
   }
 
   const elements = stringifyStandardFrequency(dosage)
   if (period || periodMax) {
-    elements.push(
-      " ", ...stringifyStandardPeriod(dosage)
-    )
+    elements.push(" ", ...stringifyStandardPeriod(dosage))
   }
   return elements
 }
@@ -208,17 +175,11 @@ function stringifyStandardFrequency(dosage: fhir.Dosage) {
   const frequency = repeat?.frequency
   const frequencyMax = repeat?.frequencyMax
   if (frequency && frequencyMax) {
-    return [
-      stringifyNumericValue(frequency), " to ", stringifyNumericValue(frequencyMax), " times"
-    ]
+    return [stringifyNumericValue(frequency), " to ", stringifyNumericValue(frequencyMax), " times"]
   } else if (frequency) {
-    return [
-      stringifyNumericValue(frequency), " times"
-    ]
+    return [stringifyNumericValue(frequency), " times"]
   } else {
-    return [
-      "up to ", stringifyNumericValue(frequencyMax), " times"
-    ]
+    return ["up to ", stringifyNumericValue(frequencyMax), " times"]
   }
 }
 
@@ -234,16 +195,12 @@ function stringifyStandardPeriod(dosage: fhir.Dosage) {
       " to ",
       stringifyNumericValue(periodMax),
       " ",
-      stringifyPluralUnitOfTime(periodUnit, periodMax)
+      stringifyUnitOfTime(periodUnit, periodMax)
     ]
   } else if (isOne(period)) {
-    return [
-      getIndefiniteArticleForUnitOfTime(periodUnit), " ", stringifyUnitOfTime(periodUnit)
-    ]
+    return [getIndefiniteArticleForUnitOfTime(periodUnit), " ", getUnitOfTimeDisplay(periodUnit)]
   } else {
-    return [
-      "every ", stringifyNumericValue(period), " ", stringifyPluralUnitOfTime(periodUnit, period)
-    ]
+    return ["every ", stringifyNumericValue(period), " ", stringifyUnitOfTime(periodUnit, period)]
   }
 }
 
@@ -261,12 +218,10 @@ function stringifyOffsetAndWhen(dosage: fhir.Dosage) {
     const offsetMinutesStr = getNumericValueAsString(offset)
     const offsetMinutesInt = parseInt(offsetMinutesStr)
     const [offsetValue, offsetUnit] = getOffsetValueAndUnit(offsetMinutesInt)
-    elements.push(
-      offsetValue, " ", pluraliseUnit(offsetUnit, offsetValue), " "
-    )
+    elements.push(offsetValue, " ", pluraliseUnit(offsetUnit, offsetValue), " ")
   }
 
-  const formattedEventTimings = when.map(stringifyEventTiming)
+  const formattedEventTimings = when.map(getEventTimingDisplay)
   elements.push(...getListWithSeparators(formattedEventTimings))
 
   return elements
@@ -286,36 +241,28 @@ function getOffsetValueAndUnit(offsetMinutes: number) {
   return [offsetDays.toString(), "day"]
 }
 
-function stringifyDayOfWeek(dosage: fhir.Dosage) {
+function stringifyDayOfWeekAndTimeOfDay(dosage: fhir.Dosage) {
   const repeat = dosage?.timing?.repeat
   const dayOfWeek = repeat?.dayOfWeek
-  if (!dayOfWeek?.length) {
-    return []
-  }
-
-  const elements = [
-    "on "
-  ]
-
-  const formattedDaysOfWeek = dayOfWeek.map(getDayOfWeekDisplay)
-  elements.push(...getListWithSeparators(formattedDaysOfWeek))
-
-  return elements
-}
-
-function stringifyTimeOfDay(dosage: fhir.Dosage) {
-  const repeat = dosage?.timing?.repeat
   const timeOfDay = repeat?.timeOfDay
-  if (!timeOfDay?.length) {
+  if (!dayOfWeek?.length && !timeOfDay?.length) {
     return []
   }
 
-  const elements = [
-    "at "
-  ]
+  const elements = []
 
-  const formattedTimesOfDay = timeOfDay.map(formatTime)
-  elements.push(...getListWithSeparators(formattedTimesOfDay))
+  if (dayOfWeek?.length) {
+    const formattedDaysOfWeek = dayOfWeek.map(getDayOfWeekDisplay)
+    elements.push("on ", ...getListWithSeparators(formattedDaysOfWeek))
+  }
+
+  if (timeOfDay?.length) {
+    if (elements.length) {
+      elements.push(" ")
+    }
+    const formattedTimesOfDay = timeOfDay.map(formatTime)
+    elements.push("at ", ...getListWithSeparators(formattedTimesOfDay))
+  }
 
   return elements
 }
@@ -354,39 +301,17 @@ function stringifyBounds(dosage: fhir.Dosage) {
   const boundsRange = repeat?.boundsRange
   const boundsPeriod = repeat?.boundsPeriod
   if (boundsDuration) {
-    return [
-      "for ", stringifyQuantityValue(boundsDuration), " ", stringifyPluralQuantityUnit(boundsDuration)
-    ]
+    return ["for ", stringifyQuantityValue(boundsDuration), " ", stringifyQuantityUnit(boundsDuration, true)]
   } else if (boundsRange) {
-    //TODO - pluralising units as per the guide, but there's no constraint on the code system - what if the unit is "d"?
-    const lowUnit = stringifyPluralQuantityUnit(boundsRange.low)
-    const highUnit = stringifyPluralQuantityUnit(boundsRange.high)
-    const elements = [
-      "for ", stringifyQuantityValue(boundsRange.low)
-    ]
-    if (lowUnit !== highUnit) {
-      elements.push(
-        " ", lowUnit
-      )
-    }
-    elements.push(
-      " to ", stringifyQuantityValue(boundsRange.high), " ", highUnit
-    )
-    return elements
+    return ["for ", ...stringifyRange(boundsRange, true)]
   } else if (boundsPeriod) {
     //TODO - boundsPeriod is not in the guide, but is allowed by FHIR - check we're representing it correctly
     if (boundsPeriod.start && boundsPeriod.end) {
-      return [
-        "from ", formatDate(boundsPeriod.start), " to ", formatDate(boundsPeriod.end)
-      ]
+      return ["from ", formatDate(boundsPeriod.start), " to ", formatDate(boundsPeriod.end)]
     } else if (boundsPeriod.start) {
-      return [
-        "from ", formatDate(boundsPeriod.start)
-      ]
+      return ["from ", formatDate(boundsPeriod.start)]
     } else {
-      return [
-        "until ", formatDate(boundsPeriod.end)
-      ]
+      return ["until ", formatDate(boundsPeriod.end)]
     }
   } else {
     return []
@@ -405,28 +330,18 @@ function stringifyCount(dosage: fhir.Dosage) {
   }
 
   if (isOne(count) && !countMax) {
-    return [
-      "take once"
-    ]
+    return ["take once"]
   }
 
   if (isTwo(count) && !countMax) {
-    return [
-      "take twice"
-    ]
+    return ["take twice"]
   }
 
-  const elements = [
-    "take ", stringifyNumericValue(count)
-  ]
+  const elements = ["take ", stringifyNumericValue(count)]
   if (countMax) {
-    elements.push(
-      " to ", stringifyNumericValue(countMax)
-    )
+    elements.push(" to ", stringifyNumericValue(countMax))
   }
-  elements.push(
-    " times"
-  )
+  elements.push(" times")
   return elements
 }
 
@@ -437,9 +352,7 @@ function stringifyEvent(dosage: fhir.Dosage) {
   }
 
   const formattedEvents = event.map(formatDate)
-  return [
-    "on ", ...getListWithSeparators(formattedEvents)
-  ]
+  return ["on ", ...getListWithSeparators(formattedEvents)]
 }
 
 function stringifyMaxDosePerPeriod(dosage: fhir.Dosage) {
@@ -457,7 +370,7 @@ function stringifyMaxDosePerPeriod(dosage: fhir.Dosage) {
     " in ",
     stringifyQuantityValue(denominator),
     " ",
-    stringifyPluralQuantityUnit(denominator)
+    stringifyQuantityUnit(denominator, true)
   ]
 }
 
@@ -500,7 +413,6 @@ function stringifyAdditionalInstruction(dosage: fhir.Dosage) {
   const additionalInstructionDisplays = dosage.additionalInstruction
     .flatMap(codeableConcept => codeableConcept?.coding)
     .map(coding => coding?.display)
-
   return getListWithSeparators(additionalInstructionDisplays)
 }
 
@@ -508,8 +420,36 @@ function stringifyPatientInstruction(dosage: fhir.Dosage) {
   if (!dosage.patientInstruction) {
     return []
   }
-
   return [dosage.patientInstruction]
+}
+
+function formatTime(time: string) {
+  const timeMoment = moment.utc(time, ["HH:mm:ss.SSSSSSSSS", "HH:mm:ss"], true)
+  if (!timeMoment.isValid()) {
+    throw new Error("Invalid time of day " + time)
+  }
+
+  if (timeMoment.get("seconds") === 0) {
+    return timeMoment.format("HH:mm")
+  }
+
+  return timeMoment.format("HH:mm:ss")
+}
+
+function formatDate(dateTime: string) {
+  const dateTimeMoment = moment.utc(dateTime, moment.ISO_8601, true)
+  if (!dateTimeMoment.isValid()) {
+    throw new Error("Invalid dateTime " + dateTime)
+  }
+  return dateTimeMoment.format("DD/MM/YYYY")
+}
+
+function getIndefiniteArticleForUnitOfTime(unitOfTime: fhir.UnitOfTime) {
+  if (unitOfTime === fhir.UnitOfTime.HOUR) {
+    return "an"
+  } else {
+    return "a"
+  }
 }
 
 function stringifyQuantityValue(quantity: fhir.Quantity) {
@@ -524,17 +464,77 @@ function stringifyNumericValue(value: string | LosslessNumber) {
   return null
 }
 
-function stringifyPluralQuantityUnit(quantity: fhir.Quantity) {
-  const unit = stringifyQuantityUnit(quantity)
-  return pluraliseUnit(unit, quantity?.value)
-}
-
-function stringifyPluralUnitOfTime(unitOfTime: fhir.UnitOfTime, value: string | LosslessNumber) {
-  const unit = stringifyUnitOfTime(unitOfTime)
+function stringifyUnitOfTime(unitOfTime: fhir.UnitOfTime, value: string | LosslessNumber) {
+  const unit = getUnitOfTimeDisplay(unitOfTime)
   return pluraliseUnit(unit, value)
 }
 
-function stringifyUnitOfTime(unitOfTime: fhir.UnitOfTime) {
+function stringifyQuantityUnit(quantity: fhir.Quantity, pluralise = false) {
+  const unit = quantity?.unit
+  if (unit) {
+    if (pluralise) {
+      return pluraliseUnit(unit, quantity?.value)
+    } else {
+      return unit
+    }
+  }
+  return null
+}
+
+function pluraliseUnit(unit: string, value: string | LosslessNumber) {
+  if (unit) {
+    if (!value || isOne(value) || !unitCanBeSafelyPluralised(unit)) {
+      return unit
+    } else {
+      return `${unit}s`
+    }
+  }
+  return null
+}
+
+function unitCanBeSafelyPluralised(unit: string) {
+  return SINGULAR_TIME_UNITS.has(unit)
+}
+
+function isOne(numericValue: string | LosslessNumber) {
+  //TODO - compare number instead of string? what about 1.00?
+  return stringifyNumericValue(numericValue) === "1"
+}
+
+function isTwo(numericValue: string | LosslessNumber) {
+  //TODO - compare number instead of string? what about 2.00?
+  return stringifyNumericValue(numericValue) === "2"
+}
+
+function getListWithSeparators(list: Array<string>) {
+  const elements: Array<string> = []
+
+  list.forEach((listElement, index) => {
+    elements.push(listElement)
+    if (index < list.length - 2) {
+      elements.push(", ")
+    } else if (index < list.length - 1) {
+      elements.push(" and ")
+    }
+  })
+
+  return elements
+}
+
+function stringifyRange(range: fhir.Range, pluralise = false) {
+  const lowQuantity = range?.low
+  const highQuantity = range?.high
+  const lowUnit = stringifyQuantityUnit(lowQuantity, pluralise)
+  const highUnit = stringifyQuantityUnit(highQuantity, pluralise)
+  const elements = [stringifyQuantityValue(lowQuantity)]
+  if (lowUnit !== highUnit) {
+    elements.push(" ", lowUnit)
+  }
+  elements.push(" to ", stringifyQuantityValue(highQuantity), " ", highUnit)
+  return elements
+}
+
+function getUnitOfTimeDisplay(unitOfTime: fhir.UnitOfTime) {
   switch (unitOfTime) {
     case fhir.UnitOfTime.SECOND:
       return "second"
@@ -555,7 +555,7 @@ function stringifyUnitOfTime(unitOfTime: fhir.UnitOfTime) {
   }
 }
 
-function stringifyReciprocalUnitOfTime(periodUnit: fhir.UnitOfTime) {
+function getReciprocalUnitOfTimeDisplay(periodUnit: fhir.UnitOfTime) {
   switch (periodUnit) {
     case fhir.UnitOfTime.SECOND:
       return "every second"
@@ -576,7 +576,7 @@ function stringifyReciprocalUnitOfTime(periodUnit: fhir.UnitOfTime) {
   }
 }
 
-function stringifyEventTiming(eventTiming: fhir.EventTiming) {
+function getEventTimingDisplay(eventTiming: fhir.EventTiming) {
   switch (eventTiming) {
     case fhir.EventTiming.MORNING:
       return "during the morning"
@@ -654,82 +654,4 @@ function getDayOfWeekDisplay(dayOfWeek: fhir.DayOfWeek) {
     default:
       throw new Error("Unhandled DayOfWeek " + dayOfWeek)
   }
-}
-
-function formatTime(time: string) {
-  const timeMoment = moment.utc(time, ["HH:mm:ss.SSSSSSSSS", "HH:mm:ss"], true)
-  if (!timeMoment.isValid()) {
-    throw new Error("Invalid time of day " + time)
-  }
-
-  if (timeMoment.get("seconds") === 0) {
-    return timeMoment.format("HH:mm")
-  }
-
-  return timeMoment.format("HH:mm:ss")
-}
-
-function formatDate(dateTime: string) {
-  const dateTimeMoment = moment.utc(dateTime, moment.ISO_8601, true)
-  if (!dateTimeMoment.isValid()) {
-    throw new Error("Invalid dateTime " + dateTime)
-  }
-  return dateTimeMoment.format("DD/MM/YYYY")
-}
-
-function getIndefiniteArticleForUnitOfTime(unitOfTime: fhir.UnitOfTime) {
-  if (unitOfTime === fhir.UnitOfTime.HOUR) {
-    return "an"
-  } else {
-    return "a"
-  }
-}
-
-function stringifyQuantityUnit(quantity: fhir.Quantity) {
-  const unit = quantity?.unit
-  if (unit) {
-    return unit
-  }
-  //TODO - if unit isn't present we might need to get this from the system and code
-  // not sure whether we'll need to lookup in a map or use the code directly
-  return null
-}
-
-/**
- * Naive implementation for now, can handle special cases later if needed
- */
-function pluraliseUnit(unit: string, value: string | LosslessNumber) {
-  if (unit) {
-    if (!value || isOne(value)) {
-      return unit
-    } else {
-      return `${unit}s`
-    }
-  }
-  return null
-}
-
-function isOne(numericValue: string | LosslessNumber) {
-  //TODO - compare number instead of string? what about 1.00?
-  return stringifyNumericValue(numericValue) === "1"
-}
-
-function isTwo(numericValue: string | LosslessNumber) {
-  //TODO - compare number instead of string? what about 2.00?
-  return stringifyNumericValue(numericValue) === "2"
-}
-
-function getListWithSeparators(list: Array<string>) {
-  const elements: Array<string> = []
-
-  list.forEach((listElement, index) => {
-    elements.push(listElement)
-    if (index < list.length - 2) {
-      elements.push(", ")
-    } else if (index < list.length - 1) {
-      elements.push(" and ")
-    }
-  })
-
-  return elements
 }
