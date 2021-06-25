@@ -13,7 +13,7 @@ export interface StatusCheckResponse {
 
 export async function serviceHealthCheck(url: string): Promise<StatusCheckResponse> {
   return await axios
-    .get<string>(url, {timeout: 2})
+    .get<string>(url, {timeout: 20000})
     .then((response): StatusCheckResponse => ({
       status: response.status === 200 ? "pass" : "error",
       timeout: "false",
