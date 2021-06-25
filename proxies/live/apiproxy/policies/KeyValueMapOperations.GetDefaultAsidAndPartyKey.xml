@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<KeyValueMapOperations async="false" continueOnError="false" enabled="true" name="KeyValueMapOperations.GetDefaultAsidAndPartyKey" mapIdentifier="secret-squirrel">
+    <Get assignTo="private.apigee.NHSD-ASID" index="1">
+        <Key>
+            <Parameter>default_asid</Parameter>
+        </Key>
+    </Get>
+    <Get assignTo="private.apigee.NHSD-Party-Key" index="1">
+      <Key>
+        <Parameter>default_party_key</Parameter>
+      </Key>
+    </Get>
+</KeyValueMapOperations>

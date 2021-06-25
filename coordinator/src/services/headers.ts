@@ -6,7 +6,8 @@ export enum RequestHeaders {
   ASID = "nhsd-asid",
   RAW_RESPONSE = "x-raw-response",
   SKIP_VALIDATION = "x-skip-validation",
-  SMOKE_TEST = "x-smoke-test"
+  SMOKE_TEST = "x-smoke-test",
+  PARTY_KEY = "nhsd-party-key"
 }
 
 export function getRequestId(headers: Hapi.Util.Dictionary<string>): string {
@@ -15,4 +16,8 @@ export function getRequestId(headers: Hapi.Util.Dictionary<string>): string {
 
 export function getAsid(headers: Hapi.Util.Dictionary<string>): string {
   return headers[RequestHeaders.ASID]
+}
+
+export function getPartyKey(headers: Hapi.Util.Dictionary<string>): string {
+  return headers[RequestHeaders.PARTY_KEY]
 }

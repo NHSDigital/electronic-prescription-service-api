@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<AssignMessage async="false" continueOnError="false" enabled="true" name="AssignMessage.AddAsidHeader">
+<AssignMessage async="false" continueOnError="false" enabled="true" name="AssignMessage.AddAsidAndPartyKeyHeader">
     <Add>
         <Headers>
             <Header name="NHSD-ASID">{private.apigee.NHSD-ASID}</Header>
+            <Header name="NHSD-Party-Key">{private.apigee.NHSD-Party-Key}</Header>
         </Headers>
     </Add>
     <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>

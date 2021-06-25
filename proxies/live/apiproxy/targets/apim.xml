@@ -46,22 +46,22 @@
         {% if REQUIRE_ASID == 'True' %}
         <Step>
           <Name>RaiseFault.400BadRequest</Name>
-          <Condition>(app.asid is null)</Condition>
+          <Condition>(app.asid is null || app.party-key is null)</Condition>
         </Step>
         {% endif %}
-        <!-- Populate the ASID var from the app -->
         <Step>
-          <Name>AssignMessage.PopulateAsidFromApp</Name>
-          <Condition>(app.asid isNot null)</Condition>
+          <!-- Populate the ASID and party-key var from the app -->
+          <Name>AssignMessage.PopulateAsidAndPartyKeyFromApp</Name>
+          <Condition>(app.asid isNot null AND app.party-key isNot null)</Condition>
         </Step>
         <Step>
-          <!-- Populate the ASID var with the default ASID -->
-          <Name>KeyValueMapOperations.GetDefaultAsid</Name>
-          <Condition>(app.asid is null)</Condition>
+          <!-- Populate the ASID and party-key var with the default ASID -->
+          <Name>KeyValueMapOperations.GetDefaultAsidAndPartyKey</Name>
+          <Condition>(app.asid is null || app.party-key is null)</Condition>
         </Step>
         <Step>
-          <!-- Add the ASID var as a header -->
-          <Name>AssignMessage.AddAsidHeader</Name>
+          <!-- Add the ASID and party-key var as a header -->
+          <Name>AssignMessage.AddAsidAndPartyKeyHeader</Name>
         </Step>
         <Step>
           <!--This should always be the last Step - as it is just before the message is sent - so the initial request stays intact for as long as possible.

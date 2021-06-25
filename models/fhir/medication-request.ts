@@ -90,10 +90,139 @@ export interface MedicationRequestGroupIdentifier extends common.Identifier {
   extension?: Array<extension.IdentifierExtension>
 }
 
-export interface Dosage {
-  text: string
-  patientInstruction?: string
+export type Dosage = {
+  sequence?: string | LosslessNumber
+  text?: string
   additionalInstruction?: Array<common.CodeableConcept>
+  patientInstruction?: string
+  timing?: Timing
+  site?: common.CodeableConcept
+  route?: common.CodeableConcept
+  method?: common.CodeableConcept
+  doseAndRate?: DoseAndRate
+  maxDosePerPeriod?: common.Ratio
+  maxDosePerAdministration?: common.SimpleQuantity
+  maxDosePerLifetime?: common.SimpleQuantity
+} & AsNeeded
+
+export type AsNeeded = {
+  asNeededBoolean?: boolean
+  asNeededCodeableConcept?: never
+} | {
+  asNeededBoolean?: never
+  asNeededCodeableConcept?: common.CodeableConcept
+}
+
+export type Dose = {
+  doseRange?: common.Range
+  doseQuantity?: never
+} | {
+  doseRange?: never
+  doseQuantity?: common.SimpleQuantity
+}
+
+export type Rate = {
+  rateRatio?: common.Ratio
+  rateRange?: never
+  rateQuantity?: never
+} | {
+  rateRatio?: never
+  rateRange?: common.Range
+  rateQuantity?: never
+} | {
+  rateRatio?: never
+  rateRange?: never
+  rateQuantity?: common.SimpleQuantity
+}
+
+export type DoseAndRate = {
+  type?: common.CodeableConcept
+} & Dose & Rate
+
+export interface Timing {
+  event?: Array<string>
+  repeat?: Repeat
+  code?: common.CodeableConcept
+}
+
+export type Repeat = {
+  count?: string | LosslessNumber
+  countMax?: string | LosslessNumber
+  duration?: string | LosslessNumber
+  durationMax?: string | LosslessNumber
+  durationUnit?: UnitOfTime
+  frequency?: string | LosslessNumber
+  frequencyMax?: string | LosslessNumber
+  period?: string | LosslessNumber
+  periodMax?: string | LosslessNumber
+  periodUnit?: UnitOfTime
+  dayOfWeek?: Array<DayOfWeek>
+  timeOfDay?: Array<string>
+  when?: Array<EventTiming>
+  offset?: string | LosslessNumber
+} & Bounds
+
+export type Bounds = {
+  boundsDuration?: common.Duration
+  boundsRange?: never
+  boundsPeriod?: never
+} | {
+  boundsDuration?: never
+  boundsRange?: common.Range
+  boundsPeriod?: never
+} | {
+  boundsDuration?: never
+  boundsRange?: never
+  boundsPeriod?: common.Period
+}
+
+export enum UnitOfTime {
+  SECOND = "s",
+  MINUTE = "min",
+  HOUR = "h",
+  DAY = "d",
+  WEEK = "wk",
+  MONTH = "mo",
+  YEAR = "a"
+}
+
+export enum EventTiming {
+  MORNING = "MORN",
+  EARLY_MORNING = "MORN.early",
+  LATE_MORNING = "MORN.late",
+  NOON = "NOON",
+  AFTERNOON = "AFT",
+  EARLY_AFTERNOON = "AFT.early",
+  LATE_AFTERNOON = "AFT.late",
+  EVENING = "EVE",
+  EARLY_EVENING = "EVE.early",
+  LATE_EVENING = "EVE.late",
+  NIGHT = "NIGHT",
+  AFTER_SLEEP = "PHS",
+  BEFORE_SLEEP = "HS",
+  UPON_WAKING = "WAKE",
+  AT_MEAL = "C",
+  AT_BREAKFAST = "CM",
+  AT_LUNCH = "CD",
+  AT_DINNER = "CV",
+  BEFORE_MEAL = "AC",
+  BEFORE_BREAKFAST = "ACM",
+  BEFORE_LUNCH = "ACD",
+  BEFORE_DINNER = "ACV",
+  AFTER_MEAL = "PC",
+  AFTER_BREAKFAST = "PCM",
+  AFTER_LUNCH = "PCD",
+  AFTER_DINNER = "PCV"
+}
+
+export enum DayOfWeek {
+  MONDAY = "mon",
+  TUESDAY = "tue",
+  WEDNESDAY = "wed",
+  THURSDAY = "thu",
+  FRIDAY = "fri",
+  SATURDAY = "sat",
+  SUNDAY = "sun"
 }
 
 export interface Performer extends common.IdentifierReference<practitionerRole.Organization> {
