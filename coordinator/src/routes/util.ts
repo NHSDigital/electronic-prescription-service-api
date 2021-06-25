@@ -71,6 +71,10 @@ export function isMedicationRequest(body: unknown): body is fhir.MedicationReque
   return isFhirResourceOfType(body, "MedicationRequest")
 }
 
+export function isMedicationDispense(body: unknown): body is fhir.MedicationDispense {
+  return isFhirResourceOfType(body, "MedicationDispense")
+}
+
 function isFhirResourceOfType(body: unknown, resourceType: string) {
   return typeof body === "object"
     && "resourceType" in body

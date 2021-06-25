@@ -1,63 +1,61 @@
-import {BASE_PATH, ContentTypes, externalValidator, getPayload, isBundle, isMedicationRequest} from "../util"
+import {
+  BASE_PATH,
+  ContentTypes,
+  externalValidator,
+  getPayload,
+  isBundle,
+  isMedicationDispense,
+  isMedicationRequest
+} from "../util"
 import {fhir} from "@models"
 import {stringifyDosages} from "../../services/translation/request/dosage"
-import {getMedicationRequests} from "../../services/translation/common/getResourcesOfType"
-import {getIdentifierValueOrNullForSystem} from "../../services/translation/common"
+import {getMedicationDispenses, getMedicationRequests} from "../../services/translation/common/getResourcesOfType"
 
 export default [
   /*
-    Validate a FHIR message using the external FHIR validator.
+    Convert a FHIR dosage instruction to plain text.
   */
   {
     method: "POST",
     path: `${BASE_PATH}/$dose-to-text`,
     handler: externalValidator(async (request, responseToolkit) => {
       const payload = getPayload(request) as fhir.Resource
-      if (isBundle(payload)) {
-        request.logger.info("Converting structured dosage instructions to text (multiple MedicationRequests)")
-        const medicationRequests = getMedicationRequests(payload)
-        if (request.headers["accept"] === ContentTypes.PLAIN_TEXT) {
-          const response = medicationRequests.map(doseToTextPlain).join("\n\n")
-          return responseToolkit.response(response).code(200).type(ContentTypes.PLAIN_TEXT)
-        }
-        const response = medicationRequests.map(doseToTextJson)
-        return responseToolkit.response(response).code(200).type(ContentTypes.JSON)
-      } else if (isMedicationRequest(payload)) {
-        request.logger.info("Converting structured dosage instructions to text (single MedicationRequest)")
-        if (request.headers["accept"] === ContentTypes.PLAIN_TEXT) {
-          const response = doseToTextPlain(payload)
-          return responseToolkit.response(response).code(200).type(ContentTypes.PLAIN_TEXT)
-        }
-        const response = doseToTextJson(payload)
-        return responseToolkit.response(response).code(200).type(ContentTypes.JSON)
-      } else {
-        const response = "Request body must be a Bundle or MedicationRequest."
+      const resources = getResourcesWithDosageInstructions(payload)
+      if (!resources) {
+        const response = "Request body must be a Bundle, MedicationRequest or MedicationDispense."
         return responseToolkit.response(response).code(400).type(ContentTypes.PLAIN_TEXT)
       }
+
+      if (request.headers["accept"] === ContentTypes.PLAIN_TEXT) {
+        const response = resources.map(doseToTextPlain).join("\n")
+        return responseToolkit.response(response).code(200).type(ContentTypes.PLAIN_TEXT)
+      }
+      const response = resources.map(doseToTextJson)
+      return responseToolkit.response(response).code(200).type(ContentTypes.JSON)
     })
   }
 ]
 
-function doseToTextJson(medicationRequest: fhir.MedicationRequest) {
-  return {
-    groupIdentifier: medicationRequest.groupIdentifier,
-    identifier: medicationRequest.identifier,
-    dosageInstructionText: stringifyDosages(medicationRequest.dosageInstruction)
+function getResourcesWithDosageInstructions(payload: fhir.Resource) {
+  if (isBundle(payload)) {
+    return [
+      ...getMedicationRequests(payload),
+      ...getMedicationDispenses(payload)
+    ]
+  } else if (isMedicationRequest(payload) || isMedicationDispense(payload)) {
+    return [
+      payload
+    ]
   }
 }
 
-function doseToTextPlain(medicationRequest: fhir.MedicationRequest) {
-  const prescriptionId = getIdentifierValueOrNullForSystem(
-    [medicationRequest.groupIdentifier],
-    "https://fhir.nhs.uk/Id/prescription-order-number",
-    "MedicationRequest.groupIdentifier"
-  )
-  const lineItemId = getIdentifierValueOrNullForSystem(
-    medicationRequest.identifier,
-    "https://fhir.nhs.uk/Id/prescription-order-item-number",
-    "MedicationRequest.identifier"
-  )
-  return `Prescription ID: ${prescriptionId}\n`
-    + `Line item ID: ${lineItemId}\n`
-    + `Dosage instruction text: ${stringifyDosages(medicationRequest.dosageInstruction)}`
+function doseToTextJson(resource: fhir.MedicationRequest | fhir.MedicationDispense) {
+  return {
+    identifier: resource.identifier,
+    dosageInstructionText: stringifyDosages(resource.dosageInstruction)
+  }
+}
+
+function doseToTextPlain(resource: fhir.MedicationRequest | fhir.MedicationDispense) {
+  stringifyDosages(resource.dosageInstruction)
 }
