@@ -35,6 +35,10 @@ docker_service:
           valueFrom: '/{{ account }}/platform-common/egress/hosts/spine-prescriptions-prod'
         - name: ODS_URL
           valueFrom: '/{{ account }}/platform-common/egress/hosts/directory-spineservices'
+        - name: TO_ASID
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/spineservices.nhs.uk/to-asid'
+        - name: TO_PARTY_KEY
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/spineservices.nhs.uk/to-party-key'
     health_check:
         matcher: "200"
         path: "/_status"
