@@ -15,7 +15,6 @@ const ebxmlRequestTemplate = fs.readFileSync(
 class EbXmlRequest {
   timestamp = moment.utc().format()
   conversation_id = uuid.v4().toUpperCase()
-  from_party_id = process.env.FROM_PARTY_KEY
   to_party_id = process.env.TO_PARTY_KEY
   service = "urn:nhs:names:services:mm"
   cpa_id = "S1001A1630"
@@ -27,26 +26,32 @@ class EbXmlRequest {
   message_id: string
   action: string
   hl7_message: string
+  from_party_id: string
 
-  constructor(interactionId: string, hl7V3Message: string, requestId: string) {
+  constructor(interactionId: string, hl7V3Message: string, requestId: string, fromPartyKey: string) {
     this.action = interactionId
     this.hl7_message = hl7V3Message
     this.message_id = requestId
+    this.from_party_id = fromPartyKey
   }
 }
 
 export function addEbXmlWrapper(spineRequest: spine.SpineRequest): string {
-  const ebXmlRequest = new EbXmlRequest(spineRequest.interactionId, spineRequest.message, spineRequest.messageId)
+  const ebXmlRequest = new EbXmlRequest(spineRequest.interactionId, spineRequest.message, spineRequest.messageId,
+    spineRequest.fromPartyKey)
   return Mustache.render(ebxmlRequestTemplate, ebXmlRequest)
 }
 
 export function toSpineRequest<T>(
   sendMessagePayload: hl7V3.SendMessagePayload<T>,
-  messageId: string): spine.SpineRequest {
+  messageId: string,
+  fromPartyKey: string
+): spine.SpineRequest {
   return {
     interactionId: extractInteractionId(sendMessagePayload),
     message: writeToString(sendMessagePayload),
-    messageId
+    messageId,
+    fromPartyKey
   }
 }
 

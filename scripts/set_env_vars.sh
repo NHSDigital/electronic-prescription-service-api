@@ -6,7 +6,7 @@ set -eu
 export SANDBOX=1
 export TO_ASID=567456789789
 export TO_PARTY_KEY="YES-0000806"
-export FROM_PARTY_KEY="T141D-822234"
+#export FROM_PARTY_KEY="T141D-822234"
 
 # pact
 export PACT_BROKER_URL=
