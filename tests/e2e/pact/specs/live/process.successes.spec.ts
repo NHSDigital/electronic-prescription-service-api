@@ -8,6 +8,9 @@ import {basePath, pactOptions} from "../../resources/common"
 import {fetcher, fhir} from "@models"
 import {generateShortFormId, setPrescriptionIds, updatePrescriptions} from "../../services/update-prescriptions"
 import {generateTestOutputFile} from "../../services/genereate-test-output-file"
+import pino from "pino"
+
+const logger = pino()
 
 jestpact.pactWith(
   pactOptions("live", "process", "send"),
@@ -22,7 +25,8 @@ jestpact.pactWith(
       if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
         await updatePrescriptions(
           fetcher.prescriptionOrderExamples.filter(e => e.isSuccess),
-          fetcher.prescriptionOrderUpdateExamples.filter(e => e.isSuccess)
+          fetcher.prescriptionOrderUpdateExamples.filter(e => e.isSuccess),
+          logger
         )
       }
       generateTestOutputFile()

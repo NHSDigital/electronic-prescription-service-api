@@ -9,6 +9,9 @@ import {fetcher, fhir} from "@models"
 import * as TestResources from "../../resources/test-resources"
 import {updatePrescriptions} from "../../services/update-prescriptions"
 import {generateTestOutputFile} from "../../services/genereate-test-output-file"
+import pino from "pino"
+
+const logger = pino()
 
 const apiPath = `${basePath}/$process-message`
 jestpact.pactWith(
@@ -26,7 +29,8 @@ jestpact.pactWith(
       if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
         await updatePrescriptions(
           fetcher.prescriptionOrderExamples.filter(e => !e.isSuccess),
-          []
+          [],
+          logger
         )
       }
       generateTestOutputFile()

@@ -14,3 +14,16 @@ export function featureBlockedMessage(messageType: fhir.EventCodingCode): boolea
   }
   return process.env.DISPENSE_ENABLED !== "true"
 }
+
+export function getDoseToTextMode(): DoseToTextMode {
+  const mode = process.env.DOSE_TO_TEXT_MODE
+  if (mode in DoseToTextMode) {
+    return mode as DoseToTextMode
+  }
+  return DoseToTextMode.DISABLED
+}
+
+export enum DoseToTextMode {
+  DISABLED = "DISABLED",
+  AUDIT = "AUDIT"
+}

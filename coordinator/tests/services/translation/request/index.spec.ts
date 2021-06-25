@@ -26,19 +26,19 @@ describe("convertFhirMessageToSignedInfoMessage", () => {
   ])
 
   test.each(cases)("accepts %s", (desc: string, message: fhir.Bundle) => {
-    expect(() => convertFhirMessageToSignedInfoMessage(message)).not.toThrow()
+    expect(() => convertFhirMessageToSignedInfoMessage(message, logger)).not.toThrow()
   })
 
   test("rejects a cancellation message", () => {
     const cancellationMessage = TestResources.specification.map(s => s.fhirMessageCancel).filter(isTruthy)[0]
-    expect(() => convertFhirMessageToSignedInfoMessage(cancellationMessage)).toThrow(errors.InvalidValueError)
+    expect(() => convertFhirMessageToSignedInfoMessage(cancellationMessage, logger)).toThrow(errors.InvalidValueError)
   })
 
   test.each(cases)(
     "produces expected result for %s",
     (desc: string, message: fhir.Bundle, expectedParameters: fhir.Parameters) => {
       mockTime.value = getStringParameterByName(expectedParameters.parameter, "timestamp").valueString
-      const actualParameters = convertFhirMessageToSignedInfoMessage(message)
+      const actualParameters = convertFhirMessageToSignedInfoMessage(message, logger)
       expect(actualParameters).toEqual(expectedParameters)
     }
   )
@@ -64,7 +64,7 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
     "produces expected result for %s",
     (desc: string, message: fhir.Bundle, expectedOutput: ElementCompact) => {
       mockTime.value = convertHL7V3DateTimeToIsoDateTimeString(expectedOutput.PORX_IN020101SM31.creationTime)
-      const actualMessage = translator.createParentPrescriptionSendMessagePayload(message, "200000001285")
+      const actualMessage = translator.createParentPrescriptionSendMessagePayload(message, "200000001285", logger)
       xmlTest(actualMessage, expectedOutput.PORX_IN020101SM31)()
     }
   )

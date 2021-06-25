@@ -11,6 +11,9 @@ import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl} from "../../../../src/services/translation/common"
+import pino from "pino"
+
+const logger = pino()
 
 const actualMoment = requireActual("moment")
 jest.mock("moment", () => ({
@@ -26,7 +29,7 @@ let prescriptionId: string
 beforeAll(() => {
   const bundle = TestResources.examplePrescription1.fhirMessageUnsigned
 
-  hl7V3ParentPrescription = convertParentPrescription(bundle)
+  hl7V3ParentPrescription = convertParentPrescription(bundle, logger)
   hl7V3ExtractedFragments = extractFragments(hl7V3ParentPrescription)
   fragments = TestResources.examplePrescription1.hl7V3SignatureFragments
 
