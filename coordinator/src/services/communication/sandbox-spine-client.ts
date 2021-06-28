@@ -1,5 +1,6 @@
 import {spine, fhir, hl7V3, spineResponses} from "@models"
 import {SpineClient} from "./spine-client"
+import {StatusCheckResponse} from "../../routes/health/get-status"
 
 export class SandboxSpineClient implements SpineClient {
   async send(spineRequest: spine.SpineRequest): Promise<spine.SpineResponse<unknown>> {
@@ -47,12 +48,19 @@ export class SandboxSpineClient implements SpineClient {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async poll(path: string, fromAsid: string): Promise<spine.SpineResponse<fhir.OperationOutcome>> {
+  async poll(): Promise<spine.SpineResponse<fhir.OperationOutcome>> {
     return Promise.resolve({
       statusCode: 400,
       body: notSupportedOperationOutcome
     })
+  }
+
+  async getStatus(): Promise<StatusCheckResponse> {
+    return {
+      status: "pass",
+      timeout: "false",
+      responseCode: 200
+    }
   }
 }
 
