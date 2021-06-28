@@ -15,8 +15,8 @@ export class Address implements ElementCompact {
     use?: AddressUse
   }
   _text?: string
-  streetAddressLine: Array<core.Text>
-  postalCode: core.Text
+  streetAddressLine?: Array<core.Text>
+  postalCode?: core.Text
 }
 
 export enum NameUse {

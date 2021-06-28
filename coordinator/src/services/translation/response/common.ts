@@ -1,30 +1,36 @@
 import * as uuid from "uuid"
 import {toArray} from "../common"
-import {hl7V3, fhir, processingErrors as errors} from "@models"
+import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {createPractitioner} from "./practitioner"
 import {createHealthcareService, createLocations, createOrganization} from "./organization"
 import {createPractitionerRole} from "./practitioner-role"
 import {createPatient} from "./patient"
 
-export function convertName(name: Array<hl7V3.Name> | hl7V3.Name): Array<fhir.HumanName> {
-  const nameArray = toArray(name)
+export function convertName(names: Array<hl7V3.Name> | hl7V3.Name): Array<fhir.HumanName> {
+  const nameArray = toArray(names)
   return nameArray.map(name => {
+    const convertedName: fhir.HumanName = {}
+    if (name._attributes?.use) {
+      convertedName.use = convertNameUse(name._attributes.use)
+    }
+
     if (name._text) {
-      return {text: name._text}
-    }
-    let convertedName: fhir.HumanName = {
-      given: toArray(name.given).map(given => given._text),
-      prefix: toArray(name.prefix).map(prefix => prefix._text)
+      convertedName.text = name._text
+      return convertedName
     }
 
-    convertedName = name._attributes?.use
-      ? {...convertedName, use: convertNameUse(name._attributes.use)}
-      : convertedName
-
-    convertedName = name.family?._text
-      ? {...convertedName, family: name.family._text}
-      : convertedName
-
+    if (name.family) {
+      convertedName.family = name.family._text
+    }
+    if (name.given) {
+      convertedName.given = toArray(name.given).map(given => given._text)
+    }
+    if (name.prefix) {
+      convertedName.prefix = toArray(name.prefix).map(prefix => prefix._text)
+    }
+    if (name.suffix) {
+      convertedName.suffix = toArray(name.suffix).map(suffix => suffix._text)
+    }
     return convertedName
   })
 }
@@ -48,19 +54,26 @@ function convertNameUse(hl7NameUse: string): string {
   }
 }
 
-export function convertAddress(address: Array<hl7V3.Address> | hl7V3.Address): Array<fhir.Address> {
-  const addressArray = toArray(address)
+export function convertAddress(addresses: Array<hl7V3.Address> | hl7V3.Address): Array<fhir.Address> {
+  const addressArray = toArray(addresses)
   return addressArray.map(address => {
+    const convertedAddress: fhir.Address = {}
+    if (address._attributes?.use) {
+      convertedAddress.use = convertAddressUse(address._attributes.use)
+    }
+
     if (address._text) {
-      return {text: address._text}
+      convertedAddress.text = address._text
+      return convertedAddress
     }
-    const convertedAddress = {
-      line: address.streetAddressLine.map(addressLine => addressLine._text),
-      postalCode: address.postalCode._text
+
+    if (address.streetAddressLine) {
+      convertedAddress.line = address.streetAddressLine.map(addressLine => addressLine._text)
     }
-    return address._attributes?.use
-      ? {...convertedAddress, use: convertAddressUse(address._attributes.use)}
-      : convertedAddress
+    if (address.postalCode) {
+      convertedAddress.postalCode = address.postalCode._text
+    }
+    return convertedAddress
   })
 }
 
@@ -83,13 +96,22 @@ function convertAddressUse(addressUse: hl7V3.AddressUse): string {
   }
 }
 
-export function convertTelecom(telecom: Array<hl7V3.Telecom> | hl7V3.Telecom): Array<fhir.ContactPoint> {
-  const telecomArray = toArray(telecom)
-  return telecomArray.map(value => ({
-    system: "phone",
-    value: value._attributes.value.split(":")[1],
-    use: convertTelecomUse(value._attributes.use)
-  }))
+export function convertTelecom(telecoms: Array<hl7V3.Telecom> | hl7V3.Telecom): Array<fhir.ContactPoint> {
+  const telecomArray = toArray(telecoms)
+  return telecomArray.map(telecom => {
+    const convertedTelecom: fhir.ContactPoint = {
+      system: "phone"
+    }
+    if (telecom._attributes?.use) {
+      convertedTelecom.use = convertTelecomUse(telecom._attributes.use)
+    }
+    if (telecom._attributes?.value) {
+      const prefixedValue = telecom._attributes.value
+      const colonIndex = prefixedValue.indexOf(":")
+      convertedTelecom.value = prefixedValue.substring(colonIndex + 1)
+    }
+    return convertedTelecom
+  })
 }
 
 function convertTelecomUse(telecomUse: string): string {
@@ -104,10 +126,10 @@ function convertTelecomUse(telecomUse: string): string {
     case hl7V3.TelecomUse.MOBILE:
     case hl7V3.TelecomUse.PAGER:
       return "mobile"
-      //TODO these are possible values, but we don'e know what to map them to
-      // case core.TelecomUse.ANSWERING_MACHINE:
-      // case core.TelecomUse.EMERGENCY_CONTACT:
-      //   return "home+rank"
+    //TODO these are possible values, but we don'e know what to map them to
+    // case core.TelecomUse.ANSWERING_MACHINE:
+    // case core.TelecomUse.EMERGENCY_CONTACT:
+    //   return "home+rank"
     default:
       throw new errors.InvalidValueError(`Unhandled telecom use '${telecomUse}'.`)
   }
@@ -117,7 +139,7 @@ export function generateResourceId(): string {
   return uuid.v4()
 }
 
-export function getFullUrl(uuid: string):string {
+export function getFullUrl(uuid: string): string {
   return `urn:uuid:${uuid}`
 }
 
