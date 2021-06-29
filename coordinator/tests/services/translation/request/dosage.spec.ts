@@ -1,8 +1,229 @@
-import {stringifyDosage} from "../../../../src/services/translation/request/dosage"
+import {stringifyDosage, stringifyDosages} from "../../../../src/services/translation/request/dosage"
 import {LosslessNumber} from "lossless-json"
 import {fhir} from "@models"
 
-describe("overall", () => {
+describe("multiple instructions", () => {
+  test("empty list is handled", () => {
+    const result = stringifyDosages([])
+    expect(result).toEqual("")
+  })
+
+  test("single instruction is handled", () => {
+    const result = stringifyDosages([{
+      doseAndRate: {
+        doseQuantity: {
+          value: new LosslessNumber(1),
+          unit: "tablet",
+          system: "http://snomed.info/sct",
+          code: "428673006"
+        }
+      },
+      timing: {
+        repeat: {
+          frequency: new LosslessNumber(4),
+          period: new LosslessNumber(1),
+          periodUnit: fhir.UnitOfTime.DAY,
+          boundsDuration: {
+            value: new LosslessNumber(2),
+            unit: "day"
+          }
+        }
+      }
+    }])
+    expect(result).toEqual("1 tablet - 4 times a day - for 2 days")
+  })
+
+  test("multiple concurrent instructions are handled", () => {
+    const result = stringifyDosages([
+      {
+        sequence: new LosslessNumber(1),
+        doseAndRate: {
+          doseQuantity: {
+            value: new LosslessNumber(2),
+            unit: "tablet",
+            system: "http://snomed.info/sct",
+            code: "428673006"
+          }
+        },
+        timing: {
+          repeat: {
+            period: new LosslessNumber(1),
+            periodUnit: fhir.UnitOfTime.DAY
+          }
+        }
+      },
+      {
+        sequence: new LosslessNumber(1),
+        doseAndRate: {
+          doseQuantity: {
+            value: new LosslessNumber(1),
+            unit: "tablet",
+            system: "http://snomed.info/sct",
+            code: "428673006"
+          }
+        },
+        asNeededBoolean: true
+      }
+    ])
+    expect(result).toEqual("2 tablet - daily, and 1 tablet - as required")
+  })
+
+  test("multiple sequential instructions are handled", () => {
+    const result = stringifyDosages([
+      {
+        sequence: new LosslessNumber(2),
+        doseAndRate: {
+          doseQuantity: {
+            value: new LosslessNumber(1),
+            unit: "tablet",
+            system: "http://snomed.info/sct",
+            code: "428673006"
+          }
+        },
+        timing: {
+          repeat: {
+            period: new LosslessNumber(1),
+            periodUnit: fhir.UnitOfTime.DAY,
+            boundsDuration: {
+              value: new LosslessNumber(1),
+              unit: "week"
+            }
+          }
+        }
+      },
+      {
+        sequence: new LosslessNumber(1),
+        doseAndRate: {
+          doseQuantity: {
+            value: new LosslessNumber(2),
+            unit: "tablet",
+            system: "http://snomed.info/sct",
+            code: "428673006"
+          }
+        },
+        timing: {
+          repeat: {
+            period: new LosslessNumber(1),
+            periodUnit: fhir.UnitOfTime.DAY,
+            boundsDuration: {
+              value: new LosslessNumber(1),
+              unit: "week"
+            }
+          }
+        }
+      }
+    ])
+    expect(result).toEqual("2 tablet - daily - for 1 week, then 1 tablet - daily - for 1 week")
+  })
+
+  test("multiple sequential and concurrent instructions are handled", () => {
+    const result = stringifyDosages([
+      {
+        sequence: new LosslessNumber(2),
+        doseAndRate: {
+          doseQuantity: {
+            value: new LosslessNumber(1),
+            unit: "tablet",
+            system: "http://snomed.info/sct",
+            code: "428673006"
+          }
+        },
+        timing: {
+          repeat: {
+            period: new LosslessNumber(1),
+            periodUnit: fhir.UnitOfTime.DAY,
+            boundsDuration: {
+              value: new LosslessNumber(1),
+              unit: "week"
+            }
+          }
+        }
+      },
+      {
+        sequence: new LosslessNumber(1),
+        doseAndRate: {
+          doseQuantity: {
+            value: new LosslessNumber(2),
+            unit: "tablet",
+            system: "http://snomed.info/sct",
+            code: "428673006"
+          }
+        },
+        timing: {
+          repeat: {
+            period: new LosslessNumber(1),
+            periodUnit: fhir.UnitOfTime.DAY,
+            boundsDuration: {
+              value: new LosslessNumber(1),
+              unit: "week"
+            }
+          }
+        }
+      },
+      {
+        sequence: new LosslessNumber(1),
+        doseAndRate: {
+          doseQuantity: {
+            value: new LosslessNumber(1),
+            unit: "tablet",
+            system: "http://snomed.info/sct",
+            code: "428673006"
+          }
+        },
+        asNeededBoolean: true
+      },
+      {
+        sequence: new LosslessNumber(2),
+        doseAndRate: {
+          doseQuantity: {
+            value: new LosslessNumber(0.5),
+            unit: "tablet",
+            system: "http://snomed.info/sct",
+            code: "428673006"
+          }
+        },
+        asNeededBoolean: true
+      }
+    ])
+    // eslint-disable-next-line max-len
+    expect(result).toEqual("2 tablet - daily - for 1 week, and 1 tablet - as required, then 1 tablet - daily - for 1 week, and 0.5 tablet - as required")
+  })
+
+  test("missing sequence results in an error", () => {
+    expect(() => stringifyDosages([
+      {
+        sequence: new LosslessNumber(1),
+        doseAndRate: {
+          doseQuantity: {
+            value: new LosslessNumber(2),
+            unit: "tablet",
+            system: "http://snomed.info/sct",
+            code: "428673006"
+          }
+        },
+        timing: {
+          repeat: {
+            period: new LosslessNumber(1),
+            periodUnit: fhir.UnitOfTime.DAY
+          }
+        }
+      },
+      {
+        doseAndRate: {
+          doseQuantity: {
+            value: new LosslessNumber(1),
+            unit: "tablet",
+            system: "http://snomed.info/sct",
+            code: "428673006"
+          }
+        },
+        asNeededBoolean: true
+      }
+    ])).toThrow(Error)
+  })
+})
+
+describe("overall dosage conversion", () => {
   test("all fields are optional", () => {
     const result = stringifyDosage({})
     expect(result).toEqual("")
