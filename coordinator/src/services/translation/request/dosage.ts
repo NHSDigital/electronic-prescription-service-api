@@ -2,29 +2,60 @@ import {fhir} from "@models"
 import {getNumericValueAsString, isTruthy} from "../common"
 import {LosslessNumber} from "lossless-json"
 import moment from "moment"
+import {toMap} from "../../validation/util"
 
 const SINGULAR_TIME_UNITS: Set<string> = new Set(Object.values(fhir.UnitOfTime).map(getUnitOfTimeDisplay))
 
-export function stringifyDosage(dosageInstruction: fhir.Dosage): string {
+export function stringifyDosages(dosages: Array<fhir.Dosage>): string {
+  if (!dosages?.length) {
+    return ""
+  }
+
+  if (dosages.length === 1) {
+    return stringifyDosage(dosages[0])
+  }
+
+  const sequences = dosages.map(dosage => dosage.sequence)
+  if (!sequences.every(isTruthy)) {
+    throw new Error("Multiple dosage instructions but sequence not specified")
+  }
+
+  const sequenceToDosageStrings = toMap(dosages, getSequenceNumber, stringifyDosage)
+  const sortedSequences = Array.from(sequenceToDosageStrings.keys()).sort(compareNumbers)
+  const sequentialConcurrentInstructions = sortedSequences.map(sequence => sequenceToDosageStrings.get(sequence))
+  const sequentialInstructions = sequentialConcurrentInstructions.map(instructions => instructions.join(", and "))
+  return sequentialInstructions.join(", then ")
+}
+
+function getSequenceNumber(dosage: fhir.Dosage) {
+  const sequenceStr = getNumericValueAsString(dosage.sequence)
+  return parseInt(sequenceStr)
+}
+
+function compareNumbers(a: number, b: number) {
+  return Math.sign(a - b)
+}
+
+export function stringifyDosage(dosage: fhir.Dosage): string {
   const dosageParts = [
-    stringifyMethod(dosageInstruction),
-    stringifyDose(dosageInstruction),
-    stringifyRate(dosageInstruction),
-    stringifyDuration(dosageInstruction),
-    stringifyFrequencyAndPeriod(dosageInstruction),
-    stringifyOffsetAndWhen(dosageInstruction),
-    stringifyDayOfWeekAndTimeOfDay(dosageInstruction),
-    stringifyRoute(dosageInstruction),
-    stringifySite(dosageInstruction),
-    stringifyAsNeeded(dosageInstruction),
-    stringifyBounds(dosageInstruction),
-    stringifyCount(dosageInstruction),
-    stringifyEvent(dosageInstruction),
-    stringifyMaxDosePerPeriod(dosageInstruction),
-    stringifyMaxDosePerAdministration(dosageInstruction),
-    stringifyMaxDosePerLifetime(dosageInstruction),
-    stringifyAdditionalInstruction(dosageInstruction),
-    stringifyPatientInstruction(dosageInstruction)
+    stringifyMethod(dosage),
+    stringifyDose(dosage),
+    stringifyRate(dosage),
+    stringifyDuration(dosage),
+    stringifyFrequencyAndPeriod(dosage),
+    stringifyOffsetAndWhen(dosage),
+    stringifyDayOfWeekAndTimeOfDay(dosage),
+    stringifyRoute(dosage),
+    stringifySite(dosage),
+    stringifyAsNeeded(dosage),
+    stringifyBounds(dosage),
+    stringifyCount(dosage),
+    stringifyEvent(dosage),
+    stringifyMaxDosePerPeriod(dosage),
+    stringifyMaxDosePerAdministration(dosage),
+    stringifyMaxDosePerLifetime(dosage),
+    stringifyAdditionalInstruction(dosage),
+    stringifyPatientInstruction(dosage)
   ]
   if (dosageParts.some(part => part?.some(element => !element))) {
     console.error(dosageParts)
@@ -41,8 +72,8 @@ function getHeadAndTail<T>(array: Array<T>): [T, Array<T>] {
   return [arrayShallowCopy.shift(), arrayShallowCopy]
 }
 
-function stringifyMethod(dosageInstruction: fhir.Dosage) {
-  const method = dosageInstruction.method
+function stringifyMethod(dosage: fhir.Dosage) {
+  const method = dosage.method
   if (!method) {
     return []
   }
@@ -52,8 +83,8 @@ function stringifyMethod(dosageInstruction: fhir.Dosage) {
   return method.coding?.map(coding => coding?.display)
 }
 
-function stringifyDose(dosageInstruction: fhir.Dosage) {
-  const doseAndRate = dosageInstruction.doseAndRate
+function stringifyDose(dosage: fhir.Dosage) {
+  const doseAndRate = dosage.doseAndRate
   const doseQuantity = doseAndRate?.doseQuantity
   const doseRange = doseAndRate?.doseRange
   if (doseQuantity) {
@@ -65,8 +96,8 @@ function stringifyDose(dosageInstruction: fhir.Dosage) {
   }
 }
 
-function stringifyRate(dosageInstruction: fhir.Dosage) {
-  const doseAndRate = dosageInstruction.doseAndRate
+function stringifyRate(dosage: fhir.Dosage) {
+  const doseAndRate = dosage.doseAndRate
   const rateRatio = doseAndRate?.rateRatio
   const rateRange = doseAndRate?.rateRange
   const rateQuantity = doseAndRate?.rateQuantity
