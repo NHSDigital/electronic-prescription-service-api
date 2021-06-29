@@ -9,7 +9,7 @@ import {DoseToTextMode, getDoseToTextMode} from "../../validation/feature-flags"
 const SINGULAR_TIME_UNITS: Set<string> = new Set(Object.values(fhir.UnitOfTime).map(getUnitOfTimeDisplay))
 
 export function auditDoseToTextIfEnabled(dosages: Array<fhir.Dosage>, logger: pino.Logger): void {
-  if (getDoseToTextMode() === DoseToTextMode.AUDIT) {
+  if (getDoseToTextMode(logger) === DoseToTextMode.AUDIT) {
     try {
       logger.info(
         {

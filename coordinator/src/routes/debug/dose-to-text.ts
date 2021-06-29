@@ -46,6 +46,8 @@ function getResourcesWithDosageInstructions(payload: fhir.Resource) {
     return [
       payload
     ]
+  } else {
+    return null
   }
 }
 

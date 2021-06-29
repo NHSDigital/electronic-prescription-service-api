@@ -1,4 +1,5 @@
 import {fhir} from "@models"
+import pino from "pino"
 
 const prescriptionMessageTypes: Array<fhir.EventCodingCode> = [
   fhir.EventCodingCode.PRESCRIPTION, fhir.EventCodingCode.CANCELLATION
@@ -15,10 +16,13 @@ export function featureBlockedMessage(messageType: fhir.EventCodingCode): boolea
   return process.env.DISPENSE_ENABLED !== "true"
 }
 
-export function getDoseToTextMode(): DoseToTextMode {
+export function getDoseToTextMode(logger: pino.Logger): DoseToTextMode {
   const mode = process.env.DOSE_TO_TEXT_MODE
   if (mode in DoseToTextMode) {
     return mode as DoseToTextMode
+  }
+  if (mode) {
+    logger.warn(`Invalid dose to text mode "${mode}". Using "DISABLED".`)
   }
   return DoseToTextMode.DISABLED
 }
