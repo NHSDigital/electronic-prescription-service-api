@@ -45,7 +45,7 @@ async function createPayloadFromBundle(
 ): Promise<hl7V3.SendMessagePayload<BundleTranslationResult>> {
   switch (messageType) {
     case fhir.EventCodingCode.PRESCRIPTION:
-      return createParentPrescriptionSendMessagePayload(bundle, fromAsid)
+      return createParentPrescriptionSendMessagePayload(bundle, fromAsid, logger)
     case fhir.EventCodingCode.CANCELLATION:
       return createCancellationSendMessagePayload(bundle, fromAsid)
     case fhir.EventCodingCode.DISPENSE:
@@ -57,9 +57,10 @@ async function createPayloadFromBundle(
 
 export function createParentPrescriptionSendMessagePayload(
   bundle: fhir.Bundle,
-  fromAsid: string
+  fromAsid: string,
+  logger: pino.Logger
 ): hl7V3.SendMessagePayload<hl7V3.ParentPrescriptionRoot> {
-  const parentPrescription = convertParentPrescription(bundle)
+  const parentPrescription = convertParentPrescription(bundle, logger)
   const parentPrescriptionRoot = new hl7V3.ParentPrescriptionRoot(parentPrescription)
   const interactionId = hl7V3.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT
   return createSendMessagePayload(
@@ -117,7 +118,7 @@ export function createCancellationSendMessagePayload(
   )
 }
 
-export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle): fhir.Parameters {
+export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle, logger: pino.Logger): fhir.Parameters {
   const messageType = identifyMessageType(bundle)
   if (messageType !== fhir.EventCodingCode.PRESCRIPTION) {
     throw new errors.InvalidValueError(
@@ -126,7 +127,7 @@ export function convertFhirMessageToSignedInfoMessage(bundle: fhir.Bundle): fhir
     )
   }
 
-  const parentPrescription = convertParentPrescription(bundle)
+  const parentPrescription = convertParentPrescription(bundle, logger)
   const fragments = extractFragments(parentPrescription)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
   const base64Digest = createParametersDigest(fragmentsToBeHashed)

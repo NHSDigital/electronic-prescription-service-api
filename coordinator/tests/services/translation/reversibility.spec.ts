@@ -5,10 +5,13 @@ import {getResourcesOfType} from "../../../src/services/translation/common/getRe
 import {hl7V3, fhir} from "@models"
 import * as uuid from "uuid"
 import {toArray} from "../../../src/services/translation/common"
+import pino from "pino"
+
+const logger = pino()
 
 describe("translations are reversible", () => {
   const originalBundle = TestResources.specification[0].fhirMessageSigned
-  const parentPrescription = convertParentPrescription(originalBundle)
+  const parentPrescription = convertParentPrescription(originalBundle, logger)
   ensureLineItemStatus(parentPrescription)
   const translatedBundle = createInnerBundle(parentPrescription, uuid.v4())
 

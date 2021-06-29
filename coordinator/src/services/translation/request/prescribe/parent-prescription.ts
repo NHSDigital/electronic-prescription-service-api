@@ -4,12 +4,11 @@ import {getMessageId, toArray} from "../../common"
 import {getMedicationRequests, getPatient} from "../../common/getResourcesOfType"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import {fhir, hl7V3} from "@models"
+import pino from "pino"
 
 export function convertParentPrescription(
   bundle: fhir.Bundle,
-  convertPatientFn = convertPatient,
-  convertBundleToPrescriptionFn = convertBundleToPrescription,
-  convertCareRecordElementCategoriesFn = convertCareRecordElementCategories
+  logger: pino.Logger
 ): hl7V3.ParentPrescription {
   const messageId = getMessageId([bundle.identifier], "Bundle.identifier")
 
@@ -18,10 +17,10 @@ export function convertParentPrescription(
   )
 
   const fhirPatient = getPatient(bundle)
-  const hl7V3Patient = convertPatientFn(bundle, fhirPatient)
+  const hl7V3Patient = convertPatient(bundle, fhirPatient)
   parentPrescription.recordTarget = new hl7V3.RecordTarget(hl7V3Patient)
 
-  const prescription = convertBundleToPrescriptionFn(bundle)
+  const prescription = convertBundleToPrescription(bundle, logger)
   parentPrescription.pertinentInformation1 = new hl7V3.ParentPrescriptionPertinentInformation1(prescription)
 
   const medicationRequests = getMedicationRequests(bundle)
@@ -37,7 +36,7 @@ export function convertParentPrescription(
 
   const lineItems = toArray(parentPrescription.pertinentInformation1.pertinentPrescription.pertinentInformation2)
     .map(pertinentInformation2 => pertinentInformation2.pertinentLineItem)
-  const careRecordElementCategory = convertCareRecordElementCategoriesFn(lineItems)
+  const careRecordElementCategory = convertCareRecordElementCategories(lineItems)
   parentPrescription.pertinentInformation2 = new hl7V3.ParentPrescriptionPertinentInformation2(
     careRecordElementCategory
   )

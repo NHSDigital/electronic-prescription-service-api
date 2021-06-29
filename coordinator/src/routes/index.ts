@@ -1,5 +1,6 @@
 import convertPrescriptionRoutes from "./debug/convert"
 import validatorRoutes from "./debug/validate"
+import doseToTextRoutes from "./debug/dose-to-text"
 import preparePrescriptionRoutes from "./prescribe/prepare"
 import processPrescriptionRoutes from "./process"
 import statusRoutes from "./health/get-status"
@@ -10,7 +11,8 @@ import {isProd} from "../services/environment"
 
 const debugRoutes = [
   ...convertPrescriptionRoutes,
-  ...validatorRoutes
+  ...validatorRoutes,
+  ...doseToTextRoutes
 ]
 
 const mainRoutes = [

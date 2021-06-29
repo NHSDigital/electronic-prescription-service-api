@@ -13,6 +13,7 @@ import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} f
 import pino from "pino"
 import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
 import moment from "moment"
+import {auditDoseToTextIfEnabled} from "../dosage"
 
 export async function convertDispenseNotification(
   bundle: fhir.Bundle,
@@ -76,7 +77,8 @@ async function createPertinentInformation1(
     medicationDispense => {
       return createPertinentInformation1LineItem(
         medicationDispense,
-        getMedicationCoding(bundle, medicationDispense)
+        getMedicationCoding(bundle, medicationDispense),
+        logger
       )
     }
   )
@@ -93,11 +95,12 @@ async function createPertinentInformation1(
 
 function createPertinentInformation1LineItem(
   fhirMedicationDispense: fhir.MedicationDispense,
-  medicationCoding: fhir.Coding
+  medicationCoding: fhir.Coding,
+  logger: pino.Logger
 ) {
   const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
   const fhirPrescriptionLineItemStatus = getPrescriptionLineItemStatus(fhirMedicationDispense)
-  const fhirDosageInstruction = getDosageInstruction(fhirMedicationDispense)
+  const fhirDosageInstruction = getDosageInstruction(fhirMedicationDispense, logger)
 
   const hl7SuppliedLineItemQuantitySnomedCode = new hl7V3.SnomedCode(
     fhirMedicationDispense.quantity.code,
@@ -220,7 +223,8 @@ function getPrescriptionItemId(fhirMedicationDispense: fhir.MedicationDispense) 
   )
 }
 
-function getDosageInstruction(fhirMedicationDispense: fhir.MedicationDispense) {
+function getDosageInstruction(fhirMedicationDispense: fhir.MedicationDispense, logger: pino.Logger) {
+  auditDoseToTextIfEnabled(fhirMedicationDispense.dosageInstruction, logger)
   return onlyElement(
     fhirMedicationDispense.dosageInstruction,
     "MedicationDispense.dosageInstruction"

@@ -8,6 +8,8 @@ import {
 } from "../common"
 import {ElementCompact, js2xml} from "xml-js"
 import {fhir, hl7V3} from "@models"
+import {auditDoseToTextIfEnabled} from "./dosage"
+import pino from "pino"
 
 function convertProduct(fhirMedicationCode: fhir.Coding) {
   const hl7V3MedicationCode = new hl7V3.SnomedCode(fhirMedicationCode.code, fhirMedicationCode.display)
@@ -24,7 +26,8 @@ function convertLineItemComponent(simpleQuantity: fhir.SimpleQuantity) {
   return new hl7V3.LineItemComponent(lineItemQuantity)
 }
 
-function convertDosageInstructions(dosages: Array<fhir.Dosage>) {
+function convertDosageInstructions(dosages: Array<fhir.Dosage>, logger: pino.Logger) {
+  auditDoseToTextIfEnabled(dosages, logger)
   const dosage = onlyElement(
     dosages,
     "MedicationRequest.dosageInstruction"
@@ -100,7 +103,8 @@ export function convertMedicationRequestToLineItem(
   repeatNumber: hl7V3.Interval<hl7V3.Timestamp>,
   medicationListText: Array<hl7V3.Text>,
   patientInfoText: Array<hl7V3.Text>,
-  medicationCoding: fhir.Coding
+  medicationCoding: fhir.Coding,
+  logger: pino.Logger
 ): hl7V3.LineItem {
   const lineItemId = getIdentifierValueForSystem(
     medicationRequest.identifier,
@@ -128,7 +132,7 @@ export function convertMedicationRequestToLineItem(
     lineItem.pertinentInformation1 = pertinentInformation1
   }
 
-  lineItem.pertinentInformation2 = convertDosageInstructions(medicationRequest.dosageInstruction)
+  lineItem.pertinentInformation2 = convertDosageInstructions(medicationRequest.dosageInstruction, logger)
 
   return lineItem
 }
