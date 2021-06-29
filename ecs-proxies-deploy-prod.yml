@@ -30,6 +30,8 @@ docker_service:
           value: "false"
         - name: PRESCRIBE_ENABLED
           value: "true"
+        - name: DOSE_TO_TEXT_MODE
+          value: "DISABLED"
     secrets:
         - name: SPINE_URL
           valueFrom: '/{{ account }}/platform-common/egress/hosts/spine-prescriptions-prod'

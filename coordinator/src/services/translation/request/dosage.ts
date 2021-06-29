@@ -3,8 +3,26 @@ import {getNumericValueAsString, isTruthy} from "../common"
 import {LosslessNumber} from "lossless-json"
 import moment from "moment"
 import {toMap} from "../../validation/util"
+import pino from "pino"
+import {DoseToTextMode, getDoseToTextMode} from "../../validation/feature-flags"
 
 const SINGULAR_TIME_UNITS: Set<string> = new Set(Object.values(fhir.UnitOfTime).map(getUnitOfTimeDisplay))
+
+export function auditDoseToTextIfEnabled(dosages: Array<fhir.Dosage>, logger: pino.Logger): void {
+  if (getDoseToTextMode(logger) === DoseToTextMode.AUDIT) {
+    try {
+      logger.info(
+        {
+          dosageInstructionText: stringifyDosages(dosages),
+          dosageInstruction: dosages
+        },
+        "Auditing dose to text conversion"
+      )
+    } catch (e) {
+      logger.error(e, "Dose to text conversion failed")
+    }
+  }
+}
 
 export function stringifyDosages(dosages: Array<fhir.Dosage>): string {
   if (!dosages?.length) {

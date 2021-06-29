@@ -15,19 +15,21 @@ import * as crypto from "crypto"
 import fs from "fs"
 import moment from "moment"
 import {ElementCompact} from "xml-js"
+import pino from "pino"
 
 const privateKeyPath = process.env.SIGNING_PRIVATE_KEY_PATH
 const x509CertificatePath = process.env.SIGNING_CERT_PATH
 
 const isProd = process.env.APIGEE_ENVIRONMENT === "prod"
 
-export async function updatePrescriptions(orderCases: Array<ProcessCase>, orderUpdateCases: Array<ProcessCase>): Promise<void> {
+export async function updatePrescriptions(
+  orderCases: Array<ProcessCase>,
+  orderUpdateCases: Array<ProcessCase>,
+  logger: pino.Logger
+): Promise<void> {
   const replacements = new Map<string, string>()
 
-  let signPrescriptionFn = (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    processCase: ProcessCase, prepareRequest: fhir.Bundle, processRequest: fhir.Bundle, originalShortFormId: string
-  ): void => {
+  let signPrescriptionFn: typeof signPrescription = () => {
     return
   }
 
@@ -74,7 +76,7 @@ export async function updatePrescriptions(orderCases: Array<ProcessCase>, orderU
       setValidityPeriod(medicationRequests)
     }
 
-    signPrescriptionFn(processCase, prepareBundle, processBundle, originalShortFormId)
+    signPrescriptionFn(processCase, prepareBundle, processBundle, originalShortFormId, logger)
   })
 
   orderUpdateCases.forEach(processCase => {
@@ -180,7 +182,8 @@ function signPrescription(
   processCase: ProcessCase,
   prepareRequest: fhir.Bundle,
   processRequest: fhir.Bundle,
-  originalShortFormId: string
+  originalShortFormId: string,
+  logger: pino.Logger
 ) {
   if (!processCase.isSuccess) {
     return
@@ -191,7 +194,7 @@ function signPrescription(
   if (provenancesCheck.length > 0) {
     throw new Error("Could not remove provenance, this must be removed to get a fresh timestamp")
   }
-  const prepareResponse = convertFhirMessageToSignedInfoMessage(prepareRequest)
+  const prepareResponse = convertFhirMessageToSignedInfoMessage(prepareRequest, logger)
   const digestParameter = prepareResponse.parameter.find(p => p.name === "digest") as fhir.StringParameter
   const timestampParameter = prepareResponse.parameter.find(p => p.name === "timestamp") as fhir.StringParameter
   const digest = Buffer.from(digestParameter.valueString, "base64").toString("utf-8")
@@ -228,7 +231,7 @@ function signPrescription(
     throw new Error("Signature failed verification")
   }
 
-  checkDigestMatchesPrescription(processRequest, originalShortFormId)
+  checkDigestMatchesPrescription(processRequest, originalShortFormId, logger)
 }
 
 function getLongFormIdExtension(extensions: Array<fhir.Extension>): fhir.IdentifierExtension {
@@ -243,8 +246,8 @@ function getNhsNumberIdentifier(fhirPatient: fhir.Patient) {
     .filter(identifier => identifier.system === "https://fhir.nhs.uk/Id/nhs-number")[0]
 }
 
-function checkDigestMatchesPrescription(processBundle: fhir.Bundle, originalShortFormId: string) {
-  const prescriptionRoot = convertParentPrescription(processBundle)
+function checkDigestMatchesPrescription(processBundle: fhir.Bundle, originalShortFormId: string, logger: pino.Logger) {
+  const prescriptionRoot = convertParentPrescription(processBundle, logger)
   const signatureRoot = extractSignatureRootFromPrescriptionRoot(prescriptionRoot)
   const digestFromSignature = extractDigestFromSignatureRoot(signatureRoot)
   const digestFromPrescription = calculateDigestFromPrescriptionRoot(prescriptionRoot)

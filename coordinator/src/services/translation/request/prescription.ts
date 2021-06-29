@@ -12,8 +12,9 @@ import {getCommunicationRequests, getMedicationRequests} from "../common/getReso
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {convertIsoDateStringToHl7V3Date, convertIsoDateTimeStringToHl7V3Date} from "../common/dateTime"
+import pino from "pino"
 
-export function convertBundleToPrescription(bundle: fhir.Bundle): hl7V3.Prescription {
+export function convertBundleToPrescription(bundle: fhir.Bundle, logger: pino.Logger): hl7V3.Prescription {
   const medicationRequests = getMedicationRequests(bundle)
   const firstMedicationRequest = medicationRequests[0]
 
@@ -54,7 +55,8 @@ export function convertBundleToPrescription(bundle: fhir.Bundle): hl7V3.Prescrip
     bundle,
     communicationRequests,
     medicationRequests,
-    repeatNumber
+    repeatNumber,
+    logger
   )
   prescription.pertinentInformation8 = convertPrescriptionPertinentInformation8()
   prescription.pertinentInformation4 = convertPrescriptionPertinentInformation4(firstMedicationRequest)
@@ -185,7 +187,8 @@ function convertPrescriptionPertinentInformation2(
   bundle: fhir.Bundle,
   communicationRequests: Array<fhir.CommunicationRequest>,
   medicationRequests: Array<fhir.MedicationRequest>,
-  repeatNumber: hl7V3.Interval<hl7V3.Timestamp>
+  repeatNumber: hl7V3.Interval<hl7V3.Timestamp>,
+  logger: pino.Logger
 ) {
   const lineItems = []
 
@@ -194,7 +197,8 @@ function convertPrescriptionPertinentInformation2(
     repeatNumber,
     extractMedicationListText(bundle, communicationRequests),
     extractPatientInfoText(communicationRequests),
-    getMedicationCoding(bundle, medicationRequests[0])
+    getMedicationCoding(bundle, medicationRequests[0]),
+    logger
   ))
 
   for (let i = 1; i < medicationRequests.length; i++) {
@@ -203,7 +207,8 @@ function convertPrescriptionPertinentInformation2(
       repeatNumber,
       [],
       [],
-      getMedicationCoding(bundle, medicationRequests[i])
+      getMedicationCoding(bundle, medicationRequests[i]),
+      logger
     ))
   }
 

@@ -28,7 +28,7 @@ describe("convertMedicationRequestToLineItem", () => {
     firstFhirMedicationRequest.identifier.push(firstFhirMedicationRequest.identifier[0])
     expect(() =>
       convertMedicationRequestToLineItem(
-        firstFhirMedicationRequest, null, [], [], coding
+        firstFhirMedicationRequest, null, [], [], coding, logger
       )
     ).toThrow(errors.TooManyValuesError)
   })
@@ -36,14 +36,14 @@ describe("convertMedicationRequestToLineItem", () => {
   test("Throws TooFewValuesError when passed no dispenseRequest performer-site-type extension", () => {
     firstFhirMedicationRequest.dispenseRequest.extension = []
     expect(() =>
-      convertBundleToPrescription(bundle)
+      convertBundleToPrescription(bundle, logger)
     ).toThrow(errors.TooFewValuesError)
   })
 
   test("Throws InvalidValueError when passed no dispenseRequest extensions", () => {
     firstFhirMedicationRequest.dispenseRequest.extension = undefined
     expect(() =>
-      convertBundleToPrescription(bundle)
+      convertBundleToPrescription(bundle, logger)
     ).toThrow(errors.InvalidValueError)
   })
 
@@ -52,7 +52,7 @@ describe("convertMedicationRequestToLineItem", () => {
     firstFhirMedicationRequest.identifier[0].value = idValue
 
     const result = convertMedicationRequestToLineItem(
-      firstFhirMedicationRequest, null, [], [], coding
+      firstFhirMedicationRequest, null, [], [], coding, logger
     )
     const resultIdValue = result.id._attributes.root
 
@@ -62,7 +62,7 @@ describe("convertMedicationRequestToLineItem", () => {
   test("repeat number added to correct section of hl7 message", () => {
     const repeatNumber = new hl7V3.Interval(new hl7V3.NumericValue("1"), new hl7V3.NumericValue("6"))
     const result = convertMedicationRequestToLineItem(
-      firstFhirMedicationRequest, repeatNumber, [], [], coding
+      firstFhirMedicationRequest, repeatNumber, [], [], coding, logger
     )
     const resultIdValue = result.repeatNumber
     expect(resultIdValue).toBe(repeatNumber)
@@ -75,7 +75,7 @@ describe("convertMedicationRequestToLineItem", () => {
     firstFhirMedicationRequest.medicationCodeableConcept.coding[0].display = displayValue
 
     const result = convertMedicationRequestToLineItem(
-      firstFhirMedicationRequest, null, [], [], coding
+      firstFhirMedicationRequest, null, [], [], coding, logger
     )
     const resultCodeAttributes = result.product.manufacturedProduct.manufacturedRequestedMaterial.code._attributes
 
@@ -88,7 +88,7 @@ describe("convertMedicationRequestToLineItem", () => {
     firstFhirMedicationRequest.dispenseRequest.quantity.code = codeValue
 
     const result = convertMedicationRequestToLineItem(
-      firstFhirMedicationRequest, null, [], [], coding
+      firstFhirMedicationRequest, null, [], [], coding, logger
     )
     const resultTranslationCode = result.component.lineItemQuantity.quantity.translation._attributes.code
 
@@ -100,7 +100,7 @@ describe("convertMedicationRequestToLineItem", () => {
     firstFhirMedicationRequest.dispenseRequest.quantity.unit = unitValue
 
     const result = convertMedicationRequestToLineItem(
-      firstFhirMedicationRequest, null, [], [], coding
+      firstFhirMedicationRequest, null, [], [], coding, logger
     )
     const resultLineItemQuantity = result.component.lineItemQuantity.quantity
 
@@ -112,7 +112,7 @@ describe("convertMedicationRequestToLineItem", () => {
     firstFhirMedicationRequest.dispenseRequest.quantity.value = testValue
 
     const result = convertMedicationRequestToLineItem(
-      firstFhirMedicationRequest, null, [], [], coding
+      firstFhirMedicationRequest, null, [], [], coding, logger
     )
     const resultLineItemQuantity = result.component.lineItemQuantity.quantity
 
@@ -125,7 +125,7 @@ describe("convertMedicationRequestToLineItem", () => {
     firstFhirMedicationRequest.dosageInstruction[0].text = dosageInstructionValue
 
     const result = convertMedicationRequestToLineItem(
-      firstFhirMedicationRequest, null, [], [], coding
+      firstFhirMedicationRequest, null, [], [], coding, logger
     )
     const resultDosageinstructionValue = result.pertinentInformation2.pertinentDosageInstructions.value._text
 
@@ -146,7 +146,7 @@ describe("additionalInstructions", () => {
 
   test("no controlledDrugWords, patientInstruction, or patientInfo doesn't create a pertinentInformation1", () => {
     const result = convertMedicationRequestToLineItem(
-      firstFhirMedicationRequest, null, [], [], coding
+      firstFhirMedicationRequest, null, [], [], coding, logger
     )
     expect(result.pertinentInformation1).toBe(undefined)
   })
@@ -162,7 +162,7 @@ describe("additionalInstructions", () => {
     }
     firstFhirMedicationRequest.extension.push(controlledDrugExtension)
     const result = convertMedicationRequestToLineItem(
-      firstFhirMedicationRequest, null, [], [], coding
+      firstFhirMedicationRequest, null, [], [], coding, logger
     )
     expect(
       result.pertinentInformation1.pertinentAdditionalInstructions.value._text
@@ -174,7 +174,7 @@ describe("additionalInstructions", () => {
   test("patientInstruction show up correctly", () => {
     firstFhirMedicationRequest.dosageInstruction[0].patientInstruction = "test1"
     const result = convertMedicationRequestToLineItem(
-      firstFhirMedicationRequest, null, [], [], coding
+      firstFhirMedicationRequest, null, [], [], coding, logger
     )
     expect(
       result.pertinentInformation1.pertinentAdditionalInstructions.value._text
@@ -186,7 +186,7 @@ describe("additionalInstructions", () => {
   test("single medication shows up correctly", () => {
     const medication = [new hl7V3.Text("test1")]
     const result = convertMedicationRequestToLineItem(
-      firstFhirMedicationRequest, null, medication, [], coding
+      firstFhirMedicationRequest, null, medication, [], coding, logger
     )
     expect(
       result.pertinentInformation1.pertinentAdditionalInstructions.value._text
@@ -198,7 +198,7 @@ describe("additionalInstructions", () => {
   test("multiple medication show up correctly", () => {
     const medication = [new hl7V3.Text("test1"), new hl7V3.Text("test2")]
     const result = convertMedicationRequestToLineItem(
-      firstFhirMedicationRequest, null, medication, [], coding
+      firstFhirMedicationRequest, null, medication, [], coding, logger
     )
     expect(
       result.pertinentInformation1.pertinentAdditionalInstructions.value._text
@@ -210,7 +210,7 @@ describe("additionalInstructions", () => {
   test("single patientInfo shows up correctly", () => {
     const patientInfo = [new hl7V3.Text("test1")]
     const result = convertMedicationRequestToLineItem(
-      firstFhirMedicationRequest, null, [], patientInfo, coding
+      firstFhirMedicationRequest, null, [], patientInfo, coding, logger
     )
     expect(
       result.pertinentInformation1.pertinentAdditionalInstructions.value._text
@@ -222,7 +222,7 @@ describe("additionalInstructions", () => {
   test("multiple patientInfo show up correctly", () => {
     const patientInfo = [new hl7V3.Text("test1"), new hl7V3.Text("test2")]
     const result = convertMedicationRequestToLineItem(
-      firstFhirMedicationRequest, null, [], patientInfo, coding
+      firstFhirMedicationRequest, null, [], patientInfo, coding, logger
     )
     expect(
       result.pertinentInformation1.pertinentAdditionalInstructions.value._text
@@ -234,7 +234,7 @@ describe("additionalInstructions", () => {
   test("XML characters are escaped in patientInfo", () => {
     const patientInfo = [new hl7V3.Text("Phone practice if BP < 90/60 mmHg")]
     const result = convertMedicationRequestToLineItem(
-      firstFhirMedicationRequest, null, [], patientInfo, coding
+      firstFhirMedicationRequest, null, [], patientInfo, coding, logger
     )
     expect(
       result.pertinentInformation1.pertinentAdditionalInstructions.value._text
@@ -257,7 +257,7 @@ describe("additionalInstructions", () => {
     const medication = [new hl7V3.Text("testMedication")]
     const patientInfo = [new hl7V3.Text("testPatientInfo")]
     const result = convertMedicationRequestToLineItem(
-      firstFhirMedicationRequest, null, medication, patientInfo, coding
+      firstFhirMedicationRequest, null, medication, patientInfo, coding, logger
     )
     expect(
       result.pertinentInformation1.pertinentAdditionalInstructions.value._text
@@ -301,7 +301,7 @@ describe("prescriptionEndorsements", () => {
     )
 
     const hl7v3LineItem = convertMedicationRequestToLineItem(
-      firstFhirMedicationRequest, null, [], [], coding
+      firstFhirMedicationRequest, null, [], [], coding, logger
     )
     convertPrescriptionEndorsements(firstFhirMedicationRequest, hl7v3LineItem)
     const hl7v3PrescriptionEndorsements = hl7v3LineItem.pertinentInformation3
@@ -328,7 +328,7 @@ describe("prescriptionEndorsements", () => {
       expect(prescriptionEndorsementsFn(medicationRequest)).toEqual(undefined)
     })
 
-    const hl7v3Prescription = convertBundleToPrescription(bundle)
+    const hl7v3Prescription = convertBundleToPrescription(bundle, logger)
     const hl7v3PrescriptionEndorsements = toArray(hl7v3Prescription.pertinentInformation2)
       .flatMap(pi2 => pi2.pertinentLineItem.pertinentInformation3)
     expect(hl7v3PrescriptionEndorsements.length).toBeGreaterThan(0)
