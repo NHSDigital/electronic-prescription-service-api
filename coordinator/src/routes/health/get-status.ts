@@ -1,33 +1,61 @@
 import Hapi from "@hapi/hapi"
 import axios from "axios"
 import {VALIDATOR_HOST} from "../util"
+import {spineClient} from "../../services/communication/spine-client"
+
+export interface StatusCheckResponse {
+  status: "pass" | "warn" | "error"
+  timeout: "true" | "false"
+  responseCode: number
+  outcome?: string
+  links?: string
+}
+
+export async function serviceHealthCheck(url: string): Promise<StatusCheckResponse> {
+  return await axios
+    .get<string>(url, {timeout: 20000})
+    .then((response): StatusCheckResponse => ({
+      status: response.status === 200 ? "pass" : "error",
+      timeout: "false",
+      responseCode: response.status,
+      outcome: response.data,
+      links: url
+    }))
+    .catch(error => ({
+      status: "error",
+      timeout: error.code === "ECONNABORTED" ? "true" : "false",
+      responseCode: 500
+    }))
+}
 
 export default [
   {
     method: "GET",
     path: "/_status",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      let validator = false
+      const checks: { [name: string]: Array<StatusCheckResponse> } = {
+        "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`)],
+        "spine:status": [await spineClient.getStatus()]
+      }
 
-      try {
-        request.logger.info("Checking validator status")
-        const response = await axios.get<string>(`${VALIDATOR_HOST}/_status`, {timeout: 20000})
-        if (response.status === 200 && response.data === "Validator is alive") {
-          validator = true
-        } else {
-          const responseSummary = `Status: ${response.status}, data: ${response.data ?? "No Data"}`
-          const msg = `Did not get positive response from validator status check. ${responseSummary}`
-          request.logger.warn(msg)
-        }
-      } catch (err) {
-        request.logger.error(`Got error when making request for validator status: ${err}`)
+      let responseStatus = "pass"
+      let responseCode = 200
+      const warnFilter = Object.values(checks).flat().filter(response => response.status === "warn")
+      if (warnFilter.length > 0) {
+        responseStatus = "warn"
+        responseCode = 500
+      }
+      const errorFilter = Object.values(checks).flat().filter(response => response.status === "error")
+      if (errorFilter.length > 0) {
+        responseStatus = "error"
+        responseCode = 500
       }
 
       return h.response({
-        coordinator: true,
-        validator,
-        commitId: process.env.COMMIT_ID
-      }).code(validator ? 200 : 500)
+        status: responseStatus,
+        commitId: process.env.COMMIT_ID,
+        checks: checks
+      }).code(responseCode)
     }
   },
   {

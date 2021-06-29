@@ -24,8 +24,6 @@ docker_service:
           value: "{{ APIGEE_ENVIRONMENT }}"
         - name: TO_ASID
           value: 'TO_ASID_PLACEHOLDER'
-        - name: FROM_PARTY_KEY
-          value: 'FROM_PARTY_KEY_PLACEHOLDER'
         - name: TO_PARTY_KEY
           value: 'TO_PARTY_KEY_PLACEHOLDER'
         - name: DISPENSE_ENABLED
@@ -39,6 +37,10 @@ docker_service:
           valueFrom: '/{{ account }}/platform-common/egress/hosts/spine-prescriptions-prod'
         - name: ODS_URL
           valueFrom: '/{{ account }}/platform-common/egress/hosts/directory-spineservices'
+        - name: TO_ASID
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/spineservices.nhs.uk/to-asid'
+        - name: TO_PARTY_KEY
+          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/spineservices.nhs.uk/to-party-key'
     health_check:
         matcher: "200"
         path: "/_status"

@@ -35,8 +35,6 @@ docker_service:
           valueFrom: '/{{ account }}/platform-common/egress/hosts/directory-spineservices'
         - name: TO_ASID
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-asid'
-        - name: FROM_PARTY_KEY
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/from-party-key'
         - name: TO_PARTY_KEY
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-party-key'
     health_check:
