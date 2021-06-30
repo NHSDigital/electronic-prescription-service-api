@@ -26,6 +26,7 @@ jestpact.pactWith(
         await updatePrescriptions(
           fetcher.prescriptionOrderExamples.filter(e => e.isSuccess),
           fetcher.prescriptionOrderUpdateExamples.filter(e => e.isSuccess),
+          fetcher.prescriptionDispenseExamples.filter(e => e.isSuccess),
           logger
         )
       }
