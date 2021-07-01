@@ -28,6 +28,27 @@ export async function serviceHealthCheck(url: string): Promise<StatusCheckRespon
     }))
 }
 
+function createStatusResponse(checks: { [p: string]: Array<StatusCheckResponse> }, h: Hapi.ResponseToolkit) {
+  let responseStatus = "pass"
+  let responseCode = 200
+  const warnFilter = Object.values(checks).flat().filter(response => response.status === "warn")
+  if (warnFilter.length > 0) {
+    responseStatus = "warn"
+    responseCode = 500
+  }
+  const errorFilter = Object.values(checks).flat().filter(response => response.status === "error")
+  if (errorFilter.length > 0) {
+    responseStatus = "error"
+    responseCode = 500
+  }
+
+  return h.response({
+    status: responseStatus,
+    commitId: process.env.COMMIT_ID,
+    checks: checks
+  }).code(responseCode)
+}
+
 export default [
   {
     method: "GET",
@@ -38,24 +59,18 @@ export default [
         "spine:status": [await spineClient.getStatus()]
       }
 
-      let responseStatus = "pass"
-      let responseCode = 200
-      const warnFilter = Object.values(checks).flat().filter(response => response.status === "warn")
-      if (warnFilter.length > 0) {
-        responseStatus = "warn"
-        responseCode = 500
-      }
-      const errorFilter = Object.values(checks).flat().filter(response => response.status === "error")
-      if (errorFilter.length > 0) {
-        responseStatus = "error"
-        responseCode = 500
+      return createStatusResponse(checks, h)
+    }
+  },
+  {
+    method: "GET",
+    path: "/_healthcheck",
+    handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      const checks: { [name: string]: Array<StatusCheckResponse> } = {
+        "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`)]
       }
 
-      return h.response({
-        status: responseStatus,
-        commitId: process.env.COMMIT_ID,
-        checks: checks
-      }).code(responseCode)
+      return createStatusResponse(checks, h)
     }
   },
   {
