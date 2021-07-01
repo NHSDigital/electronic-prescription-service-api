@@ -61,7 +61,7 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
 
 // todo, remove live/sandbox split once dispense interactions are handled in live proxies
 const liveProcessMessageOperations: Array<ApiOperation> = ["send", "cancel", "dispense"]
-const liveTaskOperations: Array<ApiOperation> = ["release"]
+const liveTaskOperations: Array<ApiOperation> = ["release", "return"]
 const sandboxProcessMessageOperations: Array<ApiOperation> = ["send", "cancel", "dispense", "claim"]
 const sandboxTaskOperations: Array<ApiOperation> = ["release", "return", "withdraw"]
 const isSandbox = process.env.APIGEE_ENVIRONMENT?.includes("sandbox")
