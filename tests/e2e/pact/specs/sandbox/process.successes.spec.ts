@@ -156,7 +156,15 @@ jestpact.pactWith(
               headers: {
                 "Content-Type": "application/json"
               },
-              //TODO - Verify response body for dispensation
+              body: {
+                resourceType: "OperationOutcome",
+                issue: [
+                  {
+                    code: "informational",
+                    severity: "information"
+                  }
+                ]
+              },
               status: 200
             }
           }

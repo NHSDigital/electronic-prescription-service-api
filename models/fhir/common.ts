@@ -1,7 +1,12 @@
 import {LosslessNumber} from "lossless-json"
+import {Extension} from "./extension"
 
-export abstract class Resource {
+export abstract class Element {
   id?: string
+  extension?: Array<Extension>
+}
+
+export abstract class Resource extends Element {
   meta?: Meta
   resourceType: string
 }
