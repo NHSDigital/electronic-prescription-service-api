@@ -23,7 +23,7 @@ export async function serviceHealthCheck(url: string, logger: pino.Logger): Prom
       links: url
     }
   } catch (error) {
-    logger.error(error)
+    logger.error(error, "Error calling external service for status check")
     return {
       status: "error",
       timeout: error.code === "ECONNABORTED" ? "true" : "false",
@@ -32,16 +32,15 @@ export async function serviceHealthCheck(url: string, logger: pino.Logger): Prom
   }
 }
 
-function createStatusResponse(checks: { [p: string]: Array<StatusCheckResponse> }, h: Hapi.ResponseToolkit) {
+function createStatusResponse(checks: Record<string, Array<StatusCheckResponse>>, h: Hapi.ResponseToolkit) {
   let responseStatus = "pass"
   let responseCode = 200
-  const warnFilter = Object.values(checks).flat().filter(response => response.status === "warn")
-  if (warnFilter.length > 0) {
+  const allChecks = Object.values(checks).flat()
+  if (allChecks.find(check => check.status === "warn")) {
     responseStatus = "warn"
     responseCode = 500
   }
-  const errorFilter = Object.values(checks).flat().filter(response => response.status === "error")
-  if (errorFilter.length > 0) {
+  if (allChecks.find(check => check.status === "error")) {
     responseStatus = "error"
     responseCode = 500
   }
