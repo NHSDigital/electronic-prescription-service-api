@@ -17,6 +17,8 @@ parameters:
     type: object
   - name: enable_monitoring
     type: boolean
+  - name: enable_status_monitoring
+    type: boolean
   - name: jinja_templates
     type: object
 
@@ -30,6 +32,7 @@ extends:
     product_description: ${{ parameters.product_description }}
     spec_file: ${{ parameters.spec_file }}
     enable_monitoring: ${{ parameters.enable_monitoring }}
+    enable_status_monitoring: ${{ parameters.enable_status_monitoring }}
     apigee_deployments: ${{ parameters.apigee_deployments }}
     jinja_templates: ${{ parameters.jinja_templates }}
     post_deploy:
