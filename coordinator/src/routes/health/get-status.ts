@@ -2,6 +2,7 @@ import Hapi from "@hapi/hapi"
 import axios from "axios"
 import {VALIDATOR_HOST} from "../util"
 import {spineClient} from "../../services/communication/spine-client"
+import pino from "pino"
 
 export interface StatusCheckResponse {
   status: "pass" | "warn" | "error"
@@ -11,21 +12,24 @@ export interface StatusCheckResponse {
   links?: string
 }
 
-export async function serviceHealthCheck(url: string): Promise<StatusCheckResponse> {
-  return await axios
-    .get<string>(url, {timeout: 20000})
-    .then((response): StatusCheckResponse => ({
+export async function serviceHealthCheck(url: string, logger: pino.Logger): Promise<StatusCheckResponse> {
+  try {
+    const response = await axios.get<string>(url, {timeout: 20000})
+    return {
       status: response.status === 200 ? "pass" : "error",
       timeout: "false",
       responseCode: response.status,
       outcome: response.data,
       links: url
-    }))
-    .catch(error => ({
+    }
+  } catch (error) {
+    logger.error(error)
+    return {
       status: "error",
       timeout: error.code === "ECONNABORTED" ? "true" : "false",
       responseCode: 500
-    }))
+    }
+  }
 }
 
 function createStatusResponse(checks: { [p: string]: Array<StatusCheckResponse> }, h: Hapi.ResponseToolkit) {
@@ -55,8 +59,8 @@ export default [
     path: "/_status",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const checks: { [name: string]: Array<StatusCheckResponse> } = {
-        "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`)],
-        "spine:status": [await spineClient.getStatus()]
+        "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`, request.logger)],
+        "spine:status": [await spineClient.getStatus(request.logger)]
       }
 
       return createStatusResponse(checks, h)
@@ -67,7 +71,7 @@ export default [
     path: "/_healthcheck",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const checks: { [name: string]: Array<StatusCheckResponse> } = {
-        "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`)]
+        "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`, request.logger)]
       }
 
       return createStatusResponse(checks, h)
