@@ -9,3 +9,4 @@ export {convertMomentToISODate} from "./src/services/translation/common/dateTime
 export {extractFragments, convertFragmentsToHashableFormat} from "./src/services/translation/request/signature"
 export {writeXmlStringCanonicalized} from "./src/services/serialisation/xml"
 export {convertParentPrescription} from "./src/services/translation/request/prescribe/parent-prescription"
+export {isTask} from "./src/routes/util"

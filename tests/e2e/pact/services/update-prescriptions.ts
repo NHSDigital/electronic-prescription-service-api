@@ -1,5 +1,5 @@
 import * as uuid from "uuid"
-import {fhir, hl7V3, ProcessCase} from "@models"
+import {fhir, hl7V3, ProcessCase, TaskCase} from "@models"
 import {
   getResourcesOfType,
   convertFhirMessageToSignedInfoMessage,
@@ -9,7 +9,8 @@ import {
   convertFragmentsToHashableFormat,
   createParametersDigest,
   writeXmlStringCanonicalized,
-  convertParentPrescription
+  convertParentPrescription,
+  isTask
 } from "@coordinator"
 import * as crypto from "crypto"
 import fs from "fs"
@@ -26,6 +27,7 @@ export async function updatePrescriptions(
   orderCases: Array<ProcessCase>,
   orderUpdateCases: Array<ProcessCase>,
   dispenseCases: Array<ProcessCase>,
+  taskCases: Array<TaskCase>,
   logger: pino.Logger
 ): Promise<void> {
   const replacements = new Map<string, string>()
@@ -117,6 +119,19 @@ export async function updatePrescriptions(
 
     setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
   })
+
+  taskCases.forEach(returnCase => {
+    const task = returnCase.request
+
+    if (isTask(task)) {
+      const newBundleIdentifier = uuid.v4()
+
+      const originalShortFormId = task.groupIdentifier.value
+      const newShortFormId = replacements.get(originalShortFormId)
+
+      setTaskIds(task, newBundleIdentifier, newShortFormId)
+    }
+  })
 }
 
 export function setPrescriptionIds(
@@ -138,6 +153,11 @@ export function setPrescriptionIds(
       getMedicationDispenseShortFormIdExtension(groupIdentifierExtension.extension).valueIdentifier.value = newShortFormId
       getMedicationDispenseLongFormIdExtension(groupIdentifierExtension.extension).valueIdentifier.value = newLongFormId
     })
+}
+
+export function setTaskIds(task: fhir.Task, newTaskIdentifier: string, newShortFormID: string): void {
+  task.identifier[0].value = newTaskIdentifier
+  task.groupIdentifier.value = newShortFormID
 }
 
 export function generateShortFormId(originalShortFormId?: string): string {
