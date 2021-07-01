@@ -1,7 +1,7 @@
 import {LosslessNumber} from "lossless-json"
 import * as common from "./common"
 
-export interface Extension {
+export interface Extension extends common.Element {
   url: string
 }
 
