@@ -17,6 +17,8 @@ parameters:
     type: object
   - name: enable_monitoring
     type: boolean
+  - name: enable_status_monitoring
+    type: boolean
   - name: jinja_templates
     type: object
 
