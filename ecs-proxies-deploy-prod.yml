@@ -39,7 +39,7 @@ docker_service:
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/spineservices.nhs.uk/to-party-key'
     health_check:
         matcher: "200"
-        path: "/_status"
+        path: "/_healthcheck"
   - name: eps-validator
     port: 9001
     expose: false
