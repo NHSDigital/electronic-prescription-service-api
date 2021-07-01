@@ -1,5 +1,5 @@
 import axios, {AxiosError, AxiosResponse} from "axios"
-import {Logger} from "pino"
+import pino, {Logger} from "pino"
 import {spine} from "@models"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
@@ -122,7 +122,7 @@ export class LiveSpineClient implements SpineClient {
     return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/_poll/${path}`
   }
 
-  async getStatus(): Promise<StatusCheckResponse> {
-    return serviceHealthCheck(`${SPINE_URL_SCHEME}://${this.spineEndpoint}/healthcheck`)
+  async getStatus(logger: pino.Logger): Promise<StatusCheckResponse> {
+    return serviceHealthCheck(`${SPINE_URL_SCHEME}://${this.spineEndpoint}/healthcheck`, logger)
   }
 }
