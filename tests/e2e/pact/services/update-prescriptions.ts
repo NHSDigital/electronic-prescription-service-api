@@ -25,6 +25,7 @@ const isProd = process.env.APIGEE_ENVIRONMENT === "prod"
 export async function updatePrescriptions(
   orderCases: Array<ProcessCase>,
   orderUpdateCases: Array<ProcessCase>,
+  dispenseCases: Array<ProcessCase>,
   logger: pino.Logger
 ): Promise<void> {
   const replacements = new Map<string, string>()
@@ -97,6 +98,25 @@ export async function updatePrescriptions(
       setProdPatient(bundle)
     }
   })
+
+  dispenseCases.forEach(dispenseCase => {
+    const bundle = dispenseCase.request
+    const firstMedicationDispense = getResourcesOfType.getMedicationDispenses(bundle)[0]
+    const firstAuthorizingPrescription = firstMedicationDispense.authorizingPrescription[0]
+    const groupIdentifierExtension = getMedicationDispenseGroupIdentifierExtension(firstAuthorizingPrescription.extension)
+
+    const newBundleIdentifier = uuid.v4()
+
+    const shortFormIdExtension = getMedicationDispenseShortFormIdExtension(groupIdentifierExtension.extension)
+    const originalShortFormId = shortFormIdExtension.valueIdentifier.value
+    const newShortFormId = replacements.get(originalShortFormId)
+
+    const longFormIdExtension = getMedicationDispenseLongFormIdExtension(groupIdentifierExtension.extension)
+    const originalLongFormId = longFormIdExtension.valueIdentifier.value
+    const newLongFormId = replacements.get(originalLongFormId)
+
+    setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
+  })
 }
 
 export function setPrescriptionIds(
@@ -111,6 +131,13 @@ export function setPrescriptionIds(
     groupIdentifier.value = newShortFormId
     getLongFormIdExtension(groupIdentifier.extension).valueIdentifier.value = newLongFormId
   })
+  getResourcesOfType.getMedicationDispenses(bundle)
+    .flatMap(medicationDispense => medicationDispense.authorizingPrescription)
+    .forEach(authorizingPrescription => {
+      const groupIdentifierExtension = getMedicationDispenseGroupIdentifierExtension(authorizingPrescription.extension)
+      getMedicationDispenseShortFormIdExtension(groupIdentifierExtension.extension).valueIdentifier.value = newShortFormId
+      getMedicationDispenseLongFormIdExtension(groupIdentifierExtension.extension).valueIdentifier.value = newLongFormId
+    })
 }
 
 export function generateShortFormId(originalShortFormId?: string): string {
@@ -163,7 +190,7 @@ function setProdPatient(bundle: fhir.Bundle) {
     }
   ]
   patient.gender = "male"
-  patient.birthDate = "1932-01-06",
+  patient.birthDate = "1932-01-06"
   patient.address = [
     {
       "use": "home",
@@ -234,10 +261,24 @@ function signPrescription(
   checkDigestMatchesPrescription(processRequest, originalShortFormId, logger)
 }
 
+function getExtension<T extends fhir.Extension>(extensions: Array<fhir.Extension>, url: string): T {
+  return extensions.find(extension => extension.url === url) as T
+}
+
 function getLongFormIdExtension(extensions: Array<fhir.Extension>): fhir.IdentifierExtension {
-  return extensions.find(
-    extension => extension.url === "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId"
-  ) as fhir.IdentifierExtension
+  return getExtension(extensions, "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId")
+}
+
+function getMedicationDispenseGroupIdentifierExtension(extensions: Array<fhir.Extension>) {
+  return getExtension(extensions, "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier")
+}
+
+function getMedicationDispenseShortFormIdExtension(extensions: Array<fhir.Extension>): fhir.IdentifierExtension {
+  return getExtension(extensions, "shortForm")
+}
+
+function getMedicationDispenseLongFormIdExtension(extensions: Array<fhir.Extension>): fhir.IdentifierExtension {
+  return getExtension(extensions, "UUID")
 }
 
 function getNhsNumberIdentifier(fhirPatient: fhir.Patient) {

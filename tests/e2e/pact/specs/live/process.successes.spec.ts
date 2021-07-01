@@ -26,6 +26,7 @@ jestpact.pactWith(
         await updatePrescriptions(
           fetcher.prescriptionOrderExamples.filter(e => e.isSuccess),
           fetcher.prescriptionOrderUpdateExamples.filter(e => e.isSuccess),
+          fetcher.prescriptionDispenseExamples.filter(e => e.isSuccess),
           logger
         )
       }
@@ -180,7 +181,15 @@ jestpact.pactWith(
               headers: {
                 "Content-Type": "application/json"
               },
-              //TODO - Verify response body for dispensation
+              body: {
+                resourceType: "OperationOutcome",
+                issue: [
+                  {
+                    code: "informational",
+                    severity: "information"
+                  }
+                ]
+              },
               status: 200
             }
           }
