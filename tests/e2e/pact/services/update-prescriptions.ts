@@ -9,8 +9,7 @@ import {
   convertFragmentsToHashableFormat,
   createParametersDigest,
   writeXmlStringCanonicalized,
-  convertParentPrescription,
-  isTask
+  convertParentPrescription
 } from "@coordinator"
 import * as crypto from "crypto"
 import fs from "fs"
@@ -346,4 +345,14 @@ function removeResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): f
     ...fhirBundle,
     entry: entriesToRetain
   }
+}
+
+function isTask(body: unknown): body is fhir.Task {
+  return isFhirResourceOfType(body, "Task")
+}
+
+function isFhirResourceOfType(body: unknown, resourceType: string) {
+  return typeof body === "object"
+    && "resourceType" in body
+    && (body as fhir.Resource).resourceType === resourceType
 }
