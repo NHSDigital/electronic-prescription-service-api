@@ -57,23 +57,19 @@ export default [
     method: "GET",
     path: "/_status",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const checks: { [name: string]: Array<StatusCheckResponse> } = {
+      return createStatusResponse({
         "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`, request.logger)],
         "spine:status": [await spineClient.getStatus(request.logger)]
-      }
-
-      return createStatusResponse(checks, h)
+      }, h)
     }
   },
   {
     method: "GET",
     path: "/_healthcheck",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const checks: { [name: string]: Array<StatusCheckResponse> } = {
+      return createStatusResponse({
         "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`, request.logger)]
-      }
-
-      return createStatusResponse(checks, h)
+      }, h)
     }
   },
   {
