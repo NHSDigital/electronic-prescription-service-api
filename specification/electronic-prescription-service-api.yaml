@@ -228,6 +228,8 @@ paths:
               type: object
             examples:
               example:
+                description: |
+                  A valid secondary care prepare request. 
                 value:
                   $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Prepare-Request-200_OK.json
       responses:
@@ -240,6 +242,8 @@ paths:
                 $ref: '#/components/schemas/parameters-response'
               examples:
                 example:
+                  description: |
+                    A successful response to a secondary care prepare request.
                   value:
                     $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Prepare-Response-200_OK.json
         '4XX':
@@ -250,6 +254,8 @@ paths:
                 $ref: '#/components/schemas/operation-outcome'
               examples:
                 example:
+                  description: |
+                    An error response indicating a missing field.
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
   /FHIR/R4/$process-message:
@@ -281,12 +287,18 @@ paths:
               type: object
             examples:
               prescribe-success:
+                description: |
+                  A valid secondary care prescription order message.
                 value:
                   $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Process-Request-Send-200_OK.json
               dispense-success:
+                description: |
+                  A valid secondary care dispense notification message.
                 value:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Process-Request-Dispense-200_OK.json
               patient-deceased:
+                description: |
+                  An invalid prescription order message.
                 value:
                   $ref: components/examples/example-b-spine-error-patient-deceased/SendRequest-FhirMessageSigned.json
         description: ''
@@ -299,6 +311,8 @@ paths:
                 type: object
               examples:
                 example:
+                  description: |
+                    A response to a valid secondary care prescription-order message, showing the prescription-order was successful.
                   value:
                     $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Process-Response-Send-200_OK.json
         '4XX':
@@ -315,9 +329,13 @@ paths:
                 $ref: '#/components/responses/200OperationOutcome'
               examples:
                 OperationOutcome:
+                  description: |
+                    An error response indicating a missing field in the message sent.
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
                 Bundle:
+                  description: |
+                    An error response with some additional details provided.
                   value:
                     $ref: components/examples/prescription-order-update/bundle-error.json
   /FHIR/R4/Task:
@@ -345,9 +363,13 @@ paths:
           application/json:
             examples:
               return:
+                description: |
+                  A valid request to return a prescription to Spine.
                 value:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/2-Task-Request-Return-200_OK.json
               withdraw:
+                description: |
+                  A valid request to withdraw a dispense notification from Spine.
                 value:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/3-Task-Request-Withdraw-200_OK.json
       responses:
@@ -359,8 +381,11 @@ paths:
                 $ref: '#/components/responses/200OperationOutcome'
               examples:
                 OperationOutcome:
+                  description: |
+                    A response showing a successful return prescription or withdraw dispense notification request.
                   value:
-                    $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
+#                    Yes this says process but it's also the generic return response.
+                    $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Process-Response-Send-200_OK.json
         '4XX':
           description: |
             An error occurred as follows:
@@ -372,8 +397,10 @@ paths:
             application/fhir+json:
               examples:
                 example:
+                  description: |
+                    A response indicating an invalid return or withdraw request.
                   value:
-                    $ref: components/examples/release/validation-error.json
+                    $ref: components/examples/release/not-found-error.json
   /FHIR/R4/Task/$release:
     post:
       operationId: release
@@ -400,6 +427,8 @@ paths:
               type: object
             examples:
               owner:
+                description: |
+                  A valid release request to download prescriptions from Spine.
                 value:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Task-Request-Release-200_OK.json
       responses:
@@ -411,6 +440,8 @@ paths:
                 type: object
               examples:
                 example:
+                  description: |
+                    A response showing a successful download of prescriptions from a release request.
                   value:
                     $ref: components/examples/sandbox/Release-Response-200_OK.json
         '4XX':
@@ -426,8 +457,10 @@ paths:
                 type: object
               examples:
                 example:
+                  description: |
+                    A response indicating an invalid release request.
                   value:
-                    $ref: components/examples/release/validation-error.json
+                    $ref: components/examples/release/not-found-error.json
 components:
   parameters:
     BearerAuthorization:
