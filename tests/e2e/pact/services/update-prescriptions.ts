@@ -9,7 +9,8 @@ import {
   convertFragmentsToHashableFormat,
   createParametersDigest,
   writeXmlStringCanonicalized,
-  convertParentPrescription
+  convertParentPrescription,
+  typeGuards
 } from "@coordinator"
 import * as crypto from "crypto"
 import fs from "fs"
@@ -121,14 +122,13 @@ export async function updatePrescriptions(
 
   taskCases.forEach(returnCase => {
     const task = returnCase.request
-
-    if (isTask(task)) {
-      const newBundleIdentifier = uuid.v4()
+    if (typeGuards.isTask(task)) {
+      const newTaskIdentifier = uuid.v4()
 
       const originalShortFormId = task.groupIdentifier.value
       const newShortFormId = replacements.get(originalShortFormId)
 
-      setTaskIds(task, newBundleIdentifier, newShortFormId)
+      setTaskIds(task, newTaskIdentifier, newShortFormId)
     }
   })
 }
@@ -154,9 +154,9 @@ export function setPrescriptionIds(
     })
 }
 
-export function setTaskIds(task: fhir.Task, newTaskIdentifier: string, newShortFormID: string): void {
+export function setTaskIds(task: fhir.Task, newTaskIdentifier: string, newShortFormId: string): void {
   task.identifier[0].value = newTaskIdentifier
-  task.groupIdentifier.value = newShortFormID
+  task.groupIdentifier.value = newShortFormId
 }
 
 export function generateShortFormId(originalShortFormId?: string): string {
@@ -345,14 +345,4 @@ function removeResourcesOfType(fhirBundle: fhir.Bundle, resourceType: string): f
     ...fhirBundle,
     entry: entriesToRetain
   }
-}
-
-function isTask(body: unknown): body is fhir.Task {
-  return isFhirResourceOfType(body, "Task")
-}
-
-function isFhirResourceOfType(body: unknown, resourceType: string) {
-  return typeof body === "object"
-    && "resourceType" in body
-    && (body as fhir.Resource).resourceType === resourceType
 }
