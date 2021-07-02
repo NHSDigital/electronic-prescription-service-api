@@ -209,7 +209,7 @@ paths:
   /FHIR/R4/$prepare:
     post:
       operationId: prepare-prescription
-      summary: Encrypt prescription data
+      summary: Encode prescription data
       description: |
         ## Overview
         Use this endpoint to convert a FHIR [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) into HL7 V3 signature fragments which can then be signed by the prescriber.
