@@ -23,11 +23,13 @@ export async function serviceHealthCheck(url: string, logger: pino.Logger): Prom
       links: url
     }
   } catch (error) {
-    logger.error(error, "Error calling external service for status check")
+    logger.error("Error calling external service for status check: " + error.message)
     return {
       status: "error",
       timeout: error.code === "ECONNABORTED" ? "true" : "false",
-      responseCode: 500
+      responseCode: error.response?.status,
+      outcome: error.message,
+      links: url
     }
   }
 }
