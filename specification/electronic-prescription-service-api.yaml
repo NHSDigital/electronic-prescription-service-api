@@ -243,7 +243,7 @@ paths:
               examples:
                 example:
                   description: |
-                    A successful response to a secondary care prepare request.
+                    A successful response to a prepare request.
                   value:
                     $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Prepare-Response-200_OK.json
         '4XX':
@@ -255,7 +255,7 @@ paths:
               examples:
                 example:
                   description: |
-                    An error response indicating a missing field.
+                    An error response to a prepare request.
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
   /FHIR/R4/$process-message:
@@ -286,21 +286,26 @@ paths:
             schema:
               type: object
             examples:
-              prescribe-success:
+              prescription-order-success:
                 description: |
-                  A valid secondary care prescription order message.
+                  A valid secondary care prescription-order message.
                 value:
                   $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Process-Request-Send-200_OK.json
-              dispense-success:
+              prescription-order-update-success:
                 description: |
-                  A valid secondary care dispense notification message.
+                  A valid secondary care prescription-order-update message.
+                value:
+                  $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Process-Request-Cancel-200_OK.json
+              dispense-notification-success:
+                description: |
+                  A valid secondary care dispense-notification message.
                 value:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Process-Request-Dispense-200_OK.json
-              patient-deceased:
+              dispense-claim-success:
                 description: |
-                  An invalid prescription order message.
+                  A valid secondary care dispense-claim message.
                 value:
-                  $ref: components/examples/example-b-spine-error-patient-deceased/SendRequest-FhirMessageSigned.json
+                  $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/4-Process-Request-Claim-200_OK.json
         description: ''
       responses:
         '200':
@@ -310,32 +315,37 @@ paths:
               schema:
                 type: object
               examples:
-                example:
+                operation-outcome-success:
                   description: |
-                    A response to a valid secondary care prescription-order message, showing the prescription-order was successful.
+                    A successful response to a prescription-order, dispense-notification or dispense-claim request.
                   value:
-                    $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Process-Response-Send-200_OK.json
+                    $ref: components/examples/operation-outcome-success.json
+                bundle-success:
+                  description: |
+                    A successful response to a prescription-order-update request.
+                  value:
+                    $ref: components/examples/prescription-order-update/bundle-success.json
         '4XX':
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code         | Description                                     | FHIR type        |
-            | ----------- | ------------------ | ----------------------------------------------- | ---------------- |
-            | 400         | BAD_REQUEST        | Spine Error - duplicate prescription ID exists. | OperationOutcome |
-            | 400         | BAD_REQUEST        | Spine Error - prescription not found.           | Bundle           |
+            | HTTP status | Error code  | Description                                | FHIR type        |
+            | ----------- | ----------- | ------------------------------------------ | ---------------- |
+            | 400         | BAD_REQUEST | Invalid request.                           | OperationOutcome |
+            | 400         | BAD_REQUEST | Invalid request (with additional details). | Bundle           |
           content:
             application/fhir+json:
               schema:
-                $ref: '#/components/responses/200OperationOutcome'
+                type: object
               examples:
                 OperationOutcome:
                   description: |
-                    An error response indicating a missing field in the message sent.
+                    An error response.
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
                 Bundle:
                   description: |
-                    An error response with some additional details provided.
+                    An error response with additional details provided.
                   value:
                     $ref: components/examples/prescription-order-update/bundle-error.json
   /FHIR/R4/Task:
@@ -364,12 +374,12 @@ paths:
             examples:
               return:
                 description: |
-                  A valid request to return a prescription to Spine.
+                  A valid request to return a prescription.
                 value:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/2-Task-Request-Return-200_OK.json
               withdraw:
                 description: |
-                  A valid request to withdraw a dispense notification from Spine.
+                  A valid request to withdraw a dispense notification.
                 value:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/3-Task-Request-Withdraw-200_OK.json
       responses:
@@ -382,23 +392,22 @@ paths:
               examples:
                 OperationOutcome:
                   description: |
-                    A response showing a successful return prescription or withdraw dispense notification request.
+                    A successful response to a return or withdraw request.
                   value:
-#                    Yes this says process but it's also the generic return response.
-                    $ref: components/examples/secondary-care/community/acute/nominated-pharmacy/nurse/prescribing-and-professional-codes/1-Process-Response-Send-200_OK.json
+                    $ref: components/examples/operation-outcome-success.json
         '4XX':
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code         | Description             |
-            | ----------- | -------------------| ----------------------- |
-            | 400         | BAD_REQUEST        | Invalid request bundle. |
+            | HTTP status | Error code  | Description      |
+            | ----------- | ----------- | ---------------- |
+            | 400         | BAD_REQUEST | Invalid request. |
           content:
             application/fhir+json:
               examples:
                 example:
                   description: |
-                    A response indicating an invalid return or withdraw request.
+                    An error response to a return or withdraw request.
                   value:
                     $ref: components/examples/release/not-found-error.json
   /FHIR/R4/Task/$release:
@@ -428,7 +437,7 @@ paths:
             examples:
               owner:
                 description: |
-                  A valid release request to download prescriptions from Spine.
+                  A valid release request.
                 value:
                   $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Task-Request-Release-200_OK.json
       responses:
@@ -441,16 +450,16 @@ paths:
               examples:
                 example:
                   description: |
-                    A response showing a successful download of prescriptions from a release request.
+                    A successful response to a release request.
                   value:
                     $ref: components/examples/sandbox/Release-Response-200_OK.json
         '4XX':
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code         | Description             |
-            | ----------- | -------------------| ----------------------- |
-            | 400         | BAD_REQUEST        | Invalid request bundle. |
+            | HTTP status | Error code  | Description      |
+            | ----------- | ----------- | ---------------- |
+            | 400         | BAD_REQUEST | Invalid request. |
           content:
             application/fhir+json:
               schema:
@@ -458,7 +467,7 @@ paths:
               examples:
                 example:
                   description: |
-                    A response indicating an invalid release request.
+                    An error response to a release request.
                   value:
                     $ref: components/examples/release/not-found-error.json
 components:
