@@ -80,6 +80,8 @@ extends:
         proxy_path: live
         # manual_approval is added by default
         depends_on:
-          - ref
+          - int
+          - sandbox
+          - manual_approval
         jinja_templates:
             REQUIRE_ASID: true
