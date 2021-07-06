@@ -6,7 +6,7 @@ import {
   convertTaskToSpineRequest} from "../../../src/services/translation/request"
 import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
 import {fhir} from "@models"
-import {isBundle, isParameters, isTask} from "../../../src/routes/type-guards"
+import {isBundle, isParameters, isTask} from "../../../src/utils/type-guards"
 
 const logger = pino()
 process.env.ODS_URL = "directory.spineservices.nhs.uk"

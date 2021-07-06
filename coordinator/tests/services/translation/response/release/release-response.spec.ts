@@ -6,7 +6,7 @@ import {readXmlStripNamespace} from "../../../../../src/services/serialisation/x
 import * as LosslessJson from "lossless-json"
 import * as fs from "fs"
 import * as path from "path"
-import {getUniqueValues} from "../../../../../src/services/validation/util"
+import {getUniqueValues} from "../../../../../src/utils/collections"
 import {toArray} from "../../../../../src/services/translation/common"
 import {hl7V3} from "@models"
 

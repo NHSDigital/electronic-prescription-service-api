@@ -7,7 +7,7 @@ import {
 import {fhir} from "@models"
 import {stringifyDosages} from "../../services/translation/request/dosage"
 import {getMedicationDispenses, getMedicationRequests} from "../../services/translation/common/getResourcesOfType"
-import {isBundle, isMedicationDispense, isMedicationRequest} from "../type-guards"
+import {isBundle, isMedicationDispense, isMedicationRequest} from "../../utils/type-guards"
 
 export default [
   /*

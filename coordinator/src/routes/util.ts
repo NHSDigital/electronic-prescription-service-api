@@ -5,8 +5,8 @@ import * as LosslessJson from "lossless-json"
 import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
-import {RequestHeaders} from "../services/headers"
-import {isBundle, isOperationOutcome} from "./type-guards"
+import {RequestHeaders} from "../utils/headers"
+import {isBundle, isOperationOutcome} from "../utils/type-guards"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
