@@ -584,7 +584,7 @@ paths:
         Use this endpoint to withdraw a dispense-notification message, for example in the case that a prescription was marked as dispensed erroneously.
 
         The effect of calling this endpoint depends on the Task status.
-        To return a downloaded prescription to EPS, send a Task with a status of `in-progress`.
+        To withdraw a dispense-notification message from EPS, send a Task with a status of `in-progress`.
         For more information on how to create these messages, see [NHSDigital-Task](https://simplifier.net/guide/DigitalMedicines/NHSDigital-Task).
 
         Note that the `#withdraw` in the URL has been added to distinguish this from the other operations which
