@@ -35,17 +35,19 @@ export async function serviceHealthCheck(url: string, logger: pino.Logger): Prom
   }
 }
 
-function createStatusResponse(checks: Record<string, Array<StatusCheckResponse>>, h: Hapi.ResponseToolkit) {
+function createStatusResponse(
+  errorStatusCode: number, checks: Record<string, Array<StatusCheckResponse>>, h: Hapi.ResponseToolkit
+) {
   let responseStatus = "pass"
   let responseCode = 200
   const allChecks = Object.values(checks).flat()
   if (allChecks.find(check => check.status === "warn")) {
     responseStatus = "warn"
-    responseCode = 500
+    responseCode = errorStatusCode
   }
   if (allChecks.find(check => check.status === "error")) {
     responseStatus = "error"
-    responseCode = 500
+    responseCode = errorStatusCode
   }
 
   return h.response({
@@ -60,7 +62,7 @@ export default [
     method: "GET",
     path: "/_status",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      return createStatusResponse({
+      return createStatusResponse(200, {
         "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`, request.logger)],
         "spine:status": [await spineClient.getStatus(request.logger)]
       }, h)
@@ -70,7 +72,7 @@ export default [
     method: "GET",
     path: "/_healthcheck",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      return createStatusResponse({
+      return createStatusResponse(500, {
         "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`, request.logger)]
       }, h)
     }
