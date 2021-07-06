@@ -2,12 +2,13 @@ import * as translator from "../../services/translation/request"
 import Hapi from "@hapi/hapi"
 import {
   BASE_PATH, ContentTypes, externalValidator,
-  getPayload, isBundle, isParameters, isTask
+  getPayload
 } from "../util"
 import {fhir} from "@models"
 import * as bundleValidator from "../../services/validation/bundle-validator"
 import * as parametersValidator from "../../services/validation/parameters-validator"
 import * as taskValidator from "../../services/validation/task-validator"
+import {isBundle, isParameters, isTask} from "../../utils/type-guards"
 
 export default [
   /*

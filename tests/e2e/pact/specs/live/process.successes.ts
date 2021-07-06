@@ -6,11 +6,7 @@ import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
 import {fetcher, fhir} from "@models"
-import {generateShortFormId, setPrescriptionIds, updatePrescriptions} from "../../services/update-prescriptions"
-import {generateTestOutputFile} from "../../services/genereate-test-output-file"
-import pino from "pino"
-
-const logger = pino()
+import {generateShortFormId, setPrescriptionIds} from "../../services/update-prescriptions"
 
 jestpact.pactWith(
   pactOptions("live", "process", "send"),
@@ -20,18 +16,6 @@ jestpact.pactWith(
       const url = `${provider.mockService.baseUrl}`
       return supertest(url)
     }
-
-    beforeAll(async() => {
-      if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
-        await updatePrescriptions(
-          fetcher.prescriptionOrderExamples.filter(e => e.isSuccess),
-          fetcher.prescriptionOrderUpdateExamples.filter(e => e.isSuccess),
-          fetcher.prescriptionDispenseExamples.filter(e => e.isSuccess),
-          logger
-        )
-      }
-      generateTestOutputFile()
-    })
 
     describe("process-message send e2e tests", () => {
       test.each(TestResources.processOrderCases)("should be able to send %s", async (desc: string, message: fhir.Bundle) => {

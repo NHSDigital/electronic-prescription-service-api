@@ -2,14 +2,12 @@ import {
   BASE_PATH,
   ContentTypes,
   externalValidator,
-  getPayload,
-  isBundle,
-  isMedicationDispense,
-  isMedicationRequest
+  getPayload
 } from "../util"
 import {fhir} from "@models"
 import {stringifyDosages} from "../../services/translation/request/dosage"
 import {getMedicationDispenses, getMedicationRequests} from "../../services/translation/common/getResourcesOfType"
+import {isBundle, isMedicationDispense, isMedicationRequest} from "../../utils/type-guards"
 
 export default [
   /*

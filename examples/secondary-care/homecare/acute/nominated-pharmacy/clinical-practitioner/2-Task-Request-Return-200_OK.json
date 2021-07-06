@@ -11,7 +11,7 @@
   "intent": "order",
   "groupIdentifier": {
     "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-    "value": "269CA9-A99968-4577BA"
+    "value": "18B064-A99968-4BCAA3"
   },
   "focus": {
     "type": "Bundle",

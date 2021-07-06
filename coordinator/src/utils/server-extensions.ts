@@ -1,9 +1,9 @@
 import Hapi from "@hapi/hapi"
 import {fhir, processingErrors, validationErrors} from "@models"
-import {ContentTypes} from "./routes/util"
+import {ContentTypes} from "../routes/util"
 import {Boom} from "@hapi/boom"
-import {RequestHeaders} from "./services/headers"
-import {isProd} from "./services/environment"
+import {RequestHeaders} from "./headers"
+import {isProd} from "./environment"
 
 export function reformatUserErrorsToFhir(
   request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit

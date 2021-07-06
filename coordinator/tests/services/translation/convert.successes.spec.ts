@@ -5,7 +5,7 @@ import {
   convertParametersToSpineRequest,
   convertTaskToSpineRequest
 } from "../../../src/services/translation/request"
-import {isBundle, isParameters, isTask} from "../../../src/routes/util"
+import {isBundle, isParameters, isTask} from "../../../src/utils/type-guards"
 
 const logger = pino()
 

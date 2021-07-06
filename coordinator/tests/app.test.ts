@@ -1,8 +1,8 @@
 import Hapi from "@hapi/hapi"
 import * as HapiShot from "@hapi/shot"
-import * as Headers from "../src/services/headers"
-import {RequestHeaders} from "../src/services/headers"
-import {isProd} from "../src/services/environment"
+import * as Headers from "../src/utils/headers"
+import {RequestHeaders} from "../src/utils/headers"
+import {isProd} from "../src/utils/environment"
 import {InvalidValueError} from "../../models/errors/processing-errors"
 import {ContentTypes} from "../src/routes/util"
 import {
@@ -10,10 +10,10 @@ import {
   reformatUserErrorsToFhir,
   rejectInvalidProdHeaders,
   switchContentTypeForSmokeTest
-} from "../src/server-extensions"
+} from "../src/utils/server-extensions"
 import HapiPino from "hapi-pino"
 
-jest.mock("../src/services/environment", () => ({
+jest.mock("../src/utils/environment", () => ({
   isProd: jest.fn()
 }))
 

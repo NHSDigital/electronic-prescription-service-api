@@ -3,7 +3,7 @@ import {
   getMedicationRequests
 } from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
-import {getUniqueValues, getGroups} from "./util"
+import {getUniqueValues, getGroups} from "../../utils/collections"
 import {
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
@@ -13,7 +13,7 @@ import {
 import {fhir, validationErrors as errors} from "@models"
 import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
 import {isRepeatDispensing} from "../translation/request"
-import {featureBlockedMessage} from "./feature-flags"
+import {featureBlockedMessage} from "../../utils/feature-flags"
 
 export function verifyBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {

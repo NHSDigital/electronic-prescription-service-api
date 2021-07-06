@@ -2,7 +2,7 @@ import {Request} from "@hapi/hapi"
 import Hapi from "@hapi/hapi"
 import {spineClient} from "../services/communication/spine-client"
 import {handleResponse} from "./util"
-import {getAsid} from "../services/headers"
+import {getAsid} from "../utils/headers"
 
 export default [{
   method: "GET",

@@ -31,6 +31,7 @@ jestpact.pactWith(
           fetcher.prescriptionOrderExamples.filter(e => !e.isSuccess),
           [],
           [],
+          [],
           logger
         )
       }

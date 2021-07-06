@@ -7,7 +7,7 @@ import statusRoutes from "./health/get-status"
 import pollingRoutes from "./polling"
 import releaseRoutes from "./dispense/release"
 import taskRoutes from "./dispense/task"
-import {isProd} from "../services/environment"
+import {isProd} from "../utils/environment"
 
 const debugRoutes = [
   ...convertPrescriptionRoutes,

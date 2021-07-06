@@ -1,11 +1,11 @@
-import {InteractionObject} from "@pact-foundation/pact"
 import * as jestpact from "jest-pact"
+import {basePath, pactOptions} from "../../resources/common"
 import supertest from "supertest"
+import * as TestResources from "../../resources/test-resources"
+import {fhir} from "@models"
 import * as LosslessJson from "lossless-json"
 import * as uuid from "uuid"
-import * as TestResources from "../../resources/test-resources"
-import {basePath, pactOptions} from "../../resources/common"
-import {fhir} from "@models"
+import {InteractionObject} from "@pact-foundation/pact"
 
 jestpact.pactWith(
   pactOptions("live", "task", "release"),
