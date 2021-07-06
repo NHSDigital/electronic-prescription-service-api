@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import axios from "axios"
+import axios, {AxiosError} from "axios"
 import {VALIDATOR_HOST} from "../util"
 import {spineClient} from "../../services/communication/spine-client"
 import pino from "pino"
@@ -24,11 +24,12 @@ export async function serviceHealthCheck(url: string, logger: pino.Logger): Prom
     }
   } catch (error) {
     logger.error("Error calling external service for status check: " + error.message)
+    const axiosError = error as AxiosError
     return {
       status: "error",
-      timeout: error.code === "ECONNABORTED" ? "true" : "false",
-      responseCode: error.response?.status,
-      outcome: error.message,
+      timeout: axiosError.code === "ECONNABORTED" ? "true" : "false",
+      responseCode: axiosError.response?.status,
+      outcome: axiosError.response?.data,
       links: url
     }
   }
