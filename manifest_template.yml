@@ -48,7 +48,7 @@ apigee:
 {% for PRODUCT in PRODUCTS %}
 {% set TITLE = 'Electronic Prescription Service ' + PRODUCT.display_name + ' (' + ENV.display_name + ')' %}
 {% set DESCRIPTION = 'Electronic Prescription Service ' + PRODUCT.display_name + ' - ' + ENV.display_name | lower + ' environment' %}
-{% set NAME = 'eps-api-' + PRODUCT.name + '-' + ENV.name %}
+{% set NAME = 'electronic-prescription-service-api-' + PRODUCT.name + '-' + ENV.name %}
   - name: {{ ENV.name }}
     products:
       - name: {{ NAME }}
