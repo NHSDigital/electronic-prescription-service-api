@@ -27,6 +27,14 @@ APIGEE_ENVIRONMENTS:
   quota: 1200                 # when ready for live
   portal_visibility: false    # todo: remove this once ready for live
 ---
+PRODUCTS:
+- display_name: Prescribing
+  name: prescribing
+- display_name: Dispensing
+  name: dispensing
+- display_name: Tracker
+  name: tracker
+---
 meta:
   api:
     name: electronic-prescription-service-api
@@ -37,9 +45,10 @@ apigee:
   environments:
 
 {% for ENV in APIGEE_ENVIRONMENTS %}
-{% set TITLE = 'Electronic Prescription Service (' + ENV.display_name + ')' %}
-{% set DESCRIPTION = 'Electronic Prescription Service - ' + ENV.display_name | lower + ' environment' %}
-{% set NAME = 'electronic-prescription-service-api-' + ENV.name %}
+{% for PRODUCT in PRODUCTS %}
+{% set TITLE = 'Electronic Prescription Service ' + PRODUCT.display_name + ' (' + ENV.display_name + ')' %}
+{% set DESCRIPTION = 'Electronic Prescription Service ' + PRODUCT.display_name + ' - ' + ENV.display_name | lower + ' environment' %}
+{% set NAME = 'eps-api-' + PRODUCT.name + '-' + ENV.name %}
   - name: {{ ENV.name }}
     products:
       - name: {{ NAME }}
@@ -49,6 +58,8 @@ apigee:
             value: public
           - name: ratelimit
             value: {{ ENV.ratelimit | default('5ps') }}
+          - name: product
+            value: {{ PRODUCT.name }}
         description: {{ DESCRIPTION }}
         displayName: {{ TITLE }}
         environments: [ {{ ENV.name }} ]
@@ -75,4 +86,5 @@ apigee:
         title: {{ TITLE }}
         visibility: {{ ENV.make_spec_visible | default(false) }}
         specId: {{ NAME }}
+{% endfor %}
 {% endfor %}
