@@ -222,8 +222,7 @@ paths:
       requestBody:
         required: true
         content:
-          #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
-          application/json:
+          application/fhir+json:
             schema:
               type: object
             examples:
@@ -236,8 +235,7 @@ paths:
         '200':
           description: Successful conversion.
           content:
-            #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
-            application/json:
+            application/fhir+json:
               schema:
                 $ref: '#/components/schemas/parameters-response'
               examples:
@@ -281,8 +279,7 @@ paths:
       requestBody:
         required: true
         content:
-          #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
-          application/json:
+          application/fhir+json:
             schema:
               type: object
             examples:
@@ -344,8 +341,7 @@ paths:
       requestBody:
         required: true
         content:
-          #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
-          application/json:
+          application/fhir+json:
             schema:
               type: object
             examples:
@@ -413,8 +409,7 @@ paths:
       requestBody:
         required: true
         content:
-          #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
-          application/json:
+          application/fhir+json:
             schema:
               type: object
             examples:
@@ -476,8 +471,7 @@ paths:
       requestBody:
         required: true
         content:
-          #FIXME - should be set to application/fhir+json but we have had to change it due to an Apigee SmartDocs bug.
-          application/json:
+          application/fhir+json:
             schema:
               type: object
             examples:
@@ -540,7 +534,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/fhir+json:
             examples:
               return:
                 description: |
@@ -578,7 +572,7 @@ paths:
   /FHIR/R4/Task#withdraw:
     post:
       operationId: withdraw
-      summary: Withdraw a dispense-notification message
+      summary: Withdraw a dispense notification
       description: |
         ## Overview
         Use this endpoint to withdraw a dispense-notification message, for example in the case that a prescription was marked as dispensed erroneously.
@@ -600,7 +594,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/fhir+json:
             examples:
               withdraw:
                 description: |
@@ -654,7 +648,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          application/fhir+json:
             schema:
               type: object
             examples:
