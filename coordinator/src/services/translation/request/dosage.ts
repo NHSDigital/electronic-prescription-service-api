@@ -2,9 +2,9 @@ import {fhir} from "@models"
 import {getNumericValueAsString, isTruthy} from "../common"
 import {LosslessNumber} from "lossless-json"
 import moment from "moment"
-import {toMap} from "../../validation/util"
+import {toMap} from "../../../utils/collections"
 import pino from "pino"
-import {DoseToTextMode, getDoseToTextMode} from "../../validation/feature-flags"
+import {DoseToTextMode, getDoseToTextMode} from "../../../utils/feature-flags"
 
 const SINGULAR_TIME_UNITS: Set<string> = new Set(Object.values(fhir.UnitOfTime).map(getUnitOfTimeDisplay))
 

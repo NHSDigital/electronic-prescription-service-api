@@ -5,7 +5,8 @@ import * as LosslessJson from "lossless-json"
 import axios from "axios"
 import stream from "stream"
 import * as crypto from "crypto-js"
-import {RequestHeaders} from "../services/headers"
+import {RequestHeaders} from "../utils/headers"
+import {isBundle, isOperationOutcome} from "../utils/type-guards"
 
 type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
 
@@ -49,36 +50,6 @@ export function handleResponse<T>(
         .type(ContentTypes.FHIR)
     }
   }
-}
-
-export function isOperationOutcome(body: unknown): body is fhir.OperationOutcome {
-  return isFhirResourceOfType(body, "OperationOutcome")
-}
-
-export function isBundle(body: unknown): body is fhir.Bundle {
-  return isFhirResourceOfType(body, "Bundle")
-}
-
-export function isParameters(body: unknown): body is fhir.Parameters {
-  return isFhirResourceOfType(body, "Parameters")
-}
-
-export function isTask(body: unknown): body is fhir.Task {
-  return isFhirResourceOfType(body, "Task")
-}
-
-export function isMedicationRequest(body: unknown): body is fhir.MedicationRequest {
-  return isFhirResourceOfType(body, "MedicationRequest")
-}
-
-export function isMedicationDispense(body: unknown): body is fhir.MedicationDispense {
-  return isFhirResourceOfType(body, "MedicationDispense")
-}
-
-function isFhirResourceOfType(body: unknown, resourceType: string) {
-  return typeof body === "object"
-    && "resourceType" in body
-    && (body as fhir.Resource).resourceType === resourceType
 }
 
 const getCircularReplacer = () => {

@@ -126,7 +126,7 @@ describe("Spine communication", () => {
       })
     })
 
-    const statusResponse = await requestHandler.getStatus()
+    const statusResponse = await requestHandler.getStatus(logger)
 
     expect(statusResponse.status).toBe("pass")
     expect(statusResponse.responseCode).toBe(200)

@@ -21,7 +21,7 @@ import {convertTaskToEtpWithdraw} from "./withdraw/withdraw"
 import {getMessageIdFromBundle, getMessageIdFromTask, identifyMessageType} from "../common"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 import Hapi from "@hapi/hapi"
-import {getAsid, getPartyKey, getRequestId} from "../../headers"
+import {getAsid, getPartyKey, getRequestId} from "../../../utils/headers"
 import {convertDispenseClaimInformation} from "./dispense/dispense-claim-information"
 
 export async function convertBundleToSpineRequest(

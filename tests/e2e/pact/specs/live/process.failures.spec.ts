@@ -30,6 +30,8 @@ jestpact.pactWith(
         await updatePrescriptions(
           fetcher.prescriptionOrderExamples.filter(e => !e.isSuccess),
           [],
+          [],
+          [],
           logger
         )
       }

@@ -1,4 +1,4 @@
-import {getUniqueValues} from "../../../src/services/validation/util"
+import {getUniqueValues} from "../../src/utils/collections"
 
 describe("getUniqueValues returns correct values", () => {
   test("when input is empty", () => {

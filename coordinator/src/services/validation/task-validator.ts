@@ -1,6 +1,6 @@
 import {fhir, validationErrors as errors} from "@models"
 import {getCodeableConceptCodingForSystem, getCodingForSystemOrNull} from "../translation/common"
-import {featureBlockedDispenseMessage} from "./feature-flags"
+import {featureBlockedDispenseMessage} from "../../utils/feature-flags"
 
 export function verifyTask(task: fhir.Task): Array<fhir.OperationOutcomeIssue> {
   const validationErrors = []

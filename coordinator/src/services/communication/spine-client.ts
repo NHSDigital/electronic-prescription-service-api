@@ -1,13 +1,13 @@
 import {LiveSpineClient} from "./live-spine-client"
 import {SandboxSpineClient} from "./sandbox-spine-client"
 import {spine} from "@models"
-import {Logger} from "pino"
+import pino, {Logger} from "pino"
 import {StatusCheckResponse} from "../../routes/health/get-status"
 
 export interface SpineClient {
   send(spineRequest: spine.SpineRequest, logger: Logger): Promise<spine.SpineResponse<unknown>>
   poll(path: string, fromAsid: string, logger: Logger): Promise<spine.SpineResponse<unknown>>
-  getStatus(): Promise<StatusCheckResponse>
+  getStatus(logger: pino.Logger): Promise<StatusCheckResponse>
 }
 
 function getSpineClient(liveMode: boolean): SpineClient {

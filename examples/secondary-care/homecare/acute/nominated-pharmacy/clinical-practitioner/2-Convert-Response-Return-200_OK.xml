@@ -59,7 +59,7 @@
           <seperatableInd value="false"/>
           <pertinentPrescriptionID classCode="OBS" moodCode="EVN">
             <code code="PID" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-            <value extension="269CA9-A99968-4577BA" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+            <value extension="18B064-A99968-4BCAA3" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
           </pertinentPrescriptionID>
         </pertinentInformation1>
         <pertinentInformation3 contextConductionInd="false" typeCode="PERT">

@@ -11,8 +11,12 @@ moduleAlias(__dirname + "/../../package.json")
 import Hapi from "@hapi/hapi"
 import routes from "./routes"
 import HapiPino from "hapi-pino"
-import {isLocal} from "./services/environment"
-import {reformatUserErrorsToFhir, rejectInvalidProdHeaders, switchContentTypeForSmokeTest} from "./server-extensions"
+import {isLocal} from "./utils/environment"
+import {
+  reformatUserErrorsToFhir,
+  rejectInvalidProdHeaders,
+  switchContentTypeForSmokeTest
+} from "./utils/server-extensions"
 
 const init = async () => {
   const server = Hapi.server({

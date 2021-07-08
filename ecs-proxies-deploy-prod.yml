@@ -22,10 +22,6 @@ docker_service:
           value: "{{ SOURCE_COMMIT_ID }}"
         - name: ENVIRONMENT
           value: "{{ APIGEE_ENVIRONMENT }}"
-        - name: TO_ASID
-          value: 'TO_ASID_PLACEHOLDER'
-        - name: TO_PARTY_KEY
-          value: 'TO_PARTY_KEY_PLACEHOLDER'
         - name: DISPENSE_ENABLED
           value: "false"
         - name: PRESCRIBE_ENABLED
@@ -43,7 +39,7 @@ docker_service:
           valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/spineservices.nhs.uk/to-party-key'
     health_check:
         matcher: "200"
-        path: "/_status"
+        path: "/_healthcheck"
   - name: eps-validator
     port: 9001
     expose: false

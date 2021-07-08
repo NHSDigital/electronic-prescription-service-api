@@ -29,7 +29,8 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
       req.headers["x-smoke-test"] = "1"
       req.headers["Authorization"] = `Bearer ${token}`
       return req
-    }
+    },
+    callbackTimeout: 30000
   }
 
   if (useBroker) {
@@ -60,8 +61,8 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
 }
 
 // todo, remove live/sandbox split once dispense interactions are handled in live proxies
-const liveProcessMessageOperations: Array<ApiOperation> = ["send", "cancel"]
-const liveTaskOperations: Array<ApiOperation> = ["release"]
+const liveProcessMessageOperations: Array<ApiOperation> = ["send", "cancel", "dispense"]
+const liveTaskOperations: Array<ApiOperation> = ["release", "return"]
 const sandboxProcessMessageOperations: Array<ApiOperation> = ["send", "cancel", "dispense", "claim"]
 const sandboxTaskOperations: Array<ApiOperation> = ["release", "return", "withdraw"]
 const isSandbox = process.env.APIGEE_ENVIRONMENT?.includes("sandbox")
