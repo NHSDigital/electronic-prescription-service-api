@@ -3,7 +3,7 @@ import {
   createDispenseRequest,
   createDosage,
   createGroupIdentifierFromPrescriptionIds,
-  createMedicationRequestExtensions,
+  createMedicationRequestExtensions, createNote,
   createSnomedCodeableConcept,
   getStatus
 } from "../../../../../src/services/translation/response/release/release-medication-request"
@@ -289,23 +289,26 @@ describe("courseOfTherapyType", () => {
   })
 })
 
-describe("dosage", () => {
-  const exampleDosageInstructions = new hl7V3.DosageInstructions("As required")
-  const exampleAdditionalInstructions = "Additional instructions"
-
-  test("contains text", () => {
-    const result = createDosage(exampleDosageInstructions, null)
-    expect(result.text).toEqual("As required")
-  })
-
+describe("note", () => {
   test("handles no additional instructions", () => {
-    const result = createDosage(exampleDosageInstructions, null)
-    expect(result.patientInstruction).toBeFalsy()
+    const result = createNote("")
+    expect(result).toBeFalsy()
   })
 
   test("handles additional instructions", () => {
-    const result = createDosage(exampleDosageInstructions, exampleAdditionalInstructions)
-    expect(result.patientInstruction).toEqual("Additional instructions")
+    const result = createNote("Additional instructions")
+    expect(result).toEqual([{
+      text: "Additional instructions"
+    }])
+  })
+})
+
+describe("dosage", () => {
+  const exampleDosageInstructions = new hl7V3.DosageInstructions("As required")
+
+  test("contains text", () => {
+    const result = createDosage(exampleDosageInstructions)
+    expect(result.text).toEqual("As required")
   })
 })
 

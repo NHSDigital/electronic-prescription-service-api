@@ -7,7 +7,7 @@ import {
 import {toArray} from "../../common"
 import {parseAdditionalInstructions} from "./additional-instructions"
 import {convertHL7V3DateToIsoDateString} from "../../common/dateTime"
-import {hl7V3, fhir} from "@models"
+import {fhir, hl7V3} from "@models"
 import {LosslessNumber} from "lossless-json"
 
 export function createMedicationRequest(
@@ -46,11 +46,9 @@ export function createMedicationRequest(
       prescription.pertinentInformation5.pertinentPrescriptionTreatmentType,
       lineItem.repeatNumber
     ),
+    note: createNote(additionalInstructions.additionalInstructions),
     dosageInstruction: [
-      createDosage(
-        lineItem.pertinentInformation2.pertinentDosageInstructions,
-        additionalInstructions.additionalInstructions
-      )
+      createDosage(lineItem.pertinentInformation2.pertinentDosageInstructions)
     ],
     dispenseRequest: createDispenseRequest(
       prescription.pertinentInformation1.pertinentDispensingSitePreference,
@@ -187,17 +185,20 @@ export function createSnomedCodeableConcept(code: hl7V3.SnomedCode): fhir.Codeab
   return fhir.createCodeableConcept("http://snomed.info/sct", code._attributes.code, code._attributes.displayName)
 }
 
-export function createDosage(
-  dosageInstructions: hl7V3.DosageInstructions,
-  additionalInstructions: string
-): fhir.Dosage {
-  const dosage: fhir.Dosage = {
+export function createNote(additionalInstructions: string): Array<fhir.Annotation> {
+  if (!additionalInstructions) {
+    return undefined
+  }
+
+  return [{
+    text: additionalInstructions
+  }]
+}
+
+export function createDosage(dosageInstructions: hl7V3.DosageInstructions): fhir.Dosage {
+  return {
     text: dosageInstructions.value._text
   }
-  if (additionalInstructions) {
-    dosage.patientInstruction = additionalInstructions
-  }
-  return dosage
 }
 
 function createDispenseRequestQuantity(lineItemQuantity: hl7V3.LineItemQuantity): fhir.SimpleQuantity {

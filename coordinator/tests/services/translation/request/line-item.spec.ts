@@ -144,7 +144,7 @@ describe("additionalInstructions", () => {
     coding = firstFhirMedicationRequest.medicationCodeableConcept.coding[0]
   })
 
-  test("no controlledDrugWords, patientInstruction, or patientInfo doesn't create a pertinentInformation1", () => {
+  test("no controlledDrugWords, notes, or patientInfo doesn't create a pertinentInformation1", () => {
     const result = convertMedicationRequestToLineItem(
       firstFhirMedicationRequest, null, [], [], coding, logger
     )
@@ -171,8 +171,10 @@ describe("additionalInstructions", () => {
     )
   })
 
-  test("patientInstruction show up correctly", () => {
-    firstFhirMedicationRequest.dosageInstruction[0].patientInstruction = "test1"
+  test("notes show up correctly", () => {
+    firstFhirMedicationRequest.note = [{
+      text: "test1"
+    }]
     const result = convertMedicationRequestToLineItem(
       firstFhirMedicationRequest, null, [], [], coding, logger
     )
@@ -253,7 +255,9 @@ describe("additionalInstructions", () => {
       extension: [controlledDrugWordsExtension]
     }
     firstFhirMedicationRequest.extension.push(controlledDrugExtension)
-    firstFhirMedicationRequest.dosageInstruction[0].patientInstruction = "testPatientInstruction"
+    firstFhirMedicationRequest.note = [{
+      text: "testDispenserInstruction"
+    }]
     const medication = [new hl7V3.Text("testMedication")]
     const patientInfo = [new hl7V3.Text("testPatientInfo")]
     const result = convertMedicationRequestToLineItem(
@@ -263,7 +267,7 @@ describe("additionalInstructions", () => {
       result.pertinentInformation1.pertinentAdditionalInstructions.value._text
     ).toBe(
       // eslint-disable-next-line max-len
-      "<medication>testMedication</medication><patientInfo>testPatientInfo</patientInfo>CD: test1\ntestPatientInstruction"
+      "<medication>testMedication</medication><patientInfo>testPatientInfo</patientInfo>CD: test1\ntestDispenserInstruction"
     )
   })
 })
