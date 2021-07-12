@@ -55,6 +55,30 @@ describe.each([
         (line, index) => expect(line).toBe(hl7Organization.addr.streetAddressLine[index]._text)
       )
     })
+
+    test("empty name gets translated", () => {
+      const organizationWithoutName = createOrganization(
+        {...performerRepresentedOrganization, name: undefined}
+      )
+
+      expect(organizationWithoutName.name).toBeUndefined()
+    })
+
+    test("empty telecom gets translated", () => {
+      const organizationWithoutTelecom = createOrganization(
+        {...performerRepresentedOrganization, telecom: undefined}
+      )
+
+      expect(organizationWithoutTelecom.telecom).toBeUndefined()
+    })
+
+    test("empty address gets translated", () => {
+      const organizationWithoutAddress = createOrganization(
+        {...performerRepresentedOrganization, addr: undefined}
+      )
+
+      expect(organizationWithoutAddress.address).toBeUndefined()
+    })
   }
 )
 
@@ -104,6 +128,22 @@ describe.each([
       fhirLocations[0].address.line.forEach(
         (line, index) => expect(line).toBe(hl7Organization.addr.streetAddressLine[index]._text)
       )
+    })
+
+    test("empty name gets translated", () => {
+      const healthcareServiceWithoutName = createHealthcareService(
+        {...performerRepresentedOrganization, name: undefined}, performerLocations
+      )
+
+      expect(healthcareServiceWithoutName.name).toBeUndefined()
+    })
+
+    test("empty telecom gets translated", () => {
+      const healthcareServiceWithoutTelecom = createHealthcareService(
+        {...performerRepresentedOrganization, telecom: undefined}, performerLocations
+      )
+
+      expect(healthcareServiceWithoutTelecom.telecom).toBeUndefined()
     })
   }
 )
