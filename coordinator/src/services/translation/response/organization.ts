@@ -35,14 +35,19 @@ export function createHealthcareService(
   organization: hl7V3.Organization,
   locations: Array<fhir.Location>
 ): fhir.HealthcareService {
-  return {
+  const healthcareService: fhir.HealthcareService = {
     resourceType: "HealthcareService",
     id: generateResourceId(),
     identifier: getOrganizationCodeIdentifier(organization.id._attributes.extension),
-    location: locations.map(location => fhir.createReference(location.id)),
-    name: organization.name._text,
-    telecom: convertTelecom(organization.telecom)
+    location: locations.map(location => fhir.createReference(location.id))
   }
+  if (organization.name) {
+    healthcareService.name = organization.name._text
+  }
+  if (organization.telecom) {
+    healthcareService.telecom = convertTelecom(organization.telecom)
+  }
+  return healthcareService
 }
 
 function getOrganizationCodeIdentifier(organizationId: string) {
