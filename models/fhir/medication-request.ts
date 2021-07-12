@@ -54,6 +54,7 @@ export interface BaseMedicationRequest extends common.Resource {
   authoredOn: string
   requester: common.Reference<practitionerRole.PractitionerRole>
   groupIdentifier: MedicationRequestGroupIdentifier
+  note?: Array<Annotation>
   dispenseRequest?: MedicationRequestDispenseRequest
   substitution?: {
     allowedBoolean: false
@@ -239,4 +240,8 @@ export interface MedicationRequestDispenseRequest {
   performer?: Performer
   validityPeriod?: common.Period
   numberOfRepeatsAllowed?: string | LosslessNumber
+}
+
+export interface Annotation {
+  text: string
 }

@@ -159,10 +159,12 @@
             }
           ]
         },
+        "note": [{
+          "text": "Dosage has been decreased on advice from the hospital."
+        }],
         "dosageInstruction": [
           {
-            "text": "1 tablet, daily",
-            "patientInstruction": "Dosage has been decreased on advice from the hospital."
+            "text": "1 tablet, daily"
           }
         ],
         "dispenseRequest": {

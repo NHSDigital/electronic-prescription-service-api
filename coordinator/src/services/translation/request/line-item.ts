@@ -4,7 +4,7 @@ import {
   getIdentifierValueForSystem,
   getNumericValueAsString,
   isTruthy,
-  onlyElement
+  onlyElement, onlyElementOrNull
 } from "../common"
 import {ElementCompact, js2xml} from "xml-js"
 import {fhir, hl7V3} from "@models"
@@ -79,10 +79,10 @@ function convertAdditionalInstructions(
   const controlledDrugWords = controlledDrugWordsExtension?.valueString
   const controlledDrugWordsWithPrefix = controlledDrugWords ? `CD: ${controlledDrugWords}` : ""
 
-  const patientInstruction = onlyElement(
-    medicationRequest.dosageInstruction,
-    "MedicationRequest.dosageInstruction"
-  ).patientInstruction
+  const noteText = onlyElementOrNull(
+    medicationRequest.note,
+    "MedicationRequest.note"
+  )?.text
 
   const additionalInstructionsValueObj: ElementCompact = {}
   if (medicationListText?.length) {
@@ -91,7 +91,7 @@ function convertAdditionalInstructions(
   if (patientInfoText?.length) {
     additionalInstructionsValueObj.patientInfo = patientInfoText
   }
-  additionalInstructionsValueObj._text = [controlledDrugWordsWithPrefix, patientInstruction].filter(isTruthy).join("\n")
+  additionalInstructionsValueObj._text = [controlledDrugWordsWithPrefix, noteText].filter(isTruthy).join("\n")
   const additionalInstructionsValueStr = js2xml(additionalInstructionsValueObj, {compact: true})
 
   const additionalInstructions = new hl7V3.AdditionalInstructions(additionalInstructionsValueStr)
