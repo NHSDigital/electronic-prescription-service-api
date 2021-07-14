@@ -77,7 +77,7 @@ info:
 
     ## Network access
     This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).
-    To use this API with NHS smartcards (see below) you do need an HSCN connection, although internet-facing alternatives are available.
+    To use this API with NHS [smartcards](https://digital.nhs.uk/services/registration-authorities-and-smartcards) (see below) you do need an HSCN connection, although internet-facing alternatives are available.
 
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
 
@@ -117,7 +117,7 @@ info:
 
     * is for formal integration testing
     * is stateful, so persists updates
-    * includes authorisation, with smartcard and non-smartcard options
+    * includes authorisation, with [smartcard](https://digital.nhs.uk/services/registration-authorities-and-smartcards) and non-smartcard options
 
     For more details see [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).
 
