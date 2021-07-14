@@ -3,7 +3,7 @@ import {readXml} from "../src/services/serialisation/xml"
 import {readFileSync} from "fs"
 import * as path from "path"
 import {fetcher} from "@models"
-import {warnIfDigestDoesNotMatchPrescription, warnIfSignatureIsInvalid} from "../src/services/signature-verification";
+import {warnIfDigestDoesNotMatchPrescription, warnIfSignatureIsInvalid} from "../src/services/signature-verification"
 
 //eslint-disable-next-line max-len
 const prescriptionPath = "../../examples/primary-care/acute/no-nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/spurious-code/1-Convert-Response-Send-200_OK.xml"

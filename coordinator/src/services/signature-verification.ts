@@ -1,33 +1,35 @@
-import {ElementCompact} from "xml-js";
-import {hl7V3} from "@models";
-import {writeXmlStringCanonicalized} from "./serialisation/xml";
-import {convertFragmentsToHashableFormat, extractFragments} from "./translation/request/signature";
-import {createParametersDigest} from "./translation/request";
-import crypto from "crypto";
+import {ElementCompact} from "xml-js"
+import {hl7V3} from "@models"
+import {writeXmlStringCanonicalized} from "./serialisation/xml"
+import {convertFragmentsToHashableFormat, extractFragments} from "./translation/request/signature"
+import {createParametersDigest} from "./translation/request"
+import crypto from "crypto"
 
-export function warnIfSignatureIsInvalid(prescriptionRoot: ElementCompact) {
+export function warnIfSignatureIsInvalid(prescriptionRoot: ElementCompact): void {
   const signatureValid = verifyPrescriptionSignatureValid(prescriptionRoot)
   if (!signatureValid) {
-    console.warn(`Signature is not valid for Bundle: ${prescriptionRoot.PORX_IN020101SM31.id._attributes.root}`)
+    console.warn(
+      `Signature is not valid for Bundle: ${prescriptionRoot.PORX_IN020101SM31.id._attributes.root}`
+    )
   }
 }
 
-export function verifySignatureMatchesPrescription(prescriptionRoot: ElementCompact) {
+export function verifySignatureMatchesPrescription(prescriptionRoot: ElementCompact): boolean {
   const signatureRoot = extractSignatureRootFromPrescriptionRoot(prescriptionRoot)
   const digestFromSignature = extractDigestFromSignatureRoot(signatureRoot)
   const digestFromPrescription = calculateDigestFromPrescriptionRoot(prescriptionRoot)
   const digestMatches = digestFromPrescription === digestFromSignature
-  return digestMatches;
+  return digestMatches
 }
 
-export function warnIfDigestDoesNotMatchPrescription(prescriptionRoot: ElementCompact) {
-  const digestMatches = verifySignatureMatchesPrescription(prescriptionRoot);
+export function warnIfDigestDoesNotMatchPrescription(prescriptionRoot: ElementCompact): void {
+  const digestMatches = verifySignatureMatchesPrescription(prescriptionRoot)
   if (!digestMatches) {
     console.warn(`Digest did not match for Bundle: ${prescriptionRoot.PORX_IN020101SM31.id._attributes.root}`)
   }
 }
 
-export function verifyPrescriptionSignatureValid(prescriptionRoot: ElementCompact) {
+export function verifyPrescriptionSignatureValid(prescriptionRoot: ElementCompact): boolean {
   const signatureRoot = extractSignatureRootFromPrescriptionRoot(prescriptionRoot)
   return verifySignatureValid(signatureRoot)
 }

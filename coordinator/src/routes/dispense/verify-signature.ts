@@ -1,25 +1,22 @@
 import Hapi from "@hapi/hapi"
-import {BASE_PATH, ContentTypes, externalValidator, getPayload, handleResponse} from ".././util"
+import {BASE_PATH, ContentTypes, externalValidator, getPayload} from ".././util"
 import {fhir, hl7V3} from "@models"
-import * as bundleValidator from "../../services/validation/bundle-validator"
-import {isBundle} from "../../utils/type-guards";
-import * as translator from "../../services/translation/request";
-import {convertParentPrescription} from "../../services/translation/request/prescribe/parent-prescription";
+import {isBundle} from "../../utils/type-guards"
+import {convertParentPrescription} from "../../services/translation/request/prescribe/parent-prescription"
 import {
   verifyPrescriptionSignatureValid,
   verifySignatureMatchesPrescription
-} from "../../services/signature-verification";
-import {ElementCompact} from "xml-js";
-import pino from "pino";
+} from "../../services/signature-verification"
+import pino from "pino"
 
-function formVerifySignatureResponse(bundleEntryResource: fhir.Bundle, issue: { severity: string; code: string }[], index: number) {
+function formVerifySignatureResponse(
+  bundleEntryResource: fhir.Bundle, issue: Array<{ severity: string; code: string }>, index: number) {
   const valueReference = {
     name: "messageIdentifier",
     valueReference: {
       identifier: bundleEntryResource.identifier
     }
   }
-
 
   const resourceParameter = {
     name: "result",
@@ -35,9 +32,10 @@ function formVerifySignatureResponse(bundleEntryResource: fhir.Bundle, issue: { 
   }
 }
 
-function getSignatureVerification(bundleEntryResource: fhir.Bundle, index: number, logger: pino.Logger): fhir.MultiPartParameter {
+function getSignatureVerification(
+  bundleEntryResource: fhir.Bundle, index: number, logger: pino.Logger): fhir.MultiPartParameter {
   const parentPrescription = convertParentPrescription(bundleEntryResource, logger)
-  const parentPrescriptionRoot =  new hl7V3.ParentPrescriptionRoot(parentPrescription)
+  const parentPrescriptionRoot = new hl7V3.ParentPrescriptionRoot(parentPrescription)
   const validSignature = verifyPrescriptionSignatureValid(parentPrescriptionRoot)
   const matchingSignature = verifySignatureMatchesPrescription(parentPrescriptionRoot)
 
@@ -54,7 +52,7 @@ function getSignatureVerification(bundleEntryResource: fhir.Bundle, index: numbe
           "coding": [{
             "system": "",
             "code": "",
-            "display": "Signature is invalid.",
+            "display": "Signature is invalid."
           }]
         }
       })
@@ -67,7 +65,7 @@ function getSignatureVerification(bundleEntryResource: fhir.Bundle, index: numbe
           "coding": [{
             "system": "",
             "code": "",
-            "display": "Signature doesn't match prescription.",
+            "display": "Signature doesn't match prescription."
           }]
         }
       })
