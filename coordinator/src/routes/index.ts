@@ -7,6 +7,7 @@ import statusRoutes from "./health/get-status"
 import pollingRoutes from "./polling"
 import releaseRoutes from "./dispense/release"
 import taskRoutes from "./dispense/task"
+import verifySignatureRoutes from "./dispense/verify-signature"
 import {isProd} from "../utils/environment"
 
 const debugRoutes = [
@@ -20,7 +21,8 @@ const mainRoutes = [
   ...processPrescriptionRoutes,
   ...releaseRoutes,
   ...pollingRoutes,
-  ...taskRoutes
+  ...taskRoutes,
+  ...verifySignatureRoutes
 ]
 
 const healthcheckRoutes = [
