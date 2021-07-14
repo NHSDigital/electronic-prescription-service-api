@@ -3,8 +3,8 @@ import * as common from "./common"
 export type ParameterTypes = StringParameter |
   IdentifierParameter |
   CodeParameter |
-  ReferenceParameter<any> |
-  ResourceParameter |
+  ReferenceParameter<never> |
+  ResourceParameter<never> |
   MultiPartParameter
 
 export class Parameters extends common.Resource {
@@ -25,8 +25,8 @@ export interface ReferenceParameter<T extends common.Resource> extends Parameter
   valueReference: common.IdentifierReference<T>
 }
 
-export interface ResourceParameter extends Parameter {
-  resource: common.Resource
+export interface ResourceParameter<T extends common.Resource> extends Parameter {
+  resource: T
 }
 
 export interface MultiPartParameter extends Parameter {

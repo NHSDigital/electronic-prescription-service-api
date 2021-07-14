@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
-import {BASE_PATH, ContentTypes, externalValidator, getPayload} from ".././util"
-import {fhir, hl7V3} from "@models"
+import {BASE_PATH, ContentTypes, externalValidator, getPayload} from "../util"
+import {fhir} from "@models"
 import {isBundle} from "../../utils/type-guards"
 import {convertParentPrescription} from "../../services/translation/request/prescribe/parent-prescription"
 import {
@@ -8,71 +8,6 @@ import {
   verifySignatureMatchesPrescription
 } from "../../services/signature-verification"
 import pino from "pino"
-
-function formVerifySignatureResponse(
-  bundleEntryResource: fhir.Bundle, issue: Array<{ severity: string; code: string }>, index: number) {
-  const valueReference = {
-    name: "messageIdentifier",
-    valueReference: {
-      identifier: bundleEntryResource.identifier
-    }
-  }
-
-  const resourceParameter = {
-    name: "result",
-    resource: {
-      resourceType: "OperationOutcome",
-      issue: issue
-    }
-  }
-
-  return {
-    name: index.toString(),
-    part: [valueReference, resourceParameter]
-  }
-}
-
-function getSignatureVerification(
-  bundleEntryResource: fhir.Bundle, index: number, logger: pino.Logger): fhir.MultiPartParameter {
-  const parentPrescription = convertParentPrescription(bundleEntryResource, logger)
-  const parentPrescriptionRoot = new hl7V3.ParentPrescriptionRoot(parentPrescription)
-  const validSignature = verifyPrescriptionSignatureValid(parentPrescriptionRoot)
-  const matchingSignature = verifySignatureMatchesPrescription(parentPrescriptionRoot)
-
-  if (validSignature && matchingSignature) {
-    const issue = [{"severity": "information", "code": "informational"}]
-    return formVerifySignatureResponse(bundleEntryResource, issue, index)
-  } else {
-    const issue: Array<fhir.OperationOutcomeIssue> = []
-    if (!validSignature) {
-      issue.push({
-        "severity": "error",
-        "code": fhir.IssueCodes.INVALID,
-        "details": {
-          "coding": [{
-            "system": "",
-            "code": "",
-            "display": "Signature is invalid."
-          }]
-        }
-      })
-    }
-    if (!matchingSignature) {
-      issue.push({
-        "severity": "error",
-        "code": fhir.IssueCodes.INVALID,
-        "details": {
-          "coding": [{
-            "system": "",
-            "code": "",
-            "display": "Signature doesn't match prescription."
-          }]
-        }
-      })
-    }
-    return formVerifySignatureResponse(bundleEntryResource, issue, index)
-  }
-}
 
 export default [
   /*
@@ -83,14 +18,13 @@ export default [
     path: `${BASE_PATH}/$verify-signature`,
     handler: externalValidator(
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
-        const bundle = getPayload(request) as fhir.Resource
-        if (isBundle(bundle)) {
-
-          request.logger.info("Building HL7V3 message from Bundle")
-          const verificationResponses = bundle.entry
+        const outerBundle = getPayload(request) as fhir.Resource
+        if (isBundle(outerBundle)) {
+          request.logger.info("Verifying prescription signatures from Bundle")
+          const verificationResponses = outerBundle.entry
             .map(entry => entry.resource)
             .filter(isBundle)
-            .map((bundle, index) => getSignatureVerification(bundle, index, request.logger))
+            .map((innerBundle, index) => verifyPrescriptionSignature(innerBundle, index, request.logger))
 
           const parameters: fhir.Parameters = {
             resourceType: "Parameters",
@@ -103,3 +37,76 @@ export default [
     )
   }
 ]
+
+function verifyPrescriptionSignature(
+  bundle: fhir.Bundle,
+  index: number,
+  logger: pino.Logger
+): fhir.MultiPartParameter {
+  const parentPrescription = convertParentPrescription(bundle, logger)
+  const validSignature = verifyPrescriptionSignatureValid(parentPrescription)
+  const matchingSignature = verifySignatureMatchesPrescription(parentPrescription)
+
+  if (validSignature && matchingSignature) {
+    const issue: Array<fhir.OperationOutcomeIssue> = [{
+      severity: "information",
+      code: fhir.IssueCodes.INFORMATIONAL
+    }]
+    return buildVerificationResultParameter(bundle, issue, index)
+  } else {
+    const issue: Array<fhir.OperationOutcomeIssue> = []
+    if (!validSignature) {
+      issue.push({
+        severity: "error",
+        code: fhir.IssueCodes.INVALID,
+        details: {
+          coding: [{
+            system: "TODO_ASK_KEVIN",
+            code: "SIGNATURE_INVALID",
+            display: "Signature is invalid."
+          }]
+        }
+      })
+    }
+    if (!matchingSignature) {
+      issue.push({
+        severity: "error",
+        code: fhir.IssueCodes.INVALID,
+        details: {
+          coding: [{
+            system: "TODO_ASK_KEVIN",
+            code: "SIGNATURE_DOES_NOT_MATCH_PRESCRIPTION",
+            display: "Signature doesn't match prescription."
+          }]
+        }
+      })
+    }
+    return buildVerificationResultParameter(bundle, issue, index)
+  }
+}
+
+function buildVerificationResultParameter(
+  bundleEntryResource: fhir.Bundle,
+  issue: Array<fhir.OperationOutcomeIssue>,
+  index: number
+): fhir.MultiPartParameter {
+  const valueReference: fhir.ReferenceParameter<fhir.Bundle> = {
+    name: "messageIdentifier",
+    valueReference: {
+      identifier: bundleEntryResource.identifier
+    }
+  }
+
+  const resourceParameter: fhir.ResourceParameter<fhir.OperationOutcome> = {
+    name: "result",
+    resource: {
+      resourceType: "OperationOutcome",
+      issue: issue
+    }
+  }
+
+  return {
+    name: index.toString(),
+    part: [valueReference, resourceParameter]
+  }
+}

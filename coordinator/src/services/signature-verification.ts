@@ -5,39 +5,19 @@ import {convertFragmentsToHashableFormat, extractFragments} from "./translation/
 import {createParametersDigest} from "./translation/request"
 import crypto from "crypto"
 
-export function warnIfSignatureIsInvalid(prescriptionRoot: ElementCompact): void {
-  const signatureValid = verifyPrescriptionSignatureValid(prescriptionRoot)
-  if (!signatureValid) {
-    console.warn(
-      `Signature is not valid for Bundle: ${prescriptionRoot.PORX_IN020101SM31.id._attributes.root}`
-    )
-  }
-}
-
-export function verifySignatureMatchesPrescription(prescriptionRoot: ElementCompact): boolean {
-  const signatureRoot = extractSignatureRootFromPrescriptionRoot(prescriptionRoot)
+export function verifySignatureMatchesPrescription(parentPrescription: hl7V3.ParentPrescription): boolean {
+  const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
   const digestFromSignature = extractDigestFromSignatureRoot(signatureRoot)
-  const digestFromPrescription = calculateDigestFromPrescriptionRoot(prescriptionRoot)
-  const digestMatches = digestFromPrescription === digestFromSignature
-  return digestMatches
+  const digestFromPrescription = calculateDigestFromParentPrescription(parentPrescription)
+  return digestFromPrescription === digestFromSignature
 }
 
-export function warnIfDigestDoesNotMatchPrescription(prescriptionRoot: ElementCompact): void {
-  const digestMatches = verifySignatureMatchesPrescription(prescriptionRoot)
-  if (!digestMatches) {
-    console.warn(`Digest did not match for Bundle: ${prescriptionRoot.PORX_IN020101SM31.id._attributes.root}`)
-  }
-}
-
-export function verifyPrescriptionSignatureValid(prescriptionRoot: ElementCompact): boolean {
-  const signatureRoot = extractSignatureRootFromPrescriptionRoot(prescriptionRoot)
+export function verifyPrescriptionSignatureValid(parentPrescription: hl7V3.ParentPrescription): boolean {
+  const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
   return verifySignatureValid(signatureRoot)
 }
 
-function extractSignatureRootFromPrescriptionRoot(prescriptionRoot: ElementCompact): ElementCompact {
-  // eslint-disable-next-line max-len
-  const sendMessagePayload = prescriptionRoot.PORX_IN020101SM31 as hl7V3.SendMessagePayload<hl7V3.ParentPrescriptionRoot>
-  const parentPrescription = sendMessagePayload.ControlActEvent.subject.ParentPrescription
+function extractSignatureRootFromParentPrescription(parentPrescription: hl7V3.ParentPrescription): ElementCompact {
   const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
   return pertinentPrescription.author.signatureText
 }
@@ -51,10 +31,7 @@ function extractDigestFromSignatureRoot(signatureRoot: ElementCompact) {
   return writeXmlStringCanonicalized({SignedInfo: signedInfo})
 }
 
-function calculateDigestFromPrescriptionRoot(prescriptionRoot: ElementCompact) {
-  // eslint-disable-next-line max-len
-  const sendMessagePayload = prescriptionRoot.PORX_IN020101SM31 as hl7V3.SendMessagePayload<hl7V3.ParentPrescriptionRoot>
-  const parentPrescription = sendMessagePayload.ControlActEvent.subject.ParentPrescription
+function calculateDigestFromParentPrescription(parentPrescription: hl7V3.ParentPrescription) {
   const fragments = extractFragments(parentPrescription)
   const fragmentsToBeHashed = convertFragmentsToHashableFormat(fragments)
   const digestFromPrescriptionBase64 = createParametersDigest(fragmentsToBeHashed)
