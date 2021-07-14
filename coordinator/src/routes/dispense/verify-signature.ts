@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {BASE_PATH, ContentTypes, externalValidator, getPayload} from "../util"
-import {fhir} from "@models"
+import {fhir, validationErrors as errors} from "@models"
 import {isBundle} from "../../utils/type-guards"
 import {convertParentPrescription} from "../../services/translation/request/prescribe/parent-prescription"
 import {
@@ -19,20 +19,25 @@ export default [
     handler: externalValidator(
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const outerBundle = getPayload(request) as fhir.Resource
-        if (isBundle(outerBundle)) {
-          request.logger.info("Verifying prescription signatures from Bundle")
-          const verificationResponses = outerBundle.entry
-            .map(entry => entry.resource)
-            .filter(isBundle)
-            .map((innerBundle, index) => verifyPrescriptionSignature(innerBundle, index, request.logger))
-
-          const parameters: fhir.Parameters = {
-            resourceType: "Parameters",
-            parameter: verificationResponses
-          }
-
-          return responseToolkit.response(parameters).code(200).type(ContentTypes.FHIR)
+        if (!isBundle(outerBundle)) {
+          const operationOutcome = fhir.createOperationOutcome([
+            errors.createResourceTypeIssue("Bundle")
+          ])
+          return responseToolkit.response(operationOutcome).code(400).type(ContentTypes.FHIR)
         }
+
+        request.logger.info("Verifying prescription signatures from Bundle")
+        const verificationResponses = outerBundle.entry
+          .map(entry => entry.resource)
+          .filter(isBundle)
+          .map((innerBundle, index) => verifyPrescriptionSignature(innerBundle, index, request.logger))
+
+        const parameters: fhir.Parameters = {
+          resourceType: "Parameters",
+          parameter: verificationResponses
+        }
+
+        return responseToolkit.response(parameters).code(200).type(ContentTypes.FHIR)
       }
     )
   }
@@ -46,7 +51,6 @@ function verifyPrescriptionSignature(
   const parentPrescription = convertParentPrescription(bundle, logger)
   const validSignature = verifyPrescriptionSignatureValid(parentPrescription)
   const matchingSignature = verifySignatureMatchesPrescription(parentPrescription)
-
   if (validSignature && matchingSignature) {
     const issue: Array<fhir.OperationOutcomeIssue> = [{
       severity: "information",
@@ -61,7 +65,8 @@ function verifyPrescriptionSignature(
         code: fhir.IssueCodes.INVALID,
         details: {
           coding: [{
-            system: "TODO_ASK_KEVIN",
+            //TODO - Ask Kevin to add this code (or something equivalent)
+            system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             code: "SIGNATURE_INVALID",
             display: "Signature is invalid."
           }]
@@ -74,7 +79,8 @@ function verifyPrescriptionSignature(
         code: fhir.IssueCodes.INVALID,
         details: {
           coding: [{
-            system: "TODO_ASK_KEVIN",
+            //TODO - Ask Kevin to add this code (or something equivalent)
+            system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
             code: "SIGNATURE_DOES_NOT_MATCH_PRESCRIPTION",
             display: "Signature doesn't match prescription."
           }]
@@ -86,14 +92,14 @@ function verifyPrescriptionSignature(
 }
 
 function buildVerificationResultParameter(
-  bundleEntryResource: fhir.Bundle,
+  bundle: fhir.Bundle,
   issue: Array<fhir.OperationOutcomeIssue>,
   index: number
 ): fhir.MultiPartParameter {
-  const valueReference: fhir.ReferenceParameter<fhir.Bundle> = {
+  const messageIdentifierParameter: fhir.ReferenceParameter<fhir.Bundle> = {
     name: "messageIdentifier",
     valueReference: {
-      identifier: bundleEntryResource.identifier
+      identifier: bundle.identifier
     }
   }
 
@@ -107,6 +113,9 @@ function buildVerificationResultParameter(
 
   return {
     name: index.toString(),
-    part: [valueReference, resourceParameter]
+    part: [
+      messageIdentifierParameter,
+      resourceParameter
+    ]
   }
 }
