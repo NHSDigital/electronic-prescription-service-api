@@ -66,7 +66,7 @@ function verifyPrescriptionSignature(
         details: {
           coding: [{
             //TODO - Ask Kevin to add this code (or something equivalent)
-            system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
             code: "SIGNATURE_INVALID",
             display: "Signature is invalid."
           }]
@@ -80,7 +80,7 @@ function verifyPrescriptionSignature(
         details: {
           coding: [{
             //TODO - Ask Kevin to add this code (or something equivalent)
-            system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
             code: "SIGNATURE_DOES_NOT_MATCH_PRESCRIPTION",
             display: "Signature doesn't match prescription."
           }]
