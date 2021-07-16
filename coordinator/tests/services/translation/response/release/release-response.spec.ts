@@ -137,6 +137,11 @@ describe("bundle resources", () => {
     const medicationRequest = result.filter(resource => resource.resourceType === "MedicationRequest")
     expect(medicationRequest).toHaveLength(4)
   })
+
+  test("contains Provenance", () => {
+    const provenances = result.filter(resource => resource.resourceType === "Provenance")
+    expect(provenances).toHaveLength(1)
+  })
 })
 
 export function getExamplePrescriptionReleaseResponse(): hl7V3.PrescriptionReleaseResponse {
