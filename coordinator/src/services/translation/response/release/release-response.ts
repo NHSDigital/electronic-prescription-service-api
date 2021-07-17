@@ -7,6 +7,7 @@ import {createAndAddCommunicationRequest, parseAdditionalInstructions} from "./a
 import * as uuid from "uuid"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
 import {fhir, hl7V3} from "@models"
+import {convertSignatureTextToProvenance} from "../provenance"
 
 const SUPPORTED_MESSAGE_TYPE = "PORX_MT122003UK32"
 
@@ -60,7 +61,8 @@ export function createBundleResources(
   focusIds.push(patientId)
 
   const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
-  const authorAgentPerson = pertinentPrescription.author.AgentPerson
+  const prescriptionAuthor = pertinentPrescription.author
+  const authorAgentPerson = prescriptionAuthor.AgentPerson
   const authorId = translateAndAddAgentPerson(authorAgentPerson, bundleResources)
 
   const responsiblePartyAgentPerson = pertinentPrescription.responsibleParty?.AgentPerson
@@ -99,6 +101,11 @@ export function createBundleResources(
     releaseRequestId
   )
   bundleResources.unshift(messageHeader)
+
+  if (prescriptionAuthor.signatureText) {
+    const resourceIds = bundleResources.map(resource => resource.id)
+    bundleResources.push(convertSignatureTextToProvenance(prescriptionAuthor, authorId, resourceIds))
+  }
 
   return bundleResources
 }
