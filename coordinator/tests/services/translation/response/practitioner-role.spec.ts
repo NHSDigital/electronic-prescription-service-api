@@ -41,7 +41,9 @@ describe("createPractitionerRole", () => {
   test.each(cases)(
     "has reference to Practitioner",
     (agentPerson: hl7V3.AgentPerson, practitionerRole: fhir.PractitionerRole) => {
-      expect(practitionerRole.practitioner.reference).toBe(`urn:uuid:${practitionerId}`)
+      expect(practitionerRole.practitioner).toMatchObject({
+        reference: `urn:uuid:${practitionerId}`
+      })
     }
   )
 

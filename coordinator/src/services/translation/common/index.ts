@@ -1,6 +1,7 @@
 import {fhir, processingErrors as errors} from "@models"
 import {LosslessNumber} from "lossless-json"
 import {getMessageHeader} from "./getResourcesOfType"
+import {isReference} from "../../../utils/type-guards"
 
 export const UNKNOWN_GP_ODS_CODE = "V81999"
 
@@ -74,6 +75,67 @@ export function getResourceForFullUrl(bundle: fhir.Bundle, resourceFullUrl: stri
 
 export function resolveReference<T extends fhir.Resource>(bundle: fhir.Bundle, reference: fhir.Reference<T>): T {
   return getResourceForFullUrl(bundle, reference.reference) as T
+}
+
+export function resolvePractitioner(
+  bundle: fhir.Bundle, reference: fhir.Reference<fhir.Practitioner> | fhir.IdentifierReference<fhir.Practitioner>
+): fhir.Practitioner {
+  if (isReference(reference)) {
+    return resolveReference(bundle, reference)
+  } else {
+    return {
+      resourceType: "Practitioner",
+      identifier:[reference.identifier],
+      name: [{text: reference.display}]
+    }
+  }
+}
+
+export function resolveOrganization(bundle: fhir.Bundle, practitionerRole: fhir.PractitionerRole): fhir.Organization {
+  const organization = practitionerRole.organization
+  if (isReference(organization)) {
+    return resolveReference(bundle, organization)
+  } else {
+    const location = practitionerRole.location
+      .map(location => resolveReference(bundle, location))
+      .map(location => location.address)
+    return {
+      resourceType: "Organization",
+      identifier: [organization.identifier],
+      //Will break for Primary Care
+      type: [
+        {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+              "code": "197",
+              "display": "NHS TRUST"
+            }
+          ]
+        }
+      ],
+      name: organization.display,
+      telecom: practitionerRole.telecom,
+      address: location
+    }
+  }
+}
+
+export function resolveHealthcareService(
+  bundle: fhir.Bundle, practitionerRole: fhir.PractitionerRole
+): fhir.HealthcareService {
+  const healthcareService = practitionerRole.healthcareService[0]
+  if (isReference(healthcareService)) {
+    return resolveReference(bundle, healthcareService)
+  } else {
+    return {
+      resourceType: "HealthcareService",
+      identifier: [healthcareService.identifier],
+      name: healthcareService.display,
+      telecom: practitionerRole.telecom,
+      location: practitionerRole.location
+    }
+  }
 }
 
 export function getIdentifierValueForSystem(

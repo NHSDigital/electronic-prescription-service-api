@@ -2,7 +2,7 @@ import moment from "moment"
 import {
   getCodeableConceptCodingForSystem,
   getExtensionForUrlOrNull,
-  getIdentifierValueForSystem,
+  getIdentifierValueForSystem, resolvePractitioner,
   resolveReference
 } from "../common"
 import {getMedicationRequests} from "../common/getResourcesOfType"
@@ -62,7 +62,7 @@ export function convertRequesterToControlActAuthor(
 ): hl7V3.AuthorPersonSds {
   const firstMedicationRequest = getMedicationRequests(bundle)[0]
   const authorPractitionerRole = resolveReference(bundle, firstMedicationRequest.requester)
-  const authorPractitioner = resolveReference(bundle, authorPractitionerRole.practitioner)
+  const authorPractitioner = resolvePractitioner(bundle, authorPractitionerRole.practitioner)
   return convertPractitionerToControlActAuthor(authorPractitioner, authorPractitionerRole)
 }
 
@@ -79,7 +79,7 @@ export function convertResponsiblePractitionerToControlActAuthor(
     ? responsiblePractitionerExtension.valueReference
     : firstMedicationRequest.requester
   const responsiblePractitionerRole = resolveReference(bundle, responsiblePractitionerRoleReference)
-  const responsiblePractitioner = resolveReference(bundle, responsiblePractitionerRole.practitioner)
+  const responsiblePractitioner = resolvePractitioner(bundle, responsiblePractitionerRole.practitioner)
   return convertPractitionerToControlActAuthor(responsiblePractitioner, responsiblePractitionerRole)
 }
 

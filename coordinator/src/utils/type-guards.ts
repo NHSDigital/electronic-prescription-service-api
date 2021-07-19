@@ -29,3 +29,9 @@ function isFhirResourceOfType(body: unknown, resourceType: string) {
     && "resourceType" in body
     && (body as fhir.Resource).resourceType === resourceType
 }
+
+export function isReference<T extends fhir.Resource>(
+  body: fhir.Reference<T> | fhir.IdentifierReference<T>
+): body is fhir.Reference<T>{
+  return !!(body as fhir.Reference<T>).reference
+}
