@@ -4,6 +4,16 @@ import {writeXmlStringCanonicalized} from "./serialisation/xml"
 import {convertFragmentsToHashableFormat, extractFragments} from "./translation/request/signature"
 import {createParametersDigest} from "./translation/request"
 import crypto from "crypto"
+import {isTruthy} from "./translation/common"
+
+export function verifySignatureHasCorrectFormat(parentPrescription: hl7V3.ParentPrescription): boolean {
+  const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
+  const signature = signatureRoot?.Signature
+  const signedInfo = signature?.SignedInfo
+  const signatureValue = signature?.SignatureValue?._text
+  const x509Certificate = signature?.KeyInfo?.X509Data?.X509Certificate?._text
+  return isTruthy(signedInfo) && isTruthy(signatureValue) && isTruthy(x509Certificate)
+}
 
 export function verifySignatureMatchesPrescription(parentPrescription: hl7V3.ParentPrescription): boolean {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)

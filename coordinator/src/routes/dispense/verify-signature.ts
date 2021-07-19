@@ -4,7 +4,7 @@ import {fhir, validationErrors as errors} from "@models"
 import {isBundle} from "../../utils/type-guards"
 import {convertParentPrescription} from "../../services/translation/request/prescribe/parent-prescription"
 import {
-  verifyPrescriptionSignatureValid,
+  verifyPrescriptionSignatureValid, verifySignatureHasCorrectFormat,
   verifySignatureMatchesPrescription
 } from "../../services/signature-verification"
 import pino from "pino"
@@ -49,6 +49,14 @@ function verifyPrescriptionSignature(
   logger: pino.Logger
 ): fhir.MultiPartParameter {
   const parentPrescription = convertParentPrescription(bundle, logger)
+  const validSignatureFormat = verifySignatureHasCorrectFormat(parentPrescription)
+  if (!validSignatureFormat) {
+    const issue: Array<fhir.OperationOutcomeIssue> = [
+      createInvalidSignatureIssue("Invalid signature format.")
+    ]
+    return buildVerificationResultParameter(bundle, issue, index)
+  }
+
   const validSignature = verifyPrescriptionSignatureValid(parentPrescription)
   const matchingSignature = verifySignatureMatchesPrescription(parentPrescription)
   if (validSignature && matchingSignature) {
@@ -60,34 +68,27 @@ function verifyPrescriptionSignature(
   } else {
     const issue: Array<fhir.OperationOutcomeIssue> = []
     if (!validSignature) {
-      issue.push({
-        severity: "error",
-        code: fhir.IssueCodes.INVALID,
-        details: {
-          coding: [{
-            //TODO - Ask Kevin to add this code (or something equivalent)
-            system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-            code: "SIGNATURE_INVALID",
-            display: "Signature is invalid."
-          }]
-        }
-      })
+      issue.push(createInvalidSignatureIssue("Signature is invalid."))
     }
     if (!matchingSignature) {
-      issue.push({
-        severity: "error",
-        code: fhir.IssueCodes.INVALID,
-        details: {
-          coding: [{
-            //TODO - Ask Kevin to add this code (or something equivalent)
-            system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-            code: "SIGNATURE_DOES_NOT_MATCH_PRESCRIPTION",
-            display: "Signature doesn't match prescription."
-          }]
-        }
-      })
+      issue.push(createInvalidSignatureIssue("Signature doesn't match prescription."))
     }
     return buildVerificationResultParameter(bundle, issue, index)
+  }
+}
+
+function createInvalidSignatureIssue(display: string): fhir.OperationOutcomeIssue {
+  return {
+    severity: "error",
+    code: fhir.IssueCodes.INVALID,
+    details: {
+      coding: [{
+        system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+        code: "INVALID",
+        display
+      }]
+    },
+    expression: ["Provenance.signature.data"]
   }
 }
 
