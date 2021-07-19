@@ -320,6 +320,13 @@
             "reference": "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e",
             "display": "SOMERSET BOWEL CANCER SCREENING CENTRE"
           }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "01234567890",
+            "use": "work"
+          }
         ]
       }
     },
