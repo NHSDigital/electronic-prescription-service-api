@@ -29,11 +29,12 @@ info:
 
     ### As a dispenser
     You can:
-    * download a prescription (int/sandbox implementations only)
-    * return a prescription (sandbox implementation only)
+    * download a set of prescription (int/sandbox implementations only)
+    * verify the signatures on a set of prescriptions (in development)
+    * return a prescription (int/sandbox implementation only)
     * submit a dispense notification to EPS (sandbox implementation only)
     * withdraw a dispense notification (sandbox implementation only)
-    * submit a dispense claim (sandbox implementation only)
+    * submit a dispense claim (int/sandbox implementation only)
 
     You cannot currently use this API to:
     * claim for a dispensed prescription
@@ -447,8 +448,8 @@ paths:
                   description: |
                     An error response to a release request.
                   value:
-                    $ref: components/examples/release/not-found-error.json
-  /FHIR/R4/Task/$verify-signature:
+                    $ref: components/examples/release/not-found-error.json 
+  /FHIR/R4/$verify-signature:
     post:
       operationId: verify-signature
       summary: To verify a prescription's signature
@@ -478,7 +479,7 @@ paths:
                   $ref: components/examples/sandbox/Release-Response-200_OK.json
       responses:
         '200':
-          description: Successfully downloaded a prescription for dispensing.
+          description: Succesfully verified the prescription signature, signature may still be invalid.
           content:
             application/fhir+json:
               schema:
@@ -505,7 +506,7 @@ paths:
                   description: |
                     An error response to a verify signature request.
                   value:
-                    $ref: components/examples/release/not-found-error.json                   
+                    $ref: components/examples/release/not-found-error.json
   /FHIR/R4/Task#return:
     post:
       operationId: return
