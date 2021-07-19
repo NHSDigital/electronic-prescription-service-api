@@ -16,8 +16,8 @@
   "code": {
     "coding":  [
         {
-            "system": "http://hl7.org/fhir/CodeSystem/task-code",
-            "code": "example"
+            "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+            "code": "acute"
         }
     ]
   },
