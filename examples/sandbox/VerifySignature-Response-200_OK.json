@@ -25,11 +25,12 @@
                   "coding": [
                     {
                       "system": "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-                      "code": "SIGNATURE_INVALID",
+                      "code": "INVALID",
                       "display": "Signature is invalid."
                     }
                   ]
-                }
+                },
+                "expression": ["Provenance.signature.data"]
               },
               {
                 "severity": "error",
@@ -38,11 +39,12 @@
                   "coding": [
                     {
                       "system": "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-                      "code": "SIGNATURE_DOES_NOT_MATCH_PRESCRIPTION",
+                      "code": "INVALID",
                       "display": "Signature doesn't match prescription."
                     }
                   ]
-                }
+                },
+                "expression": ["Provenance.signature.data"]
               }
             ]
           }
