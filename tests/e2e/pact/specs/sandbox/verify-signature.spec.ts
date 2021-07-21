@@ -60,6 +60,7 @@ jestpact.pactWith(
           .set("Accept", "application/fhir+json")
           .set("X-Request-ID", requestId)
           .set("X-Correlation-ID", correlationId)
+          .set("X-Skip-Validation", "true")
           .send(messageStr)
           .expect(200)
       })
