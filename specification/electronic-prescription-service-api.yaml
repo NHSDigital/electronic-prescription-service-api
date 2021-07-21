@@ -18,12 +18,11 @@ info:
     ### As a prescriber
     You can:
     * encode prescription data
-    * create a secondary care (outpatient) prescription
-    * cancel a secondary care (outpatient) prescription
+    * create and cancel a secondary care (outpatient) prescription
+    * create and cancel a primary care prescription
 
     You cannot currently use this API to:
-    * create a primary care prescription
-    * create a secondary care (other than outpatient) prescription
+    * create a or cancel secondary care (homecare) prescription
     * create a tertiary care prescription
     * track prescriptions or check a prescription's status
 
@@ -36,13 +35,10 @@ info:
     * submit a dispense claim (sandbox implementation only)
 
     You cannot currently use this API to:
-    * claim for a dispensed prescription
     * track prescriptions or check a prescription's status
 
     ## Who can use this API
-    This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
-
-    You must do this before you can go live (see ‘Onboarding’ below).
+    This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development. You must do this before you can go live (see ‘Onboarding’ below).
 
     ## Related APIs
     The following APIs also give access to the Electronic Prescription Service:
@@ -54,7 +50,9 @@ info:
     - [Personal Demographics Service - FHIR API](https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir) - use this to obtain patient data
 
     ## API status and roadmap
-    To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?tag=eps-fhir-api).
+    The immediate EPS development priority is to support the role out of the next gen FHIR APIs for primary care and secondary care prescribing and dispensing. Alongside this we will be working on integrating a new FHIR compliant prescription tracker into the next gen APIs.
+    
+    To see suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?tag=eps-fhir-api).
 
     If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
 
@@ -125,7 +123,7 @@ info:
     You need to get your software approved by us before it can go live with this API. We call this onboarding.
     We are hoping to make the onboarding process as lightweight and as self-service as possible however it can sometimes be quite long, so it’s worth planning well ahead.
 
-    To begin the onboarding process please [contact us](https://digital.nhs.uk/developer/help-and-support) and request the 'EPS use case form'.
+    To begin the onboarding process please download and complete the [EPS use case form](https://nhs-prod.global.ssl.fastly.net/binaries/content/assets/website-assets/developer/electronic-prescription-service-fhir-api/eps-access-form-v1.0-org-short-name-yyyymmdd-1.docx) and email it to us at [epsonboarding@nhs.net](mailto:epsonboarding@nhs.net).
 
     ## Resources
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/DigitalMedicines) to assist with your integration.
