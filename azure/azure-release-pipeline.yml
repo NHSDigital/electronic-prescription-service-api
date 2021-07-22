@@ -59,6 +59,18 @@ extends:
         depends_on:
           - internal_dev
           - internal_dev_sandbox
+      - environment: int
+        stage_name: int-preview
+        make_spec_visible: true
+        fully_qualified_service_name: electronic-prescription-service-api-int-preview
+        service_base_path: electronic-prescriptions-preview
+#        service_name: electronic-prescriptions-int-preview
+#        short_service_name: epip
+        product_display_name: electronic-prescription-service-api-int-preview
+        proxy_path: live
+        depends_on:
+            - internal_dev
+            - internal_dev_sandbox
       - environment: sandbox
         proxy_path: sandbox
         depends_on:
