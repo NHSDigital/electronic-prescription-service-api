@@ -51,13 +51,19 @@ function createControlActEventAuthor(
   sdsUniqueIdentifierStr: string,
   sdsRoleProfileIdentifierStr: string
 ) {
+  const sdsRoleProfileIdentifier = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileIdentifierStr)
+
   const sdsUniqueIdentifier = new hl7V3.SdsUniqueIdentifier(sdsUniqueIdentifierStr)
   const authorAgentPersonPerson = new hl7V3.AgentPersonPersonSds(sdsUniqueIdentifier)
 
-  const sdsRoleProfileIdentifier = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileIdentifierStr)
+  const sdsJobRoleIdentifier = new hl7V3.SdsJobRoleIdentifier("UNKNOWN")
+  const sdsRole = new hl7V3.SdsRole(sdsJobRoleIdentifier)
+  const agentPersonPart = new hl7V3.AgentPersonPart(sdsRole)
+
   const authorAgentPerson = new hl7V3.AgentPersonSds()
   authorAgentPerson.id = sdsRoleProfileIdentifier
   authorAgentPerson.agentPersonSDS = authorAgentPersonPerson
+  authorAgentPerson.part = agentPersonPart
 
   return new hl7V3.AuthorPersonSds(authorAgentPerson)
 }
