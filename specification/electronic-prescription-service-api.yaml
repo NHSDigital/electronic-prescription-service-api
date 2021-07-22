@@ -96,11 +96,30 @@ info:
     - [Application-restricted RESTful API - signed JWT authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication)
 
     ## Environment and testing
-    | Purpose           | URL                                                                 |
-    | -------------     | --------------------------------------------------------------------|
-    | Sandbox           | `https://sandbox.api.service.nhs.uk/electronic-prescriptions`       |
-    | Integration test  | `https://int.api.service.nhs.uk/electronic-prescriptions`           |
-    | Production        | Not yet available                                                   |
+    | Purpose              | URL                                                               |
+    | -------------------- | ----------------------------------------------------------------- |
+    | Integration test     | `https://int.api.service.nhs.uk/electronic-prescriptions`         |
+    | Integration preview  | `https://int.api.service.nhs.uk/electronic-prescriptions-preview` |
+    | Sandbox              | `https://sandbox.api.service.nhs.uk/electronic-prescriptions`     |
+    | Production           | Not yet available                                                 |
+
+    ### Integration testing
+    We have two [integration environments](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing) 
+    for external use:
+    * Integration test is a stable environment that mirrors prod. Use this to smoke test your application.
+    * Integration preview is a non-stable environment. You should integrate with this environment when we aim to release a new version of the API. 
+    
+    #### Integration test
+    * is for formal integration testing
+    * is stateful, so persists updates
+    * includes authorisation, with [smartcard](https://digital.nhs.uk/services/registration-authorities-and-smartcards) and non-smartcard options
+
+    #### Integration preview
+    * is for testing upcoming changes to the API
+    * is stateful, so persists updates
+    * includes authorisation, with [smartcard](https://digital.nhs.uk/services/registration-authorities-and-smartcards) and non-smartcard options
+
+    For more details see [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).
 
     ### Sandbox testing
     Our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing):
@@ -111,15 +130,6 @@ info:
     * is open access, so does not allow you to test authorisation
 
     For more details on sandbox testing, or to try out the sandbox using our "Try this API" feature, see the documentation for each endpoint.
-
-    ### Integration testing
-    Our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing):
-
-    * is for formal integration testing
-    * is stateful, so persists updates
-    * includes authorisation, with [smartcard](https://digital.nhs.uk/services/registration-authorities-and-smartcards) and non-smartcard options
-
-    For more details see [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).
 
     ## Onboarding
     You need to get your software approved by us before it can go live with this API. We call this onboarding.
