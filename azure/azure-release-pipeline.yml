@@ -52,9 +52,9 @@ extends:
         make_spec_visible: true
         fully_qualified_service_name: electronic-prescription-service-api-int-preview
         service_base_path: electronic-prescriptions-preview
-        service_name: electronic-prescriptions-int-preview
-        short_service_name: epip
-        product_display_name: electronic-prescription-service-api-int-preview
+        service_name: electronic-prescription-service-api-preview
+        short_service_name: eps-coordinator-preview
+        product_display_name: Electronic Prescription Service (Preview)
         proxy_path: live
         depends_on:
             - internal_dev
