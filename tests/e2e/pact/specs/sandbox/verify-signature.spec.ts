@@ -7,7 +7,7 @@ import {InteractionObject} from "@pact-foundation/pact"
 import * as LosslessJson from "lossless-json"
 
 jestpact.pactWith(
-  pactOptions("sandbox", "validate"),
+  pactOptions("sandbox", "verify-signature"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
@@ -60,6 +60,7 @@ jestpact.pactWith(
           .set("Accept", "application/fhir+json")
           .set("X-Request-ID", requestId)
           .set("X-Correlation-ID", correlationId)
+          .set("X-Skip-Validation", "true")
           .send(messageStr)
           .expect(200)
       })
