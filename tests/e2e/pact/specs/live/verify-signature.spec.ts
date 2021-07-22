@@ -7,7 +7,7 @@ import {InteractionObject} from "@pact-foundation/pact"
 import * as LosslessJson from "lossless-json"
 
 jestpact.pactWith(
-  pactOptions("live", "validate"),
+  pactOptions("live", "verify-signature"),
   /* eslint-disable  @typescript-eslint/no-explicit-any */
   async (provider: any) => {
     const client = () => {
