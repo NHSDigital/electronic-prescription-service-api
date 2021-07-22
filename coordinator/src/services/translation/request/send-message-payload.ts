@@ -1,30 +1,17 @@
 import moment from "moment"
-import {
-  getCodeableConceptCodingForSystem,
-  getExtensionForUrlOrNull,
-  getIdentifierValueForSystem,
-  resolveReference
-} from "../common"
-import {getMedicationRequests} from "../common/getResourcesOfType"
 import {convertMomentToHl7V3DateTime} from "../common/dateTime"
-import {hl7V3, fhir} from "@models"
-
-export function createSendMessagePayloadForUnattendedAccess<T>(
-  messageId: string,
-  interactionId: hl7V3.Hl7InteractionIdentifier,
-  fromAsid: string,
-  subject: T
-): hl7V3.SendMessagePayload<T> {
-  return createSendMessagePayload(messageId, interactionId, fromAsid, subject)
-}
+import {hl7V3} from "@models"
+import {getAsid, getSdsRoleProfileId, getSdsUserUniqueId} from "../../../utils/headers"
+import Hapi from "@hapi/hapi"
 
 export function createSendMessagePayload<T>(
   messageId: string,
   interactionId: hl7V3.Hl7InteractionIdentifier,
-  fromAsid: string,
-  subject: T,
-  author?: hl7V3.AuthorPersonSds
+  headers: Hapi.Util.Dictionary<string>,
+  subject: T
 ): hl7V3.SendMessagePayload<T> {
+  const fromAsid = getAsid(headers)
+
   const sendMessagePayload = new hl7V3.SendMessagePayload<T>(
     new hl7V3.GlobalIdentifier(messageId),
     convertMomentToHl7V3DateTime(moment.utc()),
@@ -33,7 +20,7 @@ export function createSendMessagePayload<T>(
 
   sendMessagePayload.communicationFunctionRcv = createCommunicationFunction(process.env.TO_ASID)
   sendMessagePayload.communicationFunctionSnd = createCommunicationFunction(fromAsid)
-  sendMessagePayload.ControlActEvent = createControlActEvent(fromAsid, subject, author)
+  sendMessagePayload.ControlActEvent = createControlActEvent(headers, subject)
   return sendMessagePayload
 }
 
@@ -44,84 +31,33 @@ function createCommunicationFunction(asid: string) {
 }
 
 function createControlActEvent<T>(
-  fromAsid: string,
-  subject: T,
-  author?: hl7V3.AuthorPersonSds
+  headers: Hapi.Util.Dictionary<string>,
+  subject: T
 ) {
+  const sdsUniqueIdentifier = getSdsUserUniqueId(headers)
+  const sdsRoleProfileIdentifier = getSdsRoleProfileId(headers)
+  const fromAsid = getAsid(headers)
+
   const controlActEvent = new hl7V3.ControlActEvent<T>()
-  if (author) {
-    controlActEvent.author = author
+  if (sdsUniqueIdentifier && sdsRoleProfileIdentifier) {
+    controlActEvent.author = createControlActEventAuthor(sdsUniqueIdentifier, sdsRoleProfileIdentifier)
   }
   controlActEvent.author1 = createControlActEventAuthor1(fromAsid)
   controlActEvent.subject = subject
   return controlActEvent
 }
 
-export function convertRequesterToControlActAuthor(
-  bundle: fhir.Bundle
-): hl7V3.AuthorPersonSds {
-  const firstMedicationRequest = getMedicationRequests(bundle)[0]
-  const authorPractitionerRole = resolveReference(bundle, firstMedicationRequest.requester)
-  const authorPractitioner = resolveReference(bundle, authorPractitionerRole.practitioner)
-  return convertPractitionerToControlActAuthor(authorPractitioner, authorPractitionerRole)
-}
-
-export function convertResponsiblePractitionerToControlActAuthor(
-  bundle: fhir.Bundle
-): hl7V3.AuthorPersonSds {
-  const firstMedicationRequest = getMedicationRequests(bundle)[0]
-  const responsiblePractitionerExtension = getExtensionForUrlOrNull(
-    firstMedicationRequest.extension,
-    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
-    "MedicationRequest.extension"
-  ) as fhir.ReferenceExtension<fhir.PractitionerRole>
-  const responsiblePractitionerRoleReference = responsiblePractitionerExtension
-    ? responsiblePractitionerExtension.valueReference
-    : firstMedicationRequest.requester
-  const responsiblePractitionerRole = resolveReference(bundle, responsiblePractitionerRoleReference)
-  const responsiblePractitioner = resolveReference(bundle, responsiblePractitionerRole.practitioner)
-  return convertPractitionerToControlActAuthor(responsiblePractitioner, responsiblePractitionerRole)
-}
-
-function convertPractitionerToControlActAuthor(
-  practitioner: fhir.Practitioner,
-  practitionerRole: fhir.PractitionerRole
-) {
-  const sdsUniqueIdentifier = getIdentifierValueForSystem(
-    practitioner.identifier,
-    "https://fhir.nhs.uk/Id/sds-user-id",
-    "Practitioner.identifier"
-  )
-  const sdsJobRoleCode = getCodeableConceptCodingForSystem(
-    practitionerRole.code,
-    "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-    "PractitionerRole.code"
-  ).code
-  const sdsRoleProfileIdentifier = getIdentifierValueForSystem(
-    practitionerRole.identifier,
-    "https://fhir.nhs.uk/Id/sds-role-profile-id",
-    "PractitionerRole.identifier"
-  )
-  return createControlActEventAuthor(sdsUniqueIdentifier, sdsJobRoleCode, sdsRoleProfileIdentifier)
-}
-
 function createControlActEventAuthor(
   sdsUniqueIdentifierStr: string,
-  sdsJobRoleCodeStr: string,
   sdsRoleProfileIdentifierStr: string
 ) {
   const sdsUniqueIdentifier = new hl7V3.SdsUniqueIdentifier(sdsUniqueIdentifierStr)
   const authorAgentPersonPerson = new hl7V3.AgentPersonPersonSds(sdsUniqueIdentifier)
 
-  const sdsJobRoleIdentifier = new hl7V3.SdsJobRoleIdentifier(sdsJobRoleCodeStr)
-  const sdsRole = new hl7V3.SdsRole(sdsJobRoleIdentifier)
-  const agentPersonPart = new hl7V3.AgentPersonPart(sdsRole)
-
   const sdsRoleProfileIdentifier = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileIdentifierStr)
   const authorAgentPerson = new hl7V3.AgentPersonSds()
   authorAgentPerson.id = sdsRoleProfileIdentifier
   authorAgentPerson.agentPersonSDS = authorAgentPersonPerson
-  authorAgentPerson.part = agentPersonPart
 
   return new hl7V3.AuthorPersonSds(authorAgentPerson)
 }

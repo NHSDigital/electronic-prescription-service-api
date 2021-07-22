@@ -19,7 +19,10 @@ describe("conversion tests", () => {
 
       const headers = {
         "nhsd-request-id": "test",
-        "nhsd-asid": "200000001285"
+        "nhsd-asid": "200000001285",
+        "nhsd-party-key": "T141D-822234",
+        "nhsd-identity-uuid": "555254239107", //USERQ RANDOM Mr
+        "nhsd-session-urid": "555254240100" //S8000:G8000:R8001 - "Clinical":"Clinical Provision":"Nurse Access Role"
       }
 
       // copy of convert route logic, todo: either test injecting request into endpoint

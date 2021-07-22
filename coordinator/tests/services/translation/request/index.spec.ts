@@ -53,7 +53,10 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
 
   const headers = {
     "nhsd-request-id": "test",
-    "nhsd-asid": "200000001285"
+    "nhsd-asid": "200000001285",
+    "nhsd-party-key": "T141D-822234",
+    "nhsd-identity-uuid": "555254239107",
+    "nhsd-session-urid": "555254240100"
   }
 
   test.each(cases)("accepts %s", (desc: string, message: fhir.Bundle) => {
@@ -64,7 +67,7 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
     "produces expected result for %s",
     (desc: string, message: fhir.Bundle, expectedOutput: ElementCompact) => {
       mockTime.value = convertHL7V3DateTimeToIsoDateTimeString(expectedOutput.PORX_IN020101SM31.creationTime)
-      const actualMessage = translator.createParentPrescriptionSendMessagePayload(message, "200000001285", logger)
+      const actualMessage = translator.createParentPrescriptionSendMessagePayload(message, headers, logger)
       xmlTest(actualMessage, expectedOutput.PORX_IN020101SM31)()
     }
   )
