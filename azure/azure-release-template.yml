@@ -77,7 +77,10 @@ extends:
           APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
           export APIGEE_ENVIRONMENT
 
-          if [[ $SERVICE_ARTIFACT_NAME == v* ]]; then
+          if [[ $STAGE_NAME == "int_preview" ]]; then
+                PACT_VERSION=$STAGE_NAME
+                export PACT_VERSION
+          else if [[ $SERVICE_ARTIFACT_NAME == v* ]]; then
               PACT_VERSION=$APIGEE_ENVIRONMENT
               export PACT_VERSION
           else
