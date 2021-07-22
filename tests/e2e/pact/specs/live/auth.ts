@@ -31,7 +31,8 @@ export const createUnauthorisedInteraction = (desc: string, path: string): Inter
                   display: "Access Denied - Unauthorised"
                 }
               ]
-            }
+            },
+            diagnostics: "Invalid access token"
           }
         ]
       },
