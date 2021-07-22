@@ -20,6 +20,11 @@ export class SandboxSpineClient implements SpineClient {
           statusCode: 200,
           body: spineResponses.NOMINATED_PRESCRIPTION_RELEASE
         })
+      case hl7V3.Hl7InteractionIdentifier.PATIENT_PRESCRIPTION_RELEASE_REQUEST._attributes.extension:
+        return Promise.resolve({
+          statusCode: 200,
+          body: spineResponses.NOMINATED_PRESCRIPTION_RELEASE
+        })
       case hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION._attributes.extension:
         return Promise.resolve({
           statusCode: 200,
