@@ -17,26 +17,18 @@ describe("conversion tests", () => {
       const isMatch = regex.test(response)
       expect(isMatch).toBe(true)
 
-      const headers = {
-        "nhsd-request-id": "test",
-        "nhsd-asid": "200000001285",
-        "nhsd-party-key": "T141D-822234",
-        "nhsd-identity-uuid": "555254239107", //USERQ RANDOM Mr
-        "nhsd-session-urid": "555254240100" //S8000:G8000:R8001 - "Clinical":"Clinical Provision":"Nurse Access Role"
-      }
-
       // copy of convert route logic, todo: either test injecting request into endpoint
       // or refactor these checks into a testable method and remove duplication
       if (isBundle(request)) {
-        const result = await convertBundleToSpineRequest(request, headers, logger)
+        const result = await convertBundleToSpineRequest(request, TestResources.validTestHeaders, logger)
         const convertMatchesExpectation = regex.test(result.message)
         expect(convertMatchesExpectation).toBe(true)
       } else if (isParameters(request)) {
-        const result = await convertParametersToSpineRequest(request, headers, logger)
+        const result = await convertParametersToSpineRequest(request, TestResources.validTestHeaders, logger)
         const convertMatchesExpectation = regex.test(result.message)
         expect(convertMatchesExpectation).toBe(true)
       } else if (isTask(request)) {
-        const result = await convertTaskToSpineRequest(request, headers, logger)
+        const result = await convertTaskToSpineRequest(request, TestResources.validTestHeaders, logger)
         const convertMatchesExpectation = regex.test(result.message)
         expect(convertMatchesExpectation).toBe(true)
       }
