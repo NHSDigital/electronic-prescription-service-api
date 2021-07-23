@@ -8,6 +8,9 @@ export function convertName(humanName: fhir.HumanName, fhirPath: string): hl7V3.
       use: convertNameUse(humanName.use, fhirPath)
     }
   }
+  if (humanName.text && !containsStructuredName(humanName)) {
+    name._text = humanName.text
+  }
   if (humanName.prefix) {
     name.prefix = humanName.prefix.map(prefix => new hl7V3.Text(prefix))
   }
@@ -21,6 +24,10 @@ export function convertName(humanName: fhir.HumanName, fhirPath: string): hl7V3.
     name.suffix = humanName.suffix.map(suffix => new hl7V3.Text(suffix))
   }
   return name
+}
+
+function containsStructuredName(humanName: fhir.HumanName) {
+  return humanName.prefix || humanName.given || humanName.family || humanName.suffix
 }
 
 function convertNameUse(fhirNameUse: string, fhirPath: string) {
