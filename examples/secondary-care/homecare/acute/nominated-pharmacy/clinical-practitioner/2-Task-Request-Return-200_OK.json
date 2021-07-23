@@ -13,6 +13,15 @@
     "system": "https://fhir.nhs.uk/Id/prescription-order-number",
     "value": "18B064-A99968-4BCAA3"
   },
+  "code": {
+    "coding":  [
+        {
+            "system": "http://hl7.org/fhir/CodeSystem/task-code",
+            "code": "change",
+            "display": "Change the focal resource"
+        }
+    ]
+  },
   "focus": {
     "type": "Bundle",
     "identifier": {
