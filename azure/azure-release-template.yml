@@ -78,7 +78,7 @@ extends:
           export APIGEE_ENVIRONMENT
 
           if [[ $SERVICE_ARTIFACT_NAME == v* ]]; then
-              PACT_VERSION=$APIGEE_ENVIRONMENT
+              PACT_VERSION=$STAGE_NAME
               export PACT_VERSION
           else
               export PACT_VERSION="$SERVICE_BASE_PATH"
