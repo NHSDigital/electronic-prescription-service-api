@@ -57,7 +57,7 @@ apigee:
           - identity-service-{{ ENV.name }}
 {% if ENV.name == 'int' %}
           - identity-service-int-no-smartcard
-          - electronic-prescription-service-api-int-preview
+#          - electronic-prescription-service-api-int-preview
 {% endif %}
         scopes:
           - 'urn:nhsd:apim:app:level3:electronic-prescription-service-api'
