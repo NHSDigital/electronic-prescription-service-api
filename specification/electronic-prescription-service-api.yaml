@@ -57,7 +57,7 @@ info:
     ## API status and roadmap
     The immediate EPS development priority is to support the rollout of the next-gen FHIR APIs for primary care and secondary care prescribing and dispensing. Alongside this we will be working on integrating a new FHIR-compliant prescription tracker into the next gen APIs.
     
-    To see suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?tag=eps-fhir-api).
+    To suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?tag=eps-fhir-api).
 
     If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
 
