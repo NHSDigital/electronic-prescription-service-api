@@ -6,6 +6,8 @@ import * as uuid from "uuid"
 import {ElementCompact} from "xml-js"
 import {namespacedCopyOf, writeXmlStringPretty} from "../serialisation/xml"
 import {spine, hl7V3} from "@models"
+import {getPartyKey, getRequestId} from "../../utils/headers"
+import Hapi from "@hapi/hapi"
 
 const ebxmlRequestTemplate = fs.readFileSync(
   path.join(__dirname, "../../resources/ebxml_request.mustache"),
@@ -44,9 +46,10 @@ export function addEbXmlWrapper(spineRequest: spine.SpineRequest): string {
 
 export function toSpineRequest<T>(
   sendMessagePayload: hl7V3.SendMessagePayload<T>,
-  messageId: string,
-  fromPartyKey: string
+  headers: Hapi.Util.Dictionary<string>
 ): spine.SpineRequest {
+  const messageId = getRequestId(headers)
+  const fromPartyKey = getPartyKey(headers)
   return {
     interactionId: extractInteractionId(sendMessagePayload),
     message: writeToString(sendMessagePayload),

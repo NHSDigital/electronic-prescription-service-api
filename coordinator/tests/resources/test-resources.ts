@@ -4,6 +4,7 @@ import * as fs from "fs"
 import * as path from "path"
 import * as LosslessJson from "lossless-json"
 import {hl7V3, fhir, spine, fetcher} from "@models"
+import Hapi from "@hapi/hapi"
 
 export const convertSuccessExamples = fetcher.convertExamples.filter(
   e => e.isSuccess).map(spec => spec.toSuccessJestCase()
@@ -257,4 +258,12 @@ function getLocation(search: string) {
     .filter(e => e.dir.includes(search))
     .find(e => e.number === "1")
     .dir
+}
+
+export const validTestHeaders: Hapi.Util.Dictionary<string> = {
+  "nhsd-request-id": "test",
+  "nhsd-asid": "200000001285",
+  "nhsd-party-key": "T141D-822234",
+  "nhsd-identity-uuid": "555254239107", //USERQ RANDOM Mr
+  "nhsd-session-urid": "555254240100" //S8000:G8000:R8001 - "Clinical":"Clinical Provision":"Nurse Access Role"
 }
