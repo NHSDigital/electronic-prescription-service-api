@@ -159,5 +159,63 @@ jestpact.pactWith(
           .expect(400)
       })
     })
+
+    test("should reject a message with an invalid SDS Role Profile ID", async () => {
+      const message = TestResources.processOrderCases[0][1]
+      const bundleStr = LosslessJson.stringify(message)
+      const bundle = JSON.parse(bundleStr) as fhir.Bundle
+      const requestId = uuid.v4()
+      const correlationId = uuid.v4()
+      const interaction: InteractionObject = {
+        state: "is authenticated",
+        uponReceiving: `a request with an invalid SDS Role Profile ID`,
+        withRequest: {
+          headers: {
+            "Content-Type": "application/fhir+json; fhirVersion=4.0",
+            "X-Request-ID": requestId,
+            "X-Correlation-ID": correlationId,
+            "NHSD-Session-URID": "invalid"
+          },
+          method: "POST",
+          path: apiPath,
+          body: bundle
+        },
+        willRespondWith: {
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: {
+            "resourceType": "OperationOutcome",
+            "issue": [
+              {
+                "severity": "error",
+                "code": "value",
+                "details": {
+                  "coding": [
+                    {
+                      "system": "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+                      "version": "1",
+                      "code": "INVALID_VALUE",
+                      "display": "Provided value is invalid"
+                    }
+                  ]
+                },
+                "diagnostics": "Invalid value - 'invalid' in header 'NHSD-Session-URID'"
+              }
+            ]
+          },
+          status: 400
+        }
+      }
+      await provider.addInteraction(interaction)
+      await client()
+        .post(apiPath)
+        .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
+        .set("X-Request-ID", requestId)
+        .set("X-Correlation-ID", correlationId)
+        .set("NHSD-Session-URID", "invalid")
+        .send(bundleStr)
+        .expect(400)
+    })
   }
 )

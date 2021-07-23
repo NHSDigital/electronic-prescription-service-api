@@ -220,6 +220,7 @@ paths:
         - prescribing
       parameters:
         - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RoleId'
         - $ref: '#/components/parameters/RequestID'
         - $ref: '#/components/parameters/CorrelationID'
       requestBody:
@@ -277,6 +278,7 @@ paths:
         - prescribing
       parameters:
         - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RoleId'
         - $ref: '#/components/parameters/RequestID'
         - $ref: '#/components/parameters/CorrelationID'
       requestBody:
@@ -339,6 +341,7 @@ paths:
         - prescribing
       parameters:
         - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RoleId'
         - $ref: '#/components/parameters/RequestID'
         - $ref: '#/components/parameters/CorrelationID'
       requestBody:
@@ -404,6 +407,7 @@ paths:
         - dispensing
       parameters:
         - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RoleId'
         - $ref: '#/components/parameters/RequestID'
         - $ref: '#/components/parameters/CorrelationID'
       requestBody:
@@ -466,6 +470,7 @@ paths:
         - dispensing
       parameters:
         - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RoleId'
         - $ref: '#/components/parameters/RequestID'
         - $ref: '#/components/parameters/CorrelationID'
       requestBody:
@@ -523,6 +528,7 @@ paths:
         - dispensing
       parameters:
         - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RoleId'
         - $ref: '#/components/parameters/RequestID'
         - $ref: '#/components/parameters/CorrelationID'
       requestBody:
@@ -588,6 +594,7 @@ paths:
         - dispensing
       parameters:
         - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RoleId'
         - $ref: '#/components/parameters/RequestID'
         - $ref: '#/components/parameters/CorrelationID'
       requestBody:
@@ -645,6 +652,7 @@ paths:
         - dispensing
       parameters:
         - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RoleId'
         - $ref: '#/components/parameters/RequestID'
         - $ref: '#/components/parameters/CorrelationID'
       requestBody:
@@ -697,12 +705,27 @@ components:
       name: Authorization
       description: |
         An [OAuth 2.0 bearer token](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis).
+
         Required in all environments except sandbox.
-      required: false
+      required: true
       schema:
         type: string
         format: '^Bearer\ [[:ascii:]]+$'
         example: 'Bearer g1112R_ccQ1Ebbb4gtHBP1aaaNM'
+    RoleId:
+      in: header
+      name: NHSD-Session-URID
+      description: |
+        The user role ID (URID) for the current session. Also known as a user role profile ID (URPID).
+
+        If you are using User-restricted RESTful APIs - NHS login separate authentication and authorisation, see [determine the user's role](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-separate-authentication-and-authorisation#step-9-determine-the-user-s-role) for guidance.
+
+        This field is optional.
+      required: false
+      schema:
+        type: string
+        pattern: '^[0-9]+$'
+        example: '555254240100'
     RequestID:
       in: header
       name: X-Request-ID
@@ -711,8 +734,11 @@ components:
         A globally unique identifier (GUID) for the request, which we use to de-duplicate repeated requests and to trace the request if you contact our helpdesk.
 
         Must be a universally unique identifier (UUID) (ideally version 4).
+        
         Mirrored back in a response header.
+        
         If you re-send a failed request, use the same value in this header.
+        
         Required in all environments except sandbox.
       schema:
         type: string

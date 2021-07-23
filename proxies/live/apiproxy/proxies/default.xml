@@ -2,6 +2,9 @@
   <PreFlow>
     <Request>
       <Step>
+        <Name>AssignMessage.Errors.Default</Name>
+      </Step>
+      <Step>
         <Name>AssignMessage.Copy.RequestHeaders</Name>
       </Step>
     </Request>
@@ -70,7 +73,7 @@
   </RouteRule>
   <DefaultFaultRule>
     <Step>
-      <Name>AssignMessage.CatchallErrorMessage</Name>
+      <Name>AssignMessage.Errors.CatchAllMessage</Name>
     </Step>
   </DefaultFaultRule>
   <PostClientFlow>
