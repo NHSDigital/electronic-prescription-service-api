@@ -18,32 +18,32 @@ info:
     ### As a prescriber
     You can:
     * encode prescription data
+    * create a primary care prescription
+    * cancel a primary care prescription
     * create a secondary care (outpatient) prescription
     * cancel a secondary care (outpatient) prescription
 
     You cannot currently use this API to:
-    * create a primary care prescription
-    * create a secondary care (other than outpatient) prescription
-    * create a tertiary care prescription
-    * track prescriptions or check a prescription's status
+    * create a secondary care (homecare) prescription
+    * cancel a secondary care (homecare) prescription
+    * create a tertiary care (homecare) prescription
+    * cancel a tertiary care (homecare) prescription
+    * track a prescription or check a prescription's status
 
     ### As a dispenser
     You can:
-    * download a set of prescription (int/sandbox implementations only)
-    * verify the signatures on a set of prescriptions (in development)
-    * return a prescription (int/sandbox implementation only)
-    * submit a dispense notification to EPS (sandbox implementation only)
-    * withdraw a dispense notification (sandbox implementation only)
-    * submit a dispense claim (int/sandbox implementation only)
+    * download an individual prescription from EPS
+    * download a batch of prescriptions from EPS
+    * return a prescription to EPS
+    * submit a dispense notification to EPS
+    * withdraw a dispense notification to EPS (sandbox implementation only)
+    * submit a dispense claim (sandbox implementation only)
 
     You cannot currently use this API to:
-    * claim for a dispensed prescription
-    * track prescriptions or check a prescription's status
+    * track a prescription or check a prescription's status
 
     ## Who can use this API
-    This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development.
-
-    You must do this before you can go live (see ‘Onboarding’ below).
+    This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development. You must do this before you can go live (see ‘Onboarding’ below).
 
     ## Related APIs
     The following APIs also give access to the Electronic Prescription Service:
@@ -55,7 +55,9 @@ info:
     - [Personal Demographics Service - FHIR API](https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir) - use this to obtain patient data
 
     ## API status and roadmap
-    To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?tag=eps-fhir-api).
+    The immediate EPS development priority is to support the rollout of the next-gen FHIR APIs for primary care and secondary care prescribing and dispensing. Alongside this we will be working on integrating a new FHIR-compliant prescription tracker into the next gen APIs.
+    
+    To suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?tag=eps-fhir-api).
 
     If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
 
@@ -126,7 +128,7 @@ info:
     You need to get your software approved by us before it can go live with this API. We call this onboarding.
     We are hoping to make the onboarding process as lightweight and as self-service as possible however it can sometimes be quite long, so it’s worth planning well ahead.
 
-    To begin the onboarding process please [contact us](https://digital.nhs.uk/developer/help-and-support) and request the 'EPS use case form'.
+    To begin the onboarding process please download and complete the [EPS use case form](https://nhs-prod.global.ssl.fastly.net/binaries/content/assets/website-assets/developer/electronic-prescription-service-fhir-api/eps-access-form-v1.0-org-short-name-yyyymmdd-1.docx) and email it to us at [epsonboarding@nhs.net](mailto:epsonboarding@nhs.net).
 
     ## Resources
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/DigitalMedicines) to assist with your integration.
@@ -221,6 +223,7 @@ paths:
         - prescribing
       parameters:
         - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RoleId'
         - $ref: '#/components/parameters/RequestID'
         - $ref: '#/components/parameters/CorrelationID'
       requestBody:
@@ -278,6 +281,7 @@ paths:
         - prescribing
       parameters:
         - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RoleId'
         - $ref: '#/components/parameters/RequestID'
         - $ref: '#/components/parameters/CorrelationID'
       requestBody:
@@ -340,6 +344,7 @@ paths:
         - prescribing
       parameters:
         - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RoleId'
         - $ref: '#/components/parameters/RequestID'
         - $ref: '#/components/parameters/CorrelationID'
       requestBody:
@@ -405,6 +410,7 @@ paths:
         - dispensing
       parameters:
         - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RoleId'
         - $ref: '#/components/parameters/RequestID'
         - $ref: '#/components/parameters/CorrelationID'
       requestBody:
@@ -525,6 +531,7 @@ paths:
         - dispensing
       parameters:
         - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RoleId'
         - $ref: '#/components/parameters/RequestID'
         - $ref: '#/components/parameters/CorrelationID'
       requestBody:
@@ -582,6 +589,7 @@ paths:
         - dispensing
       parameters:
         - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RoleId'
         - $ref: '#/components/parameters/RequestID'
         - $ref: '#/components/parameters/CorrelationID'
       requestBody:
@@ -647,6 +655,7 @@ paths:
         - dispensing
       parameters:
         - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RoleId'
         - $ref: '#/components/parameters/RequestID'
         - $ref: '#/components/parameters/CorrelationID'
       requestBody:
@@ -704,6 +713,7 @@ paths:
         - dispensing
       parameters:
         - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RoleId'
         - $ref: '#/components/parameters/RequestID'
         - $ref: '#/components/parameters/CorrelationID'
       requestBody:
@@ -756,12 +766,27 @@ components:
       name: Authorization
       description: |
         An [OAuth 2.0 bearer token](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis).
+
         Required in all environments except sandbox.
-      required: false
+      required: true
       schema:
         type: string
         format: '^Bearer\ [[:ascii:]]+$'
         example: 'Bearer g1112R_ccQ1Ebbb4gtHBP1aaaNM'
+    RoleId:
+      in: header
+      name: NHSD-Session-URID
+      description: |
+        The user role ID (URID) for the current session. Also known as a user role profile ID (URPID).
+
+        If you are using User-restricted RESTful APIs - NHS login separate authentication and authorisation, see [determine the user's role](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-separate-authentication-and-authorisation#step-9-determine-the-user-s-role) for guidance.
+
+        This field is optional.
+      required: false
+      schema:
+        type: string
+        pattern: '^[0-9]+$'
+        example: '555254240100'
     RequestID:
       in: header
       name: X-Request-ID
@@ -770,8 +795,11 @@ components:
         A globally unique identifier (GUID) for the request, which we use to de-duplicate repeated requests and to trace the request if you contact our helpdesk.
 
         Must be a universally unique identifier (UUID) (ideally version 4).
+        
         Mirrored back in a response header.
+        
         If you re-send a failed request, use the same value in this header.
+        
         Required in all environments except sandbox.
       schema:
         type: string

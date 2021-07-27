@@ -28,10 +28,11 @@ export const createUnauthorisedInteraction = (desc: string, path: string): Inter
                   system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
                   version: "1",
                   code: "ACCESS_DENIED",
-                  display: "Invalid access token"
+                  display: "Access Denied - Unauthorised"
                 }
               ]
-            }
+            },
+            diagnostics: "Invalid access token"
           }
         ]
       },

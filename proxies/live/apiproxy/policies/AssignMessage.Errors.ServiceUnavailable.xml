@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<AssignMessage name="AssignMessage.Errors.ServiceUnavailable">
+  <Set>
+    <StatusCode>503</StatusCode>
+    <ReasonPhrase>Service unavailable</ReasonPhrase>
+    <Headers>
+      <Header name="Retry-After">5</Header>
+    </Headers>
+  </Set>
+  <AssignVariable>
+    <Name>eps.error.code</Name>
+    <Value>timeout</Value>
+  </AssignVariable>
+  <AssignVariable>
+    <Name>eps.error.coding.code</Name>
+    <Value>SERVICE_UNAVAILABLE</Value>
+  </AssignVariable>
+  <AssignVariable>
+    <Name>eps.error.coding.display</Name>
+    <Value>Service unavailable</Value>
+  </AssignVariable>
+  <AssignVariable>
+    <Name>eps.error.diagnostics</Name>
+    <Value>The downstream domain processing has not completed within the configured timeout period. Using the same 'X-Request-ID' header, retry your request after the time specified by the 'Retry-After' response header.</Value>
+  </AssignVariable>
+  <IgnoreUnresolvedVariables>true</IgnoreUnresolvedVariables>
+</AssignMessage>
