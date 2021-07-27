@@ -40,6 +40,9 @@ export function createMedicationRequest(
     ),
     subject: fhir.createReference(patientId),
     authoredOn: convertHL7V3DateTimeToIsoDateTimeString(prescription.author.time),
+    category: [fhir.createCodeableConcept(
+      "http://terminology.hl7.org/CodeSystem/medicationrequest-category", "outpatient", "Outpatient"
+    )],
     requester: fhir.createReference(requesterId),
     groupIdentifier: createGroupIdentifierFromPrescriptionIds(prescription.id),
     courseOfTherapyType: createCourseOfTherapyType(

@@ -30,7 +30,7 @@ function createJobRoleNameCode(practitionerCode: string) {
       {
         system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
         code: practitionerCode,
-        display: "Outpatient" //TODO required field, Kevin seeing if we can remove. RESOLUTION: Hardcoded for now.
+        display: "" //TODO required field, Kevin seeing if we can remove
       }
     ]
   }]
