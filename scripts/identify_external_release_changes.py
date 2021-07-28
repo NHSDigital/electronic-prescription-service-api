@@ -41,13 +41,16 @@ if __name__ == "__main__":
     key = get_api_key()
 
     int_commit_id = get_commit_id("int", key)
-    internal_qa_commit_id = get_commit_id("internal-qa", key)
+    internal_dev_commit_id = get_commit_id("internal-dev", key)
 
     int_tag = get_tag_for_commit(repo, int_commit_id)
-    internal_qa_tag = get_tag_for_commit(repo, internal_qa_commit_id)
+    internal_dev_tag = get_tag_for_commit(repo, internal_dev_commit_id)
 
-    print(f"# EPS FHIR API {internal_qa_tag}\n")
+    print(f"# EPS FHIR API {internal_dev_tag}\n")
 
     print(f"## Changes since {int_tag}")
-    for commit in repo.iter_commits(f"{int_commit_id}..{internal_qa_commit_id}"):
+    tagged_commits = [repo.commit(tag) for tag in repo.tags]
+    commits_in_range = repo.iter_commits(f"{int_commit_id}..{internal_dev_commit_id}")
+    tagged_commits_in_range = [commit for commit in commits_in_range if commit in tagged_commits]
+    for commit in tagged_commits_in_range:
         print(f"* {commit.message.splitlines()[0]}")
