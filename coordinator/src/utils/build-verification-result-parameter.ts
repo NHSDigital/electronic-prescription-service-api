@@ -1,4 +1,4 @@
-import {fhir} from "@models";
+import {fhir} from "@models"
 
 export function buildVerificationResultParameter(
   bundle: fhir.Bundle,
