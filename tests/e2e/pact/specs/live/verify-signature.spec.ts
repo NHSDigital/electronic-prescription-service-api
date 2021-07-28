@@ -5,7 +5,7 @@ import supertest from "supertest"
 import {fetcher, fhir} from "@models"
 import {InteractionObject} from "@pact-foundation/pact"
 import * as LosslessJson from "lossless-json"
-import {buildVerificationResultParameter} from "../../../../../coordinator/src/routes/dispense/verify-signature"
+import {buildVerificationResultParameter} from "../../../../../coordinator/src/utils/build-verification-result-parameter"
 
 jestpact.pactWith(
   pactOptions("live", "verify-signature"),
