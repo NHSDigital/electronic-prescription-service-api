@@ -15,8 +15,7 @@
   },
   "include": [
     "specs/**/*",
-    ".",
-    "../../../../../coordinator"
+    "."
   ],
   "references": [
     {
