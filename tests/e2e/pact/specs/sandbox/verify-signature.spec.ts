@@ -36,8 +36,8 @@ jestpact.pactWith(
             return buildVerificationResultParameter(
               bundle,
               [{
-                "severity": "information",
-                "code": fhir.IssueCodes.INFORMATIONAL
+                "severity": "error",
+                "code": fhir.IssueCodes.INVALID
               }],
               index)
           })
