@@ -5,7 +5,7 @@ import {isBundle} from "../../utils/type-guards"
 import {convertParentPrescription} from "../../services/translation/request/prescribe/parent-prescription"
 import {
   verifyPrescriptionSignatureValid, verifySignatureHasCorrectFormat,
-  verifySignatureMatchesPrescription
+  verifySignatureDigestMatchesPrescription
 } from "../../services/signature-verification"
 import pino from "pino"
 
@@ -58,7 +58,7 @@ function verifyPrescriptionSignature(
   }
 
   const validSignature = verifyPrescriptionSignatureValid(parentPrescription)
-  const matchingSignature = verifySignatureMatchesPrescription(parentPrescription)
+  const matchingSignature = verifySignatureDigestMatchesPrescription(parentPrescription)
   if (validSignature && matchingSignature) {
     const issue: Array<fhir.OperationOutcomeIssue> = [{
       severity: "information",
@@ -92,7 +92,7 @@ function createInvalidSignatureIssue(display: string): fhir.OperationOutcomeIssu
   }
 }
 
-function buildVerificationResultParameter(
+export function buildVerificationResultParameter(
   bundle: fhir.Bundle,
   issue: Array<fhir.OperationOutcomeIssue>,
   index: number

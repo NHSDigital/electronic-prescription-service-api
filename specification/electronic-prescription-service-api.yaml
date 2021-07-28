@@ -189,7 +189,7 @@ info:
     POST a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to the `/FHIR/R4/Task/$release` endpoint.
 
     #### To verify a prescription's signature:
-    POST a [verify-signature message](TODO) to the `/FHIR/R4/Task/$verify-signature` endpoint.
+    POST a verify-signature message to the `/FHIR/R4/Task/$verify-signature` endpoint.
     
     #### To submit a dispense notification to EPS:
     POST a [prescription-dispense-notification message](https://simplifier.net/guide/DigitalMedicines/dispense-notification) to the `/FHIR/R4/$process-message` endpoint to inform EPS of a partial/successful dispense.
@@ -462,9 +462,9 @@ paths:
       description: |
         ## Overview
         Use this endpoint to verify a prescription's signature to ensure that the signature is valid, and that it matches the prescription it is attached to.
-        To do this, send a [verify-signature message](TODO) to this endpoint.
+        To do this, send a verify-signature message to this endpoint.
 
-        The endpoint will return a set of (up to 25) veify responses associated with the bundle of prescriptions sent to the endpoint for verification.
+        The endpoint will return a set of (up to 25) verify responses associated with the bundle of prescriptions sent to the endpoint for verification.
       tags:
         - dispensing
       parameters:

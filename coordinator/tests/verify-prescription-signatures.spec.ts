@@ -4,7 +4,7 @@ import {readFileSync} from "fs"
 import * as path from "path"
 import {fetcher, hl7V3} from "@models"
 import {
-  verifyPrescriptionSignatureValid, verifySignatureMatchesPrescription
+  verifyPrescriptionSignatureValid, verifySignatureDigestMatchesPrescription
 } from "../src/services/signature-verification"
 
 //eslint-disable-next-line max-len
@@ -51,7 +51,7 @@ function warnIfDigestDoesNotMatchPrescription(messageRoot: ElementCompact): void
   // eslint-disable-next-line max-len
   const sendMessagePayload = messageRoot.PORX_IN020101SM31 as hl7V3.SendMessagePayload<hl7V3.ParentPrescriptionRoot>
   const parentPrescription = sendMessagePayload.ControlActEvent.subject.ParentPrescription
-  const digestMatches = verifySignatureMatchesPrescription(parentPrescription)
+  const digestMatches = verifySignatureDigestMatchesPrescription(parentPrescription)
   if (!digestMatches) {
     console.warn(`Digest did not match for Bundle: ${messageRoot.PORX_IN020101SM31.id._attributes.root}`)
   }

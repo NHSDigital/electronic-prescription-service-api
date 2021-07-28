@@ -5,6 +5,7 @@ import supertest from "supertest"
 import {fetcher, fhir} from "@models"
 import {InteractionObject} from "@pact-foundation/pact"
 import * as LosslessJson from "lossless-json"
+import {buildVerificationResultParameter} from "../../../../../coordinator/src/routes/dispense/verify-signature";
 
 jestpact.pactWith(
   pactOptions("sandbox", "verify-signature"),
@@ -29,6 +30,19 @@ jestpact.pactWith(
 
         const messageStr = LosslessJson.stringify(outerBundle)
 
+        const responseBody: fhir.Parameters = {
+          "resourceType": "Parameters",
+          "parameter": innerBundles.map((bundle, index) => {
+            return buildVerificationResultParameter(
+              bundle,
+              [{
+                "severity": "information",
+                "code": fhir.IssueCodes.INFORMATIONAL
+              }],
+              index)
+          })
+        }
+
         const interaction: InteractionObject = {
           state: "is authenticated",
           uponReceiving: "a valid FHIR message",
@@ -47,8 +61,7 @@ jestpact.pactWith(
             headers: {
               "Content-Type": "application/json"
             },
-            //TODO: add body check
-            // body: responseMessage,
+            body: responseBody,
             status: 200
           }
         }
@@ -83,89 +96,3 @@ function createOuterBundle(bundles: Array<fhir.Bundle>): fhir.Bundle {
     }))
   }
 }
-
-//TODO: need to match ids
-const responseMessage = {
-  "resourceType": "Parameters",
-  "parameter": [
-    {
-      "name": "0",
-      "part": [
-        {
-          "name": "messageIdentifier",
-          "valueReference": {
-            "identifier": {
-              "value": "85a0b4e3-7588-459d-8819-81960e43e3a4",
-              "system": "https://tools.ietf.org/html/rfc4122"
-            }
-          }
-        },
-        {
-          "name": "result",
-          "resource": {
-            "resourceType": "OperationOutcome",
-            "issue": [
-              {
-                "severity": "information",
-                "code": "informational"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "1",
-      "part": [
-        {
-          "name": "messageIdentifier",
-          "valueReference": {
-            "identifier": {
-              "value": "85a0b4e3-7588-459d-8819-81960e43e3a4",
-              "system": "https://tools.ietf.org/html/rfc4122"
-            }
-          }
-        },
-        {
-          "name": "result",
-          "resource": {
-            "resourceType": "OperationOutcome",
-            "issue": [
-              {
-                "severity": "information",
-                "code": "informational"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "0",
-      "part": [
-        {
-          "name": "messageIdentifier",
-          "valueReference": {
-            "identifier": {
-              "value": "85a0b4e3-7588-459d-8819-81960e43e3a4",
-              "system": "https://tools.ietf.org/html/rfc4122"
-            }
-          }
-        },
-        {
-          "name": "result",
-          "resource": {
-            "resourceType": "OperationOutcome",
-            "issue": [
-              {
-                "severity": "information",
-                "code": "informational"
-              }
-            ]
-          }
-        }
-      ]
-    }
-  ]
-}
-responseMessage

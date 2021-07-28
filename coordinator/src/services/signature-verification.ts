@@ -15,7 +15,7 @@ export function verifySignatureHasCorrectFormat(parentPrescription: hl7V3.Parent
   return isTruthy(signedInfo) && isTruthy(signatureValue) && isTruthy(x509Certificate)
 }
 
-export function verifySignatureMatchesPrescription(parentPrescription: hl7V3.ParentPrescription): boolean {
+export function verifySignatureDigestMatchesPrescription(parentPrescription: hl7V3.ParentPrescription): boolean {
   const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
   const digestFromSignature = extractDigestFromSignatureRoot(signatureRoot)
   const digestFromPrescription = calculateDigestFromParentPrescription(parentPrescription)
