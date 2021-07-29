@@ -27,7 +27,9 @@ export function verifyPrescriptionSignatureValid(parentPrescription: hl7V3.Paren
   return verifySignatureValid(signatureRoot)
 }
 
-function extractSignatureRootFromParentPrescription(parentPrescription: hl7V3.ParentPrescription): ElementCompact {
+export function extractSignatureRootFromParentPrescription(
+  parentPrescription: hl7V3.ParentPrescription
+): ElementCompact {
   const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
   return pertinentPrescription.author.signatureText
 }

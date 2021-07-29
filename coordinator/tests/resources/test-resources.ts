@@ -5,6 +5,7 @@ import * as path from "path"
 import * as LosslessJson from "lossless-json"
 import {hl7V3, fhir, spine, fetcher} from "@models"
 import Hapi from "@hapi/hapi"
+import {readXml} from "../../src/services/serialisation/xml";
 
 export const convertSuccessExamples = fetcher.convertExamples.filter(
   e => e.isSuccess).map(spec => spec.toSuccessJestCase()
@@ -266,4 +267,19 @@ export const validTestHeaders: Hapi.Util.Dictionary<string> = {
   "nhsd-party-key": "T141D-822234",
   "nhsd-identity-uuid": "555254239107", //USERQ RANDOM Mr
   "nhsd-session-urid": "555254240100" //S8000:G8000:R8001 - "Clinical":"Clinical Provision":"Nurse Access Role"
+}
+
+export const parentPrescriptions = {
+  validSignature: readXml(fs.readFileSync(
+    path.join(__dirname, "./signed-prescriptions/ValidSignature.xml"),
+    "utf-8"
+  )) as hl7V3.ParentPrescriptionRoot,
+  invalidSignature: readXml(fs.readFileSync(
+    path.join(__dirname, "./signed-prescriptions/SignatureIsInvalid.xml"),
+    "utf-8"
+  )) as hl7V3.ParentPrescriptionRoot,
+  nonMatchingSignature: readXml(fs.readFileSync(
+    path.join(__dirname, "./signed-prescriptions/SignatureDoesNotMatchPrescription.xml"),
+    "utf-8"
+  )) as hl7V3.ParentPrescriptionRoot
 }
