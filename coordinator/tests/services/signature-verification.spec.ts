@@ -49,7 +49,7 @@ describe("verifySignatureDigestMatchesPrescription...", () => {
     expect(result).toEqual(true)
   })
 
-  test("Prescription with digest that doesn't matches prescription returns true", () => {
+  test("Prescription with digest that doesn't matches prescription returns false", () => {
     const result = verifySignatureDigestMatchesPrescription(nonMatchingSignature)
     expect(result).toEqual(false)
   })
@@ -64,7 +64,7 @@ describe("verifyPrescriptionSignatureValid...", () => {
     expect(result).toEqual(true)
   })
 
-  test("Prescription with invalid Signature that doesn't matches prescription returns true", () => {
+  test("Prescription with invalid Signature that doesn't matches prescription returns false", () => {
     const result = verifyPrescriptionSignatureValid(invalidSignature)
     expect(result).toEqual(false)
   })
