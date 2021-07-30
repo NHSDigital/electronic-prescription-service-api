@@ -1,0 +1,55 @@
+{
+  "resourceType": "Parameters",
+  "parameter": [
+    {
+      "name": "0",
+      "part": [
+        {
+          "name": "messageIdentifier",
+          "valueReference": {
+            "identifier": {
+              "system": "https://tools.ietf.org/html/rfc4122",
+              "value": "05748daa-b163-4a59-bc8b-a71c139f82f5"
+            }
+          }
+        },
+        {
+          "name": "result",
+          "resource": {
+            "resourceType": "OperationOutcome",
+            "issue": [
+              {
+                "severity": "error",
+                "code": "invalid",
+                "details": {
+                  "coding": [
+                    {
+                      "system": "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+                      "code": "INVALID",
+                      "display": "Signature is invalid."
+                    }
+                  ]
+                },
+                "expression": ["Provenance.signature.data"]
+              },
+              {
+                "severity": "error",
+                "code": "invalid",
+                "details": {
+                  "coding": [
+                    {
+                      "system": "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+                      "code": "INVALID",
+                      "display": "Signature doesn't match prescription."
+                    }
+                  ]
+                },
+                "expression": ["Provenance.signature.data"]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -188,6 +188,9 @@ info:
     #### To download a prescription:
     POST a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to the `/FHIR/R4/Task/$release` endpoint.
 
+    #### To verify a prescription's signature:
+    POST a verify-signature message to the `/FHIR/R4/Task/$verify-signature` endpoint.
+    
     #### To submit a dispense notification to EPS:
     POST a [prescription-dispense-notification message](https://simplifier.net/guide/DigitalMedicines/dispense-notification) to the `/FHIR/R4/$process-message` endpoint to inform EPS of a partial/successful dispense.
 
@@ -450,6 +453,64 @@ paths:
                 example:
                   description: |
                     An error response to a release request.
+                  value:
+                    $ref: components/examples/release/not-found-error.json 
+  /FHIR/R4/$verify-signature:
+    post:
+      operationId: verify-signature
+      summary: To verify a prescription's signature
+      description: |
+        ## Overview
+        Use this endpoint to verify a prescription's signature to ensure that the signature is valid, and that it matches the prescription it is attached to.
+        To do this, send a verify-signature message to this endpoint.
+
+        The endpoint will return a set of (up to 25) verify responses associated with the bundle of prescriptions sent to the endpoint for verification.
+      tags:
+        - dispensing
+      parameters:
+        - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RequestID'
+        - $ref: '#/components/parameters/CorrelationID'
+      requestBody:
+        required: true
+        content:
+          application/fhir+json:
+            schema:
+              type: object
+            examples:
+              owner:
+                description: |
+                  A valid signature verification request.
+                value:
+                  $ref: components/examples/sandbox/Release-Response-200_OK.json
+      responses:
+        '200':
+          description: Succesfully verified the prescription signature, signature may still be invalid.
+          content:
+            application/fhir+json:
+              schema:
+                type: object
+              examples:
+                example:
+                  description: |
+                    A successful response to a verify signature request, showing a failure to verify the signature as correct.
+                  value:
+                    $ref: components/examples/sandbox/VerifySignature-Response-200_OK.json
+        '4XX':
+          description: |
+            An error occurred as follows:
+
+            | HTTP status | Error code  | Description      |
+            | ----------- | ----------- | ---------------- |
+            | 400         | BAD_REQUEST | Invalid request. |
+          content:
+            application/fhir+json:
+              schema:
+                type: object
+              examples:
+                example:
+                  description: |
+                    An error response to a verify signature request.
                   value:
                     $ref: components/examples/release/not-found-error.json
   /FHIR/R4/Task#return:
