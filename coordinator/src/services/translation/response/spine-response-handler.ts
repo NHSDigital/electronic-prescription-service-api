@@ -63,10 +63,10 @@ export class SpineResponseHandler<T> {
     return toArray(reasons).map(reason => reason.justifyingDetectedIssueEvent.code)
   }
 
-  static createSuccessResponse(): TranslatedSpineResponse {
+  static createSuccessResponse(issues?: Array<fhir.OperationOutcomeIssue>): TranslatedSpineResponse {
     return {
       statusCode: 200,
-      fhirResponse: fhir.createOperationOutcome([{
+      fhirResponse: fhir.createOperationOutcome(issues ?? [{
         code: fhir.IssueCodes.INFORMATIONAL,
         severity: "information"
       }])
@@ -95,6 +95,9 @@ export class SpineResponseHandler<T> {
     if (!issues.length) {
       logger.error("Trying to return bad request response with no error details")
       return SpineResponseHandler.createServerErrorResponse()
+    }
+    if (issues.every(issue => issue.code === fhir.IssueCodes.INFORMATIONAL)) {
+      return SpineResponseHandler.createSuccessResponse(issues)
     }
     return SpineResponseHandler.createBadRequestResponse(issues)
   }
