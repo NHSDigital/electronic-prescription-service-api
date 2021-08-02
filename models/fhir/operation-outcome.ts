@@ -12,6 +12,16 @@ export function createOperationOutcome(issues: Array<OperationOutcomeIssue>): Op
   }
 }
 
+export function createOperationOutcomeIssue(
+  code: IssueCodes, severity: IssueSeverity, codeableConcept: common.CodeableConcept
+): OperationOutcomeIssue {
+  return {
+    code,
+    severity,
+    details: codeableConcept
+  }
+}
+
 export enum IssueCodes {
   INFORMATIONAL = "informational",
   VALUE = "value",
@@ -29,9 +39,11 @@ export enum IssueCodes {
 }
 
 export interface OperationOutcomeIssue {
-  severity: "information" | "warning" | "error" | "fatal"
+  severity: IssueSeverity
   code: IssueCodes
   details?: common.CodeableConcept
   diagnostics?: string
   expression?: Array<string>
 }
+
+type IssueSeverity = "information" | "warning" | "error" | "fatal"
