@@ -6,7 +6,7 @@ import {
 } from "../medication-request"
 import {toArray} from "../../common"
 import {parseAdditionalInstructions} from "./additional-instructions"
-import {convertHL7V3DateToIsoDateString} from "../../common/dateTime"
+import {convertHL7V3DateTimeToIsoDateTimeString, convertHL7V3DateToIsoDateString} from "../../common/dateTime"
 import {fhir, hl7V3} from "@models"
 import {LosslessNumber} from "lossless-json"
 
@@ -39,7 +39,10 @@ export function createMedicationRequest(
       lineItem.product.manufacturedProduct.manufacturedRequestedMaterial.code
     ),
     subject: fhir.createReference(patientId),
-    authoredOn: undefined, //TODO - how do we populate this?
+    authoredOn: convertHL7V3DateTimeToIsoDateTimeString(prescription.author.time),
+    category: [fhir.createCodeableConcept(
+      "http://terminology.hl7.org/CodeSystem/medicationrequest-category", "outpatient", "Outpatient"
+    )],
     requester: fhir.createReference(requesterId),
     groupIdentifier: createGroupIdentifierFromPrescriptionIds(prescription.id),
     courseOfTherapyType: createCourseOfTherapyType(
