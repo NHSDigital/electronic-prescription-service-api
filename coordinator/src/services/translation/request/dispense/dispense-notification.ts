@@ -343,16 +343,15 @@ function createCareRecordElementCategory(fhirIdentifiers: Array<string>) {
 }
 
 function createPriorMessageRef(fhirHeader: fhir.MessageHeader) {
-  const identifier = getExtensionForUrlOrNull(
+  const replacementOf = getExtensionForUrlOrNull(
     fhirHeader.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
     "MessageHeader.extension"
   ) as fhir.IdentifierExtension
 
-  if (identifier) {
-    return new hl7V3.MessageRef(new hl7V3.GlobalIdentifier(identifier.valueIdentifier.value))
+  if (replacementOf) {
+    return new hl7V3.MessageRef(new hl7V3.GlobalIdentifier(replacementOf.valueIdentifier.value))
   }
-  return null
 }
 
 function createPriorPrescriptionReleaseEventRef(fhirHeader: fhir.MessageHeader) {
