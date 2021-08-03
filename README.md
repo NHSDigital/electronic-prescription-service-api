@@ -145,3 +145,19 @@ Successful deployment of the API Proxy requires:
  * A *Target Server* named `ig3`
 
 :bulb: For Sandbox-running environments (`test`) these need to be present for successful deployment but can be set to empty/dummy values.
+
+# Validator
+The FHIR Validator has been added to this module as a git submodule. By default, the validator submodule will not be fetched when the repo is cloned. There are two options to  retrieve the contents of the submodule:
+* Run `git clone --recurse-submodules https://github.com/NHSDigital/electronic-prescription-service-api` when initially cloning the repository
+* Run `git submodule update && git submodule init` to fetch the validator on an already cloned repo
+
+## Updating the validator
+To update the validator:
+* Change to the validator directory and check out the appropriate commit. Alternatively, run `git pull` to fetch all changes from the tracked branch. 
+* Change back to the root project directory, run `git status` to confirm there are pending changes
+    * You can see which commit is being tracked by running `git submodule`. If you have made changes to the submodule, this value should be the same as the chosen commit from step 1
+* Add and Commit the change as usual
+
+## Trouble shooting
+If you clone the repo and see unexpected changes to the validator, this is probably because your checked out version of the submodule isn't the same as the commit specified in the parent repo. You can address this by running `git submodule update && git submodule init` to bring the submodule into line with the parent repo.
+
