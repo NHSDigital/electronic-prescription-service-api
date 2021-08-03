@@ -28,12 +28,19 @@ APIGEE_ENVIRONMENTS:
   portal_visibility: false    # todo: remove this once ready for live
 
 PRODUCTS:
+# Full access is just there to pass platform manifest validation, we don't actually want it
+- display_name: Full Access
+  name_suffix: ""
+  scope_suffix: ""
 - display_name: Prescribing
-  scope_suffix: prescribing
+  name_suffix: "-prescribing"
+  scope_suffix: ":prescribing"
 - display_name: Dispensing
-  scope_suffix: dispensing
+  name_suffix: "-dispensing"
+  scope_suffix: ":dispensing"
 - display_name: Tracker
-  scope_suffix: tracker
+  name_suffix: "-tracker"
+  scope_suffix: ":tracker"
 ---
 meta:
   api:
@@ -50,11 +57,11 @@ apigee:
   - name: {{ ENV.name }}
     products:
 {% for PRODUCT in PRODUCTS %}
-{% set PRODUCT_NAME = 'electronic-prescription-service-api-' + ENV.name + '-' + PRODUCT.display_name | lower %}
+{% set PRODUCT_NAME = 'electronic-prescription-service-api-' + ENV.name + PRODUCT.name_suffix %}
 {% set PRODUCT_TITLE = 'Electronic Prescription Service ' + PRODUCT.display_name + ' (' + ENV.display_name + ')' %}
 {% set PRODUCT_DESCRIPTION = 'Electronic Prescription Service ' + PRODUCT.display_name + ' - ' + ENV.display_name | lower + ' environment' %}
-{% set USER_SCOPE_NAME = 'urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:' + PRODUCT.scope_suffix %}
-{% set APP_SCOPE_NAME = 'urn:nhsd:apim:app:level3:electronic-prescription-service-api:' + PRODUCT.scope_suffix %}
+{% set USER_SCOPE_NAME = 'urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api' + PRODUCT.scope_suffix %}
+{% set APP_SCOPE_NAME = 'urn:nhsd:apim:app:level3:electronic-prescription-service-api' + PRODUCT.scope_suffix %}
       - name: {{ PRODUCT_NAME }}
         approvalType: {{ ENV.approval_type | default('auto') }}
         attributes:
