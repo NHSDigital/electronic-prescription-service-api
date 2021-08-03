@@ -43,17 +43,17 @@ meta:
   schema_version: 1
 apigee:
   environments:
-
 {% for ENV in APIGEE_ENVIRONMENTS %}
-{% for PRODUCT in PRODUCTS %}
 {% set TITLE = 'Electronic Prescription Service ' + PRODUCT.display_name + ' (' + ENV.display_name + ')' %}
 {% set DESCRIPTION = 'Electronic Prescription Service ' + PRODUCT.display_name + ' - ' + ENV.display_name | lower + ' environment' %}
-{% set NAME = 'electronic-prescription-service-api-' + PRODUCT.display_name | lower + '-' + ENV.name %}
-{% set USER_SCOPE_NAME = 'urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:' + PRODUCT.scope_suffix %}
-{% set APP_SCOPE_NAME = 'urn:nhsd:apim:app:level3:electronic-prescription-service-api:' + PRODUCT.scope_suffix %}
+{% set API_NAME = 'electronic-prescription-service-api-' + ENV.name %}
   - name: {{ ENV.name }}
     products:
-      - name: {{ NAME }}
+{ % for PRODUCT in PRODUCTS % }
+{ % set PRODUCT_NAME = 'electronic-prescription-service-api-' + ENV.name + '-' + PRODUCT.display_name | lower % }
+{ % set USER_SCOPE_NAME = 'urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:' + PRODUCT.scope_suffix % }
+{ % set APP_SCOPE_NAME = 'urn:nhsd:apim:app:level3:electronic-prescription-service-api:' + PRODUCT.scope_suffix % }
+      - name: {{ PRODUCT_NAME }}
         approvalType: {{ ENV.approval_type | default('auto') }}
         attributes:
           - name: access
@@ -76,16 +76,16 @@ apigee:
         quota: {{ ENV.quota | default('300') }}
         quotaInterval: '1'
         quotaTimeUnit: minute
+{% endfor %}
     specs:
-      - name: {{ NAME }}
+      - name: {{ API_NAME }}
         path: electronic-prescription-service-api.json
     api_catalog:
-      - edgeAPIProductName: {{ NAME }}
+      - edgeAPIProductName: {{ API_NAME }}
         anonAllowed: true
         description: {{ DESCRIPTION }}
         requireCallbackUrl: {{ ENV.require_callback_url | default(true) }}
         title: {{ TITLE }}
         visibility: {{ ENV.make_spec_visible | default(false) }}
-        specId: {{ NAME }}
-{% endfor %}
+        specId: {{ API_NAME }}
 {% endfor %}
