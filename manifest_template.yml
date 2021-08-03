@@ -49,10 +49,10 @@ apigee:
 {% set API_NAME = 'electronic-prescription-service-api-' + ENV.name %}
   - name: {{ ENV.name }}
     products:
-{ % for PRODUCT in PRODUCTS % }
-{ % set PRODUCT_NAME = 'electronic-prescription-service-api-' + ENV.name + '-' + PRODUCT.display_name | lower % }
-{ % set USER_SCOPE_NAME = 'urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:' + PRODUCT.scope_suffix % }
-{ % set APP_SCOPE_NAME = 'urn:nhsd:apim:app:level3:electronic-prescription-service-api:' + PRODUCT.scope_suffix % }
+{% for PRODUCT in PRODUCTS %}
+{% set PRODUCT_NAME = 'electronic-prescription-service-api-' + ENV.name + '-' + PRODUCT.display_name | lower %}
+{% set USER_SCOPE_NAME = 'urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:' + PRODUCT.scope_suffix %}
+{% set APP_SCOPE_NAME = 'urn:nhsd:apim:app:level3:electronic-prescription-service-api:' + PRODUCT.scope_suffix %}
       - name: {{ PRODUCT_NAME }}
         approvalType: {{ ENV.approval_type | default('auto') }}
         attributes:
