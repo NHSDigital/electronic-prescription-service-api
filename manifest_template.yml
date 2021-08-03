@@ -44,13 +44,15 @@ meta:
 apigee:
   environments:
 {% for ENV in APIGEE_ENVIRONMENTS %}
-{% set TITLE = 'Electronic Prescription Service ' + PRODUCT.display_name + ' (' + ENV.display_name + ')' %}
-{% set DESCRIPTION = 'Electronic Prescription Service ' + PRODUCT.display_name + ' - ' + ENV.display_name | lower + ' environment' %}
 {% set API_NAME = 'electronic-prescription-service-api-' + ENV.name %}
+{% set API_TITLE = 'Electronic Prescription Service (' + ENV.display_name + ')' %}
+{% set API_DESCRIPTION = 'Electronic Prescription Service - ' + ENV.display_name | lower + ' environment' %}
   - name: {{ ENV.name }}
     products:
 {% for PRODUCT in PRODUCTS %}
 {% set PRODUCT_NAME = 'electronic-prescription-service-api-' + ENV.name + '-' + PRODUCT.display_name | lower %}
+{% set PRODUCT_TITLE = 'Electronic Prescription Service ' + PRODUCT.display_name + ' (' + ENV.display_name + ')' %}
+{% set PRODUCT_DESCRIPTION = 'Electronic Prescription Service ' + PRODUCT.display_name + ' - ' + ENV.display_name | lower + ' environment' %}
 {% set USER_SCOPE_NAME = 'urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:' + PRODUCT.scope_suffix %}
 {% set APP_SCOPE_NAME = 'urn:nhsd:apim:app:level3:electronic-prescription-service-api:' + PRODUCT.scope_suffix %}
       - name: {{ PRODUCT_NAME }}
@@ -60,8 +62,8 @@ apigee:
             value: public
           - name: ratelimit
             value: {{ ENV.ratelimit | default('5ps') }}
-        description: {{ DESCRIPTION }}
-        displayName: {{ TITLE }}
+        description: {{ PRODUCT_DESCRIPTION }}
+        displayName: {{ PRODUCT_TITLE }}
         environments: [ {{ ENV.name }} ]
         proxies:
           - electronic-prescription-service-api-{{ ENV.name }}
@@ -83,9 +85,9 @@ apigee:
     api_catalog:
       - edgeAPIProductName: {{ API_NAME }}
         anonAllowed: true
-        description: {{ DESCRIPTION }}
+        description: {{ API_DESCRIPTION }}
         requireCallbackUrl: {{ ENV.require_callback_url | default(true) }}
-        title: {{ TITLE }}
+        title: {{ API_TITLE }}
         visibility: {{ ENV.make_spec_visible | default(false) }}
         specId: {{ API_NAME }}
 {% endfor %}
