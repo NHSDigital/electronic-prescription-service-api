@@ -1,0 +1,9 @@
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+    {
+      "code": "informational",
+      "severity": "information"
+    }
+  ]
+}

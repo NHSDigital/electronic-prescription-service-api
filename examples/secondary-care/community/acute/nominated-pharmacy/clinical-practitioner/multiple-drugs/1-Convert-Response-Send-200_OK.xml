@@ -20,13 +20,13 @@
   <ControlActEvent classCode="CACT" moodCode="EVN">
     <author typeCode="AUT">
       <AgentPersonSDS classCode="AGNT">
-        <id extension="201715352555" root="1.2.826.0.1285.0.2.0.67"/>
+        <id extension="555254240100" root="1.2.826.0.1285.0.2.0.67"/>
         <agentPersonSDS classCode="PSN" determinerCode="INSTANCE">
-          <id extension="555086689106" root="1.2.826.0.1285.0.2.0.65"/>
+          <id extension="555254239107" root="1.2.826.0.1285.0.2.0.65"/>
         </agentPersonSDS>
         <part typeCode="PART">
           <partSDSRole classCode="ROL">
-            <id extension="R8000" root="1.2.826.0.1285.0.2.1.104"/>
+            <id extension="UNKNOWN" root="1.2.826.0.1285.0.2.1.104"/>
           </partSDSRole>
         </part>
       </AgentPersonSDS>
@@ -215,13 +215,6 @@
                     </quantity>
                   </lineItemQuantity>
                 </component>
-                <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
-                  <seperatableInd value="false"/>
-                  <pertinentAdditionalInstructions classCode="OBS" moodCode="EVN">
-                    <code code="AI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value>One tablet three times daily</value>
-                  </pertinentAdditionalInstructions>
-                </pertinentInformation1>
                 <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
                   <seperatableInd value="false"/>
                   <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
@@ -254,13 +247,6 @@
                     </quantity>
                   </lineItemQuantity>
                 </component>
-                <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
-                  <seperatableInd value="false"/>
-                  <pertinentAdditionalInstructions classCode="OBS" moodCode="EVN">
-                    <code code="AI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value>One or two, four times daily</value>
-                  </pertinentAdditionalInstructions>
-                </pertinentInformation1>
                 <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
                   <seperatableInd value="false"/>
                   <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
@@ -293,13 +279,6 @@
                     </quantity>
                   </lineItemQuantity>
                 </component>
-                <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
-                  <seperatableInd value="false"/>
-                  <pertinentAdditionalInstructions classCode="OBS" moodCode="EVN">
-                    <code code="AI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value>One twice daily</value>
-                  </pertinentAdditionalInstructions>
-                </pertinentInformation1>
                 <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
                   <seperatableInd value="false"/>
                   <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
@@ -332,13 +311,6 @@
                     </quantity>
                   </lineItemQuantity>
                 </component>
-                <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
-                  <seperatableInd value="false"/>
-                  <pertinentAdditionalInstructions classCode="OBS" moodCode="EVN">
-                    <code code="AI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value>One every 72 hours</value>
-                  </pertinentAdditionalInstructions>
-                </pertinentInformation1>
                 <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
                   <seperatableInd value="false"/>
                   <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
