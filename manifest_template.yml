@@ -29,11 +29,11 @@ APIGEE_ENVIRONMENTS:
 
 PRODUCTS:
 - display_name: Prescribing
-  name: prescribing
+  scope_suffix: prescribing
 - display_name: Dispensing
-  name: dispensing
+  scope_suffix: dispensing
 - display_name: Tracker
-  name: tracker
+  scope_suffix: tracker
 ---
 meta:
   api:
@@ -48,7 +48,9 @@ apigee:
 {% for PRODUCT in PRODUCTS %}
 {% set TITLE = 'Electronic Prescription Service ' + PRODUCT.display_name + ' (' + ENV.display_name + ')' %}
 {% set DESCRIPTION = 'Electronic Prescription Service ' + PRODUCT.display_name + ' - ' + ENV.display_name | lower + ' environment' %}
-{% set NAME = 'electronic-prescription-service-api-' + PRODUCT.name + '-' + ENV.name %}
+{% set NAME = 'electronic-prescription-service-api-' + PRODUCT.display_name | lower + '-' + ENV.name %}
+{% set USER_SCOPE_NAME = 'urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:' + PRODUCT.scope_suffix %}
+{% set APP_SCOPE_NAME = 'urn:nhsd:apim:app:level3:electronic-prescription-service-api:' + PRODUCT.scope_suffix %}
   - name: {{ ENV.name }}
     products:
       - name: {{ NAME }}
@@ -58,8 +60,6 @@ apigee:
             value: public
           - name: ratelimit
             value: {{ ENV.ratelimit | default('5ps') }}
-          - name: product
-            value: {{ PRODUCT.name }}
         description: {{ DESCRIPTION }}
         displayName: {{ TITLE }}
         environments: [ {{ ENV.name }} ]
@@ -71,8 +71,8 @@ apigee:
 #          - electronic-prescription-service-api-int-preview
 {% endif %}
         scopes:
-          - 'urn:nhsd:apim:app:level3:electronic-prescription-service-api'
-          - 'urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api'
+          - {{ USER_SCOPE_NAME }}
+          - {{ APP_SCOPE_NAME }}
         quota: {{ ENV.quota | default('300') }}
         quotaInterval: '1'
         quotaTimeUnit: minute
