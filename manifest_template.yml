@@ -31,16 +31,28 @@ PRODUCTS:
 # Full access is just there to pass platform manifest validation, we don't actually want it
 - display_name: Full Access
   name_suffix: ""
-  scope_suffix: ""
+  scopes:
+      - "urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:prescribing"
+      - "urn:nhsd:apim:app:level3:electronic-prescription-service-api:prescribing"
+      - "urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:dispensing"
+      - "urn:nhsd:apim:app:level3:electronic-prescription-service-api:dispensing"
+      - "urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:tracker"
+      - "urn:nhsd:apim:app:level3:electronic-prescription-service-api:tracker"
 - display_name: Prescribing
   name_suffix: "-prescribing"
-  scope_suffix: ":prescribing"
+  scopes:
+      - "urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:prescribing"
+      - "urn:nhsd:apim:app:level3:electronic-prescription-service-api:prescribing"
 - display_name: Dispensing
   name_suffix: "-dispensing"
-  scope_suffix: ":dispensing"
+  scopes:
+      - "urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:dispensing"
+      - "urn:nhsd:apim:app:level3:electronic-prescription-service-api:dispensing"
 - display_name: Tracker
   name_suffix: "-tracker"
-  scope_suffix: ":tracker"
+  scopes:
+      - "urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:tracker"
+      - "urn:nhsd:apim:app:level3:electronic-prescription-service-api:tracker"
 ---
 meta:
   api:
@@ -60,8 +72,6 @@ apigee:
 {% set PRODUCT_NAME = 'electronic-prescription-service-api-' + ENV.name + PRODUCT.name_suffix %}
 {% set PRODUCT_TITLE = 'Electronic Prescription Service ' + PRODUCT.display_name + ' (' + ENV.display_name + ')' %}
 {% set PRODUCT_DESCRIPTION = 'Electronic Prescription Service ' + PRODUCT.display_name + ' - ' + ENV.display_name | lower + ' environment' %}
-{% set USER_SCOPE_NAME = 'urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api' + PRODUCT.scope_suffix %}
-{% set APP_SCOPE_NAME = 'urn:nhsd:apim:app:level3:electronic-prescription-service-api' + PRODUCT.scope_suffix %}
       - name: {{ PRODUCT_NAME }}
         approvalType: {{ ENV.approval_type | default('auto') }}
         attributes:
@@ -79,9 +89,7 @@ apigee:
           - identity-service-int-no-smartcard
 #          - electronic-prescription-service-api-int-preview
 {% endif %}
-        scopes:
-          - {{ USER_SCOPE_NAME }}
-          - {{ APP_SCOPE_NAME }}
+        scopes: {{ PRODUCT.scopes }}
         quota: {{ ENV.quota | default('300') }}
         quotaInterval: '1'
         quotaTimeUnit: minute
