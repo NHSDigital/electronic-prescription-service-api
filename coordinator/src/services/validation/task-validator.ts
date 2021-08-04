@@ -1,6 +1,6 @@
 import {fhir, validationErrors as errors} from "@models"
 import {getCodeableConceptCodingForSystem, getCodingForSystemOrNull} from "../translation/common"
-import {validatePermittedDispenseMessage} from "./features"
+import {validatePermittedDispenseMessage} from "./prescribing-dispensing-tracker"
 
 export function verifyTask(task: fhir.Task, scope: string): Array<fhir.OperationOutcomeIssue> {
   const validationErrors = []
@@ -9,9 +9,9 @@ export function verifyTask(task: fhir.Task, scope: string): Array<fhir.Operation
     validationErrors.push(errors.createResourceTypeIssue("Task"))
   }
 
-  const featureErrors = validatePermittedDispenseMessage(scope)
-  if (featureErrors.length) {
-    return featureErrors
+  const permissionErrors = validatePermittedDispenseMessage(scope)
+  if (permissionErrors.length) {
+    return permissionErrors
   }
 
   if (task.intent !== fhir.TaskIntent.ORDER) {

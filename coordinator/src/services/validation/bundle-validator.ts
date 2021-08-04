@@ -13,7 +13,7 @@ import {
 import {fhir, validationErrors as errors} from "@models"
 import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
 import {isRepeatDispensing} from "../translation/request"
-import {validatePermittedDispenseMessage, validatePermittedPrescribeMessage} from "./features"
+import {validatePermittedDispenseMessage, validatePermittedPrescribeMessage} from "./prescribing-dispensing-tracker"
 
 const prescribeMessageTypes = fhir.PRESCRIBE_MESSAGE_TYPES.map(x => x.toString())
 const dispenseMessageTypes = fhir.DISPENSE_MESSAGE_TYPES.map(x => x.toString())
@@ -25,14 +25,14 @@ export function verifyBundle(bundle: fhir.Bundle, scope: string): Array<fhir.Ope
 
   const messageType = identifyMessageType(bundle)
   if (prescribeMessageTypes.includes(messageType)) {
-    const featureErrors = validatePermittedPrescribeMessage(scope)
-    if (featureErrors.length) {
-      return featureErrors
+    const permissionErrors = validatePermittedPrescribeMessage(scope)
+    if (permissionErrors.length) {
+      return permissionErrors
     }
   } else if (dispenseMessageTypes.includes(messageType)) {
-    const featureErrors = validatePermittedDispenseMessage(scope)
-    if (featureErrors.length) {
-      return featureErrors
+    const permissionErrors = validatePermittedDispenseMessage(scope)
+    if (permissionErrors.length) {
+      return permissionErrors
     }
   } else {
     return [errors.messageTypeIssue]
