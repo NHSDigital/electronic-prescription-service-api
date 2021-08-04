@@ -1,13 +1,14 @@
 import {fhir, validationErrors as errors} from "@models"
-import {featureBlockedDispenseMessage} from "../../utils/feature-flags"
+import {validatePermittedDispenseMessage} from "./features"
 
-export function verifyParameters(parameters: fhir.Parameters): Array<fhir.OperationOutcomeIssue> {
+export function verifyParameters(parameters: fhir.Parameters, scope: string): Array<fhir.OperationOutcomeIssue> {
   if (parameters.resourceType !== "Parameters") {
     return [errors.createResourceTypeIssue("Parameters")]
   }
 
-  if (featureBlockedDispenseMessage()) {
-    return [errors.featureBlockedIssue]
+  const featureErrors = validatePermittedDispenseMessage(scope)
+  if (featureErrors.length) {
+    return featureErrors
   }
 
   return []

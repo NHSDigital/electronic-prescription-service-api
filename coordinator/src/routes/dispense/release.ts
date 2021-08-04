@@ -4,6 +4,7 @@ import {fhir} from "@models"
 import * as translator from "../../services/translation/request"
 import {spineClient} from "../../services/communication/spine-client"
 import * as parametersValidator from "../../services/validation/parameters-validator"
+import {getScope} from "../../utils/headers"
 
 export default [
   /*
@@ -15,7 +16,8 @@ export default [
     handler: externalValidator(
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const parameters = getPayload(request) as fhir.Parameters
-        const issues = parametersValidator.verifyParameters(parameters)
+        const scope = getScope(request.headers)
+        const issues = parametersValidator.verifyParameters(parameters, scope)
         if (issues.length) {
           return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(ContentTypes.FHIR)
         }

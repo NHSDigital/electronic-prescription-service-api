@@ -9,6 +9,7 @@ import * as bundleValidator from "../../services/validation/bundle-validator"
 import * as parametersValidator from "../../services/validation/parameters-validator"
 import * as taskValidator from "../../services/validation/task-validator"
 import {isBundle, isParameters, isTask} from "../../utils/type-guards"
+import {getScope} from "../../utils/headers"
 
 export default [
   /*
@@ -20,8 +21,9 @@ export default [
     handler: externalValidator(
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const payload = getPayload(request) as fhir.Resource
+        const scope = getScope(request.headers)
         if (isBundle(payload)) {
-          const issues = bundleValidator.verifyBundle(payload)
+          const issues = bundleValidator.verifyBundle(payload, scope)
           if (issues.length) {
             return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(ContentTypes.FHIR)
           }
@@ -32,7 +34,7 @@ export default [
         }
 
         if (isParameters(payload)) {
-          const issues = parametersValidator.verifyParameters(payload)
+          const issues = parametersValidator.verifyParameters(payload, scope)
           if (issues.length) {
             return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(ContentTypes.FHIR)
           }
@@ -47,7 +49,7 @@ export default [
         }
 
         if (isTask(payload)) {
-          const issues = taskValidator.verifyTask(payload)
+          const issues = taskValidator.verifyTask(payload, scope)
           if (issues.length) {
             return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(ContentTypes.FHIR)
           }

@@ -8,10 +8,19 @@ export const messageTypeIssue: fhir.OperationOutcomeIssue = {
   expression: ["Bundle.entry.resource.ofType(MessageHeader).eventCoding.code"]
 }
 
-export const featureBlockedIssue: fhir.OperationOutcomeIssue = {
+export const incorrectScopeIssue: fhir.OperationOutcomeIssue = {
   severity: "fatal",
-  code: fhir.IssueCodes.NOT_SUPPORTED,
-  diagnostics: "The feature for this message type is disabled"
+  code: fhir.IssueCodes.FORBIDDEN,
+  //TODO - how can we make this clearer?
+  diagnostics: "Required oauth scope not found."
+}
+
+export function createDisabledFeatureIssue(featureName: string): fhir.OperationOutcomeIssue {
+  return {
+    severity: "fatal",
+    code: fhir.IssueCodes.NOT_SUPPORTED,
+    diagnostics: `${featureName} is disabled.`
+  }
 }
 
 export function createMedicationRequestInconsistentValueIssue<T>(

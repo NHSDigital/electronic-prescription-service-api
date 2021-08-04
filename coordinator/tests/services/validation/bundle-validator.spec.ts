@@ -9,6 +9,12 @@ import {
   getPrescriptionStatus
 }
   from "../../../src/services/translation/request/dispense/dispense-notification"
+import {
+  dispensingAppScope,
+  dispensingUserScope,
+  prescribingAppScope,
+  prescribingUserScope
+} from "../../../tests/services/validation/scopes"
 
 function validateValidationErrors (validationErrors: Array<fhir.OperationOutcomeIssue>) {
   expect(validationErrors).toHaveLength(1)
@@ -24,39 +30,7 @@ describe("Bundle checks", () => {
     process.env.DISPENSE_ENABLED = "true"
   })
 
-  test("verifyBundle accepts bundle with required Resources", () => {
-    expect(validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned)).toEqual([])
-  })
-
-  test("verifyBundle rejects a prescribe message when prescribe is disabled",
-    () => {
-      process.env.PRESCRIBE_ENABLED = "false"
-      expect(validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned))
-        .toEqual([errors.featureBlockedIssue])
-    })
-
-  test("verifyBundle rejects a dispense message when dispensing is disabled",
-    () => {
-      process.env.DISPENSE_ENABLED = "false"
-      expect(validator.verifyBundle(TestResources.examplePrescription3.fhirMessageDispense))
-        .toEqual([errors.featureBlockedIssue])
-    })
-
-  test("verifyBundle accepts a dispense message when prescribe is disabled",
-    () => {
-      process.env.PRESCRIBE_ENABLED = "false"
-      expect(validator.verifyBundle(TestResources.examplePrescription3.fhirMessageDispense))
-        .toEqual([])
-    })
-
-  test("verifyBundle accepts a dispense message when dispense is disabled",
-    () => {
-      process.env.DISPENSE_ENABLED = "false"
-      expect(validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned))
-        .toEqual([])
-    })
-
-  test("rejects bundle with unusual bundle type", () => {
+  test("rejects bundle with unsupported message type", () => {
     const messageHeader: fhir.MessageHeader = {
       resourceType: "MessageHeader",
       eventCoding: {
@@ -74,8 +48,60 @@ describe("Bundle checks", () => {
         }
       ]
     }
-    expect(validator.verifyBundle(bundle as fhir.Bundle))
-      .toContainEqual(errors.messageTypeIssue)
+    const result = validator.verifyBundle(bundle as fhir.Bundle, prescribingUserScope)
+    expect(result).toContainEqual(errors.messageTypeIssue)
+  })
+
+  test("verifyBundle rejects a prescribe message when prescribe is disabled", () => {
+    process.env.PRESCRIBE_ENABLED = "false"
+    const result = validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned, prescribingUserScope)
+    expect(result).toEqual([errors.createDisabledFeatureIssue("Prescribing")])
+  })
+
+  test("verifyBundle rejects a dispense message when dispensing is disabled", () => {
+    process.env.DISPENSE_ENABLED = "false"
+    const result = validator.verifyBundle(TestResources.examplePrescription3.fhirMessageDispense, dispensingUserScope)
+    expect(result).toEqual([errors.createDisabledFeatureIssue("Dispensing")])
+  })
+
+  test("verifyBundle accepts a dispense message when prescribe is disabled", () => {
+    process.env.PRESCRIBE_ENABLED = "false"
+    const result = validator.verifyBundle(TestResources.examplePrescription3.fhirMessageDispense, dispensingUserScope)
+    expect(result).toEqual([])
+  })
+
+  test("verifyBundle accepts a dispense message when dispense is disabled", () => {
+    process.env.DISPENSE_ENABLED = "false"
+    const result = validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned, prescribingUserScope)
+    expect(result).toEqual([])
+  })
+
+  test("verifyBundle accepts a prescribe message when only prescribing user scope present", () => {
+    const result = validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned, prescribingUserScope)
+    expect(result).toEqual([])
+  })
+
+  test("verifyBundle rejects a prescribe message when only prescribing app scope present", () => {
+    const result = validator.verifyBundle(TestResources.examplePrescription1.fhirMessageUnsigned, prescribingAppScope)
+    expect(result).toEqual([errors.incorrectScopeIssue])
+  })
+
+  test("verifyBundle accepts a dispense message when only dispensing user scope present", () => {
+    const result = validator.verifyBundle(TestResources.examplePrescription3.fhirMessageDispense, dispensingUserScope)
+    expect(result).toEqual([])
+  })
+
+  test("verifyBundle accepts a dispense message when only dispensing app scope present", () => {
+    const result = validator.verifyBundle(TestResources.examplePrescription3.fhirMessageDispense, dispensingAppScope)
+    expect(result).toEqual([])
+  })
+
+  test("verifyBundle accepts a message when multiple scopes are present, one of which is valid", () => {
+    const result = validator.verifyBundle(
+      TestResources.examplePrescription1.fhirMessageUnsigned,
+      `fake-testing-scope ${prescribingAppScope} ${prescribingUserScope}`
+    )
+    expect(result).toEqual([])
   })
 })
 

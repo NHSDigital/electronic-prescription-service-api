@@ -13,20 +13,29 @@ import {
 import {fhir, validationErrors as errors} from "@models"
 import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
 import {isRepeatDispensing} from "../translation/request"
-import {featureBlockedMessage} from "../../utils/feature-flags"
+import {validatePermittedDispenseMessage, validatePermittedPrescribeMessage} from "./features"
 
-export function verifyBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
+const prescribeMessageTypes = fhir.PRESCRIBE_MESSAGE_TYPES.map(x => x.toString())
+const dispenseMessageTypes = fhir.DISPENSE_MESSAGE_TYPES.map(x => x.toString())
+
+export function verifyBundle(bundle: fhir.Bundle, scope: string): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
     return [errors.createResourceTypeIssue("Bundle")]
   }
 
   const messageType = identifyMessageType(bundle)
-  if (!verifyMessageType(messageType)) {
+  if (prescribeMessageTypes.includes(messageType)) {
+    const featureErrors = validatePermittedPrescribeMessage(scope)
+    if (featureErrors.length) {
+      return featureErrors
+    }
+  } else if (dispenseMessageTypes.includes(messageType)) {
+    const featureErrors = validatePermittedDispenseMessage(scope)
+    if (featureErrors.length) {
+      return featureErrors
+    }
+  } else {
     return [errors.messageTypeIssue]
-  }
-
-  if (featureBlockedMessage(messageType)) {
-    return [errors.featureBlockedIssue]
   }
 
   const commonErrors = verifyCommonBundle(bundle)
@@ -51,10 +60,6 @@ export function verifyBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIs
     ...commonErrors,
     ...messageTypeSpecificErrors
   ]
-}
-
-function verifyMessageType(messageType: string): messageType is fhir.EventCodingCode {
-  return fhir.ACCEPTED_MESSAGE_TYPES.map(type => type.toString()).includes(messageType)
 }
 
 function resourceHasBothCodeableConceptAndReference(
