@@ -70,7 +70,7 @@ export async function callFhirValidator(
   requestHeaders: Hapi.Util.Dictionary<string>
 ): Promise<fhir.OperationOutcome> {
   const validatorResponse = await axios.post(
-    `${VALIDATOR_HOST}/$validate`,
+    `${VALIDATOR_HOST}/R4/$validate`,
     payload.toString(),
     {
       headers: {
