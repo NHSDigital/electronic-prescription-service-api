@@ -69,27 +69,33 @@ export async function callFhirValidator(
   payload: HapiPayload,
   requestHeaders: Hapi.Util.Dictionary<string>
 ): Promise<fhir.OperationOutcome> {
-  const validatorResponse = await axios.post(
-    `${VALIDATOR_HOST}/R4/$validate`,
-    payload.toString(),
-    {
-      headers: {
-        "Content-Type": requestHeaders["content-type"]
+  let validatorResponse
+  try {
+    validatorResponse = await axios.post(
+      `${VALIDATOR_HOST}/R4/$validate`,
+      payload.toString(),
+      {
+        headers: {
+          "Content-Type": requestHeaders["content-type"]
+        }
       }
+    )
+    return validatorResponse.data
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const errorResponse = error.response.data
+      if (!errorResponse) {
+        throw new TypeError("No response from validator")
+      }
+
+      if (!isOperationOutcome(errorResponse)) {
+        throw new TypeError(`Unexpected response from validator:\n${
+          JSON.stringify(errorResponse, getCircularReplacer())
+        }`)
+      }
+      return errorResponse
     }
-  )
-
-  const validatorResponseData = validatorResponse.data
-  if (!validatorResponseData) {
-    throw new TypeError("No response from validator")
   }
-
-  if (!isOperationOutcome(validatorResponseData)) {
-    throw new TypeError(`Unexpected response from validator:\n${
-      JSON.stringify(validatorResponseData, getCircularReplacer())
-    }`)
-  }
-  return validatorResponseData
 }
 
 export async function getFhirValidatorErrors(
