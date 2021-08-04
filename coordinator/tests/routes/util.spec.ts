@@ -20,7 +20,7 @@ jest.mock("../../src/services/translation/response", () => ({
 
 test("API only forwards accept header to validator", async () => {
   moxios.install(axios)
-  moxios.stubRequest(`${VALIDATOR_HOST}/$validate`, {
+  moxios.stubRequest(`${VALIDATOR_HOST}/R4/$validate`, {
     status: 200,
     responseText: JSON.stringify({
       "resourceType": "OperationOutcome"
