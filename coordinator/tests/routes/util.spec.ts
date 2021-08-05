@@ -31,8 +31,11 @@ test("API only forwards accept header to validator", async () => {
     "accept": "application/json+fhir",
     "content-type": "application/my-content-type"
   }
+  const examplePayload = JSON.stringify({
+    resourceType: ""
+  })
 
-  await callFhirValidator("data", exampleHeaders)
+  await callFhirValidator(examplePayload, exampleHeaders)
   const requestHeaders = moxios.requests.mostRecent().headers
 
   expect(requestHeaders["Accept"]).not.toBe("application/json+fhir")

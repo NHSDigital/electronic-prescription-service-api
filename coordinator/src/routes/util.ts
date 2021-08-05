@@ -105,6 +105,8 @@ export async function callFhirValidator(
         }`)
       }
       return errorResponse
+    } else if (error instanceof SyntaxError) {
+      throw new TypeError("Invalid JSON")
     }
   }
 }
