@@ -497,7 +497,7 @@
               "repeat": {
                 "frequency": 1,
                 "period": 72,
-                "periodUnit": "hr"
+                "periodUnit": "h"
               }
             },
             "doseAndRate": [

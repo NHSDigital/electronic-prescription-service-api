@@ -65,15 +65,26 @@ const getCircularReplacer = () => {
   }
 }
 
+function createValidatorPayload(parsedPayload: unknown): fhir.Parameters {
+  return {
+    resourceType: "Parameters",
+    parameter: [{
+      name: "resource",
+      resource: parsedPayload as fhir.Resource
+    }]
+  }
+}
+
 export async function callFhirValidator(
   payload: HapiPayload,
   requestHeaders: Hapi.Util.Dictionary<string>
 ): Promise<fhir.OperationOutcome> {
-  let validatorResponse
   try {
-    validatorResponse = await axios.post(
+    const parsedPayload = JSON.parse(payload.toString())
+    const validatorPayload = createValidatorPayload(parsedPayload)
+    const validatorResponse = await axios.post<fhir.OperationOutcome>(
       `${VALIDATOR_HOST}/R4/$validate`,
-      payload.toString(),
+      validatorPayload,
       {
         headers: {
           "Content-Type": requestHeaders["content-type"]
@@ -83,7 +94,7 @@ export async function callFhirValidator(
     return validatorResponse.data
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      const errorResponse = error.response.data
+      const errorResponse = error.response?.data
       if (!errorResponse) {
         throw new TypeError("No response from validator")
       }

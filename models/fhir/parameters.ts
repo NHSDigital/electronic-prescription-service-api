@@ -4,7 +4,7 @@ export type ParameterTypes = StringParameter |
   IdentifierParameter |
   CodeParameter |
   ReferenceParameter<never> |
-  ResourceParameter<never> |
+  ResourceParameter<common.Resource> |
   MultiPartParameter
 
 export class Parameters extends common.Resource {
