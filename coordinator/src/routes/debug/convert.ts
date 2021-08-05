@@ -10,6 +10,7 @@ import * as parametersValidator from "../../services/validation/parameters-valid
 import * as taskValidator from "../../services/validation/task-validator"
 import {isBundle, isParameters, isTask} from "../../utils/type-guards"
 import {getScope} from "../../utils/headers"
+import {getStatusCode} from "../../utils/status-code"
 
 export default [
   /*
@@ -25,7 +26,9 @@ export default [
         if (isBundle(payload)) {
           const issues = bundleValidator.verifyBundle(payload, scope)
           if (issues.length) {
-            return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(ContentTypes.FHIR)
+            const response = fhir.createOperationOutcome(issues)
+            const statusCode = getStatusCode(issues)
+            return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
           }
 
           request.logger.info("Building HL7V3 message from Bundle")
@@ -36,7 +39,9 @@ export default [
         if (isParameters(payload)) {
           const issues = parametersValidator.verifyParameters(payload, scope)
           if (issues.length) {
-            return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(ContentTypes.FHIR)
+            const response = fhir.createOperationOutcome(issues)
+            const statusCode = getStatusCode(issues)
+            return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
           }
 
           request.logger.info("Building HL7V3 message from Parameters")
@@ -51,7 +56,9 @@ export default [
         if (isTask(payload)) {
           const issues = taskValidator.verifyTask(payload, scope)
           if (issues.length) {
-            return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(ContentTypes.FHIR)
+            const response = fhir.createOperationOutcome(issues)
+            const statusCode = getStatusCode(issues)
+            return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
           }
 
           request.logger.info("Building HL7V3 message from Task")

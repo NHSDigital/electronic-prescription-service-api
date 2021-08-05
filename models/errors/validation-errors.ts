@@ -8,18 +8,27 @@ export const messageTypeIssue: fhir.OperationOutcomeIssue = {
   expression: ["Bundle.entry.resource.ofType(MessageHeader).eventCoding.code"]
 }
 
-export const incorrectScopeIssue: fhir.OperationOutcomeIssue = {
-  severity: "fatal",
-  code: fhir.IssueCodes.FORBIDDEN,
-  //TODO - how can we make this clearer?
-  diagnostics: "Required oauth scope not found."
+export function createUserRestrictedOnlyScopeIssue(featureName: string): fhir.OperationOutcomeIssue {
+  return {
+    severity: "fatal",
+    code: fhir.IssueCodes.FORBIDDEN,
+    diagnostics: `${featureName} functionality can only be accessed using the user-restricted access mode.`
+  }
+}
+
+export function createMissingScopeIssue(featureName: string): fhir.OperationOutcomeIssue {
+  return {
+    severity: "fatal",
+    code: fhir.IssueCodes.FORBIDDEN,
+    diagnostics: `Your app does not have permission to access ${featureName.toLowerCase()} functionality.`
+  }
 }
 
 export function createDisabledFeatureIssue(featureName: string): fhir.OperationOutcomeIssue {
   return {
     severity: "fatal",
     code: fhir.IssueCodes.NOT_SUPPORTED,
-    diagnostics: `${featureName} is disabled.`
+    diagnostics: `${featureName} functionality is disabled.`
   }
 }
 
