@@ -10,33 +10,37 @@ export enum EventCodingCode {
   CLAIM = "dispense-claim"
 }
 
-export const PRESCRIBE_MESSAGE_TYPES = [
+export const PRESCRIBE_BUNDLE_TYPES = [
   EventCodingCode.PRESCRIPTION,
   EventCodingCode.CANCELLATION
 ]
 
-export const DISPENSE_MESSAGE_TYPES = [
+export const DISPENSE_BUNDLE_TYPES = [
   EventCodingCode.DISPENSE,
   EventCodingCode.CLAIM
 ]
 
-export const ACCEPTED_MESSAGE_TYPES = PRESCRIBE_MESSAGE_TYPES.concat(DISPENSE_MESSAGE_TYPES)
+export const ACCEPTED_BUNDLE_TYPES = PRESCRIBE_BUNDLE_TYPES.concat(DISPENSE_BUNDLE_TYPES)
 
-export const EVENT_CODING_PRESCRIPTION_ORDER_RESPONSE = common.createCoding(
-  "https://fhir.nhs.uk/CodeSystem/message-event",
-  EventCodingCode.PRESCRIPTION_RESPONSE,
-  "Prescription Order Response"
-)
+export const EVENT_CODING_PRESCRIPTION_ORDER_RESPONSE: MessageHeaderEventCoding = {
+  system: "https://fhir.nhs.uk/CodeSystem/message-event",
+  code: EventCodingCode.PRESCRIPTION_RESPONSE,
+  display: "Prescription Order Response"
+}
 
-export const EVENT_CODING_PRESCRIPTION_ORDER = common.createCoding(
-  "https://fhir.nhs.uk/CodeSystem/message-event",
-  EventCodingCode.PRESCRIPTION,
-  "Prescription Order"
-)
+export const EVENT_CODING_PRESCRIPTION_ORDER: MessageHeaderEventCoding = {
+  system: "https://fhir.nhs.uk/CodeSystem/message-event",
+  code: EventCodingCode.PRESCRIPTION,
+  display: "Prescription Order"
+}
+
+export interface MessageHeaderEventCoding extends common.Coding {
+  code: EventCodingCode
+}
 
 export interface MessageHeader extends common.Resource {
   resourceType: "MessageHeader"
-  eventCoding: common.Coding
+  eventCoding: MessageHeaderEventCoding
   sender: common.IdentifierReference<practitionerRole.Organization>
   source: MessageHeaderSource
   focus: Array<common.Reference<common.Resource>>

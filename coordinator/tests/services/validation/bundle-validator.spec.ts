@@ -34,7 +34,7 @@ describe("Bundle checks", () => {
       resourceType: "MessageHeader",
       eventCoding: {
         system: undefined,
-        code: "garbage-message-type"
+        code: "garbage-message-type" as fhir.EventCodingCode
       },
       focus: undefined, sender: undefined, source: undefined
     }

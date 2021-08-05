@@ -4,7 +4,7 @@ import * as fhir from "../fhir"
 export const messageTypeIssue: fhir.OperationOutcomeIssue = {
   severity: "fatal",
   code: fhir.IssueCodes.VALUE,
-  diagnostics: `MessageHeader.eventCoding.code must be one of: ${fhir.ACCEPTED_MESSAGE_TYPES.join(", ")}.`,
+  diagnostics: `MessageHeader.eventCoding.code must be one of: ${fhir.ACCEPTED_BUNDLE_TYPES.join(", ")}.`,
   expression: ["Bundle.entry.resource.ofType(MessageHeader).eventCoding.code"]
 }
 

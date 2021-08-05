@@ -15,21 +15,18 @@ import {getOrganisationPerformer} from "../translation/request/dispense/dispense
 import {isRepeatDispensing} from "../translation/request"
 import {validatePermittedDispenseMessage, validatePermittedPrescribeMessage} from "./prescribing-dispensing-tracker"
 
-const prescribeMessageTypes = fhir.PRESCRIBE_MESSAGE_TYPES.map(x => x.toString())
-const dispenseMessageTypes = fhir.DISPENSE_MESSAGE_TYPES.map(x => x.toString())
-
 export function verifyBundle(bundle: fhir.Bundle, scope: string): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
     return [errors.createResourceTypeIssue("Bundle")]
   }
 
   const messageType = identifyMessageType(bundle)
-  if (prescribeMessageTypes.includes(messageType)) {
+  if (fhir.PRESCRIBE_BUNDLE_TYPES.includes(messageType)) {
     const permissionErrors = validatePermittedPrescribeMessage(scope)
     if (permissionErrors.length) {
       return permissionErrors
     }
-  } else if (dispenseMessageTypes.includes(messageType)) {
+  } else if (fhir.DISPENSE_BUNDLE_TYPES.includes(messageType)) {
     const permissionErrors = validatePermittedDispenseMessage(scope)
     if (permissionErrors.length) {
       return permissionErrors
