@@ -108,7 +108,7 @@ describe("getPrescriptionStatus", () => {
   )
 })
 
-describe("fhir MessageHeader maps correct values in DispenseNotificiation", () => {
+describe("fhir MessageHeader maps correct values in DispenseNotification", () => {
   let dispenseNotification: fhir.Bundle
   let messageHeader: fhir.MessageHeader
   beforeEach(() => {
@@ -116,6 +116,27 @@ describe("fhir MessageHeader maps correct values in DispenseNotificiation", () =
     messageHeader = getMessageHeader(dispenseNotification)
   })
 
+  test("replacementOf extension maps to sequelTo.priorMessageRef.id when present", async() => {
+    messageHeader.extension = [{
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
+      valueIdentifier: {
+        system: "TEST-SYSTEM",
+        value: "TEST-VALUE"
+      }
+    }]
+
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
+
+    expect(hl7dispenseNotification.replacementOf.priorMessageRef.id._attributes.root).toEqual("TEST-VALUE")
+  })
+
+  test("replacementOf extension doesn't map to sequelTo.priorMessageRef.id when missing", async() => {
+    messageHeader.extension = []
+
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
+
+    expect(hl7dispenseNotification.replacementOf).toBeUndefined()
+  })
   test("response.identifier maps to sequelTo.priorPrescriptionReleaseEventRef.id", async() => {
     messageHeader.response.identifier = "XX-TEST-VALUE"
 
