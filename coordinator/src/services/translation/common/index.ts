@@ -12,7 +12,7 @@ export function getMessageId(identifier: Array<fhir.Identifier>, fhirPath: strin
   )
 }
 
-export function identifyMessageType(bundle: fhir.Bundle): string {
+export function identifyMessageType(bundle: fhir.Bundle): fhir.EventCodingCode {
   return getMessageHeader(bundle).eventCoding?.code
 }
 

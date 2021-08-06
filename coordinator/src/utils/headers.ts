@@ -7,6 +7,7 @@ export enum RequestHeaders {
   PARTY_KEY = "nhsd-party-key",
   SDS_USER_UNIQUE_ID = "nhsd-identity-uuid",
   SDS_ROLE_PROFILE_ID = "nhsd-session-urid",
+  SCOPE = "nhsd-scope",
   RAW_RESPONSE = "x-raw-response",
   SKIP_VALIDATION = "x-skip-validation",
   SMOKE_TEST = "x-smoke-test"
@@ -30,4 +31,8 @@ export function getSdsUserUniqueId(headers: Hapi.Util.Dictionary<string>): strin
 
 export function getSdsRoleProfileId(headers: Hapi.Util.Dictionary<string>): string {
   return headers[RequestHeaders.SDS_ROLE_PROFILE_ID]
+}
+
+export function getScope(headers: Hapi.Util.Dictionary<string>): string {
+  return headers[RequestHeaders.SCOPE]
 }
