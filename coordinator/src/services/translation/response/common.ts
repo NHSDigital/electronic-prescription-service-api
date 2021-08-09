@@ -5,6 +5,7 @@ import {createPractitioner} from "./practitioner"
 import {createHealthcareService, createLocations, createOrganization} from "./organization"
 import {createPractitionerRole} from "./practitioner-role"
 import {createPatient} from "./patient"
+import {createPractitionerOrRoleIdentifier} from "./identifiers"
 
 export function convertName(names: Array<hl7V3.Name> | hl7V3.Name): Array<fhir.HumanName> {
   const nameArray = toArray(names)
@@ -156,12 +157,30 @@ export function translateAndAddPatient(hl7Patient: hl7V3.Patient, resources: Arr
   return fhirPatient.id
 }
 
-export function translateAndAddAgentPerson(agentPerson: hl7V3.AgentPerson, resources: Array<fhir.Resource>): string {
+export interface TranslatedAgentPerson {
+  practitionerRole: fhir.PractitionerRole
+  practitioner: fhir.Practitioner
+  healthcareService: fhir.HealthcareService
+  locations: Array<fhir.Location>
+  organization?: fhir.Organization
+}
+
+export function roleProfileIdIdentical(agentPerson1: hl7V3.AgentPerson, agentPerson2: hl7V3.AgentPerson): boolean {
+  return agentPerson1.id._attributes.extension === agentPerson2.id._attributes.extension
+}
+
+export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): TranslatedAgentPerson {
   const practitioner = createPractitioner(agentPerson)
   const locations = createLocations(agentPerson.representedOrganization)
   const healthcareService = createHealthcareService(agentPerson.representedOrganization, locations)
   const practitionerRole = createPractitionerRole(agentPerson, practitioner.id, healthcareService.id)
-  resources.push(practitioner, ...locations, healthcareService, practitionerRole)
+
+  const translatedAgentPerson: TranslatedAgentPerson = {
+    practitionerRole,
+    practitioner,
+    healthcareService,
+    locations
+  }
 
   const healthCareProviderLicense = agentPerson.representedOrganization.healthCareProviderLicense
   if (healthCareProviderLicense) {
@@ -171,8 +190,48 @@ export function translateAndAddAgentPerson(agentPerson: hl7V3.AgentPerson, resou
       display: organization.name
     }
     practitionerRole.organization = fhir.createReference(organization.id)
-    resources.push(organization)
+    translatedAgentPerson.organization = organization
   }
 
-  return practitionerRole.id
+  return translatedAgentPerson
+}
+
+export function addTranslatedAgentPerson(
+  bundleResources: Array<fhir.Resource>,
+  translatedAgentPerson: TranslatedAgentPerson
+): void {
+  bundleResources.push(
+    translatedAgentPerson.practitionerRole,
+    translatedAgentPerson.practitioner,
+    translatedAgentPerson.healthcareService,
+    ...translatedAgentPerson.locations
+  )
+  if (translatedAgentPerson.organization) {
+    bundleResources.push(translatedAgentPerson.organization)
+  }
+}
+
+export function addDetailsToTranslatedAgentPerson(
+  translatedAgentPerson: TranslatedAgentPerson,
+  agentPerson: hl7V3.AgentPerson
+): void {
+  const userId = agentPerson.agentPerson.id._attributes.extension
+  addIdentifierToPractitionerOrRole(translatedAgentPerson.practitionerRole, translatedAgentPerson.practitioner, userId)
+}
+
+export function addIdentifierToPractitionerOrRole(
+  practitionerRole: fhir.PractitionerRole,
+  practitioner: fhir.Practitioner,
+  identifierValue: string
+): void {
+  const identifier = createPractitionerOrRoleIdentifier(identifierValue)
+  if (identifier.system === "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code") {
+    if (!practitionerRole.identifier.includes(identifier)) {
+      practitionerRole.identifier.push(identifier)
+    }
+  } else {
+    if (!practitioner.identifier.includes(identifier)) {
+      practitioner.identifier.push(identifier)
+    }
+  }
 }

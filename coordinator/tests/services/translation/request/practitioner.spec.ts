@@ -3,11 +3,10 @@ import * as helpers from "../../../resources/test-helpers"
 import * as TestResources from "../../../resources/test-resources"
 import * as common from "../../../../src/services/translation/common/getResourcesOfType"
 import {getMessageHeader, getProvenances} from "../../../../src/services/translation/common/getResourcesOfType"
-import {hl7V3, fhir, processingErrors as errors} from "@models"
+import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {onlyElement} from "../../../../src/services/translation/common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../../../src/services/translation/common/dateTime"
-
 import requireActual = jest.requireActual
 
 const actualMoment = requireActual("moment")
@@ -65,15 +64,13 @@ describe("getAgentPersonTelecom", () => {
 })
 
 describe("getAgentPersonPersonIdForAuthor", () => {
-  const gmcCodeValue = "123425516"
-
   const gmcCode: fhir.Identifier = {
     "system": "https://fhir.hl7.org.uk/Id/gmc-number",
-    "value": `C${gmcCodeValue}`
+    "value": "C1234567"
   }
   const gmpCode : fhir.Identifier = {
     "system": "https://fhir.hl7.org.uk/Id/gmp-number",
-    "value": "gmp"
+    "value": "G1234567"
   }
 
   test("if more than 1 professional code is present for a practitioner then throw", () => {
@@ -86,9 +83,9 @@ describe("getAgentPersonPersonIdForAuthor", () => {
       []
     )).toThrow()
   })
-  test("Removes leading C from GMC code", () => {
+  test("if 1 professional code is present, then return it", () => {
     expect(practitioner.getAgentPersonPersonIdForAuthor([gmcCode])._attributes.extension)
-      .toBe(gmcCodeValue)
+      .toBe("C1234567")
   })
 })
 

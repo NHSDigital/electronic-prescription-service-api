@@ -108,24 +108,24 @@ describe("bundle resources", () => {
     expect(patients).toHaveLength(1)
   })
 
-  test("contains PractitionerRoles", () => {
+  test("contains PractitionerRole", () => {
     const practitionerRoles = result.filter(resource => resource.resourceType === "PractitionerRole")
-    expect(practitionerRoles).toHaveLength(2)
+    expect(practitionerRoles).toHaveLength(1)
   })
 
-  test("contains Practitioners", () => {
+  test("contains Practitioner", () => {
     const practitioners = result.filter(resource => resource.resourceType === "Practitioner")
-    expect(practitioners).toHaveLength(2)
+    expect(practitioners).toHaveLength(1)
   })
 
-  test("contains HealthcareServices", () => {
+  test("contains HealthcareService", () => {
     const healthcareServices = result.filter(resource => resource.resourceType === "HealthcareService")
-    expect(healthcareServices).toHaveLength(2)
+    expect(healthcareServices).toHaveLength(1)
   })
 
-  test("contains Locations", () => {
+  test("contains Location", () => {
     const locations = result.filter(resource => resource.resourceType === "Location")
-    expect(locations).toHaveLength(2)
+    expect(locations).toHaveLength(1)
   })
 
   test("contains Organization", () => {
