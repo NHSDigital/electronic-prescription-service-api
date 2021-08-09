@@ -1,16 +1,17 @@
 import {fhir, validationErrors as errors} from "@models"
 import {getCodeableConceptCodingForSystem, getCodingForSystemOrNull} from "../translation/common"
-import {featureBlockedDispenseMessage} from "../../utils/feature-flags"
+import {validatePermittedDispenseMessage} from "./prescribing-dispensing-tracker"
 
-export function verifyTask(task: fhir.Task): Array<fhir.OperationOutcomeIssue> {
+export function verifyTask(task: fhir.Task, scope: string): Array<fhir.OperationOutcomeIssue> {
   const validationErrors = []
 
   if (task.resourceType !== "Task") {
     validationErrors.push(errors.createResourceTypeIssue("Task"))
   }
 
-  if (featureBlockedDispenseMessage()) {
-    return [errors.featureBlockedIssue]
+  const permissionErrors = validatePermittedDispenseMessage(scope)
+  if (permissionErrors.length) {
+    return permissionErrors
   }
 
   if (task.intent !== fhir.TaskIntent.ORDER) {

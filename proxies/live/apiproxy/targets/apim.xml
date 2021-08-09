@@ -22,8 +22,8 @@
           <Name>AssignMessage.SetAccessModeApplicationRestricted</Name>
         </Step>
         <Step>
-          <Name>AssignMessage.AddAccessModeUserRestricted</Name>
-          <Condition>(scope JavaRegex ".*(urn:nhsd:apim:user-nhs-id).*") and (accesstoken.id_token-acr StartsWith "AAL3")</Condition>
+          <Name>AssignMessage.SetAccessModeUserRestricted</Name>
+          <Condition>(scope JavaRegex "(.* )?urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:(prescribing|dispensing|tracker)( .*)?")</Condition>
         </Step>
         <Step>
           <!-- Header NHSD-Request-ID must be in the correct format (GUID) -->
@@ -66,6 +66,9 @@
         <Step>
           <!-- Add the ASID and party-key var as a header -->
           <Name>AssignMessage.AddAsidAndPartyKeyHeader</Name>
+        </Step>
+        <Step>
+          <Name>AssignMessage.AddScopeHeader</Name>
         </Step>
         <Step>
           <!--This should always be the last Step - as it is just before the message is sent - so the initial request stays intact for as long as possible.

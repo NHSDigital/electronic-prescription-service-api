@@ -1,13 +1,14 @@
 import {fhir, validationErrors as errors} from "@models"
-import {featureBlockedDispenseMessage} from "../../utils/feature-flags"
+import {validatePermittedDispenseMessage} from "./prescribing-dispensing-tracker"
 
-export function verifyParameters(parameters: fhir.Parameters): Array<fhir.OperationOutcomeIssue> {
+export function verifyParameters(parameters: fhir.Parameters, scope: string): Array<fhir.OperationOutcomeIssue> {
   if (parameters.resourceType !== "Parameters") {
     return [errors.createResourceTypeIssue("Parameters")]
   }
 
-  if (featureBlockedDispenseMessage()) {
-    return [errors.featureBlockedIssue]
+  const permissionErrors = validatePermittedDispenseMessage(scope)
+  if (permissionErrors.length) {
+    return permissionErrors
   }
 
   return []

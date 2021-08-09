@@ -1,0 +1,9 @@
+<AssignMessage async="false" continueOnError="false" enabled="true" name="AssignMessage.AddScopeHeader">
+  <Add>
+      <Headers>
+          <Header name="NHSD-Scope">urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:prescribing urn:nhsd:apim:app:level3:electronic-prescription-service-api:prescribing urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:dispensing urn:nhsd:apim:app:level3:electronic-prescription-service-api:dispensing urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:tracker urn:nhsd:apim:app:level3:electronic-prescription-service-api:tracker</Header>
+      </Headers>
+  </Add>
+  <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
+  <AssignTo createNew="false" transport="http" type="request"/>
+</AssignMessage>

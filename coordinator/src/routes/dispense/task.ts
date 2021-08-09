@@ -4,6 +4,8 @@ import {fhir} from "@models"
 import * as translator from "../../services/translation/request"
 import {spineClient} from "../../services/communication/spine-client"
 import * as taskValidator from "../../services/validation/task-validator"
+import {getScope} from "../../utils/headers"
+import {getStatusCode} from "../../utils/status-code"
 
 export default [
   /*
@@ -15,9 +17,12 @@ export default [
     handler: externalValidator(
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const taskPayload = getPayload(request) as fhir.Task
-        const issues = taskValidator.verifyTask(taskPayload)
+        const scope = getScope(request.headers)
+        const issues = taskValidator.verifyTask(taskPayload, scope)
         if (issues.length) {
-          return responseToolkit.response(fhir.createOperationOutcome(issues)).code(400).type(ContentTypes.FHIR)
+          const response = fhir.createOperationOutcome(issues)
+          const statusCode = getStatusCode(issues)
+          return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
         }
 
         request.logger.info("Building Spine return / withdraw request")

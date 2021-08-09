@@ -91,6 +91,9 @@ async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
 async function verifyValidate(): Promise<void> {
   await verifyOnce("validate")
 }
+async function verifyVerifySignatures(): Promise<void> {
+  await verifyOnce("verify-signature")
+}
 async function verifyPrepare(): Promise<void> {
   await verifyOnce("prepare")
 }
@@ -118,6 +121,7 @@ async function verifyClaim(): Promise<void> {
 
 (async () => {
   await verifyValidate()
+    .then(verifyVerifySignatures)
     .then(verifyPrepare)
     .then(verifySend)
     .then(verifyCancel)

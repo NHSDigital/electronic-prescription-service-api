@@ -6,7 +6,8 @@ import {
   getIdentifierValueOrNullForSystem,
   getMessageId,
   getMedicationCoding,
-  onlyElement
+  onlyElement,
+  getExtensionForUrlOrNull
 } from "../../common"
 import {getMedicationDispenses, getMessageHeader, getPatientOrNull} from "../../common/getResourcesOfType"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
@@ -33,6 +34,7 @@ export async function convertDispenseNotification(
   const hl7AgentOrganisation = createAgentOrganisation(fhirOrganisationPerformer)
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)
   const hl7CareRecordElementCategory = createCareRecordElementCategory(fhirLineItemIdentifiers)
+  const hl7PriorMessageRef = createPriorMessageRef(fhirHeader)
   const hl7PriorPrescriptionReleaseEventRef = createPriorPrescriptionReleaseEventRef(fhirHeader)
   const hl7PertinentInformation1 = await createPertinentInformation1(
     bundle,
@@ -49,6 +51,9 @@ export async function convertDispenseNotification(
   hl7DispenseNotification.primaryInformationRecipient = new hl7V3.PrimaryInformationRecipient(hl7AgentOrganisation)
   hl7DispenseNotification.pertinentInformation1 = hl7PertinentInformation1
   hl7DispenseNotification.pertinentInformation2 = new hl7V3.DispensePertinentInformation2(hl7CareRecordElementCategory)
+  if (hl7PriorMessageRef) {
+    hl7DispenseNotification.replacementOf = new hl7V3.ReplacementOf(hl7PriorMessageRef)
+  }
   hl7DispenseNotification.sequelTo = new hl7V3.SequelTo(hl7PriorPrescriptionReleaseEventRef)
 
   return hl7DispenseNotification
@@ -336,6 +341,18 @@ function createCareRecordElementCategory(fhirIdentifiers: Array<string>) {
     )
   )
   return hl7CareRecordElementCategory
+}
+
+function createPriorMessageRef(fhirHeader: fhir.MessageHeader) {
+  const replacementOf = getExtensionForUrlOrNull(
+    fhirHeader.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
+    "MessageHeader.extension"
+  ) as fhir.IdentifierExtension
+
+  if (replacementOf) {
+    return new hl7V3.MessageRef(new hl7V3.GlobalIdentifier(replacementOf.valueIdentifier.value))
+  }
 }
 
 function createPriorPrescriptionReleaseEventRef(fhirHeader: fhir.MessageHeader) {

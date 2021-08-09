@@ -4,7 +4,7 @@ import {
   externalValidator,
   getPayload
 } from "../util"
-import {fhir} from "@models"
+import {fhir, validationErrors as errors} from "@models"
 import {stringifyDosages} from "../../services/translation/request/dosage"
 import {getMedicationDispenses, getMedicationRequests} from "../../services/translation/common/getResourcesOfType"
 import {isBundle, isMedicationDispense, isMedicationRequest} from "../../utils/type-guards"
@@ -20,7 +20,9 @@ export default [
       const payload = getPayload(request) as fhir.Resource
       const resources = getResourcesWithDosageInstructions(payload)
       if (!resources) {
-        const response = "Request body must be a Bundle, MedicationRequest or MedicationDispense."
+        const response = fhir.createOperationOutcome([
+          errors.createResourceTypeIssue("Bundle, MedicationRequest or MedicationDispense")
+        ])
         return responseToolkit.response(response).code(400).type(ContentTypes.PLAIN_TEXT)
       }
 

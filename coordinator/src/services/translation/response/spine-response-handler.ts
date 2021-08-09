@@ -4,6 +4,7 @@ import {toArray} from "../common"
 import * as pino from "pino"
 import * as cancelResponseTranslator from "./cancellation/cancellation-response"
 import * as releaseResponseTranslator from "./release/release-response"
+import {getStatusCode} from "../../../utils/status-code"
 
 export interface TranslatedSpineResponse {
   fhirResponse: fhir.Resource
@@ -73,13 +74,6 @@ export class SpineResponseHandler<T> {
     }
   }
 
-  static createBadRequestResponse(issues: Array<fhir.OperationOutcomeIssue>): TranslatedSpineResponse {
-    return {
-      statusCode: 400,
-      fhirResponse: fhir.createOperationOutcome(issues)
-    }
-  }
-
   static createServerErrorResponse(): TranslatedSpineResponse {
     return {
       statusCode: 500,
@@ -90,28 +84,20 @@ export class SpineResponseHandler<T> {
     }
   }
 
+  static createResponseForIssues(issues: Array<fhir.OperationOutcomeIssue>): TranslatedSpineResponse {
+    return {
+      statusCode: getStatusCode(issues),
+      fhirResponse: fhir.createOperationOutcome(issues)
+    }
+  }
+
   private static handleErrorOrRejectionResponse(errorCodes: Array<hl7V3.Code<string>>, logger: pino.Logger) {
-    const issues = errorCodes.map(SpineResponseHandler.toOperationOutcomeIssue)
+    const issues = errorCodes.map(SpineResponseHandler.getErrorCodeInformation)
     if (!issues.length) {
       logger.error("Trying to return bad request response with no error details")
       return SpineResponseHandler.createServerErrorResponse()
     }
-    return SpineResponseHandler.createBadRequestResponse(issues)
-  }
-
-  private static toOperationOutcomeIssue(code: hl7V3.Code<string>): fhir.OperationOutcomeIssue {
-    const epsCodeInformation = SpineResponseHandler.getErrorCodeInformation(code)
-    return {
-      code: epsCodeInformation.code,
-      severity: "error",
-      details: {
-        coding: [{
-          system: epsCodeInformation.system,
-          code: epsCodeInformation.issueCode,
-          display: epsCodeInformation.display
-        }]
-      }
-    }
+    return SpineResponseHandler.createResponseForIssues(issues)
   }
 
   private static getErrorCodeInformation(code: hl7V3.Code<string>) {
@@ -125,274 +111,344 @@ export class SpineResponseHandler<T> {
     }
   }
 
-  private static toUnhandledMessageTypeErrorCode(code: hl7V3.Code<string>): EpsErrorCodeInformation {
-    return {
-      code: fhir.IssueCodes.INVALID,
-      issueCode: code._attributes.code,
-      display: code._attributes.displayName,
-      system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
-    }
+  private static toUnhandledMessageTypeErrorCode(code: hl7V3.Code<string>): fhir.OperationOutcomeIssue {
+    return fhir.createOperationOutcomeIssue(
+      fhir.IssueCodes.INVALID,
+      "error",
+      fhir.createCodeableConcept(
+        "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+        code._attributes.code,
+        code._attributes.displayName
+      ))
   }
 
-  private static toEpsPrescribeErrorCode(code: hl7V3.Code<string>): EpsErrorCodeInformation {
+  private static toEpsPrescribeErrorCode(code: hl7V3.Code<string>): fhir.OperationOutcomeIssue {
     switch (code._attributes.code) {
       //TODO - remove?
       case "0001":
-        return {
-          code: fhir.IssueCodes.BUSINESS_RULE,
-          display: "Patient is recorded as dead",
-          issueCode: "PATIENT_DECEASED",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.BUSINESS_RULE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "PATIENT_DECEASED",
+            "Patient is recorded as dead"
+          ))
       case "0002":
-        return {
-          code: fhir.IssueCodes.DUPLICATE,
-          display: "Duplicate prescription ID exists",
-          issueCode: "DUPLICATE_PRESCRIPTION_ID",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.DUPLICATE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "DUPLICATE_PRESCRIPTION_ID",
+            "Duplicate prescription ID exists"
+          ))
       case "0003":
-        return {
-          code: fhir.IssueCodes.BUSINESS_RULE,
-          display: "Digital signature not found",
-          issueCode: "MISSING_DIGITAL_SIGNATURE",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.BUSINESS_RULE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "MISSING_DIGITAL_SIGNATURE",
+            "Digital signature not found"
+          ))
       case "0005":
-        return {
-          code: fhir.IssueCodes.NOT_FOUND,
-          display: "Prescription can not be found. Contact prescriber",
-          issueCode: "PRESCRIPTION_NOT_FOUND",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.NOT_FOUND,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "PRESCRIPTION_NOT_FOUND",
+            "Prescription can not be found. Contact prescriber"
+          ))
       //TODO - remove?
       case "0007":
-        return {
-          code: fhir.IssueCodes.CODE_INVALID,
-          display: "The resource ID was not valid." +
-            " For example a NHS Number is presented which is not a valid NHS Number.",
-          issueCode: "INVALID_RESOURCE_ID",
-          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.CODE_INVALID,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+            "INVALID_RESOURCE_ID",
+            "The resource ID was not valid." +
+            " For example a NHS Number is presented which is not a valid NHS Number."
+          ))
       //TODO - remove?
       case "0008":
-        return {
-          code: fhir.IssueCodes.VALUE,
-          display: code._attributes.displayName,
-          issueCode: "MISSING_VALUE",
-          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.VALUE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+            "MISSING_VALUE",
+            code._attributes.displayName
+          ))
       case "0009":
       case "7002":
-        return {
-          code: fhir.IssueCodes.STRUCTURE,
-          display: "Invalid Message",
-          issueCode: "INVALID_MESSAGE",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.STRUCTURE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "INVALID_MESSAGE",
+            "Invalid Message"
+          ))
       //TODO - remove?
       case "0010":
-        return {
-          code: fhir.IssueCodes.BUSINESS_RULE,
-          display: "Number of items on a prescription should be between 1 and 4",
-          issueCode: "INVALID_NUMBER_MEDICATIONREQUESTS",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.BUSINESS_RULE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "INVALID_NUMBER_MEDICATIONREQUESTS",
+            "Number of items on a prescription should be between 1 and 4"
+          ))
       case "0012":
-        return {
-          code: fhir.IssueCodes.BUSINESS_RULE,
-          display: "Invalid State Transition for Prescription",
-          issueCode: "PRESCRIPTION_INVALID_STATE_TRANSITION",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.BUSINESS_RULE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "PRESCRIPTION_INVALID_STATE_TRANSITION",
+            "Invalid State Transition for Prescription"
+          ))
       case "0013":
-        return {
-          code: fhir.IssueCodes.BUSINESS_RULE,
-          display: "Invalid State Transition for Prescription Item",
-          issueCode: "MEDICATIONREQUEST_INVALID_STATE_TRANSITION",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.BUSINESS_RULE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "MEDICATIONREQUEST_INVALID_STATE_TRANSITION",
+            "Invalid State Transition for Prescription Item"
+          ))
       case "0014":
-        return {
-          code: fhir.IssueCodes.NOT_FOUND,
-          display: "Prescription Item Not found",
-          issueCode: "MEDICATIONREQUEST_NOT_FOUND",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.NOT_FOUND,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "MEDICATIONREQUEST_NOT_FOUND",
+            "Prescription Item Not found"
+          ))
       case "0015":
-        return {
-          code: fhir.IssueCodes.BUSINESS_RULE,
-          display: "Invalid Claim. Prescription is not Dispensed",
-          issueCode: "CLAIM_INVALID_NOT_DISPENSED",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.BUSINESS_RULE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "CLAIM_INVALID_NOT_DISPENSED",
+            "Invalid Claim. Prescription is not Dispensed"
+          ))
       case "0018":
-        return {
-          code: fhir.IssueCodes.BUSINESS_RULE,
-          display: "Mismatch in authorised repeat counts",
-          issueCode: "MISMATCH_AUTHORISED_REPEAT_COUNT",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.BUSINESS_RULE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "MISMATCH_AUTHORISED_REPEAT_COUNT",
+            "Mismatch in authorised repeat counts"
+          ))
       //TODO - remove?
       case "0019":
-        return {
-          code: fhir.IssueCodes.BUSINESS_RULE,
-          display: "Repeat count should be between 1 and 99",
-          issueCode: "INVALID_REPEAT_COUNT",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.BUSINESS_RULE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "INVALID_REPEAT_COUNT",
+            "Repeat count should be between 1 and 99"
+          ))
       case "0021":
-        return {
-          code: fhir.IssueCodes.BUSINESS_RULE,
-          display: "Dispense Amendment/Cancellation Request does not pertain to Last Dispense",
-          issueCode: "DISPENSE_AMEND_IDENTIFIER_MISMATCH",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.BUSINESS_RULE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "DISPENSE_AMEND_IDENTIFIER_MISMATCH",
+            "Dispense Amendment/Cancellation Request does not pertain to Last Dispense"
+          ))
       //TODO - remove?
       case "0099":
-        return {
-          code: fhir.IssueCodes.CONFLICT,
-          display: "Resource version mismatch",
-          issueCode: "RESOURCE_VERSION_MISMATCH",
-          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.CONFLICT,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+            "RESOURCE_VERSION_MISMATCH",
+            "Resource version mismatch"
+          ))
       case "0100":
-        return {
-          code: fhir.IssueCodes.BUSINESS_RULE,
-          display: "Claim amendment is not permitted outside of the claim period",
-          issueCode: "CLAIM_AMEND_PERIOD_ISSUE",
-          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.BUSINESS_RULE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+            "CLAIM_AMEND_PERIOD_ISSUE",
+            "Claim amendment is not permitted outside of the claim period"
+          ))
       //TODO - remove?
       case "5008":
-        return {
-          code: fhir.IssueCodes.DUPLICATE,
-          display: "Duplicate item ID exists",
-          issueCode: "DUPLICATE_MEDICATIONREQUEST_ID",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.DUPLICATE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "DUPLICATE_MEDICATIONREQUEST_ID",
+            "Duplicate item ID exists"
+          ))
       //TODO - remove?
       case "5009":
-        return {
-          code: fhir.IssueCodes.VALUE,
-          display: "Error in check digit",
-          issueCode: "INVALID_CHECK_DIGIT",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.VALUE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "INVALID_CHECK_DIGIT",
+            "Error in check digit"
+          ))
       //TODO - remove?
       case "9006":
-        return {
-          code: fhir.IssueCodes.VALUE,
-          display: "Format of date passed is invalid",
-          issueCode: "INVALID_DATE_FORMAT",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.VALUE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "INVALID_DATE_FORMAT",
+            "Format of date passed is invalid"
+          ))
       case "9999":
-        return {
-          code: fhir.IssueCodes.PROCESSING,
-          display: code._attributes.displayName,
-          issueCode: "FAILURE_TO_PROCESS_MESSAGE",
-          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.PROCESSING,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+            "FAILURE_TO_PROCESS_MESSAGE",
+            code._attributes.displayName
+          ))
       default:
-        return {
-          code: fhir.IssueCodes.INVALID,
-          display: code._attributes.displayName,
-          issueCode: "ERROR",
-          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.INVALID,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+            "ERROR",
+            code._attributes.displayName
+          ))
     }
   }
 
-  private static toEpsDispenseErrorCode(code: hl7V3.Code<string>): EpsErrorCodeInformation {
+  private static toEpsDispenseErrorCode(code: hl7V3.Code<string>): fhir.OperationOutcomeIssue {
     switch (code._attributes.code) {
       case "0001":
-        return {
-          code: fhir.IssueCodes.BUSINESS_RULE,
-          display: "Prescription has been cancelled",
-          issueCode: "PRESCRIPTION_CANCELLED",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.BUSINESS_RULE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "PRESCRIPTION_CANCELLED",
+            "Prescription has been cancelled"
+          ))
       case "0002":
-        return {
-          code: fhir.IssueCodes.BUSINESS_RULE,
-          display: "Prescription has expired",
-          issueCode: "PRESCRIPTION_EXPIRED",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.BUSINESS_RULE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "PRESCRIPTION_EXPIRED",
+            "Prescription has expired"
+          ))
       case "0003":
-        return {
-          code: fhir.IssueCodes.NOT_FOUND,
-          display: "Resource not found",
-          issueCode: "RESOURCE_NOT_FOUND",
-          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.NOT_FOUND,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+            "RESOURCE_NOT_FOUND",
+            "Resource not found"
+          ))
       case "0004":
-        return {
-          code: fhir.IssueCodes.BUSINESS_RULE,
-          display: "Prescription is with another dispenser",
-          issueCode: "PRESCRIPTION_WITH_ANOTHER_DISPENSER",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.BUSINESS_RULE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "PRESCRIPTION_WITH_ANOTHER_DISPENSER",
+            "Prescription is with another dispenser"
+          ))
       case "0005":
-        return {
-          code: fhir.IssueCodes.BUSINESS_RULE,
-          display: "Prescription has been dispensed",
-          issueCode: "PRESCRIPTION_DISPENSED",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.BUSINESS_RULE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "PRESCRIPTION_DISPENSED",
+            "Prescription has been dispensed"
+          ))
       case "0006":
-        return {
-          code: fhir.IssueCodes.INFORMATIONAL,
-          display: "No more prescriptions available",
-          issueCode: "NO_MORE_PRESCRIPTIONS",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.INFORMATIONAL,
+          "information",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "NO_MORE_PRESCRIPTIONS",
+            "No more prescriptions available"
+          ))
       case "0007":
-        return {
-          code: fhir.IssueCodes.EXCEPTION,
-          display: "Functionality disabled in spine",
-          issueCode: "SERVICE_DISABLED",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.EXCEPTION,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "SERVICE_DISABLED",
+            "Functionality disabled in spine"
+          ))
       //TODO - remove?
       case "0099":
-        return {
-          code: fhir.IssueCodes.CONFLICT,
-          display: "Resource version mismatch",
-          issueCode: "RESOURCE_VERSION_MISMATCH",
-          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.CONFLICT,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+            "RESOURCE_VERSION_MISMATCH",
+            "Resource version mismatch"
+          ))
       case "5000":
-        return {
-          code: fhir.IssueCodes.PROCESSING,
-          display: code._attributes.displayName,
-          issueCode: "FAILURE_TO_PROCESS_MESSAGE",
-          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.PROCESSING,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+            "FAILURE_TO_PROCESS_MESSAGE",
+            code._attributes.displayName
+          ))
       //TODO - remove?
       case "5888":
-        return {
-          code: fhir.IssueCodes.INVALID,
-          display: "Invalid message",
-          issueCode: "INVALID_MESSAGE",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.INVALID,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "INVALID_MESSAGE",
+            "Invalid message"
+          ))
       //TODO - remove?
       case "9006":
-        return {
-          code: fhir.IssueCodes.VALUE,
-          display: "Format of date passed is invalid",
-          issueCode: "INVALID_DATE_FORMAT",
-          system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.VALUE,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "INVALID_DATE_FORMAT",
+            "Format of date passed is invalid"
+          ))
       default:
-        return {
-          code: fhir.IssueCodes.INVALID,
-          display: code._attributes.displayName,
-          issueCode: "ERROR",
-          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode"
-        }
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.INVALID,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+            "ERROR",
+            code._attributes.displayName
+          ))
     }
   }
 
@@ -485,11 +541,4 @@ export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.Prescript
       fhirResponse: this.translator(releaseResponse)
     }
   }
-}
-
-interface EpsErrorCodeInformation {
-  code: fhir.IssueCodes
-  display: string
-  issueCode: string
-  system: string
 }
