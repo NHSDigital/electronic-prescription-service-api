@@ -4,7 +4,9 @@ import {
   generateResourceId,
   getFullUrl
 } from "../../../../src/services/translation/response/common"
-import {hl7V3} from "@models"
+import {fhir, hl7V3} from "@models"
+import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
+import {getExtensionForUrl, resolveReference} from "../../../../src/services/translation/common"
 
 describe("convertName", () => {
   test("converts unstructured name", () => {
@@ -291,3 +293,34 @@ describe("resourceId", () => {
     expect(fullUrl).toBe(`urn:uuid:${resourceId}`)
   })
 })
+
+export function getRequester(bundle: fhir.Bundle): fhir.PractitionerRole {
+  const medicationRequests = getMedicationRequests(bundle)
+  const medicationRequest = medicationRequests[0]
+  const requesterReference = medicationRequest.requester
+  return resolveReference(bundle, requesterReference)
+}
+
+export function getResponsiblePractitioner(bundle: fhir.Bundle): fhir.PractitionerRole {
+  const medicationRequests = getMedicationRequests(bundle)
+  const medicationRequest = medicationRequests[0]
+  const responsiblePractitionerExtension = getExtensionForUrl(
+    medicationRequest.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+    "MedicationRequest.extension"
+  ) as fhir.ReferenceExtension<fhir.PractitionerRole>
+  const responsiblePractitionerReference = responsiblePractitionerExtension.valueReference
+  return resolveReference(bundle, responsiblePractitionerReference)
+}
+
+export function getPerformer(bundle: fhir.Bundle): fhir.PractitionerRole {
+  const medicationRequests = getMedicationRequests(bundle)
+  const medicationRequest = medicationRequests[0]
+  const dispensingPerformerExtension = getExtensionForUrl(
+    medicationRequest.dispenseRequest.performer.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-DispensingPerformer",
+    "MedicationRequest.dispenseRequest.performer.extension"
+  ) as fhir.ReferenceExtension<fhir.PractitionerRole>
+  const performerReference = dispensingPerformerExtension.valueReference
+  return resolveReference(bundle, performerReference)
+}

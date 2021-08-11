@@ -216,15 +216,19 @@ export function addDetailsToTranslatedAgentPerson(
   agentPerson: hl7V3.AgentPerson
 ): void {
   const userId = agentPerson.agentPerson.id._attributes.extension
-  addIdentifierToPractitionerOrRole(translatedAgentPerson.practitionerRole, translatedAgentPerson.practitioner, userId)
+  const identifier = createPractitionerOrRoleIdentifier(userId)
+  addIdentifierToPractitionerOrRole(
+    translatedAgentPerson.practitionerRole,
+    translatedAgentPerson.practitioner,
+    identifier
+  )
 }
 
 export function addIdentifierToPractitionerOrRole(
   practitionerRole: fhir.PractitionerRole,
   practitioner: fhir.Practitioner,
-  identifierValue: string
+  identifier: fhir.Identifier
 ): void {
-  const identifier = createPractitionerOrRoleIdentifier(identifierValue)
   if (identifier.system === "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code") {
     if (!practitionerRole.identifier.includes(identifier)) {
       practitionerRole.identifier.push(identifier)
