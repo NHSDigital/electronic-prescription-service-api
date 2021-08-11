@@ -1,4 +1,4 @@
-import Hapi, {Request} from "@hapi/hapi";
+import Hapi from "@hapi/hapi"
 
 const capabilityStatement = {
   "resourceType": "CapabilityStatement",
