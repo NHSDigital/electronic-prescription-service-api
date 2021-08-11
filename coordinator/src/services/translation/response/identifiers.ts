@@ -52,6 +52,5 @@ export function createPractitionerOrRoleIdentifier(userId: string): fhir.Identif
   if (looksLikeDinCode(userId)) {
     return fhir.createIdentifier("https://fhir.hl7.org.uk/Id/din-number", userId)
   }
-  //TODO - log out if we get here - indicates something wrong with our patterns
   return fhir.createIdentifier("https://fhir.hl7.org.uk/Id/professional-code", userId)
 }
