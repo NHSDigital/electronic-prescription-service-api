@@ -1,4 +1,5 @@
 import {
+  addIdentifierToPractitionerOrRole,
   convertAddress,
   convertName, convertTelecom,
   generateResourceId,
@@ -291,6 +292,65 @@ describe("resourceId", () => {
     const resourceId = generateResourceId()
     const fullUrl = getFullUrl(resourceId)
     expect(fullUrl).toBe(`urn:uuid:${resourceId}`)
+  })
+})
+
+describe("addIdentifierToPractitionerOrRole", () => {
+  let practitionerRole: fhir.PractitionerRole
+  let practitioner: fhir.Practitioner
+  beforeEach(() => {
+    practitionerRole = {
+      resourceType: "PractitionerRole",
+      identifier: [],
+      telecom: [{
+        system: "phone",
+        value: "0800123456"
+      }]
+    }
+    practitioner = {
+      resourceType: "Practitioner",
+      identifier: []
+    }
+  })
+
+  test("adds spurious code identifier to PractitionerRole", () => {
+    const spuriousCodeIdentifier = {
+      system: "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
+      value: "G7123456"
+    }
+    addIdentifierToPractitionerOrRole(practitionerRole, practitioner, spuriousCodeIdentifier)
+    expect(practitionerRole.identifier).toMatchObject([spuriousCodeIdentifier])
+    expect(practitioner.identifier).toMatchObject([])
+  })
+
+  test("does not add duplicate identifier to PractitionerRole", () => {
+    const spuriousCodeIdentifier = {
+      system: "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
+      value: "G7123456"
+    }
+    practitionerRole.identifier.push(spuriousCodeIdentifier)
+    addIdentifierToPractitionerOrRole(practitionerRole, practitioner, spuriousCodeIdentifier)
+    expect(practitionerRole.identifier).toMatchObject([spuriousCodeIdentifier])
+  })
+
+  test("adds GMP number identifier to Practitioner", () => {
+    const gmpNumberIdentifier = {
+      system: "https://fhir.hl7.org.uk/Id/gmp-number",
+      value: "G1234567"
+    }
+    addIdentifierToPractitionerOrRole(practitionerRole, practitioner, gmpNumberIdentifier)
+    expect(practitionerRole.identifier).toMatchObject([])
+    expect(practitioner.identifier).toMatchObject([gmpNumberIdentifier])
+  })
+
+  test("does not add duplicate identifier to Practitioner", () => {
+    const gmpNumberIdentifier = {
+      system: "https://fhir.hl7.org.uk/Id/gmp-number",
+      value: "G1234567"
+    }
+    practitioner.identifier.push(gmpNumberIdentifier)
+    addIdentifierToPractitionerOrRole(practitionerRole, practitioner, gmpNumberIdentifier)
+    expect(practitioner.identifier).toMatchObject([gmpNumberIdentifier])
   })
 })
 

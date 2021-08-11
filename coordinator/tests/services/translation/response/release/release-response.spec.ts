@@ -17,7 +17,7 @@ import {
   getPractitionerRoles,
   getPractitioners
 } from "../../../../../src/services/translation/common/getResourcesOfType"
-import {getRequester, getResponsiblePractitioner} from "services/translation/response/common.spec"
+import {getRequester, getResponsiblePractitioner} from "../common.spec"
 
 describe("outer bundle", () => {
   const result = createOuterBundle(getExamplePrescriptionReleaseResponse())
@@ -331,6 +331,64 @@ describe("practitioner details", () => {
         system: "https://fhir.nhs.uk/Id/ods-organization-code",
         value: "5AW"
       }])
+    })
+  })
+
+  describe("when responsible party contains a spurious code", () => {
+    const parentPrescription = getExampleParentPrescription()
+    const prescription = parentPrescription.pertinentInformation1.pertinentPrescription
+    prescription.author.AgentPerson.id._attributes.extension = "CommonRoleProfileId"
+    prescription.author.AgentPerson.code._attributes.code = "CommonJobRoleCode"
+    prescription.author.AgentPerson.agentPerson.id._attributes.extension = "G1234567"
+    prescription.responsibleParty.AgentPerson.id._attributes.extension = "CommonRoleProfileId"
+    prescription.responsibleParty.AgentPerson.code._attributes.code = "CommonJobRoleCode"
+    prescription.responsibleParty.AgentPerson.agentPerson.id._attributes.extension = "G7123456"
+
+    const result = createInnerBundle(parentPrescription, "ReleaseRequestId")
+
+    test("one PractitionerRole present", () => {
+      const practitionerRoles = getPractitionerRoles(result)
+      expect(practitionerRoles).toHaveLength(1)
+    })
+    test("PractitionerRole contains correct identifiers (including spurious code)", () => {
+      const requester = getRequester(result)
+      const requesterIdentifiers = requester.identifier
+      expect(requesterIdentifiers).toMatchObject([
+        {
+          system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          value: "CommonRoleProfileId"
+        },
+        {
+          system: "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
+          value: "G7123456"
+        }
+      ])
+    })
+    test("PractitionerRole contains correct codes", () => {
+      const requester = getRequester(result)
+      const requesterCodes = requester.code
+      expect(requesterCodes).toMatchObject([{
+        coding: [{
+          system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+          code: "CommonJobRoleCode"
+        }]
+      }])
+    })
+
+    test("one Practitioner present", () => {
+      const practitioners = getPractitioners(result)
+      expect(practitioners).toHaveLength(1)
+    })
+    test("Practitioner contains correct identifiers (no spurious code)", () => {
+      const requesterPractitionerRole = getRequester(result)
+      const requesterPractitioner = resolveReference(result, requesterPractitionerRole.practitioner)
+      const requesterPractitionerIdentifiers = requesterPractitioner.identifier
+      expect(requesterPractitionerIdentifiers).toMatchObject([
+        {
+          system: "https://fhir.hl7.org.uk/Id/gmp-number",
+          value: "G1234567"
+        }
+      ])
     })
   })
 })
