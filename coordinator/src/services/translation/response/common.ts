@@ -230,12 +230,17 @@ export function addIdentifierToPractitionerOrRole(
   identifier: fhir.Identifier
 ): void {
   if (identifier.system === "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code") {
-    if (!practitionerRole.identifier.includes(identifier)) {
-      practitionerRole.identifier.push(identifier)
-    }
+    addIdentifierIfNotPresent(practitionerRole.identifier, identifier)
   } else {
-    if (!practitioner.identifier.includes(identifier)) {
-      practitioner.identifier.push(identifier)
-    }
+    addIdentifierIfNotPresent(practitioner.identifier, identifier)
+  }
+}
+
+function addIdentifierIfNotPresent(identifiers: Array<fhir.Identifier>, identifier: fhir.Identifier) {
+  if (!identifiers.find(existingIdentifier =>
+    existingIdentifier.system === identifier.system
+    && existingIdentifier.value === identifier.value
+  )) {
+    identifiers.push(identifier)
   }
 }

@@ -8,6 +8,7 @@ import {
 import {fhir, hl7V3} from "@models"
 import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, resolveReference} from "../../../../src/services/translation/common"
+import {clone} from "../../../resources/test-helpers"
 
 describe("convertName", () => {
   test("converts unstructured name", () => {
@@ -328,7 +329,7 @@ describe("addIdentifierToPractitionerOrRole", () => {
       system: "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
       value: "G7123456"
     }
-    practitionerRole.identifier.push(spuriousCodeIdentifier)
+    practitionerRole.identifier.push(clone(spuriousCodeIdentifier))
     addIdentifierToPractitionerOrRole(practitionerRole, practitioner, spuriousCodeIdentifier)
     expect(practitionerRole.identifier).toMatchObject([spuriousCodeIdentifier])
   })
@@ -348,7 +349,7 @@ describe("addIdentifierToPractitionerOrRole", () => {
       system: "https://fhir.hl7.org.uk/Id/gmp-number",
       value: "G1234567"
     }
-    practitioner.identifier.push(gmpNumberIdentifier)
+    practitioner.identifier.push(clone(gmpNumberIdentifier))
     addIdentifierToPractitionerOrRole(practitionerRole, practitioner, gmpNumberIdentifier)
     expect(practitioner.identifier).toMatchObject([gmpNumberIdentifier])
   })
