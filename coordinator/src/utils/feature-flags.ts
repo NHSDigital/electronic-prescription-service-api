@@ -1,19 +1,11 @@
-import {fhir} from "@models"
 import pino from "pino"
 
-const prescriptionMessageTypes: Array<fhir.EventCodingCode> = [
-  fhir.EventCodingCode.PRESCRIPTION, fhir.EventCodingCode.CANCELLATION
-]
-
-export function featureBlockedDispenseMessage(): boolean {
-  return featureBlockedMessage(fhir.EventCodingCode.DISPENSE)
+export function getPrescribeEnabled(): boolean {
+  return process.env.PRESCRIBE_ENABLED === "true"
 }
 
-export function featureBlockedMessage(messageType: fhir.EventCodingCode): boolean {
-  if (prescriptionMessageTypes.includes(messageType)) {
-    return process.env.PRESCRIBE_ENABLED !== "true"
-  }
-  return process.env.DISPENSE_ENABLED !== "true"
+export function getDispenseEnabled(): boolean {
+  return process.env.DISPENSE_ENABLED === "true"
 }
 
 export function getDoseToTextMode(logger: pino.Logger): DoseToTextMode {

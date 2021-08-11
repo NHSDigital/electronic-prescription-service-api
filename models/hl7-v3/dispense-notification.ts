@@ -28,6 +28,7 @@ export class DispenseNotification implements ElementCompact {
   primaryInformationRecipient: PrimaryInformationRecipient
   pertinentInformation1: DispenseNotificationPertinentInformation1
   pertinentInformation2: DispensePertinentInformation2
+  replacementOf?: ReplacementOf
   sequelTo: SequelTo
 
   constructor(id: codes.GlobalIdentifier) {
@@ -475,6 +476,37 @@ export class PertinentPrescriptionStatus implements ElementCompact {
   constructor(value: codes.StatusCode) {
     this.code = new codes.PrescriptionAnnotationCode("PS")
     this.value = value
+  }
+}
+
+/*
+* An act relationship indicating that Dispense Notification sequentially follows the Prescription Release Event.
+*/
+export class ReplacementOf implements ElementCompact {
+  _attributes: core.AttributeTypeCode = {
+    typeCode: "RPLC"
+  }
+
+  priorMessageRef: MessageRef
+
+  constructor(priorMessageRef: MessageRef) {
+    this.priorMessageRef = priorMessageRef
+  }
+}
+
+/*
+An act used to identify the dispense event which this Dispense Notification is to replace.
+*/
+export class MessageRef implements ElementCompact {
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+    classCode: "INFO",
+    moodCode: "EVN"
+  }
+
+  id: codes.GlobalIdentifier
+
+  constructor(id: codes.GlobalIdentifier) {
+    this.id = id
   }
 }
 

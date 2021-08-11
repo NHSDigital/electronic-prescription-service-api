@@ -3,7 +3,7 @@ import {fhir} from "@models"
 
 export function createMessageHeader(
   messageId: string,
-  eventCoding: fhir.Coding,
+  eventCoding: fhir.MessageHeaderEventCoding,
   focusIds: Array<string>,
   destinationOrganizationId: string,
   requestMessageId: string

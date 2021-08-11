@@ -4,6 +4,7 @@ import {toArray} from "../common"
 import * as pino from "pino"
 import * as cancelResponseTranslator from "./cancellation/cancellation-response"
 import * as releaseResponseTranslator from "./release/release-response"
+import {getStatusCode} from "../../../utils/status-code"
 
 export interface TranslatedSpineResponse {
   fhirResponse: fhir.Resource
@@ -63,20 +64,13 @@ export class SpineResponseHandler<T> {
     return toArray(reasons).map(reason => reason.justifyingDetectedIssueEvent.code)
   }
 
-  static createSuccessResponse(issues?: Array<fhir.OperationOutcomeIssue>): TranslatedSpineResponse {
+  static createSuccessResponse(): TranslatedSpineResponse {
     return {
       statusCode: 200,
-      fhirResponse: fhir.createOperationOutcome(issues ?? [{
+      fhirResponse: fhir.createOperationOutcome([{
         code: fhir.IssueCodes.INFORMATIONAL,
         severity: "information"
       }])
-    }
-  }
-
-  static createBadRequestResponse(issues: Array<fhir.OperationOutcomeIssue>): TranslatedSpineResponse {
-    return {
-      statusCode: 400,
-      fhirResponse: fhir.createOperationOutcome(issues)
     }
   }
 
@@ -90,16 +84,20 @@ export class SpineResponseHandler<T> {
     }
   }
 
+  static createResponseForIssues(issues: Array<fhir.OperationOutcomeIssue>): TranslatedSpineResponse {
+    return {
+      statusCode: getStatusCode(issues),
+      fhirResponse: fhir.createOperationOutcome(issues)
+    }
+  }
+
   private static handleErrorOrRejectionResponse(errorCodes: Array<hl7V3.Code<string>>, logger: pino.Logger) {
     const issues = errorCodes.map(SpineResponseHandler.getErrorCodeInformation)
     if (!issues.length) {
       logger.error("Trying to return bad request response with no error details")
       return SpineResponseHandler.createServerErrorResponse()
     }
-    if (issues.every(issue => issue.code === fhir.IssueCodes.INFORMATIONAL)) {
-      return SpineResponseHandler.createSuccessResponse(issues)
-    }
-    return SpineResponseHandler.createBadRequestResponse(issues)
+    return SpineResponseHandler.createResponseForIssues(issues)
   }
 
   private static getErrorCodeInformation(code: hl7V3.Code<string>) {

@@ -1,3 +1,4 @@
 <OAuthV2 async="false" continueOnError="false" enabled="true" name="OauthV2.VerifyAccessToken">
   <Operation>VerifyAccessToken</Operation>
+  <Scope>urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:prescribing urn:nhsd:apim:app:level3:electronic-prescription-service-api:prescribing urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:dispensing urn:nhsd:apim:app:level3:electronic-prescription-service-api:dispensing urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:tracker urn:nhsd:apim:app:level3:electronic-prescription-service-api:tracker</Scope>
 </OAuthV2>

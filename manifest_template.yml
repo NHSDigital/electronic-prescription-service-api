@@ -26,6 +26,33 @@ APIGEE_ENVIRONMENTS:
   ratelimit: 20ps             # todo: confirm with Spine team what these should be
   quota: 1200                 # when ready for live
   portal_visibility: false    # todo: remove this once ready for live
+
+PRODUCTS:
+# Full access is just there to pass platform manifest validation, we don't actually want it
+- display_name: Full Access
+  name_suffix: ""
+  scopes:
+      - "urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:prescribing"
+      - "urn:nhsd:apim:app:level3:electronic-prescription-service-api:prescribing"
+      - "urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:dispensing"
+      - "urn:nhsd:apim:app:level3:electronic-prescription-service-api:dispensing"
+      - "urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:tracker"
+      - "urn:nhsd:apim:app:level3:electronic-prescription-service-api:tracker"
+- display_name: Prescribing
+  name_suffix: "-prescribing"
+  scopes:
+      - "urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:prescribing"
+      - "urn:nhsd:apim:app:level3:electronic-prescription-service-api:prescribing"
+- display_name: Dispensing
+  name_suffix: "-dispensing"
+  scopes:
+      - "urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:dispensing"
+      - "urn:nhsd:apim:app:level3:electronic-prescription-service-api:dispensing"
+- display_name: Tracker
+  name_suffix: "-tracker"
+  scopes:
+      - "urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:tracker"
+      - "urn:nhsd:apim:app:level3:electronic-prescription-service-api:tracker"
 ---
 meta:
   api:
@@ -35,22 +62,25 @@ meta:
   schema_version: 1
 apigee:
   environments:
-
 {% for ENV in APIGEE_ENVIRONMENTS %}
-{% set TITLE = 'Electronic Prescription Service (' + ENV.display_name + ')' %}
-{% set DESCRIPTION = 'Electronic Prescription Service - ' + ENV.display_name | lower + ' environment' %}
-{% set NAME = 'electronic-prescription-service-api-' + ENV.name %}
+{% set API_NAME = 'electronic-prescription-service-api-' + ENV.name %}
+{% set API_TITLE = 'Electronic Prescription Service (' + ENV.display_name + ')' %}
+{% set API_DESCRIPTION = 'Electronic Prescription Service - ' + ENV.display_name | lower + ' environment' %}
   - name: {{ ENV.name }}
     products:
-      - name: {{ NAME }}
+{% for PRODUCT in PRODUCTS %}
+{% set PRODUCT_NAME = 'electronic-prescription-service-api-' + ENV.name + PRODUCT.name_suffix %}
+{% set PRODUCT_TITLE = 'Electronic Prescription Service ' + PRODUCT.display_name + ' (' + ENV.display_name + ')' %}
+{% set PRODUCT_DESCRIPTION = 'Electronic Prescription Service ' + PRODUCT.display_name + ' - ' + ENV.display_name | lower + ' environment' %}
+      - name: {{ PRODUCT_NAME }}
         approvalType: {{ ENV.approval_type | default('auto') }}
         attributes:
           - name: access
             value: public
           - name: ratelimit
             value: {{ ENV.ratelimit | default('5ps') }}
-        description: {{ DESCRIPTION }}
-        displayName: {{ TITLE }}
+        description: {{ PRODUCT_DESCRIPTION }}
+        displayName: {{ PRODUCT_TITLE }}
         environments: [ {{ ENV.name }} ]
         proxies:
           - electronic-prescription-service-api-{{ ENV.name }}
@@ -59,21 +89,20 @@ apigee:
           - identity-service-int-no-smartcard
 #          - electronic-prescription-service-api-int-preview
 {% endif %}
-        scopes:
-          - 'urn:nhsd:apim:app:level3:electronic-prescription-service-api'
-          - 'urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api'
+        scopes: {{ PRODUCT.scopes }}
         quota: {{ ENV.quota | default('300') }}
         quotaInterval: '1'
         quotaTimeUnit: minute
+{% endfor %}
     specs:
-      - name: {{ NAME }}
+      - name: {{ API_NAME }}
         path: electronic-prescription-service-api.json
     api_catalog:
-      - edgeAPIProductName: {{ NAME }}
+      - edgeAPIProductName: {{ API_NAME }}
         anonAllowed: true
-        description: {{ DESCRIPTION }}
+        description: {{ API_DESCRIPTION }}
         requireCallbackUrl: {{ ENV.require_callback_url | default(true) }}
-        title: {{ TITLE }}
+        title: {{ API_TITLE }}
         visibility: {{ ENV.make_spec_visible | default(false) }}
-        specId: {{ NAME }}
+        specId: {{ API_NAME }}
 {% endfor %}
