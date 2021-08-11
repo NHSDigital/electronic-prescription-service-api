@@ -4,14 +4,32 @@ import * as fhir from "../fhir"
 export const messageTypeIssue: fhir.OperationOutcomeIssue = {
   severity: "fatal",
   code: fhir.IssueCodes.VALUE,
-  diagnostics: `MessageHeader.eventCoding.code must be one of: ${fhir.ACCEPTED_MESSAGE_TYPES.join(", ")}.`,
+  diagnostics: `MessageHeader.eventCoding.code must be one of: ${fhir.ACCEPTED_BUNDLE_TYPES.join(", ")}.`,
   expression: ["Bundle.entry.resource.ofType(MessageHeader).eventCoding.code"]
 }
 
-export const featureBlockedIssue: fhir.OperationOutcomeIssue = {
-  severity: "fatal",
-  code: fhir.IssueCodes.NOT_SUPPORTED,
-  diagnostics: "The feature for this message type is disabled"
+export function createUserRestrictedOnlyScopeIssue(featureName: string): fhir.OperationOutcomeIssue {
+  return {
+    severity: "fatal",
+    code: fhir.IssueCodes.FORBIDDEN,
+    diagnostics: `${featureName} functionality can only be accessed using the user-restricted access mode.`
+  }
+}
+
+export function createMissingScopeIssue(featureName: string): fhir.OperationOutcomeIssue {
+  return {
+    severity: "fatal",
+    code: fhir.IssueCodes.FORBIDDEN,
+    diagnostics: `Your app does not have permission to access ${featureName.toLowerCase()} functionality.`
+  }
+}
+
+export function createDisabledFeatureIssue(featureName: string): fhir.OperationOutcomeIssue {
+  return {
+    severity: "fatal",
+    code: fhir.IssueCodes.NOT_SUPPORTED,
+    diagnostics: `${featureName} functionality is disabled.`
+  }
 }
 
 export function createMedicationRequestInconsistentValueIssue<T>(
