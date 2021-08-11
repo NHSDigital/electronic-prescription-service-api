@@ -4,8 +4,14 @@ import {
   PrescriptionStatusInformation
 } from "./cancellation-medication-request"
 import {createMessageHeader} from "../message-header"
-import {isDeepStrictEqual} from "util"
-import {convertResourceToBundleEntry, translateAndAddAgentPerson, translateAndAddPatient} from "../common"
+import {
+  addDetailsToTranslatedAgentPerson,
+  addTranslatedAgentPerson,
+  convertResourceToBundleEntry,
+  roleProfileIdIdentical,
+  translateAgentPerson,
+  translateAndAddPatient
+} from "../common"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
 import {fhir, hl7V3} from "@models"
 
@@ -48,30 +54,39 @@ export function translateSpineCancelResponse (cancellationResponse: hl7V3.Cancel
 }
 
 function createBundleEntries(cancellationResponse: hl7V3.CancellationResponse) {
-  const unorderedBundleResources: Array<fhir.Resource> = []
+  const bundleResources: Array<fhir.Resource> = []
 
   const patient = cancellationResponse.recordTarget.Patient
-  const patientId = translateAndAddPatient(patient, unorderedBundleResources)
+  const patientId = translateAndAddPatient(patient, bundleResources)
 
   //The Author represents the author of the cancel request, not necessarily the author of the original prescription
-  const authorAgentPerson = cancellationResponse.author.AgentPerson
-  const cancelRequesterId = translateAndAddAgentPerson(authorAgentPerson, unorderedBundleResources)
+  const cancelRequesterAgentPerson = cancellationResponse.author.AgentPerson
+  const translatedCancelRequester = translateAgentPerson(cancelRequesterAgentPerson)
+  addTranslatedAgentPerson(bundleResources, translatedCancelRequester)
 
   //The ResponsibleParty represents the author of the original prescription (if different to the cancel requester)
-  const responsiblePartyAgentPerson = cancellationResponse.responsibleParty?.AgentPerson
-  let originalPrescriptionAuthorId = cancelRequesterId
-  if (responsiblePartyAgentPerson && !isDeepStrictEqual(responsiblePartyAgentPerson, authorAgentPerson)) {
-    originalPrescriptionAuthorId = translateAndAddAgentPerson(responsiblePartyAgentPerson, unorderedBundleResources)
+  const originalPrescriptionAuthorAgentPerson = cancellationResponse.responsibleParty?.AgentPerson
+  let translatedOriginalPrescriptionAuthor = translatedCancelRequester
+  if (originalPrescriptionAuthorAgentPerson) {
+    if (roleProfileIdIdentical(originalPrescriptionAuthorAgentPerson, cancelRequesterAgentPerson)) {
+      addDetailsToTranslatedAgentPerson(translatedCancelRequester, originalPrescriptionAuthorAgentPerson)
+    } else {
+      translatedOriginalPrescriptionAuthor = translateAgentPerson(originalPrescriptionAuthorAgentPerson)
+      addTranslatedAgentPerson(bundleResources, translatedOriginalPrescriptionAuthor)
+    }
   }
 
+  const cancelRequesterId = translatedCancelRequester.practitionerRole.id
+  const originalPrescriptionAuthorId = translatedOriginalPrescriptionAuthor.practitionerRole.id
   const medicationRequest = createMedicationRequest(
     cancellationResponse,
     cancelRequesterId,
     patientId,
     originalPrescriptionAuthorId
   )
+  bundleResources.push(medicationRequest)
 
-  const representedOrganizationId = authorAgentPerson.representedOrganization.id._attributes.extension
+  const representedOrganizationId = cancelRequesterAgentPerson.representedOrganization.id._attributes.extension
   const messageId = cancellationResponse.id._attributes.root
   const cancelRequestId = cancellationResponse.pertinentInformation4.pertinentCancellationRequestRef.id._attributes.root
   const messageHeader = createMessageHeader(
@@ -81,31 +96,29 @@ function createBundleEntries(cancellationResponse: hl7V3.CancellationResponse) {
     representedOrganizationId,
     cancelRequestId
   )
-
-  const orderedBundleResources = [
-    messageHeader,
-    medicationRequest,
-    ...unorderedBundleResources
-  ]
+  bundleResources.unshift(messageHeader)
 
   if (cancellationResponse.performer) {
     const performerAgentPerson = cancellationResponse.performer.AgentPerson
-    let performerId
-    if (isDeepStrictEqual(performerAgentPerson, authorAgentPerson)) {
-      performerId = cancelRequesterId
-    } else if (isDeepStrictEqual(performerAgentPerson, responsiblePartyAgentPerson)) {
-      performerId = originalPrescriptionAuthorId
+    let translatedPerformer
+    if (roleProfileIdIdentical(performerAgentPerson, cancelRequesterAgentPerson)) {
+      addDetailsToTranslatedAgentPerson(translatedCancelRequester, performerAgentPerson)
+      translatedPerformer = translatedCancelRequester
+    } else if (roleProfileIdIdentical(performerAgentPerson, originalPrescriptionAuthorAgentPerson)) {
+      addDetailsToTranslatedAgentPerson(translatedOriginalPrescriptionAuthor, performerAgentPerson)
+      translatedPerformer = translatedOriginalPrescriptionAuthor
     } else {
-      performerId = translateAndAddAgentPerson(performerAgentPerson, orderedBundleResources)
+      translatedPerformer = translateAgentPerson(performerAgentPerson)
+      addTranslatedAgentPerson(bundleResources, translatedPerformer)
     }
-    const performerOrganizationCode = performerAgentPerson.representedOrganization.id._attributes.extension
-    const performerOrganizationName = performerAgentPerson.representedOrganization.name._text
     medicationRequest.dispenseRequest = createDispenserInfoReference(
-      performerId, performerOrganizationCode, performerOrganizationName
+      translatedPerformer.practitionerRole.id,
+      performerAgentPerson.representedOrganization.id._attributes.extension,
+      performerAgentPerson.representedOrganization.name._text
     )
   }
 
-  return orderedBundleResources.map(convertResourceToBundleEntry)
+  return bundleResources.map(convertResourceToBundleEntry)
 }
 
 function createDispenserInfoReference(practitionerId: string, organizationCode: string, organizationName: string) {

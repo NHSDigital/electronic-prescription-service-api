@@ -1,5 +1,8 @@
-import {isDeepStrictEqual} from "util"
-import {convertResourceToBundleEntry, translateAndAddAgentPerson, translateAndAddPatient} from "../common"
+import {
+  addDetailsToTranslatedAgentPerson, addTranslatedAgentPerson,
+  convertResourceToBundleEntry, roleProfileIdIdentical, translateAgentPerson,
+  translateAndAddPatient
+} from "../common"
 import {toArray} from "../../common"
 import {createMedicationRequest} from "./release-medication-request"
 import {createMessageHeader} from "../message-header"
@@ -63,16 +66,21 @@ export function createBundleResources(
   const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
   const prescriptionAuthor = pertinentPrescription.author
   const authorAgentPerson = prescriptionAuthor.AgentPerson
-  const authorId = translateAndAddAgentPerson(authorAgentPerson, bundleResources)
+  const translatedAuthor = translateAgentPerson(authorAgentPerson)
+  addTranslatedAgentPerson(bundleResources, translatedAuthor)
 
   const responsiblePartyAgentPerson = pertinentPrescription.responsibleParty?.AgentPerson
-  let responsiblePartyId = authorId
-  if (responsiblePartyAgentPerson && !isDeepStrictEqual(responsiblePartyAgentPerson, authorAgentPerson)) {
-    responsiblePartyId = translateAndAddAgentPerson(responsiblePartyAgentPerson, bundleResources)
+  let translatedResponsibleParty = translatedAuthor
+  if (responsiblePartyAgentPerson) {
+    if (roleProfileIdIdentical(responsiblePartyAgentPerson, authorAgentPerson)) {
+      addDetailsToTranslatedAgentPerson(translatedAuthor, responsiblePartyAgentPerson)
+    } else {
+      translatedResponsibleParty = translateAgentPerson(responsiblePartyAgentPerson)
+      addTranslatedAgentPerson(bundleResources, translatedResponsibleParty)
+    }
   }
 
   const lineItems = toArray(pertinentPrescription.pertinentInformation2).map(pi2 => pi2.pertinentLineItem)
-
   const firstItemText = lineItems[0].pertinentInformation1?.pertinentAdditionalInstructions?.value?._text ?? ""
   const firstItemAdditionalInstructions = parseAdditionalInstructions(firstItemText)
   const medication = firstItemAdditionalInstructions.medication
@@ -81,6 +89,8 @@ export function createBundleResources(
     createAndAddCommunicationRequest(patientId, medication, patientInfo, bundleResources)
   }
 
+  const authorId = translatedAuthor.practitionerRole.id
+  const responsiblePartyId = translatedResponsibleParty.practitionerRole.id
   lineItems.forEach(hl7LineItem => {
     const medicationRequest = createMedicationRequest(
       pertinentPrescription,
