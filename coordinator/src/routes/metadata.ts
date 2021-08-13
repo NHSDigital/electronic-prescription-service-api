@@ -138,15 +138,15 @@ const capabilityStatement = {
         },
         {
           "mode": "receiver",
-          "definition": "https://fhir.nhs.uk/MessageDefinition/pharmacy-dispense"
+          "definition": "https://fhir.nhs.uk/MessageDefinition/dispense-notification"
+        },
+        {
+          "mode": "receiver",
+          "definition": "https://fhir.nhs.uk/MessageDefinition/dispense-notification-update"
         },
         {
           "mode": "receiver",
           "definition": "https://fhir.nhs.uk/MessageDefinition/dispense-claim"
-        },
-        {
-          "mode": "receiver",
-          "definition": "https://fhir.nhs.uk/MessageDefinition/prescription-order-response"
         },
         {
           "mode": "receiver",
