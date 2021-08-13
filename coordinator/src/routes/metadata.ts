@@ -1,24 +1,77 @@
 import Hapi from "@hapi/hapi"
+import * as fs from "fs"
+
+const VERSION = process.env.DEPLOYED_VERSION
+
+function readManifestFile() {
+  try {
+    return fs.readFileSync("src/main/resources/manifest.json", "utf-8")
+  } catch {
+    return JSON.stringify([
+      {
+        "packageName": "hi",
+        "version": "2.1.14-alpha"
+      },
+      {
+        "packageName": "uk.nhsdigital.r4",
+        "version": "2.1.34-discovery"
+      },
+      {
+        "packageName": "uk.nhsdigital.clinical.r4",
+        "version": "2.1.0-dev"
+      },
+      {
+        "packageName": "UK.Core.r4.v2",
+        "version": "2.0.8"
+      }
+    ])
+  }
+}
+
+const MANIFEST = JSON.parse(readManifestFile())
+
+function getManifestExtension(data: {packageName: string, version: string}) {
+  return {
+    "url": "implementationGuide",
+    "extension": [
+      {
+        "url": "name",
+        "valueString": data.packageName
+      }, {
+        "url": "version",
+        "valueString": data.version
+      }
+    ]
+  }
+}
 
 const capabilityStatement = {
   "resourceType": "CapabilityStatement",
-  "id": "apim-medicines-conformance",
-  "url": "https://fhir.nhs.uk/CapabilityStatement/apim-medicines-conformance",
-  "version": "3.0.0",
-  "name": "APIMMedicines",
+  "id": "apim-electronic-prescription-service",
+  "name": "EPS FHIR API",
   "status": "active",
-  "date": "2021-04-28T00:00:00+00:00",
+  "date": "2021-08-13T00:00:00+00:00",
   "publisher": "digital.nhs.uk",
-  "description": "Conformance requirements for NHS Digital Medicines APIs",
-  "kind": "requirements",
+  "kind": "instance",
   "implementationGuide":  [
     "https://simplifier.net/guide/digitalmedicines",
     "https://simplifier.net/guide/nhsdigital"
   ],
+  "extension": [
+    {
+      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-NHSDigital-APIDefinition",
+      "extension": MANIFEST.map(getManifestExtension)
+    }
+  ],
   "fhirVersion": "4.0.1",
   "format":  [
-    "application/fhir+json",
-    "application/fhir+xml"
+    "application/fhir+json"
+  ],
+  "software": [
+    {
+      "name": "EPS FHIR API",
+      "version": VERSION ?? "default"
+    }
   ],
   "rest":  [
     {
@@ -38,100 +91,15 @@ const capabilityStatement = {
       },
       "resource":  [
         {
-          "type": "List",
-          "profile": "https://fhir.hl7.org.uk/StructureDefinition/UKCore-List"
-        },
-        {
-          "type": "Claim",
-          "profile": "https://fhir.nhs.uk/StructureDefinition/NHSDigital-Claim"
-        },
-        {
-          "type": "CommunicationRequest",
-          "profile": "https://fhir.nhs.uk/StructureDefinition/NHSDigital-CommunicationRequest"
-        },
-        {
-          "type": "Immunization",
-          "profile": "https://fhir.nhs.uk/StructureDefinition/NHSDigital-Immunization",
-          "interaction":  [
-            {
-              "code": "search-type"
-            }
-          ],
-          "searchParam":  [
-            {
-              "name": "patient:identifier",
-              "type": "token",
-              "documentation": "The patient identifier (e.g. NHS Number) that the immunisation is about"
-            },
-            {
-              "name": "patient",
-              "type": "reference",
-              "documentation": "The patient that the immunisation is about"
-            },
-            {
-              "name": "procedure:below",
-              "type": "token",
-              "definition": "https://fhir.nhs.uk/SearchParameter/procedure-code",
-              "documentation": "Parent snomed procedure code for vaccinations"
-            }
-          ]
+          "type": "Bundle"
         },
         {
           "type": "MedicationRequest",
-          "profile": "https://fhir.nhs.uk/StructureDefinition/NHSDigital-MedicationRequest",
-          "interaction":  [
-            {
-              "code": "search-type"
-            }
-          ],
-          "searchParam":  [
-            {
-              "name": "patient:identifier",
-              "type": "token",
-              "documentation": "Returns prescriptions for a specific patientt identifier (NHS Number)"
-            },
-            {
-              "name": "patient",
-              "type": "reference",
-              "documentation": "Returns prescriptions for a specific patient"
-            },
-            {
-              "name": "medication",
-              "type": "reference",
-              "documentation": "Return prescriptions for this medication reference"
-            },
-            {
-              "name": "status",
-              "type": "token",
-              "documentation": "Status of the prescription"
-            },
-            {
-              "name": "authoredon",
-              "type": "date",
-              "documentation": "Return prescriptions written on this date"
-            }
-          ]
+          "profile": "https://fhir.nhs.uk/StructureDefinition/NHSDigital-MedicationRequest"
         },
         {
           "type": "MedicationDispense",
-          "profile": "https://fhir.nhs.uk/StructureDefinition/NHSDigital-MedicationDispense",
-          "interaction":  [
-            {
-              "code": "search-type"
-            }
-          ],
-          "searchParam":  [
-            {
-              "name": "patient:identifier",
-              "type": "token",
-              "documentation": "TThe identity (NHS Number) of a patient to list dispenses for"
-            },
-            {
-              "name": "patient",
-              "type": "reference",
-              "documentation": "The identity of a patient to list dispenses for"
-            }
-          ]
+          "profile": "https://fhir.nhs.uk/StructureDefinition/NHSDigital-MedicationDispense"
         },
         {
           "type": "Medication",
@@ -139,18 +107,7 @@ const capabilityStatement = {
         },
         {
           "type": "Task",
-          "profile": "https://fhir.nhs.uk/StructureDefinition/NHSDigital-Task",
-          "interaction":  [
-            {
-              "code": "create"
-            }
-          ],
-          "operation":  [
-            {
-              "name": "release",
-              "definition": "https://fhir.nhs.uk/OperationDefinition/Task-release-message"
-            }
-          ]
+          "profile": "https://fhir.nhs.uk/StructureDefinition/NHSDigital-Task"
         }
       ],
       "operation":  [
@@ -161,10 +118,6 @@ const capabilityStatement = {
         {
           "name": "prepare",
           "definition": "https://fhir.nhs.uk/OperationDefinition/MessageHeader-prepare-message"
-        },
-        {
-          "name": "validate",
-          "definition": "http://hl7.org/fhir/OperationDefinition/Resource-validate"
         }
       ]
     }
@@ -187,10 +140,6 @@ const capabilityStatement = {
         {
           "mode": "receiver",
           "definition": "https://fhir.nhs.uk/MessageDefinition/dispense-claim"
-        },
-        {
-          "mode": "receiver",
-          "definition": "https://fhir.nhs.uk/MessageDefinition/vaccinations"
         },
         {
           "mode": "receiver",
