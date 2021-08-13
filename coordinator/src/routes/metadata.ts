@@ -1,12 +1,15 @@
 import Hapi from "@hapi/hapi"
 import * as fs from "fs"
+import path from "path"
 
 const VERSION = process.env.DEPLOYED_VERSION
 
 function readManifestFile() {
   try {
-    return fs.readFileSync("src/main/resources/manifest.json", "utf-8")
-  } catch {
+    console.log("attempt reading file")
+    return fs.readFileSync(path.join(__dirname, "../resources/validator_manifest.json"), "utf-8")
+  } catch (err){
+    console.log(err)
     return JSON.stringify([
       {
         "packageName": "hi",
