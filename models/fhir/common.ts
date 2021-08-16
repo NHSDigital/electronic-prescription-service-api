@@ -58,7 +58,7 @@ export interface Reference<T extends Resource> {
 
 export function createReference<T extends Resource>(reference: string): Reference<T> {
   return {
-    reference: getFullUrl(reference),
+    reference: getFullUrl(reference)
   }
 }
 
