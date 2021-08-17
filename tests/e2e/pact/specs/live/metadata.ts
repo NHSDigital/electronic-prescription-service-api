@@ -23,7 +23,7 @@ jestpact.pactWith(
           "extension": [
             {
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-NHSDigital-APIDefinition",
-              "extension": [
+              "extension": Matchers.eachLike(
                 {
                   "url": "implementationGuide",
                   "extension": [
@@ -35,44 +35,8 @@ jestpact.pactWith(
                       "valueString": Matchers.like("2.1.14-alpha")
                     }
                   ]
-                },
-                {
-                  "url": "implementationGuide",
-                  "extension": [
-                    {
-                      "url": "name",
-                      "valueString": Matchers.like("uk.nhsdigital.medicines.r4")
-                    }, {
-                      "url": "version",
-                      "valueString": Matchers.like("2.1.14-alpha")
-                    }
-                  ]
-                },
-                {
-                  "url": "implementationGuide",
-                  "extension": [
-                    {
-                      "url": "name",
-                      "valueString": Matchers.like("uk.nhsdigital.medicines.r4")
-                    }, {
-                      "url": "version",
-                      "valueString": Matchers.like("2.1.14-alpha")
-                    }
-                  ]
-                },
-                {
-                  "url": "implementationGuide",
-                  "extension": [
-                    {
-                      "url": "name",
-                      "valueString": Matchers.like("uk.nhsdigital.medicines.r4")
-                    }, {
-                      "url": "version",
-                      "valueString": Matchers.like("2.1.14-alpha")
-                    }
-                  ]
-                }
-              ]
+                }, {min: 4}
+              )
             }
           ]
         }
