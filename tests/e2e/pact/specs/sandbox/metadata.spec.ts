@@ -19,26 +19,28 @@ jestpact.pactWith(
         const requestId = uuid.v4()
 
         const responseBody = {
-          "resourceType": "CapabilityStatement",
-          "extension": [
-            {
-              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-NHSDigital-APIDefinition",
-              "extension": Matchers.eachLike(
-                {
-                  "url": "implementationGuide",
-                  "extension": [
-                    {
-                      "url": "name",
-                      "valueString": Matchers.like("uk.nhsdigital.medicines.r4")
-                    }, {
-                      "url": "version",
-                      "valueString": Matchers.like("2.1.14-alpha")
-                    }
-                  ]
-                }, {min: 4}
-              )
-            }
-          ]
+          "capabilityStatement": {
+            "resourceType": "CapabilityStatement",
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-NHSDigital-APIDefinition",
+                "extension": Matchers.eachLike(
+                  {
+                    "url": "implementationGuide",
+                    "extension": [
+                      {
+                        "url": "name",
+                        "valueString": Matchers.like("uk.nhsdigital.medicines.r4")
+                      }, {
+                        "url": "version",
+                        "valueString": Matchers.like("2.1.14-alpha")
+                      }
+                    ]
+                  }, {min: 4}
+                )
+              }
+            ]
+          }
         }
 
         const interaction: InteractionObject = {
