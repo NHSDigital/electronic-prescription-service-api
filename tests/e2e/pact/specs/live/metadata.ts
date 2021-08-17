@@ -2,10 +2,7 @@ import * as jestpact from "jest-pact"
 import * as uuid from "uuid"
 import {basePath, pactOptions} from "../../resources/common"
 import supertest from "supertest"
-import {fetcher, fhir} from "@models"
 import {InteractionObject, Matchers} from "@pact-foundation/pact"
-import * as LosslessJson from "lossless-json"
-import {buildVerificationResultParameter} from "@coordinator"
 
 jestpact.pactWith(
   pactOptions("live", "metadata"),
