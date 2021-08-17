@@ -1,6 +1,6 @@
 import * as jestpact from "jest-pact"
 import * as uuid from "uuid"
-import {basePath, pactOptions} from "../../resources/common"
+import {pactOptions} from "../../resources/common"
 import supertest from "supertest"
 import {InteractionObject, Matchers} from "@pact-foundation/pact"
 
@@ -15,7 +15,7 @@ jestpact.pactWith(
 
     describe("metadata e2e tests", () => {
       test("should respond with 200", async () => {
-        const apiPath = `${basePath}/metadata`
+        const apiPath = `/metadata`
         const requestId = uuid.v4()
 
         const responseBody = {
