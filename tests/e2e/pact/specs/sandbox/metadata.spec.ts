@@ -63,7 +63,7 @@ jestpact.pactWith(
 
         await provider.addInteraction(interaction)
         await client()
-          .post(apiPath)
+          .get(apiPath)
           .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
           .set("Accept", "application/fhir+json")
           .set("X-Request-ID", requestId)
