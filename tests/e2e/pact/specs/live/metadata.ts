@@ -67,7 +67,6 @@ jestpact.pactWith(
           .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
           .set("Accept", "application/fhir+json")
           .set("X-Request-ID", requestId)
-          .set("X-Skip-Validation", "true")
           .expect(200)
       })
     })
