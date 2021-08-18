@@ -118,6 +118,9 @@ async function verifyWithdraw(): Promise<void> {
 async function verifyClaim(): Promise<void> {
   await verifyOnce("process", "claim")
 }
+async function verifyMetadata(): Promise<void> {
+  await verifyOnce("metadata")
+}
 
 (async () => {
   await verifyValidate()
@@ -130,4 +133,5 @@ async function verifyClaim(): Promise<void> {
     .then(verifyDispense)
     .then(verifyWithdraw)
     .then(verifyClaim)
+    .then(verifyMetadata)
 })()
