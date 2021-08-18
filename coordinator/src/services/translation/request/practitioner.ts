@@ -173,15 +173,12 @@ export function getAgentPersonPersonIdForAuthor(
 ): hl7V3.PrescriptionAuthorId {
   const professionalCode: Array<hl7V3.ProfessionalCode> = []
 
-  let gmcCode = getIdentifierValueOrNullForSystem(
+  const gmcCode = getIdentifierValueOrNullForSystem(
     fhirPractitionerIdentifier,
     "https://fhir.hl7.org.uk/Id/gmc-number",
     "Practitioner.identifier"
   )
   if (gmcCode) {
-    if(gmcCode.toUpperCase().startsWith("C")) {
-      gmcCode = gmcCode.substring(1)
-    }
     professionalCode.push(new hl7V3.ProfessionalCode(gmcCode))
   }
 

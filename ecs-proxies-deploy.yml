@@ -20,6 +20,8 @@ docker_service:
           value: "https://{{ APIGEE_HOSTNAME }}/{{ SERVICE_BASE_PATH }}"
         - name: COMMIT_ID
           value: "{{ SOURCE_COMMIT_ID }}"
+        - name: DEPLOYED_VERSION
+          value: "{{ DEPLOYED_VERSION }}"
         - name: ENVIRONMENT
           value: "{{ APIGEE_ENVIRONMENT }}"
         - name: DISPENSE_ENABLED

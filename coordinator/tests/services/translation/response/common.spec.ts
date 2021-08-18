@@ -1,10 +1,14 @@
 import {
+  addIdentifierToPractitionerOrRole,
   convertAddress,
   convertName, convertTelecom,
   generateResourceId,
   getFullUrl
 } from "../../../../src/services/translation/response/common"
-import {hl7V3} from "@models"
+import {fhir, hl7V3} from "@models"
+import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
+import {getExtensionForUrl, resolveReference} from "../../../../src/services/translation/common"
+import {clone} from "../../../resources/test-helpers"
 
 describe("convertName", () => {
   test("converts unstructured name", () => {
@@ -291,3 +295,93 @@ describe("resourceId", () => {
     expect(fullUrl).toBe(`urn:uuid:${resourceId}`)
   })
 })
+
+describe("addIdentifierToPractitionerOrRole", () => {
+  let practitionerRole: fhir.PractitionerRole
+  let practitioner: fhir.Practitioner
+  beforeEach(() => {
+    practitionerRole = {
+      resourceType: "PractitionerRole",
+      identifier: [],
+      telecom: [{
+        system: "phone",
+        value: "0800123456"
+      }]
+    }
+    practitioner = {
+      resourceType: "Practitioner",
+      identifier: []
+    }
+  })
+
+  test("adds spurious code identifier to PractitionerRole", () => {
+    const spuriousCodeIdentifier = {
+      system: "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
+      value: "G7123456"
+    }
+    addIdentifierToPractitionerOrRole(practitionerRole, practitioner, spuriousCodeIdentifier)
+    expect(practitionerRole.identifier).toMatchObject([spuriousCodeIdentifier])
+    expect(practitioner.identifier).toMatchObject([])
+  })
+
+  test("does not add duplicate identifier to PractitionerRole", () => {
+    const spuriousCodeIdentifier = {
+      system: "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code",
+      value: "G7123456"
+    }
+    practitionerRole.identifier.push(clone(spuriousCodeIdentifier))
+    addIdentifierToPractitionerOrRole(practitionerRole, practitioner, spuriousCodeIdentifier)
+    expect(practitionerRole.identifier).toMatchObject([spuriousCodeIdentifier])
+  })
+
+  test("adds GMP number identifier to Practitioner", () => {
+    const gmpNumberIdentifier = {
+      system: "https://fhir.hl7.org.uk/Id/gmp-number",
+      value: "G1234567"
+    }
+    addIdentifierToPractitionerOrRole(practitionerRole, practitioner, gmpNumberIdentifier)
+    expect(practitionerRole.identifier).toMatchObject([])
+    expect(practitioner.identifier).toMatchObject([gmpNumberIdentifier])
+  })
+
+  test("does not add duplicate identifier to Practitioner", () => {
+    const gmpNumberIdentifier = {
+      system: "https://fhir.hl7.org.uk/Id/gmp-number",
+      value: "G1234567"
+    }
+    practitioner.identifier.push(clone(gmpNumberIdentifier))
+    addIdentifierToPractitionerOrRole(practitionerRole, practitioner, gmpNumberIdentifier)
+    expect(practitioner.identifier).toMatchObject([gmpNumberIdentifier])
+  })
+})
+
+export function getRequester(bundle: fhir.Bundle): fhir.PractitionerRole {
+  const medicationRequests = getMedicationRequests(bundle)
+  const medicationRequest = medicationRequests[0]
+  const requesterReference = medicationRequest.requester
+  return resolveReference(bundle, requesterReference)
+}
+
+export function getResponsiblePractitioner(bundle: fhir.Bundle): fhir.PractitionerRole {
+  const medicationRequests = getMedicationRequests(bundle)
+  const medicationRequest = medicationRequests[0]
+  const responsiblePractitionerExtension = getExtensionForUrl(
+    medicationRequest.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+    "MedicationRequest.extension"
+  ) as fhir.ReferenceExtension<fhir.PractitionerRole>
+  const responsiblePractitionerReference = responsiblePractitionerExtension.valueReference
+  return resolveReference(bundle, responsiblePractitionerReference)
+}
+
+export function getPerformer(bundle: fhir.Bundle): fhir.PractitionerRole {
+  const medicationRequests = getMedicationRequests(bundle)
+  const medicationRequest = medicationRequests[0]
+  const dispensingPerformerExtension = getExtensionForUrl(
+    medicationRequest.dispenseRequest.performer.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-DispensingPerformer",
+    "MedicationRequest.dispenseRequest.performer.extension"
+  ) as fhir.ReferenceExtension<fhir.PractitionerRole>
+  const performerReference = dispensingPerformerExtension.valueReference
+  return resolveReference(bundle, performerReference)
+}
