@@ -59,6 +59,9 @@ extends:
 #        depends_on:
 #            - internal_dev
 #            - internal_dev_sandbox
+      - environment: dev
+        make_spec_visible: false
+        proxy_path: live
       - environment: sandbox
         proxy_path: sandbox
         depends_on:
@@ -78,7 +81,6 @@ extends:
         # todo: make_spec_visible: true when ready for live
         make_spec_visible: false
         proxy_path: live
-        # manual_approval is added by default
         depends_on:
           - int
           - sandbox
