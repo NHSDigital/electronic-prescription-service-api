@@ -9,7 +9,7 @@ export class PractitionerRole extends common.Resource {
   practitioner?: common.Reference<Practitioner> | common.IdentifierReference<Practitioner>
   organization?: common.Reference<Organization> | common.IdentifierReference<Organization>
   code?: Array<common.CodeableConcept>
-  healthcareService?: Array<common.Reference<HealthcareService>> | Array<common.IdentifierReference<HealthcareService>>
+  healthcareService?: Array<common.Reference<HealthcareService> | common.IdentifierReference<HealthcareService>>
   location?: Array<common.Reference<Location>>
   telecom: Array<demographics.ContactPoint>
 }
