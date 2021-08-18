@@ -50,7 +50,9 @@ extends:
       - environment: internal-qa
         proxy_path: live
         make_spec_visible: true
-        depends_on: []
+        depends_on:
+            - internal_dev
+            - internal_dev_sandbox
 #      - environment: int
 #        stage_name: int-preview
 #        make_spec_visible: true
