@@ -59,6 +59,9 @@ extends:
 #        depends_on:
 #            - internal_dev
 #            - internal_dev_sandbox
+      - environment: dev
+        make_spec_visible: false
+        proxy_path: live
       - environment: sandbox
         proxy_path: sandbox
         depends_on:
