@@ -1,7 +1,7 @@
 import * as validator from "../../../src/services/validation/bundle-validator"
 import * as TestResources from "../../resources/test-resources"
 import {clone} from "../../resources/test-helpers"
-import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
+import {getMedicationRequests, getPractitionerRoles} from "../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, isTruthy} from "../../../src/services/translation/common"
 import {fhir, validationErrors as errors} from "@models"
 import {
@@ -129,10 +129,12 @@ describe("Bundle checks", () => {
 describe("verifyCommonBundle", () => {
   let bundle: fhir.Bundle
   let medicationRequests: Array<fhir.MedicationRequest>
+  let practitionerRoles: Array<fhir.PractitionerRole>
 
   beforeEach(() => {
     bundle = clone(TestResources.examplePrescription1.fhirMessageUnsigned)
     medicationRequests = getMedicationRequests(bundle)
+    practitionerRoles = getPractitionerRoles(bundle)
   })
 
   test("Should accept a prescription-order message where all MedicationRequests have intent order", () => {
@@ -165,6 +167,34 @@ describe("verifyCommonBundle", () => {
     medicationRequests[0].medicationReference = testReference
     const validationErrors = validator.verifyCommonBundle(bundle)
     expect(validationErrors).toHaveLength(1)
+  })
+
+  test("Should reject a message where True feature flag doesn't match PractitionerRole", () => {
+    process.env.REFACTOR_ENABLED = "true"
+    const testReference: fhir.Reference<fhir.Practitioner> = {
+      reference: "urn:uuid:test"
+    }
+    practitionerRoles[0].practitioner = testReference
+    practitionerRoles[0].organization = testReference
+    practitionerRoles[0].healthcareService = [testReference]
+
+    const validationErrors = validator.verifyCommonBundle(bundle)
+    expect(validationErrors).toHaveLength(3)
+  })
+
+  test("Should reject a message where False feature flag doesn't match PractitionerRole", () => {
+    process.env.REFACTOR_ENABLED = "false"
+    const testReference: fhir.IdentifierReference<fhir.Practitioner> = {
+      identifier: {
+        value: "test"
+      }
+    }
+    practitionerRoles[0].practitioner = testReference
+    practitionerRoles[0].organization = testReference
+    practitionerRoles[0].healthcareService = [testReference]
+
+    const validationErrors = validator.verifyCommonBundle(bundle)
+    expect(validationErrors).toHaveLength(3)
   })
 })
 
