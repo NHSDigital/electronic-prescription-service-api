@@ -2,7 +2,6 @@ import {fhir, processingErrors as errors} from "@models"
 import {LosslessNumber} from "lossless-json"
 import {getMessageHeader} from "./getResourcesOfType"
 import {isReference} from "../../../utils/type-guards"
-import {prescriptionRefactorEnabled} from "../../../utils/feature-flags";
 
 export const UNKNOWN_GP_ODS_CODE = "V81999"
 
@@ -81,16 +80,14 @@ export function resolveReference<T extends fhir.Resource>(bundle: fhir.Bundle, r
 export function resolvePractitioner(
   bundle: fhir.Bundle, reference: fhir.Reference<fhir.Practitioner> | fhir.IdentifierReference<fhir.Practitioner>
 ): fhir.Practitioner {
-  if (prescriptionRefactorEnabled() && !isReference(reference)) {
+  if (isReference(reference)) {
+    return resolveReference(bundle, reference)
+  } else {
     return {
       resourceType: "Practitioner",
       identifier:[reference.identifier],
       name: [{text: reference.display}]
     }
-  } else if (!prescriptionRefactorEnabled() && isReference(reference)) {
-    return resolveReference(bundle, reference)
-  } else {
-    throw new Error()
   }
 }
 

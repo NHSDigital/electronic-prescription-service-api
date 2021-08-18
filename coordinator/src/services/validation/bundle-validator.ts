@@ -17,10 +17,6 @@ import {validatePermittedDispenseMessage, validatePermittedPrescribeMessage} fro
 import {prescriptionRefactorEnabled} from "../../utils/feature-flags"
 import {isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"
-import {
-  fieldIsNotReferenceButShouldBe,
-  fieldIsReferenceButShouldNotBe
-} from "../../../../models/errors/validation-errors";
 
 export function verifyBundle(bundle: fhir.Bundle, scope: string): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
@@ -80,10 +76,10 @@ function validatePractitionerRoleReferenceField<T extends fhir.Resource>(
   fhirPathToField: string
 ) {
   if (prescriptionRefactorEnabled() && isReference(fieldToValidate)) {
-    incorrectValueErrors.push(fieldIsReferenceButShouldNotBe(fhirPathToField))
+    incorrectValueErrors.push(errors.fieldIsReferenceButShouldNotBe(fhirPathToField))
   }
   if (!prescriptionRefactorEnabled() && !isReference(fieldToValidate)) {
-    incorrectValueErrors.push(fieldIsNotReferenceButShouldBe(fhirPathToField))
+    incorrectValueErrors.push(errors.fieldIsNotReferenceButShouldBe(fhirPathToField))
   }
 }
 
