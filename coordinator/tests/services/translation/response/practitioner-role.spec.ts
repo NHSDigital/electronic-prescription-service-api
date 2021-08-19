@@ -1,7 +1,11 @@
-import {createPractitionerRole} from "../../../../src/services/translation/response/practitioner-role"
+import {
+  createPractitionerRole,
+  createRefactoredPractitionerRole
+} from "../../../../src/services/translation/response/practitioner-role"
 import * as TestResources from "../../../resources/test-resources"
 import {getCancellationResponse} from "../common/test-helpers"
 import {hl7V3, fhir} from "@models"
+import {isReference} from "../../../../src/utils/type-guards"
 
 describe("createPractitionerRole", () => {
   const cancellationErrorResponse = getCancellationResponse(TestResources.spineResponses.cancellationNotFoundError)
@@ -69,5 +73,72 @@ describe("createPractitionerRole", () => {
 
   test("performerParticipantPractitionerRole has correct telecom information", () => {
     expect(performerParticipantPractitionerRole.telecom).toBeUndefined()
+  })
+})
+
+describe("createRefactoredPractitionerRole", () => {
+  const cancellationErrorResponse = getCancellationResponse(TestResources.spineResponses.cancellationNotFoundError)
+  const cancellationErrorDispensedResponse = getCancellationResponse(
+    TestResources.spineResponses.cancellationDispensedError
+  )
+  const authorAgentPerson = cancellationErrorResponse.author.AgentPerson
+  const responsiblePartyAgentPerson = cancellationErrorResponse.responsibleParty.AgentPerson
+  const performerAgentPerson = cancellationErrorDispensedResponse.performer.AgentPerson
+
+  const practitionerId = "testReference"
+  const healthcareServiceId = "anotherTestReference"
+
+  const authorPractitionerRole = createRefactoredPractitionerRole(authorAgentPerson)
+  const responsiblePartyPractitionerRole = createRefactoredPractitionerRole(responsiblePartyAgentPerson)
+  const performerPractitionerRole = createRefactoredPractitionerRole(performerAgentPerson)
+
+  const cases = [
+    [authorAgentPerson, authorPractitionerRole],
+    [responsiblePartyAgentPerson, responsiblePartyPractitionerRole],
+    [performerAgentPerson, performerPractitionerRole]
+  ]
+
+  test.each(cases)(
+    "returned PractitionerRole contains an identifier block with correct sds role profile id",
+    (agentPerson: hl7V3.AgentPerson, practitionerRole: fhir.PractitionerRole) => {
+      expect(practitionerRole.identifier[0].system).toBe("https://fhir.nhs.uk/Id/sds-role-profile-id")
+      expect(practitionerRole.identifier[0].value).toBe(agentPerson.id._attributes.extension)
+    })
+
+  test.each(cases)(
+    "practitioner has identifier and display fields",
+    (_: hl7V3.AgentPerson, practitionerRole: fhir.PractitionerRole) => {
+      expect(isReference(practitionerRole.practitioner)).toBeFalsy()
+      const practitioner = practitionerRole.practitioner as fhir.IdentifierReference<fhir.Practitioner>
+      expect(practitioner.identifier).toBeDefined()
+      expect(practitioner.display).toBeDefined()
+    }
+  )
+
+  test.each(cases)(
+    "has reference to HealthcareService",
+    (_: hl7V3.AgentPerson, practitionerRole: fhir.PractitionerRole) => {
+      practitionerRole.healthcareService.forEach(healthcareService => {
+        expect(isReference(healthcareService)).toBeFalsy()
+        const typedHealthCareService = healthcareService as fhir.IdentifierReference<fhir.Practitioner>
+        expect(typedHealthCareService.identifier).toBeDefined()
+        expect(typedHealthCareService.display).toBeDefined()
+      })
+    }
+  )
+
+  test.each(cases)("has correct code", (agentPerson: hl7V3.AgentPerson, practitionerRole: fhir.PractitionerRole) => {
+    expect(practitionerRole.code[0].coding[0].code).toBe(agentPerson.code._attributes.code)
+    expect(practitionerRole.code[0].coding[0].system).toBe("https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName")
+  })
+
+  test("practitionerRole has correct telecom information", () => {
+    expect(authorPractitionerRole.telecom[0].system).toBe("phone")
+    expect(authorPractitionerRole.telecom[0].use).toBe("work")
+    expect(authorPractitionerRole.telecom[0].value).toBe("01234567890")
+  })
+
+  test("performerParticipantPractitionerRole has correct telecom information", () => {
+    expect(performerPractitionerRole.telecom).toBeUndefined()
   })
 })
