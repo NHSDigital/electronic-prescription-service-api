@@ -1,9 +1,10 @@
-import {convertName, convertTelecom, generateResourceId, joinArrayWithSpaces} from "./common"
+import {convertName, convertTelecom, generateResourceId, humanNameArrayToString} from "./common"
 import {toArray} from "../common"
 import {fhir, hl7V3} from "@models"
 import {createPractitionerOrRoleIdentifier} from "./identifiers"
 import {createPractitionerIdentifier} from "./practitioner"
 import {getOrganizationCodeIdentifier} from "./organization"
+import {createIdentifierReference} from "../../../../../models/fhir"
 
 export function createPractitionerRole(
   hl7AgentPerson: hl7V3.AgentPerson,
@@ -26,13 +27,15 @@ export function createPractitionerRole(
 export function createRefactoredPractitionerRole(
   hl7AgentPerson: hl7V3.AgentPerson
 ): fhir.PractitionerRole {
-  const organization = hl7AgentPerson.representedOrganization
-  const practitionerName = joinArrayWithSpaces(convertName(hl7AgentPerson.agentPerson.name))
-  const practitionerIdentifier = createPractitionerIdentifier(hl7AgentPerson.agentPerson.id._attributes.extension)
-  const healthcareServiceIdentifier = getOrganizationCodeIdentifier(organization.id._attributes.extension)
-  const healthcareServiceName = organization.name._text
+  const representedOrganization = hl7AgentPerson.representedOrganization
 
-  return {
+  const practitionerName = humanNameArrayToString(convertName(hl7AgentPerson.agentPerson.name))
+  const practitionerIdentifier = createPractitionerIdentifier(hl7AgentPerson.agentPerson.id._attributes.extension)
+
+  const healthcareServiceName = representedOrganization.name._text
+  const healthcareServiceIdentifier = getOrganizationCodeIdentifier(representedOrganization.id._attributes.extension)
+
+  const practitionerRole: fhir.PractitionerRole = {
     resourceType: "PractitionerRole",
     id: generateResourceId(),
     identifier: createPractitionerRoleIdentifiers(hl7AgentPerson),
@@ -43,6 +46,18 @@ export function createRefactoredPractitionerRole(
     code: createJobRoleNameCode(hl7AgentPerson.code._attributes.code),
     telecom: toArray(hl7AgentPerson.telecom)[0]?._attributes ? convertTelecom(hl7AgentPerson.telecom) : undefined
   }
+
+  const healthCareProviderLicense = representedOrganization.healthCareProviderLicense
+  if (healthCareProviderLicense) {
+    const organization = healthCareProviderLicense.Organization
+
+    const organizationName = organization.name._text
+    const organizationIdentifier = getOrganizationCodeIdentifier(organization.id._attributes.extension)
+
+    practitionerRole.organization = createIdentifierReference(organizationIdentifier, organizationName)
+  }
+
+  return practitionerRole
 }
 
 function createPractitionerRoleIdentifiers(hl7AgentPerson: hl7V3.AgentPerson) {

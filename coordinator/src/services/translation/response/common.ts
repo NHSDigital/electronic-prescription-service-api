@@ -2,16 +2,11 @@ import * as uuid from "uuid"
 import {toArray} from "../common"
 import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {createPractitioner} from "./practitioner"
-import {
-  createHealthcareService,
-  createLocations,
-  createOrganization,
-  getOrganizationCodeIdentifier
-} from "./organization"
+import {createHealthcareService, createLocations, createOrganization} from "./organization"
 import {createPractitionerRole, createRefactoredPractitionerRole} from "./practitioner-role"
 import {createPatient} from "./patient"
 import {createPractitionerOrRoleIdentifier} from "./identifiers"
-import {prescriptionRefactorEnabled} from "../../../utils/feature-flags";
+import {prescriptionRefactorEnabled} from "../../../utils/feature-flags"
 
 export function convertName(names: Array<hl7V3.Name> | hl7V3.Name): Array<fhir.HumanName> {
   const nameArray = toArray(names)
@@ -42,7 +37,7 @@ export function convertName(names: Array<hl7V3.Name> | hl7V3.Name): Array<fhir.H
   })
 }
 
-export function joinArrayWithSpaces(names: Array<fhir.HumanName>): string {
+export function humanNameArrayToString(names: Array<fhir.HumanName>): string {
   return names.map(name => {
     if (name.text) {
       return name.text
@@ -190,20 +185,10 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): Translated
     const practitionerRole = createRefactoredPractitionerRole(agentPerson)
     const locations = createLocations(agentPerson.representedOrganization)
 
-    const translatedAgentPerson: TranslatedAgentPerson = {
+    return {
       practitionerRole,
       locations
     }
-
-    const healthCareProviderLicense = agentPerson.representedOrganization.healthCareProviderLicense
-    if (healthCareProviderLicense) {
-      const organization = createOrganization(healthCareProviderLicense.Organization)
-      const organizationIdentifier = getOrganizationCodeIdentifier(organization.id)
-      practitionerRole.organization = fhir.createIdentifierReference(organizationIdentifier, organization.name)
-      translatedAgentPerson.organization = organization
-    }
-
-    return translatedAgentPerson
   } else {
     const practitioner = createPractitioner(agentPerson)
     const locations = createLocations(agentPerson.representedOrganization)
