@@ -81,12 +81,16 @@ describe("createRefactoredPractitionerRole", () => {
   const cancellationErrorDispensedResponse = getCancellationResponse(
     TestResources.spineResponses.cancellationDispensedError
   )
+
   const authorAgentPerson = cancellationErrorResponse.author.AgentPerson
   const responsiblePartyAgentPerson = cancellationErrorResponse.responsibleParty.AgentPerson
   const performerAgentPerson = cancellationErrorDispensedResponse.performer.AgentPerson
 
-  const practitionerId = "testReference"
-  const healthcareServiceId = "anotherTestReference"
+  /* add healthcareProvider section to author to test Organization translations */
+  const testOrg = new hl7V3.Organization()
+  testOrg.id = new hl7V3.SdsOrganizationIdentifier("testId")
+  testOrg.name = new hl7V3.Text("testName")
+  authorAgentPerson.representedOrganization.healthCareProviderLicense = new hl7V3.HealthCareProviderLicense(testOrg)
 
   const authorPractitionerRole = createRefactoredPractitionerRole(authorAgentPerson)
   const responsiblePartyPractitionerRole = createRefactoredPractitionerRole(responsiblePartyAgentPerson)
@@ -99,7 +103,7 @@ describe("createRefactoredPractitionerRole", () => {
   ]
 
   test.each(cases)(
-    "returned PractitionerRole contains an identifier block with correct sds role profile id",
+    "identifier has correct sds role profile id",
     (agentPerson: hl7V3.AgentPerson, practitionerRole: fhir.PractitionerRole) => {
       expect(practitionerRole.identifier[0].system).toBe("https://fhir.nhs.uk/Id/sds-role-profile-id")
       expect(practitionerRole.identifier[0].value).toBe(agentPerson.id._attributes.extension)
@@ -116,7 +120,7 @@ describe("createRefactoredPractitionerRole", () => {
   )
 
   test.each(cases)(
-    "has reference to HealthcareService",
+    "HealthcareService has identifier and display fields",
     (_: hl7V3.AgentPerson, practitionerRole: fhir.PractitionerRole) => {
       practitionerRole.healthcareService.forEach(healthcareService => {
         expect(isReference(healthcareService)).toBeFalsy()
@@ -125,6 +129,14 @@ describe("createRefactoredPractitionerRole", () => {
         expect(typedHealthCareService.display).toBeDefined()
       })
     }
+  )
+
+  test("organization has identifier and display fields (author only)", () => {
+    expect(isReference(authorPractitionerRole.organization)).toBeFalsy()
+    const organization = authorPractitionerRole.organization as fhir.IdentifierReference<fhir.Organization>
+    expect(organization.identifier).toBeDefined()
+    expect(organization.display).toBeDefined()
+  }
   )
 
   test.each(cases)("has correct code", (agentPerson: hl7V3.AgentPerson, practitionerRole: fhir.PractitionerRole) => {

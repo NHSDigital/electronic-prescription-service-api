@@ -4,7 +4,6 @@ import {fhir, hl7V3} from "@models"
 import {createPractitionerOrRoleIdentifier} from "./identifiers"
 import {createPractitionerIdentifier} from "./practitioner"
 import {getOrganizationCodeIdentifier} from "./organization"
-import {createIdentifierReference} from "../../../../../models/fhir"
 
 export function createPractitionerRole(
   hl7AgentPerson: hl7V3.AgentPerson,
@@ -51,10 +50,10 @@ export function createRefactoredPractitionerRole(
   if (healthCareProviderLicense) {
     const organization = healthCareProviderLicense.Organization
 
-    const organizationName = organization.name._text
+    const organizationName = organization.name?._text
     const organizationIdentifier = getOrganizationCodeIdentifier(organization.id._attributes.extension)
 
-    practitionerRole.organization = createIdentifierReference(organizationIdentifier, organizationName)
+    practitionerRole.organization = fhir.createIdentifierReference(organizationIdentifier, organizationName)
   }
 
   return practitionerRole

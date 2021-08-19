@@ -19,7 +19,7 @@ import {
 } from "../../../../../src/services/translation/response/cancellation/cancellation-medication-request"
 import {fhir} from "@models"
 import {getPerformer, getRequester, getResponsiblePractitioner} from "../common.spec"
-import {resolveReference} from "../../../../../src/services/translation/common"
+import {resolvePractitioner} from "../../../../../src/services/translation/common"
 
 const actualError = TestResources.spineResponses.cancellationNotFoundError
 const actualSendMessagePayload = CANCEL_RESPONSE_HANDLER.extractSendMessagePayload(actualError.response.body)
@@ -208,7 +208,7 @@ describe("practitioner details", () => {
     })
     test("requester Practitioner contains correct identifiers", () => {
       const requesterPractitionerRole = getRequester(bundle)
-      const requesterPractitioner = resolveReference(bundle, requesterPractitionerRole.practitioner)
+      const requesterPractitioner = resolvePractitioner(bundle, requesterPractitionerRole.practitioner)
       expect(requesterPractitioner.identifier).toMatchObject([{
         system: "https://fhir.hl7.org.uk/Id/professional-code",
         //Note: Responsible practitioner in FHIR is not the same as responsible party in HL7 V3
@@ -217,7 +217,7 @@ describe("practitioner details", () => {
     })
     test("responsible practitioner Practitioner contains correct identifiers", () => {
       const respPracPractitionerRole = getResponsiblePractitioner(bundle)
-      const respPracPractitioner = resolveReference(bundle, respPracPractitionerRole.practitioner)
+      const respPracPractitioner = resolvePractitioner(bundle, respPracPractitionerRole.practitioner)
       expect(respPracPractitioner.identifier).toMatchObject([{
         system: "https://fhir.hl7.org.uk/Id/professional-code",
         //Note: Responsible practitioner in FHIR is not the same as responsible party in HL7 V3
@@ -226,7 +226,7 @@ describe("practitioner details", () => {
     })
     test("performer Practitioner contains correct identifiers", () => {
       const performerPractitionerRole = getPerformer(bundle)
-      const performerPractitioner = resolveReference(bundle, performerPractitionerRole.practitioner)
+      const performerPractitioner = resolvePractitioner(bundle, performerPractitionerRole.practitioner)
       expect(performerPractitioner.identifier).toMatchObject([{
         system: "https://fhir.hl7.org.uk/Id/professional-code",
         value: "PerformerProfessionalCode"
@@ -294,7 +294,7 @@ describe("practitioner details", () => {
     })
     test("requester Practitioner contains correct identifiers", () => {
       const requesterPractitionerRole = getRequester(bundle)
-      const requesterPractitioner = resolveReference(bundle, requesterPractitionerRole.practitioner)
+      const requesterPractitioner = resolvePractitioner(bundle, requesterPractitionerRole.practitioner)
       expect(requesterPractitioner.identifier).toMatchObject([
         {
           system: "https://fhir.hl7.org.uk/Id/professional-code",
@@ -308,7 +308,7 @@ describe("practitioner details", () => {
     })
     test("performer Practitioner contains correct identifiers", () => {
       const performerPractitionerRole = getPerformer(bundle)
-      const performerPractitioner = resolveReference(bundle, performerPractitionerRole.practitioner)
+      const performerPractitioner = resolvePractitioner(bundle, performerPractitionerRole.practitioner)
       expect(performerPractitioner.identifier).toMatchObject([{
         system: "https://fhir.hl7.org.uk/Id/professional-code",
         value: "PerformerProfessionalCode"
@@ -380,7 +380,7 @@ describe("practitioner details", () => {
     })
     test("requester Practitioner contains correct identifiers", () => {
       const requesterPractitionerRole = getRequester(bundle)
-      const requesterPractitioner = resolveReference(bundle, requesterPractitionerRole.practitioner)
+      const requesterPractitioner = resolvePractitioner(bundle, requesterPractitionerRole.practitioner)
       expect(requesterPractitioner.identifier).toMatchObject([{
         system: "https://fhir.hl7.org.uk/Id/professional-code",
         //Note: Responsible practitioner in FHIR is not the same as responsible party in HL7 V3
@@ -389,7 +389,7 @@ describe("practitioner details", () => {
     })
     test("responsible practitioner Practitioner contains correct identifiers", () => {
       const respPracPractitionerRole = getResponsiblePractitioner(bundle)
-      const respPracPractitioner = resolveReference(bundle, respPracPractitionerRole.practitioner)
+      const respPracPractitioner = resolvePractitioner(bundle, respPracPractitionerRole.practitioner)
       expect(respPracPractitioner.identifier).toMatchObject([
         {
           system: "https://fhir.hl7.org.uk/Id/professional-code",
@@ -468,7 +468,7 @@ describe("practitioner details", () => {
     })
     test("requester Practitioner contains correct identifiers", () => {
       const requesterPractitionerRole = getRequester(bundle)
-      const requesterPractitioner = resolveReference(bundle, requesterPractitionerRole.practitioner)
+      const requesterPractitioner = resolvePractitioner(bundle, requesterPractitionerRole.practitioner)
       expect(requesterPractitioner.identifier).toMatchObject([
         {
           system: "https://fhir.hl7.org.uk/Id/professional-code",
@@ -483,7 +483,7 @@ describe("practitioner details", () => {
     })
     test("responsible practitioner Practitioner contains correct identifiers", () => {
       const respPracPractitionerRole = getResponsiblePractitioner(bundle)
-      const respPracPractitioner = resolveReference(bundle, respPracPractitionerRole.practitioner)
+      const respPracPractitioner = resolvePractitioner(bundle, respPracPractitionerRole.practitioner)
       expect(respPracPractitioner.identifier).toMatchObject([{
         system: "https://fhir.hl7.org.uk/Id/professional-code",
         //Note: Responsible practitioner in FHIR is not the same as responsible party in HL7 V3
@@ -541,7 +541,7 @@ describe("practitioner details", () => {
     })
     test("requester Practitioner contains correct identifiers", () => {
       const requesterPractitionerRole = getRequester(bundle)
-      const requesterPractitioner = resolveReference(bundle, requesterPractitionerRole.practitioner)
+      const requesterPractitioner = resolvePractitioner(bundle, requesterPractitionerRole.practitioner)
       expect(requesterPractitioner.identifier).toMatchObject([
         {
           system: "https://fhir.hl7.org.uk/Id/professional-code",

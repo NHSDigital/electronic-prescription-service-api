@@ -8,7 +8,11 @@ import * as LosslessJson from "lossless-json"
 import * as fs from "fs"
 import * as path from "path"
 import {getUniqueValues} from "../../../../../src/utils/collections"
-import {resolveReference, toArray} from "../../../../../src/services/translation/common"
+import {
+  resolveOrganization,
+  resolvePractitioner,
+  toArray
+} from "../../../../../src/services/translation/common"
 import {hl7V3} from "@models"
 import {
   getHealthcareServices,
@@ -214,7 +218,7 @@ describe("practitioner details", () => {
     })
     test("requester Practitioner contains correct identifiers", () => {
       const requesterPractitionerRole = getRequester(result)
-      const requesterPractitioner = resolveReference(result, requesterPractitionerRole.practitioner)
+      const requesterPractitioner = resolvePractitioner(result, requesterPractitionerRole.practitioner)
       const requesterPractitionerIdentifiers = requesterPractitioner.identifier
       expect(requesterPractitionerIdentifiers).toMatchObject([{
         system: "https://fhir.hl7.org.uk/Id/professional-code",
@@ -223,7 +227,7 @@ describe("practitioner details", () => {
     })
     test("responsible practitioner Practitioner contains correct identifiers", () => {
       const respPracPractitionerRole = getResponsiblePractitioner(result)
-      const respPracPractitioner = resolveReference(result, respPracPractitionerRole.practitioner)
+      const respPracPractitioner = resolvePractitioner(result, respPracPractitionerRole.practitioner)
       const respPracPractitionerIdentifiers = respPracPractitioner.identifier
       expect(respPracPractitionerIdentifiers).toMatchObject([{
         system: "https://fhir.hl7.org.uk/Id/professional-code",
@@ -246,7 +250,7 @@ describe("practitioner details", () => {
     })
     test("requester Organization contains correct identifiers", () => {
       const requester = getRequester(result)
-      const requesterOrganization = resolveReference(result, requester.organization)
+      const requesterOrganization = resolveOrganization(result, requester)
       const requesterOrganizationIdentifiers = requesterOrganization.identifier
       expect(requesterOrganizationIdentifiers).toMatchObject([{
         system: "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -296,7 +300,7 @@ describe("practitioner details", () => {
     })
     test("Practitioner contains correct identifiers", () => {
       const requesterPractitionerRole = getRequester(result)
-      const requesterPractitioner = resolveReference(result, requesterPractitionerRole.practitioner)
+      const requesterPractitioner = resolvePractitioner(result, requesterPractitionerRole.practitioner)
       const requesterPractitionerIdentifiers = requesterPractitioner.identifier
       expect(requesterPractitionerIdentifiers).toMatchObject([
         {
@@ -325,7 +329,7 @@ describe("practitioner details", () => {
     })
     test("Organization contains correct identifiers", () => {
       const requester = getRequester(result)
-      const requesterOrganization = resolveReference(result, requester.organization)
+      const requesterOrganization = resolveOrganization(result, requester)
       const requesterOrganizationIdentifiers = requesterOrganization.identifier
       expect(requesterOrganizationIdentifiers).toMatchObject([{
         system: "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -381,7 +385,7 @@ describe("practitioner details", () => {
     })
     test("Practitioner contains correct identifiers (no spurious code)", () => {
       const requesterPractitionerRole = getRequester(result)
-      const requesterPractitioner = resolveReference(result, requesterPractitionerRole.practitioner)
+      const requesterPractitioner = resolvePractitioner(result, requesterPractitionerRole.practitioner)
       const requesterPractitionerIdentifiers = requesterPractitioner.identifier
       expect(requesterPractitionerIdentifiers).toMatchObject([
         {
