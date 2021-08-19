@@ -107,12 +107,14 @@ export function verifyCommonBundle(bundle: fhir.Bundle): Array<fhir.OperationOut
     validatePractitionerRoleReferenceField(
       practitionerRole.organization, incorrectValueErrors, "practitionerRole.organization"
     )
-    practitionerRole.healthcareService.forEach(
-      (healthCareService, index) =>
-        validatePractitionerRoleReferenceField(
-          healthCareService, incorrectValueErrors, `practitionerRole.healthcareService[${index}]`
-        )
-    )
+    if (practitionerRole.healthcareService) {
+      practitionerRole.healthcareService.forEach(
+        (healthCareService, index) =>
+          validatePractitionerRoleReferenceField(
+            healthCareService, incorrectValueErrors, `practitionerRole.healthcareService[${index}]`
+          )
+      )
+    }
   })
 
   return incorrectValueErrors
