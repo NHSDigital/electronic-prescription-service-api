@@ -85,7 +85,7 @@ export function resolvePractitioner(
   } else {
     return {
       resourceType: "Practitioner",
-      identifier:[reference.identifier],
+      identifier: [reference.identifier],
       name: [{text: reference.display}]
     }
   }

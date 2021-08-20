@@ -11,6 +11,12 @@ describe("process", () => {
   })
 })
 
+describe("convert", () => {
+  test("all examples", () => {
+    printCases(fetchers.convertExamples)
+  })
+})
+
 function printCases<T extends Case>(cases: Array<T>) {
   let str = ""
   cases.forEach(Case => {
