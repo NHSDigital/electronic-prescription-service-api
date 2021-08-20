@@ -1,6 +1,7 @@
 import {
   createPertinentInformation1,
-  createPertinentInformation3, createReversalOf
+  createPertinentInformation3,
+  createReversalOf
 } from "../../../../../src/services/translation/request/return/return"
 
 test("short form prescription ID is mapped correctly", () => {

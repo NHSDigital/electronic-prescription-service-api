@@ -6,10 +6,11 @@ export type PersonOrOrganization = PractitionerRole | Practitioner | Organizatio
 export class PractitionerRole extends common.Resource {
   readonly resourceType = "PractitionerRole"
   identifier?: Array<common.Identifier>
-  practitioner?: common.Reference<Practitioner>
-  organization?: common.Reference<Organization>
+  practitioner?: common.Reference<Practitioner> | common.IdentifierReference<Practitioner>
+  organization?: common.Reference<Organization> | common.IdentifierReference<Organization>
   code?: Array<common.CodeableConcept>
-  healthcareService?: Array<common.Reference<HealthcareService>>
+  healthcareService?: Array<common.Reference<HealthcareService> | common.IdentifierReference<HealthcareService>>
+  location?: Array<common.Reference<Location>>
   telecom: Array<demographics.ContactPoint>
 }
 

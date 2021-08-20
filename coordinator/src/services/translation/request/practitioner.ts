@@ -7,6 +7,9 @@ import {
   identifyMessageType,
   onlyElement,
   onlyElementOrNull,
+  resolveHealthcareService,
+  resolveOrganization,
+  resolvePractitioner,
   resolveReference
 } from "../common"
 import * as XmlJs from "xml-js"
@@ -82,7 +85,7 @@ function convertPractitionerRole(
   convertAgentPersonPersonFn = convertAgentPersonPerson,
   getAgentPersonPersonIdFn = getAgentPersonPersonIdForAuthor
 ): hl7V3.AgentPerson {
-  const practitioner = resolveReference(bundle, practitionerRole.practitioner)
+  const practitioner = resolvePractitioner(bundle, practitionerRole.practitioner)
 
   const agentPerson = createAgentPerson(
     practitionerRole,
@@ -91,11 +94,11 @@ function convertPractitionerRole(
     getAgentPersonPersonIdFn
   )
 
-  const organization = resolveReference(bundle, practitionerRole.organization)
+  const organization = resolveOrganization(bundle, practitionerRole)
 
   let healthcareService: fhir.HealthcareService
   if (practitionerRole.healthcareService) {
-    healthcareService = resolveReference(bundle, practitionerRole.healthcareService[0])
+    healthcareService = resolveHealthcareService(bundle, practitionerRole)
   }
 
   agentPerson.representedOrganization = convertOrganizationAndProviderLicense(

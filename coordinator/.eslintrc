@@ -5,7 +5,8 @@
     },
     "parser": "@typescript-eslint/parser",
     "plugins": [
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "import-newlines"
     ],
     "extends": [
         "eslint:recommended",
@@ -24,6 +25,7 @@
         "eqeqeq": "error",
         "func-call-spacing": "error",
         "func-style": ["error", "declaration", {"allowArrowFunctions": true}],
+        "import-newlines/enforce": ["error", {"items": 3, "max-len": 120, "semi": false}],
         "indent": ["error", 2, {"SwitchCase": 1}],
         "max-len": ["error", 120],
         "no-multi-spaces": "error",

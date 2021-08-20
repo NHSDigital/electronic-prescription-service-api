@@ -4,7 +4,8 @@ import {
   convertBundleToPrescription,
   convertCourseOfTherapyType,
   convertPrescriptionComponent1,
-  convertRepeatNumber, extractRepeatNumberHighValue,
+  convertRepeatNumber,
+  extractRepeatNumberHighValue,
   extractReviewDate
 } from "../../../../src/services/translation/request/prescription"
 import * as translator from "../../../../src/services/translation/request"

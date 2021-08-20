@@ -1,6 +1,7 @@
 import {
   getMedicationDispenses,
-  getMedicationRequests
+  getMedicationRequests,
+  getPractitionerRoles
 } from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues, getGroups} from "../../utils/collections"
@@ -14,6 +15,9 @@ import {fhir, validationErrors as errors} from "@models"
 import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
 import {isRepeatDispensing} from "../translation/request"
 import {validatePermittedDispenseMessage, validatePermittedPrescribeMessage} from "./prescribing-dispensing-tracker"
+import {prescriptionRefactorEnabled} from "../../utils/feature-flags"
+import {isReference} from "../../utils/type-guards"
+import * as common from "../../../../models/fhir/common"
 
 export function verifyBundle(bundle: fhir.Bundle, scope: string): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
@@ -67,8 +71,21 @@ function resourceHasBothCodeableConceptAndReference(
   )
 }
 
+function validatePractitionerRoleReferenceField<T extends fhir.Resource>(
+  fieldToValidate: common.Reference<T> | common.IdentifierReference<T>,
+  incorrectValueErrors: Array<fhir.OperationOutcomeIssue>,
+  fhirPathToField: string
+) {
+  if (prescriptionRefactorEnabled() && isReference(fieldToValidate)) {
+    incorrectValueErrors.push(errors.fieldIsReferenceButShouldNotBe(fhirPathToField))
+  }
+  if (!prescriptionRefactorEnabled() && !isReference(fieldToValidate)) {
+    incorrectValueErrors.push(errors.fieldIsNotReferenceButShouldBe(fhirPathToField))
+  }
+}
+
 export function verifyCommonBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
-  const incorrectValueErrors = []
+  const incorrectValueErrors: Array<fhir.OperationOutcomeIssue> = []
 
   const medicationRequests = getMedicationRequests(bundle)
   if (medicationRequests.some(medicationRequest => medicationRequest.intent !== fhir.MedicationRequestIntent.ORDER)) {
@@ -82,6 +99,24 @@ export function verifyCommonBundle(bundle: fhir.Bundle): Array<fhir.OperationOut
       errors.createMedicationFieldIssue("Request")
     )
   }
+
+  const practitionerRoles = getPractitionerRoles(bundle)
+  practitionerRoles.forEach(practitionerRole => {
+    validatePractitionerRoleReferenceField(
+      practitionerRole.practitioner, incorrectValueErrors, "practitionerRole.practitioner"
+    )
+    validatePractitionerRoleReferenceField(
+      practitionerRole.organization, incorrectValueErrors, "practitionerRole.organization"
+    )
+    if (practitionerRole.healthcareService) {
+      practitionerRole.healthcareService.forEach(
+        (healthCareService, index) =>
+          validatePractitionerRoleReferenceField(
+            healthCareService, incorrectValueErrors, `practitionerRole.healthcareService[${index}]`
+          )
+      )
+    }
+  })
 
   return incorrectValueErrors
 }

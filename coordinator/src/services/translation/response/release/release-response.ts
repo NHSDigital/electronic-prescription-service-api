@@ -1,6 +1,9 @@
 import {
-  addDetailsToTranslatedAgentPerson, addTranslatedAgentPerson,
-  convertResourceToBundleEntry, roleProfileIdIdentical, translateAgentPerson,
+  addDetailsToTranslatedAgentPerson,
+  addTranslatedAgentPerson,
+  convertResourceToBundleEntry,
+  roleProfileIdIdentical,
+  translateAgentPerson,
   translateAndAddPatient
 } from "../common"
 import {toArray} from "../../common"

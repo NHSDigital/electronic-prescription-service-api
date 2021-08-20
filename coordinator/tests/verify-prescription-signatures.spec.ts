@@ -4,7 +4,8 @@ import {readFileSync} from "fs"
 import * as path from "path"
 import {fetcher, hl7V3} from "@models"
 import {
-  verifyPrescriptionSignatureValid, verifySignatureDigestMatchesPrescription
+  verifyPrescriptionSignatureValid,
+  verifySignatureDigestMatchesPrescription
 } from "../src/services/signature-verification"
 
 //eslint-disable-next-line max-len

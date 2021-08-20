@@ -13,12 +13,12 @@ const prescriptionOrderUpdateFiles = processRequestFiles
   .filter(processRequestFile => processRequestFile.operation === "cancel")
 const prescriptionDispenseFiles = processRequestFiles
   .filter(processRequestFile => processRequestFile.operation === "dispense")
-  const prescriptionClaimFiles = processRequestFiles
+const prescriptionClaimFiles = processRequestFiles
   .filter(processRequestFile => processRequestFile.operation === "claim")
 
-export const prescriptionOrderExamples: Array<ProcessCase> = prescriptionOrderFiles.map(processRequestFile =>
-  new ProcessCase(processRequestFile, getResponseFile(processRequestFile))
-)
+export const prescriptionOrderExamples: Array<ProcessCase> = prescriptionOrderFiles
+  .filter(orderFile => !orderFile.dir.includes("prescription-refactor"))
+  .map(processRequestFile => new ProcessCase(processRequestFile, getResponseFile(processRequestFile)))
 export const prescriptionOrderUpdateExamples: Array<ProcessCase> = prescriptionOrderUpdateFiles.map(
   processRequestFile => new ProcessCase(processRequestFile, getResponseFile(processRequestFile))
 )

@@ -67,6 +67,15 @@ export interface IdentifierReference<T extends Resource> {
   display?: string
 }
 
+export function createIdentifierReference<T extends Resource>(
+  identifier: Identifier, display: string
+): IdentifierReference<T> {
+  return {
+    identifier: identifier,
+    display: display
+  }
+}
+
 export interface Quantity {
   value?: string | LosslessNumber
   comparator?: string

@@ -8,6 +8,28 @@ describe("convertName fills correct fields only", () => {
     expect(Object.keys(result)).toHaveLength(0)
   })
 
+  test("should handle unstructured", () => {
+    const fhirName = {
+      text: "Jackie Clark"
+    }
+    const result = demographics.convertName(fhirName, "fhirPath")
+    expect(Object.keys(result)).toHaveLength(1)
+    expect(result._text).toEqual("Jackie Clark")
+  })
+
+  test("should prefer structured details where provided", () => {
+    const fhirName = {
+      text: "Jackie Clark",
+      given: ["Jackie"],
+      family: "Clark"
+    }
+    const result = demographics.convertName(fhirName, "fhirPath")
+    expect(Object.keys(result)).toHaveLength(2)
+    expect(result._text).toBeFalsy()
+    expect(result.given).toEqual([{_text: "Jackie"}])
+    expect(result.family).toEqual({_text: "Clark"})
+  })
+
   const keyCases = [
     ["prefix", {prefix: ["example"]}],
     ["given", {given: ["example"]}],

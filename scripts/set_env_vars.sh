@@ -6,6 +6,8 @@ set -eu
 export SANDBOX=1
 export TO_ASID=567456789789
 export TO_PARTY_KEY="YES-0000806"
+export PRESCRIBE_ENABLED="true"
+export DISPENSE_ENABLED="true"
 #export FROM_PARTY_KEY="T141D-822234"
 
 # pact

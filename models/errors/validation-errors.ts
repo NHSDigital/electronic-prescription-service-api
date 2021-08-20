@@ -184,3 +184,15 @@ export const invalidHeaderOperationOutcome = (headers: Array<string>): fhir.Oper
   },
   diagnostics: `Invalid headers: ${headers}.`
 })
+
+export const fieldIsReferenceButShouldNotBe = (fhirPath: string): fhir.OperationOutcomeIssue => ({
+  severity: "error",
+  code: fhir.IssueCodes.INVALID,
+  diagnostics: `${fhirPath} populated incorrectly. Please populate with Identifier and Display.`
+})
+
+export const fieldIsNotReferenceButShouldBe = (fhirPath: string): fhir.OperationOutcomeIssue => ({
+  severity: "error",
+  code: fhir.IssueCodes.INVALID,
+  diagnostics: `${fhirPath} populated incorrectly. Please populate with Reference to resource within Bundle.`
+})

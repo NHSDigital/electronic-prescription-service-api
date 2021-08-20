@@ -5,7 +5,7 @@ export function createOrganization(hl7Organization: hl7V3.Organization): fhir.Or
   const organization: fhir.Organization = {
     resourceType: "Organization",
     id: generateResourceId(),
-    identifier: getOrganizationCodeIdentifier(hl7Organization.id._attributes.extension),
+    identifier: [getOrganizationCodeIdentifier(hl7Organization.id._attributes.extension)],
     type: getFixedOrganizationType()
   }
   if (hl7Organization.name) {
@@ -38,7 +38,7 @@ export function createHealthcareService(
   const healthcareService: fhir.HealthcareService = {
     resourceType: "HealthcareService",
     id: generateResourceId(),
-    identifier: getOrganizationCodeIdentifier(organization.id._attributes.extension),
+    identifier: [getOrganizationCodeIdentifier(organization.id._attributes.extension)],
     location: locations.map(location => fhir.createReference(location.id))
   }
   if (organization.name) {
@@ -50,8 +50,8 @@ export function createHealthcareService(
   return healthcareService
 }
 
-function getOrganizationCodeIdentifier(organizationId: string) {
-  return [fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", organizationId)]
+export function getOrganizationCodeIdentifier(organizationId: string): fhir.Identifier {
+  return fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", organizationId)
 }
 
 function getFixedOrganizationType() {

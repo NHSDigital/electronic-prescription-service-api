@@ -4,7 +4,8 @@ import {
   getIdentifierValueForSystem,
   getNumericValueAsString,
   isTruthy,
-  onlyElement, onlyElementOrNull
+  onlyElement,
+  onlyElementOrNull
 } from "../common"
 import {ElementCompact, js2xml} from "xml-js"
 import {fhir, hl7V3} from "@models"

@@ -1,7 +1,5 @@
 import {fhir, hl7V3} from "@models"
-import {
-  getMessageId
-} from "../../common"
+import {getMessageId} from "../../common"
 import pino from "pino"
 
 export async function convertDispenseClaimInformation(

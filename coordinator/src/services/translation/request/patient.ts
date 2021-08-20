@@ -1,4 +1,9 @@
-import {convertAddress, convertGender, convertName, convertTelecom} from "./demographics"
+import {
+  convertAddress,
+  convertGender,
+  convertName,
+  convertTelecom
+} from "./demographics"
 import {getIdentifierValueForSystem, onlyElement, UNKNOWN_GP_ODS_CODE} from "../common"
 import {convertIsoDateStringToHl7V3Date} from "../common/dateTime"
 import {fhir, hl7V3} from "@models"

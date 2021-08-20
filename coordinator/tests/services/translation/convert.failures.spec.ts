@@ -3,7 +3,8 @@ import * as TestResources from "../../resources/test-resources"
 import {
   convertBundleToSpineRequest,
   convertParametersToSpineRequest,
-  convertTaskToSpineRequest} from "../../../src/services/translation/request"
+  convertTaskToSpineRequest
+} from "../../../src/services/translation/request"
 import {getMedicationRequests} from "../../../src/services/translation/common/getResourcesOfType"
 import {fhir} from "@models"
 import {isBundle, isParameters, isTask} from "../../../src/utils/type-guards"

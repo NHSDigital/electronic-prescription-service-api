@@ -1,7 +1,8 @@
 import {
   addIdentifierToPractitionerOrRole,
   convertAddress,
-  convertName, convertTelecom,
+  convertName,
+  convertTelecom,
   generateResourceId,
   getFullUrl
 } from "../../../../src/services/translation/response/common"

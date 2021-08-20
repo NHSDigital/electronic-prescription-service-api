@@ -9,19 +9,15 @@ import * as TestResources from "../../../../resources/test-resources"
 import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {hl7V3, fhir} from "@models"
-import {
-  getExtensionForUrl,
-  toArray
-} from "../../../../../src/services/translation/common"
+import {getExtensionForUrl, toArray} from "../../../../../src/services/translation/common"
 import {clone} from "../../../../resources/test-helpers"
 import {
-  getMedicationDispenses, getMessageHeader
+  getMedicationDispenses,
+  getMessageHeader
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {ElementCompact} from "xml-js"
 import pino = require("pino")
-import {
-  createAgentPersonForUnattendedAccess
-} from "../../../../../src/services/translation/request/agent-unattended"
+import {createAgentPersonForUnattendedAccess} from "../../../../../src/services/translation/request/agent-unattended"
 
 const logger = pino()
 

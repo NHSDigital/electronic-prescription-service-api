@@ -3,9 +3,10 @@ import {toArray} from "../common"
 import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {createPractitioner} from "./practitioner"
 import {createHealthcareService, createLocations, createOrganization} from "./organization"
-import {createPractitionerRole} from "./practitioner-role"
+import {createPractitionerRole, createRefactoredPractitionerRole} from "./practitioner-role"
 import {createPatient} from "./patient"
 import {createPractitionerOrRoleIdentifier} from "./identifiers"
+import {prescriptionRefactorEnabled} from "../../../utils/feature-flags"
 
 export function convertName(names: Array<hl7V3.Name> | hl7V3.Name): Array<fhir.HumanName> {
   const nameArray = toArray(names)
@@ -34,6 +35,16 @@ export function convertName(names: Array<hl7V3.Name> | hl7V3.Name): Array<fhir.H
     }
     return convertedName
   })
+}
+
+export function humanNameArrayToString(names: Array<fhir.HumanName>): string {
+  return names.map(name => {
+    if (name.text) {
+      return name.text
+    } else {
+      return `${name.prefix || ""} ${name.given || ""} ${name.family || ""} ${name.suffix || ""}`
+    }
+  }).join(" ")
 }
 
 function convertNameUse(hl7NameUse: string): string {
@@ -159,8 +170,8 @@ export function translateAndAddPatient(hl7Patient: hl7V3.Patient, resources: Arr
 
 export interface TranslatedAgentPerson {
   practitionerRole: fhir.PractitionerRole
-  practitioner: fhir.Practitioner
-  healthcareService: fhir.HealthcareService
+  practitioner?: fhir.Practitioner
+  healthcareService?: fhir.HealthcareService
   locations: Array<fhir.Location>
   organization?: fhir.Organization
 }
@@ -170,30 +181,40 @@ export function roleProfileIdIdentical(agentPerson1: hl7V3.AgentPerson, agentPer
 }
 
 export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): TranslatedAgentPerson {
-  const practitioner = createPractitioner(agentPerson)
-  const locations = createLocations(agentPerson.representedOrganization)
-  const healthcareService = createHealthcareService(agentPerson.representedOrganization, locations)
-  const practitionerRole = createPractitionerRole(agentPerson, practitioner.id, healthcareService.id)
+  if (prescriptionRefactorEnabled()) {
+    const practitionerRole = createRefactoredPractitionerRole(agentPerson)
+    const locations = createLocations(agentPerson.representedOrganization)
 
-  const translatedAgentPerson: TranslatedAgentPerson = {
-    practitionerRole,
-    practitioner,
-    healthcareService,
-    locations
-  }
-
-  const healthCareProviderLicense = agentPerson.representedOrganization.healthCareProviderLicense
-  if (healthCareProviderLicense) {
-    const organization = createOrganization(healthCareProviderLicense.Organization)
-    healthcareService.providedBy = {
-      identifier: organization.identifier[0],
-      display: organization.name
+    return {
+      practitionerRole,
+      locations
     }
-    practitionerRole.organization = fhir.createReference(organization.id)
-    translatedAgentPerson.organization = organization
-  }
+  } else {
+    const practitioner = createPractitioner(agentPerson)
+    const locations = createLocations(agentPerson.representedOrganization)
+    const healthcareService = createHealthcareService(agentPerson.representedOrganization, locations)
+    const practitionerRole = createPractitionerRole(agentPerson, practitioner.id, healthcareService.id)
 
-  return translatedAgentPerson
+    const translatedAgentPerson: TranslatedAgentPerson = {
+      practitionerRole,
+      practitioner,
+      healthcareService,
+      locations
+    }
+
+    const healthCareProviderLicense = agentPerson.representedOrganization.healthCareProviderLicense
+    if (healthCareProviderLicense) {
+      const organization = createOrganization(healthCareProviderLicense.Organization)
+      healthcareService.providedBy = {
+        identifier: organization.identifier[0],
+        display: organization.name
+      }
+      practitionerRole.organization = fhir.createReference(organization.id)
+      translatedAgentPerson.organization = organization
+    }
+
+    return translatedAgentPerson
+  }
 }
 
 export function addTranslatedAgentPerson(

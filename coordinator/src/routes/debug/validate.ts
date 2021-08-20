@@ -1,7 +1,5 @@
 import {fhir} from "@models"
-import {
-  BASE_PATH, ContentTypes, externalValidator
-} from "../util"
+import {BASE_PATH, ContentTypes, externalValidator} from "../util"
 
 export default [
   /*
