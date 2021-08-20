@@ -1,8 +1,6 @@
 import * as TestResources from "../../../resources/test-resources"
 import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
-import {
-  getCourseOfTherapyTypeCode
-} from "../../../../src/services/translation/request/course-of-therapy-type"
+import {getCourseOfTherapyTypeCode} from "../../../../src/services/translation/request/course-of-therapy-type"
 import {clone} from "../../../resources/test-helpers"
 import {fhir} from "@models"
 

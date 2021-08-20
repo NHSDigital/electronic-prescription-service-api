@@ -3,7 +3,8 @@ import {
   createDispenseRequest,
   createDosage,
   createGroupIdentifierFromPrescriptionIds,
-  createMedicationRequestExtensions, createNote,
+  createMedicationRequestExtensions,
+  createNote,
   createSnomedCodeableConcept,
   getStatus
 } from "../../../../../src/services/translation/response/release/release-medication-request"

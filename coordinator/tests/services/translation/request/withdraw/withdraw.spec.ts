@@ -1,7 +1,9 @@
 import {
   createAuthor,
   createPertinentInformation2,
-  createPertinentInformation3, createPertinentInformation4, createPertinentInformation5,
+  createPertinentInformation3,
+  createPertinentInformation4,
+  createPertinentInformation5,
   createRecordTarget
 } from "../../../../../src/services/translation/request/withdraw/withdraw"
 

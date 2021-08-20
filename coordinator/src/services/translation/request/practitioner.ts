@@ -6,7 +6,10 @@ import {
   getIdentifierValueOrNullForSystem,
   identifyMessageType,
   onlyElement,
-  onlyElementOrNull, resolveHealthcareService, resolveOrganization, resolvePractitioner,
+  onlyElementOrNull,
+  resolveHealthcareService,
+  resolveOrganization,
+  resolvePractitioner,
   resolveReference
 } from "../common"
 import * as XmlJs from "xml-js"

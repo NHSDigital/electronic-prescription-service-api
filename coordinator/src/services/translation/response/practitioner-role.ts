@@ -1,4 +1,9 @@
-import {convertName, convertTelecom, generateResourceId, humanNameArrayToString} from "./common"
+import {
+  convertName,
+  convertTelecom,
+  generateResourceId,
+  humanNameArrayToString
+} from "./common"
 import {toArray} from "../common"
 import {fhir, hl7V3} from "@models"
 import {createPractitionerOrRoleIdentifier} from "./identifiers"

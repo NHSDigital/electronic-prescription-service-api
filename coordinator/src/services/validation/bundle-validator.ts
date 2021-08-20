@@ -1,6 +1,7 @@
 import {
   getMedicationDispenses,
-  getMedicationRequests, getPractitionerRoles
+  getMedicationRequests,
+  getPractitionerRoles
 } from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues, getGroups} from "../../utils/collections"

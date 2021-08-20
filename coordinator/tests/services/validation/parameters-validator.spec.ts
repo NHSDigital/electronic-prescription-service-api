@@ -2,7 +2,9 @@ import {fhir, validationErrors as errors} from "@models"
 import * as TestResources from "../../resources/test-resources"
 import {verifyParameters} from "../../../src/services/validation/parameters-validator"
 import {
-  DISPENSING_APP_SCOPE, DISPENSING_USER_SCOPE, PRESCRIBING_APP_SCOPE,
+  DISPENSING_APP_SCOPE,
+  DISPENSING_USER_SCOPE,
+  PRESCRIBING_APP_SCOPE,
   PRESCRIBING_USER_SCOPE
 } from "../../../src/services/validation/prescribing-dispensing-tracker"
 

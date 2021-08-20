@@ -2,8 +2,12 @@ import * as translator from "../services/translation/request"
 import {spineClient} from "../services/communication/spine-client"
 import Hapi from "@hapi/hapi"
 import {
-  BASE_PATH, ContentTypes, createHash,
-  externalValidator, getPayload, handleResponse
+  BASE_PATH,
+  ContentTypes,
+  createHash,
+  externalValidator,
+  getPayload,
+  handleResponse
 } from "./util"
 import {fhir} from "@models"
 import * as bundleValidator from "../services/validation/bundle-validator"

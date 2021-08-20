@@ -7,11 +7,11 @@ import {fhir, validationErrors as errors} from "@models"
 import {
   getOrganisationPerformer,
   getPrescriptionStatus
-}
-  from "../../../src/services/translation/request/dispense/dispense-notification"
+} from "../../../src/services/translation/request/dispense/dispense-notification"
 import {
   DISPENSING_APP_SCOPE,
-  DISPENSING_USER_SCOPE, PRESCRIBING_APP_SCOPE,
+  DISPENSING_USER_SCOPE,
+  PRESCRIBING_APP_SCOPE,
   PRESCRIBING_USER_SCOPE
 } from "../../../src/services/validation/prescribing-dispensing-tracker"
 

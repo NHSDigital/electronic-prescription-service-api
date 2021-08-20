@@ -1,15 +1,18 @@
 import * as XmlJs from "xml-js"
 import * as crypto from "crypto-js"
 import * as uuid from "uuid"
-import {
-  createSendMessagePayload
-} from "./send-message-payload"
+import {createSendMessagePayload} from "./send-message-payload"
 import {writeXmlStringCanonicalized} from "../../serialisation/xml"
 import {convertParentPrescription} from "./prescribe/parent-prescription"
 import {convertCancellation} from "./cancel/cancellation"
 import {convertFragmentsToHashableFormat, extractFragments} from "./signature"
 import * as requestBuilder from "../../communication/ebxml-request-builder"
-import {spine, hl7V3, fhir, processingErrors as errors} from "@models"
+import {
+  spine,
+  hl7V3,
+  fhir,
+  processingErrors as errors
+} from "@models"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
 import {convertDispenseNotification} from "./dispense/dispense-notification"
 import {translateReleaseRequest} from "./dispense/release"

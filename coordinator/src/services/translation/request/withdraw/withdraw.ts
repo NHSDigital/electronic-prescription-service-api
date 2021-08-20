@@ -1,10 +1,7 @@
 import {fhir, hl7V3} from "@models"
 import {getCodeableConceptCodingForSystem, getIdentifierValueForSystem, getMessageId} from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
-import {
-  getMessageIdFromTaskFocusIdentifier,
-  getPrescriptionShortFormIdFromTaskGroupIdentifier
-} from "../task"
+import {getMessageIdFromTaskFocusIdentifier, getPrescriptionShortFormIdFromTaskGroupIdentifier} from "../task"
 
 export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
   const id = getMessageId(task.identifier, "Task.identifier")

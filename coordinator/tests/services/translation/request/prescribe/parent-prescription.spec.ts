@@ -3,7 +3,10 @@ import {
 } from "../../../../../src/services/translation/request/prescribe/parent-prescription"
 import * as TestResources from "../../../../resources/test-resources"
 import {clone} from "../../../../resources/test-helpers"
-import {getMedicationRequests, getProvenances} from "../../../../../src/services/translation/common/getResourcesOfType"
+import {
+  getMedicationRequests,
+  getProvenances
+} from "../../../../../src/services/translation/common/getResourcesOfType"
 import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {onlyElement} from "../../../../../src/services/translation/common"

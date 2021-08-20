@@ -1,7 +1,9 @@
 import * as translator from "../../services/translation/request"
 import Hapi from "@hapi/hapi"
 import {
-  BASE_PATH, ContentTypes, externalValidator,
+  BASE_PATH,
+  ContentTypes,
+  externalValidator,
   getPayload
 } from "../util"
 import {fhir} from "@models"

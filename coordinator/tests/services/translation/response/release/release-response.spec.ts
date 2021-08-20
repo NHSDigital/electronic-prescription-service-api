@@ -8,11 +8,7 @@ import * as LosslessJson from "lossless-json"
 import * as fs from "fs"
 import * as path from "path"
 import {getUniqueValues} from "../../../../../src/utils/collections"
-import {
-  resolveOrganization,
-  resolvePractitioner,
-  toArray
-} from "../../../../../src/services/translation/common"
+import {resolveOrganization, resolvePractitioner, toArray} from "../../../../../src/services/translation/common"
 import {hl7V3} from "@models"
 import {
   getHealthcareServices,

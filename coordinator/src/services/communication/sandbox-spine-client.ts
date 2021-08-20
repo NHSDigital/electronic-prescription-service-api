@@ -1,4 +1,9 @@
-import {spine, fhir, hl7V3, spineResponses} from "@models"
+import {
+  spine,
+  fhir,
+  hl7V3,
+  spineResponses
+} from "@models"
 import {SpineClient} from "./spine-client"
 import {StatusCheckResponse} from "../../routes/health/get-status"
 

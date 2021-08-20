@@ -1,10 +1,16 @@
 import Hapi from "@hapi/hapi"
-import {BASE_PATH, ContentTypes, externalValidator, getPayload} from "../util"
+import {
+  BASE_PATH,
+  ContentTypes,
+  externalValidator,
+  getPayload
+} from "../util"
 import {fhir, validationErrors as errors} from "@models"
 import {isBundle} from "../../utils/type-guards"
 import {convertParentPrescription} from "../../services/translation/request/prescribe/parent-prescription"
 import {
-  verifyPrescriptionSignatureValid, verifySignatureHasCorrectFormat,
+  verifyPrescriptionSignatureValid,
+  verifySignatureHasCorrectFormat,
   verifySignatureDigestMatchesPrescription
 } from "../../services/signature-verification"
 import pino from "pino"

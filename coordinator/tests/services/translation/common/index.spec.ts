@@ -1,9 +1,11 @@
 import {
   getIdentifierParameterByName,
   getIdentifierValueForSystem,
-  getIdentifierValueOrNullForSystem, getMedicationCoding,
+  getIdentifierValueOrNullForSystem,
+  getMedicationCoding,
   getNumericValueAsString,
-  getResourceForFullUrl, getStringParameterByName
+  getResourceForFullUrl,
+  getStringParameterByName
 } from "../../../../src/services/translation/common"
 import * as TestResources from "../../../resources/test-resources"
 import {clone} from "../../../resources/test-helpers"
