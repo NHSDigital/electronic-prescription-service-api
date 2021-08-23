@@ -34,7 +34,7 @@ function generateCancelMessage(
   const cancelMessage = clone(requestPayload)
   cancelMessage.identifier.value = generateResourceId()
   const cancelMessageHeader = getMessageHeader(cancelMessage)
-  cancelMessageHeader.eventCoding.code = "prescription-order-update"
+  cancelMessageHeader.eventCoding.code = fhir.EventCodingCode.CANCELLATION
   cancelMessageHeader.eventCoding.display = "Prescription Order Update"
 
   const entryToKeep = cancelMessage.entry
