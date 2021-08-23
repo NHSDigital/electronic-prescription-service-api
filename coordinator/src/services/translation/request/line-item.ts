@@ -40,19 +40,16 @@ function convertDosageInstructions(dosages: Array<fhir.Dosage>, logger: pino.Log
 export function convertPrescriptionEndorsements(
   medicationRequest: fhir.MedicationRequest
 ): Array<hl7V3.LineItemPertinentInformation3> {
-  const endorsementExtensions = medicationRequest.extension?.filter(
-    extension => extension.url === "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement"
+  const endorsementExtensions = medicationRequest.extension?.filter(extension =>
+    extension.url === "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement"
   ) as Array<fhir.CodeableConceptExtension>
-  if (!endorsementExtensions?.length) {
-    return null
-  }
 
-  return endorsementExtensions.map(endorsementExtension => {
+  return endorsementExtensions?.map(endorsementExtension => {
     const endorsementCoding = getCodeableConceptCodingForSystem(
       [endorsementExtension.valueCodeableConcept],
       "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
       // eslint-disable-next-line max-len
-      "MedicationRequest.extension(https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement).valueCodeableConcept"
+      'MedicationRequest.extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement").valueCodeableConcept'
     )
     const prescriptionEndorsementValue = new hl7V3.PrescriptionEndorsementCode(endorsementCoding.code)
     const prescriptionEndorsement = new hl7V3.PrescriptionEndorsement(prescriptionEndorsementValue)
@@ -96,7 +93,7 @@ function getControlledDrugWordsWithPrefix(medicationRequest: fhir.MedicationRequ
   const controlledDrugWordsExtension = getExtensionForUrlOrNull(
     controlledDrugExtension.extension,
     "quantityWords",
-    "MedicationRequest.extension(\"https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug\").extension"
+    'MedicationRequest.extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug").extension'
   ) as fhir.StringExtension
   if (!controlledDrugWordsExtension) {
     return null
