@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {fhir} from "@models"
-import {BASE_PATH} from "./util"
+import {BASE_PATH, ContentTypes} from "./util"
 
 interface lineItem {
   id: string,
@@ -42,14 +42,17 @@ export default [{
   path: `${BASE_PATH}/$tracker`,
   handler: (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Hapi.Lifecycle.ReturnValue => {
     const queryParams = request.query
-    console.log(queryParams)
     if (queryParams["prescription-id"]) {
       const prescriptionId = queryParams["prescription-id"]
       return responseToolkit
         .response(sandboxSuccessResponse(prescriptionId as string))
         .code(200)
+        .type(ContentTypes.FHIR)
     } else {
-      return responseToolkit.response(sandboxErrorResponse)
+      return responseToolkit
+        .response(sandboxErrorResponse)
+        .code(400)
+        .type(ContentTypes.FHIR)
     }
   }
 }]
