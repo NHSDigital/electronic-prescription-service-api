@@ -18,56 +18,58 @@ jestpact.pactWith(
     }
 
     describe("process-message send e2e tests", () => {
-      test.each(TestResources.processOrderCases)("should be able to send %s", async (desc: string, message: fhir.Bundle) => {
-        const apiPath = `${basePath}/$process-message`
-        const bundleStr = LosslessJson.stringify(message)
-        const bundle = JSON.parse(bundleStr) as fhir.Bundle
+      test.each(TestResources.processOrderCases)(
+        "should be able to send %s",
+        async (desc: string, message: fhir.Bundle) => {
+          const apiPath = `${basePath}/$process-message`
+          const bundleStr = LosslessJson.stringify(message)
+          const bundle = JSON.parse(bundleStr) as fhir.Bundle
 
-        const requestId = uuid.v4()
-        const correlationId = uuid.v4()
+          const requestId = uuid.v4()
+          const correlationId = uuid.v4()
 
-        const firstMedicationRequest = message.entry.map(e => e.resource)
-          .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
-        const prescriptionId = firstMedicationRequest.groupIdentifier.value
+          const firstMedicationRequest = message.entry.map(e => e.resource)
+            .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
+          const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
-        const interaction: InteractionObject = {
-          state: "is authenticated",
-          uponReceiving: `a request to process prescription: ${prescriptionId} - ${desc} message to Spine`,
-          withRequest: {
-            headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0",
-              "X-Request-ID": requestId,
-              "X-Correlation-ID": correlationId
+          const interaction: InteractionObject = {
+            state: "is authenticated",
+            uponReceiving: `a request to process prescription: ${prescriptionId} - ${desc} message to Spine`,
+            withRequest: {
+              headers: {
+                "Content-Type": "application/fhir+json; fhirVersion=4.0",
+                "X-Request-ID": requestId,
+                "X-Correlation-ID": correlationId
+              },
+              method: "POST",
+              path: apiPath,
+              body: bundle
             },
-            method: "POST",
-            path: apiPath,
-            body: bundle
-          },
-          willRespondWith: {
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: {
-              resourceType: "OperationOutcome",
-              issue: [
-                {
-                  code: "informational",
-                  severity: "information"
-                }
-              ]
-            },
-            status: 200
+            willRespondWith: {
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: {
+                resourceType: "OperationOutcome",
+                issue: [
+                  {
+                    code: "informational",
+                    severity: "information"
+                  }
+                ]
+              },
+              status: 200
+            }
           }
-        }
-        await provider.addInteraction(interaction)
-        await client()
-          .post(apiPath)
-          .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
-          .set("X-Request-ID", requestId)
-          .set("X-Correlation-ID", correlationId)
-          .send(bundleStr)
-          .expect(200)
-      })
+          await provider.addInteraction(interaction)
+          await client()
+            .post(apiPath)
+            .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
+            .set("X-Request-ID", requestId)
+            .set("X-Correlation-ID", correlationId)
+            .send(bundleStr)
+            .expect(200)
+        })
     })
   }
 )
@@ -82,48 +84,50 @@ jestpact.pactWith(
     }
 
     describe("process-message cancel e2e tests", () => {
-      test.each(TestResources.processOrderUpdateCases)("should be able to cancel %s", async (desc: string, message: fhir.Bundle) => {
-        const apiPath = `${basePath}/$process-message`
-        const bundleStr = LosslessJson.stringify(message)
-        const bundle = JSON.parse(bundleStr) as fhir.Bundle
+      test.each(TestResources.processOrderUpdateCases)(
+        "should be able to cancel %s",
+        async (desc: string, message: fhir.Bundle) => {
+          const apiPath = `${basePath}/$process-message`
+          const bundleStr = LosslessJson.stringify(message)
+          const bundle = JSON.parse(bundleStr) as fhir.Bundle
 
-        const requestId = uuid.v4()
-        const correlationId = uuid.v4()
+          const requestId = uuid.v4()
+          const correlationId = uuid.v4()
 
-        const firstMedicationRequest = message.entry.map(e => e.resource)
-          .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
-        const prescriptionId = firstMedicationRequest.groupIdentifier.value
+          const firstMedicationRequest = message.entry.map(e => e.resource)
+            .find(r => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
+          const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
-        const interaction: InteractionObject = {
-          state: "is authenticated",
-          uponReceiving: `a request to cancel prescription: ${prescriptionId} - ${desc} message to Spine`,
-          withRequest: {
-            headers: {
-              "Content-Type": "application/fhir+json; fhirVersion=4.0",
-              "X-Request-ID": requestId,
-              "X-Correlation-ID": correlationId
+          const interaction: InteractionObject = {
+            state: "is authenticated",
+            uponReceiving: `a request to cancel prescription: ${prescriptionId} - ${desc} message to Spine`,
+            withRequest: {
+              headers: {
+                "Content-Type": "application/fhir+json; fhirVersion=4.0",
+                "X-Request-ID": requestId,
+                "X-Correlation-ID": correlationId
+              },
+              method: "POST",
+              path: apiPath,
+              body: bundle
             },
-            method: "POST",
-            path: apiPath,
-            body: bundle
-          },
-          willRespondWith: {
-            headers: {
-              "Content-Type": "application/json"
-            },
-            //TODO - Verify response body for cancellations
-            status: 200
+            willRespondWith: {
+              headers: {
+                "Content-Type": "application/json"
+              },
+              //TODO - Verify response body for cancellations
+              status: 200
+            }
           }
+          await provider.addInteraction(interaction)
+          await client()
+            .post(apiPath)
+            .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
+            .set("X-Request-ID", requestId)
+            .set("X-Correlation-ID", correlationId)
+            .send(bundleStr)
+            .expect(200)
         }
-        await provider.addInteraction(interaction)
-        await client()
-          .post(apiPath)
-          .set("Content-Type", "application/fhir+json; fhirVersion=4.0")
-          .set("X-Request-ID", requestId)
-          .set("X-Correlation-ID", correlationId)
-          .send(bundleStr)
-          .expect(200)
-      }
       )
     })
   })

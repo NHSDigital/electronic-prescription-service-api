@@ -20,6 +20,7 @@ function createPostmanCollection() {
     pactGroupNames.forEach(group => {
       const pactString = fs.readFileSync(path.join(
         __dirname,
+        /* eslint-disable-next-line max-len */
         `pact/pacts/nhsd-apim-eps-test-client+${pactVersion}-nhsd-apim-eps+${endpointLower}-${group}+${pactVersion}.json`
       ), "utf8")
       const pact = JSON.parse(pactString)
