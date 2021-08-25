@@ -1,7 +1,4 @@
-import {
-  convertMedicationRequestToLineItem,
-  convertPrescriptionEndorsements
-} from "../../../../src/services/translation/request/line-item"
+import {convertMedicationRequestToLineItem} from "../../../../src/services/translation/request/line-item"
 import {clone} from "../../../resources/test-helpers"
 import * as TestResources from "../../../resources/test-resources"
 import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
@@ -307,7 +304,6 @@ describe("prescriptionEndorsements", () => {
     const hl7v3LineItem = convertMedicationRequestToLineItem(
       firstFhirMedicationRequest, null, [], [], coding, logger
     )
-    convertPrescriptionEndorsements(firstFhirMedicationRequest, hl7v3LineItem)
     const hl7v3PrescriptionEndorsements = hl7v3LineItem.pertinentInformation3
 
     expect(hl7v3PrescriptionEndorsements.length).toBeGreaterThan(0)
