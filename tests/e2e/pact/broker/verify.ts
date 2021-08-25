@@ -121,6 +121,9 @@ async function verifyClaim(): Promise<void> {
 async function verifyMetadata(): Promise<void> {
   await verifyOnce("metadata")
 }
+async function verifyTracker(): Promise<void> {
+  await verifyOnce("tracker")
+}
 
 (async () => {
   await verifyValidate()
@@ -134,4 +137,5 @@ async function verifyMetadata(): Promise<void> {
     .then(verifyWithdraw)
     .then(verifyClaim)
     .then(verifyMetadata)
+    .then(verifyTracker)
 })()

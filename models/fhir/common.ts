@@ -68,11 +68,13 @@ export interface IdentifierReference<T extends Resource> {
 }
 
 export function createIdentifierReference<T extends Resource>(
-  identifier: Identifier, display: string
+  identifier: Identifier, display?: string
 ): IdentifierReference<T> {
-  return {
+  return display ? {
     identifier: identifier,
     display: display
+  } : {
+    identifier: identifier
   }
 }
 

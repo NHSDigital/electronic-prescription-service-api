@@ -2,6 +2,8 @@ import * as common from "./common"
 import * as bundle from "./bundle"
 import * as patient from "./patient"
 import * as practitionerRole from "./practitioner-role"
+import * as medicationRequest from "./medication-request"
+import * as extension from "./extension"
 
 export class Task extends common.Resource {
   readonly resourceType = "Task"
@@ -15,6 +17,14 @@ export class Task extends common.Resource {
   owner: common.IdentifierReference<practitionerRole.PersonOrOrganization>
   reasonCode: common.CodeableConcept
   code?: common.CodeableConcept
+  businessStatus?: common.CodeableConcept
+  input?: Array<TaskInput>
+}
+
+interface TaskInput {
+  extension?: Array<extension.ExtensionExtension<extension.CodingExtension>>
+  type: common.CodeableConcept
+  valueReference: common.IdentifierReference<medicationRequest.MedicationRequest>
 }
 
 export enum TaskStatus {
