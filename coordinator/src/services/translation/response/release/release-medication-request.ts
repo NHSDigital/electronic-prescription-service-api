@@ -6,7 +6,11 @@ import {
 } from "../medication-request"
 import {toArray} from "../../common"
 import {parseAdditionalInstructions} from "./additional-instructions"
-import {convertHL7V3DateTimeToIsoDateTimeString, convertHL7V3DateToIsoDateString} from "../../common/dateTime"
+import {
+  convertHL7V3DateTimeToIsoDateString,
+  convertHL7V3DateTimeToIsoDateTimeString,
+  convertHL7V3DateToIsoDateString
+} from "../../common/dateTime"
 import {fhir, hl7V3} from "@models"
 import {LosslessNumber} from "lossless-json"
 
@@ -28,7 +32,8 @@ export function createMedicationRequest(
       lineItem.repeatNumber,
       prescription.pertinentInformation7?.pertinentReviewDate,
       toArray(lineItem.pertinentInformation3 ?? []).map(pi3 => pi3.pertinentPrescriberEndorsement),
-      additionalInstructions.controlledDrugWords
+      additionalInstructions.controlledDrugWords,
+      prescription.predecessor?.priorPreviousIssueDate
     ),
     identifier: [
       createItemNumberIdentifier(lineItem.id._attributes.root)
@@ -69,7 +74,8 @@ export function createMedicationRequestExtensions(
   lineItemRepeatNumber: hl7V3.Interval<hl7V3.NumericValue>,
   reviewDate: hl7V3.ReviewDate,
   lineItemEndorsements: Array<hl7V3.PrescriptionEndorsement>,
-  controlledDrugWords: string
+  controlledDrugWords: string,
+  previousIssueDate: hl7V3.PreviousIssueDate
 ): Array<fhir.MedicationRequestPermittedExtensions> {
   const extensions: Array<fhir.MedicationRequestPermittedExtensions> = [
     createResponsiblePractitionerExtension(responsiblePartyId),
@@ -84,6 +90,10 @@ export function createMedicationRequestExtensions(
   if (controlledDrugWords) {
     const controlledDrugExtension = createControlledDrugExtension(controlledDrugWords)
     extensions.push(controlledDrugExtension)
+  }
+  if (previousIssueDate) {
+    const dispensingInformationExtension = createDispensingInformationExtension(previousIssueDate)
+    extensions.push(dispensingInformationExtension)
   }
   return extensions
 }
@@ -145,6 +155,18 @@ function createControlledDrugExtension(controlledDrugWords: string): fhir.Contro
     extension: [{
       url: "quantityWords",
       valueString: controlledDrugWords
+    }]
+  }
+}
+
+function createDispensingInformationExtension(
+  previousIssueDate: hl7V3.PreviousIssueDate
+): fhir.DispensingInformationExtension {
+  return {
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation",
+    extension: [{
+      url: "dateLastDispensed",
+      valueDate: convertHL7V3DateTimeToIsoDateString(previousIssueDate.value)
     }]
   }
 }

@@ -31,6 +31,11 @@ export function convertHL7V3DateTimeToIsoDateTimeString(hl7Date: hl7V3.Timestamp
   return convertMomentToISODateTime(dateTimeMoment)
 }
 
+export function convertHL7V3DateTimeToIsoDateString(hl7Date: hl7V3.Timestamp): string {
+  const dateTimeMoment = convertHL7V3DateTimeToMoment(hl7Date)
+  return convertMomentToISODate(dateTimeMoment)
+}
+
 export function convertHL7V3DateToIsoDateString(hl7Date: hl7V3.Timestamp): string {
   const dateTimeMoment = convertHL7V3DateToMoment(hl7Date)
   return convertMomentToISODate(dateTimeMoment)
