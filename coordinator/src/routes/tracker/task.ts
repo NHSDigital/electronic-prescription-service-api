@@ -15,11 +15,11 @@ const sandboxSuccessResponse = (prescriptionId: string): Partial<fhir.Task> => {
     "https://tools.ietf.org/html/rfc4122",
     "ee86a018-779c-4809-999f-a9d89cdfd30f"
   ))
-  const medicationStatus: Array<fhir.ExtensionExtension<fhir.CodeableConceptExtension>> = [{
+  const medicationStatus: Array<fhir.ExtensionExtension<fhir.CodingExtension>> = [{
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation",
     extension: [{
       url: "dispenseStatus",
-      valueCodeableConcept: fhir.createCodeableConcept(
+      valueCoding: fhir.createCoding(
         "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
         "0002",
         "With Dispenser"
@@ -68,17 +68,15 @@ export const validateQueryParameters = (queryParams: Hapi.RequestQuery): Array<f
     return [noValidQueryParameters]
   }
 
-  const errorList: Array<fhir.OperationOutcomeIssue> = []
-  validQueryParamsFound.forEach(param => {
-    if (queryParameterIsStringArray(queryParams[param])) {
-      errorList.push(duplicateIdentifier)
-    }
-  })
+  const duplicatedParams = validQueryParamsFound.some(param => queryParameterIsStringArray(queryParams[param]))
+  if (duplicatedParams) {
+    return [duplicateIdentifier]
+  }
 
   if (validQueryParamsFound.includes("identifier") && validQueryParamsFound.includes("focus:identifier")) {
-    errorList.push(duplicateIdentifier)
+    return [duplicateIdentifier]
   }
-  return errorList
+  return []
 }
 
 export default [{

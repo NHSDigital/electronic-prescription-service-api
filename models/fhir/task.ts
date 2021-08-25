@@ -22,7 +22,7 @@ export class Task extends common.Resource {
 }
 
 interface TaskInput {
-  extension?: Array<extension.ExtensionExtension<extension.CodeableConceptExtension>>
+  extension?: Array<extension.ExtensionExtension<extension.CodingExtension>>
   type: common.CodeableConcept
   valueReference: common.IdentifierReference<medicationRequest.MedicationRequest>
 }

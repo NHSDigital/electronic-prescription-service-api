@@ -15,7 +15,7 @@ jestpact.pactWith(
 
     describe("tracker e2e test", () => {
       test("should return 200", async () => {
-        const apiPath = `${basePath}/$tracker`
+        const apiPath = `${basePath}/Task`
 
         const testPrescriptionId = "EB8B1F-A83008-42DC8L"
         const requestId = uuid.v4()
@@ -31,7 +31,7 @@ jestpact.pactWith(
               "X-Correlation-ID": correlationId
             },
             query: {
-              "prescription-id": testPrescriptionId
+              "focus:identifier": testPrescriptionId
             },
             method: "GET",
             path: apiPath
@@ -51,7 +51,7 @@ jestpact.pactWith(
           .set("Accept", "application/fhir+json")
           .set("X-Request-ID", requestId)
           .set("X-Correlation-ID", correlationId)
-          .query({"prescription-id": testPrescriptionId})
+          .query({"focus:identifier": testPrescriptionId})
           .expect(200)
       })
     })
