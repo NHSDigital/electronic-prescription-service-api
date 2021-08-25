@@ -1,4 +1,4 @@
-import * as fhir from "../../../src/models/fhir"
+import {fhir} from "@models"
 
 const doctorPractitioner: fhir.Practitioner = {
   resourceType: "Practitioner",
