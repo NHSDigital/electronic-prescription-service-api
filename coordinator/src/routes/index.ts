@@ -8,7 +8,7 @@ import metadataRoutes from "./metadata"
 import pollingRoutes from "./polling"
 import releaseRoutes from "./dispense/release"
 import taskRoutes from "./dispense/task"
-import trackerRoutes from "./tracker"
+import trackerRoutes from "./tracker/task"
 import verifySignatureRoutes from "./dispense/verify-signature"
 import {isProd} from "../utils/environment"
 
