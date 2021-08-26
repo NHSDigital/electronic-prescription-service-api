@@ -62,12 +62,10 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
 
 // todo, remove live/sandbox split once dispense interactions are handled in live proxies
 const liveProcessMessageOperations: Array<ApiOperation> = ["send", "cancel", "dispense"]
-const liveTaskOperations: Array<ApiOperation> = ["release", "return"]
 const sandboxProcessMessageOperations: Array<ApiOperation> = ["send", "cancel", "dispense", "claim"]
-const sandboxTaskOperations: Array<ApiOperation> = ["release", "return", "withdraw"]
 const isSandbox = process.env.APIGEE_ENVIRONMENT?.includes("sandbox")
 const processMessageOperations = isSandbox ? sandboxProcessMessageOperations : liveProcessMessageOperations
-const taskOperations = isSandbox ? sandboxTaskOperations : liveTaskOperations
+const taskOperations: Array<ApiOperation> = ["release", "return", "withdraw"]
 
 async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
   // todo: remove below if statement once dispense interactions are handled in live proxies
@@ -121,6 +119,9 @@ async function verifyClaim(): Promise<void> {
 async function verifyMetadata(): Promise<void> {
   await verifyOnce("metadata")
 }
+async function verifyTracker(): Promise<void> {
+  await verifyOnce("tracker")
+}
 
 (async () => {
   await verifyValidate()
@@ -134,4 +135,5 @@ async function verifyMetadata(): Promise<void> {
     .then(verifyWithdraw)
     .then(verifyClaim)
     .then(verifyMetadata)
+    .then(verifyTracker)
 })()

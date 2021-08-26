@@ -11,7 +11,7 @@
   "intent": "order",
   "groupIdentifier": {
     "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-    "value": "269CA9-A99968-4577AB"
+    "value": "C2782B-A99968-4E4E9Z"
   },
   "code": {
     "coding":  [
@@ -26,7 +26,7 @@
     "type": "Bundle",
     "identifier": {
       "system": "https://tools.ietf.org/html/rfc4122",
-      "value": "0A1FD9EF-A3D5-4E95-84CD-552070A03096"
+      "value": "602159ee-1678-41ec-a100-7b3dd04c1d84"
     }
   },
   "for": {

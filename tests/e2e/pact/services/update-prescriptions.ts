@@ -47,7 +47,9 @@ export async function updatePrescriptions(
     const processBundle = processCase.request
     const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(processBundle)[0].groupIdentifier
 
+    const originalBundleIdentifier = processBundle.identifier.value
     const newBundleIdentifier = uuid.v4()
+    replacements.set(originalBundleIdentifier, newBundleIdentifier)
 
     const originalShortFormId = firstGroupIdentifier.value
     let newShortFormId = originalShortFormId
@@ -86,7 +88,9 @@ export async function updatePrescriptions(
     const bundle = processCase.request
     const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(bundle)[0].groupIdentifier
 
+    const originalBundleIdentifier = bundle.identifier.value
     const newBundleIdentifier = uuid.v4()
+    replacements.set(originalBundleIdentifier, newBundleIdentifier)
 
     const originalShortFormId = firstGroupIdentifier.value
     const newShortFormId = replacements.get(originalShortFormId)
@@ -107,7 +111,9 @@ export async function updatePrescriptions(
     const firstAuthorizingPrescription = firstMedicationDispense.authorizingPrescription[0]
     const groupIdentifierExtension = getMedicationDispenseGroupIdentifierExtension(firstAuthorizingPrescription.extension)
 
+    const originalBundleIdentifier = bundle.identifier.value
     const newBundleIdentifier = uuid.v4()
+    replacements.set(originalBundleIdentifier, newBundleIdentifier)
 
     const shortFormIdExtension = getMedicationDispenseShortFormIdExtension(groupIdentifierExtension.extension)
     const originalShortFormId = shortFormIdExtension.valueIdentifier.value
@@ -128,7 +134,10 @@ export async function updatePrescriptions(
       const originalShortFormId = task.groupIdentifier.value
       const newShortFormId = replacements.get(originalShortFormId)
 
-      setTaskIds(task, newTaskIdentifier, newShortFormId)
+      const originalFocusId = task.focus.identifier.value
+      const newFocusId = replacements.get(originalFocusId)
+
+      setTaskIds(task, newTaskIdentifier, newShortFormId, newFocusId)
     }
   })
 }
@@ -154,9 +163,15 @@ export function setPrescriptionIds(
     })
 }
 
-export function setTaskIds(task: fhir.Task, newTaskIdentifier: string, newShortFormId: string): void {
+export function setTaskIds(
+  task: fhir.Task,
+  newTaskIdentifier: string,
+  newShortFormId: string,
+  newFocusId: string
+): void {
   task.identifier[0].value = newTaskIdentifier
   task.groupIdentifier.value = newShortFormId
+  task.focus.identifier.value = newFocusId
 }
 
 export function generateShortFormId(originalShortFormId?: string): string {

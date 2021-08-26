@@ -85,7 +85,7 @@
         <reversalOf inversionInd="true" negationInd="false" typeCode="REV">
           <seperatableInd value="true"/>
           <priorPrescriptionReleaseResponseRef classCode="INFO" moodCode="EVN">
-            <id root="0A1FD9EF-A3D5-4E95-84CD-352070A03086"/>
+            <id root="67C585F6-F4B5-4F53-861A-50C07ECFF5D4"/>
           </priorPrescriptionReleaseResponseRef>
         </reversalOf>
       </DispenseProposalReturn>
