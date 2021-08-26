@@ -31,8 +31,8 @@ export class Prescription implements ElementCompact {
   pertinentInformation8: PrescriptionPertinentInformation8
   //TODO - pertinentInformation3
   pertinentInformation4: PrescriptionPertinentInformation4
-
   //TODO - inFulfillmentOf
+  predecessor?: PrescriptionPredecessor
 
   constructor(id: codes.GlobalIdentifier, shortFormId: codes.ShortFormPrescriptionIdentifier) {
     this.id = [id, shortFormId]
@@ -222,6 +222,20 @@ export class PrescriptionPertinentInformation8 implements ElementCompact {
   }
 }
 
+/**
+ * A link to the date and time dispensing activities were completed for the
+ * previous issue of an instance of a repeat dispensing prescription.
+ */
+export class PrescriptionPredecessor implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PREV",
+    contextConductionInd: "true"
+  }
+
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  priorPreviousIssueDate: PreviousIssueDate
+}
+
 export abstract class PrescriptionAnnotation implements ElementCompact {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "OBS",
@@ -305,5 +319,18 @@ export class PrescriptionId extends PrescriptionAnnotation {
   constructor(value: string) {
     super(new codes.PrescriptionAnnotationCode("PID"))
     this.value = new codes.ShortFormPrescriptionIdentifier(value)
+  }
+}
+
+/**
+ * The date and time dispensing activities were completed for the
+ * previous issue of an instance of a repeat dispensing prescription.
+ */
+export class PreviousIssueDate extends PrescriptionAnnotation {
+  value: core.Timestamp
+
+  constructor(value: core.Timestamp) {
+    super(new codes.PrescriptionAnnotationCode("PRDT"))
+    this.value = value
   }
 }

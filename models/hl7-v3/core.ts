@@ -3,7 +3,7 @@ import {Attributes, ElementCompact} from "xml-js"
 
 export interface AttributeTypeCode extends Attributes {
   typeCode: "AUT" | "COMP" | "CSM" | "FLFS" | "LA" | "PART" | "PERT"
-    | "PRCP" |"PRD" | "PRF" | "RESP" | "REV" | "RCT" | "SBJ" | "SEQL" | "RPLC"
+    | "PRCP" | "PRD" |"PREV" | "PRF" | "RESP" | "REV" | "RCT" | "SBJ" | "SEQL" | "RPLC"
 }
 
 export interface AttributeContextControlCode extends Attributes {

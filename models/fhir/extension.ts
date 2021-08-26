@@ -33,6 +33,10 @@ export interface DateTimeExtension extends Extension {
   valueDateTime: string
 }
 
+export interface DateExtension extends Extension {
+  valueDate: string
+}
+
 export interface ExtensionExtension<T extends Extension> extends Extension {
   extension: Array<T>
 }

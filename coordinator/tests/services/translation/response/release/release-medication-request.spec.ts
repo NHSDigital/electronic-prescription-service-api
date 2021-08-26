@@ -23,6 +23,7 @@ describe("extension", () => {
   const exampleRepeatNumber = new hl7V3.Interval(new hl7V3.NumericValue("1"), new hl7V3.NumericValue("6"))
   const exampleReviewDate = new hl7V3.ReviewDate(new hl7V3.Timestamp("20210301"))
   const exampleControlledDrugWords = "twenty eight"
+  const examplePreviousIssueDate = new hl7V3.PreviousIssueDate(new hl7V3.Timestamp("20210214120802"))
 
   test("contains responsible practitioner", () => {
     const result = createMedicationRequestExtensions(
@@ -31,6 +32,7 @@ describe("extension", () => {
       null,
       null,
       [],
+      null,
       null
     )
     const expected: fhir.ReferenceExtension<fhir.PractitionerRole> = {
@@ -49,6 +51,7 @@ describe("extension", () => {
       null,
       null,
       [],
+      null,
       null
     )
     const expected: fhir.CodingExtension = {
@@ -68,6 +71,7 @@ describe("extension", () => {
       null,
       null,
       [],
+      null,
       null
     )
     result.forEach(extension => {
@@ -82,6 +86,7 @@ describe("extension", () => {
       null,
       null,
       [examplePrescriptionEndorsement1],
+      null,
       null
     )
     const expected: fhir.CodeableConceptExtension = {
@@ -103,6 +108,7 @@ describe("extension", () => {
       null,
       null,
       [examplePrescriptionEndorsement1, examplePrescriptionEndorsement2],
+      null,
       null
     )
     const expected1: fhir.CodeableConceptExtension = {
@@ -134,6 +140,7 @@ describe("extension", () => {
       null,
       null,
       [],
+      null,
       null
     )
     result.forEach(extension => {
@@ -150,6 +157,7 @@ describe("extension", () => {
       exampleRepeatNumber,
       exampleReviewDate,
       [],
+      null,
       null
     )
     const expected: fhir.RepeatInformationExtension = {
@@ -179,6 +187,7 @@ describe("extension", () => {
       null,
       null,
       [],
+      null,
       null
     )
     result.forEach(extension => {
@@ -193,13 +202,49 @@ describe("extension", () => {
       null,
       null,
       [],
-      exampleControlledDrugWords
+      exampleControlledDrugWords,
+      null
     )
     const expected: fhir.ControlledDrugExtension = {
       url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ControlledDrug",
       extension: [{
         url: "quantityWords",
         valueString: "twenty eight"
+      }]
+    }
+    expect(result).toContainEqual(expected)
+  })
+
+  test("handles no previous issue date", () => {
+    const result = createMedicationRequestExtensions(
+      exampleResponsiblePartyId,
+      examplePrescriptionType,
+      null,
+      null,
+      [],
+      null,
+      null
+    )
+    result.forEach(extension => {
+      expect(extension.url).not.toEqual("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation")
+    })
+  })
+
+  test("handles previous issue date", () => {
+    const result = createMedicationRequestExtensions(
+      exampleResponsiblePartyId,
+      examplePrescriptionType,
+      null,
+      null,
+      [],
+      null,
+      examplePreviousIssueDate
+    )
+    const expected: fhir.DispensingInformationExtension = {
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation",
+      extension: [{
+        url: "dateLastDispensed",
+        valueDate: "2021-02-14"
       }]
     }
     expect(result).toContainEqual(expected)
