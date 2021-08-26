@@ -100,7 +100,8 @@ export function createBundleResources(
       hl7LineItem,
       patientId,
       authorId,
-      responsiblePartyId
+      responsiblePartyId,
+      releaseRequestId
     )
     bundleResources.push(medicationRequest)
     focusIds.push(medicationRequest.id)

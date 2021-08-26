@@ -39,7 +39,8 @@ export enum MedicationRequestStatus {
 
 export enum MedicationRequestIntent {
   ORDER = "order",
-  PLAN = "plan"
+  PLAN = "plan",
+  REFLEX_ORDER = "reflex-order"
 }
 
 export interface BaseMedicationRequest extends common.Resource {
@@ -68,6 +69,7 @@ export interface MedicationRequest extends BaseMedicationRequest {
   extension: Array<MedicationRequestPermittedExtensions>
   statusReason?: common.CodeableConcept
   dispenseRequest: MedicationRequestDispenseRequest
+  basedOn?: common.Reference<MedicationRequest>
 }
 
 export interface MedicationRequestOutcome extends BaseMedicationRequest {
@@ -78,7 +80,7 @@ export interface MedicationRequestOutcome extends BaseMedicationRequest {
 export type MedicationRequestPermittedExtensions = extension.IdentifierExtension
   | extension.ReferenceExtension<practitionerRole.PractitionerRole>
   | extension.CodingExtension | extension.CodeableConceptExtension
-  | RepeatInformationExtension | ControlledDrugExtension
+  | RepeatInformationExtension | ControlledDrugExtension | DispensingInformationExtension
 
 export type RepeatInformationExtension = extension.ExtensionExtension<extension.UnsignedIntExtension
   | extension.DateTimeExtension>
@@ -86,6 +88,7 @@ export type ControlledDrugExtension = extension.ExtensionExtension<extension.Str
   | extension.CodingExtension>
 export type PrescriptionStatusHistoryExtension = extension.ExtensionExtension<extension.CodingExtension
   | extension.DateTimeExtension>
+export type DispensingInformationExtension = extension.ExtensionExtension<extension.DateExtension>
 
 export interface MedicationRequestGroupIdentifier extends common.Identifier {
   extension?: Array<extension.IdentifierExtension>
