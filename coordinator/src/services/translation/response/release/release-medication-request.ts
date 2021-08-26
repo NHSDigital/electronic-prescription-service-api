@@ -19,7 +19,8 @@ export function createMedicationRequest(
   lineItem: hl7V3.LineItem,
   patientId: string,
   requesterId: string,
-  responsiblePartyId: string
+  responsiblePartyId: string,
+  releaseRequestId: string
 ): fhir.MedicationRequest {
   const text = lineItem.pertinentInformation1?.pertinentAdditionalInstructions?.value?._text ?? ""
   const additionalInstructions = parseAdditionalInstructions(text)
@@ -39,7 +40,8 @@ export function createMedicationRequest(
       createItemNumberIdentifier(lineItem.id._attributes.root)
     ],
     status: getStatus(lineItem.pertinentInformation4.pertinentItemStatus),
-    intent: fhir.MedicationRequestIntent.ORDER,
+    basedOn: fhir.createReference(releaseRequestId.toLowerCase()),
+    intent: fhir.MedicationRequestIntent.REFLEX_ORDER,
     medicationCodeableConcept: createSnomedCodeableConcept(
       lineItem.product.manufacturedProduct.manufacturedRequestedMaterial.code
     ),
