@@ -39,7 +39,8 @@ export enum MedicationRequestStatus {
 
 export enum MedicationRequestIntent {
   ORDER = "order",
-  PLAN = "plan"
+  PLAN = "plan",
+  REFLEX_ORDER = "reflex-order"
 }
 
 export interface BaseMedicationRequest extends common.Resource {
@@ -68,6 +69,7 @@ export interface MedicationRequest extends BaseMedicationRequest {
   extension: Array<MedicationRequestPermittedExtensions>
   statusReason?: common.CodeableConcept
   dispenseRequest: MedicationRequestDispenseRequest
+  basedOn?: common.Reference<MedicationRequest>
 }
 
 export interface MedicationRequestOutcome extends BaseMedicationRequest {
