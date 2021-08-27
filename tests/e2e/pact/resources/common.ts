@@ -14,6 +14,7 @@ export function pactOptions(mode: ApiMode, endpoint: ApiEndpoint, operation?: Ap
   return {
     spec: 2,
     consumer: `nhsd-apim-eps-test-client${pacticipant_suffix}+${process.env.PACT_VERSION}`,
+    /* eslint-disable-next-line max-len */
     provider: `nhsd-apim-eps${pacticipant_suffix}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
     pactfileWriteMode: "merge"
   }

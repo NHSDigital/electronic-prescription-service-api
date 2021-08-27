@@ -1,5 +1,10 @@
 import * as uuid from "uuid"
-import {fhir, hl7V3, ProcessCase, TaskCase} from "@models"
+import {
+  fhir,
+  hl7V3,
+  ProcessCase,
+  TaskCase
+} from "@models"
 import {
   getResourcesOfType,
   convertFhirMessageToSignedInfoMessage,
@@ -109,7 +114,8 @@ export async function updatePrescriptions(
     const bundle = dispenseCase.request
     const firstMedicationDispense = getResourcesOfType.getMedicationDispenses(bundle)[0]
     const firstAuthorizingPrescription = firstMedicationDispense.authorizingPrescription[0]
-    const groupIdentifierExtension = getMedicationDispenseGroupIdentifierExtension(firstAuthorizingPrescription.extension)
+    const groupIdentifierExtension =
+      getMedicationDispenseGroupIdentifierExtension(firstAuthorizingPrescription.extension)
 
     const originalBundleIdentifier = bundle.identifier.value
     const newBundleIdentifier = uuid.v4()
@@ -158,8 +164,10 @@ export function setPrescriptionIds(
     .flatMap(medicationDispense => medicationDispense.authorizingPrescription)
     .forEach(authorizingPrescription => {
       const groupIdentifierExtension = getMedicationDispenseGroupIdentifierExtension(authorizingPrescription.extension)
-      getMedicationDispenseShortFormIdExtension(groupIdentifierExtension.extension).valueIdentifier.value = newShortFormId
-      getMedicationDispenseLongFormIdExtension(groupIdentifierExtension.extension).valueIdentifier.value = newLongFormId
+      const longFormIdExtension = getMedicationDispenseLongFormIdExtension(groupIdentifierExtension.extension)
+      longFormIdExtension.valueIdentifier.value = newLongFormId
+      const shortFormIdExtension = getMedicationDispenseShortFormIdExtension(groupIdentifierExtension.extension)
+      shortFormIdExtension.valueIdentifier.value = newShortFormId
     })
 }
 
@@ -177,7 +185,10 @@ export function setTaskIds(
 export function generateShortFormId(originalShortFormId?: string): string {
   const _PRESC_CHECKDIGIT_VALUES = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+"
   const hexString = (uuid.v4()).replace(/-/g, "").toUpperCase()
-  let prescriptionID = `${hexString.substring(0, 6)}-${originalShortFormId?.substring(7, 13) ?? "A12345"}-${hexString.substring(12, 17)}`
+  const first = hexString.substring(0, 6)
+  const middle = originalShortFormId?.substring(7, 13) ?? "A12345"
+  const last = hexString.substring(12, 17)
+  let prescriptionID = `${first}-${middle}-${last}`
   const prscID = prescriptionID.replace(/-/g, "")
   const prscIDLength = prscID.length
   let runningTotal = 0
@@ -259,7 +270,8 @@ function signPrescription(
   const digestParameter = prepareResponse.parameter.find(p => p.name === "digest") as fhir.StringParameter
   const timestampParameter = prepareResponse.parameter.find(p => p.name === "timestamp") as fhir.StringParameter
   const digest = Buffer.from(digestParameter.valueString, "base64").toString("utf-8")
-  const digestWithoutNamespace = digest.replace(`<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">`, `<SignedInfo>`)
+  const digestWithoutNamespace = digest
+    .replace(`<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">`, `<SignedInfo>`)
   const signature = crypto.sign("sha1", Buffer.from(digest, "utf-8"), {
     key: fs.readFileSync(privateKeyPath, "utf-8"),
     padding: crypto.constants.RSA_PKCS1_PADDING
