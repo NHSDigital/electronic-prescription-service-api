@@ -165,9 +165,9 @@ export function setPrescriptionIds(
     .forEach(authorizingPrescription => {
       const groupIdentifierExtension = getMedicationDispenseGroupIdentifierExtension(authorizingPrescription.extension)
       const longFormIdExtension = getMedicationDispenseLongFormIdExtension(groupIdentifierExtension.extension)
-      longFormIdExtension.valueIdentifier.value = newShortFormId
+      longFormIdExtension.valueIdentifier.value = newLongFormId
       const shortFormIdExtension = getMedicationDispenseShortFormIdExtension(groupIdentifierExtension.extension)
-      shortFormIdExtension.valueIdentifier.value = newLongFormId
+      shortFormIdExtension.valueIdentifier.value = newShortFormId
     })
 }
 
