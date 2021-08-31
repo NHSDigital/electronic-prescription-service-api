@@ -29,6 +29,10 @@ export interface UnsignedIntExtension extends Extension {
   valueUnsignedInt: LosslessNumber | string
 }
 
+export interface IntegerExtension extends Extension {
+  valueInteger: LosslessNumber | string
+}
+
 export interface DateTimeExtension extends Extension {
   valueDateTime: string
 }
