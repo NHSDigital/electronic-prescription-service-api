@@ -106,7 +106,7 @@ export class PertinentSuppliedLineItem implements ElementCompact {
   id: codes.GlobalIdentifier
   code: codes.SnomedCode
   effectiveTime: core.Null
-  repeatNumber: undefined // todo dispenseNotification: handle repeats
+  repeatNumber?: core.Interval<core.NumericValue>
   // todo dispenseNotification:? mim says do not use but will be available in future circa many years ago
   doseQuantity: undefined
   // todo dispenseNotification: ? mim says do not use but will be available in future circa many years ago
@@ -265,6 +265,7 @@ export class PertinentSupplyHeader implements ElementCompact {
   id: codes.GlobalIdentifier
   code: codes.SnomedCode
   effectiveTime: core.Null
+  repeatNumber?: core.Interval<core.NumericValue>
   author: prescription.PrescriptionAuthor
   pertinentInformation1: Array<DispenseNotificationPertinentInformation1LineItem>
   pertinentInformation3: DispensePertinentInformation3
