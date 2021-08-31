@@ -96,7 +96,7 @@ async function createPertinentInformation1(
   supplyHeader.inFulfillmentOf = new hl7V3.InFulfillmentOf(hl7PriorOriginalRef)
 
   if (dispenseNotificationIsRepeatDispensing(fhirFirstMedicationDispense)) {
-    const repeatInfo = getExtensionForUrlOrNull(
+    const repeatInfo = getExtensionForUrl(
       fhirFirstMedicationDispense.extension,
       "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
       "MedicationDispense.extension"
@@ -169,7 +169,7 @@ function createPertinentInformation1LineItem(
   )
 
   if (dispenseNotificationIsRepeatDispensing(fhirMedicationDispense)) {
-    const repeatInfo = getExtensionForUrlOrNull(
+    const repeatInfo = getExtensionForUrl(
       fhirMedicationDispense.extension,
       "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
       "MedicationDispense.extension"
