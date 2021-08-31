@@ -106,9 +106,9 @@
           "type": "Patient",
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "9449307571"
+            "value": "9449305552"
           },
-          "display": "MS TETTY PIMPL"
+          "display": "MISS ETTA CORY"
         },
         "performer": [
           {
@@ -218,9 +218,9 @@
           "type": "Patient",
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "9449307571"
+            "value": "9449305552"
           },
-          "display": "MS TETTY PIMPL"
+          "display": "MISS ETTA CORY"
         },
         "performer": [
           {
