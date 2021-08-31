@@ -209,7 +209,7 @@
           "performer": {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "FH542"
+              "value": "FER21"
             }
           }
         },

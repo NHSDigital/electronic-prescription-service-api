@@ -219,3 +219,27 @@ export const ORGANIZATION_FL584_HOMECARE: fhir.Organization = {
     country: "ENGLAND"
   }]
 }
+
+export const ORGANIZATION_FER21_HOMECARE: fhir.Organization = {
+  resourceType: "Organization",
+  identifier: [{
+    system: "https://fhir.nhs.uk/Id/ods-organization-code",
+    value: "FER21"
+  }],
+  type: [{
+    coding: [{
+      system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+      code: "182"
+    }]
+  }],
+  name: "HEATH PHARMACY",
+  address: [{
+    line: [
+      "MAIDSTONE ROAD"
+    ],
+    city: "HORSMONDEN",
+    district: "TONBRIDGE",
+    postalCode: "TN12 8JJ",
+    country: "ENGLAND"
+  }]
+}
