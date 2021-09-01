@@ -6,6 +6,7 @@ import * as organisation from "./organization"
 import * as prescription from "./prescription"
 import * as lineItem from "./line-item"
 import * as patient from "./patient"
+import {PrimaryInformationRecipient} from "./dispense-claim-information"
 
 export class DispenseNotificationRoot {
   DispenseNotification: DispenseNotification
@@ -25,7 +26,7 @@ export class DispenseNotification implements ElementCompact {
   effectiveTime: core.Timestamp
   typeId: codes.TypeIdentifier
   recordTarget: patient.RecordTargetReference
-  primaryInformationRecipient: PrimaryInformationRecipient
+  primaryInformationRecipient: DispenseNotificationPrimaryInformationRecipient
   pertinentInformation1: DispenseNotificationPertinentInformation1
   pertinentInformation2: DispensePertinentInformation2
   replacementOf?: ReplacementOf
@@ -42,16 +43,14 @@ export class DispenseNotification implements ElementCompact {
   }
 }
 
-export class PrimaryInformationRecipient implements ElementCompact {
+export class DispenseNotificationPrimaryInformationRecipient extends PrimaryInformationRecipient {
   _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
     typeCode: "PRCP",
     contextControlCode: "ON"
   }
 
-  AgentOrg: organisation.AgentOrganization
-
   constructor(organisation: organisation.AgentOrganization) {
-    this.AgentOrg = organisation
+    super(organisation)
   }
 }
 
@@ -106,7 +105,7 @@ export class PertinentSuppliedLineItem implements ElementCompact {
   id: codes.GlobalIdentifier
   code: codes.SnomedCode
   effectiveTime: core.Null
-  repeatNumber: undefined // todo dispenseNotification: handle repeats
+  repeatNumber?: core.Interval<core.NumericValue>
   // todo dispenseNotification:? mim says do not use but will be available in future circa many years ago
   doseQuantity: undefined
   // todo dispenseNotification: ? mim says do not use but will be available in future circa many years ago
@@ -265,6 +264,7 @@ export class PertinentSupplyHeader implements ElementCompact {
   id: codes.GlobalIdentifier
   code: codes.SnomedCode
   effectiveTime: core.Null
+  repeatNumber?: core.Interval<core.NumericValue>
   author: prescription.PrescriptionAuthor
   pertinentInformation1: Array<DispenseNotificationPertinentInformation1LineItem>
   pertinentInformation3: DispensePertinentInformation3

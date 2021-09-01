@@ -181,28 +181,6 @@ info:
       }
     ```
 
-    #### To cancel a prescription:
-    POST a [prescription-order-update message](https://simplifier.net/guide/DigitalMedicines/prescription-order-update) to the `/FHIR/R4/$process-message` endpoint.
-
-    ### Dispensing endpoints
-    #### To download a prescription:
-    POST a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to the `/FHIR/R4/Task/$release` endpoint.
-
-    #### To verify a prescription's signature:
-    POST a verify-signature message to the `/FHIR/R4/Task/$verify-signature` endpoint.
-    
-    #### To submit a dispense notification to EPS:
-    POST a [prescription-dispense-notification message](https://simplifier.net/guide/DigitalMedicines/dispense-notification) to the `/FHIR/R4/$process-message` endpoint to inform EPS of a partial/successful dispense.
-
-    #### To return a prescription:
-    POST a [Task-dispense-proposal-return message](https://simplifier.net/guide/DigitalMedicines/Task) to the `/FHIR/R4/Task` endpoint.
-
-    #### To withdraw a dispense notification:
-    POST a [Task-dispense-notification-amend message](https://simplifier.net/guide/DigitalMedicines/Task) to the `/FHIR/R4/Task` endpoint.
-
-    #### To make a dispense claim:
-    POST a [dispense-claim message](https://simplifier.net/guide/DigitalMedicines/NHSDigital-Claim) to the `/FHIR/R4/$process-message` endpoint.
-
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
     description: 'Sandbox'
@@ -402,10 +380,11 @@ paths:
       summary: Download prescriptions
       description: |
         ## Overview
-        Use this endpoint to download prescriptions from Spine prior to being dispensed to a patient.
-        To do this, send a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to this endpoint.
+        Use this endpoint to download prescriptions from Spine prior to being dispensed.
+        You can download a single prescription using the prescription's ID,
+        or download up to 25 prescriptions (per request) nominated to a dispenser using the dispenser's ODS code.
 
-        The endpoint will return a set of (up to 25) prescriptions associated with the pharmacy that sends the request.
+        To do this, send a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to this endpoint.
       tags:
         - dispensing
       parameters:
