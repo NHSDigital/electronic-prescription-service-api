@@ -73,7 +73,7 @@
             }
           },
           {
-            "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+            "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-RepeatInformation",
             "extension": [
               {
                 "url": "numberOfRepeatPrescriptionsAllowed",
