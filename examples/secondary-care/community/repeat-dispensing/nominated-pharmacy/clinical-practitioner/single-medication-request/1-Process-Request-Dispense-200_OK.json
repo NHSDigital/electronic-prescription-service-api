@@ -3,14 +3,13 @@
   "id": "aef77afb-7e3c-427a-8657-2c427f71a271",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "9974488b-5bc9-4de4-a34c-7d72ac785852"
+    "value": "0798ce5e-b84e-4749-a9ab-b198f7445315"
   },
   "type": "message",
   "entry": [
     {
       "fullUrl": "urn:uuid:aef77afb-7e3c-427a-8657-2c427f71a271",
       "resource": {
-        "resourceType": "MessageHeader",
         "destination": [
           {
             "endpoint": "urn:nhs-uk:addressing:ods:FH542",
@@ -29,6 +28,7 @@
         },
         "focus": [],
         "id": "3599c0e9-9292-413e-9270-9a1ef1ead99c",
+        "resourceType": "MessageHeader",
         "response": {
           "code": "ok",
           "identifier": "999f9999-9999-9999-9ff9-f9fff9999999"
@@ -49,7 +49,6 @@
     {
       "fullUrl": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6",
       "resource": {
-        "resourceType": "MedicationDispense",
         "authorizingPrescription": [
           {
             "extension": [
@@ -59,14 +58,14 @@
                     "url": "shortForm",
                     "valueIdentifier": {
                       "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-                      "value": "D96150-A99968-43DAAS"
+                      "value": "2319A4-A99968-482684"
                     }
                   },
                   {
                     "url": "UUID",
                     "valueIdentifier": {
                       "system": "https://fhir.nhs.uk/Id/prescription",
-                      "value": "6600f536-a7ee-407f-8bb7-37f735a7309b"
+                      "value": "6bb52c12-e99c-40b2-bfff-1ed642c01684"
                     }
                   }
                 ],
@@ -146,6 +145,7 @@
           "unit": "tablet",
           "value": 63
         },
+        "resourceType": "MedicationDispense",
         "status": "completed",
         "subject": {
           "identifier": {
