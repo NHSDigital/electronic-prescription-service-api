@@ -181,7 +181,8 @@ function createPertinentInformation1LineItem(
     ) as fhir.IntegerExtension
     const numberOfRepeatsAllowed = getNumericValueAsString(numberOfRepeatsAllowedExtension.valueInteger)
 
-    hl7PertinentSuppliedLineItem.repeatNumber = new hl7V3.HighInterval<hl7V3.NumericValue>(
+    hl7PertinentSuppliedLineItem.repeatNumber = new hl7V3.Interval<hl7V3.NumericValue>(
+      new hl7V3.NumericValue("0"),
       new hl7V3.NumericValue(numberOfRepeatsAllowed)
     )
   }
