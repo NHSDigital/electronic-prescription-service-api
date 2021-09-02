@@ -98,6 +98,10 @@
               {
                 "url": "numberOfRepeatsAllowed",
                 "valueInteger": 6
+              },
+              {
+                "url": "numberOfRepeatsIssued",
+                "valueInteger": 1
               }
             ]
           }

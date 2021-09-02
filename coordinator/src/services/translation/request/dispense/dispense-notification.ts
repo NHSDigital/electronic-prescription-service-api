@@ -100,19 +100,9 @@ async function createPertinentInformation1(
       fhirFirstMedicationDispense.extension,
       "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
       "MedicationDispense.extension"
-    )
-    const numberOfRepeatsAllowedExtension = getExtensionForUrl(
-      repeatInfo.extension,
-      "numberOfRepeatsAllowed",
-      /* eslint-disable-next-line max-len */
-      'MedicationDispense.extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension'
-    ) as fhir.IntegerExtension
-    const numberOfRepeatsAllowed = getNumericValueAsString(numberOfRepeatsAllowedExtension.valueInteger)
+    ) as fhir.ExtensionExtension<fhir.IntegerExtension>
 
-    supplyHeader.repeatNumber = new hl7V3.Interval<hl7V3.NumericValue>(
-      new hl7V3.NumericValue("0"),
-      new hl7V3.NumericValue(numberOfRepeatsAllowed)
-    )
+    supplyHeader.repeatNumber = getRepeatNumberFromRepeatInfoExtension(repeatInfo)
   }
 
   return new hl7V3.DispenseNotificationPertinentInformation1(supplyHeader)
@@ -173,22 +163,36 @@ function createPertinentInformation1LineItem(
       fhirMedicationDispense.extension,
       "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
       "MedicationDispense.extension"
-    )
-    const numberOfRepeatsAllowedExtension = getExtensionForUrl(
-      repeatInfo.extension,
-      "numberOfRepeatsAllowed",
-      /* eslint-disable-next-line max-len */
-      'MedicationDispense.extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension'
-    ) as fhir.IntegerExtension
-    const numberOfRepeatsAllowed = getNumericValueAsString(numberOfRepeatsAllowedExtension.valueInteger)
+    ) as fhir.ExtensionExtension<fhir.IntegerExtension>
 
-    hl7PertinentSuppliedLineItem.repeatNumber = new hl7V3.Interval<hl7V3.NumericValue>(
-      new hl7V3.NumericValue("0"),
-      new hl7V3.NumericValue(numberOfRepeatsAllowed)
-    )
+    hl7PertinentSuppliedLineItem.repeatNumber = getRepeatNumberFromRepeatInfoExtension(repeatInfo)
   }
 
   return new hl7V3.DispenseNotificationPertinentInformation1LineItem(hl7PertinentSuppliedLineItem)
+}
+
+function getRepeatNumberFromRepeatInfoExtension(
+  repeatInfoExtension: fhir.ExtensionExtension<fhir.IntegerExtension>
+): hl7V3.Interval<hl7V3.NumericValue> {
+  const numberOfRepeatsAllowedExtension = getExtensionForUrl(
+    repeatInfoExtension.extension,
+    "numberOfRepeatsAllowed",
+    /* eslint-disable-next-line max-len */
+    'MedicationDispense.extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension'
+  ) as fhir.IntegerExtension
+  const numberOfRepeatsAllowed = getNumericValueAsString(numberOfRepeatsAllowedExtension.valueInteger)
+  const numberOfRepeatsIssuedExtension = getExtensionForUrl(
+    repeatInfoExtension.extension,
+    "numberOfRepeatsIssued",
+    /* eslint-disable-next-line max-len */
+    'MedicationDispense.extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension'
+  ) as fhir.IntegerExtension
+  const numberOfRepeatsIssued = getNumericValueAsString(numberOfRepeatsIssuedExtension.valueInteger)
+
+  return new hl7V3.Interval<hl7V3.NumericValue>(
+    new hl7V3.NumericValue(numberOfRepeatsIssued),
+    new hl7V3.NumericValue(numberOfRepeatsAllowed)
+  )
 }
 
 function createSuppliedLineItemQuantity(
