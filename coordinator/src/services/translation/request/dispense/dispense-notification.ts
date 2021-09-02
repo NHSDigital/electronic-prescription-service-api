@@ -109,7 +109,8 @@ async function createPertinentInformation1(
     ) as fhir.IntegerExtension
     const numberOfRepeatsAllowed = getNumericValueAsString(numberOfRepeatsAllowedExtension.valueInteger)
 
-    supplyHeader.repeatNumber = new hl7V3.HighInterval<hl7V3.NumericValue>(
+    supplyHeader.repeatNumber = new hl7V3.Interval<hl7V3.NumericValue>(
+      new hl7V3.NumericValue("0"),
       new hl7V3.NumericValue(numberOfRepeatsAllowed)
     )
   }
