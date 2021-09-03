@@ -174,13 +174,6 @@ function createPertinentInformation1LineItem(
 function getRepeatNumberFromRepeatInfoExtension(
   repeatInfoExtension: fhir.ExtensionExtension<fhir.IntegerExtension>
 ): hl7V3.Interval<hl7V3.NumericValue> {
-  const numberOfRepeatsAllowedExtension = getExtensionForUrl(
-    repeatInfoExtension.extension,
-    "numberOfRepeatsAllowed",
-    /* eslint-disable-next-line max-len */
-    'MedicationDispense.extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension'
-  ) as fhir.IntegerExtension
-  const numberOfRepeatsAllowed = getNumericValueAsString(numberOfRepeatsAllowedExtension.valueInteger)
   const numberOfRepeatsIssuedExtension = getExtensionForUrl(
     repeatInfoExtension.extension,
     "numberOfRepeatsIssued",
@@ -188,6 +181,13 @@ function getRepeatNumberFromRepeatInfoExtension(
     'MedicationDispense.extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension'
   ) as fhir.IntegerExtension
   const numberOfRepeatsIssued = getNumericValueAsString(numberOfRepeatsIssuedExtension.valueInteger)
+  const numberOfRepeatsAllowedExtension = getExtensionForUrl(
+    repeatInfoExtension.extension,
+    "numberOfRepeatsAllowed",
+    /* eslint-disable-next-line max-len */
+    'MedicationDispense.extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension'
+  ) as fhir.IntegerExtension
+  const numberOfRepeatsAllowed = getNumericValueAsString(numberOfRepeatsAllowedExtension.valueInteger)
 
   return new hl7V3.Interval<hl7V3.NumericValue>(
     new hl7V3.NumericValue(numberOfRepeatsIssued),

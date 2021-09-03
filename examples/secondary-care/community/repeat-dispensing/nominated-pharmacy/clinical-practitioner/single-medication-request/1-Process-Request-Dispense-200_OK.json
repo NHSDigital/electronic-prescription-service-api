@@ -134,10 +134,10 @@
           },
           {
             "actor": {
-              "display": "FIVE STAR HOMECARE LEEDS LTD",
+              "display": "HEATH PHARMACY",
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "VNFKT"
+                "value": "FER21"
               },
               "type": "Organization"
             }

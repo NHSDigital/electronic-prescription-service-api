@@ -153,14 +153,6 @@ export class Interval<T> {
   }
 }
 
-export class HighInterval<T> {
-  high?: T
-
-  constructor(high: T) {
-    this.high = high
-  }
-}
-
 export class IntervalUnanchored {
   width: {
     _attributes: {
