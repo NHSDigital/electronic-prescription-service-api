@@ -1,8 +1,9 @@
-import * as core from "./core"
+import { ElementCompact } from "xml-js"
+import { AgentPerson } from "./agent-person"
 import * as codes from "./codes"
-import {ElementCompact} from "xml-js"
+import * as core from "./core"
+import { DispensePertinentInformation1, PertinentSupplyHeader, SequelTo } from "./dispense-common"
 import * as organisation from "./organization"
-import {DispenseNotificationPertinentInformation1, ReplacementOf, SequelTo} from "./dispense-notification"
 
 export class DispenseClaimInformationRoot {
   DispenseClaimInformation: DispenseClaimInformation
@@ -22,21 +23,42 @@ export class DispenseClaimInformation implements ElementCompact {
   effectiveTime: core.Timestamp
   typeId: codes.TypeIdentifier
   primaryInformationRecipient: PrimaryInformationRecipient
-  //receiver: something that wraps Agent
-  pertinentInformation1: DispenseNotificationPertinentInformation1
-  //pertinentInformation2: PertinentInformation2
-  replacementOf?: ReplacementOf
-  //coverage: Coverage
+  pertinentInformation1: DispensePertinentInformation1
   sequelTo: SequelTo
 
-  constructor(id: codes.GlobalIdentifier) {
+  constructor(id: codes.GlobalIdentifier, effectiveTime: core.Timestamp) {
     this.id = id
     this.code = new codes.SnomedCode(
       "163541000000107",
       "Dispensed Medication - FocusActOrEvent (administrative concept)"
     )
-    this.effectiveTime = new core.Timestamp("PLACEHOLDER")
+    this.effectiveTime = effectiveTime
     this.typeId = new codes.TypeIdentifier("PORX_MT142001UK31")
+  }
+}
+
+export class DispenseClaimPertinentSupplyHeader extends PertinentSupplyHeader {
+  legalAuthenticator: LegalAuthenticator
+
+  constructor(id: codes.GlobalIdentifier, legalAuthenticator: LegalAuthenticator) {
+    super(id)
+    this.legalAuthenticator = legalAuthenticator
+  }
+}
+
+export class LegalAuthenticator implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
+    typeCode: "LA",
+    contextControlCode: "OP"
+  }
+
+  time: core.Timestamp
+  signatureText: core.Null
+  participant: AgentPerson
+
+  constructor(participant: AgentPerson, time: core.Timestamp) {
+    this.participant = participant
+    this.signatureText = core.Null.NOT_APPLICABLE
   }
 }
 

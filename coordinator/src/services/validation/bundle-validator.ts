@@ -12,12 +12,12 @@ import {
   isTruthy
 } from "../translation/common"
 import {fhir, validationErrors as errors} from "@models"
-import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
 import {isRepeatDispensing} from "../translation/request"
 import {validatePermittedDispenseMessage, validatePermittedPrescribeMessage} from "./prescribing-dispensing-tracker"
 import {prescriptionRefactorEnabled} from "../../utils/feature-flags"
 import {isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"
+import {getOrganisationPerformer} from "../translation/request/dispense/dispense-common"
 
 export function verifyBundle(bundle: fhir.Bundle, scope: string): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {

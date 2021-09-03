@@ -230,7 +230,7 @@ export function isRepeatDispensing(medicationRequests: Array<fhir.MedicationRequ
   return courseOfTherapyTypeCode === fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
 }
 
-export function dispenseNotificationIsRepeatDispensing(medicationDispense: fhir.MedicationDispense): boolean {
+export function dispenseIsRepeatDispensing(medicationDispense: fhir.MedicationDispense): boolean {
   return !!getExtensionForUrlOrNull(
     medicationDispense.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
