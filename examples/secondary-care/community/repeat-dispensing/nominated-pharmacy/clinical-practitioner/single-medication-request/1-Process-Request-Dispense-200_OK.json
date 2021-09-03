@@ -1,0 +1,174 @@
+{
+  "resourceType": "Bundle",
+  "id": "aef77afb-7e3c-427a-8657-2c427f71a271",
+  "identifier": {
+    "system": "https://tools.ietf.org/html/rfc4122",
+    "value": "76d1cc0b-bd64-4fad-a513-4de0f2ae7014"
+  },
+  "type": "message",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:aef77afb-7e3c-427a-8657-2c427f71a271",
+      "resource": {
+        "resourceType": "MessageHeader",
+        "id": "3599c0e9-9292-413e-9270-9a1ef1ead99c",
+        "eventCoding": {
+          "system": "https://fhir.nhs.uk/CodeSystem/message-event",
+          "code": "dispense-notification",
+          "display": "Dispense Notification"
+        },
+        "sender": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA"
+          },
+          "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
+          "display": "RAZIA|ALI"
+        },
+        "source": {
+          "endpoint": "urn:nhs-uk:addressing:ods:RBA"
+        },
+        "destination": [
+          {
+            "endpoint": "urn:nhs-uk:addressing:ods:FH542",
+            "receiver": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "FH542"
+              }
+            }
+          }
+        ],
+        "focus": [],
+        "response": {
+          "identifier": "999f9999-9999-9999-9ff9-f9fff9999999",
+          "code": "ok"
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6",
+      "resource": {
+        "resourceType": "MedicationDispense",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+              "code": "0003",
+              "display": "With Dispenser - Active"
+            }
+          },
+          {
+            "extension": [
+              {
+                "url": "numberOfRepeatsAllowed",
+                "valueInteger": 6
+              },
+              {
+                "url": "numberOfRepeatsIssued",
+                "valueInteger": 1
+              }
+            ],
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation"
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+          }
+        ],
+        "medicationCodeableConcept": {
+          "coding": [
+            {
+              "system": "http://snomed.info/sct",
+              "code": "15517911000001104",
+              "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
+            }
+          ]
+        },
+        "subject": {
+          "type": "Patient",
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449305552"
+          }
+        },
+        "authorizingPrescription": [
+          {
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
+                "extension": [
+                  {
+                    "url": "shortForm",
+                    "valueIdentifier": {
+                      "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+                      "value": "B407F7-A99968-4DB2AU"
+                    }
+                  },
+                  {
+                    "url": "UUID",
+                    "valueIdentifier": {
+                      "system": "https://fhir.nhs.uk/Id/prescription",
+                      "value": "10d37820-dda2-4810-94d7-c79e5fdb4b46"
+                    }
+                  }
+                ]
+              }
+            ],
+            "identifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+              "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+            }
+          }
+        ],
+        "performer": [
+          {
+            "actor": {
+              "type": "Practitioner",
+              "identifier": {
+                "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+                "value": "7654321"
+              },
+              "display": "Mr Peter Potion"
+            }
+          },
+          {
+            "actor": {
+              "type": "Organization",
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "FER21"
+              },
+              "display": "HEATH PHARMACY"
+            }
+          }
+        ],
+        "whenPrepared": "2021-07-07T15:43:00+00:00",
+        "dosageInstruction": [
+          {
+            "text": "4 times a day for 7 days"
+          }
+        ],
+        "quantity": {
+          "value": 63,
+          "unit": "tablet",
+          "system": "http://snomed.info/sct",
+          "code": "428673006"
+        },
+        "status": "completed",
+        "type": {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "code": "0001",
+              "display": "Item fully dispensed"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
