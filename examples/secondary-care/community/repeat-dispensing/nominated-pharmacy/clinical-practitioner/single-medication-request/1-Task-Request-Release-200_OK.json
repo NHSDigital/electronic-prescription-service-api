@@ -1,0 +1,17 @@
+{
+  "resourceType": "Parameters",
+  "id": "d773b78f-0802-47d2-8364-19990a4f051e",
+  "parameter": [
+    {
+      "name": "owner",
+      "valueIdentifier": {
+        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+        "value": "FER21"
+      }
+    },
+    {
+      "name": "status",
+      "valueCode": "accepted"
+    }
+  ]
+}
