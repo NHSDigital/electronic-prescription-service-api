@@ -1,7 +1,7 @@
 {
   "resourceType": "Parameters",
-  "id": "nominatedPharmacyReleaseRequest",
-  "parameter":  [
+  "id": "d773b78f-0802-47d2-8364-19990a4f051e",
+  "parameter": [
     {
       "name": "owner",
       "valueIdentifier": {
