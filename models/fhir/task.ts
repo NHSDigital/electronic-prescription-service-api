@@ -3,9 +3,7 @@ import * as bundle from "./bundle"
 import * as patient from "./patient"
 import * as practitionerRole from "./practitioner-role"
 import * as medicationRequest from "./medication-request"
-import * as extension from "./extension"
 import * as medicationDispense from "./medication-dispense"
-import {DispensingReleaseInformationExtension} from "./medication-request"
 
 export class Task extends common.Resource {
   readonly resourceType = "Task"
