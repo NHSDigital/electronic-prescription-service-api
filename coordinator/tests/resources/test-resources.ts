@@ -258,6 +258,13 @@ export const spineResponses = {
   cancellationDispensedError
 }
 
+export const trackerSpineResponses = {
+  success: fs.readFileSync(
+    path.join(__dirname, "./spine-responses/tracker-responses/success.json"),
+    "utf8"
+  )
+}
+
 function getLocation(search: string) {
   return fetcher
     .exampleFiles
