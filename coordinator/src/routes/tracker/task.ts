@@ -2,6 +2,7 @@ import Hapi from "@hapi/hapi"
 import {fhir} from "@models"
 import {BASE_PATH, ContentTypes} from "../util"
 import {getStatusCode} from "../../utils/status-code"
+import {trackerClient} from "../../services/communication/tracker"
 
 const validQueryParams = ["identifier", "focus:identifier"]
 
@@ -82,7 +83,9 @@ export const validateQueryParameters = (queryParams: Hapi.RequestQuery): Array<f
 export default [{
   method: "GET",
   path: `${BASE_PATH}/Task`,
-  handler: (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Hapi.Lifecycle.ReturnValue => {
+  handler: async (
+    request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
+  ): Promise<Hapi.Lifecycle.ReturnValue> => {
     const queryParams = request.query
 
     const issues = validateQueryParameters(queryParams)
@@ -93,10 +96,10 @@ export default [{
     } else {
       const validatedParams = queryParams as { [key: string]: string }
       const prescriptionIdentifier = validatedParams["focus:identifier"] || validatedParams["identifier"]
+      const spineResponse = await trackerClient.getPrescription(prescriptionIdentifier, request.logger)
       return responseToolkit
-        .response(sandboxSuccessResponse(prescriptionIdentifier))
+        .response({spineResponse})
         .code(200)
-        .type(ContentTypes.FHIR)
     }
   }
 }]
