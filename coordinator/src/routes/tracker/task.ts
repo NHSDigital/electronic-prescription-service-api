@@ -168,7 +168,8 @@ export default [{
     } else {
       const validatedParams = queryParams as { [key: string]: string }
       const prescriptionIdentifier = validatedParams["focus:identifier"] || validatedParams["identifier"]
-      const spineResponse = await trackerClient.getPrescription(prescriptionIdentifier, request.logger)
+
+      const spineResponse = await trackerClient.getPrescription(prescriptionIdentifier, request.headers, request.logger)
       return responseToolkit
         .response({spineResponse})
         .code(200)

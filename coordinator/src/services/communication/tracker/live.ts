@@ -1,6 +1,8 @@
 import {TrackerClient, WeirdJsonResponse} from "./index"
 import pino from "pino"
 import axios from "axios"
+import Hapi from "@hapi/hapi"
+import {getAsid, getSdsRoleProfileId, getSdsUserUniqueId} from "../../../utils/headers"
 
 const SPINE_ENDPOINT = process.env.SPINE_URL
 const SPINE_PRESCRIPTION_PATH = "nhs111itemsummary"
@@ -8,14 +10,18 @@ const SPINE_PRESCRIPTION_PATH = "nhs111itemsummary"
 const SPINE_LINE_ITEM_PATH = "nhs111itemdetails"
 
 export class LiveTrackerClient implements TrackerClient {
-  async getPrescription(prescriptionId: string, logger: pino.Logger): Promise<WeirdJsonResponse> {
+  async getPrescription(
+    prescriptionId: string,
+    inboundHeaders: Hapi.Util.Dictionary<string>,
+    logger: pino.Logger
+  ): Promise<WeirdJsonResponse> {
     const address = this.getItemSummaryUrl()
 
-    const headers = {
+    const outboundHeaders = {
       "Accept": "application/json",
-      "Spine-From-Asid": "12-digits",
-      "Spine-UserId": "12-digits",
-      "Spine-RoleProfileId": "12-digits"
+      "Spine-From-Asid": getAsid(inboundHeaders),
+      "Spine-UserId": getSdsUserUniqueId(inboundHeaders),
+      "Spine-RoleProfileId": getSdsRoleProfileId(inboundHeaders)
     }
     const queryParams = {prescriptionId}
 
@@ -24,7 +30,7 @@ export class LiveTrackerClient implements TrackerClient {
       const response = await axios.get<WeirdJsonResponse>(
         address,
         {
-          headers: headers,
+          headers: outboundHeaders,
           params: queryParams
         }
       )

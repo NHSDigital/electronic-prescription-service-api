@@ -1,4 +1,5 @@
 import pino from "pino"
+import Hapi from "hapi__hapi"
 import {SandboxTrackerClient} from "./sandbox"
 import {LiveTrackerClient} from "./live"
 import {fhir} from "@models"
@@ -42,7 +43,11 @@ export function convertWeirdJsonResponseToFhirTask(response: WeirdJsonResponse):
 }
 
 export interface TrackerClient {
-  getPrescription(prescriptionId: string, logger: pino.Logger): Promise<WeirdJsonResponse>
+  getPrescription(
+    prescriptionId: string,
+    headers: Hapi.Util.Dictionary<string>,
+    logger: pino.Logger
+  ): Promise<WeirdJsonResponse>
 
 }
 
