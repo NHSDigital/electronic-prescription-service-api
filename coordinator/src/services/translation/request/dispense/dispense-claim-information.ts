@@ -1,20 +1,13 @@
 import {fhir, hl7V3} from "@models"
 import moment from "moment"
 import pino from "pino"
-import {dispenseIsRepeatDispensing} from ".."
 import {
   DispenseClaimPertinentSupplyHeader,
   LegalAuthenticator,
   PrimaryInformationRecipient,
   Timestamp
 } from "../../../../../../models/hl7-v3"
-import {
-  getExtensionForUrl,
-  getExtensionForUrlOrNull,
-  getMedicationCoding,
-  getMessageId,
-  getNumericValueAsString
-} from "../../common"
+import {getExtensionForUrl, getMedicationCoding, getMessageId} from "../../common"
 import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import {getMedicationDispenses, getMessageHeader} from "../../common/getResourcesOfType"
 import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
@@ -25,7 +18,9 @@ import {
   createPertinentPrescriptionStatus,
   createPriorOriginalRef,
   createPriorPrescriptionReleaseEventRef,
-  getOrganisationPerformer
+  getOrganisationPerformer,
+  getRepeatNumberFromRepeatInfoExtension,
+  isRepeatDispensing
 } from "./dispense-common"
 
 export async function convertDispenseClaimInformation(
@@ -103,24 +98,14 @@ async function createPertinentInformation1(
   supplyHeader.pertinentInformation4 = new hl7V3.DispensePertinentInformation4(hl7PertinentPrescriptionIdentifier)
   supplyHeader.inFulfillmentOf = new hl7V3.InFulfillmentOf(hl7PriorOriginalRef)
 
-  if (dispenseIsRepeatDispensing(fhirFirstMedicationDispense)) {
-    const repeatInfo = getExtensionForUrlOrNull(
+  if (isRepeatDispensing(fhirFirstMedicationDispense)) {
+    const repeatInfo = getExtensionForUrl(
       fhirFirstMedicationDispense.extension,
       "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
       "MedicationDispense.extension"
-    )
-    const numberOfRepeatsAllowedExtension = getExtensionForUrl(
-      repeatInfo.extension,
-      "numberOfRepeatsAllowed",
-      /* eslint-disable-next-line max-len */
-      'MedicationDispense.extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension'
-    ) as fhir.IntegerExtension
-    const numberOfRepeatsAllowed = getNumericValueAsString(numberOfRepeatsAllowedExtension.valueInteger)
+    ) as fhir.ExtensionExtension<fhir.IntegerExtension>
 
-    supplyHeader.repeatNumber = new hl7V3.Interval<hl7V3.NumericValue>(
-      new hl7V3.NumericValue(undefined),
-      new hl7V3.NumericValue(numberOfRepeatsAllowed)
-    )
+    supplyHeader.repeatNumber = getRepeatNumberFromRepeatInfoExtension(repeatInfo)
   }
 
   return new hl7V3.DispensePertinentInformation1(supplyHeader)

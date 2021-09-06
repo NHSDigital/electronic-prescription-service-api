@@ -5,7 +5,6 @@ import * as parentPrescription from "./parent-prescription"
 import * as organisation from "./organization"
 import * as prescription from "./prescription"
 import * as lineItem from "./line-item"
-import { PrimaryInformationRecipient } from "./dispense-claim-information"
 
 /*
 * A container for the collection of clinical statements that constitute Dispense Notification information
@@ -37,16 +36,16 @@ export abstract class PertinentSupplyHeader implements ElementCompact {
  * An act relationship that associates the Dispense focal act with
  * SupplyHeader - the primary act of the PSIS clinical message.
  */
-export class DispensePertinentInformation1 implements ElementCompact {
+export class DispensePertinentInformation1<T extends PertinentSupplyHeader> implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
         typeCode: "PERT",
         contextConductionInd: "true"
     }
 
     templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.pertinentInformation")
-    pertinentSupplyHeader: PertinentSupplyHeader
+    pertinentSupplyHeader: T
 
-    constructor(pertinentSupplyHeader: PertinentSupplyHeader) {
+    constructor(pertinentSupplyHeader: T) {
         this.pertinentSupplyHeader = pertinentSupplyHeader
     }
 }
@@ -401,19 +400,30 @@ export class PriorPrescriptionReleaseEventRef implements ElementCompact {
     }
 }
 
-export class DispensePrimaryInformationRecipient extends PrimaryInformationRecipient {
+export class PrimaryInformationRecipient implements ElementCompact {
+    _attributes: core.AttributeTypeCode = {
+        typeCode: "PRCP"
+    }
+
+    AgentOrg: organisation.AgentOrganization
+
+    constructor(organisation: organisation.AgentOrganization) {
+        this.AgentOrg = organisation
+    }
+}
+
+export class DispensePrimaryInformationRecipient implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
         typeCode: "PRCP",
         contextControlCode: "ON"
     }
 
+    AgentOrg: organisation.AgentOrganization
+
     constructor(organisation: organisation.AgentOrganization) {
-        super(organisation)
+        this.AgentOrg = organisation
     }
 }
-
-
-
 
 /*
 * An act relationship that considers the status of the original prescription Line Item

@@ -7,7 +7,7 @@ import {fhir, validationErrors as errors} from "@models"
 import {
   getOrganisationPerformer,
   getPrescriptionStatus
-} from "../../../src/services/translation/request/dispense/dispense-notification"
+} from "../../../src/services/translation/request/dispense/dispense-common"
 import {
   DISPENSING_APP_SCOPE,
   DISPENSING_USER_SCOPE,

@@ -5,15 +5,13 @@ import {
   getIdentifierValueOrNullForSystem,
   getMessageId,
   getMedicationCoding,
-  getExtensionForUrlOrNull,
-  getNumericValueAsString
+  getExtensionForUrlOrNull
 } from "../../common"
 import {getMedicationDispenses, getMessageHeader, getPatientOrNull} from "../../common/getResourcesOfType"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import pino from "pino"
 import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
 import moment from "moment"
-import {dispenseIsRepeatDispensing} from "../index"
 import {DispenseNotificationPertinentSupplyHeader} from "../../../../../../models/hl7-v3"
 import {
   createAgentOrganisation,
@@ -22,7 +20,9 @@ import {
   createPertinentPrescriptionStatus,
   createPriorOriginalRef,
   createPriorPrescriptionReleaseEventRef,
-  getOrganisationPerformer
+  getOrganisationPerformer,
+  getRepeatNumberFromRepeatInfoExtension,
+  isRepeatDispensing
 } from "./dispense-common"
 
 export async function convertDispenseNotification(
@@ -102,8 +102,8 @@ async function createPertinentInformation1(
   supplyHeader.pertinentInformation4 = new hl7V3.DispensePertinentInformation4(hl7PertinentPrescriptionIdentifier)
   supplyHeader.inFulfillmentOf = new hl7V3.InFulfillmentOf(hl7PriorOriginalRef)
 
-  if (dispenseIsRepeatDispensing(fhirFirstMedicationDispense)) {
-    const repeatInfo = getExtensionForUrlOrNull(
+  if (isRepeatDispensing(fhirFirstMedicationDispense)) {
+    const repeatInfo = getExtensionForUrl(
       fhirFirstMedicationDispense.extension,
       "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
       "MedicationDispense.extension"
@@ -113,30 +113,6 @@ async function createPertinentInformation1(
   }
 
   return new hl7V3.DispensePertinentInformation1(supplyHeader)
-}
-
-function getRepeatNumberFromRepeatInfoExtension(
-  repeatInfoExtension: fhir.ExtensionExtension<fhir.IntegerExtension>
-): hl7V3.Interval<hl7V3.NumericValue> {
-  const numberOfRepeatsIssuedExtension = getExtensionForUrl(
-    repeatInfoExtension.extension,
-    "numberOfRepeatsIssued",
-    /* eslint-disable-next-line max-len */
-    'MedicationDispense.extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension'
-  ) as fhir.IntegerExtension
-  const numberOfRepeatsIssued = getNumericValueAsString(numberOfRepeatsIssuedExtension.valueInteger)
-  const numberOfRepeatsAllowedExtension = getExtensionForUrl(
-    repeatInfoExtension.extension,
-    "numberOfRepeatsAllowed",
-    /* eslint-disable-next-line max-len */
-    'MedicationDispense.extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension'
-  ) as fhir.IntegerExtension
-  const numberOfRepeatsAllowed = getNumericValueAsString(numberOfRepeatsAllowedExtension.valueInteger)
-
-  return new hl7V3.Interval<hl7V3.NumericValue>(
-    new hl7V3.NumericValue(numberOfRepeatsIssued),
-    new hl7V3.NumericValue(numberOfRepeatsAllowed)
-  )
 }
 
 function getLineItemIdentifiers(fhirMedicationDispenses: Array<fhir.MedicationDispense>) {
@@ -158,6 +134,13 @@ function getNhsNumber(fhirPatient: fhir.Patient, fhirFirstMedicationDispense: fh
     : fhirFirstMedicationDispense.subject.identifier.value
 }
 
+function createPatient(patient: fhir.Patient, firstMedicationDispense: fhir.MedicationDispense): hl7V3.Patient {
+  const nhsNumber = getNhsNumber(patient, firstMedicationDispense)
+  const hl7Patient = new hl7V3.Patient()
+  hl7Patient.id = new hl7V3.NhsNumber(nhsNumber)
+  return hl7Patient
+}
+
 async function createAuthor(
   organisationCode: string,
   authorTime: string,
@@ -168,13 +151,6 @@ async function createAuthor(
   author.signatureText = hl7V3.Null.NOT_APPLICABLE
   author.AgentPerson = await createAgentPersonForUnattendedAccess(organisationCode, logger)
   return author
-}
-
-function createPatient(patient: fhir.Patient, firstMedicationDispense: fhir.MedicationDispense): hl7V3.Patient {
-  const nhsNumber = getNhsNumber(patient, firstMedicationDispense)
-  const hl7Patient = new hl7V3.Patient()
-  hl7Patient.id = new hl7V3.NhsNumber(nhsNumber)
-  return hl7Patient
 }
 
 function createCareRecordElementCategory(fhirIdentifiers: Array<string>) {

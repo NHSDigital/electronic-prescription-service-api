@@ -2,8 +2,8 @@ import { ElementCompact } from "xml-js"
 import { AgentPerson } from "./agent-person"
 import * as codes from "./codes"
 import * as core from "./core"
-import { DispensePertinentInformation1, PertinentSupplyHeader, SequelTo } from "./dispense-common"
-import * as organisation from "./organization"
+import { DispensePertinentInformation1, PertinentSupplyHeader, PrimaryInformationRecipient, SequelTo } from "./dispense-common"
+import { PrescriptionAuthor } from "./prescription"
 
 export class DispenseClaimInformationRoot {
   DispenseClaimInformation: DispenseClaimInformation
@@ -23,7 +23,7 @@ export class DispenseClaimInformation implements ElementCompact {
   effectiveTime: core.Timestamp
   typeId: codes.TypeIdentifier
   primaryInformationRecipient: PrimaryInformationRecipient
-  pertinentInformation1: DispensePertinentInformation1
+  pertinentInformation1: DispensePertinentInformation1<DispenseClaimPertinentSupplyHeader>
   sequelTo: SequelTo
 
   constructor(id: codes.GlobalIdentifier, effectiveTime: core.Timestamp) {
@@ -46,30 +46,17 @@ export class DispenseClaimPertinentSupplyHeader extends PertinentSupplyHeader {
   }
 }
 
-export class LegalAuthenticator implements ElementCompact {
+export class LegalAuthenticator extends PrescriptionAuthor {
   _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
     typeCode: "LA",
     contextControlCode: "OP"
   }
 
-  time: core.Timestamp
-  signatureText: core.Null
-  participant: AgentPerson
-
   constructor(participant: AgentPerson, time: core.Timestamp) {
-    this.participant = participant
+    super()
+    this.time = time
+    this.AgentPerson = participant
     this.signatureText = core.Null.NOT_APPLICABLE
   }
 }
 
-export class PrimaryInformationRecipient implements ElementCompact {
-  _attributes: core.AttributeTypeCode = {
-    typeCode: "PRCP"
-  }
-
-  AgentOrg: organisation.AgentOrganization
-
-  constructor(organisation: organisation.AgentOrganization) {
-    this.AgentOrg = organisation
-  }
-}

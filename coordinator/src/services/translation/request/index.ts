@@ -19,15 +19,10 @@ import {translateReleaseRequest} from "./dispense/release"
 import pino from "pino"
 import {convertTaskToDispenseProposalReturn} from "./return/return"
 import {convertTaskToEtpWithdraw} from "./withdraw/withdraw"
-import {
-  getExtensionForUrlOrNull,
-  getMessageIdFromBundle,
-  getMessageIdFromTask,
-  identifyMessageType
-} from "../common"
-import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
+import {getMessageIdFromBundle, getMessageIdFromTask, identifyMessageType} from "../common"
 import Hapi from "@hapi/hapi"
 import {convertDispenseClaimInformation} from "./dispense/dispense-claim-information"
+import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 
 export async function convertBundleToSpineRequest(
   bundle: fhir.Bundle,
@@ -228,12 +223,4 @@ function createDispenserWithdrawSendMessagePayload(task: fhir.Task, headers: Hap
 export function isRepeatDispensing(medicationRequests: Array<fhir.MedicationRequest>): boolean {
   const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
   return courseOfTherapyTypeCode === fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
-}
-
-export function dispenseIsRepeatDispensing(medicationDispense: fhir.MedicationDispense): boolean {
-  return !!getExtensionForUrlOrNull(
-    medicationDispense.extension,
-    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-    "MedicationDispense.extension"
-  )
 }

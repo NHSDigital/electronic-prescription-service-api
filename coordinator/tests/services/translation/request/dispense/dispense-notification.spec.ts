@@ -1,10 +1,12 @@
 import {
+  convertDispenseNotification
+} from "../../../../../src/services/translation/request/dispense/dispense-notification"
+import {
   getFhirGroupIdentifierExtension,
   createLineItemStatusCode,
   getPrescriptionItemNumber,
-  getPrescriptionStatus,
-  convertDispenseNotification
-} from "../../../../../src/services/translation/request/dispense/dispense-notification"
+  getPrescriptionStatus
+} from "../../../../../src/services/translation/request/dispense/dispense-common"
 import * as TestResources from "../../../../resources/test-resources"
 import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"

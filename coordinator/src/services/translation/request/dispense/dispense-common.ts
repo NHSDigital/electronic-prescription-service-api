@@ -9,13 +9,13 @@ import {
 } from "../../common"
 import pino from "pino"
 import {auditDoseToTextIfEnabled} from "../dosage"
-import {dispenseIsRepeatDispensing} from ".."
+import {DispensePertinentInformation1LineItem} from "../../../../../../models/hl7-v3"
 
 export function createPertinentInformation1LineItem(
   fhirMedicationDispense: fhir.MedicationDispense,
   medicationCoding: fhir.Coding,
   logger: pino.Logger
-): hl7V3.DispensePertinentInformation1LineItem {
+): DispensePertinentInformation1LineItem {
   const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
   const fhirPrescriptionLineItemStatus = getPrescriptionLineItemStatus(fhirMedicationDispense)
   const fhirDosageInstruction = getDosageInstruction(fhirMedicationDispense, logger)
@@ -61,27 +61,41 @@ export function createPertinentInformation1LineItem(
     new hl7V3.PriorOriginalRef(new hl7V3.GlobalIdentifier(hl7PriorOriginalItemRef))
   )
 
-  if (dispenseIsRepeatDispensing(fhirMedicationDispense)) {
-    const repeatInfo = getExtensionForUrlOrNull(
+  if (isRepeatDispensing(fhirMedicationDispense)) {
+    const repeatInfo = getExtensionForUrl(
       fhirMedicationDispense.extension,
       "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
       "MedicationDispense.extension"
-    )
-    const numberOfRepeatsAllowedExtension = getExtensionForUrl(
-      repeatInfo.extension,
-      "numberOfRepeatsAllowed",
-      /* eslint-disable-next-line max-len */
-      'MedicationDispense.extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension'
-    ) as fhir.IntegerExtension
-    const numberOfRepeatsAllowed = getNumericValueAsString(numberOfRepeatsAllowedExtension.valueInteger)
+    ) as fhir.ExtensionExtension<fhir.IntegerExtension>
 
-    hl7PertinentSuppliedLineItem.repeatNumber = new hl7V3.Interval<hl7V3.NumericValue>(
-      new hl7V3.NumericValue(undefined),
-      new hl7V3.NumericValue(numberOfRepeatsAllowed)
-    )
+    hl7PertinentSuppliedLineItem.repeatNumber = getRepeatNumberFromRepeatInfoExtension(repeatInfo)
   }
 
   return new hl7V3.DispensePertinentInformation1LineItem(hl7PertinentSuppliedLineItem)
+}
+
+export function getRepeatNumberFromRepeatInfoExtension(
+  repeatInfoExtension: fhir.ExtensionExtension<fhir.IntegerExtension>
+): hl7V3.Interval<hl7V3.NumericValue> {
+  const numberOfRepeatsIssuedExtension = getExtensionForUrl(
+    repeatInfoExtension.extension,
+    "numberOfRepeatsIssued",
+    /* eslint-disable-next-line max-len */
+    'MedicationDispense.extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension'
+  ) as fhir.IntegerExtension
+  const numberOfRepeatsIssued = getNumericValueAsString(numberOfRepeatsIssuedExtension.valueInteger)
+  const numberOfRepeatsAllowedExtension = getExtensionForUrl(
+    repeatInfoExtension.extension,
+    "numberOfRepeatsAllowed",
+    /* eslint-disable-next-line max-len */
+    'MedicationDispense.extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension'
+  ) as fhir.IntegerExtension
+  const numberOfRepeatsAllowed = getNumericValueAsString(numberOfRepeatsAllowedExtension.valueInteger)
+
+  return new hl7V3.Interval<hl7V3.NumericValue>(
+    new hl7V3.NumericValue(numberOfRepeatsIssued),
+    new hl7V3.NumericValue(numberOfRepeatsAllowed)
+  )
 }
 
 export function createSuppliedLineItemQuantity(
@@ -234,5 +248,13 @@ export function createPriorPrescriptionReleaseEventRef(
 ): hl7V3.PriorPrescriptionReleaseEventRef {
   return new hl7V3.PriorPrescriptionReleaseEventRef(
     new hl7V3.GlobalIdentifier(fhirHeader.response.identifier)
+  )
+}
+
+export function isRepeatDispensing(medicationDispense: fhir.MedicationDispense): boolean {
+  return !!getExtensionForUrlOrNull(
+    medicationDispense.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+    "MedicationDispense.extension"
   )
 }

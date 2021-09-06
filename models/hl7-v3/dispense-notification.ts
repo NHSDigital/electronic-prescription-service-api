@@ -24,7 +24,7 @@ export class DispenseNotification implements ElementCompact {
   typeId: codes.TypeIdentifier
   recordTarget: patient.RecordTargetReference
   primaryInformationRecipient: DispensePrimaryInformationRecipient
-  pertinentInformation1: DispensePertinentInformation1
+  pertinentInformation1: DispensePertinentInformation1<DispenseNotificationPertinentSupplyHeader>
   pertinentInformation2: DispensePertinentInformation2
   replacementOf?: ReplacementOf
   sequelTo: SequelTo

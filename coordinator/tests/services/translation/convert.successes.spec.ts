@@ -6,13 +6,14 @@ import {
   convertTaskToSpineRequest
 } from "../../../src/services/translation/request"
 import {isBundle, isParameters, isTask} from "../../../src/utils/type-guards"
+import * as fs from "fs"
 
 const logger = pino()
 
 describe("conversion tests", () => {
   test.each(TestResources.convertSuccessExamples)(
     "should be able to convert %s message to HL7V3",
-    async (_: string, request: unknown, response: string, responseMatcher: string) => {
+    async (testname: string, request: unknown, response: string, responseMatcher: string) => {
       const regex = new RegExp(responseMatcher)
       const isMatch = regex.test(response)
       expect(isMatch).toBe(true)
@@ -22,6 +23,9 @@ describe("conversion tests", () => {
       if (isBundle(request)) {
         const result = await convertBundleToSpineRequest(request, TestResources.validTestHeaders, logger)
         const convertMatchesExpectation = regex.test(result.message)
+        if (!convertMatchesExpectation) {
+          fs.writeFileSync(`/home/richard-crawley/${testname}.txt`, result.message)
+        }
         expect(convertMatchesExpectation).toBe(true)
       } else if (isParameters(request)) {
         const result = await convertParametersToSpineRequest(request, TestResources.validTestHeaders, logger)
