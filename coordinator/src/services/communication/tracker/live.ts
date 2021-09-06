@@ -6,7 +6,7 @@ import {getAsid, getSdsRoleProfileId, getSdsUserUniqueId} from "../../../utils/h
 
 const SPINE_ENDPOINT = process.env.SPINE_URL
 const SPINE_PRESCRIPTION_PATH = "nhs111itemsummary"
-/* eslint-disable-next-line */
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 const SPINE_LINE_ITEM_PATH = "nhs111itemdetails"
 
 export class LiveTrackerClient implements TrackerClient {

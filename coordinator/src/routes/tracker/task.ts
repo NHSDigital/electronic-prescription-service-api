@@ -19,6 +19,7 @@ const CODEABLE_CONCEPT_DISPENSING_MEDICATION = fhir.createCodeableConcept(
 )
 const VALID_QUERY_PARAMS = ["identifier", "focus:identifier"]
 
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 const buildSandboxSuccessResponse = (prescriptionId: string): fhir.Task => {
   const repeatInformationExtension = {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",

@@ -27,6 +27,7 @@ export interface WeirdJsonResponse {
 }
 
 //TODO - translate
+/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
 export function convertWeirdJsonResponseToFhirTask(response: WeirdJsonResponse): fhir.Task {
   return {
     resourceType: "Task",
