@@ -5,7 +5,6 @@ import {getStatusCode} from "../../utils/status-code"
 import * as uuid from "uuid"
 import {convertMomentToISODate, convertMomentToISODateTime} from "../../services/translation/common/dateTime"
 import moment from "moment"
-import {LosslessNumber} from "lossless-json"
 import * as LosslessJson from "lossless-json"
 
 const CODEABLE_CONCEPT_PRESCRIPTION = fhir.createCodeableConcept(
@@ -144,11 +143,11 @@ function createRepeatInformationExtension() {
     extension: [
       {
         url: "numberOfRepeatsAllowed",
-        valueUnsignedInt: new LosslessNumber(6)
+        valueUnsignedInt: new LosslessJson.LosslessNumber(6)
       },
       {
         url: "numberOfRepeatsIssued",
-        valueUnsignedInt: new LosslessNumber(3)
+        valueUnsignedInt: new LosslessJson.LosslessNumber(3)
       }
     ]
   }
