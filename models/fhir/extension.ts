@@ -48,3 +48,10 @@ export interface ExtensionExtension<T extends Extension> extends Extension {
 export interface BooleanExtension extends Extension {
   valueBoolean: boolean
 }
+
+export type RepeatInformationExtension = ExtensionExtension<UnsignedIntExtension | DateTimeExtension>
+export type ControlledDrugExtension = ExtensionExtension<StringExtension | CodingExtension>
+export type PrescriptionStatusHistoryExtension = ExtensionExtension<CodingExtension | DateTimeExtension>
+export type DispensingInformationExtension = ExtensionExtension<CodingExtension | DateExtension>
+export type DispensingReleaseInformationExtension = ExtensionExtension<DateExtension>
+export type PrescriptionExtension = ExtensionExtension<CodingExtension>
