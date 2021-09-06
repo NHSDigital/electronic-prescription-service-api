@@ -189,6 +189,7 @@ servers:
 tags:
   - name: prescribing
   - name: dispensing
+  - name: tracker
 paths:
   /FHIR/R4/$prepare:
     post:
@@ -738,6 +739,51 @@ paths:
                     An error response.
                   value:
                     $ref: components/examples/example-a-validation-error-missing-field/Response-FhirError.json
+  /FHIR/R4/Task:
+    get:
+      operationId: get-task
+      summary: Search for summary details about a prescription
+      description: |
+        ## Overview
+        Use this endpoint to search for summary details about a prescription.
+        
+        At least one of the following query parameters must be provided:
+        * identifier
+        * focus:identifier
+      tags:
+        - tracker
+      parameters:
+        - $ref: '#/components/parameters/BearerAuthorization'
+        - $ref: '#/components/parameters/RoleId'
+        - $ref: '#/components/parameters/RequestID'
+        - $ref: '#/components/parameters/CorrelationID'
+        - $ref: '#/components/parameters/Identifier'
+        - $ref: '#/components/parameters/FocusIdentifier'
+      responses:
+        '200':
+          description: Successful query.
+          content:
+            application/fhir+json:
+              schema:
+                type: object
+              examples:
+                example:
+                  description: |
+                    A successful response to a prescription summary query.
+                  value:
+                    $ref: 'components/examples/task/success.json'
+        '4XX':
+          description: Invalid query.
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/operation-outcome'
+              examples:
+                example:
+                  description: |
+                    An error response to a prescription summary query.
+                  value:
+                    $ref: 'components/examples/task/query-error.json'
 components:
   parameters:
     BearerAuthorization:
@@ -795,6 +841,24 @@ components:
       schema:
         type: string
         example: 11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA
+    Identifier:
+      in: query
+      name: identifier
+      description: |
+        The short form identifier of the prescription you are searching for.
+      required: false
+      schema:
+        type: string
+        example: 'CDF34E-A99968-4FF3BQ'
+    FocusIdentifier:
+      in: query
+      name: focus:identifier
+      description: |
+        The short form identifier of the prescription you are searching for.
+      required: false
+      schema:
+        type: string
+        example: 'CDF34E-A99968-4FF3BQ'
   responses:
     200OperationOutcome:
       description: A successful response.

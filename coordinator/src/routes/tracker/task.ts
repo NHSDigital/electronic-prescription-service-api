@@ -6,6 +6,7 @@ import * as uuid from "uuid"
 import {convertMomentToISODate, convertMomentToISODateTime} from "../../services/translation/common/dateTime"
 import moment from "moment"
 import {LosslessNumber} from "lossless-json"
+import * as LosslessJson from "lossless-json"
 
 const CODEABLE_CONCEPT_PRESCRIPTION = fhir.createCodeableConcept(
   "http://snomed.info/sct",
@@ -32,8 +33,10 @@ export default [{
     } else {
       const validatedParams = queryParams as { [key: string]: string }
       const prescriptionIdentifier = validatedParams["focus:identifier"] || validatedParams["identifier"]
+      const sandboxResponse = createSandboxSuccessResponse(prescriptionIdentifier)
+      const serializedResponse = LosslessJson.stringify(sandboxResponse)
       return responseToolkit
-        .response(createSandboxSuccessResponse(prescriptionIdentifier))
+        .response(serializedResponse)
         .code(200)
         .type(ContentTypes.FHIR)
     }
