@@ -3,7 +3,7 @@
   "id": "aef77afb-7e3c-427a-8657-2c427f71a271",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "7498fc5e-bfc3-4f71-9128-c06a087607c4"
+    "value": "8de3221e-54b7-4994-a55b-e7038abd36ad"
   },
   "type": "message",
   "entry": [
@@ -118,12 +118,12 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/prescription",
-                "value": "5c57b2b8-d424-4b93-a785-2e99adb0f7eb"
+                "value": "10d37820-dda2-4810-94d7-c79e5fdb4b46"
               }
             }
           ],
           "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-          "value": "C2B5B3-A99968-4235A7"
+          "value": "B407F7-A99968-4DB2AU"
         },
         "courseOfTherapyType": {
           "coding": [
@@ -191,8 +191,8 @@
             }
           ],
           "validityPeriod": {
-            "start": "2021-05-07",
-            "end": "2021-06-04"
+            "start": "2021-09-03",
+            "end": "2021-10-03"
           },
           "quantity": {
             "value": 63,
@@ -209,7 +209,7 @@
           "performer": {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "FH542"
+              "value": "FER21"
             }
           }
         },
