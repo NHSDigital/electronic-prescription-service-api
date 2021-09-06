@@ -19,7 +19,7 @@ interface Prescription {
   lineItems: { [lineItemId: string]: string }
 }
 
-export interface WeirdJsonResponse {
+export interface TrackerJsonResponse {
   version: string
   reason: string
   statusCode: string
@@ -28,7 +28,7 @@ export interface WeirdJsonResponse {
 
 //TODO - translate
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-export function convertWeirdJsonResponseToFhirTask(response: WeirdJsonResponse): fhir.Task {
+export function convertWeirdJsonResponseToFhirTask(response: TrackerJsonResponse): fhir.Task {
   return {
     resourceType: "Task",
     identifier: undefined,
@@ -48,7 +48,7 @@ export interface TrackerClient {
     prescriptionId: string,
     headers: Hapi.Util.Dictionary<string>,
     logger: pino.Logger
-  ): Promise<WeirdJsonResponse>
+  ): Promise<TrackerJsonResponse>
 
 }
 

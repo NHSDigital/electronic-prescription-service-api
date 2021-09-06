@@ -1,12 +1,12 @@
-import {TrackerClient, WeirdJsonResponse} from "./index"
+import {TrackerClient, TrackerJsonResponse} from "./index"
 import pino from "pino"
 import axios from "axios"
 import Hapi from "@hapi/hapi"
 import {getAsid, getSdsRoleProfileId, getSdsUserUniqueId} from "../../../utils/headers"
 
 const SPINE_ENDPOINT = process.env.SPINE_URL
-const SPINE_PRESCRIPTION_PATH = "nhs111itemsummary"
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+const SPINE_PRESCRIPTION_PATH = "nhs111itemsummary"
 const SPINE_LINE_ITEM_PATH = "nhs111itemdetails"
 
 export class LiveTrackerClient implements TrackerClient {
@@ -14,7 +14,7 @@ export class LiveTrackerClient implements TrackerClient {
     prescriptionId: string,
     inboundHeaders: Hapi.Util.Dictionary<string>,
     logger: pino.Logger
-  ): Promise<WeirdJsonResponse> {
+  ): Promise<TrackerJsonResponse> {
     const address = this.getItemSummaryUrl()
 
     const outboundHeaders = {
@@ -27,7 +27,7 @@ export class LiveTrackerClient implements TrackerClient {
 
     logger.info(`Attempting to send message to ${address} with prescriptionId: ${prescriptionId}`)
     try {
-      const response = await axios.get<WeirdJsonResponse>(
+      const response = await axios.get<TrackerJsonResponse>(
         address,
         {
           headers: outboundHeaders,
@@ -42,7 +42,7 @@ export class LiveTrackerClient implements TrackerClient {
   }
 
   getItemSummaryUrl(): string {
-    return `https://${SPINE_ENDPOINT}/mm/${SPINE_PRESCRIPTION_PATH}`
+    return `https://${SPINE_ENDPOINT}/mm/${SPINE_LINE_ITEM_PATH}`
   }
 }
 
