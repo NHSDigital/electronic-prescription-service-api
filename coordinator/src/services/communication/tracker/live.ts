@@ -1,4 +1,4 @@
-import {TrackerClient, TrackerJsonResponse} from "./index"
+import {TrackerClient, DetailTrackerResponse} from "."
 import pino from "pino"
 import axios from "axios"
 import Hapi from "@hapi/hapi"
@@ -14,7 +14,7 @@ export class LiveTrackerClient implements TrackerClient {
     prescriptionId: string,
     inboundHeaders: Hapi.Util.Dictionary<string>,
     logger: pino.Logger
-  ): Promise<TrackerJsonResponse> {
+  ): Promise<DetailTrackerResponse> {
     const address = this.getItemSummaryUrl()
 
     const outboundHeaders = {
@@ -27,7 +27,7 @@ export class LiveTrackerClient implements TrackerClient {
 
     logger.info(`Attempting to send message to ${address} with prescriptionId: ${prescriptionId}`)
     try {
-      const response = await axios.get<TrackerJsonResponse>(
+      const response = await axios.get<DetailTrackerResponse>(
         address,
         {
           headers: outboundHeaders,
