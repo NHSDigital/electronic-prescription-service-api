@@ -1,10 +1,11 @@
 import Hapi from "@hapi/hapi"
-import {fhir} from "@models"
+import {fhir, validationErrors} from "@models"
 import {BASE_PATH, ContentTypes} from "../util"
 import {getStatusCode} from "../../utils/status-code"
 import * as uuid from "uuid"
 import {convertMomentToISODate, convertMomentToISODateTime} from "../../services/translation/common/dateTime"
 import moment from "moment"
+import {LosslessNumber} from "lossless-json"
 
 const CODEABLE_CONCEPT_PRESCRIPTION = fhir.createCodeableConcept(
   "http://snomed.info/sct",
@@ -18,51 +19,52 @@ const CODEABLE_CONCEPT_DISPENSING_MEDICATION = fhir.createCodeableConcept(
 )
 const VALID_QUERY_PARAMS = ["identifier", "focus:identifier"]
 
-const buildSandboxSuccessResponse = (prescriptionId: string): fhir.Task => {
-  const repeatInformationExtension = {
-    url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-    extension:  [
-      {
-        url: "numberOfRepeatsAllowed",
-        valueUnsignedInt: 6
-      },
-      {
-        url: "numberOfRepeatsIssued",
-        valueUnsignedInt: 3
-      }
-    ]
+export default [{
+  method: "GET",
+  path: `${BASE_PATH}/Task`,
+  handler: (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Hapi.Lifecycle.ReturnValue => {
+    const queryParams = request.query
+    const issues = validateQueryParameters(queryParams)
+    if (issues.length) {
+      const response = fhir.createOperationOutcome(issues)
+      const statusCode = getStatusCode(issues)
+      return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
+    } else {
+      const validatedParams = queryParams as { [key: string]: string }
+      const prescriptionIdentifier = validatedParams["focus:identifier"] || validatedParams["identifier"]
+      return responseToolkit
+        .response(createSandboxSuccessResponse(prescriptionIdentifier))
+        .code(200)
+        .type(ContentTypes.FHIR)
+    }
   }
-  const lastIssueDispensedDate = convertMomentToISODate(moment.utc().subtract(1, "month"))
-  const dispensingInformationExtension = {
-    url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation",
-    extension: [
-      {
-        url: "dispenseStatus",
-        valueCoding: fhir.createCoding(
-          "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
-          "0002",
-          "With Dispenser"
-        )
-      },
-      {
-        url: "dateLastDispensed",
-        valueDate: lastIssueDispensedDate
-      }
-    ]
-  }
-  const dispensingReleaseInformationExtension = {
-    url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingReleaseInformation",
-    extension: [{
-      url: "dateLastIssuedDispensed",
-      valueDate: lastIssueDispensedDate
-    }]
+}]
+
+export const validateQueryParameters = (queryParams: Hapi.RequestQuery): Array<fhir.OperationOutcomeIssue> => {
+  const validQueryParamsFound = VALID_QUERY_PARAMS.filter(param => queryParams[param])
+  if (validQueryParamsFound.length === 0) {
+    return [validationErrors.createMissingQueryParameterIssue(VALID_QUERY_PARAMS)]
   }
 
+  const duplicatedParams = validQueryParamsFound.some(param => Array.isArray(queryParams[param]))
+  if (duplicatedParams) {
+    return [validationErrors.invalidQueryParameterCombinationIssue]
+  }
+
+  if (validQueryParamsFound.includes("identifier") && validQueryParamsFound.includes("focus:identifier")) {
+    return [validationErrors.invalidQueryParameterCombinationIssue]
+  }
+  return []
+}
+
+const createSandboxSuccessResponse = (prescriptionId: string): fhir.Task => {
+  const lastIssueDispensedDate = convertMomentToISODate(moment.utc().subtract(1, "month"))
   return {
     resourceType: "Task",
     id: uuid.v4(),
     extension: [
-      repeatInformationExtension
+      createPrescriptionExtension(),
+      createRepeatInformationExtension()
     ],
     meta: {
       lastUpdated: convertMomentToISODateTime(moment.utc())
@@ -99,7 +101,7 @@ const buildSandboxSuccessResponse = (prescriptionId: string): fhir.Task => {
     authoredOn: convertMomentToISODateTime(moment.utc().subtract(3, "month")),
     input: [{
       extension: [
-        dispensingInformationExtension
+        createDispensingInformationExtension(lastIssueDispensedDate)
       ],
       type: CODEABLE_CONCEPT_PRESCRIPTION,
       valueReference: fhir.createIdentifierReference(
@@ -108,7 +110,7 @@ const buildSandboxSuccessResponse = (prescriptionId: string): fhir.Task => {
     }],
     output: [{
       extension: [
-        dispensingReleaseInformationExtension
+        createDispensingReleaseInformationExtension(lastIssueDispensedDate)
       ],
       type: CODEABLE_CONCEPT_DISPENSING_MEDICATION,
       valueReference: fhir.createIdentifierReference(
@@ -118,57 +120,66 @@ const buildSandboxSuccessResponse = (prescriptionId: string): fhir.Task => {
   }
 }
 
-export const noValidQueryParameters: fhir.OperationOutcomeIssue = {
-  severity: "error",
-  code: fhir.IssueCodes.INVALID,
-  diagnostics: `Query parameter must be one of: ${VALID_QUERY_PARAMS.join(", ")}.`
+function createPrescriptionExtension() {
+  const prescriptionExtension: fhir.PrescriptionExtension = {
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription",
+    extension: [{
+      url: "courseOfTherapyType",
+      valueCoding: {
+        system: "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
+        code: "continuous-repeat-dispensing",
+        display: "Continuous long term (repeat dispensing)"
+      }
+    }]
+  }
+  return prescriptionExtension
 }
 
-export const duplicateIdentifier: fhir.OperationOutcomeIssue = {
-  severity: "error",
-  code: fhir.IssueCodes.INVALID,
-  diagnostics: "Invalid combination of query parameters."
+function createRepeatInformationExtension() {
+  const repeatInformationExtension: fhir.RepeatInformationExtension = {
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+    extension: [
+      {
+        url: "numberOfRepeatsAllowed",
+        valueUnsignedInt: new LosslessNumber(6)
+      },
+      {
+        url: "numberOfRepeatsIssued",
+        valueUnsignedInt: new LosslessNumber(3)
+      }
+    ]
+  }
+  return repeatInformationExtension
 }
 
-const queryParameterIsStringArray = (queryParam: string | Array<string>): queryParam is Array<string> => {
-  return Array.isArray(queryParam)
+function createDispensingInformationExtension(lastIssueDispensedDate: string) {
+  const dispensingInformationExtension: fhir.DispensingInformationExtension = {
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation",
+    extension: [
+      {
+        url: "dispenseStatus",
+        valueCoding: fhir.createCoding(
+          "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+          "0002",
+          "With Dispenser"
+        )
+      },
+      {
+        url: "dateLastDispensed",
+        valueDate: lastIssueDispensedDate
+      }
+    ]
+  }
+  return dispensingInformationExtension
 }
 
-export const validateQueryParameters = (queryParams: Hapi.RequestQuery): Array<fhir.OperationOutcomeIssue> => {
-  const validQueryParamsFound = VALID_QUERY_PARAMS.filter(param => queryParams[param])
-  if (validQueryParamsFound.length === 0) {
-    return [noValidQueryParameters]
+function createDispensingReleaseInformationExtension(lastIssueDispensedDate: string) {
+  const dispensingReleaseInformationExtension: fhir.DispensingReleaseInformationExtension = {
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingReleaseInformation",
+    extension: [{
+      url: "dateLastIssuedDispensed",
+      valueDate: lastIssueDispensedDate
+    }]
   }
-
-  const duplicatedParams = validQueryParamsFound.some(param => queryParameterIsStringArray(queryParams[param]))
-  if (duplicatedParams) {
-    return [duplicateIdentifier]
-  }
-
-  if (validQueryParamsFound.includes("identifier") && validQueryParamsFound.includes("focus:identifier")) {
-    return [duplicateIdentifier]
-  }
-  return []
+  return dispensingReleaseInformationExtension
 }
-
-export default [{
-  method: "GET",
-  path: `${BASE_PATH}/Task`,
-  handler: (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Hapi.Lifecycle.ReturnValue => {
-    const queryParams = request.query
-
-    const issues = validateQueryParameters(queryParams)
-    if (issues.length) {
-      const response = fhir.createOperationOutcome(issues)
-      const statusCode = getStatusCode(issues)
-      return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
-    } else {
-      const validatedParams = queryParams as { [key: string]: string }
-      const prescriptionIdentifier = validatedParams["focus:identifier"] || validatedParams["identifier"]
-      return responseToolkit
-        .response(buildSandboxSuccessResponse(prescriptionIdentifier))
-        .code(200)
-        .type(ContentTypes.FHIR)
-    }
-  }
-}]

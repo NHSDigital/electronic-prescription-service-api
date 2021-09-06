@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import {duplicateIdentifier, noValidQueryParameters, validateQueryParameters} from "../../src/routes/tracker/task"
+import {invalidQueryParameterCombinationIssue, noValidQueryParameters, validateQueryParameters} from "../../src/routes/tracker/task"
 
 describe("task query parameter validation", () => {
   test("message with no valid query parameters get rejected", () => {
@@ -19,7 +19,7 @@ describe("task query parameter validation", () => {
 
     const errors = validateQueryParameters(params)
 
-    expect(errors.includes(duplicateIdentifier))
+    expect(errors.includes(invalidQueryParameterCombinationIssue))
   })
 
   test("message with multiple identifier parameters get rejected", () => {
@@ -30,6 +30,6 @@ describe("task query parameter validation", () => {
 
     const errors = validateQueryParameters(params)
 
-    expect(errors.includes(duplicateIdentifier))
+    expect(errors.includes(invalidQueryParameterCombinationIssue))
   })
 })
