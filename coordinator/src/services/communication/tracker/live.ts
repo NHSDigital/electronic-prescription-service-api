@@ -42,7 +42,7 @@ export class LiveTrackerClient implements TrackerClient {
   }
 
   getItemSummaryUrl(): string {
-    return `https://${SPINE_ENDPOINT}/${SPINE_PRESCRIPTION_PATH}`
+    return `https://${SPINE_ENDPOINT}/mm/${SPINE_PRESCRIPTION_PATH}`
   }
 }
 
