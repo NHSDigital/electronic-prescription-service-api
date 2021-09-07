@@ -8,6 +8,11 @@ import {convertMomentToISODate, convertMomentToISODateTime} from "../../services
 import moment from "moment"
 import * as LosslessJson from "lossless-json"
 
+const CODEABLE_CONCEPT_PRESCRIPTION = fhir.createCodeableConcept(
+  "http://snomed.info/sct",
+  "16076005",
+  "Prescription"
+)
 const CODEABLE_CONCEPT_DISPENSING_MEDICATION = fhir.createCodeableConcept(
   "http://snomed.info/sct",
   "373784005",
