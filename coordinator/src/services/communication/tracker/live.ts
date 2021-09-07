@@ -1,8 +1,9 @@
-import {TrackerClient, DetailTrackerResponse} from "."
+import {TrackerClient} from "."
 import pino from "pino"
 import axios from "axios"
 import Hapi from "@hapi/hapi"
 import {getAsid, getSdsRoleProfileId, getSdsUserUniqueId} from "../../../utils/headers"
+import {DetailTrackerResponse} from "./spine-model"
 
 const SPINE_ENDPOINT = process.env.SPINE_URL
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars */

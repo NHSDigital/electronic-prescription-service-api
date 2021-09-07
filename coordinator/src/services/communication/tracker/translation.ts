@@ -1,4 +1,4 @@
-import {DetailTrackerResponse} from "./spine-model"
+import {DetailPrescription, DetailTrackerResponse} from "./spine-model"
 import {fhir} from "@models"
 import * as uuid from "uuid"
 
@@ -27,6 +27,86 @@ function getStatusCodeFromDisplay(display: string): string {
   }
 }
 
+function convertLineItemToInput(lineItemId: string, prescription: DetailPrescription){
+  const lineItem = prescription.lineItems[lineItemId]
+  const taskInput: fhir.TaskInput = {
+    type: fhir.createCodeableConcept("http://snomed.info/sct", lineItem.code, lineItem.description),
+    valueReference: fhir.createIdentifierReference(
+      fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", lineItemId)
+    )
+  }
+  const extensions = []
+  if (prescription.prescriptionDispenseDate) {
+    extensions.push({
+      url: "dateLastDispensed",
+      valueDate: prescription.prescriptionDispenseDate
+    })
+  }
+
+  extensions.push({
+    url: "dispenseNotificationReference",
+    valueIdentifier: fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", "PLACEHOLDER")
+  })
+
+  if (lineItem.itemStatus) {
+    extensions.push({
+      url: "dispenseStatus",
+      valueCoding: fhir.createCoding(
+        "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+        getStatusCodeFromDisplay(lineItem.itemStatus),
+        lineItem.itemStatus
+      )
+    })
+  }
+
+  if (extensions.length > 0) {
+    taskInput.extension = [{
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation",
+      extension: extensions
+    }]
+  }
+
+  return taskInput
+}
+
+function convertLineItemToOutput(lineItemId: string, prescription: DetailPrescription){
+  const lineItem = prescription.lineItems[lineItemId]
+  const taskOutput: fhir.TaskOutput = {
+    type: fhir.createCodeableConcept("http://snomed.info/sct", lineItem.code, lineItem.description),
+    valueReference: fhir.createIdentifierReference(
+      fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", lineItemId)
+    )
+  }
+  const extensions = []
+  if (prescription.prescriptionLastIssueDispensedDate) {
+    extensions.push({
+      url: "dateLastIssuedDispensed",
+      valueDate: prescription.prescriptionLastIssueDispensedDate
+    })
+  }
+  if (prescription.prescriptionDownloadDate) {
+    extensions.push({
+      url: "dateLastIssuedDispensed",
+      valueDate: prescription.prescriptionDownloadDate
+    })
+  }
+  if (prescription.prescriptionClaimedDate) {
+    extensions.push({
+      url: "dateLastIssuedDispensed",
+      valueDate: prescription.prescriptionClaimedDate
+    })
+  }
+
+  if (extensions.length > 0) {
+    taskOutput.extension = [{
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingReleaseInformation",
+      extension: extensions
+    }]
+  }
+
+  return taskOutput
+}
+
 export function convertDetailedJsonResponseToFhirTask(response: DetailTrackerResponse): fhir.Task {
   const prescriptionIds = Object.keys(response).filter(fieldName => isPrescriptionField(response, fieldName))
   const prescriptions = prescriptionIds.map(id => response[id])
@@ -34,10 +114,10 @@ export function convertDetailedJsonResponseToFhirTask(response: DetailTrackerRes
 
   const owner = prescription.dispensingPharmacy ?? prescription.nominatedPharmacy
 
-  return {
+  const task: fhir.Task = {
     resourceType: "Task",
     identifier: [fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", uuid.v4())],
-    status: undefined,
+    status: fhir.TaskStatus.IN_PROGRESS,
     businessStatus: fhir.createCodeableConcept(
       "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
       getStatusCodeFromDisplay(prescription.prescriptionStatus),
@@ -54,16 +134,11 @@ export function convertDetailedJsonResponseToFhirTask(response: DetailTrackerRes
     owner: fhir.createIdentifierReference(
       fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", owner.ods),
       owner.name
-    ),
-    input: [{
-      extension: [
-        undefined
-      ],
-      type: undefined,
-      valueReference: fhir.createIdentifierReference(
-        fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", uuid.v4())
-      )
-    }],
-    output: undefined
+    )
   }
+
+  const lineItemIds = Object.keys(prescription.lineItems)
+  task.input = lineItemIds.map(lineItemId => convertLineItemToInput(lineItemId, prescription))
+  task.output = lineItemIds.map(lineItemId => convertLineItemToOutput(lineItemId, prescription))
+  return task
 }

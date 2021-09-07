@@ -1,6 +1,7 @@
-import {TrackerClient, DetailTrackerResponse} from "."
+import {TrackerClient} from "."
 import pino from "pino"
 import Hapi from "@hapi/hapi"
+import {DetailTrackerResponse} from "./spine-model"
 
 export class SandboxTrackerClient implements TrackerClient {
   getPrescription(

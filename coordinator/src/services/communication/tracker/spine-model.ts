@@ -17,7 +17,7 @@ interface SummaryPrescription extends Prescription {
   lineItems: { [lineItemId: string]: string }
 }
 
-interface DetailPrescription extends Prescription {
+export interface DetailPrescription extends Prescription {
   prescriptionDownloadDate: string
   prescriptionDispenseDate: string
   prescriptionClaimedDate: string
