@@ -1,5 +1,6 @@
 import Hapi from "@hapi/hapi"
-import {duplicateIdentifier, noValidQueryParameters, validateQueryParameters} from "../../src/routes/tracker/task"
+import {validateQueryParameters} from "../../src/routes/tracker/task"
+import {validationErrors} from "@models"
 
 describe("task query parameter validation", () => {
   test("message with no valid query parameters get rejected", () => {
@@ -9,7 +10,8 @@ describe("task query parameter validation", () => {
 
     const errors = validateQueryParameters(params)
 
-    expect(errors.includes(noValidQueryParameters))
+    expect(errors).toHaveLength(1)
+    expect(errors[0].diagnostics).toContain("A valid query parameter must be supplied")
   })
 
   test("message with multiple of the same parameter get rejected", () => {
@@ -19,7 +21,7 @@ describe("task query parameter validation", () => {
 
     const errors = validateQueryParameters(params)
 
-    expect(errors.includes(duplicateIdentifier))
+    expect(errors.includes(validationErrors.invalidQueryParameterCombinationIssue))
   })
 
   test("message with multiple identifier parameters get rejected", () => {
@@ -30,6 +32,6 @@ describe("task query parameter validation", () => {
 
     const errors = validateQueryParameters(params)
 
-    expect(errors.includes(duplicateIdentifier))
+    expect(errors.includes(validationErrors.invalidQueryParameterCombinationIssue))
   })
 })
