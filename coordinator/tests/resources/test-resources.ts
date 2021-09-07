@@ -259,8 +259,20 @@ export const spineResponses = {
 }
 
 export const trackerSpineResponses = {
-  success: fs.readFileSync(
-    path.join(__dirname, "./spine-responses/tracker-responses/success.json"),
+  success1LineItem: fs.readFileSync(
+    path.join(__dirname, "./spine-responses/tracker-responses/success-1-lineItem.json"),
+    "utf8"
+  ),
+  success2LineItems: fs.readFileSync(
+    path.join(__dirname, "./spine-responses/tracker-responses/success-2-lineItems.json"),
+    "utf8"
+  ),
+  successCreated: fs.readFileSync(
+    path.join(__dirname, "./spine-responses/tracker-responses/success-created.json"),
+    "utf8"
+  ),
+  successClaimed: fs.readFileSync(
+    path.join(__dirname, "./spine-responses/tracker-responses/success-claimed.json"),
     "utf8"
   )
 }

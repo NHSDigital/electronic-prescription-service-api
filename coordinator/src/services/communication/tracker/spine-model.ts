@@ -19,7 +19,7 @@ interface SummaryPrescription extends Prescription {
 
 export interface DetailPrescription extends Prescription {
   prescriptionDownloadDate: string
-  prescriptionDispenseDate: string
+  prescriptionDispensedDate: string
   prescriptionClaimedDate: string
   prescriptionLastIssueDispensedDate: string
   prescriber: Organization

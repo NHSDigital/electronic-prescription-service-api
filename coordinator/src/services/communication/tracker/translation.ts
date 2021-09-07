@@ -32,24 +32,24 @@ function convertLineItemToInput(lineItemId: string, prescription: DetailPrescrip
   const taskInput: fhir.TaskInput = {
     type: fhir.createCodeableConcept("http://snomed.info/sct", lineItem.code, lineItem.description),
     valueReference: fhir.createIdentifierReference(
-      fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", lineItemId)
+      fhir.createIdentifier("https://fhir.nhs.uk/Id/prescription-order-item-number", lineItemId)
     )
   }
-  const extensions = []
-  if (prescription.prescriptionDispenseDate) {
-    extensions.push({
+  const dispensingInformationExtension = []
+  if (prescription.prescriptionDispensedDate) {
+    dispensingInformationExtension.push({
       url: "dateLastDispensed",
-      valueDate: prescription.prescriptionDispenseDate
+      valueDate: prescription.prescriptionDispensedDate
     })
   }
 
-  extensions.push({
+  dispensingInformationExtension.push({
     url: "dispenseNotificationReference",
     valueIdentifier: fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", "PLACEHOLDER")
   })
 
   if (lineItem.itemStatus) {
-    extensions.push({
+    dispensingInformationExtension.push({
       url: "dispenseStatus",
       valueCoding: fhir.createCoding(
         "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
@@ -59,10 +59,10 @@ function convertLineItemToInput(lineItemId: string, prescription: DetailPrescrip
     })
   }
 
-  if (extensions.length > 0) {
+  if (dispensingInformationExtension.length > 0) {
     taskInput.extension = [{
       url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation",
-      extension: extensions
+      extension: dispensingInformationExtension
     }]
   }
 
@@ -74,33 +74,33 @@ function convertLineItemToOutput(lineItemId: string, prescription: DetailPrescri
   const taskOutput: fhir.TaskOutput = {
     type: fhir.createCodeableConcept("http://snomed.info/sct", lineItem.code, lineItem.description),
     valueReference: fhir.createIdentifierReference(
-      fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", lineItemId)
+      fhir.createIdentifier("https://fhir.nhs.uk/Id/prescription-dispense-item-number", lineItemId)
     )
   }
-  const extensions = []
+  const releaseInformationExtensions = []
   if (prescription.prescriptionLastIssueDispensedDate) {
-    extensions.push({
+    releaseInformationExtensions.push({
       url: "dateLastIssuedDispensed",
       valueDate: prescription.prescriptionLastIssueDispensedDate
     })
   }
   if (prescription.prescriptionDownloadDate) {
-    extensions.push({
-      url: "dateLastIssuedDispensed",
+    releaseInformationExtensions.push({
+      url: "dateDownloaded",
       valueDate: prescription.prescriptionDownloadDate
     })
   }
   if (prescription.prescriptionClaimedDate) {
-    extensions.push({
-      url: "dateLastIssuedDispensed",
+    releaseInformationExtensions.push({
+      url: "dateClaimed",
       valueDate: prescription.prescriptionClaimedDate
     })
   }
 
-  if (extensions.length > 0) {
+  if (releaseInformationExtensions.length > 0) {
     taskOutput.extension = [{
       url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingReleaseInformation",
-      extension: extensions
+      extension: releaseInformationExtensions
     }]
   }
 
