@@ -7,6 +7,7 @@ import * as uuid from "uuid"
 import {convertMomentToISODate, convertMomentToISODateTime} from "../../services/translation/common/dateTime"
 import moment from "moment"
 import * as LosslessJson from "lossless-json"
+import {convertDetailedJsonResponseToFhirTask} from "../../services/communication/tracker/translation"
 
 const CODEABLE_CONCEPT_PRESCRIPTION = fhir.createCodeableConcept(
   "http://snomed.info/sct",
@@ -38,8 +39,9 @@ export default [{
       const prescriptionIdentifier = validatedParams["focus:identifier"] || validatedParams["identifier"]
 
       const spineResponse = await trackerClient.getPrescription(prescriptionIdentifier, request.headers, request.logger)
+      const translatedResponse = convertDetailedJsonResponseToFhirTask(spineResponse)
       return responseToolkit
-        .response({spineResponse})
+        .response({spineResponse, translatedResponse})
         .code(200)
     }
   }
