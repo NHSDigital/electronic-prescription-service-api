@@ -1,5 +1,5 @@
 import * as TestResources from "../../resources/test-resources"
-import {convertDetailedJsonResponseToFhirTask} from "../../../src/services/communication/tracker"
+import {convertDetailedJsonResponseToFhirTask} from "../../../src/services/communication/tracker/translation"
 
 describe("translateToFhir", () => {
   const spineResponse = JSON.parse(TestResources.trackerSpineResponses.success)
