@@ -11,7 +11,7 @@ import {
 } from "@models"
 import Hapi from "@hapi/hapi"
 import {readXml} from "../../src/services/serialisation/xml"
-import {DetailPrescription, DetailTrackerResponse} from "../../src/services/communication/tracker/spine-model";
+import {DetailTrackerResponse} from "../../src/services/communication/tracker/spine-model"
 
 export const convertSuccessExamples = fetcher.convertExamples.filter(
   e => e.isSuccess).map(spec => spec.toSuccessJestCase()

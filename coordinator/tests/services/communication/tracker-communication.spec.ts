@@ -14,12 +14,8 @@ describe("translateToFhir", () => {
     const taskResponse = convertDetailedJsonResponseToFhirTask(spineResponse)
     taskResponse.input.forEach((input, index) => {
       const id = taskResponse.focus.identifier.value
-      console.log(id)
-      console.log(Object.keys(spineResponse[id].lineItems)[index])
-      // expect(input.valueReference.identifier.value).toEqual(spineResponse[taskResponse.id].lineItems[id])
+      expect(input.valueReference.identifier.value).toEqual(Object.keys(spineResponse[id].lineItems)[index])
     })
-    // expect(taskResponse.input[0].valueReference.identifier.value).toEqual("30b7e9cf-6f42-40a8-84c1-e61ef638eee2")
-    // expect(taskResponse.input[1].valueReference.identifier.value).toEqual("636f1b57-e18c-4f45-acae-2d7db86b6e1e")
   })
 
   it("succeeds with a prescription in 'To be Dispensed' state", () => {
@@ -27,8 +23,13 @@ describe("translateToFhir", () => {
     const taskResponse = convertDetailedJsonResponseToFhirTask(spineResponse)
     expect(taskResponse.businessStatus.coding[0].display).toEqual("To be Dispensed")
     expect(taskResponse.businessStatus.coding[0].code).toEqual("0001")
-    expect(taskResponse.input[0].extension[0].extension).toHaveLength(2)
-    expect(taskResponse.output[0].extension).toBeUndefined()
+
+    taskResponse.input.forEach(input => {
+      expect(input.extension[0].extension).toHaveLength(2)
+    })
+    taskResponse.output.forEach(output => {
+      expect(output.extension).toBeUndefined()
+    })
   })
 
   it("succeeds with a prescription in 'Dispensed' state", () => {
@@ -36,7 +37,12 @@ describe("translateToFhir", () => {
     const taskResponse = convertDetailedJsonResponseToFhirTask(spineResponse)
     expect(taskResponse.businessStatus.coding[0].display).toEqual("Dispensed")
     expect(taskResponse.businessStatus.coding[0].code).toEqual("0006")
-    expect(taskResponse.input[0].extension[0].extension).toHaveLength(3)
-    expect(taskResponse.output[0].extension[0].extension).toHaveLength(3)
+
+    taskResponse.input.forEach(input => {
+      expect(input.extension[0].extension).toHaveLength(3)
+    })
+    taskResponse.output.forEach(output => {
+      expect(output.extension[0].extension).toHaveLength(3)
+    })
   })
 })
