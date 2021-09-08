@@ -55,7 +55,7 @@ export default [{
         } catch (err) {
           return responseToolkit
             .response({spineResponse, err})
-            .code(500)
+            .code(200)
             .type(ContentTypes.JSON)
         }
       }
