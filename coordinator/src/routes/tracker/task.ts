@@ -8,6 +8,7 @@ import {convertMomentToISODate, convertMomentToISODateTime} from "../../services
 import moment from "moment"
 import * as LosslessJson from "lossless-json"
 import {convertDetailedJsonResponseToFhirTask} from "../../services/communication/tracker/translation"
+import {RequestHeaders} from "../../utils/headers"
 
 const CODEABLE_CONCEPT_PRESCRIPTION = fhir.createCodeableConcept(
   "http://snomed.info/sct",
@@ -39,15 +40,24 @@ export default [{
       const prescriptionIdentifier = validatedParams["focus:identifier"] || validatedParams["identifier"]
 
       const spineResponse = await trackerClient.getPrescription(prescriptionIdentifier, request.headers, request.logger)
-      try {
-        const translatedResponse = convertDetailedJsonResponseToFhirTask(spineResponse)
+      if (request.headers[RequestHeaders.RAW_RESPONSE]) {
         return responseToolkit
-          .response({spineResponse, translatedResponse})
+          .response(spineResponse.toString())
           .code(200)
-      } catch (err) {
-        return responseToolkit
-          .response({spineResponse, err})
-          .code(200)
+          .type(ContentTypes.JSON)
+      } else {
+        try {
+          const translatedResponse = convertDetailedJsonResponseToFhirTask(spineResponse)
+          return responseToolkit
+            .response({spineResponse, translatedResponse})
+            .code(200)
+            .type(ContentTypes.FHIR)
+        } catch (err) {
+          return responseToolkit
+            .response({spineResponse, err})
+            .code(500)
+            .type(ContentTypes.JSON)
+        }
       }
     }
   }
