@@ -39,10 +39,16 @@ export default [{
       const prescriptionIdentifier = validatedParams["focus:identifier"] || validatedParams["identifier"]
 
       const spineResponse = await trackerClient.getPrescription(prescriptionIdentifier, request.headers, request.logger)
-      const translatedResponse = convertDetailedJsonResponseToFhirTask(spineResponse)
-      return responseToolkit
-        .response({spineResponse, translatedResponse})
-        .code(200)
+      try {
+        const translatedResponse = convertDetailedJsonResponseToFhirTask(spineResponse)
+        return responseToolkit
+          .response({spineResponse, translatedResponse})
+          .code(200)
+      } catch (err) {
+        return responseToolkit
+          .response({spineResponse, err})
+          .code(200)
+      }
     }
   }
 

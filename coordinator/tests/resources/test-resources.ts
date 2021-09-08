@@ -11,6 +11,7 @@ import {
 } from "@models"
 import Hapi from "@hapi/hapi"
 import {readXml} from "../../src/services/serialisation/xml"
+import {DetailPrescription, DetailTrackerResponse} from "../../src/services/communication/tracker/spine-model";
 
 export const convertSuccessExamples = fetcher.convertExamples.filter(
   e => e.isSuccess).map(spec => spec.toSuccessJestCase()
@@ -259,22 +260,22 @@ export const spineResponses = {
 }
 
 export const trackerSpineResponses = {
-  success1LineItem: fs.readFileSync(
+  success1LineItem: JSON.parse(fs.readFileSync(
     path.join(__dirname, "./spine-responses/tracker-responses/success-1-lineItem.json"),
     "utf8"
-  ),
-  success2LineItems: fs.readFileSync(
+  )) as DetailTrackerResponse,
+  success2LineItems: JSON.parse(fs.readFileSync(
     path.join(__dirname, "./spine-responses/tracker-responses/success-2-lineItems.json"),
     "utf8"
-  ),
-  successCreated: fs.readFileSync(
+  )) as DetailTrackerResponse,
+  successCreated: JSON.parse(fs.readFileSync(
     path.join(__dirname, "./spine-responses/tracker-responses/success-created.json"),
     "utf8"
-  ),
-  successClaimed: fs.readFileSync(
+  )) as DetailTrackerResponse,
+  successClaimed: JSON.parse(fs.readFileSync(
     path.join(__dirname, "./spine-responses/tracker-responses/success-claimed.json"),
     "utf8"
-  )
+  )) as DetailTrackerResponse
 }
 
 function getLocation(search: string) {
