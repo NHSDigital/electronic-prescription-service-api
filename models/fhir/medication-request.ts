@@ -73,22 +73,15 @@ export interface MedicationRequest extends BaseMedicationRequest {
 }
 
 export interface MedicationRequestOutcome extends BaseMedicationRequest {
-  extension: Array<extension.ReferenceExtension<practitionerRole.PractitionerRole> | PrescriptionStatusHistoryExtension>
+  extension: Array<extension.ReferenceExtension<practitionerRole.PractitionerRole>
+    | extension.PrescriptionStatusHistoryExtension>
 }
 
 //TODO - at what point do we just use Extension instead of a union type? What benefit is this providing?
 export type MedicationRequestPermittedExtensions = extension.IdentifierExtension
   | extension.ReferenceExtension<practitionerRole.PractitionerRole>
   | extension.CodingExtension | extension.CodeableConceptExtension
-  | RepeatInformationExtension | ControlledDrugExtension | DispensingInformationExtension
-
-export type RepeatInformationExtension = extension.ExtensionExtension<extension.UnsignedIntExtension
-  | extension.DateTimeExtension>
-export type ControlledDrugExtension = extension.ExtensionExtension<extension.StringExtension
-  | extension.CodingExtension>
-export type PrescriptionStatusHistoryExtension = extension.ExtensionExtension<extension.CodingExtension
-  | extension.DateTimeExtension>
-export type DispensingInformationExtension = extension.ExtensionExtension<extension.DateExtension>
+  | extension.RepeatInformationExtension | extension.ControlledDrugExtension | extension.DispensingInformationExtension
 
 export interface MedicationRequestGroupIdentifier extends common.Identifier {
   extension?: Array<extension.IdentifierExtension>

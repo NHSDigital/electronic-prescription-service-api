@@ -1,0 +1,10 @@
+{
+  "resourceType": "OperationOutcome",
+  "issue": [
+    {
+      "severity": "error",
+      "code": "invalid",
+      "diagnostics": "Query parameter must be one of: identifier, focus:identifier."
+    }
+  ]
+}
