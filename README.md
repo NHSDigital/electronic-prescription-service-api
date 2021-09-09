@@ -1,4 +1,4 @@
-# electronic-prescription-service-api
+# Electronic Prescription Service API
 
 ![Build](https://github.com/NHSDigital/electronic-prescription-service-api/workflows/Build/badge.svg?branch=master)
 
@@ -145,6 +145,21 @@ Successful deployment of the API Proxy requires:
  * A *Target Server* named `ig3`
 
 :bulb: For Sandbox-running environments (`test`) these need to be present for successful deployment but can be set to empty/dummy values.
+
+## Release notes
+The project includes a script to calculate the difference between two different versions of the API and provide a template for generating release notes. The script is available as a makefile command:
+
+```
+make identify-external-release-changes
+```
+
+By default, this will compare the currently deployed version on `internal-dev` and the deployed version on `int` and provide a summary of all changes. You can specify an arbitrary tag to deploy with the `DEPLOY_TAG` argument:
+
+```
+make identify-external-release-changes DEPLOY_TAG=v1.0.638-beta
+```
+
+This will use the specified tag as the proposed release candidate instead of the version currently deployed to `internal-dev`
 
 # Validator
 The FHIR Validator has been added to this module as a git submodule. By default, the validator submodule will not be fetched when the repo is cloned. There are two options to  retrieve the contents of the submodule:

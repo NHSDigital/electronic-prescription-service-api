@@ -202,4 +202,4 @@ generate-postman-collection:
 	&& npm run generate-postman-collection
 
 identify-external-release-changes:
-	poetry run python ./scripts/identify_external_release_changes.py
+	poetry run python ./scripts/identify_external_release_changes.py --deploy-tag=${DEPLOY_TAG}
