@@ -2,6 +2,7 @@ import requests
 import boto3
 import git
 import os
+import argparse
 
 SCRIPT_LOCATION = os.path.join(os.path.dirname(os.path.abspath(__file__)))
 REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_LOCATION, ".."))
@@ -33,6 +34,16 @@ def get_tag_for_commit(r: git.Repo, commit_id: str) -> str:
 
 
 if __name__ == "__main__":
+    script = argparse.ArgumentParser(description="Identify release notes for commits between two tags")
+
+    script.add_argument(
+        "--deploy-tag",
+        help="A specific tag to deploy, otherwise use the version currently deployed to internal dev",
+        required=False
+    )
+
+    args = script.parse_args()
+
     repo = git.Repo(REPO_ROOT)
 
     origin = repo.remote("origin")
@@ -44,13 +55,13 @@ if __name__ == "__main__":
     internal_dev_commit_id = get_commit_id("internal-dev", key)
 
     int_tag = get_tag_for_commit(repo, int_commit_id)
-    internal_dev_tag = get_tag_for_commit(repo, internal_dev_commit_id)
+    internal_dev_tag = args.deploy_tag or get_tag_for_commit(repo, internal_dev_commit_id)
 
     print(f"# EPS FHIR API {internal_dev_tag}\n")
 
     print(f"## Changes since {int_tag}")
     tagged_commits = [repo.commit(tag) for tag in repo.tags]
-    commits_in_range = repo.iter_commits(f"{int_commit_id}..{internal_dev_commit_id}")
+    commits_in_range = repo.iter_commits(f"{int_tag}..{internal_dev_tag}")
     tagged_commits_in_range = [commit for commit in commits_in_range if commit in tagged_commits]
     for commit in tagged_commits_in_range:
         print(f"* {commit.message.splitlines()[0]}")
