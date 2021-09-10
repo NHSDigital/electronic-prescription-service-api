@@ -442,7 +442,9 @@ paths:
       description: |
         ## Overview
         Use this endpoint to verify a prescription's signature to ensure that the signature is valid, and that it matches the prescription it is attached to.
-        To do this, send a verify-signature message to this endpoint.
+        This endpoint is expected to be used immediately after downloading prescriptions.
+        Send the response message from the release endpoint to this endpoint.
+        The signatures on these prescriptions will be verified.
 
         The endpoint will return a set of (up to 25) verify responses associated with the bundle of prescriptions sent to the endpoint for verification.
       tags:
