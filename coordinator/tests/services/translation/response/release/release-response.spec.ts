@@ -3,6 +3,7 @@ import {
   createOuterBundle
 } from "../../../../../src/services/translation/response/release/release-response"
 import {readXmlStripNamespace} from "../../../../../src/services/serialisation/xml"
+import * as LosslessJson from "lossless-json"
 import * as fs from "fs"
 import * as path from "path"
 import {getUniqueValues} from "../../../../../src/utils/collections"
@@ -52,6 +53,10 @@ describe("outer bundle", () => {
   test("contains entry containing only bundles", () => {
     const resourceTypes = result.entry.map(entry => entry.resource.resourceType)
     expect(getUniqueValues(resourceTypes)).toEqual(["Bundle"])
+  })
+
+  test("can be converted", () => {
+    expect(() => LosslessJson.stringify(result)).not.toThrow()
   })
 
   describe("when the release response message contains only old format prescriptions", () => {
