@@ -19,11 +19,17 @@ export function createMedicationRequest(
   lineItem: hl7V3.LineItem,
   patientId: string,
   requesterId: string,
-  responsiblePartyId: string,
-  releaseRequestId: string
+  responsiblePartyId: string
 ): fhir.MedicationRequest {
   const text = lineItem.pertinentInformation1?.pertinentAdditionalInstructions?.value?._text ?? ""
   const additionalInstructions = parseAdditionalInstructions(text)
+  const courseOfTherapyType = createCourseOfTherapyType(
+    prescription.pertinentInformation5.pertinentPrescriptionTreatmentType,
+    lineItem.repeatNumber
+  )
+  const intent = courseOfTherapyType === fhir.COURSE_OF_THERAPY_TYPE_CONTINUOUS_REPEAT_DISPENSING
+    ? fhir.MedicationRequestIntent.REFLEX_ORDER
+    : fhir.MedicationRequestIntent.ORDER
   return {
     resourceType: "MedicationRequest",
     id: uuid.v4(),
@@ -40,8 +46,8 @@ export function createMedicationRequest(
       createItemNumberIdentifier(lineItem.id._attributes.root)
     ],
     status: getStatus(lineItem.pertinentInformation4.pertinentItemStatus),
-    basedOn: fhir.createReference(releaseRequestId.toLowerCase()),
-    intent: fhir.MedicationRequestIntent.REFLEX_ORDER,
+    basedOn: fhir.createReference(lineItem.id._attributes.root),
+    intent: intent,
     medicationCodeableConcept: createSnomedCodeableConcept(
       lineItem.product.manufacturedProduct.manufacturedRequestedMaterial.code
     ),
@@ -52,10 +58,7 @@ export function createMedicationRequest(
     )],
     requester: fhir.createReference(requesterId),
     groupIdentifier: createGroupIdentifierFromPrescriptionIds(prescription.id),
-    courseOfTherapyType: createCourseOfTherapyType(
-      prescription.pertinentInformation5.pertinentPrescriptionTreatmentType,
-      lineItem.repeatNumber
-    ),
+    courseOfTherapyType: courseOfTherapyType,
     note: createNote(additionalInstructions.additionalInstructions),
     dosageInstruction: [
       createDosage(lineItem.pertinentInformation2.pertinentDosageInstructions)

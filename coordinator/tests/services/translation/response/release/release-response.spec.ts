@@ -1,5 +1,4 @@
 import {
-  createBundleResources,
   createInnerBundle,
   createOuterBundle
 } from "../../../../../src/services/translation/response/release/release-response"
@@ -9,19 +8,23 @@ import * as fs from "fs"
 import * as path from "path"
 import {getUniqueValues} from "../../../../../src/utils/collections"
 import {resolveOrganization, resolvePractitioner, toArray} from "../../../../../src/services/translation/common"
-import {hl7V3} from "@models"
+import {fhir, hl7V3} from "@models"
 import {
   getHealthcareServices,
   getLocations,
+  getMedicationRequests,
+  getMessageHeader,
   getOrganizations,
+  getPatient,
   getPractitionerRoles,
-  getPractitioners
+  getPractitioners,
+  getProvenances
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {getRequester, getResponsiblePractitioner} from "../common.spec"
 
 describe("outer bundle", () => {
   const result = createOuterBundle(getExamplePrescriptionReleaseResponse())
-  console.log(LosslessJson.stringify(result))
+  LosslessJson.stringify(result)
 
   test("contains id", () => {
     expect(result.id).toBeTruthy()
@@ -71,7 +74,7 @@ describe("outer bundle", () => {
 
 describe("inner bundle", () => {
   const result = createInnerBundle(getExampleParentPrescription(), "ReleaseRequestId")
-  console.log(LosslessJson.stringify(result))
+  LosslessJson.stringify(result)
 
   test("contains id", () => {
     expect(result.id).toBeTruthy()
@@ -100,56 +103,93 @@ describe("inner bundle", () => {
 })
 
 describe("bundle resources", () => {
-  const result = createBundleResources(getExampleParentPrescription(), "ReleaseRequestId")
-  console.log(LosslessJson.stringify(result))
+  const result = createInnerBundle(getExampleParentPrescription(), "ReleaseRequestId")
+  LosslessJson.stringify(result)
 
   test("contains MessageHeader", () => {
-    const messageHeader = result.filter(resource => resource.resourceType === "MessageHeader")
-    expect(messageHeader).toHaveLength(1)
+    expect(() => getMessageHeader(result)).not.toThrow()
   })
 
   test("first element is MessageHeader", () => {
-    expect(result[0].resourceType).toEqual("MessageHeader")
+    expect(result.entry[0].resource.resourceType).toEqual("MessageHeader")
   })
 
   test("contains Patient", () => {
-    const patients = result.filter(resource => resource.resourceType === "Patient")
-    expect(patients).toHaveLength(1)
+    expect(() => getPatient(result)).not.toThrow()
   })
 
   test("contains PractitionerRole", () => {
-    const practitionerRoles = result.filter(resource => resource.resourceType === "PractitionerRole")
+    const practitionerRoles = getPractitionerRoles(result)
     expect(practitionerRoles).toHaveLength(1)
   })
 
   test("contains Practitioner", () => {
-    const practitioners = result.filter(resource => resource.resourceType === "Practitioner")
+    const practitioners = getPractitioners(result)
     expect(practitioners).toHaveLength(1)
   })
 
   test("contains HealthcareService", () => {
-    const healthcareServices = result.filter(resource => resource.resourceType === "HealthcareService")
+    const healthcareServices = getHealthcareServices(result)
     expect(healthcareServices).toHaveLength(1)
   })
 
   test("contains Location", () => {
-    const locations = result.filter(resource => resource.resourceType === "Location")
+    const locations = getLocations(result)
     expect(locations).toHaveLength(1)
   })
 
   test("contains Organization", () => {
-    const organizations = result.filter(resource => resource.resourceType === "Organization")
+    const organizations = getOrganizations(result)
     expect(organizations).toHaveLength(1)
   })
 
   test("contains MedicationRequests", () => {
-    const medicationRequest = result.filter(resource => resource.resourceType === "MedicationRequest")
-    expect(medicationRequest).toHaveLength(4)
+    const medicationRequests = getMedicationRequests(result)
+    expect(medicationRequests).toHaveLength(4)
   })
 
   test("contains Provenance", () => {
-    const provenances = result.filter(resource => resource.resourceType === "Provenance")
+    const provenances = getProvenances(result)
     expect(provenances).toHaveLength(1)
+  })
+})
+
+describe("medicationRequest details", () => {
+  const parentPrescription = getExampleParentPrescription()
+  const prescription = parentPrescription.pertinentInformation1.pertinentPrescription
+  const treatmentType = prescription.pertinentInformation5.pertinentPrescriptionTreatmentType
+
+  test("acute treatmentType causes intent = order", () => {
+    treatmentType.value = hl7V3.PrescriptionTreatmentTypeCode.ACUTE
+    const result = createInnerBundle(parentPrescription, "ReleaseRequestId")
+
+    const medicationRequests = getMedicationRequests(result)
+
+    medicationRequests.forEach(medicationRequest => {
+      expect(medicationRequest.intent).toBe(fhir.MedicationRequestIntent.ORDER)
+    })
+  })
+
+  test("continuous treatmentType causes intent = order", () => {
+    treatmentType.value = hl7V3.PrescriptionTreatmentTypeCode.CONTINUOUS
+    const result = createInnerBundle(parentPrescription, "ReleaseRequestId")
+
+    const medicationRequests = getMedicationRequests(result)
+
+    medicationRequests.forEach(medicationRequest => {
+      expect(medicationRequest.intent).toBe(fhir.MedicationRequestIntent.ORDER)
+    })
+  })
+
+  test("continuous repeat dispensing treatmentType causes intent = reflex-order", () => {
+    treatmentType.value = hl7V3.PrescriptionTreatmentTypeCode.CONTINUOUS_REPEAT_DISPENSING
+    const result = createInnerBundle(parentPrescription, "ReleaseRequestId")
+
+    const medicationRequests = getMedicationRequests(result)
+
+    medicationRequests.forEach(medicationRequest => {
+      expect(medicationRequest.intent).toBe(fhir.MedicationRequestIntent.REFLEX_ORDER)
+    })
   })
 })
 
