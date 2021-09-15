@@ -43,7 +43,7 @@ export function createMedicationRequest(
       prescription.predecessor?.priorPreviousIssueDate
     ),
     identifier: [
-      createItemNumberIdentifier(lineItem.id._attributes.root)
+      createItemNumberIdentifier(lineItem.id._attributes.root.toLowerCase())
     ],
     status: getStatus(lineItem.pertinentInformation4.pertinentItemStatus),
     basedOn: fhir.createReference(lineItem.id._attributes.root),

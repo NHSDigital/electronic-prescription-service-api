@@ -3,7 +3,6 @@ import {
   createOuterBundle
 } from "../../../../../src/services/translation/response/release/release-response"
 import {readXmlStripNamespace} from "../../../../../src/services/serialisation/xml"
-import * as LosslessJson from "lossless-json"
 import * as fs from "fs"
 import * as path from "path"
 import {getUniqueValues} from "../../../../../src/utils/collections"
@@ -24,7 +23,6 @@ import {getRequester, getResponsiblePractitioner} from "../common.spec"
 
 describe("outer bundle", () => {
   const result = createOuterBundle(getExamplePrescriptionReleaseResponse())
-  LosslessJson.stringify(result)
 
   test("contains id", () => {
     expect(result.id).toBeTruthy()
@@ -74,7 +72,6 @@ describe("outer bundle", () => {
 
 describe("inner bundle", () => {
   const result = createInnerBundle(getExampleParentPrescription(), "ReleaseRequestId")
-  LosslessJson.stringify(result)
 
   test("contains id", () => {
     expect(result.id).toBeTruthy()
@@ -104,7 +101,6 @@ describe("inner bundle", () => {
 
 describe("bundle resources", () => {
   const result = createInnerBundle(getExampleParentPrescription(), "ReleaseRequestId")
-  LosslessJson.stringify(result)
 
   test("contains MessageHeader", () => {
     expect(() => getMessageHeader(result)).not.toThrow()
