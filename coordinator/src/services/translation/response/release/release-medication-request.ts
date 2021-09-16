@@ -43,10 +43,10 @@ export function createMedicationRequest(
       prescription.predecessor?.priorPreviousIssueDate
     ),
     identifier: [
-      createItemNumberIdentifier(lineItem.id._attributes.root.toLowerCase())
+      createItemNumberIdentifier(lineItem.id._attributes.root)
     ],
     status: getStatus(lineItem.pertinentInformation4.pertinentItemStatus),
-    basedOn: fhir.createReference(lineItem.id._attributes.root),
+    basedOn: fhir.createReference(lineItem.id._attributes.root.toLowerCase()),
     intent: intent,
     medicationCodeableConcept: createSnomedCodeableConcept(
       lineItem.product.manufacturedProduct.manufacturedRequestedMaterial.code
