@@ -54,14 +54,10 @@ export function createCoding(system: string, code: string, display: string): Cod
   }
 }
 
-// Matt and Dan - 
+// Matt and Dan -
 export interface Reference<T extends Resource> {
   reference: string,
   display?: string
-}
-
-export interface Payee {
-  party: fhir.IdentifierReference<PersonOrOrganization>
 }
 
 export function createReference<T extends Resource>(reference: string): Reference<T> {

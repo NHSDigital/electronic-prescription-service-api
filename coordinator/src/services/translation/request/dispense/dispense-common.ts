@@ -131,7 +131,7 @@ export function getOrganisationPerformer(fhirFirstMedicationDispense: fhir.Medic
 }
 
 export function getOrganisationPerformerFromClaim(
-  claim: fhir.DispenseClaimInformation
+  claim: fhir.Claim
 ): fhir.IdentifierReference<PersonOrOrganization> {
   return claim.payee.party
 }

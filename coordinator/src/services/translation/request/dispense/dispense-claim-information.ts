@@ -5,16 +5,21 @@ import {PersonOrOrganization} from "../../../../../../models/fhir"
 import {
   DispenseClaimChargePayment,
   DispenseClaimLineItemComponent,
-  DispenseClaimLineItemPertinentInformation2,
   DispenseClaimPertinentSupplyHeader,
   DispenseClaimSuppliedLineItemQuantity,
   LegalAuthenticator,
   PrimaryInformationRecipient,
   Timestamp
 } from "../../../../../../models/hl7-v3"
-import {getExtensionForUrl, getMessageId} from "../../common"
+import {
+  getCodeableConceptCodingForSystem,
+  getExtensionForUrl,
+  getIdentifierValueForSystem,
+  getMessageId,
+  getNumericValueAsString
+} from "../../common"
 import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
-import {getDispenseClaims, getMessageHeader} from "../../common/getResourcesOfType"
+import {getClaims, getMessageHeader} from "../../common/getResourcesOfType"
 import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
 import {
   createAgentOrganisationFromReference,
@@ -22,6 +27,7 @@ import {
   createPriorPrescriptionReleaseEventRef,
   getOrganisationPerformerFromClaim
 } from "./dispense-common"
+import {InvalidValueError} from "../../../../../../models/errors/processing-errors"
 
 export async function convertDispenseClaimInformation(
   bundle: fhir.Bundle,
@@ -38,7 +44,7 @@ export async function convertDispenseClaimInformation(
     now
   )
 
-  const claims = getDispenseClaims(bundle)
+  const claims = getClaims(bundle)
   const firstClaim = claims[0]
 
   const fhirOrganisationPerformer = getOrganisationPerformerFromClaim(firstClaim)
@@ -69,47 +75,50 @@ async function createPertinentInformation1(
   messageId: string,
   timestamp: Timestamp,
   fhirOrganisation: fhir.IdentifierReference<PersonOrOrganization>,
-  fhirClaims: Array<fhir.DispenseClaimInformation>,
-  firstClaim: fhir.DispenseClaimInformation,
+  fhirClaims: Array<fhir.Claim>,
+  firstClaim: fhir.Claim,
   logger: pino.Logger
 ) {
-
-  const hl7PertinentPrescriptionStatus = createPertinentPrescriptionStatusForClaim()
   const hl7PertinentPrescriptionIdentifier = createPertinentPrescriptionIdForClaim()
   const hl7PriorOriginalRef = createPriorOriginalRefForClaim()
-
-  const hl7PertinentInformation1LineItems = fhirClaims.map(
-    () => {
-      return createPertinentInformation1LineItemForClaim(
-        firstClaim,
-        {code: "FAKE_MEDICATION_CODE"}
-      )
-    }
-  )
 
   const hl7RepresentedOrganisationCode = fhirOrganisation.identifier.value
   // TODO - Unattended access?
   const agentPerson = await createAgentPersonForUnattendedAccess(hl7RepresentedOrganisationCode, logger)
   const legalAuthenticator = new LegalAuthenticator(agentPerson, timestamp)
+  //TODO - work out what this means and whether we're doing it:
+  // "Note: this must refer to the last one in the series if more
+  // than one dispense event was required to fulfil the prescription."
   const supplyHeader = new DispenseClaimPertinentSupplyHeader(new hl7V3.GlobalIdentifier(messageId))
+  //TODO - repeat dispensing
   supplyHeader.legalAuthenticator = legalAuthenticator
-  supplyHeader.pertinentInformation1 = hl7PertinentInformation1LineItems
+  //TODO - populate legalAuthenticator.participant
+  //TODO - populate pertinentInformation2 (non-dispensing reason)
+
+  //TODO - ensure consistent prescription status for all items on all claims (should this even be at item level?)
+  const prescriptionStatusExtension = getExtensionForUrl(
+    firstClaim.item[0].extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+    "Claim.item.extension"
+  ) as fhir.CodingExtension
+  const hl7PertinentPrescriptionStatus = createPertinentPrescriptionStatusForClaim(
+    prescriptionStatusExtension.valueCoding
+  )
   supplyHeader.pertinentInformation3 = new hl7V3.DispensePertinentInformation3(hl7PertinentPrescriptionStatus)
+
+  const hl7PertinentInformation1LineItems = fhirClaims.map(createPertinentInformation1LineItemForClaim)
+  supplyHeader.pertinentInformation1 = hl7PertinentInformation1LineItems
   supplyHeader.pertinentInformation4 = new hl7V3.DispensePertinentInformation4(hl7PertinentPrescriptionIdentifier)
   supplyHeader.inFulfillmentOf = new hl7V3.InFulfillmentOf(hl7PriorOriginalRef)
 
   return new hl7V3.DispensePertinentInformation1(supplyHeader)
 }
 
-export function createPertinentPrescriptionStatusForClaim(): hl7V3.PertinentPrescriptionStatus {
-  // TODO: Where do we get prescription status from?
-  const fhirPrescriptionStatus = {valueCoding: {
-    code: "12345",
-    display: "MOCK STATUS"
-  }
-  }
-  const hl7StatusCode = new hl7V3.StatusCode(fhirPrescriptionStatus.valueCoding.code)
-  hl7StatusCode._attributes.displayName = fhirPrescriptionStatus.valueCoding.display
+export function createPertinentPrescriptionStatusForClaim(
+  prescriptionStatus: fhir.Coding
+): hl7V3.PertinentPrescriptionStatus {
+  const hl7StatusCode = new hl7V3.StatusCode(prescriptionStatus.code)
+  hl7StatusCode._attributes.displayName = prescriptionStatus.display
   return new hl7V3.PertinentPrescriptionStatus(hl7StatusCode)
 }
 
@@ -128,36 +137,34 @@ export function createPertinentPrescriptionIdForClaim(): hl7V3.PrescriptionId {
 }
 
 export function createPertinentInformation1LineItemForClaim(
-  dispenseClaim: fhir.DispenseClaimInformation,
-  medicationCoding: fhir.Coding,
+  claim: fhir.Claim
 ): hl7V3.DispenseClaimPertinentInformation1LineItem {
-  const fhirPrescriptionDispenseItemNumber = "1" // TODO: Fake prescription item number
-  const fhirPrescriptionLineItemStatus = {code: "FAKE_LINE_ITEM_STATUS_CODE"}
+  //TODO - should this definitely be the dispense notification ID and not the line item ID?
+  // and if so, should this not be at item level instead of claim level?
+  const dispenseNotificationId = getIdentifierValueForSystem(
+    claim.identifier,
+    "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+    "Claim.identifier"
+  )
 
-  const hl7SuppliedLineItemQuantitySnomedCode = new hl7V3.SnomedCode(
-    dispenseClaim.item.quantity.code,
-    dispenseClaim.item.quantity.unit
-  )
-  const hl7UnitValue = dispenseClaim.item.quantity.value.toString()
-  const hl7Quantity = new hl7V3.QuantityInAlternativeUnits(
-    hl7UnitValue,
-    hl7UnitValue,
-    hl7SuppliedLineItemQuantitySnomedCode
-  )
-  const hl7ItemStatusCode = createLineItemStatusCode(fhirPrescriptionLineItemStatus)
   const hl7PriorOriginalItemRef = "12345" // TODO: Get prescription item ID from dispense claim
-  const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(
-    hl7SuppliedLineItemQuantitySnomedCode,
-    hl7Quantity,
-    medicationCoding,
-  )
 
   const hl7PertinentSuppliedLineItem = new hl7V3.DispenseClaimPertinentSuppliedLineItem(
-    new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber),
-    new hl7V3.SnomedCode(medicationCoding.code)
+    new hl7V3.GlobalIdentifier(dispenseNotificationId)
   )
+  hl7PertinentSuppliedLineItem.effectiveTime = hl7V3.Null.NOT_APPLICABLE
+  //TODO - repeat dispensing
+  hl7PertinentSuppliedLineItem.component = claim.item.map(item => {
+    return item.detail.map(itemDetail => {
+      const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(claim, item, itemDetail)
+      return new DispenseClaimLineItemComponent(hl7SuppliedLineItemQuantity)
+    })
+  }).flat()
 
-  hl7PertinentSuppliedLineItem.component = new DispenseClaimLineItemComponent(hl7SuppliedLineItemQuantity)
+  //TODO - got to here
+
+  const fhirPrescriptionLineItemStatus = {code: "FAKE_LINE_ITEM_STATUS_CODE"}
+  const hl7ItemStatusCode = createLineItemStatusCode(fhirPrescriptionLineItemStatus)
   hl7PertinentSuppliedLineItem.pertinentInformation3 = new hl7V3.DispenseLineItemPertinentInformation3(
     new hl7V3.PertinentItemStatus(hl7ItemStatusCode)
   )
@@ -169,38 +176,70 @@ export function createPertinentInformation1LineItemForClaim(
 }
 
 export function createSuppliedLineItemQuantity(
-  hl7SuppliedLineItemQuantitySnomedCode: hl7V3.SnomedCode,
-  hl7Quantity: hl7V3.QuantityInAlternativeUnits,
-  fhirMedicationCodeableConceptCoding: fhir.Coding
+  claim: fhir.Claim,
+  item: fhir.ClaimItem,
+  itemDetail: fhir.ClaimItemDetail
 ): DispenseClaimSuppliedLineItemQuantity {
-  const dispenseProduct = new hl7V3.DispenseProduct(
-    new hl7V3.SuppliedManufacturedProduct(
-      new hl7V3.ManufacturedRequestedMaterial(
-        new hl7V3.SnomedCode(
-          fhirMedicationCodeableConceptCoding.code,
-          fhirMedicationCodeableConceptCoding.display
-        )
-      )
-    )
+  const fhirQuantity = itemDetail.quantity
+  const quantityUnitSnomedCode = new hl7V3.SnomedCode(fhirQuantity.code, fhirQuantity.unit)
+  const quantityValue = getNumericValueAsString(fhirQuantity.value)
+  const hl7Quantity = new hl7V3.QuantityInAlternativeUnits(quantityValue, quantityValue, quantityUnitSnomedCode)
+
+  const fhirProductCoding = getCodeableConceptCodingForSystem(
+    [itemDetail.productOrService],
+    "http://snomed.info/sct",
+    "Claim.item.detail.productOrService"
   )
+  const hl7ProductCoding = new hl7V3.SnomedCode(fhirProductCoding.code, fhirProductCoding.display)
+  const manufacturedRequestedMaterial = new hl7V3.ManufacturedRequestedMaterial(hl7ProductCoding)
+  const suppliedManufacturedProduct = new hl7V3.SuppliedManufacturedProduct(manufacturedRequestedMaterial)
+  const dispenseProduct = new hl7V3.DispenseProduct(suppliedManufacturedProduct)
 
-  const pertinentInformation1 = new hl7V3.DispenseClaimLineItemPertinentInformation1(
-    new DispenseClaimChargePayment(
-      true // TODO: Need to work out where we obtain this
-    )
-  )
+  const chargePaid = getChargePaid(itemDetail)
+  const chargePayment = new DispenseClaimChargePayment(chargePaid)
+  const pertinentInformation1 = new hl7V3.DispenseClaimLineItemPertinentInformation1(chargePayment)
 
-  const pertinentInformation2: Array<DispenseClaimLineItemPertinentInformation2> = []
+  const endorsementCodings = getEndorsementCodings(itemDetail)
+  const pertinentInformation2 = endorsementCodings.map(endorsementCoding => {
+    const endorsement = createEndorsement(endorsementCoding)
+    return new hl7V3.DispenseClaimLineItemPertinentInformation2(endorsement)
+  })
 
-  const hl7SuppliedLineItemQuantity = new hl7V3.DispenseClaimSuppliedLineItemQuantity(
-    hl7SuppliedLineItemQuantitySnomedCode,
+  return new hl7V3.DispenseClaimSuppliedLineItemQuantity(
     hl7Quantity,
     dispenseProduct,
     pertinentInformation1,
     pertinentInformation2
   )
+}
 
-  return hl7SuppliedLineItemQuantity
+function getChargePaid(itemDetail: fhir.ClaimItemDetail) {
+  const prescriptionChargeCoding = getCodeableConceptCodingForSystem(
+    itemDetail.programCode,
+    "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
+    "Claim.item.detail.programCode"
+  )
+  switch (prescriptionChargeCoding.code) {
+    case "paid-once":
+      return true
+    case "not-paid":
+      return false
+    default:
+      throw new InvalidValueError("Unsupported prescription charge code", "Claim.item.detail.programCode")
+  }
+}
+
+function getEndorsementCodings(itemDetail: fhir.ClaimItemDetail) {
+  return itemDetail.programCode
+    .flatMap(codeableConcept => codeableConcept.coding)
+    .filter(coding => coding.system === "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement")
+}
+
+function createEndorsement(endorsementCoding: fhir.Coding) {
+  const endorsement = new hl7V3.DispensingEndorsement()
+  //TODO - endorsement supporting information
+  endorsement.value = new hl7V3.DispensingEndorsementCode(endorsementCoding.code)
+  return endorsement
 }
 
 export function createPriorOriginalRefForClaim(): hl7V3.PriorOriginalRef {

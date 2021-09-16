@@ -1,6 +1,6 @@
 import * as core from "./core"
 import * as codes from "./codes"
-import { ElementCompact } from "xml-js"
+import {ElementCompact} from "xml-js"
 import * as parentPrescription from "./parent-prescription"
 import * as organisation from "./organization"
 import * as prescription from "./prescription"
@@ -11,25 +11,25 @@ import * as lineItem from "./line-item"
 * to be available on PSIS.
 */
 export abstract class PertinentSupplyHeader implements ElementCompact {
-    _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-        classCode: "SBADM",
-        moodCode: "EVN"
-    }
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+    classCode: "SBADM",
+    moodCode: "EVN"
+  }
 
-    id: codes.GlobalIdentifier
-    code: codes.SnomedCode
-    effectiveTime: core.Null
-    repeatNumber?: core.Interval<core.NumericValue>
-    pertinentInformation1: Array<DispensePertinentInformation1LineItem>
-    pertinentInformation3: DispensePertinentInformation3
-    pertinentInformation4: DispensePertinentInformation4
-    inFulfillmentOf: InFulfillmentOf
+  id: codes.GlobalIdentifier
+  code: codes.SnomedCode
+  effectiveTime: core.Null
+  repeatNumber?: core.Interval<core.NumericValue>
+  pertinentInformation1: Array<DispensePertinentInformation1LineItem>
+  pertinentInformation3: DispensePertinentInformation3
+  pertinentInformation4: DispensePertinentInformation4
+  inFulfillmentOf: InFulfillmentOf
 
-    constructor(id: codes.GlobalIdentifier) {
-        this.id = id
-        this.code = new codes.SnomedCode("225426007")
-        this.effectiveTime = core.Null.NOT_APPLICABLE
-    }
+  constructor(id: codes.GlobalIdentifier) {
+    this.id = id
+    this.code = new codes.SnomedCode("225426007")
+    this.effectiveTime = core.Null.NOT_APPLICABLE
+  }
 }
 
 /*
@@ -37,139 +37,138 @@ export abstract class PertinentSupplyHeader implements ElementCompact {
  * SupplyHeader - the primary act of the PSIS clinical message.
  */
 export class DispensePertinentInformation1<T extends ElementCompact> implements ElementCompact {
-    _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
-        typeCode: "PERT",
-        contextConductionInd: "true"
-    }
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
 
-    templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.pertinentInformation")
-    pertinentSupplyHeader: T
+  templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.pertinentInformation")
+  pertinentSupplyHeader: T
 
-    constructor(pertinentSupplyHeader: T) {
-        this.pertinentSupplyHeader = pertinentSupplyHeader
-    }
+  constructor(pertinentSupplyHeader: T) {
+    this.pertinentSupplyHeader = pertinentSupplyHeader
+  }
 }
 
 /*
  * An act relationship that provides information about the actual supplied Line Item (medication).
  */
 export class DispensePertinentInformation1LineItem implements ElementCompact {
-    _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
-        typeCode: "PERT",
-        contextConductionInd: "true",
-        inversionInd: "false",
-        negationInd: "false"
-    }
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true",
+    inversionInd: "false",
+    negationInd: "false"
+  }
 
-    seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-    templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.sourceOf2")
-    pertinentSuppliedLineItem: PertinentSuppliedLineItem
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.sourceOf2")
+  pertinentSuppliedLineItem: PertinentSuppliedLineItem
 
-     constructor(pertinentSuppliedLineItem: PertinentSuppliedLineItem) {
-        this.pertinentSuppliedLineItem = pertinentSuppliedLineItem
-    }
+  constructor(pertinentSuppliedLineItem: PertinentSuppliedLineItem) {
+    this.pertinentSuppliedLineItem = pertinentSuppliedLineItem
+  }
 }
-
 
 /*
 * An act relationship to denote that this medication dispense is
 * satisfying the requirements from the original prescription.
 */
 export class InFulfillmentOf implements ElementCompact {
-    _attributes: core.AttributeTypeCode & core.AttributeInversionInd & core.AttributeNegationInd = {
-        typeCode: "FLFS",
-        inversionInd: "false",
-        negationInd: "false"
-    }
+  _attributes: core.AttributeTypeCode & core.AttributeInversionInd & core.AttributeNegationInd = {
+    typeCode: "FLFS",
+    inversionInd: "false",
+    negationInd: "false"
+  }
 
-    seperatableInd: core.BooleanValue = new core.BooleanValue(true)
-    templateId: codes.TemplateIdentifier
-    priorOriginalPrescriptionRef: PriorOriginalRef
+  seperatableInd: core.BooleanValue = new core.BooleanValue(true)
+  templateId: codes.TemplateIdentifier
+  priorOriginalPrescriptionRef: PriorOriginalRef
 
-    constructor(priorOriginalPrescriptionRef: PriorOriginalRef) {
-        this.templateId = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.sourceOf1")
-        this.priorOriginalPrescriptionRef = priorOriginalPrescriptionRef
-    }
+  constructor(priorOriginalPrescriptionRef: PriorOriginalRef) {
+    this.templateId = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.sourceOf1")
+    this.priorOriginalPrescriptionRef = priorOriginalPrescriptionRef
+  }
 }
 
 export class PriorOriginalRef implements ElementCompact {
-    _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-        classCode: "SBADM",
-        moodCode: "RQO"
-    }
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+    classCode: "SBADM",
+    moodCode: "RQO"
+  }
 
-    id: codes.GlobalIdentifier
+  id: codes.GlobalIdentifier
 
-    constructor(id: codes.GlobalIdentifier) {
-        this.id = id
-    }
+  constructor(id: codes.GlobalIdentifier) {
+    this.id = id
+  }
 }
 
 /*
 * An identifier of the Act Relationship that relates clinical statements directly to the focal act.
 */
 export class DispensePertinentInformation2 implements ElementCompact {
-    _attributes: core.AttributeTypeCode = {
-        typeCode: "PERT"
-    }
+  _attributes: core.AttributeTypeCode = {
+    typeCode: "PERT"
+  }
 
-    templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.pertinentInformation1")
-    pertinentCareRecordElementCategory: parentPrescription.CareRecordElementCategory
+  templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.pertinentInformation1")
+  pertinentCareRecordElementCategory: parentPrescription.CareRecordElementCategory
 
-    constructor(pertinentCareRecordElementCategory: parentPrescription.CareRecordElementCategory) {
-        this.pertinentCareRecordElementCategory = pertinentCareRecordElementCategory
-    }
+  constructor(pertinentCareRecordElementCategory: parentPrescription.CareRecordElementCategory) {
+    this.pertinentCareRecordElementCategory = pertinentCareRecordElementCategory
+  }
 }
 
 /*
 * Details of the status of the Prescription as a function of the dispense progress of the individual medication items.
 */
 export class DispensePertinentInformation3 implements ElementCompact {
-    _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
-        typeCode: "PERT",
-        contextConductionInd: "true"
-    }
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
 
-    seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-    pertinentPrescriptionStatus: PertinentPrescriptionStatus
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  pertinentPrescriptionStatus: PertinentPrescriptionStatus
 
-    constructor(pertinentPrescriptionStatus: PertinentPrescriptionStatus) {
-        this.pertinentPrescriptionStatus = pertinentPrescriptionStatus
-    }
+  constructor(pertinentPrescriptionStatus: PertinentPrescriptionStatus) {
+    this.pertinentPrescriptionStatus = pertinentPrescriptionStatus
+  }
 }
 
 /*
 * A link to the identify the original prescription.
 */
 export class DispensePertinentInformation4 implements ElementCompact {
-    _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
-        typeCode: "PERT",
-        contextConductionInd: "true"
-    }
-    seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-    pertinentPrescriptionID: prescription.PrescriptionId
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  pertinentPrescriptionID: prescription.PrescriptionId
 
-    constructor(pertinentPrescriptionID: prescription.PrescriptionId) {
-        this.pertinentPrescriptionID = pertinentPrescriptionID
-    }
+  constructor(pertinentPrescriptionID: prescription.PrescriptionId) {
+    this.pertinentPrescriptionID = pertinentPrescriptionID
+  }
 }
 
 /*
 * Details of the  status of the overall prescription as a function of the respective Medication item statuses.
 */
 export class PertinentPrescriptionStatus implements ElementCompact {
-    _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-        classCode: "OBS",
-        moodCode: "EVN"
-    }
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+    classCode: "OBS",
+    moodCode: "EVN"
+  }
 
-    code: codes.PrescriptionAnnotationCode
-    value: codes.StatusCode
+  code: codes.PrescriptionAnnotationCode
+  value: codes.StatusCode
 
-    constructor(value: codes.StatusCode) {
-        this.code = new codes.PrescriptionAnnotationCode("PS")
-        this.value = value
-    }
+  constructor(value: codes.StatusCode) {
+    this.code = new codes.PrescriptionAnnotationCode("PS")
+    this.value = value
+  }
 }
 
 /*
@@ -177,46 +176,46 @@ export class PertinentPrescriptionStatus implements ElementCompact {
 * in the Prescription Line Item.
 */
 export class PertinentSuppliedLineItem implements ElementCompact {
-    _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-        classCode: "SBADM",
-        moodCode: "PRMS"
-    }
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+    classCode: "SBADM",
+    moodCode: "PRMS"
+  }
 
-    id: codes.GlobalIdentifier
-    code: codes.SnomedCode
-    effectiveTime: core.Null
-    repeatNumber?: core.Interval<core.NumericValue>
-    // todo Dispense:? mim says do not use but will be available in future circa many years ago
-    doseQuantity: undefined
-    // todo Dispense: ? mim says do not use but will be available in future circa many years ago
-    rateQuantity: undefined
-    consumable: Consumable
-    component: DispenseLineItemComponent
-    component1: DispenseLineItemComponent1
-    pertinentInformation3: DispenseLineItemPertinentInformation3
-    inFulfillmentOf: InFulfillmentOfLineItem
+  id: codes.GlobalIdentifier
+  code: codes.SnomedCode
+  effectiveTime: core.Null
+  repeatNumber?: core.Interval<core.NumericValue>
+  // todo Dispense:? mim says do not use but will be available in future circa many years ago
+  doseQuantity: undefined
+  // todo Dispense: ? mim says do not use but will be available in future circa many years ago
+  rateQuantity: undefined
+  consumable: Consumable
+  component: DispenseLineItemComponent
+  component1: DispenseLineItemComponent1
+  pertinentInformation3: DispenseLineItemPertinentInformation3
+  inFulfillmentOf: InFulfillmentOfLineItem
 
-    constructor(id: codes.GlobalIdentifier, code: codes.SnomedCode) {
-        this.id = id
-        this.code = code
-        this.effectiveTime = core.Null.NOT_APPLICABLE
-    }
+  constructor(id: codes.GlobalIdentifier, code: codes.SnomedCode) {
+    this.id = id
+    this.code = code
+    this.effectiveTime = core.Null.NOT_APPLICABLE
+  }
 }
 
 /*
 * An act relationship to provide information on the actual quantity of medication dispensed in this Dispense event.
 */
 export class DispenseLineItemComponent implements ElementCompact {
-    _attributes: core.AttributeTypeCode = {
-        typeCode: "COMP"
-    }
+  _attributes: core.AttributeTypeCode = {
+    typeCode: "COMP"
+  }
 
-    seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-    suppliedLineItemQuantity: SuppliedLineItemQuantity
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  suppliedLineItemQuantity: SuppliedLineItemQuantity
 
-    constructor(suppliedLineItemQuantity: SuppliedLineItemQuantity) {
-        this.suppliedLineItemQuantity = suppliedLineItemQuantity
-    }
+  constructor(suppliedLineItemQuantity: SuppliedLineItemQuantity) {
+    this.suppliedLineItemQuantity = suppliedLineItemQuantity
+  }
 }
 
 /*
@@ -224,66 +223,66 @@ export class DispenseLineItemComponent implements ElementCompact {
 * prescription line item. This information might not necessarily be derived from PSIS.
 */
 export class DispenseLineItemComponent1 implements ElementCompact {
-    _attributes: core.AttributeTypeCode = {
-        typeCode: "COMP"
-    }
+  _attributes: core.AttributeTypeCode = {
+    typeCode: "COMP"
+  }
 
-    seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-    supplyRequest: SupplyRequest
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  supplyRequest: SupplyRequest
 
-    constructor(supplyRequest: SupplyRequest) {
-        this.supplyRequest = supplyRequest
-    }
+  constructor(supplyRequest: SupplyRequest) {
+    this.supplyRequest = supplyRequest
+  }
 }
 
 /*
 * Details of the quantity of medication requested.
 */
 export class SupplyRequest implements ElementCompact {
-    _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-        classCode: "SPLY",
-        moodCode: "RQO"
-    }
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+    classCode: "SPLY",
+    moodCode: "RQO"
+  }
 
-    code: codes.SnomedCode
-    quantity: core.QuantityInAlternativeUnits
+  code: codes.SnomedCode
+  quantity: core.QuantityInAlternativeUnits
 
-    constructor(code: codes.SnomedCode, quantity: core.QuantityInAlternativeUnits) {
-        this.code = code
-        this.quantity = quantity
-    }
+  constructor(code: codes.SnomedCode, quantity: core.QuantityInAlternativeUnits) {
+    this.code = code
+    this.quantity = quantity
+  }
 }
 
 /*
 * Details of the actual medication treatment dispensed in this Dispense event for this Line Item.
 */
 export class SuppliedLineItemQuantity implements ElementCompact {
-    _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-        classCode: "SPLY",
-        moodCode: "EVN"
-    }
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+    classCode: "SPLY",
+    moodCode: "EVN"
+  }
 
-    code: codes.SnomedCode
-    quantity: core.QuantityInAlternativeUnits
-    product: DispenseProduct
-    pertinentInformation1: DispenseLineItemPertinentInformation1
+  code: codes.SnomedCode
+  quantity: core.QuantityInAlternativeUnits
+  product: DispenseProduct
+  pertinentInformation1: DispenseLineItemPertinentInformation1
 }
 
 /*
 * This act relationship enables tracking of partial dispenses through the monitor of total medication dispensed to-date.
 */
 export class DispenseLineItemPertinentInformation1 implements ElementCompact {
-    _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
-        typeCode: "PERT",
-        contextConductionInd: "true"
-    }
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
 
-    seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-    pertinentSupplyInstructions: PertinentSupplyInstructions
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  pertinentSupplyInstructions: PertinentSupplyInstructions
 
-    constructor(pertinentSupplyInstructions: PertinentSupplyInstructions) {
-        this.pertinentSupplyInstructions = pertinentSupplyInstructions
-    }
+  constructor(pertinentSupplyInstructions: PertinentSupplyInstructions) {
+    this.pertinentSupplyInstructions = pertinentSupplyInstructions
+  }
 }
 
 /*
@@ -292,95 +291,95 @@ export class DispenseLineItemPertinentInformation1 implements ElementCompact {
 * varies from the prescribed medication requiring more drug specification information.
 */
 export class PertinentSupplyInstructions implements ElementCompact {
-    _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-        classCode: "OBS",
-        moodCode: "EVN"
-    }
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+    classCode: "OBS",
+    moodCode: "EVN"
+  }
 
-    code: codes.PrescriptionAnnotationCode
-    value: core.Text
+  code: codes.PrescriptionAnnotationCode
+  value: core.Text
 
-    constructor(value: core.Text) {
-        this.code = new codes.PrescriptionAnnotationCode("SI")
-        this.value = value
-    }
+  constructor(value: core.Text) {
+    this.code = new codes.PrescriptionAnnotationCode("SI")
+    this.value = value
+  }
 }
 
 /**
  * A participation that establishes product specific data for the medication prescribed.
  */
 export class DispenseProduct implements ElementCompact {
-    _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
-        typeCode: "PRD",
-        contextControlCode: "OP"
-    }
+  _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
+    typeCode: "PRD",
+    contextControlCode: "OP"
+  }
 
-    suppliedManufacturedProduct: SuppliedManufacturedProduct
+  suppliedManufacturedProduct: SuppliedManufacturedProduct
 
-    constructor(suppliedManufacturedProduct: SuppliedManufacturedProduct) {
-        this.suppliedManufacturedProduct = suppliedManufacturedProduct
-    }
+  constructor(suppliedManufacturedProduct: SuppliedManufacturedProduct) {
+    this.suppliedManufacturedProduct = suppliedManufacturedProduct
+  }
 }
 
 /**
  * Details about the physical characteristics of the treatment prescribed.
  */
 export class SuppliedManufacturedProduct implements ElementCompact {
-    _attributes: core.AttributeClassCode = {
-        classCode: "MANU"
-    }
+  _attributes: core.AttributeClassCode = {
+    classCode: "MANU"
+  }
 
-    manufacturedSuppliedMaterial: lineItem.ManufacturedRequestedMaterial
+  manufacturedSuppliedMaterial: lineItem.ManufacturedRequestedMaterial
 
-    constructor(manufacturedSuppliedMaterial: lineItem.ManufacturedRequestedMaterial) {
-        this.manufacturedSuppliedMaterial = manufacturedSuppliedMaterial
-    }
+  constructor(manufacturedSuppliedMaterial: lineItem.ManufacturedRequestedMaterial) {
+    this.manufacturedSuppliedMaterial = manufacturedSuppliedMaterial
+  }
 }
 
 /*
 * An act relationship indicating that Dispense Notification sequentially follows the Prescription Release Event.
 */
 export class ReplacementOf implements ElementCompact {
-    _attributes: core.AttributeTypeCode = {
-        typeCode: "RPLC"
-    }
+  _attributes: core.AttributeTypeCode = {
+    typeCode: "RPLC"
+  }
 
-    priorMessageRef: MessageRef
+  priorMessageRef: MessageRef
 
-    constructor(priorMessageRef: MessageRef) {
-        this.priorMessageRef = priorMessageRef
-    }
+  constructor(priorMessageRef: MessageRef) {
+    this.priorMessageRef = priorMessageRef
+  }
 }
 
 /*
 An act used to identify the dispense event which this Dispense Notification is to replace.
 */
 export class MessageRef implements ElementCompact {
-    _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-        classCode: "INFO",
-        moodCode: "EVN"
-    }
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+    classCode: "INFO",
+    moodCode: "EVN"
+  }
 
-    id: codes.GlobalIdentifier
+  id: codes.GlobalIdentifier
 
-    constructor(id: codes.GlobalIdentifier) {
-        this.id = id
-    }
+  constructor(id: codes.GlobalIdentifier) {
+    this.id = id
+  }
 }
 
 /*
 * An act relationship indicating that Dispense Notification sequentially follows the Prescription Release Event.
 */
 export class SequelTo implements ElementCompact {
-    _attributes: core.AttributeTypeCode = {
-        typeCode: "SEQL"
-    }
+  _attributes: core.AttributeTypeCode = {
+    typeCode: "SEQL"
+  }
 
-    priorPrescriptionReleaseEventRef: PriorPrescriptionReleaseEventRef
+  priorPrescriptionReleaseEventRef: PriorPrescriptionReleaseEventRef
 
-    constructor(priorPrescriptionReleaseEventRef: PriorPrescriptionReleaseEventRef) {
-        this.priorPrescriptionReleaseEventRef = priorPrescriptionReleaseEventRef
-    }
+  constructor(priorPrescriptionReleaseEventRef: PriorPrescriptionReleaseEventRef) {
+    this.priorPrescriptionReleaseEventRef = priorPrescriptionReleaseEventRef
+  }
 }
 
 /*
@@ -388,41 +387,41 @@ export class SequelTo implements ElementCompact {
 * that authorised the Dispense event.
 */
 export class PriorPrescriptionReleaseEventRef implements ElementCompact {
-    _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-        classCode: "INFO",
-        moodCode: "RQO"
-    }
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+    classCode: "INFO",
+    moodCode: "RQO"
+  }
 
-    id: codes.GlobalIdentifier
+  id: codes.GlobalIdentifier
 
-    constructor(id: codes.GlobalIdentifier) {
-        this.id = id
-    }
+  constructor(id: codes.GlobalIdentifier) {
+    this.id = id
+  }
 }
 
 export class PrimaryInformationRecipient implements ElementCompact {
-    _attributes: core.AttributeTypeCode = {
-        typeCode: "PRCP"
-    }
+  _attributes: core.AttributeTypeCode = {
+    typeCode: "PRCP"
+  }
 
-    AgentOrg: organisation.AgentOrganization
+  AgentOrg: organisation.AgentOrganization
 
-    constructor(organisation: organisation.AgentOrganization) {
-        this.AgentOrg = organisation
-    }
+  constructor(organisation: organisation.AgentOrganization) {
+    this.AgentOrg = organisation
+  }
 }
 
 export class DispensePrimaryInformationRecipient implements ElementCompact {
-    _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
-        typeCode: "PRCP",
-        contextControlCode: "ON"
-    }
+  _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
+    typeCode: "PRCP",
+    contextControlCode: "ON"
+  }
 
-    AgentOrg: organisation.AgentOrganization
+  AgentOrg: organisation.AgentOrganization
 
-    constructor(organisation: organisation.AgentOrganization) {
-        this.AgentOrg = organisation
-    }
+  constructor(organisation: organisation.AgentOrganization) {
+    this.AgentOrg = organisation
+  }
 }
 
 /*
@@ -430,38 +429,36 @@ export class DispensePrimaryInformationRecipient implements ElementCompact {
 * prior to the dispense of the medication.
 */
 export class DispenseLineItemPertinentInformation3 implements ElementCompact {
-    _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
-        typeCode: "PERT",
-        contextConductionInd: "true"
-    }
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
 
-    seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-    pertinentItemStatus: PertinentItemStatus
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  pertinentItemStatus: PertinentItemStatus
 
-    constructor(pertinentItemStatus: PertinentItemStatus) {
-        this.pertinentItemStatus = pertinentItemStatus
-    }
+  constructor(pertinentItemStatus: PertinentItemStatus) {
+    this.pertinentItemStatus = pertinentItemStatus
+  }
 }
 
 /*
 * Describes the status of the prescription Line Item as a result of the dispense event.
 */
 export class PertinentItemStatus implements ElementCompact {
-    _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-        classCode: "OBS",
-        moodCode: "EVN"
-    }
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+    classCode: "OBS",
+    moodCode: "EVN"
+  }
 
-    code: codes.PrescriptionAnnotationCode
-    value: codes.ItemStatusCode
+  code: codes.PrescriptionAnnotationCode
+  value: codes.ItemStatusCode
 
-    constructor(value: codes.ItemStatusCode) {
-        this.code = new codes.PrescriptionAnnotationCode("IS")
-        this.value = value
-    }
+  constructor(value: codes.ItemStatusCode) {
+    this.code = new codes.PrescriptionAnnotationCode("IS")
+    this.value = value
+  }
 }
-
-
 
 /*
 * An act relationship to determine that this medication Line Item Dispense event satisifies the
@@ -470,23 +467,21 @@ export class PertinentItemStatus implements ElementCompact {
 * points to the data on PSIS.
 */
 export class InFulfillmentOfLineItem implements ElementCompact {
-    _attributes: core.AttributeTypeCode & core.AttributeInversionInd & core.AttributeNegationInd = {
-        typeCode: "FLFS",
-        inversionInd: "false",
-        negationInd: "false"
-    }
+  _attributes: core.AttributeTypeCode & core.AttributeInversionInd & core.AttributeNegationInd = {
+    typeCode: "FLFS",
+    inversionInd: "false",
+    negationInd: "false"
+  }
 
-    seperatableInd: core.BooleanValue = new core.BooleanValue(true)
-    templateId: codes.TemplateIdentifier
-    priorOriginalItemRef: PriorOriginalRef
+  seperatableInd: core.BooleanValue = new core.BooleanValue(true)
+  templateId: codes.TemplateIdentifier
+  priorOriginalItemRef: PriorOriginalRef
 
-    constructor(priorOriginalItemRef: PriorOriginalRef) {
-        this.templateId = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.sourceOf1")
-        this.priorOriginalItemRef = priorOriginalItemRef
-    }
+  constructor(priorOriginalItemRef: PriorOriginalRef) {
+    this.templateId = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.sourceOf1")
+    this.priorOriginalItemRef = priorOriginalItemRef
+  }
 }
-
-
 
 /*
 * Provides information against the original prescription Line Item against which
@@ -496,16 +491,16 @@ export class InFulfillmentOfLineItem implements ElementCompact {
 * of the prescription by the dispenser.
 */
 export class Consumable implements ElementCompact {
-    _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
-        typeCode: "CSM",
-        contextControlCode: "OP"
-    }
+  _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
+    typeCode: "CSM",
+    contextControlCode: "OP"
+  }
 
-    requestedManufacturedProduct: RequestedManufacturedProduct
+  requestedManufacturedProduct: RequestedManufacturedProduct
 
-    constructor(requestedManufacturedProduct: RequestedManufacturedProduct) {
-        this.requestedManufacturedProduct = requestedManufacturedProduct
-    }
+  constructor(requestedManufacturedProduct: RequestedManufacturedProduct) {
+    this.requestedManufacturedProduct = requestedManufacturedProduct
+  }
 }
 
 /*
@@ -513,13 +508,13 @@ export class Consumable implements ElementCompact {
 * May not be queried from PSIS but sourced from elsewhere.
 */
 export class RequestedManufacturedProduct implements ElementCompact {
-    _attributes: core.AttributeClassCode = {
-        classCode: "MANU"
-    }
-    manufacturedRequestedMaterial: lineItem.ManufacturedRequestedMaterial
+  _attributes: core.AttributeClassCode = {
+    classCode: "MANU"
+  }
+  manufacturedRequestedMaterial: lineItem.ManufacturedRequestedMaterial
 
-    constructor(manufacturedRequestedMaterial: lineItem.ManufacturedRequestedMaterial) {
-        this.manufacturedRequestedMaterial = manufacturedRequestedMaterial
-    }
+  constructor(manufacturedRequestedMaterial: lineItem.ManufacturedRequestedMaterial) {
+    this.manufacturedRequestedMaterial = manufacturedRequestedMaterial
+  }
 }
 

@@ -23,8 +23,8 @@ export function getMedicationDispenses(bundle: fhir.Bundle): Array<fhir.Medicati
   return getResourcesOfType<fhir.MedicationDispense>(bundle, "MedicationDispense")
 }
 
-export function getDispenseClaims(bundle: fhir.Bundle): Array<fhir.DispenseClaimInformation> {
-  return getResourcesOfType<fhir.DispenseClaimInformation>(bundle, "Claim")
+export function getClaims(bundle: fhir.Bundle): Array<fhir.Claim> {
+  return getResourcesOfType<fhir.Claim>(bundle, "Claim")
 }
 
 export function getCommunicationRequests(bundle: fhir.Bundle): Array<fhir.CommunicationRequest> {
