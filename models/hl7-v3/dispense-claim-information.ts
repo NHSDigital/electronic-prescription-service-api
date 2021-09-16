@@ -2,7 +2,7 @@ import { ElementCompact } from "xml-js"
 import { AgentPerson } from "./agent-person"
 import * as codes from "./codes"
 import * as core from "./core"
-import { DispensePertinentInformation1, DispenseProduct, PertinentSupplyHeader, PrimaryInformationRecipient, SequelTo } from "./dispense-common"
+import { Consumable, DispenseLineItemComponent, DispenseLineItemComponent1, DispenseLineItemPertinentInformation3, DispensePertinentInformation1, DispensePertinentInformation1LineItem, DispensePertinentInformation3, DispensePertinentInformation4, DispenseProduct, InFulfillmentOf, InFulfillmentOfLineItem, PertinentSuppliedLineItem, PertinentSupplyHeader, PrimaryInformationRecipient, SequelTo } from "./dispense-common"
 import { PrescriptionAuthor } from "./prescription"
 
 export class DispenseClaimInformationRoot {
@@ -18,6 +18,7 @@ export class DispenseClaimInformation implements ElementCompact {
     classCode: "INFO",
     moodCode: "EVN"
   }
+  
   id: codes.GlobalIdentifier
   code: codes.SnomedCode
   effectiveTime: core.Timestamp
@@ -37,12 +38,77 @@ export class DispenseClaimInformation implements ElementCompact {
   }
 }
 
-export class DispenseClaimPertinentSupplyHeader extends PertinentSupplyHeader {
+export class DispenseClaimPertinentSupplyHeader implements ElementCompact {
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+      classCode: "SBADM",
+      moodCode: "EVN"
+  }
+
+  id: codes.GlobalIdentifier
+  code: codes.SnomedCode
+  effectiveTime: core.Null
+  repeatNumber?: core.Interval<core.NumericValue>
+  pertinentInformation1: Array<DispenseClaimPertinentInformation1LineItem> // Line item information
+  pertinentInformation3: DispensePertinentInformation3 // Prescription Status
+  pertinentInformation4: DispensePertinentInformation4 // Prescription ID
+  inFulfillmentOf: InFulfillmentOf
   legalAuthenticator: LegalAuthenticator
 
-  constructor(id: codes.GlobalIdentifier, legalAuthenticator: LegalAuthenticator) {
-    super(id)
-    this.legalAuthenticator = legalAuthenticator
+  constructor(id: codes.GlobalIdentifier) {
+      this.id = id
+      this.code = new codes.SnomedCode("225426007")
+      this.effectiveTime = core.Null.NOT_APPLICABLE
+  }
+}
+
+export class DispenseClaimPertinentInformation1LineItem implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+      typeCode: "PERT",
+      contextConductionInd: "true",
+      inversionInd: "false",
+      negationInd: "false"
+  }
+
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.sourceOf2")
+  pertinentSuppliedLineItem: DispenseClaimPertinentSuppliedLineItem
+
+  constructor(pertinentSuppliedLineItem: DispenseClaimPertinentSuppliedLineItem) {
+      this.pertinentSuppliedLineItem = pertinentSuppliedLineItem
+  }
+}
+
+export class DispenseClaimPertinentSuppliedLineItem implements ElementCompact {
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+      classCode: "SBADM",
+      moodCode: "PRMS"
+  }
+
+  id: codes.GlobalIdentifier
+  code: codes.SnomedCode
+  effectiveTime: core.Null
+  repeatNumber?: core.Interval<core.NumericValue>
+  component: DispenseClaimLineItemComponent // Link line item to dispensed quantity
+  pertinentInformation3: DispenseLineItemPertinentInformation3 // Prescription line item status
+  inFulfillmentOf: InFulfillmentOfLineItem
+
+  constructor(id: codes.GlobalIdentifier, code: codes.SnomedCode) {
+      this.id = id
+      this.code = code
+      this.effectiveTime = core.Null.NOT_APPLICABLE
+  }
+}
+
+export class DispenseClaimLineItemComponent implements ElementCompact {
+  _attributes: core.AttributeTypeCode = {
+      typeCode: "COMP"
+  }
+
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  suppliedLineItemQuantity: DispenseClaimSuppliedLineItemQuantity
+
+  constructor(suppliedLineItemQuantity: DispenseClaimSuppliedLineItemQuantity) {
+      this.suppliedLineItemQuantity = suppliedLineItemQuantity
   }
 }
 
@@ -55,8 +121,8 @@ export class DispenseClaimSuppliedLineItemQuantity implements ElementCompact {
   code: codes.SnomedCode
   quantity: core.QuantityInAlternativeUnits
   product: DispenseProduct
-  pertinentInformation1: DispenseClaimLineItemPertinentInformation1
-  pertinentInformation2: Array<DispenseClaimLineItemPertinentInformation2>
+  pertinentInformation1: DispenseClaimLineItemPertinentInformation1 // Line item details
+  pertinentInformation2: Array<DispenseClaimLineItemPertinentInformation2> // Endorsements
 
   constructor(
     code: codes.SnomedCode,

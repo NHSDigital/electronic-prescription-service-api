@@ -10,6 +10,7 @@ import {
 import pino from "pino"
 import {auditDoseToTextIfEnabled} from "../dosage"
 import {DispensePertinentInformation1LineItem} from "../../../../../../models/hl7-v3"
+import {PersonOrOrganization} from "../../../../../../models/fhir"
 
 export function createPertinentInformation1LineItem(
   fhirMedicationDispense: fhir.MedicationDispense,
@@ -129,6 +130,12 @@ export function getOrganisationPerformer(fhirFirstMedicationDispense: fhir.Medic
   return fhirFirstMedicationDispense.performer.find(p => p.actor.type === "Organization")
 }
 
+export function getOrganisationPerformerFromClaim(
+  claim: fhir.DispenseClaimInformation
+): fhir.IdentifierReference<PersonOrOrganization> {
+  return claim.payee.party
+}
+
 export function getFhirGroupIdentifierExtension(
   fhirFirstMedicationDispense: fhir.MedicationDispense
 ): fhir.ExtensionExtension<fhir.Extension> {
@@ -228,9 +235,17 @@ export function createPertinentPrescriptionStatus(
   return new hl7V3.PertinentPrescriptionStatus(hl7StatusCode)
 }
 
-export function createAgentOrganisation(organisation: fhir.DispensePerformer): hl7V3.AgentOrganization {
-  const organisationCode = organisation.actor.identifier.value
-  const organisationName = organisation.actor.display
+export function createAgentOrganisation(
+  organisation: fhir.DispensePerformer
+): hl7V3.AgentOrganization {
+  return createAgentOrganisationFromReference(organisation.actor)
+}
+
+export function createAgentOrganisationFromReference(
+  reference: fhir.IdentifierReference<PersonOrOrganization>
+): hl7V3.AgentOrganization {
+  const organisationCode = reference.identifier.value
+  const organisationName = reference.display
   const hl7Organisation = createOrganisation(organisationCode, organisationName)
   return new hl7V3.AgentOrganization(hl7Organisation)
 }

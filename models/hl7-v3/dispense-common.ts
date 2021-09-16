@@ -36,7 +36,7 @@ export abstract class PertinentSupplyHeader implements ElementCompact {
  * An act relationship that associates the Dispense focal act with
  * SupplyHeader - the primary act of the PSIS clinical message.
  */
-export class DispensePertinentInformation1<T extends PertinentSupplyHeader> implements ElementCompact {
+export class DispensePertinentInformation1<T extends ElementCompact> implements ElementCompact {
     _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
         typeCode: "PERT",
         contextConductionInd: "true"
@@ -65,7 +65,7 @@ export class DispensePertinentInformation1LineItem implements ElementCompact {
     templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.sourceOf2")
     pertinentSuppliedLineItem: PertinentSuppliedLineItem
 
-    constructor(pertinentSuppliedLineItem: PertinentSuppliedLineItem) {
+     constructor(pertinentSuppliedLineItem: PertinentSuppliedLineItem) {
         this.pertinentSuppliedLineItem = pertinentSuppliedLineItem
     }
 }
