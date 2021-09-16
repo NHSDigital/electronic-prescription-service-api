@@ -348,8 +348,8 @@ export class ReplacementOf implements ElementCompact {
 
   priorMessageRef: MessageRef
 
-  constructor(priorMessageRef: MessageRef) {
-    this.priorMessageRef = priorMessageRef
+  constructor(messageRef: MessageRef) {
+    this.priorMessageRef = messageRef
   }
 }
 

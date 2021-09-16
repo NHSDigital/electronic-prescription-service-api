@@ -133,12 +133,6 @@ export function getOrganisationPerformer(fhirFirstMedicationDispense: fhir.Medic
   return fhirFirstMedicationDispense.performer.find(p => p.actor.type === "Organization")
 }
 
-export function getOrganisationPerformerFromClaim(
-  claim: fhir.Claim
-): fhir.IdentifierReference<PersonOrOrganization> {
-  return claim.payee.party
-}
-
 export function getFhirGroupIdentifierExtension(
   fhirFirstMedicationDispense: fhir.MedicationDispense
 ): fhir.ExtensionExtension<fhir.Extension> {

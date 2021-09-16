@@ -6,7 +6,6 @@ import {
   DispenseCommonPertinentInformation1,
   DispenseProduct,
   PrimaryInformationRecipient,
-  SequelTo,
   SuppliedLineItemComponent,
   SuppliedLineItemInFulfillmentOf,
   SuppliedLineItemPertinentInformation2,
@@ -35,8 +34,12 @@ export class DispenseClaimInformation implements ElementCompact {
   effectiveTime: core.Timestamp
   typeId: codes.TypeIdentifier
   primaryInformationRecipient: PrimaryInformationRecipient
+  //TODO - receiver
   pertinentInformation1: DispenseCommonPertinentInformation1<DispenseClaimSupplyHeader>
-  sequelTo: SequelTo
+  //TODO - pertinentInformation2
+  replacementOf: hl7V3.ReplacementOf
+  coverage: Coverage
+  sequelTo: hl7V3.SequelTo
 
   constructor(id: codes.GlobalIdentifier, effectiveTime: core.Timestamp) {
     this.id = id
@@ -171,5 +174,19 @@ export class LegalAuthenticator extends PrescriptionAuthor {
     this.time = time
     this.AgentPerson = participant
     this.signatureText = core.Null.NOT_APPLICABLE
+  }
+}
+
+export class Coverage implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "COVBY",
+    contextConductionInd: "true"
+  }
+
+  seperatableInd = new core.BooleanValue(false)
+  coveringChargeExempt: hl7V3.ChargeExempt
+
+  constructor(chargeExempt: hl7V3.ChargeExempt) {
+    this.coveringChargeExempt = chargeExempt
   }
 }

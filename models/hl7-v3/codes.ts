@@ -273,6 +273,12 @@ export class NotDispensedReasonCode extends Code<"2.16.840.1.113883.2.1.3.2.4.16
   }
 }
 
+export class PrescriptionChargeExemptionCode extends Code<"2.16.840.1.113883.2.1.3.2.4.16.33"> {
+  constructor(code: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.16.33", code)
+  }
+}
+
 export class SdsUniqueIdentifier extends Identifier<"1.2.826.0.1285.0.2.0.65"> {
   constructor(extension: string) {
     super("1.2.826.0.1285.0.2.0.65", extension)

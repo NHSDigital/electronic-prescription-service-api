@@ -1,7 +1,7 @@
 import {fhir, hl7V3} from "@models"
 import moment from "moment"
 import pino from "pino"
-import {GroupIdentifierExtension, PersonOrOrganization} from "../../../../../../models/fhir"
+import {GroupIdentifierExtension} from "../../../../../../models/fhir"
 import {
   DispenseClaimChargePayment,
   DispenseClaimSuppliedLineItem,
@@ -14,7 +14,7 @@ import {
   Timestamp
 } from "../../../../../../models/hl7-v3"
 import {
-  getCodeableConceptCodingForSystem,
+  getCodeableConceptCodingForSystem, getCodeableConceptCodingForSystemOrNull,
   getExtensionForUrl,
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
@@ -24,12 +24,7 @@ import {
 import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import {getClaims, getMessageHeader} from "../../common/getResourcesOfType"
 import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
-import {
-  createAgentOrganisationFromReference,
-  createLineItemStatusCode,
-  createPriorPrescriptionReleaseEventRef,
-  getOrganisationPerformerFromClaim
-} from "./dispense-common"
+import {createLineItemStatusCode, createOrganisation, createPriorPrescriptionReleaseEventRef} from "./dispense-common"
 import {InvalidValueError} from "../../../../../../models/errors/processing-errors"
 
 export async function convertDispenseClaimInformation(
@@ -37,61 +32,108 @@ export async function convertDispenseClaimInformation(
   logger: pino.Logger
 ): Promise<hl7V3.DispenseClaimInformation> {
   const messageId = getMessageId([bundle.identifier], "Bundle.identifier")
-  const fhirHeader = getMessageHeader(bundle)
-
   const now = convertMomentToHl7V3DateTime(moment.utc())
-
-  const hl7DispenseClaimInformation = new hl7V3.DispenseClaimInformation(
+  const dispenseClaimInformation = new hl7V3.DispenseClaimInformation(
     new hl7V3.GlobalIdentifier(messageId),
     now
   )
 
-  const claims = getClaims(bundle)
-  const firstClaim = claims[0]
+  //TODO - could get this from Claim.insurance.coverage but why bother?
+  const organization = createOrganisation("T1450", "NHS BUSINESS SERVICES AUTHORITY")
+  const agentOrganization = new hl7V3.AgentOrganization(organization)
+  dispenseClaimInformation.primaryInformationRecipient = new PrimaryInformationRecipient(agentOrganization)
 
-  const fhirOrganisationPerformer = getOrganisationPerformerFromClaim(firstClaim)
-  const hl7PertinentInformation1 = await createPertinentInformation1(
+  //TODO - receiver
+
+  dispenseClaimInformation.pertinentInformation1 = await createPertinentInformation1(
     bundle,
     messageId,
     now,
-    fhirOrganisationPerformer,
-    claims,
     logger
   )
 
-  hl7DispenseClaimInformation.pertinentInformation1 = hl7PertinentInformation1
+  //TODO - pertinentInformation2
 
-  const hl7PriorPrescriptionReleaseEventRef = createPriorPrescriptionReleaseEventRef(fhirHeader)
-  hl7DispenseClaimInformation.sequelTo = new hl7V3.SequelTo(hl7PriorPrescriptionReleaseEventRef)
+  const messageHeader = getMessageHeader(bundle)
+  const replacementOfExtension = getExtensionForUrlOrNull(
+    messageHeader.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
+    "MessageHeader.extension"
+  ) as fhir.IdentifierExtension
+  if (replacementOfExtension) {
+    const previousMessageId = new hl7V3.GlobalIdentifier(replacementOfExtension.valueIdentifier.value)
+    const priorMessageRef = new hl7V3.MessageRef(previousMessageId)
+    dispenseClaimInformation.replacementOf = new hl7V3.ReplacementOf(priorMessageRef)
+  }
 
-  const hl7AgentOrganisation = createAgentOrganisationFromReference(fhirOrganisationPerformer)
+  //TODO - this is at item level but is conceptually at top level - see comments on supplied line item
+  const claims = getClaims(bundle)
+  //TODO - which claim and item should we look at to find this code?
+  const firstItem = claims[0].item[0]
+  const chargeExemptionCoding = getCodeableConceptCodingForSystemOrNull(
+    firstItem.programCode,
+    "https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption",
+    "Claim.item.programCode"
+  )
+  if (chargeExemptionCoding) {
+    const chargeExemptionCode = chargeExemptionCoding.code
+    const chargeExempt = new hl7V3.ChargeExempt(isExemption(chargeExemptionCode), chargeExemptionCode)
 
-  hl7DispenseClaimInformation.primaryInformationRecipient = new PrimaryInformationRecipient(hl7AgentOrganisation)
+    //TODO - which claim and item and detail should we look at to find this code?
+    const firstItemDetail = firstItem.detail[0]
+    const evidenceSeenCoding = getCodeableConceptCodingForSystemOrNull(
+      firstItemDetail.programCode,
+      "https://fhir.nhs.uk/CodeSystem/DM-exemption-evidence",
+      "Claim.item.detail.programCode"
+    )
+    if (evidenceSeenCoding) {
+      const evidenceSeenCode = evidenceSeenCoding.code
+      const evidenceSeen = new hl7V3.EvidenceSeen(isEvidenceSeen(evidenceSeenCode))
+      chargeExempt.authorization = new hl7V3.Authorization(evidenceSeen)
+    }
+    dispenseClaimInformation.coverage = new hl7V3.Coverage(chargeExempt)
+  }
 
-  return hl7DispenseClaimInformation
+  const hl7PriorPrescriptionReleaseEventRef = createPriorPrescriptionReleaseEventRef(messageHeader)
+  dispenseClaimInformation.sequelTo = new hl7V3.SequelTo(hl7PriorPrescriptionReleaseEventRef)
+
+  return dispenseClaimInformation
+}
+
+function isExemption(chargeExemptionCode: string) {
+  //TODO - check this logic
+  return chargeExemptionCode !== "0001"
+}
+
+function isEvidenceSeen(evidenceSeenCode: string) {
+  //TODO - check this logic
+  return evidenceSeenCode === "evidence-seen"
 }
 
 async function createPertinentInformation1(
   bundle: fhir.Bundle,
   messageId: string,
   timestamp: Timestamp,
-  fhirOrganisation: fhir.IdentifierReference<PersonOrOrganization>,
-  fhirClaims: Array<fhir.Claim>,
   logger: pino.Logger
 ) {
-  const firstClaim = fhirClaims[0]
+  const claims = getClaims(bundle)
+  const firstClaim = claims[0]
 
-  const hl7RepresentedOrganisationCode = fhirOrganisation.identifier.value
-  // TODO - Unattended access?
-  const agentPerson = await createAgentPersonForUnattendedAccess(hl7RepresentedOrganisationCode, logger)
-  const legalAuthenticator = new LegalAuthenticator(agentPerson, timestamp)
   //TODO - work out what this means and whether we're doing it:
   // "Note: this must refer to the last one in the series if more
   // than one dispense event was required to fulfil the prescription."
   const supplyHeader = new DispenseClaimSupplyHeader(new hl7V3.GlobalIdentifier(messageId))
+
   //TODO - repeat dispensing
+
+  //TODO - ensure consistent payee for all claims
+  const payeeOdsCode = firstClaim.payee.party.identifier.value
+  // TODO - Unattended access?
+  const agentPerson = await createAgentPersonForUnattendedAccess(payeeOdsCode, logger)
+  const legalAuthenticator = new LegalAuthenticator(agentPerson, timestamp)
   supplyHeader.legalAuthenticator = legalAuthenticator
   //TODO - populate legalAuthenticator.participant
+
   //TODO - populate pertinentInformation2 (non-dispensing reason)
 
   //TODO - ensure consistent prescription status for all items on all claims (should this even be at item level?)
@@ -105,7 +147,7 @@ async function createPertinentInformation1(
   )
   supplyHeader.pertinentInformation3 = new hl7V3.SupplyHeaderPertinentInformation3(hl7PertinentPrescriptionStatus)
 
-  supplyHeader.pertinentInformation1 = fhirClaims.map(createSupplyHeaderPertinentInformation1)
+  supplyHeader.pertinentInformation1 = claims.map(createSupplyHeaderPertinentInformation1)
 
   //TODO - ensure consistent prescription id for all claims
   const prescriptionId = createPrescriptionId(firstClaim)

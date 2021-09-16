@@ -347,3 +347,39 @@ export class NonDispensingReason extends PrescriptionAnnotation {
     this.value = new codes.NotDispensedReasonCode(value)
   }
 }
+
+export class ChargeExempt extends PrescriptionAnnotation {
+  negationInd: core.BooleanValue
+  value: codes.PrescriptionChargeExemptionCode
+  authorization?: Authorization
+
+  constructor(chargeExempt: boolean, value: string) {
+    super(new codes.PrescriptionAnnotationCode("EX"))
+    this.negationInd = new core.BooleanValue(!chargeExempt)
+    this.value = new codes.PrescriptionChargeExemptionCode(value)
+  }
+}
+
+export class EvidenceSeen extends PrescriptionAnnotation {
+  negationInd: core.BooleanValue
+
+  constructor(evidenceSeen: boolean) {
+    super(new codes.PrescriptionAnnotationCode("ES"))
+    this.negationInd = new core.BooleanValue(!evidenceSeen)
+  }
+}
+
+export class Authorization implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "AUTH",
+    contextConductionInd: "true"
+  }
+
+  seperatableInd = new core.BooleanValue(false)
+  authorizingEvidenceSeen: EvidenceSeen
+
+  constructor(evidenceSeen: EvidenceSeen) {
+    this.authorizingEvidenceSeen = evidenceSeen
+  }
+}
+
