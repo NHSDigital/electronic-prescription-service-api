@@ -1,8 +1,16 @@
-import { ElementCompact } from "xml-js"
+import {ElementCompact} from "xml-js"
 import * as codes from "./codes"
 import * as core from "./core"
 import * as prescription from "./prescription"
-import { DispensePertinentInformation1, DispensePrimaryInformationRecipient, DispensePertinentInformation2, PertinentSupplyHeader, ReplacementOf, SequelTo } from "./dispense-common"
+import {
+  DispenseCommonPertinentInformation1,
+  DispenseNotificationSuppliedLineItem,
+  DispenseCommonPertinentInformation2,
+  DispenseCommonPrimaryInformationRecipient,
+  ReplacementOf,
+  SequelTo,
+  SupplyHeader
+} from "./dispense-common"
 import * as patient from "./patient"
 
 export class DispenseNotificationRoot {
@@ -23,9 +31,9 @@ export class DispenseNotification implements ElementCompact {
   effectiveTime: core.Timestamp
   typeId: codes.TypeIdentifier
   recordTarget: patient.RecordTargetReference
-  primaryInformationRecipient: DispensePrimaryInformationRecipient
-  pertinentInformation1: DispensePertinentInformation1<DispenseNotificationPertinentSupplyHeader>
-  pertinentInformation2: DispensePertinentInformation2
+  primaryInformationRecipient: DispenseCommonPrimaryInformationRecipient
+  pertinentInformation1: DispenseCommonPertinentInformation1<DispenseNotificationSupplyHeader>
+  pertinentInformation2: DispenseCommonPertinentInformation2
   replacementOf?: ReplacementOf
   sequelTo: SequelTo
 
@@ -40,7 +48,7 @@ export class DispenseNotification implements ElementCompact {
   }
 }
 
-export class DispenseNotificationPertinentSupplyHeader extends PertinentSupplyHeader {
+export class DispenseNotificationSupplyHeader extends SupplyHeader<DispenseNotificationSuppliedLineItem> {
   author: prescription.PrescriptionAuthor
 
   constructor(id: codes.GlobalIdentifier, author: prescription.PrescriptionAuthor) {

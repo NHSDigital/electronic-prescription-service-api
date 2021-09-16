@@ -1,19 +1,22 @@
 import {fhir, hl7V3} from "@models"
 import moment from "moment"
 import pino from "pino"
-import {PersonOrOrganization} from "../../../../../../models/fhir"
+import {GroupIdentifierExtension, PersonOrOrganization} from "../../../../../../models/fhir"
 import {
   DispenseClaimChargePayment,
-  DispenseClaimLineItemComponent,
-  DispenseClaimPertinentSupplyHeader,
+  DispenseClaimSuppliedLineItem,
   DispenseClaimSuppliedLineItemQuantity,
+  DispenseClaimSupplyHeader,
   LegalAuthenticator,
   PrimaryInformationRecipient,
+  SuppliedLineItemComponent,
+  SuppliedLineItemPertinentInformation2,
   Timestamp
 } from "../../../../../../models/hl7-v3"
 import {
   getCodeableConceptCodingForSystem,
   getExtensionForUrl,
+  getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
   getMessageId,
   getNumericValueAsString
@@ -31,7 +34,6 @@ import {InvalidValueError} from "../../../../../../models/errors/processing-erro
 
 export async function convertDispenseClaimInformation(
   bundle: fhir.Bundle,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   logger: pino.Logger
 ): Promise<hl7V3.DispenseClaimInformation> {
   const messageId = getMessageId([bundle.identifier], "Bundle.identifier")
@@ -54,7 +56,6 @@ export async function convertDispenseClaimInformation(
     now,
     fhirOrganisationPerformer,
     claims,
-    firstClaim,
     logger
   )
 
@@ -76,11 +77,9 @@ async function createPertinentInformation1(
   timestamp: Timestamp,
   fhirOrganisation: fhir.IdentifierReference<PersonOrOrganization>,
   fhirClaims: Array<fhir.Claim>,
-  firstClaim: fhir.Claim,
   logger: pino.Logger
 ) {
-  const hl7PertinentPrescriptionIdentifier = createPertinentPrescriptionIdForClaim()
-  const hl7PriorOriginalRef = createPriorOriginalRefForClaim()
+  const firstClaim = fhirClaims[0]
 
   const hl7RepresentedOrganisationCode = fhirOrganisation.identifier.value
   // TODO - Unattended access?
@@ -89,7 +88,7 @@ async function createPertinentInformation1(
   //TODO - work out what this means and whether we're doing it:
   // "Note: this must refer to the last one in the series if more
   // than one dispense event was required to fulfil the prescription."
-  const supplyHeader = new DispenseClaimPertinentSupplyHeader(new hl7V3.GlobalIdentifier(messageId))
+  const supplyHeader = new DispenseClaimSupplyHeader(new hl7V3.GlobalIdentifier(messageId))
   //TODO - repeat dispensing
   supplyHeader.legalAuthenticator = legalAuthenticator
   //TODO - populate legalAuthenticator.participant
@@ -104,14 +103,19 @@ async function createPertinentInformation1(
   const hl7PertinentPrescriptionStatus = createPertinentPrescriptionStatusForClaim(
     prescriptionStatusExtension.valueCoding
   )
-  supplyHeader.pertinentInformation3 = new hl7V3.DispensePertinentInformation3(hl7PertinentPrescriptionStatus)
+  supplyHeader.pertinentInformation3 = new hl7V3.SupplyHeaderPertinentInformation3(hl7PertinentPrescriptionStatus)
 
-  const hl7PertinentInformation1LineItems = fhirClaims.map(createPertinentInformation1LineItemForClaim)
-  supplyHeader.pertinentInformation1 = hl7PertinentInformation1LineItems
-  supplyHeader.pertinentInformation4 = new hl7V3.DispensePertinentInformation4(hl7PertinentPrescriptionIdentifier)
-  supplyHeader.inFulfillmentOf = new hl7V3.InFulfillmentOf(hl7PriorOriginalRef)
+  supplyHeader.pertinentInformation1 = fhirClaims.map(createSupplyHeaderPertinentInformation1)
 
-  return new hl7V3.DispensePertinentInformation1(supplyHeader)
+  //TODO - ensure consistent prescription id for all claims
+  const prescriptionId = createPrescriptionId(firstClaim)
+  supplyHeader.pertinentInformation4 = new hl7V3.SupplyHeaderPertinentInformation4(prescriptionId)
+
+  //TODO - ensure consistent prescription id for all claims
+  const originalPrescriptionRef = createOriginalPrescriptionRef(firstClaim)
+  supplyHeader.inFulfillmentOf = new hl7V3.InFulfillmentOf(originalPrescriptionRef)
+
+  return new hl7V3.DispenseCommonPertinentInformation1(supplyHeader)
 }
 
 export function createPertinentPrescriptionStatusForClaim(
@@ -122,23 +126,26 @@ export function createPertinentPrescriptionStatusForClaim(
   return new hl7V3.PertinentPrescriptionStatus(hl7StatusCode)
 }
 
-export function createPertinentPrescriptionIdForClaim(): hl7V3.PrescriptionId {
-  // TODO: Need to get the group identifier from the claim
-  const fhirGroupIdentifierExtension = getFhirGroupIdentifierExtensionForClaim()
-  const fhirAuthorizingPrescriptionShortFormIdExtension = getExtensionForUrl(
-    fhirGroupIdentifierExtension.extension,
+export function createPrescriptionId(claim: fhir.Claim): hl7V3.PrescriptionId {
+  const groupIdentifierExtension = getExtensionForUrl(
+    claim.prescription.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
+    "Claim.prescription.extension"
+  ) as GroupIdentifierExtension
+
+  const prescriptionShortFormIdExtension = getExtensionForUrl(
+    groupIdentifierExtension.extension,
     "shortForm",
-    "MedicationDispense.authorizingPrescription.extension.valueIdentifier"
+    "Claim.prescription.extension(\"https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier\").extension"
   ) as fhir.IdentifierExtension
-  const hl7PertinentPrescriptionId = fhirAuthorizingPrescriptionShortFormIdExtension
-    .valueIdentifier
-    .value
-  return new hl7V3.PrescriptionId(hl7PertinentPrescriptionId)
+
+  const prescriptionShortFormId = prescriptionShortFormIdExtension.valueIdentifier.value
+  return new hl7V3.PrescriptionId(prescriptionShortFormId)
 }
 
-export function createPertinentInformation1LineItemForClaim(
+export function createSupplyHeaderPertinentInformation1(
   claim: fhir.Claim
-): hl7V3.DispenseClaimPertinentInformation1LineItem {
+): hl7V3.SupplyHeaderPertinentInformation1<DispenseClaimSuppliedLineItem> {
   //TODO - should this definitely be the dispense notification ID and not the line item ID?
   // and if so, should this not be at item level instead of claim level?
   const dispenseNotificationId = getIdentifierValueForSystem(
@@ -147,9 +154,7 @@ export function createPertinentInformation1LineItemForClaim(
     "Claim.identifier"
   )
 
-  const hl7PriorOriginalItemRef = "12345" // TODO: Get prescription item ID from dispense claim
-
-  const hl7PertinentSuppliedLineItem = new hl7V3.DispenseClaimPertinentSuppliedLineItem(
+  const hl7PertinentSuppliedLineItem = new hl7V3.DispenseClaimSuppliedLineItem(
     new hl7V3.GlobalIdentifier(dispenseNotificationId)
   )
   hl7PertinentSuppliedLineItem.effectiveTime = hl7V3.Null.NOT_APPLICABLE
@@ -157,22 +162,50 @@ export function createPertinentInformation1LineItemForClaim(
   hl7PertinentSuppliedLineItem.component = claim.item.map(item => {
     return item.detail.map(itemDetail => {
       const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(claim, item, itemDetail)
-      return new DispenseClaimLineItemComponent(hl7SuppliedLineItemQuantity)
+      return new SuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
     })
   }).flat()
 
-  //TODO - got to here
+  //TODO - this extension is at item level, but conceptually is at claim level
+  // move it to claim?
+  // enforce that all items have the same value?
+  // use a particular instance (currently using the last, assuming that's most recent and so likely to be correct)?
+  const statusReasonExtensions = claim.item.map(item =>
+    getExtensionForUrlOrNull(
+      item.extension,
+      "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
+      "Claim.item.extension"
+    )
+  ) as Array<fhir.CodingExtension>
+  const mostRecentStatusReasonExtension = statusReasonExtensions.pop()
+  if (mostRecentStatusReasonExtension) {
+    const nonDispensingReasonCode = mostRecentStatusReasonExtension.valueCoding.code
+    const nonDispensingReason = new hl7V3.NonDispensingReason(nonDispensingReasonCode)
+    hl7PertinentSuppliedLineItem.pertinentInformation2 = new SuppliedLineItemPertinentInformation2(nonDispensingReason)
+  }
 
-  const fhirPrescriptionLineItemStatus = {code: "FAKE_LINE_ITEM_STATUS_CODE"}
-  const hl7ItemStatusCode = createLineItemStatusCode(fhirPrescriptionLineItemStatus)
-  hl7PertinentSuppliedLineItem.pertinentInformation3 = new hl7V3.DispenseLineItemPertinentInformation3(
+  //TODO - this extension is at item level, but conceptually is at claim level - see above
+  const itemStatusExtensions = claim.item.map(item =>
+    getExtensionForUrl(
+      item.extension,
+      "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+      "Claim.item.extension"
+    )
+  ) as Array<fhir.CodingExtension>
+  const mostRecentItemStatusExtension = itemStatusExtensions.pop()
+  const hl7ItemStatusCode = createLineItemStatusCode(mostRecentItemStatusExtension.valueCoding)
+  hl7PertinentSuppliedLineItem.pertinentInformation3 = new hl7V3.SuppliedLineItemPertinentInformation3(
     new hl7V3.PertinentItemStatus(hl7ItemStatusCode)
   )
-  hl7PertinentSuppliedLineItem.inFulfillmentOf = new hl7V3.InFulfillmentOfLineItem(
-    new hl7V3.PriorOriginalRef(new hl7V3.GlobalIdentifier(hl7PriorOriginalItemRef))
+
+  const hl7PriorOriginalItemRef = claim.prescription.identifier.value
+  hl7PertinentSuppliedLineItem.inFulfillmentOf = new hl7V3.SuppliedLineItemInFulfillmentOf(
+    new hl7V3.OriginalPrescriptionRef(new hl7V3.GlobalIdentifier(hl7PriorOriginalItemRef))
   )
 
-  return new hl7V3.DispenseClaimPertinentInformation1LineItem(hl7PertinentSuppliedLineItem)
+  //TODO - predecessor
+
+  return new hl7V3.SupplyHeaderPertinentInformation1(hl7PertinentSuppliedLineItem)
 }
 
 export function createSuppliedLineItemQuantity(
@@ -197,12 +230,12 @@ export function createSuppliedLineItemQuantity(
 
   const chargePaid = getChargePaid(itemDetail)
   const chargePayment = new DispenseClaimChargePayment(chargePaid)
-  const pertinentInformation1 = new hl7V3.DispenseClaimLineItemPertinentInformation1(chargePayment)
+  const pertinentInformation1 = new hl7V3.DispenseClaimSuppliedLineItemQuantityPertinentInformation1(chargePayment)
 
   const endorsementCodings = getEndorsementCodings(itemDetail)
   const pertinentInformation2 = endorsementCodings.map(endorsementCoding => {
     const endorsement = createEndorsement(endorsementCoding)
-    return new hl7V3.DispenseClaimLineItemPertinentInformation2(endorsement)
+    return new hl7V3.DispenseClaimSuppliedLineItemQuantityPertinentInformation2(endorsement)
   })
 
   return new hl7V3.DispenseClaimSuppliedLineItemQuantity(
@@ -242,27 +275,24 @@ function createEndorsement(endorsementCoding: fhir.Coding) {
   return endorsement
 }
 
-export function createPriorOriginalRefForClaim(): hl7V3.PriorOriginalRef {
-  const fhirGroupIdentifierExtension = getFhirGroupIdentifierExtensionForClaim()
-  const fhirAuthorizingPrescriptionShortFormIdExtension = getExtensionForUrl(
-    fhirGroupIdentifierExtension.extension,
+export function createOriginalPrescriptionRef(claim: fhir.Claim): hl7V3.OriginalPrescriptionRef {
+  const groupIdentifierExtension = getGroupIdentifierExtension(claim)
+  const prescriptionLongFormIdExtension = getExtensionForUrl(
+    groupIdentifierExtension.extension,
     "UUID",
-    "Claim.originalPrescription.extension.valueIdentifier"
+    "Claim.prescription.extension(\"https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier\").extension"
   ) as fhir.IdentifierExtension
-  const id = fhirAuthorizingPrescriptionShortFormIdExtension.valueIdentifier.value
-  return new hl7V3.PriorOriginalRef(
-    new hl7V3.GlobalIdentifier(id)
+
+  const prescriptionLongFormId = prescriptionLongFormIdExtension.valueIdentifier.value
+  return new hl7V3.OriginalPrescriptionRef(
+    new hl7V3.GlobalIdentifier(prescriptionLongFormId)
   )
 }
 
-export function getFhirGroupIdentifierExtensionForClaim(): fhir.ExtensionExtension<fhir.Extension> {
-  // TODO: Not clear where this should come from?
-  const ext = {
-    url: "http://mock.extension.url",
-    extension: [{
-      url: "http:mock.extension.url"
-    }]
-  }
-
-  return ext
+function getGroupIdentifierExtension(claim: fhir.Claim) {
+  return getExtensionForUrl(
+    claim.prescription.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
+    "Claim.prescription.extension"
+  )
 }

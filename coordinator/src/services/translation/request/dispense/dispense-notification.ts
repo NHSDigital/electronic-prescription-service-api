@@ -12,13 +12,13 @@ import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} f
 import pino from "pino"
 import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
 import moment from "moment"
-import {DispenseNotificationPertinentSupplyHeader} from "../../../../../../models/hl7-v3"
+import {DispenseNotificationSupplyHeader} from "../../../../../../models/hl7-v3"
 import {
   createAgentOrganisation,
-  createPertinentInformation1LineItem,
-  createPertinentPrescriptionId,
+  createDispenseNotificationSupplyHeaderPertinentInformation1,
+  createPrescriptionId,
   createPertinentPrescriptionStatus,
-  createPriorOriginalRef,
+  createOriginalPrescriptionRef,
   createPriorPrescriptionReleaseEventRef,
   getOrganisationPerformer,
   getRepeatNumberFromRepeatInfoExtension,
@@ -58,9 +58,11 @@ export async function convertDispenseNotification(
   hl7DispenseNotification.effectiveTime = convertMomentToHl7V3DateTime(moment.utc())
   hl7DispenseNotification.recordTarget = new hl7V3.RecordTargetReference(hl7Patient)
   hl7DispenseNotification.primaryInformationRecipient =
-    new hl7V3.DispensePrimaryInformationRecipient(hl7AgentOrganisation)
+    new hl7V3.DispenseCommonPrimaryInformationRecipient(hl7AgentOrganisation)
   hl7DispenseNotification.pertinentInformation1 = hl7PertinentInformation1
-  hl7DispenseNotification.pertinentInformation2 = new hl7V3.DispensePertinentInformation2(hl7CareRecordElementCategory)
+  hl7DispenseNotification.pertinentInformation2 = new hl7V3.DispenseCommonPertinentInformation2(
+    hl7CareRecordElementCategory
+  )
   if (hl7PriorMessageRef) {
     hl7DispenseNotification.replacementOf = new hl7V3.ReplacementOf(hl7PriorMessageRef)
   }
@@ -80,8 +82,8 @@ async function createPertinentInformation1(
   const hl7RepresentedOrganisationCode = fhirOrganisation.actor.identifier.value
   const hl7AuthorTime = fhirFirstMedicationDispense.whenPrepared
   const hl7PertinentPrescriptionStatus = createPertinentPrescriptionStatus(fhirFirstMedicationDispense)
-  const hl7PertinentPrescriptionIdentifier = createPertinentPrescriptionId(fhirFirstMedicationDispense)
-  const hl7PriorOriginalRef = createPriorOriginalRef(fhirFirstMedicationDispense)
+  const hl7PertinentPrescriptionIdentifier = createPrescriptionId(fhirFirstMedicationDispense)
+  const hl7PriorOriginalRef = createOriginalPrescriptionRef(fhirFirstMedicationDispense)
   const hl7Author = await createAuthor(
     hl7RepresentedOrganisationCode,
     hl7AuthorTime,
@@ -89,17 +91,17 @@ async function createPertinentInformation1(
   )
   const hl7PertinentInformation1LineItems = fhirMedicationDispenses.map(
     medicationDispense => {
-      return createPertinentInformation1LineItem(
+      return createDispenseNotificationSupplyHeaderPertinentInformation1(
         medicationDispense,
         getMedicationCoding(bundle, medicationDispense),
         logger
       )
     }
   )
-  const supplyHeader = new DispenseNotificationPertinentSupplyHeader(new hl7V3.GlobalIdentifier(messageId), hl7Author)
+  const supplyHeader = new DispenseNotificationSupplyHeader(new hl7V3.GlobalIdentifier(messageId), hl7Author)
   supplyHeader.pertinentInformation1 = hl7PertinentInformation1LineItems
-  supplyHeader.pertinentInformation3 = new hl7V3.DispensePertinentInformation3(hl7PertinentPrescriptionStatus)
-  supplyHeader.pertinentInformation4 = new hl7V3.DispensePertinentInformation4(hl7PertinentPrescriptionIdentifier)
+  supplyHeader.pertinentInformation3 = new hl7V3.SupplyHeaderPertinentInformation3(hl7PertinentPrescriptionStatus)
+  supplyHeader.pertinentInformation4 = new hl7V3.SupplyHeaderPertinentInformation4(hl7PertinentPrescriptionIdentifier)
   supplyHeader.inFulfillmentOf = new hl7V3.InFulfillmentOf(hl7PriorOriginalRef)
 
   if (isRepeatDispensing(fhirFirstMedicationDispense)) {
@@ -112,7 +114,7 @@ async function createPertinentInformation1(
     supplyHeader.repeatNumber = getRepeatNumberFromRepeatInfoExtension(repeatInfo)
   }
 
-  return new hl7V3.DispensePertinentInformation1(supplyHeader)
+  return new hl7V3.DispenseCommonPertinentInformation1(supplyHeader)
 }
 
 function getLineItemIdentifiers(fhirMedicationDispenses: Array<fhir.MedicationDispense>) {

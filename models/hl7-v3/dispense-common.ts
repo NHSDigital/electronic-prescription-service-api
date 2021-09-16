@@ -6,11 +6,13 @@ import * as organisation from "./organization"
 import * as prescription from "./prescription"
 import * as lineItem from "./line-item"
 
+//TODO - some of these types aren't common - move to dispense notification or claim as appropriate
+
 /*
 * A container for the collection of clinical statements that constitute Dispense Notification information
 * to be available on PSIS.
 */
-export abstract class PertinentSupplyHeader implements ElementCompact {
+export abstract class SupplyHeader<T extends ElementCompact> implements ElementCompact {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "SBADM",
     moodCode: "EVN"
@@ -20,9 +22,9 @@ export abstract class PertinentSupplyHeader implements ElementCompact {
   code: codes.SnomedCode
   effectiveTime: core.Null
   repeatNumber?: core.Interval<core.NumericValue>
-  pertinentInformation1: Array<DispensePertinentInformation1LineItem>
-  pertinentInformation3: DispensePertinentInformation3
-  pertinentInformation4: DispensePertinentInformation4
+  pertinentInformation1: Array<SupplyHeaderPertinentInformation1<T>>
+  pertinentInformation3: SupplyHeaderPertinentInformation3
+  pertinentInformation4: SupplyHeaderPertinentInformation4
   inFulfillmentOf: InFulfillmentOf
 
   constructor(id: codes.GlobalIdentifier) {
@@ -36,7 +38,7 @@ export abstract class PertinentSupplyHeader implements ElementCompact {
  * An act relationship that associates the Dispense focal act with
  * SupplyHeader - the primary act of the PSIS clinical message.
  */
-export class DispensePertinentInformation1<T extends ElementCompact> implements ElementCompact {
+export class DispenseCommonPertinentInformation1<T extends ElementCompact> implements ElementCompact {
   _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
     typeCode: "PERT",
     contextConductionInd: "true"
@@ -53,7 +55,7 @@ export class DispensePertinentInformation1<T extends ElementCompact> implements 
 /*
  * An act relationship that provides information about the actual supplied Line Item (medication).
  */
-export class DispensePertinentInformation1LineItem implements ElementCompact {
+export class SupplyHeaderPertinentInformation1<T extends ElementCompact> implements ElementCompact {
   _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
     typeCode: "PERT",
     contextConductionInd: "true",
@@ -63,10 +65,10 @@ export class DispensePertinentInformation1LineItem implements ElementCompact {
 
   seperatableInd: core.BooleanValue = new core.BooleanValue(false)
   templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.sourceOf2")
-  pertinentSuppliedLineItem: PertinentSuppliedLineItem
+  pertinentSuppliedLineItem: T
 
-  constructor(pertinentSuppliedLineItem: PertinentSuppliedLineItem) {
-    this.pertinentSuppliedLineItem = pertinentSuppliedLineItem
+  constructor(suppliedLineItem: T) {
+    this.pertinentSuppliedLineItem = suppliedLineItem
   }
 }
 
@@ -83,15 +85,15 @@ export class InFulfillmentOf implements ElementCompact {
 
   seperatableInd: core.BooleanValue = new core.BooleanValue(true)
   templateId: codes.TemplateIdentifier
-  priorOriginalPrescriptionRef: PriorOriginalRef
+  priorOriginalPrescriptionRef: OriginalPrescriptionRef
 
-  constructor(priorOriginalPrescriptionRef: PriorOriginalRef) {
+  constructor(originalPrescriptionRef: OriginalPrescriptionRef) {
     this.templateId = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.sourceOf1")
-    this.priorOriginalPrescriptionRef = priorOriginalPrescriptionRef
+    this.priorOriginalPrescriptionRef = originalPrescriptionRef
   }
 }
 
-export class PriorOriginalRef implements ElementCompact {
+export class OriginalPrescriptionRef implements ElementCompact {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "SBADM",
     moodCode: "RQO"
@@ -107,7 +109,7 @@ export class PriorOriginalRef implements ElementCompact {
 /*
 * An identifier of the Act Relationship that relates clinical statements directly to the focal act.
 */
-export class DispensePertinentInformation2 implements ElementCompact {
+export class DispenseCommonPertinentInformation2 implements ElementCompact {
   _attributes: core.AttributeTypeCode = {
     typeCode: "PERT"
   }
@@ -123,7 +125,7 @@ export class DispensePertinentInformation2 implements ElementCompact {
 /*
 * Details of the status of the Prescription as a function of the dispense progress of the individual medication items.
 */
-export class DispensePertinentInformation3 implements ElementCompact {
+export class SupplyHeaderPertinentInformation3 implements ElementCompact {
   _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
     typeCode: "PERT",
     contextConductionInd: "true"
@@ -140,7 +142,7 @@ export class DispensePertinentInformation3 implements ElementCompact {
 /*
 * A link to the identify the original prescription.
 */
-export class DispensePertinentInformation4 implements ElementCompact {
+export class SupplyHeaderPertinentInformation4 implements ElementCompact {
   _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
     typeCode: "PERT",
     contextConductionInd: "true"
@@ -175,7 +177,7 @@ export class PertinentPrescriptionStatus implements ElementCompact {
 * Details about the medication Line Item dispensed to satisfy the requirements for the treatment specified
 * in the Prescription Line Item.
 */
-export class PertinentSuppliedLineItem implements ElementCompact {
+export class DispenseNotificationSuppliedLineItem implements ElementCompact {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "SBADM",
     moodCode: "PRMS"
@@ -190,10 +192,10 @@ export class PertinentSuppliedLineItem implements ElementCompact {
   // todo Dispense: ? mim says do not use but will be available in future circa many years ago
   rateQuantity: undefined
   consumable: Consumable
-  component: DispenseLineItemComponent
-  component1: DispenseLineItemComponent1
-  pertinentInformation3: DispenseLineItemPertinentInformation3
-  inFulfillmentOf: InFulfillmentOfLineItem
+  component: SuppliedLineItemComponent<DispenseNotificationSuppliedLineItemQuantity>
+  component1: SuppliedLineItemComponent1
+  pertinentInformation3: SuppliedLineItemPertinentInformation3
+  inFulfillmentOf: SuppliedLineItemInFulfillmentOf
 
   constructor(id: codes.GlobalIdentifier, code: codes.SnomedCode) {
     this.id = id
@@ -205,15 +207,15 @@ export class PertinentSuppliedLineItem implements ElementCompact {
 /*
 * An act relationship to provide information on the actual quantity of medication dispensed in this Dispense event.
 */
-export class DispenseLineItemComponent implements ElementCompact {
+export class SuppliedLineItemComponent<T extends ElementCompact> implements ElementCompact {
   _attributes: core.AttributeTypeCode = {
     typeCode: "COMP"
   }
 
   seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-  suppliedLineItemQuantity: SuppliedLineItemQuantity
+  suppliedLineItemQuantity: T
 
-  constructor(suppliedLineItemQuantity: SuppliedLineItemQuantity) {
+  constructor(suppliedLineItemQuantity: T) {
     this.suppliedLineItemQuantity = suppliedLineItemQuantity
   }
 }
@@ -222,7 +224,7 @@ export class DispenseLineItemComponent implements ElementCompact {
 * An act relationship that relates to the quantity of the medication treatment ordered in the original
 * prescription line item. This information might not necessarily be derived from PSIS.
 */
-export class DispenseLineItemComponent1 implements ElementCompact {
+export class SuppliedLineItemComponent1 implements ElementCompact {
   _attributes: core.AttributeTypeCode = {
     typeCode: "COMP"
   }
@@ -256,7 +258,7 @@ export class SupplyRequest implements ElementCompact {
 /*
 * Details of the actual medication treatment dispensed in this Dispense event for this Line Item.
 */
-export class SuppliedLineItemQuantity implements ElementCompact {
+export class DispenseNotificationSuppliedLineItemQuantity implements ElementCompact {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "SPLY",
     moodCode: "EVN"
@@ -265,13 +267,13 @@ export class SuppliedLineItemQuantity implements ElementCompact {
   code: codes.SnomedCode
   quantity: core.QuantityInAlternativeUnits
   product: DispenseProduct
-  pertinentInformation1: DispenseLineItemPertinentInformation1
+  pertinentInformation1: DispenseNotificationSuppliedLineItemQuantityPertinentInformation1
 }
 
 /*
 * This act relationship enables tracking of partial dispenses through the monitor of total medication dispensed to-date.
 */
-export class DispenseLineItemPertinentInformation1 implements ElementCompact {
+export class DispenseNotificationSuppliedLineItemQuantityPertinentInformation1 implements ElementCompact {
   _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
     typeCode: "PERT",
     contextConductionInd: "true"
@@ -411,7 +413,7 @@ export class PrimaryInformationRecipient implements ElementCompact {
   }
 }
 
-export class DispensePrimaryInformationRecipient implements ElementCompact {
+export class DispenseCommonPrimaryInformationRecipient implements ElementCompact {
   _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
     typeCode: "PRCP",
     contextControlCode: "ON"
@@ -424,11 +426,25 @@ export class DispensePrimaryInformationRecipient implements ElementCompact {
   }
 }
 
+export class SuppliedLineItemPertinentInformation2 implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
+
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  pertinentNonDispensingReason: prescription.NonDispensingReason
+
+  constructor(nonDispensingReason: prescription.NonDispensingReason) {
+    this.pertinentNonDispensingReason = nonDispensingReason
+  }
+}
+
 /*
 * An act relationship that considers the status of the original prescription Line Item
 * prior to the dispense of the medication.
 */
-export class DispenseLineItemPertinentInformation3 implements ElementCompact {
+export class SuppliedLineItemPertinentInformation3 implements ElementCompact {
   _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
     typeCode: "PERT",
     contextConductionInd: "true"
@@ -466,7 +482,7 @@ export class PertinentItemStatus implements ElementCompact {
 * Line Item id. Details on the original treatment ordered are determined through an act ref that
 * points to the data on PSIS.
 */
-export class InFulfillmentOfLineItem implements ElementCompact {
+export class SuppliedLineItemInFulfillmentOf implements ElementCompact {
   _attributes: core.AttributeTypeCode & core.AttributeInversionInd & core.AttributeNegationInd = {
     typeCode: "FLFS",
     inversionInd: "false",
@@ -475,9 +491,9 @@ export class InFulfillmentOfLineItem implements ElementCompact {
 
   seperatableInd: core.BooleanValue = new core.BooleanValue(true)
   templateId: codes.TemplateIdentifier
-  priorOriginalItemRef: PriorOriginalRef
+  priorOriginalItemRef: OriginalPrescriptionRef
 
-  constructor(priorOriginalItemRef: PriorOriginalRef) {
+  constructor(priorOriginalItemRef: OriginalPrescriptionRef) {
     this.templateId = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.sourceOf1")
     this.priorOriginalItemRef = priorOriginalItemRef
   }

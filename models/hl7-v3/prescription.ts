@@ -334,3 +334,16 @@ export class PreviousIssueDate extends PrescriptionAnnotation {
     this.value = value
   }
 }
+
+/**
+ * Information underlying the reasons why a medication requirement
+ * on a prescription has not been dispensed.
+ */
+export class NonDispensingReason extends PrescriptionAnnotation {
+  value: codes.NotDispensedReasonCode
+
+  constructor(value: string) {
+    super(new codes.PrescriptionAnnotationCode("NDR"))
+    this.value = new codes.NotDispensedReasonCode(value)
+  }
+}

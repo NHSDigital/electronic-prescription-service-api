@@ -55,3 +55,4 @@ export type PrescriptionStatusHistoryExtension = ExtensionExtension<CodingExtens
 export type DispensingInformationExtension = ExtensionExtension<CodingExtension | DateExtension>
 export type DispensingReleaseInformationExtension = ExtensionExtension<DateExtension>
 export type PrescriptionExtension = ExtensionExtension<CodingExtension>
+export type GroupIdentifierExtension = ExtensionExtension<IdentifierExtension>

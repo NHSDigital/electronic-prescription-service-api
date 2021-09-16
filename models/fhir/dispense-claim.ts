@@ -1,16 +1,22 @@
 import * as common from "./common"
 import * as extension from "./extension"
 import * as practitionerRole from "./practitioner-role"
+import * as medicationRequest from "./medication-request"
 import {LosslessNumber} from "lossless-json"
 
 export interface Claim extends common.Resource {
   resourceType: "Claim"
   identifier: Array<common.Identifier>
-  payee: Payee
+  prescription: ClaimPrescription
+  payee: ClaimPayee
   item: Array<ClaimItem>
 }
 
-export interface Payee {
+export interface ClaimPrescription extends common.IdentifierReference<medicationRequest.MedicationRequest> {
+  extension: Array<extension.GroupIdentifierExtension>
+}
+
+export interface ClaimPayee {
   party: common.IdentifierReference<practitionerRole.PersonOrOrganization>
 }
 
