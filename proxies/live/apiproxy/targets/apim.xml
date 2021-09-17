@@ -1,6 +1,9 @@
 <TargetEndpoint name="apim">
   <PreFlow/>
   <Flows>
+    <Flow name="No-Auth">
+      <Condition>(proxy.pathsuffix MatchesPath "/metadata")</Condition>
+    </Flow>
     <Flow name="Status">
       <Request>
         <Step>
