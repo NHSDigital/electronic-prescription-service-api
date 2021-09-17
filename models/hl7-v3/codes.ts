@@ -135,8 +135,8 @@ export class PrescriptionStatusCode extends Code<"2.16.840.1.113883.2.1.3.2.4.16
 }
 
 export class ItemStatusCode extends Code<"2.16.840.1.113883.2.1.3.2.4.17.23"> {
-  constructor(code: string) {
-    super("2.16.840.1.113883.2.1.3.2.4.17.23", code)
+  constructor(code: string, desc?: string) {
+    super("2.16.840.1.113883.2.1.3.2.4.17.23", code, desc)
   }
 
   static FULLY_DISPENSED = new ItemStatusCode("0001")

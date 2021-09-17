@@ -18,7 +18,6 @@ import {
   getCodeableConceptCodingForSystemOrNull,
   getExtensionForUrl,
   getExtensionForUrlOrNull,
-  getIdentifierValueForSystem,
   getMessageId,
   getNumericValueAsString,
   onlyElement
@@ -26,7 +25,7 @@ import {
 import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import {getClaim, getMessageHeader} from "../../common/getResourcesOfType"
 import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
-import {createLineItemStatusCode, createOrganisation, createPriorPrescriptionReleaseEventRef} from "./dispense-common"
+import {createOrganisation, createPriorPrescriptionReleaseEventRef} from "./dispense-common"
 import {InvalidValueError} from "../../../../../../models/errors/processing-errors"
 
 export async function convertDispenseClaimInformation(
@@ -41,7 +40,8 @@ export async function convertDispenseClaimInformation(
   const claim = getClaim(bundle)
 
   //TODO - validate that coverage is always NHS BSA
-  const coverage = claim.insurance.coverage
+  const insurance = onlyElement(claim.insurance, "Claim.insurance")
+  const coverage = insurance.coverage
   const organization = createOrganisation(coverage.identifier.value, coverage.display)
   const agentOrganization = new hl7V3.AgentOrganization(organization)
   dispenseClaimInformation.primaryInformationRecipient = new PrimaryInformationRecipient(agentOrganization)
@@ -178,17 +178,13 @@ export function createSuppliedLineItem(
   item: fhir.ClaimItem,
   detail: fhir.ClaimItemDetail
 ): DispenseClaimSuppliedLineItem {
-  //TODO - should this definitely be the dispense notification ID and not the line item ID?
-  // and if so, should this be at subDetail level instead of claim/item/detail level?
-  // and which dispense notification do we refer to if there are multiple for a given line item?
-  const dispenseNotificationId = getIdentifierValueForSystem(
-    claim.identifier,
-    "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
-    "Claim.identifier"
-  )
-
+  const claimSequenceIdentifierExtension = getExtensionForUrl(
+    detail.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
+    "Claim.item.detail.extension"
+  ) as fhir.IdentifierExtension
   const suppliedLineItem = new hl7V3.DispenseClaimSuppliedLineItem(
-    new hl7V3.GlobalIdentifier(dispenseNotificationId)
+    new hl7V3.GlobalIdentifier(claimSequenceIdentifierExtension.valueIdentifier.value)
   )
   suppliedLineItem.effectiveTime = hl7V3.Null.NOT_APPLICABLE
   //TODO - repeat dispensing
@@ -208,20 +204,25 @@ export function createSuppliedLineItem(
     suppliedLineItem.pertinentInformation2 = new SuppliedLineItemPertinentInformation2(nonDispensingReason)
   }
 
-  const itemStatusExtension = getExtensionForUrl(
-    detail.extension,
-    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
-    "Claim.item.extension"
-  ) as fhir.CodingExtension
-  const hl7ItemStatusCode = createLineItemStatusCode(itemStatusExtension.valueCoding)
+  //TODO - is this actually the status of the item BEFORE dispensing?
+  const lineItemStatusCoding = getCodeableConceptCodingForSystem(
+    detail.modifier,
+    "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+    "Claim.item.detail.modifier"
+  )
+  const hl7ItemStatusCode = new hl7V3.ItemStatusCode(lineItemStatusCoding.code, lineItemStatusCoding.display)
   suppliedLineItem.pertinentInformation3 = new hl7V3.SuppliedLineItemPertinentInformation3(
     new hl7V3.ItemStatus(hl7ItemStatusCode)
   )
 
-  const hl7PriorOriginalItemRef = claim.prescription.identifier.value
-  suppliedLineItem.inFulfillmentOf = new hl7V3.SuppliedLineItemInFulfillmentOf(
-    new hl7V3.OriginalPrescriptionRef(new hl7V3.GlobalIdentifier(hl7PriorOriginalItemRef))
-  )
+  const lineItemIdentifierExtension = getExtensionForUrl(
+    detail.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
+    "Claim.item.detail"
+  ) as fhir.IdentifierReferenceExtension<fhir.MedicationRequest>
+  const lineItemIdentifier = new hl7V3.GlobalIdentifier(lineItemIdentifierExtension.valueReference.identifier.value)
+  const originalPrescriptionRef = new hl7V3.OriginalPrescriptionRef(lineItemIdentifier)
+  suppliedLineItem.inFulfillmentOf = new hl7V3.SuppliedLineItemInFulfillmentOf(originalPrescriptionRef)
 
   //TODO - predecessor
 
@@ -288,7 +289,7 @@ function getChargePaid(subDetail: fhir.ClaimItemSubDetail) {
 function getEndorsementCodings(subDetail: fhir.ClaimItemSubDetail) {
   return subDetail.programCode
     .flatMap(codeableConcept => codeableConcept.coding)
-    .filter(coding => coding.system === "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement")
+    .filter(coding => coding?.system === "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement")
 }
 
 function createEndorsement(endorsementCoding: fhir.Coding) {

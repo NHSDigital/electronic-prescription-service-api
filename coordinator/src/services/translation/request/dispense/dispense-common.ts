@@ -33,7 +33,10 @@ export function createDispenseNotificationSupplyHeaderPertinentInformation1(
     hl7UnitValue,
     hl7SuppliedLineItemQuantitySnomedCode
   )
-  const hl7ItemStatusCode = createLineItemStatusCode(fhirPrescriptionLineItemStatus)
+  const hl7ItemStatusCode = new hl7V3.ItemStatusCode(
+    fhirPrescriptionLineItemStatus.code,
+    fhirPrescriptionLineItemStatus.display
+  )
   const hl7PriorOriginalItemRef = getPrescriptionItemId(fhirMedicationDispense)
   const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(
     hl7SuppliedLineItemQuantitySnomedCode,
@@ -183,14 +186,6 @@ export function getPrescriptionLineItemStatus(fhirMedicationDispense: fhir.Medic
     "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
     "MedicationDispense.type.coding"
   )
-}
-
-export function createLineItemStatusCode(
-  fhirPrescriptionLineItemStatus: fhir.Coding
-): hl7V3.ItemStatusCode {
-  const itemStatusCode = new hl7V3.ItemStatusCode(fhirPrescriptionLineItemStatus.code)
-  itemStatusCode._attributes.displayName = fhirPrescriptionLineItemStatus.display
-  return itemStatusCode
 }
 
 export function createPrescriptionId(

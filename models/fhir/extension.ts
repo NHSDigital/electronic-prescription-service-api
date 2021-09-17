@@ -25,6 +25,10 @@ export interface ReferenceExtension<T extends common.Resource> extends Extension
   valueReference: common.Reference<T>
 }
 
+export interface IdentifierReferenceExtension<T extends common.Resource> extends Extension {
+  valueReference: common.IdentifierReference<T>
+}
+
 export interface UnsignedIntExtension extends Extension {
   valueUnsignedInt: LosslessNumber | string
 }

@@ -12,7 +12,7 @@ export interface Claim extends common.Resource {
   identifier: Array<common.Identifier>
   prescription: ClaimPrescription
   payee: ClaimPayee
-  insurance: ClaimInsurance
+  insurance: Array<ClaimInsurance>
   item: Array<ClaimItem>
 }
 
@@ -33,7 +33,6 @@ export interface ClaimInsurance {
  */
 export interface ClaimItem extends BaseClaimItemDetail {
   extension: Array<extension.IdentifierExtension | extension.CodingExtension>
-  modifier: Array<common.CodeableConcept>
   detail: Array<ClaimItemDetail>
 }
 
@@ -53,6 +52,7 @@ export type ClaimItemSubDetail = BaseClaimItemDetail
 interface BaseClaimItemDetail {
   sequence: string | LosslessNumber
   productOrService: common.CodeableConcept
+  modifier: Array<common.CodeableConcept>
   programCode: Array<common.CodeableConcept>
   quantity: common.SimpleQuantity
 }
