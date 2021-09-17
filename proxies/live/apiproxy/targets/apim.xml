@@ -1,7 +1,10 @@
 <TargetEndpoint name="apim">
   <PreFlow/>
   <Flows>
-    <Flow name="Status">
+    <Flow name="No-Auth">
+      <Condition>(proxy.pathsuffix MatchesPath "/metadata")</Condition>
+    </Flow>
+    <Flow name="ApiKey-Auth">
       <Request>
         <Step>
           <Name>KeyValueMapOperations.GetSharedSecureVariables</Name>
@@ -13,7 +16,7 @@
       </Request>
       <Condition>((proxy.pathsuffix MatchesPath "/_status") or (proxy.pathsuffix MatchesPath "/_validatormetrics") or (proxy.pathsuffix MatchesPath "/_validatormetrics/**")) and ((request.verb = "GET") or (request.verb = "HEAD"))</Condition>
     </Flow>
-    <Flow name="Default">
+    <Flow name="Default-Auth">
       <Request>
         <Step>
           <Name>OauthV2.VerifyAccessToken</Name>

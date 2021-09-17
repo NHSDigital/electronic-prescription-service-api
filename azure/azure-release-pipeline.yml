@@ -37,7 +37,7 @@ extends:
     service_base_path_pr: none
     spec_file: ${{ variables.spec_file }}
     enable_monitoring: true
-    enable_status_monitoring: false
+    enable_status_monitoring: true
     jinja_templates:
         REQUIRE_ASID: false
     apigee_deployments:
