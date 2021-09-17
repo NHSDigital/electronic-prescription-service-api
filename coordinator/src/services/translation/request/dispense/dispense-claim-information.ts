@@ -3,7 +3,7 @@ import moment from "moment"
 import pino from "pino"
 import {GroupIdentifierExtension} from "../../../../../../models/fhir"
 import {
-  DispenseClaimChargePayment,
+  ChargePayment,
   DispenseClaimSuppliedLineItem,
   DispenseClaimSuppliedLineItemQuantity,
   DispenseClaimSupplyHeader,
@@ -125,8 +125,7 @@ async function createPertinentInformation1(
   const payeeOdsCode = claim.payee.party.identifier.value
   //TODO - check that we can omit the user details (applies to all dispensing messages)
   const agentPerson = await createAgentPersonForUnattendedAccess(payeeOdsCode, logger)
-  supplyHeader.legalAuthenticator = new LegalAuthenticator(agentPerson, timestamp)
-  //TODO - populate legalAuthenticator.participant
+  supplyHeader.legalAuthenticator = new LegalAuthenticator(timestamp, agentPerson)
 
   //TODO - populate pertinentInformation2 (non-dispensing reason)
 
@@ -216,7 +215,7 @@ export function createSuppliedLineItem(
   ) as fhir.CodingExtension
   const hl7ItemStatusCode = createLineItemStatusCode(itemStatusExtension.valueCoding)
   suppliedLineItem.pertinentInformation3 = new hl7V3.SuppliedLineItemPertinentInformation3(
-    new hl7V3.PertinentItemStatus(hl7ItemStatusCode)
+    new hl7V3.ItemStatus(hl7ItemStatusCode)
   )
 
   const hl7PriorOriginalItemRef = claim.prescription.identifier.value
@@ -251,7 +250,7 @@ export function createSuppliedLineItemQuantity(
   const dispenseProduct = new hl7V3.DispenseProduct(suppliedManufacturedProduct)
 
   const chargePaid = getChargePaid(subDetail)
-  const chargePayment = new DispenseClaimChargePayment(chargePaid)
+  const chargePayment = new ChargePayment(chargePaid)
   const pertinentInformation1 = new hl7V3.DispenseClaimSuppliedLineItemQuantityPertinentInformation1(chargePayment)
 
   const endorsementCodings = getEndorsementCodings(subDetail)

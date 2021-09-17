@@ -58,7 +58,7 @@ export function createDispenseNotificationSupplyHeaderPertinentInformation1(
     new hl7V3.SupplyRequest(hl7SuppliedLineItemQuantitySnomedCode, hl7Quantity)
   )
   hl7PertinentSuppliedLineItem.pertinentInformation3 = new hl7V3.SuppliedLineItemPertinentInformation3(
-    new hl7V3.PertinentItemStatus(hl7ItemStatusCode)
+    new hl7V3.ItemStatus(hl7ItemStatusCode)
   )
   hl7PertinentSuppliedLineItem.inFulfillmentOf = new hl7V3.SuppliedLineItemInFulfillmentOf(
     new hl7V3.OriginalPrescriptionRef(new hl7V3.GlobalIdentifier(hl7PriorOriginalItemRef))
@@ -122,9 +122,7 @@ export function createSuppliedLineItemQuantity(
   )
   // eslint-disable-next-line max-len
   hl7SuppliedLineItemQuantity.pertinentInformation1 = new hl7V3.DispenseNotificationSuppliedLineItemQuantityPertinentInformation1(
-    new hl7V3.PertinentSupplyInstructions(
-      new hl7V3.Text(fhirDosageInstruction.text)
-    )
+    new hl7V3.SupplyInstructions(fhirDosageInstruction.text)
   )
   return hl7SuppliedLineItemQuantity
 }

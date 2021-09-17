@@ -5,7 +5,6 @@ import * as parentPrescription from "./parent-prescription"
 import * as organisation from "./organization"
 import * as prescription from "./prescription"
 import * as lineItem from "./line-item"
-import {PrescriptionStatus} from "./prescription"
 
 //TODO - some of these types aren't common - move to dispense notification or claim as appropriate
 
@@ -140,6 +139,15 @@ export class SupplyHeaderPertinentInformation3 implements ElementCompact {
   }
 }
 
+export class PrescriptionStatus extends prescription.PrescriptionAnnotation {
+  value: codes.PrescriptionStatusCode
+
+  constructor(valueCode: string, valueDesc: string) {
+    super(new codes.PrescriptionAnnotationCode("PS"))
+    this.value = new codes.PrescriptionStatusCode(valueCode, valueDesc)
+  }
+}
+
 /*
 * A link to the identify the original prescription.
 */
@@ -263,30 +271,19 @@ export class DispenseNotificationSuppliedLineItemQuantityPertinentInformation1 i
   }
 
   seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-  pertinentSupplyInstructions: PertinentSupplyInstructions
+  pertinentSupplyInstructions: SupplyInstructions
 
-  constructor(pertinentSupplyInstructions: PertinentSupplyInstructions) {
-    this.pertinentSupplyInstructions = pertinentSupplyInstructions
+  constructor(supplyInstructions: SupplyInstructions) {
+    this.pertinentSupplyInstructions = supplyInstructions
   }
 }
 
-/*
-* Medication administration instructions as supplied by the dispenser and printed on the supplied items.
-* Normally, these should be the same as the prescriber instructions except when the supplied medication
-* varies from the prescribed medication requiring more drug specification information.
-*/
-export class PertinentSupplyInstructions implements ElementCompact {
-  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-    classCode: "OBS",
-    moodCode: "EVN"
-  }
-
-  code: codes.PrescriptionAnnotationCode
+export class SupplyInstructions extends prescription.PrescriptionAnnotation {
   value: core.Text
 
-  constructor(value: core.Text) {
-    this.code = new codes.PrescriptionAnnotationCode("SI")
-    this.value = value
+  constructor(value: string) {
+    super(new codes.PrescriptionAnnotationCode("SI"))
+    this.value = new core.Text(value)
   }
 }
 
@@ -416,10 +413,23 @@ export class SuppliedLineItemPertinentInformation2 implements ElementCompact {
   }
 
   seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-  pertinentNonDispensingReason: prescription.NonDispensingReason
+  pertinentNonDispensingReason: NonDispensingReason
 
-  constructor(nonDispensingReason: prescription.NonDispensingReason) {
+  constructor(nonDispensingReason: NonDispensingReason) {
     this.pertinentNonDispensingReason = nonDispensingReason
+  }
+}
+
+/**
+ * Information underlying the reasons why a medication requirement
+ * on a prescription has not been dispensed.
+ */
+export class NonDispensingReason extends prescription.PrescriptionAnnotation {
+  value: codes.NotDispensedReasonCode
+
+  constructor(value: string) {
+    super(new codes.PrescriptionAnnotationCode("NDR"))
+    this.value = new codes.NotDispensedReasonCode(value)
   }
 }
 
@@ -434,28 +444,10 @@ export class SuppliedLineItemPertinentInformation3 implements ElementCompact {
   }
 
   seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-  pertinentItemStatus: PertinentItemStatus
+  pertinentItemStatus: lineItem.ItemStatus
 
-  constructor(pertinentItemStatus: PertinentItemStatus) {
+  constructor(pertinentItemStatus: lineItem.ItemStatus) {
     this.pertinentItemStatus = pertinentItemStatus
-  }
-}
-
-/*
-* Describes the status of the prescription Line Item as a result of the dispense event.
-*/
-export class PertinentItemStatus implements ElementCompact {
-  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-    classCode: "OBS",
-    moodCode: "EVN"
-  }
-
-  code: codes.PrescriptionAnnotationCode
-  value: codes.ItemStatusCode
-
-  constructor(value: codes.ItemStatusCode) {
-    this.code = new codes.PrescriptionAnnotationCode("IS")
-    this.value = value
   }
 }
 
