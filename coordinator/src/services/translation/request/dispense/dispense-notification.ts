@@ -17,7 +17,7 @@ import {
   createAgentOrganisation,
   createDispenseNotificationSupplyHeaderPertinentInformation1,
   createPrescriptionId,
-  createPertinentPrescriptionStatus,
+  createPrescriptionStatus,
   createOriginalPrescriptionRef,
   createPriorPrescriptionReleaseEventRef,
   getOrganisationPerformer,
@@ -81,7 +81,7 @@ async function createPertinentInformation1(
 ) {
   const hl7RepresentedOrganisationCode = fhirOrganisation.actor.identifier.value
   const hl7AuthorTime = fhirFirstMedicationDispense.whenPrepared
-  const hl7PertinentPrescriptionStatus = createPertinentPrescriptionStatus(fhirFirstMedicationDispense)
+  const hl7PertinentPrescriptionStatus = createPrescriptionStatus(fhirFirstMedicationDispense)
   const hl7PertinentPrescriptionIdentifier = createPrescriptionId(fhirFirstMedicationDispense)
   const hl7PriorOriginalRef = createOriginalPrescriptionRef(fhirFirstMedicationDispense)
   const hl7Author = await createAuthor(

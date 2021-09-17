@@ -225,13 +225,12 @@ export function createOriginalPrescriptionRef(
   )
 }
 
-export function createPertinentPrescriptionStatus(
+export function createPrescriptionStatus(
   fhirFirstMedicationDispense: fhir.MedicationDispense
-): hl7V3.PertinentPrescriptionStatus {
-  const fhirPrescriptionStatus = getPrescriptionStatus(fhirFirstMedicationDispense)
-  const hl7StatusCode = new hl7V3.StatusCode(fhirPrescriptionStatus.valueCoding.code)
-  hl7StatusCode._attributes.displayName = fhirPrescriptionStatus.valueCoding.display
-  return new hl7V3.PertinentPrescriptionStatus(hl7StatusCode)
+): hl7V3.PrescriptionStatus {
+  const prescriptionStatusExtension = getPrescriptionStatus(fhirFirstMedicationDispense)
+  const prescriptionStatusCoding = prescriptionStatusExtension.valueCoding
+  return new hl7V3.PrescriptionStatus(prescriptionStatusCoding.code, prescriptionStatusCoding.display)
 }
 
 export function createAgentOrganisation(

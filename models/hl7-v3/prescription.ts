@@ -348,6 +348,15 @@ export class NonDispensingReason extends PrescriptionAnnotation {
   }
 }
 
+export class PrescriptionStatus extends PrescriptionAnnotation {
+  value: codes.PrescriptionStatusCode
+
+  constructor(valueCode: string, valueDesc: string) {
+    super(new codes.PrescriptionAnnotationCode("PS"))
+    this.value = new codes.PrescriptionStatusCode(valueCode, valueDesc)
+  }
+}
+
 export class ChargeExempt extends PrescriptionAnnotation {
   negationInd: core.BooleanValue
   value: codes.PrescriptionChargeExemptionCode

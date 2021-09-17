@@ -5,6 +5,7 @@ import * as parentPrescription from "./parent-prescription"
 import * as organisation from "./organization"
 import * as prescription from "./prescription"
 import * as lineItem from "./line-item"
+import {PrescriptionStatus} from "./prescription"
 
 //TODO - some of these types aren't common - move to dispense notification or claim as appropriate
 
@@ -132,9 +133,9 @@ export class SupplyHeaderPertinentInformation3 implements ElementCompact {
   }
 
   seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-  pertinentPrescriptionStatus: PertinentPrescriptionStatus
+  pertinentPrescriptionStatus: PrescriptionStatus
 
-  constructor(pertinentPrescriptionStatus: PertinentPrescriptionStatus) {
+  constructor(pertinentPrescriptionStatus: PrescriptionStatus) {
     this.pertinentPrescriptionStatus = pertinentPrescriptionStatus
   }
 }
@@ -152,24 +153,6 @@ export class SupplyHeaderPertinentInformation4 implements ElementCompact {
 
   constructor(pertinentPrescriptionID: prescription.PrescriptionId) {
     this.pertinentPrescriptionID = pertinentPrescriptionID
-  }
-}
-
-/*
-* Details of the  status of the overall prescription as a function of the respective Medication item statuses.
-*/
-export class PertinentPrescriptionStatus implements ElementCompact {
-  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-    classCode: "OBS",
-    moodCode: "EVN"
-  }
-
-  code: codes.PrescriptionAnnotationCode
-  value: codes.StatusCode
-
-  constructor(value: codes.StatusCode) {
-    this.code = new codes.PrescriptionAnnotationCode("PS")
-    this.value = value
   }
 }
 
