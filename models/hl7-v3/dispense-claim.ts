@@ -5,15 +5,15 @@ import * as core from "./core"
 import * as dispenseCommon from "./dispense-common"
 import * as prescription from "./prescription"
 
-export class DispenseClaimInformationRoot {
-  DispenseClaimInformation: DispenseClaimInformation
+export class DispenseClaimRoot {
+  DispenseClaim: DispenseClaim
 
-  constructor(dispenseClaimInformation: DispenseClaimInformation) {
-    this.DispenseClaimInformation = dispenseClaimInformation
+  constructor(dispenseClaim: DispenseClaim) {
+    this.DispenseClaim = dispenseClaim
   }
 }
 
-export class DispenseClaimInformation implements ElementCompact {
+export class DispenseClaim implements ElementCompact {
   _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
     classCode: "INFO",
     moodCode: "EVN"

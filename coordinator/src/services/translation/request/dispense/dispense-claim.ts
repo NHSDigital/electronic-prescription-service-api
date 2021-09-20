@@ -28,14 +28,14 @@ import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
 import {createOrganisation, createPriorPrescriptionReleaseEventRef} from "./dispense-common"
 import {InvalidValueError} from "../../../../../../models/errors/processing-errors"
 
-export async function convertDispenseClaimInformation(
+export async function convertDispenseClaim(
   bundle: fhir.Bundle,
   logger: pino.Logger
-): Promise<hl7V3.DispenseClaimInformation> {
+): Promise<hl7V3.DispenseClaim> {
   //TODO - possibly get rid of Bundle and MessageHeader and move everything to the Claim
   const messageId = getMessageId([bundle.identifier], "Bundle.identifier")
   const now = convertMomentToHl7V3DateTime(moment.utc())
-  const dispenseClaimInformation = new hl7V3.DispenseClaimInformation(new hl7V3.GlobalIdentifier(messageId), now)
+  const dispenseClaim = new hl7V3.DispenseClaim(new hl7V3.GlobalIdentifier(messageId), now)
 
   const claim = getClaim(bundle)
 
@@ -44,12 +44,12 @@ export async function convertDispenseClaimInformation(
   const coverage = insurance.coverage
   const organization = createOrganisation(coverage.identifier.value, coverage.display)
   const agentOrganization = new hl7V3.AgentOrganization(organization)
-  dispenseClaimInformation.primaryInformationRecipient = new PrimaryInformationRecipient(agentOrganization)
+  dispenseClaim.primaryInformationRecipient = new PrimaryInformationRecipient(agentOrganization)
 
   //TODO - receiver
 
   const item = onlyElement(claim.item, "Claim.item")
-  dispenseClaimInformation.pertinentInformation1 = await createPertinentInformation1(
+  dispenseClaim.pertinentInformation1 = await createPertinentInformation1(
     claim,
     item,
     messageId,
@@ -68,7 +68,7 @@ export async function convertDispenseClaimInformation(
   if (replacementOfExtension) {
     const previousMessageId = new hl7V3.GlobalIdentifier(replacementOfExtension.valueIdentifier.value)
     const priorMessageRef = new hl7V3.MessageRef(previousMessageId)
-    dispenseClaimInformation.replacementOf = new hl7V3.ReplacementOf(priorMessageRef)
+    dispenseClaim.replacementOf = new hl7V3.ReplacementOf(priorMessageRef)
   }
 
   const chargeExemptionCoding = getCodeableConceptCodingForSystemOrNull(
@@ -89,13 +89,13 @@ export async function convertDispenseClaimInformation(
       const evidenceSeen = new hl7V3.EvidenceSeen(isEvidenceSeen(evidenceSeenCode))
       chargeExempt.authorization = new hl7V3.Authorization(evidenceSeen)
     }
-    dispenseClaimInformation.coverage = new hl7V3.Coverage(chargeExempt)
+    dispenseClaim.coverage = new hl7V3.Coverage(chargeExempt)
   }
 
   const hl7PriorPrescriptionReleaseEventRef = createPriorPrescriptionReleaseEventRef(messageHeader)
-  dispenseClaimInformation.sequelTo = new hl7V3.SequelTo(hl7PriorPrescriptionReleaseEventRef)
+  dispenseClaim.sequelTo = new hl7V3.SequelTo(hl7PriorPrescriptionReleaseEventRef)
 
-  return dispenseClaimInformation
+  return dispenseClaim
 }
 
 function isExemption(chargeExemptionCode: string) {
