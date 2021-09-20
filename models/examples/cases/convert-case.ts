@@ -84,6 +84,13 @@ export class ConvertCase extends Case {
       )
     }
 
+    if (operation === "claim") {
+      responseXml = responseXml.replace(
+        /<time value=\\"[0-9]*\\"\\\/>/g,
+        "<time value=\\\"[0-9]*\\\"\\/>"
+      )
+    }
+
     return responseXml
   }
 
