@@ -28,6 +28,10 @@ function convertLineItemComponent(simpleQuantity: fhir.SimpleQuantity) {
 }
 
 function convertDosageInstructions(dosages: Array<fhir.Dosage>, logger: pino.Logger) {
+  // Auditing dose to text result so we can use
+  // the resulting translations as evidence for
+  // solutions assurance. We're not currently using
+  // the translated text in messages to spine
   auditDoseToTextIfEnabled(dosages, logger)
   const dosage = onlyElement(
     dosages,
