@@ -1,9 +1,10 @@
 import {ElementCompact} from "xml-js"
-import {AgentPerson} from "./agent-person"
+import * as agentPerson from "./agent-person"
 import * as codes from "./codes"
 import * as core from "./core"
 import * as dispenseCommon from "./dispense-common"
 import * as prescription from "./prescription"
+import * as organisation from "./organization"
 
 export class DispenseClaimRoot {
   DispenseClaim: DispenseClaim
@@ -23,7 +24,7 @@ export class DispenseClaim implements ElementCompact {
   code: codes.SnomedCode
   effectiveTime: core.Timestamp
   typeId: codes.TypeIdentifier
-  primaryInformationRecipient: dispenseCommon.PrimaryInformationRecipient
+  primaryInformationRecipient: DispenseClaimPrimaryInformationRecipient
   //TODO - receiver
   pertinentInformation1: dispenseCommon.DispenseCommonPertinentInformation1<DispenseClaimSupplyHeader>
   //TODO - pertinentInformation2
@@ -42,41 +43,44 @@ export class DispenseClaim implements ElementCompact {
   }
 }
 
+export class DispenseClaimPrimaryInformationRecipient implements ElementCompact {
+  _attributes: core.AttributeTypeCode = {
+    typeCode: "PRCP"
+  }
+
+  AgentOrg: organisation.AgentOrganization
+
+  constructor(organisation: organisation.AgentOrganization) {
+    this.AgentOrg = organisation
+  }
+}
+
 export class DispenseClaimSupplyHeader extends dispenseCommon.SupplyHeader<DispenseClaimSuppliedLineItem> {
   legalAuthenticator: LegalAuthenticator
 }
 
-export class DispenseClaimSuppliedLineItem implements ElementCompact {
-  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-    classCode: "SBADM",
-    moodCode: "PRMS"
+export class LegalAuthenticator extends prescription.PrescriptionAuthor {
+  _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
+    typeCode: "LA",
+    contextControlCode: "OP"
   }
 
-  id: codes.GlobalIdentifier
-  code: codes.SnomedCode
-  effectiveTime: core.Null
-  repeatNumber?: core.Interval<core.NumericValue>
-  component: Array<dispenseCommon.SuppliedLineItemComponent<DispenseClaimSuppliedLineItemQuantity>>
-  pertinentInformation2: dispenseCommon.SuppliedLineItemPertinentInformation2
-  pertinentInformation3: dispenseCommon.SuppliedLineItemPertinentInformation3
-  inFulfillmentOf: dispenseCommon.SuppliedLineItemInFulfillmentOf
-
-  constructor(id: codes.GlobalIdentifier) {
-    this.id = id
-    this.code = new codes.SnomedCode("225426007")
-    this.effectiveTime = core.Null.NOT_APPLICABLE
+  constructor(time: core.Timestamp, participantAgentPerson: agentPerson.AgentPerson) {
+    super()
+    this.time = time
+    this.signatureText = core.Null.NOT_APPLICABLE
+    this.AgentPerson = participantAgentPerson
   }
 }
 
-export class DispenseClaimSuppliedLineItemQuantity implements ElementCompact {
-  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
-    classCode: "SPLY",
-    moodCode: "EVN"
-  }
+export class DispenseClaimSuppliedLineItem extends dispenseCommon.DispenseCommonSuppliedLineItem {
+  component: Array<dispenseCommon.SuppliedLineItemComponent<DispenseClaimSuppliedLineItemQuantity>>
+  pertinentInformation2: SuppliedLineItemPertinentInformation2
+  pertinentInformation3: dispenseCommon.SuppliedLineItemPertinentInformation3
+  inFulfillmentOf: dispenseCommon.SuppliedLineItemInFulfillmentOf
+}
 
-  code: codes.SnomedCode
-  quantity: core.QuantityInAlternativeUnits
-  product: dispenseCommon.DispenseProduct
+export class DispenseClaimSuppliedLineItemQuantity extends dispenseCommon.DispenseCommonSuppliedLineItemQuantity {
   pertinentInformation1: DispenseClaimSuppliedLineItemQuantityPertinentInformation1
   pertinentInformation2: Array<DispenseClaimSuppliedLineItemQuantityPertinentInformation2>
 
@@ -86,11 +90,32 @@ export class DispenseClaimSuppliedLineItemQuantity implements ElementCompact {
     pertinentInformation1: DispenseClaimSuppliedLineItemQuantityPertinentInformation1,
     pertinentInformation2: Array<DispenseClaimSuppliedLineItemQuantityPertinentInformation2>
   ) {
-    this.code = new codes.SnomedCode("373784005")
-    this.quantity = quantity
-    this.product = product
+    super(quantity, product)
     this.pertinentInformation1 = pertinentInformation1
     this.pertinentInformation2 = pertinentInformation2
+  }
+}
+
+export class DispenseClaimSuppliedLineItemQuantityPertinentInformation1 implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
+
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  pertinentChargePayment: ChargePayment
+
+  constructor(pertinentChargePayment: ChargePayment) {
+    this.pertinentChargePayment = pertinentChargePayment
+  }
+}
+
+export class ChargePayment extends prescription.PrescriptionAnnotation {
+  value: boolean
+
+  constructor(value: boolean) {
+    super(new codes.PrescriptionAnnotationCode("CP"))
+    this.value = value
   }
 }
 
@@ -118,40 +143,30 @@ export class DispensingEndorsement extends prescription.PrescriptionAnnotation {
   }
 }
 
-export class DispenseClaimSuppliedLineItemQuantityPertinentInformation1 implements ElementCompact {
+export class SuppliedLineItemPertinentInformation2 implements ElementCompact {
   _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
     typeCode: "PERT",
     contextConductionInd: "true"
   }
 
   seperatableInd: core.BooleanValue = new core.BooleanValue(false)
-  pertinentChargePayment: ChargePayment
+  pertinentNonDispensingReason: NonDispensingReason
 
-  constructor(pertinentChargePayment: ChargePayment) {
-    this.pertinentChargePayment = pertinentChargePayment
+  constructor(nonDispensingReason: NonDispensingReason) {
+    this.pertinentNonDispensingReason = nonDispensingReason
   }
 }
 
-export class ChargePayment extends prescription.PrescriptionAnnotation {
-  value: boolean
+/**
+ * Information underlying the reasons why a medication requirement
+ * on a prescription has not been dispensed.
+ */
+export class NonDispensingReason extends prescription.PrescriptionAnnotation {
+  value: codes.NotDispensedReasonCode
 
-  constructor(value: boolean) {
-    super(new codes.PrescriptionAnnotationCode("CP"))
-    this.value = value
-  }
-}
-
-export class LegalAuthenticator extends prescription.PrescriptionAuthor {
-  _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
-    typeCode: "LA",
-    contextControlCode: "OP"
-  }
-
-  constructor(time: core.Timestamp, agentPerson: AgentPerson) {
-    super()
-    this.time = time
-    this.signatureText = core.Null.NOT_APPLICABLE
-    this.AgentPerson = agentPerson
+  constructor(value: string) {
+    super(new codes.PrescriptionAnnotationCode("NDR"))
+    this.value = new codes.NotDispensedReasonCode(value)
   }
 }
 
@@ -181,15 +196,6 @@ export class ChargeExempt extends prescription.PrescriptionAnnotation {
   }
 }
 
-export class EvidenceSeen extends prescription.PrescriptionAnnotation {
-  negationInd: core.BooleanValue
-
-  constructor(evidenceSeen: boolean) {
-    super(new codes.PrescriptionAnnotationCode("ES"))
-    this.negationInd = new core.BooleanValue(!evidenceSeen)
-  }
-}
-
 export class Authorization implements ElementCompact {
   _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
     typeCode: "AUTH",
@@ -201,5 +207,14 @@ export class Authorization implements ElementCompact {
 
   constructor(evidenceSeen: EvidenceSeen) {
     this.authorizingEvidenceSeen = evidenceSeen
+  }
+}
+
+export class EvidenceSeen extends prescription.PrescriptionAnnotation {
+  negationInd: core.BooleanValue
+
+  constructor(evidenceSeen: boolean) {
+    super(new codes.PrescriptionAnnotationCode("ES"))
+    this.negationInd = new core.BooleanValue(!evidenceSeen)
   }
 }

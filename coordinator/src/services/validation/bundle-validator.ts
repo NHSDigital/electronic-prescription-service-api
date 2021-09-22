@@ -17,7 +17,7 @@ import {validatePermittedDispenseMessage, validatePermittedPrescribeMessage} fro
 import {prescriptionRefactorEnabled} from "../../utils/feature-flags"
 import {isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"
-import {getOrganisationPerformer} from "../translation/request/dispense/dispense-common"
+import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
 
 export function verifyBundle(bundle: fhir.Bundle, scope: string): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {

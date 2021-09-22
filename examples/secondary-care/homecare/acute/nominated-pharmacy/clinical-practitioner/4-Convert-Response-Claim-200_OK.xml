@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN090101SM31 xmlns="urn:hl7-org:v3">
   <id root="A2C05EC6-4292-4568-8200-BFAC8439DA04"/>
-  <creationTime value="20210920103420"/>
+  <creationTime value="20210922102339"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN090101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -42,7 +42,7 @@
       <DispenseClaim classCode="INFO" moodCode="EVN">
         <id root="A2C05EC6-4292-4568-8200-BFAC8439DA04"/>
         <code code="163541000000107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensed Medication - FocusActOrEvent (administrative concept)"/>
-        <effectiveTime value="20210920103420"/>
+        <effectiveTime value="20210922102339"/>
         <typeId extension="PORX_MT142001UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <primaryInformationRecipient typeCode="PRCP">
           <AgentOrg classCode="AGNT">
@@ -60,7 +60,7 @@
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
             <effectiveTime nullFlavor="NA"/>
             <legalAuthenticator contextControlCode="OP" typeCode="LA">
-              <time value="20210920103420"/>
+              <time value="20210922102339"/>
               <signatureText nullFlavor="NA"/>
               <AgentPerson classCode="AGNT">
                 <id extension="999999999999" root="1.2.826.0.1285.0.2.0.67"/>
@@ -99,12 +99,12 @@
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentSuppliedLineItem classCode="SBADM" moodCode="PRMS">
                 <id root="58338C37-00E5-A577-E040-A8C016024E6D"/>
-                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
                 <component typeCode="COMP">
                   <seperatableInd value="false"/>
                   <suppliedLineItemQuantity classCode="SPLY" moodCode="EVN">
-                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
                     <quantity unit="1" value="1">
                       <translation code="3319611000001107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="vial" value="1"/>
                     </quantity>
@@ -152,12 +152,12 @@
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentSuppliedLineItem classCode="SBADM" moodCode="PRMS">
                 <id root="58338C37-00E6-A577-E040-A8C016024E6D"/>
-                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
                 <component typeCode="COMP">
                   <seperatableInd value="false"/>
                   <suppliedLineItemQuantity classCode="SPLY" moodCode="EVN">
-                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
                     <quantity unit="1" value="1">
                       <translation code="3319611000001107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="vial" value="1"/>
                     </quantity>
@@ -205,12 +205,12 @@
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentSuppliedLineItem classCode="SBADM" moodCode="PRMS">
                 <id root="58338C37-00E7-A577-E040-A8C016024E6D"/>
-                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
                 <component typeCode="COMP">
                   <seperatableInd value="false"/>
                   <suppliedLineItemQuantity classCode="SPLY" moodCode="EVN">
-                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
+                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
                     <quantity unit="1" value="1">
                       <translation code="3319611000001107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="vial" value="1"/>
                     </quantity>

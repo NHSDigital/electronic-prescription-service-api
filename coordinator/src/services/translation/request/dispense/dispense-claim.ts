@@ -1,18 +1,6 @@
-import {fhir, hl7V3} from "@models"
+import {fhir, hl7V3, processingErrors} from "@models"
 import moment from "moment"
 import pino from "pino"
-import {GroupIdentifierExtension} from "../../../../../../models/fhir"
-import {
-  ChargePayment,
-  DispenseClaimSuppliedLineItem,
-  DispenseClaimSuppliedLineItemQuantity,
-  DispenseClaimSupplyHeader,
-  LegalAuthenticator,
-  PrimaryInformationRecipient,
-  SuppliedLineItemComponent,
-  SuppliedLineItemPertinentInformation2,
-  Timestamp
-} from "../../../../../../models/hl7-v3"
 import {
   getCodeableConceptCodingForSystem,
   getCodeableConceptCodingForSystemOrNull,
@@ -25,8 +13,7 @@ import {
 import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import {getClaim, getMessageHeader} from "../../common/getResourcesOfType"
 import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
-import {createOrganisation, createPriorPrescriptionReleaseEventRef} from "./dispense-common"
-import {InvalidValueError} from "../../../../../../models/errors/processing-errors"
+import {createAgentOrganisationFromReference, createPriorPrescriptionReleaseEventRef} from "./dispense-common"
 
 export async function convertDispenseClaim(
   bundle: fhir.Bundle,
@@ -41,15 +28,13 @@ export async function convertDispenseClaim(
 
   //TODO - validate that coverage is always NHS BSA
   const insurance = onlyElement(claim.insurance, "Claim.insurance")
-  const coverage = insurance.coverage
-  const organization = createOrganisation(coverage.identifier.value, coverage.display)
-  const agentOrganization = new hl7V3.AgentOrganization(organization)
-  dispenseClaim.primaryInformationRecipient = new PrimaryInformationRecipient(agentOrganization)
+  const agentOrganization = createAgentOrganisationFromReference(insurance.coverage)
+  dispenseClaim.primaryInformationRecipient = new hl7V3.DispenseClaimPrimaryInformationRecipient(agentOrganization)
 
   //TODO - receiver
 
   const item = onlyElement(claim.item, "Claim.item")
-  dispenseClaim.pertinentInformation1 = await createPertinentInformation1(
+  dispenseClaim.pertinentInformation1 = await createDispenseClaimPertinentInformation1(
     claim,
     item,
     messageId,
@@ -108,24 +93,24 @@ function isEvidenceSeen(evidenceSeenCode: string) {
   return evidenceSeenCode === "evidence-seen"
 }
 
-async function createPertinentInformation1(
+async function createDispenseClaimPertinentInformation1(
   claim: fhir.Claim,
   item: fhir.ClaimItem,
   messageId: string,
-  timestamp: Timestamp,
+  timestamp: hl7V3.Timestamp,
   logger: pino.Logger
 ) {
   //TODO - work out what this means and whether we're doing it:
   // "Note: this must refer to the last one in the series if more
   // than one dispense event was required to fulfil the prescription."
-  const supplyHeader = new DispenseClaimSupplyHeader(new hl7V3.GlobalIdentifier(messageId))
+  const supplyHeader = new hl7V3.DispenseClaimSupplyHeader(new hl7V3.GlobalIdentifier(messageId))
 
   //TODO - repeat dispensing
 
   const payeeOdsCode = claim.payee.party.identifier.value
   //TODO - check that we can omit the user details (applies to all dispensing messages)
   const agentPerson = await createAgentPersonForUnattendedAccess(payeeOdsCode, logger)
-  supplyHeader.legalAuthenticator = new LegalAuthenticator(timestamp, agentPerson)
+  supplyHeader.legalAuthenticator = new hl7V3.LegalAuthenticator(timestamp, agentPerson)
 
   //TODO - populate pertinentInformation2 (non-dispensing reason)
 
@@ -156,28 +141,11 @@ function createPrescriptionStatus(item: fhir.ClaimItem) {
   return new hl7V3.PrescriptionStatus(prescriptionStatusCoding.code, prescriptionStatusCoding.display)
 }
 
-export function createPrescriptionId(claim: fhir.Claim): hl7V3.PrescriptionId {
-  const groupIdentifierExtension = getExtensionForUrl(
-    claim.prescription.extension,
-    "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
-    "Claim.prescription.extension"
-  ) as GroupIdentifierExtension
-
-  const prescriptionShortFormIdExtension = getExtensionForUrl(
-    groupIdentifierExtension.extension,
-    "shortForm",
-    "Claim.prescription.extension(\"https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier\").extension"
-  ) as fhir.IdentifierExtension
-
-  const prescriptionShortFormId = prescriptionShortFormIdExtension.valueIdentifier.value
-  return new hl7V3.PrescriptionId(prescriptionShortFormId)
-}
-
 export function createSuppliedLineItem(
   claim: fhir.Claim,
   item: fhir.ClaimItem,
   detail: fhir.ClaimItemDetail
-): DispenseClaimSuppliedLineItem {
+): hl7V3.DispenseClaimSuppliedLineItem {
   const claimSequenceIdentifierExtension = getExtensionForUrl(
     detail.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
@@ -190,7 +158,7 @@ export function createSuppliedLineItem(
   //TODO - repeat dispensing
   suppliedLineItem.component = detail.subDetail.map(subDetail => {
     const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(claim, item, detail, subDetail)
-    return new SuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
+    return new hl7V3.SuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
   })
 
   const statusReasonExtension = getExtensionForUrlOrNull(
@@ -201,7 +169,7 @@ export function createSuppliedLineItem(
   if (statusReasonExtension) {
     const nonDispensingReasonCode = statusReasonExtension.valueCoding.code
     const nonDispensingReason = new hl7V3.NonDispensingReason(nonDispensingReasonCode)
-    suppliedLineItem.pertinentInformation2 = new SuppliedLineItemPertinentInformation2(nonDispensingReason)
+    suppliedLineItem.pertinentInformation2 = new hl7V3.SuppliedLineItemPertinentInformation2(nonDispensingReason)
   }
 
   //TODO - is this actually the status of the item BEFORE dispensing?
@@ -234,7 +202,7 @@ export function createSuppliedLineItemQuantity(
   item: fhir.ClaimItem,
   detail: fhir.ClaimItemDetail,
   subDetail: fhir.ClaimItemSubDetail
-): DispenseClaimSuppliedLineItemQuantity {
+): hl7V3.DispenseClaimSuppliedLineItemQuantity {
   const fhirQuantity = subDetail.quantity
   const quantityUnitSnomedCode = new hl7V3.SnomedCode(fhirQuantity.code, fhirQuantity.unit)
   const quantityValue = getNumericValueAsString(fhirQuantity.value)
@@ -251,7 +219,7 @@ export function createSuppliedLineItemQuantity(
   const dispenseProduct = new hl7V3.DispenseProduct(suppliedManufacturedProduct)
 
   const chargePaid = getChargePaid(subDetail)
-  const chargePayment = new ChargePayment(chargePaid)
+  const chargePayment = new hl7V3.ChargePayment(chargePaid)
   const pertinentInformation1 = new hl7V3.DispenseClaimSuppliedLineItemQuantityPertinentInformation1(chargePayment)
 
   const endorsementCodings = getEndorsementCodings(subDetail)
@@ -282,7 +250,10 @@ function getChargePaid(subDetail: fhir.ClaimItemSubDetail) {
     case "not-paid":
       return false
     default:
-      throw new InvalidValueError("Unsupported prescription charge code", "Claim.item.detail.programCode")
+      throw new processingErrors.InvalidValueError(
+        "Unsupported prescription charge code",
+        "Claim.item.detail.programCode"
+      )
   }
 }
 
@@ -297,6 +268,18 @@ function createEndorsement(endorsementCoding: fhir.Coding) {
   //TODO - endorsement supporting information
   endorsement.value = new hl7V3.DispensingEndorsementCode(endorsementCoding.code)
   return endorsement
+}
+
+export function createPrescriptionId(claim: fhir.Claim): hl7V3.PrescriptionId {
+  const groupIdentifierExtension = getGroupIdentifierExtension(claim)
+  const prescriptionShortFormIdExtension = getExtensionForUrl(
+    groupIdentifierExtension.extension,
+    "shortForm",
+    "Claim.prescription.extension(\"https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier\").extension"
+  ) as fhir.IdentifierExtension
+
+  const prescriptionShortFormId = prescriptionShortFormIdExtension.valueIdentifier.value
+  return new hl7V3.PrescriptionId(prescriptionShortFormId)
 }
 
 export function createOriginalPrescriptionRef(claim: fhir.Claim): hl7V3.OriginalPrescriptionRef {

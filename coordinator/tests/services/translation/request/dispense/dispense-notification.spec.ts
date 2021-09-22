@@ -1,11 +1,9 @@
 import {
-  convertDispenseNotification
-} from "../../../../../src/services/translation/request/dispense/dispense-notification"
-import {
+  convertDispenseNotification,
   getFhirGroupIdentifierExtension,
   getPrescriptionItemNumber,
   getPrescriptionStatus
-} from "../../../../../src/services/translation/request/dispense/dispense-common"
+} from "../../../../../src/services/translation/request/dispense/dispense-notification"
 import * as TestResources from "../../../../resources/test-resources"
 import requireActual = jest.requireActual
 import {MomentFormatSpecification, MomentInput} from "moment"
@@ -345,34 +343,6 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .displayName
       ).toEqual(
         medicationDispense.quantity.unit
-      )
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component
-          .suppliedLineItemQuantity
-          .code
-          ._attributes
-          .displayName
-      ).toEqual(
-        medicationDispense.quantity.unit
-      )
-      expect(
-        hl7dispenseNotification
-          .pertinentInformation1
-          .pertinentSupplyHeader
-          .pertinentInformation1[index]
-          .pertinentSuppliedLineItem
-          .component
-          .suppliedLineItemQuantity
-          .code
-          ._attributes
-          .code
-      ).toEqual(
-        medicationDispense.quantity.code
       )
       expect(
         hl7dispenseNotification
