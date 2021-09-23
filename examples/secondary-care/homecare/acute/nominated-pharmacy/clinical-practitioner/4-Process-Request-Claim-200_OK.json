@@ -58,7 +58,7 @@
         "identifier":  [
           {
             "system": "https://tools.ietf.org/html/rfc4122",
-            "value": "2ED97439-1078-E46F-E040-007F01001C14"
+            "value": "e4203ee9-33bb-4c37-9408-4380d876dbf1"
           }
         ],
         "status": "active",
@@ -75,7 +75,7 @@
         "patient": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
-            "value": "2300992742"
+            "value": "9990548609"
           }
         },
         "created": "2011-10-25T13:45:35+00:00",
@@ -103,14 +103,14 @@
                   "url": "shortForm",
                   "valueIdentifier": {
                     "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-                    "value": "111467-A82003-09881S"
+                    "value": "0EB38D-A99968-424EAR"
                   }
                 },
                 {
                   "url": "UUID",
                   "valueIdentifier": {
                     "system": "https://fhir.nhs.uk/Id/prescription",
-                    "value": "1DE59600-86B1-11DB-84BA-2B9204F7A7C9"
+                    "value": "57a5aa32-7148-47c1-8efc-65ac5f625e61"
                   }
                 }
               ]
@@ -156,8 +156,8 @@
                 "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
                 "valueCoding": {
                   "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
-                  "code": "0006",
-                  "display": "Dispensed"
+                  "code": "0003",
+                  "display": "With Dispenser - Active"
                 }
               }
             ],
@@ -188,7 +188,7 @@
                     "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
                     "valueIdentifier": {
                       "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
-                      "value": "58338C37-00E5-A577-E040-A8C016024E6D"
+                      "value": "598bf5df-3086-4cd5-99ed-7cb0df0bacf3"
                     }
                   },
                   {
@@ -196,7 +196,7 @@
                     "valueReference": {
                       "identifier": {
                         "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-                        "value": "33560bee-bc0c-4e3b-a155-71591eee9ca5"
+                        "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
                       }
                     }
                   }
@@ -224,9 +224,9 @@
                 ],
                 "quantity": {
                   "value": 1,
-                  "unit": "vial",
+                  "unit": "pre-filled disposable injection",
                   "system": "http://snomed.info/sct",
-                  "code": "3319611000001107"
+                  "code": "3318611000001103"
                 },
                 "subDetail":  [
                   {
@@ -235,16 +235,16 @@
                       "coding":  [
                         {
                           "system": "http://snomed.info/sct",
-                          "code": "4627811000001103",
-                          "display": "Flolan 1.5mg powder and solvent for solution for injection vials (GlaxoSmithKline) 1 vial"
+                          "code": "15517911000001104",
+                          "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
                         }
                       ]
                     },
                     "quantity": {
                       "value": 1,
-                      "unit": "vial",
+                      "unit": "pre-filled disposable injection",
                       "system": "http://snomed.info/sct",
-                      "code": "3319611000001107"
+                      "code": "3318611000001103"
                     },
                     "programCode":  [
                       {
@@ -255,174 +255,6 @@
                             "display": "No Dispenser Endorsement Code"
                           }
                         ]
-                      },
-                      {
-                        "coding":  [
-                          {
-                            "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
-                            "code": "not-paid",
-                            "display": "Not Paid"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "extension":  [
-                  {
-                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
-                    "valueIdentifier": {
-                      "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
-                      "value": "58338C37-00E6-A577-E040-A8C016024E6D"
-                    }
-                  },
-                  {
-                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
-                    "valueReference": {
-                      "identifier": {
-                        "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-                        "value": "e8e75676-9d30-45f8-8b09-696818e7f4ca"
-                      }
-                    }
-                  }
-                ],
-                "sequence": 2,
-                "productOrService": {
-                  "coding":  [
-                    {
-                      "system": "http://snomed.info/sct",
-                      "code": "373784005",
-                      "display": "Administration of therapeutic substance"
-                    }
-                  ]
-                },
-                "modifier":  [
-                  {
-                    "coding":  [
-                      {
-                        "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
-                        "code": "0001",
-                        "display": "Item fully dispensed"
-                      }
-                    ]
-                  }
-                ],
-                "quantity": {
-                  "value": 1,
-                  "unit": "vial",
-                  "system": "http://snomed.info/sct",
-                  "code": "3319611000001107"
-                },
-                "subDetail":  [
-                  {
-                    "sequence": 1,
-                    "productOrService": {
-                      "coding":  [
-                        {
-                          "system": "http://snomed.info/sct",
-                          "code": "4627811000001103",
-                          "display": "Flolan 1.5mg powder and solvent for solution for injection vials (GlaxoSmithKline) 1 vial"
-                        }
-                      ]
-                    },
-                    "quantity": {
-                      "value": 1,
-                      "unit": "vial",
-                      "system": "http://snomed.info/sct",
-                      "code": "3319611000001107"
-                    },
-                    "programCode":  [
-                      {
-                        "coding":  [
-                          {
-                            "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
-                            "code": "BB",
-                            "display": "Broken Bulk"
-                          }
-                        ]
-                      },
-                      {
-                        "coding":  [
-                          {
-                            "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
-                            "code": "not-paid",
-                            "display": "Not Paid"
-                          }
-                        ]
-                      }
-                    ]
-                  }
-                ]
-              },
-              {
-                "extension":  [
-                  {
-                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
-                    "valueIdentifier": {
-                      "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
-                      "value": "58338C37-00E7-A577-E040-A8C016024E6D"
-                    }
-                  },
-                  {
-                    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
-                    "valueReference": {
-                      "identifier": {
-                        "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-                        "value": "164e94fe-16e5-4105-a4aa-10c3757c07c5"
-                      }
-                    }
-                  }
-                ],
-                "sequence": 3,
-                "productOrService": {
-                  "coding":  [
-                    {
-                      "system": "http://snomed.info/sct",
-                      "code": "373784005",
-                      "display": "Administration of therapeutic substance"
-                    }
-                  ]
-                },
-                "modifier":  [
-                  {
-                    "coding":  [
-                      {
-                        "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
-                        "code": "0001",
-                        "display": "Item fully dispensed"
-                      }
-                    ]
-                  }
-                ],
-                "quantity": {
-                  "value": 1,
-                  "unit": "vial",
-                  "system": "http://snomed.info/sct",
-                  "code": "3319611000001107"
-                },
-                "subDetail":  [
-                  {
-                    "sequence": 1,
-                    "productOrService": {
-                      "coding":  [
-                        {
-                          "system": "http://snomed.info/sct",
-                          "code": "4627811000001103",
-                          "display": "Flolan 1.5mg powder and solvent for solution for injection vials (GlaxoSmithKline) 1 vial"
-                        }
-                      ]
-                    },
-                    "quantity": {
-                      "value": 1,
-                      "unit": "vial",
-                      "system": "http://snomed.info/sct",
-                      "code": "3319611000001107"
-                    },
-                    "programCode":  [
-                      {
-                        "text": "Flolan 1.5mg pdr & solv for soln for inj vials,Test additional information [AI is no longer a valid code]"
                       },
                       {
                         "coding":  [
