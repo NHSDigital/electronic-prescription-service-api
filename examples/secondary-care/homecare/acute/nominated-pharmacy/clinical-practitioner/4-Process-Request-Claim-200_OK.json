@@ -159,6 +159,12 @@
                   "code": "0003",
                   "display": "With Dispenser - Active"
                 }
+              },
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-SuppliedItemIdentifier",
+                "valueIdentifier": {
+                  "value": "This extension shouldn't be here - ask Kevin to remove from the profile"
+                }
               }
             ],
             "productOrService": {
@@ -170,6 +176,18 @@
                 }
               ]
             },
+            "modifier":  [
+              {
+                "text": "This modifier shouldn't be here - ask Kevin to remove from the profile",
+                "coding":  [
+                  {
+                    "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+                    "code": "0001",
+                    "display": "Item fully dispensed"
+                  }
+                ]
+              }
+            ],
             "programCode":  [
               {
                 "coding":  [
@@ -206,8 +224,8 @@
                   "coding":  [
                     {
                       "system": "http://snomed.info/sct",
-                      "code": "373784005",
-                      "display": "Administration of therapeutic substance"
+                      "code": "15517911000001104",
+                      "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
                     }
                   ]
                 },
