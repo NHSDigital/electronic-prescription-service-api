@@ -1,5 +1,10 @@
 import * as uuid from "uuid"
-import {fhir, hl7V3, ProcessCase, TaskCase} from "@models"
+import {
+  fhir,
+  hl7V3,
+  ProcessCase,
+  TaskCase
+} from "@models"
 import {
   convertFhirMessageToSignedInfoMessage,
   convertFragmentsToHashableFormat,
