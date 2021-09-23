@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN090101SM31 xmlns="urn:hl7-org:v3">
   <id root="A2C05EC6-4292-4568-8200-BFAC8439DA04"/>
-  <creationTime value="20210922102339"/>
+  <creationTime value="20210923104036"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN090101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -42,7 +42,7 @@
       <DispenseClaim classCode="INFO" moodCode="EVN">
         <id root="A2C05EC6-4292-4568-8200-BFAC8439DA04"/>
         <code code="163541000000107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensed Medication - FocusActOrEvent (administrative concept)"/>
-        <effectiveTime value="20210922102339"/>
+        <effectiveTime value="20210923104036"/>
         <typeId extension="PORX_MT142001UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <primaryInformationRecipient typeCode="PRCP">
           <AgentOrg classCode="AGNT">
@@ -60,7 +60,7 @@
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
             <effectiveTime nullFlavor="NA"/>
             <legalAuthenticator contextControlCode="OP" typeCode="LA">
-              <time value="20210922102339"/>
+              <time value="20210923104036"/>
               <signatureText nullFlavor="NA"/>
               <AgentPerson classCode="AGNT">
                 <id extension="999999999999" root="1.2.826.0.1285.0.2.0.67"/>
@@ -91,14 +91,14 @@
               <seperatableInd value="false"/>
               <pertinentPrescriptionStatus classCode="OBS" moodCode="EVN">
                 <code code="PS" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                <value code="0006" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.35" displayName="Dispensed"/>
+                <value code="0003" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.35" displayName="With Dispenser - Active"/>
               </pertinentPrescriptionStatus>
             </pertinentInformation3>
             <pertinentInformation1 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT">
               <seperatableInd value="false"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentSuppliedLineItem classCode="SBADM" moodCode="PRMS">
-                <id root="58338C37-00E5-A577-E040-A8C016024E6D"/>
+                <id root="598BF5DF-3086-4CD5-99ED-7CB0DF0BACF3"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
                 <component typeCode="COMP">
@@ -106,12 +106,12 @@
                   <suppliedLineItemQuantity classCode="SPLY" moodCode="EVN">
                     <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
                     <quantity unit="1" value="1">
-                      <translation code="3319611000001107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="vial" value="1"/>
+                      <translation code="3318611000001103" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="pre-filled disposable injection" value="1"/>
                     </quantity>
                     <product contextControlCode="OP" typeCode="PRD">
                       <suppliedManufacturedProduct classCode="MANU">
                         <manufacturedSuppliedMaterial classCode="MMAT" determinerCode="KIND">
-                          <code code="4627811000001103" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Flolan 1.5mg powder and solvent for solution for injection vials (GlaxoSmithKline) 1 vial"/>
+                          <code code="15517911000001104" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"/>
                         </manufacturedSuppliedMaterial>
                       </suppliedManufacturedProduct>
                     </product>
@@ -142,106 +142,7 @@
                   <seperatableInd value="true"/>
                   <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
                   <priorOriginalItemRef classCode="SBADM" moodCode="RQO">
-                    <id root="33560BEE-BC0C-4E3B-A155-71591EEE9CA5"/>
-                  </priorOriginalItemRef>
-                </inFulfillmentOf>
-              </pertinentSuppliedLineItem>
-            </pertinentInformation1>
-            <pertinentInformation1 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT">
-              <seperatableInd value="false"/>
-              <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
-              <pertinentSuppliedLineItem classCode="SBADM" moodCode="PRMS">
-                <id root="58338C37-00E6-A577-E040-A8C016024E6D"/>
-                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
-                <effectiveTime nullFlavor="NA"/>
-                <component typeCode="COMP">
-                  <seperatableInd value="false"/>
-                  <suppliedLineItemQuantity classCode="SPLY" moodCode="EVN">
-                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
-                    <quantity unit="1" value="1">
-                      <translation code="3319611000001107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="vial" value="1"/>
-                    </quantity>
-                    <product contextControlCode="OP" typeCode="PRD">
-                      <suppliedManufacturedProduct classCode="MANU">
-                        <manufacturedSuppliedMaterial classCode="MMAT" determinerCode="KIND">
-                          <code code="4627811000001103" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Flolan 1.5mg powder and solvent for solution for injection vials (GlaxoSmithKline) 1 vial"/>
-                        </manufacturedSuppliedMaterial>
-                      </suppliedManufacturedProduct>
-                    </product>
-                    <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
-                      <seperatableInd value="false"/>
-                      <pertinentChargePayment classCode="OBS" moodCode="EVN">
-                        <code code="CP" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                        <value>false</value>
-                      </pertinentChargePayment>
-                    </pertinentInformation1>
-                    <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
-                      <seperatableInd value="true"/>
-                      <pertinentDispensingEndorsement classCode="OBS" moodCode="EVN">
-                        <code code="DE" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                        <value code="BB" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.29"/>
-                      </pertinentDispensingEndorsement>
-                    </pertinentInformation2>
-                  </suppliedLineItemQuantity>
-                </component>
-                <pertinentInformation3 contextConductionInd="true" typeCode="PERT">
-                  <seperatableInd value="false"/>
-                  <pertinentItemStatus classCode="OBS" moodCode="EVN">
-                    <code code="IS" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value code="0001" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.23" displayName="Item fully dispensed"/>
-                  </pertinentItemStatus>
-                </pertinentInformation3>
-                <inFulfillmentOf inversionInd="false" negationInd="false" typeCode="FLFS">
-                  <seperatableInd value="true"/>
-                  <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
-                  <priorOriginalItemRef classCode="SBADM" moodCode="RQO">
-                    <id root="E8E75676-9D30-45F8-8B09-696818E7F4CA"/>
-                  </priorOriginalItemRef>
-                </inFulfillmentOf>
-              </pertinentSuppliedLineItem>
-            </pertinentInformation1>
-            <pertinentInformation1 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT">
-              <seperatableInd value="false"/>
-              <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
-              <pertinentSuppliedLineItem classCode="SBADM" moodCode="PRMS">
-                <id root="58338C37-00E7-A577-E040-A8C016024E6D"/>
-                <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
-                <effectiveTime nullFlavor="NA"/>
-                <component typeCode="COMP">
-                  <seperatableInd value="false"/>
-                  <suppliedLineItemQuantity classCode="SPLY" moodCode="EVN">
-                    <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
-                    <quantity unit="1" value="1">
-                      <translation code="3319611000001107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="vial" value="1"/>
-                    </quantity>
-                    <product contextControlCode="OP" typeCode="PRD">
-                      <suppliedManufacturedProduct classCode="MANU">
-                        <manufacturedSuppliedMaterial classCode="MMAT" determinerCode="KIND">
-                          <code code="4627811000001103" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Flolan 1.5mg powder and solvent for solution for injection vials (GlaxoSmithKline) 1 vial"/>
-                        </manufacturedSuppliedMaterial>
-                      </suppliedManufacturedProduct>
-                    </product>
-                    <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
-                      <seperatableInd value="false"/>
-                      <pertinentChargePayment classCode="OBS" moodCode="EVN">
-                        <code code="CP" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                        <value>false</value>
-                      </pertinentChargePayment>
-                    </pertinentInformation1>
-                  </suppliedLineItemQuantity>
-                </component>
-                <pertinentInformation3 contextConductionInd="true" typeCode="PERT">
-                  <seperatableInd value="false"/>
-                  <pertinentItemStatus classCode="OBS" moodCode="EVN">
-                    <code code="IS" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                    <value code="0001" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.23" displayName="Item fully dispensed"/>
-                  </pertinentItemStatus>
-                </pertinentInformation3>
-                <inFulfillmentOf inversionInd="false" negationInd="false" typeCode="FLFS">
-                  <seperatableInd value="true"/>
-                  <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
-                  <priorOriginalItemRef classCode="SBADM" moodCode="RQO">
-                    <id root="164E94FE-16E5-4105-A4AA-10C3757C07C5"/>
+                    <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
                   </priorOriginalItemRef>
                 </inFulfillmentOf>
               </pertinentSuppliedLineItem>
@@ -250,14 +151,14 @@
               <seperatableInd value="false"/>
               <pertinentPrescriptionID classCode="OBS" moodCode="EVN">
                 <code code="PID" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                <value extension="111467-A82003-09881S" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+                <value extension="0EB38D-A99968-424EAR" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
               </pertinentPrescriptionID>
             </pertinentInformation4>
             <inFulfillmentOf inversionInd="false" negationInd="false" typeCode="FLFS">
               <seperatableInd value="true"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <priorOriginalPrescriptionRef classCode="SBADM" moodCode="RQO">
-                <id root="1DE59600-86B1-11DB-84BA-2B9204F7A7C9"/>
+                <id root="57A5AA32-7148-47C1-8EFC-65AC5F625E61"/>
               </priorOriginalPrescriptionRef>
             </inFulfillmentOf>
           </pertinentSupplyHeader>
