@@ -41,6 +41,9 @@ extends:
     jinja_templates:
         REQUIRE_ASID: false
     apigee_deployments:
+      - environment: manual-approval
+        stage_name: manual_approval_external_ptl
+        depends_on: []
       - environment: internal-dev-sandbox
         proxy_path: sandbox
         make_spec_visible: true
@@ -68,18 +71,17 @@ extends:
       - environment: sandbox
         proxy_path: sandbox
         depends_on:
-          - manual_approval
+          - manual_approval_external_ptl
       - environment: int
         make_spec_visible: true
         proxy_path: live
         depends_on:
-          - manual_approval
+          - manual_approval_external_ptl
       - environment: ref
         proxy_path: live
         depends_on:
           - int
           - sandbox
-          - manual_approval
       - environment: prod
         # todo: make_spec_visible: true when ready for live
         make_spec_visible: false
