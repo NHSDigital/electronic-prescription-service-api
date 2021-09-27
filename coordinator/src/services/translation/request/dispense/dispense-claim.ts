@@ -21,6 +21,7 @@ export async function convertDispenseClaim(
 ): Promise<hl7V3.DispenseClaim> {
   //TODO - possibly get rid of Bundle and MessageHeader and move everything to the Claim
   const messageId = getMessageId([bundle.identifier], "Bundle.identifier")
+  //TODO - should we use Claim.created instead?
   const now = convertMomentToHl7V3DateTime(moment.utc())
   const dispenseClaim = new hl7V3.DispenseClaim(new hl7V3.GlobalIdentifier(messageId), now)
 
@@ -160,6 +161,8 @@ export function createSuppliedLineItem(
     const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(claim, item, detail, subDetail)
     return new hl7V3.SuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
   })
+
+  //TODO - running total
 
   const statusReasonExtension = getExtensionForUrlOrNull(
     detail.extension,
