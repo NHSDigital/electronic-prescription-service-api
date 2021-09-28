@@ -6,8 +6,8 @@ docker_containers:
       dockerfile: "validator/Dockerfile"
       path: "validator"
     - name: eps-api-tool
-      dockerfile: "Dockerfile-Site"
+      dockerfile: "tool/Dockerfile-Site"
       path: "./tool"
     - name: eps-api-tool-store
-      dockerfile: "Dockerfile-Store"
+      dockerfile: "tool/Dockerfile-Store"
       path: "./tool"
