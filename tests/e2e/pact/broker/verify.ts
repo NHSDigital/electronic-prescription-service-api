@@ -3,8 +3,7 @@ import {ApiEndpoint, ApiOperation, basePath} from "../resources/common"
 import {getIdentifierParameterByName} from "@coordinator"
 import path from "path"
 import axios from "axios"
-import {fetcher} from "@models"
-import {fhir} from "@models"
+import {fhir, fetcher} from "@models"
 import * as uuid from "uuid"
 
 let token: string
