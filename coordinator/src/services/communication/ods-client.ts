@@ -2,9 +2,11 @@ import {fhir} from "@models"
 import pino from "pino"
 import {SandboxOdsClient} from "./sandbox-ods-client"
 import {LiveOdsClient} from "./live-ods-client"
+import {StatusCheckResponse} from "../../routes/health/get-status"
 
 export interface OdsClient {
   lookupOrganization(odsCode: string, logger: pino.Logger): Promise<fhir.Organization>
+  getStatus(logger: pino.Logger): Promise<StatusCheckResponse>
 }
 
 function getOdsClient(liveMode: boolean): OdsClient {

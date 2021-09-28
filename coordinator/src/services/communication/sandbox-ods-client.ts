@@ -1,6 +1,7 @@
 import {OdsClient} from "./ods-client"
 import {fhir, odsResponses} from "@models"
 import {getIdentifierValueForSystem} from "../translation/common"
+import {StatusCheckResponse} from "../../routes/health/get-status"
 
 export class SandboxOdsClient implements OdsClient {
   static responses = [
@@ -30,5 +31,13 @@ export class SandboxOdsClient implements OdsClient {
 
   lookupOrganization(odsCode: string): Promise<fhir.Organization> {
     return Promise.resolve(SandboxOdsClient.responseMap.get(odsCode) ?? null)
+  }
+
+  getStatus(): Promise<StatusCheckResponse> {
+    return Promise.resolve({
+      status: "pass",
+      timeout: "false",
+      responseCode: 200
+    })
   }
 }
