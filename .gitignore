@@ -16,3 +16,6 @@ envrc.ps1
 sign/
 *.key
 prescriptions-*.txt
+tool/templates/*
+tool/static/*
+venv

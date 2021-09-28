@@ -1,0 +1,21 @@
+<TargetEndpoint name="target">
+    <PreFlow>
+        <Request>
+            <Step>
+                <Name>Quota</Name>
+            </Step>
+            <Step>
+                <Name>SpikeArrest</Name>
+            </Step>
+            <Step>
+                <Name>AssignMessage.AddEncoding</Name>
+            </Step>
+        </Request>
+    </PreFlow>
+    <HTTPTargetConnection>
+        <Properties>
+            <Property name="success.codes">1xx,2xx,3xx,4xx</Property>
+        </Properties>
+        {{ HOSTED_TARGET_CONNECTION }}
+    </HTTPTargetConnection>
+</TargetEndpoint>

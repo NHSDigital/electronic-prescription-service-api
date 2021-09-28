@@ -1,0 +1,6 @@
+variables:
+  service_name: eps-api-tool
+  short_service_name: eps-api-tool
+  service_base_path: eps-api-tool
+  product_display_name: EPS API Tool
+  product_description: " "

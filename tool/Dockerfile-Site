@@ -1,0 +1,27 @@
+# syntax=docker/dockerfile:1
+
+# --- Base ---
+FROM python:3.8-slim-buster AS base
+WORKDIR /app
+
+# --- Build ---
+FROM node:12.18.1-alpine as build
+ENV NO_UPDATE_NOTIFIER true
+WORKDIR /build
+COPY package*.json ./
+RUN npm config set update-notifier false
+RUN npm ci
+COPY webpack.config.js ./
+COPY tsconfig.json ./
+COPY client ./client
+RUN npm run build
+
+# --- Runtime ---
+FROM base AS runtime
+COPY --from=build /build/static ./static
+COPY --from=build /build/templates ./templates
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+COPY ./server/ ./
+USER nobody
+CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
