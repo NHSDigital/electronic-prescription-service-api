@@ -3,7 +3,7 @@ import {ApiEndpoint, ApiOperation, basePath} from "../resources/common"
 import {getIdentifierParameterByName} from "@coordinator"
 import path from "path"
 import axios from "axios"
-import {taskExamples} from "../../../../models/examples/fetchers"
+import {fetcher} from "@models"
 import {fhir} from "@models"
 import * as uuid from "uuid"
 
@@ -131,7 +131,7 @@ async function verifyTracker(): Promise<void> {
 function clearData() {
   const releaseUrl = `${process.env.PACT_PROVIDER_URL}${basePath}/Task/$release`
 
-  const nominatedReleases = taskExamples
+  const nominatedReleases = fetcher.taskExamples
     .filter(task => task.isSuccess)
     .filter(task => task.requestFile.operation === "release")
     .map(task => task.request as fhir.Parameters)
