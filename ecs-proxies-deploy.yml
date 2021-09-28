@@ -10,38 +10,38 @@ docker_service:
     port: 9000
     expose: true
     environment:
-        - name: NODE_ENV
-          value: production
-        - name: LOG_LEVEL
-          value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
-        - name: SANDBOX
-          value: "{{ SANDBOX_MODE_ENABLED }}"
-        - name: BASE_PATH
-          value: "https://{{ APIGEE_HOSTNAME }}/{{ SERVICE_BASE_PATH }}"
-        - name: COMMIT_ID
-          value: "{{ SOURCE_COMMIT_ID }}"
-        - name: DEPLOYED_VERSION
-          value: "{{ DEPLOYED_VERSION }}"
-        - name: ENVIRONMENT
-          value: "{{ APIGEE_ENVIRONMENT }}"
-        - name: DISPENSE_ENABLED
-          value: "true"
-        - name: PRESCRIBE_ENABLED
-          value: "true"
-        - name: DOSE_TO_TEXT_MODE
-          value: "AUDIT"
+      - name: NODE_ENV
+        value: production
+      - name: LOG_LEVEL
+        value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
+      - name: SANDBOX
+        value: "{{ SANDBOX_MODE_ENABLED }}"
+      - name: BASE_PATH
+        value: "https://{{ APIGEE_HOSTNAME }}/{{ SERVICE_BASE_PATH }}"
+      - name: COMMIT_ID
+        value: "{{ SOURCE_COMMIT_ID }}"
+      - name: DEPLOYED_VERSION
+        value: "{{ DEPLOYED_VERSION }}"
+      - name: ENVIRONMENT
+        value: "{{ APIGEE_ENVIRONMENT }}"
+      - name: DISPENSE_ENABLED
+        value: "true"
+      - name: PRESCRIBE_ENABLED
+        value: "true"
+      - name: DOSE_TO_TEXT_MODE
+        value: "AUDIT"
     secrets:
-        - name: SPINE_URL
-          valueFrom: '/{{ account }}/platform-common/egress/hosts/spine-prescriptions-{{ SPINE_ENV }}'
-        - name: ODS_URL
-          valueFrom: '/{{ account }}/platform-common/egress/hosts/directory-spineservices'
-        - name: TO_ASID
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-asid'
-        - name: TO_PARTY_KEY
-          valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-party-key'
+      - name: SPINE_URL
+        valueFrom: '/{{ account }}/platform-common/egress/hosts/spine-prescriptions-{{ SPINE_ENV }}'
+      - name: ODS_URL
+        valueFrom: '/{{ account }}/platform-common/egress/hosts/directory-spineservices'
+      - name: TO_ASID
+        valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-asid'
+      - name: TO_PARTY_KEY
+        valueFrom: '/{{ account }}/api-deployment/{{ service_name }}/veit07.devspineservices.nhs.uk/to-party-key'
     health_check:
-        matcher: "200"
-        path: "/_healthcheck"
+      matcher: "200"
+      path: "/_healthcheck"
   - name: eps-validator
     port: 9001
     expose: false
@@ -49,53 +49,53 @@ docker_service:
         matcher: "200"
         path: "/_status"
   - name: eps-api-tool
-      port: 9000
-      expose: true
-      environment:
-          - name: FLASK_RUN_PORT
-            value: "9000"
-          - name: LOG_LEVEL
-            value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
-          - name: COMMIT_ID
-            value: "{{ SOURCE_COMMIT_ID }}"
-          - name: ENVIRONMENT
-            value: "{{ APIGEE_ENVIRONMENT }}"
-          - name: PUBLIC_APIGEE_URL
-            value: "https://{{ APIGEE_HOSTNAME }}"
-          - name: BASE_PATH
-            value: "{{ SERVICE_BASE_PATH }}"
-          - name: REDIS_URL
-            value: "redis://localhost:6379"
-      secrets:
-          - name: APIGEE_DOMAIN_NAME
-            valueFrom: '/{{ account }}/platform-common/egress/hosts/apigee-{{ APIGEE_ENVIRONMENT }}'
-          - name: DEMO_APP_CLIENT_ID
-            valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/client-id"
-          - name: DEMO_APP_KEY_ID
-            valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/local-jwt-key-id"
-          - name: RSS_JWT_ISSUER
-            valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/rss-jwt-issuer"
-          - name: RSS_JWT_KID
-            valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/rss-jwt-key-id"
-          - name: APP_SIGNING_SUBJECT
-            valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/rss-jwt-subject"
-          - name: RSS_JWT_PRIVATE_KEY
-            valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/rss-jwt-private-key"
-          - name: DEMO_APP_PRIVATE_KEY
-            valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/local-jwt-private-key"
-          - name: DEMO_APP_CLIENT_KEY
-            valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/client-key"
-          - name: SESSION_TOKEN_ENCRYPTION_KEY
-            valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/session-token-encryption-key"
-      health_check:
-          matcher: "200"
-          path: "/_healthcheck"
-    - name: eps-api-tool-store
-      port: 6379
-      expose: false
-      environment:
-          - name: HEALTHCHECK_INTERNAL_PORT
-            value: "9001"
-      health_check:
-        matcher: "200"
-        path: "/_healthcheck"
+    port: 9000
+    expose: true
+    environment:
+      - name: FLASK_RUN_PORT
+        value: "9000"
+      - name: LOG_LEVEL
+        value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
+      - name: COMMIT_ID
+        value: "{{ SOURCE_COMMIT_ID }}"
+      - name: ENVIRONMENT
+        value: "{{ APIGEE_ENVIRONMENT }}"
+      - name: PUBLIC_APIGEE_URL
+        value: "https://{{ APIGEE_HOSTNAME }}"
+      - name: BASE_PATH
+        value: "{{ SERVICE_BASE_PATH }}"
+      - name: REDIS_URL
+        value: "redis://localhost:6379"
+    secrets:
+      - name: APIGEE_DOMAIN_NAME
+        valueFrom: '/{{ account }}/platform-common/egress/hosts/apigee-{{ APIGEE_ENVIRONMENT }}'
+      - name: DEMO_APP_CLIENT_ID
+        valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/client-id"
+      - name: DEMO_APP_KEY_ID
+        valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/local-jwt-key-id"
+      - name: RSS_JWT_ISSUER
+        valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/rss-jwt-issuer"
+      - name: RSS_JWT_KID
+        valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/rss-jwt-key-id"
+      - name: APP_SIGNING_SUBJECT
+        valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/rss-jwt-subject"
+      - name: RSS_JWT_PRIVATE_KEY
+        valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/rss-jwt-private-key"
+      - name: DEMO_APP_PRIVATE_KEY
+        valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/local-jwt-private-key"
+      - name: DEMO_APP_CLIENT_KEY
+        valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/client-key"
+      - name: SESSION_TOKEN_ENCRYPTION_KEY
+        valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/session-token-encryption-key"
+    health_check:
+      matcher: "200"
+      path: "/_healthcheck"
+  - name: eps-api-tool-store
+    port: 6379
+    expose: false
+    environment:
+      - name: HEALTHCHECK_INTERNAL_PORT
+        value: "9001"
+    health_check:
+      matcher: "200"
+      path: "/_healthcheck"

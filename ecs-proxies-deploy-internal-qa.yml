@@ -49,53 +49,53 @@ docker_service:
         matcher: "200"
         path: "/_status"
   - name: eps-api-tool
-      port: 9000
-      expose: true
-      environment:
-          - name: FLASK_RUN_PORT
-            value: "9000"
-          - name: LOG_LEVEL
-            value: "info"
-          - name: COMMIT_ID
-            value: "{{ SOURCE_COMMIT_ID }}"
-          - name: ENVIRONMENT
-            value: "{{ APIGEE_ENVIRONMENT }}"
-          - name: PUBLIC_APIGEE_URL
-            value: "https://{{ APIGEE_HOSTNAME }}"
-          - name: BASE_PATH
-            value: "{{ SERVICE_BASE_PATH }}"
-          - name: REDIS_URL
-            value: "redis://localhost:6379"
-      secrets:
-          - name: APIGEE_DOMAIN_NAME
-            valueFrom: '/{{ account }}/platform-common/egress/hosts/apigee-internal-qa'
-          - name: DEMO_APP_CLIENT_ID
-            valueFrom: "/{{ account }}/api-deployment/eps-api-tool/internal-qa/test-client/client-id"
-          - name: DEMO_APP_KEY_ID
-            valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/local-jwt-key-id"
-          - name: RSS_JWT_ISSUER
-            valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/rss-jwt-issuer"
-          - name: RSS_JWT_KID
-            valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/rss-jwt-key-id"
-          - name: APP_SIGNING_SUBJECT
-            valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/rss-jwt-subject"
-          - name: RSS_JWT_PRIVATE_KEY
-            valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/int/test-client/rss-jwt-private-key"
-          - name: DEMO_APP_PRIVATE_KEY
-            valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/int/test-client/local-jwt-private-key"
-          - name: DEMO_APP_CLIENT_KEY
-            valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/internal-qa/test-client/client-key"
-          - name: SESSION_TOKEN_ENCRYPTION_KEY
-            valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/int/test-client/session-token-encryption-key"
-      health_check:
-          matcher: "200"
-          path: "/_healthcheck"
-    - name: eps-api-tool-store
-      port: 6379
-      expose: false
-      environment:
-          - name: HEALTHCHECK_INTERNAL_PORT
-            value: "9001"
-      health_check:
+    port: 9000
+    expose: true
+    environment:
+        - name: FLASK_RUN_PORT
+          value: "9000"
+        - name: LOG_LEVEL
+          value: "info"
+        - name: COMMIT_ID
+          value: "{{ SOURCE_COMMIT_ID }}"
+        - name: ENVIRONMENT
+          value: "{{ APIGEE_ENVIRONMENT }}"
+        - name: PUBLIC_APIGEE_URL
+          value: "https://{{ APIGEE_HOSTNAME }}"
+        - name: BASE_PATH
+          value: "{{ SERVICE_BASE_PATH }}"
+        - name: REDIS_URL
+          value: "redis://localhost:6379"
+    secrets:
+        - name: APIGEE_DOMAIN_NAME
+          valueFrom: '/{{ account }}/platform-common/egress/hosts/apigee-internal-qa'
+        - name: DEMO_APP_CLIENT_ID
+          valueFrom: "/{{ account }}/api-deployment/eps-api-tool/internal-qa/test-client/client-id"
+        - name: DEMO_APP_KEY_ID
+          valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/local-jwt-key-id"
+        - name: RSS_JWT_ISSUER
+          valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/rss-jwt-issuer"
+        - name: RSS_JWT_KID
+          valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/rss-jwt-key-id"
+        - name: APP_SIGNING_SUBJECT
+          valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/rss-jwt-subject"
+        - name: RSS_JWT_PRIVATE_KEY
+          valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/int/test-client/rss-jwt-private-key"
+        - name: DEMO_APP_PRIVATE_KEY
+          valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/int/test-client/local-jwt-private-key"
+        - name: DEMO_APP_CLIENT_KEY
+          valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/internal-qa/test-client/client-key"
+        - name: SESSION_TOKEN_ENCRYPTION_KEY
+          valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/int/test-client/session-token-encryption-key"
+    health_check:
         matcher: "200"
         path: "/_healthcheck"
+  - name: eps-api-tool-store
+    port: 6379
+    expose: false
+    environment:
+        - name: HEALTHCHECK_INTERNAL_PORT
+          value: "9001"
+    health_check:
+      matcher: "200"
+      path: "/_healthcheck"
