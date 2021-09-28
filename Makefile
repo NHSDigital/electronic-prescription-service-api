@@ -72,7 +72,6 @@ install-node:
 	cd models && npm ci
 	cd coordinator && npm ci
 	cd tests/e2e/pact && make install
-	cd
 
 install-hooks:
 	cp scripts/pre-commit .git/hooks/pre-commit
