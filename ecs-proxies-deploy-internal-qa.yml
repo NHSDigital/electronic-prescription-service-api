@@ -13,7 +13,7 @@ docker_service:
         - name: NODE_ENV
           value: production
         - name: LOG_LEVEL
-          value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
+          value: "info"
         - name: SANDBOX
           value: "0"
         - name: BASE_PATH
