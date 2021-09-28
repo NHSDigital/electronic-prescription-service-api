@@ -72,6 +72,7 @@ install-node:
 	cd models && npm ci
 	cd coordinator && npm ci
 	cd tests/e2e/pact && make install
+	cd
 
 install-hooks:
 	cp scripts/pre-commit .git/hooks/pre-commit
@@ -128,10 +129,11 @@ lint: build
 	cd specification && npm run lint
 	cd coordinator && npm run lint
 	make -C validator lint
-	cd tests/e2e/pact && make lint
 	poetry run flake8 scripts/*.py --config .flake8
 	shellcheck scripts/*.sh
-
+	cd tests/e2e/pact && make lint
+	cd tool && make lint
+	
 check-licenses:
 	cd specification && npm run check-licenses
 	cd coordinator && npm run check-licenses
