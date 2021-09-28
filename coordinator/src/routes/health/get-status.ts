@@ -1,43 +1,14 @@
 import Hapi from "@hapi/hapi"
-import axios, {AxiosError} from "axios"
+import axios from "axios"
 import {VALIDATOR_HOST} from "../util"
 import {spineClient} from "../../services/communication/spine-client"
 import {odsClient} from "../../services/communication/ods-client"
-import pino from "pino"
-
-export interface StatusCheckResponse {
-  status: "pass" | "warn" | "error"
-  timeout: "true" | "false"
-  responseCode: number
-  outcome?: string
-  links?: string
-}
-
-export async function serviceHealthCheck(url: string, logger: pino.Logger): Promise<StatusCheckResponse> {
-  try {
-    const response = await axios.get<string>(url, {timeout: 20000})
-    return {
-      status: response.status === 200 ? "pass" : "error",
-      timeout: "false",
-      responseCode: response.status,
-      outcome: response.data,
-      links: url
-    }
-  } catch (error) {
-    logger.error("Error calling external service for status check: " + error.message)
-    const axiosError = error as AxiosError
-    return {
-      status: "error",
-      timeout: axiosError.code === "ECONNABORTED" ? "true" : "false",
-      responseCode: axiosError.response?.status,
-      outcome: axiosError.response?.data,
-      links: url
-    }
-  }
-}
+import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
 
 function createStatusResponse(
-  errorStatusCode: number, checks: Record<string, Array<StatusCheckResponse>>, h: Hapi.ResponseToolkit
+  errorStatusCode: number,
+  checks: Record<string, Array<StatusCheckResponse>>,
+  h: Hapi.ResponseToolkit
 ) {
   let responseStatus = "pass"
   let responseCode = 200

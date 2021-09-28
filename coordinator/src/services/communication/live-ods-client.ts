@@ -3,7 +3,7 @@ import pino from "pino"
 import {fhir} from "@models"
 import {OdsClient} from "./ods-client"
 import {convertToOrganization, OdsOrganization} from "./ods-organization"
-import {serviceHealthCheck, StatusCheckResponse} from "../../routes/health/get-status"
+import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
 
 const HEALTHCHECK_ODS_CODE = "X26" //Using the ODS code for NHS Digital
 

@@ -1,7 +1,7 @@
 import {OdsClient} from "./ods-client"
 import {fhir, odsResponses} from "@models"
 import {getIdentifierValueForSystem} from "../translation/common"
-import {StatusCheckResponse} from "../../routes/health/get-status"
+import {StatusCheckResponse} from "../../utils/status"
 
 export class SandboxOdsClient implements OdsClient {
   static responses = [
