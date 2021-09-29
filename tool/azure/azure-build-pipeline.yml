@@ -32,8 +32,6 @@ extends:
       - bash: |
           shopt -s extglob
           rm -rfv !(tool)
-          ls -la
           rsync -vua --delete-after tool/ .
-          ls -la
         workingDirectory: "${{ variables.service_name }}"
         displayName: Prepare eps-api-tool
