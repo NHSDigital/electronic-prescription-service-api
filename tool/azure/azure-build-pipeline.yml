@@ -31,7 +31,7 @@ extends:
     cache_steps:
       - bash: |
           shopt -s extglob
-          rm -rf !("tool")
+          rm -rf !(tool)
           ls -la
           rsync -vua --delete-after tool/ .
         displayName: Prepare eps-api-tool
