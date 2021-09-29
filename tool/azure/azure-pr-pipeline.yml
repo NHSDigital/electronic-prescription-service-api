@@ -72,7 +72,7 @@ extends:
 
           if [ $success == 0 ]
           then
-              echo "Failed to verify if EPS API has been succesfully deployed: API was not ready in time"
+              echo "Smoke tests failed, API was not ready in time"
               exit 255
           fi
-        displayName: Wait for EPS deploy
+        displayName: Wait for deploy
