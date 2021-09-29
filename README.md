@@ -175,3 +175,4 @@ To update the validator:
 
 ## Trouble shooting
 If you clone the repo and see unexpected changes to the validator, this is probably because your checked out version of the submodule isn't the same as the commit specified in the parent repo. You can address this by running `git submodule update && git submodule init` to bring the submodule into line with the parent repo.
+
