@@ -44,11 +44,10 @@ extends:
 
           set -euo pipefail
 
-          SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
-          export SERVICE_BASE_PATH="${SERVICE_BASE_PATH/eps-api-tool/"electronic-prescriptions"}"
+          export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
           export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
 
-          # Poll EPS API until our deployed version matches the release version
+          # Poll deploying API until our deployed version matches the release version
           if [ "$APIGEE_ENVIRONMENT" != "prod" ]; then
               envPrefix="$APIGEE_ENVIRONMENT."
           fi;

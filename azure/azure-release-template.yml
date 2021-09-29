@@ -9,8 +9,6 @@ parameters:
     type: string
   - name: product_description
     type: string
-  - name: service_base_path_pr
-    type: string
   - name: spec_file
     type: string
   - name: apigee_deployments
