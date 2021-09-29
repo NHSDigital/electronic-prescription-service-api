@@ -28,3 +28,8 @@ extends:
   parameters:
     service_name: ${{ variables.service_name }}
     short_service_name: ${{ variables.short_service_name }}
+    cache_steps:
+      - bash: |
+          rm -v !("tool")
+          rsync -vua --delete-after tool/ .
+        displayName: Prepare eps-api-tool
