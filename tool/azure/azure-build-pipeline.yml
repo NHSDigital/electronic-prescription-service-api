@@ -30,6 +30,7 @@ extends:
     short_service_name: ${{ variables.short_service_name }}
     cache_steps:
       - bash: |
+          shopt -s extglob
           rm -v !("tool")
           rsync -vua --delete-after tool/ .
         displayName: Prepare eps-api-tool
