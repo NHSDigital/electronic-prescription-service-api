@@ -30,6 +30,7 @@ extends:
     short_service_name: ${{ variables.short_service_name }}
     cache_steps:
       - bash: |
+          set -euo pipefail
           shopt -s extglob
           rm -rfv !(tool)
           rsync -vua --delete-after tool/ .
