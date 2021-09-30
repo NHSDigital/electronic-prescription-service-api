@@ -24,7 +24,7 @@ extends:
     product_description: ${{ parameters.product_description }}
     spec_file: ${{ parameters.spec_file }}
     apigee_deployments: ${{ parameters.apigee_deployments }}
-    prod_requires_approval: false
+    prod_requires_approval: true
     post_deploy:
       - bash: |
           #!/bin/bash
