@@ -1,0 +1,239 @@
+{
+  "resourceType": "Claim",
+  "id": "e8e75676-9d30-45f8-8b09-696818e7f4ca",
+  "identifier": [
+    {
+      "system": "https://tools.ietf.org/html/rfc4122",
+      "value": "a2c05ec6-4292-4568-8200-bfac8439da04"
+    }
+  ],
+  "status": "active",
+  "type": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/claim-type",
+        "code": "pharmacy",
+        "display": "Pharmacy"
+      }
+    ]
+  },
+  "use": "claim",
+  "patient": {
+    "identifier": {
+      "system": "https://fhir.nhs.uk/Id/nhs-number",
+      "value": "9990548609"
+    }
+  },
+  "created": "2011-10-25T13:45:35+00:00",
+  "provider": {
+    "identifier": {
+      "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      "value": "884562163557"
+    },
+    "display": "dummy full name"
+  },
+  "priority": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/processpriority",
+        "code": "normal"
+      }
+    ]
+  },
+  "prescription": {
+    "extension": [
+      {
+        "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
+        "extension": [
+          {
+            "url": "shortForm",
+            "valueIdentifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+              "value": "0EB38D-A99968-424EAR"
+            }
+          },
+          {
+            "url": "UUID",
+            "valueIdentifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription",
+              "value": "57a5aa32-7148-47c1-8efc-65ac5f625e61"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "payee": {
+    "type": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/payeetype",
+          "code": "provider",
+          "display": "Provider"
+        }
+      ]
+    },
+    "party": {
+      "identifier": {
+        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+        "value": "FL584"
+      },
+      "display": "YOUR LOCAL BOOTS PHARMACY"
+    }
+  },
+  "insurance": [
+    {
+      "sequence": 1,
+      "focal": true,
+      "coverage": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "T1450"
+        },
+        "display": "NHS BUSINESS SERVICES AUTHORITY"
+      }
+    }
+  ],
+  "item": [
+    {
+      "sequence": 1,
+      "extension": [
+        {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+          "valueCoding": {
+            "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+            "code": "0006",
+            "display": "Dispensed"
+          }
+        },
+        {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-SuppliedItemIdentifier",
+          "valueIdentifier": {
+            "value": "This extension shouldn't be here - ask Kevin to remove from the profile"
+          }
+        }
+      ],
+      "productOrService": {
+        "coding": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "16076005",
+            "display": "Prescription"
+          }
+        ]
+      },
+      "modifier": [
+        {
+          "text": "This modifier shouldn't be here - ask Kevin to remove from the profile",
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "code": "0001",
+              "display": "Item fully dispensed"
+            }
+          ]
+        }
+      ],
+      "programCode": [
+        {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption",
+              "code": "0001",
+              "display": "Patient has paid appropriate charges"
+            }
+          ]
+        }
+      ],
+      "detail": [
+        {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
+              "valueIdentifier": {
+                "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
+                "value": "598bf5df-3086-4cd5-99ed-7cb0df0bacf3"
+              }
+            },
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
+              "valueReference": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                  "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+                }
+              }
+            }
+          ],
+          "sequence": 1,
+          "productOrService": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "15517911000001104",
+                "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
+              }
+            ]
+          },
+          "modifier": [
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+                  "code": "0001",
+                  "display": "Item fully dispensed"
+                }
+              ]
+            }
+          ],
+          "quantity": {
+            "value": 1,
+            "unit": "pre-filled disposable injection",
+            "system": "http://snomed.info/sct",
+            "code": "3318611000001103"
+          },
+          "subDetail": [
+            {
+              "sequence": 1,
+              "productOrService": {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "15517911000001104",
+                    "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
+                  }
+                ]
+              },
+              "quantity": {
+                "value": 1,
+                "unit": "pre-filled disposable injection",
+                "system": "http://snomed.info/sct",
+                "code": "3318611000001103"
+              },
+              "programCode": [
+                {
+                  "coding": [
+                    {
+                      "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+                      "code": "NDEC",
+                      "display": "No Dispenser Endorsement Code"
+                    }
+                  ]
+                },
+                {
+                  "coding": [
+                    {
+                      "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
+                      "code": "not-paid",
+                      "display": "Not Paid"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -4,6 +4,7 @@ import {generateTestOutputFile} from "../../services/genereate-test-output-file"
 import pino from "pino"
 import * as processSuccesses from "./process.successes"
 import * as taskSuccesses from "./task.successes"
+import * as claimSuccesses from "./claim.successes"
 
 const logger = pino()
 
@@ -14,7 +15,7 @@ beforeAll(async() => {
       fetcher.prescriptionOrderUpdateExamples.filter(e => e.isSuccess),
       fetcher.prescriptionDispenseExamples.filter(e => e.isSuccess),
       fetcher.taskExamples.filter(e => e.isSuccess),
-      fetcher.prescriptionClaimExamples.filter(e => e.isSuccess),
+      fetcher.claimExamples.filter(e => e.isSuccess),
       logger
     )
   }
@@ -26,5 +27,6 @@ beforeAll(async() => {
 // and then run all of the tests which depend on the result.
 export const tests = [
   processSuccesses,
-  taskSuccesses
+  taskSuccesses,
+  claimSuccesses
 ]

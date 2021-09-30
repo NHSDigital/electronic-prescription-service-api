@@ -52,9 +52,6 @@ export function verifyBundle(bundle: fhir.Bundle, scope: string): Array<fhir.Ope
     case fhir.EventCodingCode.DISPENSE:
       messageTypeSpecificErrors = verifyDispenseBundle(bundle)
       break
-    case fhir.EventCodingCode.CLAIM:
-      messageTypeSpecificErrors = verifyClaimBundle(bundle)
-      break
   }
 
   return [
@@ -250,12 +247,6 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
   }
 
   return allErrors
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function verifyClaimBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
-  // todo dispense-claim: validate
-  return []
 }
 
 function verifyIdenticalForAllMedicationDispenses(

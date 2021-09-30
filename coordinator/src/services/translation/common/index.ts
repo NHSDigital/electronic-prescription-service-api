@@ -25,6 +25,10 @@ export function getMessageIdFromTask(task: fhir.Task): string {
   return getMessageId(task.identifier, "Task.identifier")
 }
 
+export function getMessageIdFromClaim(claim: fhir.Claim): string {
+  return getMessageId(claim.identifier, "Claim.identifier")
+}
+
 export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, additionalContext?: string): T {
   if (!iterable) {
     throw new errors.InvalidValueError("Required field missing.", fhirPath)

@@ -6,8 +6,7 @@ export enum EventCodingCode {
   PRESCRIPTION = "prescription-order",
   PRESCRIPTION_RESPONSE = "prescription-order-response",
   CANCELLATION = "prescription-order-update",
-  DISPENSE = "dispense-notification",
-  CLAIM = "dispense-claim"
+  DISPENSE = "dispense-notification"
 }
 
 export const PRESCRIBE_BUNDLE_TYPES = [
@@ -16,8 +15,7 @@ export const PRESCRIBE_BUNDLE_TYPES = [
 ]
 
 export const DISPENSE_BUNDLE_TYPES = [
-  EventCodingCode.DISPENSE,
-  EventCodingCode.CLAIM
+  EventCodingCode.DISPENSE
 ]
 
 export const ACCEPTED_BUNDLE_TYPES = PRESCRIBE_BUNDLE_TYPES.concat(DISPENSE_BUNDLE_TYPES)

@@ -11,23 +11,20 @@ import {
   onlyElement
 } from "../../common"
 import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
-import {getClaim, getMessageHeader} from "../../common/getResourcesOfType"
 import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
-import {createAgentOrganisationFromReference, createPriorPrescriptionReleaseEventRef} from "./dispense-common"
+import {createAgentOrganisationFromReference} from "./dispense-common"
 
 export async function convertDispenseClaim(
-  bundle: fhir.Bundle,
+  claim: fhir.Claim,
   logger: pino.Logger
 ): Promise<hl7V3.DispenseClaim> {
-  //TODO - possibly get rid of Bundle and MessageHeader and move everything to the Claim
-  const messageId = getMessageId([bundle.identifier], "Bundle.identifier")
+  const messageId = getMessageId(claim.identifier, "Bundle.identifier")
+
   //TODO - should we use Claim.created instead?
   const now = convertMomentToHl7V3DateTime(moment.utc())
   const dispenseClaim = new hl7V3.DispenseClaim(new hl7V3.GlobalIdentifier(messageId), now)
 
-  const claim = getClaim(bundle)
-
-  //TODO - validate that coverage is always NHS BSA
+  //TODO - validate that coverage is always NHS BSA (preferably using the FHIR profile)
   const insurance = onlyElement(claim.insurance, "Claim.insurance")
   const agentOrganization = createAgentOrganisationFromReference(insurance.coverage)
   dispenseClaim.primaryInformationRecipient = new hl7V3.DispenseClaimPrimaryInformationRecipient(agentOrganization)
@@ -45,9 +42,9 @@ export async function convertDispenseClaim(
 
   //TODO - pertinentInformation2
 
-  const messageHeader = getMessageHeader(bundle)
+  //TODO - check that this is the correct source
   const replacementOfExtension = getExtensionForUrlOrNull(
-    messageHeader.extension,
+    claim.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
     "MessageHeader.extension"
   ) as fhir.IdentifierExtension
@@ -78,8 +75,9 @@ export async function convertDispenseClaim(
     dispenseClaim.coverage = new hl7V3.Coverage(chargeExempt)
   }
 
-  const hl7PriorPrescriptionReleaseEventRef = createPriorPrescriptionReleaseEventRef(messageHeader)
-  dispenseClaim.sequelTo = new hl7V3.SequelTo(hl7PriorPrescriptionReleaseEventRef)
+  //TODO - find an alternative source for this
+  //const hl7PriorPrescriptionReleaseEventRef = createPriorPrescriptionReleaseEventRef(messageHeader)
+  //dispenseClaim.sequelTo = new hl7V3.SequelTo(hl7PriorPrescriptionReleaseEventRef)
 
   return dispenseClaim
 }

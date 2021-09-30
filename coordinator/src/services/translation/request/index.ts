@@ -19,7 +19,7 @@ import {translateReleaseRequest} from "./dispense/release"
 import pino from "pino"
 import {convertTaskToDispenseProposalReturn} from "./return/return"
 import {convertTaskToEtpWithdraw} from "./withdraw/withdraw"
-import {getMessageIdFromBundle, getMessageIdFromTask, identifyMessageType} from "../common"
+import {getMessageIdFromBundle, getMessageIdFromClaim, getMessageIdFromTask, identifyMessageType} from "../common"
 import Hapi from "@hapi/hapi"
 import {convertDispenseClaim} from "./dispense/dispense-claim"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
@@ -50,8 +50,6 @@ async function createPayloadFromBundle(
       return createCancellationSendMessagePayload(bundle, headers)
     case fhir.EventCodingCode.DISPENSE:
       return await createDispenseNotificationSendMessagePayload(bundle, headers, logger)
-    case fhir.EventCodingCode.CLAIM:
-      return await createDispenseClaimSendMessagePayload(bundle, headers, logger)
   }
 }
 
@@ -77,18 +75,6 @@ export async function createDispenseNotificationSendMessagePayload(
   const messageId = getMessageIdFromBundle(bundle)
   const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION
   return createSendMessagePayload(messageId, interactionId, headers, dispenseNotificationRoot)
-}
-
-export async function createDispenseClaimSendMessagePayload(
-  bundle: fhir.Bundle,
-  headers: Hapi.Util.Dictionary<string>,
-  logger: pino.Logger
-): Promise<hl7V3.SendMessagePayload<hl7V3.DispenseClaimRoot>> {
-  const dispenseClaim = await convertDispenseClaim(bundle, logger)
-  const dispenseClaimRoot = new hl7V3.DispenseClaimRoot(dispenseClaim)
-  const messageId = getMessageIdFromBundle(bundle)
-  const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_CLAIM_INFORMATION
-  return createSendMessagePayload(messageId, interactionId, headers, dispenseClaimRoot)
 }
 
 export function createCancellationSendMessagePayload(
@@ -223,4 +209,17 @@ function createDispenserWithdrawSendMessagePayload(task: fhir.Task, headers: Hap
 export function isRepeatDispensing(medicationRequests: Array<fhir.MedicationRequest>): boolean {
   const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
   return courseOfTherapyTypeCode === fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
+}
+
+export async function convertClaimToSpineRequest(
+  claim: fhir.Claim,
+  headers: Hapi.Util.Dictionary<string>,
+  logger: pino.Logger
+): Promise<spine.SpineRequest> {
+  const dispenseClaim = await convertDispenseClaim(claim, logger)
+  const dispenseClaimRoot = new hl7V3.DispenseClaimRoot(dispenseClaim)
+  const messageId = getMessageIdFromClaim(claim)
+  const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_CLAIM_INFORMATION
+  const payload = createSendMessagePayload(messageId, interactionId, headers, dispenseClaimRoot)
+  return requestBuilder.toSpineRequest(payload, headers)
 }

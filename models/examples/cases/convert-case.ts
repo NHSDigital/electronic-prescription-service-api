@@ -7,7 +7,7 @@ import * as fhir from "../../fhir"
 
 export class ConvertCase extends Case {
   description: string
-  request: fhir.Bundle
+  request: fhir.Resource
   response: string
   responseMatcher: string
   statusText: string
@@ -94,11 +94,11 @@ export class ConvertCase extends Case {
     return responseXml
   }
 
-  toSuccessJestCase(): [string, fhir.Bundle, string, string, number] {
+  toSuccessJestCase(): [string, fhir.Resource, string, string, number] {
     return [this.description, this.request, this.response, this.responseMatcher, this.statusCode]
   }
 
-  toErrorJestCase(): [string, fhir.Bundle, string, number] {
+  toErrorJestCase(): [string, fhir.Resource, string, number] {
     return [this.description, this.request, this.response, this.statusCode]
   }
 }

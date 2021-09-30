@@ -1,5 +1,6 @@
 import * as uuid from "uuid"
 import {
+  ClaimCase,
   fhir,
   hl7V3,
   ProcessCase,
@@ -33,7 +34,7 @@ export async function updatePrescriptions(
   orderUpdateCases: Array<ProcessCase>,
   dispenseCases: Array<ProcessCase>,
   taskCases: Array<TaskCase>,
-  claimCases: Array<ProcessCase>,
+  claimCases: Array<ClaimCase>,
   logger: pino.Logger
 ): Promise<void> {
   const replacements = new Map<string, string>()
@@ -149,11 +150,10 @@ export async function updatePrescriptions(
   })
 
   claimCases.forEach(claimCase => {
-    const bundle = claimCase.request
-    const prescriptionReference = getResourcesOfType.getClaim(bundle).prescription
-    const groupIdentifierExtension = getMedicationDispenseGroupIdentifierExtension(prescriptionReference.extension)
+    const claim = claimCase.request
+    const groupIdentifierExtension = getMedicationDispenseGroupIdentifierExtension(claim.prescription.extension)
 
-    const originalBundleIdentifier = bundle.identifier.value
+    const originalBundleIdentifier = claim.identifier[0].value
     const newBundleIdentifier = uuid.v4()
     replacements.set(originalBundleIdentifier, newBundleIdentifier)
 
@@ -165,7 +165,7 @@ export async function updatePrescriptions(
     const originalLongFormId = longFormIdExtension.valueIdentifier.value
     const newLongFormId = replacements.get(originalLongFormId)
 
-    setPrescriptionIds(bundle, newBundleIdentifier, newShortFormId, newLongFormId)
+    setClaimIds(claim, newBundleIdentifier, newShortFormId, newLongFormId)
   })
 }
 
@@ -190,13 +190,6 @@ export function setPrescriptionIds(
       const shortFormIdExtension = getMedicationDispenseShortFormIdExtension(groupIdentifierExtension.extension)
       shortFormIdExtension.valueIdentifier.value = newShortFormId
     })
-  getResourcesOfType.getResourcesOfType<fhir.Claim>(bundle, "Claim").forEach(claim => {
-    const groupIdentifierExtension = getMedicationDispenseGroupIdentifierExtension(claim.prescription.extension)
-    const longFormIdExtension = getMedicationDispenseLongFormIdExtension(groupIdentifierExtension.extension)
-    longFormIdExtension.valueIdentifier.value = newLongFormId
-    const shortFormIdExtension = getMedicationDispenseShortFormIdExtension(groupIdentifierExtension.extension)
-    shortFormIdExtension.valueIdentifier.value = newShortFormId
-  })
 }
 
 export function setTaskIds(
@@ -208,6 +201,20 @@ export function setTaskIds(
   task.identifier[0].value = newTaskIdentifier
   task.groupIdentifier.value = newShortFormId
   task.focus.identifier.value = newFocusId
+}
+
+function setClaimIds(
+  claim: fhir.Claim,
+  newClaimIdentifier: string,
+  newShortFormId: string,
+  newLongFormId: string
+) {
+  claim.identifier[0].value = newClaimIdentifier
+  const groupIdentifierExtension = getMedicationDispenseGroupIdentifierExtension(claim.prescription.extension)
+  const longFormIdExtension = getMedicationDispenseLongFormIdExtension(groupIdentifierExtension.extension)
+  longFormIdExtension.valueIdentifier.value = newLongFormId
+  const shortFormIdExtension = getMedicationDispenseShortFormIdExtension(groupIdentifierExtension.extension)
+  shortFormIdExtension.valueIdentifier.value = newShortFormId
 }
 
 export function generateShortFormId(originalShortFormId?: string): string {

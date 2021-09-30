@@ -17,15 +17,6 @@ import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
 import moment from "moment"
 import {createAgentOrganisationFromReference, createPriorPrescriptionReleaseEventRef} from "./dispense-common"
 import {auditDoseToTextIfEnabled} from "../dosage"
-import {
-  Consumable,
-  DispenseNotificationPertinentInformation2,
-  DispenseNotificationSuppliedLineItemQuantityPertinentInformation1,
-  RequestedManufacturedProduct,
-  SuppliedLineItemComponent1,
-  SupplyInstructions,
-  SupplyRequest
-} from "../../../../../../models/hl7-v3"
 
 export async function convertDispenseNotification(
   bundle: fhir.Bundle,
@@ -62,7 +53,7 @@ export async function convertDispenseNotification(
   hl7DispenseNotification.primaryInformationRecipient =
     new hl7V3.DispenseNotificationPrimaryInformationRecipient(hl7AgentOrganisation)
   hl7DispenseNotification.pertinentInformation1 = hl7PertinentInformation1
-  hl7DispenseNotification.pertinentInformation2 = new DispenseNotificationPertinentInformation2(
+  hl7DispenseNotification.pertinentInformation2 = new hl7V3.DispenseNotificationPertinentInformation2(
     hl7CareRecordElementCategory
   )
   if (hl7PriorMessageRef) {
@@ -218,16 +209,16 @@ export function createDispenseNotificationSupplyHeaderPertinentInformation1(
   const hl7PertinentSuppliedLineItem = new hl7V3.DispenseNotificationSuppliedLineItem(
     new hl7V3.GlobalIdentifier(fhirPrescriptionDispenseItemNumber)
   )
-  hl7PertinentSuppliedLineItem.consumable = new Consumable(
-    new RequestedManufacturedProduct(
+  hl7PertinentSuppliedLineItem.consumable = new hl7V3.Consumable(
+    new hl7V3.RequestedManufacturedProduct(
       new hl7V3.ManufacturedRequestedMaterial(
         hl7SuppliedLineItemQuantitySnomedCode
       )
     )
   )
   hl7PertinentSuppliedLineItem.component = new hl7V3.SuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
-  hl7PertinentSuppliedLineItem.component1 = new SuppliedLineItemComponent1(
-    new SupplyRequest(hl7SuppliedLineItemQuantitySnomedCode, hl7Quantity)
+  hl7PertinentSuppliedLineItem.component1 = new hl7V3.SuppliedLineItemComponent1(
+    new hl7V3.SupplyRequest(hl7SuppliedLineItemQuantitySnomedCode, hl7Quantity)
   )
   hl7PertinentSuppliedLineItem.pertinentInformation3 = new hl7V3.SuppliedLineItemPertinentInformation3(
     new hl7V3.ItemStatus(hl7ItemStatusCode)
@@ -287,8 +278,8 @@ export function createSuppliedLineItemQuantity(
     dispenseProduct
   )
   // eslint-disable-next-line max-len
-  hl7SuppliedLineItemQuantity.pertinentInformation1 = new DispenseNotificationSuppliedLineItemQuantityPertinentInformation1(
-    new SupplyInstructions(fhirDosageInstruction.text)
+  hl7SuppliedLineItemQuantity.pertinentInformation1 = new hl7V3.DispenseNotificationSuppliedLineItemQuantityPertinentInformation1(
+    new hl7V3.SupplyInstructions(fhirDosageInstruction.text)
   )
   return hl7SuppliedLineItemQuantity
 }
