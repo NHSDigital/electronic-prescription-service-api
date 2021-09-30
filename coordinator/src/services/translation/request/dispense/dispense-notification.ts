@@ -176,7 +176,7 @@ function createPriorMessageRef(fhirHeader: fhir.MessageHeader) {
   }
 }
 
-export function createDispenseNotificationSupplyHeaderPertinentInformation1(
+function createDispenseNotificationSupplyHeaderPertinentInformation1(
   fhirMedicationDispense: fhir.MedicationDispense,
   medicationCoding: fhir.Coding,
   logger: pino.Logger
@@ -240,7 +240,7 @@ export function createDispenseNotificationSupplyHeaderPertinentInformation1(
   return new hl7V3.SupplyHeaderPertinentInformation1(hl7PertinentSuppliedLineItem)
 }
 
-export function getRepeatNumberFromRepeatInfoExtension(
+function getRepeatNumberFromRepeatInfoExtension(
   repeatInfoExtension: fhir.ExtensionExtension<fhir.IntegerExtension>
 ): hl7V3.Interval<hl7V3.NumericValue> {
   const numberOfRepeatsIssuedExtension = getExtensionForUrl(
@@ -264,7 +264,7 @@ export function getRepeatNumberFromRepeatInfoExtension(
   )
 }
 
-export function createSuppliedLineItemQuantity(
+function createSuppliedLineItemQuantity(
   hl7Quantity: hl7V3.QuantityInAlternativeUnits,
   fhirProductCoding: fhir.Coding,
   fhirDosageInstruction: fhir.Dosage
@@ -307,7 +307,7 @@ export function getPrescriptionStatus(fhirFirstMedicationDispense: fhir.Medicati
     "MedicationDispense.extension") as fhir.CodingExtension
 }
 
-export function getPrescriptionItemId(fhirMedicationDispense: fhir.MedicationDispense): string {
+function getPrescriptionItemId(fhirMedicationDispense: fhir.MedicationDispense): string {
   return getIdentifierValueForSystem(
     fhirMedicationDispense.authorizingPrescription.map(e => e.identifier),
     "https://fhir.nhs.uk/Id/prescription-order-item-number",
@@ -315,7 +315,7 @@ export function getPrescriptionItemId(fhirMedicationDispense: fhir.MedicationDis
   )
 }
 
-export function getDosageInstruction(
+function getDosageInstruction(
   fhirMedicationDispense: fhir.MedicationDispense,
   logger: pino.Logger
 ): fhir.Dosage {
@@ -326,7 +326,7 @@ export function getDosageInstruction(
   )
 }
 
-export function getPrescriptionItemNumber(fhirMedicationDispense: fhir.MedicationDispense): string {
+function getPrescriptionItemNumber(fhirMedicationDispense: fhir.MedicationDispense): string {
   return getIdentifierValueForSystem(
     fhirMedicationDispense.identifier,
     "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
@@ -334,7 +334,7 @@ export function getPrescriptionItemNumber(fhirMedicationDispense: fhir.Medicatio
   )
 }
 
-export function getPrescriptionLineItemStatus(fhirMedicationDispense: fhir.MedicationDispense): fhir.Coding {
+function getPrescriptionLineItemStatus(fhirMedicationDispense: fhir.MedicationDispense): fhir.Coding {
   return getCodingForSystem(
     fhirMedicationDispense.type.coding,
     "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
@@ -342,7 +342,7 @@ export function getPrescriptionLineItemStatus(fhirMedicationDispense: fhir.Medic
   )
 }
 
-export function createPrescriptionId(
+function createPrescriptionId(
   fhirFirstMedicationDispense: fhir.MedicationDispense
 ): hl7V3.PrescriptionId {
   const fhirGroupIdentifierExtension = getFhirGroupIdentifierExtension(fhirFirstMedicationDispense)
@@ -357,7 +357,7 @@ export function createPrescriptionId(
   return new hl7V3.PrescriptionId(hl7PertinentPrescriptionId)
 }
 
-export function createOriginalPrescriptionRef(
+function createOriginalPrescriptionRef(
   firstMedicationDispense: fhir.MedicationDispense
 ): hl7V3.OriginalPrescriptionRef {
   const fhirGroupIdentifierExtension = getFhirGroupIdentifierExtension(firstMedicationDispense)
@@ -372,7 +372,7 @@ export function createOriginalPrescriptionRef(
   )
 }
 
-export function createPrescriptionStatus(
+function createPrescriptionStatus(
   fhirFirstMedicationDispense: fhir.MedicationDispense
 ): hl7V3.PrescriptionStatus {
   const prescriptionStatusExtension = getPrescriptionStatus(fhirFirstMedicationDispense)
@@ -380,7 +380,7 @@ export function createPrescriptionStatus(
   return new hl7V3.PrescriptionStatus(prescriptionStatusCoding.code, prescriptionStatusCoding.display)
 }
 
-export function isRepeatDispensing(medicationDispense: fhir.MedicationDispense): boolean {
+function isRepeatDispensing(medicationDispense: fhir.MedicationDispense): boolean {
   return !!getExtensionForUrlOrNull(
     medicationDispense.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -388,7 +388,7 @@ export function isRepeatDispensing(medicationDispense: fhir.MedicationDispense):
   )
 }
 
-export function createAgentOrganisation(
+function createAgentOrganisation(
   organisation: fhir.DispensePerformer
 ): hl7V3.AgentOrganization {
   return createAgentOrganisationFromReference(organisation.actor)

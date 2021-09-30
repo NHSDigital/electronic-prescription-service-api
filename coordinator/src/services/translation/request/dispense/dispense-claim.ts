@@ -65,7 +65,7 @@ export async function convertDispenseClaim(
     const evidenceSeenCoding = getCodeableConceptCodingForSystemOrNull(
       item.programCode,
       "https://fhir.nhs.uk/CodeSystem/DM-exemption-evidence",
-      "Claim.item.detail.programCode"
+      "Claim.item.programCode"
     )
     if (evidenceSeenCoding) {
       const evidenceSeenCode = evidenceSeenCoding.code
@@ -140,7 +140,7 @@ function createPrescriptionStatus(item: fhir.ClaimItem) {
   return new hl7V3.PrescriptionStatus(prescriptionStatusCoding.code, prescriptionStatusCoding.display)
 }
 
-export function createSuppliedLineItem(
+function createSuppliedLineItem(
   claim: fhir.Claim,
   item: fhir.ClaimItem,
   detail: fhir.ClaimItemDetail
@@ -165,7 +165,7 @@ export function createSuppliedLineItem(
   const statusReasonExtension = getExtensionForUrlOrNull(
     detail.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
-    "Claim.item.extension"
+    "Claim.item.detail.extension"
   ) as fhir.CodingExtension
   if (statusReasonExtension) {
     const nonDispensingReasonCode = statusReasonExtension.valueCoding.code
@@ -187,7 +187,7 @@ export function createSuppliedLineItem(
   const lineItemIdentifierExtension = getExtensionForUrl(
     detail.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
-    "Claim.item.detail"
+    "Claim.item.detail.extension"
   ) as fhir.IdentifierReferenceExtension<fhir.MedicationRequest>
   const lineItemIdentifier = new hl7V3.GlobalIdentifier(lineItemIdentifierExtension.valueReference.identifier.value)
   const originalPrescriptionRef = new hl7V3.OriginalPrescriptionRef(lineItemIdentifier)
@@ -198,7 +198,7 @@ export function createSuppliedLineItem(
   return suppliedLineItem
 }
 
-export function createSuppliedLineItemQuantity(
+function createSuppliedLineItemQuantity(
   claim: fhir.Claim,
   item: fhir.ClaimItem,
   detail: fhir.ClaimItemDetail,
@@ -212,7 +212,7 @@ export function createSuppliedLineItemQuantity(
   const fhirProductCoding = getCodeableConceptCodingForSystem(
     [subDetail.productOrService],
     "http://snomed.info/sct",
-    "Claim.item.detail.productOrService"
+    "Claim.item.detail.subDetail.productOrService"
   )
   const hl7ProductCoding = new hl7V3.SnomedCode(fhirProductCoding.code, fhirProductCoding.display)
   const manufacturedRequestedMaterial = new hl7V3.ManufacturedRequestedMaterial(hl7ProductCoding)
@@ -241,7 +241,7 @@ function getChargePaid(subDetail: fhir.ClaimItemSubDetail) {
   const prescriptionChargeCoding = getCodeableConceptCodingForSystem(
     subDetail.programCode,
     "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
-    "Claim.item.detail.programCode"
+    "Claim.item.detail.subDetail.programCode"
   )
   switch (prescriptionChargeCoding.code) {
     //TODO - create enum?
@@ -253,7 +253,7 @@ function getChargePaid(subDetail: fhir.ClaimItemSubDetail) {
     default:
       throw new processingErrors.InvalidValueError(
         "Unsupported prescription charge code",
-        "Claim.item.detail.programCode"
+        "Claim.item.detail.subDetail.programCode"
       )
   }
 }
@@ -271,7 +271,7 @@ function createEndorsement(endorsementCoding: fhir.Coding) {
   return endorsement
 }
 
-export function createPrescriptionId(claim: fhir.Claim): hl7V3.PrescriptionId {
+function createPrescriptionId(claim: fhir.Claim): hl7V3.PrescriptionId {
   const groupIdentifierExtension = getGroupIdentifierExtension(claim)
   const prescriptionShortFormIdExtension = getExtensionForUrl(
     groupIdentifierExtension.extension,
@@ -283,7 +283,7 @@ export function createPrescriptionId(claim: fhir.Claim): hl7V3.PrescriptionId {
   return new hl7V3.PrescriptionId(prescriptionShortFormId)
 }
 
-export function createOriginalPrescriptionRef(claim: fhir.Claim): hl7V3.OriginalPrescriptionRef {
+function createOriginalPrescriptionRef(claim: fhir.Claim): hl7V3.OriginalPrescriptionRef {
   const groupIdentifierExtension = getGroupIdentifierExtension(claim)
   const prescriptionLongFormIdExtension = getExtensionForUrl(
     groupIdentifierExtension.extension,
