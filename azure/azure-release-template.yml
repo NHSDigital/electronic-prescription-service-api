@@ -9,8 +9,6 @@ parameters:
     type: string
   - name: product_description
     type: string
-  - name: service_base_path_pr
-    type: string
   - name: spec_file
     type: string
   - name: apigee_deployments
@@ -35,6 +33,7 @@ extends:
     enable_status_monitoring: ${{ parameters.enable_status_monitoring }}
     apigee_deployments: ${{ parameters.apigee_deployments }}
     jinja_templates: ${{ parameters.jinja_templates }}
+    prod_requires_approval: false
     post_deploy:
       - bash: |
           if [ "$(APIGEE_ENVIRONMENT)" == "prod" ]

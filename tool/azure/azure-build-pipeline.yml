@@ -1,0 +1,42 @@
+name: "$(SourceBranchName)+$(BuildID)"
+
+trigger:
+  branches:
+    include:
+      - tags/refs/v*
+  tags:
+    include:
+      - v*
+
+pr:
+  branches:
+    include: ['*']
+
+resources:
+  repositories:
+    - repository: common
+      type: github
+      name: NHSDigital/api-management-utils
+      ref: refs/heads/edge
+      endpoint: NHSDigital
+
+variables:
+  - template: project.yml
+
+extends:
+  template: azure/common/apigee-build.yml@common
+  parameters:
+    service_name: ${{ variables.service_name }}
+    short_service_name: ${{ variables.short_service_name }}
+    cache_steps:
+      - bash: |
+          # Replace all eps artifacts with eps-api-tool artifacts by
+          #   - Deleting eps artifacts
+          #   - Moving eps-api-tool artifacts from tool/ directory to root directory
+          # Having root directory CI/CD files is required by platforms
+          set -euo pipefail
+          shopt -s extglob
+          rm -rfv !(tool)
+          rsync -vua --delete-after tool/ .
+        workingDirectory: "${{ variables.service_name }}"
+        displayName: Prepare eps-api-tool

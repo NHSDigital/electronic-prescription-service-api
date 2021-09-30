@@ -1,0 +1,58 @@
+SERVICE_NAME: eps-api-tool
+PRODUCT_DISPLAY_NAME: EPS API Tool
+DESCRIPTION: Assurance tool, prescription tracker, prescription viewer and demo client for the EPS FHIR API
+APIGEE_ENVIRONMENTS:
+  - name: internal-dev
+    display_name: Internal Development
+  - name: internal-qa
+    display_name: Integration Testing Preview
+  - name: int
+    display_name: Integration Testing
+  - name: prod
+    display_name: Production
+---
+meta:
+  api:
+    name: eps-api-tool
+    guid: 699ee49f-fad2-4a52-aa20-7f920e3f27ca
+    spec_guids: ['a3cf7f48-ff15-4d30-a0b2-a13e9d5193e1']
+  schema_version: 1
+apigee:
+  environments:
+{% for ENV in APIGEE_ENVIRONMENTS %}
+{% set TITLE = 'EPS API Tool (' + ENV.display_name + ')' %}
+{% set DESCRIPTION = 'EPS API Tool - ' + ENV.display_name | lower + ' environment' %}
+{% set NAME = 'eps-api-tool-' + ENV.name %}
+  - name: {{ ENV.name }}
+    products:
+      - name: {{ NAME }}
+        approvalType: auto
+        attributes:
+          - name: access
+            value: public
+          - name: ratelimit
+            value: 300pm
+        description: {{ DESCRIPTION }}
+        displayName: {{ TITLE }}
+        environments: [ {{ ENV.name }} ]
+        proxies:
+          - eps-api-tool-{{ ENV.name }}
+          - identity-service-{{ ENV.name }}
+        scopes:
+          - 'urn:nhsd:apim:app:level3:eps-api-tool'
+          - 'urn:nhsd:apim:user-nhs-id:aal3:eps-api-tool'
+        quota: '300'
+        quotaInterval: '1'
+        quotaTimeUnit: minute
+    specs:
+      - name: {{ NAME }}
+        path: eps-api-tool.json
+    api_catalog:
+      - edgeAPIProductName: {{ NAME }}
+        anonAllowed: true
+        description: {{ DESCRIPTION }}
+        requireCallbackUrl: false
+        title: {{ TITLE }}
+        visibility: false
+        specId: {{ NAME }}
+{% endfor %}
