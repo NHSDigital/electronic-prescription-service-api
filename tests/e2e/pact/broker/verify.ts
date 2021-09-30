@@ -141,7 +141,6 @@ function clearData() {
 
   nominatedReleases.forEach(async release => {
     let response
-    try {
       do {
         console.log(
           "Clearing Prescriptions For: ",
@@ -149,10 +148,7 @@ function clearData() {
         )
         response = await nominatedRelease(releaseUrl, release)
       }
-      while (response && response.data.issue[0].details.coding.code !== "NO_MORE_PRESCRIPTIONS")
-    } catch (error) {
-      console.log(error)
-    }
+      while (response.data.resourceType !== "OperationOutcome")
   })
 }
 
