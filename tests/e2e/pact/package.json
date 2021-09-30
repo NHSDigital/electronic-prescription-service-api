@@ -10,9 +10,9 @@
     "clear-cache": "jest --clearCache",
     "create-sandbox-pacts": "jest sandbox",
     "create-live-pacts": "jest live",
-    "publish-pacts": "ts-node --project ./tsconfig.json ./broker/publish.ts --use_strict --show-config",
-    "verify-pacts": "ts-node --project ./tsconfig.json ./broker/verify.ts --use_strict --show-config",
-    "generate-token": "ts-node --project ./tsconfig.json ./services/get-access-token.ts --show-config"
+    "publish-pacts": "ts-node --project tsconfig.json ./broker/publish.ts --use_strict",
+    "verify-pacts": "ts-node --project tsconfig.json ./broker/verify.ts --use_strict",
+    "generate-token": "ts-node --project tsconfig.json ./services/get-access-token.ts"
   },
   "author": "NHS Digital",
   "license": "MIT",
@@ -52,6 +52,7 @@
     "supertest": "4.0.2",
     "ts-jest": "26.1.0",
     "ts-node": "8.10.2",
+    "tsconfig-paths": "^3.11.0",
     "typescript": "3.9.5",
     "uuid": "^8.2.0",
     "xml-js": "^1.6.11"

@@ -1,9 +1,11 @@
 import {VerifierV3, VerifierV3Options} from "@pact-foundation/pact"
 import {ApiEndpoint, ApiOperation, basePath} from "../resources/common"
+/* eslint-disable-next-line  @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars */
+const register = require("tsconfig-paths/register")
+import {fhir, fetcher} from "@models"
 import {getIdentifierParameterByName} from "@coordinator"
 import path from "path"
 import axios from "axios"
-import {fhir, fetcher} from "@models"
 import * as uuid from "uuid"
 
 let token: string
@@ -128,6 +130,7 @@ async function verifyTracker(): Promise<void> {
 }
 
 function clearData() {
+  if (isSandbox) return
   const releaseUrl = `${process.env.PACT_PROVIDER_URL}${basePath}/Task/$release`
 
   const nominatedReleases = fetcher.taskExamples
