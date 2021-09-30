@@ -9,17 +9,8 @@
     "lib": [
       "es2019",
       "dom"
-    ],
-    "baseUrl": ".",
-    "paths": {
-      "@models": ["../../models", "./models"]
-    }
+    ]
   },
   "skipLibCheck": true,
   "files": ["client/index.ts", "client/data/prescriptions.ts"],
-  "references": [
-    {
-      "path": "../../models"
-    }
-  ]
 }

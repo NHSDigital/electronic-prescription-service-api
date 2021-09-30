@@ -25,7 +25,7 @@ variables:
   - template: project.yml
 
 extends:
-  template: azure/common/apigee-deployment.yml@common
+  template: azure-release-template.yml
   parameters:
     service_name: ${{ variables.service_name }}
     short_service_name: ${{ variables.short_service_name }}
