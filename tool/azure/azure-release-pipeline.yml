@@ -12,7 +12,7 @@ resources:
       endpoint: NHSDigital
   pipelines:
   - pipeline: build_pipeline
-    source: "EPS-API-Tool-Build-New"
+    source: "EPS-API-Tool-Build"
     trigger:
       branches:
         include:
