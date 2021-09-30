@@ -1,12 +1,12 @@
 import {VerifierV3, VerifierV3Options} from "@pact-foundation/pact"
 import {ApiEndpoint, ApiOperation, basePath} from "../resources/common"
+/* eslint-disable-next-line  @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars */
+const register = require("tsconfig-paths/register")
 import {fetcher, fhir} from "@models"
 import {getIdentifierParameterByName} from "@coordinator"
 import path from "path"
 import axios from "axios"
 import * as uuid from "uuid"
-/* eslint-disable-next-line  @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars */
-const register = require("tsconfig-paths/register")
 
 let token: string
 
