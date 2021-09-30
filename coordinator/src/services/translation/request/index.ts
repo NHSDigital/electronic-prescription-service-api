@@ -19,7 +19,12 @@ import {translateReleaseRequest} from "./dispense/release"
 import pino from "pino"
 import {convertTaskToDispenseProposalReturn} from "./return/return"
 import {convertTaskToEtpWithdraw} from "./withdraw/withdraw"
-import {getMessageIdFromBundle, getMessageIdFromClaim, getMessageIdFromTask, identifyMessageType} from "../common"
+import {
+  getMessageIdFromBundle,
+  getMessageIdFromClaim,
+  getMessageIdFromTask,
+  identifyMessageType
+} from "../common"
 import Hapi from "@hapi/hapi"
 import {convertDispenseClaim} from "./dispense/dispense-claim"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
