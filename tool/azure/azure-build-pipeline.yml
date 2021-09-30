@@ -31,8 +31,8 @@ extends:
     cache_steps:
       - bash: |
           # Replace all eps artifacts with eps-api-tool artifacts by
-          # - Deleting eps artifacts
-          # - Moving eps-api-tool artifacts from tool/ directory to root directory
+          #   - Deleting eps artifacts
+          #   - Moving eps-api-tool artifacts from tool/ directory to root directory
           # Having root directory CI/CD files is required by platforms
           set -euo pipefail
           shopt -s extglob
