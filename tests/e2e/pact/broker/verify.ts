@@ -141,14 +141,14 @@ function clearData() {
 
   nominatedReleases.forEach(async release => {
     let response
-      do {
-        console.log(
-          "Clearing Prescriptions For: ",
-          getIdentifierParameterByName(release.parameter, "owner").valueIdentifier.value
-        )
-        response = await nominatedRelease(releaseUrl, release)
-      }
-      while (response.data.resourceType !== "OperationOutcome")
+    do {
+      console.log(
+        "Clearing Prescriptions For: ",
+        getIdentifierParameterByName(release.parameter, "owner").valueIdentifier.value
+      )
+      response = await nominatedRelease(releaseUrl, release)
+    }
+    while (response.data.resourceType !== "OperationOutcome")
   })
 }
 
