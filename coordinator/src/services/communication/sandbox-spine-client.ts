@@ -5,7 +5,7 @@ import {
   spineResponses
 } from "@models"
 import {SpineClient} from "./spine-client"
-import {StatusCheckResponse} from "../../routes/health/get-status"
+import {StatusCheckResponse} from "../../utils/status"
 
 export class SandboxSpineClient implements SpineClient {
   async send(spineRequest: spine.SpineRequest): Promise<spine.SpineResponse<unknown>> {

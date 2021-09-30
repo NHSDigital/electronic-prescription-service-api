@@ -1,9 +1,9 @@
 import axios, {AxiosError, AxiosResponse} from "axios"
-import pino, {Logger} from "pino"
+import pino from "pino"
 import {spine} from "@models"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
-import {serviceHealthCheck, StatusCheckResponse} from "../../routes/health/get-status"
+import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
@@ -25,7 +25,7 @@ export class LiveSpineClient implements SpineClient {
     this.ebXMLBuilder = ebXMLBuilder || addEbXmlWrapper
   }
 
-  async send(spineRequest: spine.SpineRequest, logger: Logger): Promise<spine.SpineResponse<unknown>> {
+  async send(spineRequest: spine.SpineRequest, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
     logger.info("Building EBXML wrapper for SpineRequest")
     const wrappedMessage = this.ebXMLBuilder(spineRequest)
     const address = this.getSpineUrlForPrescription()
@@ -54,7 +54,7 @@ export class LiveSpineClient implements SpineClient {
     }
   }
 
-  async poll(path: string, fromAsid: string, logger: Logger): Promise<spine.SpineResponse<unknown>> {
+  async poll(path: string, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
     const address = this.getSpineUrlForPolling(path)
 
     logger.info(`Attempting to send polling message to ${address}`)
@@ -75,7 +75,11 @@ export class LiveSpineClient implements SpineClient {
     }
   }
 
-  private static handlePollableOrImmediateResponse(result: AxiosResponse, logger: Logger, previousPollingUrl?: string) {
+  private static handlePollableOrImmediateResponse(
+    result: AxiosResponse,
+    logger: pino.Logger,
+    previousPollingUrl?: string
+  ) {
     if (result.status === 200) {
       logger.info("Successful request, returning SpineDirectResponse")
       return {
