@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": false,
+    "moduleResolution": "node",
+    "module": "es6",
+    "target": "es5",
+    "lib": [
+      "es2019",
+      "dom"
+    ]
+  },
+  "skipLibCheck": true,
+  "files": ["client/index.ts", "client/data/prescriptions.ts"],
+}

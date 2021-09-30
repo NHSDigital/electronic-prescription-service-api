@@ -12,12 +12,10 @@ resources:
       endpoint: NHSDigital
   pipelines:
   - pipeline: build_pipeline
-    source: "Electronic-Prescription-Service-Build"
+    source: "EPS-API-Tool-Build-New"
     trigger:
       branches:
-        exclude:
-          - master
-          - refs/heads/master
+        include:
           - refs/tags/v*
 
 pool:
@@ -25,7 +23,6 @@ pool:
 
 variables:
   - template: project.yml
-  - group: pact
 
 extends:
   template: azure-release-template.yml
@@ -36,13 +33,19 @@ extends:
     product_display_name: ${{ variables.product_display_name }}
     product_description: ${{ variables.product_description }}
     spec_file: ${{ variables.spec_file }}
-    enable_monitoring: false
-    enable_status_monitoring: false
-    jinja_templates:
-        REQUIRE_ASID: false
     apigee_deployments:
-      - environment: internal-dev-sandbox
-        proxy_path: sandbox
       - environment: internal-dev
-        proxy_path: live
-        make_spec_visible: true
+        make_spec_visible: false
+        depends_on: []
+      - environment: internal-qa
+        make_spec_visible: false
+        depends_on:
+          - internal_dev
+      - environment: int
+        make_spec_visible: false
+        depends_on:
+          - internal_qa
+    #   - environment: prod
+    #     make_spec_visible: false
+    #     depends_on:
+    #       - int
