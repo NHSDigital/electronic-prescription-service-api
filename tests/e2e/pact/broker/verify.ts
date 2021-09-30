@@ -1,12 +1,12 @@
 import {VerifierV3, VerifierV3Options} from "@pact-foundation/pact"
 import {ApiEndpoint, ApiOperation, basePath} from "../resources/common"
-/* eslint-disable-next-line  @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars */
-const register = require("tsconfig-paths/register")
-import {fhir, fetcher} from "@models"
+import {fetcher, fhir} from "@models"
 import {getIdentifierParameterByName} from "@coordinator"
 import path from "path"
 import axios from "axios"
 import * as uuid from "uuid"
+/* eslint-disable-next-line  @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars */
+const register = require("tsconfig-paths/register")
 
 let token: string
 
@@ -77,67 +77,79 @@ async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
 async function verifyValidate(): Promise<void> {
   await verifyOnce("validate")
 }
+
 async function verifyVerifySignatures(): Promise<void> {
   await verifyOnce("verify-signature")
 }
+
 async function verifyPrepare(): Promise<void> {
   await verifyOnce("prepare")
 }
+
 async function verifySend(): Promise<void> {
   await verifyOnce("process", "send")
 }
+
 async function verifyCancel(): Promise<void> {
   await verifyOnce("process", "cancel")
 }
+
 async function verifyRelease(): Promise<void> {
   await verifyOnce("task", "release")
 }
+
 async function verifyDispense(): Promise<void> {
   await verifyOnce("process", "dispense")
 }
+
 async function verifyReturn(): Promise<void> {
   await verifyOnce("task", "return")
 }
+
 async function verifyWithdraw(): Promise<void> {
   await verifyOnce("task", "withdraw")
 }
+
 async function verifyClaim(): Promise<void> {
   await verifyOnce("process", "claim")
 }
+
 async function verifyMetadata(): Promise<void> {
   await verifyOnce("metadata")
 }
+
 async function verifyTracker(): Promise<void> {
   await verifyOnce("tracker")
 }
 
-function clearData() {
-  if (isSandbox) return
-  const releaseUrl = `${process.env.PACT_PROVIDER_URL}${basePath}/Task/$release`
+async function clearData() {
+  if (process.env.APIGEE_ENVIRONMENT?.includes("sandbox")) {
+    return
+  }
 
-  const nominatedReleases = fetcher.taskExamples
+  const nominatedReleaseRequests = fetcher.taskExamples
     .filter(task => task.isSuccess)
     .filter(task => task.requestFile.operation === "release")
     .map(task => task.request as fhir.Parameters)
     .filter(isNominatedRelease)
 
-  nominatedReleases.forEach(async release => {
+  for (const nominatedReleaseRequest of nominatedReleaseRequests) {
     let response
     do {
       console.log(
         "Clearing Prescriptions For: ",
-        getIdentifierParameterByName(release.parameter, "owner").valueIdentifier.value
+        getIdentifierParameterByName(nominatedReleaseRequest.parameter, "owner").valueIdentifier.value
       )
-      response = await nominatedRelease(releaseUrl, release)
+      response = await sendReleaseRequest(nominatedReleaseRequest)
     }
     while (response.data.resourceType !== "OperationOutcome")
-  })
+  }
 }
 
-async function nominatedRelease(releaseUrl: string, release: fhir.Parameters) {
+async function sendReleaseRequest(releaseRequest: fhir.Parameters) {
   return await axios.post<fhir.Bundle | fhir.OperationOutcome>(
-    releaseUrl,
-    release,
+    `${process.env.PACT_PROVIDER_URL}${basePath}/Task/$release`,
+    releaseRequest,
     {
       headers: {
         "Content-Type": "application/fhir+json; fhirVersion=4.0",
@@ -159,7 +171,7 @@ function isGroupIdentifier(parameter: fhir.Parameter): boolean {
 
 (async () => {
   await clearData()
-  await verifyValidate()
+    .then(verifyValidate)
     .then(verifyVerifySignatures)
     .then(verifyPrepare)
     .then(verifySend)
