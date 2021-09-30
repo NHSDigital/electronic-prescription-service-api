@@ -6,7 +6,7 @@ import {
   getCodeableConceptCodingForSystemOrNull,
   getExtensionForUrl,
   getExtensionForUrlOrNull,
-  getMessageId,
+  getMessageIdFromClaim,
   getNumericValueAsString,
   onlyElement
 } from "../../common"
@@ -18,7 +18,7 @@ export async function convertDispenseClaim(
   claim: fhir.Claim,
   logger: pino.Logger
 ): Promise<hl7V3.DispenseClaim> {
-  const messageId = getMessageId(claim.identifier, "Bundle.identifier")
+  const messageId = getMessageIdFromClaim(claim)
 
   //TODO - should we use Claim.created instead?
   const now = convertMomentToHl7V3DateTime(moment.utc())
@@ -99,9 +99,6 @@ async function createDispenseClaimPertinentInformation1(
   timestamp: hl7V3.Timestamp,
   logger: pino.Logger
 ) {
-  //TODO - work out what this means and whether we're doing it:
-  // "Note: this must refer to the last one in the series if more
-  // than one dispense event was required to fulfil the prescription."
   const supplyHeader = new hl7V3.DispenseClaimSupplyHeader(new hl7V3.GlobalIdentifier(messageId))
 
   //TODO - repeat dispensing
