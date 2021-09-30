@@ -141,14 +141,18 @@ function clearData() {
 
   nominatedReleases.forEach(async release => {
     let response
-    do {
-      console.log(
-        "Clearing Prescriptions For: ",
-        getIdentifierParameterByName(release.parameter, "owner").valueIdentifier.value
-      )
-      response = await nominatedRelease(releaseUrl, release)
+    try {
+      do {
+        console.log(
+          "Clearing Prescriptions For: ",
+          getIdentifierParameterByName(release.parameter, "owner").valueIdentifier.value
+        )
+        response = await nominatedRelease(releaseUrl, release)
+      }
+      while (response && response.data.issue[0].details.coding.code !== "NO_MORE_PRESCRIPTIONS")
+    } catch (error) {
+      console.log(error)
     }
-    while (response && response.data.resourceType !== "OperationOutcome")
   })
 }
 
@@ -164,7 +168,7 @@ async function nominatedRelease(releaseUrl: string, release: fhir.Parameters) {
         "Authorization": `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
       }
     }
-  ).catch(e => console.log(e))
+  )
 }
 
 function isNominatedRelease(parameters: fhir.Parameters): boolean {
