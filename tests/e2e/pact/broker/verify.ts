@@ -1,6 +1,12 @@
 import {VerifierV3, VerifierV3Options} from "@pact-foundation/pact"
-import {ApiEndpoint, ApiOperation} from "../resources/common"
+import {ApiEndpoint, ApiOperation, basePath} from "../resources/common"
+/* eslint-disable-next-line  @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars */
+const register = require("tsconfig-paths/register")
+import {fhir, fetcher} from "@models"
+import {getIdentifierParameterByName} from "@coordinator"
 import path from "path"
+import axios from "axios"
+import * as uuid from "uuid"
 
 let token: string
 
@@ -123,7 +129,54 @@ async function verifyTracker(): Promise<void> {
   await verifyOnce("tracker")
 }
 
+function clearData() {
+  if (isSandbox) return
+  const releaseUrl = `${process.env.PACT_PROVIDER_URL}${basePath}/Task/$release`
+
+  const nominatedReleases = fetcher.taskExamples
+    .filter(task => task.isSuccess)
+    .filter(task => task.requestFile.operation === "release")
+    .map(task => task.request as fhir.Parameters)
+    .filter(isNominatedRelease)
+
+  nominatedReleases.forEach(async release => {
+    let response
+    do {
+      console.log(
+        "Clearing Prescriptions For: ",
+        getIdentifierParameterByName(release.parameter, "owner").valueIdentifier.value
+      )
+      response = await nominatedRelease(releaseUrl, release)
+    }
+    while (response.data.resourceType !== "OperationOutcome")
+  })
+}
+
+async function nominatedRelease(releaseUrl: string, release: fhir.Parameters) {
+  return await axios.post<fhir.Bundle | fhir.OperationOutcome>(
+    releaseUrl,
+    release,
+    {
+      headers: {
+        "Content-Type": "application/fhir+json; fhirVersion=4.0",
+        "X-Request-ID": uuid.v4(),
+        "X-Correlation-ID": uuid.v4(),
+        "Authorization": `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
+      }
+    }
+  )
+}
+
+function isNominatedRelease(parameters: fhir.Parameters): boolean {
+  return !parameters.parameter.find(isGroupIdentifier)
+}
+
+function isGroupIdentifier(parameter: fhir.Parameter): boolean {
+  return parameter.name === "group-identifer"
+}
+
 (async () => {
+  await clearData()
   await verifyValidate()
     .then(verifyVerifySignatures)
     .then(verifyPrepare)
