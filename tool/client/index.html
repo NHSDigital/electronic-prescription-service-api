@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en" id="main-content" style="display:none;">
+<head>
+  <meta charset="UTF-8">
+  <title>EPSAT</title>
+  <link rel="shortcut icon" href="{{base_url}}static/favicon.png">
+  <link href="https://nhsuk.github.io/nhsuk-frontend/assets/nhsuk.css" rel="stylesheet">
+  <style rv-if="environment | isProd">
+    body{background-color: #f6b8b8;}
+  </style>
+</head>
+<body>
+  <header class="nhsuk-header nhsuk-header--transactional" role="banner">
+    <div class="nhsuk-width-container nhsuk-header__container">
+      <div class="nhsuk-header__logo nhsuk-header__logo--only">
+        <a class="nhsuk-header__link" href="{{base_url}}" aria-label="NHS homepage">
+          <svg class="nhsuk-logo" xmlns="http://www.w3.org/2000/svg" role="presentation" focusable="false"
+            viewBox="0 0 40 16">
+            <path class="nhsuk-logo__background" d="M0 0h40v16H0z"></path>
+            <path class="nhsuk-logo__text"
+              d="M3.9 1.5h4.4l2.6 9h.1l1.8-9h3.3l-2.8 13H9l-2.7-9h-.1l-1.8 9H1.1M17.3 1.5h3.6l-1 4.9h4L25 1.5h3.5l-2.7 13h-3.5l1.1-5.6h-4.1l-1.2 5.6h-3.4M37.7 4.4c-.7-.3-1.6-.6-2.9-.6-1.4 0-2.5.2-2.5 1.3 0 1.8 5.1 1.2 5.1 5.1 0 3.6-3.3 4.5-6.4 4.5-1.3 0-2.9-.3-4-.7l.8-2.7c.7.4 2.1.7 3.2.7s2.8-.2 2.8-1.5c0-2.1-5.1-1.3-5.1-5 0-3.4 2.9-4.4 5.8-4.4 1.6 0 3.1.2 4 .6">
+            </path>
+            <image src="https://assets.nhs.uk/images/nhs-logo.png"></image>
+          </svg>
+        </a>
+      </div>
+      <div class="nhsuk-header__transactional-service-name">
+        <a class="nhsuk-header__transactional-service-name--link" href="{{base_url}}">EPSAT - Electronic Prescription Service API Tool</a>
+      </div>
+      <div class="nhsuk-label" style="float: right; color: #ffffff;">Environment: {environment | displayEnvironment}</div>
+    </div>
+  </header>
+  <div class="nhsuk-width-container">
+    <main class="nhsuk-main-wrapper" id="maincontent" role="main">
+      <div class="nhsuk-warning-callout" rv-show="environment | isProd">
+        <h3 class="nhsuk-warning-callout__label">
+          <span role="text">
+            <span class="nhsuk-u-visually-hidden">Important: </span>
+            Production Environment!
+          </span>
+        </h3>
+        <p>You are currently in the production environment and messages sent will have actions on the live EPS system.</p>
+      </div>
+      <div class="nhsuk-grid-row">
+        <div class="nhsuk-grid-column-three-quarters">
+          <fieldset class="nhsuk-fieldset">
+            <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--xl">
+              <div rv-show="mode | isLogin">
+                <h1 class="nhsuk-fieldset__heading">Select Auth method...</h1>
+              </div>
+              <div rv-show="mode | isHome">
+                <h1 class="nhsuk-fieldset__heading">I would like to...</h1>
+              </div>
+              <div rv-show="mode | isLoad">
+                <h1 class="nhsuk-fieldset__heading">Load prescription</h1>
+              </div>
+              <div rv-show="mode | isEdit">
+                <h1 class="nhsuk-fieldset__heading">Edit prescription</h1>
+              </div>
+              <div rv-show="mode | isCancel">
+                <h1 class="nhsuk-fieldset__heading">Cancel prescription</h1>
+              </div>
+              <div rv-show="mode | isSign">
+                <h1 class="nhsuk-fieldset__heading">Prescription
+                  <div style="float:right;display:inline;width:150px;margin-left:20px;">
+                    <a href="{{base_url}}download" id="download-messages" download="messages.zip"><img style="width: 35%;" src="{{base_url}}static/json.png" title="FHIR"></a>
+                  </div>
+                </h1>
+              </div>
+              <div rv-show="mode | isSend">
+                <h1 class="nhsuk-fieldset__heading">Send prescription</h1>
+              </div>
+              <div rv-show="mode | isRelease">
+                <h1 class="nhsuk-fieldset__heading">Release prescription(s)</h1>
+              </div>
+              <div rv-show="mode | isDispense">
+                <h1 class="nhsuk-fieldset__heading">Dispense prescription</h1>
+              </div>
+            </legend>
+          </fieldset>
+        </div>
+        <div rv-hide="mode | isLogin" class="nhsuk-grid-column-one-quarter">
+          <div class="nhsuk-action-link" style="float: right;">
+            <a class="nhsuk-action-link__link" rv-show="loggedIn" href="{{base_url}}change-auth">
+              <span rv-hide="environment | isProd">
+                <svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+                  <path
+                    d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z">
+                  </path>
+                </svg>
+                <span class="nhsuk-action-link__text">Change auth</span>
+              </span>
+            </a>
+            <a class="nhsuk-action-link__link" rv-hide="loggedIn" rv-href="'{{base_url}}logout?page_mode=' | appendPageMode">
+              <svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M0 0h24v24H0z" fill="none"></path>
+                <path
+                  d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z">
+                </path>
+              </svg>
+              <span class="nhsuk-action-link__text">Login</span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="nhsuk-grid-row" rv-show="mode | isLoad">
+        <div class="nhsuk-grid-column-full">
+          <div class="nhsuk-form-group">
+            <fieldset class="nhsuk-fieldset" aria-describedby="example-hint">
+              <div>
+                <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Select a prescription
+                  to load</legend>
+              </div>
+              <div class="nhsuk-radios">
+                <div class="nhsuk-radios__item" rv-each-example="examples">
+                  <input class="nhsuk-radios__input" rv-id="example.id" type="radio" name="example"
+                    rv-value="example.id" rv-checked="selectedExampleId" rv-on-click="example.select">
+                  <label class="nhsuk-label nhsuk-radios__label" rv-for="example.id">{example.description}</label>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+      <div class="nhsuk-grid-row" id="prescription-container" rv-show="showCustomExampleInput" style="display:none;">
+        <div class="nhsuk-grid-column-full">
+          <fieldset class="nhsuk-fieldset">
+            <div class="nhsuk-form-group">
+              <div class="nhsuk-label" id="prescription-input-hint">
+                Paste a FHIR prescription
+              </div>
+              <textarea class="nhsuk-textarea" id="prescription-textarea" style="height:100px"
+                name="prescription-textarea" rows="10" aria-describedby="key-textarea-hint"></textarea>
+            </div>
+          </fieldset>
+        </div>
+        <div class="nhsuk-grid-column-full">
+          <fieldset class="nhsuk-fieldset">
+            <div class="nhsuk-form-group">
+              <div class="nhsuk-label" id="prescription-test-pact-hint">
+                Upload Test Pack
+              </div>
+              <input class="nhsuk-input" id="prescription-test-pack" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+            </div>
+          </fieldset>
+        </div>
+        <div class="nhsuk-grid-column-full">
+          <fieldset class="nhsuk-fieldset">
+            <div class="nhsuk-form-group">
+              <div class="nhsuk-label" id="prescription-files-hint">
+                Upload FHIR prescription files
+              </div>
+              <input class="nhsuk-input" multiple id="prescription-files" type="file" accept="application/json" />
+            </div>
+          </fieldset>
+        </div>
+      </div>
+      <div class="nhsuk-grid-row" rv-show="mode | isRelease" style="margin-bottom:20px;">
+        <div class="nhsuk-grid-column-full" rv-hide="releaseResponse">
+          <div class="nhsuk-radios">
+            <div class="nhsuk-radios__item" rv-each-release="releases">
+              <input class="nhsuk-radios__input" rv-id="release.id" type="radio" name="release"
+                rv-value="release.id" rv-checked="selectedReleaseId" rv-on-click="release.select">
+              <label class="nhsuk-label nhsuk-radios__label" rv-for="release.id">{release.description}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nhsuk-grid-row" id="prescription-id-container" rv-show="showCustomPrescriptionIdInput">
+        <div class="nhsuk-grid-column-full" rv-hide="releaseResponse">
+          <fieldset class="nhsuk-fieldset">
+            <div class="nhsuk-form-group">
+              <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Prescription Id</legend>
+              <input class="nhsuk-input" rv-value="prescriptionId" type="text" id="prescription-id-input" name="prescription-id-input" />
+            </div>
+          </fieldset>
+        </div>
+      </div>
+      <div class="nhsuk-grid-row" id="custom-release-container" rv-show="showCustomReleaseInput" style="display:none;">
+        <div class="nhsuk-grid-column-full" rv-hide="releaseResponse">
+          <fieldset class="nhsuk-fieldset">
+            <div class="nhsuk-form-group">
+              <div class="nhsuk-label" id="custom-release-input-hint">
+                Paste a FHIR release message
+              </div>
+              <textarea class="nhsuk-textarea" id="custom-release-textarea" style="height:100px"
+                        name="custom-release-textarea" rows="10" aria-describedby="key-textarea-hint"></textarea>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+      <div class="nhsuk-grid-row" rv-show="mode | showPharmacyList">
+        <div class="nhsuk-grid-column-full" rv-hide="releaseResponse">
+          <div class="nhsuk-form-group">
+            <fieldset class="nhsuk-fieldset" aria-describedby="pharmacy-hint">
+              <div>
+                <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m" rv-show="mode | isEdit">Nominate a pharmacy</legend>
+                <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m"
+                  rv-show="mode | isRelease">Pharmacy to release prescriptions to
+                </legend>
+              </div>
+              <div class="nhsuk-radios">
+                <div class="nhsuk-radios__item" rv-each-pharmacy="pharmacies">
+                  <input class="nhsuk-radios__input" rv-id="pharmacy.id" type="radio" name="pharmacy"
+                    rv-value="pharmacy.id" rv-checked="selectedPharmacy" rv-on-click="pharmacy.select">
+                  <label class="nhsuk-label nhsuk-radios__label" rv-for="pharmacy.id">{pharmacy.display}</label>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+      <div class="nhsuk-grid-row" rv-show="mode | isEdit">
+        <div class="nhsuk-grid-column-full">
+          <fieldset class="nhsuk-fieldset">
+            <div class="nhsuk-form-group">
+              <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">How many prescriptions do you want to create?</legend>
+              <input class="nhsuk-input" value="1" type="number" id="prescription-copies-input" name="prescription-copies-input" />
+            </div>
+          </fieldset>
+        </div>
+      </div>
+      <div class="nhsuk-grid-row" rv-show="mode | isSign">
+        <div class="nhsuk-grid-column-full">
+          <div class="nhsuk-panel">
+            <dl class="nhsuk-summary-list">
+              <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">ID</dt>
+                <dd class="nhsuk-summary-list__value">{prescription.id}</dd>
+                <dt class="nhsuk-summary-list__key" rv-show="prescription.repeatNumber">Repeat Number</dt>
+                <dd class="nhsuk-summary-list__value" rv-show="prescription.repeatNumber">{prescription.repeatNumber}</dd>
+              </div>
+            </dl>
+          </div>
+          <div class="nhsuk-panel">
+            <dl class="nhsuk-summary-list">
+              <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">Authored on</dt>
+                <dd class="nhsuk-summary-list__value">{prescription.authoredOn}</dd>
+              </div>
+              <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">Effective date</dt>
+                <dd class="nhsuk-summary-list__value">{prescription.author.startDate}</dd>
+              </div>
+
+            </dl>
+            <dl class="nhsuk-summary-list" rv-show="prescription.medicationRequests | hasNominatedPharmacy">
+              <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">Nominated Pharmacy ODS Code</dt>
+                <dd class="nhsuk-summary-list__value">{prescription.medicationRequests | nominatedOds}</dd>
+              </div>
+              <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">Nominated Pharmacy Type</dt>
+                <dd class="nhsuk-summary-list__value">{prescription.medicationRequests | pharmacyType}</dd>
+              </div>
+            </dl>
+          </div>
+          <div class="nhsuk-panel" rv-show="prescription.patientInstructions">
+            <dl class="nhsuk-summary-list">
+              <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">Patient Instructions</dt>
+                <dd class="nhsuk-summary-list__value">{prescription.patientInstructions}</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+        <nav class="nhsuk-pagination" role="navigation" aria-label="Pagination">
+          <ul class="nhsuk-list nhsuk-pagination__list">
+            <li class="nhsuk-pagination-item--previous" rv-show="previous_prescription_id">
+              <a class="nhsuk-pagination__link nhsuk-pagination__link--prev" onclick="getEditRequest('previous')">
+                <span class="nhsuk-pagination__title">Previous</span>
+                <span class="nhsuk-u-visually-hidden">:</span>
+                <span class="nhsuk-pagination__page"></span>
+                <svg class="nhsuk-icon nhsuk-icon__arrow-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                  aria-hidden="true">
+                  <path
+                    d="M4.1 12.3l2.7 3c.2.2.5.2.7 0 .1-.1.1-.2.1-.3v-2h11c.6 0 1-.4 1-1s-.4-1-1-1h-11V9c0-.2-.1-.4-.3-.5h-.2c-.1 0-.3.1-.4.2l-2.7 3c0 .2 0 .4.1.6z">
+                  </path>
+                </svg>
+              </a>
+            </li>
+            <li class="nhsuk-pagination-item--next" rv-show="next_prescription_id">
+              <a class="nhsuk-pagination__link nhsuk-pagination__link--next" onclick="getEditRequest('next')">
+                <span class="nhsuk-pagination__title">Next</span>
+                <span class="nhsuk-u-visually-hidden">:</span>
+                <span class="nhsuk-pagination__page"></span>
+                <svg class="nhsuk-icon nhsuk-icon__arrow-right" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                  aria-hidden="true">
+                  <path
+                    d="M19.6 11.66l-2.73-3A.51.51 0 0 0 16 9v2H5a1 1 0 0 0 0 2h11v2a.5.5 0 0 0 .32.46.39.39 0 0 0 .18 0 .52.52 0 0 0 .37-.16l2.73-3a.5.5 0 0 0 0-.64z">
+                  </path>
+                </svg>
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <div class="nhsuk-grid-column-full">
+          <div class="nhsuk-panel-with-label">
+            <h3 class="nhsuk-panel-with-label__label">Patient</h3>
+            <dl class="nhsuk-summary-list">
+              <div class="nhsuk-summary-list__row" rv-each-name="prescription.patient.name">
+                <dt class="nhsuk-summary-list__key">Name</dt>
+                <dd class="nhsuk-summary-list__value">{name | fullName | joinWithSpaces}</dd>
+              </div>
+              <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">NHS number</dt>
+                <dd class="nhsuk-summary-list__value">{prescription.patient.identifier |
+                  nhsNumber}</dd>
+              </div>
+              <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">Date of birth</dt>
+                <dd class="nhsuk-summary-list__value">{prescription.patient.birthDate}</dd>
+              </div>
+              <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">Gender</dt>
+                <dd class="nhsuk-summary-list__value">{prescription.patient.gender | titleCase}
+                </dd>
+              </div>
+              <div class="nhsuk-summary-list__row" rv-each-address="prescription.patient.address">
+                <dt class="nhsuk-summary-list__key">Address</dt>
+                <dd class="nhsuk-summary-list__value">
+                  <div rv-each-line="address | fullAddress">
+                    {line}<br>
+                  </div>
+                </dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <div class="nhsuk-grid-row" rv-show="mode | isSign">
+        <div class="nhsuk-grid-column-full">
+          <div class="nhsuk-table__panel-with-heading-tab">
+            <h3 class="nhsuk-table__heading-tab">Medication</h3>
+            <div class="nhsuk-table-responsive">
+              <table class="nhsuk-table">
+                <caption class="nhsuk-table__caption">Medication summary</caption>
+                <thead class="nhsuk-table__head">
+                  <tr class="nhsuk-table__row">
+                    <th class="nhsuk-table__header" scope="col">Code</th>
+                    <th class="nhsuk-table__header" scope="col">Name</th>
+                    <th class="nhsuk-table__header" scope="col">Quantity</th>
+                    <th class="nhsuk-table__header" scope="col">Unit</th>
+                    <th class="nhsuk-table__header" scope="col">Dosage Instructions</th>
+                  </tr>
+                </thead>
+                <tbody class="nhsuk-table__body">
+                  <tr class="nhsuk-table__row" rv-each-medication="prescription.medicationRequests">
+                    <td class="nhsuk-table__cell">{medication.medicationCodeableConcept.coding | snomedCode}</td>
+                    <td class="nhsuk-table__cell">
+                      <div class="nhsuk-label nhsuk-label--s">{medication.medicationCodeableConcept.coding | snomedCodeDescription}</div>
+                      <div rv-show="medication.extension | prescriptionEndorsements">Endorsements: {medication.extension | prescriptionEndorsements}</div>
+                      <div rv-show="medication.note | dispenserNotes">Dispenser Notes: {medication.note | dispenserNotes}</div>
+                    </td>
+                    <td class="nhsuk-table__cell">{medication.dispenseRequest.quantity.value}</td>
+                    <td class="nhsuk-table__cell">{medication.dispenseRequest.quantity.unit}</td>
+                    <td class="nhsuk-table__cell">{medication.dosageInstruction | dosageInstruction}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nhsuk-grid-row" rv-show="mode | isSign">
+        <div class="nhsuk-grid-column-full">
+          <div class="nhsuk-panel-with-label">
+            <h3 class="nhsuk-panel-with-label__label">Prescriber</h3>
+            <dl class="nhsuk-summary-list">
+              <div class="nhsuk-summary-list__row" rv-each-name="prescription.practitioner.name">
+                <dt class="nhsuk-summary-list__key">Name</dt>
+                <dd class="nhsuk-summary-list__value">{name | fullName | joinWithSpaces}</dd>
+              </div>
+              <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">Organization</dt>
+                <dd class="nhsuk-summary-list__value">{prescription.prescribingOrganization.name}
+                  ({prescription.prescribingOrganization.identifier | odsCode})</dd>
+              </div>
+              <div class="nhsuk-summary-list__row" rv-each-telecom="prescription.practitionerRole.telecom">
+                <dt class="nhsuk-summary-list__key">Telecom</dt>
+                <dd class="nhsuk-summary-list__value">{telecom.value}</dd>
+              </div>
+              <div class="nhsuk-summary-list__row" rv-each-address="prescription.prescribingOrganization.address">
+                <dt class="nhsuk-summary-list__key">Address</dt>
+                <dd class="nhsuk-summary-list__value">
+                  <div rv-each-line="address | fullAddress">
+                    {line}<br>
+                  </div>
+                </dd>
+              </div>
+              <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">Trust / CCG</dt>
+                <dd class="nhsuk-summary-list__value">{prescription.parentOrganization.name}
+                  ({prescription.parentOrganization.identifier | odsCode})</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <div class="nhsuk-grid-row" rv-show="signResponse">
+        <div class="nhsuk-grid-column-full">
+          <div class="nhsuk-panel-with-label">
+            <h3 class="nhsuk-panel-with-label__label">Signature</h3>
+            <dl class="nhsuk-summary-list">
+              <div class="nhsuk-summary-list__row">
+                <dd class="nhsuk-summary-list__value">{signResponse.signature | safe}</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <div class="nhsuk-grid-row" rv-show="sendBulkResponse">
+        <div class="nhsuk-grid-column-full">
+          <button class="nhsuk-button" type="submit" onclick="copySuccessfulPrescriptionIds();" rv-show="clipboardAvailable">
+              Copy Successful Prescription IDs
+          </button>
+          <table class="nhsuk-table">
+              <thead role="rowgroup" class="nhsuk-table__head">
+              <tr role="row">
+                  <th role="columnheader" class="" scope="col">Prescription ID</th>
+                  <th role="columnheader" class="" scope="col">Success</th>
+              </tr>
+              </thead>
+              <tbody class="nhsuk-table__body">
+              <tr role="row" class="nhsuk-table__row" rv-each-entry="sendBulkResponse">
+                  <td class="nhsuk-table__cell">{entry.prescription_id}</td>
+                  <td class="nhsuk-table__cell">
+                      <svg rv-show="entry.success" class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="none">
+                          <path stroke-width="4" stroke-linecap="round" stroke="#007f3b" d="M18.4 7.8l-8.5 8.4L5.6 12"></path>
+                      </svg>
+                      <svg rv-hide="entry.success" class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path>
+                          <path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path>
+                      </svg>
+                  </td>
+              </tr>
+              </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="nhsuk-grid-row" rv-show="sendResponse">
+        <div class="nhsuk-grid-column-full">
+          <div class="nhsuk-panel">
+            <dl class="nhsuk-summary-list">
+              <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">Prescription Id</dt>
+                <dd class="nhsuk-summary-list__value">
+                  <div style="float:left;">{sendResponse.prescriptionId}</div>
+                </dd>
+                <dd class="nhsuk-summary-list__value">
+                  <div style="margin-top: -5px;float:left;display: inline;width: 45px;">
+                    <svg rv-show="sendResponse.success" class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="none">
+                      <path stroke-width="4" stroke-linecap="round" stroke="#007f3b" d="M18.4 7.8l-8.5 8.4L5.6 12"></path>
+                    </svg>
+                    <svg rv-hide="sendResponse.success" class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path>
+                      <path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path>
+                    </svg>
+                  </div>
+                  <div style="float:left;display: inline;width: 150px;margin-top: -7px;">
+                    <a rv-href="sendResponse.fhirRequest | downloadJson" download="send_request.json"><img style="width: 25%;" src="{{base_url}}static/json.png" title="Request (FHIR)"/></a>
+                    <a rv-href="sendResponse.hl7Request | downloadXml" download="send_request.xml"><img style="width: 25%;" src="{{base_url}}static/xml.png" title="Request (HL7v3)"/></a>
+                    <a rv-href="sendResponse.hl7Response | downloadXml" download="send_response.xml"><img style="width: 25%;" src="{{base_url}}static/xml.png" title="Response (HL7v3)"/></a>
+                    <a rv-href="sendResponse.fhirResponse | downloadJson" download="send_response.json"><img style="width: 25%;" src="{{base_url}}static/json.png" title="Response (FHIR)"/></a>
+                  </div>
+                </dd>
+                <dd class="nhsuk-summary-list__value" style="padding-top:0;">
+                  <label class="nhsuk-label nhsuk-select__label" style="display:inline;font-weight:600;padding-right:20px;">Actions</label>
+                  <select class="nhsuk-select" name="prescription-actions" id="prescription-actions" onchange="doPrescriptionAction(this)">
+                    <option rv-each-action="actions" rv-id="action.id" rv-value="action.id">{action.description}</option>
+                  </select>
+                </dd>
+              </div>
+            </dl>
+            <details class="nhsuk-details nhsuk-expander">
+              <summary class="nhsuk-details__summary">
+                <span class="nhsuk-details__summary-text">
+                  Request (FHIR)
+                </span>
+              </summary>
+              <div class="nhsuk-details__text">
+                <pre rv-html="sendResponse.fhirRequest | json"></pre>
+              </div>
+            </details>
+            <details class="nhsuk-details nhsuk-expander">
+              <summary class="nhsuk-details__summary">
+                <span class="nhsuk-details__summary-text">
+                  Request (HL7v3)
+                </span>
+              </summary>
+              <div class="nhsuk-details__text">
+                <pre rv-html="sendResponse.hl7Request | xml"></pre>
+              </div>
+            </details>
+            <details class="nhsuk-details nhsuk-expander">
+              <summary class="nhsuk-details__summary">
+                <span class="nhsuk-details__summary-text">
+                  Response (HL7v3)
+                </span>
+              </summary>
+              <div class="nhsuk-details__text">
+                <pre rv-html="sendResponse.hl7Response | xml"></pre>
+              </div>
+            </details>
+            <details class="nhsuk-details nhsuk-expander">
+              <summary class="nhsuk-details__summary">
+                <span class="nhsuk-details__summary-text">
+                  Response (FHIR)
+                </span>
+              </summary>
+              <div class="nhsuk-details__text">
+                <pre rv-html="sendResponse.fhirResponse | json"></pre>
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+      <div class="nhsuk-grid-row" rv-show="mode | isCancel">
+        <div class="nhsuk-grid-column-full" rv-hide="cancelResponse">
+          <div class="nhsuk-form-group">
+            <fieldset class="nhsuk-fieldset" aria-describedby="cancel-reason-hint">
+              <div>
+                <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Choose a reason for cancellation</legend>
+              </div>
+              <div class="nhsuk-radios">
+                <div class="nhsuk-radios__item" rv-each-reason="reasons">
+                  <input class="nhsuk-radios__input" rv-id="reason.id" type="radio" name="reason"
+                    rv-value="reason.id" rv-checked="selectedCancellationReasonId" rv-on-click="reason.select">
+                  <label class="nhsuk-label nhsuk-radios__label" rv-for="reason.id">{reason.display}</label>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+          <div class="nhsuk-form-group">
+            <fieldset class="nhsuk-fieldset" aria-describedby="canceler-hint">
+              <div>
+                <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Choose a cancellation user</legend>
+              </div>
+              <div class="nhsuk-radios">
+                <div class="nhsuk-radios__item" rv-each-canceller="cancellers">
+                  <input class="nhsuk-radios__input" rv-id="canceller.id" type="radio" name="cancellers"
+                    rv-value="canceller.id" rv-checked="selectedCancellerId" rv-on-click="canceller.select">
+                  <label class="nhsuk-label nhsuk-radios__label" rv-for="canceller.id">{canceller.description}</label>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+          <div class="nhsuk-form-group">
+            <fieldset class="nhsuk-fieldset" aria-describedby="canceler-hint">
+              <div>
+                <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Choose a medication to cancel</legend>
+              </div>
+              <div class="nhsuk-checkboxes">
+                <div class="nhsuk-checkboxes__item" rv-each-medication="prescription.medicationRequests">
+                  <input class="nhsuk-radios__input" name="cancel-medications" type="radio" rv-value="medication.medicationCodeableConcept.coding | snomedCode">
+                  <label class="nhsuk-label nhsuk-radios__label" rv-for="medication.medicationCodeableConcept.coding | snomedCode">
+                    {medication.medicationCodeableConcept.coding | snomedCodeDescription}
+                  </label>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+      <div class="nhsuk-grid-row" rv-show="mode | isDispense">
+        <div class="nhsuk-grid-column-full" rv-hide="dispenseResponse">
+          <div class="nhsuk-form-group">
+            <fieldset class="nhsuk-fieldset" aria-describedby="dispense-hint">
+              <div>
+                <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Choose a medication to dispense</legend>
+              </div>
+              <div class="nhsuk-checkboxes">
+                <div class="nhsuk-checkboxes__item" rv-each-medication="prescription.medicationRequests">
+                  <input class="nhsuk-radios__input" name="dispense-medications" type="radio" rv-value="medication.medicationCodeableConcept.coding | snomedCode">
+                  <label class="nhsuk-label nhsuk-radios__label" rv-for="medication.medicationCodeableConcept.coding | snomedCode">
+                    {medication.medicationCodeableConcept.coding | snomedCodeDescription}
+                  </label>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+      <div class="nhsuk-grid-row" rv-show="cancelResponse">
+        <div class="nhsuk-grid-column-full">
+          <div class="nhsuk-panel">
+            <dl class="nhsuk-summary-list">
+              <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">Prescription</dt>
+                <dd class="nhsuk-summary-list__value">
+                  <div style="float:left;">{cancelResponse.prescriptionId}</div>
+                </dd>
+                <dd class="nhsuk-summary-list__value">
+                  <div style="margin-top: -5px;float:left;display: inline;width: 45px;">
+                    <svg rv-show="cancelResponse.success" class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="none">
+                      <path stroke-width="4" stroke-linecap="round" stroke="#007f3b" d="M18.4 7.8l-8.5 8.4L5.6 12"></path>
+                    </svg>
+                    <svg rv-hide="cancelResponse.success" class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path>
+                      <path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path>
+                    </svg>
+                  </div>
+                  <div style="float:left;display: inline;width: 150px;margin-top: -7px;">
+                    <a rv-href="cancelResponse.fhirRequest | downloadJson" download="cancel_request.json"><img style="width: 25%;" src="{{base_url}}static/json.png" title="Request (FHIR)"/></a>
+                    <a rv-href="cancelResponse.hl7Request | downloadXml" download="cancel_request.xml"><img style="width: 25%;" src="{{base_url}}static/xml.png" title="Request (HL7v3)"/></a>
+                    <a rv-href="cancelResponse.hl7Response | downloadXml" download="cancel_response.xml"><img style="width: 25%;" src="{{base_url}}static/xml.png" title="Response (HL7v3)"/></a>
+                    <a rv-href="cancelResponse.fhirResponse | downloadJson" download="cancel_response.json"><img style="width: 25%;" src="{{base_url}}static/json.png" title="Response (FHIR)"/></a>
+                  </div>
+                </dd>
+              </div>
+            </dl>
+            <details class="nhsuk-details nhsuk-expander">
+              <summary class="nhsuk-details__summary">
+                <span class="nhsuk-details__summary-text">
+                  Request (FHIR)
+                </span>
+              </summary>
+              <div class="nhsuk-details__text">
+                <pre rv-html="cancelResponse.fhirRequest | json"></pre>
+              </div>
+            </details>
+            <details class="nhsuk-details nhsuk-expander">
+              <summary class="nhsuk-details__summary">
+                <span class="nhsuk-details__summary-text">
+                  Request (HL7v3)
+                </span>
+              </summary>
+              <div class="nhsuk-details__text">
+                <pre rv-html="cancelResponse.hl7Request | xml"></pre>
+              </div>
+            </details>
+            <details class="nhsuk-details nhsuk-expander">
+              <summary class="nhsuk-details__summary">
+                <span class="nhsuk-details__summary-text">
+                  Response (HL7v3)
+                </span>
+              </summary>
+              <div class="nhsuk-details__text">
+                <pre rv-html="cancelResponse.hl7Response | xml"></pre>
+              </div>
+            </details>
+            <details class="nhsuk-details nhsuk-expander">
+              <summary class="nhsuk-details__summary">
+                <span class="nhsuk-details__summary-text">
+                  Response (FHIR)
+                </span>
+              </summary>
+              <div class="nhsuk-details__text">
+                <pre rv-html="cancelResponse.fhirResponse | json"></pre>
+              </div>
+            </details>
+          </div>
+        </div>
+        <div class="nhsuk-grid-column-full" rv-show="cancelResponse.prescriber.code">
+          <div class="nhsuk-panel-with-label">
+            <h3 class="nhsuk-panel-with-label__label">Prescriber</h3>
+            <dl class="nhsuk-summary-list">
+              <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">Name</dt>
+                <dd class="nhsuk-summary-list__value">{cancelResponse.prescriber.name}</dd>
+              </div>
+              <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">RBAC Code</dt>
+                <dd class="nhsuk-summary-list__value">{cancelResponse.prescriber.code}</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+        <div class="nhsuk-grid-column-full" rv-show="cancelResponse.canceller.code">
+          <div class="nhsuk-panel-with-label">
+            <h3 class="nhsuk-panel-with-label__label">Canceller</h3>
+            <dl class="nhsuk-summary-list">
+              <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">Name</dt>
+                <dd class="nhsuk-summary-list__value">{cancelResponse.canceller.name}</dd>
+              </div>
+              <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">RBAC Code</dt>
+                <dd class="nhsuk-summary-list__value">{cancelResponse.canceller.code}</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+      </div>
+      <div class="nhsuk-grid-row" id="pharmacy-container" rv-show="showCustomPharmacyInput">
+        <div class="nhsuk-grid-column-full">
+          <fieldset class="nhsuk-fieldset">
+            <div class="nhsuk-form-group">
+              <div class="nhsuk-hint" id="pharmacy-input-hint">
+                Enter an ODS Code
+              </div>
+              <input class="nhsuk-textarea" id="pharmacy-input" name="pharmacy-input" rows="10"
+                aria-describedby="key-textarea-hint" />
+            </div>
+          </fieldset>
+        </div>
+      </div>
+      <div class="nhsuk-grid-row" rv-show="releaseResponse">
+        <div class="nhsuk-grid-column-full">
+          <div class="nhsuk-panel">
+            <dl class="nhsuk-summary-list">
+              <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">Status</dt>
+                <dd class="nhsuk-summary-list__value">
+                  <div style="margin-top: -5px;float:left;display: inline;width: 45px;">
+                    <svg rv-show="releaseResponse.success" class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="none">
+                      <path stroke-width="4" stroke-linecap="round" stroke="#007f3b" d="M18.4 7.8l-8.5 8.4L5.6 12"></path>
+                    </svg>
+                    <svg rv-hide="releaseResponse.success" class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path>
+                      <path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path>
+                    </svg>
+                  </div>
+                  <div style="float:left;display: inline;width: 150px;margin-top: -7px;">
+                    <a rv-href="releaseResponse.fhirRequest | downloadJson" download="release_request.json"><img style="width: 25%;" src="{{base_url}}static/json.png" title="Request (FHIR)"/></a>
+                    <a rv-href="releaseResponse.hl7Request | downloadXml" download="release_request.xml"><img style="width: 25%;" src="{{base_url}}static/xml.png" title="Request (HL7v3)"/></a>
+                    <a rv-href="releaseResponse.hl7Response | downloadXml" download="release_response.xml"><img style="width: 25%;" src="{{base_url}}static/xml.png" title="Response (HL7v3)"/></a>
+                    <a rv-href="releaseResponse.fhirResponse | downloadJson" download="release_response.json"><img style="width: 25%;" src="{{base_url}}static/json.png" title="Response (FHIR)"/></a>
+                  </div>
+                </dd>
+              </div>
+            </dl>
+            <details class="nhsuk-details nhsuk-expander">
+              <summary class="nhsuk-details__summary">
+                <span class="nhsuk-details__summary-text">
+                  Request (FHIR)
+                </span>
+              </summary>
+              <div class="nhsuk-details__text">
+                <pre rv-html="releaseResponse.fhirRequest | json"></pre>
+              </div>
+            </details>
+            <details class="nhsuk-details nhsuk-expander">
+              <summary class="nhsuk-details__summary">
+                <span class="nhsuk-details__summary-text">
+                  Request (HL7v3)
+                </span>
+              </summary>
+              <div class="nhsuk-details__text">
+                <pre rv-html="releaseResponse.hl7Request | xml"></pre>
+              </div>
+            </details>
+            <details class="nhsuk-details nhsuk-expander">
+              <summary class="nhsuk-details__summary">
+                <span class="nhsuk-details__summary-text">
+                  Response (HL7v3)
+                </span>
+              </summary>
+              <div class="nhsuk-details__text">
+                <pre rv-html="releaseResponse.hl7Response | xml"></pre>
+              </div>
+            </details>
+            <details class="nhsuk-details nhsuk-expander">
+              <summary class="nhsuk-details__summary">
+                <span class="nhsuk-details__summary-text">
+                  Response (FHIR)
+                </span>
+              </summary>
+              <div class="nhsuk-details__text">
+                <pre rv-html="releaseResponse.fhirResponse | json"></pre>
+              </div>
+            </details>
+          </div>
+        </div>
+        <div class="nhsuk-grid-column-full" rv-show="releaseResponse.prescriptions">
+          <table class="table table-bordered results-table dataTable no-footer" id="resultstable" role="grid"
+            aria-describedby="resultstable_info">
+            <thead>
+              <tr role="row">
+                <th tabindex="0" id="prescriptionId" rowspan="1" colspan="1">Prescription</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="results-table-row odd" role="row" rv-each-prescription="releaseResponse.prescriptions">
+                <td rv-id="prescription.id">
+                  <div name="releasedPrescriptionId">{prescription.id}</a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="nhsuk-grid-row" rv-show="dispenseResponse">
+        <div class="nhsuk-grid-column-full">
+          <div class="nhsuk-panel">
+            <dl class="nhsuk-summary-list">
+              <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">Status</dt>
+                <dd class="nhsuk-summary-list__value">
+                  <div style="margin-top: -5px;float:left;display: inline;width: 45px;">
+                    <svg rv-show="dispenseResponse.success" class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="none">
+                      <path stroke-width="4" stroke-linecap="round" stroke="#007f3b" d="M18.4 7.8l-8.5 8.4L5.6 12"></path>
+                    </svg>
+                    <svg rv-hide="dispenseResponse.success" class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path>
+                      <path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path>
+                    </svg>
+                  </div>
+                  <div style="float:left;display: inline;width: 150px;margin-top: -7px;">
+                    <a rv-href="dispenseResponse.fhirRequest | downloadJson" download="dispense_request.json"><img style="width: 25%;" src="{{base_url}}static/json.png" title="Request (FHIR)"/></a>
+                    <a rv-href="dispenseResponse.hl7Request | downloadXml" download="dispense_request.xml"><img style="width: 25%;" src="{{base_url}}static/xml.png" title="Request (HL7v3)"/></a>
+                    <a rv-href="dispenseResponse.hl7Response | downloadXml" download="dispense_response.xml"><img style="width: 25%;" src="{{base_url}}static/xml.png" title="Response (HL7v3)"/></a>
+                    <a rv-href="dispenseResponse.fhirResponse | downloadJson" download="dispense_response.json"><img style="width: 25%;" src="{{base_url}}static/json.png" title="Response (FHIR)"/></a>
+                  </div>
+                </dd>
+              </div>
+            </dl>
+            <details class="nhsuk-details nhsuk-expander">
+              <summary class="nhsuk-details__summary">
+                <span class="nhsuk-details__summary-text">
+                  Request (FHIR)
+                </span>
+              </summary>
+              <div class="nhsuk-details__text">
+                <pre rv-html="dispenseResponse.fhirRequest | json"></pre>
+              </div>
+            </details>
+            <details class="nhsuk-details nhsuk-expander">
+              <summary class="nhsuk-details__summary">
+                <span class="nhsuk-details__summary-text">
+                  Request (HL7v3)
+                </span>
+              </summary>
+              <div class="nhsuk-details__text">
+                <pre rv-html="dispenseResponse.hl7Request | xml"></pre>
+              </div>
+            </details>
+            <details class="nhsuk-details nhsuk-expander">
+              <summary class="nhsuk-details__summary">
+                <span class="nhsuk-details__summary-text">
+                  Response (HL7v3)
+                </span>
+              </summary>
+              <div class="nhsuk-details__text">
+                <pre rv-html="dispenseResponse.hl7Response | xml"></pre>
+              </div>
+            </details>
+            <details class="nhsuk-details nhsuk-expander">
+              <summary class="nhsuk-details__summary">
+                <span class="nhsuk-details__summary-text">
+                  Response (FHIR)
+                </span>
+              </summary>
+              <div class="nhsuk-details__text">
+                <pre rv-html="dispenseResponse.fhirResponse | json"></pre>
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
+      <div class="nhsuk-grid-row" rv-show="errorList">
+        <div class="nhsuk-grid-column-full">
+          <div class="nhsuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1">
+            <h2 class="nhsuk-error-summary__title" id="error-summary-title">
+              The following error(s) occured
+            </h2>
+            <div class="nhsuk-error-summary__body">
+              <p rv-each-error="errorList">{error.message}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div rv-show="mode | isLogin">
+        <div class="nhsuk-grid-row">
+          <div class="nhsuk-grid-column-full">
+            <button class="nhsuk-button" type="submit" onclick="updateAuthMethod('cis2')">CIS 2</button>
+            <button class="nhsuk-button" type="submit" onclick="updateAuthMethod('simulated')" rv-hide="environment | isProd">Simulated</button>
+          </div>
+        </div>
+      </div>
+      <div rv-show="mode | isHome">
+        <div class="nhsuk-grid-row">
+          <div rv-show="loggedIn" class="nhsuk-grid-column-full" >
+            <a href="{{base_url}}prescribe/load" class="nhsuk-button">Prescribe</a>
+            <a href="{{base_url}}dispense/release" class="nhsuk-button" rv-hide="environment | isProd">Dispense</a>
+          </div>
+          <div rv-hide="loggedIn" class="nhsuk-grid-column-full">
+            <a href="{{base_url}}prescribe/load" class="nhsuk-button" rv-hide="environment | isProd">View Prescription(s)</a>
+          </div>
+        </div>
+      </div>
+      <div rv-show="mode | isLoad">
+        <div class="nhsuk-grid-row">
+          <div class="nhsuk-grid-column-full">
+            <button class="nhsuk-button" type="submit" onclick="sendEditRequest()">View</button>
+            <button rv-show="loggedIn" class="nhsuk-button nhsuk-button--reverse" type="submit" onclick="sendLoadRequest()">Edit</button>
+            <button class="nhsuk-button nhsuk-button--secondary" type="submit"
+              onclick="resetPageData('home');">Back</button>
+          </div>
+        </div>
+      </div>
+      <div rv-show="mode | isEdit">
+        <div class="nhsuk-grid-row">
+          <div class="nhsuk-grid-column-full">
+            <button class="nhsuk-button" type="submit" onclick="sendEditRequest()">Update</button>
+            <button class="nhsuk-button nhsuk-button--secondary" type="submit"
+              onclick="resetPageData('load');">Back</button>
+          </div>
+        </div>
+      </div>
+      <div rv-show="mode | isSign">
+        <div class="nhsuk-grid-row">
+          <div class="nhsuk-grid-column-full">
+            <button rv-show="loggedIn" class="nhsuk-button" type="submit" onclick="sendSignRequest()">Send</button>
+            <button class="nhsuk-button nhsuk-button--secondary" type="submit"
+              onclick="resetPageData('load');">Back</button>
+          </div>
+        </div>
+      </div>
+      <div rv-show="mode | isSend">
+        <div class="nhsuk-grid-row">
+          <div class="nhsuk-grid-column-full">
+            <button class="nhsuk-button nhsuk-button--secondary" type="submit" rv-show="sendResponse | showSendButton sendBulkResponse"
+              onclick="resetPageData('home');">Reset</button>
+          </div>
+        </div>
+      </div>
+      <div rv-show="mode | isCancel">
+        <div class="nhsuk-grid-row">
+          <div class="nhsuk-grid-column-full">
+            <button class="nhsuk-button" type="submit" rv-hide="cancelResponse"
+              onclick="sendCancelRequest()">Send</button>
+            <button class="nhsuk-button nhsuk-button" type="submit" rv-show="cancelResponse"
+              onclick="resetPageData('cancel');">Back</button>
+            <button class="nhsuk-button nhsuk-button--secondary" type="submit" onclick="resetPageData('home');">Reset</button>
+          </div>
+        </div>
+      </div>
+      <div rv-show="mode | isRelease">
+        <div class="nhsuk-grid-row">
+          <div class="nhsuk-grid-column-full">
+            <button class="nhsuk-button" type="submit" rv-hide="releaseResponse"
+              onclick="sendReleaseRequest()">Release</button>
+            <button class="nhsuk-button nhsuk-button--secondary" type="submit"
+              onclick="resetPageData('home');">Back</button>
+          </div>
+        </div>
+      </div>
+      <div rv-show="mode | isDispense">
+        <!--TODO - show only for repeat dispensing prescriptions-->
+        <div class="nhsuk-grid-row" rv-hide="dispenseResponse">
+          <div class="nhsuk-grid-column-full">
+            <div class="nhsuk-form-group">
+              <label class="nhsuk-label" for="issue-number">
+                Issue Number (if repeat dispensing)
+              </label>
+              <input class="nhsuk-input nhsuk-input--width-2" id="issue-number" name="issue-number" type="text" value="1">
+            </div>
+          </div>
+        </div>
+        <div class="nhsuk-grid-row">
+          <div class="nhsuk-grid-column-full">
+            <button class="nhsuk-button" type="submit" rv-hide="dispenseResponse"
+              onclick="sendDispenseRequest()">Dispense</button>
+            <button class="nhsuk-button nhsuk-button--secondary" type="submit"
+              onclick="resetPageData('home');">Back</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer role="contentinfo">
+    <div class="nhsuk-footer" id="nhsuk-footer">
+      <div class="nhsuk-width-container">
+        <h2 class="nhsuk-heading-l">EPS Software Versions:</h2>
+        <ul class="nhsuk-footer__list">
+          <li class="nhsuk-footer__list-item" rv-each-package="validatorPackages">
+            <p>{package.name}: {package.version}</p>
+          </li>
+        </ul>
+        <p class="nhsuk-footer__copyright">&copy; Crown copyright</p>
+      </div>
+    </div>
+  </footer>
+  <script type="text/javascript">
+    document.addEventListener("DOMContentLoaded", (event) => {
+      const mode = "{{page_mode}}"
+      const env = "{{environment}}"
+      const baseUrl = "{{base_url}}"
+      {% if sign_response is not none and page_mode == "send" %}
+      const signResponse = {signature: "{{sign_response.signature}}"}
+      {% else %}
+      const signResponse = null
+      {% endif %}
+      startApplication(mode, env, baseUrl, signResponse)
+    });
+  </script>
+</body>
+</html>

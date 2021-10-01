@@ -1,0 +1,4 @@
+<APIProxy name="eps-api-tool">
+    <!-- This is the root of the application -->
+    <Description>Proxy to EPS API tool endpoints.</Description>
+</APIProxy>

@@ -34,13 +34,18 @@ extends:
     service_base_path: ${{ variables.service_base_path }}
     product_display_name: ${{ variables.product_display_name }}
     product_description: ${{ variables.product_description }}
-    service_base_path_pr: none
     spec_file: ${{ variables.spec_file }}
     enable_monitoring: true
     enable_status_monitoring: true
     jinja_templates:
         REQUIRE_ASID: false
     apigee_deployments:
+      - environment: manual-approval
+        stage_name: manual_approval_external_ptl
+        depends_on: []
+      - environment: manual-approval
+        stage_name: manual_approval_prod
+        depends_on: []
       - environment: internal-dev-sandbox
         proxy_path: sandbox
         make_spec_visible: true
@@ -68,26 +73,24 @@ extends:
       - environment: sandbox
         proxy_path: sandbox
         depends_on:
-          - manual_approval
+          - manual_approval_external_ptl
       - environment: int
         make_spec_visible: true
         proxy_path: live
         depends_on:
-          - manual_approval
+          - manual_approval_external_ptl
       - environment: ref
         proxy_path: live
         depends_on:
           - int
           - sandbox
-          - manual_approval
       - environment: prod
         # todo: make_spec_visible: true when ready for live
         make_spec_visible: false
         proxy_path: live
         # manual_approval is added by default
         depends_on:
-          - int
-          - sandbox
-          - manual_approval
+          - ref
+          - manual_approval_prod
         jinja_templates:
             REQUIRE_ASID: true

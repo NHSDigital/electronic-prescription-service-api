@@ -3,6 +3,9 @@ import pino from "pino"
 import {fhir} from "@models"
 import {OdsClient} from "./ods-client"
 import {convertToOrganization, OdsOrganization} from "./ods-organization"
+import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
+
+const HEALTHCHECK_ODS_CODE = "X26" //Using the ODS code for NHS Digital
 
 export class LiveOdsClient implements OdsClient {
   async lookupOrganization(odsCode: string, logger: pino.Logger): Promise<fhir.Organization> {
@@ -19,5 +22,9 @@ export class LiveOdsClient implements OdsClient {
       logger.error(`Failed ODS lookup for path ${url}. Error: ${error}`)
       return null
     }
+  }
+
+  async getStatus(logger: pino.Logger): Promise<StatusCheckResponse> {
+    return serviceHealthCheck(`https://${process.env.ODS_URL}/STU3/Organization/${HEALTHCHECK_ODS_CODE}`, logger)
   }
 }

@@ -87,8 +87,7 @@ export function createMedicationRequestExtensions(
     createPrescriptionTypeExtension(prescriptionType),
     ...lineItemEndorsements.map(createEndorsementExtension)
   ]
-  //TODO - is this the correct condition? could we have a review date without a repeat number?
-  if (lineItemRepeatNumber) {
+  if (reviewDate || lineItemRepeatNumber) {
     const repeatInformationExtension = createRepeatInformationExtension(reviewDate, lineItemRepeatNumber)
     extensions.push(repeatInformationExtension)
   }
@@ -107,22 +106,32 @@ function createRepeatInformationExtension(
   reviewDate: hl7V3.ReviewDate,
   lineItemRepeatNumber: hl7V3.Interval<hl7V3.NumericValue>
 ): fhir.RepeatInformationExtension {
+  const extensions: Array<fhir.UnsignedIntExtension | fhir.DateTimeExtension> = []
+
+  if (reviewDate?.value) {
+    extensions.push({
+      url: "authorisationExpiryDate",
+      valueDateTime: convertHL7V3DateToIsoDateString(reviewDate.value)
+    })
+  }
+
+  if (lineItemRepeatNumber?.low?._attributes?.value) {
+    extensions.push({
+      url: "numberOfRepeatPrescriptionsIssued",
+      valueUnsignedInt: new LosslessNumber(lineItemRepeatNumber.low._attributes.value)
+    })
+  }
+
+  if (lineItemRepeatNumber?.high?._attributes?.value) {
+    extensions.push({
+      url: "numberOfRepeatPrescriptionsAllowed",
+      valueUnsignedInt: new LosslessNumber(lineItemRepeatNumber.high._attributes.value)
+    })
+  }
+
   return {
     url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-    extension: [
-      {
-        url: "authorisationExpiryDate",
-        valueDateTime: convertHL7V3DateToIsoDateString(reviewDate.value)
-      },
-      {
-        url: "numberOfRepeatPrescriptionsIssued",
-        valueUnsignedInt: new LosslessNumber(lineItemRepeatNumber.low._attributes.value)
-      },
-      {
-        url: "numberOfRepeatPrescriptionsAllowed",
-        valueUnsignedInt: new LosslessNumber(lineItemRepeatNumber.high._attributes.value)
-      }
-    ]
+    extension: extensions
   }
 }
 
