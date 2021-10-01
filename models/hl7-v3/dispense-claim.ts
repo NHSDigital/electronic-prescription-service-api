@@ -1,10 +1,15 @@
 import {ElementCompact} from "xml-js"
-import * as agentPerson from "./agent-person"
 import * as codes from "./codes"
 import * as core from "./core"
 import * as dispenseCommon from "./dispense-common"
 import * as prescription from "./prescription"
 import * as organisation from "./organization"
+import {
+  DispenseCommonSuppliedLineItemQuantity,
+  InFulfillmentOf,
+  SupplyHeaderPertinentInformation3,
+  SupplyHeaderPertinentInformation4
+} from "./dispense-common"
 
 export class DispenseClaimRoot {
   DispenseClaim: DispenseClaim
@@ -26,7 +31,7 @@ export class DispenseClaim implements ElementCompact {
   typeId: codes.TypeIdentifier
   primaryInformationRecipient: DispenseClaimPrimaryInformationRecipient
   //TODO - receiver
-  pertinentInformation1: dispenseCommon.DispenseCommonPertinentInformation1<DispenseClaimSupplyHeader>
+  pertinentInformation1: DispenseClaimPertinentInformation1
   //TODO - pertinentInformation2
   replacementOf: dispenseCommon.ReplacementOf
   coverage: Coverage
@@ -55,29 +60,93 @@ export class DispenseClaimPrimaryInformationRecipient implements ElementCompact 
   }
 }
 
-export class DispenseClaimSupplyHeader extends dispenseCommon.SupplyHeader<DispenseClaimSuppliedLineItem> {
-  legalAuthenticator: LegalAuthenticator
-}
-
-export class LegalAuthenticator extends prescription.PrescriptionAuthor {
-  _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
-    typeCode: "LA",
-    contextControlCode: "OP"
+export class DispenseClaimPertinentInformation1 implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
   }
 
-  constructor(time: core.Timestamp, participantAgentPerson: agentPerson.AgentPerson) {
-    super()
-    this.time = time
-    this.signatureText = core.Null.NOT_APPLICABLE
-    this.AgentPerson = participantAgentPerson
+  templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.pertinentInformation")
+  pertinentSupplyHeader: DispenseClaimSupplyHeader
+
+  constructor(supplyHeader: DispenseClaimSupplyHeader) {
+    this.pertinentSupplyHeader = supplyHeader
   }
 }
 
-export class DispenseClaimSuppliedLineItem extends dispenseCommon.DispenseCommonSuppliedLineItem {
-  component: Array<dispenseCommon.SuppliedLineItemComponent<DispenseClaimSuppliedLineItemQuantity>>
+export class DispenseClaimSupplyHeader {
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+    classCode: "SBADM",
+    moodCode: "EVN"
+  }
+
+  id: codes.GlobalIdentifier
+  code: codes.SnomedCode
+  effectiveTime: core.Null
+  repeatNumber?: core.Interval<core.NumericValue>
+  pertinentInformation1: Array<DispenseClaimSupplyHeaderPertinentInformation1>
+  pertinentInformation3: SupplyHeaderPertinentInformation3
+  pertinentInformation4: SupplyHeaderPertinentInformation4
+  inFulfillmentOf: InFulfillmentOf
+  legalAuthenticator: prescription.PrescriptionLegalAuthenticator
+
+  constructor(id: codes.GlobalIdentifier) {
+    this.id = id
+    this.code = new codes.SnomedCode("225426007")
+    this.effectiveTime = core.Null.NOT_APPLICABLE
+  }
+}
+
+export class DispenseClaimSupplyHeaderPertinentInformation1 implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true",
+    inversionInd: "false",
+    negationInd: "false"
+  }
+
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.sourceOf2")
+  pertinentSuppliedLineItem: DispenseClaimSuppliedLineItem
+
+  constructor(suppliedLineItem: DispenseClaimSuppliedLineItem) {
+    this.pertinentSuppliedLineItem = suppliedLineItem
+  }
+}
+
+export class DispenseClaimSuppliedLineItem {
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+    classCode: "SBADM",
+    moodCode: "PRMS"
+  }
+
+  id: codes.GlobalIdentifier
+  code: codes.SnomedCode
+  effectiveTime: core.Null
+  repeatNumber?: core.Interval<core.NumericValue>
+  component: Array<DispenseClaimSuppliedLineItemComponent>
   pertinentInformation2: SuppliedLineItemPertinentInformation2
   pertinentInformation3: dispenseCommon.SuppliedLineItemPertinentInformation3
   inFulfillmentOf: dispenseCommon.SuppliedLineItemInFulfillmentOf
+
+  constructor(id: codes.GlobalIdentifier) {
+    this.id = id
+    this.code = new codes.SnomedCode("225426007", "Administration of therapeutic substance (procedure)")
+    this.effectiveTime = core.Null.NOT_APPLICABLE
+  }
+}
+
+export class DispenseClaimSuppliedLineItemComponent implements ElementCompact {
+  _attributes: core.AttributeTypeCode = {
+    typeCode: "COMP"
+  }
+
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  suppliedLineItemQuantity: DispenseClaimSuppliedLineItemQuantity
+
+  constructor(suppliedLineItemQuantity: DispenseClaimSuppliedLineItemQuantity) {
+    this.suppliedLineItemQuantity = suppliedLineItemQuantity
+  }
 }
 
 export class DispenseClaimSuppliedLineItemQuantity extends dispenseCommon.DispenseCommonSuppliedLineItemQuantity {

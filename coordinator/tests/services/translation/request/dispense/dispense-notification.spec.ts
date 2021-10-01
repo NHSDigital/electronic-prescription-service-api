@@ -184,7 +184,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .pertinentSupplyHeader
           .pertinentInformation1[index]
           .pertinentSuppliedLineItem
-          .component
+          .component[0]
           .suppliedLineItemQuantity
           .product
           .suppliedManufacturedProduct
@@ -200,7 +200,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .pertinentSupplyHeader
           .pertinentInformation1[index]
           .pertinentSuppliedLineItem
-          .component
+          .component[0]
           .suppliedLineItemQuantity
           .product
           .suppliedManufacturedProduct
@@ -306,7 +306,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .pertinentSupplyHeader
           .pertinentInformation1[index]
           .pertinentSuppliedLineItem
-          .component
+          .component[0]
           .suppliedLineItemQuantity
           .quantity
           ._attributes
@@ -320,7 +320,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .pertinentSupplyHeader
           .pertinentInformation1[index]
           .pertinentSuppliedLineItem
-          .component
+          .component[0]
           .suppliedLineItemQuantity
           .quantity
           .translation
@@ -335,7 +335,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .pertinentSupplyHeader
           .pertinentInformation1[index]
           .pertinentSuppliedLineItem
-          .component
+          .component[0]
           .suppliedLineItemQuantity
           .quantity
           .translation
@@ -350,7 +350,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .pertinentSupplyHeader
           .pertinentInformation1[index]
           .pertinentSuppliedLineItem
-          .component
+          .component[0]
           .suppliedLineItemQuantity
           .quantity
           .translation
@@ -417,7 +417,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
           .pertinentSupplyHeader
           .pertinentInformation1[index]
           .pertinentSuppliedLineItem
-          .component
+          .component[0]
           .suppliedLineItemQuantity
           .pertinentInformation1
           .pertinentSupplyInstructions

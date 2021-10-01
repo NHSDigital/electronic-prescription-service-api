@@ -104,9 +104,7 @@ async function createDispenseClaimPertinentInformation1(
   //TODO - repeat dispensing
 
   const payeeOdsCode = claim.payee.party.identifier.value
-  //TODO - check that we can omit the user details (applies to all dispensing messages)
-  const agentPerson = await createAgentPersonForUnattendedAccess(payeeOdsCode, logger)
-  supplyHeader.legalAuthenticator = new hl7V3.LegalAuthenticator(timestamp, agentPerson)
+  supplyHeader.legalAuthenticator = await createLegalAuthenticator(payeeOdsCode, timestamp, logger)
 
   //TODO - populate pertinentInformation2 (non-dispensing reason)
 
@@ -115,7 +113,7 @@ async function createDispenseClaimPertinentInformation1(
 
   supplyHeader.pertinentInformation1 = item.detail.map(detail => {
     const suppliedLineItem = createSuppliedLineItem(claim, item, detail)
-    return new hl7V3.SupplyHeaderPertinentInformation1(suppliedLineItem)
+    return new hl7V3.DispenseClaimSupplyHeaderPertinentInformation1(suppliedLineItem)
   })
 
   const prescriptionId = createPrescriptionId(claim)
@@ -124,7 +122,19 @@ async function createDispenseClaimPertinentInformation1(
   const originalPrescriptionRef = createOriginalPrescriptionRef(claim)
   supplyHeader.inFulfillmentOf = new hl7V3.InFulfillmentOf(originalPrescriptionRef)
 
-  return new hl7V3.DispenseCommonPertinentInformation1(supplyHeader)
+  return new hl7V3.DispenseClaimPertinentInformation1(supplyHeader)
+}
+
+async function createLegalAuthenticator(payeeOdsCode: string, timestamp: hl7V3.Timestamp, logger: pino.Logger) {
+  //TODO - check that we can omit the user details (applies to all dispensing messages)
+  const agentPerson = await createAgentPersonForUnattendedAccess(payeeOdsCode, logger)
+
+  const legalAuthenticator = new hl7V3.PrescriptionLegalAuthenticator()
+  legalAuthenticator.time = timestamp
+  legalAuthenticator.signatureText = hl7V3.Null.NOT_APPLICABLE
+  legalAuthenticator.AgentPerson = agentPerson
+
+  return legalAuthenticator
 }
 
 function createPrescriptionStatus(item: fhir.ClaimItem) {
@@ -154,7 +164,7 @@ function createSuppliedLineItem(
   //TODO - repeat dispensing
   suppliedLineItem.component = detail.subDetail.map(subDetail => {
     const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(claim, item, detail, subDetail)
-    return new hl7V3.SuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
+    return new hl7V3.DispenseClaimSuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
   })
 
   //TODO - running total

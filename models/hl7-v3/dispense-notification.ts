@@ -7,6 +7,11 @@ import * as patient from "./patient"
 import * as parentPrescription from "./parent-prescription"
 import * as lineItem from "./line-item"
 import * as organisation from "./organization"
+import {
+  InFulfillmentOf,
+  SupplyHeaderPertinentInformation3,
+  SupplyHeaderPertinentInformation4
+} from "./dispense-common"
 
 export class DispenseNotificationRoot {
   DispenseNotification: DispenseNotification
@@ -27,7 +32,7 @@ export class DispenseNotification implements ElementCompact {
   typeId: codes.TypeIdentifier
   recordTarget: patient.RecordTargetReference
   primaryInformationRecipient: DispenseNotificationPrimaryInformationRecipient
-  pertinentInformation1: dispenseCommon.DispenseCommonPertinentInformation1<DispenseNotificationSupplyHeader>
+  pertinentInformation1: DispenseNotificationPertinentInformation1
   pertinentInformation2: DispenseNotificationPertinentInformation2
   replacementOf?: dispenseCommon.ReplacementOf
   sequelTo: dispenseCommon.SequelTo
@@ -56,13 +61,59 @@ export class DispenseNotificationPrimaryInformationRecipient implements ElementC
   }
 }
 
-export class DispenseNotificationSupplyHeader
-  extends dispenseCommon.SupplyHeader<DispenseNotificationSuppliedLineItem> {
+export class DispenseNotificationPertinentInformation1 implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true"
+  }
+
+  templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.pertinentInformation")
+  pertinentSupplyHeader: DispenseNotificationSupplyHeader
+
+  constructor(supplyHeader: DispenseNotificationSupplyHeader) {
+    this.pertinentSupplyHeader = supplyHeader
+  }
+}
+
+export class DispenseNotificationSupplyHeader implements ElementCompact {
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+    classCode: "SBADM",
+    moodCode: "EVN"
+  }
+
+  id: codes.GlobalIdentifier
+  code: codes.SnomedCode
+  effectiveTime: core.Null
+  repeatNumber?: core.Interval<core.NumericValue>
   author: prescription.PrescriptionAuthor
+  pertinentInformation1: Array<DispenseNotificationSupplyHeaderPertinentInformation1>
+  pertinentInformation3: SupplyHeaderPertinentInformation3
+  pertinentInformation4: SupplyHeaderPertinentInformation4
+  inFulfillmentOf: InFulfillmentOf
 
   constructor(id: codes.GlobalIdentifier, author: prescription.PrescriptionAuthor) {
-    super(id)
+    this.id = id
+    this.code = new codes.SnomedCode("225426007")
+    this.effectiveTime = core.Null.NOT_APPLICABLE
+    //TODO - should be added AFTER repeat number
     this.author = author
+  }
+}
+
+export class DispenseNotificationSupplyHeaderPertinentInformation1 implements ElementCompact {
+  _attributes: core.AttributeTypeCode & core.AttributeContextConductionInd = {
+    typeCode: "PERT",
+    contextConductionInd: "true",
+    inversionInd: "false",
+    negationInd: "false"
+  }
+
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  templateId: codes.TemplateIdentifier = new codes.TemplateIdentifier("CSAB_RM-NPfITUK10.sourceOf2")
+  pertinentSuppliedLineItem: DispenseNotificationSuppliedLineItem
+
+  constructor(suppliedLineItem: DispenseNotificationSuppliedLineItem) {
+    this.pertinentSuppliedLineItem = suppliedLineItem
   }
 }
 
@@ -85,12 +136,27 @@ export class RequestedManufacturedProduct implements ElementCompact {
 * Details about the medication Line Item dispensed to satisfy the requirements for the treatment specified
 * in the Prescription Line Item.
 */
-export class DispenseNotificationSuppliedLineItem extends dispenseCommon.DispenseCommonSuppliedLineItem {
+export class DispenseNotificationSuppliedLineItem {
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+    classCode: "SBADM",
+    moodCode: "PRMS"
+  }
+
+  id: codes.GlobalIdentifier
+  code: codes.SnomedCode
+  effectiveTime: core.Null
+  repeatNumber?: core.Interval<core.NumericValue>
   consumable: Consumable
-  component: dispenseCommon.SuppliedLineItemComponent<DispenseNotificationSuppliedLineItemQuantity>
-  component1: SuppliedLineItemComponent1
+  component: Array<DispenseNotificationSuppliedLineItemComponent>
+  component1: DispenseNotificationSuppliedLineItemComponent1
   pertinentInformation3: dispenseCommon.SuppliedLineItemPertinentInformation3
   inFulfillmentOf: dispenseCommon.SuppliedLineItemInFulfillmentOf
+
+  constructor(id: codes.GlobalIdentifier) {
+    this.id = id
+    this.code = new codes.SnomedCode("225426007", "Administration of therapeutic substance (procedure)")
+    this.effectiveTime = core.Null.NOT_APPLICABLE
+  }
 }
 
 /*
@@ -110,6 +176,19 @@ export class Consumable implements ElementCompact {
 
   constructor(requestedManufacturedProduct: RequestedManufacturedProduct) {
     this.requestedManufacturedProduct = requestedManufacturedProduct
+  }
+}
+
+export class DispenseNotificationSuppliedLineItemComponent implements ElementCompact {
+  _attributes: core.AttributeTypeCode = {
+    typeCode: "COMP"
+  }
+
+  seperatableInd: core.BooleanValue = new core.BooleanValue(false)
+  suppliedLineItemQuantity: DispenseNotificationSuppliedLineItemQuantity
+
+  constructor(suppliedLineItemQuantity: DispenseNotificationSuppliedLineItemQuantity) {
+    this.suppliedLineItemQuantity = suppliedLineItemQuantity
   }
 }
 
@@ -151,7 +230,7 @@ export class SupplyInstructions extends prescription.PrescriptionAnnotation {
 * An act relationship that relates to the quantity of the medication treatment ordered in the original
 * prescription line item. This information might not necessarily be derived from PSIS.
 */
-export class SuppliedLineItemComponent1 implements ElementCompact {
+export class DispenseNotificationSuppliedLineItemComponent1 implements ElementCompact {
   _attributes: core.AttributeTypeCode = {
     typeCode: "COMP"
   }

@@ -107,7 +107,7 @@ async function createPertinentInformation1(
     supplyHeader.repeatNumber = getRepeatNumberFromRepeatInfoExtension(repeatInfo)
   }
 
-  return new hl7V3.DispenseCommonPertinentInformation1(supplyHeader)
+  return new hl7V3.DispenseNotificationPertinentInformation1(supplyHeader)
 }
 
 function getLineItemIdentifiers(fhirMedicationDispenses: Array<fhir.MedicationDispense>) {
@@ -180,7 +180,7 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
   fhirMedicationDispense: fhir.MedicationDispense,
   medicationCoding: fhir.Coding,
   logger: pino.Logger
-): hl7V3.SupplyHeaderPertinentInformation1<hl7V3.DispenseNotificationSuppliedLineItem> {
+): hl7V3.DispenseNotificationSupplyHeaderPertinentInformation1 {
   const fhirPrescriptionDispenseItemNumber = getPrescriptionItemNumber(fhirMedicationDispense)
   const fhirPrescriptionLineItemStatus = getPrescriptionLineItemStatus(fhirMedicationDispense)
   const fhirDosageInstruction = getDosageInstruction(fhirMedicationDispense, logger)
@@ -216,8 +216,10 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
       )
     )
   )
-  hl7PertinentSuppliedLineItem.component = new hl7V3.SuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
-  hl7PertinentSuppliedLineItem.component1 = new hl7V3.SuppliedLineItemComponent1(
+  hl7PertinentSuppliedLineItem.component = [
+    new hl7V3.DispenseNotificationSuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
+  ]
+  hl7PertinentSuppliedLineItem.component1 = new hl7V3.DispenseNotificationSuppliedLineItemComponent1(
     new hl7V3.SupplyRequest(hl7SuppliedLineItemQuantitySnomedCode, hl7Quantity)
   )
   hl7PertinentSuppliedLineItem.pertinentInformation3 = new hl7V3.SuppliedLineItemPertinentInformation3(
@@ -237,7 +239,7 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
     hl7PertinentSuppliedLineItem.repeatNumber = getRepeatNumberFromRepeatInfoExtension(repeatInfo)
   }
 
-  return new hl7V3.SupplyHeaderPertinentInformation1(hl7PertinentSuppliedLineItem)
+  return new hl7V3.DispenseNotificationSupplyHeaderPertinentInformation1(hl7PertinentSuppliedLineItem)
 }
 
 function getRepeatNumberFromRepeatInfoExtension(
