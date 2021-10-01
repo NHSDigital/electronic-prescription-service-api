@@ -4,10 +4,7 @@ import {clone} from "../../resources/test-helpers"
 import {getMedicationRequests, getPractitionerRoles} from "../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, isTruthy} from "../../../src/services/translation/common"
 import {fhir, validationErrors as errors} from "@models"
-import {
-  getOrganisationPerformer,
-  getPrescriptionStatus
-} from "../../../src/services/translation/request/dispense/dispense-notification"
+import {getOrganisationPerformer} from "../../../src/services/translation/request/dispense/dispense-notification"
 import {
   DISPENSING_APP_SCOPE,
   DISPENSING_USER_SCOPE,
@@ -439,27 +436,6 @@ describe("verifyDispenseNotificationBundle", () => {
   test("accepts a valid dispense request", () => {
     const returnedErrors = validator.verifyDispenseBundle(bundle)
     expect(returnedErrors.length).toBe(0)
-  })
-
-  test("returns an error when MedicationDispenses have different prescription statuses", () => {
-    const medicationDispenseEntry =
-      bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
-
-    const medicationDispense1 = medicationDispenseEntry.resource as fhir.MedicationDispense
-    const prescriptionStatus1 = getPrescriptionStatus(medicationDispense1)
-    prescriptionStatus1.valueCoding.code = "0001"
-
-    const medicationDispenseEntry2 = clone(medicationDispenseEntry)
-    const medicationDispense2 = medicationDispenseEntry.resource as fhir.MedicationDispense
-    const prescriptionStatus2 = getPrescriptionStatus(medicationDispense2)
-    prescriptionStatus2.valueCoding.code = "0003"
-    bundle.entry.push(medicationDispenseEntry2)
-
-    const returnedErrors = validator.verifyDispenseBundle(bundle)
-    expect(returnedErrors.length).toBe(1)
-    expect(returnedErrors[0].expression)
-      // eslint-disable-next-line max-len
-      .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).extension(\"https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus\")")
   })
 
   test("returns an error when MedicationDispenses have different whenPrepared timestamps", () => {
