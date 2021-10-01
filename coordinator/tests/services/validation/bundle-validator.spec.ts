@@ -5,8 +5,7 @@ import {getMedicationRequests, getPractitionerRoles} from "../../../src/services
 import {getExtensionForUrl, isTruthy} from "../../../src/services/translation/common"
 import {fhir, validationErrors as errors} from "@models"
 import {
-  getOrganisationPerformer,
-  getPrescriptionStatus
+  getOrganisationPerformer
 } from "../../../src/services/translation/request/dispense/dispense-notification"
 import {
   DISPENSING_APP_SCOPE,
