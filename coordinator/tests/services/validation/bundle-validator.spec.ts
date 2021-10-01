@@ -4,9 +4,7 @@ import {clone} from "../../resources/test-helpers"
 import {getMedicationRequests, getPractitionerRoles} from "../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, isTruthy} from "../../../src/services/translation/common"
 import {fhir, validationErrors as errors} from "@models"
-import {
-  getOrganisationPerformer
-} from "../../../src/services/translation/request/dispense/dispense-notification"
+import {getOrganisationPerformer} from "../../../src/services/translation/request/dispense/dispense-notification"
 import {
   DISPENSING_APP_SCOPE,
   DISPENSING_USER_SCOPE,
