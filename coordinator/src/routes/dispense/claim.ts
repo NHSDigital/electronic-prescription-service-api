@@ -15,7 +15,7 @@ import {getStatusCode} from "../../utils/status-code"
 
 export default [
   /*
-    Send a dispense release request to SPINE
+    Send a claim to SPINE
   */
   {
     method: "POST",

@@ -10,6 +10,7 @@ import {LosslessNumber} from "lossless-json"
 export interface Claim extends common.Resource {
   resourceType: "Claim"
   identifier: Array<common.Identifier>
+  created: string
   prescription: ClaimPrescription
   payee: ClaimPayee
   insurance: Array<ClaimInsurance>

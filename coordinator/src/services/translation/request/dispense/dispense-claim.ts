@@ -1,5 +1,4 @@
 import {fhir, hl7V3, processingErrors} from "@models"
-import moment from "moment"
 import pino from "pino"
 import {
   getCodeableConceptCodingForSystem,
@@ -10,7 +9,7 @@ import {
   getNumericValueAsString,
   onlyElement
 } from "../../common"
-import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
+import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
 import {createAgentOrganisationFromReference} from "./dispense-common"
 
@@ -19,10 +18,8 @@ export async function convertDispenseClaim(
   logger: pino.Logger
 ): Promise<hl7V3.DispenseClaim> {
   const messageId = getMessageIdFromClaim(claim)
-
-  //TODO - should we use Claim.created instead?
-  const now = convertMomentToHl7V3DateTime(moment.utc())
-  const dispenseClaim = new hl7V3.DispenseClaim(new hl7V3.GlobalIdentifier(messageId), now)
+  const claimDateTime = convertIsoDateTimeStringToHl7V3DateTime(claim.created, "Claim.created")
+  const dispenseClaim = new hl7V3.DispenseClaim(new hl7V3.GlobalIdentifier(messageId), claimDateTime)
 
   //TODO - validate that coverage is always NHS BSA (preferably using the FHIR profile)
   const insurance = onlyElement(claim.insurance, "Claim.insurance")
@@ -36,7 +33,7 @@ export async function convertDispenseClaim(
     claim,
     item,
     messageId,
-    now,
+    claimDateTime,
     logger
   )
 
@@ -96,7 +93,7 @@ async function createDispenseClaimPertinentInformation1(
   claim: fhir.Claim,
   item: fhir.ClaimItem,
   messageId: string,
-  timestamp: hl7V3.Timestamp,
+  claimDateTime: hl7V3.Timestamp,
   logger: pino.Logger
 ) {
   const supplyHeader = new hl7V3.DispenseClaimSupplyHeader(new hl7V3.GlobalIdentifier(messageId))
@@ -104,7 +101,7 @@ async function createDispenseClaimPertinentInformation1(
   //TODO - repeat dispensing
 
   const payeeOdsCode = claim.payee.party.identifier.value
-  supplyHeader.legalAuthenticator = await createLegalAuthenticator(payeeOdsCode, timestamp, logger)
+  supplyHeader.legalAuthenticator = await createLegalAuthenticator(payeeOdsCode, claimDateTime, logger)
 
   //TODO - populate pertinentInformation2 (non-dispensing reason)
 
@@ -126,14 +123,11 @@ async function createDispenseClaimPertinentInformation1(
 }
 
 async function createLegalAuthenticator(payeeOdsCode: string, timestamp: hl7V3.Timestamp, logger: pino.Logger) {
-  //TODO - check that we can omit the user details (applies to all dispensing messages)
-  const agentPerson = await createAgentPersonForUnattendedAccess(payeeOdsCode, logger)
-
   const legalAuthenticator = new hl7V3.PrescriptionLegalAuthenticator()
   legalAuthenticator.time = timestamp
   legalAuthenticator.signatureText = hl7V3.Null.NOT_APPLICABLE
-  legalAuthenticator.AgentPerson = agentPerson
-
+  //TODO - check that we can omit the user details (applies to all dispensing messages)
+  legalAuthenticator.AgentPerson = await createAgentPersonForUnattendedAccess(payeeOdsCode, logger)
   return legalAuthenticator
 }
 
@@ -180,7 +174,6 @@ function createSuppliedLineItem(
     suppliedLineItem.pertinentInformation2 = new hl7V3.SuppliedLineItemPertinentInformation2(nonDispensingReason)
   }
 
-  //TODO - is this actually the status of the item BEFORE dispensing?
   const lineItemStatusCoding = getCodeableConceptCodingForSystem(
     detail.modifier,
     "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
