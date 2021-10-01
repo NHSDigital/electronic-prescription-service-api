@@ -214,7 +214,6 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
   const fhirPaths = [
     "whenPrepared",
     "subject.identifier.value",
-    'extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus")',
     'extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation")'
   ]
 
