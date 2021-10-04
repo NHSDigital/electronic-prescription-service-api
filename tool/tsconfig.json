@@ -12,5 +12,5 @@
     ]
   },
   "skipLibCheck": true,
-  "files": ["client/index.ts", "client/data/prescriptions.ts"],
+  "files": ["client/**/*.ts"],
 }
