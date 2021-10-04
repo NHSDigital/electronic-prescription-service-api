@@ -82,6 +82,17 @@ export class PrescriptionResponsibleParty extends agentPerson.ResponsibleParty {
   }
 }
 
+export class PrescriptionLegalAuthenticator extends agentPerson.LegalAuthenticator {
+  _attributes: core.AttributeTypeCode & core.AttributeContextControlCode = {
+    typeCode: "LA",
+    contextControlCode: "OP"
+  }
+
+  time: core.Timestamp
+  signatureText: core.Null | ElementCompact
+  AgentPerson: agentPerson.AgentPerson
+}
+
 /**
  * An act relationship used to provide information on the number of days' treatment that the current prescription's
  * medication provides for.

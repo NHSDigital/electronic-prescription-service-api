@@ -24,7 +24,7 @@ export class ExampleFile {
     this.statusText = filenameSplit[4] || filenameSplit[3]
 
     if (this.operation === this.statusText.toLowerCase()) {
-      this.operation = undefined
+      this.operation = this.endpoint
     }
 
     this.isRequest = filenameSplit[2] === "Request"
