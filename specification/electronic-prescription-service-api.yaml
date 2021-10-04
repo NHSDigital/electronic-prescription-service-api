@@ -61,12 +61,12 @@ info:
     There are three types of medication workflows
     
     #### Primary care medication workflow
-    In primary care medication workflow, the prescription is sent from a primary care service, such as a GP practise to a Pharmacy. For this flow, the API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
+    In primary care medication workflow, the prescription is sent from a primary care service, such as a GP practise to a Pharmacy. For this workflow, the API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
     - it is available for testing in the integration environment, but not for production use
     - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
 
     #### Secondary care medication workflow
-    In a secondary care medication workflow, the prescription is sent from a secondary care service, such as an NHS hospital to a Pharmacy. For this flow, the API is in [beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
+    In a secondary care medication workflow, the prescription is sent from a secondary care service, such as an NHS hospital to a Pharmacy. For this workflow, the API is in [beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
     - it is available in integration and production
     - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
     
