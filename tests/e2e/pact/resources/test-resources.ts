@@ -15,6 +15,12 @@ function getTaskCases(operation: ApiOperation) {
     .map(spec => spec.toJestCase())
 }
 
+function getClaimCases() {
+  return fetcher.claimExamples
+    .filter(e => e.isSuccess)
+    .map(spec => spec.toJestCase())
+}
+
 export const prepareCaseGroups = fetcher.prepareExamples.filter(e => e.isSuccess).map(spec => spec.toJestCase())
 export const prepareErrorCases = fetcher.prepareExamples.filter(e => !e.isSuccess).map(spec => spec.toJestCase())
 
@@ -25,8 +31,9 @@ export const processErrorCases = fetcher.processExamples.filter(e => !e.isSucces
 export const processOrderCases = getProcessCases("send")
 export const processOrderUpdateCases = getProcessCases("cancel")
 export const processDispenseNotificationCases = getProcessCases("dispense")
-export const processClaimInformationCases = getProcessCases("claim")
 
 export const taskReleaseCases = getTaskCases("release")
 export const taskReturnCases = getTaskCases("return")
 export const taskWithdrawCases = getTaskCases("withdraw")
+
+export const claimCases = getClaimCases()
