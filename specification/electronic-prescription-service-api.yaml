@@ -36,8 +36,8 @@ info:
     * download a batch of prescriptions from EPS
     * return a prescription to EPS
     * submit a dispense notification to EPS
-    * withdraw a dispense notification to EPS (sandbox implementation only)
-    * submit a dispense claim (sandbox implementation only)
+    * withdraw a dispense notification from EPS
+    * submit a dispense claim
 
     You cannot currently use this API to:
     * track a prescription or check a prescription's status
@@ -678,19 +678,13 @@ paths:
                     An error response to a withdraw request.
                   value:
                     $ref: components/examples/release/not-found-error.json
-  /FHIR/R4/$process-message#dispense-claim:
+  /FHIR/R4/Claim:
     post:
       operationId: send-dispense-claim-message
       summary: Claim for a dispensed prescription
       description: |
         ## Overview
-        Use this endpoint to send a dispense-claim message to EPS.
-
-        The effect of calling this endpoint depends on the type of the message, which is determined by the `MessageHeader` resource.
-        To submit a claim for a dispensed prescription, send a [dispense-claim message](https://simplifier.net/guide/DigitalMedicines/NHSDigital-Claim).
-
-        Note that the `#dispense-claim` in the URL has been added to distinguish this from the other operations which
-        can be performed using the `$process-message` endpoint. It is not required in requests to the API.
+        Use this endpoint to submit a claim for reimbursement for a dispensed prescription.
       tags:
         - dispensing
       parameters:
@@ -707,9 +701,9 @@ paths:
             examples:
               dispense-claim-success:
                 description: |
-                  A valid secondary care dispense-claim message.
+                  A valid secondary care Claim message.
                 value:
-                  $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/4-Process-Request-Claim-200_OK.json
+                  $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/4-Claim-Request-200_OK.json
         description: ''
       responses:
         '200':

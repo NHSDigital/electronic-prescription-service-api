@@ -16,6 +16,10 @@ export function isTask(body: unknown): body is fhir.Task {
   return isFhirResourceOfType(body, "Task")
 }
 
+export function isClaim(body: unknown): body is fhir.Claim {
+  return isFhirResourceOfType(body, "Claim")
+}
+
 export function isMedicationRequest(body: unknown): body is fhir.MedicationRequest {
   return isFhirResourceOfType(body, "MedicationRequest")
 }

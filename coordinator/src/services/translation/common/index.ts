@@ -25,6 +25,10 @@ export function getMessageIdFromTask(task: fhir.Task): string {
   return getMessageId(task.identifier, "Task.identifier")
 }
 
+export function getMessageIdFromClaim(claim: fhir.Claim): string {
+  return getMessageId(claim.identifier, "Claim.identifier")
+}
+
 export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, additionalContext?: string): T {
   if (!iterable) {
     throw new errors.InvalidValueError("Required field missing.", fhirPath)
@@ -212,7 +216,7 @@ export function getCodeableConceptCodingForSystem(
   if (!codeableConcepts) {
     throw new errors.InvalidValueError("Required field missing.", fhirPath)
   }
-  const coding = codeableConcepts.flatMap(codeableConcept => codeableConcept.coding)
+  const coding = codeableConcepts.flatMap(codeableConcept => codeableConcept.coding).filter(isTruthy)
   return getCodingForSystem(coding, system, fhirPath + ".coding")
 }
 
@@ -224,7 +228,7 @@ export function getCodeableConceptCodingForSystemOrNull(
   if (!codeableConcepts) {
     return null
   }
-  const coding = codeableConcepts.flatMap(codeableConcept => codeableConcept.coding)
+  const coding = codeableConcepts.flatMap(codeableConcept => codeableConcept.coding).filter(isTruthy)
   return getCodingForSystemOrNull(coding, system, fhirPath + ".coding")
 }
 
