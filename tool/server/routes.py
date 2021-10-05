@@ -532,7 +532,7 @@ def post_claim():
     request = flask.request.json
     access_token = get_access_token()
 
-    convert_response = "TODO"
+    convert_response, _code = make_eps_api_convert_message_request(access_token, request)
     claim_response, claim_response_code, request_id = make_eps_api_claim_request(
         access_token,
         request

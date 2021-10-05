@@ -253,9 +253,7 @@ customWindow.sendClaimRequest = function () {
       "GET",
       `${pageData.baseUrl}dispense/history?prescription_id=${prescriptionId}`
     )
-    console.log(JSON.stringify(dispensingHistory)) //TODO - remove
     const claim = createClaim(dispensingHistory.prescription_order, dispensingHistory.dispense_notifications)
-    console.log(JSON.stringify(claim)) //TODO - remove
     const response = makeRequest(
       "POST",
       `${pageData.baseUrl}dispense/claim`,
