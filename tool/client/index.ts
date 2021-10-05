@@ -33,6 +33,7 @@ import {
   updateNominatedPharmacy,
   updateValidityPeriodIfRepeatDispensing
 } from "./parsers/write/bundle-parser"
+import {createClaim} from "./transformers/dispense-claim"
 
 const customWindow = window as Record<string, any>
 
@@ -245,6 +246,34 @@ customWindow.sendDispenseRequest = function () {
   }
 }
 
+customWindow.sendClaimRequest = function () {
+  try {
+    const prescriptionId = Cookies.get("Current-Prescription-Id")
+    const dispensingHistory = makeRequest(
+      "GET",
+      `${pageData.baseUrl}dispense/history?prescription_id=${prescriptionId}`
+    )
+    console.log(JSON.stringify(dispensingHistory)) //TODO - remove
+    const claim = createClaim(dispensingHistory.prescription_order, dispensingHistory.dispense_notifications)
+    console.log(JSON.stringify(claim)) //TODO - remove
+    const response = makeRequest(
+      "POST",
+      `${pageData.baseUrl}dispense/claim`,
+      JSON.stringify(claim)
+    )
+    pageData.claimResponse = {
+      success: response.success,
+      fhirRequest: response.request,
+      hl7Request: response.request_xml,
+      hl7Response: response.response_xml,
+      fhirResponse: response.response
+    }
+  } catch (e) {
+    console.log(e)
+    addError("Communication error")
+  }
+}
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 window.onerror = function (msg, url, line, col, error) {
   // todo: fix cancellation page checkbox, prevent rivets from publishing checkbox values
@@ -382,6 +411,12 @@ customWindow.doPrescriptionAction = function (select: HTMLInputElement) {
         "_blank"
       )
       break
+    case "claim":
+      window.open(
+        `${pageData.baseUrl}dispense/claim?prescription_id=${prescriptionId}`,
+        "_blank"
+      )
+      break
     default:
       return
   }
@@ -421,6 +456,7 @@ customWindow.startApplication = async function (mode: string, env: string, baseU
     if (env !== "prod") {
       pageData.actions.push(new PrescriptionAction("release", "Release"))
       pageData.actions.push(new PrescriptionAction("dispense", "Dispense"))
+      pageData.actions.push(new PrescriptionAction("claim", "Claim"))
     }
   }
   if (pageData.mode === "cancel") {

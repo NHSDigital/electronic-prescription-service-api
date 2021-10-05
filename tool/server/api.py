@@ -61,6 +61,19 @@ def make_eps_api_release_request_untranslated(access_token, body, request_id):
     return response.text, response.status_code
 
 
+def make_eps_api_claim_request(access_token, body):
+    print("Sending EPS claim request...")
+    request_id = str(uuid.uuid4())
+    response = make_eps_api_request("Claim", access_token, body, request_id)
+    return response.json(), response.status_code, request_id
+
+
+def make_eps_api_claim_request_untranslated(access_token, body, request_id):
+    print("Sending EPS claim request...")
+    response = make_eps_api_request("Claim", access_token, body, request_id, raw_response_header)
+    return response.text, response.status_code
+
+
 def make_eps_api_request(path, access_token, body, request_id=str(uuid.uuid4()), additional_headers=None):
     headers = {
         "x-request-id": request_id,

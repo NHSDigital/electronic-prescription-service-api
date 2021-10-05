@@ -1,8 +1,35 @@
 import * as fhir from "../models"
+import {Identifier} from "../models"
 import * as uuid from "uuid"
-import {getMedicationDispenseResources, getMedicationRequestResources} from "../parsers/read/bundle-parser"
+import {
+  getMedicationDispenseResources,
+  getMedicationRequestResources,
+  getPatientResources
+} from "../parsers/read/bundle-parser"
+
+//TODO - remove once the profile is fixed
+const DEPRECATED_LINE_ITEM_IDENTIFIER_EXTENSION: fhir.IdentifierExtension = {
+  url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-SuppliedItemIdentifier",
+  valueIdentifier: {
+    system: "https://tools.ietf.org/html/rfc4122",
+    value: "a54d66b0-e6ea-48ab-9498-298e3c2f5452"
+  }
+}
+
+//TODO - remove once the profile is fixed
+const DEPRECATED_DISPENSE_TYPE_FULLY_DISPENSED: fhir.CodeableConcept = {
+  "coding": [
+    {
+      "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+      "code": "0001",
+      "display": "Item fully dispensed"
+    }
+  ]
+}
 
 const INSURANCE_NHS_BSA: fhir.ClaimInsurance = {
+  sequence: 1,
+  focal: true,
   coverage: {
     identifier: {
       system: "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -12,8 +39,37 @@ const INSURANCE_NHS_BSA: fhir.ClaimInsurance = {
   }
 }
 
+const CODEABLE_CONCEPT_CLAIM_TYPE_PHARMACY: fhir.CodeableConcept = {
+  coding: [
+    {
+      system: "http://terminology.hl7.org/CodeSystem/claim-type",
+      code: "pharmacy",
+      display: "Pharmacy"
+    }
+  ]
+}
+
+const CODEABLE_CONCEPT_PRIORITY_NORMAL: fhir.CodeableConcept = {
+  coding: [
+    {
+      system: "http://terminology.hl7.org/CodeSystem/processpriority",
+      code: "normal"
+    }
+  ]
+}
+
+const CODEABLE_CONCEPT_PAYEE_TYPE_PROVIDER: fhir.CodeableConcept = {
+  coding: [
+    {
+      system: "http://terminology.hl7.org/CodeSystem/payeetype",
+      code: "provider",
+      display: "Provider"
+    }
+  ]
+}
+
 const CODEABLE_CONCEPT_PRESCRIPTION: fhir.CodeableConcept = {
-  coding:  [
+  coding: [
     {
       system: "http://snomed.info/sct",
       code: "16076005",
@@ -22,8 +78,8 @@ const CODEABLE_CONCEPT_PRESCRIPTION: fhir.CodeableConcept = {
   ]
 }
 
-const CODEABLE_CONCEPT_NO_CHARGE_EXEMPTION: fhir.CodeableConcept = {
-  coding:  [
+const CODEABLE_CONCEPT_CHARGE_EXEMPTION_NONE: fhir.CodeableConcept = {
+  coding: [
     {
       system: "https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption",
       code: "0001",
@@ -56,6 +112,9 @@ export function createClaim(prescriptionOrder: fhir.Bundle, dispenseNotification
   const medicationRequests = getMedicationRequestResources(prescriptionOrder)
   const medicationDispenses = dispenseNotifications.map(getMedicationDispenseResources)
     .reduce((a, b) => a.concat(b), [])
+  const patient = getPatientResources(prescriptionOrder)
+
+  const patientIdentifier = patient[0].identifier[0]
 
   const finalMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
   const prescriptionStatusExtension = finalMedicationDispense.extension.find(
@@ -74,6 +133,12 @@ export function createClaim(prescriptionOrder: fhir.Bundle, dispenseNotification
     resourceType: "Claim",
     created: new Date().toISOString(),
     identifier: [createClaimIdentifier()],
+    status: "active",
+    type: CODEABLE_CONCEPT_CLAIM_TYPE_PHARMACY,
+    use: "claim",
+    patient: createClaimPatient(patientIdentifier),
+    provider: createClaimProvider(),
+    priority: CODEABLE_CONCEPT_PRIORITY_NORMAL,
     insurance: [INSURANCE_NHS_BSA],
     payee: createClaimPayee(claimingOrganizationReference),
     prescription: createClaimPrescription(groupIdentifierExtension),
@@ -88,8 +153,30 @@ function createClaimIdentifier(): fhir.Identifier {
   }
 }
 
+function createClaimPatient(identifier: Identifier) {
+  return {
+    //Doing it this way to avoid copying the verification status extension
+    identifier: {
+      system: identifier.system,
+      value: identifier.value
+    }
+  }
+}
+
+function createClaimProvider() {
+  //TODO - is this actually needed?
+  return {
+    identifier: {
+      system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      value: "999999999999"
+    },
+    display: "Unattended Access"
+  }
+}
+
 function createClaimPayee(claimingOrganizationReference: fhir.IdentifierReference<fhir.Organization>): fhir.ClaimPayee {
   return {
+    type: CODEABLE_CONCEPT_PAYEE_TYPE_PROVIDER,
     party: claimingOrganizationReference
   }
 }
@@ -107,10 +194,14 @@ function createClaimItem(
 ): fhir.ClaimItem {
   const lineItemIds = medicationRequests.map(getMedicationRequestLineItemId)
   return {
-    extension: [prescriptionStatusExtension],
+    extension: [
+      prescriptionStatusExtension,
+      DEPRECATED_LINE_ITEM_IDENTIFIER_EXTENSION
+    ],
     sequence: 1,
     productOrService: CODEABLE_CONCEPT_PRESCRIPTION,
-    modifier: [CODEABLE_CONCEPT_NO_CHARGE_EXEMPTION],
+    modifier: [DEPRECATED_DISPENSE_TYPE_FULLY_DISPENSED],
+    programCode: [CODEABLE_CONCEPT_CHARGE_EXEMPTION_NONE],
     detail: lineItemIds.map((lineItemId, index) => {
       const medicationRequestForLineItem = medicationRequests.find(
         medicationRequest => getMedicationRequestLineItemId(medicationRequest) === lineItemId
@@ -139,6 +230,7 @@ function createClaimItemDetail(
     sequence,
     productOrService: medicationRequest.medicationCodeableConcept,
     modifier: [finalMedicationDispense.type],
+    programCode: [CODEABLE_CONCEPT_CHARGE_EXEMPTION_NONE],
     quantity: medicationRequest.dispenseRequest.quantity,
     subDetail: medicationDispenses.map((medicationDispense, index) =>
       createClaimItemSubDetail(index + 1, medicationDispense)

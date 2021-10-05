@@ -4,6 +4,17 @@ def get_prescription_id(bundle_json):
         resource = entry["resource"]
         if resource["resourceType"] == "MedicationRequest":
             return resource["groupIdentifier"]["value"]
+        if resource["resourceType"] == "MedicationDispense":
+            authorizing_prescription = resource["authorizingPrescription"][0]
+            group_identifier_extension = next(
+                x for x in authorizing_prescription["extension"]
+                if x["url"] == "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier"
+            )
+            short_form_id_extension = next(
+                x for x in group_identifier_extension["extension"]
+                if x["url"] == "shortForm"
+            )
+            return short_form_id_extension["valueIdentifier"]["value"]
 
 
 def create_provenance(timestamp, signature):

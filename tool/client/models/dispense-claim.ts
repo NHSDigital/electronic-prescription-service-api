@@ -2,6 +2,7 @@ import * as common from "./common"
 import * as extension from "./extension"
 import * as practitionerRole from "./practitioner-role"
 import * as medicationRequest from "./medication-request"
+import * as patient from "./patient"
 
 /**
  * Details of the claim itself
@@ -9,7 +10,13 @@ import * as medicationRequest from "./medication-request"
 export interface Claim extends common.Resource {
   resourceType: "Claim"
   identifier: Array<common.Identifier>
+  status: "active"
+  type: common.CodeableConcept
+  use: "claim"
+  patient: common.IdentifierReference<patient.Patient>
   created: string
+  provider: common.IdentifierReference<practitionerRole.PractitionerRole>
+  priority: common.CodeableConcept
   prescription: ClaimPrescription
   payee: ClaimPayee
   insurance: Array<ClaimInsurance>
@@ -21,10 +28,13 @@ export interface ClaimPrescription {
 }
 
 export interface ClaimPayee {
+  type: common.CodeableConcept
   party: common.IdentifierReference<practitionerRole.PersonOrOrganization>
 }
 
 export interface ClaimInsurance {
+  sequence: number,
+  focal: boolean,
   coverage: common.IdentifierReference<common.Resource>
 }
 

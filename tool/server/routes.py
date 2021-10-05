@@ -1,16 +1,14 @@
-import uuid
+import base64
 import datetime
 import io
-import os
 import json
-import base64
-import flask
-import httpx
-import time
 import zipfile
-import sys
 from functools import wraps
-from urllib.parse import urlencode
+
+import flask
+from flask import make_response
+
+import config
 from api import (
     make_eps_api_prepare_request,
     make_eps_api_process_message_request,
@@ -20,11 +18,12 @@ from api import (
     make_sign_api_signature_upload_request,
     make_sign_api_signature_download_request,
     make_eps_api_convert_message_request,
-    make_eps_api_metadata_request
+    make_eps_api_metadata_request, make_eps_api_claim_request, make_eps_api_claim_request_untranslated
 )
 from app import app, fernet
 from auth import exchange_code_for_token, get_access_token, login, redirect_and_set_cookies
 from bundle import get_prescription_id, create_provenance
+from client import render_client
 from cookies import (
     get_current_prescription_id_from_cookie,
     set_previous_prescription_id_cookie,
@@ -38,22 +37,21 @@ from cookies import (
     set_auth_method_cookie,
     set_skip_signature_page_cookie,
 )
-from client import render_client
-import config
-from store import (
-    add_prepare_request,
-    add_prepare_response,
-    add_send_request,
-    load_prepare_request,
-    load_prepare_response,
-    load_send_request, contains_prepare_response, contains_send_request,
-)
 from helpers import (
-    get_oauth_base_path,
     pr_redirect_required,
     pr_redirect_enabled,
     get_pr_branch_url,
     parse_oauth_state
+)
+from store import (
+    add_prepare_request,
+    add_prepare_response,
+    add_prescription_order_send_request,
+    load_prepare_request,
+    load_prepare_response,
+    load_prescription_order_send_request, contains_prepare_response, contains_prescription_order_send_request,
+    add_dispense_notification_send_request, load_dispense_notification_send_requests,
+    contains_dispense_notification_send_requests,
 )
 
 HOME_URL = "/"
@@ -70,6 +68,9 @@ SEND_URL = "/prescribe/send"
 CANCEL_URL = "/prescribe/cancel"
 RELEASE_URL = "/dispense/release"
 DISPENSE_URL = "/dispense/dispense"
+# TODO - think of a name for this
+DISPENSING_HISTORY_URL = "/dispense/history"
+CLAIM_URL = "/dispense/claim"
 METADATA_URL = "/metadata"
 
 
@@ -341,7 +342,7 @@ def get_send():
         provenance = create_provenance(prepare_response["timestamp"], xml_dsig_encoded)
         prepare_request["entry"].append(provenance)
         send_request = prepare_request
-        add_send_request(short_prescription_id, send_request)
+        add_prescription_order_send_request(short_prescription_id, send_request)
     # todo: deprecate sign response page, instead go straight to send
     return render_client("send", sign_response={"signature": ""})
 
@@ -363,8 +364,8 @@ def post_send_single(short_prescription_ids, access_token):
     send_request_xml = ""
     send_response = ""
     send_response_xml = ""
-    if contains_send_request(short_prescription_id):
-        send_request = load_send_request(short_prescription_id)
+    if contains_prescription_order_send_request(short_prescription_id):
+        send_request = load_prescription_order_send_request(short_prescription_id)
         send_response, send_response_code, request_id = make_eps_api_process_message_request(access_token, send_request)
         send_response_success = send_response_code == 200
         send_request_xml, _code = make_eps_api_convert_message_request(access_token, send_request)
@@ -387,8 +388,8 @@ def post_send_bulk(short_prescription_ids, access_token):
     success_list = []
 
     for short_prescription_id in short_prescription_ids:
-        if contains_send_request(short_prescription_id):
-            send_request = load_send_request(short_prescription_id)
+        if contains_prescription_order_send_request(short_prescription_id):
+            send_request = load_prescription_order_send_request(short_prescription_id)
             _, send_response_code, _ = make_eps_api_process_message_request(access_token, send_request)
             success_list.append({
                 "prescription_id": short_prescription_id,
@@ -479,6 +480,7 @@ def post_dispense():
         return app.make_response("Bad Request", 400)
 
     request = flask.request.json
+    short_prescription_id = get_prescription_id(request)
     access_token = get_access_token()
 
     convert_response, _code = make_eps_api_convert_message_request(access_token, request)
@@ -491,12 +493,62 @@ def post_dispense():
         request,
         request_id
     )
+    success = dispense_response_code == 200
+    if success:
+        add_dispense_notification_send_request(short_prescription_id, request)
+
     return {
-        "success": dispense_response_code == 200,
+        "success": success,
         "request_xml": convert_response,
         "request": request,
         "response": dispense_response,
         "response_xml": dispense_response_xml
+    }
+
+
+@app.route(DISPENSING_HISTORY_URL, methods=["GET"])
+def get_dispensing_history():
+    short_prescription_id = flask.request.args.get("prescription_id")
+    prescription_order = load_prescription_order_send_request(short_prescription_id)
+    dispense_notifications = load_dispense_notification_send_requests(short_prescription_id)
+    return {
+        "prescription_order": prescription_order,
+        "dispense_notifications": dispense_notifications
+    }
+
+
+@app.route(CLAIM_URL, methods=["GET"])
+def get_claim():
+    if config.ENVIRONMENT == "prod":
+        return app.make_response("Bad Request", 400)
+    return render_client("claim")
+
+
+@app.route(CLAIM_URL, methods=["POST"])
+def post_claim():
+    if config.ENVIRONMENT == "prod":
+        return app.make_response("Bad Request", 400)
+
+    request = flask.request.json
+    access_token = get_access_token()
+
+    convert_response = "TODO"
+    claim_response, claim_response_code, request_id = make_eps_api_claim_request(
+        access_token,
+        request
+    )
+    claim_response_xml, _untranslated_code = make_eps_api_claim_request_untranslated(
+        access_token,
+        request,
+        request_id
+    )
+
+    return {
+        "success": claim_response_code == 200,
+        "request_xml": convert_response,
+        "request": request,
+        "response": claim_response,
+        "response_xml": claim_response_xml
     }
 
 
