@@ -1,27 +1,54 @@
 # syntax=docker/dockerfile:1
 
-# --- Base ---
+# --- Dependencies ---
 FROM python:3.8-slim-buster AS base
+ENV NO_UPDATE_NOTIFIER true
+RUN apt-get update
+RUN apt-get install xz-utils
+RUN apt-get -y install curl
+RUN curl https://nodejs.org/dist/v14.15.4/node-v14.15.4-linux-x64.tar.xz -O
+RUN tar -xf node-v14.15.4-linux-x64.tar.xz
+RUN ln -s /node-v14.15.4-linux-x64/bin/node /usr/local/bin/node
+RUN ln -s /node-v14.15.4-linux-x64/bin/npm /usr/local/bin/npm
 WORKDIR /app
 
-# --- Build ---
-FROM node:12.18.1-alpine as build
+# --- Build Client ---
+FROM node:12.18.1-alpine as build-client
 ENV NO_UPDATE_NOTIFIER true
 WORKDIR /build
 COPY package*.json ./
 RUN npm config set update-notifier false
 RUN npm ci
 COPY webpack.config.js ./
-COPY tsconfig.json ./
+COPY tsconfig.client.json ./
 COPY client ./client
-RUN npm run build
+RUN npm run build:client:prod
+
+# --- Build Javascript Server ---
+FROM node:12.18.1-alpine as build-javascript-server
+ENV NO_UPDATE_NOTIFIER true
+WORKDIR /build
+COPY package*.json ./
+RUN npm config set update-notifier false
+RUN npm ci
+COPY tsconfig.server.json ./
+COPY server_javascript/*.ts .
+RUN npm run build:server:prod
+
+# --- Build Python Server ---
+FROM python:3.8-slim-buster as build-python-server
+WORKDIR /build
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+COPY ./server_python/ ./
 
 # --- Runtime ---
 FROM base AS runtime
-COPY --from=build /build/static ./static
-COPY --from=build /build/templates ./templates
-COPY requirements.txt requirements.txt
-RUN pip3 install -r requirements.txt
-COPY ./server/ ./
+COPY --from=build-client /build/static ./static
+COPY --from=build-client /build/templates ./templates
+COPY --from=build-javascript-server /build .
+COPY --from=build-python-server /usr/local/lib/python3.8/site-packages /usr/local/lib/python3.8/site-packages
+COPY --from=build-python-server /build .
+COPY docker-site-entrypoint.sh .
 USER nobody
-CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]
+CMD ["/app/docker-site-entrypoint.sh"]
