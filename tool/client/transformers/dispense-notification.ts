@@ -1,4 +1,3 @@
-import * as uuid from "uuid"
 import * as fhirCommon from "../models/common"
 import {
   EventCodingCode,
@@ -18,13 +17,14 @@ import {
 import {getNhsNumber} from "../parsers/read/patient-parser"
 import * as fhirExtension from "../models/extension"
 import {getLongFormIdExtension} from "../parsers/read/extensions-parser"
+import {createUuidIdentifier} from "./common"
 
 export function createDispenseRequest(bundle: Bundle): Bundle {
   // Fixes duplicate hl7v3 identifier error
   // this is not an obvious error for a supplier to resolve as
   // there is no mention of the fhir field it relates to
   // can we improve our returned error message here??
-  bundle.identifier.value = uuid.v4()
+  bundle.identifier = createUuidIdentifier()
   // ****************************************
 
   const messageHeader = getMessageHeaderResources(bundle)[0]

@@ -24,6 +24,10 @@ export interface ReferenceExtension<T extends common.Resource> extends Extension
   valueReference: common.Reference<T>
 }
 
+export interface IdentifierReferenceExtension<T extends common.Resource> extends Extension {
+  valueReference: common.IdentifierReference<T>
+}
+
 export interface UnsignedIntExtension extends Extension {
   valueUnsignedInt: number
 }
@@ -43,3 +47,5 @@ export interface ExtensionExtension<T extends Extension> extends Extension {
 export interface BooleanExtension extends Extension {
   valueBoolean: boolean
 }
+
+export type GroupIdentifierExtension = ExtensionExtension<IdentifierExtension>

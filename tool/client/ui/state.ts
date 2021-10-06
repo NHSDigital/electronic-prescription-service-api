@@ -28,6 +28,7 @@ const sendBulkResponse: SendBulkAPIResponse = undefined
 const cancelResponse: CancelAPIResponse = undefined
 const releaseResponse: ReleaseAPIResponse = undefined
 const dispenseResponse: APIResponse = undefined
+const claimResponse: APIResponse = undefined
 
 const errorList: Array<{ message: string }> = undefined
 
@@ -149,6 +150,7 @@ export const pageData = {
   cancelResponse: cancelResponse,
   releaseResponse: releaseResponse,
   dispenseResponse: dispenseResponse,
+  claimResponse: claimResponse,
   errorList: errorList,
   payloads: payloads,
   validatorPackages: validatorPackages,
@@ -178,6 +180,7 @@ export function resetPageData(pageMode: string): void {
       pageMode === "release" ? pageData.selectedReleaseId === "custom" : false
   pageData.releaseResponse = null
   pageData.dispenseResponse = null
+  pageData.claimResponse = null
   pageData.selectedPharmacy =
     pageMode === "edit" || pageMode === "release"
       ? pageData.selectedPharmacy ?? "VNFKT"

@@ -1,6 +1,5 @@
 import datetime
 import flask
-import os
 import config
 
 

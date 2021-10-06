@@ -8,7 +8,7 @@ import {
   Organization,
   MedicationRequest,
   MessageHeader,
-  CommunicationRequest
+  CommunicationRequest, MedicationDispense
 } from "../../models"
 import * as fhirCommon from "../../models/common"
 import * as fhirExtension from "../../models/extension"
@@ -19,6 +19,7 @@ export const getPractitionerResources = buildResourceFinder<Practitioner>("Pract
 export const getPractitionerRoleResources = buildResourceFinder<PractitionerRole>("PractitionerRole")
 export const getOrganizationResources = buildResourceFinder<Organization>("Organization")
 export const getMedicationRequestResources = buildResourceFinder<MedicationRequest>("MedicationRequest")
+export const getMedicationDispenseResources = buildResourceFinder<MedicationDispense>("MedicationDispense")
 export const getMessageHeaderResources = buildResourceFinder<MessageHeader>("MessageHeader")
 export const getCommunicationRequestResources = buildResourceFinder<CommunicationRequest>("CommunicationRequest")
 

@@ -10,7 +10,13 @@ import {fhir} from "@models"
 import * as bundleValidator from "../../services/validation/bundle-validator"
 import * as parametersValidator from "../../services/validation/parameters-validator"
 import * as taskValidator from "../../services/validation/task-validator"
-import {isBundle, isParameters, isTask} from "../../utils/type-guards"
+import * as claimValidator from "../../services/validation/claim-validator"
+import {
+  isBundle,
+  isClaim,
+  isParameters,
+  isTask
+} from "../../utils/type-guards"
 import {getScope} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
 
@@ -65,6 +71,19 @@ export default [
 
           request.logger.info("Building HL7V3 message from Task")
           const spineRequest = await translator.convertTaskToSpineRequest(payload, request.headers, request.logger)
+          return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)
+        }
+
+        if (isClaim(payload)) {
+          const issues = claimValidator.verifyClaim(payload, scope)
+          if (issues.length) {
+            const response = fhir.createOperationOutcome(issues)
+            const statusCode = getStatusCode(issues)
+            return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
+          }
+
+          request.logger.info("Building HL7V3 message from Claim")
+          const spineRequest = await translator.convertClaimToSpineRequest(payload, request.headers, request.logger)
           return responseToolkit.response(spineRequest.message).code(200).type(ContentTypes.XML)
         }
 
