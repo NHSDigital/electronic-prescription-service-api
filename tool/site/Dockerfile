@@ -29,7 +29,7 @@ WORKDIR /build
 COPY server_javascript/package*.json ./
 RUN npm ci
 COPY server_javascript/tsconfig.json ./
-COPY server_javascript/*.ts .
+COPY server_javascript/src src
 RUN npm run build:prod
 
 # --- Build Python Server ---
@@ -44,7 +44,9 @@ FROM base AS runtime
 ENV NO_UPDATE_NOTIFIER true
 COPY --from=build-client /build/static ./static
 COPY --from=build-client /build/templates ./templates
-COPY --from=build-javascript-server /build .
+COPY --from=build-javascript-server /build/node_modules node_modules
+COPY --from=build-javascript-server /build/dist/ .
+COPY --from=build-javascript-server /build/package*.json .
 COPY --from=build-python-server /usr/local/lib/python3.8/site-packages /usr/local/lib/python3.8/site-packages
 COPY --from=build-python-server /build .
 COPY docker-entrypoint.sh .

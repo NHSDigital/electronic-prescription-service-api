@@ -1,16 +1,33 @@
 {
   "compilerOptions": {
-    "allowJs": true,
+    "module": "commonjs",
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "noImplicitAny": false,
-    "moduleResolution": "node",
-    "module": "es6",
-    "target": "es5",
+    "target": "es6",
     "lib": [
-      "es2019",
-      "dom"
-    ]
+      "es2019"
+    ],
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    // "strict": true,
+    "outDir": "dist",
+    "baseUrl": ".",
+    "paths": {
+      "*": [
+        "node_modules/*",
+        "tests/*"
+      ],
+      //"@models": ["../../../models", "./models"]
+    }
   },
-  "skipLibCheck": true,
-  "files": ["app.ts"],
+  "include": [
+    "src/**/*",
+    "tests/**/*"
+  ],
+  // "references": [
+  //   { 
+  //     "path": "../../../models"
+  //   }
+  // ]
 }
