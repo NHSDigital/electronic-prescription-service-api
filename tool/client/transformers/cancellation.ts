@@ -8,13 +8,14 @@ import {
 } from "../parsers/read/bundle-parser"
 import {pageData} from "../ui/state"
 import * as fhirCommon from "../models/common"
+import {createUuidIdentifier} from "./common"
 
 export function createCancellation(bundle: Bundle): Bundle {
   // Fixes duplicate hl7v3 identifier error
   // this is not an obvious error for a supplier to resolve as
   // there is no mention of the fhir field it relates to
   // can we improve our returned error message here??
-  bundle.identifier.value = uuid.v4()
+  bundle.identifier = createUuidIdentifier()
   // ****************************************
 
   const messageHeaderEntry = getMessageHeaderBundleEntries(bundle.entry)[0]
