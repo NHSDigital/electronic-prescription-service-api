@@ -1,6 +1,6 @@
 import httpx
 
-HAPI_HOST = "http://localhost:9001"
+HAPI_HOST = "http://0.0.0.0:9001"
 STATUS_URL = "/_status"
 
 def get_status():
