@@ -45,10 +45,10 @@ ENV NO_UPDATE_NOTIFIER true
 COPY --from=build-client /build/static ./static
 COPY --from=build-client /build/templates ./templates
 COPY --from=build-javascript-server /build/node_modules node_modules
-COPY --from=build-javascript-server /build/dist/ .
-COPY --from=build-javascript-server /build/package*.json .
+COPY --from=build-javascript-server /build/dist/ ./
+COPY --from=build-javascript-server /build/package*.json ./
 COPY --from=build-python-server /usr/local/lib/python3.8/site-packages /usr/local/lib/python3.8/site-packages
-COPY --from=build-python-server /build .
+COPY --from=build-python-server /build ./
 COPY docker-entrypoint.sh .
 USER nobody
 CMD ["/app/docker-entrypoint.sh"]
