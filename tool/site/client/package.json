@@ -14,8 +14,8 @@
     "type": "git",
     "url": "git+https://github.com/NHSDigital/electronic-prescription-service-api.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "NHS Digital",
+  "license": "MIT",
   "devDependencies": {
     "@babel/core": "7.14.6",
     "@babel/preset-env": "7.14.7",
