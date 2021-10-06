@@ -3,17 +3,21 @@ import {
   addTranslatedAgentPerson,
   convertResourceToBundleEntry,
   roleProfileIdIdentical,
-  translateAgentPerson,
-  translateAndAddPatient
+  translateAgentPerson
 } from "../common"
 import {toArray} from "../../common"
 import {createMedicationRequest} from "./release-medication-request"
 import {createMessageHeader} from "../message-header"
-import {createAndAddCommunicationRequest, parseAdditionalInstructions} from "./additional-instructions"
+import {
+  addTranslatedAdditionalInstructions,
+  parseAdditionalInstructions,
+  translateAdditionalInstructions
+} from "./additional-instructions"
 import * as uuid from "uuid"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
 import {fhir, hl7V3} from "@models"
 import {convertSignatureTextToProvenance} from "../provenance"
+import {createPatient} from "../patient"
 
 const SUPPORTED_MESSAGE_TYPE = "PORX_MT122003UK32"
 
@@ -63,7 +67,9 @@ export function createBundleResources(
   const bundleResources: Array<fhir.Resource> = []
   const focusIds: Array<string> = []
 
-  const patientId = translateAndAddPatient(parentPrescription.recordTarget.Patient, bundleResources)
+  const fhirPatient = createPatient(parentPrescription.recordTarget.Patient)
+  bundleResources.push(fhirPatient)
+  const patientId = fhirPatient.id
   focusIds.push(patientId)
 
   const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
@@ -84,12 +90,19 @@ export function createBundleResources(
   }
 
   const lineItems = toArray(pertinentPrescription.pertinentInformation2).map(pi2 => pi2.pertinentLineItem)
+
   const firstItemText = lineItems[0].pertinentInformation1?.pertinentAdditionalInstructions?.value?._text ?? ""
   const firstItemAdditionalInstructions = parseAdditionalInstructions(firstItemText)
+
   const medication = firstItemAdditionalInstructions.medication
   const patientInfo = firstItemAdditionalInstructions.patientInfo
   if (medication.length || patientInfo.length) {
-    createAndAddCommunicationRequest(patientId, medication, patientInfo, bundleResources)
+    const patientIdentifier = fhirPatient.identifier
+    const organizationIdentifier = translatedAuthor.healthcareService.identifier[0]
+    const translatedAdditionalInstructions = translateAdditionalInstructions(
+      patientId, patientIdentifier, organizationIdentifier, medication, patientInfo
+    )
+    addTranslatedAdditionalInstructions(bundleResources, translatedAdditionalInstructions)
   }
 
   const authorId = translatedAuthor.practitionerRole.id
