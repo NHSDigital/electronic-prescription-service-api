@@ -176,6 +176,9 @@ rivets.formatters.isRelease = function (mode: string) {
 rivets.formatters.isDispense = function (mode: string) {
   return mode === "dispense"
 }
+rivets.formatters.isClaim = function (mode: string) {
+  return mode === "claim"
+}
 rivets.formatters.showPharmacyList = function (mode: string) {
   return mode === "edit" || mode === "release"
 }

@@ -1,4 +1,3 @@
-import os
 from cryptography.fernet import Fernet
 from flask import Flask
 from flask_compress import Compress

@@ -1,9 +1,7 @@
 import flask
-import os
 import httpx
-import json
 from urllib.parse import urlencode
-from app import app, fernet
+from app import fernet
 from cookies import get_auth_method_from_cookie
 from helpers import get_oauth_base_path, create_oauth_state, get_pr_number, get_registered_callback_url
 import config
