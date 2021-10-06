@@ -4,9 +4,7 @@ import io
 import json
 import zipfile
 from functools import wraps
-
 import flask
-
 import config
 from api import (
     make_eps_api_prepare_request,
@@ -56,6 +54,7 @@ from store import (
     add_dispense_notification_send_request,
     load_dispense_notification_send_requests,
 )
+import hapi_passthrough
 
 HOME_URL = "/"
 HEALTHCHECK_URL = "/_healthcheck"
@@ -137,14 +136,7 @@ def get_healthcheck():
 @app.route(STATUS_URL, methods=["GET"])
 @exclude_from_auth()
 def get_status():
-    return app.response_class(
-        response=json.dumps({
-            "status": "pass",
-            "commitId": config.COMMIT_ID,
-            "checks": {}
-        }),
-        mimetype='application/json'
-    )
+    return hapi_passthrough.get_status()
 
 
 @app.route(AUTH_URL, methods=["GET"])
