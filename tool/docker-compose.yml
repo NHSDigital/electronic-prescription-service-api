@@ -3,8 +3,8 @@ services:
   eps-api-tool:
     image: 'eps-api-tool-local'
     build:
-        context: .
-        dockerfile: Dockerfile-Site
+        context: site
+        dockerfile: Dockerfile
     environment:
         - PYTHONUNBUFFERED=1
         - FLASK_ENV=development
@@ -19,8 +19,8 @@ services:
         - "9000:9000"
   eps-api-tool-store:
     build:
-        context: .
-        dockerfile: Dockerfile-Store
+        context: store
+        dockerfile: Dockerfile
     environment:
       - HEALTHCHECK_INTERNAL_PORT=9001
     ports:

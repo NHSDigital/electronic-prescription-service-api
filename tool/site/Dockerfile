@@ -2,7 +2,6 @@
 
 # --- Dependencies ---
 FROM python:3.8-slim-buster AS base
-ENV NO_UPDATE_NOTIFIER true
 RUN apt-get update
 RUN apt-get install xz-utils
 RUN apt-get -y install curl
@@ -14,26 +13,24 @@ WORKDIR /app
 
 # --- Build Client ---
 FROM node:12.18.1-alpine as build-client
-ENV NO_UPDATE_NOTIFIER true
 WORKDIR /build
-COPY package*.json ./
-RUN npm config set update-notifier false
+COPY client/package*.json ./
 RUN npm ci
-COPY webpack.config.js ./
-COPY tsconfig.client.json ./
-COPY client ./client
-RUN npm run build:client:prod
+COPY client/ ./client
+RUN rm client/tsconfig.json
+RUN rm client/webpack.config.js
+COPY client/tsconfig.json ./
+COPY client/webpack.config.js ./
+RUN npm run build:prod
 
 # --- Build Javascript Server ---
 FROM node:12.18.1-alpine as build-javascript-server
-ENV NO_UPDATE_NOTIFIER true
 WORKDIR /build
-COPY package*.json ./
-RUN npm config set update-notifier false
+COPY server_javascript/package*.json ./
 RUN npm ci
-COPY tsconfig.server.json ./
+COPY server_javascript/tsconfig.json ./
 COPY server_javascript/*.ts .
-RUN npm run build:server:prod
+RUN npm run build:prod
 
 # --- Build Python Server ---
 FROM python:3.8-slim-buster as build-python-server
@@ -44,11 +41,12 @@ COPY ./server_python/ ./
 
 # --- Runtime ---
 FROM base AS runtime
+ENV NO_UPDATE_NOTIFIER true
 COPY --from=build-client /build/static ./static
 COPY --from=build-client /build/templates ./templates
 COPY --from=build-javascript-server /build .
 COPY --from=build-python-server /usr/local/lib/python3.8/site-packages /usr/local/lib/python3.8/site-packages
 COPY --from=build-python-server /build .
-COPY docker-site-entrypoint.sh .
+COPY docker-entrypoint.sh .
 USER nobody
-CMD ["/app/docker-site-entrypoint.sh"]
+CMD ["/app/docker-entrypoint.sh"]

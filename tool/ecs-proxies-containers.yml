@@ -1,7 +1,7 @@
 docker_containers:
     - name: eps-api-tool
-      dockerfile: "Dockerfile-Site"
-      path: "."
+      dockerfile: "site/Dockerfile"
+      path: "site"
     - name: eps-api-tool-store
-      dockerfile: "Dockerfile-Store"
-      path: "."
+      dockerfile: "store/Dockerfile"
+      path: "store"

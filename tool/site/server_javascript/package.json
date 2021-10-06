@@ -1,0 +1,25 @@
+{
+  "name": "EPSAT-Server",
+  "version": "1.0.0",
+  "description": "EPS API Tool Server",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest",
+    "build:prod": "tsc --project ./tsconfig.json",
+    "start": "node app.js --use_strict",
+    "lint": "eslint . --max-warnings 0 --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NHSDigital/electronic-prescription-service-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.4.3"
+  },
+  "engines": {
+    "node": "12.x",
+    "npm": "7.x"
+  }
+}

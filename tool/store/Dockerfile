@@ -5,10 +5,10 @@ FROM redis:alpine3.14 as base
 
 # --- Build ---
 FROM golang:1.13.7-alpine3.11 as build
-COPY ./store/healthcheck.go healthcheck.go
+COPY healthcheck.go .
 RUN go build -v -o /bin/server ./healthcheck.go
 
 # --- Runtime ---
 FROM base as runtime
 COPY --from=build /bin/server /bin/server
-COPY ./store/docker-entrypoint.sh /usr/local/bin/
+COPY ./docker-entrypoint.sh /usr/local/bin/
