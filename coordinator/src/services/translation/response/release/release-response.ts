@@ -3,12 +3,16 @@ import {
   addTranslatedAgentPerson,
   convertResourceToBundleEntry,
   roleProfileIdIdentical,
-  translateAgentPerson,
+  translateAgentPerson
 } from "../common"
 import {toArray} from "../../common"
 import {createMedicationRequest} from "./release-medication-request"
 import {createMessageHeader} from "../message-header"
-import {createAndAddCommunicationRequest, parseAdditionalInstructions} from "./additional-instructions"
+import {
+  addTranslatedAdditionalInstructions,
+  parseAdditionalInstructions,
+  translateAdditionalInstructions
+} from "./additional-instructions"
 import * as uuid from "uuid"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
 import {fhir, hl7V3} from "@models"
@@ -86,16 +90,19 @@ export function createBundleResources(
   }
 
   const lineItems = toArray(pertinentPrescription.pertinentInformation2).map(pi2 => pi2.pertinentLineItem)
+
   const firstItemText = lineItems[0].pertinentInformation1?.pertinentAdditionalInstructions?.value?._text ?? ""
   const firstItemAdditionalInstructions = parseAdditionalInstructions(firstItemText)
+
   const medication = firstItemAdditionalInstructions.medication
   const patientInfo = firstItemAdditionalInstructions.patientInfo
   if (medication.length || patientInfo.length) {
     const patientIdentifier = fhirPatient.identifier
     const organizationIdentifier = translatedAuthor.healthcareService.identifier[0]
-    createAndAddCommunicationRequest(
-      patientId, patientIdentifier, organizationIdentifier, medication, patientInfo, bundleResources
+    const translatedAdditionalInstructions = translateAdditionalInstructions(
+      patientId, patientIdentifier, organizationIdentifier, medication, patientInfo
     )
+    addTranslatedAdditionalInstructions(bundleResources, translatedAdditionalInstructions)
   }
 
   const authorId = translatedAuthor.practitionerRole.id

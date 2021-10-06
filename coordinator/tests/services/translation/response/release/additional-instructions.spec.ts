@@ -1,7 +1,8 @@
 import {
-  createAndAddCommunicationRequest,
-  createAndAddList,
-  parseAdditionalInstructions
+  createCommunicationRequest,
+  createList,
+  parseAdditionalInstructions,
+  translateAdditionalInstructions
 } from "../../../../../src/services/translation/response/release/additional-instructions"
 import {fhir} from "@models"
 
@@ -159,58 +160,19 @@ describe("parseAdditionalInstructions", () => {
   })
 })
 
-describe("communication request", () => {
-  const examplePatientId = "patientId"
-  let bundleResources: Array<fhir.Resource>
-  beforeEach(() => {
-    bundleResources = []
-  })
-
-  test("contains id", () => {
-    createAndAddCommunicationRequest(
-      examplePatientId,
-      undefined,
-      undefined,
-      [],
-      [],
-      bundleResources
-    )
-    const communicationRequest = bundleResources.find(
-      resource => resource.resourceType === "CommunicationRequest"
-    ) as fhir.CommunicationRequest
-    expect(communicationRequest.id).toBeTruthy()
-    expect(communicationRequest.status).toBe("unknown")
-  })
-
-  test("contains patient reference", () => {
-    createAndAddCommunicationRequest(
-      examplePatientId,
-      undefined,
-      undefined,
-      [],
-      [],
-      bundleResources
-    )
-    const communicationRequest = bundleResources.find(resource => resource.resourceType === "CommunicationRequest")
-    expect(communicationRequest).toMatchObject<Partial<fhir.CommunicationRequest>>({
-      subject: {
-        reference: "urn:uuid:patientId"
-      }
-    })
-  })
-
+describe("additionalInstructions", () => {
   test("handles single patient info", () => {
-    createAndAddCommunicationRequest(
-      examplePatientId,
+    const translatedAgentPerson = translateAdditionalInstructions(
+      "patientId",
       undefined,
       undefined,
       [],
-      ["Patient info"],
-      bundleResources
+      ["Patient info"]
     )
-    const list = bundleResources.find(resource => resource.resourceType === "List")
+    const list = translatedAgentPerson.list
     expect(list).toBeFalsy()
-    const communicationRequest = bundleResources.find(resource => resource.resourceType === "CommunicationRequest")
+
+    const communicationRequest = translatedAgentPerson.communicationRequest
     expect(communicationRequest).toMatchObject<Partial<fhir.CommunicationRequest>>({
       payload: [{
         contentString: "Patient info"
@@ -219,17 +181,17 @@ describe("communication request", () => {
   })
 
   test("handles multiple patient info", () => {
-    createAndAddCommunicationRequest(
-      examplePatientId,
+    const translatedAgentPerson = translateAdditionalInstructions(
+      "patientId",
       undefined,
       undefined,
       [],
-      ["Patient info 1", "Patient info 2"],
-      bundleResources
+      ["Patient info 1", "Patient info 2"]
     )
-    const list = bundleResources.find(resource => resource.resourceType === "List")
+    const list = translatedAgentPerson.list
     expect(list).toBeFalsy()
-    const communicationRequest = bundleResources.find(resource => resource.resourceType === "CommunicationRequest")
+
+    const communicationRequest = translatedAgentPerson.communicationRequest
     expect(communicationRequest).toMatchObject<Partial<fhir.CommunicationRequest>>({
       payload: [
         {
@@ -243,15 +205,14 @@ describe("communication request", () => {
   })
 
   test("handles single medication", () => {
-    createAndAddCommunicationRequest(
-      examplePatientId,
+    const translatedAgentPerson = translateAdditionalInstructions(
+      "patientId",
       undefined,
       undefined,
       ["Medication"],
-      [],
-      bundleResources
+      []
     )
-    const list = bundleResources.find(resource => resource.resourceType === "List")
+    const list = translatedAgentPerson.list
     expect(list).toMatchObject<Partial<fhir.List>>({
       entry: [{
         item: {
@@ -259,7 +220,8 @@ describe("communication request", () => {
         }
       }]
     })
-    const communicationRequest = bundleResources.find(resource => resource.resourceType === "CommunicationRequest")
+
+    const communicationRequest = translatedAgentPerson.communicationRequest
     expect(communicationRequest).toMatchObject<Partial<fhir.CommunicationRequest>>({
       payload: [{
         contentReference: {
@@ -270,15 +232,14 @@ describe("communication request", () => {
   })
 
   test("handles multiple medication", () => {
-    createAndAddCommunicationRequest(
-      examplePatientId,
+    const translatedAgentPerson = translateAdditionalInstructions(
+      "patientId",
       undefined,
       undefined,
       ["Medication 1", "Medication 2"],
-      [],
-      bundleResources
+      []
     )
-    const list = bundleResources.find(resource => resource.resourceType === "List")
+    const list = translatedAgentPerson.list
     expect(list).toMatchObject<Partial<fhir.List>>({
       entry: [
         {
@@ -293,7 +254,8 @@ describe("communication request", () => {
         }
       ]
     })
-    const communicationRequest = bundleResources.find(resource => resource.resourceType === "CommunicationRequest")
+
+    const communicationRequest = translatedAgentPerson.communicationRequest
     expect(communicationRequest).toMatchObject<Partial<fhir.CommunicationRequest>>({
       payload: [{
         contentReference: {
@@ -302,19 +264,43 @@ describe("communication request", () => {
       }]
     })
   })
+})
+
+describe("communication request", () => {
+  test("contains id", () => {
+    const communicationRequest = createCommunicationRequest(
+      "patientId",
+      undefined,
+      undefined,
+      []
+    )
+    expect(communicationRequest.id).toBeTruthy()
+    expect(communicationRequest.status).toBe("unknown")
+  })
+
+  test("contains patient reference", () => {
+    const communicationRequest = createCommunicationRequest(
+      "patientId",
+      undefined,
+      undefined,
+      []
+    )
+    expect(communicationRequest).toMatchObject<Partial<fhir.CommunicationRequest>>({
+      subject: {
+        reference: "urn:uuid:patientId"
+      }
+    })
+  })
 
   test("populates requester and recipient fields", () => {
     const patientIdentifiers = [fhir.createIdentifier("NHS number", "000")]
     const organizationIdentifier = fhir.createIdentifier("ODS code", "000")
-    createAndAddCommunicationRequest(
-      examplePatientId,
-      patientIdentifiers,
+    const communicationRequest = createCommunicationRequest(
+      "patientId",
+      undefined,
       organizationIdentifier,
-      [],
-      [],
-      bundleResources
+      patientIdentifiers
     )
-    const communicationRequest = bundleResources.find(resource => resource.resourceType === "CommunicationRequest")
     expect(communicationRequest).toMatchObject<Partial<fhir.CommunicationRequest>>(
       {
         requester: organizationIdentifier,
@@ -325,22 +311,15 @@ describe("communication request", () => {
 })
 
 describe("list", () => {
-  let bundleResources: Array<fhir.Resource>
-  beforeEach(() => {
-    bundleResources = []
-  })
-
   test("contains id", () => {
-    createAndAddList(["Item"], bundleResources)
-    const list = bundleResources.find(resource => resource.resourceType === "List") as fhir.List
+    const list = createList(["Item"])
     expect(list.id).toBeTruthy()
     expect(list.status).toBe("current")
     expect(list.mode).toBe("snapshot")
   })
 
   test("handles single entry", () => {
-    createAndAddList(["Item"], bundleResources)
-    const list = bundleResources.find(resource => resource.resourceType === "List")
+    const list = createList(["Item"])
     expect(list).toMatchObject<Partial<fhir.List>>({
       entry: [{
         item: {
@@ -351,8 +330,7 @@ describe("list", () => {
   })
 
   test("handles multiple entries", () => {
-    createAndAddList(["Item 1", "Item 2"], bundleResources)
-    const list = bundleResources.find(resource => resource.resourceType === "List")
+    const list = createList(["Item 1", "Item 2"])
     expect(list).toMatchObject<Partial<fhir.List>>({
       entry: [
         {

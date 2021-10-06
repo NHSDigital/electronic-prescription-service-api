@@ -61,21 +61,44 @@ function parseMedicationAdditionalInstructions(text: string): {
   }
 }
 
-export function createAndAddCommunicationRequest(
+export interface TranslatedAdditionalInstructions {
+  communicationRequest: fhir.CommunicationRequest
+  list?: fhir.List
+}
+
+export function translateAdditionalInstructions(
   patientId: string,
   patientIdentifier: Array<fhir.Identifier>,
   organizationIdentifier: fhir.Identifier,
   medication: Array<string>,
   patientInfo: Array<string>,
-  bundleResources: Array<fhir.Resource>
-): string {
-  const payload: Array<fhir.ContentReferencePayload | fhir.ContentStringPayload> = []
-  if (medication.length) {
-    const listId = createAndAddList(medication, bundleResources)
-    payload.push({contentReference: fhir.createReference(listId)})
+): TranslatedAdditionalInstructions {
+  const contentStringPayloads = patientInfo.map(patientInfoEntry => ({contentString: patientInfoEntry}))
+  const communicationRequest = createCommunicationRequest(
+    patientId, contentStringPayloads, organizationIdentifier, patientIdentifier
+  )
+
+  const translatedAdditionalInstructions: TranslatedAdditionalInstructions = {
+    communicationRequest
   }
-  patientInfo.forEach(patientInfoEntry => payload.push({contentString: patientInfoEntry}))
-  const communicationRequest: fhir.CommunicationRequest = {
+
+  if (medication.length) {
+    const list = createList(medication)
+    translatedAdditionalInstructions.list = list
+
+    const listId = list.id
+    communicationRequest.payload.push({contentReference: fhir.createReference(listId)})
+  }
+  return translatedAdditionalInstructions
+}
+
+export function createCommunicationRequest(
+  patientId: string,
+  payload: Array<fhir.ContentReferencePayload | fhir.ContentStringPayload>,
+  organizationIdentifier: fhir.Identifier,
+  patientIdentifier: Array<fhir.Identifier>
+): fhir.CommunicationRequest {
+  return {
     resourceType: "CommunicationRequest",
     id: uuid.v4(),
     status: "unknown",
@@ -84,18 +107,24 @@ export function createAndAddCommunicationRequest(
     requester: organizationIdentifier,
     recipient: patientIdentifier
   }
-  bundleResources.push(communicationRequest)
-  return communicationRequest.id
 }
 
-export function createAndAddList(listItems: Array<string>, bundleResources: Array<fhir.Resource>): string {
-  const medicationList: fhir.List = {
+export function createList(listItems: Array<string>): fhir.List {
+  return {
     resourceType: "List",
     id: uuid.v4(),
     status: "current",
     mode: "snapshot",
     entry: listItems.map(listItem => ({item: {display: listItem}}))
   }
-  bundleResources.push(medicationList)
-  return medicationList.id
+}
+
+export function addTranslatedAdditionalInstructions(
+  bundleResources: Array<fhir.Resource>,
+  translatedAdditionalInstructions: TranslatedAdditionalInstructions
+): void {
+  bundleResources.push(translatedAdditionalInstructions.communicationRequest)
+  if (translatedAdditionalInstructions.list) {
+    bundleResources.push(translatedAdditionalInstructions.list)
+  }
 }
