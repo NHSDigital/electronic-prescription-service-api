@@ -63,6 +63,8 @@ function parseMedicationAdditionalInstructions(text: string): {
 
 export function createAndAddCommunicationRequest(
   patientId: string,
+  patientIdentifier: Array<fhir.Identifier>,
+  organizationIdentifier: fhir.Identifier,
   medication: Array<string>,
   patientInfo: Array<string>,
   bundleResources: Array<fhir.Resource>
@@ -76,8 +78,11 @@ export function createAndAddCommunicationRequest(
   const communicationRequest: fhir.CommunicationRequest = {
     resourceType: "CommunicationRequest",
     id: uuid.v4(),
+    status: "unknown",
     subject: fhir.createReference(patientId),
-    payload: payload
+    payload: payload,
+    requester: organizationIdentifier,
+    recipient: patientIdentifier
   }
   bundleResources.push(communicationRequest)
   return communicationRequest.id
@@ -87,6 +92,8 @@ export function createAndAddList(listItems: Array<string>, bundleResources: Arra
   const medicationList: fhir.List = {
     resourceType: "List",
     id: uuid.v4(),
+    status: "current",
+    mode: "snapshot",
     entry: listItems.map(listItem => ({item: {display: listItem}}))
   }
   bundleResources.push(medicationList)
