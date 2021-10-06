@@ -27,6 +27,14 @@ export class ResponsibleParty implements ElementCompact {
   AgentPerson: AgentPerson
 }
 
+export class LegalAuthenticator implements ElementCompact {
+  _attributes: core.AttributeTypeCode = {
+    typeCode: "LA"
+  }
+
+  AgentPerson: AgentPerson
+}
+
 export class AuthorPersonSds implements ElementCompact {
   _attributes: core.AttributeTypeCode = {
     typeCode: "AUT"

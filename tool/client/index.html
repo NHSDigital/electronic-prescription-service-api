@@ -76,6 +76,9 @@
               <div rv-show="mode | isDispense">
                 <h1 class="nhsuk-fieldset__heading">Dispense prescription</h1>
               </div>
+              <div rv-show="mode | isClaim">
+                <h1 class="nhsuk-fieldset__heading">Claim for prescription</h1>
+              </div>
             </legend>
           </fieldset>
         </div>
@@ -212,6 +215,19 @@
             </fieldset>
           </div>
         </div>
+      </div>
+      <div class="nhsuk-grid-row" id="pharmacy-container" rv-show="showCustomPharmacyInput">
+          <div class="nhsuk-grid-column-full">
+              <fieldset class="nhsuk-fieldset">
+                  <div class="nhsuk-form-group">
+                      <div class="nhsuk-hint" id="pharmacy-input-hint">
+                          Enter an ODS Code
+                      </div>
+                      <input class="nhsuk-textarea" id="pharmacy-input" name="pharmacy-input" rows="10"
+                             aria-describedby="key-textarea-hint" />
+                  </div>
+              </fieldset>
+          </div>
       </div>
       <div class="nhsuk-grid-row" rv-show="mode | isEdit">
         <div class="nhsuk-grid-column-full">
@@ -685,19 +701,6 @@
           </div>
         </div>
       </div>
-      <div class="nhsuk-grid-row" id="pharmacy-container" rv-show="showCustomPharmacyInput">
-        <div class="nhsuk-grid-column-full">
-          <fieldset class="nhsuk-fieldset">
-            <div class="nhsuk-form-group">
-              <div class="nhsuk-hint" id="pharmacy-input-hint">
-                Enter an ODS Code
-              </div>
-              <input class="nhsuk-textarea" id="pharmacy-input" name="pharmacy-input" rows="10"
-                aria-describedby="key-textarea-hint" />
-            </div>
-          </fieldset>
-        </div>
-      </div>
       <div class="nhsuk-grid-row" rv-show="releaseResponse">
         <div class="nhsuk-grid-column-full">
           <div class="nhsuk-panel">
@@ -851,6 +854,74 @@
           </div>
         </div>
       </div>
+      <div class="nhsuk-grid-row" rv-show="claimResponse">
+        <div class="nhsuk-grid-column-full">
+          <div class="nhsuk-panel">
+            <dl class="nhsuk-summary-list">
+              <div class="nhsuk-summary-list__row">
+                <dt class="nhsuk-summary-list__key">Status</dt>
+                <dd class="nhsuk-summary-list__value">
+                  <div style="margin-top: -5px;float:left;display: inline;width: 45px;">
+                    <svg rv-show="claimResponse.success" class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" fill="none">
+                      <path stroke-width="4" stroke-linecap="round" stroke="#007f3b" d="M18.4 7.8l-8.5 8.4L5.6 12"></path>
+                    </svg>
+                    <svg rv-hide="claimResponse.success" class="nhsuk-icon nhsuk-icon__cross" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M17 18.5c-.4 0-.8-.1-1.1-.4l-10-10c-.6-.6-.6-1.6 0-2.1.6-.6 1.5-.6 2.1 0l10 10c.6.6.6 1.5 0 2.1-.3.3-.6.4-1 .4z"></path>
+                      <path d="M7 18.5c-.4 0-.8-.1-1.1-.4-.6-.6-.6-1.5 0-2.1l10-10c.6-.6 1.5-.6 2.1 0 .6.6.6 1.5 0 2.1l-10 10c-.3.3-.6.4-1 .4z"></path>
+                    </svg>
+                  </div>
+                  <div style="float:left;display: inline;width: 150px;margin-top: -7px;">
+                    <a rv-href="claimResponse.fhirRequest | downloadJson" download="dispense_request.json"><img style="width: 25%;" src="{{base_url}}static/json.png" title="Request (FHIR)"/></a>
+                    <a rv-href="claimResponse.hl7Request | downloadXml" download="dispense_request.xml"><img style="width: 25%;" src="{{base_url}}static/xml.png" title="Request (HL7v3)"/></a>
+                    <a rv-href="claimResponse.hl7Response | downloadXml" download="dispense_response.xml"><img style="width: 25%;" src="{{base_url}}static/xml.png" title="Response (HL7v3)"/></a>
+                    <a rv-href="claimResponse.fhirResponse | downloadJson" download="dispense_response.json"><img style="width: 25%;" src="{{base_url}}static/json.png" title="Response (FHIR)"/></a>
+                  </div>
+                </dd>
+              </div>
+            </dl>
+            <details class="nhsuk-details nhsuk-expander">
+              <summary class="nhsuk-details__summary">
+                <span class="nhsuk-details__summary-text">
+                  Request (FHIR)
+                </span>
+              </summary>
+              <div class="nhsuk-details__text">
+                <pre rv-html="claimResponse.fhirRequest | json"></pre>
+              </div>
+            </details>
+            <details class="nhsuk-details nhsuk-expander">
+              <summary class="nhsuk-details__summary">
+                <span class="nhsuk-details__summary-text">
+                  Request (HL7v3)
+                </span>
+              </summary>
+              <div class="nhsuk-details__text">
+                <pre rv-html="claimResponse.hl7Request | xml"></pre>
+              </div>
+            </details>
+            <details class="nhsuk-details nhsuk-expander">
+              <summary class="nhsuk-details__summary">
+                <span class="nhsuk-details__summary-text">
+                  Response (HL7v3)
+                </span>
+              </summary>
+              <div class="nhsuk-details__text">
+                <pre rv-html="claimResponse.hl7Response | xml"></pre>
+              </div>
+            </details>
+            <details class="nhsuk-details nhsuk-expander">
+              <summary class="nhsuk-details__summary">
+                <span class="nhsuk-details__summary-text">
+                  Response (FHIR)
+                </span>
+              </summary>
+              <div class="nhsuk-details__text">
+                <pre rv-html="claimResponse.fhirResponse | json"></pre>
+              </div>
+            </details>
+          </div>
+        </div>
+      </div>
       <div class="nhsuk-grid-row" rv-show="errorList">
         <div class="nhsuk-grid-column-full">
           <div class="nhsuk-error-summary" aria-labelledby="error-summary-title" role="alert" tabindex="-1">
@@ -959,6 +1030,16 @@
               onclick="resetPageData('home');">Back</button>
           </div>
         </div>
+      </div>
+      <div rv-show="mode | isClaim">
+          <div class="nhsuk-grid-row">
+              <div class="nhsuk-grid-column-full">
+                  <button class="nhsuk-button" type="submit" rv-hide="claimResponse"
+                          onclick="sendClaimRequest()">Claim</button>
+                  <button class="nhsuk-button nhsuk-button--secondary" type="submit"
+                          onclick="resetPageData('home');">Back</button>
+              </div>
+          </div>
       </div>
     </main>
   </div>
