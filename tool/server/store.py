@@ -58,12 +58,7 @@ def add_dispense_notification_send_request(short_prescription_id, request):
     session[key].append(request)
 
 
-def contains_dispense_notification_send_requests(short_prescription_id):
-    key = f'dispense_notification_send_request_{short_prescription_id}'
-    return key in session
-
-
 def load_dispense_notification_send_requests(short_prescription_id):
     key = f'dispense_notification_send_request_{short_prescription_id}'
     print(f'loading {key}', file=sys.stderr)
-    return session[key]
+    return session[key] if key in session else []

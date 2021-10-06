@@ -1,11 +1,11 @@
 import * as fhir from "../models"
-import {Identifier} from "../models"
 import * as uuid from "uuid"
 import {
   getMedicationDispenseResources,
   getMedicationRequestResources,
   getPatientResources
 } from "../parsers/read/bundle-parser"
+import {createUuidIdentifier} from "./common"
 
 //TODO - remove once the profile is fixed
 const DEPRECATED_LINE_ITEM_IDENTIFIER_EXTENSION: fhir.IdentifierExtension = {
@@ -112,18 +112,18 @@ export function createClaim(prescriptionOrder: fhir.Bundle, dispenseNotification
   const medicationRequests = getMedicationRequestResources(prescriptionOrder)
   const medicationDispenses = dispenseNotifications.map(getMedicationDispenseResources)
     .reduce((a, b) => a.concat(b), [])
-  const patient = getPatientResources(prescriptionOrder)
+  const patients = getPatientResources(prescriptionOrder)
 
-  const patientIdentifier = patient[0].identifier[0]
+  const patientIdentifier = patients[0].identifier[0]
 
   const finalMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
   const prescriptionStatusExtension = finalMedicationDispense.extension.find(
     e => e.url === "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus"
   ) as fhir.CodingExtension
 
-  const claimingOrganizationReference = finalMedicationDispense.performer
-    .map(performer => performer.actor)
-    .find(actor => actor.type === "Organization")
+  const actors = finalMedicationDispense.performer.map(performer => performer.actor)
+  const claimingPractitionerReference = actors.find(actor => actor.type === "Practitioner")
+  const claimingOrganizationReference = actors.find(actor => actor.type === "Organization")
 
   const groupIdentifierExtension = finalMedicationDispense.authorizingPrescription[0].extension.find(
     e => e.url === "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier"
@@ -132,12 +132,12 @@ export function createClaim(prescriptionOrder: fhir.Bundle, dispenseNotification
   return {
     resourceType: "Claim",
     created: new Date().toISOString(),
-    identifier: [createClaimIdentifier()],
+    identifier: [createUuidIdentifier()],
     status: "active",
     type: CODEABLE_CONCEPT_CLAIM_TYPE_PHARMACY,
     use: "claim",
     patient: createClaimPatient(patientIdentifier),
-    provider: createClaimProvider(),
+    provider: claimingPractitionerReference,
     priority: CODEABLE_CONCEPT_PRIORITY_NORMAL,
     insurance: [INSURANCE_NHS_BSA],
     payee: createClaimPayee(claimingOrganizationReference),
@@ -146,31 +146,13 @@ export function createClaim(prescriptionOrder: fhir.Bundle, dispenseNotification
   }
 }
 
-function createClaimIdentifier(): fhir.Identifier {
-  return {
-    system: "https://tools.ietf.org/html/rfc4122",
-    value: uuid.v4()
-  }
-}
-
-function createClaimPatient(identifier: Identifier) {
+function createClaimPatient(identifier: fhir.Identifier) {
   return {
     //Doing it this way to avoid copying the verification status extension
     identifier: {
       system: identifier.system,
       value: identifier.value
     }
-  }
-}
-
-function createClaimProvider() {
-  //TODO - is this actually needed?
-  return {
-    identifier: {
-      system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
-      value: "999999999999"
-    },
-    display: "Unattended Access"
   }
 }
 
@@ -223,7 +205,6 @@ function createClaimItemDetail(
   const finalMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
   return {
     extension: [
-      //TODO - sequence identifier is unused in translations - can this extension be removed?
       createClaimSequenceIdentifierExtension(),
       createMedicationRequestReferenceExtension(lineItemId)
     ],

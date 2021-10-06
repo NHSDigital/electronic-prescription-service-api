@@ -12,10 +12,10 @@ import * as parametersValidator from "../../services/validation/parameters-valid
 import * as taskValidator from "../../services/validation/task-validator"
 import * as claimValidator from "../../services/validation/claim-validator"
 import {
-isBundle,
-isClaim,
-isParameters,
-isTask
+  isBundle,
+  isClaim,
+  isParameters,
+  isTask
 } from "../../utils/type-guards"
 import {getScope} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"

@@ -15,7 +15,7 @@ export interface Claim extends common.Resource {
   use: "claim"
   patient: common.IdentifierReference<patient.Patient>
   created: string
-  provider: common.IdentifierReference<practitionerRole.PractitionerRole>
+  provider: common.IdentifierReference<practitionerRole.Practitioner | practitionerRole.PractitionerRole>
   priority: common.CodeableConcept
   prescription: ClaimPrescription
   payee: ClaimPayee

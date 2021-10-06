@@ -6,7 +6,6 @@ import zipfile
 from functools import wraps
 
 import flask
-from flask import make_response
 
 import config
 from api import (
@@ -18,7 +17,9 @@ from api import (
     make_sign_api_signature_upload_request,
     make_sign_api_signature_download_request,
     make_eps_api_convert_message_request,
-    make_eps_api_metadata_request, make_eps_api_claim_request, make_eps_api_claim_request_untranslated
+    make_eps_api_metadata_request,
+    make_eps_api_claim_request,
+    make_eps_api_claim_request_untranslated
 )
 from app import app, fernet
 from auth import exchange_code_for_token, get_access_token, login, redirect_and_set_cookies
@@ -49,9 +50,11 @@ from store import (
     add_prescription_order_send_request,
     load_prepare_request,
     load_prepare_response,
-    load_prescription_order_send_request, contains_prepare_response, contains_prescription_order_send_request,
-    add_dispense_notification_send_request, load_dispense_notification_send_requests,
-    contains_dispense_notification_send_requests,
+    load_prescription_order_send_request,
+    contains_prepare_response,
+    contains_prescription_order_send_request,
+    add_dispense_notification_send_request,
+    load_dispense_notification_send_requests,
 )
 
 HOME_URL = "/"
@@ -68,7 +71,6 @@ SEND_URL = "/prescribe/send"
 CANCEL_URL = "/prescribe/cancel"
 RELEASE_URL = "/dispense/release"
 DISPENSE_URL = "/dispense/dispense"
-# TODO - think of a name for this
 DISPENSING_HISTORY_URL = "/dispense/history"
 CLAIM_URL = "/dispense/claim"
 METADATA_URL = "/metadata"
