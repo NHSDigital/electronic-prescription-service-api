@@ -13,7 +13,7 @@ services:
         - ENVIRONMENT=internal-dev-sandbox
         - SESSION_TOKEN_ENCRYPTION_KEY=ZmDfcTF7_60GrrY167zsiPd67pEvs0aGOv2oasOM1Pg=
         - REDIS_URL=redis://eps-api-tool-store:6379
-        - HAPI_URL=http://eps-api-tool-hapi:9002
+        - HAPI_URL=http://eps-api-tool-hapi:9001
         - PUBLIC_APIGEE_URL=http://localhost:9000
         - APIGEE_DOMAIN_NAME=internal-dev-sandbox.api.service.nhs.uk
     ports:
@@ -29,7 +29,7 @@ services:
         - PUBLIC_APIGEE_URL=http://localhost:9000
         - APIGEE_DOMAIN_NAME=internal-dev-sandbox.api.service.nhs.uk
     ports:
-        - "9002:9002"
+        - "9001:9001"
   eps-api-tool-store:
     build:
         context: store
