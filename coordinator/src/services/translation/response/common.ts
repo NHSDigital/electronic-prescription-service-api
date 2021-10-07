@@ -4,7 +4,6 @@ import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {createPractitioner} from "./practitioner"
 import {createHealthcareService, createLocations, createOrganization} from "./organization"
 import {createPractitionerRole, createRefactoredPractitionerRole} from "./practitioner-role"
-import {createPatient} from "./patient"
 import {createPractitionerOrRoleIdentifier} from "./identifiers"
 import {prescriptionRefactorEnabled} from "../../../utils/feature-flags"
 
@@ -160,12 +159,6 @@ export function convertResourceToBundleEntry(resource: fhir.Resource): fhir.Bund
     resource,
     fullUrl: getFullUrl(resource.id)
   }
-}
-
-export function translateAndAddPatient(hl7Patient: hl7V3.Patient, resources: Array<fhir.Resource>): string {
-  const fhirPatient = createPatient(hl7Patient)
-  resources.push(fhirPatient)
-  return fhirPatient.id
 }
 
 export interface TranslatedAgentPerson {

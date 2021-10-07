@@ -19,8 +19,12 @@ export function xmlTest(actualRoot: XmlJs.ElementCompact, expectedRoot: XmlJs.El
 export function addEmptyCommunicationRequestToBundle(bundle: fhir.Bundle): void {
   const communicationRequest: fhir.CommunicationRequest = {
     resourceType: "CommunicationRequest",
+    status: "unknown",
     subject: undefined,
-    payload: []}
+    payload: [],
+    requester: undefined,
+    recipient: undefined
+  }
   bundle.entry.push({resource: communicationRequest})
 }
 
@@ -28,6 +32,8 @@ export function addEmptyListToBundle(bundle: fhir.Bundle): void {
   const list: fhir.List = {
     resourceType: "List",
     id: uuid.v4(),
+    status: "current",
+    mode: "snapshot",
     entry: []
   }
   bundle.entry.push({

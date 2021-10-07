@@ -6,6 +6,8 @@ export interface CommunicationRequest extends common.Resource {
   status?: string
   subject: common.Reference<patient.Patient>
   payload: Array<ContentStringPayload | ContentReferencePayload>
+  requester: common.Identifier
+  recipient: Array<common.Identifier>
 }
 
 export interface ContentStringPayload {
@@ -30,6 +32,8 @@ export function isContentReferencePayload(
 
 export interface List extends common.Resource {
   resourceType: "List"
+  status: string
+  mode: string
   entry: Array<ListEntry>
 }
 
