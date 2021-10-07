@@ -5,7 +5,7 @@ import HapiPino from "hapi-pino"
 const init = async () => {
   const server = Hapi.server({
     port: 9001,
-    host: "localhost",
+    host: "0.0.0.0",
     routes: {
       cors: true, // Won't run as Apigee hosted target without this
       payload: {
