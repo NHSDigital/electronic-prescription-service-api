@@ -45,11 +45,11 @@ docker_service:
           matcher: "200"
           path: "/_healthcheck"
     - name: eps-api-tool-hapi
-      port: 9002
+      port: 9001
       expose: false
       environment:
           - name: HEALTHCHECK_INTERNAL_PORT
-            value: "9002"
+            value: "9001"
       health_check:
         matcher: "200"
         path: "/_healthcheck"
