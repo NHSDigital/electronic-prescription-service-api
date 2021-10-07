@@ -44,6 +44,15 @@ docker_service:
       health_check:
           matcher: "200"
           path: "/_healthcheck"
+    - name: eps-api-tool-hapi
+      port: 9002
+      expose: false
+      environment:
+          - name: HEALTHCHECK_INTERNAL_PORT
+            value: "9002"
+      health_check:
+        matcher: "200"
+        path: "/_healthcheck"
     - name: eps-api-tool-store
       port: 6379
       expose: false

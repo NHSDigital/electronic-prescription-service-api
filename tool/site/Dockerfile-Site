@@ -38,4 +38,4 @@ COPY --from=build-client /build/templates ./templates
 COPY --from=build-flask-server /usr/local/lib/python3.8/site-packages /usr/local/lib/python3.8/site-packages
 COPY --from=build-flask-server /build ./
 USER nobody
-CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0"]
+CMD ["python3", "-m", "flask", "run", "--host=0.0.0.0", "--port=9000"]
