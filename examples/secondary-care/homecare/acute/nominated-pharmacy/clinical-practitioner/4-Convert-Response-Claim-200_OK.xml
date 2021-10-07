@@ -119,7 +119,7 @@
                       <seperatableInd value="false"/>
                       <pertinentChargePayment classCode="OBS" moodCode="EVN">
                         <code code="CP" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                        <value>false</value>
+                        <value value="false"/>
                       </pertinentChargePayment>
                     </pertinentInformation1>
                     <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
@@ -165,9 +165,8 @@
         </pertinentInformation1>
         <coverage contextConductionInd="true" typeCode="COVBY">
           <seperatableInd value="false"/>
-          <coveringChargeExempt classCode="OBS" moodCode="EVN">
+          <coveringChargeExempt classCode="OBS" moodCode="EVN" negationInd="true">
             <code code="EX" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-            <negationInd value="true"/>
             <value code="0001" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.33"/>
           </coveringChargeExempt>
         </coverage>
