@@ -20,6 +20,8 @@ docker_service:
             value: "{{ SERVICE_BASE_PATH }}"
           - name: REDIS_URL
             value: "redis://localhost:6379"
+          - name: HAPI_URL
+            value: "http:/localhost:9001"
       secrets:
           - name: APIGEE_DOMAIN_NAME
             valueFrom: '/{{ account }}/platform-common/egress/hosts/apigee-{{ APIGEE_ENVIRONMENT }}'
@@ -44,6 +46,15 @@ docker_service:
       health_check:
           matcher: "200"
           path: "/_healthcheck"
+    - name: eps-api-tool-hapi
+      port: 9001
+      expose: false
+      environment:
+          - name: HEALTHCHECK_INTERNAL_PORT
+            value: "9001"
+      health_check:
+        matcher: "200"
+        path: "/_healthcheck"
     - name: eps-api-tool-store
       port: 6379
       expose: false

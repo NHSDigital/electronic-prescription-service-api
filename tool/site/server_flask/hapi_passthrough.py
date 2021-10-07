@@ -1,10 +1,12 @@
+import os
 import httpx
 
-HAPI_HOST = "http://0.0.0.0:9001"
+
+HAPI_URL = os.environ["HAPI_URL"]
 STATUS_URL = "/_status"
 
 def get_status():
     return httpx.get(
-        f"{HAPI_HOST}{STATUS_URL}",
+        f"{HAPI_URL}{STATUS_URL}",
         verify=False,
     ).json()

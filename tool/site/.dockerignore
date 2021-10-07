@@ -1,3 +1,4 @@
 .dockerignore
-Dockerfile
+Dockerfile-Site
+Dockerfile-Hapi
 node_modules
