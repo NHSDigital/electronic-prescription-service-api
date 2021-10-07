@@ -10,8 +10,6 @@ docker_service:
             value: "9000"
           - name: LOG_LEVEL
             value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
-          - name: COMMIT_ID
-            value: "{{ SOURCE_COMMIT_ID }}"
           - name: ENVIRONMENT
             value: "{{ APIGEE_ENVIRONMENT }}"
           - name: PUBLIC_APIGEE_URL
@@ -49,6 +47,9 @@ docker_service:
     - name: eps-api-tool-hapi
       port: 9001
       expose: false
+      environment:
+          - name: COMMIT_ID
+            value: "{{ SOURCE_COMMIT_ID }}"
       health_check:
         matcher: "200"
         path: "/_healthcheck"
