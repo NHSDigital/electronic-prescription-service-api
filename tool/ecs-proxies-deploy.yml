@@ -19,7 +19,7 @@ docker_service:
           - name: REDIS_URL
             value: "redis://localhost:6379"
           - name: HAPI_URL
-            value: "http:/localhost:9001"
+            value: "http://localhost:9001"
       secrets:
           - name: APIGEE_DOMAIN_NAME
             valueFrom: '/{{ account }}/platform-common/egress/hosts/apigee-{{ APIGEE_ENVIRONMENT }}'
