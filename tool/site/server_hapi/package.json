@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "build:prod": "tsc --project ./tsconfig.json",
-    "start": "lsof -i -P -n && node app.js --use_strict",
+    "start": "node app.js --use_strict",
     "lint": "eslint . --max-warnings 0 --fix"
   },
   "author": "NHS Digital",
