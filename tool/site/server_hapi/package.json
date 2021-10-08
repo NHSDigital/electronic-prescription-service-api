@@ -6,7 +6,7 @@
   "scripts": {
     "test": "jest",
     "build:prod": "tsc --project ./tsconfig.json",
-    "start": "node app.js --use_strict",
+    "start": "lsof -i -P -n | grep '127.0.0.1:9001 (LISTEN)' || node app.js --use_strict",
     "lint": "eslint . --max-warnings 0 --fix"
   },
   "author": "NHS Digital",
