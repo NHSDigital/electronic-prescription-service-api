@@ -34,5 +34,5 @@ COPY --from=build-hapi-server /build/node_modules node_modules
 COPY --from=build-hapi-server /build/dist/ ./
 COPY --from=build-hapi-server /build/package*.json ./
 RUN chmod -R a+x /app
-USER nobody
+# USER nobody #TODO - reinstate
 CMD ["npm", "run", "start"]
