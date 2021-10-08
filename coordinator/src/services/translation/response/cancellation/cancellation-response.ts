@@ -9,11 +9,11 @@ import {
   addTranslatedAgentPerson,
   convertResourceToBundleEntry,
   roleProfileIdIdentical,
-  translateAgentPerson,
-  translateAndAddPatient
+  translateAgentPerson
 } from "../common"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
 import {fhir, hl7V3} from "@models"
+import {createPatient} from "../patient"
 
 export function translateSpineCancelResponseIntoBundle(cancellationResponse: hl7V3.CancellationResponse): fhir.Bundle {
   return {
@@ -56,8 +56,9 @@ export function translateSpineCancelResponse (cancellationResponse: hl7V3.Cancel
 function createBundleEntries(cancellationResponse: hl7V3.CancellationResponse) {
   const bundleResources: Array<fhir.Resource> = []
 
-  const patient = cancellationResponse.recordTarget.Patient
-  const patientId = translateAndAddPatient(patient, bundleResources)
+  const fhirPatient = createPatient(cancellationResponse.recordTarget.Patient)
+  bundleResources.push(fhirPatient)
+  const patientId = fhirPatient.id
 
   //The Author represents the author of the cancel request, not necessarily the author of the original prescription
   const cancelRequesterAgentPerson = cancellationResponse.author.AgentPerson
