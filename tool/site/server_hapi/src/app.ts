@@ -8,9 +8,9 @@ const executeChildProcess = promisify(exec)
 
 async function logOpenPorts() {
   console.log("lsof results:")
-  await executeChildProcessAndLogOutput("sudo lsof -i -P -n")
+  await executeChildProcessAndLogOutput("lsof -i -P -n")
   console.log("netstat results:")
-  await executeChildProcessAndLogOutput("sudo netstat -a -p")
+  await executeChildProcessAndLogOutput("netstat -a -p")
 }
 
 async function executeChildProcessAndLogOutput(command: string) {
