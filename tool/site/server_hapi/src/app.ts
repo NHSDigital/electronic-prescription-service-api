@@ -1,23 +1,6 @@
 import Hapi from "@hapi/hapi"
 import routes from "./routes"
 import HapiPino from "hapi-pino"
-import {promisify} from "util"
-import {exec} from "child_process"
-
-const executeChildProcess = promisify(exec)
-
-async function logOpenPorts() {
-  console.log("lsof results:")
-  await executeChildProcessAndLogOutput("lsof -i -P -n")
-  console.log("netstat results:")
-  await executeChildProcessAndLogOutput("netstat -a -p")
-}
-
-async function executeChildProcessAndLogOutput(command: string) {
-  const {stdout, stderr} = await executeChildProcess(command)
-  console.log("stdout:", stdout)
-  console.log("stderr:", stderr)
-}
 
 const init = async () => {
   const server = Hapi.server({
@@ -43,10 +26,8 @@ const init = async () => {
     }
   })
 
-  console.log("About to start server")
   await server.start()
   server.log("info", `Server running on ${server.info.uri}`)
-  await logOpenPorts()
 }
 
 process.on("unhandledRejection", err => {
@@ -54,4 +35,4 @@ process.on("unhandledRejection", err => {
   process.exit(1)
 })
 
-logOpenPorts().then(init)
+init()
