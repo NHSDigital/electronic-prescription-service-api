@@ -258,8 +258,10 @@ export abstract class PrescriptionAnnotation implements ElementCompact {
 
   constructor(code: codes.PrescriptionAnnotationCode, negationInd?: boolean) {
     this.code = code
-    if (negationInd !== null && negationInd !== undefined) {
-      this._attributes.negationInd = negationInd ? "true" : "false"
+    if (negationInd === true) {
+      this._attributes.negationInd = "true"
+    } else if (negationInd === false) {
+      this._attributes.negationInd = "false"
     }
   }
 }
