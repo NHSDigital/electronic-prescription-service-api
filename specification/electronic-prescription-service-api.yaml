@@ -82,17 +82,19 @@ info:
     If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
 
     ## Technology
-    This API conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir) global standard for health care data exchange.
+    This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
+    
+    It also conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir) global standard for health care data exchange.
     Specifically, it is aligned with [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), which is built on FHIR Release 4.
 
-    You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.
-    In particular:
+    You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules. In particular:
+    - resource names are capitalised and singular, for example `/Patient` not `/patients`
     - array names are singular, for example `line` not `lines` for address lines
     - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
 
     ## Network access
     This API is available on the internet and, indirectly, on the [Health and Social Care Network (HSCN)](https://digital.nhs.uk/services/health-and-social-care-network).
-    To use this API with NHS [smartcards](https://digital.nhs.uk/services/registration-authorities-and-smartcards) (see below) you do need an HSCN connection, although internet-facing alternatives are available.
+    To use this API with NHS [smartcards](https://digital.nhs.uk/services/registration-authorities-and-smartcards) you do need an HSCN connection, although internet-facing alternatives are available.
 
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
 
@@ -102,7 +104,7 @@ info:
     meaning we authenticate the calling application but not the end user.
 
     You can use this access mode as follows:
-    - unattended (end user not present), for example as part of a back end process to send prsecriptions to the API
+    - unattended (end user not present), for example as part of a back end process to send prescriptions to the API
     - attended (end user present) - in which case, you must ensure the end user is authenticated and suitably authorised locally by the calling application
 
     For further details on attended access, see [user-restricted access](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis).
@@ -111,7 +113,7 @@ info:
     - [Application-restricted RESTful API - signed JWT authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication)
 
     ## Environment and testing
-    | Purpose           | URL                                                                 |
+    | Environment       | Base URL                                                            |
     | -------------     | --------------------------------------------------------------------|
     | Sandbox           | `https://sandbox.api.service.nhs.uk/electronic-prescriptions`       |
     | Integration test  | `https://int.api.service.nhs.uk/electronic-prescriptions`           |
@@ -125,7 +127,7 @@ info:
     * is stateless, so it does not actually persist any updates
     * is open access, so does not allow you to test authorisation
 
-    For more details on sandbox testing, or to try out the sandbox using our "Try this API" feature, see the documentation for each endpoint.
+    For details of sandbox testing, or to try out the sandbox using our "Try this API" feature, see the documentation for each endpoint.
 
     ### Integration testing
     Our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing):
@@ -138,13 +140,15 @@ info:
 
     ## Onboarding
     You need to get your software approved by us before it can go live with this API. We call this onboarding.
-    We are hoping to make the onboarding process as lightweight and as self-service as possible however it can sometimes be quite long, so it’s worth planning well ahead.
+    We are hoping to make the onboarding process as lightweight and as self-service as possible. The onboarding process can sometimes be quite long, so it’s worth planning well ahead.
 
     To begin the onboarding process please download and complete the [EPS use case form](https://nhs-prod.global.ssl.fastly.net/binaries/content/assets/website-assets/developer/electronic-prescription-service-fhir-api/eps-access-form-v1.0-org-short-name-yyyymmdd-1.docx) and email it to us at [epsonboarding@nhs.net](mailto:epsonboarding@nhs.net).
 
     ## Resources
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/DigitalMedicines) to assist with your integration.
     This is the FHIR specification for Digital Medicines starting with the assets required for an electronic prescription sent to the EPS.
+    
+    For further guidance on prescribing, see [EPS prescribing developer guide](https://digital.nhs.uk/developer/guides-and-documentation/developer-guides/eps-developer-guide).
 
     ## Errors
     ### API wide errors
@@ -172,8 +176,8 @@ info:
     
     #### To create a prescription:
     
-    1. Sign the encoded prescription data using the [Signing Service API](https://digital.nhs.uk/developer/api-catalogue/signing-service) or your existing local signing solution to get the prescription data signed.
-    2. Generate a XML-DSig using the signed prescription data (see below).
+    1. Sign the encoded prescription data using the [Signing Service API](https://digital.nhs.uk/developer/api-catalogue/signing-service) or your existing local signing solution.
+    2. Generate an XML-DSig using the signed prescription data (see below).
     3. Put the XML-DSig in a `Provenance` resource.
     4. Add the `Provenance` to the `prescription-order` message.
     5. POST the signed `prescription-order` message to the `/FHIR/R4/$process-message` endpoint.
@@ -393,11 +397,11 @@ paths:
       summary: Download prescriptions
       description: |
         ## Overview
-        Use this endpoint to download prescriptions from Spine prior to being dispensed.
+        Use this endpoint to download prescriptions from Spine before it is dispensed.
         You can download a single prescription using the prescription's ID,
         or download up to 25 prescriptions (per request) nominated to a dispenser using the dispenser's ODS code.
 
-        To do this, send a [Task-release-message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to this endpoint.
+        Send a [Task-release message](https://simplifier.net/guide/DigitalMedicines/release-duplicate-2) to this endpoint to download the prescription.
       tags:
         - dispensing
       parameters:
@@ -843,7 +847,7 @@ components:
       name: X-Correlation-ID
       required: false
       description: |
-        An optional ID which you can use to track transactions across multiple systems. It can take any value, but we recommend avoiding `.` characters.
+        An optional ID which you can use to track transactions across multiple systems. It can have any value, but we recommend avoiding `.` characters.
 
         Mirrored back in a response header.
       schema:
