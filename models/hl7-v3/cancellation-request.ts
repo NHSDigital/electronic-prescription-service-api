@@ -21,7 +21,6 @@ export class CancellationRequest implements ElementCompact {
 
   id: codes.GlobalIdentifier
   effectiveTime: core.Timestamp
-  typeId: codes.TypeIdentifier
   recordTarget: patient.RecordTarget
   author: agentPerson.Author
   responsibleParty: agentPerson.ResponsibleParty
@@ -33,7 +32,6 @@ export class CancellationRequest implements ElementCompact {
   constructor(id: codes.GlobalIdentifier, effectiveTime: core.Timestamp) {
     this.id = id
     this.effectiveTime = effectiveTime
-    this.typeId = new codes.TypeIdentifier("PORX_MT135001UK32")
   }
 }
 
