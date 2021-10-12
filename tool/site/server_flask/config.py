@@ -3,7 +3,6 @@ import os
 SESSION_TOKEN_ENCRYPTION_KEY = os.environ["SESSION_TOKEN_ENCRYPTION_KEY"].encode("utf-8")
 REDIS_URL = os.environ["REDIS_URL"]
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "prod")
-COMMIT_ID = os.environ.get("COMMIT_ID", "unknown")
 PUBLIC_APIGEE_URL = os.environ["PUBLIC_APIGEE_URL"]
 BASE_PATH = os.environ.get("BASE_PATH")
 if BASE_PATH is None:
