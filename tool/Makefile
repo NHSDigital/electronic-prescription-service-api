@@ -1,7 +1,6 @@
 SHELL=/bin/bash -euo pipefail
 
 lint:
-	echo Lint
 	cd site/client && npm install && npm run lint
 	cd site/server_hapi && npm install && npm run lint
 
