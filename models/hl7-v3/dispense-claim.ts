@@ -4,12 +4,6 @@ import * as core from "./core"
 import * as dispenseCommon from "./dispense-common"
 import * as prescription from "./prescription"
 import * as organisation from "./organization"
-import {
-  DispenseCommonSuppliedLineItemQuantity,
-  InFulfillmentOf,
-  SupplyHeaderPertinentInformation3,
-  SupplyHeaderPertinentInformation4
-} from "./dispense-common"
 
 export class DispenseClaimRoot {
   DispenseClaim: DispenseClaim
@@ -85,9 +79,9 @@ export class DispenseClaimSupplyHeader {
   effectiveTime: core.Null
   repeatNumber?: core.Interval<core.NumericValue>
   pertinentInformation1: Array<DispenseClaimSupplyHeaderPertinentInformation1>
-  pertinentInformation3: SupplyHeaderPertinentInformation3
-  pertinentInformation4: SupplyHeaderPertinentInformation4
-  inFulfillmentOf: InFulfillmentOf
+  pertinentInformation3: dispenseCommon.SupplyHeaderPertinentInformation3
+  pertinentInformation4: dispenseCommon.SupplyHeaderPertinentInformation4
+  inFulfillmentOf: dispenseCommon.InFulfillmentOf
   legalAuthenticator: prescription.PrescriptionLegalAuthenticator
 
   constructor(id: codes.GlobalIdentifier) {
@@ -180,11 +174,11 @@ export class DispenseClaimSuppliedLineItemQuantityPertinentInformation1 implemen
 }
 
 export class ChargePayment extends prescription.PrescriptionAnnotation {
-  value: boolean
+  value: core.BooleanValue
 
   constructor(value: boolean) {
     super(new codes.PrescriptionAnnotationCode("CP"))
-    this.value = value
+    this.value = new core.BooleanValue(value)
   }
 }
 
@@ -254,13 +248,11 @@ export class Coverage implements ElementCompact {
 }
 
 export class ChargeExempt extends prescription.PrescriptionAnnotation {
-  negationInd: core.BooleanValue
   value: codes.PrescriptionChargeExemptionCode
   authorization?: Authorization
 
   constructor(chargeExempt: boolean, value: string) {
-    super(new codes.PrescriptionAnnotationCode("EX"))
-    this.negationInd = new core.BooleanValue(!chargeExempt)
+    super(new codes.PrescriptionAnnotationCode("EX"), !chargeExempt)
     this.value = new codes.PrescriptionChargeExemptionCode(value)
   }
 }
@@ -280,10 +272,7 @@ export class Authorization implements ElementCompact {
 }
 
 export class EvidenceSeen extends prescription.PrescriptionAnnotation {
-  negationInd: core.BooleanValue
-
   constructor(evidenceSeen: boolean) {
-    super(new codes.PrescriptionAnnotationCode("ES"))
-    this.negationInd = new core.BooleanValue(!evidenceSeen)
+    super(new codes.PrescriptionAnnotationCode("ES"), !evidenceSeen)
   }
 }
