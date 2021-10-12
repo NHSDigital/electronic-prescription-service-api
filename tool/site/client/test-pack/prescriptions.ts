@@ -243,7 +243,7 @@ function getCareSetting(prescriptionRows: Array<StringKeyedObject>): string {
     case "1208":
       return "Homecare"
     default:
-      throw new Error("Unable to determine care-setting")
+      throw new Error("Unable to determine care-setting from 'Prescription Type'")
   }
 }
 
@@ -526,7 +526,7 @@ function getMedicationQuantityCode(unitsOfMeasure: string) {
       return "415818006"
     case "device":
     default:
-      return "999999999"
+      throw new Error("Unable to determine Unit of Measure from 'UoM'")
   }
 }
 
