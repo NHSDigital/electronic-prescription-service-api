@@ -36,8 +36,8 @@ info:
     * download a batch of prescriptions from EPS
     * return a prescription to EPS
     * submit a dispense notification to EPS
-    * withdraw a dispense notification to EPS (sandbox implementation only)
-    * submit a dispense claim (sandbox implementation only)
+    * withdraw a dispense notification from EPS
+    * submit a dispense claim
 
     You cannot currently use this API to:
     * track a prescription or check a prescription's status
@@ -55,25 +55,37 @@ info:
     - [Personal Demographics Service - FHIR API](https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir) - use this to obtain patient data
 
     ## API status and roadmap
-    The immediate EPS development priority is to support the rollout of the next-gen FHIR APIs for primary care and secondary care prescribing and dispensing. Alongside this we will be working on integrating a new FHIR-compliant prescription tracker into the next gen APIs.
+    The immediate priority of EPS development is to support the rollout of the next-gen FHIR APIs for primary care and secondary care prescribing and dispensing. Alongside this we will be working on integrating a new FHIR-compliant prescription tracker into the next gen APIs.
     
-    To suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?tag=eps-fhir-api).
-
-    If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
-
     ### Prescribing API
-    Prescribing flows for EPS FHIR API are now in a state of technical go-live awaiting our first of type integration.
+    There are three types of medication workflows
+    
+    #### Primary care medication workflow
+    In a primary care medication workflow, the prescription is sent from a primary care service, such as a GP practice to a pharmacy. For this workflow, the API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
+    - it is available for testing in the integration environment, but not for production use
+    - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
 
-    The API is currently available for sandbox testing and integration testing, but not for production use.
-
+    #### Secondary care medication workflow
+    In a secondary care medication workflow, the prescription is sent from a secondary care service, such as an NHS hospital to a pharmacy. For this workflow, the API is in [beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
+    - it is available in integration and production
+    - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
+    
+    #### Tertiary care medication workflow
+    This API does not support tertiary care medication workflow.
+    
     ### Dispensing API
     Download and the mark as dispensed dispensing flows for the EPS FHIR API are in the sandbox environment only, withdraw and return are currently only referenced in this spec.
+    
+    ### Roadmap
+    To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?tag=eps-fhir-api).
+    
+    If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
 
     ## Technology
     This API conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir) global standard for health care data exchange.
     Specifically, it is aligned with [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), which is built on FHIR Release 4.
 
-    You don’t need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.
+    You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules.
     In particular:
     - array names are singular, for example `line` not `lines` for address lines
     - data items that are country-specific and thus not included in the FHIR global base resources are usually wrapped in an `extension` object
@@ -678,19 +690,13 @@ paths:
                     An error response to a withdraw request.
                   value:
                     $ref: components/examples/release/not-found-error.json
-  /FHIR/R4/$process-message#dispense-claim:
+  /FHIR/R4/Claim:
     post:
       operationId: send-dispense-claim-message
       summary: Claim for a dispensed prescription
       description: |
         ## Overview
-        Use this endpoint to send a dispense-claim message to EPS.
-
-        The effect of calling this endpoint depends on the type of the message, which is determined by the `MessageHeader` resource.
-        To submit a claim for a dispensed prescription, send a [dispense-claim message](https://simplifier.net/guide/DigitalMedicines/NHSDigital-Claim).
-
-        Note that the `#dispense-claim` in the URL has been added to distinguish this from the other operations which
-        can be performed using the `$process-message` endpoint. It is not required in requests to the API.
+        Use this endpoint to submit a claim for reimbursement for a dispensed prescription.
       tags:
         - dispensing
       parameters:
@@ -707,9 +713,9 @@ paths:
             examples:
               dispense-claim-success:
                 description: |
-                  A valid secondary care dispense-claim message.
+                  A valid secondary care Claim message.
                 value:
-                  $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/4-Process-Request-Claim-200_OK.json
+                  $ref: components/examples/secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/4-Claim-Request-200_OK.json
         description: ''
       responses:
         '200':

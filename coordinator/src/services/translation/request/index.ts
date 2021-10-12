@@ -20,14 +20,14 @@ import pino from "pino"
 import {convertTaskToDispenseProposalReturn} from "./return/return"
 import {convertTaskToEtpWithdraw} from "./withdraw/withdraw"
 import {
-  getExtensionForUrlOrNull,
   getMessageIdFromBundle,
+  getMessageIdFromClaim,
   getMessageIdFromTask,
   identifyMessageType
 } from "../common"
-import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 import Hapi from "@hapi/hapi"
-import {convertDispenseClaimInformation} from "./dispense/dispense-claim-information"
+import {convertDispenseClaim} from "./dispense/dispense-claim"
+import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 
 export async function convertBundleToSpineRequest(
   bundle: fhir.Bundle,
@@ -40,7 +40,7 @@ export async function convertBundleToSpineRequest(
 }
 
 type BundleTranslationResult = hl7V3.ParentPrescriptionRoot | hl7V3.CancellationRequestRoot
-  | hl7V3.DispenseNotificationRoot | hl7V3.DispenseClaimInformationRoot
+  | hl7V3.DispenseNotificationRoot | hl7V3.DispenseClaimRoot
 
 async function createPayloadFromBundle(
   messageType: string,
@@ -55,8 +55,6 @@ async function createPayloadFromBundle(
       return createCancellationSendMessagePayload(bundle, headers)
     case fhir.EventCodingCode.DISPENSE:
       return await createDispenseNotificationSendMessagePayload(bundle, headers, logger)
-    case fhir.EventCodingCode.CLAIM:
-      return await createDispenseClaimInformationSendMessagePayload(bundle, headers, logger)
   }
 }
 
@@ -82,18 +80,6 @@ export async function createDispenseNotificationSendMessagePayload(
   const messageId = getMessageIdFromBundle(bundle)
   const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION
   return createSendMessagePayload(messageId, interactionId, headers, dispenseNotificationRoot)
-}
-
-export async function createDispenseClaimInformationSendMessagePayload(
-  bundle: fhir.Bundle,
-  headers: Hapi.Util.Dictionary<string>,
-  logger: pino.Logger
-): Promise<hl7V3.SendMessagePayload<hl7V3.DispenseClaimInformationRoot>> {
-  const dispenseClaimInformation = await convertDispenseClaimInformation(bundle, logger)
-  const dispenseClaimInformationRoot = new hl7V3.DispenseClaimInformationRoot(dispenseClaimInformation)
-  const messageId = getMessageIdFromBundle(bundle)
-  const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_CLAIM_INFORMATION
-  return createSendMessagePayload(messageId, interactionId, headers, dispenseClaimInformationRoot)
 }
 
 export function createCancellationSendMessagePayload(
@@ -230,10 +216,15 @@ export function isRepeatDispensing(medicationRequests: Array<fhir.MedicationRequ
   return courseOfTherapyTypeCode === fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
 }
 
-export function dispenseNotificationIsRepeatDispensing(medicationDispense: fhir.MedicationDispense): boolean {
-  return !!getExtensionForUrlOrNull(
-    medicationDispense.extension,
-    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-    "MedicationDispense.extension"
-  )
+export async function convertClaimToSpineRequest(
+  claim: fhir.Claim,
+  headers: Hapi.Util.Dictionary<string>,
+  logger: pino.Logger
+): Promise<spine.SpineRequest> {
+  const dispenseClaim = await convertDispenseClaim(claim, logger)
+  const dispenseClaimRoot = new hl7V3.DispenseClaimRoot(dispenseClaim)
+  const messageId = getMessageIdFromClaim(claim)
+  const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_CLAIM_INFORMATION
+  const payload = createSendMessagePayload(messageId, interactionId, headers, dispenseClaimRoot)
+  return requestBuilder.toSpineRequest(payload, headers)
 }
