@@ -57,8 +57,8 @@ from store import (
 import hapi_passthrough
 
 HOME_URL = "/"
-HEALTHCHECK_URL = "/_healthcheck"
 STATUS_URL = "/_status"
+HEALTHCHECK_URL = "/_healthcheck"
 AUTH_URL = "/change-auth"
 LOGOUT_URL = "/logout"
 CALLBACK_URL = "/callback"
@@ -130,7 +130,7 @@ def auth_check():
 @app.route(HEALTHCHECK_URL, methods=["GET"])
 @exclude_from_auth()
 def get_healthcheck():
-    return app.make_response({})
+    return hapi_passthrough.get_healthcheck()
 
 
 @app.route(STATUS_URL, methods=["GET"])
