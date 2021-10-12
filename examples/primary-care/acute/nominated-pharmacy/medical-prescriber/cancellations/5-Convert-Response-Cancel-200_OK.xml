@@ -42,7 +42,6 @@
       <CancellationRequest classCode="INFO" moodCode="EVN">
         <id root="B3D06C45-0C63-403C-A9DA-810A4FAFD453"/>
         <effectiveTime value="20210420000000"/>
-        <typeId extension="PORX_MT135001UK32" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <Patient classCode="PAT">
             <id extension="9990548609" root="2.16.840.1.113883.2.1.4.1"/>

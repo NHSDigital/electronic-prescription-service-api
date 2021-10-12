@@ -248,15 +248,21 @@ export class PrescriptionPredecessor implements ElementCompact {
 }
 
 export abstract class PrescriptionAnnotation implements ElementCompact {
-  _attributes: core.AttributeClassCode & core.AttributeMoodCode = {
+  _attributes: core.AttributeClassCode & core.AttributeMoodCode & core.AttributeNegationInd = {
     classCode: "OBS",
-    moodCode: "EVN"
+    moodCode: "EVN",
+    negationInd: undefined
   }
 
   code: codes.PrescriptionAnnotationCode
 
-  constructor(code: codes.PrescriptionAnnotationCode) {
+  constructor(code: codes.PrescriptionAnnotationCode, negationInd?: boolean) {
     this.code = code
+    if (negationInd === true) {
+      this._attributes.negationInd = "true"
+    } else if (negationInd === false) {
+      this._attributes.negationInd = "false"
+    }
   }
 }
 
