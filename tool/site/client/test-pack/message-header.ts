@@ -1,5 +1,5 @@
-import {BundleEntry, MessageHeader} from "../models";
-import {pageData} from "../ui/state";
+import {BundleEntry, MessageHeader} from "../models"
+import {pageData} from "../ui/state"
 
 export function createMessageHeaderEntry(): BundleEntry {
   return {

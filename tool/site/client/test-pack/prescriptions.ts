@@ -19,7 +19,7 @@ import {pageData} from "../ui/state"
 import {createMessageHeaderEntry} from "./message-header"
 import {getNhsNumber} from "../parsers/read/patient-parser"
 
-export function createPrescriptions(patients: Array<BundleEntry>, rows: Array<StringKeyedObject>) {
+export function createPrescriptions(patients: Array<BundleEntry>, rows: Array<StringKeyedObject>): void {
   pageData.payloads = []
   const prescriptionRows = groupBy(rows, (row: StringKeyedObject) => row["Test"])
   prescriptionRows.forEach(prescriptionRows => {
@@ -53,8 +53,7 @@ export function createPrescriptions(patients: Array<BundleEntry>, rows: Array<St
           parseInt(prescriptionRow["Issues"]) - 1
         )
       )
-    }
-    else {
+    } else {
       pageData.payloads.push(createPrescription(patient, prescriptionRows))
     }
   })
@@ -461,7 +460,6 @@ function createPrescriptionType(row: StringKeyedObject): any {
     code: treatmentTypeCode
   }
 }
-
 
 function createRepeatDispensingExtensionIfRequired(
   repeatsIssued: number,

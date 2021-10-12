@@ -21,7 +21,7 @@ const parseExcel = (file: Blob) => {
     const workbook = XLSX.read(data, {
       type: "binary"
     })
- 
+
     const patientRows = getRowsFromSheet("Patients", workbook)
     const prescriptionRows = getRowsFromSheet("Prescriptions", workbook)
     const patients = createPatients(patientRows)
