@@ -37,12 +37,7 @@ const config = {
       },
       {
         test: /\.(ts|tsx)$/i,
-        use: [{
-          loader: "ts-loader",
-          options: {
-            configFile: "tsconfig.json"
-          }
-        }],
+        loader: "ts-loader",
         exclude: ["/node_modules/"]
       },
       {
