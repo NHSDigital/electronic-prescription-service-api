@@ -1,10 +1,11 @@
 import {pageData} from "../ui/state"
 
 export function makeRequest(method: string, url: string, body?: unknown): any {
+  const uri = encodeURI(url)
   const xhr = new XMLHttpRequest()
   try {
     xhr.withCredentials = true
-    xhr.open(method, url, false)
+    xhr.open(method, uri, false)
     xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
     xhr.send(body as any)
   } catch {

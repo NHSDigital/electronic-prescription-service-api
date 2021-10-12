@@ -38,24 +38,21 @@ const parseExcel = (file: Blob) => {
     const workbook = XLSX.read(data, {
       type: "binary"
     })
+ 
+    const patientSheet = workbook.Sheets["Patients"]
+    if (!patientSheet) throw new Error("Could not find a sheet called 'Patients'")
+    //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const patientRows = XLSX.utils.sheet_to_row_object_array(patientSheet)
+    
+    const prescriptionsSheet = workbook.Sheets["Prescriptions"]
+    if (!prescriptionsSheet) throw new Error("Could not find a sheet called 'Prescriptions'")
+    //eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const prescriptionRows = XLSX.utils.sheet_to_row_object_array(prescriptionsSheet)
 
-    let patients = [] as Array<BundleEntry>
-    workbook.SheetNames.forEach(function (sheetName: string) {
-      //eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      const rows = XLSX.utils.sheet_to_row_object_array(
-        workbook.Sheets[sheetName]
-      )
-
-      switch (sheetName.toLowerCase()) {
-        case "patients":
-          patients = createPatients(rows)
-          break
-        case "prescriptions":
-          createPrescriptions(patients, rows)
-          break
-      }
-    })
+    const patients = createPatients(patientRows)
+    createPrescriptions(patients, prescriptionRows)
   }
 
   reader.onerror = function (ex) {
@@ -166,7 +163,7 @@ function createPrescriptions(patients: Array<BundleEntry>, rows: Array<StringKey
     const prescription = prescriptionRows[0]
 
     if (
-      getPrescriptionTypeCode(prescription) === "continuous-repeat-dispensing"
+      getPrescriptionTreatmentTypeCode(prescription) === "continuous"
     ) {
       const repeatsAllowed = getNumberOfRepeatsAllowed(prescription)
       for (
@@ -442,7 +439,7 @@ function createPrescription(
 
 function getCareSetting(prescriptionRows: Array<StringKeyedObject>): string {
   const row = prescriptionRows[0]
-  const prescriberTypeCode = row["Prescriber  Code"]
+  const prescriberTypeCode = row["Prescription Type"].toString()
   switch (prescriberTypeCode) {
     // https://simplifier.net/guide/DigitalMedicines/DM-Prescription-Type
     case "0108":
@@ -454,11 +451,17 @@ function getCareSetting(prescriptionRows: Array<StringKeyedObject>): string {
     case "1004":
     case "1001":
       return "Secondary-Care"
+    case "1201":
+    case "1204":
+    case "1208":
+      return "Homecare"
+    default:
+      throw new Error("Unable to determine care-setting")
   }
 }
 
 function createPlaceResources(careSetting: string, fhirPrescription: Bundle) {
-  if (careSetting === "Primary-Care") {
+  if (careSetting === "Primary-Care" || careSetting === "Homecare") {
     fhirPrescription.entry.push({
       fullUrl: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
       resource: {
@@ -673,8 +676,8 @@ function createMedicationRequests(
         courseOfTherapyType: {
           coding: [
             createPrescriptionType(
-              getPrescriptionTypeSystem(row),
-              getPrescriptionTypeCode(row)
+              getPrescriptionTreatmentTypeSystem(row),
+              getPrescriptionTreatmentTypeCode(row)
             )
           ]
         },
@@ -693,7 +696,10 @@ function createMedicationRequests(
 }
 
 function getDispenseRequest(row: StringKeyedObject): MedicationRequestDispenseRequest {
-  if (getPrescriptionTypeCode(row) === "continuous-repeat-dispensing") {
+  const prescriptionTreatmentTypeCode = getPrescriptionTreatmentTypeCode(row)
+  // todo: remove magic strings
+  if (prescriptionTreatmentTypeCode === "continuous"
+    || prescriptionTreatmentTypeCode === "continuous-repeat-dispensing") {
     const start = convertMomentToISODate(moment.utc())
     const end = convertMomentToISODate(moment.utc().add(1, "month"))
     return {
@@ -755,7 +761,7 @@ function getDosageInstructionText(row: StringKeyedObject): string {
 }
 
 function getMedicationSnomedCode(row: StringKeyedObject): string {
-  return row["Snomed"].trim()
+  return row["Snomed"]
 }
 
 function getMedicationDisplay(row: StringKeyedObject): string {
@@ -763,7 +769,7 @@ function getMedicationDisplay(row: StringKeyedObject): string {
 }
 
 function getMedicationRequestExtensions(row: StringKeyedObject, repeatsIssued: number, maxRepeatsAllowed: number): Array<fhirExtension.Extension> {
-  const prescriberTypeCode = row["Prescriber  Code"]
+  const prescriptionTypeCode = row["Prescription Type"]
   const prescriberTypeDisplay = row["Prescriber Description"]
   const extension: Array<fhirExtension.Extension> = [
     {
@@ -771,7 +777,7 @@ function getMedicationRequestExtensions(row: StringKeyedObject, repeatsIssued: n
         "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
       valueCoding: {
         system: "https://fhir.nhs.uk/CodeSystem/prescription-type",
-        code: prescriberTypeCode,
+        code: prescriptionTypeCode,
         display: prescriberTypeDisplay
       }
     } as fhirExtension.CodingExtension
@@ -809,16 +815,24 @@ interface StringKeyedObject {
   [k: string]: string
 }
 
-function getPrescriptionTypeCode(row: StringKeyedObject): string {
-  const firstPart = row["Prescription Type"].split(" ")[0]
-  if (firstPart === "acute") return "acute"
-  else {
-    return "continuous-repeat-dispensing"
+function getPrescriptionTreatmentTypeCode(row: StringKeyedObject): string {
+  const validCodes = ["acute", "repeat-prescribing", "repeat-dispensing"]
+  const code = row["Prescription Treatment Type"].split(" ")[0]
+  if (!validCodes.includes(code)) {
+    throw new Error(`Prescription Treatment Type column contained an invalid value. 'Prescription Treatment Type' must be one of: ${validCodes.join(", ")}`)
+  }
+  switch(code) {
+    case "acute":
+      return "acute"
+    case "repeat-prescribing":
+      return "continuous"
+    case "repeat-dispensing":
+      return "continuous-repeat-dispensing"
   }
 }
 
-function getPrescriptionTypeSystem(row: StringKeyedObject): string {
-  const firstPart = row["Prescription Type"].split(" ")[0]
+function getPrescriptionTreatmentTypeSystem(row: StringKeyedObject): string {
+  const firstPart = row["Prescription Treatment Type"]
   if (firstPart === "acute")
     return "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy"
   else {
@@ -827,7 +841,7 @@ function getPrescriptionTypeSystem(row: StringKeyedObject): string {
 }
 
 function getNumberOfRepeatsAllowed(row: StringKeyedObject) {
-  return parseInt(row["Prescription Type"].split(" ")[0])
+  return parseInt(row["Issues"])
 }
 
 function createPrescriptionType(system: string, code: string): any {
