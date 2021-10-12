@@ -26,7 +26,7 @@ export function createPatients(rows: Array<StringKeyedObject>): Array<BundleEntr
               }
             ],
             system: "https://fhir.nhs.uk/Id/nhs-number",
-            value: row["NHS_NUMBER"]
+            value: row["NHS_NUMBER"].toString()
           }
         ],
         name: [

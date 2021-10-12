@@ -23,13 +23,13 @@ export function createPrescriptions(patients: Array<BundleEntry>, rows: Array<St
   pageData.payloads = []
   const prescriptionRows = groupBy(rows, (row: StringKeyedObject) => row["Test"])
   prescriptionRows.forEach(prescriptionRows => {
-    const prescription = prescriptionRows[0]
+    const prescriptionRow = prescriptionRows[0]
     const patient = getPatientBundleEntry(patients, prescriptionRows)
 
-    const prescriptionTreatmentTypeCode = getPrescriptionTreatmentTypeCode(prescription)
+    const prescriptionTreatmentTypeCode = getPrescriptionTreatmentTypeCode(prescriptionRow)
 
     if (prescriptionTreatmentTypeCode === "continuous") {
-      const repeatsAllowed = getNumberOfRepeatsAllowed(prescription)
+      const repeatsAllowed = getNumberOfRepeatsAllowed(prescriptionRow)
       for (
         let repeatsIssued = 0;
         repeatsIssued < repeatsAllowed;
@@ -44,7 +44,17 @@ export function createPrescriptions(patients: Array<BundleEntry>, rows: Array<St
           )
         )
       }
-    } else {
+    } else if (prescriptionTreatmentTypeCode === "continuous-repeat-dispensing") {
+      pageData.payloads.push(
+        createPrescription(
+          patient,
+          prescriptionRows,
+          0,
+          parseInt(prescriptionRow["Issues"]) - 1
+        )
+      )
+    }
+    else {
       pageData.payloads.push(createPrescription(patient, prescriptionRows))
     }
   })
@@ -307,10 +317,7 @@ function createMedicationRequests(
         },
         courseOfTherapyType: {
           coding: [
-            createPrescriptionType(
-              getPrescriptionTreatmentTypeSystem(row),
-              getPrescriptionTreatmentTypeCode(row)
-            )
+            createPrescriptionType(row)
           ]
         },
         dosageInstruction: [
@@ -393,7 +400,7 @@ function getDosageInstructionText(row: StringKeyedObject): string {
 }
 
 function getMedicationSnomedCode(row: StringKeyedObject): string {
-  return row["Snomed"]
+  return row["Snomed"].toString()
 }
 
 function getMedicationDisplay(row: StringKeyedObject): string {
@@ -401,7 +408,7 @@ function getMedicationDisplay(row: StringKeyedObject): string {
 }
 
 function getMedicationRequestExtensions(row: StringKeyedObject, repeatsIssued: number, maxRepeatsAllowed: number): Array<fhirExtension.Extension> {
-  const prescriptionTypeCode = row["Prescription Type"]
+  const prescriptionTypeCode = row["Prescription Type"].toString()
   const prescriberTypeDisplay = row["Prescriber Description"]
   const extension: Array<fhirExtension.Extension> = [
     {
@@ -443,21 +450,15 @@ function getMedicationRequestExtensions(row: StringKeyedObject, repeatsIssued: n
   return extension
 }
 
-
-
-function getPrescriptionTreatmentTypeSystem(row: StringKeyedObject): string {
-  const treatmentType = row["Prescription Treatment Type"]
-  if (treatmentType === "acute")
-    return "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy"
-  else {
-    return "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy"
-  }
-}
-
-function createPrescriptionType(system: string, code: string): any {
+function createPrescriptionType(row: StringKeyedObject): any {
+  const treatmentTypeCode = getPrescriptionTreatmentTypeCode(row)
+  const treatmentTypeSystem =
+    treatmentTypeCode === "continuous-repeat-dispensing"
+      ? "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy"
+      : "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy"
   return {
-    system,
-    code
+    system: treatmentTypeSystem,
+    code: treatmentTypeCode
   }
 }
 
