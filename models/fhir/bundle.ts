@@ -1,4 +1,5 @@
 import * as common from "./common"
+import * as task from "./task"
 
 export interface Bundle extends common.Resource {
   resourceType: "Bundle"
@@ -11,5 +12,5 @@ export interface Bundle extends common.Resource {
 
 export interface BundleEntry {
   fullUrl?: string
-  resource?: common.Resource
+  resource?: common.Resource | task.Task
 }

@@ -59,8 +59,7 @@ export const validateQueryParameters = (queryParams: Hapi.RequestQuery): Array<f
   return []
 }
 
-const createSandboxSuccessResponse = (prescriptionId: string): fhir.Task => {
-  const lastIssueDispensedDate = convertMomentToISODate(moment.utc().subtract(1, "month"))
+function createTask(prescriptionId: string, lastIssueDispensedDate: string) {
   return {
     resourceType: "Task",
     id: uuid.v4(),
@@ -68,9 +67,6 @@ const createSandboxSuccessResponse = (prescriptionId: string): fhir.Task => {
       createPrescriptionExtension(),
       createRepeatInformationExtension()
     ],
-    meta: {
-      lastUpdated: convertMomentToISODateTime(moment.utc())
-    },
     identifier: [
       fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", uuid.v4())
     ],
@@ -118,6 +114,24 @@ const createSandboxSuccessResponse = (prescriptionId: string): fhir.Task => {
       valueReference: fhir.createIdentifierReference(
         fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", uuid.v4())
       )
+    }]
+  }
+}
+
+const createSandboxSuccessResponse = (prescriptionId: string): fhir.Bundle => {
+  const lastIssueDispensedDate = convertMomentToISODate(moment.utc().subtract(1, "month"))
+  const task = createTask(prescriptionId, lastIssueDispensedDate)
+
+  return {
+    resourceType: "Bundle",
+    id: uuid.v4(),
+    meta: {
+      lastUpdated: convertMomentToISODateTime(moment.utc())
+    },
+    identifier: fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", uuid.v4()),
+    type: "searchset",
+    entry: [{
+      resource: task
     }]
   }
 }
