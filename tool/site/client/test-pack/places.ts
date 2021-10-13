@@ -6,7 +6,7 @@ import {
 } from "../models"
 
 export function createPlaceResources(careSetting: string, fhirPrescription: Bundle): void {
-  if (careSetting === "Primary-Care" || careSetting === "Homecare") {
+  if (careSetting === "Primary-Care") {
     fhirPrescription.entry.push({
       fullUrl: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
       resource: <Organization> {
@@ -55,7 +55,7 @@ export function createPlaceResources(careSetting: string, fhirPrescription: Bund
         }
       }
     })
-  } else if (careSetting === "Secondary-Care") {
+  } else if (careSetting === "Secondary-Care" || careSetting === "Homecare") {
     fhirPrescription.entry.push({
       fullUrl: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
       resource: <Organization> {
