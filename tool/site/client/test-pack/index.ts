@@ -1,5 +1,6 @@
 import * as XLSX from "xlsx"
 import {pageData} from "../ui/state"
+import {createNominatedPharmacies} from "./nominated_pharmacies"
 import {createPatients} from "./patients"
 import {createPrescribers} from "./prescribers"
 import {createPrescriptions} from "./prescriptions"
@@ -25,12 +26,15 @@ const parseExcel = (file: Blob) => {
     })
 
     const patientRows = getRowsFromSheet("Patients", workbook)
-    const prescriberRows = getRowsFromSheet("Prescribers", workbook)
+    const prescriberRows = getRowsFromSheet("Prescribers", workbook, false)
+    const nominatedPharmacyRows = getRowsFromSheet("Nominated_Pharmacies", workbook, false)
     const prescriptionRows = getRowsFromSheet("Prescriptions", workbook)
-    // todo: check enough patients and prescribers to cover all prescriptions
+    // todo: sanity check user input and provide feedback if
+    // patients and prescriber count doesn't match prescription count
     const patients = createPatients(patientRows)
     const prescribers = createPrescribers(prescriberRows)
-    pageData.payloads = createPrescriptions(patients, prescribers, prescriptionRows)
+    const nominatedPharmacies = createNominatedPharmacies(nominatedPharmacyRows)
+    pageData.payloads = createPrescriptions(patients, prescribers, nominatedPharmacies, prescriptionRows)
   }
 
   reader.onerror = function (ex) {
@@ -40,9 +44,9 @@ const parseExcel = (file: Blob) => {
   reader.readAsBinaryString(file)
 }
 
-function getRowsFromSheet(sheetName: string, workbook: XLSX.WorkBook) {
+function getRowsFromSheet(sheetName: string, workbook: XLSX.WorkBook, required = true) {
   const sheet = workbook.Sheets[sheetName]
-  if (!sheet)
+  if (!sheet && required)
     throw new Error(`Could not find a sheet called '${sheetName}'`)
   //eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore

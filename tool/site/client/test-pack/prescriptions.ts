@@ -14,18 +14,21 @@ import {convertMomentToISODate} from "../lib/date-time"
 import {createMessageHeaderEntry} from "./message-header"
 import {getNhsNumber} from "../parsers/read/patient-parser"
 import {createPlaceResources} from "./places"
+import {updateNominatedPharmacy} from "../parsers/write/bundle-parser"
 
 export function createPrescriptions(
   patients: Array<BundleEntry>,
   prescribers: Array<BundleEntry>,
+  nominatedPharmacies: Array<string>,
   rows: Array<StringKeyedObject>
 ): any[] {
   const prescriptions = []
   const prescriptionRows = groupBy(rows, (row: StringKeyedObject) => row["Test"])
   prescriptionRows.forEach(prescriptionRows => {
     const prescriptionRow = prescriptionRows[0]
-    const patient = getPatientBundleEntry(patients, prescriptionRows)
-    const prescriber = getPrescriberBundleEntry(prescribers, prescriptionRows)
+    const patient = getPatientBundleEntry(patients, prescriptionRow)
+    const prescriber = getPrescriberBundleEntry(prescribers, prescriptionRow)
+    const nominatedPharmacy = getNominatedPharmacyOdsCode(nominatedPharmacies, prescriptionRow)
 
     const prescriptionTreatmentTypeCode = getPrescriptionTreatmentTypeCode(prescriptionRow)
 
@@ -36,43 +39,58 @@ export function createPrescriptions(
         repeatsIssued < repeatsAllowed;
         repeatsIssued++
       ) {
-        prescriptions.push(
-          createPrescription(
-            patient,
-            prescriber,
-            prescriptionRows,
-            repeatsIssued,
-            repeatsAllowed
-          )
-        )
-      }
-    } else if (prescriptionTreatmentTypeCode === "continuous-repeat-dispensing") {
-      prescriptions.push(
-        createPrescription(
+        const prescription = createPrescription(
           patient,
           prescriber,
           prescriptionRows,
-          0,
-          parseInt(prescriptionRow["Issues"]) - 1
+          repeatsIssued,
+          repeatsAllowed
         )
+        const bundle = JSON.parse(prescription)
+        updateNominatedPharmacy(bundle, nominatedPharmacy)
+        prescriptions.push(JSON.stringify(bundle))
+      }
+    } else if (prescriptionTreatmentTypeCode === "continuous-repeat-dispensing") {
+      const prescription = createPrescription(
+        patient,
+        prescriber,
+        prescriptionRows,
+        0,
+        parseInt(prescriptionRow["Issues"]) - 1
       )
+      const bundle = JSON.parse(prescription)
+      updateNominatedPharmacy(bundle, nominatedPharmacy)
+      prescriptions.push(JSON.stringify(bundle))
     } else {
-      prescriptions.push(createPrescription(patient, prescriber, prescriptionRows))
+      const prescription = createPrescription(patient, prescriber, prescriptionRows)
+      const bundle = JSON.parse(prescription)
+      updateNominatedPharmacy(bundle, nominatedPharmacy)
+      prescriptions.push(JSON.stringify(bundle))
     }
   })
   return prescriptions
 }
 
-function getPatientBundleEntry(patients: Array<BundleEntry>, prescriptionRows: Array<StringKeyedObject>) {
-  const prescription = prescriptionRows[0]
-  const testNumber = parseInt(prescription["Test"])
+function getPatientBundleEntry(patients: Array<BundleEntry>, prescriptionRow: StringKeyedObject) {
+  const testNumber = parseInt(prescriptionRow["Test"])
   return patients[testNumber - 1]
 }
 
-function getPrescriberBundleEntry(prescribers: Array<BundleEntry>, prescriptionRows: Array<StringKeyedObject>) {
-  const prescription = prescriptionRows[0]
-  const testNumber = parseInt(prescription["Test"])
+function getPrescriberBundleEntry(prescribers: Array<BundleEntry>, prescriptionRow: StringKeyedObject) {
+  if (!prescriptionRow["Test"]) {
+    return null
+  }
+
+  const testNumber = parseInt(prescriptionRow["Test"])
   return prescribers[testNumber - 1]
+}
+
+function getNominatedPharmacyOdsCode(nominatedPharmacies: Array<string>, prescriptionRow: StringKeyedObject) {
+  if (!prescriptionRow["Test"]) {
+    return null
+  }
+  const testNumber = parseInt(prescriptionRow["Test"])
+  return nominatedPharmacies[testNumber - 1]
 }
 
 function createPrescription(
@@ -142,7 +160,7 @@ function createPrescription(
     entry: [
       createMessageHeaderEntry(),
       patientEntry,
-      practitionerEntry,
+      practitionerEntry ?? {/*todo: default for this */},
       practitionerRoleEntry,
       {
         fullUrl: "urn:uuid:51793ac0-112f-46c7-a891-9af8cefb206e",

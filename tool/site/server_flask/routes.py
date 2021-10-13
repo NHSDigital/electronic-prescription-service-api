@@ -217,7 +217,8 @@ def get_metadata():
 @app.route(EDIT_URL, methods=["GET"])
 @exclude_from_auth()
 def get_edit():
-    short_prescription_id = flask.request.args.get("prescription_id")
+    # handles '+' in query_string where flask.request.args.get does not
+    short_prescription_id = flask.request.query_string.decode("utf-8")[len("prescription_id="):]
     if short_prescription_id is None:
         return flask.redirect(f"{config.BASE_URL}change-auth")
     bundle = load_prepare_request(short_prescription_id)

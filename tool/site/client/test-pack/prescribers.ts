@@ -8,14 +8,14 @@ export function createPrescribers(rows: Array<StringKeyedObject>): Array<BundleE
     const prescribingCode = row["Prescribing Code"]?.toString()
     const prescribingCodeType = row["Prescribing Code Type"]?.toString()
 
-    let practitionerIdentifier = [
+    const practitionerIdentifier = [
       {
         system: "https://fhir.nhs.uk/Id/sds-user-id",
         value: "7020134158"
       }
     ]
 
-    let professionalCodeSystem: string = ""
+    let professionalCodeSystem = ""
     switch (professionalCodeType) {
       case "GMC":
         professionalCodeSystem = "https://fhir.hl7.org.uk/Id/gmc-number"
@@ -47,10 +47,10 @@ export function createPrescribers(rows: Array<StringKeyedObject>): Array<BundleE
     switch (prescribingCodeType) {
       case "DIN":
         practitionerIdentifier.push({
-            system: "https://fhir.hl7.org.uk/Id/din-number",
-            value: prescribingCode
+          system: "https://fhir.hl7.org.uk/Id/din-number",
+          value: prescribingCode
         })
-      break
+        break
     }
 
     return {
