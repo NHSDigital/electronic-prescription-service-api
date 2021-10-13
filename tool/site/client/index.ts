@@ -26,7 +26,7 @@ import {
 } from "./ui/state"
 import {APIResponse, PrescriptionAction} from "./ui/view-models"
 import {makeRequest} from "./api/make-request"
-import {initialiseTestPack} from "./importers/test-pack"
+import {initialiseTestPack} from "./test-pack"
 import {
   sanitiseProdTestData,
   updateBundleIds,
@@ -274,16 +274,15 @@ customWindow.sendClaimRequest = function () {
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 window.onerror = function (msg, url, line, col, error) {
-  // todo: fix cancellation page checkbox, prevent rivets from publishing checkbox values
+  // todo: remove when migrated to react (this is a workaround for a rivets issue)
   if (
     pageData.mode === "cancel" &&
     msg === "Uncaught TypeError: Cannot read property 'length' of undefined"
   ) {
     return true
   }
-  addError(
-    "Unhandled error: " + msg + " at " + url + ":" + line + " col " + col
-  )
+  console.log("Unhandled error: " + msg + " at " + url + ":" + line + " col " + col)
+  addError(msg.toString().replace("Uncaught Error: ", ""))
   return true
 }
 

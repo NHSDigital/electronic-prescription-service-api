@@ -184,7 +184,12 @@ rivets.formatters.showPharmacyList = function (mode: string) {
 }
 
 rivets.formatters.joinWithSpaces = function (strings: Array<string>) {
-  return strings.join(" ")
+  try {
+    return strings.join(" ")
+  }
+  catch (err) {
+    return strings
+  }
 }
 
 rivets.formatters.appendPageMode = function (string: string) {
