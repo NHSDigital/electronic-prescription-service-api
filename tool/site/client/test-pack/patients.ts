@@ -33,27 +33,16 @@ export function createPatients(rows: Array<StringKeyedObject>): Array<BundleEntr
           {
             use: "usual",
             family: row["FAMILY_NAME"],
-            given: [
-              //row["OTHER_GIVEN_NAME"], - todo, null handling
-              row["GIVEN_NAME"]
-            ],
+            given: getGivenName(row),
             prefix: [row["TITLE"]]
           }
         ],
         gender: getGender(row),
-        birthDate: `${row["DATE_OF_BIRTH"].toString().substring(0, 4)}-${row[
-          "DATE_OF_BIRTH"
-        ].toString().substring(4, 6)}-${row["DATE_OF_BIRTH"].toString().substring(6)}`,
+        birthDate: getBirthDate(row),
         address: [
           {
             use: "home",
-            line: [
-              //row["ADDRESS_LINE_1"], todo null handling
-              row["ADDRESS_LINE_2"],
-              //row["ADDRESS_LINE_3"],
-              row["ADDRESS_LINE_4"]
-              //row["ADDRESS_LINE_5"]
-            ],
+            line: getAddressLines(row),
             postalCode: row["POST_CODE"]
           }
         ],
@@ -70,6 +59,13 @@ export function createPatients(rows: Array<StringKeyedObject>): Array<BundleEntr
   })
 }
 
+function getGivenName(row: StringKeyedObject): string[] {
+  return [
+    row["OTHER_GIVEN_NAME"],
+    row["GIVEN_NAME"]
+  ].filter(Boolean)
+}
+
 function getGender(row: StringKeyedObject) {
   const gender = row["GENDER"].toLowerCase()
   if (gender === "indeterminate") {
@@ -79,4 +75,19 @@ function getGender(row: StringKeyedObject) {
     return "unknown"
   }
   return gender
+}
+
+function getBirthDate(row: StringKeyedObject): string {
+  return `${row["DATE_OF_BIRTH"].toString().substring(0, 4)}`
+    + `-${row["DATE_OF_BIRTH"].toString().substring(4, 6)}`
+    + `-${row["DATE_OF_BIRTH"].toString().substring(6)}`
+}
+
+function getAddressLines(row: StringKeyedObject): string[] {
+  return [
+    row["ADDRESS_LINE_1"],
+    row["ADDRESS_LINE_2"],
+    row["ADDRESS_LINE_3"],
+    row["ADDRESS_LINE_4"]
+  ].filter(Boolean)
 }
