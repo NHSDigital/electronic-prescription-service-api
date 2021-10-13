@@ -333,7 +333,7 @@ function createMedicationRequests(
 
 function getDispenseRequest(row: StringKeyedObject): MedicationRequestDispenseRequest {
   const prescriptionTreatmentTypeCode = getPrescriptionTreatmentTypeCode(row)
-  
+
   const shouldHaveRepeatInformation =
     prescriptionTreatmentTypeCode === "continuous"
     || prescriptionTreatmentTypeCode === "continuous-repeat-dispensing"

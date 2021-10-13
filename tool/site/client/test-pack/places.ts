@@ -5,7 +5,7 @@ import {
   Location
 } from "../models"
 
-export function createPlaceResources(careSetting: string, fhirPrescription: Bundle) {
+export function createPlaceResources(careSetting: string, fhirPrescription: Bundle): void {
   if (careSetting === "Primary-Care" || careSetting === "Homecare") {
     fhirPrescription.entry.push({
       fullUrl: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8",
