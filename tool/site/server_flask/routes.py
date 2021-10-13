@@ -233,21 +233,22 @@ def get_edit():
 @app.route(EDIT_URL, methods=["POST"])
 @exclude_from_auth()
 def post_edit():
-    request_bundles = flask.request.json
-    short_prescription_ids = []
-    for bundle in request_bundles:
-        short_prescription_id = get_prescription_id(bundle)
-        short_prescription_ids.append(short_prescription_id)
-        add_prepare_request(short_prescription_id, bundle)
-    first_bundle = request_bundles[0]
-    current_short_prescription_id = get_prescription_id(first_bundle)
-    response = app.make_response({
-        "bundle": first_bundle,
-        "errors": []
-        # todo: make a $validate call against ?sandbox? for non-authed users to provide validation errors against test-pack/individual prescription
-    })
-    update_pagination(response, short_prescription_ids, current_short_prescription_id)
-    return response
+    return hapi_passthrough.post_edit(flask.request.json)
+    # request_bundles = flask.request.json
+    # short_prescription_ids = []
+    # for bundle in request_bundles:
+    #     short_prescription_id = get_prescription_id(bundle)
+    #     short_prescription_ids.append(short_prescription_id)
+    #     add_prepare_request(short_prescription_id, bundle)
+    # first_bundle = request_bundles[0]
+    # current_short_prescription_id = get_prescription_id(first_bundle)
+    # response = app.make_response({
+    #     "bundle": first_bundle,
+    #     "errors": []
+    #     # todo: make a $validate call against ?sandbox? for non-authed users to provide validation errors against test-pack/individual prescription
+    # })
+    # update_pagination(response, short_prescription_ids, current_short_prescription_id)
+    # return response
 
 
 @app.route(SIGN_URL, methods=["GET"])

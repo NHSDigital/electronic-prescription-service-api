@@ -50,6 +50,12 @@ docker_service:
         environment:
             -   name: COMMIT_ID
                 value: "{{ SOURCE_COMMIT_ID }}"
+            -   name: REDIS_URL
+                value: "localhost"
+            -   name: REDIS_PORT
+                value: "6379"
+            -   name: SESSION_TOKEN_ENCRYPTION_KEY
+                valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/int/test-client/session-token-encryption-key"
         health_check:
             matcher: "200"
             path: "/_healthcheck"

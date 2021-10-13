@@ -1,6 +1,8 @@
 import Hapi from "@hapi/hapi"
 import routes from "./routes"
 import HapiPino from "hapi-pino"
+import Yar from "@hapi/yar"
+import CatboxRedis from "@hapi/catbox-redis"
 
 const init = async () => {
   const server = Hapi.server({
@@ -11,10 +13,35 @@ const init = async () => {
       payload: {
         parse: false
       }
-    }
+    },
+    cache: [{
+      name: 'eps_api_tool_hapi',
+      provider: {
+          constructor: CatboxRedis,
+          options: {
+              host: process.env.REDIS_URL,
+              port: process.env.REDIS_PORT
+          }
+      }
+    }]
   })
 
   server.route(routes)
+
+  await server.register({
+    plugin: Yar,
+    options: {
+      // Use "0" maxCookieSize to force all session data to be written to cache
+      maxCookieSize: 0,
+      cache: {
+          expiresIn: 24 * 60 * 60 * 1000
+      },
+      cookieOptions: {
+          password: process.env.SESSION_TOKEN_ENCRYPTION_KEY,
+          isSecure: true
+      }
+    }
+  })
 
   await server.register({
     plugin: HapiPino,

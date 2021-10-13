@@ -5,6 +5,7 @@
   "main": "app.js",
   "scripts": {
     "test": "jest",
+    "build:dev": "tsc --build --clean && tsc --alwaysStrict --project tsconfig.json",
     "build:prod": "tsc --project ./tsconfig.json",
     "start": "node app.js --use_strict",
     "lint": "eslint . --max-warnings 0 --fix"
@@ -12,9 +13,10 @@
   "author": "NHS Digital",
   "license": "MIT",
   "devDependencies": {
+    "@types/hapi__catbox-redis": "^5.0.4",
     "@types/hapi__hapi": "^20.0.9",
+    "@types/hapi__yar": "^10.1.1",
     "@types/hapi-pino": "^8.0.3",
-    "@types/module-alias": "^2.0.1",
     "@types/node": "^16.10.3",
     "@typescript-eslint/eslint-plugin": "^4.29.0",
     "@typescript-eslint/parser": "^4.29.0",
@@ -27,8 +29,11 @@
     "npm": "7.x"
   },
   "dependencies": {
+    "@hapi/catbox-redis": "^6.0.2",
     "@hapi/hapi": "^20.2.0",
+    "@hapi/yar": "^10.1.1",
     "hapi-pino": "^8.4.0",
-    "module-alias": "^2.2.2"
+    "models": "file:../../../models",
+    "coordinator": "file:../../../coordinator"
   }
 }
