@@ -1,0 +1,34 @@
+{
+  "name": "EPSAT-Server",
+  "version": "1.0.0",
+  "description": "EPS API Tool Server",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest",
+    "build:prod": "tsc --project ./tsconfig.json",
+    "start": "node app.js --use_strict",
+    "lint": "eslint . --max-warnings 0 --fix"
+  },
+  "author": "NHS Digital",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/hapi__hapi": "^20.0.9",
+    "@types/hapi-pino": "^8.0.3",
+    "@types/module-alias": "^2.0.1",
+    "@types/node": "^16.10.3",
+    "@typescript-eslint/eslint-plugin": "^4.29.0",
+    "@typescript-eslint/parser": "^4.29.0",
+    "eslint": "^7.30.0",
+    "eslint-plugin-import-newlines": "^1.1.4",
+    "typescript": "^4.4.3"
+  },
+  "engines": {
+    "node": "12.x",
+    "npm": "7.x"
+  },
+  "dependencies": {
+    "@hapi/hapi": "^20.2.0",
+    "hapi-pino": "^8.4.0",
+    "module-alias": "^2.2.2"
+  }
+}

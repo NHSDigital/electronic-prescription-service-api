@@ -1,22 +1,21 @@
 {
-  "name": "EPSAT",
+  "name": "EPSAT-Client",
   "version": "1.0.0",
-  "description": "EPS Assurance Tool",
+  "description": "EPS API Tool Client",
   "main": "client/index.js",
   "scripts": {
     "test": "jest",
-    "build": "webpack --mode=production --node-env=production",
     "build:dev": "webpack --mode=development",
     "build:prod": "webpack --mode=production --node-env=production",
-    "lint": "eslint ./client --max-warnings 0 --fix",
+    "lint": "eslint . --max-warnings 0 --fix",
     "watch": "webpack --watch"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/NHSDigital/prescribing-demo.git"
+    "url": "git+https://github.com/NHSDigital/electronic-prescription-service-api.git"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "NHS Digital",
+  "license": "MIT",
   "devDependencies": {
     "@babel/core": "7.14.6",
     "@babel/preset-env": "7.14.7",
@@ -49,8 +48,5 @@
     "rivets": "^0.9.6",
     "uuid": "^8.3.2",
     "xlsx": "^0.17.0"
-  },
-  "_moduleAliases": {
-    "@models": "models"
   }
 }
