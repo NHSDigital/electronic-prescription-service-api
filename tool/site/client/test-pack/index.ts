@@ -1,5 +1,7 @@
 import * as XLSX from "xlsx"
+import {pageData} from "../ui/state"
 import {createPatients} from "./patients"
+import {createPrescribers} from "./prescribers"
 import {createPrescriptions} from "./prescriptions"
 
 export function initialiseTestPack(): void {
@@ -23,9 +25,12 @@ const parseExcel = (file: Blob) => {
     })
 
     const patientRows = getRowsFromSheet("Patients", workbook)
+    const prescriberRows = getRowsFromSheet("Prescribers", workbook)
     const prescriptionRows = getRowsFromSheet("Prescriptions", workbook)
+    // todo: check enough patients and prescribers to cover all prescriptions
     const patients = createPatients(patientRows)
-    createPrescriptions(patients, prescriptionRows)
+    const prescribers = createPrescribers(prescriberRows)
+    pageData.payloads = createPrescriptions(patients, prescribers, prescriptionRows)
   }
 
   reader.onerror = function (ex) {

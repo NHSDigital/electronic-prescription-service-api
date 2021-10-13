@@ -6,23 +6,26 @@ import {groupBy, StringKeyedObject} from "./helpers"
 import {
   Bundle,
   BundleEntry,
-  Practitioner,
   PractitionerRole,
   CommunicationRequest,
   MedicationRequestDispenseRequest
 } from "../models"
 import {convertMomentToISODate} from "../lib/date-time"
-import {pageData} from "../ui/state"
 import {createMessageHeaderEntry} from "./message-header"
 import {getNhsNumber} from "../parsers/read/patient-parser"
 import {createPlaceResources} from "./places"
 
-export function createPrescriptions(patients: Array<BundleEntry>, rows: Array<StringKeyedObject>): void {
-  pageData.payloads = []
+export function createPrescriptions(
+  patients: Array<BundleEntry>,
+  prescribers: Array<BundleEntry>,
+  rows: Array<StringKeyedObject>
+): any[] {
+  const prescriptions = []
   const prescriptionRows = groupBy(rows, (row: StringKeyedObject) => row["Test"])
   prescriptionRows.forEach(prescriptionRows => {
     const prescriptionRow = prescriptionRows[0]
     const patient = getPatientBundleEntry(patients, prescriptionRows)
+    const prescriber = getPrescriberBundleEntry(prescribers, prescriptionRows)
 
     const prescriptionTreatmentTypeCode = getPrescriptionTreatmentTypeCode(prescriptionRow)
 
@@ -33,9 +36,10 @@ export function createPrescriptions(patients: Array<BundleEntry>, rows: Array<St
         repeatsIssued < repeatsAllowed;
         repeatsIssued++
       ) {
-        pageData.payloads.push(
+        prescriptions.push(
           createPrescription(
             patient,
+            prescriber,
             prescriptionRows,
             repeatsIssued,
             repeatsAllowed
@@ -43,18 +47,20 @@ export function createPrescriptions(patients: Array<BundleEntry>, rows: Array<St
         )
       }
     } else if (prescriptionTreatmentTypeCode === "continuous-repeat-dispensing") {
-      pageData.payloads.push(
+      prescriptions.push(
         createPrescription(
           patient,
+          prescriber,
           prescriptionRows,
           0,
           parseInt(prescriptionRow["Issues"]) - 1
         )
       )
     } else {
-      pageData.payloads.push(createPrescription(patient, prescriptionRows))
+      prescriptions.push(createPrescription(patient, prescriber, prescriptionRows))
     }
   })
+  return prescriptions
 }
 
 function getPatientBundleEntry(patients: Array<BundleEntry>, prescriptionRows: Array<StringKeyedObject>) {
@@ -63,8 +69,15 @@ function getPatientBundleEntry(patients: Array<BundleEntry>, prescriptionRows: A
   return patients[testNumber - 1]
 }
 
+function getPrescriberBundleEntry(prescribers: Array<BundleEntry>, prescriptionRows: Array<StringKeyedObject>) {
+  const prescription = prescriptionRows[0]
+  const testNumber = parseInt(prescription["Test"])
+  return prescribers[testNumber - 1]
+}
+
 function createPrescription(
   patientEntry: BundleEntry,
+  practitionerEntry: BundleEntry,
   prescriptionRows: Array<StringKeyedObject>,
   repeatsIssued = 0,
   maxRepeatsAllowed = 0
@@ -110,7 +123,7 @@ function createPrescription(
     }
   }
 
-  if (careSetting === "Secondary-Care") {
+  if (careSetting === "Secondary-Care" || careSetting === "Homecare") {
     (practitionerRoleEntry.resource as PractitionerRole).healthcareService = [
       {
         reference: "urn:uuid:54b0506d-49af-4245-9d40-d7d64902055e"
@@ -129,35 +142,8 @@ function createPrescription(
     entry: [
       createMessageHeaderEntry(),
       patientEntry,
+      practitionerEntry,
       practitionerRoleEntry,
-      {
-        fullUrl: "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a",
-        resource: <Practitioner> {
-          resourceType: "Practitioner",
-          id: "a8c85454-f8cb-498d-9629-78e2cb5fa47a",
-          identifier: [
-            {
-              system: "https://fhir.nhs.uk/Id/sds-user-id",
-              value: "7020134158"
-            },
-            {
-              system: "https://fhir.hl7.org.uk/Id/gmc-number",
-              value: "G9999999"
-            },
-            {
-              system: "https://fhir.hl7.org.uk/Id/din-number",
-              value: "70201123456"
-            }
-          ],
-          name: [
-            {
-              family: "Edwards",
-              given: ["Thomas"],
-              prefix: ["DR"]
-            }
-          ]
-        }
-      },
       {
         fullUrl: "urn:uuid:51793ac0-112f-46c7-a891-9af8cefb206e",
         resource: <CommunicationRequest> {
