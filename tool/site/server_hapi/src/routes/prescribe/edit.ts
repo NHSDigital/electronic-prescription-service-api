@@ -33,7 +33,7 @@ export default [
         "bundle": bundle
       }).code(200)
     }
-  },
+  }
 ]
 
 function getPayload(request: Hapi.Request): unknown {

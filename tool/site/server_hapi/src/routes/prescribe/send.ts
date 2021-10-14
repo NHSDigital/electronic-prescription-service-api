@@ -5,11 +5,11 @@ export default [
     method: "GET",
     path: "/prescribe/send",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const authMethod = request.yar.get("auth_method") ?? "simulated"
-      const accessToken = request.yar.get("access_token")
-      const signatureToken = request.query["token"]
+      // const authMethod = request.yar.get("auth_method") ?? "simulated"
+      // const accessToken = request.yar.get("access_token")
+      // const signatureToken = request.query["token"]
       const signatureResponse = downloadSignatureRequest(request)
-      const prescriptionId = request.yar.get("prescription_id")
+      // const prescriptionId = request.yar.get("prescription_id")
       const prescriptionIds = request.yar.get("prescription_ids")
       const prepareResponses = prescriptionIds.map((id: string) => {
         return {
@@ -29,12 +29,12 @@ export default [
           f"<SignatureValue>${signature}</SignatureValue>"
           f"<KeyInfo><X509Data><X509Certificate>${certificate}</X509Certificate></X509Data></KeyInfo>"
           f"</Signature>`
-          const xmlDsigEncoded = Buffer.from(xmlDsig, "utf-8").toString("base64")  
-          const provenance = createProvenance(prepareResponse.response.timestamp, xmlDsigEncoded)
-          const prepareRequest = request.yar.get(`prepare_request_${prepareResponse.prescriptionId}`)
-          prepareRequest.entry.push(provenance)
-          const sendRequest = prepareRequest
-          request.yar.set(`prescription_order_send_request_${prepareResponse.prescriptionId}`, sendRequest)
+        const xmlDsigEncoded = Buffer.from(xmlDsig, "utf-8").toString("base64")
+        const provenance = createProvenance(prepareResponse.response.timestamp, xmlDsigEncoded)
+        const prepareRequest = request.yar.get(`prepare_request_${prepareResponse.prescriptionId}`)
+        prepareRequest.entry.push(provenance)
+        const sendRequest = prepareRequest
+        request.yar.set(`prescription_order_send_request_${prepareResponse.prescriptionId}`, sendRequest)
       })
       return h.response({}).code(200)
     }
@@ -43,7 +43,7 @@ export default [
     method: "POST",
     path: "/prescribe/send",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const accessToken = request.yar.get("access_token")
+      // const accessToken = request.yar.get("access_token")
       const prescriptionIds = request.yar.get("prescription_ids")
       if (prescriptionIds.length === 1) {
         const send_request = request.yar.get(`prescription_order_send_request_${prescriptionIds[0]}`)
@@ -62,22 +62,22 @@ export default [
   }
 ]
 
-function downloadSignatureRequest(request: Hapi.Request): {signatures: {id: string, signature: string}[], certificate: string} {
+function downloadSignatureRequest(request: Hapi.Request): {signatures: {id: string, signature: string}[], certificate: string} | void {
   // todo: non-mocked implementation
   const useMockSignatureResponse = process.env.ENVIRONMENT?.endsWith("-sandbox")
-  if (useMockSignatureResponse || true /* todo: remove once live implemented */) {
-      const mockCertificate = ""
-      const mockSignatures =
+  if (useMockSignatureResponse) {
+    const mockCertificate = ""
+    const mockSignatures =
         request.yar.get("prescription_ids").map((id: string) => {
           return {
             id,
             signature: ""
           }
         })
-      return {
-        signatures: mockSignatures,
-        certificate: mockCertificate
-      }
+    return {
+      signatures: mockSignatures,
+      certificate: mockCertificate
+    }
   }
 }
 

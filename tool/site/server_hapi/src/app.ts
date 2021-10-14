@@ -2,7 +2,7 @@ import Hapi from "@hapi/hapi"
 import routes from "./routes"
 import HapiPino from "hapi-pino"
 import Yar from "@hapi/yar"
-import Catbox from "@hapi/catbox"
+// import Catbox from "@hapi/catbox"
 import CatboxRedis from "@hapi/catbox-redis"
 
 export let server: Hapi.Server
@@ -18,13 +18,13 @@ const init = async () => {
       }
     },
     cache: [{
-      name: 'eps_api_tool_hapi',
+      name: "eps_api_tool_hapi",
       provider: {
-          constructor: CatboxRedis,
-          options: {
-              host: process.env.REDIS_URL,
-              port: process.env.REDIS_PORT
-          }
+        constructor: CatboxRedis,
+        options: {
+          host: process.env.REDIS_URL,
+          port: process.env.REDIS_PORT
+        }
       }
     }]
   })
@@ -38,11 +38,11 @@ const init = async () => {
       // Use "0" maxCookieSize to force all session data to be written to cache
       maxCookieSize: 0,
       cache: {
-          expiresIn: 24 * 60 * 60 * 1000
+        expiresIn: 24 * 60 * 60 * 1000
       },
       cookieOptions: {
-          password: process.env.SESSION_TOKEN_ENCRYPTION_KEY,
-          isSecure: true
+        password: process.env.SESSION_TOKEN_ENCRYPTION_KEY,
+        isSecure: true
       }
     }
   })
