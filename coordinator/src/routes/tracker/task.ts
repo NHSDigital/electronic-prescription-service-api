@@ -59,7 +59,7 @@ export const validateQueryParameters = (queryParams: Hapi.RequestQuery): Array<f
   return []
 }
 
-function createTask(prescriptionId: string, lastIssueDispensedDate: string) {
+function createTask(prescriptionId: string, lastIssueDispensedDate: string): fhir.Task {
   return {
     resourceType: "Task",
     id: uuid.v4(),
@@ -129,6 +129,7 @@ const createSandboxSuccessResponse = (prescriptionId: string): fhir.Bundle => {
       lastUpdated: convertMomentToISODateTime(moment.utc())
     },
     identifier: fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", uuid.v4()),
+    total: 1,
     type: "searchset",
     entry: [{
       resource: task
