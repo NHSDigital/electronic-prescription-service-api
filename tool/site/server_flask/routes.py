@@ -306,8 +306,8 @@ def get_send():
 
 @app.route(SEND_URL, methods=["POST"])
 def post_send():
-    response = hapi_passthrough.post_send()
-    return post_send_single(response)
+    return hapi_passthrough.post_send()
+    # post_send_single(response)
     # access_token = get_access_token()
     # session_short_prescription_ids = get_all_prescription_ids_from_cookie()
     # if len(session_short_prescription_ids) == 1:
@@ -316,16 +316,16 @@ def post_send():
     #     return post_send_bulk(session_short_prescription_ids, access_token)
 
 
-def post_send_single(response):
-    return {
-        "prescription_ids": response["prescription_ids"],
-        "prescription_id": response["prescription_id"],
-        "success": response["success"],
-        "request_xml": response["request_xml"],
-        "request": response["request"],
-        "response": response["response"],
-        "response_xml": response["response_xml"]
-    }
+# def post_send_single(response):
+#     return {
+#         "prescription_ids": response["prescription_ids"],
+#         "prescription_id": response["prescription_id"],
+#         "success": response["success"],
+#         "request_xml": response["request_xml"],
+#         "request": response["request"],
+#         "response": response["response"],
+#         "response_xml": response["response_xml"]
+#     }
 
 
 def post_send_bulk(short_prescription_ids, access_token):
