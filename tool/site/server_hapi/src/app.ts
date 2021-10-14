@@ -42,7 +42,8 @@ const init = async () => {
       },
       cookieOptions: {
         password: process.env.SESSION_TOKEN_ENCRYPTION_KEY,
-        isSecure: true
+        isSecure: true,
+        isSameSite: "None"
       }
     }
   })
