@@ -62,8 +62,7 @@ export default [
   }
 ]
 
-function downloadSignatureRequest(request: Hapi.Request): {signatures: {id: string, signature: string}[], certificate: string} | void {
-  // todo: non-mocked implementation
+function downloadSignatureRequest(request: Hapi.Request): {signatures: {id: string, signature: string}[], certificate: string} {
   const useMockSignatureResponse = process.env.ENVIRONMENT?.endsWith("-sandbox")
   if (useMockSignatureResponse) {
     const mockCertificate = ""
@@ -77,6 +76,13 @@ function downloadSignatureRequest(request: Hapi.Request): {signatures: {id: stri
     return {
       signatures: mockSignatures,
       certificate: mockCertificate
+    }
+  }
+  else {
+    // todo: non-mocked implementation
+    return {
+      signatures: [],
+      certificate: ""
     }
   }
 }
