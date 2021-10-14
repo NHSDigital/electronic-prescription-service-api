@@ -10,7 +10,6 @@ export interface TrackerClient {
     headers: Hapi.Util.Dictionary<string>,
     logger: pino.Logger
   ): Promise<TrackerSpineResponse>
-
 }
 
 function getTrackerClient(liveMode: boolean): TrackerClient {

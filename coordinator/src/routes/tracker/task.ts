@@ -32,18 +32,10 @@ export default [{
           .code(200)
           .type(ContentTypes.JSON)
       } else {
-        try {
-          const translatedResponse = convertSpineResponseToBundle(spineResponse)
-          return responseToolkit
-            .response({spineResponse, translatedResponse})
-            .code(200)
-            .type(ContentTypes.FHIR)
-        } catch (err) {
-          return responseToolkit
-            .response({spineResponse, err})
-            .code(200)
-            .type(ContentTypes.JSON)
-        }
+        return responseToolkit
+          .response(convertSpineResponseToBundle(spineResponse))
+          .code(200)
+          .type(ContentTypes.FHIR)
       }
     }
   }

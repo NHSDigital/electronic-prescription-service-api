@@ -16,7 +16,7 @@ export class LiveTrackerClient implements TrackerClient {
     inboundHeaders: Hapi.Util.Dictionary<string>,
     logger: pino.Logger
   ): Promise<TrackerSpineResponse> {
-    const address = this.getItemSummaryUrl()
+    const address = this.getItemDetailUrl()
 
     const outboundHeaders = {
       "Accept": "application/json",
@@ -42,7 +42,7 @@ export class LiveTrackerClient implements TrackerClient {
     }
   }
 
-  getItemSummaryUrl(): string {
+  getItemDetailUrl(): string {
     return `https://${SPINE_ENDPOINT}/mm/${SPINE_LINE_ITEM_PATH}`
   }
 }
