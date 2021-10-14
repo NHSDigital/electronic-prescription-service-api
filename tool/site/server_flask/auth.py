@@ -6,30 +6,11 @@ from cookies import get_auth_method_from_cookie
 from helpers import get_oauth_base_path, create_oauth_state, get_pr_number, get_registered_callback_url
 import config
 
-
-def redirect_and_set_cookies(page_mode, access_token_encrypted, refresh_token_encrypted, access_token_expiry, refresh_token_expiry):
-    redirect_url = f'{config.PUBLIC_APIGEE_URL}/{config.BASE_PATH}'
-    callback_response = flask.redirect(redirect_url)
+def set_access_token_cookies(page_mode, response, access_token, access_token_encrypted, refresh_token_encrypted, access_token_expiry, refresh_token_expiry):
     secure_flag = not config.DEV_MODE
-    # todo: refresh token implementation
-    # callback_response.set_cookie(
-    #     "Access-Token", access_token_encrypted, expires=refresh_token_expiry, secure=secure_flag, httponly=True
-    # )
-    # callback_response.set_cookie(
-    #     "Refresh-Token", refresh_token_encrypted, expires=refresh_token_expiry, secure=secure_flag, httponly=True
-    # )
-    callback_response.set_cookie(
-        "Access-Token", access_token_encrypted, expires=access_token_expiry, secure=secure_flag, httponly=True
-    )
-    callback_response.set_cookie(
-        "Refresh-Token", refresh_token_encrypted, expires=access_token_expiry, secure=secure_flag, httponly=True
-    )
-    # callback_response.set_cookie(
-    #     "Access-Token-Session", "True", expires=access_token_expiry, secure=secure_flag, httponly=True
-    # )
-    # callback_response.set_cookie("Access-Token-Set", "true", expires=refresh_token_expiry, secure=secure_flag)
-    callback_response.set_cookie("Access-Token-Set", "true", expires=access_token_expiry, secure=secure_flag)
-    return callback_response
+    response.set_cookie("Access-Token", access_token_encrypted, expires=access_token_expiry, secure=secure_flag, httponly=True)
+    response.set_cookie("Access-Token-Set", "true", expires=access_token_expiry, secure=secure_flag)
+    return response
 
 
 def exchange_code_for_token(code, auth_method):

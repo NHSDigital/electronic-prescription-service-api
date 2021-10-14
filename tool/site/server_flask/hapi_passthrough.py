@@ -1,7 +1,6 @@
 import json
 import os
 import httpx
-from auth import get_access_token
 from cookies import get_session_cookie_value
 
 
@@ -29,19 +28,31 @@ def get_healthcheck():
 
 
 def get_edit(prescription_id):
-    response = httpx.get(
+    session_cookie_value = get_session_cookie_value()
+    return httpx.get(
         f"{HAPI_URL}{EDIT_URL}?{prescription_id}",
         verify=False,
-    )
-    session_cookie_value = response.cookies["session"]
-    return session_cookie_value, response.json()
+        cookies={
+            "session": session_cookie_value
+        }
+    ).json()
 
 
 def post_edit(body):
+    # when in local mode, we might not have session cookie at this point
+    # as we've skipped login, so ensure it is set here
+    session_cookie_value = get_session_cookie_value()
+    if session_cookie_value:
+        cookies = {
+            "session": session_cookie_value 
+        }
+    else:
+        cookies = {}
     response = httpx.post(
         f"{HAPI_URL}{EDIT_URL}",
         json=body,
         verify=False,
+        cookies=cookies
     )
     session_cookie_value = response.cookies["session"]
     return session_cookie_value, response.json()
@@ -83,13 +94,22 @@ def post_send():
 
 def get_login():
     session_cookie_value = get_session_cookie_value()
-    return httpx.post(
+    return httpx.get(
         f"{HAPI_URL}{AUTH_URL}",
-        json={
-            "access_token": get_access_token()
-        },
         verify=False,
         cookies={
             "session": session_cookie_value
         }
     ).json()
+
+
+def post_login(access_token):
+    response =  httpx.post(
+        f"{HAPI_URL}{AUTH_URL}",
+        json={
+            "access_token": access_token
+        },
+        verify=False
+    )
+    session_cookie_value = response.cookies["session"]
+    return session_cookie_value, response.json()

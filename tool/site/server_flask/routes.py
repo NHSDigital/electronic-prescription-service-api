@@ -20,7 +20,7 @@ from api import (
     make_eps_api_claim_request_untranslated
 )
 from app import app, fernet
-from auth import exchange_code_for_token, get_access_token, login, redirect_and_set_cookies
+from auth import exchange_code_for_token, get_access_token, login, set_access_token_cookies
 from bundle import get_prescription_id, create_provenance
 from client import render_client
 from cookies import (
@@ -35,7 +35,8 @@ from cookies import (
     get_auth_method_from_cookie,
     set_auth_method_cookie,
     set_skip_signature_page_cookie,
-    set_session_cookie
+    set_session_cookie,
+    get_session_cookie_value
 )
 from helpers import (
     pr_redirect_required,
@@ -122,7 +123,6 @@ def auth_check():
                 #     callback_response.set_cookie(
                 #         "Access-Token-Session", "True", expires=access_token_expiry, secure=secure_flag, httponly=True
                 #     )
-                hapi_passthrough.login()
             except:
                 return login()
         else:
@@ -243,17 +243,15 @@ def get_edit():
 def post_edit():
     request_bundles = flask.request.json
     session_cookie_value, response_json = hapi_passthrough.post_edit(request_bundles)
-    # short_prescription_ids = []
-    # for bundle in request_bundles:
-    #     short_prescription_id = get_prescription_id(bundle)
-    #     short_prescription_ids.append(short_prescription_id)
-    #     add_prepare_request(short_prescription_id, bundle)
-    # first_bundle = request_bundles[0]
-    # short_prescription_id = get_prescription_id(first_bundle)
     response = app.make_response(response_json)
+
+    # todo: migrate to hapi
     # update_pagination(response, short_prescription_ids, current_short_prescription_id)
-    # set_current_prescription_id_cookie(response, short_prescription_id)
-    set_session_cookie(response, session_cookie_value)
+
+    # when in local mode, we might not have session cookie at this point
+    # as we've skipped login, so ensure it is set here
+    if get_session_cookie_value() is None:
+        set_session_cookie(response, session_cookie_value)
     return response
 
 
@@ -505,7 +503,9 @@ def post_claim():
 
 @app.route(LOGOUT_URL, methods=["GET"])
 def get_logout():
-    return redirect_and_set_cookies("login", "", "", 0, 0)
+    redirect_url = f'{config.PUBLIC_APIGEE_URL}/{config.BASE_PATH}'
+    response = flask.redirect(redirect_url)
+    return set_access_token_cookies("login", response, "", "", 0, 0)
 
 
 @app.route(CALLBACK_URL, methods=["GET"])
@@ -530,5 +530,9 @@ def get_callback():
     refresh_token_encrypted = fernet.encrypt(refresh_token.encode("utf-8")).decode("utf-8")
     access_token_expires = datetime.datetime.utcnow() + datetime.timedelta(seconds=float(access_token_expires_in))
     refresh_token_expires = datetime.datetime.utcnow() + datetime.timedelta(seconds=float(refresh_token_expires_in))
-    return redirect_and_set_cookies(page_mode, access_token_encrypted, refresh_token_encrypted, access_token_expires,
+    session_cookie_value, _ = hapi_passthrough.post_login(access_token)
+    redirect_url = f'{config.PUBLIC_APIGEE_URL}/{config.BASE_PATH}'
+    response = flask.redirect(redirect_url)
+    set_session_cookie(response, session_cookie_value)
+    return set_access_token_cookies(page_mode, response, access_token_encrypted, refresh_token_encrypted, access_token_expires,
                                     refresh_token_expires)
