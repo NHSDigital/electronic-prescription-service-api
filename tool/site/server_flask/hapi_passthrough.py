@@ -81,7 +81,7 @@ def post_send():
     ).json()
 
 
-def login():
+def get_login():
     session_cookie_value = get_session_cookie_value()
     return httpx.post(
         f"{HAPI_URL}{AUTH_URL}",
