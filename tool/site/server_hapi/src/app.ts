@@ -2,10 +2,13 @@ import Hapi from "@hapi/hapi"
 import routes from "./routes"
 import HapiPino from "hapi-pino"
 import Yar from "@hapi/yar"
+import Catbox from "@hapi/catbox"
 import CatboxRedis from "@hapi/catbox-redis"
 
+export let server: Hapi.Server
+
 const init = async () => {
-  const server = Hapi.server({
+  server = Hapi.server({
     port: 9001,
     host: "0.0.0.0",
     routes: {
@@ -31,6 +34,7 @@ const init = async () => {
   await server.register({
     plugin: Yar,
     options: {
+      storeBlank: false,
       // Use "0" maxCookieSize to force all session data to be written to cache
       maxCookieSize: 0,
       cache: {
@@ -46,8 +50,8 @@ const init = async () => {
   await server.register({
     plugin: HapiPino,
     options: {
-      // Dont pretty print to avoid spamming logs
-      prettyPrint: false,
+      // Dont pretty print in non local envrionment to avoid spamming logs
+      prettyPrint: process.env.ENVIRONMENT?.endsWith("-sandbox"),
       // Redact Authorization headers, see https://getpino.io/#/docs/redaction
       redact: ["req.headers.authorization"]
     }

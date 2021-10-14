@@ -12,12 +12,7 @@ compress = Compress()
 def create_app():
     app = Flask(__name__, static_url_path=config.STATIC_URL)
     compress.init_app(app)
-    app.config.from_mapping(
-        SECRET_KEY=config.SESSION_TOKEN_ENCRYPTION_KEY,
-        SESSION_TYPE="redis",
-        SESSION_REDIS=redis.from_url(config.REDIS_URL),
-        JSON_SORT_KEYS=False
-    )
+    app.config.from_mapping(JSON_SORT_KEYS=False)
     Session(app)
 
     return app

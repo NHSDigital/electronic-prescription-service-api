@@ -1,10 +1,14 @@
+import json
 import os
 import httpx
+from cookies import get_session_cookie_value
 
 HAPI_URL = os.environ["HAPI_URL"]
 STATUS_URL = "/_status"
 HEALTHCHECK_URL = "/_healthcheck"
 EDIT_URL = "/prescribe/edit"
+SIGN_URL = "/prescribe/sign"
+SEND_URL = "/prescribe/send"
 
 
 def get_status():
@@ -21,9 +25,54 @@ def get_healthcheck():
     ).json()
 
 
+def get_edit(prescription_id):
+    response = httpx.get(
+        f"{HAPI_URL}{EDIT_URL}?{prescription_id}",
+        verify=False,
+    )
+    session_cookie_value = response.cookies["session"]
+    return session_cookie_value, response.json()
+
+
 def post_edit(body):
-    return httpx.post(
+    response = httpx.post(
         f"{HAPI_URL}{EDIT_URL}",
         json=body,
         verify=False,
+    )
+    session_cookie_value = response.cookies["session"]
+    return session_cookie_value, response.json()
+
+
+def post_sign():
+    session_cookie_value = get_session_cookie_value()
+    return httpx.post(
+        f"{HAPI_URL}{SIGN_URL}",
+        json={},
+        verify=False,
+        cookies={
+            "session": session_cookie_value
+        }
+    ).json()
+
+
+def get_send():
+    session_cookie_value = get_session_cookie_value()
+    return httpx.get(
+        f"{HAPI_URL}{SEND_URL}",
+        verify=False,
+        cookies={
+            "session": session_cookie_value
+        }
+    ).json()
+
+def post_send():
+    session_cookie_value = get_session_cookie_value()
+    return httpx.post(
+        f"{HAPI_URL}{SEND_URL}",
+        json={},
+        verify=False,
+        cookies={
+            "session": session_cookie_value
+        }
     ).json()

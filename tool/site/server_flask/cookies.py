@@ -83,3 +83,17 @@ def set_skip_signature_page_cookie(response, skip_signature_page):
         secure=not config.DEV_MODE,
         httponly=False,
     )
+
+
+def set_session_cookie(response, session_cookie_value):
+    response.set_cookie(
+        "session",
+        session_cookie_value,
+        expires=datetime.datetime.utcnow() + datetime.timedelta(seconds=float(600)),
+        secure=not config.DEV_MODE,
+        httponly=True
+    )
+
+
+def get_session_cookie_value():
+    return flask.request.cookies.get("session")
