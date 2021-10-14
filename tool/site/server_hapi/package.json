@@ -32,8 +32,6 @@
     "@hapi/catbox-redis": "^6.0.2",
     "@hapi/hapi": "^20.2.0",
     "@hapi/yar": "^10.1.1",
-    "hapi-pino": "^8.4.0",
-    "models": "file:../../../models",
-    "coordinator": "file:../../../coordinator"
+    "hapi-pino": "^8.4.0"
   }
 }

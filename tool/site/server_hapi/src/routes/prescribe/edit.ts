@@ -1,5 +1,4 @@
 import Hapi from "@hapi/hapi"
-import getMedicationRequests from "@coordinator"
 
 export default [
   {
@@ -14,3 +13,13 @@ export default [
     }
   }
 ]
+
+function getMedicationRequests(bundle: any): Array<any> {
+  return getResourcesOfType<any>(bundle, "MedicationRequest")
+}
+
+function getResourcesOfType<T extends any>(bundle: any, resourceType: string): Array<T> {
+  return bundle.entry
+    .map((entry: { resource: any }) => entry.resource)
+    .filter((resource: { resourceType: string }) => resource.resourceType === resourceType) as Array<T>
+}
