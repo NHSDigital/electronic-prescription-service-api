@@ -1,7 +1,9 @@
 import json
 import os
 import httpx
+from auth import get_access_token
 from cookies import get_session_cookie_value
+
 
 HAPI_URL = os.environ["HAPI_URL"]
 STATUS_URL = "/_status"
@@ -9,6 +11,7 @@ HEALTHCHECK_URL = "/_healthcheck"
 EDIT_URL = "/prescribe/edit"
 SIGN_URL = "/prescribe/sign"
 SEND_URL = "/prescribe/send"
+AUTH_URL = "/login"
 
 
 def get_status():
@@ -71,6 +74,20 @@ def post_send():
     return httpx.post(
         f"{HAPI_URL}{SEND_URL}",
         json={},
+        verify=False,
+        cookies={
+            "session": session_cookie_value
+        }
+    ).json()
+
+
+def login():
+    session_cookie_value = get_session_cookie_value()
+    return httpx.post(
+        f"{HAPI_URL}{AUTH_URL}",
+        json={
+            "access_token": get_access_token()
+        },
         verify=False,
         cookies={
             "session": session_cookie_value

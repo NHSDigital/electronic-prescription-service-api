@@ -122,10 +122,17 @@ def auth_check():
                 #     callback_response.set_cookie(
                 #         "Access-Token-Session", "True", expires=access_token_expiry, secure=secure_flag, httponly=True
                 #     )
+                hapi_passthrough.login()
             except:
                 return login()
         else:
             return login()
+
+
+# test: todo: remove
+@app.route("/login", methods=["GET"])
+def get_login():
+    return hapi_passthrough.get_login()
 
 
 @app.route(HEALTHCHECK_URL, methods=["GET"])
