@@ -9,7 +9,6 @@ const authRoutes = [
 ]
 
 const prescribeRoutes = [
-  ...authRoutes,
   ...editRoutes,
   ...signRoutes,
   ...sendRoutes
