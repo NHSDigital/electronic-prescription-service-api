@@ -1,0 +1,23 @@
+pre {
+  white-space: break-spaces;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 40.0625em) {
+  .nhsuk-grid-row {
+    margin-bottom: -48px;
+  }
+
+  .nhsuk-summary-list {
+    margin-bottom: 25px;
+  }
+
+  .nhsuk-pagination {
+    margin-bottom: 48px;
+  }
+
+  .nhsuk-pagination {
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+}

@@ -131,7 +131,6 @@ lint: build
 	poetry run flake8 scripts/*.py --config .flake8
 	shellcheck scripts/*.sh
 	cd tests/e2e/pact && make lint
-	cd tool && make lint
 	
 check-licenses:
 	cd specification && npm run check-licenses

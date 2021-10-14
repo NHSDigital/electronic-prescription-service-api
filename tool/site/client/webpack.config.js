@@ -1,7 +1,9 @@
+/* eslint-disable */
 const path = require("path")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const CopyPlugin = require("copy-webpack-plugin")
 const stylesHandler = "style-loader"
+/* eslint-enable */
 
 const config = {
   entry: ["./client/index.ts"],
@@ -53,7 +55,7 @@ const config = {
   }
 }
 
-const isProduction = process.env.NODE_ENV == "production"
+const isProduction = process.env.NODE_ENV === "production"
 
 module.exports = () => {
   if (isProduction) {
