@@ -1,3 +1,4 @@
+export type TrackerSpineResponse = unknown
 
 interface Prescription {
   lastEventDate: string
@@ -8,7 +9,7 @@ interface Prescription {
     currentIssue: string
     totalAuthorised: string
   }
-  pendingCancellations: boolean
+  pendingCancellations: string
   prescriptionTreatmentType: string
   prescriptionStatus: string
 }

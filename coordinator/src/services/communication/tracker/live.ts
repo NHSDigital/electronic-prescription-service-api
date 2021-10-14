@@ -3,7 +3,7 @@ import pino from "pino"
 import axios from "axios"
 import Hapi from "@hapi/hapi"
 import {getAsid, getSdsRoleProfileId, getSdsUserUniqueId} from "../../../utils/headers"
-import {DetailTrackerResponse} from "./spine-model"
+import {TrackerSpineResponse} from "./spine-model"
 
 const SPINE_ENDPOINT = process.env.SPINE_URL
 /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
@@ -15,7 +15,7 @@ export class LiveTrackerClient implements TrackerClient {
     prescriptionId: string,
     inboundHeaders: Hapi.Util.Dictionary<string>,
     logger: pino.Logger
-  ): Promise<DetailTrackerResponse> {
+  ): Promise<TrackerSpineResponse> {
     const address = this.getItemSummaryUrl()
 
     const outboundHeaders = {
@@ -28,7 +28,7 @@ export class LiveTrackerClient implements TrackerClient {
 
     logger.info(`Attempting to send message to ${address} with prescriptionId: ${prescriptionId}`)
     try {
-      const response = await axios.get<DetailTrackerResponse>(
+      const response = await axios.get<TrackerSpineResponse>(
         address,
         {
           headers: outboundHeaders,
