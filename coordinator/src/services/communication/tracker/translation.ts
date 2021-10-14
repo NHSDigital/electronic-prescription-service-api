@@ -5,27 +5,6 @@ import {convertResourceToBundleEntry} from "../../translation/response/common"
 import moment from "moment"
 import {HL7_V3_DATE_TIME_FORMAT, ISO_DATE_FORMAT} from "../../translation/common/dateTime"
 
-function getStatusCodeFromDisplay(display: string): string {
-  switch (display) {
-    case "To be Dispensed":
-      return "0001"
-    case "With Dispenser":
-      return "0002"
-    case "With Dispenser - Active":
-      return "0003"
-    case "Expired":
-      return "0004"
-    case "Cancelled":
-      return "0005"
-    case "Dispensed":
-      return "0006"
-    case "Not Dispensed":
-      return "0007"
-    default:
-      throw new Error
-  }
-}
-
 export function convertSpineResponseToBundle(spineResponse: unknown): fhir.Bundle {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const {version, reason, statusCode, ...remainder} = spineResponse as DetailTrackerResponse
@@ -75,6 +54,27 @@ function convertPrescriptionToTask(prescriptionId: string, prescription: DetailP
   task.input = lineItemIds.map(lineItemId => convertLineItemToInput(lineItemId, prescription))
   task.output = lineItemIds.map(lineItemId => convertLineItemToOutput(lineItemId, prescription))
   return task
+}
+
+function getStatusCodeFromDisplay(display: string): string {
+  switch (display) {
+    case "To be Dispensed":
+      return "0001"
+    case "With Dispenser":
+      return "0002"
+    case "With Dispenser - Active":
+      return "0003"
+    case "Expired":
+      return "0004"
+    case "Cancelled":
+      return "0005"
+    case "Dispensed":
+      return "0006"
+    case "Not Dispensed":
+      return "0007"
+    default:
+      throw new Error
+  }
 }
 
 function convertLineItemToInput(lineItemId: string, prescription: DetailPrescription) {
