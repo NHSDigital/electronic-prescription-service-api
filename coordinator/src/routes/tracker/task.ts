@@ -33,7 +33,10 @@ export default [{
           .type(ContentTypes.JSON)
       } else {
         return responseToolkit
-          .response(convertSpineResponseToBundle(spineResponse))
+          .response({
+            spineResponse: spineResponse,
+            fhirResponse: convertSpineResponseToBundle(spineResponse)
+          })
           .code(200)
           .type(ContentTypes.FHIR)
       }

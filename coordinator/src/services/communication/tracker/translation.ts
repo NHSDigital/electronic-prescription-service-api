@@ -80,7 +80,8 @@ function getStatusCodeFromDisplay(display: string): string {
     case "Not Dispensed":
       return "0007"
     default:
-      throw new Error
+      console.warn("Unexpected Status Code from Spine")
+      return "0000"
   }
 }
 
