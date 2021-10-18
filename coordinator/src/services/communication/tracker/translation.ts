@@ -22,10 +22,12 @@ export function convertSpineResponseToBundle(spineResponse: unknown): fhir.Bundl
 
 function convertPrescriptionToTask(prescriptionId: string, prescription: DetailPrescription): fhir.Task {
   const owner = prescription.dispensingPharmacy ?? prescription.nominatedPharmacy
+  const id = uuid.v4()
 
   const task: fhir.Task = {
     resourceType: "Task",
-    identifier: [fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", uuid.v4())],
+    id: id,
+    identifier: [fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", id)],
     status: fhir.TaskStatus.IN_PROGRESS,
     businessStatus: fhir.createCodeableConcept(
       "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
@@ -33,6 +35,11 @@ function convertPrescriptionToTask(prescriptionId: string, prescription: DetailP
       prescription.prescriptionStatus
     ),
     intent: fhir.TaskIntent.ORDER,
+    code: fhir.createCodeableConcept(
+      "http://hl7.org/fhir/CodeSystem/task-code",
+      "fulfill",
+      "Fulfill the focal request"
+    ),
     focus: fhir.createIdentifierReference(
       fhir.createIdentifier("https://fhir.nhs.uk/Id/prescription-order-number", prescriptionId)
     ),
@@ -40,6 +47,10 @@ function convertPrescriptionToTask(prescriptionId: string, prescription: DetailP
       fhir.createIdentifier("https://fhir.nhs.uk/Id/nhs-number", prescription.patientNhsNumber)
     ),
     authoredOn: convertToFhirDate(prescription.prescriptionIssueDate),
+    requester: fhir.createIdentifierReference(
+      fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", prescription.prescriber.ods),
+      prescription.prescriber.name
+    ),
     owner: fhir.createIdentifierReference(
       fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", owner.ods),
       owner.name
@@ -80,7 +91,7 @@ function convertToFhirDate(dateString: string) {
 function convertLineItemToInput(lineItemId: string, prescription: DetailPrescription) {
   const lineItem = prescription.lineItems[lineItemId]
   const taskInput: fhir.TaskInput = {
-    type: fhir.createCodeableConcept("http://snomed.info/sct", lineItem.code, lineItem.description),
+    type: fhir.createCodeableConcept("http://snomed.info/sct", "16076005", "Prescription"),
     valueReference: fhir.createIdentifierReference(
       fhir.createIdentifier("https://fhir.nhs.uk/Id/prescription-order-item-number", lineItemId.toLowerCase())
     )
@@ -93,11 +104,6 @@ function convertLineItemToInput(lineItemId: string, prescription: DetailPrescrip
       valueDate: convertToFhirDate(prescription.prescriptionDispensedDate)
     })
   }
-
-  // dispensingInformationExtension.push({
-  //   url: "dispenseNotificationReference",
-  //   valueIdentifier: fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", "PLACEHOLDER")
-  // })
 
   if (lineItem.itemStatus) {
     dispensingInformationExtension.push({
