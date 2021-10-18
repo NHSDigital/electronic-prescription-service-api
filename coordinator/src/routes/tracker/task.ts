@@ -3,7 +3,7 @@ import {fhir, validationErrors} from "@models"
 import {BASE_PATH, ContentTypes} from "../util"
 import {getStatusCode} from "../../utils/status-code"
 import {trackerClient} from "../../services/communication/tracker"
-import {convertSpineResponseToBundle} from "../../services/communication/tracker/translation"
+import {convertSpineResponseToFhir} from "../../services/communication/tracker/translation"
 import {RequestHeaders} from "../../utils/headers"
 
 const VALID_QUERY_PARAMS = ["identifier", "focus:identifier"]
@@ -36,7 +36,7 @@ export default [{
           return responseToolkit
             .response({
               spineResponse: spineResponse,
-              fhirResponse: convertSpineResponseToBundle(spineResponse)
+              fhirResponse: convertSpineResponseToFhir(spineResponse)
             })
             .code(200)
             .type(ContentTypes.FHIR)

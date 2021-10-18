@@ -275,6 +275,10 @@ export const trackerSpineResponses = {
   successClaimed: JSON.parse(fs.readFileSync(
     path.join(__dirname, "./spine-responses/tracker-responses/success-claimed.json"),
     "utf8"
+  )) as DetailTrackerResponse,
+  errorNoIssueNumber: JSON.parse(fs.readFileSync(
+    path.join(__dirname, "./spine-responses/tracker-responses/error-no-issue-number.json"),
+    "utf8"
   )) as DetailTrackerResponse
 }
 

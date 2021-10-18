@@ -24,7 +24,10 @@ export class LiveTrackerClient implements TrackerClient {
       "Spine-UserId": getSdsUserUniqueId(inboundHeaders),
       "Spine-RoleProfileId": getSdsRoleProfileId(inboundHeaders)
     }
-    const queryParams = {prescriptionId}
+    const queryParams = {
+      prescriptionId: prescriptionId,
+      issueNumber: "1"
+    }
 
     logger.info(`Attempting to send message to ${address} with prescriptionId: ${prescriptionId}`)
     try {

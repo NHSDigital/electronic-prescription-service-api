@@ -5,9 +5,22 @@ import {convertResourceToBundleEntry} from "../../translation/response/common"
 import moment from "moment"
 import {HL7_V3_DATE_TIME_FORMAT, ISO_DATE_FORMAT} from "../../translation/common/dateTime"
 
-export function convertSpineResponseToBundle(spineResponse: unknown): fhir.Bundle {
+export function convertSpineResponseToFhir(spineResponse: unknown): fhir.Bundle | fhir.OperationOutcome {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const {version, reason, statusCode, ...prescriptions} = spineResponse as DetailTrackerResponse
+  const {statusCode, reason, version, ...prescriptions} = spineResponse as DetailTrackerResponse
+
+  if (statusCode !== "0") {
+    return fhir.createOperationOutcome([fhir.createOperationOutcomeIssue(
+      fhir.IssueCodes.INVALID,
+      "error",
+      fhir.createCodeableConcept(
+        "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+        "INVALID",
+        reason
+      )
+    )])
+  }
+
   const tasks = Object.entries(prescriptions).map(
     ([id, detailPrescription]) => convertPrescriptionToTask(id, detailPrescription)
   )
