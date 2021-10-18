@@ -70,6 +70,12 @@ function convertPrescriptionToTask(prescriptionId: string, prescription: DetailP
     )
   }
 
+  if (prescription.repeatInstance.totalAuthorised === "1") {
+    task.extension = [
+      createRepeatInfoExtension(prescription.repeatInstance.currentIssue, prescription.repeatInstance.totalAuthorised)
+    ]
+  }
+
   const lineItemIds = Object.keys(prescription.lineItems)
   task.input = lineItemIds.map(lineItemId => convertLineItemToInput(lineItemId, prescription))
   task.output = lineItemIds.map(lineItemId => convertLineItemToOutput(lineItemId, prescription))
@@ -100,6 +106,22 @@ function getStatusCodeFromDisplay(display: string): string {
 
 function convertToFhirDate(dateString: string) {
   return moment.utc(dateString, HL7_V3_DATE_TIME_FORMAT).format(ISO_DATE_FORMAT)
+}
+
+function createRepeatInfoExtension(currentIssue: string, totalAuthorised: string) {
+  return {
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+    extension: [
+      {
+        url: "numberOfRepeatsAllowed",
+        valueUnsignedInt: totalAuthorised
+      },
+      {
+        url: "numberOfRepeatsIssued",
+        valueUnsignedInt: currentIssue
+      }
+    ]
+  }
 }
 
 function convertLineItemToInput(lineItemId: string, prescription: DetailPrescription) {
