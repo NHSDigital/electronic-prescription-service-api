@@ -1,22 +1,23 @@
 import Hapi from "@hapi/hapi"
+import {getSessionValue, setSessionValue} from "../../services/session"
 
 export default [
   {
     method: "POST",
     path: "/prescribe/edit",
-    handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+    handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const prepareBundles = Array.from(getPayload(request) as any[])
       const prescriptionIds: Array<string> = []
       prepareBundles.forEach((prepareBundle: any) => {
         const prescriptionId = getMedicationRequests(prepareBundle)[0].groupIdentifier.value
         prescriptionIds.push(prescriptionId)
-        request.yar.set(`prepare_request_${prescriptionId}`, prepareBundle)
+        setSessionValue(`prepare_request_${prescriptionId}`, prepareBundle, request)
       })
-      request.yar.set("prescription_ids", prescriptionIds) // yar doesn't like arrays ?
-      const first_bundle = prepareBundles[0] // lossless-json to json ?
+      setSessionValue("prescription_ids", prescriptionIds, request)
+      const first_bundle = prepareBundles[0]
       const first_bundle_id = prescriptionIds[0]
-      request.yar.set("prescription_id", first_bundle_id)
-      return h.response({
+      setSessionValue("prescription_id", first_bundle_id, request)
+      return responseToolkit.response({
         "bundle": first_bundle,
         "errors": []
         // todo: make a $validate call against ?sandbox? for non-authed users to provide validation errors against test-pack/individual prescription
@@ -28,7 +29,7 @@ export default [
     path: "/prescribe/edit",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const shortPrescriptionId = request.query["prescription_id"]
-      const bundle = request.yar.get(`prepare_request_${shortPrescriptionId}`)
+      const bundle = getSessionValue(`prepare_request_${shortPrescriptionId}`, request)
       return h.response({
         "bundle": bundle
       }).code(200)

@@ -2,8 +2,8 @@ import Hapi from "@hapi/hapi"
 import routes from "./routes"
 import HapiPino from "hapi-pino"
 import Yar from "@hapi/yar"
-// import Catbox from "@hapi/catbox"
 import CatboxRedis from "@hapi/catbox-redis"
+import {isLocal} from "./services/environment"
 
 export let server: Hapi.Server
 
@@ -51,8 +51,8 @@ const init = async () => {
   await server.register({
     plugin: HapiPino,
     options: {
-      // Dont pretty print in non local envrionment to avoid spamming logs
-      prettyPrint: process.env.ENVIRONMENT?.endsWith("-sandbox"),
+      // Pretty print in local envrionment only to avoid spamming logs
+      prettyPrint: !isLocal(),
       // Redact Authorization headers, see https://getpino.io/#/docs/redaction
       redact: ["req.headers.authorization"]
     }

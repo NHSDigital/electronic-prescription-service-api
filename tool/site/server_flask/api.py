@@ -3,7 +3,6 @@ import httpx
 import time
 import config
 from jwt import JWT, jwk_from_dict, jwk_from_pem
-from cookies import get_all_prescription_ids_from_cookie
 from helpers import get_pem
 
 raw_response_header = {
@@ -139,26 +138,6 @@ def createPayload(prepare_response):
         "payload": prepare_response["digest"]
     }
     return payload
-
-
-def make_sign_api_signature_download_request(auth_method, access_token, token):
-    # mocked for local development
-    if config.ENVIRONMENT.endswith("-sandbox"):
-        signatureCount = len(get_all_prescription_ids_from_cookie())
-        signatures = []
-        for i in range(signatureCount):
-            signatures.append({"id": "", "signature": ""})
-        return {
-          "signatures": signatures,
-          "certificate": ""
-        }
-    # actual implementation
-    signing_base_url = get_signing_base_path(auth_method, False)
-    return httpx.get(
-        f"{signing_base_url}/signatureresponse/{token}",
-        headers={"Content-Type": "text/plain", "Authorization": f"Bearer {access_token}"},
-        verify=False,
-    ).json()
 
 
 def get_signing_base_path(auth_method, public):

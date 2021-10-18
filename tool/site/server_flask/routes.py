@@ -13,7 +13,6 @@ from api import (
     make_eps_api_release_request,
     make_eps_api_release_request_untranslated,
     make_sign_api_signature_upload_request,
-    make_sign_api_signature_download_request,
     make_eps_api_convert_message_request,
     make_eps_api_metadata_request,
     make_eps_api_claim_request,
@@ -30,13 +29,11 @@ from cookies import (
     set_next_prescription_id_cookie,
     reset_previous_prescription_id_cookie,
     reset_next_prescription_id_cookie,
-    set_prescription_ids_cookie,
-    get_all_prescription_ids_from_cookie,
     get_auth_method_from_cookie,
     set_auth_method_cookie,
     set_skip_signature_page_cookie,
     set_session_cookie,
-    get_session_cookie_value
+    get_hapi_session_cookie_value
 )
 from helpers import (
     pr_redirect_required,
@@ -159,30 +156,29 @@ def get_load():
     return render_client("load")
 
 
-@exclude_from_auth()
-@app.route(DOWNLOAD_URL, methods=['GET'])
-def download():
-    zFile = io.BytesIO()
-    access_token = get_access_token()
-    with zipfile.ZipFile(zFile, 'w') as zip_file:
-        short_prescription_ids = get_all_prescription_ids_from_cookie()
-        for index, short_prescription_id in enumerate(short_prescription_ids):
-            bundle = load_prepare_request(short_prescription_id)
-            zip_file.writestr(f"send_request_{index + 1}.json", json.dumps(bundle, indent=2))
-            if access_token:
-                xml, _status_code = make_eps_api_convert_message_request(access_token, bundle)
-                zip_file.writestr(f"send_request_{index + 1}.xml", xml)
-    zFile.seek(0)
+# @exclude_from_auth()
+# @app.route(DOWNLOAD_URL, methods=['GET'])
+# def download():
+#     zFile = io.BytesIO()
+#     access_token = get_access_token()
+#     with zipfile.ZipFile(zFile, 'w') as zip_file:
+#         short_prescription_ids = get_all_prescription_ids_from_cookie()
+#         for index, short_prescription_id in enumerate(short_prescription_ids):
+#             bundle = load_prepare_request(short_prescription_id)
+#             zip_file.writestr(f"send_request_{index + 1}.json", json.dumps(bundle, indent=2))
+#             if access_token:
+#                 xml, _status_code = make_eps_api_convert_message_request(access_token, bundle)
+#                 zip_file.writestr(f"send_request_{index + 1}.xml", xml)
+#     zFile.seek(0)
 
-    return flask.send_file(
-        zFile,
-        mimetype='application/zip',
-        as_attachment=True,
-        attachment_filename='messages.zip')
+#     return flask.send_file(
+#         zFile,
+#         mimetype='application/zip',
+#         as_attachment=True,
+#         attachment_filename='messages.zip')
 
 
 def update_pagination(response, short_prescription_ids, current_short_prescription_id):
-    set_prescription_ids_cookie(response, short_prescription_ids)
     previous_short_prescription_id_index = short_prescription_ids.index(current_short_prescription_id) - 1
     next_short_prescription_id_index = previous_short_prescription_id_index + 2
     if previous_short_prescription_id_index >= 0:
@@ -211,9 +207,11 @@ def get_edit():
         return flask.redirect(f"{config.BASE_URL}change-auth")
     response_json = hapi_passthrough.get_edit(short_prescription_id)
     response = app.make_response(response_json)
-    short_prescription_ids = get_all_prescription_ids_from_cookie()
+    hapi_session_cookie_value = get_hapi_session_cookie_value()
+    state = hapi_passthrough.get_prescription_ids(hapi_session_cookie_value)
+    short_prescription_ids = state["prescriptionIds"]
+    short_prescription_id = state["prescriptionId"]
     update_pagination(response, short_prescription_ids, short_prescription_id)
-    # set_current_prescription_id_cookie(response, short_prescription_id)
     return response
 
 
@@ -229,7 +227,7 @@ def post_edit():
     update_pagination(response, short_prescription_ids, short_prescription_id)
     # when in local mode, we might not have session cookie at this point
     # as we've skipped login, so ensure it is set here
-    if get_session_cookie_value() is None:
+    if get_hapi_session_cookie_value() is None:
         set_session_cookie(response, hapi_session_cookie_value)
     return response
 
@@ -279,12 +277,6 @@ def post_sign():
 @app.route(SEND_URL, methods=["GET"])
 def get_send():
     hapi_passthrough.get_send()
-    # todo: real implementation in downloadSignatureRequest (see below)
-    # auth_method = get_auth_method_from_cookie()
-    # # mocked in local development
-    # signature_response = make_sign_api_signature_download_request(
-    #     auth_method, get_access_token(), flask.request.args.get("token")
-    # )
     return render_client("send", sign_response={"signature": ""})
 
 

@@ -1,7 +1,7 @@
 import json
 import os
 import httpx
-from cookies import get_session_cookie_value
+from cookies import get_hapi_session_cookie_value
 
 
 HAPI_URL = os.environ["HAPI_URL"]
@@ -28,7 +28,7 @@ def get_healthcheck():
 
 
 def get_edit(prescription_id):
-    session_cookie_value = get_session_cookie_value()
+    session_cookie_value = get_hapi_session_cookie_value()
     return httpx.get(
         f"{HAPI_URL}{EDIT_URL}?{prescription_id}",
         verify=False,
@@ -41,7 +41,7 @@ def get_edit(prescription_id):
 def post_edit(body):
     # when in local mode, we might not have session cookie at this point
     # as we've skipped login, so ensure it is set here
-    session_cookie_value = get_session_cookie_value()
+    session_cookie_value = get_hapi_session_cookie_value()
     if session_cookie_value:
         cookies = {
             "session": session_cookie_value 
@@ -59,7 +59,7 @@ def post_edit(body):
 
 
 def post_sign():
-    session_cookie_value = get_session_cookie_value()
+    session_cookie_value = get_hapi_session_cookie_value()
     return httpx.post(
         f"{HAPI_URL}{SIGN_URL}",
         json={},
@@ -71,7 +71,7 @@ def post_sign():
 
 
 def get_send():
-    session_cookie_value = get_session_cookie_value()
+    session_cookie_value = get_hapi_session_cookie_value()
     return httpx.get(
         f"{HAPI_URL}{SEND_URL}",
         verify=False,
@@ -82,7 +82,7 @@ def get_send():
 
 
 def post_send():
-    session_cookie_value = get_session_cookie_value()
+    session_cookie_value = get_hapi_session_cookie_value()
     return httpx.post(
         f"{HAPI_URL}{SEND_URL}",
         json={},
@@ -94,7 +94,7 @@ def post_send():
 
 
 def get_login():
-    session_cookie_value = get_session_cookie_value()
+    session_cookie_value = get_hapi_session_cookie_value()
     return httpx.get(
         f"{HAPI_URL}{AUTH_URL}",
         verify=False,

@@ -1,20 +1,17 @@
 import Hapi from "@hapi/hapi"
+import {getSessionValue, setSessionValue} from "../../services/session"
 
 export default [
   {
     method: "GET",
     path: "/prescribe/send",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      // const authMethod = request.yar.get("auth_method") ?? "simulated"
-      // const accessToken = request.yar.get("access_token")
-      // const signatureToken = request.query["token"]
       const signatureResponse = downloadSignatureRequest(request)
-      // const prescriptionId = request.yar.get("prescription_id")
-      const prescriptionIds = request.yar.get("prescription_ids")
+      const prescriptionIds = getSessionValue("prescription_ids", request)
       const prepareResponses = prescriptionIds.map((id: string) => {
         return {
           prescriptionId: id,
-          response: request.yar.get(`prepare_response_${id}`)
+          response: getSessionValue(`prepare_response_${id}`, request)
         }
       })
       prepareResponses.forEach((prepareResponse: {prescriptionId: string, response: any}, index: number) => {
@@ -31,10 +28,10 @@ export default [
           f"</Signature>`
         const xmlDsigEncoded = Buffer.from(xmlDsig, "utf-8").toString("base64")
         const provenance = createProvenance(prepareResponse.response.timestamp, xmlDsigEncoded)
-        const prepareRequest = request.yar.get(`prepare_request_${prepareResponse.prescriptionId}`)
+        const prepareRequest = getSessionValue(`prepare_request_${prepareResponse.prescriptionId}`, request)
         prepareRequest.entry.push(provenance)
         const sendRequest = prepareRequest
-        request.yar.set(`prescription_order_send_request_${prepareResponse.prescriptionId}`, sendRequest)
+        setSessionValue(`prescription_order_send_request_${prepareResponse.prescriptionId}`, sendRequest, request)
       })
       return h.response({}).code(200)
     }
@@ -43,10 +40,10 @@ export default [
     method: "POST",
     path: "/prescribe/send",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      // const accessToken = request.yar.get("access_token")
-      const prescriptionIds = request.yar.get("prescription_ids")
+      // const accessToken = getSessionValue("access_token", request)
+      const prescriptionIds = getSessionValue("prescription_ids", request)
       if (prescriptionIds.length === 1) {
-        const send_request = request.yar.get(`prescription_order_send_request_${prescriptionIds[0]}`)
+        const send_request = getSessionValue(`prescription_order_send_request_${prescriptionIds[0]}`, request)
         return h.response({
           prescription_ids: prescriptionIds,
           prescription_id: prescriptionIds[0],
@@ -65,25 +62,45 @@ export default [
 function downloadSignatureRequest(request: Hapi.Request): {signatures: {id: string, signature: string}[], certificate: string} {
   const useMockSignatureResponse = process.env.ENVIRONMENT?.endsWith("-sandbox")
   if (useMockSignatureResponse) {
-    const mockCertificate = ""
-    const mockSignatures =
-        request.yar.get("prescription_ids").map((id: string) => {
-          return {
-            id,
-            signature: ""
-          }
-        })
-    return {
-      signatures: mockSignatures,
-      certificate: mockCertificate
-    }
+    return getMockSignatureDownloadResponse(request)
   }
-  else {
-    // todo: non-mocked implementation
+
+  return getSignatureDownloadRequest(request)
+}
+
+function getMockSignatureDownloadResponse(request: Hapi.Request) {
+  const mockCertificate = ""
+  const mockSignatures = getSessionValue("prescription_ids", request).map((id: string) => {
     return {
-      signatures: [],
-      certificate: ""
+      id,
+      signature: ""
     }
+  })
+  return {
+    signatures: mockSignatures,
+    certificate: mockCertificate
+  }
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function getSignatureDownloadRequest(request: Hapi.Request): { signatures: { id: string; signature: string} []; certificate: string } {
+  // todo: live implementation
+
+  // const authMethod = getSessionValue("auth_method", request) ?? "simulated"
+  // const accessToken = getSessionValue("access_token", request)
+  // const signatureToken = request.query["token"]
+  // const prescriptionId = getSessionValue("prescription_id", request)
+
+  //   signing_base_url = get_signing_base_path(auth_method, False)
+  // #     return httpx.get(
+  // #         f"{signing_base_url}/signatureresponse/{token}",
+  // #         headers={"Content-Type": "text/plain", "Authorization": f"Bearer {access_token}"},
+  // #         verify=False,
+  // #     ).json()
+
+  return {
+    signatures: [],
+    certificate: ""
   }
 }
 
