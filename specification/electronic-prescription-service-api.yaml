@@ -17,17 +17,17 @@ info:
 
     ### As a prescriber
     You can:
-    * encode prescription data
+    * encode prescription data (to be signed using the [signing service](https://digital.nhs.uk/developer/api-catalogue/signing-service))
     * create a primary care prescription
     * cancel a primary care prescription
     * create a secondary care (outpatient) prescription
     * cancel a secondary care (outpatient) prescription
-
-    You cannot currently use this API to:
     * create a secondary care (homecare) prescription
     * cancel a secondary care (homecare) prescription
-    * create a tertiary care (homecare) prescription
-    * cancel a tertiary care (homecare) prescription
+
+    You cannot currently use this API to:
+    * create a tertiary care prescription
+    * cancel a tertiary care prescription
     * track a prescription or check a prescription's status
 
     ### As a dispenser
@@ -58,7 +58,7 @@ info:
     The immediate priority of EPS development is to support the rollout of the next-gen FHIR APIs for primary care and secondary care prescribing and dispensing. Alongside this we will be working on integrating a new FHIR-compliant prescription tracker into the next gen APIs.
     
     ### Prescribing API
-    There are three types of medication workflows
+    This API supports two types of prescribing medication workflows
     
     #### Primary care medication workflow
     In a primary care medication workflow, the prescription is sent from a primary care service, such as a GP practice to a pharmacy. For this workflow, the API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
@@ -70,12 +70,19 @@ info:
     - it is available in integration and production
     - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
     
-    #### Tertiary care medication workflow
-    This API does not support tertiary care medication workflow.
-    
     ### Dispensing API
-    Download and the mark as dispensed dispensing flows for the EPS FHIR API are in the sandbox environment only, withdraw and return are currently only referenced in this spec.
-    
+    This API supports two types of dispensing medication workflows
+
+    #### Community pharmacy workflow
+    In a community pharmacy workflow, prescriptions can be releaased (downloaded) from Spine and updated and dispensed by the pharmacy
+    - it is available for testing in the integration environment, but not for production use
+    - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
+
+    #### Homecare dispenser workflow
+    In a homecare dispenser workflow, prescriptions can be releaased (downloaded) from Spine and updated and dispensed by the dispenser
+    - it is available for testing in the integration environment, but not for production use
+    - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
+
     ### Roadmap
     To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?tag=eps-fhir-api).
     
@@ -115,7 +122,7 @@ info:
     | -------------     | --------------------------------------------------------------------|
     | Sandbox           | `https://sandbox.api.service.nhs.uk/electronic-prescriptions`       |
     | Integration test  | `https://int.api.service.nhs.uk/electronic-prescriptions`           |
-    | Production        | Not yet available                                                   |
+    | Production        |  `https://api.service.nhs.uk/electronic-prescriptions`                                                 |
 
     ### Sandbox testing
     Our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing):
@@ -152,7 +159,7 @@ info:
     | --------------| ---------------------- | -------------------------------------------------------------------------------- |
     | 400           | MISSING_FIELD          | A required field is missing within the request, see `display` field in response. |
     | 400           | INVALID_VALUE          | Invalid value in message.                                                        |
-    | 400           | INCORRECT_RESOURCETYPE | FHIR resource has incorrect resourceType.                                        |
+    | 400           | INCORRECT_RESOURCETYPE | FHIR resource has an incorrect resourceType.                                     |
     | 404           | NOT_FOUND              | Route not found.                                                                 |
 
     ### Platform wide errors
