@@ -10,7 +10,7 @@
     "noImplicitAny": true,
     "moduleResolution": "node",
     "sourceMap": true,
-    //"strict": true,
+    "strict": true,
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {

@@ -68,3 +68,34 @@ export function createPrescribers(rows: Array<StringKeyedObject>): Array<BundleE
     }
   })
 }
+
+export function getDefaultPractitionerBundleEntry(): BundleEntry {
+  return {
+    fullUrl: "urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a",
+    resource: <Practitioner> {
+      resourceType: "Practitioner",
+      id: "a8c85454-f8cb-498d-9629-78e2cb5fa47a",
+      identifier: [
+        {
+          system: "https://fhir.nhs.uk/Id/sds-user-id",
+          value: "7020134158"
+        },
+        {
+          system: "https://fhir.hl7.org.uk/Id/gmc-number",
+          value: "G9999999"
+        },
+        {
+          system: "https://fhir.hl7.org.uk/Id/din-number",
+          value: "70201123456"
+        }
+      ],
+      name: [
+        {
+          family: "Edwards",
+          given: ["Thomas"],
+          prefix: ["DR"]
+        }
+      ]
+    }
+  }
+}

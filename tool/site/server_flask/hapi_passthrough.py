@@ -80,6 +80,7 @@ def get_send():
         }
     ).json()
 
+
 def post_send():
     session_cookie_value = get_session_cookie_value()
     return httpx.post(
@@ -113,3 +114,17 @@ def post_login(access_token):
     )
     session_cookie_value = response.cookies["session"]
     return session_cookie_value, response.json()
+
+
+def get_prescription_ids(hapi_session_key):
+    cookies = {
+        "session": hapi_session_key
+    }
+    return make_get_request_raw(f"{HAPI_URL}/prescriptionIds", cookies)
+
+# Helpers
+
+def make_get_request_raw(url, cookies=None):
+    if cookies is None:
+        cookies = get_cookies()
+    return httpx.get(url, verify=False, cookies=cookies).json()

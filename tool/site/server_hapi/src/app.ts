@@ -41,7 +41,7 @@ const init = async () => {
         expiresIn: 24 * 60 * 60 * 1000
       },
       cookieOptions: {
-        password: process.env.SESSION_TOKEN_ENCRYPTION_KEY,
+        password: process.env.SESSION_TOKEN_ENCRYPTION_KEY ?? "",
         isSecure: true,
         isSameSite: "None"
       }

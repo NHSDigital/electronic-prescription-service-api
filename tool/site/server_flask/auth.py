@@ -6,7 +6,7 @@ from cookies import get_auth_method_from_cookie
 from helpers import get_oauth_base_path, create_oauth_state, get_pr_number, get_registered_callback_url
 import config
 
-def set_access_token_cookies(page_mode, response, access_token, access_token_encrypted, refresh_token_encrypted, access_token_expiry, refresh_token_expiry):
+def set_access_token_cookies(response, access_token_encrypted, access_token_expiry):
     secure_flag = not config.DEV_MODE
     response.set_cookie("Access-Token", access_token_encrypted, expires=access_token_expiry, secure=secure_flag, httponly=True)
     response.set_cookie("Access-Token-Set", "true", expires=access_token_expiry, secure=secure_flag)

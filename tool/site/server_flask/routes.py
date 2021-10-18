@@ -109,30 +109,11 @@ def auth_check():
         access_token_encrypted = flask.request.cookies.get("Access-Token")
         if access_token_encrypted is not None:
             try:
-                # todo: refresh token implementation
                 access_token = fernet.decrypt(access_token_encrypted.encode("utf-8")).decode("utf-8")
-                # access_token_session = flask.request.cookies.get("Access-Token-Session")
-                # refresh_token_encrypted = flask.request.cookies.get("Refresh-Token")
-                # auth_method = get_auth_method_from_cookie()
-                # if not access_token_session:
-                #     refresh_token = fernet.decrypt(refresh_token_encrypted.encode("utf-8")).decode("utf-8")
-                #     token_response = refresh_token_session(refresh_token, auth_method)
-                #     print("Refreshed token session. Got response...")
-                #     print(json.dumps(token_response))
-                #     access_token_expiry = token_response["expires_in"]
-                #     callback_response.set_cookie(
-                #         "Access-Token-Session", "True", expires=access_token_expiry, secure=secure_flag, httponly=True
-                #     )
             except:
                 return login()
         else:
             return login()
-
-
-# test: todo: remove
-@app.route("/login", methods=["GET"])
-def get_login():
-    return hapi_passthrough.get_login()
 
 
 @app.route(HEALTHCHECK_URL, methods=["GET"])
@@ -163,7 +144,6 @@ def post_change_auth():
     secure_flag = not config.DEV_MODE
     response.set_cookie("Access-Token", "", expires=0, secure=secure_flag, httponly=True)
     response.set_cookie("Access-Token-Set", "false", expires=0, secure=secure_flag)
-    response.set_cookie("Refresh-Token", "", expires=0, secure=secure_flag)
     return response
 
 
@@ -229,11 +209,10 @@ def get_edit():
     short_prescription_id = flask.request.query_string.decode("utf-8")[len("prescription_id="):]
     if short_prescription_id is None:
         return flask.redirect(f"{config.BASE_URL}change-auth")
-    # bundle = load_prepare_request(short_prescription_id)
     response_json = hapi_passthrough.get_edit(short_prescription_id)
     response = app.make_response(response_json)
-    # short_prescription_ids = get_all_prescription_ids_from_cookie()
-    # update_pagination(response, short_prescription_ids, short_prescription_id)
+    short_prescription_ids = get_all_prescription_ids_from_cookie()
+    update_pagination(response, short_prescription_ids, short_prescription_id)
     # set_current_prescription_id_cookie(response, short_prescription_id)
     return response
 
@@ -242,16 +221,16 @@ def get_edit():
 @exclude_from_auth()
 def post_edit():
     request_bundles = flask.request.json
-    session_cookie_value, response_json = hapi_passthrough.post_edit(request_bundles)
+    hapi_session_cookie_value, response_json = hapi_passthrough.post_edit(request_bundles)
     response = app.make_response(response_json)
-
-    # todo: migrate to hapi
-    # update_pagination(response, short_prescription_ids, current_short_prescription_id)
-
+    state = hapi_passthrough.get_prescription_ids(hapi_session_cookie_value)
+    short_prescription_ids = state["prescriptionIds"]
+    short_prescription_id = state["prescriptionId"]
+    update_pagination(response, short_prescription_ids, short_prescription_id)
     # when in local mode, we might not have session cookie at this point
     # as we've skipped login, so ensure it is set here
     if get_session_cookie_value() is None:
-        set_session_cookie(response, session_cookie_value)
+        set_session_cookie(response, hapi_session_cookie_value)
     return response
 
 
@@ -505,7 +484,7 @@ def post_claim():
 def get_logout():
     redirect_url = f'{config.PUBLIC_APIGEE_URL}/{config.BASE_PATH}'
     response = flask.redirect(redirect_url)
-    return set_access_token_cookies("login", response, "", "", 0, 0)
+    return set_access_token_cookies(response, "", 0)
 
 
 @app.route(CALLBACK_URL, methods=["GET"])
@@ -518,7 +497,6 @@ def get_callback():
                 get_pr_branch_url(state["prNumber"], "callback", flask.request.query_string.decode("utf-8")))
         else:
             return app.make_response("Bad Request", 400)
-    page_mode = state["pageMode"]
     code = flask.request.args.get("code")
     auth_method = get_auth_method_from_cookie()
     token_response_json = exchange_code_for_token(code, auth_method)
@@ -534,5 +512,4 @@ def get_callback():
     redirect_url = f'{config.PUBLIC_APIGEE_URL}/{config.BASE_PATH}'
     response = flask.redirect(redirect_url)
     set_session_cookie(response, session_cookie_value)
-    return set_access_token_cookies(page_mode, response, access_token_encrypted, refresh_token_encrypted, access_token_expires,
-                                    refresh_token_expires)
+    return set_access_token_cookies(response, access_token_encrypted, access_token_expires)

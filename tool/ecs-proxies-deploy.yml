@@ -54,6 +54,9 @@ docker_service:
                 value: "localhost"
             -   name: REDIS_PORT
                 value: "6379"
+        secrets:
+            -   name: APIGEE_DOMAIN_NAME
+                valueFrom: '/{{ account }}/platform-common/egress/hosts/apigee-{{ APIGEE_ENVIRONMENT }}'
             -   name: SESSION_TOKEN_ENCRYPTION_KEY
                 valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/session-token-encryption-key"
         health_check:
