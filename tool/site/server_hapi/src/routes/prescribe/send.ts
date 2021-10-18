@@ -1,14 +1,14 @@
 import Hapi from "@hapi/hapi"
-import {isLocal} from "../../services/environment"
-import {signingClient} from "../../services/communication/signing-client"
-import {getSessionValue, setSessionValue} from "../../services/session"
-import {preRequest} from "../util"
+import { isLocal } from "../../services/environment"
+import { signingClient } from "../../services/communication/signing-client"
+import { getSessionValue, setSessionValue } from "../../services/session"
+import { preRequest } from "../util"
 
 export default [
   {
     method: "GET",
     path: "/prescribe/send",
-    handler:  preRequest(
+    handler: preRequest(
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const signatureResponse = await downloadSignatureRequest(request)
         const prescriptionIds = getSessionValue("prescription_ids", request)
@@ -18,7 +18,7 @@ export default [
             response: getSessionValue(`prepare_response_${id}`, request)
           }
         })
-        prepareResponses.forEach((prepareResponse: {prescriptionId: string, response: any}, index: number) => {
+        prepareResponses.forEach((prepareResponse: { prescriptionId: string, response: any }, index: number) => {
           const payload = prepareResponse.response.digest
           const signature = signatureResponse.signatures[index].signature
           const certificate = signatureResponse.certificate
@@ -38,13 +38,12 @@ export default [
           setSessionValue(`prescription_order_send_request_${prepareResponse.prescriptionId}`, sendRequest, request)
         })
         return responseToolkit.response({}).code(200)
-    })
+      })
   },
   {
     method: "POST",
     path: "/prescribe/send",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      // const accessToken = getSessionValue("access_token", request)
       const prescriptionIds = getSessionValue("prescription_ids", request)
       if (prescriptionIds.length === 1) {
         const send_request = getSessionValue(`prescription_order_send_request_${prescriptionIds[0]}`, request)
@@ -58,19 +57,28 @@ export default [
           response_xml: ""
         }).code(200)
       }
-      return h.response({}).code(200)
+
+      return h.response({
+        prescription_ids: prescriptionIds,
+        success_list: prescriptionIds.map((id: string) => {
+          return {
+            prescription_id: id,
+            success: true
+          }
+        })
+      }).code(200)
     }
   }
 ]
 
 async function downloadSignatureRequest(request: Hapi.Request):
-  Promise<{signatures: {id: string, signature: string}[], certificate: string}> {
-    const useMockSignatureResponse = isLocal()
-    if (useMockSignatureResponse) {
-      return await getMockSignatureDownloadResponse(request)
-    }
+  Promise<{ signatures: { id: string, signature: string }[], certificate: string }> {
+  const useMockSignatureResponse = isLocal()
+  if (useMockSignatureResponse) {
+    return await getMockSignatureDownloadResponse(request)
+  }
 
-    return await getSignatureDownloadRequest(request)
+  return await getSignatureDownloadRequest(request)
 }
 
 async function getMockSignatureDownloadResponse(request: Hapi.Request) {
@@ -88,9 +96,9 @@ async function getMockSignatureDownloadResponse(request: Hapi.Request) {
 }
 
 async function getSignatureDownloadRequest(request: Hapi.Request):
-  Promise<{ signatures: { id: string; signature: string} []; certificate: string }> {
-    const signatureToken = request.query["token"]
-    return signingClient.makeSignatureDownloadRequest(signatureToken)
+  Promise<{ signatures: { id: string; signature: string }[]; certificate: string }> {
+  const signatureToken = request.query["token"]
+  return signingClient.makeSignatureDownloadRequest(signatureToken)
 }
 
 function createProvenance(timestamp: string, signature: string) {

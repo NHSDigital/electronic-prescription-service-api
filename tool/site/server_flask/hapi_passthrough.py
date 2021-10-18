@@ -27,10 +27,10 @@ def get_healthcheck():
     ).json()
 
 
-def get_edit(prescription_id):
+def get_prescription(prescription_id):
     session_cookie_value = get_hapi_session_cookie_value()
     return httpx.get(
-        f"{HAPI_URL}{EDIT_URL}?{prescription_id}",
+        f"{HAPI_URL}{EDIT_URL}?prescription_id={prescription_id}",
         verify=False,
         cookies={
             "session": session_cookie_value
@@ -86,17 +86,6 @@ def post_send():
     return httpx.post(
         f"{HAPI_URL}{SEND_URL}",
         json={},
-        verify=False,
-        cookies={
-            "session": session_cookie_value
-        }
-    ).json()
-
-
-def get_login():
-    session_cookie_value = get_hapi_session_cookie_value()
-    return httpx.get(
-        f"{HAPI_URL}{AUTH_URL}",
         verify=False,
         cookies={
             "session": session_cookie_value

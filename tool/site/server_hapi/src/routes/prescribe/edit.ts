@@ -29,6 +29,7 @@ export default [
     path: "/prescribe/edit",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const shortPrescriptionId = request.query["prescription_id"]
+      setSessionValue("prescription_id", shortPrescriptionId, request)
       const bundle = getSessionValue(`prepare_request_${shortPrescriptionId}`, request)
       return h.response({
         "bundle": bundle

@@ -205,7 +205,7 @@ def get_edit():
     short_prescription_id = flask.request.query_string.decode("utf-8")[len("prescription_id="):]
     if short_prescription_id is None:
         return flask.redirect(f"{config.BASE_URL}change-auth")
-    response_json = hapi_passthrough.get_edit(short_prescription_id)
+    response_json = hapi_passthrough.get_prescription(short_prescription_id)
     response = app.make_response(response_json)
     hapi_session_cookie_value = get_hapi_session_cookie_value()
     state = hapi_passthrough.get_prescription_ids(hapi_session_cookie_value)
@@ -240,10 +240,8 @@ def get_sign():
 @app.route(SIGN_URL, methods=["POST"])
 def post_sign():
     # mock implementation
-    hapi_passthrough.post_sign()
-    response = app.make_response({
-        "redirectUri": f'{config.BASE_URL}prescribe/send'
-    })   
+    hapi_response = hapi_passthrough.post_sign()
+    response = app.make_response(hapi_response)
     # todo: deprecate signature page
     set_skip_signature_page_cookie(response, "True")
     return response

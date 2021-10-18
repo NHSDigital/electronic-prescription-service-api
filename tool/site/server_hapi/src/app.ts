@@ -51,8 +51,8 @@ const init = async () => {
   await server.register({
     plugin: HapiPino,
     options: {
-      // Pretty print in local envrionment only to avoid spamming logs
-      prettyPrint: !isLocal(),
+      // Pretty print in local environment only to avoid spamming logs
+      prettyPrint: isLocal(),
       // Redact Authorization headers, see https://getpino.io/#/docs/redaction
       redact: ["req.headers.authorization"]
     }
