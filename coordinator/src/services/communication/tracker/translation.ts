@@ -7,8 +7,8 @@ import {HL7_V3_DATE_TIME_FORMAT, ISO_DATE_FORMAT} from "../../translation/common
 
 export function convertSpineResponseToBundle(spineResponse: unknown): fhir.Bundle {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const {version, reason, statusCode, ...lineItems} = spineResponse as DetailTrackerResponse
-  const tasks = Object.entries(lineItems).map(
+  const {version, reason, statusCode, ...prescriptions} = spineResponse as DetailTrackerResponse
+  const tasks = Object.entries(prescriptions).map(
     ([id, detailPrescription]) => convertPrescriptionToTask(id, detailPrescription)
   )
 
