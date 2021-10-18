@@ -20,10 +20,6 @@ export function convertSpineResponseToBundle(spineResponse: unknown): fhir.Bundl
   }
 }
 
-function convertToFhirDate(dateString: string) {
-  return moment.utc(dateString, HL7_V3_DATE_TIME_FORMAT).format(ISO_DATE_FORMAT)
-}
-
 function convertPrescriptionToTask(prescriptionId: string, prescription: DetailPrescription): fhir.Task {
   const owner = prescription.dispensingPharmacy ?? prescription.nominatedPharmacy
 
@@ -75,6 +71,10 @@ function getStatusCodeFromDisplay(display: string): string {
     default:
       throw new Error
   }
+}
+
+function convertToFhirDate(dateString: string) {
+  return moment.utc(dateString, HL7_V3_DATE_TIME_FORMAT).format(ISO_DATE_FORMAT)
 }
 
 function convertLineItemToInput(lineItemId: string, prescription: DetailPrescription) {
