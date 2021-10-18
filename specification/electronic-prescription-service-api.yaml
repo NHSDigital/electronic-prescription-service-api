@@ -171,35 +171,6 @@ info:
 
     For further details on common HTTP status codes, see [5xx status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide)
 
-    ## Endpoint overview
-    
-    ### Prescribing endpoints
-    #### To encode prescription data
-    POST a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) to the `/FHIR/R4/$prepare` endpoint and get the encoded prescription data that requires a signature.
-    
-    #### To create a prescription:
-    
-    1. Sign the encoded prescription data using the [Signing Service API](https://digital.nhs.uk/developer/api-catalogue/signing-service) or your existing local signing solution to get the prescription data signed.
-    2. Generate a XML-DSig using the signed prescription data (see below).
-    3. Put the XML-DSig in a `Provenance` resource.
-    4. Add the `Provenance` to the `prescription-order` message.
-    5. POST the signed `prescription-order` message to the `/FHIR/R4/$process-message` endpoint.
-
-    To generate an XML-DSig:
-    1. Get the encoded prescription data from the `/FHIR/R4/$prepare` endpoint of the EPS API.
-    2. Get the signature and certificate from the `/SignatureResponse` endpoint of the [Signing Service API](https://digital.nhs.uk/developer/api-catalogue/signing-service).
-    3. Assemble the XML-DSig (see the javascript example code below).
-
-    Example code to generate an XML-DSig:
-    ```javascript
-      function toXmlSignature(digest: string, signature: string, certificate: string): string {
-        const decodedDigest = Buffer.from(digest, "base64").toString("utf-8")
-        const digestWithoutNamespace = decodedDigest.replace("<SignedInfo xmlns=\"http://www.w3.org/2000/09/xmldsig#\">", "<SignedInfo>")
-        const xmlSignature = `<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">${digestWithoutNamespace}<SignatureValue>${signature}</SignatureValue><KeyInfo><X509Data><X509Certificate>${certificate}</X509Certificate></X509Data></KeyInfo></Signature>`
-        return Buffer.from(xmlSignature, "utf-8").toString("base64")
-      }
-    ```
-
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
     description: 'Sandbox'
