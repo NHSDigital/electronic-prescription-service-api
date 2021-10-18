@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import { signingClient } from "../services/communication/signing-client"
+import {signingClient} from "../services/communication/signing-client"
 import {epsClient, epsClientIsLive} from "../services/communication/eps-client"
 import {getSessionValue, getSessionValueOrDefault} from "../services/session"
 

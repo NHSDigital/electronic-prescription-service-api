@@ -1,5 +1,6 @@
 import * as uuid from "uuid"
 import axios from "axios"
+import {Bundle, Parameters} from "fhir/r4"
 import {EpsClient} from "./eps-client"
 
 export class LiveEpsClient implements EpsClient {
@@ -9,7 +10,7 @@ export class LiveEpsClient implements EpsClient {
     this.accessToken = accessToken
   }
 
-  async makePrepareRequest(body: unknown): Promise<any> {
+  async makePrepareRequest(body: Bundle): Promise<Parameters> {
     return await this.makeApiCall("$prepare", body)
   }
 

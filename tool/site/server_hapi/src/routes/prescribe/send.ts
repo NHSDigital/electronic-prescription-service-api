@@ -1,8 +1,8 @@
 import Hapi from "@hapi/hapi"
-import { isLocal } from "../../services/environment"
-import { signingClient } from "../../services/communication/signing-client"
-import { getSessionValue, setSessionValue } from "../../services/session"
-import { preRequest } from "../util"
+import {isLocal} from "../../services/environment"
+import {signingClient} from "../../services/communication/signing-client"
+import {getSessionValue, setSessionValue} from "../../services/session"
+import {preRequest} from "../util"
 
 export default [
   {

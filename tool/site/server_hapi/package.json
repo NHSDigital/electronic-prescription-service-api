@@ -12,10 +12,12 @@
   "author": "NHS Digital",
   "license": "MIT",
   "devDependencies": {
+    "@types/fhir": "^0.0.34",
     "@types/hapi__catbox-redis": "^5.0.4",
     "@types/hapi__hapi": "^20.0.9",
     "@types/hapi__yar": "^10.1.1",
     "@types/hapi-pino": "^8.0.3",
+    "@types/jsonwebtoken": "^8.5.5",
     "@types/node": "^16.10.3",
     "@types/uuid": "^8.3.1",
     "@typescript-eslint/eslint-plugin": "^4.29.0",
@@ -32,8 +34,9 @@
     "@hapi/catbox-redis": "^6.0.2",
     "@hapi/hapi": "^20.2.0",
     "@hapi/yar": "^10.1.1",
-    "hapi-pino": "^8.4.0",
     "axios": "^0.23.0",
+    "hapi-pino": "^8.4.0",
+    "jsonwebtoken": "^8.5.1",
     "uuid": "^8.3.2"
   }
 }

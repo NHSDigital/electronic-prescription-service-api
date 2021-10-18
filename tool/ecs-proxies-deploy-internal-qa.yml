@@ -27,14 +27,6 @@ docker_service:
                 valueFrom: "/{{ account }}/api-deployment/eps-api-tool/internal-qa/test-client/client-id"
             -   name: DEMO_APP_KEY_ID
                 valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/local-jwt-key-id"
-            -   name: RSS_JWT_ISSUER
-                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/rss-jwt-issuer"
-            -   name: RSS_JWT_KID
-                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/rss-jwt-key-id"
-            -   name: APP_SIGNING_SUBJECT
-                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/rss-jwt-subject"
-            -   name: RSS_JWT_PRIVATE_KEY
-                valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/int/test-client/rss-jwt-private-key"
             -   name: DEMO_APP_PRIVATE_KEY
                 valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/int/test-client/local-jwt-private-key"
             -   name: DEMO_APP_CLIENT_KEY
@@ -59,6 +51,14 @@ docker_service:
                 valueFrom: '/{{ account }}/platform-common/egress/hosts/apigee-internal-qa'
             -   name: SESSION_TOKEN_ENCRYPTION_KEY
                 valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/int/test-client/session-token-encryption-key"
+            -   name: APP_JWT_PRIVATE_KEY
+                valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/int/test-client/rss-jwt-private-key"
+            -   name: APP_JWT_KID
+                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/rss-jwt-key-id"
+            -   name: APP_JWT_ISSUER
+                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/rss-jwt-issuer"
+            -   name: APP_JWT_SUBJECT
+                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/rss-jwt-subject"
         health_check:
             matcher: "200"
             path: "/_healthcheck"
