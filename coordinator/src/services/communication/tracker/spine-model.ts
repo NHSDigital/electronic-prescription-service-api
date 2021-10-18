@@ -1,5 +1,3 @@
-export type TrackerSpineResponse = unknown
-
 interface Prescription {
   lastEventDate: string
   prescriptionIssueDate: string

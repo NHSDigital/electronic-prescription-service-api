@@ -1,13 +1,12 @@
 import {TrackerClient} from "."
 import pino from "pino"
 import Hapi from "@hapi/hapi"
-import {TrackerSpineResponse} from "./spine-model"
 
 export class SandboxTrackerClient implements TrackerClient {
   getPrescription(
     /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
     prescriptionId: string, headers: Hapi.Util.Dictionary<string>, logger: pino.Logger
-  ): Promise<TrackerSpineResponse> {
+  ): Promise<unknown> {
     return Promise.resolve({
       version: "2",
       reason: "",

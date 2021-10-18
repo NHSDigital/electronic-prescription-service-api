@@ -38,8 +38,13 @@ export interface TaskOutput {
 }
 
 export enum TaskStatus {
+  ACCEPTED = "accepted",
+  CANCELLED = "cancelled",
+  COMPLETED = "completed",
   IN_PROGRESS = "in-progress",
-  REJECTED = "rejected"
+  FAILED = "failed",
+  REJECTED = "rejected",
+  REQUESTED = "requested"
 }
 
 export enum TaskIntent {

@@ -34,17 +34,19 @@ export function convertSpineResponseToFhir(spineResponse: unknown): fhir.Bundle 
 }
 
 function convertPrescriptionToTask(prescriptionId: string, prescription: DetailPrescription): fhir.Task {
-  const owner = prescription.dispensingPharmacy ?? prescription.nominatedPharmacy
+  const hasBeenDispensed = prescription.dispensingPharmacy.ods
+  const owner = hasBeenDispensed ? prescription.dispensingPharmacy : prescription.nominatedPharmacy
+  const {status, businessStatus} = getStatusCodesFromDisplay(prescription.prescriptionStatus)
   const id = uuid.v4()
 
   const task: fhir.Task = {
     resourceType: "Task",
     id: id,
     identifier: [fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", id)],
-    status: fhir.TaskStatus.IN_PROGRESS,
+    status: status,
     businessStatus: fhir.createCodeableConcept(
       "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
-      getStatusCodeFromDisplay(prescription.prescriptionStatus),
+      businessStatus,
       prescription.prescriptionStatus
     ),
     intent: fhir.TaskIntent.ORDER,
@@ -70,7 +72,7 @@ function convertPrescriptionToTask(prescriptionId: string, prescription: DetailP
     )
   }
 
-  if (prescription.repeatInstance.totalAuthorised === "1") {
+  if (prescription.repeatInstance.totalAuthorised !== "1") {
     task.extension = [
       createRepeatInfoExtension(prescription.repeatInstance.currentIssue, prescription.repeatInstance.totalAuthorised)
     ]
@@ -82,25 +84,24 @@ function convertPrescriptionToTask(prescriptionId: string, prescription: DetailP
   return task
 }
 
-function getStatusCodeFromDisplay(display: string): string {
+function getStatusCodesFromDisplay(display: string): { status: fhir.TaskStatus, businessStatus: string } {
   switch (display) {
     case "To be Dispensed":
-      return "0001"
+      return {status: fhir.TaskStatus.REQUESTED, businessStatus: "0001"}
     case "With Dispenser":
-      return "0002"
+      return {status: fhir.TaskStatus.ACCEPTED, businessStatus: "0002"}
     case "With Dispenser - Active":
-      return "0003"
+      return {status: fhir.TaskStatus.IN_PROGRESS, businessStatus: "0003"}
     case "Expired":
-      return "0004"
+      return {status: fhir.TaskStatus.FAILED, businessStatus: "0004"}
     case "Cancelled":
-      return "0005"
+      return {status: fhir.TaskStatus.CANCELLED, businessStatus: "0005"}
     case "Dispensed":
-      return "0006"
+      return {status: fhir.TaskStatus.COMPLETED, businessStatus: "0006"}
     case "Not Dispensed":
-      return "0007"
+      return {status: fhir.TaskStatus.COMPLETED, businessStatus: "0007"}
     default:
-      console.warn("Unexpected Status Code from Spine")
-      return "0000"
+      throw new Error("Unexpected Status Code from Spine")
   }
 }
 
@@ -126,6 +127,7 @@ function createRepeatInfoExtension(currentIssue: string, totalAuthorised: string
 
 function convertLineItemToInput(lineItemId: string, prescription: DetailPrescription) {
   const lineItem = prescription.lineItems[lineItemId]
+  const {businessStatus} = getStatusCodesFromDisplay(lineItem.itemStatus)
   const taskInput: fhir.TaskInput = {
     type: fhir.createCodeableConcept("http://snomed.info/sct", "16076005", "Prescription"),
     valueReference: fhir.createIdentifierReference(
@@ -146,7 +148,7 @@ function convertLineItemToInput(lineItemId: string, prescription: DetailPrescrip
       url: "dispenseStatus",
       valueCoding: fhir.createCoding(
         "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
-        getStatusCodeFromDisplay(lineItem.itemStatus),
+        businessStatus,
         lineItem.itemStatus
       )
     })
