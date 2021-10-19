@@ -28,7 +28,7 @@ export class SigningClient {
     const payload = {
       sub: process.env.APP_JWT_SUBJECT,
       iss: process.env.APP_JWT_ISSUER,
-      aud: baseUrl,
+      aud: this.getBaseUrl(true),
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + (60 * 10),
       payloads: prepareResponses.map(pr => {
@@ -39,8 +39,6 @@ export class SigningClient {
       }),
       algorithm: prepareResponses[0].parameter?.find(p => p.name === "algorithm")?.valueString
     }
-    console.log("?????????????????????")
-    console.log(JSON.stringify(prepareResponses))
     console.log("!!!!!!!!!!!!!!!!!!!!!")
     console.log(JSON.stringify(payload))
     const body = await jwt.sign(payload, privateKey, {algorithm: "RS512", keyid: process.env.APP_JWT_KID})
@@ -60,8 +58,8 @@ export class SigningClient {
     })).data
   }
 
-  private getBaseUrl() {
-    const apigeeUrl = `https://${process.env.APIGEE_DOMAIN_NAME}`
+  private getBaseUrl(isPublic: boolean = false) {
+    const apigeeUrl = isPublic ? `https://${process.env.PUBLIC_APIGEE_URL}` : `https://${process.env.APIGEE_DOMAIN_NAME}`
     const baseUrl = this.authMethod === "simulated" && process.env.ENVIRONMENT === "int"
       ? `${apigeeUrl}/signing-service-no-smartcard`
       : `${apigeeUrl}/signing-service`
