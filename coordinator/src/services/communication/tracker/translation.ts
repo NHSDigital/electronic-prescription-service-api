@@ -4,6 +4,7 @@ import * as uuid from "uuid"
 import {convertResourceToBundleEntry} from "../../translation/response/common"
 import moment from "moment"
 import {HL7_V3_DATE_TIME_FORMAT, ISO_DATE_FORMAT} from "../../translation/common/dateTime"
+import {LosslessNumber} from "lossless-json"
 
 export function convertSpineResponseToFhir(spineResponse: unknown): fhir.Bundle | fhir.OperationOutcome {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -146,11 +147,11 @@ function createRepeatInfoExtension(currentIssue: string, totalAuthorised: string
     extension: [
       {
         url: "numberOfRepeatsAllowed",
-        valueUnsignedInt: totalAuthorised
+        valueUnsignedInt: new LosslessNumber(totalAuthorised)
       },
       {
         url: "numberOfRepeatsIssued",
-        valueUnsignedInt: currentIssue
+        valueUnsignedInt: new LosslessNumber(currentIssue)
       }
     ]
   }

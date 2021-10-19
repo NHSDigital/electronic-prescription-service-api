@@ -5,6 +5,7 @@ import {getStatusCode} from "../../utils/status-code"
 import {trackerClient} from "../../services/communication/tracker"
 import {convertSpineResponseToFhir} from "../../services/communication/tracker/translation"
 import {RequestHeaders} from "../../utils/headers"
+import * as LosslessJson from "lossless-json"
 
 const VALID_QUERY_PARAMS = ["identifier", "focus:identifier"]
 
@@ -28,12 +29,12 @@ export default [{
       const spineResponse = await trackerClient.getPrescription(prescriptionIdentifier, request.headers, request.logger)
       if (request.headers[RequestHeaders.RAW_RESPONSE]) {
         return responseToolkit
-          .response(spineResponse.toString())
+          .response(JSON.stringify(spineResponse))
           .code(200)
           .type(ContentTypes.JSON)
       } else {
         return responseToolkit
-          .response(convertSpineResponseToFhir(spineResponse))
+          .response(LosslessJson.stringify(convertSpineResponseToFhir(spineResponse)))
           .code(200)
           .type(ContentTypes.FHIR)
       }
