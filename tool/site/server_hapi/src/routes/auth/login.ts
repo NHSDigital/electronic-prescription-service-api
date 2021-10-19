@@ -10,14 +10,6 @@ export default [
       request.yar.set(`access_token`, access_token)
       return h.response({}).code(200)
     }
-  },
-  {
-    method: "GET",
-    path: "/login",
-    handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const access_token = request.yar.get("access_token")
-      return h.response(access_token).code(200)
-    }
   }
 ]
 

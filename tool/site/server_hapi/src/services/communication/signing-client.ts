@@ -68,4 +68,3 @@ export class SigningClient {
   }
 }
 
-export const signingClient = new SigningClient()

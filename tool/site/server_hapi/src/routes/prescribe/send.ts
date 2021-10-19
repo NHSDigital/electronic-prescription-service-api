@@ -1,44 +1,49 @@
 import Hapi from "@hapi/hapi"
 import {isLocal} from "../../services/environment"
-import {signingClient} from "../../services/communication/signing-client"
-import {getSessionValue, setSessionValue} from "../../services/session"
-import {preRequest} from "../util"
+import {SigningClient} from "../../services/communication/signing-client"
+import {getSessionValue, getSessionValueOrDefault, setSessionValue} from "../../services/session"
 
 export default [
   {
     method: "GET",
     path: "/prescribe/send",
-    handler: preRequest(
-      async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
-        const signatureResponse = await downloadSignatureRequest(request)
-        const prescriptionIds = getSessionValue("prescription_ids", request)
-        const prepareResponses = prescriptionIds.map((id: string) => {
-          return {
-            prescriptionId: id,
-            response: getSessionValue(`prepare_response_${id}`, request)
-          }
-        })
-        prepareResponses.forEach((prepareResponse: { prescriptionId: string, response: any }, index: number) => {
-          const payload = prepareResponse.response.digest
-          const signature = signatureResponse.signatures[index].signature
-          const certificate = signatureResponse.certificate
-          const payloadDecoded = Buffer.from(payload, "base64")
-            .toString("utf-8")
-            .replace('<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">', "<SignedInfo>")
-          const xmlDsig =
-            `<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">${payloadDecoded}'
+    handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      const signingClient = new SigningClient()
+      if (!isLocal()) {
+        const accessToken = getSessionValue("access_token", request)
+        const authMethod = getSessionValueOrDefault("auth_method", request, "simulated")
+        signingClient.setAuthMethod(authMethod)
+        signingClient.setAccessToken(accessToken)
+      }
+      const signatureResponse = await downloadSignatureRequest(request)
+      const prescriptionIds = getSessionValue("prescription_ids", request)
+      const prepareResponses = prescriptionIds.map((id: string) => {
+        return {
+          prescriptionId: id,
+          response: getSessionValue(`prepare_response_${id}`, request)
+        }
+      })
+      prepareResponses.forEach((prepareResponse: { prescriptionId: string, response: any }, index: number) => {
+        const payload = prepareResponse.response.digest
+        const signature = signatureResponse.signatures[index].signature
+        const certificate = signatureResponse.certificate
+        const payloadDecoded = Buffer.from(payload, "base64")
+          .toString("utf-8")
+          .replace('<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">', "<SignedInfo>")
+        const xmlDsig =
+          `<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">${payloadDecoded}'
             f"<SignatureValue>${signature}</SignatureValue>"
             f"<KeyInfo><X509Data><X509Certificate>${certificate}</X509Certificate></X509Data></KeyInfo>"
             f"</Signature>`
-          const xmlDsigEncoded = Buffer.from(xmlDsig, "utf-8").toString("base64")
-          const provenance = createProvenance(prepareResponse.response.timestamp, xmlDsigEncoded)
-          const prepareRequest = getSessionValue(`prepare_request_${prepareResponse.prescriptionId}`, request)
-          prepareRequest.entry.push(provenance)
-          const sendRequest = prepareRequest
-          setSessionValue(`prescription_order_send_request_${prepareResponse.prescriptionId}`, sendRequest, request)
-        })
-        return responseToolkit.response({}).code(200)
+        const xmlDsigEncoded = Buffer.from(xmlDsig, "utf-8").toString("base64")
+        const provenance = createProvenance(prepareResponse.response.timestamp, xmlDsigEncoded)
+        const prepareRequest = getSessionValue(`prepare_request_${prepareResponse.prescriptionId}`, request)
+        prepareRequest.entry.push(provenance)
+        const sendRequest = prepareRequest
+        setSessionValue(`prescription_order_send_request_${prepareResponse.prescriptionId}`, sendRequest, request)
       })
+      return responseToolkit.response({}).code(200)
+    }
   },
   {
     method: "POST",
