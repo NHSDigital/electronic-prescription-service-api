@@ -39,6 +39,10 @@ export class SigningClient {
       }),
       algorithm: prepareResponses[0].parameter?.find(p => p.name === "algorithm")?.valueString
     }
+    console.log("?????????????????????")
+    console.log(prepareResponses)
+    console.log("!!!!!!!!!!!!!!!!!!!!!")
+    console.log(payload)
     const body = await jwt.sign(payload, privateKey, {algorithm: "RS512", keyid: process.env.APP_JWT_KID})
     return (await axios.post(url, body, {headers: headers})).data
   }
