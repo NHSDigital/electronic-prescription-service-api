@@ -13,7 +13,11 @@ export class MockEpsClient implements EpsClient {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async makeSendRequest(body: Bundle): Promise<OperationOutcome> {
+  async makeSendRequest(requestId: string, body: Bundle, getSpineResponse: boolean): Promise<OperationOutcome> {
+    if (getSpineResponse) {
+      return await this.mockAxiosResponse("")
+    }
+
     return await this.mockAxiosResponse({
       resourceType: "OperationOutcome",
       issue: [

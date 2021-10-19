@@ -1,5 +1,5 @@
 import * as uuid from "uuid"
-import axios from "axios"
+import axios, {AxiosRequestHeaders} from "axios"
 import {Bundle, OperationOutcome, Parameters} from "fhir/r4"
 import {EpsClient} from "./eps-client"
 
@@ -14,20 +14,26 @@ export class LiveEpsClient implements EpsClient {
     return await this.makeApiCall("$prepare", body)
   }
 
-  async makeSendRequest(body: Bundle): Promise<OperationOutcome> {
-    return await this.makeApiCall("$process-message", body)
+  async makeSendRequest(requestId: string, body: Bundle, getSpineResponse: boolean): Promise<OperationOutcome> {
+    return await this.makeApiCall("$process-message", body, requestId, getSpineResponse)
   }
 
   async makeConvertRequest(body: unknown): Promise<string> {
     return await this.makeApiCall("$convert", body)
   }
 
-  private async makeApiCall(endpoint: string, body?: unknown): Promise<any> {
+  private async makeApiCall(endpoint: string, body?: unknown, requestId?: string, getSpineResponse?: boolean): Promise<any> {
     const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/${endpoint}`
-    const headers = {
+    let headers: AxiosRequestHeaders = {
       "Authorization": `Bearer ${this.accessToken}`,
-      "x-request-id": uuid.v4(),
+      "x-request-id": requestId ?? uuid.v4(),
       "x-correlation-id": uuid.v4()
+    }
+    if (getSpineResponse) {
+      headers = {
+        ...headers,
+        "x-raw-response": "true"
+      }
     }
     if (body) {
       return (await axios.post(url, body, {headers: headers})).data
