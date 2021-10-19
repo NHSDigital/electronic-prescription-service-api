@@ -19,18 +19,14 @@ export class LiveEpsClient implements EpsClient {
     const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/${endpoint}`
     const headers = {
       "Authorization": `Bearer ${this.accessToken}`,
+      "Content-Type": "application/fhir+json; fhirVersion=4.0",
       "x-request-id": uuid.v4(),
       "x-correlation-id": uuid.v4()
     }
     if (body) {
-      return (await axios.post(url, {
-        headers: headers,
-        body
-      })).data
+      return (await axios.post(url, body, {headers: headers})).data
     }
 
-    return (await axios.get(url, {
-      headers: headers
-    })).data
+    return (await axios.get(url, {headers: headers})).data
   }
 }
