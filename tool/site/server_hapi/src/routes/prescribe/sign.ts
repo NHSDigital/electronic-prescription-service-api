@@ -26,7 +26,7 @@ export default [
         console.log("tttttttttttttttttttttt")
         console.log(JSON.stringify(prepareResponse))
       }
-      const prepareResponses = prescriptionIds.map(async (id: string) => getSessionValue(`prepare_response_${id}`, request))
+      const prepareResponses = prescriptionIds.map((id: string) => getSessionValue(`prepare_response_${id}`, request))
       console.log("vvvvvvvvvvvvvvvvvvvvvvvv")
       console.log(JSON.stringify(prepareResponses))
       if (isLocal()) {
