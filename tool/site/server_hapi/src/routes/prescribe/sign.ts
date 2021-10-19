@@ -11,7 +11,7 @@ export default [
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       if (isLocal()) {
         return responseToolkit.response(getMockRedirect()).code(200)
-      }    
+      }
       const epsClient = getEpsClient(isLocal())
       const signingClient = new SigningClient()
       if (epsClientIsLive(epsClient)) {
@@ -20,7 +20,7 @@ export default [
         epsClient.setAccessToken(accessToken)
         signingClient.setAuthMethod(authMethod)
         signingClient.setAccessToken(accessToken)
-      }  
+      }
       const prescriptionIds = getSessionValue("prescription_ids", request)
       for (const id of prescriptionIds) {
         const prepareRequest = getSessionValue(`prepare_request_${id}`, request)

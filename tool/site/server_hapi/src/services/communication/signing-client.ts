@@ -58,8 +58,8 @@ export class SigningClient {
     })).data
   }
 
-  private getBaseUrl(isPublic: boolean = false) {
-    const apigeeUrl = isPublic ? `https://${process.env.PUBLIC_APIGEE_URL}` : `https://${process.env.APIGEE_DOMAIN_NAME}`
+  private getBaseUrl(isPublic = false) {
+    const apigeeUrl = isPublic ? `${process.env.PUBLIC_APIGEE_URL}` : `https://${process.env.APIGEE_DOMAIN_NAME}`
     const baseUrl = this.authMethod === "simulated" && process.env.ENVIRONMENT === "int"
       ? `${apigeeUrl}/signing-service-no-smartcard`
       : `${apigeeUrl}/signing-service`
