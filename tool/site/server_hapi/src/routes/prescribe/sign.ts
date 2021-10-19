@@ -19,14 +19,14 @@ export default [
         signingClient.setAccessToken(accessToken)
       }
       const prescriptionIds = getSessionValue("prescription_ids", request)
-      const prepareResponses = prescriptionIds.map(async (id: string) => {
+      for (const id of prescriptionIds) {
         const prepareRequest = getSessionValue(`prepare_request_${id}`, request)
         const prepareResponse = await epsClient.makePrepareRequest(prepareRequest)
         setSessionValue(`prepare_response_${id}`, prepareResponse, request)
         console.log("tttttttttttttttttttttt")
         console.log(JSON.stringify(prepareResponse))
-        return prepareResponse
-      })
+      }
+      const prepareResponses = prescriptionIds.map(async (id: string) => getSessionValue(`prepare_response_${id}`, request))
       console.log("vvvvvvvvvvvvvvvvvvvvvvvv")
       console.log(JSON.stringify(prepareResponses))
       if (isLocal()) {
