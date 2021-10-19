@@ -1,26 +1,17 @@
 import Hapi from "@hapi/hapi"
-import {SigningClient} from "../../services/communication/signing-client"
-import {epsClientIsLive, getEpsClient} from "../../services/communication/eps-client"
+import {getSigningClient} from "../../services/communication/signing-client"
+import {getEpsClient} from "../../services/communication/eps-client"
 import {getSessionValue, getSessionValueOrDefault, setSessionValue} from "../../services/session"
-import {isLocal} from "../../services/environment"
 
 export default [
   {
     method: "POST",
     path: "/prescribe/sign",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      if (isLocal()) {
-        return responseToolkit.response(getMockRedirect()).code(200)
-      }
-      const epsClient = getEpsClient(isLocal())
-      const signingClient = new SigningClient()
-      if (epsClientIsLive(epsClient)) {
-        const accessToken = getSessionValue("access_token", request)
-        const authMethod = getSessionValueOrDefault("auth_method", request, "simulated")
-        epsClient.setAccessToken(accessToken)
-        signingClient.setAuthMethod(authMethod)
-        signingClient.setAccessToken(accessToken)
-      }
+      const accessToken = getSessionValueOrDefault("access_token", request, "")
+      const authMethod = getSessionValueOrDefault("auth_method", request, "cis2")
+      const epsClient = getEpsClient(accessToken)
+      const signingClient = getSigningClient(request, accessToken, authMethod)
       const prescriptionIds = getSessionValue("prescription_ids", request)
       for (const id of prescriptionIds) {
         const prepareRequest = getSessionValue(`prepare_request_${id}`, request)
@@ -33,13 +24,3 @@ export default [
     }
   }
 ]
-
-function getMockRedirect() {
-  const basePathForRedirect = process.env.BASE_PATH === undefined
-    ? "/"
-    : `/${process.env.BASE_PATH}/`
-  const response = {
-    "redirectUri": `${basePathForRedirect}prescribe/send`
-  }
-  return response
-}

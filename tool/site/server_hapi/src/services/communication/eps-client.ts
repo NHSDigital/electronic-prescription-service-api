@@ -1,17 +1,16 @@
 import {MockEpsClient} from "./mock-eps-client"
 import {LiveEpsClient} from "./live-eps-client"
-import {Parameters} from "fhir/r4"
+import {Bundle, Parameters, OperationOutcome} from "fhir/r4"
+import {isLocal} from "../environment"
 
 export interface EpsClient {
-  makePrepareRequest(body: any): Promise<Parameters>
+  makePrepareRequest(body: Bundle): Promise<Parameters>
+  makeSendRequest(body: Bundle): Promise<OperationOutcome>
+  makeConvertRequest(body: unknown): Promise<string>
 }
 
-export function getEpsClient(useMock: boolean): EpsClient {
-  return useMock
+export function getEpsClient(accessToken: string): EpsClient {
+  return isLocal()
     ? new MockEpsClient()
-    : new LiveEpsClient()
-}
-
-export function epsClientIsLive(client: EpsClient): client is LiveEpsClient {
-  return (<LiveEpsClient>client).setAccessToken !== undefined
+    : new LiveEpsClient(accessToken)
 }

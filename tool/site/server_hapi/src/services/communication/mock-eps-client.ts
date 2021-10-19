@@ -1,4 +1,4 @@
-import {Bundle, Parameters} from "fhir/r4"
+import {Bundle, OperationOutcome, Parameters} from "fhir/r4"
 import {EpsClient} from "./eps-client"
 
 export class MockEpsClient implements EpsClient {
@@ -10,6 +10,24 @@ export class MockEpsClient implements EpsClient {
       algorithm: "RS1",
       timestamp: "2021-05-07T14:47:58+00:00"
     })
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async makeSendRequest(body: Bundle): Promise<OperationOutcome> {
+    return await this.mockAxiosResponse({
+      resourceType: "OperationOutcome",
+      issue: [
+        {
+          code: "informational",
+          severity: "information"
+        }
+      ]
+    })
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async makeConvertRequest(body: unknown): Promise<string> {
+    return await this.mockAxiosResponse("")
   }
 
   private async mockAxiosResponse(body: unknown): Promise<any> {

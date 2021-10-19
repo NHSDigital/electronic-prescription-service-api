@@ -1,21 +1,18 @@
 import Hapi from "@hapi/hapi"
-import {isLocal} from "../../services/environment"
-import {SigningClient} from "../../services/communication/signing-client"
+import {getSigningClient} from "../../services/communication/signing-client"
 import {getSessionValue, getSessionValueOrDefault, setSessionValue} from "../../services/session"
+import {getEpsClient} from "../../services/communication/eps-client"
 
 export default [
   {
     method: "GET",
     path: "/prescribe/send",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const signingClient = new SigningClient()
-      if (!isLocal()) {
-        const accessToken = getSessionValue("access_token", request)
-        const authMethod = getSessionValueOrDefault("auth_method", request, "simulated")
-        signingClient.setAuthMethod(authMethod)
-        signingClient.setAccessToken(accessToken)
-      }
-      const signatureResponse = await downloadSignatureRequest(signingClient, request)
+      const accessToken = getSessionValueOrDefault("access_token", request, "")
+      const authMethod = getSessionValueOrDefault("auth_method", request, "cis2")
+      const signatureToken = request.query["token"]
+      const signingClient = getSigningClient(request, accessToken, authMethod)
+      const signatureResponse = await signingClient.makeSignatureDownloadRequest(signatureToken)
       const prescriptionIds = getSessionValue("prescription_ids", request)
       const prepareResponses = prescriptionIds.map((id: string) => {
         return {
@@ -50,15 +47,19 @@ export default [
     path: "/prescribe/send",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const prescriptionIds = getSessionValue("prescription_ids", request)
+      const accessToken = getSessionValueOrDefault("access_token", request, "")
+      const epsClient = getEpsClient(accessToken)
       if (prescriptionIds.length === 1) {
-        const send_request = getSessionValue(`prescription_order_send_request_${prescriptionIds[0]}`, request)
+        const sendRequest = getSessionValue(`prescription_order_send_request_${prescriptionIds[0]}`, request)
+        const sendResponse = await epsClient.makeSendRequest(sendRequest)
+        const convertResponse = await epsClient.makeConvertRequest(sendRequest)
         return h.response({
           prescription_ids: prescriptionIds,
           prescription_id: prescriptionIds[0],
           success: true,
-          request_xml: "",
-          request: send_request,
-          response: {},
+          request_xml: convertResponse,
+          request: sendRequest,
+          response: sendResponse,
           response_xml: ""
         }).code(200)
       }
@@ -75,36 +76,6 @@ export default [
     }
   }
 ]
-
-async function downloadSignatureRequest(signingClient: SigningClient, request: Hapi.Request):
-  Promise<{ signatures: { id: string, signature: string }[], certificate: string }> {
-  const useMockSignatureResponse = isLocal()
-  if (useMockSignatureResponse) {
-    return await getMockSignatureDownloadResponse(request)
-  }
-
-  return await getSignatureDownloadRequest(signingClient, request)
-}
-
-async function getMockSignatureDownloadResponse(request: Hapi.Request) {
-  const mockCertificate = ""
-  const mockSignatures = getSessionValue("prescription_ids", request).map((id: string) => {
-    return {
-      id,
-      signature: ""
-    }
-  })
-  return Promise.resolve({
-    signatures: mockSignatures,
-    certificate: mockCertificate
-  })
-}
-
-async function getSignatureDownloadRequest(signingClient: SigningClient, request: Hapi.Request):
-  Promise<{ signatures: { id: string; signature: string }[]; certificate: string }> {
-  const signatureToken = request.query["token"]
-  return signingClient.makeSignatureDownloadRequest(signatureToken)
-}
 
 function createProvenance(timestamp: string, signature: string) {
   return {
