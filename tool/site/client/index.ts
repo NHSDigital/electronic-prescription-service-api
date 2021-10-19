@@ -253,6 +253,16 @@ customWindow.sendClaimRequest = function () {
       "GET",
       `${pageData.baseUrl}dispense/history?prescription_id=${prescriptionId}`
     )
+    if (!dispensingHistory.prescription_order || !dispensingHistory.dispense_notifications) {
+      pageData.claimResponse = {
+        success: undefined,
+        fhirRequest: undefined,
+        hl7Request: "",
+        hl7Response: "",
+        fhirResponse: undefined
+      }
+      return
+    }
     const claim = createClaim(dispensingHistory.prescription_order, dispensingHistory.dispense_notifications)
     const response = makeRequest(
       "POST",

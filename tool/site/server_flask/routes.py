@@ -357,6 +357,8 @@ def post_dispense():
 @app.route(DISPENSING_HISTORY_URL, methods=["GET"])
 def get_dispensing_history():
     short_prescription_id = flask.request.args.get("prescription_id")
+    if not contains_prescription_order_send_request(short_prescription_id):
+        return {}
     prescription_order = load_prescription_order_send_request(short_prescription_id)
     dispense_notifications = load_dispense_notification_send_requests(short_prescription_id)
     return {
