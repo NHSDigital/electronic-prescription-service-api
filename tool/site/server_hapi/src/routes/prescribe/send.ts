@@ -15,7 +15,7 @@ export default [
         signingClient.setAuthMethod(authMethod)
         signingClient.setAccessToken(accessToken)
       }
-      const signatureResponse = await downloadSignatureRequest(request)
+      const signatureResponse = await downloadSignatureRequest(signingClient, request)
       const prescriptionIds = getSessionValue("prescription_ids", request)
       const prepareResponses = prescriptionIds.map((id: string) => {
         return {
@@ -76,14 +76,14 @@ export default [
   }
 ]
 
-async function downloadSignatureRequest(request: Hapi.Request):
+async function downloadSignatureRequest(signingClient: SigningClient, request: Hapi.Request):
   Promise<{ signatures: { id: string, signature: string }[], certificate: string }> {
   const useMockSignatureResponse = isLocal()
   if (useMockSignatureResponse) {
     return await getMockSignatureDownloadResponse(request)
   }
 
-  return await getSignatureDownloadRequest(request)
+  return await getSignatureDownloadRequest(signingClient, request)
 }
 
 async function getMockSignatureDownloadResponse(request: Hapi.Request) {
@@ -100,7 +100,7 @@ async function getMockSignatureDownloadResponse(request: Hapi.Request) {
   })
 }
 
-async function getSignatureDownloadRequest(request: Hapi.Request):
+async function getSignatureDownloadRequest(signingClient: SigningClient, request: Hapi.Request):
   Promise<{ signatures: { id: string; signature: string }[]; certificate: string }> {
   const signatureToken = request.query["token"]
   return signingClient.makeSignatureDownloadRequest(signatureToken)
