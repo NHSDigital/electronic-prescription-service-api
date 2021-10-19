@@ -106,7 +106,10 @@ rivets.formatters.hasNominatedPharmacy = function (medicationRequests: Array<Med
 }
 
 rivets.formatters.nominatedOds = function (medicationRequests: Array<MedicationRequest>) {
-  return medicationRequests ? medicationRequests[0].dispenseRequest.performer.identifier.value : ""
+  if (!medicationRequests) {
+    return ""
+  }
+  return medicationRequests[0]?.dispenseRequest?.performer?.identifier?.value || ""
 }
 
 rivets.formatters.pharmacyType = function (medicationRequests: Array<MedicationRequest>) {
