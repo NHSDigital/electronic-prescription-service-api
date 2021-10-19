@@ -32,20 +32,10 @@ export default [{
           .code(200)
           .type(ContentTypes.JSON)
       } else {
-        try {
-          return responseToolkit
-            .response({
-              spineResponse: spineResponse,
-              fhirResponse: convertSpineResponseToFhir(spineResponse)
-            })
-            .code(200)
-            .type(ContentTypes.FHIR)
-        } catch (e) {
-          return {
-            spineResponse: spineResponse,
-            error: e
-          }
-        }
+        return responseToolkit
+          .response(convertSpineResponseToFhir(spineResponse))
+          .code(200)
+          .type(ContentTypes.FHIR)
       }
     }
   }

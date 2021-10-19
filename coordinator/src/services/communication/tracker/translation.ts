@@ -42,6 +42,7 @@ function convertPrescriptionToTask(prescriptionId: string, prescription: DetailP
   const task: fhir.Task = {
     resourceType: "Task",
     id: id,
+    extension: [createCourseOfTherapyTypeExtension(prescription.prescriptionTreatmentType)],
     identifier: [fhir.createIdentifier("https://tools.ietf.org/html/rfc4122", id)],
     status: status,
     businessStatus: fhir.createCodeableConcept(
@@ -73,9 +74,9 @@ function convertPrescriptionToTask(prescriptionId: string, prescription: DetailP
   }
 
   if (prescription.repeatInstance.totalAuthorised !== "1") {
-    task.extension = [
+    task.extension.push(
       createRepeatInfoExtension(prescription.repeatInstance.currentIssue, prescription.repeatInstance.totalAuthorised)
-    ]
+    )
   }
 
   const lineItemIds = Object.keys(prescription.lineItems)
@@ -87,6 +88,7 @@ function convertPrescriptionToTask(prescriptionId: string, prescription: DetailP
 function getStatusCodesFromDisplay(display: string): { status: fhir.TaskStatus, businessStatus: string } {
   switch (display) {
     case "To be Dispensed":
+    case "To Be Dispensed":
       return {status: fhir.TaskStatus.REQUESTED, businessStatus: "0001"}
     case "With Dispenser":
       return {status: fhir.TaskStatus.ACCEPTED, businessStatus: "0002"}
@@ -102,6 +104,35 @@ function getStatusCodesFromDisplay(display: string): { status: fhir.TaskStatus, 
       return {status: fhir.TaskStatus.COMPLETED, businessStatus: "0007"}
     default:
       throw new Error("Unexpected Status Code from Spine")
+  }
+}
+
+function createCourseOfTherapyTypeExtension(treatmentType: string): fhir.ExtensionExtension<fhir.CodingExtension> {
+  let code, display
+  switch (treatmentType) {
+    case "Acute Prescription":
+      code = fhir.CourseOfTherapyTypeCode.ACUTE
+      display = "Short course (acute) therapy"
+      break
+    case "Repeat Prescribing":
+      code = fhir.CourseOfTherapyTypeCode.CONTINUOUS
+      display = "Continuous long term therapy"
+      break
+    case "Repeat Dispensing":
+      code = fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
+      display = "Continuous long term (repeat dispensing)"
+      break
+  }
+  return {
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription",
+    extension:  [{
+      url: "courseOfTherapyType",
+      valueCoding: {
+        system: "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+        code: code,
+        display: display
+      }
+    }]
   }
 }
 
@@ -127,7 +158,6 @@ function createRepeatInfoExtension(currentIssue: string, totalAuthorised: string
 
 function convertLineItemToInput(lineItemId: string, prescription: DetailPrescription) {
   const lineItem = prescription.lineItems[lineItemId]
-  const {businessStatus} = getStatusCodesFromDisplay(lineItem.itemStatus)
   const taskInput: fhir.TaskInput = {
     type: fhir.createCodeableConcept("http://snomed.info/sct", "16076005", "Prescription"),
     valueReference: fhir.createIdentifierReference(
@@ -136,7 +166,7 @@ function convertLineItemToInput(lineItemId: string, prescription: DetailPrescrip
   }
 
   const dispensingInformationExtension = []
-  if (prescription.prescriptionDispensedDate) {
+  if (prescription.prescriptionDispensedDate !== "False") {
     dispensingInformationExtension.push({
       url: "dateLastDispensed",
       valueDate: convertToFhirDate(prescription.prescriptionDispensedDate)
@@ -144,6 +174,7 @@ function convertLineItemToInput(lineItemId: string, prescription: DetailPrescrip
   }
 
   if (lineItem.itemStatus) {
+    const {businessStatus} = getStatusCodesFromDisplay(lineItem.itemStatus)
     dispensingInformationExtension.push({
       url: "dispenseStatus",
       valueCoding: fhir.createCoding(
@@ -173,7 +204,7 @@ function convertLineItemToOutput(lineItemId: string, prescription: DetailPrescri
     )
   }
   const releaseInformationExtensions = []
-  if (prescription.prescriptionLastIssueDispensedDate && prescription.prescriptionLastIssueDispensedDate !== "False") {
+  if (prescription.prescriptionLastIssueDispensedDate !== "False") {
     releaseInformationExtensions.push({
       url: "dateLastIssuedDispensed",
       valueDate: convertToFhirDate(prescription.prescriptionLastIssueDispensedDate)
