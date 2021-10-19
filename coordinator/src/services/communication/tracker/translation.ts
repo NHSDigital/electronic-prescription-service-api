@@ -166,7 +166,7 @@ function convertLineItemToInput(lineItemId: string, prescription: DetailPrescrip
   }
 
   const dispensingInformationExtension = []
-  if (prescription.prescriptionDispensedDate !== "False") {
+  if (prescription.prescriptionDispensedDate && prescription.prescriptionDispensedDate !== "False") {
     dispensingInformationExtension.push({
       url: "dateLastDispensed",
       valueDate: convertToFhirDate(prescription.prescriptionDispensedDate)
@@ -204,7 +204,7 @@ function convertLineItemToOutput(lineItemId: string, prescription: DetailPrescri
     )
   }
   const releaseInformationExtensions = []
-  if (prescription.prescriptionLastIssueDispensedDate !== "False") {
+  if (prescription.prescriptionLastIssueDispensedDate && prescription.prescriptionLastIssueDispensedDate !== "False") {
     releaseInformationExtensions.push({
       url: "dateLastIssuedDispensed",
       valueDate: convertToFhirDate(prescription.prescriptionLastIssueDispensedDate)
