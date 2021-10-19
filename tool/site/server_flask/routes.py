@@ -7,7 +7,6 @@ from functools import wraps
 import flask
 import config
 from api import (
-    make_eps_api_prepare_request,
     make_eps_api_process_message_request,
     make_eps_api_process_message_request_untranslated,
     make_eps_api_release_request,
