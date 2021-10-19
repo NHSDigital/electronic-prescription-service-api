@@ -33,9 +33,6 @@ extends:
     service_name: ${{ variables.service_name }}
     short_service_name: ${{ variables.short_service_name }}
     service_base_path: ${{ variables.service_base_path }}
-    product_display_name: ${{ variables.product_display_name }}
-    product_description: ${{ variables.product_description }}
-    spec_file: ${{ variables.spec_file }}
     enable_monitoring: false
     enable_status_monitoring: false
     jinja_templates:
