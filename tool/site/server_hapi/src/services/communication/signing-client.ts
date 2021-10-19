@@ -40,10 +40,7 @@ export class SigningClient {
       algorithm: prepareResponses[0].parameter?.find(p => p.name === "algorithm")?.valueString
     }
     const body = await jwt.sign(payload, privateKey, {algorithm: "RS512", keyid: process.env.APP_JWT_KID})
-    return (await axios.post(url, {
-      headers: headers,
-      body
-    })).data
+    return (await axios.post(url, body, {headers: headers})).data
   }
 
   async makeSignatureDownloadRequest(token: string): Promise<any> {
