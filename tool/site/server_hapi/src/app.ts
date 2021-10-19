@@ -5,10 +5,8 @@ import Yar from "@hapi/yar"
 import CatboxRedis from "@hapi/catbox-redis"
 import {isLocal} from "./services/environment"
 
-export let server: Hapi.Server
-
 const init = async () => {
-  server = Hapi.server({
+  const server = Hapi.server({
     port: 9001,
     host: "0.0.0.0",
     routes: {
