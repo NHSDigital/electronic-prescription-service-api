@@ -51,9 +51,3 @@ def create_oauth_state(pr_number, page_mode):
 def parse_oauth_state(state):
     decoded_state = base64.b64decode(state.encode("utf-8")).decode("utf-8")
     return json.loads(decoded_state)
-
-
-def get_pem(private_key_secret):
-  while len(private_key_secret) % 4 != 0:
-    private_key_secret += "="
-  return base64.b64decode(private_key_secret.encode("utf-8"))

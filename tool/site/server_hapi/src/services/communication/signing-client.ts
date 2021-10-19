@@ -24,7 +24,7 @@ export class SigningClient {
       "x-request-id": uuid.v4(),
       "x-correlation-id": uuid.v4()
     }
-    const privateKey = process.env.APP_JWT_PRIVATE_KEY ?? ""
+    const privateKey = getPrivateKey()
     const payload = {
       sub: process.env.APP_JWT_SUBJECT,
       iss: process.env.APP_JWT_ISSUER,
@@ -65,3 +65,10 @@ export class SigningClient {
   }
 }
 
+function getPrivateKey() {
+  let private_key_secret = process.env.APP_JWT_PRIVATE_KEY ?? ""
+  while (private_key_secret.length % 4 !== 0) {
+    private_key_secret += "="
+  }
+  return Buffer.from(private_key_secret, "base64").toString("utf-8")
+}
