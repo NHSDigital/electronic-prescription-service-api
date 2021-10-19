@@ -12,7 +12,6 @@ from api import (
     make_eps_api_process_message_request_untranslated,
     make_eps_api_release_request,
     make_eps_api_release_request_untranslated,
-    make_sign_api_signature_upload_request,
     make_eps_api_convert_message_request,
     make_eps_api_metadata_request,
     make_eps_api_claim_request,
@@ -239,37 +238,10 @@ def get_sign():
 
 @app.route(SIGN_URL, methods=["POST"])
 def post_sign():
-    # mock implementation
     hapi_response = hapi_passthrough.post_sign()
     response = app.make_response(hapi_response)
-    # todo: deprecate signature page
     set_skip_signature_page_cookie(response, "True")
     return response
-    # # prepare and sign
-    # prepare_successes = []
-    # prepare_errors = []
-    # for short_prescription_id in all_prescription_ids:
-    #     prepare_request = load_prepare_request(short_prescription_id)
-    #     prepare_response, status_code = make_eps_api_prepare_request(get_access_token(), prepare_request)
-    #     if status_code == 200:
-    #         prepare_response = {p["name"]: p["valueString"] for p in prepare_response["parameter"]}
-    #         add_prepare_response(short_prescription_id, prepare_response)
-    #         prepare_successes.append(prepare_response)
-    #     else:
-    #         prepare_errors.append(prepare_response)
-    # # todo: error handling for prepare and sign errors
-    # #   response = app.make_response({
-    # #     "prepareSuccesses": prepare_successes,
-    # #     "prepareErrors": prepare_errors
-    # #   })
-    # auth_method = get_auth_method_from_cookie()
-    # sign_response = make_sign_api_signature_upload_request(
-    #     auth_method, get_access_token(), prepare_successes
-    # )
-    # response = app.make_response(sign_response)
-    # # todo: deprecate signature page
-    # set_skip_signature_page_cookie(response, "True")
-    # return response
 
 
 @app.route(SEND_URL, methods=["GET"])
@@ -281,48 +253,6 @@ def get_send():
 @app.route(SEND_URL, methods=["POST"])
 def post_send():
     return hapi_passthrough.post_send()
-    # post_send_single(response)
-    # access_token = get_access_token()
-    # session_short_prescription_ids = get_all_prescription_ids_from_cookie()
-    # if len(session_short_prescription_ids) == 1:
-    #     return post_send_single(session_short_prescription_ids, access_token)
-    # else:
-    #     return post_send_bulk(session_short_prescription_ids, access_token)
-
-
-# def post_send_single(response):
-#     return {
-#         "prescription_ids": response["prescription_ids"],
-#         "prescription_id": response["prescription_id"],
-#         "success": response["success"],
-#         "request_xml": response["request_xml"],
-#         "request": response["request"],
-#         "response": response["response"],
-#         "response_xml": response["response_xml"]
-#     }
-
-
-def post_send_bulk(short_prescription_ids, access_token):
-    success_list = []
-
-    for short_prescription_id in short_prescription_ids:
-        if contains_prescription_order_send_request(short_prescription_id):
-            send_request = load_prescription_order_send_request(short_prescription_id)
-            _, send_response_code, _ = make_eps_api_process_message_request(access_token, send_request)
-            success_list.append({
-                "prescription_id": short_prescription_id,
-                "success": send_response_code == 200
-            })
-        else:
-            success_list.append({
-                "prescription_id": short_prescription_id,
-                "success": False
-            })
-
-    return {
-        "prescription_ids": short_prescription_ids,
-        "success_list": success_list,
-    }
 
 
 @app.route(CANCEL_URL, methods=["GET"])

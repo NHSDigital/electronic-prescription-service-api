@@ -29,8 +29,6 @@ const parseExcel = (file: Blob) => {
     const prescriberRows = getRowsFromSheet("Prescribers", workbook, false)
     const nominatedPharmacyRows = getRowsFromSheet("Nominated_Pharmacies", workbook, false)
     const prescriptionRows = getRowsFromSheet("Prescriptions", workbook)
-    // todo: sanity check user input and provide feedback if
-    // patients and prescriber count doesn't match prescription count
     const patients = createPatients(patientRows)
     const prescribers = createPrescribers(prescriberRows)
     const nominatedPharmacies = createNominatedPharmacies(nominatedPharmacyRows)
