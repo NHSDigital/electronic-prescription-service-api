@@ -15,7 +15,6 @@ export class LiveEpsClient implements EpsClient {
   }
 
   private async makeApiCall(endpoint: string, body?: unknown): Promise<any> {
-    console.log(`Making eps ${endpoint} request with body:\n${JSON.stringify(body)}`)
     const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/${endpoint}`
     const headers = {
       "Authorization": `Bearer ${this.accessToken}`,
