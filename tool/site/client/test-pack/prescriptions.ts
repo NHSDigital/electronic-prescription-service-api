@@ -114,7 +114,7 @@ function getPatientBundleEntry(patients: Array<BundleEntry>, prescriptionRow: St
 }
 
 function getPractitionerBundleEntry(prescribers: Array<BundleEntry>, prescriptionRow: StringKeyedObject) {
-  if (!prescriptionRow["Test"]) {
+  if (!!prescribers) {
     return getDefaultPractitionerBundleEntry()
   }
 
