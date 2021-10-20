@@ -219,7 +219,7 @@ def get_edit():
 @exclude_from_auth()
 def post_edit():
     request_bundles = flask.request.json
-    hapi_passthrough.post_edit(request_bundles)
+    response_json = hapi_passthrough.post_edit(request_bundles)
     response = app.make_response(response_json)
     hapi_session_cookie_value = get_hapi_session_cookie_value()
     state = hapi_passthrough.get_prescription_ids(hapi_session_cookie_value)
