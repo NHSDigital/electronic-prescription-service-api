@@ -159,6 +159,7 @@ def get_load():
 def download():
     zFile = io.BytesIO()
     access_token = get_access_token()
+    hapi_session_cookie_value = get_hapi_session_cookie_value()
     state = hapi_passthrough.get_prescription_ids(hapi_session_cookie_value)
     short_prescription_ids = state["prescriptionIds"]
     with zipfile.ZipFile(zFile, 'w') as zip_file:
