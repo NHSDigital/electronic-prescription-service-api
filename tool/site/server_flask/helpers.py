@@ -30,9 +30,9 @@ def pr_redirect_required(base_path, state):
 
 
 def get_pr_number(base_path):
-  if not base_path.startswith("eps-api-tool-pr-"):
+  if not base_path.startswith("/eps-api-tool-pr-"):
     return None
-  pr_number_str = base_path.partition("eps-api-tool-pr-")[2]
+  pr_number_str = base_path.partition("/eps-api-tool-pr-")[2]
   return int(pr_number_str)
 
 
