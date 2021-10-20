@@ -87,13 +87,13 @@ def post_login(access_token):
 
 
 def get_prescription_ids():
-    return make_get_request_raw(f"{HAPI_URL}/prescriptionIds", cookies)
+    return make_get_request_raw(f"{HAPI_URL}/prescriptionIds")
 
 
 # Helpers
 
-def make_get_request_raw(url, cookies):
+def make_get_request_raw(url):
     session_cookie_value = get_hapi_session_cookie_value()
-    return httpx.get(url, verify=False, cookies=cookies={
+    return httpx.get(url, verify=False, cookies={
         "session": session_cookie_value
     }).json()
