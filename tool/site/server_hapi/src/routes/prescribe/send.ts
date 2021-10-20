@@ -12,10 +12,10 @@ export default [
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const accessToken = getSessionValueOrDefault("access_token", request, "")
       const authMethod = getSessionValueOrDefault("auth_method", request, "cis2")
-      const signatureToken = request.query["token"]
+      const sendRequest = getPayload(request) as {signatureToken: string}
       const signingClient = getSigningClient(request, accessToken, authMethod)
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const signatureResponse = await signingClient.makeSignatureDownloadRequest(signatureToken)
+      const signatureResponse = await signingClient.makeSignatureDownloadRequest(sendRequest.signatureToken)
       const prescriptionIds = getSessionValue("prescription_ids", request)
       const prepareResponses: {prescriptionId: string, response: Parameters}[] = prescriptionIds.map((id: string) => {
         return {
@@ -114,6 +114,17 @@ export default [
     }
   }
 ]
+
+function getPayload(request: Hapi.Request): unknown {
+  request.logger.info("Parsing request payload")
+  if (Buffer.isBuffer(request.payload)) {
+    return JSON.parse(request.payload.toString())
+  } else if (typeof request.payload === "string") {
+    return JSON.parse(request.payload)
+  } else {
+    return {}
+  }
+}
 
 // function createProvenance(timestamp: string, signature: string) {
 //   return {
