@@ -43,7 +43,7 @@ export class LiveSigningClient implements SigningClient {
 
   async makeSignatureDownloadRequest(token: string): Promise<any> {
     const baseUrl = this.getBaseUrl()
-    const url = `${baseUrl}/${token}`
+    const url = `${baseUrl}/signatureresponse/${token}`
     const headers = {
       "Authorization": `Bearer ${this.accessToken}`,
       "x-request-id": uuid.v4(),
