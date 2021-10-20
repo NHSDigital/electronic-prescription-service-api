@@ -29,6 +29,8 @@ export default [
           response: getSessionValue(`prepare_response_${id}`, request)
         }
       })
+      console.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+      console.error(JSON.stringify(prepareResponses))
       for (const [index, prepareResponse] of prepareResponses.entries()) {
         const payload = prepareResponse.response.parameter?.find(p => p.name === "digest")?.valueString ?? ""
         const signature = signatureResponse.signatures[index].signature
