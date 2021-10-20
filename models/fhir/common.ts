@@ -64,18 +64,23 @@ export function createReference<T extends Resource>(reference: string): Referenc
 
 export interface IdentifierReference<T extends Resource> {
   identifier: Identifier,
+  type?: string,
   display?: string
 }
 
 export function createIdentifierReference<T extends Resource>(
-  identifier: Identifier, display?: string
+  identifier: Identifier, display?: string, type?: string
 ): IdentifierReference<T> {
-  return display ? {
-    identifier: identifier,
-    display: display
-  } : {
+  const identifierReference: IdentifierReference<T> = {
     identifier: identifier
   }
+  if (display) {
+    identifierReference.display = display
+  }
+  if (type) {
+    identifierReference.type = type
+  }
+  return identifierReference
 }
 
 export interface Quantity {

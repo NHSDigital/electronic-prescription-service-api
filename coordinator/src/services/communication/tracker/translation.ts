@@ -57,21 +57,23 @@ function convertPrescriptionToTask(prescriptionId: string, prescription: DetailP
       "fulfill",
       "Fulfill the focal request"
     ),
-    focus: fhir.createIdentifierReference(
-      fhir.createIdentifier("https://fhir.nhs.uk/Id/prescription-order-number", prescriptionId)
+    focus: fhir.createIdentifierReference(fhir.createIdentifier(
+      "https://fhir.nhs.uk/Id/prescription-order-number",
+      prescriptionId)
     ),
-    for: fhir.createIdentifierReference(
-      fhir.createIdentifier("https://fhir.nhs.uk/Id/nhs-number", prescription.patientNhsNumber)
+    for: fhir.createIdentifierReference(fhir.createIdentifier(
+      "https://fhir.nhs.uk/Id/nhs-number",
+      prescription.patientNhsNumber)
     ),
     authoredOn: convertToFhirDate(prescription.prescriptionIssueDate),
-    requester: fhir.createIdentifierReference(
-      fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", prescription.prescriber.ods),
-      prescription.prescriber.name
+    requester: fhir.createIdentifierReference(fhir.createIdentifier(
+      "https://fhir.nhs.uk/Id/ods-organization-code",
+      prescription.prescriber.ods), prescription.prescriber.name
     ),
-    owner: fhir.createIdentifierReference(
-      fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", owner.ods),
-      owner.name
-    )
+    owner: fhir.createIdentifierReference(fhir.createIdentifier(
+      "https://fhir.nhs.uk/Id/ods-organization-code",
+      owner.ods
+    ), owner.name)
   }
 
   if (prescription.repeatInstance.totalAuthorised !== "1") {
@@ -162,7 +164,9 @@ function convertLineItemToInput(lineItemId: string, prescription: DetailPrescrip
   const taskInput: fhir.TaskInput = {
     type: fhir.createCodeableConcept("http://snomed.info/sct", "16076005", "Prescription"),
     valueReference: fhir.createIdentifierReference(
-      fhir.createIdentifier("https://fhir.nhs.uk/Id/prescription-order-item-number", lineItemId.toLowerCase())
+      fhir.createIdentifier("https://fhir.nhs.uk/Id/prescription-order-item-number", lineItemId.toLowerCase()),
+      undefined,
+      "MedicationRequest"
     )
   }
 
@@ -197,11 +201,12 @@ function convertLineItemToInput(lineItemId: string, prescription: DetailPrescrip
 }
 
 function convertLineItemToOutput(lineItemId: string, prescription: DetailPrescription) {
-  const lineItem = prescription.lineItems[lineItemId]
   const taskOutput: fhir.TaskOutput = {
-    type: fhir.createCodeableConcept("http://snomed.info/sct", lineItem.code, lineItem.description),
+    type: fhir.createCodeableConcept("http://snomed.info/sct", "373784005", "Dispensing medication"),
     valueReference: fhir.createIdentifierReference(
-      fhir.createIdentifier("https://fhir.nhs.uk/Id/prescription-dispense-item-number", lineItemId.toLowerCase())
+      fhir.createIdentifier("https://fhir.nhs.uk/Id/prescription-dispense-item-number", lineItemId.toLowerCase()),
+      undefined,
+      "MedicationDispense"
     )
   }
   const releaseInformationExtensions = []
