@@ -253,7 +253,7 @@ def get_send():
 
 @app.route(SEND_URL, methods=["POST"])
 def post_send():
-    return hapi_passthrough.post_send()
+    return hapi_passthrough.post_send(flask.request.json)
 
 
 @app.route(CANCEL_URL, methods=["GET"])

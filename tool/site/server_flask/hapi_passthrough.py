@@ -62,11 +62,11 @@ def post_sign():
     ).json()
 
 
-def post_send():
+def post_send(request):
     session_cookie_value = get_hapi_session_cookie_value()
     return httpx.post(
         f"{HAPI_URL}{SEND_URL}",
-        json={},
+        json=request,
         verify=False,
         cookies={
             "session": session_cookie_value
