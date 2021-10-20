@@ -56,7 +56,7 @@ export interface BooleanExtension extends Extension {
 export type RepeatInformationExtension = ExtensionExtension<UnsignedIntExtension | DateTimeExtension>
 export type ControlledDrugExtension = ExtensionExtension<StringExtension | CodingExtension>
 export type PrescriptionStatusHistoryExtension = ExtensionExtension<CodingExtension | DateTimeExtension>
-export type DispensingInformationExtension = ExtensionExtension<CodingExtension | DateExtension>
+export type DispensingInformationExtension = ExtensionExtension<CodingExtension | DateExtension | IdentifierExtension>
 export type DispensingReleaseInformationExtension = ExtensionExtension<DateExtension>
 export type PrescriptionExtension = ExtensionExtension<CodingExtension>
 export type GroupIdentifierExtension = ExtensionExtension<IdentifierExtension>

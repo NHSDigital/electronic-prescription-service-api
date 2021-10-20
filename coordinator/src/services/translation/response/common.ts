@@ -155,9 +155,14 @@ export function getFullUrl(uuid: string): string {
 }
 
 export function convertResourceToBundleEntry(resource: fhir.Resource): fhir.BundleEntry {
+  if (resource.id) {
+    return {
+      resource,
+      fullUrl: getFullUrl(resource.id)
+    }
+  }
   return {
-    resource,
-    fullUrl: getFullUrl(resource.id)
+    resource
   }
 }
 
