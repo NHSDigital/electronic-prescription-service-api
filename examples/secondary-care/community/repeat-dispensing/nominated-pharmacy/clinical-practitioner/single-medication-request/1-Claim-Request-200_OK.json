@@ -1,0 +1,252 @@
+{
+  "resourceType": "Claim",
+  "id": "41d318cf-29dd-4eb8-9e51-d175b9dc97a7",
+  "identifier": [
+    {
+      "system": "https://tools.ietf.org/html/rfc4122",
+      "value": "41d318cf-29dd-4eb8-9e51-d175b9dc97a7"
+    }
+  ],
+  "status": "active",
+  "type": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/claim-type",
+        "code": "pharmacy",
+        "display": "Pharmacy"
+      }
+    ]
+  },
+  "use": "claim",
+  "patient": {
+    "identifier": {
+      "system": "https://fhir.nhs.uk/Id/nhs-number",
+      "value": "9449305552"
+    }
+  },
+  "created": "2021-10-20T14:02:56+00:00",
+  "provider": {
+    "identifier": {
+      "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+      "value": "884562163557"
+    },
+    "display": "dummy full name"
+  },
+  "priority": {
+    "coding": [
+      {
+        "system": "http://terminology.hl7.org/CodeSystem/processpriority",
+        "code": "normal"
+      }
+    ]
+  },
+  "prescription": {
+    "extension": [
+      {
+        "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
+        "extension": [
+          {
+            "url": "shortForm",
+            "valueIdentifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+              "value": "B407F7-A99968-4DB2AU"
+            }
+          },
+          {
+            "url": "UUID",
+            "valueIdentifier": {
+              "system": "https://fhir.nhs.uk/Id/prescription",
+              "value": "10d37820-dda2-4810-94d7-c79e5fdb4b46"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "payee": {
+    "type": {
+      "coding": [
+        {
+          "system": "http://terminology.hl7.org/CodeSystem/payeetype",
+          "code": "provider",
+          "display": "Provider"
+        }
+      ]
+    },
+    "party": {
+      "identifier": {
+        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+        "value": "FER21"
+      },
+      "display": "HEATH PHARMACY"
+    }
+  },
+  "insurance": [
+    {
+      "sequence": 1,
+      "focal": true,
+      "coverage": {
+        "identifier": {
+          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+          "value": "T1450"
+        },
+        "display": "NHS BUSINESS SERVICES AUTHORITY"
+      }
+    }
+  ],
+  "item": [
+    {
+      "sequence": 1,
+      "extension": [
+        {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+          "valueCoding": {
+            "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+            "code": "0006",
+            "display": "Dispensed"
+          }
+        },
+        {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-SuppliedItemIdentifier",
+          "valueIdentifier": {
+            "value": "This extension shouldn't be here - ask Kevin to remove from the profile"
+          }
+        }
+      ],
+      "productOrService": {
+        "coding": [
+          {
+            "system": "http://snomed.info/sct",
+            "code": "16076005",
+            "display": "Prescription"
+          }
+        ]
+      },
+      "modifier": [
+        {
+          "text": "This modifier shouldn't be here - ask Kevin to remove from the profile",
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "code": "0001",
+              "display": "Item fully dispensed"
+            }
+          ]
+        }
+      ],
+      "programCode": [
+        {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption",
+              "code": "0001",
+              "display": "Patient has paid appropriate charges"
+            }
+          ]
+        }
+      ],
+      "detail": [
+        {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
+              "valueIdentifier": {
+                "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
+                "value": "823e7290-b0b1-4d3b-b694-0ff25c295b88"
+              }
+            },
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
+              "valueReference": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                  "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+                }
+              }
+            },
+            {
+              "extension": [
+                {
+                  "url": "numberOfRepeatsAllowed",
+                  "valueInteger": 6
+                },
+                {
+                  "url": "numberOfRepeatsIssued",
+                  "valueInteger": 1
+                }
+              ],
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation"
+            }
+          ],
+          "sequence": 1,
+          "productOrService": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "15517911000001104",
+                "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
+              }
+            ]
+          },
+          "modifier": [
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+                  "code": "0001",
+                  "display": "Item fully dispensed"
+                }
+              ]
+            }
+          ],
+          "quantity": {
+            "value": 63,
+            "unit": "tablet",
+            "system": "http://snomed.info/sct",
+            "code": "428673006"
+          },
+          "subDetail": [
+            {
+              "sequence": 1,
+              "productOrService": {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "15517911000001104",
+                    "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
+                  }
+                ]
+              },
+              "quantity": {
+                "value": 63,
+                "unit": "tablet",
+                "system": "http://snomed.info/sct",
+                "code": "428673006"
+              },
+              "programCode": [
+                {
+                  "coding": [
+                    {
+                      "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+                      "code": "NDEC",
+                      "display": "No Dispenser Endorsement Code"
+                    }
+                  ]
+                },
+                {
+                  "coding": [
+                    {
+                      "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
+                      "code": "not-paid",
+                      "display": "Not Paid"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

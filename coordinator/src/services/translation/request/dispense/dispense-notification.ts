@@ -7,7 +7,6 @@ import {
   getIdentifierValueOrNullForSystem,
   getMedicationCoding,
   getMessageId,
-  getNumericValueAsString,
   onlyElement
 } from "../../common"
 import {getMedicationDispenses, getMessageHeader, getPatientOrNull} from "../../common/getResourcesOfType"
@@ -15,7 +14,11 @@ import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} f
 import pino from "pino"
 import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
 import moment from "moment"
-import {createAgentOrganisationFromReference, createPriorPrescriptionReleaseEventRef} from "./dispense-common"
+import {
+  createAgentOrganisationFromReference,
+  createPriorPrescriptionReleaseEventRef,
+  getRepeatNumberFromRepeatInfoExtension
+} from "./dispense-common"
 import {auditDoseToTextIfEnabled} from "../dosage"
 
 export async function convertDispenseNotification(
@@ -104,7 +107,7 @@ async function createPertinentInformation1(
       "MedicationDispense.extension"
     ) as fhir.ExtensionExtension<fhir.IntegerExtension>
 
-    supplyHeader.repeatNumber = getRepeatNumberFromRepeatInfoExtension(repeatInfo)
+    supplyHeader.repeatNumber = getRepeatNumberFromRepeatInfoExtension(repeatInfo, "MedicationDispense.extension")
   }
 
   return new hl7V3.DispenseNotificationPertinentInformation1(supplyHeader)
@@ -236,34 +239,13 @@ function createDispenseNotificationSupplyHeaderPertinentInformation1(
       "MedicationDispense.extension"
     ) as fhir.ExtensionExtension<fhir.IntegerExtension>
 
-    hl7PertinentSuppliedLineItem.repeatNumber = getRepeatNumberFromRepeatInfoExtension(repeatInfo)
+    hl7PertinentSuppliedLineItem.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
+      repeatInfo,
+      "MedicationDispense.extension"
+    )
   }
 
   return new hl7V3.DispenseNotificationSupplyHeaderPertinentInformation1(hl7PertinentSuppliedLineItem)
-}
-
-function getRepeatNumberFromRepeatInfoExtension(
-  repeatInfoExtension: fhir.ExtensionExtension<fhir.IntegerExtension>
-): hl7V3.Interval<hl7V3.NumericValue> {
-  const numberOfRepeatsIssuedExtension = getExtensionForUrl(
-    repeatInfoExtension.extension,
-    "numberOfRepeatsIssued",
-    /* eslint-disable-next-line max-len */
-    "MedicationDispense.extension(\"https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation\").extension"
-  ) as fhir.IntegerExtension
-  const numberOfRepeatsIssued = getNumericValueAsString(numberOfRepeatsIssuedExtension.valueInteger)
-  const numberOfRepeatsAllowedExtension = getExtensionForUrl(
-    repeatInfoExtension.extension,
-    "numberOfRepeatsAllowed",
-    /* eslint-disable-next-line max-len */
-    "MedicationDispense.extension(\"https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation\").extension"
-  ) as fhir.IntegerExtension
-  const numberOfRepeatsAllowed = getNumericValueAsString(numberOfRepeatsAllowedExtension.valueInteger)
-
-  return new hl7V3.Interval<hl7V3.NumericValue>(
-    new hl7V3.NumericValue(numberOfRepeatsIssued),
-    new hl7V3.NumericValue(numberOfRepeatsAllowed)
-  )
 }
 
 function createSuppliedLineItemQuantity(

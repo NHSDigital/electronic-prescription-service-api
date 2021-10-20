@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<PORX_IN080101SM31 xmlns="urn:hl7-org:v3">
-  <id root="76D1CC0B-BD64-4FAD-A513-4DE0F2AE7014"/>
-  <creationTime value="20211020130830"/>
+<PORX_IN090101SM31 xmlns="urn:hl7-org:v3">
+  <id root="41D318CF-29DD-4EB8-9E51-D175B9DC97A7"/>
+  <creationTime value="20211020130616"/>
   <versionCode code="V3NPfIT4.2.00"/>
-  <interactionId extension="PORX_IN080101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
+  <interactionId extension="PORX_IN090101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
   <processingModeCode code="T"/>
   <acceptAckCode code="NE"/>
@@ -39,33 +39,32 @@
       </AgentSystemSDS>
     </author1>
     <subject>
-      <DispenseNotification classCode="INFO" moodCode="EVN">
-        <id root="76D1CC0B-BD64-4FAD-A513-4DE0F2AE7014"/>
+      <DispenseClaim classCode="INFO" moodCode="EVN">
+        <id root="41D318CF-29DD-4EB8-9E51-D175B9DC97A7"/>
         <code code="163541000000107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensed Medication - FocusActOrEvent (administrative concept)"/>
-        <effectiveTime value="20211020130830"/>
-        <typeId extension="PORX_MT024001UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
-        <recordTarget typeCode="RCT">
-          <patient classCode="PAT">
-            <id extension="9449305552" root="2.16.840.1.113883.2.1.4.1"/>
-          </patient>
-        </recordTarget>
-        <primaryInformationRecipient contextControlCode="ON" typeCode="PRCP">
+        <effectiveTime value="20211020140256"/>
+        <typeId extension="PORX_MT142001UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
+        <primaryInformationRecipient typeCode="PRCP">
           <AgentOrg classCode="AGNT">
             <agentOrganization classCode="ORG" determinerCode="INSTANCE">
-              <id extension="FER21" root="1.2.826.0.1285.0.1.10"/>
+              <id extension="T1450" root="1.2.826.0.1285.0.1.10"/>
               <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
-              <name>HEATH PHARMACY</name>
+              <name>NHS BUSINESS SERVICES AUTHORITY</name>
             </agentOrganization>
           </AgentOrg>
         </primaryInformationRecipient>
         <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
           <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
           <pertinentSupplyHeader classCode="SBADM" moodCode="EVN">
-            <id root="76D1CC0B-BD64-4FAD-A513-4DE0F2AE7014"/>
+            <id root="41D318CF-29DD-4EB8-9E51-D175B9DC97A7"/>
             <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15"/>
             <effectiveTime nullFlavor="NA"/>
-            <author contextControlCode="OP" typeCode="AUT">
-              <time value="20210707154300"/>
+            <repeatNumber>
+              <low value="1"/>
+              <high value="6"/>
+            </repeatNumber>
+            <legalAuthenticator contextControlCode="OP" typeCode="LA">
+              <time value="20211020140256"/>
               <signatureText nullFlavor="NA"/>
               <AgentPerson classCode="AGNT">
                 <id extension="999999999999" root="1.2.826.0.1285.0.2.0.67"/>
@@ -90,21 +89,25 @@
                   </addr>
                 </representedOrganization>
               </AgentPerson>
-            </author>
+            </legalAuthenticator>
+            <pertinentInformation3 contextConductionInd="true" typeCode="PERT">
+              <seperatableInd value="false"/>
+              <pertinentPrescriptionStatus classCode="OBS" moodCode="EVN">
+                <code code="PS" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                <value code="0006" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.35" displayName="Dispensed"/>
+              </pertinentPrescriptionStatus>
+            </pertinentInformation3>
             <pertinentInformation1 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT">
               <seperatableInd value="false"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentSuppliedLineItem classCode="SBADM" moodCode="PRMS">
-                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
+                <id root="823E7290-B0B1-4D3B-B694-0FF25C295B88"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
-                <consumable contextControlCode="OP" typeCode="CSM">
-                  <requestedManufacturedProduct classCode="MANU">
-                    <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
-                      <code code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet"/>
-                    </manufacturedRequestedMaterial>
-                  </requestedManufacturedProduct>
-                </consumable>
+                <repeatNumber>
+                  <low value="1"/>
+                  <high value="6"/>
+                </repeatNumber>
                 <component typeCode="COMP">
                   <seperatableInd value="false"/>
                   <suppliedLineItemQuantity classCode="SPLY" moodCode="EVN">
@@ -121,22 +124,20 @@
                     </product>
                     <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
                       <seperatableInd value="false"/>
-                      <pertinentSupplyInstructions classCode="OBS" moodCode="EVN">
-                        <code code="SI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                        <value>4 times a day for 7 days</value>
-                      </pertinentSupplyInstructions>
+                      <pertinentChargePayment classCode="OBS" moodCode="EVN">
+                        <code code="CP" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                        <value value="false"/>
+                      </pertinentChargePayment>
                     </pertinentInformation1>
+                    <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
+                      <seperatableInd value="true"/>
+                      <pertinentDispensingEndorsement classCode="OBS" moodCode="EVN">
+                        <code code="DE" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+                        <value code="NDEC" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.29"/>
+                      </pertinentDispensingEndorsement>
+                    </pertinentInformation2>
                   </suppliedLineItemQuantity>
                 </component>
-                <component1 typeCode="COMP">
-                  <seperatableInd value="false"/>
-                  <supplyRequest classCode="SPLY" moodCode="RQO">
-                    <code code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet"/>
-                    <quantity unit="1" value="63">
-                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="63"/>
-                    </quantity>
-                  </supplyRequest>
-                </component1>
                 <pertinentInformation3 contextConductionInd="true" typeCode="PERT">
                   <seperatableInd value="false"/>
                   <pertinentItemStatus classCode="OBS" moodCode="EVN">
@@ -151,19 +152,8 @@
                     <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
                   </priorOriginalItemRef>
                 </inFulfillmentOf>
-                <repeatNumber>
-                  <low value="1"/>
-                  <high value="6"/>
-                </repeatNumber>
               </pertinentSuppliedLineItem>
             </pertinentInformation1>
-            <pertinentInformation3 contextConductionInd="true" typeCode="PERT">
-              <seperatableInd value="false"/>
-              <pertinentPrescriptionStatus classCode="OBS" moodCode="EVN">
-                <code code="PS" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
-                <value code="0006" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.35" displayName="Dispensed"/>
-              </pertinentPrescriptionStatus>
-            </pertinentInformation3>
             <pertinentInformation4 contextConductionInd="true" typeCode="PERT">
               <seperatableInd value="false"/>
               <pertinentPrescriptionID classCode="OBS" moodCode="EVN">
@@ -178,29 +168,16 @@
                 <id root="10D37820-DDA2-4810-94D7-C79E5FDB4B46"/>
               </priorOriginalPrescriptionRef>
             </inFulfillmentOf>
-            <repeatNumber>
-              <low value="1"/>
-              <high value="6"/>
-            </repeatNumber>
           </pertinentSupplyHeader>
         </pertinentInformation1>
-        <pertinentInformation2 typeCode="PERT">
-          <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
-          <pertinentCareRecordElementCategory classCode="CATEGORY" moodCode="EVN">
-            <code code="185361000000102" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Medication - care record element (record artifact)"/>
-            <component typeCode="COMP">
-              <actRef classCode="SBADM" moodCode="PRMS">
-                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
-              </actRef>
-            </component>
-          </pertinentCareRecordElementCategory>
-        </pertinentInformation2>
-        <sequelTo typeCode="SEQL">
-          <priorPrescriptionReleaseEventRef classCode="INFO" moodCode="RQO">
-            <id root="999F9999-9999-9999-9FF9-F9FFF9999999"/>
-          </priorPrescriptionReleaseEventRef>
-        </sequelTo>
-      </DispenseNotification>
+        <coverage contextConductionInd="true" typeCode="COVBY">
+          <seperatableInd value="false"/>
+          <coveringChargeExempt classCode="OBS" moodCode="EVN" negationInd="true">
+            <code code="EX" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+            <value code="0001" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.33"/>
+          </coveringChargeExempt>
+        </coverage>
+      </DispenseClaim>
     </subject>
   </ControlActEvent>
-</PORX_IN080101SM31>
+</PORX_IN090101SM31>
