@@ -41,42 +41,38 @@ export default [
         const sendRequest = prepareRequest
         setSessionValue(`prescription_order_send_request_${prepareResponse.prescriptionId}`, sendRequest, request)
       }
-      //const sendRequest = getSessionValue(`prescription_order_send_request_${prescriptionIds[0]}`, request)
       const epsClient = getEpsClient(accessToken)
-      //if (prescriptionIds.length === 1) {
-      const sendRequest = getSessionValue(`prescription_order_send_request_${prescriptionIds[0]}`, request)
-      const requestId = uuid.v4()
-      const sendResponseFhir = await epsClient.makeSendRequest(requestId, sendRequest, false)
-      const sendRequestHl7 = await epsClient.makeConvertRequest(sendRequest)
-      const sendResponseSpine = await epsClient.makeSendRequest(requestId, sendRequest, true)
+      if (prescriptionIds.length === 1) {
+        const sendRequest = getSessionValue(`prescription_order_send_request_${prescriptionIds[0]}`, request)
+        const requestId = uuid.v4()
+        const sendResponseFhir = await epsClient.makeSendRequest(requestId, sendRequest, false)
+        const sendRequestHl7 = await epsClient.makeConvertRequest(sendRequest)
+        const sendResponseSpine = await epsClient.makeSendRequest(requestId, sendRequest, true)
+        return responseToolkit.response({
+          prescription_ids: prescriptionIds,
+          prescription_id: prescriptionIds[0],
+          success: true,
+          request_xml: sendRequestHl7,
+          request: sendRequest,
+          response: sendResponseFhir,
+          response_xml: sendResponseSpine
+        }).code(200)
+      }
+
+      const successList = []
+      for (const id of prescriptionIds) {
+        const sendRequest = getSessionValue(`prescription_order_send_request_${id}`, request)
+        await epsClient.makeSendRequest(uuid.v4(), sendRequest, false)
+        successList.push({
+          prescription_id: id,
+          success: true
+        })
+      }
+
       return responseToolkit.response({
         prescription_ids: prescriptionIds,
-        prescription_id: prescriptionIds[0],
-        success: true,
-        request_xml: sendRequestHl7,
-        request: sendRequest,
-        response: sendResponseFhir,
-        response_xml: sendResponseSpine
+        success_list: successList
       }).code(200)
-
-      // const successList = []
-      // for (const id of prescriptionIds) {
-      //   const sendRequest = getSessionValue(`prescription_order_send_request_${prescriptionIds[0]}`, request)
-      //   console.log("5555555555555555555555555")
-      //   console.log(JSON.stringify(sendRequest))
-      //   const sendRequestFhir = await epsClient.makeSendRequest(uuid.v4(), sendRequest, false)
-      //   console.log("6666666666666666666666666")
-      //   console.log(JSON.stringify(sendRequestFhir))
-      //   successList.push({
-      //     prescription_id: id,
-      //     success: true
-      //   })
-      // }
-
-      // return h.response({
-      //   prescription_ids: prescriptionIds,
-      //   success_list: successList
-      // }).code(200)
     }
   }
 ]
