@@ -248,7 +248,6 @@ def post_sign():
 
 @app.route(SEND_URL, methods=["GET"])
 def get_send():
-    hapi_passthrough.get_send()
     return render_client("send", sign_response={"signature": ""})
 
 
