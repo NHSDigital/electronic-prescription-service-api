@@ -92,9 +92,8 @@ def get_prescription_ids(hapi_session_key):
     }
     return make_get_request_raw(f"{HAPI_URL}/prescriptionIds", cookies)
 
+
 # Helpers
 
-def make_get_request_raw(url, cookies=None):
-    if cookies is None:
-        cookies = get_cookies()
+def make_get_request_raw(url, cookies):
     return httpx.get(url, verify=False, cookies=cookies).json()

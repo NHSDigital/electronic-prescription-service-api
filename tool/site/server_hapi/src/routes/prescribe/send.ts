@@ -1,9 +1,9 @@
 import Hapi from "@hapi/hapi"
 // import * as uuid from "uuid"
-// import {getSigningClient} from "../../services/communication/signing-client"
-import {/*getSessionValue,*/ getSessionValueOrDefault/*, setSessionValue*/} from "../../services/session"
+import {getSigningClient} from "../../services/communication/signing-client"
+import {getSessionValue, getSessionValueOrDefault/*, setSessionValue*/} from "../../services/session"
 // import {getEpsClient} from "../../services/communication/eps-client"
-// import {Parameters} from "fhir/r4"
+import {Parameters} from "fhir/r4"
 
 export default [
   {
@@ -14,6 +14,19 @@ export default [
       const accessToken = getSessionValueOrDefault("access_token", request, "")
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const authMethod = getSessionValueOrDefault("auth_method", request, "cis2")
+      const signatureToken = request.query["token"]
+      const signingClient = getSigningClient(request, accessToken, authMethod)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const signatureResponse = await signingClient.makeSignatureDownloadRequest(signatureToken)
+      const prescriptionIds = getSessionValue("prescription_ids", request)
+      const prepareResponses: {prescriptionId: string, response: Parameters}[] = prescriptionIds.map((id: string) => {
+        return {
+          prescriptionId: id,
+          response: getSessionValue(`prepare_response_${id}`, request)
+        }
+      })
+      console.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+      console.error(JSON.stringify(prepareResponses))
       return responseToolkit.response({
         prescription_ids: [],
         prescription_id: "",
@@ -23,18 +36,6 @@ export default [
         response: {},
         response_xml: ""
       }).code(200)
-      // const signatureToken = request.query["token"]
-      // const signingClient = getSigningClient(request, accessToken, authMethod)
-      // const signatureResponse = await signingClient.makeSignatureDownloadRequest(signatureToken)
-      // const prescriptionIds = getSessionValue("prescription_ids", request)
-      // const prepareResponses: {prescriptionId: string, response: Parameters}[] = prescriptionIds.map((id: string) => {
-      //   return {
-      //     prescriptionId: id,
-      //     response: getSessionValue(`prepare_response_${id}`, request)
-      //   }
-      // })
-      // console.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-      // console.error(JSON.stringify(prepareResponses))
       // for (const [index, prepareResponse] of prepareResponses.entries()) {
       //   const payload = prepareResponse.response.parameter?.find(p => p.name === "digest")?.valueString ?? ""
       //   const signature = signatureResponse.signatures[index].signature
