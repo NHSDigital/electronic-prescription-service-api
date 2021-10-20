@@ -30,8 +30,7 @@ from cookies import (
     get_auth_method_from_cookie,
     set_auth_method_cookie,
     set_skip_signature_page_cookie,
-    set_session_cookie,
-    get_hapi_session_cookie_value
+    set_session_cookie
 )
 from helpers import (
     pr_redirect_required,
@@ -159,8 +158,7 @@ def get_load():
 def download():
     zFile = io.BytesIO()
     access_token = get_access_token()
-    hapi_session_cookie_value = get_hapi_session_cookie_value()
-    state = hapi_passthrough.get_prescription_ids(hapi_session_cookie_value)
+    state = hapi_passthrough.get_prescription_ids()
     short_prescription_ids = state["prescriptionIds"]
     with zipfile.ZipFile(zFile, 'w') as zip_file:
         for index, short_prescription_id in enumerate(short_prescription_ids):
@@ -207,8 +205,7 @@ def get_edit():
         return flask.redirect(f"{config.BASE_URL}change-auth")
     response_json = hapi_passthrough.get_prescription(short_prescription_id)
     response = app.make_response(response_json)
-    hapi_session_cookie_value = get_hapi_session_cookie_value()
-    state = hapi_passthrough.get_prescription_ids(hapi_session_cookie_value)
+    state = hapi_passthrough.get_prescription_ids()
     short_prescription_ids = state["prescriptionIds"]
     short_prescription_id = state["prescriptionId"]
     update_pagination(response, short_prescription_ids, short_prescription_id)
@@ -221,15 +218,10 @@ def post_edit():
     request_bundles = flask.request.json
     response_json = hapi_passthrough.post_edit(request_bundles)
     response = app.make_response(response_json)
-    hapi_session_cookie_value = get_hapi_session_cookie_value()
-    state = hapi_passthrough.get_prescription_ids(hapi_session_cookie_value)
+    state = hapi_passthrough.get_prescription_ids()
     short_prescription_ids = state["prescriptionIds"]
     short_prescription_id = state["prescriptionId"]
     update_pagination(response, short_prescription_ids, short_prescription_id)
-    # when in local mode, we might not have session cookie at this point
-    # as we've skipped login, so ensure it is set here
-    if get_hapi_session_cookie_value() is None:
-        set_session_cookie(response, hapi_session_cookie_value)
     return response
 
 

@@ -86,14 +86,14 @@ def post_login(access_token):
     return session_cookie_value, response.json()
 
 
-def get_prescription_ids(hapi_session_key):
-    cookies = {
-        "session": hapi_session_key
-    }
+def get_prescription_ids():
     return make_get_request_raw(f"{HAPI_URL}/prescriptionIds", cookies)
 
 
 # Helpers
 
 def make_get_request_raw(url, cookies):
-    return httpx.get(url, verify=False, cookies=cookies).json()
+    session_cookie_value = get_hapi_session_cookie_value()
+    return httpx.get(url, verify=False, cookies=cookies={
+        "session": session_cookie_value
+    }).json()
