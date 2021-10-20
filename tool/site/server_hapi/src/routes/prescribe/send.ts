@@ -3,6 +3,7 @@ import Hapi from "@hapi/hapi"
 import {getSigningClient} from "../../services/communication/signing-client"
 import {getSessionValue, getSessionValueOrDefault, setSessionValue} from "../../services/session"
 // import {getEpsClient} from "../../services/communication/eps-client"
+import {Parameters} from "fhir/r4"
 
 export default [
   {
@@ -22,14 +23,14 @@ export default [
       const signingClient = getSigningClient(request, accessToken, authMethod)
       const signatureResponse = await signingClient.makeSignatureDownloadRequest(signatureToken)
       const prescriptionIds = getSessionValue("prescription_ids", request)
-      const prepareResponses = prescriptionIds.map((id: string) => {
+      const prepareResponses: {prescriptionId: string, response: Parameters}[] = prescriptionIds.map((id: string) => {
         return {
           prescriptionId: id,
           response: getSessionValue(`prepare_response_${id}`, request)
         }
       })
-      prepareResponses.forEach((prepareResponse: { prescriptionId: string, response: any }, index: number) => {
-        const payload = prepareResponse.response.digest
+      for (const [index, prepareResponse] of prepareResponses.entries()) {
+        const payload = prepareResponse.response.parameter?.find(p => p.name === "digest")?.valueString ?? ""
         const signature = signatureResponse.signatures[index].signature
         const certificate = signatureResponse.certificate
         const payloadDecoded = Buffer.from(payload, "base64")
@@ -41,12 +42,12 @@ export default [
             f"<KeyInfo><X509Data><X509Certificate>${certificate}</X509Certificate></X509Data></KeyInfo>"
             f"</Signature>`
         const xmlDsigEncoded = Buffer.from(xmlDsig, "utf-8").toString("base64")
-        const provenance = createProvenance(prepareResponse.response.timestamp, xmlDsigEncoded)
+        const provenance = createProvenance(prepareResponse.response.parameter?.find(p => p.name === "timestamp")?.valueString ?? "", xmlDsigEncoded)
         const prepareRequest = getSessionValue(`prepare_request_${prepareResponse.prescriptionId}`, request)
         prepareRequest.entry.push(provenance)
         const sendRequest = prepareRequest
         setSessionValue(`prescription_order_send_request_${prepareResponse.prescriptionId}`, sendRequest, request)
-      })
+      }
       const sendRequest = getSessionValue(`prescription_order_send_request_${prescriptionIds[0]}`, request)
       return h.response({
         prescription_ids: prescriptionIds,
