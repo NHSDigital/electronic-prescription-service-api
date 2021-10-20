@@ -52,7 +52,7 @@ export function createCoding(system: string, code: string, display: string): Cod
 }
 
 export interface Reference<T extends Resource> {
-  reference: string,
+  reference: string
   display?: string
 }
 
@@ -63,9 +63,9 @@ export function createReference<T extends Resource>(reference: string): Referenc
 }
 
 export interface IdentifierReference<T extends Resource> {
-  identifier: Identifier,
-  type?: string,
+  identifier: Identifier
   display?: string
+  type?: string
 }
 
 export function createIdentifierReference<T extends Resource>(

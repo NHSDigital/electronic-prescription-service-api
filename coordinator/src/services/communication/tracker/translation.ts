@@ -59,21 +59,21 @@ function convertPrescriptionToTask(prescriptionId: string, prescription: DetailP
     ),
     focus: fhir.createIdentifierReference(fhir.createIdentifier(
       "https://fhir.nhs.uk/Id/prescription-order-number",
-      prescriptionId)
-    ),
+      prescriptionId
+    )),
     for: fhir.createIdentifierReference(fhir.createIdentifier(
       "https://fhir.nhs.uk/Id/nhs-number",
-      prescription.patientNhsNumber)
-    ),
+      prescription.patientNhsNumber
+    )),
     authoredOn: convertToFhirDate(prescription.prescriptionIssueDate),
-    requester: fhir.createIdentifierReference(fhir.createIdentifier(
-      "https://fhir.nhs.uk/Id/ods-organization-code",
-      prescription.prescriber.ods), prescription.prescriber.name
+    requester: fhir.createIdentifierReference(
+      fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", prescription.prescriber.ods),
+      prescription.prescriber.name
     ),
-    owner: fhir.createIdentifierReference(fhir.createIdentifier(
-      "https://fhir.nhs.uk/Id/ods-organization-code",
-      owner.ods
-    ), owner.name)
+    owner: fhir.createIdentifierReference(
+      fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", owner.ods),
+      owner.name
+    )
   }
 
   if (prescription.repeatInstance.totalAuthorised !== "1") {
