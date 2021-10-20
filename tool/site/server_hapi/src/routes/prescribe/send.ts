@@ -16,22 +16,20 @@ export default [
       const signingClient = getSigningClient(request, accessToken, authMethod)
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const signatureResponse = await signingClient.makeSignatureDownloadRequest(sendRequest.signatureToken)
-      const prescriptionIds = getSessionValue("prescription_ids", request)
-      const prepareResponses: {prescriptionId: string, response: Parameters}[] = prescriptionIds.map((id: string) => {
-        return {
-          prescriptionId: id,
-          response: getSessionValue(`prepare_response_${id}`, request)
-        }
-      })
-      console.error("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-      console.error(JSON.stringify(prepareResponses))
+      // const prescriptionIds = getSessionValue("prescription_ids", request)
+      // const prepareResponses: {prescriptionId: string, response: Parameters}[] = prescriptionIds.map((id: string) => {
+      //   return {
+      //     prescriptionId: id,
+      //     response: getSessionValue(`prepare_response_${id}`, request)
+      //   }
+      // })
       return responseToolkit.response({
         prescription_ids: [],
         prescription_id: "",
         success: true,
         request_xml: "",
         request: {},
-        response: {},
+        response: signatureResponse,
         response_xml: ""
       }).code(200)
       // for (const [index, prepareResponse] of prepareResponses.entries()) {
