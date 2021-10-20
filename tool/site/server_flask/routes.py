@@ -423,4 +423,5 @@ def get_callback():
     redirect_url = f'{config.PUBLIC_APIGEE_URL}/{config.BASE_PATH}'
     response = flask.redirect(redirect_url)
     set_session_cookie(response, session_cookie_value, access_token_expires)
-    return set_access_token_cookies(response, access_token_encrypted, access_token_expires)
+    set_access_token_cookies(response, access_token_encrypted, access_token_expires)
+    return response

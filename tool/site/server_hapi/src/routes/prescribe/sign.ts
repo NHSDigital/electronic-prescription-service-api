@@ -1,15 +1,15 @@
 import Hapi from "@hapi/hapi"
 import {getSigningClient} from "../../services/communication/signing-client"
 import {getEpsClient} from "../../services/communication/eps-client"
-import {getSessionValue, getSessionValueOrDefault, setSessionValue} from "../../services/session"
+import {getSessionValue, setSessionValue} from "../../services/session"
 
 export default [
   {
     method: "POST",
     path: "/prescribe/sign",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const accessToken = getSessionValueOrDefault("access_token", request, "")
-      const authMethod = getSessionValueOrDefault("auth_method", request, "cis2")
+      const accessToken = getSessionValue("access_token", request)
+      const authMethod = getSessionValue("auth_method", request)
       const epsClient = getEpsClient(accessToken)
       const signingClient = getSigningClient(request, accessToken, authMethod)
       const prescriptionIds = getSessionValue("prescription_ids", request)
