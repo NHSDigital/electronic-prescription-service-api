@@ -23,7 +23,7 @@ export function setSessionValue(key: string, value: unknown, request: Hapi.Reque
   if (Array.isArray(value)) {
     value = {arrayValues: value}
   }
-  if (isLocal()) {
+  if (!isLocal()) {
     console.log(`Saving ${key} to session with value: ${JSON.stringify(value)}`)
   }
   request.yar.set(key, value)
