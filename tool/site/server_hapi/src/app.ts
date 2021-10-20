@@ -16,7 +16,7 @@ const init = async () => {
       }
     },
     cache: [{
-      name: "eps_api_tool_hapi",
+      name: "session",
       provider: {
         constructor: CatboxRedis,
         options: {

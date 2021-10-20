@@ -2,7 +2,7 @@ import * as uuid from "uuid"
 import moment from "moment"
 import * as fhirCommon from "../models/common"
 import * as fhirExtension from "../models/extension"
-import { groupBy, StringKeyedObject } from "./helpers"
+import {groupBy, StringKeyedObject} from "./helpers"
 import {
   Bundle,
   BundleEntry,
