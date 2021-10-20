@@ -7,16 +7,9 @@ import {Parameters} from "fhir/r4"
 
 export default [
   {
-    method: "GET",
-    path: "/prescribe/send",
-    handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      return responseToolkit.response({}).code(200)
-    }
-  },
-  {
     method: "POST",
     path: "/prescribe/send",
-    handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+    handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const accessToken = getSessionValueOrDefault("access_token", request, "")
       const authMethod = getSessionValueOrDefault("auth_method", request, "cis2")
       const signatureToken = request.query["token"]
@@ -51,7 +44,7 @@ export default [
         setSessionValue(`prescription_order_send_request_${prepareResponse.prescriptionId}`, sendRequest, request)
       }
       const sendRequest = getSessionValue(`prescription_order_send_request_${prescriptionIds[0]}`, request)
-      return h.response({
+      return responseToolkit.response({
         prescription_ids: prescriptionIds,
         prescription_id: prescriptionIds[0],
         success: true,
@@ -108,6 +101,13 @@ export default [
       //   prescription_ids: prescriptionIds,
       //   success_list: successList
       // }).code(200)
+    }
+  },
+  {
+    method: "GET",
+    path: "/prescribe/send",
+    handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      return responseToolkit.response({}).code(200)
     }
   }
 ]
