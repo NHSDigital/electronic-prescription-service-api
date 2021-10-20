@@ -1,10 +1,13 @@
+import datetime
 import flask
 import httpx
+import os
 from urllib.parse import urlencode
 from app import fernet
-from cookies import get_auth_method_from_cookie
+from cookies import get_auth_method_from_cookie, set_session_cookie
 from helpers import get_oauth_base_path, create_oauth_state, get_pr_number, get_registered_callback_url
 import config
+import hapi_passthrough
 
 def set_access_token_cookies(response, access_token_encrypted, access_token_expiry):
     secure_flag = not config.DEV_MODE
@@ -49,6 +52,15 @@ def get_access_token():
 
 
 def login():
+    # local environment
+    if os.environ["ENVIRONMENT"].endswith("-sandbox"):
+        session_cookie_value, _ = hapi_passthrough.post_login("")
+        response = flask.redirect("/")
+        set_session_cookie(response, session_cookie_value)
+        mock_access_token_encrypted = fernet.encrypt("mock_access_token".encode("utf-8")).decode("utf-8")
+        set_access_token_cookies(response, mock_access_token_encrypted, datetime.datetime.utcnow() + datetime.timedelta(seconds=float(600)))
+        return response
+    # deployed environments
     page_mode = flask.request.args.get("page_mode", "home")
     state = create_oauth_state(get_pr_number(config.BASE_PATH), page_mode)
     auth_method = get_auth_method_from_cookie()

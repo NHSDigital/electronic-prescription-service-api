@@ -89,10 +89,6 @@ def auth_check():
     if config.STATIC_URL in flask.request.path:
         return
 
-    # mock login for local development
-    if config.ENVIRONMENT.endswith("-sandbox"):
-        return
-
     flask.g.skip_auth = False
 
     if flask.request.endpoint in app.view_functions:

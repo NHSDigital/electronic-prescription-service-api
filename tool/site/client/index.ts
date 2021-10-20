@@ -436,7 +436,7 @@ function setInitialState(mode: string, env: string, baseUrl: string, signRespons
   pageData.environment = env
   pageData.baseUrl = baseUrl
   pageData.signResponse = signResponse
-  pageData.loggedIn = pageData.loggedIn || env.endsWith("-sandbox")
+  pageData.loggedIn = pageData.loggedIn
 }
 
 customWindow.startApplication = async function (mode: string, env: string, baseUrl: string, signResponse: APIResponse) {
