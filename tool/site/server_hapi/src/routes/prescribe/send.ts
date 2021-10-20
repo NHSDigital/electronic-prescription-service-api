@@ -4,6 +4,7 @@ import {getSigningClient} from "../../services/communication/signing-client"
 import {getSessionValue, getSessionValueOrDefault, setSessionValue} from "../../services/session"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {Parameters} from "fhir/r4"
+import {getPayload} from "../util"
 
 export default [
   {
@@ -76,17 +77,6 @@ export default [
     }
   }
 ]
-
-function getPayload(request: Hapi.Request): unknown {
-  request.logger.info("Parsing request payload")
-  if (Buffer.isBuffer(request.payload)) {
-    return JSON.parse(request.payload.toString())
-  } else if (typeof request.payload === "string") {
-    return JSON.parse(request.payload)
-  } else {
-    return {}
-  }
-}
 
 function createProvenance(timestamp: string, signature: string) {
   return {

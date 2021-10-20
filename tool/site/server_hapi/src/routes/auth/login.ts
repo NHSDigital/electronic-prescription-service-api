@@ -1,5 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {setSessionValue} from "../../services/session"
+import {getPayload} from "../util"
 
 export default [
   {
@@ -15,14 +16,3 @@ export default [
     }
   }
 ]
-
-function getPayload(request: Hapi.Request): unknown {
-  request.logger.info("Parsing request payload")
-  if (Buffer.isBuffer(request.payload)) {
-    return JSON.parse(request.payload.toString())
-  } else if (typeof request.payload === "string") {
-    return JSON.parse(request.payload)
-  } else {
-    return {}
-  }
-}
