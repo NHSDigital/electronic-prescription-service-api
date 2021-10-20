@@ -70,11 +70,11 @@ def set_skip_signature_page_cookie(response, skip_signature_page):
     )
 
 
-def set_session_cookie(response, session_cookie_value):
+def set_session_cookie(response, session_cookie_value, expiry):
     response.set_cookie(
         "session",
         session_cookie_value,
-        expires=datetime.datetime.utcnow() + datetime.timedelta(seconds=float(600)),
+        expires=expiry,
         secure=not config.DEV_MODE,
         httponly=True
     )

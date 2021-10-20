@@ -56,9 +56,10 @@ def login():
     if os.environ["ENVIRONMENT"].endswith("-sandbox"):
         session_cookie_value, _ = hapi_passthrough.post_login("")
         response = flask.redirect("/")
-        set_session_cookie(response, session_cookie_value)
+        session_expiry = datetime.datetime.utcnow() + datetime.timedelta(seconds=float(600))
+        set_session_cookie(response, session_cookie_value, session_expiry)
         mock_access_token_encrypted = fernet.encrypt("mock_access_token".encode("utf-8")).decode("utf-8")
-        set_access_token_cookies(response, mock_access_token_encrypted, datetime.datetime.utcnow() + datetime.timedelta(seconds=float(600)))
+        set_access_token_cookies(response, mock_access_token_encrypted, session_expiry)
         return response
     # deployed environments
     page_mode = flask.request.args.get("page_mode", "home")

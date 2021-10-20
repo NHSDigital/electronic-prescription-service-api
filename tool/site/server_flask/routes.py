@@ -132,8 +132,6 @@ def post_change_auth():
     response = app.make_response({"redirectUri": f'{config.BASE_URL}logout'})
     set_auth_method_cookie(response, auth_method)
     secure_flag = not config.DEV_MODE
-    response.set_cookie("Access-Token", "", expires=0, secure=secure_flag, httponly=True)
-    response.set_cookie("Access-Token-Set", "false", expires=0, secure=secure_flag)
     return response
 
 
@@ -395,7 +393,9 @@ def post_claim():
 def get_logout():
     redirect_url = f'{config.PUBLIC_APIGEE_URL}/{config.BASE_PATH}'
     response = flask.redirect(redirect_url)
-    return set_access_token_cookies(response, "", 0)
+    set_access_token_cookies(response, "", 0)
+    set_session_cookie(response, "", 0)
+    return response
 
 
 @app.route(CALLBACK_URL, methods=["GET"])
@@ -422,5 +422,5 @@ def get_callback():
     session_cookie_value, _ = hapi_passthrough.post_login(access_token)
     redirect_url = f'{config.PUBLIC_APIGEE_URL}/{config.BASE_PATH}'
     response = flask.redirect(redirect_url)
-    set_session_cookie(response, session_cookie_value)
+    set_session_cookie(response, session_cookie_value, access_token_expires)
     return set_access_token_cookies(response, access_token_encrypted, access_token_expires)
