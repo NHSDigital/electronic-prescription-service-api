@@ -10,15 +10,12 @@ export default [
     method: "POST",
     path: "/prescribe/send",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const accessToken = getSessionValueOrDefault("access_token", request, "")
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const authMethod = getSessionValueOrDefault("auth_method", request, "cis2")
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const signatureToken = request.query["token"]
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const signingClient = getSigningClient(request, accessToken, authMethod)
-      //const signatureResponse = await signingClient.makeSignatureDownloadRequest(signatureToken)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const signatureResponse = await signingClient.makeSignatureDownloadRequest(signatureToken)
       const prescriptionIds = getSessionValue("prescription_ids", request)
       const prepareResponses: {prescriptionId: string, response: Parameters}[] = prescriptionIds.map((id: string) => {
         return {
