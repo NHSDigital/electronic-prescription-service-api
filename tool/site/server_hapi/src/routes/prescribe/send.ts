@@ -9,6 +9,13 @@ export default [
     method: "GET",
     path: "/prescribe/send",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      return responseToolkit.response({}).code(200)
+    }
+  },
+  {
+    method: "POST",
+    path: "/prescribe/send",
+    handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const accessToken = getSessionValueOrDefault("access_token", request, "")
       const authMethod = getSessionValueOrDefault("auth_method", request, "cis2")
       const signatureToken = request.query["token"]
@@ -40,14 +47,6 @@ export default [
         const sendRequest = prepareRequest
         setSessionValue(`prescription_order_send_request_${prepareResponse.prescriptionId}`, sendRequest, request)
       })
-      return responseToolkit.response({}).code(200)
-    }
-  },
-  {
-    method: "POST",
-    path: "/prescribe/send",
-    handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const prescriptionIds = getSessionValue("prescription_ids", request)
       const sendRequest = getSessionValue(`prescription_order_send_request_${prescriptionIds[0]}`, request)
       return h.response({
         prescription_ids: prescriptionIds,
