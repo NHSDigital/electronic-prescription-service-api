@@ -42,6 +42,5 @@ extends:
         depends_on:
           - internal_qa
     #   - environment: prod
-    #     make_spec_visible: false
     #     depends_on:
     #       - int
