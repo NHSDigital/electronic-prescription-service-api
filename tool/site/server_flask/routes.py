@@ -17,7 +17,7 @@ from api import (
     make_eps_api_claim_request_untranslated
 )
 from app import app, fernet
-from auth import exchange_code_for_token, get_access_token, login, set_access_token_cookies
+from auth import exchange_code_for_token, get_access_token, login, set_access_token_cookies, get_authorize_url
 from bundle import get_prescription_id, create_provenance
 from client import render_client
 from cookies import (
@@ -36,7 +36,9 @@ from helpers import (
     pr_redirect_required,
     pr_redirect_enabled,
     get_pr_branch_url,
-    parse_oauth_state
+    parse_oauth_state,
+    get_pr_number,
+    create_oauth_state
 )
 from store import (
     add_prepare_request,
@@ -129,10 +131,14 @@ def get_change_auth():
 def post_change_auth():
     login_request = flask.request.json
     auth_method = login_request["authMethod"]
-    response = app.make_response({"redirectUri": f'{config.BASE_URL}'})
+    if config.ENVIRONMENT.endswith("-sandbox"):
+        authorize_url = "/callback"
+    else:
+        state = create_oauth_state(get_pr_number(config.BASE_URL), "home")
+        authorize_url = get_authorize_url(state, auth_method)
+    response = app.make_response({"redirectUri": f'{authorize_url}'})
     set_auth_method_cookie(response, auth_method)
-    secure_flag = not config.DEV_MODE
-    return login(response)
+    return response
 
 
 @app.route(HOME_URL, methods=["GET"])
@@ -196,7 +202,7 @@ def get_edit():
     # handles '+' in query_string where flask.request.args.get does not
     short_prescription_id = flask.request.query_string.decode("utf-8")[len("prescription_id="):]
     if short_prescription_id is None:
-        return flask.redirect(f"{config.BASE_URL}change-auth")
+        return flask.redirect(f"{config.PUBLIC_APIGEE_URL}{config.BASE_URL}change-auth")
     response_json = hapi_passthrough.get_prescription(short_prescription_id)
     response = app.make_response(response_json)
     state = hapi_passthrough.get_prescription_ids()
@@ -391,7 +397,7 @@ def post_claim():
 
 @app.route(LOGOUT_URL, methods=["GET"])
 def get_logout():
-    redirect_url = f'{config.PUBLIC_APIGEE_URL}/{config.BASE_PATH}'
+    redirect_url = f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}'
     response = flask.redirect(redirect_url)
     set_access_token_cookies(response, "", 0)
     set_session_cookie(response, "", 0)
@@ -401,8 +407,18 @@ def get_logout():
 @app.route(CALLBACK_URL, methods=["GET"])
 @exclude_from_auth()
 def get_callback():
+    # local development
+    if config.ENVIRONMENT.endswith("-sandbox"):
+        session_cookie_value, _ = hapi_passthrough.post_login("", "")
+        session_expiry = datetime.datetime.utcnow() + datetime.timedelta(seconds=float(600))
+        response = flask.redirect(config.BASE_URL)
+        set_session_cookie(response, session_cookie_value, session_expiry)
+        mock_access_token_encrypted = fernet.encrypt("mock_access_token".encode("utf-8")).decode("utf-8")
+        set_access_token_cookies(response, mock_access_token_encrypted, session_expiry)
+        return response
+    # deployed environments
     state = parse_oauth_state(flask.request.args.get("state"))
-    if pr_redirect_required(config.BASE_PATH, state):
+    if pr_redirect_required(config.BASE_URL, state):
         if pr_redirect_enabled(config.ENVIRONMENT):
             return flask.redirect(
                 get_pr_branch_url(state["prNumber"], "callback", flask.request.query_string.decode("utf-8")))
@@ -419,8 +435,8 @@ def get_callback():
     refresh_token_encrypted = fernet.encrypt(refresh_token.encode("utf-8")).decode("utf-8")
     access_token_expires = datetime.datetime.utcnow() + datetime.timedelta(seconds=float(access_token_expires_in))
     refresh_token_expires = datetime.datetime.utcnow() + datetime.timedelta(seconds=float(refresh_token_expires_in))
-    session_cookie_value, _ = hapi_passthrough.post_login(access_token)
-    redirect_url = f'{config.PUBLIC_APIGEE_URL}/{config.BASE_PATH}'
+    session_cookie_value, _ = hapi_passthrough.post_login(auth_method, access_token)
+    redirect_url = f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}'
     response = flask.redirect(redirect_url)
     set_session_cookie(response, session_cookie_value, access_token_expires)
     set_access_token_cookies(response, access_token_encrypted, access_token_expires)

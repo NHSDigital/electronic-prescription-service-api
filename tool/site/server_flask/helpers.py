@@ -15,7 +15,7 @@ def get_registered_callback_url():
   if pr_redirect_enabled(config.ENVIRONMENT):
     return f'{config.PUBLIC_APIGEE_URL}/eps-api-tool/callback'
   else:
-    return f'{config.PUBLIC_APIGEE_URL}/{config.BASE_PATH}/callback'
+    return f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}/callback'
 
 
 def pr_redirect_enabled(environment):

@@ -74,10 +74,11 @@ def post_send(request):
     ).json()
 
 
-def post_login(access_token):
+def post_login(auth_method, access_token):
     response =  httpx.post(
         f"{HAPI_URL}{AUTH_URL}",
         json={
+            "auth_method": auth_method,
             "access_token": access_token
         },
         verify=False
@@ -93,7 +94,9 @@ def get_prescription_ids():
 # Helpers
 
 def make_get_request_raw(url):
+    return httpx.get(url, verify=False, cookies=get_cookies()).json()
+
+
+def get_cookies():
     session_cookie_value = get_hapi_session_cookie_value()
-    return httpx.get(url, verify=False, cookies={
-        "session": session_cookie_value
-    }).json()
+    return {"session": session_cookie_value}

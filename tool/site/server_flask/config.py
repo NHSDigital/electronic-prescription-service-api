@@ -4,11 +4,10 @@ SESSION_TOKEN_ENCRYPTION_KEY = os.environ["SESSION_TOKEN_ENCRYPTION_KEY"].encode
 REDIS_URL = os.environ["REDIS_URL"]
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "prod")
 PUBLIC_APIGEE_URL = os.environ["PUBLIC_APIGEE_URL"]
-BASE_PATH = os.environ.get("BASE_PATH")
-if BASE_PATH is None:
+if "BASE_PATH" not in os.environ:
   BASE_URL = "/"
 else:
-  BASE_URL = f'/{BASE_PATH}/'
+  BASE_URL = f'/{os.environ["BASE_PATH"]}/'
 STATIC_URL = f'/static'
 DEV_MODE = os.environ.get("DEV_MODE", False)
 DEMO_APP_CLIENT_ID = os.environ.get("DEMO_APP_CLIENT_ID")
