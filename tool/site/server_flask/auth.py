@@ -51,11 +51,10 @@ def get_access_token():
         return fernet.decrypt(access_token_encrypted.encode("utf-8")).decode("utf-8")
 
 
-def login():
+def login(response=None):
     # local environment
     if os.environ["ENVIRONMENT"].endswith("-sandbox"):
         session_cookie_value, _ = hapi_passthrough.post_login("")
-        response = flask.redirect("/")
         session_expiry = datetime.datetime.utcnow() + datetime.timedelta(seconds=float(600))
         set_session_cookie(response, session_cookie_value, session_expiry)
         mock_access_token_encrypted = fernet.encrypt("mock_access_token".encode("utf-8")).decode("utf-8")
@@ -66,8 +65,7 @@ def login():
     state = create_oauth_state(get_pr_number(config.BASE_PATH), page_mode)
     auth_method = get_auth_method_from_cookie()
     authorize_url = get_authorize_url(state, auth_method)
-    response = flask.redirect(authorize_url)
-    return response
+    return flask.redirect(authorize_url)
 
 
 def get_authorize_url(state, auth_method):

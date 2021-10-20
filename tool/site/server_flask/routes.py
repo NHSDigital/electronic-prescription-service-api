@@ -129,10 +129,10 @@ def get_change_auth():
 def post_change_auth():
     login_request = flask.request.json
     auth_method = login_request["authMethod"]
-    response = app.make_response({"redirectUri": f'{config.BASE_URL}logout'})
+    response = app.make_response({"redirectUri": f'{config.BASE_URL}'})
     set_auth_method_cookie(response, auth_method)
     secure_flag = not config.DEV_MODE
-    return response
+    return login(response)
 
 
 @app.route(HOME_URL, methods=["GET"])
