@@ -36,4 +36,3 @@ extends:
     product_description: ${{ variables.product_description }}
     apigee_deployments:
       - environment: internal-dev
-        make_spec_visible: false
