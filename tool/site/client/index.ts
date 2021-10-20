@@ -126,7 +126,7 @@ customWindow.sendPrescriptionRequest = function () {
   resetErrors()
   try {
     const urlParams = new URLSearchParams(window.location.search)
-    const signatureToken = urlParams.get('token')
+    const signatureToken = urlParams.get("token")
     const response = makeRequest("POST", `${pageData.baseUrl}prescribe/send`, JSON.stringify({signatureToken}))
     pageData.signResponse = null
     if (response.prescription_ids.length > 1) {
@@ -436,7 +436,6 @@ function setInitialState(mode: string, env: string, baseUrl: string, signRespons
   pageData.environment = env
   pageData.baseUrl = baseUrl
   pageData.signResponse = signResponse
-  pageData.loggedIn = pageData.loggedIn
 }
 
 customWindow.startApplication = async function (mode: string, env: string, baseUrl: string, signResponse: APIResponse) {
