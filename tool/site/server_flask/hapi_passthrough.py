@@ -39,23 +39,15 @@ def get_prescription(prescription_id):
 
 
 def post_edit(body):
-    # when in local mode, we might not have session cookie at this point
-    # as we've skipped login, so ensure it is set here
     session_cookie_value = get_hapi_session_cookie_value()
-    if session_cookie_value:
-        cookies = {
-            "session": session_cookie_value 
-        }
-    else:
-        cookies = {}
-    response = httpx.post(
+    return httpx.post(
         f"{HAPI_URL}{EDIT_URL}",
         json=body,
         verify=False,
-        cookies=cookies
-    )
-    session_cookie_value = response.cookies["session"]
-    return session_cookie_value, response.json()
+        cookies={
+            "session": session_cookie_value
+        }
+    ).json()
 
 
 def post_sign():
