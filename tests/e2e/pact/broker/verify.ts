@@ -158,7 +158,7 @@ async function sendReleaseRequest(releaseRequest: fhir.Parameters) {
         "Authorization": `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
       }
     }
-  )
+  ).catch(() => process.exit(1))
 }
 
 function isNominatedRelease(parameters: fhir.Parameters): boolean {
