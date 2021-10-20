@@ -127,7 +127,7 @@ customWindow.sendPrescriptionRequest = function () {
   try {
     const urlParams = new URLSearchParams(window.location.search)
     const signatureToken = urlParams.get('token')
-    const response = makeRequest("POST", `${pageData.baseUrl}prescribe/send`, {signatureToken})
+    const response = makeRequest("POST", `${pageData.baseUrl}prescribe/send`, JSON.stringify({signatureToken}))
     pageData.signResponse = null
     if (response.prescription_ids.length > 1) {
       pageData.sendBulkResponse = response.success_list
