@@ -154,26 +154,27 @@ def get_load():
     return render_client("load")
 
 
-# @exclude_from_auth()
-# @app.route(DOWNLOAD_URL, methods=['GET'])
-# def download():
-#     zFile = io.BytesIO()
-#     access_token = get_access_token()
-#     with zipfile.ZipFile(zFile, 'w') as zip_file:
-#         short_prescription_ids = get_all_prescription_ids_from_cookie()
-#         for index, short_prescription_id in enumerate(short_prescription_ids):
-#             bundle = load_prepare_request(short_prescription_id)
-#             zip_file.writestr(f"send_request_{index + 1}.json", json.dumps(bundle, indent=2))
-#             if access_token:
-#                 xml, _status_code = make_eps_api_convert_message_request(access_token, bundle)
-#                 zip_file.writestr(f"send_request_{index + 1}.xml", xml)
-#     zFile.seek(0)
+@exclude_from_auth()
+@app.route(DOWNLOAD_URL, methods=['GET'])
+def download():
+    zFile = io.BytesIO()
+    access_token = get_access_token()
+    state = hapi_passthrough.get_prescription_ids(hapi_session_cookie_value)
+    short_prescription_ids = state["prescriptionIds"]
+    with zipfile.ZipFile(zFile, 'w') as zip_file:
+        for index, short_prescription_id in enumerate(short_prescription_ids):
+            bundle = load_prepare_request(short_prescription_id)
+            zip_file.writestr(f"send_request_{index + 1}.json", json.dumps(bundle, indent=2))
+            if access_token:
+                xml, _status_code = make_eps_api_convert_message_request(access_token, bundle)
+                zip_file.writestr(f"send_request_{index + 1}.xml", xml)
+    zFile.seek(0)
 
-#     return flask.send_file(
-#         zFile,
-#         mimetype='application/zip',
-#         as_attachment=True,
-#         attachment_filename='messages.zip')
+    return flask.send_file(
+        zFile,
+        mimetype='application/zip',
+        as_attachment=True,
+        attachment_filename='messages.zip')
 
 
 def update_pagination(response, short_prescription_ids, current_short_prescription_id):
