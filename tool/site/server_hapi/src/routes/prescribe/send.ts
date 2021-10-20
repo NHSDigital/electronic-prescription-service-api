@@ -1,9 +1,9 @@
 import Hapi from "@hapi/hapi"
 // import * as uuid from "uuid"
 import {getSigningClient} from "../../services/communication/signing-client"
-import {getSessionValue, getSessionValueOrDefault/*, setSessionValue*/} from "../../services/session"
+import {/*getSessionValue,*/ getSessionValueOrDefault/*, setSessionValue*/} from "../../services/session"
 // import {getEpsClient} from "../../services/communication/eps-client"
-import {Parameters} from "fhir/r4"
+// import {Parameters} from "fhir/r4"
 
 export default [
   {
