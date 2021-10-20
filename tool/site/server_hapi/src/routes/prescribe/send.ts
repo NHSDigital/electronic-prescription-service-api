@@ -14,10 +14,11 @@ export default [
       const accessToken = getSessionValueOrDefault("access_token", request, "")
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const authMethod = getSessionValueOrDefault("auth_method", request, "cis2")
-      const signatureToken = request.query["token"]
-      const signingClient = getSigningClient(request, accessToken, authMethod)
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const signatureResponse = await signingClient.makeSignatureDownloadRequest(signatureToken)
+      const signatureToken = request.query["token"]
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const signingClient = getSigningClient(request, accessToken, authMethod)
+      //const signatureResponse = await signingClient.makeSignatureDownloadRequest(signatureToken)
       const prescriptionIds = getSessionValue("prescription_ids", request)
       const prepareResponses: {prescriptionId: string, response: Parameters}[] = prescriptionIds.map((id: string) => {
         return {
