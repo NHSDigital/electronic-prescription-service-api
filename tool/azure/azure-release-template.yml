@@ -9,8 +9,6 @@ parameters:
     type: string
   - name: product_description
     type: string
-  - name: spec_file
-    type: string
   - name: apigee_deployments
     type: object
 
@@ -22,7 +20,6 @@ extends:
     service_base_path: ${{ parameters.service_base_path }}
     product_display_name: ${{ parameters.product_display_name }}
     product_description: ${{ parameters.product_description }}
-    spec_file: ${{ parameters.spec_file }}
     apigee_deployments: ${{ parameters.apigee_deployments }}
     prod_requires_approval: true
     post_deploy:
