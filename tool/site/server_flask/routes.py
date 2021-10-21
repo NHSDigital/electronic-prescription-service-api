@@ -158,8 +158,8 @@ def get_load():
 def download():
     zFile = io.BytesIO()
     access_token = get_access_token()
-    state = hapi_passthrough.get_prescription_ids()
-    short_prescription_ids = state["prescriptionIds"]
+    hapi_session = hapi_passthrough.get_hapi_session()
+    short_prescription_ids = hapi_session["prescriptionIds"]
     with zipfile.ZipFile(zFile, 'w') as zip_file:
         for index, short_prescription_id in enumerate(short_prescription_ids):
             bundle = hapi_passthrough.get_prescription(short_prescription_id)
@@ -206,9 +206,9 @@ def get_edit():
         return flask.redirect(f"{config.PUBLIC_APIGEE_URL}{config.BASE_URL}change-auth")
     response_json = hapi_passthrough.get_prescription(short_prescription_id)
     response = app.make_response(response_json)
-    state = hapi_passthrough.get_prescription_ids()
-    short_prescription_ids = state["prescriptionIds"]
-    short_prescription_id = state["prescriptionId"]
+    hapi_session = hapi_passthrough.get_hapi_session()
+    short_prescription_ids = hapi_session["prescriptionIds"]
+    short_prescription_id = hapi_session["prescriptionId"]
     update_pagination(response, short_prescription_ids, short_prescription_id)
     return response
 
@@ -219,15 +219,15 @@ def post_edit():
     request_bundles = flask.request.json
     response_json = hapi_passthrough.post_edit(request_bundles)
     response = app.make_response(response_json)
-    state = hapi_passthrough.get_prescription_ids()
-    if "short_prescription_id" not in state:
+    hapi_session = hapi_passthrough.get_hapi_session()
+    if "short_prescription_id" not in hapi_session:
         # anonymous user view single prescription only
         bundle = request_bundles[0]
         short_prescription_id = get_prescription_id(bundle)
         short_prescription_ids = [short_prescription_id]
     else:
-        short_prescription_ids = state["prescriptionIds"]
-        short_prescription_id = state["prescriptionId"]
+        short_prescription_ids = hapi_session["prescriptionIds"]
+        short_prescription_id = hapi_session["prescriptionId"]
     update_pagination(response, short_prescription_ids, short_prescription_id)
     return response
 
@@ -416,10 +416,10 @@ def get_logout():
 def get_callback():
     # local development
     if config.ENVIRONMENT.endswith("-sandbox"):
-        session_cookie_value, _ = hapi_passthrough.post_login("", "")
+        hapi_session_cookie, _ = hapi_passthrough.post_login("", "")
         session_expiry = datetime.datetime.utcnow() + datetime.timedelta(seconds=float(600))
         response = flask.redirect(config.BASE_URL)
-        set_session_cookie(response, session_cookie_value, session_expiry)
+        set_session_cookie(response, hapi_session_cookie, session_expiry)
         mock_access_token_encrypted = fernet.encrypt("mock_access_token".encode("utf-8")).decode("utf-8")
         set_access_token_cookies(response, mock_access_token_encrypted, session_expiry)
         return response
@@ -442,9 +442,9 @@ def get_callback():
     refresh_token_encrypted = fernet.encrypt(refresh_token.encode("utf-8")).decode("utf-8")
     access_token_expires = datetime.datetime.utcnow() + datetime.timedelta(seconds=float(access_token_expires_in))
     refresh_token_expires = datetime.datetime.utcnow() + datetime.timedelta(seconds=float(refresh_token_expires_in))
-    session_cookie_value, _ = hapi_passthrough.post_login(auth_method, access_token)
+    hapi_session_cookie, _ = hapi_passthrough.post_login(auth_method, access_token)
     redirect_url = f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}'
     response = flask.redirect(redirect_url)
-    set_session_cookie(response, session_cookie_value, access_token_expires)
+    set_session_cookie(response, hapi_session_cookie, access_token_expires)
     set_access_token_cookies(response, access_token_encrypted, access_token_expires)
     return response

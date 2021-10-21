@@ -1,6 +1,6 @@
 import statusRoutes from "./health/get-status"
 import accessTokenRoutes from "./auth/login"
-import prescriptionIdRoutes from "./state/prescription-ids"
+import sessionRoutes from "./state/session"
 import editRoutes from "./prescribe/edit"
 import signRoutes from "./prescribe/sign"
 import sendRoutes from "./prescribe/send"
@@ -10,7 +10,7 @@ const authRoutes = [
 ]
 
 const stateRoutes = [
-  ...prescriptionIdRoutes
+  ...sessionRoutes
 ]
 
 const prescribeRoutes = [

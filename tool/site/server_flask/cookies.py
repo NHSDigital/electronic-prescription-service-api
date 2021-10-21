@@ -70,15 +70,15 @@ def set_skip_signature_page_cookie(response, skip_signature_page):
     )
 
 
-def set_session_cookie(response, session_cookie_value, expiry):
+def set_session_cookie(response, session_cookie, expiry):
     response.set_cookie(
         "session",
-        session_cookie_value,
+        session_cookie,
         expires=expiry,
         secure=not config.DEV_MODE,
         httponly=True
     )
 
 
-def get_hapi_session_cookie_value():
+def get_session_cookie():
     return flask.request.cookies.get("session")

@@ -1,7 +1,7 @@
 import json
 import os
 import httpx
-from cookies import get_hapi_session_cookie_value
+from cookies import get_session_cookie
 
 HAPI_URL = os.environ["HAPI_URL"]
 
@@ -23,8 +23,8 @@ def post_login(auth_method, access_token):
         },
         verify=False
     )
-    session_cookie_value = response.cookies["session"]
-    return session_cookie_value, response.json()
+    hapi_session_cookie = response.cookies["session"]
+    return hapi_session_cookie, response.json()
 
 
 def get_prescription(prescription_id):
@@ -43,8 +43,8 @@ def post_send(body):
     return make_post_request(f"{HAPI_URL}/prescribe/send", body)
 
 
-def get_prescription_ids():
-    return make_get_request(f"{HAPI_URL}/prescriptionIds")
+def get_hapi_session():
+    return make_get_request(f"{HAPI_URL}/session")
 
 
 # Helpers
@@ -58,7 +58,7 @@ def make_post_request(url, body):
 
 
 def get_cookies():
-    session_cookie_value = get_hapi_session_cookie_value()
-    if session_cookie_value is not None:
-        return {"session": session_cookie_value}
+    hapi_session_cookie = get_session_cookie()
+    if hapi_session_cookie is not None:
+        return {"session": hapi_session_cookie}
     return {}

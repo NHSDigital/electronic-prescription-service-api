@@ -4,7 +4,7 @@ import {getSessionValue} from "../../services/session"
 export default [
   {
     method: "GET",
-    path: "/prescriptionIds",
+    path: "/session",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const prescriptionId = getSessionValue("prescription_id", request)
       const prescriptionIds = getSessionValue("prescription_ids", request)
