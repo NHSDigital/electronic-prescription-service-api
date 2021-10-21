@@ -40,12 +40,14 @@ docker_service:
         port: 9001
         expose: false
         environment:
-            -   name: COMMIT_ID
+             -   name: COMMIT_ID
                 value: "{{ SOURCE_COMMIT_ID }}"
             -   name: REDIS_URL
                 value: "localhost"
             -   name: REDIS_PORT
                 value: "6379"
+            -   name: PUBLIC_APIGEE_URL
+                value: "https://{{ APIGEE_HOSTNAME }}"
         secrets:
             -   name: APIGEE_DOMAIN_NAME
                 valueFrom: '/{{ account }}/platform-common/egress/hosts/apigee-internal-qa'
