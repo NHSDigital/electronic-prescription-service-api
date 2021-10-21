@@ -57,7 +57,7 @@ def login():
         return response
     # deployed environments
     page_mode = flask.request.args.get("page_mode", "home")
-    state = create_oauth_state(get_pr_number(config.BASE_URL), page_mode)
+    state = create_oauth_state(get_pr_number(config.BASE_PATH), page_mode)
     auth_method = get_auth_method_from_cookie()
     authorize_url = get_authorize_url(state, auth_method)
     return flask.redirect(authorize_url)

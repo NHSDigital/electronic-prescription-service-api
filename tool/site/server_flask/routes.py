@@ -134,7 +134,7 @@ def post_change_auth():
     if config.ENVIRONMENT.endswith("-sandbox"):
         authorize_url = "/callback"
     else:
-        state = create_oauth_state(get_pr_number(config.BASE_URL), "home")
+        state = create_oauth_state(get_pr_number(config.BASE_PATH), "home")
         authorize_url = get_authorize_url(state, auth_method)
     response = app.make_response({"redirectUri": f'{authorize_url}'})
     set_auth_method_cookie(response, auth_method)
