@@ -31,7 +31,7 @@ export class Case {
   }
 
   rewriteResponseFile(fileBody: string): void {
-    fs.writeFileSync(this.responseFile.path, fileBody, "utf-8")
+    fs.writeFileSync(this.responseFile.path, fileBody + "\n", "utf-8")
   }
 }
 
