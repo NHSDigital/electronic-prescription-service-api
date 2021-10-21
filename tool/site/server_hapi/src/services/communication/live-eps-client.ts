@@ -30,7 +30,7 @@ export class LiveEpsClient implements EpsClient {
     return await (await this.makeApiCall("$convert", body)).data as string
   }
 
-  private async makeApiCall(endpoint: string, body?: unknown, requestId?: string,  additionalHeaders?: AxiosRequestHeaders): Promise<AxiosResponse> {
+  private async makeApiCall(endpoint: string, body?: unknown, requestId?: string, additionalHeaders?: AxiosRequestHeaders): Promise<AxiosResponse> {
     const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/${endpoint}`
     let headers: AxiosRequestHeaders = {
       "Authorization": `Bearer ${this.accessToken}`,
@@ -40,7 +40,7 @@ export class LiveEpsClient implements EpsClient {
     if (additionalHeaders) {
       headers = {
         ...headers,
-        ...additionalHeaders,
+        ...additionalHeaders
       }
     }
     if (body) {
