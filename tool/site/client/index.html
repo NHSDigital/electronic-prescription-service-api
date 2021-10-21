@@ -62,8 +62,8 @@
               </div>
               <div rv-show="mode | isSign">
                 <h1 class="nhsuk-fieldset__heading">Prescription
-                  <div style="float:right;display:inline;width:150px;margin-left:20px;">
-                    <a href="{{base_url}}download" id="download-messages" download="messages.zip"><img style="width: 35%;" src="{{base_url}}static/json.png" title="FHIR"></a>
+                  <div rv-show="loggedIn" style="float:right;display:inline;width:150px;margin-left:20px;">
+                    <a href="{{base_url}}download" id="download-messages"><img style="width: 35%;" src="{{base_url}}static/json.png" title="FHIR"></a>
                   </div>
                 </h1>
               </div>

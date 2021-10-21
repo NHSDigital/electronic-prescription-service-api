@@ -162,11 +162,11 @@ def download():
     short_prescription_ids = state["prescriptionIds"]
     with zipfile.ZipFile(zFile, 'w') as zip_file:
         for index, short_prescription_id in enumerate(short_prescription_ids):
-            bundle = load_prepare_request(short_prescription_id)
-            zip_file.writestr(f"send_request_{index + 1}.json", json.dumps(bundle, indent=2))
+            bundle = hapi_passthrough.get_prescription(short_prescription_id)
+            zip_file.writestr(f"prepare_request_{index + 1}.json", json.dumps(bundle, indent=2))
             if access_token:
                 xml, _status_code = make_eps_api_convert_message_request(access_token, bundle)
-                zip_file.writestr(f"send_request_{index + 1}.xml", xml)
+                zip_file.writestr(f"prepare_request_{index + 1}.xml", xml)
     zFile.seek(0)
 
     return flask.send_file(
