@@ -59,4 +59,6 @@ def make_post_request(url, body):
 
 def get_cookies():
     session_cookie_value = get_hapi_session_cookie_value()
-    return {"session": session_cookie_value}
+    if session_cookie_value is not None:
+        return {"session": session_cookie_value}
+    return {}

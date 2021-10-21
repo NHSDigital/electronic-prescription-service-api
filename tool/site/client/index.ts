@@ -436,6 +436,10 @@ function setInitialState(mode: string, env: string, baseUrl: string, signRespons
   pageData.environment = env
   pageData.baseUrl = baseUrl
   pageData.signResponse = signResponse
+  // remove ability to add custom examples as an anonymous user  
+  if (!pageData.loggedIn) {
+    pageData.examples.pop()
+  }
 }
 
 customWindow.startApplication = async function (mode: string, env: string, baseUrl: string, signResponse: APIResponse) {

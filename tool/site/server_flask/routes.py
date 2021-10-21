@@ -219,8 +219,14 @@ def post_edit():
     response_json = hapi_passthrough.post_edit(request_bundles)
     response = app.make_response(response_json)
     state = hapi_passthrough.get_prescription_ids()
-    short_prescription_ids = state["prescriptionIds"]
-    short_prescription_id = state["prescriptionId"]
+    if "short_prescription_id" not in state:
+        # anonymous user view single prescription only
+        bundle = request_bundles[0]
+        short_prescription_id = get_prescription_id(bundle)
+        short_prescription_ids = [short_prescription_id]
+    else:
+        short_prescription_ids = state["prescriptionIds"]
+        short_prescription_id = state["prescriptionId"]
     update_pagination(response, short_prescription_ids, short_prescription_id)
     return response
 
