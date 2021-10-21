@@ -23,6 +23,8 @@ docker_service:
         secrets:
             -   name: APIGEE_DOMAIN_NAME
                 valueFrom: '/{{ account }}/platform-common/egress/hosts/apigee-internal-qa'
+            -   name: DEMO_APP_CLIENT_ID
+                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/internal-qa/test-client/client-id"
             -   name: DEMO_APP_CLIENT_KEY
                 valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/internal-qa/test-client/client-key"
             -   name: SESSION_TOKEN_ENCRYPTION_KEY
@@ -34,7 +36,7 @@ docker_service:
         port: 9001
         expose: false
         environment:
-             -   name: COMMIT_ID
+            -   name: COMMIT_ID
                 value: "{{ SOURCE_COMMIT_ID }}"
             -   name: REDIS_URL
                 value: "localhost"
