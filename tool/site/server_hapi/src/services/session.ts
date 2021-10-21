@@ -7,7 +7,9 @@ export function getSessionValue(key: string, request: Hapi.Request): any {
     if (sessionValue === null) {
       console.error(`Failed to reteive session value for key: ${key}`)
     }
-    console.error(`Retrieved ${key} from session with value: ${JSON.stringify(sessionValue)}`)
+    else {
+      console.error(`Retrieved ${key} from session with value: ${JSON.stringify(sessionValue)}`)
+    }
   }
   if (Object.keys(sessionValue).length === 1 && Object.keys(sessionValue)[0] === "arrayValues") {
     return sessionValue.arrayValues
