@@ -109,12 +109,12 @@ export async function getFhirValidatorErrors(
   return null
 }
 
-function filterValidatorResponse(validatorResponse: fhir.OperationOutcome): fhir.OperationOutcome {
+export function filterValidatorResponse(validatorResponse: fhir.OperationOutcome): fhir.OperationOutcome {
   const nhsVerificationErrorString = "https://fhir.hl7.org.uk/ValueSet/UKCore-NHSNumberVerificationStatus"
   const issues = validatorResponse.issue
   const onlyErrors = issues.filter(issue => issue.severity !== "warning" && issue.severity !== "information")
   const noNHSNumberVerificationError = onlyErrors.filter(
-    issue => !issue.diagnostics.includes(nhsVerificationErrorString)
+    issue => !issue.diagnostics?.includes(nhsVerificationErrorString)
   )
   return {
     ...validatorResponse,
