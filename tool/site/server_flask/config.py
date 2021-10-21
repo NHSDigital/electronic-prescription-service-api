@@ -5,7 +5,7 @@ REDIS_URL = os.environ["REDIS_URL"]
 ENVIRONMENT = os.environ.get("ENVIRONMENT", "prod")
 PUBLIC_APIGEE_URL = os.environ["PUBLIC_APIGEE_URL"]
 BASE_PATH = os.environ.get("BASE_PATH")
-if "BASE_PATH" not in os.environ:
+if BASE_PATH is None:
   BASE_URL = "/"
 else:
   BASE_URL = f'/{os.environ["BASE_PATH"]}/'
