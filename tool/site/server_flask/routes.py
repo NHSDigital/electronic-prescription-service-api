@@ -220,7 +220,7 @@ def post_edit():
     response_json = hapi_passthrough.post_edit(request_bundles)
     response = app.make_response(response_json)
     hapi_session = hapi_passthrough.get_hapi_session()
-    if "short_prescription_id" not in hapi_session:
+    if "prescriptionId" not in hapi_session:
         # anonymous user view single prescription only
         bundle = request_bundles[0]
         short_prescription_id = get_prescription_id(bundle)
