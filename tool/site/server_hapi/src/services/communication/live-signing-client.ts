@@ -22,10 +22,30 @@ export class LiveSigningClient implements SigningClient {
       "x-request-id": uuid.v4(),
       "x-correlation-id": uuid.v4()
     }
-    const privateKey = this.getPrivateKey()
-    const payload = {
+
+    // patch for RSS support whilst requirements for local signing and RSS are different
+    // todo: remove this logic once they are aligned
+    let keyId: string | undefined
+    let privateKey: string
+    let payload = {}
+    if (this.authMethod === "cis2") {
+      keyId = process.env.DEMO_APP_KEY_ID
+      payload = {
+        iss: process.env.DEMO_APP_CLIENT_ID
+      }
+      privateKey = this.getPrivateKey(process.env.DEMO_APP_PRIVATE_KEY ?? "")
+    }
+    else { // always 'simulated' (this will only support RSS Windows/IOS, smartcard simulated auth will fail as JWTs are different)
+      keyId = process.env.DEMO_APP_REMOTE_SIGNING_KID
+      payload = {
+        iss: process.env.DEMO_APP_REMOTE_SIGNING_ISSUER
+      }
+      privateKey = this.getPrivateKey(process.env.APP_JWT_PRIVATE_KEY ?? "")
+    }
+
+    payload = {
+      ...payload,
       sub: process.env.APP_JWT_SUBJECT,
-      iss: process.env.APP_JWT_ISSUER,
       aud: this.getBaseUrl(true),
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + (60 * 10),
@@ -37,7 +57,9 @@ export class LiveSigningClient implements SigningClient {
       }),
       algorithm: prepareResponses[0].parameter?.find(p => p.name === "algorithm")?.valueString
     }
-    const body = await jwt.sign(payload, privateKey, {algorithm: "RS512", keyid: process.env.APP_JWT_KID})
+
+    const body = await jwt.sign(payload, privateKey, {algorithm: "RS512", keyid: keyId})
+
     return (await axios.post(url, body, {headers: headers})).data
   }
 
@@ -54,8 +76,7 @@ export class LiveSigningClient implements SigningClient {
     })).data
   }
 
-  private getPrivateKey() {
-    let private_key_secret = process.env.APP_JWT_PRIVATE_KEY ?? ""
+  private getPrivateKey(private_key_secret: string) {
     while (private_key_secret.length % 4 !== 0) {
       private_key_secret += "="
     }
