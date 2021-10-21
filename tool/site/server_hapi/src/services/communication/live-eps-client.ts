@@ -1,7 +1,7 @@
 import * as uuid from "uuid"
-import axios, {AxiosRequestHeaders} from "axios"
+import axios, {AxiosRequestHeaders, AxiosResponse} from "axios"
 import {Bundle, OperationOutcome, Parameters} from "fhir/r4"
-import {EpsClient} from "./eps-client"
+import {EpsClient, EpsSendReponse} from "./eps-client"
 
 export class LiveEpsClient implements EpsClient {
   private accessToken: string
@@ -11,34 +11,43 @@ export class LiveEpsClient implements EpsClient {
   }
 
   async makePrepareRequest(body: Bundle): Promise<Parameters> {
-    return await this.makeApiCall("$prepare", body)
+    return await (await this.makeApiCall("$prepare", body)).data as Parameters
   }
 
-  async makeSendRequest(requestId: string, body: Bundle, getSpineResponse: boolean): Promise<OperationOutcome> {
-    return await this.makeApiCall("$process-message", body, requestId, getSpineResponse)
+  async makeSendRequest(body: Bundle): Promise<EpsSendReponse> {
+    const requestId = uuid.v4()
+    const rawResponseHeaders = {
+      "x-raw-response": "true"
+    }
+    const response = await this.makeApiCall("$process-message", body)
+    const statusCode = response.status
+    const fhirResponse = await response.data as OperationOutcome
+    const spineResponse = await (await this.makeApiCall("$process-message", body, requestId, rawResponseHeaders)).data as string
+    return {statusCode, fhirResponse, spineResponse}
   }
 
   async makeConvertRequest(body: unknown): Promise<string> {
-    return await this.makeApiCall("$convert", body)
+    return await (await this.makeApiCall("$convert", body)).data as string
   }
 
-  private async makeApiCall(endpoint: string, body?: unknown, requestId?: string, getSpineResponse?: boolean): Promise<any> {
+  private async makeApiCall(endpoint: string, body?: unknown, requestId?: string,  additionalHeaders?: AxiosRequestHeaders): Promise<AxiosResponse> {
     const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/${endpoint}`
     let headers: AxiosRequestHeaders = {
       "Authorization": `Bearer ${this.accessToken}`,
       "x-request-id": requestId ?? uuid.v4(),
       "x-correlation-id": uuid.v4()
     }
-    if (getSpineResponse) {
+    if (additionalHeaders) {
       headers = {
         ...headers,
-        "x-raw-response": "true"
+        ...additionalHeaders,
       }
     }
     if (body) {
-      return (await axios.post(url, body, {headers: headers})).data
+      return await axios.post(url, body, {headers: headers})
     }
 
-    return (await axios.get(url, {headers: headers})).data
+    return await axios.get(url, {headers: headers})
   }
 }
+

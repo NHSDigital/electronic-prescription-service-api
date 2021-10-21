@@ -1,7 +1,7 @@
 import * as uuid from "uuid"
 import axios from "axios"
 import {Bundle, Parameters} from "fhir/r4"
-import {EpsClient} from "./eps-client"
+import {EpsClient, EpsSendReponse} from "./eps-client"
 
 export class MockEpsClient implements EpsClient {
 
@@ -29,14 +29,11 @@ export class MockEpsClient implements EpsClient {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async makeSendRequest(requestId: string, body: Bundle, getSpineResponse: boolean): Promise<unknown> {
-    if (getSpineResponse) {
-      const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/$process-message`
-      const response = (await axios.post(url, body, {headers: {"X-Request-ID": uuid.v4(), "X-Raw-Response": "true"}})).data
-      return response as string
-    }
-
-    return await this.mockAxiosResponse({
+  async makeSendRequest(body: Bundle): Promise<EpsSendReponse> {
+    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/$process-message`
+    const statusCode = 200
+    const spineResponse = (await axios.post(url, body, {headers: {"X-Request-ID": uuid.v4(), "X-Raw-Response": "true"}})).data as string
+    const fhirResponse = {
       resourceType: "OperationOutcome",
       issue: [
         {
@@ -44,7 +41,8 @@ export class MockEpsClient implements EpsClient {
           severity: "information"
         }
       ]
-    })
+    }
+    return await this.mockAxiosResponse({statusCode, fhirResponse, spineResponse})
   }
 
   async makeConvertRequest(body: unknown): Promise<string> {
