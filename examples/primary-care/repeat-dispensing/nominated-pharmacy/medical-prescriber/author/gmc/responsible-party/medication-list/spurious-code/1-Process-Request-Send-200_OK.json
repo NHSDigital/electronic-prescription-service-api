@@ -164,7 +164,7 @@
               }
             }
           ],
-          "numberOfRepeatsAllowed": 6,
+          "numberOfRepeatsAllowed": 5,
           "validityPeriod": {
             "start": "2021-05-07",
             "end": "2021-06-04"
@@ -304,7 +304,7 @@
               }
             }
           ],
-          "numberOfRepeatsAllowed": 6,
+          "numberOfRepeatsAllowed": 5,
           "validityPeriod": {
             "start": "2021-05-07",
             "end": "2021-06-04"

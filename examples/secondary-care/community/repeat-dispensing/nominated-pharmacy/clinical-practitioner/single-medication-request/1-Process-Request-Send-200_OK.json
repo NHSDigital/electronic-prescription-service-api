@@ -186,7 +186,7 @@
               }
             }
           ],
-          "numberOfRepeatsAllowed": 6,
+          "numberOfRepeatsAllowed": 5,
           "validityPeriod": {
             "start": "2021-09-03",
             "end": "2021-10-03"

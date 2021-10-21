@@ -29,7 +29,8 @@ describe("conversion tests", () => {
     }
   )
 
-  test.each(fetcher.convertExamples)(
+  const successExamplesThatAreNotJestCases = fetcher.convertExamples.filter(e => e.isSuccess)
+  test.each(successExamplesThatAreNotJestCases)(
     "regenerate convert snapshots",
     async (convertCase) => {
       const request = convertCase.request
