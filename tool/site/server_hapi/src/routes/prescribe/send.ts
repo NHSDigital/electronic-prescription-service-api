@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {getSigningClient} from "../../services/communication/signing-client"
-import {getSessionValue, getSessionValueOrDefault, setSessionValue} from "../../services/session"
+import {getSessionValue, setSessionValue} from "../../services/session"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {Parameters} from "fhir/r4"
 import {getPayload} from "../util"
@@ -10,8 +10,8 @@ export default [
     method: "POST",
     path: "/prescribe/send",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const accessToken = getSessionValueOrDefault("access_token", request, "")
-      const authMethod = getSessionValueOrDefault("auth_method", request, "cis2")
+      const accessToken = getSessionValue("access_token", request)
+      const authMethod = getSessionValue("auth_method", request)
       const parsedRequest = getPayload(request) as {signatureToken: string}
       const signingClient = getSigningClient(request, accessToken, authMethod)
       const signatureResponse = await signingClient.makeSignatureDownloadRequest(parsedRequest.signatureToken)

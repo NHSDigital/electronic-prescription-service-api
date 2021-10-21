@@ -34,8 +34,7 @@ export class LiveSigningClient implements SigningClient {
         iss: process.env.DEMO_APP_CLIENT_ID
       }
       privateKey = this.getPrivateKey(process.env.DEMO_APP_PRIVATE_KEY ?? "")
-    }
-    else { // always 'simulated' (this will only support RSS Windows/IOS, smartcard simulated auth will fail as JWTs are different)
+    } else { // always 'simulated' (this will only support RSS Windows/IOS, smartcard simulated auth will fail as JWTs are different)
       keyId = process.env.DEMO_APP_REMOTE_SIGNING_KID
       payload = {
         iss: process.env.DEMO_APP_REMOTE_SIGNING_ISSUER

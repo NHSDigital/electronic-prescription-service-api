@@ -22,7 +22,7 @@ export class LiveEpsClient implements EpsClient {
     const response = await this.makeApiCall("$process-message", body)
     const statusCode = response.status
     const fhirResponse = await response.data as OperationOutcome
-    const spineResponse = await (await this.makeApiCall("$process-message", body, requestId, rawResponseHeaders)).data as string
+    const spineResponse = "" ?? await (await this.makeApiCall("$process-message", body, requestId, rawResponseHeaders)).data as string
     return {statusCode, fhirResponse, spineResponse}
   }
 

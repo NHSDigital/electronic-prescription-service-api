@@ -6,8 +6,7 @@ export function getSessionValue(key: string, request: Hapi.Request): any {
   if (isLocal()) {
     if (sessionValue === null) {
       console.error(`Failed to reteive session value for key: ${key}`)
-    }
-    else {
+    } else {
       console.error(`Retrieved ${key} from session with value: ${JSON.stringify(sessionValue)}`)
     }
   }
