@@ -15,6 +15,7 @@ export default [
       const prescriptionIds = getSessionValue("prescription_ids", request)
       for (const id of prescriptionIds) {
         const prepareRequest = getSessionValue(`prepare_request_${id}`, request)
+        // todo: return prepareErrors (see client/index.ts sendSignRequest for expected format)
         const prepareResponse = await epsClient.makePrepareRequest(prepareRequest)
         setSessionValue(`prepare_response_${id}`, prepareResponse, request)
       }

@@ -113,12 +113,15 @@ customWindow.sendSignRequest = function () {
         .filter(issue => !issue.diagnostics.startsWith("Unable to find matching profile for urn:uuid:"))
         .map(issue => issue.diagnostics)
         .forEach(diagnostic => addError(diagnostic))
-    } else {
+    } else if (response.redirectUri) {
       window.location.href = response.redirectUri
+    }
+    else {
+      addError(`Unable to sign prescription, this is most likely because your session has expired. Please try to change-auth or login again`)
     }
   } catch (e) {
     console.log(e)
-    addError("Communication error")
+    addError(`Unable to sign prescription, this is most likely because your session has expired. Please try to change-auth or login again`)
   }
 }
 
