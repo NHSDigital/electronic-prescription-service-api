@@ -15,7 +15,7 @@ docker_service:
             -   name: PUBLIC_APIGEE_URL
                 value: "https://{{ APIGEE_HOSTNAME }}"
             -   name: BASE_PATH
-                value: "eps-api-tool"
+                value: "{{ SERVICE_BASE_PATH }}"
             -   name: REDIS_URL
                 value: "redis://localhost:6379"
             -   name: HAPI_URL
