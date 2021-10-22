@@ -10,24 +10,18 @@
     "noImplicitAny": true,
     "moduleResolution": "node",
     "sourceMap": true,
-    // "strict": true,
+    "strict": true,
     "outDir": "dist",
     "baseUrl": ".",
     "paths": {
       "*": [
         "node_modules/*",
         "tests/*"
-      ],
-      //"@models": ["../../../models", "./models"]
+      ]
     }
   },
   "include": [
     "src/**/*",
     "tests/**/*"
-  ],
-  // "references": [
-  //   { 
-  //     "path": "../../../models"
-  //   }
-  // ]
+  ]
 }
