@@ -111,9 +111,17 @@ export async function getFhirValidatorErrors(
 
 export function filterValidatorResponse(validatorResponse: fhir.OperationOutcome): fhir.OperationOutcome {
   const issues = validatorResponse.issue
+
   const noInformation = filterOutSeverity(issues, "information")
   const noWarnings = filterOutSeverity(noInformation, "warning")
-  const noNHSNumberVerificationError = filterOutDiagnosticOnString(noWarnings, "UKCore-NHSNumberVerificationStatus")
+
+  const noMatchingProfileError = filterOutDiagnosticOnString(
+    noWarnings, "Unable to find matching profile for"
+  )
+  const noNHSNumberVerificationError = filterOutDiagnosticOnString(
+    noMatchingProfileError, "UKCore-NHSNumberVerificationStatus"
+  )
+
   return {
     ...validatorResponse,
     issue: noNHSNumberVerificationError
