@@ -74,15 +74,15 @@ info:
     This API does not support tertiary care medication workflow.
     
     ### Dispensing API
-    Download and the mark as dispensed dispensing flows for the EPS FHIR API are in the sandbox environment only, withdraw and return are currently only referenced in this spec.
-    
+    All aspects of the dispensing workflow are currently available for testing in the `int` envronment. This includes, download and mark prescriptions as dispensed, and withdraw and return prescriptions.
+        
     ### Roadmap
     To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?tag=eps-fhir-api).
     
     If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
 
     ## Technology
-    This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#basic-rest).
+    This API conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir) global standard for health care data exchange.
     
     It also conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir) global standard for health care data exchange.
     Specifically, it is aligned with [FHIR UK Core](https://digital.nhs.uk/services/fhir-uk-core), which is built on FHIR Release 4.
@@ -156,7 +156,7 @@ info:
     | --------------| ---------------------- | -------------------------------------------------------------------------------- |
     | 400           | MISSING_FIELD          | A required field is missing within the request, see `display` field in response. |
     | 400           | INVALID_VALUE          | Invalid value in message.                                                        |
-    | 400           | INCORRECT_RESOURCETYPE | FHIR resource has incorrect resourceType.                                        |
+    | 400           | INCORRECT_RESOURCETYPE | FHIR resource has an incorrect resourceType.                                        |
     | 404           | NOT_FOUND              | Route not found.                                                                 |
 
     ### Platform wide errors
