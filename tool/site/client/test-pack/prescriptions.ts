@@ -14,65 +14,120 @@ import {convertMomentToISODate} from "../lib/date-time"
 import {createMessageHeaderEntry} from "./message-header"
 import {getNhsNumber} from "../parsers/read/patient-parser"
 import {createPlaceResources} from "./places"
+import {updateNominatedPharmacy} from "../parsers/write/bundle-parser"
+import {getDefaultPractitionerBundleEntry} from "./prescribers"
 
 export function createPrescriptions(
   patients: Array<BundleEntry>,
   prescribers: Array<BundleEntry>,
+  nominatedPharmacies: Array<string>,
   rows: Array<StringKeyedObject>
 ): any[] {
   const prescriptions = []
   const prescriptionRows = groupBy(rows, (row: StringKeyedObject) => row["Test"])
   prescriptionRows.forEach(prescriptionRows => {
     const prescriptionRow = prescriptionRows[0]
-    const patient = getPatientBundleEntry(patients, prescriptionRows)
-    const prescriber = getPrescriberBundleEntry(prescribers, prescriptionRows)
+    const patient = getPatientBundleEntry(patients, prescriptionRow)
+    const prescriber = getPractitionerBundleEntry(prescribers, prescriptionRow)
+    const nominatedPharmacy = getNominatedPharmacyOdsCode(nominatedPharmacies, prescriptionRow)
 
     const prescriptionTreatmentTypeCode = getPrescriptionTreatmentTypeCode(prescriptionRow)
 
-    if (prescriptionTreatmentTypeCode === "continuous") {
-      const repeatsAllowed = getNumberOfRepeatsAllowed(prescriptionRow)
-      for (
-        let repeatsIssued = 0;
-        repeatsIssued < repeatsAllowed;
-        repeatsIssued++
-      ) {
-        prescriptions.push(
-          createPrescription(
-            patient,
-            prescriber,
-            prescriptionRows,
-            repeatsIssued,
-            repeatsAllowed
-          )
-        )
-      }
-    } else if (prescriptionTreatmentTypeCode === "continuous-repeat-dispensing") {
-      prescriptions.push(
-        createPrescription(
-          patient,
-          prescriber,
-          prescriptionRows,
-          0,
-          parseInt(prescriptionRow["Issues"]) - 1
-        )
-      )
-    } else {
-      prescriptions.push(createPrescription(patient, prescriber, prescriptionRows))
+    switch (prescriptionTreatmentTypeCode) {
+      case "acute":
+        createAcutePrescription(patient, prescriber, prescriptionRows, nominatedPharmacy, prescriptions)
+        break
+      case "continuous":
+        createRepeatPrescribingPrescriptions(prescriptionRow, patient, prescriber, prescriptionRows, nominatedPharmacy, prescriptions)
+        break
+      case "continuous-repeat-dispensing":
+        createRepeatDispensingPrescription(patient, prescriber, prescriptionRows, prescriptionRow, nominatedPharmacy, prescriptions)
+        break
+      default:
+        throw new Error(`Invalid 'Prescription Treatment Type', must be one of: ${validFhirPrescriptionTreatmentTypes.join(", ")}`)
     }
   })
   return prescriptions
 }
 
-function getPatientBundleEntry(patients: Array<BundleEntry>, prescriptionRows: Array<StringKeyedObject>) {
-  const prescription = prescriptionRows[0]
-  const testNumber = parseInt(prescription["Test"])
+const validFhirPrescriptionTreatmentTypes = ["acute", "repeat-prescribing", "repeat-dispensing"]
+
+function createAcutePrescription(
+  patient: BundleEntry,
+  prescriber: BundleEntry,
+  prescriptionRows: StringKeyedObject[],
+  nominatedPharmacy: string,
+  prescriptions: any[]
+) {
+  const prescription = createPrescription(patient, prescriber, prescriptionRows)
+  const bundle = JSON.parse(prescription)
+  updateNominatedPharmacy(bundle, nominatedPharmacy)
+  prescriptions.push(JSON.stringify(bundle))
+}
+
+function createRepeatPrescribingPrescriptions(
+  prescriptionRow: StringKeyedObject,
+  patient: BundleEntry,
+  prescriber: BundleEntry,
+  prescriptionRows: StringKeyedObject[],
+  nominatedPharmacy: string,
+  prescriptions: any[]
+) {
+  const repeatsAllowed = getNumberOfRepeatsAllowed(prescriptionRow)
+  for (let repeatsIssued = 0; repeatsIssued < repeatsAllowed; repeatsIssued++) {
+    const prescription = createPrescription(
+      patient,
+      prescriber,
+      prescriptionRows,
+      repeatsIssued,
+      repeatsAllowed
+    )
+    const bundle = JSON.parse(prescription)
+    updateNominatedPharmacy(bundle, nominatedPharmacy)
+    prescriptions.push(JSON.stringify(bundle))
+  }
+}
+
+function createRepeatDispensingPrescription(
+  patient: BundleEntry,
+  prescriber: BundleEntry,
+  prescriptionRows: StringKeyedObject[],
+  prescriptionRow: StringKeyedObject,
+  nominatedPharmacy: string,
+  prescriptions: any[]
+) {
+  const prescription = createPrescription(
+    patient,
+    prescriber,
+    prescriptionRows,
+    0,
+    parseInt(prescriptionRow["Issues"]) - 1
+  )
+  const bundle = JSON.parse(prescription)
+  updateNominatedPharmacy(bundle, nominatedPharmacy)
+  prescriptions.push(JSON.stringify(bundle))
+}
+
+function getPatientBundleEntry(patients: Array<BundleEntry>, prescriptionRow: StringKeyedObject) {
+  const testNumber = parseInt(prescriptionRow["Test"])
   return patients[testNumber - 1]
 }
 
-function getPrescriberBundleEntry(prescribers: Array<BundleEntry>, prescriptionRows: Array<StringKeyedObject>) {
-  const prescription = prescriptionRows[0]
-  const testNumber = parseInt(prescription["Test"])
+function getPractitionerBundleEntry(prescribers: Array<BundleEntry>, prescriptionRow: StringKeyedObject) {
+  if (prescribers) {
+    return getDefaultPractitionerBundleEntry()
+  }
+
+  const testNumber = parseInt(prescriptionRow["Test"])
   return prescribers[testNumber - 1]
+}
+
+function getNominatedPharmacyOdsCode(nominatedPharmacies: Array<string>, prescriptionRow: StringKeyedObject) {
+  if (!prescriptionRow["Test"]) {
+    return null
+  }
+  const testNumber = parseInt(prescriptionRow["Test"])
+  return nominatedPharmacies[testNumber - 1]
 }
 
 function createPrescription(
@@ -86,7 +141,7 @@ function createPrescription(
 
   const practitionerRoleEntry: BundleEntry = {
     fullUrl: "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666",
-    resource: <PractitionerRole> {
+    resource: <PractitionerRole>{
       resourceType: "PractitionerRole",
       id: "56166769-c1c4-4d07-afa8-132b5dfca666",
       identifier: [
@@ -146,7 +201,7 @@ function createPrescription(
       practitionerRoleEntry,
       {
         fullUrl: "urn:uuid:51793ac0-112f-46c7-a891-9af8cefb206e",
-        resource: <CommunicationRequest> {
+        resource: <CommunicationRequest>{
           resourceType: "CommunicationRequest",
           status: "unknown",
           subject: {
@@ -161,7 +216,7 @@ function createPrescription(
             type: "Organization",
             identifier: {
               system: "https://fhir.nhs.uk/Id/ods-organization-code",
-              value: "RBA" // todo: remove hardcoded
+              value: "RBA"
             }
           },
           recipient: [
@@ -189,12 +244,12 @@ function createPrescription(
 }
 
 function getPrescriptionTreatmentTypeCode(row: StringKeyedObject): string {
-  const validCodes = ["acute", "repeat-prescribing", "repeat-dispensing"]
   const code = row["Prescription Treatment Type"].split(" ")[0]
-  if (!validCodes.includes(code)) {
-    throw new Error(`Prescription Treatment Type column contained an invalid value. 'Prescription Treatment Type' must be one of: ${validCodes.join(", ")}`)
+  if (!validFhirPrescriptionTreatmentTypes.includes(code)) {
+    // eslint-disable-next-line max-len
+    throw new Error(`Prescription Treatment Type column contained an invalid value. 'Prescription Treatment Type' must be one of: ${validFhirPrescriptionTreatmentTypes.join(", ")}`)
   }
-  switch(code) {
+  switch (code) {
     case "acute":
       return "acute"
     case "repeat-prescribing":

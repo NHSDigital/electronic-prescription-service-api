@@ -25,7 +25,7 @@ APIGEE_ENVIRONMENTS:
   approval_type: manual
   ratelimit: 20ps             # todo: confirm with Spine team what these should be
   quota: 1200                 # when ready for live
-  portal_visibility: false    # todo: remove this once ready for live
+  # make_spec_visible: true   # todo: uncomment once ready for live
 
 PRODUCTS:
 # Full access is just there to pass platform manifest validation, we don't actually want it
@@ -87,7 +87,6 @@ apigee:
           - identity-service-{{ ENV.name }}
 {% if ENV.name == 'int' %}
           - identity-service-int-no-smartcard
-#          - electronic-prescription-service-api-int-preview
 {% endif %}
         scopes: {{ PRODUCT.scopes }}
         quota: {{ ENV.quota | default('300') }}
