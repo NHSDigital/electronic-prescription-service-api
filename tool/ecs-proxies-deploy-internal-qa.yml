@@ -44,6 +44,12 @@ docker_service:
                 value: "6379"
             -   name: PUBLIC_APIGEE_URL
                 value: "https://{{ APIGEE_HOSTNAME }}"
+            -   name: ENVIRONMENT
+                value: "{{ APIGEE_ENVIRONMENT }}"
+            -   name: BASE_PATH
+                value: "{{ SERVICE_BASE_PATH }}"
+            -   name: LOG_LEVEL
+                value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
         secrets:
             -   name: APIGEE_DOMAIN_NAME
                 valueFrom: '/{{ account }}/platform-common/egress/hosts/apigee-internal-qa'
