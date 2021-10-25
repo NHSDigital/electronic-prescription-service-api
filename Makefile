@@ -119,7 +119,7 @@ test-coordinator:
 
 validate-models:
 	mkdir -p examples/build
-	test -f examples/build/org.hl7.fhir.validator.jar || curl https://storage.googleapis.com/ig-build/org.hl7.fhir.validator.jar > examples/build/org.hl7.fhir.validator.jar
+	test -f examples/build/org.hl7.fhir.validator.jar || curl https://github.com/hapifhir/org.hl7.fhir.core/releases/latest/download/validator_cli.jar > examples/build/org.hl7.fhir.validator.jar
 	java -jar examples/build/org.hl7.fhir.validator.jar $$(find examples/secondary-care/ -name "*.json") -version 4.0.1 -tx n/a | tee /tmp/validation.txt;
 	java -jar examples/build/org.hl7.fhir.validator.jar $$(find examples/errors/ -name "*.json") -version 4.0.1 -tx n/a | tee /tmp/validation.txt;
 	java -jar examples/build/org.hl7.fhir.validator.jar $$(find examples/primary-care/ -name "*.json") -version 4.0.1 -tx n/a | tee /tmp/validation.txt;
@@ -131,7 +131,7 @@ lint: build
 	poetry run flake8 scripts/*.py --config .flake8
 	shellcheck scripts/*.sh
 	cd tests/e2e/pact && make lint
-	
+
 check-licenses:
 	cd specification && npm run check-licenses
 	cd coordinator && npm run check-licenses
