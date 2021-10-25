@@ -365,25 +365,25 @@ describe("verifyRepeatDispensingPrescription", () => {
 
   test("Repeat prescription with no dispenseRequest.validityPeriod adds an error", () => {
     delete firstMedicationRequest.dispenseRequest.validityPeriod
-    const returnedErrors = validator.verifyRepeatDispensingPrescription(medicationRequests)
+    const returnedErrors = validator.verifyRepeatDispensingPrescription(bundle, medicationRequests)
     expect(returnedErrors.length).toBe(1)
   })
 
   test("Repeat prescription with no dispenseRequest.expectedSupplyDuration adds an error", () => {
     delete firstMedicationRequest.dispenseRequest.expectedSupplyDuration
-    const returnedErrors = validator.verifyRepeatDispensingPrescription(medicationRequests)
+    const returnedErrors = validator.verifyRepeatDispensingPrescription(bundle, medicationRequests)
     expect(returnedErrors.length).toBe(1)
   })
 
-  test("Repeat prescription with no extension adds an error", () => {
+  test("Repeat prescription with no extension adds two errors", () => {
     const extensionToRemove = getExtensionForUrl(
       firstMedicationRequest.extension,
       "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
       "bluh"
     )
     firstMedicationRequest.extension.remove(extensionToRemove as fhir.RepeatInformationExtension)
-    const returnedErrors = validator.verifyRepeatDispensingPrescription(medicationRequests)
-    expect(returnedErrors.length).toBe(1)
+    const returnedErrors = validator.verifyRepeatDispensingPrescription(bundle, medicationRequests)
+    expect(returnedErrors.length).toBe(2)
   })
 })
 
