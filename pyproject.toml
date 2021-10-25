@@ -33,7 +33,7 @@ argparse = "^1.4.0"
 [tool.poetry.dev-dependencies]
 flake8 = "^3.7.9"
 black = "^19.10b0"
-pip-licenses = "^2.0.1"
+pip-licenses = "^2.3.0"
 jinja2 = "^2.11.1"
 
 [tool.poetry.scripts]
