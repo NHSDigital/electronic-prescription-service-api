@@ -119,7 +119,7 @@ test-coordinator:
 
 validate-models:
 	mkdir -p examples/build
-	test -f examples/build/org.hl7.fhir.validator.jar || curl https://github.com/hapifhir/org.hl7.fhir.core/releases/latest/download/validator_cli.jar > examples/build/org.hl7.fhir.validator.jar
+	test -f examples/build/org.hl7.fhir.validator.jar || curl -L https://github.com/hapifhir/org.hl7.fhir.core/releases/latest/download/validator_cli.jar > examples/build/org.hl7.fhir.validator.jar
 	java -jar examples/build/org.hl7.fhir.validator.jar $$(find examples/secondary-care/ -name "*.json") -version 4.0.1 -tx n/a | tee /tmp/validation.txt;
 	java -jar examples/build/org.hl7.fhir.validator.jar $$(find examples/errors/ -name "*.json") -version 4.0.1 -tx n/a | tee /tmp/validation.txt;
 	java -jar examples/build/org.hl7.fhir.validator.jar $$(find examples/primary-care/ -name "*.json") -version 4.0.1 -tx n/a | tee /tmp/validation.txt;
