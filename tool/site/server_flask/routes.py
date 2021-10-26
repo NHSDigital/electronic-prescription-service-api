@@ -19,7 +19,7 @@ from api import (
 from app import app, fernet
 from auth import exchange_code_for_token, get_access_token, login, set_access_token_cookies, get_authorize_url
 from bundle import get_prescription_id, create_provenance
-from client import render_client
+from client import render_rivets_client, render_react_client
 from cookies import (
     get_current_prescription_id_from_cookie,
     set_previous_prescription_id_cookie,
@@ -123,7 +123,7 @@ def get_status():
 @app.route(AUTH_URL, methods=["GET"])
 @exclude_from_auth()
 def get_change_auth():
-    return render_client("login")
+    return render_rivets_client("login")
 
 
 @app.route(AUTH_URL, methods=["POST"])
@@ -144,13 +144,13 @@ def post_change_auth():
 @app.route(HOME_URL, methods=["GET"])
 @exclude_from_auth()
 def get_home():
-    return render_client("home")
+    return render_rivets_client("home")
 
 
 @app.route(LOAD_URL, methods=["GET"])
 @exclude_from_auth()
 def get_load():
-    return render_client("load")
+    return render_rivets_client("load")
 
 
 @exclude_from_auth()
@@ -162,7 +162,7 @@ def download():
     short_prescription_ids = hapi_session["prescriptionIds"]
     with zipfile.ZipFile(zFile, 'w') as zip_file:
         for index, short_prescription_id in enumerate(short_prescription_ids):
-            bundle = hapi_passthrough.get_prescription(short_prescription_id)
+            bundle = hapi_passthrough.get_edit(short_prescription_id)
             zip_file.writestr(f"prepare_request_{index + 1}.json", json.dumps(bundle, indent=2))
             # todo: fix 'invalid json' issue
             # if access_token:
@@ -204,8 +204,8 @@ def get_edit():
     short_prescription_id = flask.request.query_string.decode("utf-8")[len("prescription_id="):]
     if short_prescription_id is None:
         return flask.redirect(f"{config.PUBLIC_APIGEE_URL}{config.BASE_URL}change-auth")
-    response_json = hapi_passthrough.get_prescription(short_prescription_id)
-    response = app.make_response(response_json)
+    hapi_passthrough.get_edit(short_prescription_id)
+    response = app.make_response(render_react_client("edit")) 
     hapi_session = hapi_passthrough.get_hapi_session()
     short_prescription_ids = hapi_session["prescriptionIds"]
     short_prescription_id = hapi_session["prescriptionId"]
@@ -217,8 +217,7 @@ def get_edit():
 @exclude_from_auth()
 def post_edit():
     request_bundles = flask.request.json
-    response_json = hapi_passthrough.post_edit(request_bundles)
-    response = app.make_response(response_json)
+    hapi_passthrough.post_edit(request_bundles)
     hapi_session = hapi_passthrough.get_hapi_session()
     if "prescriptionId" not in hapi_session:
         # anonymous user view single prescription only
@@ -228,13 +227,15 @@ def post_edit():
     else:
         short_prescription_ids = hapi_session["prescriptionIds"]
         short_prescription_id = hapi_session["prescriptionId"]
+    redirect_url = f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}prescribe/edit?prescription_id={short_prescription_id}'
+    response = app.make_response({"redirectUri": redirect_url})
     update_pagination(response, short_prescription_ids, short_prescription_id)
     return response
 
 
 @app.route(SIGN_URL, methods=["GET"])
 def get_sign():
-    return render_client("sign")
+    return render_rivets_client("sign")
 
 
 @app.route(SIGN_URL, methods=["POST"])
@@ -247,7 +248,7 @@ def post_sign():
 
 @app.route(SEND_URL, methods=["GET"])
 def get_send():
-    return render_client("send", sign_response={"signature": ""})
+    return render_rivets_client("send", sign_response={"signature": ""})
 
 
 @app.route(SEND_URL, methods=["POST"])
@@ -257,7 +258,7 @@ def post_send():
 
 @app.route(CANCEL_URL, methods=["GET"])
 def get_cancel():
-    return render_client("cancel")
+    return render_rivets_client("cancel")
 
 
 @app.route(CANCEL_URL, methods=["POST"])
@@ -285,7 +286,7 @@ def post_cancel():
 def get_release():
     if (config.ENVIRONMENT == "prod"):
         return app.make_response("Bad Request", 400)
-    return render_client("release")
+    return render_rivets_client("release")
 
 
 @app.route(RELEASE_URL, methods=["POST"])
@@ -319,7 +320,7 @@ def post_release():
 def get_dispense():
     if (config.ENVIRONMENT == "prod"):
         return app.make_response("Bad Request", 400)
-    return render_client("dispense")
+    return render_rivets_client("dispense")
 
 
 @app.route(DISPENSE_URL, methods=["POST"])
@@ -371,7 +372,7 @@ def get_dispensing_history():
 def get_claim():
     if config.ENVIRONMENT == "prod":
         return app.make_response("Bad Request", 400)
-    return render_client("claim")
+    return render_rivets_client("claim")
 
 
 @app.route(CLAIM_URL, methods=["POST"])

@@ -88,9 +88,12 @@ customWindow.sendEditRequest = function () {
       `${pageData.baseUrl}prescribe/edit`,
       JSON.stringify(bundles)
     )
-    resetPageData("sign")
-    pageData.prescription = getPrescriptionSummary(response.bundle)
-    response.errors.forEach((error: any) => addError(error))
+    if (response.redirectUri) {
+      window.location.href = response.redirectUri
+    }
+    else {
+      addError("Failed to read prescription(s)")
+    }
   } catch (e) {
     console.log(e)
     addError("Failed to read prescription(s)")
