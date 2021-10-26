@@ -1,6 +1,6 @@
 {
   "resourceType": "Bundle",
-  "id": "F190329A-3854-4A31-9FF5-417969F2A40D",
+  "id": "f190329a-3854-4a31-9ff5-417969f2a40d",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
     "value": "d8f2e9c9-789d-402f-9995-1911be7431df"
@@ -8,10 +8,10 @@
   "type": "message",
   "entry": [
     {
-      "fullUrl": "urn:uuid:F190329A-3854-4A31-9FF5-417969F2A40D",
+      "fullUrl": "urn:uuid:f190329a-3854-4a31-9ff5-417969f2a40d",
       "resource": {
         "resourceType": "MessageHeader",
-        "id": "F190329A-3854-4A31-9FF5-417969F2A40D",
+        "id": "f190329a-3854-4a31-9ff5-417969f2a40d",
         "eventCoding": {
           "system": "https://fhir.nhs.uk/CodeSystem/message-event",
           "code": "prescription-order",

@@ -39,7 +39,10 @@
             }
           }
         ],
-        "focus": [],
+        "focus": [
+          {
+            "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+          }],
         "response": {
           "identifier": "999f9999-9999-9999-9ff9-f9fff9999999",
           "code": "ok"
