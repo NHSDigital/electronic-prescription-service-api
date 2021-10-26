@@ -65,7 +65,12 @@ export function updateNominatedPharmacy(bundle: Bundle, odsCode: string): void {
     })
   })
   getMedicationRequestResources(bundle).forEach(function (medicationRequest) {
-    medicationRequest.dispenseRequest.performer.identifier.value = odsCode
+    medicationRequest.dispenseRequest.performer = {
+      identifier: {
+        system: "https://fhir.nhs.uk/Id/ods-organization-code",
+        value: odsCode
+      }
+    }
   })
 }
 

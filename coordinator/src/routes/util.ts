@@ -101,12 +101,39 @@ export async function getFhirValidatorErrors(
     request.logger.info("Making call to FHIR validator")
     const validatorResponseData = await callFhirValidator(request.payload, request.headers)
     request.logger.info("Received response from FHIR validator")
-    const error = validatorResponseData.issue.find(issue => issue.severity === "error" || issue.severity === "fatal")
-    if (error) {
+    const filteredResponse = filterValidatorResponse(validatorResponseData)
+    if (filteredResponse.issue.length) {
       return validatorResponseData
     }
   }
   return null
+}
+
+export function filterValidatorResponse(validatorResponse: fhir.OperationOutcome): fhir.OperationOutcome {
+  const issues = validatorResponse.issue
+
+  const noInformation = filterOutSeverity(issues, "information")
+  const noWarnings = filterOutSeverity(noInformation, "warning")
+
+  const noMatchingProfileError = filterOutDiagnosticOnString(
+    noWarnings, "Unable to find matching profile for"
+  )
+  const noNHSNumberVerificationError = filterOutDiagnosticOnString(
+    noMatchingProfileError, "UKCore-NHSNumberVerificationStatus"
+  )
+
+  return {
+    ...validatorResponse,
+    issue: noNHSNumberVerificationError
+  }
+}
+
+function filterOutSeverity(issues: Array<fhir.OperationOutcomeIssue>, severity: fhir.IssueSeverity) {
+  return issues.filter(issue => issue.severity !== severity)
+}
+
+function filterOutDiagnosticOnString(issues: Array<fhir.OperationOutcomeIssue>, diagnosticString: string) {
+  return issues.filter(issue => !issue.diagnostics?.includes(diagnosticString))
 }
 
 export function externalValidator(handler: Hapi.Lifecycle.Method) {

@@ -25,7 +25,9 @@ services:
             dockerfile: Dockerfile-Hapi
         environment:
             - ENVIRONMENT=internal-dev-sandbox
-            - REDIS_URL=redis://eps-api-tool-store:6379
+            - SESSION_TOKEN_ENCRYPTION_KEY=ZmDfcTF7_60GrrY167zsiPd67pEvs0aGOv2oasOM1Pg=
+            - REDIS_URL=eps-api-tool-store
+            - REDIS_PORT=6379
             - PUBLIC_APIGEE_URL=http://localhost:9000
             - APIGEE_DOMAIN_NAME=internal-dev-sandbox.api.service.nhs.uk
         ports:

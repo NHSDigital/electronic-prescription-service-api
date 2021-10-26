@@ -70,10 +70,6 @@
             "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
             "extension": [
               {
-                "url": "numberOfRepeatPrescriptionsAllowed",
-                "valueUnsignedInt": 6
-              },
-              {
                 "url": "authorisationExpiryDate",
                 "valueDateTime": "2021-08-11"
               }
@@ -168,6 +164,7 @@
               }
             }
           ],
+          "numberOfRepeatsAllowed": 5,
           "validityPeriod": {
             "start": "2021-05-07",
             "end": "2021-06-04"
@@ -212,10 +209,6 @@
           {
             "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
             "extension": [
-              {
-                "url": "numberOfRepeatPrescriptionsAllowed",
-                "valueUnsignedInt": 6
-              },
               {
                 "url": "authorisationExpiryDate",
                 "valueDateTime": "2021-08-11"
@@ -311,6 +304,7 @@
               }
             }
           ],
+          "numberOfRepeatsAllowed": 5,
           "validityPeriod": {
             "start": "2021-05-07",
             "end": "2021-06-04"
