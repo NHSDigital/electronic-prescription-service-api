@@ -1,6 +1,6 @@
 {
   "resourceType": "Bundle",
-  "id": "0A1FD9EF-A3D5-4E95-84CD-552070A03083",
+  "id": "0a1fd9ef-a3d5-4e95-84cd-552070a03083",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
     "value": "0A1FD9EF-A3D5-4E95-84CD-25204A23086"
@@ -8,10 +8,10 @@
   "type": "message",
   "entry": [
     {
-      "fullUrl": "urn:uuid:0A1FD9EF-A3D5-4E95-84CD-552070A03083",
+      "fullUrl": "urn:uuid:0a1fd9ef-a3d5-4e95-84cd-552070a03083",
       "resource": {
         "resourceType": "MessageHeader",
-        "id": "0A1FD9EF-A3D5-4E95-84CD-552070A03086",
+        "id": "0a1fd9ef-a3d5-4e95-84cd-552070a03086",
         "eventCoding": {
           "system": "https://fhir.nhs.uk/CodeSystem/message-event",
           "code": "prescription-order-update",
