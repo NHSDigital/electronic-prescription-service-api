@@ -8,8 +8,10 @@ interface AddressSummaryListRowProps {
 }
 
 export const AddressSummaryListRow = ({address}: AddressSummaryListRowProps): JSX.Element => {
+  const addressLines = address.line ?? []
+
   const allAddressLines = [
-    ...address.line,
+    ...addressLines,
     address.city,
     address.district,
     address.state,
