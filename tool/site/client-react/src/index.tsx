@@ -1,6 +1,9 @@
 import {Bundle} from "fhir/r4"
 import * as React from "react"
-import {PrescriptionSummary} from "./components/prescription-summary/prescriptionSummary"
+import {
+  createPrescriptionSummaryProps,
+  PrescriptionSummary
+} from "./components/prescription-summary/prescriptionSummary"
 import {PageContainer} from "./components/pageContainer"
 import ReactDOM = require("react-dom")
 
@@ -1015,9 +1018,14 @@ const bundle: Bundle = {
   ]
 }
 
+const prescriptionSummaryProps = createPrescriptionSummaryProps(bundle)
+
 const content = (
   <PageContainer>
-    <PrescriptionSummary bundle={bundle}/>
+    <PrescriptionSummary
+      patient={prescriptionSummaryProps.patient}
+      practitionerRole={prescriptionSummaryProps.practitionerRole}
+    />
   </PageContainer>
 )
 ReactDOM.render(content, document.getElementById("root"))

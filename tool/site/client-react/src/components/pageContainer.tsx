@@ -1,6 +1,6 @@
-import {ReactNode} from "react"
 import * as React from "react"
-import {Col, Header, Row, Container, Footer} from "nhsuk-react-components"
+import {ReactNode} from "react"
+import {Col, Container, Footer, Header, Row} from "nhsuk-react-components"
 
 interface PageContainerProps {
   children: ReactNode
@@ -11,7 +11,7 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
     <>
       <Header transactional>
         <Header.Container>
-          <Header.Logo href="/" />
+          <Header.Logo href="/"/>
           <Header.ServiceName href="/">EPSAT - Electronic Prescription Service API Tool</Header.ServiceName>
         </Header.Container>
       </Header>
