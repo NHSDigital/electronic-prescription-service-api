@@ -25,18 +25,6 @@ docker_service:
                 valueFrom: '/{{ account }}/platform-common/egress/hosts/apigee-{{ APIGEE_ENVIRONMENT }}'
             -   name: DEMO_APP_CLIENT_ID
                 valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/client-id"
-            -   name: DEMO_APP_KEY_ID
-                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/local-jwt-key-id"
-            -   name: RSS_JWT_ISSUER
-                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/rss-jwt-issuer"
-            -   name: RSS_JWT_KID
-                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/rss-jwt-key-id"
-            -   name: APP_SIGNING_SUBJECT
-                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/rss-jwt-subject"
-            -   name: RSS_JWT_PRIVATE_KEY
-                valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/rss-jwt-private-key"
-            -   name: DEMO_APP_PRIVATE_KEY
-                valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/local-jwt-private-key"
             -   name: DEMO_APP_CLIENT_KEY
                 valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/client-key"
             -   name: SESSION_TOKEN_ENCRYPTION_KEY
@@ -50,6 +38,37 @@ docker_service:
         environment:
             -   name: COMMIT_ID
                 value: "{{ SOURCE_COMMIT_ID }}"
+            -   name: REDIS_URL
+                value: "localhost"
+            -   name: REDIS_PORT
+                value: "6379"
+            -   name: PUBLIC_APIGEE_URL
+                value: "https://{{ APIGEE_HOSTNAME }}"
+            -   name: ENVIRONMENT
+                value: "{{ APIGEE_ENVIRONMENT }}"
+            -   name: BASE_PATH
+                value: "{{ SERVICE_BASE_PATH }}"
+            -   name: LOG_LEVEL
+                value: "{{ 'debug' if APIGEE_ENVIRONMENT == 'internal-dev' else 'info' }}"
+        secrets:
+            -   name: APIGEE_DOMAIN_NAME
+                valueFrom: '/{{ account }}/platform-common/egress/hosts/apigee-{{ APIGEE_ENVIRONMENT }}'
+            -   name: SESSION_TOKEN_ENCRYPTION_KEY
+                valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/session-token-encryption-key"
+            -   name: DEMO_APP_KEY_ID
+                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/local-jwt-key-id"
+            -   name: DEMO_APP_CLIENT_ID
+                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/client-id"
+            -   name: DEMO_APP_PRIVATE_KEY
+                valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/local-jwt-private-key"
+            -   name: APP_JWT_PRIVATE_KEY
+                valueFrom: "arn:aws:secretsmanager:eu-west-2:{{ PTL_ACCOUNT_ID }}:secret:{{ account }}/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/rss-jwt-private-key"
+            -   name: DEMO_APP_REMOTE_SIGNING_KID
+                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/rss-jwt-key-id"
+            -   name: DEMO_APP_REMOTE_SIGNING_ISSUER
+                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/{{ APIGEE_ENVIRONMENT }}/test-client/rss-jwt-issuer"
+            -   name: APP_JWT_SUBJECT
+                valueFrom: "/{{ account }}/api-deployment/eps-api-tool/int/test-client/rss-jwt-subject"
         health_check:
             matcher: "200"
             path: "/_healthcheck"

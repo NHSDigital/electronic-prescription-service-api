@@ -3,8 +3,6 @@ import httpx
 import time
 import config
 from jwt import JWT, jwk_from_dict, jwk_from_pem
-from cookies import get_all_prescription_ids_from_cookie
-from helpers import get_pem
 
 raw_response_header = {
     "x-raw-response": "true"
@@ -20,11 +18,6 @@ def make_eps_api_metadata_request():
         headers=headers,
         verify=False,
     )
-    return response.json(), response.status_code
-
-def make_eps_api_prepare_request(access_token, body):
-    print("Sending EPS prepare request...")
-    response = make_eps_api_request("$prepare", access_token, body)
     return response.json(), response.status_code
 
 
@@ -87,83 +80,3 @@ def make_eps_api_request(path, access_token, body, request_id=str(uuid.uuid4()),
         json=body,
         verify=False,
     )
-
-
-def make_sign_api_signature_upload_request(auth_method, access_token, prepare_responses):
-    jwt_client = JWT()
-    public_signing_base_url = get_signing_base_path(auth_method, True)
-
-    # patch for RSS support whilst requirements for local signing and RSS are different
-    # todo: remove this logic once they are aligned
-    if auth_method == "cis2":
-        pem = get_pem(config.DEMO_APP_LOCAL_SIGNING_PRIVATE_KEY)
-        sub = config.APP_SIGNING_SUBJECT
-        iss = config.DEMO_APP_CLIENT_ID
-        kid = config.DEMO_APP_KEY_ID
-    else:  # always 'simulated' (this will only support RSS Windows/IOS, smartcard simulated auth will fail as JWTs are different)
-        pem = get_pem(config.DEMO_APP_REMOTE_SIGNING_PRIVATE_KEY)
-        sub = config.APP_SIGNING_SUBJECT
-        iss = config.DEMO_APP_REMOTE_SIGNING_ISSUER
-        kid = config.DEMO_APP_REMOTE_SIGNING_KID
-
-    signing_key = jwk_from_pem(pem)
-
-    jwt_request = jwt_client.encode(
-        {
-            "sub": sub,
-            "iss": iss,
-            "aud": public_signing_base_url,
-            "iat": time.time(),
-            "exp": time.time() + 600,
-            "payloads": list(map(createPayload, prepare_responses)),
-            "algorithm": prepare_responses[0]["algorithm"], # todo: question this mapping, do we validate all same alg ???
-        },
-        signing_key,
-        alg="RS512",
-        optional_headers={"kid": kid},
-    )
-
-    print("Sending Signing Service signature upload request...")
-    signing_base_url = get_signing_base_path(auth_method, False)
-    return httpx.post(
-        f"{signing_base_url}/signaturerequest",
-        headers={"Content-Type": "text/plain", "Authorization": f"Bearer {access_token}"},
-        data=jwt_request,
-        verify=False,
-    ).json()
-
-
-def createPayload(prepare_response):
-    payload = {
-        "id": str(uuid.uuid4()),
-        "payload": prepare_response["digest"]
-    }
-    return payload
-
-
-def make_sign_api_signature_download_request(auth_method, access_token, token):
-    # mocked for local development
-    if config.ENVIRONMENT.endswith("-sandbox"):
-        signatureCount = len(get_all_prescription_ids_from_cookie())
-        signatures = []
-        for i in range(signatureCount):
-            signatures.append({"id": "", "signature": ""})
-        return {
-          "signatures": signatures,
-          "certificate": ""
-        }
-    # actual implementation
-    signing_base_url = get_signing_base_path(auth_method, False)
-    return httpx.get(
-        f"{signing_base_url}/signatureresponse/{token}",
-        headers={"Content-Type": "text/plain", "Authorization": f"Bearer {access_token}"},
-        verify=False,
-    ).json()
-
-
-def get_signing_base_path(auth_method, public):
-    apigee_url = config.PUBLIC_APIGEE_URL if public else f"https://{config.APIGEE_DOMAIN_NAME}"
-    if auth_method == "simulated" and config.ENVIRONMENT == "int":
-        return f"{apigee_url}/signing-service-no-smartcard"
-    else:
-        return f"{apigee_url}/signing-service"

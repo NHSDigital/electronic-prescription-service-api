@@ -1,6 +1,7 @@
 import {
   callFhirValidator,
   ContentTypes,
+  filterValidatorResponse,
   handleResponse,
   VALIDATOR_HOST
 } from "../../src/routes/util"
@@ -166,5 +167,49 @@ describe("handleResponse", () => {
 
     expect(JSON.parse(response.payload)).toEqual({value: "some FHIR response"})
     expect(response.headers["content-type"]).toEqual(ContentTypes.FHIR)
+  })
+})
+
+describe("filterValidatorResponse", () => {
+  test("returns errors if present", () => {
+    const validatorResponse: fhir.OperationOutcome = {
+      resourceType: "OperationOutcome",
+      issue: [{
+        code: undefined,
+        severity: "error"
+      }]
+    }
+    expect(filterValidatorResponse(validatorResponse).issue).toHaveLength(1)
+  })
+
+  test("returns empty if no errors", () => {
+    const validatorResponse: fhir.OperationOutcome = {
+      resourceType: "OperationOutcome",
+      issue: [{
+        code: undefined,
+        severity: "warning"
+      }]
+    }
+    expect(filterValidatorResponse(validatorResponse).issue).toHaveLength(0)
+  })
+
+  test("ignores errors that have nhsNumberVerification", () => {
+    const validatorResponse: fhir.OperationOutcome = {
+      resourceType: "OperationOutcome",
+      issue: [
+        {
+          "severity": "error",
+          "code": fhir.IssueCodes.PROCESSING,
+          // eslint-disable-next-line max-len
+          "diagnostics": "None of the codes provided are in the value set https://fhir.hl7.org.uk/ValueSet/UKCore-NHSNumberVerificationStatus (https://fhir.hl7.org.uk/ValueSet/UKCore-NHSNumberVerificationStatus), and a code from this value set is required) (codes = https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus#01)"
+        }, {
+          "severity": "error",
+          "code": fhir.IssueCodes.PROCESSING,
+          // eslint-disable-next-line max-len
+          "diagnostics": "Unknown code 'https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus#01' for 'https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus#01'"
+        }
+      ]
+    }
+    expect(filterValidatorResponse(validatorResponse).issue).toHaveLength(0)
   })
 })

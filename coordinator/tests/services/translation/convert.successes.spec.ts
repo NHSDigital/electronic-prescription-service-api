@@ -12,7 +12,7 @@ import {
   isParameters,
   isTask
 } from "../../../src/utils/type-guards"
-import {fhir} from "@models"
+import {fetcher, fhir} from "@models"
 
 const logger = pino()
 
@@ -26,6 +26,16 @@ describe("conversion tests", () => {
       const result = await convert(request)
       const convertMatchesExpectation = regex.test(result.message)
       expect(convertMatchesExpectation).toBe(true)
+    }
+  )
+
+  const successExamplesThatAreNotJestCases = fetcher.convertExamples.filter(e => e.isSuccess)
+  test.skip.each(successExamplesThatAreNotJestCases)(
+    "regenerate convert snapshots",
+    async (convertCase) => {
+      const request = convertCase.request
+      const convertResponse = await convert(request)
+      convertCase.rewriteResponseFile(convertResponse.message)
     }
   )
 })
