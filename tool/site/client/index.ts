@@ -89,7 +89,7 @@ customWindow.sendEditRequest = function () {
       JSON.stringify(bundles)
     )
     if (response.redirectUri) {
-      window.location.href = response.redirectUri
+      window.location.href = encodeURI(response.redirectUri)
     }
     else {
       addError("Failed to read prescription(s)")

@@ -5,6 +5,7 @@ import json
 import zipfile
 from functools import wraps
 import flask
+import urllib.parse
 import config
 from api import (
     make_eps_api_process_message_request,
@@ -201,7 +202,7 @@ def get_metadata():
 @exclude_from_auth()
 def get_edit():
     # handles '+' in query_string where flask.request.args.get does not
-    short_prescription_id = flask.request.query_string.decode("utf-8")[len("prescription_id="):]
+    short_prescription_id = flask.request.args.get("prescription_id")
     if short_prescription_id is None:
         return flask.redirect(f"{config.PUBLIC_APIGEE_URL}{config.BASE_URL}change-auth")
     hapi_passthrough.get_edit(short_prescription_id)
@@ -227,7 +228,7 @@ def post_edit():
     else:
         short_prescription_ids = hapi_session["prescriptionIds"]
         short_prescription_id = hapi_session["prescriptionId"]
-    redirect_url = f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}prescribe/edit?prescription_id={short_prescription_id}'
+    redirect_url = f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}prescribe/edit?prescription_id={urllib.parse.quote_plus(short_prescription_id)}'
     response = app.make_response({"redirectUri": redirect_url})
     update_pagination(response, short_prescription_ids, short_prescription_id)
     return response
