@@ -12,7 +12,7 @@ all:
 
 install: install-validator install-node install-python install-hooks
 
-build: build-specification build-coordinator build-validator build-proxies
+build: build-specification build-validator build-proxies
 
 test: validate-models check-licenses test-coordinator
 	cd tests/e2e/pact && make test
@@ -92,13 +92,6 @@ build-specification:
 	&& cat build/electronic-prescription-service-api.resolved.json | poetry run python ../scripts/set_version.py > build/electronic-prescription-service-api.json \
 	&& mkdir -p dist \
 	&& cp build/electronic-prescription-service-api.json dist/electronic-prescription-service-api.json
-
-build-coordinator:
-	npm run --prefix=coordinator/ build
-	cp coordinator/package.json coordinator/dist/
-	mkdir -p coordinator/dist/coordinator/src/resources
-	cp coordinator/src/resources/ebxml_request.mustache coordinator/dist/coordinator/src/resources/
-	cp validator/src/main/resources/manifest.json coordinator/dist/coordinator/src/resources/validator_manifest.json
 
 build-validator:
 	make -C validator build
