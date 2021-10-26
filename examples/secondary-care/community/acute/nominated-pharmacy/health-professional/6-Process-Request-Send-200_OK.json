@@ -1,6 +1,6 @@
 {
   "resourceType": "Bundle",
-  "id": "F190329A-3854-4A31-9FF5-417969F2A40D",
+  "id": "f190329a-3854-4a31-9ff5-417969f2a40d",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
     "value": "ec9c4f98-a31e-46b6-a8fb-6cd0483a60cb"
@@ -8,10 +8,10 @@
   "type": "message",
   "entry": [
     {
-      "fullUrl": "urn:uuid:F190329A-3854-4A31-9FF5-417969F2A40D",
+      "fullUrl": "urn:uuid:f190329a-3854-4a31-9ff5-417969f2a40d",
       "resource": {
         "resourceType": "MessageHeader",
-        "id": "F190329A-3854-4A31-9FF5-417969F2A40D",
+        "id": "f190329a-3854-4a31-9ff5-417969f2a40d",
         "eventCoding": {
           "system": "https://fhir.nhs.uk/CodeSystem/message-event",
           "code": "prescription-order",
@@ -47,7 +47,7 @@
             "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
           },
           {
-            "reference": "urn:uuid:28828C55-8FA7-42D7-916F-FCF076E0C10E"
+            "reference": "urn:uuid:28828c55-8fa7-42d7-916f-fcf076e0c10e"
           }
         ]
       }
@@ -427,10 +427,10 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:28828C55-8FA7-42D7-916F-FCF076E0C10E",
+      "fullUrl": "urn:uuid:28828c55-8fa7-42d7-916f-fcf076e0c10e",
       "resource": {
         "resourceType": "Provenance",
-        "id": "28828C55-8FA7-42D7-916F-FCF076E0C10E",
+        "id": "28828c55-8fa7-42d7-916f-fcf076e0c10e",
         "target": [
           {
             "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"

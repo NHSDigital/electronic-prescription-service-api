@@ -46,4 +46,4 @@ export interface OperationOutcomeIssue {
   expression?: Array<string>
 }
 
-type IssueSeverity = "information" | "warning" | "error" | "fatal"
+export type IssueSeverity = "information" | "warning" | "error" | "fatal"

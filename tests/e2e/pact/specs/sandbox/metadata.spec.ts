@@ -36,7 +36,7 @@ jestpact.pactWith(
                         "valueString": Matchers.like("2.1.14-alpha")
                       }
                     ]
-                  }, {min: 4}
+                  }, {min: 1}
                 )
               }
             ]
