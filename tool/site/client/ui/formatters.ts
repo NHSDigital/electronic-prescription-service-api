@@ -3,7 +3,7 @@ import {Annotation, Dosage, MedicationRequest} from "../models/medication-reques
 import {CodingExtension} from "../models/extension"
 import * as fhirCommon from "../models/common"
 import * as fhirExtension from "../models/extension"
-import * as rivets from "../../node_modules/rivets/dist/rivets"
+import * as rivets from "../node_modules/rivets/dist/rivets"
 import {pageData} from "./state"
 
 rivets.formatters.snomedCode = {
