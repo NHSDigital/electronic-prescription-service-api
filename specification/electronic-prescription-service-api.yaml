@@ -17,30 +17,31 @@ info:
 
     ### As a prescriber
     You can:
-    * encode prescription data
     * create a primary care prescription
     * cancel a primary care prescription
     * create a secondary care (outpatient) prescription
     * cancel a secondary care (outpatient) prescription
-
-    You cannot currently use this API to:
     * create a secondary care (homecare) prescription
     * cancel a secondary care (homecare) prescription
+    * view a prescription's summary information
+
+    You cannot currently use this API to:
     * create a tertiary care (homecare) prescription
     * cancel a tertiary care (homecare) prescription
-    * track a prescription or check a prescription's status
 
     ### As a dispenser
     You can:
     * download an individual prescription from EPS
     * download a batch of prescriptions from EPS
+    * verify a prescription's signature (subject to change)
     * return a prescription to EPS
     * submit a dispense notification to EPS
     * withdraw a dispense notification from EPS
     * submit a dispense claim
+    * view a prescription's summary information
 
     You cannot currently use this API to:
-    * track a prescription or check a prescription's status
+    * view a prescription's detailed dispense history
 
     ## Who can use this API
     This API can only be used where there is a legal basis to do so. Make sure you have a valid use case before you go too far with your development. You must do this before you can go live (see ‘Onboarding’ below).
