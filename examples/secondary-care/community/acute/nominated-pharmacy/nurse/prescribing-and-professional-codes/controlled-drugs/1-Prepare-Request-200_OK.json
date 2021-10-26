@@ -1,6 +1,6 @@
 {
   "resourceType": "Bundle",
-  "id": "2C251CED-DC17-47FF-BD2F-36F4B8C27DDA",
+  "id": "2c251ced-dc17-47ff-bd2f-36f4b8c27dda",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
     "value": "e7c0a2db-abac-4ed7-8757-106fd8c36274"
@@ -8,7 +8,7 @@
   "type": "message",
   "entry": [
     {
-      "fullUrl": "urn:uuid:2C251CED-DC17-47FF-BD2F-36F4B8C27DDA",
+      "fullUrl": "urn:uuid:2c251ced-dc17-47ff-bd2f-36f4b8c27dda",
       "resource": {
         "resourceType": "MessageHeader",
         "id": "A8F71A7D-B426-4B55-80A5-05436DE80486",
