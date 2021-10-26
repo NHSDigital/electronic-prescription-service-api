@@ -11,7 +11,7 @@ end_of_line = lf
 [Makefile]
 indent_style = tab
 
-[*.{xml,js,json,yaml,ts}]
+[*.{xml,js,jsx,json,yaml,ts,tsx}]
 indent_size = 2
 
 [*.postman_collection.json]
