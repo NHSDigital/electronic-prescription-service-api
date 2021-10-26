@@ -105,12 +105,6 @@
             "code": "0006",
             "display": "Dispensed"
           }
-        },
-        {
-          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-SuppliedItemIdentifier",
-          "valueIdentifier": {
-            "value": "This extension shouldn't be here - ask Kevin to remove from the profile"
-          }
         }
       ],
       "productOrService": {
@@ -122,18 +116,6 @@
           }
         ]
       },
-      "modifier": [
-        {
-          "text": "This modifier shouldn't be here - ask Kevin to remove from the profile",
-          "coding": [
-            {
-              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
-              "code": "0001",
-              "display": "Item fully dispensed"
-            }
-          ]
-        }
-      ],
       "programCode": [
         {
           "coding": [
