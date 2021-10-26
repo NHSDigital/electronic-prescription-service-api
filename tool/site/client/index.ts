@@ -113,19 +113,24 @@ customWindow.sendSignRequest = function () {
         .filter(issue => !issue.diagnostics.startsWith("Unable to find matching profile for urn:uuid:"))
         .map(issue => issue.diagnostics)
         .forEach(diagnostic => addError(diagnostic))
-    } else {
+    } else if (response.redirectUri) {
       window.location.href = response.redirectUri
+    }
+    else {
+      addError(`Unable to sign prescription, this is most likely because your session has expired. Please try to change-auth or login again`)
     }
   } catch (e) {
     console.log(e)
-    addError("Communication error")
+    addError(`Unable to sign prescription, this is most likely because your session has expired. Please try to change-auth or login again`)
   }
 }
 
 customWindow.sendPrescriptionRequest = function () {
   resetErrors()
   try {
-    const response = makeRequest("POST", `${pageData.baseUrl}prescribe/send`, {})
+    const urlParams = new URLSearchParams(window.location.search)
+    const signatureToken = urlParams.get("token")
+    const response = makeRequest("POST", `${pageData.baseUrl}prescribe/send`, JSON.stringify({signatureToken}))
     pageData.signResponse = null
     if (response.prescription_ids.length > 1) {
       pageData.sendBulkResponse = response.success_list
@@ -253,6 +258,16 @@ customWindow.sendClaimRequest = function () {
       "GET",
       `${pageData.baseUrl}dispense/history?prescription_id=${prescriptionId}`
     )
+    if (!dispensingHistory.prescription_order || !dispensingHistory.dispense_notifications) {
+      pageData.claimResponse = {
+        success: undefined,
+        fhirRequest: undefined,
+        hl7Request: "",
+        hl7Response: "",
+        fhirResponse: undefined
+      }
+      return
+    }
     const claim = createClaim(dispensingHistory.prescription_order, dispensingHistory.dispense_notifications)
     const response = makeRequest(
       "POST",
@@ -424,7 +439,10 @@ function setInitialState(mode: string, env: string, baseUrl: string, signRespons
   pageData.environment = env
   pageData.baseUrl = baseUrl
   pageData.signResponse = signResponse
-  pageData.loggedIn = pageData.loggedIn || env.endsWith("-sandbox")
+  // remove ability to add custom examples as an anonymous user  
+  if (!pageData.loggedIn) {
+    pageData.examples.pop()
+  }
 }
 
 customWindow.startApplication = async function (mode: string, env: string, baseUrl: string, signResponse: APIResponse) {

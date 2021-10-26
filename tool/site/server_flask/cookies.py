@@ -45,21 +45,6 @@ def reset_next_prescription_id_cookie(response):
     response.set_cookie("Next-Prescription-Id", "", expires=0, secure=not config.DEV_MODE, httponly=True)
 
 
-def set_prescription_ids_cookie(response, prescription_ids):
-    separator = "|"
-    response.set_cookie(
-        "Prescription-Ids",
-        separator.join(prescription_ids),
-        expires=datetime.datetime.utcnow() + datetime.timedelta(seconds=float(600)),
-        secure=not config.DEV_MODE,
-        httponly=True,
-    )
-
-
-def get_all_prescription_ids_from_cookie():
-    return flask.request.cookies.get("Prescription-Ids", "").split("|")
-
-
 def get_auth_method_from_cookie():
     return flask.request.cookies.get("Auth-Method", "cis2")
 
@@ -83,3 +68,17 @@ def set_skip_signature_page_cookie(response, skip_signature_page):
         secure=not config.DEV_MODE,
         httponly=False,
     )
+
+
+def set_session_cookie(response, session_cookie, expiry):
+    response.set_cookie(
+        "session",
+        session_cookie,
+        expires=expiry,
+        secure=not config.DEV_MODE,
+        httponly=True
+    )
+
+
+def get_session_cookie():
+    return flask.request.cookies.get("session")

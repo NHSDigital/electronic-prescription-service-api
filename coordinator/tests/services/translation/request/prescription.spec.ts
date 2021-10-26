@@ -16,7 +16,7 @@ import {
 } from "../../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl, toArray} from "../../../../src/services/translation/common"
 import {setCourseOfTherapyTypeCode} from "./course-of-therapy-type.spec"
-import {hl7V3, fhir} from "@models"
+import {fhir, hl7V3} from "@models"
 import pino from "pino"
 import {LosslessNumber} from "lossless-json"
 import {InvalidValueError} from "../../../../../models/errors/processing-errors"
@@ -318,7 +318,7 @@ describe("extractReviewDate returns the correct value", () => {
   })
 
   test("for a medication request with repeat information but without a review date", () => {
-    clearRepeatInformationField(medicationRequest, "authorisationExpiryDate")
+    clearExpiryDateField(medicationRequest)
     const converted = extractReviewDate(medicationRequest)
     expect(converted).toBeFalsy()
   })
@@ -353,7 +353,7 @@ function clearRepeatInformation(medicationRequest: fhir.MedicationRequest) {
   medicationRequest.extension.splice(medicationRequest.extension.indexOf(repeatInformationExtension), 1)
 }
 
-function clearRepeatInformationField(medicationRequest: fhir.MedicationRequest, url: string) {
+function clearExpiryDateField(medicationRequest: fhir.MedicationRequest) {
   const repeatInformationExtension = getExtensionForUrl(
     medicationRequest.extension,
     "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
@@ -361,10 +361,14 @@ function clearRepeatInformationField(medicationRequest: fhir.MedicationRequest, 
   ) as fhir.RepeatInformationExtension
   const reviewDateExtension = getExtensionForUrl(
     repeatInformationExtension.extension,
-    url,
+    "authorisationExpiryDate",
     "MedicationRequest.extension.extension"
   ) as fhir.DateTimeExtension | fhir.UnsignedIntExtension
   repeatInformationExtension.extension.splice(repeatInformationExtension.extension.indexOf(reviewDateExtension), 1)
+}
+
+function clearRepeatNumber(medicationRequest: fhir.MedicationRequest) {
+  delete medicationRequest.dispenseRequest.numberOfRepeatsAllowed
 }
 
 describe("createRepeatNumberForMedicationRequests", () => {
@@ -420,7 +424,7 @@ describe("createRepeatNumberForMedicationRequests", () => {
   test("throws for repeat dispensing prescriptions where repeat number is missing", () => {
     medicationRequests.forEach(medicationRequest => {
       setCourseOfTherapyTypeCode(medicationRequest, fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
-      clearRepeatInformationField(medicationRequest, "numberOfRepeatPrescriptionsAllowed")
+      clearRepeatNumber(medicationRequest)
     })
 
     expect(() => {
