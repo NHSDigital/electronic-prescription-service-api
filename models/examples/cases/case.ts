@@ -29,6 +29,10 @@ export class Case {
     this.isSuccess = requestFile.statusText === "200-OK"
     this.statusCode = parseInt(requestFile.statusText.split("-")[0])
   }
+
+  rewriteResponseFile(fileBody: string): void {
+    fs.writeFileSync(this.responseFile.path, fileBody + "\n", "utf-8")
+  }
 }
 
 const examplesRootPath = "../../../examples"

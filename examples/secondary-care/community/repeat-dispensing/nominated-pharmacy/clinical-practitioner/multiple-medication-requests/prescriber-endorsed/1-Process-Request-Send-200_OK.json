@@ -67,10 +67,6 @@
             "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
             "extension": [
               {
-                "url": "numberOfRepeatPrescriptionsAllowed",
-                "valueUnsignedInt": 6
-              },
-              {
                 "url": "authorisationExpiryDate",
                 "valueDateTime": "2020-12-07"
               }
@@ -202,6 +198,7 @@
               }
             }
           ],
+          "numberOfRepeatsAllowed": 5,
           "validityPeriod": {
             "start": "2021-05-07",
             "end": "2021-06-04"
@@ -247,10 +244,6 @@
           {
             "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
             "extension": [
-              {
-                "url": "numberOfRepeatPrescriptionsAllowed",
-                "valueUnsignedInt": 6
-              },
               {
                 "url": "authorisationExpiryDate",
                 "valueDateTime": "2020-12-07"
@@ -383,6 +376,7 @@
               }
             }
           ],
+          "numberOfRepeatsAllowed": 5,
           "validityPeriod": {
             "start": "2021-05-07",
             "end": "2021-06-04"
@@ -428,10 +422,6 @@
           {
             "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
             "extension": [
-              {
-                "url": "numberOfRepeatPrescriptionsAllowed",
-                "valueUnsignedInt": 6
-              },
               {
                 "url": "authorisationExpiryDate",
                 "valueDateTime": "2020-12-07"
@@ -564,6 +554,7 @@
               }
             }
           ],
+          "numberOfRepeatsAllowed": 5,
           "validityPeriod": {
             "start": "2021-05-07",
             "end": "2021-06-04"
@@ -609,10 +600,6 @@
           {
             "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
             "extension": [
-              {
-                "url": "numberOfRepeatPrescriptionsAllowed",
-                "valueUnsignedInt": 6
-              },
               {
                 "url": "authorisationExpiryDate",
                 "valueDateTime": "2020-12-07"
@@ -745,6 +732,7 @@
               }
             }
           ],
+          "numberOfRepeatsAllowed": 5,
           "validityPeriod": {
             "start": "2021-05-07",
             "end": "2021-06-04"
@@ -1007,10 +995,10 @@
       }
     },
     {
-      "fullUrl": "urn:uuid:28828C55-8FA7-42D7-916F-FCF076E0C10E",
+      "fullUrl": "urn:uuid:28828c55-8fa7-42d7-916f-fcf076e0c10e",
       "resource": {
         "resourceType": "Provenance",
-        "id": "28828C55-8FA7-42D7-916F-FCF076E0C10E",
+        "id": "28828c55-8fa7-42d7-916f-fcf076e0c10e",
         "target": [
           {
             "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
