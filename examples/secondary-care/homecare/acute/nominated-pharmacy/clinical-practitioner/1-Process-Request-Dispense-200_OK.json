@@ -69,7 +69,7 @@
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
               "code": "0003",
-              "display": "With Dispenser - Active"
+              "display": "Dispensed"
             }
           }
         ],
@@ -181,7 +181,7 @@
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
               "code": "0003",
-              "display": "With Dispenser - Active"
+              "display": "Dispensed"
             }
           }
         ],
