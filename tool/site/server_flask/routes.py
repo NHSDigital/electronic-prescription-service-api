@@ -433,7 +433,7 @@ def get_callback():
         return response
     # deployed environments
     state = parse_oauth_state(flask.request.args.get("state"))
-    if pr_redirect_required(config.BASE_URL, state):
+    if pr_redirect_required(config.BASE_PATH, state):
         if pr_redirect_enabled(config.ENVIRONMENT):
             return flask.redirect(
                 get_pr_branch_url(state["prNumber"], "callback", flask.request.query_string.decode("utf-8")))
