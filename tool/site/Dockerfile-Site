@@ -17,7 +17,11 @@ WORKDIR /build
 COPY client/package*.json ./
 RUN npm ci
 COPY client/ ./client
-RUN npm --prefix=client run build:prod
+RUN rm client/tsconfig.json
+RUN rm client/webpack.config.js
+COPY client/tsconfig.json ./
+COPY client/webpack.config.js ./
+RUN npm run build:prod
 
 # --- Build Flask Server ---
 FROM python:3.8-slim-buster as build-flask-server
