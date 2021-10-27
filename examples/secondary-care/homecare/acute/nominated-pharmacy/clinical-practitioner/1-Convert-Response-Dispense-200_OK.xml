@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN080101SM31 xmlns="urn:hl7-org:v3">
   <id root="A22AD970-417C-4B0D-9C18-19A54761B478"/>
-  <creationTime value="20211025112855"/>
+  <creationTime value="20211027102646"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN080101SM31" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -42,7 +42,7 @@
       <DispenseNotification classCode="INFO" moodCode="EVN">
         <id root="A22AD970-417C-4B0D-9C18-19A54761B478"/>
         <code code="163541000000107" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensed Medication - FocusActOrEvent (administrative concept)"/>
-        <effectiveTime value="20211025112855"/>
+        <effectiveTime value="20211027102646"/>
         <typeId extension="PORX_MT024001UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <patient classCode="PAT">
@@ -104,7 +104,7 @@
                 <consumable contextControlCode="OP" typeCode="CSM">
                   <requestedManufacturedProduct classCode="MANU">
                     <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
-                      <code code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet"/>
+                      <code code="385024007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="ml"/>
                     </manufacturedRequestedMaterial>
                   </requestedManufacturedProduct>
                 </consumable>
@@ -112,8 +112,8 @@
                   <seperatableInd value="false"/>
                   <suppliedLineItemQuantity classCode="SPLY" moodCode="EVN">
                     <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
-                    <quantity unit="1" value="28">
-                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="28"/>
+                    <quantity unit="1" value="5">
+                      <translation code="385024007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="ml" value="5"/>
                     </quantity>
                     <product contextControlCode="OP" typeCode="PRD">
                       <suppliedManufacturedProduct classCode="MANU">
@@ -134,9 +134,9 @@
                 <component1 typeCode="COMP">
                   <seperatableInd value="false"/>
                   <supplyRequest classCode="SPLY" moodCode="RQO">
-                    <code code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet"/>
-                    <quantity unit="1" value="28">
-                      <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="28"/>
+                    <code code="385024007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="ml"/>
+                    <quantity unit="1" value="5">
+                      <translation code="385024007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="ml" value="5"/>
                     </quantity>
                   </supplyRequest>
                 </component1>
@@ -160,7 +160,7 @@
               <seperatableInd value="false"/>
               <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
               <pertinentSuppliedLineItem classCode="SBADM" moodCode="PRMS">
-                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
+                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB7"/>
                 <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
                 <effectiveTime nullFlavor="NA"/>
                 <consumable contextControlCode="OP" typeCode="CSM">
@@ -252,7 +252,7 @@
             </component>
             <component typeCode="COMP">
               <actRef classCode="SBADM" moodCode="PRMS">
-                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB6"/>
+                <id root="A54219B8-F741-4C47-B662-E4F8DFA49AB7"/>
               </actRef>
             </component>
           </pertinentCareRecordElementCategory>

@@ -99,18 +99,18 @@ describe("createSuppliedLineItem", () => {
     claim.item[0].detail.forEach(detail => {
       detail.extension = [
         {
-          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
-          "valueIdentifier": {
-            "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
-            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+          url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
+          valueIdentifier: {
+            system: "https://fhir.nhs.uk/Id/claim-sequence-identifier",
+            value: "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
           }
         },
         {
-          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
-          "valueReference": {
-            "identifier": {
-              "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-              "value": "ea66ee9d-a981-432f-8c27-6907cbd99219"
+          url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
+          valueReference: {
+            identifier: {
+              system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
+              value: "ea66ee9d-a981-432f-8c27-6907cbd99219"
             }
           }
         }
@@ -127,26 +127,26 @@ describe("createSuppliedLineItem", () => {
     claim.item[0].detail.forEach(detail => {
       detail.extension = [
         {
-          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
-          "valueIdentifier": {
-            "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
-            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+          url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
+          valueIdentifier: {
+            system: "https://fhir.nhs.uk/Id/claim-sequence-identifier",
+            value: "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
           }
         },
         {
-          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
-          "valueReference": {
-            "identifier": {
-              "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
-              "value": "ea66ee9d-a981-432f-8c27-6907cbd99219"
+          url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
+          valueReference: {
+            identifier: {
+              system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
+              value: "ea66ee9d-a981-432f-8c27-6907cbd99219"
             }
           }
         },
         {
-          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
-          "valueCoding": {
-            "system": "",
-            "code": "bluh code"
+          url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatusReason",
+          valueCoding: {
+            system: "",
+            code: "bluh code"
           }
         }
       ]
