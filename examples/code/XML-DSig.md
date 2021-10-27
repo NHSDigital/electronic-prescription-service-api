@@ -1,7 +1,7 @@
 
 Example code used to generate an XML-DSig:
 
-    ``` Javascript
+    ```javascript
       function toXmlSignature(digest: string, signature: string, certificate: string): string {
         const decodedDigest = Buffer.from(digest, "base64").toString("utf-8")
         const digestWithoutNamespace = decodedDigest.replace("<SignedInfo xmlns=\"http://www.w3.org/2000/09/xmldsig#\">", "<SignedInfo>")
