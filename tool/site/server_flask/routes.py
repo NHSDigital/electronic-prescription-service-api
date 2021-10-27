@@ -198,7 +198,7 @@ def get_metadata():
     return make_eps_api_metadata_request()
 
 
-@app.route(f"/prescription/<short_prescription_id>", methods=["GET"])
+@app.route("/prescription/<short_prescription_id>", methods=["GET"])
 def get_prescription(short_prescription_id):
     bundle = hapi_passthrough.get_edit(str(short_prescription_id))
     return app.make_response(bundle["bundle"])
