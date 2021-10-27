@@ -7,26 +7,6 @@ import {
 } from "../parsers/read/bundle-parser"
 import {createUuidIdentifier} from "./common"
 
-//TODO - remove once the profile is fixed
-const DEPRECATED_LINE_ITEM_IDENTIFIER_EXTENSION: fhir.IdentifierExtension = {
-  url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-SuppliedItemIdentifier",
-  valueIdentifier: {
-    system: "https://tools.ietf.org/html/rfc4122",
-    value: "a54d66b0-e6ea-48ab-9498-298e3c2f5452"
-  }
-}
-
-//TODO - remove once the profile is fixed
-const DEPRECATED_DISPENSE_TYPE_FULLY_DISPENSED: fhir.CodeableConcept = {
-  "coding": [
-    {
-      "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
-      "code": "0001",
-      "display": "Item fully dispensed"
-    }
-  ]
-}
-
 const INSURANCE_NHS_BSA: fhir.ClaimInsurance = {
   sequence: 1,
   focal: true,
@@ -176,13 +156,9 @@ function createClaimItem(
 ): fhir.ClaimItem {
   const lineItemIds = medicationRequests.map(getMedicationRequestLineItemId)
   return {
-    extension: [
-      prescriptionStatusExtension,
-      DEPRECATED_LINE_ITEM_IDENTIFIER_EXTENSION
-    ],
+    extension: [prescriptionStatusExtension],
     sequence: 1,
     productOrService: CODEABLE_CONCEPT_PRESCRIPTION,
-    modifier: [DEPRECATED_DISPENSE_TYPE_FULLY_DISPENSED],
     programCode: [CODEABLE_CONCEPT_CHARGE_EXEMPTION_NONE],
     detail: lineItemIds.map((lineItemId, index) => {
       const medicationRequestForLineItem = medicationRequests.find(

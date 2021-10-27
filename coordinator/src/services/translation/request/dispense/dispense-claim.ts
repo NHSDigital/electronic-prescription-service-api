@@ -11,7 +11,7 @@ import {
 } from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
-import {createAgentOrganisationFromReference} from "./dispense-common"
+import {createAgentOrganisationFromReference, getRepeatNumberFromRepeatInfoExtension} from "./dispense-common"
 
 export async function convertDispenseClaim(
   claim: fhir.Claim,
@@ -26,8 +26,6 @@ export async function convertDispenseClaim(
   const agentOrganization = createAgentOrganisationFromReference(insurance.coverage)
   dispenseClaim.primaryInformationRecipient = new hl7V3.DispenseClaimPrimaryInformationRecipient(agentOrganization)
 
-  //TODO - receiver
-
   const item = onlyElement(claim.item, "Claim.item")
   dispenseClaim.pertinentInformation1 = await createDispenseClaimPertinentInformation1(
     claim,
@@ -37,13 +35,11 @@ export async function convertDispenseClaim(
     logger
   )
 
-  //TODO - pertinentInformation2
-
   //TODO - check that this is the correct source
   const replacementOfExtension = getExtensionForUrlOrNull(
     claim.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
-    "MessageHeader.extension"
+    "Claim.extension"
   ) as fhir.IdentifierExtension
   if (replacementOfExtension) {
     const previousMessageId = new hl7V3.GlobalIdentifier(replacementOfExtension.valueIdentifier.value)
@@ -98,12 +94,20 @@ async function createDispenseClaimPertinentInformation1(
 ) {
   const supplyHeader = new hl7V3.DispenseClaimSupplyHeader(new hl7V3.GlobalIdentifier(messageId))
 
-  //TODO - repeat dispensing
+  const repeatInfoExtension = getExtensionForUrlOrNull(
+    item.detail[0].extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+    "Claim.item.detail.extension"
+  ) as fhir.ExtensionExtension<fhir.IntegerExtension>
+  if (repeatInfoExtension) {
+    supplyHeader.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
+      repeatInfoExtension,
+      "Claim.item.detail.extension"
+    )
+  }
 
   const payeeOdsCode = claim.payee.party.identifier.value
   supplyHeader.legalAuthenticator = await createLegalAuthenticator(payeeOdsCode, claimDateTime, logger)
-
-  //TODO - populate pertinentInformation2 (non-dispensing reason)
 
   const prescriptionStatus = createPrescriptionStatus(item)
   supplyHeader.pertinentInformation3 = new hl7V3.SupplyHeaderPertinentInformation3(prescriptionStatus)
@@ -155,13 +159,23 @@ function createSuppliedLineItem(
     new hl7V3.GlobalIdentifier(claimSequenceIdentifierExtension.valueIdentifier.value)
   )
   suppliedLineItem.effectiveTime = hl7V3.Null.NOT_APPLICABLE
-  //TODO - repeat dispensing
+
+  const repeatInfoExtension = getExtensionForUrlOrNull(
+    detail.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+    "Claim.item.detail.extension"
+  ) as fhir.ExtensionExtension<fhir.IntegerExtension>
+  if (repeatInfoExtension) {
+    suppliedLineItem.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
+      repeatInfoExtension,
+      "Claim.item.detail.extension"
+    )
+  }
+
   suppliedLineItem.component = detail.subDetail.map(subDetail => {
     const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(claim, item, detail, subDetail)
     return new hl7V3.DispenseClaimSuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
   })
-
-  //TODO - running total
 
   const statusReasonExtension = getExtensionForUrlOrNull(
     detail.extension,
@@ -192,8 +206,6 @@ function createSuppliedLineItem(
   const lineItemIdentifier = new hl7V3.GlobalIdentifier(lineItemIdentifierExtension.valueReference.identifier.value)
   const originalPrescriptionRef = new hl7V3.OriginalPrescriptionRef(lineItemIdentifier)
   suppliedLineItem.inFulfillmentOf = new hl7V3.SuppliedLineItemInFulfillmentOf(originalPrescriptionRef)
-
-  //TODO - predecessor
 
   return suppliedLineItem
 }
