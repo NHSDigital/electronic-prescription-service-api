@@ -1,10 +1,10 @@
 {
   "resourceType": "Claim",
-  "id": "e8e75676-9d30-45f8-8b09-696818e7f4ca",
+  "id": "41d318cf-29dd-4eb8-9e51-d175b9dc97a7",
   "identifier": [
     {
       "system": "https://tools.ietf.org/html/rfc4122",
-      "value": "a2c05ec6-4292-4568-8200-bfac8439da04"
+      "value": "41d318cf-29dd-4eb8-9e51-d175b9dc97a7"
     }
   ],
   "status": "active",
@@ -21,10 +21,10 @@
   "patient": {
     "identifier": {
       "system": "https://fhir.nhs.uk/Id/nhs-number",
-      "value": "9990548609"
+      "value": "9449305552"
     }
   },
-  "created": "2021-09-23T13:09:56+00:00",
+  "created": "2021-10-20T14:02:56+00:00",
   "provider": {
     "identifier": {
       "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -49,14 +49,14 @@
             "url": "shortForm",
             "valueIdentifier": {
               "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-              "value": "0EB38D-A99968-424EAR"
+              "value": "B407F7-A99968-4DB2AU"
             }
           },
           {
             "url": "UUID",
             "valueIdentifier": {
               "system": "https://fhir.nhs.uk/Id/prescription",
-              "value": "57a5aa32-7148-47c1-8efc-65ac5f625e61"
+              "value": "10d37820-dda2-4810-94d7-c79e5fdb4b46"
             }
           }
         ]
@@ -76,9 +76,9 @@
     "party": {
       "identifier": {
         "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "FL584"
+        "value": "FER21"
       },
-      "display": "YOUR LOCAL BOOTS PHARMACY"
+      "display": "HEATH PHARMACY"
     }
   },
   "insurance": [
@@ -134,7 +134,7 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
-                "value": "598bf5df-3086-4cd5-99ed-7cb0df0bacf3"
+                "value": "823e7290-b0b1-4d3b-b694-0ff25c295b88"
               }
             },
             {
@@ -145,6 +145,19 @@
                   "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
                 }
               }
+            },
+            {
+              "extension": [
+                {
+                  "url": "numberOfRepeatsAllowed",
+                  "valueInteger": 6
+                },
+                {
+                  "url": "numberOfRepeatsIssued",
+                  "valueInteger": 1
+                }
+              ],
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation"
             }
           ],
           "sequence": 1,
@@ -169,10 +182,10 @@
             }
           ],
           "quantity": {
-            "value": 1,
-            "unit": "pre-filled disposable injection",
+            "value": 63,
+            "unit": "tablet",
             "system": "http://snomed.info/sct",
-            "code": "3318611000001103"
+            "code": "428673006"
           },
           "subDetail": [
             {
@@ -187,10 +200,10 @@
                 ]
               },
               "quantity": {
-                "value": 1,
-                "unit": "pre-filled disposable injection",
+                "value": 63,
+                "unit": "tablet",
                 "system": "http://snomed.info/sct",
-                "code": "3318611000001103"
+                "code": "428673006"
               },
               "programCode": [
                 {
