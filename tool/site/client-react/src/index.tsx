@@ -1,11 +1,12 @@
 import * as React from "react"
 import {PageContainer} from "./components/pageContainer"
-import {PrescriptionSummary} from "./components/prescription-summary/prescriptionSummary"
-import ReactDOM = require("react-dom")
+import PrescriptionSummary from "./components/prescription-summary/prescriptionSummary"
+import * as ReactDOM from "react-dom"
 
-(async function () {
+const customWindow = window as Record<string, any>
+
+async function startApplication (baseUrl: string): Promise<void> {
   // todo: get baseUrl to handle non-local environments
-  const baseUrl = "/"
   const urlParams = new URLSearchParams(window.location.search)
 
   const content = (
@@ -17,4 +18,6 @@ import ReactDOM = require("react-dom")
     </PageContainer>
   )
   ReactDOM.render(content, document.getElementById("root"))
-}())
+}
+
+customWindow.startApplication = startApplication
