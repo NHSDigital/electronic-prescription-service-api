@@ -19,7 +19,7 @@ export function createPrescriptionSummaryProps(bundle: fhir.Bundle): Prescriptio
   const requesterPractitionerRole: fhir.PractitionerRole = resolveReference(bundle, medicationRequest.requester)
   const requesterPractitioner: fhir.Practitioner = resolveReference(bundle, requesterPractitionerRole.practitioner)
   const requesterOrganization: fhir.Organization = resolveReference(bundle, requesterPractitionerRole.organization)
-  const requesterHealthcareService: fhir.HealthcareService = resolveReference(bundle, requesterPractitionerRole.healthcareService[0])
+  const requesterHealthcareService: fhir.HealthcareService = requesterPractitionerRole.healthcareService ? resolveReference(bundle, requesterPractitionerRole.healthcareService[0]) : undefined
   const requesterLocation: fhir.Location = resolveReference(bundle, requesterHealthcareService?.location[0])
 
   const patientSummaryListProps = createPatientSummaryListProps(patient)

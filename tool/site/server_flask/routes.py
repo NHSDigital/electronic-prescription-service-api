@@ -198,11 +198,17 @@ def get_metadata():
     return make_eps_api_metadata_request()
 
 
+@app.route(f"/prescription/<short_prescription_id>", methods=["GET"])
+def get_prescription(short_prescription_id):
+    bundle = hapi_passthrough.get_edit(str(short_prescription_id))
+    return app.make_response(bundle["bundle"])
+
+
 @app.route(EDIT_URL, methods=["GET"])
 @exclude_from_auth()
 def get_edit():
     # handles '+' in query_string where flask.request.args.get does not
-    short_prescription_id = flask.request.args.get("prescription_id")
+    short_prescription_id = flask.request.query_string.decode("utf-8")[len("prescription_id="):]
     if short_prescription_id is None:
         return flask.redirect(f"{config.PUBLIC_APIGEE_URL}{config.BASE_URL}change-auth")
     hapi_passthrough.get_edit(short_prescription_id)
