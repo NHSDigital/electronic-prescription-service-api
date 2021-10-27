@@ -8,6 +8,7 @@ import {PageContainer} from "./components/pageContainer"
 import ReactDOM = require("react-dom")
 
 (async function() {
+  // todo: get baseUrl to handle non-local environments
   const baseUrl = "/"
   const urlParams = new URLSearchParams(window.location.search)
   const prescriptionId = urlParams.get("prescription_id")
