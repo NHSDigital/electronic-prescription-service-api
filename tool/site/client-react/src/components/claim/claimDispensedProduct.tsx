@@ -2,6 +2,7 @@ import * as React from "react"
 import {Fragment} from "react"
 import ClaimEndorsement, {EndorsementInfo} from "./claimEndorsement"
 import {Button, Checkboxes, Fieldset, SummaryList} from "nhsuk-react-components"
+import {DeepPartial, sparseArray} from "./stateHelpers"
 
 export interface StaticDispensedProductInfo {
   id: string,
@@ -18,7 +19,7 @@ export interface DispensedProductInfo {
 interface ClaimDispensedProductProps {
   staticInfo: StaticDispensedProductInfo
   value: DispensedProductInfo
-  callback: (id: string, dispensedProductInfo: Partial<DispensedProductInfo>) => void
+  callback: (dispensedProductInfo: DeepPartial<DispensedProductInfo>) => void
   addEndorsement: () => void
   removeEndorsement: (index: number) => void
 }
@@ -30,13 +31,6 @@ const ClaimDispensedProduct: React.FC<ClaimDispensedProductProps> = ({
   addEndorsement,
   removeEndorsement
 }) => {
-  //TODO - There might be a bug here. Not sure if you're allowed to merge props into state like this.
-  const endorsementCallback = (index: number, newValue: Partial<EndorsementInfo>) => {
-    const newEndorsements = [...value.endorsements]
-    Object.assign(newEndorsements[index], newValue)
-    callback(staticInfo.id, {endorsements: newEndorsements})
-  }
-
   return (
     <Fieldset>
       <Fieldset.Legend size="m">{staticInfo.productName}</Fieldset.Legend>
@@ -54,7 +48,7 @@ const ClaimDispensedProduct: React.FC<ClaimDispensedProductProps> = ({
         <Checkboxes.Box
           id={"patient-paid-" + staticInfo.id}
           checked={value.patientPaid}
-          onChange={event => callback(staticInfo.id, {patientPaid: event.target.checked})}
+          onChange={event => callback({patientPaid: event.target.checked})}
         >
           Patient Paid
         </Checkboxes.Box>
@@ -64,7 +58,7 @@ const ClaimDispensedProduct: React.FC<ClaimDispensedProductProps> = ({
           <ClaimEndorsement
             index={index}
             value={endorsement}
-            callback={newValue => endorsementCallback(index, newValue)}
+            callback={newValue => callback({endorsements: sparseArray(index, newValue)})}
           />
           <div>
             <Button type="button" onClick={() => removeEndorsement(index)} secondary>Remove Endorsement</Button>

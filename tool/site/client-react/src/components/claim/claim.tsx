@@ -4,6 +4,17 @@ import {useState} from "react"
 import dispenserEndorsementCodings from "../reference-data/dispenserEndorsementCodings"
 import ClaimExemptionStatus, {ExemptionInfo} from "./claimExemptionStatus"
 import ClaimDispensedProduct, {DispensedProductInfo, StaticDispensedProductInfo} from "./claimDispensedProduct"
+import {DeepPartial, mergeState} from "./stateHelpers"
+
+const INITIAL_EXEMPTION_INFO: ExemptionInfo = {
+  exemptionStatus: "0001",
+  evidenceSeen: false
+}
+
+const INITIAL_DISPENSED_PRODUCT_INFO: DispensedProductInfo = {
+  patientPaid: false,
+  endorsements: []
+}
 
 interface ClaimProps {
   dispensedProducts: Array<StaticDispensedProductInfo>
@@ -12,28 +23,16 @@ interface ClaimProps {
 const Claim: React.FC<ClaimProps> = ({
   dispensedProducts
 }) => {
-  const initialExemptionInfo = {
-    exemptionStatus: "0001",
-    evidenceSeen: false
-  }
-  const [exemptionInfo, setExemptionInfo] = useState(initialExemptionInfo)
-  const exemptionInfoChanged = (newValue: Partial<ExemptionInfo>) => setExemptionInfo(prevState => {
-    const newState = {...prevState}
-    Object.assign(newState, newValue)
-    return newState
-  })
+  const [exemptionInfo, setExemptionInfo] = useState(INITIAL_EXEMPTION_INFO)
+  const updateExemptionInfo = createStateUpdater(setExemptionInfo)
 
-  const initialDispensedProductInfo = Object.fromEntries(dispensedProducts.map(product =>
-    [product.id, {patientPaid: false, endorsements: []} as DispensedProductInfo]
-  ))
-  const [dispensedProductInfo, setDispensedProductInfo] = useState(initialDispensedProductInfo)
-  const dispensedProductInfoChanged = (id: string, newValue: Partial<DispensedProductInfo>) => setDispensedProductInfo(prevState => {
-    const newState = {...prevState}
-    Object.assign(newState[id], newValue)
-    return newState
-  })
+  const initialDispensedProductInfoMap: DispensedProductInfoMap = Object.fromEntries(
+    dispensedProducts.map(product => [product.id, INITIAL_DISPENSED_PRODUCT_INFO])
+  )
+  const [dispensedProductInfoMap, setDispensedProductInfoMap] = useState(initialDispensedProductInfoMap)
+  const updateDispensedProductInfoMap = createStateUpdater(setDispensedProductInfoMap)
 
-  const addEndorsement = (id: string) => setDispensedProductInfo(prevState => {
+  const addEndorsement = (id: string) => setDispensedProductInfoMap(prevState => {
     const newState = {...prevState}
     newState[id].endorsements.push({
       code: dispenserEndorsementCodings[0].code,
@@ -41,7 +40,7 @@ const Claim: React.FC<ClaimProps> = ({
     })
     return newState
   })
-  const removeEndorsement = (id: string, index: number) => setDispensedProductInfo(prevState => {
+  const removeEndorsement = (id: string, index: number) => setDispensedProductInfoMap(prevState => {
     const newState = {...prevState}
     newState[id].endorsements.splice(index, 1)
     return newState
@@ -50,7 +49,7 @@ const Claim: React.FC<ClaimProps> = ({
   const handleSubmit = event => {
     event.preventDefault()
     console.log(JSON.stringify(exemptionInfo))
-    console.log(JSON.stringify(dispensedProductInfo))
+    console.log(JSON.stringify(dispensedProductInfoMap))
     //TODO - build claim, post to server
   }
 
@@ -61,16 +60,24 @@ const Claim: React.FC<ClaimProps> = ({
         <ClaimDispensedProduct
           key={dispensedProduct.id}
           staticInfo={dispensedProduct}
-          value={dispensedProductInfo[dispensedProduct.id]}
-          callback={dispensedProductInfoChanged}
+          value={dispensedProductInfoMap[dispensedProduct.id]}
+          callback={newValue => updateDispensedProductInfoMap({[dispensedProduct.id]: newValue})}
           addEndorsement={() => addEndorsement(dispensedProduct.id)}
           removeEndorsement={index => removeEndorsement(dispensedProduct.id, index)}
         />
       )}
-      <ClaimExemptionStatus value={exemptionInfo} callback={exemptionInfoChanged}/>
+      <ClaimExemptionStatus value={exemptionInfo} callback={updateExemptionInfo}/>
       <Button type="submit">Claim</Button>
     </Form>
   )
+}
+
+function createStateUpdater<T>(stateSetter: React.Dispatch<React.SetStateAction<T>>) {
+  return (newValue: DeepPartial<T>) => stateSetter(prevState => mergeState(prevState, newValue))
+}
+
+export interface DispensedProductInfoMap {
+  [key: string]: DispensedProductInfo
 }
 
 export default Claim
