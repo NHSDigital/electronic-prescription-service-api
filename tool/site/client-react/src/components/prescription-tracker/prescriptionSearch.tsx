@@ -18,7 +18,7 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
         <Label isPageHeading>Search for a Prescription</Label>
         <Input
           label="Prescription ID"
-          hint="(short form)"
+          hint="Use the short form here, e.g. E3E6FA-A83008-41F09Y"
           width={30}
           value={searchCritera.prescriptionId}
           onChange={event => setSearchCritera({prescriptionId: event.currentTarget.value})}
