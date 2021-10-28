@@ -32,6 +32,7 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
                 onChange={event => setSearchCritera({prescriptionId: event.currentTarget.value})}
               />
               <Button onClick={() => search(baseUrl, searchCritera.prescriptionId, setsearchResults)}>Search</Button>
+              <Button secondary href={baseUrl}>Back</Button>
             </div>
           : <div>
               <Label isPageHeading>Search Results</Label>
