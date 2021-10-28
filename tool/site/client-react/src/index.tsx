@@ -13,9 +13,7 @@ interface signResponse {
   prepareErrors?: Array<OperationOutcome>
 }
 
-let baseUrl: string
-
-async function sendSignRequest (baseUrl: string) {
+async function sendSignRequest(baseUrl: string) {
   try {
     const response = await axios.post<signResponse>(`${baseUrl}prescribe/sign`)
     if (response.data.prepareErrors) {
@@ -38,17 +36,17 @@ async function sendSignRequest (baseUrl: string) {
 }
 
 async function startApplication (baseUrl: string): Promise<void> {
-  // todo: get baseUrl to handle non-local environments
   const urlParams = new URLSearchParams(window.location.search)
-
   const content = (
     <PageContainer>
       <PrescriptionSummary
         baseUrl={baseUrl}
         prescriptionId={urlParams.get("prescription_id")}
       />
-      <Button onClick={sendSignRequest}>Send</Button>
-      <Button href={baseUrl}>Back</Button>
+      <div>
+        <Button onClick={() => sendSignRequest(baseUrl)}>Send</Button>
+        <Button secondary href={baseUrl}>Back</Button>
+      </div>
     </PageContainer>
   )
   ReactDOM.render(content, document.getElementById("root"))
