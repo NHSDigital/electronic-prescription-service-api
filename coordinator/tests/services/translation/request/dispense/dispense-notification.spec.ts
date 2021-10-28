@@ -38,8 +38,8 @@ describe("convertPrescriptionDispense", () => {
       example.hl7V3MessageDispense.PORX_IN080101SM31.ControlActEvent.subject.DispenseNotification as hl7V3.DispenseNotification
     ])
 
-  test.each(cases)("accepts %s", async(desc: string, input: fhir.Bundle) => {
-    expect(async() => await convertDispenseNotification(input, logger)).not.toThrow()
+  test.each(cases)("accepts %s", async (desc: string, input: fhir.Bundle) => {
+    expect(async () => await convertDispenseNotification(input, logger)).not.toThrow()
   })
 })
 
@@ -80,7 +80,7 @@ describe("fhir MessageHeader maps correct values in DispenseNotification", () =>
     messageHeader = getMessageHeader(dispenseNotification)
   })
 
-  test("replacementOf extension maps to sequelTo.priorMessageRef.id when present", async() => {
+  test("replacementOf extension maps to sequelTo.priorMessageRef.id when present", async () => {
     messageHeader.extension = [{
       url: "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
       valueIdentifier: {
@@ -94,14 +94,14 @@ describe("fhir MessageHeader maps correct values in DispenseNotification", () =>
     expect(hl7dispenseNotification.replacementOf.priorMessageRef.id._attributes.root).toEqual("TEST-VALUE")
   })
 
-  test("replacementOf extension doesn't map to sequelTo.priorMessageRef.id when missing", async() => {
+  test("replacementOf extension doesn't map to sequelTo.priorMessageRef.id when missing", async () => {
     messageHeader.extension = []
 
     const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
 
     expect(hl7dispenseNotification.replacementOf).toBeUndefined()
   })
-  test("response.identifier maps to sequelTo.priorPrescriptionReleaseEventRef.id", async() => {
+  test("response.identifier maps to sequelTo.priorPrescriptionReleaseEventRef.id", async () => {
     messageHeader.response.identifier = "XX-TEST-VALUE"
 
     const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
@@ -125,7 +125,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
   })
 
   // eslint-disable-next-line max-len
-  test("performer.actor.(type === Organization) maps to primaryInformationRecipient.AgentOrg.agentOrganization", async() => {
+  test("performer.actor.(type === Organization) maps to primaryInformationRecipient.AgentOrg.agentOrganization", async () => {
     medicationDispenses.forEach(medicationDispense =>
       setOrganisation(medicationDispense, "XX-TEST-VALUE", "XX-TEST-VALUE-DISPLAY")
     )
@@ -151,7 +151,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
   })
 
   // eslint-disable-next-line max-len
-  test("identifier.value maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.id", async() => {
+  test("identifier.value maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.id", async () => {
     medicationDispenses.forEach(medicationDispense => setPrescriptionItemNumber(medicationDispense, "XX-TEST-VALUE"))
 
     const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
@@ -170,7 +170,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
   })
 
   // eslint-disable-next-line max-len
-  test("medicationCodeableConcept.coding maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.component.suppliedLineItemQuantity.product.suppliedManufacturedProduct.manufacturedSuppliedMaterial.code", async() => {
+  test("medicationCodeableConcept.coding maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.component.suppliedLineItemQuantity.product.suppliedManufacturedProduct.manufacturedSuppliedMaterial.code", async () => {
     medicationDispenses.forEach(medicationDispense =>
       setMedicationCodeableConcept(medicationDispense, "XX-TEST-VALUE", "XX-TEST-VALUE-DISPLAY")
     )
@@ -213,7 +213,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
     })
   })
 
-  test("subject.Patient.value maps to recordTarget.patient.id.extension", async() => {
+  test("subject.Patient.value maps to recordTarget.patient.id.extension", async () => {
     medicationDispenses.forEach(medicationDispense => setPatientId(medicationDispense, "XX-TEST-VALUE"))
 
     const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
@@ -227,7 +227,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
     })
   })
 
-  test("authorizingPrescription maps to pertinentInformation1.pertinentSupplyHeader", async() => {
+  test("authorizingPrescription maps to pertinentInformation1.pertinentSupplyHeader", async () => {
     medicationDispenses.forEach(medicationDispense =>
       setAuthorizingPrescriptionValues(
         medicationDispense,
@@ -290,7 +290,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
   })
 
   // eslint-disable-next-line max-len
-  test("quantity maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.component.suppliedLineItemQuantity", async() => {
+  test("quantity maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.component.suppliedLineItemQuantity", async () => {
     medicationDispenses.forEach(medicationDispense => {
       medicationDispense.quantity.value = "XX-TEST-VALUE"
       medicationDispense.quantity.unit = "XX-TEST-VALUE-UNIT"
@@ -361,7 +361,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
     })
   })
 
-  test("whenPrepared maps to pertinentInformation1.pertinentSupplyHeader.author.time", async() => {
+  test("whenPrepared maps to pertinentInformation1.pertinentSupplyHeader.author.time", async () => {
     medicationDispenses.forEach(medicationDispense => medicationDispense.whenPrepared = "2020-03-10")
 
     const expected = "20200310000000"
@@ -403,7 +403,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
   })
 
   // eslint-disable-next-line max-len
-  test("dosage maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.component.suppliedLineItemQuantity.pertinentInformation1.pertinentSupplyInstructions", async() => {
+  test("dosage maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.component.suppliedLineItemQuantity.pertinentInformation1.pertinentSupplyInstructions", async () => {
     medicationDispenses.forEach(medicationDispense =>
       medicationDispense.dosageInstruction.forEach(d => d.text = "XX-TEST-VALUE")
     )
