@@ -10,6 +10,10 @@ export class LiveEpsClient implements EpsClient {
     this.accessToken = accessToken
   }
 
+  async makeGetTrackerRequest(prescriptionId: string): Promise<Bundle | OperationOutcome> {
+    return await (await this.makeApiCall<Bundle | OperationOutcome>(`Task?focus:identifier=${prescriptionId}`)).data
+  }
+
   async makePrepareRequest(body: Bundle): Promise<Parameters> {
     return await (await this.makeApiCall<Parameters>("$prepare", body)).data
   }
@@ -30,8 +34,13 @@ export class LiveEpsClient implements EpsClient {
     return await (await this.makeApiCall<string>("$convert", body)).data
   }
 
-  private async makeApiCall<T>(endpoint: string, body?: unknown, requestId?: string, additionalHeaders?: AxiosRequestHeaders): Promise<AxiosResponse<T>> {
-    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/${endpoint}`
+  private async makeApiCall<T>(
+    path: string,
+    body?: unknown,
+    requestId?: string,
+    additionalHeaders?: AxiosRequestHeaders
+  ): Promise<AxiosResponse<T>> {
+    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/${path}`
     let headers: AxiosRequestHeaders = {
       "Authorization": `Bearer ${this.accessToken}`,
       "x-request-id": requestId ?? uuid.v4(),
@@ -50,4 +59,3 @@ export class LiveEpsClient implements EpsClient {
     return await axios.get(url, {headers: headers})
   }
 }
-

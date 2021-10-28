@@ -5,6 +5,7 @@ import {isLocal} from "../environment"
 import {OperationOutcome} from "fhir/r4"
 
 export interface EpsClient {
+  makeGetTrackerRequest(prescriptionId: string): Promise<Bundle | OperationOutcome>
   makePrepareRequest(body: Bundle): Promise<Parameters>
   makeSendRequest(body: Bundle): Promise<EpsSendReponse>
   makeConvertRequest(body: unknown): Promise<string>

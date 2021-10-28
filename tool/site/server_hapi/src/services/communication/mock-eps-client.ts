@@ -1,6 +1,6 @@
 import * as uuid from "uuid"
 import axios from "axios"
-import {Bundle, Parameters} from "fhir/r4"
+import {Bundle, OperationOutcome, Parameters} from "fhir/r4"
 import {EpsClient, EpsSendReponse} from "./eps-client"
 
 export class MockEpsClient implements EpsClient {
@@ -49,6 +49,16 @@ export class MockEpsClient implements EpsClient {
     const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/$convert`
     const response = (await axios.post(url, body, {headers: {"X-Request-ID": uuid.v4()}})).data
     return response as string
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async makeGetTrackerRequest(prescriptionId: string): Promise<Bundle | OperationOutcome> {
+    return await this.mockAxiosResponse({
+      resourceType: "Bundle",
+      type: "searchset",
+      total: 0,
+      entry: []
+    })
   }
 
   private async mockAxiosResponse(body: unknown): Promise<any> {
