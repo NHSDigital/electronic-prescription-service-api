@@ -149,7 +149,6 @@ def get_home():
 
 
 @app.route("/search", methods=["GET"])
-@exclude_from_auth()
 def get_search():
     return render_react_client("search")
 
