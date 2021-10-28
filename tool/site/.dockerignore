@@ -1,4 +1,5 @@
 .dockerignore
 Dockerfile-Site
 Dockerfile-Hapi
-node_modules
+**/node_modules
+**/dist
