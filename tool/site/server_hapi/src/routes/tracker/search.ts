@@ -10,7 +10,7 @@ export default [
       const accessToken = getSessionValue("access_token", request)
       const epsClient = getEpsClient(accessToken)
       const prescriptionId = request.query["prescription_id"]
-      const response = await epsClient.makeGetTrackerRequest(`Task?focus:identifier=${prescriptionId}`)
+      const response = await epsClient.makeGetTrackerRequest({prescriptionId})
       return h.response(response).code(200)
     }
   }

@@ -1,7 +1,7 @@
 import * as uuid from "uuid"
 import axios, {AxiosRequestHeaders, AxiosResponse} from "axios"
 import {Bundle, OperationOutcome, Parameters} from "fhir/r4"
-import {EpsClient, EpsSendReponse} from "./eps-client"
+import {EpsClient, EpsSearchRequest, EpsSendReponse} from "./eps-client"
 
 export class LiveEpsClient implements EpsClient {
   private accessToken: string
@@ -10,8 +10,8 @@ export class LiveEpsClient implements EpsClient {
     this.accessToken = accessToken
   }
 
-  async makeGetTrackerRequest(prescriptionId: string): Promise<Bundle | OperationOutcome> {
-    return await (await this.makeApiCall<Bundle | OperationOutcome>(`Task?focus:identifier=${prescriptionId}`)).data
+  async makeGetTrackerRequest(searchRequest: EpsSearchRequest): Promise<Bundle | OperationOutcome> {
+    return await (await this.makeApiCall<Bundle | OperationOutcome>(`Task?focus:identifier=${searchRequest.prescriptionId}`)).data
   }
 
   async makePrepareRequest(body: Bundle): Promise<Parameters> {

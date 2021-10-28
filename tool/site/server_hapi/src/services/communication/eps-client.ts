@@ -5,7 +5,7 @@ import {isLocal} from "../environment"
 import {OperationOutcome} from "fhir/r4"
 
 export interface EpsClient {
-  makeGetTrackerRequest(prescriptionId: string): Promise<Bundle | OperationOutcome>
+  makeGetTrackerRequest(searchRequest: EpsSearchRequest): Promise<Bundle | OperationOutcome>
   makePrepareRequest(body: Bundle): Promise<Parameters>
   makeSendRequest(body: Bundle): Promise<EpsSendReponse>
   makeConvertRequest(body: unknown): Promise<string>
@@ -22,4 +22,8 @@ export interface EpsSendReponse {
   statusCode: number,
   fhirResponse: OperationOutcome
   spineResponse: string
+}
+
+export interface EpsSearchRequest {
+  prescriptionId: string
 }
