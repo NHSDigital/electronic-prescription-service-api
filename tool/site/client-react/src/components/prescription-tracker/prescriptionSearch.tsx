@@ -21,9 +21,9 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
   }
   return (
     <>
-        <Label isPageHeading>Search for a Prescription</Label>
         {!searchResults
           ? <div>
+              <Label isPageHeading>Search for a Prescription</Label>
               <Input
                 label="Prescription ID"
                 hint="Use the short form here, e.g. E3E6FA-A83008-41F09Y"
@@ -34,8 +34,9 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
               <Button onClick={() => search(baseUrl, searchCritera.prescriptionId, setsearchResults)}>Search</Button>
             </div>
           : <div>
+              <Label isPageHeading>Search Results</Label>
               <Details expander>
-                <Details.Summary>Results</Details.Summary>
+                <Details.Summary>Details</Details.Summary>
                 <Details.Text>
                   <pre style={preStyle}>{JSON.stringify(searchResults, null, 2)}</pre>
                 </Details.Text>
