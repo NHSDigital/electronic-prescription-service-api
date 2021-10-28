@@ -1,10 +1,18 @@
-export function mergeState<S>(prevState: S, change: S | DeepPartial<S>): S {
-  if (typeof change === "object") {
+import * as React from "react"
+
+export function createStateUpdater<T>(
+  stateSetter: React.Dispatch<React.SetStateAction<T>>
+): (newPartialState: DeepPartial<T>) => void {
+  return (newPartialState: DeepPartial<T>) => stateSetter(prevState => mergeState(prevState, newPartialState))
+}
+
+export function mergeState<S>(prevState: S, newPartialState: S | DeepPartial<S>): S {
+  if (typeof newPartialState === "object") {
     const newState = Array.isArray(prevState) ? [...prevState] as unknown as S : {...prevState}
-    Object.keys(change).forEach(key => newState[key] = mergeState(newState[key], change[key]))
+    Object.keys(newPartialState).forEach(key => newState[key] = mergeState(newState[key], newPartialState[key]))
     return newState
   }
-  return change
+  return newPartialState
 }
 
 export type DeepPartial<T> = {

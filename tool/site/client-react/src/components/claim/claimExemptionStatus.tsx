@@ -1,6 +1,7 @@
 import * as React from "react"
 import {Checkboxes, Fieldset, Select} from "nhsuk-react-components"
 import chargeExemptionCodings from "../reference-data/chargeExemptionCodings"
+import {DeepPartial} from "./stateHelpers"
 
 export interface ExemptionInfo {
   exemptionStatus: string,
@@ -9,7 +10,7 @@ export interface ExemptionInfo {
 
 interface ClaimExemptionStatusProps {
   value: ExemptionInfo
-  callback: (exemptionInfo: Partial<ExemptionInfo>) => void
+  callback: (exemptionInfo: DeepPartial<ExemptionInfo>) => void
 }
 
 const ClaimExemptionStatus: React.FC<ClaimExemptionStatusProps> = ({

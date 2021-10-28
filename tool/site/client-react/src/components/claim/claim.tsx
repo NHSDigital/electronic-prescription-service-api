@@ -4,7 +4,8 @@ import {useState} from "react"
 import dispenserEndorsementCodings from "../reference-data/dispenserEndorsementCodings"
 import ClaimExemptionStatus, {ExemptionInfo} from "./claimExemptionStatus"
 import ClaimDispensedProduct, {DispensedProductInfo, StaticDispensedProductInfo} from "./claimDispensedProduct"
-import {DeepPartial, mergeState} from "./stateHelpers"
+import {createStateUpdater} from "./stateHelpers"
+import {EndorsementInfo} from "./claimEndorsement"
 
 const INITIAL_EXEMPTION_INFO: ExemptionInfo = {
   exemptionStatus: "0001",
@@ -14,6 +15,11 @@ const INITIAL_EXEMPTION_INFO: ExemptionInfo = {
 const INITIAL_DISPENSED_PRODUCT_INFO: DispensedProductInfo = {
   patientPaid: false,
   endorsements: []
+}
+
+const INITIAL_ENDORSEMENT_INFO: EndorsementInfo = {
+  code: dispenserEndorsementCodings[0].code,
+  supportingInfo: ""
 }
 
 interface ClaimProps {
@@ -34,10 +40,7 @@ const Claim: React.FC<ClaimProps> = ({
 
   const addEndorsement = (id: string) => setDispensedProductInfoMap(prevState => {
     const newState = {...prevState}
-    newState[id].endorsements.push({
-      code: dispenserEndorsementCodings[0].code,
-      supportingInfo: ""
-    })
+    newState[id].endorsements.push(INITIAL_ENDORSEMENT_INFO)
     return newState
   })
   const removeEndorsement = (id: string, index: number) => setDispensedProductInfoMap(prevState => {
@@ -70,10 +73,6 @@ const Claim: React.FC<ClaimProps> = ({
       <Button type="submit">Claim</Button>
     </Form>
   )
-}
-
-function createStateUpdater<T>(stateSetter: React.Dispatch<React.SetStateAction<T>>) {
-  return (newValue: DeepPartial<T>) => stateSetter(prevState => mergeState(prevState, newValue))
 }
 
 export interface DispensedProductInfoMap {

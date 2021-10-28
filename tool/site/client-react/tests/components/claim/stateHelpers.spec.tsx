@@ -2,29 +2,35 @@ import {mergeState, sparseArray} from "../../../src/components/claim/stateHelper
 
 test.each([
   [
-    "primitives",
+    "primitive updates",
     false,
     true,
     true
   ],
   [
-    "shallow objects",
+    "shallow object updates",
     {A: "a", B: "b"},
-    {A: "c"},
-    {A: "c", B: "b"}
+    {A: "zzz"},
+    {A: "zzz", B: "b"}
   ],
   [
-    "shallow arrays",
+    "shallow array updates",
     ["a", "b", "c"],
-    sparseArray(1, "z"),
-    ["a", "z", "c"]
+    sparseArray(1, "zzz"),
+    ["a", "zzz", "c"]
   ],
   [
-    "nested stuff",
-    {A: ["aaa", "bbb", "ccc"], B: ["ddd", "eee"]},
+    "nested updates",
+    {A: ["a", "b", "c"], B: ["d", "e"]},
     {A: sparseArray(2, "zzz")},
-    {A: ["aaa", "bbb", "zzz"], B: ["ddd", "eee"]}
+    {A: ["a", "b", "zzz"], B: ["d", "e"]}
+  ],
+  [
+    "multiple updates",
+    {A: {w: "1", x: "2"}, B: {y: "3", z: "4"}},
+    {A: {x: "999"}, B: {y: "999"}},
+    {A: {w: "1", x: "999"}, B: {y: "999", z: "4"}}
   ]
-])("mergeState handles %s", (_desc, prevState, change, mergedState) => {
-  expect(mergeState(prevState, change)).toEqual(mergedState)
+])("mergeState handles %s", (_desc, prevState, newPartialState, mergedState) => {
+  expect(mergeState(prevState, newPartialState)).toEqual(mergedState)
 })

@@ -1,6 +1,7 @@
 import * as React from "react"
 import {Input, Select} from "nhsuk-react-components"
 import dispenserEndorsementCodings from "../reference-data/dispenserEndorsementCodings"
+import {DeepPartial} from "./stateHelpers"
 
 export interface EndorsementInfo {
   code: string
@@ -10,7 +11,7 @@ export interface EndorsementInfo {
 interface ClaimEndorsementProps {
   index: number
   value: EndorsementInfo
-  callback: (endorsement: Partial<EndorsementInfo>) => void
+  callback: (endorsement: DeepPartial<EndorsementInfo>) => void
 }
 
 const ClaimEndorsement: React.FC<ClaimEndorsementProps> = ({
