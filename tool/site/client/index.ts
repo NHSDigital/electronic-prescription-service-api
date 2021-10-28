@@ -117,7 +117,8 @@ customWindow.sendSignRequest = function () {
         .map(issue => issue.diagnostics)
         .forEach(diagnostic => addError(diagnostic))
     } else if (response.redirectUri) {
-      window.location.href = response.redirectUri
+      const state = Buffer.from(JSON.stringify({baseUrl: pageData.baseUrl})).toString("base64")
+      window.location.href = `${response.redirectUri}&state=${state}`
     } else {
       addError(`Unable to sign prescription, this is most likely because your session has expired. Please try to change-auth or login again`)
     }
