@@ -11,17 +11,21 @@ RUN ln -s /node-v14.15.4-linux-x64/bin/node /usr/local/bin/node
 RUN ln -s /node-v14.15.4-linux-x64/bin/npm /usr/local/bin/npm
 WORKDIR /app
 
-# --- Build Client ---
-FROM node:12.18.1-alpine as build-client
+# --- Build Rivets Client ---
+FROM node:12.18.1-alpine as build-rivets-client
 WORKDIR /build
 COPY client/package*.json ./
 RUN npm ci
-COPY client/ ./client
-RUN rm client/tsconfig.json
-RUN rm client/webpack.config.js
-COPY client/tsconfig.json ./
-COPY client/webpack.config.js ./
+COPY client/ ./
 RUN npm run build:prod
+
+# --- Build React Client ---
+FROM node:12.18.1-alpine as build-react-client
+WORKDIR /build
+COPY client-react/package*.json ./
+RUN npm ci
+COPY client-react/ ./
+RUN npm run build
 
 # --- Build Flask Server ---
 FROM python:3.8-slim-buster as build-flask-server
@@ -33,8 +37,10 @@ COPY ./server_flask/ ./
 # --- Runtime ---
 FROM base AS runtime
 ENV NO_UPDATE_NOTIFIER true
-COPY --from=build-client /build/static ./static
-COPY --from=build-client /build/templates ./templates
+COPY --from=build-rivets-client /build/static ./static
+COPY --from=build-react-client /build/dist/index.js ./static/
+COPY --from=build-rivets-client /build/templates ./templates
+COPY --from=build-react-client /build/index.html ./templates/client_v2.html
 COPY --from=build-flask-server /usr/local/lib/python3.8/site-packages /usr/local/lib/python3.8/site-packages
 COPY --from=build-flask-server /build ./
 USER nobody

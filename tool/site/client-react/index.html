@@ -2,11 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>EPSAT</title>
     <link href="https://nhsuk.github.io/nhsuk-frontend/assets/nhsuk.css" rel="stylesheet">
-    <script defer src="index.js"></script>
+    <script defer src="{{base_url}}static/index.js"></script>
 </head>
 <body>
 <div id="root"></div>
+<script type="module">
+    document.addEventListener("DOMContentLoaded", (event) => {
+        const baseUrl = "{{base_url}}"
+        startApplication(baseUrl)
+    });
+</script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 import * as uuid from "uuid"
-import * as rivets from "../../node_modules/rivets/dist/rivets"
+import * as rivets from "../node_modules/rivets/dist/rivets"
 import Cookies from "js-cookie"
 import {
   Prescription,

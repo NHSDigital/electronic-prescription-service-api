@@ -4,15 +4,15 @@ import {Fragment} from "react"
 import {HealthcareService, Location, Organization, Practitioner, PractitionerRole} from "fhir/r4"
 import {formatName, getAllAddressLines} from "../../formatters/demographics"
 
-export function createPractitionerRoleSummaryListProps(
+export function createSummaryPractitionerRole(
   practitionerRole: PractitionerRole,
   practitioner: Practitioner,
   organization: Organization,
   healthcareService?: HealthcareService,
   location?: Location
-): PractitionerRoleSummaryListProps {
-  let organizationProps: PractitionerRoleSummaryListOrganizationProps
-  let parentOrganizationProps: PractitionerRoleSummaryListOrganizationProps
+): SummaryPractitionerRole {
+  let organizationProps: SummaryOrganization
+  let parentOrganizationProps: SummaryOrganization
   if (healthcareService) {
     organizationProps = {
       name: healthcareService.name,
@@ -43,20 +43,20 @@ export function createPractitionerRoleSummaryListProps(
   }
 }
 
-export interface PractitionerRoleSummaryListProps {
+export interface SummaryPractitionerRole {
   name: string
   telecom: string
-  organization: PractitionerRoleSummaryListOrganizationProps
-  parentOrganization: PractitionerRoleSummaryListOrganizationProps
+  organization: SummaryOrganization
+  parentOrganization: SummaryOrganization
 }
 
-interface PractitionerRoleSummaryListOrganizationProps {
+interface SummaryOrganization {
   name: string
   odsCode: string
   addressLines?: Array<string>
 }
 
-export const PractitionerRoleSummaryList: React.FC<PractitionerRoleSummaryListProps> = ({
+export const PractitionerRoleSummaryList: React.FC<SummaryPractitionerRole> = ({
   name,
   telecom,
   organization,
@@ -95,3 +95,5 @@ export const PractitionerRoleSummaryList: React.FC<PractitionerRoleSummaryListPr
     </SummaryList>
   )
 }
+
+export default PractitionerRoleSummaryList

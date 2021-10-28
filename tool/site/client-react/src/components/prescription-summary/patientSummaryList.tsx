@@ -5,7 +5,7 @@ import {Patient} from "fhir/r4"
 import {formatGender, formatName, formatNhsNumber, getAllAddressLines} from "../../formatters/demographics"
 import {formatDate} from "../../formatters/dates"
 
-export function createPatientSummaryListProps(patient: Patient): PatientSummaryListProps {
+export function createSummaryPatient(patient: Patient): SummaryPatient {
   return {
     name: formatName(patient.name[0]),
     nhsNumber: formatNhsNumber(patient.identifier.find(identifier => identifier.system === "https://fhir.nhs.uk/Id/nhs-number").value),
@@ -15,7 +15,7 @@ export function createPatientSummaryListProps(patient: Patient): PatientSummaryL
   }
 }
 
-export interface PatientSummaryListProps {
+export interface SummaryPatient {
   name: string
   nhsNumber: string
   dateOfBirth: string
@@ -29,7 +29,7 @@ export const PatientSummaryList = ({
   dateOfBirth,
   gender,
   addressLines
-}: PatientSummaryListProps): JSX.Element => {
+}: SummaryPatient): JSX.Element => {
   const addressLineFragments = addressLines.map((addressLine, index) => (
     <Fragment key={index}>
       {index > 0 && <br/>}
@@ -63,3 +63,5 @@ export const PatientSummaryList = ({
     </SummaryList>
   )
 }
+
+export default PatientSummaryList

@@ -88,9 +88,12 @@ customWindow.sendEditRequest = function () {
       `${pageData.baseUrl}prescribe/edit`,
       JSON.stringify(bundles)
     )
-    resetPageData("sign")
-    pageData.prescription = getPrescriptionSummary(response.bundle)
-    response.errors.forEach((error: any) => addError(error))
+    if (response.redirectUri) {
+      window.location.href = encodeURI(response.redirectUri)
+    }
+    else {
+      addError("Failed to read prescription(s)")
+    }
   } catch (e) {
     console.log(e)
     addError("Failed to read prescription(s)")
@@ -115,8 +118,7 @@ customWindow.sendSignRequest = function () {
         .forEach(diagnostic => addError(diagnostic))
     } else if (response.redirectUri) {
       window.location.href = response.redirectUri
-    }
-    else {
+    } else {
       addError(`Unable to sign prescription, this is most likely because your session has expired. Please try to change-auth or login again`)
     }
   } catch (e) {
@@ -439,7 +441,7 @@ function setInitialState(mode: string, env: string, baseUrl: string, signRespons
   pageData.environment = env
   pageData.baseUrl = baseUrl
   pageData.signResponse = signResponse
-  // remove ability to add custom examples as an anonymous user  
+  // remove ability to add custom examples as an anonymous user
   if (!pageData.loggedIn) {
     pageData.examples.pop()
   }

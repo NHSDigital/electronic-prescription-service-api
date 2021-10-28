@@ -6,7 +6,7 @@ const stylesHandler = "style-loader"
 /* eslint-enable */
 
 const config = {
-  entry: ["./client/index.ts"],
+  entry: ["./index.ts"],
   output: {
     path: path.resolve(__dirname),
     filename: "static/main.js"
@@ -16,7 +16,7 @@ const config = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: "client/index.html",
+      template: "index.html",
       filename: "templates/client.html",
       publicPath: "{{public_apigee_url}}/{{base_url}}",
       inject: "head",
@@ -25,7 +25,7 @@ const config = {
     }),
     new CopyPlugin({
       patterns: [
-        {from: "./client/static", to: path.join(__dirname, "/static")}
+        {from: "./static", to: path.join(__dirname, "/static")}
       ]
     })
   ],
