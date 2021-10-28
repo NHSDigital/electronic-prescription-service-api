@@ -2,10 +2,6 @@ import * as React from "react"
 import {Button, Input, Label} from "nhsuk-react-components"
 import {useState} from "react"
 
-function search(baseUrl: string, prescriptionId: string) {
-  console.log(JSON.stringify({baseUrl, prescriptionId}))
-}
-
 interface PrescriptionSearchProps {
   baseUrl: string
   prescriptionId?: string
@@ -30,6 +26,10 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
         <Button onClick={() => search(baseUrl, searchCritera.prescriptionId)}>Search</Button>
     </>
   )
+}
+
+function search(baseUrl: string, prescriptionId: string) {
+  console.log(JSON.stringify({baseUrl, prescriptionId}))
 }
 
 export default PrescriptionSearch
