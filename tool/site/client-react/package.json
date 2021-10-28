@@ -6,6 +6,7 @@
   "scripts": {
     "test": "jest",
     "build": "esbuild src/index.tsx --sourcemap --bundle --outdir=dist",
+    "watch": "esbuild src/index.tsx --bundle --outdir=dist --watch",
     "serve": "mkdir -p dist && cp index.html dist && esbuild src/index.tsx --sourcemap --bundle --outdir=dist --servedir=dist",
     "lint": "eslint . --max-warnings 0 --fix"
   },

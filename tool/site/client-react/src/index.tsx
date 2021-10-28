@@ -3,7 +3,7 @@ import {PageContainer} from "./components/pageContainer"
 import PrescriptionSummary from "./components/prescription-summary/prescriptionSummary"
 import * as ReactDOM from "react-dom"
 import {Button, WarningCallout} from "nhsuk-react-components"
-import {OperationOutcome} from "../../client/models"
+import {OperationOutcome} from "fhir/r4"
 import axios from "axios"
 import {BrowserRouter, Switch, Route} from "react-router-dom"
 
