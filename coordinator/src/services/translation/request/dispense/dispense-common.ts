@@ -1,4 +1,5 @@
 import {fhir, hl7V3} from "@models"
+import {getExtensionForUrl, getNumericValueAsString} from "../../common"
 
 export function createAgentOrganisationFromReference(
   reference: fhir.IdentifierReference<fhir.PersonOrOrganization>
@@ -25,3 +26,25 @@ export function createPriorPrescriptionReleaseEventRef(
   )
 }
 
+export function getRepeatNumberFromRepeatInfoExtension(
+  repeatInfoExtension: fhir.ExtensionExtension<fhir.IntegerExtension>,
+  fhirPath: string
+): hl7V3.Interval<hl7V3.NumericValue> {
+  const numberOfRepeatsIssuedExtension = getExtensionForUrl(
+    repeatInfoExtension.extension,
+    "numberOfRepeatsIssued",
+    `${fhirPath}("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension`
+  ) as fhir.IntegerExtension
+  const numberOfRepeatsIssued = getNumericValueAsString(numberOfRepeatsIssuedExtension.valueInteger)
+  const numberOfRepeatsAllowedExtension = getExtensionForUrl(
+    repeatInfoExtension.extension,
+    "numberOfRepeatsAllowed",
+    `${fhirPath}("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation").extension`
+  ) as fhir.IntegerExtension
+  const numberOfRepeatsAllowed = getNumericValueAsString(numberOfRepeatsAllowedExtension.valueInteger)
+
+  return new hl7V3.Interval<hl7V3.NumericValue>(
+    new hl7V3.NumericValue(numberOfRepeatsIssued),
+    new hl7V3.NumericValue(numberOfRepeatsAllowed)
+  )
+}
