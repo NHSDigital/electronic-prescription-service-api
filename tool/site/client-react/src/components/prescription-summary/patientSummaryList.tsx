@@ -23,7 +23,7 @@ export interface SummaryPatient {
   addressLines: Array<string>
 }
 
-export const PatientSummaryList = ({
+const PatientSummaryList = ({
   name,
   nhsNumber,
   dateOfBirth,

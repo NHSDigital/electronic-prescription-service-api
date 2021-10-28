@@ -16,6 +16,7 @@
   "author": "NHS Digital",
   "license": "MIT",
   "devDependencies": {
+    "@testing-library/react": "^12.1.2",
     "@types/fhir": "^0.0.34",
     "@types/jest": "^27.0.2",
     "@types/js-cookie": "^2.2.7",
