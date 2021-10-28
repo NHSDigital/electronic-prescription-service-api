@@ -45,5 +45,9 @@
   "engines": {
     "node": "12.x",
     "npm": "7.x"
+  },
+  "dependencies": {
+    "@types/axios": "^0.14.0",
+    "axios": "^0.24.0"
   }
 }

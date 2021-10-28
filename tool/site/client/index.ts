@@ -118,8 +118,7 @@ customWindow.sendSignRequest = function () {
         .forEach(diagnostic => addError(diagnostic))
     } else if (response.redirectUri) {
       window.location.href = response.redirectUri
-    }
-    else {
+    } else {
       addError(`Unable to sign prescription, this is most likely because your session has expired. Please try to change-auth or login again`)
     }
   } catch (e) {
@@ -442,7 +441,7 @@ function setInitialState(mode: string, env: string, baseUrl: string, signRespons
   pageData.environment = env
   pageData.baseUrl = baseUrl
   pageData.signResponse = signResponse
-  // remove ability to add custom examples as an anonymous user  
+  // remove ability to add custom examples as an anonymous user
   if (!pageData.loggedIn) {
     pageData.examples.pop()
   }
