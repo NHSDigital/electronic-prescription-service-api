@@ -6,6 +6,7 @@ import {Button, WarningCallout} from "nhsuk-react-components"
 import {OperationOutcome} from "fhir/r4"
 import axios from "axios"
 import {BrowserRouter, Switch, Route} from "react-router-dom"
+import PrescriptionSearch from "./components/prescription-tracker/prescriptionSearch"
 
 const customWindow = window as Record<string, any>
 
@@ -53,11 +54,10 @@ async function startApplication (baseUrl: string): Promise<void> {
             </div>
           </Route>
           <Route path={`${baseUrl}search`}>
-          <WarningCallout>
-            <p>
-              Search functionality is currently in development
-            </p>
-          </WarningCallout>
+            <PrescriptionSearch
+              baseUrl={baseUrl}
+              prescriptionId={urlParams.get("prescription_id")}
+            />
           </Route>
         </Switch>
       </BrowserRouter>
