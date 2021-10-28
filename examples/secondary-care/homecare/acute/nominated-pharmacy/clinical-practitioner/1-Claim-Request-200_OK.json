@@ -21,14 +21,14 @@
   "patient": {
     "identifier": {
       "system": "https://fhir.nhs.uk/Id/nhs-number",
-      "value": "9990548609"
+      "value": "9449304106"
     }
   },
   "created": "2021-09-23T13:09:56+00:00",
   "provider": {
     "identifier": {
-      "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
-      "value": "884562163557"
+      "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+      "value": "7654321"
     },
     "display": "dummy full name"
   },
@@ -49,14 +49,14 @@
             "url": "shortForm",
             "valueIdentifier": {
               "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-              "value": "0EB38D-A99968-424EAR"
+              "value": "A0548B-A99968-451485"
             }
           },
           {
             "url": "UUID",
             "valueIdentifier": {
               "system": "https://fhir.nhs.uk/Id/prescription",
-              "value": "57a5aa32-7148-47c1-8efc-65ac5f625e61"
+              "value": "a5b9dc81-ccf4-4dab-b887-3d88e557febb"
             }
           }
         ]
@@ -76,9 +76,9 @@
     "party": {
       "identifier": {
         "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-        "value": "FL584"
+        "value": "VNCEL"
       },
-      "display": "YOUR LOCAL BOOTS PHARMACY"
+      "display": "YORKSHIRE HOMECARE LIMITED"
     }
   },
   "insurance": [
@@ -105,6 +105,12 @@
             "code": "0006",
             "display": "Dispensed"
           }
+        },
+        {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-SuppliedItemIdentifier",
+          "valueIdentifier": {
+            "value": "This extension shouldn't be here - ask Kevin to remove from the profile"
+          }
         }
       ],
       "productOrService": {
@@ -116,6 +122,18 @@
           }
         ]
       },
+      "modifier": [
+        {
+          "text": "This modifier shouldn't be here - ask Kevin to remove from the profile",
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "code": "0001",
+              "display": "Item fully dispensed"
+            }
+          ]
+        }
+      ],
       "programCode": [
         {
           "coding": [
@@ -134,7 +152,7 @@
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
               "valueIdentifier": {
                 "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
-                "value": "598bf5df-3086-4cd5-99ed-7cb0df0bacf3"
+                "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
               }
             },
             {
@@ -152,8 +170,8 @@
             "coding": [
               {
                 "system": "http://snomed.info/sct",
-                "code": "15517911000001104",
-                "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
+                "code": "13892511000001100",
+                "display": "Amlodipine 5mg/5ml oral solution"
               }
             ]
           },
@@ -169,10 +187,10 @@
             }
           ],
           "quantity": {
-            "value": 1,
-            "unit": "pre-filled disposable injection",
+            "value": 5,
+            "unit": "ml",
             "system": "http://snomed.info/sct",
-            "code": "3318611000001103"
+            "code": "385024007"
           },
           "subDetail": [
             {
@@ -181,16 +199,103 @@
                 "coding": [
                   {
                     "system": "http://snomed.info/sct",
-                    "code": "15517911000001104",
-                    "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
+                    "code": "13892511000001100",
+                    "display": "Amlodipine 5mg/5ml oral solution"
                   }
                 ]
               },
               "quantity": {
-                "value": 1,
-                "unit": "pre-filled disposable injection",
+                "value": 5,
+                "unit": "ml",
                 "system": "http://snomed.info/sct",
-                "code": "3318611000001103"
+                "code": "385024007"
+              },
+              "programCode": [
+                {
+                  "coding": [
+                    {
+                      "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+                      "code": "NDEC",
+                      "display": "No Dispenser Endorsement Code"
+                    }
+                  ]
+                },
+                {
+                  "coding": [
+                    {
+                      "system": "https://fhir.nhs.uk/CodeSystem/DM-prescription-charge",
+                      "code": "not-paid",
+                      "display": "Not Paid"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "extension": [
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
+              "valueIdentifier": {
+                "system": "https://fhir.nhs.uk/Id/claim-sequence-identifier",
+                "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
+              }
+            },
+            {
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
+              "valueReference": {
+                "identifier": {
+                  "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                  "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
+                }
+              }
+            }
+          ],
+          "sequence": 1,
+          "productOrService": {
+            "coding": [
+              {
+                "system": "http://snomed.info/sct",
+                "code": "317972000",
+                "display": "Furosemide 40mg tablets"
+              }
+            ]
+          },
+          "modifier": [
+            {
+              "coding": [
+                {
+                  "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+                  "code": "0001",
+                  "display": "Item fully dispensed"
+                }
+              ]
+            }
+          ],
+          "quantity": {
+            "value": 28,
+            "unit": "tablet",
+            "system": "http://snomed.info/sct",
+            "code": "428673006"
+          },
+          "subDetail": [
+            {
+              "sequence": 1,
+              "productOrService": {
+                "coding": [
+                  {
+                    "system": "http://snomed.info/sct",
+                    "code": "317972000",
+                    "display": "Furosemide 40mg tablets"
+                  }
+                ]
+              },
+              "quantity": {
+                "value": 28,
+                "unit": "tablet",
+                "system": "http://snomed.info/sct",
+                "code": "428673006"
               },
               "programCode": [
                 {
