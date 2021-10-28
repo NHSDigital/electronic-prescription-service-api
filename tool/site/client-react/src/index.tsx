@@ -2,7 +2,7 @@ import * as React from "react"
 import {PageContainer} from "./components/pageContainer"
 import PrescriptionSummary from "./components/prescription-summary/prescriptionSummary"
 import * as ReactDOM from "react-dom"
-import {Button} from "nhsuk-react-components"
+import {Button, WarningCallout} from "nhsuk-react-components"
 import {OperationOutcome} from "../../client/models"
 import axios from "axios"
 import {BrowserRouter, Switch, Route} from "react-router-dom"
@@ -53,7 +53,11 @@ async function startApplication (baseUrl: string): Promise<void> {
             </div>
           </Route>
           <Route path={`${baseUrl}search`}>
-            <p>Welcome to search page</p>
+          <WarningCallout>
+            <p>
+              Search functionality is currently in development
+            </p>
+          </WarningCallout>
           </Route>
         </Switch>
       </BrowserRouter>
