@@ -148,6 +148,12 @@ def get_home():
     return render_rivets_client("home")
 
 
+@app.route("/search", methods=["GET"])
+@exclude_from_auth()
+def get_search():
+    return render_react_client("search")
+
+
 @app.route(LOAD_URL, methods=["GET"])
 @exclude_from_auth()
 def get_load():

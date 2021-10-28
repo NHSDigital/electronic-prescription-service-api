@@ -5,6 +5,7 @@ import * as ReactDOM from "react-dom"
 import {Button} from "nhsuk-react-components"
 import {OperationOutcome} from "../../client/models"
 import axios from "axios"
+import {BrowserRouter, Switch, Route} from "react-router-dom"
 
 const customWindow = window as Record<string, any>
 
@@ -38,16 +39,25 @@ async function sendSignRequest(baseUrl: string) {
 async function startApplication (baseUrl: string): Promise<void> {
   const urlParams = new URLSearchParams(window.location.search)
   const content = (
-    <PageContainer>
-      <PrescriptionSummary
-        baseUrl={baseUrl}
-        prescriptionId={urlParams.get("prescription_id")}
-      />
-      <div>
-        <Button onClick={() => sendSignRequest(baseUrl)}>Send</Button>
-        <Button secondary href={baseUrl}>Back</Button>
-      </div>
-    </PageContainer>
+    <BrowserRouter>
+        <Switch>
+          <Route path={`${baseUrl}prescribe/edit`}>
+          <PageContainer>
+            <PrescriptionSummary
+              baseUrl={baseUrl}
+              prescriptionId={urlParams.get("prescription_id")}
+            />
+            <div>
+              <Button onClick={() => sendSignRequest(baseUrl)}>Send</Button>
+              <Button secondary href={baseUrl}>Back</Button>
+            </div>
+          </PageContainer>
+          </Route>
+          <Route path={`${baseUrl}search`}>
+            <p>Welcome to search page</p>
+          </Route>
+        </Switch>
+    </BrowserRouter>
   )
   ReactDOM.render(content, document.getElementById("root"))
 }
