@@ -71,18 +71,21 @@ interface ExemptionInfo {
   evidenceSeen: boolean
 }
 
-type DispensedProductCallback = (id: string, dispensedProductInfo: DispensedProductInfo) => void
+type DispensedProductCallback = (id: string, dispensedProductInfo: Partial<DispensedProductInfo>) => void
 
-type ExemptionStatusCallback = (exemptionInfo: ExemptionInfo) => void
+type ExemptionStatusCallback = (exemptionInfo: Partial<ExemptionInfo>) => void
 
-type EndorsementCallback = (endorsement: EndorsementInfo) => void
+type EndorsementCallback = (endorsement: Partial<EndorsementInfo>) => void
 
 interface ClaimDispensedProductProps {
   id: string,
   productName: string,
   status: string,
-  quantityDispensed: string
+  quantityDispensed: string,
+  value: DispensedProductInfo,
   callback: DispensedProductCallback
+  addEndorsement: () => void
+  removeEndorsement: (index: number) => void
 }
 
 const ClaimDispensedProduct: React.FC<ClaimDispensedProductProps> = ({
@@ -90,35 +93,16 @@ const ClaimDispensedProduct: React.FC<ClaimDispensedProductProps> = ({
   productName,
   status,
   quantityDispensed,
-  callback
+  value,
+  callback,
+  addEndorsement,
+  removeEndorsement
 }) => {
-  const [patientPaid, setPatientPaid] = useState(false)
-  const [endorsements, setEndorsements] = useState<Array<EndorsementInfo>>([])
-
-  const patientPaidChanged = event => {
-    const {checked} = event.target
-    setPatientPaid(checked)
+  const endorsementCallback = (index: number, newValue: Partial<EndorsementInfo>) => {
+    const newEndorsements = [...value.endorsements]
+    Object.assign(newEndorsements[index], newValue)
+    callback(id, {endorsements: newEndorsements})
   }
-  const endorsementChanged = (index, newValue) => setEndorsements(prevState => {
-    const newState = [...prevState]
-    newState[index] = newValue
-    return newState
-  })
-  const addEndorsement = () => setEndorsements(prevState => {
-    const newState = [...prevState]
-    newState.push({
-      code: dispenserEndorsementCodings[0].code,
-      supportingInfo: ""
-    })
-    return newState
-  })
-  const removeEndorsement = index => setEndorsements(prevState => {
-    const newState = [...prevState]
-    newState.splice(index, 1)
-    return newState
-  })
-
-  useEffect(() => callback(id, {patientPaid, endorsements}), [patientPaid, endorsements])
 
   return (
     <Fieldset>
@@ -134,13 +118,21 @@ const ClaimDispensedProduct: React.FC<ClaimDispensedProductProps> = ({
         </SummaryList.Row>
       </SummaryList>
       <Checkboxes>
-        <Checkboxes.Box id="patient-paid" checked={patientPaid} onChange={patientPaidChanged}>
+        <Checkboxes.Box
+          id="patient-paid"
+          checked={value.patientPaid}
+          onChange={event => callback(id, {patientPaid: event.target.checked})}
+        >
           Patient Paid
         </Checkboxes.Box>
       </Checkboxes>
-      {endorsements.map((endorsement, index) =>
+      {value.endorsements.map((endorsement, index) =>
         <Fragment key={index}>
-          <ClaimEndorsement index={index} value={endorsement} callback={value => endorsementChanged(index, value)}/>
+          <ClaimEndorsement
+            index={index}
+            value={endorsement}
+            callback={newValue => endorsementCallback(index, newValue)}
+          />
           <div>
             <Button type="button" onClick={() => removeEndorsement(index)} secondary>Remove Endorsement</Button>
           </div>
@@ -164,26 +156,13 @@ const ClaimEndorsement: React.FC<ClaimEndorsementProps> = ({
   value,
   callback
 }) => {
-  const [code, setCode] = useState(value.code)
-  const [supportingInfo, setSupportingInfo] = useState(value.supportingInfo)
-  const codeChanged = event => {
-    const {value} = event.target
-    setCode(value)
-  }
-  const supportingInfoChanged = event => {
-    const {value} = event.target
-    setSupportingInfo(value)
-  }
-
-  useEffect(() => callback({code, supportingInfo}), [code, supportingInfo])
-
   return (
-    <InsetText>
+    <>
       <Select
         id={"endorsement-code-" + index}
         label={"Endorsement " + (index + 1)}
-        value={code}
-        onChange={codeChanged}
+        value={value.code}
+        onChange={event => callback({code: event.target.value})}
       >
         {dispenserEndorsementCodings.map(coding =>
           <Select.Option key={coding.code} value={coding.code}>{coding.display}</Select.Option>
@@ -193,43 +172,40 @@ const ClaimEndorsement: React.FC<ClaimEndorsementProps> = ({
         id={"endorsement-supporting-info-" + index}
         label={"Endorsement " + (index + 1) + " Supporting Information"}
         width={30}
-        value={supportingInfo}
-        onChange={supportingInfoChanged}/>
-    </InsetText>
+        value={value.supportingInfo}
+        onChange={event => callback({supportingInfo: event.target.value})}/>
+    </>
   )
 }
 
 interface ClaimExemptionStatusProps {
+  value: ExemptionInfo
   callback: ExemptionStatusCallback
 }
 
 const ClaimExemptionStatus: React.FC<ClaimExemptionStatusProps> = ({
+  value,
   callback
 }) => {
-  const [exemptionStatus, setExemptionStatus] = useState(chargeExemptionCodings[0].code)
-  const [evidenceSeen, setEvidenceSeen] = useState(false)
-
-  const exemptionStatusChanged = event => {
-    const {value} = event.target
-    setExemptionStatus(value)
-  }
-  const evidenceSeenChanged = event => {
-    const {checked} = event.target
-    setEvidenceSeen(checked)
-  }
-
-  useEffect(() => callback({exemptionStatus, evidenceSeen}), [exemptionStatus, evidenceSeen])
-
   return (
     <Fieldset>
       <Fieldset.Legend size="m">Charge Exemption</Fieldset.Legend>
-      <Select id="exemption-status" label="Exemption Status" value={exemptionStatus} onChange={exemptionStatusChanged}>
+      <Select
+        id="exemption-status"
+        label="Exemption Status"
+        value={value.exemptionStatus}
+        onChange={event => callback({exemptionStatus: event.target.value})}
+      >
         {chargeExemptionCodings.map(coding =>
           <Select.Option key={coding.code} value={coding.code}>{coding.display}</Select.Option>
         )}
       </Select>
       <Checkboxes>
-        <Checkboxes.Box id="evidence-seen" checked={evidenceSeen} onChange={evidenceSeenChanged}>
+        <Checkboxes.Box
+          id="evidence-seen"
+          checked={value.evidenceSeen}
+          onChange={event => callback({evidenceSeen: event.target.checked})}
+        >
           Evidence Seen
         </Checkboxes.Box>
       </Checkboxes>
