@@ -39,10 +39,10 @@ async function sendSignRequest(baseUrl: string) {
 async function startApplication (baseUrl: string): Promise<void> {
   const urlParams = new URLSearchParams(window.location.search)
   const content = (
-    <BrowserRouter>
+    <PageContainer>
+      <BrowserRouter>
         <Switch>
-          <Route path={`${baseUrl}prescribe/edit`}>
-          <PageContainer>
+          <Route path={`${baseUrl}prescribe/edit`}>     
             <PrescriptionSummary
               baseUrl={baseUrl}
               prescriptionId={urlParams.get("prescription_id")}
@@ -51,13 +51,13 @@ async function startApplication (baseUrl: string): Promise<void> {
               <Button onClick={() => sendSignRequest(baseUrl)}>Send</Button>
               <Button secondary href={baseUrl}>Back</Button>
             </div>
-          </PageContainer>
           </Route>
           <Route path={`${baseUrl}search`}>
             <p>Welcome to search page</p>
           </Route>
         </Switch>
-    </BrowserRouter>
+      </BrowserRouter>
+    </PageContainer>
   )
   ReactDOM.render(content, document.getElementById("root"))
 }
