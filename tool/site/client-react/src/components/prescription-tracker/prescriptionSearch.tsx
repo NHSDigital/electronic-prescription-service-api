@@ -11,8 +11,8 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
   baseUrl,
   prescriptionId
 }) => {
-  const initialSeachCriteria = prescriptionId ? {prescriptionId} : {prescriptionId: ""}
-  const [searchCritera, setSearchCritera] = useState(initialSeachCriteria)
+  const initialSearchCriteria = prescriptionId ? {prescriptionId} : {prescriptionId: ""}
+  const [searchCritera, setSearchCritera] = useState(initialSearchCriteria)
   return (
     <>
         <Label isPageHeading>Search for a Prescription</Label>
