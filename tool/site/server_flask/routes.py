@@ -213,6 +213,8 @@ def get_prescription(short_prescription_id):
 def get_tracker_prescription():
     short_prescription_id = flask.request.query_string.decode("utf-8")[len("prescription_id="):]
     bundle = hapi_passthrough.get_edit(short_prescription_id)
+    if "bundle" not in bundle:
+        return app.make_response({})    
     return app.make_response(bundle["bundle"])
 
 
