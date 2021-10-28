@@ -25,7 +25,8 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
           hint="(short form)"
           width={30}
           value={searchCritera.prescriptionId}
-          onChange={event => setSearchCritera({prescriptionId: event.currentTarget.value})}/>  
+          onChange={event => setSearchCritera({prescriptionId: event.currentTarget.value})}
+        />  
         <Button onClick={() => search(baseUrl, searchCritera.prescriptionId)}>Search</Button>
     </>
   )
