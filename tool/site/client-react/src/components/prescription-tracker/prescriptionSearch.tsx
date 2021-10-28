@@ -12,7 +12,7 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
   prescriptionId
 }) => {
   const initialSearchCriteria = prescriptionId ? {prescriptionId} : {prescriptionId: ""}
-  const initialSearchResults = []
+  const initialSearchResults = null
   const [searchCritera, setSearchCritera] = useState(initialSearchCriteria)
   const [searchResults, setsearchResults] = useState(initialSearchResults)
   const preStyle: React.CSSProperties = {
@@ -22,7 +22,7 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
   return (
     <>
         <Label isPageHeading>Search for a Prescription</Label>
-        {!searchResults.length
+        {!searchResults
           ? <div>
               <Input
                 label="Prescription ID"
@@ -47,15 +47,14 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
   )
 }
 
-async function search(baseUrl: string, prescriptionId: string, setsearchResults: React.Dispatch<React.SetStateAction<any[]>>) {
+async function search(baseUrl: string, prescriptionId: string, setsearchResults: React.Dispatch<React.SetStateAction<any>>) {
   const response = await fetch(`${baseUrl}tracker?prescription_id=${prescriptionId}`)
-  const responseBody = await response.json()
-  const results = [responseBody]
+  const results = await response.json()
   setsearchResults(results)
 }
 
-function reset(setSearchResults: React.Dispatch<React.SetStateAction<any[]>>) {
-  setSearchResults([])
+function reset(setSearchResults: React.Dispatch<React.SetStateAction<any>>) {
+  setSearchResults(null)
 }
 
 export default PrescriptionSearch
