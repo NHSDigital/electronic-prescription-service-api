@@ -1,8 +1,6 @@
 import * as React from "react"
 import {PageContainer} from "./components/pageContainer"
-import PrescriptionSummary from "./components/prescription-summary/prescriptionSummary"
 import * as ReactDOM from "react-dom"
-import {Button} from "nhsuk-react-components"
 import {OperationOutcome} from "fhir/r4"
 import axios from "axios"
 import Claim from "./components/claim/claim"
@@ -65,7 +63,11 @@ async function startApplication (baseUrl: string): Promise<void> {
       quantityDispensed: "28 tablet"
     }
   ]
-  const content = <Claim dispensedProducts={dispensedProducts}/>
+  const content = (
+    <PageContainer>
+      <Claim dispensedProducts={dispensedProducts}/>
+    </PageContainer>
+  )
   ReactDOM.render(content, document.getElementById("root"))
 }
 

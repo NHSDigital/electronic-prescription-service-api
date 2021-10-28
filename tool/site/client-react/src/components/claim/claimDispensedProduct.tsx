@@ -43,7 +43,7 @@ const ClaimDispensedProduct: React.FC<ClaimDispensedProductProps> = ({
       <SummaryList noBorder>
         <SummaryList.Row>
           <SummaryList.Key>Status</SummaryList.Key>
-          <SummaryList.Value>{status}</SummaryList.Value>
+          <SummaryList.Value>{staticInfo.status}</SummaryList.Value>
         </SummaryList.Row>
         <SummaryList.Row>
           <SummaryList.Key>Quantity Dispensed</SummaryList.Key>
@@ -52,7 +52,7 @@ const ClaimDispensedProduct: React.FC<ClaimDispensedProductProps> = ({
       </SummaryList>
       <Checkboxes>
         <Checkboxes.Box
-          id="patient-paid"
+          id={"patient-paid-" + staticInfo.id}
           checked={value.patientPaid}
           onChange={event => callback(staticInfo.id, {patientPaid: event.target.checked})}
         >
