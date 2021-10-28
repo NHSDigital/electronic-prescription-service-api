@@ -1,6 +1,6 @@
-import {Button, Checkboxes, Fieldset, Form, Input, InsetText, Label, Select, SummaryList} from "nhsuk-react-components"
+import {Button, Checkboxes, Fieldset, Form, Input, Label, Select, SummaryList} from "nhsuk-react-components"
 import * as React from "react"
-import {Fragment, useEffect, useState} from "react"
+import {Fragment, useState} from "react"
 import chargeExemptionCodings from "../reference-data/chargeExemptionCodings"
 import dispenserEndorsementCodings from "../reference-data/dispenserEndorsementCodings"
 
@@ -21,24 +21,43 @@ const dispensedProducts = [
 ]
 
 const Claim: React.FC = () => {
-  const dispensedProductInfoMap: Map<string, DispensedProductInfo> = new Map()
-  let exemptionInfo: ExemptionInfo = {
+  const [exemptionInfo, setExemptionInfo] = useState({
     exemptionStatus: "0001",
     evidenceSeen: false
-  }
+  })
+  const exemptionInfoChanged = (newValue: Partial<ExemptionInfo>) => setExemptionInfo(prevState => {
+    const newState = {...prevState}
+    Object.assign(newState, newValue)
+    return newState
+  })
 
-  const productStateChanged = (id: string, newDispensedProductInfo: DispensedProductInfo) => {
-    dispensedProductInfoMap.set(id, newDispensedProductInfo)
-  }
-
-  const exemptionStatusChanged = newExemptionInfo => {
-    exemptionInfo = newExemptionInfo
-  }
+  const initialDispensedProductInfo = Object.fromEntries(dispensedProducts.map(product =>
+    [product.id, {patientPaid: false, endorsements: []} as DispensedProductInfo]
+  ))
+  const [dispensedProductInfo, setDispensedProductInfo] = useState(initialDispensedProductInfo)
+  const dispensedProductInfoChanged = (id: string, newValue: Partial<DispensedProductInfo>) => setDispensedProductInfo(prevState => {
+    const newState = {...prevState}
+    Object.assign(newState[id], newValue)
+    return newState
+  })
+  const addEndorsement = (id: string) => setDispensedProductInfo(prevState => {
+    const newState = {...prevState}
+    newState[id].endorsements.push({
+      code: dispenserEndorsementCodings[0].code,
+      supportingInfo: ""
+    })
+    return newState
+  })
+  const removeEndorsement = (id: string, index: number) => setDispensedProductInfo(prevState => {
+    const newState = {...prevState}
+    newState[id].endorsements.splice(index, 1)
+    return newState
+  })
 
   const handleSubmit = event => {
     event.preventDefault()
     console.log(JSON.stringify(exemptionInfo))
-    console.log(JSON.stringify(Array.from(dispensedProductInfoMap.entries())))
+    console.log(JSON.stringify(dispensedProductInfo))
     //TODO - build claim, post to server
   }
 
@@ -46,15 +65,29 @@ const Claim: React.FC = () => {
     <Form onSubmit={handleSubmit}>
       <Label isPageHeading>Claim for Dispensed Medication</Label>
       {dispensedProducts.map(dispensedProduct =>
-        <ClaimDispensedProduct key={dispensedProduct.id} {...dispensedProduct} callback={productStateChanged}/>
+        <ClaimDispensedProduct
+          key={dispensedProduct.id}
+          staticInfo={dispensedProduct}
+          value={dispensedProductInfo[dispensedProduct.id]}
+          callback={dispensedProductInfoChanged}
+          addEndorsement={() => addEndorsement(dispensedProduct.id)}
+          removeEndorsement={index => removeEndorsement(dispensedProduct.id, index)}
+        />
       )}
-      <ClaimExemptionStatus callback={exemptionStatusChanged}/>
+      <ClaimExemptionStatus value={exemptionInfo} callback={exemptionInfoChanged}/>
       <Button type="submit">Claim</Button>
     </Form>
   )
 }
 
 export default Claim
+
+interface StaticDispensedProductInfo {
+  id: string,
+  productName: string,
+  status: string,
+  quantityDispensed: string
+}
 
 interface DispensedProductInfo {
   patientPaid: boolean,
@@ -78,35 +111,30 @@ type ExemptionStatusCallback = (exemptionInfo: Partial<ExemptionInfo>) => void
 type EndorsementCallback = (endorsement: Partial<EndorsementInfo>) => void
 
 interface ClaimDispensedProductProps {
-  id: string,
-  productName: string,
-  status: string,
-  quantityDispensed: string,
-  value: DispensedProductInfo,
+  staticInfo: StaticDispensedProductInfo
+  value: DispensedProductInfo
   callback: DispensedProductCallback
   addEndorsement: () => void
   removeEndorsement: (index: number) => void
 }
 
 const ClaimDispensedProduct: React.FC<ClaimDispensedProductProps> = ({
-  id,
-  productName,
-  status,
-  quantityDispensed,
+  staticInfo,
   value,
   callback,
   addEndorsement,
   removeEndorsement
 }) => {
+  //TODO - There might be a bug here. Not sure if you're allowed to merge props into state like this.
   const endorsementCallback = (index: number, newValue: Partial<EndorsementInfo>) => {
     const newEndorsements = [...value.endorsements]
     Object.assign(newEndorsements[index], newValue)
-    callback(id, {endorsements: newEndorsements})
+    callback(staticInfo.id, {endorsements: newEndorsements})
   }
 
   return (
     <Fieldset>
-      <Fieldset.Legend size="m">{productName}</Fieldset.Legend>
+      <Fieldset.Legend size="m">{staticInfo.productName}</Fieldset.Legend>
       <SummaryList noBorder>
         <SummaryList.Row>
           <SummaryList.Key>Status</SummaryList.Key>
@@ -114,14 +142,14 @@ const ClaimDispensedProduct: React.FC<ClaimDispensedProductProps> = ({
         </SummaryList.Row>
         <SummaryList.Row>
           <SummaryList.Key>Quantity Dispensed</SummaryList.Key>
-          <SummaryList.Value>{quantityDispensed}</SummaryList.Value>
+          <SummaryList.Value>{staticInfo.quantityDispensed}</SummaryList.Value>
         </SummaryList.Row>
       </SummaryList>
       <Checkboxes>
         <Checkboxes.Box
           id="patient-paid"
           checked={value.patientPaid}
-          onChange={event => callback(id, {patientPaid: event.target.checked})}
+          onChange={event => callback(staticInfo.id, {patientPaid: event.target.checked})}
         >
           Patient Paid
         </Checkboxes.Box>
