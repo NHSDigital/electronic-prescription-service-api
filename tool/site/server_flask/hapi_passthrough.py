@@ -27,8 +27,8 @@ def post_login(auth_method, access_token):
     return hapi_session_cookie, response.json()
 
 
-def get_edit(prescription_id):
-    return make_get_request(f"{HAPI_URL}/prescribe/edit?prescription_id={prescription_id}")
+def get_prescription(prescription_id):
+    return make_get_request(f"{HAPI_URL}/prescription/{prescription_id}")
 
 
 def post_edit(body):

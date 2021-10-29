@@ -59,12 +59,12 @@ customWindow.getEditRequest = function (previousOrNext: string) {
         : pageData.next_prescription_id
     const response = makeRequest(
       "GET",
-      `${pageData.baseUrl}prescribe/edit?prescription_id=${prescriptionId}`
+      `${pageData.baseUrl}prescription/${prescriptionId}`
     )
     pageData.previous_prescription_id = Cookies.get("Previous-Prescription-Id")
     pageData.next_prescription_id = Cookies.get("Next-Prescription-Id")
     resetPageData("sign")
-    pageData.prescription = getPrescriptionSummary(response.bundle)
+    pageData.prescription = getPrescriptionSummary(response)
   } catch (e) {
     console.log(e)
     addError("Communication error")
@@ -90,8 +90,7 @@ customWindow.sendEditRequest = function () {
     )
     if (response.redirectUri) {
       window.location.href = encodeURI(response.redirectUri)
-    }
-    else {
+    } else {
       addError("Failed to read prescription(s)")
     }
   } catch (e) {
@@ -166,10 +165,10 @@ customWindow.sendCancelRequest = function () {
     const prescriptionId = Cookies.get("Current-Prescription-Id")
     const prescription = makeRequest(
       "GET",
-      `${pageData.baseUrl}prescribe/edit?prescription_id=${prescriptionId}`
+      `${pageData.baseUrl}prescription/${prescriptionId}`
     )
     resetPageData("cancel")
-    const cancellation = createCancellation(prescription.bundle)
+    const cancellation = createCancellation(prescription)
     const response = makeRequest(
       "POST",
       `${pageData.baseUrl}prescribe/cancel`,
@@ -232,9 +231,9 @@ customWindow.sendDispenseRequest = function () {
     const prescriptionId = Cookies.get("Current-Prescription-Id")
     const prescription = makeRequest(
       "GET",
-      `${pageData.baseUrl}prescribe/edit?prescription_id=${prescriptionId}`
+      `${pageData.baseUrl}prescription/${prescriptionId}`
     )
-    const dispenseRequest = createDispenseRequest(prescription.bundle)
+    const dispenseRequest = createDispenseRequest(prescription)
     const response = makeRequest(
       "POST",
       `${pageData.baseUrl}dispense/dispense`,
@@ -457,9 +456,9 @@ customWindow.startApplication = async function (mode: string, env: string, baseU
     const prescriptionId = Cookies.get("Current-Prescription-Id")
     const response = await makeRequest(
       "GET",
-      `${pageData.baseUrl}prescribe/edit?prescription_id=${prescriptionId}`
+      `${pageData.baseUrl}prescription/${prescriptionId}`
     )
-    pageData.prescription = getPrescriptionSummary(response.bundle)
+    pageData.prescription = getPrescriptionSummary(response)
     resetPageData("dispense")
   }
   if (
@@ -480,9 +479,9 @@ customWindow.startApplication = async function (mode: string, env: string, baseU
     const prescriptionId = Cookies.get("Current-Prescription-Id")
     const response = await makeRequest(
       "GET",
-      `${pageData.baseUrl}prescribe/edit?prescription_id=${prescriptionId}`
+      `${pageData.baseUrl}prescription/${prescriptionId}`
     )
-    pageData.prescription = getPrescriptionSummary(response.bundle)
+    pageData.prescription = getPrescriptionSummary(response)
     resetPageData("cancel")
   }
   initialiseTestPack()
