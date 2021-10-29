@@ -19,3 +19,4 @@ prescriptions-*.txt
 tool/templates/*
 tool/static/*
 venv
+.DS_Store

@@ -1,9 +1,6 @@
-import PrescriptionSummaryView, {
-  createSummaryPrescription,
-  SummaryPrescription
-} from "./prescriptionSummaryView"
+import PrescriptionSummaryView, {createSummaryPrescription, SummaryPrescription} from "./prescriptionSummaryView"
 import * as React from "react"
-import {useState} from "react"
+import {useEffect, useState} from "react"
 import {Label} from "nhsuk-react-components"
 
 interface PrescriptionSummaryProps {
@@ -17,20 +14,19 @@ const PrescriptionSummary: React.FC<PrescriptionSummaryProps> = ({
 }) => {
   const [summaryViewProps, setSummaryViewProps] = useState<SummaryPrescription>()
 
-  if (!summaryViewProps) {
-    fetch(`${baseUrl}prescription/${prescriptionId}`)
-      .then(response => response.json())
-      .then(createSummaryPrescription)
-      .then(setSummaryViewProps)
-  }
+  useEffect(() => {
+    if (!summaryViewProps) {
+      fetch(`${baseUrl}prescription/${prescriptionId}`)
+        .then(response => response.json())
+        .then(createSummaryPrescription)
+        .then(setSummaryViewProps)
+    }
+  }, [summaryViewProps])
 
   return (
     <>
       {summaryViewProps
-        ? <PrescriptionSummaryView
-          patient={summaryViewProps.patient}
-          practitionerRole={summaryViewProps.practitionerRole}
-        />
+        ? <PrescriptionSummaryView {...summaryViewProps}/>
         : <Label isPageHeading>Loading</Label>}
     </>
   )
