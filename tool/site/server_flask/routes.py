@@ -168,7 +168,7 @@ def download():
     short_prescription_ids = hapi_session["prescriptionIds"]
     with zipfile.ZipFile(zFile, 'w') as zip_file:
         for index, short_prescription_id in enumerate(short_prescription_ids):
-            bundle = hapi_passthrough.get_edit(short_prescription_id)
+            bundle = hapi_passthrough.get_prescription(short_prescription_id)
             zip_file.writestr(f"prepare_request_{index + 1}.json", json.dumps(bundle, indent=2))
             # todo: fix 'invalid json' issue
             # if access_token:
@@ -205,8 +205,8 @@ def get_metadata():
 
 @app.route("/prescription/<short_prescription_id>", methods=["GET"])
 def get_prescription(short_prescription_id):
-    bundle = hapi_passthrough.get_edit(str(short_prescription_id))
-    return app.make_response(bundle["bundle"])
+    response = hapi_passthrough.get_prescription(str(short_prescription_id))
+    return app.make_response(response)
 
 
 @app.route("/tracker", methods=["GET"])
@@ -225,7 +225,7 @@ def get_edit():
     short_prescription_id = flask.request.query_string.decode("utf-8")[len("prescription_id="):]
     if short_prescription_id is None:
         return flask.redirect(f"{config.PUBLIC_APIGEE_URL}{config.BASE_URL}change-auth")
-    hapi_passthrough.get_edit(short_prescription_id)
+    hapi_passthrough.get_prescription(short_prescription_id)
     response = app.make_response(render_react_client("edit"))
     hapi_session = hapi_passthrough.get_hapi_session()
     short_prescription_ids = hapi_session["prescriptionIds"]
@@ -380,7 +380,9 @@ def post_dispense():
 def get_dispensing_history():
     short_prescription_id = flask.request.args.get("prescription_id")
     dispense_notifications = load_dispense_notification_send_requests(short_prescription_id)
-    return dispense_notifications
+    return {
+        "dispense_notifications": dispense_notifications
+    }
 
 
 @app.route(CLAIM_URL, methods=["GET"])
