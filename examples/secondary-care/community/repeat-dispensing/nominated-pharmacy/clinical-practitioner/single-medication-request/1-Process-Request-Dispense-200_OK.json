@@ -39,7 +39,10 @@
             }
           }
         ],
-        "focus": [],
+        "focus": [
+          {
+            "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+          }],
         "response": {
           "identifier": "999f9999-9999-9999-9ff9-f9fff9999999",
           "code": "ok"
@@ -55,8 +58,8 @@
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
-              "code": "0003",
-              "display": "With Dispenser - Active"
+              "code": "0006",
+              "display": "Dispensed"
             }
           },
           {

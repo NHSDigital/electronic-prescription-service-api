@@ -106,7 +106,10 @@ rivets.formatters.hasNominatedPharmacy = function (medicationRequests: Array<Med
 }
 
 rivets.formatters.nominatedOds = function (medicationRequests: Array<MedicationRequest>) {
-  return medicationRequests ? medicationRequests[0].dispenseRequest.performer.identifier.value : ""
+  if (!medicationRequests) {
+    return ""
+  }
+  return medicationRequests[0]?.dispenseRequest?.performer?.identifier?.value || ""
 }
 
 rivets.formatters.pharmacyType = function (medicationRequests: Array<MedicationRequest>) {
@@ -183,13 +186,8 @@ rivets.formatters.showPharmacyList = function (mode: string) {
   return mode === "edit" || mode === "release"
 }
 
-rivets.formatters.joinWithSpaces = function (strings: Array<string>) {
-  try {
-    return strings.join(" ")
-  }
-  catch (err) {
-    return strings
-  }
+rivets.formatters.joinWithSpaces = function (input: Array<string> | string) {
+  return Array.isArray(input) ? input.join(" ") : input ?? ""
 }
 
 rivets.formatters.appendPageMode = function (string: string) {

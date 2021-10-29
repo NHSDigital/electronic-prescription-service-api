@@ -5,12 +5,6 @@ parameters:
     type: string
   - name: service_base_path
     type: string
-  - name: product_display_name
-    type: string
-  - name: product_description
-    type: string
-  - name: spec_file
-    type: string
   - name: apigee_deployments
     type: object
   - name: enable_monitoring
@@ -26,9 +20,6 @@ extends:
     service_name: ${{ parameters.service_name }}
     short_service_name: ${{ parameters.short_service_name }}
     service_base_path: ${{ parameters.service_base_path }}
-    product_display_name: ${{ parameters.product_display_name }}
-    product_description: ${{ parameters.product_description }}
-    spec_file: ${{ parameters.spec_file }}
     enable_monitoring: ${{ parameters.enable_monitoring }}
     enable_status_monitoring: ${{ parameters.enable_status_monitoring }}
     apigee_deployments: ${{ parameters.apigee_deployments }}
