@@ -5,9 +5,12 @@ import {
   ClaimMedicationRequestReferenceExtension,
   ClaimSequenceIdentifierExtension,
   getGroupIdentifierExtension,
+  getRepeatInformationExtension,
   getTaskBusinessStatusExtension,
   GroupIdentifierExtension,
-  TaskBusinessStatusExtension
+  TaskBusinessStatusExtension,
+  URL_CLAIM_MEDICATION_REQUEST_REFERENCE,
+  URL_CLAIM_SEQUENCE_IDENTIFIER
 } from "../../fhir/customExtensions"
 import {
   CODEABLE_CONCEPT_CLAIM_TYPE_PHARMACY,
@@ -21,29 +24,11 @@ import {
   DEPRECATED_CODEABLE_CONCEPT_CHARGE_EXEMPTION_NONE
 } from "./reference-data/codeableConcepts"
 import {INSURANCE_NHS_BSA} from "./reference-data/insurance"
-import {
-  getMedicationDispenseResources,
-  getMedicationRequestResources,
-  getPatientResources
-} from "../../fhir/bundleResourceFinder"
 import {ExemptionInfo} from "./claimExemptionStatus"
 import {DispensedProductInfoMap} from "./claim"
 import chargeExemptionCodings from "./reference-data/chargeExemptionCodings"
 import {DispensedProductInfo} from "./claimDispensedProduct"
 import dispenserEndorsementCodings from "./reference-data/dispenserEndorsementCodings"
-
-export function createClaimOldWay(
-  prescriptionOrder: fhir.Bundle,
-  dispenseNotifications: Array<fhir.Bundle>,
-  exemptionInfo: ExemptionInfo,
-  dispensedProductInfoMap: DispensedProductInfoMap
-): fhir.Claim {
-  const patients = getPatientResources(prescriptionOrder)
-  const medicationRequests = getMedicationRequestResources(prescriptionOrder)
-  const medicationDispenses = dispenseNotifications.map(getMedicationDispenseResources)
-    .reduce((a, b) => a.concat(b), [])
-  return createClaim(patients[0], medicationRequests, medicationDispenses, exemptionInfo, dispensedProductInfoMap)
-}
 
 export function createClaim(
   patient: Patient,
@@ -168,12 +153,17 @@ function createClaimItemDetail(
   medicationDispenses: Array<fhir.MedicationDispense>,
   dispensedProductInfo: DispensedProductInfo
 ): fhir.ClaimItemDetail {
+  const claimItemDetailExtensions: Array<fhir.Extension> = [
+    createClaimSequenceIdentifierExtension(),
+    createMedicationRequestReferenceExtension(lineItemId)
+  ]
+  const repeatInformationExtension = getRepeatInformationExtension(medicationRequest.extension)
+  if (repeatInformationExtension) {
+    claimItemDetailExtensions.push(repeatInformationExtension)
+  }
   const finalMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
   return {
-    extension: [
-      createClaimSequenceIdentifierExtension(),
-      createMedicationRequestReferenceExtension(lineItemId)
-    ],
+    extension: claimItemDetailExtensions,
     sequence,
     productOrService: medicationRequest.medicationCodeableConcept,
     modifier: [finalMedicationDispense.type],
@@ -187,7 +177,7 @@ function createClaimItemDetail(
 
 function createClaimSequenceIdentifierExtension(): ClaimSequenceIdentifierExtension {
   return {
-    url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier",
+    url: URL_CLAIM_SEQUENCE_IDENTIFIER,
     valueIdentifier: {
       system: "https://fhir.nhs.uk/Id/claim-sequence-identifier",
       value: uuid.v4()
@@ -197,7 +187,7 @@ function createClaimSequenceIdentifierExtension(): ClaimSequenceIdentifierExtens
 
 function createMedicationRequestReferenceExtension(lineItemId: string): ClaimMedicationRequestReferenceExtension {
   return {
-    url: "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference",
+    url: URL_CLAIM_MEDICATION_REQUEST_REFERENCE,
     valueReference: {
       identifier: {
         system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
