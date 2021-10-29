@@ -56,7 +56,7 @@ interface SummaryOrganization {
   addressLines?: Array<string>
 }
 
-export const PractitionerRoleSummaryList: React.FC<SummaryPractitionerRole> = ({
+const PractitionerRoleSummaryList: React.FC<SummaryPractitionerRole> = ({
   name,
   telecom,
   organization,

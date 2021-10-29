@@ -18,6 +18,8 @@ services:
             - APIGEE_DOMAIN_NAME=internal-dev-sandbox.api.service.nhs.uk
         ports:
             - "9000:9000"
+        volumes:
+            - ./site/client-react/dist/index.js:/app/static/index.js
     eps-api-tool-hapi:
         image: 'eps-api-tool-hapi-local'
         build:
