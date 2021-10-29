@@ -1,11 +1,14 @@
 import {Button, Form, Label} from "nhsuk-react-components"
 import * as React from "react"
 import {useState} from "react"
-import dispenserEndorsementCodings from "../reference-data/dispenserEndorsementCodings"
+import dispenserEndorsementCodings from "./reference-data/dispenserEndorsementCodings"
 import ClaimExemptionStatus, {ExemptionInfo} from "./claimExemptionStatus"
 import ClaimDispensedProduct, {DispensedProductInfo, StaticDispensedProductInfo} from "./claimDispensedProduct"
-import {createStateUpdater} from "./stateHelpers"
+import {createStateUpdater} from "../stateHelpers"
 import {EndorsementInfo} from "./claimEndorsement"
+import {MedicationDispense, MedicationRequest, Patient} from "fhir/r4"
+import {createClaim, getMedicationDispenseLineItemId} from "./createDispenseClaim"
+import {getTaskBusinessStatusExtension} from "../../fhir/customExtensions"
 
 const INITIAL_EXEMPTION_INFO: ExemptionInfo = {
   exemptionStatus: "0001",
@@ -22,18 +25,23 @@ const INITIAL_ENDORSEMENT_INFO: EndorsementInfo = {
   supportingInfo: ""
 }
 
-interface ClaimProps {
-  dispensedProducts: Array<StaticDispensedProductInfo>
+export interface ClaimProps {
+  patient: Patient
+  medicationRequests: Array<MedicationRequest>
+  medicationDispenses: Array<MedicationDispense>
 }
 
 const Claim: React.FC<ClaimProps> = ({
-  dispensedProducts
+  patient,
+  medicationRequests,
+  medicationDispenses
 }) => {
   const [exemptionInfo, setExemptionInfo] = useState(INITIAL_EXEMPTION_INFO)
   const updateExemptionInfo = createStateUpdater(setExemptionInfo)
 
+  const staticDispensedProductInfo = getStaticDispensedProductInfo(medicationDispenses)
   const initialDispensedProductInfoMap: DispensedProductInfoMap = Object.fromEntries(
-    dispensedProducts.map(product => [product.id, INITIAL_DISPENSED_PRODUCT_INFO])
+    staticDispensedProductInfo.map(product => [product.id, INITIAL_DISPENSED_PRODUCT_INFO])
   )
   const [dispensedProductInfoMap, setDispensedProductInfoMap] = useState(initialDispensedProductInfoMap)
   const updateDispensedProductInfoMap = createStateUpdater(setDispensedProductInfoMap)
@@ -53,13 +61,15 @@ const Claim: React.FC<ClaimProps> = ({
     event.preventDefault()
     console.log(JSON.stringify(exemptionInfo))
     console.log(JSON.stringify(dispensedProductInfoMap))
-    //TODO - build claim, post to server
+    const claim = createClaim(patient, medicationRequests, medicationDispenses, exemptionInfo, dispensedProductInfoMap)
+    console.log(JSON.stringify(claim))
+    //TODO - post to server
   }
 
   return (
     <Form onSubmit={handleSubmit}>
       <Label isPageHeading>Claim for Dispensed Medication</Label>
-      {dispensedProducts.map(dispensedProduct =>
+      {staticDispensedProductInfo.map(dispensedProduct =>
         <ClaimDispensedProduct
           key={dispensedProduct.id}
           staticInfo={dispensedProduct}
@@ -73,6 +83,15 @@ const Claim: React.FC<ClaimProps> = ({
       <Button type="submit">Claim</Button>
     </Form>
   )
+}
+
+function getStaticDispensedProductInfo(medicationDispenses: Array<MedicationDispense>): Array<StaticDispensedProductInfo> {
+  return medicationDispenses.map(medicationDispense => ({
+    id: getMedicationDispenseLineItemId(medicationDispense),
+    productName: medicationDispense.medicationCodeableConcept.text,
+    quantityDispensed: `${medicationDispense.quantity.value} ${medicationDispense.quantity.unit}`,
+    status: getTaskBusinessStatusExtension(medicationDispense.extension).valueCoding.display
+  }))
 }
 
 export interface DispensedProductInfoMap {

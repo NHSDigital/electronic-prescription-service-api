@@ -1,4 +1,4 @@
-import {mergeState, sparseArray} from "../../../src/components/claim/stateHelpers"
+import {mergeState, sparseArray} from "../../../src/components/stateHelpers"
 
 test.each([
   [

@@ -1,7 +1,7 @@
 import * as React from "react"
 import {Input, Select} from "nhsuk-react-components"
-import dispenserEndorsementCodings from "../reference-data/dispenserEndorsementCodings"
-import {DeepPartial} from "./stateHelpers"
+import dispenserEndorsementCodings from "./reference-data/dispenserEndorsementCodings"
+import {DeepPartial} from "../stateHelpers"
 
 export interface EndorsementInfo {
   code: string

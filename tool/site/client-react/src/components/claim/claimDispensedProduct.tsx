@@ -2,7 +2,7 @@ import * as React from "react"
 import {Fragment} from "react"
 import ClaimEndorsement, {EndorsementInfo} from "./claimEndorsement"
 import {Button, Checkboxes, Fieldset, SummaryList} from "nhsuk-react-components"
-import {DeepPartial, sparseArray} from "./stateHelpers"
+import {DeepPartial, sparseArray} from "../stateHelpers"
 
 export interface StaticDispensedProductInfo {
   id: string,
