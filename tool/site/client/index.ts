@@ -133,7 +133,7 @@ customWindow.sendPrescriptionRequest = function () {
   try {
     const urlParams = new URLSearchParams(window.location.search)
     const state = JSON.parse(Buffer.from(urlParams.get("state"), "base64").toString())
-    if (state.baseUrl != pageData.baseUrl) {
+    if (state.baseUrl !== pageData.baseUrl) {
       window.location.href = state.baseUrl + window.location.search
     }
     const signatureToken = urlParams.get("token")
