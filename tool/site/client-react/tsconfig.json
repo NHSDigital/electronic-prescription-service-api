@@ -5,12 +5,15 @@
     "noImplicitAny": false,
     "moduleResolution": "node",
     "module": "es6",
-    "target": "es5",
+    "target": "es6",
     "lib": [
       "es2019",
       "dom"
-    ]
+    ],
+    "jsx": "react-jsx",
+    "esModuleInterop": true
   },
   "skipLibCheck": true,
-  "files": ["index.ts", "data/prescriptions.ts"],
+  "files": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
 }

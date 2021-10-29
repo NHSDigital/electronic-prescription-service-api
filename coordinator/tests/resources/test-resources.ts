@@ -27,9 +27,11 @@ export class ExamplePrescription {
   fhirMessageCancel: fhir.Bundle
   fhirMessageDispense: fhir.Bundle
   fhirMessageDigest: fhir.Parameters
+  fhirMessageClaim: fhir.Claim
   hl7V3Message: ElementCompact
   hl7V3MessageCancel: ElementCompact
   hl7V3MessageDispense: ElementCompact
+  hl7V3MessageClaim: ElementCompact
 
   hl7V3SignatureFragments?: ElementCompact
   hl7V3FragmentsCanonicalized?: string
@@ -82,6 +84,18 @@ export class ExamplePrescription {
     if (fs.existsSync(hl7V3MessageDispensePath)) {
       const hl7V3MessageDispenseStr = fs.readFileSync(hl7V3MessageDispensePath, "utf-8")
       this.hl7V3MessageDispense = XmlJs.xml2js(hl7V3MessageDispenseStr, {compact: true})
+    }
+
+    const fhirMessageClaimPath = path.join(location, "1-Claim-Request-200_OK.json")
+    if (fs.existsSync(fhirMessageClaimPath)) {
+      const fhirMessageClaimStr = fs.readFileSync(fhirMessageClaimPath, "utf-8")
+      this.fhirMessageClaim = LosslessJson.parse(fhirMessageClaimStr)
+    }
+
+    const hl7V3MessageClaimPath = path.join(location, "1-Convert-Response-Claim-200_OK.xml")
+    if (fs.existsSync(hl7V3MessageClaimPath)) {
+      const hl7V3MessageClaimStr = fs.readFileSync(hl7V3MessageClaimPath, "utf-8")
+      this.hl7V3MessageClaim = XmlJs.xml2js(hl7V3MessageClaimStr, {compact: true})
     }
   }
 }

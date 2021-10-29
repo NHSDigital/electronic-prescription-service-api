@@ -3,6 +3,8 @@ import * as extension from "./extension"
 import * as practitionerRole from "./practitioner-role"
 import * as medicationRequest from "./medication-request"
 import {LosslessNumber} from "lossless-json"
+import {MedicationRequest} from "./medication-request";
+import {IdentifierReferenceExtension} from "./extension";
 
 /**
  * Details of the claim itself
@@ -15,6 +17,7 @@ export interface Claim extends common.Resource {
   payee: ClaimPayee
   insurance: Array<ClaimInsurance>
   item: Array<ClaimItem>
+  extension: Array<extension.IdentifierExtension>
 }
 
 export interface ClaimPrescription extends common.IdentifierReference<medicationRequest.MedicationRequest> {
@@ -41,7 +44,7 @@ export interface ClaimItem extends BaseClaimItemDetail {
  * Details of the line item
  */
 export interface ClaimItemDetail extends BaseClaimItemDetail {
-  extension: Array<extension.CodingExtension>
+  extension: Array<extension.IdentifierReferenceExtension<MedicationRequest> | extension.CodingExtension | extension.IdentifierExtension>
   subDetail: Array<ClaimItemSubDetail>
 }
 

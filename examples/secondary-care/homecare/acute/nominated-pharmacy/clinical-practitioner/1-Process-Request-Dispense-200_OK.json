@@ -68,8 +68,8 @@
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
-              "code": "0003",
-              "display": "With Dispenser - Active"
+              "code": "0006",
+              "display": "Dispensed"
             }
           }
         ],
@@ -158,10 +158,10 @@
           ]
         },
         "quantity": {
-          "value": 28,
-          "unit": "tablet",
+          "value": 5,
+          "unit": "ml",
           "system": "http://snomed.info/sct",
-          "code": "428673006"
+          "code": "385024007"
         },
         "whenPrepared": "2021-05-07T14:47:29+00:00",
         "dosageInstruction": [
@@ -180,15 +180,15 @@
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
             "valueCoding": {
               "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
-              "code": "0003",
-              "display": "With Dispenser - Active"
+              "code": "0006",
+              "display": "Dispensed"
             }
           }
         ],
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
-            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
           }
         ],
         "status": "completed",
