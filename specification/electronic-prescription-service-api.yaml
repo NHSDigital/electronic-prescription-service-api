@@ -59,7 +59,7 @@ info:
     The immediate priority of EPS development is to support the rollout of the next-gen FHIR APIs for primary care and secondary care prescribing and dispensing. Alongside this we will be working on integrating a new FHIR-compliant prescription tracker into the next gen APIs.
     
     ### Prescribing API
-    There are three types of medication workflows
+    This API supports two types of prescribing medication workflows
     
     #### Primary care medication workflow
     In a primary care medication workflow, the prescription is sent from a primary care service, such as a GP practice to a pharmacy. For this workflow, the API is in [alpha](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
@@ -71,12 +71,19 @@ info:
     - it is available in integration and production
     - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
     
-    #### Tertiary care medication workflow
-    This API does not support tertiary care medication workflow.
-    
     ### Dispensing API
-    All aspects of the dispensing workflow are currently available for testing in the `int` envronment. This includes, download and mark prescriptions as dispensed, and withdraw and return prescriptions.
-        
+    This API supports two types of dispensing medication workflows
+
+    #### Community pharmacy workflow
+    In a community pharmacy workflow, prescriptions can be released (downloaded) from Spine, updated, dispensed, and then claimed by the pharmacy
+    - it is available for testing in the integration environment, but not for production use
+    - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
+
+    #### Homecare dispenser workflow
+    In a homecare dispenser workflow, prescriptions can be released (downloaded) from Spine, updated, and dispensed by the dispenser
+    - it is available for testing in the integration environment, but not for production use
+    - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
+
     ### Roadmap
     To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?tag=eps-fhir-api).
     
@@ -116,7 +123,7 @@ info:
     | -------------     | --------------------------------------------------------------------|
     | Sandbox           | `https://sandbox.api.service.nhs.uk/electronic-prescriptions`       |
     | Integration test  | `https://int.api.service.nhs.uk/electronic-prescriptions`           |
-    | Production        | Not yet available                                                   |
+    | Production        |  `https://api.service.nhs.uk/electronic-prescriptions`                                                 |
 
     ### Sandbox testing
     Our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing):
@@ -155,7 +162,7 @@ info:
     | --------------| ---------------------- | -------------------------------------------------------------------------------- |
     | 400           | MISSING_FIELD          | A required field is missing within the request, see `display` field in response. |
     | 400           | INVALID_VALUE          | Invalid value in message.                                                        |
-    | 400           | INCORRECT_RESOURCETYPE | FHIR resource has an incorrect resourceType.                                        |
+    | 400           | INCORRECT_RESOURCETYPE | FHIR resource has an incorrect resourceType.                                     |
     | 404           | NOT_FOUND              | Route not found.                                                                 |
 
     ### Platform wide errors
@@ -166,35 +173,6 @@ info:
     | 404           | NOT_FOUND       | Resource not found.                                     |
 
     For further details on common HTTP status codes, see [5xx status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide)
-
-    ## Endpoint overview
-    
-    ### Prescribing endpoints
-    #### To encode prescription data
-    POST a [prescription-order message](https://simplifier.net/guide/DigitalMedicines/prescription-order) to the `/FHIR/R4/$prepare` endpoint and get the encoded prescription data that requires a signature.
-    
-    #### To create a prescription:
-    
-    1. Sign the encoded prescription data using the [Signing Service API](https://digital.nhs.uk/developer/api-catalogue/signing-service) or your existing local signing solution.
-    2. Generate an XML-DSig using the signed prescription data (see below).
-    3. Put the XML-DSig in a `Provenance` resource.
-    4. Add the `Provenance` to the `prescription-order` message.
-    5. POST the signed `prescription-order` message to the `/FHIR/R4/$process-message` endpoint.
-
-    To generate an XML-DSig:
-    1. Get the encoded prescription data from the `/FHIR/R4/$prepare` endpoint of the EPS API.
-    2. Get the signature and certificate from the `/SignatureResponse` endpoint of the [Signing Service API](https://digital.nhs.uk/developer/api-catalogue/signing-service).
-    3. Assemble the XML-DSig (see the javascript example code below).
-
-    Example code to generate an XML-DSig:
-    ```javascript
-      function toXmlSignature(digest: string, signature: string, certificate: string): string {
-        const decodedDigest = Buffer.from(digest, "base64").toString("utf-8")
-        const digestWithoutNamespace = decodedDigest.replace("<SignedInfo xmlns=\"http://www.w3.org/2000/09/xmldsig#\">", "<SignedInfo>")
-        const xmlSignature = `<Signature xmlns="http://www.w3.org/2000/09/xmldsig#">${digestWithoutNamespace}<SignatureValue>${signature}</SignatureValue><KeyInfo><X509Data><X509Certificate>${certificate}</X509Certificate></X509Data></KeyInfo></Signature>`
-        return Buffer.from(xmlSignature, "utf-8").toString("base64")
-      }
-    ```
 
 servers:
   - url: 'https://sandbox.api.service.nhs.uk/electronic-prescriptions'
