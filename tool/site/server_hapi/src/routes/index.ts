@@ -4,6 +4,7 @@ import sessionRoutes from "./state/session"
 import editRoutes from "./prescribe/edit"
 import signRoutes from "./prescribe/sign"
 import sendRoutes from "./prescribe/send"
+import searchRoutes from "./tracker/search"
 
 const authRoutes = [
   ...accessTokenRoutes
@@ -19,6 +20,10 @@ const prescribeRoutes = [
   ...sendRoutes
 ]
 
+const trackerRoutes = [
+  ...searchRoutes
+]
+
 const healthcheckRoutes = [
   ...statusRoutes
 ]
@@ -27,7 +32,8 @@ const routes = [
   ...authRoutes,
   ...stateRoutes,
   ...healthcheckRoutes,
-  ...prescribeRoutes
+  ...prescribeRoutes,
+  ...trackerRoutes
 ]
 
 export default routes

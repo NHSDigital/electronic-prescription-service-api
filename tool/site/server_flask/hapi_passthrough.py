@@ -5,6 +5,7 @@ from cookies import get_session_cookie
 
 HAPI_URL = os.environ["HAPI_URL"]
 
+# Health
 
 def get_status():
     return httpx.get(f"{HAPI_URL}/_status", verify=False).json()
@@ -13,6 +14,7 @@ def get_status():
 def get_healthcheck():
     return httpx.get(f"{HAPI_URL}/_healthcheck", verify=False).json()
 
+# Login
 
 def post_login(auth_method, access_token):
     response =  httpx.post(
@@ -26,6 +28,8 @@ def post_login(auth_method, access_token):
     hapi_session_cookie = response.cookies["session"]
     return hapi_session_cookie, response.json()
 
+
+# Send Prescription User-Journey
 
 def get_edit(prescription_id):
     return make_get_request(f"{HAPI_URL}/prescribe/edit?prescription_id={prescription_id}")
@@ -42,6 +46,14 @@ def post_sign():
 def post_send(body):
     return make_post_request(f"{HAPI_URL}/prescribe/send", body)
 
+
+# Tracker
+
+def get_tracker_prescription(short_prescription_id):
+    return make_get_request(f"{HAPI_URL}/search?prescription_id={short_prescription_id}")
+
+
+# Session
 
 def get_hapi_session():
     return make_get_request(f"{HAPI_URL}/session")

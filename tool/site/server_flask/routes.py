@@ -148,6 +148,11 @@ def get_home():
     return render_rivets_client("home")
 
 
+@app.route("/search", methods=["GET"])
+def get_search():
+    return render_react_client("search")
+
+
 @app.route(LOAD_URL, methods=["GET"])
 @exclude_from_auth()
 def get_load():
@@ -202,6 +207,15 @@ def get_metadata():
 def get_prescription(short_prescription_id):
     bundle = hapi_passthrough.get_edit(str(short_prescription_id))
     return app.make_response(bundle["bundle"])
+
+
+@app.route("/tracker", methods=["GET"])
+def get_tracker_prescription():
+    # handles '+' in query_string where flask.request.args.get does not
+    short_prescription_id = flask.request.query_string.decode("utf-8")[len("prescription_id="):]
+    hapi_response = hapi_passthrough.get_tracker_prescription(short_prescription_id)
+    response = app.make_response(hapi_response)
+    return response
 
 
 @app.route(EDIT_URL, methods=["GET"])
