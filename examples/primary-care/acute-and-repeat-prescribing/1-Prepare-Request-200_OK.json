@@ -191,6 +191,15 @@
               "code": "0101",
               "display": "Primary Care Prescriber - Medical Prescriber"
             }
+          },
+          {
+            "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
+            "extension": [
+              {
+                "url": "authorisationExpiryDate",
+                "valueDateTime": "2020-12-07"
+              }
+            ]
           }
         ],
         "identifier": [
