@@ -117,8 +117,7 @@ customWindow.sendSignRequest = function () {
         .map(issue => issue.diagnostics)
         .forEach(diagnostic => addError(diagnostic))
     } else if (response.redirectUri) {
-      const state = Buffer.from(JSON.stringify({baseUrl: pageData.baseUrl})).toString("base64")
-      window.location.href = `${response.redirectUri}&state=${state}`
+      window.location.href = response.redirectUri
     } else {
       addError(`Unable to sign prescription, this is most likely because your session has expired. Please try to change-auth or login again`)
     }
@@ -132,13 +131,6 @@ customWindow.sendPrescriptionRequest = function () {
   resetErrors()
   try {
     const urlParams = new URLSearchParams(window.location.search)
-    const stateParam = urlParams.get("state")
-    if (stateParam) {
-      const state = JSON.parse(atob(stateParam))
-      if (state.baseUrl !== pageData.baseUrl) {
-        window.location.href = state.baseUrl + window.location.search
-      }
-    }
     const signatureToken = urlParams.get("token")
     const response = makeRequest("POST", `${pageData.baseUrl}prescribe/send`, JSON.stringify({signatureToken}))
     pageData.signResponse = null
