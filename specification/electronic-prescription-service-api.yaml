@@ -74,12 +74,12 @@ info:
     This API supports two types of dispensing medication workflows
 
     #### Community pharmacy workflow
-    In a community pharmacy workflow, prescriptions can be releaased (downloaded) from Spine and updated and dispensed by the pharmacy
+    In a community pharmacy workflow, prescriptions can be released (downloaded) from Spine, updated, dispensed, and then claimed by the pharmacy
     - it is available for testing in the integration environment, but not for production use
     - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
 
     #### Homecare dispenser workflow
-    In a homecare dispenser workflow, prescriptions can be releaased (downloaded) from Spine and updated and dispensed by the dispenser
+    In a homecare dispenser workflow, prescriptions can be released (downloaded) from Spine, updated, and dispensed by the dispenser
     - it is available for testing in the integration environment, but not for production use
     - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
 
