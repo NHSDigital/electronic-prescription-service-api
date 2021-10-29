@@ -133,12 +133,12 @@ customWindow.sendPrescriptionRequest = function () {
   try {
     const urlParams = new URLSearchParams(window.location.search)
     const stateParam = urlParams.get("state")
-    //if (stateParam) {
+    if (stateParam) {
       const state = JSON.parse(atob(stateParam))
       if (state.baseUrl !== pageData.baseUrl) {
         window.location.href = state.baseUrl + window.location.search
       }
-    //}
+    }
     const signatureToken = urlParams.get("token")
     const response = makeRequest("POST", `${pageData.baseUrl}prescribe/send`, JSON.stringify({signatureToken}))
     pageData.signResponse = null
