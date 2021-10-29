@@ -22,24 +22,41 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
   const [claimProps, setClaimProps] = useState<ClaimProps>()
   const [error, setError] = useState<string>()
 
+  async function retrievePrescriptionDetails() {
+    const {data: prescriptionOrder} = await axios.get<Bundle>(
+      `${baseUrl}prescription/${prescriptionId}`
+    )
+    if (!prescriptionOrder) {
+      setError("Prescription not found. Is the ID correct?")
+      return
+    }
+
+    const {data: dispenseNotifications} = await axios.get<Array<Bundle>>(
+      `${baseUrl}dispense/history?prescription_id=${prescriptionId}`
+    )
+    if (!dispenseNotifications?.length) {
+      setError("Dispense history not found. Has this prescription been dispensed?")
+      return
+    }
+
+    const patients = getPatientResources(prescriptionOrder)
+    const medicationRequests = getMedicationRequestResources(prescriptionOrder)
+    const medicationDispenses = dispenseNotifications.map(getMedicationDispenseResources)
+      .reduce((a, b) => a.concat(b), [])
+
+    setClaimProps({
+      patient: patients[0],
+      medicationRequests: medicationRequests,
+      medicationDispenses: medicationDispenses
+    })
+  }
+
   useEffect(() => {
     if (!claimProps) {
-      axios.get<HistoryResponse>(`${baseUrl}dispense/history?prescription_id=${prescriptionId}`)
-        .then(({data}) => {
-          const prescriptionOrder = data.prescription_order
-          const dispenseNotifications = data.dispense_notifications
-          if (!prescriptionOrder || !dispenseNotifications) {
-            setError("Incomplete dispensing history for prescription. Has this prescription been dispensed yet?")
-          } else {
-            setClaimProps({
-              patient: (getPatientResources(prescriptionOrder))[0],
-              medicationRequests: getMedicationRequestResources(prescriptionOrder),
-              medicationDispenses: dispenseNotifications.map(getMedicationDispenseResources)
-                .reduce((a, b) => a.concat(b), [])
-            })
-          }
-        })
-        .catch(() => setError("Failed to retrieve dispensing history for prescription."))
+      retrievePrescriptionDetails().catch(error => {
+        console.log(error)
+        setError("Failed to retrieve prescription details.")
+      })
     }
   }, [claimProps])
 
@@ -53,11 +70,6 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
       {claimProps && <Claim {...claimProps}/>}
     </>
   )
-}
-
-interface HistoryResponse {
-  prescription_order: Bundle,
-  dispense_notifications: Array<Bundle>
 }
 
 export default ClaimPage

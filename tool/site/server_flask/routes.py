@@ -226,7 +226,7 @@ def get_edit():
     if short_prescription_id is None:
         return flask.redirect(f"{config.PUBLIC_APIGEE_URL}{config.BASE_URL}change-auth")
     hapi_passthrough.get_edit(short_prescription_id)
-    response = app.make_response(render_react_client("edit")) 
+    response = app.make_response(render_react_client("edit"))
     hapi_session = hapi_passthrough.get_hapi_session()
     short_prescription_ids = hapi_session["prescriptionIds"]
     short_prescription_id = hapi_session["prescriptionId"]
@@ -379,21 +379,15 @@ def post_dispense():
 @app.route(DISPENSING_HISTORY_URL, methods=["GET"])
 def get_dispensing_history():
     short_prescription_id = flask.request.args.get("prescription_id")
-    if not contains_prescription_order_send_request(short_prescription_id):
-        return {}
-    prescription_order = load_prescription_order_send_request(short_prescription_id)
     dispense_notifications = load_dispense_notification_send_requests(short_prescription_id)
-    return {
-        "prescription_order": prescription_order,
-        "dispense_notifications": dispense_notifications
-    }
+    return dispense_notifications
 
 
 @app.route(CLAIM_URL, methods=["GET"])
 def get_claim():
     if config.ENVIRONMENT == "prod":
         return app.make_response("Bad Request", 400)
-    return render_rivets_client("claim")
+    return render_react_client("claim")
 
 
 @app.route(CLAIM_URL, methods=["POST"])
