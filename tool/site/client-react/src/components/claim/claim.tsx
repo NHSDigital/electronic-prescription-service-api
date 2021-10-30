@@ -6,7 +6,7 @@ import ClaimExemptionStatus, {ExemptionInfo} from "./claimExemptionStatus"
 import ClaimDispensedProduct, {DispensedProductInfo, StaticDispensedProductInfo} from "./claimDispensedProduct"
 import {createStateUpdater} from "../stateHelpers"
 import {EndorsementInfo} from "./claimEndorsement"
-import {MedicationDispense, MedicationRequest, Patient} from "fhir/r4"
+import * as fhir from "fhir/r4"
 import {createClaim, getMedicationDispenseLineItemId} from "./createDispenseClaim"
 import {getTaskBusinessStatusExtension} from "../../fhir/customExtensions"
 
@@ -26,15 +26,17 @@ const INITIAL_ENDORSEMENT_INFO: EndorsementInfo = {
 }
 
 export interface ClaimProps {
-  patient: Patient
-  medicationRequests: Array<MedicationRequest>
-  medicationDispenses: Array<MedicationDispense>
+  patient: fhir.Patient
+  medicationRequests: Array<fhir.MedicationRequest>
+  medicationDispenses: Array<fhir.MedicationDispense>
+  sendClaim: (claim: fhir.Claim) => void
 }
 
 const Claim: React.FC<ClaimProps> = ({
   patient,
   medicationRequests,
-  medicationDispenses
+  medicationDispenses,
+  sendClaim
 }) => {
   const [exemptionInfo, setExemptionInfo] = useState(INITIAL_EXEMPTION_INFO)
   const updateExemptionInfo = createStateUpdater(setExemptionInfo)
@@ -63,7 +65,7 @@ const Claim: React.FC<ClaimProps> = ({
     console.log(JSON.stringify(dispensedProductInfoMap))
     const claim = createClaim(patient, medicationRequests, medicationDispenses, exemptionInfo, dispensedProductInfoMap)
     console.log(JSON.stringify(claim))
-    //TODO - post to server
+    sendClaim(claim)
   }
 
   return (
@@ -85,7 +87,9 @@ const Claim: React.FC<ClaimProps> = ({
   )
 }
 
-function getStaticDispensedProductInfo(medicationDispenses: Array<MedicationDispense>): Array<StaticDispensedProductInfo> {
+function getStaticDispensedProductInfo(
+  medicationDispenses: Array<fhir.MedicationDispense>
+): Array<StaticDispensedProductInfo> {
   return medicationDispenses.map(medicationDispense => ({
     id: getMedicationDispenseLineItemId(medicationDispense),
     productName: medicationDispense.medicationCodeableConcept.text,

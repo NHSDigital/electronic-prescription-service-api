@@ -8,7 +8,8 @@ import {
   getMedicationRequestResources,
   getPatientResources
 } from "../../fhir/bundleResourceFinder"
-import {Bundle} from "fhir/r4"
+import * as fhir from "fhir/r4"
+import Pre from "../pre"
 
 interface ClaimPageProps {
   baseUrl: string
@@ -19,64 +20,91 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
   baseUrl,
   prescriptionId
 }) => {
+  const [loadingMessage, setLoadingMessage] = useState<string>()
+  const [errorMessage, setErrorMessage] = useState<string>()
   const [claimProps, setClaimProps] = useState<ClaimProps>()
-  const [error, setError] = useState<string>()
-
-  async function retrievePrescriptionDetails() {
-    const prescriptionOrderResponse = await axios.get<Bundle>(
-      `${baseUrl}prescription/${prescriptionId}`
-    )
-    const prescriptionOrder = prescriptionOrderResponse.data
-    if (!prescriptionOrder) {
-      setError("Prescription not found. Is the ID correct?")
-      return
-    }
-
-    const historyResponse = await axios.get<HistoryResponse>(
-      `${baseUrl}dispense/history?prescription_id=${prescriptionId}`
-    )
-    const dispenseNotifications = historyResponse.data?.dispense_notifications
-    if (!dispenseNotifications?.length) {
-      setError("Dispense history not found. Has this prescription been dispensed?")
-      return
-    }
-
-    console.log(dispenseNotifications)
-
-    const patients = getPatientResources(prescriptionOrder)
-    const medicationRequests = getMedicationRequestResources(prescriptionOrder)
-    const medicationDispenses = dispenseNotifications.flatMap(getMedicationDispenseResources)
-
-    setClaimProps({
-      patient: patients[0],
-      medicationRequests: medicationRequests,
-      medicationDispenses: medicationDispenses
-    })
-  }
+  const [claimResult, setClaimResult] = useState<string>()
 
   useEffect(() => {
     if (!claimProps) {
       retrievePrescriptionDetails().catch(error => {
         console.log(error)
-        setError("Failed to retrieve prescription details.")
+        setErrorMessage("Failed to retrieve prescription details.")
       })
     }
   }, [claimProps])
 
-  return (
-    <>
-      {!error && !claimProps && <Label isPageHeading>Retrieving Dispense History...</Label>}
-      {error && <>
-        <Label isPageHeading>Error</Label>
-        <ErrorMessage>{error}</ErrorMessage>
-      </>}
-      {claimProps && <Claim {...claimProps}/>}
+  async function retrievePrescriptionDetails() {
+    setLoadingMessage("Retrieving dispense history.")
+
+    const prescriptionOrderResponse = await axios.get<fhir.Bundle>(`${baseUrl}prescription/${prescriptionId}`)
+    const prescriptionOrder = prescriptionOrderResponse.data
+    if (!prescriptionOrder) {
+      setErrorMessage("Prescription not found. Is the ID correct?")
+      return
+    }
+
+    const historyResponse = await axios.get<HistoryResponse>(`${baseUrl}dispense/history?prescription_id=${prescriptionId}`)
+    const dispenseNotifications = historyResponse.data?.dispense_notifications
+    if (!dispenseNotifications?.length) {
+      setErrorMessage("Dispense history not found. Has this prescription been dispensed?")
+      return
+    }
+
+    setClaimProps({
+      patient: getPatientResources(prescriptionOrder)[0],
+      medicationRequests: getMedicationRequestResources(prescriptionOrder),
+      medicationDispenses: dispenseNotifications.flatMap(getMedicationDispenseResources),
+      sendClaim
+    })
+    setLoadingMessage(undefined)
+  }
+
+  async function sendClaim(claim: fhir.Claim): Promise<void> {
+    setLoadingMessage("Sending claim.")
+
+    const response = await axios.post(`${baseUrl}dispense/claim`, claim)
+    const resultStr = JSON.stringify(response.data)
+    console.log(response.data)
+    console.log(resultStr)
+
+    setClaimResult(resultStr)
+    setLoadingMessage(undefined)
+  }
+
+  if (errorMessage) {
+    return <>
+      <Label isPageHeading>Error</Label>
+      <ErrorMessage>{errorMessage}</ErrorMessage>
     </>
-  )
+  }
+
+  if (loadingMessage) {
+    return <>
+      <Label isPageHeading>Loading...</Label>
+      <Label>{loadingMessage}</Label>
+    </>
+  }
+
+  if (claimResult) {
+    return <>
+      <Label isPageHeading>Result</Label>
+      <Pre>{claimResult}</Pre>
+    </>
+  }
+
+  if (claimProps) {
+    return <Claim {...claimProps}/>
+  }
+
+  return <>
+    <Label isPageHeading>Error</Label>
+    <ErrorMessage>An unknown error occurred.</ErrorMessage>
+  </>
 }
 
 interface HistoryResponse {
-  dispense_notifications: Array<Bundle>
+  dispense_notifications: Array<fhir.Bundle>
 }
 
 export default ClaimPage
