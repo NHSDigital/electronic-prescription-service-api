@@ -64,11 +64,9 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
     setLoadingMessage("Sending claim.")
 
     const response = await axios.post(`${baseUrl}dispense/claim`, claim)
-    const resultStr = JSON.stringify(response.data)
-    console.log(response.data)
-    console.log(resultStr)
+    const responseStr = JSON.stringify(response.data)
 
-    setClaimResult(resultStr)
+    setClaimResult(responseStr)
     setLoadingMessage(undefined)
   }
 

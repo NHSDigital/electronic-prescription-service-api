@@ -24,18 +24,15 @@ import {
   DEPRECATED_CODEABLE_CONCEPT_CHARGE_EXEMPTION_NONE
 } from "./reference-data/codeableConcepts"
 import {INSURANCE_NHS_BSA} from "./reference-data/insurance"
-import {ExemptionInfo} from "./claimExemptionStatus"
-import {DispensedProductInfoMap} from "./claim"
+import {ClaimFormValues, ProductInfo} from "./claim"
 import chargeExemptionCodings from "./reference-data/chargeExemptionCodings"
-import {DispensedProductInfo} from "./claimDispensedProduct"
 import dispenserEndorsementCodings from "./reference-data/dispenserEndorsementCodings"
 
 export function createClaim(
   patient: Patient,
   medicationRequests: Array<MedicationRequest>,
   medicationDispenses: Array<MedicationDispense>,
-  exemptionInfo: ExemptionInfo,
-  dispensedProductInfoMap: DispensedProductInfoMap
+  claimFormValues: ClaimFormValues
 ): fhir.Claim {
   const patientIdentifier = patient.identifier[0]
 
@@ -67,8 +64,7 @@ export function createClaim(
         prescriptionStatusExtension,
         medicationRequests,
         medicationDispenses,
-        exemptionInfo,
-        dispensedProductInfoMap
+        claimFormValues
       )
     ]
   }
@@ -108,13 +104,12 @@ function createClaimItem(
   prescriptionStatusExtension: TaskBusinessStatusExtension,
   medicationRequests: Array<fhir.MedicationRequest>,
   medicationDispenses: Array<fhir.MedicationDispense>,
-  exemptionInfo: ExemptionInfo,
-  dispensedProductInfoMap: DispensedProductInfoMap
+  claimFormValues: ClaimFormValues
 ): fhir.ClaimItem {
   const lineItemIds = medicationRequests.map(getMedicationRequestLineItemId)
 
   const exemptionStatusCodeableConcept: fhir.CodeableConcept = {
-    coding: chargeExemptionCodings.filter(coding => coding.code === exemptionInfo.exemptionStatus)
+    coding: chargeExemptionCodings.filter(coding => coding.code === claimFormValues.exemptionInfo.exemptionStatus)
   }
 
   return {
@@ -123,7 +118,7 @@ function createClaimItem(
     productOrService: CODEABLE_CONCEPT_PRESCRIPTION,
     programCode: [
       exemptionStatusCodeableConcept,
-      exemptionInfo.evidenceSeen
+      claimFormValues.exemptionInfo.evidenceSeen
         ? CODEABLE_CONCEPT_EXEMPTION_EVIDENCE_SEEN
         : CODEABLE_CONCEPT_EXEMPTION_NO_EVIDENCE_SEEN
     ],
@@ -134,7 +129,7 @@ function createClaimItem(
       const medicationDispensesForLineItem = medicationDispenses.filter(
         medicationDispense => getMedicationDispenseLineItemId(medicationDispense) === lineItemId
       )
-      const dispensedProductInfoForLineItem = dispensedProductInfoMap[lineItemId]
+      const dispensedProductInfoForLineItem = claimFormValues.productInfo.find(product => product.id === lineItemId)
       return createClaimItemDetail(
         index + 1,
         lineItemId,
@@ -151,7 +146,7 @@ function createClaimItemDetail(
   lineItemId: string,
   medicationRequest: fhir.MedicationRequest,
   medicationDispenses: Array<fhir.MedicationDispense>,
-  dispensedProductInfo: DispensedProductInfo
+  dispensedProductInfo: ProductInfo
 ): fhir.ClaimItemDetail {
   const claimItemDetailExtensions: Array<fhir.Extension> = [
     createClaimSequenceIdentifierExtension(),
@@ -200,7 +195,7 @@ function createMedicationRequestReferenceExtension(lineItemId: string): ClaimMed
 function createClaimItemDetailSubDetail(
   sequence: number,
   medicationDispense: fhir.MedicationDispense,
-  dispensedProductInfo: DispensedProductInfo
+  dispensedProductInfo: ProductInfo
 ): fhir.ClaimItemDetailSubDetail {
   const endorsementCodeableConcepts: Array<fhir.CodeableConcept> = dispensedProductInfo.endorsements
     .map(endorsement => ({
