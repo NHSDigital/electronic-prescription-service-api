@@ -53,9 +53,7 @@ const Claim: React.FC<ClaimProps> = ({
             )}
           </Field>
           <Checkboxes>
-            <Field name="exemptionInfo.evidenceSeen" as={Checkboxes.Box}>
-              Evidence Seen
-            </Field>
+            <Field name="exemptionInfo.evidenceSeen" type="checkbox" as={Checkboxes.Box}>Evidence Seen</Field>
           </Checkboxes>
           <Button type="submit">Claim</Button>
           <Button type="reset" secondary>Reset</Button>
@@ -76,7 +74,7 @@ const ClaimProduct = ({name, product}) => {
       <Fieldset.Legend size="m">{product.name}</Fieldset.Legend>
       <ClaimProductSummaryList {...product}/>
       <Checkboxes>
-        <Field name={`${name}.patientPaid`} as={Checkboxes.Box}>Patient Paid</Field>
+        <Field name={`${name}.patientPaid`} type="checkbox" as={Checkboxes.Box}>Patient Paid</Field>
       </Checkboxes>
       <FieldArray name={`${name}.endorsements`}>
         {({push, remove}) =>
