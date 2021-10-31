@@ -1,60 +1,36 @@
-import {Button, Checkboxes, Fieldset, Form, Input, Label, Select, SummaryList} from "nhsuk-react-components"
+import {Button, Checkboxes, Fieldset, Form, Input, Select, SummaryList} from "nhsuk-react-components"
 import * as React from "react"
-import dispenserEndorsementCodings from "./reference-data/dispenserEndorsementCodings"
-import * as fhir from "fhir/r4"
-import {createClaim, getMedicationDispenseLineItemId} from "./createDispenseClaim"
-import {getTaskBusinessStatusExtension} from "../../fhir/customExtensions"
-import {Field, FieldArray, Formik} from "formik"
-import chargeExemptionCodings from "./reference-data/chargeExemptionCodings"
+import {Field, FieldArray, Formik, getIn} from "formik"
+import {FieldArrayRenderProps} from "formik/dist/FieldArray"
+import {VALUE_SET_DISPENSER_ENDORSEMENT, VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION} from "./reference-data/valueSets"
 
 export interface ClaimProps {
-  patient: fhir.Patient
-  medicationRequests: Array<fhir.MedicationRequest>
-  medicationDispenses: Array<fhir.MedicationDispense>
-  sendClaim: (claim: fhir.Claim) => void
+  products: Array<StaticProductInfo>
+  sendClaim: (claim: ClaimFormValues) => void
 }
 
 const Claim: React.FC<ClaimProps> = ({
-  patient,
-  medicationRequests,
-  medicationDispenses,
+  products,
   sendClaim
 }) => {
   const initialValues: ClaimFormValues = {
-    productInfo: medicationDispenses.map(toProductInfo),
-    exemptionInfo: {
-      exemptionStatus: chargeExemptionCodings[0].code,
+    products: products.map(product => ({
+      ...product,
+      patientPaid: false,
+      endorsements: []
+    })),
+    exemption: {
+      code: VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION[0].code,
       evidenceSeen: false
     }
   }
 
-  const onSubmit = values => {
-    const claim = createClaim(patient, medicationRequests, medicationDispenses, values)
-    sendClaim(claim)
-  }
-
   return (
-    <Formik<ClaimFormValues> initialValues={initialValues} onSubmit={onSubmit}>
+    <Formik<ClaimFormValues> initialValues={initialValues} onSubmit={sendClaim}>
       {formik =>
         <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
-          <Label isPageHeading>Claim for Dispensed Medication</Label>
-          <FieldArray name="productInfo">
-            {() =>
-              <>
-                {formik.values.productInfo.map((product, productIndex) =>
-                  <ClaimProduct key={productIndex} name={`productInfo.${productIndex}`} product={product}/>
-                )}
-              </>
-            }
-          </FieldArray>
-          <Field name="exemptionInfo.exemptionStatus" as={Select}>
-            {chargeExemptionCodings.map(coding =>
-              <Select.Option key={coding.code} value={coding.code}>{coding.display}</Select.Option>
-            )}
-          </Field>
-          <Checkboxes>
-            <Field name="exemptionInfo.evidenceSeen" type="checkbox" as={Checkboxes.Box}>Evidence Seen</Field>
-          </Checkboxes>
+          <FieldArray name="products" component={ClaimProducts}/>
+          <ClaimExemption name="exemption"/>
           <Button type="submit">Claim</Button>
           <Button type="reset" secondary>Reset</Button>
         </Form>
@@ -63,39 +39,27 @@ const Claim: React.FC<ClaimProps> = ({
   )
 }
 
-const ClaimProduct = ({name, product}) => {
-  const initialEndorsementValues: EndorsementInfo = {
-    code: dispenserEndorsementCodings[0].code,
-    supportingInfo: ""
-  }
-
+const ClaimProducts: React.FC<FieldArrayRenderProps> = ({form, name}) => {
+  const products = getIn(form.values, name)
   return (
-    <Fieldset>
-      <Fieldset.Legend size="m">{product.name}</Fieldset.Legend>
-      <ClaimProductSummaryList {...product}/>
-      <Checkboxes>
-        <Field name={`${name}.patientPaid`} type="checkbox" as={Checkboxes.Box}>Patient Paid</Field>
-      </Checkboxes>
-      <FieldArray name={`${name}.endorsements`}>
-        {({push, remove}) =>
-          <>
-            {product.endorsements.map((endorsement, index) =>
-              <ClaimEndorsement
-                key={index}
-                name={`${name}.endorsements.${index}`}
-                label={`Endorsement ${index + 1}`}
-                removeEndorsement={() => remove(index)}
-              />
-            )}
-            <div>
-              <Button type="button" onClick={() => push(initialEndorsementValues)}>Add Endorsement</Button>
-            </div>
-          </>
-        }
-      </FieldArray>
-    </Fieldset>
+    <>
+      {products.map((product, productIndex) =>
+        <ClaimProduct key={productIndex} name={`${name}.${productIndex}`} product={product}/>
+      )}
+    </>
   )
 }
+
+const ClaimProduct = ({name, product}) => (
+  <Fieldset>
+    <Fieldset.Legend size="m">{product.name}</Fieldset.Legend>
+    <ClaimProductSummaryList {...product}/>
+    <Checkboxes>
+      <Field name={`${name}.patientPaid`} type="checkbox" as={Checkboxes.Box}>Patient Paid</Field>
+    </Checkboxes>
+    <FieldArray name={`${name}.endorsements`} component={ClaimEndorsements}/>
+  </Fieldset>
+)
 
 const ClaimProductSummaryList = ({status, quantityDispensed}) => (
   <SummaryList noBorder>
@@ -110,10 +74,34 @@ const ClaimProductSummaryList = ({status, quantityDispensed}) => (
   </SummaryList>
 )
 
+const ClaimEndorsements: React.FC<FieldArrayRenderProps> = ({form, name, push, remove}) => {
+  const initialEndorsementValues: EndorsementFormValues = {
+    code: VALUE_SET_DISPENSER_ENDORSEMENT[0].code,
+    supportingInfo: ""
+  }
+
+  const endorsements = getIn(form.values, name)
+  return (
+    <>
+      {endorsements.map((endorsement, index) =>
+        <ClaimEndorsement
+          key={index}
+          name={`${name}.${index}`}
+          label={`Endorsement ${index + 1}`}
+          removeEndorsement={() => remove(index)}
+        />
+      )}
+      <div>
+        <Button type="button" onClick={() => push(initialEndorsementValues)}>Add Endorsement</Button>
+      </div>
+    </>
+  )
+}
+
 const ClaimEndorsement = ({name, label, removeEndorsement}) => (
   <>
-    <Field name={`${name}.code`} as={Select} label={label}>
-      {dispenserEndorsementCodings.map(coding =>
+    <Field name={`${name}.code`} as={Select} label={`${label} Type`}>
+      {VALUE_SET_DISPENSER_ENDORSEMENT.map(coding =>
         <Select.Option key={coding.code} value={coding.code}>{coding.display}</Select.Option>
       )}
     </Field>
@@ -124,39 +112,45 @@ const ClaimEndorsement = ({name, label, removeEndorsement}) => (
   </>
 )
 
+const ClaimExemption = ({name}) => (
+  <Fieldset>
+    <Fieldset.Legend size="m">Prescription Charge Exemption</Fieldset.Legend>
+    <Field name={`${name}.code`} as={Select} label="Exemption Status">
+      {VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION.map(coding =>
+        <Select.Option key={coding.code} value={coding.code}>{coding.display}</Select.Option>
+      )}
+    </Field>
+    <Checkboxes>
+      <Field name={`${name}.evidenceSeen`} type="checkbox" as={Checkboxes.Box}>Evidence Seen</Field>
+    </Checkboxes>
+  </Fieldset>
+)
+
 export interface ClaimFormValues {
-  productInfo: Array<ProductInfo>
-  exemptionInfo: ExemptionInfo
+  products: Array<ProductFormValues>
+  exemption: ExemptionFormValues
 }
 
-export interface ProductInfo {
+export interface StaticProductInfo {
   id: string
   name: string
   status: string
   quantityDispensed: string
-  patientPaid: boolean
-  endorsements: Array<EndorsementInfo>
 }
 
-export interface EndorsementInfo {
+export interface ProductFormValues extends StaticProductInfo {
+  patientPaid: boolean
+  endorsements: Array<EndorsementFormValues>
+}
+
+export interface EndorsementFormValues {
   code: string
   supportingInfo: string
 }
 
-export interface ExemptionInfo {
-  exemptionStatus: string
+export interface ExemptionFormValues {
+  code: string
   evidenceSeen: boolean
-}
-
-function toProductInfo(medicationDispense: fhir.MedicationDispense): ProductInfo {
-  return {
-    id: getMedicationDispenseLineItemId(medicationDispense),
-    name: medicationDispense.medicationCodeableConcept.coding[0].display,
-    quantityDispensed: `${medicationDispense.quantity.value} ${medicationDispense.quantity.unit}`,
-    status: getTaskBusinessStatusExtension(medicationDispense.extension).valueCoding.display,
-    patientPaid: false,
-    endorsements: []
-  }
 }
 
 export default Claim

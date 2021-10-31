@@ -24,9 +24,8 @@ import {
   DEPRECATED_CODEABLE_CONCEPT_CHARGE_EXEMPTION_NONE
 } from "./reference-data/codeableConcepts"
 import {INSURANCE_NHS_BSA} from "./reference-data/insurance"
-import {ClaimFormValues, ProductInfo} from "./claim"
-import chargeExemptionCodings from "./reference-data/chargeExemptionCodings"
-import dispenserEndorsementCodings from "./reference-data/dispenserEndorsementCodings"
+import {ClaimFormValues, ProductFormValues} from "./claim"
+import {VALUE_SET_DISPENSER_ENDORSEMENT, VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION} from "./reference-data/valueSets"
 
 export function createClaim(
   patient: Patient,
@@ -109,7 +108,7 @@ function createClaimItem(
   const lineItemIds = medicationRequests.map(getMedicationRequestLineItemId)
 
   const exemptionStatusCodeableConcept: fhir.CodeableConcept = {
-    coding: chargeExemptionCodings.filter(coding => coding.code === claimFormValues.exemptionInfo.exemptionStatus)
+    coding: VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION.filter(coding => coding.code === claimFormValues.exemption.code)
   }
 
   return {
@@ -118,7 +117,7 @@ function createClaimItem(
     productOrService: CODEABLE_CONCEPT_PRESCRIPTION,
     programCode: [
       exemptionStatusCodeableConcept,
-      claimFormValues.exemptionInfo.evidenceSeen
+      claimFormValues.exemption.evidenceSeen
         ? CODEABLE_CONCEPT_EXEMPTION_EVIDENCE_SEEN
         : CODEABLE_CONCEPT_EXEMPTION_NO_EVIDENCE_SEEN
     ],
@@ -129,13 +128,13 @@ function createClaimItem(
       const medicationDispensesForLineItem = medicationDispenses.filter(
         medicationDispense => getMedicationDispenseLineItemId(medicationDispense) === lineItemId
       )
-      const dispensedProductInfoForLineItem = claimFormValues.productInfo.find(product => product.id === lineItemId)
+      const productFormValuesForLineItem = claimFormValues.products.find(product => product.id === lineItemId)
       return createClaimItemDetail(
         index + 1,
         lineItemId,
         medicationRequestForLineItem,
         medicationDispensesForLineItem,
-        dispensedProductInfoForLineItem
+        productFormValuesForLineItem
       )
     })
   }
@@ -146,7 +145,7 @@ function createClaimItemDetail(
   lineItemId: string,
   medicationRequest: fhir.MedicationRequest,
   medicationDispenses: Array<fhir.MedicationDispense>,
-  dispensedProductInfo: ProductInfo
+  productFormValues: ProductFormValues
 ): fhir.ClaimItemDetail {
   const claimItemDetailExtensions: Array<fhir.Extension> = [
     createClaimSequenceIdentifierExtension(),
@@ -165,7 +164,7 @@ function createClaimItemDetail(
     programCode: [DEPRECATED_CODEABLE_CONCEPT_CHARGE_EXEMPTION_NONE], //TODO - remove this duplicated info
     quantity: medicationRequest.dispenseRequest.quantity,
     subDetail: medicationDispenses.map((medicationDispense, index) =>
-      createClaimItemDetailSubDetail(index + 1, medicationDispense, dispensedProductInfo)
+      createClaimItemDetailSubDetail(index + 1, medicationDispense, productFormValues)
     )
   }
 }
@@ -195,15 +194,15 @@ function createMedicationRequestReferenceExtension(lineItemId: string): ClaimMed
 function createClaimItemDetailSubDetail(
   sequence: number,
   medicationDispense: fhir.MedicationDispense,
-  dispensedProductInfo: ProductInfo
+  productFormValues: ProductFormValues
 ): fhir.ClaimItemDetailSubDetail {
-  const endorsementCodeableConcepts: Array<fhir.CodeableConcept> = dispensedProductInfo.endorsements
+  const endorsementCodeableConcepts: Array<fhir.CodeableConcept> = productFormValues.endorsements
     .map(endorsement => ({
-      coding: dispenserEndorsementCodings.filter(coding => coding.code === endorsement.code),
+      coding: VALUE_SET_DISPENSER_ENDORSEMENT.filter(coding => coding.code === endorsement.code),
       text: endorsement.supportingInfo ? endorsement.supportingInfo : undefined
     }))
 
-  const chargePaidCodeableConcept = dispensedProductInfo.patientPaid
+  const chargePaidCodeableConcept = productFormValues.patientPaid
     ? CODEABLE_CONCEPT_PRESCRIPTION_CHARGE_PAID
     : CODEABLE_CONCEPT_PRESCRIPTION_CHARGE_NOT_PAID
 

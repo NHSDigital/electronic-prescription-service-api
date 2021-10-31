@@ -1,7 +1,7 @@
 import * as React from "react"
 import {useEffect, useState} from "react"
 import {ErrorMessage, Label} from "nhsuk-react-components"
-import Claim, {ClaimProps} from "./claim"
+import Claim, {ClaimFormValues, StaticProductInfo} from "./claim"
 import axios from "axios"
 import {
   getMedicationDispenseResources,
@@ -10,6 +10,8 @@ import {
 } from "../../fhir/bundleResourceFinder"
 import * as fhir from "fhir/r4"
 import Pre from "../pre"
+import {createClaim, getMedicationDispenseLineItemId} from "./createDispenseClaim"
+import {getTaskBusinessStatusExtension} from "../../fhir/customExtensions"
 
 interface ClaimPageProps {
   baseUrl: string
@@ -22,47 +24,52 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
 }) => {
   const [loadingMessage, setLoadingMessage] = useState<string>("Loading page.")
   const [errorMessage, setErrorMessage] = useState<string>()
-  const [claimProps, setClaimProps] = useState<ClaimProps>()
+  const [prescriptionDetails, setPrescriptionDetails] = useState<PrescriptionDetails>()
   const [claimResult, setClaimResult] = useState<string>()
 
   useEffect(() => {
-    if (!claimProps) {
+    if (!prescriptionDetails) {
       retrievePrescriptionDetails().catch(error => {
         console.log(error)
         setErrorMessage("Failed to retrieve prescription details.")
       })
     }
-  }, [claimProps])
+  }, [prescriptionDetails])
 
   async function retrievePrescriptionDetails() {
-    setLoadingMessage("Retrieving dispense history.")
+    setLoadingMessage("Retrieving prescription details.")
 
     const prescriptionOrderResponse = await axios.get<fhir.Bundle>(`${baseUrl}prescription/${prescriptionId}`)
     const prescriptionOrder = prescriptionOrderResponse.data
     if (!prescriptionOrder) {
-      setErrorMessage("Prescription not found. Is the ID correct?")
+      setErrorMessage("Prescription order not found. Is the ID correct?")
       return
     }
 
     const historyResponse = await axios.get<HistoryResponse>(`${baseUrl}dispense/history?prescription_id=${prescriptionId}`)
     const dispenseNotifications = historyResponse.data?.dispense_notifications
     if (!dispenseNotifications?.length) {
-      setErrorMessage("Dispense history not found. Has this prescription been dispensed?")
+      setErrorMessage("Dispense notification not found. Has this prescription been dispensed?")
       return
     }
 
-    setClaimProps({
+    setPrescriptionDetails({
       patient: getPatientResources(prescriptionOrder)[0],
       medicationRequests: getMedicationRequestResources(prescriptionOrder),
-      medicationDispenses: dispenseNotifications.flatMap(getMedicationDispenseResources),
-      sendClaim
+      medicationDispenses: dispenseNotifications.flatMap(getMedicationDispenseResources)
     })
     setLoadingMessage(undefined)
   }
 
-  async function sendClaim(claim: fhir.Claim): Promise<void> {
+  async function sendClaim(claimFormValues: ClaimFormValues): Promise<void> {
     setLoadingMessage("Sending claim.")
 
+    const claim = createClaim(
+      prescriptionDetails.patient,
+      prescriptionDetails.medicationRequests,
+      prescriptionDetails.medicationDispenses,
+      claimFormValues
+    )
     const response = await axios.post(`${baseUrl}dispense/claim`, claim)
     const responseStr = JSON.stringify(response.data)
 
@@ -91,8 +98,14 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
     </>
   }
 
-  if (claimProps) {
-    return <Claim {...claimProps}/>
+  if (prescriptionDetails) {
+    return <>
+      <Label isPageHeading>Claim for Dispensed Medication</Label>
+      <Claim
+        products={prescriptionDetails.medicationDispenses.map(toStaticProductInfo)}
+        sendClaim={sendClaim}
+      />
+    </>
   }
 
   return <>
@@ -103,6 +116,21 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
 
 interface HistoryResponse {
   dispense_notifications: Array<fhir.Bundle>
+}
+
+interface PrescriptionDetails {
+  patient: fhir.Patient
+  medicationRequests: Array<fhir.MedicationRequest>
+  medicationDispenses: Array<fhir.MedicationDispense>
+}
+
+function toStaticProductInfo(medicationDispense: fhir.MedicationDispense): StaticProductInfo {
+  return {
+    id: getMedicationDispenseLineItemId(medicationDispense),
+    name: medicationDispense.medicationCodeableConcept.coding[0].display,
+    quantityDispensed: `${medicationDispense.quantity.value} ${medicationDispense.quantity.unit}`,
+    status: getTaskBusinessStatusExtension(medicationDispense.extension).valueCoding.display
+  }
 }
 
 export default ClaimPage

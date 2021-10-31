@@ -1,6 +1,74 @@
 import {Coding} from "fhir/r4"
 
-const chargeExemptionCodings: Array<Coding> = [
+export const VALUE_SET_DISPENSER_ENDORSEMENT: Array<Coding> = [
+  {
+    code: "BB",
+    system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+    display: "Broken Bulk"
+  },
+  {
+    code: "ED",
+    system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+    display: "Extemporaneously dispensed"
+  },
+  {
+    code: "IP",
+    system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+    display: "Invoice Price for less common products or special items"
+  },
+  {
+    code: "MF",
+    system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+    display: "Measured and Fitted"
+  },
+  {
+    code: "NCSO",
+    system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+    display: "No Cheaper Stock Obtainable"
+  },
+  {
+    code: "NDEC",
+    system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+    display: "No Dispenser Endorsement Code"
+  },
+  {
+    code: "XP",
+    system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+    display: "Out of Pocket Expenses"
+  },
+  {
+    code: "PC",
+    system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+    display: "Prescriber Contacted"
+  },
+  {
+    code: "PNC",
+    system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+    display: "Prescriber Not Contacted"
+  },
+  {
+    code: "RC",
+    system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+    display: "Rebate Claimed"
+  },
+  {
+    code: "SSP",
+    system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+    display: "Serious Shortage Protocol"
+  },
+  {
+    code: "SP",
+    system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+    display: "Special License"
+  },
+  {
+    code: "ZD",
+    system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
+    display: "Zero Discount (List B only)"
+  }
+]
+
+export const VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION: Array<Coding> = [
   {
     code: "0001",
     system: "https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption",
@@ -77,5 +145,3 @@ const chargeExemptionCodings: Array<Coding> = [
     display: "Patient does not need to pay the prescription charge"
   }
 ]
-
-export default chargeExemptionCodings
