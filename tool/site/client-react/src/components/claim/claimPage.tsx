@@ -20,7 +20,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
   baseUrl,
   prescriptionId
 }) => {
-  const [loadingMessage, setLoadingMessage] = useState<string>()
+  const [loadingMessage, setLoadingMessage] = useState<string>("Loading page.")
   const [errorMessage, setErrorMessage] = useState<string>()
   const [claimProps, setClaimProps] = useState<ClaimProps>()
   const [claimResult, setClaimResult] = useState<string>()
