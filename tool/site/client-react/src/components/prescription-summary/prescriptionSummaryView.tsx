@@ -10,10 +10,13 @@ import PractitionerRoleSummaryList, {
 } from "./practitionerRoleSummaryList"
 import {Label} from "nhsuk-react-components"
 import {ErrorBoundary} from "../errorBoundary"
+import MedicationSummary, {createSummaryMedication, SummaryMedication} from "./medicationSummary"
 
 export function createSummaryPrescription(bundle: fhir.Bundle): SummaryPrescription {
   const resources = bundle.entry.map(e => e.resource)
   const medicationRequests = resources.filter(r => r.resourceType === "MedicationRequest") as Array<fhir.MedicationRequest>
+  const summaryMedicationRequests = medicationRequests.map(createSummaryMedication)
+
   const medicationRequest = medicationRequests[0]
 
   const patient: fhir.Patient = resolveReference(bundle, medicationRequest.subject)
@@ -37,17 +40,20 @@ export function createSummaryPrescription(bundle: fhir.Bundle): SummaryPrescript
   )
 
   return {
+    medications: summaryMedicationRequests,
     patient: summaryPatient,
     practitionerRole: summaryPractitionerRole
   }
 }
 
 export interface SummaryPrescription {
+  medications: Array<SummaryMedication>
   patient: SummaryPatient
   practitionerRole: SummaryPractitionerRole
 }
 
 const PrescriptionSummaryView: React.FC<SummaryPrescription> = ({
+  medications,
   patient,
   practitionerRole
 }) => {
@@ -57,6 +63,9 @@ const PrescriptionSummaryView: React.FC<SummaryPrescription> = ({
       <Label size="m" bold>Patient</Label>
       <ErrorBoundary>
         <PatientSummaryList {...patient}/>
+      </ErrorBoundary>
+      <ErrorBoundary>
+        <MedicationSummary medicationSummaryList={medications}/>
       </ErrorBoundary>
       <Label size="m" bold>Prescriber</Label>
       <ErrorBoundary>

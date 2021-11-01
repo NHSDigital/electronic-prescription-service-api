@@ -1,6 +1,17 @@
 import {SummaryPractitionerRole} from "../../../src/components/prescription-summary/practitionerRoleSummaryList"
 import {SummaryPatient} from "../../../src/components/prescription-summary/patientSummaryList"
 import {SummaryPrescription} from "../../../src/components/prescription-summary/prescriptionSummaryView"
+import {SummaryMedication} from "../../../src/components/prescription-summary/medicationSummary"
+
+export const summaryMedication: SummaryMedication = {
+  dispenserNotes: ["See your GP next week", "Don't forget your 5 a day"],
+  dosageInstruction: ["Only take during meal", "Can split in half"],
+  prescriptionEndorsements: ["FS", "DM", "YOLO"],
+  quantityUnit: "ml",
+  quantityValue: 30,
+  snomedCode: "3003302996",
+  snomedCodeDescription: "Liquid dopamine"
+}
 
 export const summaryPatient: SummaryPatient = {
   name: "CORY, ETTA (MISS)",
@@ -25,6 +36,7 @@ export const summaryPractitionerRole: SummaryPractitionerRole = {
 }
 
 export const summaryPrescription: SummaryPrescription = {
+  medications: [summaryMedication],
   patient: summaryPatient,
   practitionerRole: summaryPractitionerRole
 }
