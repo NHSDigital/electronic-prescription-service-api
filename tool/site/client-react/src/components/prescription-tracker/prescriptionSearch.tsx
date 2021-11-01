@@ -23,7 +23,7 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
   baseUrl,
   prescriptionId
 }) => {
-  const [searchCriteria, setSearchCriteria] = useState<PrescriptionSearchCriteria>({prescriptionId: prescriptionId ?? ""})
+  const [searchCriteria, setSearchCriteria] = useState<PrescriptionSearchCriteria>({ prescriptionId: prescriptionId ?? "" })
   const [searchResults, setSearchResults] = useState<PrescriptionSearchResults>(null)
 
   async function handleSearch() {
@@ -32,7 +32,7 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
     const results: PrescriptionSearchResults = {
       ...searchset,
       count: searchset.total,
-      pluralSuffix: searchResults.count > 1 || searchResults.count === 0 ? "s": ""
+      pluralSuffix: searchResults.count > 1 || searchResults.count === 0 ? "s" : ""
     }
     setSearchResults(results)
   }
@@ -45,27 +45,27 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
     <>
       {!searchResults
         ? <div>
-            <Label isPageHeading>Search for a Prescription</Label>
-            <Input
-              label="Prescription ID"
-              hint="Use the short form here, e.g. E3E6FA-A83008-41F09Y"
-              width={30}
-              value={searchCriteria.prescriptionId}
-              onChange={event => setSearchCriteria({prescriptionId: event.currentTarget.value})}
-            />
-            <Button onClick={handleSearch}>Search</Button>
-            <Button secondary href={baseUrl}>Back</Button>
-          </div>
+          <Label isPageHeading>Search for a Prescription</Label>
+          <Input
+            label="Prescription ID"
+            hint="Use the short form here, e.g. E3E6FA-A83008-41F09Y"
+            width={30}
+            value={searchCriteria.prescriptionId}
+            onChange={event => setSearchCriteria({ prescriptionId: event.currentTarget.value })}
+          />
+          <Button onClick={handleSearch}>Search</Button>
+          <Button secondary href={baseUrl}>Back</Button>
+        </div>
         : <div>
-            <Label isPageHeading>Found {searchResults.count} Prescription{searchResults.pluralSuffix}</Label>
-            <Details expander>
-              <Details.Summary>Details</Details.Summary>
-              <Details.Text>
-                <Pre>{JSON.stringify(searchResults.searchset, null, 2)}</Pre>
-              </Details.Text>
-            </Details>
-            <Button secondary onClick={handleReset}>Back</Button>
-          </div>
+          <Label isPageHeading>Found {searchResults.count} Prescription{searchResults.pluralSuffix}</Label>
+          <Details expander>
+            <Details.Summary>Details</Details.Summary>
+            <Details.Text>
+              <Pre>{JSON.stringify(searchResults.searchset, null, 2)}</Pre>
+            </Details.Text>
+          </Details>
+          <Button secondary onClick={handleReset}>Back</Button>
+        </div>
       }
     </>
   )
