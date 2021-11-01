@@ -6,22 +6,17 @@ import pretty from "pretty"
 import * as React from "react"
 import ClaimForm from "../../../src/components/claim/claimForm"
 
-test("Renders correctly", async () => {
-  const component = <ClaimForm products={[staticProductInfo]} sendClaim={jest.fn}/>
-  const {container} = render(component)
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
-})
-
 test("Form has no endorsement fields initially", async () => {
-  render(<ClaimForm products={[staticProductInfo]} sendClaim={jest.fn}/>)
+  const {container} = render(<ClaimForm products={[staticProductInfo]} sendClaim={jest.fn}/>)
 
   expect(screen.queryAllByLabelText(/Endorsement \d+ Type/)).toHaveLength(0)
   expect(screen.queryAllByLabelText(/Endorsement \d+ Supporting Information/)).toHaveLength(0)
   expect(screen.queryAllByText("Remove Endorsement")).toHaveLength(0)
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
 test("Clicking Add Endorsement button adds one set of endorsement fields", async () => {
-  render(<ClaimForm products={[staticProductInfo]} sendClaim={jest.fn}/>)
+  const {container} = render(<ClaimForm products={[staticProductInfo]} sendClaim={jest.fn}/>)
 
   await addEndorsement()
 
@@ -30,10 +25,11 @@ test("Clicking Add Endorsement button adds one set of endorsement fields", async
   expect(screen.queryByLabelText("Endorsement 2 Type")).toBeFalsy()
   expect(screen.queryByLabelText("Endorsement 2 Supporting Information")).toBeFalsy()
   expect(screen.queryAllByText("Remove Endorsement")).toHaveLength(1)
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
 test("Clicking Add Endorsement button twice adds two sets of endorsement fields", async () => {
-  render(<ClaimForm products={[staticProductInfo]} sendClaim={jest.fn}/>)
+  const {container} = render(<ClaimForm products={[staticProductInfo]} sendClaim={jest.fn}/>)
 
   await addEndorsement()
   await addEndorsement()
@@ -41,10 +37,11 @@ test("Clicking Add Endorsement button twice adds two sets of endorsement fields"
   expect(screen.getByLabelText("Endorsement 2 Type")).toBeTruthy()
   expect(screen.getByLabelText("Endorsement 2 Supporting Information")).toBeTruthy()
   expect(screen.queryAllByText("Remove Endorsement")).toHaveLength(2)
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
 test("Clicking Remove Endorsement button removes one set of endorsement fields", async () => {
-  render(<ClaimForm products={[staticProductInfo]} sendClaim={jest.fn}/>)
+  const {container} = render(<ClaimForm products={[staticProductInfo]} sendClaim={jest.fn}/>)
   await addEndorsement()
   await addEndorsement()
 
@@ -53,6 +50,7 @@ test("Clicking Remove Endorsement button removes one set of endorsement fields",
   expect(screen.queryByLabelText("Endorsement 2 Type")).toBeFalsy()
   expect(screen.queryByLabelText("Endorsement 2 Supporting Information")).toBeFalsy()
   expect(screen.queryAllByText("Remove Endorsement")).toHaveLength(1)
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
 test("Clicking Claim button calls the callback with form values", async () => {
