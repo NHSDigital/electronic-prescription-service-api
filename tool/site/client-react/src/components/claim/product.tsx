@@ -17,8 +17,10 @@ const Product: React.FC<ProductProps> = ({
   <Fieldset>
     <Fieldset.Legend size="m">{product.name}</Fieldset.Legend>
     <ProductSummaryList {...product}/>
-    <Checkboxes>
-      <Field name={`${name}.patientPaid`} type="checkbox" as={Checkboxes.Box}>Patient Paid</Field>
+    <Checkboxes id={`${name}.patientPaid.boxes`}>
+      <Field id={`${name}.patientPaid.box`} name={`${name}.patientPaid`} type="checkbox" as={Checkboxes.Box}>
+        Patient Paid
+      </Field>
     </Checkboxes>
     <FieldArray name={`${name}.endorsements`} component={EndorsementArray}/>
   </Fieldset>

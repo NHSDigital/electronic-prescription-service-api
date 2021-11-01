@@ -15,12 +15,18 @@ const Endorsement: React.FC<EndorsementProps> = ({
   removeEndorsement
 }) => (
   <>
-    <Field name={`${name}.code`} as={Select} label={`${label} Type`}>
+    <Field id={`${name}.code`} name={`${name}.code`} as={Select} label={`${label} Type`}>
       {VALUE_SET_DISPENSER_ENDORSEMENT.map(coding =>
         <Select.Option key={coding.code} value={coding.code}>{coding.display}</Select.Option>
       )}
     </Field>
-    <Field name={`${name}.supportingInfo`} as={Input} width={30} label={`${label} Supporting Information`}/>
+    <Field
+      id={`${name}.supportingInfo`}
+      name={`${name}.supportingInfo`}
+      as={Input}
+      width={30}
+      label={`${label} Supporting Information`}
+    />
     <div>
       <Button type="button" onClick={removeEndorsement} secondary>Remove Endorsement</Button>
     </div>
