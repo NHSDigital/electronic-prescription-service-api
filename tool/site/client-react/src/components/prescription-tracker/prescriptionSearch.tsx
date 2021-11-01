@@ -2,7 +2,7 @@ import * as React from "react"
 import {useState} from "react"
 import {Button, Details, Input, Label} from "nhsuk-react-components"
 import Pre from "../pre"
-import {Bundle} from "fhir/r4"
+import {Bundle, Task} from "fhir/r4"
 
 interface PrescriptionSearchProps {
   baseUrl: string
@@ -17,6 +17,13 @@ interface PrescriptionSearchResults {
   searchset: Bundle
   count: number
   pluralSuffix: string
+  prescriptionSummaries: PrescriptionSummary[]
+}
+
+interface PrescriptionSummary {}
+
+function createPrescriptionSummary(task: Task): PrescriptionSummary[] {
+  return []
 }
 
 const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
@@ -28,11 +35,12 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
 
   async function handleSearch() {
     const response = await fetch(`${baseUrl}tracker?prescription_id=${searchCriteria.prescriptionId}`)
-    const searchset = await response.json()
+    const searchset = await response.json() as Bundle
     const results: PrescriptionSearchResults = {
-      ...searchset,
+      searchset,
       count: searchset.total,
-      pluralSuffix: searchResults.count > 1 || searchResults.count === 0 ? "s" : ""
+      pluralSuffix: searchResults.count > 1 || searchResults.count === 0 ? "s" : "",
+      prescriptionSummaries: searchset.entry.map(e => createPrescriptionSummary(e as Task))
     }
     setSearchResults(results)
   }
