@@ -24,7 +24,7 @@ import {
   DEPRECATED_CODEABLE_CONCEPT_CHARGE_EXEMPTION_NONE
 } from "./reference-data/codeableConcepts"
 import {INSURANCE_NHS_BSA} from "./reference-data/insurance"
-import {ClaimFormValues, ProductFormValues} from "./claim"
+import {ClaimFormValues, ProductFormValues} from "./claimForm"
 import {VALUE_SET_DISPENSER_ENDORSEMENT, VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION} from "./reference-data/valueSets"
 
 export function createClaim(

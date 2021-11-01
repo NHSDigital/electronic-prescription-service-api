@@ -1,7 +1,7 @@
 import * as React from "react"
 import {useEffect, useState} from "react"
 import {ErrorMessage, Label} from "nhsuk-react-components"
-import Claim, {ClaimFormValues, StaticProductInfo} from "./claim"
+import ClaimForm, {ClaimFormValues, StaticProductInfo} from "./claimForm"
 import axios from "axios"
 import {
   getMedicationDispenseResources,
@@ -101,7 +101,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
   if (prescriptionDetails) {
     return <>
       <Label isPageHeading>Claim for Dispensed Medication</Label>
-      <Claim
+      <ClaimForm
         products={prescriptionDetails.medicationDispenses.map(toStaticProductInfo)}
         sendClaim={sendClaim}
       />
