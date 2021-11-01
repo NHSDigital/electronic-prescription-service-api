@@ -20,10 +20,25 @@ interface PrescriptionSearchResults {
   prescriptionSummaries: PrescriptionSummary[]
 }
 
-interface PrescriptionSummary {}
+interface PrescriptionSummary {
+  prescription
+}
 
-function createPrescriptionSummary(task: Task): PrescriptionSummary[] {
-  return []
+function createPrescriptionSummary(task: Task): PrescriptionSummary {
+  const prescription = {
+    id: task.focus.identifier[0].value,
+    type: task.extension.find(e => e.url === "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription")
+            ?.extension?.find(e => e.url === "courseOfTherapyType")?.valueCoding?.code,
+    patitentNhsNumber: task.for.identifier.value,
+    creationDate: task.authoredOn,
+    pharmacy: task.owner.identifier.value,
+    status: task.businessStatus.coding[0].display
+  }
+  // const medicationRequests = task.input
+  // const medicationDispenses = task.output
+  return {
+    prescription
+  }
 }
 
 const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
@@ -40,7 +55,7 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
       searchset,
       count: searchset.total,
       pluralSuffix: searchset.total > 1 || searchset.total === 0 ? "s" : "",
-      prescriptionSummaries: searchset.entry.map(e => createPrescriptionSummary(e as Task))
+      prescriptionSummaries: (searchset.entry as Task[]).map(createPrescriptionSummary)
     }
     setSearchResults(results)
   }
@@ -69,7 +84,8 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
           <Details expander>
             <Details.Summary>Details</Details.Summary>
             <Details.Text>
-              <Pre>{JSON.stringify(searchResults.searchset, null, 2)}</Pre>
+              <Pre>{JSON.stringify(searchResults.prescriptionSummaries, null, 2)}</Pre>
+              {/* <Pre>{JSON.stringify(searchResults.searchset, null, 2)}</Pre> */}
             </Details.Text>
           </Details>
           <Button secondary onClick={handleReset}>Back</Button>
