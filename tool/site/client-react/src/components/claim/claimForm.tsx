@@ -27,7 +27,7 @@ const ClaimForm: React.FC<ClaimFormProps> = ({
   }
 
   return (
-    <Formik<ClaimFormValues> initialValues={initialValues} onSubmit={sendClaim}>
+    <Formik<ClaimFormValues> initialValues={initialValues} onSubmit={values => sendClaim(values)}>
       {formik =>
         <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
           <FieldArray name="products" component={ProductArray}/>
