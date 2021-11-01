@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useState} from "react"
-import {Button, Details, Input, Label} from "nhsuk-react-components"
+import {Button, Input, Label} from "nhsuk-react-components"
 import Pre from "../pre"
 import {Bundle, Task} from "fhir/r4"
 
@@ -21,23 +21,62 @@ interface PrescriptionSearchResults {
 }
 
 interface PrescriptionSummary {
-  prescription
+  prescription: Prescription
+  prescriptionItems: PrescriptionItem[]
 }
+
+interface Prescription {
+  id: string
+  type: string
+  patientNhsNumber: string // todo: format
+  creationDate: string // todo: format
+  pharmacy: string
+  status: string
+}
+
+interface PrescriptionItem {
+  identifier: string
+  dispenseStatus: string
+  dispenseEvents: DispenseEvent[]
+}
+
+interface DispenseEvent {
+  description: string
+}
+
 
 function createPrescriptionSummary(task: Task): PrescriptionSummary {
   const prescription = {
-    id: task.focus.identifier[0].value,
+    id: task.focus.identifier.value,
     type: task.extension.find(e => e.url === "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription")
             ?.extension?.find(e => e.url === "courseOfTherapyType")?.valueCoding?.code,
-    patitentNhsNumber: task.for.identifier.value,
+    patientNhsNumber: task.for.identifier.value,
     creationDate: task.authoredOn,
     pharmacy: task.owner.identifier.value,
     status: task.businessStatus.coding[0].display
   }
-  // const medicationRequests = task.input
-  // const medicationDispenses = task.output
+
+  // todo: validate how a prescriptionItem maps to multiple dispense events, coding array?
+  const prescriptionItemDispenseEvents = new Map<string, DispenseEvent[]>()
+  task.output.forEach(output => {
+    const prescriptionItemIdentifier = output.valueReference.identifier.value
+    prescriptionItemDispenseEvents.set(
+      prescriptionItemIdentifier,
+      output.type.coding.map(coding => { return {description: coding.display} }))
+  })
+
+  const prescriptionItems = task.input.map(input => { 
+    return {
+      identifier: input.valueReference.identifier.value,
+      dispenseStatus: input.extension.find(e => e.url === "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation")
+                        ?.extension?.find(e => e.url === "dispenseStatus")?.valueCoding.display,
+      dispenseEvents: prescriptionItemDispenseEvents.get(input.valueReference.identifier.value)
+    }
+  })
+
   return {
-    prescription
+    prescription,
+    prescriptionItems
   }
 }
 
@@ -55,7 +94,7 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
       searchset,
       count: searchset.total,
       pluralSuffix: searchset.total > 1 || searchset.total === 0 ? "s" : "",
-      prescriptionSummaries: (searchset.entry as Task[]).map(createPrescriptionSummary)
+      prescriptionSummaries: searchset.entry.map(e => e.resource as Task).map(createPrescriptionSummary)
     }
     setSearchResults(results)
   }
