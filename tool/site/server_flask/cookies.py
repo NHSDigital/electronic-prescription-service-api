@@ -2,6 +2,8 @@ import datetime
 import flask
 import config
 
+HAPI_SESSION_COOKIE_NAME = "session"
+
 
 def get_current_prescription_id_from_cookie():
     return flask.request.cookies.get("Current-Prescription-Id")
@@ -72,7 +74,7 @@ def set_skip_signature_page_cookie(response, skip_signature_page):
 
 def set_session_cookie(response, session_cookie, expiry):
     response.set_cookie(
-        "session",
+        HAPI_SESSION_COOKIE_NAME,
         session_cookie,
         expires=expiry,
         secure=not config.DEV_MODE,
@@ -81,4 +83,4 @@ def set_session_cookie(response, session_cookie, expiry):
 
 
 def get_session_cookie():
-    return flask.request.cookies.get("session")
+    return flask.request.cookies.get(HAPI_SESSION_COOKIE_NAME)
