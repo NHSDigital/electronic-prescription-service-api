@@ -39,7 +39,7 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
     const results: PrescriptionSearchResults = {
       searchset,
       count: searchset.total,
-      pluralSuffix: searchResults.count > 1 || searchResults.count === 0 ? "s" : "",
+      pluralSuffix: searchset.total > 1 || searchset.total === 0 ? "s" : "",
       prescriptionSummaries: searchset.entry.map(e => createPrescriptionSummary(e as Task))
     }
     setSearchResults(results)
