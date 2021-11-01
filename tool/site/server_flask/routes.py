@@ -148,6 +148,11 @@ def get_home():
     return render_rivets_client("home")
 
 
+@app.route("/search", methods=["GET"])
+def get_search():
+    return render_react_client("search")
+
+
 @app.route(LOAD_URL, methods=["GET"])
 @exclude_from_auth()
 def get_load():
@@ -163,7 +168,7 @@ def download():
     short_prescription_ids = hapi_session["prescriptionIds"]
     with zipfile.ZipFile(zFile, 'w') as zip_file:
         for index, short_prescription_id in enumerate(short_prescription_ids):
-            bundle = hapi_passthrough.get_edit(short_prescription_id)
+            bundle = hapi_passthrough.get_prescription(short_prescription_id)
             zip_file.writestr(f"prepare_request_{index + 1}.json", json.dumps(bundle, indent=2))
             # todo: fix 'invalid json' issue
             # if access_token:
@@ -200,8 +205,17 @@ def get_metadata():
 
 @app.route("/prescription/<short_prescription_id>", methods=["GET"])
 def get_prescription(short_prescription_id):
-    bundle = hapi_passthrough.get_edit(str(short_prescription_id))
-    return app.make_response(bundle["bundle"])
+    response = hapi_passthrough.get_prescription(str(short_prescription_id))
+    return app.make_response(response)
+
+
+@app.route("/tracker", methods=["GET"])
+def get_tracker_prescription():
+    # handles '+' in query_string where flask.request.args.get does not
+    short_prescription_id = flask.request.query_string.decode("utf-8")[len("prescription_id="):]
+    hapi_response = hapi_passthrough.get_tracker_prescription(short_prescription_id)
+    response = app.make_response(hapi_response)
+    return response
 
 
 @app.route(EDIT_URL, methods=["GET"])
@@ -211,8 +225,8 @@ def get_edit():
     short_prescription_id = flask.request.query_string.decode("utf-8")[len("prescription_id="):]
     if short_prescription_id is None:
         return flask.redirect(f"{config.PUBLIC_APIGEE_URL}{config.BASE_URL}change-auth")
-    hapi_passthrough.get_edit(short_prescription_id)
-    response = app.make_response(render_react_client("edit")) 
+    hapi_passthrough.get_prescription(short_prescription_id)
+    response = app.make_response(render_react_client("edit"))
     hapi_session = hapi_passthrough.get_hapi_session()
     short_prescription_ids = hapi_session["prescriptionIds"]
     short_prescription_id = hapi_session["prescriptionId"]
@@ -365,12 +379,8 @@ def post_dispense():
 @app.route(DISPENSING_HISTORY_URL, methods=["GET"])
 def get_dispensing_history():
     short_prescription_id = flask.request.args.get("prescription_id")
-    if not contains_prescription_order_send_request(short_prescription_id):
-        return {}
-    prescription_order = load_prescription_order_send_request(short_prescription_id)
     dispense_notifications = load_dispense_notification_send_requests(short_prescription_id)
     return {
-        "prescription_order": prescription_order,
         "dispense_notifications": dispense_notifications
     }
 
@@ -379,7 +389,7 @@ def get_dispensing_history():
 def get_claim():
     if config.ENVIRONMENT == "prod":
         return app.make_response("Bad Request", 400)
-    return render_rivets_client("claim")
+    return render_react_client("claim")
 
 
 @app.route(CLAIM_URL, methods=["POST"])

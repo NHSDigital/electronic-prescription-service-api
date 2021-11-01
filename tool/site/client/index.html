@@ -947,6 +947,7 @@
           <div rv-show="loggedIn" class="nhsuk-grid-column-full" >
             <a href="{{base_url}}prescribe/load" class="nhsuk-button">Prescribe</a>
             <a href="{{base_url}}dispense/release" class="nhsuk-button" rv-hide="environment | isProd">Dispense</a>
+            <a href="{{base_url}}search" class="nhsuk-button">Search</a>
           </div>
           <div rv-hide="loggedIn" class="nhsuk-grid-column-full">
             <a href="{{base_url}}prescribe/load" class="nhsuk-button" rv-hide="environment | isProd">View Prescription(s)</a>

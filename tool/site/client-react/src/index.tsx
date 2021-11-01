@@ -5,6 +5,9 @@ import * as ReactDOM from "react-dom"
 import {Button} from "nhsuk-react-components"
 import {OperationOutcome} from "fhir/r4"
 import axios from "axios"
+import {BrowserRouter, Switch, Route} from "react-router-dom"
+import PrescriptionSearch from "./components/prescription-tracker/prescriptionSearch"
+import ClaimPage from "./components/claim/claimPage"
 
 const customWindow = window as Record<string, any>
 
@@ -39,14 +42,29 @@ async function startApplication (baseUrl: string): Promise<void> {
   const urlParams = new URLSearchParams(window.location.search)
   const content = (
     <PageContainer>
-      <PrescriptionSummary
-        baseUrl={baseUrl}
-        prescriptionId={urlParams.get("prescription_id")}
-      />
-      <div>
-        <Button onClick={() => sendSignRequest(baseUrl)}>Send</Button>
-        <Button secondary href={baseUrl}>Back</Button>
-      </div>
+      <BrowserRouter>
+        <Switch>
+          <Route path={`${baseUrl}prescribe/edit`}>
+            <PrescriptionSummary
+              baseUrl={baseUrl}
+              prescriptionId={urlParams.get("prescription_id")}
+            />
+            <div>
+              <Button onClick={() => sendSignRequest(baseUrl)}>Send</Button>
+              <Button secondary href={baseUrl}>Back</Button>
+            </div>
+          </Route>
+          <Route path={`${baseUrl}search`}>
+            <PrescriptionSearch
+              baseUrl={baseUrl}
+              prescriptionId={urlParams.get("prescription_id")}
+            />
+          </Route>
+          <Route path={`${baseUrl}dispense/claim`}>
+            <ClaimPage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")}/>
+          </Route>
+        </Switch>
+      </BrowserRouter>
     </PageContainer>
   )
   ReactDOM.render(content, document.getElementById("root"))
