@@ -44,12 +44,11 @@ interface DispenseEvent {
   description: string
 }
 
-
 function createPrescriptionSummary(task: Task): PrescriptionSummary {
   const prescription = {
     id: task.focus.identifier.value,
     type: task.extension.find(e => e.url === "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription")
-            ?.extension?.find(e => e.url === "courseOfTherapyType")?.valueCoding?.code,
+      ?.extension?.find(e => e.url === "courseOfTherapyType")?.valueCoding?.code,
     patientNhsNumber: task.for.identifier.value,
     creationDate: task.authoredOn,
     pharmacy: task.owner.identifier.value,
@@ -62,14 +61,16 @@ function createPrescriptionSummary(task: Task): PrescriptionSummary {
     const prescriptionItemIdentifier = output.valueReference.identifier.value
     prescriptionItemDispenseEvents.set(
       prescriptionItemIdentifier,
-      output.type.coding.map(coding => { return {description: coding.display} }))
+      output.type.coding.map(coding => {
+        return {description: coding.display}
+      }))
   })
 
-  const prescriptionItems = task.input.map(input => { 
+  const prescriptionItems = task.input.map(input => {
     return {
       identifier: input.valueReference.identifier.value,
       dispenseStatus: input.extension.find(e => e.url === "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation")
-                        ?.extension?.find(e => e.url === "dispenseStatus")?.valueCoding.display,
+        ?.extension?.find(e => e.url === "dispenseStatus")?.valueCoding.display,
       dispenseEvents: prescriptionItemDispenseEvents.get(input.valueReference.identifier.value)
     }
   })
@@ -84,7 +85,7 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
   baseUrl,
   prescriptionId
 }) => {
-  const [searchCriteria, setSearchCriteria] = useState<PrescriptionSearchCriteria>({ prescriptionId: prescriptionId ?? "" })
+  const [searchCriteria, setSearchCriteria] = useState<PrescriptionSearchCriteria>({prescriptionId: prescriptionId ?? ""})
   const [searchResults, setSearchResults] = useState<PrescriptionSearchResults>(null)
 
   async function handleSearch() {
@@ -113,7 +114,7 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
             hint="Use the short form here, e.g. E3E6FA-A83008-41F09Y"
             width={30}
             value={searchCriteria.prescriptionId}
-            onChange={event => setSearchCriteria({ prescriptionId: event.currentTarget.value })}
+            onChange={event => setSearchCriteria({prescriptionId: event.currentTarget.value})}
           />
           <Button onClick={handleSearch}>Search</Button>
           <Button secondary href={baseUrl}>Back</Button>
