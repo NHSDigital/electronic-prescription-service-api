@@ -12,7 +12,8 @@ def create_app():
     compress.init_app(app)
     app.config.from_mapping(
         SECRET_KEY=config.SESSION_TOKEN_ENCRYPTION_KEY,
-        JSON_SORT_KEYS=False
+        JSON_SORT_KEYS=False,
+        SESSION_COOKIE_NAME="flask_session"
     )
     return app
 
