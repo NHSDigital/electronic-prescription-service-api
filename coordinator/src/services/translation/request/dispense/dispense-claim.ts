@@ -67,9 +67,9 @@ export async function convertDispenseClaim(
     dispenseClaim.coverage = new hl7V3.Coverage(chargeExempt)
   }
 
-  //This is mandatory but unused by BSA, so just populate it with our own message ID.
+  //This is mandatory but unused by BSA, so just populate it with a placeholder.
   const hl7PriorPrescriptionReleaseEventRef = new hl7V3.PriorPrescriptionReleaseEventRef(
-    new hl7V3.GlobalIdentifier(messageId)
+    new hl7V3.GlobalIdentifier("ffffffff-ffff-4fff-bfff-ffffffffffff")
   )
   dispenseClaim.sequelTo = new hl7V3.SequelTo(hl7PriorPrescriptionReleaseEventRef)
 

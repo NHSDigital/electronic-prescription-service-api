@@ -180,7 +180,7 @@
         </coverage>
         <sequelTo typeCode="SEQL">
           <priorPrescriptionReleaseEventRef classCode="INFO" moodCode="RQO">
-            <id root="41D318CF-29DD-4EB8-9E51-D175B9DC97A7"/>
+            <id root="FFFFFFFF-FFFF-4FFF-BFFF-FFFFFFFFFFFF"/>
           </priorPrescriptionReleaseEventRef>
         </sequelTo>
       </DispenseClaim>
