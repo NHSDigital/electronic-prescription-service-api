@@ -2,6 +2,7 @@ import {SummaryPractitionerRole} from "../../../src/components/prescription-summ
 import {SummaryPatient} from "../../../src/components/prescription-summary/patientSummaryList"
 import {SummaryPrescription} from "../../../src/components/prescription-summary/prescriptionSummaryView"
 import {SummaryMedication} from "../../../src/components/prescription-summary/medicationSummary"
+import {PrescriptionLevelDetailsProps} from "../../../src/components/prescription-summary/prescriptionLevelDetails"
 
 export const summaryMedication: SummaryMedication = {
   dispenserNotes: ["See your GP next week", "Don't forget your 5 a day"],
@@ -35,8 +36,20 @@ export const summaryPractitionerRole: SummaryPractitionerRole = {
   }
 }
 
+export const prescriptionLevelDetailProps: PrescriptionLevelDetailsProps = {
+  prescriptionId: "A0548B-A99968-451485",
+  repeatIssued: 1,
+  repeatAllowed: 6,
+  authoredOn: "01-11-2021",
+  startDate: "02-11-2021",
+  nominatedOds: "VNCEL",
+  nominatedType: "Other (e.g. Community Pharmacy)",
+  patientInstruction: "Take the medicine."
+}
+
 export const summaryPrescription: SummaryPrescription = {
   medications: [summaryMedication],
   patient: summaryPatient,
-  practitionerRole: summaryPractitionerRole
+  practitionerRole: summaryPractitionerRole,
+  prescriptionLevelDetails: prescriptionLevelDetailProps
 }
