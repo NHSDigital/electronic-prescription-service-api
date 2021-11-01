@@ -124,7 +124,7 @@ interface PrescriptionDetails {
   medicationDispenses: Array<fhir.MedicationDispense>
 }
 
-function toStaticProductInfo(medicationDispense: fhir.MedicationDispense): StaticProductInfo {
+export function toStaticProductInfo(medicationDispense: fhir.MedicationDispense): StaticProductInfo {
   return {
     id: getMedicationDispenseLineItemId(medicationDispense),
     name: medicationDispense.medicationCodeableConcept.coding[0].display,

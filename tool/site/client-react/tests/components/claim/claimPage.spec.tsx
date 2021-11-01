@@ -4,17 +4,8 @@ import pretty from "pretty"
 import * as React from "react"
 import moxios from "moxios"
 import ClaimPage from "../../../src/components/claim/claimPage"
-import * as fs from "fs"
-import * as path from "path"
 import userEvent from "@testing-library/user-event"
-
-beforeEach(function () {
-  moxios.install()
-})
-
-afterEach(function () {
-  moxios.uninstall()
-})
+import {readMessage} from "./messages/messages"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "7A9089-A83008-56A03J"
@@ -26,11 +17,15 @@ const claimUrl = `${baseUrl}dispense/claim`
 const prescriptionOrder = readMessage("prescriptionOrder.json")
 const dispenseNotification = readMessage("dispenseNotification.json")
 
+beforeEach(() => moxios.install())
+
+afterEach(() => moxios.uninstall())
+
 test("Displays loading text while prescription data is being requested", async () => {
   const {container} = render(<ClaimPage baseUrl={baseUrl} prescriptionId={prescriptionId}/>)
-  await waitFor(() => screen.getByText("Loading..."))
+  await waitFor(() => screen.getByText("Retrieving prescription details."))
 
-  expect(screen.getByText("Retrieving prescription details.")).toBeTruthy()
+  expect(screen.getByText("Loading...")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
@@ -149,9 +144,3 @@ test("Displays claim result", async () => {
   expect(screen.getByText(JSON.stringify("Mock result"))).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
-
-function readMessage(filename: string) {
-  const messagePath = path.join(__dirname, `messages/${filename}`)
-  const messageStr = fs.readFileSync(messagePath, "utf-8")
-  return JSON.parse(messageStr)
-}
