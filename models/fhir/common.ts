@@ -30,6 +30,7 @@ export function createIdentifier(system: string, value: string): Identifier {
 
 export interface CodeableConcept {
   coding: Array<Coding>
+  text?: string
 }
 
 export function createCodeableConcept(system: string, code: string, display: string): CodeableConcept {

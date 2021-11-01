@@ -210,10 +210,11 @@
                   "coding": [
                     {
                       "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
-                      "code": "NDEC",
-                      "display": "No Dispenser Endorsement Code"
+                      "code": "IP",
+                      "display": "Invoice Price"
                     }
-                  ]
+                  ],
+                  "text": "£210.91,100ml,Specials Ltd,Lic12345678,BN12345678"
                 },
                 {
                   "coding": [
