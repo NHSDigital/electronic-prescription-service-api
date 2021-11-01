@@ -90,8 +90,7 @@ customWindow.sendEditRequest = function () {
     )
     if (response.redirectUri) {
       window.location.href = encodeURI(response.redirectUri)
-    }
-    else {
+    } else {
       addError("Failed to read prescription(s)")
     }
   } catch (e) {
