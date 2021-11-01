@@ -1,7 +1,37 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Renders correctly 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Prescription Summary</label></h1><label class=\\"nhsuk-label nhsuk-label--m\\">Patient</label>
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Prescription Summary</label></h1>
+<dl class=\\"nhsuk-summary-list\\">
+  <div class=\\"nhsuk-summary-list__row\\">
+    <dt class=\\"nhsuk-summary-list__key\\">ID</dt>
+    <dd class=\\"nhsuk-summary-list__value\\">A0548B-A99968-451485</dd>
+  </div>
+  <div class=\\"nhsuk-summary-list__row\\">
+    <dt class=\\"nhsuk-summary-list__key\\">Repeat Information</dt>
+    <dd class=\\"nhsuk-summary-list__value\\">1/6</dd>
+  </div>
+  <div class=\\"nhsuk-summary-list__row\\">
+    <dt class=\\"nhsuk-summary-list__key\\">Authored On</dt>
+    <dd class=\\"nhsuk-summary-list__value\\">01-11-2021</dd>
+  </div>
+  <div class=\\"nhsuk-summary-list__row\\">
+    <dt class=\\"nhsuk-summary-list__key\\">Effective Date</dt>
+    <dd class=\\"nhsuk-summary-list__value\\">02-11-2021</dd>
+  </div>
+  <div class=\\"nhsuk-summary-list__row\\">
+    <dt class=\\"nhsuk-summary-list__key\\">Nominated Pharmacy ODS Code</dt>
+    <dd class=\\"nhsuk-summary-list__value\\">VNCEL</dd>
+  </div>
+  <div class=\\"nhsuk-summary-list__row\\">
+    <dt class=\\"nhsuk-summary-list__key\\">Nominated Pharmacy Type</dt>
+    <dd class=\\"nhsuk-summary-list__value\\">Other (e.g. Community Pharmacy)</dd>
+  </div>
+  <div class=\\"nhsuk-summary-list__row\\">
+    <dt class=\\"nhsuk-summary-list__key\\">Patient Instructions</dt>
+    <dd class=\\"nhsuk-summary-list__value\\">Take the medicine.</dd>
+  </div>
+</dl><label class=\\"nhsuk-label nhsuk-label--m\\">Patient</label>
 <dl class=\\"nhsuk-summary-list\\">
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Name</dt>
@@ -23,7 +53,41 @@ exports[`Renders correctly 1`] = `
     <dt class=\\"nhsuk-summary-list__key\\">Address</dt>
     <dd class=\\"nhsuk-summary-list__value\\">1 Trevelyan Square<br>Boar Lane<br>Leeds<br>West Yorkshire<br>LS1 6AE</dd>
   </div>
-</dl><label class=\\"nhsuk-label nhsuk-label--m\\">Prescriber</label>
+</dl>
+<div class=\\"nhsuk-table__panel-with-heading-tab\\">
+  <h3 class=\\"nhsuk-table__heading-tab\\">Medication</h3>
+  <div class=\\"nhsuk-table-responsive\\">
+    <table class=\\"nhsuk-table\\">
+      <caption class=\\"nhsuk-table__caption\\">Medication summary</caption>
+      <thead class=\\"nhsuk-table__head\\">
+        <tr class=\\"nhsuk-table__row\\">
+          <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Details</th>
+          <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Quantity</th>
+          <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Unit</th>
+          <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Dosage Instructions</th>
+        </tr>
+      </thead>
+      <tbody class=\\"nhsuk-table__body\\">
+        <tr class=\\"nhsuk-table__row\\">
+          <td class=\\"nhsuk-table__cell\\">
+            <div><b>Liquid dopamine</b></div>
+            <div>FS</div>
+            <div>DM</div>
+            <div>YOLO</div>
+            <div>See your GP next week</div>
+            <div>Don't forget your 5 a day</div>
+          </td>
+          <td class=\\"nhsuk-table__cell\\">30</td>
+          <td class=\\"nhsuk-table__cell\\">ml</td>
+          <td class=\\"nhsuk-table__cell\\">
+            <div>Only take during meal</div>
+            <div>Can split in half</div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div><label class=\\"nhsuk-label nhsuk-label--m\\">Prescriber</label>
 <dl class=\\"nhsuk-summary-list\\">
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Name</dt>

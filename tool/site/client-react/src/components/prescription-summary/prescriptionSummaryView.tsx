@@ -67,20 +67,12 @@ const PrescriptionSummaryView: React.FC<SummaryPrescription> = ({
   return (
     <>
       <Label isPageHeading>Prescription Summary</Label>
-      <ErrorBoundary>
-        <PrescriptionLevelDetails {...prescriptionLevelDetails}/>
-      </ErrorBoundary>
+      <PrescriptionLevelDetails {...prescriptionLevelDetails}/>
       <Label size="m" bold>Patient</Label>
-      <ErrorBoundary>
-        <PatientSummaryList {...patient}/>
-      </ErrorBoundary>
-      <ErrorBoundary>
-        <MedicationSummary medicationSummaryList={medications}/>
-      </ErrorBoundary>
+      <PatientSummaryList {...patient}/>
+      <MedicationSummary medicationSummaryList={medications}/>
       <Label size="m" bold>Prescriber</Label>
-      <ErrorBoundary>
-        <PractitionerRoleSummaryList {...practitionerRole}/>
-      </ErrorBoundary>
+      <PractitionerRoleSummaryList {...practitionerRole}/>
     </>
   )
 }

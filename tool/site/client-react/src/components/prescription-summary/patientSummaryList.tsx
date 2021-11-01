@@ -1,9 +1,9 @@
 import {SummaryList} from "nhsuk-react-components"
 import * as React from "react"
-import {Fragment} from "react"
 import {Patient} from "fhir/r4"
 import {formatGender, formatName, formatNhsNumber, getAllAddressLines} from "../../formatters/demographics"
 import {formatDate} from "../../formatters/dates"
+import {brLineFragments} from "./brLineFragments"
 
 export function createSummaryPatient(patient: Patient): SummaryPatient {
   return {
@@ -30,12 +30,7 @@ const PatientSummaryList = ({
   gender,
   addressLines
 }: SummaryPatient): JSX.Element => {
-  const addressLineFragments = addressLines.map((addressLine, index) => (
-    <Fragment key={index}>
-      {index > 0 && <br/>}
-      {addressLine}
-    </Fragment>
-  ))
+  const addressLineFragments = brLineFragments(addressLines)
   return (
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore

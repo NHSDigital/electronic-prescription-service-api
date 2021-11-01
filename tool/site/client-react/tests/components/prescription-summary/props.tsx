@@ -44,7 +44,7 @@ export const prescriptionLevelDetailProps: PrescriptionLevelDetailsProps = {
   startDate: "02-11-2021",
   nominatedOds: "VNCEL",
   nominatedType: "Other (e.g. Community Pharmacy)",
-  patientInstruction: "Take the medicine."
+  patientInstructions: ["Take the medicine."]
 }
 
 export const summaryPrescription: SummaryPrescription = {

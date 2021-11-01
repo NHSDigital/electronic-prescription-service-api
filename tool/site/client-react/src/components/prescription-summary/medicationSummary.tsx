@@ -56,7 +56,7 @@ const MedicationSummary: React.FC<MedicationSummaryProps> = ({medicationSummaryL
           </Table.Row>
         </Table.Head>
         <Table.Body>
-          {medicationSummaryList.map(medication => <MedicationRow {...medication} />)}
+          {medicationSummaryList.map((medication, index) => <MedicationRow key={index} {...medication} />)}
         </Table.Body>
       </Table>
     </Table.Panel>
@@ -71,16 +71,16 @@ const MedicationRow: React.FC<SummaryMedication> = ({
   quantityValue,
   snomedCode,
   snomedCodeDescription
-}) => <Table.Row key={snomedCode}>
+}) => <Table.Row>
   <Table.Cell>
     <div><b>{snomedCodeDescription}</b></div>
-    {prescriptionEndorsements.map(endorsement => <div key={endorsement}>{endorsement}</div>)}
+    {prescriptionEndorsements.map((endorsement, index) => <div key={index}>{endorsement}</div>)}
     {/* TODO when endorsements are a thing, sort out key in ^map^. will break on duplicate endorsements */}
     {dispenserNotes?.map(note => <div key={note}>{note}</div>)}
   </Table.Cell>
   <Table.Cell>{quantityValue}</Table.Cell>
   <Table.Cell>{quantityUnit}</Table.Cell>
-  <Table.Cell>{dosageInstruction?.map(note => <div key={note}>{note}</div>)}</Table.Cell>
+  <Table.Cell>{dosageInstruction?.map((note, index) => <div key={index}>{note}</div>)}</Table.Cell>
 </Table.Row>
 
 export default MedicationSummary

@@ -7,6 +7,7 @@ import {
   getNumberOfRepeatsIssuedExtension, getPerformerSiteTypeExtension,
   getRepeatInformationExtension
 } from "../../fhir/customExtensions"
+import {brLineFragments} from "./brLineFragments";
 
 export function createPrescriptionLevelDetails(medicationRequest: MedicationRequest, communicationRequests?: Array<CommunicationRequest>): PrescriptionLevelDetailsProps {
   const prescriptionId = medicationRequest.groupIdentifier.value
@@ -18,19 +19,18 @@ export function createPrescriptionLevelDetails(medicationRequest: MedicationRequ
   const repeatAllowed = repeatsAllowedExtension.valueInteger
 
   const authoredOn = formatDate()
-  const startDate = medicationRequest.dispenseRequest.validityPeriod?.start ?? new Date().toISOString().slice(0, 10)
+  const startDate = formatDate(medicationRequest.dispenseRequest.validityPeriod?.start) ?? formatDate()
   const nominatedOds = medicationRequest.dispenseRequest?.performer?.identifier?.value || ""
 
   const nominatedTypeExtension = getPerformerSiteTypeExtension(medicationRequest.dispenseRequest.extension)
   const nominatedTypeCode = nominatedTypeExtension.valueCoding.code
   const nominatedType = getPharmacyTypeText(nominatedTypeCode)
 
-  const patientInstruction = communicationRequests
+  const patientInstructions = communicationRequests
     .flatMap(communicationRequest => communicationRequest.payload)
     .filter(Boolean)
     .filter(isContentStringPayload)
     .map(payload => payload.contentString)
-    .join("\n")
 
   return {
     prescriptionId,
@@ -40,7 +40,7 @@ export function createPrescriptionLevelDetails(medicationRequest: MedicationRequ
     startDate,
     nominatedOds,
     nominatedType,
-    patientInstruction
+    patientInstructions
   }
 }
 
@@ -52,7 +52,7 @@ export interface PrescriptionLevelDetailsProps {
   startDate: string
   nominatedOds?: string
   nominatedType?: string
-  patientInstruction?: string
+  patientInstructions?: Array<string>
 }
 
 const PrescriptionLevelDetails = ({
@@ -63,9 +63,9 @@ const PrescriptionLevelDetails = ({
   startDate,
   nominatedOds,
   nominatedType,
-  patientInstruction
+  patientInstructions
 }: PrescriptionLevelDetailsProps): JSX.Element => {
-
+  const patientInstruction = brLineFragments(patientInstructions)
   return (
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
@@ -83,11 +83,11 @@ const PrescriptionLevelDetails = ({
         </>
       }
       <SummaryList.Row>
-        <SummaryList.Key>Authored on</SummaryList.Key>
+        <SummaryList.Key>Authored On</SummaryList.Key>
         <SummaryList.Value>{authoredOn}</SummaryList.Value>
       </SummaryList.Row>
       <SummaryList.Row>
-        <SummaryList.Key>Effective date</SummaryList.Key>
+        <SummaryList.Key>Effective Date</SummaryList.Key>
         <SummaryList.Value>{startDate}</SummaryList.Value>
       </SummaryList.Row>
       {nominatedOds &&
