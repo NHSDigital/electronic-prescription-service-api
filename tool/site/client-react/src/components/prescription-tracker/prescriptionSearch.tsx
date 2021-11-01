@@ -81,13 +81,7 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
         </div>
         : <div>
           <Label isPageHeading>Found {searchResults.count} Prescription{searchResults.pluralSuffix}</Label>
-          <Details expander>
-            <Details.Summary>Details</Details.Summary>
-            <Details.Text>
-              <Pre>{JSON.stringify(searchResults.prescriptionSummaries, null, 2)}</Pre>
-              {/* <Pre>{JSON.stringify(searchResults.searchset, null, 2)}</Pre> */}
-            </Details.Text>
-          </Details>
+          <Pre>{JSON.stringify(searchResults.prescriptionSummaries, null, 2)}</Pre>
           <Button secondary onClick={handleReset}>Back</Button>
         </div>
       }
