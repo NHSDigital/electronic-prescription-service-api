@@ -1,15 +1,30 @@
 import {SummaryList} from "nhsuk-react-components"
 import * as React from "react"
 import {CommunicationRequest, CommunicationRequestPayload, MedicationRequest} from "fhir/r4"
+import {formatDate} from "../../formatters/dates"
+import {
+  getNumberOfRepeatsAllowedExtension,
+  getNumberOfRepeatsIssuedExtension, getPerformerSiteTypeExtension,
+  getRepeatInformationExtension
+} from "../../fhir/customExtensions"
 
 export function createPrescriptionLevelDetails(medicationRequest: MedicationRequest, communicationRequests?: Array<CommunicationRequest>): PrescriptionLevelDetailsProps {
   const prescriptionId = medicationRequest.groupIdentifier.value
-  //TODO - repeatNumber
-  const repeatNumber = null
-  const authoredOn = getFormattedDate()
+
+  const repeatExtension = getRepeatInformationExtension(medicationRequest.extension)
+  const repeatsIssuedExtension = getNumberOfRepeatsIssuedExtension(repeatExtension.extension)
+  const repeatIssued = repeatsIssuedExtension.valueInteger
+  const repeatsAllowedExtension = getNumberOfRepeatsAllowedExtension(repeatExtension.extension)
+  const repeatAllowed = repeatsAllowedExtension.valueInteger
+
+  const authoredOn = formatDate()
   const startDate = medicationRequest.dispenseRequest.validityPeriod?.start ?? new Date().toISOString().slice(0, 10)
   const nominatedOds = medicationRequest.dispenseRequest?.performer?.identifier?.value || ""
-  const nominatedType = getPharmacyType(medicationRequest)
+
+  const nominatedTypeExtension = getPerformerSiteTypeExtension(medicationRequest.dispenseRequest.extension)
+  const nominatedTypeCode = nominatedTypeExtension.valueCoding.code
+  const nominatedType = getPharmacyTypeText(nominatedTypeCode)
+
   const patientInstruction = communicationRequests
     .flatMap(communicationRequest => communicationRequest.payload)
     .filter(Boolean)
@@ -19,7 +34,8 @@ export function createPrescriptionLevelDetails(medicationRequest: MedicationRequ
 
   return {
     prescriptionId,
-    repeatNumber,
+    repeatIssued,
+    repeatAllowed,
     authoredOn,
     startDate,
     nominatedOds,
@@ -30,7 +46,8 @@ export function createPrescriptionLevelDetails(medicationRequest: MedicationRequ
 
 export interface PrescriptionLevelDetailsProps {
   prescriptionId: string
-  repeatNumber?: string
+  repeatIssued?: number
+  repeatAllowed?: number
   authoredOn: string
   startDate: string
   nominatedOds?: string
@@ -40,7 +57,8 @@ export interface PrescriptionLevelDetailsProps {
 
 const PrescriptionLevelDetails = ({
   prescriptionId,
-  repeatNumber,
+  repeatIssued,
+  repeatAllowed,
   authoredOn,
   startDate,
   nominatedOds,
@@ -56,11 +74,11 @@ const PrescriptionLevelDetails = ({
         <SummaryList.Key>ID</SummaryList.Key>
         <SummaryList.Value>{prescriptionId}</SummaryList.Value>
       </SummaryList.Row>
-      {repeatNumber &&
+      {repeatAllowed > 1 &&
         <>
           <SummaryList.Row>
-            <SummaryList.Key>Repeat Number</SummaryList.Key>
-            <SummaryList.Value>{repeatNumber}</SummaryList.Value>
+            <SummaryList.Key>Repeat Information</SummaryList.Key>
+            <SummaryList.Value>{repeatIssued}/{repeatAllowed}</SummaryList.Value>
           </SummaryList.Row>
         </>
       }
@@ -96,32 +114,17 @@ const PrescriptionLevelDetails = ({
   )
 }
 
-function getFormattedDate() {
-  const date = new Date()
-  const year = date.getFullYear()
-  const month = ("0" + (date.getMonth() + 1)).slice(-2)
-  const day = date.getDate()
-  return `${year}-${month}-${day}`
-}
-
-function getPharmacyType(medicationRequest: MedicationRequest): string {
-  if (medicationRequest) {
-    const extension = medicationRequest.dispenseRequest.extension?.filter(
-      extension => extension.url === "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType"
-    )[0] as CodingExtension
-    const code = extension?.valueCoding?.code
-
-    if (code === "P1") {
-      return "Other (e.g. Community Pharmacy)"
-    } else if (code === "P2") {
-      return "Appliance Contractor"
-    } else if (code === "P3") {
-      return "Dispensing Doctor"
-    } else if (code === "0004") {
-      return "None"
-    } else {
-      return ""
-    }
+function getPharmacyTypeText(code: string): string {
+  if (code === "P1") {
+    return "Other (e.g. Community Pharmacy)"
+  } else if (code === "P2") {
+    return "Appliance Contractor"
+  } else if (code === "P3") {
+    return "Dispensing Doctor"
+  } else if (code === "0004") {
+    return "None"
+  } else {
+    return ""
   }
 }
 
