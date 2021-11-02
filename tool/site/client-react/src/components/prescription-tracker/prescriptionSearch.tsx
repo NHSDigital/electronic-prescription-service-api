@@ -72,6 +72,7 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
               <Pre>{JSON.stringify(searchResults.searchset, null, 2)}</Pre>
             </Details.Text>
           </Details>
+          <Button secondary onClick={handleSearch}>Refresh</Button>
           <Button secondary onClick={handleReset}>Back</Button>
         </div>
       }
