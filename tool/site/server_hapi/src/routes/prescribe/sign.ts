@@ -34,5 +34,5 @@ export default [
 ]
 
 function prepareResponseIsError(prepareResponse: Parameters | OperationOutcome): prepareResponse is OperationOutcome {
-  return prepareResponse as OperationOutcome !== undefined
+  return !!(prepareResponse as OperationOutcome).issue?.length
 }
