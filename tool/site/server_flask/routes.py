@@ -341,7 +341,7 @@ def post_release():
 def get_dispense():
     if (config.ENVIRONMENT == "prod"):
         return app.make_response("Bad Request", 400)
-    return render_rivets_client("dispense")
+    return render_react_client("dispense")
 
 
 @app.route(DISPENSE_URL, methods=["POST"])
