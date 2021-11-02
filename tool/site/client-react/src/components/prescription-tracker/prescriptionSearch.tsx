@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useState} from "react"
-import {Button, Input, Label} from "nhsuk-react-components"
+import {Button, Details, Input, Label, SummaryList, Table} from "nhsuk-react-components"
 import Pre from "../pre"
 import {Bundle, Task} from "fhir/r4"
 
@@ -17,10 +17,10 @@ interface PrescriptionSearchResults {
   searchset: Bundle
   count: number
   pluralSuffix: string
-  prescriptionSummaries: PrescriptionSummary[]
+  prescriptionSummaries: PrescriptionSummaryProps[]
 }
 
-interface PrescriptionSummary {
+interface PrescriptionSummaryProps {
   prescription: Prescription
   prescriptionItems: PrescriptionItem[]
 }
@@ -44,7 +44,7 @@ interface DispenseEvent {
   description: string
 }
 
-function createPrescriptionSummary(task: Task): PrescriptionSummary {
+function createPrescriptionSummaryProps(task: Task): PrescriptionSummaryProps {
   const prescription = {
     id: task.focus.identifier.value,
     type: task.extension.find(e => e.url === "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription")
@@ -81,6 +81,68 @@ function createPrescriptionSummary(task: Task): PrescriptionSummary {
   }
 }
 
+const Prescription: React.FC<PrescriptionSummaryProps> = ({prescription}) => {
+  return (
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    <SummaryList>
+      <SummaryList.Row>
+        <SummaryList.Key>ID</SummaryList.Key>
+        <SummaryList.Value>{prescription.id}</SummaryList.Value>
+      </SummaryList.Row>
+      <SummaryList.Row>
+        <SummaryList.Key>Type</SummaryList.Key>
+        <SummaryList.Value>{prescription.type}</SummaryList.Value>
+      </SummaryList.Row>
+      <SummaryList.Row>
+        <SummaryList.Key>NHS Number</SummaryList.Key>
+        <SummaryList.Value>{prescription.patientNhsNumber}</SummaryList.Value>
+      </SummaryList.Row>
+      <SummaryList.Row>
+        <SummaryList.Key>Created On</SummaryList.Key>
+        <SummaryList.Value>{prescription.creationDate}</SummaryList.Value>
+      </SummaryList.Row>
+      <SummaryList.Row>
+        <SummaryList.Key>Pharmacy</SummaryList.Key>
+        <SummaryList.Value>{prescription.pharmacy}</SummaryList.Value>
+      </SummaryList.Row>
+      <SummaryList.Row>
+        <SummaryList.Key>Status</SummaryList.Key>
+        <SummaryList.Value>{prescription.status}</SummaryList.Value>
+      </SummaryList.Row>
+    </SummaryList>
+  )
+}
+
+const PrescriptionItems: React.FC<PrescriptionSummaryProps> = ({prescriptionItems}) => {
+  return (
+    <Table.Panel heading="Items">
+      <Table caption="Item summary">
+        <Table.Head>
+          <Table.Row>
+            <Table.Cell>Identifier</Table.Cell>
+            <Table.Cell>Status</Table.Cell>
+            <Table.Cell>Dispense Events</Table.Cell>
+          </Table.Row>
+        </Table.Head>
+        <Table.Body>
+          {prescriptionItems.map((item, index) => <ItemRow key={index} {...item} />)}
+        </Table.Body>
+      </Table>
+    </Table.Panel>
+  )
+}
+
+const ItemRow: React.FC<PrescriptionItem> = ({
+  identifier,
+  dispenseStatus,
+  dispenseEvents
+}) => <Table.Row>
+  <Table.Cell>{identifier}</Table.Cell>
+  <Table.Cell>{dispenseStatus}</Table.Cell>
+  <Table.Cell>{dispenseEvents?.map((event, index) => <div key={index}>{event.description}</div>)}</Table.Cell>
+</Table.Row>
+
 const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
   baseUrl,
   prescriptionId
@@ -95,7 +157,7 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
       searchset,
       count: searchset.total,
       pluralSuffix: searchset.total > 1 || searchset.total === 0 ? "s" : "",
-      prescriptionSummaries: searchset.entry.map(e => e.resource as Task).map(createPrescriptionSummary)
+      prescriptionSummaries: searchset.entry.map(e => e.resource as Task).map(createPrescriptionSummaryProps)
     }
     setSearchResults(results)
   }
@@ -121,7 +183,15 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
         </div>
         : <div>
           <Label isPageHeading>Found {searchResults.count} Prescription{searchResults.pluralSuffix}</Label>
-          <Pre>{JSON.stringify(searchResults.prescriptionSummaries, null, 2)}</Pre>
+          {/* todo: handle multiple prescriptions */}
+          <Prescription {...searchResults.prescriptionSummaries[0]} />
+          <PrescriptionItems {...searchResults.prescriptionSummaries[0]} />
+          <Details expander>
+            <Details.Summary>Show FHIR</Details.Summary>
+            <Details.Text>
+              <Pre>{JSON.stringify(searchResults.searchset, null, 2)}</Pre>
+            </Details.Text>
+          </Details>
           <Button secondary onClick={handleReset}>Back</Button>
         </div>
       }
