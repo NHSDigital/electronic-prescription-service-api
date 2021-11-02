@@ -10,10 +10,7 @@ const init = async () => {
     port: 9001,
     host: "0.0.0.0",
     routes: {
-      cors: true, // Won't run as Apigee hosted target without this
-      payload: {
-        parse: false
-      }
+      cors: true // Won't run as Apigee hosted target without this
     },
     cache: [{
       name: "session",

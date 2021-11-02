@@ -5,14 +5,18 @@ import axios from "axios"
 import {
   getMedicationDispenseResources,
   getMedicationRequestResources,
+  getMessageHeaderResources,
   getPatientResources
 } from "../../fhir/bundleResourceFinder"
 import * as fhir from "fhir/r4"
+import {MedicationDispense} from "fhir/r4"
 import Pre from "../pre"
-import DispenseForm, {DispenseFormValues, StaticLineItemInfo} from "./dispenseForm"
+import DispenseForm, {DispenseFormValues, StaticLineItemInfo, StaticPrescriptionInfo} from "./dispenseForm"
 import {getMedicationDispenseLineItemId, getMedicationRequestLineItemId} from "../claim/createDispenseClaim"
 import {formatQuantity} from "../../formatters/quantity"
+import {createDispenseNotification} from "./createDispenseNotification"
 import {getTaskBusinessStatusExtension} from "../../fhir/customExtensions"
+import {LineItemStatus, PrescriptionStatus} from "./reference-data/valueSets"
 
 interface DispensePageProps {
   baseUrl: string
@@ -47,10 +51,11 @@ const DispensePage: React.FC<DispensePageProps> = ({
       return
     }
 
-    const historyResponse = await axios.get<HistoryResponse>(`${baseUrl}dispense/history?prescription_id=${prescriptionId}`)
-    const dispenseNotifications = historyResponse.data?.dispense_notifications ?? []
+    const dispenseNotificationsResponse = await axios.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
+    const dispenseNotifications = dispenseNotificationsResponse.data
 
     setPrescriptionDetails({
+      messageHeader: getMessageHeaderResources(prescriptionOrder)[0],
       patient: getPatientResources(prescriptionOrder)[0],
       medicationRequests: getMedicationRequestResources(prescriptionOrder),
       medicationDispenses: dispenseNotifications.flatMap(getMedicationDispenseResources)
@@ -61,9 +66,22 @@ const DispensePage: React.FC<DispensePageProps> = ({
   async function sendDispenseNotification(dispenseFormValues: DispenseFormValues): Promise<void> {
     setLoadingMessage("Sending dispense notification.")
 
-    //TODO - send to server
+    const dispenseNotification = createDispenseNotification(
+      prescriptionDetails.messageHeader,
+      prescriptionDetails.patient,
+      prescriptionDetails.medicationRequests,
+      dispenseFormValues
+    )
 
-    setDispenseResult(JSON.stringify(dispenseFormValues))
+    const dispenseNotificationStr = JSON.stringify(dispenseNotification, null, 2)
+    setDispenseResult(dispenseNotificationStr)
+
+    const response = await axios.post(`${baseUrl}dispense/dispense`, dispenseNotification)
+    const responseStr = JSON.stringify(response.data, null, 2)
+    console.log(dispenseNotification)
+    console.log(response)
+
+    //setDispenseResult(responseStr)
     setLoadingMessage(undefined)
   }
 
@@ -92,7 +110,8 @@ const DispensePage: React.FC<DispensePageProps> = ({
     return <>
       <Label isPageHeading>Dispense Medication</Label>
       <DispenseForm
-        lineItems={createStaticLineItemInfoArray(prescriptionDetails)}
+        lineItems={createStaticLineItemInfoArray(prescriptionDetails.medicationRequests, prescriptionDetails.medicationDispenses)}
+        prescription={createStaticPrescriptionInfo(prescriptionDetails.medicationDispenses)}
         sendDispenseNotification={sendDispenseNotification}
       />
     </>
@@ -104,20 +123,20 @@ const DispensePage: React.FC<DispensePageProps> = ({
   </>
 }
 
-interface HistoryResponse {
-  dispense_notifications: Array<fhir.Bundle>
-}
-
 interface PrescriptionDetails {
+  messageHeader: fhir.MessageHeader
   patient: fhir.Patient
   medicationRequests: Array<fhir.MedicationRequest>
   medicationDispenses: Array<fhir.MedicationDispense>
 }
 
-function createStaticLineItemInfoArray(prescriptionDetails: PrescriptionDetails): Array<StaticLineItemInfo> {
-  return prescriptionDetails.medicationRequests.map(medicationRequest => {
+function createStaticLineItemInfoArray(
+  medicationRequests: Array<fhir.MedicationRequest>,
+  medicationDispenses: Array<fhir.MedicationDispense>
+): Array<StaticLineItemInfo> {
+  return medicationRequests.map(medicationRequest => {
     const lineItemId = getMedicationRequestLineItemId(medicationRequest)
-    const medicationDispensesForItem = prescriptionDetails.medicationDispenses.filter(medicationDispense =>
+    const medicationDispensesForItem = medicationDispenses.filter(medicationDispense =>
       getMedicationDispenseLineItemId(medicationDispense) === lineItemId
     )
     const latestMedicationDispenseForItem = medicationDispensesForItem.pop()
@@ -135,9 +154,27 @@ export function createStaticLineItemInfo(
     name: medicationRequest.medicationCodeableConcept.coding[0].display,
     quantity: formatQuantity(medicationRequest.dispenseRequest.quantity),
     priorStatusCode: medicationDispense
-      ? medicationDispense.type.coding[0].code
-      : "0007"
+      ? getLineItemStatus(medicationDispense)
+      : LineItemStatus.TO_BE_DISPENSED,
+    priorNonDispensingReasonCode: medicationDispense?.statusReasonCodeableConcept?.coding?.[0]?.code
   }
+}
+
+export function createStaticPrescriptionInfo(medicationDispenses: Array<MedicationDispense>): StaticPrescriptionInfo {
+  //TODO - use release response
+  return {
+    priorStatusCode: medicationDispenses.length
+      ? getPrescriptionStatus(medicationDispenses[medicationDispenses.length - 1])
+      : PrescriptionStatus.TO_BE_DISPENSED
+  }
+}
+
+function getLineItemStatus(medicationDispense: MedicationDispense): LineItemStatus {
+  return medicationDispense.type.coding[0].code as LineItemStatus
+}
+
+function getPrescriptionStatus(medicationDispense: MedicationDispense): PrescriptionStatus {
+  return getTaskBusinessStatusExtension(medicationDispense.extension).valueCoding.code as PrescriptionStatus
 }
 
 export default DispensePage

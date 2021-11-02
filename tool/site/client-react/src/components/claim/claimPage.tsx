@@ -9,9 +9,9 @@ import {
   getPatientResources
 } from "../../fhir/bundleResourceFinder"
 import * as fhir from "fhir/r4"
+import {MedicationDispense, MedicationRequest} from "fhir/r4"
 import Pre from "../pre"
 import {createClaim, getMedicationDispenseLineItemId} from "./createDispenseClaim"
-import {getTaskBusinessStatusExtension} from "../../fhir/customExtensions"
 
 interface ClaimPageProps {
   baseUrl: string
@@ -46,8 +46,8 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
       return
     }
 
-    const historyResponse = await axios.get<HistoryResponse>(`${baseUrl}dispense/history?prescription_id=${prescriptionId}`)
-    const dispenseNotifications = historyResponse.data?.dispense_notifications
+    const dispenseNotificationsResponse = await axios.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
+    const dispenseNotifications = dispenseNotificationsResponse.data
     if (!dispenseNotifications?.length) {
       setErrorMessage("Dispense notification not found. Has this prescription been dispensed?")
       return
@@ -71,7 +71,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
       claimFormValues
     )
     const response = await axios.post(`${baseUrl}dispense/claim`, claim)
-    const responseStr = JSON.stringify(response.data)
+    const responseStr = JSON.stringify(response.data, null, 2)
 
     setClaimResult(responseStr)
     setLoadingMessage(undefined)
@@ -102,7 +102,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
     return <>
       <Label isPageHeading>Claim for Dispensed Medication</Label>
       <ClaimForm
-        products={prescriptionDetails.medicationDispenses.map(toStaticProductInfo)}
+        products={createStaticProductInfoArray(prescriptionDetails.medicationRequests, prescriptionDetails.medicationDispenses)}
         sendClaim={sendClaim}
       />
     </>
@@ -114,23 +114,72 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
   </>
 }
 
-interface HistoryResponse {
-  dispense_notifications: Array<fhir.Bundle>
-}
-
 interface PrescriptionDetails {
   patient: fhir.Patient
   medicationRequests: Array<fhir.MedicationRequest>
   medicationDispenses: Array<fhir.MedicationDispense>
 }
 
-export function toStaticProductInfo(medicationDispense: fhir.MedicationDispense): StaticProductInfo {
-  return {
-    id: getMedicationDispenseLineItemId(medicationDispense),
-    name: medicationDispense.medicationCodeableConcept.coding[0].display,
-    quantityDispensed: `${medicationDispense.quantity.value} ${medicationDispense.quantity.unit}`,
-    status: getTaskBusinessStatusExtension(medicationDispense.extension).valueCoding.display
-  }
+function createStaticProductInfoArray(
+  medicationRequests: Array<MedicationRequest>,
+  medicationDispenses: Array<MedicationDispense>
+): Array<StaticProductInfo> {
+  const lineItemGroups = groupByProperty(medicationDispenses, getMedicationDispenseLineItemId)
+  return lineItemGroups.flatMap(([lineItemId, medicationDispensesForLineItem]) => {
+    const latestMedicationDispense = medicationDispensesForLineItem[medicationDispensesForLineItem.length - 1]
+    const totalQuantity = medicationDispensesForLineItem
+      .map(medicationDispense => medicationDispense.quantity.value)
+      .reduce((a, b) => a + b)
+    return {
+      id: lineItemId,
+      name: latestMedicationDispense.medicationCodeableConcept.coding[0].display,
+      quantityDispensed: `${totalQuantity} ${latestMedicationDispense.quantity.unit}`,
+      status: latestMedicationDispense.type.coding[0].display
+    }
+  })
+}
+
+// TODO - maybe handle dispensing multiple products to fulfill a request
+// function createStaticProductInfoArray(
+//   medicationRequests: Array<MedicationRequest>,
+//   medicationDispenses: Array<MedicationDispense>
+// ): Array<StaticProductInfo> {
+//   const lineItemGroups = groupByProperty(medicationDispenses, getMedicationDispenseLineItemId)
+//   return lineItemGroups.flatMap((([, medicationDispensesForLineItem]) =>
+//     createStaticProductInfoArrayForLineItem(medicationDispensesForLineItem)
+//   ))
+// }
+//
+// function createStaticProductInfoArrayForLineItem(
+//   medicationDispenses: Array<MedicationDispense>
+// ): Array<StaticProductInfo> {
+//   const latestMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
+//   const lineItemId = getMedicationDispenseLineItemId(latestMedicationDispense)
+//   const finalStatus = latestMedicationDispense.type.coding[0].display
+//
+//   const productGroups = groupByProperty(
+//     medicationDispenses,
+//     medicationDispense => medicationDispense.medicationCodeableConcept.coding[0].code
+//   )
+//   return productGroups.map(([, medicationDispensesForProduct]) => {
+//     const totalQuantity = medicationDispensesForProduct
+//       .map(medicationDispense => medicationDispense.quantity.value)
+//       .reduce((a, b) => a + b)
+//     return {
+//       id: lineItemId,
+//       name: medicationDispensesForProduct[0].medicationCodeableConcept.coding[0].display,
+//       quantityDispensed: `${totalQuantity} ${medicationDispensesForProduct[0].quantity.unit}`,
+//       status: finalStatus
+//     }
+//   })
+// }
+
+function groupByProperty<K, V>(array: Array<V>, getProperty: (value: V) => K): Array<[K, Array<V>]> {
+  const uniqueThings = new Set(array.map(getProperty))
+  return Array.from(uniqueThings).map(property => [
+    property,
+    array.filter(element => getProperty(element) === property)
+  ])
 }
 
 export default ClaimPage

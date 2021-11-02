@@ -2,11 +2,9 @@ import * as React from "react"
 import {Fieldset, Select} from "nhsuk-react-components"
 import LineItemSummaryList from "./lineItemSummaryList"
 import {Field} from "formik"
-import {VALUE_SET_LINE_ITEM_STATUS, VALUE_SET_NON_DISPENSING_REASON} from "./reference-data/valueSets"
+import {LineItemStatus, VALUE_SET_LINE_ITEM_STATUS, VALUE_SET_NON_DISPENSING_REASON} from "./reference-data/valueSets"
 import ConditionalField from "../conditionalField"
 import {LineItemFormValues} from "./dispenseForm"
-
-const LINE_ITEM_STATUS_NOT_DISPENSED = "0002"
 
 interface LineItemProps {
   name: string
@@ -23,7 +21,7 @@ const LineItem: React.FC<LineItemProps> = ({name, lineItem}) => (
       )}
     </Field>
     <ConditionalField
-      condition={lineItem.statusCode === LINE_ITEM_STATUS_NOT_DISPENSED}
+      condition={lineItem.statusCode === LineItemStatus.NOT_DISPENSED}
       id={`${name}.nonDispensingReasonCode`}
       name={`${name}.nonDispensingReasonCode`}
       as={Select}

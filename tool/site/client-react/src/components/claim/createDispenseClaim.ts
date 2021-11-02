@@ -105,8 +105,6 @@ function createClaimItem(
   medicationDispenses: Array<fhir.MedicationDispense>,
   claimFormValues: ClaimFormValues
 ): fhir.ClaimItem {
-  const lineItemIds = medicationRequests.map(getMedicationRequestLineItemId)
-
   const exemptionStatusCodeableConcept: fhir.CodeableConcept = {
     coding: VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION.filter(coding => coding.code === claimFormValues.exemption.code)
   }
@@ -121,20 +119,17 @@ function createClaimItem(
         ? CODEABLE_CONCEPT_EXEMPTION_EVIDENCE_SEEN
         : CODEABLE_CONCEPT_EXEMPTION_NO_EVIDENCE_SEEN
     ],
-    detail: lineItemIds.map((lineItemId, index) => {
-      const medicationRequestForLineItem = medicationRequests.find(
-        medicationRequest => getMedicationRequestLineItemId(medicationRequest) === lineItemId
-      )
-      const medicationDispensesForLineItem = medicationDispenses.filter(
+    detail: medicationRequests.map((medicationRequest, index) => {
+      const lineItemId = getMedicationRequestLineItemId(medicationRequest)
+      const medicationDispensesForRequest = medicationDispenses.filter(
         medicationDispense => getMedicationDispenseLineItemId(medicationDispense) === lineItemId
       )
-      const productFormValuesForLineItem = claimFormValues.products.find(product => product.id === lineItemId)
+      const productFormValuesForRequest = claimFormValues.products.find(product => product.id === lineItemId)
       return createClaimItemDetail(
         index + 1,
-        lineItemId,
-        medicationRequestForLineItem,
-        medicationDispensesForLineItem,
-        productFormValuesForLineItem
+        medicationRequest,
+        medicationDispensesForRequest,
+        productFormValuesForRequest
       )
     })
   }
@@ -142,11 +137,11 @@ function createClaimItem(
 
 function createClaimItemDetail(
   sequence: number,
-  lineItemId: string,
   medicationRequest: fhir.MedicationRequest,
   medicationDispenses: Array<fhir.MedicationDispense>,
   productFormValues: ProductFormValues
 ): fhir.ClaimItemDetail {
+  const lineItemId = getMedicationRequestLineItemId(medicationRequest)
   const claimItemDetailExtensions: Array<fhir.Extension> = [
     createClaimSequenceIdentifierExtension(),
     createMedicationRequestReferenceExtension(lineItemId)
@@ -163,9 +158,7 @@ function createClaimItemDetail(
     modifier: [finalMedicationDispense.type],
     programCode: [DEPRECATED_CODEABLE_CONCEPT_CHARGE_EXEMPTION_NONE], //TODO - remove this duplicated info
     quantity: medicationRequest.dispenseRequest.quantity,
-    subDetail: medicationDispenses.map((medicationDispense, index) =>
-      createClaimItemDetailSubDetail(index + 1, medicationDispense, productFormValues)
-    )
+    subDetail: [createClaimItemDetailSubDetail(1, medicationDispenses, productFormValues)]
   }
 }
 
@@ -193,9 +186,11 @@ function createMedicationRequestReferenceExtension(lineItemId: string): ClaimMed
 
 function createClaimItemDetailSubDetail(
   sequence: number,
-  medicationDispense: fhir.MedicationDispense,
+  medicationDispenses: Array<fhir.MedicationDispense>,
   productFormValues: ProductFormValues
 ): fhir.ClaimItemDetailSubDetail {
+  const latestMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
+
   const endorsementCodeableConcepts: Array<fhir.CodeableConcept> = productFormValues.endorsements
     .map(endorsement => ({
       coding: VALUE_SET_DISPENSER_ENDORSEMENT.filter(coding => coding.code === endorsement.code),
@@ -208,8 +203,13 @@ function createClaimItemDetailSubDetail(
 
   return {
     sequence,
-    productOrService: medicationDispense.medicationCodeableConcept,
-    quantity: medicationDispense.quantity,
+    productOrService: latestMedicationDispense.medicationCodeableConcept,
+    quantity: {
+      ...latestMedicationDispense.quantity,
+      value: medicationDispenses
+        .map(medicationDispense => medicationDispense.quantity.value)
+        .reduce((a, b) => a + b)
+    },
     programCode: [
       ...endorsementCodeableConcepts,
       chargePaidCodeableConcept
@@ -223,4 +223,8 @@ export function getMedicationRequestLineItemId(medicationRequest: fhir.Medicatio
 
 export function getMedicationDispenseLineItemId(medicationDispense: fhir.MedicationDispense): string {
   return medicationDispense.authorizingPrescription[0].identifier.value
+}
+
+export function getMedicationDispenseId(medicationDispense: fhir.MedicationDispense): string {
+  return medicationDispense.identifier[0].value
 }

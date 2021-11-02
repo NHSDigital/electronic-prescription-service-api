@@ -42,6 +42,28 @@ export interface ClaimMedicationRequestReferenceExtension extends Extension {
 }
 export const getClaimMedicationRequestReferenceExtension = getExtensionFinder<ClaimMedicationRequestReferenceExtension>(URL_CLAIM_MEDICATION_REQUEST_REFERENCE)
 
+export const URL_UK_CORE_REPEAT_INFORMATION = "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation"
+export interface UkCoreRepeatInformationExtension extends Extension {
+  url: typeof URL_UK_CORE_REPEAT_INFORMATION,
+  extension: Array<UkCoreNumberOfRepeatPrescriptionsIssuedExtension | UkCoreNumberOfRepeatPrescriptionsAllowedExtension | UkCoreAuthorisationExpiryDateExtension>
+}
+export const getUkCoreRepeatInformationExtension = getExtensionFinder<UkCoreRepeatInformationExtension>(URL_UK_CORE_REPEAT_INFORMATION)
+
+export interface UkCoreNumberOfRepeatPrescriptionsIssuedExtension extends Extension {
+  url: "numberOfRepeatPrescriptionsIssued"
+  valueUnsignedInt: number
+}
+
+export interface UkCoreNumberOfRepeatPrescriptionsAllowedExtension extends Extension {
+  url: "numberOfRepeatPrescriptionsAllowed"
+  valueUnsignedInt: number
+}
+
+export interface UkCoreAuthorisationExpiryDateExtension extends Extension {
+  url: "authorisationExpiryDate"
+  valueDateTime: string
+}
+
 export const URL_REPEAT_INFORMATION = "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation"
 export interface RepeatInformationExtension extends Extension {
   url: typeof URL_REPEAT_INFORMATION
@@ -58,3 +80,10 @@ export interface NumberOfRepeatsAllowedExtension extends Extension {
   url: "numberOfRepeatsAllowed"
   valueInteger: number
 }
+
+export const URL_LONG_FORM_ID = "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId"
+export interface LongFormIdExtension extends Extension {
+  url: typeof URL_LONG_FORM_ID,
+  valueIdentifier: Identifier
+}
+export const getLongFormIdExtension = getExtensionFinder<LongFormIdExtension>(URL_LONG_FORM_ID)

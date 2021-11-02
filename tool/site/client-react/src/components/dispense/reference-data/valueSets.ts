@@ -1,81 +1,102 @@
 import {Coding} from "fhir/r4"
 
+export enum LineItemStatus {
+  DISPENSED = "0001",
+  NOT_DISPENSED = "0002",
+  PARTIALLY_DISPENSED = "0003",
+  OWING = "0004",
+  CANCELLED = "0005",
+  EXPIRED = "0006",
+  TO_BE_DISPENSED = "0007",
+  WITH_DISPENSER = "0008"
+}
+
 export const VALUE_SET_LINE_ITEM_STATUS: Array<Coding> = [
   {
-    code: "0001",
+    code: LineItemStatus.DISPENSED,
     system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
     display: "Item fully dispensed"
   },
   {
-    code: "0002",
+    code: LineItemStatus.NOT_DISPENSED,
     system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
     display: "Item not dispensed"
   },
   {
-    code: "0003",
+    code: LineItemStatus.PARTIALLY_DISPENSED,
     system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
     display: "Item dispensed - partial"
   },
   {
-    code: "0004",
+    code: LineItemStatus.OWING,
     system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
     display: "Item not dispensed owing"
   },
   {
-    code: "0005",
+    code: LineItemStatus.CANCELLED,
     system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
     display: "Item cancelled"
   },
   {
-    code: "0006",
+    code: LineItemStatus.EXPIRED,
     system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
     display: "Expired"
   },
   {
-    code: "0007",
+    code: LineItemStatus.TO_BE_DISPENSED,
     system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
     display: "Item to be dispensed"
   },
   {
-    code: "0008",
+    code: LineItemStatus.WITH_DISPENSER,
     system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
     display: "Item with dispenser"
   }
 ]
 
+export enum PrescriptionStatus {
+  TO_BE_DISPENSED = "0001",
+  WITH_DISPENSER = "0002",
+  PARTIALLY_DISPENSED = "0003",
+  EXPIRED = "0004",
+  CANCELLED = "0005",
+  DISPENSED = "0006",
+  NOT_DISPENSED = "0007"
+}
+
 export const VALUE_SET_PRESCRIPTION_STATUS: Array<Coding> = [
   {
-    code: "0001",
+    code: PrescriptionStatus.TO_BE_DISPENSED,
     system: "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
     display: "To be Dispensed"
   },
   {
-    code: "0002",
+    code: PrescriptionStatus.WITH_DISPENSER,
     system: "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
     display: "With Dispenser"
   },
   {
-    code: "0003",
+    code: PrescriptionStatus.PARTIALLY_DISPENSED,
     system: "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
     display: "With Dispenser - Active"
   },
   {
-    code: "0004",
+    code: PrescriptionStatus.EXPIRED,
     system: "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
     display: "Expired"
   },
   {
-    code: "0005",
+    code: PrescriptionStatus.CANCELLED,
     system: "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
     display: "Cancelled"
   },
   {
-    code: "0006",
+    code: PrescriptionStatus.DISPENSED,
     system: "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
     display: "Dispensed"
   },
   {
-    code: "0007",
+    code: PrescriptionStatus.NOT_DISPENSED,
     system: "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
     display: "Not Dispensed"
   }

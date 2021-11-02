@@ -41,18 +41,6 @@ from helpers import (
     get_pr_number,
     create_oauth_state
 )
-from store import (
-    add_prepare_request,
-    add_prepare_response,
-    add_prescription_order_send_request,
-    load_prepare_request,
-    load_prepare_response,
-    load_prescription_order_send_request,
-    contains_prepare_response,
-    contains_prescription_order_send_request,
-    add_dispense_notification_send_request,
-    load_dispense_notification_send_requests,
-)
 import hapi_passthrough
 
 HOME_URL = "/"
@@ -69,7 +57,6 @@ SEND_URL = "/prescribe/send"
 CANCEL_URL = "/prescribe/cancel"
 RELEASE_URL = "/dispense/release"
 DISPENSE_URL = "/dispense/dispense"
-DISPENSING_HISTORY_URL = "/dispense/history"
 CLAIM_URL = "/dispense/claim"
 METADATA_URL = "/metadata"
 
@@ -348,41 +335,14 @@ def get_dispense():
 def post_dispense():
     if (config.ENVIRONMENT == "prod"):
         return app.make_response("Bad Request", 400)
-
-    request = flask.request.json
-    short_prescription_id = get_prescription_id(request)
-    access_token = get_access_token()
-
-    convert_response, _code = make_eps_api_convert_message_request(access_token, request)
-    dispense_response, dispense_response_code, request_id = make_eps_api_process_message_request(
-        access_token,
-        request
-    )
-    dispense_response_xml, _untranslated_code = make_eps_api_process_message_request_untranslated(
-        access_token,
-        request,
-        request_id
-    )
-    success = dispense_response_code == 200
-    if success:
-        add_dispense_notification_send_request(short_prescription_id, request)
-
-    return {
-        "success": success,
-        "request_xml": convert_response,
-        "request": request,
-        "response": dispense_response,
-        "response_xml": dispense_response_xml
-    }
+    response = hapi_passthrough.post_dispense(flask.request.json)
+    return app.make_response(response)
 
 
-@app.route(DISPENSING_HISTORY_URL, methods=["GET"])
-def get_dispensing_history():
-    short_prescription_id = flask.request.args.get("prescription_id")
-    dispense_notifications = load_dispense_notification_send_requests(short_prescription_id)
-    return {
-        "dispense_notifications": dispense_notifications
-    }
+@app.route("/dispenseNotifications/<short_prescription_id>", methods=["GET"])
+def get_dispense_notifications(short_prescription_id):
+    response = hapi_passthrough.get_dispense_notifications(str(short_prescription_id))
+    return app.make_response(json.dumps(response))
 
 
 @app.route(CLAIM_URL, methods=["GET"])
