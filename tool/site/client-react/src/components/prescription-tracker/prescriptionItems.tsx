@@ -13,7 +13,7 @@ export function createPrescriptionItemProps(task: Task): Array<PrescriptionItemP
   return task.input.map(input => {
     return {
       identifier: input.valueReference.identifier.value,
-      dispenseStatus: getDispenseStatusExtension()(input.extension).valueCoding.code
+      dispenseStatus: getDispenseStatusExtension()(input.extension).valueCoding.display
     }
   })
 }
