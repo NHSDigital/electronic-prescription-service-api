@@ -17,6 +17,9 @@ release:
 	cp specification/eps-api-tool.json dist/
 	cp -Rv proxies/live/apiproxy dist/proxies/live
 
+test:
+	cd site/client-react && npm run test
+
 clean:
 	docker-compose down
 	rm templates static -rf
