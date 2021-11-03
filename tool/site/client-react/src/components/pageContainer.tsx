@@ -24,7 +24,7 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
       </main>
       <Footer>
         <Footer.List>
-          <Footer.ListItem href="/">{ /*TODO*/ }</Footer.ListItem>
+          <Footer.ListItem href="/">{ /*TODO*/}</Footer.ListItem>
         </Footer.List>
         <Footer.Copyright>&copy; Crown copyright</Footer.Copyright>
       </Footer>

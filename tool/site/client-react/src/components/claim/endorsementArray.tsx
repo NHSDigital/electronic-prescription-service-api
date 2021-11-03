@@ -5,6 +5,7 @@ import {getIn} from "formik"
 import Endorsement from "./endorsement"
 import {Button} from "nhsuk-react-components"
 import {EndorsementFormValues} from "./claimForm"
+import ButtonList from "../buttonList"
 
 const INITIAL_ENDORSEMENT_VALUES: EndorsementFormValues = {
   code: VALUE_SET_DISPENSER_ENDORSEMENT[0].code,
@@ -28,9 +29,9 @@ const EndorsementArray: React.FC<FieldArrayRenderProps> = ({
           removeEndorsement={() => remove(index)}
         />
       )}
-      <div>
+      <ButtonList>
         <Button type="button" onClick={() => push(INITIAL_ENDORSEMENT_VALUES)}>Add Endorsement</Button>
-      </div>
+      </ButtonList>
     </>
   )
 }

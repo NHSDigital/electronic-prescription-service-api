@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useEffect, useState} from "react"
-import {CrossIcon, ErrorMessage, Label, TickIcon} from "nhsuk-react-components"
+import {ActionLink, Button, Col, CrossIcon, ErrorMessage, Label, TickIcon} from "nhsuk-react-components"
 import axios from "axios"
 import {
   getMedicationDispenseResources,
@@ -10,7 +10,6 @@ import {
 } from "../../fhir/bundleResourceFinder"
 import * as fhir from "fhir/r4"
 import {MedicationDispense} from "fhir/r4"
-import Pre from "../pre"
 import DispenseForm, {DispenseFormValues, StaticLineItemInfo, StaticPrescriptionInfo} from "./dispenseForm"
 import {getMedicationDispenseLineItemId, getMedicationRequestLineItemId} from "../claim/createDispenseClaim"
 import {formatQuantity} from "../../formatters/quantity"
@@ -18,6 +17,7 @@ import {createDispenseNotification} from "./createDispenseNotification"
 import {getTaskBusinessStatusExtension} from "../../fhir/customExtensions"
 import {LineItemStatus, PrescriptionStatus} from "./reference-data/valueSets"
 import MessageExpanders from "../messageExpanders"
+import ButtonList from "../buttonList"
 
 interface DispensePageProps {
   baseUrl: string
@@ -98,14 +98,22 @@ const DispensePage: React.FC<DispensePageProps> = ({
 
   if (dispenseResult) {
     return <>
-      <Label isPageHeading>Dispense Result</Label>
-      <Label>Success: {dispenseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
+      <Label isPageHeading>Dispense Result {dispenseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
+      <ActionLink href={`${baseUrl}dispense/dispense?prescription_id=${prescriptionId}`}>
+        Send another dispense notification for this prescription
+      </ActionLink>
+      <ActionLink href={`${baseUrl}dispense/claim?prescription_id=${prescriptionId}`}>
+        Claim for this prescription
+      </ActionLink>
       <MessageExpanders
         fhirRequest={dispenseResult.request}
         hl7V3Request={dispenseResult.request_xml}
         fhirResponse={dispenseResult.response}
         hl7V3Response={dispenseResult.response_xml}
       />
+      <ButtonList>
+        <Button type="button" href={baseUrl} secondary>Back</Button>
+      </ButtonList>
     </>
   }
 

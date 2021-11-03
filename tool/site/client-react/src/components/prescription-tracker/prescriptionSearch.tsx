@@ -2,6 +2,7 @@ import * as React from "react"
 import {useState} from "react"
 import {Button, Details, Input, Label} from "nhsuk-react-components"
 import Pre from "../pre"
+import ButtonList from "../buttonList"
 
 interface PrescriptionSearchProps {
   baseUrl: string
@@ -37,8 +38,10 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
             value={searchCriteria.prescriptionId}
             onChange={event => setSearchCriteria({prescriptionId: event.currentTarget.value})}
           />
-          <Button onClick={handleSearch}>Search</Button>
-          <Button secondary href={baseUrl}>Back</Button>
+          <ButtonList>
+            <Button onClick={handleSearch}>Search</Button>
+            <Button secondary href={baseUrl}>Back</Button>
+          </ButtonList>
         </div>
         : <div>
           <Label isPageHeading>Search Results</Label>
@@ -48,7 +51,9 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
               <Pre>{JSON.stringify(searchResults, null, 2)}</Pre>
             </Details.Text>
           </Details>
-          <Button secondary onClick={handleReset}>Back</Button>
+          <ButtonList>
+            <Button secondary onClick={handleReset}>Back</Button>
+          </ButtonList>
         </div>
       }
     </>

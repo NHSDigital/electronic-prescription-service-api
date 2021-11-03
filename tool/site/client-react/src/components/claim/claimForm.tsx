@@ -4,6 +4,7 @@ import {FieldArray, Formik} from "formik"
 import {VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION} from "./reference-data/valueSets"
 import Exemption from "./exemption"
 import ProductArray from "./productArray"
+import ButtonList from "../buttonList"
 
 export interface ClaimFormProps {
   products: Array<StaticProductInfo>
@@ -32,8 +33,10 @@ const ClaimForm: React.FC<ClaimFormProps> = ({
         <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
           <FieldArray name="products" component={ProductArray}/>
           <Exemption name="exemption"/>
-          <Button type="submit">Claim</Button>
-          <Button type="reset" secondary>Reset</Button>
+          <ButtonList>
+            <Button type="submit">Claim</Button>
+            <Button type="reset" secondary>Reset</Button>
+          </ButtonList>
         </Form>
       }
     </Formik>

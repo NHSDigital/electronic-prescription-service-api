@@ -4,6 +4,7 @@ import {Button, Form} from "nhsuk-react-components"
 import {LineItemStatus, PrescriptionStatus, VALUE_SET_NON_DISPENSING_REASON} from "./reference-data/valueSets"
 import LineItemArray from "./lineItemArray"
 import Prescription from "./prescription"
+import ButtonList from "../buttonList"
 
 export interface DispenseFormProps {
   lineItems: Array<StaticLineItemInfo>
@@ -35,8 +36,10 @@ const DispenseForm: React.FC<DispenseFormProps> = ({
           <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
             <FieldArray name="lineItems" component={LineItemArray}/>
             <Prescription name="prescription"/>
-            <Button type="submit">Dispense</Button>
-            <Button type="reset" secondary>Reset</Button>
+            <ButtonList>
+              <Button type="submit">Dispense</Button>
+              <Button type="reset" secondary>Reset</Button>
+            </ButtonList>
           </Form>
         )
       }}

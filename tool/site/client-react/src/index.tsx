@@ -9,6 +9,7 @@ import {BrowserRouter, Switch, Route} from "react-router-dom"
 import PrescriptionSearch from "./components/prescription-tracker/prescriptionSearch"
 import ClaimPage from "./components/claim/claimPage"
 import DispensePage from "./components/dispense/dispensePage"
+import ButtonList from "./components/buttonList"
 
 const customWindow = window as Record<string, any>
 
@@ -50,10 +51,10 @@ async function startApplication (baseUrl: string): Promise<void> {
               baseUrl={baseUrl}
               prescriptionId={urlParams.get("prescription_id")}
             />
-            <div>
+            <ButtonList>
               <Button onClick={() => sendSignRequest(baseUrl)}>Send</Button>
               <Button secondary href={baseUrl}>Back</Button>
-            </div>
+            </ButtonList>
           </Route>
           <Route path={`${baseUrl}search`}>
             <PrescriptionSearch

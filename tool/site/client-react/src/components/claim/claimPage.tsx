@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useEffect, useState} from "react"
-import {CrossIcon, ErrorMessage, Label, TickIcon} from "nhsuk-react-components"
+import {Button, Col, CrossIcon, ErrorMessage, Label, TickIcon} from "nhsuk-react-components"
 import ClaimForm, {ClaimFormValues, StaticProductInfo} from "./claimForm"
 import axios from "axios"
 import {
@@ -10,9 +10,9 @@ import {
 } from "../../fhir/bundleResourceFinder"
 import * as fhir from "fhir/r4"
 import {MedicationDispense, MedicationRequest} from "fhir/r4"
-import Pre from "../pre"
 import {createClaim, getMedicationDispenseLineItemId} from "./createDispenseClaim"
 import MessageExpanders from "../messageExpanders"
+import ButtonList from "../buttonList"
 
 interface ClaimPageProps {
   baseUrl: string
@@ -95,14 +95,16 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
 
   if (claimResult) {
     return <>
-      <Label isPageHeading>Claim Result</Label>
-      <Label>Success: {claimResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
+      <Label isPageHeading>Claim Result {claimResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
       <MessageExpanders
         fhirRequest={claimResult.request}
         hl7V3Request={claimResult.request_xml}
         fhirResponse={claimResult.response}
         hl7V3Response={claimResult.response_xml}
       />
+      <ButtonList>
+        <Button type="button" href={baseUrl} secondary>Back</Button>
+      </ButtonList>
     </>
   }
 
