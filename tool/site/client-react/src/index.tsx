@@ -40,10 +40,17 @@ async function sendSignRequest(baseUrl: string) {
   }
 }
 
+interface AppContext {
+  baseUrl: string
+}
+
+export const AppContext = React.createContext<AppContext>({baseUrl: "/"})
+
 async function startApplication (baseUrl: string): Promise<void> {
   const urlParams = new URLSearchParams(window.location.search)
   const content = (
     <PageContainer>
+      <AppContext.Provider value={{baseUrl}} />
       <BrowserRouter>
         <Switch>
           <Route path={`${baseUrl}prescribe/edit`}>
@@ -51,10 +58,10 @@ async function startApplication (baseUrl: string): Promise<void> {
               baseUrl={baseUrl}
               prescriptionId={urlParams.get("prescription_id")}
             />
-            <div>
+            <>
               <Button onClick={() => sendSignRequest(baseUrl)}>Send</Button>
               <Button secondary href={baseUrl}>Back</Button>
-            </div>
+            </>
           </Route>
           <Route path={`${baseUrl}search`}>
             <SearchPage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")} />

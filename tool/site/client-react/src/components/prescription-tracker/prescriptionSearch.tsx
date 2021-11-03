@@ -49,7 +49,7 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
   return (
     <>
       {!searchResults
-        ? <div>
+        ? <>
           <Label isPageHeading>Search for a Prescription</Label>
           <Input
             label="Prescription ID"
@@ -60,15 +60,15 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
           />
           <Button onClick={handleSearch}>Search</Button>
           <Button secondary href={baseUrl}>Back</Button>
-        </div>
-        : <div>
+        </>
+        : <>
           <Label isPageHeading>Found {searchResults.count} Prescription{searchResults.pluralSuffix}</Label>
           {/* todo: handle multiple prescriptions */}
           {searchResults.prescriptions
-            ? <div>
+            ? <>
               <PrescriptionDetails {...searchResults.prescriptions[0]} />
               <PrescriptionItems {...searchResults.prescriptions[0]} />
-            </div>
+            </>
             : ""
           }
           <Details expander>
@@ -79,7 +79,7 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
           </Details>
           <Button onClick={handleSearch}>Refresh</Button>
           <Button secondary onClick={handleReset}>Back</Button>
-        </div>
+        </>
       }
     </>
   )
