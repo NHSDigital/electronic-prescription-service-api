@@ -15,7 +15,7 @@ export interface PrescriptionDetailProps {
 }
 
 export function createPrescriptionDetailProps(task: Task): PrescriptionDetailProps {
-  const prescriptionType = getCourseOfTherapyTypeExtension(task.extension).valueCoding.code
+  const prescriptionType = getCourseOfTherapyTypeExtension()(task.extension).valueCoding.code
   return {
     id: task.focus.identifier.value,
     type: prescriptionType.substring(0, 1).toUpperCase() + prescriptionType.substring(1),

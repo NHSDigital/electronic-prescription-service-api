@@ -93,7 +93,7 @@ interface CourseOfTherapyTypeExtension extends Extension {
   valueCoding: Coding
 }
 export const getPrescriptionExtension = getExtensionFinder<PrescriptionExtension>(URL_PRESCRIPTION_EXTENSION)
-export const getCourseOfTherapyTypeExtension =
+export const getCourseOfTherapyTypeExtension = () =>
   new ExtensionFinderBuilder<CourseOfTherapyTypeExtension>()
     .addExtension(URL_PRESCRIPTION_EXTENSION)
     .addExtension(URL_PRESCRIPTION_EXTENSION_COURSE_OF_THERAPY_EXTENSION)
