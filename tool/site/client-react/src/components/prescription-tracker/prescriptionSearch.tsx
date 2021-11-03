@@ -20,7 +20,7 @@ interface PrescriptionSearchResults {
   searchset: Bundle
   count: number
   pluralSuffix: string
-  prescriptions: PrescriptionProps[]
+  prescriptions: Array<PrescriptionProps>
 }
 
 const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
