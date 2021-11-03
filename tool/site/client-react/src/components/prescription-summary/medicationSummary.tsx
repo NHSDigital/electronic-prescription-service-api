@@ -75,7 +75,6 @@ const MedicationRow: React.FC<SummaryMedication> = ({
   <Table.Cell>
     <div><b>{snomedCodeDescription}</b></div>
     {prescriptionEndorsements.map((endorsement, index) => <div key={index}>{endorsement}</div>)}
-    {/* TODO when endorsements are a thing, sort out key in ^map^. will break on duplicate endorsements */}
     {dispenserNotes?.map(note => <div key={note}>{note}</div>)}
   </Table.Cell>
   <Table.Cell>{quantityValue}</Table.Cell>
