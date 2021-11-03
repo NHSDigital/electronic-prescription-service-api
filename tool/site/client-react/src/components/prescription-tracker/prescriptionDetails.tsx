@@ -11,7 +11,6 @@ export interface PrescriptionDetailProps {
   type: string
   patientNhsNumber: string
   creationDate: string
-  pharmacy: string
   status: string
 }
 
@@ -22,7 +21,6 @@ export function createPrescriptionDetailProps(task: Task): PrescriptionDetailPro
     type: prescriptionType.substring(0, 1).toUpperCase() + prescriptionType.substring(1),
     patientNhsNumber: formatNhsNumber(task.for.identifier.value),
     creationDate: formatDate(task.authoredOn),
-    pharmacy: task.owner.identifier.value,
     status: task.businessStatus.coding[0].display
   }
 }
@@ -47,10 +45,6 @@ export const PrescriptionDetails: React.FC<PrescriptionProps> = ({prescription})
       <SummaryList.Row>
         <SummaryList.Key>Created On</SummaryList.Key>
         <SummaryList.Value>{prescription.creationDate}</SummaryList.Value>
-      </SummaryList.Row>
-      <SummaryList.Row>
-        <SummaryList.Key>Pharmacy</SummaryList.Key>
-        <SummaryList.Value>{prescription.pharmacy}</SummaryList.Value>
       </SummaryList.Row>
       <SummaryList.Row>
         <SummaryList.Key>Status</SummaryList.Key>
