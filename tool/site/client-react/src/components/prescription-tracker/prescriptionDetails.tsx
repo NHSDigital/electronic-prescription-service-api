@@ -2,6 +2,9 @@ import * as React from "react"
 import {SummaryList} from "nhsuk-react-components"
 import {PrescriptionProps} from "./prescription"
 import {Task} from "fhir/r4"
+import {formatNhsNumber} from "../../formatters/demographics"
+import {formatDate} from "../../formatters/dates"
+import {getCourseOfTherapyTypeExtension} from "../../fhir/customExtensions"
 
 export interface PrescriptionDetailProps {
   id: string
@@ -13,12 +16,12 @@ export interface PrescriptionDetailProps {
 }
 
 export function createPrescriptionDetailProps(task: Task): PrescriptionDetailProps {
+  const prescriptionType = getCourseOfTherapyTypeExtension(task.extension).valueCoding.code
   return {
     id: task.focus.identifier.value,
-    type: task.extension.find(e => e.url === "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription")
-      ?.extension?.find(e => e.url === "courseOfTherapyType")?.valueCoding?.code,
-    patientNhsNumber: task.for.identifier.value,
-    creationDate: task.authoredOn,
+    type: prescriptionType.substring(0, 1).toUpperCase() + prescriptionType.substring(1),
+    patientNhsNumber: formatNhsNumber(task.for.identifier.value),
+    creationDate: formatDate(task.authoredOn),
     pharmacy: task.owner.identifier.value,
     status: task.businessStatus.coding[0].display
   }
