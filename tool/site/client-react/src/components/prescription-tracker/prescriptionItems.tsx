@@ -2,6 +2,7 @@ import * as React from "react"
 import {Table} from "nhsuk-react-components"
 import {PrescriptionProps} from "./prescription"
 import {Task} from "fhir/r4"
+import {getDispenseStatusExtension} from "../../fhir/customExtensions"
 
 export interface PrescriptionItemProps {
   identifier: string
@@ -12,8 +13,7 @@ export function createPrescriptionItemProps(task: Task): Array<PrescriptionItemP
   return task.input.map(input => {
     return {
       identifier: input.valueReference.identifier.value,
-      dispenseStatus: input.extension.find(e => e.url === "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation")
-        ?.extension?.find(e => e.url === "dispenseStatus")?.valueCoding.display
+      dispenseStatus: getDispenseStatusExtension()(input.extension).valueCoding.code
     }
   })
 }

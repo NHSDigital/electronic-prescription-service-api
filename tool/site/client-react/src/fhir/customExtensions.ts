@@ -98,3 +98,23 @@ export const getCourseOfTherapyTypeExtension = (): (extensions: Array<Extension>
     .addExtension(URL_PRESCRIPTION_EXTENSION)
     .addExtension(URL_PRESCRIPTION_EXTENSION_COURSE_OF_THERAPY_EXTENSION)
     .build()
+
+const URL_DISPENSING_INFORMATION = "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation"
+const URL_DISPENSE_STATUS_EXTENSION = "dispenseStatus"
+interface DispensingInformationExtension extends Extension {
+  url: typeof URL_DISPENSING_INFORMATION,
+  extension: Array<CourseOfTherapyTypeExtension>
+}
+interface DispenseStatusExtension extends Extension {
+  url: typeof URL_PRESCRIPTION_EXTENSION_COURSE_OF_THERAPY_EXTENSION,
+  valueCoding: Coding
+}
+export const getDispensingInformationExtension =
+  new ExtensionFinderBuilder<DispensingInformationExtension>()
+    .addExtension(URL_DISPENSING_INFORMATION)
+    .build()
+export const getDispenseStatusExtension = (): (extensions: Array<Extension>) => CourseOfTherapyTypeExtension =>
+  new ExtensionFinderBuilder<DispenseStatusExtension>()
+    .addExtension(URL_DISPENSING_INFORMATION)
+    .addExtension(URL_DISPENSE_STATUS_EXTENSION)
+    .build()
