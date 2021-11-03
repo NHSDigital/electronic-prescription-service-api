@@ -109,7 +109,7 @@ interface DispenseStatusExtension extends Extension {
   url: typeof URL_DISPENSING_INFORMATION_DISPENSE_STATUS_EXTENSION,
   valueCoding: Coding
 }
-export const getDispensingInformationExtension =
+export const getDispensingInformationExtension = (): (extensions: Array<Extension>) => DispensingInformationExtension =>
   new ExtensionFinderBuilder<DispensingInformationExtension>()
     .addExtension(URL_DISPENSING_INFORMATION_EXTENSION)
     .build()
