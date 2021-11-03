@@ -37,7 +37,7 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
       searchset,
       count: searchset.total,
       pluralSuffix: searchset.total > 1 || searchset.total === 0 ? "s" : "",
-      prescriptions: searchset.entry.map(e => e.resource as Task).map(createPrescriptionProps)
+      prescriptions: searchset.entry?.map(e => e.resource as Task).map(createPrescriptionProps) ?? []
     }
     setSearchResults(results)
   }
@@ -64,8 +64,13 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
         : <div>
           <Label isPageHeading>Found {searchResults.count} Prescription{searchResults.pluralSuffix}</Label>
           {/* todo: handle multiple prescriptions */}
-          <PrescriptionDetails {...searchResults.prescriptions[0]} />
-          <PrescriptionItems {...searchResults.prescriptions[0]} />
+          {searchResults.prescriptions
+            ? <div>
+              <PrescriptionDetails {...searchResults.prescriptions[0]} />
+              <PrescriptionItems {...searchResults.prescriptions[0]} />
+            </div>
+            : ""
+          }
           <Details expander>
             <Details.Summary>Show FHIR</Details.Summary>
             <Details.Text>
