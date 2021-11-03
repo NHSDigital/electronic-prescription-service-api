@@ -49,15 +49,19 @@ export interface UkCoreRepeatInformationExtension extends Extension {
 }
 export const getUkCoreRepeatInformationExtension = getExtensionFinder<UkCoreRepeatInformationExtension>(URL_UK_CORE_REPEAT_INFORMATION)
 
+export const URL_UK_CORE_NUMBER_OF_REPEATS_ISSUED = "numberOfRepeatPrescriptionsIssued"
 export interface UkCoreNumberOfRepeatPrescriptionsIssuedExtension extends Extension {
-  url: "numberOfRepeatPrescriptionsIssued"
+  url: typeof URL_UK_CORE_NUMBER_OF_REPEATS_ISSUED
   valueUnsignedInt: number
 }
+export const getUkCoreNumberOfRepeatsIssuedExtension = getExtensionFinder<UkCoreNumberOfRepeatPrescriptionsIssuedExtension>(URL_UK_CORE_NUMBER_OF_REPEATS_ISSUED)
 
+export const URL_UK_CORE_NUMBER_OF_REPEATS_ALLOWED = "numberOfRepeatPrescriptionsAllowed"
 export interface UkCoreNumberOfRepeatPrescriptionsAllowedExtension extends Extension {
-  url: "numberOfRepeatPrescriptionsAllowed"
+  url: typeof URL_UK_CORE_NUMBER_OF_REPEATS_ALLOWED
   valueUnsignedInt: number
 }
+export const getUkCoreNumberOfRepeatsAllowedExtension = getExtensionFinder<UkCoreNumberOfRepeatPrescriptionsAllowedExtension>(URL_UK_CORE_NUMBER_OF_REPEATS_ALLOWED)
 
 export interface UkCoreAuthorisationExpiryDateExtension extends Extension {
   url: "authorisationExpiryDate"

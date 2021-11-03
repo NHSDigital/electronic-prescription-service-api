@@ -73,15 +73,11 @@ const DispensePage: React.FC<DispensePageProps> = ({
       dispenseFormValues
     )
 
-    const dispenseNotificationStr = JSON.stringify(dispenseNotification, null, 2)
-    setDispenseResult(dispenseNotificationStr)
-
     const response = await axios.post(`${baseUrl}dispense/dispense`, dispenseNotification)
-    const responseStr = JSON.stringify(response.data, null, 2)
     console.log(dispenseNotification)
     console.log(response)
 
-    //setDispenseResult(responseStr)
+    setDispenseResult(JSON.stringify(response.data, null, 2))
     setLoadingMessage(undefined)
   }
 
