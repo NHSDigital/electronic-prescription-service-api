@@ -10,12 +10,12 @@ const SearchPage: React.FC<SearchPageProps> = ({
   baseUrl,
   prescriptionId
 }) => {
-    return <>
-        <PrescriptionSearch
-            baseUrl={baseUrl}
-            prescriptionId={prescriptionId}
-        />
-    </>
+  return <>
+    <PrescriptionSearch
+      baseUrl={baseUrl}
+      prescriptionId={prescriptionId}
+    />
+  </>
 }
 
 export default SearchPage
