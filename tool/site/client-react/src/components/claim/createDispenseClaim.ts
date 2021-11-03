@@ -23,7 +23,7 @@ import {
   DEPRECATED_CODEABLE_CONCEPT_CHARGE_EXEMPTION_NONE
 } from "./reference-data/codeableConcepts"
 import {INSURANCE_NHS_BSA} from "./reference-data/insurance"
-import {ClaimFormValues, ProductFormValues} from "./claimForm"
+import {ClaimFormValues, EndorsementFormValues, ExemptionFormValues, ProductFormValues} from "./claimForm"
 import {VALUE_SET_DISPENSER_ENDORSEMENT, VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION} from "./reference-data/valueSets"
 import {createRepeatInformationExtensionIfRequired} from "../dispense/createDispenseNotification"
 
@@ -105,20 +105,11 @@ function createClaimItem(
   medicationDispenses: Array<fhir.MedicationDispense>,
   claimFormValues: ClaimFormValues
 ): fhir.ClaimItem {
-  const exemptionStatusCodeableConcept: fhir.CodeableConcept = {
-    coding: VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION.filter(coding => coding.code === claimFormValues.exemption.code)
-  }
-
   return {
     extension: [prescriptionStatusExtension],
     sequence: 1,
     productOrService: CODEABLE_CONCEPT_PRESCRIPTION,
-    programCode: [
-      exemptionStatusCodeableConcept,
-      claimFormValues.exemption.evidenceSeen
-        ? CODEABLE_CONCEPT_EXEMPTION_EVIDENCE_SEEN
-        : CODEABLE_CONCEPT_EXEMPTION_NO_EVIDENCE_SEEN
-    ],
+    programCode: createExemptionCodeableConcepts(claimFormValues.exemption),
     detail: medicationRequests.map((medicationRequest, index) => {
       const lineItemId = getMedicationRequestLineItemId(medicationRequest)
       const medicationDispensesForRequest = medicationDispenses.filter(
@@ -135,6 +126,21 @@ function createClaimItem(
   }
 }
 
+function createExemptionCodeableConcepts(exemption: ExemptionFormValues) {
+  const exemptionStatusCodeableConcept: fhir.CodeableConcept = {
+    coding: VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION.filter(coding => coding.code === exemption.code)
+  }
+
+  const evidenceSeenCodeableConcept = exemption.evidenceSeen
+    ? CODEABLE_CONCEPT_EXEMPTION_EVIDENCE_SEEN
+    : CODEABLE_CONCEPT_EXEMPTION_NO_EVIDENCE_SEEN
+
+  return [
+    exemptionStatusCodeableConcept,
+    evidenceSeenCodeableConcept
+  ]
+}
+
 function createClaimItemDetail(
   sequence: number,
   medicationRequest: fhir.MedicationRequest,
@@ -142,15 +148,19 @@ function createClaimItemDetail(
   productFormValues: ProductFormValues
 ): fhir.ClaimItemDetail {
   const lineItemId = getMedicationRequestLineItemId(medicationRequest)
+
   const claimItemDetailExtensions: Array<fhir.Extension> = [
     createClaimSequenceIdentifierExtension(),
     createMedicationRequestReferenceExtension(lineItemId)
   ]
+
   const repeatInformationExtension = createRepeatInformationExtensionIfRequired(medicationRequest)
   if (repeatInformationExtension) {
     claimItemDetailExtensions.push(repeatInformationExtension)
   }
+
   const finalMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
+
   return {
     extension: claimItemDetailExtensions,
     sequence,
@@ -191,11 +201,7 @@ function createClaimItemDetailSubDetail(
 ): fhir.ClaimItemDetailSubDetail {
   const latestMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
 
-  const endorsementCodeableConcepts: Array<fhir.CodeableConcept> = productFormValues.endorsements
-    .map(endorsement => ({
-      coding: VALUE_SET_DISPENSER_ENDORSEMENT.filter(coding => coding.code === endorsement.code),
-      text: endorsement.supportingInfo ? endorsement.supportingInfo : undefined
-    }))
+  const endorsementCodeableConcepts = productFormValues.endorsements.map(createEndorsementCodeableConcept)
 
   const chargePaidCodeableConcept = productFormValues.patientPaid
     ? CODEABLE_CONCEPT_PRESCRIPTION_CHARGE_PAID
@@ -215,6 +221,16 @@ function createClaimItemDetailSubDetail(
       chargePaidCodeableConcept
     ]
   }
+}
+
+function createEndorsementCodeableConcept(endorsement: EndorsementFormValues): fhir.CodeableConcept {
+  const endorsementCodeableConcept: fhir.CodeableConcept = {
+    coding: VALUE_SET_DISPENSER_ENDORSEMENT.filter(coding => coding.code === endorsement.code)
+  }
+  if (endorsement.supportingInfo) {
+    endorsementCodeableConcept.text = endorsement.supportingInfo
+  }
+  return endorsementCodeableConcept
 }
 
 export function getMedicationRequestLineItemId(medicationRequest: fhir.MedicationRequest): string {

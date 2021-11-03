@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useEffect, useState} from "react"
-import {ErrorMessage, Label} from "nhsuk-react-components"
+import {CrossIcon, ErrorMessage, Label, TickIcon} from "nhsuk-react-components"
 import ClaimForm, {ClaimFormValues, StaticProductInfo} from "./claimForm"
 import axios from "axios"
 import {
@@ -12,6 +12,7 @@ import * as fhir from "fhir/r4"
 import {MedicationDispense, MedicationRequest} from "fhir/r4"
 import Pre from "../pre"
 import {createClaim, getMedicationDispenseLineItemId} from "./createDispenseClaim"
+import MessageExpanders from "../messageExpanders"
 
 interface ClaimPageProps {
   baseUrl: string
@@ -25,7 +26,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
   const [loadingMessage, setLoadingMessage] = useState<string>("Loading page.")
   const [errorMessage, setErrorMessage] = useState<string>()
   const [prescriptionDetails, setPrescriptionDetails] = useState<PrescriptionDetails>()
-  const [claimResult, setClaimResult] = useState<string>()
+  const [claimResult, setClaimResult] = useState<ClaimResult>()
 
   useEffect(() => {
     if (!prescriptionDetails) {
@@ -70,11 +71,11 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
       prescriptionDetails.medicationDispenses,
       claimFormValues
     )
-    const response = await axios.post(`${baseUrl}dispense/claim`, claim)
+    const response = await axios.post<ClaimResult>(`${baseUrl}dispense/claim`, claim)
     console.log(claim)
     console.log(response)
 
-    setClaimResult(JSON.stringify(response.data, null, 2))
+    setClaimResult(response.data)
     setLoadingMessage(undefined)
   }
 
@@ -94,8 +95,14 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
 
   if (claimResult) {
     return <>
-      <Label isPageHeading>Result</Label>
-      <Pre>{claimResult}</Pre>
+      <Label isPageHeading>Claim Result</Label>
+      <Label>Success: {claimResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
+      <MessageExpanders
+        fhirRequest={claimResult.request}
+        hl7V3Request={claimResult.request_xml}
+        fhirResponse={claimResult.response}
+        hl7V3Response={claimResult.response_xml}
+      />
     </>
   }
 
@@ -119,6 +126,14 @@ interface PrescriptionDetails {
   patient: fhir.Patient
   medicationRequests: Array<fhir.MedicationRequest>
   medicationDispenses: Array<fhir.MedicationDispense>
+}
+
+interface ClaimResult {
+  success: boolean
+  request: fhir.Claim
+  request_xml: string
+  response: fhir.OperationOutcome
+  response_xml: string
 }
 
 function createStaticProductInfoArray(

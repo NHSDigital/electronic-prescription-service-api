@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useEffect, useState} from "react"
-import {ErrorMessage, Label} from "nhsuk-react-components"
+import {CrossIcon, ErrorMessage, Label, TickIcon} from "nhsuk-react-components"
 import axios from "axios"
 import {
   getMedicationDispenseResources,
@@ -17,6 +17,7 @@ import {formatQuantity} from "../../formatters/quantity"
 import {createDispenseNotification} from "./createDispenseNotification"
 import {getTaskBusinessStatusExtension} from "../../fhir/customExtensions"
 import {LineItemStatus, PrescriptionStatus} from "./reference-data/valueSets"
+import MessageExpanders from "../messageExpanders"
 
 interface DispensePageProps {
   baseUrl: string
@@ -30,7 +31,7 @@ const DispensePage: React.FC<DispensePageProps> = ({
   const [loadingMessage, setLoadingMessage] = useState<string>("Loading page.")
   const [errorMessage, setErrorMessage] = useState<string>()
   const [prescriptionDetails, setPrescriptionDetails] = useState<PrescriptionDetails>()
-  const [dispenseResult, setDispenseResult] = useState<string>()
+  const [dispenseResult, setDispenseResult] = useState<DispenseResult>()
 
   useEffect(() => {
     if (!prescriptionDetails) {
@@ -73,11 +74,11 @@ const DispensePage: React.FC<DispensePageProps> = ({
       dispenseFormValues
     )
 
-    const response = await axios.post(`${baseUrl}dispense/dispense`, dispenseNotification)
+    const response = await axios.post<DispenseResult>(`${baseUrl}dispense/dispense`, dispenseNotification)
     console.log(dispenseNotification)
     console.log(response)
 
-    setDispenseResult(JSON.stringify(response.data, null, 2))
+    setDispenseResult(response.data)
     setLoadingMessage(undefined)
   }
 
@@ -97,8 +98,14 @@ const DispensePage: React.FC<DispensePageProps> = ({
 
   if (dispenseResult) {
     return <>
-      <Label isPageHeading>Result</Label>
-      <Pre>{dispenseResult}</Pre>
+      <Label isPageHeading>Dispense Result</Label>
+      <Label>Success: {dispenseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
+      <MessageExpanders
+        fhirRequest={dispenseResult.request}
+        hl7V3Request={dispenseResult.request_xml}
+        fhirResponse={dispenseResult.response}
+        hl7V3Response={dispenseResult.response_xml}
+      />
     </>
   }
 
@@ -124,6 +131,14 @@ interface PrescriptionDetails {
   patient: fhir.Patient
   medicationRequests: Array<fhir.MedicationRequest>
   medicationDispenses: Array<fhir.MedicationDispense>
+}
+
+interface DispenseResult {
+  success: boolean
+  request: fhir.Bundle
+  request_xml: string
+  response: fhir.OperationOutcome
+  response_xml: string
 }
 
 function createStaticLineItemInfoArray(
