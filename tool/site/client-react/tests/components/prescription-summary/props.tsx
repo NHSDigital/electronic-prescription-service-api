@@ -24,6 +24,7 @@ export const summaryPatient: SummaryPatient = {
 
 export const summaryPractitionerRole: SummaryPractitionerRole = {
   name: "EDWARDS, Thomas (DR)",
+  professionalCodes: [{type: "GMC Number", value: "12345"}],
   telecom: "01234567890",
   organization: {
     name: "SOMERSET BOWEL CANCER SCREENING CENTRE",
@@ -38,6 +39,7 @@ export const summaryPractitionerRole: SummaryPractitionerRole = {
 
 export const prescriptionLevelDetailProps: PrescriptionLevelDetailsProps = {
   prescriptionId: "A0548B-A99968-451485",
+  courseOfTherapyTypeCoding: {display: "Short course (acute) therapy", code: "acute"},
   repeatIssued: 1,
   repeatAllowed: 6,
   authoredOn: "01-11-2021",

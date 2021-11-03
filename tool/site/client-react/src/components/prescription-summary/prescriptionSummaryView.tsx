@@ -9,7 +9,6 @@ import PractitionerRoleSummaryList, {
   SummaryPractitionerRole
 } from "./practitionerRoleSummaryList"
 import {Label} from "nhsuk-react-components"
-import {ErrorBoundary} from "../errorBoundary"
 import MedicationSummary, {createSummaryMedication, SummaryMedication} from "./medicationSummary"
 import PrescriptionLevelDetails, {createPrescriptionLevelDetails, PrescriptionLevelDetailsProps} from "./prescriptionLevelDetails"
 
