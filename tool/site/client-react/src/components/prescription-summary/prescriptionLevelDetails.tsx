@@ -11,11 +11,12 @@ import {
 import {newLineFormatter} from "./newLineFormatter"
 import * as fhir from "fhir/r4"
 import {COURSE_OF_THERAPY_TYPE_CODES, VALUE_SET_COURSE_OF_THERAPY_TYPE} from "./reference-data/valueSets"
+import {FC} from "react"
 
 export function createPrescriptionLevelDetails(medicationRequest: MedicationRequest, communicationRequests?: Array<CommunicationRequest>): PrescriptionLevelDetailsProps {
   const prescriptionId = medicationRequest.groupIdentifier.value
 
-  const courseOfTherapyTypeCoding: fhir.Coding = VALUE_SET_COURSE_OF_THERAPY_TYPE.find(coding => coding.code === medicationRequest.courseOfTherapyType.coding[0].code)
+  const courseOfTherapyTypeCoding = VALUE_SET_COURSE_OF_THERAPY_TYPE.find(coding => coding.code === medicationRequest.courseOfTherapyType.coding[0].code)
 
   const repeatExtension = getRepeatInformationExtension(medicationRequest.extension)
   let repeatIssued = 1
@@ -68,7 +69,7 @@ export interface PrescriptionLevelDetailsProps {
   patientInstructions?: Array<string>
 }
 
-const PrescriptionLevelDetails = ({
+const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
   prescriptionId,
   courseOfTherapyTypeCoding,
   repeatIssued,
@@ -78,7 +79,7 @@ const PrescriptionLevelDetails = ({
   nominatedOds,
   nominatedType,
   patientInstructions
-}: PrescriptionLevelDetailsProps): JSX.Element => {
+}): JSX.Element => {
   const patientInstruction = newLineFormatter(patientInstructions)
   return (
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -95,7 +96,7 @@ const PrescriptionLevelDetails = ({
       {courseOfTherapyTypeCoding.code !== COURSE_OF_THERAPY_TYPE_CODES.acute &&
           <SummaryList.Row>
             <SummaryList.Key>Repeat Information</SummaryList.Key>
-            <SummaryList.Value>{repeatIssued}/{repeatAllowed}</SummaryList.Value>
+            <SummaryList.Value>{repeatIssued} out of {repeatAllowed}</SummaryList.Value>
           </SummaryList.Row>
       }
       <SummaryList.Row>

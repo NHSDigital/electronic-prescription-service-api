@@ -47,39 +47,30 @@ export function createSummaryPractitionerRole(
   }
 }
 
-function getProfessionalCodes(identifiers: Array<Identifier>): Array<Record<string, string>> {
+function getProfessionalCodes(identifiers: Array<Identifier>): Array<string> {
   return identifiers.map(identifier => {
-    let identifierType: string
     switch (identifier.system) {
       case "https://fhir.nhs.uk/Id/sds-user-id":
-        identifierType = "SDS Role ID"
-        break
+        return "SDS Role ID - " + identifier.value
       case "https://fhir.hl7.org.uk/Id/gmc-number":
-        identifierType = "GMC Number"
-        break
+        return "GMC Number - " + identifier.value
       case "https://fhir.hl7.org.uk/Id/gmp-number":
-        identifierType = "GMP Number"
-        break
+        return "GMP Number - " + identifier.value
       case "https://fhir.hl7.org.uk/Id/din-number":
-        identifierType = "DIN Number"
-        break
+        return "DIN Number - " + identifier.value
       case "https://fhir.hl7.org.uk/Id/gphc-number":
-        identifierType = "GPHC Number"
-        break
+        return "GPHC Number - " + identifier.value
       case "https://fhir.hl7.org.uk/Id/hcpc-number":
-        identifierType = "HCPC Number"
-        break
+        return "HCPC Number - " + identifier.value
       case "https://fhir.hl7.org.uk/Id/nmc-number":
-        identifierType = "NMC Number"
-        break
+        return "NMC Number - " + identifier.value
     }
-    return {type: identifierType, value: identifier.value}
   })
 }
 
 export interface SummaryPractitionerRole {
   name: string
-  professionalCodes: Array<Record<string, string>>
+  professionalCodes: Array<string>
   telecom: string
   organization: SummaryOrganization
   parentOrganization: SummaryOrganization
@@ -99,7 +90,7 @@ const PractitionerRoleSummaryList: React.FC<SummaryPractitionerRole> = ({
   parentOrganization
 }) => {
   const addressLineFragments = newLineFormatter(organization.addressLines)
-  const professionalCodeFragments = newLineFormatter(professionalCodes.map(code => `${code.type} - ${code.value}`))
+  const professionalCodeFragments = newLineFormatter(professionalCodes)
   return (
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
