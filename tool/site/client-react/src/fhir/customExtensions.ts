@@ -4,24 +4,24 @@ function getExtensionFinder<T extends Extension>(url: string) {
   return (extensions: Array<Extension>) => extensions.find(extension => extension.url === url) as T
 }
 
-class ExtensionFinder<T extends Extension> {
-  extensionUrls: Array<string>
+class ExtensionFinderBuilder<T extends Extension> {
+  extensionUrlsToFind: Array<string>
   constructor() {
-    this.extensionUrls = new Array<string>()
+    this.extensionUrlsToFind = new Array<string>()
   }
   addExtension(url: string): this {
-    this.extensionUrls.push(url)
+    this.extensionUrlsToFind.push(url)
     return this
   }
-  findExtension() {
+  build() {
     return (extensions: Array<Extension>) => {
       return this.find(extensions)
     }
   }
   private find(extensions: Array<Extension>): T {
-    const url = this.extensionUrls.shift()
+    const url = this.extensionUrlsToFind.shift()
     const foundExtension = extensions.find(e => e.url === url)
-    if (!this.extensionUrls.length) {
+    if (!this.extensionUrlsToFind.length) {
       return foundExtension as T
     } else if (foundExtension.extension === undefined) {
       throw new Error(`Extension with url: '${foundExtension.url}' does not have any nested extension with url: '${url}'`)
@@ -94,7 +94,7 @@ interface CourseOfTherapyTypeExtension extends Extension {
 }
 export const getPrescriptionExtension = getExtensionFinder<PrescriptionExtension>(URL_PRESCRIPTION_EXTENSION)
 export const getCourseOfTherapyTypeExtension =
-  new ExtensionFinder<CourseOfTherapyTypeExtension>()
+  new ExtensionFinderBuilder<CourseOfTherapyTypeExtension>()
     .addExtension(URL_PRESCRIPTION_EXTENSION)
     .addExtension(URL_PRESCRIPTION_EXTENSION_COURSE_OF_THERAPY_EXTENSION)
-    .findExtension()
+    .build()
