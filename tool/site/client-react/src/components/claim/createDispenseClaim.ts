@@ -5,7 +5,6 @@ import {
   ClaimMedicationRequestReferenceExtension,
   ClaimSequenceIdentifierExtension,
   getGroupIdentifierExtension,
-  getRepeatInformationExtension,
   getTaskBusinessStatusExtension,
   GroupIdentifierExtension,
   TaskBusinessStatusExtension,
@@ -26,6 +25,7 @@ import {
 import {INSURANCE_NHS_BSA} from "./reference-data/insurance"
 import {ClaimFormValues, ProductFormValues} from "./claimForm"
 import {VALUE_SET_DISPENSER_ENDORSEMENT, VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION} from "./reference-data/valueSets"
+import {createRepeatInformationExtensionIfRequired} from "../dispense/createDispenseNotification"
 
 export function createClaim(
   patient: Patient,
@@ -146,7 +146,7 @@ function createClaimItemDetail(
     createClaimSequenceIdentifierExtension(),
     createMedicationRequestReferenceExtension(lineItemId)
   ]
-  const repeatInformationExtension = getRepeatInformationExtension(medicationRequest.extension)
+  const repeatInformationExtension = createRepeatInformationExtensionIfRequired(medicationRequest)
   if (repeatInformationExtension) {
     claimItemDetailExtensions.push(repeatInformationExtension)
   }

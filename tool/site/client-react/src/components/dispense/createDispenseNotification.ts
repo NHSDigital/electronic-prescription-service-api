@@ -96,11 +96,9 @@ function createMedicationDispense(
   prescriptionFormValues: PrescriptionFormValues
 ): MedicationDispense {
   const extensions: Array<Extension> = [createTaskBusinessStatusExtension(prescriptionFormValues.statusCode)]
-  const courseOfTherapyType = medicationRequest.courseOfTherapyType.coding[0].code
-  if (courseOfTherapyType === "continuous-repeat-dispensing") {
-    extensions.push(createRepeatInformationExtensionFromMedicationRequest(medicationRequest))
-  } else if (courseOfTherapyType === "continuous") {
-    extensions.push(createRepeatInformationExtension(1, 1))
+  const repeatInformationExtension = createRepeatInformationExtensionIfRequired(medicationRequest)
+  if (repeatInformationExtension) {
+    extensions.push(repeatInformationExtension)
   }
 
   const lineItemId = getMedicationRequestLineItemId(medicationRequest)
@@ -146,9 +144,19 @@ function createTaskBusinessStatusExtension(prescriptionStatus: PrescriptionStatu
   }
 }
 
-function createRepeatInformationExtensionFromMedicationRequest(
+export function createRepeatInformationExtensionIfRequired(medicationRequest: MedicationRequest): RepeatInformationExtension {
+  const courseOfTherapyType = medicationRequest.courseOfTherapyType.coding[0].code
+  if (courseOfTherapyType === "continuous-repeat-dispensing") {
+    const [repeatsIssued, repeatsAllowed] = getRepeatsIssuedAndAllowed(medicationRequest)
+    return createRepeatInformationExtension(repeatsIssued, repeatsAllowed)
+  } else if (courseOfTherapyType === "continuous") {
+    return createRepeatInformationExtension(1, 1)
+  }
+}
+
+function getRepeatsIssuedAndAllowed(
   medicationRequest: MedicationRequest
-): RepeatInformationExtension {
+): [repeatsIssued: number, repeatsAllowed: number] {
   const ukCoreRepeatInformationExtension = getUkCoreRepeatInformationExtension(medicationRequest.extension)
 
   const ukCoreRepeatsIssuedExtension = getUkCoreNumberOfRepeatsIssuedExtension(ukCoreRepeatInformationExtension.extension)
@@ -161,7 +169,7 @@ function createRepeatInformationExtensionFromMedicationRequest(
     ? ukCoreRepeatsAllowedExtension.valueUnsignedInt
     : medicationRequest.dispenseRequest.numberOfRepeatsAllowed + 1
 
-  return createRepeatInformationExtension(numberOfRepeatPrescriptionsIssued, numberOfRepeatPrescriptionsAllowed)
+  return [numberOfRepeatPrescriptionsIssued, numberOfRepeatPrescriptionsAllowed]
 }
 
 function createRepeatInformationExtension(repeatsIssued: number, repeatsAllowed: number): RepeatInformationExtension {
