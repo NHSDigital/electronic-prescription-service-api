@@ -11,7 +11,7 @@ const ButtonList: React.FC<ButtonListProps> = ({
   const containerStyle: CSSProperties = {
     display: "flex",
     flexDirection: "row",
-    gap: "1em"
+    gap: "0.5em"
   }
   return (
     <div style={containerStyle}>

@@ -1,7 +1,9 @@
 import * as React from "react"
-import {Details} from "nhsuk-react-components"
+import {CSSProperties} from "react"
+import {Button, Details} from "nhsuk-react-components"
 import Pre from "./pre"
 import {FhirResource} from "fhir/r4"
+import ButtonList from "./buttonList"
 
 interface MessageExpandersProps {
   fhirRequest: FhirResource
@@ -15,34 +17,57 @@ const MessageExpanders: React.FC<MessageExpandersProps> = ({
   hl7V3Request,
   fhirResponse,
   hl7V3Response
+}) => (
+  <Details.ExpanderGroup>
+    <MessageExpander
+      name="Request (FHIR)"
+      message={JSON.stringify(fhirRequest, null, 2)}
+      mimeType="application/json"
+    />
+    <MessageExpander
+      name="Request (HL7 V3)"
+      message={hl7V3Request}
+      mimeType="text/xml"
+    />
+    <MessageExpander
+      name="Response (FHIR)"
+      message={JSON.stringify(fhirResponse, null, 2)}
+      mimeType="application/json"
+    />
+    <MessageExpander
+      name="Response (HL7 V3)"
+      message={hl7V3Response}
+      mimeType="text/xml"
+    />
+  </Details.ExpanderGroup>
+)
+
+interface MessageExpanderProps {
+  name: string
+  message: string
+  mimeType: string
+}
+
+const MessageExpander: React.FC<MessageExpanderProps> = ({
+  name,
+  message,
+  mimeType
 }) => {
+  const buttonStyle: CSSProperties = {
+    marginBottom: 0
+  }
   return (
-    <Details.ExpanderGroup>
-      <Details expander>
-        <Details.Summary>Request (FHIR)</Details.Summary>
-        <Details.Text>
-          <Pre>{JSON.stringify(fhirRequest, null, 2)}</Pre>
-        </Details.Text>
-      </Details>
-      <Details expander>
-        <Details.Summary>Request (HL7 V3)</Details.Summary>
-        <Details.Text>
-          <Pre>{hl7V3Request}</Pre>
-        </Details.Text>
-      </Details>
-      <Details expander>
-        <Details.Summary>Response (FHIR)</Details.Summary>
-        <Details.Text>
-          <Pre>{JSON.stringify(fhirResponse, null, 2)}</Pre>
-        </Details.Text>
-      </Details>
-      <Details expander>
-        <Details.Summary>Response (HL7 V3)</Details.Summary>
-        <Details.Text>
-          <Pre>{hl7V3Response}</Pre>
-        </Details.Text>
-      </Details>
-    </Details.ExpanderGroup>
+    <Details expander>
+      <Details.Summary>{name}</Details.Summary>
+      <Details.Text>
+        <ButtonList>
+          <Button style={buttonStyle} onClick={() => navigator.clipboard.writeText(message)}>Copy</Button>
+          <Button style={buttonStyle} download="message"
+                  href={`data:${mimeType};charset=utf-8,${encodeURIComponent(message)}`}>Download</Button>
+        </ButtonList>
+        <Pre>{message}</Pre>
+      </Details.Text>
+    </Details>
   )
 }
 
