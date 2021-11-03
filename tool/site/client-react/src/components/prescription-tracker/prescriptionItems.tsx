@@ -8,7 +8,7 @@ export interface PrescriptionItemProps {
   dispenseStatus: string
 }
 
-export function createPrescriptionItemProps(task: Task): PrescriptionItemProps[] {
+export function createPrescriptionItemProps(task: Task): Array<PrescriptionItemProps> {
   return task.input.map(input => {
     return {
       identifier: input.valueReference.identifier.value,

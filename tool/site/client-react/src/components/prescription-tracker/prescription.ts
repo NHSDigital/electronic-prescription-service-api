@@ -4,7 +4,7 @@ import {createPrescriptionItemProps, PrescriptionItemProps} from "./prescription
 
 export interface PrescriptionProps {
   prescription: PrescriptionDetailProps
-  prescriptionItems: PrescriptionItemProps[]
+  prescriptionItems: Array<PrescriptionItemProps>
 }
 
 export function createPrescriptionProps(task: Task): PrescriptionProps {
