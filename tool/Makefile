@@ -2,6 +2,7 @@ SHELL=/bin/bash -euo pipefail
 
 lint:
 	cd site/client && npm install && npm run lint
+	cd site/client-react && npm install && npm run lint
 	cd site/server_hapi && npm install && npm run lint
 
 publish:
