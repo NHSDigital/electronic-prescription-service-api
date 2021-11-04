@@ -4,7 +4,7 @@ function getExtensions<T>(extensions: Array<Extension>, urls: Array<string>): Ar
   const nextUrl = urls.shift()
   const extensionsForUrl = extensions.filter(extension => extension.url === nextUrl)
   if (!urls.length) {
-    return extensions as unknown as Array<T>
+    return extensionsForUrl as unknown as Array<T>
   }
   const nestedExtensions = extensionsForUrl.flatMap(extension => extension?.extension || [])
   return getExtensions(nestedExtensions, urls)

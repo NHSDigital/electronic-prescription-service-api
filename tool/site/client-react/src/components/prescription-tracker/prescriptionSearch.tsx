@@ -56,9 +56,7 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
     setSearchResults(null)
   }
 
-  return (
-    <>
-      {!searchResults
+  return !searchResults
         ? <>
           <Label isPageHeading>Search for a Prescription</Label>
           <Input
@@ -90,9 +88,6 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
           <Button onClick={handleSearch}>Refresh</Button>
           <Button secondary onClick={handleReset}>Back</Button>
         </>
-      }
-    </>
-  )
 }
 
 export default PrescriptionSearch
