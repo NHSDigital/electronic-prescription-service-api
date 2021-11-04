@@ -1,16 +1,16 @@
 import {CodeableConcept, Coding, Extension, Identifier, Reference} from "fhir/r4"
 
-function getExtensions<T>(extensions: Array<Extension>, urls: Array<string>): Array<T> {
+function getExtensions<T extends Extension>(extensions: Array<Extension>, urls: Array<string>): Array<T> {
   const nextUrl = urls.shift()
   const extensionsForUrl = extensions.filter(extension => extension.url === nextUrl)
   if (!urls.length) {
-    return extensionsForUrl as unknown as Array<T>
+    return extensionsForUrl as Array<T>
   }
   const nestedExtensions = extensionsForUrl.flatMap(extension => extension?.extension || [])
   return getExtensions(nestedExtensions, urls)
 }
 
-function getSingleExtension<T>(extensions: Array<Extension>, urls: Array<string>): T {
+function getSingleExtension<T extends Extension>(extensions: Array<Extension>, urls: Array<string>): T {
   const foundExtensions = getExtensions(extensions, urls)
   if (foundExtensions.length === 1) {
     return foundExtensions[0] as T
@@ -75,7 +75,7 @@ interface RepeatInformationExtension extends Extension {
 }
 export const URL_NUMBER_OF_REPEATS_ISSUED = "numberOfRepeatsIssued"
 interface NumberOfRepeatsIssuedExtension extends Extension {
-  url: "numberOfRepeatsIssued"
+  url: typeof URL_NUMBER_OF_REPEATS_ISSUED
   valueInteger: number
 }
 export const getRepeatInformationExtension = (extensions: Array<Extension>): RepeatInformationExtension =>
