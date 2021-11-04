@@ -15,6 +15,10 @@ export function createSummaryPractitionerRole(
   let parentOrganizationProps: SummaryOrganization
 
   const professionalCodes = getProfessionalCodes(practitioner.identifier)
+  const practitionerRoleCodes = getProfessionalCodes(practitionerRole.identifier)
+  if (practitionerRoleCodes.length) {
+    practitionerRoleCodes.forEach(code => professionalCodes.unshift(code))
+  }
 
   if (healthcareService) {
     organizationProps = {
@@ -51,7 +55,7 @@ function getProfessionalCodes(identifiers: Array<Identifier>): Array<string> {
   return identifiers.map(identifier => {
     switch (identifier.system) {
       case "https://fhir.nhs.uk/Id/sds-user-id":
-        return "SDS Role ID - " + identifier.value
+        return "SDS User ID - " + identifier.value
       case "https://fhir.hl7.org.uk/Id/gmc-number":
         return "GMC Number - " + identifier.value
       case "https://fhir.hl7.org.uk/Id/gmp-number":
@@ -64,6 +68,10 @@ function getProfessionalCodes(identifiers: Array<Identifier>): Array<string> {
         return "HCPC Number - " + identifier.value
       case "https://fhir.hl7.org.uk/Id/nmc-number":
         return "NMC Number - " + identifier.value
+      case "https://fhir.hl7.org.uk/Id/nhsbsa-spurious-code":
+        return "Spurious Code - " + identifier.value
+      case "https://fhir.nhs.uk/Id/sds-role-profile-id":
+        return "SDS Role Profile ID - " + identifier.value
     }
   })
 }
