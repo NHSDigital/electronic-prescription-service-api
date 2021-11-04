@@ -31,6 +31,17 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
   const [searchResults, setSearchResults] = useState<PrescriptionSearchResults>(null)
 
   async function handleSearch() {
+    if (!searchCriteria.prescriptionId)
+    {
+      const results: PrescriptionSearchResults = {
+        searchset: {} as Bundle,
+        pluralSuffix: "s",
+        count: 0,
+        prescriptions: null
+      }
+      setSearchResults(results)
+      return
+    }
     const response = await fetch(`${baseUrl}tracker?prescription_id=${searchCriteria.prescriptionId}`)
     const searchset = await response.json() as Bundle
     const results: PrescriptionSearchResults = {
