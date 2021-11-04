@@ -1,10 +1,10 @@
 import * as React from "react"
 import {FieldArrayRenderProps} from "formik/dist/FieldArray"
-import {VALUE_SET_DISPENSER_ENDORSEMENT} from "./reference-data/valueSets"
 import {getIn} from "formik"
 import Endorsement from "./endorsement"
 import {Button} from "nhsuk-react-components"
 import {EndorsementFormValues} from "./claimForm"
+import {VALUE_SET_DISPENSER_ENDORSEMENT} from "../../fhir/reference-data/valueSets"
 
 const INITIAL_ENDORSEMENT_VALUES: EndorsementFormValues = {
   code: VALUE_SET_DISPENSER_ENDORSEMENT[0].code,

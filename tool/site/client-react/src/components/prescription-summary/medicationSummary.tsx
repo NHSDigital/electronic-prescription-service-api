@@ -1,18 +1,21 @@
 import * as React from "react"
 import {MedicationRequest} from "fhir/r4"
 import {Table} from "nhsuk-react-components"
+import {getPrescriptionEndorsementExtension} from "../../fhir/customExtensions"
 
 export function createSummaryMedication(medicationRequest: MedicationRequest): SummaryMedication {
   const quantity = medicationRequest.dispenseRequest.quantity
   const snomedInformation = medicationRequest.medicationCodeableConcept.coding[0]
 
   const summary: SummaryMedication = {
-    prescriptionEndorsements: [],
     quantityUnit: quantity.unit,
     quantityValue: quantity.value,
-    snomedCode: snomedInformation.code,
     snomedCodeDescription: snomedInformation.display
   }
+
+  const prescriberEndorsementExtension = getPrescriptionEndorsementExtension(medicationRequest.extension)
+  if (prescriberEndorsementExtension)
+    summary.prescriptionEndorsements = prescriberEndorsementExtension.valueCodeableConcept.coding.map(coding => coding.display)
 
   if (medicationRequest.note) {
     summary.dispenserNotes = medicationRequest.note
@@ -32,10 +35,9 @@ export function createSummaryMedication(medicationRequest: MedicationRequest): S
 export interface SummaryMedication {
   dispenserNotes?: Array<string>
   dosageInstruction?: Array<string>
-  prescriptionEndorsements: Array<string>
+  prescriptionEndorsements?: Array<string>
   quantityUnit: string
   quantityValue: number
-  snomedCode: string
   snomedCodeDescription: string
 }
 
@@ -69,12 +71,11 @@ const MedicationRow: React.FC<SummaryMedication> = ({
   prescriptionEndorsements,
   quantityUnit,
   quantityValue,
-  snomedCode,
   snomedCodeDescription
 }) => <Table.Row>
   <Table.Cell>
     <div><b>{snomedCodeDescription}</b></div>
-    {prescriptionEndorsements.map((endorsement, index) => <div key={index}>{endorsement}</div>)}
+    {prescriptionEndorsements && prescriptionEndorsements.map((endorsement, index) => <div key={index}>{endorsement}</div>)}
     {dispenserNotes?.map((note, index) => <div key={index}>{note}</div>)}
   </Table.Cell>
   <Table.Cell>{quantityValue}</Table.Cell>

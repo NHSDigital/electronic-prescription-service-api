@@ -92,8 +92,6 @@ const PractitionerRoleSummaryList: React.FC<SummaryPractitionerRole> = ({
   const addressLineFragments = newLineFormatter(organization.addressLines)
   const professionalCodeFragments = newLineFormatter(professionalCodes)
   return (
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     <SummaryList>
       <SummaryList.Row>
         <SummaryList.Key>Name</SummaryList.Key>

@@ -32,8 +32,6 @@ const PatientSummaryList = ({
 }: SummaryPatient): JSX.Element => {
   const addressLineFragments = newLineFormatter(addressLines)
   return (
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     <SummaryList>
       <SummaryList.Row>
         <SummaryList.Key>Name</SummaryList.Key>

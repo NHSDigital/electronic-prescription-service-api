@@ -1,4 +1,4 @@
-import {Coding, Extension, Identifier, Reference} from "fhir/r4"
+import {CodeableConcept, Coding, Extension, Identifier, Reference} from "fhir/r4"
 
 function getExtensionFinder<T extends Extension>(url: string) {
   return (extensions: Array<Extension>) => extensions.find(extension => extension.url === url) as T
@@ -69,3 +69,10 @@ export interface PerformerSiteTypeExtension extends Extension {
   valueCoding: Coding
 }
 export const getPerformerSiteTypeExtension = getExtensionFinder<PerformerSiteTypeExtension>(URL_PERFORMER_SITE_TYPE)
+
+export const URL_PRESCRIPTION_ENDORSEMENT = "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement"
+export interface PrescriptionEndorsementExtension extends Extension {
+  url: typeof URL_PRESCRIPTION_ENDORSEMENT
+  valueCodeableConcept: CodeableConcept
+}
+export const getPrescriptionEndorsementExtension = getExtensionFinder<PrescriptionEndorsementExtension>(URL_PRESCRIPTION_ENDORSEMENT)

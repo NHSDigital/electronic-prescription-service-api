@@ -1,6 +1,6 @@
 import {SummaryList} from "nhsuk-react-components"
-import * as React from "react"
-import {Coding, CommunicationRequest, CommunicationRequestPayload, MedicationRequest} from "fhir/r4"
+import React, {FC} from "react"
+import {CommunicationRequest, CommunicationRequestPayload, MedicationRequest} from "fhir/r4"
 import {formatCurrentDate, formatDate} from "../../formatters/dates"
 import {
   getNumberOfRepeatsAllowedExtension,
@@ -9,29 +9,15 @@ import {
   getRepeatInformationExtension
 } from "../../fhir/customExtensions"
 import {newLineFormatter} from "./newLineFormatter"
-import * as fhir from "fhir/r4"
-import {COURSE_OF_THERAPY_TYPE_CODES, VALUE_SET_COURSE_OF_THERAPY_TYPE} from "./reference-data/valueSets"
-import {FC} from "react"
+import {COURSE_OF_THERAPY_TYPE_CODES, VALUE_SET_COURSE_OF_THERAPY_TYPE} from "../../fhir/reference-data/valueSets"
 
 export function createPrescriptionLevelDetails(medicationRequest: MedicationRequest, communicationRequests?: Array<CommunicationRequest>): PrescriptionLevelDetailsProps {
   const prescriptionId = medicationRequest.groupIdentifier.value
 
   const courseOfTherapyTypeCoding = VALUE_SET_COURSE_OF_THERAPY_TYPE.find(coding => coding.code === medicationRequest.courseOfTherapyType.coding[0].code)
 
-  const repeatExtension = getRepeatInformationExtension(medicationRequest.extension)
-  let repeatIssued = 1
-  let repeatAllowed = medicationRequest.dispenseRequest.numberOfRepeatsAllowed ? medicationRequest.dispenseRequest.numberOfRepeatsAllowed + 1 : 1
-  if (repeatExtension) {
-    const repeatsIssuedExtension = getNumberOfRepeatsIssuedExtension(repeatExtension.extension)
-    repeatIssued = repeatsIssuedExtension.valueInteger
-    const repeatsAllowedExtension = getNumberOfRepeatsAllowedExtension(repeatExtension.extension)
-    if (repeatsAllowedExtension) {
-      repeatAllowed = repeatsAllowedExtension.valueInteger
-    }
-  }
-
   const authoredOn = formatCurrentDate()
-  const startDate = formatDate(medicationRequest.dispenseRequest.validityPeriod?.start) ?? formatCurrentDate()
+  const startDate = formatDate(medicationRequest.dispenseRequest.validityPeriod?.start) ?? authoredOn
   const nominatedOds = medicationRequest.dispenseRequest?.performer?.identifier?.value || ""
 
   const nominatedTypeExtension = getPerformerSiteTypeExtension(medicationRequest.dispenseRequest.extension)
@@ -44,22 +30,37 @@ export function createPrescriptionLevelDetails(medicationRequest: MedicationRequ
     .filter(isContentStringPayload)
     .map(payload => payload.contentString)
 
-  return {
+  const detailsProps: PrescriptionLevelDetailsProps = {
     prescriptionId,
-    courseOfTherapyTypeCoding,
-    repeatIssued,
-    repeatAllowed,
+    courseOfTherapyType: courseOfTherapyTypeCoding.display,
     authoredOn,
     startDate,
     nominatedOds,
     nominatedType,
     patientInstructions
   }
+
+  if (courseOfTherapyTypeCoding.code !== COURSE_OF_THERAPY_TYPE_CODES.ACUTE) {
+    const repeatExtension = getRepeatInformationExtension(medicationRequest.extension)
+    if (repeatExtension) {
+      const repeatsIssuedExtension = getNumberOfRepeatsIssuedExtension(repeatExtension.extension)
+      detailsProps.repeatIssued = repeatsIssuedExtension.valueInteger
+      const repeatsAllowedExtension = getNumberOfRepeatsAllowedExtension(repeatExtension.extension)
+      if (repeatsAllowedExtension) {
+        detailsProps.repeatAllowed = repeatsAllowedExtension.valueInteger
+      }
+    } else {
+      detailsProps.repeatIssued = 1
+      detailsProps.repeatAllowed = medicationRequest.dispenseRequest.numberOfRepeatsAllowed ? medicationRequest.dispenseRequest.numberOfRepeatsAllowed + 1 : 1
+    }
+  }
+
+  return detailsProps
 }
 
 export interface PrescriptionLevelDetailsProps {
   prescriptionId: string
-  courseOfTherapyTypeCoding: Coding
+  courseOfTherapyType: string
   repeatIssued?: number
   repeatAllowed?: number
   authoredOn: string
@@ -71,7 +72,7 @@ export interface PrescriptionLevelDetailsProps {
 
 const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
   prescriptionId,
-  courseOfTherapyTypeCoding,
+  courseOfTherapyType,
   repeatIssued,
   repeatAllowed,
   authoredOn,
@@ -79,24 +80,22 @@ const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
   nominatedOds,
   nominatedType,
   patientInstructions
-}): JSX.Element => {
+}) => {
   const patientInstruction = newLineFormatter(patientInstructions)
   return (
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     <SummaryList>
       <SummaryList.Row>
         <SummaryList.Key>ID</SummaryList.Key>
         <SummaryList.Value>{prescriptionId}</SummaryList.Value>
       </SummaryList.Row>
       <SummaryList.Row>
-        <SummaryList.Key>Course Of Therapy Type</SummaryList.Key>
-        <SummaryList.Value>{courseOfTherapyTypeCoding.display}</SummaryList.Value>
+        <SummaryList.Key>Course Of Therapy</SummaryList.Key>
+        <SummaryList.Value>{courseOfTherapyType}</SummaryList.Value>
       </SummaryList.Row>
-      {courseOfTherapyTypeCoding.code !== COURSE_OF_THERAPY_TYPE_CODES.acute &&
+      {repeatIssued &&
           <SummaryList.Row>
-            <SummaryList.Key>Repeat Information</SummaryList.Key>
-            <SummaryList.Value>{repeatIssued} out of {repeatAllowed}</SummaryList.Value>
+            <SummaryList.Key>Issue Number</SummaryList.Key>
+            <SummaryList.Value>{repeatIssued} of {repeatAllowed}</SummaryList.Value>
           </SummaryList.Row>
       }
       <SummaryList.Row>
@@ -119,7 +118,7 @@ const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
           </SummaryList.Row>
         </>
       }
-      {patientInstruction &&
+      {patientInstructions.length > 0 &&
         <SummaryList.Row>
           <SummaryList.Key>Patient Instructions</SummaryList.Key>
           <SummaryList.Value>{patientInstruction}</SummaryList.Value>
