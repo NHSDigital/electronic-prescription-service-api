@@ -37,31 +37,27 @@ const EVENT_CODING_DISPENSE_NOTIFICATION = {
 
 export function createDispenseNotification(
   prescriptionOrderMessageHeader: MessageHeader,
-  patient: Patient,
+  prescriptionOrderPatient: Patient,
   medicationRequests: Array<MedicationRequest>,
   dispenseFormValues: DispenseFormValues
 ): Bundle {
+  const dispenseNotificationPatient = createPatient(prescriptionOrderPatient)
+
   const medicationDispenses = medicationRequests.map(medicationRequest => {
     const lineItemId = getMedicationRequestLineItemId(medicationRequest)
     const formValuesForLineItem = dispenseFormValues.lineItems.find(item => item.id === lineItemId)
-    return createMedicationDispense(medicationRequest, formValuesForLineItem, dispenseFormValues.prescription)
+    return createMedicationDispense(
+      medicationRequest,
+      dispenseNotificationPatient,
+      formValuesForLineItem,
+      dispenseFormValues.prescription
+    )
   })
-
-  //TODO - Fix resources without IDs in examples? Or just assign a fresh ID here
-  if (!patient.id) {
-    patient.id = medicationRequests[0].subject.reference.substring("urn:uuid:".length)
-  }
-
-  //TODO - work out why we're getting validation errors
-  patient.identifier[0] = {
-    system: patient.identifier[0].system,
-    value: patient.identifier[0].value
-  }
 
   const dispenseNotificationMessageHeader = createMessageHeader(
     prescriptionOrderMessageHeader,
     [
-      patient,
+      dispenseNotificationPatient,
       ...medicationDispenses
     ].map(resource => resource.id)
   )
@@ -73,14 +69,29 @@ export function createDispenseNotification(
     type: "message",
     entry: [
       dispenseNotificationMessageHeader,
-      patient,
+      dispenseNotificationPatient,
       ...medicationDispenses
     ].map(resource => ({resource, fullUrl: `urn:uuid:${resource.id}`}))
   }
 }
 
+function createPatient(patient: Patient) {
+  const patientCopy = {...patient}
+
+  patientCopy.id = uuid.v4()
+
+  //TODO - work out why we're getting validation errors
+  patientCopy.identifier[0] = {
+    system: patientCopy.identifier[0].system,
+    value: patientCopy.identifier[0].value
+  }
+
+  return patientCopy
+}
+
 function createMedicationDispense(
   medicationRequest: MedicationRequest,
+  patient: Patient,
   lineItemFormValues: LineItemFormValues,
   prescriptionFormValues: PrescriptionFormValues
 ): MedicationDispense {
@@ -105,12 +116,8 @@ function createMedicationDispense(
     statusReasonCodeableConcept: createStatusReason(lineItemFormValues),
     medicationCodeableConcept: medicationRequest.medicationCodeableConcept,
     subject: {
-      ...medicationRequest.subject,
-      //TODO - suspect unused - fix validation
-      identifier: {
-        system: "https://fhir.nhs.uk/Id/nhs-number",
-        value: "i-think-this-is-unused"
-      }
+      reference: `urn:uuid:${patient.id}`,
+      identifier: patient.identifier[0]
     },
     performer: [
       //TODO - map from somewhere
