@@ -1,78 +1,150 @@
 import {CodeableConcept, Coding, Extension, Identifier, Reference} from "fhir/r4"
 
-function getExtensionFinder<T extends Extension>(url: string) {
-  return (extensions: Array<Extension>) => extensions.find(extension => extension.url === url) as T
+function getExtensions<T extends Extension>(extensions: Array<Extension>, urls: Array<string>): Array<T> {
+  const nextUrl = urls.shift()
+  const extensionsForUrl = extensions.filter(extension => extension.url === nextUrl)
+  if (!urls.length) {
+    return extensionsForUrl as Array<T>
+  }
+  const nestedExtensions = extensionsForUrl.flatMap(extension => extension?.extension || [])
+  return getExtensions(nestedExtensions, urls)
 }
 
-export const URL_TASK_BUSINESS_STATUS = "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus"
+function getSingleExtension<T extends Extension>(extensions: Array<Extension>, urls: Array<string>): T {
+  const foundExtensions = getExtensions<T>(extensions, urls)
+  if (foundExtensions.length === 1) {
+    return foundExtensions[0]
+  }
+  throw new Error(`Found ${extensions.length} when expecting only 1. Extensions: \n${extensions}\n Urls: \n${urls}`)
+}
+
+const URL_TASK_BUSINESS_STATUS = "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus"
 export interface TaskBusinessStatusExtension extends Extension {
   url: typeof URL_TASK_BUSINESS_STATUS,
   valueCoding: Coding
 }
-export const getTaskBusinessStatusExtension = getExtensionFinder<TaskBusinessStatusExtension>(URL_TASK_BUSINESS_STATUS)
+export const getTaskBusinessStatusExtension = (extensions: Array<Extension>): TaskBusinessStatusExtension[] =>
+  getExtensions<TaskBusinessStatusExtension>(extensions, [
+    URL_TASK_BUSINESS_STATUS
+  ])
 
-export const URL_GROUP_IDENTIFIER_EXTENSION = "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier"
+const URL_GROUP_IDENTIFIER_EXTENSION = "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier"
 export interface GroupIdentifierExtension extends Extension {
   url: typeof URL_GROUP_IDENTIFIER_EXTENSION,
   extension: Array<PrescriptionShortFormIdExtension | PrescriptionLongFormIdExtension>
 }
-export const getGroupIdentifierExtension = getExtensionFinder<GroupIdentifierExtension>(URL_GROUP_IDENTIFIER_EXTENSION)
-
-export interface PrescriptionShortFormIdExtension extends Extension {
+interface PrescriptionShortFormIdExtension extends Extension {
   url: "shortForm",
   valueIdentifier: Identifier
 }
 
-export interface PrescriptionLongFormIdExtension extends Extension {
+interface PrescriptionLongFormIdExtension extends Extension {
   url: "UUID",
   valueIdentifier: Identifier
 }
+
+export const getGroupIdentifierExtension = (extensions: Array<Extension>): GroupIdentifierExtension =>
+  getSingleExtension<GroupIdentifierExtension>(extensions, [
+    URL_GROUP_IDENTIFIER_EXTENSION
+  ])
 
 export const URL_CLAIM_SEQUENCE_IDENTIFIER = "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier"
 export interface ClaimSequenceIdentifierExtension extends Extension {
   url: typeof URL_CLAIM_SEQUENCE_IDENTIFIER,
   valueIdentifier: Identifier
 }
-export const getClaimSequenceIdentifierExtension = getExtensionFinder<ClaimSequenceIdentifierExtension>(URL_CLAIM_SEQUENCE_IDENTIFIER)
+export const getClaimSequenceIdentifierExtension = (extensions: Array<Extension>): ClaimSequenceIdentifierExtension =>
+  getSingleExtension<ClaimSequenceIdentifierExtension>(extensions, [
+    URL_CLAIM_SEQUENCE_IDENTIFIER
+  ])
 
 export const URL_CLAIM_MEDICATION_REQUEST_REFERENCE = "https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference"
 export interface ClaimMedicationRequestReferenceExtension extends Extension {
   url: typeof URL_CLAIM_MEDICATION_REQUEST_REFERENCE,
   valueReference: Reference
 }
-export const getClaimMedicationRequestReferenceExtension = getExtensionFinder<ClaimMedicationRequestReferenceExtension>(URL_CLAIM_MEDICATION_REQUEST_REFERENCE)
+export const getClaimMedicationRequestReferenceExtension = (extensions: Array<Extension>): ClaimMedicationRequestReferenceExtension =>
+  getSingleExtension<ClaimMedicationRequestReferenceExtension>(extensions, [
+    URL_CLAIM_MEDICATION_REQUEST_REFERENCE
+  ])
 
-export const URL_REPEAT_INFORMATION = "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation"
-export interface RepeatInformationExtension extends Extension {
+const URL_REPEAT_INFORMATION = "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation"
+interface RepeatInformationExtension extends Extension {
   url: typeof URL_REPEAT_INFORMATION
   extension: Array<NumberOfRepeatsIssuedExtension | NumberOfRepeatsAllowedExtension>
 }
-export const getRepeatInformationExtension = getExtensionFinder<RepeatInformationExtension>(URL_REPEAT_INFORMATION)
-
 export const URL_NUMBER_OF_REPEATS_ISSUED = "numberOfRepeatsIssued"
-export interface NumberOfRepeatsIssuedExtension extends Extension {
+interface NumberOfRepeatsIssuedExtension extends Extension {
   url: typeof URL_NUMBER_OF_REPEATS_ISSUED
   valueInteger: number
 }
-export const getNumberOfRepeatsIssuedExtension = getExtensionFinder<NumberOfRepeatsIssuedExtension>(URL_NUMBER_OF_REPEATS_ISSUED)
+export const getRepeatInformationExtension = (extensions: Array<Extension>): RepeatInformationExtension =>
+  getSingleExtension<RepeatInformationExtension>(extensions, [
+    URL_REPEAT_INFORMATION
+  ])
+export const getNumberOfRepeatsIssuedExtension = (extensions: Array<Extension>): NumberOfRepeatsIssuedExtension =>
+  getSingleExtension<NumberOfRepeatsIssuedExtension>(extensions, [
+    URL_NUMBER_OF_REPEATS_ISSUED
+  ])
+
+const URL_PRESCRIPTION_EXTENSION = "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription"
+const URL_PRESCRIPTION_EXTENSION_COURSE_OF_THERAPY_EXTENSION = "courseOfTherapyType"
+interface PrescriptionExtension extends Extension {
+  url: typeof URL_PRESCRIPTION_EXTENSION,
+  extension: Array<CourseOfTherapyTypeExtension>
+}
+interface CourseOfTherapyTypeExtension extends Extension {
+  url: typeof URL_PRESCRIPTION_EXTENSION_COURSE_OF_THERAPY_EXTENSION,
+  valueCoding: Coding
+}
+export const getPrescriptionExtension = (extensions: Array<Extension>): PrescriptionExtension =>
+  getSingleExtension<PrescriptionExtension>(extensions, [
+    URL_PRESCRIPTION_EXTENSION
+  ])
+export const getCourseOfTherapyTypeExtension = (extensions: Array<Extension>): CourseOfTherapyTypeExtension =>
+  getSingleExtension<CourseOfTherapyTypeExtension>(extensions, [
+    URL_PRESCRIPTION_EXTENSION,
+    URL_PRESCRIPTION_EXTENSION_COURSE_OF_THERAPY_EXTENSION
+  ])
 
 export const URL_NUMBER_OF_REPEATS_ALLOWED = "numberOfRepeatsAllowed"
 export interface NumberOfRepeatsAllowedExtension extends Extension {
   url: typeof URL_NUMBER_OF_REPEATS_ALLOWED
   valueInteger: number
 }
-export const getNumberOfRepeatsAllowedExtension = getExtensionFinder<NumberOfRepeatsAllowedExtension>(URL_NUMBER_OF_REPEATS_ALLOWED)
+export const getNumberOfRepeatsAllowedExtension = (extensions: Array<Extension>): NumberOfRepeatsAllowedExtension =>
+  getSingleExtension<NumberOfRepeatsAllowedExtension>(extensions, [
+    URL_NUMBER_OF_REPEATS_ALLOWED
+  ])
 
 export const URL_PERFORMER_SITE_TYPE = "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType"
 export interface PerformerSiteTypeExtension extends Extension {
   url: typeof URL_PERFORMER_SITE_TYPE
   valueCoding: Coding
 }
-export const getPerformerSiteTypeExtension = getExtensionFinder<PerformerSiteTypeExtension>(URL_PERFORMER_SITE_TYPE)
+export const getPerformerSiteTypeExtension = (extensions: Array<Extension>): PerformerSiteTypeExtension =>
+  getSingleExtension<PerformerSiteTypeExtension>(extensions, [
+    URL_PERFORMER_SITE_TYPE
+  ])
 
 export const URL_PRESCRIPTION_ENDORSEMENT = "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement"
 export interface PrescriptionEndorsementExtension extends Extension {
   url: typeof URL_PRESCRIPTION_ENDORSEMENT
   valueCodeableConcept: CodeableConcept
 }
-export const getPrescriptionEndorsementExtension = getExtensionFinder<PrescriptionEndorsementExtension>(URL_PRESCRIPTION_ENDORSEMENT)
+export const getPrescriptionEndorsementExtension = (extensions: Array<Extension>): PrescriptionEndorsementExtension[] =>
+  getExtensions<PrescriptionEndorsementExtension>(extensions, [
+    URL_PRESCRIPTION_ENDORSEMENT
+  ])
+const URL_DISPENSING_INFORMATION_EXTENSION = "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation"
+const URL_DISPENSING_INFORMATION_DISPENSE_STATUS_EXTENSION = "dispenseStatus"
+interface DispenseStatusExtension extends Extension {
+  url: typeof URL_DISPENSING_INFORMATION_DISPENSE_STATUS_EXTENSION,
+  valueCoding: Coding
+}
+
+export const getDispenseStatusExtension = (extensions: Array<Extension>): DispenseStatusExtension =>
+  getSingleExtension<DispenseStatusExtension>(extensions, [
+    URL_DISPENSING_INFORMATION_EXTENSION,
+    URL_DISPENSING_INFORMATION_DISPENSE_STATUS_EXTENSION
+  ])

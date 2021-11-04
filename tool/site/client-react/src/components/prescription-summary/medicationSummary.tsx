@@ -15,7 +15,7 @@ export function createSummaryMedication(medicationRequest: MedicationRequest): S
 
   const prescriberEndorsementExtension = getPrescriptionEndorsementExtension(medicationRequest.extension)
   if (prescriberEndorsementExtension)
-    summary.prescriptionEndorsements = prescriberEndorsementExtension.valueCodeableConcept.coding.map(coding => coding.display)
+    summary.prescriptionEndorsements = prescriberEndorsementExtension.flatMap(endorsement => endorsement.valueCodeableConcept.coding.map(coding => coding.display))
 
   if (medicationRequest.note) {
     summary.dispenserNotes = medicationRequest.note
