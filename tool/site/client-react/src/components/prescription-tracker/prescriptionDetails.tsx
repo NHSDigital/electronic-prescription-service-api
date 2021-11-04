@@ -17,7 +17,7 @@ export interface PrescriptionDetailProps {
 export function createPrescriptionDetailProps(task: Task): PrescriptionDetailProps {
   return {
     id: task.focus.identifier.value,
-    type: getCourseOfTherapyTypeExtension()(task.extension).valueCoding.display,
+    type: getCourseOfTherapyTypeExtension(task.extension).valueCoding.display,
     patientNhsNumber: formatNhsNumber(task.for.identifier.value),
     creationDate: formatDate(task.authoredOn),
     status: task.businessStatus.coding[0].display
