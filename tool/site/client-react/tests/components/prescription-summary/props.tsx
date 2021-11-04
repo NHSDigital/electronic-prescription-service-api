@@ -1,6 +1,18 @@
 import {SummaryPractitionerRole} from "../../../src/components/prescription-summary/practitionerRoleSummaryList"
 import {SummaryPatient} from "../../../src/components/prescription-summary/patientSummaryList"
 import {SummaryPrescription} from "../../../src/components/prescription-summary/prescriptionSummaryView"
+import {SummaryMedication} from "../../../src/components/prescription-summary/medicationSummary"
+import {PrescriptionLevelDetailsProps} from "../../../src/components/prescription-summary/prescriptionLevelDetails"
+
+export const summaryMedication: SummaryMedication = {
+  dispenserNotes: ["See your GP next week", "Don't forget your 5 a day"],
+  dosageInstruction: ["Only take during meal", "Can split in half"],
+  prescriptionEndorsements: ["FS", "DM", "YOLO"],
+  quantityUnit: "ml",
+  quantityValue: 30,
+  snomedCode: "3003302996",
+  snomedCodeDescription: "Liquid dopamine"
+}
 
 export const summaryPatient: SummaryPatient = {
   name: "CORY, ETTA (MISS)",
@@ -12,6 +24,7 @@ export const summaryPatient: SummaryPatient = {
 
 export const summaryPractitionerRole: SummaryPractitionerRole = {
   name: "EDWARDS, Thomas (DR)",
+  professionalCodes: [{type: "GMC Number", value: "12345"}],
   telecom: "01234567890",
   organization: {
     name: "SOMERSET BOWEL CANCER SCREENING CENTRE",
@@ -24,7 +37,21 @@ export const summaryPractitionerRole: SummaryPractitionerRole = {
   }
 }
 
+export const prescriptionLevelDetailProps: PrescriptionLevelDetailsProps = {
+  prescriptionId: "A0548B-A99968-451485",
+  courseOfTherapyTypeCoding: {display: "Short course (acute) therapy", code: "acute"},
+  repeatIssued: 1,
+  repeatAllowed: 6,
+  authoredOn: "01-11-2021",
+  startDate: "02-11-2021",
+  nominatedOds: "VNCEL",
+  nominatedType: "Other (e.g. Community Pharmacy)",
+  patientInstructions: ["Take the medicine."]
+}
+
 export const summaryPrescription: SummaryPrescription = {
+  medications: [summaryMedication],
   patient: summaryPatient,
-  practitionerRole: summaryPractitionerRole
+  practitionerRole: summaryPractitionerRole,
+  prescriptionLevelDetails: prescriptionLevelDetailProps
 }

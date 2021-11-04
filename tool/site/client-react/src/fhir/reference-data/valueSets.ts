@@ -1,5 +1,33 @@
 import {Coding} from "fhir/r4"
 
+export const VALUE_SET_PRESCRIBER_ENDORSEMENT: Array<Coding> = [
+  {
+    code: "CC",
+    system: "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
+    display: "Contraceptive"
+  },
+  {
+    code: "FS",
+    system: "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
+    display: "Sexual Health"
+  },
+  {
+    code: "ACBS",
+    system: "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
+    display: "Advisory Committee on Borderline Substances"
+  },
+  {
+    code: "SLS",
+    system: "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
+    display: "Selected List Scheme"
+  },
+  {
+    code: "AF",
+    system: "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
+    display: "Food replacement/food supplement products"
+  }
+]
+
 export const VALUE_SET_DISPENSER_ENDORSEMENT: Array<Coding> = [
   {
     code: "BB",
@@ -143,5 +171,29 @@ export const VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION: Array<Coding> = [
     code: "0015",
     system: "https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption",
     display: "Patient does not need to pay the prescription charge"
+  }
+]
+
+export enum COURSE_OF_THERAPY_TYPE_CODES {
+  ACUTE = "acute",
+  CONTINUOUS = "continuous",
+  CONTINUOUS_REPEAT_DISPENSING = "continuous-repeat-dispensing"
+}
+
+export const VALUE_SET_COURSE_OF_THERAPY_TYPE: Array<Coding> = [
+  {
+    code: COURSE_OF_THERAPY_TYPE_CODES.ACUTE,
+    system: "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+    display: "Short course (acute) therapy"
+  },
+  {
+    code: COURSE_OF_THERAPY_TYPE_CODES.CONTINUOUS,
+    system: "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+    display: "Continuous long term therapy"
+  },
+  {
+    code: COURSE_OF_THERAPY_TYPE_CODES.CONTINUOUS_REPEAT_DISPENSING,
+    system: "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
+    display: "Continuous long term (repeat dispensing)"
   }
 ]

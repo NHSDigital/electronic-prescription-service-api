@@ -31,8 +31,7 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
   const [searchResults, setSearchResults] = useState<PrescriptionSearchResults>(null)
 
   async function handleSearch() {
-    if (!searchCriteria.prescriptionId)
-    {
+    if (!searchCriteria.prescriptionId) {
       const results: PrescriptionSearchResults = {
         searchset: {} as Bundle,
         pluralSuffix: "s",

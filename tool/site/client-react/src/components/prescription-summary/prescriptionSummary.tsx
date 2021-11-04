@@ -23,13 +23,9 @@ const PrescriptionSummary: React.FC<PrescriptionSummaryProps> = ({
     }
   }, [summaryViewProps])
 
-  return (
-    <>
-      {summaryViewProps
-        ? <PrescriptionSummaryView {...summaryViewProps}/>
-        : <Label isPageHeading>Retrieving Prescription Summary...</Label>}
-    </>
-  )
+  return summaryViewProps
+    ? <PrescriptionSummaryView {...summaryViewProps}/>
+    : <Label isPageHeading>Retrieving Prescription Summary...</Label>
 }
 
 export default PrescriptionSummary
