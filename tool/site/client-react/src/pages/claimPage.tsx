@@ -1,20 +1,20 @@
 import * as React from "react"
 import {useEffect, useState} from "react"
 import {Button, CrossIcon, ErrorMessage, Label, TickIcon} from "nhsuk-react-components"
-import ClaimForm, {ClaimFormValues, StaticProductInfo} from "./claimForm"
+import ClaimForm, {ClaimFormValues, StaticProductInfo} from "../components/claim/claimForm"
 import axios from "axios"
 import {
   getMedicationDispenseResources,
   getMedicationRequestResources,
   getPatientResources
-} from "../../fhir/bundleResourceFinder"
+} from "../fhir/bundleResourceFinder"
 import * as fhir from "fhir/r4"
 import {MedicationDispense} from "fhir/r4"
-import {createClaim} from "./createDispenseClaim"
-import MessageExpanders from "../messageExpanders"
-import ButtonList from "../buttonList"
-import {getMedicationDispenseLineItemId, getTotalQuantity} from "../../fhir/helpers"
-import {formatQuantity} from "../../formatters/quantity"
+import {createClaim} from "../components/claim/createDispenseClaim"
+import MessageExpanders from "../components/messageExpanders"
+import ButtonList from "../components/buttonList"
+import {getMedicationDispenseLineItemId, getTotalQuantity} from "../fhir/helpers"
+import {formatQuantity} from "../formatters/quantity"
 
 interface ClaimPageProps {
   baseUrl: string

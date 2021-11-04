@@ -1,7 +1,12 @@
 import * as fhir from "fhir/r4"
 import {MedicationRequest} from "fhir/r4"
-import {getUkCoreNumberOfRepeatsAllowedExtension, getUkCoreNumberOfRepeatsIssuedExtension} from "./customExtensions"
+import {
+  getUkCoreNumberOfRepeatsAllowedExtension,
+  getUkCoreNumberOfRepeatsIssuedExtension,
+  RepeatInformationExtension
+} from "./customExtensions"
 import * as uuid from "uuid"
+import {COURSE_OF_THERAPY_TYPE_CODES} from "./reference-data/valueSets"
 
 export function getMedicationRequestLineItemId(medicationRequest: fhir.MedicationRequest): string {
   return medicationRequest.identifier[0].value
@@ -27,6 +32,34 @@ export function getTotalQuantity(quantities: Array<fhir.Quantity>): fhir.Quantit
   }
 }
 
+export function createUuidIdentifier(): fhir.Identifier {
+  return {
+    system: "https://tools.ietf.org/html/rfc4122",
+    value: uuid.v4()
+  }
+}
+
+export function requiresDispensingRepeatInformationExtension(medicationRequest: MedicationRequest): boolean {
+  return medicationRequest.courseOfTherapyType.coding[0].code !== COURSE_OF_THERAPY_TYPE_CODES.ACUTE
+}
+
+export function createDispensingRepeatInformationExtension(medicationRequest: MedicationRequest): RepeatInformationExtension {
+  const [repeatsIssued, repeatsAllowed] = getRepeatsIssuedAndAllowed(medicationRequest)
+  return {
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+    extension: [
+      {
+        url: "numberOfRepeatsIssued",
+        valueInteger: repeatsIssued
+      },
+      {
+        url: "numberOfRepeatsAllowed",
+        valueInteger: repeatsAllowed
+      }
+    ]
+  }
+}
+
 export function getRepeatsIssuedAndAllowed(medicationRequest: MedicationRequest): [number, number] {
   const ukCoreRepeatsIssuedExtension = getUkCoreNumberOfRepeatsIssuedExtension(medicationRequest.extension)
   const numberOfRepeatPrescriptionsIssued = ukCoreRepeatsIssuedExtension
@@ -39,11 +72,4 @@ export function getRepeatsIssuedAndAllowed(medicationRequest: MedicationRequest)
     : (medicationRequest.dispenseRequest.numberOfRepeatsAllowed || 0) + 1
 
   return [numberOfRepeatPrescriptionsIssued, numberOfRepeatPrescriptionsAllowed]
-}
-
-export function createUuidIdentifier(): fhir.Identifier {
-  return {
-    system: "https://tools.ietf.org/html/rfc4122",
-    value: uuid.v4()
-  }
 }

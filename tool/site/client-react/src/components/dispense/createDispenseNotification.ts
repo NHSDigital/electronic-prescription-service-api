@@ -15,19 +15,23 @@ import {DispenseFormValues, LineItemFormValues, PrescriptionFormValues} from "./
 import * as uuid from "uuid"
 import {
   getLongFormIdExtension,
-  RepeatInformationExtension,
   TaskBusinessStatusExtension,
   URL_GROUP_IDENTIFIER_EXTENSION,
   URL_TASK_BUSINESS_STATUS
 } from "../../fhir/customExtensions"
 import {
+  COURSE_OF_THERAPY_TYPE_CODES,
   LineItemStatus,
   PrescriptionStatus,
   VALUE_SET_LINE_ITEM_STATUS,
   VALUE_SET_NON_DISPENSING_REASON,
   VALUE_SET_PRESCRIPTION_STATUS
 } from "../../fhir/reference-data/valueSets"
-import {createUuidIdentifier, getMedicationRequestLineItemId, getRepeatsIssuedAndAllowed} from "../../fhir/helpers"
+import {
+  createDispensingRepeatInformationExtension,
+  createUuidIdentifier,
+  getMedicationRequestLineItemId, requiresDispensingRepeatInformationExtension
+} from "../../fhir/helpers"
 
 const EVENT_CODING_DISPENSE_NOTIFICATION = {
   system: "https://fhir.nhs.uk/CodeSystem/message-event",
@@ -96,8 +100,8 @@ function createMedicationDispense(
   prescriptionFormValues: PrescriptionFormValues
 ): MedicationDispense {
   const extensions: Array<Extension> = [createTaskBusinessStatusExtension(prescriptionFormValues.statusCode)]
-  const repeatInformationExtension = createRepeatInformationExtensionIfRequired(medicationRequest)
-  if (repeatInformationExtension) {
+  if (requiresDispensingRepeatInformationExtension(medicationRequest)) {
+    const repeatInformationExtension = createDispensingRepeatInformationExtension(medicationRequest)
     extensions.push(repeatInformationExtension)
   }
 
@@ -137,32 +141,6 @@ function createTaskBusinessStatusExtension(prescriptionStatus: PrescriptionStatu
   return {
     url: URL_TASK_BUSINESS_STATUS,
     valueCoding: VALUE_SET_PRESCRIPTION_STATUS.find(coding => coding.code === prescriptionStatus)
-  }
-}
-
-export function createRepeatInformationExtensionIfRequired(medicationRequest: MedicationRequest): RepeatInformationExtension {
-  const courseOfTherapyType = medicationRequest.courseOfTherapyType.coding[0].code
-  if (courseOfTherapyType === "continuous-repeat-dispensing") {
-    const [repeatsIssued, repeatsAllowed] = getRepeatsIssuedAndAllowed(medicationRequest)
-    return createRepeatInformationExtension(repeatsIssued, repeatsAllowed)
-  } else if (courseOfTherapyType === "continuous") {
-    return createRepeatInformationExtension(1, 1)
-  }
-}
-
-function createRepeatInformationExtension(repeatsIssued: number, repeatsAllowed: number): RepeatInformationExtension {
-  return {
-    url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-    extension: [
-      {
-        url: "numberOfRepeatsIssued",
-        valueInteger: repeatsIssued
-      },
-      {
-        url: "numberOfRepeatsAllowed",
-        valueInteger: repeatsAllowed
-      }
-    ]
   }
 }
 

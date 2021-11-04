@@ -4,7 +4,7 @@ import {
   getPatientResources
 } from "../../../src/fhir/bundleResourceFinder"
 import {createClaim} from "../../../src/components/claim/createDispenseClaim"
-import {toStaticProductInfo} from "../../../src/components/claim/claimPage"
+import {toStaticProductInfo} from "../../../src/pages/claimPage"
 import * as fhir from "fhir/r4"
 import {getClaimSequenceIdentifierExtension} from "../../../src/fhir/customExtensions"
 import {readMessage} from "./messages/messages"

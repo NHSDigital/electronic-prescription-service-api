@@ -6,9 +6,9 @@ import {Button} from "nhsuk-react-components"
 import {OperationOutcome} from "fhir/r4"
 import axios from "axios"
 import {BrowserRouter, Route, Switch} from "react-router-dom"
-import ClaimPage from "./components/claim/claimPage"
+import ClaimPage from "./pages/claimPage"
 import SearchPage from "./pages/searchPage"
-import DispensePage from "./components/dispense/dispensePage"
+import DispensePage from "./pages/dispensePage"
 import ButtonList from "./components/buttonList"
 
 const customWindow = window as Record<string, any>

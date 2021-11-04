@@ -25,15 +25,16 @@ import {
 import {INSURANCE_NHS_BSA} from "../../fhir/reference-data/insurance"
 import {ClaimFormValues, EndorsementFormValues, ExemptionFormValues, ProductFormValues} from "./claimForm"
 import {
+  COURSE_OF_THERAPY_TYPE_CODES,
   VALUE_SET_DISPENSER_ENDORSEMENT,
   VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION
 } from "../../fhir/reference-data/valueSets"
-import {createRepeatInformationExtensionIfRequired} from "../dispense/createDispenseNotification"
 import {
+  createDispensingRepeatInformationExtension,
   createUuidIdentifier,
   getMedicationDispenseLineItemId,
   getMedicationRequestLineItemId,
-  getTotalQuantity
+  getTotalQuantity, requiresDispensingRepeatInformationExtension
 } from "../../fhir/helpers"
 
 export function createClaim(
@@ -156,8 +157,8 @@ function createClaimItemDetail(
     createMedicationRequestReferenceExtension(lineItemId)
   ]
 
-  const repeatInformationExtension = createRepeatInformationExtensionIfRequired(medicationRequest)
-  if (repeatInformationExtension) {
+  if (requiresDispensingRepeatInformationExtension(medicationRequest)) {
+    const repeatInformationExtension = createDispensingRepeatInformationExtension(medicationRequest)
     claimItemDetailExtensions.push(repeatInformationExtension)
   }
 

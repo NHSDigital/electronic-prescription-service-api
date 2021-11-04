@@ -7,17 +7,17 @@ import {
   getMedicationRequestResources,
   getMessageHeaderResources,
   getPatientResources
-} from "../../fhir/bundleResourceFinder"
+} from "../fhir/bundleResourceFinder"
 import * as fhir from "fhir/r4"
 import {MedicationDispense} from "fhir/r4"
-import DispenseForm, {DispenseFormValues, StaticLineItemInfo, StaticPrescriptionInfo} from "./dispenseForm"
-import {formatQuantity} from "../../formatters/quantity"
-import {createDispenseNotification} from "./createDispenseNotification"
-import {getTaskBusinessStatusExtension} from "../../fhir/customExtensions"
-import MessageExpanders from "../messageExpanders"
-import ButtonList from "../buttonList"
-import {LineItemStatus, PrescriptionStatus} from "../../fhir/reference-data/valueSets"
-import {getMedicationDispenseLineItemId, getMedicationRequestLineItemId} from "../../fhir/helpers"
+import DispenseForm, {DispenseFormValues, StaticLineItemInfo, StaticPrescriptionInfo} from "../components/dispense/dispenseForm"
+import {formatQuantity} from "../formatters/quantity"
+import {createDispenseNotification} from "../components/dispense/createDispenseNotification"
+import {getTaskBusinessStatusExtension} from "../fhir/customExtensions"
+import MessageExpanders from "../components/messageExpanders"
+import ButtonList from "../components/buttonList"
+import {LineItemStatus, PrescriptionStatus} from "../fhir/reference-data/valueSets"
+import {getMedicationDispenseLineItemId, getMedicationRequestLineItemId} from "../fhir/helpers"
 
 interface DispensePageProps {
   baseUrl: string
