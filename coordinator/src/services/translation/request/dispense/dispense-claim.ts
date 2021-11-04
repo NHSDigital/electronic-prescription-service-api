@@ -35,7 +35,6 @@ export async function convertDispenseClaim(
     logger
   )
 
-  //TODO - check that this is the correct source
   const replacementOfExtension = getExtensionForUrlOrNull(
     claim.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
@@ -68,9 +67,11 @@ export async function convertDispenseClaim(
     dispenseClaim.coverage = new hl7V3.Coverage(chargeExempt)
   }
 
-  //TODO - find an alternative source for this
-  //const hl7PriorPrescriptionReleaseEventRef = createPriorPrescriptionReleaseEventRef(messageHeader)
-  //dispenseClaim.sequelTo = new hl7V3.SequelTo(hl7PriorPrescriptionReleaseEventRef)
+  //This is mandatory but unused by BSA, so just populate it with a placeholder.
+  const hl7PriorPrescriptionReleaseEventRef = new hl7V3.PriorPrescriptionReleaseEventRef(
+    new hl7V3.GlobalIdentifier("ffffffff-ffff-4fff-bfff-ffffffffffff")
+  )
+  dispenseClaim.sequelTo = new hl7V3.SequelTo(hl7PriorPrescriptionReleaseEventRef)
 
   return dispenseClaim
 }
@@ -235,9 +236,9 @@ function createSuppliedLineItemQuantity(
   const chargePayment = new hl7V3.ChargePayment(chargePaid)
   const pertinentInformation1 = new hl7V3.DispenseClaimSuppliedLineItemQuantityPertinentInformation1(chargePayment)
 
-  const endorsementCodings = getEndorsementCodings(subDetail)
-  const pertinentInformation2 = endorsementCodings.map(endorsementCoding => {
-    const endorsement = createEndorsement(endorsementCoding)
+  const endorsementCodeableConcepts = getEndorsementCodeableConcepts(subDetail)
+  const pertinentInformation2 = endorsementCodeableConcepts.map(codeableConcept => {
+    const endorsement = createEndorsement(codeableConcept)
     return new hl7V3.DispenseClaimSuppliedLineItemQuantityPertinentInformation2(endorsement)
   })
 
@@ -270,15 +271,23 @@ function getChargePaid(subDetail: fhir.ClaimItemSubDetail) {
   }
 }
 
-function getEndorsementCodings(subDetail: fhir.ClaimItemSubDetail) {
-  return subDetail.programCode
-    .flatMap(codeableConcept => codeableConcept.coding)
-    .filter(coding => coding?.system === "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement")
+function getEndorsementCodeableConcepts(subDetail: fhir.ClaimItemSubDetail) {
+  return subDetail.programCode.filter(codeableConcept =>
+    codeableConcept.coding.find(coding =>
+      coding.system === "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement"
+    )
+  )
 }
 
-function createEndorsement(endorsementCoding: fhir.Coding) {
+function createEndorsement(endorsementCodeableConcept: fhir.CodeableConcept) {
+  const endorsementCoding = endorsementCodeableConcept.coding.find(coding =>
+    coding.system === "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement"
+  )
   const endorsement = new hl7V3.DispensingEndorsement()
-  //TODO - endorsement supporting information
+  const supportingInfo = endorsementCodeableConcept.text
+  if (supportingInfo) {
+    endorsement.text = supportingInfo
+  }
   endorsement.value = new hl7V3.DispensingEndorsementCode(endorsementCoding.code)
   return endorsement
 }

@@ -3,7 +3,7 @@ import * as uuid from "uuid"
 import {Bundle} from "../../models"
 import {pageData} from "../../ui/state"
 import {TEST_PATIENT} from "../../data/patients"
-import {getMessageHeaderResources, getMedicationRequestResources, isRepeatDispensing} from "../read/bundle-parser"
+import {getMedicationRequestResources, getMessageHeaderResources, isRepeatDispensing} from "../read/bundle-parser"
 import {getLongFormIdExtension} from "../read/extensions-parser"
 import {convertMomentToISODate} from "../../lib/date-time"
 import {generateShortFormIdFromExisting} from "./generate-prescription-ids"
@@ -28,19 +28,18 @@ export function sanitiseProdTestData(bundle: Bundle): void {
 
 export function updateBundleIds(bundle: Bundle): void {
   const firstGroupIdentifier = getMedicationRequestResources(bundle)[0].groupIdentifier
-
-  const newBundleIdentifier = uuid.v4()
-
   const originalShortFormId = firstGroupIdentifier.value
+
   const newShortFormId = generateShortFormIdFromExisting(originalShortFormId)
   const newLongFormId = uuid.v4()
 
-  setPrescriptionIds(
-    bundle,
-    newBundleIdentifier,
-    newShortFormId,
-    newLongFormId
-  )
+  bundle.identifier.value = uuid.v4()
+  getMedicationRequestResources(bundle).forEach(medicationRequest => {
+    medicationRequest.identifier[0].value = uuid.v4()
+    const groupIdentifier = medicationRequest.groupIdentifier
+    groupIdentifier.value = newShortFormId
+    getLongFormIdExtension(groupIdentifier.extension).valueIdentifier.value = newLongFormId
+  })
 }
 
 export function updateValidityPeriodIfRepeatDispensing(bundle: Bundle): void {
@@ -74,18 +73,3 @@ export function updateNominatedPharmacy(bundle: Bundle, odsCode: string): void {
   })
 }
 
-function setPrescriptionIds(
-  bundle: Bundle,
-  newBundleIdentifier: string,
-  newShortFormId: string,
-  newLongFormId: string
-) {
-  bundle.identifier.value = newBundleIdentifier
-  getMedicationRequestResources(bundle).forEach(function (medicationRequest) {
-    const groupIdentifier = medicationRequest.groupIdentifier
-    groupIdentifier.value = newShortFormId
-    getLongFormIdExtension(
-      groupIdentifier.extension
-    ).valueIdentifier.value = newLongFormId
-  })
-}
