@@ -5,7 +5,7 @@ export function getSessionValue(key: string, request: Hapi.Request): any {
   const sessionValue = request.yar.get(key)
   if (isLocal()) {
     if (sessionValue === null) {
-      console.error(`Failed to reteive session value for key: ${key}`)
+      console.error(`Failed to retrieve session value for key: ${key}`)
     } else {
       console.error(`Retrieved ${key} from session with value: ${JSON.stringify(sessionValue)}`)
     }

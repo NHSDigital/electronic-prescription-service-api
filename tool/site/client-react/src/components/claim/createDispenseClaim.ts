@@ -25,7 +25,10 @@ import {
 } from "./reference-data/codeableConcepts"
 import {INSURANCE_NHS_BSA} from "./reference-data/insurance"
 import {ClaimFormValues, ProductFormValues} from "./claimForm"
-import {VALUE_SET_DISPENSER_ENDORSEMENT, VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION} from "./reference-data/valueSets"
+import {
+  VALUE_SET_DISPENSER_ENDORSEMENT,
+  VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION
+} from "../../fhir/reference-data/valueSets"
 
 export function createClaim(
   patient: Patient,

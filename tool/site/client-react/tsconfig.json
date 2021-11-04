@@ -10,10 +10,10 @@
       "es2019",
       "dom"
     ],
-    "jsx": "react-jsx",
+    "jsx": "react",
     "esModuleInterop": true
   },
   "skipLibCheck": true,
-  "files": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }

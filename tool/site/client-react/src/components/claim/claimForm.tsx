@@ -1,9 +1,9 @@
 import {Button, Form} from "nhsuk-react-components"
 import * as React from "react"
 import {FieldArray, Formik} from "formik"
-import {VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION} from "./reference-data/valueSets"
 import Exemption from "./exemption"
 import ProductArray from "./productArray"
+import {VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION} from "../../fhir/reference-data/valueSets"
 
 export interface ClaimFormProps {
   products: Array<StaticProductInfo>

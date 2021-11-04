@@ -1,4 +1,4 @@
-import {Coding, Extension, Identifier, Reference} from "fhir/r4"
+import {CodeableConcept, Coding, Extension, Identifier, Reference} from "fhir/r4"
 
 function getExtensionFinder<T extends Extension>(url: string) {
   return (extensions: Array<Extension>) => extensions.find(extension => extension.url === url) as T
@@ -49,12 +49,30 @@ export interface RepeatInformationExtension extends Extension {
 }
 export const getRepeatInformationExtension = getExtensionFinder<RepeatInformationExtension>(URL_REPEAT_INFORMATION)
 
+export const URL_NUMBER_OF_REPEATS_ISSUED = "numberOfRepeatsIssued"
 export interface NumberOfRepeatsIssuedExtension extends Extension {
-  url: "numberOfRepeatsIssued"
+  url: typeof URL_NUMBER_OF_REPEATS_ISSUED
   valueInteger: number
 }
+export const getNumberOfRepeatsIssuedExtension = getExtensionFinder<NumberOfRepeatsIssuedExtension>(URL_NUMBER_OF_REPEATS_ISSUED)
 
+export const URL_NUMBER_OF_REPEATS_ALLOWED = "numberOfRepeatsAllowed"
 export interface NumberOfRepeatsAllowedExtension extends Extension {
-  url: "numberOfRepeatsAllowed"
+  url: typeof URL_NUMBER_OF_REPEATS_ALLOWED
   valueInteger: number
 }
+export const getNumberOfRepeatsAllowedExtension = getExtensionFinder<NumberOfRepeatsAllowedExtension>(URL_NUMBER_OF_REPEATS_ALLOWED)
+
+export const URL_PERFORMER_SITE_TYPE = "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType"
+export interface PerformerSiteTypeExtension extends Extension {
+  url: typeof URL_PERFORMER_SITE_TYPE
+  valueCoding: Coding
+}
+export const getPerformerSiteTypeExtension = getExtensionFinder<PerformerSiteTypeExtension>(URL_PERFORMER_SITE_TYPE)
+
+export const URL_PRESCRIPTION_ENDORSEMENT = "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionEndorsement"
+export interface PrescriptionEndorsementExtension extends Extension {
+  url: typeof URL_PRESCRIPTION_ENDORSEMENT
+  valueCodeableConcept: CodeableConcept
+}
+export const getPrescriptionEndorsementExtension = getExtensionFinder<PrescriptionEndorsementExtension>(URL_PRESCRIPTION_ENDORSEMENT)
