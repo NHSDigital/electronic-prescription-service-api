@@ -6,8 +6,8 @@ import {Button} from "nhsuk-react-components"
 import {OperationOutcome} from "fhir/r4"
 import axios from "axios"
 import {BrowserRouter, Switch, Route} from "react-router-dom"
-import PrescriptionSearch from "./components/prescription-tracker/prescriptionSearch"
 import ClaimPage from "./components/claim/claimPage"
+import SearchPage from "./pages/searchPage"
 
 const customWindow = window as Record<string, any>
 
@@ -16,6 +16,7 @@ interface signResponse {
   prepareErrors?: Array<OperationOutcome>
 }
 
+// TODO: move this to page/component
 async function sendSignRequest(baseUrl: string) {
   try {
     const response = await axios.post<signResponse>(`${baseUrl}prescribe/sign`)
@@ -27,6 +28,7 @@ async function sendSignRequest(baseUrl: string) {
         .filter(issue => !issue.diagnostics.startsWith("Unable to find matching profile for urn:uuid:"))
         .map(issue => issue.diagnostics)
         .forEach(diagnostic => console.log(diagnostic))
+        // TODO display the above errors on ui
     } else if (response.data.redirectUri) {
       //TODO REACT redirect when router
       window.location.href = response.data.redirectUri
@@ -38,34 +40,39 @@ async function sendSignRequest(baseUrl: string) {
   }
 }
 
+interface AppContext {
+  baseUrl: string
+}
+
+export const AppContext = React.createContext<AppContext>({baseUrl: "/"})
+
 async function startApplication (baseUrl: string): Promise<void> {
   const urlParams = new URLSearchParams(window.location.search)
   const content = (
-    <PageContainer>
-      <BrowserRouter>
-        <Switch>
-          <Route path={`${baseUrl}prescribe/edit`}>
-            <PrescriptionSummary
-              baseUrl={baseUrl}
-              prescriptionId={urlParams.get("prescription_id")}
-            />
-            <div>
-              <Button onClick={() => sendSignRequest(baseUrl)}>Send</Button>
-              <Button secondary href={baseUrl}>Back</Button>
-            </div>
-          </Route>
-          <Route path={`${baseUrl}search`}>
-            <PrescriptionSearch
-              baseUrl={baseUrl}
-              prescriptionId={urlParams.get("prescription_id")}
-            />
-          </Route>
-          <Route path={`${baseUrl}dispense/claim`}>
-            <ClaimPage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")}/>
-          </Route>
-        </Switch>
-      </BrowserRouter>
-    </PageContainer>
+    <AppContext.Provider value={{baseUrl}}>
+      <PageContainer>
+        <BrowserRouter>
+          <Switch>
+            <Route path={`${baseUrl}prescribe/edit`}>
+              <PrescriptionSummary
+                baseUrl={baseUrl}
+                prescriptionId={urlParams.get("prescription_id")}
+              />
+              <>
+                <Button onClick={() => sendSignRequest(baseUrl)}>Send</Button>
+                <Button secondary href={baseUrl}>Back</Button>
+              </>
+            </Route>
+            <Route path={`${baseUrl}search`}>
+              <SearchPage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")} />
+            </Route>
+            <Route path={`${baseUrl}dispense/claim`}>
+              <ClaimPage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")}/>
+            </Route>
+          </Switch>
+        </BrowserRouter>
+      </PageContainer>
+    </AppContext.Provider>
   )
   ReactDOM.render(content, document.getElementById("root"))
 }
