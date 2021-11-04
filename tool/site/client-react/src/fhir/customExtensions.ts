@@ -11,9 +11,9 @@ function getExtensions<T extends Extension>(extensions: Array<Extension>, urls: 
 }
 
 function getSingleExtension<T extends Extension>(extensions: Array<Extension>, urls: Array<string>): T {
-  const foundExtensions = getExtensions(extensions, urls)
+  const foundExtensions = getExtensions<T>(extensions, urls)
   if (foundExtensions.length === 1) {
-    return foundExtensions[0] as T
+    return foundExtensions[0]
   }
   throw new Error(`Found ${extensions.length} when expecting only 1. Extensions: \n${extensions}\n Urls: \n${urls}`)
 }
