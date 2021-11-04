@@ -2,14 +2,10 @@ import {SummaryList} from "nhsuk-react-components"
 import React, {FC} from "react"
 import {CommunicationRequest, CommunicationRequestPayload, MedicationRequest} from "fhir/r4"
 import {formatCurrentDate, formatDate} from "../../formatters/dates"
-import {
-  getNumberOfRepeatsAllowedExtension,
-  getNumberOfRepeatsIssuedExtension,
-  getPerformerSiteTypeExtension,
-  getRepeatInformationExtension
-} from "../../fhir/customExtensions"
+import {getPerformerSiteTypeExtension} from "../../fhir/customExtensions"
 import {newLineFormatter} from "./newLineFormatter"
 import {COURSE_OF_THERAPY_TYPE_CODES, VALUE_SET_COURSE_OF_THERAPY_TYPE} from "../../fhir/reference-data/valueSets"
+import {getRepeatsIssuedAndAllowed} from "../../fhir/helpers"
 
 export function createPrescriptionLevelDetails(medicationRequest: MedicationRequest, communicationRequests?: Array<CommunicationRequest>): PrescriptionLevelDetailsProps {
   const prescriptionId = medicationRequest.groupIdentifier.value
@@ -41,18 +37,9 @@ export function createPrescriptionLevelDetails(medicationRequest: MedicationRequ
   }
 
   if (courseOfTherapyTypeCoding.code !== COURSE_OF_THERAPY_TYPE_CODES.ACUTE) {
-    const repeatExtension = getRepeatInformationExtension(medicationRequest.extension)
-    if (repeatExtension) {
-      const repeatsIssuedExtension = getNumberOfRepeatsIssuedExtension(repeatExtension.extension)
-      detailsProps.repeatIssued = repeatsIssuedExtension.valueInteger
-      const repeatsAllowedExtension = getNumberOfRepeatsAllowedExtension(repeatExtension.extension)
-      if (repeatsAllowedExtension) {
-        detailsProps.repeatAllowed = repeatsAllowedExtension.valueInteger
-      }
-    } else {
-      detailsProps.repeatIssued = 1
-      detailsProps.repeatAllowed = medicationRequest.dispenseRequest.numberOfRepeatsAllowed ? medicationRequest.dispenseRequest.numberOfRepeatsAllowed + 1 : 1
-    }
+    const [repeatsIssued, repeatsAllowed] = getRepeatsIssuedAndAllowed(medicationRequest)
+    detailsProps.repeatsIssued = repeatsIssued
+    detailsProps.repeatsAllowed = repeatsAllowed
   }
 
   return detailsProps
@@ -61,8 +48,8 @@ export function createPrescriptionLevelDetails(medicationRequest: MedicationRequ
 export interface PrescriptionLevelDetailsProps {
   prescriptionId: string
   courseOfTherapyType: string
-  repeatIssued?: number
-  repeatAllowed?: number
+  repeatsIssued?: number
+  repeatsAllowed?: number
   authoredOn: string
   startDate: string
   nominatedOds?: string
@@ -73,8 +60,8 @@ export interface PrescriptionLevelDetailsProps {
 const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
   prescriptionId,
   courseOfTherapyType,
-  repeatIssued,
-  repeatAllowed,
+  repeatsIssued,
+  repeatsAllowed,
   authoredOn,
   startDate,
   nominatedOds,
@@ -92,11 +79,11 @@ const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
         <SummaryList.Key>Course Of Therapy</SummaryList.Key>
         <SummaryList.Value>{courseOfTherapyType}</SummaryList.Value>
       </SummaryList.Row>
-      {repeatIssued &&
-          <SummaryList.Row>
-            <SummaryList.Key>Issue Number</SummaryList.Key>
-            <SummaryList.Value>{repeatIssued} of {repeatAllowed}</SummaryList.Value>
-          </SummaryList.Row>
+      {repeatsIssued &&
+      <SummaryList.Row>
+        <SummaryList.Key>Issue Number</SummaryList.Key>
+        <SummaryList.Value>{repeatsIssued} of {repeatsAllowed}</SummaryList.Value>
+      </SummaryList.Row>
       }
       <SummaryList.Row>
         <SummaryList.Key>Authored On</SummaryList.Key>
@@ -107,22 +94,22 @@ const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
         <SummaryList.Value>{startDate}</SummaryList.Value>
       </SummaryList.Row>
       {nominatedOds &&
-        <>
-          <SummaryList.Row>
-            <SummaryList.Key>Nominated Pharmacy ODS Code</SummaryList.Key>
-            <SummaryList.Value>{nominatedOds}</SummaryList.Value>
-          </SummaryList.Row>
-          <SummaryList.Row>
-            <SummaryList.Key>Nominated Pharmacy Type</SummaryList.Key>
-            <SummaryList.Value>{nominatedType}</SummaryList.Value>
-          </SummaryList.Row>
-        </>
+      <>
+        <SummaryList.Row>
+          <SummaryList.Key>Nominated Pharmacy ODS Code</SummaryList.Key>
+          <SummaryList.Value>{nominatedOds}</SummaryList.Value>
+        </SummaryList.Row>
+        <SummaryList.Row>
+          <SummaryList.Key>Nominated Pharmacy Type</SummaryList.Key>
+          <SummaryList.Value>{nominatedType}</SummaryList.Value>
+        </SummaryList.Row>
+      </>
       }
       {patientInstructions.length > 0 &&
-        <SummaryList.Row>
-          <SummaryList.Key>Patient Instructions</SummaryList.Key>
-          <SummaryList.Value>{patientInstruction}</SummaryList.Value>
-        </SummaryList.Row>
+      <SummaryList.Row>
+        <SummaryList.Key>Patient Instructions</SummaryList.Key>
+        <SummaryList.Value>{patientInstruction}</SummaryList.Value>
+      </SummaryList.Row>
       }
     </SummaryList>
   )

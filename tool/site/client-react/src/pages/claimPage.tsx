@@ -1,17 +1,20 @@
 import * as React from "react"
 import {useEffect, useState} from "react"
-import {ErrorMessage, Label} from "nhsuk-react-components"
-import ClaimForm, {ClaimFormValues, StaticProductInfo} from "./claimForm"
+import {Button, CrossIcon, ErrorMessage, Label, TickIcon} from "nhsuk-react-components"
+import ClaimForm, {ClaimFormValues, StaticProductInfo} from "../components/claim/claimForm"
 import axios from "axios"
 import {
   getMedicationDispenseResources,
   getMedicationRequestResources,
   getPatientResources
-} from "../../fhir/bundleResourceFinder"
+} from "../fhir/bundleResourceFinder"
 import * as fhir from "fhir/r4"
-import Pre from "../pre"
-import {createClaim, getMedicationDispenseLineItemId} from "./createDispenseClaim"
-import {getTaskBusinessStatusExtension} from "../../fhir/customExtensions"
+import {MedicationDispense} from "fhir/r4"
+import {createClaim} from "../components/claim/createDispenseClaim"
+import MessageExpanders from "../components/messageExpanders"
+import ButtonList from "../components/buttonList"
+import {getMedicationDispenseLineItemId, getTotalQuantity} from "../fhir/helpers"
+import {formatQuantity} from "../formatters/quantity"
 
 interface ClaimPageProps {
   baseUrl: string
@@ -25,7 +28,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
   const [loadingMessage, setLoadingMessage] = useState<string>("Loading page.")
   const [errorMessage, setErrorMessage] = useState<string>()
   const [prescriptionDetails, setPrescriptionDetails] = useState<PrescriptionDetails>()
-  const [claimResult, setClaimResult] = useState<string>()
+  const [claimResult, setClaimResult] = useState<ClaimResult>()
 
   useEffect(() => {
     if (!prescriptionDetails) {
@@ -46,8 +49,8 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
       return
     }
 
-    const historyResponse = await axios.get<HistoryResponse>(`${baseUrl}dispense/history?prescription_id=${prescriptionId}`)
-    const dispenseNotifications = historyResponse.data?.dispense_notifications
+    const dispenseNotificationsResponse = await axios.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
+    const dispenseNotifications = dispenseNotificationsResponse.data
     if (!dispenseNotifications?.length) {
       setErrorMessage("Dispense notification not found. Has this prescription been dispensed?")
       return
@@ -70,10 +73,11 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
       prescriptionDetails.medicationDispenses,
       claimFormValues
     )
-    const response = await axios.post(`${baseUrl}dispense/claim`, claim)
-    const responseStr = JSON.stringify(response.data)
+    const response = await axios.post<ClaimResult>(`${baseUrl}dispense/claim`, claim)
+    console.log(claim)
+    console.log(response)
 
-    setClaimResult(responseStr)
+    setClaimResult(response.data)
     setLoadingMessage(undefined)
   }
 
@@ -93,8 +97,16 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
 
   if (claimResult) {
     return <>
-      <Label isPageHeading>Result</Label>
-      <Pre>{claimResult}</Pre>
+      <Label isPageHeading>Claim Result {claimResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
+      <MessageExpanders
+        fhirRequest={claimResult.request}
+        hl7V3Request={claimResult.request_xml}
+        fhirResponse={claimResult.response}
+        hl7V3Response={claimResult.response_xml}
+      />
+      <ButtonList>
+        <Button type="button" href={baseUrl} secondary>Back</Button>
+      </ButtonList>
     </>
   }
 
@@ -102,7 +114,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
     return <>
       <Label isPageHeading>Claim for Dispensed Medication</Label>
       <ClaimForm
-        products={prescriptionDetails.medicationDispenses.map(toStaticProductInfo)}
+        products={createStaticProductInfoArray(prescriptionDetails.medicationDispenses)}
         sendClaim={sendClaim}
       />
     </>
@@ -114,23 +126,40 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
   </>
 }
 
-interface HistoryResponse {
-  dispense_notifications: Array<fhir.Bundle>
-}
-
 interface PrescriptionDetails {
   patient: fhir.Patient
   medicationRequests: Array<fhir.MedicationRequest>
   medicationDispenses: Array<fhir.MedicationDispense>
 }
 
-export function toStaticProductInfo(medicationDispense: fhir.MedicationDispense): StaticProductInfo {
-  return {
-    id: getMedicationDispenseLineItemId(medicationDispense),
-    name: medicationDispense.medicationCodeableConcept.coding[0].display,
-    quantityDispensed: `${medicationDispense.quantity.value} ${medicationDispense.quantity.unit}`,
-    status: getTaskBusinessStatusExtension(medicationDispense.extension).valueCoding.display
-  }
+interface ClaimResult {
+  success: boolean
+  request: fhir.Claim
+  request_xml: string
+  response: fhir.OperationOutcome
+  response_xml: string
+}
+
+function createStaticProductInfoArray(medicationDispenses: Array<MedicationDispense>): Array<StaticProductInfo> {
+  const lineItemGroups = groupByProperty(medicationDispenses, getMedicationDispenseLineItemId)
+  return lineItemGroups.map(([lineItemId, medicationDispensesForLineItem]) => {
+    const latestMedicationDispense = medicationDispensesForLineItem[medicationDispensesForLineItem.length - 1]
+    const totalQuantity = getTotalQuantity(medicationDispensesForLineItem.map(m => m.quantity))
+    return {
+      id: lineItemId,
+      name: latestMedicationDispense.medicationCodeableConcept.coding[0].display,
+      quantityDispensed: formatQuantity(totalQuantity),
+      status: latestMedicationDispense.type.coding[0].display
+    }
+  })
+}
+
+function groupByProperty<K, V>(array: Array<V>, getProperty: (value: V) => K): Array<[K, Array<V>]> {
+  const uniquePropertyValues = new Set(array.map(getProperty))
+  return Array.from(uniquePropertyValues).map(propertyValue => [
+    propertyValue,
+    array.filter(element => getProperty(element) === propertyValue)
+  ])
 }
 
 export default ClaimPage
