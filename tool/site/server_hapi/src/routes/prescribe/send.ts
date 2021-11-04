@@ -3,7 +3,6 @@ import {getSigningClient} from "../../services/communication/signing-client"
 import {getSessionValue, setSessionValue} from "../../services/session"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {Parameters} from "fhir/r4"
-import {getPayload} from "../util"
 
 export default [
   {
@@ -12,7 +11,7 @@ export default [
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const accessToken = getSessionValue("access_token", request)
       const authMethod = getSessionValue("auth_method", request)
-      const parsedRequest = getPayload(request) as {signatureToken: string}
+      const parsedRequest = request.payload as {signatureToken: string}
       const signingClient = getSigningClient(request, accessToken, authMethod)
       const signatureResponse = await signingClient.makeSignatureDownloadRequest(parsedRequest.signatureToken)
       const prescriptionIds = getSessionValue("prescription_ids", request)

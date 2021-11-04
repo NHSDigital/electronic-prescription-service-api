@@ -1,16 +1,16 @@
 import * as React from "react"
 import * as fhir from "fhir/r4"
-import PatientSummaryList, {
-  createSummaryPatient,
-  SummaryPatient
-} from "./patientSummaryList"
+import PatientSummaryList, {createSummaryPatient, SummaryPatient} from "./patientSummaryList"
 import PractitionerRoleSummaryList, {
   createSummaryPractitionerRole,
   SummaryPractitionerRole
 } from "./practitionerRoleSummaryList"
 import {Label} from "nhsuk-react-components"
 import MedicationSummary, {createSummaryMedication, SummaryMedication} from "./medicationSummary"
-import PrescriptionLevelDetails, {createPrescriptionLevelDetails, PrescriptionLevelDetailsProps} from "./prescriptionLevelDetails"
+import PrescriptionLevelDetails, {
+  createPrescriptionLevelDetails,
+  PrescriptionLevelDetailsProps
+} from "./prescriptionLevelDetails"
 
 export function createSummaryPrescription(bundle: fhir.Bundle): SummaryPrescription {
   const resources = bundle.entry.map(e => e.resource)

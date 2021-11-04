@@ -3,6 +3,7 @@ import * as React from "react"
 import {FieldArray, Formik} from "formik"
 import Exemption from "./exemption"
 import ProductArray from "./productArray"
+import ButtonList from "../buttonList"
 import {VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION} from "../../fhir/reference-data/valueSets"
 
 export interface ClaimFormProps {
@@ -32,8 +33,10 @@ const ClaimForm: React.FC<ClaimFormProps> = ({
         <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
           <FieldArray name="products" component={ProductArray}/>
           <Exemption name="exemption"/>
-          <Button type="submit">Claim</Button>
-          <Button type="reset" secondary>Reset</Button>
+          <ButtonList>
+            <Button type="submit">Claim</Button>
+            <Button type="reset" secondary>Reset</Button>
+          </ButtonList>
         </Form>
       }
     </Formik>

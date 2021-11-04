@@ -3,7 +3,7 @@ import {screen} from "@testing-library/dom"
 import pretty from "pretty"
 import * as React from "react"
 import moxios from "moxios"
-import ClaimPage from "../../../src/components/claim/claimPage"
+import ClaimPage from "../../../src/pages/claimPage"
 import userEvent from "@testing-library/user-event"
 import {readMessage} from "./messages/messages"
 

@@ -1,13 +1,12 @@
 import Hapi from "@hapi/hapi"
 import {getSessionValue, setSessionValue} from "../../services/session"
-import {getPayload} from "../util"
 
 export default [
   {
     method: "POST",
     path: "/prescribe/edit",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      const prepareBundles = Array.from(getPayload(request) as any[])
+      const prepareBundles = Array.from(request.payload as any[])
       const prescriptionIds: Array<string> = []
       prepareBundles.forEach((prepareBundle: any) => {
         const prescriptionId = getMedicationRequests(prepareBundle)[0].groupIdentifier.value

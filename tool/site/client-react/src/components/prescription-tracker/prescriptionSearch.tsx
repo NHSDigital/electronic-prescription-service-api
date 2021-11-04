@@ -6,6 +6,7 @@ import {Bundle, Task} from "fhir/r4"
 import {createPrescriptionProps, PrescriptionProps} from "./prescription"
 import {PrescriptionDetails} from "./prescriptionDetails"
 import {PrescriptionItems} from "./prescriptionItems"
+import ButtonList from "../buttonList"
 
 interface PrescriptionSearchProps {
   baseUrl: string
@@ -56,38 +57,43 @@ const PrescriptionSearch: React.FC<PrescriptionSearchProps> = ({
     setSearchResults(null)
   }
 
-  return !searchResults
-        ? <>
-          <Label isPageHeading>Search for a Prescription</Label>
-          <Input
-            label="Prescription ID"
-            hint="Use the short form here, e.g. E3E6FA-A83008-41F09Y"
-            width={30}
-            value={searchCriteria.prescriptionId}
-            onChange={event => setSearchCriteria({prescriptionId: event.currentTarget.value})}
-          />
-          <Button onClick={handleSearch}>Search</Button>
-          <Button secondary href={baseUrl}>Back</Button>
-        </>
-        : <>
-          <Label isPageHeading>Found {searchResults.count} Prescription{searchResults.pluralSuffix}</Label>
-          {/* todo: handle multiple prescriptions */}
-          {searchResults.prescriptions
-            ? <>
-              <PrescriptionDetails {...searchResults.prescriptions[0]} />
-              <PrescriptionItems {...searchResults.prescriptions[0]} />
-            </>
-            : ""
-          }
-          <Details expander>
-            <Details.Summary>Show FHIR</Details.Summary>
-            <Details.Text>
-              <Pre>{JSON.stringify(searchResults.searchset, null, 2)}</Pre>
-            </Details.Text>
-          </Details>
-          <Button onClick={handleSearch}>Refresh</Button>
-          <Button secondary onClick={handleReset}>Back</Button>
-        </>
+  if (!searchResults) {
+    return <>
+      <Label isPageHeading>Search for a Prescription</Label>
+      <Input
+        label="Prescription ID"
+        hint="Use the short form here, e.g. E3E6FA-A83008-41F09Y"
+        width={30}
+        value={searchCriteria.prescriptionId}
+        onChange={event => setSearchCriteria({prescriptionId: event.currentTarget.value})}
+      />
+      <ButtonList>
+        <Button onClick={handleSearch}>Search</Button>
+        <Button secondary href={baseUrl}>Back</Button>
+      </ButtonList>
+    </>
+  }
+
+  return <>
+    <Label isPageHeading>Found {searchResults.count} Prescription{searchResults.pluralSuffix}</Label>
+    {/* todo: handle multiple prescriptions */}
+    {searchResults.prescriptions && (
+      <>
+        <PrescriptionDetails {...searchResults.prescriptions[0]} />
+        <PrescriptionItems {...searchResults.prescriptions[0]} />
+      </>
+    )}
+    <Details expander>
+      <Details.Summary>Show FHIR</Details.Summary>
+      <Details.Text>
+        <Pre>{JSON.stringify(searchResults.searchset, null, 2)}</Pre>
+      </Details.Text>
+    </Details>
+    <ButtonList>
+      <Button onClick={handleSearch}>Refresh</Button>
+      <Button secondary onClick={handleReset}>Back</Button>
+    </ButtonList>
+  </>
 }
 
 export default PrescriptionSearch

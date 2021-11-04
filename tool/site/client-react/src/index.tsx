@@ -5,9 +5,11 @@ import * as ReactDOM from "react-dom"
 import {Button} from "nhsuk-react-components"
 import {OperationOutcome} from "fhir/r4"
 import axios from "axios"
-import {BrowserRouter, Switch, Route} from "react-router-dom"
-import ClaimPage from "./components/claim/claimPage"
+import {BrowserRouter, Route, Switch} from "react-router-dom"
+import ClaimPage from "./pages/claimPage"
 import SearchPage from "./pages/searchPage"
+import DispensePage from "./pages/dispensePage"
+import ButtonList from "./components/buttonList"
 
 const customWindow = window as Record<string, any>
 
@@ -28,7 +30,7 @@ async function sendSignRequest(baseUrl: string) {
         .filter(issue => !issue.diagnostics.startsWith("Unable to find matching profile for urn:uuid:"))
         .map(issue => issue.diagnostics)
         .forEach(diagnostic => console.log(diagnostic))
-        // TODO display the above errors on ui
+      // TODO display the above errors on ui
     } else if (response.data.redirectUri) {
       //TODO REACT redirect when router
       window.location.href = response.data.redirectUri
@@ -46,7 +48,7 @@ interface AppContext {
 
 export const AppContext = React.createContext<AppContext>({baseUrl: "/"})
 
-async function startApplication (baseUrl: string): Promise<void> {
+async function startApplication(baseUrl: string): Promise<void> {
   const urlParams = new URLSearchParams(window.location.search)
   const content = (
     <AppContext.Provider value={{baseUrl}}>
@@ -58,13 +60,16 @@ async function startApplication (baseUrl: string): Promise<void> {
                 baseUrl={baseUrl}
                 prescriptionId={urlParams.get("prescription_id")}
               />
-              <>
+              <ButtonList>
                 <Button onClick={() => sendSignRequest(baseUrl)}>Send</Button>
                 <Button secondary href={baseUrl}>Back</Button>
-              </>
+              </ButtonList>
             </Route>
             <Route path={`${baseUrl}search`}>
-              <SearchPage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")} />
+              <SearchPage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")}/>
+            </Route>
+            <Route path={`${baseUrl}dispense/dispense`}>
+              <DispensePage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")}/>
             </Route>
             <Route path={`${baseUrl}dispense/claim`}>
               <ClaimPage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")}/>
