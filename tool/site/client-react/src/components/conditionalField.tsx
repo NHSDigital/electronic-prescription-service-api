@@ -21,9 +21,7 @@ const ConditionalField: React.FC<ConditionalFieldProps> = ({
     }
   }, [condition])
 
-  return condition
-    ? <Field name={name} {...extraProps}/>
-    : null
+  return condition && <Field name={name} {...extraProps}/>
 }
 
 export default ConditionalField

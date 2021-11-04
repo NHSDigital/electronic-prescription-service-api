@@ -1,4 +1,3 @@
-import * as fhir from "fhir/r4"
 import {
   Bundle,
   CodeableConcept,
@@ -28,7 +27,7 @@ import {
   VALUE_SET_NON_DISPENSING_REASON,
   VALUE_SET_PRESCRIPTION_STATUS
 } from "../../fhir/reference-data/valueSets"
-import {getMedicationRequestLineItemId, getRepeatsIssuedAndAllowed} from "../../fhir/helpers"
+import {createUuidIdentifier, getMedicationRequestLineItemId, getRepeatsIssuedAndAllowed} from "../../fhir/helpers"
 
 const EVENT_CODING_DISPENSE_NOTIFICATION = {
   system: "https://fhir.nhs.uk/CodeSystem/message-event",
@@ -77,13 +76,6 @@ export function createDispenseNotification(
       patient,
       ...medicationDispenses
     ].map(resource => ({resource, fullUrl: `urn:uuid:${resource.id}`}))
-  }
-}
-
-function createUuidIdentifier(): fhir.Identifier {
-  return {
-    system: "https://tools.ietf.org/html/rfc4122",
-    value: uuid.v4()
   }
 }
 
@@ -248,6 +240,7 @@ function createMessageHeader(
 ): MessageHeader {
   return {
     resourceType: "MessageHeader",
+    id: uuid.v4(),
     destination: prescriptionOrderMessageHeader.destination,
     sender: {
       ...prescriptionOrderMessageHeader.sender,

@@ -154,41 +154,6 @@ function createStaticProductInfoArray(medicationDispenses: Array<MedicationDispe
   })
 }
 
-// TODO - maybe handle dispensing multiple products to fulfill a request
-// function createStaticProductInfoArray(
-//   medicationRequests: Array<MedicationRequest>,
-//   medicationDispenses: Array<MedicationDispense>
-// ): Array<StaticProductInfo> {
-//   const lineItemGroups = groupByProperty(medicationDispenses, getMedicationDispenseLineItemId)
-//   return lineItemGroups.flatMap((([, medicationDispensesForLineItem]) =>
-//     createStaticProductInfoArrayForLineItem(medicationDispensesForLineItem)
-//   ))
-// }
-//
-// function createStaticProductInfoArrayForLineItem(
-//   medicationDispenses: Array<MedicationDispense>
-// ): Array<StaticProductInfo> {
-//   const latestMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
-//   const lineItemId = getMedicationDispenseLineItemId(latestMedicationDispense)
-//   const finalStatus = latestMedicationDispense.type.coding[0].display
-//
-//   const productGroups = groupByProperty(
-//     medicationDispenses,
-//     medicationDispense => medicationDispense.medicationCodeableConcept.coding[0].code
-//   )
-//   return productGroups.map(([, medicationDispensesForProduct]) => {
-//     const totalQuantity = medicationDispensesForProduct
-//       .map(medicationDispense => medicationDispense.quantity.value)
-//       .reduce((a, b) => a + b)
-//     return {
-//       id: lineItemId,
-//       name: medicationDispensesForProduct[0].medicationCodeableConcept.coding[0].display,
-//       quantityDispensed: `${totalQuantity} ${medicationDispensesForProduct[0].quantity.unit}`,
-//       status: finalStatus
-//     }
-//   })
-// }
-
 function groupByProperty<K, V>(array: Array<V>, getProperty: (value: V) => K): Array<[K, Array<V>]> {
   const uniquePropertyValues = new Set(array.map(getProperty))
   return Array.from(uniquePropertyValues).map(propertyValue => [

@@ -29,7 +29,12 @@ import {
   VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION
 } from "../../fhir/reference-data/valueSets"
 import {createRepeatInformationExtensionIfRequired} from "../dispense/createDispenseNotification"
-import {getMedicationDispenseLineItemId, getMedicationRequestLineItemId, getTotalQuantity} from "../../fhir/helpers"
+import {
+  createUuidIdentifier,
+  getMedicationDispenseLineItemId,
+  getMedicationRequestLineItemId,
+  getTotalQuantity
+} from "../../fhir/helpers"
 
 export function createClaim(
   patient: Patient,
@@ -70,13 +75,6 @@ export function createClaim(
         claimFormValues
       )
     ]
-  }
-}
-
-function createUuidIdentifier(): fhir.Identifier {
-  return {
-    system: "https://tools.ietf.org/html/rfc4122",
-    value: uuid.v4()
   }
 }
 

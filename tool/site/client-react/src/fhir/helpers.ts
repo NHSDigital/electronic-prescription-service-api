@@ -1,6 +1,7 @@
 import * as fhir from "fhir/r4"
 import {MedicationRequest} from "fhir/r4"
 import {getUkCoreNumberOfRepeatsAllowedExtension, getUkCoreNumberOfRepeatsIssuedExtension} from "./customExtensions"
+import * as uuid from "uuid"
 
 export function getMedicationRequestLineItemId(medicationRequest: fhir.MedicationRequest): string {
   return medicationRequest.identifier[0].value
@@ -38,4 +39,11 @@ export function getRepeatsIssuedAndAllowed(medicationRequest: MedicationRequest)
     : (medicationRequest.dispenseRequest.numberOfRepeatsAllowed || 0) + 1
 
   return [numberOfRepeatPrescriptionsIssued, numberOfRepeatPrescriptionsAllowed]
+}
+
+export function createUuidIdentifier(): fhir.Identifier {
+  return {
+    system: "https://tools.ietf.org/html/rfc4122",
+    value: uuid.v4()
+  }
 }

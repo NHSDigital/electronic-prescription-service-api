@@ -160,7 +160,7 @@ export interface PrescriptionEndorsementExtension extends Extension {
   valueCodeableConcept: CodeableConcept
 }
 
-export const getPrescriptionEndorsementExtension = (extensions: Array<Extension>): PrescriptionEndorsementExtension[] =>
+export const getPrescriptionEndorsementExtensions = (extensions: Array<Extension>): Array<PrescriptionEndorsementExtension> =>
   getExtensions(extensions, [URL_PRESCRIPTION_ENDORSEMENT])
 
 const URL_DISPENSING_INFORMATION_EXTENSION = "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation"

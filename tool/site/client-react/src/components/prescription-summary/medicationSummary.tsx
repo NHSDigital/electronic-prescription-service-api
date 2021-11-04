@@ -1,7 +1,7 @@
 import * as React from "react"
 import {MedicationRequest} from "fhir/r4"
 import {Table} from "nhsuk-react-components"
-import {getPrescriptionEndorsementExtension} from "../../fhir/customExtensions"
+import {getPrescriptionEndorsementExtensions} from "../../fhir/customExtensions"
 
 export function createSummaryMedication(medicationRequest: MedicationRequest): SummaryMedication {
   const quantity = medicationRequest.dispenseRequest.quantity
@@ -13,9 +13,12 @@ export function createSummaryMedication(medicationRequest: MedicationRequest): S
     snomedCodeDescription: snomedInformation.display
   }
 
-  const prescriberEndorsementExtension = getPrescriptionEndorsementExtension(medicationRequest.extension)
-  if (prescriberEndorsementExtension)
-    summary.prescriptionEndorsements = prescriberEndorsementExtension.flatMap(endorsement => endorsement.valueCodeableConcept.coding.map(coding => coding.display))
+  const prescriberEndorsementExtensions = getPrescriptionEndorsementExtensions(medicationRequest.extension)
+  if (prescriberEndorsementExtensions) {
+    summary.prescriptionEndorsements = prescriberEndorsementExtensions.map(endorsement =>
+      endorsement.valueCodeableConcept.coding[0].display
+    )
+  }
 
   if (medicationRequest.note) {
     summary.dispenserNotes = medicationRequest.note
