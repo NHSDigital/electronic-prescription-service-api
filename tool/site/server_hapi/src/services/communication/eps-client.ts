@@ -6,7 +6,7 @@ import {OperationOutcome} from "fhir/r4"
 
 export interface EpsClient {
   makeGetTrackerRequest(searchRequest: EpsSearchRequest): Promise<Bundle | OperationOutcome>
-  makePrepareRequest(body: Bundle): Promise<Parameters>
+  makePrepareRequest(body: Bundle): Promise<Parameters | OperationOutcome>
   makeSendRequest(body: Bundle): Promise<EpsSendReponse>
   makeConvertRequest(body: unknown): Promise<string>
 }

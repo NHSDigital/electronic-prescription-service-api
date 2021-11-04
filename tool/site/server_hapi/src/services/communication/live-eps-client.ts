@@ -14,8 +14,8 @@ export class LiveEpsClient implements EpsClient {
     return await (await this.makeApiCall<Bundle | OperationOutcome>(`Task?focus:identifier=${searchRequest.prescriptionId}`)).data
   }
 
-  async makePrepareRequest(body: Bundle): Promise<Parameters> {
-    return await (await this.makeApiCall<Parameters>("$prepare", body)).data
+  async makePrepareRequest(body: Bundle): Promise<Parameters | OperationOutcome> {
+    return await (await this.makeApiCall<Parameters | OperationOutcome>("$prepare", body)).data
   }
 
   async makeSendRequest(body: Bundle): Promise<EpsSendReponse> {

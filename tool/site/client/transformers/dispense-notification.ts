@@ -66,7 +66,7 @@ export function createDispenseRequest(bundle: Bundle): Bundle {
     medicationDispense.identifier = [
       {
         system: "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
-        value: medicationRequestEntry.fullUrl.replace("urn:uuid:", "")
+        value: medicationRequestEntry.resource.identifier[0].value
       }
     ]
     medicationDispense.medicationCodeableConcept =
@@ -87,7 +87,7 @@ export function createDispenseRequest(bundle: Bundle): Bundle {
         ],
         identifier: {
           system: "https://fhir.nhs.uk/Id/prescription-order-item-number",
-          value: medicationRequestEntry.fullUrl.replace("urn:uuid:", "")
+          value: medicationRequestEntry.resource.identifier[0].value
         }
       }
     ]

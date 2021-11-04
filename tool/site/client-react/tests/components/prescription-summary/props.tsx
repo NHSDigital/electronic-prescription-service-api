@@ -40,8 +40,8 @@ export const summaryPractitionerRole: SummaryPractitionerRole = {
 export const prescriptionLevelDetailProps: PrescriptionLevelDetailsProps = {
   prescriptionId: "A0548B-A99968-451485",
   courseOfTherapyTypeCoding: {display: "Short course (acute) therapy", code: "acute"},
-  repeatIssued: 1,
-  repeatAllowed: 6,
+  repeatsIssued: 1,
+  repeatsAllowed: 6,
   authoredOn: "01-11-2021",
   startDate: "02-11-2021",
   nominatedOds: "VNCEL",

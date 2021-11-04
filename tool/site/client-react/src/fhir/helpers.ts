@@ -1,4 +1,6 @@
 import * as fhir from "fhir/r4"
+import {MedicationRequest} from "fhir/r4"
+import {getUkCoreNumberOfRepeatsAllowedExtension, getUkCoreNumberOfRepeatsIssuedExtension} from "./customExtensions"
 
 export function getMedicationRequestLineItemId(medicationRequest: fhir.MedicationRequest): string {
   return medicationRequest.identifier[0].value
@@ -22,4 +24,18 @@ export function getTotalQuantity(quantities: Array<fhir.Quantity>): fhir.Quantit
     ...quantities[0],
     value: values.reduce((a, b) => a + b)
   }
+}
+
+export function getRepeatsIssuedAndAllowed(medicationRequest: MedicationRequest): [number, number] {
+  const ukCoreRepeatsIssuedExtension = getUkCoreNumberOfRepeatsIssuedExtension(medicationRequest.extension)
+  const numberOfRepeatPrescriptionsIssued = ukCoreRepeatsIssuedExtension
+    ? ukCoreRepeatsIssuedExtension.valueUnsignedInt
+    : 1
+
+  const ukCoreRepeatsAllowedExtension = getUkCoreNumberOfRepeatsAllowedExtension(medicationRequest.extension)
+  const numberOfRepeatPrescriptionsAllowed = ukCoreRepeatsAllowedExtension
+    ? ukCoreRepeatsAllowedExtension.valueUnsignedInt
+    : (medicationRequest.dispenseRequest.numberOfRepeatsAllowed || 0) + 1
+
+  return [numberOfRepeatPrescriptionsIssued, numberOfRepeatPrescriptionsAllowed]
 }

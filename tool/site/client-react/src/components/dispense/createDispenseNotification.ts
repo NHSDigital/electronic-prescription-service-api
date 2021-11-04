@@ -16,21 +16,18 @@ import {DispenseFormValues, LineItemFormValues, PrescriptionFormValues} from "./
 import * as uuid from "uuid"
 import {
   getLongFormIdExtension,
-  getUkCoreNumberOfRepeatsAllowedExtension,
-  getUkCoreNumberOfRepeatsIssuedExtension,
-  getUkCoreRepeatInformationExtension,
   RepeatInformationExtension,
-  TaskBusinessStatusExtension,
-  URL_GROUP_IDENTIFIER_EXTENSION,
+  TaskBusinessStatusExtension, URL_GROUP_IDENTIFIER_EXTENSION,
   URL_TASK_BUSINESS_STATUS
 } from "../../fhir/customExtensions"
 import {
   LineItemStatus,
-  PrescriptionStatus, VALUE_SET_LINE_ITEM_STATUS,
+  PrescriptionStatus,
+  VALUE_SET_LINE_ITEM_STATUS,
   VALUE_SET_NON_DISPENSING_REASON,
   VALUE_SET_PRESCRIPTION_STATUS
 } from "../../fhir/reference-data/valueSets"
-import {getMedicationRequestLineItemId} from "../../fhir/helpers"
+import {getMedicationRequestLineItemId, getRepeatsIssuedAndAllowed} from "../../fhir/helpers"
 
 const EVENT_CODING_DISPENSE_NOTIFICATION = {
   system: "https://fhir.nhs.uk/CodeSystem/message-event",
@@ -151,22 +148,6 @@ export function createRepeatInformationExtensionIfRequired(medicationRequest: Me
   } else if (courseOfTherapyType === "continuous") {
     return createRepeatInformationExtension(1, 1)
   }
-}
-
-function getRepeatsIssuedAndAllowed(medicationRequest: MedicationRequest): [number, number] {
-  const ukCoreRepeatInformationExtension = getUkCoreRepeatInformationExtension(medicationRequest.extension)
-
-  const ukCoreRepeatsIssuedExtension = getUkCoreNumberOfRepeatsIssuedExtension(ukCoreRepeatInformationExtension.extension)
-  const numberOfRepeatPrescriptionsIssued = ukCoreRepeatsIssuedExtension
-    ? ukCoreRepeatsIssuedExtension.valueUnsignedInt
-    : 1
-
-  const ukCoreRepeatsAllowedExtension = getUkCoreNumberOfRepeatsAllowedExtension(ukCoreRepeatInformationExtension.extension)
-  const numberOfRepeatPrescriptionsAllowed = ukCoreRepeatsAllowedExtension
-    ? ukCoreRepeatsAllowedExtension.valueUnsignedInt
-    : medicationRequest.dispenseRequest.numberOfRepeatsAllowed + 1
-
-  return [numberOfRepeatPrescriptionsIssued, numberOfRepeatPrescriptionsAllowed]
 }
 
 function createRepeatInformationExtension(repeatsIssued: number, repeatsAllowed: number): RepeatInformationExtension {
