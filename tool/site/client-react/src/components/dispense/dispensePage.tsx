@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useEffect, useState} from "react"
-import {ActionLink, Button, Col, CrossIcon, ErrorMessage, Label, TickIcon} from "nhsuk-react-components"
+import {ActionLink, Button, CrossIcon, ErrorMessage, Label, TickIcon} from "nhsuk-react-components"
 import axios from "axios"
 import {
   getMedicationDispenseResources,
@@ -11,13 +11,13 @@ import {
 import * as fhir from "fhir/r4"
 import {MedicationDispense} from "fhir/r4"
 import DispenseForm, {DispenseFormValues, StaticLineItemInfo, StaticPrescriptionInfo} from "./dispenseForm"
-import {getMedicationDispenseLineItemId, getMedicationRequestLineItemId} from "../claim/createDispenseClaim"
 import {formatQuantity} from "../../formatters/quantity"
 import {createDispenseNotification} from "./createDispenseNotification"
 import {getTaskBusinessStatusExtension} from "../../fhir/customExtensions"
-import {LineItemStatus, PrescriptionStatus} from "./reference-data/valueSets"
 import MessageExpanders from "../messageExpanders"
 import ButtonList from "../buttonList"
+import {LineItemStatus, PrescriptionStatus} from "../../fhir/reference-data/valueSets"
+import {getMedicationDispenseLineItemId, getMedicationRequestLineItemId} from "../../fhir/helpers"
 
 interface DispensePageProps {
   baseUrl: string

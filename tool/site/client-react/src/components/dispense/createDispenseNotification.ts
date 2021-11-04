@@ -14,14 +14,6 @@ import {
 } from "fhir/r4"
 import {DispenseFormValues, LineItemFormValues, PrescriptionFormValues} from "./dispenseForm"
 import * as uuid from "uuid"
-import {getMedicationRequestLineItemId} from "../claim/createDispenseClaim"
-import {
-  LineItemStatus,
-  PrescriptionStatus,
-  VALUE_SET_LINE_ITEM_STATUS,
-  VALUE_SET_NON_DISPENSING_REASON,
-  VALUE_SET_PRESCRIPTION_STATUS
-} from "./reference-data/valueSets"
 import {
   getLongFormIdExtension,
   getUkCoreNumberOfRepeatsAllowedExtension,
@@ -32,6 +24,13 @@ import {
   URL_GROUP_IDENTIFIER_EXTENSION,
   URL_TASK_BUSINESS_STATUS
 } from "../../fhir/customExtensions"
+import {
+  LineItemStatus,
+  PrescriptionStatus, VALUE_SET_LINE_ITEM_STATUS,
+  VALUE_SET_NON_DISPENSING_REASON,
+  VALUE_SET_PRESCRIPTION_STATUS
+} from "../../fhir/reference-data/valueSets"
+import {getMedicationRequestLineItemId} from "../../fhir/helpers"
 
 const EVENT_CODING_DISPENSE_NOTIFICATION = {
   system: "https://fhir.nhs.uk/CodeSystem/message-event",
@@ -154,9 +153,7 @@ export function createRepeatInformationExtensionIfRequired(medicationRequest: Me
   }
 }
 
-function getRepeatsIssuedAndAllowed(
-  medicationRequest: MedicationRequest
-): [repeatsIssued: number, repeatsAllowed: number] {
+function getRepeatsIssuedAndAllowed(medicationRequest: MedicationRequest): [number, number] {
   const ukCoreRepeatInformationExtension = getUkCoreRepeatInformationExtension(medicationRequest.extension)
 
   const ukCoreRepeatsIssuedExtension = getUkCoreNumberOfRepeatsIssuedExtension(ukCoreRepeatInformationExtension.extension)

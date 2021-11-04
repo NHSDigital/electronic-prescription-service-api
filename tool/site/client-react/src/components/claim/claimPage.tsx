@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useEffect, useState} from "react"
-import {Button, Col, CrossIcon, ErrorMessage, Label, TickIcon} from "nhsuk-react-components"
+import {Button, CrossIcon, ErrorMessage, Label, TickIcon} from "nhsuk-react-components"
 import ClaimForm, {ClaimFormValues, StaticProductInfo} from "./claimForm"
 import axios from "axios"
 import {
@@ -9,10 +9,12 @@ import {
   getPatientResources
 } from "../../fhir/bundleResourceFinder"
 import * as fhir from "fhir/r4"
-import {MedicationDispense, MedicationRequest} from "fhir/r4"
-import {createClaim, getMedicationDispenseLineItemId} from "./createDispenseClaim"
+import {MedicationDispense} from "fhir/r4"
+import {createClaim} from "./createDispenseClaim"
 import MessageExpanders from "../messageExpanders"
 import ButtonList from "../buttonList"
+import {getMedicationDispenseLineItemId, getTotalQuantity} from "../../fhir/helpers"
+import {formatQuantity} from "../../formatters/quantity"
 
 interface ClaimPageProps {
   baseUrl: string
@@ -112,7 +114,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
     return <>
       <Label isPageHeading>Claim for Dispensed Medication</Label>
       <ClaimForm
-        products={createStaticProductInfoArray(prescriptionDetails.medicationRequests, prescriptionDetails.medicationDispenses)}
+        products={createStaticProductInfoArray(prescriptionDetails.medicationDispenses)}
         sendClaim={sendClaim}
       />
     </>
@@ -138,20 +140,15 @@ interface ClaimResult {
   response_xml: string
 }
 
-function createStaticProductInfoArray(
-  medicationRequests: Array<MedicationRequest>,
-  medicationDispenses: Array<MedicationDispense>
-): Array<StaticProductInfo> {
+function createStaticProductInfoArray(medicationDispenses: Array<MedicationDispense>): Array<StaticProductInfo> {
   const lineItemGroups = groupByProperty(medicationDispenses, getMedicationDispenseLineItemId)
-  return lineItemGroups.flatMap(([lineItemId, medicationDispensesForLineItem]) => {
+  return lineItemGroups.map(([lineItemId, medicationDispensesForLineItem]) => {
     const latestMedicationDispense = medicationDispensesForLineItem[medicationDispensesForLineItem.length - 1]
-    const totalQuantity = medicationDispensesForLineItem
-      .map(medicationDispense => medicationDispense.quantity.value)
-      .reduce((a, b) => a + b)
+    const totalQuantity = getTotalQuantity(medicationDispensesForLineItem.map(m => m.quantity))
     return {
       id: lineItemId,
       name: latestMedicationDispense.medicationCodeableConcept.coding[0].display,
-      quantityDispensed: `${totalQuantity} ${latestMedicationDispense.quantity.unit}`,
+      quantityDispensed: formatQuantity(totalQuantity),
       status: latestMedicationDispense.type.coding[0].display
     }
   })
@@ -193,10 +190,10 @@ function createStaticProductInfoArray(
 // }
 
 function groupByProperty<K, V>(array: Array<V>, getProperty: (value: V) => K): Array<[K, Array<V>]> {
-  const uniqueThings = new Set(array.map(getProperty))
-  return Array.from(uniqueThings).map(property => [
-    property,
-    array.filter(element => getProperty(element) === property)
+  const uniquePropertyValues = new Set(array.map(getProperty))
+  return Array.from(uniquePropertyValues).map(propertyValue => [
+    propertyValue,
+    array.filter(element => getProperty(element) === propertyValue)
   ])
 }
 

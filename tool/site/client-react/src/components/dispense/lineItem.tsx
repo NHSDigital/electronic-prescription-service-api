@@ -2,9 +2,13 @@ import * as React from "react"
 import {Fieldset, Select} from "nhsuk-react-components"
 import LineItemSummaryList from "./lineItemSummaryList"
 import {Field} from "formik"
-import {LineItemStatus, VALUE_SET_LINE_ITEM_STATUS, VALUE_SET_NON_DISPENSING_REASON} from "./reference-data/valueSets"
 import ConditionalField from "../conditionalField"
 import {LineItemFormValues} from "./dispenseForm"
+import {
+  LineItemStatus,
+  VALUE_SET_LINE_ITEM_STATUS,
+  VALUE_SET_NON_DISPENSING_REASON
+} from "../../fhir/reference-data/valueSets"
 
 interface LineItemProps {
   name: string

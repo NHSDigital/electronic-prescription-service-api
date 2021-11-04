@@ -1,7 +1,7 @@
 import * as React from "react"
-import {VALUE_SET_LINE_ITEM_STATUS} from "./reference-data/valueSets"
 import {SummaryList} from "nhsuk-react-components"
 import {LineItemFormValues} from "./dispenseForm"
+import {VALUE_SET_LINE_ITEM_STATUS} from "../../fhir/reference-data/valueSets"
 
 const LineItemSummaryList: React.FC<LineItemFormValues> = ({quantity, priorStatusCode}) => {
   const priorStatusDesc = VALUE_SET_LINE_ITEM_STATUS.find(coding => coding.code === priorStatusCode).display

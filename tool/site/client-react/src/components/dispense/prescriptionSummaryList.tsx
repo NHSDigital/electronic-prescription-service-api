@@ -2,7 +2,7 @@ import {SummaryList} from "nhsuk-react-components"
 import * as React from "react"
 import {useField} from "formik"
 import {PrescriptionFormValues} from "./dispenseForm"
-import {VALUE_SET_PRESCRIPTION_STATUS} from "./reference-data/valueSets"
+import {VALUE_SET_PRESCRIPTION_STATUS} from "../../fhir/reference-data/valueSets"
 
 interface PrescriptionSummaryListProps {
   name: string
