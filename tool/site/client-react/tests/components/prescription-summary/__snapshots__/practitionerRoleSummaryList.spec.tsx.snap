@@ -7,6 +7,10 @@ exports[`Renders correctly 1`] = `
     <dd class=\\"nhsuk-summary-list__value\\">EDWARDS, Thomas (DR)</dd>
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
+    <dt class=\\"nhsuk-summary-list__key\\">Professional Codes</dt>
+    <dd class=\\"nhsuk-summary-list__value\\">GMC Number - 12345</dd>
+  </div>
+  <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Telecom</dt>
     <dd class=\\"nhsuk-summary-list__value\\">01234567890</dd>
   </div>

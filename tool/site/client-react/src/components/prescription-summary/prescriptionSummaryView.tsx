@@ -9,12 +9,18 @@ import PractitionerRoleSummaryList, {
   SummaryPractitionerRole
 } from "./practitionerRoleSummaryList"
 import {Label} from "nhsuk-react-components"
-import {ErrorBoundary} from "../errorBoundary"
+import MedicationSummary, {createSummaryMedication, SummaryMedication} from "./medicationSummary"
+import PrescriptionLevelDetails, {createPrescriptionLevelDetails, PrescriptionLevelDetailsProps} from "./prescriptionLevelDetails"
 
 export function createSummaryPrescription(bundle: fhir.Bundle): SummaryPrescription {
   const resources = bundle.entry.map(e => e.resource)
   const medicationRequests = resources.filter(r => r.resourceType === "MedicationRequest") as Array<fhir.MedicationRequest>
+  const summaryMedicationRequests = medicationRequests.map(createSummaryMedication)
+
+  const communicationRequests = resources.filter(r => r.resourceType === "CommunicationRequest") as Array<fhir.CommunicationRequest>
   const medicationRequest = medicationRequests[0]
+
+  const prescriptionLevelDetails = createPrescriptionLevelDetails(medicationRequest, communicationRequests)
 
   const patient: fhir.Patient = resolveReference(bundle, medicationRequest.subject)
 
@@ -37,31 +43,35 @@ export function createSummaryPrescription(bundle: fhir.Bundle): SummaryPrescript
   )
 
   return {
+    medications: summaryMedicationRequests,
     patient: summaryPatient,
-    practitionerRole: summaryPractitionerRole
+    practitionerRole: summaryPractitionerRole,
+    prescriptionLevelDetails: prescriptionLevelDetails
   }
 }
 
 export interface SummaryPrescription {
+  medications: Array<SummaryMedication>
   patient: SummaryPatient
   practitionerRole: SummaryPractitionerRole
+  prescriptionLevelDetails: PrescriptionLevelDetailsProps
 }
 
 const PrescriptionSummaryView: React.FC<SummaryPrescription> = ({
+  medications,
   patient,
-  practitionerRole
+  practitionerRole,
+  prescriptionLevelDetails
 }) => {
   return (
     <>
       <Label isPageHeading>Prescription Summary</Label>
+      <PrescriptionLevelDetails {...prescriptionLevelDetails}/>
       <Label size="m" bold>Patient</Label>
-      <ErrorBoundary>
-        <PatientSummaryList {...patient}/>
-      </ErrorBoundary>
+      <PatientSummaryList {...patient}/>
+      <MedicationSummary medicationSummaryList={medications}/>
       <Label size="m" bold>Prescriber</Label>
-      <ErrorBoundary>
-        <PractitionerRoleSummaryList {...practitionerRole}/>
-      </ErrorBoundary>
+      <PractitionerRoleSummaryList {...practitionerRole}/>
     </>
   )
 }

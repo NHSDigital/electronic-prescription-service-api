@@ -1,8 +1,8 @@
 import {Field} from "formik"
 import {Button, Input, Select} from "nhsuk-react-components"
-import {VALUE_SET_DISPENSER_ENDORSEMENT} from "./reference-data/valueSets"
 import * as React from "react"
 import ButtonList from "../buttonList"
+import {VALUE_SET_DISPENSER_ENDORSEMENT} from "../../fhir/reference-data/valueSets"
 
 interface EndorsementProps {
   name: string

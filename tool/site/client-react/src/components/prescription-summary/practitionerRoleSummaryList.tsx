@@ -1,8 +1,8 @@
 import {SummaryList} from "nhsuk-react-components"
 import * as React from "react"
-import {Fragment} from "react"
-import {HealthcareService, Location, Organization, Practitioner, PractitionerRole} from "fhir/r4"
+import {HealthcareService, Identifier, Location, Organization, Practitioner, PractitionerRole} from "fhir/r4"
 import {formatName, getAllAddressLines} from "../../formatters/demographics"
+import {newLineFormatter} from "./newLineFormatter"
 
 export function createSummaryPractitionerRole(
   practitionerRole: PractitionerRole,
@@ -13,6 +13,9 @@ export function createSummaryPractitionerRole(
 ): SummaryPractitionerRole {
   let organizationProps: SummaryOrganization
   let parentOrganizationProps: SummaryOrganization
+
+  const professionalCodes = getProfessionalCodes(practitioner.identifier)
+
   if (healthcareService) {
     organizationProps = {
       name: healthcareService.name,
@@ -37,14 +40,37 @@ export function createSummaryPractitionerRole(
 
   return {
     name: formatName(practitioner.name[0]),
+    professionalCodes: professionalCodes,
     telecom: practitionerRole.telecom[0].value,
     organization: organizationProps,
     parentOrganization: parentOrganizationProps
   }
 }
 
+function getProfessionalCodes(identifiers: Array<Identifier>): Array<string> {
+  return identifiers.map(identifier => {
+    switch (identifier.system) {
+      case "https://fhir.nhs.uk/Id/sds-user-id":
+        return "SDS Role ID - " + identifier.value
+      case "https://fhir.hl7.org.uk/Id/gmc-number":
+        return "GMC Number - " + identifier.value
+      case "https://fhir.hl7.org.uk/Id/gmp-number":
+        return "GMP Number - " + identifier.value
+      case "https://fhir.hl7.org.uk/Id/din-number":
+        return "DIN Number - " + identifier.value
+      case "https://fhir.hl7.org.uk/Id/gphc-number":
+        return "GPHC Number - " + identifier.value
+      case "https://fhir.hl7.org.uk/Id/hcpc-number":
+        return "HCPC Number - " + identifier.value
+      case "https://fhir.hl7.org.uk/Id/nmc-number":
+        return "NMC Number - " + identifier.value
+    }
+  })
+}
+
 export interface SummaryPractitionerRole {
   name: string
+  professionalCodes: Array<string>
   telecom: string
   organization: SummaryOrganization
   parentOrganization: SummaryOrganization
@@ -58,23 +84,22 @@ interface SummaryOrganization {
 
 const PractitionerRoleSummaryList: React.FC<SummaryPractitionerRole> = ({
   name,
+  professionalCodes,
   telecom,
   organization,
   parentOrganization
 }) => {
-  const addressLineFragments = organization.addressLines.map((addressLine, index) => (
-    <Fragment key={index}>
-      {index > 0 && <br/>}
-      {addressLine}
-    </Fragment>
-  ))
+  const addressLineFragments = newLineFormatter(organization.addressLines)
+  const professionalCodeFragments = newLineFormatter(professionalCodes)
   return (
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     <SummaryList>
       <SummaryList.Row>
         <SummaryList.Key>Name</SummaryList.Key>
         <SummaryList.Value>{name}</SummaryList.Value>
+      </SummaryList.Row>
+      <SummaryList.Row>
+        <SummaryList.Key>Professional Codes</SummaryList.Key>
+        <SummaryList.Value>{professionalCodeFragments}</SummaryList.Value>
       </SummaryList.Row>
       <SummaryList.Row>
         <SummaryList.Key>Telecom</SummaryList.Key>

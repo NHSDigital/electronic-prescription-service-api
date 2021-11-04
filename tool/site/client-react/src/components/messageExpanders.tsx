@@ -56,14 +56,14 @@ const MessageExpander: React.FC<MessageExpanderProps> = ({
   const buttonStyle: CSSProperties = {
     marginBottom: 0
   }
+  const downloadHref = `data:${mimeType};charset=utf-8,${encodeURIComponent(message)}`
   return (
     <Details expander>
       <Details.Summary>{name}</Details.Summary>
       <Details.Text>
         <ButtonList>
           <Button style={buttonStyle} onClick={() => navigator.clipboard.writeText(message)}>Copy</Button>
-          <Button style={buttonStyle} download="message"
-                  href={`data:${mimeType};charset=utf-8,${encodeURIComponent(message)}`}>Download</Button>
+          <Button style={buttonStyle} download="message" href={downloadHref}>Download</Button>
         </ButtonList>
         <Pre>{message}</Pre>
       </Details.Text>
