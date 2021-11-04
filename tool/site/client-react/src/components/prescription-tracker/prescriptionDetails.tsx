@@ -15,10 +15,9 @@ export interface PrescriptionDetailProps {
 }
 
 export function createPrescriptionDetailProps(task: Task): PrescriptionDetailProps {
-  const prescriptionType = getCourseOfTherapyTypeExtension()(task.extension).valueCoding.code
   return {
     id: task.focus.identifier.value,
-    type: prescriptionType.substring(0, 1).toUpperCase() + prescriptionType.substring(1),
+    type: getCourseOfTherapyTypeExtension()(task.extension).valueCoding.display,
     patientNhsNumber: formatNhsNumber(task.for.identifier.value),
     creationDate: formatDate(task.authoredOn),
     status: task.businessStatus.coding[0].display
@@ -27,8 +26,6 @@ export function createPrescriptionDetailProps(task: Task): PrescriptionDetailPro
 
 export const PrescriptionDetails: React.FC<PrescriptionProps> = ({prescription}) => {
   return (
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
     <SummaryList>
       <SummaryList.Row>
         <SummaryList.Key>ID</SummaryList.Key>

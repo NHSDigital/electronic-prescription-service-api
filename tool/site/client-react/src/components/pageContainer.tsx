@@ -9,7 +9,6 @@ interface PageContainerProps {
 
 export const PageContainer: React.FC = (props: PageContainerProps) => {
   return (
-    <>
       <AppContext.Consumer>
         {({baseUrl}) => (
           <>
@@ -35,6 +34,5 @@ export const PageContainer: React.FC = (props: PageContainerProps) => {
           </>
         )} 
       </AppContext.Consumer>
-    </>
   )
 }
