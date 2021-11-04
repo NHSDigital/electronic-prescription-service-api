@@ -1,16 +1,4 @@
-import {
-  Bundle,
-  CodeableConcept,
-  Extension,
-  Identifier,
-  MedicationDispense,
-  MedicationDispensePerformer,
-  MedicationRequest,
-  MessageHeader,
-  Patient,
-  Quantity,
-  Reference
-} from "fhir/r4"
+import * as fhir from "fhir/r4"
 import {DispenseFormValues, LineItemFormValues, PrescriptionFormValues} from "./dispenseForm"
 import * as uuid from "uuid"
 import {
@@ -20,7 +8,6 @@ import {
   URL_TASK_BUSINESS_STATUS
 } from "../../fhir/customExtensions"
 import {
-  COURSE_OF_THERAPY_TYPE_CODES,
   LineItemStatus,
   PrescriptionStatus,
   VALUE_SET_LINE_ITEM_STATUS,
@@ -30,7 +17,8 @@ import {
 import {
   createDispensingRepeatInformationExtension,
   createUuidIdentifier,
-  getMedicationRequestLineItemId, requiresDispensingRepeatInformationExtension
+  getMedicationRequestLineItemId,
+  requiresDispensingRepeatInformationExtension
 } from "../../fhir/helpers"
 
 const EVENT_CODING_DISPENSE_NOTIFICATION = {
@@ -40,11 +28,11 @@ const EVENT_CODING_DISPENSE_NOTIFICATION = {
 }
 
 export function createDispenseNotification(
-  prescriptionOrderMessageHeader: MessageHeader,
-  prescriptionOrderPatient: Patient,
-  medicationRequests: Array<MedicationRequest>,
+  prescriptionOrderMessageHeader: fhir.MessageHeader,
+  prescriptionOrderPatient: fhir.Patient,
+  medicationRequests: Array<fhir.MedicationRequest>,
   dispenseFormValues: DispenseFormValues
-): Bundle {
+): fhir.Bundle {
   const dispenseNotificationPatient = createPatient(prescriptionOrderPatient)
 
   const medicationDispenses = medicationRequests.map(medicationRequest => {
@@ -79,7 +67,7 @@ export function createDispenseNotification(
   }
 }
 
-function createPatient(patient: Patient) {
+function createPatient(patient: fhir.Patient) {
   const patientCopy = {...patient}
 
   patientCopy.id = uuid.v4()
@@ -94,12 +82,12 @@ function createPatient(patient: Patient) {
 }
 
 function createMedicationDispense(
-  medicationRequest: MedicationRequest,
-  patient: Patient,
+  medicationRequest: fhir.MedicationRequest,
+  patient: fhir.Patient,
   lineItemFormValues: LineItemFormValues,
   prescriptionFormValues: PrescriptionFormValues
-): MedicationDispense {
-  const extensions: Array<Extension> = [createTaskBusinessStatusExtension(prescriptionFormValues.statusCode)]
+): fhir.MedicationDispense {
+  const extensions: Array<fhir.Extension> = [createTaskBusinessStatusExtension(prescriptionFormValues.statusCode)]
   if (requiresDispensingRepeatInformationExtension(medicationRequest)) {
     const repeatInformationExtension = createDispensingRepeatInformationExtension(medicationRequest)
     extensions.push(repeatInformationExtension)
@@ -144,7 +132,7 @@ function createTaskBusinessStatusExtension(prescriptionStatus: PrescriptionStatu
   }
 }
 
-function createStatusReason(lineItemFormValues: LineItemFormValues): CodeableConcept {
+function createStatusReason(lineItemFormValues: LineItemFormValues): fhir.CodeableConcept {
   if (lineItemFormValues.statusCode !== LineItemStatus.NOT_DISPENSED) {
     return undefined
   }
@@ -153,7 +141,7 @@ function createStatusReason(lineItemFormValues: LineItemFormValues): CodeableCon
   }
 }
 
-const MEDICATION_DISPENSE_PERFORMER_PRACTITIONER: MedicationDispensePerformer = {
+const MEDICATION_DISPENSE_PERFORMER_PRACTITIONER: fhir.MedicationDispensePerformer = {
   actor: {
     type: "Practitioner",
     identifier: {
@@ -164,7 +152,7 @@ const MEDICATION_DISPENSE_PERFORMER_PRACTITIONER: MedicationDispensePerformer = 
   }
 }
 
-const MEDICATION_DISPENSE_PERFORMER_ORGANIZATION: MedicationDispensePerformer = {
+const MEDICATION_DISPENSE_PERFORMER_ORGANIZATION: fhir.MedicationDispensePerformer = {
   actor: {
     type: "Organization",
     identifier: {
@@ -175,7 +163,7 @@ const MEDICATION_DISPENSE_PERFORMER_ORGANIZATION: MedicationDispensePerformer = 
   }
 }
 
-function createAuthorizingPrescription(groupIdentifier: Identifier, lineItemId: string): Reference {
+function createAuthorizingPrescription(groupIdentifier: fhir.Identifier, lineItemId: string): fhir.Reference {
   return {
     extension: [createGroupIdentifierExtension(groupIdentifier)],
     identifier: {
@@ -185,7 +173,7 @@ function createAuthorizingPrescription(groupIdentifier: Identifier, lineItemId: 
   }
 }
 
-function createGroupIdentifierExtension({extension, system, value}: Identifier) {
+function createGroupIdentifierExtension({extension, system, value}: fhir.Identifier) {
   return {
     url: URL_GROUP_IDENTIFIER_EXTENSION,
     extension: [
@@ -201,16 +189,16 @@ function createGroupIdentifierExtension({extension, system, value}: Identifier) 
   }
 }
 
-function createMedicationDispenseType(lineItemStatus: LineItemStatus): CodeableConcept {
+function createMedicationDispenseType(lineItemStatus: LineItemStatus): fhir.CodeableConcept {
   return {
     coding: VALUE_SET_LINE_ITEM_STATUS.filter(coding => coding.code === lineItemStatus)
   }
 }
 
 function createDispensedQuantity(
-  requestedQuantity: Quantity,
+  requestedQuantity: fhir.Quantity,
   {statusCode, priorStatusCode}: LineItemFormValues
-): Quantity {
+): fhir.Quantity {
   const dispensedQuantity = {...requestedQuantity}
   //TODO - maybe handle custom quantities for partial dispensing
   if (statusCode !== LineItemStatus.DISPENSED || priorStatusCode === LineItemStatus.DISPENSED) {
@@ -220,9 +208,9 @@ function createDispensedQuantity(
 }
 
 function createMessageHeader(
-  prescriptionOrderMessageHeader: MessageHeader,
+  prescriptionOrderMessageHeader: fhir.MessageHeader,
   focusResourceIds: Array<string>
-): MessageHeader {
+): fhir.MessageHeader {
   return {
     resourceType: "MessageHeader",
     id: uuid.v4(),

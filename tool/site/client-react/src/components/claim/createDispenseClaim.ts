@@ -1,5 +1,4 @@
 import * as fhir from "fhir/r4"
-import {MedicationDispense, MedicationRequest, Patient} from "fhir/r4"
 import * as uuid from "uuid"
 import {
   ClaimMedicationRequestReferenceExtension,
@@ -25,7 +24,6 @@ import {
 import {INSURANCE_NHS_BSA} from "../../fhir/reference-data/insurance"
 import {ClaimFormValues, EndorsementFormValues, ExemptionFormValues, ProductFormValues} from "./claimForm"
 import {
-  COURSE_OF_THERAPY_TYPE_CODES,
   VALUE_SET_DISPENSER_ENDORSEMENT,
   VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION
 } from "../../fhir/reference-data/valueSets"
@@ -34,13 +32,14 @@ import {
   createUuidIdentifier,
   getMedicationDispenseLineItemId,
   getMedicationRequestLineItemId,
-  getTotalQuantity, requiresDispensingRepeatInformationExtension
+  getTotalQuantity,
+  requiresDispensingRepeatInformationExtension
 } from "../../fhir/helpers"
 
 export function createClaim(
-  patient: Patient,
-  medicationRequests: Array<MedicationRequest>,
-  medicationDispenses: Array<MedicationDispense>,
+  patient: fhir.Patient,
+  medicationRequests: Array<fhir.MedicationRequest>,
+  medicationDispenses: Array<fhir.MedicationDispense>,
   claimFormValues: ClaimFormValues
 ): fhir.Claim {
   const patientIdentifier = patient.identifier[0]
