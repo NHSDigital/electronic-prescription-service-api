@@ -29,14 +29,14 @@ export const PrescriptionItems: React.FC<PrescriptionProps> = ({prescriptionItem
           </Table.Row>
         </Table.Head>
         <Table.Body>
-          {prescriptionItems.map((item, index) => <ItemRow key={index} {...item} />)}
+          {prescriptionItems.map((item, index) => <PrescriptionItemRow key={index} {...item} />)}
         </Table.Body>
       </Table>
     </Table.Panel>
   )
 }
 
-const ItemRow: React.FC<PrescriptionItemProps> = ({
+const PrescriptionItemRow: React.FC<PrescriptionItemProps> = ({
   identifier,
   dispenseStatus
 }) => <Table.Row>
