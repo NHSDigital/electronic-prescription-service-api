@@ -17,7 +17,8 @@ import * as uuid from "uuid"
 import {
   getLongFormIdExtension,
   RepeatInformationExtension,
-  TaskBusinessStatusExtension, URL_GROUP_IDENTIFIER_EXTENSION,
+  TaskBusinessStatusExtension,
+  URL_GROUP_IDENTIFIER_EXTENSION,
   URL_TASK_BUSINESS_STATUS
 } from "../../fhir/customExtensions"
 import {

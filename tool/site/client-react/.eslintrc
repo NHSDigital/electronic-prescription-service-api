@@ -23,6 +23,7 @@
     "func-style": ["error", "declaration", {"allowArrowFunctions": true}],
     "indent": ["error", 2, {"SwitchCase": 1}],
     "max-len": ["error", 180],
+    "no-duplicate-imports": "error",
     "no-multi-spaces": "error",
     "no-multiple-empty-lines": ["error", {"max": 1}],
     "no-trailing-spaces": "error",

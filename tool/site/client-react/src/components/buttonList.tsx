@@ -1,5 +1,4 @@
-import * as React from "react"
-import {CSSProperties, ReactNode} from "react"
+import React, {CSSProperties, ReactNode} from "react"
 
 interface ButtonListProps {
   children: ReactNode

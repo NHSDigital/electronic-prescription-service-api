@@ -75,7 +75,9 @@ const MedicationRow: React.FC<SummaryMedication> = ({
 }) => <Table.Row>
   <Table.Cell>
     <div><b>{snomedCodeDescription}</b></div>
-    {prescriptionEndorsements && prescriptionEndorsements.map((endorsement, index) => <div key={index}>{endorsement}</div>)}
+    {prescriptionEndorsements && prescriptionEndorsements.map((endorsement, index) =>
+      <div key={index}>{endorsement}</div>
+    )}
     {dispenserNotes?.map((note, index) => <div key={index}>{note}</div>)}
   </Table.Cell>
   <Table.Cell>{quantityValue}</Table.Cell>
