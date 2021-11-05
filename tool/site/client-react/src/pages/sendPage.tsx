@@ -66,6 +66,12 @@ const SendPage: React.FC<SendPageProps> = ({
       <ActionLink href={`${baseUrl}dispense/release?prescription_id=${sendResult.prescription_id}`}>
         Release this prescription
       </ActionLink>
+      <ActionLink href={`${baseUrl}dispense/dispense?prescription_id=${sendResult.prescription_id}`}>
+        Dispense this prescription
+      </ActionLink>
+      <ActionLink href={`${baseUrl}dispense/claim?prescription_id=${sendResult.prescription_id}`}>
+        Claim for this prescription
+      </ActionLink>
       <ActionLink href={`${baseUrl}prescribe/cancel?prescription_id=${sendResult.prescription_id}`}>
         Cancel this prescription
       </ActionLink>
