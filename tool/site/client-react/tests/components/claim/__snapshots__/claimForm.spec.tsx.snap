@@ -36,8 +36,8 @@ exports[`Clicking Add Endorsement button adds one set of endorsement fields 1`] 
           <option value=\\"ZD\\">Zero Discount (List B only)</option>
         </select></div>
       <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"products.0.endorsements.0.supportingInfo--label\\" for=\\"products.0.endorsements.0.supportingInfo\\">Endorsement 1 Supporting Information</label><input class=\\"nhsuk-input nhsuk-input--width-30\\" aria-labelledby=\\"products.0.endorsements.0.supportingInfo--label\\" name=\\"products.0.endorsements.0.supportingInfo\\" id=\\"products.0.endorsements.0.supportingInfo\\" type=\\"text\\" value=\\"\\"></div>
-      <div><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Remove Endorsement</button></div>
-      <div><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"button\\">Add Endorsement</button></div>
+      <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Remove Endorsement</button></div>
+      <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"button\\">Add Endorsement</button></div>
     </fieldset>
   </div>
   <div class=\\"nhsuk-form-group\\">
@@ -66,7 +66,8 @@ exports[`Clicking Add Endorsement button adds one set of endorsement fields 1`] 
         </div>
       </div>
     </fieldset>
-  </div><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button>
+  </div>
+  <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
 </form>"
 `;
 
@@ -106,7 +107,7 @@ exports[`Clicking Add Endorsement button twice adds two sets of endorsement fiel
           <option value=\\"ZD\\">Zero Discount (List B only)</option>
         </select></div>
       <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"products.0.endorsements.0.supportingInfo--label\\" for=\\"products.0.endorsements.0.supportingInfo\\">Endorsement 1 Supporting Information</label><input class=\\"nhsuk-input nhsuk-input--width-30\\" aria-labelledby=\\"products.0.endorsements.0.supportingInfo--label\\" name=\\"products.0.endorsements.0.supportingInfo\\" id=\\"products.0.endorsements.0.supportingInfo\\" type=\\"text\\" value=\\"\\"></div>
-      <div><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Remove Endorsement</button></div>
+      <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Remove Endorsement</button></div>
       <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"products.0.endorsements.1.code--label\\" for=\\"products.0.endorsements.1.code\\">Endorsement 2 Type</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"products.0.endorsements.1.code--label\\" name=\\"products.0.endorsements.1.code\\" id=\\"products.0.endorsements.1.code\\">
           <option value=\\"BB\\">Broken Bulk</option>
           <option value=\\"ED\\">Extemporaneously dispensed</option>
@@ -123,8 +124,8 @@ exports[`Clicking Add Endorsement button twice adds two sets of endorsement fiel
           <option value=\\"ZD\\">Zero Discount (List B only)</option>
         </select></div>
       <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"products.0.endorsements.1.supportingInfo--label\\" for=\\"products.0.endorsements.1.supportingInfo\\">Endorsement 2 Supporting Information</label><input class=\\"nhsuk-input nhsuk-input--width-30\\" aria-labelledby=\\"products.0.endorsements.1.supportingInfo--label\\" name=\\"products.0.endorsements.1.supportingInfo\\" id=\\"products.0.endorsements.1.supportingInfo\\" type=\\"text\\" value=\\"\\"></div>
-      <div><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Remove Endorsement</button></div>
-      <div><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"button\\">Add Endorsement</button></div>
+      <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Remove Endorsement</button></div>
+      <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"button\\">Add Endorsement</button></div>
     </fieldset>
   </div>
   <div class=\\"nhsuk-form-group\\">
@@ -153,7 +154,8 @@ exports[`Clicking Add Endorsement button twice adds two sets of endorsement fiel
         </div>
       </div>
     </fieldset>
-  </div><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button>
+  </div>
+  <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
 </form>"
 `;
 
@@ -193,8 +195,8 @@ exports[`Clicking Remove Endorsement button removes one set of endorsement field
           <option value=\\"ZD\\">Zero Discount (List B only)</option>
         </select></div>
       <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"products.0.endorsements.0.supportingInfo--label\\" for=\\"products.0.endorsements.0.supportingInfo\\">Endorsement 1 Supporting Information</label><input class=\\"nhsuk-input nhsuk-input--width-30\\" aria-labelledby=\\"products.0.endorsements.0.supportingInfo--label\\" name=\\"products.0.endorsements.0.supportingInfo\\" id=\\"products.0.endorsements.0.supportingInfo\\" type=\\"text\\" value=\\"\\"></div>
-      <div><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Remove Endorsement</button></div>
-      <div><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"button\\">Add Endorsement</button></div>
+      <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Remove Endorsement</button></div>
+      <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"button\\">Add Endorsement</button></div>
     </fieldset>
   </div>
   <div class=\\"nhsuk-form-group\\">
@@ -223,7 +225,8 @@ exports[`Clicking Remove Endorsement button removes one set of endorsement field
         </div>
       </div>
     </fieldset>
-  </div><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button>
+  </div>
+  <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
 </form>"
 `;
 
@@ -247,7 +250,7 @@ exports[`Form has no endorsement fields initially 1`] = `
           <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"products.0.patientPaid\\" id=\\"products.0.patientPaid.box\\" type=\\"checkbox\\" value=\\"false\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"products.0.patientPaid.box--label\\" for=\\"products.0.patientPaid.box\\">Patient Paid</label></div>
         </div>
       </div>
-      <div><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"button\\">Add Endorsement</button></div>
+      <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"button\\">Add Endorsement</button></div>
     </fieldset>
   </div>
   <div class=\\"nhsuk-form-group\\">
@@ -276,6 +279,7 @@ exports[`Form has no endorsement fields initially 1`] = `
         </div>
       </div>
     </fieldset>
-  </div><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button>
+  </div>
+  <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
 </form>"
 `;
