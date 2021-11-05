@@ -5,10 +5,11 @@ import {Field} from "formik"
 import ConditionalField from "../conditionalField"
 import {LineItemFormValues} from "./dispenseForm"
 import {
-  LineItemStatus,
+  LineItemStatus, VALUE_SET_DISPENSER_ENDORSEMENT,
   VALUE_SET_LINE_ITEM_STATUS,
   VALUE_SET_NON_DISPENSING_REASON
 } from "../../fhir/reference-data/valueSets"
+import SelectField, {convertCodingsToOptions} from "../SelectField"
 
 interface LineItemProps {
   name: string
@@ -19,22 +20,17 @@ const LineItem: React.FC<LineItemProps> = ({name, lineItem}) => (
   <Fieldset>
     <Fieldset.Legend size="m">{lineItem.name}</Fieldset.Legend>
     <LineItemSummaryList {...lineItem}/>
-    <Field id={`${name}.statusCode`} name={`${name}.statusCode`} as={Select} label="Status">
-      {VALUE_SET_LINE_ITEM_STATUS.map(coding =>
-        <Select.Option key={coding.code} value={coding.code}>{coding.display}</Select.Option>
-      )}
-    </Field>
+    <SelectField
+      fieldName={`${name}.statusCode`}
+      label={`Status`}
+      fieldOptions={convertCodingsToOptions(VALUE_SET_LINE_ITEM_STATUS)}
+    />
     <ConditionalField
       condition={lineItem.statusCode === LineItemStatus.NOT_DISPENSED}
-      id={`${name}.nonDispensingReasonCode`}
-      name={`${name}.nonDispensingReasonCode`}
-      as={Select}
+      fieldName={`${name}.nonDispensingReasonCode`}
+      fieldOptions={convertCodingsToOptions(VALUE_SET_NON_DISPENSING_REASON)}
       label="Reason"
-    >
-      {VALUE_SET_NON_DISPENSING_REASON.map(coding =>
-        <Select.Option key={coding.code} value={coding.code}>{coding.display}</Select.Option>
-      )}
-    </ConditionalField>
+    />
   </Fieldset>
 )
 

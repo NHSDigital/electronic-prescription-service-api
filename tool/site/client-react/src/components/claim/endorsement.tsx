@@ -3,6 +3,7 @@ import {Button, Input, Select} from "nhsuk-react-components"
 import * as React from "react"
 import ButtonList from "../buttonList"
 import {VALUE_SET_DISPENSER_ENDORSEMENT} from "../../fhir/reference-data/valueSets"
+import SelectField, {convertCodingsToOptions} from "../SelectField"
 
 interface EndorsementProps {
   name: string
@@ -16,6 +17,11 @@ const Endorsement: React.FC<EndorsementProps> = ({
   removeEndorsement
 }) => (
   <>
+    <SelectField
+      fieldName={`${name}.code`}
+      label={`${label} Type`}
+      fieldOptions={convertCodingsToOptions(VALUE_SET_DISPENSER_ENDORSEMENT)}
+    />
     <Field id={`${name}.code`} name={`${name}.code`} as={Select} label={`${label} Type`}>
       {VALUE_SET_DISPENSER_ENDORSEMENT.map(coding =>
         <Select.Option key={coding.code} value={coding.code}>{coding.display}</Select.Option>

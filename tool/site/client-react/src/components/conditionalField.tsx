@@ -1,18 +1,16 @@
-import * as React from "react"
-import {useEffect} from "react"
-import {Field, FieldAttributes, useField} from "formik"
+import React, {useEffect} from "react"
+import {useField} from "formik"
+import SelectField, {SelectFieldProps} from "./SelectField"
 
-interface ConditionalFieldProps extends FieldAttributes<any> {
-  name: string,
+interface ConditionalFieldProps extends SelectFieldProps {
   condition: boolean
 }
 
 const ConditionalField: React.FC<ConditionalFieldProps> = ({
-  name,
   condition,
   ...extraProps
 }) => {
-  const [, meta, helpers] = useField(name)
+  const [, meta, helpers] = useField(extraProps.fieldName)
   useEffect(() => {
     if (!condition) {
       helpers.setValue(meta.initialValue)
@@ -21,7 +19,7 @@ const ConditionalField: React.FC<ConditionalFieldProps> = ({
     }
   }, [condition])
 
-  return condition && <Field name={name} {...extraProps}/>
+  return condition && <SelectField {...extraProps}/>
 }
 
 export default ConditionalField
