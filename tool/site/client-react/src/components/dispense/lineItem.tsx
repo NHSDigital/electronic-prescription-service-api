@@ -1,5 +1,5 @@
 import React from "react"
-import {Fieldset, Select} from "nhsuk-react-components"
+import {Fieldset} from "nhsuk-react-components"
 import LineItemSummaryList from "./lineItemSummaryList"
 import ConditionalField from "../conditionalField"
 import {LineItemFormValues} from "./dispenseForm"
@@ -8,7 +8,7 @@ import {
   VALUE_SET_LINE_ITEM_STATUS,
   VALUE_SET_NON_DISPENSING_REASON
 } from "../../fhir/reference-data/valueSets"
-import SelectField, {convertCodingsToOptions} from "../SelectField"
+import SelectField, {convertCodingsToOptions} from "../selectField"
 
 interface LineItemProps {
   name: string

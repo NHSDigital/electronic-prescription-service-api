@@ -1,11 +1,10 @@
-import {Checkboxes, Fieldset, Select} from "nhsuk-react-components"
+import {Checkboxes, Fieldset} from "nhsuk-react-components"
 import {Field} from "formik"
 import * as React from "react"
 import {
-  VALUE_SET_DISPENSER_ENDORSEMENT,
   VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION
 } from "../../fhir/reference-data/valueSets"
-import SelectField, {convertCodingsToOptions} from "../SelectField"
+import SelectField, {convertCodingsToOptions} from "../selectField"
 
 interface ExemptionProps {
   name: string
