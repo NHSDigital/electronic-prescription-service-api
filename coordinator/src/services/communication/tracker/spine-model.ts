@@ -12,7 +12,7 @@ interface Prescription {
   prescriptionStatus: string
 }
 
-interface SummaryPrescription extends Prescription {
+export interface SummaryPrescription extends Prescription {
   lineItems: { [lineItemId: string]: string }
 }
 
@@ -43,7 +43,7 @@ export interface LineItemDetail {
   code: string
 }
 
-interface Prescriptions<T extends Prescription> {
+export interface Prescriptions<T extends Prescription> {
   [prescriptionShortFormId: string]: T
 }
 

@@ -1,4 +1,10 @@
-import {DetailPrescription, DetailTrackerResponse} from "./spine-model"
+import {
+  DetailPrescription,
+  DetailTrackerResponse,
+  Prescriptions,
+  SummaryPrescription,
+  SummaryTrackerResponse
+} from "./spine-model"
 import {fhir} from "@models"
 import * as uuid from "uuid"
 import {convertResourceToBundleEntry} from "../../translation/response/common"
@@ -6,10 +12,10 @@ import moment from "moment"
 import {HL7_V3_DATE_TIME_FORMAT, ISO_DATE_FORMAT} from "../../translation/common/dateTime"
 import {LosslessNumber} from "lossless-json"
 
-export function convertSpineResponseToFhir(spineResponse: unknown): fhir.Bundle | fhir.OperationOutcome {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const {statusCode, reason, version, ...prescriptions} = spineResponse as DetailTrackerResponse
-
+export function convertSpineResponseToFhir(
+  spineResponse: SummaryTrackerResponse | DetailTrackerResponse
+): fhir.Bundle | fhir.OperationOutcome {
+  const {statusCode, reason, prescriptions} = getSpineResponseParts(spineResponse)
   if (statusCode !== "0") {
     return fhir.createOperationOutcome([fhir.createOperationOutcomeIssue(
       fhir.IssueCodes.INVALID,
@@ -34,9 +40,25 @@ export function convertSpineResponseToFhir(spineResponse: unknown): fhir.Bundle 
   }
 }
 
-function convertPrescriptionToTask(prescriptionId: string, prescription: DetailPrescription): fhir.Task {
-  const hasBeenDispensed = prescription.dispensingPharmacy.ods
-  const owner = hasBeenDispensed ? prescription.dispensingPharmacy : prescription.nominatedPharmacy
+interface SpineResponseParts {
+  statusCode: string
+  reason: string
+  version: string
+  prescriptions: Prescriptions<SummaryPrescription | DetailPrescription>
+}
+
+function getSpineResponseParts(spineResponse: SummaryTrackerResponse | DetailTrackerResponse): SpineResponseParts {
+  if ("prescriptions" in spineResponse) {
+    return spineResponse as SummaryTrackerResponse
+  }
+  const {statusCode, reason, version, ...prescriptions} = spineResponse
+  return {statusCode, reason, version, prescriptions}
+}
+
+function convertPrescriptionToTask(
+  prescriptionId: string,
+  prescription: DetailPrescription | SummaryPrescription
+): fhir.Task {
   const {status, businessStatus} = getStatusCodesFromDisplay(prescription.prescriptionStatus)
   const id = uuid.v4()
 
@@ -65,14 +87,23 @@ function convertPrescriptionToTask(prescriptionId: string, prescription: DetailP
       "https://fhir.nhs.uk/Id/nhs-number",
       prescription.patientNhsNumber
     )),
-    authoredOn: convertToFhirDate(prescription.prescriptionIssueDate),
-    requester: fhir.createIdentifierReference(
-      fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", prescription.prescriber.ods),
-      prescription.prescriber.name
-    ),
-    owner: fhir.createIdentifierReference(
+    authoredOn: convertToFhirDate(prescription.prescriptionIssueDate)
+  }
+
+  //TODO - owner is mandatory in the profile but we don't get it back in the summary response
+  if ("dispensingPharmacy" in prescription) {
+    const hasBeenDispensed = prescription.dispensingPharmacy.ods
+    const owner = hasBeenDispensed ? prescription.dispensingPharmacy : prescription.nominatedPharmacy
+    task.owner = fhir.createIdentifierReference(
       fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", owner.ods),
       owner.name
+    )
+  }
+
+  if ("prescriber" in prescription) {
+    task.requester = fhir.createIdentifierReference(
+      fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", prescription.prescriber.ods),
+      prescription.prescriber.name
     )
   }
 
@@ -128,7 +159,7 @@ function createCourseOfTherapyTypeExtension(treatmentType: string): fhir.Extensi
   }
   return {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription",
-    extension:  [{
+    extension: [{
       url: "courseOfTherapyType",
       valueCoding: {
         system: "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
@@ -159,7 +190,7 @@ function createRepeatInfoExtension(currentIssue: string, totalAuthorised: string
   }
 }
 
-function convertLineItemToInput(lineItemId: string, prescription: DetailPrescription) {
+function convertLineItemToInput(lineItemId: string, prescription: SummaryPrescription | DetailPrescription) {
   const lineItem = prescription.lineItems[lineItemId]
   const taskInput: fhir.TaskInput = {
     type: fhir.createCodeableConcept("http://snomed.info/sct", "16076005", "Prescription"),
@@ -171,14 +202,16 @@ function convertLineItemToInput(lineItemId: string, prescription: DetailPrescrip
   }
 
   const dispensingInformationExtension = []
-  if (prescription.prescriptionDispensedDate && prescription.prescriptionDispensedDate !== "False") {
+  if ("prescriptionDispensedDate" in prescription
+    && prescription.prescriptionDispensedDate
+    && prescription.prescriptionDispensedDate !== "False") {
     dispensingInformationExtension.push({
       url: "dateLastDispensed",
       valueDate: convertToFhirDate(prescription.prescriptionDispensedDate)
     })
   }
 
-  if (lineItem.itemStatus) {
+  if (typeof lineItem === "object" && lineItem.itemStatus) {
     const {businessStatus} = getStatusCodesFromDisplay(lineItem.itemStatus)
     dispensingInformationExtension.push({
       url: "dispenseStatus",
@@ -200,7 +233,7 @@ function convertLineItemToInput(lineItemId: string, prescription: DetailPrescrip
   return taskInput
 }
 
-function convertLineItemToOutput(lineItemId: string, prescription: DetailPrescription) {
+function convertLineItemToOutput(lineItemId: string, prescription: SummaryPrescription | DetailPrescription) {
   const taskOutput: fhir.TaskOutput = {
     type: fhir.createCodeableConcept("http://snomed.info/sct", "373784005", "Dispensing medication"),
     valueReference: fhir.createIdentifierReference(
@@ -210,19 +243,22 @@ function convertLineItemToOutput(lineItemId: string, prescription: DetailPrescri
     )
   }
   const releaseInformationExtensions = []
-  if (prescription.prescriptionLastIssueDispensedDate && prescription.prescriptionLastIssueDispensedDate !== "False") {
+  if ("prescriptionLastIssueDispensedDate" in prescription
+    && prescription.prescriptionLastIssueDispensedDate
+    && prescription.prescriptionLastIssueDispensedDate !== "False"
+  ) {
     releaseInformationExtensions.push({
       url: "dateLastIssuedDispensed",
       valueDate: convertToFhirDate(prescription.prescriptionLastIssueDispensedDate)
     })
   }
-  if (prescription.prescriptionDownloadDate) {
+  if ("prescriptionDownloadDate" in prescription && prescription.prescriptionDownloadDate) {
     releaseInformationExtensions.push({
       url: "dateDownloaded",
       valueDate: convertToFhirDate(prescription.prescriptionDownloadDate)
     })
   }
-  if (prescription.prescriptionClaimedDate) {
+  if ("prescriptionClaimedDate" in prescription && prescription.prescriptionClaimedDate) {
     releaseInformationExtensions.push({
       url: "dateClaimed",
       valueDate: convertToFhirDate(prescription.prescriptionClaimedDate)

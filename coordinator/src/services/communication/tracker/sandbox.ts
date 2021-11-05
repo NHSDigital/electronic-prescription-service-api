@@ -1,12 +1,51 @@
 import {TrackerClient} from "."
-import pino from "pino"
-import Hapi from "@hapi/hapi"
+import {DetailTrackerResponse, SummaryTrackerResponse} from "./spine-model"
 
 export class SandboxTrackerClient implements TrackerClient {
-  getPrescription(
-    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-    prescriptionId: string, headers: Hapi.Util.Dictionary<string>, logger: pino.Logger
-  ): Promise<unknown> {
+  getPrescriptions(): Promise<SummaryTrackerResponse> {
+    return Promise.resolve({
+      "version": "1",
+      "reason": "",
+      "statusCode": "0",
+      "prescriptions": {
+        "2D35F7-ZA0448-11E88Z": {
+          "lastEventDate": "20180422095703",
+          "prescriptionIssueDate": "20180117095703",
+          "patientNhsNumber": "9912003489",
+          "epsVersion": "R2",
+          "repeatInstance": {
+            "currentIssue": "2",
+            "totalAuthorised": "6"
+          },
+          "pendingCancellations": "False",
+          "prescriptionTreatmentType": "Repeat Dispensing",
+          "prescriptionStatus": "Dispensed",
+          "lineItems": {
+            "30b7e9cf-6f42-40a8-84c1-e61ef638eee2": "Perindopril erbumine 2mg tablets",
+            "636f1b57-e18c-4f45-acae-2d7db86b6e1e": "Metformin 500mg modified-release tablets"
+          }
+        },
+        "ABC5F7-ZA0448-77E88X": {
+          "lastEventDate": "20180319115010",
+          "prescriptionIssueDate": "20180319101307",
+          "patientNhsNumber": "9912003489",
+          "epsVersion": "R2",
+          "repeatInstance": {
+            "currentIssue": "1",
+            "totalAuthorised": "1"
+          },
+          "pendingCancellations": "False",
+          "prescriptionTreatmentType": "Acute Prescribing",
+          "prescriptionStatus": "Dispensed",
+          "lineItems": {
+            "636f1b57-e18c-4f45-acae-2d7db86b6e1e": "Hydrocortisone 0.5% cream"
+          }
+        }
+      }
+    })
+  }
+
+  getPrescription(): Promise<DetailTrackerResponse> {
     return Promise.resolve({
       version: "2",
       reason: "",
@@ -56,6 +95,6 @@ export class SandboxTrackerClient implements TrackerClient {
           }
         }
       }
-    })
+    } as unknown as DetailTrackerResponse)
   }
 }
