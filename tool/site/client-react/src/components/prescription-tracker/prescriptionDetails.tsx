@@ -49,12 +49,11 @@ export const PrescriptionDetails: React.FC<PrescriptionProps> = ({prescription})
         <SummaryList.Key>NHS Number</SummaryList.Key>
         <SummaryList.Value>{prescription.patientNhsNumber}</SummaryList.Value>
       </SummaryList.Row>
-      {prescription.pharmacy
-        ? <SummaryList.Row>
+      {prescription.pharmacy &&
+        <SummaryList.Row>
           <SummaryList.Key>{prescription.pharmacy.context}</SummaryList.Key>
           <SummaryList.Value>{prescription.pharmacy.code}</SummaryList.Value>
         </SummaryList.Row>
-        : ""
       }
       <SummaryList.Row>
         <SummaryList.Key>Created On</SummaryList.Key>
