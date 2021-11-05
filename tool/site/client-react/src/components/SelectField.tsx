@@ -4,7 +4,7 @@ import {Field} from "formik"
 import {Coding} from "fhir/r4"
 
 export interface SelectFieldProps {
-  fieldName: string
+  name: string
   label: string
   fieldOptions: Array<Option>
 }
@@ -14,8 +14,8 @@ interface Option {
   text: string
 }
 
-const SelectField: FC<SelectFieldProps> = ({fieldName, label, fieldOptions}) => (
-  <Field id={fieldName} name={fieldName} as={Select} label={label}>
+const SelectField: FC<SelectFieldProps> = ({name, label, fieldOptions}) => (
+  <Field id={name} name={name} as={Select} label={label}>
     {fieldOptions.map((option, index) =>
       <Select.Option key={index} value={option.value}>{option.text}</Select.Option>
     )}
