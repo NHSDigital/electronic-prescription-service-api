@@ -22,11 +22,6 @@ const Endorsement: React.FC<EndorsementProps> = ({
       label={`${label} Type`}
       fieldOptions={convertCodingsToOptions(VALUE_SET_DISPENSER_ENDORSEMENT)}
     />
-    <Field id={`${name}.code`} name={`${name}.code`} as={Select} label={`${label} Type`}>
-      {VALUE_SET_DISPENSER_ENDORSEMENT.map(coding =>
-        <Select.Option key={coding.code} value={coding.code}>{coding.display}</Select.Option>
-      )}
-    </Field>
     <Field
       id={`${name}.supportingInfo`}
       name={`${name}.supportingInfo`}
