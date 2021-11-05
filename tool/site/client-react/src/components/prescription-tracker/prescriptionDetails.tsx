@@ -11,14 +11,14 @@ export interface PrescriptionDetailProps {
   type: string
   patientNhsNumber: string
   creationDate: string
-  pharmacy?: {key: string, value: string},
+  pharmacy?: {context: string, code: string},
   status: string
 }
 
 export function createPrescriptionDetailProps(task: Task): PrescriptionDetailProps {
   const status = task.businessStatus.coding[0].display
   const pharmacyOdsCode = task.owner.identifier.value
-  const pharmacyTitle = status === "To Be Dispensed" ? "Nominated Pharmacy ODS Code" : "Assigned Pharmacy ODS Code"
+  const pharmacyContext = status === "To Be Dispensed" ? "Nominated Pharmacy ODS Code" : "Assigned Pharmacy ODS Code"
   return {
     id: task.focus.identifier.value,
     type: getCourseOfTherapyTypeExtension(task.extension).valueCoding.display,
@@ -26,8 +26,8 @@ export function createPrescriptionDetailProps(task: Task): PrescriptionDetailPro
     creationDate: formatDate(task.authoredOn),
     pharmacy: pharmacyOdsCode
       ? {
-        key: pharmacyTitle,
-        value: pharmacyOdsCode
+        context: pharmacyContext,
+        code: pharmacyOdsCode
       }
       : undefined,
     status
@@ -49,10 +49,10 @@ export const PrescriptionDetails: React.FC<PrescriptionProps> = ({prescription})
         <SummaryList.Key>NHS Number</SummaryList.Key>
         <SummaryList.Value>{prescription.patientNhsNumber}</SummaryList.Value>
       </SummaryList.Row>
-      {prescription.pharamcy
+      {prescription.pharmacy
         ? <SummaryList.Row>
-          <SummaryList.Key>{prescription.pharamcy.key}</SummaryList.Key>
-          <SummaryList.Value>{prescription.pharamcy.value}</SummaryList.Value>
+          <SummaryList.Key>{prescription.pharmacy.context}</SummaryList.Key>
+          <SummaryList.Value>{prescription.pharmacy.code}</SummaryList.Value>
         </SummaryList.Row>
         : ""
       }
