@@ -2,6 +2,7 @@ import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
 import {hl7V3, fhir, processingErrors as errors} from "@models"
 import {generateResourceId, getFullUrl} from "../common"
 import {createGroupIdentifier} from "../medication-request"
+import {createDispenseRequest, createDispenseRequestQuantity} from "../release/release-medication-request";
 
 const MEDICINAL_PRODUCT_CODEABLE_CONCEPT = fhir.createCodeableConcept(
   "http://snomed.info/sct",
@@ -26,6 +27,10 @@ export function createMedicationRequest(
     extractStatusCode(cancellationResponse)
   const effectiveTime = convertHL7V3DateTimeToIsoDateTimeString(cancellationResponse.effectiveTime)
 
+  // const dispenseRequest: fhir.MedicationRequestDispenseRequest = {
+  //   quantity: createDispenseRequestQuantity(cancellationResponse.pertinentInformation1.)
+  // }
+
   return {
     resourceType: "MedicationRequest",
     id: generateResourceId(),
@@ -42,6 +47,8 @@ export function createMedicationRequest(
     subject: fhir.createReference(patientId),
     authoredOn: undefined, //the v3 message doesnt have enough information for authoredOn
     requester: fhir.createReference(originalPrescriptionAuthorPractitionerRoleId),
+    dispenseRequest: dispenseRequest,
+    substitution: {allowedBoolean: false},
     groupIdentifier: createGroupIdentifierFromPertinentInformation2(cancellationResponse.pertinentInformation2)
   }
 }
@@ -50,7 +57,7 @@ function createPrescriptionStatusHistoryExtension(
   fhirCode: string, fhirDisplay: string, effectiveTime: string
 ): fhir.PrescriptionStatusHistoryExtension {
   return {
-    url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionTaskStatusReason",
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionStatusHistory",
     extension: [
       {
         url: "status",

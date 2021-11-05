@@ -103,7 +103,7 @@ export async function getFhirValidatorErrors(
     request.logger.info("Received response from FHIR validator")
     const filteredResponse = filterValidatorResponse(validatorResponseData)
     if (filteredResponse.issue.length) {
-      return validatorResponseData
+      return filteredResponse
     }
   }
   return null

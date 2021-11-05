@@ -240,7 +240,7 @@ export function createDosage(dosageInstructions: hl7V3.DosageInstructions): fhir
   }
 }
 
-function createDispenseRequestQuantity(lineItemQuantity: hl7V3.LineItemQuantity): fhir.SimpleQuantity {
+export function createDispenseRequestQuantity(lineItemQuantity: hl7V3.LineItemQuantity): fhir.SimpleQuantity {
   const lineItemQuantityTranslation = lineItemQuantity.quantity.translation
   return {
     value: new LosslessNumber(lineItemQuantityTranslation._attributes.value),
