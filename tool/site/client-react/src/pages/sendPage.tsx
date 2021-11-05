@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useEffect, useState} from "react"
-import {ActionLink, Button, CrossIcon, ErrorMessage, Label, TickIcon} from "nhsuk-react-components"
+import {ActionLink, Button, CrossIcon, ErrorMessage, Label, SummaryList, TickIcon} from "nhsuk-react-components"
 import axios from "axios"
 import * as fhir from "fhir/r4"
 import MessageExpanders from "../components/messageExpanders"
@@ -57,10 +57,16 @@ const SendPage: React.FC<SendPageProps> = ({
   if (sendResult) {
     return <>
       <Label isPageHeading>Send Result {sendResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
-      <ActionLink href={`${baseUrl}`}>
+      <SummaryList>
+        <SummaryList.Row>
+          <SummaryList.Key>ID</SummaryList.Key>
+          <SummaryList.Value>{sendResult.prescription_id}</SummaryList.Value>
+        </SummaryList.Row>
+      </SummaryList>
+      <ActionLink href={`${baseUrl}dispense/release?prescription_id=${sendResult.prescription_id}`}>
         Release this prescription
       </ActionLink>
-      <ActionLink href={`${baseUrl}`}>
+      <ActionLink href={`${baseUrl}prescribe/cancel?prescription_id=${sendResult.prescription_id}`}>
         Cancel this prescription
       </ActionLink>
       <MessageExpanders
@@ -82,6 +88,8 @@ const SendPage: React.FC<SendPageProps> = ({
 }
 
 interface SendResult {
+  prescription_ids: string[]
+  prescription_id: string
   success: boolean
   request: fhir.Bundle
   request_xml: string
