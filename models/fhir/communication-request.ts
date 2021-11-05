@@ -1,3 +1,4 @@
+import { Organization } from "."
 import * as common from "./common"
 import * as patient from "./patient"
 
@@ -6,7 +7,7 @@ export interface CommunicationRequest extends common.Resource {
   status?: string
   subject: common.Reference<patient.Patient>
   payload: Array<ContentStringPayload | ContentReferencePayload>
-  requester: common.Identifier
+  requester: common.IdentifierReference<Organization>
   recipient: Array<common.Identifier>
 }
 
