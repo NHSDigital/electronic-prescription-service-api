@@ -31,7 +31,7 @@ describe("translateToFhir", () => {
     bundleResponse.entry
       .map(entry => entry.resource as fhir.Task)
       .forEach(task => {
-        expect(task.businessStatus.coding[0].display).toEqual("To be Dispensed")
+        expect(task.businessStatus.coding[0].display).toEqual("To Be Dispensed")
         expect(task.businessStatus.coding[0].code).toEqual("0001")
 
         task.input.forEach(input => {

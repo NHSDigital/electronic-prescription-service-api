@@ -61,7 +61,7 @@ function convertPrescriptionToTask(
   prescriptionId: string,
   prescription: DetailPrescription | SummaryPrescription
 ): fhir.Task {
-  const {status, businessStatus} = getStatusCodesFromDisplay(prescription.prescriptionStatus)
+  const {status, businessStatus} = getPrescriptionStatusCodesFromDisplay(prescription.prescriptionStatus)
   const id = uuid.v4()
 
   const task: fhir.Task = {
@@ -121,7 +121,7 @@ function convertPrescriptionToTask(
   return task
 }
 
-function getStatusCodesFromDisplay(display: string): { status: fhir.TaskStatus, businessStatus: string } {
+function getPrescriptionStatusCodesFromDisplay(display: string): { status: fhir.TaskStatus, businessStatus: string } {
   //TODO - some of these cases aren't in the code system, but can be produced by Spine
   switch (display) {
     case "Awaiting Release Ready":
@@ -151,7 +151,30 @@ function getStatusCodesFromDisplay(display: string): { status: fhir.TaskStatus, 
     case "Cancelled future instance":
       return {status: fhir.TaskStatus.CANCELLED, businessStatus: "9005"}
     default:
-      throw new Error("Unexpected Status Code from Spine")
+      throw new Error("Unexpected prescription status from Spine: " + display)
+  }
+}
+
+function getLineItemStatusCodeFromDisplay(display: string): string {
+  switch (display) {
+    case "Dispensed":
+      return "0001"
+    case "Not Dispensed":
+      return "0002"
+    case "Dispensed - Partial":
+      return "0003"
+    case "Not Dispensed - Owing":
+      return "0004"
+    case "Cancelled":
+      return "0005"
+    case "Expired":
+      return "0006"
+    case "To be Dispensed":
+      return "0007"
+    case "With Dispenser":
+      return "0008"
+    default:
+      throw new Error("Unexpected line item status from Spine: " + display)
   }
 }
 
@@ -226,12 +249,12 @@ function convertLineItemToInput(lineItemId: string, prescription: SummaryPrescri
   }
 
   if (typeof lineItem === "object" && lineItem.itemStatus) {
-    const {businessStatus} = getStatusCodesFromDisplay(lineItem.itemStatus)
+    const statusCode = getLineItemStatusCodeFromDisplay(lineItem.itemStatus)
     dispensingInformationExtension.push({
       url: "dispenseStatus",
       valueCoding: fhir.createCoding(
         "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
-        businessStatus,
+        statusCode,
         lineItem.itemStatus
       )
     })

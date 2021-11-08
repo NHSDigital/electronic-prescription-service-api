@@ -16,10 +16,19 @@ export enum QueryParam {
 
 type ValidQuery = Partial<Record<QueryParam, string>>
 
-const queryParamToValidSystem = new Map<QueryParam, string>([
-  [QueryParam.FOCUS_IDENTIFIER, "https://fhir.nhs.uk/Id/prescription-order-number"],
-  [QueryParam.IDENTIFIER, "https://fhir.nhs.uk/Id/prescription-order-number"],
-  [QueryParam.PATIENT_IDENTIFIER, "https://fhir.nhs.uk/Id/nhs-number"]
+const queryParamMetadata = new Map([
+  [QueryParam.FOCUS_IDENTIFIER, {
+    system: "https://fhir.nhs.uk/Id/prescription-order-number",
+    getTaskField: (task: fhir.Task) => task.focus.identifier
+  }],
+  [QueryParam.IDENTIFIER, {
+    system: "https://fhir.nhs.uk/Id/prescription-order-number",
+    getTaskField: task => task.focus.identifier
+  }],
+  [QueryParam.PATIENT_IDENTIFIER, {
+    system: "https://fhir.nhs.uk/Id/nhs-number",
+    getTaskField: task => task.for.identifier
+  }]
 ])
 
 async function makeSpineRequest(validQuery: ValidQuery, request: Hapi.Request) {
@@ -73,39 +82,38 @@ export default [{
 //TODO - move validation code to the validation section of the repo
 
 export const validateQueryParameters = (queryParams: Hapi.RequestQuery): Array<fhir.OperationOutcomeIssue> => {
-  const validQueryParams = Object.values(QueryParam).map(value => value.toString())
-  const validatedEntries = Object.entries(queryParams).filter(([queryParam]) => validQueryParams.includes(queryParam))
+  const validatedEntries = Object.entries(queryParams).filter(
+    ([queryParam]) => queryParamMetadata.has(queryParam as QueryParam)
+  )
   if (validatedEntries.length === 0) {
-    return [validationErrors.createMissingQueryParameterIssue(validQueryParams)]
+    const validQueryParameters = Array.from(queryParamMetadata.keys())
+    return [validationErrors.createMissingQueryParameterIssue(validQueryParameters)]
   }
+
+  const issues: Array<fhir.OperationOutcomeIssue> = []
 
   const hasArrayValuedParams = validatedEntries.some(([, value]) => Array.isArray(value))
   if (hasArrayValuedParams) {
-    return [validationErrors.invalidQueryParameterCombinationIssue]
+    issues.push(validationErrors.invalidQueryParameterCombinationIssue)
   }
 
   const validatedQuery = Object.fromEntries(validatedEntries) as ValidQuery
   if (validatedQuery[QueryParam.IDENTIFIER] && validatedQuery[QueryParam.FOCUS_IDENTIFIER]) {
-    return [validationErrors.invalidQueryParameterCombinationIssue]
+    issues.push(validationErrors.invalidQueryParameterCombinationIssue)
   }
 
-  const invalidSystemIssues: Array<fhir.OperationOutcomeIssue> = []
-  queryParamToValidSystem.forEach((validSystem, queryParam) => {
-    if (!validateSystem(validatedQuery[queryParam], validSystem)) {
-      invalidSystemIssues.push(validationErrors.createInvalidSystemIssue(queryParam, validSystem))
+  queryParamMetadata.forEach((metadata, queryParam) => {
+    const queryParamValue = validatedQuery[queryParam]
+    const validSystem = metadata.system
+    if (queryParamValue && !validateSystem(queryParamValue, validSystem)) {
+      issues.push(validationErrors.createInvalidSystemIssue(queryParam, validSystem))
     }
   })
-  if (invalidSystemIssues) {
-    return invalidSystemIssues
-  }
 
-  return []
+  return issues
 }
 
 function validateSystem(value: string, validSystem: string) {
-  if (!value) {
-    return true
-  }
   const pipeIndex = value.indexOf("|")
   if (pipeIndex === -1) {
     return true
@@ -121,7 +129,7 @@ function getValue(query: ValidQuery, param: QueryParam): string {
     return rawValue
   }
 
-  const systemPrefix = queryParamToValidSystem.get(param) + "|"
+  const systemPrefix = queryParamMetadata.get(param) + "|"
   if (rawValue.startsWith(systemPrefix)) {
     return rawValue.substring(systemPrefix.length)
   }
@@ -134,20 +142,11 @@ function filterBundleEntries(result: fhir.Bundle, queryParams: ValidQuery) {
 }
 
 function filterTask(task: fhir.Task, queryParams: ValidQuery) {
-  const focusIdentifier = getValue(queryParams, QueryParam.FOCUS_IDENTIFIER)
-  if (focusIdentifier && task.focus.identifier.value !== focusIdentifier) {
-    return false
-  }
-
-  const identifier = getValue(queryParams, QueryParam.IDENTIFIER)
-  if (identifier && task.focus.identifier.value !== focusIdentifier) {
-    return false
-  }
-
-  const patientIdentifier = getValue(queryParams, QueryParam.PATIENT_IDENTIFIER)
-  if (patientIdentifier && task.for.identifier.value !== patientIdentifier) {
-    return false
-  }
-
+  queryParamMetadata.forEach((metadata, queryParam) => {
+    const queryParamValue = getValue(queryParams, queryParam)
+    if (queryParamValue && metadata.getTaskField(task) !== queryParamValue) {
+      return false
+    }
+  })
   return true
 }
