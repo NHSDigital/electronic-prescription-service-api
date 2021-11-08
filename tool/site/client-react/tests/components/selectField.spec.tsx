@@ -2,16 +2,29 @@ import * as React from "react"
 import {render} from "@testing-library/react"
 import pretty from "pretty"
 import SelectField from "../../src/components/selectField"
+import {Formik, Form, FormikConfig} from "formik"
 
-test("Renders correctly", async () => {
+const TestForm: React.FC<Partial<FormikConfig<null>>> = ({children}) => <Formik initialValues={{}} onSubmit={jest.fn()}>
+  <Form>
+    {children}
+  </Form>
+</Formik>
+
+test("Renders correctly", () => {
   const component = <SelectField name={"test"} label={"test"} fieldOptions={[]}/>
-  const {container} = render(component)
+  const testForm = <TestForm>{component}</TestForm>
+
+  const {container} = render(testForm)
+
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-test("Renders correctly with many field options", async () => {
+test("Renders correctly with many field options", () => {
   const fieldOption = {value: "testValue", text: "testText"}
   const component = <SelectField name={"test"} label={"test"} fieldOptions={[fieldOption, fieldOption, fieldOption]}/>
-  const {container} = render(component)
+  const testForm = <TestForm>{component}</TestForm>
+
+  const {container} = render(testForm)
+
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
