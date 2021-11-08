@@ -1,3 +1,5 @@
+//TODO - move everything in this file to the models section of the repo
+
 interface Prescription {
   lastEventDate: string
   prescriptionIssueDate: string

@@ -70,8 +70,10 @@ export default [{
   }
 }]
 
+//TODO - move validation code to the validation section of the repo
+
 export const validateQueryParameters = (queryParams: Hapi.RequestQuery): Array<fhir.OperationOutcomeIssue> => {
-  const validQueryParams = Object.keys(QueryParam)
+  const validQueryParams = Object.values(QueryParam).map(value => value.toString())
   const validatedEntries = Object.entries(queryParams).filter(([queryParam]) => validQueryParams.includes(queryParam))
   if (validatedEntries.length === 0) {
     return [validationErrors.createMissingQueryParameterIssue(validQueryParams)]

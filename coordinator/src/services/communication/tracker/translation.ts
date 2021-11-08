@@ -12,6 +12,8 @@ import moment from "moment"
 import {HL7_V3_DATE_TIME_FORMAT, ISO_DATE_FORMAT} from "../../translation/common/dateTime"
 import {LosslessNumber} from "lossless-json"
 
+//TODO - move everything in this file to the translation section of the repo
+
 export function convertSpineResponseToFhir(
   spineResponse: SummaryTrackerResponse | DetailTrackerResponse
 ): fhir.Bundle | fhir.OperationOutcome {
@@ -120,8 +122,10 @@ function convertPrescriptionToTask(
 }
 
 function getStatusCodesFromDisplay(display: string): { status: fhir.TaskStatus, businessStatus: string } {
+  //TODO - some of these cases aren't in the code system, but can be produced by Spine
   switch (display) {
-    case "To be Dispensed":
+    case "Awaiting Release Ready":
+      return {status: fhir.TaskStatus.REQUESTED, businessStatus: "0000"}
     case "To Be Dispensed":
       return {status: fhir.TaskStatus.REQUESTED, businessStatus: "0001"}
     case "With Dispenser":
@@ -136,6 +140,16 @@ function getStatusCodesFromDisplay(display: string): { status: fhir.TaskStatus, 
       return {status: fhir.TaskStatus.COMPLETED, businessStatus: "0006"}
     case "Not Dispensed":
       return {status: fhir.TaskStatus.COMPLETED, businessStatus: "0007"}
+    case "Claimed":
+      return {status: fhir.TaskStatus.COMPLETED, businessStatus: "0008"}
+    case "No-Claimed":
+      return {status: fhir.TaskStatus.COMPLETED, businessStatus: "0009"}
+    case "Repeat Dispense future instance":
+      return {status: fhir.TaskStatus.REQUESTED, businessStatus: "9000"}
+    case "Prescription future instance":
+      return {status: fhir.TaskStatus.REQUESTED, businessStatus: "9001"}
+    case "Cancelled future instance":
+      return {status: fhir.TaskStatus.CANCELLED, businessStatus: "9005"}
     default:
       throw new Error("Unexpected Status Code from Spine")
   }
