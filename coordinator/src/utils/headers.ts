@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import * as uuid from "uuid"
-import {DISPENSING_USER_SCOPE, PRESCRIBING_USER_SCOPE} from "../services/validation/scope-validator"
+import {DISPENSING_USER_SCOPE, PRESCRIBING_USER_SCOPE, TRACKER_USER_SCOPE} from "../services/validation/scope-validator"
 
 export enum RequestHeaders {
   REQUEST_ID = "nhsd-request-id",
@@ -39,6 +39,6 @@ export function getSdsRoleProfileId(headers: Hapi.Util.Dictionary<string>): stri
 }
 
 export function getScope(headers: Hapi.Util.Dictionary<string>): string {
-  const defaultScope = `${PRESCRIBING_USER_SCOPE} ${DISPENSING_USER_SCOPE}`
+  const defaultScope = `${PRESCRIBING_USER_SCOPE} ${DISPENSING_USER_SCOPE} ${TRACKER_USER_SCOPE}`
   return process.env.SANDBOX === "1" ? defaultScope : headers[RequestHeaders.SCOPE]
 }
