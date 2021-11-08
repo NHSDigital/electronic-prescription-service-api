@@ -11,7 +11,7 @@ const baseUrl = "baseUrl/"
 const prescriptionId = "7A9089-A83008-56A03J"
 
 const prescriptionOrderUrl = `${baseUrl}prescription/${prescriptionId}`
-const dispenseNotificationUrl = `${baseUrl}dispense/history?prescription_id=${prescriptionId}`
+const dispenseNotificationUrl = `${baseUrl}dispenseNotifications/${prescriptionId}`
 const claimUrl = `${baseUrl}dispense/claim`
 
 const prescriptionOrder = readMessage("prescriptionOrder.json")
@@ -36,9 +36,7 @@ test("Displays claim form if prescription details are retrieved successfully", a
   })
   moxios.stubRequest(dispenseNotificationUrl, {
     status: 200,
-    response: {
-      dispense_notifications: [dispenseNotification]
-    }
+    response: [dispenseNotification]
   })
 
   const {container} = render(<ClaimPage baseUrl={baseUrl} prescriptionId={prescriptionId}/>)
@@ -68,9 +66,7 @@ test("Displays an error if dispense-notification not found", async () => {
   })
   moxios.stubRequest(dispenseNotificationUrl, {
     status: 200,
-    response: {
-      dispense_notifications: []
-    }
+    response: []
   })
 
   const {container} = render(<ClaimPage baseUrl={baseUrl} prescriptionId={prescriptionId}/>)
@@ -87,9 +83,7 @@ test("Displays an error on invalid response", async () => {
   })
   moxios.stubRequest(dispenseNotificationUrl, {
     status: 200,
-    response: {
-      dispense_notifications: [{}]
-    }
+    response: [{}]
   })
 
   const {container} = render(<ClaimPage baseUrl={baseUrl} prescriptionId={prescriptionId}/>)
@@ -106,9 +100,7 @@ test("Displays loading text while claim is being submitted", async () => {
   })
   moxios.stubRequest(dispenseNotificationUrl, {
     status: 200,
-    response: {
-      dispense_notifications: [dispenseNotification]
-    }
+    response: [dispenseNotification]
   })
 
   const {container} = render(<ClaimPage baseUrl={baseUrl} prescriptionId={prescriptionId}/>)
@@ -127,20 +119,27 @@ test("Displays claim result", async () => {
   })
   moxios.stubRequest(dispenseNotificationUrl, {
     status: 200,
-    response: {
-      dispense_notifications: [dispenseNotification]
-    }
+    response: [dispenseNotification]
   })
   moxios.stubRequest(claimUrl, {
     status: 200,
-    response: "Mock result"
+    response: {
+      success: true,
+      request: "JSON Request",
+      request_xml: "XML Request",
+      response: "JSON Response",
+      response_xml: "XML Response"
+    }
   })
 
   const {container} = render(<ClaimPage baseUrl={baseUrl} prescriptionId={prescriptionId}/>)
   await waitFor(() => screen.getByText("Claim for Dispensed Medication"))
   userEvent.click(screen.getByText("Claim"))
-  await waitFor(() => screen.getByText("Result"))
+  await waitFor(() => screen.getByText(/Claim Result/))
 
-  expect(screen.getByText(JSON.stringify("Mock result"))).toBeTruthy()
+  expect(screen.getByText(JSON.stringify("JSON Request"))).toBeTruthy()
+  expect(screen.getByText("XML Request")).toBeTruthy()
+  expect(screen.getByText(JSON.stringify("JSON Response"))).toBeTruthy()
+  expect(screen.getByText("XML Response")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
