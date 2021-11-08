@@ -1,12 +1,13 @@
 import Hapi from "@hapi/hapi"
-import {fhir, validationErrors} from "@models"
+import {fhir} from "@models"
 import {BASE_PATH, ContentTypes} from "../util"
 import {getStatusCode} from "../../utils/status-code"
 import {trackerClient} from "../../services/communication/tracker"
-import {convertSpineResponseToFhir} from "../../services/communication/tracker/translation"
+import {convertSpineResponseToFhir} from "../../services/translation/response/tracker/translation"
 import {RequestHeaders} from "../../utils/headers"
 import * as LosslessJson from "lossless-json"
 import {isBundle, isTask} from "../../utils/type-guards"
+import {validateQueryParameters} from "../../services/validation/query-validator"
 
 export enum QueryParam {
   IDENTIFIER = "identifier",
@@ -14,9 +15,9 @@ export enum QueryParam {
   PATIENT_IDENTIFIER = "patient:identifier"
 }
 
-type ValidQuery = Partial<Record<QueryParam, string>>
+export type ValidQuery = Partial<Record<QueryParam, string>>
 
-const queryParamMetadata = new Map([
+export const queryParamMetadata = new Map([
   [QueryParam.FOCUS_IDENTIFIER, {
     system: "https://fhir.nhs.uk/Id/prescription-order-number",
     getTaskField: (task: fhir.Task) => task.focus.identifier
@@ -30,19 +31,6 @@ const queryParamMetadata = new Map([
     getTaskField: task => task.for.identifier
   }]
 ])
-
-async function makeSpineRequest(validQuery: ValidQuery, request: Hapi.Request) {
-  const prescriptionIdentifier = getValue(validQuery, QueryParam.FOCUS_IDENTIFIER)
-    || getValue(validQuery, QueryParam.IDENTIFIER)
-  if (prescriptionIdentifier) {
-    return await trackerClient.getPrescription(prescriptionIdentifier, request.headers, request.logger)
-  }
-
-  const patientIdentifier = getValue(validQuery, QueryParam.PATIENT_IDENTIFIER)
-  if (patientIdentifier) {
-    return await trackerClient.getPrescriptions(patientIdentifier, request.headers, request.logger)
-  }
-}
 
 export default [{
   method: "GET",
@@ -79,48 +67,17 @@ export default [{
   }
 }]
 
-//TODO - move validation code to the validation section of the repo
-
-export const validateQueryParameters = (queryParams: Hapi.RequestQuery): Array<fhir.OperationOutcomeIssue> => {
-  const validatedEntries = Object.entries(queryParams).filter(
-    ([queryParam]) => queryParamMetadata.has(queryParam as QueryParam)
-  )
-  if (validatedEntries.length === 0) {
-    const validQueryParameters = Array.from(queryParamMetadata.keys())
-    return [validationErrors.createMissingQueryParameterIssue(validQueryParameters)]
+async function makeSpineRequest(validQuery: ValidQuery, request: Hapi.Request) {
+  const prescriptionIdentifier = getValue(validQuery, QueryParam.FOCUS_IDENTIFIER)
+    || getValue(validQuery, QueryParam.IDENTIFIER)
+  if (prescriptionIdentifier) {
+    return await trackerClient.getPrescription(prescriptionIdentifier, request.headers, request.logger)
   }
 
-  const issues: Array<fhir.OperationOutcomeIssue> = []
-
-  const hasArrayValuedParams = validatedEntries.some(([, value]) => Array.isArray(value))
-  if (hasArrayValuedParams) {
-    issues.push(validationErrors.invalidQueryParameterCombinationIssue)
+  const patientIdentifier = getValue(validQuery, QueryParam.PATIENT_IDENTIFIER)
+  if (patientIdentifier) {
+    return await trackerClient.getPrescriptions(patientIdentifier, request.headers, request.logger)
   }
-
-  const validatedQuery = Object.fromEntries(validatedEntries) as ValidQuery
-  if (validatedQuery[QueryParam.IDENTIFIER] && validatedQuery[QueryParam.FOCUS_IDENTIFIER]) {
-    issues.push(validationErrors.invalidQueryParameterCombinationIssue)
-  }
-
-  queryParamMetadata.forEach((metadata, queryParam) => {
-    const queryParamValue = validatedQuery[queryParam]
-    const validSystem = metadata.system
-    if (queryParamValue && !validateSystem(queryParamValue, validSystem)) {
-      issues.push(validationErrors.createInvalidSystemIssue(queryParam, validSystem))
-    }
-  })
-
-  return issues
-}
-
-function validateSystem(value: string, validSystem: string) {
-  const pipeIndex = value.indexOf("|")
-  if (pipeIndex === -1) {
-    return true
-  }
-
-  const system = value.substring(0, pipeIndex)
-  return system === validSystem
 }
 
 function getValue(query: ValidQuery, param: QueryParam): string {

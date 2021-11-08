@@ -2,7 +2,7 @@ import pino from "pino"
 import Hapi from "hapi__hapi"
 import {SandboxTrackerClient} from "./sandbox"
 import {LiveTrackerClient} from "./live"
-import {DetailTrackerResponse, SummaryTrackerResponse} from "./spine-model"
+import {DetailTrackerResponse, SummaryTrackerResponse} from "../../../../../models/spine/spine-model"
 
 export interface TrackerClient {
   getPrescriptions(

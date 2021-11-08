@@ -1,6 +1,6 @@
 import * as TestResources from "../../resources/test-resources"
 import {fhir} from "@models"
-import {convertSpineResponseToFhir} from "../../../src/services/communication/tracker/translation"
+import {convertSpineResponseToFhir} from "../../../src/services/translation/response/tracker/translation"
 
 describe("translateToFhir", () => {
   it("succeeds with 1 line item", () => {

@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
-import {validateQueryParameters} from "../../src/routes/tracker/task"
 import {validationErrors} from "@models"
+import {validateQueryParameters} from "../../src/services/validation/query-validator"
 
 describe("task query parameter validation", () => {
   test("message with no valid query parameters get rejected", () => {

@@ -1,24 +1,24 @@
 import {
   DetailPrescription,
   DetailTrackerResponse,
-  Prescriptions,
   SummaryPrescription,
   SummaryTrackerResponse
-} from "./spine-model"
+} from "../../../../../../models/spine/spine-model"
 import {fhir} from "@models"
 import * as uuid from "uuid"
-import {convertResourceToBundleEntry} from "../../translation/response/common"
+import {convertResourceToBundleEntry} from "../common"
 import moment from "moment"
-import {HL7_V3_DATE_TIME_FORMAT, ISO_DATE_FORMAT} from "../../translation/common/dateTime"
+import {HL7_V3_DATE_TIME_FORMAT, ISO_DATE_FORMAT} from "../../common/dateTime"
 import {LosslessNumber} from "lossless-json"
 
 //TODO - move everything in this file to the translation section of the repo
 
+const STATUS_CODE_SUCCESS = "0"
+
 export function convertSpineResponseToFhir(
-  spineResponse: SummaryTrackerResponse | DetailTrackerResponse
+  {statusCode, reason, prescriptions}: SummaryTrackerResponse | DetailTrackerResponse
 ): fhir.Bundle | fhir.OperationOutcome {
-  const {statusCode, reason, prescriptions} = getSpineResponseParts(spineResponse)
-  if (statusCode !== "0") {
+  if (statusCode !== STATUS_CODE_SUCCESS) {
     return fhir.createOperationOutcome([fhir.createOperationOutcomeIssue(
       fhir.IssueCodes.INVALID,
       "error",
@@ -31,7 +31,7 @@ export function convertSpineResponseToFhir(
   }
 
   const tasks = Object.entries(prescriptions).map(
-    ([id, detailPrescription]) => convertPrescriptionToTask(id, detailPrescription)
+    ([id, prescription]) => convertPrescriptionToTask(id, prescription)
   )
 
   return {
@@ -40,21 +40,6 @@ export function convertSpineResponseToFhir(
     total: tasks.length,
     entry: tasks.map(convertResourceToBundleEntry)
   }
-}
-
-interface SpineResponseParts {
-  statusCode: string
-  reason: string
-  version: string
-  prescriptions: Prescriptions<SummaryPrescription | DetailPrescription>
-}
-
-function getSpineResponseParts(spineResponse: SummaryTrackerResponse | DetailTrackerResponse): SpineResponseParts {
-  if ("prescriptions" in spineResponse) {
-    return spineResponse as SummaryTrackerResponse
-  }
-  const {statusCode, reason, version, ...prescriptions} = spineResponse
-  return {statusCode, reason, version, prescriptions}
 }
 
 function convertPrescriptionToTask(
@@ -193,6 +178,8 @@ function createCourseOfTherapyTypeExtension(treatmentType: string): fhir.Extensi
       code = fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
       display = "Continuous long term (repeat dispensing)"
       break
+    default:
+      throw new Error("Unexpected treatment type from Spine: " + treatmentType)
   }
   return {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription",

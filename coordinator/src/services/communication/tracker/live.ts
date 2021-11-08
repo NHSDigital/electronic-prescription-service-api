@@ -3,11 +3,11 @@ import pino from "pino"
 import axios from "axios"
 import Hapi from "@hapi/hapi"
 import {getAsid, getSdsRoleProfileId, getSdsUserUniqueId} from "../../../utils/headers"
-import {DetailTrackerResponse, SummaryTrackerResponse} from "./spine-model"
+import {DetailTrackerResponse, SummaryTrackerResponse} from "../../../../../models/spine/spine-model"
 
-const SPINE_ENDPOINT = process.env.SPINE_URL
-const SPINE_PRESCRIPTION_PATH = "nhs111itemsummary"
-const SPINE_LINE_ITEM_PATH = "nhs111itemdetails"
+const SPINE_BASE_URL = process.env.SPINE_URL
+const SPINE_PRESCRIPTION_SUMMARY_PATH = "nhs111itemsummary"
+const SPINE_PRESCRIPTION_DETAIL_PATH = "nhs111itemdetails"
 
 export class LiveTrackerClient implements TrackerClient {
   async getPrescriptions(
@@ -15,7 +15,7 @@ export class LiveTrackerClient implements TrackerClient {
     inboundHeaders: Hapi.Util.Dictionary<string>,
     logger: pino.Logger
   ): Promise<SummaryTrackerResponse> {
-    const address = this.getItemSummaryUrl()
+    const address = this.getPrescriptionSummaryUrl()
     const queryParams = {
       nhsNumber: patientId
     }
@@ -27,12 +27,14 @@ export class LiveTrackerClient implements TrackerClient {
     inboundHeaders: Hapi.Util.Dictionary<string>,
     logger: pino.Logger
   ): Promise<DetailTrackerResponse> {
-    const address = this.getItemDetailUrl()
+    const address = this.getPrescriptionDetailUrl()
     const queryParams = {
       prescriptionId: prescriptionId,
       issueNumber: "1"
     }
-    return await LiveTrackerClient.makeTrackerRequest(inboundHeaders, address, queryParams, logger)
+    const rawResponse = await LiveTrackerClient.makeTrackerRequest(inboundHeaders, address, queryParams, logger)
+    const {statusCode, reason, version, ...prescriptions} = rawResponse
+    return {statusCode, reason, version, prescriptions}
   }
 
   private static async makeTrackerRequest(
@@ -64,12 +66,11 @@ export class LiveTrackerClient implements TrackerClient {
     }
   }
 
-  getItemSummaryUrl(): string {
-    return `https://${SPINE_ENDPOINT}/mm/${SPINE_PRESCRIPTION_PATH}`
+  getPrescriptionSummaryUrl(): string {
+    return `https://${SPINE_BASE_URL}/mm/${SPINE_PRESCRIPTION_SUMMARY_PATH}`
   }
 
-  getItemDetailUrl(): string {
-    return `https://${SPINE_ENDPOINT}/mm/${SPINE_LINE_ITEM_PATH}`
+  getPrescriptionDetailUrl(): string {
+    return `https://${SPINE_BASE_URL}/mm/${SPINE_PRESCRIPTION_DETAIL_PATH}`
   }
 }
-
