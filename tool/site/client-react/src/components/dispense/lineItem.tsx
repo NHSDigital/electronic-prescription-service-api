@@ -21,7 +21,7 @@ const LineItem: React.FC<LineItemProps> = ({name, lineItem}) => (
     <LineItemSummaryList {...lineItem}/>
     <SelectField
       name={`${name}.statusCode`}
-      label={`Status`}
+      label="Status"
       fieldOptions={convertCodingsToOptions(VALUE_SET_LINE_ITEM_STATUS)}
     />
     <ConditionalField

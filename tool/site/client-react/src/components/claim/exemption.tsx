@@ -17,7 +17,7 @@ const Exemption: React.FC<ExemptionProps> = ({
     <Fieldset.Legend size="m">Prescription Charge Exemption</Fieldset.Legend>
     <SelectField
       name={`${name}.code`}
-      label={`Exemption Status`}
+      label="Exemption Status"
       fieldOptions={convertCodingsToOptions(VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION)}
     />
     <Checkboxes id={`${name}.evidenceSeen.boxes`}>
