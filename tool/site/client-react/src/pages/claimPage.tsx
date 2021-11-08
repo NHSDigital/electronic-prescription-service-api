@@ -140,7 +140,7 @@ interface ClaimResult {
   response_xml: string
 }
 
-function createStaticProductInfoArray(medicationDispenses: Array<MedicationDispense>): Array<StaticProductInfo> {
+export function createStaticProductInfoArray(medicationDispenses: Array<MedicationDispense>): Array<StaticProductInfo> {
   const lineItemGroups = groupByProperty(medicationDispenses, getMedicationDispenseLineItemId)
   return lineItemGroups.map(([lineItemId, medicationDispensesForLineItem]) => {
     const latestMedicationDispense = medicationDispensesForLineItem[medicationDispensesForLineItem.length - 1]
