@@ -1,11 +1,11 @@
 import * as TestResources from "../../../../resources/test-resources"
 import {fhir} from "@models"
-import {convertSpineResponseToFhir} from "../../../../../src/services/translation/response/tracker/translation"
+import {convertSpineTrackerResponseToFhir} from "../../../../../src/services/translation/response/tracker/translation"
 
-describe("translateToFhir", () => {
+describe("detail tracker responses", () => {
   it("succeeds with 1 line item", () => {
-    const spineResponse = TestResources.trackerSpineResponses.success1LineItem
-    const bundleResponse = convertSpineResponseToFhir(spineResponse) as fhir.Bundle
+    const spineResponse = TestResources.detailTrackerResponses.success1LineItem
+    const bundleResponse = convertSpineTrackerResponseToFhir(spineResponse) as fhir.Bundle
     bundleResponse.entry
       .map(entry => entry.resource as fhir.Task)
       .forEach(task => expect(task.input[0].valueReference.identifier.value)
@@ -13,8 +13,8 @@ describe("translateToFhir", () => {
   })
 
   it("succeeds with many line items", () => {
-    const spineResponse = TestResources.trackerSpineResponses.success2LineItems
-    const bundleResponse = convertSpineResponseToFhir(spineResponse) as fhir.Bundle
+    const spineResponse = TestResources.detailTrackerResponses.success2LineItems
+    const bundleResponse = convertSpineTrackerResponseToFhir(spineResponse) as fhir.Bundle
     bundleResponse.entry
       .map(entry => entry.resource as fhir.Task)
       .forEach(task => {
@@ -27,8 +27,8 @@ describe("translateToFhir", () => {
   })
 
   it("succeeds with a prescription in 'To be Dispensed' state", () => {
-    const spineResponse = TestResources.trackerSpineResponses.successCreated
-    const bundleResponse = convertSpineResponseToFhir(spineResponse) as fhir.Bundle
+    const spineResponse = TestResources.detailTrackerResponses.successCreated
+    const bundleResponse = convertSpineTrackerResponseToFhir(spineResponse) as fhir.Bundle
     bundleResponse.entry
       .map(entry => entry.resource as fhir.Task)
       .forEach(task => {
@@ -43,12 +43,11 @@ describe("translateToFhir", () => {
           expect(output.extension).toBeUndefined()
         })
       })
-
   })
 
   it("succeeds with a prescription in 'Dispensed' state", () => {
-    const spineResponse = TestResources.trackerSpineResponses.successClaimed
-    const bundleResponse = convertSpineResponseToFhir(spineResponse) as fhir.Bundle
+    const spineResponse = TestResources.detailTrackerResponses.successClaimed
+    const bundleResponse = convertSpineTrackerResponseToFhir(spineResponse) as fhir.Bundle
     bundleResponse.entry
       .map(entry => entry.resource as fhir.Task)
       .forEach(task => {
@@ -66,8 +65,21 @@ describe("translateToFhir", () => {
   })
 
   it("returns operationOutcome on non-zero statusCode", () => {
-    const spineResponse = TestResources.trackerSpineResponses.errorNoIssueNumber
-    const operationOutcomeResponse = convertSpineResponseToFhir(spineResponse)
+    const spineResponse = TestResources.detailTrackerResponses.errorNoIssueNumber
+    const operationOutcomeResponse = convertSpineTrackerResponseToFhir(spineResponse)
     expect(operationOutcomeResponse.resourceType).toBe("OperationOutcome")
+  })
+})
+
+describe("summary tracker responses", () => {
+  test("converts a success response to a Bundle of Tasks", () => {
+    const spineResponse = TestResources.summaryTrackerResponses.success
+    const translatedResponse = convertSpineTrackerResponseToFhir(spineResponse) as fhir.Bundle
+    expect(translatedResponse.resourceType).toBe("Bundle")
+    expect(translatedResponse.entry).toHaveLength(5)
+    translatedResponse.entry.map(entry => entry.resource as fhir.Task).forEach(resource => {
+      expect(resource.resourceType).toBe("Task")
+      expect(resource.for.identifier.value).toEqual("9449304106")
+    })
   })
 })

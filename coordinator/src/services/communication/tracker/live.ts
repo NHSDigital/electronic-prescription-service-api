@@ -4,7 +4,7 @@ import axios from "axios"
 import Hapi from "@hapi/hapi"
 import {getAsid, getSdsRoleProfileId, getSdsUserUniqueId} from "../../../utils/headers"
 import {tracker} from "@models"
-import {toDetailTrackerResponse} from "../../translation/response/tracker/translation"
+import {convertRawResponseToDetailTrackerResponse} from "../../translation/response/tracker/translation"
 
 const SPINE_BASE_URL = process.env.SPINE_URL
 const SPINE_PRESCRIPTION_SUMMARY_PATH = "nhs111itemsummary"
@@ -34,7 +34,7 @@ export class LiveTrackerClient implements TrackerClient {
       issueNumber: "1"
     }
     const rawResponse = await LiveTrackerClient.makeTrackerRequest(inboundHeaders, address, queryParams, logger)
-    return toDetailTrackerResponse(rawResponse)
+    return convertRawResponseToDetailTrackerResponse(rawResponse)
   }
 
   private static async makeTrackerRequest(

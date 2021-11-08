@@ -3,7 +3,7 @@ import {fhir} from "@models"
 import {BASE_PATH, ContentTypes} from "../util"
 import {getStatusCode} from "../../utils/status-code"
 import {trackerClient} from "../../services/communication/tracker"
-import {convertSpineResponseToFhir} from "../../services/translation/response/tracker/translation"
+import {convertSpineTrackerResponseToFhir} from "../../services/translation/response/tracker/translation"
 import {getScope, RequestHeaders} from "../../utils/headers"
 import * as LosslessJson from "lossless-json"
 import {isBundle, isTask} from "../../utils/type-guards"
@@ -57,7 +57,7 @@ export default [{
         .type(ContentTypes.JSON)
     }
 
-    const result = convertSpineResponseToFhir(spineResponse)
+    const result = convertSpineTrackerResponseToFhir(spineResponse)
     if (isBundle(result)) {
       filterBundleEntries(result, validQuery)
     }

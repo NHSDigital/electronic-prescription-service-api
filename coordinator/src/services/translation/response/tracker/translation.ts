@@ -5,18 +5,16 @@ import moment from "moment"
 import {HL7_V3_DATE_TIME_FORMAT, ISO_DATE_FORMAT} from "../../common/dateTime"
 import {LosslessNumber} from "lossless-json"
 
-//TODO - move everything in this file to the translation section of the repo
-
 const STATUS_CODE_SUCCESS = "0"
 
-export function toDetailTrackerResponse(
+export function convertRawResponseToDetailTrackerResponse(
   rawResponse: tracker.TrackerResponse & Record<string, tracker.DetailPrescription>
 ): tracker.DetailTrackerResponse {
   const {version, reason, statusCode, ...prescriptions} = rawResponse
   return {version, reason, statusCode, prescriptions}
 }
 
-export function convertSpineResponseToFhir(
+export function convertSpineTrackerResponseToFhir(
   {statusCode, reason, prescriptions}: tracker.SummaryTrackerResponse | tracker.DetailTrackerResponse
 ): fhir.Bundle | fhir.OperationOutcome {
   if (statusCode !== STATUS_CODE_SUCCESS) {

@@ -12,7 +12,8 @@ import {
 } from "@models"
 import Hapi from "@hapi/hapi"
 import {readXml} from "../../src/services/serialisation/xml"
-import {toDetailTrackerResponse} from "../../src/services/translation/response/tracker/translation"
+import {convertRawResponseToDetailTrackerResponse} from "../../src/services/translation/response/tracker/translation"
+import {SummaryTrackerResponse} from "../../../models/spine/tracker"
 
 export const convertSuccessExamples = fetcher.convertExamples.filter(
   e => e.isSuccess).map(spec => spec.toSuccessJestCase()
@@ -274,7 +275,7 @@ export const spineResponses = {
   cancellationDispensedError
 }
 
-export const trackerSpineResponses = {
+export const detailTrackerResponses = {
   success1LineItem: readDetailTrackerResponse("success-1-lineItem.json"),
   success2LineItems: readDetailTrackerResponse("success-2-lineItems.json"),
   successCreated: readDetailTrackerResponse("success-created.json"),
@@ -282,18 +283,22 @@ export const trackerSpineResponses = {
   errorNoIssueNumber: readDetailTrackerResponse("error-no-issue-number.json")
 }
 
-function readDetailTrackerResponse(filename: string): tracker.DetailTrackerResponse {
-  const filePath = path.join(__dirname, `./spine-responses/tracker-responses/${filename}`)
-  const responseStr = fs.readFileSync(filePath, "utf8")
-  const responseObj = JSON.parse(responseStr)
-  return toDetailTrackerResponse(responseObj)
+export const summaryTrackerResponses = {
+  success: readSummaryTrackerResponse("success.json")
 }
 
-// function readSummaryTrackerResponse(filename: string): SummaryTrackerResponse {
-//   const filePath = path.join(__dirname, `./spine-responses/tracker-responses/${filename}`)
-//   const responseStr = fs.readFileSync(filePath, "utf8")
-//   return JSON.parse(responseStr)
-// }
+function readDetailTrackerResponse(filename: string): tracker.DetailTrackerResponse {
+  const filePath = path.join(__dirname, `./spine-responses/tracker-responses/detail/${filename}`)
+  const responseStr = fs.readFileSync(filePath, "utf8")
+  const responseObj = JSON.parse(responseStr)
+  return convertRawResponseToDetailTrackerResponse(responseObj)
+}
+
+function readSummaryTrackerResponse(filename: string): SummaryTrackerResponse {
+  const filePath = path.join(__dirname, `./spine-responses/tracker-responses/summary/${filename}`)
+  const responseStr = fs.readFileSync(filePath, "utf8")
+  return JSON.parse(responseStr)
+}
 
 function getLocation(search: string) {
   return fetcher

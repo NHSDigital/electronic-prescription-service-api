@@ -21,8 +21,8 @@ export class SandboxTrackerClient implements TrackerClient {
           prescriptionTreatmentType: "Repeat Dispensing",
           prescriptionStatus: "Dispensed",
           lineItems: {
-            "30B7E9CF-6F42-40A8-84C1-E61EF638EEE2": "Perindopril erbumine 2mg tablets",
-            "636F1B57-E18C-4F45-ACAE-2D7DB86B6E1E": "Metformin 500mg modified-release tablets"
+            "30b7e9cf-6f42-40a8-84c1-e61ef638eee2": "Perindopril erbumine 2mg tablets",
+            "636f1b57-e18c-4f45-acae-2d7db86b6e1e": "Metformin 500mg modified-release tablets"
           }
         },
         "ABC5F7-ZA0448-77E88X": {
@@ -38,7 +38,7 @@ export class SandboxTrackerClient implements TrackerClient {
           prescriptionTreatmentType: "Acute Prescribing",
           prescriptionStatus: "Dispensed",
           lineItems: {
-            "636F1B57-E18C-4F45-ACAE-2D7DB86B6E1E": "Hydrocortisone 0.5% cream"
+            "636f1b57-e18c-4f45-acae-2d7db86b6e1e": "Hydrocortisone 0.5% cream"
           }
         }
       }
@@ -86,7 +86,7 @@ export class SandboxTrackerClient implements TrackerClient {
             ods: "VNFKT"
           },
           lineItems: {
-            "A54219B8-F741-4C47-B662-E4F8DFA49AB6": {
+            "a54219b8-f741-4c47-b662-e4f8dfa49ab6": {
               description: "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes",
               quantity: "1",
               uom: "pre-filled disposable injection",

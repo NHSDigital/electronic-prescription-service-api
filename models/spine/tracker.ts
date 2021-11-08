@@ -1,5 +1,3 @@
-//TODO - move everything in this file to the models section of the repo
-
 export interface TrackerResponse {
   version: string
   reason: string
