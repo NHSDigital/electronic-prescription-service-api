@@ -7,13 +7,11 @@ import {
   fetcher,
   fhir,
   hl7V3,
-  spine,
-  tracker
+  spine
 } from "@models"
 import Hapi from "@hapi/hapi"
 import {readXml} from "../../src/services/serialisation/xml"
 import {convertRawResponseToDetailTrackerResponse} from "../../src/services/translation/response/tracker/translation"
-import {SummaryTrackerResponse} from "../../../models/spine/tracker"
 
 export const convertSuccessExamples = fetcher.convertExamples.filter(
   e => e.isSuccess).map(spec => spec.toSuccessJestCase()
@@ -287,14 +285,14 @@ export const summaryTrackerResponses = {
   success: readSummaryTrackerResponse("success.json")
 }
 
-function readDetailTrackerResponse(filename: string): tracker.DetailTrackerResponse {
+function readDetailTrackerResponse(filename: string): spine.DetailTrackerResponse {
   const filePath = path.join(__dirname, `./spine-responses/tracker-responses/detail/${filename}`)
   const responseStr = fs.readFileSync(filePath, "utf8")
   const responseObj = JSON.parse(responseStr)
   return convertRawResponseToDetailTrackerResponse(responseObj)
 }
 
-function readSummaryTrackerResponse(filename: string): SummaryTrackerResponse {
+function readSummaryTrackerResponse(filename: string): spine.SummaryTrackerResponse {
   const filePath = path.join(__dirname, `./spine-responses/tracker-responses/summary/${filename}`)
   const responseStr = fs.readFileSync(filePath, "utf8")
   return JSON.parse(responseStr)

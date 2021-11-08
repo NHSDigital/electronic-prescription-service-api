@@ -1,4 +1,4 @@
-import {fhir, tracker} from "@models"
+import {fhir, spine} from "@models"
 import * as uuid from "uuid"
 import {convertResourceToBundleEntry} from "../common"
 import moment from "moment"
@@ -8,14 +8,14 @@ import {LosslessNumber} from "lossless-json"
 const STATUS_CODE_SUCCESS = "0"
 
 export function convertRawResponseToDetailTrackerResponse(
-  rawResponse: tracker.TrackerResponse & Record<string, tracker.DetailPrescription>
-): tracker.DetailTrackerResponse {
+  rawResponse: spine.TrackerResponse & Record<string, spine.DetailPrescription>
+): spine.DetailTrackerResponse {
   const {version, reason, statusCode, ...prescriptions} = rawResponse
   return {version, reason, statusCode, prescriptions}
 }
 
 export function convertSpineTrackerResponseToFhir(
-  {statusCode, reason, prescriptions}: tracker.SummaryTrackerResponse | tracker.DetailTrackerResponse
+  {statusCode, reason, prescriptions}: spine.SummaryTrackerResponse | spine.DetailTrackerResponse
 ): fhir.Bundle | fhir.OperationOutcome {
   if (statusCode !== STATUS_CODE_SUCCESS) {
     return fhir.createOperationOutcome([fhir.createOperationOutcomeIssue(
@@ -43,7 +43,7 @@ export function convertSpineTrackerResponseToFhir(
 
 function convertPrescriptionToTask(
   prescriptionId: string,
-  prescription: tracker.DetailPrescription | tracker.SummaryPrescription
+  prescription: spine.DetailPrescription | spine.SummaryPrescription
 ): fhir.Task {
   const {status, businessStatus} = getPrescriptionStatusCodesFromDisplay(prescription.prescriptionStatus)
   const id = uuid.v4()
@@ -215,7 +215,7 @@ function createRepeatInfoExtension(currentIssue: string, totalAuthorised: string
 
 function convertLineItemToInput(
   lineItemId: string,
-  prescription: tracker.SummaryPrescription | tracker.DetailPrescription
+  prescription: spine.SummaryPrescription | spine.DetailPrescription
 ) {
   const lineItem = prescription.lineItems[lineItemId]
   const taskInput: fhir.TaskInput = {
@@ -261,12 +261,13 @@ function convertLineItemToInput(
 
 function convertLineItemToOutput(
   lineItemId: string,
-  prescription: tracker.SummaryPrescription | tracker.DetailPrescription
+  prescription: spine.SummaryPrescription | spine.DetailPrescription
 ) {
   const taskOutput: fhir.TaskOutput = {
     type: fhir.createCodeableConcept("http://snomed.info/sct", "373784005", "Dispensing medication"),
     valueReference: fhir.createIdentifierReference(
-      fhir.createIdentifier("https://fhir.nhs.uk/Id/prescription-dispense-item-number", lineItemId.toLowerCase()),
+      //TODO - this should be a prescription-dispense-item-number but we don't get one back in the response
+      fhir.createIdentifier("https://fhir.nhs.uk/Id/prescription-order-item-number", lineItemId.toLowerCase()),
       undefined,
       "MedicationDispense"
     )

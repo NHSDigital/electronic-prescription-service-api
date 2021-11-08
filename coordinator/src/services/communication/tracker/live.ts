@@ -3,7 +3,7 @@ import pino from "pino"
 import axios from "axios"
 import Hapi from "@hapi/hapi"
 import {getAsid, getSdsRoleProfileId, getSdsUserUniqueId} from "../../../utils/headers"
-import {tracker} from "@models"
+import {spine} from "@models"
 import {convertRawResponseToDetailTrackerResponse} from "../../translation/response/tracker/translation"
 
 const SPINE_BASE_URL = process.env.SPINE_URL
@@ -15,7 +15,7 @@ export class LiveTrackerClient implements TrackerClient {
     patientId: string,
     inboundHeaders: Hapi.Util.Dictionary<string>,
     logger: pino.Logger
-  ): Promise<tracker.SummaryTrackerResponse> {
+  ): Promise<spine.SummaryTrackerResponse> {
     const address = this.getPrescriptionSummaryUrl()
     const queryParams = {
       nhsNumber: patientId
@@ -27,7 +27,7 @@ export class LiveTrackerClient implements TrackerClient {
     prescriptionId: string,
     inboundHeaders: Hapi.Util.Dictionary<string>,
     logger: pino.Logger
-  ): Promise<tracker.DetailTrackerResponse> {
+  ): Promise<spine.DetailTrackerResponse> {
     const address = this.getPrescriptionDetailUrl()
     const queryParams = {
       prescriptionId: prescriptionId,

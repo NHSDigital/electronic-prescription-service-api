@@ -2,19 +2,19 @@ import pino from "pino"
 import Hapi from "hapi__hapi"
 import {SandboxTrackerClient} from "./sandbox"
 import {LiveTrackerClient} from "./live"
-import {tracker} from "@models"
+import {spine} from "@models"
 
 export interface TrackerClient {
   getPrescriptions(
     patientId: string,
     headers: Hapi.Util.Dictionary<string>,
     logger: pino.Logger
-  ): Promise<tracker.SummaryTrackerResponse>
+  ): Promise<spine.SummaryTrackerResponse>
   getPrescription(
     prescriptionId: string,
     headers: Hapi.Util.Dictionary<string>,
     logger: pino.Logger
-  ): Promise<tracker.DetailTrackerResponse>
+  ): Promise<spine.DetailTrackerResponse>
 }
 
 function getTrackerClient(liveMode: boolean): TrackerClient {
