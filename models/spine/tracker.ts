@@ -1,6 +1,6 @@
 //TODO - move everything in this file to the models section of the repo
 
-interface TrackerResponse {
+export interface TrackerResponse {
   version: string
   reason: string
   statusCode: string

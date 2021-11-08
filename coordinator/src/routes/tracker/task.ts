@@ -4,7 +4,7 @@ import {BASE_PATH, ContentTypes} from "../util"
 import {getStatusCode} from "../../utils/status-code"
 import {trackerClient} from "../../services/communication/tracker"
 import {convertSpineResponseToFhir} from "../../services/translation/response/tracker/translation"
-import {RequestHeaders} from "../../utils/headers"
+import {getScope, RequestHeaders} from "../../utils/headers"
 import * as LosslessJson from "lossless-json"
 import {isBundle, isTask} from "../../utils/type-guards"
 import {validateQueryParameters} from "../../services/validation/query-validator"
@@ -39,7 +39,8 @@ export default [{
     request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
   ): Promise<Hapi.Lifecycle.ReturnValue> => {
     const query = request.query
-    const issues = validateQueryParameters(query)
+    const scope = getScope(request.headers)
+    const issues = validateQueryParameters(query, scope)
     if (issues.length) {
       const response = fhir.createOperationOutcome(issues)
       const statusCode = getStatusCode(issues)

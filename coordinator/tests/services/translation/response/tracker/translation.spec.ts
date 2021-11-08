@@ -1,6 +1,6 @@
-import * as TestResources from "../../resources/test-resources"
+import * as TestResources from "../../../../resources/test-resources"
 import {fhir} from "@models"
-import {convertSpineResponseToFhir} from "../../../src/services/translation/response/tracker/translation"
+import {convertSpineResponseToFhir} from "../../../../../src/services/translation/response/tracker/translation"
 
 describe("translateToFhir", () => {
   it("succeeds with 1 line item", () => {
@@ -20,7 +20,8 @@ describe("translateToFhir", () => {
       .forEach(task => {
         const id = task.focus.identifier.value
         task.input.forEach((input, index) => {
-          expect(input.valueReference.identifier.value).toEqual(Object.keys(spineResponse[id].lineItems)[index])
+          const expected = Object.keys(spineResponse.prescriptions[id].lineItems)[index]
+          expect(input.valueReference.identifier.value).toEqual(expected)
         })
       })
   })

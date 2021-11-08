@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import * as uuid from "uuid"
-import {DISPENSING_USER_SCOPE, PRESCRIBING_USER_SCOPE} from "../services/validation/prescribing-dispensing-tracker"
+import {DISPENSING_USER_SCOPE, PRESCRIBING_USER_SCOPE} from "../services/validation/scope-validator"
 
 export enum RequestHeaders {
   REQUEST_ID = "nhsd-request-id",

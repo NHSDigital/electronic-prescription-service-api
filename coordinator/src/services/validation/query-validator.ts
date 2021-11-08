@@ -1,8 +1,17 @@
 import Hapi from "@hapi/hapi"
 import {fhir, validationErrors} from "@models"
 import {QueryParam, queryParamMetadata, ValidQuery} from "../../routes/tracker/task"
+import {validatePermittedTrackerMessage} from "./scope-validator"
 
-export const validateQueryParameters = (queryParams: Hapi.RequestQuery): Array<fhir.OperationOutcomeIssue> => {
+export const validateQueryParameters = (
+  queryParams: Hapi.RequestQuery,
+  scope: string
+): Array<fhir.OperationOutcomeIssue> => {
+  const permissionErrors = validatePermittedTrackerMessage(scope)
+  if (permissionErrors.length) {
+    return permissionErrors
+  }
+
   const validatedEntries = Object.entries(queryParams).filter(
     ([queryParam]) => queryParamMetadata.has(queryParam as QueryParam)
   )

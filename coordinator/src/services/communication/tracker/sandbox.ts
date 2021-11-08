@@ -1,8 +1,8 @@
 import {TrackerClient} from "."
-import {DetailTrackerResponse, SummaryTrackerResponse} from "../../../../../models/spine/spine-model"
+import {tracker} from "@models"
 
 export class SandboxTrackerClient implements TrackerClient {
-  getPrescriptions(): Promise<SummaryTrackerResponse> {
+  getPrescriptions(): Promise<tracker.SummaryTrackerResponse> {
     return Promise.resolve({
       version: "1",
       reason: "",
@@ -45,7 +45,7 @@ export class SandboxTrackerClient implements TrackerClient {
     })
   }
 
-  getPrescription(): Promise<DetailTrackerResponse> {
+  getPrescription(): Promise<tracker.DetailTrackerResponse> {
     return Promise.resolve({
       version: "2",
       reason: "",

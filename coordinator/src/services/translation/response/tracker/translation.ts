@@ -1,10 +1,4 @@
-import {
-  DetailPrescription,
-  DetailTrackerResponse,
-  SummaryPrescription,
-  SummaryTrackerResponse
-} from "../../../../../../models/spine/spine-model"
-import {fhir} from "@models"
+import {fhir, tracker} from "@models"
 import * as uuid from "uuid"
 import {convertResourceToBundleEntry} from "../common"
 import moment from "moment"
@@ -15,8 +9,15 @@ import {LosslessNumber} from "lossless-json"
 
 const STATUS_CODE_SUCCESS = "0"
 
+export function toDetailTrackerResponse(
+  rawResponse: tracker.TrackerResponse & Record<string, tracker.DetailPrescription>
+): tracker.DetailTrackerResponse {
+  const {version, reason, statusCode, ...prescriptions} = rawResponse
+  return {version, reason, statusCode, prescriptions}
+}
+
 export function convertSpineResponseToFhir(
-  {statusCode, reason, prescriptions}: SummaryTrackerResponse | DetailTrackerResponse
+  {statusCode, reason, prescriptions}: tracker.SummaryTrackerResponse | tracker.DetailTrackerResponse
 ): fhir.Bundle | fhir.OperationOutcome {
   if (statusCode !== STATUS_CODE_SUCCESS) {
     return fhir.createOperationOutcome([fhir.createOperationOutcomeIssue(
@@ -44,7 +45,7 @@ export function convertSpineResponseToFhir(
 
 function convertPrescriptionToTask(
   prescriptionId: string,
-  prescription: DetailPrescription | SummaryPrescription
+  prescription: tracker.DetailPrescription | tracker.SummaryPrescription
 ): fhir.Task {
   const {status, businessStatus} = getPrescriptionStatusCodesFromDisplay(prescription.prescriptionStatus)
   const id = uuid.v4()
@@ -214,7 +215,10 @@ function createRepeatInfoExtension(currentIssue: string, totalAuthorised: string
   }
 }
 
-function convertLineItemToInput(lineItemId: string, prescription: SummaryPrescription | DetailPrescription) {
+function convertLineItemToInput(
+  lineItemId: string,
+  prescription: tracker.SummaryPrescription | tracker.DetailPrescription
+) {
   const lineItem = prescription.lineItems[lineItemId]
   const taskInput: fhir.TaskInput = {
     type: fhir.createCodeableConcept("http://snomed.info/sct", "16076005", "Prescription"),
@@ -257,7 +261,10 @@ function convertLineItemToInput(lineItemId: string, prescription: SummaryPrescri
   return taskInput
 }
 
-function convertLineItemToOutput(lineItemId: string, prescription: SummaryPrescription | DetailPrescription) {
+function convertLineItemToOutput(
+  lineItemId: string,
+  prescription: tracker.SummaryPrescription | tracker.DetailPrescription
+) {
   const taskOutput: fhir.TaskOutput = {
     type: fhir.createCodeableConcept("http://snomed.info/sct", "373784005", "Dispensing medication"),
     valueReference: fhir.createIdentifierReference(

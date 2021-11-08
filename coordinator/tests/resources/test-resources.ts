@@ -4,14 +4,15 @@ import * as fs from "fs"
 import * as path from "path"
 import * as LosslessJson from "lossless-json"
 import {
-  hl7V3,
+  fetcher,
   fhir,
+  hl7V3,
   spine,
-  fetcher
+  tracker
 } from "@models"
 import Hapi from "@hapi/hapi"
 import {readXml} from "../../src/services/serialisation/xml"
-import {DetailTrackerResponse} from "../../../models/spine/spine-model"
+import {toDetailTrackerResponse} from "../../src/services/translation/response/tracker/translation"
 
 export const convertSuccessExamples = fetcher.convertExamples.filter(
   e => e.isSuccess).map(spec => spec.toSuccessJestCase()
@@ -274,27 +275,25 @@ export const spineResponses = {
 }
 
 export const trackerSpineResponses = {
-  success1LineItem: JSON.parse(fs.readFileSync(
-    path.join(__dirname, "./spine-responses/tracker-responses/success-1-lineItem.json"),
-    "utf8"
-  )) as DetailTrackerResponse,
-  success2LineItems: JSON.parse(fs.readFileSync(
-    path.join(__dirname, "./spine-responses/tracker-responses/success-2-lineItems.json"),
-    "utf8"
-  )) as DetailTrackerResponse,
-  successCreated: JSON.parse(fs.readFileSync(
-    path.join(__dirname, "./spine-responses/tracker-responses/success-created.json"),
-    "utf8"
-  )) as DetailTrackerResponse,
-  successClaimed: JSON.parse(fs.readFileSync(
-    path.join(__dirname, "./spine-responses/tracker-responses/success-claimed.json"),
-    "utf8"
-  )) as DetailTrackerResponse,
-  errorNoIssueNumber: JSON.parse(fs.readFileSync(
-    path.join(__dirname, "./spine-responses/tracker-responses/error-no-issue-number.json"),
-    "utf8"
-  )) as DetailTrackerResponse
+  success1LineItem: readDetailTrackerResponse("success-1-lineItem.json"),
+  success2LineItems: readDetailTrackerResponse("success-2-lineItems.json"),
+  successCreated: readDetailTrackerResponse("success-created.json"),
+  successClaimed: readDetailTrackerResponse("success-claimed.json"),
+  errorNoIssueNumber: readDetailTrackerResponse("error-no-issue-number.json")
 }
+
+function readDetailTrackerResponse(filename: string): tracker.DetailTrackerResponse {
+  const filePath = path.join(__dirname, `./spine-responses/tracker-responses/${filename}`)
+  const responseStr = fs.readFileSync(filePath, "utf8")
+  const responseObj = JSON.parse(responseStr)
+  return toDetailTrackerResponse(responseObj)
+}
+
+// function readSummaryTrackerResponse(filename: string): SummaryTrackerResponse {
+//   const filePath = path.join(__dirname, `./spine-responses/tracker-responses/${filename}`)
+//   const responseStr = fs.readFileSync(filePath, "utf8")
+//   return JSON.parse(responseStr)
+// }
 
 function getLocation(search: string) {
   return fetcher
