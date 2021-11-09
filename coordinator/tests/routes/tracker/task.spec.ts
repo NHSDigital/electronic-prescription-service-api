@@ -4,70 +4,53 @@ import {
   QueryParam,
   ValidQuery
 } from "../../../src/routes/tracker/task"
-import {fhir} from "@models"
+import {fetcher, fhir} from "@models"
+import {isTask} from "../../../src/utils/type-guards"
 
-const task: fhir.Task = {
-  resourceType: "Task",
-  identifier: [{
-    system: "https://tools.ietf.org/html/rfc4122",
-    value: "8698b467-5cbc-429b-9a1c-9e707f02907d"
-  }],
-  status: fhir.TaskStatus.IN_PROGRESS,
-  focus: {
-    identifier: {
-      system: "https://fhir.nhs.uk/Id/prescription-order-number",
-      value: "CCAD24-A99968-464724"
-    }
-  },
-  intent: fhir.TaskIntent.ORDER,
-  for: {
-    identifier: {
-      system: "https://fhir.nhs.uk/Id/nhs-number",
-      value: "9449304106"
-    }
-  },
-  authoredOn: "2021-11-02"
-}
+const exampleTasks = fetcher.taskExamples.map(example => example.request).filter(isTask)
 
-const cases: Array<[ValidQuery, boolean]> = [
-  [{[QueryParam.IDENTIFIER]: "CCAD24-A99968-464724"}, true],
-  [{[QueryParam.IDENTIFIER]: "003D4D-A99968-4C5AAJ"}, false],
-  [{[QueryParam.FOCUS_IDENTIFIER]: "CCAD24-A99968-464724"}, true],
-  [{[QueryParam.FOCUS_IDENTIFIER]: "003D4D-A99968-4C5AAJ"}, false],
-  [{[QueryParam.PATIENT_IDENTIFIER]: "9449304106"}, true],
-  [{[QueryParam.PATIENT_IDENTIFIER]: "9449304130"}, false],
-  [{[QueryParam.FOCUS_IDENTIFIER]: "CCAD24-A99968-464724", [QueryParam.PATIENT_IDENTIFIER]: "9449304106"}, true],
-  [{[QueryParam.FOCUS_IDENTIFIER]: "003D4D-A99968-4C5AAJ", [QueryParam.PATIENT_IDENTIFIER]: "9449304106"}, false],
-  [{[QueryParam.FOCUS_IDENTIFIER]: "CCAD24-A99968-464724", [QueryParam.PATIENT_IDENTIFIER]: "9449304130"}, false]
+const exampleTask1 = exampleTasks[0]
+const prescriptionId1 = exampleTask1.focus.identifier.value
+const nhsNumber1 = exampleTask1.for.identifier.value
+
+const exampleTask2 = exampleTasks.find(task =>
+  task.focus.identifier.value !== prescriptionId1
+  && task.for.identifier.value !== nhsNumber1
+)
+const prescriptionId2 = exampleTask2.focus.identifier.value
+const nhsNumber2 = exampleTask2.for.identifier.value
+
+const exampleBundleEntries: Array<fhir.BundleEntry> = [{resource: exampleTask1}, {resource: exampleTask2}]
+
+const taskCases: Array<[ValidQuery, boolean]> = [
+  [{[QueryParam.IDENTIFIER]: prescriptionId1}, true],
+  [{[QueryParam.IDENTIFIER]: prescriptionId2}, false],
+  [{[QueryParam.FOCUS_IDENTIFIER]: prescriptionId1}, true],
+  [{[QueryParam.FOCUS_IDENTIFIER]: prescriptionId2}, false],
+  [{[QueryParam.PATIENT_IDENTIFIER]: nhsNumber1}, true],
+  [{[QueryParam.PATIENT_IDENTIFIER]: nhsNumber2}, false],
+  [{[QueryParam.FOCUS_IDENTIFIER]: prescriptionId1, [QueryParam.PATIENT_IDENTIFIER]: nhsNumber1}, true],
+  [{[QueryParam.FOCUS_IDENTIFIER]: prescriptionId2, [QueryParam.PATIENT_IDENTIFIER]: nhsNumber1}, false],
+  [{[QueryParam.FOCUS_IDENTIFIER]: prescriptionId1, [QueryParam.PATIENT_IDENTIFIER]: nhsNumber2}, false]
 ]
 
-test.each(cases)("matchesQuery returns expected result", (query: ValidQuery, expectedResult: boolean) => {
-  const matches = matchesQuery(task, query)
+test.each(taskCases)("matchesQuery returns expected result", (query: ValidQuery, expectedResult: boolean) => {
+  const matches = matchesQuery(exampleTask1, query)
   expect(matches).toBe(expectedResult)
 })
 
-test("filterBundleEntries returns expected result", () => {
-  const task2: fhir.Task = {
-    ...task,
-    focus: {
-      identifier: {
-        system: "https://fhir.nhs.uk/Id/prescription-order-number",
-        value: "003D4D-A99968-4C5AAJ"
-      }
-    }
+const bundleCases: Array<[ValidQuery, Array<fhir.Task>]> = [
+  [{}, [exampleTask1, exampleTask2]],
+  [{[QueryParam.FOCUS_IDENTIFIER]: prescriptionId1}, [exampleTask1]],
+  [{[QueryParam.FOCUS_IDENTIFIER]: prescriptionId2}, [exampleTask2]],
+  [{[QueryParam.FOCUS_IDENTIFIER]: "Invalid"}, []]
+]
+
+test.each(bundleCases)(
+  "filterBundleEntries returns expected result",
+  (query: ValidQuery, expectedMatches: Array<fhir.Task>) => {
+    const filteredEntries = filterBundleEntries(exampleBundleEntries, query)
+    const resources = filteredEntries.map(entry => entry.resource)
+    expect(resources).toEqual(expectedMatches)
   }
-  const bundle: fhir.Bundle = {
-    resourceType: "Bundle",
-    entry: [
-      {
-        resource: task
-      },
-      {
-        resource: task2
-      }
-    ]
-  }
-  filterBundleEntries(bundle, {[QueryParam.IDENTIFIER]: "CCAD24-A99968-464724"})
-  expect(bundle.entry).toHaveLength(1)
-  expect(bundle.entry[0].resource).toEqual(task)
-})
+)
