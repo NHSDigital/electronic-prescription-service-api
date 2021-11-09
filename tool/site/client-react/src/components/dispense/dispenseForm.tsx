@@ -31,18 +31,16 @@ const DispenseForm: React.FC<DispenseFormProps> = ({
 
   return (
     <Formik<DispenseFormValues> initialValues={initialValues} onSubmit={values => sendDispenseNotification(values)}>
-      {formik => {
-        return (
-          <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
-            <FieldArray name="lineItems" component={LineItemArray}/>
-            <Prescription name="prescription"/>
-            <ButtonList>
-              <Button type="submit">Dispense</Button>
-              <Button type="reset" secondary>Reset</Button>
-            </ButtonList>
-          </Form>
-        )
-      }}
+      {formik =>
+        <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
+          <FieldArray name="lineItems" component={LineItemArray}/>
+          <Prescription name="prescription"/>
+          <ButtonList>
+            <Button type="submit">Dispense</Button>
+            <Button type="reset" secondary>Reset</Button>
+          </ButtonList>
+        </Form>
+      }
     </Formik>
   )
 }
