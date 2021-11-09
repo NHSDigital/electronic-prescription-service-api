@@ -1,3 +1,8 @@
+import {fhir} from "../../../../models"
+import {convertMomentToISODate} from "../../../../coordinator"
+import {getMedicationRequests} from "../../../../coordinator/src/services/translation/common/getResourcesOfType"
+import moment from "moment"
+
 /**
  * Models
  */
@@ -33,12 +38,28 @@ const SECONDARY_CARE_COMMUNITY_ACUTE_NON_NOMINATED = getPrescription(
 const HOMECARE_ACUTE_NOMINATED = getPrescription(
   "secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Prepare-Request-200_OK.json"
 )
-/* eslint-enable max-len */
-export default {
+
+function setValidityPeriod(bundle: fhir.Bundle) {
+  const medicationRequests = getMedicationRequests(bundle)
+  const start = convertMomentToISODate(moment.utc())
+  const end = convertMomentToISODate(moment.utc().add(1, "month"))
+  medicationRequests.forEach(medicationRequest => {
+    const validityPeriod = medicationRequest.dispenseRequest.validityPeriod
+    validityPeriod.start = start
+    validityPeriod.end = end
+  })
+}
+
+const prescriptions = [
   PRIMARY_CARE_ACUTE_NOMINATED,
   PRIMARY_CARE_REPEAT_PRESCRIBING_NOMINATED,
   SECONDARY_CARE_COMMUNITY_ACUTE_NOMINATED,
   SECONDARY_CARE_COMMUNITY_ACUTE_NON_NOMINATED,
   SECONDARY_CARE_REPEAT_DISPENSING_NOMINATED,
   HOMECARE_ACUTE_NOMINATED
-}
+]
+
+prescriptions.forEach(setValidityPeriod)
+
+/* eslint-enable max-len */
+export default {...prescriptions}
