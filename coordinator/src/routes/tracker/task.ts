@@ -59,7 +59,7 @@ export default [{
 
     const result = convertSpineTrackerResponseToFhir(spineResponse)
     if (isBundle(result)) {
-      result.entry = filterBundleEntries(result.entry, validQuery)
+      filterBundleEntries(result, validQuery)
     }
     return responseToolkit
       .response(LosslessJson.stringify(result))
@@ -95,11 +95,13 @@ function getValue(query: ValidQuery, param: QueryParam): string {
   return rawValue
 }
 
-export function filterBundleEntries(
-  entries: Array<fhir.BundleEntry>,
-  queryParams: ValidQuery
-): Array<fhir.BundleEntry> {
-  return entries.filter(entry => isTask(entry.resource) && matchesQuery(entry.resource, queryParams))
+export function filterBundleEntries(bundle: fhir.Bundle, queryParams: ValidQuery): void {
+  const filteredEntries = bundle.entry.filter(entry =>
+    isTask(entry.resource)
+    && matchesQuery(entry.resource, queryParams)
+  )
+  bundle.entry = filteredEntries
+  bundle.total = filteredEntries.length
 }
 
 export function matchesQuery(task: fhir.Task, queryParams: ValidQuery): boolean {

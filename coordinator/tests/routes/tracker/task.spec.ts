@@ -20,8 +20,6 @@ const exampleTask2 = exampleTasks.find(task =>
 const prescriptionId2 = exampleTask2.focus.identifier.value
 const nhsNumber2 = exampleTask2.for.identifier.value
 
-const exampleBundleEntries: Array<fhir.BundleEntry> = [{resource: exampleTask1}, {resource: exampleTask2}]
-
 const taskCases: Array<[ValidQuery, boolean]> = [
   [{[QueryParam.IDENTIFIER]: prescriptionId1}, true],
   [{[QueryParam.IDENTIFIER]: prescriptionId2}, false],
@@ -49,8 +47,14 @@ const bundleCases: Array<[ValidQuery, Array<fhir.Task>]> = [
 test.each(bundleCases)(
   "filterBundleEntries returns expected result",
   (query: ValidQuery, expectedMatches: Array<fhir.Task>) => {
-    const filteredEntries = filterBundleEntries(exampleBundleEntries, query)
-    const resources = filteredEntries.map(entry => entry.resource)
+    const bundle: fhir.Bundle = {
+      resourceType: "Bundle",
+      entry: [{resource: exampleTask1}, {resource: exampleTask2}],
+      total: 2
+    }
+    filterBundleEntries(bundle, query)
+    const resources = bundle.entry.map(entry => entry.resource)
     expect(resources).toEqual(expectedMatches)
+    expect(bundle.total).toEqual(expectedMatches.length)
   }
 )
