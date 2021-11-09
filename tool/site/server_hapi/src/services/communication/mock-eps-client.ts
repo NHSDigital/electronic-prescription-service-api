@@ -35,7 +35,9 @@ export class MockEpsClient implements EpsClient {
         "X-Request-ID": uuid.v4(),
         "X-Raw-Response": "true"
       }
-    })).data as string
+    })).data
+    const spineResponseStr = typeof spineResponse === "string" ? spineResponse : JSON.stringify(spineResponse)
+
     const fhirResponse: OperationOutcome = {
       resourceType: "OperationOutcome",
       issue: [
@@ -45,14 +47,18 @@ export class MockEpsClient implements EpsClient {
         }
       ]
     }
-    return Promise.resolve({statusCode, fhirResponse, spineResponse})
+    return Promise.resolve({statusCode, fhirResponse, spineResponse: spineResponseStr})
   }
 
   async makeConvertRequest(body: unknown): Promise<string> {
     const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/$convert`
     //TODO - why is the mock client sending real requests?
-    const response = (await axios.post(url, body, {headers: {"X-Request-ID": uuid.v4()}})).data
-    return response as string
+    const response = (await axios.post(url, body, {
+      headers: {
+        "X-Request-ID": uuid.v4()
+      }
+    })).data
+    return typeof response === "string" ? response : JSON.stringify(response)
   }
 
   async makeGetTrackerRequest(): Promise<Bundle | OperationOutcome> {

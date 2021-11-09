@@ -41,23 +41,20 @@ export class LiveEpsClient implements EpsClient {
     additionalHeaders?: AxiosRequestHeaders
   ): Promise<AxiosResponse<T>> {
     const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/${path}`
-    let headers: AxiosRequestHeaders = {
+    const headers: AxiosRequestHeaders = {
       "Authorization": `Bearer ${this.accessToken}`,
       "x-request-id": requestId ?? uuid.v4(),
       "x-correlation-id": uuid.v4()
     }
     if (additionalHeaders) {
-      headers = {
-        ...headers,
-        ...additionalHeaders
-      }
+      Object.assign(headers, additionalHeaders)
     }
 
     return axios.request({
       url,
       method: body ? "POST" : "GET",
       headers,
-      validateStatus: () => true
+      data: body
     })
   }
 }
