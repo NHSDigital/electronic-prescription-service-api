@@ -20,15 +20,15 @@ export type ValidQuery = Partial<Record<QueryParam, string>>
 export const queryParamMetadata = new Map([
   [QueryParam.FOCUS_IDENTIFIER, {
     system: "https://fhir.nhs.uk/Id/prescription-order-number",
-    getTaskField: (task: fhir.Task) => task.focus.identifier
+    getTaskField: (task: fhir.Task) => task.focus.identifier.value
   }],
   [QueryParam.IDENTIFIER, {
     system: "https://fhir.nhs.uk/Id/prescription-order-number",
-    getTaskField: task => task.focus.identifier
+    getTaskField: task => task.focus.identifier.value
   }],
   [QueryParam.PATIENT_IDENTIFIER, {
     system: "https://fhir.nhs.uk/Id/nhs-number",
-    getTaskField: task => task.for.identifier
+    getTaskField: task => task.for.identifier.value
   }]
 ])
 
@@ -95,16 +95,16 @@ function getValue(query: ValidQuery, param: QueryParam): string {
   return rawValue
 }
 
-function filterBundleEntries(result: fhir.Bundle, queryParams: ValidQuery) {
-  result.entry = result.entry.filter(entry => isTask(entry.resource) && filterTask(entry.resource, queryParams))
+export function filterBundleEntries(result: fhir.Bundle, queryParams: ValidQuery): void {
+  result.entry = result.entry.filter(entry => isTask(entry.resource) && matchesQuery(entry.resource, queryParams))
 }
 
-function filterTask(task: fhir.Task, queryParams: ValidQuery) {
-  queryParamMetadata.forEach((metadata, queryParam) => {
+export function matchesQuery(task: fhir.Task, queryParams: ValidQuery): boolean {
+  for (const [queryParam, metadata] of queryParamMetadata) {
     const queryParamValue = getValue(queryParams, queryParam)
     if (queryParamValue && metadata.getTaskField(task) !== queryParamValue) {
       return false
     }
-  })
+  }
   return true
 }
