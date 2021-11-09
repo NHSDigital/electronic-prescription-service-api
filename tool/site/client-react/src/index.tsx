@@ -10,6 +10,7 @@ import ClaimPage from "./pages/claimPage"
 import SearchPage from "./pages/searchPage"
 import DispensePage from "./pages/dispensePage"
 import ButtonList from "./components/buttonList"
+import SendPage from "./pages/sendPage"
 
 const customWindow = window as Record<string, any>
 
@@ -65,14 +66,17 @@ async function startApplication(baseUrl: string): Promise<void> {
                 <Button secondary href={baseUrl}>Back</Button>
               </ButtonList>
             </Route>
-            <Route path={`${baseUrl}search`}>
-              <SearchPage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")}/>
+            <Route path={`${baseUrl}prescribe/send`}>
+              <SendPage baseUrl={baseUrl} token={urlParams.get("token")}/>
             </Route>
             <Route path={`${baseUrl}dispense/dispense`}>
               <DispensePage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")}/>
             </Route>
             <Route path={`${baseUrl}dispense/claim`}>
               <ClaimPage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")}/>
+            </Route>
+            <Route path={`${baseUrl}search`}>
+              <SearchPage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")}/>
             </Route>
           </Switch>
         </BrowserRouter>
