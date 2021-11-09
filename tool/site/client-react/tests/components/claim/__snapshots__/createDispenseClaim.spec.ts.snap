@@ -43,6 +43,19 @@ Object {
                 },
               },
             },
+            Object {
+              "extension": Array [
+                Object {
+                  "url": "numberOfRepeatsIssued",
+                  "valueInteger": 1,
+                },
+                Object {
+                  "url": "numberOfRepeatsAllowed",
+                  "valueInteger": 6,
+                },
+              ],
+              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+            },
           ],
           "modifier": Array [
             Object {

@@ -8,8 +8,12 @@ exports[`Renders correctly 1`] = `
     <dd class=\\"nhsuk-summary-list__value\\">A0548B-A99968-451485</dd>
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Repeat Information</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">1/6</dd>
+    <dt class=\\"nhsuk-summary-list__key\\">Course Of Therapy</dt>
+    <dd class=\\"nhsuk-summary-list__value\\">Short course (acute) therapy</dd>
+  </div>
+  <div class=\\"nhsuk-summary-list__row\\">
+    <dt class=\\"nhsuk-summary-list__key\\">Issue Number</dt>
+    <dd class=\\"nhsuk-summary-list__value\\">1 of 6</dd>
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Authored On</dt>
@@ -92,6 +96,10 @@ exports[`Renders correctly 1`] = `
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Name</dt>
     <dd class=\\"nhsuk-summary-list__value\\">EDWARDS, Thomas (DR)</dd>
+  </div>
+  <div class=\\"nhsuk-summary-list__row\\">
+    <dt class=\\"nhsuk-summary-list__key\\">Professional Codes</dt>
+    <dd class=\\"nhsuk-summary-list__value\\">GMC Number - 12345</dd>
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Telecom</dt>
