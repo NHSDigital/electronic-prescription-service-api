@@ -17,10 +17,15 @@ export enum QueryParam {
 
 export type ValidQuery = Partial<Record<QueryParam, string>>
 
-export const queryParamMetadata = new Map([
+interface QueryParamProperties {
+  system: string
+  getTaskField: (task: fhir.Task) => string
+}
+
+export const queryParamMetadata = new Map<QueryParam, QueryParamProperties>([
   [QueryParam.FOCUS_IDENTIFIER, {
     system: "https://fhir.nhs.uk/Id/prescription-order-number",
-    getTaskField: (task: fhir.Task) => task.focus.identifier.value
+    getTaskField: task => task.focus.identifier.value
   }],
   [QueryParam.IDENTIFIER, {
     system: "https://fhir.nhs.uk/Id/prescription-order-number",
@@ -72,26 +77,21 @@ async function makeSpineRequest(validQuery: ValidQuery, request: Hapi.Request) {
   const prescriptionIdentifier = getValue(validQuery, QueryParam.FOCUS_IDENTIFIER)
     || getValue(validQuery, QueryParam.IDENTIFIER)
   if (prescriptionIdentifier) {
-    return await trackerClient.getPrescription(prescriptionIdentifier, request.headers, request.logger)
+    return await trackerClient.getPrescriptionById(prescriptionIdentifier, request.headers, request.logger)
   }
 
   const patientIdentifier = getValue(validQuery, QueryParam.PATIENT_IDENTIFIER)
   if (patientIdentifier) {
-    return await trackerClient.getPrescriptions(patientIdentifier, request.headers, request.logger)
+    return await trackerClient.getPrescriptionsByPatientId(patientIdentifier, request.headers, request.logger)
   }
 }
 
-function getValue(query: ValidQuery, param: QueryParam): string {
+export function getValue(query: ValidQuery, param: QueryParam): string {
   const rawValue = query[param]
-  if (!rawValue) {
-    return rawValue
+  const pipeIndex = rawValue?.indexOf("|") || -1
+  if (pipeIndex !== -1) {
+    return rawValue.substring(pipeIndex + 1)
   }
-
-  const systemPrefix = queryParamMetadata.get(param) + "|"
-  if (rawValue.startsWith(systemPrefix)) {
-    return rawValue.substring(systemPrefix.length)
-  }
-
   return rawValue
 }
 

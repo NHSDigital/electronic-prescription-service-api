@@ -5,12 +5,12 @@ import {LiveTrackerClient} from "./live"
 import {spine} from "@models"
 
 export interface TrackerClient {
-  getPrescriptions(
+  getPrescriptionsByPatientId(
     patientId: string,
     headers: Hapi.Util.Dictionary<string>,
     logger: pino.Logger
   ): Promise<spine.SummaryTrackerResponse>
-  getPrescription(
+  getPrescriptionById(
     prescriptionId: string,
     headers: Hapi.Util.Dictionary<string>,
     logger: pino.Logger

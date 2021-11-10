@@ -8,6 +8,12 @@ export interface SummaryTrackerResponse extends TrackerResponse {
   prescriptions: Record<string, SummaryPrescription>
 }
 
+/**
+ * RawDetailTrackerResponse is the actual response format from Spine.
+ * Typescript doesn't like it so we convert to DetailTrackerResponse at the earliest opportunity.
+ */
+export type RawDetailTrackerResponse = TrackerResponse & Record<string, DetailPrescription>
+
 export interface DetailTrackerResponse extends TrackerResponse {
   prescriptions: Record<string, DetailPrescription>
 }

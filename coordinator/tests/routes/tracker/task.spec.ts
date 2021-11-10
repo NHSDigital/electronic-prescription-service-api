@@ -1,5 +1,6 @@
 import {
   filterBundleEntries,
+  getValue,
   matchesQuery,
   QueryParam,
   ValidQuery
@@ -58,3 +59,23 @@ test.each(bundleCases)(
     expect(bundle.total).toEqual(expectedMatches.length)
   }
 )
+
+const exampleQuery: ValidQuery = {
+  [QueryParam.FOCUS_IDENTIFIER]: "18B064-A99968-4BCAA3",
+  [QueryParam.PATIENT_IDENTIFIER]: "https://fhir.nhs.uk/Id/nhs-number|9449304289"
+}
+
+test("getValue returns correct result when value present and system not specified", () => {
+  const value = getValue(exampleQuery, QueryParam.FOCUS_IDENTIFIER)
+  expect(value).toEqual("18B064-A99968-4BCAA3")
+})
+
+test("getValue returns correct result when value present and system specified", () => {
+  const value = getValue(exampleQuery, QueryParam.PATIENT_IDENTIFIER)
+  expect(value).toEqual("9449304289")
+})
+
+test("getValue returns correct result when value not present", () => {
+  const value = getValue(exampleQuery, QueryParam.IDENTIFIER)
+  expect(value).toBeFalsy()
+})

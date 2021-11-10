@@ -4,11 +4,12 @@ import {convertResourceToBundleEntry} from "../common"
 import moment from "moment"
 import {HL7_V3_DATE_TIME_FORMAT, ISO_DATE_FORMAT} from "../../common/dateTime"
 import {LosslessNumber} from "lossless-json"
+import {RawDetailTrackerResponse} from "../../../../../../models/spine"
 
 const STATUS_CODE_SUCCESS = "0"
 
 export function convertRawResponseToDetailTrackerResponse(
-  rawResponse: spine.TrackerResponse & Record<string, spine.DetailPrescription>
+  rawResponse: RawDetailTrackerResponse
 ): spine.DetailTrackerResponse {
   const {version, reason, statusCode, ...prescriptions} = rawResponse
   return {version, reason, statusCode, prescriptions}
