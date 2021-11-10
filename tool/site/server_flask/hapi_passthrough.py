@@ -59,8 +59,8 @@ def post_dispense(body):
 
 # Tracker
 
-def get_tracker_prescription(short_prescription_id):
-    return make_get_request(f"{HAPI_URL}/search?prescription_id={short_prescription_id}")
+def get_tracker_prescription(query):
+    return make_get_request(f"{HAPI_URL}/search?{query}")
 
 
 # Session
