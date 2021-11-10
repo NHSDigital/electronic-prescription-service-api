@@ -1,7 +1,7 @@
 import * as uuid from "uuid"
 import axios from "axios"
 import {Bundle, OperationOutcome, Parameters} from "fhir/r4"
-import {EpsClient, EpsSearchRequest, EpsSendReponse} from "./eps-client"
+import {EpsClient, EpsSendReponse} from "./eps-client"
 
 export class MockEpsClient implements EpsClient {
 
@@ -51,8 +51,7 @@ export class MockEpsClient implements EpsClient {
     return response as string
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async makeGetTrackerRequest(searchRequest: EpsSearchRequest): Promise<Bundle | OperationOutcome> {
+  async makeGetTrackerRequest(): Promise<Bundle | OperationOutcome> {
     return await this.mockAxiosResponse({
       resourceType: "Bundle",
       type: "searchset",
