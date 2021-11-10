@@ -1,8 +1,9 @@
 import {Field} from "formik"
-import {Button, Input, Select} from "nhsuk-react-components"
+import {Button, Input} from "nhsuk-react-components"
 import * as React from "react"
 import ButtonList from "../buttonList"
 import {VALUE_SET_DISPENSER_ENDORSEMENT} from "../../fhir/reference-data/valueSets"
+import SelectField, {convertCodingsToOptions} from "../selectField"
 
 interface EndorsementProps {
   name: string
@@ -16,11 +17,11 @@ const Endorsement: React.FC<EndorsementProps> = ({
   removeEndorsement
 }) => (
   <>
-    <Field id={`${name}.code`} name={`${name}.code`} as={Select} label={`${label} Type`}>
-      {VALUE_SET_DISPENSER_ENDORSEMENT.map(coding =>
-        <Select.Option key={coding.code} value={coding.code}>{coding.display}</Select.Option>
-      )}
-    </Field>
+    <SelectField
+      name={`${name}.code`}
+      label={`${label} Type`}
+      fieldOptions={convertCodingsToOptions(VALUE_SET_DISPENSER_ENDORSEMENT)}
+    />
     <Field
       id={`${name}.supportingInfo`}
       name={`${name}.supportingInfo`}

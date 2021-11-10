@@ -4,10 +4,11 @@ import {
   getPatientResources
 } from "../../../src/fhir/bundleResourceFinder"
 import {createClaim} from "../../../src/components/claim/createDispenseClaim"
-import {toStaticProductInfo} from "../../../src/pages/claimPage"
 import * as fhir from "fhir/r4"
 import {getClaimSequenceIdentifierExtension} from "../../../src/fhir/customExtensions"
 import {readMessage} from "./messages/messages"
+import {createStaticProductInfoArray} from "../../../src/pages/claimPage"
+import {ClaimFormValues} from "../../../src/components/claim/claimForm"
 
 const prescriptionOrder = readMessage("prescriptionOrder.json")
 const dispenseNotification = readMessage("dispenseNotification.json")
@@ -16,9 +17,10 @@ const medicationRequests = getMedicationRequestResources(prescriptionOrder)
 const medicationDispenses = getMedicationDispenseResources(dispenseNotification)
 
 test("Produces expected result", () => {
-  const result = createClaim(patient, medicationRequests, medicationDispenses, {
-    products: medicationDispenses.map(medicationDispense => ({
-      ...toStaticProductInfo(medicationDispense),
+  const staticProductInfoArray = createStaticProductInfoArray(medicationDispenses)
+  const claimFormValues: ClaimFormValues = {
+    products: staticProductInfoArray.map(staticProductInfo => ({
+      ...staticProductInfo,
       patientPaid: true,
       endorsements: [{
         code: "IP",
@@ -29,7 +31,8 @@ test("Produces expected result", () => {
       code: "0005",
       evidenceSeen: true
     }
-  })
+  }
+  const result = createClaim(patient, medicationRequests, medicationDispenses, claimFormValues)
   replaceNonDeterministicValues(result)
   expect(result).toMatchSnapshot()
 })
