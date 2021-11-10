@@ -19,8 +19,7 @@ release:
 	cp -Rv proxies/live/apiproxy dist/proxies/live
 
 test:
-	echo Test
-#cd site/client-react && npm run test
+	cd site/client-react && npm run test
 
 clean:
 	docker-compose down

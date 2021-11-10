@@ -15,7 +15,7 @@ exports[`Displays claim form if prescription details are retrieved successfully 
       <dl class=\\"nhsuk-summary-list nhsuk-summary-list--no-border\\">
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Status</dt>
-          <dd class=\\"nhsuk-summary-list__value\\">Dispensed</dd>
+          <dd class=\\"nhsuk-summary-list__value\\">Item fully dispensed</dd>
         </div>
         <div class=\\"nhsuk-summary-list__row\\">
           <dt class=\\"nhsuk-summary-list__key\\">Quantity Dispensed</dt>
@@ -27,7 +27,7 @@ exports[`Displays claim form if prescription details are retrieved successfully 
           <div class=\\"nhsuk-checkboxes__item\\"><input class=\\"nhsuk-checkboxes__input\\" name=\\"products.0.patientPaid\\" id=\\"products.0.patientPaid.box\\" type=\\"checkbox\\" value=\\"false\\"><label class=\\"nhsuk-label nhsuk-checkboxes__label\\" id=\\"products.0.patientPaid.box--label\\" for=\\"products.0.patientPaid.box\\">Patient Paid</label></div>
         </div>
       </div>
-      <div><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"button\\">Add Endorsement</button></div>
+      <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"button\\">Add Endorsement</button></div>
     </fieldset>
   </div>
   <div class=\\"nhsuk-form-group\\">
@@ -56,11 +56,43 @@ exports[`Displays claim form if prescription details are retrieved successfully 
         </div>
       </div>
     </fieldset>
-  </div><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button>
+  </div>
+  <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
 </form>"
 `;
 
-exports[`Displays claim result 1`] = `"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Result</label></h1><pre style=\\"white-space: break-spaces; overflow-wrap: anywhere;\\">\\"Mock result\\"</pre>"`;
+exports[`Displays claim result 1`] = `
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Claim Result <svg class=\\"nhsuk-icon nhsuk-icon__tick\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
+      <path stroke-width=\\"4\\" stroke-linecap=\\"round\\" stroke=\\"#007f3b\\" fill=\\"none\\" d=\\"M18.4 7.8l-8.5 8.4L5.6 12\\"></path>
+    </svg></label></h1>
+<div class=\\"nhsuk-expander-group\\">
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request (FHIR)</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\" style=\\"margin-bottom: 0px;\\">Copy</button><a class=\\"nhsuk-button\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%22JSON%20Request%22\\" style=\\"margin-bottom: 0px;\\" download=\\"message\\">Download</a></div><pre style=\\"white-space: break-spaces; overflow-wrap: anywhere;\\">\\"JSON Request\\"</pre>
+    </div>
+  </details>
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request (HL7 V3)</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\" style=\\"margin-bottom: 0px;\\">Copy</button><a class=\\"nhsuk-button\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,XML%20Request\\" style=\\"margin-bottom: 0px;\\" download=\\"message\\">Download</a></div><pre style=\\"white-space: break-spaces; overflow-wrap: anywhere;\\">XML Request</pre>
+    </div>
+  </details>
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response (FHIR)</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\" style=\\"margin-bottom: 0px;\\">Copy</button><a class=\\"nhsuk-button\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:application/json;charset=utf-8,%22JSON%20Response%22\\" style=\\"margin-bottom: 0px;\\" download=\\"message\\">Download</a></div><pre style=\\"white-space: break-spaces; overflow-wrap: anywhere;\\">\\"JSON Response\\"</pre>
+    </div>
+  </details>
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response (HL7 V3)</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\" style=\\"margin-bottom: 0px;\\">Copy</button><a class=\\"nhsuk-button\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/xml;charset=utf-8,XML%20Response\\" style=\\"margin-bottom: 0px;\\" download=\\"message\\">Download</a></div><pre style=\\"white-space: break-spaces; overflow-wrap: anywhere;\\">XML Response</pre>
+    </div>
+  </details>
+</div>
+<div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><a class=\\"nhsuk-button nhsuk-button--secondary\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/\\" type=\\"button\\">Back</a></div>"
+`;
 
 exports[`Displays loading text while claim is being submitted 1`] = `"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Loading...</label></h1><label class=\\"nhsuk-label\\">Sending claim.</label>"`;
 

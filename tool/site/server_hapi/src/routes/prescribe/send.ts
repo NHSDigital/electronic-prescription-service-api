@@ -9,11 +9,16 @@ export default [
     method: "POST",
     path: "/prescribe/send",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      const parsedRequest = request.payload as {signatureToken: string}
+      const signatureToken = parsedRequest.signatureToken
+      const existingSendResult = getSessionValue(`signature_token_${signatureToken}`, request)
+      if (existingSendResult) {
+        return responseToolkit.response(existingSendResult).code(200)
+      }
       const accessToken = getSessionValue("access_token", request)
       const authMethod = getSessionValue("auth_method", request)
-      const parsedRequest = request.payload as {signatureToken: string}
       const signingClient = getSigningClient(request, accessToken, authMethod)
-      const signatureResponse = await signingClient.makeSignatureDownloadRequest(parsedRequest.signatureToken)
+      const signatureResponse = await signingClient.makeSignatureDownloadRequest(signatureToken)
       const prescriptionIds = getSessionValue("prescription_ids", request)
       const prepareResponses: {prescriptionId: string, response: Parameters}[] = prescriptionIds.map((id: string) => {
         return {
@@ -45,7 +50,7 @@ export default [
         const sendRequest = getSessionValue(`prescription_order_send_request_${prescriptionIds[0]}`, request)
         const sendResponse = await epsClient.makeSendRequest(sendRequest)
         const sendRequestHl7 = await epsClient.makeConvertRequest(sendRequest)
-        return responseToolkit.response({
+        const sendResult = {
           prescription_ids: prescriptionIds,
           prescription_id: prescriptionIds[0],
           success: true,
@@ -53,7 +58,9 @@ export default [
           request: sendRequest,
           response: sendResponse.fhirResponse,
           response_xml: sendResponse.spineResponse
-        }).code(200)
+        }
+        setSessionValue(`signature_token_${signatureToken}`, sendResult, request)
+        return responseToolkit.response(sendResult).code(200)
       }
 
       const results = []
@@ -65,11 +72,12 @@ export default [
           success: sendResponseStatus === 200
         })
       }
-
-      return responseToolkit.response({
+      const sendBulkResult = {
         prescription_ids: prescriptionIds,
         success_list: results
-      }).code(200)
+      }
+      setSessionValue(`signature_token_${signatureToken}`, sendBulkResult, request)
+      return responseToolkit.response(sendBulkResult).code(200)
     }
   }
 ]
