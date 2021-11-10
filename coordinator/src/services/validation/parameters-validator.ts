@@ -1,5 +1,5 @@
 import {fhir, validationErrors as errors} from "@models"
-import {validatePermittedDispenseMessage} from "./prescribing-dispensing-tracker"
+import {validatePermittedDispenseMessage} from "./scope-validator"
 
 export function verifyParameters(parameters: fhir.Parameters, scope: string): Array<fhir.OperationOutcomeIssue> {
   if (parameters.resourceType !== "Parameters") {

@@ -13,7 +13,7 @@ import {
 } from "../translation/common"
 import {fhir, validationErrors as errors} from "@models"
 import {isRepeatDispensing} from "../translation/request"
-import {validatePermittedDispenseMessage, validatePermittedPrescribeMessage} from "./prescribing-dispensing-tracker"
+import {validatePermittedDispenseMessage, validatePermittedPrescribeMessage} from "./scope-validator"
 import {prescriptionRefactorEnabled} from "../../utils/feature-flags"
 import {isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"

@@ -17,7 +17,7 @@ export class Task extends common.Resource {
   for: common.IdentifierReference<patient.Patient>
   authoredOn: string
   requester?: common.IdentifierReference<practitionerRole.PersonOrOrganization>
-  owner: common.IdentifierReference<practitionerRole.PersonOrOrganization>
+  owner?: common.IdentifierReference<practitionerRole.PersonOrOrganization>
   reasonCode?: common.CodeableConcept
   code?: common.CodeableConcept
   businessStatus?: common.CodeableConcept
