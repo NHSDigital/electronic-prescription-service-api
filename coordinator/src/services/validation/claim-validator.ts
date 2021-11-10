@@ -1,5 +1,5 @@
 import {fhir, validationErrors as errors} from "@models"
-import {validatePermittedDispenseMessage} from "./prescribing-dispensing-tracker"
+import {validatePermittedDispenseMessage} from "./scope-validator"
 
 export function verifyClaim(claim: fhir.Claim, scope: string): Array<fhir.OperationOutcomeIssue> {
   if (claim.resourceType !== "Claim") {

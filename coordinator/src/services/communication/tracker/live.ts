@@ -3,32 +3,54 @@ import pino from "pino"
 import axios from "axios"
 import Hapi from "@hapi/hapi"
 import {getAsid, getSdsRoleProfileId, getSdsUserUniqueId} from "../../../utils/headers"
+import {spine} from "@models"
+import {convertRawResponseToDetailTrackerResponse} from "../../translation/response/tracker/translation"
 
-const SPINE_ENDPOINT = process.env.SPINE_URL
-/* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-const SPINE_PRESCRIPTION_PATH = "nhs111itemsummary"
-const SPINE_LINE_ITEM_PATH = "nhs111itemdetails"
+const SPINE_BASE_URL = process.env.SPINE_URL
+const SPINE_PRESCRIPTION_SUMMARY_PATH = "nhs111itemsummary"
+const SPINE_PRESCRIPTION_DETAIL_PATH = "nhs111itemdetails"
 
 export class LiveTrackerClient implements TrackerClient {
-  async getPrescription(
+  async getPrescriptionsByPatientId(
+    patientId: string,
+    inboundHeaders: Hapi.Util.Dictionary<string>,
+    logger: pino.Logger
+  ): Promise<spine.SummaryTrackerResponse> {
+    const address = this.getPrescriptionSummaryUrl()
+    const queryParams = {
+      nhsNumber: patientId
+    }
+    return await LiveTrackerClient.makeTrackerRequest(inboundHeaders, address, queryParams, logger)
+  }
+
+  async getPrescriptionById(
     prescriptionId: string,
     inboundHeaders: Hapi.Util.Dictionary<string>,
     logger: pino.Logger
-  ): Promise<unknown> {
-    const address = this.getItemDetailUrl()
+  ): Promise<spine.DetailTrackerResponse> {
+    const address = this.getPrescriptionDetailUrl()
+    const queryParams = {
+      prescriptionId: prescriptionId,
+      issueNumber: "1"
+    }
+    const rawResponse = await LiveTrackerClient.makeTrackerRequest(inboundHeaders, address, queryParams, logger)
+    return convertRawResponseToDetailTrackerResponse(rawResponse)
+  }
 
+  private static async makeTrackerRequest(
+    inboundHeaders: Hapi.Util.Dictionary<string>,
+    address: string,
+    queryParams: Record<string, string>,
+    logger: pino.Logger
+  ) {
     const outboundHeaders = {
       "Accept": "application/json",
       "Spine-From-Asid": getAsid(inboundHeaders),
       "Spine-UserId": getSdsUserUniqueId(inboundHeaders),
       "Spine-RoleProfileId": getSdsRoleProfileId(inboundHeaders)
     }
-    const queryParams = {
-      prescriptionId: prescriptionId,
-      issueNumber: "1"
-    }
 
-    logger.info(`Attempting to send message to ${address} with prescriptionId: ${prescriptionId}`)
+    logger.info(`Attempting to send message to ${address}`)
     try {
       const response = await axios.get(
         address,
@@ -44,8 +66,11 @@ export class LiveTrackerClient implements TrackerClient {
     }
   }
 
-  getItemDetailUrl(): string {
-    return `https://${SPINE_ENDPOINT}/mm/${SPINE_LINE_ITEM_PATH}`
+  getPrescriptionSummaryUrl(): string {
+    return `https://${SPINE_BASE_URL}/mm/${SPINE_PRESCRIPTION_SUMMARY_PATH}`
+  }
+
+  getPrescriptionDetailUrl(): string {
+    return `https://${SPINE_BASE_URL}/mm/${SPINE_PRESCRIPTION_DETAIL_PATH}`
   }
 }
-
