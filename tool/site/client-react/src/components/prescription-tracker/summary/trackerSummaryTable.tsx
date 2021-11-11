@@ -27,7 +27,7 @@ const TrackerSummaryTable: React.FC<TrackerSummaryTableProps> = ({
       </Table.Head>
       <Table.Body>
         {prescriptions.map(prescription => (
-          <Table.Row>
+          <Table.Row key={prescription.id}>
             <Table.Cell>{prescription.id}</Table.Cell>
             <Table.Cell>{prescription.patientNhsNumber}</Table.Cell>
             <Table.Cell>{prescription.status}</Table.Cell>

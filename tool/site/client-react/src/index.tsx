@@ -7,10 +7,10 @@ import {OperationOutcome} from "fhir/r4"
 import axios from "axios"
 import {BrowserRouter, Route, Switch} from "react-router-dom"
 import ClaimPage from "./pages/claimPage"
-import SearchPage from "./pages/searchPage"
 import DispensePage from "./pages/dispensePage"
 import ButtonList from "./components/buttonList"
 import SendPage from "./pages/sendPage"
+import PrescriptionSearchPage from "./pages/prescriptionSearchPage"
 
 const customWindow = window as Record<string, any>
 
@@ -76,7 +76,7 @@ async function startApplication(baseUrl: string): Promise<void> {
               <ClaimPage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")}/>
             </Route>
             <Route path={`${baseUrl}search`}>
-              <SearchPage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")}/>
+              <PrescriptionSearchPage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")}/>
             </Route>
           </Switch>
         </BrowserRouter>

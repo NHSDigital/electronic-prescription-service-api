@@ -48,7 +48,7 @@ interface MessageExpanderProps {
   mimeType: string
 }
 
-const MessageExpander: React.FC<MessageExpanderProps> = ({
+export const MessageExpander: React.FC<MessageExpanderProps> = ({
   name,
   message,
   mimeType
