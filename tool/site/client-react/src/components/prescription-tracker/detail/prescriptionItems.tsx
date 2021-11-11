@@ -1,8 +1,11 @@
 import * as React from "react"
 import {Table} from "nhsuk-react-components"
-import {PrescriptionProps} from "./prescription"
 import {Task} from "fhir/r4"
-import {getDispenseStatusExtension} from "../../fhir/customExtensions"
+import {getDispenseStatusExtension} from "../../../fhir/customExtensions"
+
+interface PrescriptionItemsProps {
+  items: Array<PrescriptionItemProps>
+}
 
 export interface PrescriptionItemProps {
   identifier: string
@@ -13,12 +16,16 @@ export function createPrescriptionItemProps(task: Task): Array<PrescriptionItemP
   return task.input.map(input => {
     return {
       identifier: input.valueReference.identifier.value,
-      dispenseStatus: getDispenseStatusExtension(input.extension)?.valueCoding.display
+      dispenseStatus: (input.extension
+        && getDispenseStatusExtension(input.extension)?.valueCoding?.display)
+        ?? "Unknown"
     }
   })
 }
 
-export const PrescriptionItems: React.FC<PrescriptionProps> = ({prescriptionItems}) => {
+export const PrescriptionItems: React.FC<PrescriptionItemsProps> = ({
+  items
+}) => {
   return (
     <Table.Panel heading="Items">
       <Table caption="Item summary">
@@ -29,7 +36,7 @@ export const PrescriptionItems: React.FC<PrescriptionProps> = ({prescriptionItem
           </Table.Row>
         </Table.Head>
         <Table.Body>
-          {prescriptionItems.map((item, index) => <PrescriptionItemRow key={index} {...item} />)}
+          {items.map((item, index) => <PrescriptionItemRow key={index} {...item} />)}
         </Table.Body>
       </Table>
     </Table.Panel>
