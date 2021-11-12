@@ -4,14 +4,14 @@ import * as fs from "fs"
 import * as path from "path"
 import * as LosslessJson from "lossless-json"
 import {
-  hl7V3,
+  fetcher,
   fhir,
-  spine,
-  fetcher
+  hl7V3,
+  spine
 } from "@models"
 import Hapi from "@hapi/hapi"
 import {readXml} from "../../src/services/serialisation/xml"
-import {DetailTrackerResponse} from "../../src/services/communication/tracker/spine-model"
+import {convertRawResponseToDetailTrackerResponse} from "../../src/services/translation/response/tracker/translation"
 
 export const convertSuccessExamples = fetcher.convertExamples.filter(
   e => e.isSuccess).map(spec => spec.toSuccessJestCase()
@@ -273,27 +273,29 @@ export const spineResponses = {
   cancellationDispensedError
 }
 
-export const trackerSpineResponses = {
-  success1LineItem: JSON.parse(fs.readFileSync(
-    path.join(__dirname, "./spine-responses/tracker-responses/success-1-lineItem.json"),
-    "utf8"
-  )) as DetailTrackerResponse,
-  success2LineItems: JSON.parse(fs.readFileSync(
-    path.join(__dirname, "./spine-responses/tracker-responses/success-2-lineItems.json"),
-    "utf8"
-  )) as DetailTrackerResponse,
-  successCreated: JSON.parse(fs.readFileSync(
-    path.join(__dirname, "./spine-responses/tracker-responses/success-created.json"),
-    "utf8"
-  )) as DetailTrackerResponse,
-  successClaimed: JSON.parse(fs.readFileSync(
-    path.join(__dirname, "./spine-responses/tracker-responses/success-claimed.json"),
-    "utf8"
-  )) as DetailTrackerResponse,
-  errorNoIssueNumber: JSON.parse(fs.readFileSync(
-    path.join(__dirname, "./spine-responses/tracker-responses/error-no-issue-number.json"),
-    "utf8"
-  )) as DetailTrackerResponse
+export const detailTrackerResponses = {
+  success1LineItem: readDetailTrackerResponse("success-1-lineItem.json"),
+  success2LineItems: readDetailTrackerResponse("success-2-lineItems.json"),
+  successCreated: readDetailTrackerResponse("success-created.json"),
+  successClaimed: readDetailTrackerResponse("success-claimed.json"),
+  errorNoIssueNumber: readDetailTrackerResponse("error-no-issue-number.json")
+}
+
+export const summaryTrackerResponses = {
+  success: readSummaryTrackerResponse("success.json")
+}
+
+function readDetailTrackerResponse(filename: string): spine.DetailTrackerResponse {
+  const filePath = path.join(__dirname, `./spine-responses/tracker-responses/detail/${filename}`)
+  const responseStr = fs.readFileSync(filePath, "utf8")
+  const responseObj = JSON.parse(responseStr)
+  return convertRawResponseToDetailTrackerResponse(responseObj)
+}
+
+function readSummaryTrackerResponse(filename: string): spine.SummaryTrackerResponse {
+  const filePath = path.join(__dirname, `./spine-responses/tracker-responses/summary/${filename}`)
+  const responseStr = fs.readFileSync(filePath, "utf8")
+  return JSON.parse(responseStr)
 }
 
 function getLocation(search: string) {
