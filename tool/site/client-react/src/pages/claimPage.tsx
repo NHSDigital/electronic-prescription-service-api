@@ -31,38 +31,38 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
   const [claimResult, setClaimResult] = useState<ClaimResult>()
 
   useEffect(() => {
+    async function retrievePrescriptionDetails() {
+      setLoadingMessage("Retrieving prescription details.")
+
+      const prescriptionOrderResponse = await axios.get<fhir.Bundle>(`${baseUrl}prescription/${prescriptionId}`)
+      const prescriptionOrder = prescriptionOrderResponse.data
+      if (!prescriptionOrder) {
+        setErrorMessage("Prescription order not found. Is the ID correct?")
+        return
+      }
+
+      const dispenseNotificationsResponse = await axios.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
+      const dispenseNotifications = dispenseNotificationsResponse.data
+      if (!dispenseNotifications?.length) {
+        setErrorMessage("Dispense notification not found. Has this prescription been dispensed?")
+        return
+      }
+
+      setPrescriptionDetails({
+        patient: getPatientResources(prescriptionOrder)[0],
+        medicationRequests: getMedicationRequestResources(prescriptionOrder),
+        medicationDispenses: dispenseNotifications.flatMap(getMedicationDispenseResources)
+      })
+      setLoadingMessage(undefined)
+    }
+
     if (!prescriptionDetails) {
       retrievePrescriptionDetails().catch(error => {
         console.log(error)
         setErrorMessage("Failed to retrieve prescription details.")
       })
     }
-  }, [prescriptionDetails])
-
-  async function retrievePrescriptionDetails() {
-    setLoadingMessage("Retrieving prescription details.")
-
-    const prescriptionOrderResponse = await axios.get<fhir.Bundle>(`${baseUrl}prescription/${prescriptionId}`)
-    const prescriptionOrder = prescriptionOrderResponse.data
-    if (!prescriptionOrder) {
-      setErrorMessage("Prescription order not found. Is the ID correct?")
-      return
-    }
-
-    const dispenseNotificationsResponse = await axios.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
-    const dispenseNotifications = dispenseNotificationsResponse.data
-    if (!dispenseNotifications?.length) {
-      setErrorMessage("Dispense notification not found. Has this prescription been dispensed?")
-      return
-    }
-
-    setPrescriptionDetails({
-      patient: getPatientResources(prescriptionOrder)[0],
-      medicationRequests: getMedicationRequestResources(prescriptionOrder),
-      medicationDispenses: dispenseNotifications.flatMap(getMedicationDispenseResources)
-    })
-    setLoadingMessage(undefined)
-  }
+  }, [prescriptionDetails, baseUrl, prescriptionId])
 
   async function sendClaim(claimFormValues: ClaimFormValues): Promise<void> {
     setLoadingMessage("Sending claim.")

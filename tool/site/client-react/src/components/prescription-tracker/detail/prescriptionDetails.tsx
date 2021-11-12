@@ -10,26 +10,18 @@ export interface PrescriptionDetailProps {
   type: string
   patientNhsNumber: string
   creationDate: string
-  pharmacy?: { context: string, code: string }
   status: string
+  dispenserOdsCode?: string
 }
 
 export function createPrescriptionDetailProps(task: Task): PrescriptionDetailProps {
-  const status = task.businessStatus.coding[0].display
-  const pharmacyOdsCode = task.owner?.identifier?.value
-  const pharmacyContext = status === "To Be Dispensed" ? "Nominated Pharmacy ODS Code" : "Assigned Pharmacy ODS Code"
   return {
     id: task.focus.identifier.value,
     type: getCourseOfTherapyTypeExtension(task.extension).valueCoding.display,
     patientNhsNumber: formatNhsNumber(task.for.identifier.value),
     creationDate: formatDate(task.authoredOn),
-    pharmacy: pharmacyOdsCode
-      ? {
-        context: pharmacyContext,
-        code: pharmacyOdsCode
-      }
-      : undefined,
-    status
+    status: task.businessStatus.coding[0].display,
+    dispenserOdsCode: task.owner?.identifier?.value
   }
 }
 
@@ -37,10 +29,11 @@ export const PrescriptionDetails: React.FC<PrescriptionDetailProps> = ({
   id,
   type,
   patientNhsNumber,
-  pharmacy,
+  dispenserOdsCode,
   creationDate,
   status
 }) => {
+  const dispenserDesc = status === "To Be Dispensed" ? "Nominated Dispenser ODS Code" : "Assigned Dispenser ODS Code"
   return (
     <SummaryList>
       <SummaryList.Row>
@@ -55,12 +48,12 @@ export const PrescriptionDetails: React.FC<PrescriptionDetailProps> = ({
         <SummaryList.Key>NHS Number</SummaryList.Key>
         <SummaryList.Value>{patientNhsNumber}</SummaryList.Value>
       </SummaryList.Row>
-      {pharmacy &&
-      <SummaryList.Row>
-        <SummaryList.Key>{pharmacy.context}</SummaryList.Key>
-        <SummaryList.Value>{pharmacy.code}</SummaryList.Value>
-      </SummaryList.Row>
-      }
+      {dispenserOdsCode && (
+        <SummaryList.Row>
+          <SummaryList.Key>{dispenserDesc}</SummaryList.Key>
+          <SummaryList.Value>{dispenserOdsCode}</SummaryList.Value>
+        </SummaryList.Row>
+      )}
       <SummaryList.Row>
         <SummaryList.Key>Created On</SummaryList.Key>
         <SummaryList.Value>{creationDate}</SummaryList.Value>

@@ -19,7 +19,7 @@ const ConditionalField: React.FC<ConditionalFieldProps> = ({
       helpers.setTouched(meta.initialTouched)
       helpers.setError(meta.initialError)
     }
-  }, [condition])
+  }, [condition, meta, helpers])
 
   return condition && <Field name={name} {...extraProps}/>
 }

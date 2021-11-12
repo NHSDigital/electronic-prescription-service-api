@@ -20,25 +20,25 @@ const SendPage: React.FC<SendPageProps> = ({
   const [sendResult, setSendResult] = useState<SendResult>()
 
   useEffect(() => {
+    async function sendPrescription(): Promise<void> {
+      setLoadingMessage("Sending prescription.")
+
+      const request = {signatureToken: token}
+      const response = await axios.post<SendResult>(`${baseUrl}prescribe/send`, request)
+      console.log(request)
+      console.log(response)
+
+      setSendResult(response.data)
+      setLoadingMessage(undefined)
+    }
+
     if (!sendResult) {
       sendPrescription().catch(error => {
         console.log(error)
         setErrorMessage("Failed to send or retrieve sent prescription details.")
       })
     }
-  }, [sendResult])
-
-  async function sendPrescription(): Promise<void> {
-    setLoadingMessage("Sending prescription.")
-
-    const request = {signatureToken: token}
-    const response = await axios.post<SendResult>(`${baseUrl}prescribe/send`, request)
-    console.log(request)
-    console.log(response)
-
-    setSendResult(response.data)
-    setLoadingMessage(undefined)
-  }
+  }, [sendResult, baseUrl, token])
 
   if (errorMessage) {
     return <>

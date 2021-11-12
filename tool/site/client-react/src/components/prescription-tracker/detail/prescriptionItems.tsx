@@ -16,9 +16,7 @@ export function createPrescriptionItemProps(task: Task): Array<PrescriptionItemP
   return task.input.map(input => {
     return {
       identifier: input.valueReference.identifier.value,
-      dispenseStatus: (input.extension
-        && getDispenseStatusExtension(input.extension)?.valueCoding?.display)
-        ?? "Unknown"
+      dispenseStatus: getDispenseStatusExtension(input.extension).valueCoding.display
     }
   })
 }
@@ -36,7 +34,7 @@ export const PrescriptionItems: React.FC<PrescriptionItemsProps> = ({
           </Table.Row>
         </Table.Head>
         <Table.Body>
-          {items.map((item, index) => <PrescriptionItemRow key={index} {...item} />)}
+          {items.map((item, index) => <PrescriptionItemRow key={index} {...item}/>)}
         </Table.Body>
       </Table>
     </Table.Panel>

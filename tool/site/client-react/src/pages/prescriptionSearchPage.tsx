@@ -1,7 +1,7 @@
 import * as React from "react"
 import {useState} from "react"
 import {Button, ErrorMessage, Form, Label} from "nhsuk-react-components"
-import {Bundle, FhirResource, OperationOutcome, Task} from "fhir/r4"
+import {Bundle, Task} from "fhir/r4"
 import {
   createPrescriptionDetailProps,
   PrescriptionDetails
@@ -15,6 +15,7 @@ import {Field, Formik} from "formik"
 import {MaskedInput} from "nhsuk-react-components-extensions"
 import TrackerSummaryTable from "../components/prescription-tracker/summary/trackerSummaryTable"
 import {MessageExpander} from "../components/messageExpanders"
+import {isBundle, isOperationOutcome, isTask} from "../fhir/typeGuards"
 
 interface PrescriptionSearchPageProps {
   baseUrl: string
@@ -36,30 +37,32 @@ const PrescriptionSearchPage: React.FC<PrescriptionSearchPageProps> = ({
   const [loadingMessage, setLoadingMessage] = useState<string>()
 
   async function handleSearch(searchCriteria: PrescriptionSearchCriteria) {
-    setLoadingMessage("Searching for prescriptions...")
+    setLoadingMessage("Searching for prescriptions.")
+
     const bundle = await makeTrackerRequest(searchCriteria)
     if (bundle) {
       setSearchResults(bundle)
     }
+
     setLoadingMessage(undefined)
   }
 
   async function selectPrescription(selectedPrescriptionId: string) {
-    const selectedTask = searchResults.entry
-      .map(entry => entry.resource)
-      .filter(isTask)
-      .find(task => task.focus.identifier.value === selectedPrescriptionId)
+    const selectedTask = getTasks(searchResults).find(task => task.focus.identifier.value === selectedPrescriptionId)
     if (selectedTask.owner) {
       setSelectedPrescription(selectedTask)
-    } else {
-      setLoadingMessage("Retrieving full prescription details...")
-      const responseData = await makeTrackerRequest({prescriptionId: selectedPrescriptionId})
-      if (responseData) {
-        const task = responseData.entry.map(entry => entry.resource).find(isTask)
-        setSelectedPrescription(task)
-      }
-      setLoadingMessage(undefined)
+      return
     }
+
+    setLoadingMessage("Retrieving full prescription details.")
+
+    const bundle = await makeTrackerRequest({prescriptionId: selectedPrescriptionId})
+    if (bundle) {
+      const tasks = getTasks(bundle)
+      setSelectedPrescription(tasks[0])
+    }
+
+    setLoadingMessage(undefined)
   }
 
   async function makeTrackerRequest(searchCriteria: PrescriptionSearchCriteria): Promise<Bundle | undefined> {
@@ -124,13 +127,13 @@ const PrescriptionSearchPage: React.FC<PrescriptionSearchPageProps> = ({
   }
 
   if (searchResults) {
-    const prescriptions = searchResults.entry
-      .map(entry => entry.resource)
-      .filter(isTask)
-      .map(task => createPrescriptionDetailProps(task))
+    const prescriptions = getTasks(searchResults).map(task => createPrescriptionDetailProps(task))
     return <>
       <Label isPageHeading>Search Results</Label>
-      <TrackerSummaryTable prescriptions={prescriptions} selectPrescription={selectPrescription}/>
+      {prescriptions.length
+        ? <TrackerSummaryTable prescriptions={prescriptions} selectPrescription={selectPrescription}/>
+        : <Label>No results found.</Label>
+      }
       <MessageExpander
         name="Response (FHIR)"
         message={JSON.stringify(searchResults, null, 2)}
@@ -192,16 +195,10 @@ function toURLSearchParams(searchCriteria: PrescriptionSearchCriteria) {
   return searchParams
 }
 
-function isOperationOutcome(resource: FhirResource): resource is OperationOutcome {
-  return resource.resourceType === "OperationOutcome"
-}
-
-function isBundle(resource: FhirResource): resource is Bundle {
-  return resource.resourceType === "Bundle"
-}
-
-function isTask(resource: FhirResource): resource is Task {
-  return resource.resourceType === "Task"
+function getTasks(bundle: Bundle): Array<Task> {
+  return bundle.entry
+    .map(entry => entry.resource)
+    .filter(isTask)
 }
 
 export default PrescriptionSearchPage

@@ -21,7 +21,7 @@ const Prescription: React.FC<PrescriptionProps> = ({name}) => {
     if (derivedPrescriptionStatus) {
       context.setFieldValue("prescription.statusCode", derivedPrescriptionStatus)
     }
-  }, lineItemStatuses)
+  }, [context, lineItemStatuses])
 
   return (
     <Fieldset>
@@ -36,9 +36,6 @@ const Prescription: React.FC<PrescriptionProps> = ({name}) => {
   )
 }
 
-/**
- * TODO - check these rules
- */
 function derivePrescriptionStatusFromLineItemStatuses(lineItemStatuses: Array<LineItemStatus>): string {
   //To be dispensed
   if (lineItemStatuses.find(status => status === LineItemStatus.TO_BE_DISPENSED)) {

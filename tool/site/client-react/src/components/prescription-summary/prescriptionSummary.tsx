@@ -21,7 +21,7 @@ const PrescriptionSummary: React.FC<PrescriptionSummaryProps> = ({
         .then(createSummaryPrescription)
         .then(setSummaryViewProps)
     }
-  }, [summaryViewProps])
+  }, [summaryViewProps, baseUrl, prescriptionId])
 
   return summaryViewProps
     ? <PrescriptionSummaryView {...summaryViewProps}/>

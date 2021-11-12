@@ -10,7 +10,11 @@ import {
 } from "../fhir/bundleResourceFinder"
 import * as fhir from "fhir/r4"
 import {MedicationDispense} from "fhir/r4"
-import DispenseForm, {DispenseFormValues, StaticLineItemInfo, StaticPrescriptionInfo} from "../components/dispense/dispenseForm"
+import DispenseForm, {
+  DispenseFormValues,
+  StaticLineItemInfo,
+  StaticPrescriptionInfo
+} from "../components/dispense/dispenseForm"
 import {formatQuantity} from "../formatters/quantity"
 import {createDispenseNotification} from "../components/dispense/createDispenseNotification"
 import {getTaskBusinessStatusExtension} from "../fhir/customExtensions"
@@ -34,35 +38,35 @@ const DispensePage: React.FC<DispensePageProps> = ({
   const [dispenseResult, setDispenseResult] = useState<DispenseResult>()
 
   useEffect(() => {
+    async function retrievePrescriptionDetails() {
+      setLoadingMessage("Retrieving prescription details.")
+
+      const prescriptionOrderResponse = await axios.get<fhir.Bundle>(`${baseUrl}prescription/${prescriptionId}`)
+      const prescriptionOrder = prescriptionOrderResponse.data
+      if (!prescriptionOrder) {
+        setErrorMessage("Prescription order not found. Is the ID correct?")
+        return
+      }
+
+      const dispenseNotificationsResponse = await axios.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
+      const dispenseNotifications = dispenseNotificationsResponse.data
+
+      setPrescriptionDetails({
+        messageHeader: getMessageHeaderResources(prescriptionOrder)[0],
+        patient: getPatientResources(prescriptionOrder)[0],
+        medicationRequests: getMedicationRequestResources(prescriptionOrder),
+        medicationDispenses: dispenseNotifications.flatMap(getMedicationDispenseResources)
+      })
+      setLoadingMessage(undefined)
+    }
+
     if (!prescriptionDetails) {
       retrievePrescriptionDetails().catch(error => {
         console.log(error)
         setErrorMessage("Failed to retrieve prescription details.")
       })
     }
-  }, [prescriptionDetails])
-
-  async function retrievePrescriptionDetails() {
-    setLoadingMessage("Retrieving prescription details.")
-
-    const prescriptionOrderResponse = await axios.get<fhir.Bundle>(`${baseUrl}prescription/${prescriptionId}`)
-    const prescriptionOrder = prescriptionOrderResponse.data
-    if (!prescriptionOrder) {
-      setErrorMessage("Prescription order not found. Is the ID correct?")
-      return
-    }
-
-    const dispenseNotificationsResponse = await axios.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
-    const dispenseNotifications = dispenseNotificationsResponse.data
-
-    setPrescriptionDetails({
-      messageHeader: getMessageHeaderResources(prescriptionOrder)[0],
-      patient: getPatientResources(prescriptionOrder)[0],
-      medicationRequests: getMedicationRequestResources(prescriptionOrder),
-      medicationDispenses: dispenseNotifications.flatMap(getMedicationDispenseResources)
-    })
-    setLoadingMessage(undefined)
-  }
+  }, [prescriptionDetails, baseUrl, prescriptionId])
 
   async function sendDispenseNotification(dispenseFormValues: DispenseFormValues): Promise<void> {
     setLoadingMessage("Sending dispense notification.")
