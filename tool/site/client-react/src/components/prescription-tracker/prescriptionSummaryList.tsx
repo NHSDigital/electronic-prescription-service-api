@@ -1,11 +1,11 @@
 import * as React from "react"
 import {SummaryList} from "nhsuk-react-components"
 import {Task} from "fhir/r4"
-import {formatNhsNumber} from "../../../formatters/demographics"
-import {formatDate} from "../../../formatters/dates"
-import {getCourseOfTherapyTypeExtension} from "../../../fhir/customExtensions"
+import {formatNhsNumber} from "../../formatters/demographics"
+import {formatDate} from "../../formatters/dates"
+import {getCourseOfTherapyTypeExtension} from "../../fhir/customExtensions"
 
-export interface PrescriptionDetailProps {
+export interface PrescriptionSummaryProps {
   id: string
   type: string
   patientNhsNumber: string
@@ -14,7 +14,7 @@ export interface PrescriptionDetailProps {
   dispenserOdsCode?: string
 }
 
-export function createPrescriptionDetailProps(task: Task): PrescriptionDetailProps {
+export function createPrescriptionSummaryProps(task: Task): PrescriptionSummaryProps {
   return {
     id: task.focus.identifier.value,
     type: getCourseOfTherapyTypeExtension(task.extension).valueCoding.display,
@@ -25,7 +25,7 @@ export function createPrescriptionDetailProps(task: Task): PrescriptionDetailPro
   }
 }
 
-export const PrescriptionDetails: React.FC<PrescriptionDetailProps> = ({
+export const PrescriptionSummaryList: React.FC<PrescriptionSummaryProps> = ({
   id,
   type,
   patientNhsNumber,

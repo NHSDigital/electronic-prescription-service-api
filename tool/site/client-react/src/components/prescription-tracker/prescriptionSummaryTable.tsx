@@ -1,13 +1,13 @@
 import {ActionLink, Table} from "nhsuk-react-components"
-import {PrescriptionDetailProps} from "../detail/prescriptionDetails"
+import {PrescriptionSummaryProps} from "./prescriptionSummaryList"
 import React from "react"
 
 interface TrackerSummaryTableProps {
-  prescriptions: Array<PrescriptionDetailProps>
+  prescriptions: Array<PrescriptionSummaryProps>
   selectPrescription: React.Dispatch<React.SetStateAction<string>>
 }
 
-const TrackerSummaryTable: React.FC<TrackerSummaryTableProps> = ({
+const PrescriptionSummaryTable: React.FC<TrackerSummaryTableProps> = ({
   prescriptions,
   selectPrescription
 }) => {
@@ -44,4 +44,4 @@ const TrackerSummaryTable: React.FC<TrackerSummaryTableProps> = ({
   )
 }
 
-export default TrackerSummaryTable
+export default PrescriptionSummaryTable

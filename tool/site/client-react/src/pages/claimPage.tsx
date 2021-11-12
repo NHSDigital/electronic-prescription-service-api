@@ -1,6 +1,6 @@
 import * as React from "react"
-import {useEffect, useState} from "react"
-import {Button, CrossIcon, ErrorMessage, Label, TickIcon} from "nhsuk-react-components"
+import {useContext, useState} from "react"
+import {Button, CrossIcon, Label, TickIcon} from "nhsuk-react-components"
 import ClaimForm, {ClaimFormValues, StaticProductInfo} from "../components/claim/claimForm"
 import axios from "axios"
 import {
@@ -15,115 +15,90 @@ import MessageExpanders from "../components/messageExpanders"
 import ButtonList from "../components/buttonList"
 import {getMedicationDispenseLineItemId, getTotalQuantity} from "../fhir/helpers"
 import {formatQuantity} from "../formatters/quantity"
+import LongRunningTask from "../components/longRunningTask"
+import {AppContext} from "../index"
 
 interface ClaimPageProps {
-  baseUrl: string
   prescriptionId: string
 }
 
 const ClaimPage: React.FC<ClaimPageProps> = ({
-  baseUrl,
   prescriptionId
 }) => {
-  const [loadingMessage, setLoadingMessage] = useState<string>("Loading page.")
-  const [errorMessage, setErrorMessage] = useState<string>()
-  const [prescriptionDetails, setPrescriptionDetails] = useState<PrescriptionDetails>()
-  const [claimResult, setClaimResult] = useState<ClaimResult>()
+  const {baseUrl} = useContext(AppContext)
+  const [claimFormValues, setClaimFormValues] = useState<ClaimFormValues>()
 
-  useEffect(() => {
-    async function retrievePrescriptionDetails() {
-      setLoadingMessage("Retrieving prescription details.")
+  return (
+    <LongRunningTask<PrescriptionDetails> task={() => retrievePrescriptionDetails(baseUrl, prescriptionId)} message="Retrieving prescription details.">
+      {prescriptionDetails => {
+        if (claimFormValues) {
+          return (
+            <LongRunningTask<ClaimResult> task={() => sendClaim(baseUrl, prescriptionDetails, claimFormValues)} message="Sending claim.">
+              {claimResult => (
+                <>
+                  <Label isPageHeading>Claim Result {claimResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
+                  <MessageExpanders
+                    fhirRequest={claimResult.request}
+                    hl7V3Request={claimResult.request_xml}
+                    fhirResponse={claimResult.response}
+                    hl7V3Response={claimResult.response_xml}
+                  />
+                  <ButtonList>
+                    <Button type="button" href={baseUrl} secondary>Back</Button>
+                  </ButtonList>
+                </>
+              )}
+            </LongRunningTask>
+          )
+        }
 
-      const prescriptionOrderResponse = await axios.get<fhir.Bundle>(`${baseUrl}prescription/${prescriptionId}`)
-      const prescriptionOrder = prescriptionOrderResponse.data
-      if (!prescriptionOrder) {
-        setErrorMessage("Prescription order not found. Is the ID correct?")
-        return
-      }
+        return (
+          <>
+            <Label isPageHeading>Claim for Dispensed Medication</Label>
+            <ClaimForm
+              products={createStaticProductInfoArray(prescriptionDetails.medicationDispenses)}
+              sendClaim={setClaimFormValues}
+            />
+          </>
+        )
+      }}
+    </LongRunningTask>
+  )
+}
 
-      const dispenseNotificationsResponse = await axios.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
-      const dispenseNotifications = dispenseNotificationsResponse.data
-      if (!dispenseNotifications?.length) {
-        setErrorMessage("Dispense notification not found. Has this prescription been dispensed?")
-        return
-      }
-
-      setPrescriptionDetails({
-        patient: getPatientResources(prescriptionOrder)[0],
-        medicationRequests: getMedicationRequestResources(prescriptionOrder),
-        medicationDispenses: dispenseNotifications.flatMap(getMedicationDispenseResources)
-      })
-      setLoadingMessage(undefined)
-    }
-
-    if (!prescriptionDetails) {
-      retrievePrescriptionDetails().catch(error => {
-        console.log(error)
-        setErrorMessage("Failed to retrieve prescription details.")
-      })
-    }
-  }, [prescriptionDetails, baseUrl, prescriptionId])
-
-  async function sendClaim(claimFormValues: ClaimFormValues): Promise<void> {
-    setLoadingMessage("Sending claim.")
-
-    const claim = createClaim(
-      prescriptionDetails.patient,
-      prescriptionDetails.medicationRequests,
-      prescriptionDetails.medicationDispenses,
-      claimFormValues
-    )
-    const response = await axios.post<ClaimResult>(`${baseUrl}dispense/claim`, claim)
-    console.log(claim)
-    console.log(response)
-
-    setClaimResult(response.data)
-    setLoadingMessage(undefined)
+async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: string): Promise<PrescriptionDetails> {
+  const prescriptionOrderResponse = await axios.get<fhir.Bundle>(`${baseUrl}prescription/${prescriptionId}`)
+  const prescriptionOrder = prescriptionOrderResponse.data
+  if (!prescriptionOrder) {
+    throw new Error("Prescription order not found. Is the ID correct?")
   }
 
-  if (errorMessage) {
-    return <>
-      <Label isPageHeading>Error</Label>
-      <ErrorMessage>{errorMessage}</ErrorMessage>
-    </>
+  const dispenseNotificationsResponse = await axios.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
+  const dispenseNotifications = dispenseNotificationsResponse.data
+  if (!dispenseNotifications?.length) {
+    throw new Error("Dispense notification not found. Has this prescription been dispensed?")
   }
 
-  if (loadingMessage) {
-    return <>
-      <Label isPageHeading>Loading...</Label>
-      <Label>{loadingMessage}</Label>
-    </>
+  return {
+    patient: getPatientResources(prescriptionOrder)[0],
+    medicationRequests: getMedicationRequestResources(prescriptionOrder),
+    medicationDispenses: dispenseNotifications.flatMap(getMedicationDispenseResources)
   }
+}
 
-  if (claimResult) {
-    return <>
-      <Label isPageHeading>Claim Result {claimResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
-      <MessageExpanders
-        fhirRequest={claimResult.request}
-        hl7V3Request={claimResult.request_xml}
-        fhirResponse={claimResult.response}
-        hl7V3Response={claimResult.response_xml}
-      />
-      <ButtonList>
-        <Button type="button" href={baseUrl} secondary>Back</Button>
-      </ButtonList>
-    </>
-  }
-
-  if (prescriptionDetails) {
-    return <>
-      <Label isPageHeading>Claim for Dispensed Medication</Label>
-      <ClaimForm
-        products={createStaticProductInfoArray(prescriptionDetails.medicationDispenses)}
-        sendClaim={sendClaim}
-      />
-    </>
-  }
-
-  return <>
-    <Label isPageHeading>Error</Label>
-    <ErrorMessage>An unknown error occurred.</ErrorMessage>
-  </>
+async function sendClaim(
+  baseUrl: string,
+  prescriptionDetails: PrescriptionDetails,
+  claimFormValues: ClaimFormValues
+): Promise<ClaimResult> {
+  const claim = createClaim(
+    prescriptionDetails.patient,
+    prescriptionDetails.medicationRequests,
+    prescriptionDetails.medicationDispenses,
+    claimFormValues
+  )
+  const response = await axios.post<ClaimResult>(`${baseUrl}dispense/claim`, claim)
+  return response.data
 }
 
 interface PrescriptionDetails {

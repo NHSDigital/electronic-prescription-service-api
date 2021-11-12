@@ -1,96 +1,63 @@
 import * as React from "react"
-import {useEffect, useState} from "react"
-import {ActionLink, Button, CrossIcon, ErrorMessage, Label, SummaryList, TickIcon} from "nhsuk-react-components"
+import {ActionLink, Button, CrossIcon, Label, SummaryList, TickIcon} from "nhsuk-react-components"
 import axios from "axios"
 import * as fhir from "fhir/r4"
 import MessageExpanders from "../components/messageExpanders"
 import ButtonList from "../components/buttonList"
+import LongRunningTask from "../components/longRunningTask"
+import {useContext} from "react"
+import {AppContext} from "../index"
 
 interface SendPageProps {
-  baseUrl: string
   token: string
 }
 
 const SendPage: React.FC<SendPageProps> = ({
-  baseUrl,
   token
 }) => {
-  const [loadingMessage, setLoadingMessage] = useState<string>("Loading page.")
-  const [errorMessage, setErrorMessage] = useState<string>()
-  const [sendResult, setSendResult] = useState<SendResult>()
+  const {baseUrl} = useContext(AppContext)
+  return (
+    <LongRunningTask<SendResult> task={() => sendPrescription(baseUrl, token)} message="Sending prescription.">
+      {sendResult => (
+        <>
+          <Label isPageHeading>Send Result {sendResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
+          <SummaryList>
+            <SummaryList.Row>
+              <SummaryList.Key>ID</SummaryList.Key>
+              <SummaryList.Value>{sendResult.prescription_id}</SummaryList.Value>
+            </SummaryList.Row>
+          </SummaryList>
+          <ActionLink href={`${baseUrl}dispense/release?prescription_id=${sendResult.prescription_id}`}>
+            Release this prescription
+          </ActionLink>
+          <ActionLink href={`${baseUrl}dispense/dispense?prescription_id=${sendResult.prescription_id}`}>
+            Dispense this prescription
+          </ActionLink>
+          <ActionLink href={`${baseUrl}dispense/claim?prescription_id=${sendResult.prescription_id}`}>
+            Claim for this prescription
+          </ActionLink>
+          <ActionLink href={`${baseUrl}prescribe/cancel?prescription_id=${sendResult.prescription_id}`}>
+            Cancel this prescription
+          </ActionLink>
+          <MessageExpanders
+            fhirRequest={sendResult.request}
+            hl7V3Request={sendResult.request_xml}
+            fhirResponse={sendResult.response}
+            hl7V3Response={sendResult.response_xml}
+          />
+          <ButtonList>
+            <Button type="button" href={baseUrl} secondary>Back</Button>
+          </ButtonList>
+        </>
+      )}
+    </LongRunningTask>
+  )
+}
 
-  useEffect(() => {
-    async function sendPrescription(): Promise<void> {
-      setLoadingMessage("Sending prescription.")
-
-      const request = {signatureToken: token}
-      const response = await axios.post<SendResult>(`${baseUrl}prescribe/send`, request)
-      console.log(request)
-      console.log(response)
-
-      setSendResult(response.data)
-      setLoadingMessage(undefined)
-    }
-
-    if (!sendResult) {
-      sendPrescription().catch(error => {
-        console.log(error)
-        setErrorMessage("Failed to send or retrieve sent prescription details.")
-      })
-    }
-  }, [sendResult, baseUrl, token])
-
-  if (errorMessage) {
-    return <>
-      <Label isPageHeading>Error</Label>
-      <ErrorMessage>{errorMessage}</ErrorMessage>
-    </>
-  }
-
-  if (loadingMessage) {
-    return <>
-      <Label isPageHeading>Loading...</Label>
-      <Label>{loadingMessage}</Label>
-    </>
-  }
-
-  if (sendResult) {
-    return <>
-      <Label isPageHeading>Send Result {sendResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
-      <SummaryList>
-        <SummaryList.Row>
-          <SummaryList.Key>ID</SummaryList.Key>
-          <SummaryList.Value>{sendResult.prescription_id}</SummaryList.Value>
-        </SummaryList.Row>
-      </SummaryList>
-      <ActionLink href={`${baseUrl}dispense/release?prescription_id=${sendResult.prescription_id}`}>
-        Release this prescription
-      </ActionLink>
-      <ActionLink href={`${baseUrl}dispense/dispense?prescription_id=${sendResult.prescription_id}`}>
-        Dispense this prescription
-      </ActionLink>
-      <ActionLink href={`${baseUrl}dispense/claim?prescription_id=${sendResult.prescription_id}`}>
-        Claim for this prescription
-      </ActionLink>
-      <ActionLink href={`${baseUrl}prescribe/cancel?prescription_id=${sendResult.prescription_id}`}>
-        Cancel this prescription
-      </ActionLink>
-      <MessageExpanders
-        fhirRequest={sendResult.request}
-        hl7V3Request={sendResult.request_xml}
-        fhirResponse={sendResult.response}
-        hl7V3Response={sendResult.response_xml}
-      />
-      <ButtonList>
-        <Button type="button" href={baseUrl} secondary>Back</Button>
-      </ButtonList>
-    </>
-  }
-
-  return <>
-    <Label isPageHeading>Error</Label>
-    <ErrorMessage>An unknown error occurred.</ErrorMessage>
-  </>
+async function sendPrescription(baseUrl: string, token: string): Promise<SendResult> {
+  const request = {signatureToken: token}
+  const response = await axios.post<SendResult>(`${baseUrl}prescribe/send`, request)
+  return response.data
 }
 
 interface SendResult {

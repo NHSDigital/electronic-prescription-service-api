@@ -1,9 +1,9 @@
 import * as React from "react"
 import {Table} from "nhsuk-react-components"
 import {Task} from "fhir/r4"
-import {getDispenseStatusExtension} from "../../../fhir/customExtensions"
+import {getDispenseStatusExtension} from "../../fhir/customExtensions"
 
-interface PrescriptionItemsProps {
+interface PrescriptionItemTableProps {
   items: Array<PrescriptionItemProps>
 }
 
@@ -21,7 +21,7 @@ export function createPrescriptionItemProps(task: Task): Array<PrescriptionItemP
   })
 }
 
-export const PrescriptionItems: React.FC<PrescriptionItemsProps> = ({
+export const PrescriptionItemTable: React.FC<PrescriptionItemTableProps> = ({
   items
 }) => {
   return (
