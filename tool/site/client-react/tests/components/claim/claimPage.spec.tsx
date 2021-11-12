@@ -6,6 +6,8 @@ import moxios from "moxios"
 import ClaimPage from "../../../src/pages/claimPage"
 import userEvent from "@testing-library/user-event"
 import {readMessage} from "./messages/messages"
+import {AppContext} from "../../../src"
+import {ReactElement} from "react"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "7A9089-A83008-56A03J"
@@ -21,8 +23,14 @@ beforeEach(() => moxios.install())
 
 afterEach(() => moxios.uninstall())
 
+const renderWithProvider = (ui: ReactElement) => render(
+  <AppContext.Provider value={{baseUrl}}>
+    {ui}
+  </AppContext.Provider>
+)
+
 test("Displays loading text while prescription data is being requested", async () => {
-  const {container} = render(<ClaimPage baseUrl={baseUrl} prescriptionId={prescriptionId}/>)
+  const {container} = renderWithProvider(<ClaimPage prescriptionId={prescriptionId}/>)
   await waitFor(() => screen.getByText("Retrieving prescription details."))
 
   expect(screen.getByText("Loading...")).toBeTruthy()
@@ -39,7 +47,7 @@ test("Displays claim form if prescription details are retrieved successfully", a
     response: [dispenseNotification]
   })
 
-  const {container} = render(<ClaimPage baseUrl={baseUrl} prescriptionId={prescriptionId}/>)
+  const {container} = renderWithProvider(<ClaimPage prescriptionId={prescriptionId}/>)
   await waitFor(() => screen.getByText("Claim for Dispensed Medication"))
 
   expect(screen.getByText("Claim")).toBeTruthy()
@@ -52,7 +60,7 @@ test("Displays an error if prescription-order not found", async () => {
     response: null
   })
 
-  const {container} = render(<ClaimPage baseUrl={baseUrl} prescriptionId={prescriptionId}/>)
+  const {container} = renderWithProvider(<ClaimPage prescriptionId={prescriptionId}/>)
   await waitFor(() => screen.getByText("Error"))
 
   expect(screen.getByText("Prescription order not found. Is the ID correct?")).toBeTruthy()
@@ -69,7 +77,7 @@ test("Displays an error if dispense-notification not found", async () => {
     response: []
   })
 
-  const {container} = render(<ClaimPage baseUrl={baseUrl} prescriptionId={prescriptionId}/>)
+  const {container} = renderWithProvider(<ClaimPage prescriptionId={prescriptionId}/>)
   await waitFor(() => screen.getByText("Error"))
 
   expect(screen.getByText("Dispense notification not found. Has this prescription been dispensed?")).toBeTruthy()
@@ -78,18 +86,14 @@ test("Displays an error if dispense-notification not found", async () => {
 
 test("Displays an error on invalid response", async () => {
   moxios.stubRequest(prescriptionOrderUrl, {
-    status: 200,
+    status: 500,
     response: {}
   })
-  moxios.stubRequest(dispenseNotificationUrl, {
-    status: 200,
-    response: [{}]
-  })
 
-  const {container} = render(<ClaimPage baseUrl={baseUrl} prescriptionId={prescriptionId}/>)
+  const {container} = renderWithProvider(<ClaimPage prescriptionId={prescriptionId}/>)
   await waitFor(() => screen.getByText("Error"))
 
-  expect(screen.getByText("Failed to retrieve prescription details.")).toBeTruthy()
+  expect(screen.getByText("Request failed with status code 500")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
@@ -103,7 +107,7 @@ test("Displays loading text while claim is being submitted", async () => {
     response: [dispenseNotification]
   })
 
-  const {container} = render(<ClaimPage baseUrl={baseUrl} prescriptionId={prescriptionId}/>)
+  const {container} = renderWithProvider(<ClaimPage prescriptionId={prescriptionId}/>)
   await waitFor(() => screen.getByText("Claim for Dispensed Medication"))
   userEvent.click(screen.getByText("Claim"))
   await waitFor(() => screen.getByText("Loading..."))
@@ -132,7 +136,7 @@ test("Displays claim result", async () => {
     }
   })
 
-  const {container} = render(<ClaimPage baseUrl={baseUrl} prescriptionId={prescriptionId}/>)
+  const {container} = renderWithProvider(<ClaimPage prescriptionId={prescriptionId}/>)
   await waitFor(() => screen.getByText("Claim for Dispensed Medication"))
   userEvent.click(screen.getByText("Claim"))
   await waitFor(() => screen.getByText(/Claim Result/))

@@ -17,6 +17,7 @@ import {getMedicationDispenseLineItemId, getTotalQuantity} from "../fhir/helpers
 import {formatQuantity} from "../formatters/quantity"
 import LongRunningTask from "../components/longRunningTask"
 import {AppContext} from "../index"
+import PrescriptionActions from "../components/prescriptionActions"
 
 interface ClaimPageProps {
   prescriptionId: string
@@ -28,38 +29,39 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
   const {baseUrl} = useContext(AppContext)
   const [claimFormValues, setClaimFormValues] = useState<ClaimFormValues>()
 
+  const retrievePrescriptionTask = () => retrievePrescriptionDetails(baseUrl, prescriptionId)
   return (
-    <LongRunningTask<PrescriptionDetails> task={() => retrievePrescriptionDetails(baseUrl, prescriptionId)} message="Retrieving prescription details.">
+    <LongRunningTask<PrescriptionDetails> task={retrievePrescriptionTask} message="Retrieving prescription details.">
       {prescriptionDetails => {
-        if (claimFormValues) {
+        if (!claimFormValues) {
+          const products = createStaticProductInfoArray(prescriptionDetails.medicationDispenses)
           return (
-            <LongRunningTask<ClaimResult> task={() => sendClaim(baseUrl, prescriptionDetails, claimFormValues)} message="Sending claim.">
-              {claimResult => (
-                <>
-                  <Label isPageHeading>Claim Result {claimResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
-                  <MessageExpanders
-                    fhirRequest={claimResult.request}
-                    hl7V3Request={claimResult.request_xml}
-                    fhirResponse={claimResult.response}
-                    hl7V3Response={claimResult.response_xml}
-                  />
-                  <ButtonList>
-                    <Button type="button" href={baseUrl} secondary>Back</Button>
-                  </ButtonList>
-                </>
-              )}
-            </LongRunningTask>
+            <>
+              <Label isPageHeading>Claim for Dispensed Medication</Label>
+              <ClaimForm products={products} onSubmit={setClaimFormValues}/>
+            </>
           )
         }
 
+        const sendClaimTask = () => sendClaim(baseUrl, prescriptionDetails, claimFormValues)
         return (
-          <>
-            <Label isPageHeading>Claim for Dispensed Medication</Label>
-            <ClaimForm
-              products={createStaticProductInfoArray(prescriptionDetails.medicationDispenses)}
-              sendClaim={setClaimFormValues}
-            />
-          </>
+          <LongRunningTask<ClaimResult> task={sendClaimTask} message="Sending claim.">
+            {claimResult => (
+              <>
+                <Label isPageHeading>Claim Result {claimResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
+                <PrescriptionActions prescriptionId={prescriptionId} view/>
+                <MessageExpanders
+                  fhirRequest={claimResult.request}
+                  hl7V3Request={claimResult.request_xml}
+                  fhirResponse={claimResult.response}
+                  hl7V3Response={claimResult.response_xml}
+                />
+                <ButtonList>
+                  <Button type="button" href={baseUrl} secondary>Back</Button>
+                </ButtonList>
+              </>
+            )}
+          </LongRunningTask>
         )
       }}
     </LongRunningTask>

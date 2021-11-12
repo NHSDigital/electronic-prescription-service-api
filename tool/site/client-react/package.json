@@ -5,6 +5,7 @@
   "main": "client/index-react.tsx",
   "scripts": {
     "test": "jest",
+    "update-snapshots": "jest --updateSnapshot",
     "build": "esbuild src/index.tsx --sourcemap --bundle --outdir=dist",
     "watch": "esbuild src/index.tsx --bundle --outdir=dist --watch",
     "serve": "mkdir -p dist && cp index.html dist && esbuild src/index.tsx --sourcemap --bundle --outdir=dist --servedir=dist",

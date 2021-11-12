@@ -1,12 +1,13 @@
 import * as React from "react"
-import {ActionLink, Button, CrossIcon, Label, SummaryList, TickIcon} from "nhsuk-react-components"
+import {useContext} from "react"
+import {Button, CrossIcon, Label, SummaryList, TickIcon} from "nhsuk-react-components"
 import axios from "axios"
 import * as fhir from "fhir/r4"
 import MessageExpanders from "../components/messageExpanders"
 import ButtonList from "../components/buttonList"
 import LongRunningTask from "../components/longRunningTask"
-import {useContext} from "react"
 import {AppContext} from "../index"
+import PrescriptionActions from "../components/prescriptionActions"
 
 interface SendPageProps {
   token: string
@@ -16,8 +17,9 @@ const SendPage: React.FC<SendPageProps> = ({
   token
 }) => {
   const {baseUrl} = useContext(AppContext)
+  const sendPrescriptionTask = () => sendPrescription(baseUrl, token)
   return (
-    <LongRunningTask<SendResult> task={() => sendPrescription(baseUrl, token)} message="Sending prescription.">
+    <LongRunningTask<SendResult> task={sendPrescriptionTask} message="Sending prescription.">
       {sendResult => (
         <>
           <Label isPageHeading>Send Result {sendResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
@@ -27,18 +29,7 @@ const SendPage: React.FC<SendPageProps> = ({
               <SummaryList.Value>{sendResult.prescription_id}</SummaryList.Value>
             </SummaryList.Row>
           </SummaryList>
-          <ActionLink href={`${baseUrl}dispense/release?prescription_id=${sendResult.prescription_id}`}>
-            Release this prescription
-          </ActionLink>
-          <ActionLink href={`${baseUrl}dispense/dispense?prescription_id=${sendResult.prescription_id}`}>
-            Dispense this prescription
-          </ActionLink>
-          <ActionLink href={`${baseUrl}dispense/claim?prescription_id=${sendResult.prescription_id}`}>
-            Claim for this prescription
-          </ActionLink>
-          <ActionLink href={`${baseUrl}prescribe/cancel?prescription_id=${sendResult.prescription_id}`}>
-            Cancel this prescription
-          </ActionLink>
+          <PrescriptionActions prescriptionId={sendResult.prescription_id} cancel release dispense claim view/>
           <MessageExpanders
             fhirRequest={sendResult.request}
             hl7V3Request={sendResult.request_xml}

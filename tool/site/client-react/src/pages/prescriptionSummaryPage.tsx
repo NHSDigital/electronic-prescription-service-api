@@ -16,25 +16,27 @@ const PrescriptionSummaryPage: React.FC<PrescriptionSummaryPageProps> = ({
   prescriptionId
 }) => {
   const {baseUrl} = useContext(AppContext)
-  const [confirmed, setConfirmed] = useState<boolean>(false)
+  const [sendConfirmed, setSendConfirmed] = useState<boolean>(false)
+  const retrievePrescriptionTask = () => retrievePrescription(baseUrl, prescriptionId)
   return (
-    <LongRunningTask<Bundle> task={() => retrievePrescription(baseUrl, prescriptionId)} message="Retrieving prescription details.">
+    <LongRunningTask<Bundle> task={retrievePrescriptionTask} message="Retrieving prescription details.">
       {bundle => {
-        if (!confirmed) {
+        if (!sendConfirmed) {
           const summaryViewProps = createSummaryPrescription(bundle)
           return (
             <>
               <PrescriptionSummaryView {...summaryViewProps}/>
               <ButtonList>
-                <Button onClick={() => setConfirmed(true)}>Send</Button>
+                <Button onClick={() => setSendConfirmed(true)}>Send</Button>
                 <Button secondary href={baseUrl}>Back</Button>
               </ButtonList>
             </>
           )
         }
 
+        const sendSignRequestTask = () => sendSignRequest(baseUrl)
         return (
-          <LongRunningTask<SignResponse> task={() => sendSignRequest(baseUrl)} message="Sending signature request.">
+          <LongRunningTask<SignResponse> task={sendSignRequestTask} message="Sending signature request.">
             {signResponse => (
               <>
                 <Label isPageHeading>Upload Complete</Label>

@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext, useState} from "react"
-import {ActionLink, Button, CrossIcon, Label, TickIcon} from "nhsuk-react-components"
+import {Button, CrossIcon, Label, TickIcon} from "nhsuk-react-components"
 import axios from "axios"
 import {
   getMedicationDispenseResources,
@@ -24,6 +24,7 @@ import {LineItemStatus, PrescriptionStatus} from "../fhir/reference-data/valueSe
 import {getMedicationDispenseLineItemId, getMedicationRequestLineItemId} from "../fhir/helpers"
 import LongRunningTask from "../components/longRunningTask"
 import {AppContext} from "../index"
+import PrescriptionActions from "../components/prescriptionActions"
 
 interface DispensePageProps {
   prescriptionId: string
@@ -35,33 +36,31 @@ const DispensePage: React.FC<DispensePageProps> = ({
   const {baseUrl} = useContext(AppContext)
   const [dispenseFormValues, setDispenseFormValues] = useState<DispenseFormValues>()
 
+  const retrievePrescriptionTask = () => retrievePrescriptionDetails(baseUrl, prescriptionId)
   return (
-    <LongRunningTask<PrescriptionDetails> task={() => retrievePrescriptionDetails(baseUrl, prescriptionId)} message="Retrieving prescription details.">
+    <LongRunningTask<PrescriptionDetails> task={retrievePrescriptionTask} message="Retrieving prescription details.">
       {prescriptionDetails => {
-        console.log("got prescription details")
         if (!dispenseFormValues) {
+          const lineItems = createStaticLineItemInfoArray(
+            prescriptionDetails.medicationRequests,
+            prescriptionDetails.medicationDispenses
+          )
+          const prescription = createStaticPrescriptionInfo(prescriptionDetails.medicationDispenses)
           return (
             <>
               <Label isPageHeading>Dispense Medication</Label>
-              <DispenseForm
-                lineItems={createStaticLineItemInfoArray(prescriptionDetails.medicationRequests, prescriptionDetails.medicationDispenses)}
-                prescription={createStaticPrescriptionInfo(prescriptionDetails.medicationDispenses)}
-                sendDispenseNotification={setDispenseFormValues}
-              />
+              <DispenseForm lineItems={lineItems} prescription={prescription} onSubmit={setDispenseFormValues}/>
             </>
           )
         }
+
+        const sendDispenseNotificationTask = () => sendDispenseNotification(baseUrl, prescriptionDetails, dispenseFormValues)
         return (
-          <LongRunningTask<DispenseResult> task={() => sendDispenseNotification(baseUrl, prescriptionDetails, dispenseFormValues)} message="Sending dispense notification.">
+          <LongRunningTask<DispenseResult> task={sendDispenseNotificationTask} message="Sending dispense notification.">
             {dispenseResult => (
               <>
                 <Label isPageHeading>Dispense Result {dispenseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
-                <ActionLink href={`${baseUrl}dispense/dispense?prescription_id=${prescriptionId}`}>
-                  Send another dispense notification for this prescription
-                </ActionLink>
-                <ActionLink href={`${baseUrl}dispense/claim?prescription_id=${prescriptionId}`}>
-                  Claim for this prescription
-                </ActionLink>
+                <PrescriptionActions prescriptionId={prescriptionId} dispense claim view/>
                 <MessageExpanders
                   fhirRequest={dispenseResult.request}
                   hl7V3Request={dispenseResult.request_xml}

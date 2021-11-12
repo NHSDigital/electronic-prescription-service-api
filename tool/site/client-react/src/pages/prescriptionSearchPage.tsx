@@ -35,8 +35,9 @@ const PrescriptionSearchPage: React.FC<PrescriptionSearchPageProps> = ({
     )
   }
 
+  const prescriptionSearchTask = () => makeTrackerRequest(baseUrl, searchCriteria)
   return (
-    <LongRunningTask<Bundle> task={() => makeTrackerRequest(baseUrl, searchCriteria)} message="Searching for prescriptions." back={handleReset}>
+    <LongRunningTask<Bundle> task={prescriptionSearchTask} message="Searching for prescriptions." back={handleReset}>
       {bundle => <PrescriptionSearchResults bundle={bundle} back={handleReset}/>}
     </LongRunningTask>
   )
