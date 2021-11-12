@@ -104,7 +104,7 @@ export function createCommunicationRequest(
     status: "unknown",
     subject: fhir.createReference(patientId),
     payload: payload,
-    requester: organizationIdentifier,
+    requester: fhir.createIdentifierReference(organizationIdentifier),
     recipient: patientIdentifier
   }
 }

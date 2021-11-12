@@ -1,6 +1,6 @@
 import {fhir, validationErrors as errors} from "@models"
 import {getCodeableConceptCodingForSystem, getCodingForSystemOrNull} from "../translation/common"
-import {validatePermittedDispenseMessage} from "./prescribing-dispensing-tracker"
+import {validatePermittedDispenseMessage} from "./scope-validator"
 
 export function verifyTask(task: fhir.Task, scope: string): Array<fhir.OperationOutcomeIssue> {
   const validationErrors = []

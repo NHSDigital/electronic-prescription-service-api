@@ -1,12 +1,13 @@
 import * as common from "./common"
 import * as patient from "./patient"
+import * as organization from "./practitioner-role"
 
 export interface CommunicationRequest extends common.Resource {
   resourceType: "CommunicationRequest"
   status?: string
   subject: common.Reference<patient.Patient>
   payload: Array<ContentStringPayload | ContentReferencePayload>
-  requester: common.Identifier
+  requester: common.IdentifierReference<organization.Organization>
   recipient: Array<common.Identifier>
 }
 
