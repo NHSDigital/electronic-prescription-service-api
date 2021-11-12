@@ -303,7 +303,7 @@ describe("communication request", () => {
     )
     expect(communicationRequest).toMatchObject<Partial<fhir.CommunicationRequest>>(
       {
-        requester: organizationIdentifier,
+        requester: fhir.createIdentifierReference(organizationIdentifier),
         recipient: patientIdentifiers
       }
     )
