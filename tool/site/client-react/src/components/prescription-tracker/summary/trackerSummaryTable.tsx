@@ -4,12 +4,12 @@ import React from "react"
 
 interface TrackerSummaryTableProps {
   prescriptions: Array<PrescriptionDetailProps>
-  setSelectedPrescriptionId: React.Dispatch<React.SetStateAction<string>>
+  selectPrescription: React.Dispatch<React.SetStateAction<string>>
 }
 
 const TrackerSummaryTable: React.FC<TrackerSummaryTableProps> = ({
   prescriptions,
-  setSelectedPrescriptionId
+  selectPrescription
 }) => {
   const actionLinkStyle: React.CSSProperties = {
     marginBottom: "0"
@@ -33,7 +33,7 @@ const TrackerSummaryTable: React.FC<TrackerSummaryTableProps> = ({
             <Table.Cell>{prescription.status}</Table.Cell>
             <Table.Cell>{prescription.creationDate}</Table.Cell>
             <Table.Cell>
-              <ActionLink style={actionLinkStyle} onClick={() => setSelectedPrescriptionId(prescription.id)}>
+              <ActionLink style={actionLinkStyle} onClick={() => selectPrescription(prescription.id)}>
                 View Details
               </ActionLink>
             </Table.Cell>

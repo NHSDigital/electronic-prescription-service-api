@@ -22,8 +22,8 @@ interface PrescriptionSearchPageProps {
 }
 
 interface PrescriptionSearchCriteria {
-  prescriptionId: string
-  patientId: string
+  prescriptionId?: string
+  patientId?: string
 }
 
 const PrescriptionSearchPage: React.FC<PrescriptionSearchPageProps> = ({
@@ -31,31 +31,54 @@ const PrescriptionSearchPage: React.FC<PrescriptionSearchPageProps> = ({
   prescriptionId
 }) => {
   const [searchResults, setSearchResults] = useState<Bundle>()
-  const [selectedPrescriptionId, setSelectedPrescriptionId] = useState<string>()
+  const [selectedPrescription, setSelectedPrescription] = useState<Task>()
   const [errorMessage, setErrorMessage] = useState<string>()
   const [loadingMessage, setLoadingMessage] = useState<string>()
 
   async function handleSearch(searchCriteria: PrescriptionSearchCriteria) {
     setLoadingMessage("Searching for prescriptions...")
+    const bundle = await makeTrackerRequest(searchCriteria)
+    if (bundle) {
+      setSearchResults(bundle)
+    }
+    setLoadingMessage(undefined)
+  }
 
+  async function selectPrescription(selectedPrescriptionId: string) {
+    const selectedTask = searchResults.entry
+      .map(entry => entry.resource)
+      .filter(isTask)
+      .find(task => task.focus.identifier.value === selectedPrescriptionId)
+    if (selectedTask.owner) {
+      setSelectedPrescription(selectedTask)
+    } else {
+      setLoadingMessage("Retrieving full prescription details...")
+      const responseData = await makeTrackerRequest({prescriptionId: selectedPrescriptionId})
+      if (responseData) {
+        const task = responseData.entry.map(entry => entry.resource).find(isTask)
+        setSelectedPrescription(task)
+      }
+      setLoadingMessage(undefined)
+    }
+  }
+
+  async function makeTrackerRequest(searchCriteria: PrescriptionSearchCriteria): Promise<Bundle | undefined> {
     const searchParams = toURLSearchParams(searchCriteria)
     const response = await fetch(`${baseUrl}tracker?${searchParams.toString()}`)
     const responseData = await response.json()
     if (isBundle(responseData)) {
-      setSearchResults(responseData)
+      return responseData
     } else if (isOperationOutcome(responseData)) {
       setErrorMessage(responseData.issue[0].diagnostics)
     } else {
       console.log(responseData)
       setErrorMessage("Unknown error")
     }
-
-    setLoadingMessage(undefined)
   }
 
   function handleReset() {
     setSearchResults(undefined)
-    setSelectedPrescriptionId(undefined)
+    setSelectedPrescription(undefined)
     setErrorMessage(undefined)
     setLoadingMessage(undefined)
   }
@@ -82,24 +105,20 @@ const PrescriptionSearchPage: React.FC<PrescriptionSearchPageProps> = ({
     </>
   }
 
-  if (selectedPrescriptionId) {
-    const selectedTask = searchResults.entry
-      .map(entry => entry.resource)
-      .filter(isTask)
-      .find(task => task.focus.identifier.value === selectedPrescriptionId)
-    const prescription = createPrescriptionDetailProps(selectedTask)
-    const prescriptionItems = createPrescriptionItemProps(selectedTask)
+  if (selectedPrescription) {
+    const prescription = createPrescriptionDetailProps(selectedPrescription)
+    const prescriptionItems = createPrescriptionItemProps(selectedPrescription)
     return <>
       <Label isPageHeading>Prescription Details</Label>
       <PrescriptionDetails {...prescription} />
       <PrescriptionItems items={prescriptionItems}/>
       <MessageExpander
         name="Response (FHIR)"
-        message={JSON.stringify(selectedTask, null, 2)}
+        message={JSON.stringify(selectedPrescription, null, 2)}
         mimeType="application/json"
       />
       <ButtonList>
-        <Button secondary onClick={() => setSelectedPrescriptionId(undefined)}>Back</Button>
+        <Button secondary onClick={() => setSelectedPrescription(undefined)}>Back</Button>
       </ButtonList>
     </>
   }
@@ -111,7 +130,7 @@ const PrescriptionSearchPage: React.FC<PrescriptionSearchPageProps> = ({
       .map(task => createPrescriptionDetailProps(task))
     return <>
       <Label isPageHeading>Search Results</Label>
-      <TrackerSummaryTable prescriptions={prescriptions} setSelectedPrescriptionId={setSelectedPrescriptionId}/>
+      <TrackerSummaryTable prescriptions={prescriptions} selectPrescription={selectPrescription}/>
       <MessageExpander
         name="Response (FHIR)"
         message={JSON.stringify(searchResults, null, 2)}
