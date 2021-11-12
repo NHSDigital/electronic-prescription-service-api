@@ -7,7 +7,7 @@ import {
   DISPENSING_USER_SCOPE,
   PRESCRIBING_APP_SCOPE,
   PRESCRIBING_USER_SCOPE
-} from "../../../src/services/validation/prescribing-dispensing-tracker"
+} from "../../../src/services/validation/scope-validator"
 
 describe("verifyTask returns errors", () => {
   const validReturnTask = TestResources.exampleReturnTask

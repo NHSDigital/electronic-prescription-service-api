@@ -1,3 +1,23 @@
+export interface TrackerResponse {
+  version: string
+  reason: string
+  statusCode: string
+}
+
+export interface SummaryTrackerResponse extends TrackerResponse {
+  prescriptions: Record<string, SummaryPrescription>
+}
+
+/**
+ * RawDetailTrackerResponse is the actual response format from Spine.
+ * Typescript doesn't like it so we convert to DetailTrackerResponse at the earliest opportunity.
+ */
+export type RawDetailTrackerResponse = TrackerResponse & Record<string, DetailPrescription>
+
+export interface DetailTrackerResponse extends TrackerResponse {
+  prescriptions: Record<string, DetailPrescription>
+}
+
 interface Prescription {
   lastEventDate: string
   prescriptionIssueDate: string
@@ -12,8 +32,8 @@ interface Prescription {
   prescriptionStatus: string
 }
 
-interface SummaryPrescription extends Prescription {
-  lineItems: { [lineItemId: string]: string }
+export interface SummaryPrescription extends Prescription {
+  lineItems: Record<string, string>
 }
 
 export interface DetailPrescription extends Prescription {
@@ -24,7 +44,7 @@ export interface DetailPrescription extends Prescription {
   prescriber: Organization
   nominatedPharmacy: Organization
   dispensingPharmacy: Organization
-  lineItems: { [lineItemId: string]: LineItemDetail }
+  lineItems: Record<string, LineItemDetail>
 }
 
 interface Organization {
@@ -42,20 +62,3 @@ export interface LineItemDetail {
   itemStatus: string
   code: string
 }
-
-interface Prescriptions<T extends Prescription> {
-  [prescriptionShortFormId: string]: T
-}
-
-export interface SummaryTrackerResponse {
-  version: string
-  reason: string
-  statusCode: string
-  prescriptions: Prescriptions<SummaryPrescription>
-}
-
-export type DetailTrackerResponse = {
-  version: string
-  reason: string
-  statusCode: string
-} & Prescriptions<DetailPrescription>
