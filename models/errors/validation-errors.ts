@@ -211,3 +211,11 @@ export const invalidQueryParameterCombinationIssue: fhir.OperationOutcomeIssue =
   code: fhir.IssueCodes.INVALID,
   diagnostics: "Invalid combination of query parameters."
 }
+
+export function createInvalidSystemIssue(param: string, system: string): fhir.OperationOutcomeIssue {
+  return {
+    severity: "error",
+    code: fhir.IssueCodes.VALUE,
+    diagnostics: `Query parameter ${param} must have system ${system} if specified.`
+  }
+}

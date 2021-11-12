@@ -256,7 +256,7 @@ def post_sign():
 
 @app.route(SEND_URL, methods=["GET"])
 def get_send():
-    return render_rivets_client("send", sign_response={"signature": ""})
+    return render_react_client("send")
 
 
 @app.route(SEND_URL, methods=["POST"])
