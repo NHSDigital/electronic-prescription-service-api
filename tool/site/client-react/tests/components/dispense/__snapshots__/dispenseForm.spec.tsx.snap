@@ -85,7 +85,7 @@ exports[`Fields default to current values 1`] = `
         </select></div>
     </fieldset>
   </div>
-  <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Dispense</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
+  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Dispense</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
 </form>"
 `;
 
@@ -161,7 +161,7 @@ exports[`Prescription status is not updated automatically if field has been touc
         </select></div>
     </fieldset>
   </div>
-  <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Dispense</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
+  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Dispense</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
 </form>"
 `;
 
@@ -237,7 +237,7 @@ exports[`Prescription status updates to suggested value when line item status is
         </select></div>
     </fieldset>
   </div>
-  <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Dispense</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
+  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Dispense</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
 </form>"
 `;
 
@@ -313,7 +313,7 @@ exports[`Reason field is hidden when status is not set to not dispensed 1`] = `
         </select></div>
     </fieldset>
   </div>
-  <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Dispense</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
+  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Dispense</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
 </form>"
 `;
 
@@ -415,7 +415,7 @@ exports[`Reason field is shown when status is set to not dispensed 1`] = `
         </select></div>
     </fieldset>
   </div>
-  <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Dispense</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
+  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Dispense</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
 </form>"
 `;
 
@@ -504,6 +504,6 @@ exports[`Reason field value is reset when hidden 1`] = `
         </select></div>
     </fieldset>
   </div>
-  <div style=\\"display: flex; flex-direction: row; gap: 0.5em;\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Dispense</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
+  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Dispense</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
 </form>"
 `;

@@ -11,13 +11,13 @@ interface PrescriptionItemTableProps {
 export interface PrescriptionItemProps {
   identifier: string
   dispenseStatus: string
-  dateLastDispensed: string
+  dateLastDispensed?: string
 }
 
 export function createPrescriptionItemProps(task: Task): Array<PrescriptionItemProps> {
   return task.input.map(input => {
     const dateLastDispensedExtension = getDateLastDispensedExtension(input.extension)
-    const dateLastDispensed = dateLastDispensedExtension ? formatDate(dateLastDispensedExtension.valueDateTime) : "N/A"
+    const dateLastDispensed = dateLastDispensedExtension && formatDate(dateLastDispensedExtension.valueDateTime)
     return {
       identifier: input.valueReference.identifier.value,
       dispenseStatus: getDispenseStatusExtension(input.extension).valueCoding.display,
@@ -54,5 +54,5 @@ const PrescriptionItemRow: React.FC<PrescriptionItemProps> = ({
 }) => <Table.Row>
   <Table.Cell>{identifier}</Table.Cell>
   <Table.Cell>{dispenseStatus}</Table.Cell>
-  <Table.Cell>{dateLastDispensed}</Table.Cell>
+  <Table.Cell>{dateLastDispensed || "N/A"}</Table.Cell>
 </Table.Row>
