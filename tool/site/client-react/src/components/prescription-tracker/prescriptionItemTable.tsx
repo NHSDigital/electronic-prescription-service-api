@@ -1,7 +1,8 @@
 import * as React from "react"
 import {Table} from "nhsuk-react-components"
 import {Task} from "fhir/r4"
-import {getDispenseStatusExtension} from "../../fhir/customExtensions"
+import {getDateLastDispensedExtension, getDispenseStatusExtension} from "../../fhir/customExtensions"
+import {formatDate} from "../../formatters/dates"
 
 interface PrescriptionItemTableProps {
   items: Array<PrescriptionItemProps>
@@ -10,13 +11,17 @@ interface PrescriptionItemTableProps {
 export interface PrescriptionItemProps {
   identifier: string
   dispenseStatus: string
+  dateLastDispensed: string
 }
 
 export function createPrescriptionItemProps(task: Task): Array<PrescriptionItemProps> {
   return task.input.map(input => {
+    const dateLastDispensedExtension = getDateLastDispensedExtension(input.extension)
+    const dateLastDispensed = dateLastDispensedExtension ? formatDate(dateLastDispensedExtension.valueDateTime) : "N/A"
     return {
       identifier: input.valueReference.identifier.value,
-      dispenseStatus: getDispenseStatusExtension(input.extension).valueCoding.display
+      dispenseStatus: getDispenseStatusExtension(input.extension).valueCoding.display,
+      dateLastDispensed: dateLastDispensed
     }
   })
 }
@@ -31,6 +36,7 @@ export const PrescriptionItemTable: React.FC<PrescriptionItemTableProps> = ({
           <Table.Row>
             <Table.Cell>Identifier</Table.Cell>
             <Table.Cell>Status</Table.Cell>
+            <Table.Cell>Last Dispensed</Table.Cell>
           </Table.Row>
         </Table.Head>
         <Table.Body>
@@ -43,8 +49,10 @@ export const PrescriptionItemTable: React.FC<PrescriptionItemTableProps> = ({
 
 const PrescriptionItemRow: React.FC<PrescriptionItemProps> = ({
   identifier,
-  dispenseStatus
+  dispenseStatus,
+  dateLastDispensed
 }) => <Table.Row>
   <Table.Cell>{identifier}</Table.Cell>
   <Table.Cell>{dispenseStatus}</Table.Cell>
+  <Table.Cell>{dateLastDispensed}</Table.Cell>
 </Table.Row>

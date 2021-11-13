@@ -167,7 +167,8 @@ test("Displays results if detail search completes successfully", async () => {
   expect(screen.getByText(prescriptionId)).toBeTruthy()
   expect(screen.getByText(formattedNhsNumber)).toBeTruthy()
   expect(screen.getByText("Claimed")).toBeTruthy()
-  expect(screen.getByText("T1450")).toBeTruthy()
+  expect(screen.getByText("SOMERSET BOWEL CANCER SCREENING CENTRE (A99968)")).toBeTruthy()
+  expect(screen.getByText("NHS BUSINESS SERVICES AUTHORITY (T1450)")).toBeTruthy()
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })

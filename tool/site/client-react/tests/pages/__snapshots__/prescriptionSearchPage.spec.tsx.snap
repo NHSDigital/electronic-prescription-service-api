@@ -833,8 +833,12 @@ exports[`Displays results if detail search completes successfully 1`] = `
     <dd class=\\"nhsuk-summary-list__value\\">944 930 4106</dd>
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Assigned Dispenser ODS Code</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">T1450</dd>
+    <dt class=\\"nhsuk-summary-list__key\\">Prescriber</dt>
+    <dd class=\\"nhsuk-summary-list__value\\">SOMERSET BOWEL CANCER SCREENING CENTRE (A99968)</dd>
+  </div>
+  <div class=\\"nhsuk-summary-list__row\\">
+    <dt class=\\"nhsuk-summary-list__key\\">Assigned Dispenser</dt>
+    <dd class=\\"nhsuk-summary-list__value\\">NHS BUSINESS SERVICES AUTHORITY (T1450)</dd>
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Created On</dt>
@@ -854,16 +858,19 @@ exports[`Displays results if detail search completes successfully 1`] = `
         <tr class=\\"nhsuk-table__row\\">
           <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Identifier</th>
           <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Status</th>
+          <th class=\\"nhsuk-table__header\\" scope=\\"col\\">Last Dispensed</th>
         </tr>
       </thead>
       <tbody class=\\"nhsuk-table__body\\">
         <tr class=\\"nhsuk-table__row\\">
           <td class=\\"nhsuk-table__cell\\">a54219b8-f741-4c47-b662-e4f8dfa49ab6</td>
           <td class=\\"nhsuk-table__cell\\">Dispensed</td>
+          <td class=\\"nhsuk-table__cell\\">13-Nov-2021</td>
         </tr>
         <tr class=\\"nhsuk-table__row\\">
           <td class=\\"nhsuk-table__cell\\">a54219b8-f741-4c47-b662-e4f8dfa49ab7</td>
           <td class=\\"nhsuk-table__cell\\">Dispensed</td>
+          <td class=\\"nhsuk-table__cell\\">13-Nov-2021</td>
         </tr>
       </tbody>
     </table>
