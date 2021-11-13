@@ -4,7 +4,7 @@ import pretty from "pretty"
 import * as React from "react"
 import moxios from "moxios"
 import userEvent from "@testing-library/user-event"
-import {readMessage} from "../components/claim/messages/messages"
+import {readMessage} from "../messages/messages"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import DispensePage from "../../src/pages/dispensePage"
@@ -42,8 +42,7 @@ test("Displays dispense form if prescription details are retrieved successfully 
     response: []
   })
 
-  const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId}/>, context)
-  await waitFor(() => screen.getByText("Dispense Medication"))
+  const container = await renderPage()
 
   expect(screen.getByText("Dispense")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
@@ -59,8 +58,7 @@ test("Displays dispense form if prescription details are retrieved successfully 
     response: [dispenseNotification]
   })
 
-  const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId}/>, context)
-  await waitFor(() => screen.getByText("Dispense Medication"))
+  const container = await renderPage()
 
   expect(screen.getByText("Dispense")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
@@ -102,8 +100,7 @@ test("Displays loading text while dispense notification is being submitted", asy
     response: [dispenseNotification]
   })
 
-  const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId}/>, context)
-  await waitFor(() => screen.getByText("Dispense Medication"))
+  const container = await renderPage()
   userEvent.click(screen.getByText("Dispense"))
   await waitFor(() => screen.getByText("Loading..."))
 
@@ -131,8 +128,7 @@ test("Displays dispense result", async () => {
     }
   })
 
-  const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId}/>, context)
-  await waitFor(() => screen.getByText("Dispense Medication"))
+  const container = await renderPage()
   userEvent.click(screen.getByText("Dispense"))
   await waitFor(() => screen.getByText(/Dispense Result/))
 
@@ -142,3 +138,9 @@ test("Displays dispense result", async () => {
   expect(screen.getByText("XML Response")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
+
+async function renderPage() {
+  const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId}/>, context)
+  await waitFor(() => screen.getByText("Dispense Medication"))
+  return container
+}

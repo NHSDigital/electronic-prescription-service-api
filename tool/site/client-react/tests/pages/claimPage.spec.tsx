@@ -5,7 +5,7 @@ import * as React from "react"
 import moxios from "moxios"
 import ClaimPage from "../../src/pages/claimPage"
 import userEvent from "@testing-library/user-event"
-import {readMessage} from "../components/claim/messages/messages"
+import {readMessage} from "../messages/messages"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 
@@ -42,8 +42,7 @@ test("Displays claim form if prescription details are retrieved successfully", a
     response: [dispenseNotification]
   })
 
-  const {container} = renderWithContext(<ClaimPage prescriptionId={prescriptionId}/>, context)
-  await waitFor(() => screen.getByText("Claim for Dispensed Medication"))
+  const container = await renderPage()
 
   expect(screen.getByText("Claim")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
@@ -102,8 +101,7 @@ test("Displays loading text while claim is being submitted", async () => {
     response: [dispenseNotification]
   })
 
-  const {container} = renderWithContext(<ClaimPage prescriptionId={prescriptionId}/>, context)
-  await waitFor(() => screen.getByText("Claim for Dispensed Medication"))
+  const container = await renderPage()
   userEvent.click(screen.getByText("Claim"))
   await waitFor(() => screen.getByText("Loading..."))
 
@@ -131,8 +129,7 @@ test("Displays claim result", async () => {
     }
   })
 
-  const {container} = renderWithContext(<ClaimPage prescriptionId={prescriptionId}/>, context)
-  await waitFor(() => screen.getByText("Claim for Dispensed Medication"))
+  const container = await renderPage()
   userEvent.click(screen.getByText("Claim"))
   await waitFor(() => screen.getByText(/Claim Result/))
 
@@ -142,3 +139,9 @@ test("Displays claim result", async () => {
   expect(screen.getByText("XML Response")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
+
+async function renderPage() {
+  const {container} = renderWithContext(<ClaimPage prescriptionId={prescriptionId}/>, context)
+  await waitFor(() => screen.getByText("Claim for Dispensed Medication"))
+  return container
+}

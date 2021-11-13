@@ -1,11 +1,12 @@
 import * as React from "react"
 import {useContext, useState} from "react"
-import {Bundle, Task} from "fhir/r4"
+import {Bundle, OperationOutcome, Task} from "fhir/r4"
 import {isBundle, isOperationOutcome, isTask} from "../fhir/typeGuards"
 import LongRunningTask from "../components/longRunningTask"
 import {AppContext} from "../index"
 import PrescriptionSearchForm from "../components/prescription-tracker/prescriptionSearchForm"
 import PrescriptionSearchResults from "../components/prescription-tracker/prescriptionSearchResults"
+import axios from "axios"
 
 export interface PrescriptionSearchCriteria {
   prescriptionId?: string
@@ -60,8 +61,8 @@ export async function makeTrackerRequest(
   searchCriteria: PrescriptionSearchCriteria
 ): Promise<Bundle> {
   const searchParams = toURLSearchParams(searchCriteria)
-  const response = await fetch(`${baseUrl}tracker?${searchParams.toString()}`)
-  const responseData = await response.json()
+  const response = await axios.get<Bundle | OperationOutcome>(`${baseUrl}tracker?${searchParams.toString()}`)
+  const responseData = response.data
   if (isBundle(responseData)) {
     return responseData
   }
@@ -88,6 +89,9 @@ function toURLSearchParams(searchCriteria: PrescriptionSearchCriteria) {
 }
 
 export function getTasks(bundle: Bundle): Array<Task> {
+  if (!bundle.entry) {
+    return []
+  }
   return bundle.entry
     .map(entry => entry.resource)
     .filter(isTask)

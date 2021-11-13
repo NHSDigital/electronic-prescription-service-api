@@ -1,0 +1,226 @@
+{
+  "resourceType": "Bundle",
+  "type": "searchset",
+  "total": 1,
+  "entry": [
+    {
+      "resource": {
+        "resourceType": "Task",
+        "id": "18d98368-cfa2-4ce9-a7e7-13a324e5093f",
+        "extension": [
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription",
+            "extension": [
+              {
+                "url": "courseOfTherapyType",
+                "valueCoding": {
+                  "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+                  "code": "acute",
+                  "display": "Short course (acute) therapy"
+                }
+              }
+            ]
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://tools.ietf.org/html/rfc4122",
+            "value": "18d98368-cfa2-4ce9-a7e7-13a324e5093f"
+          }
+        ],
+        "status": "completed",
+        "businessStatus": {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+              "code": "0008",
+              "display": "Claimed"
+            }
+          ]
+        },
+        "intent": "order",
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/CodeSystem/task-code",
+              "code": "fulfill",
+              "display": "Fulfill the focal request"
+            }
+          ]
+        },
+        "focus": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+            "value": "003D4D-A99968-4C5AAJ"
+          }
+        },
+        "for": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449304106"
+          }
+        },
+        "authoredOn": "2021-11-05",
+        "owner": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "T1450"
+          },
+          "display": "NHS BUSINESS SERVICES AUTHORITY"
+        },
+        "requester": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "A99968"
+          },
+          "display": "SOMERSET BOWEL CANCER SCREENING CENTRE"
+        },
+        "input": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "16076005",
+                  "display": "Prescription"
+                }
+              ]
+            },
+            "valueReference": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+              },
+              "type": "MedicationRequest"
+            },
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation",
+                "extension": [
+                  {
+                    "url": "dateLastDispensed",
+                    "valueDate": "2021-11-05"
+                  },
+                  {
+                    "url": "dispenseStatus",
+                    "valueCoding": {
+                      "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+                      "code": "0001",
+                      "display": "Dispensed"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "16076005",
+                  "display": "Prescription"
+                }
+              ]
+            },
+            "valueReference": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
+              },
+              "type": "MedicationRequest"
+            },
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation",
+                "extension": [
+                  {
+                    "url": "dateLastDispensed",
+                    "valueDate": "2021-11-05"
+                  },
+                  {
+                    "url": "dispenseStatus",
+                    "valueCoding": {
+                      "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+                      "code": "0001",
+                      "display": "Dispensed"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "output": [
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "373784005",
+                  "display": "Dispensing medication"
+                }
+              ]
+            },
+            "valueReference": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab6"
+              },
+              "type": "MedicationDispense"
+            },
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingReleaseInformation",
+                "extension": [
+                  {
+                    "url": "dateDownloaded",
+                    "valueDate": "2021-11-05"
+                  },
+                  {
+                    "url": "dateClaimed",
+                    "valueDate": "2021-11-05"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "type": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "373784005",
+                  "display": "Dispensing medication"
+                }
+              ]
+            },
+            "valueReference": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
+              },
+              "type": "MedicationDispense"
+            },
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingReleaseInformation",
+                "extension": [
+                  {
+                    "url": "dateDownloaded",
+                    "valueDate": "2021-11-05"
+                  },
+                  {
+                    "url": "dateClaimed",
+                    "valueDate": "2021-11-05"
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "fullUrl": "urn:uuid:18d98368-cfa2-4ce9-a7e7-13a324e5093f"
+    }
+  ]
+}
