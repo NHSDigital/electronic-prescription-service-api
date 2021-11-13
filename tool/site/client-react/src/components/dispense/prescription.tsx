@@ -21,7 +21,9 @@ const Prescription: React.FC<PrescriptionProps> = ({name}) => {
     if (derivedPrescriptionStatus) {
       context.setFieldValue("prescription.statusCode", derivedPrescriptionStatus)
     }
-  }, [context, lineItemStatuses])
+    // Including context in deps results in an infinite update loop.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, lineItemStatuses)
 
   return (
     <Fieldset>

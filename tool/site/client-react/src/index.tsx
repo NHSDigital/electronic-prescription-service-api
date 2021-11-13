@@ -10,11 +10,11 @@ import PrescriptionSearchPage from "./pages/prescriptionSearchPage"
 
 const customWindow = window as Record<string, any>
 
-interface AppContext {
+export interface AppContextValue {
   baseUrl: string
 }
 
-export const AppContext = React.createContext<AppContext>({baseUrl: "/"})
+export const AppContext = React.createContext<AppContextValue>({baseUrl: "/"})
 
 async function startApplication(baseUrl: string): Promise<void> {
   const urlParams = new URLSearchParams(window.location.search)

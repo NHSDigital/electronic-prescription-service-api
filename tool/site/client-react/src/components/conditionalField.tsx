@@ -19,7 +19,9 @@ const ConditionalField: React.FC<ConditionalFieldProps> = ({
       helpers.setTouched(meta.initialTouched)
       helpers.setError(meta.initialError)
     }
-  }, [condition, meta, helpers])
+    // Including meta and helpers in deps results in an infinite update loop.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [condition])
 
   return condition && <Field name={name} {...extraProps}/>
 }
