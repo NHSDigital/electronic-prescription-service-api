@@ -11,19 +11,17 @@ export interface PrescriptionProps {
 }
 
 const Prescription: React.FC<PrescriptionProps> = ({name}) => {
-  const context = useFormikContext<DispenseFormValues>()
-  const lineItemStatuses = context.values?.lineItems?.map(lineItem => lineItem.statusCode)
+  const {values, touched, setFieldValue} = useFormikContext<DispenseFormValues>()
   useEffect(() => {
-    if (context.touched.prescription?.statusCode) {
+    if (touched.prescription?.statusCode) {
       return
     }
+    const lineItemStatuses = values?.lineItems?.map(lineItem => lineItem.statusCode)
     const derivedPrescriptionStatus = derivePrescriptionStatusFromLineItemStatuses(lineItemStatuses)
     if (derivedPrescriptionStatus) {
-      context.setFieldValue("prescription.statusCode", derivedPrescriptionStatus)
+      setFieldValue("prescription.statusCode", derivedPrescriptionStatus)
     }
-    // Including context in deps results in an infinite update loop.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, lineItemStatuses)
+  }, [touched.prescription?.statusCode, values?.lineItems, setFieldValue])
 
   return (
     <Fieldset>
