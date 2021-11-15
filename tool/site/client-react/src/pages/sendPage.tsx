@@ -30,7 +30,7 @@ const SendPage: React.FC<SendPageProps> = ({
   }, [sendResult])
 
   async function sendPrescription(): Promise<void> {
-    setLoadingMessage("Sending prescription.")
+    setLoadingMessage("Sending prescription(s).")
 
     const request = {signatureToken: token}
     const response = await axios.post<SendResult | SendBulkResult>(`${baseUrl}prescribe/send`, request)
