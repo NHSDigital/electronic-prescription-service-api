@@ -514,7 +514,7 @@ function createRepeatDispensingExtensionIfRequired(
 
   if (repeatsIssued > 1) {
     extension.push({
-      url: "numberOfRepeatPrescriptionsIssued",
+      url: "numberOfPrescriptionsIssued",
       valueUnsignedInt: repeatsIssued
     } as fhirExtension.UnsignedIntExtension)
   }
