@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useEffect, useState} from "react"
-import {ActionLink, Button, CrossIcon, ErrorMessage, Label, SummaryList, TickIcon} from "nhsuk-react-components"
+import {ActionLink, Button, CrossIcon, ErrorMessage, Label, SummaryList, Table, TickIcon} from "nhsuk-react-components"
 import axios from "axios"
 import * as fhir from "fhir/r4"
 import MessageExpanders from "../components/messageExpanders"
@@ -18,6 +18,7 @@ const SendPage: React.FC<SendPageProps> = ({
   const [loadingMessage, setLoadingMessage] = useState<string>("Loading page.")
   const [errorMessage, setErrorMessage] = useState<string>()
   const [sendResult, setSendResult] = useState<SendResult>()
+  const [sendBulkResult, setSendBulkResult] = useState<SendBulkResult>()
 
   useEffect(() => {
     if (!sendResult) {
@@ -29,15 +30,23 @@ const SendPage: React.FC<SendPageProps> = ({
   }, [sendResult])
 
   async function sendPrescription(): Promise<void> {
-    setLoadingMessage("Sending prescription.")
+    setLoadingMessage("Sending prescription(s).")
 
     const request = {signatureToken: token}
-    const response = await axios.post<SendResult>(`${baseUrl}prescribe/send`, request)
+    const response = await axios.post<SendResult | SendBulkResult>(`${baseUrl}prescribe/send`, request)
     console.log(request)
     console.log(response)
 
-    setSendResult(response.data)
+    if (isBulkResult(response.data)) {
+      setSendBulkResult(response.data)
+    } else {
+      setSendResult(response.data)
+    }
     setLoadingMessage(undefined)
+  }
+
+  function isBulkResult(response: SendResult | SendBulkResult): response is SendBulkResult {
+    return (response as SendBulkResult).results !== undefined
   }
 
   if (errorMessage) {
@@ -51,6 +60,31 @@ const SendPage: React.FC<SendPageProps> = ({
     return <>
       <Label isPageHeading>Loading...</Label>
       <Label>{loadingMessage}</Label>
+    </>
+  }
+
+  if (sendBulkResult) {
+    return <>
+      <Label isPageHeading>Send Results</Label>
+      <ButtonList>
+        <Button onClick={() => navigator.clipboard.writeText(sendBulkResult.results.map(r => r.prescription_id).join("\n"))}>Copy Prescription IDs</Button>
+      </ButtonList>
+      <Table>
+        <Table.Head>
+          <Table.Row>
+            <Table.Cell>ID</Table.Cell>
+            <Table.Cell>Success</Table.Cell>
+          </Table.Row>
+        </Table.Head>
+        <Table.Body>
+          {sendBulkResult.results.map(result => (
+            <Table.Row key={result.prescription_id}>
+              <Table.Cell>{result.prescription_id}</Table.Cell>
+              <Table.Cell>{result.success ? <TickIcon/> : <CrossIcon/>}</Table.Cell>
+            </Table.Row>
+          ))}
+        </Table.Body>
+      </Table>
     </>
   }
 
@@ -94,13 +128,21 @@ const SendPage: React.FC<SendPageProps> = ({
 }
 
 interface SendResult {
-  prescription_ids: string[]
   prescription_id: string
   success: boolean
   request: fhir.Bundle
   request_xml: string
   response: fhir.OperationOutcome
   response_xml: string
+}
+
+interface SendBulkResult {
+  results: Array<SendBulkResultDetail>
+}
+
+interface SendBulkResultDetail {
+  prescription_id: string
+  success: boolean
 }
 
 export default SendPage
