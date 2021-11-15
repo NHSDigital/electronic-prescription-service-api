@@ -504,7 +504,7 @@ function createPrescriptionType(row: StringKeyedObject): any {
 function createRepeatDispensingExtensionIfRequired(
   repeatsIssued: number
 ): fhirExtension.ExtensionExtension<fhirExtension.Extension> {
-  const extension: any = [
+  const extension: Array<any> = [
     {
       url: "authorisationExpiryDate",
       // todo: work this out from "days treatment"
