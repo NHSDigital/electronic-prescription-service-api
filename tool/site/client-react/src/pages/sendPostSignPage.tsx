@@ -11,11 +11,11 @@ import {axiosInstance} from "../requests/axiosInstance"
 import {isResult, Result} from "../requests/result"
 import {getArrayTypeGuard} from "../fhir/typeGuards"
 
-interface SendPageProps {
+interface SendPostSignPageProps {
   token: string
 }
 
-const SendPostSignPage: React.FC<SendPageProps> = ({
+const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
   token
 }) => {
   const {baseUrl} = useContext(AppContext)

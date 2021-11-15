@@ -11,11 +11,11 @@ import {redirect} from "../browser/navigation"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 
-interface PrescriptionSummaryPageProps {
+interface SendPreSignPageProps {
   prescriptionId: string
 }
 
-const SendPreSignPage: React.FC<PrescriptionSummaryPageProps> = ({
+const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
   prescriptionId
 }) => {
   const {baseUrl} = useContext(AppContext)
