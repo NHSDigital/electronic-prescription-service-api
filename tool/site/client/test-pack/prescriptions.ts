@@ -504,19 +504,19 @@ function createPrescriptionType(row: StringKeyedObject): any {
 function createRepeatDispensingExtensionIfRequired(
   repeatsIssued: number
 ): fhirExtension.ExtensionExtension<fhirExtension.Extension> {
-  const extension: Array<any> = [
+  const extension: Array<fhirExtension.Extension> = [
     {
       url: "authorisationExpiryDate",
       // todo: work this out from "days treatment"
       valueDateTime: new Date(2025, 1, 1).toISOString().slice(0, 10)
-    }
+    } as fhirExtension.DateTimeExtension
   ]
 
-  if (repeatsIssued > 0) {
+  if (repeatsIssued > 1) {
     extension.push({
       url: "numberOfRepeatPrescriptionsIssued",
       valueUnsignedInt: repeatsIssued
-    })
+    } as fhirExtension.UnsignedIntExtension)
   }
   return {
     url:
