@@ -41,7 +41,7 @@ const DispensePage: React.FC<DispensePageProps> = ({
 
   const retrievePrescriptionTask = () => retrievePrescriptionDetails(baseUrl, prescriptionId)
   return (
-    <LongRunningTask<PrescriptionDetails> task={retrievePrescriptionTask} message="Retrieving prescription details.">
+    <LongRunningTask<PrescriptionDetails> task={retrievePrescriptionTask} loadingMessage="Retrieving prescription details.">
       {prescriptionDetails => {
         if (!dispenseFormValues) {
           const lineItems = createStaticLineItemInfoArray(
@@ -59,7 +59,7 @@ const DispensePage: React.FC<DispensePageProps> = ({
 
         const sendDispenseNotificationTask = () => sendDispenseNotification(baseUrl, prescriptionDetails, dispenseFormValues)
         return (
-          <LongRunningTask<Result> task={sendDispenseNotificationTask} message="Sending dispense notification.">
+          <LongRunningTask<Result> task={sendDispenseNotificationTask} loadingMessage="Sending dispense notification.">
             {dispenseResult => (
               <>
                 <Label isPageHeading>Dispense Result {dispenseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>

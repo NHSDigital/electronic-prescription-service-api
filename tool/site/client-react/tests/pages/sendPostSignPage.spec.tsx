@@ -21,13 +21,13 @@ afterEach(() => moxios.uninstall(axiosInstance))
 
 test("Displays loading text while prescription is being sent", async () => {
   const {container} = renderWithContext(<SendPostSignPage token={token}/>, context)
-  await waitFor(() => screen.getByText("Sending prescription."))
+  await waitFor(() => screen.getByText("Sending prescription(s)."))
 
   expect(screen.getByText("Loading...")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-test("Displays confirmation page if prescription is sent successfully", async () => {
+test("Displays confirmation page if single prescription is sent successfully", async () => {
   moxios.stubRequest(sendUrl, {
     status: 200,
     response: {
@@ -47,6 +47,35 @@ test("Displays confirmation page if prescription is sent successfully", async ()
   expect(screen.getByText("XML Request")).toBeTruthy()
   expect(screen.getByText(JSON.stringify("JSON Response"))).toBeTruthy()
   expect(screen.getByText("XML Response")).toBeTruthy()
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
+test("Displays confirmation page if multiple prescriptions are sent successfully", async () => {
+  moxios.stubRequest(sendUrl, {
+    status: 200,
+    response: {
+      results: [
+        {
+          prescription_id: "003D4D-A99968-4C5AAJ",
+          success: true
+        },
+        {
+          prescription_id: "008070-A99968-41CD9V",
+          success: true
+        },
+        {
+          prescription_id: "010E34-A99968-467D9Z",
+          success: false
+        }
+      ]
+    }
+  })
+
+  const container = await renderPage()
+
+  expect(screen.getByText("003D4D-A99968-4C5AAJ")).toBeTruthy()
+  expect(screen.getByText("008070-A99968-41CD9V")).toBeTruthy()
+  expect(screen.getByText("010E34-A99968-467D9Z")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 

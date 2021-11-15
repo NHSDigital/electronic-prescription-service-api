@@ -22,7 +22,7 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
   const [sendConfirmed, setSendConfirmed] = useState<boolean>(false)
   const retrievePrescriptionTask = () => retrievePrescription(baseUrl, prescriptionId)
   return (
-    <LongRunningTask<Bundle> task={retrievePrescriptionTask} message="Retrieving prescription details.">
+    <LongRunningTask<Bundle> task={retrievePrescriptionTask} loadingMessage="Retrieving prescription details.">
       {bundle => {
         if (!sendConfirmed) {
           const summaryViewProps = createSummaryPrescription(bundle)
@@ -39,7 +39,7 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
 
         const sendSignRequestTask = () => sendSignRequest(baseUrl)
         return (
-          <LongRunningTask<SignResponse> task={sendSignRequestTask} message="Sending signature request.">
+          <LongRunningTask<SignResponse> task={sendSignRequestTask} loadingMessage="Sending signature request.">
             {signResponse => (
               <>
                 <Label isPageHeading>Upload Complete</Label>
