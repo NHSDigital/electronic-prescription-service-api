@@ -16,7 +16,6 @@ import {getNhsNumber} from "../parsers/read/patient-parser"
 import {createPlaceResources} from "./places"
 import {updateNominatedPharmacy} from "../parsers/write/bundle-parser"
 import {getDefaultPractitionerBundleEntry} from "./prescribers"
-import { LosslessNumber } from "lossless-json"
 
 export function createPrescriptions(
   patients: Array<BundleEntry>,
