@@ -19,7 +19,7 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
   const {baseUrl} = useContext(AppContext)
   const sendPrescriptionTask = () => sendPrescription(baseUrl, token)
   return (
-    <LongRunningTask<SendResult> task={sendPrescriptionTask} message="Sending prescription.">
+    <LongRunningTask<SendResult> task={sendPrescriptionTask} loadingMessage="Sending prescription.">
       {sendResult => (
         <>
           <Label isPageHeading>Send Result {sendResult.success ? <TickIcon/> : <CrossIcon/>}</Label>

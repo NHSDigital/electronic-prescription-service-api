@@ -31,7 +31,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
 
   const retrievePrescriptionTask = () => retrievePrescriptionDetails(baseUrl, prescriptionId)
   return (
-    <LongRunningTask<PrescriptionDetails> task={retrievePrescriptionTask} message="Retrieving prescription details.">
+    <LongRunningTask<PrescriptionDetails> task={retrievePrescriptionTask} loadingMessage="Retrieving prescription details.">
       {prescriptionDetails => {
         if (!claimFormValues) {
           const products = createStaticProductInfoArray(prescriptionDetails.medicationDispenses)
@@ -45,7 +45,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
 
         const sendClaimTask = () => sendClaim(baseUrl, prescriptionDetails, claimFormValues)
         return (
-          <LongRunningTask<ClaimResult> task={sendClaimTask} message="Sending claim.">
+          <LongRunningTask<ClaimResult> task={sendClaimTask} loadingMessage="Sending claim.">
             {claimResult => (
               <>
                 <Label isPageHeading>Claim Result {claimResult.success ? <TickIcon/> : <CrossIcon/>}</Label>

@@ -49,7 +49,7 @@ const PrescriptionSearchResults: React.FC<PrescriptionSearchResultsProps> = ({
   return (
     <LongRunningTask<Task>
       task={() => retrieveFullPrescriptionDetails(baseUrl, selectedPrescriptionId)}
-      message="Retrieving full prescription details."
+      loadingMessage="Retrieving full prescription details."
       back={handleReset}
     >
       {task => <PrescriptionSearchResultsDetail task={task} back={handleReset}/>}

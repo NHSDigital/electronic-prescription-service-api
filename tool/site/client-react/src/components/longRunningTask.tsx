@@ -6,14 +6,14 @@ import {AppContext} from "../index"
 
 interface LongRunningTaskProps<T> {
   task: () => Promise<T>
-  message: string
+  loadingMessage: string
   children: JSXElementConstructor<T>
   back?: string | (() => void)
 }
 
 const LongRunningTask = <T extends unknown>({
   task,
-  message,
+  loadingMessage,
   children,
   back
 }: LongRunningTaskProps<T>): React.ReactElement => {
@@ -64,7 +64,7 @@ const LongRunningTask = <T extends unknown>({
     return (
       <>
         <Label isPageHeading>Loading...</Label>
-        <Label>{message}</Label>
+        <Label>{loadingMessage}</Label>
       </>
     )
   }
