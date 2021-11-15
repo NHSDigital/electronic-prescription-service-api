@@ -67,7 +67,7 @@ const SendPage: React.FC<SendPageProps> = ({
     return <>
       <Label isPageHeading>Send Results</Label>
       <ButtonList>
-        <Button onClick={() => navigator.clipboard.writeText(sendBulkResult.prescription_ids.join("\n"))}>Copy Prescription IDs</Button>
+        <Button onClick={() => navigator.clipboard.writeText(sendBulkResult.results.map(r => r.prescription_id).join("\n"))}>Copy Prescription IDs</Button>
       </ButtonList>
       <Table>
         <Table.Head>
