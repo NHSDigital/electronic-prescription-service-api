@@ -11,3 +11,11 @@ export function isBundle(resource: FhirResource): resource is Bundle {
 export function isTask(resource: FhirResource): resource is Task {
   return resource.resourceType === "Task"
 }
+
+export function getArrayTypeGuard<T>(
+  arrayElementTypeGuard: (arrayElement: unknown) => arrayElement is T
+): (maybeArray: unknown) => maybeArray is Array<T> {
+  return function (maybeArray: unknown): maybeArray is Array<T> {
+    return Array.isArray(maybeArray) && maybeArray.every(arrayElementTypeGuard)
+  }
+}

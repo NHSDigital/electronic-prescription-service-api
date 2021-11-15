@@ -9,6 +9,8 @@ import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import PrescriptionSearchPage from "../../src/pages/prescriptionSearchPage"
 import {Bundle, OperationOutcome} from "fhir/r4"
+import {axiosInstance} from "../../src/requests/axiosInstance"
+import {MomentInput} from "moment"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "003D4D-A99968-4C5AAJ"
@@ -22,9 +24,17 @@ const prescriptionSearchByNhsNumberUrl = `${baseUrl}tracker?patient%3Aidentifier
 const summarySearchResult = readMessage("summarySearchResult.json")
 const detailSearchResult = readMessage("detailSearchResult.json")
 
-beforeEach(() => moxios.install())
+jest.mock("moment", () => {
+  const actualMoment = jest.requireActual("moment")
+  return ({
+    ...actualMoment,
+    utc: (inp?: MomentInput, strict?: boolean) => actualMoment.utc(inp ?? "2021-11-13T10:57:13.000Z", strict)
+  })
+})
 
-afterEach(() => moxios.uninstall())
+beforeEach(() => moxios.install(axiosInstance))
+
+afterEach(() => moxios.uninstall(axiosInstance))
 
 test("Displays search form", async () => {
   const container = await renderPage()
@@ -92,7 +102,7 @@ test("Displays an error message if summary search returns an error", async () =>
     }]
   }
   moxios.stubRequest(prescriptionSearchByNhsNumberUrl, {
-    status: 200,
+    status: 400,
     response: errorResponse
   })
 
@@ -105,7 +115,7 @@ test("Displays an error message if summary search returns an error", async () =>
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-test("Displays an error message if summary search throws", async () => {
+test("Displays an error message if summary search returns invalid response", async () => {
   moxios.stubRequest(prescriptionSearchByNhsNumberUrl, {
     status: 500,
     response: null
@@ -115,7 +125,7 @@ test("Displays an error message if summary search throws", async () => {
   await enterNhsNumber()
   userEvent.click(screen.getByText("Search"))
   await waitFor(() => screen.getByText("Error"))
-  expect(screen.getByText("Request failed with status code 500")).toBeTruthy()
+  expect(screen.getByText("Empty response from server")).toBeTruthy()
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })

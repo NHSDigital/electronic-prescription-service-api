@@ -8,6 +8,7 @@ import {readMessage} from "../messages/messages"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import DispensePage from "../../src/pages/dispensePage"
+import {axiosInstance} from "../../src/requests/axiosInstance"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "7A9089-A83008-56A03J"
@@ -20,9 +21,9 @@ const dispenseUrl = `${baseUrl}dispense/dispense`
 const prescriptionOrder = readMessage("prescriptionOrder.json")
 const dispenseNotification = readMessage("dispenseNotification.json")
 
-beforeEach(() => moxios.install())
+beforeEach(() => moxios.install(axiosInstance))
 
-afterEach(() => moxios.uninstall())
+afterEach(() => moxios.uninstall(axiosInstance))
 
 test("Displays loading text while prescription data is being requested", async () => {
   const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId}/>, context)
@@ -73,7 +74,7 @@ test("Displays an error if prescription-order not found", async () => {
   const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId}/>, context)
   await waitFor(() => screen.getByText("Error"))
 
-  expect(screen.getByText("Prescription order not found. Is the ID correct?")).toBeTruthy()
+  expect(screen.getByText("Empty response from server")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
@@ -86,7 +87,7 @@ test("Displays an error on invalid response", async () => {
   const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId}/>, context)
   await waitFor(() => screen.getByText("Error"))
 
-  expect(screen.getByText("Request failed with status code 500")).toBeTruthy()
+  expect(screen.getByText("Unknown error")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 

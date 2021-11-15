@@ -1,12 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Displays an error if prescription-order not found 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1><span class=\\"nhsuk-error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>Prescription order not found. Is the ID correct?</span>
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1><span class=\\"nhsuk-error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>Empty response from server</span>
 <div class=\\"sc-bdvvtL jjZBkx\\"><a class=\\"nhsuk-button nhsuk-button--secondary\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/\\">Back</a></div>"
 `;
 
 exports[`Displays an error on invalid response 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1><span class=\\"nhsuk-error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>Request failed with status code 500</span>
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1><span class=\\"nhsuk-error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>Unknown error</span>
 <div class=\\"sc-bdvvtL jjZBkx\\"><a class=\\"nhsuk-button nhsuk-button--secondary\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/\\">Back</a></div>"
 `;
 

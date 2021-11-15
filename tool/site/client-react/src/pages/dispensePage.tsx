@@ -1,7 +1,6 @@
 import * as React from "react"
 import {useContext, useState} from "react"
 import {Button, CrossIcon, Label, TickIcon} from "nhsuk-react-components"
-import axios from "axios"
 import {
   getMedicationDispenseResources,
   getMedicationRequestResources,
@@ -25,6 +24,10 @@ import {getMedicationDispenseLineItemId, getMedicationRequestLineItemId} from ".
 import LongRunningTask from "../components/longRunningTask"
 import {AppContext} from "../index"
 import PrescriptionActions from "../components/prescriptionActions"
+import {getResponseDataIfValid} from "../requests/getValidResponse"
+import {getArrayTypeGuard, isBundle} from "../fhir/typeGuards"
+import {axiosInstance} from "../requests/axiosInstance"
+import {isResult, Result} from "../requests/result"
 
 interface DispensePageProps {
   prescriptionId: string
@@ -56,7 +59,7 @@ const DispensePage: React.FC<DispensePageProps> = ({
 
         const sendDispenseNotificationTask = () => sendDispenseNotification(baseUrl, prescriptionDetails, dispenseFormValues)
         return (
-          <LongRunningTask<DispenseResult> task={sendDispenseNotificationTask} message="Sending dispense notification.">
+          <LongRunningTask<Result> task={sendDispenseNotificationTask} message="Sending dispense notification.">
             {dispenseResult => (
               <>
                 <Label isPageHeading>Dispense Result {dispenseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
@@ -80,14 +83,11 @@ const DispensePage: React.FC<DispensePageProps> = ({
 }
 
 async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: string): Promise<PrescriptionDetails> {
-  const prescriptionOrderResponse = await axios.get<fhir.Bundle>(`${baseUrl}prescription/${prescriptionId}`)
-  const prescriptionOrder = prescriptionOrderResponse.data
-  if (!prescriptionOrder) {
-    throw new Error("Prescription order not found. Is the ID correct?")
-  }
+  const prescriptionOrderResponse = await axiosInstance.get<fhir.Bundle>(`${baseUrl}prescription/${prescriptionId}`)
+  const prescriptionOrder = getResponseDataIfValid(prescriptionOrderResponse, isBundle)
 
-  const dispenseNotificationsResponse = await axios.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
-  const dispenseNotifications = dispenseNotificationsResponse.data
+  const dispenseNotificationsResponse = await axiosInstance.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
+  const dispenseNotifications = getResponseDataIfValid(dispenseNotificationsResponse, getArrayTypeGuard(isBundle))
 
   return {
     messageHeader: getMessageHeaderResources(prescriptionOrder)[0],
@@ -101,7 +101,7 @@ async function sendDispenseNotification(
   baseUrl: string,
   prescriptionDetails: PrescriptionDetails,
   dispenseFormValues: DispenseFormValues
-): Promise<DispenseResult> {
+): Promise<Result> {
   const dispenseNotification = createDispenseNotification(
     prescriptionDetails.messageHeader,
     prescriptionDetails.patient,
@@ -109,11 +109,8 @@ async function sendDispenseNotification(
     dispenseFormValues
   )
 
-  const response = await axios.post<DispenseResult>(`${baseUrl}dispense/dispense`, dispenseNotification)
-  console.log(dispenseNotification)
-  console.log(response)
-
-  return response.data
+  const response = await axiosInstance.post<Result>(`${baseUrl}dispense/dispense`, dispenseNotification)
+  return getResponseDataIfValid(response, isResult)
 }
 
 interface PrescriptionDetails {
@@ -121,14 +118,6 @@ interface PrescriptionDetails {
   patient: fhir.Patient
   medicationRequests: Array<fhir.MedicationRequest>
   medicationDispenses: Array<fhir.MedicationDispense>
-}
-
-interface DispenseResult {
-  success: boolean
-  request: fhir.Bundle
-  request_xml: string
-  response: fhir.OperationOutcome
-  response_xml: string
 }
 
 function createStaticLineItemInfoArray(

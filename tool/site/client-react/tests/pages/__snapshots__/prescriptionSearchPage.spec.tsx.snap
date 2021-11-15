@@ -808,8 +808,8 @@ exports[`Displays an error message if summary search returns an error 1`] = `
 <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"submit\\">Back</button></div>"
 `;
 
-exports[`Displays an error message if summary search throws 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1><span class=\\"nhsuk-error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>Request failed with status code 500</span>
+exports[`Displays an error message if summary search returns invalid response 1`] = `
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1><span class=\\"nhsuk-error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>Empty response from server</span>
 <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"submit\\">Back</button></div>"
 `;
 

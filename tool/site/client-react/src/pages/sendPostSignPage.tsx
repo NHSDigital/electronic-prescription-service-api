@@ -1,19 +1,21 @@
 import * as React from "react"
 import {useContext} from "react"
 import {Button, CrossIcon, Label, SummaryList, TickIcon} from "nhsuk-react-components"
-import axios from "axios"
-import * as fhir from "fhir/r4"
 import MessageExpanders from "../components/messageExpanders"
 import ButtonList from "../components/buttonList"
 import LongRunningTask from "../components/longRunningTask"
 import {AppContext} from "../index"
 import PrescriptionActions from "../components/prescriptionActions"
+import {getResponseDataIfValid} from "../requests/getValidResponse"
+import {axiosInstance} from "../requests/axiosInstance"
+import {isResult, Result} from "../requests/result"
+import {getArrayTypeGuard} from "../fhir/typeGuards"
 
 interface SendPageProps {
   token: string
 }
 
-const SendPage: React.FC<SendPageProps> = ({
+const SendPostSignPage: React.FC<SendPageProps> = ({
   token
 }) => {
   const {baseUrl} = useContext(AppContext)
@@ -47,18 +49,29 @@ const SendPage: React.FC<SendPageProps> = ({
 
 async function sendPrescription(baseUrl: string, token: string): Promise<SendResult> {
   const request = {signatureToken: token}
-  const response = await axios.post<SendResult>(`${baseUrl}prescribe/send`, request)
-  return response.data
+  const response = await axiosInstance.post<SendResult>(`${baseUrl}prescribe/send`, request)
+  return getResponseDataIfValid(response, isSendResult)
 }
 
-interface SendResult {
+interface SendResult extends Result {
   prescription_ids: string[]
   prescription_id: string
-  success: boolean
-  request: fhir.Bundle
-  request_xml: string
-  response: fhir.OperationOutcome
-  response_xml: string
 }
 
-export default SendPage
+/**
+ * Not sure this is correct. Split single and bulk send?
+ */
+function isSendResult(data: unknown): data is SendResult {
+  if (!isResult(data)) {
+    return false
+  }
+  const sendResult = data as SendResult
+  return isString(sendResult.prescription_id)
+    || getArrayTypeGuard(isString)(sendResult.prescription_ids)
+}
+
+function isString(data: unknown): data is string {
+  return typeof data === "string"
+}
+
+export default SendPostSignPage
