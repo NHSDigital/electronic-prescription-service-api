@@ -25,9 +25,7 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
           return <>
             <Label isPageHeading>Send Results</Label>
             <ButtonList>
-              <Button
-                onClick={() => navigator.clipboard.writeText(sendResult.results.map(r => r.prescription_id).join("\n"))}>Copy
-                Prescription IDs</Button>
+              <Button onClick={() => copyPrescriptionIds(sendResult)}>Copy Prescription IDs</Button>
             </ButtonList>
             <Table>
               <Table.Head>
@@ -99,6 +97,11 @@ interface SendBulkResult {
 interface SendBulkResultDetail {
   prescription_id: string
   success: boolean
+}
+
+function copyPrescriptionIds(sendBulkResult: SendBulkResult) {
+  const prescriptionIds = sendBulkResult.results.map(r => r.prescription_id)
+  navigator.clipboard.writeText(prescriptionIds.join("\n"))
 }
 
 export default SendPostSignPage
