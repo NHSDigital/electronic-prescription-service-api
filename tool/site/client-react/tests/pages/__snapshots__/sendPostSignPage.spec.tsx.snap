@@ -36,7 +36,7 @@ exports[`Displays confirmation page if multiple prescriptions are sent successfu
 </div>"
 `;
 
-exports[`Displays confirmation page if prescription is sent successfully 1`] = `
+exports[`Displays confirmation page if single prescription is sent successfully 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Send Result <svg class=\\"nhsuk-icon nhsuk-icon__tick\\" xmlns=\\"http://www.w3.org/2000/svg\\" viewBox=\\"0 0 24 24\\" aria-hidden=\\"true\\" height=\\"32\\" width=\\"32\\">
       <path stroke-width=\\"4\\" stroke-linecap=\\"round\\" stroke=\\"#007f3b\\" fill=\\"none\\" d=\\"M18.4 7.8l-8.5 8.4L5.6 12\\"></path>
     </svg></label></h1>
@@ -95,4 +95,4 @@ exports[`Displays confirmation page if prescription is sent successfully 1`] = `
 <div class=\\"sc-bdvvtL jjZBkx\\"><a class=\\"nhsuk-button nhsuk-button--secondary\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/\\" type=\\"button\\">Back</a></div>"
 `;
 
-exports[`Displays loading text while prescription is being sent 1`] = `"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Loading...</label></h1><label class=\\"nhsuk-label\\">Sending prescription.</label>"`;
+exports[`Displays loading text while prescription is being sent 1`] = `"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Loading...</label></h1><label class=\\"nhsuk-label\\">Sending prescription(s).</label>"`;
