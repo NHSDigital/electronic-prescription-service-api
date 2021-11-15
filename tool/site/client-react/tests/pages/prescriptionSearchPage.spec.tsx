@@ -109,7 +109,6 @@ test("Displays an error message if summary search returns an error", async () =>
   await enterNhsNumber()
   userEvent.click(screen.getByText("Search"))
   await waitFor(() => screen.getByText("Error"))
-  expect(screen.getByText("Invalid query parameters.")).toBeTruthy()
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
@@ -124,7 +123,6 @@ test("Displays an error message if summary search throws", async () => {
   await enterNhsNumber()
   userEvent.click(screen.getByText("Search"))
   await waitFor(() => screen.getByText("Error"))
-  expect(screen.getByText("Request failed with status code 500")).toBeTruthy()
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })

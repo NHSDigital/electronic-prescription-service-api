@@ -64,7 +64,6 @@ test("Displays an error if response is invalid", async () => {
   const {container} = renderWithContext(<SendPreSignPage prescriptionId={prescriptionId}/>, context)
   await waitFor(() => screen.getByText("Error"))
 
-  expect(screen.getByText("Request failed with status code 500")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
@@ -130,7 +129,6 @@ test("Displays error message if prepare errors present", async () => {
   userEvent.click(screen.getByText("Send"))
   await waitFor(() => screen.getByText("Error"))
 
-  expect(screen.getByText("Error preparing prescription for signing. Check the console for details.")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
@@ -156,7 +154,6 @@ test("Displays error message if redirect URI not present", async () => {
   userEvent.click(screen.getByText("Send"))
   await waitFor(() => screen.getByText("Error"))
 
-  expect(screen.getByText("Unable to sign prescription, this is most likely because your session has expired. Please try to change-auth or login again")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
