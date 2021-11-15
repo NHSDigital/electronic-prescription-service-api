@@ -74,7 +74,7 @@ export default [
       }
       const sendBulkResult = {
         prescription_ids: prescriptionIds,
-        success_list: results
+        results
       }
       setSessionValue(`signature_token_${signatureToken}`, sendBulkResult, request)
       return responseToolkit.response(sendBulkResult).code(200)

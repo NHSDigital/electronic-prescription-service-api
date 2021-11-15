@@ -76,7 +76,9 @@ def make_get_request(url):
 
 
 def make_post_request(url, body):
-    return httpx.post(url, json=body, verify=False, cookies=get_cookies()).json()
+    timeout = httpx.Timeout(60.0, connect=10.0)
+    client = httpx.Client(timeout=timeout, verify=False, cookies=get_cookies())
+    return client.post(url, json=body).json()
 
 
 def get_cookies():
