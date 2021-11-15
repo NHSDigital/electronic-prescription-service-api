@@ -16,6 +16,7 @@ import {getNhsNumber} from "../parsers/read/patient-parser"
 import {createPlaceResources} from "./places"
 import {updateNominatedPharmacy} from "../parsers/write/bundle-parser"
 import {getDefaultPractitionerBundleEntry} from "./prescribers"
+import { LosslessNumber } from "lossless-json"
 
 export function createPrescriptions(
   patients: Array<BundleEntry>,
@@ -74,7 +75,7 @@ function createRepeatPrescribingPrescriptions(
   prescriptions: any[]
 ) {
   const repeatsAllowed = getNumberOfRepeatsAllowed(prescriptionRow)
-  for (let repeatsIssued = 0; repeatsIssued < repeatsAllowed; repeatsIssued++) {
+  for (let repeatsIssued = 1; repeatsIssued <= repeatsAllowed; repeatsIssued++) {
     const prescription = createPrescription(
       patient,
       prescriber,
@@ -100,7 +101,7 @@ function createRepeatDispensingPrescription(
     patient,
     prescriber,
     prescriptionRows,
-    0,
+    1,
     parseInt(prescriptionRow["Issues"]) - 1
   )
   const bundle = JSON.parse(prescription)
@@ -363,7 +364,7 @@ function createMedicationRequests(
             text: getDosageInstructionText(row)
           }
         ],
-        dispenseRequest: getDispenseRequest(row),
+        dispenseRequest: getDispenseRequest(row, maxRepeatsAllowed),
         substitution: {
           allowedBoolean: false
         }
@@ -372,7 +373,7 @@ function createMedicationRequests(
   })
 }
 
-function getDispenseRequest(row: StringKeyedObject): MedicationRequestDispenseRequest {
+function getDispenseRequest(row: StringKeyedObject, maxRepeatsAllowed: number): MedicationRequestDispenseRequest {
   const prescriptionTreatmentTypeCode = getPrescriptionTreatmentTypeCode(row)
 
   const shouldHaveRepeatInformation =
@@ -409,7 +410,8 @@ function getDispenseRequest(row: StringKeyedObject): MedicationRequestDispenseRe
         unit: "day",
         system: "http://unitsofmeasure.org",
         code: "d"
-      }
+      },
+      numberOfRepeatsAllowed: maxRepeatsAllowed || undefined
     }
   }
 
@@ -465,10 +467,7 @@ function getMedicationRequestExtensions(row: StringKeyedObject, repeatsIssued: n
 
   if (maxRepeatsAllowed) {
     extension.push(
-      createRepeatDispensingExtensionIfRequired(
-        repeatsIssued,
-        maxRepeatsAllowed
-      )
+      createRepeatDispensingExtensionIfRequired(repeatsIssued)
     )
   }
 
@@ -504,14 +503,9 @@ function createPrescriptionType(row: StringKeyedObject): any {
 }
 
 function createRepeatDispensingExtensionIfRequired(
-  repeatsIssued: number,
-  maxRepeatsAllowed: number
+  repeatsIssued: number
 ): fhirExtension.ExtensionExtension<fhirExtension.Extension> {
-  const extension = [
-    {
-      url: "numberOfRepeatPrescriptionsAllowed",
-      valueUnsignedInt: maxRepeatsAllowed
-    },
+  const extension: any = [
     {
       url: "authorisationExpiryDate",
       // todo: work this out from "days treatment"
