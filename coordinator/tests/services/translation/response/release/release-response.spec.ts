@@ -10,7 +10,9 @@ import {getUniqueValues} from "../../../../../src/utils/collections"
 import {resolveOrganization, resolvePractitioner, toArray} from "../../../../../src/services/translation/common"
 import {fhir, hl7V3} from "@models"
 import {
+  getCommunicationRequests,
   getHealthcareServices,
+  getLists,
   getLocations,
   getMedicationRequests,
   getMessageHeader,
@@ -21,6 +23,7 @@ import {
   getProvenances
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {getRequester, getResponsiblePractitioner} from "../common.spec"
+import {AdditionalInstructions, LineItemPertinentInformation1} from "../../../../../../models/hl7-v3"
 
 describe("outer bundle", () => {
   const result = createOuterBundle(getExamplePrescriptionReleaseResponse())
@@ -152,6 +155,35 @@ describe("bundle resources", () => {
   test("contains Provenance", () => {
     const provenances = getProvenances(result)
     expect(provenances).toHaveLength(1)
+  })
+})
+
+describe("bundle resources with additional instructions", () => {
+  const parent = getExampleParentPrescription()
+
+  const lineItemInfoWrapper = parent.pertinentInformation1.pertinentPrescription.pertinentInformation2
+
+  const lineItemInfo = Array.isArray(lineItemInfoWrapper) ? lineItemInfoWrapper[0] : lineItemInfoWrapper
+
+  lineItemInfo.pertinentLineItem.pertinentInformation1 = new LineItemPertinentInformation1(
+    new AdditionalInstructions(
+      "<medication>Bendroflumethiazide 2.5mg tablets (3/6)</medication>"+
+      "<medication>Salbutamol 100micrograms/dose inhaler CFC free (2/6)</medication>"+
+      "<patientInfo>Due to Coronavirus restrictions Church View Surgery is CLOSED until further notice</patientInfo>"
+    )
+  )
+
+  const result = createInnerBundle(parent, "ReleaseRequestId")
+
+  test("contains CommunicationRequest", () => {
+    const additionalInstructions = getCommunicationRequests(result)
+    expect(additionalInstructions).toHaveLength(1)
+  })
+
+  test("contains List", () => {
+    const medicationAdditionalInstructions = getLists(result)
+    expect(medicationAdditionalInstructions).toHaveLength(1)
+    expect(medicationAdditionalInstructions[0].entry).toHaveLength(2)
   })
 })
 
