@@ -7,7 +7,6 @@ import ClaimPage from "./pages/claimPage"
 import DispensePage from "./pages/dispensePage"
 import SendPostSignPage from "./pages/sendPostSignPage"
 import PrescriptionSearchPage from "./pages/prescriptionSearchPage"
-import axios from "axios"
 
 const customWindow = window as Record<string, any>
 
