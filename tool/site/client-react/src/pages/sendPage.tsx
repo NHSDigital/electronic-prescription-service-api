@@ -74,7 +74,6 @@ const SendPage: React.FC<SendPageProps> = ({
           <Table.Row>
             <Table.Cell>ID</Table.Cell>
             <Table.Cell>Success</Table.Cell>
-            <Table.Cell/>
           </Table.Row>
         </Table.Head>
         <Table.Body>
@@ -138,7 +137,6 @@ interface SendResult {
 }
 
 interface SendBulkResult {
-  prescription_ids: Array<string>
   results: Array<SendBulkResultDetail>
 }
 

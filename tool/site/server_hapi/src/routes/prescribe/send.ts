@@ -72,10 +72,7 @@ export default [
           success: sendResponseStatus === 200
         })
       }
-      const sendBulkResult = {
-        prescription_ids: prescriptionIds,
-        results
-      }
+      const sendBulkResult = {results}
       setSessionValue(`signature_token_${signatureToken}`, sendBulkResult, request)
       return responseToolkit.response(sendBulkResult).code(200)
     }
