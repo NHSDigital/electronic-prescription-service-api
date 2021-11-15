@@ -9,6 +9,7 @@ import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import PrescriptionSearchPage from "../../src/pages/prescriptionSearchPage"
 import {Bundle, OperationOutcome} from "fhir/r4"
+import {MomentInput} from "moment"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "003D4D-A99968-4C5AAJ"
@@ -21,6 +22,14 @@ const prescriptionSearchByNhsNumberUrl = `${baseUrl}tracker?patient%3Aidentifier
 
 const summarySearchResult = readMessage("summarySearchResult.json")
 const detailSearchResult = readMessage("detailSearchResult.json")
+
+jest.mock("moment", () => {
+  const actualMoment = jest.requireActual("moment")
+  return ({
+    ...actualMoment,
+    utc: (inp?: MomentInput, strict?: boolean) => actualMoment.utc(inp ?? "2021-11-13T10:57:13.000Z", strict)
+  })
+})
 
 beforeEach(() => moxios.install())
 

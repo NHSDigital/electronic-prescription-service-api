@@ -9,11 +9,11 @@ import LongRunningTask from "../components/longRunningTask"
 import {AppContext} from "../index"
 import PrescriptionActions from "../components/prescriptionActions"
 
-interface SendPageProps {
+interface SendPostSignPageProps {
   token: string
 }
 
-const SendPage: React.FC<SendPageProps> = ({
+const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
   token
 }) => {
   const {baseUrl} = useContext(AppContext)
@@ -61,4 +61,4 @@ interface SendResult {
   response_xml: string
 }
 
-export default SendPage
+export default SendPostSignPage

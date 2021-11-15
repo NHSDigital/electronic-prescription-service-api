@@ -7,12 +7,13 @@ import LongRunningTask from "../components/longRunningTask"
 import {AppContext} from "../index"
 import {ActionLink, Button, Label} from "nhsuk-react-components"
 import ButtonList from "../components/buttonList"
+import {redirect} from "../browser/navigation"
 
-interface PrescriptionSummaryPageProps {
+interface SendPreSignPageProps {
   prescriptionId: string
 }
 
-const PrescriptionSummaryPage: React.FC<PrescriptionSummaryPageProps> = ({
+const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
   prescriptionId
 }) => {
   const {baseUrl} = useContext(AppContext)
@@ -74,7 +75,7 @@ async function sendSignRequest(baseUrl: string) {
     throw new Error("Unable to sign prescription, this is most likely because your session has expired. Please try to change-auth or login again")
   }
 
-  window.location.href = redirectUri
+  redirect(redirectUri)
   return response.data
 }
 
@@ -83,4 +84,4 @@ interface SignResponse {
   prepareErrors?: Array<OperationOutcome>
 }
 
-export default PrescriptionSummaryPage
+export default SendPreSignPage
