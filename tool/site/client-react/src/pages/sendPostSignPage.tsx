@@ -108,4 +108,13 @@ interface SendBulkResultDetail {
   success: boolean
 }
 
+interface SendBulkResult {
+  results: Array<SendBulkResultDetail>
+}
+
+interface SendBulkResultDetail {
+  prescription_id: string
+  success: boolean
+}
+
 export default SendPostSignPage
