@@ -74,7 +74,7 @@ function createRepeatPrescribingPrescriptions(
   prescriptions: any[]
 ) {
   const repeatsAllowed = getNumberOfRepeatsAllowed(prescriptionRow)
-  for (let repeatsIssued = 0; repeatsIssued < repeatsAllowed; repeatsIssued++) {
+  for (let repeatsIssued = 1; repeatsIssued <= repeatsAllowed; repeatsIssued++) {
     const prescription = createPrescription(
       patient,
       prescriber,
@@ -100,8 +100,8 @@ function createRepeatDispensingPrescription(
     patient,
     prescriber,
     prescriptionRows,
-    0,
-    parseInt(prescriptionRow["Issues"]) - 1
+    1,
+    parseInt(prescriptionRow["Issues"])
   )
   const bundle = JSON.parse(prescription)
   updateNominatedPharmacy(bundle, nominatedPharmacy)
@@ -134,8 +134,8 @@ function createPrescription(
   patientEntry: BundleEntry,
   practitionerEntry: BundleEntry,
   prescriptionRows: Array<StringKeyedObject>,
-  repeatsIssued = 0,
-  maxRepeatsAllowed = 0
+  repeatsIssued = 1,
+  maxRepeatsAllowed = 1
 ): string {
   const careSetting = getCareSetting(prescriptionRows)
 
@@ -293,6 +293,7 @@ function createMedicationRequests(
 ) {
   return xlsxRowGroup.map((row: StringKeyedObject) => {
     const id = uuid.v4()
+    const prescriptionTreatmentType = createPrescriptionType(row)
     return {
       fullUrl: `urn:uuid:${id}`,
       resource: {
@@ -300,8 +301,8 @@ function createMedicationRequests(
         id: id,
         extension: getMedicationRequestExtensions(
           row,
-          repeatsIssued,
-          maxRepeatsAllowed
+          prescriptionTreatmentType.code,
+          repeatsIssued
         ),
         identifier: [
           {
@@ -355,7 +356,7 @@ function createMedicationRequests(
         },
         courseOfTherapyType: {
           coding: [
-            createPrescriptionType(row)
+            prescriptionTreatmentType
           ]
         },
         dosageInstruction: [
@@ -363,7 +364,7 @@ function createMedicationRequests(
             text: getDosageInstructionText(row)
           }
         ],
-        dispenseRequest: getDispenseRequest(row),
+        dispenseRequest: getDispenseRequest(row, maxRepeatsAllowed),
         substitution: {
           allowedBoolean: false
         }
@@ -372,7 +373,7 @@ function createMedicationRequests(
   })
 }
 
-function getDispenseRequest(row: StringKeyedObject): MedicationRequestDispenseRequest {
+function getDispenseRequest(row: StringKeyedObject, maxRepeatsAllowed: number): MedicationRequestDispenseRequest {
   const prescriptionTreatmentTypeCode = getPrescriptionTreatmentTypeCode(row)
 
   const shouldHaveRepeatInformation =
@@ -409,7 +410,8 @@ function getDispenseRequest(row: StringKeyedObject): MedicationRequestDispenseRe
         unit: "day",
         system: "http://unitsofmeasure.org",
         code: "d"
-      }
+      },
+      numberOfRepeatsAllowed: maxRepeatsAllowed - 1
     }
   }
 
@@ -448,7 +450,7 @@ function getMedicationDisplay(row: StringKeyedObject): string {
   return row["Medication"]
 }
 
-function getMedicationRequestExtensions(row: StringKeyedObject, repeatsIssued: number, maxRepeatsAllowed: number): Array<fhirExtension.Extension> {
+function getMedicationRequestExtensions(row: StringKeyedObject, prescriptionTreatmentTypeCode: string, repeatsIssued: number): Array<fhirExtension.Extension> {
   const prescriptionTypeCode = row["Prescription Type"].toString()
   const prescriberTypeDisplay = row["Prescriber Description"]
   const extension: Array<fhirExtension.Extension> = [
@@ -463,13 +465,8 @@ function getMedicationRequestExtensions(row: StringKeyedObject, repeatsIssued: n
     } as fhirExtension.CodingExtension
   ]
 
-  if (maxRepeatsAllowed) {
-    extension.push(
-      createRepeatDispensingExtensionIfRequired(
-        repeatsIssued,
-        maxRepeatsAllowed
-      )
-    )
+  if (prescriptionTreatmentTypeCode !== "acute") {
+    extension.push(createRepeatInformationExtensions(repeatsIssued))
   }
 
   row["Instructions for Prescribing"]?.split(", ").forEach(endorsement =>
@@ -503,28 +500,20 @@ function createPrescriptionType(row: StringKeyedObject): any {
   }
 }
 
-function createRepeatDispensingExtensionIfRequired(
-  repeatsIssued: number,
-  maxRepeatsAllowed: number
+function createRepeatInformationExtensions(
+  repeatsIssued: number
 ): fhirExtension.ExtensionExtension<fhirExtension.Extension> {
-  const extension = [
-    {
-      url: "numberOfRepeatPrescriptionsAllowed",
-      valueUnsignedInt: maxRepeatsAllowed
-    },
+  const extension: Array<fhirExtension.Extension> = [
     {
       url: "authorisationExpiryDate",
       // todo: work this out from "days treatment"
       valueDateTime: new Date(2025, 1, 1).toISOString().slice(0, 10)
-    }
+    } as fhirExtension.DateTimeExtension
   ]
-
-  if (repeatsIssued > 0) {
-    extension.push({
-      url: "numberOfRepeatPrescriptionsIssued",
-      valueUnsignedInt: repeatsIssued
-    })
-  }
+  extension.push({
+    url: "numberOfPrescriptionsIssued",
+    valueUnsignedInt: repeatsIssued
+  } as fhirExtension.UnsignedIntExtension)
   return {
     url:
       "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",

@@ -239,7 +239,7 @@ export interface MedicationRequestDispenseRequest {
   expectedSupplyDuration?: common.SimpleQuantity
   performer?: Performer
   validityPeriod?: common.Period
-  numberOfRepeatsAllowed?: string | LosslessNumber
+  numberOfRepeatsAllowed?: number
 }
 
 export interface Annotation {

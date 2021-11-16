@@ -1,7 +1,6 @@
 import * as fhir from "fhir/r4"
 import {MedicationRequest} from "fhir/r4"
 import {
-  getUkCoreNumberOfRepeatsAllowedExtension,
   getUkCoreNumberOfRepeatsIssuedExtension,
   RepeatInformationExtension
 } from "./customExtensions"
@@ -65,11 +64,6 @@ export function getRepeatsIssuedAndAllowed(medicationRequest: MedicationRequest)
   const numberOfRepeatPrescriptionsIssued = ukCoreRepeatsIssuedExtension
     ? ukCoreRepeatsIssuedExtension.valueUnsignedInt
     : 1
-
-  const ukCoreRepeatsAllowedExtension = getUkCoreNumberOfRepeatsAllowedExtension(medicationRequest.extension)
-  const numberOfRepeatPrescriptionsAllowed = ukCoreRepeatsAllowedExtension
-    ? ukCoreRepeatsAllowedExtension.valueUnsignedInt
-    : (medicationRequest.dispenseRequest.numberOfRepeatsAllowed || 0) + 1
-
+  const numberOfRepeatPrescriptionsAllowed = (medicationRequest.dispenseRequest?.numberOfRepeatsAllowed || 0) + 1
   return [numberOfRepeatPrescriptionsIssued, numberOfRepeatPrescriptionsAllowed]
 }
