@@ -1,22 +1,9 @@
-import React, {CSSProperties, ReactNode} from "react"
+import styled from "styled-components"
 
-interface ButtonListProps {
-  children: ReactNode
-}
-
-const ButtonList: React.FC<ButtonListProps> = ({
-  children
-}) => {
-  const containerStyle: CSSProperties = {
-    display: "flex",
-    flexDirection: "row",
-    gap: "0.5em"
-  }
-  return (
-    <div style={containerStyle}>
-      {children}
-    </div>
-  )
-}
+const ButtonList = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 0.5em;
+`
 
 export default ButtonList

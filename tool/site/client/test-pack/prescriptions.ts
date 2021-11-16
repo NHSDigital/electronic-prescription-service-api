@@ -74,7 +74,7 @@ function createRepeatPrescribingPrescriptions(
   prescriptions: any[]
 ) {
   const repeatsAllowed = getNumberOfRepeatsAllowed(prescriptionRow)
-  for (let repeatsIssued = 1; repeatsIssued <= repeatsAllowed + 1; repeatsIssued++) {
+  for (let repeatsIssued = 1; repeatsIssued <= repeatsAllowed; repeatsIssued++) {
     const prescription = createPrescription(
       patient,
       prescriber,
@@ -101,7 +101,7 @@ function createRepeatDispensingPrescription(
     prescriber,
     prescriptionRows,
     1,
-    parseInt(prescriptionRow["Issues"]) - 1
+    parseInt(prescriptionRow["Issues"])
   )
   const bundle = JSON.parse(prescription)
   updateNominatedPharmacy(bundle, nominatedPharmacy)
@@ -134,8 +134,8 @@ function createPrescription(
   patientEntry: BundleEntry,
   practitionerEntry: BundleEntry,
   prescriptionRows: Array<StringKeyedObject>,
-  repeatsIssued = 0,
-  maxRepeatsAllowed = 0
+  repeatsIssued = 1,
+  maxRepeatsAllowed = 1
 ): string {
   const careSetting = getCareSetting(prescriptionRows)
 
@@ -409,7 +409,7 @@ function getDispenseRequest(row: StringKeyedObject, maxRepeatsAllowed: number): 
         system: "http://unitsofmeasure.org",
         code: "d"
       },
-      numberOfRepeatsAllowed: maxRepeatsAllowed || undefined
+      numberOfRepeatsAllowed: maxRepeatsAllowed - 1
     }
   }
 
@@ -463,11 +463,7 @@ function getMedicationRequestExtensions(row: StringKeyedObject, repeatsIssued: n
     } as fhirExtension.CodingExtension
   ]
 
-  if (repeatsIssued > 1) {
-    extension.push(
-      createRepeatDispensingExtensionIfRequired(repeatsIssued)
-    )
-  }
+  extension.push(createMedicationRequestExtensions(repeatsIssued))
 
   row["Instructions for Prescribing"]?.split(", ").forEach(endorsement =>
     extension.push({
@@ -500,7 +496,7 @@ function createPrescriptionType(row: StringKeyedObject): any {
   }
 }
 
-function createRepeatDispensingExtensionIfRequired(
+function createMedicationRequestExtensions(
   repeatsIssued: number
 ): fhirExtension.ExtensionExtension<fhirExtension.Extension> {
   const extension: Array<fhirExtension.Extension> = [
@@ -510,13 +506,10 @@ function createRepeatDispensingExtensionIfRequired(
       valueDateTime: new Date(2025, 1, 1).toISOString().slice(0, 10)
     } as fhirExtension.DateTimeExtension
   ]
-
-  if (repeatsIssued > 1) {
-    extension.push({
-      url: "numberOfPrescriptionsIssued",
-      valueUnsignedInt: repeatsIssued
-    } as fhirExtension.UnsignedIntExtension)
-  }
+  extension.push({
+    url: "numberOfPrescriptionsIssued",
+    valueUnsignedInt: repeatsIssued
+  } as fhirExtension.UnsignedIntExtension)
   return {
     url:
       "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",

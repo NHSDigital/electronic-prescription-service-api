@@ -198,11 +198,8 @@ def get_prescription(short_prescription_id):
 
 @app.route("/tracker", methods=["GET"])
 def get_tracker_prescription():
-    # handles '+' in query_string where flask.request.args.get does not
-    short_prescription_id = flask.request.query_string.decode("utf-8")[len("prescription_id="):]
-    hapi_response = hapi_passthrough.get_tracker_prescription(short_prescription_id)
-    response = app.make_response(hapi_response)
-    return response
+    hapi_response = hapi_passthrough.get_tracker_prescription(flask.request.query_string.decode("utf-8"))
+    return app.make_response(hapi_response)
 
 
 @app.route(EDIT_URL, methods=["GET"])

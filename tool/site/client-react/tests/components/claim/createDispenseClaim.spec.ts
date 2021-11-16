@@ -6,7 +6,7 @@ import {
 import {createClaim} from "../../../src/components/claim/createDispenseClaim"
 import * as fhir from "fhir/r4"
 import {getClaimSequenceIdentifierExtension} from "../../../src/fhir/customExtensions"
-import {readMessage} from "./messages/messages"
+import {readMessage} from "../../messages/messages"
 import {createStaticProductInfoArray} from "../../../src/pages/claimPage"
 import {ClaimFormValues} from "../../../src/components/claim/claimForm"
 
