@@ -462,7 +462,7 @@ function getMedicationRequestExtensions(row: StringKeyedObject, repeatsIssued: n
       }
     } as fhirExtension.CodingExtension
   ]
-  
+
   extension.push(createMedicationRequestExtensions(repeatsIssued))
 
   row["Instructions for Prescribing"]?.split(", ").forEach(endorsement =>

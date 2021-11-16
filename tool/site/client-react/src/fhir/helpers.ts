@@ -1,7 +1,6 @@
 import * as fhir from "fhir/r4"
 import {MedicationRequest} from "fhir/r4"
 import {
-  getUkCoreNumberOfRepeatsAllowedExtension,
   getUkCoreNumberOfRepeatsIssuedExtension,
   RepeatInformationExtension
 } from "./customExtensions"
