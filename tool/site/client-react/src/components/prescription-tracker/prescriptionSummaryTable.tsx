@@ -1,21 +1,25 @@
 import {ActionLink, Table} from "nhsuk-react-components"
-import {PrescriptionDetailProps} from "../detail/prescriptionDetails"
+import {PrescriptionSummaryProps} from "./prescriptionSummaryList"
 import React from "react"
+import styled from "styled-components"
 
 interface TrackerSummaryTableProps {
-  prescriptions: Array<PrescriptionDetailProps>
+  prescriptions: Array<PrescriptionSummaryProps>
   selectPrescription: React.Dispatch<React.SetStateAction<string>>
 }
 
-const TrackerSummaryTable: React.FC<TrackerSummaryTableProps> = ({
+const StyledTable = styled(Table)`
+  .nhsuk-action-link {
+    margin-bottom: 0;
+  }
+`
+
+const PrescriptionSummaryTable: React.FC<TrackerSummaryTableProps> = ({
   prescriptions,
   selectPrescription
 }) => {
-  const actionLinkStyle: React.CSSProperties = {
-    marginBottom: "0"
-  }
   return (
-    <Table caption="Prescription Search Results">
+    <StyledTable caption="Prescription Search Results">
       <Table.Head>
         <Table.Row>
           <Table.Cell>ID</Table.Cell>
@@ -33,15 +37,15 @@ const TrackerSummaryTable: React.FC<TrackerSummaryTableProps> = ({
             <Table.Cell>{prescription.status}</Table.Cell>
             <Table.Cell>{prescription.creationDate}</Table.Cell>
             <Table.Cell>
-              <ActionLink style={actionLinkStyle} onClick={() => selectPrescription(prescription.id)}>
+              <ActionLink onClick={() => selectPrescription(prescription.id)}>
                 View Details
               </ActionLink>
             </Table.Cell>
           </Table.Row>
         ))}
       </Table.Body>
-    </Table>
+    </StyledTable>
   )
 }
 
-export default TrackerSummaryTable
+export default PrescriptionSummaryTable

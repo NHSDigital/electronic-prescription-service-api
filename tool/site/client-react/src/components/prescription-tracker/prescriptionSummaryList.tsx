@@ -1,39 +1,48 @@
 import * as React from "react"
 import {SummaryList} from "nhsuk-react-components"
-import {Task} from "fhir/r4"
-import {formatNhsNumber} from "../../../formatters/demographics"
-import {formatDate} from "../../../formatters/dates"
-import {getCourseOfTherapyTypeExtension} from "../../../fhir/customExtensions"
+import {Reference, Task} from "fhir/r4"
+import {formatNhsNumber} from "../../formatters/demographics"
+import {formatDate} from "../../formatters/dates"
+import {getCourseOfTherapyTypeExtension} from "../../fhir/customExtensions"
 
-export interface PrescriptionDetailProps {
+export interface PrescriptionSummaryProps {
   id: string
   type: string
   patientNhsNumber: string
   creationDate: string
   status: string
-  dispenserOdsCode?: string
+  prescriber?: string
+  dispenser?: string
 }
 
-export function createPrescriptionDetailProps(task: Task): PrescriptionDetailProps {
+export function createPrescriptionSummaryProps(task: Task): PrescriptionSummaryProps {
   return {
     id: task.focus.identifier.value,
     type: getCourseOfTherapyTypeExtension(task.extension).valueCoding.display,
     patientNhsNumber: formatNhsNumber(task.for.identifier.value),
     creationDate: formatDate(task.authoredOn),
     status: task.businessStatus.coding[0].display,
-    dispenserOdsCode: task.owner?.identifier?.value
+    prescriber: task.requester && formatReference(task.requester),
+    dispenser: task.owner && formatReference(task.owner)
   }
 }
 
-export const PrescriptionDetails: React.FC<PrescriptionDetailProps> = ({
+function formatReference(reference: Reference): string {
+  return reference.display
+    ? `${reference.display} (${reference.identifier.value})`
+    : reference.identifier.value
+}
+
+export const PrescriptionSummaryList: React.FC<PrescriptionSummaryProps> = ({
   id,
   type,
   patientNhsNumber,
-  dispenserOdsCode,
+  prescriber,
+  dispenser,
   creationDate,
   status
 }) => {
-  const dispenserDesc = status === "To Be Dispensed" ? "Nominated Dispenser ODS Code" : "Assigned Dispenser ODS Code"
+  const dispenserDesc = status === "To Be Dispensed" ? "Nominated Dispenser" : "Assigned Dispenser"
   return (
     <SummaryList>
       <SummaryList.Row>
@@ -48,10 +57,16 @@ export const PrescriptionDetails: React.FC<PrescriptionDetailProps> = ({
         <SummaryList.Key>NHS Number</SummaryList.Key>
         <SummaryList.Value>{patientNhsNumber}</SummaryList.Value>
       </SummaryList.Row>
-      {dispenserOdsCode && (
+      {prescriber && (
+        <SummaryList.Row>
+          <SummaryList.Key>Prescriber</SummaryList.Key>
+          <SummaryList.Value>{prescriber}</SummaryList.Value>
+        </SummaryList.Row>
+      )}
+      {dispenser && (
         <SummaryList.Row>
           <SummaryList.Key>{dispenserDesc}</SummaryList.Key>
-          <SummaryList.Value>{dispenserOdsCode}</SummaryList.Value>
+          <SummaryList.Value>{dispenser}</SummaryList.Value>
         </SummaryList.Row>
       )}
       <SummaryList.Row>

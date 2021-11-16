@@ -1,6 +1,7 @@
 import * as React from "react"
 import {useEffect} from "react"
-import {Field, FieldAttributes, useField} from "formik"
+import {Field, FieldAttributes, getIn, useFormikContext} from "formik"
+import {DispenseFormValues} from "./dispense/dispenseForm"
 
 interface ConditionalFieldProps extends FieldAttributes<any> {
   name: string,
@@ -12,14 +13,24 @@ const ConditionalField: React.FC<ConditionalFieldProps> = ({
   condition,
   ...extraProps
 }) => {
-  const [, meta, helpers] = useField(name)
+  const {
+    initialErrors,
+    initialTouched,
+    initialValues,
+    setFieldError,
+    setFieldTouched,
+    setFieldValue
+  } = useFormikContext<DispenseFormValues>()
   useEffect(() => {
     if (!condition) {
-      helpers.setValue(meta.initialValue)
-      helpers.setTouched(meta.initialTouched)
-      helpers.setError(meta.initialError)
+      const initialFieldError = getIn(initialErrors, name)
+      setFieldError(name, initialFieldError)
+      const initialFieldTouched = getIn(initialTouched, name)
+      setFieldTouched(name, initialFieldTouched)
+      const initialFieldValue = getIn(initialValues, name)
+      setFieldValue(name, initialFieldValue)
     }
-  }, [condition, meta, helpers])
+  }, [condition, name, initialErrors, initialTouched, initialValues, setFieldError, setFieldTouched, setFieldValue])
 
   return condition && <Field name={name} {...extraProps}/>
 }

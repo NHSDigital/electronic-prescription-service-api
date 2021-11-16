@@ -1,185 +1,78 @@
 import * as React from "react"
-import {useState} from "react"
-import {Button, ErrorMessage, Form, Label} from "nhsuk-react-components"
-import {Bundle, Task} from "fhir/r4"
-import {
-  createPrescriptionDetailProps,
-  PrescriptionDetails
-} from "../components/prescription-tracker/detail/prescriptionDetails"
-import {
-  createPrescriptionItemProps,
-  PrescriptionItems
-} from "../components/prescription-tracker/detail/prescriptionItems"
-import ButtonList from "../components/buttonList"
-import {Field, Formik} from "formik"
-import {MaskedInput} from "nhsuk-react-components-extensions"
-import TrackerSummaryTable from "../components/prescription-tracker/summary/trackerSummaryTable"
-import {MessageExpander} from "../components/messageExpanders"
+import {useContext, useState} from "react"
+import {Bundle, OperationOutcome, Task} from "fhir/r4"
 import {isBundle, isOperationOutcome, isTask} from "../fhir/typeGuards"
+import LongRunningTask from "../components/longRunningTask"
+import {AppContext} from "../index"
+import PrescriptionSearchForm from "../components/prescription-tracker/prescriptionSearchForm"
+import PrescriptionSearchResults from "../components/prescription-tracker/prescriptionSearchResults"
+import axios from "axios"
 
-interface PrescriptionSearchPageProps {
-  baseUrl: string
-  prescriptionId?: string
-}
-
-interface PrescriptionSearchCriteria {
+export interface PrescriptionSearchCriteria {
   prescriptionId?: string
   patientId?: string
 }
 
+interface PrescriptionSearchPageProps {
+  prescriptionId?: string
+}
+
 const PrescriptionSearchPage: React.FC<PrescriptionSearchPageProps> = ({
-  baseUrl,
   prescriptionId
 }) => {
-  const [searchResults, setSearchResults] = useState<Bundle>()
-  const [selectedPrescription, setSelectedPrescription] = useState<Task>()
-  const [errorMessage, setErrorMessage] = useState<string>()
-  const [loadingMessage, setLoadingMessage] = useState<string>()
-
-  async function handleSearch(searchCriteria: PrescriptionSearchCriteria) {
-    setLoadingMessage("Searching for prescriptions.")
-
-    const bundle = await makeTrackerRequest(searchCriteria)
-    if (bundle) {
-      setSearchResults(bundle)
-    }
-
-    setLoadingMessage(undefined)
-  }
-
-  async function selectPrescription(selectedPrescriptionId: string) {
-    const selectedTask = getTasks(searchResults).find(task => task.focus.identifier.value === selectedPrescriptionId)
-    if (selectedTask.owner) {
-      setSelectedPrescription(selectedTask)
-      return
-    }
-
-    setLoadingMessage("Retrieving full prescription details.")
-
-    const bundle = await makeTrackerRequest({prescriptionId: selectedPrescriptionId})
-    if (bundle) {
-      const tasks = getTasks(bundle)
-      setSelectedPrescription(tasks[0])
-    }
-
-    setLoadingMessage(undefined)
-  }
-
-  async function makeTrackerRequest(searchCriteria: PrescriptionSearchCriteria): Promise<Bundle | undefined> {
-    const searchParams = toURLSearchParams(searchCriteria)
-    const response = await fetch(`${baseUrl}tracker?${searchParams.toString()}`)
-    const responseData = await response.json()
-    if (isBundle(responseData)) {
-      return responseData
-    } else if (isOperationOutcome(responseData)) {
-      setErrorMessage(responseData.issue[0].diagnostics)
-    } else {
-      console.log(responseData)
-      setErrorMessage("Unknown error")
-    }
-  }
+  const {baseUrl} = useContext(AppContext)
+  const [searchCriteria, setSearchCriteria] = useState<PrescriptionSearchCriteria>()
 
   function handleReset() {
-    setSearchResults(undefined)
-    setSelectedPrescription(undefined)
-    setErrorMessage(undefined)
-    setLoadingMessage(undefined)
+    setSearchCriteria(undefined)
   }
 
-  const initialValues = {
-    prescriptionId: prescriptionId ?? "",
-    patientId: ""
-  }
-
-  if (errorMessage) {
-    return <>
-      <Label isPageHeading>Error</Label>
-      <ErrorMessage>{errorMessage}</ErrorMessage>
-      <ButtonList>
-        <Button secondary onClick={handleReset}>Back</Button>
-      </ButtonList>
-    </>
-  }
-
-  if (loadingMessage) {
-    return <>
-      <Label isPageHeading>Loading...</Label>
-      <Label>{loadingMessage}</Label>
-    </>
-  }
-
-  if (selectedPrescription) {
-    const prescription = createPrescriptionDetailProps(selectedPrescription)
-    const prescriptionItems = createPrescriptionItemProps(selectedPrescription)
-    return <>
-      <Label isPageHeading>Prescription Details</Label>
-      <PrescriptionDetails {...prescription} />
-      <PrescriptionItems items={prescriptionItems}/>
-      <MessageExpander
-        name="Response (FHIR)"
-        message={JSON.stringify(selectedPrescription, null, 2)}
-        mimeType="application/json"
+  if (!searchCriteria) {
+    return (
+      <PrescriptionSearchForm
+        prescriptionId={prescriptionId}
+        onSubmit={values => setSearchCriteria(values)}
       />
-      <ButtonList>
-        <Button secondary onClick={() => setSelectedPrescription(undefined)}>Back</Button>
-      </ButtonList>
-    </>
+    )
   }
 
-  if (searchResults) {
-    const prescriptions = getTasks(searchResults).map(task => createPrescriptionDetailProps(task))
-    return <>
-      <Label isPageHeading>Search Results</Label>
-      {prescriptions.length
-        ? <TrackerSummaryTable prescriptions={prescriptions} selectPrescription={selectPrescription}/>
-        : <Label>No results found.</Label>
-      }
-      <MessageExpander
-        name="Response (FHIR)"
-        message={JSON.stringify(searchResults, null, 2)}
-        mimeType="application/json"
-      />
-      <ButtonList>
-        <Button secondary onClick={handleReset}>Back</Button>
-      </ButtonList>
-    </>
-  }
-
-  //TODO - move to separate component
+  const prescriptionSearchTask = () => makeTrackerRequest(baseUrl, searchCriteria)
   return (
-    <Formik<PrescriptionSearchCriteria> initialValues={initialValues} onSubmit={values => handleSearch(values)}>
-      {formik => (
-        <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
-          <Label isPageHeading>Search for a Prescription</Label>
-          <Field
-            id="prescriptionId"
-            name="prescriptionId"
-            label="Prescription ID"
-            hint="Use the short form here, e.g. E3E6FA-A83008-41F09Y"
-            width={20}
-            mask="******-******-******"
-            maskChar=""
-            autoComplete="off"
-            as={MaskedInput}
-          />
-          <Field
-            id="patientId"
-            name="patientId"
-            label="NHS Number"
-            width={10}
-            mask="999 999 9999"
-            maskChar=""
-            autoComplete="off"
-            as={MaskedInput}
-          />
-          <ButtonList>
-            <Button type="submit">Search</Button>
-            <Button secondary href={baseUrl}>Back</Button>
-          </ButtonList>
-        </Form>
-      )}
-    </Formik>
+    <LongRunningTask<Bundle> task={prescriptionSearchTask} loadingMessage="Searching for prescriptions." back={handleReset}>
+      {bundle => <PrescriptionSearchResults bundle={bundle} back={handleReset}/>}
+    </LongRunningTask>
   )
+}
+
+export async function retrieveFullPrescriptionDetails(
+  baseUrl: string,
+  selectedPrescriptionId: string
+): Promise<Task> {
+  const detailBundle = await makeTrackerRequest(baseUrl, {prescriptionId: selectedPrescriptionId})
+  const tasks = getTasks(detailBundle)
+  if (!tasks.length) {
+    throw new Error("Prescription not found")
+  }
+  return tasks[0]
+}
+
+export async function makeTrackerRequest(
+  baseUrl: string,
+  searchCriteria: PrescriptionSearchCriteria
+): Promise<Bundle> {
+  const searchParams = toURLSearchParams(searchCriteria)
+  const response = await axios.get<Bundle | OperationOutcome>(`${baseUrl}tracker?${searchParams.toString()}`)
+  const responseData = response.data
+  if (isBundle(responseData)) {
+    return responseData
+  }
+
+  console.log(responseData)
+  if (isOperationOutcome(responseData)) {
+    throw new Error(responseData.issue[0].diagnostics)
+  }
+
+  throw new Error("Unknown error")
 }
 
 function toURLSearchParams(searchCriteria: PrescriptionSearchCriteria) {
@@ -195,7 +88,10 @@ function toURLSearchParams(searchCriteria: PrescriptionSearchCriteria) {
   return searchParams
 }
 
-function getTasks(bundle: Bundle): Array<Task> {
+export function getTasks(bundle: Bundle): Array<Task> {
+  if (!bundle.entry) {
+    return []
+  }
   return bundle.entry
     .map(entry => entry.resource)
     .filter(isTask)
