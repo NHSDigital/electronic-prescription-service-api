@@ -177,11 +177,7 @@ function createDispensingRepeatInformationExtension(
   // const numberOfRepeatPrescriptionsIssued = numberOfRepeatPrescriptionsIssuedExtension.valueUnsignedInt
   const issueNumberStr = (document.getElementById("issue-number") as HTMLInputElement).value
   const numberOfRepeatPrescriptionsIssued = parseInt(issueNumberStr, 10)
-
-  const numberOfRepeatPrescriptionsAllowedExtension = repeatInformationExtension.extension.find(e =>
-    e.url === "numberOfRepeatPrescriptionsAllowed"
-  ) as fhirExtension.UnsignedIntExtension
-  const numberOfRepeatPrescriptionsAllowed = numberOfRepeatPrescriptionsAllowedExtension.valueUnsignedInt
+  const numberOfRepeatPrescriptionsAllowed = medicationRequest.dispenseRequest?.numberOfRepeatsAllowed || 1
 
   return {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",

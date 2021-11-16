@@ -51,7 +51,7 @@ Object {
                 },
                 Object {
                   "url": "numberOfRepeatsAllowed",
-                  "valueInteger": 6,
+                  "valueInteger": 5,
                 },
               ],
               "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
