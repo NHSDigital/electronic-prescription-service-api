@@ -23,7 +23,31 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
   const [sendConfirmed, setSendConfirmed] = useState<boolean>(false)
   const retrievePrescriptionTask = () => retrievePrescription(baseUrl, prescriptionId)
 
-  setupPagination(baseUrl)
+  /* Pagination ------------------------------------------------ */
+  const [addedListener, setAddedListener] = useState(false)
+  const [cookies] = useCookies()
+  const LEFT_ARROW_KEY = 37
+  const RIGHT_ARROW_KEY = 39
+  const handleKeyDown = useCallback((e: any) => {
+    if (e.keyCode === LEFT_ARROW_KEY) {
+      const previousPrescriptionId = cookies["Previous-Prescription-Id"]
+      if (previousPrescriptionId) {
+        customWindow.location = `${baseUrl}prescribe/edit?prescription_id=${previousPrescriptionId}`
+      }
+    } else if (e.keyCode === RIGHT_ARROW_KEY) {
+      const nextPrescriptionId = cookies["Next-Prescription-Id"]
+      if (nextPrescriptionId) {
+        customWindow.location = `${baseUrl}prescribe/edit?prescription_id=${nextPrescriptionId}`
+      }
+    }
+  }, [baseUrl, cookies])
+  useEffect(() => {
+    if (!addedListener) {
+      document.addEventListener("keydown", handleKeyDown)
+    }
+    setAddedListener(true)
+  }, [addedListener, handleKeyDown])
+  /* ---------------------------------------------------------- */
 
   return (
     <LongRunningTask<Bundle> task={retrievePrescriptionTask} loadingMessage="Retrieving prescription details.">
@@ -83,32 +107,6 @@ async function sendSignRequest(baseUrl: string) {
 
   redirect(redirectUri)
   return response.data
-}
-
-function setupPagination(baseUrl: string) {
-  const [addedListener, setAddedListener] = useState(false)
-  const [cookies] = useCookies()
-  const LEFT_ARROW_KEY = 37
-  const RIGHT_ARROW_KEY = 39
-  const handleKeyDown = useCallback((e: any) => {
-    if (e.keyCode === LEFT_ARROW_KEY) {
-      const previousPrescriptionId = cookies["Previous-Prescription-Id"]
-      if (previousPrescriptionId) {
-        customWindow.location = `${baseUrl}prescribe/edit?prescription_id=${previousPrescriptionId}`
-      }
-    } else if (e.keyCode === RIGHT_ARROW_KEY) {
-      const nextPrescriptionId = cookies["Next-Prescription-Id"]
-      if (nextPrescriptionId) {
-        customWindow.location = `${baseUrl}prescribe/edit?prescription_id=${nextPrescriptionId}`
-      }
-    }
-  }, [baseUrl, cookies])
-  useEffect(() => {
-    if (!addedListener) {
-      document.addEventListener("keydown", handleKeyDown)
-    }
-    setAddedListener(true)
-  }, [addedListener, handleKeyDown])
 }
 
 interface SignResponse {
