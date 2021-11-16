@@ -11,6 +11,7 @@ import SearchPage from "./pages/searchPage"
 import DispensePage from "./pages/dispensePage"
 import ButtonList from "./components/buttonList"
 import SendPage from "./pages/sendPage"
+import {CookiesProvider} from "react-cookie"
 
 const customWindow = window as Record<string, any>
 
@@ -53,34 +54,36 @@ async function startApplication(baseUrl: string): Promise<void> {
   const urlParams = new URLSearchParams(window.location.search)
   const content = (
     <AppContext.Provider value={{baseUrl}}>
-      <PageContainer>
-        <BrowserRouter>
-          <Switch>
-            <Route path={`${baseUrl}prescribe/edit`}>
-              <PrescriptionSummary
-                baseUrl={baseUrl}
-                prescriptionId={urlParams.get("prescription_id")}
-              />
-              <ButtonList>
-                <Button onClick={() => sendSignRequest(baseUrl)}>Send</Button>
-                <Button secondary href={baseUrl}>Back</Button>
-              </ButtonList>
-            </Route>
-            <Route path={`${baseUrl}prescribe/send`}>
-              <SendPage baseUrl={baseUrl} token={urlParams.get("token")}/>
-            </Route>
-            <Route path={`${baseUrl}dispense/dispense`}>
-              <DispensePage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")}/>
-            </Route>
-            <Route path={`${baseUrl}dispense/claim`}>
-              <ClaimPage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")}/>
-            </Route>
-            <Route path={`${baseUrl}search`}>
-              <SearchPage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")}/>
-            </Route>
-          </Switch>
-        </BrowserRouter>
-      </PageContainer>
+      <CookiesProvider>
+        <PageContainer>
+          <BrowserRouter>
+            <Switch>
+              <Route path={`${baseUrl}prescribe/edit`}>
+                <PrescriptionSummary
+                  baseUrl={baseUrl}
+                  prescriptionId={urlParams.get("prescription_id")}
+                />
+                <ButtonList>
+                  <Button onClick={() => sendSignRequest(baseUrl)}>Send</Button>
+                  <Button secondary href={baseUrl}>Back</Button>
+                </ButtonList>
+              </Route>
+              <Route path={`${baseUrl}prescribe/send`}>
+                <SendPage baseUrl={baseUrl} token={urlParams.get("token")}/>
+              </Route>
+              <Route path={`${baseUrl}dispense/dispense`}>
+                <DispensePage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")}/>
+              </Route>
+              <Route path={`${baseUrl}dispense/claim`}>
+                <ClaimPage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")}/>
+              </Route>
+              <Route path={`${baseUrl}search`}>
+                <SearchPage baseUrl={baseUrl} prescriptionId={urlParams.get("prescription_id")}/>
+              </Route>
+            </Switch>
+          </BrowserRouter>
+        </PageContainer>
+      </CookiesProvider>
     </AppContext.Provider>
   )
   ReactDOM.render(content, document.getElementById("root"))
