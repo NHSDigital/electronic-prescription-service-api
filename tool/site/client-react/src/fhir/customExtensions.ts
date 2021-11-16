@@ -100,16 +100,10 @@ export const getNumberOfRepeatsAllowedExtension = (extensions: Array<Extension>)
 
 const URL_UK_CORE_REPEAT_INFORMATION = "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation"
 export const URL_UK_CORE_NUMBER_OF_REPEATS_ISSUED = "numberOfPrescriptionsIssued"
-export const URL_UK_CORE_NUMBER_OF_REPEATS_ALLOWED = "numberOfRepeatPrescriptionsAllowed"
 export const URL_UK_CORE_AUTHORISATION_EXPIRY_DATE = "authorisationExpiryDate"
 
 export interface UkCoreNumberOfRepeatPrescriptionsIssuedExtension extends Extension {
   url: typeof URL_UK_CORE_NUMBER_OF_REPEATS_ISSUED
-  valueUnsignedInt: number
-}
-
-export interface UkCoreNumberOfRepeatPrescriptionsAllowedExtension extends Extension {
-  url: typeof URL_UK_CORE_NUMBER_OF_REPEATS_ALLOWED
   valueUnsignedInt: number
 }
 
@@ -160,16 +154,10 @@ export const getPrescriptionEndorsementExtensions = (extensions: Array<Extension
 
 const URL_DISPENSING_INFORMATION_EXTENSION = "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation"
 const URL_DISPENSING_INFORMATION_DISPENSE_STATUS_EXTENSION = "dispenseStatus"
-const URL_DISPENSING_INFORMATION_DATE_LAST_DISPENSED_EXTENSION = "dateLastDispensed"
 
 interface DispenseStatusExtension extends Extension {
   url: typeof URL_DISPENSING_INFORMATION_DISPENSE_STATUS_EXTENSION,
   valueCoding: Coding
-}
-
-interface DateLastDispensedExtension extends Extension {
-  url: typeof URL_DISPENSING_INFORMATION_DATE_LAST_DISPENSED_EXTENSION,
-  valueDate: string
 }
 
 export const getDispenseStatusExtension = (extensions: Array<Extension>): DispenseStatusExtension =>
@@ -177,12 +165,6 @@ export const getDispenseStatusExtension = (extensions: Array<Extension>): Dispen
     URL_DISPENSING_INFORMATION_EXTENSION,
     URL_DISPENSING_INFORMATION_DISPENSE_STATUS_EXTENSION
   ])
-
-export const getDateLastDispensedExtension = (extensions: Array<Extension>): DateLastDispensedExtension | undefined =>
-  getExtensions<DateLastDispensedExtension>(extensions, [
-    URL_DISPENSING_INFORMATION_EXTENSION,
-    URL_DISPENSING_INFORMATION_DATE_LAST_DISPENSED_EXTENSION
-  ])[0]
 
 export const URL_LONG_FORM_ID = "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId"
 
