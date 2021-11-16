@@ -32,6 +32,7 @@ const PrescriptionSummary: React.FC<PrescriptionSummaryProps> = ({
     }
   }, [summaryViewProps])
 
+  // todo: move this logic to load/edit page so this component is more reusable
   const [cookies] = useCookies()
 
   const LEFT_ARROW_KEY = 37
