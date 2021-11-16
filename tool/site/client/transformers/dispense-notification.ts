@@ -4,7 +4,6 @@ import {
   BundleEntry,
   MedicationDispense,
   Bundle,
-  RepeatInformationExtension,
   MedicationRequest,
   MedicationRequestGroupIdentifier
 } from "../models"
@@ -165,10 +164,6 @@ export function createDispenseRequest(bundle: Bundle): Bundle {
 function createDispensingRepeatInformationExtension(
   medicationRequest: MedicationRequest
 ) {
-  const repeatInformationExtension = medicationRequest.extension.find(e =>
-    e.url === "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation"
-  ) as RepeatInformationExtension
-
   //TODO - We should be building the dispense notification from the release response, not the prescription order request.
   // If we did that, we'd have information like the issue number. For now, allow the issue number to be entered manually.
   // const numberOfRepeatPrescriptionsIssuedExtension = repeatInformationExtension.extension.find(e =>
