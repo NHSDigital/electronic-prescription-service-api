@@ -1,9 +1,9 @@
 import * as React from "react"
-import {CSSProperties} from "react"
 import {Button, Details} from "nhsuk-react-components"
 import Pre from "./pre"
 import {FhirResource} from "fhir/r4"
 import ButtonList from "./buttonList"
+import styled from "styled-components"
 
 interface MessageExpandersProps {
   fhirRequest: FhirResource
@@ -48,22 +48,23 @@ interface MessageExpanderProps {
   mimeType: string
 }
 
-const MessageExpander: React.FC<MessageExpanderProps> = ({
+const StyledButton = styled(Button)`
+  margin-bottom: 0;
+`
+
+export const MessageExpander: React.FC<MessageExpanderProps> = ({
   name,
   message,
   mimeType
 }) => {
-  const buttonStyle: CSSProperties = {
-    marginBottom: 0
-  }
   const downloadHref = `data:${mimeType};charset=utf-8,${encodeURIComponent(message)}`
   return (
     <Details expander>
       <Details.Summary>{name}</Details.Summary>
       <Details.Text>
         <ButtonList>
-          <Button style={buttonStyle} onClick={() => navigator.clipboard.writeText(message)}>Copy</Button>
-          <Button style={buttonStyle} download="message" href={downloadHref}>Download</Button>
+          <StyledButton onClick={() => navigator.clipboard.writeText(message)}>Copy</StyledButton>
+          <StyledButton download="message" href={downloadHref}>Download</StyledButton>
         </ButtonList>
         <Pre>{message}</Pre>
       </Details.Text>

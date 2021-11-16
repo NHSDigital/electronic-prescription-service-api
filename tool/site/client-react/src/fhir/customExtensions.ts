@@ -160,10 +160,16 @@ export const getPrescriptionEndorsementExtensions = (extensions: Array<Extension
 
 const URL_DISPENSING_INFORMATION_EXTENSION = "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-DispensingInformation"
 const URL_DISPENSING_INFORMATION_DISPENSE_STATUS_EXTENSION = "dispenseStatus"
+const URL_DISPENSING_INFORMATION_DATE_LAST_DISPENSED_EXTENSION = "dateLastDispensed"
 
 interface DispenseStatusExtension extends Extension {
   url: typeof URL_DISPENSING_INFORMATION_DISPENSE_STATUS_EXTENSION,
   valueCoding: Coding
+}
+
+interface DateLastDispensedExtension extends Extension {
+  url: typeof URL_DISPENSING_INFORMATION_DATE_LAST_DISPENSED_EXTENSION,
+  valueDate: string
 }
 
 export const getDispenseStatusExtension = (extensions: Array<Extension>): DispenseStatusExtension =>
@@ -171,6 +177,12 @@ export const getDispenseStatusExtension = (extensions: Array<Extension>): Dispen
     URL_DISPENSING_INFORMATION_EXTENSION,
     URL_DISPENSING_INFORMATION_DISPENSE_STATUS_EXTENSION
   ])
+
+export const getDateLastDispensedExtension = (extensions: Array<Extension>): DateLastDispensedExtension | undefined =>
+  getExtensions<DateLastDispensedExtension>(extensions, [
+    URL_DISPENSING_INFORMATION_EXTENSION,
+    URL_DISPENSING_INFORMATION_DATE_LAST_DISPENSED_EXTENSION
+  ])[0]
 
 export const URL_LONG_FORM_ID = "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId"
 

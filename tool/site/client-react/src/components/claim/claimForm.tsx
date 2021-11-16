@@ -8,12 +8,12 @@ import {VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION} from "../../fhir/reference-data
 
 export interface ClaimFormProps {
   products: Array<StaticProductInfo>
-  sendClaim: (claim: ClaimFormValues) => void
+  onSubmit: (claim: ClaimFormValues) => void
 }
 
 const ClaimForm: React.FC<ClaimFormProps> = ({
   products,
-  sendClaim
+  onSubmit
 }) => {
   const initialValues: ClaimFormValues = {
     products: products.map(product => ({
@@ -28,7 +28,7 @@ const ClaimForm: React.FC<ClaimFormProps> = ({
   }
 
   return (
-    <Formik<ClaimFormValues> initialValues={initialValues} onSubmit={values => sendClaim(values)}>
+    <Formik<ClaimFormValues> initialValues={initialValues} onSubmit={values => onSubmit(values)}>
       {formik =>
         <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
           <FieldArray name="products" component={ProductArray}/>
