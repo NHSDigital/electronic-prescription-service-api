@@ -67,9 +67,12 @@ export function getRepeatsIssuedAndAllowed(medicationRequest: MedicationRequest)
     : 1
 
   const ukCoreRepeatsAllowedExtension = getUkCoreNumberOfRepeatsAllowedExtension(medicationRequest.extension)
-  const numberOfRepeatPrescriptionsAllowed = ukCoreRepeatsAllowedExtension
-    ? ukCoreRepeatsAllowedExtension.valueUnsignedInt
-    : (medicationRequest.dispenseRequest.numberOfRepeatsAllowed || 0) + 1
+  const numberOfRepeatPrescriptionsAllowed =
+    ((medicationRequest.dispenseRequest?.numberOfRepeatsAllowed || 0)
+    ?? (ukCoreRepeatsAllowedExtension
+      ? ukCoreRepeatsAllowedExtension.valueUnsignedInt
+      : 0))
+    + 1
 
   return [numberOfRepeatPrescriptionsIssued, numberOfRepeatPrescriptionsAllowed]
 }
