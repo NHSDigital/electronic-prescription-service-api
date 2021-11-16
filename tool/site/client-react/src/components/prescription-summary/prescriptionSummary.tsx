@@ -1,6 +1,6 @@
 import PrescriptionSummaryView, {createSummaryPrescription, SummaryPrescription} from "./prescriptionSummaryView"
 import * as React from "react"
-import {useEffect, useState} from "react"
+import {useCallback, useEffect, useState} from "react"
 import {Label} from "nhsuk-react-components"
 import {useCookies} from "react-cookie"
 
@@ -17,28 +17,12 @@ const PrescriptionSummary: React.FC<PrescriptionSummaryProps> = ({
 }) => {
   const [summaryViewProps, setSummaryViewProps] = useState<SummaryPrescription>()
 
-  let addedListener = false
-  useEffect(() => {
-    if (!addedListener) {
-      document.addEventListener("keydown", handleKeyDown)
-    }
-    addedListener = true
-
-    if (!summaryViewProps) {
-      fetch(`${baseUrl}prescription/${prescriptionId}`)
-        .then(response => response.json())
-        .then(createSummaryPrescription)
-        .then(setSummaryViewProps)
-    }
-  }, [summaryViewProps])
-
   // todo: move this logic to load/edit page so this component is more reusable
+  const [addedListener, setAddedListener] = useState(false)
   const [cookies] = useCookies()
-
   const LEFT_ARROW_KEY = 37
   const RIGHT_ARROW_KEY = 39
-
-  function handleKeyDown(e) {
+  const handleKeyDown = useCallback((e: any) => {
     if (e.keyCode === LEFT_ARROW_KEY) {
       const previousPrescriptionId = cookies["Previous-Prescription-Id"]
       if (previousPrescriptionId) {
@@ -50,7 +34,21 @@ const PrescriptionSummary: React.FC<PrescriptionSummaryProps> = ({
         customWindow.location = `${baseUrl}prescribe/edit?prescription_id=${nextPrescriptionId}`
       }
     }
-  }
+  }, [baseUrl, cookies])
+
+  useEffect(() => {
+    if (!addedListener) {
+      document.addEventListener("keydown", handleKeyDown)
+    }
+    setAddedListener(true)
+
+    if (!summaryViewProps) {
+      fetch(`${baseUrl}prescription/${prescriptionId}`)
+        .then(response => response.json())
+        .then(createSummaryPrescription)
+        .then(setSummaryViewProps)
+    }
+  }, [baseUrl, prescriptionId, summaryViewProps, addedListener, handleKeyDown])
 
   return summaryViewProps
     ? <PrescriptionSummaryView {...summaryViewProps}/>

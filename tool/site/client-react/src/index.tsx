@@ -25,21 +25,21 @@ async function startApplication(baseUrl: string): Promise<void> {
         <PageContainer>
           <BrowserRouter>
             <Switch>
-            <Route path={`${baseUrl}prescribe/edit`}>
-              <SendPreSignPage prescriptionId={urlParams.get("prescription_id")}/>
-            </Route>
-            <Route path={`${baseUrl}prescribe/send`}>
-              <SendPostSignPage token={urlParams.get("token")}/>
-            </Route>
-            <Route path={`${baseUrl}dispense/dispense`}>
-              <DispensePage prescriptionId={urlParams.get("prescription_id")}/>
-            </Route>
-            <Route path={`${baseUrl}dispense/claim`}>
-              <ClaimPage prescriptionId={urlParams.get("prescription_id")}/>
-            </Route>
-            <Route path={`${baseUrl}search`}>
-              <PrescriptionSearchPage prescriptionId={urlParams.get("prescription_id")}/>
-            </Route>
+              <Route path={`${baseUrl}prescribe/edit`}>
+                <SendPreSignPage prescriptionId={urlParams.get("prescription_id")}/>
+              </Route>
+              <Route path={`${baseUrl}prescribe/send`}>
+                <SendPostSignPage token={urlParams.get("token")}/>
+              </Route>
+              <Route path={`${baseUrl}dispense/dispense`}>
+                <DispensePage prescriptionId={urlParams.get("prescription_id")}/>
+              </Route>
+              <Route path={`${baseUrl}dispense/claim`}>
+                <ClaimPage prescriptionId={urlParams.get("prescription_id")}/>
+              </Route>
+              <Route path={`${baseUrl}search`}>
+                <PrescriptionSearchPage prescriptionId={urlParams.get("prescription_id")}/>
+              </Route>
             </Switch>
           </BrowserRouter>
         </PageContainer>
