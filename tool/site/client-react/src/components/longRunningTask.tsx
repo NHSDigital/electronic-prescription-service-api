@@ -27,21 +27,19 @@ const LongRunningTask = <T extends unknown>({
   }
 
   useEffect(() => {
-    async function performTask() {
-      setLoading(true)
-      try {
-        const loadResult = await task()
-        setResult(loadResult)
-      } catch (e) {
-        console.log(e)
-        setErrorMessage(e.message)
-      } finally {
-        setLoading(false)
-      }
-    }
-
     if (!result) {
-      performTask()
+      (async () => {
+        setLoading(true)
+        try {
+          const loadResult = await task()
+          setResult(loadResult)
+        } catch (e) {
+          console.log(e)
+          setErrorMessage((typeof e === "string" ? e : e?.message) || "Unknown error")
+        } finally {
+          setLoading(false)
+        }
+      })()
     }
   }, [result, task])
 

@@ -86,7 +86,6 @@ test("Displays an error if response is empty", async () => {
   const {container} = renderWithContext(<SendPreSignPage prescriptionId={prescriptionId}/>, context)
   await waitFor(() => screen.getByText("Error"))
 
-  expect(screen.getByText("Empty response from server")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
@@ -152,7 +151,6 @@ test("Displays error message if prepare errors present", async () => {
   userEvent.click(screen.getByText("Send"))
   await waitFor(() => screen.getByText("Error"))
 
-  expect(screen.getByText("Error preparing prescription for signing. Check the console for details.")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
@@ -178,7 +176,6 @@ test("Displays error message if redirect URI not present", async () => {
   userEvent.click(screen.getByText("Send"))
   await waitFor(() => screen.getByText("Error"))
 
-  expect(screen.getByText("Some error message")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 

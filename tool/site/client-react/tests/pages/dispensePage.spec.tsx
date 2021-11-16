@@ -74,7 +74,6 @@ test("Displays an error if prescription-order not found", async () => {
   const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId}/>, context)
   await waitFor(() => screen.getByText("Error"))
 
-  expect(screen.getByText("Empty response from server")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
@@ -87,7 +86,6 @@ test("Displays an error on invalid response", async () => {
   const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId}/>, context)
   await waitFor(() => screen.getByText("Error"))
 
-  expect(screen.getByText("Unknown error")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
