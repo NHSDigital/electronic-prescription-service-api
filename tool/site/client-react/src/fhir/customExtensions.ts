@@ -123,11 +123,6 @@ export const getUkCoreNumberOfRepeatsIssuedExtension = (extensions: Array<Extens
     URL_UK_CORE_REPEAT_INFORMATION,
     URL_UK_CORE_NUMBER_OF_REPEATS_ISSUED
   ])[0] as UkCoreNumberOfRepeatPrescriptionsIssuedExtension
-export const getUkCoreNumberOfRepeatsAllowedExtension = (extensions: Array<Extension>): UkCoreNumberOfRepeatPrescriptionsAllowedExtension =>
-  getExtensions(extensions, [
-    URL_UK_CORE_REPEAT_INFORMATION,
-    URL_UK_CORE_NUMBER_OF_REPEATS_ALLOWED
-  ])[0] as UkCoreNumberOfRepeatPrescriptionsAllowedExtension
 
 const URL_PRESCRIPTION_EXTENSION = "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-Prescription"
 const URL_PRESCRIPTION_EXTENSION_COURSE_OF_THERAPY_EXTENSION = "courseOfTherapyType"
