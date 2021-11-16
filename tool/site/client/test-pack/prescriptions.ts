@@ -465,7 +465,9 @@ function getMedicationRequestExtensions(row: StringKeyedObject, prescriptionTrea
     } as fhirExtension.CodingExtension
   ]
 
-  extension.push(createMedicationRequestExtensions(prescriptionTreatmentTypeCode, repeatsIssued))
+  if (prescriptionTreatmentTypeCode !== "acute") {
+    extension.push(createRepeatInformationExtensions(repeatsIssued))
+  }
 
   row["Instructions for Prescribing"]?.split(", ").forEach(endorsement =>
     extension.push({
@@ -498,8 +500,7 @@ function createPrescriptionType(row: StringKeyedObject): any {
   }
 }
 
-function createMedicationRequestExtensions(
-  prescriptionTreatmentTypeCode: string,
+function createRepeatInformationExtensions(
   repeatsIssued: number
 ): fhirExtension.ExtensionExtension<fhirExtension.Extension> {
   const extension: Array<fhirExtension.Extension> = [
@@ -509,12 +510,10 @@ function createMedicationRequestExtensions(
       valueDateTime: new Date(2025, 1, 1).toISOString().slice(0, 10)
     } as fhirExtension.DateTimeExtension
   ]
-  if (prescriptionTreatmentTypeCode !== "acute") {
-    extension.push({
-      url: "numberOfPrescriptionsIssued",
-      valueUnsignedInt: repeatsIssued
-    } as fhirExtension.UnsignedIntExtension)
-  }
+  extension.push({
+    url: "numberOfPrescriptionsIssued",
+    valueUnsignedInt: repeatsIssued
+  } as fhirExtension.UnsignedIntExtension)
   return {
     url:
       "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
