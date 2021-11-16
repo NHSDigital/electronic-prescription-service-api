@@ -99,7 +99,7 @@ export const getNumberOfRepeatsAllowedExtension = (extensions: Array<Extension>)
   ])
 
 const URL_UK_CORE_REPEAT_INFORMATION = "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation"
-export const URL_UK_CORE_NUMBER_OF_REPEATS_ISSUED = "numberOfRepeatPrescriptionsIssued"
+export const URL_UK_CORE_NUMBER_OF_REPEATS_ISSUED = "numberOfPrescriptionsIssued"
 export const URL_UK_CORE_NUMBER_OF_REPEATS_ALLOWED = "numberOfRepeatPrescriptionsAllowed"
 export const URL_UK_CORE_AUTHORISATION_EXPIRY_DATE = "authorisationExpiryDate"
 

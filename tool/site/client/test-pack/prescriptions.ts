@@ -74,7 +74,7 @@ function createRepeatPrescribingPrescriptions(
   prescriptions: any[]
 ) {
   const repeatsAllowed = getNumberOfRepeatsAllowed(prescriptionRow)
-  for (let repeatsIssued = 1; repeatsIssued <= repeatsAllowed; repeatsIssued++) {
+  for (let repeatsIssued = 1; repeatsIssued <= repeatsAllowed + 1; repeatsIssued++) {
     const prescription = createPrescription(
       patient,
       prescriber,
@@ -300,8 +300,7 @@ function createMedicationRequests(
         id: id,
         extension: getMedicationRequestExtensions(
           row,
-          repeatsIssued,
-          maxRepeatsAllowed
+          repeatsIssued
         ),
         identifier: [
           {
@@ -449,7 +448,7 @@ function getMedicationDisplay(row: StringKeyedObject): string {
   return row["Medication"]
 }
 
-function getMedicationRequestExtensions(row: StringKeyedObject, repeatsIssued: number, maxRepeatsAllowed: number): Array<fhirExtension.Extension> {
+function getMedicationRequestExtensions(row: StringKeyedObject, repeatsIssued: number): Array<fhirExtension.Extension> {
   const prescriptionTypeCode = row["Prescription Type"].toString()
   const prescriberTypeDisplay = row["Prescriber Description"]
   const extension: Array<fhirExtension.Extension> = [
@@ -464,7 +463,7 @@ function getMedicationRequestExtensions(row: StringKeyedObject, repeatsIssued: n
     } as fhirExtension.CodingExtension
   ]
 
-  if (maxRepeatsAllowed) {
+  if (repeatsIssued > 1) {
     extension.push(
       createRepeatDispensingExtensionIfRequired(repeatsIssued)
     )
