@@ -74,7 +74,7 @@ function createRepeatPrescribingPrescriptions(
   prescriptions: any[]
 ) {
   const repeatsAllowed = getNumberOfRepeatsAllowed(prescriptionRow)
-  for (let repeatsIssued = 1; repeatsIssued <= repeatsAllowed + 1; repeatsIssued++) {
+  for (let repeatsIssued = 1; repeatsIssued <= repeatsAllowed; repeatsIssued++) {
     const prescription = createPrescription(
       patient,
       prescriber,
@@ -101,7 +101,7 @@ function createRepeatDispensingPrescription(
     prescriber,
     prescriptionRows,
     1,
-    parseInt(prescriptionRow["Issues"]) - 1
+    parseInt(prescriptionRow["Issues"])
   )
   const bundle = JSON.parse(prescription)
   updateNominatedPharmacy(bundle, nominatedPharmacy)
@@ -134,8 +134,8 @@ function createPrescription(
   patientEntry: BundleEntry,
   practitionerEntry: BundleEntry,
   prescriptionRows: Array<StringKeyedObject>,
-  repeatsIssued = 0,
-  maxRepeatsAllowed = 0
+  repeatsIssued = 1,
+  maxRepeatsAllowed = 1
 ): string {
   const careSetting = getCareSetting(prescriptionRows)
 
@@ -409,7 +409,7 @@ function getDispenseRequest(row: StringKeyedObject, maxRepeatsAllowed: number): 
         system: "http://unitsofmeasure.org",
         code: "d"
       },
-      numberOfRepeatsAllowed: maxRepeatsAllowed || undefined
+      numberOfRepeatsAllowed: maxRepeatsAllowed - 1
     }
   }
 
