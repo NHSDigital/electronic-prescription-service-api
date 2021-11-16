@@ -1,5 +1,5 @@
-import {SummaryList} from "nhsuk-react-components"
-import React, {FC} from "react"
+import {Input, SummaryList} from "nhsuk-react-components"
+import React, {FC, useState} from "react"
 import {CommunicationRequest, CommunicationRequestPayload, MedicationRequest} from "fhir/r4"
 import {formatCurrentDate, formatDate} from "../../formatters/dates"
 import {getPerformerSiteTypeExtension} from "../../fhir/customExtensions"
@@ -69,6 +69,9 @@ const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
   patientInstructions
 }) => {
   const patientInstruction = newLineFormatter(patientInstructions)
+
+  const [editModeField, setEditModeField] = useState("");
+
   return (
     <SummaryList>
       <SummaryList.Row>
@@ -82,7 +85,14 @@ const PrescriptionLevelDetails: FC<PrescriptionLevelDetailsProps> = ({
       {repeatsIssued &&
       <SummaryList.Row>
         <SummaryList.Key>Issue Number</SummaryList.Key>
-        <SummaryList.Value>{repeatsIssued} of {repeatsAllowed}</SummaryList.Value>
+        {editModeField === "Issue Number"
+          ? <SummaryList.Value onMouseLeave={() => setEditModeField(null)} style={{display: "inline-flex"}}> 
+              <Input value={repeatsIssued} formGroupProps={{style:{margin: 0}}} style={{width: "50px", height: "27.5px", marginRight: "10px"}}/>
+              <span>of</span>
+              <Input value={repeatsAllowed} style={{width: "50px", height: "27.5px", marginLeft: "10px"}}/>
+            </SummaryList.Value>
+          : <SummaryList.Value onMouseEnter={() => setEditModeField("Issue Number")}>{repeatsIssued} of {repeatsAllowed}</SummaryList.Value>
+        }
       </SummaryList.Row>
       }
       <SummaryList.Row>
