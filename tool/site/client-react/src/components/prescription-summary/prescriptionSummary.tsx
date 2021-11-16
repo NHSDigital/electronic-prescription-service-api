@@ -1,6 +1,5 @@
 import PrescriptionSummaryView, {createSummaryPrescription, SummaryPrescription} from "./prescriptionSummaryView"
 import * as React from "react"
-import {Redirect} from "react-router-dom"
 import {useEffect, useState} from "react"
 import {Label} from "nhsuk-react-components"
 import {useCookies} from "react-cookie"
@@ -17,24 +16,23 @@ const PrescriptionSummary: React.FC<PrescriptionSummaryProps> = ({
   prescriptionId
 }) => {
   const [summaryViewProps, setSummaryViewProps] = useState<SummaryPrescription>()
-  const [currentPrescriptionId, setCurrentPrescriptionId] = useState(prescriptionId)
 
   let addedListener = false
   useEffect(() => {
     if (!addedListener) {
-      document.addEventListener('keydown', handleKeyDown)
+      document.addEventListener("keydown", handleKeyDown)
     }
     addedListener = true
 
     if (!summaryViewProps) {
-      fetch(`${baseUrl}prescription/${currentPrescriptionId}`)
+      fetch(`${baseUrl}prescription/${prescriptionId}`)
         .then(response => response.json())
         .then(createSummaryPrescription)
         .then(setSummaryViewProps)
     }
   }, [summaryViewProps])
 
-  const [cookies, _] = useCookies()
+  const [cookies] = useCookies()
 
   const LEFT_ARROW_KEY = 37
   const RIGHT_ARROW_KEY = 39
