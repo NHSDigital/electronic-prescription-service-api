@@ -9,13 +9,13 @@ import {LineItemStatus, PrescriptionStatus, VALUE_SET_NON_DISPENSING_REASON} fro
 export interface DispenseFormProps {
   lineItems: Array<StaticLineItemInfo>
   prescription: StaticPrescriptionInfo
-  sendDispenseNotification: (values: DispenseFormValues) => void
+  onSubmit: (values: DispenseFormValues) => void
 }
 
 const DispenseForm: React.FC<DispenseFormProps> = ({
   lineItems,
   prescription,
-  sendDispenseNotification
+  onSubmit
 }) => {
   const initialValues: DispenseFormValues = {
     lineItems: lineItems.map(lineItem => ({
@@ -30,7 +30,7 @@ const DispenseForm: React.FC<DispenseFormProps> = ({
   }
 
   return (
-    <Formik<DispenseFormValues> initialValues={initialValues} onSubmit={values => sendDispenseNotification(values)}>
+    <Formik<DispenseFormValues> initialValues={initialValues} onSubmit={values => onSubmit(values)}>
       {formik =>
         <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
           <FieldArray name="lineItems" component={LineItemArray}/>
