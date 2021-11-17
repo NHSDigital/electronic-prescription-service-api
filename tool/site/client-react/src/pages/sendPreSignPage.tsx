@@ -10,8 +10,6 @@ import {ActionLink, Button, Label} from "nhsuk-react-components"
 import ButtonList from "../components/buttonList"
 import {redirect} from "../browser/navigation"
 
-const customWindow = window as Record<string, any>
-
 interface SendPreSignPageProps {
   prescriptionId: string
 }
