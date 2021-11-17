@@ -32,12 +32,12 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
     if (e.keyCode === LEFT_ARROW_KEY) {
       const previousPrescriptionId = cookies["Previous-Prescription-Id"]
       if (previousPrescriptionId) {
-        customWindow.location = `${baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(previousPrescriptionId)}`
+        redirect(`${baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(previousPrescriptionId)}`)
       }
     } else if (e.keyCode === RIGHT_ARROW_KEY) {
       const nextPrescriptionId = cookies["Next-Prescription-Id"]
       if (nextPrescriptionId) {
-        customWindow.location = `${baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(nextPrescriptionId)}`
+        redirect(`${baseUrl}prescribe/edit?prescription_id=${encodeURIComponent(nextPrescriptionId)}`)
       }
     }
   }, [baseUrl, cookies])
