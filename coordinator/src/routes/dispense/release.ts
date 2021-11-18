@@ -24,7 +24,8 @@ export default [
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const parameters = getPayload(request) as fhir.Parameters
         const scope = getScope(request.headers)
-        const issues = parametersValidator.verifyParameters(parameters, scope)
+        const accessTokenOds = "ODS_CODE"
+        const issues = parametersValidator.verifyParameters(parameters, scope, accessTokenOds)
         if (issues.length) {
           const response = fhir.createOperationOutcome(issues)
           const statusCode = getStatusCode(issues)
