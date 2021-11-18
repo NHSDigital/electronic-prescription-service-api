@@ -8,6 +8,8 @@ import {
   PRESCRIBING_APP_SCOPE,
   PRESCRIBING_USER_SCOPE
 } from "../../../src/services/validation/scope-validator"
+import * as common from "../../../../models/fhir/common"
+import * as practitionerRole from "../../../../models/fhir/practitioner-role"
 
 describe("verifyTask returns errors", () => {
   const validReturnTask = TestResources.exampleReturnTask
@@ -26,25 +28,25 @@ describe("verifyTask returns errors", () => {
 
   test("rejects when resourceType not 'Task'", () => {
     const invalidTask = {...validReturnTask, resourceType: "bluh"}
-    const returnedErrors = verifyTask(invalidTask as fhir.Task, DISPENSING_USER_SCOPE)
+    const returnedErrors = verifyTask(invalidTask as fhir.Task, DISPENSING_USER_SCOPE, "test_ods_code")
     expect(returnedErrors).toContainEqual(errors.createResourceTypeIssue("Task"))
   })
 
   test("verifyTask rejects a message when dispensing is disabled", () => {
     process.env.DISPENSE_ENABLED = "false"
-    const result = verifyTask(validReturnTask, DISPENSING_USER_SCOPE)
+    const result = verifyTask(validReturnTask, DISPENSING_USER_SCOPE, "test_ods_code")
     expect(result).toEqual([errors.createDisabledFeatureIssue("Dispensing")])
   })
 
   test("rejects when intent not 'order'", () => {
     invalidReturnTask.intent = "bluh" as fhir.TaskIntent
-    const returnedErrors = verifyTask(invalidReturnTask, DISPENSING_USER_SCOPE)
+    const returnedErrors = verifyTask(invalidReturnTask, DISPENSING_USER_SCOPE, "test_ods_code")
     expect(returnedErrors).toContainEqual(errors.createTaskIncorrectValueIssue("intent", fhir.TaskIntent.ORDER))
   })
 
   test("rejects when status not 'in-progress' or 'rejected'", () => {
     invalidReturnTask.status = "bluh" as fhir.TaskStatus
-    const returnedErrors = verifyTask(invalidReturnTask, DISPENSING_USER_SCOPE)
+    const returnedErrors = verifyTask(invalidReturnTask, DISPENSING_USER_SCOPE, "test_ods_code")
     expect(returnedErrors).toContainEqual(
       errors.createTaskIncorrectValueIssue("status", fhir.TaskStatus.IN_PROGRESS, fhir.TaskStatus.REJECTED)
     )
@@ -53,53 +55,81 @@ describe("verifyTask returns errors", () => {
   test("rejects withdraw where reasonCode system is invalid", () => {
     const expectedSystem = invalidWithdrawTask.reasonCode.coding[0].system
     invalidWithdrawTask.reasonCode.coding[0].system = "bluh"
-    const returnedErrors = verifyTask(invalidWithdrawTask, DISPENSING_USER_SCOPE)
+    const returnedErrors = verifyTask(invalidWithdrawTask, DISPENSING_USER_SCOPE, "test_ods_code")
     expect(returnedErrors).toContainEqual(errors.createTaskCodingSystemIssue("reasonCode", expectedSystem))
   })
 
   test("rejects return where reasonCode system is invalid", () => {
     const expectedSystem = invalidReturnTask.reasonCode.coding[0].system
     invalidReturnTask.reasonCode.coding[0].system = "bluh"
-    const returnedErrors = verifyTask(invalidReturnTask, DISPENSING_USER_SCOPE)
+    const returnedErrors = verifyTask(invalidReturnTask, DISPENSING_USER_SCOPE, "test_ods_code")
     expect(returnedErrors).toContainEqual(errors.createTaskCodingSystemIssue("reasonCode", expectedSystem))
   })
 
   test("rejects withdraw where code is not present", () => {
     delete invalidWithdrawTask.code
-    const returnedErrors = verifyTask(invalidWithdrawTask, DISPENSING_USER_SCOPE)
+    const returnedErrors = verifyTask(invalidWithdrawTask, DISPENSING_USER_SCOPE, "test_ods_code")
     expect(returnedErrors).toHaveLength(1)
     expect(returnedErrors[0].diagnostics).toBe("Task.code is required when Task.status is 'in-progress'.")
   })
 
   test("rejects withdraw where code is not 'abort'", () => {
     invalidWithdrawTask.code.coding[0].code = "suspend"
-    const returnedErrors = verifyTask(invalidWithdrawTask, DISPENSING_USER_SCOPE)
+    const returnedErrors = verifyTask(invalidWithdrawTask, DISPENSING_USER_SCOPE, "test_ods_code")
     expect(returnedErrors).toHaveLength(1)
     expect(returnedErrors[0].diagnostics).toBe("Task.code.coding.code must be one of: 'abort'.")
   })
 
   test("no errors for a valid Task", () => {
-    expect(verifyTask(validReturnTask, DISPENSING_USER_SCOPE)).toHaveLength(0)
-    expect(verifyTask(validWithdrawTask, DISPENSING_USER_SCOPE)).toHaveLength(0)
+    expect(verifyTask(validReturnTask, DISPENSING_USER_SCOPE, "test_ods_code")).toHaveLength(0)
+    expect(verifyTask(validWithdrawTask, DISPENSING_USER_SCOPE, "test_ods_code")).toHaveLength(0)
   })
 
   test("rejects a message when only prescribing user scope present", () => {
-    const result = verifyTask(validReturnTask, PRESCRIBING_USER_SCOPE)
+    const result = verifyTask(validReturnTask, PRESCRIBING_USER_SCOPE, "test_ods_code")
     expect(result).toEqual([errors.createMissingScopeIssue("Dispensing")])
   })
 
   test("rejects a message when only prescribing app scope present", () => {
-    const result = verifyTask(validReturnTask, PRESCRIBING_APP_SCOPE)
+    const result = verifyTask(validReturnTask, PRESCRIBING_APP_SCOPE, "test_ods_code")
     expect(result).toEqual([errors.createMissingScopeIssue("Dispensing")])
   })
 
   test("accepts a message when only dispensing user scope present", () => {
-    const result = verifyTask(validReturnTask, DISPENSING_USER_SCOPE)
+    const result = verifyTask(validReturnTask, DISPENSING_USER_SCOPE, "test_ods_code")
     expect(result).toEqual([])
   })
 
   test("accepts a message when only dispensing user scope present", () => {
-    const result = verifyTask(validReturnTask, DISPENSING_APP_SCOPE)
+    const result = verifyTask(validReturnTask, DISPENSING_APP_SCOPE, "test_ods_code")
     expect(result).toEqual([])
+  })
+
+  test("accepts a message with consistent accessToken and body ods codes when body code is present", () => {
+    const requester: fhir.IdentifierReference<fhir.PersonOrOrganization> = {
+      identifier: {
+        system: "",
+        value: "test_ods_code"
+      }
+    }
+    const task: fhir.Task = {...validReturnTask, requester}
+
+    const result = verifyTask(task, DISPENSING_APP_SCOPE, "test_ods_code")
+    expect(result).toEqual([])
+  })
+
+  test("rejects a message with inconsistent accessToken and body ods codes when body code is present", () => {
+    const requester: fhir.IdentifierReference<fhir.PersonOrOrganization> = {
+      identifier: {
+        system: "",
+        value: "test_ods_code_2"
+      }
+    }
+    const invalidTask: fhir.Task = {...validReturnTask, requester}
+
+    const result = verifyTask(invalidTask, DISPENSING_APP_SCOPE, "test_ods_code")
+    expect(result).toContainEqual(
+      errors.createInconsistentOrganizationIssue("task.requester", "test_ods_code", "test_ods_code_2")
+    )
   })
 })
