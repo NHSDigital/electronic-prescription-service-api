@@ -8,8 +8,6 @@ import {
   PRESCRIBING_APP_SCOPE,
   PRESCRIBING_USER_SCOPE
 } from "../../../src/services/validation/scope-validator"
-import * as common from "../../../../models/fhir/common"
-import * as practitionerRole from "../../../../models/fhir/practitioner-role"
 
 describe("verifyTask returns errors", () => {
   const validReturnTask = TestResources.exampleReturnTask
@@ -121,7 +119,7 @@ describe("verifyTask returns errors", () => {
   test("rejects a message with inconsistent accessToken and body ods codes when body code is present", () => {
     const requester: fhir.IdentifierReference<fhir.PersonOrOrganization> = {
       identifier: {
-        system: "",
+        system: "test_system",
         value: "test_ods_code_2"
       }
     }
