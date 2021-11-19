@@ -1,6 +1,5 @@
-import {fhir, validationErrors as errors} from "@models"
+import {fetcher, fhir, validationErrors as errors} from "@models"
 import {clone} from "../../resources/test-helpers"
-import * as TestResources from "../../resources/test-resources"
 import {verifyTask} from "../../../src/services/validation/task-validator"
 import {
   DISPENSING_APP_SCOPE,
@@ -12,8 +11,8 @@ import {
 jest.spyOn(global.console, "warn").mockImplementation(() => null)
 
 describe("verifyTask returns errors", () => {
-  const validReturnTask = TestResources.exampleReturnTask
-  const validWithdrawTask = TestResources.exampleWithdrawTask
+  const validReturnTask = fetcher.taskReturnExamples[0].request
+  const validWithdrawTask = fetcher.taskWithdrawExamples[0].request
   let invalidReturnTask: fhir.Task
   let invalidWithdrawTask: fhir.Task
 
