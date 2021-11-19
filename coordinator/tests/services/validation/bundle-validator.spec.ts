@@ -71,7 +71,8 @@ describe("Bundle checks", () => {
 
   test("verifyBundle accepts a dispense message when prescribe is disabled", () => {
     process.env.PRESCRIBE_ENABLED = "false"
-    const result = validator.verifyBundle(TestResources.examplePrescription3.fhirMessageDispense,
+    const result = validator.verifyBundle(
+      TestResources.examplePrescription3.fhirMessageDispense,
       DISPENSING_USER_SCOPE,
       "test_ods_code"
     )
