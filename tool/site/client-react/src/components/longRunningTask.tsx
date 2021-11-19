@@ -3,6 +3,8 @@ import {JSXElementConstructor, useContext, useEffect, useState} from "react"
 import {Button, ErrorMessage, Label} from "nhsuk-react-components"
 import ButtonList from "./buttonList"
 import {AppContext} from "../index"
+import {UnhandledAxiosResponseError} from "../requests/unhandledAxiosResponseError"
+import AxiosResponseView from "./axiosResponseView"
 
 interface LongRunningTaskProps<T> {
   task: () => Promise<T>
@@ -19,7 +21,7 @@ const LongRunningTask = <T extends unknown>({
 }: LongRunningTaskProps<T>): React.ReactElement => {
   const {baseUrl} = useContext(AppContext)
   const [loading, setLoading] = useState<boolean>(true)
-  const [errorMessage, setErrorMessage] = useState<string>()
+  const [error, setError] = useState<unknown>()
   const [result, setResult] = useState<T>()
 
   if (!back) {
@@ -35,7 +37,7 @@ const LongRunningTask = <T extends unknown>({
           setResult(loadResult)
         } catch (e) {
           console.log(e)
-          setErrorMessage((typeof e === "string" ? e : e?.message) || "Unknown error")
+          setError(e || "Unknown error.")
         } finally {
           setLoading(false)
         }
@@ -43,11 +45,14 @@ const LongRunningTask = <T extends unknown>({
     }
   }, [result, task])
 
-  if (errorMessage) {
+  if (error) {
+    const message = getMessage(error) || "Unknown error."
+    const response = error instanceof UnhandledAxiosResponseError && error.response
     return (
       <>
         <Label isPageHeading>Error</Label>
-        <ErrorMessage>{errorMessage}</ErrorMessage>
+        <ErrorMessage>{message}</ErrorMessage>
+        {response && <AxiosResponseView response={response}/>}
         <ButtonList>
           {typeof back === "string"
             ? <Button secondary href={back}>Back</Button>
@@ -68,6 +73,16 @@ const LongRunningTask = <T extends unknown>({
   }
 
   return React.createElement(children, result)
+}
+
+function getMessage(error) {
+  if (typeof error === "string") {
+    return error
+  }
+  if (error instanceof Error) {
+    return error.message
+  }
+  return error?.toString()
 }
 
 export default LongRunningTask

@@ -27,9 +27,8 @@ afterEach(() => moxios.uninstall(axiosInstance))
 
 test("Displays loading text while prescription data is being requested", async () => {
   const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId}/>, context)
-  await waitFor(() => screen.getByText("Retrieving prescription details."))
+  await waitFor(() => screen.getByText("Loading..."))
 
-  expect(screen.getByText("Loading...")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
@@ -103,7 +102,6 @@ test("Displays loading text while dispense notification is being submitted", asy
   userEvent.click(screen.getByText("Dispense"))
   await waitFor(() => screen.getByText("Loading..."))
 
-  expect(screen.getByText("Sending dispense notification.")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 

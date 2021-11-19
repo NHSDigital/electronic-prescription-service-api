@@ -34,9 +34,9 @@ test("Renders children if task resolves", async () => {
 
 test.each([
   ["an error with a message", new Error("Some error message"), "Some error message"],
-  ["an error without a message", new Error(), "Unknown error"],
+  ["an error without a message", new Error(), "Unknown error."],
   ["a string", "Some error message", "Some error message"],
-  ["anything else", null, "Unknown error"]
+  ["anything else", null, "Unknown error."]
 ])("Displays an error if task rejects with %s", async (desc: string, rejectedValue: unknown, expectedText: string) => {
   const mockTask = jest.fn()
   mockTask.mockRejectedValue(rejectedValue)

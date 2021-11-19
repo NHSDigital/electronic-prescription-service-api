@@ -11,12 +11,12 @@ exports[`Displays an error if task rejects with an error with a message 1`] = `
 `;
 
 exports[`Displays an error if task rejects with an error without a message 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1><span class=\\"nhsuk-error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>Unknown error</span>
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1><span class=\\"nhsuk-error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>Unknown error.</span>
 <div class=\\"sc-bdvvtL jjZBkx\\"><a class=\\"nhsuk-button nhsuk-button--secondary\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"/\\">Back</a></div>"
 `;
 
 exports[`Displays an error if task rejects with anything else 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1><span class=\\"nhsuk-error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>Unknown error</span>
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1><span class=\\"nhsuk-error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>Unknown error.</span>
 <div class=\\"sc-bdvvtL jjZBkx\\"><a class=\\"nhsuk-button nhsuk-button--secondary\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"/\\">Back</a></div>"
 `;
 

@@ -73,7 +73,6 @@ test("Displays an error if response is an OperationOutcome", async () => {
   const {container} = renderWithContext(<SendPreSignPage prescriptionId={prescriptionId}/>, context)
   await waitFor(() => screen.getByText("Error"))
 
-  expect(screen.getByText("Some error message")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
@@ -99,7 +98,6 @@ test("Displays loading text while claim is being submitted", async () => {
   userEvent.click(screen.getByText("Send"))
   await waitFor(() => screen.getByText("Loading..."))
 
-  expect(screen.getByText("Sending signature request.")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
