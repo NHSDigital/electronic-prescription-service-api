@@ -33,7 +33,7 @@ export default [
         const scope = getScope(request.headers)
         const accessTokenOds = getOdsCode(request.headers)
         if (isBundle(payload)) {
-          const issues = bundleValidator.verifyBundle(payload, scope)
+          const issues = bundleValidator.verifyBundle(payload, scope, accessTokenOds)
           if (issues.length) {
             const response = fhir.createOperationOutcome(issues)
             const statusCode = getStatusCode(issues)

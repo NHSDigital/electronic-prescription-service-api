@@ -19,7 +19,9 @@ import {isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"
 import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
 
-export function verifyBundle(bundle: fhir.Bundle, scope: string): Array<fhir.OperationOutcomeIssue> {
+export function verifyBundle(
+  bundle: fhir.Bundle, scope: string, accessTokenOds: string
+): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
     return [errors.createResourceTypeIssue("Bundle")]
   }
@@ -50,7 +52,7 @@ export function verifyBundle(bundle: fhir.Bundle, scope: string): Array<fhir.Ope
       messageTypeSpecificErrors = verifyCancellationBundle(bundle)
       break
     case fhir.EventCodingCode.DISPENSE:
-      messageTypeSpecificErrors = verifyDispenseBundle(bundle)
+      messageTypeSpecificErrors = verifyDispenseBundle(bundle, accessTokenOds)
       break
   }
 
@@ -214,7 +216,7 @@ export function verifyCancellationBundle(bundle: fhir.Bundle): Array<fhir.Operat
   return validationErrors
 }
 
-export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
+export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string): Array<fhir.OperationOutcomeIssue> {
   const medicationDispenses = getMedicationDispenses(bundle)
 
   const allErrors = []
@@ -238,7 +240,8 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
       allErrors.push(
         errors.createMedicationDispenseInconsistentValueIssue(
           "performer",
-          uniqueFieldValues)
+          uniqueFieldValues
+        )
       )
     }
   })
@@ -251,6 +254,16 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
     allErrors.push(
       errors.createMedicationFieldIssue("Dispense")
     )
+  }
+
+  const organizations = actors.filter(actor => actor.type === "Organization")
+  if (organizations) {
+    const bodyOrg = organizations[0].identifier.value
+    if (bodyOrg !== accessTokenOds) {
+      console.warn(
+        `Organization details do not match in request accessToken (${accessTokenOds}) and request body (${bodyOrg}).`
+      )
+    }
   }
 
   return allErrors

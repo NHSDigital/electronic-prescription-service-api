@@ -13,7 +13,7 @@ describe("verifyClaim", () => {
     expect(result).toHaveLength(0)
   })
 
-  test("rejects a Claim with inconsistent accessToken and body ods codes", () => {
+  test("console warn when inconsistent accessToken and body ods codes", () => {
     const payee: fhir.ClaimPayee = {
       party: {
         identifier: {
