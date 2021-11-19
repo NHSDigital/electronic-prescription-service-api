@@ -2,7 +2,7 @@ import {fhir, validationErrors as errors} from "@models"
 import {getCodeableConceptCodingForSystem, getCodingForSystemOrNull} from "../translation/common"
 import {validatePermittedDispenseMessage} from "./scope-validator"
 
-export function verifyTask(task: fhir.Task, scope: string, accessTokenOrg: string): Array<fhir.OperationOutcomeIssue> {
+export function verifyTask(task: fhir.Task, scope: string, accessTokenOds: string): Array<fhir.OperationOutcomeIssue> {
   const validationErrors = []
 
   if (task.resourceType !== "Task") {
@@ -23,8 +23,8 @@ export function verifyTask(task: fhir.Task, scope: string, accessTokenOrg: strin
 
   if (task.requester) {
     const bodyOrg = task.requester.identifier.value
-    if (bodyOrg !== accessTokenOrg) {
-      console.warn(errors.createInconsistentOrganizationIssue("task.requester", accessTokenOrg, bodyOrg))
+    if (bodyOrg !== accessTokenOds) {
+      console.warn(errors.createInconsistentOrganizationIssue("task.requester", accessTokenOds, bodyOrg))
     }
   }
 

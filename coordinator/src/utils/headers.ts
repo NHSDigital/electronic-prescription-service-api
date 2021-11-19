@@ -3,14 +3,15 @@ import * as uuid from "uuid"
 import {DISPENSING_USER_SCOPE, PRESCRIBING_USER_SCOPE, TRACKER_USER_SCOPE} from "../services/validation/scope-validator"
 
 export enum RequestHeaders {
-  REQUEST_ID = "nhsd-request-id",
-  AUTH_LEVEL = "nhsd-identity-authentication-level",
   ASID = "nhsd-asid",
+  AUTH_LEVEL = "nhsd-identity-authentication-level",
+  ODS_CODE = "nhsd-ods-code",
   PARTY_KEY = "nhsd-party-key",
-  SDS_USER_UNIQUE_ID = "nhsd-identity-uuid",
-  SDS_ROLE_PROFILE_ID = "nhsd-session-urid",
-  SCOPE = "nhsd-scope",
   RAW_RESPONSE = "x-raw-response",
+  REQUEST_ID = "nhsd-request-id",
+  SCOPE = "nhsd-scope",
+  SDS_ROLE_PROFILE_ID = "nhsd-session-urid",
+  SDS_USER_UNIQUE_ID = "nhsd-identity-uuid",
   SKIP_VALIDATION = "x-skip-validation",
   SMOKE_TEST = "x-smoke-test"
 }
@@ -41,4 +42,9 @@ export function getSdsRoleProfileId(headers: Hapi.Util.Dictionary<string>): stri
 export function getScope(headers: Hapi.Util.Dictionary<string>): string {
   const defaultScope = `${PRESCRIBING_USER_SCOPE} ${DISPENSING_USER_SCOPE} ${TRACKER_USER_SCOPE}`
   return process.env.SANDBOX === "1" ? defaultScope : headers[RequestHeaders.SCOPE]
+}
+
+export function getOdsCode(headers: Hapi.Util.Dictionary<string>): string {
+  const defaultOdsCode = "FER21"
+  return process.env.SANDBOX === "1" ? defaultOdsCode : headers[RequestHeaders.ODS_CODE]
 }

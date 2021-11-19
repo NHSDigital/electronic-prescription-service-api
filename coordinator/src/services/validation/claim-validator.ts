@@ -2,7 +2,7 @@ import {fhir, validationErrors as errors} from "@models"
 import {validatePermittedDispenseMessage} from "./scope-validator"
 
 export function verifyClaim(
-  claim: fhir.Claim, scope: string, accessTokenOrg: string
+  claim: fhir.Claim, scope: string, accessTokenOds: string
 ): Array<fhir.OperationOutcomeIssue> {
   const validationErrors = []
   if (claim.resourceType !== "Claim") {
@@ -16,8 +16,8 @@ export function verifyClaim(
 
   if (claim.payee?.party) {
     const bodyOrg = claim.payee.party.identifier.value
-    if (bodyOrg !== accessTokenOrg) {
-      console.warn(errors.createInconsistentOrganizationIssue("claim.payee.party", accessTokenOrg, bodyOrg))
+    if (bodyOrg !== accessTokenOds) {
+      console.warn(errors.createInconsistentOrganizationIssue("claim.payee.party", accessTokenOds, bodyOrg))
     }
   }
 

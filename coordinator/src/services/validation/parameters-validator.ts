@@ -3,7 +3,7 @@ import {validatePermittedDispenseMessage} from "./scope-validator"
 import {getIdentifierParameterByName} from "../translation/common"
 
 export function verifyParameters(
-  parameters: fhir.Parameters, scope: string, accessTokenOrg: string
+  parameters: fhir.Parameters, scope: string, accessTokenOds: string
 ): Array<fhir.OperationOutcomeIssue> {
   const validationErrors = []
   if (parameters.resourceType !== "Parameters") {
@@ -18,10 +18,10 @@ export function verifyParameters(
   const organizationParameter = getIdentifierParameterByName(parameters.parameter, "owner")
   if (organizationParameter) {
     const bodyOrg = organizationParameter.valueIdentifier.value
-    if (bodyOrg !== accessTokenOrg) {
+    if (bodyOrg !== accessTokenOds) {
       console.warn(errors.createInconsistentOrganizationIssue(
         "parameters.parameter(owner)",
-        accessTokenOrg,
+        accessTokenOds,
         bodyOrg
       ))
     }
