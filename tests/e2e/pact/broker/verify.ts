@@ -127,10 +127,9 @@ async function clearData() {
     return
   }
 
-  const nominatedReleaseRequests = fetcher.taskExamples
+  const nominatedReleaseRequests = fetcher.taskReleaseExamples
     .filter(task => task.isSuccess)
-    .filter(task => task.requestFile.operation === "release")
-    .map(task => task.request as fhir.Parameters)
+    .map(task => task.request)
     .filter(isNominatedRelease)
 
   for (const nominatedReleaseRequest of nominatedReleaseRequests) {

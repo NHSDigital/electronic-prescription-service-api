@@ -1,5 +1,4 @@
-import {fhir, validationErrors as errors} from "@models"
-import * as TestResources from "../../resources/test-resources"
+import {fhir, fetcher, validationErrors as errors} from "@models"
 import {verifyParameters} from "../../../src/services/validation/parameters-validator"
 import {
   DISPENSING_APP_SCOPE,
@@ -11,7 +10,7 @@ import {
 jest.spyOn(global.console, "warn").mockImplementation(() => null)
 
 describe("verifyParameters returns errors", () => {
-  const validParameters = TestResources.exampleParameters
+  const validParameters = fetcher.taskReleaseExamples[0].request
   const bodyOdsCode = "VNFKT"
 
   afterEach(() => {

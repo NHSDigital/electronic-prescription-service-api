@@ -136,17 +136,15 @@ export async function updatePrescriptions(
 
   taskCases.forEach(returnCase => {
     const task = returnCase.request
-    if (typeGuards.isTask(task)) {
-      const newTaskIdentifier = uuid.v4()
+    const newTaskIdentifier = uuid.v4()
 
-      const originalShortFormId = task.groupIdentifier.value
-      const newShortFormId = replacements.get(originalShortFormId)
+    const originalShortFormId = task.groupIdentifier.value
+    const newShortFormId = replacements.get(originalShortFormId)
 
-      const originalFocusId = task.focus.identifier.value
-      const newFocusId = replacements.get(originalFocusId)
+    const originalFocusId = task.focus.identifier.value
+    const newFocusId = replacements.get(originalFocusId)
 
-      setTaskIds(task, newTaskIdentifier, newShortFormId, newFocusId)
-    }
+    setTaskIds(task, newTaskIdentifier, newShortFormId, newFocusId)
   })
 
   claimCases.forEach(claimCase => {
