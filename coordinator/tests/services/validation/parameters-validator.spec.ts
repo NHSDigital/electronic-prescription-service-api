@@ -8,6 +8,8 @@ import {
   PRESCRIBING_USER_SCOPE
 } from "../../../src/services/validation/scope-validator"
 
+jest.spyOn(global.console, "warn").mockImplementation(() => null)
+
 describe("verifyParameters returns errors", () => {
   const validParameters = TestResources.exampleParameters
   const bodyOdsCode = "VNFKT"
@@ -48,14 +50,12 @@ describe("verifyParameters returns errors", () => {
     expect(result).toEqual([])
   })
 
-  test("rejects a request with inconsistent accessToken and body ods codes", () => {
+  test("console warn when inconsistent accessToken and body ods codes", () => {
     const invalidParameters: fhir.Parameters = {
       resourceType: "Parameters",
       parameter: [{name: "owner", valueIdentifier: {system: "", value: "test_ods_code"}}]
     }
-    const result = verifyParameters(invalidParameters, DISPENSING_APP_SCOPE, bodyOdsCode)
-    expect(result).toContainEqual(
-      errors.createInconsistentOrganizationIssue("parameters.parameter(owner)", bodyOdsCode, "test_ods_code")
-    )
+    verifyParameters(invalidParameters, DISPENSING_APP_SCOPE, bodyOdsCode)
+    expect(console.warn).toHaveBeenCalled()
   })
 })

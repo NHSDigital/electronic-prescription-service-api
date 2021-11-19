@@ -1,6 +1,8 @@
-import {fhir, fetcher, validationErrors as errors} from "@models"
+import {fhir, fetcher} from "@models"
 import {verifyClaim} from "../../../src/services/validation/claim-validator"
 import {DISPENSING_USER_SCOPE} from "../../../src/services/validation/scope-validator"
+
+jest.spyOn(global.console, "warn").mockImplementation(() => null)
 
 describe("verifyClaim", () => {
   const validClaim = fetcher.claimExamples[0].request
@@ -21,9 +23,7 @@ describe("verifyClaim", () => {
       }
     }
     const invalidClaim: fhir.Claim = {...validClaim, payee}
-    const result = verifyClaim(invalidClaim, DISPENSING_USER_SCOPE, bodyOdsCode)
-    expect(result).toContainEqual(
-      errors.createInconsistentOrganizationIssue("claim.payee.party", bodyOdsCode, "test_ods_code")
-    )
+    verifyClaim(invalidClaim, DISPENSING_USER_SCOPE, bodyOdsCode)
+    expect(console.warn).toHaveBeenCalled()
   })
 })

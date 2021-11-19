@@ -9,6 +9,8 @@ import {
   PRESCRIBING_USER_SCOPE
 } from "../../../src/services/validation/scope-validator"
 
+jest.spyOn(global.console, "warn").mockImplementation(() => null)
+
 describe("verifyTask returns errors", () => {
   const validReturnTask = TestResources.exampleReturnTask
   const validWithdrawTask = TestResources.exampleWithdrawTask
@@ -103,20 +105,7 @@ describe("verifyTask returns errors", () => {
     expect(result).toEqual([])
   })
 
-  test("accepts a message with consistent accessToken and body ods codes when body code is present", () => {
-    const requester: fhir.IdentifierReference<fhir.PersonOrOrganization> = {
-      identifier: {
-        system: "",
-        value: "test_ods_code"
-      }
-    }
-    const task: fhir.Task = {...validReturnTask, requester}
-
-    const result = verifyTask(task, DISPENSING_APP_SCOPE, "test_ods_code")
-    expect(result).toEqual([])
-  })
-
-  test("rejects a message with inconsistent accessToken and body ods codes when body code is present", () => {
+  test("console warn when inconsistent accessToken and body ods codes", () => {
     const requester: fhir.IdentifierReference<fhir.PersonOrOrganization> = {
       identifier: {
         system: "test_system",
@@ -125,9 +114,7 @@ describe("verifyTask returns errors", () => {
     }
     const invalidTask: fhir.Task = {...validReturnTask, requester}
 
-    const result = verifyTask(invalidTask, DISPENSING_APP_SCOPE, "test_ods_code")
-    expect(result).toContainEqual(
-      errors.createInconsistentOrganizationIssue("task.requester", "test_ods_code", "test_ods_code_2")
-    )
+    verifyTask(invalidTask, DISPENSING_APP_SCOPE, "test_ods_code")
+    expect(console.warn).toHaveBeenCalled()
   })
 })

@@ -24,7 +24,7 @@ export function verifyTask(task: fhir.Task, scope: string, accessTokenOrg: strin
   if (task.requester) {
     const bodyOrg = task.requester.identifier.value
     if (bodyOrg !== accessTokenOrg) {
-      validationErrors.push(errors.createInconsistentOrganizationIssue("task.requester", accessTokenOrg, bodyOrg))
+      console.warn(errors.createInconsistentOrganizationIssue("task.requester", accessTokenOrg, bodyOrg))
     }
   }
 

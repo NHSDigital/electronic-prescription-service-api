@@ -19,7 +19,7 @@ export function verifyParameters(
   if (organizationParameter) {
     const bodyOrg = organizationParameter.valueIdentifier.value
     if (bodyOrg !== accessTokenOrg) {
-      validationErrors.push(errors.createInconsistentOrganizationIssue(
+      console.warn(errors.createInconsistentOrganizationIssue(
         "parameters.parameter(owner)",
         accessTokenOrg,
         bodyOrg
