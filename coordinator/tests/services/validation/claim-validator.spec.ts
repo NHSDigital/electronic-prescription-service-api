@@ -6,24 +6,14 @@ jest.spyOn(global.console, "warn").mockImplementation(() => null)
 
 describe("verifyClaim", () => {
   const validClaim = fetcher.claimExamples[0].request
-  const bodyOdsCode = validClaim.payee.party.identifier.value
 
   test("accepts a valid Claim", () => {
-    const result = verifyClaim(validClaim, DISPENSING_USER_SCOPE, bodyOdsCode)
+    const result = verifyClaim(validClaim, DISPENSING_USER_SCOPE, "test_ods_code")
     expect(result).toHaveLength(0)
   })
 
   test("console warn when inconsistent accessToken and body ods codes", () => {
-    const payee: fhir.ClaimPayee = {
-      party: {
-        identifier: {
-          system: "test_system",
-          value: "test_ods_code"
-        }
-      }
-    }
-    const invalidClaim: fhir.Claim = {...validClaim, payee}
-    verifyClaim(invalidClaim, DISPENSING_USER_SCOPE, bodyOdsCode)
+    verifyClaim(validClaim, DISPENSING_USER_SCOPE, "test_ods_code")
     expect(console.warn).toHaveBeenCalled()
   })
 })
