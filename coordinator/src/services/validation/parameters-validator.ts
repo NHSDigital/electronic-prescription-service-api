@@ -19,11 +19,9 @@ export function verifyParameters(
   if (organizationParameter) {
     const bodyOrg = organizationParameter.valueIdentifier.value
     if (bodyOrg !== accessTokenOds) {
-      console.warn(errors.createInconsistentOrganizationIssue(
-        "parameters.parameter(owner)",
-        accessTokenOds,
-        bodyOrg
-      ))
+      console.warn(
+        `Organization details do not match in request accessToken (${accessTokenOds}) and request body (${bodyOrg}).`
+      )
     }
   }
 

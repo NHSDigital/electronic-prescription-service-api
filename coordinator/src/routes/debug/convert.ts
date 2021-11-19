@@ -17,7 +17,7 @@ import {
   isParameters,
   isTask
 } from "../../utils/type-guards"
-import {getScope} from "../../utils/headers"
+import {getOdsCode, getScope} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
 
 export default [
@@ -31,7 +31,7 @@ export default [
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const payload = getPayload(request) as fhir.Resource
         const scope = getScope(request.headers)
-        const accessTokenOds = "ODS_Code"
+        const accessTokenOds = getOdsCode(request.headers)
         if (isBundle(payload)) {
           const issues = bundleValidator.verifyBundle(payload, scope)
           if (issues.length) {

@@ -17,7 +17,9 @@ export function verifyClaim(
   if (claim.payee?.party) {
     const bodyOrg = claim.payee.party.identifier.value
     if (bodyOrg !== accessTokenOds) {
-      console.warn(errors.createInconsistentOrganizationIssue("claim.payee.party", accessTokenOds, bodyOrg))
+      console.warn(
+        `Organization details do not match in request accessToken (${accessTokenOds}) and request body (${bodyOrg}).`
+      )
     }
   }
 

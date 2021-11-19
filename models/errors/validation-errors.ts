@@ -130,20 +130,6 @@ export function createTaskIncorrectValueIssue(
   }
 }
 
-export function createInconsistentOrganizationIssue(
-  fhirPath: string,
-  accessTokenOrg: string,
-  bodyOrg: string
-): fhir.OperationOutcomeIssue {
-  return {
-    severity: "warning",
-    code: fhir.IssueCodes.CONFLICT,
-    diagnostics:
-      `Organization details do not match in request accessToken (${accessTokenOrg}) and request body (${bodyOrg}).`,
-    expression: [fhirPath]
-  }
-}
-
 export function createTaskCodingSystemIssue(
   fieldName: string,
   requiredSystem: string
