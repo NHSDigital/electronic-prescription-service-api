@@ -15,7 +15,6 @@ import {
   extractFragments,
   getResourcesOfType,
   isRepeatDispensing,
-  typeGuards,
   writeXmlStringCanonicalized
 } from "@coordinator"
 import * as crypto from "crypto"
