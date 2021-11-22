@@ -9,9 +9,8 @@ export const TEST_PATIENT = {
           valueCodeableConcept: {
             coding: [
               {
-                system:
-                  "https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus",
-                code: "01",
+                system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus",
+                code: "number-present-and-verified",
                 display: "Number present and verified"
               }
             ]

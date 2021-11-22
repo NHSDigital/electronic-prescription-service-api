@@ -1,22 +1,8 @@
-import * as React from "react"
-import {ReactNode} from "react"
+import styled from "styled-components"
 
-interface PreProps {
-  children: ReactNode
-}
-
-const Pre: React.FC<PreProps> = ({
-  children
-}) => {
-  const preStyle: React.CSSProperties = {
-    whiteSpace: "break-spaces",
-    overflowWrap: "anywhere"
-  }
-  return (
-    <pre style={preStyle}>
-      {children}
-    </pre>
-  )
-}
+const Pre = styled.pre`
+  white-space: break-spaces;
+  overflow-wrap: anywhere;
+`
 
 export default Pre

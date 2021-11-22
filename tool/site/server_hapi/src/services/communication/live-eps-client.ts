@@ -1,7 +1,8 @@
 import * as uuid from "uuid"
 import axios, {AxiosRequestHeaders, AxiosResponse} from "axios"
-import {Bundle, OperationOutcome, Parameters} from "fhir/r4"
-import {EpsClient, EpsSearchRequest, EpsSendReponse} from "./eps-client"
+import {Bundle, FhirResource, OperationOutcome, Parameters} from "fhir/r4"
+import {EpsClient, EpsSendReponse} from "./eps-client"
+import {URLSearchParams} from "url"
 
 export class LiveEpsClient implements EpsClient {
   private accessToken: string
@@ -10,12 +11,13 @@ export class LiveEpsClient implements EpsClient {
     this.accessToken = accessToken
   }
 
-  async makeGetTrackerRequest(searchRequest: EpsSearchRequest): Promise<Bundle | OperationOutcome> {
-    return await (await this.makeApiCall<Bundle | OperationOutcome>(`Task?focus:identifier=${searchRequest.prescriptionId}`)).data
+  async makeGetTrackerRequest(query: Record<string, string>): Promise<Bundle | OperationOutcome> {
+    const queryStr = new URLSearchParams(query).toString()
+    return await (await this.makeApiCall<Bundle | OperationOutcome>(`Task?${queryStr}`)).data
   }
 
   async makePrepareRequest(body: Bundle): Promise<Parameters | OperationOutcome> {
-    return await (await this.makeApiCall<Parameters | OperationOutcome>("$prepare", body)).data
+    return (await this.makeApiCall<Parameters | OperationOutcome>("$prepare", body)).data
   }
 
   async makeSendRequest(body: Bundle): Promise<EpsSendReponse> {
@@ -25,13 +27,13 @@ export class LiveEpsClient implements EpsClient {
     }
     const response = await this.makeApiCall<OperationOutcome>("$process-message", body, requestId)
     const statusCode = response.status
-    const fhirResponse = await response.data
-    const spineResponse = await (await this.makeApiCall<string>("$process-message", body, requestId, rawResponseHeaders)).data
+    const fhirResponse = response.data
+    const spineResponse = (await this.makeApiCall<string | OperationOutcome>("$process-message", body, requestId, rawResponseHeaders)).data
     return {statusCode, fhirResponse, spineResponse}
   }
 
-  async makeConvertRequest(body: unknown): Promise<string> {
-    return await (await this.makeApiCall<string>("$convert", body)).data
+  async makeConvertRequest(body: FhirResource): Promise<string | OperationOutcome> {
+    return (await this.makeApiCall<string>("$convert", body)).data
   }
 
   private async makeApiCall<T>(
@@ -41,21 +43,20 @@ export class LiveEpsClient implements EpsClient {
     additionalHeaders?: AxiosRequestHeaders
   ): Promise<AxiosResponse<T>> {
     const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/${path}`
-    let headers: AxiosRequestHeaders = {
+    const headers: AxiosRequestHeaders = {
       "Authorization": `Bearer ${this.accessToken}`,
       "x-request-id": requestId ?? uuid.v4(),
       "x-correlation-id": uuid.v4()
     }
     if (additionalHeaders) {
-      headers = {
-        ...headers,
-        ...additionalHeaders
-      }
-    }
-    if (body) {
-      return await axios.post(url, body, {headers: headers})
+      Object.assign(headers, additionalHeaders)
     }
 
-    return await axios.get(url, {headers: headers})
+    return axios.request({
+      url,
+      method: body ? "POST" : "GET",
+      headers,
+      data: body
+    })
   }
 }
