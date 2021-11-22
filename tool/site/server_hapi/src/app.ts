@@ -4,8 +4,11 @@ import HapiPino from "hapi-pino"
 import Yar from "@hapi/yar"
 import CatboxRedis from "@hapi/catbox-redis"
 import {isLocal} from "./services/environment"
+import axios from "axios"
 
 const init = async () => {
+  axios.defaults.validateStatus = () => true
+
   const server = Hapi.server({
     port: 9001,
     host: "0.0.0.0",

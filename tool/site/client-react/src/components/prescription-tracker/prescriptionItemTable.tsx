@@ -1,24 +1,34 @@
 import * as React from "react"
 import {Table} from "nhsuk-react-components"
-import {PrescriptionProps} from "./prescription"
 import {Task} from "fhir/r4"
-import {getDispenseStatusExtension} from "../../fhir/customExtensions"
+import {getDateLastDispensedExtension, getDispenseStatusExtension} from "../../fhir/customExtensions"
+import {formatDate} from "../../formatters/dates"
+
+interface PrescriptionItemTableProps {
+  items: Array<PrescriptionItemProps>
+}
 
 export interface PrescriptionItemProps {
   identifier: string
   dispenseStatus: string
+  dateLastDispensed?: string
 }
 
 export function createPrescriptionItemProps(task: Task): Array<PrescriptionItemProps> {
   return task.input.map(input => {
+    const dateLastDispensedExtension = getDateLastDispensedExtension(input.extension)
+    const dateLastDispensed = dateLastDispensedExtension && formatDate(dateLastDispensedExtension.valueDateTime)
     return {
       identifier: input.valueReference.identifier.value,
-      dispenseStatus: getDispenseStatusExtension(input.extension)?.valueCoding.display
+      dispenseStatus: getDispenseStatusExtension(input.extension).valueCoding.display,
+      dateLastDispensed: dateLastDispensed
     }
   })
 }
 
-export const PrescriptionItems: React.FC<PrescriptionProps> = ({prescriptionItems}) => {
+export const PrescriptionItemTable: React.FC<PrescriptionItemTableProps> = ({
+  items
+}) => {
   return (
     <Table.Panel heading="Items">
       <Table caption="Item summary">
@@ -26,10 +36,11 @@ export const PrescriptionItems: React.FC<PrescriptionProps> = ({prescriptionItem
           <Table.Row>
             <Table.Cell>Identifier</Table.Cell>
             <Table.Cell>Status</Table.Cell>
+            <Table.Cell>Last Dispensed</Table.Cell>
           </Table.Row>
         </Table.Head>
         <Table.Body>
-          {prescriptionItems.map((item, index) => <PrescriptionItemRow key={index} {...item} />)}
+          {items.map((item, index) => <PrescriptionItemRow key={index} {...item}/>)}
         </Table.Body>
       </Table>
     </Table.Panel>
@@ -38,8 +49,10 @@ export const PrescriptionItems: React.FC<PrescriptionProps> = ({prescriptionItem
 
 const PrescriptionItemRow: React.FC<PrescriptionItemProps> = ({
   identifier,
-  dispenseStatus
+  dispenseStatus,
+  dateLastDispensed
 }) => <Table.Row>
   <Table.Cell>{identifier}</Table.Cell>
   <Table.Cell>{dispenseStatus}</Table.Cell>
+  <Table.Cell>{dateLastDispensed || "N/A"}</Table.Cell>
 </Table.Row>

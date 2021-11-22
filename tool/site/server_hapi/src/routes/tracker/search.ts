@@ -9,8 +9,7 @@ export default [
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const accessToken = getSessionValue("access_token", request)
       const epsClient = getEpsClient(accessToken)
-      const prescriptionId = request.query["prescription_id"]
-      const response = await epsClient.makeGetTrackerRequest({prescriptionId})
+      const response = await epsClient.makeGetTrackerRequest(request.query)
       return h.response(response).code(200)
     }
   }

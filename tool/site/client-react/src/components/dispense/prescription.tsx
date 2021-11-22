@@ -11,17 +11,17 @@ export interface PrescriptionProps {
 }
 
 const Prescription: React.FC<PrescriptionProps> = ({name}) => {
-  const context = useFormikContext<DispenseFormValues>()
-  const lineItemStatuses = context.values?.lineItems?.map(lineItem => lineItem.statusCode)
+  const {values, touched, setFieldValue} = useFormikContext<DispenseFormValues>()
   useEffect(() => {
-    if (context.touched.prescription?.statusCode) {
+    if (touched.prescription?.statusCode) {
       return
     }
+    const lineItemStatuses = values?.lineItems?.map(lineItem => lineItem.statusCode)
     const derivedPrescriptionStatus = derivePrescriptionStatusFromLineItemStatuses(lineItemStatuses)
     if (derivedPrescriptionStatus) {
-      context.setFieldValue("prescription.statusCode", derivedPrescriptionStatus)
+      setFieldValue("prescription.statusCode", derivedPrescriptionStatus)
     }
-  }, lineItemStatuses)
+  }, [touched.prescription?.statusCode, values?.lineItems, setFieldValue])
 
   return (
     <Fieldset>
@@ -36,9 +36,6 @@ const Prescription: React.FC<PrescriptionProps> = ({name}) => {
   )
 }
 
-/**
- * TODO - check these rules
- */
 function derivePrescriptionStatusFromLineItemStatuses(lineItemStatuses: Array<LineItemStatus>): string {
   //To be dispensed
   if (lineItemStatuses.find(status => status === LineItemStatus.TO_BE_DISPENSED)) {

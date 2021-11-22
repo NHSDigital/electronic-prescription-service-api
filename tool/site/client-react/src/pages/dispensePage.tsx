@@ -1,6 +1,6 @@
 import * as React from "react"
-import {useEffect, useState} from "react"
-import {ActionLink, Button, CrossIcon, ErrorMessage, Label, TickIcon} from "nhsuk-react-components"
+import {useContext, useState} from "react"
+import {Button, CrossIcon, Label, TickIcon} from "nhsuk-react-components"
 import axios from "axios"
 import {
   getMedicationDispenseResources,
@@ -10,7 +10,11 @@ import {
 } from "../fhir/bundleResourceFinder"
 import * as fhir from "fhir/r4"
 import {MedicationDispense} from "fhir/r4"
-import DispenseForm, {DispenseFormValues, StaticLineItemInfo, StaticPrescriptionInfo} from "../components/dispense/dispenseForm"
+import DispenseForm, {
+  DispenseFormValues,
+  StaticLineItemInfo,
+  StaticPrescriptionInfo
+} from "../components/dispense/dispenseForm"
 import {formatQuantity} from "../formatters/quantity"
 import {createDispenseNotification} from "../components/dispense/createDispenseNotification"
 import {getTaskBusinessStatusExtension} from "../fhir/customExtensions"
@@ -18,120 +22,98 @@ import MessageExpanders from "../components/messageExpanders"
 import ButtonList from "../components/buttonList"
 import {LineItemStatus, PrescriptionStatus} from "../fhir/reference-data/valueSets"
 import {getMedicationDispenseLineItemId, getMedicationRequestLineItemId} from "../fhir/helpers"
+import LongRunningTask from "../components/longRunningTask"
+import {AppContext} from "../index"
+import PrescriptionActions from "../components/prescriptionActions"
 
 interface DispensePageProps {
-  baseUrl: string
   prescriptionId: string
 }
 
 const DispensePage: React.FC<DispensePageProps> = ({
-  baseUrl,
   prescriptionId
 }) => {
-  const [loadingMessage, setLoadingMessage] = useState<string>("Loading page.")
-  const [errorMessage, setErrorMessage] = useState<string>()
-  const [prescriptionDetails, setPrescriptionDetails] = useState<PrescriptionDetails>()
-  const [dispenseResult, setDispenseResult] = useState<DispenseResult>()
+  const {baseUrl} = useContext(AppContext)
+  const [dispenseFormValues, setDispenseFormValues] = useState<DispenseFormValues>()
 
-  useEffect(() => {
-    if (!prescriptionDetails) {
-      retrievePrescriptionDetails().catch(error => {
-        console.log(error)
-        setErrorMessage("Failed to retrieve prescription details.")
-      })
-    }
-  }, [prescriptionDetails])
+  const retrievePrescriptionTask = () => retrievePrescriptionDetails(baseUrl, prescriptionId)
+  return (
+    <LongRunningTask<PrescriptionDetails> task={retrievePrescriptionTask} loadingMessage="Retrieving prescription details.">
+      {prescriptionDetails => {
+        if (!dispenseFormValues) {
+          const lineItems = createStaticLineItemInfoArray(
+            prescriptionDetails.medicationRequests,
+            prescriptionDetails.medicationDispenses
+          )
+          const prescription = createStaticPrescriptionInfo(prescriptionDetails.medicationDispenses)
+          return (
+            <>
+              <Label isPageHeading>Dispense Medication</Label>
+              <DispenseForm lineItems={lineItems} prescription={prescription} onSubmit={setDispenseFormValues}/>
+            </>
+          )
+        }
 
-  async function retrievePrescriptionDetails() {
-    setLoadingMessage("Retrieving prescription details.")
+        const sendDispenseNotificationTask = () => sendDispenseNotification(baseUrl, prescriptionDetails, dispenseFormValues)
+        return (
+          <LongRunningTask<DispenseResult> task={sendDispenseNotificationTask} loadingMessage="Sending dispense notification.">
+            {dispenseResult => (
+              <>
+                <Label isPageHeading>Dispense Result {dispenseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
+                <PrescriptionActions prescriptionId={prescriptionId} dispense claim view/>
+                <MessageExpanders
+                  fhirRequest={dispenseResult.request}
+                  hl7V3Request={dispenseResult.request_xml}
+                  fhirResponse={dispenseResult.response}
+                  hl7V3Response={dispenseResult.response_xml}
+                />
+                <ButtonList>
+                  <Button type="button" href={baseUrl} secondary>Back</Button>
+                </ButtonList>
+              </>
+            )}
+          </LongRunningTask>
+        )
+      }}
+    </LongRunningTask>
+  )
+}
 
-    const prescriptionOrderResponse = await axios.get<fhir.Bundle>(`${baseUrl}prescription/${prescriptionId}`)
-    const prescriptionOrder = prescriptionOrderResponse.data
-    if (!prescriptionOrder) {
-      setErrorMessage("Prescription order not found. Is the ID correct?")
-      return
-    }
-
-    const dispenseNotificationsResponse = await axios.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
-    const dispenseNotifications = dispenseNotificationsResponse.data
-
-    setPrescriptionDetails({
-      messageHeader: getMessageHeaderResources(prescriptionOrder)[0],
-      patient: getPatientResources(prescriptionOrder)[0],
-      medicationRequests: getMedicationRequestResources(prescriptionOrder),
-      medicationDispenses: dispenseNotifications.flatMap(getMedicationDispenseResources)
-    })
-    setLoadingMessage(undefined)
+async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: string): Promise<PrescriptionDetails> {
+  const prescriptionOrderResponse = await axios.get<fhir.Bundle>(`${baseUrl}prescription/${prescriptionId}`)
+  const prescriptionOrder = prescriptionOrderResponse.data
+  if (!prescriptionOrder) {
+    throw new Error("Prescription order not found. Is the ID correct?")
   }
 
-  async function sendDispenseNotification(dispenseFormValues: DispenseFormValues): Promise<void> {
-    setLoadingMessage("Sending dispense notification.")
+  const dispenseNotificationsResponse = await axios.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
+  const dispenseNotifications = dispenseNotificationsResponse.data
 
-    const dispenseNotification = createDispenseNotification(
-      prescriptionDetails.messageHeader,
-      prescriptionDetails.patient,
-      prescriptionDetails.medicationRequests,
-      dispenseFormValues
-    )
-
-    const response = await axios.post<DispenseResult>(`${baseUrl}dispense/dispense`, dispenseNotification)
-    console.log(dispenseNotification)
-    console.log(response)
-
-    setDispenseResult(response.data)
-    setLoadingMessage(undefined)
+  return {
+    messageHeader: getMessageHeaderResources(prescriptionOrder)[0],
+    patient: getPatientResources(prescriptionOrder)[0],
+    medicationRequests: getMedicationRequestResources(prescriptionOrder),
+    medicationDispenses: dispenseNotifications.flatMap(getMedicationDispenseResources)
   }
+}
 
-  if (errorMessage) {
-    return <>
-      <Label isPageHeading>Error</Label>
-      <ErrorMessage>{errorMessage}</ErrorMessage>
-    </>
-  }
+async function sendDispenseNotification(
+  baseUrl: string,
+  prescriptionDetails: PrescriptionDetails,
+  dispenseFormValues: DispenseFormValues
+): Promise<DispenseResult> {
+  const dispenseNotification = createDispenseNotification(
+    prescriptionDetails.messageHeader,
+    prescriptionDetails.patient,
+    prescriptionDetails.medicationRequests,
+    dispenseFormValues
+  )
 
-  if (loadingMessage) {
-    return <>
-      <Label isPageHeading>Loading...</Label>
-      <Label>{loadingMessage}</Label>
-    </>
-  }
+  const response = await axios.post<DispenseResult>(`${baseUrl}dispense/dispense`, dispenseNotification)
+  console.log(dispenseNotification)
+  console.log(response)
 
-  if (dispenseResult) {
-    return <>
-      <Label isPageHeading>Dispense Result {dispenseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
-      <ActionLink href={`${baseUrl}dispense/dispense?prescription_id=${prescriptionId}`}>
-        Send another dispense notification for this prescription
-      </ActionLink>
-      <ActionLink href={`${baseUrl}dispense/claim?prescription_id=${prescriptionId}`}>
-        Claim for this prescription
-      </ActionLink>
-      <MessageExpanders
-        fhirRequest={dispenseResult.request}
-        hl7V3Request={dispenseResult.request_xml}
-        fhirResponse={dispenseResult.response}
-        hl7V3Response={dispenseResult.response_xml}
-      />
-      <ButtonList>
-        <Button type="button" href={baseUrl} secondary>Back</Button>
-      </ButtonList>
-    </>
-  }
-
-  if (prescriptionDetails) {
-    return <>
-      <Label isPageHeading>Dispense Medication</Label>
-      <DispenseForm
-        lineItems={createStaticLineItemInfoArray(prescriptionDetails.medicationRequests, prescriptionDetails.medicationDispenses)}
-        prescription={createStaticPrescriptionInfo(prescriptionDetails.medicationDispenses)}
-        sendDispenseNotification={sendDispenseNotification}
-      />
-    </>
-  }
-
-  return <>
-    <Label isPageHeading>Error</Label>
-    <ErrorMessage>An unknown error occurred.</ErrorMessage>
-  </>
+  return response.data
 }
 
 interface PrescriptionDetails {

@@ -27,27 +27,18 @@ export class LiveSigningClient implements SigningClient {
     // todo: remove this logic once they are aligned
     let keyId: string | undefined
     let privateKey: string
-    let payload = {}
+    let issuer: string | undefined
     if (this.authMethod === "cis2") {
       keyId = process.env.DEMO_APP_KEY_ID
-      payload = {
-        iss: process.env.DEMO_APP_CLIENT_ID
-      }
-      privateKey = this.getPrivateKey(process.env.DEMO_APP_PRIVATE_KEY ?? "")
+      issuer = process.env.DEMO_APP_CLIENT_ID
+      privateKey = LiveSigningClient.getPrivateKey(process.env.DEMO_APP_PRIVATE_KEY ?? "")
     } else { // always 'simulated' (this will only support RSS Windows/IOS, smartcard simulated auth will fail as JWTs are different)
       keyId = process.env.DEMO_APP_REMOTE_SIGNING_KID
-      payload = {
-        iss: process.env.DEMO_APP_REMOTE_SIGNING_ISSUER
-      }
-      privateKey = this.getPrivateKey(process.env.APP_JWT_PRIVATE_KEY ?? "")
+      issuer = process.env.DEMO_APP_REMOTE_SIGNING_ISSUER
+      privateKey = LiveSigningClient.getPrivateKey(process.env.APP_JWT_PRIVATE_KEY ?? "")
     }
 
-    payload = {
-      ...payload,
-      sub: process.env.APP_JWT_SUBJECT,
-      aud: this.getBaseUrl(true),
-      iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + (60 * 10),
+    const payload = {
       payloads: prepareResponses.map(pr => {
         return {
           id: uuid.v4(),
@@ -57,7 +48,14 @@ export class LiveSigningClient implements SigningClient {
       algorithm: prepareResponses[0].parameter?.find(p => p.name === "algorithm")?.valueString
     }
 
-    const body = await jwt.sign(payload, privateKey, {algorithm: "RS512", keyid: keyId})
+    const body = jwt.sign(payload, privateKey, {
+      algorithm: "RS512",
+      keyid: keyId,
+      issuer,
+      subject: process.env.APP_JWT_SUBJECT,
+      audience: this.getBaseUrl(true),
+      expiresIn: 600
+    })
 
     return (await axios.post(url, body, {headers: headers})).data
   }
@@ -75,7 +73,7 @@ export class LiveSigningClient implements SigningClient {
     })).data
   }
 
-  private getPrivateKey(private_key_secret: string) {
+  private static getPrivateKey(private_key_secret: string) {
     while (private_key_secret.length % 4 !== 0) {
       private_key_secret += "="
     }
@@ -84,10 +82,8 @@ export class LiveSigningClient implements SigningClient {
 
   private getBaseUrl(isPublic = false) {
     const apigeeUrl = isPublic ? `${process.env.PUBLIC_APIGEE_URL}` : `https://${process.env.APIGEE_DOMAIN_NAME}`
-    const baseUrl = this.authMethod === "simulated" && process.env.ENVIRONMENT === "int"
+    return this.authMethod === "simulated" && process.env.ENVIRONMENT === "int"
       ? `${apigeeUrl}/signing-service-no-smartcard`
       : `${apigeeUrl}/signing-service`
-    return baseUrl
   }
 }
-

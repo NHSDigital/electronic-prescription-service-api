@@ -66,16 +66,13 @@ export default [
       const results = []
       for (const id of prescriptionIds) {
         const sendRequest = getSessionValue(`prescription_order_send_request_${id}`, request)
-        const sendResponseStatus = await (await epsClient.makeSendRequest(sendRequest)).statusCode
+        const sendResponseStatus = (await epsClient.makeSendRequest(sendRequest)).statusCode
         results.push({
           prescription_id: id,
           success: sendResponseStatus === 200
         })
       }
-      const sendBulkResult = {
-        prescription_ids: prescriptionIds,
-        success_list: results
-      }
+      const sendBulkResult = {results}
       setSessionValue(`signature_token_${signatureToken}`, sendBulkResult, request)
       return responseToolkit.response(sendBulkResult).code(200)
     }
