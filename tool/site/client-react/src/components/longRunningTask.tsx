@@ -5,7 +5,6 @@ import ButtonList from "./buttonList"
 import {AppContext} from "../index"
 import {UnhandledAxiosResponseError} from "../requests/unhandledAxiosResponseError"
 import AxiosResponseView from "./axiosResponseView"
-import {MessageExpander} from "./messageExpanders"
 
 interface LongRunningTaskProps<T> {
   task: () => Promise<T>
@@ -49,13 +48,11 @@ const LongRunningTask = <T extends unknown>({
   if (error) {
     const message = getMessage(error) || "Unknown error."
     const response = error instanceof UnhandledAxiosResponseError && error.response
-    const stack = error instanceof Error && error.stack
     return (
       <>
         <Label isPageHeading>Error</Label>
         <ErrorMessage>{message}</ErrorMessage>
         {response && <AxiosResponseView response={response}/>}
-        {stack && <MessageExpander name="Stacktrace" message={stack} mimeType="text/plain"/>}
         <ButtonList>
           {typeof back === "string"
             ? <Button secondary href={back}>Back</Button>

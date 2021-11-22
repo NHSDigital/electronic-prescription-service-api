@@ -2,15 +2,6 @@
 
 exports[`Displays an error if dispense-notification not found 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1><span class=\\"nhsuk-error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>Dispense notification not found. Has this prescription been dispensed?</span>
-<details class=\\"nhsuk-details nhsuk-expander\\">
-  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Stacktrace</span></summary>
-  <div class=\\"nhsuk-details__text\\">
-    <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,Error%3A%20Dispense%20notification%20not%20found.%20Has%20this%20prescription%20been%20dispensed%3F%0A%20%20%20%20at%20%2Fhome%2Fmatt%2FIdeaProjects%2FNHSDigital%2Felectronic-prescription-service-api%2Ftool%2Fsite%2Fclient-react%2Fsrc%2Fpages%2FclaimPage.tsx%3A82%3A11%0A%20%20%20%20at%20Generator.next%20(%3Canonymous%3E)%0A%20%20%20%20at%20fulfilled%20(%2Fhome%2Fmatt%2FIdeaProjects%2FNHSDigital%2Felectronic-prescription-service-api%2Ftool%2Fsite%2Fclient-react%2Fsrc%2Fpages%2FclaimPage.tsx%3A24%3A58)\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">Error: Dispense notification not found. Has this prescription been dispensed?
-    at /home/matt/IdeaProjects/NHSDigital/electronic-prescription-service-api/tool/site/client-react/src/pages/claimPage.tsx:82:11
-    at Generator.next (&lt;anonymous&gt;)
-    at fulfilled (/home/matt/IdeaProjects/NHSDigital/electronic-prescription-service-api/tool/site/client-react/src/pages/claimPage.tsx:24:58)</pre>
-  </div>
-</details>
 <div class=\\"sc-bdvvtL jjZBkx\\"><a class=\\"nhsuk-button nhsuk-button--secondary\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/\\">Back</a></div>"
 `;
 
@@ -34,16 +25,6 @@ exports[`Displays an error if prescription-order not found 1`] = `
     <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,null\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">null</pre>
   </div>
 </details>
-<details class=\\"nhsuk-details nhsuk-expander\\">
-  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Stacktrace</span></summary>
-  <div class=\\"nhsuk-details__text\\">
-    <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,Error%3A%20Unexpected%20response%20from%20server.%0A%20%20%20%20at%20Object.getResponseDataIfValid%20(%2Fhome%2Fmatt%2FIdeaProjects%2FNHSDigital%2Felectronic-prescription-service-api%2Ftool%2Fsite%2Fclient-react%2Fsrc%2Frequests%2FgetValidResponse.ts%3A14%3A9)%0A%20%20%20%20at%20%2Fhome%2Fmatt%2FIdeaProjects%2FNHSDigital%2Felectronic-prescription-service-api%2Ftool%2Fsite%2Fclient-react%2Fsrc%2Fpages%2FclaimPage.tsx%3A76%3A29%0A%20%20%20%20at%20Generator.next%20(%3Canonymous%3E)%0A%20%20%20%20at%20fulfilled%20(%2Fhome%2Fmatt%2FIdeaProjects%2FNHSDigital%2Felectronic-prescription-service-api%2Ftool%2Fsite%2Fclient-react%2Fsrc%2Fpages%2FclaimPage.tsx%3A24%3A58)\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">Error: Unexpected response from server.
-    at Object.getResponseDataIfValid (/home/matt/IdeaProjects/NHSDigital/electronic-prescription-service-api/tool/site/client-react/src/requests/getValidResponse.ts:14:9)
-    at /home/matt/IdeaProjects/NHSDigital/electronic-prescription-service-api/tool/site/client-react/src/pages/claimPage.tsx:76:29
-    at Generator.next (&lt;anonymous&gt;)
-    at fulfilled (/home/matt/IdeaProjects/NHSDigital/electronic-prescription-service-api/tool/site/client-react/src/pages/claimPage.tsx:24:58)</pre>
-  </div>
-</details>
 <div class=\\"sc-bdvvtL jjZBkx\\"><a class=\\"nhsuk-button nhsuk-button--secondary\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/\\">Back</a></div>"
 `;
 
@@ -65,16 +46,6 @@ exports[`Displays an error on invalid response 1`] = `
   <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Body</span></summary>
   <div class=\\"nhsuk-details__text\\">
     <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">{}</pre>
-  </div>
-</details>
-<details class=\\"nhsuk-details nhsuk-expander\\">
-  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Stacktrace</span></summary>
-  <div class=\\"nhsuk-details__text\\">
-    <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,Error%3A%20Unexpected%20response%20from%20server.%0A%20%20%20%20at%20Object.getResponseDataIfValid%20(%2Fhome%2Fmatt%2FIdeaProjects%2FNHSDigital%2Felectronic-prescription-service-api%2Ftool%2Fsite%2Fclient-react%2Fsrc%2Frequests%2FgetValidResponse.ts%3A14%3A9)%0A%20%20%20%20at%20%2Fhome%2Fmatt%2FIdeaProjects%2FNHSDigital%2Felectronic-prescription-service-api%2Ftool%2Fsite%2Fclient-react%2Fsrc%2Fpages%2FclaimPage.tsx%3A76%3A29%0A%20%20%20%20at%20Generator.next%20(%3Canonymous%3E)%0A%20%20%20%20at%20fulfilled%20(%2Fhome%2Fmatt%2FIdeaProjects%2FNHSDigital%2Felectronic-prescription-service-api%2Ftool%2Fsite%2Fclient-react%2Fsrc%2Fpages%2FclaimPage.tsx%3A24%3A58)\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">Error: Unexpected response from server.
-    at Object.getResponseDataIfValid (/home/matt/IdeaProjects/NHSDigital/electronic-prescription-service-api/tool/site/client-react/src/requests/getValidResponse.ts:14:9)
-    at /home/matt/IdeaProjects/NHSDigital/electronic-prescription-service-api/tool/site/client-react/src/pages/claimPage.tsx:76:29
-    at Generator.next (&lt;anonymous&gt;)
-    at fulfilled (/home/matt/IdeaProjects/NHSDigital/electronic-prescription-service-api/tool/site/client-react/src/pages/claimPage.tsx:24:58)</pre>
   </div>
 </details>
 <div class=\\"sc-bdvvtL jjZBkx\\"><a class=\\"nhsuk-button nhsuk-button--secondary\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/\\">Back</a></div>"
