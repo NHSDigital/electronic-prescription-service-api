@@ -17,12 +17,8 @@ const AxiosResponseView: React.FC<AxiosResponseViewProps> = ({response}) => {
     <>
       <SummaryList>
         <SummaryList.Row>
-          <SummaryList.Key>Status Code</SummaryList.Key>
-          <SummaryList.Value>{response.status}</SummaryList.Value>
-        </SummaryList.Row>
-        <SummaryList.Row>
-          <SummaryList.Key>Status Text</SummaryList.Key>
-          <SummaryList.Value>{response.statusText}</SummaryList.Value>
+          <SummaryList.Key>Status</SummaryList.Key>
+          <SummaryList.Value>{response.status} {response.statusText}</SummaryList.Value>
         </SummaryList.Row>
       </SummaryList>
       <MessageExpander name="Response Headers" message={formattedResponseHeaders} mimeType="text/plain"/>
