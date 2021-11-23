@@ -24,7 +24,7 @@ import {
   resetErrors,
   resetPageData
 } from "./ui/state"
-import {APIResponse, PrescriptionAction} from "./ui/view-models"
+import {PrescriptionAction} from "./ui/view-models"
 import {makeRequest} from "./api/make-request"
 import {initialiseTestPack} from "./test-pack"
 import {
@@ -304,15 +304,14 @@ function createCopies(bundles: Array<Bundle>, numberOfCopies: number) {
     .map(bundle => createNewInstance(bundle))
 }
 
-function setInitialState(mode: string, env: string, baseUrl: string, signResponse: APIResponse) {
+function setInitialState(mode: string, env: string, baseUrl: string) {
   pageData.mode = mode
   pageData.environment = env
   pageData.baseUrl = baseUrl
-  pageData.signResponse = signResponse
 }
 
-customWindow.startApplication = async function (mode: string, env: string, baseUrl: string, signResponse: APIResponse) {
-  setInitialState(mode, env, baseUrl, signResponse)
+customWindow.startApplication = async function (mode: string, env: string, baseUrl: string) {
+  setInitialState(mode, env, baseUrl)
   if (pageData.mode === "release" && pageData.prescriptionId) {
     pageData.selectedReleaseId = "prescriptionId"
     resetPageData("release")

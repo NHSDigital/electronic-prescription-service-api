@@ -9,6 +9,7 @@ import {AppContext} from "../index"
 import {ActionLink, Button, Label} from "nhsuk-react-components"
 import ButtonList from "../components/buttonList"
 import {redirect} from "../browser/navigation"
+import BackButton from "../components/backButton"
 
 interface SendPreSignPageProps {
   prescriptionId: string
@@ -57,7 +58,7 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
               <PrescriptionSummaryView {...summaryViewProps}/>
               <ButtonList>
                 <Button onClick={() => setSendConfirmed(true)}>Send</Button>
-                <Button secondary href={baseUrl}>Back</Button>
+                <BackButton/>
               </ButtonList>
             </>
           )

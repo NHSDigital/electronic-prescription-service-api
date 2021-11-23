@@ -24,12 +24,12 @@ const PrescriptionActions: React.FC<PrescriptionActionsProps> = ({
   return (
     <>
       {cancel && (
-        <ActionLink href={`${baseUrl}prescribe/cancel?prescription_id=${prescriptionId}`}>
+        <ActionLink target="_blank" href={`${baseUrl}prescribe/cancel?prescription_id=${prescriptionId}`}>
           Cancel prescription
         </ActionLink>
       )}
       {release && (
-        <ActionLink href={`${baseUrl}dispense/release?prescription_id=${prescriptionId}`}>
+        <ActionLink target="_blank" href={`${baseUrl}dispense/release?prescription_id=${prescriptionId}`}>
           Release prescription
         </ActionLink>
       )}
