@@ -3,7 +3,6 @@ import {render, screen} from "@testing-library/react"
 import React from "react"
 import pretty from "pretty"
 import userEvent from "@testing-library/user-event"
-import { redirect } from "../../src/browser/navigation"
 
 test("Shows loading message while task runs", async () => {
   const mockTask = jest.fn()
