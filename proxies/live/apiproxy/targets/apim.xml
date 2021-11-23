@@ -46,9 +46,11 @@
         <!-- Get ODS code from UserInfo -->
         <Step>
           <Name>JavaScript.GetODSFromUserInfo</Name>
+          <Condition>(access-mode Equals "user-restricted")</Condition>
         </Step>
         <Step>
           <Name>AssignMessage.AddOrgCodeHeader</Name>
+          <Condition>(access-mode Equals "user-restricted")</Condition>
         </Step>
         <Step>
           <Name>AssignMessage.AddUserIdHeader</Name>
