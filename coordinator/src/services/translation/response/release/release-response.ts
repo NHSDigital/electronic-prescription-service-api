@@ -18,14 +18,21 @@ import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
 import {fhir, hl7V3} from "@models"
 import {convertSignatureTextToProvenance} from "../provenance"
 import {createPatient} from "../patient"
+import pino from "pino"
 
 const SUPPORTED_MESSAGE_TYPE = "PORX_MT122003UK32"
 
-export function createOuterBundle(releaseResponse: hl7V3.PrescriptionReleaseResponse): fhir.Bundle {
+export async function createOuterBundle(
+  releaseResponse: hl7V3.PrescriptionReleaseResponse,
+  logger: pino.Logger
+): Promise<fhir.Bundle> {
   const releaseRequestId = releaseResponse.inFulfillmentOf.priorDownloadRequestRef.id._attributes.root
   const parentPrescriptions = toArray(releaseResponse.component)
     .filter(component => component.templateId._attributes.extension === SUPPORTED_MESSAGE_TYPE)
     .map(component => component.ParentPrescription)
+  const translatedPrescriptions = await Promise.all(
+    parentPrescriptions.map(parentPrescription => createInnerBundle(parentPrescription, releaseRequestId, logger))
+  )
   return {
     resourceType: "Bundle",
     id: uuid.v4(),
@@ -38,13 +45,16 @@ export function createOuterBundle(releaseResponse: hl7V3.PrescriptionReleaseResp
     },
     type: "searchset",
     total: parentPrescriptions.length,
-    entry: parentPrescriptions
-      .map(parentPrescription => createInnerBundle(parentPrescription, releaseRequestId))
-      .map(convertResourceToBundleEntry)
+    entry: translatedPrescriptions.map(convertResourceToBundleEntry)
   }
 }
 
-export function createInnerBundle(parentPrescription: hl7V3.ParentPrescription, releaseRequestId: string): fhir.Bundle {
+export async function createInnerBundle(
+  parentPrescription: hl7V3.ParentPrescription,
+  releaseRequestId: string,
+  logger: pino.Logger
+): Promise<fhir.Bundle> {
+  const bundleResources = await createBundleResources(parentPrescription, releaseRequestId, logger)
   return {
     resourceType: "Bundle",
     id: uuid.v4(),
@@ -56,14 +66,15 @@ export function createInnerBundle(parentPrescription: hl7V3.ParentPrescription, 
       value: parentPrescription.id._attributes.root.toLowerCase()
     },
     type: "message",
-    entry: createBundleResources(parentPrescription, releaseRequestId).map(convertResourceToBundleEntry)
+    entry: bundleResources.map(convertResourceToBundleEntry)
   }
 }
 
-export function createBundleResources(
+export async function createBundleResources(
   parentPrescription: hl7V3.ParentPrescription,
-  releaseRequestId: string
-): Array<fhir.Resource> {
+  releaseRequestId: string,
+  logger: pino.Logger
+): Promise<Array<fhir.Resource>> {
   const bundleResources: Array<fhir.Resource> = []
   const focusIds: Array<string> = []
 
@@ -75,7 +86,7 @@ export function createBundleResources(
   const pertinentPrescription = parentPrescription.pertinentInformation1.pertinentPrescription
   const prescriptionAuthor = pertinentPrescription.author
   const authorAgentPerson = prescriptionAuthor.AgentPerson
-  const translatedAuthor = translateAgentPerson(authorAgentPerson)
+  const translatedAuthor = await translateAgentPerson(authorAgentPerson, logger)
   addTranslatedAgentPerson(bundleResources, translatedAuthor)
 
   const responsiblePartyAgentPerson = pertinentPrescription.responsibleParty?.AgentPerson
@@ -84,7 +95,7 @@ export function createBundleResources(
     if (roleProfileIdIdentical(responsiblePartyAgentPerson, authorAgentPerson)) {
       addDetailsToTranslatedAgentPerson(translatedAuthor, responsiblePartyAgentPerson)
     } else {
-      translatedResponsibleParty = translateAgentPerson(responsiblePartyAgentPerson)
+      translatedResponsibleParty = await translateAgentPerson(responsiblePartyAgentPerson, logger)
       addTranslatedAgentPerson(bundleResources, translatedResponsibleParty)
     }
   }

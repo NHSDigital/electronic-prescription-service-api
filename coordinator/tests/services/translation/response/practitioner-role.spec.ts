@@ -21,13 +21,15 @@ describe("createPractitionerRole", () => {
   const practitionerRole = createPractitionerRole(
     authorAgentPerson,
     practitionerId,
-    healthcareServiceId
+    healthcareServiceId,
+    null
   )
 
   const performerParticipantPractitionerRole = createPractitionerRole(
     performerParticipant,
     practitionerId,
-    healthcareServiceId
+    healthcareServiceId,
+    null
   )
 
   const cases = [
@@ -72,7 +74,9 @@ describe("createPractitionerRole", () => {
   })
 
   test("performerParticipantPractitionerRole has correct telecom information", () => {
-    expect(performerParticipantPractitionerRole.telecom).toBeUndefined()
+    expect(performerParticipantPractitionerRole.telecom[0].system).toBe("phone")
+    expect(performerParticipantPractitionerRole.telecom[0].use).toBe("work")
+    expect(performerParticipantPractitionerRole.telecom[0].value).toBe("01234567890")
   })
 })
 
@@ -151,6 +155,8 @@ describe("createRefactoredPractitionerRole", () => {
   })
 
   test("performerParticipantPractitionerRole has correct telecom information", () => {
-    expect(performerPractitionerRole.telecom).toBeUndefined()
+    expect(performerPractitionerRole.telecom[0].system).toBe("phone")
+    expect(performerPractitionerRole.telecom[0].use).toBe("work")
+    expect(performerPractitionerRole.telecom[0].value).toBe("01234567890")
   })
 })

@@ -62,7 +62,7 @@ function createRoute<T>(spineResponse: spine.SpineDirectResponse<T> | spine.Spin
     method: "POST",
     path: "/test",
     handler: async (request, responseToolkit) => {
-      return handleResponse(request, spineResponse, responseToolkit)
+      return await handleResponse(request, spineResponse, responseToolkit)
     }
   }
 }

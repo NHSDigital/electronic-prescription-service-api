@@ -10,36 +10,33 @@ describe("createPractitioner", () => {
   const authorAgentPerson = cancellationErrorResponse.author.AgentPerson
   const performerAgentPerson = cancellationErrorDispensedResponse.performer.AgentPerson
 
-  const authorPractitioner = createPractitioner(
-    authorAgentPerson
-  )
+  const authorPractitioner = createPractitioner(authorAgentPerson)
 
-  const performerPractitioner = createPractitioner(
-    performerAgentPerson
-  )
+  const performerPractitioner = createPractitioner(performerAgentPerson)
 
   test("author practitioner has correct identifier", () => {
     expect(authorPractitioner.identifier).toMatchObject([{
-      system: "https://fhir.hl7.org.uk/Id/gphc-number",
-      value: "4428981"
+      system: "https://fhir.hl7.org.uk/Id/din-number",
+      value: "683458"
     }])
   })
 
   test("author practitioner has correct family and given names, and prefix", () => {
     expect(authorPractitioner.name).not.toBeUndefined()
-    expect(authorPractitioner.name[0].family).toBe("Edwards")
-    expect(authorPractitioner.name[0].given[0]).toBe("Thomas")
-    expect(authorPractitioner.name[0].prefix[0]).toBe("DR")
+    expect(authorPractitioner.name[0].family).toBe("FIFTYSEVEN")
+    expect(authorPractitioner.name[0].given[0]).toBe("RANDOM")
+    expect(authorPractitioner.name[0].prefix[0]).toBe("MR")
   })
 
   test("performer practitioner has correct identifier", () => {
     expect(performerPractitioner.identifier).toMatchObject([{
-      system: "https://fhir.hl7.org.uk/Id/professional-code",
-      value: "131167442519"
+      system: "https://fhir.hl7.org.uk/Id/gmp-number",
+      value: "G9999999"
     }])
   })
 
   test("performer practitioner has correct name", () => {
-    expect(performerPractitioner.name[0].text).toBe("Taylor Paul")
+    expect(performerPractitioner.name[0].given[0]).toBe("Unattended")
+    expect(performerPractitioner.name[0].family).toBe("Access")
   })
 })

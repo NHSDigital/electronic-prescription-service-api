@@ -8,14 +8,17 @@ import {
 import {getCancellationResponse} from "../common/test-helpers"
 import {hl7V3, fhir} from "@models"
 
-const cancellationResponse = getCancellationResponse(TestResources.spineResponses.cancellationNotFoundError)
 const cancellationDispensedResponse = getCancellationResponse(TestResources.spineResponses.cancellationDispensedError)
-
-const authorRepresentedOrganization = cancellationResponse.author.AgentPerson.representedOrganization
+const authorRepresentedOrganization = cancellationDispensedResponse.author.AgentPerson.representedOrganization
 const performerRepresentedOrganization = cancellationDispensedResponse.performer.AgentPerson.representedOrganization
 
-const authorOrganization = createOrganization(authorRepresentedOrganization)
-const performerOrganization = createOrganization(performerRepresentedOrganization)
+const roleCodingNhsTrust: fhir.Coding = {
+  system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+  code: "197",
+  display: "NHS TRUST"
+}
+const authorOrganization = createOrganization(authorRepresentedOrganization, roleCodingNhsTrust)
+const performerOrganization = createOrganization(performerRepresentedOrganization, roleCodingNhsTrust)
 
 describe.each([
   ["authorOrganization", authorOrganization, authorRepresentedOrganization],
@@ -58,7 +61,8 @@ describe.each([
 
     test("empty name gets translated", () => {
       const organizationWithoutName = createOrganization(
-        {...performerRepresentedOrganization, name: undefined}
+        {...performerRepresentedOrganization, name: undefined},
+        roleCodingNhsTrust
       )
 
       expect(organizationWithoutName.name).toBeUndefined()
@@ -66,7 +70,8 @@ describe.each([
 
     test("empty telecom gets translated", () => {
       const organizationWithoutTelecom = createOrganization(
-        {...performerRepresentedOrganization, telecom: undefined}
+        {...performerRepresentedOrganization, telecom: undefined},
+        roleCodingNhsTrust
       )
 
       expect(organizationWithoutTelecom.telecom).toBeUndefined()
@@ -74,7 +79,8 @@ describe.each([
 
     test("empty address gets translated", () => {
       const organizationWithoutAddress = createOrganization(
-        {...performerRepresentedOrganization, addr: undefined}
+        {...performerRepresentedOrganization, addr: undefined},
+        roleCodingNhsTrust
       )
 
       expect(organizationWithoutAddress.address).toBeUndefined()

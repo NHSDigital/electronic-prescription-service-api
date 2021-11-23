@@ -38,7 +38,7 @@ export default [
           request.logger
         )
         const spineResponse = await spineClient.send(spineRequest, request.logger)
-        return handleResponse(request, spineResponse, responseToolkit)
+        return await handleResponse(request, spineResponse, responseToolkit)
       }
     )
   }

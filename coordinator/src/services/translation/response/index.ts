@@ -22,12 +22,13 @@ const spineResponseHandlers = [
   PATIENT_RELEASE_RESPONSE_HANDLER
 ]
 
-export function translateToFhir<T>(
+export async function translateToFhir<T>(
   hl7Message: spine.SpineDirectResponse<T>,
-  logger: pino.Logger): TranslatedSpineResponse {
+  logger: pino.Logger
+): Promise<TranslatedSpineResponse> {
   const bodyString = hl7Message.body.toString()
   for (const handler of spineResponseHandlers) {
-    const translatedSpineResponse = handler.handleResponse(bodyString, logger)
+    const translatedSpineResponse = await handler.handleResponse(bodyString, logger)
     if (translatedSpineResponse) {
       return translatedSpineResponse
     }

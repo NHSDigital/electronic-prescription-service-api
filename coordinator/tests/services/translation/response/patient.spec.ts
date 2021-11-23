@@ -18,7 +18,7 @@ describe("createPatient", () => {
   test("returned patient has an identifier block with correct NHS number", () => {
     expect(fhirPatient.identifier).not.toBeUndefined()
     const nhsNumber = fhirPatient.identifier[0].value
-    expect(nhsNumber).toBe("9453740519")
+    expect(nhsNumber).toBe("9449304122")
   })
 
   test("returned patient has correct name use", () => {
@@ -28,9 +28,9 @@ describe("createPatient", () => {
 
   test("returned patient has correct family and given names, and prefix", () => {
     expect(fhirPatient.name).not.toBeUndefined()
-    expect(fhirPatient.name[0].family).toBe("CORY")
-    expect(fhirPatient.name[0].given[0]).toBe("ETTA")
-    expect(fhirPatient.name[0].prefix[0]).toBe("MISS")
+    expect(fhirPatient.name[0].family).toBe("FORREST")
+    expect(fhirPatient.name[0].given[0]).toBe("LILAC")
+    expect(fhirPatient.name[0].prefix[0]).toBe("MS")
   })
 
   test("returned patient has correct gender", () => {
@@ -40,7 +40,7 @@ describe("createPatient", () => {
 
   test("returned patient has correct birthdate", () => {
     expect(fhirPatient.birthDate).not.toBeUndefined()
-    expect(fhirPatient.birthDate).toBe("1999-01-04")
+    expect(fhirPatient.birthDate).toBe("2011-03-30")
   })
 
   test("returned patient has unknown gp code when passed nullFlavor of 'UNK", () => {
@@ -64,10 +64,10 @@ describe("createPatient", () => {
   })
 
   test("returned patient has correct address", () => {
-    expect(fhirPatient.address[0].postalCode).toBe("NG10 1NP")
+    expect(fhirPatient.address[0].postalCode).toBe("KT11 2QX")
     expect(fhirPatient.address[0].line.length).toBe(3)
-    expect(fhirPatient.address[0].line[0]).toBe("123 Dale Avenue")
-    expect(fhirPatient.address[0].line[1]).toBe("Long Eaton")
-    expect(fhirPatient.address[0].line[2]).toBe("Nottingham")
+    expect(fhirPatient.address[0].line[0]).toBe("10 HAWKHURST")
+    expect(fhirPatient.address[0].line[1]).toBe("COBHAM")
+    expect(fhirPatient.address[0].line[2]).toBe("SURREY")
   })
 })

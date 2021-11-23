@@ -8,6 +8,7 @@ import {
   getLocations,
   getMedicationRequests,
   getMessageHeader,
+  getOrganizations,
   getPatient,
   getPractitionerRoles,
   getPractitioners
@@ -20,68 +21,84 @@ import {
 import {fhir} from "@models"
 import {getPerformer, getRequester, getResponsiblePractitioner} from "../common.spec"
 import {resolvePractitioner} from "../../../../../src/services/translation/common"
+import pino from "pino"
+
+const logger = pino()
 
 const actualError = TestResources.spineResponses.cancellationNotFoundError
 const actualSendMessagePayload = CANCEL_RESPONSE_HANDLER.extractSendMessagePayload(actualError.response.body)
 const actualCancelResponse = getCancellationResponse(TestResources.spineResponses.cancellationNotFoundError)
-const fhirBundle = translateSpineCancelResponseIntoBundle(actualCancelResponse)
+const fhirBundlePromise = translateSpineCancelResponseIntoBundle(actualCancelResponse, logger)
 const fhirOperationOutcome = translateSpineCancelResponseIntoOperationOutcome(extractStatusCode(actualCancelResponse))
 
 describe("bundle", () => {
-  test("response is a bundle", () => {
+  test("response is a bundle", async () => {
+    const fhirBundle = await fhirBundlePromise
     expect(fhirBundle.resourceType).toBe("Bundle")
   })
 
-  test("bundle has type", () => {
+  test("bundle has type", async () => {
+    const fhirBundle = await fhirBundlePromise
     expect(fhirBundle.type).toBe("message")
   })
 
-  test("bundle has identifier", () => {
+  test("bundle has identifier", async () => {
+    const fhirBundle = await fhirBundlePromise
     const bundleIdentifier = fhirBundle.identifier
     expect(bundleIdentifier.system).toBe("https://tools.ietf.org/html/rfc4122")
     expect(bundleIdentifier.value)
       .toBe(actualSendMessagePayload.id._attributes.root.toLowerCase())
   })
 
-  test("bundle has correct timestamp format", () => {
+  test("bundle has correct timestamp format", async () => {
+    const fhirBundle = await fhirBundlePromise
     expect(hasCorrectISOFormat(fhirBundle.timestamp)).toBe(true)
   })
 })
 
 describe("bundle entries", () => {
-  test("bundle contains entries", () => {
+  test("bundle contains entries", async () => {
+    const fhirBundle = await fhirBundlePromise
     expect(fhirBundle.entry.length).toBeGreaterThan(0)
   })
 
-  test("entries contains a MessageHeader", () => {
+  test("entries contains a MessageHeader", async () => {
+    const fhirBundle = await fhirBundlePromise
     expect(() => getMessageHeader(fhirBundle)).not.toThrow()
   })
 
-  test("the first entry is a MessageHeader", () => {
+  test("the first entry is a MessageHeader", async () => {
+    const fhirBundle = await fhirBundlePromise
     expect(fhirBundle.entry[0].resource.resourceType).toBe("MessageHeader")
   })
 
-  test("response bundle entries contains a Patient", () => {
+  test("response bundle entries contains a Patient", async () => {
+    const fhirBundle = await fhirBundlePromise
     expect(() => getPatient(fhirBundle)).not.toThrow()
   })
 
-  test("entries contains two Practitioner", () => {
-    expect(getPractitioners(fhirBundle)).toHaveLength(2)
+  test("entries contains a Practitioner", async () => {
+    const fhirBundle = await fhirBundlePromise
+    expect(getPractitioners(fhirBundle)).toHaveLength(1)
   })
 
-  test("entries contains two HealthcareServices", () => {
-    expect(getHealthcareServices(fhirBundle)).toHaveLength(2)
+  test("entries contains a HealthcareService (if cost centre)", async () => {
+    const fhirBundle = await fhirBundlePromise
+    expect(getHealthcareServices(fhirBundle)).toHaveLength(1)
   })
 
-  test("entries contains two Locations", () => {
-    expect(getLocations(fhirBundle)).toHaveLength(2)
+  test("entries contains a Location (if cost centre)", async () => {
+    const fhirBundle = await fhirBundlePromise
+    expect(getLocations(fhirBundle)).toHaveLength(1)
   })
 
-  test("entries contains two PractitionerRole", () => {
-    expect(getPractitionerRoles(fhirBundle)).toHaveLength(2)
+  test("entries contains a PractitionerRole", async () => {
+    const fhirBundle = await fhirBundlePromise
+    expect(getPractitionerRoles(fhirBundle)).toHaveLength(1)
   })
 
-  test("entries contains a MedicationRequest (without dispenseRequest)", () => {
+  test("entries contains a MedicationRequest (without dispenseRequest)", async () => {
+    const fhirBundle = await fhirBundlePromise
     const medicationRequests = getMedicationRequests(fhirBundle)
     expect(medicationRequests.length).toEqual(1)
     expect(medicationRequests[0].dispenseRequest).toBeUndefined()
@@ -90,41 +107,43 @@ describe("bundle entries", () => {
   const cancellationErrorDispensedResponse = getCancellationResponse(
     TestResources.spineResponses.cancellationDispensedError
   )
-  const performerFhirBundle = translateSpineCancelResponseIntoBundle(cancellationErrorDispensedResponse)
+  const performerFhirBundlePromise = translateSpineCancelResponseIntoBundle(cancellationErrorDispensedResponse, logger)
 
-  test("performer field in hl7 message adds performer practitioner", () => {
+  test("performer field in hl7 message adds performer practitioner", async () => {
+    const performerFhirBundle = await performerFhirBundlePromise
     const practitioners = getPractitioners(performerFhirBundle)
-    const nameArray = practitioners.map(practitioner => practitioner.name[0].text)
-    expect(nameArray).toContain("Taylor Paul")
+    const nameArray = practitioners
+      .map(practitioner => practitioner.name[0])
+      .map(name => `${name.given[0]} ${name.family}`)
+    expect(nameArray).toContain("Unattended Access")
   })
 
-  test("performer field in hl7 message adds performer practitionerRole", () => {
+  test("performer field in hl7 message adds performer practitionerRole", async () => {
+    const performerFhirBundle = await performerFhirBundlePromise
     const practitionerRoles = getPractitionerRoles(performerFhirBundle)
     const codeArray = practitionerRoles.map(practitionerRole => practitionerRole.code[0].coding[0].code)
-    expect(codeArray).toContain("S8000:G8000:R8003")
+    expect(codeArray).toContain("R9999")
   })
 
-  test("performer field in hl7 message adds performer location", () => {
-    const locations = getLocations(performerFhirBundle)
-    const postcodes = locations.map(location => location.address.postalCode)
-    expect(postcodes).toContain("PR26 7QN")
+  test("performer field in hl7 message adds performer organization (if not a cost centre)", async () => {
+    const performerFhirBundle = await performerFhirBundlePromise
+    const organizations = getOrganizations(performerFhirBundle)
+    const organizationPostcodes = organizations.map(organization => organization.address[0].postalCode)
+    expect(organizationPostcodes).toContain("LS27 9QS")
+    const organizationNames = organizations.map(organization => organization.name)
+    expect(organizationNames).toContain("FIVE STAR HOMECARE LEEDS LTD")
   })
 
-  test("performer field in hl7 message adds performer healthcareService", () => {
-    const healthcareServices = getHealthcareServices(performerFhirBundle)
-    const healthcareServiceNames = healthcareServices.map(healthcareService => healthcareService.name)
-    expect(healthcareServiceNames).toContain("CRx PM Chetna2 EPS")
-  })
-
-  test("performer field in hl7 message adds dispense reference to MedicationRequest", () => {
+  test("performer field in hl7 message adds dispense reference to MedicationRequest", async () => {
+    const performerFhirBundle = await performerFhirBundlePromise
     expect(getMedicationRequests(performerFhirBundle)[0].dispenseRequest).toBeDefined()
   })
 
-  test("entries are not duplicated", () => {
+  test("entries are not duplicated", async () => {
     const dispenseError = getCancellationResponse(TestResources.spineResponses.cancellationDispensedError)
     dispenseError.performer.AgentPerson.id = dispenseError.author.AgentPerson.id
     dispenseError.responsibleParty.AgentPerson.id = dispenseError.author.AgentPerson.id
-    const translatedDispenseBundle = translateSpineCancelResponseIntoBundle(dispenseError)
+    const translatedDispenseBundle = await translateSpineCancelResponseIntoBundle(dispenseError, logger)
     expect(getPractitioners(translatedDispenseBundle)).toHaveLength(1)
     expect(getPractitionerRoles(translatedDispenseBundle)).toHaveLength(1)
     expect(getHealthcareServices(translatedDispenseBundle)).toHaveLength(1)
@@ -144,12 +163,14 @@ describe("practitioner details", () => {
     dispenseError.performer.AgentPerson.id._attributes.extension = "PerformerRoleProfileId"
     dispenseError.performer.AgentPerson.code._attributes.code = "PerformerJobRoleCode"
     dispenseError.performer.AgentPerson.agentPerson.id._attributes.extension = "PerformerProfessionalCode"
-    const bundle = translateSpineCancelResponseIntoBundle(dispenseError)
+    const bundlePromise = translateSpineCancelResponseIntoBundle(dispenseError, logger)
 
-    test("three PractitionerRoles present", () => {
+    test("three PractitionerRoles present", async () => {
+      const bundle = await bundlePromise
       expect(getPractitionerRoles(bundle)).toHaveLength(3)
     })
-    test("requester PractitionerRole contains correct identifiers", () => {
+    test("requester PractitionerRole contains correct identifiers", async () => {
+      const bundle = await bundlePromise
       const requester = getRequester(bundle)
       expect(requester.identifier).toMatchObject([{
         system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -157,7 +178,8 @@ describe("practitioner details", () => {
         value: "ResponsiblePartyRoleProfileId"
       }])
     })
-    test("requester PractitionerRole contains correct codes", () => {
+    test("requester PractitionerRole contains correct codes", async () => {
+      const bundle = await bundlePromise
       const requester = getRequester(bundle)
       expect(requester.code).toMatchObject([{
         coding: [{
@@ -167,7 +189,8 @@ describe("practitioner details", () => {
         }]
       }])
     })
-    test("responsible practitioner PractitionerRole contains correct identifiers", () => {
+    test("responsible practitioner PractitionerRole contains correct identifiers", async () => {
+      const bundle = await bundlePromise
       const responsiblePractitioner = getResponsiblePractitioner(bundle)
       expect(responsiblePractitioner.identifier).toMatchObject([{
         system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -175,7 +198,8 @@ describe("practitioner details", () => {
         value: "AuthorRoleProfileId"
       }])
     })
-    test("responsible practitioner PractitionerRole contains correct codes", () => {
+    test("responsible practitioner PractitionerRole contains correct codes", async () => {
+      const bundle = await bundlePromise
       const responsiblePractitioner = getResponsiblePractitioner(bundle)
       expect(responsiblePractitioner.code).toMatchObject([{
         coding: [{
@@ -185,14 +209,16 @@ describe("practitioner details", () => {
         }]
       }])
     })
-    test("performer PractitionerRole contains correct identifiers", () => {
+    test("performer PractitionerRole contains correct identifiers", async () => {
+      const bundle = await bundlePromise
       const performer = getPerformer(bundle)
       expect(performer.identifier).toMatchObject([{
         system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
         value: "PerformerRoleProfileId"
       }])
     })
-    test("performer PractitionerRole contains correct codes", () => {
+    test("performer PractitionerRole contains correct codes", async () => {
+      const bundle = await bundlePromise
       const performer = getPerformer(bundle)
       expect(performer.code).toMatchObject([{
         coding: [{
@@ -202,11 +228,13 @@ describe("practitioner details", () => {
       }])
     })
 
-    test("three Practitioners present", () => {
+    test("three Practitioners present", async () => {
+      const bundle = await bundlePromise
       const practitioners = getPractitioners(bundle)
       expect(practitioners).toHaveLength(3)
     })
-    test("requester Practitioner contains correct identifiers", () => {
+    test("requester Practitioner contains correct identifiers", async () => {
+      const bundle = await bundlePromise
       const requesterPractitionerRole = getRequester(bundle)
       const requesterPractitioner = resolvePractitioner(bundle, requesterPractitionerRole.practitioner)
       expect(requesterPractitioner.identifier).toMatchObject([{
@@ -215,7 +243,8 @@ describe("practitioner details", () => {
         value: "ResponsiblePartyProfessionalCode"
       }])
     })
-    test("responsible practitioner Practitioner contains correct identifiers", () => {
+    test("responsible practitioner Practitioner contains correct identifiers", async () => {
+      const bundle = await bundlePromise
       const respPracPractitionerRole = getResponsiblePractitioner(bundle)
       const respPracPractitioner = resolvePractitioner(bundle, respPracPractitionerRole.practitioner)
       expect(respPracPractitioner.identifier).toMatchObject([{
@@ -224,7 +253,8 @@ describe("practitioner details", () => {
         value: "AuthorProfessionalCode"
       }])
     })
-    test("performer Practitioner contains correct identifiers", () => {
+    test("performer Practitioner contains correct identifiers", async () => {
+      const bundle = await bundlePromise
       const performerPractitionerRole = getPerformer(bundle)
       const performerPractitioner = resolvePractitioner(bundle, performerPractitionerRole.practitioner)
       expect(performerPractitioner.identifier).toMatchObject([{
@@ -245,19 +275,22 @@ describe("practitioner details", () => {
     dispenseError.performer.AgentPerson.id._attributes.extension = "PerformerRoleProfileId"
     dispenseError.performer.AgentPerson.code._attributes.code = "PerformerJobRoleCode"
     dispenseError.performer.AgentPerson.agentPerson.id._attributes.extension = "PerformerProfessionalCode"
-    const bundle = translateSpineCancelResponseIntoBundle(dispenseError)
+    const bundlePromise = translateSpineCancelResponseIntoBundle(dispenseError, logger)
 
-    test("two PractitionerRoles present", () => {
+    test("two PractitionerRoles present", async () => {
+      const bundle = await bundlePromise
       expect(getPractitionerRoles(bundle)).toHaveLength(2)
     })
-    test("requester PractitionerRole contains correct identifiers", () => {
+    test("requester PractitionerRole contains correct identifiers", async () => {
+      const bundle = await bundlePromise
       const requester = getRequester(bundle)
       expect(requester.identifier).toMatchObject([{
         system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
         value: "CommonRoleProfileId"
       }])
     })
-    test("requester PractitionerRole contains correct codes", () => {
+    test("requester PractitionerRole contains correct codes", async () => {
+      const bundle = await bundlePromise
       const requester = getRequester(bundle)
       expect(requester.code).toMatchObject([{
         coding: [{
@@ -266,19 +299,22 @@ describe("practitioner details", () => {
         }]
       }])
     })
-    test("responsible practitioner is the same as requester", () => {
+    test("responsible practitioner is the same as requester", async () => {
+      const bundle = await bundlePromise
       const requester = getRequester(bundle)
       const responsiblePractitioner = getResponsiblePractitioner(bundle)
       expect(responsiblePractitioner).toBe(requester)
     })
-    test("performer PractitionerRole contains correct identifiers", () => {
+    test("performer PractitionerRole contains correct identifiers", async () => {
+      const bundle = await bundlePromise
       const performer = getPerformer(bundle)
       expect(performer.identifier).toMatchObject([{
         system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
         value: "PerformerRoleProfileId"
       }])
     })
-    test("performer PractitionerRole contains correct codes", () => {
+    test("performer PractitionerRole contains correct codes", async () => {
+      const bundle = await bundlePromise
       const performer = getPerformer(bundle)
       expect(performer.code).toMatchObject([{
         coding: [{
@@ -288,11 +324,13 @@ describe("practitioner details", () => {
       }])
     })
 
-    test("two Practitioners present", () => {
+    test("two Practitioners present", async () => {
+      const bundle = await bundlePromise
       const practitioners = getPractitioners(bundle)
       expect(practitioners).toHaveLength(2)
     })
-    test("requester Practitioner contains correct identifiers", () => {
+    test("requester Practitioner contains correct identifiers", async () => {
+      const bundle = await bundlePromise
       const requesterPractitionerRole = getRequester(bundle)
       const requesterPractitioner = resolvePractitioner(bundle, requesterPractitionerRole.practitioner)
       expect(requesterPractitioner.identifier).toMatchObject([
@@ -306,7 +344,8 @@ describe("practitioner details", () => {
         }
       ])
     })
-    test("performer Practitioner contains correct identifiers", () => {
+    test("performer Practitioner contains correct identifiers", async () => {
+      const bundle = await bundlePromise
       const performerPractitionerRole = getPerformer(bundle)
       const performerPractitioner = resolvePractitioner(bundle, performerPractitionerRole.practitioner)
       expect(performerPractitioner.identifier).toMatchObject([{
@@ -327,12 +366,14 @@ describe("practitioner details", () => {
     dispenseError.performer.AgentPerson.id._attributes.extension = "CommonRoleProfileId"
     dispenseError.performer.AgentPerson.code._attributes.code = "CommonJobRoleCode"
     dispenseError.performer.AgentPerson.agentPerson.id._attributes.extension = "ProfessionalCode2"
-    const bundle = translateSpineCancelResponseIntoBundle(dispenseError)
+    const bundlePromise = translateSpineCancelResponseIntoBundle(dispenseError, logger)
 
-    test("two PractitionerRoles present", () => {
+    test("two PractitionerRoles present", async () => {
+      const bundle = await bundlePromise
       expect(getPractitionerRoles(bundle)).toHaveLength(2)
     })
-    test("requester PractitionerRole contains correct identifiers", () => {
+    test("requester PractitionerRole contains correct identifiers", async () => {
+      const bundle = await bundlePromise
       const requester = getRequester(bundle)
       expect(requester.identifier).toMatchObject([{
         system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -340,7 +381,8 @@ describe("practitioner details", () => {
         value: "ResponsiblePartyRoleProfileId"
       }])
     })
-    test("requester PractitionerRole contains correct codes", () => {
+    test("requester PractitionerRole contains correct codes", async () => {
+      const bundle = await bundlePromise
       const requester = getRequester(bundle)
       expect(requester.code).toMatchObject([{
         coding: [{
@@ -350,7 +392,8 @@ describe("practitioner details", () => {
         }]
       }])
     })
-    test("responsible practitioner PractitionerRole contains correct identifiers", () => {
+    test("responsible practitioner PractitionerRole contains correct identifiers", async () => {
+      const bundle = await bundlePromise
       const responsiblePractitioner = getResponsiblePractitioner(bundle)
       expect(responsiblePractitioner.identifier).toMatchObject([{
         system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -358,7 +401,8 @@ describe("practitioner details", () => {
         value: "CommonRoleProfileId"
       }])
     })
-    test("responsible practitioner PractitionerRole contains correct codes", () => {
+    test("responsible practitioner PractitionerRole contains correct codes", async () => {
+      const bundle = await bundlePromise
       const responsiblePractitioner = getResponsiblePractitioner(bundle)
       expect(responsiblePractitioner.code).toMatchObject([{
         coding: [{
@@ -368,17 +412,20 @@ describe("practitioner details", () => {
         }]
       }])
     })
-    test("performer is the same as responsible practitioner", () => {
+    test("performer is the same as responsible practitioner", async () => {
+      const bundle = await bundlePromise
       const responsiblePractitioner = getResponsiblePractitioner(bundle)
       const performer = getPerformer(bundle)
       expect(performer).toBe(responsiblePractitioner)
     })
 
-    test("two Practitioners present", () => {
+    test("two Practitioners present", async () => {
+      const bundle = await bundlePromise
       const practitioners = getPractitioners(bundle)
       expect(practitioners).toHaveLength(2)
     })
-    test("requester Practitioner contains correct identifiers", () => {
+    test("requester Practitioner contains correct identifiers", async () => {
+      const bundle = await bundlePromise
       const requesterPractitionerRole = getRequester(bundle)
       const requesterPractitioner = resolvePractitioner(bundle, requesterPractitionerRole.practitioner)
       expect(requesterPractitioner.identifier).toMatchObject([{
@@ -387,7 +434,8 @@ describe("practitioner details", () => {
         value: "ResponsiblePartyProfessionalCode"
       }])
     })
-    test("responsible practitioner Practitioner contains correct identifiers", () => {
+    test("responsible practitioner Practitioner contains correct identifiers", async () => {
+      const bundle = await bundlePromise
       const respPracPractitionerRole = getResponsiblePractitioner(bundle)
       const respPracPractitioner = resolvePractitioner(bundle, respPracPractitionerRole.practitioner)
       expect(respPracPractitioner.identifier).toMatchObject([
@@ -415,12 +463,14 @@ describe("practitioner details", () => {
     dispenseError.performer.AgentPerson.id._attributes.extension = "CommonRoleProfileId"
     dispenseError.performer.AgentPerson.code._attributes.code = "CommonJobRoleCode"
     dispenseError.performer.AgentPerson.agentPerson.id._attributes.extension = "ProfessionalCode2"
-    const bundle = translateSpineCancelResponseIntoBundle(dispenseError)
+    const bundlePromise = translateSpineCancelResponseIntoBundle(dispenseError, logger)
 
-    test("two PractitionerRoles present", () => {
+    test("two PractitionerRoles present", async () => {
+      const bundle = await bundlePromise
       expect(getPractitionerRoles(bundle)).toHaveLength(2)
     })
-    test("requester PractitionerRole contains correct identifiers", () => {
+    test("requester PractitionerRole contains correct identifiers", async () => {
+      const bundle = await bundlePromise
       const requester = getRequester(bundle)
       expect(requester.identifier).toMatchObject([{
         system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -428,7 +478,8 @@ describe("practitioner details", () => {
         value: "CommonRoleProfileId"
       }])
     })
-    test("requester PractitionerRole contains correct codes", () => {
+    test("requester PractitionerRole contains correct codes", async () => {
+      const bundle = await bundlePromise
       const requester = getRequester(bundle)
       expect(requester.code).toMatchObject([{
         coding: [{
@@ -438,7 +489,8 @@ describe("practitioner details", () => {
         }]
       }])
     })
-    test("responsible practitioner PractitionerRole contains correct identifiers", () => {
+    test("responsible practitioner PractitionerRole contains correct identifiers", async () => {
+      const bundle = await bundlePromise
       const responsiblePractitioner = getResponsiblePractitioner(bundle)
       expect(responsiblePractitioner.identifier).toMatchObject([{
         system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -446,7 +498,8 @@ describe("practitioner details", () => {
         value: "AuthorRoleProfileId"
       }])
     })
-    test("responsible practitioner PractitionerRole contains correct codes", () => {
+    test("responsible practitioner PractitionerRole contains correct codes", async () => {
+      const bundle = await bundlePromise
       const responsiblePractitioner = getResponsiblePractitioner(bundle)
       expect(responsiblePractitioner.code).toMatchObject([{
         coding: [{
@@ -456,17 +509,20 @@ describe("practitioner details", () => {
         }]
       }])
     })
-    test("performer is the same as requester", () => {
+    test("performer is the same as requester", async () => {
+      const bundle = await bundlePromise
       const requester = getRequester(bundle)
       const performer = getPerformer(bundle)
       expect(performer).toBe(requester)
     })
 
-    test("two Practitioners present", () => {
+    test("two Practitioners present", async () => {
+      const bundle = await bundlePromise
       const practitioners = getPractitioners(bundle)
       expect(practitioners).toHaveLength(2)
     })
-    test("requester Practitioner contains correct identifiers", () => {
+    test("requester Practitioner contains correct identifiers", async () => {
+      const bundle = await bundlePromise
       const requesterPractitionerRole = getRequester(bundle)
       const requesterPractitioner = resolvePractitioner(bundle, requesterPractitionerRole.practitioner)
       expect(requesterPractitioner.identifier).toMatchObject([
@@ -481,7 +537,8 @@ describe("practitioner details", () => {
         }
       ])
     })
-    test("responsible practitioner Practitioner contains correct identifiers", () => {
+    test("responsible practitioner Practitioner contains correct identifiers", async () => {
+      const bundle = await bundlePromise
       const respPracPractitionerRole = getResponsiblePractitioner(bundle)
       const respPracPractitioner = resolvePractitioner(bundle, respPracPractitionerRole.practitioner)
       expect(respPracPractitioner.identifier).toMatchObject([{
@@ -503,19 +560,22 @@ describe("practitioner details", () => {
     dispenseError.performer.AgentPerson.id._attributes.extension = "CommonRoleProfileId"
     dispenseError.performer.AgentPerson.code._attributes.code = "CommonJobRoleCode"
     dispenseError.performer.AgentPerson.agentPerson.id._attributes.extension = "ProfessionalCode3"
-    const bundle = translateSpineCancelResponseIntoBundle(dispenseError)
+    const bundlePromise = translateSpineCancelResponseIntoBundle(dispenseError, logger)
 
-    test("one PractitionerRole present", () => {
+    test("one PractitionerRole present", async () => {
+      const bundle = await bundlePromise
       expect(getPractitionerRoles(bundle)).toHaveLength(1)
     })
-    test("requester PractitionerRole contains correct identifiers", () => {
+    test("requester PractitionerRole contains correct identifiers", async () => {
+      const bundle = await bundlePromise
       const requester = getRequester(bundle)
       expect(requester.identifier).toMatchObject([{
         system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
         value: "CommonRoleProfileId"
       }])
     })
-    test("requester PractitionerRole contains correct codes", () => {
+    test("requester PractitionerRole contains correct codes", async () => {
+      const bundle = await bundlePromise
       const requester = getRequester(bundle)
       expect(requester.code).toMatchObject([{
         coding: [{
@@ -524,22 +584,26 @@ describe("practitioner details", () => {
         }]
       }])
     })
-    test("responsible practitioner is the same as requester", () => {
+    test("responsible practitioner is the same as requester", async () => {
+      const bundle = await bundlePromise
       const requester = getRequester(bundle)
       const responsiblePractitioner = getResponsiblePractitioner(bundle)
       expect(responsiblePractitioner).toBe(requester)
     })
-    test("performer is the same as requester", () => {
+    test("performer is the same as requester", async () => {
+      const bundle = await bundlePromise
       const requester = getRequester(bundle)
       const performer = getPerformer(bundle)
       expect(performer).toBe(requester)
     })
 
-    test("one Practitioner present", () => {
+    test("one Practitioner present", async () => {
+      const bundle = await bundlePromise
       const practitioners = getPractitioners(bundle)
       expect(practitioners).toHaveLength(1)
     })
-    test("requester Practitioner contains correct identifiers", () => {
+    test("requester Practitioner contains correct identifiers", async () => {
+      const bundle = await bundlePromise
       const requesterPractitionerRole = getRequester(bundle)
       const requesterPractitioner = resolvePractitioner(bundle, requesterPractitionerRole.practitioner)
       expect(requesterPractitioner.identifier).toMatchObject([

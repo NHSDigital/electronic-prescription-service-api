@@ -243,3 +243,64 @@ export const ORGANIZATION_FER21_HOMECARE: fhir.Organization = {
     country: "ENGLAND"
   }]
 }
+export const ORGANIZATION_A99968_COST_CENTRE: fhir.Organization = {
+  resourceType: "Organization",
+  identifier: [{
+    system: "https://fhir.nhs.uk/Id/ods-organization-code",
+    value: "A99968"
+  }],
+  type: [{
+    coding: [{
+      system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+      code: "177"
+    }]
+  }],
+  name: "SOMERSET BOWEL CANCER SCREENING CENTRE",
+  telecom: [{
+    system: "phone",
+    value: "01278 432000"
+  }],
+  address: [{
+    line: [
+      "TRUST MANAGEMENT",
+      "LYDEARD HOUSE",
+      "MUSGROVE PARK HOSPITAL"
+    ],
+    city: "TAUNTON",
+    postalCode: "TA1 5DA",
+    country: "ENGLAND"
+  }]
+}
+
+export const ORGANIZATION_RBA_NHS_TRUST: fhir.Organization = {
+  resourceType: "Organization",
+  identifier: [{
+    system: "https://fhir.nhs.uk/Id/ods-organization-code",
+    value: "RBA"
+  }],
+  type: [{
+    coding: [{
+      system: "https://fhir.nhs.uk/CodeSystem/organisation-role",
+      code: "197"
+    }]
+  }],
+  name: "TAUNTON AND SOMERSET NHS FOUNDATION TRUST",
+  telecom: [
+    {
+      system: "phone",
+      value: "01823 333444"
+    },
+    {
+      system: "url",
+      value: "HTTPS://WWW.TSFT.NHS.UK/"
+    }
+  ],
+  address: [{
+    line: [
+      "MUSGROVE PARK HOSPITAL"
+    ],
+    city: "TAUNTON",
+    postalCode: "TA1 5DA",
+    country: "ENGLAND"
+  }]
+}

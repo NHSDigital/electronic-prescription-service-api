@@ -23,11 +23,11 @@ export function createHash(thingsToHash: string): string {
   return crypto.SHA256(thingsToHash).toString()
 }
 
-export function handleResponse<T>(
+export async function handleResponse<T>(
   request: Hapi.Request,
   spineResponse: spine.SpineDirectResponse<T> | spine.SpinePollableResponse,
   responseToolkit: Hapi.ResponseToolkit
-): Hapi.ResponseObject {
+): Promise<Hapi.ResponseObject> {
   if (spine.isPollable(spineResponse)) {
     return responseToolkit.response()
       .code(spineResponse.statusCode)
@@ -43,7 +43,7 @@ export function handleResponse<T>(
         .code(200)
         .type(ContentTypes.XML)
     } else {
-      const translatedSpineResponse = translateToFhir(spineResponse, request.logger)
+      const translatedSpineResponse = await translateToFhir(spineResponse, request.logger)
       const serializedResponse = LosslessJson.stringify(translatedSpineResponse.fhirResponse)
       return responseToolkit.response(serializedResponse)
         .code(translatedSpineResponse.statusCode)

@@ -1,11 +1,19 @@
 import * as uuid from "uuid"
-import {toArray} from "../common"
+import {getCodeableConceptCodingForSystem, toArray} from "../common"
 import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {createPractitioner} from "./practitioner"
-import {createHealthcareService, createLocations, createOrganization} from "./organization"
+import {
+  createHealthcareService,
+  createLocations,
+  createOrganization,
+  getOrganizationCodeIdentifier
+} from "./organization"
 import {createPractitionerRole, createRefactoredPractitionerRole} from "./practitioner-role"
 import {createPractitionerOrRoleIdentifier} from "./identifiers"
 import {prescriptionRefactorEnabled} from "../../../utils/feature-flags"
+import {odsClient} from "../../communication/ods-client"
+import pino from "pino"
+import {createIdentifierReference} from "../../../../../models/fhir"
 
 export function convertName(names: Array<hl7V3.Name> | hl7V3.Name): Array<fhir.HumanName> {
   const nameArray = toArray(names)
@@ -170,7 +178,7 @@ export interface TranslatedAgentPerson {
   practitionerRole: fhir.PractitionerRole
   practitioner?: fhir.Practitioner
   healthcareService?: fhir.HealthcareService
-  locations: Array<fhir.Location>
+  locations?: Array<fhir.Location>
   organization?: fhir.Organization
 }
 
@@ -178,20 +186,37 @@ export function roleProfileIdIdentical(agentPerson1: hl7V3.AgentPerson, agentPer
   return agentPerson1.id._attributes.extension === agentPerson2.id._attributes.extension
 }
 
-export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): TranslatedAgentPerson {
+const costCentreCodes = new Set<string>([
+  "72", "80", "82", "177", "246", "247", "249", "250",
+  "251", "252", "255", "256", "257", "258", "259", "260"
+])
+
+function isCostCentre(organizationRole: fhir.Coding) {
+  return costCentreCodes.has(organizationRole.code)
+}
+
+export async function translateAgentPerson(
+  agentPerson: hl7V3.AgentPerson,
+  logger: pino.Logger
+): Promise<TranslatedAgentPerson> {
+  const childOrganization = agentPerson.representedOrganization
+  const childOrganizationRole = await lookupRoleFromOds(childOrganization, logger)
+  const childOrganizationIsHealthcareService = isCostCentre(childOrganizationRole)
+
   if (prescriptionRefactorEnabled()) {
+    //TODO - support primary care in refactored version of the message
     const practitionerRole = createRefactoredPractitionerRole(agentPerson)
-    const locations = createLocations(agentPerson.representedOrganization)
+    const locations = createLocations(childOrganization)
 
     return {
       practitionerRole,
       locations
     }
-  } else {
+  } else if (childOrganizationIsHealthcareService) {
     const practitioner = createPractitioner(agentPerson)
-    const locations = createLocations(agentPerson.representedOrganization)
-    const healthcareService = createHealthcareService(agentPerson.representedOrganization, locations)
-    const practitionerRole = createPractitionerRole(agentPerson, practitioner.id, healthcareService.id)
+    const locations = createLocations(childOrganization)
+    const healthcareService = createHealthcareService(childOrganization, locations)
+    const practitionerRole = createPractitionerRole(agentPerson, practitioner.id, healthcareService.id, null)
 
     const translatedAgentPerson: TranslatedAgentPerson = {
       practitionerRole,
@@ -200,9 +225,11 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): Translated
       locations
     }
 
-    const healthCareProviderLicense = agentPerson.representedOrganization.healthCareProviderLicense
+    const healthCareProviderLicense = childOrganization.healthCareProviderLicense
     if (healthCareProviderLicense) {
-      const organization = createOrganization(healthCareProviderLicense.Organization)
+      const parentOrganization = healthCareProviderLicense.Organization
+      const parentOrganizationRole = await lookupRoleFromOds(parentOrganization, logger)
+      const organization = createOrganization(parentOrganization, parentOrganizationRole)
       healthcareService.providedBy = {
         identifier: organization.identifier[0],
         display: organization.name
@@ -212,7 +239,41 @@ export function translateAgentPerson(agentPerson: hl7V3.AgentPerson): Translated
     }
 
     return translatedAgentPerson
+  } else {
+    const practitioner = createPractitioner(agentPerson)
+    const organization = createOrganization(childOrganization, childOrganizationRole)
+    const practitionerRole = createPractitionerRole(agentPerson, practitioner.id, null, organization.id)
+
+    const translatedAgentPerson: TranslatedAgentPerson = {
+      practitionerRole,
+      practitioner,
+      organization
+    }
+
+    const healthCareProviderLicense = childOrganization.healthCareProviderLicense
+    if (healthCareProviderLicense) {
+      const parentOrganization = healthCareProviderLicense.Organization
+      organization.partOf = createIdentifierReference(
+        getOrganizationCodeIdentifier(parentOrganization.id._attributes.extension),
+        parentOrganization.name?._text
+      )
+    }
+
+    return translatedAgentPerson
   }
+}
+
+async function lookupRoleFromOds(organization: hl7V3.Organization, logger: pino.Logger) {
+  const organizationOdsCode = organization.id._attributes.extension
+  const organizationFromOds = await odsClient.lookupOrganization(organizationOdsCode, logger)
+  if (!organizationFromOds) {
+    throw new Error(`Organization not found for code ${organizationOdsCode}`)
+  }
+  return getCodeableConceptCodingForSystem(
+    organizationFromOds.type,
+    "https://fhir.nhs.uk/CodeSystem/organisation-role",
+    "Organization.type"
+  )
 }
 
 export function addTranslatedAgentPerson(
@@ -222,9 +283,13 @@ export function addTranslatedAgentPerson(
   bundleResources.push(
     translatedAgentPerson.practitionerRole,
     translatedAgentPerson.practitioner,
-    translatedAgentPerson.healthcareService,
-    ...translatedAgentPerson.locations
   )
+  if (translatedAgentPerson.healthcareService) {
+    bundleResources.push(
+      translatedAgentPerson.healthcareService,
+      ...translatedAgentPerson.locations
+    )
+  }
   if (translatedAgentPerson.organization) {
     bundleResources.push(translatedAgentPerson.organization)
   }

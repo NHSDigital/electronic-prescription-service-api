@@ -63,7 +63,7 @@ describe("createMedicationRequest", () => {
     const identifier = medicationRequest.identifier
     expect(identifier).toHaveLength(1)
     expect(identifier[0].system).toBe("https://fhir.nhs.uk/Id/prescription-order-item-number")
-    expect(identifier[0].value).toBe("a54219b8-f741-4c47-b662-e4f8dfa49ab6")
+    expect(identifier[0].value).toBe("f50c5754-0656-43cd-9dc4-af46f6451fe6")
   })
 
   test("has 'order' in `intent` key", () => {
@@ -103,7 +103,7 @@ describe("createMedicationRequest", () => {
   test("groupIdentifier", () => {
     const groupIdentifier = medicationRequest.groupIdentifier
     expect(groupIdentifier.system).toBe("https://fhir.nhs.uk/Id/prescription-order-number")
-    expect(groupIdentifier.value).toBe("DA923E-Z8827F-11EBAK")
+    expect(groupIdentifier.value).toBe("CDEE6E-A83008-1BD6DO")
   })
 
   test("dispenseRequest", () => {

@@ -34,7 +34,7 @@ describe("default handler", () => {
     const expectedSendMessagePayload = createSuccess("MCCI_IN010000UK13", undefined)
     const spineResponse = writeXmlStringPretty({MCCI_SOMETHING_ELSE: expectedSendMessagePayload})
     const result = defaultHandler.handleResponse(spineResponse, logger)
-    expect(result).toBeNull()
+    expect(result).resolves.toBeNull()
   })
 
   function checkResponseObjectAndStatusCode(
@@ -44,7 +44,7 @@ describe("default handler", () => {
   ) {
     const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
     const result = defaultHandler.handleResponse(spineResponse, logger)
-    expect(result).toMatchObject({
+    expect(result).resolves.toMatchObject({
       statusCode: statusCode,
       fhirResponse: {
         resourceType: "OperationOutcome",
@@ -191,7 +191,7 @@ describe("custom response handler", () => {
     const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
     rejectionOverride.mockReturnValueOnce(customResponse)
     const result = customHandler.handleResponse(spineResponse, logger)
-    expect(result).toBe(customResponse)
+    expect(result).resolves.toBe(customResponse)
     expect(rejectionOverride).toHaveBeenCalled()
   })
 
@@ -204,7 +204,7 @@ describe("custom response handler", () => {
     const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
     errorOverride.mockReturnValueOnce(customResponse)
     const result = customHandler.handleResponse(spineResponse, logger)
-    expect(result).toBe(customResponse)
+    expect(result).resolves.toBe(customResponse)
     expect(errorOverride).toHaveBeenCalled()
   })
 
@@ -213,7 +213,7 @@ describe("custom response handler", () => {
     const spineResponse = writeXmlStringPretty({MCCI_IN010000UK13: expectedSendMessagePayload})
     successOverride.mockReturnValueOnce(customResponse)
     const result = customHandler.handleResponse(spineResponse, logger)
-    expect(result).toBe(customResponse)
+    expect(result).resolves.toBe(customResponse)
     expect(successOverride).toHaveBeenCalled()
   })
 })
@@ -234,7 +234,7 @@ describe("cancel response handler", () => {
     )
     const spineResponse = writeXmlStringPretty({PORX_IN050101UK31: expectedSendMessagePayload})
     const result = cancelResponseHandler.handleResponse(spineResponse, logger)
-    expect(result).toMatchObject({
+    expect(result).resolves.toMatchObject({
       statusCode: 400,
       fhirResponse: {
         resourceType: "OperationOutcome",
@@ -252,11 +252,11 @@ describe("cancel response handler", () => {
     const spineResponse = writeXmlStringPretty({PORX_IN050101UK31: expectedSendMessagePayload})
     mockTranslator.mockReturnValueOnce(mockTranslatorResponse)
     const result = cancelResponseHandler.handleResponse(spineResponse, logger)
-    expect(result).toEqual({
+    expect(result).resolves.toEqual({
       statusCode: 400,
       fhirResponse: mockTranslatorResponse
     })
-    expect(mockTranslator).toHaveBeenCalledWith(mockCancellationResponse)
+    expect(mockTranslator).toHaveBeenCalledWith(mockCancellationResponse, logger)
   })
 
   test("handleResponse returns 200 response if spine response is a success", () => {
@@ -267,11 +267,11 @@ describe("cancel response handler", () => {
     const spineResponse = writeXmlStringPretty({PORX_IN050101UK31: expectedSendMessagePayload})
     mockTranslator.mockReturnValueOnce(mockTranslatorResponse)
     const result = cancelResponseHandler.handleResponse(spineResponse, logger)
-    expect(result).toEqual({
+    expect(result).resolves.toEqual({
       statusCode: 200,
       fhirResponse: mockTranslatorResponse
     })
-    expect(mockTranslator).toHaveBeenCalledWith(mockCancellationResponse)
+    expect(mockTranslator).toHaveBeenCalledWith(mockCancellationResponse, logger)
   })
 })
 
@@ -291,7 +291,7 @@ describe("release response handler", () => {
     )
     const spineResponse = writeXmlStringPretty({PORX_IN070101UK31: expectedSendMessagePayload})
     const result = releaseResponseHandler.handleResponse(spineResponse, logger)
-    expect(result).toMatchObject({
+    expect(result).resolves.toMatchObject({
       statusCode: 400,
       fhirResponse: {
         resourceType: "OperationOutcome",
@@ -308,7 +308,7 @@ describe("release response handler", () => {
     )
     const spineResponse = writeXmlStringPretty({PORX_IN070101UK31: expectedSendMessagePayload})
     const result = releaseResponseHandler.handleResponse(spineResponse, logger)
-    expect(result).toMatchObject({
+    expect(result).resolves.toMatchObject({
       statusCode: 400,
       fhirResponse: {
         resourceType: "OperationOutcome",
@@ -325,11 +325,11 @@ describe("release response handler", () => {
     const spineResponse = writeXmlStringPretty({PORX_IN070101UK31: expectedSendMessagePayload})
     mockTranslator.mockReturnValueOnce(mockTranslatorResponse)
     const result = releaseResponseHandler.handleResponse(spineResponse, logger)
-    expect(result).toEqual({
+    expect(result).resolves.toEqual({
       statusCode: 200,
       fhirResponse: mockTranslatorResponse
     })
-    expect(mockTranslator).toHaveBeenCalledWith(mockReleaseResponse)
+    expect(mockTranslator).toHaveBeenCalledWith(mockReleaseResponse, logger)
   })
 })
 

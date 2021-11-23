@@ -13,7 +13,7 @@ describe("translations are reversible", () => {
   const originalBundle = TestResources.specification[0].fhirMessageSigned
   const parentPrescription = convertParentPrescription(originalBundle, logger)
   ensureLineItemStatus(parentPrescription)
-  const translatedBundle = createInnerBundle(parentPrescription, uuid.v4())
+  const translatedBundlePromise = createInnerBundle(parentPrescription, uuid.v4(), logger)
 
   test.skip.each([
     "MessageHeader",
@@ -27,9 +27,10 @@ describe("translations are reversible", () => {
     "Location",
     "Organization",
     "Provenance"
-  ])("%s", (resourceType: string) => {
+  ])("%s", async (resourceType: string) => {
     const original = getResourcesOfType(originalBundle, resourceType)
     removeIds(...original)
+    const translatedBundle = await translatedBundlePromise
     const translated = getResourcesOfType(translatedBundle, resourceType)
     removeIds(...translated)
     expect(original.length).toBeGreaterThan(0)

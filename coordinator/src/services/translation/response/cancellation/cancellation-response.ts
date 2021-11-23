@@ -14,14 +14,18 @@ import {
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
 import {fhir, hl7V3} from "@models"
 import {createPatient} from "../patient"
+import pino from "pino"
 
-export function translateSpineCancelResponseIntoBundle(cancellationResponse: hl7V3.CancellationResponse): fhir.Bundle {
+export async function translateSpineCancelResponseIntoBundle(
+  cancellationResponse: hl7V3.CancellationResponse,
+  logger: pino.Logger
+): Promise<fhir.Bundle> {
   return {
     resourceType: "Bundle",
     type: "message",
     identifier: createBundleIdentifier(cancellationResponse),
     timestamp: convertHL7V3DateTimeToIsoDateTimeString(cancellationResponse.effectiveTime),
-    entry: createBundleEntries(cancellationResponse)
+    entry: await createBundleEntries(cancellationResponse, logger)
   }
 }
 
@@ -43,17 +47,20 @@ export function translateSpineCancelResponseIntoOperationOutcome(
   }
 }
 
-export function translateSpineCancelResponse (cancellationResponse: hl7V3.CancellationResponse):
-  fhir.Bundle | fhir.OperationOutcome {
+export async function translateSpineCancelResponse (
+  cancellationResponse: hl7V3.CancellationResponse,
+  logger: pino.Logger
+):
+  Promise<fhir.Bundle | fhir.OperationOutcome> {
   const prescriptionStatusInformation = extractStatusCode(cancellationResponse)
   if (prescriptionStatusInformation.issueCode) {
     return translateSpineCancelResponseIntoOperationOutcome(prescriptionStatusInformation)
   } else {
-    return translateSpineCancelResponseIntoBundle(cancellationResponse)
+    return await translateSpineCancelResponseIntoBundle(cancellationResponse, logger)
   }
 }
 
-function createBundleEntries(cancellationResponse: hl7V3.CancellationResponse) {
+async function createBundleEntries(cancellationResponse: hl7V3.CancellationResponse, logger: pino.Logger) {
   const bundleResources: Array<fhir.Resource> = []
 
   const fhirPatient = createPatient(cancellationResponse.recordTarget.Patient)
@@ -62,7 +69,7 @@ function createBundleEntries(cancellationResponse: hl7V3.CancellationResponse) {
 
   //The Author represents the author of the cancel request, not necessarily the author of the original prescription
   const cancelRequesterAgentPerson = cancellationResponse.author.AgentPerson
-  const translatedCancelRequester = translateAgentPerson(cancelRequesterAgentPerson)
+  const translatedCancelRequester = await translateAgentPerson(cancelRequesterAgentPerson, logger)
   addTranslatedAgentPerson(bundleResources, translatedCancelRequester)
 
   //The ResponsibleParty represents the author of the original prescription (if different to the cancel requester)
@@ -72,7 +79,7 @@ function createBundleEntries(cancellationResponse: hl7V3.CancellationResponse) {
     if (roleProfileIdIdentical(originalPrescriptionAuthorAgentPerson, cancelRequesterAgentPerson)) {
       addDetailsToTranslatedAgentPerson(translatedCancelRequester, originalPrescriptionAuthorAgentPerson)
     } else {
-      translatedOriginalPrescriptionAuthor = translateAgentPerson(originalPrescriptionAuthorAgentPerson)
+      translatedOriginalPrescriptionAuthor = await translateAgentPerson(originalPrescriptionAuthorAgentPerson, logger)
       addTranslatedAgentPerson(bundleResources, translatedOriginalPrescriptionAuthor)
     }
   }
@@ -109,7 +116,7 @@ function createBundleEntries(cancellationResponse: hl7V3.CancellationResponse) {
       addDetailsToTranslatedAgentPerson(translatedOriginalPrescriptionAuthor, performerAgentPerson)
       translatedPerformer = translatedOriginalPrescriptionAuthor
     } else {
-      translatedPerformer = translateAgentPerson(performerAgentPerson)
+      translatedPerformer = await translateAgentPerson(performerAgentPerson, logger)
       addTranslatedAgentPerson(bundleResources, translatedPerformer)
     }
     medicationRequest.dispenseRequest = createDispenserInfoReference(

@@ -21,7 +21,7 @@ export class SpineResponseHandler<T> {
     this.regex = new RegExp(pattern)
   }
 
-  handleResponse(spineResponse: string, logger: pino.Logger): TranslatedSpineResponse {
+  async handleResponse(spineResponse: string, logger: pino.Logger): Promise<TranslatedSpineResponse> {
     const sendMessagePayload = this.extractSendMessagePayload(spineResponse)
     if (!sendMessagePayload) {
       return null
@@ -29,12 +29,12 @@ export class SpineResponseHandler<T> {
     const acknowledgementTypeCode = this.extractAcknowledgementTypeCode(sendMessagePayload)
     switch (acknowledgementTypeCode) {
       case hl7V3.AcknowledgementTypeCode.ACKNOWLEDGED:
-        return this.handleSuccessResponse(sendMessagePayload, logger)
+        return await this.handleSuccessResponse(sendMessagePayload, logger)
       case hl7V3.AcknowledgementTypeCode.ERROR:
       case hl7V3.AcknowledgementTypeCode.ERROR_ALTERNATIVE:
-        return this.handleErrorResponse(sendMessagePayload, logger)
+        return await this.handleErrorResponse(sendMessagePayload, logger)
       case hl7V3.AcknowledgementTypeCode.REJECTED:
-        return this.handleRejectionResponse(sendMessagePayload, logger)
+        return await this.handleRejectionResponse(sendMessagePayload, logger)
       default:
         logger.error("Unhandled acknowledgement type code " + acknowledgementTypeCode)
         return SpineResponseHandler.createServerErrorResponse()
@@ -452,60 +452,61 @@ export class SpineResponseHandler<T> {
     }
   }
 
-  protected handleRejectionResponse(
+  protected async handleRejectionResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<T>,
     logger: pino.Logger
-  ): TranslatedSpineResponse {
+  ): Promise<TranslatedSpineResponse> {
     const errorCodes = this.extractRejectionCodes(sendMessagePayload)
     return SpineResponseHandler.handleErrorOrRejectionResponse(errorCodes, logger)
   }
 
-  protected handleErrorResponse(
+  protected async handleErrorResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<T>,
     logger: pino.Logger
-  ): TranslatedSpineResponse {
+  ): Promise<TranslatedSpineResponse> {
     const errorCodes = this.extractErrorCodes(sendMessagePayload)
     return SpineResponseHandler.handleErrorOrRejectionResponse(errorCodes, logger)
   }
 
   /* eslint-disable @typescript-eslint/no-unused-vars */
-  protected handleSuccessResponse(
+  protected async handleSuccessResponse(
     sendMessagePayload: hl7V3.SendMessagePayload<T>,
     logger: pino.Logger
-  ): TranslatedSpineResponse {
+  ): Promise<TranslatedSpineResponse> {
     return SpineResponseHandler.createSuccessResponse()
   }
 }
 
 export class CancelResponseHandler extends SpineResponseHandler<hl7V3.CancellationResponseRoot> {
-  translator: (cancelResponse: hl7V3.CancellationResponse) => fhir.Bundle | fhir.OperationOutcome
+  translator: typeof cancelResponseTranslator.translateSpineCancelResponse
 
   constructor(
     interactionId: string,
-    translator: (cancelResponse: hl7V3.CancellationResponse) => fhir.Bundle | fhir.OperationOutcome
-    = cancelResponseTranslator.translateSpineCancelResponse
+    translator = cancelResponseTranslator.translateSpineCancelResponse
   ) {
     super(interactionId)
     this.translator = translator
   }
 
-  protected handleSuccessResponse(
-    sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.CancellationResponseRoot>
-  ): TranslatedSpineResponse {
+  protected async handleSuccessResponse(
+    sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.CancellationResponseRoot>,
+    logger: pino.Logger
+  ): Promise<TranslatedSpineResponse> {
     const cancellationResponse = sendMessagePayload.ControlActEvent.subject.CancellationResponse
     return {
       statusCode: 200,
-      fhirResponse: this.translator(cancellationResponse)
+      fhirResponse: await this.translator(cancellationResponse, logger)
     }
   }
 
-  protected handleErrorResponse(
-    sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.CancellationResponseRoot>
-  ): TranslatedSpineResponse {
+  protected async handleErrorResponse(
+    sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.CancellationResponseRoot>,
+    logger: pino.Logger
+  ): Promise<TranslatedSpineResponse> {
     const cancellationResponse = sendMessagePayload.ControlActEvent.subject.CancellationResponse
     return {
       statusCode: 400,
-      fhirResponse: this.translator(cancellationResponse)
+      fhirResponse: await this.translator(cancellationResponse, logger)
     }
   }
 }
@@ -521,24 +522,24 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
 }
 
 export class ReleaseResponseHandler extends SpineResponseHandler<hl7V3.PrescriptionReleaseResponseRoot> {
-  translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse) => fhir.Bundle
+  translator: typeof releaseResponseTranslator.createOuterBundle
 
   constructor(
     interactionId: string,
-    translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse) => fhir.Bundle
-    = releaseResponseTranslator.createOuterBundle
+    translator = releaseResponseTranslator.createOuterBundle
   ) {
     super(interactionId)
     this.translator = translator
   }
 
-  protected handleSuccessResponse(
-    sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseResponseRoot>
-  ): TranslatedSpineResponse {
+  protected async handleSuccessResponse(
+    sendMessagePayload: hl7V3.SendMessagePayload<hl7V3.PrescriptionReleaseResponseRoot>,
+    logger: pino.Logger
+  ): Promise<TranslatedSpineResponse> {
     const releaseResponse = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseResponse
     return {
       statusCode: 200,
-      fhirResponse: this.translator(releaseResponse)
+      fhirResponse: await this.translator(releaseResponse, logger)
     }
   }
 }

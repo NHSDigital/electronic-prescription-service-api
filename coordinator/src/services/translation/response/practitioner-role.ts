@@ -13,19 +13,26 @@ import {getOrganizationCodeIdentifier} from "./organization"
 export function createPractitionerRole(
   hl7AgentPerson: hl7V3.AgentPerson,
   practitionerId: string,
-  healthcareServiceId: string
+  healthcareServiceId: string,
+  organizationId: string
 ): fhir.PractitionerRole {
-  return {
+  const practitionerRole: fhir.PractitionerRole = {
     resourceType: "PractitionerRole",
     id: generateResourceId(),
     identifier: createPractitionerRoleIdentifiers(hl7AgentPerson),
     practitioner: fhir.createReference(practitionerId),
-    healthcareService: [
-      fhir.createReference(healthcareServiceId)
-    ],
     code: createJobRoleNameCode(hl7AgentPerson.code._attributes.code),
     telecom: toArray(hl7AgentPerson.telecom)[0]?._attributes ? convertTelecom(hl7AgentPerson.telecom) : undefined
   }
+  if (healthcareServiceId) {
+    practitionerRole.healthcareService = [
+      fhir.createReference(healthcareServiceId)
+    ]
+  }
+  if (organizationId) {
+    practitionerRole.organization = fhir.createReference(healthcareServiceId)
+  }
+  return practitionerRole
 }
 
 export function createRefactoredPractitionerRole(
