@@ -11,6 +11,10 @@ export class SandboxSpineClient implements SpineClient {
   async send(spineRequest: spine.SpineRequest): Promise<spine.SpineResponse<unknown>> {
     switch (spineRequest.interactionId) {
       case hl7V3.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT._attributes.extension:
+      case hl7V3.Hl7InteractionIdentifier.DISPENSE_PROPOSAL_RETURN._attributes.extension:
+      case hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION._attributes.extension:
+      case hl7V3.Hl7InteractionIdentifier.DISPENSER_WITHDRAW._attributes.extension:
+      case hl7V3.Hl7InteractionIdentifier.DISPENSE_CLAIM_INFORMATION._attributes.extension:
         return Promise.resolve({
           statusCode: 200,
           body: spineResponses.APPLICATION_ACKNOWLEDGEMENT
@@ -21,34 +25,10 @@ export class SandboxSpineClient implements SpineClient {
           body: spineResponses.CANCEL
         })
       case hl7V3.Hl7InteractionIdentifier.NOMINATED_PRESCRIPTION_RELEASE_REQUEST._attributes.extension:
-        return Promise.resolve({
-          statusCode: 200,
-          body: spineResponses.NOMINATED_PRESCRIPTION_RELEASE
-        })
       case hl7V3.Hl7InteractionIdentifier.PATIENT_PRESCRIPTION_RELEASE_REQUEST._attributes.extension:
         return Promise.resolve({
           statusCode: 200,
-          body: spineResponses.NOMINATED_PRESCRIPTION_RELEASE
-        })
-      case hl7V3.Hl7InteractionIdentifier.DISPENSE_NOTIFICATION._attributes.extension:
-        return Promise.resolve({
-          statusCode: 200,
-          body: spineResponses.APPLICATION_ACKNOWLEDGEMENT
-        })
-      case hl7V3.Hl7InteractionIdentifier.DISPENSE_CLAIM_INFORMATION._attributes.extension:
-        return Promise.resolve({
-          statusCode: 200,
-          body: spineResponses.APPLICATION_ACKNOWLEDGEMENT
-        })
-      case hl7V3.Hl7InteractionIdentifier.DISPENSER_WITHDRAW._attributes.extension:
-        return Promise.resolve({
-          statusCode: 200,
-          body: spineResponses.DISPENSER_WITHDRAW
-        })
-      case hl7V3.Hl7InteractionIdentifier.DISPENSE_PROPOSAL_RETURN._attributes.extension:
-        return Promise.resolve({
-          statusCode: 200,
-          body: spineResponses.DISPENSE_PROPOSAL_RETURN
+          body: spineResponses.RELEASE
         })
       default:
         return Promise.resolve({
