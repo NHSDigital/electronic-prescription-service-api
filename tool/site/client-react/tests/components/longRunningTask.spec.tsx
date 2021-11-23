@@ -3,6 +3,7 @@ import {render, screen} from "@testing-library/react"
 import React from "react"
 import pretty from "pretty"
 import userEvent from "@testing-library/user-event"
+import { redirect } from "../../src/browser/navigation"
 
 test("Shows loading message while task runs", async () => {
   const mockTask = jest.fn()
@@ -51,23 +52,6 @@ test.each([
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-test("Error page includes a back button with the provided href", async () => {
-  const mockTask = jest.fn()
-  mockTask.mockRejectedValue(new Error("Some error message"))
-
-  const ui = (
-    <LongRunningTask<Record<string, string>> task={mockTask} loadingMessage="Loading" back="http://example.com/">
-      {result => <span>{result.data}</span>}
-    </LongRunningTask>
-  )
-  const {container} = render(ui)
-
-  const linkButton = await screen.findByText<HTMLAnchorElement>("Back")
-  expect(linkButton.href).toEqual("http://example.com/")
-  expect(mockTask).toHaveBeenCalledTimes(1)
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
-})
-
 test("Error page includes a back button with the provided onclick handler", async () => {
   const mockTask = jest.fn()
   mockTask.mockRejectedValue(new Error("Some error message"))
@@ -84,5 +68,22 @@ test("Error page includes a back button with the provided onclick handler", asyn
   userEvent.click(button)
   expect(mockTask).toHaveBeenCalledTimes(1)
   expect(mockBack).toHaveBeenCalledTimes(1)
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
+test("Error page includes a back button defaulted to the previous page when no handler provided", async () => {
+  const mockTask = jest.fn()
+  mockTask.mockRejectedValue(new Error("Some error message"))
+
+  const ui = (
+    <LongRunningTask<Record<string, string>> task={mockTask} loadingMessage="Loading">
+      {result => <span>{result.data}</span>}
+    </LongRunningTask>
+  )
+  const {container} = render(ui)
+
+  const linkButton = await screen.findByText<HTMLButtonElement>("Back")
+  expect(linkButton.innerText).toEqual(undefined)
+  expect(mockTask).toHaveBeenCalledTimes(1)
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })

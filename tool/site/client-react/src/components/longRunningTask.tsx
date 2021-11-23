@@ -48,7 +48,6 @@ const LongRunningTask = <T extends unknown>({
             ? <Button secondary onClick={back}>Back</Button>
             : <BackButton/>
           }
-          <BackButton/>
         </ButtonList>
       </>
     )
