@@ -42,8 +42,8 @@ describe("verifyParameters returns errors", () => {
     expect(result).toEqual([])
   })
 
-  test("accepts when only dispensing app scope present", () => {
+  test("rejects when only dispensing app scope present", () => {
     const result = verifyParameters(validParameters, DISPENSING_APP_SCOPE)
-    expect(result).toEqual([])
+    expect(result).toEqual([errors.createUserRestrictedOnlyScopeIssue("Dispensing")])
   })
 })

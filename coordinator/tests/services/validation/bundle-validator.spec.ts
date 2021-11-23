@@ -101,9 +101,9 @@ describe("Bundle checks", () => {
     expect(result).toEqual([])
   })
 
-  test("verifyBundle accepts a dispense message when only dispensing app scope present", () => {
+  test("verifyBundle rejects a dispense message when only dispensing app scope present", () => {
     const result = validator.verifyBundle(TestResources.examplePrescription3.fhirMessageDispense, DISPENSING_APP_SCOPE)
-    expect(result).toEqual([])
+    expect(result).toEqual([errors.createUserRestrictedOnlyScopeIssue("Dispensing")])
   })
 
   test("verifyBundle rejects a dispense message when only prescribing user scope present", () => {

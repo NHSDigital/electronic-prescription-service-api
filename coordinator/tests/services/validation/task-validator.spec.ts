@@ -98,8 +98,8 @@ describe("verifyTask returns errors", () => {
     expect(result).toEqual([])
   })
 
-  test("accepts a message when only dispensing user scope present", () => {
+  test("rejects a message when only dispensing app scope present", () => {
     const result = verifyTask(validReturnTask, DISPENSING_APP_SCOPE)
-    expect(result).toEqual([])
+    expect(result).toEqual([errors.createUserRestrictedOnlyScopeIssue("Dispensing")])
   })
 })
