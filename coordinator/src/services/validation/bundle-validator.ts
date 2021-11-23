@@ -256,9 +256,9 @@ export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string
     )
   }
 
-  const organizations = actors.filter(actor => actor.type === "Organization")
-  if (organizations) {
-    const bodyOrg = organizations[0].identifier.value
+  const organization = actors.find(actor => actor.type === "Organization")
+  if (organization) {
+    const bodyOrg = organization.identifier.value
     if (bodyOrg !== accessTokenOds) {
       console.warn(
         `Organization details do not match in request accessToken (${accessTokenOds}) and request body (${bodyOrg}).`

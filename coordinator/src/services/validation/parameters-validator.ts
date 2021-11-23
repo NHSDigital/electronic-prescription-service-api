@@ -5,9 +5,8 @@ import {getIdentifierParameterByName} from "../translation/common"
 export function verifyParameters(
   parameters: fhir.Parameters, scope: string, accessTokenOds: string
 ): Array<fhir.OperationOutcomeIssue> {
-  const validationErrors = []
   if (parameters.resourceType !== "Parameters") {
-    validationErrors.push(errors.createResourceTypeIssue("Parameters"))
+    return [errors.createResourceTypeIssue("Parameters")]
   }
 
   const permissionErrors = validatePermittedDispenseMessage(scope)
@@ -25,5 +24,5 @@ export function verifyParameters(
     }
   }
 
-  return validationErrors
+  return []
 }

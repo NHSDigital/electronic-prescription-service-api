@@ -105,13 +105,13 @@ describe("verifyTask returns errors", () => {
   })
 
   test("console warn when inconsistent accessToken and body ods codes", () => {
-    const requester: fhir.IdentifierReference<fhir.PersonOrOrganization> = {
+    const owner: fhir.IdentifierReference<fhir.PersonOrOrganization> = {
       identifier: {
         system: "test_system",
         value: "test_ods_code_2"
       }
     }
-    const invalidTask: fhir.Task = {...validReturnTask, requester}
+    const invalidTask: fhir.Task = {...validReturnTask, owner}
 
     verifyTask(invalidTask, DISPENSING_APP_SCOPE, "test_ods_code")
     expect(console.warn).toHaveBeenCalled()

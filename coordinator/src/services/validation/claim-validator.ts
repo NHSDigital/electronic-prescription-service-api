@@ -4,9 +4,8 @@ import {validatePermittedDispenseMessage} from "./scope-validator"
 export function verifyClaim(
   claim: fhir.Claim, scope: string, accessTokenOds: string
 ): Array<fhir.OperationOutcomeIssue> {
-  const validationErrors = []
   if (claim.resourceType !== "Claim") {
-    validationErrors.push(errors.createResourceTypeIssue("Claim"))
+    return [errors.createResourceTypeIssue("Claim")]
   }
 
   const permissionErrors = validatePermittedDispenseMessage(scope)
@@ -23,5 +22,5 @@ export function verifyClaim(
     }
   }
 
-  return validationErrors
+  return []
 }
