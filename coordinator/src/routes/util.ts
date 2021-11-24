@@ -116,7 +116,7 @@ export function filterValidatorResponse(validatorResponse: fhir.OperationOutcome
   const noWarnings = filterOutSeverity(noInformation, "warning")
 
   const noMatchingProfileError = filterOutDiagnosticOnString(
-    noWarnings, "Unable to find matching profile for"
+    noWarnings, "Unable to find a match for profile"
   )
   const noNHSNumberVerificationError = filterOutDiagnosticOnString(
     noMatchingProfileError, "UKCore-NHSNumberVerificationStatus"
