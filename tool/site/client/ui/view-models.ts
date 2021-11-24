@@ -40,10 +40,10 @@ export class Prescription {
   constructor(id: string, description: string, getMessageFn: (baseUrl: string) => string) {
     this.id = id
     this.description = description
-    this.message = getMessageFn(pageData.baseUrl)
     this.select = function() {
       pageData.selectedExampleId = this.id
       pageData.showCustomExampleInput = this.id === "custom"
+      this.message = getMessageFn(pageData.baseUrl)
       resetPageData(pageData.mode)
     }
   }
