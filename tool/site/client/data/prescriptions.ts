@@ -19,27 +19,27 @@ function getPrescription(baseUrl: string, path: string) {
  * Examples
  */
 /* eslint-disable max-len */
-const PRIMARY_CARE_ACUTE_NOMINATED = (baseUrl: string) => getPrescription(baseUrl,
+const PRIMARY_CARE_ACUTE_NOMINATED = (baseUrl: string): string => getPrescription(baseUrl,
   "primary-care/acute/nominated-pharmacy/medical-prescriber/1-Prepare-Request-200_OK.json"
 )
 
-const PRIMARY_CARE_REPEAT_PRESCRIBING_NOMINATED = (baseUrl: string) => getPrescription(baseUrl,
+const PRIMARY_CARE_REPEAT_PRESCRIBING_NOMINATED = (baseUrl: string): string => getPrescription(baseUrl,
   "primary-care/repeat-prescribing/1-Prepare-Request-200_OK.json"
 )
 
-const SECONDARY_CARE_COMMUNITY_ACUTE_NOMINATED = (baseUrl: string) => getPrescription(baseUrl,
+const SECONDARY_CARE_COMMUNITY_ACUTE_NOMINATED = (baseUrl: string): string => getPrescription(baseUrl,
   "secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Prepare-Request-200_OK.json"
 )
 
-const SECONDARY_CARE_REPEAT_DISPENSING_NOMINATED = (baseUrl: string) => getPrescription(baseUrl,
+const SECONDARY_CARE_REPEAT_DISPENSING_NOMINATED = (baseUrl: string): string => getPrescription(baseUrl,
   "secondary-care/community/repeat-dispensing/nominated-pharmacy/clinical-practitioner/single-medication-request/1-Prepare-Request-200_OK.json"
 )
 
-const SECONDARY_CARE_COMMUNITY_ACUTE_NON_NOMINATED = (baseUrl: string) => getPrescription(baseUrl,
+const SECONDARY_CARE_COMMUNITY_ACUTE_NON_NOMINATED = (baseUrl: string): string => getPrescription(baseUrl,
   "secondary-care/community/acute/no-nominated-pharmacy/clinical-practitioner/1-Prepare-Request-200_OK.json"
 )
 
-const HOMECARE_ACUTE_NOMINATED = (baseUrl: string) => getPrescription(baseUrl,
+const HOMECARE_ACUTE_NOMINATED = (baseUrl: string): string => getPrescription(baseUrl,
   "secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Prepare-Request-200_OK.json"
 )
 
