@@ -37,9 +37,9 @@ extends:
       - task: DeleteFiles@1
         displayName: 'Deleting eps artifacts'
         inputs:
+          sourceFolder: "${{ variables.service_name }}"
           contents: |
             !{tool,examples}
-        workingDirectory: "${{ variables.service_name }}"
       - bash: |
           set -euo pipefail
           ls -lah
