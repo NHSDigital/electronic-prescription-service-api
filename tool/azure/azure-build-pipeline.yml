@@ -29,33 +29,17 @@ extends:
     service_name: ${{ variables.service_name }}
     short_service_name: ${{ variables.short_service_name }}
     cache_steps:
-      # Replace all eps artifacts with eps-api-tool artifacts by
-      #   - Deleting eps artifacts
-      #   - Moving eps-api-tool artifacts from tool/ directory to root directory
-      #   - Copying examples project resources into tool
-      # Having root directory CI/CD files is required by platforms
       - bash: |
+          # Replace all eps artifacts with eps-api-tool artifacts by
+          #   - Deleting eps artifacts
+          #   - Moving eps-api-tool artifacts from tool/ directory to root directory
+          #   - Copying examples project resources into tool
+          # Having root directory CI/CD files is required by platforms
           set -euo pipefail
-          ls -lah
-        workingDirectory: "${{ variables.service_name }}"
-        displayName: Debug 1
-      - task: DeleteFiles@1
-        displayName: 'Deleting eps artifacts'
-        inputs:
-          sourceFolder: "${{ variables.service_name }}"
-          removeSourceFolder: true
-          contents: |
-            !(tool)
-      - bash: |
-          set -euo pipefail
-          ls -lah
-        workingDirectory: "${{ variables.service_name }}"
-        displayName: Debug 2
-      - bash: |
-          set -euo pipefail
-          ls -lah
+          shopt -s extglob
+          mv examples tool/client/static/
+          rm -rfv !(tool)
           rsync -vua --delete-after tool/ .
-          rsync -vua --delete-after examples client/static/
           ls -lah
           ls -lah client/static/examples
         workingDirectory: "${{ variables.service_name }}"
