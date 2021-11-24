@@ -1,11 +1,12 @@
 import * as fhir from "../models"
 import moment from "moment"
 import {convertMomentToISODate} from "../lib/date-time"
+import {pageData} from "../ui/state"
 
 /**
  * Models
  */
-const epsModelsUrl = "static/examples"
+const epsModelsUrl = `${pageData.baseUrl}static/examples`
 
 function getPrescription(path: string) {
   const xmlHttp = new XMLHttpRequest()
