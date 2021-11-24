@@ -285,7 +285,7 @@ function getPayloads() {
       : [
         pageData.examples.filter(function (example) {
           return example.id === pageData.selectedExampleId
-        })[0].message
+        })[0].messageFn(pageData.baseUrl)
       ]
   } catch (e) {
     addError("Unable to parse custom prescription(s)")
