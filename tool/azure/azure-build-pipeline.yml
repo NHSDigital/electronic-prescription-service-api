@@ -37,11 +37,9 @@ extends:
           # Having root directory CI/CD files is required by platforms
           set -euo pipefail
           shopt -s extglob
-          mv examples tool/client/static/
+          mv examples tool/site/client/static/
           rm -rfv !(tool)
           rsync -vua --delete-after tool/ .
-          ls -lah
-          ls -lah client/static/examples
         workingDirectory: "${{ variables.service_name }}"
         displayName: Prepare eps-api-tool
     test_steps:
