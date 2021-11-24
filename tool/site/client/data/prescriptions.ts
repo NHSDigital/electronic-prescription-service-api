@@ -6,11 +6,10 @@ import {pageData} from "../ui/state"
 /**
  * Models
  */
-const epsModelsUrl = `${pageData.baseUrl}static/examples`
 
 function getPrescription(path: string) {
   const xmlHttp = new XMLHttpRequest()
-  xmlHttp.open("GET", epsModelsUrl + "/" + path, false)
+  xmlHttp.open("GET", `${pageData.baseUrl}static/examples/${path}`, false)
   xmlHttp.send(null)
   return JSON.parse(xmlHttp.responseText)
 }
