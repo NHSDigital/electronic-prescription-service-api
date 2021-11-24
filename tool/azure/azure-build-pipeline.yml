@@ -37,7 +37,10 @@ extends:
           # Having root directory CI/CD files is required by platforms
           set -euo pipefail
           shopt -s extglob
-          rm -rfv !(tool|examples)
+          shopt -s globstar
+          rmdir ./**/!(tool|examples)
+          rm ./*
+          ls -lah
           rsync -vua --delete-after tool/ .
           rsync -vua --delete-after examples client/static/
           ls -lah
