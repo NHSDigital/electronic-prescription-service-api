@@ -18,8 +18,7 @@ import {
   CODEABLE_CONCEPT_PRESCRIPTION,
   CODEABLE_CONCEPT_PRESCRIPTION_CHARGE_NOT_PAID,
   CODEABLE_CONCEPT_PRESCRIPTION_CHARGE_PAID,
-  CODEABLE_CONCEPT_PRIORITY_NORMAL,
-  DEPRECATED_CODEABLE_CONCEPT_CHARGE_EXEMPTION_NONE
+  CODEABLE_CONCEPT_PRIORITY_NORMAL
 } from "../../fhir/reference-data/codeableConcepts"
 import {INSURANCE_NHS_BSA} from "../../fhir/reference-data/insurance"
 import {ClaimFormValues, EndorsementFormValues, ExemptionFormValues, ProductFormValues} from "./claimForm"
@@ -168,7 +167,6 @@ function createClaimItemDetail(
     sequence,
     productOrService: medicationRequest.medicationCodeableConcept,
     modifier: [finalMedicationDispense.type],
-    programCode: [DEPRECATED_CODEABLE_CONCEPT_CHARGE_EXEMPTION_NONE], //TODO - remove this duplicated info
     quantity: medicationRequest.dispenseRequest.quantity,
     subDetail: [createClaimItemDetailSubDetail(1, medicationDispenses, productFormValues)]
   }
