@@ -1,6 +1,6 @@
 import * as React from "react"
-import { useContext, useState } from "react"
-import {Label, Button, Form, Fieldset, TickIcon, CrossIcon, Radios} from "nhsuk-react-components"
+import {useContext, useState} from "react"
+import {Label, Button, Form, Fieldset, TickIcon, CrossIcon} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import {Formik} from "formik"
 import ButtonList from "../components/buttonList"
