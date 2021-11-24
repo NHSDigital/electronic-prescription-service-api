@@ -44,8 +44,7 @@ extends:
         inputs:
           removeSourceFolder: true
           contents: |
-            !{tool,examples}
-        workingDirectory: "${{ variables.service_name }}"
+            ${{ variables.service_name }}/!{tool,examples}
       - bash: |
           set -euo pipefail
           ls -lah
