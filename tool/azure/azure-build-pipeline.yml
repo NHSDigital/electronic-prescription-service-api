@@ -34,12 +34,22 @@ extends:
       #   - Moving eps-api-tool artifacts from tool/ directory to root directory
       #   - Copying examples project resources into tool
       # Having root directory CI/CD files is required by platforms
+      - bash: |
+          set -euo pipefail
+          ls -lah
+        workingDirectory: "${{ variables.service_name }}"
+        displayName: Debug 1
       - task: DeleteFiles@1
         displayName: 'Deleting eps artifacts'
         inputs:
           sourceFolder: "${{ variables.service_name }}"
           contents: |
             !{tool,examples}
+      - bash: |
+          set -euo pipefail
+          ls -lah
+        workingDirectory: "${{ variables.service_name }}"
+        displayName: Debug 2
       - bash: |
           set -euo pipefail
           ls -lah
