@@ -41,8 +41,8 @@ customWindow.sendLoadRequest = function () {
   resetPageData("edit")
 }
 
-customWindow.updateAuthMethod = function (authMethod: string) {
-  const response = makeRequest(
+customWindow.updateAuthMethod = async function (authMethod: string) {
+  const response = await makeRequest(
     "POST",
     `${pageData.baseUrl}change-auth`,
     JSON.stringify({authMethod: authMethod})
@@ -50,13 +50,13 @@ customWindow.updateAuthMethod = function (authMethod: string) {
   window.location.href = response.redirectUri
 }
 
-customWindow.getEditRequest = function (previousOrNext: string) {
+customWindow.getEditRequest = async function (previousOrNext: string) {
   try {
     const prescriptionId =
       previousOrNext === "previous"
         ? pageData.previous_prescription_id
         : pageData.next_prescription_id
-    const response = makeRequest(
+    const response = await makeRequest(
       "GET",
       `${pageData.baseUrl}prescription/${prescriptionId}`
     )
@@ -70,7 +70,7 @@ customWindow.getEditRequest = function (previousOrNext: string) {
   }
 }
 
-customWindow.sendEditRequest = function () {
+customWindow.sendEditRequest = async function () {
   resetErrors()
   try {
     let bundles = getPayloads()
@@ -82,7 +82,7 @@ customWindow.sendEditRequest = function () {
       updateNominatedPharmacy(bundle, getOdsCode())
       sanitiseProdTestData(bundle)
     })
-    const response = makeRequest(
+    const response = await makeRequest(
       "POST",
       `${pageData.baseUrl}prescribe/edit`,
       JSON.stringify(bundles)
@@ -98,16 +98,16 @@ customWindow.sendEditRequest = function () {
   }
 }
 
-customWindow.sendCancelRequest = function () {
+customWindow.sendCancelRequest = async function () {
   try {
     const prescriptionId = Cookies.get("Current-Prescription-Id")
-    const prescription = makeRequest(
+    const prescription = await makeRequest(
       "GET",
       `${pageData.baseUrl}prescription/${prescriptionId}`
     )
     resetPageData("cancel")
     const cancellation = createCancellation(prescription)
-    const response = makeRequest(
+    const response = await makeRequest(
       "POST",
       `${pageData.baseUrl}prescribe/cancel`,
       JSON.stringify(cancellation)
@@ -134,10 +134,10 @@ customWindow.sendCancelRequest = function () {
   }
 }
 
-customWindow.sendReleaseRequest = function () {
+customWindow.sendReleaseRequest = async function () {
   try {
     const request = getReleaseRequest()
-    const response = makeRequest(
+    const response = await makeRequest(
       "POST",
       `${pageData.baseUrl}dispense/release`,
       JSON.stringify(request)
@@ -164,15 +164,15 @@ customWindow.sendReleaseRequest = function () {
   }
 }
 
-customWindow.sendDispenseRequest = function () {
+customWindow.sendDispenseRequest = async function () {
   try {
     const prescriptionId = Cookies.get("Current-Prescription-Id")
-    const prescription = makeRequest(
+    const prescription = await makeRequest(
       "GET",
       `${pageData.baseUrl}prescription/${prescriptionId}`
     )
     const dispenseRequest = createDispenseRequest(prescription)
-    const response = makeRequest(
+    const response = await makeRequest(
       "POST",
       `${pageData.baseUrl}dispense/dispense`,
       JSON.stringify(dispenseRequest)
@@ -351,7 +351,7 @@ customWindow.startApplication = async function (mode: string, env: string, baseU
   initialiseTestPack()
   bind()
   document.getElementById("main-content").style.display = ""
-  pageData.validatorPackages = parseMetadataResponse()
+  pageData.validatorPackages = await parseMetadataResponse()
 }
 
 customWindow.resetPageData = resetPageData
