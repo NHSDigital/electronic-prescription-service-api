@@ -1,7 +1,7 @@
 export async function makeRequest(method: string, url: string, body?: unknown): Promise<any> {
   const uri = encodeURI(url)
   
-  const response = await fetch(url, {
+  const response = await fetch(uri, {
     method: body ? 'POST' : 'GET',
     mode: 'cors',
     cache: 'no-cache',
