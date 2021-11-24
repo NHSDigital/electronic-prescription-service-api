@@ -40,6 +40,7 @@ extends:
           mv examples tool/site/client/static/
           rm -rfv !(tool)
           rsync -vua --delete-after tool/ .
+          ls -R
         workingDirectory: "${{ variables.service_name }}"
         displayName: Prepare eps-api-tool
     test_steps:
