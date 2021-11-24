@@ -2,7 +2,7 @@ export async function makeRequest(method: string, url: string, body?: unknown): 
   const uri = encodeURI(url)
   
   const response = await fetch(uri, {
-    method: body ? 'POST' : 'GET',
+    method: method,
     mode: 'cors',
     cache: 'no-cache',
     credentials: 'include',
@@ -11,7 +11,7 @@ export async function makeRequest(method: string, url: string, body?: unknown): 
     },
     redirect: 'manual',
     referrerPolicy: 'no-referrer',
-    body: body as string
+    body: body as any
   })
 
   if (response.status === 302) {
@@ -19,5 +19,9 @@ export async function makeRequest(method: string, url: string, body?: unknown): 
     window.location.href = location
   }
 
-  return JSON.parse(await response.json())
+  if (response.status === 429) {
+    throw new Error("Recieved 'Too Many Requests' response hit when attempting to fetch data")
+  }
+
+  return await response.json()
 }
