@@ -5,8 +5,7 @@ import {convertMomentToISODate} from "../lib/date-time"
 /**
  * Models
  */
-const epsModelsUrl =
-  "https://raw.githubusercontent.com/NHSDigital/electronic-prescription-service-api/master/examples"
+const epsModelsUrl = "static/examples"
 
 function getPrescription(path: string) {
   const xmlHttp = new XMLHttpRequest()
