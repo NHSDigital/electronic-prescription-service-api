@@ -77,17 +77,6 @@ Object {
               },
             ],
           },
-          "programCode": Array [
-            Object {
-              "coding": Array [
-                Object {
-                  "code": "0001",
-                  "display": "Patient has paid appropriate charges",
-                  "system": "https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption",
-                },
-              ],
-            },
-          ],
           "quantity": Object {
             "code": "428673006",
             "system": "http://snomed.info/sct",

@@ -39,16 +39,6 @@ export const CODEABLE_CONCEPT_PRESCRIPTION: fhir.CodeableConcept = {
   ]
 }
 
-export const DEPRECATED_CODEABLE_CONCEPT_CHARGE_EXEMPTION_NONE: fhir.CodeableConcept = {
-  coding: [
-    {
-      system: "https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption",
-      code: "0001",
-      display: "Patient has paid appropriate charges"
-    }
-  ]
-}
-
 export const CODEABLE_CONCEPT_PRESCRIPTION_CHARGE_PAID: fhir.CodeableConcept = {
   coding: [
     {
