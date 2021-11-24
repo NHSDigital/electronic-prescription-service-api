@@ -20,7 +20,7 @@ export async function makeRequest(method: string, url: string, body?: unknown): 
   }
 
   if (response.status === 429) {
-    throw new Error("Recieved 'Too Many Requests' response hit when attempting to fetch data")
+    throw new Error("Recieved 'Too Many Requests' response when attempting to fetch data")
   }
 
   return await response.json()
