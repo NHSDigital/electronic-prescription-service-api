@@ -1,16 +1,15 @@
 export function makeRequest(method: string, url: string, body?: unknown): any {
   const uri = encodeURI(url)
   const xmlhttp = new XMLHttpRequest()
-  xmlhttp.onreadystatechange = function() {
-    if (this.readyState !== 4) {
-      return
-    }
+  xmlhttp.onload = function() {
     if (this.status === 302) {
       var location = this.getResponseHeader("Location")
       window.location.href = location
       return
-    } 
-    return JSON.parse(this.responseText)
+    }
+    if (this.status === 200) {
+      return JSON.parse(this.responseText)
+    }
   }
   xmlhttp.withCredentials = true
   xmlhttp.open(method, uri, false)
