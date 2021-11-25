@@ -10,6 +10,11 @@ interface ReleaseFormProps {
   onSubmit: (values: ReleaseFormValues) => void
 }
 
+interface ReleaseFormErrors {
+  releaseType?: string
+  releasePharmacy?: string
+}
+
 const ReleaseForm: React.FC<ReleaseFormProps> = ({
   prescriptionId,
   onSubmit
@@ -21,22 +26,24 @@ const ReleaseForm: React.FC<ReleaseFormProps> = ({
 
   const validate = (values: ReleaseFormValues) => {
     const errors: ReleaseFormErrors = {}
-    if (values.releaseType === "prescriptionId" && !values.prescriptionId) {
-      errors.releaseType = "You must enter a 'Prescription ID' to release to when releasing a single prescription"
-    }
-    if (values.releaseType === "custom" && !values.customReleaseFhir) {
-      errors.releaseType = "You must enter a FHIR release message when selecting 'With a FHIR release message'"
-    }
+    
     if (values.releaseType === "custom") {
+      if (!values.customReleaseFhir) {
+        errors.releaseType = "You must enter a FHIR release message when selecting 'With a FHIR release message'"
+      }
       return errors
     }
 
+    if (values.releaseType === "prescriptionId" && !values.prescriptionId) {
+      errors.releaseType = "You must enter a 'Prescription ID' to release to when releasing a single prescription"
+    }
     if (!values.releasePharmacy) {
       errors.releasePharmacy = "You must select a pharmacy to release to"
     }
     if (values.releasePharmacy === "custom" && !values.customReleasePharmacy) {
       errors.releasePharmacy = "You must enter a pharmacy ODS code to release to when selecting 'Other'"
     }
+    
     return errors
   }
 
@@ -133,9 +140,4 @@ export interface ReleaseFormValues {
   releasePharmacy: "" | "VNFKT" | "YGM1E" | "custom"
   customReleasePharmacy?: string
   customReleaseFhir?: string
-}
-
-interface ReleaseFormErrors {
-  releaseType?: string
-  releasePharmacy?: string
 }
