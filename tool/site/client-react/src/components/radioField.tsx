@@ -14,17 +14,10 @@ interface Radio {
 }
 
 const RadioField: FC<RadioFieldProps> = ({name, label, fieldRadios}) => (
-  <Field id={name} name={name} as={Radios}>
-    <Radios
-      name={name}
-      id={name}
-      labelProps={{bold: true}}
-      label={label}
-    >
+  <Field id={name} name={name} labelProps={{bold: true}} label={label} as={Radios}>
       {fieldRadios.map((radio, index) =>
         <Radios.Radio key={index} value={radio.value}>{radio.text}</Radios.Radio>
       )}
-    </Radios>
   </Field>
 )
 
