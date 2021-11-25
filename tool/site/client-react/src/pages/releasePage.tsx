@@ -117,9 +117,9 @@ function shouldSendCustomFhirRequest(releaseFormValues: ReleaseFormValues) {
 }
 
 function getReleasePharmacy(releaseFormValues: ReleaseFormValues) {
-  return releaseFormValues.releasePharmacy === "custom"
-    ? releaseFormValues.customReleasePharmacy
-    : releaseFormValues.releasePharmacy
+  return releaseFormValues.pharmacy === "custom"
+    ? releaseFormValues.customPharmacy
+    : releaseFormValues.pharmacy
 }
 
 function shouldSendNominatedPharmacyRequest(releaseFormValues: ReleaseFormValues) {

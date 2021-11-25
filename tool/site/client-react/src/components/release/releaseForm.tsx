@@ -4,6 +4,7 @@ import {Field, Formik} from "formik"
 import ButtonList from "../../components/buttonList"
 import BackButton from "../../components/backButton"
 import RadioField from "../../components/radioField"
+import PharmacyRadios from "./pharmacies"
 
 interface ReleaseFormProps {
   prescriptionId?: string
@@ -12,7 +13,7 @@ interface ReleaseFormProps {
 
 interface ReleaseFormErrors {
   releaseType?: string
-  releasePharmacy?: string
+  pharmacy?: string
 }
 
 const ReleaseForm: React.FC<ReleaseFormProps> = ({
@@ -21,12 +22,12 @@ const ReleaseForm: React.FC<ReleaseFormProps> = ({
 }) => {
   const initialValues: ReleaseFormValues =
     prescriptionId
-      ? {releaseType: "prescriptionId", prescriptionId, releasePharmacy: "", customReleasePharmacy: ""}
-      : {releaseType: "all", prescriptionId: "", releasePharmacy: "", customReleasePharmacy: ""}
+      ? {releaseType: "prescriptionId", prescriptionId, pharmacy: "", customPharmacy: ""}
+      : {releaseType: "all", prescriptionId: "", pharmacy: "", customPharmacy: ""}
 
   const validate = (values: ReleaseFormValues) => {
     const errors: ReleaseFormErrors = {}
-    
+
     if (values.releaseType === "custom") {
       if (!values.customReleaseFhir) {
         errors.releaseType = "You must enter a FHIR release message when selecting 'With a FHIR release message'"
@@ -37,13 +38,13 @@ const ReleaseForm: React.FC<ReleaseFormProps> = ({
     if (values.releaseType === "prescriptionId" && !values.prescriptionId) {
       errors.releaseType = "You must enter a 'Prescription ID' to release to when releasing a single prescription"
     }
-    if (!values.releasePharmacy) {
-      errors.releasePharmacy = "You must select a pharmacy to release to"
+    if (!values.pharmacy) {
+      errors.pharmacy = "You must select a pharmacy to release to"
     }
-    if (values.releasePharmacy === "custom" && !values.customReleasePharmacy) {
-      errors.releasePharmacy = "You must enter a pharmacy ODS code to release to when selecting 'Other'"
+    if (values.pharmacy === "custom" && !values.customPharmacy) {
+      errors.pharmacy = "You must enter a pharmacy ODS code to release to when selecting 'Other'"
     }
-    
+
     return errors
   }
 
@@ -90,36 +91,11 @@ const ReleaseForm: React.FC<ReleaseFormProps> = ({
                 rows={20}
                 label="Paste a FHIR release message"
               />
-              : <>
-                <RadioField
-                  name="releasePharmacy"
-                  label="Pharmacy to release prescriptions to"
-                  error={formik.errors.releasePharmacy}
-                  fieldRadios={[
-                    {
-                      value: "VNFKT",
-                      text: "VNFKT - FIVE STAR HOMECARE LEEDS LTD"
-                    },
-                    {
-                      value: "YGM1E",
-                      text: "YGM1E - MBBM HEALTHCARE TECHNOLOGIES LTD"
-                    },
-                    {
-                      value: "custom",
-                      text: "Other"
-                    }
-                  ]}
-                />
-                {formik.values.releasePharmacy === "custom" &&
-                    <Field
-                      id="customReleasePharmacy"
-                      name="customReleasePharmacy"
-                      as={Input}
-                      width={30}
-                      label="Enter an ODS Code"
-                    />
-                }
-              </>
+              : <PharmacyRadios
+                label="Pharmacy to release prescriptions to"
+                error={formik.errors.pharmacy}
+                showOdsCodeInput={formik.values.pharmacy === "custom"}
+              />
             }
           </Fieldset>
           <ButtonList>
@@ -137,7 +113,7 @@ export default ReleaseForm
 export interface ReleaseFormValues {
   releaseType: "all" | "prescriptionId" | "custom"
   prescriptionId?: string
-  releasePharmacy: "" | "VNFKT" | "YGM1E" | "custom"
-  customReleasePharmacy?: string
+  pharmacy: "" | "VNFKT" | "YGM1E" | "custom"
+  customPharmacy?: string
   customReleaseFhir?: string
 }
