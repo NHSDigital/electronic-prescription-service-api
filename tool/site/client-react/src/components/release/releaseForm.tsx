@@ -20,10 +20,7 @@ const ReleaseForm: React.FC<ReleaseFormProps> = ({
   prescriptionId,
   onSubmit
 }) => {
-  const initialValues: ReleaseFormValues =
-    prescriptionId
-      ? {releaseType: "prescriptionId", prescriptionId, pharmacy: "", customPharmacy: ""}
-      : {releaseType: "all", prescriptionId: "", pharmacy: "", customPharmacy: ""}
+  const initialValues: ReleaseFormValues = getInitialValues(prescriptionId)
 
   const validate = (values: ReleaseFormValues) => {
     const errors: ReleaseFormErrors = {}
@@ -63,6 +60,12 @@ const ReleaseForm: React.FC<ReleaseFormProps> = ({
       }
     </Formik>
   )
+}
+
+function getInitialValues(prescriptionId: string): ReleaseFormValues {
+  return prescriptionId
+    ? { releaseType: "prescriptionId", prescriptionId, pharmacy: "", customPharmacy: "" }
+    : { releaseType: "all", prescriptionId: "", pharmacy: "", customPharmacy: "" }
 }
 
 function isCustomRelease(values: ReleaseFormValues) {
