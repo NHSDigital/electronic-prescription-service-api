@@ -18,11 +18,11 @@ const ReleaseForm: React.FC<ReleaseFormProps> = ({
     prescriptionId
       ? {releaseType: "prescriptionId", releasePharmacy: null, prescriptionId}
       : {releaseType: "all", releasePharmacy: null, prescriptionId: null}
-  
+
   const validate = (values: ReleaseFormValues) => {
     const errors: ReleaseFormErrors = {}
     if (!values.releasePharmacy) {
-      errors.releasePharmacy = 'You must select a pharmacy to release to'
+      errors.releasePharmacy = "You must select a pharmacy to release to"
     }
     return errors
   }
@@ -45,14 +45,14 @@ const ReleaseForm: React.FC<ReleaseFormProps> = ({
                   value: "prescriptionId",
                   text: "A single prescription by ID",
                   defaultChecked: initialValues.releaseType === "prescriptionId"
-                },
+                }
                 // {
                 //   value: "custom",
                 //   text: "With a FHIR release message"
                 // }
               ]}
             />
-            {formik.values.releaseType === "prescriptionId" && 
+            {formik.values.releaseType === "prescriptionId" &&
               <Field
                 id="prescriptionId"
                 name="prescriptionId"
@@ -73,7 +73,7 @@ const ReleaseForm: React.FC<ReleaseFormProps> = ({
                 {
                   value: "YGM1E",
                   text: "YGM1E - MBBM HEALTHCARE TECHNOLOGIES LTD"
-                },
+                }
                 // {
                 //   value: "custom",
                 //   text: "Other"

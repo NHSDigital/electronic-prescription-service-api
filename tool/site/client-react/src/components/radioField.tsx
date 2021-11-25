@@ -17,12 +17,12 @@ interface Radio {
 
 const RadioField: FC<RadioFieldProps> = ({name, label, fieldRadios, error}) => (
   <Field id={name} name={name} labelProps={{bold: true}} label={label} as={Radios}>
-      {error &&
+    {error &&
         <p style={{color: "red", marginBottom: "20px"}}>{error}</p>
-      }
-      {fieldRadios.map((radio, index) =>
-        <Radios.Radio key={index} value={radio.value} defaultChecked={radio.defaultChecked}>{radio.text}</Radios.Radio>
-      )}
+    }
+    {fieldRadios.map((radio, index) =>
+      <Radios.Radio key={index} value={radio.value} defaultChecked={radio.defaultChecked}>{radio.text}</Radios.Radio>
+    )}
   </Field>
 )
 

@@ -10,7 +10,7 @@ import MessageExpanders from "../components/messageExpanders"
 import ReloadButton from "../components/reloadButton"
 import axios from "axios"
 import * as uuid from "uuid"
-import ReleaseForm, { ReleaseFormValues } from "../components/release/releaseForm"
+import ReleaseForm, {ReleaseFormValues} from "../components/release/releaseForm"
 
 interface ReleasePageProps {
   prescriptionId?: string
@@ -96,7 +96,7 @@ function createRelease(
       }
     })
   }
-  
+
   return release
 }
 
