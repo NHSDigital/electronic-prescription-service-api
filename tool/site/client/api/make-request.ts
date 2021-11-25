@@ -9,18 +9,17 @@ export async function makeRequest(method: string, url: string, body?: unknown): 
     headers: {
       "Content-Type": "application/json;charset=UTF-8"
     },
-    redirect: "manual",
+    redirect: "follow",
     referrerPolicy: "no-referrer",
     body: body as any
   })
 
-  if (response.status === 302) {
-    const location = this.getResponseHeader("Location")
-    window.location.href = location
+  if (response.redirected) {
+    window.location.href = response.url;
   }
 
   if (response.status === 429) {
-    throw new Error("Recieved 'Too Many Requests' response when attempting to fetch data")
+    throw new Error("Received 'Too Many Requests' response when attempting to fetch data")
   }
 
   return await response.json()
