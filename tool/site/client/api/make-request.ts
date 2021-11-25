@@ -15,7 +15,7 @@ export async function makeRequest(method: string, url: string, body?: unknown): 
   })
 
   if (response.redirected) {
-    window.location.href = response.url;
+    window.location.href = response.url
   }
 
   if (response.status === 429) {
