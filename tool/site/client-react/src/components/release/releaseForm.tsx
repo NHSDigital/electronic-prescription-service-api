@@ -27,24 +27,13 @@ const ReleaseForm: React.FC<ReleaseFormProps> = ({
 
   const validate = (values: ReleaseFormValues) => {
     const errors: ReleaseFormErrors = {}
-
-    if (values.releaseType === "custom") {
-      if (!values.customReleaseFhir) {
-        errors.releaseType = "You must enter a FHIR release message when selecting 'With a FHIR release message'"
-      }
+    if (isCustomRelease(values)) {
+      populateAnyCustomReleaseErrors(values, errors)
       return errors
     }
-
-    if (values.releaseType === "prescriptionId" && !values.prescriptionId) {
-      errors.releaseType = "You must enter a 'Prescription ID' to release to when releasing a single prescription"
-    }
-    if (!values.pharmacy) {
-      errors.pharmacy = "You must select a pharmacy to release to"
-    }
-    if (values.pharmacy === "custom" && !values.customPharmacy) {
-      errors.pharmacy = "You must enter a pharmacy ODS code to release to when selecting 'Other'"
-    }
-
+    populateAnyPrescriptionIdErrors(values, errors)
+    populateAnyPharmacyErrors(values, errors)
+    populateAnyCustomPharmacyErrors(values, errors)
     return errors
   }
 
@@ -74,6 +63,34 @@ const ReleaseForm: React.FC<ReleaseFormProps> = ({
       }
     </Formik>
   )
+}
+
+function isCustomRelease(values: ReleaseFormValues) {
+  return values.releaseType === "custom"
+}
+
+function populateAnyCustomReleaseErrors(values: ReleaseFormValues, errors: ReleaseFormErrors) {
+  if (!values.customReleaseFhir) {
+    errors.releaseType = "You must enter a FHIR release message when selecting 'With a FHIR release message'"
+  }
+}
+
+function populateAnyPrescriptionIdErrors(values: ReleaseFormValues, errors: ReleaseFormErrors) {
+  if (values.releaseType === "prescriptionId" && !values.prescriptionId) {
+    errors.releaseType = "You must enter a 'Prescription ID' to release to when releasing a single prescription"
+  }
+}
+
+function populateAnyPharmacyErrors(values: ReleaseFormValues, errors: ReleaseFormErrors) {
+  if (!values.pharmacy) {
+    errors.pharmacy = "You must select a pharmacy to release to"
+  }
+}
+
+function populateAnyCustomPharmacyErrors(values: ReleaseFormValues, errors: ReleaseFormErrors) {
+  if (values.pharmacy === "custom" && !values.customPharmacy) {
+    errors.pharmacy = "You must enter a pharmacy ODS code to release to when selecting 'Other'"
+  }
 }
 
 export default ReleaseForm
