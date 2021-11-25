@@ -12,6 +12,7 @@ export interface RadioFieldProps {
 interface Radio {
   value: string
   text: string
+  defaultChecked?: boolean
 }
 
 const RadioField: FC<RadioFieldProps> = ({name, label, fieldRadios, error}) => (
@@ -20,7 +21,7 @@ const RadioField: FC<RadioFieldProps> = ({name, label, fieldRadios, error}) => (
         <p style={{color: "red", marginBottom: "20px"}}>{error}</p>
       }
       {fieldRadios.map((radio, index) =>
-        <Radios.Radio key={index} value={radio.value}>{radio.text}</Radios.Radio>
+        <Radios.Radio key={index} value={radio.value} defaultChecked={radio.defaultChecked}>{radio.text}</Radios.Radio>
       )}
   </Field>
 )
