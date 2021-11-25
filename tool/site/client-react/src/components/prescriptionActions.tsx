@@ -29,7 +29,7 @@ const PrescriptionActions: React.FC<PrescriptionActionsProps> = ({
         </ActionLink>
       )}
       {release && (
-        <ActionLink href={`${baseUrl}dispense/release?prescription_id=${prescriptionId}`}>
+        <ActionLink target="_blank" href={`${baseUrl}dispense/release?prescription_id=${prescriptionId}`}>
           Release prescription
         </ActionLink>
       )}
