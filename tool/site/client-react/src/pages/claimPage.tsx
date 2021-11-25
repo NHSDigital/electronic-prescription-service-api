@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext, useState} from "react"
-import {Button, CrossIcon, Label, TickIcon} from "nhsuk-react-components"
+import {CrossIcon, Label, TickIcon} from "nhsuk-react-components"
 import ClaimForm, {ClaimFormValues, StaticProductInfo} from "../components/claim/claimForm"
 import axios from "axios"
 import {
@@ -18,6 +18,7 @@ import {formatQuantity} from "../formatters/quantity"
 import LongRunningTask from "../components/longRunningTask"
 import {AppContext} from "../index"
 import PrescriptionActions from "../components/prescriptionActions"
+import ReloadButton from "../components/reloadButton"
 
 interface ClaimPageProps {
   prescriptionId: string
@@ -57,7 +58,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
                   hl7V3Response={claimResult.response_xml}
                 />
                 <ButtonList>
-                  <Button type="button" href={baseUrl} secondary>Back</Button>
+                  <ReloadButton/>
                 </ButtonList>
               </>
             )}

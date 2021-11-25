@@ -1,14 +1,14 @@
 import * as React from "react"
-import {JSXElementConstructor, useContext, useEffect, useState} from "react"
+import {JSXElementConstructor, useEffect, useState} from "react"
 import {Button, ErrorMessage, Label} from "nhsuk-react-components"
 import ButtonList from "./buttonList"
-import {AppContext} from "../index"
+import BackButton from "./backButton"
 
 interface LongRunningTaskProps<T> {
   task: () => Promise<T>
   loadingMessage: string
   children: JSXElementConstructor<T>
-  back?: string | (() => void)
+  back?: () => void
 }
 
 const LongRunningTask = <T extends unknown>({
@@ -17,14 +17,9 @@ const LongRunningTask = <T extends unknown>({
   children,
   back
 }: LongRunningTaskProps<T>): React.ReactElement => {
-  const {baseUrl} = useContext(AppContext)
   const [loading, setLoading] = useState<boolean>(true)
   const [errorMessage, setErrorMessage] = useState<string>()
   const [result, setResult] = useState<T>()
-
-  if (!back) {
-    back = baseUrl
-  }
 
   useEffect(() => {
     if (!result) {
@@ -49,9 +44,9 @@ const LongRunningTask = <T extends unknown>({
         <Label isPageHeading>Error</Label>
         <ErrorMessage>{errorMessage}</ErrorMessage>
         <ButtonList>
-          {typeof back === "string"
-            ? <Button secondary href={back}>Back</Button>
-            : <Button secondary onClick={back}>Back</Button>
+          {back
+            ? <Button secondary onClick={back}>Back</Button>
+            : <BackButton/>
           }
         </ButtonList>
       </>

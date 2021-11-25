@@ -130,7 +130,6 @@ def post_change_auth():
 
 
 @app.route(HOME_URL, methods=["GET"])
-@exclude_from_auth()
 def get_home():
     return render_rivets_client("home")
 
@@ -141,12 +140,10 @@ def get_search():
 
 
 @app.route(LOAD_URL, methods=["GET"])
-@exclude_from_auth()
 def get_load():
     return render_rivets_client("load")
 
 
-@exclude_from_auth()
 @app.route(DOWNLOAD_URL, methods=['GET'])
 def download():
     zFile = io.BytesIO()
@@ -157,10 +154,9 @@ def download():
         for index, short_prescription_id in enumerate(short_prescription_ids):
             bundle = hapi_passthrough.get_prescription(short_prescription_id)
             zip_file.writestr(f"prepare_request_{index + 1}.json", json.dumps(bundle, indent=2))
-            # todo: fix 'invalid json' issue
-            # if access_token:
-            #     xml, _status_code = make_eps_api_convert_message_request(access_token, bundle)
-            #     zip_file.writestr(f"prepare_request_{index + 1}.xml", xml)
+            if access_token:
+                xml, _status_code = make_eps_api_convert_message_request(access_token, bundle)
+                zip_file.writestr(f"prepare_request_{index + 1}.xml", xml)
     zFile.seek(0)
 
     return flask.send_file(
@@ -203,7 +199,6 @@ def get_tracker_prescription():
 
 
 @app.route(EDIT_URL, methods=["GET"])
-@exclude_from_auth()
 def get_edit():
     # handles '+' in query_string where flask.request.args.get does not
     short_prescription_id = flask.request.query_string.decode("utf-8")[len("prescription_id="):]
@@ -219,7 +214,6 @@ def get_edit():
 
 
 @app.route(EDIT_URL, methods=["POST"])
-@exclude_from_auth()
 def post_edit():
     request_bundles = flask.request.json
     hapi_passthrough.post_edit(request_bundles)

@@ -34,13 +34,13 @@ export interface ReleaseAPIResponse extends APIResponse {
 export class Prescription {
   id: string
   description: string
-  message: string
+  messageFn: (baseUrl: string) => string
   select: () => void
 
-  constructor(id: string, description: string, message: string) {
+  constructor(id: string, description: string, getMessageFn: (baseUrl: string) => string) {
     this.id = id
     this.description = description
-    this.message = message
+    this.messageFn = getMessageFn
     this.select = function() {
       pageData.selectedExampleId = this.id
       pageData.showCustomExampleInput = this.id === "custom"

@@ -1,11 +1,10 @@
 import * as React from "react"
-import {useContext} from "react"
-import {AppContext} from "../../index"
 import {Field, Formik} from "formik"
 import {Button, Form, Label} from "nhsuk-react-components"
 import {MaskedInput} from "nhsuk-react-components-extensions"
 import ButtonList from "../buttonList"
 import {PrescriptionSearchCriteria} from "../../pages/prescriptionSearchPage"
+import {BackButton} from "../backButton"
 
 interface PrescriptionSearchFormProps {
   prescriptionId: string,
@@ -16,7 +15,6 @@ const PrescriptionSearchForm: React.FC<PrescriptionSearchFormProps> = ({
   prescriptionId,
   onSubmit
 }) => {
-  const {baseUrl} = useContext(AppContext)
   const initialValues = {
     prescriptionId: prescriptionId ?? "",
     patientId: ""
@@ -49,7 +47,7 @@ const PrescriptionSearchForm: React.FC<PrescriptionSearchFormProps> = ({
           />
           <ButtonList>
             <Button type="submit">Search</Button>
-            <Button secondary href={baseUrl}>Back</Button>
+            <BackButton />
           </ButtonList>
         </Form>
       )}
