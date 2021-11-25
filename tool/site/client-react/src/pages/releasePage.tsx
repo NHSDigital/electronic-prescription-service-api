@@ -67,6 +67,9 @@ async function sendRelease(
 }
 
 function createRelease(releaseFormValues: ReleaseFormValues): fhir.Parameters {
+  if (releaseFormValues.releaseType === "custom") {
+    return JSON.parse(releaseFormValues.customReleaseFhir)
+  }
 
   const releasePharmacy =
     releaseFormValues.releasePharmacy === "custom"
