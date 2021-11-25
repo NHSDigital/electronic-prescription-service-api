@@ -7,7 +7,6 @@ interface PharmacyProps {
   label: string
   value?: string
   error?: string
-  showOdsCodeInput?: boolean
 }
 
 interface Pharamcy {
