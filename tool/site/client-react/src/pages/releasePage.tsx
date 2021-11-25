@@ -67,16 +67,13 @@ async function sendRelease(
 }
 
 function createRelease(releaseFormValues: ReleaseFormValues): fhir.Parameters {
-  if (releaseFormValues.releaseType === "custom") {
+  if (shouldSendCustomFhirRequest(releaseFormValues)) {
     return JSON.parse(releaseFormValues.customReleaseFhir)
   }
 
-  const releasePharmacy =
-    releaseFormValues.releasePharmacy === "custom"
-      ? releaseFormValues.customReleasePharmacy
-      : releaseFormValues.releasePharmacy
+  const releasePharmacy = getReleasePharmacy(releaseFormValues)
 
-  const release: fhir.Parameters = {
+  const nominatedPharmacyRelease: fhir.Parameters = {
     resourceType: "Parameters",
     id: uuid.v4(),
     parameter: [
@@ -94,17 +91,39 @@ function createRelease(releaseFormValues: ReleaseFormValues): fhir.Parameters {
     ]
   }
 
-  if (releaseFormValues.releaseType === "prescriptionId") {
-    release.parameter.push({
-      "name": "group-identifier",
-      "valueIdentifier": {
-        "system": "https://fhir.nhs.uk/Id/prescription-order-number",
-        "value": releaseFormValues.prescriptionId
-      }
-    })
+  if (shouldSendNominatedPharmacyRequest(releaseFormValues)) {
+    return nominatedPharmacyRelease
   }
 
-  return release
+  const patientRelease: fhir.Parameters = {
+    ...nominatedPharmacyRelease,
+    parameter: [
+      ...nominatedPharmacyRelease.parameter,
+      {
+        name: "group-identifier",
+        valueIdentifier: {
+          system: "https://fhir.nhs.uk/Id/prescription-order-number",
+          value: releaseFormValues.prescriptionId
+        }
+      }
+    ]
+  }
+
+  return patientRelease
+}
+
+function shouldSendCustomFhirRequest(releaseFormValues: ReleaseFormValues) {
+  return releaseFormValues.releaseType === "custom"
+}
+
+function getReleasePharmacy(releaseFormValues: ReleaseFormValues) {
+  return releaseFormValues.releasePharmacy === "custom"
+    ? releaseFormValues.customReleasePharmacy
+    : releaseFormValues.releasePharmacy
+}
+
+function shouldSendNominatedPharmacyRequest(releaseFormValues: ReleaseFormValues) {
+  return releaseFormValues.releaseType !== "prescriptionId"
 }
 
 export default ReleasePage
