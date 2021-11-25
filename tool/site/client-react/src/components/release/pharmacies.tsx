@@ -5,6 +5,7 @@ import RadioField from "../../components/radioField"
 
 interface PharmacyProps {
   label: string
+  value?: string
   error?: string
   showOdsCodeInput?: boolean
 }
@@ -27,8 +28,8 @@ const pharmacies: Array<Pharamcy> = [
 
 const PharmacyRadios: React.FC<PharmacyProps> = ({
   label,
-  error,
-  showOdsCodeInput
+  value,
+  error
 }) => {
   return (
     <>
@@ -49,7 +50,7 @@ const PharmacyRadios: React.FC<PharmacyProps> = ({
           }
         ]}
       />
-      {showOdsCodeInput &&
+      {value === "custom" &&
           <Field
             id="customPharmacy"
             name="customPharmacy"

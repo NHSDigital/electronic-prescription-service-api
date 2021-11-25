@@ -1,10 +1,10 @@
 import * as React from "react"
-import {Button, Form, Fieldset, Input, Textarea} from "nhsuk-react-components"
-import {Field, Formik} from "formik"
+import {Button, Form, Fieldset} from "nhsuk-react-components"
+import {Formik} from "formik"
 import ButtonList from "../../components/buttonList"
 import BackButton from "../../components/backButton"
-import RadioField from "../../components/radioField"
 import PharmacyRadios from "./pharmacies"
+import ReleaseType from "./releaseType"
 
 interface ReleaseFormProps {
   prescriptionId?: string
@@ -53,48 +53,16 @@ const ReleaseForm: React.FC<ReleaseFormProps> = ({
       {formik =>
         <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
           <Fieldset>
-            <RadioField
-              name="releaseType"
-              label="Choose how you want to release prescription(s)"
+            <ReleaseType
+              initialValue={initialValues.releaseType}
+              value={formik.values.releaseType}
               error={formik.errors.releaseType}
-              fieldRadios={[
-                {
-                  value: "all",
-                  text: "All nominated prescriptions for the below pharmacy",
-                  defaultChecked: initialValues.releaseType === "all"
-                },
-                {
-                  value: "prescriptionId",
-                  text: "A single prescription by ID",
-                  defaultChecked: initialValues.releaseType === "prescriptionId"
-                },
-                {
-                  value: "custom",
-                  text: "With a FHIR release message"
-                }
-              ]}
             />
-            {formik.values.releaseType === "prescriptionId" &&
-              <Field
-                id="prescriptionId"
-                name="prescriptionId"
-                as={Input}
-                width={30}
-                label="Prescription ID"
-              />
-            }
-            {formik.values.releaseType === "custom"
-              ? <Field
-                id="customReleaseFhir"
-                name="customReleaseFhir"
-                as={Textarea}
-                rows={20}
-                label="Paste a FHIR release message"
-              />
-              : <PharmacyRadios
+            {formik.values.releaseType !== "custom" &&
+              <PharmacyRadios
                 label="Pharmacy to release prescriptions to"
+                value={formik.values.pharmacy}
                 error={formik.errors.pharmacy}
-                showOdsCodeInput={formik.values.pharmacy === "custom"}
               />
             }
           </Fieldset>
