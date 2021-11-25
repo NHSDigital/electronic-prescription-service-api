@@ -5,6 +5,7 @@ import LineItemArray from "./lineItemArray"
 import Prescription from "./prescription"
 import ButtonList from "../buttonList"
 import {LineItemStatus, PrescriptionStatus, VALUE_SET_NON_DISPENSING_REASON} from "../../fhir/reference-data/valueSets"
+import BackButton from "../backButton"
 
 export interface DispenseFormProps {
   lineItems: Array<StaticLineItemInfo>
@@ -37,7 +38,7 @@ const DispenseForm: React.FC<DispenseFormProps> = ({
           <Prescription name="prescription"/>
           <ButtonList>
             <Button type="submit">Dispense</Button>
-            <Button type="reset" secondary>Reset</Button>
+            <BackButton/>
           </ButtonList>
         </Form>
       }

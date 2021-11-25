@@ -785,7 +785,7 @@ exports[`Clicking back from the summary search results returns to the form 1`] =
   <h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Search for a Prescription</label></h1>
   <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"prescriptionId--label\\" for=\\"prescriptionId\\">Prescription ID</label><span class=\\"nhsuk-hint\\" id=\\"prescriptionId--hint\\">Use the short form here, e.g. E3E6FA-A83008-41F09Y</span><input class=\\"nhsuk-input nhsuk-input--width-20\\" aria-describedby=\\"prescriptionId--hint\\" aria-labelledby=\\"prescriptionId--label\\" name=\\"prescriptionId\\" id=\\"prescriptionId\\" autocomplete=\\"off\\" type=\\"text\\" value=\\"\\"></div>
   <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"patientId--label\\" for=\\"patientId\\">NHS Number</label><input class=\\"nhsuk-input nhsuk-input--width-10\\" aria-labelledby=\\"patientId--label\\" name=\\"patientId\\" id=\\"patientId\\" autocomplete=\\"off\\" type=\\"text\\" value=\\"\\"></div>
-  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Search</button><a class=\\"nhsuk-button nhsuk-button--secondary\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/\\">Back</a></div>
+  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Search</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
 </form>"
 `;
 
@@ -1932,7 +1932,7 @@ exports[`Displays search form 1`] = `
   <h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Search for a Prescription</label></h1>
   <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"prescriptionId--label\\" for=\\"prescriptionId\\">Prescription ID</label><span class=\\"nhsuk-hint\\" id=\\"prescriptionId--hint\\">Use the short form here, e.g. E3E6FA-A83008-41F09Y</span><input class=\\"nhsuk-input nhsuk-input--width-20\\" aria-describedby=\\"prescriptionId--hint\\" aria-labelledby=\\"prescriptionId--label\\" name=\\"prescriptionId\\" id=\\"prescriptionId\\" autocomplete=\\"off\\" type=\\"text\\" value=\\"\\"></div>
   <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"patientId--label\\" for=\\"patientId\\">NHS Number</label><input class=\\"nhsuk-input nhsuk-input--width-10\\" aria-labelledby=\\"patientId--label\\" name=\\"patientId\\" id=\\"patientId\\" autocomplete=\\"off\\" type=\\"text\\" value=\\"\\"></div>
-  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Search</button><a class=\\"nhsuk-button nhsuk-button--secondary\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/\\">Back</a></div>
+  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Search</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
 </form>"
 `;
 
@@ -1941,6 +1941,6 @@ exports[`Form values are populated from query string 1`] = `
   <h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Search for a Prescription</label></h1>
   <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"prescriptionId--label\\" for=\\"prescriptionId\\">Prescription ID</label><span class=\\"nhsuk-hint\\" id=\\"prescriptionId--hint\\">Use the short form here, e.g. E3E6FA-A83008-41F09Y</span><input class=\\"nhsuk-input nhsuk-input--width-20\\" aria-describedby=\\"prescriptionId--hint\\" aria-labelledby=\\"prescriptionId--label\\" name=\\"prescriptionId\\" id=\\"prescriptionId\\" autocomplete=\\"off\\" type=\\"text\\" value=\\"003D4D-A99968-4C5AAJ\\"></div>
   <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"patientId--label\\" for=\\"patientId\\">NHS Number</label><input class=\\"nhsuk-input nhsuk-input--width-10\\" aria-labelledby=\\"patientId--label\\" name=\\"patientId\\" id=\\"patientId\\" autocomplete=\\"off\\" type=\\"text\\" value=\\"\\"></div>
-  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Search</button><a class=\\"nhsuk-button nhsuk-button--secondary\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/\\">Back</a></div>
+  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Search</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
 </form>"
 `;

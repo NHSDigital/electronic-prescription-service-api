@@ -9,6 +9,7 @@ import PrescriptionActions from "../components/prescriptionActions"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
 import {isResult, Result} from "../requests/result"
+import BackButton from "../components/backButton"
 
 interface SendPostSignPageProps {
   token: string
@@ -63,7 +64,7 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
               hl7V3Response={sendResult.response_xml}
             />
             <ButtonList>
-              <Button type="button" href={baseUrl} secondary>Back</Button>
+              <BackButton/>
             </ButtonList>
           </>
         )

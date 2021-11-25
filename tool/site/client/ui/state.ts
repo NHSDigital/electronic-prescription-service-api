@@ -195,8 +195,8 @@ export function resetErrors(): void {
   pageData.errorList = undefined
 }
 
-export function parseMetadataResponse(): Array<SoftwareVersion> {
-  const metadataResponse: MetadataResponse = makeRequest(
+export async function parseMetadataResponse(): Promise<Array<SoftwareVersion>> {
+  const metadataResponse: MetadataResponse = await makeRequest(
     "GET",
     `${pageData.baseUrl}metadata`
   )

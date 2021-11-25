@@ -67,7 +67,7 @@ exports[`Clicking Add Endorsement button adds one set of endorsement fields 1`] 
       </div>
     </fieldset>
   </div>
-  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
+  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
 </form>"
 `;
 
@@ -155,7 +155,7 @@ exports[`Clicking Add Endorsement button twice adds two sets of endorsement fiel
       </div>
     </fieldset>
   </div>
-  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
+  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
 </form>"
 `;
 
@@ -226,7 +226,7 @@ exports[`Clicking Remove Endorsement button removes one set of endorsement field
       </div>
     </fieldset>
   </div>
-  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
+  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
 </form>"
 `;
 
@@ -280,6 +280,6 @@ exports[`Form has no endorsement fields initially 1`] = `
       </div>
     </fieldset>
   </div>
-  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
+  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
 </form>"
 `;

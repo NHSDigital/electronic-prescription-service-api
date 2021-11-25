@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext, useState} from "react"
-import {Button, CrossIcon, Label, TickIcon} from "nhsuk-react-components"
+import {CrossIcon, Label, TickIcon} from "nhsuk-react-components"
 import ClaimForm, {ClaimFormValues, StaticProductInfo} from "../components/claim/claimForm"
 import {
   getMedicationDispenseResources,
@@ -21,6 +21,7 @@ import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {getArrayTypeGuard, isBundle} from "../fhir/typeGuards"
 import {axiosInstance} from "../requests/axiosInstance"
 import {isResult, Result} from "../requests/result"
+import ReloadButton from "../components/reloadButton"
 
 interface ClaimPageProps {
   prescriptionId: string
@@ -60,7 +61,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
                   hl7V3Response={claimResult.response_xml}
                 />
                 <ButtonList>
-                  <Button type="button" href={baseUrl} secondary>Back</Button>
+                  <ReloadButton/>
                 </ButtonList>
               </>
             )}

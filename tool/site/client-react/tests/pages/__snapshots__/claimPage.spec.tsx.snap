@@ -2,7 +2,7 @@
 
 exports[`Displays an error if dispense-notification not found 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1><span class=\\"nhsuk-error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>Dispense notification not found. Has this prescription been dispensed?</span>
-<div class=\\"sc-bdvvtL jjZBkx\\"><a class=\\"nhsuk-button nhsuk-button--secondary\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/\\">Back</a></div>"
+<div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
 `;
 
 exports[`Displays an error if prescription-order not found 1`] = `
@@ -25,7 +25,7 @@ exports[`Displays an error if prescription-order not found 1`] = `
     <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,null\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">null</pre>
   </div>
 </details>
-<div class=\\"sc-bdvvtL jjZBkx\\"><a class=\\"nhsuk-button nhsuk-button--secondary\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/\\">Back</a></div>"
+<div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
 `;
 
 exports[`Displays an error on invalid response 1`] = `
@@ -48,7 +48,7 @@ exports[`Displays an error on invalid response 1`] = `
     <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">{}</pre>
   </div>
 </details>
-<div class=\\"sc-bdvvtL jjZBkx\\"><a class=\\"nhsuk-button nhsuk-button--secondary\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/\\">Back</a></div>"
+<div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
 `;
 
 exports[`Displays claim form if prescription details are retrieved successfully 1`] = `
@@ -102,7 +102,7 @@ exports[`Displays claim form if prescription details are retrieved successfully 
       </div>
     </fieldset>
   </div>
-  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"reset\\">Reset</button></div>
+  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Claim</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
 </form>"
 `;
 
@@ -140,7 +140,7 @@ exports[`Displays claim result 1`] = `
     </div>
   </details>
 </div>
-<div class=\\"sc-bdvvtL jjZBkx\\"><a class=\\"nhsuk-button nhsuk-button--secondary\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"baseUrl/\\" type=\\"button\\">Back</a></div>"
+<div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
 `;
 
 exports[`Displays loading text while claim is being submitted 1`] = `"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Loading...</label></h1><label class=\\"nhsuk-label\\">Sending claim.</label>"`;

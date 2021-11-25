@@ -51,23 +51,6 @@ test.each([
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-test("Error page includes a back button with the provided href", async () => {
-  const mockTask = jest.fn()
-  mockTask.mockRejectedValue(new Error("Some error message"))
-
-  const ui = (
-    <LongRunningTask<Record<string, string>> task={mockTask} loadingMessage="Loading" back="http://example.com/">
-      {result => <span>{result.data}</span>}
-    </LongRunningTask>
-  )
-  const {container} = render(ui)
-
-  const linkButton = await screen.findByText<HTMLAnchorElement>("Back")
-  expect(linkButton.href).toEqual("http://example.com/")
-  expect(mockTask).toHaveBeenCalledTimes(1)
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
-})
-
 test("Error page includes a back button with the provided onclick handler", async () => {
   const mockTask = jest.fn()
   mockTask.mockRejectedValue(new Error("Some error message"))

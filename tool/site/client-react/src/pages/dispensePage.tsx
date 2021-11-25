@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext, useState} from "react"
-import {Button, CrossIcon, Label, TickIcon} from "nhsuk-react-components"
+import {CrossIcon, Label, TickIcon} from "nhsuk-react-components"
 import {
   getMedicationDispenseResources,
   getMedicationRequestResources,
@@ -28,6 +28,7 @@ import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {getArrayTypeGuard, isBundle} from "../fhir/typeGuards"
 import {axiosInstance} from "../requests/axiosInstance"
 import {isResult, Result} from "../requests/result"
+import ReloadButton from "../components/reloadButton"
 
 interface DispensePageProps {
   prescriptionId: string
@@ -63,7 +64,7 @@ const DispensePage: React.FC<DispensePageProps> = ({
             {dispenseResult => (
               <>
                 <Label isPageHeading>Dispense Result {dispenseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
-                <PrescriptionActions prescriptionId={prescriptionId} dispense claim view/>
+                <PrescriptionActions prescriptionId={prescriptionId} claim view/>
                 <MessageExpanders
                   fhirRequest={dispenseResult.request}
                   hl7V3Request={dispenseResult.request_xml}
@@ -71,7 +72,7 @@ const DispensePage: React.FC<DispensePageProps> = ({
                   hl7V3Response={dispenseResult.response_xml}
                 />
                 <ButtonList>
-                  <Button type="button" href={baseUrl} secondary>Back</Button>
+                  <ReloadButton/>
                 </ButtonList>
               </>
             )}

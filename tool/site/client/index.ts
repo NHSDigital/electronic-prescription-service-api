@@ -1,7 +1,7 @@
 import "./site.css"
 import Cookies from "js-cookie"
 import * as fhirExtension from "./models/extension"
-import {Bundle, BundleEntry, ContentReferencePayload, ContentStringPayload, OperationOutcome} from "./models"
+import {Bundle, BundleEntry, ContentReferencePayload, ContentStringPayload} from "./models"
 import {createDispenseRequest} from "./transformers/dispense-notification"
 import {createCancellation} from "./transformers/cancellation"
 import {
@@ -24,7 +24,7 @@ import {
   resetErrors,
   resetPageData
 } from "./ui/state"
-import {APIResponse, PrescriptionAction} from "./ui/view-models"
+import {PrescriptionAction} from "./ui/view-models"
 import {makeRequest} from "./api/make-request"
 import {initialiseTestPack} from "./test-pack"
 import {
@@ -33,7 +33,6 @@ import {
   updateNominatedPharmacy,
   updateValidityPeriodIfRepeatDispensing
 } from "./parsers/write/bundle-parser"
-import {createClaim} from "./transformers/dispense-claim"
 
 const customWindow = window as Record<string, any>
 
@@ -42,8 +41,8 @@ customWindow.sendLoadRequest = function () {
   resetPageData("edit")
 }
 
-customWindow.updateAuthMethod = function (authMethod: string) {
-  const response = makeRequest(
+customWindow.updateAuthMethod = async function (authMethod: string) {
+  const response = await makeRequest(
     "POST",
     `${pageData.baseUrl}change-auth`,
     JSON.stringify({authMethod: authMethod})
@@ -51,13 +50,13 @@ customWindow.updateAuthMethod = function (authMethod: string) {
   window.location.href = response.redirectUri
 }
 
-customWindow.getEditRequest = function (previousOrNext: string) {
+customWindow.getEditRequest = async function (previousOrNext: string) {
   try {
     const prescriptionId =
       previousOrNext === "previous"
         ? pageData.previous_prescription_id
         : pageData.next_prescription_id
-    const response = makeRequest(
+    const response = await makeRequest(
       "GET",
       `${pageData.baseUrl}prescription/${prescriptionId}`
     )
@@ -71,7 +70,7 @@ customWindow.getEditRequest = function (previousOrNext: string) {
   }
 }
 
-customWindow.sendEditRequest = function () {
+customWindow.sendEditRequest = async function () {
   resetErrors()
   try {
     let bundles = getPayloads()
@@ -83,7 +82,7 @@ customWindow.sendEditRequest = function () {
       updateNominatedPharmacy(bundle, getOdsCode())
       sanitiseProdTestData(bundle)
     })
-    const response = makeRequest(
+    const response = await makeRequest(
       "POST",
       `${pageData.baseUrl}prescribe/edit`,
       JSON.stringify(bundles)
@@ -99,77 +98,16 @@ customWindow.sendEditRequest = function () {
   }
 }
 
-customWindow.sendSignRequest = function () {
-  resetErrors()
-  try {
-    const response = makeRequest(
-      "POST",
-      `${pageData.baseUrl}prescribe/sign`,
-      JSON.stringify({})
-    )
-    if (response.prepareErrors) {
-      const prepareErrors: OperationOutcome[] = response.prepareErrors
-      prepareErrors
-        .flatMap(error => error.issue)
-        .filter(issue => issue.severity === "error")
-        .filter(issue => !issue.diagnostics.startsWith("Unable to find matching profile for urn:uuid:"))
-        .map(issue => issue.diagnostics)
-        .forEach(diagnostic => addError(diagnostic))
-    } else if (response.redirectUri) {
-      window.location.href = response.redirectUri
-    } else {
-      addError(`Unable to sign prescription, this is most likely because your session has expired. Please try to change-auth or login again`)
-    }
-  } catch (e) {
-    console.log(e)
-    addError(`Unable to sign prescription, this is most likely because your session has expired. Please try to change-auth or login again`)
-  }
-}
-
-customWindow.sendPrescriptionRequest = function () {
-  resetErrors()
-  try {
-    const urlParams = new URLSearchParams(window.location.search)
-    const signatureToken = urlParams.get("token")
-    const response = makeRequest("POST", `${pageData.baseUrl}prescribe/send`, JSON.stringify({signatureToken}))
-    pageData.signResponse = null
-    if (response.prescription_ids.length > 1) {
-      pageData.sendBulkResponse = response.success_list
-    } else {
-      pageData.sendResponse = {
-        prescriptionId: response.prescription_id,
-        success: response.success,
-        fhirRequest: response.request,
-        hl7Request: response.request_xml,
-        hl7Response: response.response_xml,
-        fhirResponse: response.response
-      }
-    }
-  } catch (e) {
-    console.log(e)
-    addError("Communication error")
-  }
-}
-
-customWindow.copySuccessfulPrescriptionIds = function () {
-  const prescriptionIds = pageData.sendBulkResponse
-    .filter(entry => entry.success)
-    .map(entry => entry.prescription_id)
-    .join("\n")
-  //TODO - test in multiple browsers
-  navigator.clipboard.writeText(prescriptionIds)
-}
-
-customWindow.sendCancelRequest = function () {
+customWindow.sendCancelRequest = async function () {
   try {
     const prescriptionId = Cookies.get("Current-Prescription-Id")
-    const prescription = makeRequest(
+    const prescription = await makeRequest(
       "GET",
       `${pageData.baseUrl}prescription/${prescriptionId}`
     )
     resetPageData("cancel")
     const cancellation = createCancellation(prescription)
-    const response = makeRequest(
+    const response = await makeRequest(
       "POST",
       `${pageData.baseUrl}prescribe/cancel`,
       JSON.stringify(cancellation)
@@ -196,10 +134,10 @@ customWindow.sendCancelRequest = function () {
   }
 }
 
-customWindow.sendReleaseRequest = function () {
+customWindow.sendReleaseRequest = async function () {
   try {
     const request = getReleaseRequest()
-    const response = makeRequest(
+    const response = await makeRequest(
       "POST",
       `${pageData.baseUrl}dispense/release`,
       JSON.stringify(request)
@@ -226,56 +164,20 @@ customWindow.sendReleaseRequest = function () {
   }
 }
 
-customWindow.sendDispenseRequest = function () {
+customWindow.sendDispenseRequest = async function () {
   try {
     const prescriptionId = Cookies.get("Current-Prescription-Id")
-    const prescription = makeRequest(
+    const prescription = await makeRequest(
       "GET",
       `${pageData.baseUrl}prescription/${prescriptionId}`
     )
     const dispenseRequest = createDispenseRequest(prescription)
-    const response = makeRequest(
+    const response = await makeRequest(
       "POST",
       `${pageData.baseUrl}dispense/dispense`,
       JSON.stringify(dispenseRequest)
     )
     pageData.dispenseResponse = {
-      success: response.success,
-      fhirRequest: response.request,
-      hl7Request: response.request_xml,
-      hl7Response: response.response_xml,
-      fhirResponse: response.response
-    }
-  } catch (e) {
-    console.log(e)
-    addError("Communication error")
-  }
-}
-
-customWindow.sendClaimRequest = function () {
-  try {
-    const prescriptionId = Cookies.get("Current-Prescription-Id")
-    const dispensingHistory = makeRequest(
-      "GET",
-      `${pageData.baseUrl}dispense/history?prescription_id=${prescriptionId}`
-    )
-    if (!dispensingHistory.prescription_order || !dispensingHistory.dispense_notifications) {
-      pageData.claimResponse = {
-        success: undefined,
-        fhirRequest: undefined,
-        hl7Request: "",
-        hl7Response: "",
-        fhirResponse: undefined
-      }
-      return
-    }
-    const claim = createClaim(dispensingHistory.prescription_order, dispensingHistory.dispense_notifications)
-    const response = makeRequest(
-      "POST",
-      `${pageData.baseUrl}dispense/claim`,
-      JSON.stringify(claim)
-    )
-    pageData.claimResponse = {
       success: response.success,
       fhirRequest: response.request,
       hl7Request: response.request_xml,
@@ -383,7 +285,7 @@ function getPayloads() {
       : [
         pageData.examples.filter(function (example) {
           return example.id === pageData.selectedExampleId
-        })[0].message
+        })[0].messageFn(pageData.baseUrl)
       ]
   } catch (e) {
     addError("Unable to parse custom prescription(s)")
@@ -402,52 +304,14 @@ function createCopies(bundles: Array<Bundle>, numberOfCopies: number) {
     .map(bundle => createNewInstance(bundle))
 }
 
-customWindow.doPrescriptionAction = function (select: HTMLInputElement) {
-  const value = select.value
-  const prescriptionId = Cookies.get("Current-Prescription-Id")
-  switch (value) {
-    case "cancel":
-      window.open(
-        `${pageData.baseUrl}prescribe/cancel?prescription_id=${prescriptionId}`,
-        "_blank"
-      )
-      break
-    case "release":
-      window.open(
-        `${pageData.baseUrl}dispense/release?prescription_id=${prescriptionId}`,
-        "_blank"
-      )
-      break
-    case "dispense":
-      window.open(
-        `${pageData.baseUrl}dispense/dispense?prescription_id=${prescriptionId}`,
-        "_blank"
-      )
-      break
-    case "claim":
-      window.open(
-        `${pageData.baseUrl}dispense/claim?prescription_id=${prescriptionId}`,
-        "_blank"
-      )
-      break
-    default:
-      return
-  }
-}
-
-function setInitialState(mode: string, env: string, baseUrl: string, signResponse: APIResponse) {
+function setInitialState(mode: string, env: string, baseUrl: string) {
   pageData.mode = mode
   pageData.environment = env
   pageData.baseUrl = baseUrl
-  pageData.signResponse = signResponse
-  // remove ability to add custom examples as an anonymous user
-  if (!pageData.loggedIn) {
-    pageData.examples.pop()
-  }
 }
 
-customWindow.startApplication = async function (mode: string, env: string, baseUrl: string, signResponse: APIResponse) {
-  setInitialState(mode, env, baseUrl, signResponse)
+customWindow.startApplication = async function (mode: string, env: string, baseUrl: string) {
+  setInitialState(mode, env, baseUrl)
   if (pageData.mode === "release" && pageData.prescriptionId) {
     pageData.selectedReleaseId = "prescriptionId"
     resetPageData("release")
@@ -487,7 +351,7 @@ customWindow.startApplication = async function (mode: string, env: string, baseU
   initialiseTestPack()
   bind()
   document.getElementById("main-content").style.display = ""
-  pageData.validatorPackages = parseMetadataResponse()
+  pageData.validatorPackages = await parseMetadataResponse()
 }
 
 customWindow.resetPageData = resetPageData

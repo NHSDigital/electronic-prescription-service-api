@@ -11,6 +11,7 @@ import {isBundle} from "../fhir/typeGuards"
 import {redirect} from "../browser/navigation"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
+import BackButton from "../components/backButton"
 
 interface SendPreSignPageProps {
   prescriptionId: string
@@ -59,7 +60,7 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
               <PrescriptionSummaryView {...summaryViewProps}/>
               <ButtonList>
                 <Button onClick={() => setSendConfirmed(true)}>Send</Button>
-                <Button secondary href={baseUrl}>Back</Button>
+                <BackButton/>
               </ButtonList>
             </>
           )
