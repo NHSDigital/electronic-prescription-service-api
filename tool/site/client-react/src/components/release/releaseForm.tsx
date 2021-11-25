@@ -16,13 +16,19 @@ const ReleaseForm: React.FC<ReleaseFormProps> = ({
 }) => {
   const initialValues: ReleaseFormValues =
     prescriptionId
-      ? {releaseType: "prescriptionId", releasePharmacy: null, prescriptionId}
-      : {releaseType: "all", releasePharmacy: null, prescriptionId: null}
+      ? {releaseType: "prescriptionId", prescriptionId, releasePharmacy: null, customReleasePharmacy: null}
+      : {releaseType: "all", prescriptionId: null, releasePharmacy: null, customReleasePharmacy: null}
 
   const validate = (values: ReleaseFormValues) => {
     const errors: ReleaseFormErrors = {}
+    if (values.releaseType === "prescriptionId" && !values.prescriptionId) {
+      errors.releaseType = "You must enter a 'Prescription ID' to release to when releasing a single prescription"
+    }
     if (!values.releasePharmacy) {
       errors.releasePharmacy = "You must select a pharmacy to release to"
+    }
+    if (values.releasePharmacy === "custom" && !values.customReleasePharmacy) {
+      errors.releasePharmacy = "You must enter a pharmacy ODS code to release to when selecting 'Other'"
     }
     return errors
   }
@@ -35,6 +41,7 @@ const ReleaseForm: React.FC<ReleaseFormProps> = ({
             <RadioField
               name="releaseType"
               label="Choose how you want to release prescription(s)"
+              error={formik.errors.releaseType}
               fieldRadios={[
                 {
                   value: "all",
@@ -58,7 +65,7 @@ const ReleaseForm: React.FC<ReleaseFormProps> = ({
                 name="prescriptionId"
                 as={Input}
                 width={30}
-                label="Prescription Id"
+                label="Prescription ID"
               />
             }
             <RadioField
@@ -73,13 +80,22 @@ const ReleaseForm: React.FC<ReleaseFormProps> = ({
                 {
                   value: "YGM1E",
                   text: "YGM1E - MBBM HEALTHCARE TECHNOLOGIES LTD"
+                },
+                {
+                  value: "custom",
+                  text: "Other"
                 }
-                // {
-                //   value: "custom",
-                //   text: "Other"
-                // }
               ]}
             />
+            {formik.values.releasePharmacy === "custom" &&
+              <Field
+                id="customReleasePharmacy"
+                name="customReleasePharmacy"
+                as={Input}
+                width={30}
+                label="Enter an ODS Code"
+              />
+            }
           </Fieldset>
           <ButtonList>
             <Button type="submit">Release</Button>
@@ -94,11 +110,13 @@ const ReleaseForm: React.FC<ReleaseFormProps> = ({
 export default ReleaseForm
 
 export interface ReleaseFormValues {
-  releaseType: string,
-  releasePharmacy: string
-  prescriptionId: string
+  releaseType: "all" | "prescriptionId",
+  prescriptionId?: string
+  releasePharmacy: "VNFKT" | "YGM1E" | "custom"
+  customReleasePharmacy?: string
 }
 
 interface ReleaseFormErrors {
+  releaseType?: string
   releasePharmacy?: string
 }

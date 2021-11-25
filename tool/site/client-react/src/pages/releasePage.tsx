@@ -66,9 +66,13 @@ async function sendRelease(
   return response.data
 }
 
-function createRelease(
-  releaseFormValues: ReleaseFormValues
-): fhir.Parameters {
+function createRelease(releaseFormValues: ReleaseFormValues): fhir.Parameters {
+
+  const releasePharmacy =
+    releaseFormValues.releasePharmacy === "custom"
+      ? releaseFormValues.customReleasePharmacy
+      : releaseFormValues.releasePharmacy
+
   const release: fhir.Parameters = {
     resourceType: "Parameters",
     id: uuid.v4(),
@@ -77,7 +81,7 @@ function createRelease(
         name: "owner",
         valueIdentifier: {
           system: "https://fhir.nhs.uk/Id/ods-organization-code",
-          value: releaseFormValues.releasePharmacy
+          value: releasePharmacy
         }
       },
       {
@@ -87,7 +91,7 @@ function createRelease(
     ]
   }
 
-  if (releaseFormValues.prescriptionId) {
+  if (releaseFormValues.releaseType === "prescriptionId") {
     release.parameter.push({
       "name": "group-identifier",
       "valueIdentifier": {
