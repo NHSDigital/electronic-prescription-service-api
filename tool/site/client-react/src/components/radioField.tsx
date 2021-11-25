@@ -6,6 +6,7 @@ export interface RadioFieldProps {
   name: string
   label: string
   fieldRadios: Array<Radio>
+  error?: string
 }
 
 interface Radio {
@@ -13,8 +14,11 @@ interface Radio {
   text: string
 }
 
-const RadioField: FC<RadioFieldProps> = ({name, label, fieldRadios}) => (
+const RadioField: FC<RadioFieldProps> = ({name, label, fieldRadios, error}) => (
   <Field id={name} name={name} labelProps={{bold: true}} label={label} as={Radios}>
+      {error &&
+        <p style={{color: "red", marginBottom: "20px"}}>{error}</p>
+      }
       {fieldRadios.map((radio, index) =>
         <Radios.Radio key={index} value={radio.value}>{radio.text}</Radios.Radio>
       )}

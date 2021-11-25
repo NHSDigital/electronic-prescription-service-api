@@ -13,6 +13,7 @@ import ReloadButton from "../components/reloadButton"
 import axios from "axios"
 import RadioField from "../components/radioField"
 import * as uuid from "uuid"
+import Pre from "../components/pre"
 
 interface ReleasePageProps {
   prescriptionId?: string
@@ -63,8 +64,17 @@ const ReleaseForm: React.FC<ReleaseFormProps> = ({
   onSubmit
 }) => {
   const initialValues: ReleaseFormValues = {releaseType: null, releasePharmacy: null}
+  
+  const validate = (values: ReleaseFormValues) => {
+    const errors = {} as any
+    if (!values.releasePharmacy) {
+      errors.releasePharmacy = 'You must select a pharmacy to release to'
+    }
+    return errors
+  }
+
   return (
-    <Formik<ReleaseFormValues> initialValues={initialValues} onSubmit={values => onSubmit(values)}>
+    <Formik<ReleaseFormValues> initialValues={initialValues} validate={validate} onSubmit={values => onSubmit(values)}>
       {formik =>
         <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
           <Fieldset>
@@ -88,6 +98,7 @@ const ReleaseForm: React.FC<ReleaseFormProps> = ({
             <RadioField
               name="releasePharmacy"
               label="Pharmacy to release prescriptions to"
+              error={formik.errors.releasePharmacy}
               fieldRadios={[
                 {
                   value: "VNFKT",
