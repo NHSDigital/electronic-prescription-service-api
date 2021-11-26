@@ -1,4 +1,5 @@
 import Hapi from "@hapi/hapi"
+import {getMedicationRequests} from "../../common/getResources"
 import {getSessionValue, setSessionValue} from "../../services/session"
 
 export default [
@@ -9,7 +10,7 @@ export default [
       const prepareBundles = Array.from(request.payload as any[])
       const prescriptionIds: Array<string> = []
       prepareBundles.forEach((prepareBundle: any) => {
-        const prescriptionId = getMedicationRequests(prepareBundle)[0].groupIdentifier.value
+        const prescriptionId = getMedicationRequests(prepareBundle)[0].groupIdentifier?.value ?? ""
         prescriptionIds.push(prescriptionId)
         setSessionValue(`prepare_request_${prescriptionId}`, prepareBundle, request)
       })
@@ -35,13 +36,3 @@ export default [
     }
   }
 ]
-
-function getMedicationRequests(bundle: any): Array<any> {
-  return getResourcesOfType<any>(bundle, "MedicationRequest")
-}
-
-function getResourcesOfType<T extends any>(bundle: any, resourceType: string): Array<T> {
-  return bundle.entry
-    .map((entry: { resource: any }) => entry.resource)
-    .filter((resource: { resourceType: string }) => resource.resourceType === resourceType) as Array<T>
-}
