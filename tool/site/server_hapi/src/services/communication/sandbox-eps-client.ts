@@ -34,8 +34,7 @@ export class SandboxEpsClient implements EpsClient {
         "X-Request-ID": uuid.v4(),
         "X-Raw-Response": "true"
       }
-    })).data
-    const spineResponseStr = typeof spineResponse === "string" ? spineResponse : JSON.stringify(spineResponse)
+    })).data as any
 
     const fhirResponse: OperationOutcome = {
       resourceType: "OperationOutcome",
@@ -46,7 +45,7 @@ export class SandboxEpsClient implements EpsClient {
         }
       ]
     }
-    return Promise.resolve({statusCode, fhirResponse, spineResponse: spineResponseStr})
+    return Promise.resolve({statusCode, fhirResponse, spineResponse: spineResponse})
   }
 
   async makeReleaseRequest(body: Parameters): Promise<EpsResponse<Bundle | OperationOutcome>> {
@@ -57,8 +56,7 @@ export class SandboxEpsClient implements EpsClient {
         "X-Request-ID": uuid.v4(),
         "X-Raw-Response": "true"
       }
-    })).data
-    const spineResponseStr = typeof spineResponse === "string" ? spineResponse : JSON.stringify(spineResponse)
+    })).data as any
 
     const response = (await axios.post(url, body, {
       headers: {
@@ -68,7 +66,7 @@ export class SandboxEpsClient implements EpsClient {
 
     const fhirResponse = response.data as Bundle | OperationOutcome
 
-    return Promise.resolve({statusCode, fhirResponse, spineResponse: spineResponseStr})
+    return Promise.resolve({statusCode, fhirResponse, spineResponse: spineResponse})
   }
 
   async makeConvertRequest(body: unknown): Promise<string> {
