@@ -9,12 +9,12 @@ interface PharmacyProps {
   error?: string
 }
 
-interface Pharamcy {
+interface Pharmacy {
   odsCode: string
   name: string
 }
 
-const pharmacies: Array<Pharamcy> = [
+const pharmacies: Array<Pharmacy> = [
   {
     odsCode: "VNFKT",
     name: "FIVE STAR HOMECARE LEEDS LTD"

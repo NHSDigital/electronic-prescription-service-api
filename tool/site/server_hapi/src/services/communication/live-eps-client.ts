@@ -1,7 +1,7 @@
 import * as uuid from "uuid"
 import axios, {AxiosRequestHeaders, AxiosResponse} from "axios"
 import {Bundle, FhirResource, OperationOutcome, Parameters} from "fhir/r4"
-import {EpsClient, EpsSendReponse} from "./eps-client"
+import {EpsClient, EpsResponse} from "./eps-client"
 import {URLSearchParams} from "url"
 
 export class LiveEpsClient implements EpsClient {
@@ -20,7 +20,7 @@ export class LiveEpsClient implements EpsClient {
     return (await this.makeApiCall<Parameters | OperationOutcome>("$prepare", body)).data
   }
 
-  async makeSendRequest(body: Bundle): Promise<EpsSendReponse> {
+  async makeSendRequest(body: Bundle): Promise<EpsResponse<OperationOutcome>> {
     const requestId = uuid.v4()
     const rawResponseHeaders = {
       "x-raw-response": "true"
@@ -29,6 +29,18 @@ export class LiveEpsClient implements EpsClient {
     const statusCode = response.status
     const fhirResponse = response.data
     const spineResponse = (await this.makeApiCall<string | OperationOutcome>("$process-message", body, requestId, rawResponseHeaders)).data
+    return {statusCode, fhirResponse, spineResponse}
+  }
+
+  async makeReleaseRequest(body: Parameters): Promise<EpsResponse<Bundle | OperationOutcome>> {
+    const requestId = uuid.v4()
+    const rawResponseHeaders = {
+      "x-raw-response": "true"
+    }
+    const response = await this.makeApiCall<OperationOutcome>("Task/$release", body, requestId)
+    const statusCode = response.status
+    const fhirResponse = response.data
+    const spineResponse = (await this.makeApiCall<string | OperationOutcome>("Task/$release", body, requestId, rawResponseHeaders)).data
     return {statusCode, fhirResponse, spineResponse}
   }
 

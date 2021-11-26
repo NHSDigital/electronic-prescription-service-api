@@ -292,27 +292,8 @@ def get_release():
 def post_release():
     if (config.ENVIRONMENT == "prod"):
         return app.make_response("Bad Request", 400)
-
-    request = flask.request.json
-    access_token = get_access_token()
-
-    convert_response, _code = make_eps_api_convert_message_request(access_token, request)
-    release_response, release_response_code, request_id = make_eps_api_release_request(
-        access_token,
-        request,
-    )
-    release_response_xml, _untranslated_code = make_eps_api_release_request_untranslated(
-        access_token,
-        request,
-        request_id
-    )
-    return {
-        "success": release_response_code == 200,
-        "request_xml": convert_response,
-        "request": request,
-        "response": release_response,
-        "response_xml": release_response_xml
-    }
+    response = hapi_passthrough.post_release(flask.request.json)
+    return app.make_response(response)
 
 
 @app.route(DISPENSE_URL, methods=["GET"])
