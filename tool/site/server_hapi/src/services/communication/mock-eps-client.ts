@@ -1,6 +1,6 @@
 import * as uuid from "uuid"
 import axios from "axios"
-import {Bundle, OperationOutcome, Parameters} from "fhir/r4"
+import {Bundle, BundleEntry, OperationOutcome, Parameters} from "fhir/r4"
 import {EpsClient, EpsResponse} from "./eps-client"
 
 export class MockEpsClient implements EpsClient {
@@ -61,16 +61,15 @@ export class MockEpsClient implements EpsClient {
       }
     })).data
     const spineResponseStr = typeof spineResponse === "string" ? spineResponse : JSON.stringify(spineResponse)
+    
+    const response = (await axios.post(url, body, {
+      headers: {
+        "X-Request-ID": uuid.v4()
+      }
+    }))
+    
+    const fhirResponse = response.data as Bundle | OperationOutcome
 
-    const fhirResponse: OperationOutcome = {
-      resourceType: "OperationOutcome",
-      issue: [
-        {
-          code: "informational",
-          severity: "information"
-        }
-      ]
-    }
     return Promise.resolve({statusCode, fhirResponse, spineResponse: spineResponseStr})
   }
 
