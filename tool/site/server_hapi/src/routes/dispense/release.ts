@@ -1,5 +1,5 @@
 import Hapi from "@hapi/hapi"
-import {getSessionValue, getSessionValueOrDefault, setSessionValue} from "../../services/session"
+import {getSessionValue} from "../../services/session"
 import {Parameters} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 
