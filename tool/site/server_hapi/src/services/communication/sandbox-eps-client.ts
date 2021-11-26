@@ -69,6 +69,30 @@ export class SandboxEpsClient implements EpsClient {
     return Promise.resolve({statusCode, fhirResponse, spineResponse: spineResponse})
   }
 
+  async makeReleaseRequest(body: Parameters): Promise<EpsResponse<Bundle | OperationOutcome>> {
+    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/Task/$release`
+    const statusCode = 200
+    //TODO - why is the mock client sending real requests?
+    const spineResponse = (await axios.post(url, body, {
+      headers: {
+        "X-Request-ID": uuid.v4(),
+        "X-Raw-Response": "true"
+      }
+    })).data
+    const spineResponseStr = typeof spineResponse === "string" ? spineResponse : JSON.stringify(spineResponse)
+
+    const fhirResponse: OperationOutcome = {
+      resourceType: "OperationOutcome",
+      issue: [
+        {
+          code: "informational",
+          severity: "information"
+        }
+      ]
+    }
+    return Promise.resolve({statusCode, fhirResponse, spineResponse: spineResponseStr})
+  }
+
   async makeConvertRequest(body: unknown): Promise<string> {
     const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/$convert`
     const response = (await axios.post(url, body, {
