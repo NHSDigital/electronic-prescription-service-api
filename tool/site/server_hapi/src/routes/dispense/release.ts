@@ -37,6 +37,18 @@ export default [
         response_xml: releaseResponse.spineResponse
       }).code(200)
     }
+  },
+  {
+    method: "GET",
+    path: "/dispense/release/{prescriptionId}",
+    handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      const prescriptionId = request.params.prescriptionId
+      if (!prescriptionId) {
+        return responseToolkit.response("Prescription id required in path").code(400)
+      }
+      const releaseResponse = getSessionValue(`release_response_${prescriptionId}`, request)
+      return responseToolkit.response(releaseResponse).code(200)
+    }
   }
 ]
 

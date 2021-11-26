@@ -296,6 +296,12 @@ def post_release():
     return app.make_response(response)
 
 
+@app.route("/dispense/release/<short_prescription_id>", methods=["GET"])
+def get_released_prescriptions(short_prescription_id):
+    response = hapi_passthrough.get_released_prescriptions(str(short_prescription_id))
+    return app.make_response(json.dumps(response))
+
+
 @app.route(DISPENSE_URL, methods=["GET"])
 def get_dispense():
     if (config.ENVIRONMENT == "prod"):
