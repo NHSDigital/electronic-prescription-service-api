@@ -79,6 +79,7 @@ test("Displays an error if prescription-order not found", async () => {
 test("Displays an error on invalid response", async () => {
   moxios.stubRequest(prescriptionOrderUrl, {
     status: 500,
+    statusText: "Internal Server Error",
     response: {}
   })
 

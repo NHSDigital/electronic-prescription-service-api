@@ -20,7 +20,7 @@ import PrescriptionActions from "../components/prescriptionActions"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {getArrayTypeGuard, isBundle} from "../fhir/typeGuards"
 import {axiosInstance} from "../requests/axiosInstance"
-import {isResult, Result} from "../requests/result"
+import {isApiResult, ApiResult} from "../requests/apiResult"
 import ReloadButton from "../components/reloadButton"
 
 interface ClaimPageProps {
@@ -49,7 +49,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
 
         const sendClaimTask = () => sendClaim(baseUrl, prescriptionDetails, claimFormValues)
         return (
-          <LongRunningTask<Result> task={sendClaimTask} loadingMessage="Sending claim.">
+          <LongRunningTask<ApiResult> task={sendClaimTask} loadingMessage="Sending claim.">
             {claimResult => (
               <>
                 <Label isPageHeading>Claim Result {claimResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
@@ -94,15 +94,15 @@ async function sendClaim(
   baseUrl: string,
   prescriptionDetails: PrescriptionDetails,
   claimFormValues: ClaimFormValues
-): Promise<Result> {
+): Promise<ApiResult> {
   const claim = createClaim(
     prescriptionDetails.patient,
     prescriptionDetails.medicationRequests,
     prescriptionDetails.medicationDispenses,
     claimFormValues
   )
-  const response = await axiosInstance.post<Result>(`${baseUrl}dispense/claim`, claim)
-  return getResponseDataIfValid(response, isResult)
+  const response = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/claim`, claim)
+  return getResponseDataIfValid(response, isApiResult)
 }
 
 interface PrescriptionDetails {

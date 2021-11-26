@@ -4,7 +4,7 @@ import {Button, ErrorMessage, Label} from "nhsuk-react-components"
 import ButtonList from "./buttonList"
 import BackButton from "./backButton"
 import {UnhandledAxiosResponseError} from "../requests/unhandledAxiosResponseError"
-import AxiosResponseView from "./axiosResponseView"
+import RawApiResponse, {createRawApiResponseProps} from "./rawApiResponse"
 
 interface LongRunningTaskProps<T> {
   task: () => Promise<T>
@@ -47,7 +47,7 @@ const LongRunningTask = <T extends unknown>({
       <>
         <Label isPageHeading>Error</Label>
         <ErrorMessage>{message}</ErrorMessage>
-        {response && <AxiosResponseView response={response}/>}
+        {response && <RawApiResponse {...createRawApiResponseProps(response)}/>}
         <ButtonList>
           {back
             ? <Button secondary onClick={back}>Back</Button>

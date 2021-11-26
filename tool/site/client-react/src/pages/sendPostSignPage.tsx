@@ -8,7 +8,7 @@ import {AppContext} from "../index"
 import PrescriptionActions from "../components/prescriptionActions"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
-import {isResult, Result} from "../requests/result"
+import {isApiResult, ApiResult} from "../requests/apiResult"
 import BackButton from "../components/backButton"
 
 interface SendPostSignPageProps {
@@ -83,7 +83,7 @@ function isSendResultOrSendBulkResult(data: unknown): data is SendResult | SendB
   if (isBulkResult(data as SendBulkResult)) {
     return true
   }
-  if (!isResult(data)) {
+  if (!isApiResult(data)) {
     return false
   }
   const sendResult = data as SendResult
@@ -94,7 +94,7 @@ function isBulkResult(response: SendResult | SendBulkResult): response is SendBu
   return (response as SendBulkResult).results !== undefined
 }
 
-interface SendResult extends Result {
+interface SendResult extends ApiResult {
   prescription_id: string
 }
 

@@ -9,10 +9,22 @@ exports[`Displays an error if prescription-order not found 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1><span class=\\"nhsuk-error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>Unexpected response from server.</span>
 <dl class=\\"nhsuk-summary-list\\">
   <div class=\\"nhsuk-summary-list__row\\">
+    <dt class=\\"nhsuk-summary-list__key\\">URL</dt>
+    <dd class=\\"nhsuk-summary-list__value\\">baseUrl/prescription/7A9089-A83008-56A03J</dd>
+  </div>
+  <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Status</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">200 </dd>
+    <dd class=\\"nhsuk-summary-list__value\\">200 undefined</dd>
   </div>
 </dl>
+<details class=\\"nhsuk-details nhsuk-expander\\">
+  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Headers</span></summary>
+  <div class=\\"nhsuk-details__text\\">
+    <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">{
+  \\"Accept\\": \\"application/json, text/plain, */*\\"
+}</pre>
+  </div>
+</details>
 <details class=\\"nhsuk-details nhsuk-expander\\">
   <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Headers</span></summary>
   <div class=\\"nhsuk-details__text\\">
@@ -32,10 +44,22 @@ exports[`Displays an error on invalid response 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1><span class=\\"nhsuk-error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>Unexpected response from server.</span>
 <dl class=\\"nhsuk-summary-list\\">
   <div class=\\"nhsuk-summary-list__row\\">
+    <dt class=\\"nhsuk-summary-list__key\\">URL</dt>
+    <dd class=\\"nhsuk-summary-list__value\\">baseUrl/prescription/7A9089-A83008-56A03J</dd>
+  </div>
+  <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Status</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">500 </dd>
+    <dd class=\\"nhsuk-summary-list__value\\">500 Internal Server Error</dd>
   </div>
 </dl>
+<details class=\\"nhsuk-details nhsuk-expander\\">
+  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Headers</span></summary>
+  <div class=\\"nhsuk-details__text\\">
+    <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">{
+  \\"Accept\\": \\"application/json, text/plain, */*\\"
+}</pre>
+  </div>
+</details>
 <details class=\\"nhsuk-details nhsuk-expander\\">
   <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Headers</span></summary>
   <div class=\\"nhsuk-details__text\\">

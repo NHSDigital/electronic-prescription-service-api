@@ -103,6 +103,7 @@ test("Displays an error message if summary search returns an error", async () =>
   }
   moxios.stubRequest(prescriptionSearchByNhsNumberUrl, {
     status: 400,
+    statusText: "Bad Request",
     response: errorResponse
   })
 
@@ -117,6 +118,7 @@ test("Displays an error message if summary search returns an error", async () =>
 test("Displays an error message if summary search returns invalid response", async () => {
   moxios.stubRequest(prescriptionSearchByNhsNumberUrl, {
     status: 500,
+    statusText: "Internal Server Error",
     response: null
   })
 

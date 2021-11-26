@@ -79,6 +79,7 @@ test("Displays an error if response is an OperationOutcome", async () => {
 test("Displays an error if response is empty", async () => {
   moxios.stubRequest(prescriptionOrderUrl, {
     status: 500,
+    statusText: "Internal Server Error",
     response: null
   })
 
@@ -167,6 +168,7 @@ test("Displays error message if redirect URI not present", async () => {
   })
   moxios.stubRequest(signatureRequestUrl, {
     status: 400,
+    statusText: "Bad Request",
     response: operationOutcome
   })
 

@@ -27,7 +27,7 @@ import PrescriptionActions from "../components/prescriptionActions"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {getArrayTypeGuard, isBundle} from "../fhir/typeGuards"
 import {axiosInstance} from "../requests/axiosInstance"
-import {isResult, Result} from "../requests/result"
+import {isApiResult, ApiResult} from "../requests/apiResult"
 import ReloadButton from "../components/reloadButton"
 
 interface DispensePageProps {
@@ -60,7 +60,7 @@ const DispensePage: React.FC<DispensePageProps> = ({
 
         const sendDispenseNotificationTask = () => sendDispenseNotification(baseUrl, prescriptionDetails, dispenseFormValues)
         return (
-          <LongRunningTask<Result> task={sendDispenseNotificationTask} loadingMessage="Sending dispense notification.">
+          <LongRunningTask<ApiResult> task={sendDispenseNotificationTask} loadingMessage="Sending dispense notification.">
             {dispenseResult => (
               <>
                 <Label isPageHeading>Dispense Result {dispenseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
@@ -102,7 +102,7 @@ async function sendDispenseNotification(
   baseUrl: string,
   prescriptionDetails: PrescriptionDetails,
   dispenseFormValues: DispenseFormValues
-): Promise<Result> {
+): Promise<ApiResult> {
   const dispenseNotification = createDispenseNotification(
     prescriptionDetails.messageHeader,
     prescriptionDetails.patient,
@@ -110,8 +110,8 @@ async function sendDispenseNotification(
     dispenseFormValues
   )
 
-  const response = await axiosInstance.post<Result>(`${baseUrl}dispense/dispense`, dispenseNotification)
-  return getResponseDataIfValid(response, isResult)
+  const response = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/dispense`, dispenseNotification)
+  return getResponseDataIfValid(response, isApiResult)
 }
 
 interface PrescriptionDetails {
