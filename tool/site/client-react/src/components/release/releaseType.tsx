@@ -19,17 +19,16 @@ const ReleaseType: React.FC<ReleaseTypeProps> = ({
       <RadioField
         name="releaseType"
         label="Choose how you want to release prescription(s)"
+        defaultValue={initialValue}
         error={error}
         fieldRadios={[
           {
             value: "all",
-            text: "All nominated prescriptions for the below pharmacy",
-            defaultChecked: initialValue === "all"
+            text: "All nominated prescriptions for the below pharmacy"
           },
           {
             value: "prescriptionId",
-            text: "A single prescription by ID",
-            defaultChecked: initialValue === "prescriptionId"
+            text: "A single prescription by ID"
           },
           {
             value: "custom",
