@@ -1,4 +1,4 @@
-import {MockEpsClient} from "./mock-eps-client"
+import {SandboxEpsClient} from "./sandbox-eps-client"
 import {LiveEpsClient} from "./live-eps-client"
 import {Bundle, FhirResource, Parameters} from "fhir/r4"
 import {isLocal} from "../environment"
@@ -15,7 +15,7 @@ export interface EpsClient {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function getEpsClient(accessToken: string): EpsClient {
   return isLocal()
-    ? new MockEpsClient()
+    ? new SandboxEpsClient()
     : new LiveEpsClient(accessToken)
 }
 
