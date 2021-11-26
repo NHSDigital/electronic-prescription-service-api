@@ -285,7 +285,7 @@ def post_cancel():
 def get_release():
     if (config.ENVIRONMENT == "prod"):
         return app.make_response("Bad Request", 400)
-    return render_rivets_client("release")
+    return render_react_client("release")
 
 
 @app.route(RELEASE_URL, methods=["POST"])
