@@ -15,13 +15,8 @@ interface Radio {
   defaultChecked?: boolean
 }
 
-const errorStyle: React.CSSProperties = {color: "red", marginBottom: "20px"}
-
 const RadioField: FC<RadioFieldProps> = ({name, label, fieldRadios, error}) => (
-  <Field id={name} name={name} labelProps={{bold: true}} label={label} as={Radios}>
-    {error &&
-        <p style={errorStyle}>{error}</p>
-    }
+  <Field id={name} name={name} labelProps={{bold: true}} label={label} error={error} as={Radios}>
     {fieldRadios.map((radio, index) =>
       <Radios.Radio key={index} value={radio.value} defaultChecked={radio.defaultChecked}>{radio.text}</Radios.Radio>
     )}
