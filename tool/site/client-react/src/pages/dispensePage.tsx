@@ -81,6 +81,7 @@ const DispensePage: React.FC<DispensePageProps> = ({
 }
 
 async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: string): Promise<PrescriptionDetails> {
+  // todo: retrieve release response prescription instead of send prescription response here
   const prescriptionOrderResponse = await axios.get<fhir.Bundle>(`${baseUrl}prescription/${prescriptionId}`)
   const prescriptionOrder = prescriptionOrderResponse.data
   if (!prescriptionOrder) {
