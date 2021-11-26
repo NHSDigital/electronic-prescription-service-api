@@ -37,7 +37,7 @@ export class LiveEpsClient implements EpsClient {
     const rawResponseHeaders = {
       "x-raw-response": "true"
     }
-    const response = await this.makeApiCall<OperationOutcome>("Task/$release", body, requestId)
+    const response = await this.makeApiCall<Bundle | OperationOutcome>("Task/$release", body, requestId)
     const statusCode = response.status
     const fhirResponse = response.data
     const spineResponse = (await this.makeApiCall<string | OperationOutcome>("Task/$release", body, requestId, rawResponseHeaders)).data

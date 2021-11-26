@@ -1,7 +1,8 @@
 import Hapi from "@hapi/hapi"
-import {getSessionValue} from "../../services/session"
-import {Parameters} from "fhir/r4"
+import {getSessionValue, setSessionValue} from "../../services/session"
+import {Bundle, OperationOutcome, Parameters} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
+import {getMedicationRequests} from "../../common/getResources"
 
 export default [
   {
@@ -14,6 +15,20 @@ export default [
       const releaseResponse = await epsClient.makeReleaseRequest(releaseRequest)
       const releaseRequestHl7 = await epsClient.makeConvertRequest(releaseRequest)
 
+      if (isBundleOfBundles(releaseResponse.fhirResponse)) {
+        const bundleEntries = releaseResponse.fhirResponse.entry
+        if (bundleEntries) {
+          for (const entry of bundleEntries) {
+            const bundle = entry.resource as Bundle
+            const firstMedicationRequest = getMedicationRequests(bundle)[0]
+            const prescriptionId = firstMedicationRequest.groupIdentifier?.value ?? ""
+            if (prescriptionId) {
+              setSessionValue(`release_response_${prescriptionId}`, bundle, request)
+            }
+          }
+        }
+      }
+
       return responseToolkit.response({
         success: releaseResponse.statusCode === 200,
         request_xml: releaseRequestHl7,
@@ -24,3 +39,7 @@ export default [
     }
   }
 ]
+
+function isBundleOfBundles(fhirResponse: Bundle | OperationOutcome): fhirResponse is Bundle {
+  return !!(fhirResponse as Bundle)?.entry?.length
+}
