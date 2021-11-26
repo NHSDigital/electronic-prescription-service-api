@@ -64,8 +64,8 @@ const ReleaseForm: React.FC<ReleaseFormProps> = ({
 
 function getInitialValues(prescriptionId: string): ReleaseFormValues {
   return prescriptionId
-    ? { releaseType: "prescriptionId", prescriptionId, pharmacy: "", customPharmacy: "" }
-    : { releaseType: "all", prescriptionId: "", pharmacy: "", customPharmacy: "" }
+    ? {releaseType: "prescriptionId", prescriptionId, pharmacy: "", customPharmacy: ""}
+    : {releaseType: "all", prescriptionId: "", pharmacy: "", customPharmacy: ""}
 }
 
 function isCustomRelease(values: ReleaseFormValues) {
