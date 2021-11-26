@@ -19,7 +19,7 @@ export default [
         const bundleEntries = releaseResponse.fhirResponse.entry
         if (bundleEntries) {
           for (const entry of bundleEntries) {
-            const bundle = entry as Bundle
+            const bundle = entry.resource as Bundle
             const firstMedicationRequest = getMedicationRequests(bundle)[0]
             const prescriptionId = firstMedicationRequest.groupIdentifier?.value ?? ""
             setSessionValue(`release_response_${prescriptionId}`, bundle, request)
