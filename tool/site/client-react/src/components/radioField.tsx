@@ -6,19 +6,19 @@ export interface RadioFieldProps {
   name: string
   label: string
   fieldRadios: Array<Radio>
+  defaultValue?: string
   error?: string
 }
 
 interface Radio {
   value: string
   text: string
-  defaultChecked?: boolean
 }
 
-const RadioField: FC<RadioFieldProps> = ({name, label, fieldRadios, error}) => (
+const RadioField: FC<RadioFieldProps> = ({name, label, fieldRadios, defaultValue, error}) => (
   <Field id={name} name={name} labelProps={{bold: true}} label={label} error={error} as={Radios}>
     {fieldRadios.map((radio, index) =>
-      <Radios.Radio key={index} value={radio.value} defaultChecked={radio.defaultChecked}>{radio.text}</Radios.Radio>
+      <Radios.Radio key={index} value={radio.value} defaultChecked={defaultValue === radio.value}>{radio.text}</Radios.Radio>
     )}
   </Field>
 )
