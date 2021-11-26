@@ -1,7 +1,7 @@
 import * as uuid from "uuid"
 import axios from "axios"
 import {Bundle, OperationOutcome, Parameters} from "fhir/r4"
-import {EpsClient, EpsSendReponse} from "./eps-client"
+import {EpsClient, EpsResponse} from "./eps-client"
 
 export class MockEpsClient implements EpsClient {
 
@@ -26,8 +26,32 @@ export class MockEpsClient implements EpsClient {
     })
   }
 
-  async makeSendRequest(body: Bundle): Promise<EpsSendReponse> {
+  async makeSendRequest(body: Bundle): Promise<EpsResponse<OperationOutcome>> {
     const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/$process-message`
+    const statusCode = 200
+    //TODO - why is the mock client sending real requests?
+    const spineResponse = (await axios.post(url, body, {
+      headers: {
+        "X-Request-ID": uuid.v4(),
+        "X-Raw-Response": "true"
+      }
+    })).data
+    const spineResponseStr = typeof spineResponse === "string" ? spineResponse : JSON.stringify(spineResponse)
+
+    const fhirResponse: OperationOutcome = {
+      resourceType: "OperationOutcome",
+      issue: [
+        {
+          code: "informational",
+          severity: "information"
+        }
+      ]
+    }
+    return Promise.resolve({statusCode, fhirResponse, spineResponse: spineResponseStr})
+  }
+
+  async makeReleaseRequest(body: Parameters): Promise<EpsResponse<Bundle | OperationOutcome>> {
+    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/Task/$release`
     const statusCode = 200
     //TODO - why is the mock client sending real requests?
     const spineResponse = (await axios.post(url, body, {

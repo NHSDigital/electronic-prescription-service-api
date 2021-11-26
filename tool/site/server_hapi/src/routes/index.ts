@@ -5,6 +5,7 @@ import editRoutes from "./prescribe/edit"
 import signRoutes from "./prescribe/sign"
 import sendRoutes from "./prescribe/send"
 import searchRoutes from "./tracker/search"
+import releaseRoutes from "./dispense/release"
 import dispenseRoutes from "./dispense/dispense"
 
 const authRoutes = [
@@ -15,10 +16,15 @@ const stateRoutes = [
   ...sessionRoutes
 ]
 
-const prescribeRoutes = [
+const prescribingRoutes = [
   ...editRoutes,
   ...signRoutes,
   ...sendRoutes
+]
+
+const dispensingRoutes = [
+  ...releaseRoutes,
+  ...dispenseRoutes
 ]
 
 const trackerRoutes = [
@@ -33,8 +39,8 @@ const routes = [
   ...authRoutes,
   ...stateRoutes,
   ...healthcheckRoutes,
-  ...prescribeRoutes,
-  ...dispenseRoutes,
+  ...prescribingRoutes,
+  ...dispensingRoutes,
   ...trackerRoutes
 ]
 

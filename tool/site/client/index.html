@@ -60,9 +60,6 @@
               <div rv-show="mode | isCancel">
                 <h1 class="nhsuk-fieldset__heading">Cancel prescription</h1>
               </div>
-              <div rv-show="mode | isRelease">
-                <h1 class="nhsuk-fieldset__heading">Release prescription(s)</h1>
-              </div>
             </legend>
           </fieldset>
         </div>
@@ -145,17 +142,6 @@
           </fieldset>
         </div>
       </div>
-      <div class="nhsuk-grid-row" rv-show="mode | isRelease" style="margin-bottom:20px;">
-        <div class="nhsuk-grid-column-full" rv-hide="releaseResponse">
-          <div class="nhsuk-radios">
-            <div class="nhsuk-radios__item" rv-each-release="releases">
-              <input class="nhsuk-radios__input" rv-id="release.id" type="radio" name="release"
-                rv-value="release.id" rv-checked="selectedReleaseId" rv-on-click="release.select">
-              <label class="nhsuk-label nhsuk-radios__label" rv-for="release.id">{release.description}</label>
-            </div>
-          </div>
-        </div>
-      </div>
       <div class="nhsuk-grid-row" id="prescription-id-container" rv-show="showCustomPrescriptionIdInput">
         <div class="nhsuk-grid-column-full" rv-hide="releaseResponse">
           <fieldset class="nhsuk-fieldset">
@@ -185,9 +171,6 @@
             <fieldset class="nhsuk-fieldset" aria-describedby="pharmacy-hint">
               <div>
                 <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m" rv-show="mode | isEdit">Nominate a pharmacy</legend>
-                <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m"
-                  rv-show="mode | isRelease">Pharmacy to release prescriptions to
-                </legend>
               </div>
               <div class="nhsuk-radios">
                 <div class="nhsuk-radios__item" rv-each-pharmacy="pharmacies">
@@ -547,16 +530,6 @@
             <button class="nhsuk-button nhsuk-button--secondary" type="submit" rv-show="cancelResponse"
               onclick="resetPageData('cancel');">Back</button>
             <button class="nhsuk-button nhsuk-button--secondary" type="submit" rv-hide="cancelResponse" onclick="resetPageData('home');">Back</button>
-          </div>
-        </div>
-      </div>
-      <div rv-show="mode | isRelease">
-        <div class="nhsuk-grid-row">
-          <div class="nhsuk-grid-column-full">
-            <button class="nhsuk-button" type="submit" rv-hide="releaseResponse"
-              onclick="sendReleaseRequest()">Release</button>
-            <button class="nhsuk-button nhsuk-button--secondary" type="submit"
-              onclick="resetPageData('home');">Back</button>
           </div>
         </div>
       </div>
