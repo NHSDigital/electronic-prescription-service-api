@@ -22,7 +22,9 @@ export default [
             const bundle = entry.resource as Bundle
             const firstMedicationRequest = getMedicationRequests(bundle)[0]
             const prescriptionId = firstMedicationRequest.groupIdentifier?.value ?? ""
-            setSessionValue(`release_response_${prescriptionId}`, bundle, request)
+            if (prescriptionId) {
+              setSessionValue(`release_response_${prescriptionId}`, bundle, request)
+            }
           }
         }
       }

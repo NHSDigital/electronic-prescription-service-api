@@ -11,8 +11,10 @@ export default [
       const prescriptionIds: Array<string> = []
       prepareBundles.forEach((prepareBundle: any) => {
         const prescriptionId = getMedicationRequests(prepareBundle)[0].groupIdentifier?.value ?? ""
-        prescriptionIds.push(prescriptionId)
-        setSessionValue(`prepare_request_${prescriptionId}`, prepareBundle, request)
+        if (prescriptionId) {
+          prescriptionIds.push(prescriptionId)
+          setSessionValue(`prepare_request_${prescriptionId}`, prepareBundle, request)
+        }
       })
       setSessionValue("prescription_ids", prescriptionIds, request)
       const first_bundle = prepareBundles[0]
