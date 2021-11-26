@@ -14,6 +14,8 @@ export default [
       const releaseResponse = await epsClient.makeReleaseRequest(releaseRequest)
       const releaseRequestHl7 = await epsClient.makeConvertRequest(releaseRequest)
 
+      // todo: for each bundle in release response, get prescription id and save to release_response_{id}
+
       return responseToolkit.response({
         success: releaseResponse.statusCode === 200,
         request_xml: releaseRequestHl7,
