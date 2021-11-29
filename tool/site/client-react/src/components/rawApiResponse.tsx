@@ -4,38 +4,41 @@ import React from "react"
 import {MessageExpander} from "./messageExpanders"
 
 export function createRawApiResponseProps(axiosResponse: AxiosResponse): RawApiResponseProps {
+  const request = axiosResponse.config
   return {
-    method: axiosResponse.config.method.toUpperCase(),
-    url: axiosResponse.config.url,
-    requestParams: axiosResponse.config.params,
-    requestHeaders: axiosResponse.config.headers,
-    requestBody: axiosResponse.config.data,
-    status: `${axiosResponse.status} ${axiosResponse.statusText}`,
-    responseHeaders: axiosResponse.headers,
-    responseBody: axiosResponse.data
+    request: {
+      method: request.method.toUpperCase(),
+      url: request.url,
+      params: request.params,
+      headers: request.headers,
+      body: request.data
+    },
+    response: {
+      status: `${axiosResponse.status} ${axiosResponse.statusText}`,
+      headers: axiosResponse.headers,
+      body: axiosResponse.data
+    }
   }
 }
 
 interface RawApiResponseProps {
-  method: string
-  url: string
-  requestParams?: Record<string, unknown>
-  requestHeaders?: Record<string, unknown>
-  requestBody?: unknown
-  status: string
-  responseHeaders?: Record<string, unknown>
-  responseBody?: unknown
+  request: {
+    method: string
+    url: string
+    params?: Record<string, unknown>
+    headers?: Record<string, unknown>
+    body?: unknown
+  }
+  response: {
+    status: string
+    headers?: Record<string, unknown>
+    body?: unknown
+  }
 }
 
 const RawApiResponse: React.FC<RawApiResponseProps> = ({
-  method,
-  url,
-  requestParams,
-  requestHeaders,
-  requestBody,
-  status,
-  responseHeaders,
-  responseBody
+  request,
+  response
 }) => {
   return (
     <>
@@ -44,21 +47,21 @@ const RawApiResponse: React.FC<RawApiResponseProps> = ({
         <SummaryList>
           <SummaryList.Row>
             <SummaryList.Key>Method</SummaryList.Key>
-            <SummaryList.Value>{method}</SummaryList.Value>
+            <SummaryList.Value>{request.method}</SummaryList.Value>
           </SummaryList.Row>
           <SummaryList.Row>
             <SummaryList.Key>URL</SummaryList.Key>
-            <SummaryList.Value>{url}</SummaryList.Value>
+            <SummaryList.Value>{request.url}</SummaryList.Value>
           </SummaryList.Row>
         </SummaryList>
-        {requestParams && (
-          <MessageExpander name="Request Query Params" message={formatAsString(requestParams)} mimeType="text/plain"/>
+        {request.params && (
+          <MessageExpander name="Request Query Params" message={formatAsString(request.params)} mimeType="text/plain"/>
         )}
-        {requestHeaders && (
-          <MessageExpander name="Request Headers" message={formatAsString(requestHeaders)} mimeType="text/plain"/>
+        {request.headers && (
+          <MessageExpander name="Request Headers" message={formatAsString(request.headers)} mimeType="text/plain"/>
         )}
-        {requestBody && (
-          <MessageExpander name="Request Body" message={formatAsString(requestBody)} mimeType="text/plain"/>
+        {request.body && (
+          <MessageExpander name="Request Body" message={formatAsString(request.body)} mimeType="text/plain"/>
         )}
       </Fieldset>
       <Fieldset>
@@ -66,14 +69,14 @@ const RawApiResponse: React.FC<RawApiResponseProps> = ({
         <SummaryList>
           <SummaryList.Row>
             <SummaryList.Key>Status</SummaryList.Key>
-            <SummaryList.Value>{status}</SummaryList.Value>
+            <SummaryList.Value>{response.status}</SummaryList.Value>
           </SummaryList.Row>
         </SummaryList>
-        {responseHeaders && (
-          <MessageExpander name="Response Headers" message={formatAsString(responseHeaders)} mimeType="text/plain"/>
+        {response.headers && (
+          <MessageExpander name="Response Headers" message={formatAsString(response.headers)} mimeType="text/plain"/>
         )}
-        {responseBody && (
-          <MessageExpander name="Response Body" message={formatAsString(responseBody)} mimeType="text/plain"/>
+        {response.body && (
+          <MessageExpander name="Response Body" message={formatAsString(response.body)} mimeType="text/plain"/>
         )}
       </Fieldset>
     </>
