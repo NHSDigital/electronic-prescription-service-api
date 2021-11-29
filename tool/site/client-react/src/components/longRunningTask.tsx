@@ -1,6 +1,6 @@
 import * as React from "react"
 import {JSXElementConstructor, useEffect, useState} from "react"
-import {Button, ErrorMessage, ErrorSummary, Label} from "nhsuk-react-components"
+import {Button, ErrorSummary, Label} from "nhsuk-react-components"
 import ButtonList from "./buttonList"
 import BackButton from "./backButton"
 import {UnhandledAxiosResponseError} from "../requests/unhandledAxiosResponseError"
