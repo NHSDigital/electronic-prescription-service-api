@@ -806,35 +806,44 @@ exports[`Displays a message if summary search returns no results 1`] = `
 `;
 
 exports[`Displays an error message if summary search returns an error 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1><span class=\\"nhsuk-error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>Unexpected response from server.</span>
-<dl class=\\"nhsuk-summary-list\\">
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">URL</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">baseUrl/tracker?patient%3Aidentifier=9449304106</dd>
-  </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Status</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">400 Bad Request</dd>
-  </div>
-</dl>
-<details class=\\"nhsuk-details nhsuk-expander\\">
-  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Headers</span></summary>
-  <div class=\\"nhsuk-details__text\\">
-    <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">{
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1>
+<div class=\\"nhsuk-error-summary\\">
+  <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request</h2>
+  <div class=\\"nhsuk-error-summary__body\\">Unexpected response from server.</div>
+</div>
+<fieldset class=\\"nhsuk-fieldset\\">
+  <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Request Details</legend>
+  <dl class=\\"nhsuk-summary-list\\">
+    <div class=\\"nhsuk-summary-list__row\\">
+      <dt class=\\"nhsuk-summary-list__key\\">Method</dt>
+      <dd class=\\"nhsuk-summary-list__value\\">GET</dd>
+    </div>
+    <div class=\\"nhsuk-summary-list__row\\">
+      <dt class=\\"nhsuk-summary-list__key\\">URL</dt>
+      <dd class=\\"nhsuk-summary-list__value\\">baseUrl/tracker?patient%3Aidentifier=9449304106</dd>
+    </div>
+  </dl>
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Headers</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">{
   \\"Accept\\": \\"application/json, text/plain, */*\\"
 }</pre>
-  </div>
-</details>
-<details class=\\"nhsuk-details nhsuk-expander\\">
-  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Headers</span></summary>
-  <div class=\\"nhsuk-details__text\\">
-    <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,undefined\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\"></pre>
-  </div>
-</details>
-<details class=\\"nhsuk-details nhsuk-expander\\">
-  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Body</span></summary>
-  <div class=\\"nhsuk-details__text\\">
-    <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%0A%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%22diagnostics%22%3A%20%22Invalid%20query%20parameters.%22%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">{
+    </div>
+  </details>
+</fieldset>
+<fieldset class=\\"nhsuk-fieldset\\">
+  <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Response Details</legend>
+  <dl class=\\"nhsuk-summary-list\\">
+    <div class=\\"nhsuk-summary-list__row\\">
+      <dt class=\\"nhsuk-summary-list__key\\">Status</dt>
+      <dd class=\\"nhsuk-summary-list__value\\">400 Bad Request</dd>
+    </div>
+  </dl>
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Body</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%0A%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%22diagnostics%22%3A%20%22Invalid%20query%20parameters.%22%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">{
   \\"resourceType\\": \\"OperationOutcome\\",
   \\"issue\\": [
     {
@@ -844,43 +853,48 @@ exports[`Displays an error message if summary search returns an error 1`] = `
     }
   ]
 }</pre>
-  </div>
-</details>
+    </div>
+  </details>
+</fieldset>
 <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"submit\\">Back</button></div>"
 `;
 
 exports[`Displays an error message if summary search returns invalid response 1`] = `
-"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1><span class=\\"nhsuk-error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>Unexpected response from server.</span>
-<dl class=\\"nhsuk-summary-list\\">
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">URL</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">baseUrl/tracker?patient%3Aidentifier=9449304106</dd>
-  </div>
-  <div class=\\"nhsuk-summary-list__row\\">
-    <dt class=\\"nhsuk-summary-list__key\\">Status</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">500 Internal Server Error</dd>
-  </div>
-</dl>
-<details class=\\"nhsuk-details nhsuk-expander\\">
-  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Headers</span></summary>
-  <div class=\\"nhsuk-details__text\\">
-    <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">{
+"<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1>
+<div class=\\"nhsuk-error-summary\\">
+  <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request</h2>
+  <div class=\\"nhsuk-error-summary__body\\">Unexpected response from server.</div>
+</div>
+<fieldset class=\\"nhsuk-fieldset\\">
+  <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Request Details</legend>
+  <dl class=\\"nhsuk-summary-list\\">
+    <div class=\\"nhsuk-summary-list__row\\">
+      <dt class=\\"nhsuk-summary-list__key\\">Method</dt>
+      <dd class=\\"nhsuk-summary-list__value\\">GET</dd>
+    </div>
+    <div class=\\"nhsuk-summary-list__row\\">
+      <dt class=\\"nhsuk-summary-list__key\\">URL</dt>
+      <dd class=\\"nhsuk-summary-list__value\\">baseUrl/tracker?patient%3Aidentifier=9449304106</dd>
+    </div>
+  </dl>
+  <details class=\\"nhsuk-details nhsuk-expander\\">
+    <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Headers</span></summary>
+    <div class=\\"nhsuk-details__text\\">
+      <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">{
   \\"Accept\\": \\"application/json, text/plain, */*\\"
 }</pre>
-  </div>
-</details>
-<details class=\\"nhsuk-details nhsuk-expander\\">
-  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Headers</span></summary>
-  <div class=\\"nhsuk-details__text\\">
-    <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,undefined\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\"></pre>
-  </div>
-</details>
-<details class=\\"nhsuk-details nhsuk-expander\\">
-  <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Response Body</span></summary>
-  <div class=\\"nhsuk-details__text\\">
-    <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,null\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">null</pre>
-  </div>
-</details>
+    </div>
+  </details>
+</fieldset>
+<fieldset class=\\"nhsuk-fieldset\\">
+  <legend class=\\"nhsuk-fieldset__legend nhsuk-fieldset__legend--m\\">Response Details</legend>
+  <dl class=\\"nhsuk-summary-list\\">
+    <div class=\\"nhsuk-summary-list__row\\">
+      <dt class=\\"nhsuk-summary-list__key\\">Status</dt>
+      <dd class=\\"nhsuk-summary-list__value\\">500 Internal Server Error</dd>
+    </div>
+  </dl>
+</fieldset>
 <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"submit\\">Back</button></div>"
 `;
 

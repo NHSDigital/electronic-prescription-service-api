@@ -1,6 +1,6 @@
 import * as React from "react"
 import {JSXElementConstructor, useEffect, useState} from "react"
-import {Button, ErrorMessage, Label} from "nhsuk-react-components"
+import {Button, ErrorMessage, ErrorSummary, Label} from "nhsuk-react-components"
 import ButtonList from "./buttonList"
 import BackButton from "./backButton"
 import {UnhandledAxiosResponseError} from "../requests/unhandledAxiosResponseError"
@@ -46,13 +46,13 @@ const LongRunningTask = <T extends unknown>({
     return (
       <>
         <Label isPageHeading>Error</Label>
-        <ErrorMessage>{message}</ErrorMessage>
+        <ErrorSummary>
+          <ErrorSummary.Title>Something went wrong while processing your request</ErrorSummary.Title>
+          <ErrorSummary.Body>{message}</ErrorSummary.Body>
+        </ErrorSummary>
         {response && <RawApiResponse {...createRawApiResponseProps(response)}/>}
         <ButtonList>
-          {back
-            ? <Button secondary onClick={back}>Back</Button>
-            : <BackButton/>
-          }
+          {back ? <Button secondary onClick={back}>Back</Button> : <BackButton/>}
         </ButtonList>
       </>
     )
