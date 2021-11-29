@@ -1,9 +1,9 @@
 import * as uuid from "uuid"
 import axios from "axios"
 import {Bundle, OperationOutcome, Parameters} from "fhir/r4"
-import {EpsClient, EpsSendReponse} from "./eps-client"
+import {EpsClient, EpsResponse} from "./eps-client"
 
-export class MockEpsClient implements EpsClient {
+export class SandboxEpsClient implements EpsClient {
 
   async makePrepareRequest(): Promise<Parameters> {
     return Promise.resolve({
@@ -26,17 +26,15 @@ export class MockEpsClient implements EpsClient {
     })
   }
 
-  async makeSendRequest(body: Bundle): Promise<EpsSendReponse> {
+  async makeSendRequest(body: Bundle): Promise<EpsResponse<OperationOutcome>> {
     const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/$process-message`
     const statusCode = 200
-    //TODO - why is the mock client sending real requests?
     const spineResponse = (await axios.post(url, body, {
       headers: {
         "X-Request-ID": uuid.v4(),
         "X-Raw-Response": "true"
       }
-    })).data
-    const spineResponseStr = typeof spineResponse === "string" ? spineResponse : JSON.stringify(spineResponse)
+    })).data as any
 
     const fhirResponse: OperationOutcome = {
       resourceType: "OperationOutcome",
@@ -47,12 +45,32 @@ export class MockEpsClient implements EpsClient {
         }
       ]
     }
-    return Promise.resolve({statusCode, fhirResponse, spineResponse: spineResponseStr})
+    return Promise.resolve({statusCode, fhirResponse, spineResponse: spineResponse})
+  }
+
+  async makeReleaseRequest(body: Parameters): Promise<EpsResponse<Bundle | OperationOutcome>> {
+    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/Task/$release`
+    const statusCode = 200
+    const spineResponse = (await axios.post(url, body, {
+      headers: {
+        "X-Request-ID": uuid.v4(),
+        "X-Raw-Response": "true"
+      }
+    })).data as any
+
+    const response = (await axios.post(url, body, {
+      headers: {
+        "X-Request-ID": uuid.v4()
+      }
+    }))
+
+    const fhirResponse = response.data as Bundle | OperationOutcome
+
+    return Promise.resolve({statusCode, fhirResponse, spineResponse: spineResponse})
   }
 
   async makeConvertRequest(body: unknown): Promise<string> {
     const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/$convert`
-    //TODO - why is the mock client sending real requests?
     const response = (await axios.post(url, body, {
       headers: {
         "X-Request-ID": uuid.v4()

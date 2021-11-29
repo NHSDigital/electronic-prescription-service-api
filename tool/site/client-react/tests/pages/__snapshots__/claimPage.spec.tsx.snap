@@ -10,7 +10,7 @@ exports[`Displays an error if prescription-order not found 1`] = `
 <dl class=\\"nhsuk-summary-list\\">
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">URL</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">baseUrl/prescription/7A9089-A83008-56A03J</dd>
+    <dd class=\\"nhsuk-summary-list__value\\">baseUrl/dispense/release/7A9089-A83008-56A03J</dd>
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Status</dt>
@@ -45,7 +45,7 @@ exports[`Displays an error on invalid response 1`] = `
 <dl class=\\"nhsuk-summary-list\\">
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">URL</dt>
-    <dd class=\\"nhsuk-summary-list__value\\">baseUrl/prescription/7A9089-A83008-56A03J</dd>
+    <dd class=\\"nhsuk-summary-list__value\\">baseUrl/dispense/release/7A9089-A83008-56A03J</dd>
   </div>
   <div class=\\"nhsuk-summary-list__row\\">
     <dt class=\\"nhsuk-summary-list__key\\">Status</dt>

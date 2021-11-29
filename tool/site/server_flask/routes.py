@@ -285,34 +285,21 @@ def post_cancel():
 def get_release():
     if (config.ENVIRONMENT == "prod"):
         return app.make_response("Bad Request", 400)
-    return render_rivets_client("release")
+    return render_react_client("release")
 
 
 @app.route(RELEASE_URL, methods=["POST"])
 def post_release():
     if (config.ENVIRONMENT == "prod"):
         return app.make_response("Bad Request", 400)
+    response = hapi_passthrough.post_release(flask.request.json)
+    return app.make_response(response)
 
-    request = flask.request.json
-    access_token = get_access_token()
 
-    convert_response, _code = make_eps_api_convert_message_request(access_token, request)
-    release_response, release_response_code, request_id = make_eps_api_release_request(
-        access_token,
-        request,
-    )
-    release_response_xml, _untranslated_code = make_eps_api_release_request_untranslated(
-        access_token,
-        request,
-        request_id
-    )
-    return {
-        "success": release_response_code == 200,
-        "request_xml": convert_response,
-        "request": request,
-        "response": release_response,
-        "response_xml": release_response_xml
-    }
+@app.route("/dispense/release/<short_prescription_id>", methods=["GET"])
+def get_released_prescriptions(short_prescription_id):
+    response = hapi_passthrough.get_released_prescriptions(str(short_prescription_id))
+    return app.make_response(json.dumps(response))
 
 
 @app.route(DISPENSE_URL, methods=["GET"])

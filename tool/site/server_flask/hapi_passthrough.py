@@ -49,6 +49,14 @@ def post_send(body):
 
 # Dispense
 
+def get_released_prescriptions(prescription_id):
+    return make_get_request(f"{HAPI_URL}/dispense/release/{prescription_id}")
+
+
+def post_release(body):
+    return make_post_request(f"{HAPI_URL}/dispense/release", body)
+
+
 def get_dispense_notifications(prescription_id):
     return make_get_request(f"{HAPI_URL}/dispenseNotifications/{prescription_id}")
 

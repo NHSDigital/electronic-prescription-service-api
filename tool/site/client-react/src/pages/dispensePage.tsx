@@ -84,7 +84,7 @@ const DispensePage: React.FC<DispensePageProps> = ({
 }
 
 async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: string): Promise<PrescriptionDetails> {
-  const prescriptionOrderResponse = await axiosInstance.get<fhir.Bundle>(`${baseUrl}prescription/${prescriptionId}`)
+  const prescriptionOrderResponse = await axiosInstance.get<fhir.Bundle>(`${baseUrl}dispense/release/${prescriptionId}`)
   const prescriptionOrder = getResponseDataIfValid(prescriptionOrderResponse, isBundle)
 
   const dispenseNotificationsResponse = await axiosInstance.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)

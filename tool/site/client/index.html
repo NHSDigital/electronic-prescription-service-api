@@ -49,7 +49,7 @@
                 <h1 class="nhsuk-fieldset__heading">Select Auth method...</h1>
               </div>
               <div rv-show="mode | isHome">
-                <h1 class="nhsuk-fieldset__heading">I would like to...</h1>
+                <h1 style="margin-bottom: 30px;"class="nhsuk-fieldset__heading">I would like to...</h1>
               </div>
               <div rv-show="mode | isLoad">
                 <h1 class="nhsuk-fieldset__heading">Load prescription</h1>
@@ -59,9 +59,6 @@
               </div>
               <div rv-show="mode | isCancel">
                 <h1 class="nhsuk-fieldset__heading">Cancel prescription</h1>
-              </div>
-              <div rv-show="mode | isRelease">
-                <h1 class="nhsuk-fieldset__heading">Release prescription(s)</h1>
               </div>
             </legend>
           </fieldset>
@@ -145,17 +142,6 @@
           </fieldset>
         </div>
       </div>
-      <div class="nhsuk-grid-row" rv-show="mode | isRelease" style="margin-bottom:20px;">
-        <div class="nhsuk-grid-column-full" rv-hide="releaseResponse">
-          <div class="nhsuk-radios">
-            <div class="nhsuk-radios__item" rv-each-release="releases">
-              <input class="nhsuk-radios__input" rv-id="release.id" type="radio" name="release"
-                rv-value="release.id" rv-checked="selectedReleaseId" rv-on-click="release.select">
-              <label class="nhsuk-label nhsuk-radios__label" rv-for="release.id">{release.description}</label>
-            </div>
-          </div>
-        </div>
-      </div>
       <div class="nhsuk-grid-row" id="prescription-id-container" rv-show="showCustomPrescriptionIdInput">
         <div class="nhsuk-grid-column-full" rv-hide="releaseResponse">
           <fieldset class="nhsuk-fieldset">
@@ -185,9 +171,6 @@
             <fieldset class="nhsuk-fieldset" aria-describedby="pharmacy-hint">
               <div>
                 <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m" rv-show="mode | isEdit">Nominate a pharmacy</legend>
-                <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m"
-                  rv-show="mode | isRelease">Pharmacy to release prescriptions to
-                </legend>
               </div>
               <div class="nhsuk-radios">
                 <div class="nhsuk-radios__item" rv-each-pharmacy="pharmacies">
@@ -478,13 +461,45 @@
       </div>
       <div rv-show="mode | isHome">
         <div class="nhsuk-grid-row">
-          <div rv-show="loggedIn" class="nhsuk-grid-column-full" >
-            <a href="{{base_url}}prescribe/load" class="nhsuk-button">Prescribe</a>
-            <a href="{{base_url}}dispense/release" class="nhsuk-button" rv-hide="environment | isProd">Dispense</a>
-            <a href="{{base_url}}search" class="nhsuk-button">Search</a>
+          <div class="nhsuk-grid-column-full">
+            <a style="margin-bottom: 25px;" class="nhsuk-action-link__link" href="{{base_url}}prescribe/load">
+              <svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M0 0h24v24H0z" fill="none"></path>
+                <path
+                  d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z">
+                </path>
+              </svg>
+              <span class="nhsuk-action-link__text">Create Prescription(s)</span>
+            </a>
           </div>
-          <div rv-hide="loggedIn" class="nhsuk-grid-column-full">
-            <a href="{{base_url}}prescribe/load" class="nhsuk-button" rv-hide="environment | isProd">View Prescription(s)</a>
+        </div>
+        <div class="nhsuk-grid-row">
+          <div class="nhsuk-grid-column-full">
+            <a style="margin-bottom: 25px;" class="nhsuk-action-link__link" href="{{base_url}}dispense/release">
+              <svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M0 0h24v24H0z" fill="none"></path>
+                <path
+                  d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z">
+                </path>
+              </svg>
+              <span class="nhsuk-action-link__text">Release Prescription(s)</span>
+            </a>
+          </div>
+        </div>
+        <div style="margin-bottom: 50px;" class="nhsuk-grid-row">
+          <div class="nhsuk-grid-column-full">
+            <a style="margin-bottom: 25px;" class="nhsuk-action-link__link" href="{{base_url}}search">
+              <svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M0 0h24v24H0z" fill="none"></path>
+                <path
+                  d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z">
+                </path>
+              </svg>
+              <span class="nhsuk-action-link__text">Check Prescription(s) status</span>
+            </a>
           </div>
         </div>
       </div>
@@ -515,16 +530,6 @@
             <button class="nhsuk-button nhsuk-button--secondary" type="submit" rv-show="cancelResponse"
               onclick="resetPageData('cancel');">Back</button>
             <button class="nhsuk-button nhsuk-button--secondary" type="submit" rv-hide="cancelResponse" onclick="resetPageData('home');">Back</button>
-          </div>
-        </div>
-      </div>
-      <div rv-show="mode | isRelease">
-        <div class="nhsuk-grid-row">
-          <div class="nhsuk-grid-column-full">
-            <button class="nhsuk-button" type="submit" rv-hide="releaseResponse"
-              onclick="sendReleaseRequest()">Release</button>
-            <button class="nhsuk-button nhsuk-button--secondary" type="submit"
-              onclick="resetPageData('home');">Back</button>
           </div>
         </div>
       </div>

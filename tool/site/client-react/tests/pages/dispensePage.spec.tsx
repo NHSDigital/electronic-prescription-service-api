@@ -14,7 +14,7 @@ const baseUrl = "baseUrl/"
 const prescriptionId = "7A9089-A83008-56A03J"
 const context: AppContextValue = {baseUrl}
 
-const prescriptionOrderUrl = `${baseUrl}prescription/${prescriptionId}`
+const releaseResponseUrl = `${baseUrl}dispense/release/${prescriptionId}`
 const dispenseNotificationUrl = `${baseUrl}dispenseNotifications/${prescriptionId}`
 const dispenseUrl = `${baseUrl}dispense/dispense`
 
@@ -33,7 +33,7 @@ test("Displays loading text while prescription data is being requested", async (
 })
 
 test("Displays dispense form if prescription details are retrieved successfully (no previous dispense notification)", async () => {
-  moxios.stubRequest(prescriptionOrderUrl, {
+  moxios.stubRequest(releaseResponseUrl, {
     status: 200,
     response: prescriptionOrder
   })
@@ -49,7 +49,7 @@ test("Displays dispense form if prescription details are retrieved successfully 
 })
 
 test("Displays dispense form if prescription details are retrieved successfully (previous dispense notification)", async () => {
-  moxios.stubRequest(prescriptionOrderUrl, {
+  moxios.stubRequest(releaseResponseUrl, {
     status: 200,
     response: prescriptionOrder
   })
@@ -65,7 +65,7 @@ test("Displays dispense form if prescription details are retrieved successfully 
 })
 
 test("Displays an error if prescription-order not found", async () => {
-  moxios.stubRequest(prescriptionOrderUrl, {
+  moxios.stubRequest(releaseResponseUrl, {
     status: 200,
     response: null
   })
@@ -77,7 +77,7 @@ test("Displays an error if prescription-order not found", async () => {
 })
 
 test("Displays an error on invalid response", async () => {
-  moxios.stubRequest(prescriptionOrderUrl, {
+  moxios.stubRequest(releaseResponseUrl, {
     status: 500,
     statusText: "Internal Server Error",
     response: {}
@@ -90,7 +90,7 @@ test("Displays an error on invalid response", async () => {
 })
 
 test("Displays loading text while dispense notification is being submitted", async () => {
-  moxios.stubRequest(prescriptionOrderUrl, {
+  moxios.stubRequest(releaseResponseUrl, {
     status: 200,
     response: prescriptionOrder
   })
@@ -107,7 +107,7 @@ test("Displays loading text while dispense notification is being submitted", asy
 })
 
 test("Displays dispense result", async () => {
-  moxios.stubRequest(prescriptionOrderUrl, {
+  moxios.stubRequest(releaseResponseUrl, {
     status: 200,
     response: prescriptionOrder
   })
