@@ -307,7 +307,7 @@ function extractRepeatNumberHighValueFromExtension(medicationRequest: fhir.Medic
     medicationRequest.extension,
     "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
     "MedicationRequest.extension"
-  ) as fhir.RepeatInformationExtension
+  ) as fhir.UkCoreRepeatInformationExtension
 
   const repeatNumberExtension = getExtensionForUrlOrNull(
     repeatInformationExtension.extension,
@@ -336,7 +336,7 @@ export function extractReviewDate(medicationRequest: fhir.MedicationRequest): st
     medicationRequest.extension,
     "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
     "MedicationRequest.extension"
-  ) as fhir.RepeatInformationExtension
+  ) as fhir.UkCoreRepeatInformationExtension
   if (!repeatInformationExtension) {
     return null
   }

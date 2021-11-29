@@ -4,6 +4,7 @@ import * as patient from "./patient"
 import * as medication from "./medication"
 import * as extension from "./extension"
 import {LosslessNumber} from "lossless-json"
+import {fhir} from "../index";
 
 export enum CourseOfTherapyTypeCode {
   ACUTE = "acute",
@@ -69,7 +70,7 @@ export interface MedicationRequest extends BaseMedicationRequest {
   extension: Array<MedicationRequestPermittedExtensions>
   statusReason?: common.CodeableConcept
   dispenseRequest: MedicationRequestDispenseRequest
-  basedOn?: common.Reference<MedicationRequest>
+  basedOn?: MedicationRequestBasedOn
 }
 
 export interface MedicationRequestOutcome extends BaseMedicationRequest {
@@ -81,7 +82,7 @@ export interface MedicationRequestOutcome extends BaseMedicationRequest {
 export type MedicationRequestPermittedExtensions = extension.IdentifierExtension
   | extension.ReferenceExtension<practitionerRole.PractitionerRole>
   | extension.CodingExtension | extension.CodeableConceptExtension
-  | extension.RepeatInformationExtension | extension.ControlledDrugExtension | extension.DispensingInformationExtension
+  | extension.UkCoreRepeatInformationExtension | extension.ControlledDrugExtension | extension.DispensingInformationExtension
 
 export interface MedicationRequestGroupIdentifier extends common.Identifier {
   extension?: Array<extension.IdentifierExtension>
@@ -240,4 +241,9 @@ export interface MedicationRequestDispenseRequest {
 
 export interface Annotation {
   text: string
+}
+
+export interface MedicationRequestBasedOn {
+  reference?: common.Reference<MedicationRequest>
+  extension?: Array<fhir.ExtensionExtension<fhir.IntegerExtension>>
 }

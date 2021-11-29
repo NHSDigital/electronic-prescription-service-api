@@ -160,7 +160,7 @@ describe("extension", () => {
       null,
       null
     )
-    const expected: fhir.RepeatInformationExtension = {
+    const expected: fhir.UkCoreRepeatInformationExtension = {
       url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
       extension: [
         {
@@ -190,7 +190,7 @@ describe("extension", () => {
       null,
       null
     )
-    const expected: fhir.RepeatInformationExtension = {
+    const expected: fhir.UkCoreRepeatInformationExtension = {
       url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
       extension: [
         {
@@ -212,7 +212,7 @@ describe("extension", () => {
       null,
       null
     )
-    const expected: fhir.RepeatInformationExtension = {
+    const expected: fhir.UkCoreRepeatInformationExtension = {
       url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
       extension: [
         {
@@ -234,7 +234,7 @@ describe("extension", () => {
       null,
       null
     )
-    const expected: fhir.RepeatInformationExtension = {
+    const expected: fhir.UkCoreRepeatInformationExtension = {
       url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
       extension: [
         {
