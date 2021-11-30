@@ -10,7 +10,8 @@ import MessageExpanders from "../components/messageExpanders"
 import ReloadButton from "../components/reloadButton"
 import axios from "axios"
 import CancelForm, {CancelFormValues, MedicationRadio} from "../components/cancel/cancelForm"
-import {getMedicationRequestResources} from "../fhir/bundleResourceFinder"
+import {getMedicationRequestResources, getMessageHeaderResources} from "../fhir/bundleResourceFinder"
+import {createUuidIdentifier} from "../fhir/helpers"
 
 interface CancelPageProps {
   prescriptionId?: string
@@ -38,18 +39,18 @@ const CancelPage: React.FC<CancelPageProps> = ({
           )
         }
 
-        const sendCancelTask = () => sendCancel(baseUrl, cancelFormValues)
+        const sendCancelTask = () => sendCancel(baseUrl, prescriptionDetails, cancelFormValues)
         return (
           <LongRunningTask<CancelResult> task={sendCancelTask} loadingMessage="Sending cancellation.">
-            {dispenseResult => (
+            {cancelResult => (
               <>
-                <Label isPageHeading>Cancel Result {dispenseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
+                <Label isPageHeading>Cancel Result {cancelResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
                 <PrescriptionActions prescriptionId={prescriptionId} view/>
                 <MessageExpanders
-                  fhirRequest={dispenseResult.request}
-                  hl7V3Request={dispenseResult.request_xml}
-                  fhirResponse={dispenseResult.response}
-                  hl7V3Response={dispenseResult.response_xml}
+                  fhirRequest={cancelResult.request}
+                  hl7V3Request={cancelResult.request_xml}
+                  fhirResponse={cancelResult.response}
+                  hl7V3Response={cancelResult.response_xml}
                 />
                 <ButtonList>
                   <ReloadButton/>
@@ -71,6 +72,7 @@ async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: stri
   }
 
   return {
+    bundle: prescriptionOrder,
     medicationRequests: getMedicationRequestResources(prescriptionOrder)
   }
 }
@@ -87,16 +89,12 @@ function createStaticMedicationArray(
   })
 }
 
-function createCancel(cancelFormValues: CancelFormValues): fhir.Bundle {
-  console.log(JSON.stringify(cancelFormValues))
-  return {} as fhir.Bundle
-}
-
 async function sendCancel(
   baseUrl: string,
+  prescriptionDetails: PrescriptionDetails,
   cancelFormValues: CancelFormValues
 ): Promise<CancelResult> {
-  const cancel = createCancel(cancelFormValues)
+  const cancel = createCancel(prescriptionDetails, cancelFormValues)
 
   const response = await axios.post<CancelResult>(`${baseUrl}prescribe/cancel`, cancel)
   console.log(cancel)
@@ -105,9 +103,37 @@ async function sendCancel(
   return response.data
 }
 
-export default CancelPage
+function createCancel(prescriptionDetails: PrescriptionDetails, cancelFormValues: CancelFormValues): fhir.Bundle {
+  const cancelRequest = prescriptionDetails.bundle
+  cancelRequest.identifier = createUuidIdentifier()
+  const messageHeader = getMessageHeaderResources(cancelRequest)[0]
+  messageHeader.eventCoding.code = "prescription-order-update"
+  messageHeader.eventCoding.display = "Prescription Order Update"
+  messageHeader.focus = []
+  const medicationToCancelSnomed = cancelFormValues.cancellationMedication
+  const medicationRequests = getMedicationRequestResources(prescriptionDetails.bundle)
+  const medicationToCancel = medicationRequests.filter(medicationRequest =>
+    medicationRequest.medicationCodeableConcept.coding.some(
+      c => c.code === medicationToCancelSnomed
+    )
+  )[0]
+  medicationToCancel.status = "cancelled"
+  const cancellationReason = cancelFormValues.cancellationReason
+  medicationToCancel.statusReason = {
+    coding: [
+      {
+        system:
+          "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-reason",
+        code: cancellationReason,
+        display: undefined
+      }
+    ]
+  }
+  return cancelRequest
+}
 
 interface PrescriptionDetails {
+  bundle: fhir.Bundle
   medicationRequests: Array<fhir.MedicationRequest>
 }
 
@@ -118,3 +144,5 @@ interface CancelResult {
   response: fhir.OperationOutcome
   response_xml: string
 }
+
+export default CancelPage

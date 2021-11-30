@@ -12,12 +12,10 @@ interface CancelFormProps {
 }
 
 const CancelForm: React.FC<CancelFormProps> = ({
-  prescriptionId,
   medications,
   onSubmit
 }) => {
-  const initialValues: CancelFormValues = getInitialValues(prescriptionId)
-
+  const initialValues: CancelFormValues = getInitialValues()
   return (
     <Formik<CancelFormValues> initialValues={initialValues} onSubmit={values => onSubmit(values)}>
       {formik =>
@@ -26,7 +24,7 @@ const CancelForm: React.FC<CancelFormProps> = ({
             <RadioField
               name="cancellationReason"
               label="Choose a reason for cancellation"
-              defaultValue="0001"
+              defaultValue={initialValues.cancellationReason}
               fieldRadios={[
                 {
                   value: "0001",
@@ -69,10 +67,10 @@ const CancelForm: React.FC<CancelFormProps> = ({
             <RadioField
               name="cancellationUser"
               label="Choose a cancellation user"
-              defaultValue="0001"
+              defaultValue={initialValues.cancellationUser}
               fieldRadios={[
                 {
-                  value: "same-as-original-author",
+                  value: "sameAsOriginalAuthor",
                   text: "Use original author"
                 },
                 {
@@ -97,11 +95,10 @@ const CancelForm: React.FC<CancelFormProps> = ({
   )
 }
 
-function getInitialValues(prescriptionId: string): CancelFormValues {
-  console.log(prescriptionId)
+function getInitialValues(): CancelFormValues {
   return {
     cancellationReason: "0001",
-    cancellationUser: "same-as-original-author",
+    cancellationUser: "sameAsOriginalAuthor",
     cancellationMedication: ""
   }
 }
