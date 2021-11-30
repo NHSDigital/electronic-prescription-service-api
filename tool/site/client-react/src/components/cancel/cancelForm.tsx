@@ -25,44 +25,7 @@ const CancelForm: React.FC<CancelFormProps> = ({
               name="cancellationReason"
               label="Choose a reason for cancellation"
               defaultValue={initialValues.cancellationReason}
-              fieldRadios={[
-                {
-                  value: "0001",
-                  text: "Prescribing Error"
-                },
-                {
-                  value: "0002",
-                  text: "Clinical contra-indication"
-                },
-                {
-                  value: "0003",
-                  text: "Change to medication treatment regime"
-                },
-                {
-                  value: "0004",
-                  text: "Clinical grounds"
-                },
-                {
-                  value: "0005",
-                  text: "At the Patient's request"
-                },
-                {
-                  value: "0006",
-                  text: "At the Pharmacist's request"
-                },
-                {
-                  value: "0007",
-                  text: "Notification of Death"
-                },
-                {
-                  value: "0008",
-                  text: "Patient deducted - other reason"
-                },
-                {
-                  value: "0009",
-                  text: "Patient deducted - registered with new practice"
-                }
-              ]}
+              fieldRadios={cancellationReasons}
             />
             <RadioField
               name="cancellationUser"
@@ -102,6 +65,45 @@ function getInitialValues(): CancelFormValues {
     cancellationMedication: ""
   }
 }
+
+export const cancellationReasons = [
+  {
+    value: "0001",
+    text: "Prescribing Error"
+  },
+  {
+    value: "0002",
+    text: "Clinical contra-indication"
+  },
+  {
+    value: "0003",
+    text: "Change to medication treatment regime"
+  },
+  {
+    value: "0004",
+    text: "Clinical grounds"
+  },
+  {
+    value: "0005",
+    text: "At the Patient's request"
+  },
+  {
+    value: "0006",
+    text: "At the Pharmacist's request"
+  },
+  {
+    value: "0007",
+    text: "Notification of Death"
+  },
+  {
+    value: "0008",
+    text: "Patient deducted - other reason"
+  },
+  {
+    value: "0009",
+    text: "Patient deducted - registered with new practice"
+  }
+]
 
 export default CancelForm
 

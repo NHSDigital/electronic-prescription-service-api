@@ -9,7 +9,7 @@ import PrescriptionActions from "../components/prescriptionActions"
 import MessageExpanders from "../components/messageExpanders"
 import ReloadButton from "../components/reloadButton"
 import axios from "axios"
-import CancelForm, {CancelFormValues, MedicationRadio} from "../components/cancel/cancelForm"
+import CancelForm, {CancelFormValues, cancellationReasons, MedicationRadio} from "../components/cancel/cancelForm"
 import {getMedicationRequestResources, getMessageHeaderResources} from "../fhir/bundleResourceFinder"
 import {createUuidIdentifier} from "../fhir/helpers"
 
@@ -125,10 +125,17 @@ function createCancel(prescriptionDetails: PrescriptionDetails, cancelFormValues
         system:
           "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-reason",
         code: cancellationReason,
-        display: undefined
+        display: cancellationReasons.find(r => r.value === cancellationReason).value
       }
     ]
   }
+  cancelRequest.entry =
+    cancelRequest
+      .entry
+      .filter(entry =>
+        singleMedicationResourceToCancel(entry, medicationToCancelSnomed)
+        || nonMedicationResources(entry)
+      )
   return cancelRequest
 }
 
@@ -143,6 +150,16 @@ interface CancelResult {
   request_xml: string
   response: fhir.OperationOutcome
   response_xml: string
+}
+
+function singleMedicationResourceToCancel(e: fhir.BundleEntry, medicationToCancelSnomed: string): unknown {
+  return (e.resource.resourceType === "MedicationRequest"
+    && (e.resource as fhir.MedicationRequest)
+      .medicationCodeableConcept.coding.some(c => c.code === medicationToCancelSnomed))
+}
+
+function nonMedicationResources(e: fhir.BundleEntry): unknown {
+  return e.resource.resourceType !== "MedicationRequest"
 }
 
 export default CancelPage
