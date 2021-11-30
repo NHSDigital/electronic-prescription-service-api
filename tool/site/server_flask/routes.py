@@ -197,11 +197,6 @@ def post_edit():
     return response
 
 
-@app.route("/prescribe/sign", methods=["GET"])
-def get_sign():
-    return render_rivets_client("sign")
-
-
 @app.route("/prescribe/sign", methods=["POST"])
 def post_sign():
     hapi_response = hapi_passthrough.post_sign()
