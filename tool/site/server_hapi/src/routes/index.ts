@@ -7,6 +7,7 @@ import sendRoutes from "./prescribe/send"
 import searchRoutes from "./tracker/search"
 import releaseRoutes from "./dispense/release"
 import dispenseRoutes from "./dispense/dispense"
+import claimRoutes from "./dispense/claim"
 
 const authRoutes = [
   ...accessTokenRoutes
@@ -24,7 +25,8 @@ const prescribingRoutes = [
 
 const dispensingRoutes = [
   ...releaseRoutes,
-  ...dispenseRoutes
+  ...dispenseRoutes,
+  ...claimRoutes
 ]
 
 const trackerRoutes = [

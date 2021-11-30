@@ -10,7 +10,6 @@ import config
 from api import make_eps_api_metadata_request
 from app import app, fernet
 from auth import exchange_code_for_token, get_access_token, login, set_access_token_cookies, get_authorize_url
-from bundle import get_prescription_id, create_provenance
 from client import render_rivets_client, render_react_client
 from cookies import (
     set_previous_prescription_id_cookie,
@@ -221,7 +220,7 @@ def post_send():
 
 @app.route("/prescribe/cancel", methods=["GET"])
 def get_cancel():
-    return render_rivets_client("cancel")
+    return render_react_client("cancel")
 
 
 @app.route("/prescribe/cancel", methods=["POST"])
