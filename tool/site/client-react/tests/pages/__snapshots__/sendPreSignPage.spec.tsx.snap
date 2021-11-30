@@ -3,7 +3,7 @@
 exports[`Displays an error if response is an OperationOutcome 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1>
 <div class=\\"nhsuk-error-summary\\">
-  <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request</h2>
+  <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request:</h2>
   <div class=\\"nhsuk-error-summary__body\\">Unexpected response from server.</div>
 </div>
 <fieldset class=\\"nhsuk-fieldset\\">
@@ -57,7 +57,7 @@ exports[`Displays an error if response is an OperationOutcome 1`] = `
 exports[`Displays an error if response is empty 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1>
 <div class=\\"nhsuk-error-summary\\">
-  <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request</h2>
+  <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request:</h2>
   <div class=\\"nhsuk-error-summary__body\\">Unexpected response from server.</div>
 </div>
 <fieldset class=\\"nhsuk-fieldset\\">
@@ -96,7 +96,7 @@ exports[`Displays an error if response is empty 1`] = `
 exports[`Displays error message if prepare errors present 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1>
 <div class=\\"nhsuk-error-summary\\">
-  <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request</h2>
+  <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request:</h2>
   <div class=\\"nhsuk-error-summary__body\\">Error preparing prescription for signing. Check the console for details.</div>
 </div>
 <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>"
@@ -105,7 +105,7 @@ exports[`Displays error message if prepare errors present 1`] = `
 exports[`Displays error message if redirect URI not present 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1>
 <div class=\\"nhsuk-error-summary\\">
-  <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request</h2>
+  <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request:</h2>
   <div class=\\"nhsuk-error-summary__body\\">Unexpected response from server.</div>
 </div>
 <fieldset class=\\"nhsuk-fieldset\\">

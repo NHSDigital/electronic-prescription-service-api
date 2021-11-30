@@ -18,8 +18,8 @@ const nhsNumber = "9449304106"
 const formattedNhsNumber = "944 930 4106"
 const context: AppContextValue = {baseUrl}
 
-const prescriptionSearchByIdUrl = `${baseUrl}tracker?focus%3Aidentifier=${prescriptionId}`
-const prescriptionSearchByNhsNumberUrl = `${baseUrl}tracker?patient%3Aidentifier=${nhsNumber}`
+const prescriptionSearchByIdUrl = `${baseUrl}tracker?focus:identifier=${prescriptionId}`
+const prescriptionSearchByNhsNumberUrl = `${baseUrl}tracker?patient:identifier=${nhsNumber}`
 
 const summarySearchResult = readMessage("summarySearchResult.json")
 const detailSearchResult = readMessage("detailSearchResult.json")

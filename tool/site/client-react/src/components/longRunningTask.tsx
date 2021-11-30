@@ -47,7 +47,7 @@ const LongRunningTask = <T extends unknown>({
       <>
         <Label isPageHeading>Error</Label>
         <ErrorSummary>
-          <ErrorSummary.Title>Something went wrong while processing your request</ErrorSummary.Title>
+          <ErrorSummary.Title>Something went wrong while processing your request:</ErrorSummary.Title>
           <ErrorSummary.Body>{message}</ErrorSummary.Body>
         </ErrorSummary>
         {response && <RawApiResponse {...createRawApiResponseProps(response)}/>}

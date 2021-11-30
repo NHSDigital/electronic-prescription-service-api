@@ -3,7 +3,7 @@
 exports[`Displays an error if prescription-order not found 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1>
 <div class=\\"nhsuk-error-summary\\">
-  <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request</h2>
+  <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request:</h2>
   <div class=\\"nhsuk-error-summary__body\\">Unexpected response from server.</div>
 </div>
 <fieldset class=\\"nhsuk-fieldset\\">
@@ -42,7 +42,7 @@ exports[`Displays an error if prescription-order not found 1`] = `
 exports[`Displays an error on invalid response 1`] = `
 "<h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Error</label></h1>
 <div class=\\"nhsuk-error-summary\\">
-  <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request</h2>
+  <h2 class=\\"nhsuk-error-summary__title\\">Something went wrong while processing your request:</h2>
   <div class=\\"nhsuk-error-summary__body\\">Unexpected response from server.</div>
 </div>
 <fieldset class=\\"nhsuk-fieldset\\">
