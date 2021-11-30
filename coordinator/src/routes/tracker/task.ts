@@ -8,32 +8,47 @@ import {getScope, RequestHeaders} from "../../utils/headers"
 import * as LosslessJson from "lossless-json"
 import {isBundle, isTask} from "../../utils/type-guards"
 import {validateQueryParameters} from "../../services/validation/query-validator"
+import {getCodeableConceptCodingForSystem} from "../../services/translation/common"
 
 export enum QueryParam {
   IDENTIFIER = "identifier",
   FOCUS_IDENTIFIER = "focus:identifier",
-  PATIENT_IDENTIFIER = "patient:identifier"
+  PATIENT_IDENTIFIER = "patient:identifier",
+  BUSINESS_STATUS = "business-status"
 }
 
 export type ValidQuery = Partial<Record<QueryParam, string>>
 
-interface QueryParamProperties {
+export interface QueryParamProperties {
+  querySupportedBySpine: boolean
   system: string
   getTaskField: (task: fhir.Task) => string
 }
 
 export const queryParamMetadata = new Map<QueryParam, QueryParamProperties>([
   [QueryParam.FOCUS_IDENTIFIER, {
+    querySupportedBySpine: true,
     system: "https://fhir.nhs.uk/Id/prescription-order-number",
     getTaskField: task => task.focus.identifier.value
   }],
   [QueryParam.IDENTIFIER, {
+    querySupportedBySpine: true,
     system: "https://fhir.nhs.uk/Id/prescription-order-number",
     getTaskField: task => task.focus.identifier.value
   }],
   [QueryParam.PATIENT_IDENTIFIER, {
+    querySupportedBySpine: true,
     system: "https://fhir.nhs.uk/Id/nhs-number",
     getTaskField: task => task.for.identifier.value
+  }],
+  [QueryParam.BUSINESS_STATUS, {
+    querySupportedBySpine: false,
+    system: undefined,
+    getTaskField: task => getCodeableConceptCodingForSystem(
+      [task.businessStatus],
+      "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+      "Task.businessStatus"
+    ).code
   }]
 ])
 
@@ -81,8 +96,14 @@ async function makeSpineRequest(validQuery: ValidQuery, request: Hapi.Request) {
   }
 
   const patientIdentifier = getValue(validQuery, QueryParam.PATIENT_IDENTIFIER)
-  if (patientIdentifier) {
-    return await trackerClient.getPrescriptionsByPatientId(patientIdentifier, request.headers, request.logger)
+  const businessStatus = getValue(validQuery, QueryParam.BUSINESS_STATUS)
+  if (patientIdentifier || businessStatus) {
+    return await trackerClient.getPrescriptionsByPatientId(
+      patientIdentifier,
+      businessStatus,
+      request.headers,
+      request.logger
+    )
   }
 }
 

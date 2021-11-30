@@ -7,6 +7,7 @@ import {spine} from "@models"
 export interface TrackerClient {
   getPrescriptionsByPatientId(
     patientId: string,
+    businessStatus: string,
     headers: Hapi.Util.Dictionary<string>,
     logger: pino.Logger
   ): Promise<spine.SummaryTrackerResponse>

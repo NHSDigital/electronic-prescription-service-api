@@ -13,12 +13,17 @@ const SPINE_PRESCRIPTION_DETAIL_PATH = "nhs111itemdetails"
 export class LiveTrackerClient implements TrackerClient {
   async getPrescriptionsByPatientId(
     patientId: string,
+    businessStatus: string,
     inboundHeaders: Hapi.Util.Dictionary<string>,
     logger: pino.Logger
   ): Promise<spine.SummaryTrackerResponse> {
     const address = this.getPrescriptionSummaryUrl()
-    const queryParams = {
-      nhsNumber: patientId
+    const queryParams: Record<string, string> = {}
+    if (patientId) {
+      queryParams["nhsNumber"] = patientId
+    }
+    if (businessStatus) {
+      queryParams["prescriptionStatus"] = businessStatus
     }
     return await LiveTrackerClient.makeTrackerRequest(inboundHeaders, address, queryParams, logger)
   }

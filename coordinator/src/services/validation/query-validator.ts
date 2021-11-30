@@ -1,6 +1,11 @@
 import Hapi from "@hapi/hapi"
 import {fhir, validationErrors} from "@models"
-import {QueryParam, queryParamMetadata, ValidQuery} from "../../routes/tracker/task"
+import {
+  QueryParam,
+  queryParamMetadata,
+  QueryParamProperties,
+  ValidQuery
+} from "../../routes/tracker/task"
 import {validatePermittedTrackerMessage} from "./scope-validator"
 
 export const validateQueryParameters = (
@@ -15,7 +20,11 @@ export const validateQueryParameters = (
   const validatedEntries = Object.entries(queryParams).filter(
     ([queryParam]) => queryParamMetadata.has(queryParam as QueryParam)
   )
-  if (validatedEntries.length === 0) {
+
+  const querySupportedBySpine = validatedEntries.some(
+    ([queryParam]) => queryParamMetadata.get(queryParam as QueryParam).querySupportedBySpine
+  )
+  if (!querySupportedBySpine) {
     const validQueryParameters = Array.from(queryParamMetadata.keys())
     return [validationErrors.createMissingQueryParameterIssue(validQueryParameters)]
   }
@@ -28,27 +37,32 @@ export const validateQueryParameters = (
   }
 
   const validatedQuery = Object.fromEntries(validatedEntries) as ValidQuery
-  if (validatedQuery[QueryParam.IDENTIFIER] && validatedQuery[QueryParam.FOCUS_IDENTIFIER]) {
-    issues.push(validationErrors.invalidQueryParameterCombinationIssue)
-  }
-
   queryParamMetadata.forEach((metadata, queryParam) => {
     const queryParamValue = validatedQuery[queryParam]
-    const validSystem = metadata.system
-    if (queryParamValue && !validateSystem(queryParamValue, validSystem)) {
-      issues.push(validationErrors.createInvalidSystemIssue(queryParam, validSystem))
+    if (queryParamValue) {
+      issues.push(...validateQueryParameter(metadata, queryParam, queryParamValue))
     }
   })
 
   return issues
 }
 
-function validateSystem(value: string, validSystem: string) {
-  const pipeIndex = value.indexOf("|")
-  if (pipeIndex === -1) {
-    return true
+function validateQueryParameter(metadata: QueryParamProperties, queryParam: QueryParam, queryParamValue: string) {
+  const issues: Array<fhir.OperationOutcomeIssue> = []
+
+  const validSystem = metadata.system
+  const actualSystem = getSystem(queryParamValue)
+  if (actualSystem && actualSystem !== validSystem) {
+    issues.push(validationErrors.createInvalidSystemIssue(queryParam, validSystem))
   }
 
-  const system = value.substring(0, pipeIndex)
-  return system === validSystem
+  return issues
+}
+
+export function getSystem(rawValue: string): string {
+  const pipeIndex = rawValue?.indexOf("|") || -1
+  if (pipeIndex !== -1) {
+    return rawValue.substring(0, pipeIndex)
+  }
+  return undefined
 }
