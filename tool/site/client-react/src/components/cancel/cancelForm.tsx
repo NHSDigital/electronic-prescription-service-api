@@ -98,12 +98,21 @@ const CancelForm: React.FC<CancelFormProps> = ({
 }
 
 function getInitialValues(prescriptionId: string): CancelFormValues {
-  return {prescriptionId}
+  console.log(prescriptionId)
+  return {
+    cancellationReason: "0001",
+    cancellationUser: "same-as-original-author",
+    cancellationMedication: ""
+  }
 }
 
 export default CancelForm
 
-export interface CancelFormValues {}
+export interface CancelFormValues {
+  cancellationReason: string
+  cancellationUser: string
+  cancellationMedication: string
+}
 
 export interface MedicationRadio {
   value: string
