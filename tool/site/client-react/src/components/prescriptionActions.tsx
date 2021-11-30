@@ -14,7 +14,6 @@ interface PrescriptionActionsProps {
 
 const PrescriptionActions: React.FC<PrescriptionActionsProps> = ({
   prescriptionId,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   cancel,
   release,
   dispense,
@@ -24,11 +23,11 @@ const PrescriptionActions: React.FC<PrescriptionActionsProps> = ({
   const {baseUrl} = useContext(AppContext)
   return (
     <>
-      {/* {cancel && (
-        <ActionLink target="_blank" href={`${baseUrl}prescribe/cancel?prescription_id=${prescriptionId}`}>
+      {cancel && (
+        <ActionLink href={`${baseUrl}prescribe/cancel?prescription_id=${prescriptionId}`}>
           Cancel prescription
         </ActionLink>
-      )} */}
+      )}
       {release && (
         <ActionLink href={`${baseUrl}dispense/release?prescription_id=${prescriptionId}`}>
           Release prescription
