@@ -36,10 +36,10 @@ const CancelForm: React.FC<CancelFormProps> = ({
                   value: "sameAsOriginalAuthor",
                   text: "Use original author"
                 },
-                {
-                  value: "R8006",
-                  text: "Admin - Medical Secetary Access Role"
-                }
+                // {
+                //   value: "R8006",
+                //   text: "Admin - Medical Secetary Access Role"
+                // }
               ]}
             />
             <RadioField
