@@ -47,7 +47,8 @@ customWindow.sendEditRequest = async function () {
 }
 
 function setInitialState(mode: string, env: string, baseUrl: string) {
-  toggleUiMode(mode)
+  pageData.mode = mode
+  toggleUiMode(pageData.mode)
   pageData.environment = getEnvironmentDisplay(env)
   pageData.baseUrl = baseUrl
 }
@@ -61,7 +62,8 @@ customWindow.startApplication = async function (mode: string, env: string, baseU
 }
 
 export function resetPageData(pageMode: string): void {
-  toggleUiMode(pageMode)
+  pageData.mode = pageMode
+  toggleUiMode(pageData.mode)
   pageData.showCustomExampleInput = pageMode === "load" ? pageData.selectedExampleId === "custom" : false
 }
 customWindow.resetPageData = resetPageData
