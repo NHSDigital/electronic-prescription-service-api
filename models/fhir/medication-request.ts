@@ -244,6 +244,6 @@ export interface Annotation {
 }
 
 export interface MedicationRequestBasedOn {
-  reference?: common.Reference<MedicationRequest>
+  identifier?: common.Reference<MedicationRequest>
   extension?: Array<fhir.ExtensionExtension<fhir.IntegerExtension>>
 }

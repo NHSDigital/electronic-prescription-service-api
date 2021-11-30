@@ -119,8 +119,13 @@ function createBasedOn(
 
   if (intent === fhir.MedicationRequestIntent.REFLEX_ORDER) {
     return {
-      reference: reference,
+      identifier: reference,
       extension: [basedOnRepeatExtension]
+    }
+  }
+  if (intent === fhir.MedicationRequestIntent.ORDER) {
+    return {
+      identifier: reference
     }
   }
 }
