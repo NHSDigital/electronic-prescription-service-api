@@ -98,7 +98,7 @@ const CancelForm: React.FC<CancelFormProps> = ({
 }
 
 function getInitialValues(prescriptionId: string): CancelFormValues {
-  return {}
+  return {prescriptionId}
 }
 
 export default CancelForm

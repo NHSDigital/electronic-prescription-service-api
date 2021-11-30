@@ -87,8 +87,8 @@ function createStaticMedicationArray(
   })
 }
 
-
 function createCancel(cancelFormValues: CancelFormValues): fhir.Bundle {
+  console.log(JSON.stringify(cancelFormValues))
   return {} as fhir.Bundle
 }
 
@@ -96,8 +96,6 @@ async function sendCancel(
   baseUrl: string,
   cancelFormValues: CancelFormValues
 ): Promise<CancelResult> {
-  console.log(JSON.stringify(cancelFormValues))
-  
   const cancel = createCancel(cancelFormValues)
 
   const response = await axios.post<CancelResult>(`${baseUrl}prescribe/cancel`, cancel)
