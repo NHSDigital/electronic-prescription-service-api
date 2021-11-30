@@ -23,11 +23,11 @@ const PrescriptionActions: React.FC<PrescriptionActionsProps> = ({
   const {baseUrl} = useContext(AppContext)
   return (
     <>
-      {cancel && (
+      {/* {cancel && (
         <ActionLink target="_blank" href={`${baseUrl}prescribe/cancel?prescription_id=${prescriptionId}`}>
           Cancel prescription
         </ActionLink>
-      )}
+      )} */}
       {release && (
         <ActionLink href={`${baseUrl}dispense/release?prescription_id=${prescriptionId}`}>
           Release prescription

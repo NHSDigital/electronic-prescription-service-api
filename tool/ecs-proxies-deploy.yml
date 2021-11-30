@@ -72,9 +72,3 @@ docker_service:
         health_check:
             matcher: "200"
             path: "/_healthcheck"
-    -   name: eps-api-tool-store
-        port: 6379
-        expose: false
-        health_check:
-            matcher: "200"
-            path: "/_healthcheck"
