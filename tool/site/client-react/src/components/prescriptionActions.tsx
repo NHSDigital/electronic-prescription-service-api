@@ -14,6 +14,7 @@ interface PrescriptionActionsProps {
 
 const PrescriptionActions: React.FC<PrescriptionActionsProps> = ({
   prescriptionId,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   cancel,
   release,
   dispense,
