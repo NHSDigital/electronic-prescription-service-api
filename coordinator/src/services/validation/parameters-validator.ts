@@ -1,12 +1,16 @@
 import {fhir, validationErrors as errors} from "@models"
-import {validatePermittedDispenseMessage} from "./scope-validator"
+import {validatePermittedAttendedDispenseMessage, validatePermittedUnattendedDispenseMessage} from "./scope-validator"
+import {getIdentifierParameterOrNullByName} from "../translation/common"
 
 export function verifyParameters(parameters: fhir.Parameters, scope: string): Array<fhir.OperationOutcomeIssue> {
   if (parameters.resourceType !== "Parameters") {
     return [errors.createResourceTypeIssue("Parameters")]
   }
 
-  const permissionErrors = validatePermittedDispenseMessage(scope)
+  const prescriptionIdParameter = getIdentifierParameterOrNullByName(parameters.parameter, "group-identifier")
+  const permissionErrors = prescriptionIdParameter
+    ? validatePermittedAttendedDispenseMessage(scope)
+    : validatePermittedUnattendedDispenseMessage(scope)
   if (permissionErrors.length) {
     return permissionErrors
   }
