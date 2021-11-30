@@ -381,7 +381,7 @@ describe("verifyRepeatDispensingPrescription", () => {
       "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
       "bluh"
     )
-    firstMedicationRequest.extension.remove(extensionToRemove as fhir.RepeatInformationExtension)
+    firstMedicationRequest.extension.remove(extensionToRemove as fhir.UkCoreRepeatInformationExtension)
     const returnedErrors = validator.verifyRepeatDispensingPrescription(bundle, medicationRequests)
     expect(returnedErrors.length).toBe(2)
   })

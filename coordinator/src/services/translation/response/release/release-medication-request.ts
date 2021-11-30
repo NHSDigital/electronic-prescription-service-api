@@ -109,15 +109,15 @@ function createBasedOn(
   repeatNumber: hl7V3.Interval<hl7V3.NumericValue>
 ): fhir.MedicationRequestBasedOn {
   const reference = fhir.createReference(identifierReference.toLowerCase())
-  const basedOnRepeatExtension = {
-    url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-    extension: [{
-      url: "numberOfRepeatsAllowed",
-      valueInteger: new LosslessNumber(repeatNumber.high._attributes.value)
-    }]
-  }
 
   if (intent === fhir.MedicationRequestIntent.REFLEX_ORDER) {
+    const basedOnRepeatExtension = {
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+      extension: [{
+        url: "numberOfRepeatsAllowed",
+        valueInteger: new LosslessNumber(repeatNumber.high._attributes.value)
+      }]
+    }
     return {
       identifier: reference,
       extension: [basedOnRepeatExtension]

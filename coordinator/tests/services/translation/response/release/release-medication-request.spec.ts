@@ -433,9 +433,16 @@ describe("dispenseRequest", () => {
   exampleLineItemQuantity.quantity = exampleQuantity
   const exampleEffectiveTime = new hl7V3.Interval(new hl7V3.Timestamp("20210101"), new hl7V3.Timestamp("20210201"))
   const exampleExpectedUseTime = new hl7V3.IntervalUnanchored("28", "d")
+  const exampleCourseOfTherapyType = fhir.COURSE_OF_THERAPY_TYPE_CONTINUOUS
 
   test("contains dispensing site preference", () => {
-    const result = createDispenseRequest(exampleDispensingSitePreference, exampleLineItemQuantity, null, null)
+    const result = createDispenseRequest(
+      exampleCourseOfTherapyType,
+      exampleDispensingSitePreference,
+      exampleLineItemQuantity,
+      null,
+      null
+    )
     expect(result.extension).toContainEqual({
       url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
       valueCoding: {
@@ -446,7 +453,13 @@ describe("dispenseRequest", () => {
   })
 
   test("contains quantity", () => {
-    const result = createDispenseRequest(exampleDispensingSitePreference, exampleLineItemQuantity, null, null)
+    const result = createDispenseRequest(
+      exampleCourseOfTherapyType,
+      exampleDispensingSitePreference,
+      exampleLineItemQuantity,
+      null,
+      null
+    )
     expect(result.quantity).toEqual({
       code: "732936001",
       system: "http://snomed.info/sct",
@@ -456,7 +469,13 @@ describe("dispenseRequest", () => {
   })
 
   test("handles no expected supply duration or validity period", () => {
-    const result = createDispenseRequest(exampleDispensingSitePreference, exampleLineItemQuantity, null, null)
+    const result = createDispenseRequest(
+      exampleCourseOfTherapyType,
+      exampleDispensingSitePreference,
+      exampleLineItemQuantity,
+      null,
+      null
+    )
     expect(result.expectedSupplyDuration).toBeFalsy()
     expect(result.validityPeriod).toBeFalsy()
   })
@@ -464,7 +483,13 @@ describe("dispenseRequest", () => {
   test("handles validity period", () => {
     const daysSupply = new hl7V3.DaysSupply()
     daysSupply.effectiveTime = exampleEffectiveTime
-    const result = createDispenseRequest(exampleDispensingSitePreference, exampleLineItemQuantity, daysSupply, null)
+    const result = createDispenseRequest(
+      exampleCourseOfTherapyType,
+      exampleDispensingSitePreference,
+      exampleLineItemQuantity,
+      daysSupply,
+      null
+    )
     expect(result.expectedSupplyDuration).toBeFalsy()
     expect(result.validityPeriod).toEqual({
       start: "2021-01-01",
@@ -475,7 +500,13 @@ describe("dispenseRequest", () => {
   test("handles validity period start only", () => {
     const daysSupply = new hl7V3.DaysSupply()
     daysSupply.effectiveTime = {low: new hl7V3.Timestamp("20210101")}
-    const result = createDispenseRequest(exampleDispensingSitePreference, exampleLineItemQuantity, daysSupply, null)
+    const result = createDispenseRequest(
+      exampleCourseOfTherapyType,
+      exampleDispensingSitePreference,
+      exampleLineItemQuantity,
+      daysSupply,
+      null
+    )
     expect(result.expectedSupplyDuration).toBeFalsy()
     expect(result.validityPeriod).toEqual({
       start: "2021-01-01"
@@ -485,7 +516,13 @@ describe("dispenseRequest", () => {
   test("handles validity period end only", () => {
     const daysSupply = new hl7V3.DaysSupply()
     daysSupply.effectiveTime = {high: new hl7V3.Timestamp("20210301")}
-    const result = createDispenseRequest(exampleDispensingSitePreference, exampleLineItemQuantity, daysSupply, null)
+    const result = createDispenseRequest(
+      exampleCourseOfTherapyType,
+      exampleDispensingSitePreference,
+      exampleLineItemQuantity,
+      daysSupply,
+      null
+    )
     expect(result.expectedSupplyDuration).toBeFalsy()
     expect(result.validityPeriod).toEqual({
       end: "2021-03-01"
@@ -495,7 +532,13 @@ describe("dispenseRequest", () => {
   test("handles expected supply duration", () => {
     const daysSupply = new hl7V3.DaysSupply()
     daysSupply.expectedUseTime = exampleExpectedUseTime
-    const result = createDispenseRequest(exampleDispensingSitePreference, exampleLineItemQuantity, daysSupply, null)
+    const result = createDispenseRequest(
+      exampleCourseOfTherapyType,
+      exampleDispensingSitePreference,
+      exampleLineItemQuantity,
+      daysSupply,
+      null
+    )
     expect(result.expectedSupplyDuration).toEqual({
       code: "d",
       system: "http://unitsofmeasure.org",
@@ -509,7 +552,13 @@ describe("dispenseRequest", () => {
     const daysSupply = new hl7V3.DaysSupply()
     daysSupply.effectiveTime = exampleEffectiveTime
     daysSupply.expectedUseTime = exampleExpectedUseTime
-    const result = createDispenseRequest(exampleDispensingSitePreference, exampleLineItemQuantity, daysSupply, null)
+    const result = createDispenseRequest(
+      exampleCourseOfTherapyType,
+      exampleDispensingSitePreference,
+      exampleLineItemQuantity,
+      daysSupply,
+      null
+    )
     expect(result.expectedSupplyDuration).toEqual({
       code: "d",
       system: "http://unitsofmeasure.org",
@@ -523,7 +572,13 @@ describe("dispenseRequest", () => {
   })
 
   test("handles no performer", () => {
-    const result = createDispenseRequest(exampleDispensingSitePreference, exampleLineItemQuantity, null, null)
+    const result = createDispenseRequest(
+      exampleCourseOfTherapyType,
+      exampleDispensingSitePreference,
+      exampleLineItemQuantity,
+      null,
+      null
+    )
     expect(result.performer).toBeFalsy()
   })
 
@@ -531,7 +586,13 @@ describe("dispenseRequest", () => {
     const organization = new hl7V3.Organization()
     organization.id = new hl7V3.SdsOrganizationIdentifier("VNE51")
     const performer = new hl7V3.Performer(new hl7V3.AgentOrganizationSDS(organization))
-    const result = createDispenseRequest(exampleDispensingSitePreference, exampleLineItemQuantity, null, performer)
+    const result = createDispenseRequest(
+      exampleCourseOfTherapyType,
+      exampleDispensingSitePreference,
+      exampleLineItemQuantity,
+      null,
+      performer
+    )
     expect(result.performer).toEqual({
       identifier: {
         system: "https://fhir.nhs.uk/Id/ods-organization-code",
