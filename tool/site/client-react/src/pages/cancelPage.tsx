@@ -133,67 +133,24 @@ function createCancel(prescriptionDetails: PrescriptionDetails, cancelFormValues
     ]
   }
   
-  if (cancelFormValues.cancellationUser === "R8006") {
+  if (cancellingWithAdminUser(cancelFormValues)) {
     const cancelPractitionerRoleIdentifier = uuid.v4()
     const cancelPractitionerIdentifier = uuid.v4()
 
-    medicationToCancel.extension.push({
-      url:
-        "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
-      valueReference: {
-        reference: `urn:uuid:${cancelPractitionerRoleIdentifier}`
-      }
-    })
+    addReferenceToCancellerInMedicationRequest(medicationToCancel, cancelPractitionerRoleIdentifier)
 
     const practitionerRole = getPractitionerRoleResources(cancelRequest)[0]
-    const cancelPractitionerRoleEntry: fhir.BundleEntry = {
-      fullUrl: `urn:uuid:${cancelPractitionerRoleIdentifier}`,
-      resource: {
-        ...clone(practitionerRole),
-        identifier: [
-          {
-            system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
-            value: "212304192555"
-          }
-        ],
-        practitioner: {
-          reference: `urn:uuid:${cancelPractitionerIdentifier}`
-        },
-        code: [{
-          coding: [
-            {
-              system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-              code: cancelFormValues.cancellationUser,
-              display: "Admin - Medical Secetary Access Role"
-            }
-          ]
-        }]
-      } as fhir.PractitionerRole
-    }
+    const cancelPractitionerRoleEntry: fhir.BundleEntry =
+      createCancellerPractitionerRole(
+        cancelPractitionerRoleIdentifier,
+        practitionerRole,
+        cancelPractitionerIdentifier,
+        cancelFormValues)
     cancelRequest.entry.push(cancelPractitionerRoleEntry)
 
     const practitioner = getPractitionerResources(cancelRequest)[0]
-    const cancelPractitionerEntry: fhir.BundleEntry = {
-      fullUrl: `urn:uuid:${cancelPractitionerIdentifier}`,
-      resource: {
-        ...clone(practitioner),
-        identifier: [
-          {
-            system: "https://fhir.nhs.uk/Id/sds-user-id",
-            value: "555086718101"
-          },
-          {
-            system: "https://fhir.hl7.org.uk/Id/professional-code",
-            value: "unknown"
-          }
-        ],
-        name: [{
-            family: "Secetary",
-            given: ["Medical"],
-            prefix: ["MS"]
-        }]
-      } as fhir.Practitioner
-    }
+    const cancelPractitionerEntry: fhir.BundleEntry =
+    createCancellerPractitioner(cancelPractitionerIdentifier, practitioner)
     cancelRequest.entry.push(cancelPractitionerEntry)
   }
 
@@ -218,6 +175,70 @@ interface CancelResult {
   request_xml: string
   response: fhir.OperationOutcome
   response_xml: string
+}
+
+function addReferenceToCancellerInMedicationRequest(medicationToCancel: fhir.MedicationRequest, cancelPractitionerRoleIdentifier: string) {
+  medicationToCancel.extension.push({
+    url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+    valueReference: {
+      reference: `urn:uuid:${cancelPractitionerRoleIdentifier}`
+    }
+  })
+}
+
+function createCancellerPractitioner(cancelPractitionerIdentifier: string, practitioner: fhir.Practitioner): fhir.BundleEntry {
+  return {
+    fullUrl: `urn:uuid:${cancelPractitionerIdentifier}`,
+    resource: {
+      ...clone(practitioner),
+      identifier: [
+        {
+          system: "https://fhir.nhs.uk/Id/sds-user-id",
+          value: "555086718101"
+        },
+        {
+          system: "https://fhir.hl7.org.uk/Id/professional-code",
+          value: "unknown"
+        }
+      ],
+      name: [{
+        family: "Secetary",
+        given: ["Medical"],
+        prefix: ["MS"]
+      }]
+    } as fhir.Practitioner
+  }
+}
+
+function createCancellerPractitionerRole(cancelPractitionerRoleIdentifier: string, practitionerRole: fhir.PractitionerRole, cancelPractitionerIdentifier: string, cancelFormValues: CancelFormValues): fhir.BundleEntry {
+  return {
+    fullUrl: `urn:uuid:${cancelPractitionerRoleIdentifier}`,
+    resource: {
+      ...clone(practitionerRole),
+      identifier: [
+        {
+          system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
+          value: "212304192555"
+        }
+      ],
+      practitioner: {
+        reference: `urn:uuid:${cancelPractitionerIdentifier}`
+      },
+      code: [{
+        coding: [
+          {
+            system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+            code: cancelFormValues.cancellationUser,
+            display: "Admin - Medical Secetary Access Role"
+          }
+        ]
+      }]
+    } as fhir.PractitionerRole
+  }
+}
+
+function cancellingWithAdminUser(cancelFormValues: CancelFormValues) {
+  return cancelFormValues.cancellationUser === "R8006"
 }
 
 function clone(value: any): any {
