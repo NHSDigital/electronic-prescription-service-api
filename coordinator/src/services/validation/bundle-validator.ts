@@ -9,7 +9,9 @@ import {
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
   identifyMessageType,
-  isTruthy
+  isTruthy,
+  resolveOrganization,
+  resolveReference
 } from "../translation/common"
 import {fhir, validationErrors as errors} from "@models"
 import {isRepeatDispensing} from "../translation/request"
@@ -46,7 +48,7 @@ export function verifyBundle(
   let messageTypeSpecificErrors
   switch (messageType) {
     case fhir.EventCodingCode.PRESCRIPTION:
-      messageTypeSpecificErrors = verifyPrescriptionBundle(bundle)
+      messageTypeSpecificErrors = verifyPrescriptionBundle(bundle, accessTokenOds)
       break
     case fhir.EventCodingCode.CANCELLATION:
       messageTypeSpecificErrors = verifyCancellationBundle(bundle)
@@ -120,7 +122,9 @@ export function verifyCommonBundle(bundle: fhir.Bundle): Array<fhir.OperationOut
   return incorrectValueErrors
 }
 
-export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
+export function verifyPrescriptionBundle(
+  bundle: fhir.Bundle, accessTokenOds: string
+): Array<fhir.OperationOutcomeIssue> {
   const medicationRequests = getMedicationRequests(bundle)
 
   const allErrors: Array<fhir.OperationOutcomeIssue> = []
@@ -155,6 +159,16 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
 
   if (!allMedicationRequestsHaveUniqueIdentifier(medicationRequests)){
     allErrors.push(errors.medicationRequestDuplicateIdentifierIssue)
+  }
+
+  const medicationRequest = getMedicationRequests(bundle)[0]
+  const practitionerRole = resolveReference(bundle, medicationRequest.requester)
+  const organization = resolveOrganization(bundle, practitionerRole)
+  if (organization && organization.identifier.some(identifier => identifier.value !== accessTokenOds)) {
+    console.warn(
+      `Organization details do not match in request accessToken
+        (${accessTokenOds}) and request body: (${organization.identifier}).`
+    )
   }
 
   return allErrors

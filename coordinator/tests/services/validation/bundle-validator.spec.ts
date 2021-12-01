@@ -234,21 +234,26 @@ describe("verifyPrescriptionBundle status check", () => {
     medicationRequests = getMedicationRequests(bundle)
   })
 
+  test("console warn when inconsistent accessToken and body ods codes", () => {
+    validator.verifyPrescriptionBundle(bundle, "test_ods_code")
+    expect(console.warn).toHaveBeenCalled()
+  })
+
   test("Should accept a message where all MedicationRequests have status active", () => {
-    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_ods_code")
     expect(validationErrors).toHaveLength(0)
   })
 
   test("Should reject a message where one MedicationRequest has status cancelled", () => {
     medicationRequests[0].status = fhir.MedicationRequestStatus.CANCELLED
-    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_ods_code")
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).status")
   })
 
   test("Should reject a message where all MedicationRequests have status cancelled", () => {
     medicationRequests.forEach(medicationRequest => medicationRequest.status = fhir.MedicationRequestStatus.CANCELLED)
-    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_ods_code")
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).status")
   })
@@ -280,7 +285,7 @@ describe("MedicationRequest consistency checks", () => {
     const differentAuthoredOn = "2020-01-01T00:00:00.000Z"
     medicationRequests[0].authoredOn = differentAuthoredOn
 
-    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_ods_code")
 
     validateValidationErrors(validationErrors)
     expect(
@@ -316,7 +321,7 @@ describe("MedicationRequest consistency checks", () => {
     medicationRequests.forEach(medicationRequest => medicationRequest.dispenseRequest.performer = performer)
     medicationRequests[3].dispenseRequest.performer = performerDiff
 
-    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_ods_code")
 
     validateValidationErrors(validationErrors)
     expect(
@@ -332,7 +337,7 @@ describe("MedicationRequest consistency checks", () => {
   test("Null should contribute to the count of unique values", () => {
     medicationRequests[0].groupIdentifier = null
 
-    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_ods_code")
 
     validateValidationErrors(validationErrors)
   })
@@ -340,7 +345,7 @@ describe("MedicationRequest consistency checks", () => {
   test("Undefined should contribute to the count of unique values", () => {
     medicationRequests[0].groupIdentifier = undefined
 
-    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_ods_code")
 
     validateValidationErrors(validationErrors)
   })
@@ -355,7 +360,7 @@ describe("MedicationRequest consistency checks", () => {
 
     medicationRequests.forEach(medicationRequest => medicationRequest.identifier = identifier)
 
-    const validationErrors = validator.verifyPrescriptionBundle(bundle)
+    const validationErrors = validator.verifyPrescriptionBundle(bundle, "test_ods_code")
 
     validateValidationErrors(validationErrors)
     expect(
@@ -389,7 +394,7 @@ describe("verifyRepeatDispensingPrescription", () => {
       }
     )
 
-    const returnedErrors = validator.verifyPrescriptionBundle(bundle)
+    const returnedErrors = validator.verifyPrescriptionBundle(bundle, "test_ods_code")
     expect(returnedErrors.length).toBe(0)
   })
 
