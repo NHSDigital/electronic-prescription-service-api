@@ -8,49 +8,76 @@ import {getScope, RequestHeaders} from "../../utils/headers"
 import * as LosslessJson from "lossless-json"
 import {isBundle, isTask} from "../../utils/type-guards"
 import {validateQueryParameters} from "../../services/validation/query-validator"
-import {getCodeableConceptCodingForSystem} from "../../services/translation/common"
+import {getCodeableConceptCodingForSystem, toArray} from "../../services/translation/common"
+import moment from "moment"
 
-export enum QueryParam {
-  IDENTIFIER = "identifier",
-  FOCUS_IDENTIFIER = "focus:identifier",
-  PATIENT_IDENTIFIER = "patient:identifier",
-  BUSINESS_STATUS = "business-status"
+export interface ValidQuery {
+  "identifier"?: string
+  "focus:identifier"?: string
+  "patient:identifier"?: string
+  "business-status"?: string
+  "authored-on"?: string | Array<string>
 }
 
-export type ValidQuery = Partial<Record<QueryParam, string>>
-
-export interface QueryParamProperties {
-  querySupportedBySpine: boolean
+export interface QueryParamDefinition {
+  name: keyof ValidQuery,
+  supportedBySpine: boolean
   system: string
-  getTaskField: (task: fhir.Task) => string
+  isDateParameter: boolean
+  test: (task: fhir.Task, value: string) => boolean
 }
 
-export const queryParamMetadata = new Map<QueryParam, QueryParamProperties>([
-  [QueryParam.FOCUS_IDENTIFIER, {
-    querySupportedBySpine: true,
+export const queryParamDefinitions: Array<QueryParamDefinition> = [
+  {
+    name: "focus:identifier",
+    supportedBySpine: true,
     system: "https://fhir.nhs.uk/Id/prescription-order-number",
-    getTaskField: task => task.focus.identifier.value
-  }],
-  [QueryParam.IDENTIFIER, {
-    querySupportedBySpine: true,
+    isDateParameter: false,
+    test: (task: fhir.Task, value: string): boolean => task.focus.identifier.value === value
+  },
+  {
+    name: "identifier",
+    supportedBySpine: true,
     system: "https://fhir.nhs.uk/Id/prescription-order-number",
-    getTaskField: task => task.focus.identifier.value
-  }],
-  [QueryParam.PATIENT_IDENTIFIER, {
-    querySupportedBySpine: true,
+    isDateParameter: false,
+    test: (task: fhir.Task, value: string): boolean => task.focus.identifier.value === value
+  },
+  {
+    name: "patient:identifier",
+    supportedBySpine: true,
     system: "https://fhir.nhs.uk/Id/nhs-number",
-    getTaskField: task => task.for.identifier.value
-  }],
-  [QueryParam.BUSINESS_STATUS, {
-    querySupportedBySpine: false,
-    system: undefined,
-    getTaskField: task => getCodeableConceptCodingForSystem(
+    isDateParameter: false,
+    test: (task: fhir.Task, value: string): boolean => task.for.identifier.value === value
+  },
+  {
+    name: "business-status",
+    supportedBySpine: false,
+    system: "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+    isDateParameter: false,
+    test: (task: fhir.Task, value: string): boolean => getCodeableConceptCodingForSystem(
       [task.businessStatus],
       "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
       "Task.businessStatus"
-    ).code
-  }]
-])
+    ).code === value
+  },
+  {
+    name: "authored-on",
+    supportedBySpine: false,
+    system: undefined,
+    isDateParameter: true,
+    test: (task: fhir.Task, value: string): boolean => {
+      const actualValue = moment.utc(task.authoredOn)
+      const searchValue = moment.utc(value)
+      if (value.startsWith("eq")) {
+        return actualValue.isSame(searchValue)
+      } else if (value.startsWith("le")) {
+        return actualValue.isSameOrBefore(searchValue)
+      } else if (value.startsWith("ge")) {
+        return actualValue.isSameOrAfter(searchValue)
+      }
+    }
+  }
+]
 
 export default [{
   method: "GET",
@@ -89,31 +116,28 @@ export default [{
 }]
 
 async function makeSpineRequest(validQuery: ValidQuery, request: Hapi.Request) {
-  const prescriptionIdentifier = getValue(validQuery, QueryParam.FOCUS_IDENTIFIER)
-    || getValue(validQuery, QueryParam.IDENTIFIER)
+  const prescriptionIdentifier = getValue(validQuery["focus:identifier"]) || getValue(validQuery["identifier"])
   if (prescriptionIdentifier) {
     return await trackerClient.getPrescriptionById(prescriptionIdentifier, request.headers, request.logger)
   }
 
-  const patientIdentifier = getValue(validQuery, QueryParam.PATIENT_IDENTIFIER)
-  const businessStatus = getValue(validQuery, QueryParam.BUSINESS_STATUS)
-  if (patientIdentifier || businessStatus) {
+  const patientIdentifier = getValue(validQuery["patient:identifier"])
+  if (patientIdentifier) {
+    const businessStatus = getValue(validQuery["business-status"])
+    const authoredOn = toArray(validQuery["authored-on"] || []).map(getValue)
+    const earliestDate = toSpineDateFormat(getEarliestDate(authoredOn))
+    const latestDate = toSpineDateFormat(getLatestDate(authoredOn))
     return await trackerClient.getPrescriptionsByPatientId(
       patientIdentifier,
       businessStatus,
+      earliestDate,
+      latestDate,
       request.headers,
       request.logger
     )
   }
-}
 
-export function getValue(query: ValidQuery, param: QueryParam): string {
-  const rawValue = query[param]
-  const pipeIndex = rawValue?.indexOf("|") || -1
-  if (pipeIndex !== -1) {
-    return rawValue.substring(pipeIndex + 1)
-  }
-  return rawValue
+  throw new Error("Attempting to make tracker request without prescription or patient identifier")
 }
 
 export function filterBundleEntries(bundle: fhir.Bundle, queryParams: ValidQuery): void {
@@ -126,11 +150,36 @@ export function filterBundleEntries(bundle: fhir.Bundle, queryParams: ValidQuery
 }
 
 export function matchesQuery(task: fhir.Task, queryParams: ValidQuery): boolean {
-  for (const [queryParam, metadata] of queryParamMetadata) {
-    const queryParamValue = getValue(queryParams, queryParam)
-    if (queryParamValue && metadata.getTaskField(task) !== queryParamValue) {
-      return false
-    }
+  return queryParamDefinitions.every(definition => {
+    const rawValue = queryParams[definition.name]
+    return !rawValue || toArray(rawValue).map(getValue).every(value => definition.test(task, value))
+  })
+}
+
+export function getValue(rawValue: string): string {
+  const pipeIndex = rawValue?.indexOf("|") || -1
+  if (pipeIndex !== -1) {
+    return rawValue.substring(pipeIndex + 1)
   }
-  return true
+  return rawValue
+}
+
+export function getSystem(rawValue: string): string {
+  const pipeIndex = rawValue?.indexOf("|") || -1
+  if (pipeIndex !== -1) {
+    return rawValue.substring(0, pipeIndex)
+  }
+  return undefined
+}
+
+export function getEarliestDate(dateParameterValues: Array<string>): string {
+  return dateParameterValues.find(value => value.startsWith("eq") || value.startsWith("ge"))?.substring(2)
+}
+
+export function getLatestDate(dateParameterValues: Array<string>): string {
+  return dateParameterValues.find(value => value.startsWith("eq") || value.startsWith("le"))?.substring(2)
+}
+
+export function toSpineDateFormat(date: string): string {
+  return date ? moment.utc(date).format("YYYYMMDD") : date
 }

@@ -39,13 +39,13 @@ describe("task query parameter validation", () => {
   test("identifier with system incorrectly specified is rejected", () => {
     const params: Hapi.RequestQuery = {
       "patient:identifier": "9876543210",
-      "business-status": "https://example.com|Claimed"
+      "authored-on": "https://example.com|eq2021-12-01"
     }
 
     const errors = validateQueryParameters(params, TRACKER_USER_SCOPE)
 
     expect(errors).toHaveLength(1)
-    expect(errors[0].diagnostics).toEqual("Query parameter business-status must not have a system specified.")
+    expect(errors[0].diagnostics).toEqual("Query parameter authored-on must not have a system specified.")
   })
 
   test("valid query parameter with system is accepted", () => {

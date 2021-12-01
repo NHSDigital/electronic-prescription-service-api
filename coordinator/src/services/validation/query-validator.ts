@@ -1,12 +1,10 @@
 import Hapi from "@hapi/hapi"
 import {fhir, validationErrors} from "@models"
-import {
-  QueryParam,
-  queryParamMetadata,
-  QueryParamProperties,
-  ValidQuery
-} from "../../routes/tracker/task"
+import {getSystem, QueryParamDefinition, queryParamDefinitions} from "../../routes/tracker/task"
 import {validatePermittedTrackerMessage} from "./scope-validator"
+import {toArray} from "../translation/common"
+
+const DATE_PARAM_MATCHER = /(eq|le|ge)\d{4}-\d{2}-\d{2}/
 
 export const validateQueryParameters = (
   queryParams: Hapi.RequestQuery,
@@ -17,52 +15,68 @@ export const validateQueryParameters = (
     return permissionErrors
   }
 
-  const validatedEntries = Object.entries(queryParams).filter(
-    ([queryParam]) => queryParamMetadata.has(queryParam as QueryParam)
-  )
-
-  const querySupportedBySpine = validatedEntries.some(
-    ([queryParam]) => queryParamMetadata.get(queryParam as QueryParam).querySupportedBySpine
-  )
-  if (!querySupportedBySpine) {
-    const validQueryParameters = Array.from(queryParamMetadata.keys())
-    return [validationErrors.createMissingQueryParameterIssue(validQueryParameters)]
+  const recognisedParameters: Array<[QueryParamDefinition, Array<string>]> = []
+  for (const [queryParam, queryParamValue] of Object.entries(queryParams)) {
+    const queryParamDefinition = queryParamDefinitions.find(definition => definition.name === queryParam)
+    if (queryParamDefinition) {
+      recognisedParameters.push([queryParamDefinition, toArray(queryParamValue)])
+    }
   }
 
   const issues: Array<fhir.OperationOutcomeIssue> = []
 
-  const hasArrayValuedParams = validatedEntries.some(([, value]) => Array.isArray(value))
-  if (hasArrayValuedParams) {
-    issues.push(validationErrors.invalidQueryParameterCombinationIssue)
+  if (!recognisedParameters.some(([definition]) => definition.supportedBySpine)) {
+    const requiredQueryParams = queryParamDefinitions
+      .filter(definition => definition.supportedBySpine)
+      .map(definition => definition.name)
+    issues.push(validationErrors.createMissingQueryParameterIssue(requiredQueryParams))
   }
 
-  const validatedQuery = Object.fromEntries(validatedEntries) as ValidQuery
-  queryParamMetadata.forEach((metadata, queryParam) => {
-    const queryParamValue = validatedQuery[queryParam]
-    if (queryParamValue) {
-      issues.push(...validateQueryParameter(metadata, queryParam, queryParamValue))
-    }
+  recognisedParameters.forEach(([definition, values]) => {
+    issues.push(...validateQueryParameter(definition, values))
   })
 
   return issues
 }
 
-function validateQueryParameter(metadata: QueryParamProperties, queryParam: QueryParam, queryParamValue: string) {
+function validateQueryParameter(
+  definition: QueryParamDefinition,
+  values: Array<string>
+): Array<fhir.OperationOutcomeIssue> {
   const issues: Array<fhir.OperationOutcomeIssue> = []
 
-  const validSystem = metadata.system
-  const actualSystem = getSystem(queryParamValue)
-  if (actualSystem && actualSystem !== validSystem) {
-    issues.push(validationErrors.createInvalidSystemIssue(queryParam, validSystem))
+  if (!definition.isDateParameter && values.length > 1) {
+    issues.push(validationErrors.invalidQueryParameterCombinationIssue)
   }
+
+  values.forEach(value => {
+    issues.push(...validateQueryParameterValue(definition, value))
+  })
 
   return issues
 }
 
-export function getSystem(rawValue: string): string {
-  const pipeIndex = rawValue?.indexOf("|") || -1
-  if (pipeIndex !== -1) {
-    return rawValue.substring(0, pipeIndex)
+function validateQueryParameterValue(
+  queryParamDefinition: QueryParamDefinition,
+  value: string
+): Array<fhir.OperationOutcomeIssue> {
+  const issues: Array<fhir.OperationOutcomeIssue> = []
+
+  const actualSystem = getSystem(value)
+  const expectedSystem = queryParamDefinition.system
+  if (actualSystem && actualSystem !== expectedSystem) {
+    issues.push(validationErrors.createInvalidSystemIssue(queryParamDefinition.name, expectedSystem))
   }
-  return undefined
+
+  if (queryParamDefinition.isDateParameter) {
+    if (!DATE_PARAM_MATCHER.test(value)) {
+      issues.push({
+        severity: "error",
+        code: fhir.IssueCodes.INVALID,
+        diagnostics: `Value for date param ${queryParamDefinition.name} should match pattern ${DATE_PARAM_MATCHER}.`
+      })
+    }
+  }
+
+  return issues
 }
