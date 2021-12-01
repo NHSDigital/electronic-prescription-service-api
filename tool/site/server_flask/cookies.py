@@ -5,10 +5,6 @@ import config
 HAPI_SESSION_COOKIE_NAME = "session"
 
 
-def get_current_prescription_id_from_cookie():
-    return flask.request.cookies.get("Current-Prescription-Id")
-
-
 def set_previous_prescription_id_cookie(response, short_prescription_id):
     response.set_cookie(
         "Previous-Prescription-Id",
@@ -58,17 +54,6 @@ def set_auth_method_cookie(response, auth_method):
         expires=datetime.datetime.utcnow() + datetime.timedelta(days=1),
         secure=not config.DEV_MODE,
         httponly=True,
-    )
-
-
-
-def set_skip_signature_page_cookie(response, skip_signature_page):
-    response.set_cookie(
-        "Skip-Signature-Page",
-        skip_signature_page,
-        expires=datetime.datetime.utcnow() + datetime.timedelta(seconds=float(600)),
-        secure=not config.DEV_MODE,
-        httponly=False,
     )
 
 

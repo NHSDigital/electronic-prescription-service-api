@@ -31,13 +31,16 @@ extends:
     cache_steps:
       - bash: |
           # Replace all eps artifacts with eps-api-tool artifacts by
-          #   - Deleting eps artifacts
+          #   - Moving examples project resources into eps-api-tool
+          #   - Deleting all other eps artifacts
           #   - Moving eps-api-tool artifacts from tool/ directory to root directory
           # Having root directory CI/CD files is required by platforms
           set -euo pipefail
           shopt -s extglob
-          rm -rfv !(tool)
-          rsync -vua --delete-after tool/ .
+          mv examples tool/site/client/static/ 1> /dev/null
+          rm -rfv !(tool) 1> /dev/null
+          rsync -vua --delete-after tool/ . 1> /dev/null
+          ls -R
         workingDirectory: "${{ variables.service_name }}"
         displayName: Prepare eps-api-tool
     test_steps:

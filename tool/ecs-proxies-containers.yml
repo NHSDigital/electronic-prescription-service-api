@@ -5,6 +5,3 @@ docker_containers:
     -   name: eps-api-tool-hapi
         dockerfile: "site/Dockerfile-Hapi"
         path: "site"
-    -   name: eps-api-tool-store
-        dockerfile: "store/Dockerfile"
-        path: "store"

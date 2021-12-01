@@ -1,58 +1,52 @@
-import * as fhir from "../models"
+import {Bundle, MedicationRequest} from "fhir/r4"
 import moment from "moment"
 import {convertMomentToISODate} from "../lib/date-time"
 
 /**
  * Models
  */
-const epsModelsUrl =
-  "https://raw.githubusercontent.com/NHSDigital/electronic-prescription-service-api/master/examples"
 
-function getPrescription(path: string) {
+function getPrescription(baseUrl: string, path: string) {
   const xmlHttp = new XMLHttpRequest()
-  xmlHttp.open("GET", epsModelsUrl + "/" + path, false)
+  xmlHttp.open("GET", `${baseUrl}static/examples/${path}`, false)
   xmlHttp.send(null)
-  return JSON.parse(xmlHttp.responseText)
+  const bundle = JSON.parse(xmlHttp.responseText)
+  setValidityPeriod(bundle)
+  return bundle
 }
 
 /**
  * Examples
  */
 /* eslint-disable max-len */
-const PRIMARY_CARE_ACUTE_NOMINATED = getPrescription(
+const PRIMARY_CARE_ACUTE_NOMINATED = (baseUrl: string): string => getPrescription(baseUrl,
   "primary-care/acute/nominated-pharmacy/medical-prescriber/1-Prepare-Request-200_OK.json"
 )
-setValidityPeriod(PRIMARY_CARE_ACUTE_NOMINATED)
 
-const PRIMARY_CARE_REPEAT_PRESCRIBING_NOMINATED = getPrescription(
+const PRIMARY_CARE_REPEAT_PRESCRIBING_NOMINATED = (baseUrl: string): string => getPrescription(baseUrl,
   "primary-care/repeat-prescribing/1-Prepare-Request-200_OK.json"
 )
-setValidityPeriod(PRIMARY_CARE_REPEAT_PRESCRIBING_NOMINATED)
 
-const SECONDARY_CARE_COMMUNITY_ACUTE_NOMINATED = getPrescription(
+const SECONDARY_CARE_COMMUNITY_ACUTE_NOMINATED = (baseUrl: string): string => getPrescription(baseUrl,
   "secondary-care/community/acute/nominated-pharmacy/clinical-practitioner/1-Prepare-Request-200_OK.json"
 )
-setValidityPeriod(SECONDARY_CARE_COMMUNITY_ACUTE_NOMINATED)
 
-const SECONDARY_CARE_REPEAT_DISPENSING_NOMINATED = getPrescription(
+const SECONDARY_CARE_REPEAT_DISPENSING_NOMINATED = (baseUrl: string): string => getPrescription(baseUrl,
   "secondary-care/community/repeat-dispensing/nominated-pharmacy/clinical-practitioner/single-medication-request/1-Prepare-Request-200_OK.json"
 )
-setValidityPeriod(SECONDARY_CARE_REPEAT_DISPENSING_NOMINATED)
 
-const SECONDARY_CARE_COMMUNITY_ACUTE_NON_NOMINATED = getPrescription(
+const SECONDARY_CARE_COMMUNITY_ACUTE_NON_NOMINATED = (baseUrl: string): string => getPrescription(baseUrl,
   "secondary-care/community/acute/no-nominated-pharmacy/clinical-practitioner/1-Prepare-Request-200_OK.json"
 )
-setValidityPeriod(SECONDARY_CARE_COMMUNITY_ACUTE_NON_NOMINATED)
 
-const HOMECARE_ACUTE_NOMINATED = getPrescription(
+const HOMECARE_ACUTE_NOMINATED = (baseUrl: string): string => getPrescription(baseUrl,
   "secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Prepare-Request-200_OK.json"
 )
-setValidityPeriod(HOMECARE_ACUTE_NOMINATED)
 
-function setValidityPeriod(bundle: fhir.Bundle) {
+function setValidityPeriod(bundle: Bundle) {
   const medicationRequests = bundle.entry
     .map(entry => entry.resource)
-    .filter(resource => resource.resourceType === "MedicationRequest") as Array<fhir.MedicationRequest>
+    .filter(resource => resource.resourceType === "MedicationRequest") as Array<MedicationRequest>
   const start = convertMomentToISODate(moment.utc())
   const end = convertMomentToISODate(moment.utc().add(1, "month"))
   medicationRequests.forEach(medicationRequest => {

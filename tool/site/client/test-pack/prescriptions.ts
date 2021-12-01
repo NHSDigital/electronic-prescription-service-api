@@ -1,15 +1,15 @@
 import * as uuid from "uuid"
 import moment from "moment"
-import * as fhirCommon from "../models/common"
-import * as fhirExtension from "../models/extension"
 import {groupBy, StringKeyedObject} from "./helpers"
 import {
   Bundle,
   BundleEntry,
   PractitionerRole,
   CommunicationRequest,
-  MedicationRequestDispenseRequest
-} from "../models"
+  MedicationRequestDispenseRequest,
+  Extension,
+  Quantity
+} from "fhir/r4"
 import {convertMomentToISODate} from "../lib/date-time"
 import {createMessageHeaderEntry} from "./message-header"
 import {getNhsNumber} from "../parsers/read/patient-parser"
@@ -369,7 +369,7 @@ function createMedicationRequests(
           allowedBoolean: false
         }
       }
-    }
+    } as BundleEntry
   })
 }
 
@@ -406,7 +406,7 @@ function getDispenseRequest(row: StringKeyedObject, maxRepeatsAllowed: number): 
         end: end
       },
       expectedSupplyDuration: {
-        value: "30",
+        value: 30,
         unit: "day",
         system: "http://unitsofmeasure.org",
         code: "d"
@@ -450,10 +450,10 @@ function getMedicationDisplay(row: StringKeyedObject): string {
   return row["Medication"]
 }
 
-function getMedicationRequestExtensions(row: StringKeyedObject, prescriptionTreatmentTypeCode: string, repeatsIssued: number): Array<fhirExtension.Extension> {
+function getMedicationRequestExtensions(row: StringKeyedObject, prescriptionTreatmentTypeCode: string, repeatsIssued: number): Array<Extension> {
   const prescriptionTypeCode = row["Prescription Type"].toString()
   const prescriberTypeDisplay = row["Prescriber Description"]
-  const extension: Array<fhirExtension.Extension> = [
+  const extension: Array<Extension> = [
     {
       url:
         "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
@@ -462,7 +462,7 @@ function getMedicationRequestExtensions(row: StringKeyedObject, prescriptionTrea
         code: prescriptionTypeCode,
         display: prescriberTypeDisplay
       }
-    } as fhirExtension.CodingExtension
+    }
   ]
 
   if (prescriptionTreatmentTypeCode !== "acute") {
@@ -482,7 +482,7 @@ function getMedicationRequestExtensions(row: StringKeyedObject, prescriptionTrea
           }
         ]
       }
-    } as fhirExtension.CodeableConceptExtension)
+    })
   )
 
   return extension
@@ -502,18 +502,18 @@ function createPrescriptionType(row: StringKeyedObject): any {
 
 function createRepeatInformationExtensions(
   repeatsIssued: number
-): fhirExtension.ExtensionExtension<fhirExtension.Extension> {
-  const extension: Array<fhirExtension.Extension> = [
+): {url: string, extension: Extension[]} {
+  const extension: Array<Extension> = [
     {
       url: "authorisationExpiryDate",
       // todo: work this out from "days treatment"
       valueDateTime: new Date(2025, 1, 1).toISOString().slice(0, 10)
-    } as fhirExtension.DateTimeExtension
+    }
   ]
   extension.push({
     url: "numberOfPrescriptionsIssued",
     valueUnsignedInt: repeatsIssued
-  } as fhirExtension.UnsignedIntExtension)
+  })
   return {
     url:
       "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
@@ -521,9 +521,9 @@ function createRepeatInformationExtensions(
   }
 }
 
-function getMedicationQuantity(row: StringKeyedObject): fhirCommon.SimpleQuantity {
+function getMedicationQuantity(row: StringKeyedObject): Quantity {
   return {
-    value: row["Qty"],
+    value: parseInt(row["Qty"]),
     unit: row["UoM"],
     system: "http://snomed.info/sct",
     code: getMedicationQuantityCode(row["UoM"])

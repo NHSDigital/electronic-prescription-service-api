@@ -1,4 +1,4 @@
-import {BundleEntry, MessageHeader} from "../models"
+import {BundleEntry, MessageHeader} from "fhir/r4"
 import {pageData} from "../ui/state"
 
 export function createMessageHeaderEntry(): BundleEntry {

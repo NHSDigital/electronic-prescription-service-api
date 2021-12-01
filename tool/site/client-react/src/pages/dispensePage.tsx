@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext, useState} from "react"
-import {Button, CrossIcon, Label, TickIcon} from "nhsuk-react-components"
+import {CrossIcon, Label, TickIcon} from "nhsuk-react-components"
 import axios from "axios"
 import {
   getMedicationDispenseResources,
@@ -25,6 +25,7 @@ import {getMedicationDispenseLineItemId, getMedicationRequestLineItemId} from ".
 import LongRunningTask from "../components/longRunningTask"
 import {AppContext} from "../index"
 import PrescriptionActions from "../components/prescriptionActions"
+import ReloadButton from "../components/reloadButton"
 
 interface DispensePageProps {
   prescriptionId: string
@@ -60,7 +61,7 @@ const DispensePage: React.FC<DispensePageProps> = ({
             {dispenseResult => (
               <>
                 <Label isPageHeading>Dispense Result {dispenseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
-                <PrescriptionActions prescriptionId={prescriptionId} dispense claim view/>
+                <PrescriptionActions prescriptionId={prescriptionId} claim view/>
                 <MessageExpanders
                   fhirRequest={dispenseResult.request}
                   hl7V3Request={dispenseResult.request_xml}
@@ -68,7 +69,7 @@ const DispensePage: React.FC<DispensePageProps> = ({
                   hl7V3Response={dispenseResult.response_xml}
                 />
                 <ButtonList>
-                  <Button type="button" href={baseUrl} secondary>Back</Button>
+                  <ReloadButton/>
                 </ButtonList>
               </>
             )}
@@ -80,8 +81,8 @@ const DispensePage: React.FC<DispensePageProps> = ({
 }
 
 async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: string): Promise<PrescriptionDetails> {
-  const prescriptionOrderResponse = await axios.get<fhir.Bundle>(`${baseUrl}prescription/${prescriptionId}`)
-  const prescriptionOrder = prescriptionOrderResponse.data
+  const releasedPrescription = await axios.get<fhir.Bundle>(`${baseUrl}dispense/release/${prescriptionId}`)
+  const prescriptionOrder = releasedPrescription.data
   if (!prescriptionOrder) {
     throw new Error("Prescription order not found. Is the ID correct?")
   }

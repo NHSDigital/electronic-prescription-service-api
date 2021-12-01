@@ -1,17 +1,26 @@
-import {pageData} from "../ui/state"
-
-export function makeRequest(method: string, url: string, body?: unknown): any {
+export async function makeRequest(method: string, url: string, body?: unknown): Promise<any> {
   const uri = encodeURI(url)
-  const xhr = new XMLHttpRequest()
-  try {
-    xhr.withCredentials = true
-    xhr.open(method, uri, false)
-    xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8")
-    xhr.send(body as any)
-  } catch {
-    // if we get an undetectable cors error caused by oauth triggering on a post,
-    // then logout to prompt a new login session
-    window.location.href = `${pageData.baseUrl}logout`
+
+  const response = await fetch(uri, {
+    method: method,
+    mode: "cors",
+    cache: "no-cache",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json;charset=UTF-8"
+    },
+    redirect: "follow",
+    referrerPolicy: "no-referrer",
+    body: body as any
+  })
+
+  if (response.redirected) {
+    window.location.href = response.url
   }
-  return JSON.parse(xhr.responseText)
+
+  if (response.status === 429) {
+    throw new Error("Received 'Too Many Requests' response when attempting to fetch data")
+  }
+
+  return await response.json()
 }

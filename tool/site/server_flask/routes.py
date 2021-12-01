@@ -7,22 +7,11 @@ from functools import wraps
 import flask
 import urllib.parse
 import config
-from api import (
-    make_eps_api_process_message_request,
-    make_eps_api_process_message_request_untranslated,
-    make_eps_api_release_request,
-    make_eps_api_release_request_untranslated,
-    make_eps_api_convert_message_request,
-    make_eps_api_metadata_request,
-    make_eps_api_claim_request,
-    make_eps_api_claim_request_untranslated
-)
+from api import make_eps_api_metadata_request
 from app import app, fernet
 from auth import exchange_code_for_token, get_access_token, login, set_access_token_cookies, get_authorize_url
-from bundle import get_prescription_id, create_provenance
 from client import render_rivets_client, render_react_client
 from cookies import (
-    get_current_prescription_id_from_cookie,
     set_previous_prescription_id_cookie,
     set_current_prescription_id_cookie,
     set_next_prescription_id_cookie,
@@ -30,7 +19,6 @@ from cookies import (
     reset_next_prescription_id_cookie,
     get_auth_method_from_cookie,
     set_auth_method_cookie,
-    set_skip_signature_page_cookie,
     set_session_cookie
 )
 from helpers import (
@@ -42,23 +30,6 @@ from helpers import (
     create_oauth_state
 )
 import hapi_passthrough
-
-HOME_URL = "/"
-STATUS_URL = "/_status"
-HEALTHCHECK_URL = "/_healthcheck"
-AUTH_URL = "/change-auth"
-LOGOUT_URL = "/logout"
-CALLBACK_URL = "/callback"
-LOAD_URL = "/prescribe/load"
-DOWNLOAD_URL = "/download"
-EDIT_URL = "/prescribe/edit"
-SIGN_URL = "/prescribe/sign"
-SEND_URL = "/prescribe/send"
-CANCEL_URL = "/prescribe/cancel"
-RELEASE_URL = "/dispense/release"
-DISPENSE_URL = "/dispense/dispense"
-CLAIM_URL = "/dispense/claim"
-METADATA_URL = "/metadata"
 
 
 def exclude_from_auth(*args, **kw):
@@ -96,25 +67,25 @@ def auth_check():
             return login()
 
 
-@app.route(HEALTHCHECK_URL, methods=["GET"])
+@app.route("/_healthcheck", methods=["GET"])
 @exclude_from_auth()
 def get_healthcheck():
     return hapi_passthrough.get_healthcheck()
 
 
-@app.route(STATUS_URL, methods=["GET"])
+@app.route("/_status", methods=["GET"])
 @exclude_from_auth()
 def get_status():
     return hapi_passthrough.get_status()
 
 
-@app.route(AUTH_URL, methods=["GET"])
+@app.route("/change-auth", methods=["GET"])
 @exclude_from_auth()
 def get_change_auth():
     return render_rivets_client("login")
 
 
-@app.route(AUTH_URL, methods=["POST"])
+@app.route("/change-auth", methods=["POST"])
 @exclude_from_auth()
 def post_change_auth():
     login_request = flask.request.json
@@ -129,8 +100,7 @@ def post_change_auth():
     return response
 
 
-@app.route(HOME_URL, methods=["GET"])
-@exclude_from_auth()
+@app.route("/", methods=["GET"])
 def get_home():
     return render_rivets_client("home")
 
@@ -140,14 +110,12 @@ def get_search():
     return render_react_client("search")
 
 
-@app.route(LOAD_URL, methods=["GET"])
-@exclude_from_auth()
+@app.route("/prescribe/load", methods=["GET"])
 def get_load():
     return render_rivets_client("load")
 
 
-@exclude_from_auth()
-@app.route(DOWNLOAD_URL, methods=['GET'])
+@app.route("/download", methods=['GET'])
 def download():
     zFile = io.BytesIO()
     access_token = get_access_token()
@@ -157,10 +125,9 @@ def download():
         for index, short_prescription_id in enumerate(short_prescription_ids):
             bundle = hapi_passthrough.get_prescription(short_prescription_id)
             zip_file.writestr(f"prepare_request_{index + 1}.json", json.dumps(bundle, indent=2))
-            # todo: fix 'invalid json' issue
-            # if access_token:
-            #     xml, _status_code = make_eps_api_convert_message_request(access_token, bundle)
-            #     zip_file.writestr(f"prepare_request_{index + 1}.xml", xml)
+            if access_token:
+                xml, _status_code = make_eps_api_convert_message_request(access_token, bundle)
+                zip_file.writestr(f"prepare_request_{index + 1}.xml", xml)
     zFile.seek(0)
 
     return flask.send_file(
@@ -184,7 +151,7 @@ def update_pagination(response, short_prescription_ids, current_short_prescripti
     set_current_prescription_id_cookie(response, current_short_prescription_id)
 
 
-@app.route(METADATA_URL, methods=["GET"])
+@app.route("/metadata", methods=["GET"])
 @exclude_from_auth()
 def get_metadata():
     return make_eps_api_metadata_request()
@@ -202,8 +169,7 @@ def get_tracker_prescription():
     return app.make_response(hapi_response)
 
 
-@app.route(EDIT_URL, methods=["GET"])
-@exclude_from_auth()
+@app.route("/prescribe/edit", methods=["GET"])
 def get_edit():
     # handles '+' in query_string where flask.request.args.get does not
     short_prescription_id = flask.request.query_string.decode("utf-8")[len("prescription_id="):]
@@ -218,117 +184,77 @@ def get_edit():
     return response
 
 
-@app.route(EDIT_URL, methods=["POST"])
-@exclude_from_auth()
+@app.route("/prescribe/edit", methods=["POST"])
 def post_edit():
     request_bundles = flask.request.json
     hapi_passthrough.post_edit(request_bundles)
     hapi_session = hapi_passthrough.get_hapi_session()
-    if "prescriptionId" not in hapi_session:
-        # anonymous user view single prescription only
-        bundle = request_bundles[0]
-        short_prescription_id = get_prescription_id(bundle)
-        short_prescription_ids = [short_prescription_id]
-    else:
-        short_prescription_ids = hapi_session["prescriptionIds"]
-        short_prescription_id = hapi_session["prescriptionId"]
+    short_prescription_ids = hapi_session["prescriptionIds"]
+    short_prescription_id = hapi_session["prescriptionId"]
     redirect_url = f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}prescribe/edit?prescription_id={urllib.parse.quote_plus(short_prescription_id)}'
     response = app.make_response({"redirectUri": redirect_url})
     update_pagination(response, short_prescription_ids, short_prescription_id)
     return response
 
 
-@app.route(SIGN_URL, methods=["GET"])
-def get_sign():
-    return render_rivets_client("sign")
-
-
-@app.route(SIGN_URL, methods=["POST"])
+@app.route("/prescribe/sign", methods=["POST"])
 def post_sign():
     hapi_response = hapi_passthrough.post_sign()
-    response = app.make_response(hapi_response)
-    set_skip_signature_page_cookie(response, "True")
-    return response
+    return app.make_response(hapi_response)
 
 
-@app.route(SEND_URL, methods=["GET"])
+@app.route("/prescribe/send", methods=["GET"])
 def get_send():
     return render_react_client("send")
 
 
-@app.route(SEND_URL, methods=["POST"])
+@app.route("/prescribe/send", methods=["POST"])
 def post_send():
     return hapi_passthrough.post_send(flask.request.json)
 
 
-@app.route(CANCEL_URL, methods=["GET"])
+@app.route("/prescribe/cancel", methods=["GET"])
 def get_cancel():
-    return render_rivets_client("cancel")
+    return render_react_client("cancel")
 
 
-@app.route(CANCEL_URL, methods=["POST"])
+@app.route("/prescribe/cancel", methods=["POST"])
 def post_cancel():
-    request = flask.request.json
-    short_prescription_id = get_prescription_id(request)
-    access_token = get_access_token()
-
-    convert_response, _code = make_eps_api_convert_message_request(access_token, request)
-    cancel_response, cancel_response_code, request_id = make_eps_api_process_message_request(access_token, request)
-    cancel_response_xml, _untranslated_code = make_eps_api_process_message_request_untranslated(
-        access_token, request, request_id
-    )
-    return {
-        "prescription_id": short_prescription_id,
-        "success": cancel_response_code == 200,
-        "request": request,
-        "request_xml": convert_response,
-        "response": cancel_response,
-        "response_xml": cancel_response_xml
-    }
+    if (config.ENVIRONMENT == "prod"):
+        return app.make_response("Bad Request", 400)
+    response = hapi_passthrough.post_cancel(flask.request.json)
+    return app.make_response(response)
 
 
-@app.route(RELEASE_URL, methods=["GET"])
+@app.route("/dispense/release", methods=["GET"])
 def get_release():
     if (config.ENVIRONMENT == "prod"):
         return app.make_response("Bad Request", 400)
-    return render_rivets_client("release")
+    return render_react_client("release")
 
 
-@app.route(RELEASE_URL, methods=["POST"])
+@app.route("/dispense/release", methods=["POST"])
 def post_release():
     if (config.ENVIRONMENT == "prod"):
         return app.make_response("Bad Request", 400)
-
-    request = flask.request.json
-    access_token = get_access_token()
-
-    convert_response, _code = make_eps_api_convert_message_request(access_token, request)
-    release_response, release_response_code, request_id = make_eps_api_release_request(
-        access_token,
-        request,
-    )
-    release_response_xml, _untranslated_code = make_eps_api_release_request_untranslated(
-        access_token,
-        request,
-        request_id
-    )
-    return {
-        "success": release_response_code == 200,
-        "request_xml": convert_response,
-        "request": request,
-        "response": release_response,
-        "response_xml": release_response_xml
-    }
+    response = hapi_passthrough.post_release(flask.request.json)
+    return app.make_response(response)
 
 
-@app.route(DISPENSE_URL, methods=["GET"])
+@app.route("/dispense/release/<short_prescription_id>", methods=["GET"])
+def get_released_prescriptions(short_prescription_id):
+    response = hapi_passthrough.get_released_prescriptions(str(short_prescription_id))
+    return app.make_response(json.dumps(response))
+
+
+@app.route("/dispense/dispense", methods=["GET"])
 def get_dispense():
     if (config.ENVIRONMENT == "prod"):
         return app.make_response("Bad Request", 400)
     return render_react_client("dispense")
 
 
-@app.route(DISPENSE_URL, methods=["POST"])
+@app.route("/dispense/dispense", methods=["POST"])
 def post_dispense():
     if (config.ENVIRONMENT == "prod"):
         return app.make_response("Bad Request", 400)
@@ -342,42 +268,22 @@ def get_dispense_notifications(short_prescription_id):
     return app.make_response(json.dumps(response))
 
 
-@app.route(CLAIM_URL, methods=["GET"])
+@app.route("/dispense/claim", methods=["GET"])
 def get_claim():
     if config.ENVIRONMENT == "prod":
         return app.make_response("Bad Request", 400)
     return render_react_client("claim")
 
 
-@app.route(CLAIM_URL, methods=["POST"])
+@app.route("/dispense/claim", methods=["POST"])
 def post_claim():
-    if config.ENVIRONMENT == "prod":
+    if (config.ENVIRONMENT == "prod"):
         return app.make_response("Bad Request", 400)
-
-    request = flask.request.json
-    access_token = get_access_token()
-
-    convert_response, _code = make_eps_api_convert_message_request(access_token, request)
-    claim_response, claim_response_code, request_id = make_eps_api_claim_request(
-        access_token,
-        request
-    )
-    claim_response_xml, _untranslated_code = make_eps_api_claim_request_untranslated(
-        access_token,
-        request,
-        request_id
-    )
-
-    return {
-        "success": claim_response_code == 200,
-        "request_xml": convert_response,
-        "request": request,
-        "response": claim_response,
-        "response_xml": claim_response_xml
-    }
+    response = hapi_passthrough.post_claim(flask.request.json)
+    return app.make_response(response)
 
 
-@app.route(LOGOUT_URL, methods=["GET"])
+@app.route("/logout", methods=["GET"])
 def get_logout():
     redirect_url = f'{config.PUBLIC_APIGEE_URL}{config.BASE_URL}'
     response = flask.redirect(redirect_url)
@@ -386,7 +292,7 @@ def get_logout():
     return response
 
 
-@app.route(CALLBACK_URL, methods=["GET"])
+@app.route("/callback", methods=["GET"])
 @exclude_from_auth()
 def get_callback():
     # local development

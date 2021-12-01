@@ -5,6 +5,7 @@ import Exemption from "./exemption"
 import ProductArray from "./productArray"
 import ButtonList from "../buttonList"
 import {VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION} from "../../fhir/reference-data/valueSets"
+import BackButton from "../backButton"
 
 export interface ClaimFormProps {
   products: Array<StaticProductInfo>
@@ -35,7 +36,7 @@ const ClaimForm: React.FC<ClaimFormProps> = ({
           <Exemption name="exemption"/>
           <ButtonList>
             <Button type="submit">Claim</Button>
-            <Button type="reset" secondary>Reset</Button>
+            <BackButton/>
           </ButtonList>
         </Form>
       }

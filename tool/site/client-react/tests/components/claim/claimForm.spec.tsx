@@ -78,31 +78,6 @@ test("Clicking Claim button calls the callback with form values", async () => {
   })
 })
 
-test("Clicking Reset button resets form to initial values", async () => {
-  const submit = jest.fn()
-  render(<ClaimForm products={[staticProductInfo]} onSubmit={submit}/>)
-
-  await enterValuesInAllFields()
-
-  userEvent.click(screen.getByText("Reset"))
-  await waitFor(() => expect(screen.queryByLabelText("Endorsement 1 Type")).toBeFalsy())
-
-  userEvent.click(screen.getByText("Claim"))
-  await waitFor(() => expect(submit).toHaveBeenCalled())
-
-  expect(submit).toHaveBeenCalledWith({
-    exemption: {
-      code: "0001",
-      evidenceSeen: false
-    },
-    products: [{
-      ...staticProductInfo,
-      patientPaid: false,
-      endorsements: []
-    }]
-  })
-})
-
 async function addEndorsement() {
   const initialEndorsementCount = screen.queryAllByText("Remove Endorsement").length
   userEvent.click(screen.getByText("Add Endorsement"))
