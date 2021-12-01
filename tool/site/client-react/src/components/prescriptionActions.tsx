@@ -25,7 +25,7 @@ const PrescriptionActions: React.FC<PrescriptionActionsProps> = ({
     <>
       {cancel && (
         <ActionLink href={`${baseUrl}prescribe/cancel?prescription_id=${prescriptionId}`}>
-          Cancel prescription
+          Cancel medication
         </ActionLink>
       )}
       {release && (
