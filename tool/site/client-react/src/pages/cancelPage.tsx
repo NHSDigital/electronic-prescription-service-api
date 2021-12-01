@@ -66,8 +66,8 @@ const CancelPage: React.FC<CancelPageProps> = ({
 }
 
 async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: string): Promise<PrescriptionDetails> {
-  const releasedPrescription = await axios.get<fhir.Bundle>(`${baseUrl}prescription/${prescriptionId}`)
-  const prescriptionOrder = releasedPrescription.data
+  const originalPrescriptionOrder = await axios.get<fhir.Bundle>(`${baseUrl}prescription/${prescriptionId}`)
+  const prescriptionOrder = originalPrescriptionOrder.data
   if (!prescriptionOrder) {
     throw new Error("Prescription order not found. Is the ID correct?")
   }
