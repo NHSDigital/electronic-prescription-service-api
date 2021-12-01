@@ -1,4 +1,4 @@
-import {BundleEntry, Patient} from "../../models"
+import {BundleEntry, Patient} from "fhir/r4"
 
 export function getNhsNumber(fhirPatient: BundleEntry): string {
   return (fhirPatient.resource as Patient).identifier.filter(

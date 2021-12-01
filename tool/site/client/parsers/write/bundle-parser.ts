@@ -1,6 +1,6 @@
 import moment from "moment"
 import * as uuid from "uuid"
-import {Bundle} from "../../models"
+import {Bundle} from "fhir/r4"
 import {pageData} from "../../ui/state"
 import {TEST_PATIENT} from "../../data/patients"
 import {getMedicationRequestResources, getMessageHeaderResources, isRepeatDispensing} from "../read/bundle-parser"

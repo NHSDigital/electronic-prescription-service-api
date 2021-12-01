@@ -9,6 +9,7 @@ import {CookiesProvider} from "react-cookie"
 import SendPostSignPage from "./pages/sendPostSignPage"
 import PrescriptionSearchPage from "./pages/prescriptionSearchPage"
 import ReleasePage from "./pages/releasePage"
+import CancelPage from "./pages/cancelPage"
 
 const customWindow = window as Record<string, any>
 
@@ -31,6 +32,9 @@ async function startApplication(baseUrl: string): Promise<void> {
               </Route>
               <Route path={`${baseUrl}prescribe/send`}>
                 <SendPostSignPage token={urlParams.get("token")}/>
+              </Route>
+              <Route path={`${baseUrl}prescribe/cancel`}>
+                <CancelPage prescriptionId={urlParams.get("prescription_id")}/>
               </Route>
               <Route path={`${baseUrl}dispense/release`}>
                 <ReleasePage prescriptionId={urlParams.get("prescription_id")}/>

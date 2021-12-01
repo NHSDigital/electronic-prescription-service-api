@@ -1,5 +1,5 @@
 import {StringKeyedObject} from "./helpers"
-import {BundleEntry, Practitioner} from "../models"
+import {BundleEntry, Practitioner} from "fhir/r4"
 
 export function createPrescribers(rows: Array<StringKeyedObject>): Array<BundleEntry> {
   return rows.map(row => {
