@@ -31,16 +31,7 @@ const CancelForm: React.FC<CancelFormProps> = ({
               name="cancellationUser"
               label="Choose a cancellation user"
               defaultValue={initialValues.cancellationUser}
-              fieldRadios={[
-                {
-                  value: "sameAsOriginalAuthor",
-                  text: "Use original author"
-                },
-                // {
-                //   value: "R8006",
-                //   text: "Admin - Medical Secetary Access Role"
-                // }
-              ]}
+              fieldRadios={cancellationUsers}
             />
             <RadioField
               name="cancellationMedication"
@@ -102,6 +93,17 @@ export const cancellationReasons = [
   {
     value: "0009",
     text: "Patient deducted - registered with new practice"
+  }
+]
+
+const cancellationUsers = [
+  {
+    value: "sameAsOriginalAuthor",
+    text: "Use original author"
+  },
+  {
+    value: "R8006",
+    text: "Admin - Medical Secetary Access Role"
   }
 ]
 

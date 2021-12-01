@@ -10,8 +10,9 @@ import MessageExpanders from "../components/messageExpanders"
 import ReloadButton from "../components/reloadButton"
 import axios from "axios"
 import CancelForm, {CancelFormValues, cancellationReasons, MedicationRadio} from "../components/cancel/cancelForm"
-import {getMedicationRequestResources, getMessageHeaderResources} from "../fhir/bundleResourceFinder"
+import {getMedicationRequestResources, getMessageHeaderResources, getPractitionerResources, getPractitionerRoleResources} from "../fhir/bundleResourceFinder"
 import {createUuidIdentifier} from "../fhir/helpers"
+import * as uuid from "uuid"
 
 interface CancelPageProps {
   prescriptionId?: string
@@ -106,10 +107,12 @@ async function sendCancel(
 function createCancel(prescriptionDetails: PrescriptionDetails, cancelFormValues: CancelFormValues): fhir.Bundle {
   const cancelRequest = prescriptionDetails.bundle
   cancelRequest.identifier = createUuidIdentifier()
+  
   const messageHeader = getMessageHeaderResources(cancelRequest)[0]
   messageHeader.eventCoding.code = "prescription-order-update"
   messageHeader.eventCoding.display = "Prescription Order Update"
   messageHeader.focus = []
+
   const medicationToCancelSnomed = cancelFormValues.cancellationMedication
   const medicationRequests = getMedicationRequestResources(prescriptionDetails.bundle)
   const medicationToCancel = medicationRequests.filter(medicationRequest =>
@@ -129,6 +132,71 @@ function createCancel(prescriptionDetails: PrescriptionDetails, cancelFormValues
       }
     ]
   }
+  
+  if (cancelFormValues.cancellationUser === "R8006") {
+    const cancelPractitionerRoleIdentifier = uuid.v4()
+    const cancelPractitionerIdentifier = uuid.v4()
+
+    medicationToCancel.extension.push({
+      url:
+        "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+      valueReference: {
+        reference: `urn:uuid:${cancelPractitionerRoleIdentifier}`
+      }
+    })
+
+    const practitionerRole = getPractitionerRoleResources(cancelRequest)[0]
+    const cancelPractitionerRoleEntry: fhir.BundleEntry = {
+      fullUrl: `urn:uuid:${cancelPractitionerRoleIdentifier}`,
+      resource: {
+        ...clone(practitionerRole),
+        identifier: [
+          {
+            system: "https://fhir.nhs.uk/Id/sds-role-profile-id",
+            value: "212304192555"
+          }
+        ],
+        practitioner: {
+          reference: `urn:uuid:${cancelPractitionerIdentifier}`
+        },
+        code: [{
+          coding: [
+            {
+              system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+              code: cancelFormValues.cancellationUser,
+              display: "Admin - Medical Secetary Access Role"
+            }
+          ]
+        }]
+      } as fhir.PractitionerRole
+    }
+    cancelRequest.entry.push(cancelPractitionerRoleEntry)
+
+    const practitioner = getPractitionerResources(cancelRequest)[0]
+    const cancelPractitionerEntry: fhir.BundleEntry = {
+      fullUrl: `urn:uuid:${cancelPractitionerIdentifier}`,
+      resource: {
+        ...clone(practitioner),
+        identifier: [
+          {
+            system: "https://fhir.nhs.uk/Id/sds-user-id",
+            value: "555086718101"
+          },
+          {
+            system: "https://fhir.hl7.org.uk/Id/professional-code",
+            value: "unknown"
+          }
+        ],
+        name: [{
+            family: "Secetary",
+            given: ["Medical"],
+            prefix: ["MS"]
+        }]
+      } as fhir.Practitioner
+    }
+    cancelRequest.entry.push(cancelPractitionerEntry)
+  }
+
   cancelRequest.entry =
     cancelRequest
       .entry
@@ -150,6 +218,10 @@ interface CancelResult {
   request_xml: string
   response: fhir.OperationOutcome
   response_xml: string
+}
+
+function clone(value: any): any {
+  return JSON.parse(JSON.stringify(value))
 }
 
 function singleMedicationResourceToCancel(e: fhir.BundleEntry, medicationToCancelSnomed: string): unknown {
