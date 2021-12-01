@@ -128,7 +128,7 @@ function createCancel(prescriptionDetails: PrescriptionDetails, cancelFormValues
         system:
           "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-reason",
         code: cancellationReason,
-        display: cancellationReasons.find(r => r.value === cancellationReason).value
+        display: cancellationReasons.find(r => r.value === cancellationReason).text
       }
     ]
   }
