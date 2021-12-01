@@ -214,7 +214,12 @@ function createCancellerPractitioner(cancelPractitionerIdentifier: string, pract
   }
 }
 
-function createCancellerPractitionerRole(cancelPractitionerRoleIdentifier: string, practitionerRole: fhir.PractitionerRole, cancelPractitionerIdentifier: string, cancelFormValues: CancelFormValues): fhir.BundleEntry {
+function createCancellerPractitionerRole(
+  cancelPractitionerRoleIdentifier: string,
+  practitionerRole: fhir.PractitionerRole,
+  cancelPractitionerIdentifier: string,
+  cancelFormValues: CancelFormValues
+): fhir.BundleEntry {
   return {
     fullUrl: `urn:uuid:${cancelPractitionerRoleIdentifier}`,
     resource: {
