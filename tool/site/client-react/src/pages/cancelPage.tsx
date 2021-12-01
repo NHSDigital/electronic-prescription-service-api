@@ -177,6 +177,10 @@ interface CancelResult {
   response_xml: string
 }
 
+function cancellingWithAdminUser(cancelFormValues: CancelFormValues) {
+  return cancelFormValues.cancellationUser === "R8006"
+}
+
 function addReferenceToCancellerInMedicationRequest(medicationToCancel: fhir.MedicationRequest, cancelPractitionerRoleIdentifier: string) {
   medicationToCancel.extension.push({
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
@@ -235,10 +239,6 @@ function createCancellerPractitionerRole(cancelPractitionerRoleIdentifier: strin
       }]
     } as fhir.PractitionerRole
   }
-}
-
-function cancellingWithAdminUser(cancelFormValues: CancelFormValues) {
-  return cancelFormValues.cancellationUser === "R8006"
 }
 
 function clone(value: any): any {
