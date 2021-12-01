@@ -9,7 +9,7 @@ import {
   getPatientResources
 } from "../fhir/bundleResourceFinder"
 import * as fhir from "fhir/r4"
-import {MedicationDispense, Quantity} from "fhir/r4"
+import {MedicationDispense} from "fhir/r4"
 import {createClaim} from "../components/claim/createDispenseClaim"
 import MessageExpanders from "../components/messageExpanders"
 import ButtonList from "../components/buttonList"
@@ -19,7 +19,6 @@ import LongRunningTask from "../components/longRunningTask"
 import {AppContext} from "../index"
 import PrescriptionActions from "../components/prescriptionActions"
 import ReloadButton from "../components/reloadButton"
-import {SimpleQuantity} from "fhir/r2"
 import {LineItemStatus} from "../fhir/reference-data/valueSets"
 
 interface ClaimPageProps {
@@ -34,7 +33,8 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
 
   const retrievePrescriptionTask = () => retrievePrescriptionDetails(baseUrl, prescriptionId)
   return (
-    <LongRunningTask<PrescriptionDetails> task={retrievePrescriptionTask} loadingMessage="Retrieving prescription details.">
+    <LongRunningTask<PrescriptionDetails> task={retrievePrescriptionTask}
+                                          loadingMessage="Retrieving prescription details.">
       {prescriptionDetails => {
         if (!claimFormValues) {
           const products = createStaticProductInfoArray(prescriptionDetails.medicationDispenses)
