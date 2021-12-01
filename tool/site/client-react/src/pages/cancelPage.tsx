@@ -11,7 +11,7 @@ import ReloadButton from "../components/reloadButton"
 import axios from "axios"
 import CancelForm, {CancelFormValues, cancellationReasons, MedicationRadio} from "../components/cancel/cancelForm"
 import {getMedicationRequestResources, getMessageHeaderResources, getPractitionerResources, getPractitionerRoleResources} from "../fhir/bundleResourceFinder"
-import {createUuidIdentifier} from "../fhir/helpers"
+import {createIdentifier} from "../fhir/helpers"
 import * as uuid from "uuid"
 
 interface CancelPageProps {
@@ -106,7 +106,7 @@ async function sendCancel(
 
 function createCancel(prescriptionDetails: PrescriptionDetails, cancelFormValues: CancelFormValues): fhir.Bundle {
   const cancelRequest = prescriptionDetails.bundle
-  cancelRequest.identifier = createUuidIdentifier()
+  cancelRequest.identifier = createIdentifier()
   
   const messageHeader = getMessageHeaderResources(cancelRequest)[0]
   messageHeader.eventCoding.code = "prescription-order-update"
