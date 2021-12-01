@@ -245,13 +245,13 @@ function clone(value: any): any {
   return JSON.parse(JSON.stringify(value))
 }
 
-function singleMedicationResourceToCancel(e: fhir.BundleEntry, medicationToCancelSnomed: string): unknown {
+function singleMedicationResourceToCancel(e: fhir.BundleEntry, medicationToCancelSnomed: string): boolean {
   return (e.resource.resourceType === "MedicationRequest"
     && (e.resource as fhir.MedicationRequest)
       .medicationCodeableConcept.coding.some(c => c.code === medicationToCancelSnomed))
 }
 
-function filterOutOtherResources(entry: fhir.BundleEntry): unknown {
+function filterOutOtherResources(entry: fhir.BundleEntry): boolean {
   return entry.resource.resourceType !== "MedicationRequest"
     && entry.resource.resourceType !== "Provenance"
 }
