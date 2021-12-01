@@ -202,7 +202,7 @@ function createCancel(prescriptionDetails: PrescriptionDetails, cancelFormValues
       .entry
       .filter(entry =>
         singleMedicationResourceToCancel(entry, medicationToCancelSnomed)
-        || nonMedicationResources(entry)
+        || filterOutOtherResources(entry)
       )
   return cancelRequest
 }
@@ -230,8 +230,9 @@ function singleMedicationResourceToCancel(e: fhir.BundleEntry, medicationToCance
       .medicationCodeableConcept.coding.some(c => c.code === medicationToCancelSnomed))
 }
 
-function nonMedicationResources(e: fhir.BundleEntry): unknown {
-  return e.resource.resourceType !== "MedicationRequest"
+function filterOutOtherResources(entry: fhir.BundleEntry): unknown {
+  return entry.resource.resourceType !== "MedicationRequest"
+    && entry.resource.resourceType !== "Provenance"
 }
 
 export default CancelPage
