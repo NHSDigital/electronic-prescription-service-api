@@ -1,3 +1,5 @@
+import {Patient} from "fhir/r4"
+
 export const TEST_PATIENT = {
   resourceType: "Patient",
   identifier: [
@@ -44,4 +46,4 @@ export const TEST_PATIENT = {
       }
     }
   ]
-}
+} as Patient

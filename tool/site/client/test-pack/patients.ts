@@ -1,5 +1,5 @@
 import {StringKeyedObject} from "./helpers"
-import {BundleEntry, Patient} from "../models"
+import {BundleEntry, Patient} from "fhir/r4"
 
 export function createPatients(rows: Array<StringKeyedObject>): Array<BundleEntry> {
   return rows.map(row => {

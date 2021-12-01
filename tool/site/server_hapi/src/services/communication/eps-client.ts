@@ -1,6 +1,6 @@
 import {SandboxEpsClient} from "./sandbox-eps-client"
 import {LiveEpsClient} from "./live-eps-client"
-import {Bundle, FhirResource, Parameters} from "fhir/r4"
+import {Bundle, Claim, FhirResource, Parameters} from "fhir/r4"
 import {isLocal} from "../environment"
 import {OperationOutcome} from "fhir/r4"
 
@@ -9,6 +9,7 @@ export interface EpsClient {
   makePrepareRequest(body: Bundle): Promise<Parameters | OperationOutcome>
   makeSendRequest(body: Bundle): Promise<EpsResponse<OperationOutcome>>
   makeReleaseRequest(body: Parameters): Promise<EpsResponse<Bundle | OperationOutcome>>
+  makeClaimRequest(body: Claim): Promise<EpsResponse<OperationOutcome>>
   makeConvertRequest(body: FhirResource): Promise<string | OperationOutcome>
 }
 

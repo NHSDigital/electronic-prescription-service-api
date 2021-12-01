@@ -3,6 +3,7 @@ const path = require("path")
 const HtmlWebpackPlugin = require("html-webpack-plugin")
 const CopyPlugin = require("copy-webpack-plugin")
 const stylesHandler = "style-loader"
+const ReplaceInFileWebpackPlugin = require('replace-in-file-webpack-plugin')
 /* eslint-enable */
 
 const config = {
@@ -27,7 +28,15 @@ const config = {
       patterns: [
         {from: "./static", to: path.join(__dirname, "/static")}
       ]
-    })
+    }),
+    new ReplaceInFileWebpackPlugin([{
+      dir: "static",
+      files: ["main.js"],
+      rules: [{
+        search: "rivets.Rivets",
+        replace: "rivets"
+      }]
+    }])
   ],
   module: {
     rules: [
