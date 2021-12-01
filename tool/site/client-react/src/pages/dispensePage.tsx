@@ -165,6 +165,7 @@ export function createStaticLineItemInfo(
 export function createStaticPrescriptionInfo(medicationDispenses: Array<MedicationDispense>): StaticPrescriptionInfo {
   //TODO - use release response
   return {
+    dispenseDate: new Date(),
     priorStatusCode: medicationDispenses.length
       ? getPrescriptionStatus(medicationDispenses[medicationDispenses.length - 1])
       : PrescriptionStatus.TO_BE_DISPENSED

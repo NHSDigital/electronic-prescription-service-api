@@ -9,7 +9,7 @@ import {
   getPatientResources
 } from "../fhir/bundleResourceFinder"
 import * as fhir from "fhir/r4"
-import {MedicationDispense} from "fhir/r4"
+import {MedicationDispense, Quantity} from "fhir/r4"
 import {createClaim} from "../components/claim/createDispenseClaim"
 import MessageExpanders from "../components/messageExpanders"
 import ButtonList from "../components/buttonList"
@@ -19,6 +19,8 @@ import LongRunningTask from "../components/longRunningTask"
 import {AppContext} from "../index"
 import PrescriptionActions from "../components/prescriptionActions"
 import ReloadButton from "../components/reloadButton"
+import {SimpleQuantity} from "fhir/r2"
+import {LineItemStatus} from "../fhir/reference-data/valueSets"
 
 interface ClaimPageProps {
   prescriptionId: string
@@ -120,16 +122,22 @@ interface ClaimResult {
 
 export function createStaticProductInfoArray(medicationDispenses: Array<MedicationDispense>): Array<StaticProductInfo> {
   const lineItemGroups = groupByProperty(medicationDispenses, getMedicationDispenseLineItemId)
-  return lineItemGroups.map(([lineItemId, medicationDispensesForLineItem]) => {
-    const latestMedicationDispense = medicationDispensesForLineItem[medicationDispensesForLineItem.length - 1]
-    const totalQuantity = getTotalQuantity(medicationDispensesForLineItem.map(m => m.quantity))
-    return {
-      id: lineItemId,
-      name: latestMedicationDispense.medicationCodeableConcept.coding[0].display,
-      quantityDispensed: formatQuantity(totalQuantity),
-      status: latestMedicationDispense.type.coding[0].display
-    }
-  })
+  return lineItemGroups
+    .filter(([, medicationDispensesForLineItem]) => {
+      const latestMedicationDispense = medicationDispensesForLineItem[medicationDispensesForLineItem.length - 1]
+      const latestLineItemStatusCode = latestMedicationDispense.type.coding[0].code
+      return latestLineItemStatusCode === LineItemStatus.DISPENSED
+    })
+    .map(([lineItemId, medicationDispensesForLineItem]) => {
+      const latestMedicationDispense = medicationDispensesForLineItem[medicationDispensesForLineItem.length - 1]
+      const totalQuantity = getTotalQuantity(medicationDispensesForLineItem.map(m => m.quantity))
+      return {
+        id: lineItemId,
+        name: latestMedicationDispense.medicationCodeableConcept.coding[0].display,
+        quantityDispensed: formatQuantity(totalQuantity),
+        status: latestMedicationDispense.type.coding[0].display
+      }
+    })
 }
 
 function groupByProperty<K, V>(array: Array<V>, getProperty: (value: V) => K): Array<[K, Array<V>]> {
