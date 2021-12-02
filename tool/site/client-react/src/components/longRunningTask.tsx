@@ -1,8 +1,10 @@
 import * as React from "react"
 import {JSXElementConstructor, useEffect, useState} from "react"
-import {Button, ErrorMessage, Label} from "nhsuk-react-components"
+import {Button, ErrorSummary, Label} from "nhsuk-react-components"
 import ButtonList from "./buttonList"
 import BackButton from "./backButton"
+import {UnhandledAxiosResponseError} from "../requests/unhandledAxiosResponseError"
+import RawApiResponse, {createRawApiResponseProps} from "./rawApiResponse"
 
 interface LongRunningTaskProps<T> {
   task: () => Promise<T>
@@ -18,7 +20,7 @@ const LongRunningTask = <T extends unknown>({
   back
 }: LongRunningTaskProps<T>): React.ReactElement => {
   const [loading, setLoading] = useState<boolean>(true)
-  const [errorMessage, setErrorMessage] = useState<string>()
+  const [error, setError] = useState<unknown>()
   const [result, setResult] = useState<T>()
 
   useEffect(() => {
@@ -30,7 +32,7 @@ const LongRunningTask = <T extends unknown>({
           setResult(loadResult)
         } catch (e) {
           console.log(e)
-          setErrorMessage((typeof e === "string" ? e : e?.message) || "Unknown error")
+          setError(e || "Unknown error.")
         } finally {
           setLoading(false)
         }
@@ -38,16 +40,19 @@ const LongRunningTask = <T extends unknown>({
     }
   }, [result, task])
 
-  if (errorMessage) {
+  if (error) {
+    const message = getMessage(error) || "Unknown error."
+    const response = error instanceof UnhandledAxiosResponseError && error.response
     return (
       <>
         <Label isPageHeading>Error</Label>
-        <ErrorMessage>{errorMessage}</ErrorMessage>
+        <ErrorSummary>
+          <ErrorSummary.Title>Something went wrong while processing your request:</ErrorSummary.Title>
+          <ErrorSummary.Body>{message}</ErrorSummary.Body>
+        </ErrorSummary>
+        {response && <RawApiResponse {...createRawApiResponseProps(response)}/>}
         <ButtonList>
-          {back
-            ? <Button secondary onClick={back}>Back</Button>
-            : <BackButton/>
-          }
+          {back ? <Button secondary onClick={back}>Back</Button> : <BackButton/>}
         </ButtonList>
       </>
     )
@@ -63,6 +68,16 @@ const LongRunningTask = <T extends unknown>({
   }
 
   return React.createElement(children, result)
+}
+
+function getMessage(error) {
+  if (typeof error === "string") {
+    return error
+  }
+  if (error instanceof Error) {
+    return error.message
+  }
+  return error?.toString()
 }
 
 export default LongRunningTask

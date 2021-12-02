@@ -8,6 +8,7 @@ import userEvent from "@testing-library/user-event"
 import {readMessage} from "../messages/messages"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
+import {axiosInstance} from "../../src/requests/axiosInstance"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "7A9089-A83008-56A03J"
@@ -20,15 +21,14 @@ const claimUrl = `${baseUrl}dispense/claim`
 const prescriptionOrder = readMessage("prescriptionOrder.json")
 const dispenseNotification = readMessage("dispenseNotification.json")
 
-beforeEach(() => moxios.install())
+beforeEach(() => moxios.install(axiosInstance))
 
-afterEach(() => moxios.uninstall())
+afterEach(() => moxios.uninstall(axiosInstance))
 
 test("Displays loading text while prescription data is being requested", async () => {
   const {container} = renderWithContext(<ClaimPage prescriptionId={prescriptionId}/>, context)
-  await waitFor(() => screen.getByText("Retrieving prescription details."))
+  await waitFor(() => screen.getByText("Loading..."))
 
-  expect(screen.getByText("Loading...")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
@@ -79,6 +79,7 @@ test("Displays an error if dispense-notification not found", async () => {
 test("Displays an error on invalid response", async () => {
   moxios.stubRequest(releaseResponseUrl, {
     status: 500,
+    statusText: "Internal Server Error",
     response: {}
   })
 
@@ -102,7 +103,6 @@ test("Displays loading text while claim is being submitted", async () => {
   userEvent.click(screen.getByText("Claim"))
   await waitFor(() => screen.getByText("Loading..."))
 
-  expect(screen.getByText("Sending claim.")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 

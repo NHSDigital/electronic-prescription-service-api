@@ -8,9 +8,11 @@ import * as fhir from "fhir/r4"
 import PrescriptionActions from "../components/prescriptionActions"
 import MessageExpanders from "../components/messageExpanders"
 import ReloadButton from "../components/reloadButton"
-import axios from "axios"
 import * as uuid from "uuid"
 import ReleaseForm, {ReleaseFormValues} from "../components/release/releaseForm"
+import {axiosInstance} from "../requests/axiosInstance"
+import {getResponseDataIfValid} from "../requests/getValidResponse"
+import {ApiResult, isApiResult} from "../requests/apiResult"
 
 interface ReleasePageProps {
   prescriptionId?: string
@@ -31,7 +33,7 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
   }
   const sendReleaseTask = () => sendRelease(baseUrl, releaseFormValues)
   return (
-    <LongRunningTask<ReleaseResult> task={sendReleaseTask} loadingMessage="Sending release.">
+    <LongRunningTask<ApiResult> task={sendReleaseTask} loadingMessage="Sending release.">
       {releaseResult => (
         <>
           <Label isPageHeading>Release Result {releaseResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
@@ -56,14 +58,10 @@ const ReleasePage: React.FC<ReleasePageProps> = ({
 async function sendRelease(
   baseUrl: string,
   releaseFormValues: ReleaseFormValues
-): Promise<ReleaseResult> {
-  const release = createRelease(releaseFormValues)
-
-  const response = await axios.post<ReleaseResult>(`${baseUrl}dispense/release`, release)
-  console.log(release)
-  console.log(response)
-
-  return response.data
+): Promise<ApiResult> {
+  const releaseParameters = createRelease(releaseFormValues)
+  const releaseResponse = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/release`, releaseParameters)
+  return getResponseDataIfValid(releaseResponse, isApiResult)
 }
 
 function createRelease(releaseFormValues: ReleaseFormValues): fhir.Parameters {
@@ -127,11 +125,3 @@ function shouldSendNominatedPharmacyRequest(releaseFormValues: ReleaseFormValues
 }
 
 export default ReleasePage
-
-interface ReleaseResult {
-  success: boolean
-  request: fhir.Bundle
-  request_xml: string
-  response: fhir.OperationOutcome
-  response_xml: string
-}

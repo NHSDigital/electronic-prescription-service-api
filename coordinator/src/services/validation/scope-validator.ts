@@ -23,7 +23,19 @@ export function validatePermittedPrescribeMessage(scope: string): Array<fhir.Ope
   return []
 }
 
-export function validatePermittedDispenseMessage(scope: string): Array<fhir.OperationOutcomeIssue> {
+export function validatePermittedUnattendedDispenseMessage(scope: string): Array<fhir.OperationOutcomeIssue> {
+  if (!getDispenseEnabled()) {
+    return [errors.createDisabledFeatureIssue("Dispensing")]
+  }
+
+  if (!validateScope(scope, [DISPENSING_USER_SCOPE, DISPENSING_APP_SCOPE])) {
+    return [errors.createMissingScopeIssue("Dispensing")]
+  }
+
+  return []
+}
+
+export function validatePermittedAttendedDispenseMessage(scope: string): Array<fhir.OperationOutcomeIssue> {
   if (!getDispenseEnabled()) {
     return [errors.createDisabledFeatureIssue("Dispensing")]
   }

@@ -1,6 +1,6 @@
 import {fhir, validationErrors as errors} from "@models"
 import {getCodeableConceptCodingForSystem, getCodingForSystemOrNull} from "../translation/common"
-import {validatePermittedDispenseMessage} from "./scope-validator"
+import {validatePermittedAttendedDispenseMessage} from "./scope-validator"
 
 export function verifyTask(task: fhir.Task, scope: string, accessTokenOds: string): Array<fhir.OperationOutcomeIssue> {
   const validationErrors = []
@@ -9,7 +9,7 @@ export function verifyTask(task: fhir.Task, scope: string, accessTokenOds: strin
     return [errors.createResourceTypeIssue("Task")]
   }
 
-  const permissionErrors = validatePermittedDispenseMessage(scope)
+  const permissionErrors = validatePermittedAttendedDispenseMessage(scope)
   if (permissionErrors.length) {
     return permissionErrors
   }

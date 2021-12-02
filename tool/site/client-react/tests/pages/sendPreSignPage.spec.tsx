@@ -10,6 +10,7 @@ import {renderWithContext} from "../renderWithContext"
 import SendPreSignPage from "../../src/pages/sendPreSignPage"
 import {OperationOutcome} from "fhir/r4"
 import {redirect} from "../../src/browser/navigation"
+import {axiosInstance} from "../../src/requests/axiosInstance"
 import {MomentInput} from "moment"
 
 const baseUrl = "baseUrl/"
@@ -31,9 +32,9 @@ jest.mock("moment", () => {
 
 jest.mock("../../src/browser/navigation")
 
-beforeEach(() => moxios.install())
+beforeEach(() => moxios.install(axiosInstance))
 
-afterEach(() => moxios.uninstall())
+afterEach(() => moxios.uninstall(axiosInstance))
 
 test("Displays loading text while prescription data is being requested", async () => {
   const {container} = renderWithContext(<SendPreSignPage prescriptionId={prescriptionId}/>, context)
@@ -55,9 +56,30 @@ test("Displays prescription summary if prescription details are retrieved succes
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-test("Displays an error if response is invalid", async () => {
+test("Displays an error if response is an OperationOutcome", async () => {
+  const operationOutcome: OperationOutcome = {
+    resourceType: "OperationOutcome",
+    issue: [{
+      severity: "fatal",
+      code: "invalid",
+      diagnostics: "Some error message"
+    }]
+  }
+  moxios.stubRequest(prescriptionOrderUrl, {
+    status: 200,
+    response: operationOutcome
+  })
+
+  const {container} = renderWithContext(<SendPreSignPage prescriptionId={prescriptionId}/>, context)
+  await waitFor(() => screen.getByText("Error"))
+
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
+})
+
+test("Displays an error if response is empty", async () => {
   moxios.stubRequest(prescriptionOrderUrl, {
     status: 500,
+    statusText: "Internal Server Error",
     response: null
   })
 
@@ -77,7 +99,6 @@ test("Displays loading text while claim is being submitted", async () => {
   userEvent.click(screen.getByText("Send"))
   await waitFor(() => screen.getByText("Loading..."))
 
-  expect(screen.getByText("Sending signature request.")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
@@ -146,7 +167,8 @@ test("Displays error message if redirect URI not present", async () => {
     response: prescriptionOrder
   })
   moxios.stubRequest(signatureRequestUrl, {
-    status: 200,
+    status: 400,
+    statusText: "Bad Request",
     response: operationOutcome
   })
 
