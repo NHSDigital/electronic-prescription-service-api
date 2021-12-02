@@ -70,7 +70,7 @@ export interface MedicationRequest extends BaseMedicationRequest {
   extension: Array<MedicationRequestPermittedExtensions>
   statusReason?: common.CodeableConcept
   dispenseRequest: MedicationRequestDispenseRequest
-  basedOn?: MedicationRequestBasedOn
+  basedOn?: Array<MedicationRequestBasedOn>
 }
 
 export interface MedicationRequestOutcome extends BaseMedicationRequest {

@@ -46,7 +46,7 @@ export function createMedicationRequest(
       createItemNumberIdentifier(lineItem.id._attributes.root)
     ],
     status: getStatus(lineItem.pertinentInformation4.pertinentItemStatus),
-    basedOn: createBasedOn(intent, lineItem.id._attributes.root, lineItem.repeatNumber),
+    basedOn: [createBasedOn(intent, lineItem.id._attributes.root, lineItem.repeatNumber)],
     intent: intent,
     medicationCodeableConcept: createSnomedCodeableConcept(
       lineItem.product.manufacturedProduct.manufacturedRequestedMaterial.code
