@@ -149,13 +149,6 @@ function createRepeatInformationExtension(
     })
   }
 
-  if (lineItemRepeatNumber?.high?._attributes?.value) {
-    extensions.push({
-      url: "numberOfRepeatPrescriptionsAllowed",
-      valueUnsignedInt: new LosslessNumber(lineItemRepeatNumber.high._attributes.value)
-    })
-  }
-
   return {
     url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
     extension: extensions

@@ -170,10 +170,6 @@ describe("extension", () => {
         {
           url: "numberOfRepeatPrescriptionsIssued",
           valueUnsignedInt: new LosslessNumber(1)
-        },
-        {
-          url: "numberOfRepeatPrescriptionsAllowed",
-          valueUnsignedInt: new LosslessNumber(6)
         }
       ]
     }
@@ -218,28 +214,6 @@ describe("extension", () => {
         {
           url: "numberOfRepeatPrescriptionsIssued",
           valueUnsignedInt: new LosslessNumber(1)
-        }
-      ]
-    }
-    expect(result).toContainEqual(expected)
-  })
-
-  test("handles high repeat number only", () => {
-    const result = createMedicationRequestExtensions(
-      exampleResponsiblePartyId,
-      examplePrescriptionType,
-      new hl7V3.Interval<hl7V3.NumericValue>(null, new hl7V3.NumericValue("6")),
-      null,
-      [],
-      null,
-      null
-    )
-    const expected: fhir.UkCoreRepeatInformationExtension = {
-      url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-      extension: [
-        {
-          url: "numberOfRepeatPrescriptionsAllowed",
-          valueUnsignedInt: new LosslessNumber(6)
         }
       ]
     }
