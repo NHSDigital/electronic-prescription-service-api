@@ -426,6 +426,30 @@ describe("dispenseRequest", () => {
     })
   })
 
+  test("handles continuous dispensing by adding numberOfRepeatsAllowed", () => {
+    const courseOfTherapyType = fhir.COURSE_OF_THERAPY_TYPE_CONTINUOUS
+    const result = createDispenseRequest(
+      courseOfTherapyType,
+      exampleDispensingSitePreference,
+      exampleLineItemQuantity,
+      null,
+      null
+    )
+    expect(result.numberOfRepeatsAllowed).toEqual(new LosslessNumber(1))
+  })
+
+  test("handles acute dispensing by not adding numberOfRepeatsAllowed", () => {
+    const courseOfTherapyType = fhir.COURSE_OF_THERAPY_TYPE_ACUTE
+    const result = createDispenseRequest(
+      courseOfTherapyType,
+      exampleDispensingSitePreference,
+      exampleLineItemQuantity,
+      null,
+      null
+    )
+    expect(result.numberOfRepeatsAllowed).toBeUndefined()
+  })
+
   test("contains quantity", () => {
     const result = createDispenseRequest(
       exampleCourseOfTherapyType,
