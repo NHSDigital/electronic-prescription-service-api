@@ -8,6 +8,12 @@ function getProcessCases(operation: ApiOperation) {
     .map(spec => spec.toJestCase())
 }
 
+function getTaskReleaseCases() {
+  return fetcher.taskReleaseExamples
+    .filter(e => e.isSuccess)
+    .map(spec => spec.toJestCase())
+}
+
 function getTaskCases(operation: ApiOperation) {
   return fetcher.taskExamples
     .filter(e => e.isSuccess)
@@ -32,7 +38,7 @@ export const processOrderCases = getProcessCases("send")
 export const processOrderUpdateCases = getProcessCases("cancel")
 export const processDispenseNotificationCases = getProcessCases("dispense")
 
-export const taskReleaseCases = getTaskCases("release")
+export const taskReleaseCases = getTaskReleaseCases()
 export const taskReturnCases = getTaskCases("return")
 export const taskWithdrawCases = getTaskCases("withdraw")
 
