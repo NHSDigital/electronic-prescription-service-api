@@ -161,7 +161,7 @@ export function verifyPrescriptionBundle(
     allErrors.push(errors.medicationRequestDuplicateIdentifierIssue)
   }
 
-  const medicationRequest = getMedicationRequests(bundle)[0]
+  const medicationRequest = medicationRequests[0]
   const practitionerRole = resolveReference(bundle, medicationRequest.requester)
   const organization = resolveOrganization(bundle, practitionerRole)
   if (organization && organization.identifier.some(identifier => identifier.value !== accessTokenOds)) {
