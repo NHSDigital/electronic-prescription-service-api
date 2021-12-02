@@ -123,10 +123,9 @@ function createBasedOn(
       extension: [basedOnRepeatExtension]
     }
   }
-  if (intent === fhir.MedicationRequestIntent.ORDER) {
-    return {
-      identifier: reference
-    }
+
+  return {
+    identifier: reference
   }
 }
 
