@@ -15,10 +15,19 @@ test("NHS number is mapped correctly", () => {
   expect(result.patient.id._attributes.extension).toEqual("9446368138")
 })
 
-test("author is populated with hard coded value", () => {
-  const result = createAuthor()
+test("author is populated with code from extension", () => {
+  const extension = {
+    "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+    "valueReference": {
+      "identifier": {
+        "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+        "value": "7654321"
+      }
+    }
+  }
+  const result = createAuthor(extension)
   expect(result.AgentPersonSDS.id._attributes.extension).toEqual("999999999999")
-  expect(result.AgentPersonSDS.agentPersonSDS.id._attributes.extension).toEqual("999999999999")
+  expect(result.AgentPersonSDS.agentPersonSDS.id._attributes.extension).toEqual("7654321")
 })
 
 test("short form prescription ID is mapped correctly", () => {

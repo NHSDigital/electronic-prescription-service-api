@@ -1,6 +1,17 @@
 {
   "resourceType": "Task",
   "id": "6a2624a2-321b-470e-91a6-8ae7a065e2f0",
+  "extension":  [
+    {
+      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+      "valueReference": {
+        "identifier": {
+          "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+          "value": "7654321"
+        }
+      }
+    }
+  ],
   "identifier":  [
     {
       "system": "https://tools.ietf.org/html/rfc4122",
