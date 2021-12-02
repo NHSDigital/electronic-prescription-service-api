@@ -3,12 +3,14 @@ import * as React from "react"
 import {useCallback, useContext, useEffect, useState} from "react"
 import {useCookies} from "react-cookie"
 import {Bundle, OperationOutcome} from "fhir/r4"
-import axios from "axios"
 import LongRunningTask from "../components/longRunningTask"
 import {AppContext} from "../index"
 import {ActionLink, Button, Label} from "nhsuk-react-components"
 import ButtonList from "../components/buttonList"
+import {isBundle} from "../fhir/typeGuards"
 import {redirect} from "../browser/navigation"
+import {getResponseDataIfValid} from "../requests/getValidResponse"
+import {axiosInstance} from "../requests/axiosInstance"
 import BackButton from "../components/backButton"
 
 interface SendPreSignPageProps {
@@ -82,13 +84,14 @@ const SendPreSignPage: React.FC<SendPreSignPageProps> = ({
 }
 
 async function retrievePrescription(baseUrl: string, prescriptionId: string): Promise<Bundle> {
-  const response = await axios.get<Bundle>(`${baseUrl}prescription/${prescriptionId}`)
-  return response.data
+  const response = await axiosInstance.get<Bundle | OperationOutcome>(`${baseUrl}prescription/${prescriptionId}`)
+  return getResponseDataIfValid(response, isBundle)
 }
 
 async function sendSignRequest(baseUrl: string) {
-  const response = await axios.post<SignResponse>(`${baseUrl}prescribe/sign`)
-  const prepareErrors = response.data.prepareErrors
+  const response = await axiosInstance.post<SignResponse>(`${baseUrl}prescribe/sign`)
+  const signResponse = getResponseDataIfValid(response, isSignResponse)
+  const prepareErrors = signResponse.prepareErrors
   if (prepareErrors) {
     prepareErrors
       .flatMap(error => error.issue)
@@ -99,13 +102,13 @@ async function sendSignRequest(baseUrl: string) {
     throw new Error("Error preparing prescription for signing. Check the console for details.")
   }
 
-  const redirectUri = response.data.redirectUri
-  if (!redirectUri) {
-    throw new Error("Unable to sign prescription, this is most likely because your session has expired. Please try to change-auth or login again")
-  }
+  redirect(signResponse.redirectUri)
+  return signResponse
+}
 
-  redirect(redirectUri)
-  return response.data
+function isSignResponse(data: unknown): data is SignResponse {
+  const signResponse = data as SignResponse
+  return "redirectUri" in signResponse || "prepareErrors" in signResponse
 }
 
 interface SignResponse {

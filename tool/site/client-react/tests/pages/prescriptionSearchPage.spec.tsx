@@ -9,6 +9,7 @@ import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import PrescriptionSearchPage from "../../src/pages/prescriptionSearchPage"
 import {Bundle, OperationOutcome} from "fhir/r4"
+import {axiosInstance} from "../../src/requests/axiosInstance"
 import {MomentInput} from "moment"
 
 const baseUrl = "baseUrl/"
@@ -17,8 +18,8 @@ const nhsNumber = "9449304106"
 const formattedNhsNumber = "944 930 4106"
 const context: AppContextValue = {baseUrl}
 
-const prescriptionSearchByIdUrl = `${baseUrl}tracker?focus%3Aidentifier=${prescriptionId}`
-const prescriptionSearchByNhsNumberUrl = `${baseUrl}tracker?patient%3Aidentifier=${nhsNumber}`
+const prescriptionSearchByIdUrl = `${baseUrl}tracker?focus:identifier=${prescriptionId}`
+const prescriptionSearchByNhsNumberUrl = `${baseUrl}tracker?patient:identifier=${nhsNumber}`
 
 const summarySearchResult = readMessage("summarySearchResult.json")
 const detailSearchResult = readMessage("detailSearchResult.json")
@@ -31,9 +32,9 @@ jest.mock("moment", () => {
   })
 })
 
-beforeEach(() => moxios.install())
+beforeEach(() => moxios.install(axiosInstance))
 
-afterEach(() => moxios.uninstall())
+afterEach(() => moxios.uninstall(axiosInstance))
 
 test("Displays search form", async () => {
   const container = await renderPage()
@@ -101,7 +102,8 @@ test("Displays an error message if summary search returns an error", async () =>
     }]
   }
   moxios.stubRequest(prescriptionSearchByNhsNumberUrl, {
-    status: 200,
+    status: 400,
+    statusText: "Bad Request",
     response: errorResponse
   })
 
@@ -113,9 +115,10 @@ test("Displays an error message if summary search returns an error", async () =>
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-test("Displays an error message if summary search throws", async () => {
+test("Displays an error message if summary search returns invalid response", async () => {
   moxios.stubRequest(prescriptionSearchByNhsNumberUrl, {
     status: 500,
+    statusText: "Internal Server Error",
     response: null
   })
 
