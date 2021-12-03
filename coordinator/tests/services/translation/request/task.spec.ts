@@ -5,17 +5,11 @@ import {
 } from "../../../../src/services/translation/request/task"
 import {hl7V3, fhir} from "@models"
 import pino from "pino"
-import {
-  createAuthorForAttendedAccess,
-  createAuthorForUnattendedAccess
-} from "../../../../src/services/translation/request/agent-unattended"
+import {createAuthorForAttendedAccess} from "../../../../src/services/translation/request/agent-unattended"
 import {TaskIntent, TaskStatus} from "../../../../../models/fhir"
 
 const logger = pino()
 
-jest.mock("../../../../src/services/translation/request/agent-unattended", () => ({
-  createAuthorForUnattendedAccess: jest.fn()
-}))
 jest.mock("../../../../src/services/translation/request/agent-unattended", () => ({
   createAuthorForAttendedAccess: jest.fn()
 }))
@@ -30,19 +24,6 @@ test("author organization is looked up in ODS - attended", async () => {
     logger
   )
   expect(mockAuthorFunction).toHaveBeenCalledWith("7654321", "FTX40", logger)
-  expect(result).toEqual(mockAuthorResponse)
-})
-
-test("author organization is looked up in ODS - unattended", async () => {
-  const mockAuthorResponse = new hl7V3.Author()
-  mockAuthorResponse.AgentPerson = new hl7V3.AgentPerson()
-  const mockAuthorFunction = createAuthorForUnattendedAccess as jest.Mock
-  mockAuthorFunction.mockReturnValueOnce(Promise.resolve(mockAuthorResponse))
-  const result = await createAuthorFromProvenanceAgentExtension(
-    exampleTask,
-    logger
-  )
-  expect(mockAuthorFunction).toHaveBeenCalledWith("FTX40", logger)
   expect(result).toEqual(mockAuthorResponse)
 })
 

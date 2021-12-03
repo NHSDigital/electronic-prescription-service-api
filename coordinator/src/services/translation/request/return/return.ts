@@ -51,19 +51,3 @@ export function createReversalOf(identifier: fhir.Identifier): hl7V3.DispensePro
   const prescriptionReleaseResponseRef = new hl7V3.PrescriptionReleaseResponseRef(prescriptionReleaseResponseId)
   return new hl7V3.DispenseProposalReturnReversalOf(prescriptionReleaseResponseRef)
 }
-
-// function createAuthorFromProvenanceAgentExtension(
-//   task: fhir.Task
-// ): hl7V3.Author {
-//   const authorExtension = getExtensionForUrl(
-//     task.extension,
-//     "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
-//     "Task.extension"
-//   ) as fhir.IdentifierReferenceExtension<fhir.Practitioner | fhir.PractitionerRole>
-//   const sdsId = authorExtension.valueReference.identifier.value
-//   const author = new hl7V3.Author()
-//   const agentPerson = new hl7V3.AgentPerson()
-//   author.id = new hl7V3.UnattendedSdsRoleProfileIdentifier()
-//   agentPersonSds.agentPersonSDS = new hl7V3.AgentPersonPersonSds(new hl7V3.SdsUniqueIdentifier(sdsId))
-//   return new hl7V3.Author(agentPersonSds)
-// }

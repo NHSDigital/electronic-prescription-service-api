@@ -16,7 +16,7 @@ test("NHS number is mapped correctly", () => {
 })
 
 test("author is populated with code from extension", () => {
-  const extension = {
+  const extension = [{
     "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
     "valueReference": {
       "identifier": {
@@ -24,7 +24,7 @@ test("author is populated with code from extension", () => {
         "value": "7654321"
       }
     }
-  }
+  }]
   const result = createAuthor(extension)
   expect(result.AgentPersonSDS.id._attributes.extension).toEqual("999999999999")
   expect(result.AgentPersonSDS.agentPersonSDS.id._attributes.extension).toEqual("7654321")

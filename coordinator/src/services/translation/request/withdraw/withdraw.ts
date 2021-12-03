@@ -11,15 +11,10 @@ import {getMessageIdFromTaskFocusIdentifier, getPrescriptionShortFormIdFromTaskG
 export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
   const id = getMessageId(task.identifier, "Task.identifier")
   const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(task.authoredOn, "Task.authoredOn")
-  const authorExtension = getExtensionForUrl(
-    task.extension,
-    "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
-    "Task.extension"
-  ) as fhir.IdentifierReferenceExtension<fhir.Practitioner | fhir.PractitionerRole>
   const etpWithdraw = new hl7V3.EtpWithdraw(new hl7V3.GlobalIdentifier(id), effectiveTime)
 
   etpWithdraw.recordTarget = createRecordTarget(task.for.identifier)
-  etpWithdraw.author = createAuthor(authorExtension)
+  etpWithdraw.author = createAuthor(task.extension)
   etpWithdraw.pertinentInformation3 = createPertinentInformation3(task.groupIdentifier)
   etpWithdraw.pertinentInformation2 = createPertinentInformation2()
   etpWithdraw.pertinentInformation5 = createPertinentInformation5(task.reasonCode)
@@ -40,8 +35,14 @@ export function createRecordTarget(identifier: fhir.Identifier): hl7V3.RecordTar
 }
 
 export function createAuthor(
-  authorExtension: fhir.IdentifierReferenceExtension<fhir.Practitioner | fhir.PractitionerRole>
+  extension: Array<fhir.Extension>
 ): hl7V3.AuthorPersonSds {
+  const authorExtension = getExtensionForUrl(
+    extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+    "Task.extension"
+  ) as fhir.IdentifierReferenceExtension<fhir.Practitioner | fhir.PractitionerRole>
+
   const sdsId = authorExtension.valueReference.identifier.value
   const agentPersonSds = new hl7V3.AgentPersonSds()
   agentPersonSds.id = new hl7V3.UnattendedSdsRoleProfileIdentifier()
