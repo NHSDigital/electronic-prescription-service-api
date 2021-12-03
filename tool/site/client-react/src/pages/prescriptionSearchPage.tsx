@@ -1,12 +1,13 @@
 import * as React from "react"
 import {useContext, useState} from "react"
 import {Bundle, OperationOutcome, Task} from "fhir/r4"
-import {isBundle, isOperationOutcome, isTask} from "../fhir/typeGuards"
+import {isBundle, isTask} from "../fhir/typeGuards"
 import LongRunningTask from "../components/longRunningTask"
 import {AppContext} from "../index"
 import PrescriptionSearchForm from "../components/prescription-tracker/prescriptionSearchForm"
 import PrescriptionSearchResults from "../components/prescription-tracker/prescriptionSearchResults"
-import axios from "axios"
+import {getResponseDataIfValid} from "../requests/getValidResponse"
+import {axiosInstance} from "../requests/axiosInstance"
 
 export interface PrescriptionSearchCriteria {
   prescriptionId?: string
@@ -60,30 +61,18 @@ export async function makeTrackerRequest(
   baseUrl: string,
   searchCriteria: PrescriptionSearchCriteria
 ): Promise<Bundle> {
-  const searchParams = toURLSearchParams(searchCriteria)
-  const response = await axios.get<Bundle | OperationOutcome>(`${baseUrl}tracker?${searchParams.toString()}`)
-  const responseData = response.data
-  if (isBundle(responseData)) {
-    return responseData
-  }
-
-  console.log(responseData)
-  if (isOperationOutcome(responseData)) {
-    throw new Error(responseData.issue[0].diagnostics)
-  }
-
-  throw new Error("Unknown error")
+  const params = toTrackerQueryParams(searchCriteria)
+  const response = await axiosInstance.get<Bundle | OperationOutcome>(`${baseUrl}tracker`, {params})
+  return getResponseDataIfValid(response, isBundle)
 }
 
-function toURLSearchParams(searchCriteria: PrescriptionSearchCriteria) {
-  const searchParams = new URLSearchParams()
+function toTrackerQueryParams(searchCriteria: PrescriptionSearchCriteria) {
+  const searchParams: Record<string, string> = {}
   if (searchCriteria.prescriptionId) {
-    const prescriptionIdForSearch = searchCriteria.prescriptionId.toUpperCase()
-    searchParams.set("focus:identifier", prescriptionIdForSearch)
+    searchParams["focus:identifier"] = searchCriteria.prescriptionId.toUpperCase()
   }
   if (searchCriteria.patientId) {
-    const patientIdForSearch = searchCriteria.patientId.replace(/ /g, "")
-    searchParams.set("patient:identifier", patientIdForSearch)
+    searchParams["patient:identifier"] = searchCriteria.patientId.replace(/ /g, "")
   }
   return searchParams
 }

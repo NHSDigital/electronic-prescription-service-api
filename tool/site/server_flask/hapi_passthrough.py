@@ -89,7 +89,9 @@ def get_hapi_session():
 # Helpers
 
 def make_get_request(url):
-    return httpx.get(url, verify=False, cookies=get_cookies()).json()
+    timeout = httpx.Timeout(60.0, connect=10.0)
+    client = httpx.Client(timeout=timeout, verify=False, cookies=get_cookies())
+    return client.get(url).json()
 
 
 def make_post_request(url, body):
