@@ -10,7 +10,7 @@ import {fhir} from "@models"
 import * as translator from "../../services/translation/request"
 import * as claimValidator from "../../services/validation/claim-validator"
 import {spineClient} from "../../services/communication/spine-client"
-import {getScope} from "../../utils/headers"
+import {getOdsCode, getScope} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
 
 export default [
@@ -24,7 +24,8 @@ export default [
       async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
         const claimPayload = getPayload(request) as fhir.Claim
         const scope = getScope(request.headers)
-        const issues = claimValidator.verifyClaim(claimPayload, scope)
+        const accessTokenOds = getOdsCode(request.headers)
+        const issues = claimValidator.verifyClaim(claimPayload, scope, accessTokenOds)
         if (issues.length) {
           const response = fhir.createOperationOutcome(issues)
           const statusCode = getStatusCode(issues)

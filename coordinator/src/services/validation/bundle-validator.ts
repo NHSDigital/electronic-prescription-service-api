@@ -9,7 +9,9 @@ import {
   getExtensionForUrlOrNull,
   getIdentifierValueForSystem,
   identifyMessageType,
-  isTruthy
+  isTruthy,
+  resolveOrganization,
+  resolveReference
 } from "../translation/common"
 import {fhir, validationErrors as errors} from "@models"
 import {isRepeatDispensing} from "../translation/request"
@@ -19,7 +21,9 @@ import {isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"
 import {getOrganisationPerformer} from "../translation/request/dispense/dispense-notification"
 
-export function verifyBundle(bundle: fhir.Bundle, scope: string): Array<fhir.OperationOutcomeIssue> {
+export function verifyBundle(
+  bundle: fhir.Bundle, scope: string, accessTokenOds: string
+): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
     return [errors.createResourceTypeIssue("Bundle")]
   }
@@ -44,13 +48,13 @@ export function verifyBundle(bundle: fhir.Bundle, scope: string): Array<fhir.Ope
   let messageTypeSpecificErrors
   switch (messageType) {
     case fhir.EventCodingCode.PRESCRIPTION:
-      messageTypeSpecificErrors = verifyPrescriptionBundle(bundle)
+      messageTypeSpecificErrors = verifyPrescriptionBundle(bundle, accessTokenOds)
       break
     case fhir.EventCodingCode.CANCELLATION:
       messageTypeSpecificErrors = verifyCancellationBundle(bundle)
       break
     case fhir.EventCodingCode.DISPENSE:
-      messageTypeSpecificErrors = verifyDispenseBundle(bundle)
+      messageTypeSpecificErrors = verifyDispenseBundle(bundle, accessTokenOds)
       break
   }
 
@@ -118,7 +122,9 @@ export function verifyCommonBundle(bundle: fhir.Bundle): Array<fhir.OperationOut
   return incorrectValueErrors
 }
 
-export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
+export function verifyPrescriptionBundle(
+  bundle: fhir.Bundle, accessTokenOds: string
+): Array<fhir.OperationOutcomeIssue> {
   const medicationRequests = getMedicationRequests(bundle)
 
   const allErrors: Array<fhir.OperationOutcomeIssue> = []
@@ -153,6 +159,16 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
 
   if (!allMedicationRequestsHaveUniqueIdentifier(medicationRequests)){
     allErrors.push(errors.medicationRequestDuplicateIdentifierIssue)
+  }
+
+  const medicationRequest = medicationRequests[0]
+  const practitionerRole = resolveReference(bundle, medicationRequest.requester)
+  const organization = resolveOrganization(bundle, practitionerRole)
+  if (organization && organization.identifier.some(identifier => identifier.value !== accessTokenOds)) {
+    console.warn(
+      `Organization details do not match in request accessToken
+        (${accessTokenOds}) and request body: (${organization.identifier}).`
+    )
   }
 
   return allErrors
@@ -214,7 +230,7 @@ export function verifyCancellationBundle(bundle: fhir.Bundle): Array<fhir.Operat
   return validationErrors
 }
 
-export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
+export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string): Array<fhir.OperationOutcomeIssue> {
   const medicationDispenses = getMedicationDispenses(bundle)
 
   const allErrors = []
@@ -238,7 +254,8 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
       allErrors.push(
         errors.createMedicationDispenseInconsistentValueIssue(
           "performer",
-          uniqueFieldValues)
+          uniqueFieldValues
+        )
       )
     }
   })
@@ -251,6 +268,16 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
     allErrors.push(
       errors.createMedicationFieldIssue("Dispense")
     )
+  }
+
+  const organization = actors.find(actor => actor.type === "Organization")
+  if (organization) {
+    const bodyOrg = organization.identifier.value
+    if (bodyOrg !== accessTokenOds) {
+      console.warn(
+        `Organization details do not match in request accessToken (${accessTokenOds}) and request body (${bodyOrg}).`
+      )
+    }
   }
 
   return allErrors

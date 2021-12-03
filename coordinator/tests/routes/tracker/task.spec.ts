@@ -6,9 +6,8 @@ import {
   ValidQuery
 } from "../../../src/routes/tracker/task"
 import {fetcher, fhir} from "@models"
-import {isTask} from "../../../src/utils/type-guards"
 
-const exampleTasks = fetcher.taskExamples.map(example => example.request).filter(isTask)
+const exampleTasks = fetcher.taskExamples.map(example => example.request)
 
 const exampleTask1 = exampleTasks[0]
 const prescriptionId1 = exampleTask1.focus.identifier.value
