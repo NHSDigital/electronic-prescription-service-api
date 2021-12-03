@@ -5,10 +5,11 @@ import * as practitionerRole from "./practitioner-role"
 import * as medicationRequest from "./medication-request"
 import * as medicationDispense from "./medication-dispense"
 import * as extension from "./extension"
+import {fhir} from "../index";
 
 export class Task extends common.Resource {
   readonly resourceType = "Task"
-  extension?: Array<extension.PrescriptionExtension | extension.RepeatInformationExtension>
+  extension?: Array<extension.PrescriptionExtension | extension.RepeatInformationExtension | extension.IdentifierReferenceExtension<fhir.Practitioner | fhir.PractitionerRole>>
   identifier: Array<common.Identifier>
   groupIdentifier?: common.Identifier
   status: TaskStatus

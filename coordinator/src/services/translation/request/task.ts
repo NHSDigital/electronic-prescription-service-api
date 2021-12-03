@@ -1,18 +1,24 @@
 import {fhir, hl7V3} from "@models"
-import {getIdentifierValueForSystem} from "../common"
+import {getExtensionForUrl, getIdentifierValueForSystem} from "../common"
 import * as pino from "pino"
-import {createAuthorForUnattendedAccess} from "./agent-unattended"
+import {createAuthorForAttendedAccess} from "./agent-unattended"
 
-export async function createAuthorFromTaskOwnerIdentifier(
-  identifier: fhir.Identifier,
+export async function createAuthorFromProvenanceAgentExtension(
+  task: fhir.Task,
   logger: pino.Logger
 ): Promise<hl7V3.Author> {
+  const authorExtension = getExtensionForUrl(
+    task.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+    "Task.extension"
+  ) as fhir.IdentifierReferenceExtension<fhir.Practitioner | fhir.PractitionerRole>
+  const sdsId = authorExtension.valueReference.identifier.value
   const odsOrganizationCode = getIdentifierValueForSystem(
-    [identifier],
+    [task.owner.identifier],
     "https://fhir.nhs.uk/Id/ods-organization-code",
     "Task.owner.identifier"
   )
-  return await createAuthorForUnattendedAccess(odsOrganizationCode, logger)
+  return await createAuthorForAttendedAccess(sdsId, odsOrganizationCode, logger)
 }
 
 export function getPrescriptionShortFormIdFromTaskGroupIdentifier(groupIdentifier: fhir.Identifier): string {

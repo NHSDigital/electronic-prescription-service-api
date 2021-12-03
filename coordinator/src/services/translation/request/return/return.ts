@@ -3,7 +3,7 @@ import {getCodeableConceptCodingForSystem, getMessageId} from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import * as pino from "pino"
 import {
-  createAuthorFromTaskOwnerIdentifier,
+  createAuthorFromProvenanceAgentExtension,
   getMessageIdFromTaskFocusIdentifier,
   getPrescriptionShortFormIdFromTaskGroupIdentifier
 } from "../task"
@@ -17,7 +17,7 @@ export async function convertTaskToDispenseProposalReturn(
   const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(task.authoredOn, "Task.authoredOn")
   const dispenseProposalReturn = new hl7V3.DispenseProposalReturn(id, effectiveTime)
 
-  dispenseProposalReturn.author = await createAuthorFromTaskOwnerIdentifier(task.owner.identifier, logger)
+  dispenseProposalReturn.author = await createAuthorFromProvenanceAgentExtension(task, logger)
   dispenseProposalReturn.pertinentInformation1 = createPertinentInformation1(task.groupIdentifier)
   dispenseProposalReturn.pertinentInformation3 = createPertinentInformation3(task.reasonCode)
   dispenseProposalReturn.reversalOf = createReversalOf(task.focus.identifier)
@@ -51,3 +51,19 @@ export function createReversalOf(identifier: fhir.Identifier): hl7V3.DispensePro
   const prescriptionReleaseResponseRef = new hl7V3.PrescriptionReleaseResponseRef(prescriptionReleaseResponseId)
   return new hl7V3.DispenseProposalReturnReversalOf(prescriptionReleaseResponseRef)
 }
+
+// function createAuthorFromProvenanceAgentExtension(
+//   task: fhir.Task
+// ): hl7V3.Author {
+//   const authorExtension = getExtensionForUrl(
+//     task.extension,
+//     "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+//     "Task.extension"
+//   ) as fhir.IdentifierReferenceExtension<fhir.Practitioner | fhir.PractitionerRole>
+//   const sdsId = authorExtension.valueReference.identifier.value
+//   const author = new hl7V3.Author()
+//   const agentPerson = new hl7V3.AgentPerson()
+//   author.id = new hl7V3.UnattendedSdsRoleProfileIdentifier()
+//   agentPersonSds.agentPersonSDS = new hl7V3.AgentPersonPersonSds(new hl7V3.SdsUniqueIdentifier(sdsId))
+//   return new hl7V3.Author(agentPersonSds)
+// }
