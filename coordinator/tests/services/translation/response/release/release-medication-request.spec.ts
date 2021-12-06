@@ -8,7 +8,7 @@ import {
   createSnomedCodeableConcept,
   getStatus
 } from "../../../../../src/services/translation/response/release/release-medication-request"
-import {hl7V3, fhir} from "@models"
+import {fhir, hl7V3} from "@models"
 import {LosslessNumber} from "lossless-json"
 
 describe("extension", () => {
@@ -426,28 +426,15 @@ describe("dispenseRequest", () => {
     })
   })
 
-  test("handles continuous dispensing by adding numberOfRepeatsAllowed", () => {
-    const courseOfTherapyType = fhir.COURSE_OF_THERAPY_TYPE_CONTINUOUS
+  test("fixes numberOfRepeatsAllowed to 0 in MedicationRequest.dispenseRequest", () => {
     const result = createDispenseRequest(
-      courseOfTherapyType,
+      fhir.COURSE_OF_THERAPY_TYPE_ACUTE,
       exampleDispensingSitePreference,
       exampleLineItemQuantity,
       null,
       null
     )
-    expect(result.numberOfRepeatsAllowed).toEqual(new LosslessNumber(1))
-  })
-
-  test("handles acute dispensing by not adding numberOfRepeatsAllowed", () => {
-    const courseOfTherapyType = fhir.COURSE_OF_THERAPY_TYPE_ACUTE
-    const result = createDispenseRequest(
-      courseOfTherapyType,
-      exampleDispensingSitePreference,
-      exampleLineItemQuantity,
-      null,
-      null
-    )
-    expect(result.numberOfRepeatsAllowed).toBeUndefined()
+    expect(result.numberOfRepeatsAllowed).toStrictEqual(new LosslessNumber(0))
   })
 
   test("contains quantity", () => {

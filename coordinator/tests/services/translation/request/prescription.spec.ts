@@ -354,7 +354,7 @@ function clearRepeatInformationExtension(medicationRequest: fhir.MedicationReque
 }
 
 function clearRepeatInformationNumberOfRepeatsAllowed(medicationRequest: fhir.MedicationRequest) {
-  medicationRequest.dispenseRequest.numberOfRepeatsAllowed = ""
+  delete medicationRequest.dispenseRequest.numberOfRepeatsAllowed
 }
 
 function clearExpiryDateField(medicationRequest: fhir.MedicationRequest) {

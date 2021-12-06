@@ -301,6 +301,7 @@ export function createDispenseRequest(
     extension: [
       createPerformerSiteTypeExtension(dispensingSitePreference)
     ],
+    numberOfRepeatsAllowed: new LosslessNumber(0),
     quantity: createDispenseRequestQuantity(lineItemQuantity)
   }
   if (daysSupply?.effectiveTime?.low || daysSupply?.effectiveTime?.high) {
@@ -311,9 +312,6 @@ export function createDispenseRequest(
   }
   if (performer) {
     dispenseRequest.performer = createPerformer(performer.AgentOrgSDS.agentOrganizationSDS)
-  }
-  if (courseOfTherapyType.coding[0].code === fhir.CourseOfTherapyTypeCode.CONTINUOUS) {
-    dispenseRequest.numberOfRepeatsAllowed = new LosslessNumber(1)
   }
   return dispenseRequest
 }
