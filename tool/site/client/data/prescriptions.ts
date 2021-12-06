@@ -1,4 +1,4 @@
-import * as fhir from "../models"
+import {Bundle, MedicationRequest} from "fhir/r4"
 import moment from "moment"
 import {convertMomentToISODate} from "../lib/date-time"
 
@@ -43,10 +43,10 @@ const HOMECARE_ACUTE_NOMINATED = (baseUrl: string): string => getPrescription(ba
   "secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner/1-Prepare-Request-200_OK.json"
 )
 
-function setValidityPeriod(bundle: fhir.Bundle) {
+function setValidityPeriod(bundle: Bundle) {
   const medicationRequests = bundle.entry
     .map(entry => entry.resource)
-    .filter(resource => resource.resourceType === "MedicationRequest") as Array<fhir.MedicationRequest>
+    .filter(resource => resource.resourceType === "MedicationRequest") as Array<MedicationRequest>
   const start = convertMomentToISODate(moment.utc())
   const end = convertMomentToISODate(moment.utc().add(1, "month"))
   medicationRequests.forEach(medicationRequest => {

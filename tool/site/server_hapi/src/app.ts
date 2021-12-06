@@ -2,7 +2,6 @@ import Hapi from "@hapi/hapi"
 import routes from "./routes"
 import HapiPino from "hapi-pino"
 import Yar from "@hapi/yar"
-import CatboxRedis from "@hapi/catbox-redis"
 import {isLocal} from "./services/environment"
 import axios from "axios"
 
@@ -14,17 +13,7 @@ const init = async () => {
     host: "0.0.0.0",
     routes: {
       cors: true // Won't run as Apigee hosted target without this
-    },
-    cache: [{
-      name: "session",
-      provider: {
-        constructor: CatboxRedis,
-        options: {
-          host: process.env.REDIS_URL,
-          port: process.env.REDIS_PORT
-        }
-      }
-    }]
+    }
   })
 
   server.route(routes)

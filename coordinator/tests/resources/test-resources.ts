@@ -134,25 +134,6 @@ export const specification = [
   examplePrescription3
 ]
 
-const taskBasePath = getLocation("secondary-care/homecare/acute/nominated-pharmacy/clinical-practitioner")
-const withdrawTaskPath = `${taskBasePath}/3-Task-Request-Withdraw-200_OK.json`
-export const exampleWithdrawTask = JSON.parse(fs.readFileSync(
-  withdrawTaskPath,
-  "utf-8"
-)) as fhir.Task
-
-const returnTaskPath = `${taskBasePath}/2-Task-Request-Return-200_OK.json`
-export const exampleReturnTask = JSON.parse(fs.readFileSync(
-  returnTaskPath,
-  "utf-8"
-)) as fhir.Task
-
-const releaseParametersPath = `${taskBasePath}/2-Task-Request-Release-200_OK.json`
-export const exampleParameters = JSON.parse(fs.readFileSync(
-  releaseParametersPath,
-  "utf-8"
-)) as fhir.Parameters
-
 export interface ExampleSpineResponse {
   response: spine.SpineDirectResponse<string>
   hl7ErrorCode: string | undefined

@@ -1,13 +1,14 @@
 import * as React from "react"
 import {useContext} from "react"
 import {Button, CrossIcon, Label, SummaryList, Table, TickIcon} from "nhsuk-react-components"
-import axios from "axios"
-import * as fhir from "fhir/r4"
 import MessageExpanders from "../components/messageExpanders"
 import ButtonList from "../components/buttonList"
 import LongRunningTask from "../components/longRunningTask"
 import {AppContext} from "../index"
 import PrescriptionActions from "../components/prescriptionActions"
+import {getResponseDataIfValid} from "../requests/getValidResponse"
+import {axiosInstance} from "../requests/axiosInstance"
+import {isApiResult, ApiResult} from "../requests/apiResult"
 import BackButton from "../components/backButton"
 
 interface SendPostSignPageProps {
@@ -72,23 +73,38 @@ const SendPostSignPage: React.FC<SendPostSignPageProps> = ({
   )
 }
 
-async function sendPrescription(baseUrl: string, token: string): Promise<SendResult> {
+async function sendPrescription(baseUrl: string, token: string): Promise<SendResult | SendBulkResult> {
   const request = {signatureToken: token}
-  const response = await axios.post<SendResult>(`${baseUrl}prescribe/send`, request)
-  return response.data
+  const response = await axiosInstance.post<SendResult | SendBulkResult>(`${baseUrl}prescribe/send`, request)
+  return getResponseDataIfValid(response, isSendResultOrSendBulkResult)
+}
+
+function isSendResultOrSendBulkResult(data: unknown): data is SendResult | SendBulkResult {
+  if (isBulkResult(data as SendBulkResult)) {
+    return true
+  }
+  if (!isApiResult(data)) {
+    return false
+  }
+  const sendResult = data as SendResult
+  return typeof sendResult.prescription_id === "string"
 }
 
 function isBulkResult(response: SendResult | SendBulkResult): response is SendBulkResult {
   return (response as SendBulkResult).results !== undefined
 }
 
-interface SendResult {
+interface SendResult extends ApiResult {
+  prescription_id: string
+}
+
+interface SendBulkResult {
+  results: Array<SendBulkResultDetail>
+}
+
+interface SendBulkResultDetail {
   prescription_id: string
   success: boolean
-  request: fhir.Bundle
-  request_xml: string
-  response: fhir.OperationOutcome
-  response_xml: string
 }
 
 interface SendBulkResult {
