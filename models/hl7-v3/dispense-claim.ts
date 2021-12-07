@@ -4,6 +4,7 @@ import * as core from "./core"
 import * as dispenseCommon from "./dispense-common"
 import * as prescription from "./prescription"
 import * as organisation from "./organization"
+import {Author} from "./agent-person";
 
 export class DispenseClaimRoot {
   DispenseClaim: DispenseClaim
@@ -78,6 +79,7 @@ export class DispenseClaimSupplyHeader {
   code: codes.SnomedCode
   effectiveTime: core.Null
   repeatNumber?: core.Interval<core.NumericValue>
+  author: Author
   pertinentInformation1: Array<DispenseClaimSupplyHeaderPertinentInformation1>
   pertinentInformation3: dispenseCommon.SupplyHeaderPertinentInformation3
   pertinentInformation4: dispenseCommon.SupplyHeaderPertinentInformation4

@@ -95,6 +95,15 @@ async function createDispenseClaimPertinentInformation1(
 ) {
   const supplyHeader = new hl7V3.DispenseClaimSupplyHeader(new hl7V3.GlobalIdentifier(messageId))
 
+  const authorExtension = getExtensionForUrl(
+    claim.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+    "Claim.extension"
+  ) as fhir.IdentifierReferenceExtension<fhir.Practitioner | fhir.PractitionerRole>
+  const authorProfessionalCode = authorExtension.valueReference.identifier.value
+
+  supplyHeader.author= createClaimAuthor(authorProfessionalCode)
+
   const repeatInfoExtension = getExtensionForUrlOrNull(
     item.detail[0].extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
@@ -324,4 +333,12 @@ function getGroupIdentifierExtension(claim: fhir.Claim) {
     "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
     "Claim.prescription.extension"
   )
+}
+
+function createClaimAuthor(professionalCode: string): hl7V3.Author {
+  const author = new hl7V3.Author()
+  const agentPerson = new hl7V3.AgentPerson()
+  agentPerson.agentPerson = new hl7V3.AgentPersonPerson(new hl7V3.ProfessionalCode(professionalCode))
+  author.AgentPerson = agentPerson
+  return author
 }

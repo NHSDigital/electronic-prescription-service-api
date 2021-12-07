@@ -31,13 +31,14 @@ describe("convertDispenseClaim", () => {
 
   test("FHIR replacementOf gets populated in v3", async () => {
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
-    claim.extension = [{
+    console.log(claim)
+    claim.extension.push({
       url: "https://fhir.nhs.uk/StructureDefinition/Extension-replacementOf",
       valueIdentifier: {
         system: "",
         value: "bluh id"
       }
-    }]
+    })
     const v3Claim = await convertDispenseClaim(claim, logger)
     expect(v3Claim.replacementOf).toBeDefined()
   })

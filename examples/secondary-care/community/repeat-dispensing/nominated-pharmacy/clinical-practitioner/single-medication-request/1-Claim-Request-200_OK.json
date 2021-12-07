@@ -1,6 +1,17 @@
 {
   "resourceType": "Claim",
   "id": "41d318cf-29dd-4eb8-9e51-d175b9dc97a7",
+  "extension":  [
+    {
+      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
+      "valueReference": {
+        "identifier": {
+          "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+          "value": "7654321"
+        }
+      }
+    }
+  ],
   "identifier": [
     {
       "system": "https://tools.ietf.org/html/rfc4122",
