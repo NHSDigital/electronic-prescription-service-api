@@ -1,7 +1,7 @@
 import {fhir, hl7V3} from "@models"
 import {getExtensionForUrl, getIdentifierValueForSystem} from "../common"
 import * as pino from "pino"
-import {createAuthorForAttendedAccess} from "./agent-unattended"
+import {createAuthorForAttendedAccess} from "./agent-attended"
 
 export async function createAuthorFromProvenanceAgentExtension(
   task: fhir.Task,
@@ -18,7 +18,7 @@ export async function createAuthorFromProvenanceAgentExtension(
     "https://fhir.nhs.uk/Id/ods-organization-code",
     "Task.owner.identifier"
   )
-  return await createAuthorForAttendedAccess(sdsId, odsOrganizationCode, logger)
+  return await createAuthorForAttendedAccess(sdsId, logger, odsOrganizationCode)
 }
 
 export function getPrescriptionShortFormIdFromTaskGroupIdentifier(groupIdentifier: fhir.Identifier): string {

@@ -14,17 +14,6 @@ export async function createAuthorForUnattendedAccess(
   return author
 }
 
-export async function createAuthorForAttendedAccess(
-  sdsId: string,
-  organizationCode: string,
-  logger: pino.Logger
-): Promise<hl7V3.Author> {
-  const agentPerson = await createAgentPersonForAttendedAccess(sdsId, organizationCode, logger)
-  const author = new hl7V3.Author()
-  author.AgentPerson = agentPerson
-  return author
-}
-
 export async function createAgentPersonForUnattendedAccess(
   organizationCode: string,
   logger: pino.Logger
@@ -43,34 +32,6 @@ export async function createAgentPersonForUnattendedAccess(
   return agentPerson
 }
 
-export async function createAgentPersonForAttendedAccess(
-  sdsId: string,
-  organizationCode: string,
-  logger: pino.Logger
-): Promise<hl7V3.AgentPerson> {
-  const agentPerson = new hl7V3.AgentPerson()
-  agentPerson.id = new hl7V3.UnattendedSdsRoleProfileIdentifier()
-  agentPerson.code = new hl7V3.UnattendedSdsJobRoleCode()
-  const telecom = new hl7V3.Telecom()
-  telecom._attributes = {
-    use: hl7V3.TelecomUse.WORKPLACE,
-    value: "tel:01234567890"
-  }
-  agentPerson.telecom = [telecom]
-  agentPerson.agentPerson = createAgentPersonPersonForAttendedAccess(sdsId)
-  agentPerson.representedOrganization = await createRepresentedOrganization(organizationCode, logger)
-  return agentPerson
-}
-
-function createAgentPersonPersonForAttendedAccess(sdsId: string): hl7V3.AgentPersonPerson {
-  const agentPerson = new hl7V3.AgentPersonPerson(new hl7V3.ProfessionalCode(sdsId))
-  const agentPersonPersonName = new hl7V3.Name()
-  agentPersonPersonName.given = new hl7V3.Text("Attended")
-  agentPersonPersonName.family = new hl7V3.Text("Access")
-  agentPerson.name = agentPersonPersonName
-  return agentPerson
-}
-
 function createAgentPersonPersonForUnattendedAccess(): hl7V3.AgentPersonPerson {
   const agentPerson = new hl7V3.AgentPersonPerson(new hl7V3.UnattendedProfessionalCode())
   const agentPersonPersonName = new hl7V3.Name()
@@ -80,7 +41,7 @@ function createAgentPersonPersonForUnattendedAccess(): hl7V3.AgentPersonPerson {
   return agentPerson
 }
 
-async function createRepresentedOrganization(
+export async function createRepresentedOrganization(
   organizationCode: string,
   logger: pino.Logger
 ): Promise<hl7V3.Organization> {
@@ -94,7 +55,7 @@ async function createRepresentedOrganization(
   return convertOrganization(organization)
 }
 
-function convertOrganization(organization: fhir.Organization): hl7V3.Organization {
+export function convertOrganization(organization: fhir.Organization): hl7V3.Organization {
   const hl7V3Organization = new hl7V3.Organization()
   const organizationSdsId = getIdentifierValueForSystem(
     organization.identifier,

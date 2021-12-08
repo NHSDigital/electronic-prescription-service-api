@@ -5,12 +5,12 @@ import {
 } from "../../../../src/services/translation/request/task"
 import {hl7V3, fhir} from "@models"
 import pino from "pino"
-import {createAuthorForAttendedAccess} from "../../../../src/services/translation/request/agent-unattended"
+import {createAuthorForAttendedAccess} from "../../../../src/services/translation/request/agent-attended"
 import {TaskIntent, TaskStatus} from "../../../../../models/fhir"
 
 const logger = pino()
 
-jest.mock("../../../../src/services/translation/request/agent-unattended", () => ({
+jest.mock("../../../../src/services/translation/request/agent-attended", () => ({
   createAuthorForAttendedAccess: jest.fn()
 }))
 
@@ -23,7 +23,7 @@ test("author organization is looked up in ODS - attended", async () => {
     exampleTask,
     logger
   )
-  expect(mockAuthorFunction).toHaveBeenCalledWith("7654321", "FTX40", logger)
+  expect(mockAuthorFunction).toHaveBeenCalledWith("7654321", logger, "FTX40")
   expect(result).toEqual(mockAuthorResponse)
 })
 

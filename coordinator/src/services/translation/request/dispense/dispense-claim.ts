@@ -12,6 +12,7 @@ import {
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
 import {createAgentOrganisationFromReference, getRepeatNumberFromRepeatInfoExtension} from "./dispense-common"
+import {createAuthorForAttendedAccess} from "../agent-attended"
 
 export async function convertDispenseClaim(
   claim: fhir.Claim,
@@ -102,7 +103,7 @@ async function createDispenseClaimPertinentInformation1(
   ) as fhir.IdentifierReferenceExtension<fhir.Practitioner | fhir.PractitionerRole>
   const authorProfessionalCode = authorExtension.valueReference.identifier.value
 
-  supplyHeader.author= createClaimAuthor(authorProfessionalCode)
+  supplyHeader.author = await createAuthorForAttendedAccess(authorProfessionalCode, logger)
 
   const repeatInfoExtension = getExtensionForUrlOrNull(
     item.detail[0].extension,
@@ -333,12 +334,4 @@ function getGroupIdentifierExtension(claim: fhir.Claim) {
     "https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier",
     "Claim.prescription.extension"
   )
-}
-
-function createClaimAuthor(professionalCode: string): hl7V3.Author {
-  const author = new hl7V3.Author()
-  const agentPerson = new hl7V3.AgentPerson()
-  agentPerson.agentPerson = new hl7V3.AgentPersonPerson(new hl7V3.ProfessionalCode(professionalCode))
-  author.AgentPerson = agentPerson
-  return author
 }

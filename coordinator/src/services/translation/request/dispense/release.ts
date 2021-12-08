@@ -4,7 +4,8 @@ import {getIdentifierParameterByName, getIdentifierParameterOrNullByName} from "
 import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import moment from "moment"
 import pino from "pino"
-import {createAuthorForUnattendedAccess, createAuthorForAttendedAccess} from "../agent-unattended"
+import {createAuthorForUnattendedAccess} from "../agent-unattended"
+import {createAuthorForAttendedAccess} from "../agent-attended"
 
 export async function translateReleaseRequest(
   fhirReleaseRequest: fhir.Parameters,
@@ -45,7 +46,7 @@ export async function createPatientReleaseRequest(
   const hl7Id = new hl7V3.GlobalIdentifier(uuid.v4())
   const timestamp = convertMomentToHl7V3DateTime(moment.utc())
   const hl7Release = new hl7V3.PatientPrescriptionReleaseRequest(hl7Id, timestamp)
-  hl7Release.author = await createAuthorForAttendedAccess(authorProfessionalCode, organizationCode, logger)
+  hl7Release.author = await createAuthorForAttendedAccess(authorProfessionalCode, logger, organizationCode)
   const prescriptionId = new hl7V3.PrescriptionId(prescriptionIdValue)
   hl7Release.pertinentInformation = new hl7V3.PatientPrescriptionReleaseRequestPertinentInformation(prescriptionId)
   return new hl7V3.PatientPrescriptionReleaseRequestWrapper(hl7Release)

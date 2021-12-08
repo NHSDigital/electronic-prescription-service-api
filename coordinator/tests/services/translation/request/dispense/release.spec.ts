@@ -5,15 +5,15 @@ import {
   translateReleaseRequest
 } from "../../../../../src/services/translation/request/dispense/release"
 import pino from "pino"
-import {
-  createAuthorForUnattendedAccess,
-  createAuthorForAttendedAccess
-} from "../../../../../src/services/translation/request/agent-unattended"
-
+import {createAuthorForUnattendedAccess} from "../../../../../src/services/translation/request/agent-unattended"
+import {createAuthorForAttendedAccess} from "../../../../../src/services/translation/request/agent-attended"
 const logger = pino()
 
 jest.mock("../../../../../src/services/translation/request/agent-unattended", () => ({
-  createAuthorForUnattendedAccess: jest.fn(),
+  createAuthorForUnattendedAccess: jest.fn()
+}))
+
+jest.mock("../../../../../src/services/translation/request/agent-attended", () => ({
   createAuthorForAttendedAccess: jest.fn()
 }))
 
@@ -68,7 +68,7 @@ describe("translateReleaseRequest", () => {
 
     const translatedRelease = await translateReleaseRequest(parameters, logger)
 
-    expect(mockAttendedAuthorFunction).toHaveBeenCalledWith("7654321", "FTX40", logger)
+    expect(mockAttendedAuthorFunction).toHaveBeenCalledWith("7654321", logger, "FTX40")
     expect(translatedRelease).toBeInstanceOf(hl7V3.PatientPrescriptionReleaseRequestWrapper)
   })
 
@@ -86,7 +86,7 @@ describe("translateReleaseRequest", () => {
 
     const translatedRelease = await createPatientReleaseRequest("FTX40", "7654321", "18B064-A99968-4BCAA3", logger)
 
-    expect(mockAttendedAuthorFunction).toHaveBeenCalledWith("7654321", "FTX40", logger)
+    expect(mockAttendedAuthorFunction).toHaveBeenCalledWith("7654321", logger, "FTX40")
     expect(translatedRelease.PatientPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
     expect(
       translatedRelease

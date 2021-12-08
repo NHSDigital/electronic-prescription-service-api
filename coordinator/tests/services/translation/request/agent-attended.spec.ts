@@ -1,5 +1,5 @@
 import {odsClient} from "../../../../src/services/communication/ods-client"
-import {createAuthorForUnattendedAccess} from "../../../../src/services/translation/request/agent-unattended"
+import {createAuthorForAttendedAccess} from "../../../../src/services/translation/request/agent-attended"
 import pino from "pino"
 import {fhir, processingErrors as errors} from "@models"
 import {toArray} from "../../../../src/services/translation/common"
@@ -12,11 +12,11 @@ jest.mock("../../../../src/services/communication/ods-client", () => ({
   }
 }))
 
-test("user details contain placeholder data - unattended", async () => {
+test("user details contain placeholder data - attended", async () => {
   const mockLookupFunction = odsClient.lookupOrganization as jest.Mock
   mockLookupFunction.mockReturnValueOnce(Promise.resolve(mockOrganizationResponse))
 
-  const result = await createAuthorForUnattendedAccess("FTX40", logger)
+  const result = await createAuthorForAttendedAccess("7654321", logger, "FTX40")
 
   const agentPerson = result.AgentPerson
   expect(agentPerson.id._attributes.extension).toEqual("999999999999")
@@ -24,16 +24,16 @@ test("user details contain placeholder data - unattended", async () => {
   expect(agentPerson.telecom[0]._attributes.value).toEqual("tel:01234567890")
 
   const agentPersonPerson = agentPerson.agentPerson
-  expect(agentPersonPerson.id._attributes.extension).toEqual("G9999999")
-  expect(toArray(agentPersonPerson.name.given)[0]._text).toEqual("Unattended")
+  expect(agentPersonPerson.id._attributes.extension).toEqual("7654321")
+  expect(toArray(agentPersonPerson.name.given)[0]._text).toEqual("Attended")
   expect(toArray(agentPersonPerson.name.family)[0]._text).toEqual("Access")
 })
 
-test("organization details are populated from ODS response - Unattended", async () => {
+test("organization details are populated from ODS response - attended", async () => {
   const mockLookupFunction = odsClient.lookupOrganization as jest.Mock
   mockLookupFunction.mockReturnValueOnce(Promise.resolve(mockOrganizationResponse))
 
-  const result = await createAuthorForUnattendedAccess("FTX40", logger)
+  const result = await createAuthorForAttendedAccess("7654321", logger, "FTX40")
 
   expect(mockLookupFunction).toHaveBeenCalledWith("FTX40", logger)
   const representedOrganization = result.AgentPerson.representedOrganization
@@ -44,12 +44,12 @@ test("organization details are populated from ODS response - Unattended", async 
   expect(representedOrganization.addr.postalCode._text).toEqual("DE14 2WS")
 })
 
-test("throws if organization not found in ODS - unattended", async () => {
+test("throws if organization not found in ODS - attended", async () => {
   const mockLookupFunction = odsClient.lookupOrganization as jest.Mock
   mockLookupFunction.mockReturnValueOnce(Promise.resolve(null))
 
   await expect(() =>
-    createAuthorForUnattendedAccess("FTX40", logger)
+    createAuthorForAttendedAccess("7654321", logger, "FTX40")
   ).rejects.toThrow(errors.FhirMessageProcessingError)
 })
 
