@@ -69,7 +69,7 @@ export interface MedicationRequest extends BaseMedicationRequest {
   extension: Array<MedicationRequestPermittedExtensions>
   statusReason?: common.CodeableConcept
   dispenseRequest: MedicationRequestDispenseRequest
-  basedOn?: common.Reference<MedicationRequest>
+  basedOn?: Array<MedicationRequestBasedOn>
 }
 
 export interface MedicationRequestOutcome extends BaseMedicationRequest {
@@ -81,7 +81,8 @@ export interface MedicationRequestOutcome extends BaseMedicationRequest {
 export type MedicationRequestPermittedExtensions = extension.IdentifierExtension
   | extension.ReferenceExtension<practitionerRole.PractitionerRole>
   | extension.CodingExtension | extension.CodeableConceptExtension
-  | extension.RepeatInformationExtension | extension.ControlledDrugExtension | extension.DispensingInformationExtension
+  | extension.UkCoreRepeatInformationExtension | extension.ControlledDrugExtension
+  | extension.DispensingInformationExtension
 
 export interface MedicationRequestGroupIdentifier extends common.Identifier {
   extension?: Array<extension.IdentifierExtension>
@@ -240,4 +241,9 @@ export interface MedicationRequestDispenseRequest {
 
 export interface Annotation {
   text: string
+}
+
+export interface MedicationRequestBasedOn {
+  identifier?: common.Reference<MedicationRequest>
+  extension?: Array<extension.ExtensionExtension<extension.IntegerExtension>>
 }
