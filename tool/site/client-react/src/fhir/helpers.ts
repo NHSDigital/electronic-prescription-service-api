@@ -31,7 +31,7 @@ export function getTotalQuantity(quantities: Array<fhir.Quantity>): fhir.Quantit
   }
 }
 
-export function createUuidIdentifier(): fhir.Identifier {
+export function createIdentifier(): fhir.Identifier {
   return {
     system: "https://tools.ietf.org/html/rfc4122",
     value: uuid.v4()

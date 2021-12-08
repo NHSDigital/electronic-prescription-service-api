@@ -35,9 +35,3 @@ services:
             - APIGEE_DOMAIN_NAME=internal-dev-sandbox.api.service.nhs.uk
         ports:
             - "9001:9001"
-    eps-api-tool-store:
-        build:
-            context: store
-            dockerfile: Dockerfile
-        ports:
-            - "6379:6379"

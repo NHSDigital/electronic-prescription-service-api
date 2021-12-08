@@ -4,9 +4,11 @@ import sessionRoutes from "./state/session"
 import editRoutes from "./prescribe/edit"
 import signRoutes from "./prescribe/sign"
 import sendRoutes from "./prescribe/send"
+import cancelRoutes from "./prescribe/cancel"
 import searchRoutes from "./tracker/search"
 import releaseRoutes from "./dispense/release"
 import dispenseRoutes from "./dispense/dispense"
+import claimRoutes from "./dispense/claim"
 
 const authRoutes = [
   ...accessTokenRoutes
@@ -19,12 +21,14 @@ const stateRoutes = [
 const prescribingRoutes = [
   ...editRoutes,
   ...signRoutes,
-  ...sendRoutes
+  ...sendRoutes,
+  ...cancelRoutes
 ]
 
 const dispensingRoutes = [
   ...releaseRoutes,
-  ...dispenseRoutes
+  ...dispenseRoutes,
+  ...claimRoutes
 ]
 
 const trackerRoutes = [

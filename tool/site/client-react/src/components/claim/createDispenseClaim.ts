@@ -30,7 +30,7 @@ import {
 } from "../../fhir/reference-data/valueSets"
 import {
   createDispensingRepeatInformationExtension,
-  createUuidIdentifier,
+  createIdentifier,
   getMedicationDispenseLineItemId,
   getMedicationRequestLineItemId,
   getTotalQuantity,
@@ -58,7 +58,7 @@ export function createClaim(
   return {
     resourceType: "Claim",
     created: new Date().toISOString(),
-    identifier: [createUuidIdentifier()],
+    identifier: [createIdentifier()],
     status: "active",
     type: CODEABLE_CONCEPT_CLAIM_TYPE_PHARMACY,
     use: "claim",
