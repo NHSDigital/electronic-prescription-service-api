@@ -847,7 +847,7 @@ components:
       in: query
       name: patient:identifier
       description: |
-        The nhs number of the patient you are querying.
+        The nhs number of the patient you are searching for.
       required: false
       schema:
         type: string
