@@ -728,11 +728,12 @@ paths:
       summary: Search for summary details about a prescription
       description: |
         ## Overview
-        Use this endpoint to search for summary details about a prescription.
+        Use this endpoint to search for summary details about one or more prescriptions.
         
         At least one of the following query parameters must be provided:
         * identifier
         * focus:identifier
+        * patient:identifier
       tags:
         - tracker
       parameters:
@@ -742,6 +743,7 @@ paths:
         - $ref: '#/components/parameters/CorrelationID'
         - $ref: '#/components/parameters/Identifier'
         - $ref: '#/components/parameters/FocusIdentifier'
+        - $ref: '#/components/parameters/PatientIdentifier'
       responses:
         '200':
           description: Successful query.
@@ -841,7 +843,15 @@ components:
       required: false
       schema:
         type: string
-        example: 'CDF34E-A99968-4FF3BQ'
+    PatientIdentifier:
+      in: query
+      name: patient:identifier
+      description: |
+        The nhs number of the patient you are querying.
+      required: false
+      schema:
+        type: string
+        example: '999 999 9999'
   responses:
     200OperationOutcome:
       description: A successful response.
