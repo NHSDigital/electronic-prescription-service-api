@@ -164,18 +164,23 @@ function createClaimItemDetail(
 
   const finalMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
   const finalItemStatus = finalMedicationDispense.type
-  const fullyDispensed = finalItemStatus.coding[0].code === LineItemStatus.DISPENSED
 
-  return {
+  const claimItemDetail: fhir.ClaimItemDetail = {
     extension: claimItemDetailExtensions,
     sequence,
     productOrService: medicationRequest.medicationCodeableConcept,
     modifier: [finalItemStatus],
-    quantity: medicationRequest.dispenseRequest.quantity,
-    subDetail: fullyDispensed
-      ? [createClaimItemDetailSubDetail(1, medicationDispenses, productFormValues)]
-      : []
+    quantity: medicationRequest.dispenseRequest.quantity
   }
+
+  const fullyDispensed = finalItemStatus.coding[0].code === LineItemStatus.DISPENSED
+  if (fullyDispensed) {
+    claimItemDetail.subDetail = [
+      createClaimItemDetailSubDetail(1, medicationDispenses, productFormValues)
+    ]
+  }
+
+  return claimItemDetail
 }
 
 function createClaimSequenceIdentifierExtension(): ClaimSequenceIdentifierExtension {
