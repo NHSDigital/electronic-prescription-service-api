@@ -26,7 +26,7 @@ import {getRequester, getResponsiblePractitioner} from "../common.spec"
 import {AdditionalInstructions, LineItemPertinentInformation1} from "../../../../../../models/hl7-v3"
 
 describe("outer bundle", () => {
-  const result = createOuterBundle(getExamplePrescriptionReleaseResponse())
+  const result = createOuterBundle(getExamplePrescriptionReleaseResponse("release_success.xml"))
 
   test("contains id", () => {
     expect(result.id).toBeTruthy()
@@ -63,7 +63,7 @@ describe("outer bundle", () => {
   })
 
   describe("when the release response message contains only old format prescriptions", () => {
-    const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse()
+    const examplePrescriptionReleaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
     toArray(examplePrescriptionReleaseResponse.component)
       .forEach(component => component.templateId._attributes.extension = "PORX_MT122003UK30")
     const result = createOuterBundle(examplePrescriptionReleaseResponse)
@@ -215,6 +215,7 @@ describe("medicationRequest details", () => {
   })
 
   test("continuous repeat dispensing treatmentType causes intent = reflex-order", () => {
+    const parentPrescription = getExampleRepeatDispensingParentPrescription()
     treatmentType.value = hl7V3.PrescriptionTreatmentTypeCode.CONTINUOUS_REPEAT_DISPENSING
     const result = createInnerBundle(parentPrescription, "ReleaseRequestId")
 
@@ -466,12 +467,18 @@ describe("practitioner details", () => {
   })
 })
 
-export function getExamplePrescriptionReleaseResponse(): hl7V3.PrescriptionReleaseResponse {
-  const exampleStr = fs.readFileSync(path.join(__dirname, "release_success.xml"), "utf8")
+export function getExamplePrescriptionReleaseResponse(exampleResponse: string): hl7V3.PrescriptionReleaseResponse {
+  const exampleStr = fs.readFileSync(path.join(__dirname, exampleResponse), "utf8")
   const exampleObj = readXmlStripNamespace(exampleStr)
   return exampleObj.PORX_IN070101UK31.ControlActEvent.subject.PrescriptionReleaseResponse
 }
 
 function getExampleParentPrescription(): hl7V3.ParentPrescription {
-  return toArray(getExamplePrescriptionReleaseResponse().component)[0].ParentPrescription
+  return toArray(getExamplePrescriptionReleaseResponse("release_success.xml").component)[0].ParentPrescription
+}
+
+function getExampleRepeatDispensingParentPrescription(): hl7V3.ParentPrescription {
+  return toArray(
+    getExamplePrescriptionReleaseResponse("repeat_dispensing_release_success.xml").component
+  )[0].ParentPrescription
 }

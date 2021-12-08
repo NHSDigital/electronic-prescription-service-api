@@ -9,6 +9,7 @@ import {getClaimSequenceIdentifierExtension} from "../../../src/fhir/customExten
 import {readMessage} from "../../messages/messages"
 import {createStaticProductInfoArray} from "../../../src/pages/claimPage"
 import {ClaimFormValues} from "../../../src/components/claim/claimForm"
+import {PRESCRIPTION_CHARGE_EXEMPTION_CODE_NONE} from "../../../src/fhir/reference-data/valueSets"
 
 const prescriptionOrder = readMessage("prescriptionOrder.json")
 const dispenseNotification = readMessage("dispenseNotification.json")
@@ -16,7 +17,25 @@ const patient = getPatientResources(prescriptionOrder)[0]
 const medicationRequests = getMedicationRequestResources(prescriptionOrder)
 const medicationDispenses = getMedicationDispenseResources(dispenseNotification)
 
-test("Produces expected result", () => {
+test("Produces expected result when endorsement not present", () => {
+  const staticProductInfoArray = createStaticProductInfoArray(medicationDispenses)
+  const claimFormValues: ClaimFormValues = {
+    products: staticProductInfoArray.map(staticProductInfo => ({
+      ...staticProductInfo,
+      patientPaid: true,
+      endorsements: []
+    })),
+    exemption: {
+      code: PRESCRIPTION_CHARGE_EXEMPTION_CODE_NONE,
+      evidenceSeen: false
+    }
+  }
+  const result = createClaim(patient, medicationRequests, medicationDispenses, claimFormValues)
+  replaceNonDeterministicValues(result)
+  expect(result).toMatchSnapshot()
+})
+
+test("Produces expected result when single endorsement present", () => {
   const staticProductInfoArray = createStaticProductInfoArray(medicationDispenses)
   const claimFormValues: ClaimFormValues = {
     products: staticProductInfoArray.map(staticProductInfo => ({
@@ -26,6 +45,51 @@ test("Produces expected result", () => {
         code: "IP",
         supportingInfo: "£210.91,100ml,Specials Ltd,Lic12345678,BN12345678"
       }]
+    })),
+    exemption: {
+      code: PRESCRIPTION_CHARGE_EXEMPTION_CODE_NONE,
+      evidenceSeen: false
+    }
+  }
+  const result = createClaim(patient, medicationRequests, medicationDispenses, claimFormValues)
+  replaceNonDeterministicValues(result)
+  expect(result).toMatchSnapshot()
+})
+
+test("Produces expected result when multiple endorsements present", () => {
+  const staticProductInfoArray = createStaticProductInfoArray(medicationDispenses)
+  const claimFormValues: ClaimFormValues = {
+    products: staticProductInfoArray.map(staticProductInfo => ({
+      ...staticProductInfo,
+      patientPaid: true,
+      endorsements: [
+        {
+          code: "BB",
+          supportingInfo: ""
+        },
+        {
+          code: "IP",
+          supportingInfo: "£210.91,100ml,Specials Ltd,Lic12345678,BN12345678"
+        }
+      ]
+    })),
+    exemption: {
+      code: PRESCRIPTION_CHARGE_EXEMPTION_CODE_NONE,
+      evidenceSeen: false
+    }
+  }
+  const result = createClaim(patient, medicationRequests, medicationDispenses, claimFormValues)
+  replaceNonDeterministicValues(result)
+  expect(result).toMatchSnapshot()
+})
+
+test("Produces expected result when non-default exemption code selected", () => {
+  const staticProductInfoArray = createStaticProductInfoArray(medicationDispenses)
+  const claimFormValues: ClaimFormValues = {
+    products: staticProductInfoArray.map(staticProductInfo => ({
+      ...staticProductInfo,
+      patientPaid: false,
+      endorsements: []
     })),
     exemption: {
       code: "0005",
