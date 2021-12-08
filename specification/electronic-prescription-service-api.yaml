@@ -834,7 +834,7 @@ components:
       required: false
       schema:
         type: string
-        example: 'CDF34E-A99968-4FF3BQ'
+        example: 'D7AC09-A99968-4BA59C'
     FocusIdentifier:
       in: query
       name: focus:identifier
