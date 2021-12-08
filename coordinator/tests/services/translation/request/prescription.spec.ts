@@ -324,7 +324,7 @@ describe("extractReviewDate returns the correct value", () => {
   })
 
   test("for a medication request without repeat information", () => {
-    clearRepeatInformation(medicationRequest)
+    clearRepeatInformationExtension(medicationRequest)
     const converted = extractReviewDate(medicationRequest)
     expect(converted).toBeFalsy()
   })
@@ -335,7 +335,7 @@ function setReviewDate(medicationRequest: fhir.MedicationRequest, newReviewDate:
     medicationRequest.extension,
     "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
     "MedicationRequest.extension"
-  ) as fhir.RepeatInformationExtension
+  ) as fhir.UkCoreRepeatInformationExtension
   const reviewDateExtension = getExtensionForUrl(
     repeatInformationExtension.extension,
     "authorisationExpiryDate",
@@ -344,13 +344,17 @@ function setReviewDate(medicationRequest: fhir.MedicationRequest, newReviewDate:
   reviewDateExtension.valueDateTime = newReviewDate
 }
 
-function clearRepeatInformation(medicationRequest: fhir.MedicationRequest) {
+function clearRepeatInformationExtension(medicationRequest: fhir.MedicationRequest) {
   const repeatInformationExtension = getExtensionForUrl(
     medicationRequest.extension,
     "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
     "MedicationRequest.extension"
-  ) as fhir.RepeatInformationExtension
+  ) as fhir.UkCoreRepeatInformationExtension
   medicationRequest.extension.splice(medicationRequest.extension.indexOf(repeatInformationExtension), 1)
+}
+
+function clearRepeatInformationNumberOfRepeatsAllowed(medicationRequest: fhir.MedicationRequest) {
+  delete medicationRequest.dispenseRequest.numberOfRepeatsAllowed
 }
 
 function clearExpiryDateField(medicationRequest: fhir.MedicationRequest) {
@@ -358,7 +362,7 @@ function clearExpiryDateField(medicationRequest: fhir.MedicationRequest) {
     medicationRequest.extension,
     "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
     "MedicationRequest.extension"
-  ) as fhir.RepeatInformationExtension
+  ) as fhir.UkCoreRepeatInformationExtension
   const reviewDateExtension = getExtensionForUrl(
     repeatInformationExtension.extension,
     "authorisationExpiryDate",
@@ -435,7 +439,8 @@ describe("createRepeatNumberForMedicationRequests", () => {
   test("throws for repeat dispensing prescriptions where repeat information is missing", () => {
     medicationRequests.forEach(medicationRequest => {
       setCourseOfTherapyTypeCode(medicationRequest, fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING)
-      clearRepeatInformation(medicationRequest)
+      clearRepeatInformationExtension(medicationRequest)
+      clearRepeatInformationNumberOfRepeatsAllowed(medicationRequest)
     })
 
     expect(() => {
@@ -459,21 +464,6 @@ describe("extractRepeatNumberHighValue", () => {
     expect(repeatNumberHighValue).toEqual("6")
   })
 
-  test("extracts from extension if not present in dispenseRequest", () => {
-    const testMedicationRequest: Partial<fhir.MedicationRequest> = {
-      extension: [{
-        url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-        extension: [{
-          url: "numberOfRepeatPrescriptionsAllowed",
-          valueUnsignedInt: new LosslessNumber("6")
-        }]
-      }],
-      dispenseRequest: {}
-    }
-    const repeatNumberHighValue = extractRepeatNumberHighValue(testMedicationRequest as fhir.MedicationRequest)
-    expect(repeatNumberHighValue).toEqual("6")
-  })
-
   test("throws if not present in either location", () => {
     const testMedicationRequest: Partial<fhir.MedicationRequest> = {
       extension: [{
@@ -481,23 +471,6 @@ describe("extractRepeatNumberHighValue", () => {
         extension: []
       }],
       dispenseRequest: {}
-    }
-    expect(() => extractRepeatNumberHighValue(testMedicationRequest as fhir.MedicationRequest))
-      .toThrow(InvalidValueError)
-  })
-
-  test("throws if present in both locations with inconsistent values", () => {
-    const testMedicationRequest: Partial<fhir.MedicationRequest> = {
-      extension: [{
-        url: "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-        extension: [{
-          url: "numberOfRepeatPrescriptionsAllowed",
-          valueUnsignedInt: new LosslessNumber("6")
-        }]
-      }],
-      dispenseRequest: {
-        numberOfRepeatsAllowed: new LosslessNumber("6")
-      }
     }
     expect(() => extractRepeatNumberHighValue(testMedicationRequest as fhir.MedicationRequest))
       .toThrow(InvalidValueError)
