@@ -851,7 +851,7 @@ components:
       required: false
       schema:
         type: string
-        example: '999 999 9999'
+        example: '9912003489'
   responses:
     200OperationOutcome:
       description: A successful response.

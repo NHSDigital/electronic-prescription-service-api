@@ -35,7 +35,7 @@ export class SandboxTrackerClient implements TrackerClient {
             totalAuthorised: "1"
           },
           pendingCancellations: "False",
-          prescriptionTreatmentType: "Acute Prescribing",
+          prescriptionTreatmentType: "Acute Prescription",
           prescriptionStatus: "Dispensed",
           lineItems: {
             "636f1b57-e18c-4f45-acae-2d7db86b6e1e": "Hydrocortisone 0.5% cream"
