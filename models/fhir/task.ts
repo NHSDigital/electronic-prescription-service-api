@@ -9,7 +9,7 @@ import {fhir} from "../index";
 
 export class Task extends common.Resource {
   readonly resourceType = "Task"
-  extension?: Array<extension.PrescriptionExtension | extension.RepeatInformationExtension | extension.IdentifierReferenceExtension<fhir.Practitioner | fhir.PractitionerRole>>
+  extension?: Array<extension.PrescriptionExtension | extension.UkCoreRepeatInformationExtension | extension.IdentifierReferenceExtension<fhir.Practitioner | fhir.PractitionerRole>>
   identifier: Array<common.Identifier>
   groupIdentifier?: common.Identifier
   status: TaskStatus

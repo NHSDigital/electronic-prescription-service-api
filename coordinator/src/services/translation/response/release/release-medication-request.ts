@@ -46,7 +46,7 @@ export function createMedicationRequest(
       createItemNumberIdentifier(lineItem.id._attributes.root)
     ],
     status: getStatus(lineItem.pertinentInformation4.pertinentItemStatus),
-    basedOn: fhir.createReference(lineItem.id._attributes.root.toLowerCase()),
+    basedOn: [createBasedOn(intent, lineItem.id._attributes.root, lineItem.repeatNumber)],
     intent: intent,
     medicationCodeableConcept: createSnomedCodeableConcept(
       lineItem.product.manufacturedProduct.manufacturedRequestedMaterial.code
@@ -64,6 +64,7 @@ export function createMedicationRequest(
       createDosage(lineItem.pertinentInformation2.pertinentDosageInstructions)
     ],
     dispenseRequest: createDispenseRequest(
+      courseOfTherapyType,
       prescription.pertinentInformation1.pertinentDispensingSitePreference,
       lineItem.component.lineItemQuantity,
       prescription.component1?.daysSupply,
@@ -102,10 +103,36 @@ export function createMedicationRequestExtensions(
   return extensions
 }
 
+function createBasedOn(
+  intent: string,
+  identifierReference: string,
+  repeatNumber: hl7V3.Interval<hl7V3.NumericValue>
+): fhir.MedicationRequestBasedOn {
+  const reference = fhir.createReference(identifierReference.toLowerCase())
+
+  if (intent === fhir.MedicationRequestIntent.REFLEX_ORDER) {
+    const basedOnRepeatExtension = {
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+      extension: [{
+        url: "numberOfRepeatsAllowed",
+        valueInteger: new LosslessNumber(repeatNumber.high._attributes.value)
+      }]
+    }
+    return {
+      identifier: reference,
+      extension: [basedOnRepeatExtension]
+    }
+  }
+
+  return {
+    identifier: reference
+  }
+}
+
 function createRepeatInformationExtension(
   reviewDate: hl7V3.ReviewDate,
   lineItemRepeatNumber: hl7V3.Interval<hl7V3.NumericValue>
-): fhir.RepeatInformationExtension {
+): fhir.UkCoreRepeatInformationExtension {
   const extensions: Array<fhir.UnsignedIntExtension | fhir.DateTimeExtension> = []
 
   if (reviewDate?.value) {
@@ -119,13 +146,6 @@ function createRepeatInformationExtension(
     extensions.push({
       url: "numberOfRepeatPrescriptionsIssued",
       valueUnsignedInt: new LosslessNumber(lineItemRepeatNumber.low._attributes.value)
-    })
-  }
-
-  if (lineItemRepeatNumber?.high?._attributes?.value) {
-    extensions.push({
-      url: "numberOfRepeatPrescriptionsAllowed",
-      valueUnsignedInt: new LosslessNumber(lineItemRepeatNumber.high._attributes.value)
     })
   }
 
@@ -271,6 +291,7 @@ function createExpectedSupplyDuration(expectedUseTime: hl7V3.IntervalUnanchored)
 }
 
 export function createDispenseRequest(
+  courseOfTherapyType: fhir.CodeableConcept,
   dispensingSitePreference: hl7V3.DispensingSitePreference,
   lineItemQuantity: hl7V3.LineItemQuantity,
   daysSupply: hl7V3.DaysSupply,
@@ -280,6 +301,7 @@ export function createDispenseRequest(
     extension: [
       createPerformerSiteTypeExtension(dispensingSitePreference)
     ],
+    numberOfRepeatsAllowed: new LosslessNumber(0),
     quantity: createDispenseRequestQuantity(lineItemQuantity)
   }
   if (daysSupply?.effectiveTime?.low || daysSupply?.effectiveTime?.high) {

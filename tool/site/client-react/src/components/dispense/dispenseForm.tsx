@@ -65,6 +65,7 @@ export interface LineItemFormValues extends StaticLineItemInfo {
 }
 
 export interface StaticPrescriptionInfo {
+  dispenseDate: Date
   priorStatusCode: PrescriptionStatus
 }
 

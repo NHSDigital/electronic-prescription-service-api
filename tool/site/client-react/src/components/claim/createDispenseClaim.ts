@@ -23,6 +23,8 @@ import {
 import {INSURANCE_NHS_BSA} from "../../fhir/reference-data/insurance"
 import {ClaimFormValues, EndorsementFormValues, ExemptionFormValues, ProductFormValues} from "./claimForm"
 import {
+  DISPENSER_ENDORSEMENT_CODE_NONE,
+  LineItemStatus,
   VALUE_SET_DISPENSER_ENDORSEMENT,
   VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION
 } from "../../fhir/reference-data/valueSets"
@@ -161,14 +163,18 @@ function createClaimItemDetail(
   }
 
   const finalMedicationDispense = medicationDispenses[medicationDispenses.length - 1]
+  const finalItemStatus = finalMedicationDispense.type
+  const fullyDispensed = finalItemStatus.coding[0].code === LineItemStatus.DISPENSED
 
   return {
     extension: claimItemDetailExtensions,
     sequence,
     productOrService: medicationRequest.medicationCodeableConcept,
-    modifier: [finalMedicationDispense.type],
+    modifier: [finalItemStatus],
     quantity: medicationRequest.dispenseRequest.quantity,
-    subDetail: [createClaimItemDetailSubDetail(1, medicationDispenses, productFormValues)]
+    subDetail: fullyDispensed
+      ? [createClaimItemDetailSubDetail(1, medicationDispenses, productFormValues)]
+      : []
   }
 }
 
@@ -199,7 +205,11 @@ function createClaimItemDetailSubDetail(
   medicationDispenses: Array<fhir.MedicationDispense>,
   productFormValues: ProductFormValues
 ): fhir.ClaimItemDetailSubDetail {
-  const endorsementCodeableConcepts = productFormValues.endorsements.map(createEndorsementCodeableConcept)
+  const endorsementCodeableConcepts = productFormValues.endorsements.length
+    ? productFormValues.endorsements.map(createEndorsementCodeableConcept)
+    : [{
+      coding: VALUE_SET_DISPENSER_ENDORSEMENT.filter(coding => coding.code === DISPENSER_ENDORSEMENT_CODE_NONE)
+    }]
 
   const chargePaidCodeableConcept = productFormValues.patientPaid
     ? CODEABLE_CONCEPT_PRESCRIPTION_CHARGE_PAID

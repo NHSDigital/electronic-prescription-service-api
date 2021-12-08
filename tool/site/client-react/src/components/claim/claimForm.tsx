@@ -4,7 +4,7 @@ import {FieldArray, Formik} from "formik"
 import Exemption from "./exemption"
 import ProductArray from "./productArray"
 import ButtonList from "../buttonList"
-import {VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION} from "../../fhir/reference-data/valueSets"
+import {PRESCRIPTION_CHARGE_EXEMPTION_CODE_NONE} from "../../fhir/reference-data/valueSets"
 import BackButton from "../backButton"
 
 export interface ClaimFormProps {
@@ -23,7 +23,7 @@ const ClaimForm: React.FC<ClaimFormProps> = ({
       endorsements: []
     })),
     exemption: {
-      code: VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION[0].code,
+      code: PRESCRIPTION_CHARGE_EXEMPTION_CODE_NONE,
       evidenceSeen: false
     }
   }
