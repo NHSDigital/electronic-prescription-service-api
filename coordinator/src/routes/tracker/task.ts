@@ -65,17 +65,7 @@ export const queryParamDefinitions: Array<QueryParamDefinition> = [
     supportedBySpine: false,
     system: undefined,
     isDateParameter: true,
-    test: (task: fhir.Task, value: string): boolean => {
-      const actualValue = moment.utc(task.authoredOn)
-      const searchValue = moment.utc(value)
-      if (value.startsWith("eq")) {
-        return actualValue.isSame(searchValue)
-      } else if (value.startsWith("le")) {
-        return actualValue.isSameOrBefore(searchValue)
-      } else if (value.startsWith("ge")) {
-        return actualValue.isSameOrAfter(searchValue)
-      }
-    }
+    test: (task: fhir.Task, value: string): boolean => testDate(task.authoredOn, value)
   }
 ]
 
@@ -141,12 +131,14 @@ async function makeSpineRequest(validQuery: ValidQuery, request: Hapi.Request) {
 }
 
 export function filterBundleEntries(bundle: fhir.Bundle, queryParams: ValidQuery): void {
+  console.log(`Got ${bundle.total} results from Spine before filtering.`)
   const filteredEntries = bundle.entry.filter(entry =>
     isTask(entry.resource)
     && matchesQuery(entry.resource, queryParams)
   )
   bundle.entry = filteredEntries
   bundle.total = filteredEntries.length
+  console.log(`Returning ${bundle.total} results after filtering.`)
 }
 
 export function matchesQuery(task: fhir.Task, queryParams: ValidQuery): boolean {
@@ -181,5 +173,19 @@ export function getLatestDate(dateParameterValues: Array<string>): string {
 }
 
 export function toSpineDateFormat(date: string): string {
-  return date ? moment.utc(date).format("YYYYMMDD") : date
+  return date ? moment.utc(date, true).format("YYYYMMDD") : date
+}
+
+export function testDate(actualValueStr: string, value: string): boolean {
+  const actualValue = moment.utc(actualValueStr, true)
+  const searchValue = moment.utc(value.substring(2), true)
+  if (value.startsWith("eq")) {
+    return actualValue.isSame(searchValue, "d")
+  } else if (value.startsWith("le")) {
+    return actualValue.isSameOrBefore(searchValue, "d")
+  } else if (value.startsWith("ge")) {
+    return actualValue.isSameOrAfter(searchValue, "d")
+  } else {
+    throw new Error("Unhandled comparator")
+  }
 }
