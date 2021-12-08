@@ -12,6 +12,13 @@
     {
       "name": "status",
       "valueCode": "accepted"
+    },
+    {
+      "name": "agent",
+      "valueIdentifier": {
+        "system": "https://fhir.hl7.org.uk/Id/gphc-number",
+        "value": "7654321"
+      }
     }
   ]
 }
