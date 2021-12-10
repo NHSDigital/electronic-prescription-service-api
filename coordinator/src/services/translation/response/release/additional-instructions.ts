@@ -68,7 +68,7 @@ export interface TranslatedAdditionalInstructions {
 
 export function translateAdditionalInstructions(
   patientId: string,
-  patientIdentifier: Array<fhir.Identifier>,
+  patientIdentifier: fhir.Identifier,
   organizationIdentifier: fhir.Identifier,
   medication: Array<string>,
   patientInfo: Array<string>,
@@ -96,7 +96,7 @@ export function createCommunicationRequest(
   patientId: string,
   payload: Array<fhir.ContentReferencePayload | fhir.ContentStringPayload>,
   organizationIdentifier: fhir.Identifier,
-  patientIdentifier: Array<fhir.Identifier>
+  patientIdentifier: fhir.Identifier
 ): fhir.CommunicationRequest {
   return {
     resourceType: "CommunicationRequest",
@@ -105,7 +105,7 @@ export function createCommunicationRequest(
     subject: fhir.createReference(patientId),
     payload: payload,
     requester: fhir.createIdentifierReference(organizationIdentifier),
-    recipient: patientIdentifier
+    recipient: [fhir.createIdentifierReference(patientIdentifier)]
   }
 }
 
