@@ -14,7 +14,7 @@ export interface MedicationDispense extends common.Resource {
   subject: common.IdentifierReference<patient.Patient>
   quantity: common.SimpleQuantity
   authorizingPrescription: Array<AuthorizingPrescription>
-  whenPrepared: string
+  whenHandedOver: string
   dosageInstruction: Array<medicationRequest.Dosage>
   performer: Array<DispensePerformer>
   type: common.CodeableConcept

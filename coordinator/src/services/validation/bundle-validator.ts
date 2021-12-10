@@ -236,7 +236,7 @@ export function verifyDispenseBundle(bundle: fhir.Bundle, accessTokenOds: string
   const allErrors = []
 
   const fhirPaths = [
-    "whenPrepared",
+    "whenHandedOver",
     "subject.identifier.value",
     'extension("https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation")'
   ]
