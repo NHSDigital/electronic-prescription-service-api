@@ -120,7 +120,7 @@ function createMedicationDispense(
     type: createMedicationDispenseType(lineItemFormValues.statusCode),
     quantity: createDispensedQuantity(medicationRequest.dispenseRequest.quantity, lineItemFormValues),
     daysSupply: medicationRequest.dispenseRequest.expectedSupplyDuration,
-    whenPrepared: prescriptionFormValues.dispenseDate.toISOString(),
+    whenHandedOver: prescriptionFormValues.dispenseDate.toISOString(),
     dosageInstruction: medicationRequest.dosageInstruction
   }
 }

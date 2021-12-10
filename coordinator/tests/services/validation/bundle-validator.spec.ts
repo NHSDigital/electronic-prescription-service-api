@@ -478,21 +478,22 @@ describe("verifyDispenseNotificationBundle", () => {
     expect(console.warn).toHaveBeenCalled()
   })
 
-  test("returns an error when MedicationDispenses have different whenPrepared timestamps", () => {
+  test("returns an error when MedicationDispenses have different whenHandedOver timestamps", () => {
     const medicationDispenseEntry =
       bundle.entry.filter(entry => entry.resource.resourceType === "MedicationDispense")[0]
 
     const medicationDispense1 = medicationDispenseEntry.resource as fhir.MedicationDispense
-    medicationDispense1.whenPrepared = "2009-09-21T09:24:20+00:00"
+    medicationDispense1.whenHandedOver = "2009-09-21T09:24:20+00:00"
 
     const medicationDispenseEntry2 = clone(medicationDispenseEntry)
     const medicationDispense2 = medicationDispenseEntry.resource as fhir.MedicationDispense
-    medicationDispense2.whenPrepared = "1600-09-21T09:24:20+00:00"
+    medicationDispense2.whenHandedOver = "1600-09-21T09:24:20+00:00"
     bundle.entry.push(medicationDispenseEntry2)
 
     const returnedErrors = validator.verifyDispenseBundle(bundle, "test_ods_code")
     expect(returnedErrors.length).toBe(1)
-    expect(returnedErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).whenPrepared")
+    expect(returnedErrors[0].expression)
+      .toContainEqual("Bundle.entry.resource.ofType(MedicationDispense).whenHandedOver")
   })
 
   test("returns an error when MedicationDispenses have different performer values per type", () => {

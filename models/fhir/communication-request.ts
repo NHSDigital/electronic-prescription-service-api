@@ -8,7 +8,7 @@ export interface CommunicationRequest extends common.Resource {
   subject: common.Reference<patient.Patient>
   payload: Array<ContentStringPayload | ContentReferencePayload>
   requester: common.IdentifierReference<organization.Organization>
-  recipient: Array<common.Identifier>
+  recipient: Array<common.IdentifierReference<patient.Patient>>
 }
 
 export interface ContentStringPayload {

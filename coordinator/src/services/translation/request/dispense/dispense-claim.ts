@@ -173,10 +173,12 @@ function createSuppliedLineItem(
     )
   }
 
-  suppliedLineItem.component = detail.subDetail.map(subDetail => {
-    const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(claim, item, detail, subDetail)
-    return new hl7V3.DispenseClaimSuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
-  })
+  if (detail.subDetail?.length) {
+    suppliedLineItem.component = detail.subDetail.map(subDetail => {
+      const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(claim, item, detail, subDetail)
+      return new hl7V3.DispenseClaimSuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
+    })
+  }
 
   const statusReasonExtension = getExtensionForUrlOrNull(
     detail.extension,
