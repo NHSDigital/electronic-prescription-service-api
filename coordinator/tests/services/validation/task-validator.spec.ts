@@ -51,16 +51,16 @@ describe("verifyTask returns errors", () => {
     )
   })
 
-  test("rejects withdraw where reasonCode system is invalid", () => {
-    const expectedSystem = invalidWithdrawTask.reasonCode.coding[0].system
-    invalidWithdrawTask.reasonCode.coding[0].system = "bluh"
+  test("rejects withdraw where statusReason system is invalid", () => {
+    const expectedSystem = invalidWithdrawTask.statusReason.coding[0].system
+    invalidWithdrawTask.statusReason.coding[0].system = "bluh"
     const returnedErrors = verifyTask(invalidWithdrawTask, DISPENSING_USER_SCOPE, "test_ods_code")
     expect(returnedErrors).toContainEqual(errors.createTaskCodingSystemIssue("reasonCode", expectedSystem))
   })
 
-  test("rejects return where reasonCode system is invalid", () => {
-    const expectedSystem = invalidReturnTask.reasonCode.coding[0].system
-    invalidReturnTask.reasonCode.coding[0].system = "bluh"
+  test("rejects return where statusReason system is invalid", () => {
+    const expectedSystem = invalidReturnTask.statusReason.coding[0].system
+    invalidReturnTask.statusReason.coding[0].system = "bluh"
     const returnedErrors = verifyTask(invalidReturnTask, DISPENSING_USER_SCOPE, "test_ods_code")
     expect(returnedErrors).toContainEqual(errors.createTaskCodingSystemIssue("reasonCode", expectedSystem))
   })

@@ -42,7 +42,7 @@
       "value": "VN6XW"
     }
   },
-  "reasonCode": {
+  "statusReason": {
     "coding":  [
       {
         "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-withdraw-reason",
