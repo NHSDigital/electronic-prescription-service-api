@@ -361,8 +361,8 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
     })
   })
 
-  test("whenPrepared maps to pertinentInformation1.pertinentSupplyHeader.author.time", async () => {
-    medicationDispenses.forEach(medicationDispense => medicationDispense.whenPrepared = "2020-03-10")
+  test("whenHandedOver maps to pertinentInformation1.pertinentSupplyHeader.author.time", async () => {
+    medicationDispenses.forEach(medicationDispense => medicationDispense.whenHandedOver = "2020-03-10")
 
     const expected = "20200310000000"
 
