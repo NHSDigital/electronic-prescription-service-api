@@ -18,7 +18,7 @@ export class Task extends common.Resource {
   authoredOn: string
   requester?: common.IdentifierReference<practitionerRole.PersonOrOrganization>
   owner?: common.IdentifierReference<practitionerRole.PersonOrOrganization>
-  reasonCode?: common.CodeableConcept
+  statusReason?: common.CodeableConcept
   code?: common.CodeableConcept
   businessStatus?: common.CodeableConcept
   input?: Array<TaskInput>
