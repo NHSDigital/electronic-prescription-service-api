@@ -157,4 +157,13 @@ describe("createSuppliedLineItem", () => {
       expect(pertinentInformation1.pertinentSuppliedLineItem.pertinentInformation2).toBeDefined()
     })
   })
+
+  test("FHIR with no subDetail should not populate suppliedLineItem.component", async () => {
+    const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
+    claim.item[0].detail.forEach(detail => delete detail.subDetail)
+    const v3Claim = await convertDispenseClaim(claim, logger)
+    v3Claim.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.forEach(pertinentInformation1 => {
+      expect(pertinentInformation1.pertinentSuppliedLineItem.component).toBeUndefined()
+    })
+  })
 })
