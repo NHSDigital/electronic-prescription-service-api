@@ -113,7 +113,6 @@ build-proxies:
 
 test-coordinator:
 	cd coordinator \
-	&& npm install -g jest-junit \
 	&& npm run test
 
 ## Quality Checks
