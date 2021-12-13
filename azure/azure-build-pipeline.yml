@@ -35,7 +35,7 @@ extends:
       - task: PublishTestResults@2
         displayName: 'Publish Coordinator Test Results'
         inputs:
-          testResultsFiles: junit.xml
+          testResultsFiles: test-report.html
           mergeTestResults: true
           testRunTitle: 'Coordinator Tests'
           failTaskOnFailedTests: true
