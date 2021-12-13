@@ -97,7 +97,7 @@ export function createBundleResources(
   const medication = firstItemAdditionalInstructions.medication
   const patientInfo = firstItemAdditionalInstructions.patientInfo
   if (medication.length || patientInfo.length) {
-    const patientIdentifier = fhirPatient.identifier
+    const patientIdentifier = fhirPatient.identifier[0]
     const organizationIdentifier = translatedAuthor.healthcareService.identifier[0]
     const translatedAdditionalInstructions = translateAdditionalInstructions(
       patientId, patientIdentifier, organizationIdentifier, medication, patientInfo

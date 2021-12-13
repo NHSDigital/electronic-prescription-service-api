@@ -267,46 +267,41 @@ describe("additionalInstructions", () => {
 })
 
 describe("communication request", () => {
+  const communicationRequest = createCommunicationRequest(
+    "f8d8f3b2-f7dc-4c51-a57a-592c03d08dbd",
+    [{
+      contentString: "Here is some text"
+    }],
+    fhir.createIdentifier("https://fhir.nhs.uk/Id/ods-organization-code", "A83008"),
+    fhir.createIdentifier("https://fhir.nhs.uk/Id/nhs-number", "9990548609")
+  )
+
   test("contains id", () => {
-    const communicationRequest = createCommunicationRequest(
-      "patientId",
-      undefined,
-      undefined,
-      []
-    )
     expect(communicationRequest.id).toBeTruthy()
-    expect(communicationRequest.status).toBe("unknown")
   })
 
-  test("contains patient reference", () => {
-    const communicationRequest = createCommunicationRequest(
-      "patientId",
-      undefined,
-      undefined,
-      []
-    )
+  test("expected fields are populated", () => {
     expect(communicationRequest).toMatchObject<Partial<fhir.CommunicationRequest>>({
+      status: "unknown",
       subject: {
-        reference: "urn:uuid:patientId"
-      }
+        reference: "urn:uuid:f8d8f3b2-f7dc-4c51-a57a-592c03d08dbd"
+      },
+      payload: [{
+        contentString: "Here is some text"
+      }],
+      requester: {
+        identifier: {
+          system: "https://fhir.nhs.uk/Id/ods-organization-code",
+          value: "A83008"
+        }
+      },
+      recipient: [{
+        identifier: {
+          system: "https://fhir.nhs.uk/Id/nhs-number",
+          value: "9990548609"
+        }
+      }]
     })
-  })
-
-  test("populates requester and recipient fields", () => {
-    const patientIdentifiers = [fhir.createIdentifier("NHS number", "000")]
-    const organizationIdentifier = fhir.createIdentifier("ODS code", "000")
-    const communicationRequest = createCommunicationRequest(
-      "patientId",
-      undefined,
-      organizationIdentifier,
-      patientIdentifiers
-    )
-    expect(communicationRequest).toMatchObject<Partial<fhir.CommunicationRequest>>(
-      {
-        requester: fhir.createIdentifierReference(organizationIdentifier),
-        recipient: patientIdentifiers
-      }
-    )
   })
 })
 

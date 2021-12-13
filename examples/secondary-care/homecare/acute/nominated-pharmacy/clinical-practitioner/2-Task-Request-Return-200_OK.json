@@ -42,7 +42,7 @@
       "value": "VNFKT"
     }
   },
-  "reasonCode": {
+  "statusReason": {
     "coding":  [
       {
         "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason",

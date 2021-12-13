@@ -12,7 +12,7 @@ export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
   etpWithdraw.author = createAuthor()
   etpWithdraw.pertinentInformation3 = createPertinentInformation3(task.groupIdentifier)
   etpWithdraw.pertinentInformation2 = createPertinentInformation2()
-  etpWithdraw.pertinentInformation5 = createPertinentInformation5(task.reasonCode)
+  etpWithdraw.pertinentInformation5 = createPertinentInformation5(task.statusReason)
   etpWithdraw.pertinentInformation4 = createPertinentInformation4(task.focus.identifier)
 
   return etpWithdraw
@@ -51,7 +51,7 @@ export function createPertinentInformation5(reasonCode: fhir.CodeableConcept): h
   const reasonCoding = getCodeableConceptCodingForSystem(
     [reasonCode],
     "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-withdraw-reason",
-    "Task.reasonCode"
+    "Task.statusReason"
   )
   const withdrawReason = new hl7V3.WithdrawReason(reasonCoding.code, reasonCoding.display)
   return new hl7V3.EtpWithdrawPertinentInformation5(withdrawReason)

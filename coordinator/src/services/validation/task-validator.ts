@@ -83,7 +83,7 @@ function validateReturn(task: fhir.Task) {
 }
 
 function validateReasonCode(task: fhir.Task, system: string): Array<fhir.OperationOutcomeIssue> {
-  return getCodingForSystemOrNull(task.reasonCode?.coding, system, "Task.reasonCode")
+  return getCodingForSystemOrNull(task.statusReason?.coding, system, "Task.statusReason")
     ? []
     : [errors.createTaskCodingSystemIssue("reasonCode", system)]
 }
