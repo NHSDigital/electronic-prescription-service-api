@@ -1,7 +1,5 @@
 import {hl7V3} from "@models"
-
 import pino from "pino"
-
 import {createRepresentedOrganization} from "./agent-unattended"
 
 export async function createAuthorForAttendedAccess(

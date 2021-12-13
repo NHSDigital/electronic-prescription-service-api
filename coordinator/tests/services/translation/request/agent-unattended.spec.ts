@@ -12,7 +12,7 @@ jest.mock("../../../../src/services/communication/ods-client", () => ({
   }
 }))
 
-test("user details contain placeholder data - unattended", async () => {
+test("user details contain placeholder data", async () => {
   const mockLookupFunction = odsClient.lookupOrganization as jest.Mock
   mockLookupFunction.mockReturnValueOnce(Promise.resolve(mockOrganizationResponse))
 
@@ -29,7 +29,7 @@ test("user details contain placeholder data - unattended", async () => {
   expect(toArray(agentPersonPerson.name.family)[0]._text).toEqual("Access")
 })
 
-test("organization details are populated from ODS response - Unattended", async () => {
+test("organization details are populated from ODS response", async () => {
   const mockLookupFunction = odsClient.lookupOrganization as jest.Mock
   mockLookupFunction.mockReturnValueOnce(Promise.resolve(mockOrganizationResponse))
 
@@ -44,7 +44,7 @@ test("organization details are populated from ODS response - Unattended", async 
   expect(representedOrganization.addr.postalCode._text).toEqual("DE14 2WS")
 })
 
-test("throws if organization not found in ODS - unattended", async () => {
+test("throws if organization not found in ODS", async () => {
   const mockLookupFunction = odsClient.lookupOrganization as jest.Mock
   mockLookupFunction.mockReturnValueOnce(Promise.resolve(null))
 

@@ -55,7 +55,7 @@ export async function createRepresentedOrganization(
   return convertOrganization(organization)
 }
 
-export function convertOrganization(organization: fhir.Organization): hl7V3.Organization {
+function convertOrganization(organization: fhir.Organization): hl7V3.Organization {
   const hl7V3Organization = new hl7V3.Organization()
   const organizationSdsId = getIdentifierValueForSystem(
     organization.identifier,
