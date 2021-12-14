@@ -16,7 +16,9 @@ import {
 } from "../../../../../src/services/translation/common/getResourcesOfType"
 import {ElementCompact} from "xml-js"
 import pino = require("pino")
-import {createAgentPersonForUnattendedAccess} from "../../../../../src/services/translation/request/agent-unattended"
+import {
+  createAgentPersonFromAuthenticatedUserDetails
+} from "../../../../../src/services/translation/request/agent-unattended"
 
 const logger = pino()
 
@@ -26,7 +28,7 @@ jest.mock("moment", () => ({
     actualMoment.utc(input || "2020-12-18T12:34:34Z", format)
 }))
 jest.mock("../../../../../src/services/translation/request/agent-unattended", () => ({
-  createAgentPersonForUnattendedAccess: jest.fn()
+  createAgentPersonFromAuthenticatedUserDetails: jest.fn()
 }))
 
 describe("convertPrescriptionDispense", () => {
@@ -385,7 +387,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
 
   test("pertinentInformation1.pertinentSupplyHeader.author populated using ODS details", async () => {
     const mockAgentPersonResponse = new hl7V3.AgentPerson()
-    const mockAgentPersonFunction = createAgentPersonForUnattendedAccess as jest.Mock
+    const mockAgentPersonFunction = createAgentPersonFromAuthenticatedUserDetails as jest.Mock
     mockAgentPersonFunction.mockReturnValueOnce(Promise.resolve(mockAgentPersonResponse))
 
     const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)

@@ -11,19 +11,19 @@ import {
   getUserName
 } from "../../../utils/headers"
 
-export async function createAuthorForUnattendedAccess(
+export async function createAuthorFromAuthenticatedUserDetails(
   organizationCode: string,
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger,
   telecom?: string
 ): Promise<hl7V3.Author> {
-  const agentPerson = await createAgentPersonForUnattendedAccess(organizationCode, headers, logger, telecom)
+  const agentPerson = await createAgentPersonFromAuthenticatedUserDetails(organizationCode, headers, logger, telecom)
   const author = new hl7V3.Author()
   author.AgentPerson = agentPerson
   return author
 }
 
-export async function createAgentPersonForUnattendedAccess(
+export async function createAgentPersonFromAuthenticatedUserDetails(
   organizationCode: string,
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger,
@@ -37,31 +37,29 @@ export async function createAgentPersonForUnattendedAccess(
   const organization = await odsClient.lookupOrganization(organizationCode, logger)
   if (!organization) {
     throw new errors.InvalidValueError(
-      `No organisation details found for code ${organizationCode}`,
-      "Parameters.parameter"
+      `No organisation details found for code ${organizationCode}`
     )
+  }
+  const representedOrganisation = convertOrganization(organization)
+  const v3Telecom = new hl7V3.Telecom()
+  v3Telecom._attributes = {
+    use: hl7V3.TelecomUse.WORKPLACE,
+    value: fhirTelecom ?? representedOrganisation.telecom?._attributes.value
   }
 
   const agentPerson = new hl7V3.AgentPerson()
   agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileId)
   agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode)
-
-  agentPerson.agentPerson = createAgentPersonPersonForUnattendedAccess(sdsUserUniqueId, name)
-  agentPerson.representedOrganization = convertOrganization(organization)
-
-  const v3Telecom = new hl7V3.Telecom()
-
-  v3Telecom._attributes = {
-    use: hl7V3.TelecomUse.WORKPLACE,
-    value: fhirTelecom ?? agentPerson.representedOrganization.telecom?._attributes.value
-  }
-
   agentPerson.telecom = [v3Telecom]
+  agentPerson.agentPerson = createAgentPersonPersonFromAuthenticatedUserDetails(sdsUserUniqueId, name)
+  agentPerson.representedOrganization = representedOrganisation
 
   return agentPerson
 }
 
-function createAgentPersonPersonForUnattendedAccess(sdsUserUniqueId: string, name: string): hl7V3.AgentPersonPerson {
+function createAgentPersonPersonFromAuthenticatedUserDetails(
+  sdsUserUniqueId: string, name: string
+): hl7V3.AgentPersonPerson {
   const agentPerson = new hl7V3.AgentPersonPerson(new hl7V3.SdsUniqueIdentifier(sdsUserUniqueId))
   const agentPersonPersonName = new hl7V3.Name()
   agentPersonPersonName._text = name

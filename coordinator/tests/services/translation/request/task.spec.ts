@@ -3,28 +3,31 @@ import {
   getMessageIdFromTaskFocusIdentifier,
   getPrescriptionShortFormIdFromTaskGroupIdentifier
 } from "../../../../src/services/translation/request/task"
-import {hl7V3, fetcher} from "@models"
+import {hl7V3} from "@models"
 import pino from "pino"
-import {createAuthorForUnattendedAccess} from "../../../../src/services/translation/request/agent-unattended"
+import {createAuthorFromAuthenticatedUserDetails} from "../../../../src/services/translation/request/agent-unattended"
 
 const logger = pino()
 
 jest.mock("../../../../src/services/translation/request/agent-unattended", () => ({
-  createAuthorForUnattendedAccess: jest.fn()
+  createAuthorFromAuthenticatedUserDetails: jest.fn()
 }))
 
 test("author organization is looked up in ODS", async () => {
   const mockAuthorResponse = new hl7V3.Author()
   mockAuthorResponse.AgentPerson = new hl7V3.AgentPerson()
-  const mockAuthorFunction = createAuthorForUnattendedAccess as jest.Mock
+  const mockAuthorFunction = createAuthorFromAuthenticatedUserDetails as jest.Mock
   mockAuthorFunction.mockReturnValueOnce(Promise.resolve(mockAuthorResponse))
-  const exampleTask = fetcher.taskReturnExamples[0].request
+
   const result = await createAuthorFromTaskOwnerIdentifier(
-    exampleTask,
+    {
+      system: "https://fhir.nhs.uk/Id/ods-organization-code",
+      value: "FTX40"
+    },
     undefined,
     logger
   )
-  expect(mockAuthorFunction).toHaveBeenCalledWith("VNFKT", undefined, logger)
+  expect(mockAuthorFunction).toHaveBeenCalledWith("FTX40", undefined, logger)
   expect(result).toEqual(mockAuthorResponse)
 })
 

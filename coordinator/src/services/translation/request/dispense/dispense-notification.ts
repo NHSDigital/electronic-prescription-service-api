@@ -12,7 +12,7 @@ import {
 import {getMedicationDispenses, getMessageHeader, getPatientOrNull} from "../../common/getResourcesOfType"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import pino from "pino"
-import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
+import {createAgentPersonFromAuthenticatedUserDetails} from "../agent-unattended"
 import moment from "moment"
 import {
   createAgentOrganisationFromReference,
@@ -147,7 +147,7 @@ async function createAuthor(
   const author = new hl7V3.PrescriptionAuthor()
   author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "MedicationDispense.whenHandedOver")
   author.signatureText = hl7V3.Null.NOT_APPLICABLE
-  author.AgentPerson = await createAgentPersonForUnattendedAccess(organisationCode, undefined, logger)
+  author.AgentPerson = await createAgentPersonFromAuthenticatedUserDetails(organisationCode, undefined, logger)
   return author
 }
 

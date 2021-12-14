@@ -10,7 +10,7 @@ import {
   onlyElement
 } from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
-import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
+import {createAgentPersonFromAuthenticatedUserDetails} from "../agent-unattended"
 import {createAgentOrganisationFromReference, getRepeatNumberFromRepeatInfoExtension} from "./dispense-common"
 
 export async function convertDispenseClaim(
@@ -131,8 +131,7 @@ async function createLegalAuthenticator(payeeOdsCode: string, timestamp: hl7V3.T
   const legalAuthenticator = new hl7V3.PrescriptionLegalAuthenticator()
   legalAuthenticator.time = timestamp
   legalAuthenticator.signatureText = hl7V3.Null.NOT_APPLICABLE
-  //TODO - check that we can omit the user details (applies to all dispensing messages)
-  legalAuthenticator.AgentPerson = await createAgentPersonForUnattendedAccess(payeeOdsCode, undefined, logger)
+  legalAuthenticator.AgentPerson = await createAgentPersonFromAuthenticatedUserDetails(payeeOdsCode, undefined, logger)
   return legalAuthenticator
 }
 

@@ -5,18 +5,20 @@ import {
   translateReleaseRequest
 } from "../../../../../src/services/translation/request/dispense/release"
 import pino from "pino"
-import {createAuthorForUnattendedAccess} from "../../../../../src/services/translation/request/agent-unattended"
+import {
+  createAuthorFromAuthenticatedUserDetails
+} from "../../../../../src/services/translation/request/agent-unattended"
 
 const logger = pino()
 
 jest.mock("../../../../../src/services/translation/request/agent-unattended", () => ({
-  createAuthorForUnattendedAccess: jest.fn()
+  createAuthorFromAuthenticatedUserDetails: jest.fn()
 }))
 
 describe("translateReleaseRequest", () => {
   const mockAuthorResponse = new hl7V3.Author()
   mockAuthorResponse.AgentPerson = new hl7V3.AgentPerson()
-  const mockAuthorFunction = createAuthorForUnattendedAccess as jest.Mock
+  const mockAuthorFunction = createAuthorFromAuthenticatedUserDetails as jest.Mock
 
   test("translates release request without prescription ID to nominated release request", async () => {
     mockAuthorFunction.mockReturnValueOnce(Promise.resolve(mockAuthorResponse))

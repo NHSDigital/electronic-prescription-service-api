@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <PORX_IN060102SM30 xmlns="urn:hl7-org:v3">
-  <id root="00B0783A-2D6F-4DD2-BF81-B44D97BF2270"/>
-  <creationTime value="20211214105027"/>
+  <id root="67B80F92-D1CB-4DBE-A76B-9B74ECB99746"/>
+  <creationTime value="20211214150058"/>
   <versionCode code="V3NPfIT4.2.00"/>
   <interactionId extension="PORX_IN060102SM30" root="2.16.840.1.113883.2.1.3.2.4.12"/>
   <processingCode code="P"/>
@@ -40,12 +40,13 @@
     </author1>
     <subject>
       <NominatedPrescriptionReleaseRequest classCode="INFO" moodCode="RQO">
-        <id root="AC892766-1132-403A-AC6D-1960D1D68E07"/>
-        <effectiveTime value="20211214105027"/>
+        <id root="CE0819AF-17F2-4933-B66A-B8E1DD3C12EB"/>
+        <effectiveTime value="20211214150058"/>
         <author typeCode="AUT">
           <AgentPerson classCode="AGNT">
             <id extension="555254240100" root="1.2.826.0.1285.0.2.0.67"/>
             <code code="S8000:G8000:R8003" codeSystem="1.2.826.0.1285.0.2.1.104"/>
+            <telecom use="WP"/>
             <agentPerson classCode="PSN" determinerCode="INSTANCE">
               <id extension="555254239107" root="1.2.826.0.1285.0.2.0.65"/>
               <name>USERQ RANDOM Mr</name>
@@ -62,7 +63,6 @@
                 <postalCode>LS7 2AL</postalCode>
               </addr>
             </representedOrganization>
-            <telecom use="WP"/>
           </AgentPerson>
         </author>
       </NominatedPrescriptionReleaseRequest>

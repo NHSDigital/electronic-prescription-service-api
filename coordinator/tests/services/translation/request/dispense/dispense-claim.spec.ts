@@ -15,7 +15,7 @@ jest.mock("moment", () => ({
     actualMoment.utc(input || "2020-12-18T12:34:34Z", format)
 }))
 jest.mock("../../../../../src/services/translation/request/agent-unattended", () => ({
-  createAgentPersonForUnattendedAccess: jest.fn()
+  createAgentPersonFromAuthenticatedUserDetails: jest.fn()
 }))
 
 describe("convertDispenseClaim", () => {

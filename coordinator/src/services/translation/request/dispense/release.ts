@@ -4,7 +4,7 @@ import {getIdentifierParameterByName, getIdentifierParameterOrNullByName} from "
 import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import moment from "moment"
 import pino from "pino"
-import {createAuthorForUnattendedAccess} from "../agent-unattended"
+import {createAuthorFromAuthenticatedUserDetails} from "../agent-unattended"
 
 export async function translateReleaseRequest(
   fhirReleaseRequest: fhir.Parameters,
@@ -28,7 +28,7 @@ export async function createNominatedReleaseRequest(
   const hl7Id = new hl7V3.GlobalIdentifier(uuid.v4())
   const timestamp = convertMomentToHl7V3DateTime(moment.utc())
   const hl7Release = new hl7V3.NominatedPrescriptionReleaseRequest(hl7Id, timestamp)
-  hl7Release.author = await createAuthorForUnattendedAccess(organizationCode, undefined, logger)
+  hl7Release.author = await createAuthorFromAuthenticatedUserDetails(organizationCode, undefined, logger)
   return new hl7V3.NominatedPrescriptionReleaseRequestWrapper(hl7Release)
 }
 
@@ -40,7 +40,7 @@ export async function createPatientReleaseRequest(
   const hl7Id = new hl7V3.GlobalIdentifier(uuid.v4())
   const timestamp = convertMomentToHl7V3DateTime(moment.utc())
   const hl7Release = new hl7V3.PatientPrescriptionReleaseRequest(hl7Id, timestamp)
-  hl7Release.author = await createAuthorForUnattendedAccess(organizationCode, undefined, logger)
+  hl7Release.author = await createAuthorFromAuthenticatedUserDetails(organizationCode, undefined, logger)
   const prescriptionId = new hl7V3.PrescriptionId(prescriptionIdValue)
   hl7Release.pertinentInformation = new hl7V3.PatientPrescriptionReleaseRequestPertinentInformation(prescriptionId)
   return new hl7V3.PatientPrescriptionReleaseRequestWrapper(hl7Release)
