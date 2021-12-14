@@ -1,7 +1,9 @@
-<AssignMessage async="false" continueOnError="false" enabled="true" name="AssignMessage.AddOrgCodeHeader">
+<AssignMessage async="false" continueOnError="false" enabled="true" name="AssignMessage.AddUserInfoHeaders">
   <Add>
       <Headers>
           <Header name="NHSD-ODS-Code">{user_org_code}</Header>
+          <Header name="NHSD-Role-Code">{user_role_code}</Header>
+          <Header name="NHSD-User-Name">{user_name}</Header>
       </Headers>
   </Add>
   <IgnoreUnresolvedVariables>false</IgnoreUnresolvedVariables>
