@@ -204,7 +204,7 @@ async function createDispenseProposalReturnSendMessagePayload(
 }
 
 function createDispenserWithdrawSendMessagePayload(task: fhir.Task, headers: Hapi.Util.Dictionary<string>) {
-  const etpWithdraw = convertTaskToEtpWithdraw(task)
+  const etpWithdraw = convertTaskToEtpWithdraw(task, headers)
   const etpWithdrawRoot = new hl7V3.EtpWithdrawRoot(etpWithdraw)
   const messageId = getMessageIdFromTask(task)
   const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSER_WITHDRAW
