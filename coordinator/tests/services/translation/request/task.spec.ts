@@ -3,7 +3,7 @@ import {
   getMessageIdFromTaskFocusIdentifier,
   getPrescriptionShortFormIdFromTaskGroupIdentifier
 } from "../../../../src/services/translation/request/task"
-import {hl7V3} from "@models"
+import {hl7V3, fetcher} from "@models"
 import pino from "pino"
 import {createAuthorForUnattendedAccess} from "../../../../src/services/translation/request/agent-unattended"
 
@@ -18,14 +18,13 @@ test("author organization is looked up in ODS", async () => {
   mockAuthorResponse.AgentPerson = new hl7V3.AgentPerson()
   const mockAuthorFunction = createAuthorForUnattendedAccess as jest.Mock
   mockAuthorFunction.mockReturnValueOnce(Promise.resolve(mockAuthorResponse))
+  const exampleTask = fetcher.taskReturnExamples[0].request
   const result = await createAuthorFromTaskOwnerIdentifier(
-    {
-      system: "https://fhir.nhs.uk/Id/ods-organization-code",
-      value: "FTX40"
-    },
+    exampleTask,
+    undefined,
     logger
   )
-  expect(mockAuthorFunction).toHaveBeenCalledWith("FTX40", logger)
+  expect(mockAuthorFunction).toHaveBeenCalledWith("VNFKT", undefined, logger)
   expect(result).toEqual(mockAuthorResponse)
 })
 

@@ -3,12 +3,21 @@ import {getIdentifierValueForSystem} from "../common"
 import {convertAddress, convertTelecom} from "./demographics"
 import pino from "pino"
 import {odsClient} from "../../communication/ods-client"
+import Hapi from "@hapi/hapi"
+import {
+  getRoleCode,
+  getSdsRoleProfileId,
+  getSdsUserUniqueId,
+  getUserName
+} from "../../../utils/headers"
 
 export async function createAuthorForUnattendedAccess(
   organizationCode: string,
-  logger: pino.Logger
+  headers: Hapi.Util.Dictionary<string>,
+  logger: pino.Logger,
+  telecom?: string
 ): Promise<hl7V3.Author> {
-  const agentPerson = await createAgentPersonForUnattendedAccess(organizationCode, logger)
+  const agentPerson = await createAgentPersonForUnattendedAccess(organizationCode, headers, logger, telecom)
   const author = new hl7V3.Author()
   author.AgentPerson = agentPerson
   return author
@@ -16,35 +25,15 @@ export async function createAuthorForUnattendedAccess(
 
 export async function createAgentPersonForUnattendedAccess(
   organizationCode: string,
-  logger: pino.Logger
+  headers: Hapi.Util.Dictionary<string>,
+  logger: pino.Logger,
+  fhirTelecom?: string
 ): Promise<hl7V3.AgentPerson> {
-  const agentPerson = new hl7V3.AgentPerson()
-  agentPerson.id = new hl7V3.UnattendedSdsRoleProfileIdentifier()
-  agentPerson.code = new hl7V3.UnattendedSdsJobRoleCode()
-  const telecom = new hl7V3.Telecom()
-  telecom._attributes = {
-    use: hl7V3.TelecomUse.WORKPLACE,
-    value: "tel:01234567890"
-  }
-  agentPerson.telecom = [telecom]
-  agentPerson.agentPerson = createAgentPersonPersonForUnattendedAccess()
-  agentPerson.representedOrganization = await createRepresentedOrganization(organizationCode, logger)
-  return agentPerson
-}
+  const sdsRoleProfileId = getSdsRoleProfileId(headers)
+  const sdsJobRoleCode = getRoleCode(headers)
+  const sdsUserUniqueId = getSdsUserUniqueId(headers)
+  const name = getUserName(headers)
 
-function createAgentPersonPersonForUnattendedAccess(): hl7V3.AgentPersonPerson {
-  const agentPerson = new hl7V3.AgentPersonPerson(new hl7V3.UnattendedProfessionalCode())
-  const agentPersonPersonName = new hl7V3.Name()
-  agentPersonPersonName.given = new hl7V3.Text("Unattended")
-  agentPersonPersonName.family = new hl7V3.Text("Access")
-  agentPerson.name = agentPersonPersonName
-  return agentPerson
-}
-
-async function createRepresentedOrganization(
-  organizationCode: string,
-  logger: pino.Logger
-): Promise<hl7V3.Organization> {
   const organization = await odsClient.lookupOrganization(organizationCode, logger)
   if (!organization) {
     throw new errors.InvalidValueError(
@@ -52,7 +41,32 @@ async function createRepresentedOrganization(
       "Parameters.parameter"
     )
   }
-  return convertOrganization(organization)
+
+  const agentPerson = new hl7V3.AgentPerson()
+  agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileId)
+  agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode)
+
+  agentPerson.agentPerson = createAgentPersonPersonForUnattendedAccess(sdsUserUniqueId, name)
+  agentPerson.representedOrganization = convertOrganization(organization)
+
+  const v3Telecom = new hl7V3.Telecom()
+
+  v3Telecom._attributes = {
+    use: hl7V3.TelecomUse.WORKPLACE,
+    value: fhirTelecom ?? agentPerson.representedOrganization.telecom?._attributes.value
+  }
+
+  agentPerson.telecom = [v3Telecom]
+
+  return agentPerson
+}
+
+function createAgentPersonPersonForUnattendedAccess(sdsUserUniqueId: string, name: string): hl7V3.AgentPersonPerson {
+  const agentPerson = new hl7V3.AgentPersonPerson(new hl7V3.SdsUniqueIdentifier(sdsUserUniqueId))
+  const agentPersonPersonName = new hl7V3.Name()
+  agentPersonPersonName._text = name
+  agentPerson.name = agentPersonPersonName
+  return agentPerson
 }
 
 function convertOrganization(organization: fhir.Organization): hl7V3.Organization {

@@ -28,7 +28,7 @@ export async function createNominatedReleaseRequest(
   const hl7Id = new hl7V3.GlobalIdentifier(uuid.v4())
   const timestamp = convertMomentToHl7V3DateTime(moment.utc())
   const hl7Release = new hl7V3.NominatedPrescriptionReleaseRequest(hl7Id, timestamp)
-  hl7Release.author = await createAuthorForUnattendedAccess(organizationCode, logger)
+  hl7Release.author = await createAuthorForUnattendedAccess(organizationCode, undefined, logger)
   return new hl7V3.NominatedPrescriptionReleaseRequestWrapper(hl7Release)
 }
 
@@ -40,7 +40,7 @@ export async function createPatientReleaseRequest(
   const hl7Id = new hl7V3.GlobalIdentifier(uuid.v4())
   const timestamp = convertMomentToHl7V3DateTime(moment.utc())
   const hl7Release = new hl7V3.PatientPrescriptionReleaseRequest(hl7Id, timestamp)
-  hl7Release.author = await createAuthorForUnattendedAccess(organizationCode, logger)
+  hl7Release.author = await createAuthorForUnattendedAccess(organizationCode, undefined, logger)
   const prescriptionId = new hl7V3.PrescriptionId(prescriptionIdValue)
   hl7Release.pertinentInformation = new hl7V3.PatientPrescriptionReleaseRequestPertinentInformation(prescriptionId)
   return new hl7V3.PatientPrescriptionReleaseRequestWrapper(hl7Release)

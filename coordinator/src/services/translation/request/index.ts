@@ -196,7 +196,7 @@ async function createDispenseProposalReturnSendMessagePayload(
   headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ) {
-  const dispenseProposalReturn = await convertTaskToDispenseProposalReturn(task, logger)
+  const dispenseProposalReturn = await convertTaskToDispenseProposalReturn(task, headers, logger)
   const dispenseProposalReturnRoot = new hl7V3.DispenseProposalReturnRoot(dispenseProposalReturn)
   const messageId = getMessageIdFromTask(task)
   const interactionId = hl7V3.Hl7InteractionIdentifier.DISPENSE_PROPOSAL_RETURN

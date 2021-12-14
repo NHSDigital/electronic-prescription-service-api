@@ -132,7 +132,7 @@ async function createLegalAuthenticator(payeeOdsCode: string, timestamp: hl7V3.T
   legalAuthenticator.time = timestamp
   legalAuthenticator.signatureText = hl7V3.Null.NOT_APPLICABLE
   //TODO - check that we can omit the user details (applies to all dispensing messages)
-  legalAuthenticator.AgentPerson = await createAgentPersonForUnattendedAccess(payeeOdsCode, logger)
+  legalAuthenticator.AgentPerson = await createAgentPersonForUnattendedAccess(payeeOdsCode, undefined, logger)
   return legalAuthenticator
 }
 
