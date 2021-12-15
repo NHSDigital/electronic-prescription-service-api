@@ -63,7 +63,7 @@ info:
     
     #### Primary care medication workflow
     In a primary care medication workflow, the prescription is sent from a primary care service, such as a GP practice to a pharmacy. For this workflow, the API is in [beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#api-status), meaning:
-    - it is available for testing in the integration environment, but not for production use
+    - it is available in integration and production
     - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
 
     #### Secondary care medication workflow
