@@ -11,6 +11,7 @@ export interface EpsClient {
   makeReleaseRequest(body: Parameters): Promise<EpsResponse<Bundle | OperationOutcome>>
   makeClaimRequest(body: Claim): Promise<EpsResponse<OperationOutcome>>
   makeConvertRequest(body: FhirResource): Promise<string | OperationOutcome>
+  makeValidateRequest(body: FhirResource): Promise<EpsResponse<OperationOutcome>>
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -23,5 +24,5 @@ export function getEpsClient(accessToken: string): EpsClient {
 export interface EpsResponse<T> {
   statusCode: number,
   fhirResponse: T
-  spineResponse: string | OperationOutcome
+  spineResponse?: string | OperationOutcome
 }

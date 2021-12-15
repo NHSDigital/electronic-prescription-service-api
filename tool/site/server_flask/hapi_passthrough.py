@@ -79,6 +79,11 @@ def post_claim(body):
 def get_tracker_prescription(query):
     return make_get_request(f"{HAPI_URL}/search?{query}")
 
+# Validator
+
+def post_validate(body):
+    return make_post_request(f"{HAPI_URL}/validate", body)
+
 
 # Session
 

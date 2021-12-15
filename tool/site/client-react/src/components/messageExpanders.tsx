@@ -7,9 +7,9 @@ import styled from "styled-components"
 
 interface MessageExpandersProps {
   fhirRequest: FhirResource
-  hl7V3Request: string
+  hl7V3Request?: string
   fhirResponse: FhirResource
-  hl7V3Response: string
+  hl7V3Response?: string
 }
 
 const MessageExpanders: React.FC<MessageExpandersProps> = ({
@@ -24,21 +24,21 @@ const MessageExpanders: React.FC<MessageExpandersProps> = ({
       message={JSON.stringify(fhirRequest, null, 2)}
       mimeType="application/json"
     />
-    <MessageExpander
+    {hl7V3Request && <MessageExpander
       name="Request (HL7 V3)"
       message={hl7V3Request}
       mimeType="text/xml"
-    />
+    />}
     <MessageExpander
       name="Response (FHIR)"
       message={JSON.stringify(fhirResponse, null, 2)}
       mimeType="application/json"
     />
-    <MessageExpander
+    {hl7V3Response && <MessageExpander
       name="Response (HL7 V3)"
       message={hl7V3Response}
       mimeType="text/xml"
-    />
+    />}
   </Details.ExpanderGroup>
 )
 

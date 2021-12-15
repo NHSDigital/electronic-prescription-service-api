@@ -1,0 +1,75 @@
+import * as React from "react"
+import {useContext, useState} from "react"
+import {Label, TickIcon, CrossIcon, Form, Fieldset, Button} from "nhsuk-react-components"
+import {AppContext} from "../index"
+import ButtonList from "../components/buttonList"
+import LongRunningTask from "../components/longRunningTask"
+import MessageExpanders from "../components/messageExpanders"
+import ReloadButton from "../components/reloadButton"
+import {axiosInstance} from "../requests/axiosInstance"
+import {getResponseDataIfValid} from "../requests/getValidResponse"
+import {ApiResult, isApiResult} from "../requests/apiResult"
+import {Formik} from "formik"
+import BackButton from "../components/backButton"
+import TextAreaField from "../components/textAreaField"
+
+export interface ValidateFormValues {
+  validatePayload: string
+}
+
+const ValidatePage: React.FC = () => {
+  const {baseUrl} = useContext(AppContext)
+  const [validateFormValues, setValidateFormValues] = useState<ValidateFormValues>({validatePayload: ""})
+  if (!validateFormValues.validatePayload) {
+    return (
+      <>
+        <Label isPageHeading>Validate prescription</Label>
+        <Formik<ValidateFormValues> initialValues={validateFormValues} onSubmit={setValidateFormValues}>
+          {formik =>
+            <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
+              <Fieldset>
+                <TextAreaField
+                  name="validatePayload"
+                  style={{height:"725px", width:"100%"}}/>
+              </Fieldset>
+              <ButtonList>
+                <Button type="submit">Validate</Button>
+                <BackButton/>
+              </ButtonList>
+            </Form>
+          }
+        </Formik>
+      </>
+    )
+  }
+  const sendValidateMessage = () => sendValidate(baseUrl, validateFormValues)
+  return (
+    <LongRunningTask<ApiResult> task={sendValidateMessage} loadingMessage="Sending validation request.">
+      {validateResult => (
+        <>
+          <Label isPageHeading>Validate Result {validateResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
+          <MessageExpanders
+            fhirRequest={validateResult.request}
+            fhirResponse={validateResult.response}
+          />
+          <ButtonList>
+            <ReloadButton/>
+          </ButtonList>
+        </>
+      )}
+    </LongRunningTask>
+  )
+}
+
+async function sendValidate(
+  baseUrl: string,
+  validateFormValues: ValidateFormValues
+): Promise<ApiResult> {
+  const validateResponse =
+    await axiosInstance.post<ApiResult>(
+      `${baseUrl}validate`,
+      JSON.parse(validateFormValues.validatePayload))
+  return getResponseDataIfValid(validateResponse, isApiResult)
+}
+
+export default ValidatePage

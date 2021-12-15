@@ -56,6 +56,14 @@ export class LiveEpsClient implements EpsClient {
     return {statusCode, fhirResponse, spineResponse}
   }
 
+  async makeValidateRequest(body: FhirResource): Promise<EpsResponse<OperationOutcome>> {
+    const requestId = uuid.v4()
+    const response = await this.makeApiCall<OperationOutcome>("$validate", body, requestId)
+    const statusCode = response.status
+    const fhirResponse = response.data
+    return {statusCode, fhirResponse}
+  }
+
   async makeConvertRequest(body: FhirResource): Promise<string | OperationOutcome> {
     return (await this.makeApiCall<string>("$convert", body)).data
   }
