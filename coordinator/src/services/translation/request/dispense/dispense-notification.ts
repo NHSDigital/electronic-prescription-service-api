@@ -76,7 +76,7 @@ async function createPertinentInformation1(
   logger: pino.Logger
 ) {
   const hl7RepresentedOrganisationCode = fhirOrganisation.actor.identifier.value
-  const hl7AuthorTime = fhirFirstMedicationDispense.whenPrepared
+  const hl7AuthorTime = fhirFirstMedicationDispense.whenHandedOver
   const hl7PertinentPrescriptionStatus = createPrescriptionStatus(fhirFirstMedicationDispense)
   const hl7PertinentPrescriptionIdentifier = createPrescriptionId(fhirFirstMedicationDispense)
   const hl7PriorOriginalRef = createOriginalPrescriptionRef(fhirFirstMedicationDispense)
@@ -145,7 +145,7 @@ async function createAuthor(
   logger: pino.Logger
 ): Promise<hl7V3.PrescriptionAuthor> {
   const author = new hl7V3.PrescriptionAuthor()
-  author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "MedicationDispense.whenPrepared")
+  author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "MedicationDispense.whenHandedOver")
   author.signatureText = hl7V3.Null.NOT_APPLICABLE
   author.AgentPerson = await createAgentPersonForUnattendedAccess(organisationCode, logger)
   return author

@@ -22,6 +22,7 @@ import {getArrayTypeGuard, isBundle} from "../fhir/typeGuards"
 import {axiosInstance} from "../requests/axiosInstance"
 import {isApiResult, ApiResult} from "../requests/apiResult"
 import ReloadButton from "../components/reloadButton"
+import {LineItemStatus} from "../fhir/reference-data/valueSets"
 
 interface ClaimPageProps {
   prescriptionId: string
@@ -113,16 +114,22 @@ interface PrescriptionDetails {
 
 export function createStaticProductInfoArray(medicationDispenses: Array<MedicationDispense>): Array<StaticProductInfo> {
   const lineItemGroups = groupByProperty(medicationDispenses, getMedicationDispenseLineItemId)
-  return lineItemGroups.map(([lineItemId, medicationDispensesForLineItem]) => {
-    const latestMedicationDispense = medicationDispensesForLineItem[medicationDispensesForLineItem.length - 1]
-    const totalQuantity = getTotalQuantity(medicationDispensesForLineItem.map(m => m.quantity))
-    return {
-      id: lineItemId,
-      name: latestMedicationDispense.medicationCodeableConcept.coding[0].display,
-      quantityDispensed: formatQuantity(totalQuantity),
-      status: latestMedicationDispense.type.coding[0].display
-    }
-  })
+  return lineItemGroups
+    .filter(([, medicationDispensesForLineItem]) => {
+      const latestMedicationDispense = medicationDispensesForLineItem[medicationDispensesForLineItem.length - 1]
+      const latestLineItemStatusCode = latestMedicationDispense.type.coding[0].code
+      return latestLineItemStatusCode === LineItemStatus.DISPENSED
+    })
+    .map(([lineItemId, medicationDispensesForLineItem]) => {
+      const latestMedicationDispense = medicationDispensesForLineItem[medicationDispensesForLineItem.length - 1]
+      const totalQuantity = getTotalQuantity(medicationDispensesForLineItem.map(m => m.quantity))
+      return {
+        id: lineItemId,
+        name: latestMedicationDispense.medicationCodeableConcept.coding[0].display,
+        quantityDispensed: formatQuantity(totalQuantity),
+        status: latestMedicationDispense.type.coding[0].display
+      }
+    })
 }
 
 function groupByProperty<K, V>(array: Array<V>, getProperty: (value: V) => K): Array<[K, Array<V>]> {

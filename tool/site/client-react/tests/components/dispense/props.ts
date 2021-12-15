@@ -17,5 +17,6 @@ export const staticLineItemInfoArray: Array<StaticLineItemInfo> = [
   }]
 
 export const staticPrescriptionInfo: StaticPrescriptionInfo = {
+  dispenseDate: new Date(2021, 12, 1, 14, 15),
   priorStatusCode: PrescriptionStatus.WITH_DISPENSER
 }

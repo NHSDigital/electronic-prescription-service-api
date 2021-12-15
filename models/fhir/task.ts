@@ -8,7 +8,7 @@ import * as extension from "./extension"
 
 export class Task extends common.Resource {
   readonly resourceType = "Task"
-  extension?: Array<extension.PrescriptionExtension | extension.RepeatInformationExtension>
+  extension?: Array<extension.PrescriptionExtension | extension.UkCoreRepeatInformationExtension>
   identifier: Array<common.Identifier>
   groupIdentifier?: common.Identifier
   status: TaskStatus
@@ -18,7 +18,7 @@ export class Task extends common.Resource {
   authoredOn: string
   requester?: common.IdentifierReference<practitionerRole.PersonOrOrganization>
   owner?: common.IdentifierReference<practitionerRole.PersonOrOrganization>
-  reasonCode?: common.CodeableConcept
+  statusReason?: common.CodeableConcept
   code?: common.CodeableConcept
   businessStatus?: common.CodeableConcept
   input?: Array<TaskInput>

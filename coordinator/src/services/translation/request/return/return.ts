@@ -19,7 +19,7 @@ export async function convertTaskToDispenseProposalReturn(
 
   dispenseProposalReturn.author = await createAuthorFromTaskOwnerIdentifier(task.owner.identifier, logger)
   dispenseProposalReturn.pertinentInformation1 = createPertinentInformation1(task.groupIdentifier)
-  dispenseProposalReturn.pertinentInformation3 = createPertinentInformation3(task.reasonCode)
+  dispenseProposalReturn.pertinentInformation3 = createPertinentInformation3(task.statusReason)
   dispenseProposalReturn.reversalOf = createReversalOf(task.focus.identifier)
 
   return dispenseProposalReturn
@@ -39,7 +39,7 @@ export function createPertinentInformation3(
   const reasonCoding = getCodeableConceptCodingForSystem(
     [reasonCode],
     "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason",
-    "Task.reasonCode"
+    "Task.statusReason"
   )
   const returnReasonCode = new hl7V3.ReturnReasonCode(reasonCoding.code, reasonCoding.display)
   const returnReason = new hl7V3.ReturnReason(returnReasonCode)
