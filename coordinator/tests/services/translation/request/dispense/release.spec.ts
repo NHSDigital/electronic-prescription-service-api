@@ -31,7 +31,7 @@ describe("translateReleaseRequest", () => {
       }
     }])
 
-    const translatedRelease = await translateReleaseRequest(parameters, logger)
+    const translatedRelease = await translateReleaseRequest(parameters, undefined, logger)
 
     expect(mockAuthorFunction).toHaveBeenCalledWith("FTX40", undefined, logger)
     expect(translatedRelease).toBeInstanceOf(hl7V3.NominatedPrescriptionReleaseRequestWrapper)
@@ -54,7 +54,7 @@ describe("translateReleaseRequest", () => {
       }
     }])
 
-    const translatedRelease = await translateReleaseRequest(parameters, logger)
+    const translatedRelease = await translateReleaseRequest(parameters, undefined, logger)
 
     expect(mockAuthorFunction).toHaveBeenCalledWith("FTX40", undefined, logger)
     expect(translatedRelease).toBeInstanceOf(hl7V3.PatientPrescriptionReleaseRequestWrapper)
@@ -63,7 +63,7 @@ describe("translateReleaseRequest", () => {
   test("translated nominated release contains author details from ODS", async () => {
     mockAuthorFunction.mockReturnValueOnce(Promise.resolve(mockAuthorResponse))
 
-    const translatedRelease = await createNominatedReleaseRequest("FTX40", logger)
+    const translatedRelease = await createNominatedReleaseRequest("FTX40", undefined, logger)
 
     expect(mockAuthorFunction).toHaveBeenCalledWith("FTX40", undefined, logger)
     expect(translatedRelease.NominatedPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
@@ -72,7 +72,7 @@ describe("translateReleaseRequest", () => {
   test("translated patient release contains prescription ID and author details from ODS", async () => {
     mockAuthorFunction.mockReturnValueOnce(Promise.resolve(mockAuthorResponse))
 
-    const translatedRelease = await createPatientReleaseRequest("FTX40", "18B064-A99968-4BCAA3", logger)
+    const translatedRelease = await createPatientReleaseRequest("FTX40", "18B064-A99968-4BCAA3", undefined, logger)
 
     expect(mockAuthorFunction).toHaveBeenCalledWith("FTX40", undefined, logger)
     expect(translatedRelease.PatientPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)

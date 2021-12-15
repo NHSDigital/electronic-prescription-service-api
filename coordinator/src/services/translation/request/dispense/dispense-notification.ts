@@ -20,9 +20,11 @@ import {
   getRepeatNumberFromRepeatInfoExtension
 } from "./dispense-common"
 import {auditDoseToTextIfEnabled} from "../dosage"
+import Hapi from "@hapi/hapi"
 
 export async function convertDispenseNotification(
   bundle: fhir.Bundle,
+  headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): Promise<hl7V3.DispenseNotification> {
 
@@ -34,7 +36,6 @@ export async function convertDispenseNotification(
   const fhirFirstMedicationDispense = fhirMedicationDispenses[0]
   const fhirLineItemIdentifiers = getLineItemIdentifiers(fhirMedicationDispenses)
 
-  //TODO - find out whether we need to handle user instead of organization (and what we do about org details if so)
   const fhirOrganisationPerformer = getOrganisationPerformer(fhirFirstMedicationDispense)
   const hl7AgentOrganisation = createAgentOrganisation(fhirOrganisationPerformer)
   const hl7Patient = createPatient(fhirPatient, fhirFirstMedicationDispense)
@@ -47,6 +48,7 @@ export async function convertDispenseNotification(
     fhirOrganisationPerformer,
     fhirMedicationDispenses,
     fhirFirstMedicationDispense,
+    headers,
     logger
   )
 
@@ -73,6 +75,7 @@ async function createPertinentInformation1(
   fhirOrganisation: fhir.DispensePerformer,
   fhirMedicationDispenses: Array<fhir.MedicationDispense>,
   fhirFirstMedicationDispense: fhir.MedicationDispense,
+  headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ) {
   const hl7RepresentedOrganisationCode = fhirOrganisation.actor.identifier.value
@@ -83,6 +86,7 @@ async function createPertinentInformation1(
   const hl7Author = await createAuthor(
     hl7RepresentedOrganisationCode,
     hl7AuthorTime,
+    headers,
     logger
   )
   const hl7PertinentInformation1LineItems = fhirMedicationDispenses.map(
@@ -142,12 +146,13 @@ function createPatient(patient: fhir.Patient, firstMedicationDispense: fhir.Medi
 async function createAuthor(
   organisationCode: string,
   authorTime: string,
+  headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): Promise<hl7V3.PrescriptionAuthor> {
   const author = new hl7V3.PrescriptionAuthor()
   author.time = convertIsoDateTimeStringToHl7V3DateTime(authorTime, "MedicationDispense.whenHandedOver")
   author.signatureText = hl7V3.Null.NOT_APPLICABLE
-  author.AgentPerson = await createAgentPersonFromAuthenticatedUserDetails(organisationCode, undefined, logger)
+  author.AgentPerson = await createAgentPersonFromAuthenticatedUserDetails(organisationCode, headers, logger)
   return author
 }
 

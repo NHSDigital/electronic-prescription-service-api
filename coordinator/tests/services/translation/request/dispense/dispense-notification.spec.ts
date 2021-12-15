@@ -41,7 +41,7 @@ describe("convertPrescriptionDispense", () => {
     ])
 
   test.each(cases)("accepts %s", async (desc: string, input: fhir.Bundle) => {
-    expect(async () => await convertDispenseNotification(input, logger)).not.toThrow()
+    expect(async () => await convertDispenseNotification(input, undefined, logger)).not.toThrow()
   })
 })
 
@@ -91,7 +91,7 @@ describe("fhir MessageHeader maps correct values in DispenseNotification", () =>
       }
     }]
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
 
     expect(hl7dispenseNotification.replacementOf.priorMessageRef.id._attributes.root).toEqual("TEST-VALUE")
   })
@@ -99,14 +99,14 @@ describe("fhir MessageHeader maps correct values in DispenseNotification", () =>
   test("replacementOf extension doesn't map to sequelTo.priorMessageRef.id when missing", async () => {
     messageHeader.extension = []
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
 
     expect(hl7dispenseNotification.replacementOf).toBeUndefined()
   })
   test("response.identifier maps to sequelTo.priorPrescriptionReleaseEventRef.id", async () => {
     messageHeader.response.identifier = "XX-TEST-VALUE"
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
 
     expect(
       hl7dispenseNotification
@@ -117,7 +117,7 @@ describe("fhir MessageHeader maps correct values in DispenseNotification", () =>
   })
 })
 
-describe("fhir MedicationDispense maps correct values in DispenseNotificiation", () => {
+describe("fhir MedicationDispense maps correct values in DispenseNotification", () => {
   let dispenseNotification: fhir.Bundle
   let medicationDispenses: Array<fhir.MedicationDispense>
   beforeEach(() => {
@@ -132,7 +132,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
       setOrganisation(medicationDispense, "XX-TEST-VALUE", "XX-TEST-VALUE-DISPLAY")
     )
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
 
     medicationDispenses.map((medicationDispense) => {
       const fhirOrganisation = medicationDispense.performer.find(p => p.actor.type === "Organization")
@@ -156,7 +156,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
   test("identifier.value maps to pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.pertinentSuppliedLineItem.id", async () => {
     medicationDispenses.forEach(medicationDispense => setPrescriptionItemNumber(medicationDispense, "XX-TEST-VALUE"))
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(
@@ -177,7 +177,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
       setMedicationCodeableConcept(medicationDispense, "XX-TEST-VALUE", "XX-TEST-VALUE-DISPLAY")
     )
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
 
     medicationDispenses.map((_, index) => {
       expect(
@@ -218,7 +218,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
   test("subject.Patient.value maps to recordTarget.patient.id.extension", async () => {
     medicationDispenses.forEach(medicationDispense => setPatientId(medicationDispense, "XX-TEST-VALUE"))
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
 
     medicationDispenses.map((medicationDispense) => {
       expect(
@@ -238,7 +238,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
         "XX-TEST-VALUE-IDENTIFIER")
     )
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(
@@ -299,7 +299,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
       medicationDispense.quantity.code = "XX-TEST-VALUE-CODE"
     })
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(
@@ -368,7 +368,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
 
     const expected = "20200310000000"
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
 
     medicationDispenses.map(() => {
       expect(
@@ -390,7 +390,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
     const mockAgentPersonFunction = createAgentPersonFromAuthenticatedUserDetails as jest.Mock
     mockAgentPersonFunction.mockReturnValueOnce(Promise.resolve(mockAgentPersonResponse))
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
 
     expect(mockAgentPersonFunction).toHaveBeenCalledWith("T1450", undefined, logger)
     expect(
@@ -410,7 +410,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotificiation",
       medicationDispense.dosageInstruction.forEach(d => d.text = "XX-TEST-VALUE")
     )
 
-    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, logger)
+    const hl7dispenseNotification = await convertDispenseNotification(dispenseNotification, undefined, logger)
 
     medicationDispenses.map((medicationDispense, index) => {
       expect(
