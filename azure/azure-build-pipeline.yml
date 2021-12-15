@@ -36,7 +36,7 @@ extends:
         displayName: 'Publish Coordinator Test Results'
         inputs:
           testResultsFiles: test-report.html
+          searchFolder: "${{ variables.service_name }}/coordinator"
           mergeTestResults: true
           testRunTitle: 'Coordinator Tests'
           failTaskOnFailedTests: true
-          workingDirectory: "${{ variables.service_name }}/coordinator"
