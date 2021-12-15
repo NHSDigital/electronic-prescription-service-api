@@ -249,12 +249,6 @@ export class ProfessionalCode extends AgentPersonIdCode {
   }
 }
 
-export class UnattendedProfessionalCode extends AgentPersonIdCode {
-  constructor() {
-    super("G9999999")
-  }
-}
-
 export class DispensingEndorsementCode extends Code<"2.16.840.1.113883.2.1.3.2.4.16.29"> {
   constructor(code: string) {
     super("2.16.840.1.113883.2.1.3.2.4.16.29", code)
