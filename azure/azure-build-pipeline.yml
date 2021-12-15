@@ -33,10 +33,11 @@ extends:
         displayName: Run Quality Checks
         workingDirectory: "${{ variables.service_name }}"
       - task: PublishTestResults@2
-        displayName: 'Publish Coordinator Test Results'
+        displayName: 'Publish Test Results'
         inputs:
-          testResultsFiles: test-report.html
-          searchFolder: "${{ variables.service_name }}/coordinator"
+          testResultsFormat: 'JUnit'
+          testResultsFiles: "**/junit.xml"
+          searchFolder: "${{ variables.service_name }}"
           mergeTestResults: true
-          testRunTitle: 'Coordinator Tests'
+          testRunTitle: 'EPS Tests'
           failTaskOnFailedTests: true

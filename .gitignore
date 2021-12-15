@@ -20,4 +20,4 @@ tool/templates/*
 tool/static/*
 venv
 .DS_Store
-test-report.html
+junit.xml
