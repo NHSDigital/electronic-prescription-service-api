@@ -10,11 +10,13 @@ import {
   onlyElement
 } from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
-import {createAgentPersonForUnattendedAccess} from "../agent-unattended"
+import {createAgentPersonFromAuthenticatedUserDetails} from "../agent-unattended"
 import {createAgentOrganisationFromReference, getRepeatNumberFromRepeatInfoExtension} from "./dispense-common"
+import Hapi from "@hapi/hapi"
 
 export async function convertDispenseClaim(
   claim: fhir.Claim,
+  headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ): Promise<hl7V3.DispenseClaim> {
   const messageId = getMessageIdFromClaim(claim)
@@ -32,6 +34,7 @@ export async function convertDispenseClaim(
     item,
     messageId,
     claimDateTime,
+    headers,
     logger
   )
 
@@ -91,6 +94,7 @@ async function createDispenseClaimPertinentInformation1(
   item: fhir.ClaimItem,
   messageId: string,
   claimDateTime: hl7V3.Timestamp,
+  headers: Hapi.Util.Dictionary<string>,
   logger: pino.Logger
 ) {
   const supplyHeader = new hl7V3.DispenseClaimSupplyHeader(new hl7V3.GlobalIdentifier(messageId))
@@ -108,7 +112,7 @@ async function createDispenseClaimPertinentInformation1(
   }
 
   const payeeOdsCode = claim.payee.party.identifier.value
-  supplyHeader.legalAuthenticator = await createLegalAuthenticator(payeeOdsCode, claimDateTime, logger)
+  supplyHeader.legalAuthenticator = await createLegalAuthenticator(payeeOdsCode, claimDateTime, headers, logger)
 
   const prescriptionStatus = createPrescriptionStatus(item)
   supplyHeader.pertinentInformation3 = new hl7V3.SupplyHeaderPertinentInformation3(prescriptionStatus)
@@ -127,12 +131,16 @@ async function createDispenseClaimPertinentInformation1(
   return new hl7V3.DispenseClaimPertinentInformation1(supplyHeader)
 }
 
-async function createLegalAuthenticator(payeeOdsCode: string, timestamp: hl7V3.Timestamp, logger: pino.Logger) {
+async function createLegalAuthenticator(
+  payeeOdsCode: string,
+  timestamp: hl7V3.Timestamp,
+  headers: Hapi.Util.Dictionary<string>,
+  logger: pino.Logger
+) {
   const legalAuthenticator = new hl7V3.PrescriptionLegalAuthenticator()
   legalAuthenticator.time = timestamp
   legalAuthenticator.signatureText = hl7V3.Null.NOT_APPLICABLE
-  //TODO - check that we can omit the user details (applies to all dispensing messages)
-  legalAuthenticator.AgentPerson = await createAgentPersonForUnattendedAccess(payeeOdsCode, logger)
+  legalAuthenticator.AgentPerson = await createAgentPersonFromAuthenticatedUserDetails(payeeOdsCode, headers, logger)
   return legalAuthenticator
 }
 

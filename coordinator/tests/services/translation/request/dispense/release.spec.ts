@@ -5,18 +5,20 @@ import {
   translateReleaseRequest
 } from "../../../../../src/services/translation/request/dispense/release"
 import pino from "pino"
-import {createAuthorForUnattendedAccess} from "../../../../../src/services/translation/request/agent-unattended"
+import {
+  createAuthorFromAuthenticatedUserDetails
+} from "../../../../../src/services/translation/request/agent-unattended"
 
 const logger = pino()
 
 jest.mock("../../../../../src/services/translation/request/agent-unattended", () => ({
-  createAuthorForUnattendedAccess: jest.fn()
+  createAuthorFromAuthenticatedUserDetails: jest.fn()
 }))
 
 describe("translateReleaseRequest", () => {
   const mockAuthorResponse = new hl7V3.Author()
   mockAuthorResponse.AgentPerson = new hl7V3.AgentPerson()
-  const mockAuthorFunction = createAuthorForUnattendedAccess as jest.Mock
+  const mockAuthorFunction = createAuthorFromAuthenticatedUserDetails as jest.Mock
 
   test("translates release request without prescription ID to nominated release request", async () => {
     mockAuthorFunction.mockReturnValueOnce(Promise.resolve(mockAuthorResponse))
@@ -29,9 +31,9 @@ describe("translateReleaseRequest", () => {
       }
     }])
 
-    const translatedRelease = await translateReleaseRequest(parameters, logger)
+    const translatedRelease = await translateReleaseRequest(parameters, undefined, logger)
 
-    expect(mockAuthorFunction).toHaveBeenCalledWith("FTX40", logger)
+    expect(mockAuthorFunction).toHaveBeenCalledWith("FTX40", undefined, logger)
     expect(translatedRelease).toBeInstanceOf(hl7V3.NominatedPrescriptionReleaseRequestWrapper)
   })
 
@@ -52,27 +54,27 @@ describe("translateReleaseRequest", () => {
       }
     }])
 
-    const translatedRelease = await translateReleaseRequest(parameters, logger)
+    const translatedRelease = await translateReleaseRequest(parameters, undefined, logger)
 
-    expect(mockAuthorFunction).toHaveBeenCalledWith("FTX40", logger)
+    expect(mockAuthorFunction).toHaveBeenCalledWith("FTX40", undefined, logger)
     expect(translatedRelease).toBeInstanceOf(hl7V3.PatientPrescriptionReleaseRequestWrapper)
   })
 
   test("translated nominated release contains author details from ODS", async () => {
     mockAuthorFunction.mockReturnValueOnce(Promise.resolve(mockAuthorResponse))
 
-    const translatedRelease = await createNominatedReleaseRequest("FTX40", logger)
+    const translatedRelease = await createNominatedReleaseRequest("FTX40", undefined, logger)
 
-    expect(mockAuthorFunction).toHaveBeenCalledWith("FTX40", logger)
+    expect(mockAuthorFunction).toHaveBeenCalledWith("FTX40", undefined, logger)
     expect(translatedRelease.NominatedPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
   })
 
   test("translated patient release contains prescription ID and author details from ODS", async () => {
     mockAuthorFunction.mockReturnValueOnce(Promise.resolve(mockAuthorResponse))
 
-    const translatedRelease = await createPatientReleaseRequest("FTX40", "18B064-A99968-4BCAA3", logger)
+    const translatedRelease = await createPatientReleaseRequest("FTX40", "18B064-A99968-4BCAA3", undefined, logger)
 
-    expect(mockAuthorFunction).toHaveBeenCalledWith("FTX40", logger)
+    expect(mockAuthorFunction).toHaveBeenCalledWith("FTX40", undefined, logger)
     expect(translatedRelease.PatientPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
     expect(
       translatedRelease
