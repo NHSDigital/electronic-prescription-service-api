@@ -8,10 +8,23 @@ import PrescriptionSearchForm from "../components/prescription-tracker/prescript
 import PrescriptionSearchResults from "../components/prescription-tracker/prescriptionSearchResults"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
+import moment from "moment"
 
 export interface PrescriptionSearchCriteria {
   prescriptionId?: string
   patientId?: string
+  businessStatus?: string
+  authoredOn?: ComparatorAndDateValues
+}
+
+export interface DateValues {
+  day?: string
+  month?: string
+  year?: string
+}
+
+export interface ComparatorAndDateValues extends DateValues {
+  comparator?: string
 }
 
 interface PrescriptionSearchPageProps {
@@ -74,7 +87,22 @@ function toTrackerQueryParams(searchCriteria: PrescriptionSearchCriteria) {
   if (searchCriteria.patientId) {
     searchParams["patient:identifier"] = searchCriteria.patientId.replace(/ /g, "")
   }
+  if (searchCriteria.businessStatus) {
+    searchParams["business-status"] = searchCriteria.businessStatus
+  }
+  if (searchCriteria.authoredOn?.comparator) {
+    const authoredOnMoment = createMoment(searchCriteria.authoredOn)
+    searchParams["authored-on"] = `${searchCriteria.authoredOn.comparator}${authoredOnMoment.format("YYYY-MM-DD")}`
+  }
   return searchParams
+}
+
+export function createMoment(date: ComparatorAndDateValues): moment.Moment {
+  return moment.utc({
+    day: parseInt(date.day),
+    month: parseInt(date.month) - 1,
+    year: parseInt(date.year)
+  }, true)
 }
 
 export function getTasks(bundle: Bundle): Array<Task> {
