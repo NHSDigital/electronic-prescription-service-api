@@ -15,10 +15,10 @@ test("NHS number is mapped correctly", () => {
   expect(result.patient.id._attributes.extension).toEqual("9446368138")
 })
 
-test("author is populated with hard coded value", () => {
-  const result = createAuthor()
-  expect(result.AgentPersonSDS.id._attributes.extension).toEqual("999999999999")
-  expect(result.AgentPersonSDS.agentPersonSDS.id._attributes.extension).toEqual("999999999999")
+test("author is populated with values from the header", () => {
+  const result = createAuthor(undefined)
+  expect(result.AgentPersonSDS.id._attributes.extension).toEqual("555254240100")
+  expect(result.AgentPersonSDS.agentPersonSDS.id._attributes.extension).toEqual("555254239107")
 })
 
 test("short form prescription ID is mapped correctly", () => {
