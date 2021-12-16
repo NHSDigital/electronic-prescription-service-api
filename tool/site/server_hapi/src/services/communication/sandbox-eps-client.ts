@@ -1,10 +1,9 @@
 import * as uuid from "uuid"
 import axios from "axios"
-import {Bundle, OperationOutcome, Parameters} from "fhir/r4"
+import {Bundle, Claim, OperationOutcome, Parameters} from "fhir/r4"
 import {EpsClient, EpsResponse} from "./eps-client"
 
 export class SandboxEpsClient implements EpsClient {
-
   async makePrepareRequest(): Promise<Parameters> {
     return Promise.resolve({
       resourceType: "Parameters",
@@ -65,6 +64,27 @@ export class SandboxEpsClient implements EpsClient {
     }))
 
     const fhirResponse = response.data as Bundle | OperationOutcome
+
+    return Promise.resolve({statusCode, fhirResponse, spineResponse: spineResponse})
+  }
+
+  async makeClaimRequest(body: Claim): Promise<EpsResponse<OperationOutcome>> {
+    const url = `https://${process.env.APIGEE_DOMAIN_NAME}/electronic-prescriptions/FHIR/R4/Claim`
+    const statusCode = 200
+    const spineResponse = (await axios.post(url, body, {
+      headers: {
+        "X-Request-ID": uuid.v4(),
+        "X-Raw-Response": "true"
+      }
+    })).data as any
+
+    const response = (await axios.post(url, body, {
+      headers: {
+        "X-Request-ID": uuid.v4()
+      }
+    }))
+
+    const fhirResponse = response.data as OperationOutcome
 
     return Promise.resolve({statusCode, fhirResponse, spineResponse: spineResponse})
   }

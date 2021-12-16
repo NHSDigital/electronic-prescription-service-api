@@ -4,14 +4,16 @@ import * as fhir from "../../fhir"
 
 export class TaskCase extends Case {
   description: string
-  request: fhir.Parameters | fhir.Task
+  request: fhir.Task
   response: fhir.Bundle
+  operation: string
 
-  constructor(requestFile: ExampleFile, responseFile: ExampleFile) {
+  constructor(requestFile: ExampleFile, responseFile: ExampleFile, operation: string) {
     super(requestFile, responseFile)
+    this.operation = operation
   }
 
-  toJestCase(): [string, fhir.Parameters | fhir.Task, fhir.Bundle, number] {
+  toJestCase(): [string, fhir.Task, fhir.Bundle, number] {
     return [this.description, this.request, this.response, this.statusCode]
   }
 }

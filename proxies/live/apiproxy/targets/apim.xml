@@ -43,6 +43,15 @@
           <Name>FlowCallout.UserRoleService</Name>
           <Condition>(access-mode Equals "user-restricted")</Condition>
         </Step>
+        <!-- Get ODS code from UserInfo -->
+        <Step>
+          <Name>JavaScript.GetUserDetailsFromCache</Name>
+          <Condition>(access-mode Equals "user-restricted")</Condition>
+        </Step>
+        <Step>
+          <Name>AssignMessage.AddUserInfoHeaders</Name>
+          <Condition>(access-mode Equals "user-restricted")</Condition>
+        </Step>
         <Step>
           <Name>AssignMessage.AddUserIdHeader</Name>
         </Step>

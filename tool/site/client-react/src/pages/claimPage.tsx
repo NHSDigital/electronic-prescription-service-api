@@ -2,7 +2,6 @@ import * as React from "react"
 import {useContext, useState} from "react"
 import {CrossIcon, Label, TickIcon} from "nhsuk-react-components"
 import ClaimForm, {ClaimFormValues, StaticProductInfo} from "../components/claim/claimForm"
-import axios from "axios"
 import {
   getMedicationDispenseResources,
   getMedicationRequestResources,
@@ -18,7 +17,12 @@ import {formatQuantity} from "../formatters/quantity"
 import LongRunningTask from "../components/longRunningTask"
 import {AppContext} from "../index"
 import PrescriptionActions from "../components/prescriptionActions"
+import {getResponseDataIfValid} from "../requests/getValidResponse"
+import {getArrayTypeGuard, isBundle} from "../fhir/typeGuards"
+import {axiosInstance} from "../requests/axiosInstance"
+import {isApiResult, ApiResult} from "../requests/apiResult"
 import ReloadButton from "../components/reloadButton"
+import {LineItemStatus} from "../fhir/reference-data/valueSets"
 
 interface ClaimPageProps {
   prescriptionId: string
@@ -46,7 +50,7 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
 
         const sendClaimTask = () => sendClaim(baseUrl, prescriptionDetails, claimFormValues)
         return (
-          <LongRunningTask<ClaimResult> task={sendClaimTask} loadingMessage="Sending claim.">
+          <LongRunningTask<ApiResult> task={sendClaimTask} loadingMessage="Sending claim.">
             {claimResult => (
               <>
                 <Label isPageHeading>Claim Result {claimResult.success ? <TickIcon/> : <CrossIcon/>}</Label>
@@ -70,15 +74,13 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
 }
 
 async function retrievePrescriptionDetails(baseUrl: string, prescriptionId: string): Promise<PrescriptionDetails> {
-  const releasedPrescription = await axios.get<fhir.Bundle>(`${baseUrl}dispense/release/${prescriptionId}`)
-  const prescriptionOrder = releasedPrescription.data
-  if (!prescriptionOrder) {
-    throw new Error("Prescription order not found. Is the ID correct?")
-  }
+  const prescriptionOrderResponse = await axiosInstance.get<fhir.Bundle>(`${baseUrl}dispense/release/${prescriptionId}`)
+  const prescriptionOrder = getResponseDataIfValid(prescriptionOrderResponse, isBundle)
 
-  const dispenseNotificationsResponse = await axios.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
-  const dispenseNotifications = dispenseNotificationsResponse.data
-  if (!dispenseNotifications?.length) {
+  const dispenseNotificationsResponse = await axiosInstance.get<Array<fhir.Bundle>>(`${baseUrl}dispenseNotifications/${prescriptionId}`)
+  const dispenseNotifications = getResponseDataIfValid(dispenseNotificationsResponse, getArrayTypeGuard(isBundle))
+
+  if (!dispenseNotifications.length) {
     throw new Error("Dispense notification not found. Has this prescription been dispensed?")
   }
 
@@ -93,15 +95,15 @@ async function sendClaim(
   baseUrl: string,
   prescriptionDetails: PrescriptionDetails,
   claimFormValues: ClaimFormValues
-): Promise<ClaimResult> {
+): Promise<ApiResult> {
   const claim = createClaim(
     prescriptionDetails.patient,
     prescriptionDetails.medicationRequests,
     prescriptionDetails.medicationDispenses,
     claimFormValues
   )
-  const response = await axios.post<ClaimResult>(`${baseUrl}dispense/claim`, claim)
-  return response.data
+  const response = await axiosInstance.post<ApiResult>(`${baseUrl}dispense/claim`, claim)
+  return getResponseDataIfValid(response, isApiResult)
 }
 
 interface PrescriptionDetails {
@@ -110,26 +112,24 @@ interface PrescriptionDetails {
   medicationDispenses: Array<fhir.MedicationDispense>
 }
 
-interface ClaimResult {
-  success: boolean
-  request: fhir.Claim
-  request_xml: string
-  response: fhir.OperationOutcome
-  response_xml: string
-}
-
 export function createStaticProductInfoArray(medicationDispenses: Array<MedicationDispense>): Array<StaticProductInfo> {
   const lineItemGroups = groupByProperty(medicationDispenses, getMedicationDispenseLineItemId)
-  return lineItemGroups.map(([lineItemId, medicationDispensesForLineItem]) => {
-    const latestMedicationDispense = medicationDispensesForLineItem[medicationDispensesForLineItem.length - 1]
-    const totalQuantity = getTotalQuantity(medicationDispensesForLineItem.map(m => m.quantity))
-    return {
-      id: lineItemId,
-      name: latestMedicationDispense.medicationCodeableConcept.coding[0].display,
-      quantityDispensed: formatQuantity(totalQuantity),
-      status: latestMedicationDispense.type.coding[0].display
-    }
-  })
+  return lineItemGroups
+    .filter(([, medicationDispensesForLineItem]) => {
+      const latestMedicationDispense = medicationDispensesForLineItem[medicationDispensesForLineItem.length - 1]
+      const latestLineItemStatusCode = latestMedicationDispense.type.coding[0].code
+      return latestLineItemStatusCode === LineItemStatus.DISPENSED
+    })
+    .map(([lineItemId, medicationDispensesForLineItem]) => {
+      const latestMedicationDispense = medicationDispensesForLineItem[medicationDispensesForLineItem.length - 1]
+      const totalQuantity = getTotalQuantity(medicationDispensesForLineItem.map(m => m.quantity))
+      return {
+        id: lineItemId,
+        name: latestMedicationDispense.medicationCodeableConcept.coding[0].display,
+        quantityDispensed: formatQuantity(totalQuantity),
+        status: latestMedicationDispense.type.coding[0].display
+      }
+    })
 }
 
 function groupByProperty<K, V>(array: Array<V>, getProperty: (value: V) => K): Array<[K, Array<V>]> {

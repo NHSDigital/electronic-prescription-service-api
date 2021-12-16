@@ -16,7 +16,7 @@ import {
 } from "../../fhir/reference-data/valueSets"
 import {
   createDispensingRepeatInformationExtension,
-  createUuidIdentifier,
+  createIdentifier,
   getMedicationRequestLineItemId,
   requiresDispensingRepeatInformationExtension
 } from "../../fhir/helpers"
@@ -57,7 +57,7 @@ export function createDispenseNotification(
   return {
     resourceType: "Bundle",
     id: uuid.v4(),
-    identifier: createUuidIdentifier(),
+    identifier: createIdentifier(),
     type: "message",
     entry: [
       dispenseNotificationMessageHeader,
@@ -120,7 +120,7 @@ function createMedicationDispense(
     type: createMedicationDispenseType(lineItemFormValues.statusCode),
     quantity: createDispensedQuantity(medicationRequest.dispenseRequest.quantity, lineItemFormValues),
     daysSupply: medicationRequest.dispenseRequest.expectedSupplyDuration,
-    whenPrepared: new Date().toISOString(),
+    whenHandedOver: prescriptionFormValues.dispenseDate.toISOString(),
     dosageInstruction: medicationRequest.dosageInstruction
   }
 }

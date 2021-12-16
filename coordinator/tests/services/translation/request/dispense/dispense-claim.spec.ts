@@ -15,7 +15,7 @@ jest.mock("moment", () => ({
     actualMoment.utc(input || "2020-12-18T12:34:34Z", format)
 }))
 jest.mock("../../../../../src/services/translation/request/agent-unattended", () => ({
-  createAgentPersonForUnattendedAccess: jest.fn()
+  createAgentPersonFromAuthenticatedUserDetails: jest.fn()
 }))
 
 describe("convertDispenseClaim", () => {
@@ -26,7 +26,7 @@ describe("convertDispenseClaim", () => {
     ])
 
   test.each(cases)("accepts %s", async (desc: string, input: fhir.Claim) => {
-    expect(async() => await convertDispenseClaim(input, logger)).not.toThrow()
+    expect(async() => await convertDispenseClaim(input, undefined, logger)).not.toThrow()
   })
 
   test("FHIR replacementOf gets populated in v3", async () => {
@@ -38,20 +38,20 @@ describe("convertDispenseClaim", () => {
         value: "bluh id"
       }
     }]
-    const v3Claim = await convertDispenseClaim(claim, logger)
+    const v3Claim = await convertDispenseClaim(claim, undefined, logger)
     expect(v3Claim.replacementOf).toBeDefined()
   })
 
   test("FHIR replacementOf doesn't get populated in v3", async () => {
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
-    const v3Claim = await convertDispenseClaim(claim, logger)
+    const v3Claim = await convertDispenseClaim(claim, undefined, logger)
     expect(v3Claim.replacementOf).toBeUndefined()
   })
 
   test("No chargeExemptionCoding results in no v3.coverage", async () => {
     const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
     claim.item[0].programCode = []
-    const v3Claim = await convertDispenseClaim(claim, logger)
+    const v3Claim = await convertDispenseClaim(claim, undefined, logger)
     expect(v3Claim.coverage).toBeUndefined()
   })
 
@@ -66,7 +66,7 @@ describe("convertDispenseClaim", () => {
         }
       ]
     }]
-    const v3Claim = await convertDispenseClaim(claim, logger)
+    const v3Claim = await convertDispenseClaim(claim, undefined, logger)
     expect(v3Claim.coverage).toBeDefined()
     expect(v3Claim.coverage.coveringChargeExempt.authorization).toBeUndefined()
   })
@@ -87,7 +87,7 @@ describe("convertDispenseClaim", () => {
         }
       ]
     }]
-    const v3Claim = await convertDispenseClaim(claim, logger)
+    const v3Claim = await convertDispenseClaim(claim, undefined, logger)
     expect(v3Claim.coverage).toBeDefined()
     expect(v3Claim.coverage.coveringChargeExempt.authorization).toBeDefined()
   })
@@ -116,7 +116,7 @@ describe("createSuppliedLineItem", () => {
         }
       ]
     })
-    const v3Claim = await convertDispenseClaim(claim, logger)
+    const v3Claim = await convertDispenseClaim(claim, undefined, logger)
     v3Claim.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.forEach(pertinentInformation1 => {
       expect(pertinentInformation1.pertinentSuppliedLineItem.pertinentInformation2).toBeUndefined()
     })
@@ -152,9 +152,18 @@ describe("createSuppliedLineItem", () => {
       ]
     })
 
-    const v3Claim = await convertDispenseClaim(claim, logger)
+    const v3Claim = await convertDispenseClaim(claim, undefined, logger)
     v3Claim.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.forEach(pertinentInformation1 => {
       expect(pertinentInformation1.pertinentSuppliedLineItem.pertinentInformation2).toBeDefined()
+    })
+  })
+
+  test("FHIR with no subDetail should not populate suppliedLineItem.component", async () => {
+    const claim: fhir.Claim = clone(TestResources.examplePrescription3.fhirMessageClaim)
+    claim.item[0].detail.forEach(detail => delete detail.subDetail)
+    const v3Claim = await convertDispenseClaim(claim, undefined, logger)
+    v3Claim.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.forEach(pertinentInformation1 => {
+      expect(pertinentInformation1.pertinentSuppliedLineItem.component).toBeUndefined()
     })
   })
 })

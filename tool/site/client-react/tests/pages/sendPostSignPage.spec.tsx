@@ -6,6 +6,7 @@ import moxios from "moxios"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import SendPostSignPage from "../../src/pages/sendPostSignPage"
+import {axiosInstance} from "../../src/requests/axiosInstance"
 
 const baseUrl = "baseUrl/"
 const token = "MzQxMWJmMjUtMDNlMy00N2FiLWEyOGItMGIyYjVlNTg4ZGU3"
@@ -14,9 +15,9 @@ const context: AppContextValue = {baseUrl}
 
 const sendUrl = `${baseUrl}prescribe/send`
 
-beforeEach(() => moxios.install())
+beforeEach(() => moxios.install(axiosInstance))
 
-afterEach(() => moxios.uninstall())
+afterEach(() => moxios.uninstall(axiosInstance))
 
 test("Displays loading text while prescription is being sent", async () => {
   const {container} = renderWithContext(<SendPostSignPage token={token}/>, context)

@@ -28,6 +28,8 @@ export const VALUE_SET_PRESCRIBER_ENDORSEMENT: Array<Coding> = [
   }
 ]
 
+export const DISPENSER_ENDORSEMENT_CODE_NONE = "NDEC"
+
 export const VALUE_SET_DISPENSER_ENDORSEMENT: Array<Coding> = [
   {
     code: "BB",
@@ -55,7 +57,7 @@ export const VALUE_SET_DISPENSER_ENDORSEMENT: Array<Coding> = [
     display: "No Cheaper Stock Obtainable"
   },
   {
-    code: "NDEC",
+    code: DISPENSER_ENDORSEMENT_CODE_NONE,
     system: "https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement",
     display: "No Dispenser Endorsement Code"
   },
@@ -96,9 +98,11 @@ export const VALUE_SET_DISPENSER_ENDORSEMENT: Array<Coding> = [
   }
 ]
 
+export const PRESCRIPTION_CHARGE_EXEMPTION_CODE_NONE = "0001"
+
 export const VALUE_SET_PRESCRIPTION_CHARGE_EXEMPTION: Array<Coding> = [
   {
-    code: "0001",
+    code: PRESCRIPTION_CHARGE_EXEMPTION_CODE_NONE,
     system: "https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption",
     display: "Patient has paid appropriate charges"
   },

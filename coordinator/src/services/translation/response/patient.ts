@@ -26,7 +26,7 @@ function createNhsNumberIdentifier(nhsNumber: string): Array<fhir.PatientIdentif
             coding: [
               {
                 system: "https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus",
-                code: "01",
+                code: "number-present-and-verified",
                 display: "Number present and verified"
               }
             ]

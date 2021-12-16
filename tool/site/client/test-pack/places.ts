@@ -3,7 +3,7 @@ import {
   Organization,
   HealthcareService,
   Location
-} from "../models"
+} from "fhir/r4"
 
 export function createPlaceResources(careSetting: string, fhirPrescription: Bundle): void {
   if (careSetting === "Primary-Care") {
@@ -106,7 +106,7 @@ export function createPlaceResources(careSetting: string, fhirPrescription: Bund
             value: "A99968"
           }
         ],
-        active: "true",
+        active: true,
         providedBy: {
           identifier: {
             system: "https://fhir.nhs.uk/Id/ods-organization-code",

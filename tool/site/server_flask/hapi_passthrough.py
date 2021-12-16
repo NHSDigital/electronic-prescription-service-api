@@ -14,6 +14,7 @@ def get_status():
 def get_healthcheck():
     return httpx.get(f"{HAPI_URL}/_healthcheck", verify=False).json()
 
+
 # Login
 
 def post_login(auth_method, access_token):
@@ -47,6 +48,10 @@ def post_send(body):
     return make_post_request(f"{HAPI_URL}/prescribe/send", body)
 
 
+def post_cancel(body):
+    return make_post_request(f"{HAPI_URL}/prescribe/cancel", body)
+
+
 # Dispense
 
 def get_released_prescriptions(prescription_id):
@@ -65,6 +70,10 @@ def post_dispense(body):
     return make_post_request(f"{HAPI_URL}/dispense/dispense", body)
 
 
+def post_claim(body):
+    return make_post_request(f"{HAPI_URL}/dispense/claim", body)
+
+
 # Tracker
 
 def get_tracker_prescription(query):
@@ -80,7 +89,9 @@ def get_hapi_session():
 # Helpers
 
 def make_get_request(url):
-    return httpx.get(url, verify=False, cookies=get_cookies()).json()
+    timeout = httpx.Timeout(60.0, connect=10.0)
+    client = httpx.Client(timeout=timeout, verify=False, cookies=get_cookies())
+    return client.get(url).json()
 
 
 def make_post_request(url, body):

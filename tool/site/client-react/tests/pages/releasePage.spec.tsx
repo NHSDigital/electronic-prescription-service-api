@@ -7,6 +7,7 @@ import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
 import ReleasePage from "../../src/pages/releasePage"
 import userEvent from "@testing-library/user-event"
+import {axiosInstance} from "../../src/requests/axiosInstance"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "7A9089-A83008-56A03J"
@@ -14,9 +15,9 @@ const context: AppContextValue = {baseUrl}
 
 const releaseUrl = `${baseUrl}dispense/release`
 
-beforeEach(() => moxios.install())
+beforeEach(() => moxios.install(axiosInstance))
 
-afterEach(() => moxios.uninstall())
+afterEach(() => moxios.uninstall(axiosInstance))
 
 test("Displays release form", async () => {
   const container = await renderPage()
