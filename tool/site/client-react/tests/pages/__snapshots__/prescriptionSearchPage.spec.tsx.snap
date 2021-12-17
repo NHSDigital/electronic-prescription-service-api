@@ -797,26 +797,13 @@ exports[`Clicking back from the summary search results returns to the form 1`] =
     </select></div>
   <div class=\\"nhsuk-form-group\\">
     <fieldset class=\\"nhsuk-fieldset\\">
-      <legend class=\\"nhsuk-fieldset__legend\\">Creation Date</legend>
-      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.comparator--label\\" for=\\"authoredOn.comparator\\">Search Type</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"authoredOn.comparator--label\\" name=\\"authoredOn.comparator\\" id=\\"authoredOn.comparator\\">
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.type--label\\" for=\\"authoredOn.type\\">Creation Date</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"authoredOn.type--label\\" name=\\"authoredOn.type\\" id=\\"authoredOn.type\\">
           <option value=\\"\\"></option>
-          <option value=\\"le\\">On or before</option>
-          <option value=\\"eq\\">On</option>
-          <option value=\\"ge\\">On or after</option>
+          <option value=\\"onOrBefore\\">On or before</option>
+          <option value=\\"on\\">On</option>
+          <option value=\\"onOrAfter\\">On or after</option>
+          <option value=\\"between\\">Between</option>
         </select></div>
-      <div class=\\"nhsuk-form-group\\">
-        <div class=\\"nhsuk-date-input\\" id=\\"authoredOn.date\\">
-          <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.day--label\\" for=\\"authoredOn.day\\">Day</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.day\\" aria-labelledby=\\"authoredOn.day--label\\" name=\\"authoredOn.day\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
-          </div>
-          <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.month--label\\" for=\\"authoredOn.month\\">Month</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.month\\" aria-labelledby=\\"authoredOn.month--label\\" name=\\"authoredOn.month\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
-          </div>
-          <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.year--label\\" for=\\"authoredOn.year\\">Year</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-4\\" id=\\"authoredOn.year\\" aria-labelledby=\\"authoredOn.year--label\\" name=\\"authoredOn.year\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
-          </div>
-        </div>
-      </div>
     </fieldset>
   </div>
   <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Search</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
@@ -860,9 +847,7 @@ exports[`Displays an error message if summary search returns an error 1`] = `
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Query Params</span></summary>
     <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%0A%20%20%22patient%3Aidentifier%22%3A%20%229449304106%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">{
-  \\"patient:identifier\\": \\"9449304106\\"
-}</pre>
+      <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%22patient%3Aidentifier%22%3A%20%229449304106%22\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">\\"patient:identifier\\": \\"9449304106\\"</pre>
     </div>
   </details>
   <details class=\\"nhsuk-details nhsuk-expander\\">
@@ -922,9 +907,7 @@ exports[`Displays an error message if summary search returns invalid response 1`
   <details class=\\"nhsuk-details nhsuk-expander\\">
     <summary class=\\"nhsuk-details__summary\\"><span class=\\"nhsuk-details__summary-text\\">Request Query Params</span></summary>
     <div class=\\"nhsuk-details__text\\">
-      <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%7B%0A%20%20%22patient%3Aidentifier%22%3A%20%229449304106%22%0A%7D\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">{
-  \\"patient:identifier\\": \\"9449304106\\"
-}</pre>
+      <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" aria-disabled=\\"false\\" type=\\"submit\\">Copy</button><a class=\\"nhsuk-button sc-dkPtRN hhyeAF\\" role=\\"button\\" aria-disabled=\\"false\\" draggable=\\"false\\" href=\\"data:text/plain;charset=utf-8,%22patient%3Aidentifier%22%3A%20%229449304106%22\\" download=\\"message\\">Download</a></div><pre class=\\"sc-gsDKAQ jsqwND\\">\\"patient:identifier\\": \\"9449304106\\"</pre>
     </div>
   </details>
   <details class=\\"nhsuk-details nhsuk-expander\\">
@@ -965,23 +948,23 @@ exports[`Displays error if creation date field invalid 1`] = `
     </select></div>
   <div class=\\"nhsuk-form-group nhsuk-form-group--error\\">
     <fieldset class=\\"nhsuk-fieldset\\">
-      <legend class=\\"nhsuk-fieldset__legend\\">Creation Date</legend>
-      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.comparator--label\\" for=\\"authoredOn.comparator\\">Search Type</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"authoredOn.comparator--label\\" name=\\"authoredOn.comparator\\" id=\\"authoredOn.comparator\\">
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.type--label\\" for=\\"authoredOn.type\\">Creation Date</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"authoredOn.type--label\\" name=\\"authoredOn.type\\" id=\\"authoredOn.type\\">
           <option value=\\"\\"></option>
-          <option value=\\"le\\">On or before</option>
-          <option value=\\"eq\\">On</option>
-          <option value=\\"ge\\">On or after</option>
+          <option value=\\"onOrBefore\\">On or before</option>
+          <option value=\\"on\\">On</option>
+          <option value=\\"onOrAfter\\">On or after</option>
+          <option value=\\"between\\">Between</option>
         </select></div>
-      <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><span class=\\"nhsuk-error-message\\" id=\\"authoredOn.date--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>Invalid date</span>
-        <div class=\\"nhsuk-date-input\\" id=\\"authoredOn.date\\">
+      <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.low--label\\" for=\\"authoredOn.low\\">Earliest Date</label><span class=\\"nhsuk-error-message\\" id=\\"authoredOn.low--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>Invalid date</span>
+        <div class=\\"nhsuk-date-input\\" aria-labelledby=\\"authoredOn.low--label\\" id=\\"authoredOn.low\\">
           <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.day--label\\" for=\\"authoredOn.day\\">Day</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2 nhsuk-input--error\\" id=\\"authoredOn.day\\" aria-labelledby=\\"authoredOn.day--label\\" name=\\"authoredOn.day\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"45\\"></div>
+            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.low.day--label\\" for=\\"authoredOn.low.day\\">Day</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2 nhsuk-input--error\\" id=\\"authoredOn.low.day\\" aria-labelledby=\\"authoredOn.low.day--label\\" name=\\"authoredOn.low.day\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"45\\"></div>
           </div>
           <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.month--label\\" for=\\"authoredOn.month\\">Month</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2 nhsuk-input--error\\" id=\\"authoredOn.month\\" aria-labelledby=\\"authoredOn.month--label\\" name=\\"authoredOn.month\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"12\\"></div>
+            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.low.month--label\\" for=\\"authoredOn.low.month\\">Month</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2 nhsuk-input--error\\" id=\\"authoredOn.low.month\\" aria-labelledby=\\"authoredOn.low.month--label\\" name=\\"authoredOn.low.month\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"12\\"></div>
           </div>
           <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.year--label\\" for=\\"authoredOn.year\\">Year</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-4 nhsuk-input--error\\" id=\\"authoredOn.year\\" aria-labelledby=\\"authoredOn.year--label\\" name=\\"authoredOn.year\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"2020\\"></div>
+            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.low.year--label\\" for=\\"authoredOn.low.year\\">Year</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-4 nhsuk-input--error\\" id=\\"authoredOn.low.year\\" aria-labelledby=\\"authoredOn.low.year--label\\" name=\\"authoredOn.low.year\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"2020\\"></div>
           </div>
         </div>
       </div>
@@ -991,7 +974,7 @@ exports[`Displays error if creation date field invalid 1`] = `
 </form>"
 `;
 
-exports[`Displays error if creation date field partially completed - comparator missing 1`] = `
+exports[`Displays error if creation date field partially completed 1`] = `
 "<form>
   <h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Search for a Prescription</label></h1>
   <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><label class=\\"nhsuk-label\\" id=\\"prescriptionId--label\\" for=\\"prescriptionId\\">Prescription ID</label><span class=\\"nhsuk-hint\\" id=\\"prescriptionId--hint\\">Use the short form here, e.g. E3E6FA-A83008-41F09Y</span><span class=\\"nhsuk-error-message\\" id=\\"prescriptionId--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>One of Prescription ID or NHS Number is required</span><input class=\\"nhsuk-input nhsuk-input--width-20 nhsuk-input--error\\" aria-describedby=\\"prescriptionId--hint\\" aria-labelledby=\\"prescriptionId--label\\" name=\\"prescriptionId\\" id=\\"prescriptionId\\" autocomplete=\\"off\\" type=\\"text\\" value=\\"\\"></div>
@@ -1008,66 +991,23 @@ exports[`Displays error if creation date field partially completed - comparator 
     </select></div>
   <div class=\\"nhsuk-form-group nhsuk-form-group--error\\">
     <fieldset class=\\"nhsuk-fieldset\\">
-      <legend class=\\"nhsuk-fieldset__legend\\">Creation Date</legend>
-      <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.comparator--label\\" for=\\"authoredOn.comparator\\">Search Type</label><span class=\\"nhsuk-error-message\\" id=\\"authoredOn.comparator--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>All fields are required for a date search</span><select class=\\"nhsuk-select nhsuk-select--error\\" aria-labelledby=\\"authoredOn.comparator--label\\" name=\\"authoredOn.comparator\\" id=\\"authoredOn.comparator\\">
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.type--label\\" for=\\"authoredOn.type\\">Creation Date</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"authoredOn.type--label\\" name=\\"authoredOn.type\\" id=\\"authoredOn.type\\">
           <option value=\\"\\"></option>
-          <option value=\\"le\\">On or before</option>
-          <option value=\\"eq\\">On</option>
-          <option value=\\"ge\\">On or after</option>
+          <option value=\\"onOrBefore\\">On or before</option>
+          <option value=\\"on\\">On</option>
+          <option value=\\"onOrAfter\\">On or after</option>
+          <option value=\\"between\\">Between</option>
         </select></div>
-      <div class=\\"nhsuk-form-group\\">
-        <div class=\\"nhsuk-date-input\\" id=\\"authoredOn.date\\">
+      <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.low--label\\" for=\\"authoredOn.low\\">Earliest Date</label><span class=\\"nhsuk-error-message\\" id=\\"authoredOn.low--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>All fields are required for a date search</span>
+        <div class=\\"nhsuk-date-input\\" aria-labelledby=\\"authoredOn.low--label\\" id=\\"authoredOn.low\\">
           <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.day--label\\" for=\\"authoredOn.day\\">Day</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.day\\" aria-labelledby=\\"authoredOn.day--label\\" name=\\"authoredOn.day\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"12\\"></div>
+            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.low.day--label\\" for=\\"authoredOn.low.day\\">Day</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.low.day\\" aria-labelledby=\\"authoredOn.low.day--label\\" name=\\"authoredOn.low.day\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"12\\"></div>
           </div>
           <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.month--label\\" for=\\"authoredOn.month\\">Month</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.month\\" aria-labelledby=\\"authoredOn.month--label\\" name=\\"authoredOn.month\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"6\\"></div>
+            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.low.month--label\\" for=\\"authoredOn.low.month\\">Month</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.low.month\\" aria-labelledby=\\"authoredOn.low.month--label\\" name=\\"authoredOn.low.month\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"6\\"></div>
           </div>
           <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.year--label\\" for=\\"authoredOn.year\\">Year</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-4\\" id=\\"authoredOn.year\\" aria-labelledby=\\"authoredOn.year--label\\" name=\\"authoredOn.year\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"2020\\"></div>
-          </div>
-        </div>
-      </div>
-    </fieldset>
-  </div>
-  <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Search</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
-</form>"
-`;
-
-exports[`Displays error if creation date field partially completed - date field missing 1`] = `
-"<form>
-  <h1 class=\\"nhsuk-label-wrapper\\"><label class=\\"nhsuk-label nhsuk-label--xl\\">Search for a Prescription</label></h1>
-  <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><label class=\\"nhsuk-label\\" id=\\"prescriptionId--label\\" for=\\"prescriptionId\\">Prescription ID</label><span class=\\"nhsuk-hint\\" id=\\"prescriptionId--hint\\">Use the short form here, e.g. E3E6FA-A83008-41F09Y</span><span class=\\"nhsuk-error-message\\" id=\\"prescriptionId--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>One of Prescription ID or NHS Number is required</span><input class=\\"nhsuk-input nhsuk-input--width-20 nhsuk-input--error\\" aria-describedby=\\"prescriptionId--hint\\" aria-labelledby=\\"prescriptionId--label\\" name=\\"prescriptionId\\" id=\\"prescriptionId\\" autocomplete=\\"off\\" type=\\"text\\" value=\\"\\"></div>
-  <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><label class=\\"nhsuk-label\\" id=\\"patientId--label\\" for=\\"patientId\\">NHS Number</label><span class=\\"nhsuk-error-message\\" id=\\"patientId--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>One of Prescription ID or NHS Number is required</span><input class=\\"nhsuk-input nhsuk-input--width-10 nhsuk-input--error\\" aria-labelledby=\\"patientId--label\\" name=\\"patientId\\" id=\\"patientId\\" autocomplete=\\"off\\" type=\\"text\\" value=\\"\\"></div>
-  <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"businessStatus--label\\" for=\\"businessStatus\\">Status</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"businessStatus--label\\" name=\\"businessStatus\\" id=\\"businessStatus\\">
-      <option value=\\"\\"></option>
-      <option value=\\"0001\\">To be Dispensed</option>
-      <option value=\\"0002\\">With Dispenser</option>
-      <option value=\\"0003\\">With Dispenser - Active</option>
-      <option value=\\"0004\\">Expired</option>
-      <option value=\\"0005\\">Cancelled</option>
-      <option value=\\"0006\\">Dispensed</option>
-      <option value=\\"0007\\">Not Dispensed</option>
-    </select></div>
-  <div class=\\"nhsuk-form-group nhsuk-form-group--error\\">
-    <fieldset class=\\"nhsuk-fieldset\\">
-      <legend class=\\"nhsuk-fieldset__legend\\">Creation Date</legend>
-      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.comparator--label\\" for=\\"authoredOn.comparator\\">Search Type</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"authoredOn.comparator--label\\" name=\\"authoredOn.comparator\\" id=\\"authoredOn.comparator\\">
-          <option value=\\"\\"></option>
-          <option value=\\"le\\">On or before</option>
-          <option value=\\"eq\\">On</option>
-          <option value=\\"ge\\">On or after</option>
-        </select></div>
-      <div class=\\"nhsuk-form-group nhsuk-form-group--error\\"><span class=\\"nhsuk-error-message\\" id=\\"authoredOn.date--error-message\\" role=\\"alert\\"><span class=\\"nhsuk-u-visually-hidden\\">Error: </span>All fields are required for a date search</span>
-        <div class=\\"nhsuk-date-input\\" id=\\"authoredOn.date\\">
-          <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.day--label\\" for=\\"authoredOn.day\\">Day</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.day\\" aria-labelledby=\\"authoredOn.day--label\\" name=\\"authoredOn.day\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"12\\"></div>
-          </div>
-          <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.month--label\\" for=\\"authoredOn.month\\">Month</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.month\\" aria-labelledby=\\"authoredOn.month--label\\" name=\\"authoredOn.month\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"6\\"></div>
-          </div>
-          <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.year--label\\" for=\\"authoredOn.year\\">Year</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-4 nhsuk-input--error\\" id=\\"authoredOn.year\\" aria-labelledby=\\"authoredOn.year--label\\" name=\\"authoredOn.year\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
+            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.low.year--label\\" for=\\"authoredOn.low.year\\">Year</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-4 nhsuk-input--error\\" id=\\"authoredOn.low.year\\" aria-labelledby=\\"authoredOn.low.year--label\\" name=\\"authoredOn.low.year\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
           </div>
         </div>
       </div>
@@ -1094,26 +1034,13 @@ exports[`Displays error if mandatory field missing 1`] = `
     </select></div>
   <div class=\\"nhsuk-form-group\\">
     <fieldset class=\\"nhsuk-fieldset\\">
-      <legend class=\\"nhsuk-fieldset__legend\\">Creation Date</legend>
-      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.comparator--label\\" for=\\"authoredOn.comparator\\">Search Type</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"authoredOn.comparator--label\\" name=\\"authoredOn.comparator\\" id=\\"authoredOn.comparator\\">
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.type--label\\" for=\\"authoredOn.type\\">Creation Date</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"authoredOn.type--label\\" name=\\"authoredOn.type\\" id=\\"authoredOn.type\\">
           <option value=\\"\\"></option>
-          <option value=\\"le\\">On or before</option>
-          <option value=\\"eq\\">On</option>
-          <option value=\\"ge\\">On or after</option>
+          <option value=\\"onOrBefore\\">On or before</option>
+          <option value=\\"on\\">On</option>
+          <option value=\\"onOrAfter\\">On or after</option>
+          <option value=\\"between\\">Between</option>
         </select></div>
-      <div class=\\"nhsuk-form-group\\">
-        <div class=\\"nhsuk-date-input\\" id=\\"authoredOn.date\\">
-          <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.day--label\\" for=\\"authoredOn.day\\">Day</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.day\\" aria-labelledby=\\"authoredOn.day--label\\" name=\\"authoredOn.day\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
-          </div>
-          <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.month--label\\" for=\\"authoredOn.month\\">Month</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.month\\" aria-labelledby=\\"authoredOn.month--label\\" name=\\"authoredOn.month\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
-          </div>
-          <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.year--label\\" for=\\"authoredOn.year\\">Year</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-4\\" id=\\"authoredOn.year\\" aria-labelledby=\\"authoredOn.year--label\\" name=\\"authoredOn.year\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
-          </div>
-        </div>
-      </div>
     </fieldset>
   </div>
   <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Search</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
@@ -2984,26 +2911,13 @@ exports[`Displays search form 1`] = `
     </select></div>
   <div class=\\"nhsuk-form-group\\">
     <fieldset class=\\"nhsuk-fieldset\\">
-      <legend class=\\"nhsuk-fieldset__legend\\">Creation Date</legend>
-      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.comparator--label\\" for=\\"authoredOn.comparator\\">Search Type</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"authoredOn.comparator--label\\" name=\\"authoredOn.comparator\\" id=\\"authoredOn.comparator\\">
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.type--label\\" for=\\"authoredOn.type\\">Creation Date</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"authoredOn.type--label\\" name=\\"authoredOn.type\\" id=\\"authoredOn.type\\">
           <option value=\\"\\"></option>
-          <option value=\\"le\\">On or before</option>
-          <option value=\\"eq\\">On</option>
-          <option value=\\"ge\\">On or after</option>
+          <option value=\\"onOrBefore\\">On or before</option>
+          <option value=\\"on\\">On</option>
+          <option value=\\"onOrAfter\\">On or after</option>
+          <option value=\\"between\\">Between</option>
         </select></div>
-      <div class=\\"nhsuk-form-group\\">
-        <div class=\\"nhsuk-date-input\\" id=\\"authoredOn.date\\">
-          <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.day--label\\" for=\\"authoredOn.day\\">Day</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.day\\" aria-labelledby=\\"authoredOn.day--label\\" name=\\"authoredOn.day\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
-          </div>
-          <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.month--label\\" for=\\"authoredOn.month\\">Month</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.month\\" aria-labelledby=\\"authoredOn.month--label\\" name=\\"authoredOn.month\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
-          </div>
-          <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.year--label\\" for=\\"authoredOn.year\\">Year</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-4\\" id=\\"authoredOn.year\\" aria-labelledby=\\"authoredOn.year--label\\" name=\\"authoredOn.year\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
-          </div>
-        </div>
-      </div>
     </fieldset>
   </div>
   <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Search</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>
@@ -3027,26 +2941,13 @@ exports[`Form values are populated from query string 1`] = `
     </select></div>
   <div class=\\"nhsuk-form-group\\">
     <fieldset class=\\"nhsuk-fieldset\\">
-      <legend class=\\"nhsuk-fieldset__legend\\">Creation Date</legend>
-      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.comparator--label\\" for=\\"authoredOn.comparator\\">Search Type</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"authoredOn.comparator--label\\" name=\\"authoredOn.comparator\\" id=\\"authoredOn.comparator\\">
+      <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label\\" id=\\"authoredOn.type--label\\" for=\\"authoredOn.type\\">Creation Date</label><select class=\\"nhsuk-select\\" aria-labelledby=\\"authoredOn.type--label\\" name=\\"authoredOn.type\\" id=\\"authoredOn.type\\">
           <option value=\\"\\"></option>
-          <option value=\\"le\\">On or before</option>
-          <option value=\\"eq\\">On</option>
-          <option value=\\"ge\\">On or after</option>
+          <option value=\\"onOrBefore\\">On or before</option>
+          <option value=\\"on\\">On</option>
+          <option value=\\"onOrAfter\\">On or after</option>
+          <option value=\\"between\\">Between</option>
         </select></div>
-      <div class=\\"nhsuk-form-group\\">
-        <div class=\\"nhsuk-date-input\\" id=\\"authoredOn.date\\">
-          <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.day--label\\" for=\\"authoredOn.day\\">Day</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.day\\" aria-labelledby=\\"authoredOn.day--label\\" name=\\"authoredOn.day\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
-          </div>
-          <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.month--label\\" for=\\"authoredOn.month\\">Month</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-2\\" id=\\"authoredOn.month\\" aria-labelledby=\\"authoredOn.month--label\\" name=\\"authoredOn.month\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
-          </div>
-          <div class=\\"nhsuk-date-input__item\\">
-            <div class=\\"nhsuk-form-group\\"><label class=\\"nhsuk-label nhsuk-date-input__label\\" id=\\"authoredOn.year--label\\" for=\\"authoredOn.year\\">Year</label><input class=\\"nhsuk-input nhsuk-date-input__input nhsuk-input--width-4\\" id=\\"authoredOn.year\\" aria-labelledby=\\"authoredOn.year--label\\" name=\\"authoredOn.year\\" pattern=\\"[0-9]*\\" type=\\"number\\" value=\\"\\"></div>
-          </div>
-        </div>
-      </div>
     </fieldset>
   </div>
   <div class=\\"sc-bdvvtL jjZBkx\\"><button class=\\"nhsuk-button\\" aria-disabled=\\"false\\" type=\\"submit\\">Search</button><button class=\\"nhsuk-button nhsuk-button--secondary\\" aria-disabled=\\"false\\" type=\\"button\\">Back</button></div>

@@ -19,11 +19,11 @@ const nhsNumber = "9449304106"
 const formattedNhsNumber = "944 930 4106"
 const context: AppContextValue = {baseUrl}
 
-const prescriptionSearchByIdUrl = `${baseUrl}tracker?focus:identifier=${prescriptionId}`
-const prescriptionSearchByNhsNumberUrl = `${baseUrl}tracker?patient:identifier=${nhsNumber}`
+const prescriptionSearchByIdUrl = `${baseUrl}tracker?focus%3Aidentifier=${prescriptionId}`
+const prescriptionSearchByNhsNumberUrl = `${baseUrl}tracker?patient%3Aidentifier=${nhsNumber}`
 const prescriptionSearchAllFieldsUrl = `${baseUrl}tracker`
-  + `?focus:identifier=${prescriptionId}`
-  + `&patient:identifier=${nhsNumber}`
+  + `?focus%3Aidentifier=${prescriptionId}`
+  + `&patient%3Aidentifier=${nhsNumber}`
   + `&business-status=0006`
   + `&authored-on=ge2020-01-01`
 
@@ -64,22 +64,9 @@ test("Displays error if mandatory field missing", async () => {
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
-test("Displays error if creation date field partially completed - comparator missing", async () => {
+test("Displays error if creation date field partially completed", async () => {
   const container = await renderPage()
-  await enterDateField("Day", "12")
-  await enterDateField("Month", "6")
-  await enterDateField("Year", "2020")
-  userEvent.click(screen.getByText("Search"))
-  await waitFor(() =>
-    expect(screen.getByText("All fields are required for a date search")).toBeTruthy()
-  )
-
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
-})
-
-test("Displays error if creation date field partially completed - date field missing", async () => {
-  const container = await renderPage()
-  await enterDateComparator("ge")
+  await enterDateRangeType("onOrAfter")
   await enterDateField("Day", "12")
   await enterDateField("Month", "6")
   userEvent.click(screen.getByText("Search"))
@@ -92,7 +79,7 @@ test("Displays error if creation date field partially completed - date field mis
 
 test("Displays error if creation date field invalid", async () => {
   const container = await renderPage()
-  await enterDateComparator("ge")
+  await enterDateRangeType("onOrAfter")
   await enterDateField("Day", "45")
   await enterDateField("Month", "12")
   await enterDateField("Year", "2020")
@@ -307,16 +294,16 @@ async function enterStatus() {
 }
 
 async function enterDate() {
-  await enterDateComparator("ge")
+  await enterDateRangeType("onOrAfter")
   await enterDateField("Day", "1")
   await enterDateField("Month", "1")
   await enterDateField("Year", "2020")
 }
 
-async function enterDateComparator(value: "eq" | "le" | "ge") {
-  userEvent.selectOptions(screen.getByLabelText("Search Type"), value)
+async function enterDateRangeType(value: "onOrBefore" | "on" | "onOrAfter" | "between") {
+  userEvent.selectOptions(screen.getByLabelText("Creation Date"), value)
   await waitFor(
-    () => expect(screen.getByLabelText<HTMLSelectElement>("Search Type").value).toEqual(value)
+    () => expect(screen.getByLabelText<HTMLSelectElement>("Creation Date").value).toEqual(value)
   )
 }
 

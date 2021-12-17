@@ -7,7 +7,7 @@ import {PrescriptionSearchCriteria} from "../../pages/prescriptionSearchPage"
 import {BackButton} from "../backButton"
 import SelectField, {convertCodingsToOptions} from "../selectField"
 import {VALUE_SET_PRESCRIPTION_STATUS} from "../../fhir/reference-data/valueSets"
-import ComparatorAndDateField, {validateComparatorAndDateField} from "./comparatorAndDateField"
+import DateRangeField, {validateDateRangeField} from "./dateRangeField"
 
 interface PrescriptionSearchFormProps {
   prescriptionId: string,
@@ -23,10 +23,7 @@ const PrescriptionSearchForm: React.FC<PrescriptionSearchFormProps> = ({
     patientId: "",
     businessStatus: "",
     authoredOn: {
-      comparator: "",
-      day: "",
-      month: "",
-      year: ""
+      type: ""
     }
   }
 
@@ -39,7 +36,7 @@ const PrescriptionSearchForm: React.FC<PrescriptionSearchFormProps> = ({
     }
 
     if (values.authoredOn) {
-      const authoredOnErrors = validateComparatorAndDateField(values.authoredOn)
+      const authoredOnErrors = validateDateRangeField(values.authoredOn)
       if (authoredOnErrors) {
         errors.authoredOn = authoredOnErrors
       }
@@ -88,7 +85,7 @@ const PrescriptionSearchForm: React.FC<PrescriptionSearchFormProps> = ({
             label="Status"
             fieldOptions={convertCodingsToOptions(VALUE_SET_PRESCRIPTION_STATUS, true)}
           />
-          <ComparatorAndDateField id="authoredOn" name="authoredOn" label="Creation Date"/>
+          <DateRangeField id="authoredOn" name="authoredOn" label="Creation Date"/>
           <ButtonList>
             <Button type="submit">Search</Button>
             <BackButton/>

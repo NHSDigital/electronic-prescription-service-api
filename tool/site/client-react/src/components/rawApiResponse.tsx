@@ -84,7 +84,15 @@ const RawApiResponse: React.FC<RawApiResponseProps> = ({
 }
 
 function formatAsString(thing: unknown): string {
-  return typeof thing === "string" ? thing : JSON.stringify(thing, null, 2)
+  if (typeof thing === "string") {
+    return thing
+  }
+  if (thing instanceof URLSearchParams) {
+    const values: Array<[string, string]> = []
+    thing.forEach((value, key) => values.push([key, value]))
+    return values.map(([key, value]) => `${JSON.stringify(key)}: ${JSON.stringify(value)}`).join("\n")
+  }
+  return JSON.stringify(thing, null, 2)
 }
 
 export default RawApiResponse
